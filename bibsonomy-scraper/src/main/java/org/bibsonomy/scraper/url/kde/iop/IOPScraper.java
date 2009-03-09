@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -20,7 +20,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * SCraper for http://www.iop.org
  * @author tst
  */
-public class IOPScraper extends UrlScraper {
+public class IOPScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "IOPScraper: Scraper for electronic journals from " + href("http://www.iop.org/EJ", "IOP");
 

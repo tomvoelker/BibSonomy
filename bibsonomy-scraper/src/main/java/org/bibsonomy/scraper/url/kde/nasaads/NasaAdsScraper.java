@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -25,7 +25,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * It collects bibtex snippets and single referenzes (html page or bibtex page).  
  * @author tst
  */
-public class NasaAdsScraper extends UrlScraper {
+public class NasaAdsScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "NasaAdsScraper: Extracts publications from " + href("http://adsabs.harvard.edu/", "The SAO/NASA Astrophysics Data System") + 
 	". Publications can be entered as a marked bibtex snippet (one or more publications) or by the page of a single reference.";
@@ -54,7 +54,7 @@ public class NasaAdsScraper extends UrlScraper {
 
 	private static final Pattern hrefPattern = Pattern.compile("href=\"[^\"]*\"");
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + URL_NASA_ADS_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + URL_NASA_ADS_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	public String getInfo() {
 		return INFO;

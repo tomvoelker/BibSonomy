@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -19,7 +19,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * Scraper for X.plosjournals.org
  * @author tst
  */
-public class PlosScraper extends UrlScraper {
+public class PlosScraper extends AbstractUrlScraper {
 
 	/**
 	 * INFO
@@ -62,7 +62,7 @@ public class PlosScraper extends UrlScraper {
 		return INFO;
 	}
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PLOS_HOST_ENDING), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PLOS_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
 
 	
 	/**

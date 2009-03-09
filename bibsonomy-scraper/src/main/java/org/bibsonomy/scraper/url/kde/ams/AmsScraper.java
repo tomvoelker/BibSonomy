@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -24,11 +24,11 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  * @version $Id$
  */
-public class AmsScraper extends UrlScraper {
+public class AmsScraper extends AbstractUrlScraper {
 	
 	private static final String INFO = "For references from ams.allenpress.com";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*ams.allenpress.com"), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*ams.allenpress.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	private static final Pattern pattern = Pattern.compile("doi=([^&]*)[&]?");
 	

@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
@@ -16,7 +16,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author wbi
  * @version $Id$
  */
-public class BMJScraper extends UrlScraper {
+public class BMJScraper extends AbstractUrlScraper {
 
 	private static final String info = "BMJ Scraper: This Scraper parses a publication from " + href("http://www.bmj.com/", "BMJ");
 
@@ -26,7 +26,7 @@ public class BMJScraper extends UrlScraper {
 	private static final String BMJ_BIBTEX_PATH = "/cgi/citmgr?gca=";
 	private static final String BMJ_BIBTEX_DOWNLOAD_PATH = "/cgi/citmgr?type=bibtex&gca=";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + BMJ_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + BMJ_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	public String getInfo() {
 		return info;

@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -23,7 +23,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author tst
  * @version $Id$
  */
-public class GoogleSonomyScraper extends UrlScraper {
+public class GoogleSonomyScraper extends AbstractUrlScraper {
 	
 	private static final String INFO = "GoogleSonomy Scraper: This scraper supports download links from the GoogleSonomy Firefox Plugin.";
 

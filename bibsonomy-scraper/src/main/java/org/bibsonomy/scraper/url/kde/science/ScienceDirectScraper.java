@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -22,7 +22,7 @@ import org.bibsonomy.util.WebUtils;
  * @author rja
  *
  */
-public class ScienceDirectScraper extends UrlScraper {
+public class ScienceDirectScraper extends AbstractUrlScraper {
 	private static final String info = "ScienceDirect Scraper: This scraper parses a publication page from " + href("http://www.sciencedirect.com/", "ScienceDirect");
 
 	private static final String SCIENCE_CITATION_HOST     = "sciencedirect.com";

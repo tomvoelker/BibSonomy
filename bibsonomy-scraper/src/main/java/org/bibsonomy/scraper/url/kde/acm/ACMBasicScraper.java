@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -28,7 +28,7 @@ import org.w3c.tidy.Tidy;
  * @author rja
  *
  */
-public class ACMBasicScraper extends UrlScraper {
+public class ACMBasicScraper extends AbstractUrlScraper {
 	
 	private Logger log = Logger.getLogger(ACMBasicScraper.class);
 	
@@ -40,7 +40,7 @@ public class ACMBasicScraper extends UrlScraper {
 	private static final String BROKEN_END = "},\n }";
 
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "portal.acm.org"), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "portal.acm.org"), AbstractUrlScraper.EMPTY_PATTERN));
 
 	private List<String> pathsToScrape; // holds the paths to the popup pages
 

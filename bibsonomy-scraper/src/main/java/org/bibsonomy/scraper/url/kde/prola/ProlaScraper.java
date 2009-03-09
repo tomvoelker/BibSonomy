@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -19,7 +19,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * Scraper for prola.aps.org. It scrapes selected bibtex snippets and selected articles.
  * @author tst
  */
-public class ProlaScraper extends UrlScraper {
+public class ProlaScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "ProlaScraper: For selected BibTeX snippets and articles from " + href("http://prola.aps.org/" , "PROLA");
 
@@ -48,7 +48,7 @@ public class ProlaScraper extends UrlScraper {
 	 */
 	private static final String DOWNLOAD_LINK_VALUE = "BibTeX";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PROLA_APS_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PROLA_APS_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	public String getInfo() {
 		return INFO;

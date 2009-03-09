@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
@@ -16,7 +16,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author wbi
  * @version $Id$
  */
-public class BioMedCentralScraper extends UrlScraper {
+public class BioMedCentralScraper extends AbstractUrlScraper {
 
 	private static final String info = "BioMed Central Scraper: This Scraper parse a publication from " + href("http://www.biomedcentral.com/", "BioMed Central</a>");
 
@@ -25,7 +25,7 @@ public class BioMedCentralScraper extends UrlScraper {
 	private static final String BIOMEDCENTRAL_BIBTEX_PATH = "citation";
 	private static final String BIOMEDCENTRAL_BIBTEX_PARAMS = "?format=bibtex&include=cit&direct=0&action=submit";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + BIOMEDCENTRAL_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + BIOMEDCENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	public String getInfo() {
 		return info;

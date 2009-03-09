@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.w3c.dom.DOMException;
@@ -26,7 +26,7 @@ import org.w3c.tidy.Tidy;
  * @author rja
  *
  */
-public class CiteBaseScraper extends UrlScraper {
+public class CiteBaseScraper extends AbstractUrlScraper {
 
 //	http://www.citebase.org/abstract?id=oai:arXiv.org:cs/0408047
 
@@ -41,7 +41,7 @@ public class CiteBaseScraper extends UrlScraper {
 
 	private static final Logger log = Logger.getLogger(CiteBaseScraper.class);
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + CITEBASE_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + CITEBASE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);

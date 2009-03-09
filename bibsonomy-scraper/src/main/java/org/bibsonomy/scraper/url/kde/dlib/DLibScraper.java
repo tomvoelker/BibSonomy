@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -21,7 +21,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * Scraper for www.dlib.org
  * @author tst
  */
-public class DLibScraper extends UrlScraper {
+public class DLibScraper extends AbstractUrlScraper {
 	
 	/**
 	 * Scraper info
@@ -33,7 +33,7 @@ public class DLibScraper extends UrlScraper {
 	 */
 	private static final String DLIB_HOST = "dlib.org";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + DLIB_HOST + "$"), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + DLIB_HOST + "$"), AbstractUrlScraper.EMPTY_PATTERN));
 
 	/*
 	 * FIXME: refactor all patterns into static Patterns

@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -17,13 +17,13 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author wbi
  * @version $Id$
  */
-public class NberScraper extends UrlScraper {
+public class NberScraper extends AbstractUrlScraper {
 
 	private static final String info = "NBER Scraper: This Scraper parses a publication from " + href("http://www.nber.org/", "National Bureau of Economic Research");
 
 	private static final String NBER_HOST  = "www.nber.org";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + NBER_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + NBER_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	public String getInfo() {
 		return info;

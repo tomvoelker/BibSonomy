@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 
@@ -26,7 +26,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * 
  * @author tst
  */
-public class BlackwellSynergyScraper extends UrlScraper {
+public class BlackwellSynergyScraper extends AbstractUrlScraper {
 	
 	private static final Logger log = Logger.getLogger(BlackwellSynergyScraper.class);
 
@@ -50,7 +50,7 @@ public class BlackwellSynergyScraper extends UrlScraper {
 	 */
 	private static final String HOST = "blackwell-synergy.com";
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	/**
 	 * get Info

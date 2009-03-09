@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -18,7 +18,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * Scraper for http://www.worldcat.org 
  * @author tst
  */
-public class WorldCatScraper extends UrlScraper {
+public class WorldCatScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "Worldcat Scraper: Scraper for publications from " + href("http://www.worldcat.org", "worldcat") + ". Author: KDE";
 

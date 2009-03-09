@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -18,7 +18,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author daill
  * @version $Id$
  */
-public class PubMedScraper extends UrlScraper {
+public class PubMedScraper extends AbstractUrlScraper {
 	private static final String info = "PudMed Scraper: This scraper parses a publication page of citations from "
 			+ href("http://www.ncbi.nlm.nih.gov/sites/entrez/", "PubMed");
 
@@ -28,9 +28,9 @@ public class PubMedScraper extends UrlScraper {
 	private static final List<Tuple<Pattern, Pattern>> patterns = new LinkedList<Tuple<Pattern, Pattern>>();
 	static {
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST),
-				UrlScraper.EMPTY_PATTERN));
+				AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*"
-				+ PUBMED_EUTIL_HOST), UrlScraper.EMPTY_PATTERN));
+				+ PUBMED_EUTIL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
 	protected boolean scrapeInternal(ScrapingContext sc)

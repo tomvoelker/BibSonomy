@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -19,13 +19,13 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author tst
  * @version $Id$
  */
-public class ScientificcommonsScraper extends UrlScraper{
+public class ScientificcommonsScraper extends AbstractUrlScraper{
 
 	private static final String HOST = "scientificcommons.org";
 	
 	private static final String DOWNLOAD_URL = "http://en.scientificcommons.org/export/bibtex/";
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	private static final Pattern PATTERN_ID = Pattern.compile(HOST + "/(.*)");
 	

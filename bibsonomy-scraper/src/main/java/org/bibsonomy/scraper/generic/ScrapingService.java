@@ -18,12 +18,12 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 @Deprecated
-public class ScrapingService extends UrlScraper {
+public class ScrapingService extends AbstractUrlScraper {
 
 	private static final Logger log = Logger.getLogger(ScrapingService.class);
 	private static String baseurl = "";
@@ -75,7 +75,7 @@ public class ScrapingService extends UrlScraper {
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		List<Tuple<Pattern,Pattern>> list = new LinkedList<Tuple<Pattern,Pattern>>();
-		list.add(new Tuple<Pattern, Pattern>(UrlScraper.EMPTY_PATTERN, UrlScraper.EMPTY_PATTERN));
+		list.add(new Tuple<Pattern, Pattern>(AbstractUrlScraper.EMPTY_PATTERN, AbstractUrlScraper.EMPTY_PATTERN));
 		return list;
 	}
 

@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
@@ -18,7 +18,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author tst
  * @version $Id$
  */
-public class ProjectmuseScraper extends UrlScraper {
+public class ProjectmuseScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "MUSE Scraper: Scraper for citations from " + href("http://muse.jhu.edu/", "Project MUSE");
 
@@ -45,7 +45,7 @@ public class ProjectmuseScraper extends UrlScraper {
 	private static final String PATTERN_FNAME = "<fname>(.*)</fname>";
 	private static final String PATTERN_ABSTRACT = "<abstract>\\s*<p>([^<]*)</p>\\s*</abstract>";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	public String getInfo() {
 		return INFO;

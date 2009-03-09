@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -44,7 +44,7 @@ import org.bibsonomy.scraper.exceptions.UseageFailureException;
  * @author tst
  * @version $Id$
  */
-public class IucrScraper extends UrlScraper {
+public class IucrScraper extends AbstractUrlScraper {
 
 	/*
 	 * messages
@@ -64,7 +64,7 @@ public class IucrScraper extends UrlScraper {
 
 	private static final String HOST_SCRIPTS_PREFIX = "scripts";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	private static final Pattern cnorPattern = Pattern.compile("<input name=\"cnor\" value=\"([^\"]*)\" type=\"hidden\">");
 

@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -19,7 +19,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author wbi
  * @version $Id$
  */
-public class InformaWorldScraper extends UrlScraper {
+public class InformaWorldScraper extends AbstractUrlScraper {
 
 	private static final String info = "Informaworld Scraper: This scraper parses a publication from " + href("http://www.informaworld.com/", "informaworld");
 
@@ -31,7 +31,7 @@ public class InformaWorldScraper extends UrlScraper {
 	private static final String INFORMAWORLD_BIBTEX_PATH = "/smpp/content~db=all";
 	private static final String INFORMAWORLD_BIBTEX_DOWNLOAD_PATH = "/smpp/content?file.txt&tab=citation&popup=&group=&expanded=&mode=&maction=&backurl=&citstyle=endnote&showabs=false&format=file&toemail=&subject=&fromname=&fromemail=&content={id}&selecteditems={sid}";
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + INFORMAWORLD_HOST_NAME), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + INFORMAWORLD_HOST_NAME), AbstractUrlScraper.EMPTY_PATTERN));
 
 	private static final Pattern pattern = Pattern.compile("content=([^~]*)");
 

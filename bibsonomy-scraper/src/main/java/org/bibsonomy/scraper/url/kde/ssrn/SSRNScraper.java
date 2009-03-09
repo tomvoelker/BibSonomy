@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
@@ -15,7 +15,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author tst
  * @version $Id$
  */
-public class SSRNScraper extends UrlScraper {
+public class SSRNScraper extends AbstractUrlScraper {
 
 	private static final Logger log = Logger.getLogger(SSRNScraper.class);
 
@@ -23,7 +23,7 @@ public class SSRNScraper extends UrlScraper {
 
 	private static final String HOST = "ssrn.com";
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	public String getInfo() {
 		return INFO;

@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -26,7 +26,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author rja
  *
  */
-public class SpringerLinkScraper extends UrlScraper {
+public class SpringerLinkScraper extends AbstractUrlScraper {
 	private static final String info = "SpringerLink Scraper: This scraper parses a publication page from " + href("http://springerlink.com/", "SpringerLink");
 	private static final String userAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";	
 
@@ -34,7 +34,7 @@ public class SpringerLinkScraper extends UrlScraper {
 	private static final String SPRINGER_CITATION_URL = "http://springerlink.com/";
 	private static final String SPRINGER_CITATION_HOST = "springerlink.com";
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 			sc.setScraper(this);

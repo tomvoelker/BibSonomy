@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -23,7 +23,7 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  * @version $Id$
  */
-public class AclScraper extends UrlScraper {
+public class AclScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "ACL Scraper: Scraper for (PDF) references from " + href("http://aclweb.org/", "Association for Computational Linguistics");
 

@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -19,10 +19,10 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author rja
  *
  */
-public class PubMedCentralScraper extends UrlScraper {
+public class PubMedCentralScraper extends AbstractUrlScraper {
 	private static final String info = "PudMedCentral Scraper: This scraper parses a publication page of citations from " + href("http://www.pubmedcentral.nih.gov/", "PubMedCentral");
 	private static final String HOST = "pubmedcentral.nih.gov";
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 			sc.setScraper(this);

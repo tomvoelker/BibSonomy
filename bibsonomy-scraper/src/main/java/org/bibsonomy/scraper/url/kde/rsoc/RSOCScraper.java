@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
@@ -23,7 +23,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author wbi
  * @version $Id$
  */
-public class RSOCScraper extends UrlScraper {
+public class RSOCScraper extends AbstractUrlScraper {
 
 	private static final String info = "RSOC Scraper: This Scraper parses a journal from " + href("http://journals.royalsociety.org/", "Royal Society Publishing");
 
@@ -32,7 +32,7 @@ public class RSOCScraper extends UrlScraper {
 	private static final String RSOC_ABSTRACT_PATH = "/content/";
 	private static final String RSOC_RIS_PATH = "/export.mpx?mode=ris&code=";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + RSOC_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + RSOC_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	public String getInfo() {
 		return info;

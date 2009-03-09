@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
@@ -21,7 +21,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author tst
  * @version $Id$
  */
-public class EricScraper extends UrlScraper {
+public class EricScraper extends AbstractUrlScraper {
 	
 	private static final String INFO = "ERIC Scraper: Scraper for publications from the " + href("http://www.eric.ed.gov/", "Education Resources Information Center");
 	
@@ -34,7 +34,7 @@ public class EricScraper extends UrlScraper {
 	private static final Pattern accnoPattern = Pattern.compile("accno=([^&]*)");
 
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + ERIC_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + ERIC_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	public String getInfo() {
 		return INFO;

@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -22,15 +22,15 @@ import org.w3c.dom.NodeList;
  * @author rja
  *
  */
-public class SpiresScraper extends UrlScraper{
+public class SpiresScraper extends AbstractUrlScraper{
 	private static final String FORMAT_WWWBRIEFBIBTEX = "FORMAT=WWWBRIEFBIBTEX";
 
 	private static final String info = "Spires Scraper: Gets publications from " + href("slac.stanford.edu", "SLAC National Accelerator Laboratory");
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
 	static {
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "slac.stanford.edu"), UrlScraper.EMPTY_PATTERN));
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "www-library.desy.de"), UrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "slac.stanford.edu"), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "www-library.desy.de"), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 	
 	

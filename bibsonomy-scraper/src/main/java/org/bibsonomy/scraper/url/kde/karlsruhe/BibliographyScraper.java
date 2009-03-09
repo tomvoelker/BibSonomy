@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
@@ -14,7 +14,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author tst
  * @version $Id$
  */
-public class BibliographyScraper extends UrlScraper {
+public class BibliographyScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "LIIN Scraper: Scrapes BibTeX refrences from " + href("http://liinwww.ira.uka.de/", "LIIN");
 	

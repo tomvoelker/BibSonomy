@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -33,14 +33,14 @@ import org.bibsonomy.util.TagStringUtils;
  * @author tst
  *
  */
-public class AipScitationScraper extends UrlScraper {
+public class AipScitationScraper extends AbstractUrlScraper {
 
 
 	private static final String INFO = "AipScitationScraper: Extracts publications from " + href("http://scitation.aip.org/", "Scitation") + 
 	". Publications can be entered as a marked bibtex snippet or by posting the page of the reference.";
 
 	private static final Pattern hostPattern = Pattern.compile(".*" + "aip.org");
-	private static final Pattern pathPattern = UrlScraper.EMPTY_PATTERN;
+	private static final Pattern pathPattern = AbstractUrlScraper.EMPTY_PATTERN;
 
 	private static final String URL_AIP_CITATION_PAGE = "http://scitation.aip.org/";
 	private static final String URL_AIP_CITATION_BIBTEX_PAGE_PATH = "/getabs/servlet/GetCitation";

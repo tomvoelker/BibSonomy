@@ -17,7 +17,7 @@ import java.util.regex.PatternSyntaxException;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -28,7 +28,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author sre
  *
  */
-public class UBKAScraper extends UrlScraper {
+public class UBKAScraper extends AbstractUrlScraper {
 
 	private static final String info = "UBKA Scraper: This scraper parses a publication page from the " + href("http://www.ubka.uni-karlsruhe.de/hylib/ka_opac.html", "University Library (UB) Karlsruhe");
 
@@ -52,7 +52,7 @@ public class UBKAScraper extends UrlScraper {
 	private static final String  UBKA_SPACE_PATTERN = "&nbsp;";
 	private static final String  UBKA_BREAK_PATTERN = "<br>";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + UBKA_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + UBKA_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {

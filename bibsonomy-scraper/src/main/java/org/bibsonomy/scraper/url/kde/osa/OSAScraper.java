@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -25,7 +25,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author wbi
  * @version $Id$
  */
-public class OSAScraper extends UrlScraper {
+public class OSAScraper extends AbstractUrlScraper {
 
 	private static final String info = "Optical Society of America Scraper: This Scraper parses a publication from the " + href("http://josaa.osa.org/", "Optical Society of America");
 
@@ -42,7 +42,7 @@ public class OSAScraper extends UrlScraper {
 	private static final Pattern selectPattern = Pattern.compile("<select\\b[^>]*>");
 	private static final Pattern namePattern = Pattern.compile("name=\"[^\"]*\"");
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + OSA_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + OSA_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	public String getInfo() {
 		return info;

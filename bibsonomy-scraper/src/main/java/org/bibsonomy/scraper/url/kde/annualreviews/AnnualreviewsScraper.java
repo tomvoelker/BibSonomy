@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -26,7 +26,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author tst
  * @version $Id$
  */
-public class AnnualreviewsScraper extends UrlScraper {
+public class AnnualreviewsScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "Annual Rewiews Scraper: Supports journals from " + href("http://arjournals.annualreviews.org/", "Annual Reviews");
 
@@ -43,7 +43,7 @@ public class AnnualreviewsScraper extends UrlScraper {
 	private static final Pattern doiPattern = Pattern.compile("/doi/abs/(.*)");
 	private static final Pattern doiPatternQuery = Pattern.compile("doi=([^&]*)");
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	
 	public String getInfo() {

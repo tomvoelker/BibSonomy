@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
@@ -21,7 +21,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * http://www.librarything.com/work/
  * @author tst
  */
-public class LibrarythingScraper extends UrlScraper {
+public class LibrarythingScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "LibrarythingScraper: extracts publication from " + href("http://www.librarything.com/work-info", "librarything") + 
 	". If a http://www.librarything.com/work page is selectd, then the scraper trys to download the according work-info page.";
@@ -56,7 +56,7 @@ public class LibrarythingScraper extends UrlScraper {
 
 	private static String LIBRARYTHING_PATTERN_WORK_ISBN_13 = "<td class=\"left\">ISBN-13</td><td class=\"bookNonEditField\">([^<]*)</td>";
 
-	final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*librarything\\..*"), UrlScraper.EMPTY_PATTERN));
+	final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*librarything\\..*"), AbstractUrlScraper.EMPTY_PATTERN));
 
 	private static final String PATTERN_LINK = "<a\\b[^>]*>([^<]*)</a>";
 

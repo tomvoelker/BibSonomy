@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
@@ -22,7 +22,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author rja
  *
  */
-public class IngentaconnectScraper extends UrlScraper{
+public class IngentaconnectScraper extends AbstractUrlScraper{
 
 	private static final String info = "Ingentaconnect Scraper: This scraper parses a publication page from " + href("http://www.ingentaconnect.com/", "Ingentaconnect");
 
@@ -32,7 +32,7 @@ public class IngentaconnectScraper extends UrlScraper{
 	private static final Pattern exportPattern = Pattern.compile("BibText Export\" href=\"(.*)\"");
 
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + INGENTA_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + INGENTA_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 

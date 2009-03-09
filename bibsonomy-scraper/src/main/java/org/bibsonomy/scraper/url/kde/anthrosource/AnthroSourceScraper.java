@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -23,7 +23,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author wbi
  * @version $Id$
  */
-public class AnthroSourceScraper extends UrlScraper {
+public class AnthroSourceScraper extends AbstractUrlScraper {
 
 	private static final String info = "AnthroSource Scraper: This Scraper parses a publication from " + href("http://www.anthrosource.net/", "anthrosource");
 

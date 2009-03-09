@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
@@ -18,7 +18,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author wbi
  * @version $Id$
  */
-public class DBLPScraper extends UrlScraper {
+public class DBLPScraper extends AbstractUrlScraper {
 
 	private static final String info = "DBLP Scraper: This scraper parses a publication page from the " + href("http://dblp.uni-trier.de", "University of Trier Digital Bibliography & Library Project");
 
@@ -31,7 +31,7 @@ public class DBLPScraper extends UrlScraper {
 	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
 
 	static {
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST1), UrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST1), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + DBLP_HOST2), Pattern.compile(DBLP_PATH2 + ".*")));
 	}
 	

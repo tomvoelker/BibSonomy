@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.XmlUtils;
@@ -25,7 +25,7 @@ import org.w3c.dom.NodeList;
  * @author rja
  *
  */
-public class IEEEXploreJournalProceedingsScraper extends UrlScraper {
+public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 	private static final Logger log = Logger.getLogger(IEEEXploreJournalProceedingsScraper.class);
 	private static final String info = "IEEEXplore Journal Scraper: This scraper creates a BibTeX entry for the journals and proceedings at " +
 	href("http://ieeexplore.ieee.org/", "IEEEXplore");

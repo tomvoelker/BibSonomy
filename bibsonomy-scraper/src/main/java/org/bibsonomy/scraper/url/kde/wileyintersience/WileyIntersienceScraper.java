@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
@@ -25,7 +25,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * Scraper for www3.interscience.wiley.com
  * @author tst
  */
-public class WileyIntersienceScraper extends UrlScraper {
+public class WileyIntersienceScraper extends AbstractUrlScraper {
 	
 	private static final String INFO = "WileyIntersienceScraper: Extracts publications from the abstract page of " + href("http://www3.interscience.wiley.com/cgi-bin/home?CRETRY=1&SRETRY=0","interscience.wiley.com") + ". Author: KDE";
 
@@ -64,7 +64,7 @@ public class WileyIntersienceScraper extends UrlScraper {
 	// pattern for getting id from url between jorunal and abstract
 	private static final String PATTERN_GET_ID_JOURNAL_ABSTRACT = "journal/(\\d*)/abstract";
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + WILEY_INTERSIENCE_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + WILEY_INTERSIENCE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	/**
 	 * Scraper for www3.interscience.wiley.com

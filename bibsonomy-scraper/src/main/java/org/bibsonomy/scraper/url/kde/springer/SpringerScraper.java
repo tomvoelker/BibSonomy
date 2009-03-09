@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -17,7 +17,7 @@ import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
  * Scraper for springer.com
  * @author tst
  */
-public class SpringerScraper extends UrlScraper {
+public class SpringerScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "Springer Scraper: Scraper for books from " + href("http://www.springer.com/?SGWID=1-102-0-0-0", "Springer");
 	
@@ -26,7 +26,7 @@ public class SpringerScraper extends UrlScraper {
 	 */
 	private static final String HOST = "springer.com";
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST + "$"), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST + "$"), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	public String getInfo() {
 		return INFO;

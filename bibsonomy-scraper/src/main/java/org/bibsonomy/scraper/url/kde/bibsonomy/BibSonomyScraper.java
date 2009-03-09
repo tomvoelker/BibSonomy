@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -20,7 +20,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author tst
  *
  */
-public class BibSonomyScraper extends UrlScraper {
+public class BibSonomyScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "BibSonomyScraper: If you don't like the copy button from " + href("http://www.bibsonomy.org", "BibSonomy") + ", use your postPublication button.";
 

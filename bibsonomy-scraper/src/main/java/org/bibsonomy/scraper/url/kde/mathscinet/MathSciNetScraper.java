@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -21,7 +21,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author tst
  *
  */
-public class MathSciNetScraper extends UrlScraper {
+public class MathSciNetScraper extends AbstractUrlScraper {
 	
 	private static final String INFO = "MathSciNetScraper: Extracts publications from " + href("http://www.ams.org/mathscinet/" , "MathSciNet") + 
 	". Publications can be entered as a marked bibtex snippet or by posting the page of the reference.";

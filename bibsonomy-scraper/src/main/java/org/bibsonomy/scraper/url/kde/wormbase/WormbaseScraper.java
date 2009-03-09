@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
@@ -21,11 +21,11 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author tst
  * @version $Id$
  */
-public class WormbaseScraper extends UrlScraper {
+public class WormbaseScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "Scraper for papers from " + href("http://www.wormbase.org", "Wormbase");
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "wormbase.org"), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "wormbase.org"), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	private static final Pattern pattern = Pattern.compile("name=([^;]*);");
 

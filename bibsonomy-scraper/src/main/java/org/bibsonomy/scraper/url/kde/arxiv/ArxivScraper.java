@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.OAIConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -21,7 +21,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author rja
  *
  */
-public class ArxivScraper extends UrlScraper {
+public class ArxivScraper extends AbstractUrlScraper {
 	
 	private static final String info = "arXiv Scraper: This scraper parses a publication page from " + href("http://arxiv.org/", "arXiv");
 	
@@ -29,7 +29,7 @@ public class ArxivScraper extends UrlScraper {
 	
 	private static final Pattern patternID = Pattern.compile("abs/([^?]*)");
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(ARXIV_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(ARXIV_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		

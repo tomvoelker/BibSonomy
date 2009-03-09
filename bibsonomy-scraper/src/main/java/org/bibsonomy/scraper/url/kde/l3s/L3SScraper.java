@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 
@@ -16,13 +16,13 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author rja
  *
  */
-public class L3SScraper extends UrlScraper {
+public class L3SScraper extends AbstractUrlScraper {
 	private static final String info 	= "L3S Scraper: Scrapes publications from " + href("http://www.l3s.de", "L3S");
 	
 	private static final String L3S_URL = "l3s.de";
 	private static Pattern patternTd = Pattern.compile("<td class=\" value text\">([^<]*)</td>", Pattern.MULTILINE | Pattern.DOTALL);
 	
-	private static final List<Tuple<Pattern, Pattern>> pattern = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + L3S_URL), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> pattern = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + L3S_URL), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 				

@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
@@ -16,7 +16,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author rja
  *
  */
-public class CiteseerBasicScraper extends UrlScraper {
+public class CiteseerBasicScraper extends AbstractUrlScraper {
 
 	private static final String info = "CiteSeer Scraper: This scraper parses a publication page from the " +
 	"Scientific Literature Digital Library " + href("http://citeseer.ist.psu.edu/", "CiteSeer");
@@ -24,7 +24,7 @@ public class CiteseerBasicScraper extends UrlScraper {
 	private static final String  CS_HOST_NAME   = "citeseer.ist.psu.edu";
 	private static final Pattern bibPattern = Pattern.compile(".*<pre>\\s*(@[A-Za-z]+\\s*\\{.+?\\})\\s*</pre>.*", Pattern.MULTILINE | Pattern.DOTALL);
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + CS_HOST_NAME), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + CS_HOST_NAME), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException{
 		sc.setScraper(this);

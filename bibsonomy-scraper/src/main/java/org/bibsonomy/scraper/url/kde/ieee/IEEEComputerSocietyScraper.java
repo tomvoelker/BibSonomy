@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -23,7 +23,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * Scraper for csdl2.computer.org
  * @author tst
  */ 
-public class IEEEComputerSocietyScraper extends UrlScraper {
+public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "IEEE compüuter society Scraper: Scraper for publications from " + href("http://www2.computer.org/portal/web/guest/home", "IEEE Computer Society");
 	private static final String HOST_OLD= "csdl2.computer.org";
@@ -47,8 +47,8 @@ public class IEEEComputerSocietyScraper extends UrlScraper {
 	private static final List<Tuple<Pattern, Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
 	
 	static{
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST_OLD), UrlScraper.EMPTY_PATTERN));
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST_NEW), UrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST_OLD), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST_NEW), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {

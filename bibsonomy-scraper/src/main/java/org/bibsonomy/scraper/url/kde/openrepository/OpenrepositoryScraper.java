@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -20,7 +20,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @author tst
  * @version $Id$
  */
-public class OpenrepositoryScraper extends UrlScraper {
+public class OpenrepositoryScraper extends AbstractUrlScraper {
 
 	private static final String SUPPORTED_HOST_OPENREPOSITORY = "openrepository.com";
 	private static final String SUPPORTED_HOST_E_SPACE = "e-space.mmu.ac.uk";
@@ -44,7 +44,7 @@ public class OpenrepositoryScraper extends UrlScraper {
 	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>(); 
 	
 	static {
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_OPENREPOSITORY), UrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_OPENREPOSITORY), AbstractUrlScraper.EMPTY_PATTERN));
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_E_SPACE), Pattern.compile(SUPPORTED_HOST_E_SPACE_PATH + ".*")));
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_EXETER), Pattern.compile(SUPPORTED_HOST_EXETER_PATH + ".*")));
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SUPPORTED_HOST_GTCNI), Pattern.compile(SUPPORTED_HOST_GTCNI_PATH + ".*")));

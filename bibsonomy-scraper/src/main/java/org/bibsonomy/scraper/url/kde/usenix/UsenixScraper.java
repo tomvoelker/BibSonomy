@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
@@ -18,7 +18,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * It works only with new publications. Pattterns for old data will be added soon.
  * @author tst
  */
-public class UsenixScraper extends UrlScraper {
+public class UsenixScraper extends AbstractUrlScraper {
 	
 	private static final String INFO = "USENIX Scraper: Scraper for papers from events which are postetd on " + href("http://usenix.org/", "USENIX");
 	

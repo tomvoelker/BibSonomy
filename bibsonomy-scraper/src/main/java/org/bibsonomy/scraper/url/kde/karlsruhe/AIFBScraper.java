@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
@@ -20,7 +20,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author rja
  *
  */
-public class AIFBScraper extends UrlScraper {
+public class AIFBScraper extends AbstractUrlScraper {
 	
 	private static final String info = "AIFB Scraper: This scraper parses institute, research group and people-specific pages from the " +
 									   href("http://www.aifb.uni-karlsruhe.de/", "Institut AIFB Universität Karlsruhe");

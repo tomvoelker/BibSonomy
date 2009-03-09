@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
@@ -15,14 +15,14 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @author wbi
  * @version $Id$
  */
-public class LangevScraper extends UrlScraper {
+public class LangevScraper extends AbstractUrlScraper {
 
 	private static final String info = "ISRL Scraper: This scraper parses a publication page from the " + href("http://www.isrl.uiuc.edu/", "The Graduate School of Library and Information Science at the University of Illinois");
 	
 	private static final String ISRL_HOST  = "isrl.uiuc.edu";
 	private static final Pattern ISRL_PATTERN = Pattern.compile(".*<pre>\\s*(@[A-Za-z]+\\s*\\{.+?\\})\\s*</pre>.*", Pattern.MULTILINE | Pattern.DOTALL);
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + ISRL_HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + ISRL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);

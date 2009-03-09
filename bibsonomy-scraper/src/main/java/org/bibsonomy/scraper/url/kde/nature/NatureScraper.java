@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.UrlScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
@@ -20,7 +20,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * Scraper for publication from nature.com
  * @author tst
  */
-public class NatureScraper extends UrlScraper {
+public class NatureScraper extends AbstractUrlScraper {
 
 	/**
 	 * Host
@@ -47,7 +47,7 @@ public class NatureScraper extends UrlScraper {
 	 */
 	private static final String CITATION_DOWNLOAD_LINK_NAME = ">Export citation<";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), UrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	/**
 	 * get INFO
