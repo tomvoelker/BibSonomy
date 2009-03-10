@@ -179,13 +179,13 @@ public class OpenID implements Serializable {
 			String host = requestURL.getHost();
 			String path = requestURL.getPath();
 			String contextPath = requestLogic.getContextPath();
-			int port = requestURL.getPort();
+			Integer port = requestURL.getPort();
 			
 			if (path.startsWith(contextPath)) {
 				path = path.replace(contextPath, "");
 			}
 			
-			newReceivingURL.append(protocol).append("://").append(host).append(path);
+			newReceivingURL.append(protocol).append("://").append(host).append(":"+port.toString()).append(path);
 			String queryString = requestLogic.getQueryString();
 			if (queryString != null && queryString.length() > 0) newReceivingURL.append("?").append(requestLogic.getQueryString());
 			
