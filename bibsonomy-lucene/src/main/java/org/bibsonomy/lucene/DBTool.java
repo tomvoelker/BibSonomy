@@ -46,10 +46,17 @@ public class DBTool {
 
 	public Connection getDBConnection()
 			throws ClassNotFoundException, SQLException {
-		Class.forName(DRIVER_NAME);
-		conn = DriverManager.getConnection(DRIVER_PREFIX + host + ":" + port
-				+ "/" + database, user, passwd);
-		return conn;
+//		System.out.println("############ Trying to get DB connection...");
+		try {
+			Class.forName(DRIVER_NAME);
+			conn = DriverManager.getConnection(DRIVER_PREFIX + host + ":" + port
+					+ "/" + database, user, passwd);
+			return conn;
+		}
+		catch (ClassNotFoundException ex) {
+			System.out.println("Could not find class " + DRIVER_NAME);
+		}
+		return null;
 	}
 
 	/**
