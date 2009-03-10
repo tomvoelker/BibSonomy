@@ -91,6 +91,7 @@ public class Search {
 		else
 		{
 			 luceneIndexPath = lucenePublicationsPath; 
+			// TODO set query string
 		}
 			
 		// declare ArrayList cidsArray for list of String to return
@@ -102,53 +103,35 @@ public class Search {
 		{
 		
 		
-		// open lucene index
-		IndexReader reader = IndexReader.open(luceneIndexPath);
-
-       
-		QueryParser myParser = new QueryParser(lField_desc, analyzer);
-        Query query;
-		try {
-
-			if (debug)
-			{
-				System.out.println("Lucene-Querystring: " + querystring);
-			}
-
-			query = myParser.parse(querystring);
-
-	        IndexSearcher searcher = new IndexSearcher(luceneBookmarksPath);
-	        Hits hits = searcher.search(query);
+			// open lucene index
+			IndexReader reader = IndexReader.open(luceneIndexPath);
+	
+	       
+			QueryParser myParser = new QueryParser(lField_desc, analyzer);
+	        Query query;
+			try {
+	
+				if (debug)
+				{
+					System.out.println("Lucene-Querystring: " + querystring);
+				}
+	
+				query = myParser.parse(querystring);
+	
+		        IndexSearcher searcher = new IndexSearcher(luceneBookmarksPath);
+		        Hits hits = searcher.search(query);
+				
+				for(int i = 0; i < hits.length(); i++){
+		            Document doc = hits.doc(i);
+		            cidsArray.add(doc.get(idname));
+				}	 
 			
-			for(int i = 0; i < hits.length(); i++){
-	            Document doc = hits.doc(i);
-	            cidsArray.add(doc.get(idname));
-			}	 
-		
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
+
+
 		}
 		
 		// get endtime and set it in class variable
@@ -164,7 +147,10 @@ public class Search {
 		long starttime = System.currentTimeMillis();
 		long endtime = 0;
 		
-
+		// IS this needed here or should database or whatever do this query?
+		// if so, this class is only for lucene queryies, without any database access
+		
+		
 		// get endtime and set it in class variable
 		endtime = System.currentTimeMillis();
 		this.setDuration(endtime-starttime);
