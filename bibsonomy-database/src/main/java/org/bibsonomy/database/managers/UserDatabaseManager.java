@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.params.OpenIDParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
@@ -195,6 +196,38 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private void insertOpenIDUser(final User user, final DBSession session) {
 		this.insert("insertOpenIDUser", user, session);
 	}
+	
+	/**
+	 * Attaches new OpenID to existing user
+	 * @param user the user to which new OpenID should be attached
+	 * @param openID OpenID to attach
+	 */
+	public void attachOpenID(final User user, final String openID, final DBSession session) {
+		OpenIDParam param = new OpenIDParam();
+		param.setUser(user);
+		param.setOpenID(openID);
+		this.insert("attachOpenID", param, session);
+	}
+
+	/**
+	 * Detaches given OpenID from existing user
+	 * @param user the user from which OpenID should be detached
+	 * @param openID OpenID to detach
+	 */
+	public void detachOpenID(final User user, final String openID, final DBSession session) {
+		OpenIDParam param = new OpenIDParam();
+		param.setUser(user);
+		param.setOpenID(openID);
+		this.insert("detachOpenID", param, session);
+	}
+	
+	/**
+	 * Detaches all OpenID from given user
+	 * @param user the user from which OpenID should be detached
+	 */
+	public void detachOpenIDsByUser(final User user, final DBSession session) {
+		this.delete("detachOpenIDsByUser", user, session);
+	}
 
 	/**
 	 * Change the user details
@@ -237,6 +270,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		existingUser.setOpenURL(!present(user.getOpenURL()) 	? existingUser.getOpenURL() 	: user.getOpenURL());
 		existingUser.setPlace(!present(user.getPlace()) 		? existingUser.getPlace() 		: user.getPlace());
 		existingUser.setProfession(!present(user.getProfession()) ? existingUser.getProfession(): user.getProfession());
+		existingUser.setOpenID(!present(user.getOpenID())       ? existingUser.getOpenID()      : user.getOpenID());
 
 		// we don't want to change the registration date on update!
 		//existingUser.setRegistrationDate(!present(user.getRegistrationDate()) ? existingUser.getRegistrationDate() : user.getRegistrationDate());
