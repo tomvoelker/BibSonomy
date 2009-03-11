@@ -16,6 +16,7 @@ import net.sf.jabref.imports.BibtexParser;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.LayoutRenderer;
 import org.bibsonomy.model.BibTex;
@@ -277,9 +278,23 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 			final T resource = post.getResource();
 			if (resource instanceof BibTex) {
 				final BibTex bibtex = (BibTex) resource;
+				
+				// reset misc fields - they will be re-created while toBibtexString
+				BibTexUtils.parseMiscField(bibtex);
+				bibtex.setMisc("");
+				
+				// remove id field, as it has a special meaning inside jabref
+				if (bibtex.getMiscField("id") != null) {
+					bibtex.getMiscFields().remove("id");
+				}
+				
+				// set some fields so we can easily access them later in the export filters
+				bibtex.addMiscField("bibsonomyIntrahash", HashID.INTRA_HASH.getId() + bibtex.getIntraHash());
+				bibtex.addMiscField("bibsonomyUsername", post.getUser().getName());
+				
 				bibtexStrings.append(" " + BibTexUtils.toBibtexString(bibtex)); 
 			}
-		}
+		}				
 		/*
 		 * parse them!
 		 */
