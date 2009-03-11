@@ -76,5 +76,16 @@ public class SystemTagsUtil {
 		return sysTags;
 	}
 	
+	/**
+	 * Check whether a given string is a system tag
+	 * 
+	 * @param tag - tag string
+	 * @return true if the given string is a systemtag, false otherwise
+	 */
+	public static boolean isSystemtag(String tag) {
+		if (tag == null) return false;
+		return tag.startsWith(SystemTags.GLOBAL_PREFIX + SystemTags.SYSTAG_DELIM);
+	}
+	
 	
 }
