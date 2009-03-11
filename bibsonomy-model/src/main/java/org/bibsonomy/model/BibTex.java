@@ -178,14 +178,14 @@ public class BibTex extends Resource {
 	/**
 	 * @return bibtexAbstract
 	 */
-	public String getBibtexAbstract() {
+	public String getAbstract() {
 		return this.bibtexAbstract;
 	}
 
 	/**
 	 * @param bibtexAbstract
 	 */
-	public void setBibtexAbstract(String bibtexAbstract) {
+	public void setAbstract(String bibtexAbstract) {
 		this.bibtexAbstract = bibtexAbstract;
 	}
 

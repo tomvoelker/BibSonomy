@@ -57,10 +57,12 @@ public class BibtexUtilsTest {
 		bib.setAuthor("Hans Dampf and Peter Silie");
 		bib.setJournal("Journal of the most wonderful articles on earth");
 		bib.setYear("2525");
+		bib.setAbstract("This is a nice abstract.");
 		bib.setVolume("3");
 
 		final String expectedBibtex = 
 			"@inproceedings{KIE,\n" +
+			"abstract = {This is a nice abstract.},\n" +
 			"author = {Hans Dampf and Peter Silie},\n" +
 			"journal = {Journal of the most wonderful articles on earth},\n" +
 			"title = {The most wonderfult title on earth},\n" +
