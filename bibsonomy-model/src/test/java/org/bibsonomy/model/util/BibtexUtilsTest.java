@@ -68,8 +68,23 @@ public class BibtexUtilsTest {
 			"title = {The most wonderfult title on earth},\n" +
 			"volume = {3},\n" +
 			"year = {2525}\n}";
-
+				
 		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib));
+					
+		// add some misc fields
+		bib.addMiscField("extraKey", "extraVal");
+		bib.addMiscField("extraKey2", "extraVal2");
+				
+		final String expectedBibtex2 = 
+			"@inproceedings{KIE,\n" +
+			"author = {Hans Dampf and Peter Silie},\n" +
+			"journal = {Journal of the most wonderful articles on earth},\n" +
+			"title = {The most wonderfult title on earth},\n" +
+			"volume = {3},\n" +
+			"year = {2525},\n" + 
+			"extraKey = {extraVal}, extraKey2 = {extraVal2}\n}";
+		
+		assertEquals(expectedBibtex2, BibTexUtils.toBibtexString(bib));		
 	}
 
 	/**
