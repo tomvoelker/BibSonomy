@@ -136,10 +136,19 @@
 			Handles /tags as modifier and rewrites it as a parameter
 		</note>
 		<from>^/+tags/+(.+)$</from>
-		<set type="parameter" name="restrictToTags">true</set>
+		<set type="parameter" name="tagstype">default</set>
 		<to>/$1</to>
 	</rule>
 
+	<rule>
+		<name>/relatedtags/</name>
+		<note>
+			Handles /tags as modifier and rewrites it as a parameter
+		</note>
+		<from>^/+relatedtags/+(.+)$</from>
+		<set type="parameter" name="tagstype">related</set>
+		<to>/$1</to>
+	</rule>
 
 
 
