@@ -164,8 +164,8 @@
 		GROUP BY t.tag_name ORDER BY tag_name COLLATE utf8_unicode_ci;
 	</select>
 	
-	<select id="getRelatedTagsForGroup" resultMap="Common.tag" parameterClass="tagParam">
-		SELECT t1.tag_name, COUNT(t1.tag_name) AS tag_anzahl
+	<select id="getRelatedTagsForGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT t1.tag_name, COUNT(t1.tag_name) AS tag_ctr
 		FROM tas t, tas t1, groups g, groupids i
 		WHERE t1.content_id = t.content_id
 		AND i.group_name = #requestedGroupName#		
@@ -175,8 +175,8 @@
 		AND (<iterate property="tagIndex" conjunction=" OR ">t.tag_name = #tagIndex[].tagName#</iterate>)
 		AND (<iterate property="tagIndex" conjunction=" AND ">t1.tag_name != #tagIndex[].tagName#</iterate>)	
 		GROUP BY t1.tag_name
-		ORDER BY tag_anzahl DESC 
-		LIMIT 10
+		ORDER BY tag_ctr DESC 
+		LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getRelatedTagsViewable" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
@@ -191,7 +191,7 @@
 		AND (<iterate property="tagIndex" conjunction=" AND ">tt.tag_name != #tagIndex[].tagName#</iterate>)	
 		GROUP BY tt.tag_name
 		ORDER BY tag_ctr DESC 
-		LIMIT 10
+		LIMIT #limit# OFFSET #offset#
 	</select>
 	 
 	<!-- 
@@ -217,7 +217,7 @@
 	          </isNotEmpty>
 	          <isNotEqual property="groupId" compareValue="-1">
 	          	  <!-- get related tags for viewable page (viewable/GROUPNAME/tag -->
-				  AND t.group = #groupID#	          	  
+				  AND t.group = #groupId#	          	  
 	          </isNotEqual>	   
 	          <isNotEmpty property="requestedGroupName">
 	          	  <!-- get related tas for group (group/GROUPNAME/tag) -->
