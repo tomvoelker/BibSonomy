@@ -41,7 +41,7 @@ public class RDFWriterTest {
 		final BibTex bibtex = new BibTex();
 		bibtex.setTitle("Reconsidering Physical Key Secrecy: Teledoplication via Optical Decoding");
 		bibtex.setAuthor("Benjamin Laxton and Kai Wand and Stefan Savage");
-		bibtex.setBibtexAbstract("The access control provided by a physical lock is based ...");
+		bibtex.setAbstract("The access control provided by a physical lock is based ...");
 		bibtex.setBibtexKey("laxton2008reconsidering");
 		bibtex.setEntrytype("inproceedings");
 		bibtex.setYear("2008");

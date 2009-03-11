@@ -170,7 +170,7 @@ public class RDFWriter {
 		addProperty(resource, "type", bibtex.getType());
 		addProperty(resource, "volume", bibtex.getVolume());
 		addProperty(resource, "year", bibtex.getYear());
-		addProperty(resource, "abstract", bibtex.getBibtexAbstract());
+		addProperty(resource, "abstract", bibtex.getAbstract());
 		addProperty(resource, "series", bibtex.getSeries());
 
 
