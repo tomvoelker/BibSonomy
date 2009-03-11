@@ -40,6 +40,7 @@
 				<value>filter</value>
 				<value>showPDF</value>
 				<value>resourcetype</value>
+				<value>tagstype</value>
 				<value>sortPage</value>
 				<value>sortPageOrder</value>
 				<value>duplicates</value>

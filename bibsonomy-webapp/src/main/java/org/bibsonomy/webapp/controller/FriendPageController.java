@@ -35,6 +35,9 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		final String groupingName = command.getRequestedUser();
 		final List<String> requTags = command.getRequestedTagsList();
 
+		// handle the case when tags only are requested
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, null, 0, Integer.MAX_VALUE, null);		
+		
 		// determine which lists to initalize depending on the output format
 		// and the requested resourcetype
 		this.chooseListsToInitialize(format, command.getResourcetype());

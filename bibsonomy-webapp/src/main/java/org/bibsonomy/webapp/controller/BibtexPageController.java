@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -39,14 +40,11 @@ public class BibtexPageController extends SingleResourceListController implement
 		final String requUser = command.getRequestedUser();
 		final GroupingEntity groupingEntity = (requUser != null ? GroupingEntity.USER : GroupingEntity.ALL);
 
-		// retrieve only tags for the first 1000 tags for the resource
-		if (command.getRestrictToTags()) {
-			// FIXME: hardcoded end value
-			this.setTags(command, BibTex.class, groupingEntity, requUser, null, null, hash, null, 0, 1000, null);
-			
-			// TODO: other output formats
-			return Views.JSON;
-		}
+		// handle case when only tags are requested
+		// retrieve only 1000 tags for this resource
+		// FIXME: hardcoded end value
+		command.setResourcetype("bibtex");
+		this.handleTagsOnly(command, groupingEntity, requUser, null, null, hash, null, 0, 1000, null);
 		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype

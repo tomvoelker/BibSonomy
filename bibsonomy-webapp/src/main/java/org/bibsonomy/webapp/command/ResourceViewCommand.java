@@ -18,6 +18,7 @@ public class ResourceViewCommand extends BaseCommand {
 	private TagCloudCommand tagcloud = new TagCloudCommand();
 	private String requestedUser;
 	private String resourcetype;
+	private String tagstype; // for queries for specific kinds of tags
 	private String format = "html"; 
 	private String layout; // if format="layout", here the requested layout is stored
 	private boolean formatEmbeded; // 
@@ -153,5 +154,13 @@ public class ResourceViewCommand extends BaseCommand {
 
 	public void setFormatEmbeded(boolean formatEmbeded) {
 		this.formatEmbeded = formatEmbeded;
+	}
+
+	public void setTagstype(String tagstype) {
+		this.tagstype = tagstype;
+	}
+
+	public String getTagstype() {
+		return tagstype;
 	}
 }

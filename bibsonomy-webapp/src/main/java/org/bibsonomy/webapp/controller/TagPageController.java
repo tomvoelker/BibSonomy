@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.TagUtils;
@@ -44,18 +45,9 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		
 		final List<String> requTags = command.getRequestedTagsList();
 		
-		// retrieve only tags of the user
-		if (command.getRestrictToTags()) {
-			/*
-			 * get only the tags of the user
-			 * TODO: minFreq is in HTML pages handled in the view, i.e., we get ALL tags
-			 * and prune in the JSP. This is not done in the JSON view ... to be done! 
-			 */
-			this.setTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, null, null, 0, Integer.MAX_VALUE, null);
-			
-			// TODO: other output formats
-			return Views.JSON;
-		}	
+		// handle case when only tags are requested
+		// FIXME we can only retrieve 1000 tags here
+		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, requTags, null, null, 0, 1000, null);
 		
 		// requested order
 		Order order = Order.ADDED;

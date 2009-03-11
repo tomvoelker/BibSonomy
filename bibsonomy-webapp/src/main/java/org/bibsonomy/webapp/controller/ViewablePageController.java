@@ -40,6 +40,10 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		// TODO: localize
 		command.setPageTitle("viewable :: " + groupingName);	
 		
+		// handle the case when only tags are requested
+		// TODO: max 1000 tags
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);		
+		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());

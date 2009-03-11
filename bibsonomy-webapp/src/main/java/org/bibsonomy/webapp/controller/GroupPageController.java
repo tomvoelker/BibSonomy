@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -47,14 +48,9 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 
 		//check if system-tag "sys:relevantFor:" exists in taglist
 		final boolean isRelevantFor = checkRelevantFor(requTags);
-
-		// retrieve only tags
-		if (command.getRestrictToTags()) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
-
-			// TODO: other output formats
-			return Views.JSON;
-		}		
+		
+		// handle case when only tags are requested
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags , null, null, 0, Integer.MAX_VALUE, null);
 
 		// special group given - return empty page
 		if (GroupID.isSpecialGroup(groupingName)) return Views.GROUPPAGE;
@@ -82,7 +78,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			if (requTags.size() == 0 && filter != FilterEntity.JUST_PDF) { 
 				this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, entriesPerPage, null);
 			}
-		}	
+		}
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {

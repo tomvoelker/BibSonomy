@@ -54,6 +54,9 @@ public class AuthorPageController extends SingleResourceListController implement
 				
 		// add the requested author as a system tag
 		requTags.add(SystemTagsUtil.buildSystemTagString(SystemTags.AUTHOR, authorQuery));
+		
+		// handle case when only tags are requested
+		this.handleTagsOnly(command, groupingEntity, null, null, requTags, null, null, 0, 1000, null);
 				
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype

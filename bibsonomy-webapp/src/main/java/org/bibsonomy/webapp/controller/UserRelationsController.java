@@ -57,7 +57,7 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 		// set page title
 		// TODO: internationalize
 		command.setPageTitle("relations :: " + groupingName);
-
+		
 		if (command.getFormat().equals("html")) {
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 20000, null);
 

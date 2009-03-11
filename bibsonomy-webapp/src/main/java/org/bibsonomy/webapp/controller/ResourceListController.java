@@ -2,14 +2,18 @@ package org.bibsonomy.webapp.controller;
 
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagCloudSort;
 import org.bibsonomy.common.enums.TagCloudStyle;
+import org.bibsonomy.common.enums.TagsType;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -27,7 +31,8 @@ import org.bibsonomy.webapp.command.TagCloudCommand;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * controller for retrieving multiple windowed lists with resources. These are currently the bookmark an the bibtex list
+ * controller for retrieving multiple windowed lists with resources. 
+ * These are currently the bookmark an the bibtex list
  * 
  * @author Jens Illig
  */
@@ -65,6 +70,58 @@ public abstract class ResourceListController {
 		if (tagCloudCommand.getMinFreq() == 0) {tagCloudCommand.setMinFreq(userSettings.getTagboxMinfreq());}
 		tagCloudCommand.setMaxFreq(TagUtils.getMaxUserCount(tagCloudCommand.getTags()));
 	}
+	
+	
+	/**
+	 * Initialize tag list, depending on chosen resourcetype
+	 * 
+	 * @param <T>
+	 * @param <V>
+	 * @param cmd
+	 * @param listResourceType
+	 * @param groupingEntity
+	 * @param groupingName
+	 * @param regex
+	 * @param tags
+	 * @param hash
+	 * @param order
+	 * @param start
+	 * @param end
+	 * @param search
+	 */
+	protected <V extends ResourceViewCommand> void handleTagsOnly(V cmd, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search) {
+		final String tagsType = cmd.getTagstype();
+		if (tagsType != null) {
+			
+			// if tags are requested (not related tags), remove non-systemtags from tags list
+			if (tagsType.equalsIgnoreCase(TagsType.DEFAULT.getName() ) && tags != null ) {
+				Iterator<String> it = tags.iterator();
+				while (it.hasNext()) {
+					if ( !SystemTagsUtil.isSystemtag( it.next() ) ) {
+						it.remove();
+					}
+				}
+			}
+			
+			// check if a certain resourcetype is queried
+			// TODO: better source out 
+			Class<? extends Resource> resourcetype = Resource.class;
+			if (ResourceType.BIBTEX.getLabel().equalsIgnoreCase(cmd.getResourcetype()) ) {
+				resourcetype = BibTex.class;
+			}
+			if (ResourceType.BOOKMARK.getLabel().equalsIgnoreCase(cmd.getResourcetype()) ) {
+				resourcetype = Bookmark.class;
+			}			
+			
+			// fetch tags, store them in bean
+			this.setTags(cmd, resourcetype, groupingEntity, groupingName, regex, tags, hash, order, start, end, search);
+			
+			// when tags only are requested, we don't need bibtexs and bookmarks
+			this.listsToInitialise.remove(BibTex.class);
+			this.listsToInitialise.remove(Bookmark.class);			
+		}
+	}
+	
 	
 	/**
 	 * do some post processing with the retrieved resources
@@ -155,17 +212,32 @@ public abstract class ResourceListController {
 	}
 	
 	/**
-	 * @param format
-	 * @param resourcetype
+	 * Choose which lists of resources to load for the current view. By default,
+	 * bibtex and bookmark resources are loaded.  
+	 * 
+	 * There are some views which are "resource-specific"; when one of these is used,
+	 * (e.g., a bibtex-specific one), then all not-needed resource types (e.g., boomark) 
+	 * are removed from the lists which are to be initialised.
+	 * 
+	 * In addition, one can restrict explicitly to resourcetypes via URL parameter; in such 
+	 * a case, only the requested resourcetype is kept.
+	 * 
+	 * 
+	 * @param format 
+	 * 			- a string describing the requested format (e.g. "html")
+	 * @param resourcetype 
+	 * 			- a string describing the requested resourcetype (e.g. "bibtex")
 	 */
 	protected void chooseListsToInitialize(String format, String resourcetype) {
 		format = format.toLowerCase();
 		if (Views.isBibtexOnlyFormat(format.toLowerCase()) 
-				|| (resourcetype != null && resourcetype.toLowerCase().equals("bibtex"))) {
+				|| (resourcetype != null && resourcetype.equalsIgnoreCase(ResourceType.BIBTEX.getLabel()))) {
+			// bibtex only -> remove bookmark
 			this.listsToInitialise.remove(Bookmark.class);
 		}
 		if (Views.isBookmarkOnlyFormat(format.toLowerCase()) 
-				|| (resourcetype != null && resourcetype.toLowerCase().equals("bookmark"))) {
+				|| (resourcetype != null && resourcetype.equalsIgnoreCase(ResourceType.BOOKMARK.getLabel()))) {
+			// bookmark only -> remove bibtex
 			this.listsToInitialise.remove(BibTex.class);
 		}
 	}	

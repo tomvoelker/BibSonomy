@@ -23,7 +23,10 @@ public class HomepageController extends SingleResourceListController implements 
 		 */
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
-
+		
+		// handle the case when only tags are requested
+		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, null, 0, 50, null);
+		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		

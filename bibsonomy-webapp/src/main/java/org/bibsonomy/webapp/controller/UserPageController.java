@@ -7,6 +7,7 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -42,19 +43,9 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		final String groupingName = command.getRequestedUser();
 		final List<String> requTags = command.getRequestedTagsList();
 
-		// retrieve only tags of the user
-		if (command.getRestrictToTags()) {
-			/*
-			 * get only the tags of the user
-			 * TODO: minFreq is in HTML pages handled in the view, i.e., we get ALL tags
-			 * and prune in the JSP. This is not done in the JSON view ... to be done! 
-			 */
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, requTags, null, null, 0, Integer.MAX_VALUE, null);
-			
-			// TODO: other output formats
-			return Views.JSON;
-		}	
-		
+		// handle case when only tags are requested
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, null, 0, Integer.MAX_VALUE, null);
+				
 		FilterEntity filter = null;
 
 		// display only posts which have a document attached

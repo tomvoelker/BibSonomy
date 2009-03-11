@@ -52,8 +52,7 @@ public class PopularPageController extends MultiResourceListController implement
 		final ArrayList<String> tags = new ArrayList<String>();
 		//insert an empty tag
 		tags.add("");
-		
-		
+				
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());

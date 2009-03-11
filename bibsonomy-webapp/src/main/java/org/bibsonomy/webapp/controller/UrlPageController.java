@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.ValidationUtils;
@@ -36,18 +37,22 @@ public class UrlPageController extends SingleResourceListController implements M
 	public View workOn(UrlCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
-		
-		// determine which lists to initalize depending on the output format 
-		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
-		
+
 		// no URL hash given -> error
 		final String requHash = command.getRequUrlHash();
 		if (!ValidationUtils.present(command.getRequUrl()) && !ValidationUtils.present(requHash)) {
 			LOGGER.error("Invalid query /url without URL hash");
 			throw new MalformedURLSchemeException("error.url_no_hash");
-		}
-
+		}		
+		
+		// handle the case when only tags are requested
+		command.setResourcetype(ResourceType.BOOKMARK.getLabel());
+		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, requHash, null, 0, 1000, null);
+		
+		// determine which lists to initalize depending on the output format 
+		// and the requested resourcetype
+		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
+		
 		// send redirect to /url/HASH
 		if (ValidationUtils.present(command.getRequUrl())) {
 			// TODO: add format in front of /url/? (probably not, this URL should only be called by input form)
