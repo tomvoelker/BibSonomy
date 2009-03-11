@@ -15,6 +15,7 @@ import net.sf.jabref.bst.VM;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.User;
 import org.junit.Test;
 
 /**
@@ -65,6 +66,10 @@ public class JabrefLayoutRendererTest {
 
 		final Post<BibTex> post = new Post<BibTex>();
 		post.setResource(bibtex);
+		
+		User u = new User();
+		u.setName("Wiglaf Droste");
+		post.setUser(u);
 
 		posts.add(post);
 		return posts;
