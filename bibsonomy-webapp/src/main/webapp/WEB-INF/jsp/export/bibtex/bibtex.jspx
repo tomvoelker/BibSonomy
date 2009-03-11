@@ -43,8 +43,8 @@
 	<jsp:text>description = {${post.description}},
 	</jsp:text>
 	</c:if>
-	<c:if test="${not empty bibtex.bibtexAbstract}">
-	<jsp:text>abstract = {${bibtex.bibtexAbstract}},
+	<c:if test="${not empty bibtex.abstract}">
+	<jsp:text>abstract = {${bibtex.abstract}},
 	</jsp:text>	
 	</c:if>
 	<jsp:text>biburl = {${projectHome}bibtex/2${bibtex['intraHash']}/${post.user['name']}},

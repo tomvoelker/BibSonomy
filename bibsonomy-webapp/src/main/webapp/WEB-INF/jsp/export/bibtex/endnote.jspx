@@ -72,8 +72,8 @@
 %V ${bib.volume}
 </jsp:text></c:if>
 
-<c:if test="${not empty bib.bibtexAbstract}"><jsp:text>
-%X ${bib.bibtexAbstract}
+<c:if test="${not empty bib.abstract}"><jsp:text>
+%X ${bib.abstract}
 </jsp:text></c:if>
 
 <c:if test="${not empty bib.annote}"><jsp:text>
