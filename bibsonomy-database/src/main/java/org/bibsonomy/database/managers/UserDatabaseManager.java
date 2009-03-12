@@ -197,37 +197,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.insert("insertOpenIDUser", user, session);
 	}
 	
-	/**
-	 * Attaches new OpenID to existing user
-	 * @param user the user to which new OpenID should be attached
-	 * @param openID OpenID to attach
-	 */
-	public void attachOpenID(final User user, final String openID, final DBSession session) {
-		OpenIDParam param = new OpenIDParam();
-		param.setUser(user);
-		param.setOpenID(openID);
-		this.insert("attachOpenID", param, session);
-	}
-
-	/**
-	 * Detaches given OpenID from existing user
-	 * @param user the user from which OpenID should be detached
-	 * @param openID OpenID to detach
-	 */
-	public void detachOpenID(final User user, final String openID, final DBSession session) {
-		OpenIDParam param = new OpenIDParam();
-		param.setUser(user);
-		param.setOpenID(openID);
-		this.insert("detachOpenID", param, session);
-	}
-	
-	/**
-	 * Detaches all OpenID from given user
-	 * @param user the user from which OpenID should be detached
-	 */
-	public void detachOpenIDsByUser(final User user, final DBSession session) {
-		this.delete("detachOpenIDsByUser", user, session);
-	}
 
 	/**
 	 * Change the user details
@@ -311,7 +280,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		// TODO this should also delete tas entries
 		this.delete("deleteUser", userName, session);
-		this.delete("deleteOpenIDUser", userName, session);		
+		
+		// 2009/03/10, fei: removing openids during user update drops them,
+		//        as 'getUserDetails' doesn't fetch user's openid(s)
+		//        @see org.bibsonomy.database.DBLogic#storeUser(final User user, final boolean update)
+		//this.delete("deleteOpenIDUser", userName, session);		
 		
 		//throw new UnsupportedOperationException("Not implemented");
 	}
