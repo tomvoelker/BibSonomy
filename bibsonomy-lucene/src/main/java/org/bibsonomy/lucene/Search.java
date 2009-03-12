@@ -12,11 +12,13 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.bibsonomy.common.enums.GroupID;
 
 public class Search {
 
 	/** base path to lucene index */
 	private String luceneBasePath = "/home/bibsonomy/lucene/";
+//	private String luceneBasePath = "/home/stud/sst/bibsonomy/";
 
 	/** bookmark path to lucene index */
 	private String luceneBookmarksPath = luceneBasePath+"lucene_bookmarks/"; 
@@ -41,7 +43,7 @@ public class Search {
 	}
 
 
-	/**
+	/**getBibTexSearch
 	 * @param duration the duration to set in milliseconds
 	 */
 	private void setDuration(Long duration) {
@@ -51,11 +53,15 @@ public class Search {
 		
 	
 	/** get ArrayList of strings of field id from lucene index
+	 * 
+	 * for pagination see http://www.gossamer-threads.com/lists/lucene/general/70516#70516
+	 * 
 	 * @param String idname fieldname of returning value
 	 * @param char LuceneIndex lucene index to use b for bookmar, p for publications
 	 * @throws IOException 
-	 * @throws CorruptIndexException */
-	public ArrayList<String> SearchLucene(String idname, char luceneIndex, String search_terms) throws CorruptIndexException, IOException{
+	 * @throws CorruptIndexException 
+	 * */
+	public ArrayList<String> SearchLucene(char luceneIndex, String idname, String search_terms, GroupID grouptype, int limit, int offset) throws CorruptIndexException, IOException{
 
 		// get starttime to calculate duration of execution of this method
 		long starttime = System.currentTimeMillis();
@@ -63,7 +69,6 @@ public class Search {
 		
 		String luceneIndexPath = ""; 
 		Boolean debug = false;
-		
 		// field names in Lucene index
 		String lField_contentid = "contentid";
 		String lField_group = "group";
@@ -120,8 +125,11 @@ public class Search {
 	
 		        IndexSearcher searcher = new IndexSearcher(luceneBookmarksPath);
 		        Hits hits = searcher.search(query);
-				
-				for(int i = 0; i < hits.length(); i++){
+
+		        
+		        int hitslimit = (((offset+limit)<hits.length())?(offset+limit):hits.length());
+		        
+				for(int i = offset; i < hitslimit; i++){
 		            Document doc = hits.doc(i);
 		            cidsArray.add(doc.get(idname));
 				}	 
