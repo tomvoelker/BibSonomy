@@ -57,23 +57,25 @@ public class BibtexUtilsTest {
 		bib.setAuthor("Hans Dampf and Peter Silie");
 		bib.setJournal("Journal of the most wonderful articles on earth");
 		bib.setYear("2525");
-		bib.setAbstract("This is a nice abstract.");
 		bib.setVolume("3");
+		bib.setBibtexAbstract("This is a nice abstract.");
 
 		final String expectedBibtex = 
-			"@inproceedings{KIE,\n" +
-			"abstract = {This is a nice abstract.},\n" +
+			"@inproceedings{KIE,\n" +			
 			"author = {Hans Dampf and Peter Silie},\n" +
 			"journal = {Journal of the most wonderful articles on earth},\n" +
 			"title = {The most wonderfult title on earth},\n" +
 			"volume = {3},\n" +
-			"year = {2525}\n}";
+			"year = {2525},\n" +
+			"abstract = {This is a nice abstract.},\n}";
 				
+		System.out.print(BibTexUtils.toBibtexString(bib));
 		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib));
 					
 		// add some misc fields
 		bib.addMiscField("extraKey", "extraVal");
 		bib.addMiscField("extraKey2", "extraVal2");
+		bib.setBibtexAbstract(null);
 				
 		final String expectedBibtex2 = 
 			"@inproceedings{KIE,\n" +
