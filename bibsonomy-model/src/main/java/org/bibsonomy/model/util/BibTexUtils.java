@@ -250,10 +250,7 @@ public class BibTexUtils {
 					buffer.append( (String) getter.invoke(bib, (Object[]) null) );
 					buffer.append("},\n");					
 				}
-			}
-			if (bib.getBibtexAbstract() != null && bib.getBibtexAbstract().trim() != "") {
-				buffer.append("abstract = {" + bib.getBibtexAbstract() + "}, \n");
-			}			
+			}		
 			if (bib.getMiscFields() != null && bib.getMiscFields().size() > 0) {
 				// parse the misc field
 				BibTexUtils.serializeMiscFields(bib);
