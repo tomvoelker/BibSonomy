@@ -147,13 +147,18 @@
     <td></td>
     <td>
       <input type="submit" name="submit" value="upload">
-      <a onClick="toggle_upload_options(); return false;" href="">options</a>
     </td>
     <td></td>
   </tr>
   
-  <tr class="upload_option">
-    <td class="expl">character encoding</td>
+  <tr>
+    <td colspan="3" style="padding:0.5em; border-top: 1px dashed #aaa; border-left: 1px dashed #aaa; border-right: 1px dashed #aaa;">
+      options
+    </td>
+  </tr>
+  
+  <tr>
+    <td class="expl" style="border-left: 1px dashed #aaa;" >character encoding</td>
     <%-- TODO: probably we should only list (ideally automatically) character sets supported #
                by Java --%>
     <td><select name="encoding" id="lencoding">
@@ -177,16 +182,16 @@
       <option value="UTF-16BE">UTF-16BE</option>
       <option value="UTF-16LE">UTF-16LE</option>
     </select></td>
-    <td class="expl_s">Specify the character encoding of your file.</td>
+    <td class="expl_s" style="border-right: 1px dashed #aaa;" >Specify the character encoding of your file.</td>
   </tr>
-  <tr class="upload_option">
-    <td class="expl">viewable for</td>
+  <tr>
+    <td class="expl" style="border-left: 1px dashed #aaa;" >viewable for</td>
     <td><%@include file="/boxes/groupselection.jsp"%></td>
-    <td></td>
+    <td style="border-right: 1px dashed #aaa;" ></td>
   </tr>
-  <tr class="upload_option">
-    <td class="expl">tag delimiter</td>
-    <td>
+  <tr>
+    <td class="expl"  style="border-bottom: 1px dashed #aaa; border-left: 1px dashed #aaa;">tag delimiter</td>
+    <td style="border-bottom: 1px dashed #aaa;" >
       <input type="checkbox" name="substitute" value="on" />
       assume that tags are delimited by 
       <select name="delimiter" id="ldelimiter">
@@ -195,7 +200,7 @@
       </select> 
       <br/> and substitute whitespace by <input type="text" value="_" name="whitespace" size="2" maxlength="1"/>
     </td>
-    <td class="expl_s">
+    <td class="expl_s" style="border-bottom: 1px dashed #aaa; border-right: 1px dashed #aaa;">
       If your file contains a field "tags" (or "keywords") you can specify here 
       how tags are separated. The default is whitespace (space or tab). 
     </td>
@@ -205,24 +210,9 @@
 </form>
 
 <script type="text/javascript">
-var upload_options = "hidden";
-toggle_upload_options();
 showGenerateBibtexBlock();
 maximizeById("general");
 
-function toggle_upload_options() {
-   var tr = document.getElementsByTagName("tr");
-   for (i=0; i<tr.length; i++) {
-      if (tr[i].className == "upload_option") {
-         tr[i].style.visibility = upload_options;
-      }
-   }
-   if (upload_options == "hidden") {
-     upload_options = "visible";
-   } else {
-     upload_options = "hidden";
-   }
-}
 
 function showGenerateBibtexBlock() {
 	var selectionValue = document.getElementById("selection").value;
