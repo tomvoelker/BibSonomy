@@ -2,11 +2,14 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
@@ -27,6 +30,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.SimHash;
+import org.bibsonomy.lucene.Search;
 
 /**
  * Used to create, read, update and delete BibTexs from the database.
@@ -534,9 +538,34 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexSearch(final BibTexParam param, final DBSession session) {
+		
 		return this.bibtexList("getBibTexSearch", param, session);
+		
 	}
 
+
+	/**
+	 * @see BibTexDatabaseManager#getBibTexSearch(GroupID, String, String, int, int, DBSession)
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	public List<Post<BibTex>> getBibTexSearchLucene(final BibTexParam param, final DBSession session) {
+
+		GroupID GroupType = GroupID.PUBLIC ;
+		if (GroupID.ADMINSPAM.equals(param.getGroupType())) GroupType=GroupID.ADMINSPAM;
+		else if (GroupID.FRIENDS.equals(param.getGroupType())) GroupType=GroupID.FRIENDS;
+		else if (GroupID.INVALID.equals(param.getGroupType())) GroupType=GroupID.INVALID;
+		else if (GroupID.KDE.equals(param.getGroupType())) GroupType=GroupID.KDE;
+		else if (GroupID.PRIVATE.equals(param.getGroupType())) GroupType=GroupID.PRIVATE;
+		else if (GroupID.PUBLIC.equals(param.getGroupType())) GroupType=GroupID.PUBLIC;
+		
+		return this.getBibTexSearchLucene(GroupType, param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
+		
+	}
+	
+	
 	/**
 	 * @see BibTexDatabaseManager#getBibTexSearch(BibTexParam, DBSession)
 	 * 
@@ -559,6 +588,65 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		return this.bibtexList("getBibTexSearch", param, session);
 	}
 
+	/**
+	 * Prepares queries to retrieve posts which match a fulltext search in lucene index <br/>
+	 * 
+	 * @param groupType
+	 * @param search
+	 * @param requestedUserName
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+
+	public List<Post<BibTex>> getBibTexSearchLucene(final GroupID groupType, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setGroupType(groupType);
+		param.setSearch(search);
+		param.setRequestedUserName(requestedUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+
+		
+		// get list of ids from lucene
+		ArrayList<String> cidsArray = new ArrayList<String>();
+		Search Lucene = new org.bibsonomy.lucene.Search();
+		try {
+			cidsArray = Lucene.SearchLucene('p', "contentid", search, groupType, limit, offset);
+		} catch (CorruptIndexException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		} catch (IOException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+/*		
+		try {
+			// create temp. table
+			Integer ErrCodeTempC = dbconn.rawUpdate("CREATE TEMPORARY TABLE IF NOT EXISTS tempcids (cid bigint, PRIMARY KEY (cid)) ENGINE=MEMORY;", connection);
+
+			// delete all content in temp. table
+			Integer ErrCodeTempD = dbconn.rawUpdate("TRUNCATE TABLE tempcids; ", connection);
+			
+			
+			// store content ids in temp. table
+			for  (String e: cidsArray)
+			{
+				Integer ErrCodeTempS = dbconn.rawUpdate("INSERT INTO tempcids (cid) VALUE ("+e+");", connection);
+			}			
+			
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+*/
+		
+		return this.bibtexList("getBibTexSearchLucene", param, session);
+	}
+
+	
 	/**
 	 * Returns the number of publications for a given search.
 	 * 

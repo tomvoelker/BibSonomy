@@ -38,5 +38,6 @@
 	<typeAlias alias="statisticsParam"    type="org.bibsonomy.database.params.StatisticsParam" />	
 	<typeAlias alias="tagSetParam"    	  type="org.bibsonomy.database.params.TagSetParam" />
 	<typeAlias alias="authorParam"    	  type="org.bibsonomy.database.params.AuthorParam" />	
+	<typeAlias alias="luceneParam"        type="org.bibsonomy.database.params.LuceneParam" />
 
 </sqlMap>

@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +19,14 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.database.util.LuceneHelper;
+import org.bibsonomy.lucene.Search;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.SimHash;
+
 
 /**
  * Used to CRUD bookmarks from the database.
@@ -490,6 +494,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return this.bookmarkList("getBookmarkSearch", param, session);
 	}
 
+	
 	/**
 	 * @see BookmarkDatabaseManager#getBookmarkSearch(BookmarkParam, DBSession)
 	 * 
@@ -511,6 +516,72 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return this.bookmarkList("getBookmarkSearch", param, session);
 	}
 
+	/**
+	 * @see BookmarkDatabaseManager#getBookmarkSearchLucene(GroupID, String, String, int, int, DBSession)
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bookmark posts
+	 */
+	public List<Post<Bookmark>> getBookmarkSearchLucene(final BookmarkParam param, final DBSession session) {
+		GroupID GroupType = GroupID.PUBLIC ;
+		if (GroupID.ADMINSPAM.equals(param.getGroupType())) GroupType=GroupID.ADMINSPAM;
+		else if (GroupID.FRIENDS.equals(param.getGroupType())) GroupType=GroupID.FRIENDS;
+		else if (GroupID.INVALID.equals(param.getGroupType())) GroupType=GroupID.INVALID;
+		else if (GroupID.KDE.equals(param.getGroupType())) GroupType=GroupID.KDE;
+		else if (GroupID.PRIVATE.equals(param.getGroupType())) GroupType=GroupID.PRIVATE;
+		else if (GroupID.PUBLIC.equals(param.getGroupType())) GroupType=GroupID.PUBLIC;
+		
+		return this.getBookmarkSearchLucene(GroupType, param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
+	}	
+
+	
+	
+	/**
+	 * @see BookmarkDatabaseManager#getBookmarkSearchLucene(BookmarkParam, DBSession)
+	 * 
+	 * @param groupType
+	 * @param search
+	 * @param requestedUserName
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of bookmark posts
+	 */
+	public List<Post<Bookmark>> getBookmarkSearchLucene(final GroupID groupType, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
+		final BookmarkParam param = new BookmarkParam();
+		param.setGroupType(groupType);
+		param.setSearch(search);
+		param.setRequestedUserName(requestedUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+
+		// get list of ids from lucene
+		ArrayList<String> cidsArray = new ArrayList<String>();
+		Search Lucene = new org.bibsonomy.lucene.Search();
+
+		try {
+			cidsArray = Lucene.SearchLucene('b', "contentid", search, groupType, limit, offset);
+		} catch (IOException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+		
+		LuceneHelper LuceneTTable = new LuceneHelper();
+		// create temp. table
+		LuceneTTable.createTTable(session);
+
+		// delete all content in temp. table
+		LuceneTTable.truncateTTable(session);
+
+		// store content ids in temp. table
+		LuceneTTable.fillTTable(cidsArray, session);
+		
+		
+		return this.bookmarkList("getBookmarkSearchLucene", param, session);
+	}
+
+	
 	/**
 	 * Returns the number of bookmarks for a given search.
 	 * 

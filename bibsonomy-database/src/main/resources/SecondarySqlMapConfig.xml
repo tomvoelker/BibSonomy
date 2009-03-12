@@ -53,6 +53,7 @@
 	<sqlMap resource="Basket.xml"/>
 	<sqlMap resource="Admin.xml"/>
 	<sqlMap resource="Statistics.xml"/>
+	<sqlMap resource="Lucene.xml"/>
 
 	<!-- Plugins -->
 	<sqlMap resource="plugins/Logging.xml"/>
