@@ -230,7 +230,7 @@ public class BibTexUtils {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(bib.getClass());
 			
-			final String[] excludeFields = { "misc", "simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey" };
+			final String[] excludeFields = { "bibtexAbstract", "misc", "simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey" };
 						
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("@");
@@ -251,6 +251,9 @@ public class BibTexUtils {
 					buffer.append("},\n");					
 				}
 			}
+			if (bib.getBibtexAbstract() != null && bib.getBibtexAbstract().trim() != "") {
+				buffer.append("abstract = {" + bib.getBibtexAbstract() + "}, \n");
+			}			
 			if (bib.getMiscFields() != null && bib.getMiscFields().size() > 0) {
 				// parse the misc field
 				BibTexUtils.serializeMiscFields(bib);
