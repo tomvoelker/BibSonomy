@@ -233,7 +233,7 @@ public class XMLRenderer implements Renderer {
 			xmlBibtex.setAddress(bibtex.getAddress());
 			xmlBibtex.setAnnote(bibtex.getAnnote());
 			xmlBibtex.setAuthor(bibtex.getAuthor());
-			xmlBibtex.setBibtexAbstract(bibtex.getBibtexAbstract());
+			xmlBibtex.setBibtexAbstract(bibtex.getAbstract());
 			xmlBibtex.setBibtexKey(bibtex.getBibtexKey());
 			xmlBibtex.setBKey(bibtex.getBKey());
 			xmlBibtex.setBooktitle(bibtex.getBooktitle());
