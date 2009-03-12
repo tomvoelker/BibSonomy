@@ -257,7 +257,7 @@ public class SimpleBibTeXParser {
 		field = (BibtexString) entry.getFieldValue("series");       if (field != null) bibtex.setSeries(field.getContent());       
 		field = (BibtexString) entry.getFieldValue("url");          if (field != null) bibtex.setUrl(field.getContent());           
 		field = (BibtexString) entry.getFieldValue("volume");		if (field != null) bibtex.setVolume(field.getContent());        
-		field = (BibtexString) entry.getFieldValue("abstract");		if (field != null) bibtex.setBibtexAbstract(field.getContent());
+		field = (BibtexString) entry.getFieldValue("abstract");		if (field != null) bibtex.setAbstract(field.getContent());
 		field = (BibtexString) entry.getFieldValue("type");  		if (field != null) bibtex.setType(field.getContent());          
 
 		/*
