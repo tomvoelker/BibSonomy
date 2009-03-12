@@ -76,7 +76,7 @@ public class XMLHandler extends DefaultHandler {
 		} else if ("title".equals(qName)) {
 			post.getResource().setTitle(buf.toString());
 		} else if ("abstract".equals(qName)) {
-			post.getResource().setBibtexAbstract(buf.toString());
+			post.getResource().setAbstract(buf.toString());
 		} else if ("keyword".equals(qName)) {
 			post.addTag(buf.toString());
 		}
