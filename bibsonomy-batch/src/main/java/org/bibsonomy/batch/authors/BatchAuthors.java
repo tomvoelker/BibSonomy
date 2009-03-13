@@ -114,7 +114,7 @@ public class BatchAuthors {
 			if(rs.getString(3) != null) {
 				authorsAndEditors += " and " + rs.getString(3);
 			}
-			if(authorsAndEditors != "") {
+			if(authorsAndEditors == "") {
 				continue;
 			}
 			c++;
