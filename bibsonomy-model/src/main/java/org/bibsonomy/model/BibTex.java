@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.SimHash;
 
@@ -88,6 +89,8 @@ public class BibTex extends Resource {
 	private HashMap<String, String> miscFields;
 	// this field holds the description part of an openURL to this bibtex object
 	private String openURL;
+	
+	private List<BibTexExtra> extraUrls;
 	
 	/**
 	 * A document attached to this bibtex resource.
@@ -644,5 +647,13 @@ public class BibTex extends Resource {
 	@Override
 	public String toString() {
 		return super.toString() + " by <" + author + ">";	
+	}
+
+	public List<BibTexExtra> getExtraUrls() {
+		return this.extraUrls;
+	}
+
+	public void setExtraUrls(List<BibTexExtra> extraUrls) {
+		this.extraUrls = extraUrls;
 	}
 }
