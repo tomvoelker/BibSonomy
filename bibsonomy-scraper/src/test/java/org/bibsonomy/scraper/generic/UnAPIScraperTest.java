@@ -47,8 +47,6 @@ public class UnAPIScraperTest {
 				final String bibtexResult = scrapingContext.getBibtexResult();
 
 				assertNotNull(bibtexResult);
-				System.out.println(urlString + " : " + bibtexResult.length());
-				writeToFile("/tmp/" + url.getHost().toString(), bibtexResult);
 
 			} catch (ScrapingException ex) {
 				fail(ex.getMessage());
@@ -58,12 +56,6 @@ public class UnAPIScraperTest {
 				fail(ex.getMessage());
 			}
 		}
-	}
-
-	private static final void writeToFile(final String fileName, final String content) throws IOException {
-		final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"));
-		writer.write(content);
-		writer.close();
 	}
 
 }
