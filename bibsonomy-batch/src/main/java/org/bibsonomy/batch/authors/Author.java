@@ -2,6 +2,7 @@ package org.bibsonomy.batch.authors;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Vector;
 
 /**
  * @author nmrd
@@ -10,11 +11,12 @@ import java.util.HashSet;
 public class Author {
 
 	private long authorId;
-	private HashSet<Long> contentId;
+	private HashSet<Long> contentIds;
+	private HashSet<Long> deletedContentIds;
 	private String firstName;
 	private String middleName;
 	private String lastName;
-	private String bibtexName;
+	private Vector<String> bibtexNames;
 	
 	
 	/**
@@ -27,10 +29,12 @@ public class Author {
 		this.firstName = firstName;
 		this.middleName = middleName;
 		this.lastName = lastName;
-		this.bibtexName = bibtexName;
 		
-		contentId = new HashSet<Long>();
+		this.bibtexNames = new Vector<String>();
+		this.bibtexNames.add(bibtexName);
 		
+		this.contentIds = new HashSet<Long>();
+		this.deletedContentIds = new HashSet<Long>();
 	}
 	
 	public Author() {
@@ -58,18 +62,21 @@ public class Author {
 	 * @return Vector<Long> : content ids
 	 */
 	public HashSet<Long> getContentIds() {
-		return this.contentId;
+		return this.contentIds;
 	}
 
 	
 	/**
 	 * @param contentId
 	 */
-	public void setContentId(final HashSet<Long> contentId) {
-		this.contentId = contentId;
+	public void setContentIds(final HashSet<Long> contentId) {
+		this.contentIds = contentId;
+	}
+	
+	public HashSet<Long> getDeletedContentIds() {
+		return deletedContentIds;
 	}
 
-	
 	/**
 	 * @return String : firstName
 	 */
@@ -121,16 +128,31 @@ public class Author {
 	/**
 	 * @return String : bibtexName
 	 */
-	public String getBibtexName() {
-		return this.bibtexName;
+	public Vector<String> getBibtexNames() {
+		return this.bibtexNames;
 	}
 
 	
 	/**
 	 * @param bibtexName
 	 */
-	public void setBibtexName(final String bibtexName) {
-		this.bibtexName = bibtexName;
+	public void addBibtexName(final String bibtexName) {
+		this.bibtexNames.add(bibtexName);
+	}
+	
+	public String toString() {
+		String s = "id: " + authorId + ", first: " + firstName
+				+ ", middleName: " + middleName + ", lastName: "
+				+ lastName + "\ncontent ids: ";
+		for(long l : contentIds) {
+			s += l + ", ";
+		}
+		s += "\nbibtexNames: ";
+		for(String b : bibtexNames) {
+			s += b + ", ";
+		}
+		return s;
+		
 	}
 	
 }

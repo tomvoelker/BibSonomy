@@ -102,23 +102,32 @@ public class BatchAuthors {
 		
 		int c = 0;
 		
+		String authorsAndEditors = "";
 		String[] authors;
 		String[] subNames;
+		String bibtexAuthor;
 		
 		while(rs.next()) {
-			if(rs.getString(1) == null) {
+			if(rs.getString(1) != null) {
+				authorsAndEditors += rs.getString(1);
+			}
+			if(rs.getString(3) != null) {
+				authorsAndEditors += " and " + rs.getString(3);
+			}
+			if(authorsAndEditors != "") {
 				continue;
 			}
 			c++;
 			
 			// split author field
-			authors = rs.getString(1).split(" and ");
+			authors = authorsAndEditors.split(" and ");
 			
 			// get content ID from result
 			lastContentId = rs.getLong(2);
 						
 			// loop over all authors			
 			for(int i = 0; i < authors.length; i++) {
+				bibtexAuthor = authors[i];
 				authors[i] = authors[i].trim();
 				authors[i] = enc.encode(authors[i]);
 				if(authors[i].length() > 2) {
@@ -129,7 +138,7 @@ public class BatchAuthors {
 					// create new author object
 					Author a = new Author(getFirstName(subNames),
 							getMiddleName(subNames),
-							getLastName(subNames), authors[i]);
+							getLastName(subNames), bibtexAuthor);
 					// add current content ID to author object
 					a.getContentIds().add(lastContentId);
 					// check if author is already in map
@@ -137,6 +146,10 @@ public class BatchAuthors {
 						// is contained -> add content id
 						if(authors[i].length() > 2) {
 							bibtexAuthorMap.get(authors[i]).getContentIds().add(lastContentId);
+							// check if author already got the requested bibtex representation. if not, add the current one
+							if(!bibtexAuthorMap.get(authors[i]).getBibtexNames().contains(bibtexAuthor)) {
+								bibtexAuthorMap.get(authors[i]).addBibtexName(bibtexAuthor);
+							}
 						}
 					}
 					else {
@@ -199,6 +212,10 @@ public class BatchAuthors {
 				authorMap.put(authorName, a);	
 			} else {
 				authorMap.get(authorName).getContentIds().add(rs.getLong(3));
+				// check if author already got the requested bibtex representation. if not, add the current one
+				if(!authorMap.get(enc.encode(authorName)).getBibtexNames().contains(authorName)) {
+					authorMap.get(enc.encode(authorName)).addBibtexName(authorName);
+				}
 			}
 			
 			if (c % 10000 == 0) {
@@ -255,34 +272,40 @@ public class BatchAuthors {
 			s = it.next();
 			a = bibtexAuthorMap.get(s);
 			if(authorMap.containsKey(s)) {
-				// just a stupid validation for the count of the content id's to increase the performace
-				if(authorMap.get(s).getContentIds().size() == a.getContentIds().size()) {
-					authorMap.remove(s);
-					//bibtexAuthorMap.remove(s);
-				} else {
-					// updateAuthorMap.put(s, bibtexAuthorMap.get(s));
-					// set author id
-					a.setAuthorId(authorMap.get(s).getAuthorId());
-										
-					//updateAuthorMap.get(s).setAuthorId(authorMap.get(s).getAuthorId());
-					
-					removeList.clear();
-					for(long l : a.getContentIds()) {
-						if(authorMap.get(s).getContentIds().contains(l)) {
-							removeList.add(l);
-						}
-					}
-					
-					for(long l : removeList) {
-						// remove content ids
+				// updateAuthorMap.put(s, bibtexAuthorMap.get(s));
+				// set author id
+				a.setAuthorId(authorMap.get(s).getAuthorId());
+									
+				//updateAuthorMap.get(s).setAuthorId(authorMap.get(s).getAuthorId());
+				
+				// remove existing id's for update author
+				for(long l : a.getContentIds()) {
+					if(authorMap.get(s).getContentIds().contains(l)) {
 						a.getContentIds().remove(l);
 					}
-					// remember author to update
-					updateAuthors.add(a);
-					
-					authorMap.remove(s);
-					//bibtexAuthorMap.remove(s);
 				}
+				
+				// if there isn't an old id in the update user, add it to delete list 
+				for(long l : authorMap.get(s).getContentIds()) {
+					if(!a.getContentIds().contains(l)) {
+						a.getDeletedContentIds().add(l);
+					}
+				}
+				
+				if(authorMap.get(s).getBibtexNames().size() != a.getBibtexNames().size()) {
+					for(int i = 0; i < a.getBibtexNames().size(); ++i) {
+						if(authorMap.get(s).getBibtexNames().contains(a.getBibtexNames().get(i))) {
+							a.getBibtexNames().remove(i);
+						}
+					}
+				}
+				
+				// remember author to update
+				updateAuthors.add(a);
+				
+				authorMap.remove(s);
+				//bibtexAuthorMap.remove(s);
+				
 			} else {
 				//insertAuthorMap.put(s, bibtexAuthorMap.get(s));
 				insertAuthors.add(a);
