@@ -25,10 +25,10 @@
 	
 			<div style="float: left;">
 		                <!-- select box for "other" groups -->
-		                <form:select path="relevantGroups" size="5">
+		                <form:select path="relevantGroups" size="5" onchange="showTagSets(this)" >
 	                        <fmt:message var="pleaseselect" key="post.resource.select"/>
 	                        <form:option value="" label="${pleaseselect}"/>
-		                	<form:options items="${groups}" onclick="showTagSets(event)" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
+		                	<form:options items="${groups}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
 		                </form:select>
 			</div>
 			<div style="margin: 6px 0px 0ex 15em;" class="info_bold">

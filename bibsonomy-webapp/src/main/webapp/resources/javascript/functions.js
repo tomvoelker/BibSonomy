@@ -1750,14 +1750,19 @@ function copytag(target, tagname){
 
 /** FUNCTIONS USED IN THE POSTING VIEWS **/
 
-//hide and show the tagsets in the relevant for field
-function showTagSets(event){
-	var node = xget_event(event);
-	if(node.selected == true){
-		document.getElementById("field_"+node.getAttributeNode("value").value).style.display = '';
-	}else{
-		document.getElementById("field_"+node.getAttributeNode("value").value).style.display = 'none';
-	}
+// hide and show the tagsets in the relevant for field
+function showTagSets(select) {
+    for (var i = 0; i < select.options.length; i++) {
+      var op = select.options[i];
+      var field = document.getElementById("field_" + op.value);
+      if (field != null) {
+        if (op.selected) {
+          field.style.display = '';
+        } else {
+          field.style.display = 'none';
+        }
+      }   
+    }
 }
 
 //functions checks if a group in the relevant for field is selected and adds its name to the hidden field 
