@@ -27,6 +27,8 @@ package org.bibsonomy.scrapingservice.beans;
 import java.io.Serializable;
 import java.net.URL;
 
+import org.bibsonomy.scraper.Scraper;
+
 public class ScrapingResultBean implements Serializable {
 	
 	private static final long serialVersionUID = 8899554705056075887L;
@@ -35,6 +37,7 @@ public class ScrapingResultBean implements Serializable {
 	private String errorMessage;
 	private URL url;
 	private String selection;
+	private Scraper scraper;
 	
 	public ScrapingResultBean() {
 		// TODO Auto-generated constructor stub
@@ -73,6 +76,16 @@ public class ScrapingResultBean implements Serializable {
 
 	public void setSelection(String selection) {
 		this.selection = selection;
+	}
+
+
+	public Scraper getScraper() {
+		return scraper;
+	}
+
+
+	public void setScraper(Scraper scraper) {
+		this.scraper = scraper;
 	}
 
 }

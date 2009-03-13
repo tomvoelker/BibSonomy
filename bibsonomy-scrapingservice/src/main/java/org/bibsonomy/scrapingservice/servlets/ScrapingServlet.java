@@ -107,6 +107,7 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 				if (compositeScraper.scrape(context)) {
 					bean.setBibtex(context.getBibtexResult());
 					bean.setErrorMessage(null);
+					bean.setScraper(context.getScraper());
 					
 					/*
 					 * handle special output formats
