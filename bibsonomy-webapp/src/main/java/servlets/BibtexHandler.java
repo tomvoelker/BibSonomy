@@ -240,7 +240,7 @@ public class BibtexHandler extends HttpServlet {
 					// get parameters for substitution of comma, semicolon, etc. in tagstring
 					delimiter   = getParameter(fieldMap, "delimiter");
 					whitespace  = getParameter(fieldMap, "whitespace");
-					substitute  = "on".equals(getParameter(fieldMap, "substitute"));
+					substitute  = !delimiter.trim().equals(""); // something different than " " chosen
 
 
 					// retrieve form field "file"
