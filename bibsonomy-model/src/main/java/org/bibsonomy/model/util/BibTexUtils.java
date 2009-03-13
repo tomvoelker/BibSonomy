@@ -61,6 +61,9 @@ public class BibTexUtils {
 	private static final Pattern DOI_PATTERN = Pattern.compile("http://.+/(.+?/.+?$)");
 	private static final Pattern MISC_FIELD_PATTERN = Pattern.compile("([a-zA-Z0-9]+)\\s*=\\s*\\{(.*?)\\}");
 
+	private static final List<String> EXCLUDE_FIELDS = Arrays.asList(new String[] { "bibtexAbstract", "misc", "simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey" });
+
+	
 	/**
 	 * Builds a string from a given bibtex object which can be used to build an OpenURL
 	 * see http://www.exlibrisgroup.com/sfx_openurl.htm
@@ -230,7 +233,6 @@ public class BibTexUtils {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(bib.getClass());
 			
-			final String[] excludeFields = { "bibtexAbstract", "misc", "simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey" };
 						
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("@");
@@ -243,7 +245,7 @@ public class BibTexUtils {
 				// loop over all String attributes
 				if (d.getPropertyType().equals(String.class) 
 						&& getter.invoke(bib, (Object[]) null) != null 
-					    && ! Arrays.asList(excludeFields).contains(d.getName()) ) {
+					    && ! EXCLUDE_FIELDS.contains(d.getName()) ) {
 					buffer.append(d.getName());
 					buffer.append(" = ");
 					buffer.append("{");
