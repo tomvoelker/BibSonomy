@@ -3,6 +3,10 @@ package org.bibsonomy.lucene;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
@@ -17,8 +21,9 @@ import org.bibsonomy.common.enums.GroupID;
 public class Search {
 
 	/** base path to lucene index */
-	private String luceneBasePath = "/home/bibsonomy/lucene/";
+//	private String luceneBasePath = "/home/bibsonomy/lucene/";
 //	private String luceneBasePath = "/home/stud/sst/bibsonomy/";
+	private String luceneBasePath = "";
 
 	/** bookmark path to lucene index */
 	private String luceneBookmarksPath = luceneBasePath+"lucene_bookmarks/"; 
@@ -33,6 +38,21 @@ public class Search {
 	SimpleAnalyzer analyzer = new SimpleAnalyzer();
 	
 
+
+
+	public Search() throws NamingException {
+		Context initContext = new InitialContext();
+		Context envContext = (Context) initContext.lookup("java:/comp/env");
+
+		/* set current path to lucene index, given by environment parameter in tomcat's context.xml
+		 * 
+		 *   <Environment name="luceneIndexPath" type="java.lang.String" value="/home/bibsonomy/lucene"/>
+		 */
+		this.setLuceneBasePath( (String) envContext.lookup("luceneIndexPath") );
+		this.setLuceneBookmarksPath(this.getLuceneBasePath()+"lucene_bookmarks/");
+		this.setLucenePublicationsPath(this.getLuceneBasePath()+"lucene_publications/");
+		
+	}
 
 
 	/**
@@ -62,12 +82,12 @@ public class Search {
 	 * @throws CorruptIndexException 
 	 * */
 	public ArrayList<String> SearchLucene(char luceneIndex, String idname, String search_terms, GroupID grouptype, int limit, int offset) throws CorruptIndexException, IOException{
-
+		
 		// get starttime to calculate duration of execution of this method
 		long starttime = System.currentTimeMillis();
 		long endtime = 0;
 		
-		String luceneIndexPath = ""; 
+		String luceneIndexPath = "";
 		Boolean debug = false;
 		// field names in Lucene index
 		String lField_contentid = "contentid";
@@ -85,7 +105,7 @@ public class Search {
 
 		if (luceneIndex == 'b')
 		{
-			 luceneIndexPath = luceneBookmarksPath; 
+			 luceneIndexPath = this.getLuceneBookmarksPath(); 
 
 			// grouptype == 1 setzen, um vergleichbar zu sein mit alter afrage
 			 querystring = lField_group+":1 AND (" + lField_desc + ":("+ search_terms +") " + lField_tas + ":("+ search_terms +") " + lField_ext + ":("+ search_terms +") " + lField_url + ":("+ search_terms +") )" ;
@@ -95,7 +115,7 @@ public class Search {
 		}
 		else
 		{
-			 luceneIndexPath = lucenePublicationsPath; 
+			 luceneIndexPath = this.getLucenePublicationsPath();
 			// TODO set query string
 		}
 			
@@ -162,6 +182,54 @@ public class Search {
 		// get endtime and set it in class variable
 		endtime = System.currentTimeMillis();
 		this.setDuration(endtime-starttime);
+	}
+
+
+	/**
+	 * @return the luceneBasePath
+	 */
+	public String getLuceneBasePath() {
+		return luceneBasePath;
+	}
+
+
+	/**
+	 * @param luceneBasePath the luceneBasePath to set
+	 */
+	public void setLuceneBasePath(String luceneBasePath) {
+		this.luceneBasePath = luceneBasePath;
+	}
+
+
+	/**
+	 * @return the luceneBookmarksPath
+	 */
+	private String getLuceneBookmarksPath() {
+		return luceneBookmarksPath;
+	}
+
+
+	/**
+	 * @param luceneBookmarksPath the luceneBookmarksPath to set
+	 */
+	private void setLuceneBookmarksPath(String luceneBookmarksPath) {
+		this.luceneBookmarksPath = luceneBookmarksPath;
+	}
+
+
+	/**
+	 * @return the lucenePublicationsPath
+	 */
+	private String getLucenePublicationsPath() {
+		return lucenePublicationsPath;
+	}
+
+
+	/**
+	 * @param lucenePublicationsPath the lucenePublicationsPath to set
+	 */
+	private void setLucenePublicationsPath(String lucenePublicationsPath) {
+		this.lucenePublicationsPath = lucenePublicationsPath;
 	}
 
 
