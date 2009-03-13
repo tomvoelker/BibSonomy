@@ -1,18 +1,19 @@
 package org.bibsonomy.scraper.url.kde.prola;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 
 
 /**
@@ -133,7 +134,7 @@ public class ProlaScraper extends AbstractUrlScraper {
 
 				// download article as bibtex
 				String downloadedBibtex = null;
-				downloadedBibtex = sc.getContentAsString(new URL(downloadLink));
+				downloadedBibtex = WebUtils.getContentAsString(new URL(downloadLink));
 
 				if(downloadedBibtex != null){
 
@@ -147,7 +148,7 @@ public class ProlaScraper extends AbstractUrlScraper {
 					throw new ScrapingException("ProlaScraper: can't get bibtex from this article");
 			}else
 				throw new PageNotSupportedException("ProlaScraper: This prola side has no bibtex download link.");
-		} catch (MalformedURLException e) {
+		} catch (IOException e) {
 			throw new InternalFailureException(e);
 		}
 	}

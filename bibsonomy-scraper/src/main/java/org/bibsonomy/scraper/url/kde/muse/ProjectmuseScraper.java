@@ -1,17 +1,18 @@
 package org.bibsonomy.scraper.url.kde.muse;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for muse.jhu.edu
@@ -60,7 +61,7 @@ public class ProjectmuseScraper extends AbstractUrlScraper {
 		try {
 			URL downloadUrl = new URL(PREFIX_DOWNLOAD_URL + journalID);
 
-			String sgml = sc.getContentAsString(downloadUrl);
+			String sgml = WebUtils.getContentAsString(downloadUrl);
 
 			String bibKey = null;
 			String authors = "";
@@ -185,7 +186,7 @@ public class ProjectmuseScraper extends AbstractUrlScraper {
 			sc.setBibtexResult(bibtex.toString());
 			return true;
 
-		} catch (MalformedURLException ex) {
+		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 

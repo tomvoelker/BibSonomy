@@ -1,7 +1,6 @@
 package org.bibsonomy.scraper.generic;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collection;
@@ -15,13 +14,14 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 @Deprecated
 public class ScrapingService extends AbstractUrlScraper {
 
@@ -51,7 +51,7 @@ public class ScrapingService extends AbstractUrlScraper {
 				log.debug("calling external service with url " + sc.getUrl());
 				URL url = new URL (baseurl + "?url=" + URLEncoder.encode(sc.getUrl().toString(), "UTF-8"));
 				log.debug("calling external service " + url);
-				String content = sc.getContentAsString(url);
+				final String content = WebUtils.getContentAsString(url);
 				if (content != null && content.startsWith("% ConnoteaScraper")) {
 					log.debug("got content");
 					sc.setBibtexResult(content);
@@ -64,10 +64,8 @@ public class ScrapingService extends AbstractUrlScraper {
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");
 
-			} catch (MalformedURLException e) {
-				throw new InternalFailureException(e);
-			} catch (UnsupportedEncodingException e) {
-				throw new InternalFailureException(e);
+			} catch (IOException ex) {
+				throw new InternalFailureException(ex);
 			}
 		}
 		return false;

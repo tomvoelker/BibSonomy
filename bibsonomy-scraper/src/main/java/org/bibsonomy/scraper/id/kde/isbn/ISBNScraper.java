@@ -1,5 +1,6 @@
 package org.bibsonomy.scraper.id.kde.isbn;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
@@ -55,7 +56,7 @@ public class ISBNScraper implements Scraper {
 						return true;
 					}else
 						throw new ScrapingFailureException("bibtex download from worldcat failed");
-				} catch (MalformedURLException ex) {
+				} catch (IOException ex) {
 					throw new InternalFailureException(ex);
 				}
 

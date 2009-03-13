@@ -9,7 +9,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.exceptions.UseageFailureException;
+import org.bibsonomy.scraper.exceptions.UsageFailureException;
 
 /**
  * This scraper contains other scrapers and the scrape method calls them
@@ -39,7 +39,7 @@ public class CompositeScraper implements Scraper {
 			// internal failure 
 			log.fatal(e,e);			
 			throw (e);
-		} catch (final UseageFailureException e) {
+		} catch (final UsageFailureException e) {
 			log.info("Exception during scraping following url: " + scrapingContext.getUrl());
 			// a user has used a scraper in a wrong way
 			log.info(e);

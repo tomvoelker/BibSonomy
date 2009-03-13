@@ -2,7 +2,7 @@ package org.bibsonomy.scraper.url.kde.citebase;
 
 
 
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -10,16 +10,17 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.tidy.Tidy;
 
 /** Scraper for CiteBase.
  * 
@@ -48,7 +49,7 @@ public class CiteBaseScraper extends AbstractUrlScraper {
 
 		try {
 
-			final Document document = getDOM(sc.getPageContent());
+			final Document document = XmlUtils.getDOM(sc.getPageContent());
 			String bibAbstract = extractAbstract(document, BIBTEX_ABSTRACT_TAG); 
 
 			// get bibtex url on citebase publication page
@@ -57,7 +58,7 @@ public class CiteBaseScraper extends AbstractUrlScraper {
 			log.debug("bibtex url = " + bibtexUrl);
 
 			// get bibtex page and add abstract
-			String bibtexEntry = sc.getContentAsString(bibtexUrl);
+			String bibtexEntry = WebUtils.getContentAsString(bibtexUrl);
 			if (bibAbstract != null) {
 				bibtexEntry = addAbstractToBibtexEntry(bibtexEntry,
 						bibAbstract);
@@ -66,21 +67,9 @@ public class CiteBaseScraper extends AbstractUrlScraper {
 			sc.setBibtexResult(bibtexEntry);
 			return true;
 
-		} catch (MalformedURLException me) {
-			throw new InternalFailureException(me);
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
 		}
-	}
-
-	/** Parses a page and returns the DOM
-	 * @param content
-	 * @return
-	 */
-	private Document getDOM(String content) {
-		Tidy tidy = new Tidy();
-		tidy.setQuiet(true);
-		tidy.setShowWarnings(false);// turns off warning lines
-		Document doc = tidy.parseDOM(new ByteArrayInputStream(content.getBytes()), null);
-		return doc;
 	}
 
 	public String getInfo() {

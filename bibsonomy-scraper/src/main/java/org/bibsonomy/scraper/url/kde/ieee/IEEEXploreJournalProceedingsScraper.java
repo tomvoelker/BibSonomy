@@ -1,5 +1,6 @@
 package org.bibsonomy.scraper.url.kde.ieee;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -66,8 +68,10 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 				String downUrl = "http://ieeexplore.ieee.org/xpls/citationAct?dlSelect=cite_abs&fileFormate=BibTex&arnumber=<arnumber>" + id + "</arnumber>";
 				String bibtex = null;
 				try {
-					bibtex = sc.getContentAsString(new URL(downUrl));
+					bibtex = WebUtils.getContentAsString(new URL(downUrl));
 				} catch (MalformedURLException ex) {
+					throw new InternalFailureException(ex);
+				} catch (IOException ex) {
 					throw new InternalFailureException(ex);
 				}
 

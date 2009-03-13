@@ -1,14 +1,14 @@
 package org.bibsonomy.scraper.url.kde.spires;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -45,7 +45,7 @@ public class SpiresScraper extends AbstractUrlScraper{
 					bibtexUrl = new URL(url.toString() + "&" + FORMAT_WWWBRIEFBIBTEX);
 				}
 				
-				final Document temp = XmlUtils.getDOM(sc.getContentAsString(bibtexUrl));
+				final Document temp = XmlUtils.getDOM(bibtexUrl);
 				
 				//extract the bibtex snippet which is embedded in pre tags
 				String bibtex = null;
@@ -70,7 +70,7 @@ public class SpiresScraper extends AbstractUrlScraper{
 					throw new ScrapingFailureException("getting bibtex failed");
 
 				
-			} catch (MalformedURLException e) {
+			} catch (IOException e) {
 				throw new InternalFailureException(e);
 			}
 	}

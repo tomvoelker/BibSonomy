@@ -1,17 +1,18 @@
 package org.bibsonomy.scraper.url.kde.bibsonomy;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 
 /**
@@ -48,7 +49,7 @@ public class BibSonomyScraper extends AbstractUrlScraper {
 			if(sc.getUrl().getPath().startsWith(BIBSONOMY_BIBTEX_PATH)){
 				String url = sc.getUrl().toString();
 				url = url.replace(BIBSONOMY_BIBTEX_PATH, BIBSONOMY_BIB_PATH);
-				bibResult = sc.getContentAsString(new URL(url));
+				bibResult = WebUtils.getContentAsString(new URL(url));
 
 				// if /bib/bibtex page then download directly
 			}else if(sc.getUrl().getPath().startsWith(BIBSONOMY_BIB_PATH)){
@@ -61,8 +62,8 @@ public class BibSonomyScraper extends AbstractUrlScraper {
 			}else
 				throw new ScrapingFailureException("getting bibtex failed");
 
-		} catch (MalformedURLException e) {
-			throw new InternalFailureException(e);
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
 		}
 	}
 

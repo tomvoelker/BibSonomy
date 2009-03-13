@@ -1,13 +1,13 @@
 package org.bibsonomy.scraper.url.kde.springer;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -49,7 +49,7 @@ public class SpringerScraper extends AbstractUrlScraper {
 				}else
 					throw new ScrapingFailureException("getting bibtex failed");
 
-			} catch (MalformedURLException ex) {
+			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
 	}

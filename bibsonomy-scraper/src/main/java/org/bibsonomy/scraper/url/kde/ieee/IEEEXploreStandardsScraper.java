@@ -1,26 +1,26 @@
 package org.bibsonomy.scraper.url.kde.ieee;
 
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.tidy.Tidy;
 
 /** Scraper for IEEE Explore
  * @author rja
@@ -55,8 +55,8 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 				String downUrl = "http://ieeexplore.ieee.org/xpls/citationAct?dlSelect=cite_abs&fileFormate=BibTex&arnumber=<arnumber>" + matcher.group(1) + "</arnumber>";
 				String bibtex = null;
 				try {
-					bibtex = sc.getContentAsString(new URL(downUrl));
-				} catch (MalformedURLException ex) {
+					bibtex = WebUtils.getContentAsString(new URL(downUrl));
+				} catch (IOException ex) {
 					throw new InternalFailureException(ex);
 				}
 				
@@ -103,15 +103,12 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 			String year 		= "";
 	
 			//-- get the html doc and parse the DOM
-			Tidy tidy = new Tidy();
-			tidy.setQuiet(true);
-			tidy.setShowWarnings(false); // turn off warning lines
-			Document doc = tidy.parseDOM(new ByteArrayInputStream(sc.getPageContent().getBytes()), null);
+			final Document document = XmlUtils.getDOM(sc.getPageContent());
 	
 			/* -- get the spans to extract the title and abstract
 			 */
 			pres = null;
-			pres = doc.getElementsByTagName("span"); //get all <span>-Tags
+			pres = document.getElementsByTagName("span"); //get all <span>-Tags
 			for (int i=0; i<pres.getLength(); i++){
 				currNode = pres.item(i);
 				if (currNode.hasAttributes()) {
@@ -135,7 +132,7 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 			 *  indicates the collection of all informations.
 			 * */
 			pres = null;
-			pres = doc.getElementsByTagName("p"); //get all <p>-Tags
+			pres = document.getElementsByTagName("p"); //get all <p>-Tags
 			for (int i=0; i<pres.getLength(); i++){
 				currNode = pres.item(i);
 				if (currNode.hasAttributes()) {

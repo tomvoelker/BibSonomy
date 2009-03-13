@@ -1,16 +1,17 @@
 package org.bibsonomy.scraper.url.kde.bmj;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
@@ -45,21 +46,16 @@ public class BMJScraper extends AbstractUrlScraper {
 			id = url.substring(url.indexOf(BMJ_BIBTEX_PATH) + BMJ_BIBTEX_PATH.length());
 		}
 
-		String bibResult = null;
-
 		try {
-			URL citURL = new URL(BMJ_HOST_NAME + BMJ_BIBTEX_DOWNLOAD_PATH + id);
-			bibResult = sc.getContentAsString(citURL).trim();
-			bibResult = bibResult.replaceFirst(" ", "");
-			
-		} catch (MalformedURLException ex) {
+			final String bibResult = WebUtils.getContentAsString(new URL(BMJ_HOST_NAME + BMJ_BIBTEX_DOWNLOAD_PATH + id)).trim().replaceFirst(" ", "");
+			if (bibResult != null) {
+				sc.setBibtexResult(bibResult);
+				return true;
+			}
+		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 
-		if(bibResult != null) {
-			sc.setBibtexResult(bibResult);
-			return true;
-		}
 		return false;
 	}
 

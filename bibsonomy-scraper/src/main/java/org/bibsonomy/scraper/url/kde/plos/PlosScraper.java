@@ -1,19 +1,20 @@
 package org.bibsonomy.scraper.url.kde.plos;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for X.plosjournals.org
@@ -90,7 +91,7 @@ public class PlosScraper extends AbstractUrlScraper {
 						String citationPageLinkHref = hrefMatcher.group();
 						citationPageLinkHref = "http://" + sc.getUrl().getHost() + "/perlserv/?" + citationPageLinkHref.substring(6, citationPageLinkHref.length()-1);
 						// citation page found
-						citationPage = sc.getContentAsString(new URL(citationPageLinkHref));
+						citationPage = WebUtils.getContentAsString(new URL(citationPageLinkHref));
 					}
 				}
 			}
@@ -109,7 +110,7 @@ public class PlosScraper extends AbstractUrlScraper {
 					if(hrefMatcher.find()){
 						String citationLinkHref = hrefMatcher.group();
 						citationLinkHref = "http://" + sc.getUrl().getHost() + "/perlserv/" + citationLinkHref.substring(6, citationLinkHref.length()-1);
-						citation = sc.getContentAsString(new URL(citationLinkHref));
+						citation = WebUtils.getContentAsString(new URL(citationLinkHref));
 					}
 				}
 			}
@@ -127,7 +128,7 @@ public class PlosScraper extends AbstractUrlScraper {
 			}else
 				throw new ScrapingFailureException("endnote is not available");
 
-		} catch (MalformedURLException ex) {
+		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 	}

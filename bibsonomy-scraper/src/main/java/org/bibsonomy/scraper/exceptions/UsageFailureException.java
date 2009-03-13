@@ -6,7 +6,7 @@ package org.bibsonomy.scraper.exceptions;
  * with a little trick by the user (trick is explained in the exception message).
  * @author tst
  */
-public class UseageFailureException extends ScrapingException {
+public class UsageFailureException extends ScrapingException {
 
 	private static final long serialVersionUID = -4269129145897321143L;
 
@@ -14,7 +14,7 @@ public class UseageFailureException extends ScrapingException {
 	 * set message
 	 * @param message
 	 */
-	public UseageFailureException(String message) {
+	public UsageFailureException(String message) {
 		super(message);
 	}
 
@@ -22,7 +22,7 @@ public class UseageFailureException extends ScrapingException {
 	 * set exception
 	 * @param exception
 	 */
-	public UseageFailureException(Exception exception) {
+	public UsageFailureException(Exception exception) {
 		super(exception);
 	}
 

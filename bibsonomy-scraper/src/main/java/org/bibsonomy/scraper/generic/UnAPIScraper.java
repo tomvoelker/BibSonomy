@@ -1,7 +1,6 @@
 package org.bibsonomy.scraper.generic;
 
-import java.io.ByteArrayInputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -11,12 +10,14 @@ import java.util.Collections;
 import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.tidy.Tidy;
 
 /** Scrapes pages providing BibTeX via the <a href="http://unapi.info/">UN-API</a>.
  * 
@@ -29,7 +30,7 @@ public class UnAPIScraper implements Scraper {
 
 
 	public String getInfo() {
-		return "Scrapes pages providing BibTeX (format=bibtex) via the the <a href=\"http://unapi.info/\">UN-API</a>.";
+		return "Scrapes pages providing BibTeX (format=bibtex) via <a href=\"http://unapi.info/\">UN-API</a>.";
 	}
 
 	public Collection<Scraper> getScraper() {
@@ -54,12 +55,7 @@ public class UnAPIScraper implements Scraper {
 			/*
 			 * do the expensive JTidy stuff to extract the server and id
 			 */
-			final Tidy tidy = new Tidy();
-			tidy.setQuiet(true);
-//			tidy.setMakeClean(false); // necessary?
-			tidy.setXmlTags(true); // necessary to allow empty "abbr" tags
-			tidy.setShowWarnings(false); // turn off warning lines
-			final Document document = tidy.parseDOM(new ByteArrayInputStream(pageContents.getBytes()), null);
+			final Document document = XmlUtils.getDOM(pageContents);
 			/*
 			 * get the server id
 			 */
@@ -84,7 +80,7 @@ public class UnAPIScraper implements Scraper {
 						/*
 						 * get the data
 						 */
-						final String bibtex = scrapingContext.getContentAsString(url);
+						final String bibtex = WebUtils.getContentAsString(url);
 						if (bibtex != null) {
 							/*
 							 * success! 
@@ -94,10 +90,8 @@ public class UnAPIScraper implements Scraper {
 							scrapingContext.setBibtexResult(bibtex);
 							return true;
 						}
-					} catch (MalformedURLException ex) {
-						// ignore, maybe bibtex just isn't supported
-					} catch (UnsupportedEncodingException ex) {
-						// ignore, maybe bibtex just isn't supported
+					} catch (IOException ex) {
+						throw new InternalFailureException(ex);
 					}
 				}
 			}

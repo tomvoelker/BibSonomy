@@ -3,8 +3,8 @@
  */
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Collections;
@@ -15,13 +15,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 
 /**
@@ -77,8 +78,8 @@ public class UBKAScraper extends AbstractUrlScraper {
 							UBKA_PARAM_PRINTMAB + "&" + 
 							UBKA_PARAM_BIBTEX);
 					//download page and extract bibtex
-					result = extractBibtexFromUBKA(sc.getContentAsString(expURL));
-				} catch (MalformedURLException me) {
+					result = extractBibtexFromUBKA(WebUtils.getContentAsString(expURL));
+				} catch (IOException me) {
 					throw new InternalFailureException(me);
 				}
 			}

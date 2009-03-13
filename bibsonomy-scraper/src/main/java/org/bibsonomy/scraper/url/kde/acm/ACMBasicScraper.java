@@ -1,6 +1,5 @@
 package org.bibsonomy.scraper.url.kde.acm;
 
-import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,21 +7,19 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.util.BibTeXUtils;
-import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.tidy.Tidy;
 
 /** Scrapes the ACM digital library
  * @author rja
@@ -54,12 +51,9 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			pathsToScrape  = new ArrayList<String>();
 
 			// Parse the page and obtain a DOM
-			final Tidy tidy = new Tidy();
-			tidy.setQuiet(true);
-			tidy.setShowWarnings(false); // turn off warning lines
-			Document doc = tidy.parseDOM(new ByteArrayInputStream(sc.getPageContent().getBytes()), null);
+			final Document document = XmlUtils.getDOM(sc.getPageContent());
 			// save path to popup page of current bibtex entry
-			extractSinglePath(doc);
+			extractSinglePath(document);
 
 			/*
 			 * extract the abstract
@@ -89,7 +83,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			 * 
 			 */
 			String abstrct = null;
-			final NodeList as1 = doc.getElementsByTagName("a"); // get all <a>-Tags
+			final NodeList as1 = document.getElementsByTagName("a"); // get all <a>-Tags
 			for (int i = 0; i < as1.getLength(); i++) {
 				final Node a = as1.item(i);
 
@@ -144,12 +138,12 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			 * author = {The Author}, title = {This is the title}...}</pre>
 			 */
 			for (String path: pathsToScrape) {
-				doc = tidy.parseDOM(new ByteArrayInputStream(WebUtils.getContentAsString(new URL(ACM_HOST_NAME + path)).getBytes()), null);
+				final Document doc = XmlUtils.getDOM(new URL(ACM_HOST_NAME + path));
 
-				NodeList pres = doc.getElementsByTagName("pre");
+				final NodeList pres = doc.getElementsByTagName("pre");
 				for (int i = 0; i < pres.getLength(); i++) {
-					Node currNode = pres.item(i);
-					NodeList childnodes = currNode.getChildNodes();
+					final Node currNode = pres.item(i);
+					final NodeList childnodes = currNode.getChildNodes();
 					if (childnodes.getLength() > 0) {
 						bibtexEntries.append(" " + currNode.getChildNodes().item(0).getNodeValue());
 					}

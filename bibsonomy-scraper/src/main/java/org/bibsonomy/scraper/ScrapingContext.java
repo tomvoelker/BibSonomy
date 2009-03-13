@@ -65,26 +65,14 @@ public class ScrapingContext {
 	 */
 	public String getPageContent() throws ScrapingException  {
 		if (pageContent == null) {
-			pageContent = getContentAsString(url);
+			try {
+				pageContent = WebUtils.getContentAsString(url);
+			} catch (IOException ex) {
+				throw new ScrapingException(ex);
+			}
 		}
 		return pageContent;
 	}
-
-	/**
-	 * Reads from a URL and writes the content into a string.
-	 * @param inputURL the url to scrape
-	 * @return String which holds the page content.
-	 * @throws ScrapingException 
-	 */
-	@Deprecated
-	public String getContentAsString(final URL inputURL) throws ScrapingException {
-		try {
-			return WebUtils.getContentAsString(inputURL);
-		} catch (IOException ex) {
-			throw new ScrapingException(ex);
-		}
-	}
-
 
 	/** 
 	 * @return The scraped BibTeX result.

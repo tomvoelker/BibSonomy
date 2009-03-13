@@ -1,5 +1,6 @@
 package org.bibsonomy.scraper.generic;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
@@ -13,6 +14,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 public class HighwireScraper implements Scraper {
 	private static final Logger log 	= Logger.getLogger(HighwireScraper.class);
@@ -55,7 +57,7 @@ public class HighwireScraper implements Scraper {
 					String newUrl = "http://" + sc.getUrl().getHost() + exportUrl;
 
 					//-- get the bibtex export and throw new ScrapingException if the url is broken
-					String bibtexresult = sc.getContentAsString(new URL(newUrl));
+					String bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
 
 					/*
 					 * Need to fix the bibtexkey. Its necessary to replace
@@ -90,9 +92,8 @@ public class HighwireScraper implements Scraper {
 
 				}
 
-			} catch (MalformedURLException e) {
-				throw new InternalFailureException(e);
-			}
+			} catch (IOException ex) {
+				throw new InternalFailureException(ex);			}
 		}
 		//-- This Scraper can`t handle the specified url
 		return false;

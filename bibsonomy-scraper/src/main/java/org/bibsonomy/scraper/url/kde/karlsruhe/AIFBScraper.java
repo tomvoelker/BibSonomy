@@ -1,6 +1,6 @@
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -8,11 +8,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 
 
 /** Scraper for AIFB.
@@ -122,9 +123,9 @@ public class AIFBScraper extends AbstractUrlScraper {
 				 */
 				try {
 					URL expURL = new URL(AIFB_HOST_NAME + AIFB_PUBL_EXPORT_PATH + "?" + sc.getUrl().getQuery());
-					sc.setBibtexResult(sc.getContentAsString(expURL));
+					sc.setBibtexResult(WebUtils.getContentAsString(expURL));
 					return true;
-				} catch (MalformedURLException me) {
+				} catch (IOException me) {
 					throw new InternalFailureException(me);
 				}
 				
@@ -139,9 +140,9 @@ public class AIFBScraper extends AbstractUrlScraper {
 				try {					
 					URL expURL = new URL(AIFB_HOST_NAME + AIFB_PUBL_PERSON_EXPORT_PATH + "?" +  
 										 AIFB_PARAM_PERSON_ID + extractParamValue(sc.getUrl().getQuery()));
-					sc.setBibtexResult(sc.getContentAsString(expURL)); 
+					sc.setBibtexResult(WebUtils.getContentAsString(expURL)); 
 					return true;
-				} catch (MalformedURLException me) {
+				} catch (IOException me) {
 					throw new InternalFailureException(me);
 				}
 				
@@ -156,9 +157,9 @@ public class AIFBScraper extends AbstractUrlScraper {
 				try {					
 					URL expURL = new URL(AIFB_HOST_NAME + AIFB_PUBL_PERSON_EXPORT_PATH + "?" +  
 										 AIFB_PARAM_PERSON_ID + extractParamValue(sc.getUrl().getQuery()));
-					sc.setBibtexResult(sc.getContentAsString(expURL)); 
+					sc.setBibtexResult(WebUtils.getContentAsString(expURL)); 
 					return true;
-				} catch (MalformedURLException me) {
+				} catch (IOException me) {
 					throw new InternalFailureException(me);
 				}
 				
@@ -176,9 +177,9 @@ public class AIFBScraper extends AbstractUrlScraper {
 						URL expURL = new URL(AIFB_HOST_NAME + AIFB_PUBL_DEPT_EXPORT_PATH + "?" 
 								           + AIFB_PARAM_DEPT_ID + AIFB_DEPT_ID_WBS + "&"
 								           + AIFB_PARAM_YEAR + currYear);
-						sc.setBibtexResult(sc.getContentAsString(expURL));
+						sc.setBibtexResult(WebUtils.getContentAsString(expURL));
 						return true;
-					} catch (MalformedURLException me) {
+					} catch (IOException me) {
 						throw new InternalFailureException(me);
 					}	
 				}else if(sc.getUrl().getPath().toString().contains(AIFB_DEPT_CODE_BIK)){
@@ -190,9 +191,9 @@ public class AIFBScraper extends AbstractUrlScraper {
 						URL expURL = new URL(AIFB_HOST_NAME + AIFB_PUBL_DEPT_EXPORT_PATH + "?" 
 								           + AIFB_PARAM_DEPT_ID + AIFB_DEPT_ID_BIK + "&"
 								           + AIFB_PARAM_YEAR + currYear);
-						sc.setBibtexResult(sc.getContentAsString(expURL));
+						sc.setBibtexResult(WebUtils.getContentAsString(expURL));
 						return true;
-					} catch (MalformedURLException me) {
+					} catch (IOException me) {
 						throw new InternalFailureException(me);
 					}
 				}else if(sc.getUrl().getPath().toString().contains(AIFB_DEPT_CODE_EFFALG)){
@@ -204,9 +205,9 @@ public class AIFBScraper extends AbstractUrlScraper {
 						URL expURL = new URL(AIFB_HOST_NAME + AIFB_PUBL_DEPT_EXPORT_PATH + "?" 
 								           + AIFB_PARAM_DEPT_ID + AIFB_DEPT_ID_EFFALG + "&"
 								           + AIFB_PARAM_YEAR + currYear);
-						sc.setBibtexResult(sc.getContentAsString(expURL));
+						sc.setBibtexResult(WebUtils.getContentAsString(expURL));
 						return true;
-					} catch (MalformedURLException me) {
+					} catch (IOException me) {
 						throw new InternalFailureException(me);
 					}
 				}else if(sc.getUrl().getPath().toString().contains(AIFB_DEPT_CODE_COM)){
@@ -218,9 +219,9 @@ public class AIFBScraper extends AbstractUrlScraper {
 						URL expURL = new URL(AIFB_HOST_NAME + AIFB_PUBL_DEPT_EXPORT_PATH + "?" 
 								           + AIFB_PARAM_DEPT_ID + AIFB_DEPT_ID_COM + "&"
 								           + AIFB_PARAM_YEAR + currYear);
-						sc.setBibtexResult(sc.getContentAsString(expURL));
+						sc.setBibtexResult(WebUtils.getContentAsString(expURL));
 						return true;
-					} catch (MalformedURLException me) {
+					} catch (IOException me) {
 						throw new InternalFailureException(me);
 					}
 				}

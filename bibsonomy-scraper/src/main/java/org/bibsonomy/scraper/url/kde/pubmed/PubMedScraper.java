@@ -1,18 +1,19 @@
 package org.bibsonomy.scraper.url.kde.pubmed;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author daill
@@ -55,7 +56,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 				if (ma.find()) {
 					String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids="
 							+ ma.group();
-					bibtexresult = sc.getContentAsString(new URL(newUrl));
+					bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
 				}
 
 				// try to scrape with new URL-Pattern
@@ -70,7 +71,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 				if (ma.find()) {
 					String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids="
 							+ ma.group(1);
-					bibtexresult = sc.getContentAsString(new URL(newUrl));
+					bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
 				}
 			}
 
@@ -90,7 +91,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 			} else
 				throw new ScrapingFailureException("getting bibtex failed");
 
-		} catch (MalformedURLException e) {
+		} catch (IOException e) {
 			throw new InternalFailureException(e);
 		}
 	}

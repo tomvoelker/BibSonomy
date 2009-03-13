@@ -1,20 +1,21 @@
 package org.bibsonomy.scraper.url.kde.nature;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for publication from nature.com
@@ -81,7 +82,7 @@ public class NatureScraper extends AbstractUrlScraper {
 						href = href.substring(6, href.length()-1);
 
 						// download citation (as ris)
-						final String ris = sc.getContentAsString(new URL("http://" + sc.getUrl().getHost() + "/" + href));
+						final String ris = WebUtils.getContentAsString(new URL("http://" + sc.getUrl().getHost() + "/" + href));
 
 						// convert ris to bibtex
 						final RisToBibtexConverter converter = new RisToBibtexConverter();
@@ -98,7 +99,7 @@ public class NatureScraper extends AbstractUrlScraper {
 				}
 			}
 			throw new PageNotSupportedException("Page not supported. Download URL is missing.");
-		} catch (MalformedURLException ex) {
+		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 	}

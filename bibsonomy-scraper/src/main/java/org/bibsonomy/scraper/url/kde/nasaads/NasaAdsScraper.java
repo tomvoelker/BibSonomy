@@ -18,6 +18,7 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 
 
 /**
@@ -141,7 +142,7 @@ public class NasaAdsScraper extends AbstractUrlScraper {
 								// get URL
 								String bibtexURL = href.substring(6, href.length()-1);
 								// get snippet
-								String bibtexSnippet = sc.getContentAsString(new URL(bibtexURL));
+								String bibtexSnippet = WebUtils.getContentAsString(new URL(bibtexURL));
 								sc.setBibtexResult(bibtexSnippet);
 								return true;
 							}

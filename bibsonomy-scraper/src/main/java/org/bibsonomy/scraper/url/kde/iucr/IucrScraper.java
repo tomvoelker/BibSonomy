@@ -1,20 +1,21 @@
 package org.bibsonomy.scraper.url.kde.iucr;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.exceptions.UseageFailureException;
+import org.bibsonomy.scraper.exceptions.UsageFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * scraper for jornals from iucr.org. Because of the frame structure of 
@@ -82,7 +83,7 @@ public class IucrScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 
 		if(sc.getUrl().getHost().startsWith(HOST_JOURNAL_PREFIX)){
-			throw new UseageFailureException(USEAGE_FAILURE_MESSAGE);
+			throw new UsageFailureException(USEAGE_FAILURE_MESSAGE);
 
 		}else if(sc.getUrl().getHost().startsWith(HOST_SCRIPTS_PREFIX)){
 
@@ -94,11 +95,8 @@ public class IucrScraper extends AbstractUrlScraper {
 				if(cnorMatcher.find()) {
 					final String cnor = cnorMatcher.group(1);
 
-					// build download link
-					final String downloadLink = DOWNLOAD_LINK_PART + cnor;
-
 					// download bibtex
-					String bibtex = sc.getContentAsString(new URL(downloadLink));
+					final String bibtex = WebUtils.getContentAsString(new URL((DOWNLOAD_LINK_PART + cnor)));
 
 					if(bibtex != null){
 
@@ -117,7 +115,7 @@ public class IucrScraper extends AbstractUrlScraper {
 					throw new ScrapingFailureException("ID for donwload link is missing.");
 				}
 
-			} catch (MalformedURLException ex) {
+			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
 

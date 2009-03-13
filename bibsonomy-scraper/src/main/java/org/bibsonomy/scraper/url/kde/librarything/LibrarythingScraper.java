@@ -1,5 +1,6 @@
 package org.bibsonomy.scraper.url.kde.librarything;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -7,11 +8,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 
 
 /**
@@ -101,7 +103,12 @@ public class LibrarythingScraper extends AbstractUrlScraper {
 			url = sc.getUrl();
 		}
 
-		String content = sc.getContentAsString(url);
+		String content;
+		try {
+			content = WebUtils.getContentAsString(url);
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
+		}
 
 		// extract data
 		Pattern authorPattern = Pattern.compile(LIBRARYTHING_PATTERN_AUTHOR);

@@ -1,6 +1,6 @@
 package org.bibsonomy.scraper.url.kde.dlib;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 
 /**
@@ -125,7 +126,7 @@ public class DLibScraper extends AbstractUrlScraper {
 					metaData = sc.getPageContent();
 				}else if(sc.getUrl().toString().endsWith(HTML_PAGE)){
 					String metaDataUrl = sc.getUrl().toString().substring(0, sc.getUrl().toString().length()-4) + META_DATA_PAGE;
-					metaData = sc.getContentAsString(new URL(metaDataUrl));
+					metaData = WebUtils.getContentAsString(new URL(metaDataUrl));
 				}
 				
 				// build xml to bibtex
@@ -144,7 +145,7 @@ public class DLibScraper extends AbstractUrlScraper {
 
 				}else
 					throw new PageNotSupportedException("This dlib page is not supported.");
-			} catch (MalformedURLException ex) {
+			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
 		}

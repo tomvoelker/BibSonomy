@@ -1,17 +1,18 @@
 package org.bibsonomy.scraper.url.kde.editlib;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
@@ -52,9 +53,8 @@ public class EditLibScraper extends AbstractUrlScraper {
 		String bibResult = null;
 
 		try {
-			URL citURL = new URL(EDITLIB_HOST_NAME + EDITLIB_BIBTEX_DOWNLOAD_PATH.replace("{id}", id) + id);
-			bibResult = sc.getContentAsString(citURL);
-		} catch (MalformedURLException ex) {
+			bibResult = WebUtils.getContentAsString(new URL(EDITLIB_HOST_NAME + EDITLIB_BIBTEX_DOWNLOAD_PATH.replace("{id}", id) + id));
+		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 

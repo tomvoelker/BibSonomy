@@ -1,20 +1,21 @@
 package org.bibsonomy.scraper.url.kde.wormbase;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for http://www.wormbase.org
@@ -46,7 +47,7 @@ public class WormbaseScraper extends AbstractUrlScraper {
 
 			// get endnote
 			try {
-				final String endnote = sc.getContentAsString(new URL(DOWNLOAD_URL + name));
+				final String endnote = WebUtils.getContentAsString(new URL(DOWNLOAD_URL + name));
 
 				// convert bibtex
 				final EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
@@ -58,7 +59,7 @@ public class WormbaseScraper extends AbstractUrlScraper {
 				}else
 					throw new ScrapingFailureException("generating bibtex failed");
 
-			} catch (MalformedURLException ex) {
+			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
 

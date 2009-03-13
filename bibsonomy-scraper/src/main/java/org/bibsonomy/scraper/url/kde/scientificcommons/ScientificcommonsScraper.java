@@ -1,18 +1,19 @@
 package org.bibsonomy.scraper.url.kde.scientificcommons;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for scientificcommons.org
@@ -56,8 +57,8 @@ public class ScientificcommonsScraper extends AbstractUrlScraper{
 			
 			// get bibtex
 			try {
-				bibtex = sc.getContentAsString(new URL(DOWNLOAD_URL + id));
-			} catch (MalformedURLException ex) {
+				bibtex = WebUtils.getContentAsString(new URL(DOWNLOAD_URL + id));
+			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
 			

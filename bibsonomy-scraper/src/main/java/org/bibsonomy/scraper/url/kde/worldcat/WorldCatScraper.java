@@ -1,18 +1,19 @@
 package org.bibsonomy.scraper.url.kde.worldcat;
 
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for http://www.worldcat.org 
@@ -40,7 +41,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 			}else
 				throw new ScrapingFailureException("getting bibtex failed");
 
-		} catch (MalformedURLException ex) {
+		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 	}
@@ -50,29 +51,22 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	 * @param isbn isbn for search
 	 * @param sc ScrapingContext for download
 	 * @return publication as bibtex
-	 * @throws MalformedURLException
+	 * @throws IOException 
 	 * @throws ScrapingException
 	 */
-	public String getBibtexByISBN(String isbn, ScrapingContext sc) throws MalformedURLException, ScrapingException{
-		String bibtex = null;
-
-		// clean up
-		isbn = isbn.replace("-", ""); 
-
-		URL searchURL = new URL("http://www.worldcat.org/search?qt=worldcat_org_all&q=" + isbn); 
-		bibtex = getBibtex(searchURL, sc, true);
-
-		return bibtex;
+	public String getBibtexByISBN(final String isbn, final ScrapingContext sc) throws IOException, ScrapingException{
+		final URL searchURL = new URL("http://www.worldcat.org/search?qt=worldcat_org_all&q=" + isbn.replace("-", "")); 
+		return getBibtex(searchURL, sc, true);
 	}
 
-	private String getBibtex(URL publPageURL, ScrapingContext sc, boolean search) throws MalformedURLException, ScrapingException{
+	private String getBibtex(final URL publPageURL, final ScrapingContext sc, final boolean search) throws IOException, ScrapingException{
 		String exportUrl = null;
 		if(search)
 			exportUrl = publPageURL.getProtocol() + "://" + publPageURL.getHost() + publPageURL.getPath() + "?" + publPageURL.getQuery() + "&page=endnote&client=worldcat.org-detailed_record";
 		else
 			exportUrl = publPageURL.getProtocol() + "://" + publPageURL.getHost() + publPageURL.getPath() + "?page=endnote&client=worldcat.org-detailed_record";
 
-		String endnote = sc.getContentAsString(new URL(exportUrl));
+		String endnote = WebUtils.getContentAsString(new URL(exportUrl));
 
 		RisToBibtexConverter converter = new RisToBibtexConverter();
 		return converter.RisToBibtex(endnote);

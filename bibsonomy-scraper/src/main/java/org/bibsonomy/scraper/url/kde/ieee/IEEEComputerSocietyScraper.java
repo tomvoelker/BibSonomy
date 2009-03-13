@@ -1,23 +1,20 @@
 package org.bibsonomy.scraper.url.kde.ieee;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for csdl2.computer.org
@@ -67,8 +64,7 @@ public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 				if(doi.contains("#"))
 					doi = doi.substring(0, doi.indexOf("#"));
 				
-				URL downloadUrl = new URL(DOWNLOAD_URL + doi);
-				String page = sc.getContentAsString(downloadUrl);
+				final String page = WebUtils.getContentAsString(new URL(DOWNLOAD_URL + doi));
 
 				String bibtex = null;
 				Matcher bibtexMatcher = bibtexPattern.matcher(page);
@@ -89,10 +85,8 @@ public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 				}else
 					throw new ScrapingFailureException("Cannot download bibtex.");
 				
-			} catch (MalformedURLException ex) {
+			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
-			} catch (UnsupportedEncodingException e) {
-				throw new InternalFailureException(e);
 			}
 
 		}

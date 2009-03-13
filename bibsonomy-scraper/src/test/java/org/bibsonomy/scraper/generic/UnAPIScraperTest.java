@@ -2,6 +2,10 @@ package org.bibsonomy.scraper.generic;
 
 import static org.junit.Assert.*;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -23,28 +27,43 @@ public class UnAPIScraperTest {
 	 * 	"http://iwblog.vili.de/2008/06/05/vibi-mit-unapi-unterstutzung/"
 	 * --> bieten kein BibTeX an, siehe http://iwblog.vili.de/wp-content/plugins/unapi/server.php
 	 */
-	
+
 	final String[] urls = new String[] {
-			"http://canarydatabase.org/record/488"
+			"http://canarydatabase.org/record/488",
+			"http://www.bibsonomy.org/",
+			"http://www.biblicious.org/"
 	};
 
 	@Test
 	public void testScrape() {
 		final UnAPIScraper scraper = new UnAPIScraper();
-		for (final String url: urls) {
-			ScrapingContext scrapingContext = null;
+		for (final String urlString: urls) {
 			try {
-				scrapingContext = new ScrapingContext(new URL(url));
+				final URL url = new URL(urlString);
+				final ScrapingContext scrapingContext = new ScrapingContext(url);
+
+				scraper.scrape(scrapingContext);
+
+				final String bibtexResult = scrapingContext.getBibtexResult();
+
+				assertNotNull(bibtexResult);
+				System.out.println(urlString + " : " + bibtexResult.length());
+				writeToFile("/tmp/" + url.getHost().toString(), bibtexResult);
+
+			} catch (ScrapingException ex) {
+				fail(ex.getMessage());
 			} catch (MalformedURLException ex) {
 				fail(ex.getMessage());
-			}
-
-			try {
-				scraper.scrape(scrapingContext);
-				assertNotNull(scrapingContext.getBibtexResult());
-			} catch (ScrapingException ex) {
+			} catch (IOException ex) {
 				fail(ex.getMessage());
 			}
 		}
 	}
+
+	private static final void writeToFile(final String fileName, final String content) throws IOException {
+		final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"));
+		writer.write(content);
+		writer.close();
+	}
+
 }

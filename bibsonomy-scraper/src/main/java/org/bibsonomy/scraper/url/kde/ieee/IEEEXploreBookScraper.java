@@ -19,12 +19,12 @@ import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.tidy.Tidy;
 
 
 /** Scraper for IEEE Explore
@@ -108,13 +108,10 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 			String _format		= null;
 
 			//-- get the html doc and parse the DOM
-			Tidy tidy = new Tidy();
-			tidy.setQuiet(true);
-			tidy.setMakeClean(true);
-			tidy.setDropFontTags(true);
-			tidy.setShowWarnings(false); // turn off warning lines
-			Document doc = tidy.parseDOM(new ByteArrayInputStream(sc.getPageContent().getBytes()), null);
-
+			final Document doc = XmlUtils.getDOM(sc.getPageContent());
+//			tidy.setMakeClean(true);
+//			tidy.setDropFontTags(true);
+//			
 
 			/*-- Search title and extract --
 			 * The title has always the css-class "headNavBlueXLarge".
