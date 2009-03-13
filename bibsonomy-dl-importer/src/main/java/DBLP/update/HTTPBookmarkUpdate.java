@@ -116,7 +116,7 @@ public class HTTPBookmarkUpdate extends HTTPUpdate {
 			url = DBLPEntry.DBLPURL + url;
 		}
 		
-		HttpURLConnection conn = (HttpURLConnection) new URL(baseURL + "bookmark_posting_process").openConnection();
+		HttpURLConnection conn = (HttpURLConnection) new URL(baseURL + "postBookmark").openConnection();
 		setCookies(conn);
 		conn.setDoOutput(true); // neccessary to write to connection
 		conn.setDoInput(true);  // defaults to true ... but just to be sure ...		
