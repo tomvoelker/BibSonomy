@@ -50,15 +50,28 @@ public class BibtexPageController extends SingleResourceListController implement
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 		
-		// retrieve and set the requested resource lists
-		for (final Class<? extends Resource> resourceType : listsToInitialise) {			
-			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
-			
-			this.setList(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage);
-			this.postProcessAndSortList(command, resourceType);
+		// retrieve and set the requested bibtex(s)
+		final int entriesPerPage = command.getListCommand(BibTex.class).getEntriesPerPage();
+		
+		this.setList(command, BibTex.class, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage);
+		this.postProcessAndSortList(command, BibTex.class);
+		
+		// only set total count if no user is given (is always 1 otherwise)
+		if (GroupingEntity.ALL.equals(groupingEntity)) {
+			this.setTotalCount(command, BibTex.class, groupingEntity, requUser, null, hash, null, null, null, command.getListCommand(BibTex.class).getEntriesPerPage(), null);
+		}		
+		else {
+			/*
+			 * complete post details for a single post of a given user (only for
+			 * /bibtex/HASH/USER
+			 */
+			final ArrayList<Post<BibTex>> bibtex = new ArrayList<Post<BibTex>>();
+			for (Post<BibTex> b: command.getBibtex().getList()){
+				bibtex.add((Post<BibTex>) this.logic.getPostDetails(b.getResource().getIntraHash(), b.getUser().getName()));
+			}
+			command.getBibtex().setList(bibtex);
 
-			this.setTotalCount(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, command.getListCommand(resourceType).getEntriesPerPage(), null);
-		}	
+		}
 		
 		// get the title of the publication with the requested hash
 		final List<Post<BibTex>> bibtexList = command.getBibtex().getList();
@@ -72,19 +85,7 @@ public class BibtexPageController extends SingleResourceListController implement
 			command.setPageTitle("bibtex :: " + hash );
 			
 			if (GroupingEntity.USER.equals(groupingEntity)) {
-				/*
-				 * /bibtex/HASH/USER
-				 */
-
-				/*
-				 * complete post details
-				 */
-				final ArrayList<Post<BibTex>> bibtex = new ArrayList<Post<BibTex>>();
-				for (Post<BibTex> b: bibtexList){
-					bibtex.add((Post<BibTex>) this.logic.getPostDetails(b.getResource().getIntraHash(), b.getUser().getName()));
-				}
-				command.getBibtex().setList(bibtex);
-
+				//bibtex/HASH/USER
 				/*
 				 * retrieve concepts for sidebar
 				 */
