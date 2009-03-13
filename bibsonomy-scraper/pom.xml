@@ -51,12 +51,6 @@
 			<version>2.4</version>
 		</dependency>
 		<dependency>
-			<groupId>jtidy</groupId>
-			<artifactId>jtidy</artifactId>
-<!--			<version>4aug2000r7-dev</version>-->
-			<version>8.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<!-- this is a new "not so fat" JAR	 -->
 			<groupId>edu.umass.cs.mallet</groupId>
 			<artifactId>mallet</artifactId>
