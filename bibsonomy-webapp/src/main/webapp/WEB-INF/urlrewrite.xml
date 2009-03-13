@@ -596,29 +596,25 @@
 
 
 	<!-- ############## publ hashes ############### -->
-	<!-- TODO: migrate -->
-	<!-- pick right sim hash type -->
-	<rule><!-- /[32]/user -->
+	
+	<!-- NEW PAGES -->
+	<rule><!-- /[32]/USERNAME -->
 		<name>/bibtex/HASH/USER</name>
 		<from>^/+bibtex/+([0-9a-fA-F]{32})/+(.+)$</from>
-		<set type="parameter" name="requBibtex">$1</set>
-		<set type="parameter" name="page">userbibtex</set>
-		<set type="parameter" name="requSim">0</set>
-		<set type="parameter" name="requUser">$2</set>
-		<to last="true">/ResourceHandler</to>
+		<condition type="parameter" name="format">.+</condition>
+		<set type="parameter" name="requBibtex">1$1</set>
+		<set type="parameter" name="requestedUser">$2</set>
+		<to last="true">/bibtex</to>
 	</rule>
-	<!-- sim hash type explicitly given -->
-	<rule><!-- /[0-3][32]/user -->
+	<rule><!-- /[0-3][32]/USERNAME -->
 		<name>/bibtex/SHASH/USER</name>
 		<from>^/+bibtex/+([0-3])([0-9a-fA-F]{32})/+(.+)$</from>
-		<set type="parameter" name="requBibtex">$2</set>
-		<set type="parameter" name="page">userbibtex</set>
-		<set type="parameter" name="requSim">$1</set>
-		<set type="parameter" name="requUser">$3</set>
-		<to last="true">/ResourceHandler</to>
-	</rule>
-
-	<!-- NEW PAGE -->
+		<condition type="parameter" name="format">.+</condition>
+		<set type="parameter" name="requBibtex">$1$2</set>
+		<set type="parameter" name="requestedUser">$3</set>
+		<to last="true">/bibtex</to>
+	</rule>	
+	
 	<rule><!-- /[0-3][32] -->
 		<name>/bibtex/SHASH</name>
 		<from>^/+bibtex/+([0-3])([0-9a-fA-F]{32})$</from>
@@ -631,7 +627,6 @@
 		<set type="parameter" name="requBibtex">1$1</set>
 		<to last="true">/bibtex</to>
 	</rule>
-
 
 	<!-- ############## search pages ############### -->
 	<rule>
