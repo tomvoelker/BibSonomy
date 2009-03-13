@@ -150,7 +150,7 @@
 										<div id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 									</fieldset>
 								</fieldset>
-						    	<post:tagfield tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
+						    	<post:tagfield containsComma="${command.containsComma}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
 	
 									<c:if test="${not empty loginUser.groups}">
 										<post:relevantForBox groups="${loginUser.groups}"/>

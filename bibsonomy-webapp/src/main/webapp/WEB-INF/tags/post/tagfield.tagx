@@ -8,6 +8,7 @@
 
     <jsp:directive.attribute name="tags" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
+    <jsp:directive.attribute name="containsComma" type="java.lang.Boolean" required="true"/>
 	
 	<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
 		<legend><form:label path="tags" ><fmt:message key="post.resource.tags"/>*</form:label></legend>
