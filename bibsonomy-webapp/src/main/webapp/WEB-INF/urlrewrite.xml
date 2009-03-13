@@ -601,7 +601,6 @@
 	<rule><!-- /[32]/USERNAME -->
 		<name>/bibtex/HASH/USER</name>
 		<from>^/+bibtex/+([0-9a-fA-F]{32})/+(.+)$</from>
-		<condition type="parameter" name="format">.+</condition>
 		<set type="parameter" name="requBibtex">1$1</set>
 		<set type="parameter" name="requestedUser">$2</set>
 		<to last="true">/bibtex</to>
@@ -609,7 +608,6 @@
 	<rule><!-- /[0-3][32]/USERNAME -->
 		<name>/bibtex/SHASH/USER</name>
 		<from>^/+bibtex/+([0-3])([0-9a-fA-F]{32})/+(.+)$</from>
-		<condition type="parameter" name="format">.+</condition>
 		<set type="parameter" name="requBibtex">$1$2</set>
 		<set type="parameter" name="requestedUser">$3</set>
 		<to last="true">/bibtex</to>
