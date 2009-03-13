@@ -428,7 +428,7 @@ div.bibentry {
 	background-color: #e5f3fa;
 }
 
-input [type=text],input [type=password],input [type=file],textarea,select
+input[type=text],input[type=password],input[type=file],textarea,select
 	{
 	border: 1px solid #069;
 	padding: 2px;
@@ -436,17 +436,17 @@ input [type=text],input [type=password],input [type=file],textarea,select
 	font-weight: normal;
 }
 
-input [type=submit],input [type=button],input [type=reset] {
+input[type=submit],input[type=button],input[type=reset] {
 	border: 1px solid #069;
 	background-color: #eee;
 	padding: 2px;
 }
 
-h1 input [type=text],h1 select {
+h1 input[type=text],h1 select {
 	font-size: 83.33%;
 }
 
-td.tleft input [type=text],td.tleft input [type=password] {
+td.tleft input[type=text],td.tleft input[type=password] {
 	font-size: 125%;
 }
 

@@ -1,0 +1,77 @@
+@CHARSET "UTF-8";
+/*****************************************************************************
+ * style file for the postBookmark form (possibly also for the postBibTeX)
+ ****************************************************************************/
+#fsform {
+/*
+    float: left;
+    display: block;
+    clear: left;
+*/
+    width:100%;
+}
+
+#tagField {
+}
+
+.fsLegend {
+    text-align:left;
+    width:auto;
+    font-weight:normal;
+}
+
+.fsOuter {
+    border: 1px solid #069;
+    background-color: #eee; 
+    position:relative;
+    padding: 0px 10px 10px 10px;
+}
+
+.fsInner {
+    border: 1px solid #069;
+    background-color: #eee;
+    position:relative;
+    margin:8px 0px 0px 0px;
+}
+
+.fsInner label {
+    width:6em;
+    float: left;
+    display: block;
+    clear: left;
+    margin-right: 1em;
+    text-align: right;
+    font-weight: bold; 
+}
+
+.fsLabel {
+    width: 10em;
+    float: left;
+    display: block;
+    clear: left;
+    margin: 0px;
+    margin-right: 1em;
+    text-align: right;
+    font-weight: bold; 
+}
+
+.fsInput {
+    width: 45em;
+    margin: 0 0 1px 0px;
+    left:0px;
+}
+
+.fsText {
+    width: 45em;
+}
+
+.tagInput {
+    width: 54em;
+}
+
+.fsReloadButton {
+	float: left;
+	width: 1em;
+	height: 1em;
+	margin-left: -1em;
+}

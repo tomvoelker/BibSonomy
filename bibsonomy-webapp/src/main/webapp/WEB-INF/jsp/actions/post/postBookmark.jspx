@@ -19,6 +19,7 @@
     	 	| html header extension: page specific javascript
     	 	+-->
 		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 	    	<script type="text/javascript" src="${resdir}/javascript/util.js">&amp;nbsp;</script>
 	    </jsp:attribute>
 	    
@@ -130,26 +131,23 @@
                       
                 	<form:form action="/postBookmark" method="post">
 	                	<div id="fsform">
-	                		<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
-								<fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
+	                		<fieldset class="fsOuter">
+								<fieldset class="fsInner">
 									<legend><fmt:message key="general"/></legend>
-									<fieldset class="fsnoborder" style="position:relative;">
-										<legend><form:label path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label></legend>
-										<form:input path="post.resource.url" tabindex="1" size="60" />
-										<div class="postBookmarkNotValidTip"><form:errors path="post.resource.url" /></div>
-									</fieldset>	
-									<fieldset class="fsnoborder" style="position:relative;">
-										<legend><form:label path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label></legend>
-										<form:input path="post.resource.title" tabindex="2" size="60"/>
-										<div class="postBookmarkNotValidTip"><form:errors path="post.resource.title" /></div>
-		                                <div id="suggestion.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
-									</fieldset>	
-									<fieldset class="fsnoborder" style="position:relative;">
-										<legend><form:label path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label></legend>
-										<form:textarea path="post.description" tabindex="3" cols="69" rows="3" onkeyup="sz(this);" />
-										<div id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
-									</fieldset>
+									<form:label cssClass="fsCompulsive" path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label>
+									<form:input cssClass="fsInput" path="post.resource.url" tabindex="1" size="60" />
+									<div class="postBookmarkNotValidTip"><form:errors path="post.resource.url" /></div>
+
+									<form:label cssClass="fsCompulsive" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
+									<form:input cssClass="fsInput" path="post.resource.title" tabindex="2" size="60"/>
+									<div class="postBookmarkNotValidTip"><form:errors path="post.resource.title" /></div>
+	                                <div id="suggestion.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+	                                
+									<form:label path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
+									<form:textarea cssClass="fsText" path="post.description" tabindex="3" cols="69" rows="3" onkeyup="sz(this);" />
+									<div id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 								</fieldset>
+								
 						    	<post:tagfield containsComma="${command.containsComma}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
 	
 									<c:if test="${not empty loginUser.groups}">

@@ -10,9 +10,9 @@
     <jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
     <jsp:directive.attribute name="containsComma" type="java.lang.Boolean" required="true"/>
 	
-	<fieldset style="border: 1px solid #069; background-color: #eee; position:relative;">
-		<legend><form:label path="tags" ><fmt:message key="post.resource.tags"/>*</form:label></legend>
-        <form:input autocomplete="off" id="inpf" path="tags" tabindex="4" size="60" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()"  />
+	<fieldset class="fsInner">
+		<legend><span class="fsLegend"><fmt:message key="post.resource.tags"/>*</span></legend>
+        <form:input cssClass="tagInput" id="inpf" path="tags" tabindex="4" size="60" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()"  />
         (<fmt:message key="post.resource.spaceseparated"/>)
         
         <!-- name="tags"  -->
@@ -44,7 +44,10 @@
             | show recommendations
             +-->
 		<div>
-		  <fmt:message key="post.resource.recommendation"/>
+		  <div class="fsLabel">
+		  	<fmt:message key="post.resource.recommendation"/>
+		  </div>
+		  	<a href="javascript:reloadRecommendation()"><img class="fsReloadButton" src="${resdir}/image/button_reload.png" alt="get new tags"/></a>
 		  <div id="tagField"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 		</div>
 
@@ -52,10 +55,31 @@
             | show suggestions
             +-->
 		<div>
- 	      <fmt:message key="post.resource.suggested"/>
+ 	      <div class="fsLabel"><fmt:message key="post.resource.suggested"/></div>
           <div id="suggested" class="suggtag"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 		</div>
-    
-	</fieldset>		
+	</fieldset>
+	<script type="text/javascript">
+	    function reloadRecommendation() {
+	        var queryString = "";
+	        if( getPostParameter("${pageContext.request.queryString}", "intraHashToUpdate") ) {
+	          queryString = "url="+document.getElementById('post.resource.url').value;
+	        } else {
+	          queryString = "${pageContext.request.queryString}";
+	        }
 
+	    	var sg = document.getElementById("tagField");
+	    	while(sg.hasChildNodes())
+	    		sg.removeChild(sg.firstChild);
+		    
+	        $.ajax({
+	            type: "GET",
+	            url: "/ajax/getBookmarkRecommendedTags",
+	            data: "",
+	            success: function(msg){
+	              handleRecommendedTags(msg)
+	            }
+	          });
+	    }
+	</script>
 </jsp:root>
