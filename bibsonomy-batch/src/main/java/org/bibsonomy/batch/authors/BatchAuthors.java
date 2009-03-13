@@ -138,7 +138,7 @@ public class BatchAuthors {
 					// create new author object
 					Author a = new Author(getFirstName(subNames),
 							getMiddleName(subNames),
-							getLastName(subNames), bibtexAuthor);
+							getLastName(subNames), authors[i]);
 					// add current content ID to author object
 					a.getContentIds().add(lastContentId);
 					// check if author is already in map
