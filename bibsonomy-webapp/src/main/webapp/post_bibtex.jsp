@@ -122,7 +122,7 @@
 <%-- ---------------- BIBTEX UPLOAD INPUT ---------------- --%>
 <h2>Upload your BibTeX or EndNote file here:</h2>
 
-<form method="post" enctype="multipart/form-data" action='<%=response.encodeURL("/BibtexHandler?requTask=upload")%>'>
+<form name="upload" method="post" enctype="multipart/form-data" action='<%=response.encodeURL("/BibtexHandler?requTask=upload")%>'>
 <table>
   <tr>
     <td class="expl">your file*</td>
@@ -190,19 +190,26 @@
     <td style="border-right: 1px dashed #aaa;" ></td>
   </tr>
   <tr>
-    <td class="expl"  style="border-bottom: 1px dashed #aaa; border-left: 1px dashed #aaa;">tag delimiter</td>
-    <td style="border-bottom: 1px dashed #aaa;" >
-      <input type="checkbox" name="substitute" value="on" />
-      assume that tags are delimited by 
-      <select name="delimiter" id="ldelimiter">
-        <option value=",">,</option>
-        <option value=";">;</option>
-      </select> 
-      <br/> and substitute whitespace by <input type="text" value="_" name="whitespace" size="2" maxlength="1"/>
+    <td class="expl" style="border-left: 1px dashed #aaa;">tag delimiter</td>
+    <td>
+      <select name="delimiter" onchange="updateSubstitute(this);">
+        <option value=" ">&nbsp;&nbsp;(whitespace)</option>
+        <option value=",">, (comma)</option>
+        <option value=";">; (semicolon)</option>
+      </select>
     </td>
-    <td class="expl_s" style="border-bottom: 1px dashed #aaa; border-right: 1px dashed #aaa;">
+    <td class="expl_s" style="border-right: 1px dashed #aaa;">
       If your file contains a field "tags" (or "keywords") you can specify here 
       how tags are separated. The default is whitespace (space or tab). 
+    </td>
+  </tr>
+  <tr>
+    <td class="expl"  style="border-bottom: 1px dashed #aaa; border-left: 1px dashed #aaa;">whitespace substitute</td>
+    <td style="border-bottom: 1px dashed #aaa;" >
+      <input type="text" value="_" name="whitespace" size="2" maxlength="1" disabled="disabled"/>
+    </td>
+    <td class="expl_s" style="border-bottom: 1px dashed #aaa; border-right: 1px dashed #aaa;">
+      If your tags are not delimited by whitespace, enter here a symbol to substitute whitespace.
     </td>
   </tr>
 
@@ -213,6 +220,14 @@
 showGenerateBibtexBlock();
 maximizeById("general");
 
+function updateSubstitute(select) {
+  var subs = document.upload.whitespace;
+  if (select.options[select.options.selectedIndex].value == " ") {
+    subs.disabled = true;;
+  } else {
+    subs.disabled = false;
+  }
+}
 
 function showGenerateBibtexBlock() {
 	var selectionValue = document.getElementById("selection").value;
