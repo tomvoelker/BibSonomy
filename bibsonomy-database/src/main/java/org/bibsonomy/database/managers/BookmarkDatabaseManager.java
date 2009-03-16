@@ -518,32 +518,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
-	 * @see BookmarkDatabaseManager#getBookmarkSearchLucene(GroupID, String, String, int, int, DBSession)
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bookmark posts
-	 * @throws IOException 
-	 * @throws CorruptIndexException 
-	 */
-	public List<Post<Bookmark>> getBookmarkSearchLucene(final BookmarkParam param, final DBSession session) throws CorruptIndexException, IOException {
-		/*
-		 * FIXME: hard-coding those groups seems to be a bad idea ...
-		 */
-		GroupID GroupType = GroupID.PUBLIC ;
-		if (GroupID.ADMINSPAM.equals(param.getGroupType())) GroupType=GroupID.ADMINSPAM;
-		else if (GroupID.FRIENDS.equals(param.getGroupType())) GroupType=GroupID.FRIENDS;
-		else if (GroupID.INVALID.equals(param.getGroupType())) GroupType=GroupID.INVALID;
-		else if (GroupID.KDE.equals(param.getGroupType())) GroupType=GroupID.KDE;
-		else if (GroupID.PRIVATE.equals(param.getGroupType())) GroupType=GroupID.PRIVATE;
-		else if (GroupID.PUBLIC.equals(param.getGroupType())) GroupType=GroupID.PUBLIC;
-
-		return this.getBookmarkSearchLucene(GroupType, param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
-	}	
-
-
-
-	/**
 	 * @see BookmarkDatabaseManager#getBookmarkSearchLucene(BookmarkParam, DBSession)
 	 * 
 	 * @param groupType
@@ -556,9 +530,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @throws IOException 
 	 * @throws CorruptIndexException 
 	 */
-	public List<Post<Bookmark>> getBookmarkSearchLucene(final GroupID groupType, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) throws CorruptIndexException, IOException {
+	public List<Post<Bookmark>> getBookmarkSearchLucene(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
-		param.setGroupType(groupType);
+		param.setGroupId(groupId);
 		param.setSearch(search);
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
@@ -568,17 +542,26 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 		final Search lucene = new Search();
 
-		final ArrayList<Integer> contentIds = lucene.searchLucene('b', "contentid", search, groupType, limit, offset);
+		ArrayList<Integer> contentIds = new ArrayList<Integer>();
+		try {
+			contentIds = lucene.searchLucene('b', "contentid", search, groupId, limit, offset);
+		// TODO remove following line
+			System.out.println("Lucene query duration: "+lucene.getDuration()+" milliseconds");
+			
+		} catch (IOException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
 
-		LuceneHelper LuceneTTable = new LuceneHelper();
+		LuceneHelper luceneTTable = new LuceneHelper();
 		// create temp. table
-		LuceneTTable.createTTable(session);
+		luceneTTable.createTTable(session);
 
 		// delete all content in temp. table
-		LuceneTTable.truncateTTable(session);
+		luceneTTable.truncateTTable(session);
 
 		// store content ids in temp. table
-		LuceneTTable.fillTTable(contentIds, session);
+		luceneTTable.fillTTable(contentIds, session);
 
 
 		return this.bookmarkList("getBookmarkSearchLucene", param, session);

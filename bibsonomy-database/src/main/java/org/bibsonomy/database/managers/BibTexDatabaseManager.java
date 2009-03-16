@@ -554,15 +554,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 	public List<Post<BibTex>> getBibTexSearchLucene(final BibTexParam param, final DBSession session) throws IOException {
 
-		GroupID GroupType = GroupID.PUBLIC ;
-		if (GroupID.ADMINSPAM.equals(param.getGroupType())) GroupType=GroupID.ADMINSPAM;
-		else if (GroupID.FRIENDS.equals(param.getGroupType())) GroupType=GroupID.FRIENDS;
-		else if (GroupID.INVALID.equals(param.getGroupType())) GroupType=GroupID.INVALID;
-		else if (GroupID.KDE.equals(param.getGroupType())) GroupType=GroupID.KDE;
-		else if (GroupID.PRIVATE.equals(param.getGroupType())) GroupType=GroupID.PRIVATE;
-		else if (GroupID.PUBLIC.equals(param.getGroupType())) GroupType=GroupID.PUBLIC;
-		
-		return this.getBibTexSearchLucene(GroupType, param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
+		return this.getBibTexSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
 		
 	}
 	
@@ -602,9 +594,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @throws IOException 
 	 */
 
-	public List<Post<BibTex>> getBibTexSearchLucene(final GroupID groupType, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) throws IOException {
+	public List<Post<BibTex>> getBibTexSearchLucene(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) throws IOException {
 		final BibTexParam param = new BibTexParam();
-		param.setGroupType(groupType);
+		param.setGroupId(groupId);
 		param.setSearch(search);
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
@@ -613,7 +605,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		
 		// get list of ids from lucene
 			final Search lucene = new org.bibsonomy.lucene.Search();
-			final ArrayList<Integer> contentIds = lucene.searchLucene('p', "contentid", search, groupType, limit, offset);
+			final ArrayList<Integer> contentIds = lucene.searchLucene('p', "contentid", search, groupId, limit, offset);
 /*		
 		try {
 			// create temp. table
