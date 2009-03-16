@@ -186,6 +186,7 @@ public class XmlUtils {
 		tidy.setQuiet(true);
 		tidy.setShowWarnings(false);// turns off warning lines
 		tidy.setShowErrors(0); // turn off error printing
+		tidy.setXmlTags(true); // necessary to allow empty "abbr" tags (needed by unapi scraper)
 		return tidy;
 	}
 	
