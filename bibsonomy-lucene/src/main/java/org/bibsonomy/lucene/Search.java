@@ -93,7 +93,7 @@ public class Search {
 	 * @throws IOException 
 	 * @throws CorruptIndexException 
 	 * */
-	public ArrayList<String> searchLucene(char luceneIndex, String idname, String search_terms, GroupID grouptype, int limit, int offset) throws IOException {
+	public ArrayList<Integer> searchLucene(char luceneIndex, String idname, String search_terms, GroupID grouptype, int limit, int offset) throws IOException {
 
 		// get starttime to calculate duration of execution of this method
 		long starttime = System.currentTimeMillis();
@@ -132,7 +132,7 @@ public class Search {
 		}
 
 		// declare ArrayList cidsArray for list of String to return
-		ArrayList<String> cidsArray = new ArrayList<String>();
+		final ArrayList<Integer> cidsArray = new ArrayList<Integer>();
 
 
 		// do not search for nothing in lucene index
@@ -155,15 +155,14 @@ public class Search {
 
 				query = myParser.parse(querystring);
 
-				IndexSearcher searcher = new IndexSearcher(luceneBookmarksPath);
-				Hits hits = searcher.search(query);
-
+				final IndexSearcher searcher = new IndexSearcher(luceneBookmarksPath);
+				final Hits hits = searcher.search(query);
 
 				int hitslimit = (((offset+limit)<hits.length())?(offset+limit):hits.length());
 
 				for(int i = offset; i < hitslimit; i++){
 					Document doc = hits.doc(i);
-					cidsArray.add(doc.get(idname));
+					cidsArray.add(Integer.parseInt(doc.get(idname)));
 				}	 
 
 			} catch (ParseException e) {
