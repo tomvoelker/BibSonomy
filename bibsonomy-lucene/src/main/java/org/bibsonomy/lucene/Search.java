@@ -93,7 +93,7 @@ public class Search {
 	 * @throws IOException 
 	 * @throws CorruptIndexException 
 	 * */
-	public ArrayList<Integer> searchLucene(char luceneIndex, String idname, String search_terms, GroupID grouptype, int limit, int offset) throws IOException {
+	public ArrayList<Integer> searchLucene(char luceneIndex, String idname, String search_terms, int groupId, int limit, int offset) throws IOException {
 
 		// get starttime to calculate duration of execution of this method
 		long starttime = System.currentTimeMillis();
