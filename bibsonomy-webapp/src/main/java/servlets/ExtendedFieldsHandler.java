@@ -1,8 +1,13 @@
 package servlets;
 
+import helpers.database.DBBibtexURLManager;
 import helpers.database.DBExtendedFieldManager;
+import helpers.database.DBPrivnoteManager;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,9 +20,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.model.extra.BibTexExtra;
+
 import resources.Bibtex;
 import resources.ExtendedFieldMap;
 import beans.UserBean;
+import filters.ActionValidationFilter;
 import filters.SessionSettingsFilter;
 
 public class ExtendedFieldsHandler extends HttpServlet{
@@ -29,14 +38,58 @@ public class ExtendedFieldsHandler extends HttpServlet{
 	}
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		UserBean user = SessionSettingsFilter.getUser(request);
-		String currUser = user.getName(); 
+		final UserBean user = SessionSettingsFilter.getUser(request);
+		final String currUser = user.getName(); 
 		if (currUser == null) {
 			response.sendRedirect("/login?referer=/basket");
 			return;
 		}
 
-		DBExtendedFieldManager eman = new DBExtendedFieldManager();
+		final DBExtendedFieldManager eman = new DBExtendedFieldManager();
+
+		/*
+		 * FIXME: added to allow handling of some stuff at /bibtex/HASH/USER
+		 */
+		final String action = request.getParameter("action");
+		final boolean validCkey = ActionValidationFilter.isValidCkey(request);
+		if (validCkey && ("addURL".equals(action) || "deleteURL".equals(action) || "updatePrivateNote".equals(action))) {
+			final String hash = request.getParameter("hash");
+			if ("updatePrivateNote".equals(action)) {
+				/*
+				 * FIXME: missing check, if currUser owns this publication!
+				 */
+				final String privnote    = request.getParameter("privnote");
+				final String oldprivnote = request.getParameter("oldprivnote");
+				if (((privnote == null && oldprivnote != null) || (privnote != null && (oldprivnote == null || !privnote.equals(oldprivnote))))) {
+					/*
+					 * something has changed --> write it to DB
+					 */
+					DBPrivnoteManager.setPrivnoteForUser(privnote, currUser, hash);
+				}
+
+			} else {
+				/*
+				 * add / delete extra URL
+				 */
+				final String urlString = request.getParameter("url");
+				final URL url2;
+				try {
+					url2 = new URL(urlString);
+				} catch (final MalformedURLException ex) {
+					request.setAttribute("error", "The URL you entered is invalid (" + ex.getMessage() + ").");
+					getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
+					return;
+				}
+				if ("addURL".equals(action)) {
+					DBBibtexURLManager.createURL (new BibTexExtra(url2, request.getParameter("text"), null), hash, currUser, validCkey);
+				} else if ("deleteURL".equals(action)) {
+					DBBibtexURLManager.deleteURL (new BibTexExtra(url2, null, null), hash, currUser, validCkey);
+				}
+			}
+			response.sendRedirect("/bibtex/" + HashID.INTRA_HASH.getId() + URLEncoder.encode(hash, "UTF-8") + "/" + URLEncoder.encode(currUser, "UTF-8"));
+			return;
+		}
+
 
 		/*
 		 * TODO: uncomment this to generate meta data fields for NEPOMUK

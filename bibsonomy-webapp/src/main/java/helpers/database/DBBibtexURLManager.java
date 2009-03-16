@@ -6,9 +6,9 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.model.extra.BibTexExtra;
 
 import resources.Bibtex;
-import resources.BibtexURL;
 
 public class DBBibtexURLManager extends DBManager {
 	
@@ -24,7 +24,7 @@ public class DBBibtexURLManager extends DBManager {
 	
 	private static final Logger log = Logger.getLogger(DBBibtexURLManager.class);
 
-	public static boolean createURL (BibtexURL url, String hash, String user, boolean validCkey) {
+	public static boolean createURL (BibTexExtra url, String hash, String user, boolean validCkey) {
 		DBContext c = new DBContext();
 		try {
 			String urlstring = Bibtex.cleanUrl(url.getUrl().toString());
@@ -56,7 +56,7 @@ public class DBBibtexURLManager extends DBManager {
 		return false;
 	}
 
-	public static boolean deleteURL (BibtexURL url, String hash, String user, boolean validCkey) {
+	public static boolean deleteURL (BibTexExtra url, String hash, String user, boolean validCkey) {
 		DBContext c = new DBContext();
 		try {
 			if (c.init() && validCkey) {
@@ -84,9 +84,9 @@ public class DBBibtexURLManager extends DBManager {
 		return false;
 	}
 
-	public static LinkedList<BibtexURL> readURL (String hash, String user) {
+	public static LinkedList<BibTexExtra> readURL (String hash, String user) {
 		DBContext c = new DBContext();
-		LinkedList<BibtexURL> list = new LinkedList<BibtexURL>();
+		LinkedList<BibTexExtra> list = new LinkedList<BibTexExtra>();
 		try {
 			if (c.init()) {
 				c.stmt = c.conn.prepareStatement(SQL_SELECT_URL);
@@ -94,7 +94,7 @@ public class DBBibtexURLManager extends DBManager {
 				c.stmt.setString(2, user);
 				c.rst = c.stmt.executeQuery();
 				while (c.rst.next()) {
-					list.add(new BibtexURL (new URL(c.rst.getString("url")), c.rst.getString("text"), c.rst.getTimestamp("date")));
+					list.add(new BibTexExtra (new URL(c.rst.getString("url")), c.rst.getString("text"), c.rst.getTimestamp("date")));
 				}
 			}
 		} catch (SQLException e) {
