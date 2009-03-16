@@ -17,6 +17,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.model.Bookmark;
@@ -197,6 +198,12 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * checking, because the user must have this) 
 		 */
 		this.setTags(command, Resource.class, GroupingEntity.USER, loginUser.getName(), null, null, null, null, 0, 20000, null);
+		/*
+		 * get the relations of the user
+		 */
+		final List<Tag> concepts = this.logic.getConcepts(null, GroupingEntity.USER, loginUser.getName(), null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
+		command.getConcepts().setConceptList(concepts);
+		command.getConcepts().setNumConcepts(concepts.size());
 		/*
 		 * return the view
 		 */

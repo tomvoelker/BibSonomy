@@ -6,6 +6,8 @@ package org.bibsonomy.webapp.command;
  */
 public class PostCommand extends ResourceViewCommand {
 	private TagCloudCommand tagcloud = new TagCloudCommand();
+	private ConceptsCommand concepts = new ConceptsCommand();
+
 
 	public TagCloudCommand getTagcloud() {
 		return this.tagcloud;
@@ -13,6 +15,14 @@ public class PostCommand extends ResourceViewCommand {
 
 	public void setTagcloud(TagCloudCommand tagcloud) {
 		this.tagcloud = tagcloud;
+	}
+
+	public ConceptsCommand getConcepts() {
+		return this.concepts;
+	}
+
+	public void setConcepts(ConceptsCommand concepts) {
+		this.concepts = concepts;
 	}
 
 }
