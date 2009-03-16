@@ -36,22 +36,34 @@ public class Search {
 
 	/** lucene analyzer, must be the same as at indexing */
 	SimpleAnalyzer analyzer = new SimpleAnalyzer();
-	
 
 
 
-	public Search() throws NamingException {
-		Context initContext = new InitialContext();
-		Context envContext = (Context) initContext.lookup("java:/comp/env");
 
-		/* set current path to lucene index, given by environment parameter in tomcat's context.xml
-		 * 
-		 *   <Environment name="luceneIndexPath" type="java.lang.String" value="/home/bibsonomy/lucene"/>
-		 */
-		this.setLuceneBasePath( (String) envContext.lookup("luceneIndexPath") );
-		this.setLuceneBookmarksPath(this.getLuceneBasePath()+"lucene_bookmarks/");
-		this.setLucenePublicationsPath(this.getLuceneBasePath()+"lucene_publications/");
-		
+	public Search() throws RuntimeException {
+		try {
+			/*
+			 * FIXME: this should NOT be done on each instanciation of this class!
+			 * better do this in a static block on class loading or make the class
+			 * a singleton (if possible).
+			 * 
+			 */
+			Context initContext = new InitialContext();
+			Context envContext = (Context) initContext.lookup("java:/comp/env");
+
+			/* set current path to lucene index, given by environment parameter in tomcat's context.xml
+			 * 
+			 *   <Environment name="luceneIndexPath" type="java.lang.String" value="/home/bibsonomy/lucene"/>
+			 */
+			this.setLuceneBasePath( (String) envContext.lookup("luceneIndexPath") );
+			this.setLuceneBookmarksPath(this.getLuceneBasePath()+"lucene_bookmarks/");
+			this.setLucenePublicationsPath(this.getLuceneBasePath()+"lucene_publications/");
+		} catch (final NamingException e) {
+			/*
+			 * FIXME: rethrowing the exception as runtime ex is maybe not the best solution
+			 */
+			throw new RuntimeException(e);
+		}
 	}
 
 
@@ -70,8 +82,8 @@ public class Search {
 		this.duration = duration;
 	}
 
-		
-	
+
+
 	/** get ArrayList of strings of field id from lucene index
 	 * 
 	 * for pagination see http://www.gossamer-threads.com/lists/lucene/general/70516#70516
@@ -81,12 +93,12 @@ public class Search {
 	 * @throws IOException 
 	 * @throws CorruptIndexException 
 	 * */
-	public ArrayList<String> SearchLucene(char luceneIndex, String idname, String search_terms, GroupID grouptype, int limit, int offset) throws CorruptIndexException, IOException{
-		
+	public ArrayList<String> searchLucene(char luceneIndex, String idname, String search_terms, GroupID grouptype, int limit, int offset) throws CorruptIndexException, IOException{
+
 		// get starttime to calculate duration of execution of this method
 		long starttime = System.currentTimeMillis();
 		long endtime = 0;
-		
+
 		String luceneIndexPath = "";
 		Boolean debug = false;
 		// field names in Lucene index
@@ -99,26 +111,26 @@ public class Search {
 		String lField_url = "url";
 		String lField_tas = "tas";
 		String lField_type = "type";
-		
+
 		String querystring = "";
-		
+
 
 		if (luceneIndex == 'b')
 		{
-			 luceneIndexPath = this.getLuceneBookmarksPath(); 
+			luceneIndexPath = this.getLuceneBookmarksPath(); 
 
 			// grouptype == 1 setzen, um vergleichbar zu sein mit alter afrage
-			 querystring = lField_group+":1 AND (" + lField_desc + ":("+ search_terms +") " + lField_tas + ":("+ search_terms +") " + lField_ext + ":("+ search_terms +") " + lField_url + ":("+ search_terms +") )" ;
+			querystring = lField_group+":1 AND (" + lField_desc + ":("+ search_terms +") " + lField_tas + ":("+ search_terms +") " + lField_ext + ":("+ search_terms +") " + lField_url + ":("+ search_terms +") )" ;
 //			String querystring = lField_group+":" ;
 //			String querystring = search_terms;
-		
+
 		}
 		else
 		{
-			 luceneIndexPath = this.getLucenePublicationsPath();
+			luceneIndexPath = this.getLucenePublicationsPath();
 			// TODO set query string
 		}
-			
+
 		// declare ArrayList cidsArray for list of String to return
 		ArrayList<String> cidsArray = new ArrayList<String>();
 
@@ -126,34 +138,34 @@ public class Search {
 		// do not search for nothing in lucene index
 		if ( (search_terms != null) && (!search_terms.isEmpty()) )
 		{
-		
-		
+
+
 			// open lucene index
 			IndexReader reader = IndexReader.open(luceneIndexPath);
-	
-	       
+
+
 			QueryParser myParser = new QueryParser(lField_desc, analyzer);
-	        Query query;
+			Query query;
 			try {
-	
+
 				if (debug)
 				{
 					System.out.println("Lucene-Querystring: " + querystring);
 				}
-	
-				query = myParser.parse(querystring);
-	
-		        IndexSearcher searcher = new IndexSearcher(luceneBookmarksPath);
-		        Hits hits = searcher.search(query);
 
-		        
-		        int hitslimit = (((offset+limit)<hits.length())?(offset+limit):hits.length());
-		        
+				query = myParser.parse(querystring);
+
+				IndexSearcher searcher = new IndexSearcher(luceneBookmarksPath);
+				Hits hits = searcher.search(query);
+
+
+				int hitslimit = (((offset+limit)<hits.length())?(offset+limit):hits.length());
+
 				for(int i = offset; i < hitslimit; i++){
-		            Document doc = hits.doc(i);
-		            cidsArray.add(doc.get(idname));
+					Document doc = hits.doc(i);
+					cidsArray.add(doc.get(idname));
 				}	 
-			
+
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -161,24 +173,24 @@ public class Search {
 
 
 		}
-		
+
 		// get endtime and set it in class variable
 		endtime = System.currentTimeMillis();
 		this.setDuration(endtime-starttime);
 		return cidsArray;
 	};
-	
-	
+
+
 	public void SearchDatabase()
 	{
 		// get starttime to calculate duration of execution of this method
 		long starttime = System.currentTimeMillis();
 		long endtime = 0;
-		
+
 		// IS this needed here or should database or whatever do this query?
 		// if so, this class is only for lucene queryies, without any database access
-		
-		
+
+
 		// get endtime and set it in class variable
 		endtime = System.currentTimeMillis();
 		this.setDuration(endtime-starttime);
