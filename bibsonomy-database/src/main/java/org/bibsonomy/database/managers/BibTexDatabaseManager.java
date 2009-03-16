@@ -3,10 +3,11 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
@@ -24,13 +25,13 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.lucene.Search;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.SimHash;
-import org.bibsonomy.lucene.Search;
 
 /**
  * Used to create, read, update and delete BibTexs from the database.
@@ -612,14 +613,16 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 		
 		// get list of ids from lucene
-		ArrayList<String> cidsArray = new ArrayList<String>();
-		Search Lucene = new org.bibsonomy.lucene.Search();
 		try {
-			cidsArray = Lucene.SearchLucene('p', "contentid", search, groupType, limit, offset);
+			final Search lucene = new org.bibsonomy.lucene.Search();
+			final ArrayList<String> cidsArray = lucene.SearchLucene('p', "contentid", search, groupType, limit, offset);
 		} catch (CorruptIndexException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		} catch (IOException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		} catch (NamingException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
@@ -643,7 +646,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 				e1.printStackTrace();
 			}
 
-*/
+*/ 
 		
 		return this.bibtexList("getBibTexSearchLucene", param, session);
 	}
