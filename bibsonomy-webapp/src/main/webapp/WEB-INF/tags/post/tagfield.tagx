@@ -47,8 +47,14 @@
 		  <div class="fsLabel">
 		  	<fmt:message key="post.resource.recommendation"/>
 		  </div>
-		  	<a href="javascript:reloadRecommendation()"><img class="fsReloadButton" src="${resdir}/image/button_reload.png" alt="get new tags"/></a>
+          
+		  <a href="javascript:reloadRecommendation()">
+		      <c:set var="reloadTags"><fmt:message key="post.resource.reloadRecommendation"/></c:set>
+	      	  <img class="fsReloadButton" src="${resdir}/image/button_reload.png" alt="${reloadTags}" title="${reloadTags}"/>
+	      </a>
 		  <div id="tagField"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+		  
+		  												  
 		</div>
 
         <!--+
@@ -60,6 +66,10 @@
 		</div>
 	</fieldset>
 	<script type="text/javascript">
+		/**
+		 * handler for the 'reload recommendations button'
+		 * FIXME: all js-functions for recommendations should be located in a single file.
+		 */
 	    function reloadRecommendation() {
 	        var queryString = "";
 	        if( getPostParameter("${pageContext.request.queryString}", "intraHashToUpdate") ) {
@@ -67,7 +77,7 @@
 	        } else {
 	          queryString = "${pageContext.request.queryString}";
 	        }
-
+			
 	    	var sg = document.getElementById("tagField");
 	    	while(sg.hasChildNodes())
 	    		sg.removeChild(sg.firstChild);
@@ -75,7 +85,7 @@
 	        $.ajax({
 	            type: "GET",
 	            url: "/ajax/getBookmarkRecommendedTags",
-	            data: "",
+	            data: queryString,
 	            success: function(msg){
 	              handleRecommendedTags(msg)
 	            }
