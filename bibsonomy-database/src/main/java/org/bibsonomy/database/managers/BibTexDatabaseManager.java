@@ -7,10 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.naming.NamingException;
-
 import org.apache.log4j.Logger;
-import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
@@ -553,8 +550,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @param param
 	 * @param session
 	 * @return list of bibtex posts
+	 * @throws IOException 
 	 */
-	public List<Post<BibTex>> getBibTexSearchLucene(final BibTexParam param, final DBSession session) {
+	public List<Post<BibTex>> getBibTexSearchLucene(final BibTexParam param, final DBSession session) throws IOException {
 
 		GroupID GroupType = GroupID.PUBLIC ;
 		if (GroupID.ADMINSPAM.equals(param.getGroupType())) GroupType=GroupID.ADMINSPAM;
@@ -601,9 +599,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @param offset
 	 * @param session
 	 * @return list of bibtex posts
+	 * @throws IOException 
 	 */
 
-	public List<Post<BibTex>> getBibTexSearchLucene(final GroupID groupType, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
+	public List<Post<BibTex>> getBibTexSearchLucene(final GroupID groupType, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) throws IOException {
 		final BibTexParam param = new BibTexParam();
 		param.setGroupType(groupType);
 		param.setSearch(search);
@@ -613,19 +612,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 		
 		// get list of ids from lucene
-		try {
 			final Search lucene = new org.bibsonomy.lucene.Search();
-			final ArrayList<String> cidsArray = lucene.SearchLucene('p', "contentid", search, groupType, limit, offset);
-		} catch (CorruptIndexException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		} catch (NamingException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
+			final ArrayList<String> cidsArray = lucene.searchLucene('p', "contentid", search, groupType, limit, offset);
 /*		
 		try {
 			// create temp. table
