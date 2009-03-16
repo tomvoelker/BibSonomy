@@ -34,7 +34,7 @@
     margin:8px 0px 0px 0px;
 }
 
-.fsInner label {
+.fsInnerLabel {
     width:6em;
     float: left;
     display: block;
@@ -75,4 +75,7 @@
 	width: 1em;
 	height: 1em;
 	margin-left: -1em;
+}
+
+.fsConfirm {
 }
