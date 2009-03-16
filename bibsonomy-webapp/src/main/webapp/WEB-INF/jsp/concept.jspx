@@ -99,7 +99,7 @@
 						<fmt:message key="tagrelations"/>
 					</a>
 				</span>	
-				<tags:concepts requPath="${requPath}" cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
+				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
 			</li>
 
 			<!-- if requestedUser is set, show the tag cloud -->			
