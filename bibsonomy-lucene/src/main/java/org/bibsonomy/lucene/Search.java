@@ -16,7 +16,6 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
-import org.bibsonomy.common.enums.GroupID;
 
 public class Search {
 
