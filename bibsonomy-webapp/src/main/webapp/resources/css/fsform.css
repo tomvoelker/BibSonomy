@@ -62,17 +62,17 @@
 }
 
 .fsInput {
-    width: 45em;
+    width: 75%;
     margin: 0 0 1px 0px;
     left:0px;
 }
 
 .fsText {
-    width: 45em;
+    width: 75%;
 }
 
 .tagInput {
-    width: 54em;
+    width: 75%;
 }
 
 .fsReloadButton {
