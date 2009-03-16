@@ -12,8 +12,9 @@
 	
 	<fieldset class="fsInner">
 		<legend><span class="fsLegend"><fmt:message key="post.resource.tags"/>*</span></legend>
+
+        <span class="fsLabel" style="font-weight:normal;"> (<fmt:message key="post.resource.spaceseparated"/>)</span>
         <form:input cssClass="tagInput" id="inpf" path="tags" tabindex="4" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()"  />
-        (<fmt:message key="post.resource.spaceseparated"/>)
         
         <!-- name="tags"  -->
 		<div class="postBookmarkNotValidTip"><form:errors path="tags" /></div>

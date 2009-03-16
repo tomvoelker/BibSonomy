@@ -30,7 +30,7 @@
            	  <form:options items="${groups}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
             </form:select>
 
-            <span class="info_bold">
+            <span class="expl_s">
               <fmt:message key="post.resource.relevant"/>
             </span>
 	

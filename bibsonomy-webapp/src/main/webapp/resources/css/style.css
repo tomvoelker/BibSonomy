@@ -293,11 +293,11 @@ td {
 	z-index: 100;
 }
 
-td.expl_s,td.expl {
+td.expl_s,td.expl, span.expl, span.expl_s {
 	font-size: 80%;
 }
 
-td.expl {
+td.expl,span.expl {
 	text-align: right;
 	font-weight: bold;
 }
@@ -1065,19 +1065,14 @@ fieldset {
 	display: block;
 }
 
-fieldset div {
+fieldset > div {
 	margin: 8px 0px 2px 0px;
-
 }
 
 fieldset #tagField, fieldset #suggested, fieldset #copytags {
 	margin: 0;
 	padding: 00;
 	min-height: 2.5ex;
-}
-
-#inpf {
-	margin-top: 5px;
 }
 
 #post.resource.url {
