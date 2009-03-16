@@ -79,4 +79,11 @@ public class BibTexExtra {
 	public void setUrl(URL url) {
 		this.url = url;
 	}
+
+	public BibTexExtra(URL url, String text, Date date) {
+		super();
+		this.url = url;
+		this.text = text;
+		this.date = date;
+	}
 }
