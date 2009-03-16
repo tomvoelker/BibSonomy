@@ -390,9 +390,6 @@ div.bibentry {
 	width: 700px;
 }
 
-#copytags, #tagField, #suggested {
-	margin-left: 2ex !important;
-}
 
 #itembox {
 	margin: 5px 10px 5px 10px;
@@ -1071,7 +1068,7 @@ fieldset > div {
 
 fieldset #tagField, fieldset #suggested, fieldset #copytags {
 	margin: 0;
-	padding: 00;
+	padding: 0;
 	min-height: 2.5ex;
 }
 

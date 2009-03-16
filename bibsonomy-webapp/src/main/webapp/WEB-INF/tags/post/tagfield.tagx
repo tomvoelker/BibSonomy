@@ -50,15 +50,15 @@
 		  	<fmt:message key="post.resource.recommendation"/>
 		  </div>
           
-		  <a id="fsReloadLink" href="#">
-		      <fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
-	      	  <img id="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
-	      </a>
 		  <div id="tagField">
 		      <div class="fsWaitingText"><fmt:message key="post.resource.waitingForTags"/></div>
 		      <!-- This comment is needed, otherwise this will result in a self-closing element -->
 		  </div>
-		  
+      
+          <a id="fsReloadLink" href="#">
+            <fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
+            <img id="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
+          </a>
 		  												  
 		</div>
 
