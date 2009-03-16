@@ -79,7 +79,20 @@ public class BibTexExtra {
 	public void setUrl(URL url) {
 		this.url = url;
 	}
+	
+	/**
+	 * default constructor
+	 */
+	public BibTexExtra() {
+		
+	}
 
+	/**
+	 * Constructor setting all three fields.
+	 * @param url
+	 * @param text
+	 * @param date
+	 */
 	public BibTexExtra(URL url, String text, Date date) {
 		super();
 		this.url = url;
