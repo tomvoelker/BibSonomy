@@ -4,14 +4,9 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
-	<jsp:directive.attribute name="cmd"
-		type="org.bibsonomy.webapp.command.ConceptsCommand" required="true" />
-	<jsp:directive.attribute name="requPath" type="java.lang.String"
-		required="true" />
-	<jsp:directive.attribute name="usersOwnRelations"
-		type="java.lang.Boolean" required="true" />
-	<jsp:directive.attribute name="requestedUserName"
-		type="java.lang.String" required="true" />		
+	<jsp:directive.attribute name="cmd"	type="org.bibsonomy.webapp.command.ConceptsCommand" required="true" />
+	<jsp:directive.attribute name="usersOwnRelations" type="java.lang.Boolean" required="true" />
+	<jsp:directive.attribute name="requestedUserName" type="java.lang.String" required="true" />		
 
 	<fmt:bundle basename="messages"/>
 
@@ -63,7 +58,7 @@
 						<fmt:param value="${fn:escapeXml(concept.name)}"/>		
 					</fmt:message>
 				</c:set>
-				<a href="/concept/user/${requestedUserName}/${fn:escapeXml(concept.name)}" title="${showPostsForConceptTitle}">${fn:escapeXml(concept.name)}</a>
+				<a href="/concept/user/${fn:escapeXml(requestedUserName)}/${fn:escapeXml(concept.name)}" title="${showPostsForConceptTitle}">${fn:escapeXml(concept.name)}</a>
 				<c:out value=" "/>${mtl:ch('tagrelations.superConceptOf')}<c:out value=" "/>
 				<c:out value=" "/>
 				
