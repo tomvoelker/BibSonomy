@@ -83,8 +83,8 @@ public class ActionValidationFilter implements Filter {
 	 * @param request
 	 * @return
 	 */
-	public static boolean isValidCkey (ServletRequest request) {
-		Boolean validCredential = (Boolean) request.getAttribute(REQUEST_ATTRIB_VALID_CREDENTIAL);
+	public static boolean isValidCkey (final ServletRequest request) {
+		final Boolean validCredential = (Boolean) request.getAttribute(REQUEST_ATTRIB_VALID_CREDENTIAL);
 		return validCredential != null && validCredential;
 	}
 	
