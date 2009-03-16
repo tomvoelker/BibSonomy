@@ -224,7 +224,7 @@
 		<xsd:attribute name="bibtexKey" type="xsd:string"/>
 		<xsd:attribute name="bKey" type="xsd:string"/>
 		<xsd:attribute name="misc" type="xsd:string"/>
-		<xsd:attribute name="bibtexAbstract" type="xsd:string"/>
+		<xsd:attribute name="abstract" type="xsd:string"/>
 		<xsd:attribute name="entrytype" type="xsd:string"/>
 		<xsd:attribute name="address" type="xsd:string"/>
 		<xsd:attribute name="annote" type="xsd:string"/>
