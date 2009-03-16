@@ -55,6 +55,12 @@
     font-weight: bold; 
 }
 
+.fsSuggestion {
+    margin: 0 0 1px 0px;
+    left: 7em;
+    position: relative;
+}
+
 .fsInput {
     width: 45em;
     margin: 0 0 1px 0px;
@@ -74,8 +80,11 @@
 	float: right;
 	width: 1em;
 	height: 1em;
-	margin-left: -1em;
 }
 
 .fsConfirm {
+}
+
+.fsWaitingText {
+	font-style: italic;
 }

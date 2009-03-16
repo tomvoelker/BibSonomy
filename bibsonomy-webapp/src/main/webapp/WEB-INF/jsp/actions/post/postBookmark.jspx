@@ -21,6 +21,7 @@
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 	    	<script type="text/javascript" src="${resdir}/javascript/util.js">&amp;nbsp;</script>
+	    	<script type="text/javascript" src="${resdir}/javascript/recommender.js">&amp;nbsp;</script>
 	    </jsp:attribute>
 	    
 		<jsp:attribute name="heading">
@@ -71,13 +72,16 @@
 					 * Ajax callback function for inserting recommended tags:
 					 *    1) insert tags to form's recommendations field
 					 *    2) append recommended tags to potential suggestions
+					 *    3) enable recommendation reload button
 					 */
 					function handleRecommendedTags(msg) {
 						var tagSuggestions = [];
 						var target = 'tagField';
 
-						// lookup target node
+						// lookup and clear target node
 						var tagField = document.getElementById(target) 
+						clearTagField();
+						
 						// lookup tags
 						var root = msg.getElementsByTagName('tags').item(0);
 						if( root == null ) {
@@ -114,6 +118,12 @@
 
 						// add recommended tags to suggestions
 						populateSuggestionsFromRecommendations(tagSuggestions);
+
+						// enable reload button
+						var link = document.getElementById("fsReloadLink");
+	                    var button = document.getElementById("fsReloadButton");
+			            link.setAttribute("href","javascript:reloadRecommendation()");
+			  	        button.setAttribute("src","${resdir}/image/button_reload.png");
 					}
 				]]>
               //</mtl:cdata>
@@ -141,11 +151,11 @@
 									<form:label cssClass="fsInnerLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
 									<form:input cssClass="fsInput" path="post.resource.title" tabindex="2" size="60"/>
 									<div class="postBookmarkNotValidTip"><form:errors path="post.resource.title" /></div>
-	                                <div id="suggestion.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+	                                <div class="fsSuggestion" id="suggestion.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 	                                
 									<form:label cssClass="fsInnerLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
 									<form:textarea cssClass="fsText" path="post.description" tabindex="3" cols="69" rows="3" onkeyup="sz(this);" />
-									<div id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+									<div class="fsSuggestion" id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 								</fieldset>
 								
 						    	<post:tagfield containsComma="${command.containsComma}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>

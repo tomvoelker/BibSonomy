@@ -48,11 +48,14 @@
 		  	<fmt:message key="post.resource.recommendation"/>
 		  </div>
           
-		  <a href="javascript:reloadRecommendation()">
+		  <a id="fsReloadLink" href="#">
 		      <c:set var="reloadTags"><fmt:message key="post.resource.reloadRecommendation"/></c:set>
-	      	  <img class="fsReloadButton" src="${resdir}/image/button_reload.png" alt="${reloadTags}" title="${reloadTags}"/>
+	      	  <img id="fsReloadButton" class="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
 	      </a>
-		  <div id="tagField"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+		  <div id="tagField">
+		      <div class="fsWaitingText"><fmt:message key="post.resource.waitingForTags"/></div>
+		      <!-- This comment is needed, otherwise this will result in an self-closing element -->
+		  </div>
 		  
 		  												  
 		</div>
@@ -77,10 +80,13 @@
 	        } else {
 	          queryString = "${pageContext.request.queryString}";
 	        }
-			
-	    	var sg = document.getElementById("tagField");
-	    	while(sg.hasChildNodes())
-	    		sg.removeChild(sg.firstChild);
+
+	        var link = document.getElementById("fsReloadLink");
+	        var button = document.getElementById("fsReloadButton");
+	        link.setAttribute("href","#");
+	        button.setAttribute("src","${resdir}/image/button_reload-inactive.png");
+
+	        clearTagField();			
 		    
 	        $.ajax({
 	            type: "GET",
