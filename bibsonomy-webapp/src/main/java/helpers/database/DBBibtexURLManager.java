@@ -1,5 +1,7 @@
 package helpers.database;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
@@ -25,7 +27,7 @@ public class DBBibtexURLManager extends DBManager {
 	public static boolean createURL (BibtexURL url, String hash, String user, boolean validCkey) {
 		DBContext c = new DBContext();
 		try {
-			String urlstring = Bibtex.cleanUrl(url.getUrl());
+			String urlstring = Bibtex.cleanUrl(url.getUrl().toString());
 			/*
 			 * check, that URL is not empty (otherwise deleting in database ... difficult ;-)
 			 */
@@ -47,7 +49,7 @@ public class DBBibtexURLManager extends DBManager {
 				return true;
 			}
 		} catch (SQLException e) {
-			log.fatal("Could not create URL for hash " + hash + " from user " + user + ": " + e);
+			log.fatal("Could not create URL for hash " + hash + " from user " + user, e);
 		} finally {
 			c.close(); // close database connection
 		}
@@ -67,7 +69,7 @@ public class DBBibtexURLManager extends DBManager {
 					 */
 					c.stmt = c.conn.prepareStatement(SQL_DELETE_URL);
 					c.stmt.setInt(1, content_id);
-					c.stmt.setString(2, url.getUrl());
+					c.stmt.setString(2, url.getUrl().toString());
 					c.stmt.executeUpdate();
 				}
 				
@@ -75,7 +77,7 @@ public class DBBibtexURLManager extends DBManager {
 				return true;
 			}
 		} catch (SQLException e) {
-			log.fatal("Could not delete URL for hash " + hash + " from user " + user + ": " + e);
+			log.fatal("Could not delete URL for hash " + hash + " from user " + user, e);
 		} finally {
 			c.close(); // close database connection
 		}
@@ -92,11 +94,13 @@ public class DBBibtexURLManager extends DBManager {
 				c.stmt.setString(2, user);
 				c.rst = c.stmt.executeQuery();
 				while (c.rst.next()) {
-					list.add(new BibtexURL (c.rst.getString("url"), c.rst.getString("text"), c.rst.getTimestamp("date")));
+					list.add(new BibtexURL (new URL(c.rst.getString("url")), c.rst.getString("text"), c.rst.getTimestamp("date")));
 				}
 			}
 		} catch (SQLException e) {
-			log.fatal("Could not get URL for hash " + hash + " from user " + user + ": " + e);
+			log.fatal("Could not get URL for hash " + hash + " from user " + user, e);
+		} catch (MalformedURLException ex) {
+			log.fatal("Could not get URL for hash " + hash + " from user " + user, ex);
 		} finally {
 			c.close(); // close database connection
 		}

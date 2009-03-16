@@ -1,13 +1,11 @@
 package helpers.database;
 
 
-import java.sql.*;
+import java.sql.SQLException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
-import beans.PrivnoteBean;
 import resources.Bibtex;
 
 
@@ -22,15 +20,15 @@ public class DBPrivnoteManager extends DBManager {
 	 * @param bean used to get the note, the hash and the user name
 	 * @return <code>true</code> if exactly one database row got updated
 	 */
-	public static boolean setPrivnoteForUser (PrivnoteBean bean) {
+	public static boolean setPrivnoteForUser (final String privnote, final String username, final String hash) {
 		DBContext c = new DBContext();
 		try {
 			if (c.init()) { // initialize database
 				// prepare Statement
 				c.stmt = c.conn.prepareStatement("UPDATE bibtex SET privnote = ? WHERE user_name = ? AND simhash" + Bibtex.INTRA_HASH + " = ?");
-				c.stmt.setString(1, bean.getPrivnote());
-				c.stmt.setString(2, bean.getUsername());
-				c.stmt.setString(3, bean.getHash());
+				c.stmt.setString(1, privnote);
+				c.stmt.setString(2, username);
+				c.stmt.setString(3, hash);
 				return c.stmt.executeUpdate() == 1; // return true, if exactly one row got updated 
 			}
 		} catch (SQLException e) {
