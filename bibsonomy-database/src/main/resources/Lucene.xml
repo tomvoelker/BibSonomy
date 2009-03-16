@@ -11,7 +11,7 @@
 		TRUNCATE TABLE tempcids
 	</update>
 
-	<insert id="insertLuceneTT" parameterClass="luceneParam">
+	<insert id="insertLuceneTT" parameterClass="integer">
 		INSERT INTO tempcids(cid) VALUE (#cid#)
 	</insert>
 

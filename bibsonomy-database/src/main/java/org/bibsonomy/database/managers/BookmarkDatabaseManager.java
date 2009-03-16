@@ -568,7 +568,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 		final Search lucene = new Search();
 
-		final ArrayList<String> cidsArray = lucene.searchLucene('b', "contentid", search, groupType, limit, offset);
+		final ArrayList<Integer> contentIds = lucene.searchLucene('b', "contentid", search, groupType, limit, offset);
 
 		LuceneHelper LuceneTTable = new LuceneHelper();
 		// create temp. table
@@ -578,7 +578,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		LuceneTTable.truncateTTable(session);
 
 		// store content ids in temp. table
-		LuceneTTable.fillTTable(cidsArray, session);
+		LuceneTTable.fillTTable(contentIds, session);
 
 
 		return this.bookmarkList("getBookmarkSearchLucene", param, session);

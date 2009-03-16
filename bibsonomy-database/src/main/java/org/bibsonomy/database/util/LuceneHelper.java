@@ -1,8 +1,8 @@
 package org.bibsonomy.database.util;
 
 import java.util.ArrayList;
+
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.params.LuceneParam;
 
 /**
  * LuceneHelper manages temporary database tables needed for sql-queries 
@@ -30,7 +30,6 @@ public class LuceneHelper extends AbstractDatabaseManager  {
 
 	/** truncate temporary memory table
 	 * 
-	 * @param param
 	 * @param session
 	 */
 	public void truncateTTable(final DBSession session) { 
@@ -40,18 +39,15 @@ public class LuceneHelper extends AbstractDatabaseManager  {
 	}	
 		
 	/** store data given in ArrayList into database
+	 * @param contentIds 
 	 * 
-	 * @param param
 	 * @param session
 	 */
-	public void fillTTable(ArrayList<String> cidsArray, final DBSession session)
+	public void fillTTable(final ArrayList<Integer> contentIds, final DBSession session)
 	{
-		for  (String e: cidsArray)
-		{
-			LuceneParam param = new LuceneParam();
+		for  (final int contentId: contentIds) {
 //			Integer ErrCodeTempS = dbconn.rawUpdate("INSERT INTO tempcids (cid) VALUE ("+e+");", connection);
-			param.setCid(e);
-			this.insert("insertLuceneTT", param, session);
+			this.insert("insertLuceneTT", contentId, session);
 		}			
 	}	
 

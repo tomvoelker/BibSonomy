@@ -613,7 +613,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		
 		// get list of ids from lucene
 			final Search lucene = new org.bibsonomy.lucene.Search();
-			final ArrayList<String> cidsArray = lucene.searchLucene('p', "contentid", search, groupType, limit, offset);
+			final ArrayList<Integer> contentIds = lucene.searchLucene('p', "contentid", search, groupType, limit, offset);
 /*		
 		try {
 			// create temp. table
