@@ -202,7 +202,7 @@ public class ModelFactory {
 			bibtex.setAddress(xmlBibtex.getAddress());
 			bibtex.setAnnote(xmlBibtex.getAnnote());
 			bibtex.setAuthor(xmlBibtex.getAuthor());
-			bibtex.setAbstract(xmlBibtex.getBibtexAbstract());
+			bibtex.setAbstract(xmlBibtex.getAbstract());
 			bibtex.setBibtexKey(xmlBibtex.getBibtexKey());
 			bibtex.setBKey(xmlBibtex.getBKey());
 			bibtex.setBooktitle(xmlBibtex.getBooktitle());
