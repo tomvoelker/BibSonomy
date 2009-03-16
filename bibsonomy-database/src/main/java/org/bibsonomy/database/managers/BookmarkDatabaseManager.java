@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
@@ -103,7 +104,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setTagIndex(tagIndex);
 		param.setLimit(limit);
 		param.setOffset(offset);
-		
+
 		if (Order.FOLKRANK.equals(param.getOrder())){
 			param.setGroupId(GroupID.PUBLIC.getId());
 			return this.bookmarkList("getBookmarkByTagNamesAndFolkrank", param, session);
@@ -145,7 +146,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkByTagNamesForUser", param, session);
 	}
-	
+
 	/**
 	 * Retrieves the number of bookmark items tagged by the tags present in tagIndex by user requestedUserName
 	 * being visible to the logged in user
@@ -259,7 +260,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkByConceptForGroup", param, session);
 	}
-	
+
 	/**
 	 * <em>/friends</em><br/><br/>
 	 * 
@@ -347,7 +348,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setLimit(limit);
 		return this.bookmarkList("getBookmarkPopular", param, session);
 	}
-	
+
 	/**
 	 * @see BookmarkDatabaseManager#getBookmarkPopular(BookmarkParam, DBSession)
 	 * 
@@ -410,7 +411,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	/**
 	 * @see BookmarkDatabaseManager#getBookmarkByHashCount(BookmarkParam, DBSession)
 
- 	 * @param requHash 
+	 * @param requHash 
 	 * @param simHash 
 	 * @param session
 	 * @return number of bookmarks for the given hash
@@ -442,7 +443,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param userName
 	 * @param requBibtex
 	 * @param requestedUserName
-     * @param visibleGroupIDs
+	 * @param visibleGroupIDs
 	 * @param session
 	 * @param hashType
 	 * @return list of bookmark posts
@@ -494,7 +495,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		return this.bookmarkList("getBookmarkSearch", param, session);
 	}
 
-	
+
 	/**
 	 * @see BookmarkDatabaseManager#getBookmarkSearch(BookmarkParam, DBSession)
 	 * 
@@ -522,8 +523,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param param
 	 * @param session
 	 * @return list of bookmark posts
+	 * @throws IOException 
+	 * @throws CorruptIndexException 
 	 */
-	public List<Post<Bookmark>> getBookmarkSearchLucene(final BookmarkParam param, final DBSession session) {
+	public List<Post<Bookmark>> getBookmarkSearchLucene(final BookmarkParam param, final DBSession session) throws CorruptIndexException, IOException {
+		/*
+		 * FIXME: hard-coding those groups seems to be a bad idea ...
+		 */
 		GroupID GroupType = GroupID.PUBLIC ;
 		if (GroupID.ADMINSPAM.equals(param.getGroupType())) GroupType=GroupID.ADMINSPAM;
 		else if (GroupID.FRIENDS.equals(param.getGroupType())) GroupType=GroupID.FRIENDS;
@@ -531,12 +537,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		else if (GroupID.KDE.equals(param.getGroupType())) GroupType=GroupID.KDE;
 		else if (GroupID.PRIVATE.equals(param.getGroupType())) GroupType=GroupID.PRIVATE;
 		else if (GroupID.PUBLIC.equals(param.getGroupType())) GroupType=GroupID.PUBLIC;
-		
+
 		return this.getBookmarkSearchLucene(GroupType, param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
 	}	
 
-	
-	
+
+
 	/**
 	 * @see BookmarkDatabaseManager#getBookmarkSearchLucene(BookmarkParam, DBSession)
 	 * 
@@ -547,8 +553,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param offset
 	 * @param session
 	 * @return list of bookmark posts
+	 * @throws IOException 
+	 * @throws CorruptIndexException 
 	 */
-	public List<Post<Bookmark>> getBookmarkSearchLucene(final GroupID groupType, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
+	public List<Post<Bookmark>> getBookmarkSearchLucene(final GroupID groupType, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) throws CorruptIndexException, IOException {
 		final BookmarkParam param = new BookmarkParam();
 		param.setGroupType(groupType);
 		param.setSearch(search);
@@ -557,16 +565,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setOffset(offset);
 
 		// get list of ids from lucene
-		ArrayList<String> cidsArray = new ArrayList<String>();
-		Search Lucene = new org.bibsonomy.lucene.Search();
 
-		try {
-			cidsArray = Lucene.SearchLucene('b', "contentid", search, groupType, limit, offset);
-		} catch (IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-		
+		final Search lucene = new Search();
+
+		final ArrayList<String> cidsArray = lucene.searchLucene('b', "contentid", search, groupType, limit, offset);
+
 		LuceneHelper LuceneTTable = new LuceneHelper();
 		// create temp. table
 		LuceneTTable.createTTable(session);
@@ -576,12 +579,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 		// store content ids in temp. table
 		LuceneTTable.fillTTable(cidsArray, session);
-		
-		
+
+
 		return this.bookmarkList("getBookmarkSearchLucene", param, session);
+
 	}
 
-	
+
 	/**
 	 * Returns the number of bookmarks for a given search.
 	 * 
@@ -883,7 +887,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		if (present(post.getGroups()) == false) throw new InvalidModelException("There are no groups for this post.");
 		/*if (post.getGroups().contains(GroupID.PUBLIC) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");
 		if (post.getGroups().contains(GroupID.PRIVATE) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");*/
-		
+
 		final BookmarkParam param = new BookmarkParam();
 		param.setResource(post.getResource());
 		param.setDate(post.getDate());
@@ -892,11 +896,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setDescription(post.getDescription());
 		param.setUserName(post.getUser().getName());
 		param.setUrl(post.getResource().getUrl());
-		
+
 		//in field group in table bookmark, insert the id for PUBLIC, PRIVATE or the id of the FIRST group in list
 		final int groupId =  post.getGroups().iterator().next().getGroupId();
 		param.setGroupId(groupId);
-		
+
 		this.insertBookmark(param, session);
 	}
 
@@ -905,7 +909,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		this.insert("insertBookmarkHash", param, session);
 	}
 
-   	// Decrements one count in url table after deleting
+	// Decrements one count in url table after deleting
 	private void updateBookmarkHash(final BookmarkParam param, final DBSession session) {
 		this.insert("updateBookmarkHash", param, session);
 	}
@@ -977,16 +981,16 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			param.setRequestedUserName(userName);
 			param.setUserName(userName);
 			param.setHash(resourceHash);
-			
+
 			final List<Post<Bookmark>> bookmarks = this.getBookmarkByHashForUser(param, session);
 			if (bookmarks.size() == 0) {
 				// Bookmark doesn't exist
 				return false;
 			}
-			
+
 			final Post<? extends Resource> oneBookmark = bookmarks.get(0);
 			param.setRequestedContentId(oneBookmark.getContentId());
-			
+
 			if (update == false) {
 				this.plugins.onBookmarkDelete(param.getRequestedContentId(), session);
 			}
@@ -1127,7 +1131,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	public List<Post<Bookmark>> getBookmarkByConceptByTag(final BookmarkParam param, final DBSession session){
 		return this.bookmarkList("getBookmarkByConceptByTag", param, session);
 	}
-	
+
 	/**
 	 * 
 	 * @param requestedUserName
@@ -1141,10 +1145,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setRequestedUserName(requestedUserName);
 		param.setUserName(loginUserName);
 		param.setGroups(visibleGroupIDs);
-		
+
 		return (Integer) this.queryForObject("getGroupBookmarkCount", param, session);
 	}
-	
+
 	/**
 	 * @param requestedUserName
 	 * @param loginUserName
@@ -1159,10 +1163,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setRequestedUserName(requestedUserName);
 		param.setUserName(loginUserName);
 		param.setGroups(visibleGroupIDs);
-		
+
 		return (Integer) this.queryForObject("getGroupBookmarkCountByTag", param, session);
 	}
-	
+
 	/**
 	 * 
 	 * @param requestedUserName
@@ -1180,10 +1184,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setLimit(limit);
 		param.setOffset(offset);
 		param.setGroups(visibleGroupIDs);
-		
+
 		return this.bookmarkList("getBookmarksForMyGroupPosts",param,session);
 	}
-	
+
 	/**
 	 * @param requestedUserName
 	 * @param loginUserName
@@ -1202,10 +1206,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setLimit(limit);
 		param.setOffset(offset);
 		param.setGroups(visibleGroupIDs);
-		
+
 		return this.bookmarkList("getBookmarksForMyGroupPostsByTag",param,session);
 	}
-	
+
 	/**
 	 * @param days
 	 * @param session
@@ -1214,7 +1218,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	public int getBookmarkPopularDays(final int days, final DBSession session){
 		final BookmarkParam param = new BookmarkParam();
 		param.setDays(days);
-		
+
 		final Integer result = this.queryForObject("getBookmarkPopularDays", param, Integer.class, session);
 		if (result != null) {
 			return result;
