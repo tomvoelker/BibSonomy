@@ -25,8 +25,6 @@ import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.StringUtils;
 
-import com.sun.org.apache.bcel.internal.generic.INSTANCEOF;
-
 /**
  * Supplies methods to adapt the LogicInterface to the database layer.
  * 
