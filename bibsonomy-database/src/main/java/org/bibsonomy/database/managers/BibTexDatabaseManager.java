@@ -48,6 +48,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	private static final Logger log = Logger.getLogger(BibTexDatabaseManager.class);
 
 	private static final BibTexDatabaseManager singleton = new BibTexDatabaseManager();
+	private final BibTexExtraDatabaseManager extraDb;
 	private final GeneralDatabaseManager generalDb;
 	private final PermissionDatabaseManager permissionDb;
 	private final DocumentDatabaseManager docDb;
@@ -62,6 +63,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.permissionDb = PermissionDatabaseManager.getInstance();
 		this.docDb = DocumentDatabaseManager.getInstance();
+		this.extraDb = BibTexExtraDatabaseManager.getInstance();
 	}
 
 	/**
@@ -1253,6 +1255,15 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			if (this.permissionDb.isAllowedToAccessPostsDocuments(userName, post, session)) {
 				post.getResource().setDocuments(this.docDb.getDocuments(userName, resourceHash, session));
 			}
+			
+			// add private note
+			if (authUser.equalsIgnoreCase(userName)) {
+				post.getResource().setPrivnote(extraDb.getBibTexPrivnoteForUser(resourceHash, userName, session));
+			}
+			
+			// add extra URLs
+			post.getResource().setExtraUrls(extraDb.getURL(resourceHash, userName, session));
+			
 			return post;
 		}
 		/*
