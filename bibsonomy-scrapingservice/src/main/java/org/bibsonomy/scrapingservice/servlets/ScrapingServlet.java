@@ -47,7 +47,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.exceptions.UseageFailureException;
+import org.bibsonomy.scraper.exceptions.UsageFailureException;
 import org.bibsonomy.scrapingservice.beans.ScrapingResultBean;
 import org.bibsonomy.scrapingservice.writers.JSONWriter;
 import org.bibsonomy.scrapingservice.writers.RDFWriter;
@@ -150,7 +150,7 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 				// internal failure 
 				log.fatal("Internal error occurred.", e);
 				bean.setErrorMessage("Internal error occurred: " + e.getMessage());
-			} catch (final UseageFailureException e) {
+			} catch (final UsageFailureException e) {
 				// a user has used a scraper in a wrong way
 				log.info("Usage error.", e);
 				bean.setErrorMessage(e.getMessage());
