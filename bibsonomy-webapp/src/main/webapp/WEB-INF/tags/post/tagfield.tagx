@@ -12,7 +12,7 @@
 	
 	<fieldset class="fsInner">
 		<legend><span class="fsLegend"><fmt:message key="post.resource.tags"/>*</span></legend>
-        <form:input cssClass="tagInput" id="inpf" path="tags" tabindex="4" size="60" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()"  />
+        <form:input cssClass="tagInput" id="inpf" path="tags" tabindex="4" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()"  />
         (<fmt:message key="post.resource.spaceseparated"/>)
         
         <!-- name="tags"  -->
@@ -29,14 +29,15 @@
             +-->
 		<c:if test="${not empty command.copytags}">
 			<div>
-				<fmt:message key="post.resource.copytags" />
-				<br/>
-				<div id="copytags">
-				<c:forEach var="tag" items="${command.copytags}">
+               <div class="fsLabel">
+				 <fmt:message key="post.resource.copytags" />
+               </div>
+			   <div id="copytags">
+				  <c:forEach var="tag" items="${command.copytags}">
 					<a href="javascript:copytag('inpf', '${fn:escapeXml(tag.name)}')">
 						<c:out value="${tag.name} " />
 					</a>
-				</c:forEach>
+				  </c:forEach>
 				</div>
 			</div>
 		</c:if>
@@ -50,11 +51,11 @@
           
 		  <a id="fsReloadLink" href="#">
 		      <c:set var="reloadTags"><fmt:message key="post.resource.reloadRecommendation"/></c:set>
-	      	  <img id="fsReloadButton" class="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
+	      	  <img id="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
 	      </a>
 		  <div id="tagField">
 		      <div class="fsWaitingText"><fmt:message key="post.resource.waitingForTags"/></div>
-		      <!-- This comment is needed, otherwise this will result in an self-closing element -->
+		      <!-- This comment is needed, otherwise this will result in a self-closing element -->
 		  </div>
 		  
 		  												  
@@ -65,10 +66,12 @@
             +-->
 		<div>
  	      <div class="fsLabel"><fmt:message key="post.resource.suggested"/></div>
-          <div id="suggested" class="suggtag"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+          <div id="suggested" class="suggtag"><!-- This comment is needed, otherwise this will result in a self-closing element --></div>
 		</div>
 	</fieldset>
 	<script type="text/javascript">
+        //<mtl:cdata>
+        <![CDATA[
 		/**
 		 * handler for the 'reload recommendations button'
 		 * FIXME: all js-functions for recommendations should be located in a single file.
@@ -76,7 +79,7 @@
 	    function reloadRecommendation() {
 	        var queryString = "";
 	        if( getPostParameter("${pageContext.request.queryString}", "intraHashToUpdate") ) {
-	          queryString = "url="+document.getElementById('post.resource.url').value;
+	          queryString = "url=" + document.getElementById('post.resource.url').value;
 	        } else {
 	          queryString = "${pageContext.request.queryString}";
 	        }
@@ -97,5 +100,7 @@
 	            }
 	          });
 	    }
+      ]]>
+      //</mtl:cdata>
 	</script>
 </jsp:root>

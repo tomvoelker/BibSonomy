@@ -3,11 +3,6 @@
  * style file for the postBookmark form (possibly also for the postBibTeX)
  ****************************************************************************/
 #fsform {
-/*
-    float: left;
-    display: block;
-    clear: left;
-*/
     width:100%;
 }
 
@@ -34,30 +29,21 @@
     margin:8px 0px 0px 0px;
 }
 
-.fsInnerLabel {
-    width:6em;
-    float: left;
-    display: block;
-    clear: left;
-    margin-right: 1em;
-    text-align: right;
-    font-weight: bold; 
-}
-
 .fsLabel {
-    width: 10em;
+    width: 20%;
     float: left;
     display: block;
     clear: left;
-    margin: 0px;
     margin-right: 1em;
     text-align: right;
-    font-weight: bold; 
+    font-weight: bold;
+    font-size: 80%;
+    vertical-align: top;
 }
 
 .fsSuggestion {
     margin: 0 0 1px 0px;
-    left: 7em;
+    left: 20%;
     position: relative;
 }
 
@@ -67,19 +53,15 @@
     left:0px;
 }
 
-.fsText {
-    width: 75%;
-}
-
 .tagInput {
     width: 75%;
 }
 
-.fsReloadButton {
+#fsReloadButton {
 	display: block;
 	float: right;
-	width: 1em;
-	height: 1em;
+	width: 20px;
+	height: 20px;
 }
 
 .fsConfirm {

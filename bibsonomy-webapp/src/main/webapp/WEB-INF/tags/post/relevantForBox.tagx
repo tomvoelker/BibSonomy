@@ -22,20 +22,18 @@
 			<legend>
 				<fmt:message key="post.resource.relevantfor"/>
 			</legend>	
+
+            <!-- select box for "other" groups -->
+            <form:select cssStyle="float:left; margin-right: 1ex;" path="relevantGroups" size="5" onchange="showTagSets(this)">
+              <fmt:message var="pleaseselect" key="post.resource.select"/>
+              <form:option value="" label="${pleaseselect}"/>
+           	  <form:options items="${groups}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
+            </form:select>
+
+            <span class="info_bold">
+              <fmt:message key="post.resource.relevant"/>
+            </span>
 	
-			<div style="float: left;">
-		                <!-- select box for "other" groups -->
-		                <form:select path="relevantGroups" size="5" onchange="showTagSets(this)" >
-	                        <fmt:message var="pleaseselect" key="post.resource.select"/>
-	                        <form:option value="" label="${pleaseselect}"/>
-		                	<form:options items="${groups}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
-		                </form:select>
-			</div>
-			<div style="margin: 6px 0px 0ex 15em;" class="info_bold">
-		            	<fmt:message key="post.resource.relevant"/>
-			</div>
-	
-					
 		</fieldset>		
 	</div>
 </jsp:root>

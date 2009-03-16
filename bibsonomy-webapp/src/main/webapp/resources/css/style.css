@@ -1061,7 +1061,7 @@ table.vmiddle td{
 
 
 fieldset {
-	padding: 10px;
+	padding: 5px;
 	display: block;
 }
 
@@ -1070,9 +1070,9 @@ fieldset div {
 
 }
 
-fieldset #tagField, fieldset #suggested,fieldset #copytags{
-	margin: 0px 0px 0px 0px;
-	padding: 0px 0px 0px 0px;
+fieldset #tagField, fieldset #suggested, fieldset #copytags {
+	margin: 0;
+	padding: 00;
 	min-height: 2.5ex;
 }
 
