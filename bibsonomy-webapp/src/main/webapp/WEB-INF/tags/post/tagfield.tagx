@@ -51,7 +51,7 @@
 		  </div>
           
 		  <a id="fsReloadLink" href="#">
-		      <c:set var="reloadTags"><fmt:message key="post.resource.reloadRecommendation"/></c:set>
+		      <fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
 	      	  <img id="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
 	      </a>
 		  <div id="tagField">
