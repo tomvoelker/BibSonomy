@@ -144,27 +144,27 @@
 	                		<fieldset class="fsOuter">
 								<fieldset class="fsInner">
 									<legend><fmt:message key="general"/></legend>
-									<form:label cssClass="fsInnerLabel" path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label>
-									<form:input cssClass="fsInput" path="post.resource.url" tabindex="1" size="60" />
+									<form:label cssClass="fsLabel" path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label>
+									<form:input cssClass="fsInput" path="post.resource.url" tabindex="1"/>
 									<div class="postBookmarkNotValidTip"><form:errors path="post.resource.url" /></div>
 
-									<form:label cssClass="fsInnerLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
-									<form:input cssClass="fsInput" path="post.resource.title" tabindex="2" size="60"/>
+									<form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
+									<form:input cssClass="fsInput" path="post.resource.title" tabindex="2"/>
 									<div class="postBookmarkNotValidTip"><form:errors path="post.resource.title" /></div>
 	                                <div class="fsSuggestion" id="suggestion.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 	                                
-									<form:label cssClass="fsInnerLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
-									<form:textarea cssClass="fsText" path="post.description" tabindex="3" cols="69" rows="3" onkeyup="sz(this);" />
+									<form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
+									<form:textarea cssClass="fsInput" path="post.description" tabindex="3" rows="3" onkeyup="sz(this);" />
 									<div class="fsSuggestion" id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 								</fieldset>
 								
 						    	<post:tagfield containsComma="${command.containsComma}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
-	
+
+                                    <post:groupBox post="${command.post}" groups="${loginUser.groups}"/>
+  
 									<c:if test="${not empty loginUser.groups}">
 										<post:relevantForBox groups="${loginUser.groups}"/>
 									</c:if>	
-	
-									<post:groupBox post="${command.post}" groups="${loginUser.groups}"/>
 	
 									<div class="clearfloat p">
 										<post:tagSets groups="${loginUser.groups}"/>
@@ -205,6 +205,7 @@
 				</div>
 					
 				<script type="text/javascript">
+                //<mtl:cdata>
 				<![CDATA[
 					$(".postBookmarkNotValidTip").mouseover(function() {
 						$(this).fadeOut('slow');
@@ -216,6 +217,7 @@
 					//hide empty error fields
 					$(".postBookmarkNotValidTip:empty").hide("1");
 				]]>
+                //</mtl:cdata>
 				</script>
 		</jsp:attribute>
 		
