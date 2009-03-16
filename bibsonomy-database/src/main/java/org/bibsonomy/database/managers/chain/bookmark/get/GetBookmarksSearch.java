@@ -24,7 +24,7 @@ public class GetBookmarksSearch extends BookmarkChainElement {
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, DBSession session) {
 		// uncomment following for a quick hack to access secondary datasource
 		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);		
-		return this.db.getBookmarkSearchLucene(param, session);
+		return this.db.getBookmarkSearch(param, session);
 	}
 
 	@Override
