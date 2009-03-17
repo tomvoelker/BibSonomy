@@ -1,6 +1,13 @@
 package org.bibsonomy.scraper.url.kde.acm;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import junit.framework.Assert;
+
+import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UnitTestRunner;
+import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -33,4 +40,18 @@ public class ACMBasicScraperTest {
 		assertTrue(runner.runSingleTest("url_134"));
 	}
 	
+	
+	@Test
+	@Ignore
+	public void test2() throws MalformedURLException {
+		final String url = "http://portal.acm.org/citation.cfm?id=500737.500755";
+		final ACMBasicScraper acm = new ACMBasicScraper();
+		final ScrapingContext sc = new ScrapingContext(new URL(url));
+		
+		try {
+			acm.scrape(sc);
+		} catch (ScrapingException ex) {
+			Assert.fail(ex.getMessage());
+		}
+	}
 }
