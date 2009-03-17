@@ -155,7 +155,6 @@ public class UrlCompositeScraper extends CompositeScraper implements UrlScraper 
 		addScraper(new ScientificcommonsScraper());
 	}
 
-	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		final List<Tuple<Pattern, Pattern>> urlPatterns = new LinkedList<Tuple<Pattern,Pattern>>();
 		for (final Scraper scraper: getScraper()) {
@@ -166,7 +165,6 @@ public class UrlCompositeScraper extends CompositeScraper implements UrlScraper 
 		return urlPatterns;
 	}
 
-	@Override
 	public boolean supportsUrl(final URL url) {
 		for (final Scraper scraper: getScraper()) {
 			if (scraper instanceof UrlScraper) {
