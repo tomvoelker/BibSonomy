@@ -36,10 +36,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 
 	private static final String BROKEN_END = "},\n }";
 
-
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "portal.acm.org"), AbstractUrlScraper.EMPTY_PATTERN));
-
-	private List<String> pathsToScrape; // holds the paths to the popup pages
 
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
@@ -48,96 +45,20 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 		try {
 
 			final StringBuffer bibtexEntries = new StringBuffer("");
-			pathsToScrape  = new ArrayList<String>();
 
 			// Parse the page and obtain a DOM
 			final Document document = XmlUtils.getDOM(sc.getPageContent());
+
 			// save path to popup page of current bibtex entry
-			extractSinglePath(document);
+			final List<String> pathsToScrape = extractSinglePath(document); // holds the paths to the popup pages
 
-			/*
-			 * extract the abstract
-			 * 
-			 * structure is as follows:
-			 * 
-			 * <div class="abstract">
-			 *   <A HREF="citation.cfm?id=345231.345249&coll=Portal&dl=GUIDE&CFID=23770365&CFTOKEN=52785444#CIT">
-			 *     <img name="top" src="http://portal.acm.org/images/arrowu.gif" hspace="10" border="0">
-			 *   </A>
-			 *   <SPAN class=heading>
-			 *     <A NAME="abstract">ABSTRACT</A>
-			 *   </span>
-		     *   <p class="abstract">
-		     *     <p>
-		     *     
-		     *       abstract here
-		     *     </p>
-		     *   </p>
-		     * </div>
-		     * 
-		     * NOTE: there might be other (empty!) divs with class="abstract". 
-		     * We have to pick the right one.
-		     * 
-		     * ALSO: sometimes the innermost <p> is missing!
-			 * 
-			 * 
-			 */
-			String abstrct = null;
-			final NodeList as1 = document.getElementsByTagName("a"); // get all <a>-Tags
-			for (int i = 0; i < as1.getLength(); i++) {
-				final Node a = as1.item(i);
-
-				/*
-				 * check for "name" attribute which has value "abstract"
-				 */
-				if (a.hasAttributes()) {
-					final Attr name = ((Element)a).getAttributeNode("name");
-					if (name != null && "abstract".equals(name.getValue())) {
-						/*
-						 * we have found the correct <a name="abstract" ... now check its contents
-						 * (child text node)
-						 */
-						if ("ABSTRACT".equals(a.getChildNodes().item(0).getNodeValue())) {
-							/*
-							 * we now have to find the next <p class="abstract">
-							 */
-							final Node span = a.getParentNode();
-							final Node textNode = span.getNextSibling(); // there is whitespace between the nodes ...
-							final Node p = textNode.getNextSibling();    // this should be the <p class="abstract">
-							if (p.hasAttributes()) {
-								final Attr clazz = ((Element)p).getAttributeNode("class");
-								if (clazz != null && "abstract".equals(clazz.getValue())) {
-									 /*
-									  * Check for the innermost <p>. 
-									  *  
-									  * Although this <p> which contains the abstract is contained in the previous
-									  * <p class="abstract"> in the source, <p>'s can't be nested in the DOM tree.
-									  * Hence, we must take the next sibling. 
-									  */
-									final Node nextSibling = p.getNextSibling();
-									if (nextSibling != null && "p".equals(nextSibling.getNodeName())) {
-										abstrct = XmlUtils.getText(nextSibling);
-									} else {
-										/*
-										 * If the innermost <p> is missing, we take the text of the <p ...> at hand
-										 */
-										abstrct = XmlUtils.getText(p);
-									}
-									break;
-								}
-							}
-						}
-
-					}
-				}
-			}
 
 			/*
 			 * Scrape entries from popup BibTeX site. BibTeX entry on these
 			 * pages looks like this: <PRE id="155273">@article{155273,
 			 * author = {The Author}, title = {This is the title}...}</pre>
 			 */
-			for (String path: pathsToScrape) {
+			for (final String path: pathsToScrape) {
 				final Document doc = XmlUtils.getDOM(new URL(ACM_HOST_NAME + path));
 
 				final NodeList pres = doc.getElementsByTagName("pre");
@@ -152,7 +73,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 
 			/*
 			 * Some entries (e.g., http://portal.acm.org/citation.cfm?id=500737.500755) seem
-			 * to have broken BibTeX entries with an "," too much at the end. We remove this
+			 * to have broken BibTeX entries with a "," too much at the end. We remove this
 			 * here.
 			 */
 			final int indexOf = bibtexEntries.indexOf(BROKEN_END, bibtexEntries.length() - BROKEN_END.length() - 1);
@@ -168,6 +89,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			/*
 			 * append abstract
 			 */
+			final String abstrct = extractAbstract(document);
 			if (abstrct != null) {
 				BibTeXUtils.addFieldIfNotContained(bibtexEntries, "abstract", abstrct);
 			} else // log if abstract is not available
@@ -184,6 +106,87 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			me.printStackTrace();
 			throw new InternalFailureException(me);
 		}
+	}
+
+	/**
+	 * extract the abstract
+	 * 
+	 * structure is as follows:
+	 * 
+	 * <div class="abstract">
+	 *   <A HREF="citation.cfm?id=345231.345249&coll=Portal&dl=GUIDE&CFID=23770365&CFTOKEN=52785444#CIT">
+	 *     <img name="top" src="http://portal.acm.org/images/arrowu.gif" hspace="10" border="0">
+	 *   </A>
+	 *   <SPAN class=heading>
+	 *     <A NAME="abstract">ABSTRACT</A>
+	 *   </span>
+     *   <p class="abstract">
+     *     <p>
+     *     
+     *       abstract here
+     *     </p>
+     *   </p>
+     * </div>
+     * 
+     * NOTE: there might be other (empty!) divs with class="abstract". 
+     * We have to pick the right one.
+     * 
+     * ALSO: sometimes the innermost <p> is missing!
+     *
+	 * @param document
+	 * @return
+	 */
+	private String extractAbstract(final Document document) {
+		String abstrct = null;
+		final NodeList as1 = document.getElementsByTagName("a"); // get all <a>-Tags
+		for (int i = 0; i < as1.getLength(); i++) {
+			final Node a = as1.item(i);
+
+			/*
+			 * check for "name" attribute which has value "abstract"
+			 */
+			if (a.hasAttributes()) {
+				final Attr name = ((Element)a).getAttributeNode("name");
+				if (name != null && "abstract".equals(name.getValue())) {
+					/*
+					 * we have found the correct <a name="abstract" ... now check its contents
+					 * (child text node)
+					 */
+					if ("ABSTRACT".equals(a.getChildNodes().item(0).getNodeValue())) {
+						/*
+						 * we now have to find the next <p class="abstract">
+						 */
+						final Node span = a.getParentNode();
+						final Node textNode = span.getNextSibling(); // there is whitespace between the nodes ...
+						final Node p = textNode.getNextSibling();    // this should be the <p class="abstract">
+						if (p.hasAttributes()) {
+							final Attr clazz = ((Element)p).getAttributeNode("class");
+							if (clazz != null && "abstract".equals(clazz.getValue())) {
+								 /*
+								  * Check for the innermost <p>. 
+								  *  
+								  * Although this <p> which contains the abstract is contained in the previous
+								  * <p class="abstract"> in the source, <p>'s can't be nested in the DOM tree.
+								  * Hence, we must take the next sibling. 
+								  */
+								final Node nextSibling = p.getNextSibling();
+								if (nextSibling != null && "p".equals(nextSibling.getNodeName())) {
+									abstrct = XmlUtils.getText(nextSibling);
+								} else {
+									/*
+									 * If the innermost <p> is missing, we take the text of the <p ...> at hand
+									 */
+									abstrct = XmlUtils.getText(p);
+								}
+								break;
+							}
+						}
+					}
+
+				}
+			}
+		}
+		return abstrct;
 	}
 
 	/**
@@ -212,11 +215,12 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	 * @param doc The document to extract the popup path from.
 	 * @param snippet
 	 */
-	private void extractSinglePath(Document doc) {
-		NodeList as = doc.getElementsByTagName("a");
+	private List<String> extractSinglePath(final Document doc) {
+		final List<String> pathsToScrape = new ArrayList<String>(); // holds the paths to the popup pages
+		final NodeList as = doc.getElementsByTagName("a");
 		for (int i = 0; i < as.getLength(); i++) {
-			Node currNode = as.item(i);
-			NodeList childnodes = currNode.getChildNodes();
+			final Node currNode = as.item(i);
+			final NodeList childnodes = currNode.getChildNodes();
 
 			if (childnodes.getLength() > 0) {
 				if (BIBTEX_STRING_ON_ACM.equals(currNode.getChildNodes().item(0).getNodeValue())) {
@@ -224,6 +228,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 				}
 			}
 		}
+		return pathsToScrape;
 	}
 
 	public String getInfo() {

@@ -55,7 +55,7 @@ public class UnAPIScraper implements Scraper {
 			/*
 			 * do the expensive JTidy stuff to extract the server and id
 			 */
-			final Document document = XmlUtils.getDOM(pageContents);
+			final Document document = XmlUtils.getDOM(pageContents, true);
 			/*
 			 * get the server id
 			 */

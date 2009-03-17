@@ -62,7 +62,9 @@ public class BibTeXUtils {
 	public static void addField(final StringBuffer bibtex, final String fieldName, final String fieldValue) {
 		if (bibtex == null) return;
 		final int lastIndexOf = bibtex.lastIndexOf("}");
-		bibtex.replace(lastIndexOf, bibtex.length(), "," + fieldName + " = {" + fieldValue + "}\n}");
+		if (lastIndexOf > 0) {
+		   bibtex.replace(lastIndexOf, bibtex.length(), "," + fieldName + " = {" + fieldValue + "}\n}");
+		}
 	}
 	
 	
