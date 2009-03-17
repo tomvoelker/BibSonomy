@@ -47,6 +47,7 @@ public class XmlUtils {
      * {@link XmlUtils#ILLEGAL_CHAR_SUBSTITUTE}. 
      *
      * @param string
+     * @param substitute 
      * @return a string with control characters removed
      */
     public static String removeXmlControlCharacters(String string, final Boolean substitute) {
@@ -65,7 +66,7 @@ public class XmlUtils {
     }
     
     /**
-     * wrapper method for {@link XmlUtils.removeXmlControlCharacters(String string, final Boolean substitute)} 
+     * wrapper method for {@link #removeXmlControlCharacters(String, Boolean)} 
      * 
      * @param string a string
      * @return a string with control characters removed
@@ -80,6 +81,7 @@ public class XmlUtils {
      * were found, no copy is made and the given char array
      * 
      * @param ch a char array
+     * @param substitute 
      * @return a char array with control characters removed
      */
     public static char[] removeXmlControlCharacters(char[] ch, final Boolean substitute) {
@@ -96,7 +98,7 @@ public class XmlUtils {
     }
     
     /**
-     * wrapper method for {@link XmlUtils.removeXmlControlCharacters(char[] ch, boolean substitute)}
+     * wrapper method for {@link #removeXmlControlCharacters(char[] ch, Boolean substitute)}
      * 
      * @param ch a char array
      * @return a char array with control characters removed
@@ -110,6 +112,7 @@ public class XmlUtils {
      * is returned, if no, the char c is returned
      * 
      * @param c a char
+     * @param substitute 
      * @return a char with control characters removed
      */
     public static char removeXmlControlCharacter(char c, final Boolean substitute) {
@@ -120,7 +123,7 @@ public class XmlUtils {
     }
     
     /**
-     * Wrapper for {@link XmlUtils.removeXmlControlCharacter(char c, final Boolean substitute)}
+     * Wrapper for {@link #removeXmlControlCharacter(char, Boolean)}
      * 
      * @param c a char
      * @return a char with control charaters removed
@@ -144,9 +147,18 @@ public class XmlUtils {
 	 * @return The DOM tree of the XML string.
 	 */
 	public static Document getDOM(final String content) {
-		return getDOM(new ByteArrayInputStream(content.getBytes()));
+		return getDOM(content, false);
 	}
 
+	/**
+	 * @param content
+	 * @param xmlTags <code>true</code>, if the content should be handled as XML (e.g., empty tags are not removed!)
+	 * @return The DOM of the given XML string 
+	 */
+	public static Document getDOM(final String content, final boolean xmlTags) {
+		return getDOM(new ByteArrayInputStream(content.getBytes()), xmlTags);
+	}
+	
 	
 	/**
 	 * Parse html file from given URL into DOM tree.
@@ -156,12 +168,24 @@ public class XmlUtils {
 	 * @throws IOException if html file could not be parsed. 
 	 */
 	public static Document getDOM(final URL inputURL) throws IOException {
-			final Tidy tidy = getTidy();
-			
-			final String encodingName = WebUtils.extractCharset(((HttpURLConnection)inputURL.openConnection()).getContentType());
-			tidy.setInputEncoding(encodingName);
-			return tidy.parseDOM(inputURL.openConnection().getInputStream(), null);
+		return getDOM(inputURL, false);
 	}
+	
+	/** Parse html file from given URL into DOM tree.
+	 * 
+	 * @param inputURL file's url
+	 * @param xmlTags <code>true</code>, if the content should be handled as XML (e.g., empty tags are not removed!)
+	 * @return parsed DOM tree
+	 * @throws IOException if html file could not be parsed. 
+	 */
+	public static Document getDOM(final URL inputURL, final boolean xmlTags) throws IOException {
+		final Tidy tidy = getTidy(xmlTags);
+		
+		final String encodingName = WebUtils.extractCharset(((HttpURLConnection)inputURL.openConnection()).getContentType());
+		tidy.setInputEncoding(encodingName);
+		return tidy.parseDOM(inputURL.openConnection().getInputStream(), null);
+}
+	
 	
 
 	/**
@@ -169,10 +193,19 @@ public class XmlUtils {
 	 * 
 	 * @param inputStream 
 	 * @return parsed DOM tree
-	 * @throws IOException if html file could not be parsed. 
 	 */
 	public static Document getDOM(final InputStream inputStream) {
-			final Tidy tidy = getTidy();
+		return getDOM(inputStream, false);
+	}
+	
+	/**
+	 * Parse html file from given input stream into DOM tree.
+	 * 
+	 * @param inputStream 
+	 * @return parsed DOM tree
+	 */
+	public static Document getDOM(final InputStream inputStream, final boolean xmlTags) {
+			final Tidy tidy = getTidy(xmlTags);
 			
 			// we don't know the encoding now ... so we assume utf8
 			tidy.setInputEncoding("UTF-8");
@@ -181,12 +214,21 @@ public class XmlUtils {
 	}
 	
 	
-	private static Tidy getTidy() {
+	/** Returns a version of tidy where {@link Tidy#setXmlTags(boolean)} is set 
+	 * to xmlTags. 
+	 * <br/>
+	 * Note that <code>xmlTags = true</code> is in particular neccessary for the 
+	 * UnAPI scraper to allow empty &lt;abbr&gt; tags.
+	 * 
+	 * @param xmlTags
+	 * @return
+	 */
+	private static Tidy getTidy(final boolean xmlTags) {
 		final Tidy tidy = new Tidy();
 		tidy.setQuiet(true);
 		tidy.setShowWarnings(false);// turns off warning lines
 		tidy.setShowErrors(0); // turn off error printing
-		tidy.setXmlTags(true); // necessary to allow empty "abbr" tags (needed by unapi scraper)
+		tidy.setXmlTags(xmlTags);
 		return tidy;
 	}
 	
