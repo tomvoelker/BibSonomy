@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -58,13 +59,12 @@ public class CiteBaseScraper extends AbstractUrlScraper {
 			log.debug("bibtex url = " + bibtexUrl);
 
 			// get bibtex page and add abstract
-			String bibtexEntry = WebUtils.getContentAsString(bibtexUrl);
+			final StringBuffer bibtex = new StringBuffer(WebUtils.getContentAsString(bibtexUrl));
 			if (bibAbstract != null) {
-				bibtexEntry = addAbstractToBibtexEntry(bibtexEntry,
-						bibAbstract);
+				BibTexUtils.addField(bibtex, "abstract", bibAbstract);
 			}
 			// set result
-			sc.setBibtexResult(bibtexEntry);
+			sc.setBibtexResult(bibtex.toString());
 			return true;
 
 		} catch (IOException ex) {
@@ -113,16 +113,6 @@ public class CiteBaseScraper extends AbstractUrlScraper {
 			}
 		}		
 		return null;
-	}
-
-	/**
-	 *  Add abstract to bibtex entry by replacing the last occurrence of "}"
-	 *  with ",abstract = {...}}"
-	 */
-	private String addAbstractToBibtexEntry(String bibtexEntry, String bibAbstract){
-		StringBuffer buf = new StringBuffer (bibtexEntry);
-		buf.replace(buf.lastIndexOf("}"), buf.length(), ", abstract={" + bibAbstract + "}}");
-		return  buf.toString();		
 	}
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {

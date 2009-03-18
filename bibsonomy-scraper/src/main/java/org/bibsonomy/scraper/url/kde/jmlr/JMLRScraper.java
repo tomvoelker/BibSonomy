@@ -26,18 +26,14 @@ public class JMLRScraper extends AbstractUrlScraper {
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
-	/*
-	 * pattern
-	 * FIXME: refactor into static Patterns
-	 */
-	private static final String PATTERN_TITLE = "<h2>([^<]*)</h2>";
-	private static final String PATTERN_AUTHOR = "<i>([^<]*)</i></b>";
-	private static final String PATTERN_YEAR_PAGE = "</i></b>([^<]*)</p>";
-	private static final String PATTERN_YEAR = "(\\d{4})";
-	private static final String PATTERN_PAGE = ":([^,]*),";
-	private static final String PATTERN_VOLUME = "/papers/([^/]*)/";
-	private static final String PATTERN_FIRST_LASTNAME = " ([\\S]*) and";
-
+	private static final Pattern titlePattern = Pattern.compile("<h2>([^<]*)</h2>");
+	private static final Pattern authorPattern = Pattern.compile("<i>([^<]*)</i></b>");
+	private static final Pattern pageYearPattern = Pattern.compile("</i></b>([^<]*)</p>");
+	private static final Pattern volumePattern = Pattern.compile("/papers/([^/]*)/");
+	private static final Pattern yearPattern = Pattern.compile("(\\d{4})");
+	private static final Pattern pagePattern = Pattern.compile(":([^,]*),");
+	private static final Pattern lastnamePattern = Pattern.compile(" ([\\S]*) and");
+	
 	public String getInfo() {
 		return INFO;
 	}
@@ -50,15 +46,13 @@ public class JMLRScraper extends AbstractUrlScraper {
 
 			// get title (directly)
 			String title = null;
-			Pattern titlePattern = Pattern.compile(PATTERN_TITLE);
-			Matcher titleMatcher = titlePattern.matcher(pageContent);
+			final Matcher titleMatcher = titlePattern.matcher(pageContent);
 			if(titleMatcher.find())
 				title = titleMatcher.group(1);
 
 			// get author (directly)
 			String author = null;
-			Pattern authorPattern = Pattern.compile(PATTERN_AUTHOR);
-			Matcher authorMatcher = authorPattern.matcher(pageContent);
+			final Matcher authorMatcher = authorPattern.matcher(pageContent);
 			if(authorMatcher.find())
 				author = authorMatcher.group(1);
 			// clean up author string
@@ -67,42 +61,36 @@ public class JMLRScraper extends AbstractUrlScraper {
 
 			// get volume (from url)
 			String volume = null;
-			Pattern volumePattern = Pattern.compile(PATTERN_VOLUME);
-			Matcher volumeMatcher = volumePattern.matcher(sc.getUrl().getPath());
+			final Matcher volumeMatcher = volumePattern.matcher(sc.getUrl().getPath());
 			if(volumeMatcher.find())
 				volume = volumeMatcher.group(1);
 
 			// get pageYear (directly)
 			String pageYear = null;
-			Pattern pageYearPattern = Pattern.compile(PATTERN_YEAR_PAGE);
-			Matcher pageYearMatcher = pageYearPattern.matcher(pageContent);
+			final Matcher pageYearMatcher = pageYearPattern.matcher(pageContent);
 			if(pageYearMatcher.find())
 				pageYear = pageYearMatcher.group(1);
 
 			// extract year from pageYear string
 			String year = null;
-			Pattern yearPattern = Pattern.compile(PATTERN_YEAR);
-			Matcher yearMatcher = yearPattern.matcher(pageYear);
+			final Matcher yearMatcher = yearPattern.matcher(pageYear);
 			if(yearMatcher.find())
 				year = yearMatcher.group(1);
 
 			// extarct page from pageYear string
 			String page = null;
-			Pattern pagePattern = Pattern.compile(PATTERN_PAGE);
-			Matcher pageMatcher = pagePattern.matcher(pageYear);
+			final Matcher pageMatcher = pagePattern.matcher(pageYear);
 			if(pageMatcher.find())
 				page = pageMatcher.group(1);
 
 			/*
 			 * build bibtex
 			 */
-			StringBuffer bibtex = new StringBuffer();
-			bibtex.append("@proceedings{");
+			final StringBuffer bibtex = new StringBuffer("@proceedings{");
 
 			// build bibtex key
 			if(year != null && author != null){
-				Pattern lastnamePattern = Pattern.compile(PATTERN_FIRST_LASTNAME);
-				Matcher lastnameMatcher = lastnamePattern.matcher(author);
+				final Matcher lastnameMatcher = lastnamePattern.matcher(author);
 				if(lastnameMatcher.find()) // combination lastname and year
 					bibtex.append(lastnameMatcher.group(1)).append(year);
 				else // only year
@@ -112,46 +100,15 @@ public class JMLRScraper extends AbstractUrlScraper {
 			bibtex.append(",\n");
 
 			// add title
-			if(title != null){
-				bibtex.append("title = {");
-				bibtex.append(title);
-				bibtex.append("},\n");
-			}
-
+			appendField(bibtex, "title", title);
 			// add author
-			if(author != null){
-				bibtex.append("author = {");
-				bibtex.append(author);
-				bibtex.append("},\n");
-			}
-
+			appendField(bibtex, "author", author);
 			// add year
-			if(year != null){
-				bibtex.append("year = {");
-				bibtex.append(year);
-				bibtex.append("},\n");
-			}
-
+			appendField(bibtex, "year", year);
 			// add page
-			if(page != null){
-				bibtex.append("page = {");
-				bibtex.append(page);
-				bibtex.append("},\n");
-			}
-
-			// add page
-			if(page != null){
-				bibtex.append("page = {");
-				bibtex.append(page);
-				bibtex.append("},\n");
-			}
-
+			appendField(bibtex, "page", page);
 			// add volume
-			if(volume != null){
-				bibtex.append("volume = {");
-				bibtex.append(volume);
-				bibtex.append("},\n");
-			}
+			appendField(bibtex, "volume", volume);
 
 			// remove last ","
 			bibtex.deleteCharAt(bibtex.lastIndexOf(","));
@@ -164,7 +121,11 @@ public class JMLRScraper extends AbstractUrlScraper {
 			return true;
 
 		}else
-			throw new PageNotSupportedException("Select a page with the abtract view from a jmlr paper.");
+			throw new PageNotSupportedException("Select a page with the abtract view from a JMLR paper.");
+	}
+	
+	private static void appendField(final StringBuffer bibtex, final String fieldName, final String fieldValue) {
+		if (fieldValue != null) bibtex.append(fieldName + " = {" + fieldValue + "},\n");
 	}
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
