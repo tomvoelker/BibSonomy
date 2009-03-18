@@ -8,6 +8,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
@@ -17,6 +18,7 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.bibsonomy.common.enums.GroupID;
 
 public class Search {
 
@@ -35,7 +37,8 @@ public class Search {
 	private Long duration;
 
 	/** lucene analyzer, must be the same as at indexing */
-	SimpleAnalyzer analyzer = new SimpleAnalyzer();
+	//SimpleAnalyzer analyzer = new SimpleAnalyzer();
+	PerFieldAnalyzerWrapper analyzer = new PerFieldAnalyzerWrapper(new SimpleAnalyzer());
 
 
 
@@ -58,6 +61,13 @@ public class Search {
 			this.setLuceneBasePath( (String) envContext.lookup("luceneIndexPath") );
 			this.setLuceneBookmarksPath(this.getLuceneBasePath()+"lucene_bookmarks/");
 			this.setLucenePublicationsPath(this.getLuceneBasePath()+"lucene_publications/");
+
+
+			// let field group of analyzer use SimpleKeywordAnalyzer
+			// numbers will be deleted by SimpleAnalyser but group has only numbers, therefore use SimpleKeywordAnalyzer 
+			analyzer.addAnalyzer("group", new SimpleKeywordAnalyzer());
+
+		
 		} catch (final NamingException e) {
 			/*
 			 * FIXME: rethrowing the exception as runtime ex is maybe not the best solution
@@ -121,16 +131,26 @@ public class Search {
 			luceneIndexPath = this.getLuceneBookmarksPath(); 
 
 			// grouptype == 1 setzen, um vergleichbar zu sein mit alter afrage
-			querystring = lField_group+":1 AND (" + lField_desc + ":("+ search_terms +") " + lField_tas + ":("+ search_terms +") " + lField_ext + ":("+ search_terms +") " + lField_url + ":("+ search_terms +") )" ;
-//			String querystring = lField_group+":" ;
-//			String querystring = search_terms;
+
+			if (GroupID.INVALID.equals(groupId))
+			{
+				// query without groupID
+				querystring = lField_desc + ":("+ search_terms +") " + lField_tas + ":("+ search_terms +") " + lField_ext + ":("+ search_terms +") " + lField_url + ":("+ search_terms +")" ;
+			}
+			else
+			{
+				// query with groupID
+				querystring = lField_group+":\""+groupId+"\" AND (" + lField_desc + ":("+ search_terms +") " + lField_tas + ":("+ search_terms +") " + lField_ext + ":("+ search_terms +") " + lField_url + ":("+ search_terms +") )" ;
+			}
 
 		}
 		else
 		{
 			luceneIndexPath = this.getLucenePublicationsPath();
+			querystring = "";
 			// TODO set query string
 		}
+		LOGGER.debug("Lucene-Querystring (assembled): " + querystring);
 
 		// declare ArrayList cidsArray for list of String to return
 		final ArrayList<Integer> cidsArray = new ArrayList<Integer>();
@@ -148,10 +168,8 @@ public class Search {
 			QueryParser myParser = new QueryParser(lField_desc, analyzer);
 			Query query;
 			try {
-
-				LOGGER.debug("Lucene-Querystring: " + querystring);
-
 				query = myParser.parse(querystring);
+				LOGGER.debug("Lucene-Querystring (analyzed):  " + query.toString());
 
 				final IndexSearcher searcher = new IndexSearcher(luceneBookmarksPath);
 				final Hits hits = searcher.search(query);
