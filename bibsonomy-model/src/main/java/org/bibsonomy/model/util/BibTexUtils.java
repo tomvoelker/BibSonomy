@@ -61,7 +61,7 @@ public class BibTexUtils {
 	private static final Pattern DOI_PATTERN = Pattern.compile("http://.+/(.+?/.+?$)");
 	private static final Pattern MISC_FIELD_PATTERN = Pattern.compile("([a-zA-Z0-9]+)\\s*=\\s*\\{(.*?)\\}");
 
-	private static final List<String> EXCLUDE_FIELDS = Arrays.asList(new String[] { "bibtexAbstract", "misc", "simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey" });
+	private static final List<String> EXCLUDE_FIELDS = Arrays.asList(new String[] { "bibtexAbstract", "abstract", "misc", "simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey" });
 
 	
 	/**
@@ -200,7 +200,7 @@ public class BibTexUtils {
 		// loop over misc fields, if any
 		if (miscFields != null && miscFields.values().size() > 0) {
 			for (String key : miscFields.keySet()) {
-				miscFieldsSerialized.append(key + " = {" + miscFields.get(key) + "}, ");
+				miscFieldsSerialized.append("  " + key + " = {" + miscFields.get(key) + "},\n");
 			}
 			// remove last comma
 			miscFieldsSerialized.delete(miscFieldsSerialized.lastIndexOf(","), miscFieldsSerialized.length());
@@ -232,8 +232,7 @@ public class BibTexUtils {
 	public static String toBibtexString(BibTex bib) {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(bib.getClass());
-			
-						
+									
 			final StringBuffer buffer = new StringBuffer();
 			buffer.append("@");
 			buffer.append(bib.getEntrytype());
@@ -246,22 +245,30 @@ public class BibTexUtils {
 				if (d.getPropertyType().equals(String.class) 
 						&& getter.invoke(bib, (Object[]) null) != null 
 					    && ! EXCLUDE_FIELDS.contains(d.getName()) ) {
+					buffer.append("  "); // indent 
 					buffer.append(d.getName());
 					buffer.append(" = ");
 					buffer.append("{");
 					buffer.append( (String) getter.invoke(bib, (Object[]) null) );
 					buffer.append("},\n");					
 				}
-			}		
-			if (bib.getMiscFields() != null && bib.getMiscFields().size() > 0) {
-				// parse the misc field
+			}			
+			if ((bib.getMisc() != null && bib.getMisc().trim() != "") || 
+				(bib.getMiscFields() != null && bib.getMiscFields().size() > 0)) {
+				// parse & re-serialize the misc field
+				BibTexUtils.parseMiscField(bib);
 				BibTexUtils.serializeMiscFields(bib);
-				buffer.append(bib.getMisc() + "\n");
+				if (! "".equals(bib.getMisc().trim())) {
+					buffer.append(bib.getMisc() + ",\n");
+				}
 			}
-			else {
-				buffer.delete(buffer.length()-2, buffer.length()-1); // remove last comma
+			if (bib.getAbstract() != null && bib.getAbstract() != "") {
+				buffer.append("  abstract = {");
+				buffer.append(bib.getAbstract());
+				buffer.append("},\n");
 			}
-			buffer.append("}");	
+			buffer.delete(buffer.lastIndexOf(","), buffer.length()); // remove last comma
+			buffer.append("\n}");	
 			return buffer.toString();
 		} catch (IntrospectionException ex) {
 			ex.printStackTrace();

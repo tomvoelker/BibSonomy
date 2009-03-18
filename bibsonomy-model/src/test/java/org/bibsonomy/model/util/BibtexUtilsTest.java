@@ -104,15 +104,15 @@ public class BibtexUtilsTest {
 		bib.setAbstract("This is a nice abstract.");
 
 		final String expectedBibtex = 
-			"@inproceedings{KIE,\n" +
-			"abstract = {This is a nice abstract.},\n" +
-			"author = {Hans Dampf and Peter Silie},\n" +
-			"journal = {Journal of the most wonderful articles on earth},\n" +
-			"title = {The most wonderfult title on earth},\n" +
-			"volume = {3},\n" +
-			"year = {2525}\n}";
+			"@inproceedings{KIE,\n" +			
+			"  author = {Hans Dampf and Peter Silie},\n" +
+			"  journal = {Journal of the most wonderful articles on earth},\n" +
+			"  title = {The most wonderfult title on earth},\n" +
+			"  volume = {3},\n" +
+			"  year = {2525},\n" + 
+			"  abstract = {This is a nice abstract.}\n}";
 				
-		System.out.print(BibTexUtils.toBibtexString(bib));
+		System.out.print(BibTexUtils.toBibtexString(bib));		
 		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib));
 					
 		// add some misc fields
@@ -122,13 +122,15 @@ public class BibtexUtilsTest {
 				
 		final String expectedBibtex2 = 
 			"@inproceedings{KIE,\n" +
-			"author = {Hans Dampf and Peter Silie},\n" +
-			"journal = {Journal of the most wonderful articles on earth},\n" +
-			"title = {The most wonderfult title on earth},\n" +
-			"volume = {3},\n" +
-			"year = {2525},\n" + 
-			"extraKey = {extraVal}, extraKey2 = {extraVal2}\n}";
+			"  author = {Hans Dampf and Peter Silie},\n" +
+			"  journal = {Journal of the most wonderful articles on earth},\n" +
+			"  title = {The most wonderfult title on earth},\n" +
+			"  volume = {3},\n" +
+			"  year = {2525},\n" + 
+			"  extraKey = {extraVal},\n" + 
+			"  extraKey2 = {extraVal2}\n}";
 		
+		System.out.println(BibTexUtils.toBibtexString(bib));
 		assertEquals(expectedBibtex2, BibTexUtils.toBibtexString(bib));		
 	}
 
@@ -238,11 +240,11 @@ public class BibtexUtilsTest {
 		// add misc field, check if it is correctly serialized
 		bib.addMiscField("key1", "value1");
 		BibTexUtils.serializeMiscFields(bib);
-		assertEquals("key1 = {value1}", bib.getMisc());
+		assertEquals("  key1 = {value1}", bib.getMisc());
 		// reset, modify misc fields, re-check
 		bib.addMiscField("key1", "anotherValue1");
 		BibTexUtils.serializeMiscFields(bib);
-		assertEquals("key1 = {anotherValue1}", bib.getMisc());
+		assertEquals("  key1 = {anotherValue1}", bib.getMisc());
 		//try the other way round (parse the serialized stuff)
 		bib.addMiscField("key1", "value1");
 		bib.addMiscField("key2", "value2");
