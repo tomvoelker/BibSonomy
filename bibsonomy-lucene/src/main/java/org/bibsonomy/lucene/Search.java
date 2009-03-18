@@ -7,6 +7,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
@@ -93,7 +94,8 @@ public class Search {
 	 * @throws CorruptIndexException 
 	 * */
 	public ArrayList<Integer> searchLucene(char luceneIndex, String idname, String search_terms, int groupId, int limit, int offset) throws IOException {
-
+		final Logger LOGGER = Logger.getLogger(Search.class);
+			
 		// get starttime to calculate duration of execution of this method
 		long starttime = System.currentTimeMillis();
 		long endtime = 0;
@@ -147,10 +149,7 @@ public class Search {
 			Query query;
 			try {
 
-				if (debug)
-				{
-					System.out.println("Lucene-Querystring: " + querystring);
-				}
+				LOGGER.debug("Lucene-Querystring: " + querystring);
 
 				query = myParser.parse(querystring);
 
