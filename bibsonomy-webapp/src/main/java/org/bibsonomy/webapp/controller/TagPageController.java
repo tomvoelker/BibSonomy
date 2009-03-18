@@ -80,7 +80,9 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		/*
 		 *  if order = folkrank - retrieve related users
 		 *  
-		 *  TODO: in practice, this is (currently) only neccessary for HTML and SWRC 
+		 *  TODO: in practice, this is (currently) only neccessary for HTML and SWRC. The related
+		 *  users will be ignored by all other views.
+		 *   
 		 *  (burst, publrss, swrc) related pages
 		 */
 		if (order.equals(Order.FOLKRANK)) {
