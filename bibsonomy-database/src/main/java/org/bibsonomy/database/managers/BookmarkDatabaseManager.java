@@ -531,6 +531,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @throws CorruptIndexException 
 	 */
 	public List<Post<Bookmark>> getBookmarkSearchLucene(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
+		final Logger LOGGER = Logger.getLogger(BookmarkDatabaseManager.class);
 		final BookmarkParam param = new BookmarkParam();
 		param.setGroupId(groupId);
 		param.setSearch(search);
@@ -545,9 +546,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		ArrayList<Integer> contentIds = new ArrayList<Integer>();
 		try {
 			contentIds = lucene.searchLucene('b', "contentid", search, groupId, limit, offset);
-		// TODO remove following line
-			System.out.println("Lucene query duration: "+lucene.getDuration()+" milliseconds");
-			
+
+			LOGGER.debug("Lucene query duration: "+lucene.getDuration()+" milliseconds");
+
 		} catch (IOException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
