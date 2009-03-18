@@ -4,7 +4,7 @@ package org.bibsonomy.webapp.command;
  * @author mwa
  * @version $Id$
  */
-public class BibtexResourceViewCommand extends SimpleResourceViewCommand{
+public class BibtexResourceViewCommand extends TagResourceViewCommand{
 	
 	/** the intrahash of a publication **/
 	private String requBibtex = "";

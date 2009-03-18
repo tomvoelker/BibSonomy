@@ -1,5 +1,6 @@
 package tags;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -14,6 +15,9 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.exceptions.LayoutRenderingException;
+import org.bibsonomy.layout.jabref.JabrefLayout;
+import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -38,6 +42,8 @@ public class Functions  {
 	private static String[] bibtexEntryTypes = {"article","book","booklet","inbook","incollection","inproceedings","manual","masterthesis","misc","phdthesis","proceedings","techreport",     "unpublished"}; 
 	private static String[] swrcEntryTypes   = {"Article","Book","Booklet","InBook","InCollection","InProceedings","Manual","MasterThesis","Misc","PhDThesis","Proceedings","TechnicalReport","Unpublished"}; 
 	private static String[] risEntryTypes    = {"Journal Article","Book", "Book", "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis", "Generic", "Thesis", "Conference Proceedings", "Report", "Unpublished Work"};
+	
+	private static JabrefLayoutRenderer LayoutRenderer;
 
 	// contains special characters, symbols, etc...
 	private static Properties chars = new Properties(); 
@@ -46,6 +52,7 @@ public class Functions  {
 	static {
 		try {
 			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
+			LayoutRenderer = JabrefLayoutRenderer.getInstance();
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage());
 		}	    	    		
@@ -506,6 +513,46 @@ public class Functions  {
 	public static String shorten(final String s, final Integer length) {
 		if (s.length() > length) return s.substring(0, length - 3) + "...";
 		return s;
+	}
+	
+	
+	/**
+	 * Access the built-in utility function for bibtex export
+	 * 
+	 * @param post
+	 * 		- a bibtex post
+	 * @return
+	 * 		- a bibtex string of this post
+	 */
+	public static String toBibtexString(final Post<BibTex> post) {
+		return BibTexUtils.toBibtexString(post.getResource());
+	}
+	
+	/**
+	 * Helper method to access JabRef layouts via taglib function
+	 * 
+	 * @param post
+	 * @param layoutName
+	 * @return
+	 */
+	public static String renderLayout(final Post<BibTex> post, String layoutName) {
+		try {
+			JabrefLayout layout = LayoutRenderer.getLayout(layoutName, "");
+			if (! ".html".equals(layout.getExtension())) {
+				return "The requested layout is not valid; only HTML layouts are allowed. Requested extension is: " + layout.getExtension();
+			}
+			ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
+			posts.add(post);
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			LayoutRenderer.renderLayout(layout, posts, outputStream, true);
+			return outputStream.toString("UTF-8");
+		} catch (LayoutRenderingException ex) {
+			return "The requested layout '" + layoutName + "' was not found.";			
+		} catch (UnsupportedEncodingException ex) {
+			return "An Encoding error occured while trying to convert to layout '" + layoutName  + "'.";
+		} catch (IOException ex) {
+			return "An I/O error occured while trying to convert to layout '" + layoutName  + "'."; 
+		}
 	}
 	
 }

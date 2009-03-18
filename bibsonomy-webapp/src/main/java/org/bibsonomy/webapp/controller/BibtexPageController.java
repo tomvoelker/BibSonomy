@@ -11,6 +11,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.BibtexResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -21,7 +22,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author mwa
  * @version $Id$
  */
-public class BibtexPageController extends SingleResourceListController implements MinimalisticController<BibtexResourceViewCommand>{
+public class BibtexPageController extends SingleResourceListControllerWithTags implements MinimalisticController<BibtexResourceViewCommand>{
 
 	private static final Logger LOGGER = Logger.getLogger(BibtexPageController.class);
 	
@@ -86,25 +87,27 @@ public class BibtexPageController extends SingleResourceListController implement
 			
 			if (GroupingEntity.USER.equals(groupingEntity)) {
 				//bibtex/HASH/USER
-				/*
-				 * retrieve concepts for sidebar
-				 */
-				final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, requUser, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
-				command.getConcepts().setConceptList(concepts);
-				command.getConcepts().setNumConcepts(concepts.size());
 				
+				// fetch other users who have tagged this publication				
+				List<Post<BibTex>> allPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, bibtexList.get(0).getResource().getInterHash(), null, null, 0, 1000, null);
+				for (Post<BibTex> post : allPosts) {
+					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
+				}
+								
 				/*
-				 * show complete tag cloud of user
+				 * show tags by all users for this resource; the ones by the given user
+				 * will be highlighted later
+				 * FIXME: hardcoded end value
 				 */
-				this.setTags(command, Resource.class, groupingEntity, requUser, null, null, null, null, 0, Integer.MAX_VALUE, null);
+				//this.setTags(command, Resource.class, groupingEntity, requUser, null, tagsList, null, null, 0, Integer.MAX_VALUE, null);
+				this.setTags(command, BibTex.class, GroupingEntity.ALL, null, null, null, hash, null, 0, 1000, null);
 				return Views.BIBTEXDETAILS;
 			}
 			/*
 			 * get only those tags, related to the resource
 			 * FIXME: hardcoded end value
-			 * FIXME: here we assume, bibtexsare handled, further above we use listsToInitialize ...
 			 */
-			this.setTags(command, BibTex.class, groupingEntity, requUser, null, null, hash, null, 0, 1000, null);
+			this.setTags(command, BibTex.class, groupingEntity, requUser, null, null, hash, null, 0, 1000, null);			
 			return Views.BIBTEXPAGE;
 	
 		}

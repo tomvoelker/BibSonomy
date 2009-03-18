@@ -1121,3 +1121,13 @@ fieldset #tagField, fieldset #suggested, fieldset #copytags {
 padding-top:1px;	
 }
 
+/* export formats */
+#exports ul {
+	list-style: none;
+}
+
+#exports li {
+	float:left;
+	padding-left: 1em;
+}
+
