@@ -507,7 +507,10 @@ public class BibTexUtils {
 	 * @param fieldValue - the value of the field
 	 */
 	public static void addField(final StringBuffer bibtex, final String fieldName, final String fieldValue) {
-		if (bibtex == null) return;
+		/*
+		 * ignore empty bibtex and empty field values
+		 */
+		if (bibtex == null || fieldValue == null || fieldValue.trim().equals("")) return;
 		final int lastIndexOf = bibtex.lastIndexOf("}");
 		if (lastIndexOf > 0) {
 		   bibtex.replace(lastIndexOf, bibtex.length(), "," + fieldName + " = {" + fieldValue + "}\n}");
