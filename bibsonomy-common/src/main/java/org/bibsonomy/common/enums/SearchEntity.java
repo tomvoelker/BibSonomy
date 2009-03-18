@@ -40,5 +40,9 @@ public enum SearchEntity {
 	/**
 	 * search only in author field
 	 */
-	AUTHOR;	
+	AUTHOR,
+	/**
+	 * fulltext search via lucene
+	 */
+	LUCENE;
 }
