@@ -219,7 +219,7 @@ public class BatchAuthors {
 			}
 			
 			if (c % 10000 == 0) {
-				logger.info("nr. of bibtex authors: " + authorMap.size());
+				logger.info("nr. of authors: " + authorMap.size());
 				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
 				logger.info("memory used: " + memUsed + " KB"); 
 				logger.info("Calling GC...");
@@ -335,6 +335,7 @@ public class BatchAuthors {
 				continue;
 			}
 		}
+		logger.info("Done.");
 		
 		logger.info("Updating authors...");
 		for (int j = 0; j < updateAuthors.size(); j++) {
@@ -354,6 +355,7 @@ public class BatchAuthors {
 				continue;
 			}			
 		}
+		logger.info("Done.");
 	}
 	
 	
