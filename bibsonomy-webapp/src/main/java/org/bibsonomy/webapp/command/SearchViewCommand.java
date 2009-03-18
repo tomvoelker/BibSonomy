@@ -7,10 +7,12 @@ package org.bibsonomy.webapp.command;
  * @author Beate Krause
  * @version $Id$
  */
-public class SearchViewCommand extends SimpleResourceViewCommand{
+public class SearchViewCommand extends TagResourceViewCommand{
 	
 	/** String to search for */
 	private String requestedSearch = "";
+	
+	private String searchmode = "all";
 	
 	/**
 	 * sets the requested search string
@@ -25,6 +27,20 @@ public class SearchViewCommand extends SimpleResourceViewCommand{
 	 */
 	public String getRequestedSearch() {
 		return requestedSearch;
+	}
+
+	/**
+	 * @return the searchmode
+	 */
+	public String getSearchmode() {
+		return this.searchmode;
+	}
+
+	/**
+	 * @param searchmode the searchmode to set
+	 */
+	public void setSearchmode(String searchmode) {
+		this.searchmode = searchmode;
 	}
 	
 }

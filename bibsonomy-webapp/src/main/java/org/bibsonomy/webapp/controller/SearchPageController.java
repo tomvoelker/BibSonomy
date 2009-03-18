@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -31,6 +32,16 @@ public class SearchPageController extends SingleResourceListController implement
 		String search = command.getRequestedSearch();
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
+
+		/* DEBUG */
+		System.out.println("SearchPageController: command.getSearchmode()="+command.getSearchmode());
+		
+		if ("lucene".equals(command.getSearchmode())) {
+			command.getRequestedTagsList().add(SystemTags.SEARCH.getPrefix() + ":lucene");
+		} 
+
+		/* DEBUG */
+		System.out.println("SearchPageController: command.getRequestedTagsList().toString()="+command.getRequestedTagsList().toString());
 		
 		// search in a specific user's entries		
 		if (search.matches(".*user:.*")) {
@@ -53,7 +64,7 @@ public class SearchPageController extends SingleResourceListController implement
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, search, command.getListCommand(resourceType).getEntriesPerPage());
+			this.setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, null, search, command.getListCommand(resourceType).getEntriesPerPage());
 			this.postProcessAndSortList(command, resourceType);
 			
 		}
