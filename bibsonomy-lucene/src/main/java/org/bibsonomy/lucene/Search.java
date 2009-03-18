@@ -132,7 +132,7 @@ public class Search {
 
 			// grouptype == 1 setzen, um vergleichbar zu sein mit alter afrage
 
-			if (GroupID.INVALID.equals(groupId))
+			if (GroupID.INVALID.getId() == groupId)
 			{
 				// query without groupID
 				querystring = lField_desc + ":("+ search_terms +") " + lField_tas + ":("+ search_terms +") " + lField_ext + ":("+ search_terms +") " + lField_url + ":("+ search_terms +")" ;
