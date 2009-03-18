@@ -1240,7 +1240,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			}
 			
 			// add private note
-			if (authUser.equalsIgnoreCase(userName)) {
+			if (authUser != null && authUser.equalsIgnoreCase(userName)) {
 				post.getResource().setPrivnote(extraDb.getBibTexPrivnoteForUser(resourceHash, userName, session));
 			}
 			
