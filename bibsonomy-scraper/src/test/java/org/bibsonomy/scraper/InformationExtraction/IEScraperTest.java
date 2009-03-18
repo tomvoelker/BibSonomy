@@ -1,15 +1,14 @@
 package org.bibsonomy.scraper.InformationExtraction;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import junit.framework.Assert;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -18,37 +17,38 @@ import org.junit.Test;
  */
 public class IEScraperTest {
 
+	private final String expectedBibtex = 
+		"@misc{ieKey,\n" +
+		"booktitle = {Research Challenges in Ubiquitous Knowledge Discovery. Next Generation of Data Mining(Chapman & Hall / Crc Data Mining and Knowledge Discovery Series), Chapman & Hall / CRC},\n" +
+		"year = {2008},\n" +
+		"date = {2008},\n" +
+		"title = {Michael May and Bettina Berendt and Antoine Cornuejols and Joao Gama and Fosca Giannotti and Andreas Hotho and Donato Malerba and Ernestina Menesalvas and Katharina Morik and Rasmus Pedersen and Lorenza Saitta and Yucel Saygin and Assaf Schuster and Koen Vanhoof}\n" +
+		",url = {http://www.example.com/reasearch_challenges.html}\n" +
+		"}";
+
 	@Test
 	public void testScrape() {
-		final ScrapingContext testContext = IEScraper.getTestContext();
+		final ScrapingContext sc = IEScraper.getTestContext();
+		try {
+			sc.setUrl(new URL("http://www.example.com/reasearch_challenges.html"));
+		} catch (MalformedURLException ex) {
+			fail(ex.getMessage());
+		}
 
 		final IEScraper scraper = new IEScraper();
 
 		try {
-			final boolean scrape = scraper.scrape(testContext);
+			final boolean scrape = scraper.scrape(sc);
+			Assert.assertTrue(scrape);
 		} catch (final ScrapingException ex) {
 			ex.printStackTrace();
 			fail(ex.getMessage());
 		}
 
-	}
+		final String bibtex = sc.getBibtexResult();
 
-	public static void main(String[] args) {
-
-
-		final ScrapingContext testContext = IEScraper.getTestContext();
-
-		final IEScraper scraper = new IEScraper();
-
-		try {
-			final boolean scrape = scraper.scrape(testContext);
-		} catch (final ScrapingException ex) {
-			ex.printStackTrace();
-		}
-		
-	
+		Assert.assertEquals(expectedBibtex, bibtex);
 
 	}
-
 
 }

@@ -16,10 +16,20 @@ import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.ie.BibExtraction;
+import org.bibsonomy.scraper.util.BibTeXUtils;
 
 
+/**
+ * Extracts data from selected text using the information extraction tool MALLET.
+ * 
+ * @author rja
+ *
+ */
 public class IEScraper implements Scraper {
 
+	private static final Pattern yearPattern = Pattern.compile("\\d{4}");
+
+	
 	/**
 	 * Extract a valid Bibtex entry from a given publication snippet by using information extraction.
 	 */
@@ -29,16 +39,26 @@ public class IEScraper implements Scraper {
 		 * don't scrape, if there is nothing selected
 		 */
 		if (selectedText == null || selectedText.trim().equals("")) return false;
-		
+
 		try {
-			HashMap<String, String> map = new BibExtraction().extraction(selectedText);
+			final HashMap<String, String> map = new BibExtraction().extraction(selectedText);
 
 			if (map != null) {
 
 				/*
-				 * build Bibtex String from map and add url to bibtex entry
+				 * build Bibtex String from map
 				 */
-				sc.setBibtexResult(getBibtexString(map).replaceFirst("}", "},\nurl = {" + sc.getUrl().toString() + "}"));
+				final StringBuffer bibtex = getBibtex(map);
+				/*
+				 * add url to bibtex entry
+				 */
+				if (sc.getUrl() != null) {
+					BibTeXUtils.addField(bibtex, "url", sc.getUrl().toString());
+				}
+				/*
+				 * set result
+				 */
+				sc.setBibtexResult(bibtex.toString());
 
 				/*
 				 * save the text the user selected (and the scraper used) into map 
@@ -61,7 +81,7 @@ public class IEScraper implements Scraper {
 
 				return true;
 			}
-		
+
 		} catch (IOException e) {
 			throw new ScrapingException(e);
 		} catch (ClassNotFoundException e) {
@@ -76,16 +96,16 @@ public class IEScraper implements Scraper {
 	 * @param map
 	 * @return
 	 */
-	private String getBibtexString(HashMap<String, String> map) {
+	private StringBuffer getBibtex(HashMap<String, String> map) {
 		/*
 		 * start with a stringbuffer which contains start of bibtex entry
 		 */
-		StringBuffer bib = new StringBuffer("@misc{ieKey,");
+		final StringBuffer bib = new StringBuffer("@misc{ieKey,\n");
 
 		/*
 		 * iterate over fields of hashmap
 		 */
-		for (String key:map.keySet()) {
+		for (final String key:map.keySet()) {
 			/*
 			 * extract value
 			 */
@@ -108,23 +128,23 @@ public class IEScraper implements Scraper {
 					/*
 					 * look for YYYY, extract and append it
 					 */
-					Pattern p = Pattern.compile("\\d{4}");
-					Matcher m = p.matcher(value);
+					final Matcher m = yearPattern.matcher(value);
 					if (m.find()) {
-						bib.append("year = {" + m.group() + "},");
+						bib.append("year = {" + m.group() + "},\n");
 					}
 				}
-				bib.append(key + " = {" + value + "},");
+				bib.append(key + " = {" + value + "},\n");
 			}
-			
+
 		}
 
 		/*
 		 * replace last "," with a closing curly bracket "}"
 		 */
-		bib.replace(bib.length()-1, bib.length(), "}");
-		
-		return bib.toString();
+		final int pos = bib.lastIndexOf(",");
+		bib.replace(pos, pos + 1, "\n}");
+
+		return bib;
 	}
 
 	/** Returns a self description of this scraper.
@@ -133,11 +153,11 @@ public class IEScraper implements Scraper {
 	public String getInfo() {
 		return "IEScraper: Extraction of bibliographic references by information extraction. Author: Thomas Steuber";
 	}
-	
+
 	public Collection<Scraper> getScraper() {
 		return Collections.singletonList((Scraper)this);
 	}
-	
+
 	/** Cleans a String containing person names.
 	 * @param person
 	 * @return
@@ -152,7 +172,7 @@ public class IEScraper implements Scraper {
 		// in references with "," and no " and " or ";" replace "," with " and "
 		if (person.contains(","))
 			return person.replace(",", " and ");
-		
+
 		return person;
 	}
 
@@ -161,7 +181,7 @@ public class IEScraper implements Scraper {
 			return true; // supports every snippet
 		return false;
 	}
-	
+
 	public static ScrapingContext getTestContext(){
 		ScrapingContext context = new ScrapingContext(null);
 		context.setSelectedText("Michael May and Bettina Berendt and Antoine Cornuejols and Joao Gama and Fosca Giannotti and Andreas Hotho and Donato Malerba and Ernestina Menesalvas and Katharina Morik and Rasmus Pedersen and Lorenza Saitta and Yucel Saygin and Assaf Schuster and Koen Vanhoof. Research Challenges in Ubiquitous Knowledge Discovery. Next Generation of Data Mining (Chapman & Hall/Crc Data Mining and Knowledge Discovery Series), Chapman & Hall/CRC,2008.");
