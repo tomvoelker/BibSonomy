@@ -34,14 +34,14 @@ public class SearchPageController extends SingleResourceListController implement
 		String groupingName = null;
 
 		/* DEBUG */
-		System.out.println("SearchPageController: command.getSearchmode()="+command.getSearchmode());
+		LOGGER.debug("SearchPageController: command.getSearchmode()="+command.getSearchmode());
 		
 		if ("lucene".equals(command.getSearchmode())) {
 			command.getRequestedTagsList().add(SystemTags.SEARCH.getPrefix() + ":lucene");
 		} 
 
 		/* DEBUG */
-		System.out.println("SearchPageController: command.getRequestedTagsList().toString()="+command.getRequestedTagsList().toString());
+		LOGGER.debug("SearchPageController: command.getRequestedTagsList().toString()="+command.getRequestedTagsList().toString());
 		
 		// search in a specific user's entries		
 		if (search.matches(".*user:.*")) {
