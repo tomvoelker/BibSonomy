@@ -242,11 +242,11 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkSearch() {	
 		final String requestedUserName = "testuser1";
 		final String search = "suchmaschine";
-		final GroupID groupType = GroupID.PUBLIC;
-		List<Post<Bookmark>> post = this.bookmarkDb.getBookmarkSearch(groupType, search, requestedUserName, 10, 0, this.dbSession);
+		final int groupId = GroupID.PUBLIC.getId();
+		List<Post<Bookmark>> post = this.bookmarkDb.getBookmarkSearch(groupId, search, requestedUserName, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
 		// you don't need requestedUserName
-		post = this.bookmarkDb.getBookmarkSearch(groupType, search, null, 10, 0, this.dbSession);
+		post = this.bookmarkDb.getBookmarkSearch(groupId, search, null, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
 	}
 

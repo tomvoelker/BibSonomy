@@ -200,7 +200,7 @@
 		FROM (SELECT b.content_id, b.book_url_hash, b.book_description AS title, b.book_extended AS description, b.date,
 		             b.user_name, u.book_url, u.book_url_ctr
 		      FROM bookmark b, urls u, search_bookmark s
-		      WHERE s.group = #groupType#
+		      WHERE s.group = #groupId#
 		            AND MATCH (s.content) AGAINST (#search# IN BOOLEAN MODE)
 		            AND u.book_url_hash = b.book_url_hash
 		            AND s.content_id = b.content_id

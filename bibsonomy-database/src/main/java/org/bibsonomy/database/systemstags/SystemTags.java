@@ -21,7 +21,9 @@ public enum SystemTags {
 	/** relevant for */
 	RELEVANTFOR("relevantfor"),
 	/** year restriction */
-	YEAR("year");
+	YEAR("year"),
+	/** define search type */
+	SEARCH("search");
 		
 	/** stores the prefix */
 	private final String prefix;

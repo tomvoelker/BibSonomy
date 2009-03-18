@@ -31,7 +31,7 @@ public class GetBibtexSearch extends BibTexChainElement {
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
 		return (param.getGrouping() == GroupingEntity.ALL &&
-				SearchEntity.ALL.equals(param.getSearchEntity()) &&				
+				(SearchEntity.ALL.equals(param.getSearchEntity()) || SearchEntity.LUCENE.equals(param.getSearchEntity()) ) &&				
 				!present(param.getBibtexKey()) &&
 				present(param.getSearch()));
 	}

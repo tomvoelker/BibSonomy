@@ -507,9 +507,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param session
 	 * @return list of bookmark posts
 	 */
-	public List<Post<Bookmark>> getBookmarkSearch(final GroupID groupType, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
+	public List<Post<Bookmark>> getBookmarkSearch(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
-		param.setGroupType(groupType);
+		param.setGroupId(groupId);
 		param.setSearch(search);
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
