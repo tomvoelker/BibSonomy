@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.util.BibTeXUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -85,13 +85,13 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			/*
 			 * append URL
 			 */
-			BibTeXUtils.addFieldIfNotContained(bibtexEntries, "url", sc.getUrl().toString());
+			BibTexUtils.addFieldIfNotContained(bibtexEntries, "url", sc.getUrl().toString());
 			/*
 			 * append abstract
 			 */
 			final String abstrct = extractAbstract(document);
 			if (abstrct != null) {
-				BibTeXUtils.addFieldIfNotContained(bibtexEntries, "abstract", abstrct);
+				BibTexUtils.addFieldIfNotContained(bibtexEntries, "abstract", abstrct);
 			} else // log if abstract is not available
 				log.info("ACMBasicScraper: Abstract not available \n" + sc.getPageContent());
 

@@ -6,13 +6,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.scraper.util.BibTeXUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -60,7 +60,7 @@ public class SpiresScraper extends AbstractUrlScraper{
 				/*
 				 * add URL
 				 */
-				bibtex = BibTeXUtils.addFieldIfNotContained(bibtex, "url", url.toString());
+				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", url.toString());
 				
 				//-- bibtex string may not be empty
 				if (bibtex != null && ! "".equals(bibtex)) {

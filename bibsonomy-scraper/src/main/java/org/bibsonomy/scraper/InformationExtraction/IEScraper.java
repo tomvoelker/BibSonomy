@@ -12,11 +12,11 @@ import java.util.regex.Pattern;
 
 import javax.naming.NamingException;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.ie.BibExtraction;
-import org.bibsonomy.scraper.util.BibTeXUtils;
 
 
 /**
@@ -53,7 +53,7 @@ public class IEScraper implements Scraper {
 				 * add url to bibtex entry
 				 */
 				if (sc.getUrl() != null) {
-					BibTeXUtils.addField(bibtex, "url", sc.getUrl().toString());
+					BibTexUtils.addField(bibtex, "url", sc.getUrl().toString());
 				}
 				/*
 				 * set result
