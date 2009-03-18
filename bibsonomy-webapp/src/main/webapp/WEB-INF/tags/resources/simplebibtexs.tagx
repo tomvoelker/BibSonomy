@@ -28,7 +28,7 @@
 		
 		<!-- BibTeX action -->
 		<jsp:attribute name="actions">
-			<bib:actions loginUserName="${loginUserName}" post="${post}"/>
+			<bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/>
 		</jsp:attribute>
 		
 		<!-- extended title which is shown beside the titlekey-->
