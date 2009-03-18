@@ -11,6 +11,7 @@
 		required="true" />
 	<jsp:directive.attribute name="tagboxMinfreqStyle" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="tagSizeMode" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="highlightTags" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="showTooltips" type="java.lang.Integer" required="false"/>
 	<jsp:directive.attribute name="copytag" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="targetId" type="java.lang.String" required="false"/>
@@ -28,6 +29,11 @@
 	<!-- disable tagbox minfreq links, if not specified -->
 	<c:if test="${empty tagboxMinfreqStyle}">
     	<c:set var="tagboxMinfreqStyle" value="none"/>
+    </c:if>
+
+	<!-- preprocess tags to be highlighted -->
+	<c:if test="${not empty highlightTags}">
+    	<c:set var="highlightTags">${' '}${highlightTags}${' '}</c:set>
     </c:if>
 			
 	<!-- display of tag tooltips is disabled by default -->
@@ -69,6 +75,9 @@
 						<c:if test="${tagSizeMode eq 'home'}">				
 							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, cmd.maxFreq, tagSizeMode)}%</jspx:attribute>
 						</c:if>
+						<c:if test="${not empty highlightTags and fn:contains(highlightTags,tag.name)}">				
+							<jspx:attribute name="style">border-bottom:1px dotted black;</jspx:attribute>
+						</c:if>						
 						<c:if test="${showTooltips}">
 							<jspx:attribute name="onmouseover">javascript:preDoTooltip(event)</jspx:attribute>
 							<jspx:attribute name="onmouseout">javascript:hideTip()</jspx:attribute>					
