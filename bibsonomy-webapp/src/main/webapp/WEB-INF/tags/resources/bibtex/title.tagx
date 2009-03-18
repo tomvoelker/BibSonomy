@@ -2,13 +2,15 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"	
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>	
-	
-	<c:if test='${not empty post.resource.documents}'> 
-			<a href="/documents/${post.resource.documents[0].fileHash}"><img alt="PDF" src="${resdir}/image/document-txt-blue.png" style="float: left;"/></a>
-	</c:if>
+
+	<!-- include link to private document(s) -->	
+	<bib:documents post="${post}" includeFilename="${false}"/>
+
+	<!--  display title -->
 	<c:set var="bibUrlTemplate">/bibtex/${hash.intra.id}${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></c:set>
 	<c:url var="bibUrl" value="${bibUrlTemplate}" context="${projectContext}"/>
 	<a href="${bibUrl}"><mtl:bibclean value="${post.resource.title}"/></a>
