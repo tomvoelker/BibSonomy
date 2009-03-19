@@ -11,6 +11,10 @@
 		required="true" />
 	<jsp:directive.attribute name="tagboxMinfreqStyle" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="tagSizeMode" type="java.lang.String" required="false"/>
+	<!-- 
+		highlighTags is a space-separated string of tags; each one will be highlighted
+		in the tagcloud (if present)
+	-->
 	<jsp:directive.attribute name="highlightTags" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="showTooltips" type="java.lang.Integer" required="false"/>
 	<jsp:directive.attribute name="copytag" type="java.lang.Boolean" required="false"/>
@@ -31,7 +35,7 @@
     	<c:set var="tagboxMinfreqStyle" value="none"/>
     </c:if>
 
-	<!-- preprocess tags to be highlighted -->
+	<!-- preprocess tags to be highlighted (add space at beginning + end) -->
 	<c:if test="${not empty highlightTags}">
     	<c:set var="highlightTags" value="${' '}${highlightTags}${' '}"/>
     </c:if>
