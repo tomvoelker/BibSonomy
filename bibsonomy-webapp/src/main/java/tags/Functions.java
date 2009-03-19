@@ -464,8 +464,8 @@ public class Functions  {
 	 * @param Author
 	 * @return value between 0 and 100 %
 	 */
-	public static double getAuthorFontSize(final Author author) {
-		return Math.round(Math.log(author.getCtr())) * 25;		
+	public static double getAuthorFontSize(final Author author) {		
+		return ((author.getCtr() * 100) / 1000) + 50;
 	}
 
 	/** Returns the host name of a URL.
