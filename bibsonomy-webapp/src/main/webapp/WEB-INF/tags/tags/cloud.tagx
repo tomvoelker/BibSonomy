@@ -33,7 +33,7 @@
 
 	<!-- preprocess tags to be highlighted -->
 	<c:if test="${not empty highlightTags}">
-    	<c:set var="highlightTags">${' '}${highlightTags}${' '}</c:set>
+    	<c:set var="highlightTags" value="${' '}${highlightTags}${' '}"/>
     </c:if>
 			
 	<!-- display of tag tooltips is disabled by default -->
@@ -75,7 +75,8 @@
 						<c:if test="${tagSizeMode eq 'home'}">				
 							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, cmd.maxFreq, tagSizeMode)}%</jspx:attribute>
 						</c:if>
-						<c:if test="${not empty highlightTags and fn:contains(highlightTags,tag.name)}">				
+						<c:set var="tagNameWithSpaces" value="${' '}${tag.name}${' '}"/>
+						<c:if test="${not empty highlightTags and fn:contains(highlightTags,tagNameWithSpaces)}">				
 							<jspx:attribute name="style">border-bottom:1px dotted black;</jspx:attribute>
 						</c:if>						
 						<c:if test="${showTooltips}">
