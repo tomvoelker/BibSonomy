@@ -61,7 +61,7 @@ public class BibTexUtils {
 	private static final Pattern DOI_PATTERN = Pattern.compile("http://.+/(.+?/.+?$)");
 	private static final Pattern MISC_FIELD_PATTERN = Pattern.compile("([a-zA-Z0-9]+)\\s*=\\s*\\{(.*?)\\}");
 
-	private static final List<String> EXCLUDE_FIELDS = Arrays.asList(new String[] { "bibtexAbstract", "abstract", "misc", "simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey" });
+	private static final List<String> EXCLUDE_FIELDS = Arrays.asList(new String[] { "bibtexAbstract", "openURL", "abstract", "misc", "simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey" });
 
 	
 	/**
