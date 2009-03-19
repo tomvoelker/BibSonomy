@@ -4,12 +4,12 @@
 <sqlMap namespace="Author">
 
 	<select id="getAuthors" resultMap="AuthorCommon.author">
-        SELECT ctr, last_name
+        SELECT first_name, last_name, ctr
         FROM (
             SELECT first_name, last_name, ctr
             FROM author
 			ORDER BY ctr DESC
-            LIMIT 200
+            LIMIT 100
         ) AS tab
         ORDER BY last_name
 	</select>
