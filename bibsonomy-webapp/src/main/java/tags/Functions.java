@@ -43,7 +43,7 @@ public class Functions  {
 	private static String[] swrcEntryTypes   = {"Article","Book","Booklet","InBook","InCollection","InProceedings","Manual","MasterThesis","Misc","PhDThesis","Proceedings","TechnicalReport","Unpublished"}; 
 	private static String[] risEntryTypes    = {"Journal Article","Book", "Book", "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis", "Generic", "Thesis", "Conference Proceedings", "Report", "Unpublished Work"};
 	
-	private static JabrefLayoutRenderer LayoutRenderer;
+	private static JabrefLayoutRenderer layoutRenderer;
 
 	// contains special characters, symbols, etc...
 	private static Properties chars = new Properties(); 
@@ -52,7 +52,7 @@ public class Functions  {
 	static {
 		try {
 			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
-			LayoutRenderer = JabrefLayoutRenderer.getInstance();
+			layoutRenderer = JabrefLayoutRenderer.getInstance();
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage());
 		}	    	    		
@@ -537,14 +537,14 @@ public class Functions  {
 	 */
 	public static String renderLayout(final Post<BibTex> post, String layoutName) {
 		try {
-			JabrefLayout layout = LayoutRenderer.getLayout(layoutName, "");
+			JabrefLayout layout = layoutRenderer.getLayout(layoutName, "");
 			if (! ".html".equals(layout.getExtension())) {
 				return "The requested layout is not valid; only HTML layouts are allowed. Requested extension is: " + layout.getExtension();
 			}
 			ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
 			posts.add(post);
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			LayoutRenderer.renderLayout(layout, posts, outputStream, true);
+			layoutRenderer.renderLayout(layout, posts, outputStream, true);
 			return outputStream.toString("UTF-8");
 		} catch (LayoutRenderingException ex) {
 			return "The requested layout '" + layoutName + "' was not found.";			
