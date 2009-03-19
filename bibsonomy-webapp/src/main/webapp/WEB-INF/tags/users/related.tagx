@@ -23,10 +23,17 @@
 			</c:choose>
 		
 			<!-- title -->
+			
 			<c:set var="userTitle">
-				<fmt:message key="sort.folkrank.weight"/>:
-				${user.prediction} <!-- we misuse the prediction field here, which is normally user for spammer predictions -->
+				<c:choose>
+				<c:when test="${not empty user.prediction}">
+					<fmt:message key="sort.folkrank.weight"/>:
+					${user.prediction} <!-- we misuse the prediction field here, which is normally user for spammer predictions -->
+				</c:when>
+				<c:otherwise>${user.name}</c:otherwise>
+				</c:choose>	
 			</c:set>	
+			
 			
 			<!-- url -->
 			<c:url var="userUrl" context="${projectContext}" value="/user/${fn:escapeXml(user.name)}"/>		
