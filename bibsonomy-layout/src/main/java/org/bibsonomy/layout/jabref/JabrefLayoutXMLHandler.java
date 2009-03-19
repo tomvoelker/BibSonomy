@@ -34,6 +34,7 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 		buf = new StringBuffer();
 		if ("layout".equals(name)) {
 			currentLayoutDefinition = new JabrefLayout(atts.getValue("name"));
+			currentLayoutDefinition.setPublicLayout(new Boolean(atts.getValue("public")));
 		}
 	}
 

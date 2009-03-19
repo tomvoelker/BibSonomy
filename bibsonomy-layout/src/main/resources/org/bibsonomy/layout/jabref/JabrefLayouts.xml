@@ -184,7 +184,7 @@
 		<mimeType>text/rtf</mimeType>
 		<extension>.rtf</extension>
 	</layout>
-	<layout name="imtm">
+	<layout name="imtm" public="false">
 		<displayName>IMTM</displayName>
 		<description>
 			Custom output format provided by the Department of
@@ -215,7 +215,7 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>		
-	<layout name="mms">
+	<layout name="mms" public="false">
 		<displayName>DIN 1505 MMS</displayName>
 		<description>
 			HTML output format according to the German Institute for
@@ -227,7 +227,7 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
-	<layout name="mmsyear">
+	<layout name="mmsyear" public="false">
 		<displayName>DIN 1505 MMS, grouped by year</displayName>
 		<description>
 			HTML output format according to the German Institute for

@@ -11,6 +11,15 @@ package org.bibsonomy.layout;
 public abstract class Layout {
 
 	/**
+	 * Public layouts are announced on the layout overview pages (/export/). 
+	 * NOTE: Making a layout not public does <strong>not</strong> mean that
+	 * it can't be publicly used! Everybody who knows the URL prefix for the
+	 * layout can access it!
+	 * 
+	 */
+	protected boolean publicLayout = true;
+	
+	/**
 	 * The name of the layout (used as identifier in the URL).
 	 */
 	protected final String name;
@@ -78,6 +87,28 @@ public abstract class Layout {
 		description + "', " + 
 		mimeType + ", " + 
 		extension + ")";
+	}
+
+	/**
+	 * Public layouts are announced on the layout overview pages (/export/). 
+	 * NOTE: Making a layout not public does <strong>not</strong> mean that
+	 * it can't be publicly used! Everybody who knows the URL prefix for the
+	 * layout can access it!
+	 * @return
+	 */
+	public boolean isPublicLayout() {
+		return publicLayout;
+	}
+
+	/**
+	 * Public layouts are announced on the layout overview pages (/export/). 
+	 * NOTE: Making a layout not public does <strong>not</strong> mean that
+	 * it can't be publicly used! Everybody who knows the URL prefix for the
+	 * layout can access it!
+	 * @param publicLayout
+	 */
+	public void setPublicLayout(boolean publicLayout) {
+		this.publicLayout = publicLayout;
 	}
 
 }

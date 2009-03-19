@@ -58,7 +58,16 @@
     		</element>
     	</sequence>
     	<attribute name="name" type="string" use="required"></attribute>
-    	<attribute name="public" type="boolean" use="optional"></attribute>
+    	<attribute name="public" type="boolean" use="optional">
+    		<annotation>
+    			<documentation>
+    				Documents if the layout should be publicly announced
+    				on the layout overview page. Making a layout
+    				non-public does not prevent other users from using
+    				it! Everyone who knows the URL prefix can access the
+    				layout.
+    			</documentation>
+    		</annotation></attribute>
     </complexType>
 
     <element name="layouts" type="tns:JabrefLayouts"></element>
