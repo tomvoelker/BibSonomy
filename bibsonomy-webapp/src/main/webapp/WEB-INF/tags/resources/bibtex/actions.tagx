@@ -62,7 +62,7 @@
 				<c:choose>
 					<c:when test="${noedittags}">
 						<c:set var="editTitle"><fmt:message key="bibtex.actions.edit.title"/></c:set>
-             			<a href="/ShowBibtexEntry?hash=${resource.hash}" title="${editTitle}">
+             			<a href="/ShowBibtexEntry?hash=${post.resource.intraHash}" title="${editTitle}">
 							<fmt:message key="bibtex.actions.edit"/>
 						</a>
 					</c:when>
