@@ -2,15 +2,15 @@
     Klicklogging. Logging Infos bei jedem Klick an einen Server senden.
     
 	Diese Datei sendet bei jedem Klick einen Request an einen vordefinierten Server. (AJAX)
-	Dieser Request enthält Daten, um die Klickposition auswerten zu können.
+	Dieser Request enthï¿½lt Daten, um die Klickposition auswerten zu kï¿½nnen.
 	So kann jeder Klick nachvollzogen werden.
 	
-	Es werden folgende Daten übermittelt:
+	Es werden folgende Daten ï¿½bermittelt:
     dompath:		Position des Klicks im DOM-Baum mit IDs
     dompath2:		Position des Klicks im DOM-Baum mit IDs und Klassen
 	pageurl:		URL der aktuellen Seite
 	numberofposts:	Anzahl der Posts eines Tags in der Tagwolke
-	acontent: 		Inhalt des angeklickten Links, wenn verfügbar. Der klickbare Linktext.
+	acontent: 		Inhalt des angeklickten Links, wenn verfï¿½gbar. Der klickbare Linktext.
 	ahref:			Ziel-URL des angeklickten Links
 	windowsize:		Groesse des Anzeigefensters
     mouseclientpos:	Position der Maus beim Klick im Anzeigefesnter
@@ -20,8 +20,8 @@
 
 	Es werden nur Klicks auf einen Link (A-Element) an den Loggingserver gesendet.
 
-	Der Loggingserver kann die Requests auswerten und in einer Datenbank speichern, so dass eine spätere
-	Auswertung möglich sein wird. Dadurch kann dann das Design und die Usability der Anwendung verbessert werden.
+	Der Loggingserver kann die Requests auswerten und in einer Datenbank speichern, so dass eine spï¿½tere
+	Auswertung mï¿½glich sein wird. Dadurch kann dann das Design und die Usability der Anwendung verbessert werden.
 
 	Sven Stefani, 2008 - stefani@cs.uni-kassel.de
 	
@@ -145,7 +145,7 @@ function log_sendRequest(e) {
 	}
 
 
-	// schleife fängt mit dem innersten LI an
+	// schleife fï¿½ngt mit dem innersten LI an
 	mostInnerLi = true;
 
 	// do-while-loop - from most inner (clicked) html-tag to html-root-tag
@@ -192,7 +192,9 @@ function log_sendRequest(e) {
 //			dom_acontent = welement.childNodes[0].textContent;
 			dom_acontent = welement.firstChild.nodeValue;
 			// trim(dom_acontent)
-			dom_acontent = dom_acontent.replace (/^\s+/, '').replace (/\s+$/, '');
+			if (dom_acontent) {
+				dom_acontent = dom_acontent.replace (/^\s+/, '').replace (/\s+$/, '');
+			}
 			dom_ahref=welementattrs_ahref;
 			numberofposts=welementattrs_title.split(" ")[0];
 			a_node_present = true;	
@@ -232,6 +234,7 @@ function log_sendRequest(e) {
 		if (welementattrs_class != "") dom_path2 += "."+welementattrs_class;
 		dom_path2 += "/"
 
+		sibling_count = 0;
 
 		if (welement.nodeName == "LI" && mostInnerLi)
 		{
