@@ -1,7 +1,6 @@
 package org.bibsonomy.scraper.generic;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,7 +16,6 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexFile;
 import bibtex.parser.BibtexParser;
-import bibtex.parser.ParseException;
 
 /**
  * Search in sourcecode from the given page for bibtex and scrape it.
@@ -26,7 +24,7 @@ import bibtex.parser.ParseException;
  */
 public class BibtexScraper implements Scraper {
 	
-	private static final String INFO = "Scraper for bibtex, independent from URL";
+	private static final String INFO = "Scraper for BibTeX, independent from URL.";
 
 	public String getInfo() {
 		return INFO;
@@ -40,8 +38,8 @@ public class BibtexScraper implements Scraper {
 	 * 
 	 * @see org.bibsonomy.scraper.Scraper#scrape(org.bibsonomy.scraper.ScrapingContext)
 	 */
-	public boolean scrape(ScrapingContext sc)throws ScrapingException {
-		if(sc != null && sc.getUrl() != null){
+	public boolean scrape(ScrapingContext sc) throws ScrapingException {
+		if(sc != null && sc.getUrl() != null) {
 			
 			final String result = parseBibTeX(sc.getPageContent());
 
@@ -55,7 +53,7 @@ public class BibtexScraper implements Scraper {
 		return false;
 	}
 
-	private String parseBibTeX(final String pageContent) throws InternalFailureException {
+	private String parseBibTeX(final String pageContent) {
 		
 		if (pageContent == null) return null;
 		
@@ -79,10 +77,13 @@ public class BibtexScraper implements Scraper {
 					return potentialEntry.toString();
 				}
 			}
-		} catch (ParseException ex) {
-			throw new InternalFailureException(ex);
-		} catch (IOException ex) {
-			throw new InternalFailureException(ex);
+		} catch (final Exception ex) {
+			/*
+			 * be silent
+			 * This scraper shall not throw any exceptions, since it shall just
+			 * check, if the given page contains bibtex or not. If scraping is 
+			 * not possible, fail silently.
+			 */
 		}
 		return null;
 	}
@@ -100,12 +101,11 @@ public class BibtexScraper implements Scraper {
 		return false;
 	}
 	
-	public static ScrapingContext getTestContext(){
-		ScrapingContext context = new ScrapingContext(null);
+	public static ScrapingContext getTestContext() {
 		try {
-			context.setUrl(new URL("http://de.wikipedia.org/wiki/BibTeX"));
-		} catch (MalformedURLException ex) {
+			return new ScrapingContext(new URL("http://de.wikipedia.org/wiki/BibTeX"));
+		} catch (final MalformedURLException ex) {
+			return new ScrapingContext(null);
 		}
-		return context;
 	}
 }
