@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.Sort;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
@@ -21,7 +23,7 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.util.LuceneHelper;
-import org.bibsonomy.lucene.Search;
+import org.bibsonomy.lucene.LuceneSearchBookmarks;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -541,19 +543,23 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 		// get list of ids from lucene
 
-		final Search lucene = new Search();
+		final LuceneSearchBookmarks lucene = LuceneSearchBookmarks.getInstance();
 
 		ArrayList<Integer> contentIds = new ArrayList<Integer>();
 		try {
+			long starttimeQuery = System.currentTimeMillis();
+
 			contentIds = lucene.searchLucene('b', "contentid", search, groupId, limit, offset);
 
-			LOGGER.debug("Lucene query duration: "+lucene.getDuration()+" milliseconds");
+			long endtimeQuery = System.currentTimeMillis();
+			LOGGER.debug("Lucene complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
 		} catch (IOException ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
 
+		long starttimeTable = System.currentTimeMillis();
 		LuceneHelper luceneTTable = new LuceneHelper();
 		// create temp. table
 		luceneTTable.createTTable(session);
@@ -563,6 +569,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 		// store content ids in temp. table
 		luceneTTable.fillTTable(contentIds, session);
+		long endtimeTable = System.currentTimeMillis();
+		LOGGER.debug("Lucene: filled temp. table with requested lucene ids in " + (endtimeTable-starttimeTable) + "ms");
 
 
 		return this.bookmarkList("getBookmarkSearchLucene", param, session);

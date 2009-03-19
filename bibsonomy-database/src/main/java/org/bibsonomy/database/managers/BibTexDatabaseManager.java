@@ -22,7 +22,7 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.lucene.Search;
+import org.bibsonomy.lucene.LuceneSearchBookmarks;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -604,7 +604,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 		
 		// get list of ids from lucene
-			final Search lucene = new org.bibsonomy.lucene.Search();
+			final LuceneSearchBookmarks lucene = LuceneSearchBookmarks.getInstance();
 			final ArrayList<Integer> contentIds = lucene.searchLucene('p', "contentid", search, groupId, limit, offset);
 /*		
 		try {
