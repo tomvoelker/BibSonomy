@@ -20,15 +20,16 @@
 				<input type="text" size="20" name="author" id="inpf" value=""/>
 			</form>
 		</jsp:attribute>
-
+			
 		<jsp:attribute name="content">
 			<c:if test="${not empty command.authorList}">
+				<fmt:message var="posts" key="posts"/>
 				<div style="text-align:justify;" class="tags_first">
 				<c:forEach var="author" items="${command.authorList}">
 					<a	class="${mtl:getTagSize(author.ctr, command.maxCount)}" 
 						style="font-size:${mtl:authorFontSize(author)}%; padding:0.3em;" 
-						title="${author.ctr} posts" 
-						href="/author/${fn:escapeXml(author.lastName)}">
+						title="${fn:escapeXml(author.firstName)}${' '}${fn:escapeXml(author.lastName)}: ${author.ctr}${' '}${posts}" 
+						href="/author/${fn:escapeXml(author.firstName)}${'+'}${fn:escapeXml(author.lastName)}">
 					<c:out value="${author.lastName}"/>
 					</a>
 					<c:out value=" "/>
