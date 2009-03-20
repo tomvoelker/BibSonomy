@@ -83,6 +83,8 @@ public class UserUtils {
 	/**
 	 * Merges spaminformation into the groupId (MSB set iff isSpammer == true).
 	 * 
+	 * FIXME: can't handle {@link GroupID#INVALID}.
+	 * 
 	 * @param groupId
 	 *            the original groupId
 	 * @param isSpammer
