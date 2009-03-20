@@ -100,38 +100,38 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 		for (final SortCriterium crit : this.sortCriteria) {
 			try {
 				// author
-				if (crit.sortKey.equals(SortKey.AUTHOR)) {
+				if (SortKey.AUTHOR.equals(crit.sortKey)) {
 					// if author not present, take editor
 					final String personList1 = ( present(post1.getResource().getAuthor()) ? post1.getResource().getAuthor() : post1.getResource().getEditor() );
 					final String personList2 = ( present(post2.getResource().getAuthor()) ? post2.getResource().getAuthor() : post2.getResource().getEditor() );
 					return this.nomalizeAndCompare(BibTexUtils.getFirstPersonsLastName(personList1), BibTexUtils.getFirstPersonsLastName(personList2), crit.sortOrder);
 				}
 				// year
-				else if (crit.sortKey.equals(SortKey.YEAR)) {
+				else if (SortKey.YEAR.equals(crit.sortKey)) {
 					return this.compare(BibTexUtils.getYear(post1.getResource().getYear()), BibTexUtils.getYear(post2.getResource().getYear()), crit.sortOrder);
 				}
 				// editor
-				else if (crit.sortKey.equals(SortKey.EDITOR)) {
+				else if (SortKey.EDITOR.equals(crit.sortKey)) {
 					return this.nomalizeAndCompare(BibTexUtils.getFirstPersonsLastName(post1.getResource().getEditor()), BibTexUtils.getFirstPersonsLastName(post2.getResource().getEditor()), crit.sortOrder);				
 				}
 				// entrytype
-				else if (crit.sortKey.equals(SortKey.ENTRYTYPE)) {
+				else if (SortKey.ENTRYTYPE.equals(crit.sortKey)) {
 					return this.nomalizeAndCompare(post1.getResource().getEntrytype(), post2.getResource().getEntrytype(), crit.sortOrder);
 				}
 				// title
-				else if (crit.sortKey.equals(SortKey.TITLE)) {
+				else if (SortKey.TITLE.equals(crit.sortKey)) {
 					return this.nomalizeAndCompare(post1.getResource().getTitle(), post2.getResource().getTitle(), crit.sortOrder);
 				}		
 				// booktitle
-				else if (crit.sortKey.equals(SortKey.BOOKTITLE)) {
+				else if (SortKey.BOOKTITLE.equals(crit.sortKey)) {
 					return this.nomalizeAndCompare(post1.getResource().getBooktitle(), post2.getResource().getBooktitle(), crit.sortOrder);
 				}			
 				// school
-				else if (crit.sortKey.equals(SortKey.SCHOOL)) {
+				else if (SortKey.SCHOOL.equals(crit.sortKey)) {
 					return this.nomalizeAndCompare(post1.getResource().getSchool(), post2.getResource().getSchool(), crit.sortOrder);
 				}
 				// posting date
-				else if (crit.sortKey.equals(SortKey.DATE)) {
+				else if (SortKey.DATE.equals(crit.sortKey)) {
 					return this.compare(post1.getDate(), post2.getDate(), crit.sortOrder);
 				}
 				else {
@@ -160,7 +160,7 @@ public class BibTexPostComparator implements Comparator<Post<BibTex>>, Serializa
 		if (present(s2)) s2 = BibTexUtils.cleanBibTex(s2).trim();
 		// comparison
 		int comp = 0;
-		if (order.equals(SortOrder.ASC)) {
+		if (SortOrder.ASC.equals(order)) {
 			comp = StringUtils.secureCompareTo(s1, s2);
 		} else {
 			comp = StringUtils.secureCompareTo(s2, s1);
