@@ -66,6 +66,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -553,13 +554,18 @@ public class DBLogic implements LogicInterface {
 	/*
 	 * Adds/updates a post in the database.
 	 */
-	private <T extends Resource> String storePost(Post<T> post, final boolean update) {
+	private <T extends Resource> String storePost(final Post<T> post, final boolean update) {
 		final DBSession session = openSession();
 		try {
 			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
 			final String oldIntraHash = post.getResource().getIntraHash();
 			post.getResource().recalculateHashes();			
-			post = this.validateGroups(post, session);
+			this.validateGroups(post, session);
+			
+			/*
+			 * change group IDs to spam group IDs 
+			 */
+			PostUtils.setGroupIds(post, this.loginUser);
 
 			SystemTag stt;
 			for (Tag tag : post.getTags()) {
@@ -587,12 +593,11 @@ public class DBLogic implements LogicInterface {
 
 	/**
 	 * Check for each group of a post if the groups actually exist and if the posting user is allowed to post.  
-	 * If yes, insert the correct group ID
+	 * If yes, insert the correct group ID into the given post's groups.
 	 * 
-	 * @param post the incoming post
-	 * @return post the incoming post with the groupIDs filled in
+	 * @param post the post whose groups will be modified. 
 	 */
-	private <T extends Resource> Post<T> validateGroups(final Post<T> post, final DBSession session) {
+	private void validateGroups(final Post<? extends Resource> post, final DBSession session) {
 		/*
 		 * First check for "public" and "private".
 		 * Those two groups are special, they can't be assigned with another group. 
@@ -615,7 +620,6 @@ public class DBLogic implements LogicInterface {
 			} else {
 				group.setGroupId(GroupUtils.getPublicGroup().getGroupId());
 			}
-			return post;
 		}
 		/*
 		 * only non-special groups remain (including "friends") - check those
@@ -648,8 +652,6 @@ public class DBLogic implements LogicInterface {
 		if (groups.size() == 0) {
 			groups.add(GroupUtils.getPublicGroup());
 		}
-
-		return post;
 	}
 
 	@SuppressWarnings("unchecked")
