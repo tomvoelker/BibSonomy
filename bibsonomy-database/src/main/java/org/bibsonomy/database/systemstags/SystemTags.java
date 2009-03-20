@@ -19,7 +19,7 @@ public enum SystemTags {
 	/** days */
 	DAYS("days"),
 	/** relevant for */
-	RELEVANTFOR("relevantfor"),
+	RELEVANTFOR("relevantFor"),
 	/** year restriction */
 	YEAR("year"),
 	/** define search type */
