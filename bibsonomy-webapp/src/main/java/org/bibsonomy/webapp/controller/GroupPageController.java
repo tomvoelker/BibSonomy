@@ -147,7 +147,11 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 	 */
 	private boolean checkRelevantFor(List<String> tags){
 		for(String tag: tags){
-			if(tag.startsWith(SystemTags.RELEVANTFOR.getPrefix())){
+			/* 
+			 * let's not be too strict here if we find wrong capitalization (e.g. 
+			 * 'relevantfor' instead of 'relevantFor'
+			 */			
+			if(tag.toLowerCase().startsWith(SystemTags.RELEVANTFOR.getPrefix().toLowerCase())){
 				log.debug("SYSTEMTAG 'sys:relevantFor:' found --> forward to the relevant-for View");
 				return true;
 			}
