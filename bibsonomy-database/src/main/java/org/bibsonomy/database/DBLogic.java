@@ -620,33 +620,34 @@ public class DBLogic implements LogicInterface {
 			} else {
 				group.setGroupId(GroupUtils.getPublicGroup().getGroupId());
 			}
+		} else {
+			/*
+			 * only non-special groups remain (including "friends") - check those
+			 */
+			/*
+			 * retrieve the user's groups
+			 */
+			final Set<Integer> groupIds = new HashSet<Integer>(this.groupDBManager.getGroupIdsForUser(post.getUser().getName(), session));
+			/*
+			 * add "friends" group
+			 */
+			groupIds.add(GroupID.FRIENDS.getId());
+			/*
+			 * check that there are only groups the user is allowed to post to.
+			 */
+			for (final Group group: groups) {
+				final Group testGroup = this.groupDBManager.getGroupByName(group.getName().toLowerCase(), session);
+				if (testGroup == null) {
+					// group does not exist
+					throw new ValidationException("Group " + group.getName() + " does not exist");
+				}
+				if (!groupIds.contains(testGroup.getGroupId())) {
+					// the posting user is not a member of this group
+					throw new ValidationException("User " + post.getUser().getName() + " is not a member of group " + group.getName());
+				}
+				group.setGroupId(testGroup.getGroupId());
+			}		
 		}
-		/*
-		 * only non-special groups remain (including "friends") - check those
-		 */
-		/*
-		 * retrieve the user's groups
-		 */
-		final Set<Integer> groupIds = new HashSet<Integer>(this.groupDBManager.getGroupIdsForUser(post.getUser().getName(), session));
-		/*
-		 * add "friends" group
-		 */
-		groupIds.add(GroupID.FRIENDS.getId());
-		/*
-		 * check that there are only groups the user is allowed to post to.
-		 */
-		for (final Group group: groups) {
-			final Group testGroup = this.groupDBManager.getGroupByName(group.getName().toLowerCase(), session);
-			if (testGroup == null) {
-				// group does not exist
-				throw new ValidationException("Group " + group.getName() + " does not exist");
-			}
-			if (!groupIds.contains(testGroup.getGroupId())) {
-				// the posting user is not a member of this group
-				throw new ValidationException("User " + post.getUser().getName() + " is not a member of group " + group.getName());
-			}
-			group.setGroupId(testGroup.getGroupId());
-		}		
 
 		// no group specified -> make it public
 		if (groups.size() == 0) {
