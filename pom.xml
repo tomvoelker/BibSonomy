@@ -158,6 +158,27 @@
 			</roles>
 		</developer>
 	</developers>
+  	<mailingLists>
+    	<mailingList>
+      		<name>BibSononomy-Discuss: For BibSonomy users</name>
+      		<subscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss</subscribe>
+      		<unsubscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss</unsubscribe>
+      		<post>bibsonomy-discuss@cs.uni-kassel.de</post>
+      		<archive>https://mail.cs.uni-kassel.de/pipermail/bibsonomy-discuss</archive>
+      		<!--  
+      		<otherArchives>
+        		<otherArchive></otherArchive>
+      		</otherArchives>
+      		-->
+    	</mailingList>
+    	<mailingList>
+      		<name>Api-Discuss: for users and developers of the BibSonomy-API.</name>
+      		<subscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</subscribe>
+      		<unsubscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</unsubscribe>
+      		<post>api-discuss@cs.uni-kassel.de</post>
+      		<archive>https://mail.cs.uni-kassel.de/pipermail/api-discuss</archive>
+    	</mailingList>
+  	</mailingLists>	  	
 	<repositories>
 		<repository>
 			<id>biblicious</id>
@@ -299,6 +320,11 @@
 					-->
 				</configuration>
 			</plugin>
+			<plugin>
+        		<groupId>org.apache.maven.plugins</groupId>
+        		<artifactId>maven-war-plugin</artifactId>
+        		<version>2.0</version>
+        	</plugin>		
 		</plugins>
 	</build>
 	<reporting>
