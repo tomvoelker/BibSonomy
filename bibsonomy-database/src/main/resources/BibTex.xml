@@ -591,7 +591,7 @@
 	<select id="getBibTexByAuthorAndTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr as count,NULL AS `group`, NULL AS group_name
 		FROM bibtex b, tas t, bibhash h,
-		     (SELECT s.content_id FROM search_bibtex s, tas t1
+		     (SELECT s.content_id FROM search_bibtex s, <include refid="tagFromQuery"/>
 		      WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE)
 		            AND s.group = #groupType#
 		            AND s.content_id = t1.content_id
