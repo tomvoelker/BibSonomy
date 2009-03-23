@@ -290,7 +290,7 @@ public class DBLogic implements LogicInterface {
 				// can not add filter to BookmarkParam yet, but need to add group before buildParam
 
 				if (this.permissionDBManager.checkFilterPermissions(filter, this.loginUser)){
-					loginUser.addGroup(new Group(GroupID.ADMINSPAM));
+					loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 				}
 
 				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
@@ -1105,7 +1105,7 @@ public class DBLogic implements LogicInterface {
 		try {
 
 			if(this.permissionDBManager.checkFilterPermissions(filter, this.loginUser)){
-				loginUser.addGroup(new Group(GroupID.ADMINSPAM));
+				loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 			}
 
 			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
