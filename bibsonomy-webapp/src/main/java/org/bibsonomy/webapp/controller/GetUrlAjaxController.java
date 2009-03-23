@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.controller;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.commons.logging.Log;
@@ -38,7 +36,7 @@ public class GetUrlAjaxController extends AjaxController implements Minimalistic
 		return Views.AJAX;
 	}
 
-	private void getDetailsForUrl(GetUrlAjaxCommand command) {
+	private void getDetailsForUrl(final GetUrlAjaxCommand command) {
 
 		if ((command.getPageURL() == null) || (command.getPageURL().length() == 0)) return;
 
@@ -66,9 +64,7 @@ public class GetUrlAjaxController extends AjaxController implements Minimalistic
 				}
 			}
 
-		} catch (MalformedURLException ex) {
-			// ignore exceptions silently
-		} catch (IOException ex) {
+		} catch (final Exception ex) {
 			// ignore exceptions silently
 		}
 	}
