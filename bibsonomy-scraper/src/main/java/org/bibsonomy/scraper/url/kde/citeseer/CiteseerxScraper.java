@@ -21,7 +21,7 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 									   "Scientific Literature Digital Library and Search Engine " + href("http://citeseerx.ist.psu.edu/", "CiteSeerX");
 	
 	private static final String HOST = "citeseerx.ist.psu.edu";
-	private static final Pattern pattern = Pattern.compile("</h2>\\s*(@.*)\\s*</div>");
+	private static final Pattern pattern = Pattern.compile("<h2>BibTeX.*?</h2>\\s*<div class=\"content\">\\s*(@.*?)\\s*</div>", Pattern.MULTILINE | Pattern.DOTALL);
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
