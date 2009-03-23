@@ -13,6 +13,7 @@
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
+    <jsp:directive.attribute name="unpick" type="java.lang.Boolean" required="false" description="If TRUE, unpick links (instead of pick links) are shown."/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
     <jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>  
@@ -65,7 +66,7 @@
 			</c:if>		
 
 
-			<resources:bibtexs listView="${command.bibtex}" loginUserName="${loginUserName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+			<resources:bibtexs listView="${command.bibtex}" unpick="${empty unpick ? false : unpick}" loginUserName="${loginUserName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 
 		</jsp:attribute>
 	</layout:layout>

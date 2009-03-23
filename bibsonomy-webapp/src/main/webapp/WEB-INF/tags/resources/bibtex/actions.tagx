@@ -8,12 +8,13 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="noedittags" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="true" />
+    <jsp:directive.attribute name="unpick" type="java.lang.Boolean" required="false" description="If TRUE, unpick links (instead of pick links) are shown."/>
 
 	<c:if test="${command.context.userLoggedIn}">
 
 		<!-- PICK / UNPICK -->
 		<c:choose>
-			<c:when test="${not empty unpick}">
+			<c:when test="${not empty unpick and unpick}">
 				<!-- This means we are on a page which wants to show unpick links 
                      instead of pick links. Typically: the basket page.  -->
 				<c:url var="unpick_url" value="/Collector" context="${projectContext}">
