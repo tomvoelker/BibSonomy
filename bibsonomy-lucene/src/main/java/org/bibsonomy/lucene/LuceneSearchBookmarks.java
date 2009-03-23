@@ -133,12 +133,21 @@ public class LuceneSearchBookmarks {
 
 			QueryParser myParser = new QueryParser(lField_desc, analyzer);
 			Query query;
+			Sort sort = new Sort("date",true);
+/* sort first by date and then by score. This is not necessary, because there are 
+ * no or only few entries with same date (date is with seconds) 			
+  			Sort sort = new Sort(new SortField[]{
+												new SortField("date",true),
+												SortField.FIELD_SCORE	
+						});
+*/			
 			try {
 				query = myParser.parse(querystring);
 				LOGGER.debug("Lucene-Querystring (analyzed):  " + query.toString());
+				LOGGER.debug("Lucene-Query will be sorted by:  " + sort);
 
 				long starttimeQuery = System.currentTimeMillis();
-				final Hits hits = searcher.search(query,new Sort("date",true));
+				final Hits hits = searcher.search(query,sort);
 				long endtimeQuery = System.currentTimeMillis();
 				LOGGER.debug("Lucene pure query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
