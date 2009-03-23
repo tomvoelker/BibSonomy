@@ -40,19 +40,13 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 			}
 			
 			// no snippet selected
-			String page = sc.getPageContent();
+			final String page = sc.getPageContent();
 			
 			// search snippet in html
 			final Matcher matcher = pattern.matcher(page);
 			
-			if(matcher.find()){
-				String bibtex = matcher.group(1);
-				
-				// remove HTML entities
-				bibtex = bibtex.replace("<br/>", "\n");
-				bibtex = bibtex.replace("&nbsp;", " ");
-				
-				sc.setBibtexResult(bibtex);
+			if (matcher.find()) {
+				sc.setBibtexResult(matcher.group(1).replace("<br/>", "\n").replace("&nbsp;", " "));
 				return true;
 
 			}else
