@@ -12,6 +12,9 @@
 	
 <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
+<!-- to get correct hash IDs for URLs  -->
+<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
+  
 <html>
   <head>
     <title>${projectName}</title>
@@ -24,9 +27,9 @@
     <c:forEach var="post" items="${command.bibtex.list}">
       <c:set var="bib" value="${post.resource}"/>
       <p class="entry">
-        <!-- author --><c:if test="${!empty bib.author}"><span class="entry_author"><mtl:bibclean value="${bib.author}"/>. </span></c:if>
-        <!-- title  --><span class="entry_title"><a href="${projectHome}bibtex/2${bib.intraHash}/${fn:escapeXml(post.user.name)}"><mtl:bibclean value="${bib.title}"/></a>. </span>
-        <!-- editor --><c:if test="${!empty bib.editor}"><span class="entry_editor">In <mtl:bibclean value="${bib.editor}"/>, editor(s), </span></c:if>
+        <!-- author --><c:if test="${not empty bib.author}"><span class="entry_author"><mtl:bibclean value="${bib.author}"/>. </span></c:if>
+        <!-- title  --><span class="entry_title"><a href="${projectHome}bibtex/${hash.intra.id}${bib.intraHash}/${fn:escapeXml(post.user.name)}"><mtl:bibclean value="${bib.title}"/></a>. </span>
+        <!-- editor --><c:if test="${not empty bib.editor}"><span class="entry_editor">In <mtl:bibclean value="${bib.editor}"/>, editor(s), </span></c:if>
         <!-- journal, booktitle, series  -->
         <c:choose>
           <c:when test="${!empty bib.journal}">
@@ -43,12 +46,15 @@
         <span class="entry_vonupa">
          <c:if test="${!empty bib.volume}">(<mtl:bibclean value="${bib.volume}"/>)<c:if test="${!empty bib.pages and empty bib.number}">:</c:if></c:if><c:if test="${!empty bib.number}"><mtl:bibclean value="${bib.number}"/><c:if test="${!empty bib.pages}">:</c:if></c:if><c:if test="${!empty bib.pages}"><mtl:bibclean value="${bib.pages}"/>,</c:if>
         </span>
-        <!-- publisher --><c:if test="${!empty bib.publisher}"><span class="entry_publisher"><mtl:bibclean value="${bib.publisher}"/>,</span></c:if>
-        <!-- address   --><c:if test="${!empty bib.address}"><span class="entry_address"><mtl:bibclean value="${bib.address}"/>,</span></c:if>
-        <!-- year      --><c:if test="${!empty bib.year}"><span class="entry_year"><mtl:bibclean value="${bib.year}"/>.</span></c:if>
-       
-        <!-- tags & url -->
-   		<output:tagsUrl post="${post}"/>
+        <!-- publisher --><c:if test="${not empty bib.publisher}"><span class="entry_publisher"><mtl:bibclean value="${bib.publisher}"/>,</span></c:if>
+        <!-- address   --><c:if test="${not empty bib.address}"><span class="entry_address"><mtl:bibclean value="${bib.address}"/>,</span></c:if>
+        <!-- year      --><c:if test="${not empty bib.year}"><span class="entry_year"><mtl:bibclean value="${bib.year}"/>.</span></c:if>
+
+        <c:if test="${not command.notags}">
+          <!-- tags & url -->
+   		  <output:tagsUrl post="${post}"/>
+        </c:if>
+        
       </p>
     </c:forEach>
   
