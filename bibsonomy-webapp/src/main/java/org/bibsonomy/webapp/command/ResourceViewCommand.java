@@ -25,6 +25,7 @@ public class ResourceViewCommand extends BaseCommand {
 	private String sortPage = "none";
 	private String sortPageOrder = "asc";
 	private String duplicates = "yes";
+	private boolean notags = false;
 	
 	/** retrieve only tags without resources */
 	private boolean restrictToTags = false;
@@ -162,5 +163,13 @@ public class ResourceViewCommand extends BaseCommand {
 
 	public String getTagstype() {
 		return tagstype;
+	}
+
+	public boolean isNotags() {
+		return this.notags;
+	}
+
+	public void setNotags(boolean notags) {
+		this.notags = notags;
 	}
 }
