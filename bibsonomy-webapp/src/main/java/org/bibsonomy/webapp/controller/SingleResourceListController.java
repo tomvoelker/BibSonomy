@@ -1,10 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
 
-import java.util.List;
-
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 
@@ -21,9 +18,8 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	 * @param cmd
 	 */
 	protected <T extends SimpleResourceViewCommand> void postProcessAndSortList(T cmd, Class<? extends Resource> resourceType) {				
-		final List<Post<BibTex>> list = cmd.getBibtex().getList();
-		if (resourceType == BibTex.class && list != null) {
-			postProcessAndSortList(cmd, list);
+		if (resourceType == BibTex.class) {
+			postProcessAndSortList(cmd, cmd.getBibtex().getList());
 		}
 	}
 	

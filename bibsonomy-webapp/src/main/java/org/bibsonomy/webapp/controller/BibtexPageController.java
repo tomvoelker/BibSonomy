@@ -64,33 +64,30 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();		
 			this.setList(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage);
 			
-			/* 
-			 * retrieve total count with given hash 
-			 * (only for /bibtex/HASH)
-			 */
 			if (GroupingEntity.ALL.equals(groupingEntity)) {
+				/* 
+				 * retrieve total count with given hash 
+				 * (only for /bibtex/HASH)
+				 */
 				this.setTotalCount(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage, null);
+			} else if (GroupingEntity.USER.equals(groupingEntity)) {
+				/*
+				 * complete post details for a single post of a given user 
+				 * (only for /bibtex/HASH/USER)
+				 */
+
+				final ArrayList<Post<BibTex>> bibtex = new ArrayList<Post<BibTex>>();
+				for (final Post<BibTex> b : command.getBibtex().getList()){
+					bibtex.add((Post<BibTex>) this.logic.getPostDetails(b.getResource().getIntraHash(), b.getUser().getName()));
+				}			
+				command.getBibtex().setList(bibtex);			
 			}
+			/*
+			 * post process and sort list (e.g., insert open URL)
+			 */
+			this.postProcessAndSortList(command, resourceType);
+
 		}
-
-
-
-		/*
-		 * complete post details for a single post of a given user 
-		 * (only for /bibtex/HASH/USER)
-		 */
-		if (GroupingEntity.USER.equals(groupingEntity)) {
-			final ArrayList<Post<BibTex>> bibtex = new ArrayList<Post<BibTex>>();
-			for (final Post<BibTex> b : command.getBibtex().getList()){
-				bibtex.add((Post<BibTex>) this.logic.getPostDetails(b.getResource().getIntraHash(), b.getUser().getName()));
-			}			
-			command.getBibtex().setList(bibtex);			
-		}
-
-		/*
-		 * post process and sort list (e.g., insert open URL)
-		 */
-		this.postProcessAndSortList(command, BibTex.class);
 
 		/*
 		 * extract first bibtex; if list is empty, return blank page
@@ -98,8 +95,7 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		final BibTex firstBibtex;
 		if (command.getBibtex().getList() != null && command.getBibtex().getList().size() > 0){
 			firstBibtex = command.getBibtex().getList().get(0).getResource();			
-		}
-		else {
+		} else {
 			if ("html".equals(format)) {
 				return (GroupingEntity.USER.equals(groupingEntity) ? Views.BIBTEXDETAILS : Views.BIBTEXPAGE);				
 			} 
