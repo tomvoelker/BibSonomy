@@ -1,8 +1,10 @@
 package org.bibsonomy.webapp.controller;
 
 
-import org.apache.log4j.Logger;
+import java.util.List;
+
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 
@@ -12,7 +14,6 @@ import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
  * @author Jens Illig
  */
 public abstract class SingleResourceListController extends ResourceListController {
-	private static final Logger log = Logger.getLogger(SingleResourceListController.class);
 		
 	/**
 	 * do some post processing with the retrieved resources
@@ -20,8 +21,9 @@ public abstract class SingleResourceListController extends ResourceListControlle
 	 * @param cmd
 	 */
 	protected <T extends SimpleResourceViewCommand> void postProcessAndSortList(T cmd, Class<? extends Resource> resourceType) {				
-		if (resourceType == BibTex.class) {
-			postProcessAndSortList(cmd, cmd.getBibtex().getList());
+		final List<Post<BibTex>> list = cmd.getBibtex().getList();
+		if (resourceType == BibTex.class && list != null) {
+			postProcessAndSortList(cmd, list);
 		}
 	}
 	

@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.BibtexResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -25,12 +26,13 @@ import org.bibsonomy.webapp.view.Views;
 public class BibtexPageController extends SingleResourceListControllerWithTags implements MinimalisticController<BibtexResourceViewCommand>{
 
 	private static final Logger LOGGER = Logger.getLogger(BibtexPageController.class);
-	
+
 	public View workOn(BibtexResourceViewCommand command) {
-		
+
 		LOGGER.debug(this.getClass().getSigners());
-		this.startTiming(this.getClass(), command.getFormat());
-		
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);
+
 		/*
 		 * if no hash given -> error
 		 */
@@ -38,7 +40,7 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 			LOGGER.error("Invalid query /bibtex without hashvalue");
 			throw new MalformedURLSchemeException("error.bibtex_no_hash");
 		}
-		
+
 		/*
 		 * Set hash, username, grouping entity
 		 */
@@ -53,38 +55,43 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		 */
 		command.setResourcetype("bibtex");
 		this.handleTagsOnly(command, groupingEntity, requUser, null, null, hash, null, 0, 1000, null);
-		
+
 		/*
 		 * retrieve and set the requested bibtex(s)
 		 */
-		final int entriesPerPage = command.getListCommand(BibTex.class).getEntriesPerPage();		
-		this.setList(command, BibTex.class, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage);
-				
-		/* 
-		 * retrieve total count with given hash 
-		 * (only for /bibtex/HASH)
-		 */
-		if (GroupingEntity.ALL.equals(groupingEntity)) {
-			this.setTotalCount(command, BibTex.class, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage, null);
+		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+
+			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();		
+			this.setList(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage);
+			
+			/* 
+			 * retrieve total count with given hash 
+			 * (only for /bibtex/HASH)
+			 */
+			if (GroupingEntity.ALL.equals(groupingEntity)) {
+				this.setTotalCount(command, resourceType, groupingEntity, requUser, null, hash, null, null, null, entriesPerPage, null);
+			}
 		}
-		
+
+
+
 		/*
 		 * complete post details for a single post of a given user 
 		 * (only for /bibtex/HASH/USER)
 		 */
 		if (GroupingEntity.USER.equals(groupingEntity)) {
 			final ArrayList<Post<BibTex>> bibtex = new ArrayList<Post<BibTex>>();
-			for (Post<BibTex> b : command.getBibtex().getList()){
+			for (final Post<BibTex> b : command.getBibtex().getList()){
 				bibtex.add((Post<BibTex>) this.logic.getPostDetails(b.getResource().getIntraHash(), b.getUser().getName()));
 			}			
 			command.getBibtex().setList(bibtex);			
 		}
-		
+
 		/*
 		 * post process and sort list (e.g., insert open URL)
 		 */
 		this.postProcessAndSortList(command, BibTex.class);
-		
+
 		/*
 		 * extract first bibtex; if list is empty, return blank page
 		 */
@@ -93,37 +100,40 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 			firstBibtex = command.getBibtex().getList().get(0).getResource();			
 		}
 		else {
-			return (GroupingEntity.USER.equals(groupingEntity) ? Views.BIBTEXDETAILS : Views.BIBTEXPAGE);
+			if ("html".equals(format)) {
+				return (GroupingEntity.USER.equals(groupingEntity) ? Views.BIBTEXDETAILS : Views.BIBTEXPAGE);				
+			} 
+			return Views.getViewByFormat(format);
 		}
-		
+
 		/*
 		 * Set page title to title of first publication 
 		 */
 		command.setTitle(firstBibtex.getTitle());
-		
-		if (command.getFormat().equals("html")) {
+
+		if (format.equals("html")) {
 			this.endTiming();
-			
+
 			command.setPageTitle("bibtex :: " + command.getTitle() );
-			
+
 			if (GroupingEntity.USER.equals(groupingEntity)) { //bibtex/HASH/USER
 				/*
 				 * fetch posts of all users with the given hash, add users to related
 				 * users list				
 				 */
-				List<Post<BibTex>> allPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, firstBibtex.getInterHash(), null, null, 0, 1000, null);
+				final List<Post<BibTex>> allPosts = this.logic.getPosts(BibTex.class, GroupingEntity.ALL, null, null, firstBibtex.getInterHash(), null, null, 0, 1000, null);
 				for (Post<BibTex> post : allPosts) {
 					command.getRelatedUserCommand().getRelatedUsers().add(post.getUser());
 				}
-				
+
 				/* 
 				 * set "correct" count .This is the number of ALL users having the publication
 				 * with the interHash of firstBibtex in their collection. In allPosts, only public posts
 				 * are contained, hence it can be smaller.
 				 */
-				this.setTotalCount(command, BibTex.class, GroupingEntity.ALL, null, null, firstBibtex.getInterHash(), null, null, null, entriesPerPage, null);
+				this.setTotalCount(command, BibTex.class, GroupingEntity.ALL, null, null, firstBibtex.getInterHash(), null, null, null, 1000, null);
 				firstBibtex.setCount(command.getBibtex().getTotalCount());
-												
+
 				/*
 				 * show tags by all users for this resource; the ones by the given user
 				 * will be highlighted later
@@ -138,15 +148,15 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 			 */
 			this.setTags(command, BibTex.class, groupingEntity, requUser, null, null, hash, null, 0, 1000, null);			
 			return Views.BIBTEXPAGE;
-	
+
 		}
 		this.endTiming();
-		
+
 		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());
-		
+		return Views.getViewByFormat(format);
+
 	}
-	
+
 	public BibtexResourceViewCommand instantiateCommand() {
 		return new BibtexResourceViewCommand();
 	}
