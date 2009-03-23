@@ -45,10 +45,27 @@ public enum GroupID {
 	INVALID(-1),
 	
 	/**
-	 * group for admins to be able to view spam posts
+	 * public group for spam posts
 	 */
-	ADMINSPAM(-2147483648);
+	PUBLIC_SPAM(-2147483648),
+	/**
+	 * private group for spam posts
+	 */
+	PRIVATE_SPAM(-2147483647),
+	/**
+	 * public group for spam posts 
+	 */
+	FRIENDS_SPAM(-2147483646); 
 
+	/*
+	 * use logical OR (|) to set first bit
+	 */ 
+	private static final int CONST_SET_1ST_BIT = 0x80000000;
+	/*
+	 * use logical AND (&) to clear first bit
+	 */
+	private static final int CONST_CLEAR_1ST_BIT = 0x7FFFFFFF;
+	
 	private final int id;
 
 	private GroupID(final int id) {
@@ -73,7 +90,7 @@ public enum GroupID {
 		final GroupID group = valueOf(groupName.toUpperCase());
 		if (isSpecialGroupId(group.getId())) return group;
 		return null;
-	}
+	}	
 
 	/**
 	 * categorizes groupIds between special and nonspecial groups. special
@@ -111,5 +128,61 @@ public enum GroupID {
 		} catch (IllegalArgumentException ignore) {
 		}
 		return false;
+	}
+
+	/**
+	 * Merges spaminformation into the groupId (MSB set iff isSpammer == true).
+	 * 
+	 * FIXME: can't handle {@link GroupID#INVALID}.
+	 * 
+	 * @param groupId
+	 *            the original groupId
+	 * @param isSpammer
+	 *            true if the user is a spammer, otherwise false
+	 * @return groupId with potentially modified MSB
+	 */
+	public static int getGroupId(final int groupId, final boolean isSpammer) {
+		if (isSpammer) return getSpam(groupId);
+		/* 
+		 * Note: "return groupid" is not enough, since we want to use that to
+		 * unflag spammers posts, as well
+		 */ 
+		return getNonSpam(groupId);
+	}
+
+	private static int getNonSpam(final int groupId) {
+		return groupId & CONST_CLEAR_1ST_BIT;
+	}
+
+	/**
+	 * @param groupId
+	 * @return
+	 */
+	private static int getSpam(final int groupId) {
+		return groupId | CONST_SET_1ST_BIT;
+	}
+	
+	/**
+	 * Compares two group IDs ignoring if they're spam flagged or not. 
+	 * 
+	 * @param groupIdA
+	 * @param groupIdB
+	 * @return <code>true</code> if both IDs are equal, independent of their spam flag
+	 */
+	public static boolean equalsIgnoreSpam(final int groupIdA, final int groupIdB) {
+		final int a = getNonSpam(groupIdA);
+		final int b = getNonSpam(groupIdB);
+		return (a) == (b);
+	}
+	
+	/**
+	 * Compares two group IDs ignoring if they're spam flagged or not. 
+	 * 
+	 * @param groupIdA
+	 * @param groupIdB
+	 * @return <code>true</code> if both IDs are equal, independent of their spam flag
+	 */
+	public static boolean equalsIgnoreSpam(final GroupID groupIdA, final GroupID groupIdB) {
+		return equalsIgnoreSpam(groupIdA.getId(), groupIdB.getId());
 	}
 }

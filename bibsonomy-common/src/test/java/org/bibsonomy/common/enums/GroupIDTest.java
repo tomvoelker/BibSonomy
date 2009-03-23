@@ -95,4 +95,50 @@ public class GroupIDTest {
 			assertFalse(GroupID.isSpecialGroup(groupId));
 		}
 	}
+	
+
+	/**
+	 * tests getGroupId
+	 */
+	@Test
+	public void getGroupId() {
+		for (int i = 0; i < 42; i++) {
+			// flag
+			assertEquals(Integer.MIN_VALUE + i, GroupID.getGroupId(i, true));
+			assertEquals(i, GroupID.getGroupId(i, false));
+			// unflag
+			assertEquals(i, GroupID.getGroupId(GroupID.getGroupId(i, true), false));
+		}
+		
+		/*
+		 * should work independent of the given group (i.e., if it is
+		 * already modified or not)
+		 */
+		assertEquals(GroupID.PUBLIC.getId(), GroupID.getGroupId(GroupID.PUBLIC.getId(), false));
+		assertEquals(GroupID.PUBLIC.getId(), GroupID.getGroupId(GroupID.PUBLIC_SPAM.getId(), false));
+		
+		assertEquals(GroupID.PUBLIC_SPAM.getId(), GroupID.getGroupId(GroupID.PUBLIC.getId(), true));
+		assertEquals(GroupID.PUBLIC_SPAM.getId(), GroupID.getGroupId(GroupID.PUBLIC_SPAM.getId(), true));
+		
+		
+	}
+	
+	@Test
+	public void testEqualsIgnoreSpam() {
+		assertTrue(GroupID.equalsIgnoreSpam(GroupID.PRIVATE, GroupID.PRIVATE));
+		assertTrue(GroupID.equalsIgnoreSpam(GroupID.PRIVATE_SPAM, GroupID.PRIVATE_SPAM));
+		assertTrue(GroupID.equalsIgnoreSpam(GroupID.PRIVATE, GroupID.PRIVATE_SPAM));
+		assertTrue(GroupID.equalsIgnoreSpam(GroupID.PRIVATE_SPAM, GroupID.PRIVATE));
+		
+		assertTrue(GroupID.equalsIgnoreSpam(GroupID.PUBLIC, GroupID.PUBLIC));
+		assertTrue(GroupID.equalsIgnoreSpam(GroupID.PUBLIC_SPAM, GroupID.PUBLIC_SPAM));
+		assertTrue(GroupID.equalsIgnoreSpam(GroupID.PUBLIC, GroupID.PUBLIC_SPAM));
+		assertTrue(GroupID.equalsIgnoreSpam(GroupID.PUBLIC_SPAM, GroupID.PUBLIC));
+		
+		assertFalse(GroupID.equalsIgnoreSpam(GroupID.PUBLIC, GroupID.PRIVATE));
+		assertFalse(GroupID.equalsIgnoreSpam(GroupID.PUBLIC_SPAM, GroupID.PRIVATE_SPAM));
+		assertFalse(GroupID.equalsIgnoreSpam(GroupID.PRIVATE, GroupID.PUBLIC_SPAM));
+		assertFalse(GroupID.equalsIgnoreSpam(GroupID.PRIVATE_SPAM, GroupID.PUBLIC));
+	}
+	
 }
