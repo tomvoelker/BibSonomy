@@ -1447,7 +1447,7 @@ function unicodeCollation(ersterWert, zweiterWert){
     	       }
     	    }
     	}
-    	updateCollector(pickUnpick + "=" + encodeURI(param));
+    	updateCollector(pickUnpick + "=" + encodeURIComponent(param));
     	
     	breakEvent(evt);    	
     }    
@@ -1521,7 +1521,7 @@ function sendEditTags(obj, type, ckey, link) {
 	
 	$.ajax( {
 		type :"POST",
-		url :"/TagHandler?requTask=" + type + "&" + hash + "=" + encodeURI(tags.trim())
+		url :"/TagHandler?requTask=" + type + "&" + hash + "=" + encodeURIComponent(tags.trim())
 				+ "&ckey=" + ckey,
 		dataType :"html",
 		global :"false"
@@ -1557,7 +1557,7 @@ function sendEditTags(obj, type, ckey, link) {
 
 	for (i in tagList) {
 		var tag = document.createElement("a");
-		tags = encodeURI(tagList[i]);
+		tags = encodeURIComponent(tagList[i]);
 		tag.setAttribute("href", "/user/" + currUser + "/" + tags);
 		tag.appendChild(document.createTextNode(tagList[i] + " "));
 		parent.appendChild(tag);
