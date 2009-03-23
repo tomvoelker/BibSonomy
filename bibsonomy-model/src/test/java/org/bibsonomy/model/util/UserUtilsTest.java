@@ -68,20 +68,6 @@ public class UserUtilsTest {
 	}
 
 	/**
-	 * tests getGroupId
-	 */
-	@Test
-	public void getGroupId() {
-		for (int i = 0; i < 42; i++) {
-			// flag
-			assertEquals(Integer.MIN_VALUE + i, UserUtils.getGroupId(i, true));
-			assertEquals(i, UserUtils.getGroupId(i, false));
-			// unflag
-			assertEquals(i, UserUtils.getGroupId(UserUtils.getGroupId(i, true), false));
-		}
-	}
-
-	/**
 	 * tests setGroupsByGroupIDs
 	 */
 	@Test

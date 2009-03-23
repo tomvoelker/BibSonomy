@@ -2,6 +2,7 @@ package org.bibsonomy.model.util;
 
 import java.util.Set;
 
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -49,7 +50,7 @@ public class PostUtils {
 			/*
 			 * update the group id of the post
 			 */
-			group.setGroupId(UserUtils.getGroupId(group.getGroupId(), isSpammer));
+			group.setGroupId(GroupID.getGroupId(group.getGroupId(), isSpammer));
 		}
 	}
 	

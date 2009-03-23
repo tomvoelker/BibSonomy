@@ -267,7 +267,7 @@ public class Group {
 			/*
 			 * both groups have IDs set --> compare them by id
 			 */
-			final boolean groupIdEquals = this.groupId == other.groupId;
+			final boolean groupIdEquals = GroupID.equalsIgnoreSpam(this.groupId, other.groupId);
 			if (this.name != null && other.name != null) {
 				final boolean nameEquals = this.name.equalsIgnoreCase(other.name);
 				/*

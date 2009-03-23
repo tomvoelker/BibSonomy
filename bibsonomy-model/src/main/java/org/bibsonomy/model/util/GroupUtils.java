@@ -37,9 +37,15 @@ public class GroupUtils {
 
 
 	private static final Group INVALID_GROUP = getGroup("invalid", "invalid group", GroupID.INVALID, Privlevel.HIDDEN);
+
 	private static final Group FRIENDS_GROUP = getGroup("friends", "friends group", GroupID.FRIENDS, Privlevel.HIDDEN);
 	private static final Group PRIVATE_GROUP = getGroup("private", "private group", GroupID.PRIVATE, Privlevel.HIDDEN);
 	private static final Group PUBLIC_GROUP  = getGroup("public",  "public group",  GroupID.PUBLIC,  Privlevel.PUBLIC);
+
+	private static final Group FRIENDS_SPAM_GROUP = getGroup("friends", "friends group", GroupID.FRIENDS_SPAM, Privlevel.HIDDEN);
+	private static final Group PRIVATE_SPAM_GROUP = getGroup("private", "private group", GroupID.PRIVATE_SPAM, Privlevel.HIDDEN);
+	private static final Group PUBLIC_SPAM_GROUP  = getGroup("public",  "public group",  GroupID.PUBLIC_SPAM,  Privlevel.PUBLIC);
+
 
 	/**
 	 * Public group
@@ -68,6 +74,34 @@ public class GroupUtils {
 		return FRIENDS_GROUP;
 	}
 
+
+	/**
+	 * Public spam group
+	 * 
+	 * @return public group
+	 */
+	public static Group getPublicSpamGroup() {
+		return PUBLIC_SPAM_GROUP;
+	}
+
+	/**
+	 * Private spam group
+	 * 
+	 * @return private group
+	 */
+	public static Group getPrivateSpamGroup() {
+		return PRIVATE_SPAM_GROUP;
+	}
+
+	/**
+	 * Friends spam group
+	 * 
+	 * @return friends group
+	 */
+	public static Group getFriendsSpamGroup() {
+		return FRIENDS_SPAM_GROUP;
+	}
+
 	/**
 	 * Invalid group
 	 * 
@@ -87,28 +121,28 @@ public class GroupUtils {
 	 * @return <code>true</code> if the group is exclusively be "viewable for". 
 	 */
 	public static boolean isExclusiveGroup(final Group group) {
-		/*
-		 * FIXME: support SPAM groups! (possibly by modifying Group.equals()?)
-		 */
-		return getPrivateGroup().equals(group) || getPublicGroup().equals(group);
+		return (
+				getPrivateGroup().equals(group) || 
+				getPublicGroup().equals(group)
+		);
 	}
-	
+
 	/**
 	 * Checks if the given group ID is an "exclusive" group ID, i.e., a group which can't 
 	 * be chosen as "viewable for" together with another group - basically the 
 	 * groups "private" and "public". Use this method because it also checks spam
 	 * groups! 
 	 *  
-	 * @param group
+	 * @param groupId
 	 * @return <code>true</code> if the group is exclusively "viewable for" 
 	 */
-	public static boolean isExclusiveGroup(final int group) {
-		/*
-		 * FIXME: support SPAM groups! (possibly by modifying Group.equals()?)
-		 */		
-		return getPrivateGroup().getGroupId() == group || getPublicGroup().getGroupId() == group;
+	public static boolean isExclusiveGroup(final int groupId) {
+		return (
+				GroupID.equalsIgnoreSpam(getPrivateGroup().getGroupId(), groupId) || 
+				GroupID.equalsIgnoreSpam(getPublicGroup().getGroupId(), groupId)
+		);
 	}
-	
+
 	/**
 	 * Checks if the given groups contain an "exclusive" group, i.e., a group which 
 	 * can't be chosen as "viewable for" together with another group - basically the 
@@ -124,7 +158,7 @@ public class GroupUtils {
 		 */
 		return groups.contains(getPublicGroup()) || groups.contains(getPrivateGroup());
 	}
-	
+
 	/**
 	 * Helper method that returns a new {@link Group} object.
 	 */

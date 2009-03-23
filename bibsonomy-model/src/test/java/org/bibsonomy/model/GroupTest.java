@@ -263,6 +263,19 @@ public class GroupTest {
 
 		}
 	}
+	
+	@Test
+	public void testEqualsSpam() {
+		final Group first = new Group("public");
+		final Group second = new Group("publiC");
+		
+		first.setGroupId(GroupID.PRIVATE.getId());
+		second.setGroupId(GroupID.PRIVATE_SPAM.getId());
+		
+		assertEquals(first, second);
+		
+	}
+
 
 	/**
 	 * Hashcode must be compatible to equals ...

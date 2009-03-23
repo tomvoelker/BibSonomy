@@ -23,12 +23,14 @@
 
 package org.bibsonomy.model.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.Group;
-import static org.bibsonomy.util.ValidationUtils.present;
 import org.junit.Test;
 
 /**
@@ -61,4 +63,27 @@ public class GroupUtilsTest {
 //		assertNotSame(g1, g2);
 		assertSame(g1, g2);
 	}
+	
+	@Test
+	public void testIsExclusiveGroupGroup() {
+		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.getPrivateGroup()));
+		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.getPrivateSpamGroup()));
+		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.getPublicGroup()));
+		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.getPublicSpamGroup()));
+		assertFalse(GroupUtils.isExclusiveGroup(GroupUtils.getFriendsGroup()));
+		assertFalse(GroupUtils.isExclusiveGroup(GroupUtils.getFriendsSpamGroup()));
+	}
+	
+	@Test
+	public void testIsExclusiveGroupGroupId() {
+		assertTrue(GroupUtils.isExclusiveGroup(GroupID.PRIVATE.getId()));
+		assertTrue(GroupUtils.isExclusiveGroup(GroupID.PRIVATE_SPAM.getId()));
+		assertTrue(GroupUtils.isExclusiveGroup(GroupID.PUBLIC.getId()));
+		assertTrue(GroupUtils.isExclusiveGroup(GroupID.PUBLIC_SPAM.getId()));
+		assertFalse(GroupUtils.isExclusiveGroup(GroupID.FRIENDS.getId()));
+		assertFalse(GroupUtils.isExclusiveGroup(GroupID.FRIENDS_SPAM.getId()));
+	}
+	
+	
+	
 }

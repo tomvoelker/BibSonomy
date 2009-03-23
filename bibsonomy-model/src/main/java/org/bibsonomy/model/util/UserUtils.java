@@ -80,28 +80,6 @@ public class UserUtils {
 		return randomBytes;
 	}
 
-	/**
-	 * Merges spaminformation into the groupId (MSB set iff isSpammer == true).
-	 * 
-	 * FIXME: can't handle {@link GroupID#INVALID}.
-	 * 
-	 * @param groupId
-	 *            the original groupId
-	 * @param isSpammer
-	 *            true if the user is a spammer, otherwise false
-	 * @return groupId with potentially modified MSB
-	 */
-	public static int getGroupId(final int groupId, final boolean isSpammer) {
-		// use logical OR (|) to set first bit
-		final int CONST_SET_1ST_BIT = 0x80000000;
-		// use logical AND (&) to clear first bit
-		final int CONST_CLEAR_1ST_BIT = 0x7FFFFFFF;
-
-		if (isSpammer) return groupId | CONST_SET_1ST_BIT;
-		// Note: "return groupid" is not enough, since we want to use that to
-		// unflag spammers posts, as well
-		return groupId & CONST_CLEAR_1ST_BIT;
-	}
 
 	/**
 	 * Helper function to set a user's groups by a list of group IDs
