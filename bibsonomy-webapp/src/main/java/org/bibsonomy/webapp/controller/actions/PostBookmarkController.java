@@ -303,8 +303,9 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		posts.add(post);
 		/*
 		 * Overwrite the date with the current date, if not posted by the DBLP user.
+		 * If DBLP does not provide a date, we have to set the date, too.
 		 */
-		if (!UserUtils.isDBLPUser(loginUserName)) {
+		if (!UserUtils.isDBLPUser(loginUserName) || post.getDate() == null) {
 			/*
 			 * update date TODO: don't we want to keep the posting date unchanged
 			 * and only update the date? --> actually, this does currently not work,
@@ -441,8 +442,9 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 		/*
 		 * Overwrite the date with the current date, if not posted by the DBLP user.
+		 * If DBLP does not provide a date, we have to set the date, too.
 		 */
-		if (!UserUtils.isDBLPUser(loginUserName)) {
+		if (!UserUtils.isDBLPUser(loginUserName) || post.getDate() == null) {
 			post.setDate(new Date());
 		}
 
