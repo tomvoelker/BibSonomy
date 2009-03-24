@@ -14,6 +14,8 @@ import org.bibsonomy.model.Resource;
  */
 public class RecQueryParam {
 	private Long qid;
+	/** ID for mapping posts to recommender queries */
+	private int pid;
 	private Integer contentType;
 	private String userName;
 	private Timestamp timeStamp;
@@ -62,5 +64,11 @@ public class RecQueryParam {
 	}
 	public Integer getContentType() {
 		return contentType;
+	}
+	public void setPid(int pid) {
+		this.pid = pid;
+	}
+	public int getPid() {
+		return pid;
 	}
 }

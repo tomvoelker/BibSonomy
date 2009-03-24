@@ -19,6 +19,7 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.recommender.params.RecQueryParam;
 import org.bibsonomy.recommender.params.RecSettingParam;
 import org.bibsonomy.recommender.params.SelectorSettingParam;
@@ -67,7 +68,7 @@ public class DBAccessTest {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
 		// store and retrieve query
-		Long qid = DBAccess.addQuery(post.getUser().getName(), ts, post);
+		Long qid = DBAccess.addQuery(post.getUser().getName(), ts, post, MultiplexingTagRecommender.getUnknownPID());
 		RecQueryParam retVal = DBAccess.getQuery(qid);
 		
 		String    queryUN = retVal.getUserName();

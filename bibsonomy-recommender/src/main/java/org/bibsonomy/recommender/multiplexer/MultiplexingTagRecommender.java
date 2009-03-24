@@ -46,6 +46,10 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	
 	private long queryTimeout = 100;                // timeout for querying distant recommenders
 	private RecommendationSelector resultSelector;
+	
+	/** indicates that post identifier was not given */
+	public static int UNKNOWN_POSTID = -1;
+	
 	/**
 	 * constructor.
 	 */
@@ -131,9 +135,26 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	public String getInfo() {
 		return "Multiplexing recommender for querying several independent recommenders.";
 	}
-
+	
 	public SortedSet<RecommendedTag> getRecommendedTags(
 			Post<? extends Resource> post) {
+		return getRecommendedTags(post, UNKNOWN_POSTID);
+    };
+    
+    /**
+     * Extends TagRecommender's interface with a parameter which is used to map
+     * recommender queries to posts in BibSonomy:
+     *   When the postBookmark-Form is displayed, a random postID is generated and
+     *   passed to the recommender via a hidden field.
+     *   After storing the post, the postBookmarkController calls updateQuery()
+     *   with the corresponding username, date, postID and Hash.
+     *   
+     * @param post The post for which tag recommendations are requested.
+     * @param postID ID for mapping posts to recommender queries
+     * @return Set of recommended Tags.
+     */
+	public SortedSet<RecommendedTag> getRecommendedTags(
+			Post<? extends Resource> post, int postID) {
 		log.debug("querying["+localRecommenders+", "+distRecommenders+"]");
 		// SortedSet holding recommenders results
 		SortedSet<RecommendedTag> result = null;
@@ -147,7 +168,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 
 		try {
 			// each set of queries is identified by an unique id:
-			qid = DBAccess.addQuery(post.getUser().getName(), ts, post);
+			qid = DBAccess.addQuery(post.getUser().getName(), ts, post, postID);
 			
 			// query remote recommenders
 			for( TagRecommenderConnector con: getDistRecommenders() ) {
@@ -348,5 +369,13 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		public void abortQuery() {
 			abort = true;
 		}
+	}
+
+	/**
+	 * Get id which indicates that a recommender was not associated with a post.
+	 * @return UNKNOWN_POSTID
+	 */
+	public static int getUnknownPID() {
+		return UNKNOWN_POSTID;
 	}
 }

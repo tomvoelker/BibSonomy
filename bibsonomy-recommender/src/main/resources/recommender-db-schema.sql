@@ -1,10 +1,20 @@
 DROP TABLE IF EXISTS log_recommender;
 CREATE TABLE log_recommender(
 	query_id BIGINT NOT NULL AUTO_INCREMENT,
+	post_id INT NOT NULL DEFAULT '-1',
 	user_name VARCHAR(30) NOT NULL,
 	date TIMESTAMP NOT NULL,
 	content_type TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
 	PRIMARY KEY (query_id)
+) DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS recommender_postmap;
+CREATE TABLE recommender_postmap(
+	post_id INT NOT NULL,
+	user_name VARCHAR(30) NOT NULL,
+	date DATETIME NOT NULL,
+	hash char(32) NOT NULL,
+	PRIMARY KEY (post_id, user_name, date)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS recommender_result;

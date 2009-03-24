@@ -22,6 +22,7 @@ import org.bibsonomy.recommender.multiplexer.strategy.RecommendationSelector;
 import org.bibsonomy.recommender.params.Pair;
 import org.bibsonomy.recommender.params.PostGuess;
 import org.bibsonomy.recommender.params.PostParam;
+import org.bibsonomy.recommender.params.PostRecParam;
 import org.bibsonomy.recommender.params.QueryGuess;
 import org.bibsonomy.recommender.params.RecQueryParam;
 import org.bibsonomy.recommender.params.RecQuerySettingParam;
@@ -104,11 +105,13 @@ public class DBAccess extends AbstractDatabaseManager {
 	@SuppressWarnings("unchecked")
 	public static Long addQuery(
 			String userName, Timestamp date, 
-			Post<? extends Resource> post) throws SQLException {
+			Post<? extends Resource> post,
+			int postID) throws SQLException {
 		// construct parameter
 		RecQueryParam recQuery = new RecQueryParam();
 		recQuery.setTimeStamp(date);
 		recQuery.setUserName(userName);
+		recQuery.setPid(postID);
 		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) )
 			recQuery.setContentType(new Integer(1));
 		else if( BibTex.class.isAssignableFrom(post.getResource().getClass()) )
@@ -254,6 +257,27 @@ public class DBAccess extends AbstractDatabaseManager {
 		return tags.size();
 	}
 
+	/**
+	 * Connect postID with recommendation.
+	 *    For each post process an unique id is generated. This is used for mapping 
+	 *    posts to recommendations and vice verca.  
+	 * @param post post as stored in bibsonomy
+	 * @param post's random id as generated in PostBookmarkController
+	 * @throws SQLException 
+	 */
+	public static void connectWithPost(Post<? extends Resource> post, int postID) throws SQLException {
+		SqlMapClient sqlMap = getSqlMapInstance();
+
+		PostRecParam postMap = new PostRecParam();
+		postMap.setUserName(post.getUser().getName());
+		postMap.setDate(post.getDate());
+		postMap.setPostID(postID);
+		postMap.setHash(post.getResource().getIntraHash());
+
+		// insert data
+		sqlMap.insert("connectWithPost", postMap);
+	};
+	
 	/**
 	 * Get sorted list of tags recommended in a given query by a given recommender. 
 	 * 

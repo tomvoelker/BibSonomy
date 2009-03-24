@@ -287,8 +287,8 @@
 	    | Add recommender query.
 	  	+-->
 	<insert id="addRecommenderQuery" parameterClass="recQuery">
-		INSERT INTO log_recommender (user_name, date, content_type)
-		VALUES ( #userName#, #timeStamp#, #contentType# )
+		INSERT INTO log_recommender (user_name, date, content_type, post_id)
+		VALUES ( #userName#, #timeStamp#, #contentType#, #pid# )
  		<selectKey resultClass="java.lang.Long" keyProperty="qid">
 			SELECT LAST_INSERT_ID() AS value
 	    </selectKey>
@@ -320,7 +320,15 @@
 		VALUES ( #qid#, #score#, #confidence#, #tagName# )
 	</insert>
 	
-	
+	<!--+
+	    | Connect postID with recommmendation
+	    +-->
+	<insert id="connectWithPost" parameterClass="postRecParam">
+	    INSERT INTO recommender_postmap
+	       (post_id, user_name, date, hash)
+	    VALUES ( #postID#, #userName#, #date#, #hash# )
+	</insert>
+
 	<!--+
 		| Insert Bookmark 
 	 	+-->
