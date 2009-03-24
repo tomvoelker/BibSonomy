@@ -22,7 +22,7 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 	    	<script type="text/javascript" src="${resdir}/javascript/util.js">&amp;nbsp;</script>
 	    	<script type="text/javascript" src="${resdir}/javascript/recommender.js">&amp;nbsp;</script>
-	    	<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js"></script> 
+	    	<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js">&amp;nbsp;</script> 
 	    </jsp:attribute>
 	    
 		<jsp:attribute name="heading">
