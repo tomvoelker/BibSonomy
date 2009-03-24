@@ -42,14 +42,17 @@ public class ACMBasicScraperTest {
 	
 	
 	@Test
-	@Ignore
+	//@Ignore
 	public void test2() throws MalformedURLException {
-		final String url = "http://portal.acm.org/citation.cfm?id=500737.500755";
+		
+		String url = "http://portal.acm.org/citation.cfm?id=500737.500755"; // abstract works
+		url = "http://portal.acm.org/citation.cfm?id=1364171"; // abstract missing
 		final ACMBasicScraper acm = new ACMBasicScraper();
 		final ScrapingContext sc = new ScrapingContext(new URL(url));
 		
 		try {
 			acm.scrape(sc);
+			System.out.println(sc.getBibtexResult());
 		} catch (ScrapingException ex) {
 			Assert.fail(ex.getMessage());
 		}
