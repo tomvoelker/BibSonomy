@@ -48,6 +48,11 @@ public class EditBookmarkCommand extends PostCommand {
 
 	private Map<String,Map<String,List<String>>> relevantTagSets;
 	
+	/**
+	 * stores an id, e.g. for mapping recommendations to posts
+	 */
+	private int postID;
+	
 	public Post<Bookmark> getPost() {
 		return this.post;
 	}
@@ -192,5 +197,13 @@ public class EditBookmarkCommand extends PostCommand {
 
 	public void setContainsComma(boolean containsComma) {
 		this.containsComma = containsComma;
+	}
+
+	public void setPostID(int postID) {
+		this.postID = postID;
+	}
+
+	public int getPostID() {
+		return postID;
 	}
 }

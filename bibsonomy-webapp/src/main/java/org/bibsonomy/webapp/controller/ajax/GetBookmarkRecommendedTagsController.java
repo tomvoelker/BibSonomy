@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
@@ -18,6 +19,7 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.recommender.tags.TagRecommender;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
@@ -41,7 +43,7 @@ public class GetBookmarkRecommendedTagsController extends AjaxController impleme
 	/**
 	 * Provides tag recommendations to the user.
 	 */
-	private TagRecommender tagRecommender = null;
+	private MultiplexingTagRecommender tagRecommender = null;
 	
 	//------------------------------------------------------------------------
 	// MinimalisticController interface
@@ -93,7 +95,8 @@ public class GetBookmarkRecommendedTagsController extends AjaxController impleme
 			 * get the recommended tags for the post from the command
 			 */
 			if (getTagRecommender() != null)	{
-				command.setRecommendedTags(getTagRecommender().getRecommendedTags(command.getPost()));
+				SortedSet<RecommendedTag> result = getTagRecommender().getRecommendedTags(command.getPost(), command.getPostID()); 
+				command.setRecommendedTags(result);
 				Renderer renderer = XMLRenderer.getInstance();
 				StringWriter sw = new StringWriter(100);
 				renderer.serializeRecommendedTags(sw, command.getRecommendedTags());
@@ -133,11 +136,11 @@ public class GetBookmarkRecommendedTagsController extends AjaxController impleme
 	//------------------------------------------------------------------------
 	// Getter/Setter
 	//------------------------------------------------------------------------
-	public void setTagRecommender(TagRecommender tagRecommender) {
+	public void setTagRecommender(MultiplexingTagRecommender tagRecommender) {
 		this.tagRecommender = tagRecommender;
 	}
 
-	public TagRecommender getTagRecommender() {
+	public MultiplexingTagRecommender getTagRecommender() {
 		return tagRecommender;
 	}
 

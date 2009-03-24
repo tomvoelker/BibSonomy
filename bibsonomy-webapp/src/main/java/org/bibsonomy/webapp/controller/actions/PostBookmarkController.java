@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,6 +32,8 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
+import org.bibsonomy.recommender.DBAccess;
+import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -87,6 +90,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * set default values.
 		 */
 		command.getPost().getResource().setUrl("http://");
+		command.setPostID(MultiplexingTagRecommender.getUnknownPID());
 		return command;
 	}
 
@@ -143,6 +147,13 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * initialize relevantFor-tags FIXME: candidate for system tags
 		 */
 		initRelevantForTags(command, post);
+		
+		/*
+		 * For each post process an unique identifier is generated. 
+		 * This is used for mapping posts to recommendations.
+		 */
+		if( command.getPostID()==MultiplexingTagRecommender.UNKNOWN_POSTID )
+			command.setPostID((int)Math.round((Math.random()*Integer.MAX_VALUE)));
 
 		/*
 		 * decide, what to do
@@ -326,6 +337,18 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			log.warn("could not update post");
 			return Views.ERROR;
 		}
+		
+		/*
+		 * update recommender table such that recommendations are linked to the final post
+		 */
+		try {
+			DBAccess.connectWithPost(posts.get(0), command.getPostID());
+		} catch (SQLException ex) {
+			log.error("Could connect post with recommendations.", ex);
+			errors.reject("error.post.redirect", new Object[]{ex.getMessage()}, "Could connect post with recommendations: " + ex.getMessage());
+			return Views.ERROR;
+		}
+		
 		/*
 		 * leave if and reach final redirect
 		 */
@@ -459,6 +482,17 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		log.debug("finally: creating a new post in the DB");
 		final String createPosts = logic.createPosts(posts).get(0);
 		log.debug("created post: " + createPosts);
+		
+		/*
+		 * update recommender table such that recommendations are linked to the final post
+		 */
+		try {
+			DBAccess.connectWithPost(posts.get(0), command.getPostID());
+		} catch (SQLException ex) {
+			log.error("Could connect post with recommendations.", ex);
+			errors.reject("error.post.redirect", new Object[]{ex.getMessage()}, "Could connect post with recommendations: " + ex.getMessage());
+			return Views.ERROR;
+		}
 
 		return finalRedirect(command.isJump(), loginUserName, post.getResource().getUrl());
 	}
