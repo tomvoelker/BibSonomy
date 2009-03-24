@@ -350,6 +350,7 @@
 		<value>jump</value>
 		<value>relevantGroups</value>
 		<value>acceptComma</value>
+		<value>postID</value>								
 	</util:list>
 
     <!--  #################### controller #################### -->
