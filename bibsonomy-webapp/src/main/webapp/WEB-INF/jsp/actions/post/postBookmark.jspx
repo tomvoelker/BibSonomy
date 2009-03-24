@@ -22,6 +22,7 @@
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
 	    	<script type="text/javascript" src="${resdir}/javascript/util.js">&amp;nbsp;</script>
 	    	<script type="text/javascript" src="${resdir}/javascript/recommender.js">&amp;nbsp;</script>
+	    	<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js"></script> 
 	    </jsp:attribute>
 	    
 		<jsp:attribute name="heading">
@@ -139,7 +140,7 @@
                         </c:if>
 
                       
-                	<form:form action="/postBookmark" method="post">
+                	<form:form id="postBookmarkForm" action="/postBookmark" method="post">
 	                	<div id="fsform">
 	                		<fieldset class="fsOuter">
 								<fieldset class="fsInner">
@@ -174,6 +175,7 @@
 									<div class="clearfloat p">
 										<c:set var="save"><fmt:message key="save"/></c:set>
 		                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
+		                                <input type="hidden" name="postID" value="${command.postID}"/>
 		                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 	                                       <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
 		                                <form:hidden path="intraHashToUpdate"/>
@@ -255,8 +257,11 @@
         <script type="text/javascript">
       //<mtl:cdata>
     <![CDATA[   
+      /* try to get title from url */
       checkUrlForTitle();
 
+      /* get recommended tags */
+      /*
       var queryString = "";
       if( getPostParameter("${pageContext.request.queryString}", "intraHashToUpdate") ) {
         queryString = "url="+document.getElementById('post.resource.url').value;
@@ -266,12 +271,46 @@
       $.ajax({
         type: "GET",
         url: "/ajax/getBookmarkRecommendedTags",
-        data: queryString,
+        data: queryString+"&postID=${command.postID}",
         success: function(msg){
           handleRecommendedTags(msg)
         }
       });
+      */
+      
+      /* setup jQuery to update recommender with form data */
+      var options = { 
+	            url:  '/ajax/getBookmarkRecommendedTags',   // target element(s) to be updated with server response 
+	            success:       showResponse     // post-submit callback 
+	            	     
+	            // other available options: 
+	            //url:       url         // override for form's 'action' attribute 
+	            //type:      type        // 'get' or 'post', override for form's 'method' attribute 
+	            //dataType:  null        // 'xml', 'script', or 'json' (expected server response type) 
+	            //clearForm: true        // clear all form fields after successful submit 
+	            //resetForm: true        // reset the form after successful submit 
+	     
+	            // $.ajax options can be used here too, for example: 
+	            //timeout:   3000 
+	        }; 
+      $('#postBookmarkForm').ajaxSubmit(options); 
 
+	  /* jQuery's response containing recommended tags */
+	  function showResponse(responseText, statusText)  { 
+	    // for normal html responses, the first argument to the success callback 
+	    // is the XMLHttpRequest object's responseText property 
+	 
+	    // if the ajaxSubmit method was passed an Options Object with the dataType 
+	    // property set to 'xml' then the first argument to the success callback 
+	    // is the XMLHttpRequest object's responseXML property 
+	 
+	    // if the ajaxSubmit method was passed an Options Object with the dataType 
+	    // property set to 'json' then the first argument to the success callback 
+	    // is the json data object returned by the server 
+	    handleRecommendedTags(responseText);
+	  } 
+      
+      /* get user's tags for suggestions */
       $.ajax({
           type: "GET",
           url: "/json/tags/user/${command.context.loginUser.name}",
@@ -280,8 +319,7 @@
                       populateSuggestionsFromJSON(data);
                      }
       });
-      
-    
+
       function scraping(){
         if(document.getElementById("post.resource.url").value.length > 'http://'.length){
           var req = ajaxInit();

@@ -91,15 +91,13 @@
 	        button.setAttribute("src","${resdir}/image/button_reload-inactive.png");
 
 	        clearTagField();			
-		    
-	        $.ajax({
-	            type: "GET",
-	            url: "/ajax/getBookmarkRecommendedTags",
-	            data: queryString,
-	            success: function(msg){
-	              handleRecommendedTags(msg)
-	            }
-	          });
+
+	        /* setup jQuery to update recommender with form data */
+	        var options = { 
+	  	            url:  '/ajax/getBookmarkRecommendedTags',   // target element(s) to be updated with server response 
+	  	            success:       showResponse     // post-submit callback 
+	  	        }; 
+	        $('#postBookmarkForm').ajaxSubmit(options); 
 	    }
       ]]>
       //</mtl:cdata>
