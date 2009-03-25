@@ -76,6 +76,24 @@ public class UrlUtils {
 	}
 	
 	/**
+	 * Check whether given url is valid.
+	 * @param url The url to test
+	 */
+	public static boolean isValid(String url) {
+		/*
+		 * clean url
+		 */
+		url = UrlUtils.cleanUrl(url);
+		
+		/*
+		 * check url
+		 */
+		if (url == null || url.equals("http://") || url.startsWith(UrlUtils.BROKEN_URL)) 
+			return false;
+		return true;
+	}
+	
+	/**
 	 * Set a parameter in a given URL-String
 	 * 
 	 * ATTENTION: to ease parsing, fragment identifiers are not supported
