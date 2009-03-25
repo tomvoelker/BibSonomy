@@ -144,6 +144,34 @@
   </tr>
 </c:if>
 
+
+
+
+
+<tr>
+  <td class="expl">
+    relevant for
+  </td>
+  <td> 
+            <!-- select box for "other" groups -->
+            <select style="float:left; margin-right: 1ex;" id="relevantGroups" size="3" multiple="true">
+              <option value="">--please select--</option>
+              <c:forEach var="group" items="${user.groups}">
+                <option value="${f:escapeXml(group)}"><c:out value="${group}"/></option> 
+              </c:forEach>
+            </select>
+   </td>
+   <td class="expl_s">
+     If your post is interesting for one or more groups, you can mark your post "relevant" for these groups.
+   </td>
+</tr>
+
+
+
+
+
+
+
 <tr><td colspan="3"><hr style="margin: 20px 0px 20px 0px;"></td></tr>
 
 <tr>
