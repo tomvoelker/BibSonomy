@@ -32,7 +32,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	private static final String PATTERN_DOWNLOAD_PAGE_LINK = "<a href=\"(/science\\?_ob=DownloadURL[^\"]*)\"";
 
 	private static final String PATTERN_ACCT               = "<input type=hidden name=_acct value=([^>]*)>";
-	private static final String PATTERN_ARTICLE_LIST_ID    = "<input type=hidden name=_ArticleListID\" value=(.+?)>";
+	private static final String PATTERN_ARTICLE_LIST_ID    = "<input type=hidden name=_ArticleListID value=(.+?)>";
 	private static final String PATTERN_USER_ID            = "<input type=hidden name=_userid value=(.+?)>"; // "&_userid=([^&]*)";
 	private static final String PATTERN_UIOKEY             = "<input type=hidden name=_uoikey value=(.+?)>"; //"&_uoikey=([^&]*)";
 	private static final String PATTERN_MD5                = "<input type=hidden name=md5 value=(.+?)>";
