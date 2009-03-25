@@ -638,7 +638,7 @@
 	</URLTest>
 	<URLTest id="url_112">
 		<TestDescription>URL test for citeseerx</TestDescription>
-		<URL>http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.28.9570</URL>
+		<URL>http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.14.7185</URL>
 		<BibFile>CiteseerxScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper</Scraper>
 	</URLTest>
