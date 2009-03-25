@@ -18,6 +18,7 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.store.RAMDirectory;
 import org.bibsonomy.common.enums.GroupID;
 
 
@@ -26,11 +27,13 @@ public class LuceneSearchBookmarks {
 	private final static LuceneSearchBookmarks singleton = new LuceneSearchBookmarks();
 	private IndexSearcher searcher; 
 	private PerFieldAnalyzerWrapper analyzer;
-	
+	private Boolean useRAMforIndex = true;
+
 
 
 
 	private LuceneSearchBookmarks() throws RuntimeException {
+		final Logger LOGGER = Logger.getLogger(LuceneSearchBookmarks.class);
 		try {
 
 			Context initContext = new InitialContext();
@@ -50,9 +53,23 @@ public class LuceneSearchBookmarks {
 			// numbers will be deleted by SimpleAnalyser but group has only numbers, therefore use SimpleKeywordAnalyzer 
 			this.analyzer.addAnalyzer("group", new SimpleKeywordAnalyzer());
 			
-			this.searcher = new IndexSearcher( (String) envContext.lookup("luceneIndexPathBoomarks") );
-
-			
+			if (useRAMforIndex) {
+				// load and hold index on physical hard disk
+				LOGGER.debug("LuceneBookmark: use index from disk");
+				this.searcher = new IndexSearcher( (String) envContext.lookup("luceneIndexPathBoomarks") );
+			}
+			else
+			{	
+				// load a copy of index in memory
+				// changes will have no effect on original index!
+				// make sure complete index fill fit into memory!
+				LOGGER.debug("LuceneBookmark: load index into RAM");
+				long starttime = System.currentTimeMillis();
+				RAMDirectory BookmarkIndexRAM = new RAMDirectory ((String) envContext.lookup("luceneIndexPathBoomarks"));
+				this.searcher = new IndexSearcher( BookmarkIndexRAM );
+				long endtime = System.currentTimeMillis();
+				LOGGER.debug("LuceneBookmark: index loaded into RAM in "+ (endtime-starttime) + "ms");
+			}
 		} catch (final NamingException e) {
 			/*
 			 * FIXME: rethrowing the exception as runtime ex is maybe not the best solution

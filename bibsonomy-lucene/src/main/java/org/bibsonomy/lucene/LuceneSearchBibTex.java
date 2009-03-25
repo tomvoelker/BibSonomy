@@ -20,6 +20,7 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.store.RAMDirectory;
 import org.bibsonomy.common.enums.GroupID;
 
 
@@ -28,11 +29,12 @@ public class LuceneSearchBibTex {
 	private final static LuceneSearchBibTex singleton = new LuceneSearchBibTex();
 	private IndexSearcher searcher; 
 	private PerFieldAnalyzerWrapper analyzer;
-	
-
+	private Boolean useRAMforIndex = false;
+		
 
 
 	private LuceneSearchBibTex() throws RuntimeException {
+		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
 		try {
 
 			Context initContext = new InitialContext();
@@ -51,10 +53,24 @@ public class LuceneSearchBibTex {
 			// let field group of analyzer use SimpleKeywordAnalyzer
 			// numbers will be deleted by SimpleAnalyser but group has only numbers, therefore use SimpleKeywordAnalyzer 
 			this.analyzer.addAnalyzer("group", new SimpleKeywordAnalyzer());
-			
-			this.searcher = new IndexSearcher( (String) envContext.lookup("luceneIndexPathPublications") );
 
-			
+			if (useRAMforIndex) {
+				// load and hold index on physical hard disk
+				LOGGER.debug("LuceneBookmark: use index from disk");
+				this.searcher = new IndexSearcher( (String) envContext.lookup("luceneIndexPathPublications") );
+			}
+			else
+			{	
+				// load a copy of index in memory
+				// changes will have no effect on original index!
+				// make sure complete index fill fit into memory!
+				LOGGER.debug("LuceneBookmark: load index into RAM");
+				long starttime = System.currentTimeMillis();
+				RAMDirectory BibTexIndexRAM = new RAMDirectory ((String) envContext.lookup("luceneIndexPathPublications"));
+				this.searcher = new IndexSearcher( BibTexIndexRAM );
+				long endtime = System.currentTimeMillis();
+				LOGGER.debug("LuceneBookmark: index loaded into RAM in "+ (endtime-starttime) + "ms");
+			}
 		} catch (final NamingException e) {
 			/*
 			 * FIXME: rethrowing the exception as runtime ex is maybe not the best solution
