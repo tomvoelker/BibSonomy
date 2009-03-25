@@ -27,7 +27,7 @@ public class CoinsScraper implements Scraper {
 	private static final String INFO = "<a href=\"http://ocoins.info/\">COinS</a> Scraper: Scraper for Metadata in COinS format.";
 
 	private static final Pattern patternCoins = Pattern.compile("<span class=\"Z3988\" title=\"([^\\\"]*)\"");
-	private static final Pattern patternKeyValue = Pattern.compile("([^=]*)=([^&]*)&?");
+	private static final Pattern patternKeyValue = Pattern.compile("([^=]*)=([^&]*)&amp;?");
 	private static final Pattern datePattern = Pattern.compile("(\\d{4})");
 
 
