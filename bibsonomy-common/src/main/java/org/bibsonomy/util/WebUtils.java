@@ -41,10 +41,15 @@ import org.apache.log4j.Logger;
  */
 public class WebUtils {
 
+	/**
+	 * The user agent used for all requests with {@link HttpURLConnection}.
+	 */
+	private static final String USER_AGENT = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";
+
 	private static final Logger log = Logger.getLogger(WebUtils.class);
-	
+
 	private static final String CHARSET = "charset=";
-	
+
 	/**
 	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
 	 * 
@@ -63,16 +68,16 @@ public class WebUtils {
 		urlConn.setUseCaches(false);
 		urlConn.setRequestMethod("POST");
 		urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-		
-		
+
+
 		/*
 		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
 		 * pages require it to download content.
 		 */
-		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
+		urlConn.setRequestProperty("User-Agent", USER_AGENT);
 
 		writeStringToStream(postContent, urlConn.getOutputStream());
-		
+
 		// connect
 		urlConn.connect();
 
@@ -85,16 +90,18 @@ public class WebUtils {
 		} else {
 			activeCharset = charset;
 		}
-		
+
 		// write into string writer
 		final StringWriter out = inputStreamToStringWriter(urlConn.getInputStream(), activeCharset);
-		
+
 		// disconnect
 		urlConn.disconnect();
-		
+
 		return out.toString();
 	}
-	
+
+
+
 	/**
 	 * Do a POST request to the given URL with the given content.
 	 * 
@@ -107,7 +114,7 @@ public class WebUtils {
 	public static String getPostContentAsString(final URL url, final String postContent) throws IOException {
 		return getPostContentAsString(url, postContent, null);
 	}
-	
+
 	/**
 	 * Reads from a URL and writes the content into a string.
 	 * @param inputURL the url to scrape
@@ -125,21 +132,21 @@ public class WebUtils {
 			 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
 			 * pages require it to download content.
 			 */
-			urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
+			urlConn.setRequestProperty("User-Agent", USER_AGENT);
 			urlConn.connect();
-			
+
 			/*
 			 * extract character encoding from header
 			 */
 			final String charSet = getCharset(urlConn);
-			
+
 			/*
 			 * write content into string buffer
 			 */
 			StringWriter out = inputStreamToStringWriter(urlConn.getInputStream(), charSet);
 
 			urlConn.disconnect();
-			
+
 			out.flush();
 			out.close();
 			return out.toString();
@@ -152,7 +159,43 @@ public class WebUtils {
 		}
 	}
 
-	
+	/**
+	 * Sends a request to the given URL and checks, if it contains a redirect.
+	 * If it does, returns the redirect URL. Otherwise, returns null.
+	 * 
+	 * @param url
+	 * @return - The redirect URL.
+	 */
+	public static URL getRedirectUrl(final URL url) {
+		try {
+			final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+
+			urlConn.setAllowUserInteraction(false);
+			urlConn.setDoInput(true);
+			urlConn.setDoOutput(false);
+			urlConn.setUseCaches(false);
+			urlConn.setInstanceFollowRedirects(false);
+
+			/*
+			 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
+			 * pages require it to download content.
+			 */
+			urlConn.setRequestProperty("User-Agent", USER_AGENT);
+
+			urlConn.connect();
+
+			// get URL to redirected resource
+			String location = urlConn.getHeaderField("Location");
+
+			urlConn.disconnect();
+
+			return new URL(location);
+		} catch (final IOException e) {
+			return null;
+		}
+	}
+
+
 	/** Extracts the charset ID of a web page as returned by the server.
 	 * 
 	 * @param urlConn
@@ -187,7 +230,7 @@ public class WebUtils {
 				 * text/html; charset=utf-8; qs=1
 				 */
 				String charSet = contentType.substring(charsetPosition + CHARSET.length());
-				
+
 				// get only charset
 				final int charsetEnding = charSet.indexOf(";");
 				if (charsetEnding > -1) {
@@ -219,7 +262,7 @@ public class WebUtils {
 			in = new InputStreamReader(inputStream);
 		else 
 			in = new InputStreamReader(inputStream, charset);
-		
+
 		final StringWriter out = new StringWriter();
 		int b;
 		while ((b = in.read()) >= 0) {
