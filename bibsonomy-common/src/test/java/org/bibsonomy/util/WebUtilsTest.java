@@ -25,6 +25,9 @@ package org.bibsonomy.util;
 
 import static org.junit.Assert.*;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.junit.Test;
 
 /**
@@ -51,6 +54,10 @@ public class WebUtilsTest {
 		assertEquals("LATIN1", WebUtils.extractCharset("text/html; charset=latin1; qs=1"));
 	}
 
+	@Test
+	public void testRedirectUrl() throws MalformedURLException {
+		assertEquals("http://www.bibsonomy.org/groups", WebUtils.getRedirectUrl(new URL("http://www.bibsonomy.org/group")).toString());
+	}
 	
 	
 }
