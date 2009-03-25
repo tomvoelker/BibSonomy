@@ -5,6 +5,7 @@ import org.bibsonomy.scraper.generic.BibtexScraper;
 import org.bibsonomy.scraper.generic.CoinsScraper;
 import org.bibsonomy.scraper.generic.HighwireScraper;
 import org.bibsonomy.scraper.generic.UnAPIScraper;
+import org.bibsonomy.scraper.id.kde.doi.DOIScraper;
 import org.bibsonomy.scraper.id.kde.isbn.ISBNScraper;
 import org.bibsonomy.scraper.snippet.SnippetScraper;
 
@@ -21,6 +22,14 @@ public class KDEScraperFactory {
 	 */
 	public CompositeScraper getScraper () {
 		final CompositeScraper scraper = new CompositeScraper();
+
+		/*
+		 * first scraper: the DOIScraper, because it replaces dx.doi.org URLs 
+		 * by the corresponding "real" URLs (i.e., the URLs, where the dx.doi.org
+		 * URL points to using HTTP redirect)
+		 */
+		scraper.addScraper(new DOIScraper());
+		
 		scraper.addScraper(new UrlCompositeScraper());
 		
 		// this scraper always crawls the content and thus accepts ALL URLs!
