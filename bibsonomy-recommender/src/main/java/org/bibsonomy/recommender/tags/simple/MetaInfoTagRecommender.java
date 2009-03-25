@@ -13,6 +13,7 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tags.TagRecommenderConnector;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -48,6 +49,10 @@ public class MetaInfoTagRecommender implements TagRecommenderConnector {
 
 		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) ) {
 			String url = ((Bookmark)post.getResource()).getUrl();
+			if( !UrlUtils.isValid(url) ) {
+				log.debug("Invalid url: "+url);
+				return result;
+			}
 			log.debug("Scraping " + url + " for keywords.");
 			
 			String[] keywords = getKeywordsForUrl(url).split(",");
