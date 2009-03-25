@@ -153,6 +153,13 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			log.debug("scope is user:");
 			return "/search/" + URLEncoder.encode(search + " " + scope, "UTF-8");
 		}
+		if (scope.startsWith("group:")) {
+			/*
+			 * special handling, when scope is "group:GROUPNAME", this is search restricted to the given group name
+			 */
+			log.debug("scope is group:");
+			return "/search/" + URLEncoder.encode(search + " " + scope, "UTF-8");
+		}
 		/*
 		 * all other pages simply go to /scope/search
 		 */
