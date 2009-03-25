@@ -163,6 +163,8 @@ public class WebUtils {
 	 * Sends a request to the given URL and checks, if it contains a redirect.
 	 * If it does, returns the redirect URL. Otherwise, returns null.
 	 * 
+	 * FIXME: we might follow several redirects, because sometimes this is not the final URL, yet.
+	 * 
 	 * @param url
 	 * @return - The redirect URL.
 	 */
