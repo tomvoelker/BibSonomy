@@ -2,6 +2,7 @@ package org.bibsonomy.lucene;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -11,6 +12,7 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -21,16 +23,16 @@ import org.apache.lucene.search.Sort;
 import org.bibsonomy.common.enums.GroupID;
 
 
-public class LuceneSearchBookmarks {
+public class LuceneSearchBibTex {
 
-	private final static LuceneSearchBookmarks singleton = new LuceneSearchBookmarks();
+	private final static LuceneSearchBibTex singleton = new LuceneSearchBibTex();
 	private IndexSearcher searcher; 
 	private PerFieldAnalyzerWrapper analyzer;
 	
 
 
 
-	private LuceneSearchBookmarks() throws RuntimeException {
+	private LuceneSearchBibTex() throws RuntimeException {
 		try {
 
 			Context initContext = new InitialContext();
@@ -50,7 +52,7 @@ public class LuceneSearchBookmarks {
 			// numbers will be deleted by SimpleAnalyser but group has only numbers, therefore use SimpleKeywordAnalyzer 
 			this.analyzer.addAnalyzer("group", new SimpleKeywordAnalyzer());
 			
-			this.searcher = new IndexSearcher( (String) envContext.lookup("luceneIndexPathBoomarks") );
+			this.searcher = new IndexSearcher( (String) envContext.lookup("luceneIndexPathPublications") );
 
 			
 		} catch (final NamingException e) {
@@ -62,6 +64,7 @@ public class LuceneSearchBookmarks {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			System.out.println("IOException in LuceneSearchBibTex.LuceneSearchBibTex()");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -71,7 +74,7 @@ public class LuceneSearchBookmarks {
 	/**
 	 * @return LuceneSearchBookmarks
 	 */
-	public static LuceneSearchBookmarks getInstance() {
+	public static LuceneSearchBibTex getInstance() {
 		return singleton;
 	}
 
@@ -82,41 +85,75 @@ public class LuceneSearchBookmarks {
 	 * for pagination see http://www.gossamer-threads.com/lists/lucene/general/70516#70516
 	 * 
 	 * @param String idname fieldname of returning value
-	 * @param char LuceneIndex lucene index to use b for bookmar, p for publications
 	 * @throws IOException 
 	 * @throws CorruptIndexException 
 	 * */
 	public ArrayList<Integer> searchLucene(String idname, String search_terms, int groupId, int limit, int offset) throws IOException {
-		final Logger LOGGER = Logger.getLogger(LuceneSearchBookmarks.class);
+		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
 			
 		Boolean debug = false;
-		// field names in Lucene index
-		String lField_contentid = "contentid";
-		String lField_group = "group";
-		String lField_date = "date";
-		String lField_user = "user";
-		String lField_desc = "desc";
-		String lField_ext = "ext";
-		String lField_url = "url";
-		String lField_tas = "tas";
-		String lField_type = "type";
-
+		String queryFields = "";
 		String querystring = "";
 
 
+		ArrayList<String> bibTexField = new ArrayList<String> ();
+		ArrayList<String> bibTexFieldAll = new ArrayList<String> ();
 
+		bibTexField.add("user_name");
+		bibTexField.add("author");
+		bibTexField.add("editor");
+		bibTexField.add("title");
+		bibTexField.add("journal");
+		bibTexField.add("booktitle");
+		bibTexField.add("volume");
+		bibTexField.add("number");
+		bibTexField.add("chapter");
+		bibTexField.add("edition");
+		bibTexField.add("month");
+		bibTexField.add("day");
+		bibTexField.add("howPublished");
+		bibTexField.add("institution");
+		bibTexField.add("organization");
+		bibTexField.add("publisher");
+		bibTexField.add("address");
+		bibTexField.add("school");
+		bibTexField.add("series");
+		bibTexField.add("bibtexKey");
+		bibTexField.add("url");
+		bibTexField.add("type");
+		bibTexField.add("description");
+		bibTexField.add("annote");
+		bibTexField.add("note");
+		bibTexField.add("pages");
+		bibTexField.add("bKey");
+		bibTexField.add("crossref");
+		bibTexField.add("misc");
+		bibTexField.add("bibtexAbstract");
+		bibTexField.add("year");
+		bibTexField.add("tas");		
+		
+		bibTexFieldAll.addAll(bibTexField);
+		bibTexFieldAll.add("content_id");
+		bibTexFieldAll.add("group");
+		bibTexFieldAll.add("date");
+
+		
+		for (String btField:bibTexField)
+		{
+			queryFields += btField + ":("+ search_terms +") ";
+		}
 		if (GroupID.INVALID.getId() == groupId)
 		{
 			// query without groupID
-			querystring = lField_desc + ":("+ search_terms +") " + lField_tas + ":("+ search_terms +") " + lField_ext + ":("+ search_terms +") " + lField_url + ":("+ search_terms +")" ;
+			querystring = queryFields;
 		}
 		else
 		{
 			// query with groupID
-			querystring = lField_group+":\""+groupId+"\" AND (" + lField_desc + ":("+ search_terms +") " + lField_tas + ":("+ search_terms +") " + lField_ext + ":("+ search_terms +") " + lField_url + ":("+ search_terms +") )" ;
+			querystring = "group:\""+groupId+"\" AND ("+queryFields+")" ;
 		}
 
-		LOGGER.debug("LuceneBookmark-Querystring (assembled): " + querystring);
+		LOGGER.debug("LuceneBibTex-Querystring (assembled): " + querystring);
 
 		// declare ArrayList cidsArray for list of String to return
 		final ArrayList<Integer> cidsArray = new ArrayList<Integer>();
@@ -131,7 +168,7 @@ public class LuceneSearchBookmarks {
 			//IndexReader reader = IndexReader.open(luceneIndexPath);
 
 
-			QueryParser myParser = new QueryParser(lField_desc, analyzer);
+			QueryParser myParser = new QueryParser("description", analyzer);
 			Query query;
 			Sort sort = new Sort("date",true);
 /* sort first by date and then by score. This is not necessary, because there are 
@@ -143,22 +180,24 @@ public class LuceneSearchBookmarks {
 */			
 			try {
 				query = myParser.parse(querystring);
-				LOGGER.debug("LuceneBookmark-Querystring (analyzed):  " + query.toString());
-				LOGGER.debug("LuceneBookmark-Query will be sorted by:  " + sort);
-
-				LOGGER.debug("LuceneBookmark: searcher:  " + searcher);
+				LOGGER.debug("LuceneBibTex-Querystring (analyzed):  " + query.toString());
+				LOGGER.debug("LuceneBibTex-Query will be sorted by:  " + sort);
 				
+				LOGGER.debug("LuceneBibTex: searcher:  " + searcher);
+				
+
 				long starttimeQuery = System.currentTimeMillis();
 				final Hits hits = searcher.search(query,sort);
 				long endtimeQuery = System.currentTimeMillis();
-				LOGGER.debug("LuceneBookmark pure query time: " + (endtimeQuery-starttimeQuery) + "ms");
+				LOGGER.debug("LuceneBibTex pure query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
 				int hitslimit = (((offset+limit)<hits.length())?(offset+limit):hits.length());
 
-				LOGGER.debug("LuceneBookmark:  offset / limit / hitslimit / hits.length():  " + offset + " / " + limit + " / " + hitslimit + " / " + hits.length());
+				LOGGER.debug("LuceneBibTex:  offset / limit / hitslimit / hits.length():  " + offset + " / " + limit + " / " + hitslimit + " / " + hits.length());
 				
 				for(int i = offset; i < hitslimit; i++){
 					Document doc = hits.doc(i);
+					LOGGER.debug("LuceneBibTex: doc.get("+idname+")="+doc.get(idname));
 					cidsArray.add(Integer.parseInt(doc.get(idname)));
 				}	 
 
