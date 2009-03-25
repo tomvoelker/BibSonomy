@@ -31,6 +31,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
@@ -40,6 +41,11 @@ import org.apache.log4j.Logger;
  * @version $Id$
  */
 public class WebUtils {
+
+	/**
+	 * maximal number of redirects to follow in {@link #getRedirectUrl(URL)}
+	 */
+	private static final int MAX_REDIRECT_COUNT = 10;
 
 	/**
 	 * The user agent used for all requests with {@link HttpURLConnection}.
@@ -170,32 +176,49 @@ public class WebUtils {
 	 */
 	public static URL getRedirectUrl(final URL url) {
 		try {
-			final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+			URL internalUrl = url;
+			URL previousUrl = null;
+			int redirectCtr = 0;
+			while (internalUrl != null && redirectCtr < MAX_REDIRECT_COUNT) {
+				redirectCtr++;
 
-			urlConn.setAllowUserInteraction(false);
-			urlConn.setDoInput(true);
-			urlConn.setDoOutput(false);
-			urlConn.setUseCaches(false);
-			urlConn.setInstanceFollowRedirects(false);
+				final HttpURLConnection urlConn = (HttpURLConnection) internalUrl.openConnection();
 
-			/*
-			 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-			 * pages require it to download content.
-			 */
-			urlConn.setRequestProperty("User-Agent", USER_AGENT);
+				urlConn.setAllowUserInteraction(false);
+				urlConn.setDoInput(true);
+				urlConn.setDoOutput(false);
+				urlConn.setUseCaches(false);
+				urlConn.setInstanceFollowRedirects(false);
 
-			urlConn.connect();
 
-			// get URL to redirected resource
-			String location = urlConn.getHeaderField("Location");
+				/*
+				 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
+				 * pages require it to download content.
+				 */
+				urlConn.setRequestProperty("User-Agent", USER_AGENT);
 
-			urlConn.disconnect();
+				urlConn.connect();
 
-			return new URL(location);
+				// get URL to redirected resource
+				previousUrl = internalUrl;
+				try {
+					internalUrl = new URL(urlConn.getHeaderField("Location"));
+				} catch (final MalformedURLException e) {
+					internalUrl = null;
+				}
+
+				urlConn.disconnect();
+
+			}
+
+			return previousUrl;
 		} catch (final IOException e) {
+			e.printStackTrace();
 			return null;
 		}
 	}
+
+
 
 
 	/** Extracts the charset ID of a web page as returned by the server.
@@ -251,6 +274,9 @@ public class WebUtils {
 		 */
 		return "UTF-8";
 	}
+
+
+
 
 	/** Copies the stream into the string writer.
 	 * 

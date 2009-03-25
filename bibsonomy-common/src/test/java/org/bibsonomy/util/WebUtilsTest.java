@@ -28,6 +28,7 @@ import static org.junit.Assert.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -54,10 +55,28 @@ public class WebUtilsTest {
 		assertEquals("LATIN1", WebUtils.extractCharset("text/html; charset=latin1; qs=1"));
 	}
 
+	/**
+	 * tests one-level redirect
+	 * 
+	 * @throws MalformedURLException
+	 */
 	@Test
-	public void testRedirectUrl() throws MalformedURLException {
+	public void testRedirectUrl1() throws MalformedURLException {
 		assertEquals("http://www.bibsonomy.org/groups", WebUtils.getRedirectUrl(new URL("http://www.bibsonomy.org/group")).toString());
 	}
+	
+	/**
+	 * tests three-level redirect
+	 * 
+	 * @throws MalformedURLException
+	 */
+	@Test
+	@Ignore
+	public void testRedirectUrl() throws MalformedURLException {
+		assertEquals("http://journals.cambridge.org/action/displayAbstract?fromPage=online&aid=5123720", WebUtils.getRedirectUrl(new URL("http://dx.doi.org/10.1017/S0952523808080978")).toString());
+	}
+	
+	
 	
 	
 }
