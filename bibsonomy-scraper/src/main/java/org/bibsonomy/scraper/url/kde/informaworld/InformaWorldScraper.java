@@ -1,5 +1,10 @@
 package org.bibsonomy.scraper.url.kde.informaworld;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -14,6 +19,9 @@ import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
+
+import com.sun.net.ssl.SSLContext;
 
 /**
  * @author wbi
@@ -44,27 +52,95 @@ public class InformaWorldScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 
 		String id = null;
-
-		final Matcher matcher = pattern.matcher(sc.getUrl().getPath());
-		if(matcher.find())
-			id = matcher.group(1);
-
-		final String citUrl = "http://www." + INFORMAWORLD_HOST_NAME + (INFORMAWORLD_BIBTEX_DOWNLOAD_PATH.replace("{id}", id)).replace("{sid}", id.substring(1));
-
+		String cookie = null;
+		
 		try {
-			sc.setUrl(new URL(citUrl));
-		} catch (MalformedURLException ex) {
+			cookie = getCookie(sc.getUrl());
+		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
 
-		final EndnoteToBibtexConverter bib = new EndnoteToBibtexConverter();
-		final String bibResult = bib.processEntry(sc.getPageContent());
-
-		if(bibResult != null) {
-			sc.setBibtexResult(bibResult);
-			return true;
+		if(cookie != null){
+			final Matcher matcher = pattern.matcher(sc.getUrl().getPath());
+			if(matcher.find())
+				id = matcher.group(1);
+	
+			final String citUrl = "http://www." + INFORMAWORLD_HOST_NAME + (INFORMAWORLD_BIBTEX_DOWNLOAD_PATH.replace("{id}", id)).replace("{sid}", id.substring(1));
+	
+			try {
+				sc.setUrl(new URL(citUrl));
+			} catch (MalformedURLException ex) {
+				throw new InternalFailureException(ex);
+			}
+			
+			final EndnoteToBibtexConverter bib = new EndnoteToBibtexConverter();
+			String bibResult = null;
+			try {
+				bibResult = bib.processEntry(getContent(sc.getUrl(), cookie));
+			} catch (IOException ex) {
+				throw new InternalFailureException(ex);
+			}
+	
+			if(bibResult != null) {
+				sc.setBibtexResult(bibResult);
+				return true;
+			}else
+				throw new ScrapingFailureException("getting bibtex failed");
 		}else
-			throw new ScrapingFailureException("getting bibtex failed");
+			throw new ScrapingFailureException("cookie is missing");
+	}
+	
+	private String getCookie(URL abstractUrl) throws IOException{
+		HttpURLConnection urlConn = null;
+
+		urlConn = (HttpURLConnection) abstractUrl.openConnection();
+
+		urlConn.setAllowUserInteraction(false);
+		urlConn.setDoInput(true);
+		urlConn.setDoOutput(false);
+		urlConn.setUseCaches(false);
+
+		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
+
+		urlConn.connect();
+
+		List<String> cookieContent = urlConn.getHeaderFields().get("Set-Cookie");
+
+		String cookie = "";
+		//TODO
+		if(cookieContent != null){
+			for (String crumb : cookieContent) {
+				if(cookie.equals(""))
+					cookie = crumb;
+				else
+					cookie = cookie + ";" + crumb;
+			}
+		}
+		urlConn.disconnect();
+
+		return cookie;
+	}
+
+	private String getContent(URL queryURL, String cookie) throws IOException{
+
+		HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
+		urlConn.setAllowUserInteraction(false);
+		urlConn.setDoInput(true);
+		urlConn.setDoOutput(false);
+		urlConn.setUseCaches(false);
+
+		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
+
+		urlConn.setRequestProperty("Cookie", cookie);
+		urlConn.connect();
+		StringWriter out = new StringWriter();
+		InputStream in = new BufferedInputStream(urlConn.getInputStream());
+		int b;
+		while ((b = in.read()) >= 0) {
+			out.write(b);
+		}
+		urlConn.disconnect();
+		return out.toString();
 	}
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
