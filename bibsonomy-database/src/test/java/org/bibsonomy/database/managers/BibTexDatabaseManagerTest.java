@@ -365,18 +365,18 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getBibTexSearch() {
-		GroupID groupType = GroupID.PUBLIC;
+		int groupId = GroupID.PUBLIC.getId();
 		String search = "search string";
 		String requestedUserName = "testuser1";
-		List<Post<BibTex>> post = this.bibTexDb.getBibTexSearch(groupType, search, requestedUserName, 10, 0, this.dbSession);
+		List<Post<BibTex>> post = this.bibTexDb.getBibTexSearch(groupId, search, requestedUserName, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
 		
-		post = this.bibTexDb.getBibTexSearch(groupType, search, null, 10, 0, this.dbSession);
+		post = this.bibTexDb.getBibTexSearch(groupId, search, null, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
 		
 		// change words order -> no effect
 		search = "test search bibtext string";
-		post = this.bibTexDb.getBibTexSearch(groupType, search, requestedUserName, 10, 0, this.dbSession);
+		post = this.bibTexDb.getBibTexSearch(groupId, search, requestedUserName, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
 	}
 

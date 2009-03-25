@@ -18,12 +18,15 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.lucene.LuceneSearchBookmarks;
+import org.bibsonomy.database.util.LuceneHelper;
+import org.bibsonomy.lucene.LuceneSearchBibTex;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -571,9 +574,9 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @return list of bibtex posts
 	 */
 
-	public List<Post<BibTex>> getBibTexSearch(final GroupID groupType, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
+	public List<Post<BibTex>> getBibTexSearch(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
-		param.setGroupType(groupType);
+		param.setGroupId(groupId);
 		param.setSearch(search);
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
@@ -594,7 +597,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @throws IOException 
 	 */
 
-	public List<Post<BibTex>> getBibTexSearchLucene(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) throws IOException {
+	public List<Post<BibTex>> getBibTexSearchLucene(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
+		final Logger LOGGER = Logger.getLogger(BibTexDatabaseManager.class);
 		final BibTexParam param = new BibTexParam();
 		param.setGroupId(groupId);
 		param.setSearch(search);
@@ -602,33 +606,40 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.setLimit(limit);
 		param.setOffset(offset);
 
-		
 		// get list of ids from lucene
-			final LuceneSearchBookmarks lucene = LuceneSearchBookmarks.getInstance();
-			final ArrayList<Integer> contentIds = lucene.searchLucene('p', "contentid", search, groupId, limit, offset);
-/*		
+
+		final LuceneSearchBibTex lucene = LuceneSearchBibTex.getInstance();
+
+		ArrayList<Integer> contentIds = new ArrayList<Integer>();
 		try {
-			// create temp. table
-			Integer ErrCodeTempC = dbconn.rawUpdate("CREATE TEMPORARY TABLE IF NOT EXISTS tempcids (cid bigint, PRIMARY KEY (cid)) ENGINE=MEMORY;", connection);
+			long starttimeQuery = System.currentTimeMillis();
 
-			// delete all content in temp. table
-			Integer ErrCodeTempD = dbconn.rawUpdate("TRUNCATE TABLE tempcids; ", connection);
-			
-			
-			// store content ids in temp. table
-			for  (String e: cidsArray)
-			{
-				Integer ErrCodeTempS = dbconn.rawUpdate("INSERT INTO tempcids (cid) VALUE ("+e+");", connection);
-			}			
-			
-			} catch (SQLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			contentIds = lucene.searchLucene("content_id", search, groupId, limit, offset);
 
-*/ 
-		
+			long endtimeQuery = System.currentTimeMillis();
+			LOGGER.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+
+		} catch (IOException ex) {
+			// TODO Auto-generated catch block
+			ex.printStackTrace();
+		}
+
+		long starttimeTable = System.currentTimeMillis();
+		LuceneHelper luceneTTable = new LuceneHelper();
+		// create temp. table
+		luceneTTable.createTTable(session);
+
+		// delete all content in temp. table
+		luceneTTable.truncateTTable(session);
+
+		// store content ids in temp. table
+		luceneTTable.fillTTable(contentIds, session);
+		long endtimeTable = System.currentTimeMillis();
+		LOGGER.debug("LuceneBibTex: filled temp. table with requested lucene ids in " + (endtimeTable-starttimeTable) + "ms");
+
+
 		return this.bibtexList("getBibTexSearchLucene", param, session);
+
 	}
 
 	

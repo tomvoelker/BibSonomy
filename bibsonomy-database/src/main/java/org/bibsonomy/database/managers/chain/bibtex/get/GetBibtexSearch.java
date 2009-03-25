@@ -25,7 +25,13 @@ public class GetBibtexSearch extends BibTexChainElement {
 	protected List<Post<BibTex>> handle(final BibTexParam param, DBSession session) {
 		// uncomment following for a quick hack to access secondary datasource
 		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
-		return this.db.getBibTexSearch(param, session);
+		if (SearchEntity.LUCENE.equals(param.getSearchEntity())) {
+			return this.db.getBibTexSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
+		}
+		else {
+			return this.db.getBibTexSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
+		}
+//		return this.db.getBibTexSearch(param, session);
 	}
 
 	@Override

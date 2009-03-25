@@ -527,8 +527,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param offset
 	 * @param session
 	 * @return list of bookmark posts
-	 * @throws IOException 
-	 * @throws CorruptIndexException 
 	 */
 	public List<Post<Bookmark>> getBookmarkSearchLucene(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
 		final Logger LOGGER = Logger.getLogger(BookmarkDatabaseManager.class);
@@ -547,10 +545,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		try {
 			long starttimeQuery = System.currentTimeMillis();
 
-			contentIds = lucene.searchLucene('b', "contentid", search, groupId, limit, offset);
+			contentIds = lucene.searchLucene("contentid", search, groupId, limit, offset);
 
 			long endtimeQuery = System.currentTimeMillis();
-			LOGGER.debug("Lucene complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+			LOGGER.debug("LuceneBookmark complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
 		} catch (IOException ex) {
 			// TODO Auto-generated catch block
@@ -568,7 +566,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		// store content ids in temp. table
 		luceneTTable.fillTTable(contentIds, session);
 		long endtimeTable = System.currentTimeMillis();
-		LOGGER.debug("Lucene: filled temp. table with requested lucene ids in " + (endtimeTable-starttimeTable) + "ms");
+		LOGGER.debug("LuceneBookmark: filled temp. table with requested lucene ids in " + (endtimeTable-starttimeTable) + "ms");
 
 
 		return this.bookmarkList("getBookmarkSearchLucene", param, session);
@@ -586,6 +584,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	public Integer getBookmarkSearchCount(final BookmarkParam param, final DBSession session) {
 		return this.queryForObject("getBookmarkSearchCount", param, Integer.class, session);
 	}
+
 
 	/**
 	 * @see BookmarkDatabaseManager#getBookmarkSearchCount(BookmarkParam, DBSession)
