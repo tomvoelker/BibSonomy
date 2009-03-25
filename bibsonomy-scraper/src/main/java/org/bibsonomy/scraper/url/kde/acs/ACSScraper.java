@@ -132,11 +132,13 @@ public class ACSScraper extends AbstractUrlScraper {
 
 		String cookie = "I2KBRCK=1;";
 		//TODO
-		for (String crumb : cookieContent) {
-			if(cookie.equals(""))
-				cookie = crumb;
-			else
-				cookie = cookie + ";" + crumb;
+		if(cookieContent != null){
+			for (String crumb : cookieContent) {
+				if(cookie.equals(""))
+					cookie = crumb;
+				else
+					cookie = cookie + ";" + crumb;
+			}
 		}
 		urlConn.disconnect();
 
