@@ -82,6 +82,8 @@ public class BibtexHandler extends HttpServlet {
 	private DataSource dataSource;
 	private static String tempPath = null;
 
+	private static final String LOGIN_INFO = "login.notice.post.publication";
+	
 	/*
 	 * The dataSource lookup code is added to the init() method to avoid the
 	 * costly JNDI operations for every HTTP request.
@@ -108,7 +110,7 @@ public class BibtexHandler extends HttpServlet {
 		UserBean user = SessionSettingsFilter.getUser(request);
 		String currUser = user.getName(); 
 		if (currUser == null) {
-			String refer = "/login?referer="+URLEncoder.encode("/BibtexHandler?"+request.getQueryString(), "UTF-8");
+			String refer = "/login?referer=" + URLEncoder.encode("/BibtexHandler?"+request.getQueryString(), "UTF-8") +  "&notice=" + URLEncoder.encode(LOGIN_INFO, "UTF-8"); 
 			response.sendRedirect(refer);
 			return;
 		}

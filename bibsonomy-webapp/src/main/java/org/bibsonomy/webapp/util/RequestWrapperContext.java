@@ -81,5 +81,12 @@ public class RequestWrapperContext {
 		return request.getAttribute(name);
 	}
 	
+	/**
+	 * @return The query string of the request.
+	 */
+	public String getQueryString() {
+		return request.getQueryString();
+	}
+	
 	
 }

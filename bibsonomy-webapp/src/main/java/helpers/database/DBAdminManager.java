@@ -34,9 +34,10 @@ public class DBAdminManager extends DBManager {
 	 * gets settings for this user and saves them in bean
 	 */
 	public static void addGroupToSystem (AdminBean bean) {
-		DBContext c = new DBContext();
+		final DBContext c = new DBContext();
 		try {
-			if (c.init()) { // initialize database
+			if (bean.getUser() != null && c.init()) { // initialize database
+				final String user = bean.getUser().trim();
 				// get next group id
 				c.conn.setAutoCommit(false); // we do this in a transaction
 				c.stmt = c.conn.prepareStatement("SELECT MAX(`group`) + 1 AS id FROM groupids");
@@ -45,12 +46,12 @@ public class DBAdminManager extends DBManager {
 					int next_groupid = c.rst.getInt("id");
 					// check, if user name exists
 					c.stmt = c.conn.prepareStatement("SELECT user_name FROM user WHERE user_name = ?");
-					c.stmt.setString(1, bean.getUser());
+					c.stmt.setString(1, user);
 					c.rst  = c.stmt.executeQuery();
 					if (c.rst.next()) {
 						// user exists, check, if group exists
 						c.stmt = c.conn.prepareStatement("SELECT group_name FROM groupids WHERE group_name = ?");
-						c.stmt.setString(1, bean.getUser());
+						c.stmt.setString(1, user);
 						c.rst  = c.stmt.executeQuery();
 						if (c.rst.next()) {
 							// group already exists --> do nothing
@@ -58,12 +59,12 @@ public class DBAdminManager extends DBManager {
 						} else {
 							// group does not exists --> add it
 							c.stmt = c.conn.prepareStatement("INSERT INTO groupids (`group_name`, `group`, privlevel) VALUES (?,?,?)");
-							c.stmt.setString(1, bean.getUser());
+							c.stmt.setString(1, user);
 							c.stmt.setInt(2, next_groupid);
 							c.stmt.setInt(3, bean.getPrivlevel());
 							c.stmt.executeUpdate();
 							c.stmt = c.conn.prepareStatement("INSERT INTO groups (`user_name`, `group`, `defaultgroup`) VALUES (?,?,?)");
-							c.stmt.setString(1, bean.getUser());
+							c.stmt.setString(1, user);
 							c.stmt.setInt(2, next_groupid);
 							c.stmt.setInt(3, next_groupid);
 							c.stmt.executeUpdate();
