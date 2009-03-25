@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.controller.actions;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,7 +31,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
-import org.bibsonomy.recommender.DBAccess;
+import org.bibsonomy.recommender.RecommenderStatisticsManager;
 import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
@@ -63,7 +62,12 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
-
+	
+	/**
+	 * Interface for logging performance of tag recommendations
+	 */
+	private RecommenderStatisticsManager recommenderStatistics;
+	
 	/**
 	 * Returns an instance of the command the controller handles.
 	 * 
@@ -90,7 +94,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * set default values.
 		 */
 		command.getPost().getResource().setUrl("http://");
-		command.setPostID(MultiplexingTagRecommender.getUnknownPID());
+		command.setPostID(recommenderStatistics.getUnknownPID());
 		return command;
 	}
 
@@ -341,13 +345,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		/*
 		 * update recommender table such that recommendations are linked to the final post
 		 */
-		try {
-			DBAccess.connectWithPost(posts.get(0), command.getPostID());
-		} catch (SQLException ex) {
-			log.error("Could connect post with recommendations.", ex);
-			errors.reject("error.post.redirect", new Object[]{ex.getMessage()}, "Could connect post with recommendations: " + ex.getMessage());
-			return Views.ERROR;
-		}
+		getRecommenderStatistics().connectPostWithRecommendation(posts.get(0), command.getPostID());
 		
 		/*
 		 * leave if and reach final redirect
@@ -486,13 +484,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		/*
 		 * update recommender table such that recommendations are linked to the final post
 		 */
-		try {
-			DBAccess.connectWithPost(posts.get(0), command.getPostID());
-		} catch (SQLException ex) {
-			log.error("Could connect post with recommendations.", ex);
-			errors.reject("error.post.redirect", new Object[]{ex.getMessage()}, "Could connect post with recommendations: " + ex.getMessage());
-			return Views.ERROR;
-		}
+		getRecommenderStatistics().connectPostWithRecommendation(posts.get(0), command.getPostID());
 
 		return finalRedirect(command.isJump(), loginUserName, post.getResource().getUrl());
 	}
@@ -742,6 +734,21 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
+	}
+
+	/**
+	 * set manager for logging performance of (tag) recommendations
+	 * @param recommenderStatistics
+	 */
+	public void setRecommenderStatistics(RecommenderStatisticsManager recommenderStatistics) {
+		this.recommenderStatistics = recommenderStatistics;
+	}
+
+	/**
+	 * get manager used for logging performance of (tag) recommendations
+	 */
+	public RecommenderStatisticsManager getRecommenderStatistics() {
+		return this.recommenderStatistics;
 	}
 
 }
