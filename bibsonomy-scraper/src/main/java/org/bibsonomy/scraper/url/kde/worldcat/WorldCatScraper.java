@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -25,6 +26,8 @@ public class WorldCatScraper extends AbstractUrlScraper {
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "worldcat.org"), Pattern.compile("/oclc/")));
 
+	private Pattern PATTERN_GET_FIRST_SEARCH_RESULT = Pattern.compile("<a href=\"([^\\\"]*brief_results)\">");
+	
 	public String getInfo() {
 		return INFO;
 	}
@@ -60,11 +63,20 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	}
 
 	private String getBibtex(final URL publPageURL, final ScrapingContext sc, final boolean search) throws IOException, ScrapingException{
+		Matcher matcherFirstSearchResult = PATTERN_GET_FIRST_SEARCH_RESULT.matcher(WebUtils.getContentAsString(publPageURL));
+		
+		URL publUrl = null;
+		if(matcherFirstSearchResult.find())
+			publUrl = new URL(publPageURL.getProtocol() + "://" + publPageURL.getHost() + matcherFirstSearchResult.group(1));
+		else
+			publUrl = publPageURL;
+		
+		
 		String exportUrl = null;
 		if(search)
-			exportUrl = publPageURL.getProtocol() + "://" + publPageURL.getHost() + publPageURL.getPath() + "?" + publPageURL.getQuery() + "&page=endnote&client=worldcat.org-detailed_record";
+			exportUrl = publUrl.getProtocol() + "://" + publUrl.getHost() + publUrl.getPath() + "?" + publUrl.getQuery() + "&page=endnote&client=worldcat.org-detailed_record";
 		else
-			exportUrl = publPageURL.getProtocol() + "://" + publPageURL.getHost() + publPageURL.getPath() + "?page=endnote&client=worldcat.org-detailed_record";
+			exportUrl = publUrl.getProtocol() + "://" + publUrl.getHost() + publUrl.getPath() + "?page=endnote&client=worldcat.org-detailed_record";
 
 		String endnote = WebUtils.getContentAsString(new URL(exportUrl));
 
