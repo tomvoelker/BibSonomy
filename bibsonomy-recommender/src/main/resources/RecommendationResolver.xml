@@ -123,4 +123,55 @@
 		ORDER BY ABS(TIMESTAMPDIFF(SECOND, date, #timestamp#)) ASC
 		LIMIT 5
 	</select>
+	
+	<!--+
+	    | try to get latest content id for given post data
+	    +-->
+	<select id="lookupBookmarkContentID-1" resultClass="integer" parameterClass="postRecParam">
+		SELECT content_id 
+		FROM bookmark
+		WHERE 
+			book_url_hash = #hash# AND
+			user_name = #userName# AND
+			date = #date#
+		LIMIT 1
+	</select>
+	<!--+
+	    | try to get old content id for given post data
+	    +-->
+	<select id="lookupBookmarkContentID-2" resultClass="integer" parameterClass="postRecParam">
+		SELECT content_id 
+		FROM log_bookmark
+		WHERE 
+			book_url_hash = #hash# AND
+			user_name = #userName# AND
+			date = #date#
+		LIMIT 1
+	</select>
+
+	<!--+
+	    | try to get latest content id for given post data
+	    +-->
+	<select id="lookupBibTeXContentID-1" resultClass="integer" parameterClass="postRecParam">
+		SELECT content_id 
+		FROM bibtex
+		WHERE 
+			simhash2 = #hash# AND
+			user_name = #userName# AND
+			date = #date#
+		LIMIT 1
+	</select>
+	<!--+
+	    | try to get old content id for given post data
+	    +-->
+	<select id="lookupBibTeXContentID-2" resultClass="integer" parameterClass="postRecParam">
+		SELECT content_id 
+		FROM log_bibtex
+		WHERE 
+			simhash2 = #hash# AND
+			user_name = #userName# AND
+			date = #date#
+		LIMIT 1
+	</select>
+
 </sqlMap>

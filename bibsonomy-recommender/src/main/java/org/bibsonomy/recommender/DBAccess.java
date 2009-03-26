@@ -4,6 +4,7 @@ import java.io.Reader;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -587,6 +588,68 @@ public class DBAccess extends AbstractDatabaseManager {
 		// all done.
 		return result; 		
 	}
+	
+	/**
+	 * Get queryID for given postID, user_name and date
+	 * @param postID
+	 * @return
+	 * @throws SQLException 
+	 */
+	static public Long getQueryForPost(String user_name, Date date, Integer postID) throws SQLException {
+		SqlMapClient sqlMap = getSqlMapInstance();
+		
+		PostRecParam postParam = new PostRecParam();
+		postParam.setDate(date);
+		postParam.setUserName(user_name);
+		postParam.setPostID(postID);
+		
+		log.debug("Looking up queryID for " + user_name + ", " + date + ", " + postID);
+		//log.debug("HERE: " + (Long) sqlMap.queryForObject("getQueryForPost", postParam));
+		return (Long) sqlMap.queryForObject("getQueryForPost", postParam);
+	}
+	
+	/**
+	 * Get contentID for given queryID
+	 * @throws SQLException 
+	 */
+	static public Integer getContentIDForQuery(Long queryID) throws SQLException {
+		SqlMapClient sqlMap = getSqlMapInstance();
+		SqlMapClient bibMap = getSqlBibMapInstance();
+		Integer retVal = null;
+		
+		// first get hash, username and post date
+		PostRecParam postParam = (PostRecParam)sqlMap.queryForObject("lookupPostForQuery", queryID);
+		
+		// now get content_id
+		if( postParam.getContentType()==1 ) {
+			// look for new entry
+			retVal = (Integer)bibMap.queryForObject("lookupBookmarkContentID-1", postParam);
+			if( retVal==null )
+				// look for logged entry
+				retVal = (Integer)bibMap.queryForObject("lookupBookmarkContentID-2", postParam);
+		} else if (postParam.getContentType()==2) {
+			log.error("BIBTEX LOOKUP NOT TESTED");
+			// look for new entry
+			retVal = (Integer)bibMap.queryForObject("lookupBibTeXContentID-1", postParam);
+			if( retVal==null )
+				// look for logged entry
+				retVal = (Integer)bibMap.queryForObject("lookupBibTeXContentID-2", postParam);
+		} else
+			log.error("INVALID POST: CONTENT_TYPE");
+		
+		// all done.
+		return retVal;
+	}
+	
+	/**
+	 * Get contentID for given query data
+	 * @throws SQLException 
+	 */
+	static public Integer getContentIDForQuery(String userName, Date date, Integer postID) {
+		log.error("NOT IMPLEMENTED");
+		return null;
+	}
+	
 	/**
 	 * insert recommender setting into table - if given setting already exists,
 	 * return its id. This should always be embedded into a transaction.

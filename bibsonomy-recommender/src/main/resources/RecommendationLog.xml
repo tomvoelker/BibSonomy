@@ -203,6 +203,21 @@
 		WHERE query_id = #qid#
 	</select>
 	
+	<!--+
+	    | Get query for given post 
+	    +-->
+	<select id="getQueryForPost" resultClass="long" parameterClass="postRecParam">
+		SELECT query_id
+		FROM log_recommender
+		WHERE user_name = #userName# 
+		   AND post_id = #postID# 
+		   AND YEAR(date) = YEAR(#date#)
+		   AND MONTH(date) = MONTH(#date#)
+		   AND DAY(date) = DAY(#date#)
+		ORDER BY DATE DESC 
+		LIMIT 1
+	</select>
+	
 	<!--+ 
 	    | Get specific recommender setting's id, if it exists 
 	  	+-->
@@ -251,6 +266,26 @@
 		SELECT selector_id
 		FROM recommender_selectors
 		WHERE (selector_name = #info# AND selector_meta IS NULL) 
+	</select>
+	
+	<!--+
+	    | Get post data for given query_id
+	    -->
+	<select id="lookupPostForQuery" parameterClass="long" resultMap="RecommendationLogCommon.postRec">
+		SELECT l.post_id as post_id,
+		       l.user_name as user_name,
+		       m.date as date,
+		       l.content_type as content_type,
+		       m.hash as hash
+		FROM log_recommender l 
+		   JOIN recommender_postmap m ON (
+		   		m.post_id=l.post_id AND 
+		   		YEAR(l.date)=YEAR(m.date) AND 
+		   		MONTH(l.date)=MONTH(m.date) AND 
+		   		DAY(l.date)=DAY(m.date)
+		   	) 
+		WHERE query_id=#qid#
+		LIMIT 1
 	</select>
 
 	<!--+ 

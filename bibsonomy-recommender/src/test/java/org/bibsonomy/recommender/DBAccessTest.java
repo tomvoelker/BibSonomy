@@ -3,7 +3,7 @@ package org.bibsonomy.recommender;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -41,10 +41,15 @@ public class DBAccessTest {
 	 */
 	
 	public static void main( String[] args ) throws Exception {
-		DBAccessTest obj = new DBAccessTest(); 
+		DBAccessTest obj = new DBAccessTest();
+		JNDITestDatabaseBinder.bind();
+		/*
 		obj.testAddNewSelector2();
 		obj.testAddNewSelector();
 		obj.testAddSelectedTags();
+		*/
+		obj.testGetPostDataForQuery();
+		JNDITestDatabaseBinder.unbind();
     }
 	
 	@Before
@@ -173,6 +178,36 @@ public class DBAccessTest {
 	@Test
 	public void testAddKnownRecommender() {
 	}
+	
+	/**
+	 * Test mapping post to recommendation
+	 * @throws SQLException 
+	 */
+	@Test
+	public void testGetQueryForPost() throws SQLException {
+		/*
+		 *  add query
+		 */
+		Post<? extends Resource> post = createPost();
+		Timestamp ts = new Timestamp(System.currentTimeMillis());
+		int postID = (int)Math.floor(Math.random()*Integer.MAX_VALUE);
+		
+		// store and retrieve query
+		Long qid = DBAccess.addQuery(post.getUser().getName(), ts, post, postID);
+		Long  id = DBAccess.getQueryForPost(post.getUser().getName(), (Date)ts, postID);
+		
+		assertEquals(qid, id);
+	}
+
+	/**
+	 * Test getting post data for recommender query
+	 * @throws SQLException 
+	 */
+	@Test
+	public void testGetPostDataForQuery() throws SQLException {
+		Integer contentID = DBAccess.getContentIDForQuery(new Long(3033));
+	}
+
 	
 	//------------------------------------------------------------------------
 	// private helpers

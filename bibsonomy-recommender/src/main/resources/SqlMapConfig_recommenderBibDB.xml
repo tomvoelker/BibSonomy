@@ -20,6 +20,8 @@
 	<typeAlias alias="tasParam" type="org.bibsonomy.recommender.params.TasParam" />
 	<typeAlias alias="tasEntry"  type="org.bibsonomy.recommender.params.TasEntry" />
 	<typeAlias alias="timestamp"  type="java.sql.Timestamp" />
+	<typeAlias alias="postRecParam"    type="org.bibsonomy.recommender.params.PostRecParam" />
+	
 	<!--
 		Configure a datasource to use with this SQL Map using
 		SimpleDataSource. Notice the use of the properties from the above

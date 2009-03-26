@@ -12,6 +12,7 @@ public class PostRecParam {
 	private String userName;
 	private String hash;
 	private Date date;
+	private Integer contentType;
 	
 	
 	public void setPostID(int postID) {
@@ -37,5 +38,11 @@ public class PostRecParam {
 	}
 	public Date getDate() {
 		return date;
+	}
+	public void setContentType(Integer contentType) {
+		this.contentType = contentType;
+	}
+	public Integer getContentType() {
+		return contentType;
 	}
 }

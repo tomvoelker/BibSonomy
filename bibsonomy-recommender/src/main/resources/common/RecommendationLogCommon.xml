@@ -62,6 +62,14 @@
 		<result property="diff"   column="diff"       javaType="long" />
 	</resultMap>	
 
+	<resultMap id="postRec" class="postRecParam">
+		<result property="postID"      column="post_id"      javaType="integer" />
+		<result property="userName"    column="user_name"    javaType="string" />
+		<result property="date"        column="date"         jdbcType="DATETIME"/>
+		<result property="contentType" column="content_type" javaType="integer"/>
+		<result property="hash"        column="hash"         javaType="string"/>
+	</resultMap>	
+
 	<statement id="selectResults" resultMap="recLog_result"> <!-- resultClass="java.util.HashMap"> -->
   		SELECT tag, score, confidence FROM recommender_result 
   		WHERE query_id = #qid#
