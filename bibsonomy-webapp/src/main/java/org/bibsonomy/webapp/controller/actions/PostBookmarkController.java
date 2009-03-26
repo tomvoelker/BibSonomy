@@ -32,8 +32,7 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
-import org.bibsonomy.recommender.RecommenderStatisticsManager;
-import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
+import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -164,7 +163,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * For each post process an unique identifier is generated. 
 		 * This is used for mapping posts to recommendations.
 		 */
-		if( command.getPostID()==MultiplexingTagRecommender.UNKNOWN_POSTID )
+		if( command.getPostID()==recommenderStatistics.getUnknownPID())
 			command.setPostID((int)Math.round((Math.random()*Integer.MAX_VALUE)));
 
 		/*
