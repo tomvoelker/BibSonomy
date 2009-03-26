@@ -21,8 +21,7 @@ public class DOIScraperTest {
 	
 	/**
 	 * test getting URL
-	 * FIXME: Thomas, kannst Du bitte mal schauen, was hier schiefläuft? Ist ja total seltsam ...
-	 * 
+	 *  
 	 * Im Browser komme ich bei Aufruf von
 	 * 
 	 * http://dx.doi.org/10.1007/11922162
@@ -43,7 +42,7 @@ public class DOIScraperTest {
 	 * der ersten URL raus. D.h., irgendwie scheint Springer da je nach
 	 * Cookie-Handling, Referer, oder nach Browser woanders hinzuleiten. :-(
 	 * 
-	 *   
+	 * tst: dem SpringerLinkScraper einfach die Unterstützung für URLs wie http://www.springerlink.com/link.asp?id=w425794t7433 hinzugefügt
 	 */
 	@Test
 	@Ignore
