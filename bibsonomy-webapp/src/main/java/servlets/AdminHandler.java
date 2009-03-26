@@ -3,7 +3,6 @@ import helpers.database.DBAdminManager;
 import helpers.database.DBDBLPManager;
 import helpers.database.DBStatisticsManager;
 
-
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
@@ -35,7 +34,9 @@ public class AdminHandler extends HttpServlet {
 	private static Set<String> allowedUsers = null;
 	private static final Logger log = Logger.getLogger(AdminHandler.class);
 	
-	public void init(ServletConfig config) throws ServletException{	
+	public void init(ServletConfig config) throws ServletException{
+	
+		
 		super.init(config);
 		allowedUsers = new HashSet<String>();
 		allowedUsers.add("jaeschke");
