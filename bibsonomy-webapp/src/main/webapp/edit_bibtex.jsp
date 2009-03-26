@@ -29,6 +29,10 @@ input, textarea {
   width: 100%;
 }
 
+#sidebar input {
+  width: 10ex;
+}
+
 td.expl_s {
   padding-left: 1em;
   max-width: 300px;
