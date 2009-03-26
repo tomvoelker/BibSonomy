@@ -804,4 +804,16 @@
 		<BibFile>SpringerLinkScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_144">
+		<TestDescription>test for cell scraper</TestDescription>
+		<URL>http://www.cell.com/abstract/S0092-8674(09)00271-2</URL>
+		<BibFile>CellScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cell.CellScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_145">
+		<TestDescription>test for cell scraper (biophysical journal)</TestDescription>
+		<URL>http://www.cell.com/biophysj/abstract/S0006-3495(09)00310-5</URL>
+		<BibFile>CellScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.cell.CellScraper</Scraper>
+	</URLTest>
 </test:Tests>
