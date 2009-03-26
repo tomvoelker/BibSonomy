@@ -46,8 +46,14 @@
 			<div class="scrapebox">
 				<form method="get" action="/service">
                     <span>enter URL here:</span>
-                    <input name="url" type="text" size="50"/>
+                    <input name="url" type="text" style="width: 60ex;" value="${fn:escapeXml(bean.url)}"/>
 					<input type="submit" value="send"/>
+          
+                    <div onclick="javascript:document.getElementById('selection').style.visibility = 'visible';">
+                        <textarea id="selection" rows="3" style="margin-left: 15ex; width: 60ex;visibility: hidden" name="selection">
+                          <c:out value="${bean.selection}"/><c:out value=" "/>
+                       </textarea>
+                    </div>
 				</form>
 			</div>
 
