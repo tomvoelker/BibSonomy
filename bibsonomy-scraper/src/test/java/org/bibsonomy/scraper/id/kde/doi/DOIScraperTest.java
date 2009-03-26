@@ -7,6 +7,7 @@ import junit.framework.Assert;
 
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -19,6 +20,7 @@ public class DOIScraperTest {
 	
 	
 	@Test
+	@Ignore
 	public void testScraper() throws ScrapingException, MalformedURLException {
 		final ScrapingContext sc = new ScrapingContext(new URL("http://dx.doi.org/10.1007/11922162"));
 		final DOIScraper scraper = new DOIScraper();
