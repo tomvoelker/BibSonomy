@@ -19,7 +19,7 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
+import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 import org.bibsonomy.webapp.command.ajax.AjaxBookmarkRecommenderCommand;
