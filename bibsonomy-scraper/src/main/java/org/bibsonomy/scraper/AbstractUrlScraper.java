@@ -62,7 +62,7 @@ public abstract class AbstractUrlScraper implements UrlScraper {
 	 * @param text
 	 * @return
 	 */
-	protected static String href(final String url, final String text) {
+	public static String href(final String url, final String text) {
 		return "<a href=\"" + url + "\">" + text + "</a>";
 	}
 

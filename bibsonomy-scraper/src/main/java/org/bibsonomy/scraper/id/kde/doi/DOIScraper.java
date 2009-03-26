@@ -1,21 +1,20 @@
 package org.bibsonomy.scraper.id.kde.doi;
 
-import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.AbstractUrlScraper;
+import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.id.DOIUtils;
 
 /**
- * Checks, if the URL in the {@link ScrapingContext} points to 
- * dx.doi.org and if so, follows the redirect to get the "real" 
+ * Checks, if the URL or the selection in the {@link ScrapingContext} points to 
+ * dx.doi.org OR is a DOI and if so, follows the redirect to get the "real" 
  * URL which is then passed to the next scrapers.
  * 
  * Should be one of the first scrapers in the chain!
@@ -24,48 +23,76 @@ import org.bibsonomy.util.WebUtils;
  * @author tst
  * @version $Id$
  */
-public class DOIScraper extends AbstractUrlScraper {
+public class DOIScraper implements Scraper {
 
-	private static final String DX_DOI_ORG = "dx.doi.org";
-	private static final String DX_DOI_ORG_URL = "http://" + DX_DOI_ORG + "/";
-	private static final List<Tuple<Pattern, Pattern>> urlPatterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + DX_DOI_ORG), EMPTY_PATTERN)); 
-
-	/**
-	 * Resolves DOI to a URL
-	 * @param doi DOI as String
-	 * @return URL from the referenced DOI resource, null if resolve failed
-	 * @throws IOException
-	 */
-	public static URL getUrlForDoi(final String doi) throws IOException {
-		return WebUtils.getRedirectUrl(new URL(DX_DOI_ORG_URL + doi));
+	public String getInfo() {
+		return "Scraper which follows redirects from " + AbstractUrlScraper.href(DOIUtils.DX_DOI_ORG_URL, DOIUtils.DX_DOI_ORG) + 
+		" and passes the resulting URLs to the following scrapers. Additionally checks, if the given selection" +
+		" text contains (almost only!) a DOI and basically does the same.";
 	}
 
-	@Override
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		return urlPatterns;
+	public Collection<Scraper> getScraper() {
+		return Collections.singletonList((Scraper) this);
 	}
 
 	/**
-	 * Checks the URL for dx.doi.org ... if contained, follows the redirect and
+	 * First, checks the URL for dx.doi.org ... if contained, follows the redirect and
 	 * exchanges the URL in the scraping context such that the following scrapers
 	 * can check the "real" URL.
+	 * 
+	 * Second, if no matching URL found, but selection found which contains (almost only!) 
+	 * a DOI, follows the redirects to the final URL and exchanges the URL in the context
+	 * with it.
 	 * 
 	 * <p>NOTE: always returns false, such that the other scrapers have a chance :-)</p>
 	 * 
 	 * 
 	 * @see org.bibsonomy.scraper.AbstractUrlScraper#scrapeInternal(org.bibsonomy.scraper.ScrapingContext)
 	 */
-	@Override
-	protected boolean scrapeInternal(ScrapingContext scrapingContext) throws ScrapingException {
-		final URL redirectUrl = WebUtils.getRedirectUrl(scrapingContext.getUrl());
-		if (ValidationUtils.present(redirectUrl)) {
-			scrapingContext.setUrl(redirectUrl);
+	public boolean scrape(ScrapingContext scrapingContext) throws ScrapingException {
+		/*
+		 * first: check URL
+		 */
+		final URL url = scrapingContext.getUrl();
+		final String selection = scrapingContext.getSelectedText();
+		if (!ValidationUtils.present(selection) && DOIUtils.isDOIURL(url)) {
+			/*
+			 * dx.doi.org URL found! --> resolve redirects
+			 */
+			final URL redirectUrl = WebUtils.getRedirectUrl(url);
+			if (ValidationUtils.present(redirectUrl)) {
+				scrapingContext.setUrl(redirectUrl);
+			}
+		} else if (isSupportedSelection(selection)) {
+			/*
+			 * selection contains a DOI -> extract it
+			 */
+			final String doi = DOIUtils.extractDOI(selection);
+			final URL redirectUrl = WebUtils.getRedirectUrl(DOIUtils.getUrlForDoi(doi));
+			if (ValidationUtils.present(redirectUrl)) {
+				scrapingContext.setUrl(redirectUrl);
+			}
 		}
+		/*
+		 * always return false, such that the "real" scrapers can do their work
+		 */
 		return false;
 	}
 
-	public String getInfo() {
-		return "Scraper which follows redirects from " + href(DX_DOI_ORG_URL, DX_DOI_ORG) + " and passes the resulting URLs to the following scrapers.";
+	
+	/**
+	 * Checks, whether the selection contains a DOI and is not too long (i.e., 
+	 * hopefully only contains the DOI and nothing else. 
+	 * 
+	 * @param selection
+	 * @return
+	 */
+	private static boolean isSupportedSelection(final String selection) {
+		return selection != null && selection.length() < 10 && DOIUtils.containsOnlyDOI(selection);
+	}
+
+	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
+		return DOIUtils.isDOIURL(scrapingContext.getUrl()) || isSupportedSelection(scrapingContext.getSelectedText());
 	}
 
 
