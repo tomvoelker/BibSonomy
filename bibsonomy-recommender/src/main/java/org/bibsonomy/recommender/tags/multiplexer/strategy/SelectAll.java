@@ -1,12 +1,12 @@
-package org.bibsonomy.recommender.multiplexer.strategy;
+package org.bibsonomy.recommender.tags.multiplexer.strategy;
 
 import java.sql.SQLException;
 import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.RecommendedTag;
-import org.bibsonomy.recommender.DBAccess;
-import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
+import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
+import org.bibsonomy.recommender.tags.database.DBAccess;
 
 /**
  * @author fei

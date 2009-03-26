@@ -1,11 +1,10 @@
-package org.bibsonomy.recommender.multiplexer.evaluation;
+package org.bibsonomy.recommender.tags.database;
 
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.DBAccess;
 
 /**
  * Implements a service for logging recommendation statistics.
@@ -13,7 +12,7 @@ import org.bibsonomy.recommender.DBAccess;
  * @author fei
  * @version $Id$
  */
-public class RecommenderStatisticsManagerImpl implements org.bibsonomy.recommender.RecommenderStatisticsManager {
+public class RecommenderStatisticsManagerImpl implements org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager {
 	private static final Logger log = Logger.getLogger(RecommenderStatisticsManagerImpl.class);
 	/** indicates that post identifier was not given */
 	public static int UNKNOWN_POSTID = -1;

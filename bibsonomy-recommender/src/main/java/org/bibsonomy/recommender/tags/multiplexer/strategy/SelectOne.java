@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.multiplexer.strategy;
+package org.bibsonomy.recommender.tags.multiplexer.strategy;
 
 import java.sql.SQLException;
 import java.util.Iterator;
@@ -9,8 +9,8 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
-import org.bibsonomy.recommender.DBAccess;
-import org.bibsonomy.recommender.multiplexer.MultiplexingTagRecommender;
+import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
+import org.bibsonomy.recommender.tags.database.DBAccess;
 
 /**
  * This selection strategy selects exactly one recommender.

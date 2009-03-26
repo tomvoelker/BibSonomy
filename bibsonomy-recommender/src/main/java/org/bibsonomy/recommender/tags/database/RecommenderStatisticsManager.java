@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender;
+package org.bibsonomy.recommender.tags.database;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;

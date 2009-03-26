@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.multiplexer.strategy;
+package org.bibsonomy.recommender.tags.multiplexer.strategy;
 
 import java.sql.SQLException;
 import java.util.SortedSet;

@@ -10,9 +10,9 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.recommender.DBAccess;
-import org.bibsonomy.recommender.params.Pair;
+import org.bibsonomy.recommender.tags.database.params.Pair;
 import org.bibsonomy.services.recommender.TagRecommender;
+import org.bibsonomy.recommender.tags.database.DBAccess;
 
 /**
  * Returns the most popular (i.e., most often attached) tags of the resource as 
