@@ -64,6 +64,17 @@ public abstract class HttpWorker {
 		httpClientParams.setParameter(HttpClientParams.RETRY_HANDLER, defaultHttpMethodRetryHandler);
 		httpClientParams.setParameter(HttpClientParams.HTTP_CONTENT_CHARSET, UTF8);
 		httpClientParams.setAuthenticationPreemptive(true);
+		
+		// try to catch proxy settings
+		if (System.getProperty("http.proxyHost") != null){
+			// if theres no port specified use port 80
+			if (System.getProperty("http.proxyPort") != null){
+				httpClient.getHostConfiguration().setProxy(System.getProperty("http.proxyHost"), Integer.parseInt(System.getProperty("http.proxyPort")));
+			} else {
+				httpClient.getHostConfiguration().setProxy(System.getProperty("http.proxyHost"), 80);
+			}
+		}
+		
 		this.httpClient.setParams(httpClientParams);
 	}
 
