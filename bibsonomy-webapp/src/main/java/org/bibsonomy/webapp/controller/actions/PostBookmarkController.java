@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -58,16 +59,18 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	 * FIXME: system tag handling should be done by system tags ... not by this
 	 * controller.
 	 */
-	private static final String SYS_RELEVANT_FOR = "sys:relevantFor:";
+	private static final String SYS_RELEVANT_FOR = SystemTags.RELEVANTFOR.getPrefix() + SystemTags.SYSTAG_DELIM;
 
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
+	
+	private static final String LOGIN_NOTICE = "login.notice.post.bookmark";
 	
 	/**
 	 * Interface for logging performance of tag recommendations
 	 */
 	private RecommenderStatisticsManager recommenderStatistics;
-	
+
 	/**
 	 * Returns an instance of the command the controller handles.
 	 * 
@@ -125,8 +128,13 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			 * is send back to this controller after login. This is not so
 			 * simple, because we cannot access the query path and for POST
 			 * requests we would need to build the parameters by ourselves.
+			 * 
+			 * This is a quick hack, it works at least for GET requests.
+			 * What is ugly about it: we have the URL to postBookmark in
+			 * the source code (although we could/should inject it using 
+			 * Spring)
 			 */
-			return new ExtendedRedirectView("/login");
+			return new ExtendedRedirectView("/login?notice=" + LOGIN_NOTICE + "&referer=/postBookmark?" + safeURIEncode(context.getQueryString()));
 		}
 
 		/*
@@ -175,6 +183,20 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 	}
 
+	/**
+	 * Encodes the given String with URLEncoder. If that fails, returns an empty string.
+	 * 
+	 * @param s
+	 * @return
+	 */
+	private static String safeURIEncode(final String s) {
+		try {
+			return URLEncoder.encode(s, "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			return "";
+		}
+	}
+	
 	/**
 	 * This methods does everything which needs to be done before proceeding to
 	 * the {@link Views#POST_BOOKMARK} view. This includes:
