@@ -27,7 +27,6 @@ public class LuceneSearchBookmarks {
 	private final static LuceneSearchBookmarks singleton = new LuceneSearchBookmarks();
 	private IndexSearcher searcher; 
 	private PerFieldAnalyzerWrapper analyzer;
-	private Boolean useRAMforIndex = true;
 
 
 
@@ -39,6 +38,8 @@ public class LuceneSearchBookmarks {
 			Context initContext = new InitialContext();
 			Context envContext = (Context) initContext.lookup("java:/comp/env");
 
+			Boolean loadIndexIntoRAM = (Boolean) envContext.lookup("luceneIndexBookmarksLoadIntoRAM");
+			
 			/* set current path to lucene index, given by environment parameter in tomcat's context.xml
 			 * 
 			 *   <Environment name="luceneIndexPath" type="java.lang.String" value="/home/bibsonomy/lucene"/>
@@ -53,13 +54,7 @@ public class LuceneSearchBookmarks {
 			// numbers will be deleted by SimpleAnalyser but group has only numbers, therefore use SimpleKeywordAnalyzer 
 			this.analyzer.addAnalyzer("group", new SimpleKeywordAnalyzer());
 			
-			if (useRAMforIndex) {
-				// load and hold index on physical hard disk
-				LOGGER.debug("LuceneBookmark: use index from disk");
-				this.searcher = new IndexSearcher( (String) envContext.lookup("luceneIndexPathBoomarks") );
-			}
-			else
-			{	
+			if (loadIndexIntoRAM) {
 				// load a copy of index in memory
 				// changes will have no effect on original index!
 				// make sure complete index fill fit into memory!
@@ -69,6 +64,12 @@ public class LuceneSearchBookmarks {
 				this.searcher = new IndexSearcher( BookmarkIndexRAM );
 				long endtime = System.currentTimeMillis();
 				LOGGER.debug("LuceneBookmark: index loaded into RAM in "+ (endtime-starttime) + "ms");
+			}
+			else
+			{	
+				// load and hold index on physical hard disk
+				LOGGER.debug("LuceneBookmark: use index from disk");
+				this.searcher = new IndexSearcher( (String) envContext.lookup("luceneIndexPathBoomarks") );
 			}
 		} catch (final NamingException e) {
 			/*
