@@ -25,6 +25,11 @@ import org.bibsonomy.util.id.DOIUtils;
  */
 public class DOIScraper implements Scraper {
 
+	/**
+	 * Maximum length of a selection to be search a DOI for
+	 */
+	private static final int MAX_SELECTION_LENGTH = 200;
+
 	public String getInfo() {
 		return "Scraper which follows redirects from " + AbstractUrlScraper.href(DOIUtils.DX_DOI_ORG_URL, DOIUtils.DX_DOI_ORG) + 
 		" and passes the resulting URLs to the following scrapers. Additionally checks, if the given selection" +
@@ -88,7 +93,7 @@ public class DOIScraper implements Scraper {
 	 * @return
 	 */
 	private static boolean isSupportedSelection(final String selection) {
-		return selection != null && selection.length() < 10 && DOIUtils.containsOnlyDOI(selection);
+		return selection != null && selection.length() < MAX_SELECTION_LENGTH && DOIUtils.containsOnlyDOI(selection);
 	}
 
 	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
