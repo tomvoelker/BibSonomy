@@ -49,6 +49,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -405,10 +406,10 @@ public class BookmarkHandler extends HttpServlet{
 				// use grouping settings from del.icio.us
 				if (post.hasAttribute("shared")){
 					if ("no".equals(post.getAttribute("shared"))){
-						bookmark.setGroupid(1);
+						bookmark.setGroupid(GroupID.PRIVATE.getId());
 					}
 				} else {
-					bookmark.setGroupid(0);
+					bookmark.setGroupid(GroupID.PUBLIC.getId());
 				}
 				
 				//bookmark.setGroupid(groupid);	
