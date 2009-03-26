@@ -50,7 +50,8 @@
 		  	<fmt:message key="post.resource.recommendation"/>
 		  </div>
           
-		  <div id="tagField">
+          <!-- we assign post's id to div's class for accessing clicklog data -->
+		  <div id="tagField" class="${command.postID}">
 		      <div class="fsWaitingText"><fmt:message key="post.resource.waitingForTags"/></div>
 		      <!-- This comment is needed, otherwise this will result in a self-closing element -->
 		  </div>
