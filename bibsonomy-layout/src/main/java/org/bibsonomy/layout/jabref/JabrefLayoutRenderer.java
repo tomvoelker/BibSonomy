@@ -1,3 +1,26 @@
+/**
+ *  
+ *  BibSonomy-Layout - Layout engine for the webapp.
+ *   
+ *  Copyright (C) 2006 - 2008 Knowledge & Data Engineering Group, 
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *  
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ * 
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
 package org.bibsonomy.layout.jabref;
 
 import java.io.IOException;
@@ -18,11 +41,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
-import org.bibsonomy.layout.LayoutRenderer;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.springframework.beans.factory.annotation.Required;
 
 /**
@@ -45,7 +68,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 
 	/** Returns the requested layout.
 	 *  
-	 * @see org.bibsonomy.layout.LayoutRenderer#getLayout(java.lang.String, java.lang.String)
+	 * @see org.bibsonomy.services.renderer.LayoutRenderer#getLayout(java.lang.String, java.lang.String)
 	 */
 	public JabrefLayout getLayout(final String layout, final String loginUserName) throws LayoutRenderingException, IOException {
 		final JabrefLayout jabrefLayout;
@@ -72,7 +95,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 
 	/** Renders the posts with the given layout.
 	 * 
-	 * @see org.bibsonomy.layout.LayoutRenderer#renderLayout(org.bibsonomy.layout.Layout, java.util.List, java.io.OutputStream)
+	 * @see org.bibsonomy.services.renderer.LayoutRenderer#renderLayout(org.bibsonomy.model.Layout, java.util.List, java.io.OutputStream)
 	 */
 	public <T extends Resource> void renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final OutputStream outputStream, final boolean embeddedLayout) throws LayoutRenderingException, IOException {
 		log.debug("rendering " + posts.size() + " posts with " + layout.getName() + " layout");
@@ -339,7 +362,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	/**
 	 * This renderer only supports {@link BibTex}.
 	 * 
-	 * @see org.bibsonomy.layout.LayoutRenderer#supportsResourceType(java.lang.Class)
+	 * @see org.bibsonomy.services.renderer.LayoutRenderer#supportsResourceType(java.lang.Class)
 	 */
 	public boolean supportsResourceType(final Class<? extends Resource> clazz) {
 		return BibTex.class.equals(clazz);
