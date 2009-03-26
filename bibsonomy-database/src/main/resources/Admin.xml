@@ -35,7 +35,7 @@
 	<select id="getAdminClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
 		SELECT *
 		FROM user u JOIN prediction p ON (u.user_name = p.user_name)
-		WHERE (u.updated_by != 'classifier' OR ISNULL(u.updated_by)) AND prediction = #prediction# AND algorithm='admin'
+		WHERE ((u.updated_by != 'classifier' AND u.updated_by != 'on_delete') OR ISNULL(u.updated_by)) AND prediction = #prediction# AND algorithm='admin'
 		<isGreaterThan property="interval" compareValue="0" prepend="AND">
 			u.updated_at > NOW() - INTERVAL #interval# HOUR		
 	    </isGreaterThan>
@@ -63,6 +63,7 @@
 		SELECT * FROM user u 
 		JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
 		JOIN bibtex b ON (u.user_name = b.user_name)
+		WHERE algorithm != "self_deleted"
 		GROUP BY u.user_name
 		ORDER BY u.updated_at DESC
 		LIMIT #limit#
