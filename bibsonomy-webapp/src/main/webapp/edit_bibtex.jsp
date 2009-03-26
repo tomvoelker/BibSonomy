@@ -105,7 +105,7 @@ td.expl_s {
 <tr>
   <td class="expl">description,<br>comment</td>
   <td>
-    <textarea name="description" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.description}"/></textarea>
+    <textarea name="description" rows="3" ><c:out value="${bibtexHandlerBean.description}"/></textarea>
     <div class="errmsg">${bibtexHandlerBean.errors.description}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.description}"/></div>
   </td>
@@ -240,7 +240,7 @@ td.expl_s {
 <tr>
   <td class="expl">title*</td>
   <td>
-    <textarea class="reqinput" name="title" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.title}"/></textarea>
+    <textarea class="reqinput" name="title" rows="3" ><c:out value="${bibtexHandlerBean.title}"/></textarea>
     <div class="errmsg">${bibtexHandlerBean.errors.title}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.title}"/></div>
   </td>
@@ -424,7 +424,7 @@ td.expl_s {
 <tr id="annoteR">
   <td class="expl">annote</td>
   <td>
-    <textarea name="annote" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.annote}"/></textarea>
+    <textarea name="annote" rows="3" ><c:out value="${bibtexHandlerBean.annote}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.annote}"/></div>    
   </td>
   <td></td>
@@ -433,7 +433,7 @@ td.expl_s {
 <tr id="noteR">
   <td class="expl">note</td>
   <td>
-    <textarea name="note" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.note}"/></textarea>
+    <textarea name="note" rows="3" ><c:out value="${bibtexHandlerBean.note}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.note}"/></div>    
   </td>
   <td class="expl_s">additional information which could help the reader</td>
@@ -499,7 +499,7 @@ td.expl_s {
 <tr>
   <td class="expl">misc</td>
   <td>
-    <textarea name="misc" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.misc}"/></textarea>
+    <textarea name="misc" rows="3" ><c:out value="${bibtexHandlerBean.misc}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.misc}"/></div>    
   </td>
   <td class="expl_s">this field can be used to import nonstandard fields in addition to the predefined ones. please use BibTeX compliant syntax.</td>
@@ -508,7 +508,7 @@ td.expl_s {
 <tr>
   <td class="expl">abstract</td>
   <td>
-    <textarea name="bibtexAbstract" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.bibtexAbstract}"/></textarea>
+    <textarea name="bibtexAbstract" rows="3" ><c:out value="${bibtexHandlerBean.bibtexAbstract}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.bibtexAbstract}"/></div>    
   </td>
   <td></td>
@@ -517,7 +517,7 @@ td.expl_s {
 <tr id="miscR">
   <td class="expl">private note</td>
   <td>
-    <textarea name="privnote" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.privnote}"/></textarea>
+    <textarea name="privnote" rows="3" ><c:out value="${bibtexHandlerBean.privnote}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.privnote}"/></div>    
   </td>
   <td class="expl_s">here you can enter a private note which is not visible to other users</td>
@@ -644,6 +644,12 @@ td.expl_s {
   	}  
   	
   	changeView();
+
+  	/* enable dynamic resizing of textareas */
+  	$(document).ready(function(){
+  	  	$('textarea').autoResize();
+	});
+
 </script>
 
 </div><%--closed general box --%>
