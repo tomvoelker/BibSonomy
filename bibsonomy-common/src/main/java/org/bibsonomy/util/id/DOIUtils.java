@@ -10,6 +10,11 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Helper methods to simplify <a href="http://www.doi.org/">DOI</a>s (digital object identifiers).
  *  
+ *  
+ *  FIXME: how to support DOI URLs like
+ *  http://doi.acm.org/10.1145/160688.160713
+ *  i.e., how to extract/match them?  
+ * 
  * @author rja
  * @version $Id$
  */
