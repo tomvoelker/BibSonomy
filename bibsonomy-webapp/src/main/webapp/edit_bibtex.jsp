@@ -44,7 +44,7 @@ td.expl_s {
 <!------------------------------------------->
 <div id="general">
 <c:forEach var="errorkey" items="${bibtexHandlerBean.errorKeys}">
-  <div class="errmsg">${bibtexHandlerBean.errors[errorkey]}</div> 
+  <div class="errmsg"><c:out value="${bibtexHandlerBean.errors[errorkey]}"/></div> 
 </c:forEach>
 
 <%-- entry already exists  --%>
@@ -74,7 +74,7 @@ td.expl_s {
   
 </c:if>
 
-<c:if test="${!empty param.selection}">
+<c:if test="${not empty param.selection}">
   <h2>Selected Text</h2>
   <pre><c:out value="${mtl:trimWhiteSpace(param.selection)}"/></pre>
 </c:if>
@@ -112,7 +112,6 @@ td.expl_s {
   <td></td>				
 </tr>
 
-
   <tr>
     <td class="expl">
       viewable for
@@ -125,10 +124,17 @@ td.expl_s {
   
       <c:if test="${not empty user.groups}">
 
-        <select style="float:right;" id="relevantGroups" size="3" multiple="true">
+        <select name="relevantFor" style="float:right;" id="relevantGroups" size="3" multiple="true">
           <option value="">--please select--</option>
           <c:forEach var="group" items="${user.groups}">
-            <option value="${f:escapeXml(group)}"><c:out value="${group}"/></option> 
+            <c:choose>
+              <c:when test="${mtl:contains(bibtexHandlerBean.relevantFor,group)}">
+                <option value="${f:escapeXml(group)}" selected="true"><c:out value="${group}"/></option>
+              </c:when>
+              <c:otherwise>
+                <option value="${f:escapeXml(group)}"><c:out value="${group}"/></option>  
+              </c:otherwise>
+            </c:choose>
           </c:forEach>
         </select>
         <span class="expl" style="float:right; padding-right: 1em;">
@@ -157,7 +163,8 @@ td.expl_s {
         <div class="errmsg"></div>
   	  </td>
 	</tr>
-<c:if test="${not empty bibtexHandlerBean.recommendedTags}" >
+    
+    <c:if test="${not empty bibtexHandlerBean.recommendedTags}" >
 		<tr>
           <td height="40">
     	    <ul id="suggTags">
@@ -172,7 +179,7 @@ td.expl_s {
             </ul>
       	  </td>
     	</tr>		
-	</c:if>
+  </c:if>
 
 
 <%--  insert copy tags --%>
@@ -230,7 +237,7 @@ td.expl_s {
   <td class="expl">BibTeX key*</td>
   <td>
     <input class="reqinput" type="text" name="bibtexKey" value='<c:out value="${bibtexHandlerBean.bibtexKey}"/>' style="width: 10em;"/>
-    <div class="errmsg">${bibtexHandlerBean.errors.bibtexKey}</div>
+    <div class="errmsg"><c:out value="${bibtexHandlerBean.errors.bibtexKey}"/></div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.bibtexKey}"/></div>
   </td>
   <td class="expl_s">a memorable key without spaces</td>
@@ -532,6 +539,11 @@ td.expl_s {
   <td></td>
   <td></td>
 </tr>
+<tr style="line-height: 0px; visibility: hidden;">
+  <td>&nbsp;</td>
+  <td>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ </td>
+  <td>&nbsp;</td>
+</tr>
 </table>
 </form>
 
@@ -653,6 +665,7 @@ td.expl_s {
 </script>
 
 </div><%--closed general box --%>
+
 
 <div id="sidebarroundcorner" >
 <ul id="sidebar">
