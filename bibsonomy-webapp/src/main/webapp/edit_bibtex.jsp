@@ -22,6 +22,23 @@
 <%-------------------------- Navigation -----------------------%>
 <%@include file="/boxes/navi.jsp" %> 
 
+
+<style type="text/css">
+<!--
+input, textarea {
+  width: 100%;
+}
+
+td.expl_s {
+  padding-left: 1em;
+  max-width: 300px;
+}
+
+-->
+</style>
+
+
+
 <!------------------------------------------->
 <!--          Content goes here            -->
 <!------------------------------------------->
@@ -69,25 +86,26 @@
   <input type="hidden" name="oldhash" value="${bibtexHandlerBean.oldhash}"/>
   <input type="hidden" name="rating" value="${bibtexHandlerBean.rating}"/>
   <input type="hidden" value="${ckey}" name="ckey"/>
-  <table>
+
+
+<table>
     
-<tr>
-  <td class="expl">tags*</td>
-  <td>
-    <input class="reqinput" type="text" size="60" id="inpf" name="tags" onClick="setActiveInputField(this.id); enableHandler();" onFocus="setActiveInputField(this.id); enableHandler()" onBlur="disableHandler()" value='<c:out value="${bibtexHandlerBean.tags}" />' autocomplete="off" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" >
+  <tr>
+    <td class="expl">tags*</td>
+    <td>
+      <input class="reqinput" type="text" id="inpf" name="tags" onClick="setActiveInputField(this.id); enableHandler();" onFocus="setActiveInputField(this.id); enableHandler()" onBlur="disableHandler()" value='<c:out value="${bibtexHandlerBean.tags}" />' autocomplete="off" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" >
+      <%@include file="/boxes/comma_test.jsp" %> 
     
-    <%@include file="/boxes/comma_test.jsp" %> 
-    
-    <div class="errmsg">${bibtexHandlerBean.errors.tags}</div>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.fullTagString}"/></div>
-  </td>
-  <td class="expl_s">space separated</td>				
-</tr>
+      <div class="errmsg">${bibtexHandlerBean.errors.tags}</div>
+      <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.fullTagString}"/></div>
+    </td>
+    <td class="expl_s">space separated</td>				
+  </tr>
 
 <tr>
   <td class="expl">description,<br>comment</td>
   <td>
-    <textarea name="description" cols="60" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.description}"/></textarea>
+    <textarea name="description" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.description}"/></textarea>
     <div class="errmsg">${bibtexHandlerBean.errors.description}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.description}"/></div>
   </td>
@@ -95,12 +113,39 @@
 </tr>
 
 
-<tr>
-  <td class="expl">viewable for</td>
-  <td><%@include file="/boxes/groupselection.jsp" %></td>
-  <td></td>
+  <tr>
+    <td class="expl">
+      viewable for
+    </td>
+    
+    <td>
+      <span style="float: left;">
+        <%@include file="/boxes/groupselection.jsp" %>
+      </span>
+  
+      <c:if test="${not empty user.groups}">
+
+        <select style="float:right;" id="relevantGroups" size="3" multiple="true">
+          <option value="">--please select--</option>
+          <c:forEach var="group" items="${user.groups}">
+            <option value="${f:escapeXml(group)}"><c:out value="${group}"/></option> 
+          </c:forEach>
+        </select>
+        <span class="expl" style="float:right; padding-right: 1em;">
+          relevant for
+        </span>
+        
+      </c:if>
+   </td>
+   <td class="expl_s">
+     <c:if test="${not empty user.groups}">
+       If your post is interesting for one or more groups, you can mark your post "relevant" for these groups.
+     </c:if>
+   </td>
 </tr>
-    <tr>
+
+
+<tr>
       <td height="40">
 	    <ul id="suggTags">
 	      <li>suggested</li>
@@ -148,28 +193,6 @@
 
 
 
-<tr>
-  <td class="expl">
-    relevant for
-  </td>
-  <td> 
-            <!-- select box for "other" groups -->
-            <select style="float:left; margin-right: 1ex;" id="relevantGroups" size="3" multiple="true">
-              <option value="">--please select--</option>
-              <c:forEach var="group" items="${user.groups}">
-                <option value="${f:escapeXml(group)}"><c:out value="${group}"/></option> 
-              </c:forEach>
-            </select>
-   </td>
-   <td class="expl_s">
-     If your post is interesting for one or more groups, you can mark your post "relevant" for these groups.
-   </td>
-</tr>
-
-
-
-
-
 
 
 <tr><td colspan="3"><hr style="margin: 20px 0px 20px 0px;"></td></tr>
@@ -206,7 +229,7 @@
 <tr>
   <td class="expl">BibTeX key*</td>
   <td>
-    <input class="reqinput" type="text" name="bibtexKey" value='<c:out value="${bibtexHandlerBean.bibtexKey}"/>' size="20" />
+    <input class="reqinput" type="text" name="bibtexKey" value='<c:out value="${bibtexHandlerBean.bibtexKey}"/>' style="width: 10em;"/>
     <div class="errmsg">${bibtexHandlerBean.errors.bibtexKey}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.bibtexKey}"/></div>
   </td>
@@ -217,7 +240,7 @@
 <tr>
   <td class="expl">title*</td>
   <td>
-    <textarea class="reqinput" name="title" cols="60" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.title}"/></textarea>
+    <textarea class="reqinput" name="title" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.title}"/></textarea>
     <div class="errmsg">${bibtexHandlerBean.errors.title}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.title}"/></div>
   </td>
@@ -227,7 +250,7 @@
 <tr>
   <td class="expl">authors*</td>
   <td>
-    <textarea class="reqinput" name="author" id="lauthor" onkeyup="toggle_required_author_editor(); sz(this);"" rows="3" cols="60"><c:out value="${bibtexHandlerBean.authorLineBreak}"/></textarea>
+    <textarea class="reqinput" name="author" id="lauthor" onkeyup="toggle_required_author_editor(); sz(this);"" rows="3"><c:out value="${bibtexHandlerBean.authorLineBreak}"/></textarea>
     <div class="errmsg">${bibtexHandlerBean.errors.author}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.author}"/></div>
   </td>
@@ -239,7 +262,7 @@
 <tr>
   <td valign="top" class="expl">editors*</td>
   <td>
-    <textarea class="reqinput" name="editor" id="leditor" onkeyup="toggle_required_author_editor(); sz(this);" rows="3" cols="60"><c:out value="${bibtexHandlerBean.editorLineBreak}"/></textarea>
+    <textarea class="reqinput" name="editor" id="leditor" onkeyup="toggle_required_author_editor(); sz(this);" rows="3" ><c:out value="${bibtexHandlerBean.editorLineBreak}"/></textarea>
     <div class="errmsg">${bibtexHandlerBean.errors.editor}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.editor}"/></div>
     <script type="text/javascript">toggle_required_author_editor();</script>    
@@ -252,7 +275,7 @@
 <tr id="booktitleR">
   <td class="expl">booktitle</td>
   <td>
-    <input type="text" name="booktitle" size="60" value='<c:out value="${bibtexHandlerBean.booktitle}"/>'/>
+    <input type="text" name="booktitle" value="${f:escapeXml(bibtexHandlerBean.booktitle)}"/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.booktitle}"/></div>
   </td>
   <td class="expl_s">title of a book when only part is cited</td>
@@ -263,7 +286,7 @@
 <tr id="journalR">
   <td class="expl">journal</td>
   <td>
-    <input type="text" name="journal" value='<c:out value="${bibtexHandlerBean.journal}"/>' size="60" />
+    <input type="text" name="journal" value='<c:out value="${bibtexHandlerBean.journal}"/>' />
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.journal}"/></div>
   </td>
   <td class="expl_s">full (unabbreviated) journal title</td>
@@ -275,7 +298,7 @@
 <tr id="volumeR">
   <td class="expl">volume</td>
   <td>
-    <input type="text" name="volume" value='<c:out value="${bibtexHandlerBean.volume}"/>' size="10" />
+    <input type="text" name="volume" value='<c:out value="${bibtexHandlerBean.volume}"/>' style="width: 10em;" />
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.volume}"/></div>
   </td>
   <td></td>
@@ -285,7 +308,7 @@
 <tr id="numberR">
   <td class="expl">number</td>
   <td>
-    <input type="text" name="number" value='<c:out value="${bibtexHandlerBean.number}"/>' size="10" />
+    <input type="text" name="number" value='<c:out value="${bibtexHandlerBean.number}"/>' style="width: 10em;"/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.number}"/></div>
   </td>
   <td class="expl_s">number of journal, magazine, technical report, or work in a series</td>
@@ -294,7 +317,7 @@
 <tr id="pagesR">
   <td class="expl">pages</td>
   <td>
-    <input type="text" name="pages" value='<c:out value="${bibtexHandlerBean.pages}"/>' size="10" />
+    <input type="text" name="pages" value='<c:out value="${bibtexHandlerBean.pages}"/>' style="width: 10em;"/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.pages}"/></div>    
   </td>
   <td></td>
@@ -304,7 +327,7 @@
 <tr id="publisherR">
   <td class="expl">publisher</td>
   <td>
-    <input type="text" name="publisher" value='<c:out value="${bibtexHandlerBean.publisher}"/>' size="60" />
+    <input type="text" name="publisher" value='<c:out value="${bibtexHandlerBean.publisher}"/>' />
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.publisher}"/></div>    
   </td>
   <td></td>
@@ -313,7 +336,7 @@
 <tr id="addressR">
   <td class="expl">address</td>
   <td>
-    <input type="text" name="address" value="<c:out value='${bibtexHandlerBean.address}'/>" size="60" />
+    <input type="text" name="address" value="<c:out value='${bibtexHandlerBean.address}'/>" />
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.address}"/></div>    
   </td>
   <td class="expl_s">address of the publisher or institution</td>
@@ -324,7 +347,7 @@
 <tr>
   <td class="expl">year*</td>
   <td>
-    <input class="reqinput" type="text" name="year" value='<c:out value="${bibtexHandlerBean.year}"/>' size="10" />
+    <input class="reqinput" type="text" name="year" value='<c:out value="${bibtexHandlerBean.year}"/>' style="width: 10em;"/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.year}"/></div>    
   </td>
   <td></td>
@@ -333,7 +356,7 @@
 <tr id="monthR">
   <td class="expl">month</td>
   <td>
-    <input type="text" name="month" value='<c:out value="${bibtexHandlerBean.month}"/>' size="10"/>
+    <input type="text" name="month" value='<c:out value="${bibtexHandlerBean.month}"/>' style="width: 10em;"/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.month}"/></div>    
   </td>
   <td></td>
@@ -342,7 +365,7 @@
 <tr id="dayR">
   <td class="expl">day</td>
   <td>
-    <input type="text" name="day" value='<c:out value="${bibtexHandlerBean.day}"/>' size="10" />
+    <input type="text" name="day" value='<c:out value="${bibtexHandlerBean.day}"/>' style="width: 10em;"/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.day}"/></div>    
   </td>
   <td></td>
@@ -352,7 +375,7 @@
 <tr id="editionR">
   <td class="expl">edition</td>
   <td>
-    <input type="text" name="edition" value='<c:out value="${bibtexHandlerBean.edition}"/>' size="10" />
+    <input type="text" name="edition" value='<c:out value="${bibtexHandlerBean.edition}"/>' style="width: 10em;"/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.edition}"/></div>    
   </td>
   <td class="expl_s">edition of a book, usually written in full as "Second"</td>
@@ -362,7 +385,7 @@
 <tr id="chapterR">
   <td class="expl">chapter</td>
   <td>
-    <input type="text" name="chapter" value='<c:out value="${bibtexHandlerBean.chapter}"/>' size="10" />
+    <input type="text" name="chapter" value='<c:out value="${bibtexHandlerBean.chapter}"/>' style="width: 10em;"/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.chapter}"/></div>    
   </td>
   <td class="expl_s">chapter or section number</td>
@@ -372,7 +395,7 @@
 <tr>
   <td class="expl">url</td>
   <td>
-    <input type="text" name="url" value='<c:out value="${bibtexHandlerBean.url}"/>' size=60>
+    <input type="text" name="url" value='<c:out value="${bibtexHandlerBean.url}"/>'>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.url}"/></div>    
   </td>
   <td></td>
@@ -382,7 +405,7 @@
 <tr id="keyR">
   <td class="expl">key</td>
   <td>
-    <input type="text" name="key" value='<c:out value="${bibtexHandlerBean.key}"/>' size="10" />
+    <input type="text" name="key" value='<c:out value="${bibtexHandlerBean.key}"/>'/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.key}"/></div>    
   </td>
   <td class="expl_s">used by BibTeX for sorting</td>
@@ -391,7 +414,7 @@
 <tr id="typeR">
   <td class="expl">type</td>
   <td>
-    <input type="text" name="type" value='<c:out value="${bibtexHandlerBean.type}"/>' size="60" />
+    <input type="text" name="type" value='<c:out value="${bibtexHandlerBean.type}"/>'/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.type}"/></div>    
   </td>
   <td class="expl_s">type of technical report, e.g. "research report"</td>
@@ -401,7 +424,7 @@
 <tr id="annoteR">
   <td class="expl">annote</td>
   <td>
-    <textarea name="annote" rows="3" cols="60" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.annote}"/></textarea>
+    <textarea name="annote" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.annote}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.annote}"/></div>    
   </td>
   <td></td>
@@ -410,7 +433,7 @@
 <tr id="noteR">
   <td class="expl">note</td>
   <td>
-    <textarea name="note" rows="3" cols="60" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.note}"/></textarea>
+    <textarea name="note" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.note}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.note}"/></div>    
   </td>
   <td class="expl_s">additional information which could help the reader</td>
@@ -421,7 +444,7 @@
 <tr id="howpublishedR">
   <td class="expl">howpublished</td>
   <td>
-    <input type="text" name="howpublished" value='<c:out value="${bibtexHandlerBean.howpublished}"/>' size="60" />
+    <input type="text" name="howpublished" value='<c:out value="${bibtexHandlerBean.howpublished}"/>'/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.howpublished}"/></div>    
   </td>
   <td class="expl_s">anything unusual about the method of publishing, e.g. "privately published"</td>
@@ -430,7 +453,7 @@
 <tr id="institutionR">
   <td class="expl">institution</td>
   <td>
-    <input type="text" name="institution" value='<c:out value="${bibtexHandlerBean.institution}"/>' size="60" />
+    <input type="text" name="institution" value='<c:out value="${bibtexHandlerBean.institution}"/>'/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.institution}"/></div>    
   </td>
   <td class="expl_s">name of the sponsoring institution for a technical report</td>
@@ -439,7 +462,7 @@
 <tr id="organizationR">
   <td class="expl">organization</td>
   <td>
-    <input type="text" name="organization" value='<c:out value="${bibtexHandlerBean.organization}"/>' size="60" />
+    <input type="text" name="organization" value='<c:out value="${bibtexHandlerBean.organization}"/>'/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.organization}"/></div>    
   </td>
   <td class="expl_s">sponsoring organization for a conference or manual</td>
@@ -449,7 +472,7 @@
 <tr id="schoolR">
   <td class="expl">school</td>
   <td>
-    <input type="text" name="school" value='<c:out value="${bibtexHandlerBean.school}"/>' size="60" />
+    <input type="text" name="school" value='<c:out value="${bibtexHandlerBean.school}"/>'/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.school}"/></div>    
   </td>
   <td class="expl_s">name of the academic institution where a thesis was written</td>
@@ -458,7 +481,7 @@
 <tr id="seriesR">
   <td class="expl">series</td>
   <td>
-    <input type="text" name="series" value='<c:out value="${bibtexHandlerBean.series}"/>' size="60" />
+    <input type="text" name="series" value='<c:out value="${bibtexHandlerBean.series}"/>'/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.series}"/></div>    
   </td>
   <td class="expl_s">name of a series or a set of books</td>
@@ -467,7 +490,7 @@
 <tr id="crossrefR">
   <td class="expl">crossref</td>
   <td>
-    <input type="text" name="crossref" value='<c:out value="${bibtexHandlerBean.crossref}"/>' size="20" />
+    <input type="text" name="crossref" value='<c:out value="${bibtexHandlerBean.crossref}"/>' style="width: 10em;"/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.crossref}"/></div>    
   </td>
   <td></td>
@@ -476,7 +499,7 @@
 <tr>
   <td class="expl">misc</td>
   <td>
-    <textarea name="misc" cols="60" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.misc}"/></textarea>
+    <textarea name="misc" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.misc}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.misc}"/></div>    
   </td>
   <td class="expl_s">this field can be used to import nonstandard fields in addition to the predefined ones. please use BibTeX compliant syntax.</td>
@@ -485,7 +508,7 @@
 <tr>
   <td class="expl">abstract</td>
   <td>
-    <textarea name="bibtexAbstract" cols="60" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.bibtexAbstract}"/></textarea>
+    <textarea name="bibtexAbstract" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.bibtexAbstract}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.bibtexAbstract}"/></div>    
   </td>
   <td></td>
@@ -494,7 +517,7 @@
 <tr id="miscR">
   <td class="expl">private note</td>
   <td>
-    <textarea name="privnote" cols="60" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.privnote}"/></textarea>
+    <textarea name="privnote" rows="3" onkeyup="sz(this);"><c:out value="${bibtexHandlerBean.privnote}"/></textarea>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.privnote}"/></div>    
   </td>
   <td class="expl_s">here you can enter a private note which is not visible to other users</td>
