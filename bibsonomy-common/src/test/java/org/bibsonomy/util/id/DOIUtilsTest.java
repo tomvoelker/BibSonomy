@@ -50,7 +50,8 @@ public class DOIUtilsTest {
 		"10.1145/860451",
 		"10.1002/cpe.607",
 		"doi:10.1109/ISSTA.2002.1048560",
-		"DOI: 10.1016/j.spl.2008.05.017"
+		"DOI: 10.1016/j.spl.2008.05.017",
+		"10.1145/160688.160713"
 	                                                };
 
 	private static final String[] nonDois = new String[] 
@@ -145,7 +146,6 @@ public class DOIUtilsTest {
 	public void testContainsOnlyDOI() {
 		for(final String doi: dois) {
 			final String fuzzyDoi = fuzzifyDoiOnlyDOI(doi);
-			System.out.println(doi + " --> " + fuzzyDoi);
 			Assert.assertTrue(DOIUtils.containsOnlyDOI(doi));
 			Assert.assertTrue(DOIUtils.containsOnlyDOI(fuzzyDoi));
 		}
