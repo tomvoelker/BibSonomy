@@ -23,6 +23,7 @@
 
 package org.bibsonomy.rest.client;
 
+import org.apache.commons.httpclient.ProxyHost;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
@@ -46,6 +47,8 @@ public final class Bibsonomy {
 	private String apiURL = RestProperties.getInstance().getApiUrl();
 	private String username;
 	private String apiKey;
+	private String proxyHost;
+	private int proxyPort = 80;
 	private RenderingFormat renderingFormat = RenderingFormat.XML;
 
 	/**
@@ -69,6 +72,12 @@ public final class Bibsonomy {
 	public Bibsonomy(final String username, final String apiKey) throws IllegalArgumentException {
 		this.setUsername(username);
 		this.setApiKey(apiKey);
+
+		this.setProxyHost(System.getProperty("http.proxyHost"));
+		
+		if (System.getProperty("http.proxyPort") != null){
+			this.setProxyPort(Integer.parseInt(System.getProperty("http.proxyPort")));
+		}
 	}
 
 	/**
@@ -86,6 +95,8 @@ public final class Bibsonomy {
 		if (this.apiKey == null) throw new IllegalStateException("The password has not yet been set.");
 		query.setRenderingFormat(this.renderingFormat);
 		query.setApiURL(this.apiURL);
+		query.setProxyHost(this.proxyHost);
+		query.setProxyPort(this.proxyPort);
 		query.execute(this.username, this.apiKey);
 	}
 
@@ -105,6 +116,8 @@ public final class Bibsonomy {
 	 */
 	public void executeQuery(final AbstractQuery<?> query, final ProgressCallback callback) throws ErrorPerformingRequestException, IllegalStateException {
 		query.setProgressCallback(callback);
+		query.setProxyHost(this.proxyHost);
+		query.setProxyPort(this.proxyPort);
 		executeQuery(query);
 	}
 
@@ -166,5 +179,21 @@ public final class Bibsonomy {
 			throw new UnsupportedOperationException("Currently only the xml rendering format is implemented.");
 		}
 		this.renderingFormat = renderingFormat;
+	}
+
+	/**
+	 * 
+	 * @param proxyHost
+	 */
+	public void setProxyHost(String proxyHost) {
+		this.proxyHost = proxyHost;
+	}
+
+	/**
+	 * 
+	 * @param proxyPort
+	 */
+	public void setProxyPort(int proxyPort) {
+		this.proxyPort = proxyPort;
 	}
 }

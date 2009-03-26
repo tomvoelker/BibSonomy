@@ -31,6 +31,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.logging.Level;
 
+import org.apache.commons.httpclient.ProxyHost;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.bibsonomy.rest.client.ProgressCallback;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
@@ -44,8 +45,8 @@ public final class GetWorker extends HttpWorker {
 
 	private final ProgressCallback callback;
 
-	public GetWorker(final String username, final String password, final ProgressCallback callback) {
-		super(username, password);
+	public GetWorker(final String username, final String password, final ProgressCallback callback, final String proxyHost, final int proxyPort) {
+		super(username, password, proxyHost, proxyPort);
 		this.callback = callback;
 	}
 

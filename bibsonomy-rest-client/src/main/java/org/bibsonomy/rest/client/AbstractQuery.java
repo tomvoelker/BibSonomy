@@ -26,6 +26,7 @@ package org.bibsonomy.rest.client;
 import java.io.Reader;
 
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.ProxyHost;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
@@ -55,6 +56,8 @@ public abstract class AbstractQuery<T> {
 	private String apiKey;
 	private String username;
 	private String apiURL;
+	private String proxyHost;
+	private int proxyPort;
 	private int statusCode = -1;
 	private RenderingFormat renderingFormat = RenderingFormat.XML;
 	private ProgressCallback callback;
@@ -65,7 +68,7 @@ public abstract class AbstractQuery<T> {
 	private boolean executed = false;
 
 	protected final Reader performGetRequest(final String url) throws ErrorPerformingRequestException {
-		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.callback);
+		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.callback, this.proxyHost, this.proxyPort);
 		final Reader downloadedDocument = worker.perform(this.apiURL + url);
 		this.statusCode = worker.getHttpResult();
 		return downloadedDocument;
@@ -79,19 +82,19 @@ public abstract class AbstractQuery<T> {
 
 		switch (method) {
 		case POST:
-			worker = new PostWorker(this.username, this.apiKey);
+			worker = new PostWorker(this.username, this.apiKey, this.proxyHost, this.proxyPort);
 			result = ((PostWorker) worker).perform(absoluteUrl, requestBody);
 			break;
 		case DELETE:
-			worker = new DeleteWorker(this.username, this.apiKey);
+			worker = new DeleteWorker(this.username, this.apiKey, this.proxyHost, this.proxyPort);
 			result = ((DeleteWorker) worker).perform(absoluteUrl);
 			break;
 		case PUT:
-			worker = new PutWorker(this.username, this.apiKey);
+			worker = new PutWorker(this.username, this.apiKey, this.proxyHost, this.proxyPort);
 			result = ((PutWorker) worker).perform(absoluteUrl, requestBody);
 			break;
 		case HEAD:
-			worker = new HeadWorker(this.username, this.apiKey);
+			worker = new HeadWorker(this.username, this.apiKey, this.proxyHost, this.proxyPort);
 			result = ((HeadWorker) worker).perform(absoluteUrl);
 			break;
 		case GET:
@@ -160,6 +163,8 @@ public abstract class AbstractQuery<T> {
 	void setApiURL(final String apiURL) {
 		this.apiURL = apiURL;
 	}
+	
+	
 
 	/**
 	 * @return the {@link RenderingFormat} to use.
@@ -193,5 +198,13 @@ public abstract class AbstractQuery<T> {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
 		return RendererFactory.getRenderer(getRenderingFormat()).parseError(this.downloadedDocument);
 	}	
+	
+	public void setProxyHost(String proxyHost) {
+		this.proxyHost = proxyHost;
+	}
+
+	public void setProxyPort(int proxyPort) {
+		this.proxyPort = proxyPort;
+	}
 	
 }

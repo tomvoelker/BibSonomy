@@ -29,6 +29,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.logging.Level;
 
+import org.apache.commons.httpclient.ProxyHost;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.bibsonomy.rest.client.ProgressCallback;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
@@ -40,8 +41,8 @@ import org.bibsonomy.rest.client.worker.HttpWorker;
  */
 public final class DeleteWorker extends HttpWorker {
 
-	public DeleteWorker(final String username, final String apiKey) {
-		super(username, apiKey);
+	public DeleteWorker(final String username, final String apiKey, final String proxyHost, final int proxyPort) {
+		super(username, apiKey, proxyHost ,proxyPort);
 	}
 
 	public Reader perform(final String url) throws ErrorPerformingRequestException {

@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
+import org.apache.commons.httpclient.ProxyHost;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
@@ -38,8 +39,8 @@ import org.bibsonomy.rest.client.worker.HttpWorker;
  */
 public final class PostWorker extends HttpWorker {
 
-	public PostWorker(final String username, final String apiKey) {
-		super(username, apiKey);
+	public PostWorker(final String username, final String apiKey, final String proxyHost, final int proxyPort) {
+		super(username, apiKey, proxyHost, proxyPort);
 	}
 
 	public Reader perform(final String url, final String requestBody) throws ErrorPerformingRequestException {
