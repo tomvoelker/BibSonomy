@@ -18,9 +18,19 @@ public class ScienceDirectScraperTest {
 	 */
 	@Test
 	@Ignore
-	public void urlTestRun(){
+	public void urlTestRun1(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_28"));
+	}
+
+	/**
+	 * starts URL test with id url_141
+	 */
+	@Test
+	@Ignore
+	public void urlTestRun2(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_141"));
 	}
 	
 }

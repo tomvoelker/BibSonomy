@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,9 +33,15 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 
 	private static final Pattern contentPattern = Pattern.compile("content\\/(.+?)\\/");
 	private static final String SPRINGER_CITATION_URL = "http://springerlink.com/";
-	private static final String SPRINGER_CITATION_HOST = "springerlink.com";
+	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
+	private static final String SPRINGER_CITATION_HOST_DE = "springerlink.de";
 	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	
+	static{
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST_COM), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST_DE), AbstractUrlScraper.EMPTY_PATTERN));
+	}
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 			sc.setScraper(this);
