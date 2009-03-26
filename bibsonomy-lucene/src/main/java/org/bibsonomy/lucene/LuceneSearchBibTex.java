@@ -29,7 +29,7 @@ public class LuceneSearchBibTex {
 	private final static LuceneSearchBibTex singleton = new LuceneSearchBibTex();
 	private IndexSearcher searcher; 
 	private PerFieldAnalyzerWrapper analyzer;
-	private Boolean useRAMforIndex = false;
+	private Boolean useRAMforIndex = true;
 		
 
 
