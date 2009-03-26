@@ -20,18 +20,15 @@
 		<hr/>
 		
 		<%-- ------------------------ delicious import -------------------------- --%>
-		<h2>import your del.icio.us data:</h2>
+		<h2>import your Delicious data:</h2>
 		<form method="POST" action="/bookmarkHandler">
 	  	<table>
 	    	<tr><td>username</td><td><input type="text" name="username" size="30"/></td></tr>
 	    	<tr><td>password</td><td><input type="password" name="password" size="30"/></td></tr>
 	    	<tr>
-	      		<td colspan="2">group settings will be transferred from del.icio.us</td>
-	      		<!-- <td><select name="group"><c:forEach var="group" items="${user.allGroups}">
-	         	<option value="${group}">${group}</option>
-	      		</c:forEach></select></td> -->
+	      		<td colspan="2">group settings will be transferred from Delicious</td>
 	    	</tr>
-	    	<tr><td></td><td><input type="checkbox" name="overwrite" value="yes">del.icio.us bookmarks overwrite ${projectName} bookmarks</td></tr>
+	    	<tr><td></td><td><input type="checkbox" name="overwrite" value="yes">Delicious bookmarks overwrite ${projectName} bookmarks</td></tr>
 	    	<tr><td>
 	      		<input type="hidden" name="ckey" value="${ckey}"/>
 	      		<input type="hidden" name="import" value="delicious"/>
