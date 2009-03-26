@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.params;
+package org.bibsonomy.recommender.tags.database.params;
 
 /**
  * Bean for selection result strategy settings

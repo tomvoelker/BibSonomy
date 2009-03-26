@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.params;
+package org.bibsonomy.recommender.tags.database.params;
 
 public class Pair <T extends Comparable<T>, U extends Comparable<U>> implements Comparable<Pair<T,U>>
 {
