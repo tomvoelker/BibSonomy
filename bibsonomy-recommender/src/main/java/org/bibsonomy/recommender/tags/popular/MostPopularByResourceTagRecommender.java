@@ -12,7 +12,7 @@ import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.DBAccess;
 import org.bibsonomy.recommender.params.Pair;
-import org.bibsonomy.recommender.tags.TagRecommender;
+import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
  * Returns the most popular (i.e., most often attached) tags of the resource as 
@@ -39,7 +39,7 @@ public class MostPopularByResourceTagRecommender implements TagRecommender {
 	/**
 	 * Returns the resource's overall most popular tags
 	 * 
-	 * @see org.bibsonomy.recommender.tags.TagRecommender#getRecommendedTags(org.bibsonomy.model.Post)
+	 * @see org.bibsonomy.services.recommender.TagRecommender#getRecommendedTags(org.bibsonomy.model.Post)
 	 */
 	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
 

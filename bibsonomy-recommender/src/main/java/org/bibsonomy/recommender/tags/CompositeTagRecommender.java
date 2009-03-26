@@ -9,6 +9,7 @@ import java.util.TreeSet;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
  * @author rja
