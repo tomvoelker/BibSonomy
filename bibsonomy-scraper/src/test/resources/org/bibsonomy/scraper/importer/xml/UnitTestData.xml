@@ -159,7 +159,7 @@
 	<URLTest id="url_28">
 		<TestDescription>URL scraping test with publication from siencedirect</TestDescription>
 		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6TYF-4NB99GY-1&amp;_user=4861060&amp;_coverDate=06%2F30%2F2007&amp;_alid=724597580&amp;_rdoc=1&amp;_fmt=high&amp;_orig=search&amp;_cdi=5617&amp;_sort=d&amp;_st=4&amp;_docanchor=&amp;_ct=1&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=7adb7eb1b4e2ed495f2b202e7e608c0d</URL>
-		<BibFile>ScienceDirectScraperUnitURLTest.bib</BibFile>
+		<BibFile>ScienceDirectScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_29">
@@ -365,18 +365,6 @@
 		<URL>http://opac.bibliothek.uni-kassel.de/DB=23/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=191787183</URL>
 		<BibFile>OpacScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.opac.OpacScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_66">
-		<TestDescription>AnthroSource Journals Url 1</TestDescription>
-		<URL>http://www.anthrosource.net/doi/abs/10.1525/aa.1980.82.1.02a00550</URL>
-		<BibFile>AnthroSourceScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.anthrosource.AnthroSourceScraper</Scraper>
-	</URLTest>
-	<URLTest id="url_67">
-		<TestDescription>AnthroSource Journals Url 1</TestDescription>
-		<URL>http://www.anthrosource.net/action/showCitFormats?doi=10.1525%2Faa.1980.82.1.02a00550</URL>
-		<BibFile>AnthroSourceScraperUnitURLTest.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.anthrosource.AnthroSourceScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_68">
 		<TestDescription>BMJ Journals Url 1</TestDescription>
@@ -808,6 +796,12 @@
 		<TestDescription>test for springerlink</TestDescription>
 		<URL>http://www.springerlink.de/content/k82w1317j2u6w546/?p=d0fc272f4d7a4654864797b3773c2909&amp;pi=0</URL>
 		<BibFile>SpringerLinkScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_143">
+		<TestDescription>test for springerlink with docid in url query</TestDescription>
+		<URL>http://www.springerlink.com/link.asp?id=w425794t7433</URL>
+		<BibFile>SpringerLinkScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
 </test:Tests>

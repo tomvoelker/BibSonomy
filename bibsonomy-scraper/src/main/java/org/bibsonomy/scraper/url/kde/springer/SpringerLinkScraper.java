@@ -32,6 +32,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	private static final String userAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";	
 
 	private static final Pattern contentPattern = Pattern.compile("content\\/(.+?)\\/");
+	private static final Pattern idPattern = Pattern.compile("id=([^\\&]*)");
 	private static final String SPRINGER_CITATION_URL = "http://springerlink.com/";
 	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
 	private static final String SPRINGER_CITATION_HOST_DE = "springerlink.de";
@@ -53,10 +54,14 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				 */
 				String docid = null;
 				
-				final Matcher m = contentPattern.matcher(sc.getUrl().toString());
-				if (m.find()) {
-					docid = m.group(1);
+				final Matcher mContent = contentPattern.matcher(sc.getUrl().toString());
+				final Matcher mId = idPattern.matcher(sc.getUrl().toString());
+				if (mContent.find()) {
+					docid = mContent.group(1);
+				} else if (mId.find()) {
+					docid = mId.group(1);
 				} else {
+					
 					return false;
 				}
 				
