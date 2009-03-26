@@ -14,7 +14,7 @@
     -->
 
 
-	<jsp:directive.attribute name="groups" type="java.util.List" required="true" description="The groups the user is a member of."/>
+	<jsp:directive.attribute name="groups" type="java.util.Collection" required="true" description="The groups the user is a member of."/>
   
   
 	<div id="groupBoxright">

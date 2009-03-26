@@ -313,6 +313,12 @@
   	<name>renderLayout</name>
   	<function-class>tags.Functions</function-class>
   	<function-signature>String renderLayout(org.bibsonomy.model.Post, java.lang.String)</function-signature>
-  </function>  
+  </function>
+  
+  <function>
+  	<name>contains</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>Boolean contains(java.util.Collection, java.lang.Object)</function-signature>
+  </function>
   
 </taglib>
