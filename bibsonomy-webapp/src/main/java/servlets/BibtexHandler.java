@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +44,8 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
+import org.bibsonomy.database.systemstags.SystemTags;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -78,12 +81,12 @@ public class BibtexHandler extends HttpServlet {
 	private static final Logger log = Logger.getLogger(BibtexHandler.class);
 
 	private static final String AND = " and ";
-	
+
 	private DataSource dataSource;
 	private static String tempPath = null;
 
 	private static final String LOGIN_INFO = "login.notice.post.publication";
-	
+
 	/*
 	 * The dataSource lookup code is added to the init() method to avoid the
 	 * costly JNDI operations for every HTTP request.
@@ -175,6 +178,7 @@ public class BibtexHandler extends HttpServlet {
 
 					isManual = true;
 
+
 					Bibtex bib = bean.getResource();
 					group      = bib.getGroup();
 					oldhash    = bean.getOldhash(); // remember oldhash for "move" operation
@@ -190,7 +194,7 @@ public class BibtexHandler extends HttpServlet {
 					StringBuffer entryBuffer = getBibtexString(bib);
 
 					// add tags and tagrelations as last field of entry
-					entryBuffer.append("keywords = {" + bean.getTagstring() + "}}"); 
+					entryBuffer.append("keywords = {" + bean.getTagstring() + " " + buildRelevantForTagString(bean.getRelevantFor()) + "}}"); 
 
 					// put entry into reader
 					bibReader = new BufferedReader(new StringReader(entryBuffer.toString()));
@@ -464,7 +468,7 @@ public class BibtexHandler extends HttpServlet {
 					/*
 					 * put BibTeX as given by user again into bean
 					 */
-					bean.setBibtex(bibold);					
+					bean.setBibtex(bibold);
 					request.setAttribute("bibtexHandlerBean", bean);
 					/*
 					 * add errors
@@ -528,6 +532,19 @@ public class BibtexHandler extends HttpServlet {
 
 	} // END OF doPost
 
+
+	private static String buildRelevantForTagString(final Collection<String> relevantForGroups) {
+		final StringBuffer buf = new StringBuffer();
+        if (relevantForGroups != null) {
+  			for(final String group: relevantForGroups) {
+				if (group != null && !group.trim().equals("")) {
+					buf.append(SystemTagsUtil.buildSystemTagString(SystemTags.RELEVANTFOR, group) + " ");
+				}
+			}
+		}
+
+		return buf.toString();
+	}
 
 	private String getParameter (Map<String,FileItem> fieldMap, String parameterName) {
 		FileItem itemValue = fieldMap.get(parameterName);
@@ -889,21 +906,21 @@ public class BibtexHandler extends HttpServlet {
 			allTags.append(TagStringUtils.cleanTags(((BibtexString) tagAbstractValue).getContent(), substitute, delimiter, whitespace));
 		}
 		/*
-         * parsing of several tags - replace above by code below
-         */ 
+		 * parsing of several tags - replace above by code below
+		 */ 
 //		System.out.println("Getting keywords");
 //		final List tagAbstractValueList = entry.getFieldValuesAsList("keywords");
-//
+
 //		System.out.println("got list: " + tagAbstractValueList);
-//	if (tagAbstractValueList != null) {
-//			System.out.println("list is not null");
-//
-//			for (final Object keyword: tagAbstractValueList) {
-//				System.out.println("found keyword: " + keyword);
-//				// clean tags
-//				allTags.append(TagStringUtils.cleanTags(((BibtexString) keyword).getContent(), substitute, delimiter, whitespace) + " ");
-//				System.out.println("allTags is now: " + allTags);
-//			}
+//		if (tagAbstractValueList != null) {
+//		System.out.println("list is not null");
+
+//		for (final Object keyword: tagAbstractValueList) {
+//		System.out.println("found keyword: " + keyword);
+//		// clean tags
+//		allTags.append(TagStringUtils.cleanTags(((BibtexString) keyword).getContent(), substitute, delimiter, whitespace) + " ");
+//		System.out.println("allTags is now: " + allTags);
+//		}
 //		}
 
 

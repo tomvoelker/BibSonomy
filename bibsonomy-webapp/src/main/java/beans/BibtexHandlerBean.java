@@ -1,13 +1,18 @@
 package beans;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import resources.Bibtex;
 
 public class BibtexHandlerBean extends ResourceSuperBean<Bibtex> {
-	
+
 	private static final long serialVersionUID = 3258135768999540276L;
 	private String oldhash = ""; 
 	private Bibtex oldentry;
 	private int extract_id;
+
+	private Set<String> relevantFor = new HashSet<String>();
 
 	// extract_id is the key for the ie result for this entry. extract_id = 0 means no ie
 	public int getExtract_id() {
@@ -32,7 +37,7 @@ public class BibtexHandlerBean extends ResourceSuperBean<Bibtex> {
 	public void setOldhash(String oldhash) {
 		this.oldhash = oldhash;
 	}
-	
+
 	/* check validity */
 	public boolean isValid () {
 		if (!resource.hasValidTags()) { 
@@ -49,19 +54,19 @@ public class BibtexHandlerBean extends ResourceSuperBean<Bibtex> {
 		}
 		return resource.isValid();
 	}
-	
-	
-	
+
+
+
 	public BibtexHandlerBean() {
 		super();
 		resource = new Bibtex();
 	}
-	
+
 	public BibtexHandlerBean (Bibtex b) {
 		super();
 		this.resource = b;
 	}
-	
+
 	/* these two methods are hacks, they're inserted for a hack in BibtexHandler
 	 * to allow generation of warnings for erroneous manual posts 
 	 */
@@ -71,7 +76,7 @@ public class BibtexHandlerBean extends ResourceSuperBean<Bibtex> {
 	public void setBibtex (Bibtex b) {
 		this.resource = b;
 	}
-	
+
 	/*
 	 * getter
 	 */	
@@ -113,7 +118,7 @@ public class BibtexHandlerBean extends ResourceSuperBean<Bibtex> {
 	public String getHash()			  {return resource.getHash();          }
 	public int getScraperid()         {return resource.getScraperid();}
 	public String getPrivnote()       {return resource.getPrivnote();}
-	
+
 	// getter with " and " subtituted by linebreaks - for nicer output in textbox
 	public String getAuthorLineBreak () {
 		if (resource.getAuthor() != null) {
@@ -128,7 +133,7 @@ public class BibtexHandlerBean extends ResourceSuperBean<Bibtex> {
 		}
 		return resource.getEditor();
 	}
-	
+
 	/*
 	 * setter
 	 */	 
@@ -167,5 +172,28 @@ public class BibtexHandlerBean extends ResourceSuperBean<Bibtex> {
 	public void setEntrytype     (String et) {resource.setEntrytype(et);	   }
 	public void setScraperid     (int si)    {resource.setScraperid(si);}
 	public void setPrivnote      (String pn) {resource.setPrivnote(pn);}
-	
+
+
+
+	public Set<String> getRelevantFor() {
+		return this.relevantFor;
+	}
+	public void setRelevantFor(Set<String> relevantFor) {
+		this.relevantFor = relevantFor;
+	}
+
+
+	public void setRelevantForParam(final String[] strings) {
+		if (strings != null) {
+			this.relevantFor = new HashSet<String>();
+			for (final String string : strings) {
+				this.relevantFor.add(string);
+			}
+		}
+	}
+
+	public String[] getRelevantForParam() {
+		return relevantFor.toArray(new String[]{});
+	}
+
 }

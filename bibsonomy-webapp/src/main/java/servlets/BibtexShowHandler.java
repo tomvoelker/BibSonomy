@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.database.systemstags.SystemTags;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 
 import recommender.RecommenderFrontEnd;
 import resources.Bibtex;
@@ -31,6 +33,7 @@ import filters.SessionSettingsFilter;
 
 public class BibtexShowHandler extends HttpServlet{
 	
+	private static final String SYS_RELEVANT_FOR = SystemTags.RELEVANTFOR.getPrefix();
 	private static final long serialVersionUID = 3833747689652301876L;
 	private static final Logger log = Logger.getLogger(BibtexShowHandler.class);
 	
@@ -224,6 +227,30 @@ public class BibtexShowHandler extends HttpServlet{
 			bean.setRecommendedTags( RecommenderFrontEnd.getRecommendation( currUser, bibtex.getHash(), Bibtex.class, bibtex.getTitle()) );
 			//bean.setJump(request.getParameter("jump")); // TODO: what was this good for? rja, 02.12.2005
 			bean.setCopytag(request.getParameter("copytag"));
+			
+			
+			/*
+			 * handle "relevantFor:group" tags
+			 */
+			final String tags = bean.getTags();
+			if (tags != null && tags.contains(SYS_RELEVANT_FOR)) {
+				final StringBuffer buf = new StringBuffer(); // new tag string
+				final String[] tagParts = tags.split("\\s"); // tags
+
+				for (final String tag : tagParts) {
+					if (tag.indexOf(SYS_RELEVANT_FOR) == 0) {
+						// tag starts with sys:relevantFor:
+						final String group = tag.substring(SYS_RELEVANT_FOR.length() + 1); // + 1 = ":"
+						// FIXME: check validity!
+						bean.getRelevantFor().add(group);
+					} else {
+						buf.append(tag + " ");
+					}
+				}
+				bean.setTags(buf.toString().trim());
+			}
+			
+			
 			
 			/* Bean wird dem request angehängt */
 			request.setAttribute("bibtexHandlerBean",bean);			

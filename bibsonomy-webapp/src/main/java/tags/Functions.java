@@ -555,4 +555,15 @@ public class Functions  {
 		}
 	}
 	
+	
+	/** Checks if the given set contains the given object.
+	 * 
+	 * @param set
+	 * @param object
+	 * @return <code>true</code>, if object is contained in set.
+	 */
+	public static Boolean contains(final Collection set, final Object object) {
+		return set.contains(object);
+	}
+	
 }
