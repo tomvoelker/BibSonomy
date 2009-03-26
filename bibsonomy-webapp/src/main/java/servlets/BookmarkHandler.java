@@ -164,10 +164,13 @@ public class BookmarkHandler extends HttpServlet{
 				// get bookmarks to add
 				try {
 					if (!ActionValidationFilter.isValidCkey(request)) throw new IOException("wrong credentials.");
+//					bookmarks = getBookmarksFromService(request.getParameter("username"), 
+//							request.getParameter("password"), 
+//							currUser, 
+//							groupman.getGroup(currUser, request.getParameter("group")));
 					bookmarks = getBookmarksFromService(request.getParameter("username"), 
 							request.getParameter("password"), 
-							currUser, 
-							groupman.getGroup(currUser, request.getParameter("group")));
+							currUser);
 				} catch (IOException e) {
 					log.fatal("could not download del.icio.us data: " + e.getMessage());
 					request.setAttribute("error", "Sorry, I was not able to get your bookmarks " + e);
@@ -329,7 +332,7 @@ public class BookmarkHandler extends HttpServlet{
 	/*
 	 *  gets XML file from delicious API, parses it and returns all found bookmarks in a LinkedList 
 	 */
-	private LinkedList<Bookmark> getBookmarksFromService(String username, String password, String currUser, int groupid) throws FactoryConfigurationError, ParserConfigurationException, SAXException, IOException {
+	private LinkedList<Bookmark> getBookmarksFromService(String username, String password, String currUser) throws FactoryConfigurationError, ParserConfigurationException, SAXException, IOException {
 		LinkedList<Bookmark> bookmarks = new LinkedList<Bookmark>();
 		Bookmark bookmark;
 		String userpass = username + ":" + password;
@@ -398,7 +401,17 @@ public class BookmarkHandler extends HttpServlet{
 				}
 				bookmark.setToIns(true);
 				bookmark.setUser(currUser);
-				bookmark.setGroupid(groupid);
+				
+				// use grouping settings from del.icio.us
+				if (post.hasAttribute("shared")){
+					if ("no".equals(post.getAttribute("shared"))){
+						bookmark.setGroupid(1);
+					}
+				} else {
+					bookmark.setGroupid(0);
+				}
+				
+				//bookmark.setGroupid(groupid);	
 				bookmarks.add(bookmark);
 			}
 			// close all resources that we do not need

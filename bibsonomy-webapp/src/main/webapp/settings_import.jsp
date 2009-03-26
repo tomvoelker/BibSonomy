@@ -26,10 +26,10 @@
 	    	<tr><td>username</td><td><input type="text" name="username" size="30"/></td></tr>
 	    	<tr><td>password</td><td><input type="password" name="password" size="30"/></td></tr>
 	    	<tr>
-	      		<td>viewable for</td>
-	      		<td><select name="group"><c:forEach var="group" items="${user.allGroups}">
+	      		<td colspan="2">group settings will be transferred from del.icio.us</td>
+	      		<!-- <td><select name="group"><c:forEach var="group" items="${user.allGroups}">
 	         	<option value="${group}">${group}</option>
-	      		</c:forEach></select></td>
+	      		</c:forEach></select></td> -->
 	    	</tr>
 	    	<tr><td></td><td><input type="checkbox" name="overwrite" value="yes">del.icio.us bookmarks overwrite ${projectName} bookmarks</td></tr>
 	    	<tr><td>
