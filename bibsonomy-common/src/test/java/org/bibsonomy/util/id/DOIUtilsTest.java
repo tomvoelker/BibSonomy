@@ -5,6 +5,8 @@ import static org.junit.Assert.fail;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
@@ -47,7 +49,8 @@ public class DOIUtilsTest {
 		"10.1016/S0169-7552(98)00110-X",
 		"10.1145/860451",
 		"10.1002/cpe.607",
-		"doi:10.1109/ISSTA.2002.1048560"
+		"doi:10.1109/ISSTA.2002.1048560",
+		"DOI: 10.1016/j.spl.2008.05.017"
 	                                                };
 
 	private static final String[] nonDois = new String[] 
@@ -92,6 +95,7 @@ public class DOIUtilsTest {
 		"'"
 	};
 
+	private static final Pattern DOI_START = Pattern.compile("^doi:\\s*(.*)", Pattern.CASE_INSENSITIVE);
 
 	@Test
 	public void testIsDOIURL() {
@@ -120,9 +124,11 @@ public class DOIUtilsTest {
 	}
 
 	private String stripDOI(final String doi) {
-		if (doi.toLowerCase().startsWith("doi:")) {
-			return doi.substring(4);
+		final Matcher matcher = DOI_START.matcher(doi);
+		if (matcher.find()) {
+			return matcher.group(1);
 		}
+		
 		return doi;
 	}
 

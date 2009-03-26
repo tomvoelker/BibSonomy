@@ -46,7 +46,7 @@ public class DOIUtils {
 	 * 
 	 */
 //	private static final String DOI = "(10\\.\\d+\\/\\d+?)";
-	private static final String DOI = "(doi:)?(10\\.\\d+\\/[^\\s\"'}]+)";
+	private static final String DOI = "(doi:\\s*)?(10\\.\\d+\\/[^\\s\"'}]+)";
 	private static final String DOI_END = "[\\s\"'}]*";
 	
 	/**
