@@ -60,10 +60,10 @@
   			
 				<table id="spammers" class="spammertable">
 					
-				    <tr style="font-size: 120%">
+				    <tr>
 				    	<th>Spam?</th>
 								<th>Username</th>
-								<th>Realname</th>
+								<th>Name</th>
 								<th>IP</th>
 								<th>E-Mail</th>
 								<th>Regdate</th>  	
@@ -74,10 +74,10 @@
 				    	<th>Confidence</th>
 				    	</c:when>
 				    	<c:otherwise>
-				    	<th>updated by</th>
+				    	<th>By</th>
 				    	</c:otherwise>
 				    	</c:choose>
-				    	<th>updated at</th>
+				    	<th>Updated</th>
 				    </tr>
 				    				    
 				    <!-- user list -->
@@ -170,7 +170,7 @@
 				       <td><c:out value="${fn:substring(user.realname, 0, 25)}" /></td>	
 					   <td><c:out value="${fn:substringBefore(user.IPAddress, ',')}"/></td>
 					   <td>
-					   	<c:out value="${user.email}" />
+					   	<c:out value="${fn:substring(user.email, 0, 35)}" />
 					   </td>
 					   <td>
 					    <fmt:formatDate type="both" timeStyle="short"
@@ -271,7 +271,7 @@
 							<option id="N" value="N">Night</option>						
 						</select>						
 					</td>
-					<td><input type="button" value="update"
+					<td><input type="button" value="los"
 						onclick="javascript:updateSettings('mode', document.getElementById('mode').value)" /></td>
 				</tr>
 				<tr>
@@ -281,41 +281,41 @@
 							<option id="weka.classifiers.lazy.IBk"
 							value="weka.classifiers.lazy.IBk">IBk</option>
 							<option id="weka.classifiers.bayes.NaiveBayes"
-							value="weka.classifiers.bayes.NaiveBayes">Naive Bayes</option>
+							value="weka.classifiers.bayes.NaiveBayes">Bayes</option>
 							<option id="weka.classifiers.trees.J48"
 							value="weka.classifiers.trees.J48">J48</option>
 							<option id="weka.classifiers.rules.OneR"
 							value="weka.classifiers.rules.OneR">OneR</option>
 							<option id="weka.classifiers.functions.Logistic"
-							value="weka.classifiers.functions.Logistic">Logistic Regression</option>
+							value="weka.classifiers.functions.Logistic">Log Reg</option>
 							<option id="weka.classifiers.functions.LibSVM"
 							value="weka.classifiers.functions.LibSVM">LibSVM</option>
 							<option id="weka.classifiers.functions.SMO"
-							value="weka.classifiers.functions.SMO">Weka SVM (SMO)</option>
+							value="weka.classifiers.functions.SMO">SVM (SMO)</option>
 						</select>
 					</td>
-					<td><input type="button" value="update"
+					<td><input type="button" value="los"
 						onclick="javascript:updateSettings('algorithm', document.getElementById('algorithm').value)" /></td>
 				</tr>
 				<tr>
 					<td>training period:</td>
 					<td><input type="text" id="training_period" size="7"
 						value="${settingsCommand.trainingPeriod}" /> sec</td>
-					<td><input type="button" value="update"
+					<td><input type="button" value="los"
 						onclick="javascript:updateSettings('training_period', document.getElementById('training_period').value)" /></td>
 				</tr>
 				<tr>
 					<td>classify period:</td>
 					<td><input type="text" id="classify_period" size="7"
 						value="${settingsCommand.classifyPeriod}" /> sec</td>
-					<td><input type="button" value="update"
+					<td><input type="button" value="los"
 						onclick="javascript:updateSettings('classify_period', document.getElementById('classify_period').value)" /></td>
 				</tr>
 				<tr>
 					<td>probability limit:</td>
 					<td><input type="text" id="probability_limit" size="7"
 						value="${settingsCommand.probabilityLimit}" /></td>
-					<td><input type="button" value="update"
+					<td><input type="button" value="los"
 						onclick="javascript:updateSettings('probability_limit', document.getElementById('probability_limit').value)" /></td>
 				</tr>
 				<tr>
@@ -325,7 +325,7 @@
 							<option id="on" value="on">On</option>
 							<option id="off" value="off">Off</option>
 						</select></td>
-					<td><input type="button" value="update"
+					<td><input type="button" value="los"
 						onclick="javascript:updateSettings('testing', document.getElementById('testing').value)" /></td>
 				</tr>
 			</table>

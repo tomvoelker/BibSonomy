@@ -1,7 +1,6 @@
 /* elements for admin pages */
 .logbox {
 	height:100px;
-	width:300px;
 	overflow: auto;
 	font-family: Arial, Helvetica, sans-serif;	
 	overflow-x: hidden;
@@ -28,12 +27,13 @@
 	padding: 3px;	
 }
 
-.stattable td {		
-	padding: 2px;
+.stattable td {
+	margin-left: 2px;		
+	padding: 0.1em 0.12em;
 }
 
 .spammertable {
-	font-size:70%;
+	font-size:60%;
 	border-collapse:collapse;
 	empty-cells:show;	
 	margin-top: 15px;	
@@ -46,6 +46,7 @@
 	border: 1px solid #CCCCCC;	
 	padding: 2px;
 	text-align: center;
+	font-size: 100%;
 }
 
 .spammertable td {		
@@ -54,7 +55,7 @@
 }
 
 .poststable {
-	font-size:70%;
+	font-size:75%;
 	border-collapse:collapse;
 	empty-cells:show;	
 	margin-top: 15px;	
@@ -103,7 +104,7 @@ div.tipHeader {
 }
 
 .spamflag a {
-	padding-right: 1em;
+	padding-right: 0.3em;
 }
 	
 #ajax_tooltipObj{
