@@ -67,7 +67,6 @@ public abstract class HttpWorker {
 		httpClientParams.setAuthenticationPreemptive(true);
 		
 		if (proxyHost != null){
-			System.out.println(proxyHost + " ----" + proxyPort);
 			httpClient.getHostConfiguration().setProxy(proxyHost, proxyPort);
 		}
 		
