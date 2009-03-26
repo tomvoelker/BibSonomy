@@ -32,20 +32,20 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 	<typeAlias alias="bookmarkParam"   type="org.bibsonomy.database.params.BookmarkParam" />
 	<typeAlias alias="bibtexParam"     type="org.bibsonomy.database.params.BibTexParam" />
 
-	<typeAlias alias="recLogEntry"     type="org.bibsonomy.recommender.params.RecLogEntry" />
-	<typeAlias alias="recSetting"      type="org.bibsonomy.recommender.params.RecSettingParam" />
-	<typeAlias alias="recQuerySetting" type="org.bibsonomy.recommender.params.RecQuerySettingParam" />
-	<typeAlias alias="recQuery"        type="org.bibsonomy.recommender.params.RecQueryParam" />
-	<typeAlias alias="recResponse"     type="org.bibsonomy.recommender.params.RecResponseParam" />
-	<typeAlias alias="queryGuess"      type="org.bibsonomy.recommender.params.QueryGuess" />
-	<typeAlias alias="postParam"       type="org.bibsonomy.recommender.params.PostParam" />
-	<typeAlias alias="tasEntry"        type="org.bibsonomy.recommender.params.TasEntry" />
-    <typeAlias alias="postRecParam"    type="org.bibsonomy.recommender.params.PostRecParam" />
+	<typeAlias alias="recLogEntry"     type="org.bibsonomy.recommender.tags.database.params.RecLogEntry" />
+	<typeAlias alias="recSetting"      type="org.bibsonomy.recommender.tags.database.params.RecSettingParam" />
+	<typeAlias alias="recQuerySetting" type="org.bibsonomy.recommender.tags.database.params.RecQuerySettingParam" />
+	<typeAlias alias="recQuery"        type="org.bibsonomy.recommender.tags.database.params.RecQueryParam" />
+	<typeAlias alias="recResponse"     type="org.bibsonomy.recommender.tags.database.params.RecResponseParam" />
+	<typeAlias alias="queryGuess"      type="org.bibsonomy.recommender.tags.database.params.QueryGuess" />
+	<typeAlias alias="postParam"       type="org.bibsonomy.recommender.tags.database.params.PostParam" />
+	<typeAlias alias="tasEntry"        type="org.bibsonomy.recommender.tags.database.params.TasEntry" />
+    <typeAlias alias="postRecParam"    type="org.bibsonomy.recommender.tags.database.params.PostRecParam" />
 
-	<typeAlias alias="pair"            type="org.bibsonomy.recommender.params.Pair" />
-	<typeAlias alias="selectorMap"     type="org.bibsonomy.recommender.params.SelectorQueryMapParam" />
-	<typeAlias alias="selectorSetting" type="org.bibsonomy.recommender.params.SelectorSettingParam" />
-	<typeAlias alias="selectorResponse" type="org.bibsonomy.recommender.params.SelectorTagParam" />
+	<typeAlias alias="pair"            type="org.bibsonomy.recommender.tags.database.params.Pair" />
+	<typeAlias alias="selectorMap"     type="org.bibsonomy.recommender.tags.database.params.SelectorQueryMapParam" />
+	<typeAlias alias="selectorSetting" type="org.bibsonomy.recommender.tags.database.params.SelectorSettingParam" />
+	<typeAlias alias="selectorResponse" type="org.bibsonomy.recommender.tags.database.params.SelectorTagParam" />
 	
 	<!--
 		Spezifizieren sie eine DataSource für diese SQL Map. Hier nehmen wir

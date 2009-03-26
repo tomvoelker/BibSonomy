@@ -13,14 +13,14 @@
 		Type aliases allow you to use a shorter name for long fully qualified
 		class names.
 	-->
-	<typeAlias alias="pair" type="org.bibsonomy.recommender.params.Pair" />
+	<typeAlias alias="pair" type="org.bibsonomy.recommender.tags.database.params.Pair" />
 	<typeAlias alias="tag" type="org.bibsonomy.model.Tag" />
-	<typeAlias alias="postGuess" type="org.bibsonomy.recommender.params.PostGuess" />
-	<typeAlias alias="postParam"  type="org.bibsonomy.recommender.params.PostParam" />
-	<typeAlias alias="tasParam" type="org.bibsonomy.recommender.params.TasParam" />
-	<typeAlias alias="tasEntry"  type="org.bibsonomy.recommender.params.TasEntry" />
+	<typeAlias alias="postGuess" type="org.bibsonomy.recommender.tags.database.params.PostGuess" />
+	<typeAlias alias="postParam"  type="org.bibsonomy.recommender.tags.database.params.PostParam" />
+	<typeAlias alias="tasParam" type="org.bibsonomy.recommender.tags.database.params.TasParam" />
+	<typeAlias alias="tasEntry"  type="org.bibsonomy.recommender.tags.database.params.TasEntry" />
 	<typeAlias alias="timestamp"  type="java.sql.Timestamp" />
-	<typeAlias alias="postRecParam"    type="org.bibsonomy.recommender.params.PostRecParam" />
+	<typeAlias alias="postRecParam"    type="org.bibsonomy.recommender.tags.database.params.PostRecParam" />
 	
 	<!--
 		Configure a datasource to use with this SQL Map using
