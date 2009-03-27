@@ -115,7 +115,7 @@ public class LuceneSearchBibTex {
 
 		if (this.searcher == null)
 		{
-			LOGGER.debug("LuceneBibTex: ERROR!! searcher is NULL");
+			LOGGER.error("LuceneBibTex: searcher is NULL!");
 			
 		}
 		
