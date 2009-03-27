@@ -40,8 +40,10 @@ public class LuceneSearchBibTex {
 			Context envContext = (Context) initContext.lookup("java:/comp/env");
 
 			Boolean loadIndexIntoRAM = (Boolean) envContext.lookup("luceneIndexPublicationsLoadIntoRAM");
+			String lucenePath = (String) envContext.lookup("luceneIndexPathPublications");
 			
-			
+			LOGGER.debug("LuceneBibTex: use index: " + lucenePath);
+
 			/* set current path to lucene index, given by environment parameter in tomcat's context.xml
 			 * 
 			 *   <Environment name="luceneIndexPath" type="java.lang.String" value="/home/bibsonomy/lucene"/>
@@ -62,7 +64,7 @@ public class LuceneSearchBibTex {
 				// make sure complete index fill fit into memory!
 				LOGGER.debug("LuceneBibTex: load index into RAM");
 				long starttime = System.currentTimeMillis();
-				RAMDirectory BibTexIndexRAM = new RAMDirectory ((String) envContext.lookup("luceneIndexPathPublications"));
+				RAMDirectory BibTexIndexRAM = new RAMDirectory ( lucenePath );
 				this.searcher = new IndexSearcher( BibTexIndexRAM );
 				long endtime = System.currentTimeMillis();
 				LOGGER.debug("LuceneBibTex: index loaded into RAM in "+ (endtime-starttime) + "ms");
@@ -71,7 +73,7 @@ public class LuceneSearchBibTex {
 			{	
 				// load and hold index on physical hard disk
 				LOGGER.debug("LuceneBibTex: use index from disk");
-				this.searcher = new IndexSearcher( (String) envContext.lookup("luceneIndexPathPublications") );
+				this.searcher = new IndexSearcher( lucenePath );
 			}
 		} catch (final NamingException e) {
 			System.out.println("NamingException in LuceneSearchBibTex.LuceneSearchBibTex()");

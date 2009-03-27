@@ -39,7 +39,10 @@ public class LuceneSearchBookmarks {
 			Context envContext = (Context) initContext.lookup("java:/comp/env");
 
 			Boolean loadIndexIntoRAM = (Boolean) envContext.lookup("luceneIndexBookmarksLoadIntoRAM");
-			
+			String lucenePath = (String) envContext.lookup("luceneIndexPathBoomarks");
+
+			LOGGER.debug("LuceneBookmark: use index: " + lucenePath);
+
 			/* set current path to lucene index, given by environment parameter in tomcat's context.xml
 			 * 
 			 *   <Environment name="luceneIndexPath" type="java.lang.String" value="/home/bibsonomy/lucene"/>
@@ -60,7 +63,7 @@ public class LuceneSearchBookmarks {
 				// make sure complete index fill fit into memory!
 				LOGGER.debug("LuceneBookmark: load index into RAM");
 				long starttime = System.currentTimeMillis();
-				RAMDirectory BookmarkIndexRAM = new RAMDirectory ((String) envContext.lookup("luceneIndexPathBoomarks"));
+				RAMDirectory BookmarkIndexRAM = new RAMDirectory ( lucenePath );
 				this.searcher = new IndexSearcher( BookmarkIndexRAM );
 				long endtime = System.currentTimeMillis();
 				LOGGER.debug("LuceneBookmark: index loaded into RAM in "+ (endtime-starttime) + "ms");
@@ -69,7 +72,7 @@ public class LuceneSearchBookmarks {
 			{	
 				// load and hold index on physical hard disk
 				LOGGER.debug("LuceneBookmark: use index from disk");
-				this.searcher = new IndexSearcher( (String) envContext.lookup("luceneIndexPathBoomarks") );
+				this.searcher = new IndexSearcher( lucenePath );
 			}
 		} catch (final NamingException e) {
 			/*
