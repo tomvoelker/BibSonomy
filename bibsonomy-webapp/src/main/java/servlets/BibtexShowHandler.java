@@ -23,7 +23,6 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.database.systemstags.SystemTags;
-import org.bibsonomy.database.systemstags.SystemTagsUtil;
 
 import recommender.RecommenderFrontEnd;
 import resources.Bibtex;
