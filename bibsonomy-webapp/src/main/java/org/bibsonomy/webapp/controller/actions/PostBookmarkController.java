@@ -163,8 +163,8 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * For each post process an unique identifier is generated. 
 		 * This is used for mapping posts to recommendations.
 		 */
-		if( command.getPostID()==recommenderStatistics.getUnknownPID())
-			command.setPostID((int)Math.round((Math.random()*Integer.MAX_VALUE)));
+		if(command.getPostID()==recommenderStatistics.getUnknownPID())
+			command.setPostID(recommenderStatistics.getNewPID());
 
 		/*
 		 * decide, what to do
