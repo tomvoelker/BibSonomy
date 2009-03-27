@@ -35,7 +35,8 @@ input, textarea {
 
 td.expl_s {
   padding-left: 1em;
-  max-width: 300px;
+  min-width: 30ex;
+  max-width: 90ex;
 }
 
 -->
