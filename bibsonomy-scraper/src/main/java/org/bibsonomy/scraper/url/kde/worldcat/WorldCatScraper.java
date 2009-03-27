@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -31,6 +32,9 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "worldcat.org"), Pattern.compile("/oclc/")));
 
 	private static final Pattern PATTERN_GET_FIRST_SEARCH_RESULT = Pattern.compile("<a href=\"([^\\\"]*brief_results)\">");
+	
+	private static final RisToBibtexConverter converter = new RisToBibtexConverter();
+
 	
 	public String getInfo() {
 		return INFO;
@@ -80,7 +84,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		return null;
 	}
 	
-	private static String getBibtex(final URL publPageURL, final boolean search) throws IOException, ScrapingException{
+	private static String getBibtex(final URL publPageURL, final boolean search) throws IOException, ScrapingException {
 		final Matcher matcherFirstSearchResult = PATTERN_GET_FIRST_SEARCH_RESULT.matcher(WebUtils.getContentAsString(publPageURL));
 		
 		URL publUrl = null;
@@ -96,10 +100,18 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		else
 			exportUrl = publUrl.getProtocol() + "://" + publUrl.getHost() + publUrl.getPath() + "?page=endnote&client=worldcat.org-detailed_record";
 
-		String endnote = WebUtils.getContentAsString(new URL(exportUrl));
+		final String endnote = WebUtils.getContentAsString(new URL(exportUrl));
 
-		RisToBibtexConverter converter = new RisToBibtexConverter();
-		return converter.RisToBibtex(endnote);
+		/*
+		 * convert RIS to BibTeX
+		 */
+		final String bibtex = converter.RisToBibtex(endnote);
+		/*
+		 * add URL
+		 */
+		BibTexUtils.addFieldIfNotContained(bibtex, "url", publPageURL.toString());
+		
+		return bibtex;
 	}
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
