@@ -43,6 +43,7 @@ import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlCompositeScraper;
+import org.bibsonomy.scraper.InformationExtraction.IEScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -71,7 +72,8 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 	/**
 	 * Scrapers used in this servlet.
 	 */
-	private static final Scraper compositeScraper = new KDEScraperFactory().getScraper();
+	private static final Scraper compositeScraper = new KDEScraperFactory().getScraperWithoutIE();
+	private static final Scraper ieScraper = new IEScraper();
 	private static final UrlCompositeScraper urlCompositeScraper = new UrlCompositeScraper();
 
 	
@@ -84,8 +86,8 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 		final String selection = request.getParameter("selection");
 		final String format    = request.getParameter("format");
 		final String action    = request.getParameter("action");
+		final boolean doIE     = !"false".equals(request.getParameter("doIE")); // do information extraction, except when doIE=false
 
-		
 		final ScrapingResultBean bean = new ScrapingResultBean();
 		request.setAttribute("bean", bean);
 
@@ -104,7 +106,11 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 				final ScrapingContext context = new ScrapingContext(url);
 				context.setSelectedText(selection);
 
-				if (compositeScraper.scrape(context)) {
+				/*
+				 * Do IE only, if neccessary (i.e., compositeScraper can't handle it) and 
+				 * when requested. 
+				 */
+				if (compositeScraper.scrape(context) || (doIE && ieScraper.scrape(context))) {
 					bean.setBibtex(context.getBibtexResult());
 					bean.setErrorMessage(null);
 					bean.setScraper(context.getScraper());
