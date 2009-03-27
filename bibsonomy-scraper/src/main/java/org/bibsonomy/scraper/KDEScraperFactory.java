@@ -21,6 +21,20 @@ public class KDEScraperFactory {
 	 * @return The scrapers produced by this factory.
 	 */
 	public CompositeScraper getScraper () {
+		final CompositeScraper scraper = getScraperWithoutIE();
+
+		/*
+		 * If nothing works: do information extraction using MALLET.
+		 */
+		scraper.addScraper(new IEScraper());
+		return scraper;
+	}
+
+	/**
+	 *  @return All scrapers produced by this factory without the {@link IEScraper}. 
+	 *  
+	 */
+	public CompositeScraper getScraperWithoutIE() {
 		final CompositeScraper scraper = new CompositeScraper();
 
 		/*
@@ -47,11 +61,6 @@ public class KDEScraperFactory {
 		
 		// TODO: Scraper for searching bibtex in HTML-Sourcecode 
 		scraper.addScraper(new BibtexScraper());
-
-		/*
-		 * If nothing works: do information extraction using MALLET.
-		 */
-		scraper.addScraper(new IEScraper());
 		return scraper;
 	}
 
