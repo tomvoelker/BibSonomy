@@ -1,6 +1,7 @@
 package org.bibsonomy.scraper.url.kde.worldcat;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.id.ISBNUtils;
 
 /**
  * Scraper for http://www.worldcat.org 
@@ -24,9 +26,11 @@ public class WorldCatScraper extends AbstractUrlScraper {
 
 	private static final String INFO = "Worldcat Scraper: Scraper for publications from " + href("http://www.worldcat.org", "worldcat") + ". Author: KDE";
 
+	private static final String WORLDCAT_URL = "http://www.worldcat.org/search?qt=worldcat_org_all&q=";
+
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "worldcat.org"), Pattern.compile("/oclc/")));
 
-	private Pattern PATTERN_GET_FIRST_SEARCH_RESULT = Pattern.compile("<a href=\"([^\\\"]*brief_results)\">");
+	private static final Pattern PATTERN_GET_FIRST_SEARCH_RESULT = Pattern.compile("<a href=\"([^\\\"]*brief_results)\">");
 	
 	public String getInfo() {
 		return INFO;
@@ -36,7 +40,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 
 		try {
-			final String bibtex = getBibtex(sc.getUrl(), sc, false);
+			final String bibtex = getBibtex(sc.getUrl(), false);
 
 			if(bibtex != null){
 				sc.setBibtexResult(bibtex);
@@ -52,18 +56,32 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	/**
 	 * search publication on worldcat.org with a given isbn and returns it as bibtex
 	 * @param isbn isbn for search
-	 * @param sc ScrapingContext for download
 	 * @return publication as bibtex
 	 * @throws IOException 
 	 * @throws ScrapingException
 	 */
-	public String getBibtexByISBN(final String isbn, final ScrapingContext sc) throws IOException, ScrapingException{
-		final URL searchURL = new URL("http://www.worldcat.org/search?qt=worldcat_org_all&q=" + isbn.replace("-", "")); 
-		return getBibtex(searchURL, sc, true);
+	public static String getBibtexByISBN(final String isbn) throws IOException, ScrapingException{
+		return getBibtex(new URL(WORLDCAT_URL + ISBNUtils.cleanISBN(isbn)), true);
 	}
 
-	private String getBibtex(final URL publPageURL, final ScrapingContext sc, final boolean search) throws IOException, ScrapingException{
-		Matcher matcherFirstSearchResult = PATTERN_GET_FIRST_SEARCH_RESULT.matcher(WebUtils.getContentAsString(publPageURL));
+
+	/**
+	 * builds a worldcat.org URL with the given ISBN
+	 * @param isbn valid ISBN
+	 * @return URL from worldcat.org, null if no ISBN is give 
+	 * @throws MalformedURLException 
+	 */
+	public static URL getUrlForIsbn(final String isbn) throws MalformedURLException{
+		final String checkISBN = ISBNUtils.extractISBN(isbn);
+
+		// build worldcat.org URL
+		if (checkISBN != null)
+			return new URL(WORLDCAT_URL + checkISBN);
+		return null;
+	}
+	
+	private static String getBibtex(final URL publPageURL, final boolean search) throws IOException, ScrapingException{
+		final Matcher matcherFirstSearchResult = PATTERN_GET_FIRST_SEARCH_RESULT.matcher(WebUtils.getContentAsString(publPageURL));
 		
 		URL publUrl = null;
 		if(matcherFirstSearchResult.find())

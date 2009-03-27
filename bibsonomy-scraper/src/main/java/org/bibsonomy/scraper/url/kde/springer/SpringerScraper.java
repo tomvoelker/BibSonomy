@@ -36,12 +36,9 @@ public class SpringerScraper extends AbstractUrlScraper {
 			sc.setScraper(this);
 			
 			try {
-				String url = sc.getUrl().toString();
-				String isbn = url.substring(url.lastIndexOf("/")+1);
-				isbn = isbn.replace("-", "");
-				
-				WorldCatScraper worldCat = new WorldCatScraper();
-				String bibtex = worldCat.getBibtexByISBN(isbn, sc);
+				final String url = sc.getUrl().toString();
+				final String isbn = url.substring(url.lastIndexOf("/") + 1);
+				final String bibtex = WorldCatScraper.getBibtexByISBN(isbn);
 				
 				if(bibtex != null){
 					sc.setBibtexResult(bibtex);
