@@ -22,7 +22,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
-import org.bibsonomy.webapp.command.ajax.AjaxBookmarkRecommenderCommand;
+import org.bibsonomy.webapp.command.ajax.AjaxRecommenderCommand;
 import org.bibsonomy.webapp.controller.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -36,7 +36,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author fei
  * @version $Id$
  */
-public class GetBookmarkRecommendedTagsController extends AjaxController implements MinimalisticController<AjaxBookmarkRecommenderCommand> {
+public class GetBookmarkRecommendedTagsController extends AjaxController implements MinimalisticController<AjaxRecommenderCommand<Bookmark>> {
 	private static final Log log = LogFactory.getLog(GetBookmarkRecommendedTagsController.class);
 
 	/**
@@ -48,8 +48,8 @@ public class GetBookmarkRecommendedTagsController extends AjaxController impleme
 	// MinimalisticController interface
 	//------------------------------------------------------------------------
 	
-	public AjaxBookmarkRecommenderCommand instantiateCommand() {
-		final AjaxBookmarkRecommenderCommand command = new AjaxBookmarkRecommenderCommand();
+	public AjaxRecommenderCommand<Bookmark> instantiateCommand() {
+		final AjaxRecommenderCommand<Bookmark> command = new AjaxRecommenderCommand<Bookmark>();
 		/*
 		 * initialize lists
 		 * FIXME: is it really neccessary to initialize ALL those lists? Which are really needed?
@@ -73,7 +73,7 @@ public class GetBookmarkRecommendedTagsController extends AjaxController impleme
 		return command;
 	}
 
-	public View workOn(AjaxBookmarkRecommenderCommand command) {
+	public View workOn(AjaxRecommenderCommand<Bookmark> command) {
 		final RequestWrapperContext context = command.getContext();
 		
 		/*
