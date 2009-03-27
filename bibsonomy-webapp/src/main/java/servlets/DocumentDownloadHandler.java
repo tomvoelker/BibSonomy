@@ -27,13 +27,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.util.StringUtils;
 
 import beans.UserBean;
 import filters.SessionSettingsFilter;
 
 public class DocumentDownloadHandler extends HttpServlet{ 
-
+	private static final Logger log = Logger.getLogger(DocumentDownloadHandler.class);
+	
 	private static final long serialVersionUID = 3839748679655351876L;
 	private DataSource dataSource;
 	private String documentPath = null;
@@ -58,6 +60,7 @@ public class DocumentDownloadHandler extends HttpServlet{
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		
 		UserBean user = SessionSettingsFilter.getUser(request);
 		String currUser = user.getName(); 
 		if (currUser == null) {
@@ -99,6 +102,7 @@ public class DocumentDownloadHandler extends HttpServlet{
 				response.sendRedirect(request.getHeader("referer"));
 				
 			} else {
+				log.fatal("DEPRECATED: " + DocumentDownloadHandler.class.getSimpleName() + " called to download document. Query string: " + request.getQueryString());
 				/*
 				 * download document
 				 */
