@@ -3,6 +3,8 @@ package org.bibsonomy.webapp.command.ajax;
 /**
  * Interface for ajax commands.
  * 
+ * FIXME: write JavaDoc! 
+ * 
  * @author fei
  * @version $Id$
  */
