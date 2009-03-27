@@ -60,12 +60,12 @@ public class LuceneSearchBibTex {
 				// load a copy of index in memory
 				// changes will have no effect on original index!
 				// make sure complete index fill fit into memory!
-				LOGGER.debug("LuceneBookmark: load index into RAM");
+				LOGGER.debug("LuceneBibTex: load index into RAM");
 				long starttime = System.currentTimeMillis();
 				RAMDirectory BibTexIndexRAM = new RAMDirectory ((String) envContext.lookup("luceneIndexPathPublications"));
 				this.searcher = new IndexSearcher( BibTexIndexRAM );
 				long endtime = System.currentTimeMillis();
-				LOGGER.debug("LuceneBookmark: index loaded into RAM in "+ (endtime-starttime) + "ms");
+				LOGGER.debug("LuceneBibTex: index loaded into RAM in "+ (endtime-starttime) + "ms");
 			}
 			else
 			{	
@@ -74,11 +74,14 @@ public class LuceneSearchBibTex {
 				this.searcher = new IndexSearcher( (String) envContext.lookup("luceneIndexPathPublications") );
 			}
 		} catch (final NamingException e) {
+			System.out.println("NamingException in LuceneSearchBibTex.LuceneSearchBibTex()");
 			/*
 			 * FIXME: rethrowing the exception as runtime ex is maybe not the best solution
 			 */
-			throw new RuntimeException(e);
+			e.printStackTrace();
+//			throw new RuntimeException(e);
 		} catch (CorruptIndexException e) {
+			System.out.println("CorruptIndexException in LuceneSearchBibTex.LuceneSearchBibTex()");
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -109,6 +112,13 @@ public class LuceneSearchBibTex {
 	public ArrayList<Integer> searchLucene(String idname, String search_terms, int groupId, int limit, int offset) throws IOException {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
 			
+
+		if (this.searcher == null)
+		{
+			LOGGER.debug("LuceneBibTex: ERROR!! searcher is NULL");
+			
+		}
+		
 		Boolean debug = false;
 		String queryFields = "";
 		String querystring = "";
@@ -205,7 +215,7 @@ public class LuceneSearchBibTex {
 				
 
 				long starttimeQuery = System.currentTimeMillis();
-				final Hits hits = searcher.search(query,sort);
+				final Hits hits = this.searcher.search(query,sort);
 				long endtimeQuery = System.currentTimeMillis();
 				LOGGER.debug("LuceneBibTex pure query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
