@@ -72,6 +72,7 @@ public class SearchPageController extends SingleResourceListController implement
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
 			command.setPageTitle("search");
+			this.endTiming();
 			return Views.SEARCHPAGE;			
 		}
 		
