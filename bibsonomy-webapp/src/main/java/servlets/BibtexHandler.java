@@ -86,6 +86,9 @@ public class BibtexHandler extends HttpServlet {
 	private static String tempPath = null;
 
 	private static final String LOGIN_INFO = "login.notice.post.publication";
+	
+	private static final Scraper scraper = new KDEScraperFactory().getScraper();
+
 
 	/*
 	 * The dataSource lookup code is added to the init() method to avoid the
@@ -289,7 +292,7 @@ public class BibtexHandler extends HttpServlet {
 					 * try to scrape
 					 * ***************************************************************/
 					isSnippet = true;
-					URL url = null;
+					URL url;
 					try {
 						url = new URL(request.getParameter("url"));
 					} catch (MalformedURLException e) {
@@ -299,7 +302,7 @@ public class BibtexHandler extends HttpServlet {
 					description    = request.getParameter("description"); // nur desc der URL!!!
 					group          = request.getParameter("group");
 					String snippet = request.getParameter("selection");
-
+					
 					/*
 					 * TODO: another dirty scraper hack ... read comment above private class ScraperId ...
 					 */
@@ -575,11 +578,10 @@ public class BibtexHandler extends HttpServlet {
 	 * @return an empty string ("") if parsing failed, otherwise a bibtex entry as string
 	 * @throws ScrapingException
 	 */
-	private Reader callScrapers(URL url, String snippet, ScraperId scraperid) throws ScrapingException {
-		ScrapingContext sc = new ScrapingContext(url);
+	private Reader callScrapers(final URL url, final String snippet, final ScraperId scraperid) throws ScrapingException {
+		final ScrapingContext sc = new ScrapingContext(url);
 		sc.setSelectedText(snippet);
 
-		Scraper scraper = new KDEScraperFactory().getScraper();
 
 		/*		CompositeScraper scraper = new CompositeScraper();
 		scraper.addScraper(new URLCompositeScraper());
