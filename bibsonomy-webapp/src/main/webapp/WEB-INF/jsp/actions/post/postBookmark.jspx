@@ -126,6 +126,22 @@
 			            link.setAttribute("href","javascript:reloadRecommendation()");
 			  	        button.setAttribute("src","${resdir}/image/button_reload.png");
 					}
+          
+                    /**
+                     * handler for the 'reload recommendations button'
+                     * FIXME: all js-functions for recommendations should be located in a single file.
+                     */
+                      function reloadRecommendation() {
+                          var link = document.getElementById("fsReloadLink");
+                          var button = document.getElementById("fsReloadButton");
+                          link.setAttribute("href","#");
+                          button.setAttribute("src","${resdir}/image/button_reload-inactive.png");
+                
+                          clearTagField();      
+                
+                          $('#postBookmarkForm').ajaxSubmit({url:'/ajax/getBookmarkRecommendedTags', success: showResponse}); 
+                      }
+          
 				]]>
               //</mtl:cdata>
 			</script>					
@@ -263,53 +279,16 @@
       /* try to get title from url */
       checkUrlForTitle();
 
-      /* get recommended tags */
-      /*
-      var queryString = "";
-      if( getPostParameter("${pageContext.request.queryString}", "intraHashToUpdate") ) {
-        queryString = "url="+document.getElementById('post.resource.url').value;
-      } else {
-        queryString = "${pageContext.request.queryString}";
-      }
-      $.ajax({
-        type: "GET",
-        url: "/ajax/getBookmarkRecommendedTags",
-        data: queryString+"&postID=${command.postID}",
-        success: function(msg){
-          handleRecommendedTags(msg)
-        }
-      });
-      */
-      
+
       /* setup jQuery to update recommender with form data */
       var options = { 
-	            url:  '/ajax/getBookmarkRecommendedTags',   // target element(s) to be updated with server response 
-	            success:       showResponse     // post-submit callback 
-	            	     
-	            // other available options: 
-	            //url:       url         // override for form's 'action' attribute 
-	            //type:      type        // 'get' or 'post', override for form's 'method' attribute 
-	            //dataType:  null        // 'xml', 'script', or 'json' (expected server response type) 
-	            //clearForm: true        // clear all form fields after successful submit 
-	            //resetForm: true        // reset the form after successful submit 
-	     
-	            // $.ajax options can be used here too, for example: 
-	            //timeout:   3000 
+	            url:  '/ajax/getBookmarkRecommendedTags', 
+	            success:       showResponse 
 	        }; 
       $('#postBookmarkForm').ajaxSubmit(options); 
 
 	  /* jQuery's response containing recommended tags */
 	  function showResponse(responseText, statusText)  { 
-	    // for normal html responses, the first argument to the success callback 
-	    // is the XMLHttpRequest object's responseText property 
-	 
-	    // if the ajaxSubmit method was passed an Options Object with the dataType 
-	    // property set to 'xml' then the first argument to the success callback 
-	    // is the XMLHttpRequest object's responseXML property 
-	 
-	    // if the ajaxSubmit method was passed an Options Object with the dataType 
-	    // property set to 'json' then the first argument to the success callback 
-	    // is the json data object returned by the server 
 	    handleRecommendedTags(responseText);
 	  } 
       

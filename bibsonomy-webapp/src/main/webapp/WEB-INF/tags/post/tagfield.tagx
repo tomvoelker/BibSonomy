@@ -71,36 +71,4 @@
           <div id="suggested" class="suggtag"><!-- This comment is needed, otherwise this will result in a self-closing element --></div>
 		</div>
 	</fieldset>
-	<script type="text/javascript">
-        //<mtl:cdata>
-        <![CDATA[
-		/**
-		 * handler for the 'reload recommendations button'
-		 * FIXME: all js-functions for recommendations should be located in a single file.
-		 */
-	    function reloadRecommendation() {
-	        var queryString = "";
-	        if( getPostParameter("${pageContext.request.queryString}", "intraHashToUpdate") ) {
-	          queryString = "url=" + document.getElementById('post.resource.url').value;
-	        } else {
-	          queryString = "${pageContext.request.queryString}";
-	        }
-
-	        var link = document.getElementById("fsReloadLink");
-	        var button = document.getElementById("fsReloadButton");
-	        link.setAttribute("href","#");
-	        button.setAttribute("src","${resdir}/image/button_reload-inactive.png");
-
-	        clearTagField();			
-
-	        /* setup jQuery to update recommender with form data */
-	        var options = { 
-	  	            url:  '/ajax/getBookmarkRecommendedTags',   // target element(s) to be updated with server response 
-	  	            success:       showResponse     // post-submit callback 
-	  	        }; 
-	        $('#postBookmarkForm').ajaxSubmit(options); 
-	    }
-      ]]>
-      //</mtl:cdata>
-	</script>
 </jsp:root>
