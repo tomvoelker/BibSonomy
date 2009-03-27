@@ -87,7 +87,7 @@ td.expl_s {
 
 <h2>Feel free to edit your BibTeX entry</h2>
 
-<form name="post_bibtex" method="post" action="/bibtex_posting_process">
+<form id="postPublicationForm" name="post_bibtex" method="post" action="/bibtex_posting_process">
   <input type="hidden" name="oldhash" value="${bibtexHandlerBean.oldhash}"/>
   <input type="hidden" name="rating" value="${bibtexHandlerBean.rating}"/>
   <input type="hidden" value="${ckey}" name="ckey"/>
@@ -157,7 +157,7 @@ td.expl_s {
 
 
 <tr>
-      <td height="40">
+      <td height="40"  class="expl">
 	    <ul id="suggTags">
 	      <li>suggested</li>
 	    </ul>
@@ -168,23 +168,23 @@ td.expl_s {
         <div class="errmsg"></div>
   	  </td>
 	</tr>
-    
-    <c:if test="${not empty bibtexHandlerBean.recommendedTags}" >
-		<tr>
-          <td height="40">
-    	    <ul id="suggTags">
-    	      <li>recommendation:</li>
-    	    </ul>
-    	  </td>
-          <td height="40" id="recommender">
-            <ul id="recommendtag">
-                <c:forEach var="tag" items="${bibtexHandlerBean.recommendedTags}">
-                    <li class="recommended"><a onclick="toggle(event); return false;" title="<c:out value="${tag.score}"/> score"><c:out value="${tag.name}"/></a></li>
-    			</c:forEach>
-            </ul>
-      	  </td>
-    	</tr>		
-  </c:if>
+  <tr>
+    <td class="expl">recommendation:</td>
+    <td>
+    <div>
+      <div id="tagField" class="42">
+          <div class="fsWaitingText">waiting for tags</div>
+          <!-- This comment is needed, otherwise this will result in a self-closing element -->
+      </div>
+                                
+    </div>
+    </td>
+    <td>
+      <a id="fsReloadLink" href="#">
+         <img id="fsReloadButton" src="/resources/image/button_reload-inactive.png" alt="reloading tags" title="reloading tags"/>
+      </a>
+    </td>
+  </tr>
 
 
 <%--  insert copy tags --%>
@@ -666,6 +666,92 @@ td.expl_s {
   	$(document).ready(function(){
   	  	$('textarea').autoResize();
 	});
+
+
+    function clearTagField() {
+      var sg = document.getElementById("tagField");
+      while(sg.hasChildNodes()) 
+        sg.removeChild(sg.firstChild);
+    }
+
+          function handleRecommendedTags(msg) {
+            var tagSuggestions = [];
+            var target = 'tagField';
+
+            // lookup and clear target node
+            var tagField = document.getElementById(target) 
+            clearTagField();
+            
+            // lookup tags
+            var root = msg.getElementsByTagName('tags').item(0);
+            if( root == null ) {
+              // FIXME: DEBUG
+              alert("Invalid Ajax response: <tags/> not found.");
+            }
+            // append each tag to target field
+            for (var iNode = 0; iNode < root.childNodes.length; iNode++) {
+              var node = root.childNodes.item(iNode);
+              // work around firefox' phantom nodes
+              if( (node.nodeType == 1) && (node.tagName == 'tag') ) {
+                // collect tag informations
+                var tagName       = node.getAttribute('name');
+                var tagScore      = node.getAttribute('score');
+                var tagConfidence = node.getAttribute('confidence');
+                
+                // create link element from tag
+                var newTag = document.createElement('a');
+                var newText= document.createTextNode(tagName + " ");
+                newTag.setAttribute('href', "javascript:copytag('inpf', '"
+                              +node.getAttribute('name')
+                              +"')");
+                newTag.appendChild(newText);
+                tagField.appendChild(newTag);
+                
+                // append tag to suggestion list
+                var suggestion = new Object;
+                suggestion.label      = tagName;
+                suggestion.score      = tagScore;
+                suggestion.confidence = tagConfidence;
+                tagSuggestions.push(suggestion);
+              }
+            }
+
+            // add recommended tags to suggestions
+            populateSuggestionsFromRecommendations(tagSuggestions);
+
+            // enable reload button
+            var link = document.getElementById("fsReloadLink");
+                      var button = document.getElementById("fsReloadButton");
+                  link.setAttribute("href","javascript:reloadRecommendation()");
+                  button.setAttribute("src","/resources/image/button_reload.png");
+          }
+
+    /* setup jQuery to update recommender with form data */
+    var options = { 
+              url:  '/ajax/getPublicationRecommendedTags', 
+              success:       showResponse 
+          }; 
+      $('#postPublicationForm').ajaxSubmit(options); 
+
+    function showResponse(responseText, statusText)  { 
+      handleRecommendedTags(responseText);
+    } 
+
+     function reloadRecommendation() {
+          var link = document.getElementById("fsReloadLink");
+          var button = document.getElementById("fsReloadButton");
+          link.setAttribute("href","#");
+          button.setAttribute("src","resources/image/button_reload-inactive.png");
+
+          clearTagField();      
+
+          var options = { 
+                  url:  '/ajax/getPublicationRecommendedTags', 
+                  success:       showResponse 
+              }; 
+          $('#postPublicationForm').ajaxSubmit(options); 
+      }
+
 
 </script>
 
