@@ -138,6 +138,9 @@ public class ResourceHandler extends HttpServlet{
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		
+		log.fatal("ResourceHandler called! Query string: " + request.getQueryString());
+		
 		ResultSet rst = null;
 		DBContext c   = new DBContext();
 
