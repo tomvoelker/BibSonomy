@@ -23,10 +23,11 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.database.systemstags.SystemTags;
+import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
+import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManagerImpl;
 
 import resources.Bibtex;
 import beans.BibtexHandlerBean;
-import beans.UserBean;
 import filters.SessionSettingsFilter;
 
 public class BibtexShowHandler extends HttpServlet{
@@ -36,6 +37,8 @@ public class BibtexShowHandler extends HttpServlet{
 	private static final Logger log = Logger.getLogger(BibtexShowHandler.class);
 	
 	private DataSource dataSource;
+	
+	private RecommenderStatisticsManager recommenderStatistics = new RecommenderStatisticsManagerImpl();
 	
 	public void init(ServletConfig config) throws ServletException{	
 		super.init(config); 
@@ -73,9 +76,7 @@ public class BibtexShowHandler extends HttpServlet{
 			return;
 		}
 		
-		/* get username */
-		UserBean user = SessionSettingsFilter.getUser(request);
-		String currUser = user.getName(); 
+		final String currUser = SessionSettingsFilter.getUser(request).getName(); 
 	
 		if (currUser == null) {
 			// TODO: user will be redirected to login and from there back to the site he
@@ -109,8 +110,8 @@ public class BibtexShowHandler extends HttpServlet{
 			/* generate a new bean and fill it with the request-parameters
 			 * this way (with a filled bean) we can get the apropriate hash
 			 * and can ask the database just for the hash */
-			Bibtex bibtex = new Bibtex();
-			BibtexHandlerBean bean = new BibtexHandlerBean(bibtex);
+			final Bibtex bibtex = new Bibtex();
+			final BibtexHandlerBean bean = new BibtexHandlerBean(bibtex);
 			
 			bibtex.setTitle(requTitle);
 			bibtex.setAuthor(request.getParameter("author"));
@@ -247,6 +248,12 @@ public class BibtexShowHandler extends HttpServlet{
 				bean.setTags(buf.toString().trim());
 			}
 			
+			
+			/*
+			 * add post id (for recommender) to bean
+			 */
+			
+			bean.setPostID(recommenderStatistics.getNewPID());
 			
 			
 			/* Bean wird dem request angehängt */

@@ -14,6 +14,16 @@ public class BibtexHandlerBean extends ResourceSuperBean<Bibtex> {
 
 	private Set<String> relevantFor = new HashSet<String>();
 
+	private int postID;
+	
+	public void setPostID(int postID) {
+		this.postID = postID;
+	}
+
+	public int getPostID() {
+		return postID;
+	}
+	
 	// extract_id is the key for the ie result for this entry. extract_id = 0 means no ie
 	public int getExtract_id() {
 		return extract_id;

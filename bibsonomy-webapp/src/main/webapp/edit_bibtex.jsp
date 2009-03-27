@@ -90,6 +90,7 @@ td.expl_s {
 <form id="postPublicationForm" name="post_bibtex" method="post" action="/bibtex_posting_process">
   <input type="hidden" name="oldhash" value="${bibtexHandlerBean.oldhash}"/>
   <input type="hidden" name="rating" value="${bibtexHandlerBean.rating}"/>
+  <input type="hidden" name="postID" value="${bibtexHandlerBean.postID}"/>
   <input type="hidden" value="${ckey}" name="ckey"/>
 
 

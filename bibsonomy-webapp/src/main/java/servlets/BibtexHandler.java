@@ -44,8 +44,14 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.User;
+import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
+import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManagerImpl;
 import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -88,7 +94,8 @@ public class BibtexHandler extends HttpServlet {
 	private static final String LOGIN_INFO = "login.notice.post.publication";
 	
 	private static final Scraper scraper = new KDEScraperFactory().getScraper();
-
+	
+	private RecommenderStatisticsManager recommenderStatistics = new RecommenderStatisticsManagerImpl();
 
 	/*
 	 * The dataSource lookup code is added to the init() method to avoid the
@@ -407,6 +414,24 @@ public class BibtexHandler extends HttpServlet {
 					if (!isManual) {
 						bibtexList.removeAll(warnings.getDuplicate()); 
 						bibtexUploadBean.setBibtex(bibtexList);
+					} else {
+						/*
+						 * handle manual post: store post ID for recommender
+						 */
+						if (bibSuccessCounter == 1) {
+							/*
+							 * create new post
+							 */
+							final Post<BibTex> post = new Post<BibTex>();
+							post.setUser(new User(currUser));
+							post.setResource(new BibTex());
+							
+							final Bibtex first = bibtexList.getFirst();
+							post.getResource().setIntraHash(first.getSimHash(HashID.INTRA_HASH.getId()));
+							post.setDate(first.getDate());
+							
+							recommenderStatistics.connectPostWithRecommendation(post, bean.getPostID());
+						}
 					}
 					// send inserted bibtex for user info
 					request.setAttribute("bibtexUploadBean", bibtexUploadBean);
