@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.4"
+	xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+	<display-name>Sample Tag Recommender Servlets for BibSonomy</display-name>
+
+	<servlet>
+		<description>Servlet dispatching tag recommender queries.</description>
+		<display-name>TagReccomenderServlet</display-name>
+		<servlet-name>TagRecommenderServlet</servlet-name>
+		<servlet-class>org.bibsonomy.recommender.servlets.TagRecommenderServlet</servlet-class>
+		<init-param>
+			<description></description>
+			<param-name>recommender</param-name>
+			<param-value>org.bibsonomy.recommender.tags.simple.SimpleContentBasedTagRecommender</param-value>
+		</init-param>
+	</servlet>
+
+    <context-param>
+  		<param-name>TagRecommender</param-name>
+	    <param-value>org.bibsonomy.recommender.tags.simple.SimpleContentBasedTagRecommender</param-value>
+	</context-param>
+
+	<servlet-mapping>
+		<servlet-name>TagRecommenderServlet</servlet-name>
+		<url-pattern>/TagRecommenderServlet</url-pattern>
+	</servlet-mapping>
+</web-app>
