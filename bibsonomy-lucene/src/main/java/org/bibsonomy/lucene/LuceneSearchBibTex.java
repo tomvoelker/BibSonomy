@@ -227,7 +227,6 @@ public class LuceneSearchBibTex {
 				
 				for(int i = offset; i < hitslimit; i++){
 					Document doc = hits.doc(i);
-					LOGGER.debug("LuceneBibTex: doc.get("+idname+")="+doc.get(idname));
 					cidsArray.add(Integer.parseInt(doc.get(idname)));
 				}	 
 
