@@ -48,7 +48,7 @@ function add_filter() {
   tags_filter = document.createElement("input");
   tags_filter.autocomplete="off";
   tags_filter.type="text";
-  tags_filter.size="10";
+  tags_filter.style.size="10ex";
   tags_filter.onkeyup = filter_tags;
 
   f.appendChild(tags_filter);
@@ -106,6 +106,17 @@ function hideNextList() {
       content.src="/resources/image/icon_collapse.png";
     }
   }
+}
+
+// textarea resize
+function sz(t) {
+	a=t.value.split('\n');
+	b=0;
+	for (x=0; x<a.length; x++) {
+		if (a[x].length >= t.cols) b+= Math.floor(a[x].length/t.cols);
+	}
+	b+= a.length;
+	if (b>t.rows) t.rows=b;
 }
 
 // if window is small, maximizes "general" div to 95%
