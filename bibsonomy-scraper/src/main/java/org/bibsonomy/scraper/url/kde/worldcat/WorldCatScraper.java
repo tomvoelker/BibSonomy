@@ -109,9 +109,7 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		/*
 		 * add URL
 		 */
-		BibTexUtils.addFieldIfNotContained(bibtex, "url", publPageURL.toString());
-		
-		return bibtex;
+		return BibTexUtils.addFieldIfNotContained(bibtex, "url", publPageURL.toString());
 	}
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
