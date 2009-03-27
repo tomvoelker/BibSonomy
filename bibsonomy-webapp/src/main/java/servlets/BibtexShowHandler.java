@@ -24,7 +24,6 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.bibsonomy.database.systemstags.SystemTags;
 
-import recommender.RecommenderFrontEnd;
 import resources.Bibtex;
 import beans.BibtexHandlerBean;
 import beans.UserBean;
@@ -223,7 +222,6 @@ public class BibtexShowHandler extends HttpServlet{
 				}
 			}
 			
-			bean.setRecommendedTags( RecommenderFrontEnd.getRecommendation( currUser, bibtex.getHash(), Bibtex.class, bibtex.getTitle()) );
 			//bean.setJump(request.getParameter("jump")); // TODO: what was this good for? rja, 02.12.2005
 			bean.setCopytag(request.getParameter("copytag"));
 			
