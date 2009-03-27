@@ -199,7 +199,7 @@
                                   <fmt:message key="post.meta.save_as_publication" var="post_publication"/>
                                   <input id="button" type="submit" name="submit" value="${post_publication}"/>
                                 </p>
-                                <textarea id="bib" name="selection" cols="60" rows="15" class="reqinput"><c:out value=" "/></textarea>
+                                <textarea style="width: 100%;" id="bib" name="selection" rows="15" class="reqinput"><c:out value=" "/></textarea>
                                 <input type="hidden" name="requTask" value="upload" />
                                 
                               </fieldset>
@@ -328,7 +328,7 @@
         if(url.length > 'http://'.length){
           var req = ajaxInit();
           if(req){
-            req.open("GET", '/scrapingservice?url='+encodeURIComponent(url)+'&format=bibtex&selection='+encodeURIComponent(document.getElementById("post.description").value), true); // Request starten
+            req.open("GET", '/scrapingservice?url='+encodeURIComponent(url)+'&format=bibtex&doIE=false&selection='+encodeURIComponent(document.getElementById("post.description").value), true); // Request starten
             req.onreadystatechange = function() {
                 if ( req.readyState == 4 ) {
                     if ( req.status == 200 ) {
