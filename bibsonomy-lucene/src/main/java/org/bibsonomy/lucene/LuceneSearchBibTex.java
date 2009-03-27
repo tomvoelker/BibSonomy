@@ -70,7 +70,7 @@ public class LuceneSearchBibTex {
 			else
 			{	
 				// load and hold index on physical hard disk
-				LOGGER.debug("LuceneBookmark: use index from disk");
+				LOGGER.debug("LuceneBibTex: use index from disk");
 				this.searcher = new IndexSearcher( (String) envContext.lookup("luceneIndexPathPublications") );
 			}
 		} catch (final NamingException e) {
