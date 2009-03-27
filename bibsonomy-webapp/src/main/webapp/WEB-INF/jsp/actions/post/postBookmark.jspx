@@ -324,10 +324,11 @@
       });
 
       function scraping(){
-        if(document.getElementById("post.resource.url").value.length > 'http://'.length){
+        var url = document.getElementById("post.resource.url").value;
+        if(url.length > 'http://'.length){
           var req = ajaxInit();
           if(req){
-            req.open("GET", '/scrapingservice?url='+encodeURIComponent(document.getElementById("post.resource.url").value)+'&format=bibtex', true); // Request starten
+            req.open("GET", '/scrapingservice?url='+encodeURIComponent(url)+'&format=bibtex&selection='+encodeURIComponent(document.getElementById("post.description").value), true); // Request starten
             req.onreadystatechange = function() {
                 if ( req.readyState == 4 ) {
                     if ( req.status == 200 ) {
