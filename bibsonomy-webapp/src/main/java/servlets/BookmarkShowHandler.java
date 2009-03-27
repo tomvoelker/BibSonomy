@@ -59,6 +59,9 @@ public class BookmarkShowHandler extends HttpServlet{
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+		
+		log.fatal("DEPRECATED: " + BookmarkShowHandler.class.getSimpleName() + " called. Query string: " + request.getQueryString());
+		
 		/* get url */
 		String requUrl  = request.getParameter("url");
 		String requHash = request.getParameter("hash");
