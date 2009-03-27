@@ -1,6 +1,7 @@
 package org.bibsonomy.recommender.tags.database;
 
 import java.sql.SQLException;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Post;
@@ -16,6 +17,7 @@ public class RecommenderStatisticsManagerImpl implements org.bibsonomy.recommend
 	private static final Logger log = Logger.getLogger(RecommenderStatisticsManagerImpl.class);
 	/** indicates that post identifier was not given */
 	public static int UNKNOWN_POSTID = -1;
+	private static final Random rand = new Random();
 	
 	@Override
 	public void connectPostWithRecommendation(Post<? extends Resource> post, int postID) {
@@ -27,8 +29,15 @@ public class RecommenderStatisticsManagerImpl implements org.bibsonomy.recommend
 	}
 
 	@Override
-	public Integer getUnknownPID() {
+	public int getUnknownPID() {
 		return  UNKNOWN_POSTID;
 	}
+
+	@Override
+	public int getNewPID() {
+		return rand.nextInt(Integer.MAX_VALUE);
+	}
+	
+	
 
 }
