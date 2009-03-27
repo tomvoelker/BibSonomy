@@ -18,7 +18,7 @@
 		<jsp:attribute name="heading">
 		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.bibtex.cap"/></a> :: 
 		<form action="/search" method="get" class="smallform">
-		  <input type="text" size="20" name="q" value="${command.title}"/>
+		  <input type="text" size="20" name="q" value="${mtl:cleanBibtex(command.title)}"/>
 		</form>
 		</jsp:attribute>
 		
@@ -46,7 +46,7 @@
 		<li>			
 			<span class="sidebar_h"><fmt:message key="tags"/>
 				<span style="font-size:80%;font-weight:lighter;">
-					(<a href="/user/${command.bibtex.list[0].user.name}">${command.bibtex.list[0].user.name}</a>
+					(<a href="/user/${fn:escapeXml(command.bibtex.list[0].user.name)}">${fn:escapeXml(command.bibtex.list[0].user.name)}</a>
 					<fmt:message key="tags.highlighted.by_user"/>)
 				</span>
 			</span>
