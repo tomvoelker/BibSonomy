@@ -1067,8 +1067,19 @@ function xget_event (event) {
 				}
 				else if(sortedCollection) {
 					if(sortedCollection[pos] != "") {
+						// tag found in collection
 						reset = true;
-						tags[i] = sortedCollection[pos] + " ";
+						var tag = sortedCollection[pos];
+						tags[i] =  tag + " ";
+						//
+						// 2009/03/30, fei: treat tag completion as mouseclick
+						//                  (that way we get this information via
+						//                   clicklog)
+						// FIXME: relations not tested!
+						var target = lookupRecommendedTag(tag);
+						// send clicklog-event
+						if( target!=null )
+							simulateClick(target);
 					}
 					if(!sortedCollection[pos]) {
 						reset = false
@@ -1108,7 +1119,41 @@ function xget_event (event) {
 			inpf.select(); 
 
 		inpf.value = inpf.value;
+
 	}
+	
+/**
+ * returns link from tagfield if given tagname was recommended
+ */
+function lookupRecommendedTag(tag) {
+	var tagField = document.getElementById("tagField");
+	var links = tagField.getElementsByTagName("a");
+	var tag_name = tag.replace(/^\s+|\s+$/g, '');
+	var retVal = null;
+	
+	for (var i = 0; i < links.length; i++) {
+		var text = links[i].firstChild.nodeValue.replace(/^\s+|\s+$/g, '');
+		if( tag_name==text ) {
+			retVal = links[i];
+			break;
+		}
+	}
+	return retVal;
+}
+
+function simulateClick(target) {
+	var evt;
+	var el = target;
+	if (document.createEvent){
+		evt = document.createEvent("MouseEvents");
+		if (evt.initMouseEvent){
+			evt.initMouseEvent("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+		} else {
+			evt = false;
+		}
+	}
+	(evt)? el.dispatchEvent(evt):(el.click && el.click());
+} 
 
 function setButton() {
 	var tNode = document.getElementById("privnote");
