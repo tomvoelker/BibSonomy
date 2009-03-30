@@ -25,7 +25,6 @@ package org.bibsonomy.rest.client.worker;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.ProxyHost;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,8 +52,12 @@ public abstract class HttpWorker {
 
 	protected final String username;
 	protected final String apiKey;
-		
-	public HttpWorker(final String username, final String apiKey, final String proxyHost, final int proxyPort) {
+	
+	protected String proxyHost;
+	protected int proxyPort;
+	
+
+	public HttpWorker(final String username, final String apiKey) {
 		this.username = username;
 		this.apiKey = apiKey;
 		
@@ -65,10 +68,6 @@ public abstract class HttpWorker {
 		httpClientParams.setParameter(HttpClientParams.RETRY_HANDLER, defaultHttpMethodRetryHandler);
 		httpClientParams.setParameter(HttpClientParams.HTTP_CONTENT_CHARSET, UTF8);
 		httpClientParams.setAuthenticationPreemptive(true);
-		
-		if (proxyHost != null){
-			httpClient.getHostConfiguration().setProxy(proxyHost, proxyPort);
-		}
 		
 		this.httpClient.setParams(httpClientParams);
 	}
@@ -94,5 +93,19 @@ public abstract class HttpWorker {
 	 */
 	public int getHttpResult() {
 		return this.httpResult;
+	}
+	
+	/**
+	 * @param proxyHost
+	 */
+	public void setProxyHost(String proxyHost) {
+		this.proxyHost = proxyHost;
+	}
+
+	/**
+	 * @param proxyPort
+	 */
+	public void setProxyPort(int proxyPort) {
+		this.proxyPort = proxyPort;
 	}
 }

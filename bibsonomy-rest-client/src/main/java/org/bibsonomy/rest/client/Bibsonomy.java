@@ -23,7 +23,6 @@
 
 package org.bibsonomy.rest.client;
 
-import org.apache.commons.httpclient.ProxyHost;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.queries.get.GetPostsQuery;
@@ -116,8 +115,6 @@ public final class Bibsonomy {
 	 */
 	public void executeQuery(final AbstractQuery<?> query, final ProgressCallback callback) throws ErrorPerformingRequestException, IllegalStateException {
 		query.setProgressCallback(callback);
-		query.setProxyHost(this.proxyHost);
-		query.setProxyPort(this.proxyPort);
 		executeQuery(query);
 	}
 

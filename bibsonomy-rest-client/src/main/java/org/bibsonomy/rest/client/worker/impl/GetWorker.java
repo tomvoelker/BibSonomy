@@ -29,9 +29,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.logging.Level;
 
-import org.apache.commons.httpclient.ProxyHost;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.bibsonomy.rest.client.ProgressCallback;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
@@ -45,13 +43,19 @@ public final class GetWorker extends HttpWorker {
 
 	private final ProgressCallback callback;
 
-	public GetWorker(final String username, final String password, final ProgressCallback callback, final String proxyHost, final int proxyPort) {
-		super(username, password, proxyHost, proxyPort);
+	public GetWorker(final String username, final String password, final ProgressCallback callback) {
+		super(username, password);
+		
 		this.callback = callback;
 	}
 
 	public Reader perform(final String url) throws ErrorPerformingRequestException {
 		LOGGER.debug("GET: URL: " + url);
+		
+		// dirty but working
+		if (this.proxyHost != null){
+			getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
+		}
 
 		final GetMethod get = new GetMethod(url);
 		get.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());

@@ -26,9 +26,7 @@ package org.bibsonomy.rest.client.worker.impl;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.util.logging.Level;
 
-import org.apache.commons.httpclient.ProxyHost;
 import org.apache.commons.httpclient.methods.HeadMethod;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
@@ -39,12 +37,17 @@ import org.bibsonomy.rest.client.worker.HttpWorker;
  */
 public class HeadWorker extends HttpWorker {
 
-	public HeadWorker(final String username, final String apiKey, final String proxyHost, final int proxyPort) {
-		super(username, apiKey, proxyHost, proxyPort);
+	public HeadWorker(final String username, final String apiKey) {
+		super(username, apiKey);
 	}
 
 	public Reader perform(final String url) throws ErrorPerformingRequestException {
 		LOGGER.debug("HEAD: URL: " + url);
+		
+		// dirty but working
+		if (this.proxyHost != null){
+			getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
+		}
 
 		final HeadMethod head = new HeadMethod(url);
 		head.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());

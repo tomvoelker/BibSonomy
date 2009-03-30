@@ -26,7 +26,6 @@ package org.bibsonomy.rest.client;
 import java.io.Reader;
 
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.ProxyHost;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
@@ -68,7 +67,9 @@ public abstract class AbstractQuery<T> {
 	private boolean executed = false;
 
 	protected final Reader performGetRequest(final String url) throws ErrorPerformingRequestException {
-		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.callback, this.proxyHost, this.proxyPort);
+		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.callback);
+		worker.setProxyHost(this.proxyHost);
+		worker.setProxyPort(this.proxyPort);
 		final Reader downloadedDocument = worker.perform(this.apiURL + url);
 		this.statusCode = worker.getHttpResult();
 		return downloadedDocument;
@@ -82,19 +83,27 @@ public abstract class AbstractQuery<T> {
 
 		switch (method) {
 		case POST:
-			worker = new PostWorker(this.username, this.apiKey, this.proxyHost, this.proxyPort);
+			worker = new PostWorker(this.username, this.apiKey);
+			worker.setProxyHost(this.proxyHost);
+			worker.setProxyPort(this.proxyPort);
 			result = ((PostWorker) worker).perform(absoluteUrl, requestBody);
 			break;
 		case DELETE:
-			worker = new DeleteWorker(this.username, this.apiKey, this.proxyHost, this.proxyPort);
+			worker = new DeleteWorker(this.username, this.apiKey);
+			worker.setProxyHost(this.proxyHost);
+			worker.setProxyPort(this.proxyPort);
 			result = ((DeleteWorker) worker).perform(absoluteUrl);
 			break;
 		case PUT:
-			worker = new PutWorker(this.username, this.apiKey, this.proxyHost, this.proxyPort);
+			worker = new PutWorker(this.username, this.apiKey);
+			worker.setProxyHost(this.proxyHost);
+			worker.setProxyPort(this.proxyPort);
 			result = ((PutWorker) worker).perform(absoluteUrl, requestBody);
 			break;
 		case HEAD:
-			worker = new HeadWorker(this.username, this.apiKey, this.proxyHost, this.proxyPort);
+			worker = new HeadWorker(this.username, this.apiKey);
+			worker.setProxyHost(this.proxyHost);
+			worker.setProxyPort(this.proxyPort);
 			result = ((HeadWorker) worker).perform(absoluteUrl);
 			break;
 		case GET:
