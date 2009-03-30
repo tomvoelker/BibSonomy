@@ -23,7 +23,7 @@ import org.bibsonomy.util.WebUtils;
  */
 public class CellScraper extends AbstractUrlScraper {
 	
-	private static String INFO = "Cell Scraper: PSCraper for Journals from " + href("http://www.cell.com/", "Cell") + " and " + href("http://www.cell.com/biophysj/home", "Biophysical Journal");
+	private static String INFO = "Cell Scraper: Scraper for Journals from " + href("http://www.cell.com/", "Cell") + " and " + href("http://www.cell.com/biophysj/home", "Biophysical Journal");
 	
 	private static String HOST_CELL = "cell.com";
 	private static String PATH_BIOPHYSICAL = "/biophysj/";
@@ -44,6 +44,8 @@ public class CellScraper extends AbstractUrlScraper {
 
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
+		sc.setScraper(this);
+		
 		String id = null;
 		Matcher idMatcher = patternId.matcher(sc.getUrl().toString());
 		if(idMatcher.find())
