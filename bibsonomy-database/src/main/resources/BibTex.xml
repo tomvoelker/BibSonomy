@@ -286,6 +286,42 @@
 		ORDER BY b.date DESC, b.content_id
 	</select>
 	
+
+	<!-- 
+		get the bibtex posts in case of a fulltext search
+	 -->
+	<select id="getBibTexSearchForGroup" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group   
+		FROM bibtex b, bibhash h, ((
+			SELECT t1.content_id, t1.date                  	      				<!-- currUser's own items + items from users of group which currUser may see -->
+			FROM groups g, search_bibtex t1
+			WHERE g.group = #groupId#
+				AND g.user_name = t1.user_name									<!-- all items of all group members (including currUser) -->
+				AND (
+					t1.user_name = #userName#									<!-- currUser's own items -->
+					OR
+					<include refid="inGroupsUnchecked"/> )						<!-- items of other users wich currUser may see --> 
+				AND MATCH (t1.content) AGAINST (#search# IN BOOLEAN MODE)		<!-- fulltext search over search item in search table -->
+			) UNION (
+				SELECT t1.content_id, t1.date									<!-- items from users of group which have currUser as friend -->
+				FROM groups g, friends f, search_bibtex t1
+				WHERE g.group = #groupId#
+					AND f.f_user_name = #userName#               				<!-- currUser is friend of user -->
+					AND g.user_name = f.user_name								<!-- user is in group -->
+					AND t1.user_name = f.user_name								<!-- user owns this item -->
+					AND t1.group = $groupType$									<!-- item is only for friends -->
+					AND MATCH (t1.content) AGAINST (#search# IN BOOLEAN MODE)	<!-- fulltext search over search item in search table -->
+			) ORDER BY date DESC   
+			LIMIT #limit# OFFSET #offset#
+		) AS bb     
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g     
+		WHERE t.group = g.group                                              
+			AND <include refid="bibtexSimHash"/>                            	<!-- join counts, ... -->
+			<include refid="sysTagsYear"/>										<!-- sys:year: systemtag -->        
+			AND b.content_id = bb.content_id 									<!-- join title, description, ... -->
+		ORDER BY bb.date DESC, bb.content_id DESC								<!-- order for output -->
+	</select> 
+	
 	
 	<select id="getBibTexSearchLucene" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam" >
 		SELECT	<include refid ="allBibtexAttributes"/>, t.tag_name, b.ctr AS count,
