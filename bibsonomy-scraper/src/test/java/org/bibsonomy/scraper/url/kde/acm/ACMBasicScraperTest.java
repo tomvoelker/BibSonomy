@@ -52,7 +52,6 @@ public class ACMBasicScraperTest {
 		
 		try {
 			acm.scrape(sc);
-			System.out.println(sc.getBibtexResult());
 		} catch (ScrapingException ex) {
 			Assert.fail(ex.getMessage());
 		}
