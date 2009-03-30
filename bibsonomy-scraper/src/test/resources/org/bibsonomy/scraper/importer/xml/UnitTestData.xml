@@ -816,4 +816,10 @@
 		<BibFile>CellScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.cell.CellScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_146">
+		<TestDescription>test for AGU scraper</TestDescription>
+		<URL>http://www.agu.org/pubs/crossref/2008/2008JD010287.shtml</URL>
+		<BibFile>AGUScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.agu.AGUScraper</Scraper>
+	</URLTest>
 </test:Tests>
