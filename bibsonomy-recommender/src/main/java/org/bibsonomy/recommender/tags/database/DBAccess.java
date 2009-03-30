@@ -11,6 +11,7 @@ import java.util.TreeSet;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -759,12 +760,31 @@ public class DBAccess extends AbstractDatabaseManager {
 	 * @param update
 	 * @param session
 	 * @return true on success, false otherwise
+	 * @throws SQLException 
 	 */
 	static private boolean storeBibTexPost(String userName, Long qid, Post<BibTex> post,
-			String oldHash, boolean update ) {
+			String oldHash, boolean update ) throws SQLException {
 		// TODO Auto-generated method stub
-		log.warn("storeBibTexPost not implemented yet.");
-		return false;
+		log.warn("storeBibTexPost not tested.");
+		final BibTexParam param = new BibTexParam();
+		param.setResource(post.getResource());
+		param.setRequestedContentId(qid.intValue());
+		param.setDescription(post.getDescription());
+		param.setDate(post.getDate());
+		param.setUserName(((post.getUser() != null) ? post.getUser().getName() : ""));
+		
+		SqlMapClient sqlMap = getSqlMapInstance();
+		try {
+			sqlMap.startTransaction();
+   			sqlMap.insert("insertBibTex", param);
+    		sqlMap.commitTransaction();
+		} finally {
+			// all done -> close session
+			sqlMap.endTransaction();
+		}
+		
+		// all done.
+		return true;
 	}
 
 	/**

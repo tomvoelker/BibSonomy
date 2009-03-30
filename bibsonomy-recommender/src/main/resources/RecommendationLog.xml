@@ -211,9 +211,7 @@
 		FROM log_recommender
 		WHERE user_name = #userName# 
 		   AND post_id = #postID# 
-		   AND YEAR(date) = YEAR(#date#)
-		   AND MONTH(date) = MONTH(#date#)
-		   AND DAY(date) = DAY(#date#)
+		   AND TIMESTAMPDIFF(HOUR, date, #date#) &lt; 12
 		ORDER BY DATE DESC 
 		LIMIT 1
 	</select>
@@ -280,9 +278,7 @@
 		FROM log_recommender l 
 		   JOIN recommender_postmap m ON (
 		   		m.post_id=l.post_id AND 
-		   		YEAR(l.date)=YEAR(m.date) AND 
-		   		MONTH(l.date)=MONTH(m.date) AND 
-		   		DAY(l.date)=DAY(m.date)
+		   		TIMESTAMPDIFF(HOUR, l.date, m.date) &lt; 12
 		   	) 
 		WHERE query_id=#qid#
 		LIMIT 1

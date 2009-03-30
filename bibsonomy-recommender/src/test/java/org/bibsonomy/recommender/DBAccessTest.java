@@ -48,8 +48,9 @@ public class DBAccessTest {
 		obj.testAddNewSelector2();
 		obj.testAddNewSelector();
 		obj.testAddSelectedTags();
-		*/
 		obj.testGetPostDataForQuery();
+		*/
+		obj.testAddQuery();
 		JNDITestDatabaseBinder.unbind();
     }
 	
@@ -236,7 +237,7 @@ public class DBAccessTest {
 		bibtex.setBibtexKey("test");
 		bibtex.setEntrytype("twse");
 		post.setResource(bibtex);
-
+		post.setContentId(new Integer(0));
 		return post;
 	}
 	

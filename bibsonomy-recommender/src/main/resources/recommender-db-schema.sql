@@ -58,7 +58,7 @@ CREATE TABLE recommender_querymap(
 DROP TABLE IF EXISTS recommender_settings;
 CREATE TABLE recommender_settings(
 	setting_id BIGINT NOT NULL AUTO_INCREMENT,
-	rec_id VARCHAR(255) NOT NULL,
+	rec_id VARCHAR(50) NOT NULL,
 	rec_meta BLOB,
 	PRIMARY KEY (setting_id)
 ) DEFAULT CHARSET=utf8;
@@ -157,7 +157,7 @@ CREATE TABLE `recommender_bibtex` (
   `change_date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `rating` tinyint(3) NOT NULL default '0',
   PRIMARY KEY  (`content_id`),
-  UNIQUE KEY `unique_user_name_simhash2` (`user_name`,`simhash2`),
+  KEY `unique_user_name_simhash2` (`user_name`,`simhash2`),
   KEY `group_date_content_id_idx` (`group`,`date`,`content_id`),
   KEY `user_name_group_date_content_id_idx` (`user_name`,`group`,`date`,`content_id`),
   KEY `bib_hash_group_date_content_id_idx` (`simhash0`,`group`,`date`,`content_id`),
