@@ -173,7 +173,7 @@ td.expl_s {
     <td class="expl">recommendation</td>
     <td>
     <div>
-      <div id="tagField" class="42">
+      <div id="tagField" class="${bibtexHandlerBean.postID}">
           <div class="fsWaitingText">waiting for tags</div>
           <!-- This comment is needed, otherwise this will result in a self-closing element -->
       </div>
