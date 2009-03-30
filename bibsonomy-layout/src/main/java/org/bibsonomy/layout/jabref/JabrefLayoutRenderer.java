@@ -314,6 +314,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 				// set some fields so we can easily access them later in the export filters
 				bibtex.addMiscField("bibsonomyIntrahash", HashID.INTRA_HASH.getId() + bibtex.getIntraHash());
 				bibtex.addMiscField("bibsonomyUsername", post.getUser().getName());
+				bibtex.addMiscField("description", post.getDescription());
 				
 				bibtexStrings.append(" " + BibTexUtils.toBibtexString(bibtex)); 
 			}
