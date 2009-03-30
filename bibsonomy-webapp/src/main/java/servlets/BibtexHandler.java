@@ -321,8 +321,8 @@ public class BibtexHandler extends HttpServlet {
 				/* *****************************************************************
 				 * parse the BibTeX entries
 				 * *****************************************************************/
-				LinkedList<Bibtex> bibtexList = new LinkedList<Bibtex>();
-				int bibTotalCounter = parseBibtex(currUser, warnings, bibtexList, bibReader, description, group, substitute, delimiter, whitespace, rating, privnote);
+				final LinkedList<Bibtex> bibtexList = new LinkedList<Bibtex>();
+				final int bibTotalCounter = parseBibtex(currUser, warnings, bibtexList, bibReader, description, group, substitute, delimiter, whitespace, rating, privnote);
 
 				// TODO: a lot of comments removed, have look into versions 1.146 or 1.145 which contains the comments
 				if (isSnippet) {
@@ -338,7 +338,7 @@ public class BibtexHandler extends HttpServlet {
 				 * ********************************************************/
 				if (bibtexList.size() + warnings.getIncompleteCount() == 1 && (isSnippet || isFileUpload)) {
 
-					Bibtex bibtex;
+					final Bibtex bibtex;
 
 					if (bibtexList.size() == 1) {
 						// entry is valid (in bibtexList)
@@ -350,14 +350,16 @@ public class BibtexHandler extends HttpServlet {
 
 					bibtex.setScraperid(scraperid);
 					// put bibtex object into bean
-					BibtexHandlerBean bibBean = new BibtexHandlerBean (bibtex);
+					final BibtexHandlerBean bibBean = new BibtexHandlerBean (bibtex);
+					
+					bibBean.setPostID(recommenderStatistics.getNewPID());
 
 
 					contentman.prepareStatementsForBibtex(conn);
 					/* Test, if this bibtex is a duplicate! If yes, get the
 					 * old one from DB and send it as oldentry!	 */
 					bibgetman.prepareStatements(conn);
-					Bibtex oldBib = bibgetman.getBibtex(bibtex.getHash(), currUser);
+					final Bibtex oldBib = bibgetman.getBibtex(bibtex.getHash(), currUser);
 					if (oldBib != null) {
 						/* this bibtex entry exists for that user --> get existing entry */
 						bibBean.setOldentry(oldBib);
@@ -509,6 +511,13 @@ public class BibtexHandler extends HttpServlet {
 				}
 				return;
 			} 
+			
+			/*
+			 * FIXME: hack to do a redirect ("after POST") when everything is OK 
+			 */
+			if (redirectURL.startsWith("/user/")) {
+				response.sendRedirect(redirectURL);
+			}
 			getServletConfig().getServletContext().getRequestDispatcher(response.encodeRedirectURL(redirectURL)).forward(request, response);
 
 
