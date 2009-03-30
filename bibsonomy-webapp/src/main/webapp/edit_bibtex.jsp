@@ -170,7 +170,7 @@ td.expl_s {
   	  </td>
 	</tr>
   <tr>
-    <td class="expl">recommendation:</td>
+    <td class="expl">recommendation</td>
     <td>
     <div>
       <div id="tagField" class="42">
