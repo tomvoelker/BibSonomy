@@ -366,7 +366,14 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		/*
 		 * update recommender table such that recommendations are linked to the final post
 		 */
-		getRecommenderStatistics().connectPostWithRecommendation(posts.get(0), command.getPostID());
+		try {
+			recommenderStatistics.connectPostWithRecommendation(posts.get(0), command.getPostID());
+		} catch (final Exception ex) {
+			log.warn("Could not connect post with recommendation.");
+			/*
+			 * fail silently to not confuse user with error 500 when recommender fails 
+			 */
+		}
 		
 		/*
 		 * leave if and reach final redirect
