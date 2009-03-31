@@ -120,12 +120,11 @@ public enum SpamStatus {
 	public static SpamStatus getRealSpammerState(final SpamStatus status, final ClassifierMode mode) {
 		if (status.equals(SPAMMER) || status.equals(NO_SPAMMER)) return status;
 		else if (status.equals(SPAMMER_NOT_SURE)) {
-			//TODO: Remove day and night modus
-			if (mode.equals(ClassifierMode.DAY)) return NO_SPAMMER;
 			return SPAMMER;
 		}
 		else if (status.equals(NO_SPAMMER_NOT_SURE)) {
-			return NO_SPAMMER;
+			if (mode.equals(ClassifierMode.DAY)) return NO_SPAMMER;
+			return SPAMMER;
 		}else{
 			return status;
 		}
