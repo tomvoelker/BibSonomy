@@ -21,9 +21,12 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.model;
+package org.bibsonomy.model.comparators;
 
 import java.util.Comparator;
+
+import org.bibsonomy.model.RecommendedTag;
+import org.bibsonomy.model.Tag;
 
 
 /** Compares two recommended tags.
