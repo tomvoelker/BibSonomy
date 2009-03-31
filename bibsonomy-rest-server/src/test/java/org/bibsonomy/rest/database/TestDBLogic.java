@@ -254,7 +254,7 @@ public class TestDBLogic implements LogicInterface {
 		userManu.setRealname("Manuel Bork");
 		userManu.setRegistrationDate(new Date(System.currentTimeMillis()));
 		this.dbUsers.put(userManu.getName(), userManu);
-		publicGroup.getUsers().add(userManu);
+		//publicGroup.getUsers().add(userManu);
 		userManu.getGroups().add(publicGroup);
 
 		final User userAndreas = new User();
@@ -267,7 +267,7 @@ public class TestDBLogic implements LogicInterface {
 		userAndreas.setRealname("Andreas Hotho");
 		userAndreas.setRegistrationDate(new Date(System.currentTimeMillis()));
 		this.dbUsers.put(userAndreas.getName(), userAndreas);
-		publicGroup.getUsers().add(userAndreas);
+//		publicGroup.getUsers().add(userAndreas);
 		userAndreas.getGroups().add(publicGroup);
 
 		final User userButonic = new User();
@@ -280,7 +280,7 @@ public class TestDBLogic implements LogicInterface {
 		userButonic.setRealname("Joern Dreyer");
 		userButonic.setRegistrationDate(new Date(System.currentTimeMillis()));
 		this.dbUsers.put(userButonic.getName(), userButonic);
-		publicGroup.getUsers().add(userButonic);
+//		publicGroup.getUsers().add(userButonic);
 		userButonic.getGroups().add(publicGroup);
 
 		// tags
