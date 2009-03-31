@@ -1206,6 +1206,13 @@ public class DBLogic implements LogicInterface {
 		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, tags, null, order, start, end, null, null, loginUser);
 		final DBSession session = openSession();
 		try {
+			if (tags.size() == 1 && tags.get(0).startsWith("sys:user:")) {
+				// TODO: proper system tag handling
+				final String tag = tags.get(0);
+				final String username = tag.substring(tag.lastIndexOf(":") + 1, tag.length());
+				System.out.println("requested user " + username);
+				return this.userDBManager.getUsersByUserAndFolkrank(username, this.loginUser.getName(), end, session);
+			}
 			return this.userDBManager.getUserByFolkrank(param, session);
 		} finally {
 			session.close();
@@ -1281,6 +1288,8 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
+	
+
 
 	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
 		Integer result;

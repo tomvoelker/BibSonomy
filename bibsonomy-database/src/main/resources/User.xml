@@ -86,6 +86,16 @@
 		LIMIT #limit#
 	</select>
 	
+	<select id="getUsersByUserAndFolkrank" resultMap="UserCommon.userWithWeight" parameterClass="userParam"> 
+		SELECT w.item AS user_name, ROUND(weight,5) * 10000 AS weight
+		FROM rankings r
+			JOIN weights w USING (id)
+			WHERE r.item=#requestedUserName# AND r.dim = 1
+			AND w.dim = 1
+		ORDER BY 2 DESC
+		LIMIT #limit#
+	</select>	
+	
 	<!-- get all users, which have user in their friend list -->
 	<select id="getUserFriends" resultMap="Common.user"	parameterClass="string">
 		SELECT user_name FROM friends WHERE f_user_name = #username#
