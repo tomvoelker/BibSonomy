@@ -9,8 +9,8 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
-import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.recommender.tags.TagRecommenderConnector;
 import org.bibsonomy.services.recommender.TagRecommender;
 

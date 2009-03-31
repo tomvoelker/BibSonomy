@@ -8,7 +8,7 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.RecommendedTag;
-import org.bibsonomy.model.RecommendedTagComparator;
+import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.recommender.tags.database.DBAccess;
 
