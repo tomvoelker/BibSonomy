@@ -22,7 +22,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * @version $Id$
  */
 public class MostPopularByUserTagRecommender implements TagRecommender {
-	private static final Logger log = Logger.getLogger(DBAccess.class);
+	private static final Logger log = Logger.getLogger(MostPopularByUserTagRecommender.class);
 	
 	private static final int DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND = 5;
 	
