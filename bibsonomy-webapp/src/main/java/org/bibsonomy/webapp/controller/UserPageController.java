@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -11,6 +12,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
@@ -105,7 +107,13 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			if (command.getTagcloud().getTags().size() > 19999) {
 				LOGGER.error("User " + groupingName + " has reached threshold of 20000 tags on user page");
 			}
-
+			
+			// retrieve similar users
+			List<String> tags = new ArrayList<String>();
+			tags.add("sys:user:" + groupingName);
+			List<User> similarUsers = this.logic.getUsers(tags, Order.FOLKRANK, 0, 8);
+			command.getRelatedUserCommand().setRelatedUsers(similarUsers);
+			
 			if (requTags.size() > 0) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
 				command.getRelatedTagCommand().setTagGlobalCount(totalNumPosts);
