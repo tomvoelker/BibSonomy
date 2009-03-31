@@ -303,6 +303,7 @@ public class XMLRendererTest {
 		user1.setRealname("Dr. FOO BaR");
 		final User user2 = new User();
 		user2.setName("fooBar");
+		user2.getGroups().add(new Group("kde"));
 		users.add(user2);
 		this.renderer.serializeUsers(sw, users, vm);
 		compareWithFile(sw, "ExampleResultUsers1.txt");

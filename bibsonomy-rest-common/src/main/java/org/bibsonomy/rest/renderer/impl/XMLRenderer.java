@@ -60,10 +60,10 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
-import org.bibsonomy.model.RecommendedTagComparator;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -331,6 +331,18 @@ public class XMLRenderer implements Renderer {
 		xmlUser.setClassifierMode(user.getMode());
 		if (user.getToClassify() != null)
 			xmlUser.setToClassify(BigInteger.valueOf(user.getToClassify()));
+		
+		/*
+		 * copy groups
+		 */
+		final List<Group> groups = user.getGroups();
+		xmlUser.setGroups(new GroupsType());
+		if (groups != null) {
+			final List<GroupType> group2 = xmlUser.getGroups().getGroup();
+			for (final Group group: groups) {
+				group2.add(createXmlGroup(group));
+			}
+		}
 		return xmlUser;
 	}
 

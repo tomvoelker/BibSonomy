@@ -96,6 +96,16 @@ public class ModelFactory {
 		if (xmlUser.getToClassify() != null) {
 			user.setToClassify(xmlUser.getToClassify().intValue());
 		}
+		/*
+		 * copy groups
+		 */
+		final GroupsType groups = xmlUser.getGroups();
+		if (groups != null) {
+			final List<Group> groups2 = user.getGroups();
+			for (final GroupType xmlGroup: groups.getGroup()) {
+				groups2.add(createGroup(xmlGroup));
+			}
+		}
 		return user;
 	}
 
