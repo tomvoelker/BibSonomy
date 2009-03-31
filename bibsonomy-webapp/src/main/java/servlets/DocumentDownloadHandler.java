@@ -102,7 +102,6 @@ public class DocumentDownloadHandler extends HttpServlet{
 				response.sendRedirect(request.getHeader("referer"));
 				
 			} else {
-				log.fatal("DEPRECATED: " + DocumentDownloadHandler.class.getSimpleName() + " called to download document. Query string: " + request.getQueryString());
 				/*
 				 * download document
 				 */
