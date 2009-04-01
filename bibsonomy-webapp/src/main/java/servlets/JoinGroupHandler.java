@@ -196,7 +196,7 @@ public class JoinGroupHandler extends HttpServlet {
 							/*
 							 * spammer = 0 ... no spammer!
 							 */
-							log.fatal("user " + currUser + " tries to join group " + requGroup); 
+							log.info("user " + currUser + " tries to join group " + requGroup); 
 
 							/*
 							 * get reason for joining this group and shorten it
@@ -226,6 +226,7 @@ public class JoinGroupHandler extends HttpServlet {
 							request.setAttribute("success", "Your join request has been noticed.");
 							getServletConfig().getServletContext().getRequestDispatcher("/success.jsp").forward(request, response);
 						} else {
+							log.warn("user " + currUser + " (spammer!) tries to join group " + requGroup);
 							request.setAttribute("error", "Joining this group is not possible.");
 							getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
 						}
