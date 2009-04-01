@@ -7,6 +7,7 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
     xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+    xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
@@ -33,6 +34,12 @@
 					</a>
 				</span>	
 				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
+			</li>
+			
+			<!-- display similar users -->
+			<li>
+				<span class="sidebar_h"><fmt:message key="users"/></span>
+				<users:related cmd="${command.relatedUserCommand}"/>
 			</li>
 			
 			<!-- display tags -->
