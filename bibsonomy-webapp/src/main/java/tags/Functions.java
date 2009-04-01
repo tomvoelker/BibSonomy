@@ -1,6 +1,5 @@
 package tags;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -23,7 +22,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.UrlUtils;
 
 import resources.Resource;
@@ -171,7 +169,14 @@ public class Functions  {
 	 * @return a space-separated string of tags
 	 */
 	public static String toTagString (final Collection<Tag> tags) {		
-		return TagUtils.toTagString(tags, " ");
+		final StringBuffer sb = new StringBuffer();
+		if (tags != null) {
+			for (final Tag tag : tags) {
+				sb.append(tag.getName());
+				sb.append(" ");
+			}
+		}
+		return sb.toString().trim();
 	}
 
 	/**
@@ -527,7 +532,7 @@ public class Functions  {
 	 * 
 	 * @param post
 	 * @param layoutName
-	 * @return the rendered layout as a string
+	 * @return The rendered output as string.
 	 */
 	public static String renderLayout(final Post<BibTex> post, String layoutName) {
 		try {
@@ -537,19 +542,14 @@ public class Functions  {
 			}
 			ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
 			posts.add(post);
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			layoutRenderer.renderLayout(layout, posts, outputStream, true);
-			return outputStream.toString("UTF-8");
+			return layoutRenderer.renderLayout(layout, posts, true).toString();
 		} catch (LayoutRenderingException ex) {
 			return "The requested layout '" + layoutName + "' was not found.";			
 		} catch (UnsupportedEncodingException ex) {
 			return "An Encoding error occured while trying to convert to layout '" + layoutName  + "'.";
 		} catch (IOException ex) {
 			return "An I/O error occured while trying to convert to layout '" + layoutName  + "'."; 
-		} catch(Exception ex) {
-			return "An error occured while trying to render the layout '" + layoutName  + "'; maybe the BibTeX entry you tried to render is not well-formed?.";
 		}
-		
 	}
 	
 	

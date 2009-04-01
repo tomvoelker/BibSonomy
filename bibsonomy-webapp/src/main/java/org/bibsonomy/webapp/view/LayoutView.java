@@ -10,11 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
-import org.bibsonomy.model.Layout;
-import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Layout;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.BindingResult;
@@ -130,7 +130,11 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		final LAYOUT layout = layoutRenderer.getLayout(layoutName, loginUserName);
 
 		log.info("got layout " + layout);
-
+		/*
+		 * First: do the real rendering, such that when an exception is thrown, we can forward to a JSP,
+		 * since response.getOutputStream() hasn't been called yet,
+		 */
+		final StringBuffer buf = layoutRenderer.renderLayout(layout, posts, formatEmbeded);
 		/*
 		 * set the content type headers
 		 */				
@@ -145,9 +149,10 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 			response.setHeader("Content-Disposition", "attachement; filename=" + Functions.makeCleanFileName(requPath) + extension);
 		}
 		/*
-		 * do the real rendering
+		 * write the buffer to the response
 		 */
-		layoutRenderer.renderLayout(layout, posts, response.getOutputStream(), formatEmbeded);
+		response.getOutputStream().write(buf.toString().getBytes("UTF-8"));
+		
 	}
 
 	
