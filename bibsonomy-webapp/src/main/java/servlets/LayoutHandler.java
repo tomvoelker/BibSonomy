@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.layout.jabref.LayoutPart;
@@ -27,7 +28,7 @@ import filters.SessionSettingsFilter;
 
 public class LayoutHandler extends HttpServlet { 
 
-	private static final Logger log = Logger.getLogger(LayoutHandler.class);
+	private static final Log log = LogFactory.getLog(LayoutHandler.class);
 	private static final long serialVersionUID = 3839748679655351876L;
 
 	private static String documentPath = null;
@@ -103,48 +104,52 @@ public class LayoutHandler extends HttpServlet {
 			final MultiPartRequestParser parser = new MultiPartRequestParser(); 
 			final Map<String, FileItem> fieldMap = parser.getFields(request, rootPath);
 
-			for (String layoutType:LayoutPart.getLayoutTypes()) {
+			for (final String layoutType:LayoutPart.getLayoutTypes()) {
 
 				// retrieve form field "file"
-				FileItem file = (FileItem) fieldMap.get("file." + layoutType);
-				String fileName = file.getName();
-				
+				final FileItem file = fieldMap.get("file." + layoutType);
+
 				/*
+				 * check for null (user might choose to upload only one of the three layouts
 				 * if filename is empty, user has not choosen a file for that type: don't try 
 				 * to check file ending
 				 */
-				if (file != null && fileName != null && !fileName.trim().equals("")) {
+				if (file != null) {
+					final String fileName = file.getName();
 
-					// check file extension
-					if (!StringUtils.matchExtension(fileName, "layout")) {
-						throw new FileUploadException ("Please check your file. Only layout files are accepted. ");	
+					if (fileName != null && !fileName.trim().equals("")) {
+
+						// check file extension
+						if (!StringUtils.matchExtension(fileName, "layout")) {
+							throw new FileUploadException ("Please check your file. Only layout files are accepted. ");	
+						}
+
+						// get hashed name
+						final String hashedName = JabrefLayoutUtils.userLayoutHash(currUser, LayoutPart.getLayoutType(layoutType));
+
+						// build path from first two letters of file name hash
+						final String docPath = documentPath + hashedName.substring(0, 2).toLowerCase();
+
+						/* *************************************************
+						 * save file and insert data into database
+						 * *************************************************/
+						final File inputFile = new File(docPath, hashedName);
+						log.debug("writing user layout file to " + inputFile);
+
+						if (DBLayoutManager.insertLayout(currUser, hashedName, fileName)) {
+							file.write(inputFile);	
+						} 
+						// writing into file was ok -> delete fileitem upfile
+						file.delete();
 					}
-
-					// get hashed name
-					String hashedName = JabrefLayoutUtils.userLayoutHash(currUser, LayoutPart.getLayoutType(layoutType));
-
-					// build path from first two letters of file name hash
-					String docPath = documentPath + hashedName.substring(0, 2).toLowerCase();
-
-					/* *************************************************
-					 * save file and insert data into database
-					 * *************************************************/
-					final File inputFile = new File(docPath, hashedName);
-					log.debug("writing user layout file to " + inputFile);
-
-					if (DBLayoutManager.insertLayout(currUser, hashedName, fileName)) {
-						file.write(inputFile);	
-					} 
-					// writing into file was ok -> delete fileitem upfile
-					file.delete();
 				}
 			}
 			// redirect to bibtex entry
 			response.sendRedirect("/settings#layout");
 		} catch (Exception e) {
-			log.fatal("layout upload for user " + currUser + " failed: " + e);
+			log.fatal("layout upload for user " + currUser + " failed.", e);
 			// if it failed, send user to error page
-			UploadBean bean = new UploadBean();
+			final UploadBean bean = new UploadBean();
 			bean.setErrors("file", "Your upload failed: " + e);
 			request.setAttribute("upBean", bean);
 			getServletConfig().getServletContext().getRequestDispatcher("/upload_error").forward(request, response);		
