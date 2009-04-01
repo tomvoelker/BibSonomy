@@ -52,7 +52,7 @@ public class ConfigUtil {
 		try {
 			return ((String) ((Context) new InitialContext().lookup("java:/comp/env")).lookup(key));
 		} catch (NamingException ex) {
-			log.error("Could not get environment variable '" + key + "'.");
+			log.warn("Could not get environment variable '" + key + "'.", ex);
 		}
 		return null;
 	}
