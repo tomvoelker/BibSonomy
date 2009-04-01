@@ -544,7 +544,7 @@ public class Functions  {
 			posts.add(post);
 			return layoutRenderer.renderLayout(layout, posts, true).toString();
 		} catch (LayoutRenderingException ex) {
-			return "The requested layout '" + layoutName + "' was not found.";			
+			return ex.getMessage();			
 		} catch (UnsupportedEncodingException ex) {
 			return "An Encoding error occured while trying to convert to layout '" + layoutName  + "'.";
 		} catch (IOException ex) {
