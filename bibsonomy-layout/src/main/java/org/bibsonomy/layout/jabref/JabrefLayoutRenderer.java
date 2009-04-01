@@ -86,7 +86,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		 * no layout found -> LayoutRenderingException
 		 */
 		if (jabrefLayout == null) {
-			throw new LayoutRenderingException("Could not find layout '" + layout + "' for user " + loginUserName);
+			throw new LayoutRenderingException("Could not find layout '" + layout + "' for user '" + loginUserName + "'");
 		}
 		return jabrefLayout;
 
