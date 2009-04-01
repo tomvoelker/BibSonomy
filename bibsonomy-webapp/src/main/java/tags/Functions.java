@@ -23,6 +23,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.UrlUtils;
 
 import resources.Resource;
@@ -170,14 +171,7 @@ public class Functions  {
 	 * @return a space-separated string of tags
 	 */
 	public static String toTagString (final Collection<Tag> tags) {		
-		final StringBuffer sb = new StringBuffer();
-		if (tags != null) {
-			for (final Tag tag : tags) {
-				sb.append(tag.getName());
-				sb.append(" ");
-			}
-		}
-		return sb.toString().trim();
+		return TagUtils.toTagString(tags, " ");
 	}
 
 	/**
@@ -533,7 +527,7 @@ public class Functions  {
 	 * 
 	 * @param post
 	 * @param layoutName
-	 * @return
+	 * @return the rendered layout as a string
 	 */
 	public static String renderLayout(final Post<BibTex> post, String layoutName) {
 		try {
@@ -552,7 +546,10 @@ public class Functions  {
 			return "An Encoding error occured while trying to convert to layout '" + layoutName  + "'.";
 		} catch (IOException ex) {
 			return "An I/O error occured while trying to convert to layout '" + layoutName  + "'."; 
+		} catch(Exception ex) {
+			return "An error occured while trying to render the layout '" + layoutName  + "'; maybe the BibTeX entry you tried to render is not well-formed?.";
 		}
+		
 	}
 	
 	
