@@ -24,7 +24,6 @@
 package org.bibsonomy.layout.jabref;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.List;
 
@@ -97,7 +96,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * 
 	 * @see org.bibsonomy.services.renderer.LayoutRenderer#renderLayout(org.bibsonomy.model.Layout, java.util.List, java.io.OutputStream)
 	 */
-	public <T extends Resource> void renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final OutputStream outputStream, final boolean embeddedLayout) throws LayoutRenderingException, IOException {
+	public <T extends Resource> StringBuffer renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final boolean embeddedLayout) throws LayoutRenderingException, IOException {
 		log.debug("rendering " + posts.size() + " posts with " + layout.getName() + " layout");
 		/*
 		 * XXX: different handling of "duplicates = no" in new code:
@@ -114,12 +113,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		/*
 		 * render the database
 		 */
-		final StringBuffer renderDatabase = renderDatabase(database, layout, embeddedLayout);
-		try {
-			outputStream.write(renderDatabase.toString().getBytes("UTF-8"));
-		} catch (final IOException e) {
-			throw new LayoutRenderingException("Could not render layout: " + e.getMessage());
-		}
+		return renderDatabase(database, layout, embeddedLayout);
 	}
 
 
@@ -324,11 +318,10 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		 */
 		try {
 			return BibtexParser.parse(new StringReader(bibtexStrings.toString())).getDatabase();
-		} catch (IOException e) {
+		} catch (final Exception e) {
 			log.fatal("Error parsing BibTeX objects for JabRef output.", e);
+			throw new LayoutRenderingException("Could not render layout: Error parsing BibTeX entries: " + e.getMessage());
 		}
-
-		return null;
 	}
 
 	/**
