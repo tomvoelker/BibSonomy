@@ -12,7 +12,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.webapp.command.BaseCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -49,7 +50,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	private String controllerBeanName;
-	private static final Logger LOGGER = Logger.getLogger(MinimalisticControllerSpringWrapper.class);
+	private static final Log log = LogFactory.getLog(MinimalisticControllerSpringWrapper.class);
 	
 	private String[] allowedFields;
 	private String[] disallowedFields;	
@@ -120,10 +121,10 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		/*
 		 * DEBUG: log request attributes
 		 */
-		if (LOGGER.isDebugEnabled()) {
+		if (log.isDebugEnabled()) {
 			Enumeration e = request.getAttributeNames();
 			while (e.hasMoreElements()) {
-				LOGGER.debug(e.nextElement().toString());			
+				log.debug(e.nextElement().toString());			
 			}
 		}
 		
@@ -162,30 +163,30 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		catch (MalformedURLSchemeException malformed) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			errors.reject(malformed.getMessage());
-			LOGGER.error("Could not complete controller.", malformed);
+			log.error("Could not complete controller.", malformed);
 			view = Views.ERROR;
 		}
 		catch (ValidationException notValid) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			errors.reject(notValid.getMessage());
-			LOGGER.error("Could not complete controller.", notValid);
+			log.error("Could not complete controller.", notValid);
 			view = Views.ERROR;
 		}
 		catch (ServiceUnavailableException e) {
 			response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 			response.setHeader("Retry-After", Long.toString(e.getRetryAfter()));
 			errors.reject(e.getMessage(), new Object[]{e.getRetryAfter()}, "Service unavailable");
-			LOGGER.warn("Could not complete controller.", e);
+			log.warn("Could not complete controller.", e);
 			view = Views.ERROR;
 		}
 		catch (Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
-			LOGGER.error("Could not complete controller.", ex);
+			log.error("Could not complete controller.", ex);
 			view = Views.ERROR;
 		}
 		
-		LOGGER.debug("Exception catching block passed, putting comand+errors into model.");
+		log.debug("Exception catching block passed, putting comand+errors into model.");
 		
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put(getCommandName(), command);
@@ -195,7 +196,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		 */
 		model.putAll(errors.getModel());
 		
-		LOGGER.debug("Returning model and view.");
+		log.debug("Returning model and view.");
 		
 		/**
 		 * If the view is already a Spring view, use it directly.
