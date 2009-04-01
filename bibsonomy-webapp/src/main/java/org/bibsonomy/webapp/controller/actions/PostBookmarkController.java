@@ -191,8 +191,8 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	private static String safeURIEncode(final String s) {
 		try {
 			return URLEncoder.encode(s, "UTF-8");
-		} catch (UnsupportedEncodingException ex) {
-			return "";
+		} catch (Exception ex) {
+			return s;
 		}
 	}
 	

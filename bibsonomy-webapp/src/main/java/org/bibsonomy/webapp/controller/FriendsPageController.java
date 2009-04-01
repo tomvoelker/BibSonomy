@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.FriendsResourceViewCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -26,6 +27,11 @@ public class FriendsPageController extends SingleResourceListController implemen
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
 
+		// we need to be logged in
+		if (command.getContext().isUserLoggedIn() == false) {
+			throw new MalformedURLSchemeException("error.friends_page_not_logged_in");
+		}
+		
 		// set grouping entity
 		final GroupingEntity groupingEntity = GroupingEntity.FRIEND;
 
