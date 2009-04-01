@@ -41,7 +41,7 @@
 	
 			<c:if test="${loginUserName ne post.user.name}">
 				<!-- COPY link -->
-				<c:set var="copyTitle"><fmt:message key="bookmark.actions.copy.title"/></c:set>
+				<fmt:message var="copyTitle" key="bookmark.actions.copy.title"/>
 				<a
 					href="/postBookmark?c=b&amp;jump=no&amp;url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}"
 					title="${copyTitle}">
