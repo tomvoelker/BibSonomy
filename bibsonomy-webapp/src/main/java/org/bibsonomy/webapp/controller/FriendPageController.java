@@ -2,7 +2,8 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.Resource;
@@ -17,16 +18,16 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class FriendPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
-	private static final Logger LOGGER = Logger.getLogger(FriendPageController.class);
+	private static final Log log = LogFactory.getLog(FriendPageController.class);
 
 	public View workOn(final UserResourceViewCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
+		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
 
 		// no user given -> error
 		if (command.getRequestedUser() == null) {
-			LOGGER.error("Invalid query /friend without friendname");
+			log.error("Invalid query /friend without friendname");
 			throw new MalformedURLSchemeException("error.friend_page_without_friendname");
 		}
 
@@ -57,7 +58,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 
 			// log if a user has reached threshold
 			if (command.getTagcloud().getTags().size() > 19999) {
-				LOGGER.error("User " + groupingName + " has reached threshold of 20000 tags on friend page");
+				log.error("User " + groupingName + " has reached threshold of 20000 tags on friend page");
 			}
 			
 			/*

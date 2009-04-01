@@ -3,7 +3,8 @@ package org.bibsonomy.webapp.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -25,11 +26,11 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class BibtexPageController extends SingleResourceListControllerWithTags implements MinimalisticController<BibtexResourceViewCommand>{
 
-	private static final Logger LOGGER = Logger.getLogger(BibtexPageController.class);
+	private static final Log log = LogFactory.getLog(BibtexPageController.class);
 
 	public View workOn(BibtexResourceViewCommand command) {
 
-		LOGGER.debug(this.getClass().getSigners());
+		log.debug(this.getClass().getSigners());
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
 
@@ -37,7 +38,7 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		 * if no hash given -> error
 		 */
 		if(command.getRequBibtex() == null || command.getRequBibtex().length() == 0){
-			LOGGER.error("Invalid query /bibtex without hashvalue");
+			log.error("Invalid query /bibtex without hashvalue");
 			throw new MalformedURLSchemeException("error.bibtex_no_hash");
 		}
 

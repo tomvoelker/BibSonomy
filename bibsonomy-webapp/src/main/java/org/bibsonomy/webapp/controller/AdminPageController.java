@@ -2,10 +2,10 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.model.User;
@@ -25,7 +25,7 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class AdminPageController implements MinimalisticController<AdminViewCommand> {
 
-	private static final Logger log = Logger.getLogger(AdminPageController.class);
+	private static final Log log = LogFactory.getLog(AdminPageController.class);
 	
 	private LogicInterface logic;
 	

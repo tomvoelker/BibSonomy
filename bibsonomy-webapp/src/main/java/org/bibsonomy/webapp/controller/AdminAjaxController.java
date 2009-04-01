@@ -2,13 +2,14 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
@@ -25,7 +26,7 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class AdminAjaxController extends AjaxController implements MinimalisticController<AdminAjaxCommand> {
 	
-	private static final Logger log = Logger.getLogger(AdminAjaxController.class);
+	private static final Log log = LogFactory.getLog(AdminAjaxController.class);
 
 	public View workOn(AdminAjaxCommand command) {
 		

@@ -2,7 +2,8 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
@@ -20,10 +21,10 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class AuthorPageController extends SingleResourceListController implements MinimalisticController<AuthorResourceCommand>{
-	private static final Logger LOGGER = Logger.getLogger(AuthorPageController.class);
+	private static final Log log = LogFactory.getLog(AuthorPageController.class);
 
 	public View workOn(AuthorResourceCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
+		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 
 		// get author query - it might still contain some system tags at this point!
@@ -31,7 +32,7 @@ public class AuthorPageController extends SingleResourceListController implement
 
 		// if no author given throw error 		
 		if (!ValidationUtils.present(authorQuery)) {
-			LOGGER.error("Invalid query /author without author name");
+			log.error("Invalid query /author without author name");
 			throw new MalformedURLSchemeException("error.author_page_without_authorname");
 		}
 						

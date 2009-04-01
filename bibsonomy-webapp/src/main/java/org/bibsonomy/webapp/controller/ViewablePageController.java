@@ -2,7 +2,8 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
@@ -17,10 +18,10 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class ViewablePageController extends SingleResourceListControllerWithTags implements MinimalisticController<GroupResourceViewCommand>{
-	private static final Logger LOGGER = Logger.getLogger(GroupPageController.class);
+	private static final Log log = LogFactory.getLog(GroupPageController.class);
 	
 	public View workOn(GroupResourceViewCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
+		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		// we need to be logged in, and a group needs to be present

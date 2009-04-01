@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.FriendsResourceViewCommand;
@@ -18,10 +19,10 @@ import org.bibsonomy.webapp.view.Views;
  *          Exp $
  */
 public class FriendsPageController extends SingleResourceListController implements MinimalisticController<FriendsResourceViewCommand> {
-	private static final Logger LOGGER = Logger.getLogger(FriendsPageController.class);
+	private static final Log log = LogFactory.getLog(FriendsPageController.class);
 
 	public View workOn(final FriendsResourceViewCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
+		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
 

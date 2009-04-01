@@ -211,7 +211,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 				String referer = URLEncoder.encode(command.getReferer(), "UTF-8");
 				returnToUrl = projectHome + "login?referer=" + referer;
 			} catch (UnsupportedEncodingException ex) {
-				ex.printStackTrace();
+				log.warn("Could not encode URL for login page.", ex);
 			}
 			
 			/*

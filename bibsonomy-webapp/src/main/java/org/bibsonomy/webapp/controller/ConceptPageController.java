@@ -3,8 +3,8 @@ package org.bibsonomy.webapp.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-import org.bibsonomy.common.enums.ConceptStatus;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -23,15 +23,15 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class ConceptPageController  extends SingleResourceListController implements MinimalisticController<ConceptResourceViewCommand>{
-	private static final Logger LOGGER = Logger.getLogger(ConceptPageController.class);
+	private static final Log log = LogFactory.getLog(ConceptPageController.class);
 
 	public View workOn(ConceptResourceViewCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
+		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		//if no concept given -> error
 		if(command.getRequestedTags().length() == 0) { // checking for string length here works because requestedTags is initialized with ""
-			LOGGER.error("Invalid query /concept without concept name");
+			log.error("Invalid query /concept without concept name");
 			throw new MalformedURLSchemeException("error.concept_page_without_conceptname");
 		}
 		

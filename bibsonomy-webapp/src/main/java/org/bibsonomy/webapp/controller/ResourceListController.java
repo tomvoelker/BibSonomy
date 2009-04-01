@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.ResourceType;
@@ -37,7 +38,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author Jens Illig
  */
 public abstract class ResourceListController {
-	private static final Logger log = Logger.getLogger(ResourceListController.class);
+	private static final Log log = LogFactory.getLog(ResourceListController.class);
 	
 	protected LogicInterface logic;
 	protected UserSettings userSettings;

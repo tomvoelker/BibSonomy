@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.controller;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.webapp.command.AuthorsCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;

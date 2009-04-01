@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.BibtexResourceViewCommand;
@@ -17,16 +18,16 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class BasketPageController extends SingleResourceListController implements MinimalisticController<BibtexResourceViewCommand>{
 
-	private static final Logger LOGGER = Logger.getLogger(BasketPageController.class);
+	private static final Log log = LogFactory.getLog(BasketPageController.class);
 	
 	public View workOn(BibtexResourceViewCommand command) {
 		
-		LOGGER.debug(this.getClass().getSigners());
+		log.debug(this.getClass().getSigners());
 		this.startTiming(this.getClass(), command.getFormat());
 						
 		// if user is not logged in, redirect him to login page
 		if (command.getContext().isUserLoggedIn() == false) {
-			LOGGER.info("Trying to access basket without being logged in");
+			log.info("Trying to access basket without being logged in");
 			return new ExtendedRedirectView("/login");
 		}				
 		

@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.model.Resource;
@@ -17,16 +18,16 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class SearchPageController extends SingleResourceListController implements MinimalisticController<SearchViewCommand>{
-	private static final Logger LOGGER = Logger.getLogger(SearchPageController.class);
+	private static final Log log = LogFactory.getLog(SearchPageController.class);
 
 	public View workOn(SearchViewCommand command) {
 		
-		LOGGER.debug(this.getClass().getSimpleName());
+		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		// no search given -> error 
 		if (command.getRequestedSearch().length() == 0){
-			LOGGER.error("Invalid query /search without search term");
+			log.error("Invalid query /search without search term");
 			throw new MalformedURLSchemeException("error.search_page_without_search");	
 		}
 		String search = command.getRequestedSearch();
@@ -34,14 +35,14 @@ public class SearchPageController extends SingleResourceListController implement
 		String groupingName = null;
 
 		/* DEBUG */
-		LOGGER.debug("SearchPageController: command.getSearchmode()="+command.getSearchmode());
+		log.debug("SearchPageController: command.getSearchmode()="+command.getSearchmode());
 		
 		if ("lucene".equals(command.getSearchmode())) {
 			command.getRequestedTagsList().add(SystemTags.SEARCH.getPrefix() + ":lucene");
 		} 
 
 		/* DEBUG */
-		LOGGER.debug("SearchPageController: command.getRequestedTagsList().toString()="+command.getRequestedTagsList().toString());
+		log.debug("SearchPageController: command.getRequestedTagsList().toString()="+command.getRequestedTagsList().toString());
 		
 		// search in a specific user's entries		
 		if (search.matches(".*user:.*")) {

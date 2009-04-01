@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Bookmark;
@@ -32,16 +33,16 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class UrlPageController extends SingleResourceListController implements MinimalisticController<UrlCommand> {
-	private static final Logger LOGGER = Logger.getLogger(UrlPageController.class);
+	private static final Log log = LogFactory.getLog(UrlPageController.class);
 
 	public View workOn(UrlCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
+		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 
 		// no URL hash given -> error
 		final String requHash = command.getRequUrlHash();
 		if (!ValidationUtils.present(command.getRequUrl()) && !ValidationUtils.present(requHash)) {
-			LOGGER.error("Invalid query /url without URL hash");
+			log.error("Invalid query /url without URL hash");
 			throw new MalformedURLSchemeException("error.url_no_hash");
 		}		
 		

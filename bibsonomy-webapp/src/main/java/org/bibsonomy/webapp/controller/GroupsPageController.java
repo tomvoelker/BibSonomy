@@ -3,8 +3,8 @@
  */
 package org.bibsonomy.webapp.controller;
 
-import org.apache.log4j.Logger;
-import org.bibsonomy.model.logic.LogicInterface;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.webapp.command.GroupsListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -18,17 +18,8 @@ import org.bibsonomy.webapp.view.Views;
  * @author Folke Eisterlehner
  */
 public class GroupsPageController extends SingleResourceListController implements MinimalisticController<GroupsListCommand> {
-	private static final Logger LOGGER = Logger.getLogger(GroupsPageController.class);
-	protected LogicInterface logic;
+	private static final Log log = LogFactory.getLog(GroupsPageController.class);
 
-	/**
-	 * setter interface for injection
-	 * @param logic logic interface
-	 */
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
-	}
-	
 	/**
 	 * implementation of {@link MinimalisticController} interface
 	 */

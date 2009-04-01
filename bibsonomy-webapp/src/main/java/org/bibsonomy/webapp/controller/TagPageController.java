@@ -1,14 +1,12 @@
 package org.bibsonomy.webapp.controller;
 
-import java.util.Collections;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.RelatedUserCommand;
@@ -18,8 +16,6 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-
-import tags.Functions;
 
 /**
  * Controller for tag pages
@@ -31,15 +27,15 @@ import tags.Functions;
  */
 
 public class TagPageController extends SingleResourceListControllerWithTags implements MinimalisticController<TagResourceViewCommand>{
-	private static final Logger LOGGER = Logger.getLogger(TagPageController.class);
+	private static final Log log = LogFactory.getLog(TagPageController.class);
 	
 	public View workOn(final TagResourceViewCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
+		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		// if no tags given return
 		if (command.getRequestedTags() == null || command.getRequestedTags().length() == 0) {
-			LOGGER.error("Invalid query /tag without tag");
+			log.error("Invalid query /tag without tag");
 			throw new MalformedURLSchemeException("error.tag_page_without_tag");
 		}
 		

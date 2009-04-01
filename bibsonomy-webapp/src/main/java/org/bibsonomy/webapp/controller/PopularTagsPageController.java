@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
@@ -16,10 +17,10 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class PopularTagsPageController extends SingleResourceListController implements MinimalisticController<TagCloudCommand> {
-	private static final Logger LOGGER = Logger.getLogger(PopularTagsPageController.class);
+	private static final Log log = LogFactory.getLog(PopularTagsPageController.class);
 
 	public View workOn(TagCloudCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
+		log.debug(this.getClass().getSimpleName());
 		
 		/* set title */
 		command.setPageTitle("Tags");

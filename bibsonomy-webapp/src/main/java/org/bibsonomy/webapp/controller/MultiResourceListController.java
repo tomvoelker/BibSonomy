@@ -3,7 +3,8 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
@@ -19,7 +20,7 @@ import org.bibsonomy.webapp.command.MultiResourceViewCommand;
  * @author Jens Illig
  */
 public abstract class MultiResourceListController extends ResourceListController {
-	private static final Logger log = Logger.getLogger(MultiResourceListController.class);
+	private static final Log log = LogFactory.getLog(MultiResourceListController.class);
 
 	/**
 	 * do some post processing with the retrieved resources

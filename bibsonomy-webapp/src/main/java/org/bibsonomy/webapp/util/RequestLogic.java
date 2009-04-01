@@ -238,7 +238,7 @@ public class RequestLogic {
 			    buf.append("&");
 		    }
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			log.warn("Could not build query string.", ex);
 		}
 		return buf.toString();
 	}

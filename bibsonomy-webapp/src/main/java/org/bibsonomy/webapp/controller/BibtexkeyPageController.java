@@ -2,7 +2,8 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
@@ -21,17 +22,17 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class BibtexkeyPageController extends SingleResourceListController implements MinimalisticController<BibtexkeyCommand> {
-	private static final Logger LOGGER = Logger.getLogger(BibtexkeyPageController.class);
+	private static final Log log = LogFactory.getLog(BibtexkeyPageController.class);
 
 	public View workOn(BibtexkeyCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
+		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
 		
 		if (!ValidationUtils.present(command.getRequestedKey())) {
-			LOGGER.error("Invalid query /bibtexkey without key");
+			log.error("Invalid query /bibtexkey without key");
 			throw new MalformedURLSchemeException("error.bibtexkey_no_key");
 		}
 		

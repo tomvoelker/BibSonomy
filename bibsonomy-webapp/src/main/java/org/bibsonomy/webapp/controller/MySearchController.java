@@ -9,7 +9,8 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
@@ -32,13 +33,13 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class MySearchController extends SingleResourceListControllerWithTags implements MinimalisticController<MySearchCommand> {
 
-	private static final Logger LOGGER = Logger.getLogger(MySearchController.class);
+	private static final Log log = LogFactory.getLog(MySearchController.class);
 
 	public View workOn(MySearchCommand command) {
 
 		User user = null;
 
-		LOGGER.debug(this.getClass().getSimpleName());
+		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		/*

@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
@@ -15,13 +16,13 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class HomepageController extends SingleResourceListController implements MinimalisticController<SimpleResourceViewCommand> {
-	private static final Logger LOGGER = Logger.getLogger(HomepageController.class);
+	private static final Log log = LogFactory.getLog(HomepageController.class);
 
 	public View workOn(final SimpleResourceViewCommand command) {
 		/*
 		 * FIXME: implement filter=no parameter
 		 */
-		LOGGER.debug(this.getClass().getSimpleName());
+		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		// handle the case when only tags are requested
