@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 import org.bibsonomy.scraper.url.kde.acl.AclScraper;
 import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
+import org.bibsonomy.scraper.url.kde.agu.AGUScraper;
 import org.bibsonomy.scraper.url.kde.aip.AipScitationScraper;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.ams.AmsScraper;
@@ -153,6 +154,7 @@ public class UrlCompositeScraper extends CompositeScraper implements UrlScraper 
 		addScraper(new GoogleSonomyScraper());
 		addScraper(new DLibScraper());
 		addScraper(new ScientificcommonsScraper());
+		addScraper(new AGUScraper());
 	}
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
