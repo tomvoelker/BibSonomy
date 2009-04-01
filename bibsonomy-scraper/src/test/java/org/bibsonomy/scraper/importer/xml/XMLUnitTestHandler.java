@@ -1,6 +1,5 @@
 package org.bibsonomy.scraper.importer.xml;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -31,7 +30,7 @@ public class XMLUnitTestHandler extends DefaultHandler {
 	private static final String ELEMENT_SCRAPER = "Scraper";
 	private static final String ATTRIBUTE_ID = "id";
 	
-	private static final String PATH_TO_BIBS = "src/test/resources/org/bibsonomy/scraper/data/";
+	private static final String PATH_TO_BIBS = "org/bibsonomy/scraper/data/";
 	
 	private LinkedList<ScraperUnitTest> tests = null;
 	
@@ -127,8 +126,8 @@ public class XMLUnitTestHandler extends DefaultHandler {
 	 * @throws IOException
 	 */
 	private String getExpectedReference(String bibFile) throws IOException{
-		InputStreamReader is = new InputStreamReader(new FileInputStream(PATH_TO_BIBS + bibFile), "UTF-8");
-		StringWriter writer = new StringWriter();
+		final InputStreamReader is = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(PATH_TO_BIBS + bibFile), "UTF-8");
+		final StringWriter writer = new StringWriter();
 		
 		int read = is.read();
 		while(read != -1){
