@@ -37,7 +37,8 @@ public class TagEditHandler extends HttpServlet {
 	
 	/* HTTP parameter "do" -- constants */
 	private static final String PARAM_DO_REPLACE = "replace";
-	
+	private static final Log log = LogFactory.getLog(TagEditHandler.class);
+
 	private static final long serialVersionUID = 3347074924956899157L;
 	
 	private DataSource dataSource;
@@ -310,12 +311,7 @@ public class TagEditHandler extends HttpServlet {
 			response.sendRedirect("/edit_tags");
 			
 		} catch (SQLException e) {
-			/*
-			 * TODO: first attempt to do logging when exceptions are thrown - code "stolen" from Jens'
-			 * Database backend classes
-			 */
-			final Log log = LogFactory.getLog(TagEditHandler.class);
-			log.fatal("could not change tags: " + e.getMessage());
+			log.fatal("could not change tags.", e);
 			getServletConfig().getServletContext().getRequestDispatcher("/errors/databaseError.jsp").forward(request, response);
 		} finally {
 			tags.closeStatements();

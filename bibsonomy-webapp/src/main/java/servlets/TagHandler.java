@@ -302,7 +302,7 @@ public class TagHandler extends HttpServlet {
 			response.sendRedirect(referer);
 			
 		} catch (SQLException e) {
-			log.fatal("could not change tags" + e.getMessage());
+			log.fatal("could not change tags", e);
 			getServletConfig().getServletContext().getRequestDispatcher("/errors/databaseError.jsp").forward(request, response);
 		} finally {	
 			if(stmtU != null) { try{stmtU.close();} catch (SQLException e) {} stmtU = null;}

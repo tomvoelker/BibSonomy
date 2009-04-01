@@ -31,7 +31,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import beans.AdminBean;
 import beans.UserBean;
@@ -45,7 +46,7 @@ public class SettingsHandler extends HttpServlet{
 
 	private static final long serialVersionUID = 4051324539558769200L;
 	private DataSource dataSource;
-	private static final Logger log = Logger.getLogger(SettingsHandler.class);
+	private static final Log log = LogFactory.getLog(SettingsHandler.class);
 
 	public void init(ServletConfig config) throws ServletException{	
 		super.init(config); 
@@ -231,7 +232,7 @@ public class SettingsHandler extends HttpServlet{
 						try {
 							mail.sendMail(new String[] {"register@bibsonomy.org"},  "User deleted his account", "name is " + currUser, "register@bibsonomy.org");
 						} catch (MessagingException e) {
-							log.fatal("Could not send info mail: " + e.getMessage());
+							log.fatal("Could not send info mail.", e);
 						}
 						session.invalidate();
 						redirectPage = "/logout";
@@ -245,7 +246,7 @@ public class SettingsHandler extends HttpServlet{
 
 			} catch(SQLException e) {
 				conn.rollback();     // rollback all queries
-				log.fatal("Could not change settings for user " + currUser + ":" + e);
+				log.fatal("Could not change settings for user " + currUser + ".", e);
 				getServletConfig().getServletContext().getRequestDispatcher("/errors/databaseError.jsp").forward(request, response);
 			}       
 		} catch (Exception e) {

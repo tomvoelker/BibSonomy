@@ -36,6 +36,7 @@ import filters.SessionSettingsFilter;
  *
  */
 public class RelationsHandler extends HttpServlet {
+	private static final Log log = LogFactory.getLog(RelationsHandler.class);
 
 	private static final long serialVersionUID = 3256439226819228214L;
 	private DataSource dataSource;
@@ -141,12 +142,7 @@ public class RelationsHandler extends HttpServlet {
 					nextUrl = "/user/" + URLEncoder.encode(currUser, "UTF-8");
 			} 
 		} catch(SQLException e) {
-			/*
-			 * TODO: first attempt to do logging when exceptions are thrown - code "stolen" from Jens'
-			 * Database backend classes
-			 */
-			final Log log = LogFactory.getLog(RelationsHandler.class);
-			log.fatal("could not update database " + e.getMessage());
+			log.fatal("could not update database ", e);
 		} finally {
 			if (conn != null) {try {conn.close(); } catch (SQLException e) {} conn = null;}
 			relationManager.closeStatements();
