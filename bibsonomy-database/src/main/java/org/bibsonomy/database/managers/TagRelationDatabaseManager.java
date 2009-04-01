@@ -107,7 +107,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 			this.generalDb.updateIds(ConstantID.IDS_TAGREL_ID, session);
 		} catch (final Exception ex) {
 			// TODO: improve me...
-			log.debug(ex.getMessage(), ex);
+			log.warn(ex.getMessage(), ex);
 		} finally {
 			session.commitTransaction();
 			session.endTransaction();
