@@ -1,6 +1,7 @@
 package org.bibsonomy.recommender.tags.multiplexer.strategy;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
@@ -19,10 +20,10 @@ public class SelectAll implements RecommendationSelector {
 	/**
 	 * Selection strategy which simply selects each recommended tag
 	 */
-	public SortedSet<RecommendedTag> selectResult(Long qid) throws SQLException {
+	@Override
+	public void selectResult(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
 		log.debug("Selecting result.");
-		final SortedSet<RecommendedTag> result = DBAccess.getRecommendations(qid);
-		return result;
+		DBAccess.getRecommendations(qid, recommendedTags);
 	}
 
 	public String getInfo() {
@@ -44,5 +45,6 @@ public class SelectAll implements RecommendationSelector {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

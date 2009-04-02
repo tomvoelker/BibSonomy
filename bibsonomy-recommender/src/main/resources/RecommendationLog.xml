@@ -44,7 +44,7 @@
 		 | Get details for given query
 		 + -->
  	<select id="getQueryByID" parameterClass="long" resultMap="RecommendationLogCommon.recQuery">
- 		SELECT query_id, date, user_name
+ 		SELECT query_id, date, user_name, post_id
  		FROM log_recommender
  		WHERE query_id = #id#
  	</select>
@@ -53,7 +53,7 @@
 		 | Get list of all queries for given recommender
 		 + -->
  	<select id="getQueriesBySID" parameterClass="long" resultMap="RecommendationLogCommon.recQuery">
- 		SELECT l.query_id, l.date, l.user_name
+ 		SELECT l.query_id, l.date, l.user_name, l.post_id
  		FROM log_recommender l 
  		   JOIN recommender_querymap m ON (m.query_id=l.query_id) 
  		WHERE m.setting_id=#id#;

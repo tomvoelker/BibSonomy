@@ -1,6 +1,7 @@
 package org.bibsonomy.recommender.tags.multiplexer.strategy;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
@@ -21,13 +22,17 @@ import org.bibsonomy.recommender.tags.database.DBAccess;
 public class SelectOne implements RecommendationSelector {
 	private static final Logger log = Logger.getLogger(SelectOne.class);
 	private String info = "Strategy for selecting one recommender.";
-	
+
+
 	/**
 	 * Selection strategy which selects recommender (uniform) randomly.
 	 * If selected recommender didn't deliver recommendations - a fallback
 	 * recommender is chosen. 
 	 */
-	public SortedSet<RecommendedTag> selectResult(Long qid) throws SQLException {
+	@Override
+	public void selectResult(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
+		// TODO Auto-generated method stub
+		
 		log.debug("Selecting result.");
 		
 		// get list of recommenders which delivered tags in given query
@@ -35,9 +40,12 @@ public class SelectOne implements RecommendationSelector {
 		// get list of all recommenders for given query
 		final List<Long> listAll    = DBAccess.getAllRecommenderIDs(qid);
 		
-		// select recommender
+		
+		// if no recommendation available, append nothing
 		if( listAll.size()==0 || listActive.size()==0 ) 
-			return new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+			return;
+		
+		// select recommender
 		Long sid = listAll.get(
 					new Double(Math.floor((Math.random()*listAll.size()))).intValue()
 				);
@@ -61,9 +69,8 @@ public class SelectOne implements RecommendationSelector {
 		};
 		
 		// finally get recommended tags
-		final SortedSet<RecommendedTag> result = DBAccess.getRecommendations(qid, sid);
-		return result;
-	}
+		DBAccess.getRecommendations(qid, sid, recommendedTags);
+	}	
 
 	public String getInfo() {
 		return info;
@@ -83,5 +90,6 @@ public class SelectOne implements RecommendationSelector {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

@@ -118,22 +118,6 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	//------------------------------------------------------------------------
 	// TagRecommender interface implementation
 	//------------------------------------------------------------------------
-	/** Simply adds recommendations at end of list. 
-	 * 
-	 * @see org.bibsonomy.recommender.tags.TagRecommender#addRecommendedTags(java.util.SortedSet, org.bibsonomy.model.Post)
-	 */	
-	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
-		 recommendedTags.addAll(getRecommendedTags(post));
-	}
-
-	public String getInfo() {
-		return "Multiplexing recommender for querying several independent recommenders.";
-	}
-	
-	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
-		return getRecommendedTags(post, UNKNOWN_POSTID);
-    };
-    
     /**
      * Extends TagRecommender's interface with a parameter which is used to map
      * recommender queries to posts in BibSonomy:
@@ -146,8 +130,10 @@ public class MultiplexingTagRecommender implements TagRecommender {
      * @param postID ID for mapping posts to recommender queries
      * @return Set of recommended Tags.
      */
-	public SortedSet<RecommendedTag> getRecommendedTags(
-			Post<? extends Resource> post, int postID) {
+	public void addRecommendedTags(
+			Collection<RecommendedTag> recommendedTags, 
+			Post<? extends Resource> post, 
+			int postID) {
 		log.debug("querying["+localRecommenders+", "+distRecommenders+"]");
 		// SortedSet holding recommenders results
 		SortedSet<RecommendedTag> result = null;
@@ -197,14 +183,45 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		
 		if( qid!=null )
 			try {
-				result = selectResult(qid);
+				selectResult(qid, recommendedTags);
 			} catch (SQLException ex) {
 				// TODO Auto-generated catch block
 				log.error(ex.getMessage(), ex);
 			}
-		
-		// all done.
-		return result;
+	}
+
+	/** Simply adds recommendations to the given collection of recommended tags. 
+	 * 
+	 * @see org.bibsonomy.recommender.tags.TagRecommender#addRecommendedTags(java.util.SortedSet, org.bibsonomy.model.Post)
+	 */	
+	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
+		addRecommendedTags(recommendedTags, post, UNKNOWN_POSTID);
+	}
+
+	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
+		return getRecommendedTags(post, UNKNOWN_POSTID);
+    };
+	
+    /**
+     * Extends TagRecommender's interface with a parameter which is used to map
+     * recommender queries to posts in BibSonomy:
+     *   When the postBookmark-Form is displayed, a random postID is generated and
+     *   passed to the recommender via a hidden field.
+     *   After storing the post, the postBookmarkController calls updateQuery()
+     *   with the corresponding username, date, postID and Hash.
+     *   
+     * @param post The post for which tag recommendations are requested.
+     * @param postID ID for mapping posts to recommender queries
+     * @return Set of recommended Tags.
+     */
+	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post, int postID) {
+		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		addRecommendedTags(recommendedTags, post);
+		return recommendedTags;
+	}
+
+	public String getInfo() {
+		return "Multiplexing recommender for querying several independent recommenders.";
 	}
 
 	//------------------------------------------------------------------------
@@ -214,7 +231,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * After querying all recommenders, the final result is composed here.
 	 * @throws SQLException
 	 */
-	private SortedSet<RecommendedTag> selectResult(Long qid) throws SQLException {
+	private void selectResult(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
 		// assure that no further results are added while evaluating 
 		// collected responses
 		// TODO current primitive synchronization prohibits parallel result selection
@@ -223,9 +240,8 @@ public class MultiplexingTagRecommender implements TagRecommender {
 					resultSelector.getInfo(), 
 					resultSelector.getMeta()
 					);
-			SortedSet<RecommendedTag> result = resultSelector.selectResult(qid);
-			DBAccess.storeRecommendation(qid, rid, result);
-			return result;
+			resultSelector.selectResult(qid, recommendedTags);
+			DBAccess.storeRecommendation(qid, rid, recommendedTags);
 		}
 	}
 	/**

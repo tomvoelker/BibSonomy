@@ -19,6 +19,7 @@
     
 	<resultMap id="recQuery" class="recQuery">
 		<result property="qid"         column="query_id"   javaType="long" />
+		<result property="pid"         column="post_id"    javaType="integer"/>
 		<result property="userName"    column="user_name"  javaType="string" />
 		<result property="timeStamp"   column="date"       javaType="timestamp"/> 
 	</resultMap>

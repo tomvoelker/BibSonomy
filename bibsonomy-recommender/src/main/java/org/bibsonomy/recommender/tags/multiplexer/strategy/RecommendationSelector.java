@@ -1,7 +1,7 @@
 package org.bibsonomy.recommender.tags.multiplexer.strategy;
 
 import java.sql.SQLException;
-import java.util.SortedSet;
+import java.util.Collection;
 
 import org.bibsonomy.model.RecommendedTag;
 
@@ -17,7 +17,7 @@ public interface RecommendationSelector {
 	 * @return
 	 * @throws Exception
 	 */
-	public SortedSet<RecommendedTag> selectResult(Long qid) throws SQLException;
+	public void selectResult(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException;
 	
 	/**
 	 * selector specific meta informations

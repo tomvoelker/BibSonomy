@@ -3,6 +3,7 @@ package org.bibsonomy.recommender.tags.database;
 import java.io.Reader;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
@@ -286,8 +287,25 @@ public class DBAccess extends AbstractDatabaseManager {
 	 * @return tags recommended in query identified by qid and recommender identified by sid
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("unchecked")
 	public static SortedSet<RecommendedTag> getRecommendations(Long qid, Long sid) throws SQLException {
+	    SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+	    getRecommendations(qid, sid, result);
+	    
+	    // all done.
+	    return result;
+	}	
+
+
+	/**
+	 * Append tags which were recommended in a given query by a given recommender to a given collection. 
+	 * 
+	 * @param qid
+	 * @param sid
+	 * @return tags recommended in query identified by qid and recommender identified by sid
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public static void getRecommendations(Long qid, Long sid, Collection<RecommendedTag> recommendedTags) throws SQLException {
 		// TODO ugly inefficient implementation
 		log.warn("Inefficient implementation");
 		
@@ -296,13 +314,9 @@ public class DBAccess extends AbstractDatabaseManager {
 		queryMap.setQid(qid);
 		queryMap.setSid(sid);
 	    List<RecommendedTag> queryResult = sqlMap.queryForList("getRecommendationsByQidSid", queryMap);
-	    SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-	    result.addAll(queryResult);
-	    
-	    // all done.
-	    return result;
+	    recommendedTags.addAll(queryResult);
 	}	
-
+	
 	/**
 	 * Get sorted list of tags recommended in a given query. 
 	 * 
@@ -310,17 +324,28 @@ public class DBAccess extends AbstractDatabaseManager {
 	 * @return tags recommended in query identified by qid and all recommenders 
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("unchecked")
 	public static SortedSet<RecommendedTag> getRecommendations(Long qid) throws SQLException {
-		// TODO ugly inefficient implementation
-		log.warn("Inefficient implementation");
-	    List<RecommendedTag> queryResult = sqlMap.queryForList("getRecommendationsByQid", qid);
 	    SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-	    result.addAll(queryResult);
+	    getRecommendations(qid, result);
 	    // all done.
 	    return result;
 	}		
 
+	/**
+	 * Append tags which are recommended in a given query to given collection 
+	 * 
+	 * @param qid query id
+	 * @param recommendedTags collection where recommended tags should be appended
+	 * @throws SQLException
+	 */
+	@SuppressWarnings("unchecked")
+	public static void getRecommendations(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
+		// TODO ugly inefficient implementation
+		log.warn("Inefficient implementation");
+	    List<RecommendedTag> queryResult = sqlMap.queryForList("getRecommendationsByQid", qid);
+	    recommendedTags.addAll(queryResult);
+	}
+	
 	/**
 	 * Get (unsorted) list of selected tags for a given query. 
 	 * 
@@ -588,6 +613,7 @@ public class DBAccess extends AbstractDatabaseManager {
 		return result; 		
 	}
 	
+	
 	/**
 	 * Get queryID for given postID, user_name and date
 	 * @param postID
@@ -726,7 +752,7 @@ public class DBAccess extends AbstractDatabaseManager {
 	 * @param result set of recommended tags
 	 * @throws SQLException 
 	 */
-	public static int storeRecommendation(Long qid, Long rid, SortedSet<RecommendedTag> result) throws SQLException {
+	public static int storeRecommendation(Long qid, Long rid, Collection<RecommendedTag> result) throws SQLException {
 		SqlMapClient sqlMap = getSqlMapInstance();
 		try {
 			sqlMap.startTransaction();
@@ -868,6 +894,7 @@ public class DBAccess extends AbstractDatabaseManager {
 		}
 		return false;
 	}
+
 
 
 }
