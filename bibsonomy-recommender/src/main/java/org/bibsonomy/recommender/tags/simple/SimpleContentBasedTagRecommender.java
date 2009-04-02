@@ -14,7 +14,8 @@ import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
  * Extracts tags from the title of the post. Cleans the words using a stopword list
- * and the cleanTag method according to the Discovery Challenge.
+ * and the cleanTag method according to the Discovery Challenge. Stops, when it has
+ * found enough proper tags.
  * 
  * @see TermProcessingIterator
  * @author rja
@@ -49,10 +50,11 @@ public class SimpleContentBasedTagRecommender implements TagRecommender {
 
 			final Iterator<String> extractor = buildTagExtractionIterator(title);
 			/*
-			 * add all extracted tags
+			 * add extracted tags (not more than numberOfTagsToRecommend
 			 */
-			while(extractor.hasNext() == true) {
-				extracted.add(new RecommendedTag(extractor.next(), 0.5, 0.0));
+			int ctr = 0;
+			while(extractor.hasNext() == true && ctr++ < numberOfTagsToRecommend) {
+				extracted.add(new RecommendedTag(extractor.next(), 0.0, 0.0));
 			}
 		}
 		return extracted;
