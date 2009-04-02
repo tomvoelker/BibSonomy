@@ -1,5 +1,6 @@
 package org.bibsonomy.services.recommender;
 
+import java.util.Collection;
 import java.util.SortedSet;
 
 import org.bibsonomy.model.Post;
@@ -34,16 +35,17 @@ public interface TagRecommender {
 	 */
 	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post);
 	
-	/** To the given list of recommended tags, the recommender shall add further tags.
-	 * If it adds them at the end, at the beginning, or else, is left to the implementation.
+	/** Into the given collection, the recommender shall add its recommended tags.
+	 * Then, recommendedTags should contain the result of {@link #getRecommendedTags(Post)}.
 	 * <br/>
-	 * If given an empty list, recommendedTags should contain the result of {@link #getRecommendedTags(Post)}.
+	 * The reason for having this method in addition to {@link #getRecommendedTags(Post)} is
+	 * to allow use of special collections and comparators.  
 	 * 
 	 * @see #getRecommendedTags(Post)
-	 * @param recommendedTags A list of recommended tags (from another recommender). Might be empty.
+	 * @param recommendedTags An empty collection.
 	 * @param post
 	 */
-	public void addRecommendedTags(final SortedSet<RecommendedTag> recommendedTags, final Post<? extends Resource> post);
+	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post);
 	
 	
 	/** Provide some short information about this recommender.
