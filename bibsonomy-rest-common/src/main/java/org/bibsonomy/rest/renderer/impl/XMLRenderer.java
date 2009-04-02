@@ -331,7 +331,7 @@ public class XMLRenderer implements Renderer {
 		xmlUser.setClassifierMode(user.getMode());
 		if (user.getToClassify() != null)
 			xmlUser.setToClassify(BigInteger.valueOf(user.getToClassify()));
-		
+
 		/*
 		 * copy groups
 		 */
@@ -420,10 +420,10 @@ public class XMLRenderer implements Renderer {
 		// }
 		xmlTag.setConfidence(tag.getConfidence());
 		xmlTag.setScore(tag.getScore());
-		
+
 		return xmlTag;
 	}
-	
+
 	public void serializeGroups(final Writer writer, final List<Group> groups, final ViewModel viewModel) throws InternServerException {
 		final GroupsType xmlGroups = new GroupsType();
 		if (viewModel != null) {
@@ -811,8 +811,10 @@ public class XMLRenderer implements Renderer {
 
 	public void serializeRecommendedTags(Writer writer, Collection<RecommendedTag> tags) {
 		final TagsType xmlTags = new TagsType();
-		for (final RecommendedTag tag : tags) {
-			xmlTags.getTag().add(createXmlRecommendedTag(tag));
+		if (tags != null) {
+			for (final RecommendedTag tag : tags) {
+				xmlTags.getTag().add(createXmlRecommendedTag(tag));
+			}
 		}
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
