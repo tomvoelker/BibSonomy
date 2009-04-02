@@ -1,15 +1,14 @@
 package org.bibsonomy.recommender.tags.simple;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.LinkedList;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.User;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -18,17 +17,7 @@ import org.junit.Test;
  */
 public class SimpleContentBasedTagRecommenderTest {
 
-	/**
-	 * FIXME:
-	 * This test does not work because tags in the set are ordered by their score 
-	 * and the {@link SortedSet} implementation of {@link Set#contains(Object)} 
-	 * uses the comparator to find the tag in the set. Since using contains we want
-	 * to use equals(), this does not work.
-	 * 
-	 * Suggested fix: 
-	 */
-	// @Test
-	@Ignore
+	@Test
 	public void testGetRecommendedTags() {
 		final Post<Bookmark> post = new Post<Bookmark>();
 		post.setUser(new User("jaeschke"));
@@ -40,9 +29,9 @@ public class SimpleContentBasedTagRecommenderTest {
 
 		final SimpleContentBasedTagRecommender recommender = new  SimpleContentBasedTagRecommender();
 		
-		final SortedSet<RecommendedTag> recommendedTags = recommender.getRecommendedTags(post);
-
-		final String[] testTags = new String[]{"nepomuk", "main", "Main", "NEPOMUK"};
+		final LinkedList<RecommendedTag> recommendedTags = new LinkedList<RecommendedTag>(recommender.getRecommendedTags(post));
+		
+		final String[] testTags = new String[]{"nepomuk", "main", "finalreviewnov2008script"};
 
 		for (final String s: testTags) {
 			assertTrue(recommendedTags.contains(new RecommendedTag(s, 0.0, 0.0)));

@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.tags.popular;
+package org.bibsonomy.recommender.tags.meta;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -10,6 +10,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
+import org.bibsonomy.recommender.tags.meta.WeightedMergingTagRecommender;
 import org.bibsonomy.recommender.tags.simple.FixedTagsTagRecommender;
 import org.bibsonomy.services.recommender.TagRecommender;
 import org.junit.Test;
@@ -19,11 +20,11 @@ import org.junit.Test;
  * @author rja
  * @version $Id$
  */
-public class MostPopularMixTagRecommenderTest {
+public class WeightedMergingTagRecommenderTest {
 
 	@Test
 	public void testGetRecommendedTags() {
-		final MostPopularMixTagRecommender recommender = new MostPopularMixTagRecommender();
+		final WeightedMergingTagRecommender recommender = new WeightedMergingTagRecommender();
 
 		recommender.setTagRecommenders(new TagRecommender[] 
 		                                                  {

@@ -13,10 +13,19 @@ import org.bibsonomy.recommender.tags.simple.termprocessing.TermProcessingIterat
 import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
+ * Extracts tags from the title of the post. Cleans the words using a stopword list
+ * and the cleanTag method according to the Discovery Challenge.
+ * 
+ * @see TermProcessingIterator
  * @author rja
  * @version $Id$
  */
 public class SimpleContentBasedTagRecommender implements TagRecommender {
+
+	private static final int DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND = 5;
+
+	private int numberOfTagsToRecommend = DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND;
+
 
 	/** Simply adds recommendations at end of list. 
 	 * 
@@ -53,6 +62,21 @@ public class SimpleContentBasedTagRecommender implements TagRecommender {
 		final Scanner s = new Scanner(title);
 		s.useDelimiter("([\\|/\\\\ \t;!,\\-:\\)\\(\\]\\[\\}\\{]+)|(\\.[\\t ]+)");
 		return new TermProcessingIterator(s);
+	}
+
+	/**
+	 * @return The (maximal) number of tags this recommender shall return.
+	 */
+	public int getNumberOfTagsToRecommend() {
+		return this.numberOfTagsToRecommend;
+	}
+
+	/** Set the (maximal) number of tags this recommender shall return. The default is {@value #DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND}.
+	 * 
+	 * @param numberOfTagsToRecommend
+	 */
+	public void setNumberOfTagsToRecommend(int numberOfTagsToRecommend) {
+		this.numberOfTagsToRecommend = numberOfTagsToRecommend;
 	}
 
 }

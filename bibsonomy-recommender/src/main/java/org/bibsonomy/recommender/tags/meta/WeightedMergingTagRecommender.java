@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.tags.popular;
+package org.bibsonomy.recommender.tags.meta;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,10 +10,12 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
+import org.bibsonomy.recommender.tags.popular.MostPopularByResourceTagRecommender;
+import org.bibsonomy.recommender.tags.popular.MostPopularByUserTagRecommender;
 import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
- * Returns the most popular \rho-mix of the injected recommenders as tag recommendation for the post.
+ * Merges and weights the recommendations of the given recommenders. 
  * 
  *   <p>
  *   The {@link #tagRecommenders} array shall include all the tagrecommenders which should 
@@ -28,8 +30,8 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * @author rja
  * @version $Id$
  */
-public class MostPopularMixTagRecommender implements TagRecommender {
-	private static final Logger log = Logger.getLogger(MostPopularMixTagRecommender.class);
+public class WeightedMergingTagRecommender implements TagRecommender {
+	private static final Logger log = Logger.getLogger(WeightedMergingTagRecommender.class);
 
 	private static final int DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND = 5;
 
@@ -42,7 +44,7 @@ public class MostPopularMixTagRecommender implements TagRecommender {
 	 * and {@link MostPopularByResourceTagRecommender} recommender, giving the first one
 	 * a weight of 0.4 and the second one a weight of 0.6.
 	 */
-	public MostPopularMixTagRecommender() {
+	public WeightedMergingTagRecommender() {
 		this.tagRecommenders = new TagRecommender[] {
 				new MostPopularByUserTagRecommender(),
 				new MostPopularByResourceTagRecommender()
