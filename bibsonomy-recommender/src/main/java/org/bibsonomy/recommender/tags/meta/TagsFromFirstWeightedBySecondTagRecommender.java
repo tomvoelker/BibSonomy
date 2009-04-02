@@ -1,0 +1,169 @@
+package org.bibsonomy.recommender.tags.meta;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.apache.log4j.Logger;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.RecommendedTag;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.comparators.RecommendedTagComparator;
+import org.bibsonomy.recommender.tags.popular.MostPopularByResourceTagRecommender;
+import org.bibsonomy.recommender.tags.popular.MostPopularByUserTagRecommender;
+import org.bibsonomy.recommender.tags.simple.SimpleContentBasedTagRecommender;
+import org.bibsonomy.services.recommender.TagRecommender;
+
+/**
+ * Takes the tags from {@link #firstTagRecommender} and orders them by their scores
+ * from {@link #secondTagRecommender}. If they're not recommended by {@link #secondTagRecommender},
+ * they get a score of 0. If {@link #firstTagRecommender} can't deliver enough tags, they're filled
+ * up by the top tags from {@link #secondTagRecommender}.
+ * 
+ * @author rja
+ * @version $Id$
+ */
+public class TagsFromFirstWeightedBySecondTagRecommender implements TagRecommender {
+	private static final Logger log = Logger.getLogger(TagsFromFirstWeightedBySecondTagRecommender.class);
+
+	private static final int DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND = 5;
+
+	private int numberOfTagsToRecommend;
+	private TagRecommender firstTagRecommender;
+	private TagRecommender secondTagRecommender;
+
+	/**
+	 * Initializes the tag recommenders with a {@link MostPopularByUserTagRecommender} 
+	 * and {@link MostPopularByResourceTagRecommender} recommender, giving the first one
+	 * a weight of 0.4 and the second one a weight of 0.6.
+	 */
+	public TagsFromFirstWeightedBySecondTagRecommender() {
+		this.firstTagRecommender = new SimpleContentBasedTagRecommender();
+		this.secondTagRecommender = new MostPopularByUserTagRecommender();
+		this.numberOfTagsToRecommend = DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND;
+	}
+
+
+	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
+		log.debug("Getting tag recommendations for " + post);
+
+		if (firstTagRecommender == null || secondTagRecommender == null) {
+			throw new IllegalArgumentException("No tag recommenders available.");
+		}
+
+		/*
+		 * Get recommendation from first recommender.
+		 * 
+		 */
+		final SortedSet<RecommendedTag> firstRecommendedTags = firstTagRecommender.getRecommendedTags(post);
+
+		/*
+		 * Get recommendation from second tag recommender.
+		 * Since we need to get the scores from this recommender for the tags from the first
+		 * recommender, we use the TopTagsMapBackedSet, such that we can easily get tags by their name.
+		 * Additionally, we might need to fill up the tags with the top tags (according to 
+		 * the RecommendedTagComparator) from the second recommender. We get those from the TopTagsMapBackedSet. 
+		 */
+		final TopTagsMapBackedSet secondRecommendedTags = new TopTagsMapBackedSet(numberOfTagsToRecommend);
+		secondTagRecommender.addRecommendedTags(secondRecommendedTags, post);
+
+		/*
+		 * Iterate over tags from first recommender until we have enough tags
+		 * Put only those into result, which occur in second recommendation
+		 */
+		final Iterator<RecommendedTag> iterator = firstRecommendedTags.iterator();
+		while (recommendedTags.size() < numberOfTagsToRecommend && iterator.hasNext()) {
+			final RecommendedTag recommendedTag = iterator.next();
+			if (!recommendedTags.contains(recommendedTag) && secondRecommendedTags.contains(recommendedTag)) recommendedTags.add(secondRecommendedTags.get(recommendedTag)); 
+
+		}
+
+		/*
+		 * If we have not enough tags, yet, add tags from second until set is complete.
+		 * Note: we add them with score = 0, to not put them before the tags from first.
+		 */
+		if (recommendedTags.size() < numberOfTagsToRecommend) {
+			/*
+			 * we want to get the top tags, not ordered alphabetically!
+			 */
+			final SortedSet<RecommendedTag> topRecommendedTags = secondRecommendedTags.getTopTags();
+			final Iterator<RecommendedTag> iterator2 = topRecommendedTags.iterator();
+			while (recommendedTags.size() < numberOfTagsToRecommend && iterator2.hasNext()) {
+				final RecommendedTag recommendedTag = iterator2.next();
+				if (!recommendedTags.contains(recommendedTag)) {
+
+					recommendedTags.add(new RecommendedTag(recommendedTag.getName(), 0, 0));
+				}
+			}
+		}
+
+	}
+
+	public String getInfo() {
+		return "Most Popular Tags Mix Recommender";
+	}
+
+	/**
+	 * Returns the resource's overall most popular tags
+	 * 
+	 * @see org.bibsonomy.services.recommender.TagRecommender#getRecommendedTags(org.bibsonomy.model.Post)
+	 */
+	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
+		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		addRecommendedTags(recommendedTags, post);
+		return recommendedTags;
+	}
+
+	/**
+	 * @return The (maximal) number of tags this recommender shall return.
+	 */
+	public int getNumberOfTagsToRecommend() {
+		return this.numberOfTagsToRecommend;
+	}
+
+	/** Set the (maximal) number of tags this recommender shall return. The default is {@value #DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND}.
+	 * 
+	 * @param numberOfTagsToRecommend
+	 */
+	public void setNumberOfTagsToRecommend(int numberOfTagsToRecommend) {
+		this.numberOfTagsToRecommend = numberOfTagsToRecommend;
+	}
+
+
+	/**
+	 * @return The first tag recommender.
+	 */
+	public TagRecommender getFirstTagRecommender() {
+		return this.firstTagRecommender;
+	}
+
+
+	/** This tag recommender's tags are ordered by their respective score
+	 * from the second tag recommender. 
+	 * 
+	 * @param firstTagRecommender
+	 */
+	public void setFirstTagRecommender(TagRecommender firstTagRecommender) {
+		this.firstTagRecommender = firstTagRecommender;
+	}
+
+
+	/**
+	 * @return The second tag recommender.
+	 */
+	public TagRecommender getSecondTagRecommender() {
+		return this.secondTagRecommender;
+	}
+
+
+	/**
+	 * The scores of this recommender are used to weight the tags from the first
+	 * tag recommender.
+	 *  
+	 * @param secondTagRecommender
+	 */
+	public void setSecondTagRecommender(TagRecommender secondTagRecommender) {
+		this.secondTagRecommender = secondTagRecommender;
+	}
+}

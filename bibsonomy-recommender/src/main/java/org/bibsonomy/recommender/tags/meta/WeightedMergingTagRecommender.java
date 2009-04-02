@@ -1,7 +1,6 @@
 package org.bibsonomy.recommender.tags.meta;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -57,20 +56,7 @@ public class WeightedMergingTagRecommender implements TagRecommender {
 	}
 
 
-	public void addRecommendedTags(final SortedSet<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
-		recommendedTags.addAll(getRecommendedTags(post));
-	}
-
-	public String getInfo() {
-		return "Most Popular Tags Mix Recommender";
-	}
-
-	/**
-	 * Returns the resource's overall most popular tags
-	 * 
-	 * @see org.bibsonomy.services.recommender.TagRecommender#getRecommendedTags(org.bibsonomy.model.Post)
-	 */
-	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
+	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 
 		log.debug("Getting tag recommendations for " + post);
 
@@ -78,7 +64,7 @@ public class WeightedMergingTagRecommender implements TagRecommender {
 			throw new IllegalArgumentException("No tag recommenders available.");
 		}
 
-		final Map<String, RecommendedTag> resultMap = new HashMap<String, RecommendedTag>();
+		final TopTagsMapBackedSet result = new TopTagsMapBackedSet(numberOfTagsToRecommend);
 
 		/*
 		 * iterate over all given recommenders
@@ -87,12 +73,12 @@ public class WeightedMergingTagRecommender implements TagRecommender {
 			final TagRecommender recommender = tagRecommenders[i];
 			final double scoreWeight = (weights != null || weights.length == tagRecommenders.length) ? weights[i] : 1;
 
-			final SortedSet<RecommendedTag> recommendedTags = recommender.getRecommendedTags(post);
+			final SortedSet<RecommendedTag> tempRecommendedTags = recommender.getRecommendedTags(post);
 			/*
 			 * iterate over all tags and add them to result
 			 */
-			for (final RecommendedTag recommendedTag: recommendedTags) {
-				addTag(resultMap, recommendedTag, scoreWeight);
+			for (final RecommendedTag recommendedTag: tempRecommendedTags) {
+				addTag(result, recommendedTag, scoreWeight);
 			}
 
 		}
@@ -100,19 +86,7 @@ public class WeightedMergingTagRecommender implements TagRecommender {
 		/*
 		 * copy result map into sorted set
 		 */
-		final SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-		for (final RecommendedTag recommendedTag: resultMap.values()) {
-			if (result.size() < numberOfTagsToRecommend) {
-				result.add(recommendedTag);	
-			} else if (result.last().compareTo(recommendedTag) < 0) {
-				/*
-				 * new tag is better
-				 */
-				result.remove(result.last());
-				result.add(recommendedTag);
-			}
-		}
-		return result;
+		recommendedTags.addAll(result.getTopTags());
 	}
 
 
@@ -129,25 +103,42 @@ public class WeightedMergingTagRecommender implements TagRecommender {
 	 * @param recommendedTag
 	 * @param weight the weight the score/confidence of the tag should be weighted with.
 	 */
-	private void addTag(final Map<String, RecommendedTag> result, final RecommendedTag recommendedTag, final double weight) {
+	private void addTag(final TopTagsMapBackedSet result, final RecommendedTag recommendedTag, final double weight) {
 		final double score = recommendedTag.getScore() * weight;
 		final double confidence = recommendedTag.getConfidence() * weight;
 		final String tagName = recommendedTag.getName();
 
-		if (result.containsKey(tagName)) {
+		if (result.contains(recommendedTag)) {
 			/*
 			 * add score and confidence
 			 */
-			final RecommendedTag recommendedTag2 = result.get(tagName);
+			final RecommendedTag recommendedTag2 = result.get(recommendedTag);
 			recommendedTag2.setScore(recommendedTag2.getScore() + score);
 			recommendedTag2.setConfidence(recommendedTag2.getConfidence() + confidence);
 		} else {
 			/*
 			 * create new tag with weighted score and confidence
 			 */
-			result.put(tagName, new RecommendedTag(tagName, score, confidence));
+			result.add(new RecommendedTag(tagName, score, confidence));
 		}
 	}
+	
+	public String getInfo() {
+		return "Most Popular Tags Mix Recommender";
+	}
+
+	/**
+	 * Returns the resource's overall most popular tags
+	 * 
+	 * @see org.bibsonomy.services.recommender.TagRecommender#getRecommendedTags(org.bibsonomy.model.Post)
+	 */
+	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
+		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		addRecommendedTags(recommendedTags, post);
+		return recommendedTags;
+	}
+
+
 
 
 

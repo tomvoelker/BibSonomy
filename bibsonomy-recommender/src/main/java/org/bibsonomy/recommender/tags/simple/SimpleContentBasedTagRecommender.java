@@ -29,7 +29,9 @@ public class SimpleContentBasedTagRecommender implements TagRecommender {
 	private int numberOfTagsToRecommend = DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND;
 
 
-	/** Simply adds recommendations at end of list. 
+	/** Simply adds tags from the post's title to the given collection. The score of each tag
+	 * is its inverse position in the title, such that tags coming earlier will have a higher
+	 * score. 
 	 * 
 	 * @see org.bibsonomy.services.recommender.TagRecommender#addRecommendedTags(java.util.Collection, org.bibsonomy.model.Post)
 	 */
@@ -46,7 +48,7 @@ public class SimpleContentBasedTagRecommender implements TagRecommender {
 			 */
 			int ctr = 0;
 			while(extractor.hasNext() == true && ctr++ < numberOfTagsToRecommend) {
-				recommendedTags.add(new RecommendedTag(extractor.next(), 0.0, 0.0));
+				recommendedTags.add(new RecommendedTag(extractor.next(), 1.0 / (ctr + 1.0), 0.0));
 			}
 		}
 	}

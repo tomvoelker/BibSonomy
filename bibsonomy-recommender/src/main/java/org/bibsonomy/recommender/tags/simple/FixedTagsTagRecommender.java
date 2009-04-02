@@ -2,10 +2,12 @@ package org.bibsonomy.recommender.tags.simple;
 
 import java.util.Collection;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
@@ -20,11 +22,23 @@ public class FixedTagsTagRecommender implements TagRecommender {
 	private SortedSet<RecommendedTag> tags;
 
 	/**
+	 * Adds the given tags to the fixed set of tags, ordered by their 
+	 * occurrence in the arrays.
 	 * 
+	 * @param tags
+	 */
+	public FixedTagsTagRecommender(final String[] tags) {
+		this.tags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		for (int i = 0; i < tags.length; i++) {
+			this.tags.add(new RecommendedTag(tags[i], 1.0 / (i + 1.0), 0.0));
+		}
+	}
+	
+	/**
 	 * 
 	 * @param tags - the tags this recommender will recommend.
 	 */
-	public FixedTagsTagRecommender(SortedSet<RecommendedTag> tags) {
+	public FixedTagsTagRecommender(final SortedSet<RecommendedTag> tags) {
 		super();
 		this.tags = tags;
 	}
