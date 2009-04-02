@@ -1,5 +1,6 @@
 package comparators;
 
+import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -98,4 +99,35 @@ public class RecommendedTagComparatorTest {
 		assertTrue(testSet.contains(new RecommendedTag("Main", 0.0, 0.0)));
 	}
 
+	
+	@Test
+	public void testOrder() {
+		final SortedSet<RecommendedTag> tags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		tags.add(new RecommendedTag("eins", 0.3, 0.2));
+		tags.add(new RecommendedTag("drei", 0.2, 0.2));
+		tags.add(new RecommendedTag("vier", 0.5, 0.2));
+		tags.add(new RecommendedTag("sieben", 0.6, 0.2));
+		tags.add(new RecommendedTag("eins", 0.5, 0.2));
+		tags.add(new RecommendedTag("eins", 0.2, 0.2));
+		tags.add(new RecommendedTag("semantic", 0.5, 0.2));
+		tags.add(new RecommendedTag("bar", 0.6, 0.2));
+		tags.add(new RecommendedTag("foo", 0.7, 0.2));
+		tags.add(new RecommendedTag("net", 0.8, 0.2));
+		
+		final Iterator<RecommendedTag> iterator = tags.iterator();
+		
+		assertEquals("net", iterator.next().getName());
+		assertEquals("foo", iterator.next().getName());
+		assertEquals("bar", iterator.next().getName());
+		assertEquals("sieben", iterator.next().getName());
+		assertEquals("semantic", iterator.next().getName());
+		assertEquals("vier", iterator.next().getName());
+		assertEquals("eins", iterator.next().getName());
+		assertEquals("drei", iterator.next().getName());
+		assertFalse(iterator.hasNext());
+		
+		
+	}
+	
 }
+

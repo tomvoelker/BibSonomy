@@ -44,6 +44,8 @@ public class RecommendedTagComparator implements Comparator<RecommendedTag> {
 		if (o2 == null) return 1;
 		/*
 		 * tag names equal: regard them as equal
+		 * (this basically ensures that a set won't contain tags which equal based
+		 *  on their equals() method)
 		 */
 		if (o1.equals(o2)) return 0;
 		/*
