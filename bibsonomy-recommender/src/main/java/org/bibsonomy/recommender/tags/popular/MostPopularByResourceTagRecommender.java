@@ -1,6 +1,7 @@
 package org.bibsonomy.recommender.tags.popular;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -10,9 +11,9 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
+import org.bibsonomy.recommender.tags.database.DBAccess;
 import org.bibsonomy.recommender.tags.database.params.Pair;
 import org.bibsonomy.services.recommender.TagRecommender;
-import org.bibsonomy.recommender.tags.database.DBAccess;
 
 /**
  * Returns the most popular (i.e., most often attached) tags of the resource as 
@@ -28,21 +29,7 @@ public class MostPopularByResourceTagRecommender implements TagRecommender {
 	
 	private int numberOfTagsToRecommend = DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND;
 
-	public void addRecommendedTags(final SortedSet<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
-		recommendedTags.addAll(getRecommendedTags(post));
-	}
-
-	public String getInfo() {
-		return "Most Popular Tags By Resource Recommender";
-	}
-
-	/**
-	 * Returns the resource's overall most popular tags
-	 * 
-	 * @see org.bibsonomy.services.recommender.TagRecommender#getRecommendedTags(org.bibsonomy.model.Post)
-	 */
-	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
-
+	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 		log.debug("Getting tag recommendations for " + post);
 
 		final Resource resource = post.getResource();
@@ -52,8 +39,6 @@ public class MostPopularByResourceTagRecommender implements TagRecommender {
 		resource.recalculateHashes();
 		
 		final String intraHash = resource.getIntraHash();
-
-		final SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 
 		if (intraHash != null) {
 			try {
@@ -70,9 +55,9 @@ public class MostPopularByResourceTagRecommender implements TagRecommender {
 						final double tmp = (1.0 * tag.getSecond()) / count;
 						final RecommendedTag recTag = new RecommendedTag(tag.getFirst(), tmp, 0.5);
 						
-						result.add(recTag);
+						recommendedTags.add(recTag);
 					}
-					log.debug("Returning the tags " + result);
+					log.debug("Returning the tags " + recommendedTags);
 				} else {
 					log.debug("Resource not found or no tags available.");
 				}
@@ -82,8 +67,23 @@ public class MostPopularByResourceTagRecommender implements TagRecommender {
 		} else {
 			log.debug("Could not get recommendations, because no intraHash was given.");
 		}
+		recommendedTags.addAll(getRecommendedTags(post));
+	}
+
+	public String getInfo() {
+		return "Most Popular Tags By Resource Recommender";
+	}
+
+	/**
+	 * Returns the resource's overall most popular tags
+	 * 
+	 * @see org.bibsonomy.services.recommender.TagRecommender#getRecommendedTags(org.bibsonomy.model.Post)
+	 */
+	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
+		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		addRecommendedTags(recommendedTags, post);
 		// all done
-		return result;
+		return recommendedTags;
 	}
 
 	/**

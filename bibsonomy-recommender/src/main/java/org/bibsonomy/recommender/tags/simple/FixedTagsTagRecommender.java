@@ -1,5 +1,6 @@
 package org.bibsonomy.recommender.tags.simple;
 
+import java.util.Collection;
 import java.util.SortedSet;
 
 import org.bibsonomy.model.Post;
@@ -29,7 +30,7 @@ public class FixedTagsTagRecommender implements TagRecommender {
 	}
 
 	@Override
-	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
+	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		recommendedTags.addAll(tags);
 	}
 

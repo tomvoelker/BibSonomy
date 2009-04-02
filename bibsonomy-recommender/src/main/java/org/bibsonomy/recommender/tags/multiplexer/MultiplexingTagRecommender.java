@@ -3,6 +3,7 @@ package org.bibsonomy.recommender.tags.multiplexer;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -12,11 +13,11 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
-import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.recommender.tags.TagRecommenderConnector;
 import org.bibsonomy.recommender.tags.database.DBAccess;
 import org.bibsonomy.recommender.tags.multiplexer.strategy.RecommendationSelector;
 import org.bibsonomy.recommender.tags.multiplexer.strategy.SelectAll;
+import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
  * Class for querying several recommenders. 
@@ -121,8 +122,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * 
 	 * @see org.bibsonomy.recommender.tags.TagRecommender#addRecommendedTags(java.util.SortedSet, org.bibsonomy.model.Post)
 	 */	
-	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags,
-			Post<? extends Resource> post) {
+	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		 recommendedTags.addAll(getRecommendedTags(post));
 	}
 
@@ -130,8 +130,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		return "Multiplexing recommender for querying several independent recommenders.";
 	}
 	
-	public SortedSet<RecommendedTag> getRecommendedTags(
-			Post<? extends Resource> post) {
+	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
 		return getRecommendedTags(post, UNKNOWN_POSTID);
     };
     

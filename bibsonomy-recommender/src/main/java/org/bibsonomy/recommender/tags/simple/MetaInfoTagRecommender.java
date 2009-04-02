@@ -2,6 +2,7 @@ package org.bibsonomy.recommender.tags.simple;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -29,9 +30,25 @@ import org.w3c.dom.NodeList;
 public class MetaInfoTagRecommender implements TagRecommenderConnector {
 	private static final Logger log = Logger.getLogger(MetaInfoTagRecommender.class);
 	
-	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags,
-			Post<? extends Resource> post) {
-		recommendedTags.addAll(getRecommendedTags(post));
+	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
+		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) ) {
+			String url = ((Bookmark)post.getResource()).getUrl();
+			if( !UrlUtils.isValid(url) ) {
+				log.debug("Invalid url: "+url);
+				return;
+			}
+			log.debug("Scraping " + url + " for keywords.");
+			
+			String[] keywords = getKeywordsForUrl(url).split(",");
+			if( keywords.length>0 ) {
+				for( int i=0; i<keywords.length; i++ ){
+					if(keywords[i].length()>0)
+						// FIXME: compute sensible confidence/score values.
+						// FIXME: Normalizing of tags should be done in some central helper class
+						recommendedTags.add(new RecommendedTag(keywords[i].toLowerCase().trim().replaceAll("\\s", "_"),0.5,0));
+				}
+			}
+		}
 	}
 
 	public String getInfo() {
@@ -42,30 +59,10 @@ public class MetaInfoTagRecommender implements TagRecommenderConnector {
 	 * Parse html file at given url an return list of keywords as given in file's meta-inf section.
 	 * TODO: Assumes that keywords are comma separated.
 	 */
-	public SortedSet<RecommendedTag> getRecommendedTags(
-			Post<? extends Resource> post) {
-		SortedSet<RecommendedTag> result = 
-			new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-
-		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) ) {
-			String url = ((Bookmark)post.getResource()).getUrl();
-			if( !UrlUtils.isValid(url) ) {
-				log.debug("Invalid url: "+url);
-				return result;
-			}
-			log.debug("Scraping " + url + " for keywords.");
-			
-			String[] keywords = getKeywordsForUrl(url).split(",");
-			if( keywords.length>0 ) {
-				for( int i=0; i<keywords.length; i++ ){
-					if(keywords[i].length()>0)
-						// FIXME: compute sensible confidence/score values.
-						// FIXME: Normalizing of tags should be done in some central helper class
-						result.add(new RecommendedTag(keywords[i].toLowerCase().trim().replaceAll("\\s", "_"),0.5,0));
-				}
-			}
-		}
-		return result;
+	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
+		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		addRecommendedTags(recommendedTags, post);
+		return recommendedTags;
 	}
 	
 	/**

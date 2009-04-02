@@ -1,5 +1,6 @@
 package org.bibsonomy.recommender.tags.simple;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.SortedSet;
@@ -30,18 +31,9 @@ public class SimpleContentBasedTagRecommender implements TagRecommender {
 
 	/** Simply adds recommendations at end of list. 
 	 * 
-	 * @see org.bibsonomy.services.recommender.TagRecommender#addRecommendedTags(java.util.SortedSet, org.bibsonomy.model.Post)
+	 * @see org.bibsonomy.services.recommender.TagRecommender#addRecommendedTags(java.util.Collection, org.bibsonomy.model.Post)
 	 */
-	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
-		recommendedTags.addAll(getRecommendedTags(post));
-	}
-
-	public String getInfo() {
-		return "Simple content based recommender which extracts tags from title, description, URL.";
-	}
-
-	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
-		final SortedSet<RecommendedTag> extracted = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		final String title = post.getResource().getTitle();
 		if (title != null) {
 			/*
@@ -54,10 +46,19 @@ public class SimpleContentBasedTagRecommender implements TagRecommender {
 			 */
 			int ctr = 0;
 			while(extractor.hasNext() == true && ctr++ < numberOfTagsToRecommend) {
-				extracted.add(new RecommendedTag(extractor.next(), 0.0, 0.0));
+				recommendedTags.add(new RecommendedTag(extractor.next(), 0.0, 0.0));
 			}
 		}
-		return extracted;
+	}
+
+	public String getInfo() {
+		return "Simple content based recommender which extracts tags from title, description, URL.";
+	}
+
+	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
+		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		addRecommendedTags(recommendedTags, post);
+		return recommendedTags;
 	}
 
 	private Iterator<String> buildTagExtractionIterator(final String title) {

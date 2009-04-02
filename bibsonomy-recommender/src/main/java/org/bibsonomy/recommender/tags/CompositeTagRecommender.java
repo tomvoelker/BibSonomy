@@ -1,5 +1,6 @@
 package org.bibsonomy.recommender.tags;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,9 +32,7 @@ public class CompositeTagRecommender implements TagRecommender {
 	
 	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
 		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(comparator);
-		for (final TagRecommender t: recommender) {
-			t.addRecommendedTags(recommendedTags, post);
-		}
+		addRecommendedTags(recommendedTags, post);
 		return recommendedTags;
 	}
 
@@ -49,7 +48,7 @@ public class CompositeTagRecommender implements TagRecommender {
 		this.recommender.add(tagRecommender);
 	}
 
-	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
+	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		for (final TagRecommender t: recommender) {
 			t.addRecommendedTags(recommendedTags, post);
 		}

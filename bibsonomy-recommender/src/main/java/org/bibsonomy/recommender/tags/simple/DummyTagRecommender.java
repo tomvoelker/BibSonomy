@@ -1,10 +1,10 @@
 package org.bibsonomy.recommender.tags.simple;
 
 import java.text.DecimalFormat;
+import java.util.Collection;
 import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Post;
@@ -26,19 +26,10 @@ public class DummyTagRecommender implements TagRecommender, TagRecommenderConnec
 	
 	/**  
 	 * Do nothing.
-	 * @see org.bibsonomy.services.recommender.TagRecommender#addRecommendedTags(java.util.SortedSet, org.bibsonomy.model.Post)
+	 * @see org.bibsonomy.services.recommender.TagRecommender#addRecommendedTags(java.util.Collection, org.bibsonomy.model.Post)
 	 */
-	public void addRecommendedTags(SortedSet<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
-		recommendedTags.addAll(getRecommendedTags(post));
+	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		log.info("Dummy recommender: addRecommendedTags.");
-	}
-
-	public String getInfo() {
-		return "Dummy recommender which does nothing at all.";
-	}
-
-	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
-		final SortedSet<RecommendedTag> extracted = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 		long wait = (long)(Math.random()*1000); 
 
 		// create informative recommendation:
@@ -47,7 +38,7 @@ public class DummyTagRecommender implements TagRecommender, TagRecommenderConnec
 			double confidence = Math.random();
 			DecimalFormat df = new DecimalFormat( "0.00" );
 			String re = "Dummy("+df.format(score)+","+df.format(confidence)+"["+wait+"])";
-			extracted.add(new RecommendedTag(re, score, confidence));
+			recommendedTags.add(new RecommendedTag(re, score, confidence));
 		};
 		
 		try {
@@ -55,7 +46,17 @@ public class DummyTagRecommender implements TagRecommender, TagRecommenderConnec
 		} catch (InterruptedException e) {
 			// nothing to do.
 		}
-		return extracted;
+		
+	}
+
+	public String getInfo() {
+		return "Dummy recommender which does nothing at all.";
+	}
+
+	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
+		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		addRecommendedTags(recommendedTags, post);
+		return recommendedTags;
 	}
 
 	//------------------------------------------------------------------------

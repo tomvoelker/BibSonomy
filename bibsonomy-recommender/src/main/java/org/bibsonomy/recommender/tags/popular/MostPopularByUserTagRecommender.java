@@ -1,6 +1,7 @@
 package org.bibsonomy.recommender.tags.popular;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -28,23 +29,8 @@ public class MostPopularByUserTagRecommender implements TagRecommender {
 	
 	private int numberOfTagsToRecommend = DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND;	
 	
-	public void addRecommendedTags(final SortedSet<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
-		recommendedTags.addAll(getRecommendedTags(post));
-	}
-
-	public String getInfo() {
-		return "Most Popular Tags By User Recommender";
-	}
-	 
-	/**
-	 * Returns user's five overall most popular tags
-	 * 
-	 * @see org.bibsonomy.services.recommender.TagRecommender#getRecommendedTags(org.bibsonomy.model.Post)
-	 */
-	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
+	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 		final String username = post.getUser().getName();
-		final SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-		
 		if (username != null) {
 			try {
 				/*
@@ -57,14 +43,28 @@ public class MostPopularByUserTagRecommender implements TagRecommender {
 					// TODO: use some sensible confidence value
 					final double tmp = (1.0*tag.getSecond())/count;
 					final RecommendedTag recTag = new RecommendedTag(tag.getFirst(),tmp,0.5);
-					result.add(recTag);
+					recommendedTags.add(recTag);
 				}
 			} catch (SQLException ex) {
 				log.error("Error getting recommendations for user " + username, ex);
 			}
 		}
+	}
+
+	public String getInfo() {
+		return "Most Popular Tags By User Recommender";
+	}
+	 
+	/**
+	 * Returns user's five overall most popular tags
+	 * 
+	 * @see org.bibsonomy.services.recommender.TagRecommender#getRecommendedTags(org.bibsonomy.model.Post)
+	 */
+	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
+		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		addRecommendedTags(recommendedTags, post);
 		// all done
-		return result;
+		return recommendedTags;
 	}
 	
 	/**
