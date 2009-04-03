@@ -93,7 +93,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			if (abstrct != null) {
 				BibTexUtils.addFieldIfNotContained(bibtexEntries, "abstract", abstrct);
 			} else // log if abstract is not available
-				log.info("ACMBasicScraper: Abstract not available \n" + sc.getPageContent());
+				log.info("ACMBasicScraper: Abstract not available");
 
 			final String result = bibtexEntries.toString().trim();
 
