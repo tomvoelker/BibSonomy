@@ -34,6 +34,18 @@ public class TagsFromFirstWeightedBySecondTagRecommender implements TagRecommend
 	private TagRecommender secondTagRecommender;
 
 	/**
+	 * Initializes the recommender with the given recommenders.
+	 * 
+	 * @param firstTagRecommender
+	 * @param secondTagRecommender
+	 */
+	public TagsFromFirstWeightedBySecondTagRecommender(TagRecommender firstTagRecommender, TagRecommender secondTagRecommender) {
+		super();
+		this.firstTagRecommender = firstTagRecommender;
+		this.secondTagRecommender = secondTagRecommender;
+	}
+	
+	/**
 	 * Initializes the tag recommenders with a {@link MostPopularByUserTagRecommender} 
 	 * and {@link MostPopularByResourceTagRecommender} recommender, giving the first one
 	 * a weight of 0.4 and the second one a weight of 0.6.
@@ -43,8 +55,7 @@ public class TagsFromFirstWeightedBySecondTagRecommender implements TagRecommend
 		this.secondTagRecommender = new MostPopularByUserTagRecommender();
 		this.numberOfTagsToRecommend = DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND;
 	}
-
-
+	
 	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 		log.debug("Getting tag recommendations for " + post);
 
@@ -54,34 +65,49 @@ public class TagsFromFirstWeightedBySecondTagRecommender implements TagRecommend
 
 		/*
 		 * Get recommendation from first recommender.
-		 * 
 		 */
 		final SortedSet<RecommendedTag> firstRecommendedTags = firstTagRecommender.getRecommendedTags(post);
 
 		/*
 		 * Get recommendation from second tag recommender.
+		 * 
 		 * Since we need to get the scores from this recommender for the tags from the first
 		 * recommender, we use the TopTagsMapBackedSet, such that we can easily get tags by their name.
 		 * Additionally, we might need to fill up the tags with the top tags (according to 
-		 * the RecommendedTagComparator) from the second recommender. We get those from the TopTagsMapBackedSet. 
+		 * the RecommendedTagComparator) from the second recommender. We get those from the 
+		 * TopTagsMapBackedSet, too. 
 		 */
 		final TopTagsMapBackedSet secondRecommendedTags = new TopTagsMapBackedSet(numberOfTagsToRecommend);
 		secondTagRecommender.addRecommendedTags(secondRecommendedTags, post);
 
 		/*
 		 * Iterate over tags from first recommender until we have enough tags
-		 * Put only those into result, which occur in second recommendation
+		 * Put only those into result, which occur in second recommendation.
 		 */
 		final Iterator<RecommendedTag> iterator = firstRecommendedTags.iterator();
+		/*
+		 * The scores from the tags in the next 'fill up round' should be lower 
+		 * as the scores from this 'round'. Thus, we find the smallest value 
+		 */
+		double min = Double.MAX_VALUE;
 		while (recommendedTags.size() < numberOfTagsToRecommend && iterator.hasNext()) {
 			final RecommendedTag recommendedTag = iterator.next();
-			if (!recommendedTags.contains(recommendedTag) && secondRecommendedTags.contains(recommendedTag)) recommendedTags.add(secondRecommendedTags.get(recommendedTag)); 
-
+			if (!recommendedTags.contains(recommendedTag) && secondRecommendedTags.contains(recommendedTag)) {
+				/*
+				 * add tag
+				 */
+				final RecommendedTag secondRecommendedTag = secondRecommendedTags.get(recommendedTag);
+				recommendedTags.add(secondRecommendedTag);
+				/*
+				 * find minimal score (for next round)
+				 */
+				final double score = secondRecommendedTag.getScore();
+				if (score < min) min = score;
+			} 
 		}
-
+		
 		/*
 		 * If we have not enough tags, yet, add tags from second until set is complete.
-		 * Note: we add them with score = 0, to not put them before the tags from first.
 		 */
 		if (recommendedTags.size() < numberOfTagsToRecommend) {
 			/*
@@ -89,11 +115,29 @@ public class TagsFromFirstWeightedBySecondTagRecommender implements TagRecommend
 			 */
 			final SortedSet<RecommendedTag> topRecommendedTags = secondRecommendedTags.getTopTags();
 			final Iterator<RecommendedTag> iterator2 = topRecommendedTags.iterator();
+			int ctr = 0;
 			while (recommendedTags.size() < numberOfTagsToRecommend && iterator2.hasNext()) {
 				final RecommendedTag recommendedTag = iterator2.next();
 				if (!recommendedTags.contains(recommendedTag)) {
-
-					recommendedTags.add(new RecommendedTag(recommendedTag.getName(), 0, 0));
+					ctr++;
+					/*
+					 * re-compute score
+					 */
+					if (min > 0) {
+						/*
+						 * go closer to zero (and don't do 'min/1 = min', thus '/ctr + 1')
+						 */
+						recommendedTag.setScore(min / (ctr + 1));
+					} else {
+						/*
+						 * go closer to -infinity
+						 */
+						recommendedTag.setScore(min - ctr);
+					}
+					/*
+					 * FIXME: remember to request "almost all" tags from MostPopularByUser when configuring using Spring ...
+					 */
+					recommendedTags.add(recommendedTag);
 				}
 			}
 		}

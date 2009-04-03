@@ -6,9 +6,13 @@ import java.util.TreeSet;
 
 import junit.framework.Assert;
 
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.recommender.tags.simple.FixedTagsTagRecommender;
+import org.bibsonomy.recommender.tags.simple.SimpleContentBasedTagRecommender;
+import org.bibsonomy.services.recommender.TagRecommender;
 import org.junit.Test;
 
 /**
@@ -53,8 +57,42 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 		Assert.assertEquals("drei", iterator.next().getName());
 		Assert.assertEquals("net", iterator.next().getName());
 		Assert.assertFalse(iterator.hasNext());
+	}
+	
+	
+	@Test
+	public void test2() throws Exception {
+		
+		final String[] usersTags = new String[]{"semantic", "web", "social", "net", "graph", "tool", "folksonomy", "holiday"};
+		
+		final TagsFromFirstWeightedBySecondTagRecommender merger = new TagsFromFirstWeightedBySecondTagRecommender();
+		final SimpleContentBasedTagRecommender simpleContentBasedTagRecommender = new SimpleContentBasedTagRecommender();
+		final FixedTagsTagRecommender fixedTagsTagRecommender = new FixedTagsTagRecommender(usersTags);
+
+		merger.setFirstTagRecommender(simpleContentBasedTagRecommender);
+		merger.setSecondTagRecommender(fixedTagsTagRecommender);
+		merger.setNumberOfTagsToRecommend(5);
 		
 		
+		final Bookmark bookmark = new Bookmark();
+		bookmark.setTitle("NEPOMUK: the social semantic desktop");
+		
+		final Post<Bookmark> post = new Post<Bookmark>();
+		post.setResource(bookmark);
+		
+		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendedTags(post);
+
+		
+		/*
+		 *  check containment and order of top tags
+		 */
+		final Iterator<RecommendedTag> iterator = recommendedTags.iterator();
+		Assert.assertEquals("semantic", iterator.next().getName());
+		Assert.assertEquals("social", iterator.next().getName());
+		Assert.assertEquals("web", iterator.next().getName());
+		Assert.assertEquals("net", iterator.next().getName());
+		Assert.assertEquals("graph", iterator.next().getName());
+		Assert.assertFalse(iterator.hasNext());
 		
 	}
 
