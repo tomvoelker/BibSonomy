@@ -111,4 +111,9 @@ public class MetaInfoTagRecommender implements TagRecommenderConnector {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public String getId() {
+		return MetaInfoTagRecommender.class.getName();
+	}
 }

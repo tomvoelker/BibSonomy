@@ -241,8 +241,8 @@
 		|          choice (see http://issues.apache.org/jira/browse/IBATIS-142)
 	  	+-->
 	<insert id="addRecommenderSetting" parameterClass="recSetting">
-		INSERT INTO recommender_settings (rec_id,rec_meta)
-		VALUES ( #recId#, #recMeta# )
+		INSERT INTO recommender_settings (rec_id,rec_meta,rec_descr)
+		VALUES ( #recId#, #recMeta#, #recDescr# )
  		<selectKey resultClass="java.lang.Long" keyProperty="setting_id">
 			SELECT LAST_INSERT_ID() AS value
 	    </selectKey>

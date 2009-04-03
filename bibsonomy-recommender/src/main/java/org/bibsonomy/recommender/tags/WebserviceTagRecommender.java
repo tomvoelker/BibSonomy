@@ -158,5 +158,10 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		return address;
 	}
 
+	@Override
+	public String getId() {
+		return getAddress().toString();
+	}
+
 	
 }

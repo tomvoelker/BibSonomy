@@ -33,8 +33,15 @@ public interface TagRecommenderConnector extends TagRecommender {
 	public boolean disconnect() throws Exception;
 	
 	/**
-	 * Identifies 
+	 * Arbitrary auxiliary informations.
+	 *  
 	 * @return
 	 */
 	public byte[] getMeta();
+
+	/**
+	 * Description for identifying this recommender.
+	 * @return
+	 */
+	public String getId();
 }

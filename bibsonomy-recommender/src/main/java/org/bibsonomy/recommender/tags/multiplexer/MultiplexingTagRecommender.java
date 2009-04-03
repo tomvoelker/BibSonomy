@@ -152,7 +152,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			// query remote recommenders
 			for( TagRecommenderConnector con: getDistRecommenders() ) {
 				// each recommender is identified by an unique id:
-				Long sid = DBAccess.addRecommender(qid, con.getInfo(), con.getMeta());
+				Long sid = DBAccess.addRecommender(qid, con.getInfo(), con.getId(), con.getMeta());
 				RecommenderDispatcher dispatcher = 
 					new RecommenderDispatcher(con, post, qid, sid, null);
 				dispatchers.add(dispatcher);
@@ -161,7 +161,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			// query local recommenders
 			for( TagRecommender rec: getLocalRecommenders() ) {
 				// each recommender is identified by an unique id:
-				Long sid = DBAccess.addRecommender(qid, rec.getInfo(), null);
+				Long sid = DBAccess.addRecommender(qid, rec.getInfo(), rec.getClass().getCanonicalName().toString(), null);
 				// add result to database
 				addQueryResponse(qid, sid, 0, rec.getRecommendedTags(post));
 			};

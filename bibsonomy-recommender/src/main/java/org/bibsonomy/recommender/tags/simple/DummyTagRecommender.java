@@ -88,4 +88,10 @@ public class DummyTagRecommender implements TagRecommender, TagRecommenderConnec
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public String getId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

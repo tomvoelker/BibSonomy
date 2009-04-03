@@ -140,7 +140,8 @@ public class DBAccess extends AbstractDatabaseManager {
 	 * @return unique identifier for given recommender settings
 	 * @throws SQLException 
 	 */
-	public static Long addRecommender(Long queryId, String recId, byte[] recMeta ) throws SQLException {
+	public static Long addRecommender(
+			Long queryId, String recId, String recDescr, byte[] recMeta ) throws SQLException {
 		Long settingId = null;
 
 		SqlMapClient sqlMap = getSqlMapInstance();
@@ -148,7 +149,7 @@ public class DBAccess extends AbstractDatabaseManager {
     		sqlMap.startTransaction();
     		
     		// insert recommender settings
-    		settingId = insertRecommenderSetting(recId, recMeta);
+    		settingId = insertRecommenderSetting(recId, recDescr, recMeta);
     		// connect query with setting
     		RecQuerySettingParam queryMap = new RecQuerySettingParam();
     		queryMap.setQid(queryId);
@@ -681,7 +682,7 @@ public class DBAccess extends AbstractDatabaseManager {
 	 * 
 	 * @return unique identifier for given settings
 	 */
-	private static Long insertRecommenderSetting(String recId, byte[] recMeta) throws SQLException {
+	private static Long insertRecommenderSetting(String recId, String recDescr, byte[] recMeta) throws SQLException {
 		Long settingId = null;
 
 		SqlMapClient sqlMap = getSqlMapInstance();
@@ -689,6 +690,7 @@ public class DBAccess extends AbstractDatabaseManager {
 		RecSettingParam setting = new RecSettingParam();
 		setting.setRecId(recId);
 		setting.setRecMeta(recMeta);
+		setting.setRecDescr(recDescr);
 
 		// determine which lookup sql statement we have to use.
 		String lookupFunction;

@@ -48,9 +48,9 @@ public class DBAccessTest {
 		obj.testAddNewSelector2();
 		obj.testAddNewSelector();
 		obj.testAddSelectedTags();
-		obj.testGetPostDataForQuery();
-		*/
 		obj.testAddQuery();
+		*/
+		obj.testGetPostDataForQuery();
 		JNDITestDatabaseBinder.unbind();
     }
 	
@@ -91,10 +91,11 @@ public class DBAccessTest {
 		Long qid       = new Long(0);
 		String recInfo = "TestCase-non-Recommender";
 		String recMeta = "NON-NULL-META";
+		String recDescr= "mypackage.classname";
 		// store and retrieve recommender informations
 		Long sid;
 		RecSettingParam retVal = null;
-		sid = DBAccess.addRecommender(qid, recInfo, recMeta.getBytes());
+		sid = DBAccess.addRecommender(qid, recInfo, recDescr, recMeta.getBytes());
 		retVal = DBAccess.getRecommender(sid);
 		assertEquals(recInfo, retVal.getRecId());
 		assertArrayEquals(recMeta.getBytes(), retVal.getRecMeta());
@@ -207,7 +208,7 @@ public class DBAccessTest {
 	 */
 	@Test
 	public void testGetPostDataForQuery() throws SQLException {
-		Integer contentID = DBAccess.getContentIDForQuery(new Long(3033));
+		// Integer contentID = DBAccess.getContentIDForQuery(new Long(3033));
 	}
 
 	
