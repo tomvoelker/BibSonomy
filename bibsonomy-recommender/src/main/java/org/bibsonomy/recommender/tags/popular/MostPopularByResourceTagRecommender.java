@@ -67,7 +67,6 @@ public class MostPopularByResourceTagRecommender implements TagRecommender {
 		} else {
 			log.debug("Could not get recommendations, because no intraHash was given.");
 		}
-		recommendedTags.addAll(getRecommendedTags(post));
 	}
 
 	public String getInfo() {
