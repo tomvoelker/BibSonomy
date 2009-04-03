@@ -8,6 +8,7 @@ package org.bibsonomy.recommender.tags.database.params;
 public class RecSettingParam {
 	private Long setting_id;
 	private String recId;
+	private String recDescr;
 	private byte[] recMeta;
 	
 	public void setRecId(String recId) {
@@ -27,5 +28,11 @@ public class RecSettingParam {
 	}
 	public long getSetting_id() {
 		return setting_id;
-	}	
+	}
+	public void setRecDescr(String recDescr) {
+		this.recDescr = recDescr;
+	}
+	public String getRecDescr() {
+		return recDescr;
+	}
 }
