@@ -3,8 +3,6 @@ package org.bibsonomy.webapp.controller.actions;
 
 
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -13,15 +11,12 @@ import java.util.Random;
 import net.tanesha.recaptcha.ReCaptcha;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.actions.PasswordReminderCommand;
-import org.bibsonomy.webapp.util.CookieAware;
-import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
@@ -45,18 +40,17 @@ import resources.Resource;
  * @author daill
  * @version $Id$
  */
-public class PasswordReminderController implements MinimalisticController<PasswordReminderCommand>, ErrorAware, ValidationAwareController<PasswordReminderCommand>, RequestAware, CookieAware{
+public class PasswordReminderController implements MinimalisticController<PasswordReminderCommand>, ErrorAware, ValidationAwareController<PasswordReminderCommand>, RequestAware {
 	private static final Logger log = Logger.getLogger(PasswordReminderController.class);
-	
+
 	private int maxMinutesPasswordReminderValid = 60; 
-	
+
 	private static final String success = "/login";
-	
+
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
 	private RequestLogic requestLogic;
 	private Captcha captcha;
-	private CookieLogic cookieLogic;
 	private MailUtils mailUtils;
 	private MessageSource messageSource;
 
@@ -67,45 +61,25 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 	public View workOn(PasswordReminderCommand command) {
 		// get locale
 		final Locale locale = requestLogic.getLocale();
-		
+
 		// set page title
 		command.setPageTitle(messageSource.getMessage("navi.passReminder", null, locale));
 
 		final User user = new User();
 		user.setName(command.getUserName());
 		user.setEmail(command.getUserEmail());
-		
+
 		/*
 		 * Get the hosts IP address.
 		 */
 		final String inetAddress = requestLogic.getInetAddress();
 		final String hostInetAddress = requestLogic.getHostInetAddress();
-		
-		/* Check spamIP
-		 * 
-		 * TODO: This is a canidate of functionality for a super-class "CaptchaController".
-		 * 
-		 * check, if IP is blocked from registration or
-		 *        if user has spammer cookie set
-		 * if one of the conditions is true, the user is silently blocked and has to re-enter
-		 * the captcha again and again.
+
+
+		/*
+		 * check captcha
 		 */
-		if (InetAddressStatus.WRITEBLOCKED.equals(getInetAddressStatus(hostInetAddress)) || cookieLogic.hasSpammerCookie()) {
-			/*
-			 * Spammer found!
-			 * 
-			 * Must enter captcha again (and again, and again ...)
-			 */
-			log.warn("Host " + hostInetAddress + " with SPAMMER cookie/blocked IP tried to remind password as user " + user.getName());
-			errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
-		} else {
-			/*
-			 * Valid user
-			 * 
-			 * check captcha
-			 */
-			checkCaptcha(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), hostInetAddress);
-		}
+		checkCaptcha(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), hostInetAddress);
 
 		/*
 		 * If the user name is null, we get an exception on getUserDetails.
@@ -118,18 +92,18 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
 			return Views.PASSWORD_REMINDER;
 		}
-		
+
 		/*
 		 * check, if user name exists
 		 */
 		final User existingUser = adminLogic.getUserDetails(user.getName());
-		
+
 		if (existingUser.getName() == null) {
 			errors.rejectValue("userName", "error.field.valid.user.name");
 		} else if (!user.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
 			errors.rejectValue("userEmail", "error.field.valid.user.email");
 		}
-		
+
 		/*
 		 * If the user does not exist, getReminderPasswordRequestDate() returns null.
 		 * Hence, we send the user back to the form.
@@ -141,7 +115,7 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
 			return Views.PASSWORD_REMINDER;
 		}
-		
+
 		/*
 		 * check, if user has requested a password reminder not so long ago
 		 */
@@ -162,7 +136,7 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 					new Object[]{maxMinutesPasswordReminderValid, waitingMinutes}, 
 					"You already requested a password in the last " + maxMinutesPasswordReminderValid + " minutes. Please wait " + waitingMinutes + " minutes before you can request a new password");
 		}
-		
+
 		/*
 		 * Password reminder still valid -> send user back.
 		 */
@@ -173,29 +147,29 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
 			return Views.PASSWORD_REMINDER;
 		}
-		
-		
-		
-		
-		
+
+
+
+
+
 		/*
 		 * at this point the given information like email and username are correct, and now we
 		 * need to create a new pass and put it into the DB and send it per mail.
 		 */
-		
+
 		/*
 		 * create the random pw and set it to the user object
 		 */
 		final String tempPassword = getRandomString();
 		user.setReminderPassword(tempPassword);
 		user.setReminderPasswordRequestDate(new Date());
-		
+
 		// update db
 		adminLogic.updateUser(user);
-		
+
 		// send mail
 		mailUtils.sendPasswordReminderMail(user.getName(), user.getEmail(), inetAddress, locale, maxMinutesPasswordReminderValid, tempPassword);
-		
+
 		return new ExtendedRedirectView(success);
 	}
 
@@ -214,13 +188,13 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 	public boolean isValidationRequired(PasswordReminderCommand command) {
 		return true;
 	}
-	
+
 
 	@Required
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
-	
+
 	/** Give this controller an instance of {@link ReCaptcha}.
 	 * 
 	 * @param captcha 
@@ -230,7 +204,7 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 		this.captcha = captcha;
 	}
 
-	
+
 	/**
 	 * @param adminLogic - an instance of the logic interface with admin access.
 	 */
@@ -243,7 +217,7 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 		 */
 		Assert.isTrue(Role.ADMIN.equals(this.adminLogic.getAuthenticatedUser().getRole()), "The provided logic interface must have admin access.");
 	}
-	
+
 	/**
 	 * Checks the captcha. If the response from the user does not match the captcha,
 	 * an error is added. 
@@ -278,31 +252,7 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 			}
 		}
 	}
-	
-	/** The logic needed to access the cookies.
-	 * 
-	 * @param cookieLogic
-	 */
-	@Required
-	public void setCookieLogic(CookieLogic cookieLogic) {
-		this.cookieLogic = cookieLogic;
-	}
-	
-	/** Checks the status of the given inetAddress in the DB
-	 * @param inetAddress
-	 * @return
-	 */
-	private InetAddressStatus getInetAddressStatus(final String inetAddress) {
-		// query the DB for the status of address 
-		try {
-			return adminLogic.getInetAddressStatus(InetAddress.getByName(inetAddress));
-		} catch (final UnknownHostException e) {
-			log.info("Could not check inetAddress " + inetAddress, e);
-		}
-		// fallback: unknown
-		return InetAddressStatus.UNKNOWN;
-	}
-	
+
 	/**
 	 * Creates the random string
 	 * 
@@ -314,7 +264,7 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 		rand.nextBytes(bytes);
 		return Resource.toHexString(bytes);
 	}
-	
+
 	/** A message source to format mail messages.
 	 * @param messageSource
 	 */
