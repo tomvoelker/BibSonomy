@@ -67,6 +67,7 @@ public class TagsFromFirstWeightedBySecondTagRecommender implements TagRecommend
 		 * Get recommendation from first recommender.
 		 */
 		final SortedSet<RecommendedTag> firstRecommendedTags = firstTagRecommender.getRecommendedTags(post);
+		log.debug("got " + firstRecommendedTags.size() + " recommendations from " + firstTagRecommender);
 
 		/*
 		 * Get recommendation from second tag recommender.
@@ -79,6 +80,7 @@ public class TagsFromFirstWeightedBySecondTagRecommender implements TagRecommend
 		 */
 		final TopTagsMapBackedSet secondRecommendedTags = new TopTagsMapBackedSet(numberOfTagsToRecommend);
 		secondTagRecommender.addRecommendedTags(secondRecommendedTags, post);
+		log.debug("got " + secondRecommendedTags.size() + " recommendations from " + secondTagRecommender);
 
 		/*
 		 * Iterate over tags from first recommender until we have enough tags
@@ -105,6 +107,8 @@ public class TagsFromFirstWeightedBySecondTagRecommender implements TagRecommend
 				if (score < min) min = score;
 			} 
 		}
+		
+		log.debug("used " + recommendedTags.size() + " tags from the first recommender");
 		
 		/*
 		 * If we have not enough tags, yet, add tags from second until set is complete.
@@ -141,11 +145,14 @@ public class TagsFromFirstWeightedBySecondTagRecommender implements TagRecommend
 				}
 			}
 		}
+		if (log.isDebugEnabled()) {
+			log.debug("final recommendation: " + recommendedTags);
+		}
 
 	}
 
 	public String getInfo() {
-		return "Most Popular Tags Mix Recommender";
+		return "Using the tags from the second recommender to weight the recommended tags from the first recommender.";
 	}
 
 	/**
