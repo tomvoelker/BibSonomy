@@ -18,6 +18,7 @@ import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksOfFriendsB
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksPopular;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksSearch;
+import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksSearchForGroup;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksViewable;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
@@ -44,6 +45,7 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByUserAndTagsFriends;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByFriends;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksSearch;
+	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksSearchForGroup;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByConceptByTag;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByConceptForGroup;	
 	
@@ -66,6 +68,7 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 		this.getBookmarksByUserAndTagsFriends = new GetBookmarksOfFriendsByTags();
 		this.getBookmarksByFriends = new GetBookmarksByFriends();
 		this.getBookmarksSearch = new GetBookmarksSearch();
+		this.getBookmarksSearchForGroup = new GetBookmarksSearchForGroup();
 		this.getBookmarksByConceptByTag = new GetBookmarksByConceptByTag();
 		this.getBookmarksByConceptForGroup = new GetBookmarksByConceptForGroup();
 		
@@ -83,7 +86,8 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 		this.getBookmarksByUserFriends.setNext(this.getBookmarksByUserAndTagsFriends);
 		this.getBookmarksByUserAndTagsFriends.setNext(this.getBookmarksByFriends);
 		this.getBookmarksByFriends.setNext(this.getBookmarksSearch);
-		this.getBookmarksSearch.setNext(this.getBookmarksByConceptByTag);
+		this.getBookmarksSearch.setNext(this.getBookmarksSearchForGroup);
+		this.getBookmarksSearchForGroup.setNext(this.getBookmarksByConceptByTag);
 		this.getBookmarksByConceptByTag.setNext(this.getBookmarksByConceptForGroup);
 	}
 

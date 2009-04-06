@@ -32,6 +32,7 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -397,7 +398,34 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		count = this.bibTexDb.getBibTexSearchCount(groupType, search, null, this.dbSession);
 		assertEquals(1, count);
 	}
+	
+	
+	/**
+	 * tests getBibtexSearchForGroup
+	 * 
+	 * groupId must be set
+	 * userName must be set
+	 * search must be set
+	 */
+	@Test
+	public void getBibTexSearchForGroup() {
+		final int limit = 5;
+		final int offset = 0;
+		String userName = "testuser1";
+		int groupId = GroupID.PUBLIC.getId();
+		String search = "search";
+		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		visibleGroupIDs.add(0);
 
+		List<Post<BibTex>> posts = this.bibTexDb.getBibTexSearchForGroup(groupId, search, userName, limit, offset, this.dbSession);
+		assertEquals(1, posts.size());
+
+		search = "search test string bibtext";
+		posts = this.bibTexDb.getBibTexSearchForGroup(groupId, search, userName, limit, offset, this.dbSession);
+		assertEquals(1, posts.size());
+	}
+
+	
 	/**
 	 * tests getBibTexViewable
 	 * 

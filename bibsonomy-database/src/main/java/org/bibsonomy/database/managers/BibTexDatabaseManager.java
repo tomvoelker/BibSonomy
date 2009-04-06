@@ -545,6 +545,48 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		return this.bibtexList("getBibTexSearch", param, session);
 		
 	}
+	
+	
+	/**
+	 * @see BibTexDatabaseManager#getBibTexSearchForGroup(BibTexParam, DBSession)
+	 * 
+	 * @param groupId
+	 * @param visibleGroupIDs
+	 * @param search
+	 * @param userName
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of bibtex entries
+	 */
+	public List<Post<BibTex>> getBibTexSearchForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String search, final String userName, final int limit, final int offset, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setGroupId(groupId);
+		param.setSearch(search);
+		param.setUserName(userName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setGroups(visibleGroupIDs);
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		return this.bibtexList("getBibTexSearchForGroup", param, session);
+	}
+	
+	
+	/**
+	 * <em>/search/ein+lustiger+satz+group%3AmyGroup</em><br/><br/>
+	 * 
+	 * Prepares queries to retrieve posts which match a fulltext search in the
+	 * fulltext search table with the requested group<br/>
+	 * 
+	 * @param param
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	public List<Post<BibTex>> getBibTexSearchForGroup(final BibTexParam param, final DBSession session) {
+		return this.bibtexList("getBibTexSearchForGroup", param, session);
+		
+	}
+
 
 
 	/**
@@ -575,6 +617,28 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 
 	public List<Post<BibTex>> getBibTexSearch(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
+		final BibTexParam param = new BibTexParam();
+		param.setGroupId(groupId);
+		param.setSearch(search);
+		param.setRequestedUserName(requestedUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		return this.bibtexList("getBibTexSearch", param, session);
+	}
+	
+	/**
+	 * @see BibTexDatabaseManager#getBibTexSearch(BibTexParam, DBSession)
+	 * 
+	 * @param groupType
+	 * @param search
+	 * @param requestedUserName
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+
+	public List<Post<BibTex>> getBibTexSearchForGroup(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setGroupId(groupId);
 		param.setSearch(search);

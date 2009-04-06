@@ -27,6 +27,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -268,6 +269,28 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		count = -1;
 		count = this.bookmarkDb.getBookmarkSearchCount(groupType, search, null, this.dbSession);
 		assertEquals(1, count);
+	}
+	
+	/**
+	 * tests getBookmarkSearchForGroup
+	 * 
+	 * groupId must be set
+	 * userName must be set
+	 * search must be set
+	 */
+	@Test
+	public void getBookmarkSearchForGroup() {
+		final int limit = 5;
+		final int offset = 0;
+		String userName = "testuser1";
+		int groupId = GroupID.PUBLIC.getId();
+		String search = "suchmaschine";
+		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		visibleGroupIDs.add(0);
+
+		List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkSearch(groupId, search, userName, limit, offset, this.dbSession);
+		assertEquals(1, posts.size());
+		
 	}
 
 	/**
