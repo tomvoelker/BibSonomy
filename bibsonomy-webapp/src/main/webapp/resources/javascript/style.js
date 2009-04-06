@@ -367,6 +367,8 @@ function minUsertags(minfreq, currUser) {
 	showMinfreq(minfreq, currUser);
 }
 
+var gOptions = new Array();
+
 // switches page default path to full navigation path
 function naviSwitchSpecial(target) {
 	
@@ -411,7 +413,7 @@ function naviSwitchSpecial(target) {
 	selectNode.setAttribute("id", "scope");
 	
 	// select options
-	var options = new Array("tag", "user", "group", "author", "concept/tag", "bibtexkey", "search", "explicit_user");
+	var options = new Array("tag", "user", "group", "author", "concept/tag", "bibtexkey", "search", "explicit_user", "explicit_group");
 	
 	// hint for input field
 	var hint = "";
@@ -461,6 +463,19 @@ function naviSwitchSpecial(target) {
 				selectNode.appendChild(optionNode);
 			}
 			
+		} else if(options[i] == "explicit_group") {
+			for(var j = 0; j < gOptions.length; ++j) {
+				var optionNode = document.createElement("option");
+				optionNode.setAttribute("value", "group:" + gOptions[j]);
+				optionNode.appendChild(document.createTextNode(getString("navi.search") + ":" + gOptions[j]));		
+				
+				if(gOptions[j] == target) {
+					optionNode.setAttribute("selected", "");
+					hint = getString("navi.search.hint");	
+				}
+				
+				selectNode.appendChild(optionNode);
+			}
 		} else {
 			
 			var optionNode = document.createElement("option");
@@ -536,3 +551,4 @@ function naviSwitchSpecial(target) {
 	inpfNode.value = inpfNode.value;
 	
 }
+

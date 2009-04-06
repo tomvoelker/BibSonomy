@@ -25,7 +25,10 @@
 					<option value="search" selected="selected"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></option>
 					<c:if test="${command.context.userLoggedIn}">
 						<option value="user:${fn:escapeXml(command.context.loginUser.name)}"><fmt:message key="navi.search"/>:${fn:escapeXml(command.context.loginUser.name)}</option>
-					</c:if>					
+						<c:forEach var="grp" items="${command.context.loginUser.groups}">
+							<option value="group:${grp.name}"><fmt:message key="navi.search"/>:<c:out value='${fn:escapeXml(grp.name)}'/></option>
+						</c:forEach>
+					</c:if>
 				</select>
 				::
 				<input type="text" id="inpf" name="search" size="25" />

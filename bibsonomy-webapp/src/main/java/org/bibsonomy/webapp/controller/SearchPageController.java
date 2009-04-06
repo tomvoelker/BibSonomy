@@ -58,6 +58,20 @@ public class SearchPageController extends SingleResourceListController implement
 			}
 			// replace all occurences of "user:*"
 			search = search.replaceAll("user:[^\\s]*", "").trim();
+		} else if (search.matches(".*group:.*")) {
+			groupingEntity = GroupingEntity.GROUP;
+			// get username of first user
+			int start = search.indexOf("group:");
+			int ende  = search.indexOf(" ", start);
+			if (ende == -1) {ende = search.length();} // if group:* is last word
+			groupingName = search.substring(start + "group:".length(), ende);
+			
+			//warning if more than one user in search string
+			if (search.replaceFirst("group:[^\\s]*", "").matches(".*group:.*")){
+				throw new MalformedURLSchemeException("error.search_more_than_one_user");
+			}
+			// replace all occurences of "user:*"
+			search = search.replaceAll("group:[^\\s]*", "").trim();
 		}
 		
 		// // determine which lists to initalize depending on the output format and the requested resourcetype

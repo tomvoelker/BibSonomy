@@ -143,6 +143,14 @@
 							<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></a>
 							<c:set var="mode" value="requUser" />
 						</c:if>
+						<c:if test="${command.context.userLoggedIn}">
+							<c:forEach var="grp" items="${command.context.loginUser.groups}">
+								<script type="text/javascript">
+									gOptions.push('${grp.name}');
+								</script>
+								<a onclick="naviSwitchSpecial('${grp.name}')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${fn:escapeXml(grp.name)}'/></a>
+							</c:forEach>
+						</c:if>
 					</div>	
 					
 					<!-- init dropdown menu -->
