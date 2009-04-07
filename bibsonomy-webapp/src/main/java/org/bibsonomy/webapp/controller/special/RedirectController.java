@@ -2,14 +2,6 @@ package org.bibsonomy.webapp.controller.special;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.Vector;
-import java.util.Map.Entry;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,6 +9,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.special.RedirectCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
+import org.bibsonomy.webapp.util.HeaderUtils;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestAware;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -47,22 +40,6 @@ public class RedirectController implements MinimalisticController<RedirectComman
 	private Errors errors;
 
 
-
-	/**
-	 * Mapping of mime types to the supported export formats.
-	 * Used for content negotiation using /uri/ 
-	 */
-	private static final String[][] FORMAT_URLS = new String[][] {
-		/*   mime-type,     bookmark, publication    */
-		{"html", 		null, 	null		},
-		{"rss", 		"rss", 	"publrss"	},
-		{"rdf+xml",		null,	"swrc"		},
-		{"text/plain",  null, 	"bib"		},
-		{"plain", 		null, 	"bib"		},
-		{"xml", 		"xml",	"layout/dblp"},
-		{"rdf",			null,	"burst"		},
-		{"bibtex",		null,	"bib"		}
-	};	
 
 	public View workOn(final RedirectCommand command) {
 		log.debug("handling /redirect URLs");
@@ -116,15 +93,10 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		int resourceType = 2;
 		if (url.startsWith("url")) resourceType = 1;
 
-		/* 
-		 * get response format
-		 */
-		final int responseFormatId = getResponseFormatId(acceptHeader, resourceType);
-
 		/*
 		 * build redirectUrl
 		 */
-		return "/" + FORMAT_URLS[responseFormatId][resourceType] + "/" + url;
+		return "/" + HeaderUtils.getResponseFormat(acceptHeader, resourceType) + "/" + url;
 	}
 
 	/** Handles redirects for main page search form. 
@@ -220,92 +192,7 @@ public class RedirectController implements MinimalisticController<RedirectComman
 
 
 
-	/**
-	 * Gets the preferred response format which is supported in 
-	 * dependence of the 'q-Value' (similar to a priority)
-	 *
-	 * @param acceptHeader 
-	 * 			the HTML ACCEPT Header
-	 * 			(example: 
-	 * 				<code>ACCEPT: text/xml,text/html;q=0.9,text/plain;q=0.8,image/png</code>
-	 * 				would be interpreted in the following precedence:
-	 * 				1) text/xml
-	 * 				2) image/png
-	 * 				3) text/html
-	 * 				4) text/plain)
-	 * 			) 	
-	 * @param contentType
-	 * 			the contentType of the requested resource 
-	 * 			<code>0</code> for bookmarks
-	 * 			<code>1</code> for BibTeX
-	 * @return 
-	 * 			an index for access to the FORMAT_URLS array with the 
-	 * 			url for redirect
-	 */
-	private int getResponseFormatId(final String acceptHeader, final int contentType) {		
-		int responseFormat = 0;
-
-		// if no acceptHeader is set, return default (= 0);
-		if (acceptHeader == null) return responseFormat;
-
-		// maps the q-value to output format (reverse order)
-		final SortedMap<Double,Vector<String>> preferredTypes = new TreeMap<Double,Vector<String>>(new Comparator<Double>() {
-			public int compare(Double o1, Double o2) {
-				if (o1.doubleValue() > o2.doubleValue())
-					return -1;
-				else if (o1.doubleValue() < o2.doubleValue())
-					return 1;
-				else
-					return o1.hashCode() - o2.hashCode();
-			}				
-		});		
-
-		// fill map with q-values and formats
-		Scanner scanner = new Scanner(acceptHeader.toLowerCase());
-		scanner.useDelimiter(",");
-
-		while(scanner.hasNext()) {
-			String[] types = scanner.next().split(";");
-			String type = types[0];
-			double qValue = 1;
-
-			if (types.length != 1) 
-				qValue = Double.parseDouble(types[1].split("=")[1]);
-
-			if (!preferredTypes.containsKey(qValue)) {
-				Vector<String> v = new Vector<String>();
-				v.add(type);				
-				preferredTypes.put(qValue, v);
-			} else {
-				preferredTypes.get(qValue).add(type);					
-			}
-		}
-
-		List<String> formatOrder = new ArrayList<String>();			
-		for (Entry<Double, Vector<String>> entry: preferredTypes.entrySet()) {								
-			for (String type: entry.getValue()) {					
-				formatOrder.add(type);					
-			}
-		}
-
-		// check for supported formats
-		boolean found = false;
-		for (String type: formatOrder) {
-			if (found) break;
-			for (int j=0; j<FORMAT_URLS.length; j++) {					
-				String checkType = FORMAT_URLS[j][0];				
-				if (type.indexOf(checkType) != -1) {						
-					if (FORMAT_URLS[j][contentType] != null || checkType == "html") {
-						responseFormat = j;
-						found = true;
-						break;	
-					}
-				}
-			}
-		}		
-		return responseFormat;
-	}
-
+	
 	public RedirectCommand instantiateCommand() {
 		return new RedirectCommand();
 	}
