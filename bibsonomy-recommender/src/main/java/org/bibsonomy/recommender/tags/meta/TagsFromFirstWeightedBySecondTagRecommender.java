@@ -68,6 +68,9 @@ public class TagsFromFirstWeightedBySecondTagRecommender implements TagRecommend
 		 */
 		final SortedSet<RecommendedTag> firstRecommendedTags = firstTagRecommender.getRecommendedTags(post);
 		log.debug("got " + firstRecommendedTags.size() + " recommendations from " + firstTagRecommender);
+		if (log.isDebugEnabled()) {
+			log.debug(firstRecommendedTags);
+		}
 
 		/*
 		 * Get recommendation from second tag recommender.
