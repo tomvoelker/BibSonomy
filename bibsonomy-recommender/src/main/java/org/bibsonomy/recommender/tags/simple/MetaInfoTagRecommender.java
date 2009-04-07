@@ -4,15 +4,13 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.Properties;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.comparators.RecommendedTagComparator;
+import org.bibsonomy.recommender.tags.AbstractTagRecommender;
 import org.bibsonomy.recommender.tags.TagRecommenderConnector;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.XmlUtils;
@@ -27,10 +25,10 @@ import org.w3c.dom.NodeList;
  * @author fei
  * @version $Id$
  */
-public class MetaInfoTagRecommender implements TagRecommenderConnector {
+public class MetaInfoTagRecommender extends AbstractTagRecommender implements TagRecommenderConnector {
 	private static final Logger log = Logger.getLogger(MetaInfoTagRecommender.class);
 	
-	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
+	protected void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) ) {
 			String url = ((Bookmark)post.getResource()).getUrl();
 			if( !UrlUtils.isValid(url) ) {
@@ -40,12 +38,19 @@ public class MetaInfoTagRecommender implements TagRecommenderConnector {
 			log.debug("Scraping " + url + " for keywords.");
 			
 			String[] keywords = getKeywordsForUrl(url).split(",");
+			int ctr = 0;
 			if( keywords.length>0 ) {
 				for( int i=0; i<keywords.length; i++ ){
-					if(keywords[i].length()>0)
-						// FIXME: compute sensible confidence/score values.
-						// FIXME: Normalizing of tags should be done in some central helper class
-						recommendedTags.add(new RecommendedTag(keywords[i].toLowerCase().trim().replaceAll("\\s", "_"),0.5,0));
+					if(keywords[i].length()>0) {
+						final String tag = getCleanedTag(keywords[i].toLowerCase().trim().replaceAll("\\s", "_"));
+						if (tag != null) {
+							ctr++;
+							/*
+							 * add one to not get 1.0 as score 
+							 */
+							recommendedTags.add(new RecommendedTag(tag, 1.0 / (ctr + 1.0), 0));
+						}
+					}
 				}
 			}
 		}
@@ -55,16 +60,6 @@ public class MetaInfoTagRecommender implements TagRecommenderConnector {
 		return "Recommender using html <meta> informations.";
 	}
 
-	/**
-	 * Parse html file at given url an return list of keywords as given in file's meta-inf section.
-	 * TODO: Assumes that keywords are comma separated.
-	 */
-	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
-		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-		addRecommendedTags(recommendedTags, post);
-		return recommendedTags;
-	}
-	
 	/**
 	 * Parses html file at given url and returns keywords from its meta informations.
 	 * @param url file's url

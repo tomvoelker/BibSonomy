@@ -3,13 +3,12 @@ package org.bibsonomy.recommender.tags.meta;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.comparators.RecommendedTagComparator;
+import org.bibsonomy.recommender.tags.AbstractTagRecommender;
 import org.bibsonomy.recommender.tags.popular.MostPopularByResourceTagRecommender;
 import org.bibsonomy.recommender.tags.popular.MostPopularByUserTagRecommender;
 import org.bibsonomy.recommender.tags.simple.SimpleContentBasedTagRecommender;
@@ -24,12 +23,9 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * @author rja
  * @version $Id$
  */
-public class TagsFromFirstWeightedBySecondTagRecommender implements TagRecommender {
+public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagRecommender implements TagRecommender {
 	private static final Logger log = Logger.getLogger(TagsFromFirstWeightedBySecondTagRecommender.class);
 
-	private static final int DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND = 5;
-
-	private int numberOfTagsToRecommend;
 	private TagRecommender firstTagRecommender;
 	private TagRecommender secondTagRecommender;
 
@@ -53,11 +49,9 @@ public class TagsFromFirstWeightedBySecondTagRecommender implements TagRecommend
 	public TagsFromFirstWeightedBySecondTagRecommender() {
 		this.firstTagRecommender = new SimpleContentBasedTagRecommender();
 		this.secondTagRecommender = new MostPopularByUserTagRecommender();
-		this.numberOfTagsToRecommend = DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND;
 	}
 	
-	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
-		log.debug("Getting tag recommendations for " + post);
+	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 
 		if (firstTagRecommender == null || secondTagRecommender == null) {
 			throw new IllegalArgumentException("No tag recommenders available.");
@@ -157,33 +151,6 @@ public class TagsFromFirstWeightedBySecondTagRecommender implements TagRecommend
 	public String getInfo() {
 		return "Using the tags from the second recommender to weight the recommended tags from the first recommender.";
 	}
-
-	/**
-	 * Returns the resource's overall most popular tags
-	 * 
-	 * @see org.bibsonomy.services.recommender.TagRecommender#getRecommendedTags(org.bibsonomy.model.Post)
-	 */
-	public SortedSet<RecommendedTag> getRecommendedTags(final Post<? extends Resource> post) {
-		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-		addRecommendedTags(recommendedTags, post);
-		return recommendedTags;
-	}
-
-	/**
-	 * @return The (maximal) number of tags this recommender shall return.
-	 */
-	public int getNumberOfTagsToRecommend() {
-		return this.numberOfTagsToRecommend;
-	}
-
-	/** Set the (maximal) number of tags this recommender shall return. The default is {@value #DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND}.
-	 * 
-	 * @param numberOfTagsToRecommend
-	 */
-	public void setNumberOfTagsToRecommend(int numberOfTagsToRecommend) {
-		this.numberOfTagsToRecommend = numberOfTagsToRecommend;
-	}
-
 
 	/**
 	 * @return The first tag recommender.
