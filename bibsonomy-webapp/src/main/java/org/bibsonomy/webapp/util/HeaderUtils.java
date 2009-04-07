@@ -10,6 +10,7 @@ import java.util.Vector;
 import java.util.Map.Entry;
 
 import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.webapp.exceptions.NotAcceptableException;
 
 /**
  * @author rja
@@ -112,16 +113,20 @@ public class HeaderUtils {
 			for (int j=0; j<FORMAT_URLS.length; j++) {					
 				final String checkType = FORMAT_URLS[j][0];			
 				if (type.indexOf(checkType) != -1) {						
-					if (FORMAT_URLS[j][contentType] != null || "html".equals(checkType)) {
+					if (FORMAT_URLS[j][contentType] != null) {
 						return FORMAT_URLS[j][contentType];
 					}
 				}
 			}
 		}		
 		/*
-		 * default: return HTML
+		 * default: HTML
 		 */
 		return FORMAT_URLS[0][contentType];
+		/*
+		 * TODO: throw exception
+		 */
+//		throw new NotAcceptableException("", );
 	}
 
 }

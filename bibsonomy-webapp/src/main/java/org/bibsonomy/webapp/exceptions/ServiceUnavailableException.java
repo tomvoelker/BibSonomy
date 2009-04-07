@@ -4,6 +4,9 @@ package org.bibsonomy.webapp.exceptions;
  * Caller must provide the number of seconds, after which the client may try to call
  * the service again.  
  * 
+ * Equivalent to HTTP status code 503 Service Unavailable, see 
+ * http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+ * 
  * @author rja
  * @version $Id$
  */
