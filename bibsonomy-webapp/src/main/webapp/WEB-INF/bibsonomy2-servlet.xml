@@ -662,7 +662,8 @@
 
 	<!--  #################### imports #################### -->
 
-    <import resource="bibsonomy2-servlet-actions.xml"/>	
+    <import resource="bibsonomy2-servlet-recommender.xml"/>	
+    <import resource="bibsonomy2-servlet-actions.xml"/>
     <import resource="bibsonomy2-servlet-ajax.xml"/>	
     <import resource="bibsonomy2-servlet-fields.xml"/>    		
 	
