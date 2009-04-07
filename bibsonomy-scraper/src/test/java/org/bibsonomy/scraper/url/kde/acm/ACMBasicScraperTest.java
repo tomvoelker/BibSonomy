@@ -42,7 +42,7 @@ public class ACMBasicScraperTest {
 	
 	
 	@Test
-	//@Ignore
+	@Ignore
 	public void test2() throws MalformedURLException {
 		
 		String url = "http://portal.acm.org/citation.cfm?id=500737.500755"; // abstract works
