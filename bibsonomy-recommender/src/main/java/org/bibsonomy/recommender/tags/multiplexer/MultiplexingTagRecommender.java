@@ -216,7 +216,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
      */
 	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post, int postID) {
 		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-		addRecommendedTags(recommendedTags, post);
+		addRecommendedTags(recommendedTags, post, postID);
 		return recommendedTags;
 	}
 
