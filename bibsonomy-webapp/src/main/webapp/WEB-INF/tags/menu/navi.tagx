@@ -89,12 +89,6 @@
 					   <td><a href="/group/${fn:escapeXml(grp.name)}"><c:out value='${grp.name}'/></a></td>
                        <td><a href="/relevantfor/group/${fn:escapeXml(grp.name)}"><fmt:message key="navi.relevantFor"/></a></td>
                        <td>
-	                       <form method="get" action="/redirect" style="padding-top:5px">
-	                       		<input name="scope" type="hidden" value="group:${fn:escapeXml(grp.name)}"/>
-	                       		<input name="search" type="text" />
-	                       </form>
-                       </td>
-                       <td>
                          <c:if test="${grp.sharedDocuments}">
                            <a href="/group/${fn:escapeXml(grp.name)}?filter=myGroupPDF">
                              <fmt:message key="navi.groups"/>                   
