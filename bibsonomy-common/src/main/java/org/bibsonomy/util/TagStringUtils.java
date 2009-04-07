@@ -23,13 +23,32 @@
 
 package org.bibsonomy.util;
 
+import java.text.Normalizer;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
- * Home of static methods for dealing with string representations of tags
+ * Static methods for dealing with string representations of tags
  */
 public class TagStringUtils {
-
+	
+	
+	/**
+	 * Tags which are ignored for recommendation
+	 */
+	private static final Set<String> ignoreTags = new HashSet<String>();
+	static {
+		ignoreTags.add("imported");
+		ignoreTags.add("public");
+		ignoreTags.add("system:imported");
+		ignoreTags.add("nn");
+		ignoreTags.add("system:unfiled");
+	}
+	
+	
+	
+	
 	/**
 	 * Allows in a string of tags to change the delimiter to space. Additionally, tags consisting of
 	 * more than one word (separated by whitespace) can be joined with whitespaceSub.
@@ -69,5 +88,32 @@ public class TagStringUtils {
 			return tagstring;
 		} 
 		return "";
+	}
+	
+	
+	
+	/** Checks if the given tag is a tag which should be ignored according 
+	 * to the tag recommendation challenge rules.
+	 * <br/>Note that the tag must have been cleaned using {@link #cleanTag(String)}!
+	 * 
+	 * @param tag
+	 * @return <code>true</code> if the tag should be ignored.
+	 */
+	public static boolean isIgnoreTag(final String tag) {
+		return tag == null || tag.isEmpty() || ignoreTags.contains(tag);
+	}
+	
+	
+	/**
+	 * Cleans the given tag according to the recommendation challenge rules.
+	 * Only numbers and letters (in lowercase!) remain, normalized to Unicode
+	 * normal form KC. 
+	 * 
+	 * @see Normalizer
+	 * @param tag
+	 * @return The cleaned tag.
+	 */
+	public static String cleanTag(final String tag) {
+		return Normalizer.normalize(tag.toLowerCase().replaceAll("[^0-9\\p{L}]+", ""), Normalizer.Form.NFKC);
 	}
 }
