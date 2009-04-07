@@ -1,7 +1,10 @@
 package org.bibsonomy.webapp.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import org.bibsonomy.webapp.exceptions.NotAcceptableException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,6 +37,30 @@ public class HeaderUtilsTest {
 		
 		assertEquals("swrc", HeaderUtils.getResponseFormat("application/rdf+xml", 2));
 		
+		/*
+		 * unknown: HTML
+		 */
+		assertEquals("", HeaderUtils.getResponseFormat("application/foobar", 2));
+		
 	}
+	
+	/**
+	 * TODO: to be implemented
+	 * 
+	 */
+	@Test
+	@Ignore
+	public void testGetResponseFormatException() {
+		/*
+		 * unknown: 406 Not Acceptable
+		 */
+		try {
+			HeaderUtils.getResponseFormat("application/foobar", 2);
+			fail("expected " + NotAcceptableException.class.getSimpleName() + " exception");
+		} catch (NotAcceptableException e) {
+			// ignore
+		}
+	}
+	
 
 }
