@@ -1,8 +1,9 @@
 package org.bibsonomy.recommender.tags.simple.termprocessing;
 
-import java.text.Normalizer;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import org.bibsonomy.util.TagStringUtils;
 
 /**
  * Extracts terms from given list of words, using a stopword remover and the
@@ -28,8 +29,14 @@ public class TermProcessingIterator implements Iterator<String> {
 		 * skip empty tags
 		 */
 		while ((next == null || next.trim().equals("")) && words.hasNext()) {
-			next = cleanTag(words.next());
-			if (stopwordRemover.process(next) == null) {
+			/*
+			 * clean tag according to challenge rules
+			 */
+			next = TagStringUtils.cleanTag(words.next());
+			/*
+			 * ignore stop words and tags to be ignored according to the challenge rules
+			 */
+			if (stopwordRemover.process(next) == null || TagStringUtils.isIgnoreTag(next)) {
 				next = null;
 			}
 		}
@@ -55,14 +62,4 @@ public class TermProcessingIterator implements Iterator<String> {
 		throw new UnsupportedOperationException();
 	}
 	
-	/**
-	 * Cleans the given tag according to the Discovery Challenge rules.
-	 * 
-	 * @param tag
-	 * @return
-	 */
-	private static String cleanTag(final String tag) {
-		return Normalizer.normalize(tag.toLowerCase().replaceAll("[^0-9\\p{L}]+", ""), Normalizer.Form.NFKC);
-	}
-
 }
