@@ -23,7 +23,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * @author rja
  * @version $Id$
  */
-public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagRecommender implements TagRecommender {
+public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagRecommender {
 	private static final Logger log = Logger.getLogger(TagsFromFirstWeightedBySecondTagRecommender.class);
 
 	private TagRecommender firstTagRecommender;
