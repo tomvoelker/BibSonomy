@@ -35,15 +35,16 @@ public class TagStringUtils {
 	
 	
 	/**
-	 * Tags which are ignored for recommendation
+	 * Tags which are ignored for recommendation. Note that those tags 
+	 * are already cleaned using {@link #cleanTag(String)}.
 	 */
 	private static final Set<String> ignoreTags = new HashSet<String>();
 	static {
-		ignoreTags.add("imported");
-		ignoreTags.add("public");
-		ignoreTags.add("system:imported");
-		ignoreTags.add("nn");
-		ignoreTags.add("system:unfiled");
+		ignoreTags.add(cleanTag("imported"));
+		ignoreTags.add(cleanTag("public"));
+		ignoreTags.add(cleanTag("system:imported"));
+		ignoreTags.add(cleanTag("nn"));
+		ignoreTags.add(cleanTag("system:unfiled"));
 	}
 	
 	
