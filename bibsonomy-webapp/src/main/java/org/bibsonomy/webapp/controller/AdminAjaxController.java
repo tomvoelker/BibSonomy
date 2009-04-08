@@ -10,6 +10,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.EvaluatorUser;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
@@ -22,23 +23,34 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for ajax requests on admin pages
  * 
  * @author Stefan Stützer
+<<<<<<< AdminAjaxController.java
+ * @version $Id: AdminAjaxController.java,v 1.5 2008-11-04 17:34:01 beatekr Exp
+ *          $
+=======
  * @version $Id$
+>>>>>>> 1.6
  */
 public class AdminAjaxController extends AjaxController implements MinimalisticController<AdminAjaxCommand> {
+
 	
 	private static final Log log = LogFactory.getLog(AdminAjaxController.class);
 
 	public View workOn(AdminAjaxCommand command) {
-		
+
 		final String action = command.getAction();
-		
-		
+
 		if ("flag_spammer".equals(action)) {
-			log.debug("Flag as spammer ");
 			this.flagSpammer(command, true);
 			this.setResponse(command, command.getUserName() + " flagged as spammer");
 		} else if ("unflag_spammer".equals(action)) {
 			this.flagSpammer(command, false);
+			this.setResponse(command, command.getUserName() + " flagged as nonspammer");
+		} else if ("flag_spammer_evaluator".equals(action)) {
+			log.debug("flagging a spammer");
+			this.flagSpammerEvaluator(command, true);
+			this.setResponse(command, command.getUserName() + " flagged as spammer");
+		} else if ("unflag_spammer_evaluator".equals(action)) {
+			this.flagSpammerEvaluator(command, false);
 			this.setResponse(command, command.getUserName() + " flagged as nonspammer");
 		} else if ("mark_uncertainUser".equals(action)) {
 			this.flagUnsureSpammer(command, false);
@@ -51,30 +63,51 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 		} else if ("prediction_history".equals(action)) {
 			this.setPredictionHistory(command);
 			return Views.AJAX_PREDICTIONS;
+		} else if ("get_user_info".equals(action)) {
+			log.debug("Get user info with ajax " + action);
 		}
 		return Views.AJAX;
-	}	
+	}
+
+	private void flagSpammerEvaluator(AdminAjaxCommand cmd, boolean spammer) {
+		if (cmd.getUserName() != null) {
+
+			EvaluatorUser user = new EvaluatorUser(cmd.getUserName());
+			user.setToClassify(9);
+			user.setAlgorithm("admin");
+			user.setSpammer(spammer);
+			user.setEvaluator(cmd.getEvaluator());
+
+			// set date for evaluation (table is not normalized)
+			String number = cmd.getEvaluator().substring(cmd.getEvaluator().indexOf("evaluator") + 9, cmd.getEvaluator().length());
+			String evalDate = "date".concat(number);
+			
+			user.setEvalDate(evalDate);
+			this.logic.updateUser(user);
+		}
+	}
 
 	/**
 	 * flags a user as spammer
+	 * 
 	 * @param cmd
 	 */
-	private void flagSpammer(AdminAjaxCommand cmd, boolean spammer) {		
+	private void flagSpammer(AdminAjaxCommand cmd, boolean spammer) {
 		if (cmd.getUserName() != null) {
 			User user = new User(cmd.getUserName());
 			user.setToClassify(0);
 			user.setAlgorithm("admin");
 			user.setSpammer(spammer);
-			log.debug("Flag spammer in Controller");
 			this.logic.updateUser(user);
 		}
 	}
-	
+
 	/**
 	 * marks a user of not being a sure non-spammer
+	 * 
 	 * @param cmd
 	 */
-	private void flagUnsureSpammer(AdminAjaxCommand cmd, boolean spammer) {		
+	private void flagUnsureSpammer(AdminAjaxCommand cmd, boolean spammer) {
 		if (cmd.getUserName() != null) {
 			User user = new User(cmd.getUserName());
 			user.setToClassify(1);
@@ -91,33 +124,33 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 			this.logic.updateClassifierSettings(setting, command.getValue());
 		}
 	}
-	
+
 	private void setLatestPosts(AdminAjaxCommand command) {
-	 
+
 		if (command.getUserName() != null && command.getUserName() != "") {
 			// set filter to display spam posts
-			FilterEntity filter = null;			
+			FilterEntity filter = null;
 			if (command.getShowSpamPosts().equals("true")) {
 				filter = FilterEntity.ADMIN_SPAM_POSTS;
 			}
 			List<Post<Bookmark>> bookmarks = this.logic.getPosts(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, Order.ADDED, filter, 0, 5, null);
 			command.setBookmarks(bookmarks);
-			
+
 			int totalBookmarks = this.logic.getPostStatistics(Bookmark.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, 0, 100, null, null);
 			command.setBookmarkCount(totalBookmarks);
-			
+
 			int totalBibtex = this.logic.getPostStatistics(BibTex.class, GroupingEntity.USER, command.getUserName(), null, null, null, filter, 0, 10000, null, null);
 			command.setBibtexCount(totalBibtex);
 		}
-	}	
+	}
 
 	private void setPredictionHistory(AdminAjaxCommand command) {
 		if (command.getUserName() != null && command.getUserName() != "") {
 			List<User> predictions = this.logic.getClassifierHistory(command.getUserName());
 			command.setPredictionHistory(predictions);
-		}		
+		}
 	}
-	
+
 	public AdminAjaxCommand instantiateCommand() {
 		return new AdminAjaxCommand();
 	}

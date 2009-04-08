@@ -16,7 +16,27 @@ function initRequest(){
    	   	return false;
    	}
    	return req;
-}	
+}
+
+/**
+ * flags user as spammers for evaluation
+ */
+function flagSpammerEvaluator(name, rowId, disable, evaluator) {
+	if (name == null || name == "") {
+		addLogMessage("please specify a user");
+		return;
+	}
+	
+	/* colorize */
+	if (rowId != null && disable=='false') {			
+		document.getElementById(rowId).className="spammer";
+	} else {
+		document.getElementById(rowId).style.display = "none";
+	}
+	
+	/* add spammer to db via AJAX*/
+	runAjax("userName=" + name +"&evaluator=" + evaluator, "flag_spammer_evaluator");	
+}
 
 /**
 * flags a user as spammer
@@ -35,9 +55,9 @@ function addSpammer(name, rowId, disable) {
 	} else {
 		document.getElementById(rowId).style.display = "none";
 	}
-		
+	
 	/* add spammer to db via AJAX*/
-	runAjax("userName=" + name, "flag_spammer");
+	runAjax("userName=" + name , "flag_spammer");
 }
 
 
@@ -73,6 +93,29 @@ function unflagSpammer(name, rowId, disable) {
 		
 	/* remove spammer from db via AJAX*/
 	runAjax("userName=" + name, "unflag_spammer");
+}
+
+/**
+* unflags a user as spammer
+* name: name of the user
+* rowId: table row id 
+* disable:  if true row is removed else row is colorized white
+*/	
+function unflagSpammerEvaluator(name, rowId, disable, evaluator) {		
+	if (name == null || name == "") {
+		addLogMessage("please specify a user");
+		return;
+	}
+	
+	/* colorize row */
+	if (rowId != null && disable=='false') {			
+		document.getElementById(rowId).className="nonspammer";
+	} else {
+		document.getElementById(rowId).style.display = "none"; 
+	}
+	
+	/* mark spammer in db via AJAX*/
+	runAjax("userName="+name+"&evaluator=" + evaluator, "unflag_spammer_evaluator");
 }
 
 /**
@@ -153,4 +196,4 @@ function addLogMessage(msg) {
 function clearFields() {		
 	document.getElementsByName("user")[0].value = "";
 	document.getElementsByName("user")[1].value = "";
-}				
+}	
