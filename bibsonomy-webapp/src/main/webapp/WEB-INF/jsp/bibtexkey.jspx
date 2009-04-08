@@ -11,18 +11,31 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" displayIntroduction="${true}">
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${false}" disableActions="${true}" displayIntroduction="${true}">
 		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}s/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.bibtexkey"/></a> :: 
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}s/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.bibtexkey"/></a> ::
+			<c:if test="${not empty command.requestedUser}"><a href="/user/${fn:escapeXml(command.requestedUser)}">${fn:escapeXml(command.requestedUser)}</a> :: </c:if> 
 			<form action="/bibtexkey" method="get" class="smallform">
 		  		<input type="text" id="inpf" name="requestedKey" size="25" value="${fn:escapeXml(command.requestedKey)}" />
+		  		<c:if test="${not empty command.requestedUser}">
+		  			<input type="hidden" name="requestedUser" value="${fn:escapeXml(command.requestedUser)}" />
+		  		</c:if>
 			</form>	
 		</jsp:attribute>
 		<jsp:attribute name="sidebar">
 			<li>
-				<span class="sidebar_h"><fmt:message key="busytags"/></span>
+				<span class="sidebar_h"><fmt:message key="tags"/></span>
 				<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="home"/>
 			</li>
+			
+			<!-- completely hide bookmark column -->
+			<script type="text/javascript">
+			<![CDATA[
+				document.getElementById("bookmarkList").style.display = 'none';
+				document.getElementById("bibtexList").style.width = '97%';
+				document.getElementById("bookmarkList").style.width = '0%';
+			]]>
+			</script>
 		</jsp:attribute>
 	</layout:resourceLayout>
 

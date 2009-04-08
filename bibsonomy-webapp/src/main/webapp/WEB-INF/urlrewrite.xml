@@ -128,6 +128,14 @@
 		<set type="parameter" name="layout">$1</set>
 		<to>/$2</to>
 	</rule>
+	
+	<!-- personalized view  -->
+	<rule>
+		<name>/personalized/</name>
+		<from>^/+personalized/+(.*)$</from>
+		<set type="parameter" name="personalized">1</set>
+		<to>/$1</to>
+	</rule>	
 
 	
 	<rule>
@@ -339,13 +347,25 @@
 		<set type="parameter" name="requUser">$1</set>
 		<to last="true">/UserFOAFOutput.jsp</to>
 	</rule>
-
+	<!-- /bibtexkey/KEY/USER -->
+	<rule>
+		<name>/bibtexkey/user</name>
+		<note>basically the same as /bibtexkey/key+sys:user:USERNAME, but kept for compatibility reasons</note>
+		<from>^/+bibtexkey/+(.+)/([^ ]*?)$</from>
+		<set type="parameter" name="requestedKey">$1</set>
+		<set type="parameter" name="requestedUser">$2</set>
+		<to last="true">/bibtexkey</to>
+	</rule>	
+	<!-- /bibtexkey/KEY (+ eventual system tags) -->
 	<rule>
 		<name>/bibtexkey</name>
-		<from>^/+bibtexkey/+(.+)$</from>
+		<note>bibtexkeys may not contain spaces; systemtags may be appended (e.g. /bibtexkey/key+sys:user:dbenz)</note>
+		<from>^/+bibtexkey/+([^ ]+) ?(.*)$</from>
 		<set type="parameter" name="requestedKey">$1</set>
+		<set type="parameter" name="requestedTags">$2</set>
 		<to last="true">/bibtexkey</to>
 	</rule>
+	
 	<rule>
 		<name>/uploadFile</name>
 		<from>^/+uploadFile/+([0-9a-fA-F]+)$</from>
@@ -358,7 +378,7 @@
 		<from>^/+documents/(.+)$</from>
 		<set type="parameter" name="requHash">$1</set>
 		<to last="true">/DocumentDownloadHandler</to>
-	</rule>	
+	</rule>
 
 
 	<!-- ############## viewable pages ############### -->

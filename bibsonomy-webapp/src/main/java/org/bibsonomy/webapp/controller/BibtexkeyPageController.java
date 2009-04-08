@@ -1,24 +1,27 @@
 package org.bibsonomy.webapp.controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.BibtexkeyCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 /**
  * Controller for BibtexKey * 
  *
- * @author Flori
+ * @author Flori, Dominik Benz
  * @version $Id$
  */
 public class BibtexkeyPageController extends SingleResourceListController implements MinimalisticController<BibtexkeyCommand> {
@@ -27,41 +30,87 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 	public View workOn(BibtexkeyCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
+		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
 		
-		if (!ValidationUtils.present(command.getRequestedKey())) {
+		if (!present(command.getRequestedKey())) {
 			log.error("Invalid query /bibtexkey without key");
 			throw new MalformedURLSchemeException("error.bibtexkey_no_key");
 		}
 		
+		// add bibtexkey as systemtag
+		command.getRequestedTagsList().add(SystemTagsUtil.buildSystemTagString(SystemTags.BIBTEXKEY, command.getRequestedKey()));		
+		
+		// default grouping entity / grouping name
+		GroupingEntity groupingEntity = GroupingEntity.ALL;
+		String groupingName = null;
+				
+		// check for systemtag sys:user:USERNAME
+		List<String> sysTags = SystemTagsUtil.extractSystemTagsFromString(command.getRequestedTags(), " ");		
+		final String systemTagUser = extractSystemTagUser(sysTags);		
+		if (systemTagUser != null) {
+			command.setRequestedUser(systemTagUser);
+		}
+
+		// check if user was given via /bibtexkey/KEY/USERNAME or systemtag
+		if (present(command.getRequestedUser())) {
+			groupingEntity = GroupingEntity.USER;
+			groupingName = command.getRequestedUser();
+		}
+						
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			// disable manual setting of start value for homepage
-			command.getListCommand(resourceType).setStart(0);
-			ArrayList<String> listWithBibtexKey = new ArrayList<String>();
-			listWithBibtexKey.add(SystemTagsUtil.buildSystemTagString(SystemTags.BIBTEXKEY, command.getRequestedKey()));
-			setList(command, resourceType, GroupingEntity.ALL, null, listWithBibtexKey, null, null, null, null, 20);
-			
+			setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
 			postProcessAndSortList(command, resourceType);
 		}
-		
-		command.setPageTitle("bibtexkey :: " + command.getRequestedKey());
-		
-		// html format - retrieve tags and return HTML view
+						
+		// html format - fetch tags and return HTML view
 		if (command.getFormat().equals("html")) {
+			// tags
+			setTags(command, BibTex.class, groupingEntity, groupingName, null, command.getRequestedTagsList(), null, null, 0, 1000, null);
+			if (command.getTagcloud().getTags().size() > 999) {
+				log.error("Found bibtex entries by bibtex keys with more than 1000 tags assigned!!");
+			}
+			// pagetitle
+			String pageTitle = "bibtexkey :: " + command.getRequestedKey();
+			if (GroupingEntity.USER.equals(groupingEntity)) {
+				pageTitle += " :: " + command.getRequestedUser() ;
+			}
+			command.setPageTitle(pageTitle);			
 			this.endTiming();
 			return Views.BIBTEXKEYPAGE;	
 		}
-		this.endTiming();
+		
 		// export - return the appropriate view
+		this.endTiming();
 		return Views.getViewByFormat(command.getFormat());				
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
+	 */
 	public BibtexkeyCommand instantiateCommand() {
 		return new BibtexkeyCommand();
 	}
+	
+	/**
+	 * Check if 
+	 * @param sysTags
+	 * 		- a list of system tags (strings)
+	 * @return
+	 * 		- the value of the user system tag, if present (i.e. USERNAME if sys:user:USERNAME is present, 
+	 *        null otherwise 
+	 */
+	private String extractSystemTagUser(List<String> sysTags) {
+		for (String sysTag : sysTags) {
+			if (sysTag.toLowerCase().startsWith(SystemTags.USER.getPrefix().toLowerCase())) {
+				return sysTag.substring(sysTag.lastIndexOf(SystemTags.SYSTAG_DELIM) + 1, sysTag.length()).trim();
+			}
+		}
+		return null;
+	}	
 
 }

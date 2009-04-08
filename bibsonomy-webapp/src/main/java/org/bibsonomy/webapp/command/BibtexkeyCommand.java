@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.command;
 
+import edu.umass.cs.mallet.base.fst.SimpleTagger;
+
 /**
  * 
  * Bean for providing the bibtexkey
@@ -7,7 +9,7 @@ package org.bibsonomy.webapp.command;
  * @author Flori
  * @version $Id$
  */
-public class BibtexkeyCommand extends SimpleResourceViewCommand{
+public class BibtexkeyCommand extends TagResourceViewCommand{
 	
 	/** String to search for */
 	private String requestedKey = "";
