@@ -159,6 +159,16 @@
 						</property>
 					</bean>
 				</entry>
+					<entry key="/admin_userinfo">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="adminPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>userinfo</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/generalAjax">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="getUrlAjaxController"/>
@@ -179,6 +189,7 @@
 								<value>userName</value>
 								<value>value</value>
 								<value>key</value>
+								<value>evaluator</value>
 							</list>
 						</property>
 					</bean>
