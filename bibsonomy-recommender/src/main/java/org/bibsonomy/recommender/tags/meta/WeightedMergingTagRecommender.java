@@ -115,7 +115,7 @@ public class WeightedMergingTagRecommender extends AbstractTagRecommender {
 	}
 	
 	public String getInfo() {
-		return "Most Popular Tags Mix Recommender";
+		return "Merges and weights the recommendations of the given recommenders.";
 	}
 
 

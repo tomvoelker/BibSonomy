@@ -91,13 +91,13 @@ public class DBAccessTest {
 		Long qid       = new Long(0);
 		String recInfo = "TestCase-non-Recommender";
 		String recMeta = "NON-NULL-META";
-		String recDescr= "mypackage.classname";
+		String recId   = "mypackage.classname";
 		// store and retrieve recommender informations
 		Long sid;
 		RecSettingParam retVal = null;
-		sid = DBAccess.addRecommender(qid, recInfo, recDescr, recMeta.getBytes());
+		sid = DBAccess.addRecommender(qid, recId, recInfo, recMeta.getBytes());
 		retVal = DBAccess.getRecommender(sid);
-		assertEquals(recInfo, retVal.getRecId());
+		assertEquals(recId, retVal.getRecId());
 		assertArrayEquals(recMeta.getBytes(), retVal.getRecMeta());
 	}
 
