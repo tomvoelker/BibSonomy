@@ -3,13 +3,11 @@ package beans;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import recommender.model.RecommendedTag;
 import resources.Resource;
 
 public abstract class ResourceSuperBean<T extends Resource> implements Serializable {
@@ -18,7 +16,6 @@ public abstract class ResourceSuperBean<T extends Resource> implements Serializa
 	private Hashtable<String,String> errors;
 	private String tagstring;
 	private String copytag;
-	private Collection<RecommendedTag> recommendedTags;
 	
 	private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 	
@@ -83,16 +80,6 @@ public abstract class ResourceSuperBean<T extends Resource> implements Serializa
 		} else {
 			return new StringTokenizer(copytag);
 		}
-	}
-	
-	/*
-	 * recommended Tags from Recommender
-	 */
-	public Collection<RecommendedTag> getRecommendedTags() {
-		return recommendedTags;
-	}
-	public void setRecommendedTags(Collection<RecommendedTag> recommendedTags) {
-		this.recommendedTags = recommendedTags;
 	}
 	
 	/*
