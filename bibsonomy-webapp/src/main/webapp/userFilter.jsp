@@ -1,8 +1,5 @@
 <%@include file="/include_jsp_head.jsp" %>
 
-<%-- Bean einbinden --%>
-<jsp:useBean id="ResourceBean" class="beans.ResourceBean" scope="request"/>
-
 <%-- include HTML header --%>
 <jsp:include page="html_header.jsp">
   <jsp:param name="title" value="user::${param.requUser}" />
