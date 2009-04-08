@@ -67,8 +67,8 @@ public class RedirectController implements MinimalisticController<RedirectComman
 			}
 
 		} else if (ValidationUtils.present(url)) { 
-			/* ********************************************************************************
-			 * 
+			/* 
+			 * Handle /uri/ content negotiating using the Accept: header.
 			 */
 			log.debug("doing content negotiation for URL " + url);
 			redirectUrl = getContentNegotiationRedirect(url, requestLogic.getAccept());
