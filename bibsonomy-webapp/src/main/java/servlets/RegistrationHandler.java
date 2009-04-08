@@ -92,17 +92,17 @@ public class RegistrationHandler extends HttpServlet {
 				/* 
 				 * user wants to change it's password after getting a reminder 
 				 */
-				log.fatal("this code point should never be reached - password change on reminder already moved to new system");
+				log.fatal("DEPRECATED: this code point should never be reached - password change on reminder already moved to new system");
 			} else if (bean.isPasswordReminder()) {
 				/*
 				 * user wants to get a password reminder
 				 */
-				log.fatal("this code point should never be reached - password reminder already moved to new system");
+				log.fatal("DEPRECATED: this code point should never be reached - password reminder already moved to new system");
 			} else {
 				/* 
 				 * a new user wants to register  
 				 */
-				log.fatal("this code point should never be reached - user registration already moved to new system");
+				log.fatal("DEPRECATED: this code point should never be reached - user registration already moved to new system");
 
 			}			
 		} catch (SQLException e) {
