@@ -9,15 +9,12 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tags.AbstractTagRecommender;
-import org.bibsonomy.recommender.tags.popular.MostPopularByResourceTagRecommender;
-import org.bibsonomy.recommender.tags.popular.MostPopularByUserTagRecommender;
-import org.bibsonomy.recommender.tags.simple.SimpleContentBasedTagRecommender;
 import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
  * Takes the tags from {@link #firstTagRecommender} and orders them by their scores
  * from {@link #secondTagRecommender}. If they're not recommended by {@link #secondTagRecommender},
- * they get a score of 0. If {@link #firstTagRecommender} can't deliver enough tags, they're filled
+ * they get a lower score. If {@link #firstTagRecommender} can't deliver enough tags, they're filled
  * up by the top tags from {@link #secondTagRecommender}.
  * 
  * @author rja
@@ -26,8 +23,8 @@ import org.bibsonomy.services.recommender.TagRecommender;
 public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagRecommender {
 	private static final Logger log = Logger.getLogger(TagsFromFirstWeightedBySecondTagRecommender.class);
 
-	private TagRecommender firstTagRecommender;
-	private TagRecommender secondTagRecommender;
+	protected TagRecommender firstTagRecommender;
+	protected TagRecommender secondTagRecommender;
 
 	/**
 	 * Initializes the recommender with the given recommenders.
@@ -42,13 +39,10 @@ public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagReco
 	}
 	
 	/**
-	 * Initializes the tag recommenders with a {@link MostPopularByUserTagRecommender} 
-	 * and {@link MostPopularByResourceTagRecommender} recommender, giving the first one
-	 * a weight of 0.4 and the second one a weight of 0.6.
+	 * Don't initializes any recommenders - you have to call the setters!
 	 */
 	public TagsFromFirstWeightedBySecondTagRecommender() {
-		this.firstTagRecommender = new SimpleContentBasedTagRecommender();
-		this.secondTagRecommender = new MostPopularByUserTagRecommender();
+		super();
 	}
 	
 	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
@@ -80,32 +74,16 @@ public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagReco
 		log.debug("got " + secondRecommendedTags.size() + " recommendations from " + secondTagRecommender);
 
 		/*
-		 * Iterate over tags from first recommender until we have enough tags
-		 * Put only those into result, which occur in second recommendation.
-		 */
-		final Iterator<RecommendedTag> iterator = firstRecommendedTags.iterator();
-		/*
 		 * The scores from the tags in the next 'fill up round' should be lower 
 		 * as the scores from this 'round'. Thus, we find the smallest value 
 		 */
-		double min = Double.MAX_VALUE;
-		while (recommendedTags.size() < numberOfTagsToRecommend && iterator.hasNext()) {
-			final RecommendedTag recommendedTag = iterator.next();
-			if (!recommendedTags.contains(recommendedTag) && secondRecommendedTags.contains(recommendedTag)) {
-				/*
-				 * add tag
-				 */
-				final RecommendedTag secondRecommendedTag = secondRecommendedTags.get(recommendedTag);
-				recommendedTags.add(secondRecommendedTag);
-				/*
-				 * find minimal score (for next round)
-				 */
-				final double score = secondRecommendedTag.getScore();
-				if (score < min) min = score;
-			} 
-		}
-		
-		log.debug("used " + recommendedTags.size() + " tags from the first recommender");
+		final double minScore = doFirstRound(recommendedTags, firstRecommendedTags, secondRecommendedTags); 
+		log.debug("used " + recommendedTags.size() + " tags from the first recommender which occured in second recommender");
+
+
+		final int ctr = doSecondRound(recommendedTags, firstRecommendedTags, secondRecommendedTags, minScore); 
+		log.debug("used another " + ctr + " tags from the first recommender ");		
+
 		
 		/*
 		 * If we have not enough tags, yet, add tags from second until set is complete.
@@ -115,32 +93,7 @@ public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagReco
 			 * we want to get the top tags, not ordered alphabetically!
 			 */
 			final SortedSet<RecommendedTag> topRecommendedTags = secondRecommendedTags.getTopTags();
-			final Iterator<RecommendedTag> iterator2 = topRecommendedTags.iterator();
-			int ctr = 0;
-			while (recommendedTags.size() < numberOfTagsToRecommend && iterator2.hasNext()) {
-				final RecommendedTag recommendedTag = iterator2.next();
-				if (!recommendedTags.contains(recommendedTag)) {
-					ctr++;
-					/*
-					 * re-compute score
-					 */
-					if (min > 0) {
-						/*
-						 * go closer to zero (and don't do 'min/1 = min', thus '/ctr + 1')
-						 */
-						recommendedTag.setScore(min / (ctr + 1));
-					} else {
-						/*
-						 * go closer to -infinity
-						 */
-						recommendedTag.setScore(min - ctr);
-					}
-					/*
-					 * FIXME: remember to request "almost all" tags from MostPopularByUser when configuring using Spring ...
-					 */
-					recommendedTags.add(recommendedTag);
-				}
-			}
+			doThirdRound(recommendedTags, topRecommendedTags, minScore, recommendedTags.size());
 		}
 		if (log.isDebugEnabled()) {
 			log.debug("final recommendation: " + recommendedTags);
@@ -148,6 +101,107 @@ public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagReco
 
 	}
 
+
+	protected double doFirstRound(final Collection<RecommendedTag> recommendedTags, final SortedSet<RecommendedTag> firstRecommendedTags, final MapBackedSet<String, RecommendedTag> secondRecommendedTags) {
+		/* 
+		 * First round:
+		 * Iterate over tags from first recommender and check them against second recommender.
+		 * Add only those tags, which are contained in the second recommender
+		 */
+		final Iterator<RecommendedTag> iterator1 = firstRecommendedTags.iterator();
+		/*
+		 * We need to find the minimum to add the remaining tags with lower scores
+		 */
+		double minScore = Double.MAX_VALUE;
+		while (recommendedTags.size() < numberOfTagsToRecommend && iterator1.hasNext()) {
+			final RecommendedTag recommendedTag = iterator1.next();
+			if (secondRecommendedTags.contains(recommendedTag)) {
+				/*
+				 * this tag is also recommended by the second recommender: give it his score
+				 */
+
+				final RecommendedTag secondRecommendedTag = secondRecommendedTags.get(recommendedTag);
+				recommendedTags.add(secondRecommendedTag);
+				/*
+				 * remember minimal score
+				 */
+				final double score = secondRecommendedTag.getScore();
+				if (score < minScore) minScore = score;
+				/*
+				 * remove tag, such that don't use it again in the second round
+				 */
+				iterator1.remove();
+			}
+		}
+		return minScore;
+	}
+
+	protected int doSecondRound(final Collection<RecommendedTag> recommendedTags, final SortedSet<RecommendedTag> firstRecommendedTags, final MapBackedSet<String, RecommendedTag> secondRecommendedTags, final double minScore) {
+		/*
+		 * Second round:
+		 * add remaining tags from first recommender, scored lower than the tags before
+		 */
+		final Iterator<RecommendedTag> iterator2 = firstRecommendedTags.iterator();
+		int ctr = 0;
+		while (recommendedTags.size() < numberOfTagsToRecommend && iterator2.hasNext()) {
+			final RecommendedTag recommendedTag = iterator2.next();
+			ctr++;
+			recommendedTag.setScore(getLowerScore(minScore, ctr));
+			recommendedTags.add(recommendedTag);
+		}
+		return ctr;
+	}
+
+	protected int doThirdRound(final Collection<RecommendedTag> recommendedTags, final SortedSet<RecommendedTag> thirdRecommendedTags, final double minScore, final int ctr) {
+		/*
+		 * Third round:
+		 * If we have not enough tags, yet, add tags from third recommender until set is complete.
+		 */
+		int myCtr = ctr;
+		final Iterator<RecommendedTag> iterator3 = thirdRecommendedTags.iterator();
+		while (recommendedTags.size() < numberOfTagsToRecommend && iterator3.hasNext()) {
+			final RecommendedTag recommendedTag = iterator3.next();
+			if (!recommendedTags.contains(recommendedTag)) {
+				/*
+				 * tag has not already been added -> set its score lower than min
+				 */
+				myCtr++;
+				recommendedTag.setScore(getLowerScore(minScore, myCtr));
+				recommendedTags.add(recommendedTag);
+			}
+		}
+		return myCtr;
+
+	}
+	
+
+	/**
+	 * Goal of this method: "append" not so good tags on already recommended ("good") tags 
+	 * by ensuring that their score is lower than the "good" tags.
+	 * 
+	 * Depending on the sign of the min score of the already recommended tags, we apply
+	 * a strategy to use the ctr as score. 
+	 * 
+	 * @param minScore
+	 * @param ctr
+	 * @return
+	 */
+	private double getLowerScore(double minScore, int ctr) {
+		final double newScore;
+		if (minScore > 0) {
+			/*
+			 * go closer to zero (and don't do 'min/1 = min', thus '/ctr + 1')
+			 */
+			newScore = minScore / (ctr + 1);
+		} else {
+			/*
+			 * go closer to -infinity
+			 */
+			newScore = minScore - ctr;
+		}
+		return newScore;
+	}
+	
 	public String getInfo() {
 		return "Using the tags from the second recommender to weight the recommended tags from the first recommender.";
 	}

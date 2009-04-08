@@ -47,6 +47,7 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 		
 		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendedTags(null);
 		
+
 		/*
 		 *  check containment and order of top tags
 		 */
@@ -55,7 +56,7 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 		Assert.assertEquals("vier", iterator.next().getName());
 		Assert.assertEquals("eins", iterator.next().getName());
 		Assert.assertEquals("drei", iterator.next().getName());
-		Assert.assertEquals("net", iterator.next().getName());
+		Assert.assertEquals("zwei", iterator.next().getName());
 		Assert.assertFalse(iterator.hasNext());
 	}
 	
@@ -89,11 +90,11 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 		final Iterator<RecommendedTag> iterator = recommendedTags.iterator();
 		Assert.assertEquals("semantic", iterator.next().getName());
 		Assert.assertEquals("social", iterator.next().getName());
+		Assert.assertEquals("nepomuk", iterator.next().getName());
+		Assert.assertEquals("desktop", iterator.next().getName());
 		Assert.assertEquals("web", iterator.next().getName());
-		Assert.assertEquals("net", iterator.next().getName());
-		Assert.assertEquals("graph", iterator.next().getName());
 		Assert.assertFalse(iterator.hasNext());
 		
 	}
-
+	
 }

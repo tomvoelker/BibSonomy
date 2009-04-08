@@ -134,12 +134,5 @@ public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommenderTest {
 		Assert.assertFalse(iterator.hasNext());
 	}
 	
-	private void print(SortedSet<RecommendedTag> recommendedTags) {
-		System.out.println("[");
-		for (RecommendedTag recommendedTag : recommendedTags) {
-			System.out.println("\t" + recommendedTag);
-		}
-		System.out.println("]");
-	}
 
 }
