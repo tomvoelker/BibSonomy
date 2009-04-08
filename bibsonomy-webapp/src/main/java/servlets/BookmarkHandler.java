@@ -244,6 +244,7 @@ public class BookmarkHandler extends HttpServlet{
 				request.setAttribute("success", "We got your bookmarks from Firefox and will insert them now.");
 				getServletConfig().getServletContext().getRequestDispatcher("/success.jsp").forward(request, response);
 			} else {
+				log.fatal("DEPRECATED: insert / update bookmark should not be done here, already migrated");
 				/* ************************ INSERT + UPDATE  ************************** */
 				BookmarkHandlerBean b = (BookmarkHandlerBean)request.getAttribute("bookmarkHandlerBean");
 				if (b != null && ActionValidationFilter.isValidCkey(request)) {
