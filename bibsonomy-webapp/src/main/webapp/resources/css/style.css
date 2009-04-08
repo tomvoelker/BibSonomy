@@ -760,8 +760,12 @@ li.box_lowerconcept a {
 }
 
 .recommended {
-	display: inline;
-	cursor: pointer;
+	font-weight: bold;
+}
+
+.suggtag a {
+  font-size: 80%;
+  color: black;
 }
 
 /* FAQ */
