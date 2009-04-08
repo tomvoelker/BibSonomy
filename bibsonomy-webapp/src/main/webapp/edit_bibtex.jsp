@@ -85,7 +85,7 @@ td.expl_s {
 </c:if>
 
 
-<h2>Feel free to edit your BibTeX entry</h2>
+<h2>Feel free to edit your publication post</h2>
 
 <form id="postPublicationForm" name="post_bibtex" method="post" action="/bibtex_posting_process">
   <input type="hidden" name="oldhash" value="${bibtexHandlerBean.oldhash}"/>
@@ -96,18 +96,6 @@ td.expl_s {
 
 <table>
     
-  <tr>
-    <td class="expl">tags*</td>
-    <td>
-      <input class="reqinput" type="text" id="inpf" name="tags" onClick="setActiveInputField(this.id); enableHandler();" onFocus="setActiveInputField(this.id); enableHandler()" onBlur="disableHandler()" value='<c:out value="${bibtexHandlerBean.tags}" />' autocomplete="off" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" >
-      <%@include file="/boxes/comma_test.jsp" %> 
-    
-      <div class="errmsg">${bibtexHandlerBean.errors.tags}</div>
-      <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.fullTagString}"/></div>
-    </td>
-    <td class="expl_s">space separated</td>				
-  </tr>
-
 <tr>
   <td class="expl">description,<br>comment</td>
   <td>
@@ -157,22 +145,39 @@ td.expl_s {
 </tr>
 
 
+
+
+<tr><td colspan="3"><hr style="margin: 20px 0px 20px 0px;"></td></tr>
+
+
+
+
+
+
+ <tr>
+    <td class="expl">tags*</td>
+    <td>
+      <input class="reqinput" type="text" id="inpf" name="tags" onClick="setActiveInputField(this.id); enableHandler();" onFocus="setActiveInputField(this.id); enableHandler()" onBlur="disableHandler()" value='<c:out value="${bibtexHandlerBean.tags}" />' autocomplete="off" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" >
+      <%@include file="/boxes/comma_test.jsp" %> 
+    
+      <div class="errmsg">${bibtexHandlerBean.errors.tags}</div>
+      <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.fullTagString}"/></div>
+    </td>
+    <td class="expl_s">space separated</td>       
+  </tr>
+
+
 <tr>
-      <td height="40"  class="expl">
-	    <ul id="suggTags">
-	      <li>suggested</li>
-	    </ul>
-	  </td>
-	  <td height="40">
-        <ul id="suggested" class="suggtag">
-        </ul>
+      <td class="expl">&nbsp;</td>
+	  <td>
+        <div id="suggested" class="suggtag"><!-- This comment is needed, otherwise this will result in a self-closing element --></div>
         <div class="errmsg"></div>
   	  </td>
 	</tr>
   <tr>
     <td class="expl">recommendation</td>
     <td>
-    <div>
+    <div class="recommended">
       <div id="tagField" class="${bibtexHandlerBean.postID}">
           <div class="fsWaitingText">waiting for tags</div>
           <!-- This comment is needed, otherwise this will result in a self-closing element -->
@@ -180,7 +185,7 @@ td.expl_s {
                                 
     </div>
     </td>
-    <td>
+    <td style="vertical-align: middle;">
       <a id="fsReloadLink" href="#">
          <img id="fsReloadButton" src="/resources/image/button_reload-inactive.png" alt="reloading tags" title="reloading tags"/>
       </a>
@@ -191,13 +196,17 @@ td.expl_s {
 <%--  insert copy tags --%>
 <c:if test="${bibtexHandlerBean.copytag != null}">
   <tr>
-    <td colspan="3">
-      <h2>Tags of copied item: </h2>
+    <td class="expl">
+      tags of copied item
+    </td>
+    <td>
       <ul id="copytag" >
         <c:forEach var="elem" items="${bibtexHandlerBean.copytag}">
           <li ><c:out value='${elem}'/></li>
         </c:forEach>
       </ul>    
+    </td>
+    <td>
     </td>
   </tr>
 </c:if>

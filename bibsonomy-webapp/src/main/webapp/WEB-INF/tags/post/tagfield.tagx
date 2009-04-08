@@ -25,23 +25,15 @@
             <form:checkbox path="acceptComma"/><form:label path="acceptComma"><fmt:message key="post.resource.tags.comma"/></form:label>
           </div>
         </c:if>
+        
         <!--+
-            | show copied tags if available
+            | show suggestions
             +-->
-		<c:if test="${not empty command.copytags}">
-			<div>
-               <div class="fsLabel">
-				 <fmt:message key="post.resource.copytags" />
-               </div>
-			   <div id="copytags">
-				  <c:forEach var="tag" items="${command.copytags}">
-					<a href="javascript:copytag('inpf', '${fn:escapeXml(tag.name)}')">
-						<c:out value="${tag.name} " />
-					</a>
-				  </c:forEach>
-				</div>
-			</div>
-		</c:if>
+        <div>
+          <div class="fsLabel">${mtl:ch('nbsp')}</div>
+          <div id="suggested" class="suggtag"><!-- This comment is needed, otherwise this will result in a self-closing element --></div>
+        </div>
+            
         <!--+
             | show recommendations
             +-->
@@ -51,8 +43,8 @@
 		  </div>
           
           <!-- we assign post's id to div's class for accessing clicklog data -->
-		  <div id="tagField" class="${command.postID}">
-		      <div class="fsWaitingText"><fmt:message key="post.resource.waitingForTags"/></div>
+		  <div id="tagField" class="recommended ${command.postID}">
+		      <div class="fsWaitingText" style="font-weight: normal; color: #666;"><fmt:message key="post.resource.waitingForTags"/></div>
 		      <!-- This comment is needed, otherwise this will result in a self-closing element -->
 		  </div>
       
@@ -60,15 +52,26 @@
             <fmt:message var="reloadTags" key="post.resource.reloadRecommendation"/>
             <img id="fsReloadButton" src="${resdir}/image/button_reload-inactive.png" alt="${reloadTags}" title="${reloadTags}"/>
           </a>
-		  												  
 		</div>
-
-        <!--+
-            | show suggestions
+    
+            <!--+
+            | show copied tags if available
             +-->
-		<div>
- 	      <div class="fsLabel"><fmt:message key="post.resource.suggested"/></div>
-          <div id="suggested" class="suggtag"><!-- This comment is needed, otherwise this will result in a self-closing element --></div>
-		</div>
+    <c:if test="${not empty command.copytags}">
+      <div>
+               <div class="fsLabel">
+         <fmt:message key="post.resource.copytags" />
+               </div>
+         <div id="copytags">
+          <c:forEach var="tag" items="${command.copytags}">
+          <a href="javascript:copytag('inpf', '${fn:escapeXml(tag.name)}')">
+            <c:out value="${tag.name} " />
+          </a>
+          </c:forEach>
+        </div>
+      </div>
+    </c:if>
+
+
 	</fieldset>
 </jsp:root>
