@@ -96,7 +96,17 @@ public class RedirectController implements MinimalisticController<RedirectComman
 		/*
 		 * build redirectUrl
 		 */
-		return "/" + HeaderUtils.getResponseFormat(acceptHeader, resourceType) + "/" + url;
+		final String responseFormat = HeaderUtils.getResponseFormat(acceptHeader, resourceType);
+		/*
+		 * check, if specific format returned
+		 */
+		if (ValidationUtils.present(responseFormat)) {
+			return "/" + responseFormat + "/" + url;
+		} 
+		/*
+		 * redirect to default format
+		 */
+		return "/" + url;
 	}
 
 	/** Handles redirects for main page search form. 
