@@ -20,8 +20,6 @@
     response.setDateHeader("Expires",-1);
     response.setDateHeader("Last-Modified",0);
 %>
-<sql:setDataSource dataSource="jdbc/bibsonomy" var="dataSource"/> 
-<jsp:useBean id="ResourceBean" class="beans.ResourceBean" scope="request"/>
 
 
 <%--
