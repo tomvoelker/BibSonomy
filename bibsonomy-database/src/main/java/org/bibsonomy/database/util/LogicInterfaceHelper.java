@@ -205,7 +205,7 @@ public class LogicInterfaceHelper {
 			return true;
 		} else if (tagName.equals("bibtexkey")) {
 			// :bibtexkey: add bibtex key to param object
-			((BibTexParam) param).setBibtexKey(tagValue);
+			param.setBibtexKey(tagValue);
 			logger.debug("set bibtex key to " + tagValue + " after matching for bibtexkey system tag");
 			return true;
 		} else if (tagName.equals("days")) {

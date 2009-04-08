@@ -29,6 +29,7 @@ public class GetAllTags extends TagChainElement {
 				param.getOrder() != Order.POPULAR &&
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
+				!present(param.getBibtexKey()) &&
 				!present(param.getSearch()));
 	}
 }

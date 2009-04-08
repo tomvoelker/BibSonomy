@@ -29,6 +29,10 @@ public class GetTagsByFriendOfUser extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return (param.getGrouping() == GroupingEntity.FRIEND && present(param.getRequestedUserName()) && !present(param.getRegex()) && !present(param.getHash()));
+		return (param.getGrouping() == GroupingEntity.FRIEND && 
+				present(param.getRequestedUserName()) && 
+				!present(param.getRegex()) &&
+				!present(param.getBibtexKey()) &&
+				!present(param.getHash()));
 	}
 }

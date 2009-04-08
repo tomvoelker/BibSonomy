@@ -731,8 +731,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of tags
 	 */
 	public List<Tag> getTags(final TagParam param, final DBSession session) {
-		final List<Tag> tags = chain.getFirstElement().perform(param, session); 
-		return this.setUsercountToGlobalCount(tags);		
+		final List<Tag> tags = chain.getFirstElement().perform(param, session);
+		return this.setUsercountToGlobalCount(tags);
 	}
 
 	/**
@@ -745,7 +745,9 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	private List<Tag> setUsercountToGlobalCount(final List<Tag> tags) {
 		for (final Tag tag : tags) {
-			tag.setUsercount(tag.getGlobalcount());
+			if (tag.getUsercount() == 0) {
+				tag.setUsercount(tag.getGlobalcount());
+			}
 		}
 		return tags;
 	}
@@ -949,4 +951,31 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getTagsByFriendOfUser(TagParam param, DBSession session) {
 		return this.queryForList("getTagsByFriendOfUser", param, Tag.class, session);
 	}
+	
+	/**
+	 * Retrieve tags for a given bibtexkey
+	 * 
+	 * @param bibtexKey
+	 * 			- the requested key
+	 * @param visibleGroupIDs
+	 * 			- the groups the logged-in user is allowed to see
+	 * @param requestedUserName
+	 * 			- retrieve only tags of this user  
+	 * @param session
+	 * 			- the DB session
+	 * @param limit 
+	 * @param offset
+	 * @return a list of tags, used to annotate the bibtex(s) with the given bibtex key (eventually by the requested user)
+	 */
+	public List<Tag> getTagsByBibtexkey(final String bibtexKey, final List<Integer> visibleGroupIDs, final String requestedUserName, final String loginUserName, final int limit, final int offset, DBSession session) {
+		TagParam param = new TagParam();
+		param.setBibtexKey(bibtexKey);
+		param.setGroups(visibleGroupIDs);
+		param.setUserName(loginUserName);		
+		param.setRequestedUserName(requestedUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		return this.queryForList("getTagsByBibtexkey", param, Tag.class, session);
+	}
+	
 }

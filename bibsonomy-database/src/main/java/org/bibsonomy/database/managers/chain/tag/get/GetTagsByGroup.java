@@ -38,6 +38,7 @@ public class GetTagsByGroup extends TagChainElement {
 				present(param.getRequestedGroupName()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getRegex()) &&
+				!present(param.getBibtexKey()) &&
 				!present(param.getSearch()));
 	}
 }

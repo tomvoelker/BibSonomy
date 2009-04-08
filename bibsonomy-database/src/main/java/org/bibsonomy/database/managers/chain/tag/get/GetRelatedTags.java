@@ -29,6 +29,7 @@ public class GetRelatedTags extends TagChainElement {
 	protected boolean canHandle(final TagParam param) {
 		return (param.getGrouping() == GroupingEntity.ALL &&
 				present(param.getTagIndex()) &&
+				!present(param.getBibtexKey()) &&
 				nullOrEqual(param.getTagRelationType(), TagSimilarity.COOC));
 	}
 }

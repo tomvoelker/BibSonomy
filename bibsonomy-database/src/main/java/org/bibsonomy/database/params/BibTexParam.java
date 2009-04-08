@@ -39,15 +39,13 @@ public class BibTexParam extends ResourcesParam<BibTex> {
 	 */
 	private boolean documentsAttached;
 	
-	private String bibtexKey;
-
 	public BibTexParam() {
 		super();
 		
 		this.firstYear = null;
 		this.lastYear = null;
 		this.year = null;
-		this.bibtexKey = null;
+		this.setBibtexKey(null);
 	}
 
 	@Override
@@ -86,14 +84,6 @@ public class BibTexParam extends ResourcesParam<BibTex> {
 
 	public void setYear(String year) {
 		this.year = year;
-	}
-
-	public String getBibtexKey() {
-		return this.bibtexKey;
-	}
-
-	public void setBibtexKey(String requestedBibtexkey) {
-		this.bibtexKey = requestedBibtexkey;
 	}
 
 	public boolean isDocumentsAttached() {

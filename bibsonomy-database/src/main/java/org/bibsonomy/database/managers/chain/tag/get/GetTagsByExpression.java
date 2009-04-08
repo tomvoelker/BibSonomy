@@ -29,6 +29,7 @@ public class GetTagsByExpression extends TagChainElement {
 		return (present(param.getRegex()) &&
 				present(param.getGrouping()) &&
 				param.getGrouping() == GroupingEntity.USER &&
+				!present(param.getBibtexKey()) &&
 				present(param.getRequestedUserName()));
 	}
 }

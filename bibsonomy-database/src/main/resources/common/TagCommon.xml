@@ -8,6 +8,11 @@
 	    <result property="globalcount" column="tag_ctr" javaType="int" />
 	</resultMap>
 	
+	<resultMap id="tagWithGlobalAndUserCount" class="tag" extends="Common.tag">
+	    <result property="usercount" column="tag_ctr_user" javaType="int" />
+	    <result property="globalcount" column="tag_ctr_global" javaType="int" />
+	</resultMap>	
+	
 	<resultMap id="tagWithSubtags" class="tag" extends="Common.tag">
 	    <result property="subtagsString" column="subtags" javaType="String" />
 	</resultMap>	

@@ -163,6 +163,11 @@ public abstract class GenericParam {
      * of available days?!
 	 */
 	private int days;
+	
+	/*
+	 * retrieve resources via their bibtexkey 
+	 */
+	private String bibtexKey;
 
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
@@ -583,5 +588,13 @@ public abstract class GenericParam {
 
 	public SearchEntity getSearchEntity() {
 		return searchEntity;
+	}
+
+	public void setBibtexKey(String bibtexKey) {
+		this.bibtexKey = bibtexKey;
+	}
+
+	public String getBibtexKey() {
+		return bibtexKey;
 	}	
 }

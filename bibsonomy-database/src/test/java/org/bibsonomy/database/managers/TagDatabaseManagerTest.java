@@ -3,9 +3,12 @@ package org.bibsonomy.database.managers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -267,6 +270,50 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		
 		this.tagDb.updateTags(user, tagsToReplace, replacementTags, this.dbSession);
+	}
+	
+	/**
+	 * tests getTagsByBibtexkey
+	 */
+	@Test
+	public void getTagsByBibtexkey() {
+		/*
+		 * fetch tags from public bibtex entries with the key "test bibtexkey"
+		 * (should be 3)
+		 */
+		ArrayList<Integer> visibleGroups = new ArrayList<Integer>();
+		visibleGroups.add(GroupID.PUBLIC.getId());
+		String requestedUserName = null;
+		String loginUserName = null;
+		int offset = 0;
+		int limit = 10;		
+		List<Tag> tags = this.tagDb.getTagsByBibtexkey("test bibtexKey", visibleGroups, requestedUserName, loginUserName, limit, offset, this.dbSession);
+		assertEquals(3, tags.size());
+		assertTrue(tags.contains(new Tag("spam")));
+		assertTrue(tags.contains(new Tag("testbibtex")));
+		assertTrue(tags.contains(new Tag("testtag")));
+		
+		/*
+		 * fetch tags from public bibtex entries of testuser1 with the key "test bibtexkey"
+		 * (should be 2)
+		 */
+		requestedUserName = "testuser1";
+		tags = this.tagDb.getTagsByBibtexkey("test bibtexKey", visibleGroups, requestedUserName, loginUserName, limit, offset, this.dbSession);
+		assertEquals(2, tags.size());
+		assertTrue(tags.contains(new Tag("testbibtex")));
+		assertTrue(tags.contains(new Tag("testtag")));
+		
+		/*
+		 * fetch tags from private bibtexs of testuser1 with the key "test bibtexkey"
+		 * (should be 1)
+		 */
+		requestedUserName = null;
+		loginUserName = "testuser1";
+		visibleGroups.clear();
+		visibleGroups.add(GroupID.PRIVATE.getId());
+		tags = this.tagDb.getTagsByBibtexkey("test bibtexKey", visibleGroups, requestedUserName, loginUserName, limit, offset, this.dbSession);
+		assertEquals(1, tags.size());
+		assertEquals("privatebibtex", tags.get(0).getName());		
 	}
 	
 }

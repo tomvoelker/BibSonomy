@@ -24,10 +24,11 @@ public class GetPopularTags extends TagChainElement {
 	
 	@Override
 	protected boolean canHandle(TagParam param) {
-		return (param.getGrouping() == GroupingEntity.ALL && 
-				(param.getOrder() == Order.POPULAR) &&
+		return (GroupingEntity.ALL.equals(param.getGrouping()) && 
+				Order.POPULAR.equals(param.getOrder()) &&
 				!present(param.getRegex()) &&
 				!present(param.getSearch()) &&
+				!present(param.getBibtexKey()) &&
 				!present(param.getHash()));
 	}
 

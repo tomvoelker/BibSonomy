@@ -47,6 +47,7 @@ public class getTagsByHashForUser extends TagChainElement {
 		return (present(param.getGrouping()) &&
 				param.getGrouping() == GroupingEntity.USER &&
 				present(param.getHash()) &&
+				!present(param.getBibtexKey()) &&
 				present(param.getRequestedUserName()));
 	}
 }

@@ -1,71 +1,108 @@
 package org.bibsonomy.database.managers.chain.tag;
 
 import static org.junit.Assert.assertEquals;
-import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
+import org.bibsonomy.database.managers.chain.tag.get.*;
+import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Tag;
-import org.junit.Ignore;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.enums.Order;
 import org.junit.Test;
 
 /**
- * Tests related to the Tag Chain.
+ * Tests the correct reaction of reach chain element of the tag chain.
  * 
  * @author Dominik Benz
  * @author Miranda Grahl
  * @version $Id$
  */
-@Ignore
 public class TagChainTest extends AbstractChainTest {
 
 	/**
-	 * Get tags by user
+	 * get all tags, i.e. most often used tags out of the last 10000
 	 */
 	@Test
-	public void GetTagsByUser() {
-		this.tagParam.setGrouping(GroupingEntity.USER);
-		this.tagParam.setRequestedUserName("hotho");
-		this.tagParam.setUserName("hotho");
-		this.tagParam.setGroupId(GroupID.INVALID.getId());
-		this.tagParam.setRegex(null);
-		this.tagParam.setLimit(1500);
-		this.tagParam.setTagIndex(null);
-		 //start chain
-		final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);		
-		assertEquals(1412, tags.size());
+	public void GetAllTags() {
+		TagParam param = new TagParam();
+		param.setGrouping(GroupingEntity.ALL);
+		param.setTagIndex(null);
+		param.setHash(null);
+		param.setContentTypeByClass(Resource.class);
+		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
+		assertEquals(GetAllTags.class, this.chainStatus.getChainElement().getClass());
 	}
 
 	/**
-	 *  get tags by group
+	 * get popular tags
 	 */
 	@Test
-	public void GetTagsByGroup() {
-		 this.tagParam.setGrouping(GroupingEntity.GROUP);
-		 this.tagParam.setLimit(10);
-		 this.tagParam.setGroupId(GroupID.INVALID.getId());
-		 this.tagParam.addGroup(GroupID.PUBLIC.getId());
-    	 final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);         
-		 assertEquals(10, tags.size());
+	public void getPopularTags() {
+		TagParam param = new TagParam();
+		param.setGrouping(GroupingEntity.ALL);
+		param.setOrder(Order.POPULAR);
+		param.setTagIndex(null);
+		param.setHash(null);
+		param.setRegex(null);
+		param.setSearch(null);
+		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
+		assertEquals(GetPopularTags.class, this.chainStatus.getChainElement().getClass());
 	}
 
 	/**
-	 * get tags viewable
+	 * get related tags
 	 */
 	@Test
-	public void GetTagsViewable() {
-		 this.tagParam.setGrouping(GroupingEntity.VIEWABLE);
-		 this.tagParam.setSearch("");
-		 this.tagParam.setUserName("hotho");
-		 this.tagParam.setRegex(null);
-		 this.tagParam.setRequestedGroupName("kde");
-		 this.tagParam.setTagIndex(null);
-		 this.tagParam.setLimit(1000);
-		 this.tagParam.setOffset(0);
-		 final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);
-		 assertEquals(333, tags.size());		 
+	public void getRelatedTags() {
+		// TODO
+	}
+
+	/**
+	 * get related tags for group
+	 */
+	@Test
+	public void getRelatedTagsForGroup() {
+		// TODO
+	}
+
+	/**
+	 * get similar tags
+	 */
+	@Test
+	public void getSimilarTags() {
+		// TODO
+	}
+
+	/**
+	 * get tags by author
+	 */
+	@Test
+	public void GetTagsByAuthor() {
+		TagParam param = new TagParam();
+		param.setTagIndex(null);
+		param.setGrouping(GroupingEntity.VIEWABLE);
+		param.setSearch("Stumme");
+		param.setContentTypeByClass(BibTex.class);
+		param.setSearchEntity(SearchEntity.AUTHOR);
+		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
+		assertEquals(GetTagsByAuthor.class, this.chainStatus.getChainElement().getClass());
+	}
+
+	/**
+	 * get tags by bibtex key
+	 */
+	@Test
+	public void GetTagsByBibtexKey() {
+		TagParam param = new TagParam();
+		param.setBibtexKey("test bibtexkey");
+		param.setGrouping(GroupingEntity.ALL);
+		param.setRequestedUserName(null);
+		param.addGroup(GroupID.PUBLIC.getId());
+		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
+		assertEquals(GetTagsByBibtexkey.class, this.chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -73,40 +110,84 @@ public class TagChainTest extends AbstractChainTest {
 	 */
 	@Test
 	public void GetTagsByExpression() {
-		 this.tagParam.setRegex("web");
-		 this.tagParam.setGrouping(GroupingEntity.USER);
-		 this.tagParam.setRequestedUserName("hotho");
-		 this.tagParam.setLimit(100);
-    	 final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);         
-		 assertEquals(12, tags.size());		
+		TagParam param = new TagParam();
+		param.setRegex("web");
+		param.setGrouping(GroupingEntity.USER);
+		param.setRequestedUserName("hotho");
+		param.setContentTypeByClass(Resource.class);
+		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
+		assertEquals(GetTagsByExpression.class, this.chainStatus.getChainElement().getClass());
 	}
 
 	/**
-	 * get all tags, i.e. most often used tags out of the last 10000
+	 * get tags by friend of user
 	 */
 	@Test
-	public void GetAllTags() {
-		this.tagParam.setGrouping(GroupingEntity.ALL);
-		this.tagParam.setLimit(100);
-		this.tagParam.setTagIndex(null);
-		System.out.println("getAllTags");
-		final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);
-		assertEquals(0, tags.size()); // only 'dblp' in the current test database
+	public void GetTagsByFriendOfUser() {
+		// TODO
 	}
 
 	/**
-	 * get tags by author
-	 * 
-	 * TODO: adapt to new Test DB
+	 * get tags by group
 	 */
-	@Ignore
-	public void GetTagsByAuthor(){
-		this.tagParam.setTagIndex(null);
-		this.tagParam.setGrouping(GroupingEntity.VIEWABLE);
-		this.tagParam.setSearch("Stumme");
-		this.tagParam.setContentTypeByClass(BibTex.class);
-		this.tagParam.setLimit(1000);
-		final List<Tag> tags = this.tagChain.getFirstElement().perform(this.tagParam, this.dbSession);
-		assertEquals(342, tags.size());
-	}	
+	@Test
+	public void GetTagsByGroup() {
+		TagParam param = new TagParam();
+		param.setGrouping(GroupingEntity.GROUP);
+		param.setRegex(null);
+		param.getTagIndex().clear();
+		param.setRequestedGroupName("requestedGroup");
+		param.addGroup(GroupID.PUBLIC.getId());		
+		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
+		assertEquals(GetTagsByGroup.class, this.chainStatus.getChainElement().getClass());
+	}
+
+	/**
+	 * get tags by hash
+	 */
+	@Test
+	public void GetTagsByHash() {
+		// TODO
+	}
+
+	/**
+	 * get tags by hash for user
+	 */
+	@Test
+	public void GetTagsByHashForUser() {
+		// TODO
+	}
+
+	/**
+	 * Get tags by user
+	 */
+	@Test
+	public void GetTagsByUser() {
+		TagParam param = new TagParam();
+		param.setGrouping(GroupingEntity.USER);
+		param.setRequestedUserName("hotho");
+		param.setUserName("hotho");
+		param.setRegex(null);
+		param.setTagIndex(null);
+		param.setContentTypeByClass(Resource.class);
+		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
+		assertEquals(GetTagsByUser.class, this.chainStatus.getChainElement().getClass());
+	}
+
+	/**
+	 * get tags viewable
+	 */
+	@Test
+	public void GetTagsViewable() {
+		TagParam param = new TagParam();
+		param.setGrouping(GroupingEntity.VIEWABLE);
+		param.setSearch(null);
+		param.setUserName("hotho");
+		param.setRegex(null);
+		param.setRequestedGroupName("kde");
+		param.setTagIndex(null);
+		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
+		assertEquals(GetTagsViewable.class, this.chainStatus.getChainElement().getClass());
+	}
+
 }
