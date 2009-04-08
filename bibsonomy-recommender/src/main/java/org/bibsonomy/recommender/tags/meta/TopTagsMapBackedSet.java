@@ -21,22 +21,17 @@ public class TopTagsMapBackedSet extends MapBackedSet<String, RecommendedTag> {
 	private final SortedSet<RecommendedTag> sortedTags;
 	private final int numberOfTags;
 	private final RecommendedTagComparator comp;
-	
+
 	/**
 	 * @param numberOfTags - maximal number of top tags to keep.
 	 */
 	public TopTagsMapBackedSet(final int numberOfTags) {
-		super(new MapBackedSet.KeyExtractor<String, RecommendedTag>() {
-			@Override
-			public String getKey(RecommendedTag value) {
-				return value.getName();
-			}
-		});
+		super(new DefaultKeyExtractor());
 		this.sortedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 		this.numberOfTags = numberOfTags;
 		this.comp = new RecommendedTagComparator();
 	}
-	
+
 	@Override
 	public boolean add(RecommendedTag e) {
 		addToSortedSet(e);
@@ -74,5 +69,18 @@ public class TopTagsMapBackedSet extends MapBackedSet<String, RecommendedTag> {
 	public SortedSet<RecommendedTag> getTopTags() {
 		return this.sortedTags;
 	}
-	
+
+
+	/**
+	 * Uses the name of a recommended tag as key for the map backed set.
+	 * @author rja
+	 *
+	 */
+	static class DefaultKeyExtractor implements MapBackedSet.KeyExtractor<String, RecommendedTag> {
+		@Override
+		public String getKey(RecommendedTag value) {
+			return value.getName();
+		}
+	}
+
 }
