@@ -3,13 +3,16 @@ package helpers.database;
 import helpers.ModifyGroupId;
 import helpers.constants;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
 
-import recommender.TagVectorUpdater;
 import resources.Bookmark;
 
 /**
@@ -322,11 +325,11 @@ public class DBBookmarkManager {
 					 * Commit successful transaction 
 					 */
 					conn.commit();
-					try {
-						TagVectorUpdater.doUpdate(oldTags,bookmark);
-					} catch (Exception e) {
-						log.fatal("TagVectorUpdater had problems: " + e);
-					}
+//					try {
+//						TagVectorUpdater.doUpdate(oldTags,bookmark);
+//					} catch (Exception e) {
+//						log.fatal("TagVectorUpdater had problems: " + e);
+//					}
 					success = true;
 					
 				} catch(SQLException e) {

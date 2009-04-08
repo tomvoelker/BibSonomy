@@ -28,7 +28,6 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UrlCompositeScraper;
 
-import recommender.RecommenderFrontEnd;
 import resources.Bookmark;
 import beans.BookmarkHandlerBean;
 import beans.UserBean;
@@ -132,7 +131,6 @@ public class BookmarkShowHandler extends HttpServlet{
 			bean.setOldurl(bookmark.getUrl());
 			bean.setCopytag(request.getParameter("copytag"));
 			bean.setJump(request.getParameter("jump"));
-			bean.setRecommendedTags( RecommenderFrontEnd.getRecommendation(currUser,bookmark.getHash(),Bookmark.class,bookmark.getTitle()) );
 			/*
 			 * tagging of tags
 			 * 
