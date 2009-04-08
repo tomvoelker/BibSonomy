@@ -32,6 +32,6 @@
 </c:if>
 
 <c:forEach items="${name.rows}" var="n">
-	${n.user_name}
+	${n.user_name}</br>
 </c:forEach>
 
