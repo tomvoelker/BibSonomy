@@ -39,15 +39,15 @@ import org.springframework.validation.Errors;
  */
 public class UserLoginController implements MinimalisticController<UserLoginCommand>, ErrorAware, ValidationAwareController<UserLoginCommand>, RequestAware, CookieAware {
 	private static final Logger log = Logger.getLogger(UserLoginController.class);
-		
+
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
 	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
 	private OpenID openIDLogic;
-	
+
 	private String projectHome;
-	
+
 	/**
 	 * The max number of minutes, a password reminder is valid.
 	 */
@@ -74,30 +74,30 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		log.debug("workOn() called");
 
 		command.setPageTitle("login");
-		
+
 		/*
 		 * remember referer to send user back to the page she's coming from
 		 */
 		setReferer(command);
-		
+
 		/*
 		 * catch response from OpenID provider
 		 */
 		if (requestLogic.getParameter("openid.identity") != null) {
 			String openID = requestLogic.getParameter("openid.identity");
-			
+
 			/*
 			 * if login successful then redirect to referer
 			 */
 			if(this.handleOpenIDLogin(openID)) {
 				return new ExtendedRedirectView(command.getReferer());
 			} 
-			
+
 			/*
 			 * else to openID registration page
 			 */
 			return new ExtendedRedirectView("/registerOpenID");
-			
+
 		}
 
 		/* Check cookies
@@ -121,12 +121,12 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		final String password = command.getPassword();
 		final String hashedPassword = StringUtils.getMD5Hash(password);
 
-		
+
 		/*
 		 * OpenID used for authentication?
 		 */
 		final String openID = command.getOpenID();
-			
+
 
 		/*
 		 * Get the hosts IP address.
@@ -138,13 +138,13 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		 * Check, if the user (or IP) has to wait some time for another login try.
 		 */
 		handleWaiting(username, inetAddress);
-		
-		
+
+
 		/*
 		 * The user 
 		 */
 		User user = null;
-		
+
 		/*
 		 * authentication via username and password 
 		 */
@@ -180,7 +180,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 					final Calendar reminderExpirationDate = Calendar.getInstance();
 					reminderExpirationDate.setTime(user.getReminderPasswordRequestDate());
 					reminderExpirationDate.add(Calendar.MINUTE, maxMinutesPasswordReminderValid);
-					
+
 					if (now.after(reminderExpirationDate)) {
 						/*
 						 * reminder expired
@@ -213,7 +213,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 			} catch (UnsupportedEncodingException ex) {
 				log.warn("Could not encode URL for login page.", ex);
 			}
-			
+
 			/*
 			 * redirect to OpenID provider
 			 */
@@ -226,7 +226,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 			}						
 		}
 
-		
+
 		/*
 		 * on error, send user back
 		 */
@@ -342,42 +342,50 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		/*
 		 * Response from OpenId Provider 
 		 */	
-		
+
 		/*
 		 * get instance of openid logic from session
 		 */
 		openIDLogic = (OpenID) requestLogic.getSessionAttribute(OpenID.OPENID_LOGIC_SESSION_ATTRIBUTE);
-		
+
 		/*
 		 * verify the openid request
 		 */
-		User user = openIDLogic.verifyResponse(requestLogic, false);
-		
-		if (user != null) {
-			/*
-			 * OpenID auth succeeded  
-			 */
+		if (openIDLogic != null) {
 			
-			/*
-			 *  get username corresponding to openid 
-			 */
-			String username = adminLogic.getOpenIDUser(UserUtils.normalizeURL(openID));
 			
+			final User user = openIDLogic.verifyResponse(requestLogic, false);
+
+			if (user != null) {
+				/*
+				 * OpenID auth succeeded  
+				 */
+
+				/*
+				 *  get username corresponding to openid 
+				 */
+				String username = adminLogic.getOpenIDUser(UserUtils.normalizeURL(openID));
+
+				/*
+				 *  user known -> login
+				 */
+				if (username != null) {
+					final User registeredUser = adminLogic.getUserDetails(username);
+					cookieLogic.addOpenIDCookie(registeredUser.getName(), openID, registeredUser.getPassword());	
+					openIDLogic.extendOpenIDSession(requestLogic.getSession(), openID);
+					return true;
+				} 
+
+				log.debug("OpenID user not found");
+			}
+		} else {
 			/*
-			 *  user known -> login
+			 * FIXME: sensible error handling
 			 */
-			if (username != null) {
-				User registeredUser = adminLogic.getUserDetails(username);
-				cookieLogic.addOpenIDCookie(registeredUser.getName(), openID, registeredUser.getPassword());	
-				openIDLogic.extendOpenIDSession(requestLogic.getSession(), openID);
-				return true;
-			} 
-			
-			log.debug("OpenID user not found");
 		}
 		return false;
 	}
-		
+
 	public Errors getErrors() {
 		return errors;
 	}
@@ -460,7 +468,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 	public void setOpenIDLogic(OpenID openIDLogic) {
 		this.openIDLogic = openIDLogic;
 	}
-	
+
 	/** 
 	 * The base URL of the project.
 	 * 
