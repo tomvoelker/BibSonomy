@@ -2,7 +2,9 @@ package helpers.database;
 
 import helpers.constants;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -17,7 +19,6 @@ import resources.Bibtex;
 import resources.ExtendedFieldMap;
 import resources.ExtendedFieldMapComparator;
 import resources.Resource;
-import servlets.ResourceHandler;
 
 public class DBExtendedFieldManager extends DBManager {
 
@@ -127,7 +128,7 @@ public class DBExtendedFieldManager extends DBManager {
 				 * in column selection). with FORCE INDEX this does not (so often?) happen ...
 				 * MySQL sucks!
 				 */
-				String query = "SELECT " +  ResourceHandler.getBibtexSelect ("b") + ", m.key, e.value " +
+				String query = "SELECT " +  getBibtexSelect ("b") + ", m.key, e.value " +
 								                                 "  FROM (" +
 								                                 "    collector c JOIN bibtex b    ON c.content_id = b.content_id  " +
 								                                 "                                   AND c.user_name = ? " +
@@ -204,7 +205,7 @@ public class DBExtendedFieldManager extends DBManager {
 				/*
 				 * get users own publication entries from collector table
 				 */
-				c.stmt = c.conn.prepareStatement("SELECT " + ResourceHandler.getBibtexSelect ("b") + 
+				c.stmt = c.conn.prepareStatement("SELECT " + getBibtexSelect ("b") + 
 						                         "  FROM collector c " +
 						                         "    JOIN bibtex b ON c.content_id = b.content_id " +
 						                         "  WHERE c.user_name = ? " +
@@ -228,6 +229,24 @@ public class DBExtendedFieldManager extends DBManager {
 		return list;
 	}
 
+	
+	/**
+	 * return appropriate select query string for different tables
+	 */
+	private static String getBibtexSelect (String table) {	
+		String[] columns = {"address","annote","booktitle","chapter","crossref","edition",
+				"howpublished","institution","journal","bkey","month","note","number","organization",
+				"pages","publisher","school","series","type","volume","day","url", 
+				"content_id", "description", "bibtexKey", "misc", "bibtexAbstract", "user_name", "date",
+				"title","author", "editor", "year", "entrytype", "rating"};
+		StringBuffer select = new StringBuffer();
+		for (String col:columns) {
+			select.append(table + "." + col + ",");
+		}
+		select.deleteCharAt(select.length()-1);
+		return select.toString();		
+	}
+	
 	/** Fills a Bibtex object from a given result set
 	 * @param rst ResultSet containing which points to a row describing a bibtex entry.
 	 * @return the filled bibtex object

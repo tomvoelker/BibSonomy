@@ -31,15 +31,15 @@ import beans.BibtexHandlerBean;
 import filters.SessionSettingsFilter;
 
 public class BibtexShowHandler extends HttpServlet{
-	
+
 	private static final String SYS_RELEVANT_FOR = SystemTags.RELEVANTFOR.getPrefix();
 	private static final long serialVersionUID = 3833747689652301876L;
 	private static final Logger log = Logger.getLogger(BibtexShowHandler.class);
-	
+
 	private DataSource dataSource;
-	
+
 	private RecommenderStatisticsManager recommenderStatistics = new RecommenderStatisticsManagerImpl();
-	
+
 	public void init(ServletConfig config) throws ServletException{	
 		super.init(config); 
 		try {
@@ -53,10 +53,10 @@ public class BibtexShowHandler extends HttpServlet{
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request,response);
 	}
-	
-	
+
+
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+
 		/* GET PARAMETERS 
 		 * at least a title or hash should be given, so that we can check in the
 		 * database, if this entry exists
@@ -75,9 +75,9 @@ public class BibtexShowHandler extends HttpServlet{
 			response.sendRedirect("/post_bibtex");
 			return;
 		}
-		
+
 		final String currUser = SessionSettingsFilter.getUser(request).getName(); 
-	
+
 		if (currUser == null) {
 			// TODO: user will be redirected to login and from there back to the site he
 			// wanted to post (because referer header is not changed by redirect)
@@ -93,8 +93,8 @@ public class BibtexShowHandler extends HttpServlet{
 		Connection conn         = null;
 		ResultSet rst           = null;
 		PreparedStatement stmtP = null;
-	
-		
+
+
 		/* Because the dataSource instance variable is potentially 
 		 * shared across multiple threads, access to the variable 
 		 * must be from within a synchronized block. */
@@ -106,13 +106,13 @@ public class BibtexShowHandler extends HttpServlet{
 					throw new SQLException("No Datasource");
 				}
 			}
-			
+
 			/* generate a new bean and fill it with the request-parameters
 			 * this way (with a filled bean) we can get the apropriate hash
 			 * and can ask the database just for the hash */
 			final Bibtex bibtex = new Bibtex();
 			final BibtexHandlerBean bean = new BibtexHandlerBean(bibtex);
-			
+
 			bibtex.setTitle(requTitle);
 			bibtex.setAuthor(request.getParameter("author"));
 			bibtex.setEditor(request.getParameter("editor"));
@@ -130,7 +130,7 @@ public class BibtexShowHandler extends HttpServlet{
 				stmtP.setString(1, bibtex.getHash());
 				stmtP.setString(2, currUser);
 			}
-			
+
 			/* the user wants to edit an entry, therefore we have a hash, but no requUser */
 			if (requTitle == null && requHash != null && !copy) {
 				String showBibEntry = "SELECT * "
@@ -142,11 +142,11 @@ public class BibtexShowHandler extends HttpServlet{
 				stmtP.setString(1, requHash);
 				stmtP.setString(2, currUser);
 			}
-			
+
 			/* the user wants to copy an entry, therefore we have a hash and also a requUser */
 			if (requTitle == null && requHash != null && copy) {
 				/* check, in which groups the current user is */
-				String groupWhereQuery = ResourceHandler.getQueryForGroups (conn, currUser, requUser, "b");
+				String groupWhereQuery = getQueryForGroups (conn, currUser, requUser, "b");
 				String showBibEntry = "SELECT * "
 					+ "FROM bibtex b, groupids i "
 					+ "WHERE b.simhash" + Bibtex.INTRA_HASH + " = ?"
@@ -157,8 +157,8 @@ public class BibtexShowHandler extends HttpServlet{
 				stmtP.setString(1, requHash);
 				stmtP.setString(2, requUser);
 			}
-			
-			
+
+
 
 			/* get the entry from the database */
 			rst = stmtP.executeQuery();
@@ -192,12 +192,12 @@ public class BibtexShowHandler extends HttpServlet{
 				bibtex.setUrl(rst.getString("url"));
 				bibtex.setDay(rst.getString("day"));
 				bibtex.setRating(rst.getInt("rating"));
-				
+
 				// set privnote only, if this is the same user!
 				if (currUser.equals(rst.getString("user_name"))) {
 					bibtex.setPrivnote(rst.getString("privnote"));
 				}
-				
+
 				bibtex.setMisc(rst.getString("misc"));
 				bibtex.setBibtexKey(rst.getString("bibtexKey"));		                   				        	    
 				bibtex.setGroup(rst.getString("group_name"));
@@ -205,7 +205,7 @@ public class BibtexShowHandler extends HttpServlet{
 				bibtex.setEntrytype(rst.getString("entrytype"));
 
 				int content_id  = rst.getInt("content_id");
-				
+
 
 				// TODO: this tag stuff should be moved to DBTagManager (also tag managing in ResourceHandler) 
 				// get all tags for this entry
@@ -213,7 +213,7 @@ public class BibtexShowHandler extends HttpServlet{
 				if (!copy) {
 					// remember old hash to do "move" operation
 					bean.setOldhash(bibtex.getHash());
-					
+
 					stmtP = conn.prepareStatement("SELECT tag_name FROM tas WHERE content_id = ?");
 					stmtP.setInt(1, content_id);
 					rst = stmtP.executeQuery ();
@@ -222,11 +222,11 @@ public class BibtexShowHandler extends HttpServlet{
 					}					
 				}
 			}
-			
+
 			//bean.setJump(request.getParameter("jump")); // TODO: what was this good for? rja, 02.12.2005
 			bean.setCopytag(request.getParameter("copytag"));
-			
-			
+
+
 			/*
 			 * handle "relevantFor:group" tags
 			 */
@@ -247,19 +247,19 @@ public class BibtexShowHandler extends HttpServlet{
 				}
 				bean.setTags(buf.toString().trim());
 			}
-			
-			
+
+
 			/*
 			 * add post id (for recommender) to bean
 			 */
-			
+
 			bean.setPostID(recommenderStatistics.getNewPID());
-			
-			
+
+
 			/* Bean wird dem request angehängt */
 			request.setAttribute("bibtexHandlerBean",bean);			
 			getServletConfig().getServletContext().getRequestDispatcher("/edit_bibtex").forward(request, response);	
-			
+
 		} catch (SQLException e) {
 			log.fatal(e);
 			response.sendRedirect("/errors/databaseError.jsp");
@@ -271,4 +271,49 @@ public class BibtexShowHandler extends HttpServlet{
 			if (conn  != null) {try {conn.close(); } catch (SQLException e) {} conn  = null;}
 		}
 	}	
+
+
+	/* 
+	 * returns a String for the Query of groups the user is in (including "friends", if she is a friend of the requested user 
+	 */
+	private static String getQueryForGroups (Connection conn, String currUser, String requUser, String table) {
+		if (currUser != null && requUser != null && requUser.equals(currUser)) {
+			return "";
+		}
+		StringBuffer result = new StringBuffer();
+		result.append("AND " + table + ".group in (0,");
+		if (currUser != null) {
+			PreparedStatement StmtP = null;
+			ResultSet rst;
+			try {
+				// check, if the users are friends
+				if (requUser != null) {
+					StmtP = conn.prepareStatement("SELECT user_name FROM friends WHERE f_user_name = ? AND user_name = ?");
+					StmtP.setString(1, currUser);
+					StmtP.setString(2, requUser);
+					rst = StmtP.executeQuery();
+					if (rst.next()) {
+						// they are friends!
+						result.append("2,");
+					}
+				}
+				// get all the groups of the current user
+				StmtP = conn.prepareStatement("SELECT `group` FROM groups WHERE user_name = ?");
+				StmtP.setString(1, currUser);
+				rst = StmtP.executeQuery();
+				while (rst.next()) {
+					// collect groups
+					result.append(rst.getInt("group")).append(",");
+				}				
+			} catch (SQLException e) {
+				log.fatal("getQueryForGroups() caught SQLException: " + e);
+			} finally {
+				if (StmtP != null) { try {StmtP.close(); } catch (SQLException e) {} StmtP = null; }
+			}
+		}
+		// remove last ","
+		result.deleteCharAt(result.length()-1).append(") ");
+		return result.toString();
+	}
+
 }
