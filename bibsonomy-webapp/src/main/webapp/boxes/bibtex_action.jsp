@@ -60,7 +60,5 @@
   
 </span>
 
-  <%@include file="/boxes/resource_rating.jsp" %> 
-
   &nbsp;
 </div>
