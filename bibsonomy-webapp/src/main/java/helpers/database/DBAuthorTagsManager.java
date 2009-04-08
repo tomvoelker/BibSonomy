@@ -45,6 +45,8 @@ public class DBAuthorTagsManager extends DBManager{
 	 */
 	public static SortedSet<TagConcept> getSortedTagsForAuthors(String requAuthor, int sortOrder) {
 		
+		log.fatal("DEPRECATED: getSortedTagsForAuthors(String requAuthor, int sortOrder) should never be called");
+		
 		DBContext c = new DBContext();		
 		SortedSet<TagConcept> tags  = new TreeSet<TagConcept>();
 		int argCtr = 1;
