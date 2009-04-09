@@ -215,7 +215,7 @@ public class EprintScraper implements Scraper {
 	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
 		try {
 			String page = scrapingContext.getPageContent();
-			if((page.contains("name=\"eprints.creators_name\"") || page.contains("name=\"eprints.editors_name\"")) && page.contains("name=\"eprints.date\"") && page.contains("name=\"eprints.title\""))
+			if(page.contains("name=\"eprints.date\"") && page.contains("name=\"eprints.title\""))
 				return true;
 		} catch (ScrapingException ex) {
 			return false;
