@@ -822,4 +822,28 @@
 		<BibFile>AGUScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.agu.AGUScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_147">
+		<TestDescription>eprint url test</TestDescription>
+		<URL>http://orca.cf.ac.uk/5213/</URL>
+		<BibFile>EprintScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.EprintScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_148">
+		<TestDescription>eprint url test</TestDescription>
+		<URL>http://eprints.bbk.ac.uk/442/</URL>
+		<BibFile>EprintScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.EprintScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_149">
+		<TestDescription>eprint url test</TestDescription>
+		<URL>http://eprints.bbk.ac.uk/589/</URL>
+		<BibFile>EprintScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.EprintScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_150">
+		<TestDescription>eprint url test</TestDescription>
+		<URL>http://orca.cf.ac.uk/2657//</URL>
+		<BibFile>EprintScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.generic.EprintScraper</Scraper>
+	</URLTest>
 </test:Tests>
