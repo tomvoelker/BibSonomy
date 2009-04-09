@@ -28,13 +28,30 @@
 				<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="home"/>
 			</li>
 			
-			<!-- set bibtex column to full width 
-			<script type="text/javascript">
-			<![CDATA[
-				document.getElementById("bibtexList").style.width = '97%';
-			]]>
-			</script>
-			-->
+			<!-- enablle autocompletion for bibtexkeys -->
+			<c:if test="${not empty command.requestedUser}"> 
+				<script type="text/javascript">
+				<![CDATA[
+				         $(document).ready(function(){
+				     		$("#inpf").autocomplete("/generalAjax?action=getBibtexKeysForUser&requestedUser=${command.requestedUser}", {
+				     			width: 260,
+				     			selectFirst: true
+				     		});
+				       });					
+					
+				]]>
+				</script>
+			</c:if>
+			
+		</jsp:attribute>
+		
+		<!-- add jquery javascript resources to enable autocompletion --> 
+		<jsp:attribute name="headerExt">
+			<c:if test="${not empty command.requestedUser}">
+				<script type="text/javascript" src="${resdir}/javascript/jquery_autocomplete.js">&amp;nbsp;</script>
+	    		<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js">&amp;nbsp;</script> 
+				<script type="text/javascript" src="${resdir}/javascript/jquery_textarea_autoresize.js">&amp;nbsp;</script>			
+			</c:if>
 		</jsp:attribute>
 	</layout:bibtexLayout>
 
