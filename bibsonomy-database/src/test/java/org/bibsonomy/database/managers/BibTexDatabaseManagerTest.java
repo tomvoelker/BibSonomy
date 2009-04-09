@@ -37,6 +37,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.ModelUtils;
@@ -1038,26 +1039,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * Check if the getBibTexByKey() method returns the correct
-	 * bibtexkey from the database.
-	 * 
-	 * The test search the bibtexkey 'bre' and passes, if one bibtexentry with
-	 * the contentId 692511 is returned.
-	 */
-	// FIXME: adapt to new test db
-	@Ignore
-	public void getBibTexByKey() {
-		final BibTexParam  bibtexparam = new BibTexParam();
-		bibtexparam.setBibtexKey("BRE");
-		final List<Post<BibTex>> posts = this.bibTexDb.getBibTexByKey(bibtexparam, this.dbSession);
-		
-		assertNotNull(posts);
-		//assert that the contentID for the bibtexkey: 'BRE' matches this id: 692511
-		assertEquals(692511, posts.get(0).getContentId());
-		assertEquals(1, posts.size());
-	}
-
-	/**
 	 * tests getBibtexByConceptForGroup
 	 */
 	// FIXME: adapt to new test db
@@ -1075,5 +1056,25 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		final List<Post<BibTex>> posts2 = this.bibTexDb.getPosts(param, this.dbSession);
 		assertEquals(10, posts2.size());
-	}		
+	}
+	
+	
+	/**
+	 * tests getBibtexByKey
+	 */
+	@Test
+	public void getBibtexByKey() {
+		final BibTexParam param = new BibTexParam();
+		param.setBibtexKey("test %");
+		param.setGrouping(GroupingEntity.USER);
+		param.setOrder(Order.ADDED);
+		param.setHash(null);
+		param.setRequestedUserName("testuser1");
+		param.setLimit(20);
+		param.setOffset(0);
+		param.setGroupId(GroupID.PUBLIC.getId());
+		List<Post<BibTex>> posts = this.bibTexDb.getBibTexByKey(param, this.dbSession);
+		assertEquals(1,posts.size());
+		assertEquals(posts.get(0).getResource().getBibtexKey(), "test bibtexKey");
+	}
 }
