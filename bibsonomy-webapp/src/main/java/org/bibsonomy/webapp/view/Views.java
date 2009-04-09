@@ -34,6 +34,11 @@ public enum Views implements View {
 	USERPAGE("user"),
 	
 	/**
+	 * user-user page to highlight the relevant posts / tags of user 2 to user 1 
+	 */
+	USERUSERPAGE("useruser"),
+	
+	/**
 	 * user page displaying the resources of a single user tagged with a given list of tags
 	 */
 	USERTAGPAGE("usertag"),	
@@ -181,7 +186,11 @@ public enum Views implements View {
 	/**
 	 * used by postBookmark to get the details for a given Url
 	 */
-	AJAX_GET_TITLE_FOR_URL("ajaxGetTitleForUrl"),
+	AJAX_GET_TITLE_FOR_URL("ajaxGetTitleForUrl"),		
+	/**
+	 * get bibtex keys for a given user
+	 */
+	AJAX_GET_BIBTEXKEYS_FOR_USER("ajaxGetBibtexKeysForUser"),
 	/**
 	 * posts 
 	 */
