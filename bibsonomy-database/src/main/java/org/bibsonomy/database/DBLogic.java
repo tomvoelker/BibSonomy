@@ -21,7 +21,6 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
@@ -218,8 +217,20 @@ public class DBLogic implements LogicInterface {
 	public User getUserDetails(final String userName) {
 		final DBSession session = openSession();
 		try {
+			/*
+			 * We don't use userName but user.getName() in the remaining part of this 
+			 * method, since the name gets normalized in getUserDetails().
+			 */
 			final User user = this.userDBManager.getUserDetails(userName, session);
-			if (! ((this.loginUser.getName() != null && this.loginUser.getName().equals(user.getName())) || Role.ADMIN.equals(this.loginUser.getRole()))) {
+			/*
+			 * add/remove some details
+			 */
+			if (this.permissionDBManager.isAdminOrSelf(loginUser, user.getName())) {
+				/*
+				 * only admin any myself may see which group I'm a member of
+				 */
+				user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, session));
+			} else {
 				/*
 				 * only the user himself or the admin gets the full details
 				 */
@@ -236,11 +247,7 @@ public class DBLogic implements LogicInterface {
 				/*
 				 * FIXME: the settings and other things set in userDBManager.getUserDetails() are not cleared!
 				 */
-			}
-			/*
-			 * FIXME: may other people see which group I'm a member of?
-			 */
-			user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, session));
+			} 
 			return user;
 		} finally {
 			session.close();

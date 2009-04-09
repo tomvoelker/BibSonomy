@@ -31,7 +31,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 
 	private final static PermissionDatabaseManager singleton = new PermissionDatabaseManager();
 	private final GroupDatabaseManager groupDb;
-	
+
 	private static final Logger log = Logger.getLogger(PermissionDatabaseManager.class);
 
 	private PermissionDatabaseManager() {
@@ -150,9 +150,9 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		}
 		return false;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * This method checks whether the logged-in user is allowed to see documents of 
 	 * the requested user or a requested group. The user is allowed to access the documents,
@@ -207,7 +207,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		if( groupID==GroupID.INVALID.getId() )
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 	}
-	
+
 	/**
 	 * Ensures that the user is an admin.
 	 * 
@@ -228,7 +228,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	public boolean exceedsMaxmimumSize(final List<String> tags) {
 		return tags != null && tags.size() >= 10;
 	}
-	
+
 	/**
 	 * Check permissions to decide if filter can be set
 	 * 
@@ -240,19 +240,36 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * filter
 	 */
 	public boolean checkFilterPermissions(FilterEntity filter, User loginUser){
-		
+
 		if (filter == null) return false;
-		
+
 		switch (filter){
-			case ADMIN_SPAM_POSTS:
-				// Admin_SPAM_POSTS
-				if (loginUser.getRole().equals(Role.ADMIN)){
-					return true;
-				} 
+		case ADMIN_SPAM_POSTS:
+			// Admin_SPAM_POSTS
+			if (loginUser.getRole().equals(Role.ADMIN)){
+				return true;
+			} 
 		}
 		return false; 
 	}
-	
+
+	/**
+	 * Checks, if the given login user is either an admin, or the user requested
+	 * by user name.
+	 * 
+	 * @param loginUser - the logged in user.
+	 * @param userName - the name of the requested user.
+	 * @return <code>true</code> if loginUser is an admin or userName.
+	 */
+	public boolean isAdminOrSelf(final User loginUser, final String userName) {
+		return (
+				(loginUser.getName() != null && loginUser.getName().equals(userName)) // loginUser = userName  
+				||
+				Role.ADMIN.equals(loginUser.getRole())                                // loginUser is admin
+		);
+	}
+
+
 	/**
 	 * @FIXME WENN DIE RICHTIGEN GRUPPENADMINS EXISTIEREN MUSS DIESE FUNKTION GEÄNDERT WERDEN 
 	 * @param loginUser
