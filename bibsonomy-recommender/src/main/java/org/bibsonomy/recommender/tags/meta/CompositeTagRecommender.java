@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.tags;
+package org.bibsonomy.recommender.tags.meta;
 
 import java.util.Collection;
 import java.util.Comparator;

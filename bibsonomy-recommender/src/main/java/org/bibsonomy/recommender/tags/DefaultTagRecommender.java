@@ -1,6 +1,7 @@
 package org.bibsonomy.recommender.tags;
 
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
+import org.bibsonomy.recommender.tags.meta.CompositeTagRecommender;
 import org.bibsonomy.recommender.tags.simple.SimpleContentBasedTagRecommender;
 
 
