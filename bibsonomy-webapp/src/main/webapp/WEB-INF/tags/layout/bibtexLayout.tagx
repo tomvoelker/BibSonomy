@@ -20,7 +20,8 @@
   
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
-	<jsp:directive.attribute name="info" fragment="true" required="false"/>		
+	<jsp:directive.attribute name="info" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" required="false" />		
 	
 	<!-- 
 		store some locale messages in variables to be
@@ -52,6 +53,9 @@
 			<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="${bibRssUrl}" />
 			<c:set var="burstUrl" value="/burst/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${burstRssFeed} /${requPath}" href="${burstUrl}" />
+			<c:if test="${not empty headerExt}">
+				<jsp:invoke fragment="headerExt"/>
+			</c:if>
 		</jsp:attribute>
 		<jsp:attribute name="content">
 
