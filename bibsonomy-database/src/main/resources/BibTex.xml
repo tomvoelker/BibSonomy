@@ -27,8 +27,8 @@
 	<select id="getBibTexByKey" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t1.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM tas t1, bibhash h, 
-			(SELECT * FROM bibtex 
-			 WHERE bibtexKey = #bibtexKey#
+			(SELECT * FROM bibtex
+			 WHERE bibtexKey LIKE #bibtexKey#  
 			 <isNotEmpty property="requestedUserName" prepend="AND"> user_name = #requestedUserName# </isNotEmpty>
 			 LIMIT #limit# OFFSET #offset#) b 
 		WHERE b.content_id = t1.content_id
