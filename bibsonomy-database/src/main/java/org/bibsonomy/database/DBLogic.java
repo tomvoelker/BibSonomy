@@ -288,8 +288,12 @@ public class DBLogic implements LogicInterface {
 
 				// check filters
 				// can not add filter to BookmarkParam yet, but need to add group before buildParam
-
 				if (this.permissionDBManager.checkFilterPermissions(filter, this.loginUser)){
+					/*
+					 * FIXME: it is not safe, what is done here! checkFilterPermissions only checks,
+					 * if ANY filter is applicable by loginUser. But here we assume ADMIN_SPAM_POSTS
+					 * has been checked!
+					 */
 					loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 				}
 

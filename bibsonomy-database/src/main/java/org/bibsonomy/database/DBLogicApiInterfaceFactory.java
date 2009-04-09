@@ -11,12 +11,7 @@ import org.bibsonomy.model.User;
 public class DBLogicApiInterfaceFactory extends DBLogicUserInterfaceFactory {
 
 	@Override
-	protected User getLoggedInUser(final String loginName, final String password) {
-		final DBSession session = openSession();
-		try {
-			return this.userDBManager.validateUserAccess(loginName, password, session);
-		} finally {
-			session.close();
-		}
+	protected User getLoggedInUser(final String loginName, final String password, final DBSession session) {
+		return this.userDBManager.validateUserAccess(loginName, password, session);
 	}
 }

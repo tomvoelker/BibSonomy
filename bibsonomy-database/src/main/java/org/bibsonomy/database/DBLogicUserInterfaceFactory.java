@@ -30,10 +30,23 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 	 *      java.lang.String)
 	 */
 	public LogicInterface getLogicAccess(final String loginName, final String password) {
+
 		if (loginName != null) {
-			final User loggedInUser = getLoggedInUser(loginName, password);
-			if (loggedInUser.getName() != null) {
-				return new DBLogic(loggedInUser, this.dbSessionFactory);
+			final DBSession session = openSession();
+			try {
+				final User loggedInUser = getLoggedInUser(loginName, password, session);
+				if (loggedInUser.getName() != null) {
+					/*
+					 * add groups to user - needed by many queries
+					 */
+					UserUtils.setGroupsByGroupIDs(loggedInUser, this.groupDb.getGroupIdsForUser(loggedInUser.getName(), session));
+					/*
+					 * return an instance of the DBLogic
+					 */
+					return new DBLogic(loggedInUser, this.dbSessionFactory);
+				}
+			} finally {
+				session.close();
 			}
 			throw new ValidationException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
@@ -50,17 +63,8 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 	 * @param password
 	 * @return user object with details of the logged in user
 	 */
-	protected User getLoggedInUser(final String loginName, final String password) {
-		final DBSession session = openSession();
-		try {
-			final User loggedInUser = this.userDBManager.validateUserUserAccess(loginName, password, session);
-			if (loggedInUser.getName() != null) {
-				UserUtils.setGroupsByGroupIDs(loggedInUser, this.groupDb.getGroupIdsForUser(loggedInUser.getName(), session));
-			}
-			return loggedInUser;
-		} finally {
-			session.close();
-		}
+	protected User getLoggedInUser(final String loginName, final String password, final DBSession session) {
+		return this.userDBManager.validateUserUserAccess(loginName, password, session);
 	}
 
 	/**
