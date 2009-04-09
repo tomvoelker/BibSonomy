@@ -171,18 +171,20 @@
 				</entry>
 				<entry key="/generalAjax">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="getUrlAjaxController"/>
+						<property name="controllerBeanName" value="generalAjaxController"/>
 						 <property name="allowedFields">
                             <list>
                                 <value>action</value>
 								<value>pageURL</value>
+								<value>q</value>
+								<value>requestedUser</value>
 							</list>
 						</property>
 					</bean>
 				</entry>
 				<entry key="/ajax">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="ajaxController"/>
+						<property name="controllerBeanName" value="adminAjaxController"/>
 						 <property name="allowedFields">
                             <list>
                                 <value>action</value>
@@ -564,12 +566,12 @@
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
-	<bean id="ajaxController" class="org.bibsonomy.webapp.controller.AdminAjaxController" scope="request">
+	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.AdminAjaxController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 		
-	<bean id="getUrlAjaxController" class="org.bibsonomy.webapp.controller.GetUrlAjaxController" scope="request">
+	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.GeneralAjaxController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>	
