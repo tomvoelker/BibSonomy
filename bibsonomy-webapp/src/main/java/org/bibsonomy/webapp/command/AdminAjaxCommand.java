@@ -38,6 +38,9 @@ public class AdminAjaxCommand extends AjaxCommand {
 	/** total number of bibtex*/
 	private int bibtexCount;
 	
+	/** evaluator name */
+	private String evaluator;
+	
 	public String getUserName() {
 		return this.userName;
 	}
@@ -89,5 +92,12 @@ public class AdminAjaxCommand extends AjaxCommand {
 	
 	public void setBibtexCount(int bibtexCount) {
 		this.bibtexCount = bibtexCount;
+	}
+	
+	public String getEvaluator() {
+		return this.evaluator;
+	}
+	public void setEvaluator(String evaluator) {
+		this.evaluator = evaluator;
 	}
 }
