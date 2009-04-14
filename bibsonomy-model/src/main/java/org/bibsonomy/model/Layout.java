@@ -23,6 +23,9 @@
 
 package org.bibsonomy.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * 
@@ -53,7 +56,7 @@ public abstract class Layout {
 	/**
 	 * A short textual description.
 	 */
-	protected String description;
+	protected Map<String,String> description;
 	/**
 	 * The mime type of the rendered file.
 	 */
@@ -66,6 +69,7 @@ public abstract class Layout {
 	public Layout(final String name) {
 		super();
 		this.name = name;
+		this.description = new HashMap<String, String>();
 	}
 
 	public String getDisplayName() {
@@ -75,13 +79,13 @@ public abstract class Layout {
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
-
-	public String getDescription() {
-		return description;
+	
+	public Map<String, String> getDescription(){
+		return this.description;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setDescription(String lang, String description) {
+		this.description.put(lang, description);
 	}
 
 	public String getMimeType() {
