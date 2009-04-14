@@ -480,7 +480,10 @@
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
-	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request"/>
+	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
+		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
 		<property name="logic" ref="logic"/>
@@ -607,6 +610,8 @@
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
 	
 	<!--  #################### factory beans #################### -->
+	
+	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" factory-method="getInstance"/>
 
 	<!-- provides access to the request for all controllers, which need it -->
 	<bean id="requestLogic" class="org.bibsonomy.webapp.util.RequestLogic" scope="request"/>
@@ -678,6 +683,5 @@
     <import resource="bibsonomy2-servlet-recommender.xml"/>	
     <import resource="bibsonomy2-servlet-actions.xml"/>
     <import resource="bibsonomy2-servlet-ajax.xml"/>	
-    <import resource="bibsonomy2-servlet-fields.xml"/>    		
-	
+    <import resource="bibsonomy2-servlet-fields.xml"/> 
 </beans>

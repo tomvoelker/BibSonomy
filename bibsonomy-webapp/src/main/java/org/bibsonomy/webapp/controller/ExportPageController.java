@@ -1,7 +1,10 @@
 package org.bibsonomy.webapp.controller;
 
-import org.bibsonomy.webapp.command.ResourceViewCommand;
+import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
+import org.bibsonomy.layout.jabref.JabrefLayouts;
+import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
@@ -9,25 +12,47 @@ import org.bibsonomy.webapp.view.Views;
  * @author Christian
  * @version $Id$
  */
-public class ExportPageController implements MinimalisticController<ResourceViewCommand> {
-
+public class ExportPageController implements MinimalisticController<ExportPageCommand> {
+	
+	private JabrefLayoutRenderer layoutRenderer;
+	private RequestLogic requestLogic;
+	
 	/** 
 	 * Returns an instance of the command the controller handles.
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
 	 */
-	public ResourceViewCommand instantiateCommand() {
+	public ExportPageCommand instantiateCommand() {
 		
-		return new ResourceViewCommand();
+		return new ExportPageCommand();
 	}
 
 	/** Main method which does the registration.
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
-	public View workOn(ResourceViewCommand command) {
+	public View workOn(ExportPageCommand command) {
 		
+		command.setLayoutMap(this.layoutRenderer.getJabrefLayouts());
+		command.setLang(this.requestLogic.getLocale().getLanguage());
+
+		System.out.println(this.layoutRenderer.getJabrefLayouts().get("openoffice-csv"));
 		return Views.EXPORT;
+	}
+	
+	/**
+	 * @param layoutRenderer
+	 */
+	public void setLayoutRenderer(JabrefLayoutRenderer layoutRenderer) {
+		this.layoutRenderer = layoutRenderer;
+	}
+
+	/**
+	 * 
+	 * @param requestLogic
+	 */
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
 	}
 
 }

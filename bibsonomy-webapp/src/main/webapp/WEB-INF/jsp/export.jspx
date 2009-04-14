@@ -20,7 +20,7 @@
      	pageTitle="${command.pageTitle}" 
       	displayIntroduction="false" 
       	requPath="${requPath}">
-     	
+      	
      	<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt=""
 				src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message
@@ -103,6 +103,7 @@
 					<dl class="faq">
 						<dt><a href="${fn:escapeXml(bibtex)}">BibTeX</a></dt>
 						<dd>
+							<!--<c:out value="${command.layoutMap.bibtex.description[command.lang]}"/>-->
 							<fmt:message key="export.bibtex.faq">
 								<fmt:param><a href="http://en.wikipedia.org/wiki/BibTeX">BibTeX</a></fmt:param>
 								<fmt:param><a href="http://en.wikipedia.org/wiki/LaTeX">LaTeX</a></fmt:param>
@@ -114,17 +115,19 @@
 						
 						<dt><a href="${fn:escapeXml(har)}">RTF</a>&#160;<a href="#jabref">*</a></dt>
    						<dd>
-   							<fmt:message key="export.rtf.faq">
+   							<c:out value="${command.layoutMap.harvard.description[command.lang]}"/>
+   							<!--<fmt:message key="export.rtf.faq">
    								<fmt:param><a href="http://en.wikipedia.org/wiki/Rich_Text_Format">Rich Text Format</a></fmt:param>
    								<fmt:param><a href="http://www.openoffice.org">OpenOffice</a></fmt:param>
    								<fmt:param><a href="http://www.microsoft.com/word">Microsoft Word</a></fmt:param>
-   							</fmt:message>
+   							</fmt:message>-->
    						</dd>
    						 <dt><a href="${fn:escapeXml(publ)}">HTML</a></dt>
     					 <dd>
-    					 	<fmt:message key="export.html.faq">
+    					 	<c:out value="${command.layoutMap.html.description[command.lang]}"/>
+    					 	<!--<fmt:message key="export.html.faq">
     					 		<fmt:param><a href="http://en.wikipedia.org/wiki/HTML">HTML</a></fmt:param>
-    					 	</fmt:message>
+    					 	</fmt:message> -->
     					 </dd>
     					 <dt><a href="${fn:escapeXml(publrss)}">RSS</a></dt>
   					 	 <dd>
@@ -158,66 +161,78 @@
     					
     					<dt><a href="${fn:escapeXml(simplehtml)}">SimpleHTML</a><a href="#jabref">*</a></dt>
    						<dd>
-   							<fmt:message key="export.simplehtml.faq"/>   							
+   							<c:out value="${command.layoutMap.simplehtml.description[command.lang]}"/>
+   							<!--<fmt:message key="export.simplehtml.faq"/>-->   							
     					</dd>
     						
     					<dt><a href="${fn:escapeXml(tablerefs)}">TableRefs</a>&#160;<a href="#jabref">*</a></dt>
     					<dd>
-							<fmt:message key="export.tablerefs.faq"/>
+    						<c:out value="${command.layoutMap.tablerefs.description[command.lang]}"/>
+							<!--<fmt:message key="export.tablerefs.faq"/>-->
     					</dd>
     					
     					<dt><a href="${fn:escapeXml(tablerefsbib)}">TableRefsAbsBib</a>&#160;<a href="#jabref">*</a></dt>
     					<dd>
-							<fmt:message key="export.tablerefsbib.faq"/>
+    						<c:out value="${command.layoutMap.tablerefsabsbib.description[command.lang]}"/>
+							<!--<fmt:message key="export.tablerefsbib.faq"/>-->
     					</dd>
     					
     					<dt><a href="${fn:escapeXml(tablerefssort)}">TableRefsAbsBibSort</a>&#160;<a href="#jabref">*</a></dt>
     					<dd>
-							<fmt:message key="export.tablerefsbibsort.faq"/>
+    						<c:out value="${command.layoutMap.tablerefsabsbibsort.description[command.lang]}"/>
+							<!--<fmt:message key="export.tablerefsbibsort.faq"/>-->
     					</dd>
     					
     					<dt><a href="${fn:escapeXml(docbook)}">DocBook</a>&#160;<a href="#jabref">*</a></dt>
     					<dd>
-							<fmt:message key="export.docbook.faq">
+    						<c:out value="${command.layoutMap.docbook.description[command.lang]}"/>
+							<!--<fmt:message key="export.docbook.faq">
 								<fmt:param><a href="http://en.wikipedia.org/wiki/XML">XML</a></fmt:param>
 								<fmt:param><a href="http://en.wikipedia.org/wiki/DocBook">DocBook</a></fmt:param>
-							</fmt:message>
+							</fmt:message>-->
     					</dd>
     					
     					<dt><a href="${fn:escapeXml(end)}">EndNote</a>&#160;<a href="#jabref">*</a></dt>
     					<dd>
-							<fmt:message key="export.endnote.faq">
+    						<c:out value="${command.layoutMap.endnote.description[command.lang]}"/>
+							<!--<fmt:message key="export.endnote.faq">
 								<fmt:param><a href="http://en.wikipedia.org/wiki/RIS_%28file_format%29">RIS</a></fmt:param>
-							</fmt:message>
+							</fmt:message>-->
     					</dd>
     					
     					<dt><a href="${fn:escapeXml(openoffice)}">OpenOffice-CSV</a>&#160;<a href="#jabref">*</a></dt>
     					<dd>
-							<fmt:message key="export.openoffice.faq"/>
+    						<c:set var="openofficecsv" value="openoffice-csv"/>
+    						<c:out value="${command.layoutMap[openofficecsv].description[command.lang]}"/>
+							<!--<fmt:message key="export.openoffice.faq"/>-->
     					</dd>
     					
     					<dt><a href="${fn:escapeXml(dblp)}">DBLP</a>&#160;<a href="#jabref">*</a></dt>
     					<dd>
-							<fmt:message key="export.dblp.faq"/>
+    						<c:out value="${command.layoutMap.dblp.description[command.lang]}"/>
+							<!--<fmt:message key="export.dblp.faq"/>-->
     					</dd>
     					
     					<dt><a href="${fn:escapeXml(text)}">Text</a>&#160;<a href="#jabref">*</a></dt>
     					<dd>
-							<fmt:message key="export.text.faq">
+    						<c:out value="${command.layoutMap.text.description[command.lang]}"/>
+							<!--<fmt:message key="export.text.faq">
 								<fmt:param><a href="http://en.wikipedia.org/wiki/BibTeX">BibTeX</a></fmt:param>
-							</fmt:message>
+							</fmt:message>-->
     					</dd>
     					
     					<dt><a href="${fn:escapeXml(jucs)}">JUCS</a>&#160;<a href="#jabref">*</a></dt>
     					<dd>
-							<fmt:message key="export.jucs.faq">
+    						<c:out value="${command.layoutMap.jucs.description[command.lang]}"/>
+							<!--<fmt:message key="export.jucs.faq">
 								<fmt:param><a href="http://www.jucs.org/">Journal of Universal Computer Science</a></fmt:param>
-							</fmt:message>
+							</fmt:message>-->
     					</dd>
     					
     					<dt><a href="${fn:escapeXml(imtm)}">IMTM</a>&#160;<a href="#jabref">*</a></dt>
     					<dd>
-							<fmt:message key="export.imtm.faq"/>
+    						<c:out value="${command.layoutMap.imtm.description[command.lang]}"/>
+							<!--<fmt:message key="export.imtm.faq"/>-->
     					</dd>
 					</dl>
 					
