@@ -25,8 +25,8 @@ package org.bibsonomy.layout.jabref;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.jabref.BibtexDatabase;
 import net.sf.jabref.BibtexEntry;
@@ -378,7 +378,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * 
 	 * @return all layouts
 	 */
-	public HashMap<String, JabrefLayout> getJabrefLayouts(){
+	public Map<String, JabrefLayout> getJabrefLayouts(){
 		return this.layouts.getLayoutMap();
 	}
 
