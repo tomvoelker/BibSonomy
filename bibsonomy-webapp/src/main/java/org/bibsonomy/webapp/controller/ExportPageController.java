@@ -35,8 +35,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 		
 		command.setLayoutMap(this.layoutRenderer.getJabrefLayouts());
 		command.setLang(this.requestLogic.getLocale().getLanguage());
-
-		System.out.println(this.layoutRenderer.getJabrefLayouts().get("openoffice-csv"));
+		
 		return Views.EXPORT;
 	}
 	
