@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.jabref.export.layout.Layout;
 import net.sf.jabref.export.layout.LayoutHelper;
@@ -99,7 +100,7 @@ public class JabrefLayouts {
 	/**
 	 * saves all loaded layouts (html, bibtexml, tablerefs, hash(user.username), ...)
 	 */
-	private HashMap<String,JabrefLayout> layouts;
+	private Map<String,JabrefLayout> layouts;
 
 	/** Initialize the layouts by loading them into a map.
 	 * 
@@ -319,9 +320,9 @@ public class JabrefLayouts {
 	/**
 	 * Returns a map with all layouts
 	 * 
-	 * @return HashMap with all Layouts
+	 * @return Map with all Layouts
 	 */
-	protected HashMap<String, JabrefLayout> getLayoutMap(){
+	protected Map<String, JabrefLayout> getLayoutMap(){
 		return this.layouts;
 	}
 
