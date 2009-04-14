@@ -84,7 +84,10 @@ public class RecommendedTagComparatorTest {
 	}
 	
 	/**
-	 * Test that tags with t1.equalsIgnoreCase(t2) don't get lost.
+	 * Test that tags with t1.equalsIgnoreCase(t2) get lost.
+	 * 
+	 * Changes:
+	 * - 2009-04-14: case of tags is now ignored!  
 	 */
 	@Test
 	public void testCompare4() {
@@ -93,7 +96,7 @@ public class RecommendedTagComparatorTest {
 		testSet.add(new RecommendedTag("main", 0.0, 0.0));
 		testSet.add(new RecommendedTag("Main", 0.0, 0.0));
 		
-		assertEquals(2, testSet.size());
+		assertEquals(1, testSet.size());
 		
 		assertTrue(testSet.contains(new RecommendedTag("main", 0.0, 0.0)));
 		assertTrue(testSet.contains(new RecommendedTag("Main", 0.0, 0.0)));
