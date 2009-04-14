@@ -23,8 +23,8 @@
     				</documentation>
     			</annotation>
     		</element>
-    		<element name="description" maxOccurs="2"
-    			minOccurs="2">
+    		<element name="description" maxOccurs="unbounded"
+    			minOccurs="1">
     			<annotation>
 			    	<documentation>
 			    		A short textual description.
