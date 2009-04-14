@@ -1,6 +1,6 @@
 package org.bibsonomy.webapp.command;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import org.bibsonomy.layout.jabref.JabrefLayout;
 
@@ -10,7 +10,7 @@ import org.bibsonomy.layout.jabref.JabrefLayout;
  */
 public class ExportPageCommand extends ResourceViewCommand{
 	
-	private HashMap<String, JabrefLayout> layoutMap;
+	private Map<String, JabrefLayout> layoutMap;
 	private String lang;
 
 	/**
@@ -30,14 +30,14 @@ public class ExportPageCommand extends ResourceViewCommand{
 	/**
 	 * @return jabref layout map
 	 */
-	public HashMap<String, JabrefLayout> getLayoutMap() {
+	public Map<String, JabrefLayout> getLayoutMap() {
 		return this.layoutMap;
 	}
 
 	/**
 	 * @param layoutMap
 	 */
-	public void setLayoutMap(final HashMap<String, JabrefLayout> layoutMap) {
+	public void setLayoutMap(final Map<String, JabrefLayout> layoutMap) {
 		this.layoutMap = layoutMap;
 	}
 
