@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -44,6 +45,14 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	
 	/** indicates that post identifier was not given */
 	public static int UNKNOWN_POSTID = -1;
+	
+	/** FIXME: reuse AbstractTagRecommender */
+	private static final int DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND = 5;
+	/**
+	 * The maximal number of tags the recommender shall return on a call to
+	 * {@link #getRecommendedTags(Post)}.
+	 */
+	private int numberOfTagsToRecommend = DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND;
 	
 	/**
 	 * constructor.
@@ -243,6 +252,18 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			resultSelector.selectResult(qid, recommendedTags);
 			DBAccess.storeRecommendation(qid, rid, recommendedTags);
 		}
+		
+		// trim number of recommended tags if it exceeds numberOfTagsToRecommend
+		if( recommendedTags.size()>getNumberOfTagsToRecommend() ) {
+			Iterator<RecommendedTag> itr = recommendedTags.iterator();
+			int pos = 0;
+			while(itr.hasNext()) {
+			    itr.next(); 
+				pos++;
+				if( pos>getNumberOfTagsToRecommend() )
+					itr.remove();
+			};
+		}
 	}
 	/**
 	 * Publish individual (asynchronous) recommender's response.
@@ -293,7 +314,19 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	public RecommendationSelector getResultSelector() {
 		return resultSelector;
 	}
-
+	/**
+	 * Get id which indicates that a recommender was not associated with a post.
+	 * @return UNKNOWN_POSTID
+	 */
+	public static int getUnknownPID() {
+		return UNKNOWN_POSTID;
+	}
+	public void setNumberOfTagsToRecommend(int numberOfTagsToRecommend) {
+		this.numberOfTagsToRecommend = numberOfTagsToRecommend;
+	}
+	public int getNumberOfTagsToRecommend() {
+		return numberOfTagsToRecommend;
+	}
 	//------------------------------------------------------------------------
 	// Implementation of dispatching recommendation queries
 	//------------------------------------------------------------------------
@@ -380,11 +413,5 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		}
 	}
 
-	/**
-	 * Get id which indicates that a recommender was not associated with a post.
-	 * @return UNKNOWN_POSTID
-	 */
-	public static int getUnknownPID() {
-		return UNKNOWN_POSTID;
-	}
+
 }
