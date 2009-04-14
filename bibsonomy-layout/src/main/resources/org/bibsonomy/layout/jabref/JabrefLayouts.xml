@@ -2,12 +2,17 @@
 <layouts
 	xmlns="http://www.bibsonomy.org/resources/xml/JabrefLayoutDefinition"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.bibsonomy.org/resources/xml/JabrefLayoutDefinition JabrefLayoutDefinition.xsd ">
+	xsi:schemaLocation="http://www.bibsonomy.org/resources/xml/JabrefLayoutDefinition JabrefLayoutDefinition.xsd "
+	xmlns:xml="http://www.w3.org/XML/1998/namespace">
 	<layout name="html">
 		<displayName>HTML</displayName>
-		<description>
+		<description xml:lang="en">
 			A simple layout where each entry is represented as row in a
 			table.
+		</description>
+		<description xml:lang="de">
+			Ausgabe einer einfach formatierten Seite, welche Sie in ihre 
+			Homepage einfügen können.
 		</description>
 		<baseFileName>html</baseFileName>
 		<mimeType>text/html</mimeType>
@@ -15,10 +20,14 @@
 	</layout>
 	<layout name="simplehtml">
 		<displayName>Simple HTML</displayName>
-		<description>
+		<description xml:lang="en">
 			An HTML layout without any header or footer but very nice
 			output. This is useful for integrating publication lists
 			into other HTML pages.
+		</description>
+		<description xml:lang="de">
+			Ein HTML-Layout ohne Kopf- und Fußzeile, aber mit einer formatierten Ausgabe.
+			Geeignet, um Publikationslisten auf anderen HTML-Seiten einzubetten.
 		</description>
 		<baseFileName>simplehtml</baseFileName>
 		<mimeType>text/html</mimeType>
@@ -26,10 +35,14 @@
 	</layout>
 	<layout name="simplehtmlyear">
 		<displayName>Simple HTML, grouped by year</displayName>
-		<description>
+		<description xml:lang="en">
 			An HTML layout without any header or footer but very nice
 			output. This is useful for integrating publication lists
 			into other HTML pages, grouped by year
+		</description>
+		<description xml:lang="de">
+			Ein HTML-Layout ohne Kopf- und Fußzeile, aber mit einer formatierten Ausgabe.
+			Geeignet, um Publikationslisten auf anderen HTML-Seiten einzubetten, gruppiert nach Jahren.
 		</description>
 		<baseFileName>simplehtmlyear</baseFileName>
 		<mimeType>text/html</mimeType>
@@ -37,9 +50,13 @@
 	</layout>	
 	<layout name="tablerefs">
 		<displayName>HTML table</displayName>
-		<description>
+		<description xml:lang="en">
 			A more structured HTML output with each entry as a row in a
 			table and additional JavaScript search function.
+		</description>
+		<description xml:lang="de">
+			Erzeugt eine strukturierte HTML-Ausgabe, bei der jeder Eintrag in einer Reihe
+			innerhalb einer Tabelle dargestellt wird und bietet weiterhin Suchfunktionen mittels JavaScript.
 		</description>
 		<directory>tablerefs</directory>
 		<baseFileName>tablerefs</baseFileName>
@@ -50,9 +67,13 @@
 		<displayName>
 			HTML table (with Abstract &amp; BibTeX)
 		</displayName>
-		<description>
+		<description xml:lang="en">
 			Similar to tablerefs but additionally includes the BibTeX
 			source and the abstract of the publication.
+		</description>
+		<description xml:lang="de">
+			Ähnlich wie TableRefs, beinhaltet aber zusätzlich den BibTeX Quelltext und
+			eine Zusammenfassung der jeweiligen Publikation.
 		</description>
 		<directory>tablerefsabsbib</directory>
 		<baseFileName>tablerefsabsbib</baseFileName>
@@ -63,9 +84,13 @@
 		<displayName>
 			HTML table (with Abstract &amp; BibTeX, sortable)
 		</displayName>
-		<description>
+		<description xml:lang="en">
 			Similar to TableRefsAbsBib, but includes possibility to sort
 			the table by each column.
+		</description>
+		<description xml:lang="de">
+			Ähnlich wie TableRefsAbsBib, aber bietet zusätzlich die Möglichkeit
+			die Tabelle nach jeder Spalte zu sortieren.
 		</description>
 		<directory>tablerefsabsbibsort</directory>
 		<baseFileName>tablerefsabsbibsort</baseFileName>
@@ -76,9 +101,13 @@
 		<displayName>
 			HTML table (with Abstract &amp; BibTeX, sortable) - embedded version
 		</displayName>
-		<description>
+		<description xml:lang="en">
 			Similar to TableRefsAbsBib, but includes possibility to sort
 			the table by each column.
+		</description>
+		<description xml:lang="de">
+			Ähnlich wie TableRefsAbsBib, aber bietet zusätzlich die Möglichkeit
+			die Tabelle nach jeder Spalte zu sortieren.
 		</description>
 		<directory>tablerefsabsbibsortembed</directory>
 		<baseFileName>tablerefsabsbibsort</baseFileName>
@@ -87,8 +116,11 @@
 	</layout>	
 	<layout name="docbook">
 		<displayName>DocBook</displayName>
-		<description>
+		<description xml:lang="en">
 			This is an XML output according to the DocBook schema.
+		</description>
+		<description xml:lang="de">
+			Liefert eine XML-Ausgabe entsprechend dem DocBook-Schema.
 		</description>
 		<baseFileName>docbook</baseFileName>
 		<mimeType>application/xml</mimeType>
@@ -96,9 +128,12 @@
 	</layout>
 	<layout name="dblp">
 		<displayName>DBLP XML</displayName>
-		<description>
+		<description xml:lang="en">
 			DBLP export your records to a DBLP conformable XML
 			structure.
+		</description>
+		<description xml:lang="de">
+			Exportiert ihre Einträge in einer DBLP-konformen XML-Struktur.
 		</description>
 		<baseFileName>dblp</baseFileName>
 		<mimeType>application/xml</mimeType>
@@ -106,25 +141,32 @@
 	</layout>
 	<layout name="bibtexml">
 		<displayName>BibTeXML</displayName>
-		<description></description>
+		<description xml:lang="en"></description>
+		<description xml:lang="de"></description>
 		<baseFileName>bibtexml</baseFileName>
 		<mimeType>application/xml</mimeType>
 		<extension>.xml</extension>
 	</layout>
 	<layout name="bibordf">
 		<displayName>BibO RDF</displayName>
-		<description></description>
+		<description xml:lang="en"></description>
+		<description xml:lang="de"></description>
 		<baseFileName>bibordf</baseFileName>
 		<mimeType>application/rdf+xml</mimeType>
 		<extension>.rdf</extension>
 	</layout>
 	<layout name="harvard">
 		<displayName>Harvard RTF</displayName>
-		<description>
+		<description xml:lang="en">
 			This exports the publication list in Rich Text Format which
 			can be used by word processors like OpenOffice or Microsoft
 			Word. It is formatted according to the Harvard bibliography
 			style guidelines.
+		</description>
+		<description xml:lang="de">
+			Export der Publikationsliste in das Rich Text Format, welches von 
+			Textverarbeitungsprogrammen wie OpenOffice oder Microsoft verwendet wird. 
+			Die Ausgabe wird entsprechend den Harvard-Bibliographie-Richtlinien formatiert. 
 		</description>
 		<directory>harvard</directory>
 		<baseFileName>harvard</baseFileName>
@@ -133,9 +175,13 @@
 	</layout>
 	<layout name="endnote">
 		<displayName>EndNote</displayName>
-		<description>
+		<description xml:lang="en">
 			This is an output in RIS which is used by EndNote, another
 			bibliography management tool.
+		</description>
+		<description xml:lang="de">
+			Es wird eine Ausgabe in RIS erzeugt, welche von EndNote verwendet wird.
+			EndNote ist ein weiteres Bibliographie-Werkzeug.
 		</description>
 		<directory>endnote</directory>
 		<baseFileName>EndNote</baseFileName>
@@ -144,10 +190,15 @@
 	</layout>
 	<layout name="openoffice-csv">
 		<displayName>OpenOffice CSV</displayName>
-		<description>
+		<description xml:lang="en">
 			CSV, or Comma Separated Values divides all fields of the
 			entry by a comma. It is useful to import the publications
 			into spreadsheet programs.
+		</description>
+		<description xml:lang="de">
+			CSV-Dateien ("Komma-separierte Werte") unterteilen alle Felder eines
+			Eintrages mit einem Komma. Damit ist es beispielsweise möglich, Publikationen in
+			Tabellenkalkulationsprogrammen zu importieren.
 		</description>
 		<directory>openoffice</directory>
 		<baseFileName>openoffice-csv</baseFileName>
@@ -156,7 +207,8 @@
 	</layout>
 	<layout name="text">
 		<displayName>Text (BibTeX)</displayName>
-		<description>Another BibTeX output.</description>
+		<description xml:lang="en">Another BibTeX output.</description>
+		<description xml:lang="de">Erzeugt eine BibTeX-Ausgabe.</description>
 		<baseFileName>text</baseFileName>
 		<mimeType>text/plain</mimeType>
 		<extension>.txt</extension>
@@ -166,9 +218,14 @@
 	<!-- typemap.put("custom",              new OutputType(null, "text/html")); -->
 	<layout name="se" public="false">
 		<displayName>SE Kassel</displayName>
-		<description>
+		<description xml:lang="en">
 			Custom output format provided by the Research Group Software
 			Engineering, University of Bochum.
+		</description>
+		<description xml:lang="de">
+			Benutzerdefiniertes Ausgabeformat, welches von der Abteilung
+			"Research Group Software Engineering" der Universität Bochum 
+			angeboten wird.
 		</description>
 		<baseFileName>se</baseFileName>
 		<mimeType>text/html</mimeType>
@@ -176,9 +233,13 @@
 	</layout>
 	<layout name="jucs">
 		<displayName>JUCS</displayName>
-		<description>
+		<description xml:lang="en">
 			Output formatted according to the guidelines of the Journal
 			of Universal Computer Science.
+		</description>
+		<description xml:lang="de">
+			Erzeugt eine formatierte Ausgabe entsprechen den "Journal
+			of Universal Computer Science"-Richtlinien.
 		</description>
 		<baseFileName>jucs</baseFileName>
 		<mimeType>text/rtf</mimeType>
@@ -186,10 +247,15 @@
 	</layout>
 	<layout name="imtm" public="false">
 		<displayName>IMTM</displayName>
-		<description>
+		<description xml:lang="en">
 			Custom output format provided by the Department of
 			Information and Technology Management (IMTM), University of
 			Bochum.
+		</description>
+		<description xml:lang="de">
+			Benutzerdefiniertes Ausgabeformat, welches von der Abteilung
+			Informations und Technologie Management (IMTM), Universität Bochum
+			angeboten wird.
 		</description>
 		<baseFileName>imtm</baseFileName>
 		<mimeType>text/html</mimeType>
@@ -197,9 +263,12 @@
 	</layout>
 	<layout name="din1505">
 		<displayName>DIN 1505</displayName>
-		<description>
+		<description xml:lang="en">
 			HTML output format according to the German Institute for
 			Standardization (DIN).
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format entsprechend dem Deutschen Institut für Normung.
 		</description>
 		<baseFileName>din1505</baseFileName>
 		<mimeType>text/html</mimeType>
@@ -207,9 +276,13 @@
 	</layout>
 	<layout name="din1505year">
 		<displayName>DIN 1505, grouped by year</displayName>
-		<description>
+		<description xml:lang="en">
 			HTML output format according to the German Institute for
 			Standardization (DIN), grouped by year.
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format entsprechend dem Deutschen Institut für Normung, gruppiert
+			nach Jahren.
 		</description>
 		<baseFileName>din1505year</baseFileName>
 		<mimeType>text/html</mimeType>
@@ -217,10 +290,14 @@
 	</layout>		
 	<layout name="mms" public="false">
 		<displayName>DIN 1505 MMS</displayName>
-		<description>
+		<description xml:lang="en">
 			HTML output format according to the German Institute for
 			Standardization (DIN). Special version of the
 			Mensch-Maschine-Systemtechnik Institute.
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format entsprechend dem Deutschen Institut für Normung. 
+			Specielle Version des Mensch-Maschine-Systemtechnik Instituts.
 		</description>
 		<directory>mms</directory>
 		<baseFileName>mms</baseFileName>
@@ -229,10 +306,15 @@
 	</layout>
 	<layout name="mmsyear" public="false">
 		<displayName>DIN 1505 MMS, grouped by year</displayName>
-		<description>
+		<description xml:lang="en">
 			HTML output format according to the German Institute for
 			Standardization (DIN). Special version of the
 			Mensch-Maschine-Systemtechnik Institute, grouped by year.
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format entsprechend dem Deutschen Institut für Normung. 
+			Specielle Version des Mensch-Maschine-Systemtechnik Instituts, gruppiert
+			nach Jahren.
 		</description>
 		<directory>mmsyear</directory>
 		<baseFileName>mmsyear</baseFileName>
@@ -241,9 +323,13 @@
 	</layout>
 	<layout name="harvardhtml">
 		<displayName>Harvard (HTML version)</displayName>
-		<description>
+		<description xml:lang="en">
 			HTML output format formatted according to the Harvard bibliography
 			style guidelines.
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe Format entsprechend den "Harvard bibliography
+			style" Richtlinien.
 		</description>
 		<directory>harvardhtml</directory>
 		<baseFileName>harvard</baseFileName>
@@ -252,9 +338,13 @@
 	</layout>
 	<layout name="harvardhtmlyear">
 		<displayName>Harvard (HTML version), grouped by year</displayName>
-		<description>
+		<description xml:lang="en">
 			HTML output format formatted according to the Harvard bibliography
 			style guidelines and grouped by year
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe Format entsprechend den "Harvard bibliography
+			style" Richtlinien, gruppiert nach Jahren
 		</description>
 		<directory>harvardhtmlyear</directory>
 		<baseFileName>harvard</baseFileName>

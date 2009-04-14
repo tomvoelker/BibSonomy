@@ -45,6 +45,10 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 	
 	private JabrefLayout currentLayoutDefinition;
 	
+	// need to save the attribute from the description element in the
+	// startElement callback method to use it in the endElement method	
+	private String languageAttribute;
+	
 	public void startDocument() {
 		 layoutDefinitions = new LinkedList<JabrefLayout>();
 	}
@@ -58,7 +62,10 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 		if ("layout".equals(name)) {
 			currentLayoutDefinition = new JabrefLayout(atts.getValue("name"));
 			currentLayoutDefinition.setPublicLayout(new Boolean(atts.getValue("public")));
+		} else 	if ("description".equals(name)) {
+			this.languageAttribute = atts.getValue("xml:lang");
 		}
+		
 	}
 
 	/** Collect characters.
@@ -75,16 +82,17 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 	}
 
 	public void endElement (final String uri, final String name, final String qName) {
+		
 		if ("layout".equals(name)) {
 			layoutDefinitions.add(currentLayoutDefinition);
 		} else if ("displayName".equals(name)) {
 			currentLayoutDefinition.setDisplayName(getBuf());
-		} else if ("description".equals(name)) {
-			currentLayoutDefinition.setDescription(getBuf());
 		} else if ("baseFileName".equals(name)) {
 			currentLayoutDefinition.setBaseFileName(getBuf());
 		} else if ("directory".equals(name)) {
 			currentLayoutDefinition.setDirectory(getBuf());
+		} else if ("description".equals(name)) {
+			currentLayoutDefinition.setDescription(this.languageAttribute, getBuf());
 		} else if ("extension".equals(name)) {
 			currentLayoutDefinition.setExtension(getBuf());
 		} else if ("mimeType".equals(name)) {

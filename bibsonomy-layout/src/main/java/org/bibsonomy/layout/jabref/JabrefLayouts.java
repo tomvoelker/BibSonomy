@@ -209,7 +209,7 @@ public class JabrefLayouts {
 		 * initialize a new user layout
 		 */
 		final JabrefLayout jabrefLayout = new JabrefLayout(JabrefLayoutUtils.userLayoutName(userName));
-		jabrefLayout.setDescription("Custom layout of user " + userName);
+		jabrefLayout.setDescription("en", "Custom layout of user " + userName);
 		jabrefLayout.setDisplayName("custom");
 		jabrefLayout.setMimeType("text/html"); // FIXME: this should be adaptable by the user ...
 		jabrefLayout.setUserLayout(true);
@@ -314,6 +314,15 @@ public class JabrefLayouts {
 	 */
 	protected void setDefaultLayoutFilePath(String defaultLayoutFilePath) {
 		this.defaultLayoutFilePath = defaultLayoutFilePath;
+	}
+	
+	/**
+	 * Returns a map with all layouts
+	 * 
+	 * @return HashMap with all Layouts
+	 */
+	protected HashMap<String, JabrefLayout> getLayoutMap(){
+		return this.layouts;
 	}
 
 }
