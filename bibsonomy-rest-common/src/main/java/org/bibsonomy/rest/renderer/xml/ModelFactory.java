@@ -30,10 +30,13 @@ import static org.bibsonomy.model.util.ModelValidationUtils.checkPost;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkTag;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
 
+import java.io.ObjectOutputStream.PutField;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.List;
 
@@ -191,7 +194,7 @@ public class ModelFactory {
 		checkUser(xmlUser);
 		user.setName(xmlUser.getName());
 		post.setUser(user);
-		post.setDate(createDate(xmlPost.getPostingdate()));
+		post.setDate(createDate(xmlPost));
 
 		// tags
 		for (final TagType xmlTag : xmlPost.getTag()) {
@@ -283,14 +286,33 @@ public class ModelFactory {
 		}
 	}
 
-	// FIXME what do we want to do here?
-	private Date createDate(XMLGregorianCalendar date) {
-
-		return new Date(System.currentTimeMillis());
-
-//		final Calendar cal = new GregorianCalendar(date.getYear(), date.getMonth() - 1, date.getDay(), date.getHour(), date.getMinute(), date.getSecond());
-//		cal.set(Calendar.MILLISECOND, date.getMillisecond());
-//		return cal.getTime();
+	/**
+	 * Helper method to create a date when parsing a post. Two situations may occur:
+	 * 
+	 * 1/ The post is parsed on client side. Then the date is the one as sent by
+	 *    the BibSonomy API.
+	 *    
+	 * 2/ The post is parsed on server side; this only happens in the two strategies
+	 *       {@link org.bibsonomy.rest.strategy.users.PutPostStragegy}} and 
+	 *       {@link org.bibsonomy.rest.strategy.users.PostPostStragegy}.
+	 *    In both strategies, the date is overwritten in order to prevent malicious users
+	 *    from posting posts with faked dates (e.g. from the future)
+	 *    
+	 * @param post - an XML post
+	 * @return a date for this post
+	 */
+	private Date createDate(PostType post) {
+		/*
+		 * If there is no date, use the current date. 
+		 */
+		if (post.getPostingdate() == null) {
+			return new Date(System.currentTimeMillis());
+		}
+		/*
+		 * this is save because the postingdate is overwritten in the corresponding
+		 * strategies when creating or updating a post (see above) 
+		 */
+		return post.getPostingdate().toGregorianCalendar().getTime();
 	}
 
 	public ModelValidator getModelValidator() {
