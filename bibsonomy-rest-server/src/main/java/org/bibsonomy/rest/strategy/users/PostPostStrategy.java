@@ -40,6 +40,10 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 	@Override
 	protected String create() throws InternServerException, BadRequestOrResponseException {
 		final Post<?> post = this.getRenderer().parsePost(this.doc);
+		/*
+		 * set postingdate to current time (i.e., users cannot create posts with their
+		 * own (eventually faked) date
+		 */
 		post.setDate(new Date(System.currentTimeMillis()));
 		try {
 			final List<Post<?>> posts = new LinkedList<Post<?>>();
