@@ -1,6 +1,7 @@
 package org.bibsonomy.rest.strategy.users;
 
 import java.io.Writer;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,10 +58,18 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 	@Override
 	protected String update() throws InternServerException, BadRequestOrResponseException {
 		final Post<?> post = this.getRenderer().parsePost(this.doc);
-		// set the (old) intrahash of the resource as specified in the URL
+		/*
+		 * set postingdate to current time
+		 */
+		post.setDate(new Date(System.currentTimeMillis()));				
+		/*
+		 * set the (old) intrahash of the resource as specified in the URL
+		 */
 		post.getResource().setIntraHash(this.resourceHash);
-		// XXX: neither the client nor the REST API will calculate the new
-		// hash - this will be done by the logic behind the LogicInterface!		
+		/*
+		 * XXX: neither the client nor the REST API will calculate the new
+		 * hash - this will be done by the logic behind the LogicInterface!
+		 */ 		
 		try {
 			final List<Post<?>> posts = new LinkedList<Post<?>>();
 			posts.add(post);
