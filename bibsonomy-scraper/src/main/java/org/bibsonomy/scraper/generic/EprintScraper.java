@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,23 +21,13 @@ import org.bibsonomy.util.id.DOIUtils;
  * @version $Id$
  */
 public class EprintScraper implements Scraper {
-	
+
 	private static final String INFO = "Scraper for repositories which use " + AbstractUrlScraper.href("http://www.eprints.org/", "eprints");
 
-	private Pattern patternMeta = Pattern.compile("<meta content=\"([^\\\"]*)\" name=\"([^\\\"]*)\" />");
-	
-	public String getInfo() {
-		return INFO;
-	}
+	private static final Pattern patternMeta = Pattern.compile("<meta content=\"([^\\\"]*)\" name=\"([^\\\"]*)\" />");
 
-	public Collection<Scraper> getScraper() {
-		return Collections.singleton((Scraper) this);
-	}
-
-	public boolean scrape(ScrapingContext scrapingContext)throws ScrapingException{
-		scrapingContext.setScraper(this);
-		
-		HashMap<String, String> eprintToBibtexFields = new HashMap<String, String>();
+	private final static Map<String, String> eprintToBibtexFields = new HashMap<String, String>();
+	static {
 		eprintToBibtexFields.put("eprints.creators_name", "author");
 		eprintToBibtexFields.put("eprints.editors_name", "editor");
 		eprintToBibtexFields.put("eprints.type", "bibtextype");
@@ -57,54 +47,64 @@ public class EprintScraper implements Scraper {
 		eprintToBibtexFields.put("eprints.number", "number");
 		eprintToBibtexFields.put("eprints.issn", "issn");
 		eprintToBibtexFields.put("eprints.id_number", "doi");
-		
-		HashMap<String, String> eprintTypesToBibtexTypes = new HashMap<String, String>();
+	}
+	private final static Map<String, String> eprintTypesToBibtexTypes = new HashMap<String, String>();
+	static {
 		eprintTypesToBibtexTypes.put("book", "book");
 		eprintTypesToBibtexTypes.put("book_section", "inbook");
 		eprintTypesToBibtexTypes.put("article", "article");
 		eprintTypesToBibtexTypes.put("conference", "inproceeding");
 		eprintTypesToBibtexTypes.put("monograph", "techreport");
 		eprintTypesToBibtexTypes.put("thesis", "phdthesis");
+	}
+
+	public String getInfo() {
+		return INFO;
+	}
+
+	public Collection<Scraper> getScraper() {
+		return Collections.singleton((Scraper) this);
+	}
+
+	public boolean scrape(ScrapingContext scrapingContext)throws ScrapingException{
+		scrapingContext.setScraper(this);
 
 		/*
 		 * read eprint meta fields and resolve bibtex fields 
 		 */
-		
-		HashMap<String, LinkedList<String>> bibtexFields = new HashMap<String, LinkedList<String>>();
-		Matcher metaMatcher = patternMeta.matcher(scrapingContext.getPageContent());
+		final Map<String, LinkedList<String>> bibtexFields = new HashMap<String, LinkedList<String>>();
+		final Matcher metaMatcher = patternMeta.matcher(scrapingContext.getPageContent());
 		while(metaMatcher.find()){
-			String content = metaMatcher.group(1);
-			String name = metaMatcher.group(2);
-			
+			final String value = metaMatcher.group(1);
+			final String key   = metaMatcher.group(2);
+
 			// get bib field
-			String bibtexField = eprintToBibtexFields.get(name);
-			
+			final String bibtexField = eprintToBibtexFields.get(key);
+
 			// store in map
-			if(bibtexFields.containsKey(bibtexField))
-				bibtexFields.get(bibtexField).add(content);
-			else{
+			if (!bibtexFields.containsKey(bibtexField)) {
 				bibtexFields.put(bibtexField, new LinkedList<String>());
-				bibtexFields.get(bibtexField).add(content);
 			}
+			bibtexFields.get(bibtexField).add(value);
 		}
-		
+
 		/*
 		 * build bibtex
 		 */
-		
+
 		// bibtex type
-		String bibtextype = null;
-		if(bibtexFields.containsKey("bibtextype")){
-			String type = bibtexFields.get("bibtextype").getFirst();
+		final String bibtextype;
+		if (bibtexFields.containsKey("bibtextype")) {
+			final String type = bibtexFields.get("bibtextype").getFirst();
 			if(eprintTypesToBibtexTypes.containsKey(type))
 				bibtextype = eprintTypesToBibtexTypes.get(type);
 			else
 				bibtextype = "misc";
-		}else
+		} else
 			bibtextype = "misc";
 		bibtexFields.remove("bibtextype"); //not needed anymore
 
-		
+
 		// bibtex key (author/editor lastname + year)
 		String bibtexkey = "";
 		String year = null;
@@ -121,7 +121,7 @@ public class EprintScraper implements Scraper {
 			if(matcherLastname.find())
 				firstLastname = matcherLastname.group(1);
 		}
-		
+
 		if(bibtexFields.containsKey("year")){
 			String yearField = bibtexFields.get("year").getFirst();
 			Matcher matcherYear = Pattern.compile("(\\d{4})").matcher(yearField);
@@ -133,18 +133,12 @@ public class EprintScraper implements Scraper {
 			bibtexkey = firstLastname + year;
 		}else
 			bibtexkey = "defaultKey";
-		
+
 		// build bibtex
-		StringBuffer bibtexBuffer = new StringBuffer();
-		// intro elements
-		bibtexBuffer.append("@");
-		bibtexBuffer.append(bibtextype);
-		bibtexBuffer.append("{");
-		bibtexBuffer.append(bibtexkey);
-		bibtexBuffer.append(",\n");
+		final StringBuffer bibtexBuffer = new StringBuffer("@" + bibtextype + "{" + bibtexkey + ",\n");
 
 		// iterate over every bibtex field and append it to buffer
-		for(String bibtexField: bibtexFields.keySet()){
+		for(final String bibtexField: bibtexFields.keySet()){
 			if(bibtexField != null){
 				String value = null;
 				// special handling for author
@@ -154,7 +148,7 @@ public class EprintScraper implements Scraper {
 						authorString = authorString + author + " and ";
 					// remove last " and "
 					authorString = authorString.substring(0, authorString.length()-5);
-					
+
 					value = authorString;
 				}
 				// special handling for editor
@@ -184,16 +178,13 @@ public class EprintScraper implements Scraper {
 					for(String singelValue: bibtexFields.get(bibtexField))
 						bibtexFieldValue = bibtexFieldValue + " " + singelValue;
 					bibtexFieldValue = bibtexFieldValue.trim();
-					
+
 					value = bibtexFieldValue;
 				}
-				
+
 				// append
 				if(value != null){
-					bibtexBuffer.append(bibtexField);
-					bibtexBuffer.append(" = {");
-					bibtexBuffer.append(value);
-					bibtexBuffer.append("},\n");
+					bibtexBuffer.append(bibtexField + " = {" + value + "},\n");
 				}
 			}
 		}
@@ -201,26 +192,19 @@ public class EprintScraper implements Scraper {
 		bibtexBuffer.replace(bibtexBuffer.length()-2, bibtexBuffer.length(), "\n");
 		// finish
 		bibtexBuffer.append("}");
+
+		scrapingContext.setBibtexResult(bibtexBuffer.toString());
 		
-		String bibtex = null;
-		bibtex = bibtexBuffer.toString();
-		if(bibtex != null){
-			scrapingContext.setBibtexResult(bibtex);
-			return true;
-		}
-		
-		return false;
+		return true;
 	}
 
 	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
 		try {
-			String page = scrapingContext.getPageContent();
-			if(page.contains("name=\"eprints.date\"") && page.contains("name=\"eprints.title\""))
-				return true;
+			final String page = scrapingContext.getPageContent();
+			return page.contains("name=\"eprints.date\"") && page.contains("name=\"eprints.title\"");
 		} catch (ScrapingException ex) {
 			return false;
 		}
-		return false;
 	}
 
 }
