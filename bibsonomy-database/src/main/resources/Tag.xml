@@ -156,14 +156,15 @@
 		WHERE tag_name = #tagName#
 	</update>
 
-	<select id="getTagsByAuthor" resultMap="Common.tag" parameterClass="tagParam">
-		SELECT tag_name, count(tag_name) AS tag_count 
-		FROM tas t, search_bibtex s 
+	<select id="getTagsByAuthor" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
+		SELECT tag_name, count(tag_name) AS tag_ctr 
+		FROM tas t1, search_bibtex s 
 		WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE) 			 
-			AND s.group =#groupType#
-			AND t.content_type = #contentType#
-			AND t.content_id = s.content_id 
-		GROUP BY t.tag_name ORDER BY tag_name COLLATE utf8_unicode_ci;
+			AND t1.content_type = #contentType#
+			AND t1.content_id = s.content_id
+			<include refid="restrictToGroups"/> 
+		GROUP BY t1.tag_name ORDER BY tag_name COLLATE utf8_unicode_ci
+		LIMIT #limit# OFFSET #offset#
 	</select>
 	
 	<select id="getRelatedTagsForGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
