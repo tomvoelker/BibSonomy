@@ -12,11 +12,15 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.junit.Ignore;
@@ -35,6 +39,8 @@ import org.junit.Test;
 
 public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
+	private static final Log log = LogFactory.getLog(TagDatabaseManagerTest.class);	
+	
 	/**
 	 * tests getTagById
 	 */
@@ -165,13 +171,40 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.resetParameters();
 	}
 
+	/**
+	 * tests getTagsByAuthor
+	 * 
+	 * we have only a single entry in the 
+	 */
 	@Test
-	@Ignore
 	public void getTagsByAuthor() {
-		this.tagParam.setSearch("stumme");
-	    this.tagDb.getTagsAuthor(this.tagParam, this.dbSession);
-		//System.out.println(tags.size());
-		//assertEquals(10, tags.size());
+		/* 
+		 * we have only a single entry in the bibtex search table (authored by "author",
+		 * points to entry with content id 10; has 2 tags assigned  
+		 */
+		TagParam param = new TagParam();
+		param.setSearch("author");
+		param.setSearchEntity(SearchEntity.AUTHOR);
+		param.setBibtexKey(null);
+		param.setLimit(1000);
+		param.setOffset(0);
+		param.setContentTypeByClass(BibTex.class);
+	    List<Tag> tags = this.tagDb.getTagsByAuthor(param, this.dbSession);
+	    log.debug("tags found by query getTagsByAuthor for author 'author':");
+	    for (Tag tag : tags) {
+	    	log.debug(tag.getName());
+	    }
+	    assertEquals(2, tags.size());
+	    assertEquals(1, tags.get(0).getGlobalcount());
+	    assertEquals(1, tags.get(1).getGlobalcount());
+	    assertTrue(tags.contains(new Tag("testbibtex")));
+	    assertTrue(tags.contains(new Tag("testtag")));	    
+	    /*
+	     * search for non-existing author -> no results
+	     */
+	    param.setSearch("nonexistingauthor");
+	    tags = this.tagDb.getTagsByAuthor(param, this.dbSession);
+	    assertEquals(0, tags.size());
 	}
 
 	/**
