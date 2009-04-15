@@ -22,7 +22,7 @@ public class GetTagsByAuthor extends TagChainElement {
 
 	@Override
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
-		return this.db.getTagsAuthor(param, session);
+		return this.db.getTagsByAuthor(param, session);
 	}
 
 	@Override
