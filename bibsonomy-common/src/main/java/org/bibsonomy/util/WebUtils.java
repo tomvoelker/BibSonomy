@@ -33,6 +33,7 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -123,11 +124,13 @@ public class WebUtils {
 
 	/**
 	 * Reads from a URL and writes the content into a string.
-	 * @param inputURL the url to scrape
+	 * 
+	 * @param inputURL the URL of the content.
+	 * @param cookie a cookie which should be included in the header of the request send to the server
 	 * @return String which holds the page content.
 	 * @throws IOException 
 	 */
-	public static String getContentAsString(final URL inputURL) throws IOException {
+	public static String getContentAsString(final URL inputURL, final String cookie) throws IOException {
 		try {
 			final HttpURLConnection urlConn = (HttpURLConnection) inputURL.openConnection();
 			urlConn.setAllowUserInteraction(false);
@@ -139,6 +142,9 @@ public class WebUtils {
 			 * pages require it to download content.
 			 */
 			urlConn.setRequestProperty("User-Agent", USER_AGENT);
+			if (cookie != null) {
+				urlConn.setRequestProperty("Cookie", cookie);
+			}
 			urlConn.connect();
 
 			/*
@@ -164,6 +170,18 @@ public class WebUtils {
 			throw ioe;
 		}
 	}
+	
+	/**
+	 * Reads from a URL and writes the content into a string.
+	 * 
+	 * @param inputURL the URL of the content.
+	 * @return String which holds the page content.
+	 * @throws IOException
+	 */
+	public static String getContentAsString(final URL inputURL) throws IOException {
+		return getContentAsString(inputURL, null);
+	}
+	
 
 	/**
 	 * Sends a request to the given URL and checks, if it contains a redirect.
@@ -220,6 +238,51 @@ public class WebUtils {
 	}
 
 
+	/**
+	 * Returns the cookies returned by the server on accessing the URL. 
+	 * The format of the returned cookies is as
+	 * 
+	 * 
+	 * @param url
+	 * @return The cookies as string, build by {@link #buildCookieString(List)}.
+	 * @throws IOException
+	 */
+	public static String getCookies(final URL url) throws IOException {
+		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+
+		urlConn.setAllowUserInteraction(false);
+		urlConn.setDoInput(true);
+		urlConn.setDoOutput(false);
+		urlConn.setUseCaches(false);
+
+		urlConn.setRequestProperty("User-Agent", USER_AGENT);
+
+		urlConn.connect();
+
+		final List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
+		urlConn.disconnect();
+
+		return buildCookieString(cookies);
+	}
+	
+	/**
+	 * Builds a cookie string as used in the HTTP header.
+	 * 
+	 * @param cookies - a list of key/value pairs
+	 * @return The cookies folded into a string.
+	 */
+	public static String buildCookieString(final List<String> cookies) {
+		final StringBuffer result = new StringBuffer();
+
+		if (cookies != null) {
+			for (final String cookie : cookies) {
+				if (result.length() != 0)
+					result.append(";");
+				result.append(cookie);
+			}
+		}
+		return result.toString();
+	}
 
 
 	/** Extracts the charset ID of a web page as returned by the server.

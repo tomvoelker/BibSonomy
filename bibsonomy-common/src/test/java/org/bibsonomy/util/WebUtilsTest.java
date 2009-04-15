@@ -23,10 +23,12 @@
 
 package org.bibsonomy.util;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -76,7 +78,22 @@ public class WebUtilsTest {
 		assertEquals("http://journals.cambridge.org/action/displayAbstract?fromPage=online&aid=5123720", WebUtils.getRedirectUrl(new URL("http://dx.doi.org/10.1017/S0952523808080978")).toString());
 	}
 	
-	
-	
+	@Test
+	public void testBuildCookieString() {
+		final List<String> cookies = Arrays.asList(new String[]{});
+		assertEquals("", WebUtils.buildCookieString(cookies));
+	}
+
+	@Test
+	public void testBuildCookieString1() {
+		final List<String> cookies = Arrays.asList(new String[]{"Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811; Path=/"});
+		assertEquals("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811; Path=/", WebUtils.buildCookieString(cookies));
+	}
+
+	@Test
+	public void testBuildCookieString3() {
+		final List<String> cookies = Arrays.asList(new String[]{"Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811", "Path=/"});
+		assertEquals("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811;Path=/", WebUtils.buildCookieString(cookies));
+	}
 	
 }
