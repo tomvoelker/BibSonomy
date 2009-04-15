@@ -5,6 +5,7 @@ import java.util.List;
 
 import junit.framework.TestResult;
 
+import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
 import org.bibsonomy.scraper.importer.IUnitTestImporter;
@@ -19,6 +20,8 @@ import org.junit.Test;
  *
  */
 public class UnitTestRunner {
+	
+	private Logger log = Logger.getLogger(UnitTestRunner.class);
 	
 	/**
 	 * Importer which reads the tests from a external sources.
@@ -42,11 +45,30 @@ public class UnitTestRunner {
 				throw new Exception("no UnitTestImporter available");
 			
 			List<ScraperUnitTest> unitTests = importer.getUnitTests();
-			
+
+			int success = 0;
+			int error = 0;
 			for(ScraperUnitTest test : unitTests){
 				TestResult result = test.run();
-				test.printTestFailure(result);
+				test.setTestResult(result);
+				if(test.isTestFailed())
+					error++;
+				else
+					success++;
 			}
+			
+			log.error(success + " successfull tests, " + error + " failed tests");
+			
+			for(ScraperUnitTest test : unitTests)
+				if(test.isTestFailed())
+					log.error("Test " + test.getScraperTestId() + "failed for Scraper " + test.getScraperClass());
+			
+			log.error("\n");
+			log.error("Details:");
+			for(ScraperUnitTest test : unitTests)
+				if(test.isTestFailed())
+					test.printTestFailure();
+			
 			
 		} catch (Exception e) {
 			ParseFailureMessage.printParseFailureMessage(e, "main class");

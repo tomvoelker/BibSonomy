@@ -48,7 +48,6 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	private String url = null;
 	private String expectedRefrence = null;
 	private String scrapedReference = null;
-	private Scraper scraper = null;
 	private String id = null;
 	private String bibFile = null;
 	private Exception exception = null;
@@ -138,22 +137,6 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	}
 
 	/**
-	 * Class of the tested Scraper
-	 * @return Scraper
-	 */
-	public Class getScraperClass() {
-		return scraper.getClass();
-	}
-
-	/**
-	 * tested Scraper
-	 * @return 
-	 */
-	public Scraper getScraper() {
-		return this.scraper;
-	}
-
-	/**
 	 * Tested URL
 	 * @return testedURL as String
 	 */
@@ -198,9 +181,9 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	 * is available.
 	 * Inherited from ScraperUnitTest
 	 */
-	public void printTestFailure(TestResult result)throws Exception{
+	public void printTestFailure()throws Exception{
 		//printTestFailure(System.out, result);
-		printTestFailureLogger(result);
+		printTestFailureLogger();
 	}
 	
 	/**
@@ -209,11 +192,11 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	 * @param result
 	 * @throws Exception
 	 */
-	public void printTestFailure(PrintStream stream, TestResult result) throws Exception{
-		if(result == null)
+	public void printTestFailure(PrintStream stream) throws Exception{
+		if(testResult == null)
 			throw new Exception("test result is needed");
 		
-		if(result.errorCount() > 0 || result.failureCount() > 0){
+		if(testResult.errorCount() > 0 || testResult.failureCount() > 0){
 			stream.println("*******************************************************************************");
 			stream.println("failure in: " + getScraperClass().getName() + "test: " + getScraperTestId());
 			stream.println("test description: " + getDescription());
@@ -233,11 +216,11 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	 * @param result
 	 * @throws Exception
 	 */
-	public void printTestFailureLogger(TestResult result) throws Exception{
-		if(result == null)
+	public void printTestFailureLogger() throws Exception{
+		if(testResult == null)
 			throw new Exception("test result is needed");
 		
-		if(result.errorCount() > 0 || result.failureCount() > 0){
+		if(testResult.errorCount() > 0 || testResult.failureCount() > 0){
 			StringWriter swriter = new StringWriter();
 			PrintWriter pwriter = new PrintWriter(swriter, true);
 			
