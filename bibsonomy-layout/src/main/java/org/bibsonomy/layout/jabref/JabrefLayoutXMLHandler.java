@@ -61,7 +61,10 @@ public class JabrefLayoutXMLHandler extends DefaultHandler {
 		buf = new StringBuffer();
 		if ("layout".equals(name)) {
 			currentLayoutDefinition = new JabrefLayout(atts.getValue("name"));
-			currentLayoutDefinition.setPublicLayout(new Boolean(atts.getValue("public")));
+			if (atts.getValue("public") != null){
+				currentLayoutDefinition.setPublicLayout(Boolean.parseBoolean(atts.getValue("public")));
+			}
+			System.out.println(currentLayoutDefinition.isPublicLayout());
 		} else 	if ("description".equals(name)) {
 			this.languageAttribute = atts.getValue("xml:lang");
 		}

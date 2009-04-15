@@ -29,7 +29,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -119,7 +119,7 @@ public class JabrefLayouts {
 		/*
 		 * create a new hashmap to store the layouts
 		 */
-		layouts = new HashMap<String, JabrefLayout>();
+		layouts = new LinkedHashMap<String, JabrefLayout>();
 		/*
 		 * load layout definition from XML file
 		 */
