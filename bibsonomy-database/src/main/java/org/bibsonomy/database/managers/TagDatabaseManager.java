@@ -626,7 +626,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getTagsAuthor(final TagParam param, final DBSession session) {
+	public List<Tag> getTagsByAuthor(final TagParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForList("getTagsByAuthor", param, Tag.class, session);
 	}
