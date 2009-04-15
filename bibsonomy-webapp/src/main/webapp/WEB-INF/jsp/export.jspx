@@ -48,49 +48,29 @@
 			
 					
 					<c:url var="bibtex" value="/bib/" context="${projectContext}"/>
-					<c:url var="har" value="/layout/harvard/" context="${projectContext}"/>
-					<c:url var="end" value="/layout/endnote/" context="${projectContext}"/>
 					<c:url var="publ" value="/publ/" context="${projectContext}"/>
 					<c:url var="publrss" value="/publrss/" context="${projectContext}"/>
 					<c:url var="swrc" value="/swrc/" context="${projectContext}"/>
 					<c:url var="burst" value="/burst/" context="${projectContext}"/>
+					<c:url var="content" value="/layout/custom/" context="${projectContext}"/>
 					
 	            		 
 	            	<ul>
 						 <li><a href="${fn:escapeXml(bibtex)}">BibTeX</a>&#160;<b>&#183;</b>&#160;</li>       			
-	          			 <li><a href="${fn:escapeXml(har)}">RTF</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(end)}">EndNote</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(publ)}">HTML</a>&#160;<b>&#183;</b>&#160;</li>
 	          			 <li><a href="${fn:escapeXml(publrss)}">RSS</a>&#160;<b>&#183;</b>&#160;</li>
+	          			 <li><a href="${fn:escapeXml(publ)}">HTML</a>&#160;<b>&#183;</b>&#160;</li>
 	          			 <li><a href="${fn:escapeXml(swrc)}">SWRC</a>&#160;<b>&#183;</b>&#160;</li>
 	          			 <li><a href="${fn:escapeXml(burst)}">BuRST</a></li>
 					</ul>
 					
-					<c:url var="content" value="/layout/custom/" context="${projectContext}"/>
-					<c:url var="simplehtml" value="/layout/simplehtml/" context="${projectContext}"/>
-					<c:url var="html" value="/layout/html/" context="${projectContext}"/>
-					<c:url var="tablerefs" value="/layout/tablerefs/" context="${projectContext}"/>
-					<c:url var="tablerefsbib" value="/layout/tablerefsabsbib/" context="${projectContext}"/>
-					<c:url var="tablerefssort" value="/layout/tablerefsabsbibsort/" context="${projectContext}"/>
-					<c:url var="docbook" value="/layout/docbook/" context="${projectContext}"/>
-					<c:url var="openoffice" value="/layout/openoffice-csv/" context="${projectContext}"/>
-					<c:url var="dblp" value="/layout/dblp/" context="${projectContext}"/>
-					<c:url var="text" value="/layout/text/" context="${projectContext}"/>
-					<c:url var="jucs" value="/layout/jucs/" context="${projectContext}"/>
-					<c:url var="imtm" value="/layout/imtm/" context="${projectContext}"/>
 					<ul>         			
-	          			 <li><a href="${fn:escapeXml(content)}">Custom</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(simplehtml)}">SimpleHTML</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(html)}">HTML</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(tablerefs)}">TableRefs</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(tablerefsbib)}">TableRefsAbsBib</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(tablerefssort)}">TableRefsAbsBibSort</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(docbook)}">DocBook</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(openoffice)}">OpenOffice-CSV</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(dblp)}">DBLP</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(text)}">Text</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(jucs)}">JUCS</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(imtm)}">IMTM</a></li>
+	          			 <c:forEach var="entry" items="${command.layoutMap}">
+							<c:if test="${entry.value.publicLayout}">			
+								<c:url var="url" value="/layout/${entry.value.name}/" context="${projectContext}"/>
+								<li><a href="${fn:escapeXml(url)}">${entry.value.displayName}</a>&#160;<b>&#183;</b>&#160;</li>
+							</c:if>
+						</c:forEach>
+						<li><a href="${fn:escapeXml(content)}">Custom</a></li>
 					</ul>
 					
 				</div>
@@ -103,7 +83,6 @@
 					<dl class="faq">
 						<dt><a href="${fn:escapeXml(bibtex)}">BibTeX</a></dt>
 						<dd>
-							<!--<c:out value="${command.layoutMap.bibtex.description[command.lang]}"/>-->
 							<fmt:message key="export.bibtex.faq">
 								<fmt:param><a href="http://en.wikipedia.org/wiki/BibTeX">BibTeX</a></fmt:param>
 								<fmt:param><a href="http://en.wikipedia.org/wiki/LaTeX">LaTeX</a></fmt:param>
@@ -113,22 +92,6 @@
 							</fmt:message>
 						</dd>
 						
-						<dt><a href="${fn:escapeXml(har)}">RTF</a>&#160;<a href="#jabref">*</a></dt>
-   						<dd>
-   							<c:out value="${command.layoutMap.harvard.description[command.lang]}"/>
-   							<!--<fmt:message key="export.rtf.faq">
-   								<fmt:param><a href="http://en.wikipedia.org/wiki/Rich_Text_Format">Rich Text Format</a></fmt:param>
-   								<fmt:param><a href="http://www.openoffice.org">OpenOffice</a></fmt:param>
-   								<fmt:param><a href="http://www.microsoft.com/word">Microsoft Word</a></fmt:param>
-   							</fmt:message>-->
-   						</dd>
-   						 <dt><a href="${fn:escapeXml(publ)}">HTML</a></dt>
-    					 <dd>
-    					 	<c:out value="${command.layoutMap.html.description[command.lang]}"/>
-    					 	<!--<fmt:message key="export.html.faq">
-    					 		<fmt:param><a href="http://en.wikipedia.org/wiki/HTML">HTML</a></fmt:param>
-    					 	</fmt:message> -->
-    					 </dd>
     					 <dt><a href="${fn:escapeXml(publrss)}">RSS</a></dt>
   					 	 <dd>
   					 	 	<fmt:message key="export.rss.faq">
@@ -159,81 +122,24 @@
     						</fmt:message>
     					</dd>
     					
-    					<dt><a href="${fn:escapeXml(simplehtml)}">SimpleHTML</a><a href="#jabref">*</a></dt>
-   						<dd>
-   							<c:out value="${command.layoutMap.simplehtml.description[command.lang]}"/>
-   							<!--<fmt:message key="export.simplehtml.faq"/>-->   							
-    					</dd>
-    						
-    					<dt><a href="${fn:escapeXml(tablerefs)}">TableRefs</a>&#160;<a href="#jabref">*</a></dt>
-    					<dd>
-    						<c:out value="${command.layoutMap.tablerefs.description[command.lang]}"/>
-							<!--<fmt:message key="export.tablerefs.faq"/>-->
-    					</dd>
+    					<dt><a href="${fn:escapeXml(publ)}">HTML</a></dt>
+    					 <dd>
+    					 	<fmt:message key="export.html.faq">
+    					 		<fmt:param><a href="http://en.wikipedia.org/wiki/HTML">HTML</a></fmt:param>
+    					 	</fmt:message>
+    					 </dd>
     					
-    					<dt><a href="${fn:escapeXml(tablerefsbib)}">TableRefsAbsBib</a>&#160;<a href="#jabref">*</a></dt>
-    					<dd>
-    						<c:out value="${command.layoutMap.tablerefsabsbib.description[command.lang]}"/>
-							<!--<fmt:message key="export.tablerefsbib.faq"/>-->
-    					</dd>
+    											
+						<c:forEach var="mapEntry" items="${command.layoutMap}">
+							<c:if test="${mapEntry.value.publicLayout}">			
+								<c:url var="url" value="/layout/${mapEntry.value.name}/" context="${projectContext}"/>
+								<dt><a href="${fn:escapeXml(url)}">${mapEntry.value.displayName}</a>&#160;<a href="#jabref">*</a></dt>
+								<dd>
+	 								<c:out value="${mapEntry.value.description[command.lang]}"/>
+								</dd>
+							</c:if>
+						</c:forEach>
     					
-    					<dt><a href="${fn:escapeXml(tablerefssort)}">TableRefsAbsBibSort</a>&#160;<a href="#jabref">*</a></dt>
-    					<dd>
-    						<c:out value="${command.layoutMap.tablerefsabsbibsort.description[command.lang]}"/>
-							<!--<fmt:message key="export.tablerefsbibsort.faq"/>-->
-    					</dd>
-    					
-    					<dt><a href="${fn:escapeXml(docbook)}">DocBook</a>&#160;<a href="#jabref">*</a></dt>
-    					<dd>
-    						<c:out value="${command.layoutMap.docbook.description[command.lang]}"/>
-							<!--<fmt:message key="export.docbook.faq">
-								<fmt:param><a href="http://en.wikipedia.org/wiki/XML">XML</a></fmt:param>
-								<fmt:param><a href="http://en.wikipedia.org/wiki/DocBook">DocBook</a></fmt:param>
-							</fmt:message>-->
-    					</dd>
-    					
-    					<dt><a href="${fn:escapeXml(end)}">EndNote</a>&#160;<a href="#jabref">*</a></dt>
-    					<dd>
-    						<c:out value="${command.layoutMap.endnote.description[command.lang]}"/>
-							<!--<fmt:message key="export.endnote.faq">
-								<fmt:param><a href="http://en.wikipedia.org/wiki/RIS_%28file_format%29">RIS</a></fmt:param>
-							</fmt:message>-->
-    					</dd>
-    					
-    					<dt><a href="${fn:escapeXml(openoffice)}">OpenOffice-CSV</a>&#160;<a href="#jabref">*</a></dt>
-    					<dd>
-    						<c:set var="openofficecsv" value="openoffice-csv"/>
-    						<c:out value="${command.layoutMap[openofficecsv].description[command.lang]}"/>
-							<!--<fmt:message key="export.openoffice.faq"/>-->
-    					</dd>
-    					
-    					<dt><a href="${fn:escapeXml(dblp)}">DBLP</a>&#160;<a href="#jabref">*</a></dt>
-    					<dd>
-    						<c:out value="${command.layoutMap.dblp.description[command.lang]}"/>
-							<!--<fmt:message key="export.dblp.faq"/>-->
-    					</dd>
-    					
-    					<dt><a href="${fn:escapeXml(text)}">Text</a>&#160;<a href="#jabref">*</a></dt>
-    					<dd>
-    						<c:out value="${command.layoutMap.text.description[command.lang]}"/>
-							<!--<fmt:message key="export.text.faq">
-								<fmt:param><a href="http://en.wikipedia.org/wiki/BibTeX">BibTeX</a></fmt:param>
-							</fmt:message>-->
-    					</dd>
-    					
-    					<dt><a href="${fn:escapeXml(jucs)}">JUCS</a>&#160;<a href="#jabref">*</a></dt>
-    					<dd>
-    						<c:out value="${command.layoutMap.jucs.description[command.lang]}"/>
-							<!--<fmt:message key="export.jucs.faq">
-								<fmt:param><a href="http://www.jucs.org/">Journal of Universal Computer Science</a></fmt:param>
-							</fmt:message>-->
-    					</dd>
-    					
-    					<dt><a href="${fn:escapeXml(imtm)}">IMTM</a>&#160;<a href="#jabref">*</a></dt>
-    					<dd>
-    						<c:out value="${command.layoutMap.imtm.description[command.lang]}"/>
-							<!--<fmt:message key="export.imtm.faq"/>-->
-    					</dd>
 					</dl>
 					
 					<h3><a name="jabref">JabRef</a></h3>
