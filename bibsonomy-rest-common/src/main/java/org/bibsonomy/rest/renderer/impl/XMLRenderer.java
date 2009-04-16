@@ -48,6 +48,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -87,8 +89,6 @@ import org.bibsonomy.rest.renderer.xml.UserType;
 import org.bibsonomy.rest.renderer.xml.UsersType;
 import org.xml.sax.SAXParseException;
 
-import com.sun.org.apache.xerces.internal.jaxp.datatype.XMLGregorianCalendarImpl;
-
 /**
  * This class creates xml documents valid to the xsd schema and vice-versa.
  * 
@@ -99,6 +99,8 @@ public class XMLRenderer implements Renderer {
 	private static final Logger log = Logger.getLogger(XMLRenderer.class);
 	private static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.rest.renderer.xml";
 	private static XMLRenderer renderer;
+	
+	private final DatatypeFactory datatypeFactory;
 	private final UrlRenderer urlRenderer;
 	private final Boolean validateXMLInput;
 	private final Boolean validateXMLOutput;
@@ -107,6 +109,13 @@ public class XMLRenderer implements Renderer {
 	private XMLRenderer() {
 		final RestProperties properties = RestProperties.getInstance();
 		this.urlRenderer = UrlRenderer.getInstance();
+
+		try {
+			this.datatypeFactory = DatatypeFactory.newInstance();
+		} catch (DatatypeConfigurationException ex) {
+			throw new RuntimeException("Could not instantiate data type factory.", ex);
+		}
+
 		this.validateXMLInput = "true".equals( properties.get(VALIDATE_XML_INPUT) );
 		this.validateXMLOutput = "true".equals( properties.get(VALIDATE_XML_OUTPUT) );
 		ModelFactory.getInstance().setModelValidator(properties.geModelValidator());
@@ -115,13 +124,11 @@ public class XMLRenderer implements Renderer {
 		if (this.validateXMLInput || this.validateXMLOutput) {
 			try {
 				schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(this.getClass().getClassLoader().getResource("xschema.xsd"));
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				log.error("Failed to load XML schema", e);
 				schema = null;
 			}
-		}
-		else {
+		} else {
 			schema = null;
 		}
 	}
@@ -274,7 +281,7 @@ public class XMLRenderer implements Renderer {
 	private XMLGregorianCalendar createXmlCalendar(final Date date) {
 		final GregorianCalendar cal = new GregorianCalendar();
 		cal.setTime(date);
-		return new XMLGregorianCalendarImpl(cal);
+		return datatypeFactory.newXMLGregorianCalendar(cal);
 	}
 
 	private void checkPost(final Post<? extends Resource> post) throws InternServerException {
