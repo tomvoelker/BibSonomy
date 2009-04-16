@@ -51,7 +51,7 @@
 
         <div>
           <fmt:message key="export.format"/>:${mtl:ch('nbsp')}
-          <select id="selectlink" onchange="document.getElementById('link').href=this.value" size="1">
+          <select id="selectlink" onchange="self.location=this.value" size="1">
 		    <option value="${fn:escapeXml(bibtex)}">BibTeX</option>
 			<option value="${fn:escapeXml(publ)}">HTML</option>
 			<option value="${fn:escapeXml(publrss)}">RSS</option>
@@ -67,8 +67,6 @@
 			  </c:if>
 			</c:forEach>
           </select>
-
-		  <a id="link" href="/bib/${requPath}" ><img src="/resources/image/nice_box_arrow_right.png" alt="" /></a>
 
           <c:url var="currURL" value="/${requPath}" context="${projectContext}"/>
           <p><fmt:message key="export.info"><fmt:param><a href="${fn:escapeXml(currURL)}">${fn:escapeXml(currURL)}</a></fmt:param></fmt:message></p>
