@@ -39,6 +39,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -278,6 +279,29 @@ public class BibTexUtils {
 			ex.printStackTrace();
 		}		
 		return null;
+	}
+	
+	
+	
+	/**
+	 * Create a bibtex string with some bibsonomy-specific information:
+	 * <ul>
+	 * 		<li>tags in keywords fields/li>
+	 * 		<li>URL to bibtex details page in biburl field</li>
+	 * </ul>
+	 * 
+	 * @param post 
+	 * 			- a bibtex post
+	 * @param bibsonomyUrl 
+	 * 			- the bibsonomy URL to link to for the bibtex details page
+	 * 
+	 * @return
+	 */
+	public static String toBibtexString(Post<BibTex> post, String bibsonomyUrl) {
+		BibTex bib = post.getResource();		
+		bib.addMiscField("biburl", bibsonomyUrl + "bibtex/" + HashID.INTRA_HASH.getId() + bib.getIntraHash() + "/" + post.getUser().getName());
+		bib.addMiscField("keywords", TagUtils.toTagString(post.getTags(), " "));
+		return BibTexUtils.toBibtexString(bib);
 	}
 
 	/**
