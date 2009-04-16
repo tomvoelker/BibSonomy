@@ -310,9 +310,11 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 				// set some fields so we can easily access them later in the export filters
 				bibtex.addMiscField("bibsonomyIntrahash", HashID.INTRA_HASH.getId() + bibtex.getIntraHash());
 				bibtex.addMiscField("bibsonomyUsername", post.getUser().getName());
-				bibtex.addMiscField("keywords", TagUtils.toTagString(post.getTags(), " "));
-				bibtex.addMiscField("description", post.getDescription());
-
+				
+				bibtex.addMiscField("keywords", TagUtils.toTagString(post.getTags(), " ")); // used by some styles
+				bibtex.addMiscField("description", post.getDescription()); // requested by a user
+				bibtex.addMiscField("comment", post.getDescription()); // used at least by openoffice-csv 
+				
 				bibtexStrings.append("\n" + BibTexUtils.toBibtexString(bibtex)); 
 			}
 		}				
