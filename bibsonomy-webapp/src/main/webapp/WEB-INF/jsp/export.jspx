@@ -11,9 +11,9 @@
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+  <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:layout 
+    <layout:layout 
       	loginUserName="${command.context.loginUser.name}" 
      	searchString="hurz" 
      	basketSize="${command.context.loginUser.basket.numPosts}" 
@@ -21,8 +21,8 @@
       	displayIntroduction="false" 
       	requPath="${requPath}">
       	
-     	<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt=""
+    <jsp:attribute name="heading">
+      <a rel="path_menu" href="#"><img alt=""
 				src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message
 				key="navi.export" /></a>
 			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out
@@ -31,124 +31,100 @@
 				method="get" class="smallform">
 				<input type="text" size="20" name="tag" id="inpf" />
 			</form>		
-		</jsp:attribute>
+    </jsp:attribute>
       
         
-        <jsp:attribute name="content">
+    <jsp:attribute name="content">
         
-        <div id="general">
-        
-	   			<h2><fmt:message key="export.header"/></h2>
-	   			
-	   			<div>							
-			
-        			<c:url var="bibtex" value="/bib/${requPath}" context="${projectContext}"/>
-					<c:url var="publ" value="/publ/${requPath}" context="${projectContext}"/>
-					<c:url var="publrss" value="/publrss/${requPath}" context="${projectContext}"/>
-					<c:url var="swrc" value="/swrc/${requPath}" context="${projectContext}"/>
-					<c:url var="burst" value="/burst/${requPath}" context="${projectContext}"/>
-					<c:url var="content" value="/layout/custom/${requPath}" context="${projectContext}"/>
-					<c:url var="aparss" value="/aparss/${requPath}" context="${projectContext}"/>
-	            		
-					<select id="selectlink" onchange="document.link.href=this.value" size="1">
-						<option value="${fn:escapeXml(bibtex)}">BibTeX</option>
-						<option value="${fn:escapeXml(publ)}">HTML</option>
-						<option value="${fn:escapeXml(publrss)}">RSS</option>
-						<option value="${fn:escapeXml(aparss)}">RSS (APA 5th Style)</option>
-						<option value="${fn:escapeXml(burst)}">BuRST</option>						
-						<option value="${fn:escapeXml(swrc)}">SWRC</option>						
-						<option value="${fn:escapeXml(content)}">Custom</option>						
-						
-						<c:forEach var="entry" items="${command.layoutMap}">
-							<c:if test="${entry.value.publicLayout}">			
-								<c:url var="url" value="/layout/${entry.value.name}/${requPath}" context="${projectContext}"/>
-								<option value="${fn:escapeXml(url)}">${entry.value.displayName}</option>
-							</c:if>
-						</c:forEach>
-					</select>
+      <div id="general">
 
-				    <a id="link" href="/bib/${requPath}" ><img src="/resources/image/nice_box_arrow_right.png" alt="" /></a>		    	
-					
-				</div>
-		
-		
-					<c:url var="homeURL" value="/" context="${projectContext}"/>
-					
-					<p><fmt:message key="export.info"><fmt:param><a href="${fn:escapeXml(homeURL)}">${projectHome}</a></fmt:param></fmt:message></p>
-			
-					<dl class="faq">
-						<dt><a href="${fn:escapeXml(bibtex)}">BibTeX</a></dt>
-						<dd>
-							<fmt:message key="export.bibtex.faq">
-								<fmt:param><a href="http://en.wikipedia.org/wiki/BibTeX">BibTeX</a></fmt:param>
-								<fmt:param><a href="http://en.wikipedia.org/wiki/LaTeX">LaTeX</a></fmt:param>
-								<fmt:param><code>\bibliography{FILENAME}</code></fmt:param>
-								<fmt:param><code>FILENAME</code></fmt:param>
-								<fmt:param><code>*.tex</code></fmt:param>
-							</fmt:message>
-						</dd>
+        <h2><fmt:message key="export.header"/></h2>
+
+
+        <c:url var="bibtex" value="/bib/${requPath}" context="${projectContext}"/>
+        <c:url var="publ" value="/publ/${requPath}" context="${projectContext}"/>
+        <c:url var="publrss" value="/publrss/${requPath}" context="${projectContext}"/>
+        <c:url var="aparss" value="/aparss/${requPath}" context="${projectContext}"/>
+        <c:url var="burst" value="/burst/${requPath}" context="${projectContext}"/>
+        <c:url var="swrc" value="/swrc/${requPath}" context="${projectContext}"/>
+        <c:url var="custom" value="/layout/custom/${requPath}" context="${projectContext}"/>
+
+        <div>
+          <fmt:message key="export.format"/>:${mtl:ch('nbsp')}
+          <select id="selectlink" onchange="document.getElementById('link').href=this.value" size="1">
+		    <option value="${fn:escapeXml(bibtex)}">BibTeX</option>
+			<option value="${fn:escapeXml(publ)}">HTML</option>
+			<option value="${fn:escapeXml(publrss)}">RSS</option>
+			<option value="${fn:escapeXml(aparss)}">RSS (APA 5th Style)</option>
+			<option value="${fn:escapeXml(burst)}">BuRST</option>						
+			<option value="${fn:escapeXml(swrc)}">SWRC</option>						
+			<option value="${fn:escapeXml(custom)}">Custom</option>						
 						
-   						<dt><a href="${fn:escapeXml(publ)}">HTML</a></dt>
-    					 <dd>
-    					 	<fmt:message key="export.html.faq">
-    					 		<fmt:param><a href="http://en.wikipedia.org/wiki/HTML">HTML</a></fmt:param>
-    					 	</fmt:message>
-    					 </dd>
+			<c:forEach var="entry" items="${command.layoutMap}">
+              <c:if test="${entry.value.publicLayout}">			
+				<c:url var="url" value="/layout/${entry.value.name}/${requPath}" context="${projectContext}"/>
+				<option value="${fn:escapeXml(url)}"><c:out value="${entry.value.displayName}"/></option>
+			  </c:if>
+			</c:forEach>
+          </select>
+
+		  <a id="link" href="/bib/${requPath}" ><img src="/resources/image/nice_box_arrow_right.png" alt="" /></a>
+
+          <c:url var="currURL" value="/${requPath}" context="${projectContext}"/>
+          <p><fmt:message key="export.info"><fmt:param><a href="${fn:escapeXml(currURL)}">${fn:escapeXml(currURL)}</a></fmt:param></fmt:message></p>
+        </div>
+        
+        <hr/>
+
+			
+      	<dl class="faq">
+		  <dt><a href="${fn:escapeXml(bibtex)}">BibTeX</a></dt>
+		  <dd><fmt:message key="export.bibtex.faq"/></dd>
+						
+   		  <dt><a href="${fn:escapeXml(publ)}">HTML</a></dt>
+    	  <dd><fmt:message key="export.html.faq"/></dd>
     										
-					
-    					 <dt><a href="${fn:escapeXml(publrss)}">RSS</a></dt>
-  					 	 <dd>
-  					 	 	<fmt:message key="export.rss.faq">
-  					 	 		<fmt:param><a href="http://en.wikipedia.org/wiki/RSS">RSS</a></fmt:param>  					 	 		
-  					 	 	</fmt:message>
-  					 	 </dd>
+    	  <dt><a href="${fn:escapeXml(publrss)}">RSS</a></dt>
+  		  <dd><fmt:message key="export.rss.faq"/></dd>
   					 	 
-  					 	 <dt><a href="${fn:escapeXml(aparss)}">RSS (APA 5th Style)</a></dt>
-  					 	 <dd>	
-  					 	 	<fmt:message key="export.rss.faq">
-  					 	 		<fmt:param><a href="http://en.wikipedia.org/wiki/RSS">RSS</a></fmt:param>  					 	 		
-  					 	 	</fmt:message>
-  					 	 </dd>
+  		  <dt><a href="${fn:escapeXml(aparss)}">RSS (APA 5th Style)</a></dt>
+  		  <dd><fmt:message key="export.rss.faq"/></dd>
   					 	 
-  					 	 <dt><a href="${fn:escapeXml(burst)}">BuRST</a></dt>
-  					 	 <dd>
-  					 	 	<fmt:message key="export.burst.faq">
-  					 	 		<fmt:param><a href="http://en.wikipedia.org/wiki/RDF">RDF</a></fmt:param>
-  					 	 		<fmt:param><a href="http://www.cs.vu.nl/~pmika/research/burst/BuRST.html">BuRST</a></fmt:param>
-  					 	 	</fmt:message>
-  					 	 </dd>
-  					 	 
-    					<dt><a href="${fn:escapeXml(content)}">Custom</a></dt>	
-    					<dd>
-    						<fmt:message key="export.custom.faq">
-    							<fmt:param><a href="http://jabref.sourceforge.net/">JabRef</a></fmt:param>
-    							<fmt:param><a href="/settings">settings</a></fmt:param>
-    						</fmt:message>
-    					</dd>
-    					
+ 		  <dt><a href="${fn:escapeXml(burst)}">BuRST</a></dt>
+  		  <dd><fmt:message key="export.burst.faq"/></dd>
+
+          <dt><a href="${fn:escapeXml(swrc)}">SWRC</a></dt>
+          <dd><fmt:message key="export.swrc.faq"/></dd>
+
+    	  <dt><a href="${fn:escapeXml(custom)}">Custom</a></dt>	
+    	  <dd><fmt:message key="export.custom.faq"/></dd>
     											
-						<c:forEach var="mapEntry" items="${command.layoutMap}">
-							<c:if test="${mapEntry.value.publicLayout}">			
-								<c:url var="url" value="/layout/${mapEntry.value.name}/${requPath}" context="${projectContext}"/>
-								<dt><a href="${fn:escapeXml(url)}">${mapEntry.value.displayName}</a>&#160;<a href="#jabref">*</a></dt>
-								<dd>
-	 								<c:out value="${mapEntry.value.description[command.lang]}"/>
-								</dd>
-							</c:if>
-						</c:forEach>
-    					
-					</dl>
+		  <c:forEach var="mapEntry" items="${command.layoutMap}">
+		    <c:if test="${mapEntry.value.publicLayout}">			
+			  <c:url var="url" value="/layout/${mapEntry.value.name}/${requPath}" context="${projectContext}"/>
+			    <dt>
+                  <a href="${fn:escapeXml(url)}"><c:out value="${mapEntry.value.displayName}"/></a>&#160;<a href="#jabref">*</a>
+                </dt>
+				<dd>
+	 			  <c:out value="${mapEntry.value.description[command.lang]}"/>
+				</dd>
+			  </c:if>
+			</c:forEach>
+		</dl>
 					
-					<h3><a name="jabref">JabRef</a></h3>
- 					<p>
-  						<fmt:message key="export.jabref.explain">
-  							<fmt:param><a href="http://jabref.sourceforge.net/">JabRef</a></fmt:param>
-  							<fmt:param>${projectName}</fmt:param>
-  						</fmt:message>
- 		     		</p>
-			</div>
+		
+        <h3><a name="jabref">JabRef</a></h3>
+ 		<p>
+  		  <fmt:message key="export.jabref.explain">
+  			<fmt:param>${projectName}</fmt:param>
+  		  </fmt:message>
+ 		</p>
 
-		</jsp:attribute>
-	</layout:layout>
 
+
+      </div>
+
+
+    </jsp:attribute>
+  </layout:layout>
 </jsp:root>
