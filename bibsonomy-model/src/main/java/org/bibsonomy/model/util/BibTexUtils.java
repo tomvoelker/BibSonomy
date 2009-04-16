@@ -295,12 +295,13 @@ public class BibTexUtils {
 	 * @param bibsonomyUrl 
 	 * 			- the bibsonomy URL to link to for the bibtex details page
 	 * 
-	 * @return
+	 * @return A String representation of the posts in BibTeX format.
 	 */
 	public static String toBibtexString(Post<BibTex> post, String bibsonomyUrl) {
 		BibTex bib = post.getResource();		
 		bib.addMiscField("biburl", bibsonomyUrl + "bibtex/" + HashID.INTRA_HASH.getId() + bib.getIntraHash() + "/" + post.getUser().getName());
 		bib.addMiscField("keywords", TagUtils.toTagString(post.getTags(), " "));
+		bib.addMiscField("description", post.getDescription());
 		return BibTexUtils.toBibtexString(bib);
 	}
 
