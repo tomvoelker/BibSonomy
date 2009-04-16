@@ -38,16 +38,11 @@
         
         <div id="general">
         
-	         <style type="text/css">
-	   			.kiste li { display:inline;  }
-	 		</style>
-	   			
 	   			<h2><fmt:message key="export.header"/></h2>
 	   			
-	   			<div class="kiste">							
+	   			<div>							
 			
-					
-					<c:url var="bibtex" value="/bib/${requPath}" context="${projectContext}"/>
+        			<c:url var="bibtex" value="/bib/${requPath}" context="${projectContext}"/>
 					<c:url var="publ" value="/publ/${requPath}" context="${projectContext}"/>
 					<c:url var="publrss" value="/publrss/${requPath}" context="${projectContext}"/>
 					<c:url var="swrc" value="/swrc/${requPath}" context="${projectContext}"/>
@@ -55,7 +50,7 @@
 					<c:url var="content" value="/layout/custom/${requPath}" context="${projectContext}"/>
 					<c:url var="aparss" value="/aparss/${requPath}" context="${projectContext}"/>
 	            		
-					<select id="selectlink" onchange="document.getElementById('link').href=document.getElementById('selectlink').value" size="1">
+					<select id="selectlink" onchange="document.link.href=this.value" size="1">
 						<option value="${fn:escapeXml(bibtex)}">BibTeX</option>
 						<option value="${fn:escapeXml(publ)}">HTML</option>
 						<option value="${fn:escapeXml(publrss)}">RSS</option>
