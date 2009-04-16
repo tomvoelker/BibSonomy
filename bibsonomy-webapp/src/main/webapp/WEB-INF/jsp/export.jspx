@@ -52,6 +52,7 @@
         <div>
           <fmt:message key="export.format"/>:${mtl:ch('nbsp')}
           <select id="selectlink" onchange="self.location=this.value" size="1">
+            <option value=""><fmt:message key="form.input.select"/></option>
 		    <option value="${fn:escapeXml(bibtex)}">BibTeX</option>
 			<option value="${fn:escapeXml(publ)}">HTML</option>
 			<option value="${fn:escapeXml(publrss)}">RSS</option>

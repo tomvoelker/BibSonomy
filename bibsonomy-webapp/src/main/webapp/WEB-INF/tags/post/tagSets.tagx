@@ -22,7 +22,7 @@
     						<span class="info_bold"><c:out value="${tagset.setName}"/>:</span>${mtl:ch('nbsp')}
 							<form:select path="" size="1" multiple="false" cssStyle="margin-right: 1em;">
 								<!-- show "please select" hint -->
-								<fmt:message var="pleaseselect" key="post.resource.select"/>
+								<fmt:message var="pleaseselect" key="form.input.select"/>
 								<form:option value="" label="${pleaseselect}"/>
 								<form:options items="${tagset.tags}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}" onclick="copyOptionTags('inpf',event)"/>
 							</form:select>
