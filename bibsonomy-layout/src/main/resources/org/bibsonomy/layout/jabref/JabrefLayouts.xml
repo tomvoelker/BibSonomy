@@ -97,23 +97,6 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
-	<layout name="tablerefsabsbibsortembed">
-		<displayName>
-			HTML table (with Abstract &amp; BibTeX, sortable) - embedded version
-		</displayName>
-		<description xml:lang="en">
-			Similar to TableRefsAbsBib, but includes possibility to sort
-			the table by each column.
-		</description>
-		<description xml:lang="de">
-			Ähnlich wie TableRefsAbsBib, aber bietet zusätzlich die Möglichkeit
-			die Tabelle nach jeder Spalte zu sortieren.
-		</description>
-		<directory>tablerefsabsbibsortembed</directory>
-		<baseFileName>tablerefsabsbibsort</baseFileName>
-		<mimeType>text/html</mimeType>
-		<extension>.html</extension>
-	</layout>	
 	<layout name="docbook">
 		<displayName>DocBook</displayName>
 		<description xml:lang="en">
