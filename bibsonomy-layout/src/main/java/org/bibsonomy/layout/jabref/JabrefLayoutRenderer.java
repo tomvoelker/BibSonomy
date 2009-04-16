@@ -45,6 +45,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -287,7 +288,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * @throws IOException
 	 * @throws KeyCollisionException If two entries have exactly the same BibTeX key
 	 */
-	private <T extends Resource> BibtexDatabase bibtex2JabrefDB(List<Post<T>> bibtexList) {
+	private <T extends Resource> BibtexDatabase bibtex2JabrefDB(final List<Post<T>> bibtexList) {
 		/*
 		 * put all bibtex together as string
 		 */
@@ -309,9 +310,10 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 				// set some fields so we can easily access them later in the export filters
 				bibtex.addMiscField("bibsonomyIntrahash", HashID.INTRA_HASH.getId() + bibtex.getIntraHash());
 				bibtex.addMiscField("bibsonomyUsername", post.getUser().getName());
+				bibtex.addMiscField("keywords", TagUtils.toTagString(post.getTags(), " "));
 				bibtex.addMiscField("description", post.getDescription());
-				
-				bibtexStrings.append(" " + BibTexUtils.toBibtexString(bibtex)); 
+
+				bibtexStrings.append("\n" + BibTexUtils.toBibtexString(bibtex)); 
 			}
 		}				
 		/*
