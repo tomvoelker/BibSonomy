@@ -79,7 +79,7 @@ public class TagUtils {
 	}
 	
 	/**
-	 * converts a collection of tags into a space-separated string of tags 
+	 * Converts a collection of tags into a string of tags using the given delimiter. 
 	 * 
 	 * @param tags 
 	 * 			- a list of tags
@@ -90,7 +90,7 @@ public class TagUtils {
 	 */
 	public static String toTagString (final Collection<Tag> tags, final String delim) {
 		// check for special cases
-		if (tags == null || tags.size() <= 1) {
+		if (tags == null || tags.size() < 1) {
 			return "";
 		}
 		if (delim == null) {
@@ -106,6 +106,6 @@ public class TagUtils {
 		if (delim.length() == 0) {
 			return sb.toString();
 		}
-		return sb.delete(sb.lastIndexOf(delim), sb.length()).toString();
+		return sb.delete(sb.length() - delim.length(), sb.length()).toString();
 	}	
 }
