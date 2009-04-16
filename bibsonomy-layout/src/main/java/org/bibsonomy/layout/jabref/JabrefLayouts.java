@@ -214,6 +214,7 @@ public class JabrefLayouts {
 		jabrefLayout.setDisplayName("custom");
 		jabrefLayout.setMimeType("text/html"); // FIXME: this should be adaptable by the user ...
 		jabrefLayout.setUserLayout(true);
+		jabrefLayout.setPublicLayout(false);
 
 		/*
 		 * iterate over layout parts (.begin, .item, .end)

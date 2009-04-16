@@ -164,7 +164,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * This is the export method for BibTeX entries to any available format. 
 	 * @param postList Entries to export.
 	 * @param userName User to whom the passed entries belong 
-	 * @param layout - the name of the layout If "custom", export with user specific layout filter
+	 * @param layout - the layout to be rendered. If "custom", export with user specific layout filter
 	 * @param embeddedLayout - if <code>true</code> the corresponding embedded begin/end parts 
 	 * (see {@link LayoutPart}) are used (only if available).
 	 * @return output The formatted BibTeX entries as a string.
@@ -240,7 +240,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 						/*
 						 * no layout found -> throw an exception
 						 */
-						throw new LayoutRenderingException("no layout '" + layout + "' found");
+						throw new LayoutRenderingException("layout file(s) for '" + layout.getName() + "' could not be found");
 					}
 				} 
 				output.append(itemLayout.doLayout(entry, database));
