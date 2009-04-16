@@ -111,7 +111,6 @@ public abstract class Layout {
 	public String toString() {
 		return name + "(" + 
 		displayName + ", '" + 
-		description + "', " + 
 		mimeType + ", " + 
 		extension + ")";
 	}
