@@ -47,31 +47,32 @@
 	   			<div class="kiste">							
 			
 					
-					<c:url var="bibtex" value="/bib/" context="${projectContext}"/>
-					<c:url var="publ" value="/publ/" context="${projectContext}"/>
-					<c:url var="publrss" value="/publrss/" context="${projectContext}"/>
-					<c:url var="swrc" value="/swrc/" context="${projectContext}"/>
-					<c:url var="burst" value="/burst/" context="${projectContext}"/>
-					<c:url var="content" value="/layout/custom/" context="${projectContext}"/>
-					
-	            		 
-	            	<ul>
-						 <li><a href="${fn:escapeXml(bibtex)}">BibTeX</a>&#160;<b>&#183;</b>&#160;</li>       			
-	          			 <li><a href="${fn:escapeXml(publrss)}">RSS</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(publ)}">HTML</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(swrc)}">SWRC</a>&#160;<b>&#183;</b>&#160;</li>
-	          			 <li><a href="${fn:escapeXml(burst)}">BuRST</a></li>
-					</ul>
-					
-					<ul>         			
-	          			 <c:forEach var="entry" items="${command.layoutMap}">
+					<c:url var="bibtex" value="/bib/${requPath}" context="${projectContext}"/>
+					<c:url var="publ" value="/publ/${requPath}" context="${projectContext}"/>
+					<c:url var="publrss" value="/publrss/${requPath}" context="${projectContext}"/>
+					<c:url var="swrc" value="/swrc/${requPath}" context="${projectContext}"/>
+					<c:url var="burst" value="/burst/${requPath}" context="${projectContext}"/>
+					<c:url var="content" value="/layout/custom/${requPath}" context="${projectContext}"/>
+					<c:url var="aparss" value="/aparss/${requPath}" context="${projectContext}"/>
+	            		
+					<select id="selectlink" onchange="document.getElementById('link').href=document.getElementById('selectlink').value" size="1">
+						<option value="${fn:escapeXml(bibtex)}">BibTeX</option>
+						<option value="${fn:escapeXml(publ)}">HTML</option>
+						<option value="${fn:escapeXml(publrss)}">RSS</option>
+						<option value="${fn:escapeXml(aparss)}">RSS (APA 5th Style)</option>
+						<option value="${fn:escapeXml(burst)}">BuRST</option>						
+						<option value="${fn:escapeXml(swrc)}">SWRC</option>						
+						<option value="${fn:escapeXml(content)}">Custom</option>						
+						
+						<c:forEach var="entry" items="${command.layoutMap}">
 							<c:if test="${entry.value.publicLayout}">			
-								<c:url var="url" value="/layout/${entry.value.name}/" context="${projectContext}"/>
-								<li><a href="${fn:escapeXml(url)}">${entry.value.displayName}</a>&#160;<b>&#183;</b>&#160;</li>
+								<c:url var="url" value="/layout/${entry.value.name}/${requPath}" context="${projectContext}"/>
+								<option value="${fn:escapeXml(url)}">${entry.value.displayName}</option>
 							</c:if>
 						</c:forEach>
-						<li><a href="${fn:escapeXml(content)}">Custom</a></li>
-					</ul>
+					</select>
+
+				    <a id="link" href="/bib/${requPath}" ><img src="/resources/image/nice_box_arrow_right.png" alt="" /></a>		    	
 					
 				</div>
 		
@@ -92,13 +93,21 @@
 							</fmt:message>
 						</dd>
 						
+   						<dt><a href="${fn:escapeXml(publ)}">HTML</a></dt>
+    					 <dd>
+    					 	<fmt:message key="export.html.faq">
+    					 		<fmt:param><a href="http://en.wikipedia.org/wiki/HTML">HTML</a></fmt:param>
+    					 	</fmt:message>
+    					 </dd>
+    										
+					
     					 <dt><a href="${fn:escapeXml(publrss)}">RSS</a></dt>
   					 	 <dd>
   					 	 	<fmt:message key="export.rss.faq">
   					 	 		<fmt:param><a href="http://en.wikipedia.org/wiki/RSS">RSS</a></fmt:param>  					 	 		
   					 	 	</fmt:message>
   					 	 </dd>
-  					 	 <c:url var="aparss" value="/aparss/" context="${projectContext}"/>
+  					 	 
   					 	 <dt><a href="${fn:escapeXml(aparss)}">RSS (APA 5th Style)</a></dt>
   					 	 <dd>	
   					 	 	<fmt:message key="export.rss.faq">
@@ -122,17 +131,10 @@
     						</fmt:message>
     					</dd>
     					
-    					<dt><a href="${fn:escapeXml(publ)}">HTML</a></dt>
-    					 <dd>
-    					 	<fmt:message key="export.html.faq">
-    					 		<fmt:param><a href="http://en.wikipedia.org/wiki/HTML">HTML</a></fmt:param>
-    					 	</fmt:message>
-    					 </dd>
-    					
     											
 						<c:forEach var="mapEntry" items="${command.layoutMap}">
 							<c:if test="${mapEntry.value.publicLayout}">			
-								<c:url var="url" value="/layout/${mapEntry.value.name}/" context="${projectContext}"/>
+								<c:url var="url" value="/layout/${mapEntry.value.name}/${requPath}" context="${projectContext}"/>
 								<dt><a href="${fn:escapeXml(url)}">${mapEntry.value.displayName}</a>&#160;<a href="#jabref">*</a></dt>
 								<dd>
 	 								<c:out value="${mapEntry.value.description[command.lang]}"/>
