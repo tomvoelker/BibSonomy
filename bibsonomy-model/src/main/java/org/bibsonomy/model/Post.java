@@ -25,6 +25,7 @@ package org.bibsonomy.model;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -141,7 +142,11 @@ public class Post<T extends Resource> {
 	 */
 	public Set<Tag> getTags() {
 		if (this.tags == null) {
-			this.tags = new HashSet<Tag>();
+			/*
+			 * a linked hash set gives predictable iteration order
+			 * (insertion order)
+			 */
+			this.tags = new LinkedHashSet<Tag>();
 		}
 		return this.tags;
 	}
