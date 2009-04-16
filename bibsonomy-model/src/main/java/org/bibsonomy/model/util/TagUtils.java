@@ -23,6 +23,7 @@
 
 package org.bibsonomy.model.util;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.bibsonomy.model.Tag;
@@ -76,4 +77,35 @@ public class TagUtils {
 	public static Tag getEmptyTag() {
 		return emptyTag;
 	}
+	
+	/**
+	 * converts a collection of tags into a space-separated string of tags 
+	 * 
+	 * @param tags 
+	 * 			- a list of tags
+	 * @param delim
+	 * 			- a delimiter String by which the tags are to be separated 
+	 * @return a delimiter-separated string of tags
+	 * 			
+	 */
+	public static String toTagString (final Collection<Tag> tags, final String delim) {
+		// check for special cases
+		if (tags == null || tags.size() <= 1) {
+			return "";
+		}
+		if (delim == null) {
+			throw new RuntimeException("Using NULL as delimiter is not allowed when building tag string.");
+		}
+		// concat tag names
+		final StringBuffer sb = new StringBuffer();
+		for (final Tag tag : tags) {
+			sb.append(tag.getName());
+			sb.append(delim);
+		}
+		// return string
+		if (delim.length() == 0) {
+			return sb.toString();
+		}
+		return sb.delete(sb.lastIndexOf(delim), sb.length()).toString();
+	}	
 }
