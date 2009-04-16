@@ -24,14 +24,9 @@
 package org.bibsonomy.util;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-
-import javax.swing.text.StyledEditorKit.ForegroundAction;
-
-import it.unimi.dsi.fastutil.chars.CharOpenHashSet; 
 
 /**
  * Some methods for handling strings.
@@ -203,17 +198,18 @@ public class StringUtils {
 	
 	
 	/**
-	 * Implode a collection of Strings into a single String, delimited by a given delimiter
+	 * Implode a collection of objects into a single String, delimited by a given delimiter.
 	 * 
-	 * @param stringList - a list of strings s1, s2, ..
+	 * @param stringList - a list of objects s1, s2, ... - the objects toString() 
+	 * 			method is called to create the list
 	 * @param delim - a delimiter _d_
 	 * @return a concatenated representation of the string collection s1_d_s2_d_...
 	 */
-	public static String implodeStringCollection(Collection<String> stringList, String delim) {
-		if (stringList == null || delim == null) {return "";}
+	public static String implodeStringCollection(final Collection<? extends Object> stringList, final String delim) {
+		if (stringList == null || delim == null) return "";
 		int i = 0;
-		StringBuffer sb = new StringBuffer();
-		for (String elem : stringList) {
+		final StringBuffer sb = new StringBuffer();
+		for (final Object elem : stringList) {
 			if (i != 0) {
 				sb.append(delim);
 			}
