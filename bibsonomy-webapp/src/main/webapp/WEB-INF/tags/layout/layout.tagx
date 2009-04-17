@@ -144,11 +144,12 @@
 							<c:set var="mode" value="requUser" />
 						</c:if>
 						<c:if test="${command.context.userLoggedIn}">
+							<a style="color:black"><fmt:message key="navi.search"/> in group:</a>
 							<c:forEach var="grp" items="${command.context.loginUser.groups}">
 								<script type="text/javascript">
 									gOptions.push('${grp.name}');
 								</script>
-								<a onclick="naviSwitchSpecial('${grp.name}')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${fn:escapeXml(grp.name)}'/></a>
+								<a onclick="naviSwitchSpecial('${grp.name}')" style="cursor:pointer; padding-left:50px;">- <c:out value='${fn:escapeXml(grp.name)}'/></a>
 							</c:forEach>
 						</c:if>
 					</div>	

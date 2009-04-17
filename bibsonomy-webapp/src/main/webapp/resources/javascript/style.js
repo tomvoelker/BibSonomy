@@ -2,6 +2,7 @@ var request = null;
 var style_list = null;
 var style_sort = new Array("alph", "freq");
 var style_show = new Array("cloud", "list");
+var userMinFreq = 1;
 
 // var style_sort = new Array(getString("tagbox.sort.alpha"), getString("tagbox.sort.freq"));
 // var style_show = new Array(getString("tagbox.style.cloud"), getString("tagbox.style.list"));
@@ -89,11 +90,11 @@ function getStyleItem(style, style_arr) {
 	
 	return style_sort;
 }
-function attachMinUsertags(count, requUser) { return(function() { minUsertags(count,requUser);})}
+function attachMinUsertags(count) { return(function() { minUsertags(count);})}
 
-function getMinUsertagsLink (count, requUser) {
+function getMinUsertagsLink (count) {
 	var node = document.createElement("a");
-	node.onclick = attachMinUsertags(count,requUser);
+	node.onclick = attachMinUsertags(count);
 	node.appendChild(document.createTextNode(count));
 	node.style.cursor = "pointer";
 	return node;
@@ -101,17 +102,13 @@ function getMinUsertagsLink (count, requUser) {
 
 function getMinTagsLink (count) {
 	var node = document.createElement("a");
-	if (document.URL.indexOf("tagcloud.minFreq") > -1) {
-		// param is present, replace
-		node.href = document.URL.replace(/tagcloud\.minFreq\=\d+/, "tagcloud.minFreq=" + count);
+	if (userMinFreq != count) {
+		node.onclick = attachMinUsertags(count);
+		node.style.cursor = "pointer";
 	}
-	else {
-		// param not yet present, append
-		var sep = (document.URL.indexOf("=") == -1) ? "?" : "&"; 
-		node.href = document.URL + sep + "tagcloud.minFreq=" + count;
-	}
+	
 	node.appendChild(document.createTextNode(count));
-	node.style.cursor = "pointer";
+	
 	return node;
 }
 
@@ -124,24 +121,24 @@ function showUserMinfreq(count, currUser) {
 	
 	if (count == 1) {
 		minfreqList.appendChild(document.createTextNode("1 | "));
-		minfreqList.appendChild(getMinUsertagsLink (2, currUser));
+		minfreqList.appendChild(getMinUsertagsLink (2));
 		minfreqList.appendChild(document.createTextNode(" | "));
-		minfreqList.appendChild(getMinUsertagsLink (5, currUser));
+		minfreqList.appendChild(getMinUsertagsLink (5));
 	} else if(count == 2) {
-		minfreqList.appendChild(getMinUsertagsLink (1, currUser));
+		minfreqList.appendChild(getMinUsertagsLink (1));
 		minfreqList.appendChild(document.createTextNode(" | 2 | "));
-		minfreqList.appendChild(getMinUsertagsLink (5, currUser));
+		minfreqList.appendChild(getMinUsertagsLink (5));
 	} else if(count == 5) {
-		minfreqList.appendChild(getMinUsertagsLink (1, currUser));
+		minfreqList.appendChild(getMinUsertagsLink (1));
 		minfreqList.appendChild(document.createTextNode(" | "));
-		minfreqList.appendChild(getMinUsertagsLink (2, currUser));
+		minfreqList.appendChild(getMinUsertagsLink (2));
 		minfreqList.appendChild(document.createTextNode(" | 5"));
 	} else {	
-		minfreqList.appendChild(getMinUsertagsLink (1, currUser));
+		minfreqList.appendChild(getMinUsertagsLink (1));
 		minfreqList.appendChild(document.createTextNode(" | "));
-		minfreqList.appendChild(getMinUsertagsLink (2, currUser));
+		minfreqList.appendChild(getMinUsertagsLink (2));
 		minfreqList.appendChild(document.createTextNode(" | "));
-		minfreqList.appendChild(getMinUsertagsLink (5, currUser));		
+		minfreqList.appendChild(getMinUsertagsLink (5));		
 	}
 	minfreqList.appendChild(document.createTextNode(") "));
 	
@@ -152,7 +149,7 @@ function showUserMinfreq(count, currUser) {
 // create default minfreq links
 function showMinfreq() {
 	var minfreqList = document.createElement("li")
-
+	
 	minfreqList.appendChild(document.createTextNode(" (" + getString("tagbox.minfreq") + "  "));
 
 	minfreqList.appendChild(getMinTagsLink(1));
@@ -315,7 +312,8 @@ function sendMinfreqRequ(minfreq, currUser) {
  	if(request) {
  		if(minfreq == null)	minfreq = 1;
 
-		request.open('GET', "/ajax_scripts/subTagList.jsp?requUser=" + currUser + "&minfreq=" + minfreq + "&ckey=" + ckey, true);
+ 		request.open('GET', "?tagcloud.minFreq=" + minfreq + "&ckey=" + ckey + "&tagstype=default&format=plainhtml", true);
+ 		userMinFreq = minfreq;
 		request.onreadystatechange = handleMinfreqResponse(request);
 		request.send(null);
 	}
@@ -351,20 +349,31 @@ function handleMinfreqResponse(request) {
 }
 
 function replaceTags (request) {
-	
-	var pListStartTag = '<taglist>';
-	var pListEndTag = '</taglist>';
+	var pListStartTag = "<li";
+	var pListEndTag = "</ul>";
 	
 	var text = request.responseText;
-	var start = text.indexOf(pListStartTag) + pListStartTag.length;
-	var end = text.indexOf(pListEndTag);	
-
+	var start = text.indexOf(pListStartTag);
+	var end = text.indexOf(pListEndTag);
+	
 	tagbox.innerHTML = text.slice(start, end);
+	
+	var sListStartTag = "<span>";
+	var sListEndTag = "</span>";
+	start = text.indexOf(sListStartTag) + (sListEndTag.length - 1);
+	end = text.indexOf(sListEndTag);
+	
+	// re-order tags per js
+	if (text.slice(start, end) == "ALPHA") {
+		setTagBoxAlph();
+	} else{
+		setTagBoxFreq();
+	}
 }
 
-function minUsertags(minfreq, currUser) {
-	sendMinfreqRequ(minfreq, currUser)
-	showMinfreq(minfreq, currUser);
+function minUsertags(minfreq) {
+	sendMinfreqRequ(minfreq)
+	showMinfreq(minfreq);
 }
 
 var gOptions = new Array();

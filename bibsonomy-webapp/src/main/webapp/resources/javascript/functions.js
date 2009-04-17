@@ -910,7 +910,16 @@ function xget_event (event) {
 				firstElement = midElement + 1;
 		}
 		collect.sort(byWight);
-
+		
+		if(document.getElementById("copytags") != null) {
+			copyTag = document.getElementById("copytags");
+			copyRows = copyTag.getElementsByTagName("a");
+			for(var i = 0; i < copyRows.length; ++i) {
+				copyListElements[copyRows[i].firstChild.data.replace(/^\s+/, '').replace(/\s+$/, '')] = i;
+				copyList[copyRows[i].firstChild.data.replace(/^\s+/, '').replace(/\s+$/, '')] = copyRows[i];
+			}
+		}
+		
 		/*	collects suggested entrys inside copytag elemens	*/
 		for(copyTag in copyListElements) {
 			var duplicate = false;

@@ -11,6 +11,7 @@
 		required="true" />
 	<jsp:directive.attribute name="tagboxMinfreqStyle" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="tagSizeMode" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="showPlain" type="java.lang.Boolean" required="false"/>
 	<!-- 
 		highlighTags is a space-separated string of tags; each one will be highlighted
 		in the tagcloud (if present)
@@ -43,8 +44,10 @@
 	<!-- display of tag tooltips is disabled by default -->
     <c:set var="showTooltips" value="${not (empty showTooltips or showTooltips == 0)}"/>
 
-	<script type="text/javascript">tagbox_minfreq_style = '${tagboxMinfreqStyle}';</script>
-
+	<c:if test="${empty showPlain or showPlain eq 'false'}">
+		<script type="text/javascript">tagbox_minfreq_style = '${tagboxMinfreqStyle}';</script>
+	</c:if>
+	
 	<ul class="${style}" id="tagbox">
 	
 		<!-- loop over tags -->

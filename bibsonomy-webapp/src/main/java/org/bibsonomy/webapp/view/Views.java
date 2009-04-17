@@ -384,7 +384,12 @@ public enum Views implements View {
 	/**
 	 * show the advanced_search page
 	 */
-	MYSEARCH("mySearch");
+	MYSEARCH("mySearch"),
+	
+	/**
+	 * show the tag cloud of an user (i.e. for ajax requests)
+	 */
+	PLAINHTML("plainhtml");
 	
 	
 	
@@ -480,6 +485,8 @@ public enum Views implements View {
 			return BATCHEDITBIB;
 		if ("batchediturl".equals(format)) 
 			return BATCHEDITURL;
+		if ("plainhtml".equals(format))
+			return PLAINHTML;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
