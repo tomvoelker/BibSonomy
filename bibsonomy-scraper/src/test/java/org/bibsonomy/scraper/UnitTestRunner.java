@@ -10,8 +10,6 @@ import org.apache.log4j.PropertyConfigurator;
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
 import org.bibsonomy.scraper.importer.IUnitTestImporter;
 import org.bibsonomy.scraper.importer.xml.XMLUnitTestImporter;
-import org.junit.Ignore;
-import org.junit.Test;
 
 
 /**
@@ -20,14 +18,16 @@ import org.junit.Test;
  *
  */
 public class UnitTestRunner {
-	
+
+	private static final String LINE = "------------------------------------------------------------------------";
+
 	private Logger log = Logger.getLogger(UnitTestRunner.class);
-	
+
 	/**
 	 * Importer which reads the tests from a external sources.
 	 */
 	private IUnitTestImporter importer = null;
-	
+
 	/**
 	 * Init the Importer
 	 */
@@ -35,7 +35,7 @@ public class UnitTestRunner {
 		// importer for xml + bib file sources
 		importer = new XMLUnitTestImporter();
 	}
-	
+
 	/**
 	 * This Method reads and runs the unit tests.
 	 */
@@ -43,34 +43,44 @@ public class UnitTestRunner {
 		try {
 			if(importer == null)
 				throw new Exception("no UnitTestImporter available");
-			
-			List<ScraperUnitTest> unitTests = importer.getUnitTests();
 
-			int success = 0;
+			final List<ScraperUnitTest> unitTests = importer.getUnitTests();
+
 			int error = 0;
-			for(ScraperUnitTest test : unitTests){
-				TestResult result = test.run();
+			for (final ScraperUnitTest test : unitTests){
+				final TestResult result = test.run();
 				test.setTestResult(result);
-				if(test.isTestFailed())
-					error++;
-				else
-					success++;
+				if (test.isTestFailed())	error++;
 			}
-			
-			log.error(success + " successfull tests, " + error + " failed tests");
-			
-			for(ScraperUnitTest test : unitTests)
-				if(test.isTestFailed())
-					log.error("Test " + test.getScraperTestId() + "failed for Scraper " + test.getScraperClass());
-			
-			log.error("\n");
-			log.error("Details:");
-			for(ScraperUnitTest test : unitTests)
-				if(test.isTestFailed())
-					test.printTestFailure();
-			
-			
-		} catch (Exception e) {
+
+
+			log.info(LINE);
+			log.info("Tests run: " + unitTests.size() + ", Failures: " + error);
+			log.info("");
+
+			if (error > 0) {
+				log.warn("FAILED tests:");
+				log.warn("");
+
+				for (final ScraperUnitTest test : unitTests) {
+					if (test.isTestFailed()) {
+						log.warn("\tTests run: " + test.getScraperClass().getName() + ":" + test.getScraperTestId() );
+					}
+				}
+				log.warn("");
+				log.warn(LINE);
+				log.warn("Details:");
+				for (final ScraperUnitTest test : unitTests) {
+					if (test.isTestFailed()) {
+						test.printTestFailure();
+					}
+				}
+			}
+
+
+
+
+		} catch (final Exception e) {
 			ParseFailureMessage.printParseFailureMessage(e, "main class");
 		}
 	}
@@ -86,9 +96,9 @@ public class UnitTestRunner {
 		try {
 			if(importer == null)
 				throw new Exception("no UnitTestImporter available");
-			
+
 			List<ScraperUnitTest> unitTests = importer.getUnitTests();
-			
+
 			for(ScraperUnitTest test : unitTests){
 				if(test.getScraperTestId().equals(testId)){
 					TestResult result = test.run();
@@ -98,13 +108,13 @@ public class UnitTestRunner {
 						return true;
 				}
 			}
-			
+
 		} catch (Exception e) {
 			ParseFailureMessage.printParseFailureMessage(e, "main class");
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Runs a single URLSCraperUnitTest, which ist referenced by its ID and returns test and its results.
 	 * @param testId ID from URL test
@@ -116,9 +126,9 @@ public class UnitTestRunner {
 		try {
 			if(importer == null)
 				throw new Exception("no UnitTestImporter available");
-			
+
 			List<ScraperUnitTest> unitTests = importer.getUnitTests();
-			
+
 			for(ScraperUnitTest test : unitTests){
 				if(test.getScraperTestId().equals(testId)){
 					TestResult result = test.run();
@@ -128,13 +138,13 @@ public class UnitTestRunner {
 						return (URLScraperUnitTest)test;
 				}
 			}
-			
+
 		} catch (Exception e) {
 			ParseFailureMessage.printParseFailureMessage(e, "main class");
 		}
 		return null;
 	}
-	
+
 	/**
 	 * starts the whole party
 	 * @param args not needed
