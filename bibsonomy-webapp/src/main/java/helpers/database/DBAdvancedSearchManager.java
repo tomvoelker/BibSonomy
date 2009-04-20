@@ -17,6 +17,7 @@ import resources.Bibtex;
 import resources.Resource;
 import beans.AdvancedSearchBean;
 
+@Deprecated
 public class DBAdvancedSearchManager extends DBManager {
 
 	/**
