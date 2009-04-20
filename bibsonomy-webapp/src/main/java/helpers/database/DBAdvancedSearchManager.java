@@ -30,6 +30,7 @@ public class DBAdvancedSearchManager extends DBManager {
 	 * @param bean reference on AdvancedSearchBean
 	 */
 	public static void queryDB(AdvancedSearchBean bean) {
+		log.fatal("DEPRECATED: should be moved already");
 		DBContext c 	= new DBContext();
 		ResultSet rst 	= null;
 
