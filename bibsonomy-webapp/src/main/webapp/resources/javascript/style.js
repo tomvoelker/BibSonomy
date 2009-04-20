@@ -312,7 +312,7 @@ function sendMinfreqRequ(minfreq, currUser) {
  	if(request) {
  		if(minfreq == null)	minfreq = 1;
 
- 		request.open('GET', "?tagcloud.minFreq=" + minfreq + "&ckey=" + ckey + "&tagstype=default&format=plainhtml", true);
+ 		request.open('GET', "?tagcloud.minFreq=" + minfreq + "&ckey=" + ckey + "&tagstype=default&format=tagcloud", true);
  		userMinFreq = minfreq;
 		request.onreadystatechange = handleMinfreqResponse(request);
 		request.send(null);
