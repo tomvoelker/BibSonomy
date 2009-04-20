@@ -14,7 +14,7 @@
 				  <div id="my_menu" class="nicedropmenudiv">
 				    <a href="/friends">myFriends</a>
 					<a href="/relations/<mtl:encode value='${user.name}'/>">myRelations</a>
-					<a href="/advanced_search">mySearch</a>
+					<a href="/mySearch">mySearch</a>
 			        <a href="/user/<mtl:encode value='${user.name}'/>?filter=myPDF">myPDF</a>
 			        <a href="/user/<mtl:encode value='${user.name}'/>?filter=myDuplicates">myDuplicates</a>
 			        <a href="/bib/user/<mtl:encode value='${user.name}'/>?items=1000">myBibTeX</a>
