@@ -176,30 +176,35 @@ public enum Views implements View {
 	/**
 	 * response page snippet for ajax requests
 	 */
-	AJAX("ajax"),
+	AJAX("ajax/snippetPlain"),
 	
 	/**
 	 * response page snippet for xml ajax requests
 	 */
-	AJAX_RESPONSE("ajaxResponse"),	
+	AJAX_RESPONSE("ajax/snippetXML"),	
 	
 	/**
 	 * used by postBookmark to get the details for a given Url
 	 */
-	AJAX_GET_TITLE_FOR_URL("ajaxGetTitleForUrl"),		
+	AJAX_GET_TITLE_FOR_URL("ajax/jsonURLDetails"),		
 	/**
 	 * get bibtex keys for a given user
 	 */
-	AJAX_GET_BIBTEXKEYS_FOR_USER("ajaxGetBibtexKeysForUser"),
+	AJAX_GET_BIBTEXKEYS_FOR_USER("ajax/bibtexkeys"),
 	/**
 	 * posts 
 	 */
-	AJAX_POSTS("ajaxPosts"),
+	AJAX_POSTS("ajax/posts"),
 	
 	/**
 	 * spammer predictions 
 	 */
-	AJAX_PREDICTIONS("ajaxPredictions"),
+	AJAX_PREDICTIONS("ajax/predictions"),
+
+	/**
+	 * a tag cloud (to reload it using AJAX)
+	 */
+	AJAX_TAGCLOUD("ajax/tagcloud"),
 	
 
 	/* *****************************************************
@@ -384,12 +389,7 @@ public enum Views implements View {
 	/**
 	 * show the advanced_search page
 	 */
-	MYSEARCH("mySearch"),
-	
-	/**
-	 * show the tag cloud of an user (i.e. for ajax requests)
-	 */
-	PLAINHTML("plainhtml");
+	MYSEARCH("mySearch");
 	
 	
 	
@@ -485,8 +485,8 @@ public enum Views implements View {
 			return BATCHEDITBIB;
 		if ("batchediturl".equals(format)) 
 			return BATCHEDITURL;
-		if ("plainhtml".equals(format))
-			return PLAINHTML;
+		if ("tagcloud".equals(format))
+			return AJAX_TAGCLOUD;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
