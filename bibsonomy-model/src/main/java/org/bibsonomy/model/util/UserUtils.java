@@ -101,19 +101,31 @@ public class UserUtils {
 	 */
 	public static List<Integer> getListOfGroupIDs(final User user) {
 		final ArrayList<Integer> groupIDs = new ArrayList<Integer>();
-		/*
-		 * every user may see public posts
-		 */ 
-		groupIDs.add(GroupID.PUBLIC.getId());
-		if (user == null) {
-			return groupIDs;
-		}
-		final List<Group> groups = user.getGroups();
+		final List<Group> groups = getListOfGroups(user);
 		for (final Group group : groups) {
 			groupIDs.add(group.getGroupId());
 		}
 		return groupIDs;
 	}
+	
+	/**
+	 * Helper function to get a list of groups from the user's list of groups
+	 * 
+	 * @param user
+	 * @return list of groups extracted from the given user's list of groups
+	 */
+	public static List<Group> getListOfGroups(final User user) {
+		final ArrayList<Group> groups = new ArrayList<Group>();
+		/*
+		 * every user may see public posts
+		 */ 
+		groups.add(new Group(GroupID.PUBLIC));
+		if (user == null) {
+			return groups;
+		}
+		groups.addAll(user.getGroups());
+		return groups;
+	}	
 	
 	/**
 	 * Normalizes the OpenID of a user for matching
