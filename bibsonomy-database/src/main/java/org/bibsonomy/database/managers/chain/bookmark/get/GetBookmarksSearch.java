@@ -25,7 +25,10 @@ public class GetBookmarksSearch extends BookmarkChainElement {
 		// uncomment following for a quick hack to access secondary datasource
 		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
 		if (SearchEntity.LUCENE.equals(param.getSearchEntity())) {
-			return this.db.getBookmarkSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
+			//param.getGroups();   // gruppen, die der eingeloggte user sehen darf
+			//param.getUserName(); // eingeloggter user
+			//param.getGroupNames(); // gruppennamen der gruppen, die der eingeloggte user sehen darf
+			return this.db.getBookmarkSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
 		}
 		else {
 			return this.db.getBookmarkSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
@@ -596,13 +597,13 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @param session
 	 * @return list of bibtex posts
 	 * @throws IOException 
-	 */
+	 * /
 	public List<Post<BibTex>> getBibTexSearchLucene(final BibTexParam param, final DBSession session) throws IOException {
 
 		return this.getBibTexSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
 		
 	}
-	
+*/	
 	
 	/**
 	 * @see BibTexDatabaseManager#getBibTexSearch(BibTexParam, DBSession)
@@ -661,15 +662,17 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @throws IOException 
 	 */
 
-	public List<Post<BibTex>> getBibTexSearchLucene(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
+	public List<Post<BibTex>> getBibTexSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames, final int limit, final int offset, final DBSession session) {
 		final Logger LOGGER = Logger.getLogger(BibTexDatabaseManager.class);
+		List<Post<BibTex>> postBibtexList = new ArrayList<Post<BibTex>>();
+/*
 		final BibTexParam param = new BibTexParam();
 		param.setGroupId(groupId);
 		param.setSearch(search);
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
 		param.setOffset(offset);
-
+*/
 		// get list of ids from lucene
 
 		final LuceneSearchBibTex lucene = LuceneSearchBibTex.getInstance();
@@ -678,7 +681,8 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		try {
 			long starttimeQuery = System.currentTimeMillis();
 
-			contentIds = lucene.searchLucene("content_id", search, groupId, limit, offset);
+//			contentIds = lucene.searchLucene(groupId, search, requestedUserName, limit, offset);
+			postBibtexList = lucene.searchLucene(groupId, search, requestedUserName, UserName, GroupNames, limit, offset);
 
 			long endtimeQuery = System.currentTimeMillis();
 			LOGGER.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
@@ -688,6 +692,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			ex.printStackTrace();
 		}
 
+/*
 		long starttimeTable = System.currentTimeMillis();
 		LuceneHelper luceneTTable = new LuceneHelper();
 		// create temp. table
@@ -700,9 +705,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		luceneTTable.fillTTable(contentIds, session);
 		long endtimeTable = System.currentTimeMillis();
 		LOGGER.debug("LuceneBibTex: filled temp. table with requested lucene ids in " + (endtimeTable-starttimeTable) + "ms");
+*/
 
-
-		return this.bibtexList("getBibTexSearchLucene", param, session);
+//		return this.bibtexList("getBibTexSearchLucene", param, session);
+		return postBibtexList;
 
 	}
 

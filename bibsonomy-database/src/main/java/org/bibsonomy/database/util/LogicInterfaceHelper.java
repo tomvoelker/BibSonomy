@@ -96,12 +96,14 @@ public class LogicInterfaceHelper {
 		// add filters
 		param.setFilter(filter);
 
-		// set the groupIDs the logged-in user may see 
+		// set the groups the logged-in user may see 
 		//  - every user may see public posts - this one is added in the constructor of DBLogic
 		//  - groups the logged-in user is explicitely member of
-		param.addGroups(UserUtils.getListOfGroupIDs(loginUser));
+		param.addGroupsAndGroupnames(UserUtils.getListOfGroups(loginUser));
 		//  - private / friends groups are set later on 
 		//    (@see org.bibsonomy.database.util.DatabaseUtils.prepareGetPostForUser)
+		
+		
 
 		param.setOrder(order);
 		param.setOffset(start);

@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
@@ -15,8 +16,10 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.params.beans.TagIndex;
+import org.bibsonomy.lucene.LuceneSearchBookmarks;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
@@ -99,6 +102,12 @@ public abstract class GenericParam {
 	 * 
 	 * */
 	private Set<Integer> groups;
+	
+	
+	/**
+	 * List of groupnames the user belongs to. 
+	 */
+	private Set<String> groupNames;
 	
 	/**
 	 * Should tagnames (names of tags and concepts) be case sensitive; by
@@ -189,6 +198,7 @@ public abstract class GenericParam {
 		this.grouping = GroupingEntity.ALL;
 		
 		this.groups =  new HashSet<Integer>();
+		this.groupNames =  new HashSet<String>();
 		//when using this field the value of days must be greater 0 
 		this.days = -1;
 		
@@ -596,5 +606,36 @@ public abstract class GenericParam {
 
 	public String getBibtexKey() {
 		return bibtexKey;
-	}	
+	}
+	
+	/**
+	 * add group ids and groupnames of groups this user may see
+	 * 
+	 * @param groups - a list of groups
+	 */
+	public void addGroupsAndGroupnames(Collection<Group> groups) {
+		// add groupids + groupnames
+		String groupName = "";
+		for (Group g : groups) {
+			this.groups.add(g.getGroupId());
+			groupName = (g.getName()==null)?"group_"+g.getGroupId():g.getName().toLowerCase();
+			// TODO warum kann der Gruppenname (im Test) null sein? 
+			this.groupNames.add(groupName);
+			// this.groupNames.add(g.getName().toLowerCase());
+		}
+	}
+
+	/**
+	 * @return the groupNames
+	 */
+	public Set<String> getGroupNames() {
+		return this.groupNames;
+	}
+
+	/**
+	 * @param groupNames the groupNames to set
+	 */
+	public void setGroupNames(Set<String> groupNames) {
+		this.groupNames = groupNames;
+	}
 }

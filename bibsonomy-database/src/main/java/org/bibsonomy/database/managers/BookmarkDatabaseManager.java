@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
@@ -569,16 +570,12 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param session
 	 * @return list of bookmark posts
 	 */
-	public List<Post<Bookmark>> getBookmarkSearchLucene(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
+	public List<Post<Bookmark>> getBookmarkSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames,  final int limit, final int offset, final DBSession session) {
 		final Logger LOGGER = Logger.getLogger(BookmarkDatabaseManager.class);
-		final BookmarkParam param = new BookmarkParam();
-		param.setGroupId(groupId);
-		param.setSearch(search);
-		param.setRequestedUserName(requestedUserName);
-		param.setLimit(limit);
-		param.setOffset(offset);
+		List<Post<Bookmark>> postBookmarkList = new ArrayList<Post<Bookmark>>();
 
-		// get list of ids from lucene
+
+		// get search results from lucene
 
 		final LuceneSearchBookmarks lucene = LuceneSearchBookmarks.getInstance();
 
@@ -586,8 +583,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		try {
 			long starttimeQuery = System.currentTimeMillis();
 
-			contentIds = lucene.searchLucene("contentid", search, groupId, limit, offset);
-
+			//contentIds = lucene.searchLucene("contentid", search, groupId, limit, offset);
+			postBookmarkList = lucene.searchLucene(groupId, search, requestedUserName, UserName, GroupNames, limit, offset);
+			
 			long endtimeQuery = System.currentTimeMillis();
 			LOGGER.debug("LuceneBookmark complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
@@ -595,7 +593,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
-
+/*
 		long starttimeTable = System.currentTimeMillis();
 		LuceneHelper luceneTTable = new LuceneHelper();
 		// create temp. table
@@ -611,7 +609,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 
 		return this.bookmarkList("getBookmarkSearchLucene", param, session);
-
+*/
+		return postBookmarkList;
 	}
 
 
