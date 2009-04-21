@@ -60,7 +60,7 @@ public class RecommendedTagComparator implements Comparator<RecommendedTag> {
 		signum = new Double(Math.signum(o2.getConfidence() - o1.getConfidence())).intValue();
 		if (signum != 0) return signum;
 		/*
-		 * scores and confidence equal (but tag names not): return using comparaTo from Tag.
+		 * scores and confidence equal (but tag names not): return using compareTo from Tag.
 		 */
 		return o1.compareTo(o2);
 	}
