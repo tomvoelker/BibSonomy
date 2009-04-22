@@ -37,7 +37,6 @@ var serverurl = "/logging";
 
 function log_init () {
   log_register_events();
-  log_setUsername("testuserblub");
 }
 
 function log_setUsername(username) {
