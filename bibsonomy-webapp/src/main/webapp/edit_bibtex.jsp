@@ -168,9 +168,33 @@ td.expl_s {
 
 
 <tr>
+  <td class="expl">viewable for</td>
+  <td><%@include file="/boxes/groupselection.jsp" %></td>
+  <td></td>
+</tr>
+
+<!-- insert start @CK -->
+<tr>
+  <td class="expl">Helps me to </td>
+   <td><!--
+  <select name="purpose_relation">
+									<option value="help">helps me to</option>
+  </select> -->
+    <input class="reqinput" type="text" size="60" name="purpose" />
+  </td>
+</tr>
+<!-- insert end @CK -->
+
+    <tr>
+      <td height="40"  class="expl">
+	    <ul id="suggTags">
+	      <li>suggested</li>
+	    </ul>
+	  </td>
       <td class="expl">&nbsp;</td>
 	  <td>
         <div id="suggested" class="suggtag"><!-- This comment is needed, otherwise this will result in a self-closing element --></div>
+
         <div class="errmsg"></div>
   	  </td>
 	</tr>

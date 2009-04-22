@@ -732,6 +732,10 @@
 		<from>^/ShowBookmarkEntry$</from>
 		<to last="true">/postBookmark</to>
 	</rule>
-
+	<!--PURPOSE-->
+    	<rule>
+        	<from>^/+purpose(\?(.*))?$</from>
+        	<to>/purpose</to>
+    	</rule>
 
 </urlrewrite>

@@ -107,6 +107,11 @@
 			<c:url var="popularUrl" value="/popular" context="${projectContext}"/>
 			<a id="nav_popular" href="${popularUrl}"><fmt:message key="navi.popular"/></a>
 		</li>
+		<!-- CK-START -->
+		<li>
+			<c:url var="purposeUrl" value="/purpose" context="${projectContext}"/><a id="nav_purpose" href="${purposeUrl}"><fmt:message key="navi.purposetags"/></a>
+		</li>
+		<!-- CK-END -->
 	</ul>
 	</div>
 

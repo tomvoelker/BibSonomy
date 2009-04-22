@@ -201,7 +201,18 @@
 						<property name="controllerBeanName" value="popularTagsPageController"/>						
 					</bean>
 				</entry>	
-				
+<!--CK-->
+				<entry key="/purpose">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="purposeTagsPageController"/>
+					</bean>
+				</entry>
+				<entry key="/purposes">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="purposeUrlController"/>
+					</bean>
+				</entry>
+<!--CK-->				
 				<!-- actions  -->
 				<entry key="/register">
 					<bean parent="controllerBase">
@@ -597,6 +608,17 @@
 			<value type="java.lang.Integer">3</value>
 		</property>
 	</bean>
+<!--CK-->
+	<bean id="purposeTagsPageController" class="org.bibsonomy.webapp.controller.PurposeTagsPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+
+	<bean id="purposeUrlController" class="org.bibsonomy.webapp.controller.PurposeUrlController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+<!--CKEND-->
 	<!-- 
 	    This bean provides admin access to the logic interface by predicting 
 	    to be a user with role "admin". 

@@ -387,6 +387,16 @@ public enum Views implements View {
 	EXPORT("export"),
 	
 	/**
+	 * Show the page for the purpose tags
+	 */
+	PURPOSE_TAGS("purpose"),
+		
+	/**
+	 * Show the page with the purpose tags and the urls
+	 */
+	PURPOSES("purposes"),
+	
+	/**
 	 * show the advanced_search page
 	 */
 	MYSEARCH("mySearch");

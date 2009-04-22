@@ -18,7 +18,7 @@
 
 <jsp:useBean id="bibtexHandlerBean" class="beans.BibtexHandlerBean" scope="request">
   <jsp:setProperty name="bibtexHandlerBean" property="*"/>
-  <jsp:setProperty name="bibtexHandlerBean" property="relevantForParam" value="${paramValues.relevantFor}"/>  
+  <jsp:setProperty name="bibtexHandlerBean" property="relevantForParam" value="${paramValues.relevantFor}"/> 
 </jsp:useBean>
 
 
@@ -26,7 +26,16 @@
 <%-- test if tagstring contains comma and handle it --%>
 <c:if test="${empty param.acceptComma}">
   <%
+  
+    String purpose = request.getParameter("purpose");
+    if(!purpose.equals("")){
+        purpose = purpose.replace(" ", "_");
+        String oldTags = bibtexHandlerBean.getTags();
+    
+        bibtexHandlerBean.setTags(oldTags + " purpose:" +purpose);
+    }
     String tags = request.getParameter("tags");
+    
     if (tags != null && (tags.indexOf(",") != -1 || tags.indexOf(";") != -1)) {
   %>
     <jsp:forward page="/edit_bibtex">

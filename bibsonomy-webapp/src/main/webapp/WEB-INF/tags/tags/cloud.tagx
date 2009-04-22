@@ -44,14 +44,18 @@
 	<!-- display of tag tooltips is disabled by default -->
     <c:set var="showTooltips" value="${not (empty showTooltips or showTooltips == 0)}"/>
 
+
 	<c:if test="${empty showPlain or showPlain eq 'false'}">
 		<script type="text/javascript">tagbox_minfreq_style = '${tagboxMinfreqStyle}';</script>
 	</c:if>
 	
+
 	<ul class="${style}" id="tagbox">
 	
 		<!-- loop over tags -->
 		<c:forEach var="tag" items="${cmd.tags}">
+		    
+
 								
 			<c:set var="posts">
 				<fmt:message key="posts" /> <!-- plural -->
