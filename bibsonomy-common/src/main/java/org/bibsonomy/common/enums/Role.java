@@ -34,9 +34,11 @@ public enum Role {
 	/** Is allowed to use admin pages. */
 	ADMIN(0),
 	/** Not logged in. */
-	NOBODY(2);
+	NOBODY(2),
+	/** deleted account */
+	DELETED(3);
 
-	private static final Role[] map = new Role[] { ADMIN, DEFAULT, NOBODY };
+	private static final Role[] map = new Role[] { ADMIN, DEFAULT, NOBODY, DELETED};
 	private final int role;
 
 	private Role(final int role) {
