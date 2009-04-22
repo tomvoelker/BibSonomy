@@ -37,6 +37,7 @@ var serverurl = "/logging";
 
 function log_init () {
   log_register_events();
+  log_setUsername("testuserblub");
 }
 
 function log_setUsername(username) {
@@ -44,7 +45,7 @@ function log_setUsername(username) {
 }
 
 function log_getUsername() {
-	return logusername;
+	return logUsername;
 }
 
 function log_register_events() {
@@ -316,7 +317,7 @@ function log_sendRequest(e) {
 					'&mousedocumentpos='+mouseposition(e)+
 					'&mouseclientpos='+absolutemouseposition(e)+
 					'&listpos='+sibling_count+
-					'&referer='+document.referrer;
+					'&referer='+document.referrer+
 					'&username='+log_getUsername();
 					
 // post data
