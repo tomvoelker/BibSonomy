@@ -86,7 +86,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * Retrieve the names of users present in a group with given group ID
 	 */
-	@Ignore
+	@Test
 	public void getUserNamesOfGroupId() {
 		final List<String> users = this.userDb.getUserNamesByGroupId(ParamUtils.TESTGROUP1, this.dbSession);
 		final String[] testgroup1User = new String[] { "testuser1", "testuser2" };
