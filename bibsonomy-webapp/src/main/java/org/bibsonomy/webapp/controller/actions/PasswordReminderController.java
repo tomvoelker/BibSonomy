@@ -98,7 +98,11 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 		 */
 		final User existingUser = adminLogic.getUserDetails(user.getName());
 
-		if (existingUser.getName() == null) {
+		if (existingUser == null || existingUser.getName() == null || Role.DELETED.equals(existingUser.getRole())) {
+			/*
+			 * user does not exist or has been deleted (we should not sent 
+			 * reminders to deleted users!)
+			 */
 			errors.rejectValue("userName", "error.field.valid.user.name");
 		} else if (!user.getEmail().equalsIgnoreCase(existingUser.getEmail())) {
 			errors.rejectValue("userEmail", "error.field.valid.user.email");
