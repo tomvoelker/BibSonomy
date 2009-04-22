@@ -47,6 +47,11 @@
     <%-- enable logging with user permission --%>
     <c:if test="${user.logLevel != 1}">
       <script type="text/javascript" src="/resources/javascript/logging.js"></script>
+      <c:if test="${!empty user.name}">
+      <script type="text/javascript">
+			log_setUsername("${user.name}");
+	   </script>
+       </c:if>
     </c:if> 
     <script type="text/javascript" src="/resources/javascript/localized_strings_en.js"></script >
     <meta name="author" content="Knowledge and Data Engineering Group, University of Kassel, Germany">
