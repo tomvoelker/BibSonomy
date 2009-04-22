@@ -322,8 +322,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		
 		// reset user password, set spammer flag
-		User localUser = this.getUserDetails(user.getName(), session);
-		localUser.setPassword("inactive");
+		final User localUser = this.getUserDetails(user.getName(), session);
+		
+		localUser.setPassword("inactive"); // FIXME: this must be documented and refactored into a constant!
+		localUser.setRole(Role.DELETED);   // this is new - use it to check if a user has been deleted!
+		
 		// FIXME: Why is this necessary here, and is not performed by the flagSpammer method below?
 		if (!localUser.isSpammer()){
 			localUser.setSpammer(true);
