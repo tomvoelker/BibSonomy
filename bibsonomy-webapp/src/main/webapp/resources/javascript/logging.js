@@ -195,11 +195,50 @@ function log_sendRequest(e) {
 		catch(err)
 		{
 		}
-
 //			console.log (welementattrs_class);
 		if (welement.nodeName == "A") {
 //			dom_acontent = welement.childNodes[0].textContent;
-			dom_acontent = welement.firstChild.nodeValue;
+
+			// if there is an image in an a element, then text element is missing or maybe not at first position
+			// search for text-node or other useful informations
+			
+			//dom_acontent = welement.firstChild.nodeValue;
+
+			// get number of childs
+			childNodesA = [];
+			childNodesA = welement.childNodes;
+//			alert ("Number of Childs in a-node: " + childNodesA.length);
+			
+			dom_acontent = "";
+			for (var cc=0; cc< childNodesA.length; cc++)
+			{
+				var childNode = childNodesA[cc];
+//				alert(cc + ": " + childNode.nodeName + " = " + childNode.nodeValue);
+				
+				if (childNode.nodeName=="#text")
+				{
+					dom_acontent += " " + childNode.nodeValue; // can be empty, if other elements are inside node. every whitespace before and after other elements result in a text node 
+				}
+				else if (childNode.nodeName=="IMG")
+				{
+					// search in attributes for more content to add
+					// search until found first content in following list of attributes: id, title, alt 
+
+					var attributelistforimages = [ "id", "title", "alt" ];
+					for (element in attributelistforimages) {
+						if ((childNode.getAttribute(attributelistforimages[element]) != null) && (childNode.getAttribute(attributelistforimages[element])!=""))
+						{
+//							alert (attributelistforimages[element] + ":: " + childNode.getAttribute(attributelistforimages[element]));
+							dom_acontent += " " + childNode.getAttribute(attributelistforimages[element])
+							break; // break out of for loop
+						}
+						
+					}
+				}
+				
+			}
+			
+			
 			// trim(dom_acontent)
 			if (dom_acontent) {
 				dom_acontent = dom_acontent.replace (/^\s+/, '').replace (/\s+$/, '');
