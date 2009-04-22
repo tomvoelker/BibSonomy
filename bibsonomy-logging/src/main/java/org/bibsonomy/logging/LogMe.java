@@ -183,7 +183,15 @@ public class LogMe extends HttpServlet {
 			LogData.setType(logType);
 			LogData.setPageurl(req.getParameter("pageurl"));
 			LogData.setUseragent(req.getHeader("user-agent"));
-			LogData.setUsername(cookieUsername);
+			
+			if (req.getParameter("username").isEmpty()) {
+				LogData.setUsername(cookieUsername);
+			}
+			else
+			{
+				LogData.setUsername(req.getParameter("username"));
+			}
+			
 			LogData.setSessionid(cookieSessionId);
 			LogData.setHost(req.getHeader("host"));
 			LogData.setCompleteheader(completeHeader);
