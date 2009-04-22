@@ -31,11 +31,20 @@ var server	= null;
 var path	= null
 var port     = 0;
 var mostInnerLi = true;
+var logUsername = "";
 
 var serverurl = "/logging";
 
 function log_init () {
   log_register_events();
+}
+
+function log_setUsername(username) {
+	logUsername = username;	
+}
+
+function log_getUsername() {
+	return logusername;
 }
 
 function log_register_events() {
@@ -308,6 +317,7 @@ function log_sendRequest(e) {
 					'&mouseclientpos='+absolutemouseposition(e)+
 					'&listpos='+sibling_count+
 					'&referer='+document.referrer;
+					'&username='+log_getUsername();
 					
 // post data
 		http_request.open('POST', serverurl, true);
