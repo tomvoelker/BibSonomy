@@ -220,7 +220,7 @@ public class LuceneSearchBookmarks {
 		String lField_contentid = "content_id";
 		String lField_group = "group";
 		String lField_date = "date";
-		String lField_user = "user";
+		String lField_user = "user_name";
 		String lField_desc = "desc";
 		String lField_ext = "ext";
 		String lField_url = "url";
@@ -354,12 +354,15 @@ public class LuceneSearchBookmarks {
 					for (String group: doc.get(lField_group).split(",")) {
 						postBookmark.addGroup(group);
 					}
+
+					for (String tag: doc.get(lField_tas).split(" ")) {
+						postBookmark.addTag(tag);
+					}
 					
 					postBookmark.setContentId(Integer.parseInt(doc.get(lField_contentid)));
 					postBookmark.setDate(date);
 					postBookmark.setDescription(doc.get(lField_ext));
 					postBookmark.setResource(bookmark);
-					postBookmark.addTag(doc.get(lField_tas));
 					postBookmark.setUser(new User(doc.get(lField_user)));
 					
 //					LOGGER.debug("LuceneBookmark:  postBookmark.getContentId:  " + postBookmark.getContentId());

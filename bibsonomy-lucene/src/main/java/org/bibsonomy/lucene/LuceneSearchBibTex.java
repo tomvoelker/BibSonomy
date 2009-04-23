@@ -443,16 +443,19 @@ public class LuceneSearchBibTex {
 						postBibTex.addGroup(group);
 					}
 
+					for (String tag: doc.get(lField_tas).split(" ")) {
+						postBibTex.addTag(tag);
+					}
+					
 					postBibTex.setContentId(Integer.parseInt(doc.get(lField_contentid)));
 					postBibTex.setDate(date);
 					postBibTex.setDescription(doc.get(lField_ext));
 					postBibTex.setResource(bibTex);
-					postBibTex.addTag(doc.get(lField_tas));
 					postBibTex.setUser(new User(doc.get(lField_user)));
 
 					
 					LOGGER.debug("LuceneBibTex:  doc.get("+lField_user+"): " + doc.get(lField_user));
-					LOGGER.debug("LuceneBibTex:  postBibTex.getUser().getName():  " + postBibTex.getUser().getName());
+//					LOGGER.debug("LuceneBibTex:  postBibTex.getUser().getName():  " + postBibTex.getUser().getName());
 
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getContentId:  " + postBibTex.getContentId());
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getDate:  " + postBibTex.getDate());
