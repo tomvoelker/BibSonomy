@@ -467,9 +467,9 @@ public class DBAccess extends AbstractDatabaseManager {
 	@SuppressWarnings("unchecked")
 	public static <T extends Resource> Integer getNumberOfTagsForResource(final Class<T> resourceType, final String intraHash) throws SQLException {
 		if (BibTex.class.equals(resourceType)) {
-			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTasForBibTeX", intraHash);
+			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTagsForBibTeX", intraHash);
 		} else if (Bookmark.class.equals(resourceType)) {
-			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTasForBookmark", intraHash);
+			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTagsForBookmark", intraHash);
 		}
 		throw new UnsupportedResourceTypeException("Unknown resource type " + resourceType);
 	}
