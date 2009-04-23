@@ -12,10 +12,11 @@ import org.bibsonomy.recommender.tags.AbstractTagRecommender;
 import org.bibsonomy.services.recommender.TagRecommender;
 
 /**
- * Takes the tags from {@link #firstTagRecommender} and orders them by their scores
- * from {@link #secondTagRecommender}. If they're not recommended by {@link #secondTagRecommender},
- * they get a lower score. If {@link #firstTagRecommender} can't deliver enough tags, they're filled
- * up by the top tags from {@link #secondTagRecommender}.
+ * Takes the tags from {@link #firstTagRecommender} and orders them by their 
+ * scores from {@link #secondTagRecommender}. If they're not recommended by 
+ * {@link #secondTagRecommender}, they get a lower score. If 
+ * {@link #firstTagRecommender} can't deliver enough tags, they're filled up 
+ * with the top tags from {@link #secondTagRecommender}.
  * 
  * @author rja
  * @version $Id$

@@ -445,7 +445,19 @@ public class DBAccess extends AbstractDatabaseManager {
 	}
 	
 	/**
+	 * Get number of TAS of the given user. 
+	 * @param username
+	 * @return number of TAS of given user
+	 * @throws SQLException 
+	 */
+	@SuppressWarnings("unchecked")
+	public static Integer getNumberOfTasForUser(String username) throws SQLException {
+		return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTasForUser", username);
+	}
+	
+	/**
 	 * Get number of tags attached to a given resource.. 
+	 * @param <T> 
 	 * @param resourceType - type of the resource 
 	 * @param intraHash - hash of the resource
 	 * 
@@ -455,9 +467,28 @@ public class DBAccess extends AbstractDatabaseManager {
 	@SuppressWarnings("unchecked")
 	public static <T extends Resource> Integer getNumberOfTagsForResource(final Class<T> resourceType, final String intraHash) throws SQLException {
 		if (BibTex.class.equals(resourceType)) {
-			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTagsForBibTeX", intraHash);
+			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTasForBibTeX", intraHash);
 		} else if (Bookmark.class.equals(resourceType)) {
-			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTagsForBookmark", intraHash);
+			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTasForBookmark", intraHash);
+		}
+		throw new UnsupportedResourceTypeException("Unknown resource type " + resourceType);
+	}
+	
+	/**
+	 * Get number of TAS for a given resource.. 
+	 * @param <T> 
+	 * @param resourceType - type of the resource 
+	 * @param intraHash - hash of the resource
+	 * 
+	 * @return The number of TAS of the resource.
+	 * @throws SQLException 
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends Resource> Integer getNumberOfTasForResource(final Class<T> resourceType, final String intraHash) throws SQLException {
+		if (BibTex.class.equals(resourceType)) {
+			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTasForBibTeX", intraHash);
+		} else if (Bookmark.class.equals(resourceType)) {
+			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTasForBookmark", intraHash);
 		}
 		throw new UnsupportedResourceTypeException("Unknown resource type " + resourceType);
 	}
