@@ -38,8 +38,8 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 				/*
 				 * we get the count to normalize the score
 				 */
-				final Integer count = DBAccess.getNumberOfTagsForResource(resource.getClass(), intraHash);
-				log.debug("Resource has " + count + " different public tags.");
+				final int count = DBAccess.getNumberOfTasForResource(resource.getClass(), intraHash);
+				log.debug("Resource has " + count + " TAS.");
 
 				final List<Pair<String,Integer>> tagsWithCount = DBAccess.getMostPopularTagsForResource(resource.getClass(), intraHash, numberOfTagsToRecommend);
 				if (tagsWithCount != null && !tagsWithCount.isEmpty()) {

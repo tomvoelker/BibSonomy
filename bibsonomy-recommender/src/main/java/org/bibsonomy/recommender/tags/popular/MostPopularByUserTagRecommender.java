@@ -30,7 +30,7 @@ public class MostPopularByUserTagRecommender extends AbstractTagRecommender impl
 				/*
 				 * we get the count to normalize the score
 				 */
-				final Integer count = DBAccess.getNumberOfTagsForUser(username);
+				final int count = DBAccess.getNumberOfTasForUser(username);
 				
 				final List<Pair<String,Integer>> tagsWithCount = DBAccess.getMostPopularTagsForUser(username, numberOfTagsToRecommend);
 				for (final Pair<String,Integer> tagWithCount : tagsWithCount) {

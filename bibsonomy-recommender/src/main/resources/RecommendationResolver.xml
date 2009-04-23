@@ -91,6 +91,15 @@
 	</select>
 
 	<!-- +
+		 | Get number of TAS  
+		 + --> 
+	<select id="getNumberOfTasForUser" parameterClass="string" resultClass="integer">
+		SELECT COUNT(*) 
+		FROM tas 
+		WHERE user_name = #userName#
+	</select>	
+
+	<!-- +
 		 | Get number of tags for bookmark 
 		 + --> 
 	<select id="getNumberOfTagsForBookmark" parameterClass="string" resultClass="integer">
@@ -100,6 +109,17 @@
 		  WHERE b.book_url_hash = #intraHash#
 		    AND b.group = 0
 	</select>
+
+	<!-- +
+		 | Get number of TAS for bookmark 
+		 + --> 
+	<select id="getNumberOfTasForBookmark" parameterClass="string" resultClass="integer">
+		SELECT COUNT(*) 
+		  FROM tas 
+		    JOIN bookmark b USING (content_id)  
+		  WHERE b.book_url_hash = #intraHash#
+		    AND b.group = 0
+	</select>	
 	
 		<!-- +
 		 | Get number of tags used by 
@@ -111,6 +131,17 @@
 		  WHERE b.simhash2 = #intraHash#
 		    AND b.group = 0
 	</select>
+	
+		<!-- +
+		 | Get number of TAS 
+		 + --> 
+	<select id="getNumberOfTasForBibTeX" parameterClass="string" resultClass="integer">
+		SELECT COUNT(*) 
+		  FROM tas
+		    JOIN bibtex b USING (content_id) 
+		  WHERE b.simhash2 = #intraHash#
+		    AND b.group = 0
+	</select>	
 
 	<!--+
 		| Get list of top five query_ids nearest to given post
