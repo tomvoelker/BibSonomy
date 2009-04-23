@@ -20,7 +20,7 @@ CREATE TABLE recommender_postmap(
 DROP TABLE IF EXISTS recommender_result;
 CREATE TABLE recommender_result(
     result_id BIGINT NOT NULL AUTO_INCREMENT,
-	query_id VARCHAR(20) NOT NULL,
+	query_id BIGINT NOT NULL,
 	setting_id BIGINT NOT NULL,
 	rec_latency INT,
 	score DOUBLE NOT NULL,
