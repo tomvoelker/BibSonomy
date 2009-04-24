@@ -134,6 +134,12 @@ public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagReco
 				iterator1.remove();
 			}
 		}
+		/*
+		 * We would like to have values not larger than 1.0 ... but basically
+		 * this prevents to have minScore = Double.MAX_VALUE, when no tags from
+		 * the first recommender were recommended by the second recommender.
+		 */
+		if (minScore > 1.0) minScore = 1.0; 
 		return minScore;
 	}
 
