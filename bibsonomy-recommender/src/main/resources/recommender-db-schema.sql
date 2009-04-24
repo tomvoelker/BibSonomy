@@ -58,7 +58,7 @@ CREATE TABLE recommender_querymap(
 DROP TABLE IF EXISTS recommender_settings;
 CREATE TABLE recommender_settings(
 	setting_id BIGINT NOT NULL AUTO_INCREMENT,
-	rec_id VARCHAR(50) NOT NULL,
+	rec_id VARCHAR(255) NOT NULL,
 	rec_meta BLOB,
 	rec_descr VARCHAR(255),
 	PRIMARY KEY (setting_id)
