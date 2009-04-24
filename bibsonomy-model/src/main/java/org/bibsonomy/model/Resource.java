@@ -43,8 +43,7 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 public abstract class Resource {
 
 	/**
-	 * An Id for this resource; by default ConstantID.IDS_UNDEFINED_CONTENT_ID
-	 * FIXME why don't we name it id?!?
+	 * How many posts with this resource exist.
 	 */
 	private int count;
 
