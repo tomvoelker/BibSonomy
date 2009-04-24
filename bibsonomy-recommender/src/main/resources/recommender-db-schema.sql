@@ -32,7 +32,7 @@ CREATE TABLE recommender_result(
 
 DROP TABLE IF EXISTS recommender_recommendations;
 CREATE TABLE recommender_recommendations(
-	query_id VARCHAR(20) NOT NULL,
+	query_id BIGINT NOT NULL,
 	score DOUBLE NOT NULL,
 	confidence DOUBLE NOT NULL,
 	tag VARCHAR(255) NOT NULL,
