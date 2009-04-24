@@ -171,6 +171,13 @@
 		<from>^/+(.+)$</from>
 		<set name="requPath">$1</set>
 	</rule>
+	
+	<!-- store all parameters -->
+	<rule>
+		<name>requQueryAttribute</name>
+		<from>^/+(.+)$</from>
+		<set name="requQueryString">%{query-string}</set>
+	</rule>
 
 	<!-- ############## quick tag editing ############### -->
 	<!-- page where user can edit all tags in a batch -->
@@ -732,10 +739,6 @@
 		<from>^/ShowBookmarkEntry$</from>
 		<to last="true">/postBookmark</to>
 	</rule>
-	<!--PURPOSE-->
-    	<rule>
-        	<from>^/+purpose(\?(.*))?$</from>
-        	<to>/purpose</to>
-    	</rule>
+
 
 </urlrewrite>
