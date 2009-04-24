@@ -20,6 +20,27 @@
 		<to last="true">$1</to>
 	</rule>
 	
+	
+		
+	<!-- store all parameters -->
+	<!--
+		We need it before the /export rule, otherwise we won't get the 
+		parameters on the /export page.
+		Note: we add the '?' already here (not when building the URLs), 
+		such that it is only added, when the query string is not empty. 
+		This is also the reason for the condition: we only set the variable
+		when the query string is not empty. (TODO: thus, we're accessing 
+		a not existing variable in the JSPs, when there is no query string -
+		is this a problem?)  
+	 -->
+	<rule>
+		<name>requQueryAttribute</name>
+		<condition type="query-string" operator="equal"></condition>
+		<from>^/+(.+)$</from>
+		<set name="requQueryString">?%{query-string}</set>
+	</rule>
+	
+	
 	<!-- ############## feeds / export formats ############### -->
 
 	<!-- export format overview page -->
@@ -171,13 +192,7 @@
 		<from>^/+(.+)$</from>
 		<set name="requPath">$1</set>
 	</rule>
-	
-	<!-- store all parameters -->
-	<rule>
-		<name>requQueryAttribute</name>
-		<from>^/+(.+)$</from>
-		<set name="requQueryString">%{query-string}</set>
-	</rule>
+
 
 	<!-- ############## quick tag editing ############### -->
 	<!-- page where user can edit all tags in a batch -->

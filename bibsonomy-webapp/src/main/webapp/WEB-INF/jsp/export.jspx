@@ -41,13 +41,13 @@
         <h2><fmt:message key="export.header"/></h2>
 
 
-        <c:url var="bibtex" value="/bib/${requPath}" context="${projectContext}"/>
-        <c:url var="publ" value="/publ/${requPath}" context="${projectContext}"/>
-        <c:url var="publrss" value="/publrss/${requPath}" context="${projectContext}"/>
-        <c:url var="aparss" value="/aparss/${requPath}" context="${projectContext}"/>
-        <c:url var="burst" value="/burst/${requPath}" context="${projectContext}"/>
-        <c:url var="swrc" value="/swrc/${requPath}" context="${projectContext}"/>
-        <c:url var="custom" value="/layout/custom/${requPath}" context="${projectContext}"/>
+        <c:url var="bibtex"  value="/bib/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="publ"    value="/publ/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="publrss" value="/publrss/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="aparss"  value="/aparss/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="burst"   value="/burst/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="swrc"    value="/swrc/${requPath}${requQueryString}" context="${projectContext}"/>
+        <c:url var="custom"  value="/layout/custom/${requPath}${requQueryString} " context="${projectContext}"/>
 
         <div>
           <fmt:message key="export.format"/>:${mtl:ch('nbsp')}
@@ -63,13 +63,13 @@
 						
 			<c:forEach var="entry" items="${command.layoutMap}">
               <c:if test="${entry.value.publicLayout}">			
-				<c:url var="url" value="/layout/${entry.value.name}/${requPath}" context="${projectContext}"/>
+				<c:url var="url" value="/layout/${entry.value.name}/${requPath}${requQueryString}" context="${projectContext}"/>
 				<option value="${fn:escapeXml(url)}"><c:out value="${entry.value.displayName}"/></option>
 			  </c:if>
 			</c:forEach>
           </select>
 
-          <c:url var="currURL" value="/${requPath}" context="${projectContext}"/>
+          <c:url var="currURL" value="/${requPath}${requQueryString}" context="${projectContext}"/>
           <p><fmt:message key="export.info"><fmt:param><a href="${fn:escapeXml(currURL)}">${fn:escapeXml(currURL)}</a></fmt:param></fmt:message></p>
         </div>
         
