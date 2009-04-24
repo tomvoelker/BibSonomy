@@ -12,7 +12,6 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.recommender.tags.simple.FixedTagsTagRecommender;
 import org.bibsonomy.recommender.tags.simple.SimpleContentBasedTagRecommender;
-import org.bibsonomy.services.recommender.TagRecommender;
 import org.junit.Test;
 
 /**
@@ -97,4 +96,50 @@ public class TagsFromFirstWeightedBySecondTagRecommenderTest {
 		
 	}
 	
+	
+	
+	/**
+	 * 
+	 * If no tags from first reco are in second reco, we must ensure proper 
+	 * scores for fill-up round.
+	 * 
+	 */
+	@Test
+	public void testAddRecommendedTags2() {
+		final String[] firstFixedTags = new String[]{"eins", "zwei", "drei", "vier", "fünf", "sechs", "sieben", "eins"};
+		final SortedSet<RecommendedTag> secondFixedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		secondFixedTags.add(new RecommendedTag("a", 0.3, 0.2));
+		secondFixedTags.add(new RecommendedTag("b", 0.2, 0.2));
+		secondFixedTags.add(new RecommendedTag("c", 0.5, 0.2));
+		secondFixedTags.add(new RecommendedTag("d", 0.6, 0.2));
+		
+
+		final FixedTagsTagRecommender first = new FixedTagsTagRecommender(firstFixedTags);
+		final FixedTagsTagRecommender second = new FixedTagsTagRecommender(secondFixedTags);
+		final TagsFromFirstWeightedBySecondTagRecommender merger = new TagsFromFirstWeightedBySecondTagRecommender();
+		
+		merger.setFirstTagRecommender(first);
+		merger.setSecondTagRecommender(second);
+		merger.setNumberOfTagsToRecommend(5);
+		
+		final SortedSet<RecommendedTag> recommendedTags = merger.getRecommendedTags(null);
+		
+
+		/*
+		 *  check containment and order of top tags
+		 */
+		final Iterator<RecommendedTag> iterator = recommendedTags.iterator();
+		final RecommendedTag tag1 = iterator.next();
+		final double score = tag1.getScore();
+		/*
+		 * score should be smaller than 1
+		 */
+		Assert.assertTrue(score < 1.0);
+		Assert.assertEquals("eins", tag1.getName());
+		Assert.assertEquals("zwei", iterator.next().getName());
+		Assert.assertEquals("drei", iterator.next().getName());
+		Assert.assertEquals("vier", iterator.next().getName());
+		Assert.assertEquals("fünf", iterator.next().getName());
+		Assert.assertFalse(iterator.hasNext());
+	}
 }
