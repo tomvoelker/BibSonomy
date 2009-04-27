@@ -294,6 +294,21 @@
 					</bean>
 				</entry>
 				
+				<entry key="/downloadFile">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="downloadFileController"/>
+						<property name="allowedFields">
+							<list>
+								<value>intrahash</value>
+								<value>requestedUser</value>
+								<value>filename</value>
+								<value>ckey</value>
+								<value>action</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				
 				<entry key="/reminder">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="passwordReminderController"/>
