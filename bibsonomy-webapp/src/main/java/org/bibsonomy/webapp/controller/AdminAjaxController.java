@@ -23,12 +23,7 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for ajax requests on admin pages
  * 
  * @author Stefan Stützer
-<<<<<<< AdminAjaxController.java
- * @version $Id: AdminAjaxController.java,v 1.5 2008-11-04 17:34:01 beatekr Exp
- *          $
-=======
  * @version $Id$
->>>>>>> 1.6
  */
 public class AdminAjaxController extends AjaxController implements MinimalisticController<AdminAjaxCommand> {
 
@@ -42,6 +37,7 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 		if ("flag_spammer".equals(action)) {
 			this.flagSpammer(command, true);
 			this.setResponse(command, command.getUserName() + " flagged as spammer");
+			
 		} else if ("unflag_spammer".equals(action)) {
 			this.flagSpammer(command, false);
 			this.setResponse(command, command.getUserName() + " flagged as nonspammer");
@@ -63,8 +59,6 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 		} else if ("prediction_history".equals(action)) {
 			this.setPredictionHistory(command);
 			return Views.AJAX_PREDICTIONS;
-		} else if ("get_user_info".equals(action)) {
-			log.debug("Get user info with ajax " + action);
 		}
 		return Views.AJAX;
 	}

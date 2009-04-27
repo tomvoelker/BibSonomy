@@ -50,6 +50,13 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 		for (ClassifierSettings s: ClassifierSettings.values()) {
 			command.setClassifierSetting(s, this.logic.getClassifierSettings(s));
 		}
+		
+		/*
+		 * add user details for a specific user requested
+		 */
+		if (command.getAclUserInfo() != null) {
+			command.setUser(logic.getUserDetails(command.getAclUserInfo()));
+		}
 	
 		return Views.ADMINPAGE;				
 	}
@@ -89,7 +96,7 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 			List<User> u = this.logic.getClassifierComparison(cmd.getInterval()[0]);
 			cmd.setContent(u);
 			return;
-		}		
+		} 
 			
 		/* set content in dependence of the selected tab */
 		switch(cmd.getSelTab()) {
