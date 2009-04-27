@@ -8,13 +8,13 @@
 	<jsp:directive.attribute name="includeFilename" type="java.lang.Boolean" required="true"/>	
 
 	<c:if test='${not empty post.resource.documents}'>
-		<c:set var="downloadPrivDocTitle"><fmt:message key="bibtex.actions.private_document.download"/></c:set>									 
-		<a href="/documents/${post.resource.documents[0].fileHash}" title="${downloadPrivDocTitle}">
+		<c:set var="downloadPrivDocTitle"><fmt:message key="bibtex.actions.private_document.download"/></c:set>
+		<!-- <a href="/documents/${post.resource.documents[0].fileHash}" title="${downloadPrivDocTitle}"> -->
+		<a href="/documents/${post.resource.intraHash}/${post.user.name}/${post.resource.documents[0].fileName}?action=download" title="${downloadPrivDocTitle}"> 
 			<img alt="${downloadPrivDocTitle}" src="${resdir}/image/document-txt-blue.png" style="float: left;"/>
 			<c:if test="${includeFilename}">
 				${post.resource.documents[0].fileName}
 			</c:if>											
 		</a>
 	</c:if>
-	
 </jsp:root>
