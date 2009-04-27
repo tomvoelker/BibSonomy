@@ -155,6 +155,7 @@
 								<value>selTab</value>
 								<value>interval</value>
 								<value>limit</value>
+								<value>aclUserInfo</value>
 							</list>
 						</property>
 					</bean>
