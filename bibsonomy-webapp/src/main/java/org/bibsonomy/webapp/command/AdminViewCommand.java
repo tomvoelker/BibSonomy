@@ -1,6 +1,9 @@
 package org.bibsonomy.webapp.command;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ClassifierSettings;
+import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.model.User;
 
 /**
@@ -10,6 +13,8 @@ import org.bibsonomy.model.User;
  * @version $Id$
  */
 public class AdminViewCommand extends TabsCommand<User> {
+	
+	private static final Log log = LogFactory.getLog(AdminViewCommand.class);
 	
 	/** Indexes of definded tabs */
 	
@@ -35,7 +40,11 @@ public class AdminViewCommand extends TabsCommand<User> {
 	/** number of entries shown on one page */
 	private Integer limit = 100;
 
+	/** information about a specific user */
 	private String aclUserInfo; 
+	
+	/** specific user to show */
+	private User user;
 
 	public AdminViewCommand() {				
 		addTab(MOST_RECENT, "New registrations");
@@ -82,6 +91,7 @@ public class AdminViewCommand extends TabsCommand<User> {
 	}
 	
 	public String getAclUserInfo() {
+		
 		return this.aclUserInfo;
 	}
 
@@ -95,5 +105,13 @@ public class AdminViewCommand extends TabsCommand<User> {
 
 	public void setLimit(Integer limit) {
 		this.limit = limit;
+	}
+	
+	public User getUser() {
+		return this.user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 }
