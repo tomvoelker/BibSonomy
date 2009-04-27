@@ -4,10 +4,12 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="urn:http://www.springframework.org/tags"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
@@ -22,30 +24,63 @@
 		<jsp:attribute name="heading">	
 			<a href="/?filter=no">${projectName} all</a> :: <a rel="path_menu"
 				href="/admin"><fmt:message key="navi.admin" /></a>
-		</jsp:attribute>	
+		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css"
 				href="${resdir}/css/spammer.css" />
 		</jsp:attribute>
-		
+
 		<jsp:attribute name="topcontent">
-			<menu:adminNavi />	
+			
 			<!-- Admin Navigation -->	
+			<menu:adminNavi />	
+			
+			<!-- User Information -->	
+			<div class="userInfoBox">
+			<h2> User Info </h2>
+				<form:form name="userinfo" action="/admin">
+				<table style="clear: left;">
+				<tr>
+				<td><form:label path="aclUserInfo">User name</form:label></td> 
+  				<td><form:input path="aclUserInfo" /></td>
+  				<td><input type="submit" /></td>
+				</tr>
+				</table>
+				</form:form>
+				
+				<!-- Show information for a specific user -->
+				<c:if test="${not empty command.aclUserInfo}">
+				<table id="spammers" class="spammertable">
+				 <tr>
+				    	<th>Spam?</th>
+						<th>Username</th>
+						<th>Name</th>
+						<th>IP</th>
+						<th>E-Mail</th>
+						<th>Regdate</th>  	
+				    	<th>Updated by</th>
+				    	<th>Updated at</th>
+				 </tr>
+				  <tags:userInfo spamUser="${command.user}" rowNumber='1'
+						moveFromTabSpammer="false" moveFromTabNSpammer="false"
+						moveFromTabUncertain="false" selTab="userInformation" />
+			    </table>
+			    </c:if>
+			</div>
 		</jsp:attribute>
-		
+
 		<jsp:attribute name="tabcontent">		
 			<!-- spammer js -->
-			<script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>				
-			<script type="text/javascript"
+			<script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
+		<script type="text/javascript"
 				src="${resdir}/javascript/ajax-dynamic-content.js">&amp;nbsp;</script>
-			<script type="text/javascript" src="${resdir}/javascript/ajax.js">&amp;nbsp;</script>
-			<script type="text/javascript"
+		<script type="text/javascript" src="${resdir}/javascript/ajax.js">&amp;nbsp;</script>
+		<script type="text/javascript"
 				src="${resdir}/javascript/ajax-tooltip.js">&amp;nbsp;</script>
-			<script type="text/javascript"
-				src="${resdir}/javascript/marksame.js">;</script>
+		<script type="text/javascript" src="${resdir}/javascript/marksame.js">;</script>
 				
-			<c:if test="${!empty command.content}">
+			<c:if test="${not empty command.content}">
 				
 				<c:choose>
 				
@@ -83,114 +118,75 @@
 				    <!-- user list -->
 					<c:forEach var="user" items="${command.content}" varStatus="status">
 					
-					  <!-- set variables for scripts -->
-					  <!-- e.g. row coloring depending on spam status -->
-					  <!-- e.g. bookmark tooltip depending on tab -->
-					  <tr id="sl${status.count}" class="${user.prediction == 9 ? 'spamflag uncertainUser' : ((user.spammer==true) ? 'spammer' : none)}">	
-					     <c:set var="do_flag_action" value="javascript:ajax_hideTooltip()"/>
-					     <c:choose>
-					    	<c:when test="${command.selTab == 1}">
-					        	<c:set var="Unflag" value="false" /> 
-					        	<c:set var="Uncertain" value="false" />
-					        	<c:set var="Flag" value="false" /> 
-					    	</c:when> 
-					    	<c:otherwise>
-					    	<c:choose>
-					    	    <c:when
-									test="${command.selTab == 2 or command.selTab == 4}">
-					    		<c:choose>
-					    		<c:when test="${user.spammer == true}">
-					    			<c:set var="Unflag" value="true" /> 
-					    			<c:set var="Uncertain" value="true" />
-					        		<c:set var="Flag" value="false" /> 
-					        	</c:when>
-					        	<c:otherwise>		        	
-					    			<c:set var="Unflag" value="false" /> 
-					    			<c:set var="Uncertain" value="true" />
-					        		<c:set var="Flag" value="true" /> 
-					        	</c:otherwise>
-					        	</c:choose>
-					        	</c:when>
-					        	<c:otherwise>
-					        	<c:choose>
-					        	    <c:when test="${command.selTab == 3}">
-					        	    	<c:set var="Unflag" value="true" /> 
-					    				<c:set var="Uncertain" value="false" />
-					        			<c:set var="Flag" value="true" /> 
-					        	    </c:when>
-					        	    <c:otherwise>
-					        	    <c:choose>
-					        	    <c:when test="${command.selTab == 9}">
-					        	    	<c:set var="Unflag" value="false" /> 
-					    				<c:set var="Uncertain" value="false" />
-					        			<c:set var="Flag" value="false" /> 
-					        	    </c:when>
-					        	    <c:otherwise>    
-					        			<c:set var="Unflag" value="true" /> 
-					    				<c:set var="Uncertain" value="true" />
-					        			<c:set var="Flag" value="true" />
-					        			<c:set var="userIndex" value="${status.index+1}"/>
-						                <c:set var="nextUser" value="${command.content[userIndex].name}"/> 
-					        			<c:set var="do_flag_action" value="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${nextUser}',document.getElementById('latest_posts_${status.index}'));" />
-					        		</c:otherwise>
-					        		</c:choose>
-					        		</c:otherwise>
-					        	</c:choose> 
-					        	</c:otherwise>
-					        </c:choose>
-					  	 	</c:otherwise>
-						</c:choose>
+					<c:choose>
+						<c:when test="${command.selTab &lt; 5}">	
+					  <c:set var="selTabEvaluation" value="userInformation" />
+					  </c:when>
+					  	<c:otherwise>
+					  		 <c:set var="selTabEvaluation" value="classifier" />
+					  	</c:otherwise>
+					</c:choose>
+					
+						<c:choose>
 						
-						<td style="text-align: left" class="spamflag">
-						    <c:set var="nextUser" value="${command.content[userIndex].name}"/> 
-							<a
-										href="javascript:unflagSpammer('${user.name}','sl${status.count}', '${Unflag}')"
-										title="unflag this user as spammer"
-										onClick="${do_flag_action}">NO</a>
-							<a
-										href="javascript:markUncertainUser('${user.name}','sl${status.count}', '${Uncertain}')"
-										title="mark as spammer status uncertain"
-										onClick="${do_flag_action}">?</a>
-					     	<a
-										href="javascript:addSpammer('${user.name}','sl${status.count}', '${Flag}')"
-										title="flag this user as spammer"
-										onClick="${do_flag_action}">YES</a>
-						</td>
-				       <td>
-				       	<a id="latest_posts_${status.index}" href="/user/${fn:escapeXml(user.name)}"><c:out
-										value="${user.name}" /></a>
-				       	<a
-										onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;"
-										style="cursor: pointer" title="show latest posts"><img
-										src="${resdir}/image/info.png" /></a>
-				        <a
-										onclick="javascript:ajax_showTooltip('ajax?action=prediction_history&amp;userName=${user.name}',this);return false;"
-										style="cursor: pointer" title="show latest user predictions"><img
-										src="${resdir}/image/history.png" /></a></td>
-				       <td><c:out value="${fn:substring(user.realname, 0, 25)}" /></td>	
-					   <td><c:out value="${fn:substringBefore(user.IPAddress, ',')}"/></td>
-					   <td>
-					   	<c:out value="${fn:substring(user.email, 0, 35)}" />
-					   </td>
-					   <td>
-					    <fmt:formatDate type="both" timeStyle="short"
-										value="${user.registrationDate}" />
-					   </td>					   
-				 	   <c:choose>
-				       <c:when test="${command.selTab > 4}">				    				       
-				       <td><c:out value="${user.algorithm}" /></td>
-				       <td><c:out value="${user.mode}" /></td>	
-				       <td><c:out value="${fn:substring(user.confidence, 0,5)}" /></td>
-				       </c:when>
-				       <c:otherwise>
-				       <td><c:out value="${user.updatedBy}" /></td>	
-				       </c:otherwise>	
-				       </c:choose>	       
-					   <td>
-					   	<fmt:formatDate type="both" timeStyle="short"
-										value="${user.updatedAt}" />
-					   </td>
-				       </tr>
+		<!-- TODO: ausgliedern -->
+		<c:when test="${command.selTab == 1}">
+			<c:set var="Unflag" value="false" />
+			<c:set var="Uncertain" value="false" />
+			<c:set var="Flag" value="false" />
+		</c:when>
+		<c:otherwise>
+			<c:choose>
+				<c:when test="${command.selTab == 2 or command.selTab == 4}">
+					<c:choose>
+						<c:when test="${spamUser.spammer == true}">
+							<c:set var="Unflag" value="true" />
+							<c:set var="Uncertain" value="true" />
+							<c:set var="Flag" value="false" />
+						</c:when>
+						<c:otherwise>
+							<c:set var="Unflag" value="false" />
+							<c:set var="Uncertain" value="true" />
+							<c:set var="Flag" value="true" />
+						</c:otherwise>
+					</c:choose>
+				</c:when>
+				<c:otherwise>
+					<c:choose>
+						<c:when test="${command.selTab == 3}">
+							<c:set var="Unflag" value="true" />
+							<c:set var="Uncertain" value="false" />
+							<c:set var="Flag" value="true" />
+						</c:when>
+						<c:otherwise>
+							<c:choose>
+								<c:when test="${command.selTab == 9}">
+									<c:set var="Unflag" value="false" />
+									<c:set var="Uncertain" value="false" />
+									<c:set var="Flag" value="false" />
+								</c:when>
+								<c:otherwise>
+									<c:set var="Unflag" value="true" />
+									<c:set var="Uncertain" value="true" />
+									<c:set var="Flag" value="true" />
+									<c:set var="userIndex" value="${status.index+1}" />
+									<c:set var="nextUser"
+																	value="${command.content[userIndex].name}" />
+									<c:set var="do_flag_action"
+																	value="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${nextUser}',document.getElementById('latest_posts_${status.index}'));" />
+								</c:otherwise>
+							</c:choose>
+						</c:otherwise>
+					</c:choose>
+				</c:otherwise>
+			</c:choose>
+		</c:otherwise>
+	</c:choose>
+				
+					  <tags:userInfo spamUser="${user}" rowNumber="${status.count}"
+									moveFromTabSpammer="${Flag}" moveFromTabNSpammer="${Unflag}"
+									moveFromTabUncertain="${Uncertain}" selTab="${selTabEvaluation}" />
+					
 				    </c:forEach>
 				</table>
 				</c:when>
@@ -348,14 +344,16 @@
 					
 				<tr>
 					<td>Spammers</td>
-					<c:forEach items="${statisticsCommand.numAdminSpammer}" var="counts">
-					<td><c:out value="${counts.value}"/></td>
+					<c:forEach items="${statisticsCommand.numAdminSpammer}"
+						var="counts">
+					<td><c:out value="${counts.value}" /></td>
 					</c:forEach>			
 				</tr>
 				<tr>
 					<td>No Spammers</td>
-					<c:forEach items="${statisticsCommand.numAdminNoSpammer}" var="counts">
-					<td><c:out value="${counts.value}"/></td>
+					<c:forEach items="${statisticsCommand.numAdminNoSpammer}"
+						var="counts">
+					<td><c:out value="${counts.value}" /></td>
 					</c:forEach>	
 				</tr>
 				<tr>
@@ -367,26 +365,31 @@
 				
 				<tr>
 					<td>Spammers</td>
-					<c:forEach items="${statisticsCommand.numClassifierSpammer}" var="counts">
-					<td><c:out value="${counts.value}"/></td>
+					<c:forEach items="${statisticsCommand.numClassifierSpammer}"
+						var="counts">
+					<td><c:out value="${counts.value}" /></td>
 					</c:forEach>	
 				</tr>
 				<tr>
 					<td>Spammers unsure</td>
-					<c:forEach items="${statisticsCommand.numClassifierSpammerUnsure}" var="counts">
-					<td><c:out value="${counts.value}"/></td>
+					<c:forEach items="${statisticsCommand.numClassifierSpammerUnsure}"
+						var="counts">
+					<td><c:out value="${counts.value}" /></td>
 					</c:forEach>
 				</tr>
 				<tr>
 					<td>No Spammers unsure</td>
-					<c:forEach items="${statisticsCommand.numClassifierNoSpammerUnsure}" var="counts">
-					<td><c:out value="${counts.value}"/></td>
+					<c:forEach
+						items="${statisticsCommand.numClassifierNoSpammerUnsure}"
+						var="counts">
+					<td><c:out value="${counts.value}" /></td>
 					</c:forEach>
 				</tr>
 				<tr>
 					<td>No Spammers</td>
-					<c:forEach items="${statisticsCommand.numClassifierNoSpammer}" var="counts">
-					<td><c:out value="${counts.value}"/></td>
+					<c:forEach items="${statisticsCommand.numClassifierNoSpammer}"
+						var="counts">
+					<td><c:out value="${counts.value}" /></td>
 					</c:forEach>
 				</tr>	
 			</table>
@@ -403,7 +406,8 @@
 					document.getElementById(testing).selected = true;
 				}
 				preselect();
-			</script>											
+			</script>	
+												
 		</jsp:attribute>
 	</layout:tabLayout>
 </jsp:root>

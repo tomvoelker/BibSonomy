@@ -13,11 +13,12 @@
 	<a href="admin_statistics.jsp?showSpammer=no">statistics</a><c:out value=" "/>
 	
 	<a href="/admin_spammertags.jsp">spammertags</a><c:out value=" "/>
+	
 
 	<c:url var="adminUrl" value="/admin" context="${projectContext}"/>	
 	<a href="${adminUrl}">admin</a> <c:out value=" "/>
 	
-	<a style="border: 1px solid #aaa; padding:2px; background: #eee;" title="killSpammer" href="javascript:location.href='${projectHome}admin.jsp?action=flag_spammer&amp;user='+encodeURIComponent(location.href.replace(/.*\//, ''))" inclick="return false;">SpammerKillerButton</a>
+	<a style="border: 1px solid #aaa; padding:2px; background: #eee;" title="killSpammer" href="javascript:location.href='${adminUrl}?action=flag_spammer&amp;aclUserInfo='+encodeURIComponent(location.href.replace(/.*\//, ''))" onclick="return false;">SpammerKillerButton</a>
 	
 	</p>
 </jsp:root>
