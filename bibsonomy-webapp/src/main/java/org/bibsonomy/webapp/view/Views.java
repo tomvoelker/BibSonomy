@@ -281,6 +281,11 @@ public enum Views implements View {
 	UPLOAD_FILE("actions/uploadFile"), 
 	
 	/**
+	 * view for streaming the desired document to the outputResponse
+	 */
+	DOWNLOAD_FILE("downloadFile"),
+	
+	/**
 	 * Show the page for administrating groups
 	 */
 	ADMINISTRATE_GROUP("actions/admin/group"),
