@@ -27,6 +27,8 @@
 	<bean id="layout" class="org.bibsonomy.webapp.view.LayoutView">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 	</bean>
+	
+	<bean id="downloadFile" class="org.bibsonomy.webapp.view.DownloadView"/>
 
 <!-- 
 
