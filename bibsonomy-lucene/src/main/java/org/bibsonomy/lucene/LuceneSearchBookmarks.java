@@ -367,7 +367,7 @@ public class LuceneSearchBookmarks {
 					
 					postBookmark.setContentId(Integer.parseInt(doc.get(lField_contentid)));
 					bookmark.setCount(this.searcher.docFreq(new Term("intrahash", doc.get("intrahash"))));
-					LOGGER.debug("LuceneBookmark:  ContentID (intrahash) = bookmark.getCount:  " + postBookmark.getContentId() + " ("+ doc.get("intrahash") +") = " + bookmark.getCount());
+//					LOGGER.debug("LuceneBookmark:  ContentID (intrahash) = bookmark.getCount:  " + postBookmark.getContentId() + " ("+ doc.get("intrahash") +") = " + bookmark.getCount());
 
 					
 					postBookmark.setDate(date);
@@ -380,7 +380,7 @@ public class LuceneSearchBookmarks {
 //					LOGGER.debug("LuceneBookmark:  postBookmark.getContentId:  " + postBookmark.getContentId());
 //					LOGGER.debug("LuceneBookmark:  postBookmark.getDate:  " + postBookmark.getDate());
 //					LOGGER.debug("LuceneBookmark:  postBookmark.getDescription:  " + postBookmark.getDescription());
-					LOGGER.debug("LuceneBookmark:  postBookmark.getGroups:  " + postBookmark.getContentId() + ": " + postBookmark.getGroups());
+//					LOGGER.debug("LuceneBookmark:  postBookmark.getGroups:  " + postBookmark.getContentId() + ": " + postBookmark.getGroups());
 //					LOGGER.debug("LuceneBookmark:  postBookmark.getResource:  " + postBookmark.getResource());
 //					LOGGER.debug("LuceneBookmark:  postBookmark.getTags:    " + postBookmark.getContentId() + ": " + postBookmark.getTags());
 //					LOGGER.debug("LuceneBookmark:  postBookmark.getUser:  " + postBookmark.getUser());
@@ -389,6 +389,9 @@ public class LuceneSearchBookmarks {
 					postBookmarkList.add(postBookmark);
 					
 				}	 
+
+				endtimeQuery = System.currentTimeMillis();
+				LOGGER.debug("LuceneBookmark complete time: " + (endtimeQuery-starttimeQuery) + "ms");
 
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block

@@ -450,7 +450,7 @@ public class LuceneSearchBibTex {
 					
 					postBibTex.setContentId(Integer.parseInt(doc.get(lField_contentid)));
 					bibTex.setCount(this.searcher.docFreq(new Term("intrahash", doc.get("intrahash"))));
-					LOGGER.debug("LuceneBibTex:  ContentID (intrahash) = bibTex.getCount:  " + postBibTex.getContentId() + " ("+ doc.get("intrahash") +") = " + bibTex.getCount());
+//					LOGGER.debug("LuceneBibTex:  ContentID (intrahash) = bibTex.getCount:  " + postBibTex.getContentId() + " ("+ doc.get("intrahash") +") = " + bibTex.getCount());
 					
 					postBibTex.setDate(date);
 					postBibTex.setDescription(doc.get(lField_ext));
@@ -464,7 +464,7 @@ public class LuceneSearchBibTex {
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getContentId:  " + postBibTex.getContentId());
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getDate:  " + postBibTex.getDate());
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getDescription:  " + postBibTex.getDescription());
-					LOGGER.debug("LuceneBibTex:  postBibTex.getGroups:  " + postBibTex.getContentId() + ": " + postBibTex.getGroups());
+//					LOGGER.debug("LuceneBibTex:  postBibTex.getGroups:  " + postBibTex.getContentId() + ": " + postBibTex.getGroups());
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getResource().getIntraHash():  " + postBibTex.getContentId() + ": " + postBibTex.getResource().getIntraHash()  );
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getResource:  " + postBibTex.getResource());
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getTags:    " + postBibTex.getContentId() + ": " + postBibTex.getTags());
@@ -475,6 +475,9 @@ public class LuceneSearchBibTex {
 
 					
 				}	 
+
+				endtimeQuery = System.currentTimeMillis();
+				LOGGER.debug("LuceneBibtex complete time: " + (endtimeQuery-starttimeQuery) + "ms");
 
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
