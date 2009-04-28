@@ -11,6 +11,7 @@ import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.webapp.command.AdminAjaxCommand;
 import org.bibsonomy.webapp.command.AdminStatisticsCommand;
 import org.bibsonomy.webapp.command.AdminViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -21,44 +22,54 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for admin page
  * 
  * @author Stefan Stützer
- * @version $Id$
+ * @version $Id: AdminPageController.java,v 1.14 2009-04-27 18:22:16 beatekr Exp
+ *          $
  */
 public class AdminPageController implements MinimalisticController<AdminViewCommand> {
 
 	private static final Log log = LogFactory.getLog(AdminPageController.class);
-	
+
 	private LogicInterface logic;
-	
+
 	private UserSettings userSettings;
-	
+
 	public AdminPageController() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public View workOn(AdminViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
-		
-		final User loginUser = command.getContext().getLoginUser();		
+
+		final User loginUser = command.getContext().getLoginUser();
 		if (loginUser.getRole().equals(Role.DEFAULT)) {
 			/** TODO: redirect to login page as soon as it is available */
-		}		
-		
+		}
+
 		command.setPageTitle("admin");
 		this.setUsers(command);
 		this.setStatistics(command);
-		
-		for (ClassifierSettings s: ClassifierSettings.values()) {
+
+		for (ClassifierSettings s : ClassifierSettings.values()) {
 			command.setClassifierSetting(s, this.logic.getClassifierSettings(s));
 		}
-		
+
 		/*
-		 * add user details for a specific user requested
+		 * handle specific user
 		 */
 		if (command.getAclUserInfo() != null) {
+			if ("flag_spammer".equals(command.getAction())) {
+				User user = new User(command.getAclUserInfo());
+				user.setToClassify(0);
+				user.setAlgorithm("admin");
+				user.setSpammer(true);
+				this.logic.updateUser(user);
+			}
+
 			command.setUser(logic.getUserDetails(command.getAclUserInfo()));
+
 		}
-	
-		return Views.ADMINPAGE;				
+
+		return Views.ADMINPAGE;
 	}
 
 	public AdminViewCommand instantiateCommand() {
@@ -71,12 +82,12 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 
 	public void setUserSettings(UserSettings userSettings) {
 		this.userSettings = userSettings;
-	}	
-	
+	}
+
 	public void setStatistics(AdminViewCommand cmd) {
 		AdminStatisticsCommand command = cmd.getStatisticsCommand();
-		
-		for (int interval: cmd.getInterval()){
+
+		for (int interval : cmd.getInterval()) {
 			command.setNumAdminSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.SPAMMER, interval));
 			command.setNumAdminNoSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.NO_SPAMMER, interval));
 			command.setNumClassifierSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER, interval));
@@ -85,21 +96,21 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 			command.setNumClassifierNoSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER, interval));
 		}
 	}
-	
+
 	public void setUsers(AdminViewCommand cmd) {
 		Classifier classifier = null;
-		SpamStatus status 	  = null;
-		
+		SpamStatus status = null;
+
 		if (cmd.getSelTab() == AdminViewCommand.CLASSIFIER_EVALUATE) {
-			
-			//TODO: Interval checken
+
+			// TODO: Interval checken
 			List<User> u = this.logic.getClassifierComparison(cmd.getInterval()[0]);
 			cmd.setContent(u);
 			return;
-		} 
-			
+		}
+
 		/* set content in dependence of the selected tab */
-		switch(cmd.getSelTab()) {
+		switch (cmd.getSelTab()) {
 		case AdminViewCommand.MOST_RECENT:
 			classifier = Classifier.BOTH;
 			break;
@@ -131,7 +142,7 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 			classifier = Classifier.CLASSIFIER;
 			status = SpamStatus.NO_SPAMMER_NOT_SURE;
 			break;
-		}	
-		cmd.setContent(this.logic.getClassifiedUsers(classifier, status, cmd.getLimit()));		
-	}	
+		}
+		cmd.setContent(this.logic.getClassifiedUsers(classifier, status, cmd.getLimit()));
+	}
 }

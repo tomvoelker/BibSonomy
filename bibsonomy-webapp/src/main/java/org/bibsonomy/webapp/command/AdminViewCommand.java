@@ -43,6 +43,9 @@ public class AdminViewCommand extends TabsCommand<User> {
 	/** information about a specific user */
 	private String aclUserInfo; 
 	
+	/** specific action for admin page */
+	private String action; 
+
 	/** specific user to show */
 	private User user;
 
@@ -113,5 +116,13 @@ public class AdminViewCommand extends TabsCommand<User> {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public String getAction() {
+		return this.action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
 	}
 }
