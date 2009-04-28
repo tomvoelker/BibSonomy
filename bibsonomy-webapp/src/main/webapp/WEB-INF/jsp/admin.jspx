@@ -185,7 +185,8 @@
 				
 					  <tags:userInfo spamUser="${user}" rowNumber="${status.count}"
 									moveFromTabSpammer="${Flag}" moveFromTabNSpammer="${Unflag}"
-									moveFromTabUncertain="${Uncertain}" selTab="${selTabEvaluation}" />
+									moveFromTabUncertain="${Uncertain}"
+									selTab="${selTabEvaluation}" />
 					
 				    </c:forEach>
 				</table>
@@ -257,72 +258,73 @@
 			<parts:logbox initialValue="no log messages" />
 			<br />
 			
-			<span class="sidebar_h"><fmt:message key="navi.settings" /></span>			
+			<span class="sidebar_h"><fmt:message key="navi.settings" /></span>
+			<form:form>			
 			<table class="stattable">
 				<tr>
 					<td>mode:</td>
 					<td>
-						<select name="mode" id="mode" size="1">
-							<option id="D" value="D">Day</option>
-							<option id="N" value="N">Night</option>						
-						</select>						
+						<form:select path="settingsCommand.modeOptions" id="mode" size="1"
+							multiple="false">
+						<c:forEach var="entry" items="${settingsCommand.modeOptions}">
+							<form:option id="${entry.value}" value="${entry.value}"
+									label="${entry.key}" />
+						</c:forEach>					
+						</form:select>				
 					</td>
 					<td><input type="button" value="los"
-						onclick="javascript:updateSettings('mode', document.getElementById('mode').value)" /></td>
+							onclick="javascript:updateSettings('mode', document.getElementById('mode').value)" /></td>
 				</tr>
 				<tr>
+				
+					<!-- options which algorithm to select -->
 					<td>algorithm:</td>
 					<td>
-						<select name="algorithm" id="algorithm" size="1">
-							<option id="weka.classifiers.lazy.IBk"
-							value="weka.classifiers.lazy.IBk">IBk</option>
-							<option id="weka.classifiers.bayes.NaiveBayes"
-							value="weka.classifiers.bayes.NaiveBayes">Bayes</option>
-							<option id="weka.classifiers.trees.J48"
-							value="weka.classifiers.trees.J48">J48</option>
-							<option id="weka.classifiers.rules.OneR"
-							value="weka.classifiers.rules.OneR">OneR</option>
-							<option id="weka.classifiers.functions.Logistic"
-							value="weka.classifiers.functions.Logistic">Log Reg</option>
-							<option id="weka.classifiers.functions.LibSVM"
-							value="weka.classifiers.functions.LibSVM">LibSVM</option>
-							<option id="weka.classifiers.functions.SMO"
-							value="weka.classifiers.functions.SMO">SVM (SMO)</option>
-						</select>
+					
+						<form:select path="settingsCommand.algorithmOptions"
+							id="algorithm" size="1" multiple="false">
+							<c:forEach var="entry"
+								items="${settingsCommand.algorithmOptions}">
+								 <form:option value="${entry.value}" label="${entry.key}" />
+							</c:forEach>
+						</form:select>
+				
 					</td>
 					<td><input type="button" value="los"
-						onclick="javascript:updateSettings('algorithm', document.getElementById('algorithm').value)" /></td>
+							onclick="javascript:updateSettings('algorithm', document.getElementById('algorithm').value)" /></td>
 				</tr>
 				<tr>
 					<td>training period:</td>
-					<td><input type="text" id="training_period" size="7"
-						value="${settingsCommand.trainingPeriod}" /> sec</td>
+					<td><form:input path="settingsCommand.trainingPeriod" id="training_period" size="7"/> sec</td>
 					<td><input type="button" value="los"
-						onclick="javascript:updateSettings('training_period', document.getElementById('training_period').value)" /></td>
+							onclick="javascript:updateSettings('training_period', document.getElementById('training_period').value)" /></td>
 				</tr>
 				<tr>
 					<td>classify period:</td>
-					<td><input type="text" id="classify_period" size="7"
-						value="${settingsCommand.classifyPeriod}" /> sec</td>
+					<td><form:input path="settingsCommand.classifyPeriod" id="classify_period" size="7"/> sec</td>
 					<td><input type="button" value="los"
-						onclick="javascript:updateSettings('classify_period', document.getElementById('classify_period').value)" /></td>
+							onclick="javascript:updateSettings('classify_period', document.getElementById('classify_period').value)" /></td>
 				</tr>
 				<tr>
 					<td>probability limit:</td>
-					<td><input type="text" id="probability_limit" size="7"
-						value="${settingsCommand.probabilityLimit}" /></td>
+					<td><form:input path="settingsCommand.probabilityLimit" id="probability_limit" size="7"/></td>
 					<td><input type="button" value="los"
-						onclick="javascript:updateSettings('probability_limit', document.getElementById('probability_limit').value)" /></td>
+							onclick="javascript:updateSettings('probability_limit', document.getElementById('probability_limit').value)" /></td>
 				</tr>
 				<tr>
 					<td>testing mode:</td>
 					<td>
-						<select name="testing" id="testing" size="1">
-							<option id="on" value="on">On</option>
-							<option id="off" value="off">Off</option>
-						</select></td>
+					
+						<form:select path="settingsCommand.testingOptions" id="testing"
+							size="1" multiple="false">
+							<c:forEach var="entry" items="${settingsCommand.testingOptions}">
+							 	<form:option id="${entry.value}" value="${entry.value}"
+									label="${entry.key}" />
+							</c:forEach>
+						</form:select>
+					</td>
 					<td><input type="button" value="los"
-						onclick="javascript:updateSettings('testing', document.getElementById('testing').value)" /></td>
+							onclick="javascript:updateSettings('testing', document.getElementById('testing').value)" /></td>
 				</tr>
 			</table>
 			<br />
@@ -345,14 +347,14 @@
 				<tr>
 					<td>Spammers</td>
 					<c:forEach items="${statisticsCommand.numAdminSpammer}"
-						var="counts">
+							var="counts">
 					<td><c:out value="${counts.value}" /></td>
 					</c:forEach>			
 				</tr>
 				<tr>
 					<td>No Spammers</td>
 					<c:forEach items="${statisticsCommand.numAdminNoSpammer}"
-						var="counts">
+							var="counts">
 					<td><c:out value="${counts.value}" /></td>
 					</c:forEach>	
 				</tr>
@@ -366,33 +368,34 @@
 				<tr>
 					<td>Spammers</td>
 					<c:forEach items="${statisticsCommand.numClassifierSpammer}"
-						var="counts">
+							var="counts">
 					<td><c:out value="${counts.value}" /></td>
 					</c:forEach>	
 				</tr>
 				<tr>
 					<td>Spammers unsure</td>
 					<c:forEach items="${statisticsCommand.numClassifierSpammerUnsure}"
-						var="counts">
+							var="counts">
 					<td><c:out value="${counts.value}" /></td>
 					</c:forEach>
 				</tr>
 				<tr>
 					<td>No Spammers unsure</td>
 					<c:forEach
-						items="${statisticsCommand.numClassifierNoSpammerUnsure}"
-						var="counts">
+							items="${statisticsCommand.numClassifierNoSpammerUnsure}"
+							var="counts">
 					<td><c:out value="${counts.value}" /></td>
 					</c:forEach>
 				</tr>
 				<tr>
 					<td>No Spammers</td>
 					<c:forEach items="${statisticsCommand.numClassifierNoSpammer}"
-						var="counts">
+							var="counts">
 					<td><c:out value="${counts.value}" /></td>
 					</c:forEach>
 				</tr>	
 			</table>
+			</form:form>	
 			
 			<script type="text/javascript">
 				/** hack for preselect options in combobox */
