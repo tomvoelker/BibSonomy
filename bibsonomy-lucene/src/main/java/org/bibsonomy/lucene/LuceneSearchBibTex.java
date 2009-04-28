@@ -18,6 +18,7 @@ import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Hits;
@@ -26,10 +27,10 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.store.RAMDirectory;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-
 
 public class LuceneSearchBibTex {
 
@@ -448,19 +449,23 @@ public class LuceneSearchBibTex {
 					}
 					
 					postBibTex.setContentId(Integer.parseInt(doc.get(lField_contentid)));
+					bibTex.setCount(this.searcher.docFreq(new Term("intrahash", doc.get("intrahash"))));
+					LOGGER.debug("LuceneBibTex:  ContentID (intrahash) = bibTex.getCount:  " + postBibTex.getContentId() + " ("+ doc.get("intrahash") +") = " + bibTex.getCount());
+					
 					postBibTex.setDate(date);
 					postBibTex.setDescription(doc.get(lField_ext));
 					postBibTex.setResource(bibTex);
 					postBibTex.setUser(new User(doc.get(lField_user)));
 
 					
-					LOGGER.debug("LuceneBibTex:  doc.get("+lField_user+"): " + doc.get(lField_user));
+//					LOGGER.debug("LuceneBibTex:  doc.get("+lField_user+"): " + doc.get(lField_user));
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getUser().getName():  " + postBibTex.getUser().getName());
 
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getContentId:  " + postBibTex.getContentId());
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getDate:  " + postBibTex.getDate());
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getDescription:  " + postBibTex.getDescription());
 					LOGGER.debug("LuceneBibTex:  postBibTex.getGroups:  " + postBibTex.getContentId() + ": " + postBibTex.getGroups());
+//					LOGGER.debug("LuceneBibTex:  postBibTex.getResource().getIntraHash():  " + postBibTex.getContentId() + ": " + postBibTex.getResource().getIntraHash()  );
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getResource:  " + postBibTex.getResource());
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getTags:    " + postBibTex.getContentId() + ": " + postBibTex.getTags());
 //					LOGGER.debug("LuceneBibTex:  postBibTex.getUser:  " + postBibTex.getUser());

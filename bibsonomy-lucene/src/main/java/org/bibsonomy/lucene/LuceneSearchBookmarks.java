@@ -17,6 +17,7 @@ import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Hits;
@@ -358,12 +359,23 @@ public class LuceneSearchBookmarks {
 					for (String tag: doc.get(lField_tas).split(" ")) {
 						postBookmark.addTag(tag);
 					}
+
+
+					postBookmark.setContentId(Integer.parseInt(doc.get(lField_contentid)));
+					bookmark.setIntraHash(doc.get("intrahash"));
+					bookmark.setInterHash(doc.get("intrahash")); // same as intrahash 
 					
 					postBookmark.setContentId(Integer.parseInt(doc.get(lField_contentid)));
+					bookmark.setCount(this.searcher.docFreq(new Term("intrahash", doc.get("intrahash"))));
+					LOGGER.debug("LuceneBookmark:  ContentID (intrahash) = bookmark.getCount:  " + postBookmark.getContentId() + " ("+ doc.get("intrahash") +") = " + bookmark.getCount());
+
+					
 					postBookmark.setDate(date);
 					postBookmark.setDescription(doc.get(lField_ext));
 					postBookmark.setResource(bookmark);
 					postBookmark.setUser(new User(doc.get(lField_user)));
+					
+					
 					
 //					LOGGER.debug("LuceneBookmark:  postBookmark.getContentId:  " + postBookmark.getContentId());
 //					LOGGER.debug("LuceneBookmark:  postBookmark.getDate:  " + postBookmark.getDate());
