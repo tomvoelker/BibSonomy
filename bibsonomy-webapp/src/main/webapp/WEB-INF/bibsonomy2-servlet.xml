@@ -156,6 +156,7 @@
 								<value>interval</value>
 								<value>limit</value>
 								<value>aclUserInfo</value>
+								<value>action</value>
 							</list>
 						</property>
 					</bean>
