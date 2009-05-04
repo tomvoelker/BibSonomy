@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.command;
 
+import java.util.LinkedList;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ClassifierSettings;
@@ -48,6 +50,11 @@ public class AdminViewCommand extends TabsCommand<User> {
 
 	/** specific user to show */
 	private User user;
+	
+	/** specific user information */
+	private LinkedList<String> infos;
+
+	
 
 	public AdminViewCommand() {				
 		addTab(MOST_RECENT, "New registrations");
@@ -62,6 +69,9 @@ public class AdminViewCommand extends TabsCommand<User> {
 		
 		// change default tab to classifier tab
 		selTab = 6;
+		
+		// initialise info list
+		infos = new LinkedList<String>();
 	}	
 	
 		
@@ -125,4 +135,13 @@ public class AdminViewCommand extends TabsCommand<User> {
 	public void setAction(String action) {
 		this.action = action;
 	}
+	
+	public LinkedList<String> getInfos() {
+		return this.infos;
+	}
+
+	public void addInfo(String info) {
+		this.infos.add(info);
+	}
+
 }

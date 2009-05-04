@@ -58,11 +58,15 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 		 */
 		if (command.getAclUserInfo() != null) {
 			if ("flag_spammer".equals(command.getAction())) {
-				User user = new User(command.getAclUserInfo());
-				user.setToClassify(0);
-				user.setAlgorithm("admin");
-				user.setSpammer(true);
-				this.logic.updateUser(user);
+				if (!logic.getUserDetails(command.getAclUserInfo()).getSpammer()){
+					User user = new User(command.getAclUserInfo());
+					user.setToClassify(0);
+					user.setAlgorithm("admin");
+					user.setSpammer(true);
+					this.logic.updateUser(user);
+				}else{
+					command.addInfo("The user was already flagged as a spammer.");
+				}
 			}
 
 			command.setUser(logic.getUserDetails(command.getAclUserInfo()));
