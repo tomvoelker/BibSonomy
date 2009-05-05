@@ -1,0 +1,93 @@
+/**
+ *  
+ *  BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
+ *   
+ *  Copyright (C) 2006 - 2008 Knowledge & Data Engineering Group, 
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *  
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ * 
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+package org.bibsonomy.common.enums;
+
+/**
+ * Defines types of relationships / measures of relatedness between users.
+ * 
+ * The mapping of user relations to IDs has to be in sync with the content of
+ * the table useruser_similarity_measures.
+ * 
+ * @author Dominik Benz
+ * @version $Id$
+ */
+public enum UserRelation {
+	/** users related based on computation of jaccard similarity */
+	JACCARD(0),
+	/** users related based on computation of cosine similarity */
+	COSINE(1),
+	/** users related based on computation of jaccard similarity */
+	TFIDF(2),
+	/** users related based on folkrank computation */
+	FOLKRANK(3),	
+	/** source user is friend of target user (i.e. u1 -> u2) */
+	FRIEND_OF(4),
+	/** target user is friend of source user (i.e, u1 <- u2) */
+	OF_FRIEND(5),
+	/** source user is curious about the target user */
+	CURIOUS_ABOUT(6);
+	
+	/**
+	 * the relation ID. Mainly used in the table useruser_similarity.
+	 */
+	final int relationId;
+	
+	/**
+	 * Constructor 
+	 * 
+	 * @param relationId
+	 */
+	private UserRelation(final int relationId) {
+		this.relationId = relationId;
+	}
+	
+	/**
+	 * Get the ID of this user relation.
+	 * 
+	 * @return - the ID (integer) of this relation
+	 */
+	public int getId() {
+		return this.relationId;
+	}
+	
+	/**
+	 * get user relation by its integer ID
+	 * 
+	 * @param id - the id of the relation
+	 * @return the corresponding user relation
+	 */
+	public static UserRelation getUserRelationById(int id) {
+		switch (id) {
+			case 0: return UserRelation.JACCARD; 
+			case 1: return UserRelation.COSINE; 			
+			case 2: return UserRelation.TFIDF; 
+			case 3: return UserRelation.FOLKRANK; 
+			case 4: return UserRelation.FRIEND_OF; 
+			case 5: return UserRelation.OF_FRIEND; 
+			case 6: return UserRelation.CURIOUS_ABOUT; 
+			default: return UserRelation.FOLKRANK; 
+		}		
+	}
+	
+}
