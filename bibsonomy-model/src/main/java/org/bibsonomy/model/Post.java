@@ -77,6 +77,12 @@ public class Post<T extends Resource> {
 	 * the post with another text.
 	 */
 	private String description;
+	
+	
+	/**
+	 * a ranking (used to sort a list of posts)
+	 */
+	private double ranking = 0.0;
 
 	/**
 	 * @return contentId
@@ -214,5 +220,24 @@ public class Post<T extends Resource> {
 	@Override
 	public String toString() {
 		return "\n" + (user == null ? "" : user.getName()) + "\n\ttagged\n\t\t" + resource + "\n\twith\n" + tags;
+	}
+
+	/**
+	 * Set a ranking value
+	 * 
+	 * @param ranking
+	 * 			the ranking to set
+	 */
+	public void setRanking(double ranking) {
+		this.ranking = ranking;
+	}
+
+	/**
+	 * Retrieve the ranking of this post
+	 * 
+	 * @return a double representing the ranking of this post
+	 */
+	public double getRanking() {
+		return ranking;
 	}
 }
