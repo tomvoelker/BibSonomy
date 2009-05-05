@@ -1,0 +1,52 @@
+package org.bibsonomy.database.managers.chain.user;
+
+import org.bibsonomy.database.managers.chain.ChainElement;
+import org.bibsonomy.database.managers.chain.FirstChainElement;
+import org.bibsonomy.database.managers.chain.user.get.GetAllUsers;
+import org.bibsonomy.database.managers.chain.user.get.GetFriendsOfUser;
+import org.bibsonomy.database.managers.chain.user.get.GetRelatedUsersByTags;
+import org.bibsonomy.database.managers.chain.user.get.GetRelatedUsersByUser;
+import org.bibsonomy.database.managers.chain.user.get.GetUserFriends;
+import org.bibsonomy.database.managers.chain.user.get.GetUsersByGroup;
+import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.model.User;
+
+/**
+ * Chain for user queries
+ * 
+ * @author Dominik Benz
+ * @version $Id$
+ */
+public class UserChain implements FirstChainElement<User, UserParam> {
+
+	private final ChainElement<User, UserParam> getAllUsers;
+	private final ChainElement<User, UserParam> getFriendsOfUser;
+	private final ChainElement<User, UserParam> getRelatedUsersByTags;
+	private final ChainElement<User, UserParam> getRelatedUsersByUser;
+	private final ChainElement<User, UserParam> getUserFriends;
+	private final ChainElement<User, UserParam> getUsersByGroup;
+
+	/**
+	 * Constructs the chain
+	 */
+	public UserChain() {
+		// intialize chain elements
+		this.getAllUsers 				= new GetAllUsers();
+		this.getFriendsOfUser			= new GetFriendsOfUser();
+		this.getRelatedUsersByTags 		= new GetRelatedUsersByTags();
+		this.getRelatedUsersByUser 		= new GetRelatedUsersByUser();
+		this.getUserFriends				= new GetUserFriends();
+		this.getUsersByGroup			= new GetUsersByGroup();
+	
+		// set order of chain elements
+		this.getUsersByGroup.setNext(this.getRelatedUsersByUser);
+		this.getRelatedUsersByUser.setNext(this.getRelatedUsersByTags);
+		this.getRelatedUsersByTags.setNext(this.getFriendsOfUser);
+		this.getFriendsOfUser.setNext(this.getUserFriends);
+		this.getUserFriends.setNext(this.getAllUsers);
+	}
+
+	public ChainElement<User, UserParam> getFirstElement() {
+		return this.getUsersByGroup;
+	}
+}
