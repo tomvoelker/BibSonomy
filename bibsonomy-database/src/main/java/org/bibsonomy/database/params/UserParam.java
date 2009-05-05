@@ -1,5 +1,6 @@
 package org.bibsonomy.database.params;
 
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 
 /**
@@ -11,7 +12,15 @@ import org.bibsonomy.model.User;
  */
 public class UserParam extends GenericParam {
 
+	/**
+	 * a user
+	 */
 	private User user;
+	
+	/**
+	 * a user relation
+	 */
+	private UserRelation userRelation;
 
 	/**
 	 * @return user
@@ -25,5 +34,23 @@ public class UserParam extends GenericParam {
 	 */
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	/**
+	 * set user relation
+	 * 
+	 * @param userRelation
+	 */
+	public void setUserRelation(UserRelation userRelation) {
+		this.userRelation = userRelation;
+	}
+
+	/**
+	 * get user relation
+	 * 
+	 * @return the user relation
+	 */
+	public UserRelation getUserRelation() {
+		return userRelation;
 	}
 }
