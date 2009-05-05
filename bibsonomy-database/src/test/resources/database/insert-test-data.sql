@@ -312,7 +312,7 @@ INSERT INTO `log_prediction` VALUES
 -- 
 
 INSERT INTO `search_bibtex` (`content_id`, `content`, `author`, `group`, `date`, `user_name`) VALUES
-(10, 'test bibtext search string', 'author', 0, '1815-12-10 00:00:00', 'testuser1');
+(10, 'test bibtext search string', 'test author', 0, '1815-12-10 00:00:00', 'testuser1');
 
 -- 
 -- Data for table `search_bookmark`
@@ -468,6 +468,17 @@ INSERT INTO `user` (`user_name`,`user_email`,`user_password`,`user_homepage`,`us
 ('testuser1',   'testuser1@bibsonomy.org',   'test123', 'http://www.bibsonomy.org/user/testuser1',   'Test User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1),
 ('testuser2',   'testuser2@bibsonomy.org',   'test123', 'http://www.bibsonomy.org/user/testuser2',   'Test User 2',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-interests', 'test-hobbies', 'test-place', 1,           '22222222222222222222222222222222', 'rja',     '1815-12-10 00:00:00', 1,  'en', 0, 1),
 ('testuser3',   'testuser3@bibsonomy.org',   'test123', 'http://www.bibsonomy.org/user/testuser3',   'Test User 3',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:01:01', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-interests', 'test-hobbies', 'test-place', 1,           '33333333333333333333333333333333', 'rja',     '1815-12-10 00:00:00', 1,  'en', 1, 0);
+
+
+
+--
+-- Data for table `useruser_similarity`
+-- 
+INSERT INTO `useruser_similarity` (`u1`, `u2`, `sim`, `measure_id`) VALUES
+('testuser1', 'testuser2', 0.5, 0),
+('testuser1', 'testuser3', 0.2, 0),
+('testuser2', 'testuser1', 0.5, 0),
+('testuser3', 'testuser1', 1, 0);
 
 --
 -- Data for table `openIDUser`
