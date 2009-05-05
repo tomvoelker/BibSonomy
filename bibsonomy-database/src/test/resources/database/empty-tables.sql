@@ -78,6 +78,9 @@ DELETE FROM `temp_bibtex`;
 DELETE FROM `temp_bookmark`;
 DELETE FROM `urls`;
 DELETE FROM `user`;
+DELETE FROM `useruser_similarity`;
+DELETE FROM `useruser_similarity2`;
+DELETE FROM `useruser_similarity_measures`;
 DELETE FROM `weights`;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
