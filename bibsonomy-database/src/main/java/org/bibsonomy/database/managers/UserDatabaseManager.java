@@ -7,8 +7,11 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.managers.chain.user.UserChain;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
@@ -32,6 +35,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private final static UserDatabaseManager singleton = new UserDatabaseManager();
 	private final BasketDatabaseManager basketDb;
 	private final DatabasePluginRegistry plugins;
+	private static final UserChain chain = new UserChain();
 
 	private UserDatabaseManager() {
 		this.basketDb = BasketDatabaseManager.getInstance();
@@ -405,14 +409,22 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		// fallback: user is not logged in
 		return notLoggedInUser;
 	}
-		
+			
 	/**
-	 * @param param
+	 * Retrieve a list of related users by folkrank for a given list of tags
+	 * 
+	 * @param tagIndex - the list of tags (as tag index)
+	 * @param limit
+	 * @param offset
 	 * @param session
-	 * @return list of users
+	 * @return a list of users, related by folkrank for a given list of tags
 	 */
-	public List<User> getUserByFolkrank(final UserParam param, final DBSession session){
-		return this.queryForList("getUsersOrderedByFolkrank", param, User.class, session);
+	public List<User> getRelatedUsersByFolkrankAndTags(final  List<TagIndex> tagIndex, final int limit, final int offset, final DBSession session) {
+		UserParam param = new UserParam();
+		param.setTagIndex(tagIndex);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		return this.queryForList("getRelatedUsersByFolkrankAndTags", param, User.class, session);
 	}
 
 	/**
@@ -448,19 +460,52 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getFriendsOfUser", authUser, User.class, session);
 	}
 	
+
 	/**
-	 * @param username
-	 * @param authUser
-	 * @param numUsers
+	 * Returns a list of users which are related to a given user by folkrank.
+	 * 
+	 * @param requestedUsername - the given user  
+	 * @param limit
+	 * @param offset
+	 * @param session - the DB session
+	 * @return a list of users, related by folkrank to the given user. 
+	 */
+	public List<User> getRelatedUsersByFolkrankAndUser(final String requestedUsername, int limit, int offset, final DBSession session) {
+		UserParam param = new UserParam();
+		param.setRequestedUserName(requestedUsername);
+		param.setOffset(offset);
+		param.setLimit(limit);
+		return this.queryForList("getRelatedUsersByFolkrankAndUser", param, User.class, session);
+	}
+	
+	
+	/**
+	 * Returns a a list of related users to a given users, bassed on a similarity computation
+	 * between users.
+	 * 
+	 * @param requestedUserName - the requested user
+	 * @param relation - the type of user relation
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return a list of users, related to the requestedUser by the given relation
+	 */
+	public List<User> getRelatedUsersBySimilarity(final String requestedUserName, final UserRelation relation, final int limit, final int offset, final DBSession session) {
+		UserParam param = new UserParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setUserRelation(relation);
+		return this.queryForList("getRelatedUsersBySimilarity", param, User.class, session);
+	}
+	
+	/**
+	 * Entry method for the user chain
+	 * 
+	 * @param param
 	 * @param session
 	 * @return
 	 */
-	public List<User> getUsersByUserAndFolkrank(final String username, final String authUser, int numUsers, final DBSession session) {
-		UserParam param = new UserParam();
-		param.setRequestedUserName(username);
-		param.setOffset(0);
-		param.setLimit(numUsers);
-		return this.queryForList("getUsersByUserAndFolkrank", param, User.class, session);
-	}	
+	public List<User> getUsers(UserParam param, final DBSession session) {
+		return chain.getFirstElement().perform(param, session);
+	}
 
 }

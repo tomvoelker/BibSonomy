@@ -74,7 +74,7 @@
 		WHERE user_name = #name#
 	</update>
 
-	<select id="getUsersOrderedByFolkrank" resultMap="UserCommon.userWithWeight" parameterClass="userParam"> 
+	<select id="getRelatedUsersByFolkrankAndTags" resultMap="UserCommon.userWithWeight" parameterClass="userParam"> 
 		SELECT w.item AS user_name, ROUND(SUM(weight),5) * 10000 AS weight
 		FROM rankings r
 			JOIN weights w USING (id)
@@ -83,18 +83,29 @@
 		GROUP BY w.item
 		HAVING weight > 1
 		ORDER BY 2 DESC
-		LIMIT #limit#
+		LIMIT #limit# OFFSET #offset#
 	</select>
 	
-	<select id="getUsersByUserAndFolkrank" resultMap="UserCommon.userWithWeight" parameterClass="userParam"> 
+	<select id="getRelatedUsersByFolkrankAndUser" resultMap="UserCommon.userWithWeight" parameterClass="userParam"> 
 		SELECT w.item AS user_name, ROUND(weight,5) * 10000 AS weight
 		FROM rankings r
 			JOIN weights w USING (id)
 			WHERE r.item=#requestedUserName# AND r.dim = 1
 			AND w.dim = 1
+			AND w.item != #requestedUserName# 
 		ORDER BY 2 DESC
 		LIMIT #limit#
 	</select>	
+	
+	<select id="getRelatedUsersBySimilarity" resultMap="UserCommon.userWithWeight" parameterClass="userParam">
+		SELECT u2 AS user_name, sim * 10 AS weight 
+		FROM useruser_similarity 
+		WHERE measure_id = #userRelation.id# 
+		AND u1 = #requestedUserName#
+		AND u2 != #requestedUserName#
+		ORDER by 2 DESC 
+		LIMIT #limit# OFFSET #offset#
+	</select>
 	
 	<!-- get all users, which have user in their friend list -->
 	<select id="getUserFriends" resultMap="Common.user"	parameterClass="string">
