@@ -10,7 +10,7 @@
 	<jsp:directive.attribute name="rowNumber" type="java.lang.Integer"
 		required="true" />
 
-	<jsp:directive.attribute name="nextUser" type="java.lang.Integer"
+	<jsp:directive.attribute name="nextUser" type="java.lang.String"
 		required="false" />
 
 	<jsp:directive.attribute name="moveFromTabSpammer"
@@ -28,8 +28,16 @@
 	<tr id="sl${rowNumber}"
 		class="${spamUser.prediction == 9 ? 'spamflag uncertainUser' : ((spamUser.spammer==true) ? 'spammer' : none)}">
 
-	<c:set var="do_flag_action" value="javascript:ajax_hideTooltip()" />
-
+	
+	<c:choose>
+		<c:when test="${not empty nextUser}">
+			<c:set var="do_flag_action" value="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${nextUser}',document.getElementById('latest_posts_${status.index}'));" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="do_flag_action" value="javascript:ajax_hideTooltip()"/>
+		</c:otherwise>
+	</c:choose>
+	
 	<!-- 
 		flag / unflag users as (non)spammers or mark as uncertain
 	-->

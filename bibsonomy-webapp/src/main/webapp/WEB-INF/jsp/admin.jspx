@@ -38,6 +38,10 @@
 			<!-- Admin Navigation -->	
 			<menu:adminNavi />	
 			
+			<p style="font-weight: bold; color: #ff0000; ">
+  				<c:forEach var="info" items="${command.infos}">Info: ${info}<br/></c:forEach>
+			</p>
+			
 			<!-- User Information -->	
 			<div class="userInfoBox">
 			<h2> User Info </h2>
@@ -175,8 +179,6 @@
 									<c:set var="userIndex" value="${status.index+1}" />
 									<c:set var="nextUser"
 																	value="${command.content[userIndex].name}" />
-									<c:set var="do_flag_action"
-																	value="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${nextUser}',document.getElementById('latest_posts_${status.index}'));" />
 								</c:otherwise>
 							</c:choose>
 						</c:otherwise>
@@ -189,7 +191,7 @@
 					  <tags:userInfo spamUser="${user}" rowNumber="${status.count}"
 									moveFromTabSpammer="${Flag}" moveFromTabNSpammer="${Unflag}"
 									moveFromTabUncertain="${Uncertain}"
-									selTab="${selTabEvaluation}" />
+									selTab="${selTabEvaluation}" nextUser="${nextUser}"/>
 					
 				    </c:forEach>
 				</table>
