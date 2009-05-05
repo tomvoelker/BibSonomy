@@ -60,5 +60,7 @@ public enum SortKey {
 	/** by school */
 	SCHOOL,
 	/** by posting date*/
-	DATE;
+	DATE,
+	/** by a (somehow computed) ranking */
+	RANKING;
 }
