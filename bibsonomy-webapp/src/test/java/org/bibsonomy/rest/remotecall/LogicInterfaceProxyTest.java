@@ -24,6 +24,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -522,52 +523,6 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	
 
 	/**
-	 * runs the test defined by {@link #getUsers(int, int)} with certain arguments
-	 */
-	@Test
-	public void getUsersTest() {
-		getUsers(1,56);
-	}
-	public List<User> getUsers(int start, int end) {
-		final List<User> expected = new ArrayList<User>(2);
-		expected.add(ModelUtils.getUser());
-		expected.get(0).setName("Nr1");
-		expected.add(ModelUtils.getUser());
-		expected.get(1).setName("Nr2");
-		EasyMock.expect(serverLogic.getUsers(start, end)).andReturn(expected);
-		EasyMock.replay(serverLogic);
-		
-		final List<User> returned = clientLogic.getUsers(start, end);
-		ModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile(".*\\.(apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|profession|place|spammer|settings|toClassify|updatedBy|reminderPassword|openID)"));
-		EasyMock.verify(serverLogic);
-		assertLogin();
-		return returned;
-	}
-
-	/**
-	 * runs the test defined by {@link #getUsers(String, int, int)} with certain arguments
-	 */
-	@Test
-	public void getUsersTestWithGroup() {
-		getUsers("grpX",1,56);
-	}
-	public List<User> getUsers(String groupName, int start, int end) {
-		final List<User> expected = new ArrayList<User>(2);
-		expected.add(ModelUtils.getUser());
-		expected.get(0).setName("nr1");
-		expected.add(ModelUtils.getUser());
-		expected.get(1).setName("nr2");
-		EasyMock.expect(serverLogic.getUsers(groupName, start, end)).andReturn(expected);
-		EasyMock.replay(serverLogic);
-		
-		final List<User> returned = clientLogic.getUsers(groupName, start, end);
-		ModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile(".*\\.(apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|profession|place|spammer|settings|toClassify|updatedBy|reminderPassword|openID)"));
-		EasyMock.verify(serverLogic);
-		assertLogin();
-		return returned;
-	}
-
-	/**
 	 * runs the test defined by {@link #removeUserFromGroup(String, String)} with certain arguments
 	 */
 	@Test
@@ -729,10 +684,39 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/**
+	 * runs the test defined by {@link #getUsers(Class, GroupingEntity, String, List, String, Order, UserRelation, String, int, int)} with certain arguments
+	 * (in order to retrieve all users)
+	 */
+	@Test
+	public void getAllUsersTest() {
+		//getUsers(1,56);
+		getUsers(null, GroupingEntity.ALL, null, null, null, null, null, null, 1, 56);
+	}
+
+	/**
+	 * runs the test defined by {@link #getUsers(Class, GroupingEntity, String, List, String, Order, UserRelation, String, int, int)} with certain arguments
+	 * (in order to retrieve group members)
+	 */
+	@Test
+	public void getGroupMembersTest() {
+		getUsers(null, GroupingEntity.GROUP, "grpX", null, null, null, null, null, 1, 56);				
+	}	
 	
-	public List<User> getUsers(List<String> tags, Order order, int start, int end) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<User> getUsers(Class<? extends org.bibsonomy.model.Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end) {
+		List<User> expected = new ArrayList<User>(2);
+		expected.add(ModelUtils.getUser());
+		expected.get(0).setName("Nr1");
+		expected.add(ModelUtils.getUser());
+		expected.get(1).setName("Nr2");
+		EasyMock.expect(serverLogic.getUsers(resourceType, grouping, groupingName, tags, hash, order, relation, search, start, end)).andReturn(expected);
+		EasyMock.replay(serverLogic);		
+		final List<User> returned = clientLogic.getUsers(resourceType, grouping, groupingName, tags, hash, order, relation, search, start, end);
+		ModelUtils.assertPropertyEquality(expected, returned, 5, Pattern.compile(".*\\.(apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|profession|place|spammer|settings|toClassify|updatedBy|reminderPassword|openID)"));
+		EasyMock.verify(serverLogic);
+		assertLogin();			
+		return returned;
 	}
 	
 	public int getStatistics(Class<? extends org.bibsonomy.model.Resource> arg0, GroupingEntity arg1, String arg2, StatisticsConstraint arg3, String arg4, List<String> arg5) {
@@ -810,6 +794,5 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 }
