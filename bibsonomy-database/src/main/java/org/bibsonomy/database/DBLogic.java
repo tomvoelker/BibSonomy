@@ -24,6 +24,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -70,9 +71,14 @@ import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
+ * Database Implementation of the LogicInterface
+ * 
  * @author Jens Illig
  * @author Christian Kramer
  * @author Christian Claus
+ * @author Dominik Benz
+ * @author Robert Jäschke
+ * 
  * @version $Id$
  */
 public class DBLogic implements LogicInterface {
@@ -95,7 +101,8 @@ public class DBLogic implements LogicInterface {
 
 	private final User loginUser;
 
-	/** Returns an implementation of the LogicInterface.
+	/** 
+	 * Returns an implementation of the DBLogic.
 	 * 
 	 * @param loginUser - the user which wants to use the logic.
 	 * @param dbSessionFactory
@@ -134,24 +141,12 @@ public class DBLogic implements LogicInterface {
 		return this.dbSessionFactory.getDatabaseSession();
 	}
 
-	/*
-	 * Returns all users of the system
-	 */
-	public List<User> getUsers(final int start, final int end) {
-		this.permissionDBManager.checkStartEnd(start, end, "user");
-		final DBSession session = openSession();
-		try {
-			return this.userDBManager.getAllUsers(start, end, session);
-		} finally {
-			session.close();
-		}
-	}
 
-	/**
-	 * FIXME: use String instead of User
-	 *  
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUserFriends(org.bibsonomy.model.User)
+	 * FIXME: use String instead of User
 	 */
+	@Override
 	public List<User> getUserFriends(final User loginUser) {
 		/*
 		 * only logged in users can get a friend list
@@ -171,11 +166,12 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/**
-	 * FIXME: use String instead of User
-	 * 
+
+	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getFriendsOfUser(org.bibsonomy.model.User)
+	 * FIXME: use String instead of User
 	 */
+	@Override
 	public List<User> getFriendsOfUser(final User loginUser) {
 		/*
 		 * only logged in users can get a friend list
@@ -195,25 +191,11 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-
-	/*
-	 * Returns all users who are members of the specified group
-	 */
-	public List<User> getUsers(final String groupName, final int start, final int end) {
-		final DBSession session = openSession();
-		try {
-			return this.groupDBManager.getGroupMembers(this.loginUser.getName(), groupName, session).getUsers();
-		} finally {
-			session.close();
-		}
-	}
-
-	/*
-	 * Returns details about the specified user and makes sure that we don't
-	 * leak private information like the e-mail-address.
-	 * 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUserDetails(java.lang.String)
 	 * TODO: if userName = loginUser.getName() we could just return loginUser.
 	 */
+	@Override
 	public User getUserDetails(final String userName) {
 		final DBSession session = openSession();
 		try {
@@ -254,10 +236,12 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/*
-	 * Returns a list of posts; the list can be filtered.
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, org.bibsonomy.model.enums.Order, org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, String search) {
 
 		// check allowed start-/end-values 
@@ -320,11 +304,12 @@ public class DBLogic implements LogicInterface {
 		return result;
 	}
 
-	/*
-	 * Returns details to a post. A post is uniquely identified by a hash of the
-	 * corresponding resource and a username.
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPostDetails(java.lang.String, java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) {
 		final DBSession session = openSession();
 		try {
@@ -356,9 +341,11 @@ public class DBLogic implements LogicInterface {
 		return null;
 	}
 
-	/*
-	 * Returns all groups of the system
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getGroups(int, int)
 	 */
+	@Override
 	public List<Group> getGroups(final int start, final int end) {
 		final DBSession session = openSession();
 		try {
@@ -368,9 +355,11 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/*
-	 * Returns details of one group
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getGroupDetails(java.lang.String)
 	 */
+	@Override
 	public Group getGroupDetails(final String groupName) {
 		final DBSession session = openSession();
 		try {
@@ -384,17 +373,11 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/**
-	 * @param resourceType
-	 * @param grouping
-	 * @param groupingName
-	 * @param regex
-	 * @param tags
-	 * @param start
-	 * @param end
-	 * @param search
-	 * @return list of tags
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getTags(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.lang.String, java.util.List, java.lang.String, org.bibsonomy.model.enums.Order, int, int, java.lang.String, org.bibsonomy.common.enums.TagSimilarity)
 	 */
+	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final TagSimilarity relation) {
 		if (grouping.equals(GroupingEntity.ALL)) {
 			this.permissionDBManager.checkStartEnd(start, end, "Tag");
@@ -424,9 +407,11 @@ public class DBLogic implements LogicInterface {
 		return result;
 	}
 
-	/*
-	 * Returns details about a tag.
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getTagDetails(java.lang.String)
 	 */
+	@Override
 	public Tag getTagDetails(final String tagName) {
 		final DBSession session = openSession();
 		try {
@@ -447,9 +432,11 @@ public class DBLogic implements LogicInterface {
 		return true;
 	}
 
-	/*
-	 * Removes the given user.
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#deleteUser(java.lang.String)
 	 */
+	@Override
 	public void deleteUser(final String userName) {
 		// TODO: take care of toLowerCase()! 
 		final String[] tables = {"bookmark", "bibtex", "tas", "search_bibtex", "search_bookmark"};
@@ -482,9 +469,11 @@ public class DBLogic implements LogicInterface {
 //		}
 	}
 
-	/*
-	 * Removes the given group.
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#deleteGroup(java.lang.String)
 	 */
+	@Override
 	public void deleteGroup(final String groupName) {
 
 		throw new UnsupportedOperationException("not yet available");
@@ -497,9 +486,11 @@ public class DBLogic implements LogicInterface {
 //		}
 	}
 
-	/*
-	 * Removes an user from a group.
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#removeUserFromGroup(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void removeUserFromGroup(final String groupName, final String userName) {
 		// TODO: take care of toLowerCase()!
 		// FIXME: IMPORTANT: not everybody may do this!
@@ -513,10 +504,11 @@ public class DBLogic implements LogicInterface {
 //		}
 	}
 
-	/*
-	 * Removes the given post - identified by the connected resource's hash -
-	 * from the user.
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#deletePosts(java.lang.String, java.util.List)
 	 */
+	@Override
 	public void deletePosts(final String userName, final List<String> resourceHashes) {
 		/*
 		 * check permissions
@@ -562,7 +554,7 @@ public class DBLogic implements LogicInterface {
 	}
 
 
-	/*
+	/**
 	 * Adds/updates a post in the database.
 	 */
 	private <T extends Resource> String storePost(final Post<T> post, final boolean update) {
@@ -666,6 +658,13 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	/**
+	 * Helper method to retrieve an appropriate database manager
+	 * 
+	 * @param <T> extends Resource - the resource type
+	 * @param post - a post of type T
+	 * @return an appropriate database manager
+	 */
 	@SuppressWarnings("unchecked")
 	private <T extends Resource> CrudableContent<T, GenericParam> getFittingDatabaseManager(final Post<T> post) {
 		final Class resourceClass = post.getResource().getClass();
@@ -684,7 +683,7 @@ public class DBLogic implements LogicInterface {
 		return ((CrudableContent) man);
 	}
 
-	/*
+	/**
 	 * Adds/updates a group in the database.
 	 */
 	private String storeGroup(@SuppressWarnings("unused") final Group group, @SuppressWarnings("unused") boolean update) {
@@ -700,9 +699,11 @@ public class DBLogic implements LogicInterface {
 //		}		
 	}
 
-	/*
-	 * Adds an existing user to an existing group.
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#addUserToGroup(java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void addUserToGroup(final String groupName, final String userName) {
 		// TODO: take care of toLowerCase()!
 		throw new UnsupportedOperationException("not yet available");
@@ -715,17 +716,29 @@ public class DBLogic implements LogicInterface {
 //		}
 	}
 
+
+	/**
+	 * helper method to check if a user is currently logged in
+	 */
 	private void ensureLoggedIn() {
 		if (this.loginUser.getName() == null) {
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#createGroup(org.bibsonomy.model.Group)
+	 */
+	@Override
 	public String createGroup(final Group group) {
 		this.ensureLoggedIn();		
 		return this.storeGroup(group, false);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#updateGroup(org.bibsonomy.model.Group)
+	 */
+	@Override
 	public String updateGroup(final Group group) {
 		this.ensureLoggedIn();
 		return this.storeGroup(group, true);
@@ -733,6 +746,10 @@ public class DBLogic implements LogicInterface {
 
 
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#createPosts(java.util.List)
+	 */
+	@Override
 	public List<String> createPosts(final List<Post<?>> posts) {
 		this.ensureLoggedIn();
 		/*
@@ -754,6 +771,10 @@ public class DBLogic implements LogicInterface {
 
 
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#updatePosts(java.util.List, org.bibsonomy.common.enums.PostUpdateOperation)
+	 */
+	@Override
 	public List<String> updatePosts(List<Post<?>> posts, PostUpdateOperation operation) {
 		this.ensureLoggedIn();
 		/*
@@ -774,15 +795,15 @@ public class DBLogic implements LogicInterface {
 	}
 
 
-	/** Updates all posts which contain all of the given tags by replacing them with the other given tags.
-	 * 
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#updateTags(org.bibsonomy.model.User, java.util.List, java.util.List)
 	 * <p>TODO: possible options which one might want to add:</p>
 	 * <ul>
 	 * <li>ignore case</li>
 	 * </ul>
-	 * 
-	 * @see org.bibsonomy.model.logic.LogicInterface#updateTags(org.bibsonomy.model.User, java.util.List, java.util.List)
 	 */
+	@Override
 	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags) {
 		this.ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(loginUser, user.getName());
@@ -802,6 +823,10 @@ public class DBLogic implements LogicInterface {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#createUser(org.bibsonomy.model.User)
+	 */
+	@Override
 	public String createUser(final User user) {
 		/*
 		 * We ensure, that the user is logged in and has admin privileges. 
@@ -822,6 +847,10 @@ public class DBLogic implements LogicInterface {
 
 
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#updateUser(org.bibsonomy.model.User)
+	 */
+	@Override
 	public String updateUser(final User user) {
 		/*
 		 * only logged in users can update user settings
@@ -864,11 +893,10 @@ public class DBLogic implements LogicInterface {
 
 
 
-	/*
+	/**
 	 * Adds/updates a user in the database.
 	 */
 	private String storeUser(final User user, final boolean update) {
-
 
 		final DBSession session = openSession();
 		String updatedUser = null;
@@ -918,12 +946,20 @@ public class DBLogic implements LogicInterface {
 
 
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getAuthenticatedUser()
+	 */
+	@Override
 	public User getAuthenticatedUser() {
 		return this.loginUser;
 	}
 
 
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getAuthors(org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, org.bibsonomy.model.enums.Order, org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
+	 */
+	@Override
 	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search) {
 		/*
 		 * FIXME: implement a chain or something similar 
@@ -942,6 +978,10 @@ public class DBLogic implements LogicInterface {
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#addDocument(org.bibsonomy.model.Document, java.lang.String)
+	 */
+	@Override
 	public String addDocument(final Document doc, final String resourceHash) {
 		this.ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(doc, this.loginUser);
@@ -999,9 +1039,10 @@ public class DBLogic implements LogicInterface {
 		return doc;
 	}
 
-	/**
-	 * Returns the named document for the given userName and resourceHash.
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getDocument(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
 		final String lowerCaseUserName = userName.toLowerCase();
 		this.ensureLoggedIn();
@@ -1026,11 +1067,11 @@ public class DBLogic implements LogicInterface {
 		return null;
 	}
 
-	/**
-	 * @param userName
-	 * @param resourceHash
-	 * @param fileName
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#deleteDocument(java.lang.String, java.lang.String, java.lang.String)
 	 */
+	@Override
 	public void deleteDocument(final String userName, final String resourceHash, final String fileName){
 		final String lowerCaseUserName = userName.toLowerCase();
 		this.ensureLoggedIn();
@@ -1064,6 +1105,10 @@ public class DBLogic implements LogicInterface {
 		log.info("API - Document deleted: " + fileName + " from User: " + lowerCaseUserName);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#addInetAddressStatus(java.net.InetAddress, org.bibsonomy.common.enums.InetAddressStatus)
+	 */
+	@Override
 	public void addInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
 		this.ensureLoggedIn();
 		// only admins are allowed to change the status of an address
@@ -1076,6 +1121,10 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#deleteInetAdressStatus(java.net.InetAddress)
+	 */
+	@Override
 	public void deleteInetAdressStatus(final InetAddress address) {
 		this.ensureLoggedIn();
 		// only admins are allowed to change the status of an address
@@ -1088,6 +1137,10 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getInetAddressStatus(java.net.InetAddress)
+	 */
+	@Override
 	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
 		// everybody is allowed to ask for the status of an address
 		/*
@@ -1104,9 +1157,11 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/**
-	 * Query statistical information regarding posts
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPostStatistics(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, org.bibsonomy.model.enums.Order, org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String, org.bibsonomy.common.enums.StatisticsConstraint)
 	 */
+	@Override
 	public int getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint) {
 		final DBSession session = openSession();
 		final Integer result;
@@ -1137,6 +1192,10 @@ public class DBLogic implements LogicInterface {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getConcepts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.common.enums.ConceptStatus, int, int)
+	 */
+	@Override
 	public List<Tag> getConcepts(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		final DBSession session = openSession();
 		try {
@@ -1148,6 +1207,10 @@ public class DBLogic implements LogicInterface {
 		}		
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getConceptDetails(java.lang.String, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
+	 */
+	@Override
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
 		final DBSession session = openSession();
 		final Tag concept;
@@ -1165,6 +1228,10 @@ public class DBLogic implements LogicInterface {
 		return concept;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#createConcept(org.bibsonomy.model.Tag, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
+	 */
+	@Override
 	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
 		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
@@ -1172,6 +1239,10 @@ public class DBLogic implements LogicInterface {
 		return this.storeConcept(concept, grouping, groupingName, false);			
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#deleteConcept(java.lang.String, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
+	 */
+	@Override
 	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
 		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
@@ -1182,6 +1253,10 @@ public class DBLogic implements LogicInterface {
 		// FIXME: close session?
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#deleteRelation(java.lang.String, java.lang.String, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
+	 */
+	@Override
 	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
 		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
@@ -1192,6 +1267,10 @@ public class DBLogic implements LogicInterface {
 		// FIXME: close session?
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#updateConcept(org.bibsonomy.model.Tag, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
+	 */
+	@Override
 	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
 		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
@@ -1199,6 +1278,15 @@ public class DBLogic implements LogicInterface {
 		return this.storeConcept(concept, grouping, groupingName, true);
 	}
 
+	/**
+	 * Helper metod to store a concept
+	 * 
+	 * @param concept
+	 * @param grouping
+	 * @param groupingName
+	 * @param update
+	 * @return
+	 */
 	private String storeConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final boolean update) {
 		final DBSession session = openSession();
 		if (update) {
@@ -1210,26 +1298,42 @@ public class DBLogic implements LogicInterface {
 		return concept.getName();
 	}
 
-	/**
-	 * retrieve related user
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUsers(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, org.bibsonomy.model.enums.Order, org.bibsonomy.common.enums.UserRelation, java.lang.String, int, int)
 	 */
-	public List<User> getUsers(final List<String> tags, final Order order, final int start, final int end) {
-		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, tags, null, order, start, end, null, null, loginUser);
+	@Override
+	public List<User> getUsers(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, final List<String> tags, String hash, final Order order, UserRelation relation, String search, final int start, final int end) {
+		// assemle param object
+		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, null, loginUser);
+		param.setUserRelation(relation);
+		
 		final DBSession session = openSession();
 		try {
-			if (tags.size() == 1 && tags.get(0).startsWith("sys:user:")) {
-				// TODO: proper system tag handling
-				final String tag = tags.get(0);
-				final String username = tag.substring(tag.lastIndexOf(":") + 1, tag.length());
-				System.out.println("requested user " + username);
-				return this.userDBManager.getUsersByUserAndFolkrank(username, this.loginUser.getName(), end, session);
-			}
-			return this.userDBManager.getUserByFolkrank(param, session);
-		} finally {
-			session.close();
+			// start chain
+			return this.userDBManager.getUsers(param, session);
 		}
+		finally {
+			session.close();
+		}		
+		
+//		try {
+//			if (tags.size() == 1 && tags.get(0).startsWith("sys:user:")) {
+//				// TODO: proper system tag handling
+//				final String tag = tags.get(0);
+//				final String username = tag.substring(tag.lastIndexOf(":") + 1, tag.length());
+//				System.out.println("requested user " + username);
+//				return this.userDBManager.getUsersByUserAndFolkrank(username, this.loginUser.getName(), end, session);
+//			}
+//			return this.userDBManager.getUserByFolkrank(param, session);
+//		} finally {
+//			session.close();
+//		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getClassifiedUsers(org.bibsonomy.common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, int)
+	 */
+	@Override
 	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
@@ -1240,6 +1344,10 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getClassifierSettings(org.bibsonomy.common.enums.ClassifierSettings)
+	 */
+	@Override
 	public String getClassifierSettings(final ClassifierSettings key) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
@@ -1250,6 +1358,10 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#updateClassifierSettings(org.bibsonomy.common.enums.ClassifierSettings, java.lang.String)
+	 */
+	@Override
 	public void updateClassifierSettings(final ClassifierSettings key, final String value) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
@@ -1260,6 +1372,10 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getClassifiedUserCount(org.bibsonomy.common.enums.Classifier, org.bibsonomy.common.enums.SpamStatus, int)
+	 */
+	@Override
 	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
@@ -1270,6 +1386,10 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getClassifierHistory(java.lang.String)
+	 */
+	@Override
 	public List<User> getClassifierHistory(final String userName) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
@@ -1280,6 +1400,10 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getClassifierComparison(int)
+	 */
+	@Override
 	public List<User> getClassifierComparison(final int interval) {
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
 		final DBSession session = openSession();
@@ -1290,6 +1414,10 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getOpenIDUser(java.lang.String)
+	 */
+	@Override
 	public String getOpenIDUser(String openID) {
 		final DBSession session = openSession();
 		try {
@@ -1302,6 +1430,10 @@ public class DBLogic implements LogicInterface {
 	
 
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getTagStatistics(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.common.enums.ConceptStatus, int, int)
+	 */
+	@Override
 	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
 		Integer result;
 

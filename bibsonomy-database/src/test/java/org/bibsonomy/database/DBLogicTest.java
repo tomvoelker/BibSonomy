@@ -448,7 +448,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	public void testGetUsersByFolkrank(){
 		List<String> tags = new ArrayList<String>();
 		tags.add("web");
-		List<User> user = this.getDbLogic().getUsers(tags, Order.FOLKRANK, 0, 20);
+		List<User> user = this.getDbLogic().getUsers(null, null, null, tags, null, Order.FOLKRANK, null, null, 0, 20);
 		assertEquals(20, user.size());
 	}
 }
