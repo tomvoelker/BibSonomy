@@ -28,6 +28,9 @@ import static org.junit.Assert.fail;
 
 import java.math.BigInteger;
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -113,9 +116,11 @@ public class ModelFactoryTest {
 	}
 
 	@Test
-	public void testCreatePost() {
+	public void testCreatePost() throws DatatypeConfigurationException {
 		// check invalid posts
 		final PostType xmlPost = new PostType();
+		DatatypeFactory dataFact = DatatypeFactory.newInstance();		
+		xmlPost.setPostingdate(dataFact.newXMLGregorianCalendar("2008-12-04T10:42:06.000+01:00"));		
 		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "no tags specified");
 		final TagType xmlTag = new TagType();
 		xmlPost.getTag().add(xmlTag);

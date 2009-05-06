@@ -43,6 +43,8 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.PropertyException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
@@ -188,6 +190,8 @@ public class XMLRendererTest {
 		xmlPost.setUser(xmlUser);
 		final BookmarkType xmlBookmark = new BookmarkType();
 		xmlPost.setBookmark(xmlBookmark);
+		DatatypeFactory dataFact = DatatypeFactory.newInstance();		
+		xmlPost.setPostingdate(dataFact.newXMLGregorianCalendar("2008-12-04T10:42:06.000+01:00"));
 		xmlTag.setName("testtag");
 		xmlBookmark.setUrl("http://www.google.de");
 		xmlBookmark.setTitle("Google Search engine");
