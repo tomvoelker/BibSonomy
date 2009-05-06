@@ -21,6 +21,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -92,20 +93,6 @@ public class TestDBLogic implements LogicInterface {
 		fillDataBase();
 	}
 
-	public List<User> getUsers(int start, int end) {
-		final List<User> users = new LinkedList<User>();
-		users.addAll(this.dbUsers.values());
-		return users;
-	}
-
-	public List<User> getUsers(String groupName, int start, int end) {
-		final List<User> users = new LinkedList<User>();
-		final Group group = this.dbGroups.get(groupName);
-		if (group != null) {
-			users.addAll(group.getUsers());
-		}
-		return users;
-	}
 
 	public User getUserDetails(String userName) {
 		return this.dbUsers.get(userName);
@@ -791,9 +778,19 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
-	public List<User> getUsers(List<String> tags, Order order, int start, int end) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<User> getUsers(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end) {
+		final List<User> users = new LinkedList<User>();
+		if (GroupingEntity.ALL.equals(grouping)) {
+			users.addAll(this.dbUsers.values());
+		}
+		if (GroupingEntity.GROUP.equals(grouping) && groupingName != null && !groupingName.equals("")) {
+			final Group group = this.dbGroups.get(groupingName);
+			if (group != null) {
+				users.addAll(group.getUsers());
+			}
+		}
+		return users;		
+
 	}
 
 	public String getClassifierSettings(ClassifierSettings key) {

@@ -3,6 +3,7 @@ package org.bibsonomy.rest.strategy.users;
 import java.io.Writer;
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
@@ -31,7 +32,7 @@ public class GetUserListStrategy extends AbstractGetListStrategy<List<User>> {
 
 	@Override
 	protected List<User> getList() {
-		return this.getLogic().getUsers(this.getView().getStartValue(), this.getView().getEndValue());
+		return this.getLogic().getUsers(null, GroupingEntity.ALL, null, null, null, null, null, null, this.getView().getStartValue(), this.getView().getEndValue());
 	}
 
 	@Override
