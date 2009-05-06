@@ -1,0 +1,22 @@
+body {
+  border: 5px solid #ffff99;
+  margin: 0px 0px 0px 0px;
+}
+
+.tagcloud {
+  background-color: #ffff99; 
+}
+
+.ranking {
+  background-color: #ffff99;
+  font-size:80%;
+}
+
+.personalize_text {
+  font-size: 65%;
+  color: #ffff99;
+}
+
+.personalized {
+  background-color: #ffff99;
+}
