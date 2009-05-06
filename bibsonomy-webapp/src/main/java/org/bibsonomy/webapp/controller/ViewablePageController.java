@@ -83,7 +83,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 	private <V extends GroupResourceViewCommand> void setGroupDetails(V cmd, String groupName) {
 		final Group group = this.logic.getGroupDetails(groupName);
 		if (group != null) {
-			group.setUsers(this.logic.getUsers(groupName, 0, 100));
+			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 100));
 		}
 		cmd.setGroup(group);
 	}

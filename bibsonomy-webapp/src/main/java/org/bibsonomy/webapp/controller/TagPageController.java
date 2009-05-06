@@ -122,7 +122,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 	 */
 	protected <T extends Resource, V extends TagResourceViewCommand> void setRelatedUsers(V cmd, List<String> tags, Order order, int start, int end) {
 		RelatedUserCommand relatedUserCommand = cmd.getRelatedUserCommand();
-		relatedUserCommand.setRelatedUsers(this.logic.getUsers(tags,order,start,end));
+		relatedUserCommand.setRelatedUsers(this.logic.getUsers(null,null,null,tags, null, order, null, null, start, end));
 	}
 	
 }
