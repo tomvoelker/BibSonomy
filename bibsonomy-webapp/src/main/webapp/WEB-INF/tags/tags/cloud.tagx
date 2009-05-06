@@ -20,6 +20,7 @@
 	<jsp:directive.attribute name="showTooltips" type="java.lang.Integer" required="false"/>
 	<jsp:directive.attribute name="copytag" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="targetId" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="suppressTitle" type="java.lang.Boolean" required="false"/>
 
 	<!-- tagcloud styles: 0 cloud, 1 list (see org.bibsonomy.common.enums.TagCloudStyle) -->
 	<c:choose>
@@ -82,7 +83,7 @@
 								<c:otherwise>/${mtl:getPath(requPath)}/${fn:escapeXml(tag.name)}</c:otherwise>
 							</c:choose>
 						</jspx:attribute>
-						<jspx:attribute name="title">${tag.usercount}<c:out value=" "/>${posts}</jspx:attribute>
+						<jspx:attribute name="title"><c:if test="${empty suppressTitle or suppressTitle == false }">${tag.usercount}<c:out value=" "/>${posts}</c:if></jspx:attribute>
 						<c:if test="${tagSizeMode eq 'home'}">				
 							<jspx:attribute name="style">font-size:${mtl:computeTagFontsize(tag.usercount, cmd.maxFreq, tagSizeMode)}%</jspx:attribute>
 						</c:if>
