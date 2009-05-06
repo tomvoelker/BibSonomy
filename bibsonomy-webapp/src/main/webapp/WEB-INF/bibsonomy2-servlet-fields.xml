@@ -51,6 +51,8 @@
 				<value>formatEmbeded</value> <!-- boolean! -->
 				<value>order</value><!-- folkrank, date, etc. -->
 				<value>searchmode</value>
+				<value>personalized</value>
+				<value>userSimilarity</value>
 				<value>notags</value><!-- boolean (to remove tags from /publ/ page) -->
 			</list>
 		</constructor-arg>
@@ -70,3 +72,4 @@
 	
 
 </beans>
+
