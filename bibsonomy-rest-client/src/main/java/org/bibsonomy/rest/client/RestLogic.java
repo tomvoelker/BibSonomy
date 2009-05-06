@@ -39,6 +39,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -163,14 +164,6 @@ public class RestLogic implements LogicInterface {
 		return execute(new GetUserDetailsQuery(userName));
 	}
 
-	public List<User> getUsers(int start, int end) {
-		return execute(new GetUserListQuery(start, end));
-	}
-
-	public List<User> getUsers(String groupName, int start, int end) {
-		return execute(new GetUserListOfGroupQuery(groupName, start, end));
-	}
-
 	public void removeUserFromGroup(String groupName, String userName) {
 		execute(new RemoveUserFromGroupQuery(userName, groupName));
 	}
@@ -288,8 +281,15 @@ public class RestLogic implements LogicInterface {
 		return null;
 	}
 
-	public List<User> getUsers(List<String> tags, Order order, int start, int end) {
-		// TODO Auto-generated method stub
+	public List<User> getUsers(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end) {
+		// here we just simulate two possible answers of the user chain
+		if (GroupingEntity.ALL.equals(grouping)) {
+			return execute(new GetUserListQuery(start, end));
+		}
+		if (GroupingEntity.GROUP.equals(grouping)) {
+			return execute(new GetUserListOfGroupQuery(groupingName, start, end));	
+		}
+		log.error("grouping entity " + grouping.name() + " not yet supported in RestLogic implementation.");
 		return null;
 	}	
 
