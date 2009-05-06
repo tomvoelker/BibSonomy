@@ -13,27 +13,19 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${(command.requestedUser eq command.context.loginUser.name) ? 'nav_my' : ''}">
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${(command.requestedUser eq command.context.loginUser.name) ? 'nav_my' : ''}" contentHeading="The following bookmark and bibtex posts of user ${fn:escapeXml(command.requestedUser)} might be interesting for you:">
 	
 		<jsp:attribute name="heading">
 		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.user"/></a> :: 
-		<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
-		<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
-		  <input type="text" size="20" name="tag" id="inpf"/>
-		</form>
-		<c:if test="${command.requestedUser ne command.context.loginUser.name}">
-			<c:out value=" "/>
-			<a href="/personalized/user/${fn:escapeXml(command.requestedUser)}">
-				<span class="personalize_text">
-					<fmt:message key="personalize"/>!
-				</span>
-			</a>			
-		</c:if>									
+		<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${fn:escapeXml(command.requestedUser)}'/></a><span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>
+		<!-- 
+			<a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value="${fn:escapeXml(command.context.loginUser.name)}"/></a><c:out value=")"/>
+		 -->										
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
 			
-			<!-- display user's tag relations -->			
+			<!-- display user's tag relations 			
 			<li>
 				<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.title"/></c:set>
 				<span class="sidebar_h">
@@ -43,34 +35,28 @@
 				</span>	
 				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
 			</li>
+			-->
+						
+			<!-- display tags -->
+			<li>
+				<span class="sidebar_h">
+					Interesting Tags of user ${fn:escapeXml(command.requestedUser)} for you:
+					<!-- <fmt:message key="tags"/> -->
+				</span>
+				<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagSizeMode="home" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" suppressTitle="${true}"/>
+			</li>
 			
 			<!-- display similar users -->
 			<li>
 				<span class="sidebar_h">
-					<fmt:message key="users.similar"/>
+					<fmt:message key="users.similar.for">
+						<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
+					</fmt:message>
 					<c:out value=" "/><a href="${mtl:setParam(cmd.requPath, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
 				</span>
 				<users:related cmd="${command.relatedUserCommand}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
-			</li>
-			
-			<!-- display tags -->
-			<li>
-				<span class="sidebar_h"><fmt:message key="tags"/></span>
-				<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-			</li>
-			
-			<li>
-				<span class="sidebar_h"><fmt:message key="purposes"/></span>
-				<tags:purposes requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-			</li>
-      
-            <c:if test="${not empty command.user}">
-              <li>
-                <span class="sidebar_h">user details</span>
-                <user:details user="${command.user}"/>
-              </li>
-            </c:if>
-			
+			</li>			
+      			
 		</jsp:attribute>
 		
 	</layout:resourceLayout>

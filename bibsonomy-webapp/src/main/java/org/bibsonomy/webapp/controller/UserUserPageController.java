@@ -1,0 +1,131 @@
+package org.bibsonomy.webapp.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.util.EnumUtils;
+import org.bibsonomy.webapp.command.ListCommand;
+import org.bibsonomy.webapp.command.UserResourceViewCommand;
+import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
+import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RankingUtil;
+import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.RankingUtil.RankingType;
+import org.bibsonomy.webapp.view.Views;
+
+/**
+ * Controller for user pages /user/USERNAME
+ * 
+ * @author Dominik Benz
+ * @version $Id$
+ */
+public class UserUserPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
+	private static final Logger LOGGER = Logger.getLogger(UserUserPageController.class);
+
+	public View workOn(final UserResourceViewCommand command) {
+		LOGGER.debug(this.getClass().getSimpleName());
+		this.startTiming(this.getClass(), command.getFormat());
+
+		// no user given -> error
+		if (command.getRequestedUser() == null) {
+			LOGGER.error("Invalid query /user without username");
+			throw new MalformedURLSchemeException("error.user_page_without_username");
+		}
+
+		// set grouping entity, grouping name, tags, user similarity
+		final GroupingEntity groupingEntity = GroupingEntity.USER;
+		final String groupingName = command.getRequestedUser();
+		final List<String> requTags = command.getRequestedTagsList();		
+		final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity()); 
+
+		// handle case when only tags are requested
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, null, 0, Integer.MAX_VALUE, null);
+		
+		// if we're in the personalized view, we have to retrieve all posts first & then 
+		// re-rank them 
+		final int entriesPerPage = Integer.MAX_VALUE;
+		command.setSortPage("ranking");
+		command.setSortPageOrder("desc");
+				
+		// determine which lists to initalize depending on the output format
+		// and the requested resourcetype
+		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
+
+		// fetch all tags of logged-in user
+		List<Tag> loginUserTags = this.logic.getTags(Resource.class, groupingEntity, command.getContext().getLoginUser().getName(), null, null, null, null, 0, Integer.MAX_VALUE, null, null);
+		
+		// fetch all tags of requested user
+		List<Tag> targetUserTags = this.logic.getTags(Resource.class, groupingEntity, groupingName, null, null, null, null, 0, Integer.MAX_VALUE, null, null);		
+		
+		// retrieve and set the requested resource lists, along with total
+		// counts
+		for (final Class<? extends Resource> resourceType : listsToInitialise) {
+			final ListCommand<?> listCommand = command.getListCommand(resourceType);
+						
+			final int origEntriesPerPage = listCommand.getEntriesPerPage();
+			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, entriesPerPage);
+										
+			// compute the ranking for each post in the list
+			RankingUtil.computeRanking(loginUserTags, targetUserTags, command.getListCommand(resourceType).getList(), RankingType.TFIDF, false);
+				
+			// post-process & sort
+			this.postProcessAndSortList(command, resourceType);
+			
+			// show only the top ranked resources for each resource type
+			if (command.getListCommand(resourceType).getList().size() > origEntriesPerPage) {
+				if (BibTex.class.equals(resourceType)) {
+					command.getBibtex().setList(command.getBibtex().getList().subList(listCommand.getStart(), origEntriesPerPage));
+				}
+				if (Bookmark.class.equals(resourceType)) {
+					command.getBookmark().setList(command.getBookmark().getList().subList(listCommand.getStart(), origEntriesPerPage));
+				}				
+			}
+			this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, entriesPerPage, null);
+			
+		}
+
+
+		// html format - retrieve tags and return HTML view
+		if (command.getFormat().equals("html")) {
+
+			// set page title
+			// TODO: i18n
+			command.setPageTitle("user :: " + groupingName + " (personalized)");
+			
+			// re-compute tag weights
+			RankingUtil.computeRanking(loginUserTags, targetUserTags);
+			
+			// insert tags into tagcloud
+			command.getTagcloud().setTags(targetUserTags);
+			
+			// this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, Integer.MAX_VALUE, null);
+			
+			// retrieve similar users
+			List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, groupingName, null, null, null, userRelation, null, 0, 10);
+			command.getRelatedUserCommand().setRelatedUsers(similarUsers);
+			
+			this.endTiming();
+			// return personalized view
+			return Views.USERUSERPAGE;
+		}
+		this.endTiming();
+		// export - return the appropriate view
+		return Views.getViewByFormat(command.getFormat());
+	}
+
+	public UserResourceViewCommand instantiateCommand() {
+		return new UserResourceViewCommand();
+	}
+}

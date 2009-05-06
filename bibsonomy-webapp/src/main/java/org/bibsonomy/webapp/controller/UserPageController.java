@@ -8,12 +8,14 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -39,12 +41,19 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			LOGGER.error("Invalid query /user without username");
 			throw new MalformedURLSchemeException("error.user_page_without_username");
 		}
-
-		// set grouping entity, grouping name, tags
+		
+		// set grouping entity, grouping name, tags, userSimilarity
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
 		final String groupingName = command.getRequestedUser();
 		final List<String> requTags = command.getRequestedTagsList();
-
+		final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity());
+		
+		// wrong user similarity requested -> error
+		if (userRelation == null) {
+			LOGGER.error("Invalid user similarity requested: " + command.getUserSimilarity());
+			throw new MalformedURLSchemeException("error.user_page_with_wrong_user_similarity");			
+		}
+		
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, null, 0, Integer.MAX_VALUE, null);
 				
@@ -67,6 +76,16 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		if (filter == FilterEntity.JUST_PDF || filter == FilterEntity.DUPLICATES) {
 			this.listsToInitialise.remove(Bookmark.class);
 		}
+		
+		// "redirect" to user-user-page controller if requested
+		// TODO: better to this via Spring URL mapping
+		if (command.getContext().isUserLoggedIn() &&  command.isPersonalized()) {
+			UserUserPageController uupc = new UserUserPageController();
+			uupc.listsToInitialise = this.listsToInitialise;
+			uupc.logic = this.logic;
+			uupc.userSettings = this.userSettings;
+			return uupc.workOn(command);
+		}		
 
 		int totalNumPosts = 1;
 
@@ -108,10 +127,8 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				LOGGER.error("User " + groupingName + " has reached threshold of 20000 tags on user page");
 			}
 			
-			// retrieve similar users
-			List<String> tags = new ArrayList<String>();
-			tags.add("sys:user:" + groupingName);
-			List<User> similarUsers = this.logic.getUsers(tags, Order.FOLKRANK, 0, 8);
+			// retrieve similar users, by the given user similarity measure
+			List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, groupingName, null, null, null, userRelation, null, 0, 10);	
 			command.getRelatedUserCommand().setRelatedUsers(similarUsers);
 			
 			if (requTags.size() > 0) {

@@ -27,6 +27,12 @@ public class ResourceViewCommand extends BaseCommand {
 	private String duplicates = "yes";
 	private boolean notags = false;
 	
+	/**
+	 * if true, the posts and tags of the requested user will be ranked / highlighted
+	 * according to the logged-in user 
+	 */
+	private Boolean personalized = false;	
+	
 	/** retrieve only tags without resources */
 	private boolean restrictToTags = false;
 
@@ -171,5 +177,17 @@ public class ResourceViewCommand extends BaseCommand {
 
 	public void setNotags(boolean notags) {
 		this.notags = notags;
+	}
+
+	public void setPersonalized(Boolean personalized) {
+		this.personalized = personalized;
+	}
+
+	public Boolean getPersonalized() {
+		return personalized;
+	}
+	
+	public Boolean isPersonalized() {
+		return personalized;
 	}
 }

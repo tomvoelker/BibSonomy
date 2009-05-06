@@ -1135,3 +1135,7 @@ padding-top:1px;
 	padding-left: 1em;
 }
 
+.personalize_text {
+  font-size: 65%;
+  color: #ffff99;
+}
