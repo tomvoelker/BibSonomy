@@ -52,7 +52,7 @@ public class Functions  {
 	// load special characters
 	static {
 		try {
-			chars.load(FunctionsTest.class.getClassLoader().getResourceAsStream("chars.properties"));
+			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
 			layoutRenderer = JabrefLayoutRenderer.getInstance();
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage());
