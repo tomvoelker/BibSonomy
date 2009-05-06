@@ -9,6 +9,9 @@
 
 		<a href="/ShowBibtexEntry?hash=${post.resource.intraHash}&amp;user=${mtl:encodeURI(post.user.name)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}">
 			&amp;nbsp;
+       	<c:if test="${post.ranking > 0}">
+		<span class="ranking">${fn:substring(post.ranking,0,4)}</span>
+		</c:if>  	
 		</a>
 
 </jsp:root>

@@ -17,7 +17,8 @@
 	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
-	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
+	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="contentHeading" type="java.lang.String" required="false"/>	
 	
 	<!-- 
 		store some locale messages in variables to be
@@ -37,7 +38,7 @@
 	</c:if>	
 		
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	<layout:layout loginUserName="${command.context.loginUser.name}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
+	<layout:layout loginUserName="${command.context.loginUser.name}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}">
 		<jsp:attribute name="headerExt">
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
@@ -60,6 +61,9 @@
 					<li id="optionExpandBibtex"><a href="javascript:expandBibTexList();" title="Expand Publications">&lt;</a></li>
 				</ul>
 			</div>
+			<c:if test="${not empty contentHeading}">
+				<div style="padding:1em;">${contentHeading}</div>
+			</c:if>
 			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 		</jsp:attribute>

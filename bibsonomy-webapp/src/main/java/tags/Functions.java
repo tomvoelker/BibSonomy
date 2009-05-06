@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.layout.jabref.JabrefLayout;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
@@ -22,6 +23,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.UrlUtils;
 
 import resources.Resource;
@@ -50,7 +52,7 @@ public class Functions  {
 	// load special characters
 	static {
 		try {
-			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
+			chars.load(FunctionsTest.class.getClassLoader().getResourceAsStream("chars.properties"));
 			layoutRenderer = JabrefLayoutRenderer.getInstance();
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage());
@@ -561,6 +563,28 @@ public class Functions  {
 	 */
 	public static Boolean contains(final Collection set, final Object object) {
 		return set.contains(object);
+	}
+	
+	/**
+	 * Retrieve the next user similarity, based on the ordering of user similarities
+	 * as described in {@link UserRelation}. For erroneous or invalid input, 
+	 * folkrank as default measure is returned.
+	 * 
+	 * @param userSimilarity - a user similarity
+	 * @return the "next" user similarity
+	 */
+	public static String toggleUserSimilarity(String userSimilarity) {
+		if (userSimilarity == null || "".equals(userSimilarity)) {
+			return UserRelation.FOLKRANK.name().toLowerCase();
+		}
+		UserRelation rel = EnumUtils.searchEnumByName(UserRelation.values(), userSimilarity);
+		if (rel == null) {
+			return UserRelation.FOLKRANK.name().toLowerCase();
+		}
+		// the four relevant user relations have the ID's 0 to 3 - so we add 1 and 
+		// compute modulo 4
+		int nextId = (rel.getId() + 1 ) % 4;
+		return UserRelation.getUserRelationById(nextId).name().toLowerCase();
 	}
 	
 }
