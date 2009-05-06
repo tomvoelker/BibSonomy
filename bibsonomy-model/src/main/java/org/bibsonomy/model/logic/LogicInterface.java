@@ -34,6 +34,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.TagSimilarity;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -70,24 +71,32 @@ public interface LogicInterface extends PostLogicInterface {
 	 */
 	public User getAuthenticatedUser();
 	
+	
 	/**
-	 * Returns all users
+	 * Generic method to retrieve lists of users
 	 * 
+	 * @param resourceType
+	 * 			- restrict users by a certain resource type
+	 * @param grouping
+	 * 			- the grouping entity
+	 * @param groupingName
+	 * 			- the grouping name
+	 * @param tags
+	 * 			- a list of tags by which to retrieve users (e.g., users related to these tags by folkrank)
+	 * @param hash
+	 * 			- a resourcehash 
+	 * @param order
+	 * 			- the order by which to retrieve the users
+	 * @param relation TODO
+	 * 			- the relation between the users
+	 * @param search
+	 * 			- a search string
 	 * @param start
 	 * @param end
-	 * @return a set of users, an empty set else
-	 */
-	public List<User> getUsers(int start, int end);
-
-	/**
-	 * Returns all users who are members of the specified group
 	 * 
-	 * @param groupName name of the group
-	 * @param start
-	 * @param end
-	 * @return a set of users, an empty set else
+	 * @return list of user
 	 */
-	public List<User> getUsers(String groupName, int start, int end);
+	public List<User> getUsers (Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end);	
 
 	/**
 	 * Returns details about a specified user
@@ -377,14 +386,6 @@ public interface LogicInterface extends PostLogicInterface {
 	 */
 	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName);
 
-	/**
-	 * @param tags
-	 * @param order
-	 * @param start
-	 * @param end TODO
-	 * @return list of user
-	 */
-	public List<User> getUsers (List<String> tags, Order order, final int start, int end);
 
 	/**
 	 * Returns all users that are classified to the specified state by
@@ -492,5 +493,8 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return All users which loginUser has in his friend list.
 	 */
 	public List<User> getFriendsOfUser(User loginUser);
+	
+	
+	
 	
 }
