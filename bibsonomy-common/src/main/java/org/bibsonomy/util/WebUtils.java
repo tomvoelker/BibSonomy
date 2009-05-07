@@ -107,7 +107,53 @@ public class WebUtils {
 		return out.toString();
 	}
 
+	/**
+	 * Do a POST request to the given URL with the given content and cookie. Assume the charset of the result to be charset.
+	 * 
+	 * @param url
+	 * @param postContent
+	 * @param cookie
+	 * @return The content of the result page.
+	 * 
+	 * @throws IOException
+	 */
+	public static String getPostContentAsString(final String cookie, final URL url, final String postContent) throws IOException {
+		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
+		urlConn.setAllowUserInteraction(false);
+		urlConn.setDoInput(true);
+		urlConn.setDoOutput(true);
+		urlConn.setUseCaches(false);
+		urlConn.setRequestMethod("POST");
+		urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
+
+		/*
+		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
+		 * pages require it to download content.
+		 */
+		urlConn.setRequestProperty("User-Agent", USER_AGENT);
+		if (cookie != null) {
+			urlConn.setRequestProperty("Cookie", cookie);
+		}
+
+		writeStringToStream(postContent, urlConn.getOutputStream());
+
+		// connect
+		urlConn.connect();
+
+		/*
+		 * extract character encoding from header
+		 */
+		final String charSet = getCharset(urlConn);
+
+		// write into string writer
+		final StringWriter out = inputStreamToStringWriter(urlConn.getInputStream(), charSet);
+
+		// disconnect
+		urlConn.disconnect();
+
+		return out.toString();
+	}
 
 	/**
 	 * Do a POST request to the given URL with the given content.
