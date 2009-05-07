@@ -536,8 +536,8 @@
 	</URLTest>
 	<URLTest id="url_96">
 		<TestDescription>RSOC Scraper url test</TestDescription>
-		<URL>http://journals.royalsociety.org/content/0212768121k0k781/?p=a355f354e68144bdacc2a11a7b4129b9&amp;pi=1</URL>
-		<BibFile>RSOCScraperUnitURLTest.bib</BibFile>
+		<URL>http://rsta.royalsocietypublishing.org/content/357/1750/133.abstract?sid=9d8827ba-af22-4f85-92b4-d65da59cf197</URL>
+		<BibFile>RSOCScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_97">
@@ -846,4 +846,17 @@
 		<BibFile>EprintScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.EprintScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_151">
+		<TestDescription>url test for isi scraper</TestDescription>
+		<URL>http://apps.isiknowledge.com/full_record.do?product=UA&amp;search_mode=GeneralSearch&amp;qid=1&amp;SID=Z282mBKih2ciA@iGHOp&amp;page=1&amp;doc=2&amp;colname=WOS</URL>
+		<BibFile>IsiScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.isi.IsiScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_152">
+		<TestDescription>RSOC Scraper url test, alternate host</TestDescription>
+		<URL>http://rspb.royalsocietypublishing.org/content/267/1440/205.abstract?sid=93bbdbe3-dc3a-41e1-bd8d-b6c5af6ac3d8</URL>
+		<BibFile>RSOCScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper</Scraper>
+	</URLTest>
+	
 </test:Tests>

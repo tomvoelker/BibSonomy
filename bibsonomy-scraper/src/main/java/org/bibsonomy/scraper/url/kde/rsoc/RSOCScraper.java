@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.scraper.ScrapingContext;
@@ -18,6 +19,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author wbi
@@ -25,14 +27,12 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  */
 public class RSOCScraper extends AbstractUrlScraper {
 
-	private static final String info = "RSOC Scraper: This Scraper parses a journal from " + href("http://journals.royalsociety.org/", "Royal Society Publishing");
+	private static final String info = "RSOC Scraper: This Scraper parses a journal from " + href("http://royalsocietypublishing.org/", "Royal Society Publishing");
 
-	private static final String RSOC_HOST  = "journals.royalsociety.org";
-	private static final String RSOC_HOST_NAME  = "http://journals.royalsociety.org";
-	private static final String RSOC_ABSTRACT_PATH = "/content/";
-	private static final String RSOC_RIS_PATH = "/export.mpx?mode=ris&code=";
+	private static final String HOST  = "royalsocietypublishing.org";
+	private static final String PATH  = "/content";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + RSOC_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(PATH + ".*")));
 
 	public String getInfo() {
 		return info;
@@ -40,53 +40,37 @@ public class RSOCScraper extends AbstractUrlScraper {
 
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-
-		String url = sc.getUrl().toString();
-
-		//get the ID of the article
-		String id = null;
-		id = url.substring(url.indexOf(RSOC_ABSTRACT_PATH) + RSOC_ABSTRACT_PATH.length(), url.indexOf("/?p="));
-
-		//let's see if we got an ID
-		if(id != null) {
-
-			String downloadLink = RSOC_HOST_NAME + RSOC_RIS_PATH + id;
-			//Store the cookies in a String
-			String cookies = null;
-			try {
-				cookies = getCookies(sc.getUrl());
-			} catch (IOException ex) {
-				throw new InternalFailureException("Could not store cookies from " + sc.getUrl());
+		
+		try {
+			String content = WebUtils.getContentAsString(sc.getUrl());
+			
+			// get link to download page
+			Pattern downloadLinkPattern = Pattern.compile("<a href=\\\"([^\\\"]*)\\\">Download to citation manager</a>");
+			Matcher downloadLinkMatcher = downloadLinkPattern.matcher(content);
+			String downloadLink = null;
+			if(downloadLinkMatcher.find()) // add type=bibtex to the end of the link
+				downloadLink = "http://" + sc.getUrl().getHost() + downloadLinkMatcher.group(1) + "&type=bibtex";
+			else
+				throw new ScrapingFailureException("Download link is not available");
+			
+			// download bibtex directly
+			String bibtex = WebUtils.getContentAsString(new URL(downloadLink));
+			if(bibtex != null){
+				// clean up (whitespaces in bibtex key)
+				String key = bibtex.substring(0, bibtex.indexOf(","));
+				String rest = bibtex.substring(bibtex.indexOf(","));
+				key = key.replaceAll("\\s", "");
+				bibtex = key + rest;
+				
+				sc.setBibtexResult(bibtex);
+				return true;
 			}
-
-			String risFile = null;
-			try {
-				risFile = getContent(new URL(downloadLink), cookies); 
-			} catch (IOException ex) {
-				throw new InternalFailureException("The url "+ downloadLink + " is not valid");
-			}
-
-			if(risFile != null) {
-				//replace all CR+LF to LF
-				risFile = risFile.replaceAll("\r\n", "\n");
-
-				//convert the ris file to bibtex
-				String bibtex = null;
-				bibtex = (new RisToBibtexConverter()).RisToBibtex(risFile);
-
-				if(bibtex != null) {
-					sc.setBibtexResult(bibtex);
-					return true;
-				} else {
-					throw new ScrapingFailureException("Conversion from Ris to bibtex failed");
-				}
-			} else {
-				throw new ScrapingFailureException("Ris download failed. Result is null!");
-			}
-		} else {
-			// missing id
-			throw new PageNotSupportedException("ID for donwload link is missing.");
+			
+		} catch (IOException ex) {
+			throw new InternalFailureException(ex);
 		}
+		
+		return false;
 	}
 
 	/** FIXME: refactor

@@ -7,11 +7,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Scraper URL test #96 for RSOCScraper
+ * Scraper URL test #96 #152 for RSOCScraper
  * @author wbi
  * @version $Id$
  */
 public class RSOCScraperTest {
+	
 	/**
 	 * starts URL test with id url_96
 	 */
@@ -21,4 +22,15 @@ public class RSOCScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_96"));
 	}
+	
+	/**
+	 * starts URL test with id url_152
+	 */
+	@Test
+	@Ignore
+	public void urlTest2Run(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_152"));
+	}
+	
 }
