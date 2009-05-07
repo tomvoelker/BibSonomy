@@ -11,29 +11,35 @@
     <fmt:message key="navi.postPublication" var="postPublication"/>
     <fmt:message key="image.button.postPublication" var="buttonImage"/>
 
-    <!-- NOTE: Tomcat converts &amp; into the symbol "ampersand" ... thus, we get invalid XHTML.
-         Workaround: double &amp; to &amp;amp; -->
     <script type="text/javascript">
-      var myurl = "javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+";
-      if (window.getSelection) {
-        myurl  += "encodeURIComponent(window.getSelection())";
-      } else if (document.getSelection) {
-        myurl  += "encodeURIComponent(document.getSelection())";
-      } else if (document.selection) {
-        myurl  += "encodeURIComponent(document.selection.createRange().text)";
-      }
-      var left  = String.fromCharCode(60);
-      var right = String.fromCharCode(62);
-      document.write(left + 'a title="${postPublication}" href="' + myurl + '" onclick="return false" class="bookmarklet2"' + right + left + 'img src="${buttonImage}" alt="${postPublication}" title="${postPublication}"/' + right  + left + '/a' + right);
-    </script>
-    <noscript>
-      <!-- Firefox & Opera document.getSelection() -->
-      (<fmt:message key="buttons.javascript"/> Firefox/Opera: 
-      <a title="${postPublication}" href="javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;amp;url='+encodeURIComponent(location.href)+'&amp;amp;description='+encodeURIComponent(document.title)+'&amp;amp;selection='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublication}" title="${postPublication}"/></a>,
-  
-      <!-- Internet Explorer document.selection.createRange().text -->    
-      Internet Explorer: 
-      <a title="${postPublication}" href="javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;amp;url='+encodeURIComponent(location.href)+'&amp;amp;description='+encodeURIComponent(document.title)+'&amp;amp;selection='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublication}" title="${postPublication}"/></a>)
+  		//<mtl:cdata>
+		<![CDATA[
+	      var myurl = "javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+";
+	      if (window.getSelection) {
+	        myurl  += "encodeURIComponent(window.getSelection())";
+	      } else if (document.getSelection) {
+	        myurl  += "encodeURIComponent(document.getSelection())";
+	      } else if (document.selection) {
+	        myurl  += "encodeURIComponent(document.selection.createRange().text)";
+	      }
+	      var left  = String.fromCharCode(60);
+	      var right = String.fromCharCode(62);
+	      document.write(left + 'a title="${postPublication}" href="' + myurl + '" onclick="return false" class="bookmarklet2"' + right + left + 'img src="${buttonImage}" alt="${postPublication}" title="${postPublication}"/' + right  + left + '/a' + right);
+	    ]]>
+	    //</mtl:cdata>
+	</script>
+	<noscript>
+	    //<mtl:cdata>
+		<![CDATA[
+	      <!-- Firefox & Opera document.getSelection() -->
+	      (<fmt:message key="buttons.javascript"/> Firefox/Opera: 
+	      <a title="${postPublication}" href="javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublication}" title="${postPublication}"/></a>,
+	  
+	      <!-- Internet Explorer document.selection.createRange().text -->    
+	      Internet Explorer: 
+	      <a title="${postPublication}" href="javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublication}" title="${postPublication}"/></a>)
+	    ]]>
+	    //</mtl:cdata>
     </noscript>
   
 

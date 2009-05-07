@@ -404,7 +404,13 @@ public enum Views implements View {
 	/**
 	 * show the advanced_search page
 	 */
-	MYSEARCH("mySearch");
+	MYSEARCH("mySearch"),
+	
+	/**
+	 * show button-page view
+	 */
+	BUTTONS("buttons");
+	
 	
 	
 	
