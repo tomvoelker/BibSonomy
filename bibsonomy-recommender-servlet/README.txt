@@ -1,10 +1,10 @@
-                          BibSonomy REST-Common
+                          BibSonomy Recommender Webapp
 
   What is it?
   -----------
 
-  BibSonomy REST-Common contains common code needed by both the
-  REST-Client and the REST-server, like exceptions, enums, renderers.
+  BibSonomy Recommender Webapp contains a sample webapp to 
+  connect a remote recommender to BibSonomy.
 
   The module is part of the BibSonomy social bookmarking system 
   <http://www.bibsonomy.org> and is maintained by the Knowledge & 
