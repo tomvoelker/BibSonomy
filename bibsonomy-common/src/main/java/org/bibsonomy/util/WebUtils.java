@@ -63,11 +63,12 @@ public class WebUtils {
 	 * @param url
 	 * @param postContent
 	 * @param charset - the assumed charset of the result. If <code>null</code>, the charset from the response header is used.
+	 * @param cookie - the Cookie to be attached to the request. If <code>null</code>, the Cookie header is not set.
 	 * @return The content of the result page.
 	 * 
 	 * @throws IOException
 	 */
-	public static String getPostContentAsString(final URL url, final String postContent, final String charset) throws IOException {
+	public static String getPostContentAsString(final URL url, final String postContent, final String charset, final String cookie) throws IOException {
 		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 		urlConn.setAllowUserInteraction(false);
 		urlConn.setDoInput(true);
@@ -83,6 +84,11 @@ public class WebUtils {
 		 */
 		urlConn.setRequestProperty("User-Agent", USER_AGENT);
 
+		if (cookie != null) {
+			urlConn.setRequestProperty("Cookie", cookie);
+		}
+
+		
 		writeStringToStream(postContent, urlConn.getOutputStream());
 
 		// connect
@@ -107,6 +113,21 @@ public class WebUtils {
 		return out.toString();
 	}
 
+	
+	/**
+	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
+	 * 
+	 * @param url
+	 * @param postContent
+	 * @param charset - the assumed charset of the result. If <code>null</code>, the charset from the response header is used.
+	 * @return The content of the result page.
+	 * 
+	 * @throws IOException
+	 */
+	public static String getPostContentAsString(final URL url, final String postContent, final String charset) throws IOException {
+		return getPostContentAsString(url, postContent, charset, null);
+	}
+	
 	/**
 	 * Do a POST request to the given URL with the given content and cookie. Assume the charset of the result to be charset.
 	 * 
@@ -118,41 +139,7 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getPostContentAsString(final String cookie, final URL url, final String postContent) throws IOException {
-		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(true);
-		urlConn.setUseCaches(false);
-		urlConn.setRequestMethod("POST");
-		urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-
-		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-		 * pages require it to download content.
-		 */
-		urlConn.setRequestProperty("User-Agent", USER_AGENT);
-		if (cookie != null) {
-			urlConn.setRequestProperty("Cookie", cookie);
-		}
-
-		writeStringToStream(postContent, urlConn.getOutputStream());
-
-		// connect
-		urlConn.connect();
-
-		/*
-		 * extract character encoding from header
-		 */
-		final String charSet = getCharset(urlConn);
-
-		// write into string writer
-		final StringWriter out = inputStreamToStringWriter(urlConn.getInputStream(), charSet);
-
-		// disconnect
-		urlConn.disconnect();
-
-		return out.toString();
+		return getPostContentAsString(url, postContent, null, cookie);
 	}
 
 	/**
@@ -165,7 +152,7 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getPostContentAsString(final URL url, final String postContent) throws IOException {
-		return getPostContentAsString(url, postContent, null);
+		return getPostContentAsString(url, postContent, null, null);
 	}
 
 	/**
