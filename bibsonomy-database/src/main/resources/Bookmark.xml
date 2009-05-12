@@ -252,7 +252,7 @@
 		FROM urls u, bookmark b, ((
 	    	SELECT t1.content_id, t1.date                        					<!-- currUser's own items + items from users of group which currUser may see -->
 		    FROM groups g, search_bookmark t1                 
-		    WHERE t1.group = #groupId#
+		    WHERE g.group = #groupId#
 		    	AND g.user_name = t1.user_name										<!-- all items of all group members (including currUser) -->
 		    	AND (
 		        	t1.user_name = #userName#										<!-- currUser's own items -->
