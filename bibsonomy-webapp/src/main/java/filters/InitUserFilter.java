@@ -53,6 +53,7 @@ import beans.UserBean;
 public class InitUserFilter implements Filter {
 
 	public static final String STATIC_RESOURCES = "/resources";
+	public static final String API = "/api";
 
 	private final static Logger log = Logger.getLogger(InitUserFilter.class);
 
@@ -123,7 +124,7 @@ public class InitUserFilter implements Filter {
 		/*
 		 * ignore resource files (CSS, JPEG/PNG, JavaScript) ... 
 		 */
-		if (requPath.startsWith(STATIC_RESOURCES)) {
+		if (requPath.startsWith(STATIC_RESOURCES) || requPath.startsWith(API)) {
 			chain.doFilter(request, response);
 			return;
 		} 

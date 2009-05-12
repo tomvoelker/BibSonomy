@@ -40,7 +40,7 @@ public class ActionValidationFilter implements Filter {
 		/*
 		 * ignore resource files (CSS, JPEG/PNG, JavaScript) ... 
 		 */
-		if (requPath.startsWith(SessionSettingsFilter.STATIC_RESOURCES)) {
+		if (requPath.startsWith(InitUserFilter.STATIC_RESOURCES) || requPath.startsWith(InitUserFilter.API)) {
 			chain.doFilter(request, response);
 			return;
 		} 

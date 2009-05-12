@@ -27,8 +27,6 @@ import beans.UserBean;
  */
 public class SessionSettingsFilter implements Filter {
 
-	public static final String STATIC_RESOURCES = "/resources";
-
 	private final static Logger log = Logger.getLogger(SessionSettingsFilter.class);
 	
     /**
@@ -86,7 +84,7 @@ public class SessionSettingsFilter implements Filter {
 		/*
 		 * ignore resource files (CSS, JPEG/PNG, JavaScript) ... 
 		 */
-		if (requPath.startsWith(STATIC_RESOURCES)) {
+		if (requPath.startsWith(InitUserFilter.STATIC_RESOURCES) || requPath.startsWith(InitUserFilter.API)) {
 	        chain.doFilter(request, response);
 	        return;
 		} 
