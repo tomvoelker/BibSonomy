@@ -367,6 +367,11 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="mySearchController"/>
 					</bean>
+				</entry>
+				<entry key="/buttons">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="buttonPageController"/>
+					</bean>
 				</entry>	
 			</map>
 		</property>
@@ -559,8 +564,13 @@
 	 -->
 	<bean id="RedirectController" class="org.bibsonomy.webapp.controller.special.RedirectController" scope="request">
 		<property name="requestLogic" ref="requestLogic"/>
-	</bean> 
-	 
+	</bean>
+
+	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="BUTTONS"></property>
+	</bean>
+
+
 	<bean id="bibtexkeyPageController" class="org.bibsonomy.webapp.controller.BibtexkeyPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>

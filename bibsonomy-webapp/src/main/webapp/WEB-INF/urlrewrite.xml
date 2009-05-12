@@ -395,12 +395,6 @@
 		<to last="true">/uploadFile</to>
 	</rule>
 	<!-- download a document -->
-	<!--<rule>
-		<name>/documents</name>
-		<from>^/+documents/(.+)$</from>
-		<set type="parameter" name="requHash">$1</set>
-		<to last="true">/DocumentDownloadHandler</to>
-	</rule>-->
 	<rule>
 		<name>/documents/INTRAHASH/USERNAME/FILENAME</name>
 		<from>^/+documents/+([0-9a-fA-F]+)/+([^/]+)/+([^/]+)</from>
