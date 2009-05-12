@@ -11,7 +11,6 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.common.enums.DatabaseType;
 
 /**
  * Returns a list of BibTex's for a given search.
@@ -28,15 +27,13 @@ public class GetBibtexSearch extends BibTexChainElement {
 		if (SearchEntity.LUCENE.equals(param.getSearchEntity())) {
 			return this.db.getBibTexSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
 		}
-		else {
-			return this.db.getBibTexSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
-		}
-//		return this.db.getBibTexSearch(param, session);
+		
+		return this.db.getBibTexSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return (param.getGrouping() == GroupingEntity.ALL &&
+		return ((param.getGrouping() == GroupingEntity.ALL || param.getGrouping() == GroupingEntity.USER) &&
 				(SearchEntity.ALL.equals(param.getSearchEntity()) || SearchEntity.LUCENE.equals(param.getSearchEntity()) ) &&				
 				!present(param.getBibtexKey()) &&
 				present(param.getSearch()));

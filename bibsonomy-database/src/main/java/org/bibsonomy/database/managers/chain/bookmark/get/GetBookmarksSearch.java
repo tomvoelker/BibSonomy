@@ -30,15 +30,12 @@ public class GetBookmarksSearch extends BookmarkChainElement {
 			//param.getGroupNames(); // gruppennamen der gruppen, die der eingeloggte user sehen darf
 			return this.db.getBookmarkSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
 		}
-		else {
-			return this.db.getBookmarkSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
-		}
-//		return this.db.getBookmarkSearchLucene(param, session);
+		return this.db.getBookmarkSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
 	}
 	
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return (param.getGrouping() == GroupingEntity.ALL &&
+		return ((param.getGrouping() == GroupingEntity.ALL || param.getGrouping() == GroupingEntity.USER) &&
 				present(param.getSearch()));
 	}
 }
