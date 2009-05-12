@@ -24,11 +24,15 @@
 		<div id="general_fixed">
 			<c:set var="userName"><mtl:encode value='${command.context.loginUser.name}'/></c:set>
 			
-			<h2 style="text-align: center; margin-bottom: 0"><fmt:message key="buttons.bookmarklet"/></h2>
-			
-			<c:if test="${command.context.userLoggedIn}">
+			<h2><fmt:message key="buttons.bookmarklet"><fmt:param value="${projectName}"></fmt:param></fmt:message></h2>
+		
+    
+            <!-- 
+               |              myBibSonomy 
+               -->	
+         	<c:if test="${command.context.userLoggedIn}">
 				<p>
-					<fmt:message key="buttons.mybibsonomy_part_one"/><buttons:myBibSonomy username="${userName}"/><fmt:message key="buttons.mybibsonomy_part_two"/>
+					<fmt:message key="buttons.mybibsonomy_part_one"/><buttons:myBibSonomy username="${userName}"/><fmt:message key="buttons.mybibsonomy_part_two"><fmt:param value="${projectName}"></fmt:param></fmt:message>
 				</p>
 				<p>
 					<fmt:message key="buttons.mybibsonomy_part_three"/>
@@ -37,13 +41,19 @@
 					</a>
 					<fmt:message key="buttons.mybibsonomy_part_five"/>
 					<a href="/user/${userName}">
-						<fmt:message key="buttons.mybibsonomy"/>
+						<fmt:message key="buttons.mybibsonomy"><fmt:param value="${projectName}"></fmt:param></fmt:message>
 					</a>
+                    <c:out value=" "/>
 					<fmt:message key="buttons.mybibsonomy_part_six"/>
 				</p>
 			</c:if>
 			
-			<h3 style="text-align:center"><fmt:message key="buttons.shortcut_bookmarks"/></h3>
+      
+      
+            <!-- 
+               |              postBookmark 
+               -->  
+			<h3><fmt:message key="buttons.shortcut_bookmarks"/></h3>
 			<c:choose>
 				<c:when test="${command.context.userLoggedIn}">
 					<p>
@@ -62,26 +72,30 @@
 			</c:choose>
 			<p><fmt:message key="buttons.shortcut_bookmarks_end"/></p>
 			
-			<h3 style="text-align:center"><fmt:message key="buttons.shortcut_bibtex"/></h3>
+      
+            <!-- 
+               |              postPublication 
+               -->        
 			<c:if test="${command.context.userLoggedIn}">
-				<p>
+                <h3><fmt:message key="buttons.shortcut_bibtex"/></h3>
+           		<p>
 					<fmt:message key="buttons.shortcut_one"/>
 					<buttons:postPublication/><fmt:message key="buttons.shortcut_two"/><buttons:postPublicationPopUp/>
 					<fmt:message key="buttons.shortcut_three"/>
-					<fmt:message key="buttons.shortcut_bibtex_end"/>
+					<fmt:message key="buttons.shortcut_bibtex_end"><fmt:param value="${projectName}"></fmt:param></fmt:message>
 				</p>
 			</c:if>
-			
-			<h3 style="text-align:center"><fmt:message key="buttons.javascript_snippets"/></h3>
-			<p><fmt:message key="buttons.javascript_snippets_text"/></p>
+			      
+            <!-- 
+               |              JavaScript code snippets 
+               -->  
+			<h3><fmt:message key="buttons.javascript_snippets"/></h3>
+			<p><fmt:message key="buttons.javascript_snippets_text"><fmt:param value="${projectName}"></fmt:param></fmt:message></p>
 			<buttons:snippets/>
+      
 		</div>
 		
 	</jsp:attribute>
-				
-	<jsp:attribute name="sidebar"/>
-
-	<jsp:attribute name="beforeBodyClose"/>
 
 </layout:paneLayout>
 

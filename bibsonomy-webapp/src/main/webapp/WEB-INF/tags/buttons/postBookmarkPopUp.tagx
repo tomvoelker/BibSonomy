@@ -22,22 +22,18 @@
          } else if (document.selection) {
            myurl  = "javascript: var post=window.open('${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;user=<mtl:encode value='${user.name}'/>&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.selection.createRange().text), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
          }
-         document.write("<a title=\"postBookmark popup\"href=\""+myurl+"\" onclick=\"return false\" class=\"bookmarklet2\"><img src=\"/resources/image/button_postBookmark_popup.png\" alt=\"postBookmark popup\"/></a>");
+         document.write("<a title=\"postBookmark\"href=\""+myurl+"\" onclick=\"return false\" class=\"bookmarklet2\"><img src=\"/resources/image/button_postBookmark_popup.png\" alt=\"postBookmark\"/></a>");
 	]]>
 	//</mtl:cdata>
    </script>
    
    <noscript>
-   //<mtl:cdata>
-   <![CDATA[
 	   <!-- Firefox & Opera document.getSelection() -->
 	    (you need JavaScript enabled: Firefox/Opera: 
-	    <a title="postBookmark popup" href="javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;user=${fn:escapeXml(username)}&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="/resources/image/button_postBookmark.png" alt="postBookmark"/></a>
+	    <a title="postBookmark" href="javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;user=${fn:escapeXml(username)}&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="/resources/image/button_postBookmark.png" alt="postBookmark"/></a>
 	    <!-- Internet Explorer document.selection.createRange().text -->    
 	    InternetExplorer: 
-	    <a title="postBookmark popup" href="javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;user=${fn:escapeXml(username)}&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="/resources/image/button_postBookmark.png" alt="postBookmark"/></a>
-   ]]>
-   //</mtl:cdata>
+	    <a title="postBookmark" href="javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;user=${fn:escapeXml(username)}&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="/resources/image/button_postBookmark.png" alt="postBookmark"/></a>
    </noscript>
 
 </jsp:root>

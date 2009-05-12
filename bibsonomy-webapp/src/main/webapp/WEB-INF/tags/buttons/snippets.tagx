@@ -7,6 +7,10 @@
     xmlns:spring="http://www.springframework.org/tags"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 		
+    
+    
+    <fmt:message var="selectCode" key="buttons.select_code"/>
+    
 	<form name="select_all">
 		<table width="100%" border="0" cellspacing="0" cellpadding="5">
 			<tr>
@@ -23,20 +27,20 @@
 				</td>
 			</tr>
 			<tr>
-				<td width="51%" style="text-align:center">
-					<textarea name="text_area1" rows="10" cols="40">
+				<td width="70%" style="text-align:center">
+					<textarea name="text_area1" rows="10" style="width: 100%">
 						<![CDATA[
-					 		<!-- post bookmark to ${projectName} link code -->
-					 		<script type="text/javascript">    	
-								var url=encodeURIComponent(document.location.href);
-								var title=encodeURIComponent(document.title);
-								document.write("<a href='${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\'Bookmark this page to ${projectName}.\''>Bookmark to ${projectName}!</a>");
-							</script>    
-						]]>
-					</textarea><br/>
-					<input type="button" value="Highlight Text" onClick="javascript:this.form.text_area1.focus();this.form.text_area1.select();"/>
+<!-- post bookmark to ${projectName} link code -->
+<script type="text/javascript">    	
+   var url=encodeURIComponent(document.location.href);
+   var title=encodeURIComponent(document.title);
+   document.write("<a href='${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\'Bookmark this page to ${projectName}.\''>Bookmark to ${projectName}!</a>");
+</script>
+]]>
+					</textarea>
+					<input type="button" value="${selectCode}" onClick="javascript:this.form.text_area1.focus();this.form.text_area1.select();"/>
 				</td>
-				<td width="49%">
+				<td width="30%">
 					<div align="center">
 						<script type="text/javascript">
 							<![CDATA[
@@ -64,21 +68,21 @@
 			</tr>
 			
 			<tr>
-				<td width="51%" style="text-align:center">
-					<textarea name="text_area2" rows="10" cols="40">
-						<![CDATA[
-							<!-- post bookmark to ${projectName} link code -->
-							<script type="text/javascript">
-								var url=encodeURIComponent(document.location.href);
-								var title=encodeURIComponent(document.title);
-								document.write("<a href='${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\'Bookmark this page to ${projectName}.\''><img src='${projectHome}resources/image/bookmarkIt.png'></a>");	
-							</script>  
-						]]>
+				<td style="text-align:center">
+					<textarea name="text_area2" rows="10" style="width: 100%">
+<![CDATA[
+<!-- post bookmark to ${projectName} link code -->
+<script type="text/javascript">
+   var url=encodeURIComponent(document.location.href);
+   var title=encodeURIComponent(document.title);
+   document.write("<a href='${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\'Bookmark this page to ${projectName}.\''><img src='${projectHome}resources/image/bookmarkIt.png'></a>");	
+</script>
+]]>
 					
-					</textarea><br/>
-					<input type="button" value="Highlight Text" onClick="javascript:this.form.text_area2.focus();this.form.text_area2.select();"/>
+					</textarea>
+					<input type="button" value="${selectCode}" onClick="javascript:this.form.text_area2.focus();this.form.text_area2.select();"/>
 				</td>
-				<td width="49%">
+				<td>
 					<div align="center">
 						<script type="text/javascript">
 							<![CDATA[
