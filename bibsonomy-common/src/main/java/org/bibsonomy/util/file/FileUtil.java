@@ -1,5 +1,7 @@
 package org.bibsonomy.util.file;
 
+import org.bibsonomy.util.StringUtils;
+
 
 /**
  * @author rja
@@ -19,5 +21,27 @@ public class FileUtil {
 		return documentPath + documentFileHash.substring(0, 2) + "/" + documentFileHash;
 	}
 
+	/**
+	 * Depending on the extension of the file, returns the correct MIME content
+	 * type. NOTE: the method looks only at the name of the file not at the
+	 * content!
+	 * 
+	 * @param filename
+	 *            - name of the file.
+	 * @return - the MIME content type of the file.
+	 */
+	public static String getContentType(final String filename) {
+		if (StringUtils.matchExtension(filename, "ps")) {
+			return "application/postscript";
+		} else if (StringUtils.matchExtension(filename, "pdf")) {
+			return "application/pdf";
+		} else if (StringUtils.matchExtension(filename, "txt")) {
+			return "text/plain";
+		} else if (StringUtils.matchExtension(filename, "djv", "djvu")) {
+			return "image/vnd.djvu";
+		} else {
+			return "application/octet-stream";
+		}
+	}
 
 }
