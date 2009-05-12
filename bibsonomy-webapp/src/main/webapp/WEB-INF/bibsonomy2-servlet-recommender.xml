@@ -24,7 +24,7 @@
 	    <property name="queryTimeout" value="1500"/>
 		<property name="distRecommenders" ref="distRecommenderList"/>
 		<property name="localRecommenders" ref="localRecommenderList"/>
-		<property name="resultSelector" ref="uniformRandomSelection"/>
+		<property name="resultSelector" ref="selectOneWithoutReplacement"/>
 	</bean>	  
 
 	<util:list id="localRecommenderList" list-class="java.util.ArrayList">
@@ -121,6 +121,11 @@
 	     | strategy for uniform random recommender selection
 	     +-->
 	 <bean id="uniformRandomSelection" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectOne" scope="singleton"/>
+
+	 <!--+ 
+	     | strategy for uniform random recommender selection
+	     +-->
+	 <bean id="selectOneWithoutReplacement" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectOneWithoutReplacement" scope="singleton"/>
 	 
 	 <!--+
 	     | manager for logging recommender's performance
