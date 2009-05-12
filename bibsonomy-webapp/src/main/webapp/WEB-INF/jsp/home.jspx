@@ -26,7 +26,7 @@
 					<c:if test="${command.context.userLoggedIn}">
 						<option value="user:${fn:escapeXml(command.context.loginUser.name)}"><fmt:message key="navi.search"/>:${fn:escapeXml(command.context.loginUser.name)}</option>
 						<c:forEach var="grp" items="${command.context.loginUser.groups}">
-							<option value="group:${grp.name}"><fmt:message key="navi.search"/>:<c:out value='${fn:escapeXml(grp.name)}'/></option>
+							<option value="group:${fn:escapeXml(grp.name)}"><fmt:message key="navi.search"/>:<c:out value='${grp.name}'/></option>
 						</c:forEach>
 					</c:if>
 				</select>
