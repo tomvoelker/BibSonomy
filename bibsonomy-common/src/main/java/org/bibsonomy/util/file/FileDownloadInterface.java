@@ -21,44 +21,18 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.util.fileutil;
+package org.bibsonomy.util.file;
 
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 /**
- * Handles the file download
- * 
+ * @author  Christian Kramer
  * @version $Id$
- * @author Christian Kramer
  */
-public class HandleFileDownload implements FileDownloadInterface {
-
-	private BufferedInputStream buf;
+public interface FileDownloadInterface {
 
 	/**
-	 * @param docPath 
-	 * @param fileHash
-	 * @throws FileNotFoundException
+	 * @return bis
 	 */
-	public HandleFileDownload(final String docPath, final String fileHash) throws FileNotFoundException {
-		// get the file
-		final File document = new File(docPath + fileHash.substring(0, 2).toLowerCase() + "/" + fileHash);
-
-		// if the document is readable create a bufferedstream
-		if (document.canRead()) {
-			this.buf = new BufferedInputStream(new FileInputStream(document));
-		} else {
-			throw new FileNotFoundException("The requested file doesn't exists");
-		}
-	}
-
-	/*
-	 * @see org.bibsonomy.util.fileutil.FileDownloadInterface#getBuf()
-	 */
-	public BufferedInputStream getBuf() {
-		return this.buf;
-	}
+	public abstract BufferedInputStream getBuf();
 }

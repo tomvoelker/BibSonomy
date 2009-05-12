@@ -21,7 +21,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.util.fileutil;
+package org.bibsonomy.util.file;
 
 /**
  * @author  Christian Kramer

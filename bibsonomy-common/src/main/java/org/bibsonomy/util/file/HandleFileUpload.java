@@ -21,7 +21,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.util.fileutil;
+package org.bibsonomy.util.file;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -94,7 +94,7 @@ public class HandleFileUpload implements FileUploadInterface {
 	 *      java.lang.String)
 	 */
 	public void writeUploadedFiles(final String docPath) throws Exception {
-		this.upFile.write(new File((docPath + this.fileHash.substring(0, 2).toLowerCase()), this.fileHash));
+		this.upFile.write(new File((FileUtil.getDocumentPath(docPath, this.fileHash))));
 	}
 
 	/*
