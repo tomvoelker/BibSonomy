@@ -5,7 +5,8 @@ CREATE TABLE log_recommender(
 	user_name VARCHAR(30) NOT NULL,
 	date TIMESTAMP NOT NULL,
 	content_type TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
-	PRIMARY KEY (query_id)
+	PRIMARY KEY (query_id),
+	KEY `post_id_user_name_date` (`post_id`,`user_name`,`date`)
 ) DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS recommender_postmap;

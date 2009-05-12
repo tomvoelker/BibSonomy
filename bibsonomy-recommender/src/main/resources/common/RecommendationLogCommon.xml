@@ -2,6 +2,15 @@
 <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
 
 <sqlMap namespace="RecommendationLogCommon">
+	<!-- + 
+		 | Result mappings.
+	 	 + -->
+    <resultMap id="pairMap" class="pair">
+        <result property="first"  column="first" javaType="long"/>
+        <result property="second" column="second" javaType="long"/>
+    </resultMap>
+
+	
     <parameterMap id="recSetting" class="recSetting">
         <parameter property="recId"   javaType="string"/>
         <parameter property="recMeta" jdbcType="BLOB"/>

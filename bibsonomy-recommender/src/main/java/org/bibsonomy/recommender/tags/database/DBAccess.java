@@ -541,7 +541,7 @@ public class DBAccess extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Get list of all recommenders (id) which delivered tags in given query.
+	 * Get list of all recommenders (id) which where queried.
 	 * @param qid query id
 	 * @return list of ids
 	 * @throws SQLException 
@@ -550,7 +550,33 @@ public class DBAccess extends AbstractDatabaseManager {
 	public static List<Long> getAllRecommenderIDs(Long qid) throws SQLException {
 		return (List<Long>)getSqlMapInstance().queryForList("getAllRecommenderIDsForQuery", qid);
 	}
-
+	/**
+	 * Get list of all recommenders (id) which where queried.
+	 * @param qid query id
+	 * @return list of ids
+	 * @throws SQLException 
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<Pair<Long,Long>> getRecommenderSelectionCount(Long qid) throws SQLException {
+		return (List<Pair<Long,Long>>)getSqlMapInstance().queryForList("getRecommenderSelectionCount", qid);
+	}
+	
+	
+	/**
+	 * Get list of all recommenders (id) which where queried and not selected previously 
+	 * during given post process.
+	 * 
+	 * @param qid query id
+	 * @return list of ids
+	 * @throws SQLException 
+	 * @throws SQLException 
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<Long> getAllNotSelectedRecommenderIDs(Long qid) throws SQLException {
+		return (List<Long>)getSqlMapInstance().queryForList("getAllNotSelectedRecommenderIDsForQuery", qid);
+	}
+	
+	
 	/**
 	 * Returns details for given selector.
 	 * @param sid Result selector's setting id
@@ -927,6 +953,7 @@ public class DBAccess extends AbstractDatabaseManager {
 		}
 		return false;
 	}
+
 
 
 

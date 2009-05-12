@@ -30,6 +30,64 @@
 		WHERE query_id = #id#
 	</select>	
 	
+	<!-- +
+		 | Get list of all recommenders used in given query
+		 + -->  
+	<select id="getRecommenderSelectionCount" parameterClass="long" resultMap="RecommendationLogCommon.pairMap">
+		SELECT m.setting_id AS first, COUNT(s.setting_id) AS second
+		FROM log_recommender l
+		 JOIN log_recommender l2
+		   ON l.post_id=l2.post_id
+		  AND l.user_name = l2.user_name
+		  AND TIMESTAMPDIFF(HOUR, l.date, l2.date)&lt;12
+		 JOIN recommender_querymap m
+		   ON m.query_id = l2.query_id
+		 LEFT JOIN recommender_selection s 
+		  ON s.query_id=l2.query_id
+		  AND s.setting_id = m.setting_id
+		WHERE l.query_id = #qid#
+		GROUP BY m.setting_id
+		ORDER BY second ASC
+<!-- 		SELECT s.setting_id AS first, COUNT(l2.query_id) AS second
+		FROM log_recommender l
+		 JOIN log_recommender l2
+		   ON l.post_id=l2.post_id
+		  AND l.user_name = l2.user_name
+		  AND TIMESTAMPDIFF(HOUR, l.date, l2.date)&lt;12
+		 JOIN recommender_selection s 
+		   ON s.query_id = l2.query_id
+		WHERE l.query_id = #qid#
+		GROUP BY s.setting_id
+		ORDER BY second ASC -->
+	</select>	
+	
+	<!-- +
+		 | Get list of all recommenders (id) which where queried and not selected previously 
+	 	 | during given post process.
+		 + -->  
+	<select id="getAllNotSelectedRecommenderIDsForQuery" parameterClass="long" resultClass="long">
+	    SELECT DISTINCT m.setting_id
+		FROM log_recommender l
+		 JOIN log_recommender l2
+		   ON l.post_id=l2.post_id
+		  AND l.user_name = l2.user_name
+		  AND TIMESTAMPDIFF(HOUR, l.date, l2.date)&lt;12
+		 JOIN recommender_querymap m
+		   ON m.query_id = l2.query_id
+		WHERE l.query_id = #qid#
+          AND NOT EXISTS (
+                SELECT s.setting_id
+				FROM log_recommender l3
+				 JOIN log_recommender l4
+				   ON l3.post_id=l4.post_id
+				  AND l3.user_name = l4.user_name
+				  AND TIMESTAMPDIFF(HOUR, l3.date, l4.date)&lt;12
+				 JOIN recommender_selection s
+				   ON s.query_id = l4.query_id
+				WHERE l3.query_id = #qid# AND s.setting_id=m.setting_id
+        )
+	</select>	
+	
  	<!-- +
 		 | Get details for given recommender
 		 + -->  
