@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.webapp.command.actions.DownloadFileCommand;
+import org.pdfbox.util.operator.SetHorizontalTextScaling;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -44,7 +45,7 @@ public class DocumentDownloadView extends AbstractView{
 			 * set HTTP headers
 			 */
 			response.setHeader("Content-Disposition","inline; filename*='utf-8'" + URLEncoder.encode(command.getFilename(), "UTF-8"));
-			response.setContentType(command.getContentType());
+			setContentType(command.getContentType());
 			response.setContentLength((int) document.length());
 			
 			/*
