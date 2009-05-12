@@ -5,7 +5,7 @@ import java.io.File;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.actions.DownloadFileCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -42,7 +42,6 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 
 	@Override
 	public DownloadFileCommand instantiateCommand() {
-		// TODO Auto-generated method stub
 		return new DownloadFileCommand();
 	}
 
@@ -59,57 +58,61 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 			return Views.ERROR;
 		}
 
-		String intrahash = command.getIntrahash();
-		String requestedUser = command.getRequestedUser();
-		String fileName = command.getFilename();
+		final String intrahash     = command.getIntrahash();
+		final String requestedUser = command.getRequestedUser();
+		final String fileName      = command.getFilename();
 
 		if (command.getAction().equals(DOWNLOAD)) {
-
-			Document document = logic.getDocument(requestedUser, intrahash, fileName);
+			/*
+			 * handle document download
+			 */
+			final Document document = logic.getDocument(requestedUser, intrahash, fileName);
 
 			if (document != null) {
+				command.setPathToFile(FileUtil.getDocumentPath(docpath, document.getFileHash()));
+				command.setContentType(FileUtil.getContentType(document.getFileName()));
+				/*
+				 * stream document to user
+				 */
+				return Views.DOWNLOAD_FILE;
+			} 
+			
+			errors.reject("error.document_not_found");
 
-				command.setPathToFile(this.docpath + document.getFileHash().substring(0, 2) + "/" + document.getFileHash());
-
-				command.setContentType(getContentType(document.getFileName()));
-
-			} else {
-				// TODO implement adapted error message
-				return Views.ERROR;
-			}
 		} else if (command.getAction().equals(DELETE)) {
-
+			/*
+			 * handle document deletion
+			 */
 			if (command.getContext().isValidCkey()) {
-
-				Document document = logic.getDocument(requestedUser, intrahash, fileName);
+				final Document document = logic.getDocument(requestedUser, intrahash, fileName);
 
 				if (document != null) {
 
+					/*
+					 * delete entry in database
+					 */
 					logic.deleteDocument(requestedUser, intrahash, fileName);
-
-					File file = new File(this.docpath + document.getFileHash().substring(0, 2) + "/" + document.getFileHash());
-
-					file.delete();
+					new File(FileUtil.getDocumentPath(docpath, document.getFileHash())).delete();
+					/*
+					 * return to bibtex details page
+					 * FIXME: properly encode user name and intrahash
+					 */
+					return new ExtendedRedirectView(("/bibtex/" + HashID.INTRA_HASH.getId() + intrahash + "/" + requestedUser));
 				}
+				
+				errors.reject("error.document_not_found");
 
 			} else {
-
 				errors.reject("error.field.valid.ckey");
-			}
-
-			if (errors.hasErrors()) {
-
-				return Views.ERROR;
-			} else {
-
-				String refererURL = "/bibtex/" + HashID.INTRA_HASH.getId() + intrahash + "/" + requestedUser;
-
-				return new ExtendedRedirectView(refererURL);
 			}
 		}
 
-		return Views.DOWNLOAD_FILE;
+		/*
+		 * if we arrive here, there MUST be some errors ...
+		 */
+		return Views.ERROR;
 	}
+
 
 	/**
 	 * 
@@ -135,30 +138,7 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 
 	@Override
 	public Errors getErrors() {
-		// TODO Auto-generated method stub
 		return this.errors;
 	}
 
-	/**
-	 * Depending on the extension of the file, returns the correct MIME content
-	 * type. NOTE: the method looks only at the name of the file not at the
-	 * content!
-	 * 
-	 * @param filename
-	 *            - name of the file.
-	 * @return - the MIME content type of the file.
-	 */
-	private String getContentType(String filename) {
-		if (StringUtils.matchExtension(filename, "ps")) {
-			return "application/postscript";
-		} else if (StringUtils.matchExtension(filename, "pdf")) {
-			return "application/pdf";
-		} else if (StringUtils.matchExtension(filename, "txt")) {
-			return "text/plain";
-		} else if (StringUtils.matchExtension(filename, "djv", "djvu")) {
-			return "image/vnd.djvu";
-		} else {
-			return "application/octet-stream";
-		}
-	}
 }
