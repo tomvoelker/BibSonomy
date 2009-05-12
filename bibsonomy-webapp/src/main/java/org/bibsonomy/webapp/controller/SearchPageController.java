@@ -18,6 +18,13 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class SearchPageController extends SingleResourceListController implements MinimalisticController<SearchViewCommand>{
+	/**
+	 * We can restrict search to a group's or a user's posts ... here we list all
+	 * supported grouping entities.
+	 */
+	private static final GroupingEntity[] SUPPORTED_GROUPING_ENTITIES = new GroupingEntity[]{GroupingEntity.USER, GroupingEntity.GROUP};
+	
+	
 	private static final Log log = LogFactory.getLog(SearchPageController.class);
 
 	public View workOn(SearchViewCommand command) {
@@ -42,36 +49,34 @@ public class SearchPageController extends SingleResourceListController implement
 		} 
 
 		/* DEBUG */
-		log.debug("SearchPageController: command.getRequestedTagsList().toString()="+command.getRequestedTagsList().toString());
+		log.debug("SearchPageController: command.getRequestedTagsList().toString()=" + command.getRequestedTagsList().toString());
 		
-		// search in a specific user's entries		
-		if (search.matches(".*user:.*")) {
-			// get username of first user
-			int start = search.indexOf("user:");
-			int ende  = search.indexOf(" ", start);
-			if (ende == -1) {ende = search.length();} // if user:* is last word
-			groupingName = search.substring(start + "user:".length(), ende);
+		/*
+		 * search only in a user's, group's, etc. posts ...
+		 */
+		for (final GroupingEntity groupingEnt : SUPPORTED_GROUPING_ENTITIES) {
+			final String groupingEntString = groupingEnt.name().toLowerCase();
 			
-			//warning if more than one user in search string
-			if (search.replaceFirst("user:[^\\s]*", "").matches(".*user:.*")){
-				throw new MalformedURLSchemeException("error.search_more_than_one_user");
+			if (search.matches(".*" + groupingEntString  + ":.*")) {
+				groupingEntity = groupingEnt;
+				
+				// extract name of grouping entity
+				int start = search.indexOf(groupingEntString + ":");
+				int end  = search.indexOf(" ", start);
+				if (end == -1) {end = search.length();} // if group:* is last word
+				
+				groupingName = search.substring(start + (groupingEntString + ":").length(), end);
+				
+				// warning if more than one group in search string
+				if (search.replaceFirst(groupingEntString + ":[^\\s]*", "").matches(".*" + groupingEntString + ":.*")){
+					throw new MalformedURLSchemeException("error.search_more_than_one_" + groupingEntString);
+				}
+				// replace all occurences of "group:*"
+				search = search.replaceAll(groupingEntString + ":[^\\s]*", "").trim();
+				
+				// don't search for other grouping entities
+				break;
 			}
-			// replace all occurences of "user:*"
-			search = search.replaceAll("user:[^\\s]*", "").trim();
-		} else if (search.matches(".*group:.*")) {
-			groupingEntity = GroupingEntity.GROUP;
-			// get username of first user
-			int start = search.indexOf("group:");
-			int ende  = search.indexOf(" ", start);
-			if (ende == -1) {ende = search.length();} // if group:* is last word
-			groupingName = search.substring(start + "group:".length(), ende);
-			
-			//warning if more than one user in search string
-			if (search.replaceFirst("group:[^\\s]*", "").matches(".*group:.*")){
-				throw new MalformedURLSchemeException("error.search_more_than_one_user");
-			}
-			// replace all occurences of "user:*"
-			search = search.replaceAll("group:[^\\s]*", "").trim();
 		}
 		
 		// // determine which lists to initalize depending on the output format and the requested resourcetype
