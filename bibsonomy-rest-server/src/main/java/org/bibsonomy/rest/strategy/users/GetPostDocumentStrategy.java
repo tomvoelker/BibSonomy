@@ -13,8 +13,8 @@ import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
-import org.bibsonomy.util.fileutil.FileDownloadInterface;
-import org.bibsonomy.util.fileutil.HandleFileDownload;
+import org.bibsonomy.util.file.FileDownloadInterface;
+import org.bibsonomy.util.file.HandleFileDownload;
 
 /**
  * Handle a document request

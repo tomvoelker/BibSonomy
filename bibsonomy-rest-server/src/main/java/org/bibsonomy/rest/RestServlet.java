@@ -32,7 +32,7 @@ import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.util.fileutil.MultiPartRequestParser;
+import org.bibsonomy.util.file.MultiPartRequestParser;
 
 import sun.misc.BASE64Decoder;
 

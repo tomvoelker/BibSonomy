@@ -9,8 +9,8 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.util.fileutil.FileUploadInterface;
-import org.bibsonomy.util.fileutil.HandleFileUpload;
+import org.bibsonomy.util.file.FileUploadInterface;
+import org.bibsonomy.util.file.HandleFileUpload;
 
 
 /**
