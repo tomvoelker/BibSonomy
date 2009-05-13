@@ -171,8 +171,13 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			for( TagRecommender rec: getLocalRecommenders() ) {
 				// each recommender is identified by an unique id:
 				Long sid = DBAccess.addRecommender(qid, rec.getClass().getCanonicalName().toString(), rec.getInfo(), null);
-				// add result to database
-				addQueryResponse(qid, sid, 0, rec.getRecommendedTags(post));
+				// query recommender
+				// FIXME: local recommenders are also aborded when timout is reached,
+				//        so their might be now recommendations at all
+				RecommenderDispatcher dispatcher = 
+					new RecommenderDispatcher(rec, post, qid, sid, null);
+				dispatchers.add(dispatcher);
+				dispatcher.start();
 			};
 			
 		} catch (SQLException ex) {
