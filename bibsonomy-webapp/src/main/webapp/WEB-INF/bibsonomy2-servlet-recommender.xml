@@ -21,7 +21,7 @@
 	    | Multiplexing tag recommender
 	    +-->
 	<bean id="multiplexingTagRecommender" class="org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender" scope="singleton">
-	    <property name="queryTimeout" value="1500"/>
+	    <property name="queryTimeout" value="100"/>
 		<property name="distRecommenders" ref="distRecommenderList"/>
 		<property name="localRecommenders" ref="localRecommenderList"/>
 		<property name="resultSelector" ref="selectOneWithoutReplacement"/>
