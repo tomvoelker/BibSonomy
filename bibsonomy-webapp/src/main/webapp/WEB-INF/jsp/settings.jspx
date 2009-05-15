@@ -8,26 +8,100 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
     xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:sql="http://java.sun.com/jsp/jstl/sql">
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<sql:setDataSource dataSource="jdbc/bibsonomy" var="dataSource"/> 
+	<!-- SQL Queries for Groups, Groupusers and Friends -->
+
+<!-- check, if usergroup exists -->
+<sql:query var="gadmin" dataSource="${dataSource}">
+  SELECT g.user_name FROM groups g, groupids i WHERE g.user_name = ? AND i.group_name = ? AND g.group = i.group
+  <sql:param>${user.name}</sql:param>
+  <sql:param>${user.name}</sql:param>
+</sql:query>
+
+<!-- get users, which have user.name as friend -->
+<sql:query var="fr1" dataSource="${dataSource}">
+  SELECT user_name FROM friends WHERE f_user_name = ?
+  <sql:param value="${user.name}"/>  
+</sql:query>
+
+<!-- get all friends of user -->
+<sql:query var="fr2" dataSource="${dataSource}">
+  SELECT f_user_name FROM friends WHERE user_name = ?
+  <sql:param>${user.name}</sql:param>
+</sql:query>
+
+<!-- get API key of user -->
+<sql:query var="apiKey" dataSource="${dataSource}">
+  SELECT api_key FROM user WHERE user_name = ?
+  <sql:param value="${user.name}"/>  
+</sql:query>
+	<!--  get users for own group   -->
+
+<c:set var="hasOwnGroup" value="false"/>
+<c:forEach var="row" items="${gadmin.rows}">
+  <c:if test="${row.user_name eq user.name}">
+<!--      get all users of usergroup -->
+    <sql:query var="gu" dataSource="${dataSource}">
+      SELECT g.user_name FROM groups g, groupids i WHERE i.group_name = ? AND g.user_name != ? AND i.group=g.group ORDER BY g.user_name
+      <sql:param>${user.name}</sql:param>
+      <sql:param>${user.name}</sql:param>
+    </sql:query>
+    <c:set var="hasOwnGroup" value="true"/>
+  </c:if>
+</c:forEach>
+	
 	<layout:tabLayout pageTitle="${command.pageTitle}" 
 		command="${command}" requPath="${requPath}" 
 		selectedNaviTab="${command.context.loginUser.name != null ? 'nav_my' : ''}">
 		<jsp:attribute name="tabcontent">
-		
+			<c:choose>
+				<c:when test="${command.selTab == 0}">
+					<jsp:directive.include file="/settings_profile.jsp"/>
+				</c:when>
+				<c:when test="${command.selTab == 1}">
+					<jsp:directive.include file="/settings_settings.jsp"/>
+				</c:when>
+				<c:when test="${command.selTab == 2}">
+					<jsp:directive.include file="/settings_import.jsp"/>
+				</c:when>
+			</c:choose>
 		</jsp:attribute>
 		
         <jsp:attribute name="heading">
-<!--		  <h1 id="path"> -->
+		  <h1 id="path"> 
+		  	<a rel="path_menu" href="/settings"><img src="/resources/image/box_arrow.png"/>&amp;nbsp;<fmt:message key="navi.settings"/></a>
 <!--			<a rel="path_menu" href="/friend"><img src="/resources/image/box_arrow.png" />&amp;nbsp;<fmt:message key="navi.friend"/></a> :: -->
 <!--			<a href="/friend/${mtl:encodeURI(param.requestedUser)}"><c:out value="${param.requestedUser}"/></a> ::-->
 <!--			<form action="/friend/${mtl:encodeURI(param.requestedUser)}" method="GET" class="smallform">-->
 <!--			  <input type="text" size="20" id="inpf" name="tag" value="${command.requestedTags}"/>-->
 <!--			</form>-->
-<!--		  </h1> 		-->
+		  </h1> 		
         </jsp:attribute>
 		
-        <jsp:attribute name="sidebar"><!--
+        <jsp:attribute name="sidebar">
+        	<c:if test="${hasOwnGroup}">
+				<li>
+				<span class="sidebar_h">mygroup</span>
+				<ul><c:forEach var="row" items="${gu.rows}">
+			  	<li>
+			    	<a href="/user/${row.user_name}">${row.user_name}</a>
+			    	<a class="action" href="/SettingsHandler?del_group_user=${mtl:encodeURI(row.user_name)}">del</a><!-- &ckey=${ckey}-->
+			  	</li>
+				</c:forEach></ul>
+				</li>
+			</c:if>
+<!-- loginUser.groups -->
+			<li>    
+				<span class="sidebar_h"><a href="/groups">groups</a></span>
+				<ul><c:forEach var="group" items="${user.groups}">
+			  	<li><a href="/group/${mtl:encodeURI(group)}"><c:out value='${group}'/></a></li>
+				</c:forEach></ul>
+			</li>
+<!-- 
 	      <li>
 		    <span class="sidebar_h"><fmt:message key="tags" /></span>
 		      <c:if test="${not empty command.requestedTags}">
@@ -36,7 +110,8 @@
 		    <tags:cloud requPath="${requPath}" cmd="${command.tagcloud}"
 			 tagboxMinfreqStyle="none"
 			 showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
-	      </li>   
-        --></jsp:attribute>	
+	      </li-->   
+        
+        </jsp:attribute>	
 	</layout:tabLayout>
 </jsp:root>

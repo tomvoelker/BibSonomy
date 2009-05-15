@@ -5,7 +5,7 @@ import java.util.List;
 import org.bibsonomy.model.User;
 
 /**
- * @author Steffen
+ * @author Steffen Kress
  * @version $Id$
  */
 public class FriendsResourceViewCommand extends TagResourceViewCommand {

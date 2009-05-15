@@ -32,9 +32,14 @@
 						<property name="controllerBeanName" value="homepageController"/>
 					</bean>
 				</entry>
-				<entry key="/settings">
+				<entry key="/settingsnew">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="settingsController"/>
+						<property name="controllerBeanName" value="settingsPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/user">
@@ -416,7 +421,7 @@
 		</property>
 	</bean>
 	
-	<bean id="settingsController" class="org.bibsonomy.webapp.controller.SettingsController" scope="request">
+	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
