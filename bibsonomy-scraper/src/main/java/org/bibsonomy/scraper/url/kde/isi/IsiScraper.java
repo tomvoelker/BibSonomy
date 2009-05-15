@@ -1,7 +1,6 @@
 package org.bibsonomy.scraper.url.kde.isi;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -21,14 +20,20 @@ import org.bibsonomy.util.WebUtils;
  * @version $Id$
  */
 public class IsiScraper extends AbstractUrlScraper {
-	
-	private static final String INFO = "ISI Scraper: Scraper for Publication from " + href("http://apps.isiknowledge.com", "ISI Web of Knowledge");
 
-	private static final String HOST = "apps.isiknowledge.com";
-	private static final String PATH = "/full_record.do";
-	
-	
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(PATH + ".*")));
+	private static final String INFO = "Scrapes publications from " + href("http://apps.isiknowledge.com/", "ISI Web of Knowledge");
+
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(
+			Pattern.compile(".*" + "apps.isiknowledge.com"), 
+			Pattern.compile("/full_record.do" + ".*")
+	));
+
+	private static final Pattern sidPattern = Pattern.compile("SID=([^\\&]*)");
+	private static final Pattern selectedIdsPattern = Pattern.compile("name=\\\"selectedIds\\\" id=\\\"selectedIds\\\" value=\\\"([^\\\"]*)");
+	private static final Pattern downloadLinkPattern = Pattern.compile("href=\\\"([^\\\"]*bibtex&)\\\"><img");
+
+	private static final String BASE_URL_1 = "http://apps.isiknowledge.com/OutboundService.do";
+	private static final String BASE_URL_2 = "http://pcs.isiknowledge.com/uml/";
 
 	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
@@ -38,33 +43,33 @@ public class IsiScraper extends AbstractUrlScraper {
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
-		 try {
-			
+		try {
+
+			final URL pageUrl = sc.getUrl();
 			// get cookie
-			String cookie = WebUtils.getCookies(sc.getUrl());
+			final String cookie = WebUtils.getCookies(pageUrl);
 
 			// get sid from url
-			String sid = null;
-			Pattern sidPattern = Pattern.compile("SID=([^\\&]*)");
-			Matcher sidMatcher = sidPattern.matcher(sc.getUrl().getQuery());
+			final Matcher sidMatcher = sidPattern.matcher(pageUrl.getQuery());
+			final String sid;
 			if(sidMatcher.find())
 				sid = sidMatcher.group(1);
 			else
-				throw new ScrapingFailureException("sid not available");
-			
+				throw new ScrapingFailureException("article ID not found in URL");
+
 			// get selectedIds from given page 
-			String selectedIds = null;
-			Pattern selectedIdsPattern = Pattern.compile("name=\\\"selectedIds\\\" id=\\\"selectedIds\\\" value=\\\"([^\\\"]*)");
-			Matcher selectedIdsMatcher = selectedIdsPattern.matcher(WebUtils.getContentAsString(sc.getUrl(), cookie));
+			final Matcher selectedIdsMatcher = selectedIdsPattern.matcher(WebUtils.getContentAsString(pageUrl, cookie));
+			final String selectedIds;
 			if(selectedIdsMatcher.find())
 				selectedIds = selectedIdsMatcher.group(1);
 			else
 				throw new ScrapingFailureException("selected publications not found (selectedIds is missing)");
-			
+
 			// build post request for getting bibtex download page
-			
+
 			// post content
-			String post = "action=go&" +
+			final String postData = 
+				"action=go&" +
 				"mode=quickOutput&" +
 				"product=UA&" +
 				"SID=" + sid + "&" +
@@ -79,23 +84,21 @@ public class IsiScraper extends AbstractUrlScraper {
 				"save.y=12&" +
 				"next_mode=&" +
 				"redirect_url= ";
-			
+
 			// call post request
-			URL url = new URL("http://apps.isiknowledge.com/OutboundService.do");
-			String content = WebUtils.getPostContentAsString(cookie, url, post);
-			
+			final String content = WebUtils.getPostContentAsString(cookie,  new URL(BASE_URL_1), postData);
+
 			// extract direct bibtex download link from post result
-			Pattern downloadLinkPattern = Pattern.compile("href=\\\"([^\\\"]*bibtex&)\\\"><img");
-			Matcher downloadLinkMatcher = downloadLinkPattern.matcher(content);
-			String downloadLink = null;
+			final Matcher downloadLinkMatcher = downloadLinkPattern.matcher(content);
+			final URL downloadUrl;
 			if(downloadLinkMatcher.find())
-				downloadLink = "http://pcs.isiknowledge.com/uml/" + downloadLinkMatcher.group(1);
+				downloadUrl = new URL(BASE_URL_2 + downloadLinkMatcher.group(1));
 			else
-				throw new ScrapingFailureException("cannot find bibtex download link");
-			
+				throw new ScrapingFailureException("cannot find BibTeX download link");
+
 			// get bibtex
-			String bibtex = WebUtils.getContentAsString(new URL(downloadLink), cookie);
-			
+			final String bibtex = WebUtils.getContentAsString(downloadUrl, cookie);
+
 			if(bibtex != null){
 				sc.setBibtexResult(bibtex);
 				return true;
@@ -103,7 +106,7 @@ public class IsiScraper extends AbstractUrlScraper {
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
-		
+
 		return false;		
 	}
 
