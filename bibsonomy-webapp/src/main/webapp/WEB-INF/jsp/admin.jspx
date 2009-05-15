@@ -146,7 +146,7 @@
 			<c:choose>
 				<c:when test="${command.selTab == 2 or command.selTab == 4}">
 					<c:choose>
-						<c:when test="${spamUser.spammer == true}">
+						<c:when test="${user.spammer == true}">
 							<c:set var="Unflag" value="true" />
 							<c:set var="Uncertain" value="true" />
 							<c:set var="Flag" value="false" />
@@ -176,9 +176,7 @@
 									<c:set var="Unflag" value="true" />
 									<c:set var="Uncertain" value="true" />
 									<c:set var="Flag" value="true" />
-									<c:set var="userIndex" value="${status.index+1}" />
-									<c:set var="nextUser"
-																	value="${command.content[userIndex].name}" />
+									
 								</c:otherwise>
 							</c:choose>
 						</c:otherwise>
@@ -187,6 +185,9 @@
 			</c:choose>
 		</c:otherwise>
 	</c:choose>
+	
+					  <c:set var="userIndex" value="${status.index+1}" />
+					  <c:set var="nextUser" value="${command.content[userIndex].name}" />
 				
 					  <tags:userInfo spamUser="${user}" rowNumber="${status.count}"
 									moveFromTabSpammer="${Flag}" moveFromTabNSpammer="${Unflag}"
@@ -281,12 +282,11 @@
 							onclick="javascript:updateSettings('mode', document.getElementById('mode').value)" /></td>
 				</tr>
 				<tr>
-				
-					<!-- options which algorithm to select -->
+	
+				<!-- options which algorithm to select -->
 					<td>algorithm:</td>
 					<td>
-					
-						<form:select path="settingsCommand.algorithmOptions"
+						<form:select path="settingsCommand.algorithm"
 							id="algorithm" size="1" multiple="false">
 							<c:forEach var="entry"
 								items="${settingsCommand.algorithmOptions}">
