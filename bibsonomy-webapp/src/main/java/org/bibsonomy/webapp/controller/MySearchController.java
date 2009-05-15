@@ -35,10 +35,12 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 
 	private static final Log log = LogFactory.getLog(MySearchController.class);
 
-	public View workOn(MySearchCommand command) {
+	public View workOn(final MySearchCommand command) {
 
-		User user = null;
-
+		/*
+		 * FIXME: implement this for a group!
+		 */
+		
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
@@ -57,7 +59,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			return new ExtendedRedirectView("/login");
 		}
 		
-		user = command.getContext().getLoginUser();
+		final User user = command.getContext().getLoginUser();
 		
 		
 		// set grouping entity, grouping name, tags
@@ -79,11 +81,11 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		/**
 		 * retrieve all bibtex from current user
 		 */
-		ListCommand<Post<BibTex>> bibtex = command.getBibtex();
+		final ListCommand<Post<BibTex>> bibtex = command.getBibtex();
 
-		SortedSet<String> titles = new TreeSet<String>();
-		SortedSet<String> authors = new TreeSet<String>();
-		SortedSet<String> tags = new TreeSet<String>();
+		final SortedSet<String> titles  = new TreeSet<String>();
+		final SortedSet<String> authors = new TreeSet<String>();
+		final SortedSet<String> tags    = new TreeSet<String>();
 
 		/**
 		 * read title, author and tag information form bibtex
