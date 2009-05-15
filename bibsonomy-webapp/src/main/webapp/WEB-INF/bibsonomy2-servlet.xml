@@ -32,6 +32,11 @@
 						<property name="controllerBeanName" value="homepageController"/>
 					</bean>
 				</entry>
+				<entry key="/settings">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="settingsController"/>
+					</bean>
+				</entry>
 				<entry key="/user">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userPageController"/>
@@ -409,6 +414,11 @@
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</list>
 		</property>
+	</bean>
+	
+	<bean id="settingsController" class="org.bibsonomy.webapp.controller.SettingsController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request">
