@@ -47,7 +47,7 @@ public class LuceneSearchBookmarks {
 
 
 
-	private LuceneSearchBookmarks() throws RuntimeException {
+	private LuceneSearchBookmarks() throws RuntimeException {localhost
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBookmarks.class);
 		try {
 
@@ -311,11 +311,12 @@ public class LuceneSearchBookmarks {
 			}
 
 			// assemble query string 
-			querystring = mergedFiledQuery + allowedGroupNamesQuery + requestedUserNameQuery + groupIdQuery;
+			querystring = mergedFiledQuery + requestedUserNameQuery + groupIdQuery + " ( " + allowedGroupNamesQuery;
 			if (!userQuery.isEmpty()) { // logged in user 
-				querystring += "AND NOT("+privateGroupQuery+" AND NOT "+userQuery+")";
+				querystring += " OR ("+privateGroupQuery+" AND "+userQuery+")";
 			}
-			
+
+			querystring += " ) ";
 			
 			LOGGER.debug("LuceneBookmark-Querystring (assembled): " + querystring);
 			

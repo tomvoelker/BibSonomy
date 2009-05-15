@@ -260,7 +260,7 @@ public class LuceneSearchBibTex {
 
 	
 	
-	
+	~/tomcat/webapps/bibsonomy-webapp/WEB-INF/lib
 	/** get ArrayList of strings of field id from lucene index
 	 * 
 	 * for pagination see http://www.gossamer-threads.com/lists/lucene/general/70516#70516
@@ -352,11 +352,14 @@ public class LuceneSearchBibTex {
 			}
 
 			// assemble query string 
-			querystring = mergedFiledQuery + allowedGroupNamesQuery + requestedUserNameQuery + groupIdQuery;
+			querystring = mergedFiledQuery + requestedUserNameQuery + groupIdQuery + " ( " + allowedGroupNamesQuery;
 			if (!userQuery.isEmpty()) { // logged in user 
-				querystring += "AND NOT("+privateGroupQuery+" AND NOT "+userQuery+")";
+				querystring += " OR ("+privateGroupQuery+" AND "+userQuery+")";
 			}
+
+			querystring += " ) ";
 			
+				
 			LOGGER.debug("LuceneBibTex-Querystring (assembled): " + querystring);			
 			
 			
