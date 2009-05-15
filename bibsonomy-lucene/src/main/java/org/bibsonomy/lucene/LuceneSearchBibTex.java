@@ -82,7 +82,9 @@ public class LuceneSearchBibTex {
 			{	
 				// load and hold index on physical hard disk
 				LOGGER.debug("LuceneBibTex: use index from disk");
+				LOGGER.debug("this.searcher-0: " + this.searcher);
 				this.searcher = new IndexSearcher( lucenePath );
+				LOGGER.debug("this.searcher-1: " + this.searcher);
 			}
 		} catch (final NamingException e) {
 			LOGGER.debug("LuceneBookmark: NamingException "+ e.getExplanation() + " ## " + e.getMessage());
