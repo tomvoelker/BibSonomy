@@ -260,7 +260,6 @@ public class LuceneSearchBibTex {
 
 	
 	
-	~/tomcat/webapps/bibsonomy-webapp/WEB-INF/lib
 	/** get ArrayList of strings of field id from lucene index
 	 * 
 	 * for pagination see http://www.gossamer-threads.com/lists/lucene/general/70516#70516
