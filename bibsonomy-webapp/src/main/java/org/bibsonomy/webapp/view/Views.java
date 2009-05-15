@@ -29,6 +29,11 @@ public enum Views implements View {
 	HOMEPAGE("home"),
 	
 	/**
+	 * the page where a user can change his personal settings
+	 */
+	SETTINGSPAGE("settings"),
+	
+	/**
 	 * user page displaying the resources of a single user
 	 */
 	USERPAGE("user"),

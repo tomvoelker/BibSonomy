@@ -38,6 +38,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>selTab</value>
+								<value>ckey</value>
 							</list>
 						</property>
 					</bean>

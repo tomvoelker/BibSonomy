@@ -57,15 +57,15 @@ public class AdminViewCommand extends TabsCommand<User> {
 	
 
 	public AdminViewCommand() {				
-		addTab(MOST_RECENT, "New registrations");
-		addTab(ADMIN_SPAMMER_INDEX, "Admin: Spammer");
-		addTab(ADMIN_UNSURE_INDEX, "Admin: Unsure");
-		addTab(ADMIN_NOSPAMMER_INDEX, "Admin: No Spammer");
-		addTab(CLASSIFIER_SPAMMER_INDEX, "Classifier: Spammer");
-		addTab(CLASSIFIER_SPAMMER_UNSURE_INDEX, "Classifier: Spammer (U)");
-		addTab(CLASSIFIER_NOSPAMMER_UNSURE_INDEX, "Classifier: No Spammer (U)");
-		addTab(CLASSIFIER_NOSPAMMER_INDEX, "Classifier: No Spammer");
-		addTab(CLASSIFIER_EVALUATE, "Modified BibTex Users");
+		addTab(MOST_RECENT, "navi.newregistrations");
+		addTab(ADMIN_SPAMMER_INDEX, "navi.admin_spammer");
+		addTab(ADMIN_UNSURE_INDEX, "navi.admin_unsure");
+		addTab(ADMIN_NOSPAMMER_INDEX, "navi.admin_nospammer");
+		addTab(CLASSIFIER_SPAMMER_INDEX, "navi.classifier_spammer");
+		addTab(CLASSIFIER_SPAMMER_UNSURE_INDEX, "navi.classifier_spammer_unsure");
+		addTab(CLASSIFIER_NOSPAMMER_UNSURE_INDEX, "navi.classifier_nospammer_unsure");
+		addTab(CLASSIFIER_NOSPAMMER_INDEX, "navi.classifier_nospammer");
+		addTab(CLASSIFIER_EVALUATE, "navi.classifier_evaluate");
 		
 		// change default tab to classifier tab
 		selTab = 6;

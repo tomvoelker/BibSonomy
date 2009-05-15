@@ -24,9 +24,9 @@ public class SettingsViewCommand extends TabsCommand<Object> {
 	 * Constructor.
 	 */
 	public SettingsViewCommand() {
-		addTab(MY_PROFILE_IDX, "my profile");
-		addTab(SETTINGS_IDX, "settings");
-		addTab(IMPORTS_IDX, "imports");
+		addTab(MY_PROFILE_IDX, "navi.myprofile");
+		addTab(SETTINGS_IDX, "navi.settings");
+		addTab(IMPORTS_IDX, "navi.imports");
 		setSelTab(MY_PROFILE_IDX);
 	}
 }

@@ -89,7 +89,7 @@
 				<ul><c:forEach var="row" items="${gu.rows}">
 			  	<li>
 			    	<a href="/user/${row.user_name}">${row.user_name}</a>
-			    	<a class="action" href="/SettingsHandler?del_group_user=${mtl:encodeURI(row.user_name)}">del</a><!-- &ckey=${ckey}-->
+			    	<a class="action" href="/SettingsHandler?del_group_user=${mtl:encodeURI(row.user_name)}&amp;ckey=${ckey}">del</a><!-- &ckey=${ckey}-->
 			  	</li>
 				</c:forEach></ul>
 				</li>

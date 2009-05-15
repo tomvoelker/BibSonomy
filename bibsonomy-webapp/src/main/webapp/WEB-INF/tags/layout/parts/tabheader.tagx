@@ -13,10 +13,10 @@
 			<c:forEach var="tab" items="${tabView.tabs}">
 				<c:choose>
 					<c:when test="${tabView.selTab eq tab.id}">
-						<li id="selected"><a href="?selTab=${tab.id}"><c:out value="${tab.title}"/></a></li>			
+						<li id="selected"><a href="?selTab=${tab.id}"><fmt:message key="${tab.title}"/></a></li>			
 					</c:when>
 					<c:otherwise>
-						<li><a href="?selTab=${tab.id}"><c:out value="${tab.title}"/></a></li>							
+						<li><a href="?selTab=${tab.id}"><fmt:message key="${tab.title}"/></a></li>							
 					</c:otherwise>
 				</c:choose>				
 			</c:forEach>
