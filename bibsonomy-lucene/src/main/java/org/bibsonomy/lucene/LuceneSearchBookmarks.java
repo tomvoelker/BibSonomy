@@ -47,7 +47,7 @@ public class LuceneSearchBookmarks {
 
 
 
-	private LuceneSearchBookmarks() throws RuntimeException {localhost
+	private LuceneSearchBookmarks() throws RuntimeException {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBookmarks.class);
 		try {
 
