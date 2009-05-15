@@ -4,8 +4,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.SortedSet;
 
-import org.bibsonomy.model.User;
-
 /**
  * Command class which is used by the MySearchController class.
  * This class stores all information such as relations between serval bibtex informations
@@ -19,7 +17,6 @@ public class MySearchCommand extends SimpleResourceViewCommand{
 	/**
 	 * user object
 	 */
-	private User user;
 	private LinkedList<String> tags;
 	private LinkedList<String> authors;
 	private LinkedList<String> titles;	
@@ -41,23 +38,6 @@ public class MySearchCommand extends SimpleResourceViewCommand{
 		titles = new LinkedList<String>();
 	}
 
-	/**
-	 * 
-	 * @return user object
-	 */
-	public User getUser() {
-		return this.user;
-	}
-
-
-	/**
-	 * set the user object
-	 * @param user
-	 */
-	public void setUser(User user) {
-		this.user = user;
-	}
-	
 	/**
 	 * 
 	 * @return the simhash 
