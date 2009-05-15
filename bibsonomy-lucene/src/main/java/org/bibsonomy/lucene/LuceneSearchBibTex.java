@@ -25,6 +25,7 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.RAMDirectory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -84,18 +85,21 @@ public class LuceneSearchBibTex {
 				this.searcher = new IndexSearcher( lucenePath );
 			}
 		} catch (final NamingException e) {
-			System.out.println("NamingException in LuceneSearchBibTex.LuceneSearchBibTex()");
+			LOGGER.debug("LuceneBookmark: NamingException "+ e.getExplanation() + " ## " + e.getMessage());
 			/*
 			 * FIXME: rethrowing the exception as runtime ex is maybe not the best solution
 			 */
-			e.printStackTrace();
-//			throw new RuntimeException(e);
+			throw new RuntimeException(e);
 		} catch (CorruptIndexException e) {
-			System.out.println("CorruptIndexException in LuceneSearchBibTex.LuceneSearchBibTex()");
+			LOGGER.debug("LuceneBookmark: CorruptIndexException "+ e.getMessage());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println("IOException in LuceneSearchBibTex.LuceneSearchBibTex()");
+			LOGGER.debug("LuceneBookmark: IOException "+ e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RuntimeException e) {
+			LOGGER.debug("LuceneBookmark: RuntimeException "+ e.getMessage());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -290,8 +294,15 @@ public class LuceneSearchBibTex {
 		{
 			LOGGER.error("LuceneBibTex: searcher is NULL!");
 			
+/*
+  			LOGGER.error("LuceneBibTex: trying to get a searcher ... !");
+ 			
+			
+			LOGGER.debug("LuceneBibTex: searcher:  " + searcher);
+ */			
 		}
 
+		
 		List<Post<BibTex>> postBibTexList = new ArrayList<Post<BibTex>>();
 
 		LOGGER.debug("LuceneBibTex: groupID  " + groupId);
@@ -370,16 +381,16 @@ public class LuceneSearchBibTex {
 				LOGGER.debug("LuceneBibTex: searcher:  " + searcher);
 				
 				long starttimeQuery = System.currentTimeMillis();
-				final Hits hits = this.searcher.search(query,sort);
+				final TopDocs topDocs = searcher.search(query, null , offset+limit, sort);
 				long endtimeQuery = System.currentTimeMillis();
 				LOGGER.debug("LuceneBibTex pure query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
-				int hitslimit = (((offset+limit)<hits.length())?(offset+limit):hits.length());
+				int hitslimit = (((offset+limit)<topDocs.totalHits)?(offset+limit):topDocs.totalHits);
 
-				LOGGER.debug("LuceneBibTex:  offset / limit / hitslimit / hits.length():  " + offset + " / " + limit + " / " + hitslimit + " / " + hits.length());
+				LOGGER.debug("LuceneBibTex:  offset / limit / hitslimit / hits.length():  " + offset + " / " + limit + " / " + hitslimit + " / " + topDocs.totalHits);
 				
 				for(int i = offset; i < hitslimit; i++){
-					Document doc = hits.doc(i);
+					Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
 					//cidsArray.add(Integer.parseInt(doc.get(idname)));
 					
 					BibTex bibTex = new BibTex();
@@ -449,7 +460,10 @@ public class LuceneSearchBibTex {
 					}
 					
 					postBibTex.setContentId(Integer.parseInt(doc.get(lField_contentid)));
+					long starttime2Query = System.currentTimeMillis();
 					bibTex.setCount(this.searcher.docFreq(new Term("intrahash", doc.get("intrahash"))));
+					long endtime2Query = System.currentTimeMillis();
+					LOGGER.debug("LuceneBookmark query time for postcount: " + (endtime2Query-starttime2Query) + "ms");
 //					LOGGER.debug("LuceneBibTex:  ContentID (intrahash) = bibTex.getCount:  " + postBibTex.getContentId() + " ("+ doc.get("intrahash") +") = " + bibTex.getCount());
 					
 					postBibTex.setDate(date);
@@ -475,9 +489,6 @@ public class LuceneSearchBibTex {
 
 					
 				}	 
-
-				endtimeQuery = System.currentTimeMillis();
-				LOGGER.debug("LuceneBibtex complete time: " + (endtimeQuery-starttimeQuery) + "ms");
 
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block

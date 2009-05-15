@@ -16,7 +16,9 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -24,6 +26,8 @@ import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.RAMDirectory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.Bookmark;
@@ -37,6 +41,8 @@ public class LuceneSearchBookmarks {
 	private final static LuceneSearchBookmarks singleton = new LuceneSearchBookmarks();
 	private IndexSearcher searcher; 
 	private PerFieldAnalyzerWrapper analyzer;
+	
+	private String lucenePath;
 
 
 
@@ -47,9 +53,9 @@ public class LuceneSearchBookmarks {
 
 			Context initContext = new InitialContext();
 			Context envContext = (Context) initContext.lookup("java:/comp/env");
-
 			Boolean loadIndexIntoRAM = (Boolean) envContext.lookup("luceneIndexBookmarksLoadIntoRAM");
 			String lucenePath = (String) envContext.lookup("luceneIndexPathBoomarks");
+			this.lucenePath = lucenePath;
 
 			LOGGER.debug("LuceneBookmark: use index: " + lucenePath);
 
@@ -85,14 +91,21 @@ public class LuceneSearchBookmarks {
 				this.searcher = new IndexSearcher( lucenePath );
 			}
 		} catch (final NamingException e) {
+			LOGGER.debug("LuceneBookmark: NamingException "+ e.getExplanation() + " ## " + e.getMessage());
 			/*
 			 * FIXME: rethrowing the exception as runtime ex is maybe not the best solution
 			 */
 			throw new RuntimeException(e);
 		} catch (CorruptIndexException e) {
+			LOGGER.debug("LuceneBookmark: CorruptIndexException "+ e.getMessage());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
+			LOGGER.debug("LuceneBookmark: IOException "+ e.getMessage());
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (RuntimeException e) {
+			LOGGER.debug("LuceneBookmark: RuntimeException "+ e.getMessage());
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -328,16 +341,17 @@ public class LuceneSearchBookmarks {
 				LOGGER.debug("LuceneBookmark: searcher:  " + searcher);
 				
 				long starttimeQuery = System.currentTimeMillis();
-				final Hits hits = searcher.search(query,sort);
+				final TopDocs topDocs = searcher.search(query, null , offset+limit, sort);
+				
 				long endtimeQuery = System.currentTimeMillis();
 				LOGGER.debug("LuceneBookmark pure query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
-				int hitslimit = (((offset+limit)<hits.length())?(offset+limit):hits.length());
+				int hitslimit = (((offset+limit)<topDocs.totalHits)?(offset+limit):topDocs.totalHits);
 
-				LOGGER.debug("LuceneBookmark:  offset / limit / hitslimit / hits.length():  " + offset + " / " + limit + " / " + hitslimit + " / " + hits.length());
+				LOGGER.debug("LuceneBookmark:  offset / limit / hitslimit / hits.length():  " + offset + " / " + limit + " / " + hitslimit + " / " + topDocs.totalHits);
 				
 				for(int i = offset; i < hitslimit; i++){
-					Document doc = hits.doc(i);
+					Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
 					Bookmark bookmark = new Bookmark();
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s.S");
 					
@@ -366,7 +380,10 @@ public class LuceneSearchBookmarks {
 					bookmark.setInterHash(doc.get("intrahash")); // same as intrahash 
 					
 					postBookmark.setContentId(Integer.parseInt(doc.get(lField_contentid)));
+					long starttime2Query = System.currentTimeMillis();
 					bookmark.setCount(this.searcher.docFreq(new Term("intrahash", doc.get("intrahash"))));
+					long endtime2Query = System.currentTimeMillis();
+					LOGGER.debug("LuceneBookmark query time for postcount: " + (endtime2Query-starttime2Query) + "ms");
 //					LOGGER.debug("LuceneBookmark:  ContentID (intrahash) = bookmark.getCount:  " + postBookmark.getContentId() + " ("+ doc.get("intrahash") +") = " + bookmark.getCount());
 
 					
@@ -390,9 +407,6 @@ public class LuceneSearchBookmarks {
 					
 				}	 
 
-				endtimeQuery = System.currentTimeMillis();
-				LOGGER.debug("LuceneBookmark complete time: " + (endtimeQuery-starttimeQuery) + "ms");
-
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -403,4 +417,104 @@ public class LuceneSearchBookmarks {
 
 		return postBookmarkList;
 	};
+	
+	
+	
+	public void addPost() {
+		// Use default analyzer
+		SimpleAnalyzer analyzer_bm = new SimpleAnalyzer();
+		Document doc = new Document();
+
+		// field names in Lucene index
+		String lField_contentid = "content_id";
+		String lField_group = "group";
+		String lField_date = "date";
+		String lField_user = "user_name";
+		String lField_desc = "desc";
+		String lField_ext = "ext";
+		String lField_url = "url";
+		String lField_tas = "tas";
+		String lField_merged = "mergedfields";
+
+		// add few sample documents
+		try {
+			IndexWriter writer_bm = new IndexWriter(this.lucenePath, analyzer_bm, true, IndexWriter.MaxFieldLength.UNLIMITED );
+		
+			String bm_content_id = "";
+			String bm_groupid = "";
+			String bm_date = "";
+			String bm_username = "";
+			String bm_url = "";
+			String bm_description = "";
+			String bm_extended = "";
+			String bm_intrahash = "";
+			String bm_tas = "";
+			String mergedfields = "";
+	
+			String bm_groups = "";
+	
+			// TODO bmgroups / see GenerateLuceneIndex.java
+			
+			if (bm_content_id == null)
+				bm_content_id = "";
+			if (bm_groups == null)
+				bm_groups = "";
+			if (bm_date == null)
+				bm_date = "";
+			if (bm_username == null)
+				bm_username = "";
+			if (bm_description == null)
+				bm_description = "";
+			if (bm_extended == null)
+				bm_extended = "";
+			if (bm_url == null)
+				bm_url = "";
+			if (bm_tas == null)
+				bm_tas = "";
+			if (bm_intrahash == null)
+				bm_intrahash = "";
+			
+			doc.add(new Field(lField_contentid, bm_content_id,
+					Field.Store.YES, Field.Index.NOT_ANALYZED));
+			doc.add(new Field(lField_group, bm_groups, Field.Store.YES,
+					Field.Index.NOT_ANALYZED));
+	
+			doc.add(new Field(lField_date, bm_date, Field.Store.YES,
+					Field.Index.NOT_ANALYZED));
+			doc.add(new Field(lField_user, bm_username,
+					Field.Store.YES, Field.Index.NOT_ANALYZED));
+			doc.add(new Field(lField_desc, bm_description,
+					Field.Store.YES, Field.Index.NO));
+			doc.add(new Field(lField_ext, bm_extended, Field.Store.YES,
+					Field.Index.NO));
+			doc.add(new Field(lField_url, bm_url, Field.Store.YES,
+					Field.Index.NO));
+			doc.add(new Field(lField_tas, bm_tas, Field.Store.YES,
+					Field.Index.NO));
+			doc.add(new Field("intrahash", bm_intrahash, Field.Store.YES,
+					Field.Index.NOT_ANALYZED));
+	
+			mergedfields = bm_username + " " + bm_description + " "
+			+ bm_extended + " " + bm_url + " " + bm_tas;
+	
+			// TODO: Field.Store.NO
+			doc.add(new Field(lField_merged, mergedfields,
+					Field.Store.YES, Field.Index.ANALYZED));
+	
+			
+			writer_bm.addDocument(doc);
+			writer_bm.close();
+
+		} catch (CorruptIndexException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (LockObtainFailedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // true überschreibt aktuellen index
+
+	}
 }
