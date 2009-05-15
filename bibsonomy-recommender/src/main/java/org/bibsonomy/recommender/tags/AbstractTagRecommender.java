@@ -64,9 +64,10 @@ public abstract class AbstractTagRecommender implements TagRecommender {
 	}
 
 	@Override
-	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
+	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 		log.debug("Getting tag recommendations for " + post);
 		addRecommendedTagsInternal(recommendedTags, post);
+		if (log.isDebugEnabled()) log.debug("Recommending tags " + recommendedTags);
 	}
 	
 	protected abstract void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post);
