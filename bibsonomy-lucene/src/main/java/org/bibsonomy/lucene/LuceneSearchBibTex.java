@@ -347,11 +347,15 @@ public class LuceneSearchBibTex {
 
 			if (GroupID.INVALID.getId() != groupId)
 			{
-				groupIdQuery = " AND " + lField_group+":("+groupId+")";
+				groupIdQuery = " AND " + " ( " + lField_group+":("+groupId+")";
+			}
+			else
+			{
+				groupIdQuery = " ( ";
 			}
 
 			// assemble query string 
-			querystring = mergedFiledQuery + requestedUserNameQuery + groupIdQuery + " ( " + allowedGroupNamesQuery;
+			querystring = mergedFiledQuery + requestedUserNameQuery + groupIdQuery + allowedGroupNamesQuery;
 			if (!userQuery.isEmpty()) { // logged in user 
 				querystring += " OR ("+privateGroupQuery+" AND "+userQuery+")";
 			}
