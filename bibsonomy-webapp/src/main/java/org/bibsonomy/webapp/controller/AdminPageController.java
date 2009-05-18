@@ -47,7 +47,13 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 
 		command.setPageTitle("admin");
 		this.setUsers(command);
-		this.setStatistics(command);
+		
+		/*
+		 * only compute counts for specific tabs
+		 */
+		if (command.getSelTab() == 5 || command.getSelTab() == 8){
+			this.setStatistics(command);
+		}
 
 		for (ClassifierSettings s : ClassifierSettings.values()) {
 			command.setClassifierSetting(s, this.logic.getClassifierSettings(s));
