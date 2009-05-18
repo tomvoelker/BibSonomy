@@ -38,8 +38,9 @@
 			<!-- Admin Navigation -->	
 			<menu:adminNavi />	
 			
-			<p style="font-weight: bold; color: #ff0000; ">
-  				<c:forEach var="info" items="${command.infos}">Info: ${info}<br/></c:forEach>
+			<p style="font-weight: bold; color: #ff0000;">
+  				<c:forEach var="info" items="${command.infos}">Info: ${info}<br />
+			</c:forEach>
 			</p>
 			
 			<!-- User Information -->	
@@ -69,7 +70,11 @@
 				    	<th>Updated by</th>
 				    	<th>Updated at</th>
 				 </tr>
-				  <tags:userInfo spamUser="${command.user}" rowNumber='1'
+				 
+				 <!-- Row number is set negative, so that row is not removed 
+				 when flagging and unflagging the specific user  
+				 -->
+				  <tags:userInfo spamUser="${command.user}" rowNumber='-1'
 						moveFromTabSpammer="false" moveFromTabNSpammer="false"
 						moveFromTabUncertain="false" selTab="userInformation" />
 			    </table>
@@ -192,7 +197,7 @@
 					  <tags:userInfo spamUser="${user}" rowNumber="${status.count}"
 									moveFromTabSpammer="${Flag}" moveFromTabNSpammer="${Unflag}"
 									moveFromTabUncertain="${Uncertain}"
-									selTab="${selTabEvaluation}" nextUser="${nextUser}"/>
+									selTab="${selTabEvaluation}" nextUser="${nextUser}" />
 					
 				    </c:forEach>
 				</table>
@@ -214,6 +219,7 @@
 				<c:forEach var="user" items="${command.content}" varStatus="status">
 				<tr>
 					<td>
+					  
 						<a href="/user/${user.name}"><c:out value="${user.name}" /></a>
 						<a
 										onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;"
@@ -286,8 +292,8 @@
 				<!-- options which algorithm to select -->
 					<td>algorithm:</td>
 					<td>
-						<form:select path="settingsCommand.algorithm"
-							id="algorithm" size="1" multiple="false">
+						<form:select path="settingsCommand.algorithm" id="algorithm"
+							size="1" multiple="false">
 							<c:forEach var="entry"
 								items="${settingsCommand.algorithmOptions}">
 								 <form:option value="${entry.value}" label="${entry.key}" />
@@ -300,19 +306,22 @@
 				</tr>
 				<tr>
 					<td>training period:</td>
-					<td><form:input path="settingsCommand.trainingPeriod" id="training_period" size="7"/> sec</td>
+					<td><form:input path="settingsCommand.trainingPeriod"
+							id="training_period" size="7" /> sec</td>
 					<td><input type="button" value="los"
 							onclick="javascript:updateSettings('training_period', document.getElementById('training_period').value)" /></td>
 				</tr>
 				<tr>
 					<td>classify period:</td>
-					<td><form:input path="settingsCommand.classifyPeriod" id="classify_period" size="7"/> sec</td>
+					<td><form:input path="settingsCommand.classifyPeriod"
+							id="classify_period" size="7" /> sec</td>
 					<td><input type="button" value="los"
 							onclick="javascript:updateSettings('classify_period', document.getElementById('classify_period').value)" /></td>
 				</tr>
 				<tr>
 					<td>probability limit:</td>
-					<td><form:input path="settingsCommand.probabilityLimit" id="probability_limit" size="7"/></td>
+					<td><form:input path="settingsCommand.probabilityLimit"
+							id="probability_limit" size="7" /></td>
 					<td><input type="button" value="los"
 							onclick="javascript:updateSettings('probability_limit', document.getElementById('probability_limit').value)" /></td>
 				</tr>
