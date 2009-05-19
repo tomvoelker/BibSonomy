@@ -44,6 +44,15 @@ public class Functions  {
 	private static String[] swrcEntryTypes   = {"Article","Book","Booklet","InBook","InCollection","InProceedings","Manual","MasterThesis","Misc","PhDThesis","Proceedings","TechnicalReport","Unpublished"}; 
 	private static String[] risEntryTypes    = {"Journal Article","Book", "Book", "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis", "Generic", "Thesis", "Conference Proceedings", "Report", "Unpublished Work"};
 	
+	
+	/**
+	 * Fields over which are iterated in the JSP to output BibTeX.
+	 * 'month' is missing, since it is handled separatedly. 
+	 * TODO: re-use {@link BibTexUtils#toBibtexString(Post, String)} instead. 
+	 *   
+	 */
+	private static String[] bibtexFields     = {"title","address","annote","author","booktitle","chapter","crossref","edition","editor","howpublished","institution","journal","note","number","organization","pages","publisher","school","series","type","volume","year","day","url"};
+	
 	private static JabrefLayoutRenderer layoutRenderer;
 
 	// contains special characters, symbols, etc...
@@ -530,6 +539,26 @@ public class Functions  {
 	}
 	
 	/**
+	 * Access the built-in utility function for bibtex export
+	 * 
+	 * @param month
+	 * 		- the month from the bibtex  
+	 * @return
+	 * 		- the correctly quoted month
+	 */
+	public static String getBibtexMonth(final String month) {
+		return BibTexUtils.getMonth(month);
+	}
+	
+	/** 
+	 * @return The BibTeX fields which should be printed, excludign 'month' - it
+	 * should be printed using {@link #getBibtexMonth(String)}.
+	 */
+	public static String[] getBibtexFields() {
+		return bibtexFields;
+	}
+	
+	/**
 	 * Helper method to access JabRef layouts via taglib function
 	 * 
 	 * @param post
@@ -586,5 +615,7 @@ public class Functions  {
 		int nextId = (rel.getId() + 1 ) % 4;
 		return UserRelation.getUserRelationById(nextId).name().toLowerCase();
 	}
+	
+	
 	
 }
