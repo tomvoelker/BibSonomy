@@ -34,7 +34,9 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -46,6 +48,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Some BibTex utility functions
@@ -62,9 +65,31 @@ public class BibTexUtils {
 	private static final Pattern DOI_PATTERN = Pattern.compile("http://.+/(.+?/.+?$)");
 	private static final Pattern MISC_FIELD_PATTERN = Pattern.compile("([a-zA-Z0-9]+)\\s*=\\s*\\{(.*?)\\}");
 
-	private static final List<String> EXCLUDE_FIELDS = Arrays.asList(new String[] { "bibtexAbstract", "openURL", "abstract", "misc", "simHash0", "simHash1", "simHash2", "simHash3", "entrytype", "bibtexKey" });
+	private static final Set<String> EXCLUDE_FIELDS = new HashSet<String>(Arrays.asList(new String[] { 
+			"abstract",        // added separately
+			"bibtexAbstract",  // added separately
+			"bibtexKey",       // added at beginning of entry
+			"entrytype",       // added at beginning of entry
+			"misc",            // contains several fields; handled separately 
+			"month",           // handled separately
+			"openURL", 
+			"simHash0", // not added
+			"simHash1", // not added
+			"simHash2", // not added
+			"simHash3"  // not added
+	}));
 
-	
+	/**
+	 * Some BibTeX styles translate month abbreviations into (language specific) 
+	 * month names. If we find such a month abbreviation, we should not put 
+	 * braces around the string.
+	 */
+	private static final Set<String> BIBTEX_MONTHS = new HashSet<String>(Arrays.asList(new String[] {
+			"jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"
+	}));
+
+
+
 	/**
 	 * Builds a string from a given bibtex object which can be used to build an OpenURL
 	 * see http://www.exlibrisgroup.com/sfx_openurl.htm
@@ -99,7 +124,7 @@ public class BibTexUtils {
 			auinit1 = aufirst;
 			aufirst = null;
 		}
-		
+
 		// parse misc fields
 		parseMiscField(bib);
 		// extract DOI
@@ -183,7 +208,7 @@ public class BibTexUtils {
 			}
 		}
 	}
-	
+
 	/**
 	 * This is a helper method to convert the key = value pairs contained in the 
 	 * miscFields map of a bibtex object into a serialized representation in the 
@@ -233,44 +258,60 @@ public class BibTexUtils {
 	public static String toBibtexString(BibTex bib) {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(bib.getClass());
-									
-			final StringBuffer buffer = new StringBuffer();
-			buffer.append("@");
-			buffer.append(bib.getEntrytype());
-			buffer.append("{");
-			buffer.append(bib.getBibtexKey());
-			buffer.append(",\n");
+
+			/*
+			 * start with entrytype and key
+			 */
+			final StringBuffer buffer = new StringBuffer("@" + bib.getEntrytype() + "{" + bib.getBibtexKey() + ",\n");
+
+			/*
+			 * append all other fields
+			 */
 			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
 				final Method getter = d.getReadMethod();
 				// loop over all String attributes
-				if (d.getPropertyType().equals(String.class) 
-						&& getter.invoke(bib, (Object[]) null) != null 
-					    && ! EXCLUDE_FIELDS.contains(d.getName()) ) {
-					buffer.append("  "); // indent 
-					buffer.append(d.getName());
-					buffer.append(" = ");
-					buffer.append("{");
-					buffer.append( (String) getter.invoke(bib, (Object[]) null) );
-					buffer.append("},\n");					
+				final Object o = getter.invoke(bib, (Object[]) null);
+				if (String.class.equals(d.getPropertyType()) 
+						&& o != null 
+						&& ! EXCLUDE_FIELDS.contains(d.getName()) ) {
+
+					buffer.append("  " + d.getName() + " = {" + ((String) o) + "},\n");
 				}
-			}			
-			if ((bib.getMisc() != null && bib.getMisc().trim() != "") || 
-				(bib.getMiscFields() != null && bib.getMiscFields().size() > 0)) {
+			}
+			/*
+			 * add misc fields
+			 */
+			if (ValidationUtils.present(bib.getMisc()) || ValidationUtils.present(bib.getMiscFields())) {
 				// parse & re-serialize the misc field
-				BibTexUtils.parseMiscField(bib);
-				BibTexUtils.serializeMiscFields(bib);
-				if (! "".equals(bib.getMisc().trim())) {
+				parseMiscField(bib);
+				serializeMiscFields(bib);
+				if (! "".equals(bib.getMisc())) {
 					buffer.append(bib.getMisc() + ",\n");
 				}
 			}
-			if (bib.getAbstract() != null && bib.getAbstract() != "") {
-				buffer.append("  abstract = {");
-				buffer.append(bib.getAbstract());
-				buffer.append("},\n");
+			/*
+			 * add month
+			 */
+			final String month = bib.getMonth();
+			if (ValidationUtils.present(month)) {
+				// we don't add {}, this is done by getMonth(), if necessary
+				buffer.append("  month = " + getMonth(month) + ",\n");
 			}
-			buffer.delete(buffer.lastIndexOf(","), buffer.length()); // remove last comma
+			/*
+			 * add abstract
+			 */
+			final String bibAbstract = bib.getAbstract();
+			if (ValidationUtils.present(bibAbstract)) {
+				buffer.append("  abstract = {" + bibAbstract + "},\n");
+			}
+			/*
+			 * remove last comma
+			 */
+			buffer.delete(buffer.lastIndexOf(","), buffer.length());
 			buffer.append("\n}");	
+
 			return buffer.toString();
+
 		} catch (IntrospectionException ex) {
 			ex.printStackTrace();
 		} catch (InvocationTargetException ex) {
@@ -280,9 +321,24 @@ public class BibTexUtils {
 		}		
 		return null;
 	}
-	
-	
-	
+
+
+
+	/**
+	 * Some BibTeX styles translate month abbreviations into (language specific) 
+	 * month names. If we find such a month abbreviation, we should not put 
+	 * braces around the string. This method returns the correct string - with
+	 * braces, if it's not an abbreviation, without otherwise.
+	 * 
+	 * @param month
+	 * @return The correctly 'quoted' month.
+	 */
+	public static String getMonth(final String month) {
+		if (BIBTEX_MONTHS.contains(month.toLowerCase())) return month;
+		return "{" + month + "}";
+	}
+
+
 	/**
 	 * Create a bibtex string with some bibsonomy-specific information:
 	 * <ul>
@@ -392,28 +448,28 @@ public class BibTexUtils {
 	 * @return the cleaned bibtex string
 	 */
 	public static String cleanBibTex(String bibtex) {
-		
+
 		// replace markup
 		bibtex = bibtex.replaceAll("\\\\[a-z]+\\{([^\\}]+)\\}", "$1");  // \\markup{marked_up_text}		
-		
+
 		// replace special character sequences for umlauts
 		// NOTE: this is just a small subset - could / should be extended to french, ...
 		bibtex = bibtex.replaceAll("\\{|\\}|\\\\", ""). // remove '\','{' and '\'
-	       replaceAll("\\s+"," ").
-	       replaceAll("\\\"o", "ö").
-	       replaceAll("\\\"u", "ü").
-	       replaceAll("\\\"a", "ä").
-	       replaceAll("\\\"O", "Ö").
-	       replaceAll("\\\"U", "Ü").
-	       replaceAll("\\\"A", "Ä").
-	       replaceAll("\\\"s", "ß").
-	       trim();
-		
+		replaceAll("\\s+"," ").
+		replaceAll("\\\"o", "ö").
+		replaceAll("\\\"u", "ü").
+		replaceAll("\\\"a", "ä").
+		replaceAll("\\\"O", "Ö").
+		replaceAll("\\\"U", "Ü").
+		replaceAll("\\\"A", "Ä").
+		replaceAll("\\\"s", "ß").
+		trim();
+
 		final StringBuffer buffer = new StringBuffer(bibtex.length());
 		char c;		
 		for (int i = 0; i < bibtex.length(); i++) {
 			c = bibtex.charAt(i);
-			
+
 			// HTML Special Chars
 			if (c == '"')
 				buffer.append("&quot;");
@@ -484,8 +540,8 @@ public class BibTexUtils {
 		bibtexList.clear();
 		bibtexList.addAll(temp);
 	}
-	
-	
+
+
 	/** Adds the field <code>fieldName</code> to the BibTeX entry, if the entry 
 	 * does not already contain it.
 	 * 
@@ -497,12 +553,12 @@ public class BibTexUtils {
 	 */
 	public static String addFieldIfNotContained(final String bibtex, final String fieldName, final String fieldValue) {
 		if (bibtex == null) return bibtex;
-		
+
 		final StringBuffer buf = new StringBuffer(bibtex);
 		addFieldIfNotContained(buf, fieldName, fieldValue);
 		return buf.toString();
 	}
-	
+
 	/** Adds the field <code>fieldName</code> to the BibTeX entry, if the entry 
 	 * does not already contain it.
 	 * 
@@ -545,8 +601,8 @@ public class BibTexUtils {
 		if (bibtex == null || fieldValue == null || fieldValue.trim().equals("")) return;
 		final int lastIndexOf = bibtex.lastIndexOf("}");
 		if (lastIndexOf > 0) {
-		   bibtex.replace(lastIndexOf, bibtex.length(), "," + fieldName + " = {" + fieldValue + "}\n}");
+			bibtex.replace(lastIndexOf, bibtex.length(), "," + fieldName + " = {" + fieldValue + "}\n}");
 		}
 	}
-	
+
 }
