@@ -24,6 +24,7 @@
 package org.bibsonomy.util;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.bibsonomy.common.enums.GroupID;
 
@@ -47,6 +48,14 @@ public class ValidationUtils {
 	 */
 	public static boolean present(final Collection<?> collection) {
 		return ((collection != null) && (collection.size() > 0));
+	}
+	
+	/**
+	 * @param map argument to check
+	 * @return false iff the argument is null or has zero size
+	 */
+	public static boolean present(final Map<?,?> map) {
+		return ((map != null) && (map.size() > 0));
 	}
 
 	/**
