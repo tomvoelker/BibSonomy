@@ -334,7 +334,7 @@ public class BibTexUtils {
 	 * @return The correctly 'quoted' month.
 	 */
 	public static String getMonth(final String month) {
-		if (BIBTEX_MONTHS.contains(month.toLowerCase())) return month;
+		if (month != null && BIBTEX_MONTHS.contains(month.toLowerCase().trim())) return month;
 		return "{" + month + "}";
 	}
 
