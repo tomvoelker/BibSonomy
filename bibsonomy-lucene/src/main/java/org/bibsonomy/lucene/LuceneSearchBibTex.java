@@ -1,7 +1,6 @@
 package org.bibsonomy.lucene;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,7 +15,6 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
@@ -28,7 +26,6 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.RAMDirectory;
 import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
@@ -38,18 +35,23 @@ public class LuceneSearchBibTex {
 	private final static LuceneSearchBibTex singleton = new LuceneSearchBibTex();
 	private IndexSearcher searcher; 
 	private PerFieldAnalyzerWrapper analyzer;
+	private String lucenePath;
 		
 
+	private LuceneSearchBibTex() {
+		reloadIndex();
+	}
+	
 
-	private LuceneSearchBibTex() throws RuntimeException {
+	public void reloadIndex() throws RuntimeException {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
 		try {
 
 			Context initContext = new InitialContext();
 			Context envContext = (Context) initContext.lookup("java:/comp/env");
-
 			Boolean loadIndexIntoRAM = (Boolean) envContext.lookup("luceneIndexPublicationsLoadIntoRAM");
 			String lucenePath = (String) envContext.lookup("luceneIndexPathPublications");
+			this.lucenePath = lucenePath;
 			
 			LOGGER.debug("LuceneBibTex: use index: " + lucenePath);
 
@@ -58,15 +60,33 @@ public class LuceneSearchBibTex {
 			 *   <Environment name="luceneIndexPath" type="java.lang.String" value="/home/bibsonomy/lucene"/>
 			 */
 
-			/** lucene analyzer, must be the same as at indexing */
-			//SimpleAnalyzer analyzer = new SimpleAnalyzer();
-			this.analyzer = new PerFieldAnalyzerWrapper(new SimpleAnalyzer());
 
+			if (this.analyzer == null)
+			{
+				/** lucene analyzer, must be the same as at indexing */
+				//SimpleAnalyzer analyzer = new SimpleAnalyzer();
+				this.analyzer = new PerFieldAnalyzerWrapper(new SimpleAnalyzer());
+	
+				// let field group of analyzer use SimpleKeywordAnalyzer
+				// numbers will be deleted by SimpleAnalyser but group has only numbers, therefore use SimpleKeywordAnalyzer 
+				this.analyzer.addAnalyzer("group", new SimpleKeywordAnalyzer());
+			}
+			
+			
+			try {
+				if (null != this.searcher) this.searcher.close();
+			} catch (IOException e) {
+				LOGGER.debug("LuceneBibTex: IOException on searcher.close: "+ e.getMessage());
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (RuntimeException e)
+			{
+				LOGGER.debug("LuceneBibTex: RuntimeException on searcher.close: "+ e.getMessage());
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
-			// let field group of analyzer use SimpleKeywordAnalyzer
-			// numbers will be deleted by SimpleAnalyser but group has only numbers, therefore use SimpleKeywordAnalyzer 
-			this.analyzer.addAnalyzer("group", new SimpleKeywordAnalyzer());
-
+			
 			if (loadIndexIntoRAM) {
 				// load a copy of index in memory
 				// changes will have no effect on original index!
@@ -324,10 +344,9 @@ public class LuceneSearchBibTex {
 			}
 			
 			LOGGER.debug("LuceneBibTex: allowedGroups: " + allowedGroupNames);		
-			
 
 			mergedFiledQuery = lField_merged + ":("+ search_terms +") ";
-			allowedGroupNamesQuery = " AND " + lField_group+":("+allowedGroupNames+")";
+			allowedGroupNamesQuery = lField_group+":("+allowedGroupNames+")";
 			privateGroupQuery = lField_group+":(private)";
 				
 			if ( (UserName != null) && (!UserName.isEmpty()) )
@@ -347,20 +366,18 @@ public class LuceneSearchBibTex {
 
 			if (GroupID.INVALID.getId() != groupId)
 			{
-				groupIdQuery = " AND " + " ( " + lField_group+":("+groupId+")";
-			}
-			else
-			{
-				groupIdQuery = " ( ";
+				groupIdQuery = " AND " + lField_group+":("+groupId+")";
 			}
 
 			// assemble query string 
-			querystring = mergedFiledQuery + requestedUserNameQuery + groupIdQuery + allowedGroupNamesQuery;
+			querystring = mergedFiledQuery + requestedUserNameQuery + groupIdQuery ;
 			if (!userQuery.isEmpty()) { // logged in user 
-				querystring += " OR ("+privateGroupQuery+" AND "+userQuery+")";
+				querystring += " AND ( " + allowedGroupNamesQuery + " OR ("+privateGroupQuery+" AND "+userQuery+") ) ";
 			}
-
-			querystring += " ) ";
+			else
+			{
+				querystring += " AND " + allowedGroupNamesQuery;
+			}
 			
 				
 			LOGGER.debug("LuceneBibTex-Querystring (assembled): " + querystring);			
@@ -471,7 +488,7 @@ public class LuceneSearchBibTex {
 					long starttime2Query = System.currentTimeMillis();
 					bibTex.setCount(this.searcher.docFreq(new Term("intrahash", doc.get("intrahash"))));
 					long endtime2Query = System.currentTimeMillis();
-					LOGGER.debug("LuceneBookmark query time for postcount: " + (endtime2Query-starttime2Query) + "ms");
+					LOGGER.debug("LuceneBibTex query time for postcount: " + (endtime2Query-starttime2Query) + "ms");
 //					LOGGER.debug("LuceneBibTex:  ContentID (intrahash) = bibTex.getCount:  " + postBibTex.getContentId() + " ("+ doc.get("intrahash") +") = " + bibTex.getCount());
 					
 					postBibTex.setDate(date);

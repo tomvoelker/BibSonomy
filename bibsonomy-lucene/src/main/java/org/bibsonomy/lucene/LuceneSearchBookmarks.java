@@ -1,7 +1,6 @@
 package org.bibsonomy.lucene;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,7 +30,6 @@ import org.apache.lucene.store.LockObtainFailedException;
 import org.apache.lucene.store.RAMDirectory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 
@@ -40,14 +38,16 @@ public class LuceneSearchBookmarks {
 
 	private final static LuceneSearchBookmarks singleton = new LuceneSearchBookmarks();
 	private IndexSearcher searcher; 
-	private PerFieldAnalyzerWrapper analyzer;
-	
+	private PerFieldAnalyzerWrapper analyzer = null;
 	private String lucenePath;
 
 
-
-
 	private LuceneSearchBookmarks() throws RuntimeException {
+		reloadIndex();
+	}
+
+
+	public void reloadIndex() throws RuntimeException {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBookmarks.class);
 		try {
 
@@ -64,14 +64,32 @@ public class LuceneSearchBookmarks {
 			 *   <Environment name="luceneIndexPath" type="java.lang.String" value="/home/bibsonomy/lucene"/>
 			 */
 
-			/** lucene analyzer, must be the same as at indexing */
-			//SimpleAnalyzer analyzer = new SimpleAnalyzer();
-			this.analyzer = new PerFieldAnalyzerWrapper(new SimpleAnalyzer());
+			if (this.analyzer == null)
+			{
+				/** lucene analyzer, must be the same as at indexing */
+				//SimpleAnalyzer analyzer = new SimpleAnalyzer();
+				
+				this.analyzer = new PerFieldAnalyzerWrapper(new SimpleAnalyzer());
 
+				// let field group of analyzer use SimpleKeywordAnalyzer
+				// numbers will be deleted by SimpleAnalyser but group has only numbers, therefore use SimpleKeywordAnalyzer 
+				this.analyzer.addAnalyzer("group", new SimpleKeywordAnalyzer());
+			}
+			
 
-			// let field group of analyzer use SimpleKeywordAnalyzer
-			// numbers will be deleted by SimpleAnalyser but group has only numbers, therefore use SimpleKeywordAnalyzer 
-			this.analyzer.addAnalyzer("group", new SimpleKeywordAnalyzer());
+			// close searcher if opened before
+			try {
+				if (null != this.searcher) this.searcher.close();
+			} catch (IOException e) {
+				LOGGER.debug("LuceneBookmark: IOException on searcher.close: "+ e.getMessage());
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (RuntimeException e)
+			{
+				LOGGER.debug("LuceneBookmark: RuntimeException on searcher.close: "+ e.getMessage());
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 			if (loadIndexIntoRAM) {
 				// load a copy of index in memory
@@ -287,7 +305,7 @@ public class LuceneSearchBookmarks {
 			LOGGER.debug("LuceneBookmark: allowedGroups: " + allowedGroupNames);
 			
 			mergedFiledQuery = lField_merged + ":("+ search_terms +") ";
-			allowedGroupNamesQuery = " AND " + lField_group+":("+allowedGroupNames+")";
+			allowedGroupNamesQuery = lField_group+":("+allowedGroupNames+")";
 			privateGroupQuery = lField_group+":(private)";
 				
 			if ( (UserName != null) && (!UserName.isEmpty()) )
@@ -307,20 +325,19 @@ public class LuceneSearchBookmarks {
 
 			if (GroupID.INVALID.getId() != groupId)
 			{
-				groupIdQuery = " AND " + " ( " + lField_group+":("+groupId+")";
-			}
-			else
-			{
-				groupIdQuery = " ( ";
+				groupIdQuery = " AND " + lField_group+":("+groupId+")";
 			}
 
 			// assemble query string 
-			querystring = mergedFiledQuery + requestedUserNameQuery + groupIdQuery + allowedGroupNamesQuery;
+			querystring = mergedFiledQuery + requestedUserNameQuery + groupIdQuery ;
 			if (!userQuery.isEmpty()) { // logged in user 
-				querystring += " OR ("+privateGroupQuery+" AND "+userQuery+")";
+				querystring += " AND ( " + allowedGroupNamesQuery + " OR ("+privateGroupQuery+" AND "+userQuery+") ) ";
+			}
+			else
+			{
+				querystring += " AND " + allowedGroupNamesQuery;
 			}
 
-			querystring += " ) ";
 			
 			LOGGER.debug("LuceneBookmark-Querystring (assembled): " + querystring);
 			
@@ -360,7 +377,7 @@ public class LuceneSearchBookmarks {
 					Bookmark bookmark = new Bookmark();
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:m:s.S");
 					
-					Post<Bookmark> postBookmark = new Post();
+					Post<Bookmark> postBookmark = new Post<Bookmark>();
 					Date date = new Date();
 					try {
 						date = dateFormat.parse(doc.get(lField_date));
@@ -425,6 +442,7 @@ public class LuceneSearchBookmarks {
 	
 	
 	
+	
 	public void addPost() {
 		// Use default analyzer
 		SimpleAnalyzer analyzer_bm = new SimpleAnalyzer();
@@ -441,7 +459,6 @@ public class LuceneSearchBookmarks {
 		String lField_tas = "tas";
 		String lField_merged = "mergedfields";
 
-		// add few sample documents
 		try {
 			IndexWriter writer_bm = new IndexWriter(this.lucenePath, analyzer_bm, true, IndexWriter.MaxFieldLength.UNLIMITED );
 		
