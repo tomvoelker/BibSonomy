@@ -34,7 +34,13 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		log.info("Command getGrouping: "+command.getGrouping());
 		log.info("importType: "+command.getImportType());
 		log.info("overwrite: " + command.getOverwrite());
+		workOnSettingsTab(command);
 		return Views.SETTINGSPAGE;
+	}
+	
+	private void workOnSettingsTab(SettingsViewCommand command) {
+		command.getContext().getLoginUser().getSettings().getTagboxStyle();
+		command.getContext().getLoginUser().getSettings().getTagboxSort();
 	}
 	
 	/**

@@ -43,6 +43,8 @@
 								<value>importType</value>
 								<value>overwrite</value>
 								<value>file</value>
+								<value>tagBoxStyle</value>
+								<value>tagSort</value>
 							</list>
 						</property>
 					</bean>
