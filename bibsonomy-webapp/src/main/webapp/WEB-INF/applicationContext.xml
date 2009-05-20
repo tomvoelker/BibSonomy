@@ -36,5 +36,37 @@
 		<property name="mailHost"><value>${mail.smtp.host}</value></property>
 		<property name="messageSource" ref="messageSource"/>
 	</bean>
+
+
+	<!-- handles reload of lucene index to make changes/updates visible 
+	<bean name="LuceneUpdater" class="org.springframework.scheduling.quartz.JobDetailBean">
+	  <property name="jobClass" value="org.bibsonomy.lucene.LuceneUpdater" />
+	</bean>
+-->
+
+
+	<bean id="LuceneUpdater" class="org.bibsonomy.lucene.LuceneUpdater"/>
+
+	<bean id="luceneUpdateJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	  <property name="targetObject" ref="LuceneUpdater" />
+	 <property name="targetMethod" value="reloadIndex" /> 
+	  <property name="concurrent" value="false" />
+	</bean>
+	
+	<bean id="luceneUpdateCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+ 		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
+ 		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
+ 		<property name="cronExpression" value="0 1/10 * * * ?" />
+		<property name="jobDetail" ref="luceneUpdateJob" />
+	</bean>
+ 
+	
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <property name="triggers">
+        <list>
+            <ref bean="luceneUpdateCronTrigger" />
+        </list>
+    </property>
+</bean>
 	
 </beans>
