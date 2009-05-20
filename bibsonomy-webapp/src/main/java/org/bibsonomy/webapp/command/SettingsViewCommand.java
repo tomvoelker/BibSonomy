@@ -16,7 +16,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * 
 	 */
 	private static final long serialVersionUID = -1211293063812357398L;
-
+	
 	private static final Log log = LogFactory.getLog(SettingsViewCommand.class);
 	
 	/** Indexes of definded tabs */
@@ -32,6 +32,10 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private boolean overwrite;
 	
 	private CommonsMultipartFile file;
+	
+	private String tagBoxStyle;
+	
+	private String tagSort;
 
 	/**
 	 * Constructor.
@@ -66,7 +70,15 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
 	}
-	
+
+	public void setTagBoxStyle(String tagBoxStyle) {
+		this.tagBoxStyle = tagBoxStyle;
+	}
+
+	public String getTagBoxStyle() {
+		return tagBoxStyle;
+	}
+
 	public CommonsMultipartFile getFile() {
 		return this.file;
 	}
@@ -75,6 +87,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.file = file;
 	}
 
+	public void setTagSort(String tagSort) {
+		this.tagSort = tagSort;
+	}
+
+	public String getTagSort() {
+		return tagSort;
+	}
 
 
 }
