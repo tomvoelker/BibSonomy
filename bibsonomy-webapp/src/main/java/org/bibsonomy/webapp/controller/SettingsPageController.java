@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.webapp.command.AdminViewCommand;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -26,9 +27,13 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * @return the view
 	 */
 	public View workOn(SettingsViewCommand command) {
+		log.info("WorkOn called");
 		log.debug(this.getClass().getSimpleName());
 		// TODO i18n
 		command.setPageTitle("settings");
+		log.info("Command getGrouping: "+command.getGrouping());
+		log.info("importType: "+command.getImportType());
+		log.info("overwrite: " + command.getOverwrite());
 		return Views.SETTINGSPAGE;
 	}
 	
@@ -50,6 +55,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * @return
 	 */
 	public SettingsViewCommand instantiateCommand() {
-		return new SettingsViewCommand();
+		final SettingsViewCommand command = new SettingsViewCommand();
+		command.setGrouping(GroupUtils.getPublicGroup().getName());
+		return command;
 	}
 }
