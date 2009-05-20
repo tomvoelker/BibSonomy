@@ -49,8 +49,9 @@
 
 	<bean id="luceneUpdateJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	  <property name="targetObject" ref="LuceneUpdater" />
-	 <property name="targetMethod" value="reloadIndex" /> 
+	  <property name="targetMethod" value="updateAndReloadIndex" />
 	  <property name="concurrent" value="false" />
+	  
 	</bean>
 	
 	<bean id="luceneUpdateCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
