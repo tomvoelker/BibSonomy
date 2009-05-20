@@ -39,6 +39,10 @@
 							<list>
 								<value>selTab</value>
 								<value>ckey</value>
+								<value>grouping</value>
+								<value>importType</value>
+								<value>overwrite</value>
+								<value>file</value>
 							</list>
 						</property>
 					</bean>
@@ -652,7 +656,7 @@
 		</property>
 	</bean>
 <!--CK-->
-	<bean id="purposeTagsPageController" class="org.bibsonomy.webapp.controller.PurposeTagsPageController" scope="request">
+	<!--<bean id="purposeTagsPageController" class="org.bibsonomy.webapp.controller.PurposeTagsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
@@ -660,7 +664,7 @@
 	<bean id="purposeUrlController" class="org.bibsonomy.webapp.controller.PurposeUrlController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
-	</bean>
+	</bean>-->
 <!--CKEND-->
 	<!-- 
 	    This bean provides admin access to the logic interface by predicting 
