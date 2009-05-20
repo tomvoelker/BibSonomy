@@ -44,7 +44,7 @@
 	</bean>
 -->
 
-
+<!-- 
 	<bean id="LuceneUpdater" class="org.bibsonomy.lucene.LuceneUpdater"/>
 
 	<bean id="luceneUpdateJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -55,9 +55,9 @@
 	</bean>
 	
 	<bean id="luceneUpdateCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
- 		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
+ --> 		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
  		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
- 		<property name="cronExpression" value="0 1/10 * * * ?" />
+<!--  		<property name="cronExpression" value="0 1/10 * * * ?" />
 		<property name="jobDetail" ref="luceneUpdateJob" />
 	</bean>
  
@@ -69,5 +69,5 @@
         </list>
     </property>
 </bean>
-	
+ -->	
 </beans>
