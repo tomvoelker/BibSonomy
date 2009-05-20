@@ -1,14 +1,22 @@
 package org.bibsonomy.webapp.command;
 
+import java.io.Serializable;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author Steffen Kress
  * @version $Id$
  */
 //TODO
-public class SettingsViewCommand extends TabsCommand<Object> {
+public class SettingsViewCommand extends TabsCommand<Object> implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1211293063812357398L;
+
 	private static final Log log = LogFactory.getLog(SettingsViewCommand.class);
 	
 	/** Indexes of definded tabs */
@@ -22,6 +30,8 @@ public class SettingsViewCommand extends TabsCommand<Object> {
 	private String importType;
 	
 	private boolean overwrite;
+	
+	private CommonsMultipartFile file;
 
 	/**
 	 * Constructor.
@@ -56,6 +66,15 @@ public class SettingsViewCommand extends TabsCommand<Object> {
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
 	}
+	
+	public CommonsMultipartFile getFile() {
+		return this.file;
+	}
+
+	public void setFile(CommonsMultipartFile file) {
+		this.file = file;
+	}
+
 
 
 }
