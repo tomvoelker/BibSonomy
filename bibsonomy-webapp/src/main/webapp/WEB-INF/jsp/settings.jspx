@@ -66,7 +66,7 @@
 					<jsp:directive.include file="/settings_settings.jsp"/>
 				</c:when>
 				<c:when test="${command.selTab == 2}">
-					<jsp:directive.include file="/settings_import.jsp"/>
+					<jsp:directive.include file="actions/settingsImport.jspx"/>
 				</c:when>
 			</c:choose>
 		</jsp:attribute>
