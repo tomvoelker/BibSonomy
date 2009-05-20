@@ -1,8 +1,5 @@
 package org.bibsonomy.webapp.command;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -20,6 +17,12 @@ public class SettingsViewCommand extends TabsCommand<Object> {
 	public final static int SETTINGS_IDX = 1;
 	public final static int IMPORTS_IDX = 2;
 	
+	private String grouping;
+	
+	private String importType;
+	
+	private boolean overwrite;
+
 	/**
 	 * Constructor.
 	 */
@@ -29,4 +32,30 @@ public class SettingsViewCommand extends TabsCommand<Object> {
 		addTab(IMPORTS_IDX, "navi.imports");
 		setSelTab(MY_PROFILE_IDX);
 	}
+
+	public String getGrouping() {
+		return this.grouping;
+	}
+
+	public void setGrouping(String grouping) {
+		this.grouping = grouping;
+	}
+
+	public String getImportType() {
+		return this.importType;
+	}
+
+	public void setImportType(String importType) {
+		this.importType = importType;
+	}
+	
+	public boolean getOverwrite() {
+		return this.overwrite;
+	}
+
+	public void setOverwrite(boolean overwrite) {
+		this.overwrite = overwrite;
+	}
+
+
 }
