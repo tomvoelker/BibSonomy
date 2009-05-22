@@ -22,10 +22,10 @@
 		<c:set var="valueButton"><fmt:message key="settings.firefox.button.text"/></c:set>
 		
 		<h2><fmt:message key="settings.firefox.header"/></h2>
-		<form:form id="settingImportForm" action="/settingsnew?selTab=${command.selTab}" method="post">
+		<form:form id="settingImportForm" action="/settingsnew?selTab=${command.selTab}" method="post" enctype="multipart/form-data">
 		  <table> 
 		   <tr>
-		   <td><fmt:message key="settings.firefox.fileselect"/></td>
+		   <td><form:label path="file" ><fmt:message key="settings.firefox.fileselect"/></form:label></td>
 		   <td><input type="file" name="file" size="20"/></td></tr>
 		   <tr>
 		      <td><fmt:message key="settings.firefox.viewalble"/></td>
