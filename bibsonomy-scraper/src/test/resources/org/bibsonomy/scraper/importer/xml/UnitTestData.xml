@@ -858,5 +858,10 @@
 		<BibFile>RSOCScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.rsoc.RSOCScraper</Scraper>
 	</URLTest>
-	
+	<URLTest id="url_153">
+		<TestDescription>acm test</TestDescription>
+		<URL>http://portal.acm.org/citation.cfm?id=1105676</URL>
+		<BibFile>ACMBasicScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
+	</URLTest>
 </test:Tests>

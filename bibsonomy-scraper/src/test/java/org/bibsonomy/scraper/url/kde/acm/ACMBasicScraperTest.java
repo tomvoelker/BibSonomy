@@ -14,7 +14,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Scraper URL tests #1 #134 for ACMBasicSCraper  
+ * Scraper URL tests #1 #134 #153 for ACMBasicSCraper  
  * @author tst
  *
  */
@@ -40,6 +40,15 @@ public class ACMBasicScraperTest {
 		assertTrue(runner.runSingleTest("url_134"));
 	}
 	
+	/**
+	 * starts URL test with id url_153
+	 */
+	@Test
+	@Ignore
+	public void urlTestRun3(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_153"));
+	}
 	
 	@Test
 	@Ignore

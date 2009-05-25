@@ -32,7 +32,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	private static final String info = "ACM Scraper: This scraper parses a publication page from the " + href("http://portal.acm.org/portal.cfm", "ACM Digital Library");
 
 	private static final String ACM_HOST_NAME        = "http://portal.acm.org/";
-	private static final String BIBTEX_STRING_ON_ACM = "BibTex";
+	private static final String BIBTEX_STRING_ON_ACM = "BibTeX";
 
 	private static final String BROKEN_END = "},\n }";
 
