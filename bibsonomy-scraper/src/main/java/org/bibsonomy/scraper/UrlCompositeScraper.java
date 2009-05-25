@@ -37,6 +37,7 @@ import org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper;
 import org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper;
 import org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper;
 import org.bibsonomy.scraper.url.kde.iop.IOPScraper;
+import org.bibsonomy.scraper.url.kde.isi.IsiScraper;
 import org.bibsonomy.scraper.url.kde.iucr.IucrScraper;
 import org.bibsonomy.scraper.url.kde.iwap.IWAPonlineScraper;
 import org.bibsonomy.scraper.url.kde.jmlr.JMLRScraper;
@@ -157,6 +158,7 @@ public class UrlCompositeScraper extends CompositeScraper implements UrlScraper 
 		addScraper(new ScientificcommonsScraper());
 		addScraper(new AGUScraper());
 		addScraper(new CellScraper());
+		addScraper(new IsiScraper());
 	}
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {

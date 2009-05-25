@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -18,8 +19,16 @@ import org.bibsonomy.util.WebUtils;
 /**
  * @author tst
  * @version $Id$
+ * 
+ * 
+ * This scraper is disabled (but still in chain for logging. The session information 
+ * (and also the last visited publication) is related with the clients IP-Address. Every
+ * try ends with a redirect to a error page (with the message: get a new session).
+ * 
  */
 public class IsiScraper extends AbstractUrlScraper {
+	
+	private static final Logger log = Logger.getLogger(IsiScraper.class);
 
 	private static final String INFO = "Scrapes publications from " + href("http://apps.isiknowledge.com/", "ISI Web of Knowledge");
 
@@ -43,11 +52,13 @@ public class IsiScraper extends AbstractUrlScraper {
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
+		log.debug("Observed Scraper called: IsiScraper is called with " + sc.getUrl().toString());
+		/*
 		try {
 
 			final URL pageUrl = sc.getUrl();
 			// get cookie
-			final String cookie = WebUtils.getCookies(pageUrl);
+			final String cookie = WebUtils.getCookies(new URL("http://isiknowledge.com/?DestApp=UA"));
 
 			// get sid from url
 			final Matcher sidMatcher = sidPattern.matcher(pageUrl.getQuery());
@@ -58,7 +69,7 @@ public class IsiScraper extends AbstractUrlScraper {
 				throw new ScrapingFailureException("article ID not found in URL");
 
 			// get selectedIds from given page 
-			final Matcher selectedIdsMatcher = selectedIdsPattern.matcher(WebUtils.getContentAsString(pageUrl, cookie));
+			final Matcher selectedIdsMatcher = selectedIdsPattern.matcher(WebUtils.getContentAsString(pageUrl, cookie + ";SID=" + sid + ";CUSTOMER=FAK Consortium"));
 			final String selectedIds;
 			if(selectedIdsMatcher.find())
 				selectedIds = selectedIdsMatcher.group(1);
@@ -106,7 +117,7 @@ public class IsiScraper extends AbstractUrlScraper {
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
-
+	*/
 		return false;		
 	}
 
