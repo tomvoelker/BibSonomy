@@ -11,6 +11,7 @@ import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
+import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
@@ -30,17 +31,17 @@ public class PlosScraper extends AbstractUrlScraper {
 	/**
 	 * ending of plos journal URLs
 	 */
-	private static final String PLOS_HOST_ENDING = "plosjournals.org";
+	private static final String PLOS_HOST_ENDING = "plosbiology.org";
 
 	/**
 	 * title value from link to a citation page
 	 */
-	private static final String CITATION_PAGE_LINK_TITLE = "title=\"Download Citation\"";
+	private static final String PATTERN_CITATION_PAGE_LINK = "<a href=\\\"([^\\\"]*)\\\">Citation</a>";
 
 	/**
 	 * name of a citation download link
 	 */
-	private static final String CITATION_LINK_NAME = ">EndNote Format<";
+	private static final String PATTERN_CITATION_BIBTEX_LINK = "<a href=\\\"([^\\\"]*)\\\" title=\\\"BibTex Citation\\\">BibTex</a>";
 
 	/*
 	 * regex
@@ -54,7 +55,7 @@ public class PlosScraper extends AbstractUrlScraper {
 	/**
 	 * pattern for href field
 	 */
-	private static final String PATTERN_HREF = "href=\"[^\"]*\"";
+	private static final String PATTERN_HREF = "href=\\\"([^\\\"])*\\\"";
 
 	/**
 	 * get INFO
@@ -80,20 +81,14 @@ public class PlosScraper extends AbstractUrlScraper {
 			String citationPage = null;
 
 			// search link to citation in journal page
-			Pattern linkPattern = Pattern.compile(PATTERN_LINK);
-			Matcher linkMatcher = linkPattern.matcher(journalPage);
-			while(linkMatcher.find()){
-				String citationPageLink = linkMatcher.group();
-				if(citationPageLink.contains(CITATION_PAGE_LINK_TITLE)){
-					Pattern hrefPattern = Pattern.compile(PATTERN_HREF);
-					Matcher hrefMatcher = hrefPattern.matcher(citationPageLink);
-					if(hrefMatcher.find()){
-						String citationPageLinkHref = hrefMatcher.group();
-						citationPageLinkHref = "http://" + sc.getUrl().getHost() + "/perlserv/?" + citationPageLinkHref.substring(6, citationPageLinkHref.length()-1);
-						// citation page found
-						citationPage = WebUtils.getContentAsString(new URL(citationPageLinkHref));
-					}
-				}
+			Pattern linkPagePattern = Pattern.compile(PATTERN_CITATION_PAGE_LINK);
+			Matcher linkPageMatcher = linkPagePattern.matcher(journalPage);
+			if(linkPageMatcher.find()){
+				String citationPageLinkHref = linkPageMatcher.group(1);
+				citationPageLinkHref = "http://" + sc.getUrl().getHost() + citationPageLinkHref;
+				
+				// citation page found
+				citationPage = WebUtils.getContentAsString(new URL(citationPageLinkHref));
 			}
 
 			// no citation found, may be current page is already the citation page
@@ -101,29 +96,23 @@ public class PlosScraper extends AbstractUrlScraper {
 				citationPage = journalPage;
 
 			// search link to citation (in endnote)
-			Matcher citationLinkMatcher = linkPattern.matcher(citationPage);
-			while(citationLinkMatcher.find()){
-				String citationLink = citationLinkMatcher.group();
-				if(citationLink.contains(CITATION_LINK_NAME)){
-					Pattern hrefPattern = Pattern.compile(PATTERN_HREF);
-					Matcher hrefMatcher = hrefPattern.matcher(citationLink);
-					if(hrefMatcher.find()){
-						String citationLinkHref = hrefMatcher.group();
-						citationLinkHref = "http://" + sc.getUrl().getHost() + "/perlserv/" + citationLinkHref.substring(6, citationLinkHref.length()-1);
-						citation = WebUtils.getContentAsString(new URL(citationLinkHref));
-					}
-				}
+			Pattern bibtexLinkPattern = Pattern.compile(PATTERN_CITATION_BIBTEX_LINK);
+			Matcher bibtexLinkMatcher = bibtexLinkPattern.matcher(citationPage);
+			while(bibtexLinkMatcher.find()){
+				String citationLinkHref = bibtexLinkMatcher.group(1);
+				citationLinkHref = "http://" + sc.getUrl().getHost() +  citationLinkHref;
+				citation = WebUtils.getContentAsString(new URL(citationLinkHref));
 			}
 
+			/*
+			 * http://www.plosbiology.org/article/getBibTexCitation.action?articleURI=info%3Adoi%2F10.1371%2Fjournal.pbio.0060010
+			 * http://biology.plosjournals.org/perlserv//article/getBibTexCitation.action;jsessionid=5EE0CE24FCEEE9262A6A82B96BD2310E?articleURI=info%3Adoi%2F10.1371%2Fjournal.pbio.0060010
+			 */
 			// build bibtex
 			if(citation != null){
-				EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
-				String bibtex = converter.processEntry(citation);
-				if(bibtex != null){
-					sc.setBibtexResult(bibtex);
-					return true;
-				}else
-					throw new ScrapingFailureException("getting bibtex failed");
+				
+				sc.setBibtexResult(citation);
+				return true;
 
 			}else
 				throw new ScrapingFailureException("endnote is not available");

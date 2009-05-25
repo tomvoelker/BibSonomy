@@ -248,13 +248,13 @@
 	</URLTest>
 	<URLTest id="url_43">
 		<TestDescription>scraping test for jornal page from plos.org</TestDescription>
-		<URL>http://biology.plosjournals.org/perlserv/?request=get-document&amp;doi=10.1371/journal.pbio.0060010</URL>
+		<URL>http://www.plosbiology.org/article/info:doi/10.1371/journal.pbio.0060010</URL>
 		<BibFile>PlosScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_44">
 		<TestDescription>scraping test for jornal page from plos.org</TestDescription>
-		<URL>http://biology.plosjournals.org/perlserv/?request=cite-builder&amp;doi=10.1371/journal.pbio.0060010</URL>
+		<URL>http://www.plosbiology.org/article/citationList.action?articleURI=info:doi/10.1371/journal.pbio.0060010</URL>
 		<BibFile>PlosScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
 	</URLTest>
