@@ -23,6 +23,7 @@ import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.TagStringUtils;
+import org.bibsonomy.util.WebUtils;
 
 
 /**
@@ -55,8 +56,8 @@ public class AipScitationScraper extends AbstractUrlScraper {
 	private static final String AIP_CONTENT_TYPE_HTML = "text/html";
 
 	private static final Pattern inputPattern = Pattern.compile("<input(.*)>");
-	private static final Pattern valuePattern = Pattern.compile("value=\"[^\"]*\"");
-	private static final Pattern namePattern = Pattern.compile("name=\"[^\"]*\"");
+	private static final Pattern valuePattern = Pattern.compile("value=\"([^\"]*)\"");
+	private static final Pattern namePattern = Pattern.compile("name=\"([^\"]*)\"");
 	private static final Pattern keywordsPattern = Pattern.compile("keywords = \\{[^\\}]*\\}");
 
 	/*
@@ -111,6 +112,12 @@ public class AipScitationScraper extends AbstractUrlScraper {
 				urlConn = (HttpURLConnection) sc.getUrl().openConnection();
 				String aipContent = getAipContent(urlConn, cookie);
 
+				String selectcheck = null;
+				Pattern selectCheckPattern = Pattern.compile("var cvipsstr = \\\"([^\\\"]*)\\\";");
+				Matcher selectCheckMatcher = selectCheckPattern.matcher(aipContent);
+				if(selectCheckMatcher.find())
+					selectcheck = selectCheckMatcher.group(1);
+				
 				/*
 				 * if bibtex content, then use this content as snippet
 				 */
@@ -123,8 +130,9 @@ public class AipScitationScraper extends AbstractUrlScraper {
 					 * if html content, build new link to bibtex content
 					 */
 				}else if(urlConn.getContentType().startsWith(AIP_CONTENT_TYPE_HTML)){
-
-					StringBuffer bibtexLink = getBibtexFromAIP(aipContent, URL_AIP_CITATION_BIBTEX_PAGE);
+					String aipContent2 = WebUtils.getContentAsString(new URL(URL_AIP_CITATION_PAGE + "journals/help_system/getabs/actions/download_citation_form.jsp"), cookie);
+					
+					StringBuffer bibtexLink = getBibtexFromAIP(aipContent2, URL_AIP_CITATION_BIBTEX_PAGE, selectcheck);
 
 					// may be a spie link
 					if(bibtexLink == null){
@@ -143,7 +151,7 @@ public class AipScitationScraper extends AbstractUrlScraper {
 
 						// get SPIE Page which is referenced by DOI
 						String spieContent = getAipContent((HttpURLConnection) spieURL2.openConnection(), cookie);
-						bibtexLink = getBibtexFromAIP(spieContent, URL_SPIE_AIP_CITATION_BIBTEX_PAGE);
+						bibtexLink = getBibtexFromAIP(spieContent, URL_SPIE_AIP_CITATION_BIBTEX_PAGE, selectcheck);
 					}
 
 					/*
@@ -181,8 +189,7 @@ public class AipScitationScraper extends AbstractUrlScraper {
 		final Matcher valueMatcher = valuePattern.matcher(input);
 		if(valueMatcher.find()){
 
-			String value = valueMatcher.group();
-			value = value.substring(7, value.length()-1);
+			String value = valueMatcher.group(1);
 
 			// value must be encoded to be used in url
 			value = URLEncoder.encode(value, "UTF-8");
@@ -300,7 +307,7 @@ public class AipScitationScraper extends AbstractUrlScraper {
 		return result;
 	}
 
-	private StringBuffer getBibtexFromAIP(String aipContent, String aipPath) throws UnsupportedEncodingException{
+	private StringBuffer getBibtexFromAIP(String aipContent, String aipPath, String selectcheckScript) throws UnsupportedEncodingException{
 		// sarch input fields
 		final Matcher inputMatcher = inputPattern.matcher(aipContent);
 
@@ -312,15 +319,14 @@ public class AipScitationScraper extends AbstractUrlScraper {
 		//check all input fields
 		while(inputMatcher.find()){
 
-			String input = inputMatcher.group();
+			String input = inputMatcher.group(1);
 
 			// check name values
 			final Matcher nameMatcher = namePattern.matcher(input);
 
 			if(nameMatcher.find()){
 
-				String name = nameMatcher.group();
-				name = name.substring(6, name.length()-1);
+				String name = nameMatcher.group(1);
 
 				// if name is supported, then extract its value
 				if(name.contains(HTML_INPUT_NAME_PREFACTION)){
@@ -334,6 +340,10 @@ public class AipScitationScraper extends AbstractUrlScraper {
 				}
 			}
 		}
+		
+		// if selectcheck not found, then try with selectcheck from script block 
+		if(selectcheck == null || selectcheck.equals("SelectCheck=null"))
+			selectcheck = "SelectCheck=" + selectcheckScript;
 
 		/*
 		 * build bibtex link
