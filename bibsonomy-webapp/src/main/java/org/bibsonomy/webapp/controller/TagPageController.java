@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.StringUtils;
@@ -82,7 +83,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		 *  (burst, publrss, swrc) related pages
 		 */
 		if (order.equals(Order.FOLKRANK)) {
-			this.setRelatedUsers(command, requTags, order, 0, Parameters.NUM_RELATED_USERS);
+			this.setRelatedUsers(command, GroupingEntity.ALL, requTags, order, UserRelation.FOLKRANK, 0, Parameters.NUM_RELATED_USERS);
 		}
 		
 		// html format - retrieve relted tags and return HTML view
@@ -120,9 +121,9 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 	 * @param start
 	 * @param end
 	 */
-	protected <T extends Resource, V extends TagResourceViewCommand> void setRelatedUsers(V cmd, List<String> tags, Order order, int start, int end) {
+	protected <T extends Resource, V extends TagResourceViewCommand> void setRelatedUsers(V cmd, GroupingEntity grouping, List<String> tags, Order order, UserRelation relation, int start, int end) {
 		RelatedUserCommand relatedUserCommand = cmd.getRelatedUserCommand();
-		relatedUserCommand.setRelatedUsers(this.logic.getUsers(null,null,null,tags, null, order, null, null, start, end));
+		relatedUserCommand.setRelatedUsers(this.logic.getUsers(null, grouping,null,tags, null, order, relation, null, start, end));
 	}
 	
 }
