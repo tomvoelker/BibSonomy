@@ -5,9 +5,12 @@
 
 <%-------------------------- Heading -----------------------%>
 <h1><a href="/" rel="Start">${projectName}</a> :: error code 500</h1> 
+<div id="welcomeTop">A blue social bookmark and publication sharing system.</div> 
+</div>
+</div>
 
-<p id="general">
+<div id="error">
 Sorry, an internal error has occured.
-</p>
+</div>
 
 <%@ include file="/footer.jsp" %>

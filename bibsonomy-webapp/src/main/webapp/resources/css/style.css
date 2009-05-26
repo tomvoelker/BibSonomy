@@ -980,6 +980,11 @@ span.info:hover > div {
 	border-top: 1px solid #AAA;
 }
 
+#error {
+	padding: 15px;
+	border: 1px solid #aeaeae;
+}
+
 .error {
 	color: #ff6600;
 }

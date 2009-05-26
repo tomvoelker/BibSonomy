@@ -5,10 +5,12 @@
 
 <%-------------------------- Heading -----------------------%>
 <h1><a href="/" rel="Start">${projectName}</a> :: error code 503</h1> 
+<div id="welcomeTop">A blue social bookmark and publication sharing system.</div> 
+</div>
+</div>
 
-<p id="general">
+<div id="error">
 Sorry, the service is not available: ${message}.
-
-</p>
+</div>
 
 <%@ include file="/footer.jsp" %>

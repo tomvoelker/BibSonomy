@@ -7,10 +7,12 @@
 
 <%-------------------------- Heading -----------------------%>
 <h1><a href="/" rel="Start">${projectName}</a> :: database error</h1> 
+<div id="welcomeTop">A blue social bookmark and publication sharing system.</div> 
+</div>
+</div>
 
-
-<p id="general">
+<div id="error">
 Sorry, database error.
-</p>
+</div>
 
 <%@ include file="/footer.jsp" %>

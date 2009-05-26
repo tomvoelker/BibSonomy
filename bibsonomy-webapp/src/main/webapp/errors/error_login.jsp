@@ -5,12 +5,14 @@
 
 <%-------------------------- Heading -----------------------%>
 <h1><a href="/" rel="Start">${projectName}</a> :: login error</h1> 
+<div id="welcomeTop">A blue social bookmark and publication sharing system.</div> 
+</div>
+</div>
 
-
-<p id="general">
+<div id="error">
 Sorry, you don't have the right to access this site.
-<br>
+<br /><br />
 Please <a href="/login">login</a>.
-</p>
+</div>
 
 <%@ include file="/footer.jsp" %>

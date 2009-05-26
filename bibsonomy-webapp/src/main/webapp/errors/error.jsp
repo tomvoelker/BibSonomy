@@ -4,13 +4,16 @@
 </jsp:include>
 
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: error</h1> 
+<h1><a href="/" rel="Start">${projectName}</a> :: error</h1>
+<div id="welcomeTop">A blue social bookmark and publication sharing system.</div> 
+</div>
+</div>
 
-<div id="general">
-Sorry, we could not process your request because of the following error:
-<pre>
-${error}
-</pre>
+<div id="error">
+	Sorry, we could not process your request because of the following error:
+	<pre class="error">
+	${error}
+	</pre>
 </div>
 
 <%@ include file="/footer.jsp" %>

@@ -1,20 +1,20 @@
 <%@include file="/include_jsp_head.jsp" %>
 
-<jsp:useBean id="upBean" class="beans.UploadBean" scope="request"/>
-
 <%--HTML header --%>
 <jsp:include page="/html_header.jsp">
   <jsp:param name="title" value="upload error" />
 </jsp:include>
 
+<jsp:useBean id="upBean" class="beans.UploadBean" scope="request"/>
+
 <%-------------------------- Heading -----------------------%>
-<h1><a href="/" rel="Start">${projectName}</a> :: upload error</h1> 
+<h1><a href="/" rel="Start">${projectName}</a> :: login error</h1> 
+<div id="welcomeTop">A blue social bookmark and publication sharing system.</div> 
+</div>
+</div>
 
-
-<%@include file="/boxes/navi.jsp" %> 
-	    
-<div id="general">
-<p>
+<div id="error">
+<p style="margin-top:0px">
 The following error occured while processing your upload:
 <br>
 <strong><%=upBean.getErrorMsg("file")%></strong>
