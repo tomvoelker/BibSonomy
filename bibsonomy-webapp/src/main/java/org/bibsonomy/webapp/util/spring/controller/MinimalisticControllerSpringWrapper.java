@@ -163,7 +163,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		catch (MalformedURLSchemeException malformed) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			errors.reject(malformed.getMessage());
-			log.error("Could not complete controller.", malformed);
+			log.warn("Could not complete controller (invalid URL scheme) : " + malformed.getMessage());
 			view = Views.ERROR;
 		}
 		catch (ValidationException notValid) {
