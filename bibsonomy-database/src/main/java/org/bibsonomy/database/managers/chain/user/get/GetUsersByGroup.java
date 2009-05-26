@@ -26,7 +26,6 @@ public class GetUsersByGroup extends UserChainElement {
 	@Override
 	protected boolean canHandle(final UserParam param) {
 		return (GroupingEntity.GROUP.equals(param.getGrouping()) && 
-				present(param.getUserName()) &&
 				present(param.getRequestedGroupName()));
 	}
 }

@@ -41,7 +41,6 @@ public class UserChainTest extends AbstractChainTest {
 	public void getUsersByGroup() {
 		UserParam param = new UserParam();
 		param.setGrouping(GroupingEntity.GROUP);
-		param.setUserName("a_funny_username");
 		param.setRequestedGroupName("a_funny_groupname");
 		this.userChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
 		assertEquals(GetUsersByGroup.class, this.chainStatus.getChainElement().getClass());		
