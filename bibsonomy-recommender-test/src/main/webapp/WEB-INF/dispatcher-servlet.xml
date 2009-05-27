@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util 
+	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map>
+				<entry key="/postBookmark">
+					<ref bean="bookmarkController"/>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	
+    <!--  #################### controller #################### -->
+	<bean id="bookmarkController" class="org.bibsonomy.recommender.webapp.controller.BookmarkController">
+		<property name="commandClass" value="org.bibsonomy.recommender.webapp.command.EditBookmarkCommand"/>
+		<property name="formView" value="bookmarkForm"/>
+	</bean>
+
+	<!--  #################### view resolver #################### -->
+	<!-- default: JSPs -->
+	<bean id="viewResolver"	class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	
+</beans>
