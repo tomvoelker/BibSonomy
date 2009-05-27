@@ -24,7 +24,7 @@
 				
 				<title><c:out value="${pageTitle}"/></title>
 			</head>
-			<body>
+			<body style="background-color: #e5f3fa;">
 
 				<jsp:invoke fragment="content"/>
 
