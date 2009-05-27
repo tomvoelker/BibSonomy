@@ -23,7 +23,7 @@
     
           <div id="general">
 
-            <form:form id="postPublicationForm" action="/postPublication" method="post">
+            <form:form method="post">
               <input type="hidden" name="postID" value="${command.postID}"/>
 <!--              <input type="hidden" value="${command.context.ckey}" name="ckey"/>-->
             
@@ -84,18 +84,17 @@
   </td>
   <td>a memorable key without spaces</td>
 </tr>
-<!--
+
 
 <tr>
-  <td class="expl">title*</td>
+  <td>title*</td>
   <td>
-    <textarea class="reqinput" name="title" rows="3" ><c:out value="${bibtexHandlerBean.title}"/></textarea>
-    <div class="errmsg">${bibtexHandlerBean.errors.title}</div>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.title}"/></div>
+    <form:textarea path="post.resource.title" />
   </td>
   <td></td>
 </tr>
 
+<!--
 <tr>
   <td class="expl">authors*</td>
   <td>

@@ -21,7 +21,7 @@
     
           <div id="general">
 
-            Hu!
+            success!
   
           </div>
             

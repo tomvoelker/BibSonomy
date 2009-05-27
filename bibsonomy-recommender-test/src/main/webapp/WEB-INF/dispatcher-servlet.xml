@@ -24,6 +24,7 @@
 	</bean>
 	<bean id="publicationController" class="org.bibsonomy.recommender.webapp.controller.PublicationController">
 		<property name="formView" value="publicationForm"/>
+		<property name="successView" value="home"/>
 	</bean>
 
 
