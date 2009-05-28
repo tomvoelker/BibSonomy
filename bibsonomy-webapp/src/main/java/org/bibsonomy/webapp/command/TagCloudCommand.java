@@ -22,6 +22,12 @@ public class TagCloudCommand extends BaseCommand {
 	private TagCloudStyle style = TagCloudStyle.CLOUD;
 	private TagCloudSort sort = TagCloudSort.ALPHA;
 	private int maxTagCount;
+	public int getMaxUserTagCount() {
+		return this.maxUserTagCount;
+	}
+
+
+	private int maxUserTagCount;
 	
 	
 	/**
@@ -45,9 +51,13 @@ public class TagCloudCommand extends BaseCommand {
 	 */
 	private void calculateMaxTagCount() {
 		maxTagCount = Integer.MIN_VALUE;
+		maxUserTagCount = Integer.MIN_VALUE;
 		for (Tag tag : tags) {
 			if (tag.getGlobalcount() > maxTagCount) {
 				maxTagCount = tag.getGlobalcount();
+			}
+			if (tag.getUsercount() > maxUserTagCount) {
+				maxUserTagCount = tag.getUsercount();
 			}
 		}
 	}
