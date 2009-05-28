@@ -5,11 +5,11 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
-	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
-
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
+
+    <fmt:setBundle basename="messages" scope="request"/>
 
 	<jsp:output doctype-root-element="html"	doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
   
@@ -18,9 +18,9 @@
 		<jsp:body>
 			<head>
 				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
-				<link rel="stylesheet" type="text/css" href="/css/style.css" />
-				<link rel="icon" href="/images/favicon.png" type="image/png" />
-				<script type="text/javascript" src="/javascript/chrome.js">&amp;nbsp;</script>
+				<link rel="stylesheet" type="text/css" href="http://www.bibsonomy.org/resources/css/style.css" />
+				<link rel="icon" href="http://www.bibsonomy.org/resources/images/favicon.png" type="image/png" />
+				<script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/chrome.js">&amp;nbsp;</script>
 				
 				<title><c:out value="${pageTitle}"/></title>
 			</head>

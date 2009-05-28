@@ -22,102 +22,103 @@
 		<jsp:attribute name="content">
     
           <style type="text/css">
+            textarea, input[type=text] {
+              //width: 100%;
+              min-width: 40em;
+              margin-right: 1em;
+            }
+            label {
+              padding-right: 1em;
+              width: 20%;
+            }
             textarea {
-              width: 100%;
+              height: 4em;
+            }
+            td {
+              padding-right: 1em;
             }
           </style>
     
     
           <div id="general">
 
+
+            <h2>post a publication</h2>
+
+
             <form:form method="post">
               <input type="hidden" name="postID" value="${command.postID}"/>
-<!--              <input type="hidden" value="${command.context.ckey}" name="ckey"/>-->
-            
+
+              <fieldset>
+                <legend>post metadata</legend>
+           
+  <form:label path="post.user.name">username*</form:label>
+  <form:input path="post.user.name"/>
+  <span>the name of the posting user</span>
+
+  <form:label path="post.description">description, comment</form:label>
+  <form:textarea path="post.description"/>
+
+  <post:groupBox post="${command.post}" groups="${loginUser.groups}"/>
+
+  <post:tagfield containsComma="${command.containsComma}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
+
+  <input type="reset"  value="reset"/>
+  <input type="submit" value="save"/>
+             </fieldset>
+             
+             <fieldset>
+               <legend>publication metadata</legend>
+
+  <fieldset>
+    <legend>mandatory</legend>
+
+    <table>
+      <tr>
+        <td><form:label path="post.resource.entrytype">type*</form:label></td>
+        <td><form:select multiple="false" path="post.resource.entrytype" size="5">
+              <form:options items="${command.entryTypes}"/>
+            </form:select>
+        </td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><form:label path="post.resource.bibtexKey">BibTeX key*</form:label></td>
+        <td><form:input path="post.resource.bibtexKey"/></td>
+        <td>a memorable key without spaces</td>
+      </tr>
+      <tr>
+        <td><form:label path="post.resource.title">title*</form:label></td>
+        <td><form:textarea path="post.resource.title" /></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><form:label path="post.resource.author">authors*</form:label></td>
+        <td><form:textarea path="post.resource.author"/></td>
+        <td>each author on a separate line, format "Firstname Lastname"</td>
+      </tr>
+      <tr>
+
+        <td><form:label path="post.resource.editor">editors*</form:label></td>
+        <td><form:textarea path="post.resource.editor"/></td>
+        <td>each editor on a separate line, format "Firstname Lastname"</td>
+      </tr>
+      <tr>
+        <td><form:label path="post.resource.year">year*</form:label></td>
+        <td><form:input path="post.resource.year"/></td>
+        <td></td>        
+      </tr>
+    </table>
+  </fieldset>
+
+  <fieldset>
+    <legend>optional</legend>
 <table>
-    
-<tr>
-  <td><form:label path="post.description">description, comment</form:label></td>
-  <td><form:textarea path="post.description" rows="3"/></td>
-  <td></td>       
-</tr>
 
 <tr>
-  <td colspan="3">
-    <post:groupBox post="${command.post}" groups="${loginUser.groups}"/>
-  </td>   
+  
 </tr>
 
-
-<tr>
-  <td colspan="3">
-    <post:tagfield containsComma="${command.containsComma}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
-  </td>
-</tr>
-
-
-<tr>
-  <td>
-    <input type="reset"  value="reset"/>
-    <input type="submit" value="save"/>
-  </td>
-  <td class="expl_s"><a id="collapse" href="javascript:showAll()">show all fields</a> </td>
-  <td></td>
-</tr>
-
-<tr>
-  <td>type*</td>
-  <td>
-    <select name="entrytype" onChange="changeView();">
-      <c:forEach var="et" items="${command.entryTypes}">
-          <c:choose>
-            <c:when test="${command.post.resource.entrytype eq et}">
-              <option value="${et}" selected="true">${et}</option>
-            </c:when>
-            <c:otherwise>
-                <option value="${et}">${et}</option>
-              </c:otherwise>
-            </c:choose>
-          </c:forEach>
-    </select>
-  </td>
-  <td></td>
-</tr>
-
-<tr>
-  <td>BibTeX key*</td>
-  <td>
-    <form:input path="post.resource.bibtexKey"/>
-  </td>
-  <td>a memorable key without spaces</td>
-</tr>
-
-
-<tr>
-  <td>title*</td>
-  <td>
-    <form:textarea path="post.resource.title" />
-  </td>
-  <td></td>
-</tr>
-
-
-<tr>
-  <td>authors*</td>
-  <td>
-    <form:textarea path="post.resource.author"/>
-  </td>
-  <td>each author on a separate line, format "Firstname Lastname"</td>
-</tr>
-
-
-<tr>
-  <td>editors*</td>
-  <td>
-    <form:textarea path="post.resource.editor"/>
-  </td>
-  <td>each editor on a separate line, format "Firstname Lastname"</td>
-</tr>
 
 
 <tr>
@@ -158,244 +159,195 @@
   <td>number of journal, magazine, technical report, or work in a series</td>
 </tr>
 
-<!-- 
-<tr id="pagesR">
-  <td class="expl">pages</td>
-  <td>
-    <input type="text" name="pages" value='<c:out value="${bibtexHandlerBean.pages}"/>' style="width: 10em;"/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.pages}"/></div>    
-  </td>
-  <td></td>
-</tr>
-
-
-<tr id="publisherR">
-  <td class="expl">publisher</td>
-  <td>
-    <input type="text" name="publisher" value='<c:out value="${bibtexHandlerBean.publisher}"/>' />
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.publisher}"/></div>    
-  </td>
-  <td></td>
-</tr>
-
-<tr id="addressR">
-  <td class="expl">address</td>
-  <td>
-    <input type="text" name="address" value="<c:out value='${bibtexHandlerBean.address}'/>" />
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.address}"/></div>    
-  </td>
-  <td class="expl_s">address of the publisher or institution</td>
-</tr>
-
-
-
 <tr>
-  <td class="expl">year*</td>
+  <td>pages</td>
   <td>
-    <input class="reqinput" type="text" name="year" value='<c:out value="${bibtexHandlerBean.year}"/>' style="width: 10em;"/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.year}"/></div>    
+    <form:input path="post.resource.pages"/>
   </td>
   <td></td>
-</tr>
-
-<tr id="monthR">
-  <td class="expl">month</td>
-  <td>
-    <input type="text" name="month" value='<c:out value="${bibtexHandlerBean.month}"/>' style="width: 10em;"/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.month}"/></div>    
-  </td>
-  <td></td>
-</tr>
-
-<tr id="dayR">
-  <td class="expl">day</td>
-  <td>
-    <input type="text" name="day" value='<c:out value="${bibtexHandlerBean.day}"/>' style="width: 10em;"/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.day}"/></div>    
-  </td>
-  <td></td>
-</tr>
-
-
-<tr id="editionR">
-  <td class="expl">edition</td>
-  <td>
-    <input type="text" name="edition" value='<c:out value="${bibtexHandlerBean.edition}"/>' style="width: 10em;"/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.edition}"/></div>    
-  </td>
-  <td class="expl_s">edition of a book, usually written in full as "Second"</td>
-</tr>
-
-
-<tr id="chapterR">
-  <td class="expl">chapter</td>
-  <td>
-    <input type="text" name="chapter" value='<c:out value="${bibtexHandlerBean.chapter}"/>' style="width: 10em;"/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.chapter}"/></div>    
-  </td>
-  <td class="expl_s">chapter or section number</td>
 </tr>
 
 
 <tr>
-  <td class="expl">url</td>
+  <td>publisher</td>
   <td>
-    <input type="text" name="url" value='<c:out value="${bibtexHandlerBean.url}"/>'>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.url}"/></div>    
-  </td>
-  <td></td>
-</tr>
-
-
-<tr id="keyR">
-  <td class="expl">key</td>
-  <td>
-    <input type="text" name="key" value='<c:out value="${bibtexHandlerBean.key}"/>'/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.key}"/></div>    
-  </td>
-  <td class="expl_s">used by BibTeX for sorting</td>
-</tr>
-
-<tr id="typeR">
-  <td class="expl">type</td>
-  <td>
-    <input type="text" name="type" value='<c:out value="${bibtexHandlerBean.type}"/>'/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.type}"/></div>    
-  </td>
-  <td class="expl_s">type of technical report, e.g. "research report"</td>
-</tr>
-
-
-<tr id="annoteR">
-  <td class="expl">annote</td>
-  <td>
-    <textarea name="annote" rows="3" ><c:out value="${bibtexHandlerBean.annote}"/></textarea>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.annote}"/></div>    
-  </td>
-  <td></td>
-</tr>
-
-<tr id="noteR">
-  <td class="expl">note</td>
-  <td>
-    <textarea name="note" rows="3" ><c:out value="${bibtexHandlerBean.note}"/></textarea>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.note}"/></div>    
-  </td>
-  <td class="expl_s">additional information which could help the reader</td>
-</tr>
-
-
-
-<tr id="howpublishedR">
-  <td class="expl">howpublished</td>
-  <td>
-    <input type="text" name="howpublished" value='<c:out value="${bibtexHandlerBean.howpublished}"/>'/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.howpublished}"/></div>    
-  </td>
-  <td class="expl_s">anything unusual about the method of publishing, e.g. "privately published"</td>
-</tr>
-
-<tr id="institutionR">
-  <td class="expl">institution</td>
-  <td>
-    <input type="text" name="institution" value='<c:out value="${bibtexHandlerBean.institution}"/>'/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.institution}"/></div>    
-  </td>
-  <td class="expl_s">name of the sponsoring institution for a technical report</td>
-</tr>
-
-<tr id="organizationR">
-  <td class="expl">organization</td>
-  <td>
-    <input type="text" name="organization" value='<c:out value="${bibtexHandlerBean.organization}"/>'/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.organization}"/></div>    
-  </td>
-  <td class="expl_s">sponsoring organization for a conference or manual</td>
-</tr>
-
-
-<tr id="schoolR">
-  <td class="expl">school</td>
-  <td>
-    <input type="text" name="school" value='<c:out value="${bibtexHandlerBean.school}"/>'/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.school}"/></div>    
-  </td>
-  <td class="expl_s">name of the academic institution where a thesis was written</td>
-</tr>
-
-<tr id="seriesR">
-  <td class="expl">series</td>
-  <td>
-    <input type="text" name="series" value='<c:out value="${bibtexHandlerBean.series}"/>'/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.series}"/></div>    
-  </td>
-  <td class="expl_s">name of a series or a set of books</td>
-</tr>
-
-<tr id="crossrefR">
-  <td class="expl">crossref</td>
-  <td>
-    <input type="text" name="crossref" value='<c:out value="${bibtexHandlerBean.crossref}"/>' style="width: 10em;"/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.crossref}"/></div>    
+    <form:input path="post.resource.publisher"/>
   </td>
   <td></td>
 </tr>
 
 <tr>
-  <td class="expl">misc</td>
+  <td>address</td>
   <td>
-    <textarea name="misc" rows="3" ><c:out value="${bibtexHandlerBean.misc}"/></textarea>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.misc}"/></div>    
+    <form:input path="post.resource.address"/>
   </td>
-  <td class="expl_s">this field can be used to import nonstandard fields in addition to the predefined ones. please use BibTeX compliant syntax.</td>
+  <td>address of the publisher or institution</td>
+</tr>
+
+
+<tr>
+  <td>month</td>
+  <td>
+    <form:input path="post.resource.month"/>
+  </td>
+  <td></td>
 </tr>
 
 <tr>
-  <td class="expl">abstract</td>
+  <td>day</td>
   <td>
-    <textarea name="bibtexAbstract" rows="3" ><c:out value="${bibtexHandlerBean.bibtexAbstract}"/></textarea>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.bibtexAbstract}"/></div>    
+    <form:input path="post.resource.day"/>
   </td>
   <td></td>
 </tr>
 
-<tr id="miscR">
-  <td class="expl">private note</td>
+
+<tr>
+  <td>edition</td>
   <td>
-    <textarea name="privnote" rows="3" ><c:out value="${bibtexHandlerBean.privnote}"/></textarea>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.privnote}"/></div>    
+    <form:input path="post.resource.edition"/>
   </td>
-  <td class="expl_s">here you can enter a private note which is not visible to other users</td>
+  <td>edition of a book, usually written in full as "Second"</td>
+</tr>
+
+
+<tr>
+  <td>chapter</td>
+  <td>
+    <form:input path="post.resource.chapter"/>
+  </td>
+  <td>chapter or section number</td>
+</tr>
+
+
+<tr>
+  <td>url</td>
+  <td>
+    <form:input path="post.resource.url"/>
+  </td>
+  <td></td>
+</tr>
+
+
+<tr>
+  <td>key</td>
+  <td>
+    <form:input path="post.resource.BKey"/>
+  </td>
+  <td>used by BibTeX for sorting</td>
 </tr>
 
 <tr>
+  <td>type</td>
   <td>
-    <input type="submit" value="post_bibtex" onclick="clear_tags()"/>
-    <input type="hidden" name="requTask" value="upload"/>  
-    <input type="hidden" name="scraperid" value="${bibtexHandlerBean.scraperid}"/>
+    <form:input path="post.resource.type"/>
+  </td>
+  <td>type of technical report, e.g. "research report"</td>
+</tr>
+
+
+<tr>
+  <td>annote</td>
+  <td>
+    <form:textarea path="post.resource.annote"/>
   </td>
   <td></td>
+</tr>
+
+<tr>
+  <td>note</td>
+  <td>
+    <form:textarea path="post.resource.note"/>
+  </td>
+  <td>additional information which could help the reader</td>
+</tr>
+
+
+
+<tr>
+  <td>howpublished</td>
+  <td>
+    <form:input path="post.resource.howpublished" />
+  </td>
+  <td>anything unusual about the method of publishing, e.g. "privately published"</td>
+</tr>
+
+<tr>
+  <td>institution</td>
+  <td>
+    <form:input path="post.resource.institution"/>
+  </td>
+  <td>name of the sponsoring institution for a technical report</td>
+</tr>
+
+<tr>
+  <td>organization</td>
+  <td>
+    <form:input path="post.resource.organization"/>
+  </td>
+  <td>sponsoring organization for a conference or manual</td>
+</tr>
+
+
+<tr>
+  <td>school</td>
+  <td>
+    <form:input path="post.resource.school"/>
+  </td>
+  <td>name of the academic institution where a thesis was written</td>
+</tr>
+
+<tr>
+  <td>series</td>
+  <td>
+    <form:input path="post.resource.series"/>
+  </td>
+  <td>name of a series or a set of books</td>
+</tr>
+
+<tr>
+  <td>crossref</td>
+  <td>
+    <form:input path="post.resource.crossref"/>
+  </td>
   <td></td>
 </tr>
-<tr style="line-height: 0px; visibility: hidden;">
-  <td>&nbsp;</td>
-  <td>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ </td>
-  <td>&nbsp;</td>
+
+<tr>
+  <td>misc</td>
+  <td>
+    <form:textarea path="post.resource.misc"/>
+  </td>
+  <td>this field can be used to import nonstandard fields in addition to the predefined ones. please use BibTeX compliant syntax.</td>
 </tr>
-</table>
-</form>
-            
-              <form:form id="postPublicationForm" action="/postPublication" method="post">
-                  
-                
-  
+
+<tr>
+  <td>abstract</td>
+  <td>
+    <form:textarea path="post.resource.abstract"/>
+  </td>
+  <td></td>
+</tr>
+
+<tr>
+  <td>private note</td>
+  <td>
+    <form:textarea path="post.resource.privnote"/>
+  </td>
+  <td>here you can enter a private note which is not visible to other users</td>
+</tr>
+
+<!--   
 <c:if test="${not empty loginUser.groups}">
 <post:relevantForBox groups="${loginUser.groups}"/>
 </c:if>
   
 -->
 </table>
-                  
+
+
+</fieldset>
+</fieldset>
 
               </form:form>
     
