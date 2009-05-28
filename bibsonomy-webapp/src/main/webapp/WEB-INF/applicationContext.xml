@@ -39,25 +39,40 @@
 
 	<bean id="LuceneUpdater" class="org.bibsonomy.lucene.LuceneUpdater"/>
 
-	<bean id="luceneUpdateJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	<bean id="luceneUpdateJobWithoutIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	  <property name="targetObject" ref="LuceneUpdater" />
 	  <property name="targetMethod" value="updateAndReloadIndex" />
+	  <property name="arguments" value="false" /> <!-- optimizeIndex true|false -->
 	  <property name="concurrent" value="false" />
-	  
 	</bean>
 	
-	<bean id="luceneUpdateCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="luceneUpdateJobWithIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	  <property name="targetObject" ref="LuceneUpdater" />
+	  <property name="targetMethod" value="updateAndReloadIndex" />
+	  <property name="arguments" value="true" /> <!-- optimizeIndex true|false -->
+	  <property name="concurrent" value="false" />
+	</bean>
+
+	<bean id="luceneUpdateCronTriggerWithoutIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
  		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
- 		<property name="cronExpression" value="0 1/5 * * * ?" />
-		<property name="jobDetail" ref="luceneUpdateJob" />
+ 		<property name="cronExpression" value="22 1/2 * * * ?" /> <!-- *:01,03,...:22 -->
+		<property name="jobDetail" ref="luceneUpdateJobWithoutIndexOptimization" />
 	</bean>
  
+	<bean id="luceneUpdateCronTriggerWithIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
+ 		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
+ 		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
+ 		<property name="cronExpression" value="1 0 2 * * ?" />  <!-- @02:00:01 -->
+		<property name="jobDetail" ref="luceneUpdateJobWithIndexOptimization" />
+	</bean>
+
 	
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
     <property name="triggers">
         <list>
-            <ref bean="luceneUpdateCronTrigger" />
+            <ref bean="luceneUpdateCronTriggerWithoutIndexOptimization" />
+            <ref bean="luceneUpdateCronTriggerWithIndexOptimization" />
         </list>
     </property>
 </bean>
