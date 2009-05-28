@@ -8,6 +8,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
@@ -23,22 +24,21 @@ import org.bibsonomy.model.Post;
  * @version $Id$
  */
 public class GetBibtexSearch extends BibTexChainElement {
+	
+	private static final Logger LOGGER = Logger.getLogger(GetBibtexSearch.class);
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, DBSession session) {
 		// uncomment following for a quick hack to access secondary datasource
 		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
 
-		Context initContext = null;
-		Context envContext = null;
 		String searchMode = "";
 		try {
-			initContext = new InitialContext();
-			envContext = (Context) initContext.lookup("java:/comp/env");
+			Context initContext = new InitialContext();
+			Context envContext = (Context) initContext.lookup("java:/comp/env");
 			searchMode = (String) envContext.lookup("searchMode");
 		} catch (NamingException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
+			LOGGER.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
 		}
 		
 		if ("lucene".equals(searchMode)) {
