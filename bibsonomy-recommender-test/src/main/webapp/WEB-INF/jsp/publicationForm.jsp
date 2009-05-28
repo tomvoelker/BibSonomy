@@ -23,8 +23,8 @@
     
           <style type="text/css">
             textarea, input[type=text] {
-              //width: 100%;
-              min-width: 40em;
+              width: 100%;
+              min-width: 30em;
               margin-right: 1em;
             }
             label {
@@ -51,20 +51,29 @@
 
               <fieldset>
                 <legend>post metadata</legend>
-           
-  <form:label path="post.user.name">username*</form:label>
-  <form:input path="post.user.name"/>
-  <span>the name of the posting user</span>
-
-  <form:label path="post.description">description, comment</form:label>
-  <form:textarea path="post.description"/>
+                
+                  <table>
+                    <tr>
+                      <td><form:label path="post.user.name">username*</form:label></td>
+                      <td><form:input path="post.user.name"/></td>
+                      <td>the name of the posting user</td>
+                    </tr>
+                    <tr>
+                      <td><form:label path="post.description">description, comment</form:label></td>
+                      <td><form:textarea path="post.description"/></td>
+                      <td></td>
+                    </tr>
+                  </table>
 
   <post:groupBox post="${command.post}" groups="${loginUser.groups}"/>
 
   <post:tagfield containsComma="${command.containsComma}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
 
-  <input type="reset"  value="reset"/>
-  <input type="submit" value="save"/>
+  <fieldset>
+    <legend>actions</legend>
+    <input type="reset"  value="reset"/>
+    <input type="submit" value="save"/>
+  </fieldset>
              </fieldset>
              
              <fieldset>
@@ -76,7 +85,7 @@
     <table>
       <tr>
         <td><form:label path="post.resource.entrytype">type*</form:label></td>
-        <td><form:select multiple="false" path="post.resource.entrytype" size="5">
+        <td><form:select multiple="false" path="post.resource.entrytype">
               <form:options items="${command.entryTypes}"/>
             </form:select>
         </td>
