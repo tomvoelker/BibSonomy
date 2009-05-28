@@ -21,6 +21,13 @@
     
 		<jsp:attribute name="content">
     
+          <style type="text/css">
+            textarea {
+              width: 100%;
+            }
+          </style>
+    
+    
           <div id="general">
 
             <form:form method="post">
@@ -94,74 +101,64 @@
   <td></td>
 </tr>
 
-<!--
-<tr>
-  <td class="expl">authors*</td>
-  <td>
-    <textarea class="reqinput" name="author" id="lauthor" onkeyup="toggle_required_author_editor(); sz(this);"" rows="3"><c:out value="${bibtexHandlerBean.authorLineBreak}"/></textarea>
-    <div class="errmsg">${bibtexHandlerBean.errors.author}</div>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.author}"/></div>
-  </td>
-  <td class="expl_s">each author on a separate line, format "Firstname Lastname"</td>
-</tr>
 
+<tr>
+  <td>authors*</td>
+  <td>
+    <form:textarea path="post.resource.author"/>
+  </td>
+  <td>each author on a separate line, format "Firstname Lastname"</td>
+</tr>
 
 
 <tr>
-  <td valign="top" class="expl">editors*</td>
+  <td>editors*</td>
   <td>
-    <textarea class="reqinput" name="editor" id="leditor" onkeyup="toggle_required_author_editor(); sz(this);" rows="3" ><c:out value="${bibtexHandlerBean.editorLineBreak}"/></textarea>
-    <div class="errmsg">${bibtexHandlerBean.errors.editor}</div>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.editor}"/></div>
-    <script type="text/javascript">toggle_required_author_editor();</script>    
+    <form:textarea path="post.resource.editor"/>
   </td>
-  <td class="expl_s">each editor on a separate line, format "Firstname Lastname"</td>
+  <td>each editor on a separate line, format "Firstname Lastname"</td>
+</tr>
+
+
+<tr>
+  <td>booktitle</td>
+  <td>
+    <form:input path="post.resource.booktitle"/>
+  </td>
+  <td>title of a book when only part is cited</td>
 </tr>
 
 
 
-<tr id="booktitleR">
-  <td class="expl">booktitle</td>
+<tr>
+  <td>journal</td>
   <td>
-    <input type="text" name="booktitle" value="${f:escapeXml(bibtexHandlerBean.booktitle)}"/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.booktitle}"/></div>
+    <form:input path="post.resource.journal"/>
   </td>
-  <td class="expl_s">title of a book when only part is cited</td>
-</tr>
-
-
-
-<tr id="journalR">
-  <td class="expl">journal</td>
-  <td>
-    <input type="text" name="journal" value='<c:out value="${bibtexHandlerBean.journal}"/>' />
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.journal}"/></div>
-  </td>
-  <td class="expl_s">full (unabbreviated) journal title</td>
+  <td>full (unabbreviated) journal title</td>
 </tr>
 
 
 
 
-<tr id="volumeR">
-  <td class="expl">volume</td>
+<tr>
+  <td>volume</td>
   <td>
-    <input type="text" name="volume" value='<c:out value="${bibtexHandlerBean.volume}"/>' style="width: 10em;" />
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.volume}"/></div>
+    <form:input path="post.resource.volume"/>
   </td>
   <td></td>
 </tr>
 
 
-<tr id="numberR">
-  <td class="expl">number</td>
+<tr>
+  <td>number</td>
   <td>
-    <input type="text" name="number" value='<c:out value="${bibtexHandlerBean.number}"/>' style="width: 10em;"/>
-    <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.number}"/></div>
+    <form:input path="post.resource.number"/>
   </td>
-  <td class="expl_s">number of journal, magazine, technical report, or work in a series</td>
+  <td>number of journal, magazine, technical report, or work in a series</td>
 </tr>
 
+<!-- 
 <tr id="pagesR">
   <td class="expl">pages</td>
   <td>
