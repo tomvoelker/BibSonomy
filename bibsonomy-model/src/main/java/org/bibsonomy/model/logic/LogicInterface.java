@@ -494,7 +494,25 @@ public interface LogicInterface extends PostLogicInterface {
 	 */
 	public List<User> getFriendsOfUser(User loginUser);
 	
+	/**
+	 * This method deletes a relationship between the logged in user
+	 * and the given user.
+	 * 
+	 * @param loggedInUser 
+	 * @param requestedUser 
+	 * @param relation 
+	 * 
+	 */
+	public void deleteUserRelationship(User loggedInUser, User requestedUser, UserRelation relation);
 	
-	
+	/**
+	 * This method adds a relationship between the logged in user
+	 * and the given user
+	 * 
+	 * @param loggedInUser
+	 * @param requestedUser
+	 * @param relation
+	 */
+	public void insertUserRelationship(User loggedInUser, User requestedUser, UserRelation relation);
 	
 }
