@@ -1,20 +1,15 @@
 package org.bibsonomy.webapp.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.common.enums.ConceptStatus;
-import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
@@ -79,10 +74,10 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 										
 			// compute the ranking for each post in the list
 			RankingUtil.computeRanking(loginUserTags, targetUserTags, command.getListCommand(resourceType).getList(), RankingType.TFIDF, false);
-				
+
 			// post-process & sort
 			this.postProcessAndSortList(command, resourceType);
-			
+
 			// show only the top ranked resources for each resource type
 			if (command.getListCommand(resourceType).getList().size() > origEntriesPerPage) {
 				if (BibTex.class.equals(resourceType)) {
@@ -92,8 +87,8 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 					command.getBookmark().setList(command.getBookmark().getList().subList(listCommand.getStart(), origEntriesPerPage));
 				}				
 			}
-			this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, entriesPerPage, null);
-			
+			this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, origEntriesPerPage, null);
+			listCommand.setEntriesPerPage(origEntriesPerPage);
 		}
 
 
