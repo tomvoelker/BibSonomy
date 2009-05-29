@@ -3,9 +3,11 @@ package org.bibsonomy.webapp.util;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.webapp.controller.UserPageController;
 
 /**
  * Util class to compute ranking
@@ -20,6 +22,8 @@ public class RankingUtil {
 	 * the (rough) maximal global count of a tag (used to compute tf/idf-weighting)
 	 */
 	private static int MAX_TAG_GLOBALCOUNT = 200000;
+	
+	private static final Logger LOGGER = Logger.getLogger(UserPageController.class);
 	
 	
 	public enum RankingType {
@@ -102,7 +106,7 @@ public class RankingUtil {
 		for (Tag tag : targetUserTags) {
 			// double weight = ( ( ( (double) tagUserCounts.get(tag.getName()) ) / maxUserFreq ) * Math.log(MAX_TAG_GLOBALCOUNT / tagGlobalCounts.get(tag.getName()) ) ) * 100 ;
 			tag.setGlobalcount(tag.getUsercount());
-			System.out.println("working on tag " + tag.getName() + ", having user freq " + tagUserCounts.get(tag.getName()) + " and global count " + tagGlobalCounts.get(tag.getName()));
+			LOGGER.debug("working on tag " + tag.getName() + ", having user freq " + tagUserCounts.get(tag.getName()) + " and global count " + tagGlobalCounts.get(tag.getName()));
 			if (tagUserCounts.get(tag.getName()) != null && tagGlobalCounts.get(tag.getName()) != null) {
 				double weight = ( ( ( (double) tagUserCounts.get(tag.getName()) ) / maxUserFreq ) * Math.log(MAX_TAG_GLOBALCOUNT / tagGlobalCounts.get(tag.getName()) ) ) * 10 ;
 				// tag.setGlobalcount((int) weight);				
