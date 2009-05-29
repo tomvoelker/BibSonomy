@@ -857,4 +857,17 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
+
+	@Override
+	public void deleteUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void insertUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+		// TODO Auto-generated method stub
+		
+	}
 }
