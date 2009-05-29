@@ -535,8 +535,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void deleteFriendOfUser(UserParam param, final DBSession session){
-		this.delete("deleteFriendOfUser", param, session);
 		this.plugins.onDeleteFriendship(param, session);
+		this.delete("deleteFriendOfUser", param, session);
 	}
 	
 	/**
@@ -547,8 +547,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void deleteFollowerOfUser(UserParam param, final DBSession session){
-		this.delete("deleteFollowerOfUser", param, session);
 		this.plugins.onDeleteFellowship(param, session);
+		this.delete("deleteFollowerOfUser", param, session);
 	}
 	
 	/**
