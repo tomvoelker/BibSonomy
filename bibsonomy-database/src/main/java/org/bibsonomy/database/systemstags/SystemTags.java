@@ -14,6 +14,8 @@ public enum SystemTags {
 	AUTHOR("author"),
 	/** User */
 	USER("user"),
+	/** Group */
+	GROUP("group"),
 	/** BibTex key */
 	BIBTEXKEY("bibtexkey"),
 	/** days */
