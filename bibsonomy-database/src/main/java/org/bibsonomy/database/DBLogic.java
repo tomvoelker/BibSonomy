@@ -1449,4 +1449,50 @@ public class DBLogic implements LogicInterface {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#deleteUserRelationship()
+	 */
+	@Override
+	public void deleteUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+		this.ensureLoggedIn();
+		
+		final DBSession session = openSession();
+		try{
+			UserParam param = new UserParam();
+			param.setUserName(loggedInUser.getName());
+			param.setRequestedUserName(requestedUser.getName());
+			
+			if (UserRelation.FOLLOWER_OF.equals(relation)){
+				this.userDBManager.deleteFollowerOfUser(param, session);
+			}
+			if (UserRelation.FRIEND_OF.equals(relation)){
+				this.userDBManager.deleteFriendOfUser(param, session);
+			}
+		} finally {
+			session.close();
+		}
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#insertUserRelationship()
+	 */
+	@Override
+	public void insertUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+		this.ensureLoggedIn();
+		
+		final DBSession session = openSession();
+		try{
+			UserParam param = new UserParam();
+			param.setUserName(loggedInUser.getName());
+			param.setRequestedUserName(requestedUser.getName());
+			
+			if (UserRelation.FOLLOWER_OF.equals(relation)){
+				this.userDBManager.addFollowerOfUser(param, session);
+			}
+		} finally {
+			session.close();
+		}
+	}
+
 }

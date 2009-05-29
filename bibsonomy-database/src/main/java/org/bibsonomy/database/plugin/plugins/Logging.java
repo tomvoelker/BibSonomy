@@ -5,6 +5,7 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
+import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.database.util.DBSession;
 
@@ -123,6 +124,24 @@ public class Logging extends AbstractDatabasePlugin {
 		return new Runnable() {
 			public void run() {
 				insert("logUser", userName, session);
+			}
+		};
+	}
+	
+	@Override
+	public Runnable onDeleteFellowship(final UserParam param, final DBSession session){
+		return new Runnable(){
+			public void run(){
+				insert("logFollowerDelete", param, session);
+			}
+		};
+	}
+	
+	@Override
+	public Runnable onDeleteFriendship(final UserParam param, final DBSession session){
+		return new Runnable(){
+			public void run(){
+				insert("logFriendDelete", param, session);
 			}
 		};
 	}

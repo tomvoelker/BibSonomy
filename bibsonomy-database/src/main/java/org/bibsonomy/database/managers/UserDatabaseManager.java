@@ -460,6 +460,25 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getFriendsOfUser", authUser, User.class, session);
 	}
 	
+	/**
+	 * 
+	 * @param authUser
+	 * @param session
+	 * @return a list of user which the given user is following
+	 */
+	public List<User> getUserFollowers(final String authUser, final DBSession session){
+		return this.queryForList("getUserFollowers", authUser, User.class, session);
+	}
+	
+	/**
+	 * 
+	 * @param authUser
+	 * @param session
+	 * @return a list of user which are following the given user
+	 */
+	public List<User> getFollowersOfUser(final String authUser, final DBSession session){
+		return this.queryForList("getFollowersOfUser", authUser, User.class, session);
+	}
 
 	/**
 	 * Returns a list of users which are related to a given user by folkrank.
@@ -502,10 +521,44 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param param
 	 * @param session
-	 * @return
+	 * @return a list of user by given parameter
 	 */
 	public List<User> getUsers(UserParam param, final DBSession session) {
 		return chain.getFirstElement().perform(param, session);
+	}
+	
+	/**
+	 * This method quits a friendship between logged in user and
+	 * requested user.
+	 * 
+	 * @param param
+	 * @param session
+	 */
+	public void deleteFriendOfUser(UserParam param, final DBSession session){
+		this.delete("deleteFriendOfUser", param, session);
+		this.plugins.onDeleteFriendship(param, session);
+	}
+	
+	/**
+	 * This method quits a fellowship between logged in user and
+	 * requested user.
+	 * 
+	 * @param param
+	 * @param session
+	 */
+	public void deleteFollowerOfUser(UserParam param, final DBSession session){
+		this.delete("deleteFollowerOfUser", param, session);
+		this.plugins.onDeleteFellowship(param, session);
+	}
+	
+	/**
+	 * This method adds a user as a follower of another user to the db.
+	 * 
+	 * @param param
+	 * @param session
+	 */
+	public void addFollowerOfUser(final UserParam param, final DBSession session){
+		this.insert("insertFollowerOfUser", param, session);
 	}
 
 }

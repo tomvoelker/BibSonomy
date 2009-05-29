@@ -3,6 +3,7 @@ package org.bibsonomy.database.plugin;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.plugins.BibTexExtra;
 import org.bibsonomy.database.plugin.plugins.Logging;
 import org.bibsonomy.database.util.DBSession;
@@ -137,6 +138,26 @@ public class DatabasePluginRegistry {
 	public void onUserUpdate(String userName, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onUserUpdate(userName, session));
+		}
+	}
+	
+	/**
+	 * @param param
+	 * @param session
+	 */
+	public void onDeleteFellowship(UserParam param, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			this.executeRunnable(plugin.onDeleteFellowship(param, session));
+		}
+	}
+	
+	/**
+	 * @param param
+	 * @param session
+	 */
+	public void onDeleteFriendship(UserParam param, DBSession session) {
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			this.executeRunnable(plugin.onDeleteFriendship(param, session));
 		}
 	}
 }

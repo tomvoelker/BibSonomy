@@ -1,5 +1,6 @@
 package org.bibsonomy.database.plugin;
 
+import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DBSession;
 
 /**
@@ -139,4 +140,22 @@ public interface DatabasePlugin {
 	 * @return runnable
 	 */
 	public Runnable onRemoveUserFromGroup(String userName, int groupId, DBSession session);
+	
+	/**
+	 * Called when a fellowship will be deleted
+	 * 
+	 * @param param
+	 * @param session
+	 * @return runnable
+	 */
+	public Runnable onDeleteFellowship(final UserParam param, final DBSession session);
+	
+	/**
+	 * Called when a friendship will be deleted
+	 * 
+	 * @param param
+	 * @param session
+	 * @return runnable
+	 */
+	public Runnable onDeleteFriendship(final UserParam param, final DBSession session);
 }

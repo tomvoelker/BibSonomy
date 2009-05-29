@@ -6,9 +6,11 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.database.managers.chain.user.get.GetAllUsers;
+import org.bibsonomy.database.managers.chain.user.get.GetFollowersOfUser;
 import org.bibsonomy.database.managers.chain.user.get.GetFriendsOfUser;
 import org.bibsonomy.database.managers.chain.user.get.GetRelatedUsersByTags;
 import org.bibsonomy.database.managers.chain.user.get.GetRelatedUsersByUser;
+import org.bibsonomy.database.managers.chain.user.get.GetUserFollowers;
 import org.bibsonomy.database.managers.chain.user.get.GetUserFriends;
 import org.bibsonomy.database.managers.chain.user.get.GetUsersByGroup;
 import org.bibsonomy.database.params.UserParam;
@@ -96,6 +98,32 @@ public class UserChainTest extends AbstractChainTest {
 		param.setUserRelation(UserRelation.OF_FRIEND);		
 		this.userChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
 		assertEquals(GetUserFriends.class, this.chainStatus.getChainElement().getClass());		
+	}
+	
+	/**
+	 * get user followers
+	 */
+	@Test
+	public void getUserFollowers(){
+		UserParam param = new UserParam();
+		param.setGrouping(GroupingEntity.FOLLOWER);
+		param.setUserName("test");
+		param.setUserRelation(UserRelation.OF_FOLLOWER);
+		this.userChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
+		assertEquals(GetUserFollowers.class, this.chainStatus.getChainElement().getClass());
+	}
+	
+	/**
+	 * get followers of user
+	 */
+	@Test
+	public void getFollowersOfUser(){
+		UserParam param = new UserParam();
+		param.setGrouping(GroupingEntity.FOLLOWER);
+		param.setUserName("test");
+		param.setUserRelation(UserRelation.FOLLOWER_OF);
+		this.userChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
+		assertEquals(GetFollowersOfUser.class, this.chainStatus.getChainElement().getClass());
 	}
 	
 }

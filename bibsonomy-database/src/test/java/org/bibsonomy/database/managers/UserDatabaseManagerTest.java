@@ -1,6 +1,7 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -14,10 +15,12 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.BeforeClass;
@@ -269,5 +272,58 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		users = this.userDb.getRelatedUsersBySimilarity(requestedUserName, UserRelation.COSINE, 0, 10, this.dbSession);
 		assertEquals(0, users.size());
 		
+	}
+	
+	/**
+	 * tests getUserFollowers
+	 */
+	@Test
+	public void getUserFollowers(){
+		final String authUser = "testuser2";
+		
+		List<User> userFollowers = this.userDb.getUserFollowers(authUser, this.dbSession);
+		assertNotNull(userFollowers);
+		assertEquals(1, userFollowers.size());
+		assertEquals("testuser1", userFollowers.get(0).getName());
+	}
+	
+	/**
+	 * tests getUserFollowers
+	 */
+	@Test
+	public void getFollowersOfUser(){
+		final String authUser = "testuser1";
+		
+		List<User> userFollowers = this.userDb.getFollowersOfUser(authUser, this.dbSession);
+		assertNotNull(userFollowers);
+		assertEquals(2, userFollowers.size());
+		assertEquals("testuser2", userFollowers.get(0).getName());
+		assertEquals("testuser3", userFollowers.get(1).getName());
+	}
+	
+	/**
+	 * tests insert AND delete
+	 */
+	@Test
+	public void insertAndDeleteFollowersOfUser(){
+		UserParam param = new UserParam();
+		param.setUserName("testuser3");
+		param.setRequestedUserName("testuser1");
+		
+		List<User> followersOfUser = null;
+		
+		this.userDb.addFollowerOfUser(param, this.dbSession);
+		
+		followersOfUser = this.userDb.getFollowersOfUser("testuser3", this.dbSession);
+		
+		assertNotNull(followersOfUser);
+		assertEquals(1, followersOfUser.size());
+		assertEquals("testuser1", followersOfUser.get(0).getName());
+		
+		this.userDb.deleteFollowerOfUser(param, this.dbSession);
+		
+		followersOfUser = this.userDb.getFollowersOfUser("testuser3", this.dbSession);
+		assertNotNull(followersOfUser);
+		assertEquals(0, followersOfUser.size());		
 	}
 }
