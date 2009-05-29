@@ -75,6 +75,13 @@ public enum GroupingEntity {
 	FRIEND,
 	
 	/**
+	 * for constraining the associated groups of the entities in the list, 
+	 * which is to be filtered, to contain the group 'followers' and the requesting 
+	 * user is in that "followers-group".  
+	 */
+	FOLLOWER,
+	
+	/**
 	 * for constraining the entities in the list to the ones contained in the
 	 * basket collection of a given user
 	 */

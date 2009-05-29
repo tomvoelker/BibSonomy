@@ -46,7 +46,11 @@ public enum UserRelation {
 	/** target user is friend of source user (i.e, u1 <- u2) */
 	OF_FRIEND(5),
 	/** source user is curious about the target user */
-	CURIOUS_ABOUT(6);
+	CURIOUS_ABOUT(6), 
+	/** source user follows target user */
+	FOLLOWER_OF(7),
+	/** target user follows source user */
+	OF_FOLLOWER(8);
 	
 	/**
 	 * the relation ID. Mainly used in the table useruser_similarity.
@@ -85,7 +89,9 @@ public enum UserRelation {
 			case 3: return UserRelation.FOLKRANK; 
 			case 4: return UserRelation.FRIEND_OF; 
 			case 5: return UserRelation.OF_FRIEND; 
-			case 6: return UserRelation.CURIOUS_ABOUT; 
+			case 6: return UserRelation.CURIOUS_ABOUT;
+			case 7: return UserRelation.FOLLOWER_OF;
+			case 8: return UserRelation.OF_FOLLOWER;
 			default: return UserRelation.FOLKRANK; 
 		}		
 	}
