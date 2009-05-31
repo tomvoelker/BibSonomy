@@ -419,7 +419,17 @@ public enum Views implements View {
 	/**
 	 * show post_bookmark view
 	 */
-	POST_BOOKMARK_PAGE("postBookmark");
+	POST_BOOKMARK_PAGE("postBookmark"), 
+	
+	/**
+	 * show relations
+	 */
+	RELATIONS("relations"), 
+	
+	/**
+	 * show followers
+	 */
+	FOLLOWERS("followers");
 	
 	
 	
