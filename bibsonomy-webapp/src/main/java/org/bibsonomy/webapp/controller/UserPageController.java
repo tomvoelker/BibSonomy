@@ -68,6 +68,17 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		if (command.getFilter().equals("myDuplicates")) {
 			filter = FilterEntity.DUPLICATES;
 		}
+		
+		// if user is logged in fetch if the logged in user follows the requested
+		if (command.getContext().getUserLoggedIn()){
+			List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
+			for (User u : followersOfUser){
+				if (u.getName().equals(command.getRequestedUser())){
+					command.setFollowerOfUser(true);
+					break;
+				}
+			}
+		}
 
 		// determine which lists to initalize depending on the output format
 		// and the requested resourcetype

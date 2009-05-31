@@ -32,7 +32,36 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
+			<script type="text/javascript" src="${resdir}/javascript/follower.js">&amp;nbsp;</script>
 			
+				<!-- we need to switch if the user already follows this user or not -->
+				<c:choose>
+					<c:when test="${command.followerOfUser eq true}">
+					<div style="margin-top: 10px">
+						<div id="removeLink">
+							<fmt:message key="follow.info.text2"/>
+							<a style="cursor: pointer;" onclick="javascript:removeFollower('${command.requestedUser}');"><fmt:message key="follow.link.text.remove"/></a>
+						</div>
+						<div id="followLink" style="visibility:hidden; display:none">
+							<fmt:message key="follow.info.text1"/>
+							<a style="cursor: pointer;" onclick="javascript:addFollower('${command.requestedUser}');"><fmt:message key="follow.link.text.follow"/></a>
+						</div>
+					</div>
+					</c:when>
+					<c:otherwise>
+					<div style="margin-top: 10px">
+						<div id="removeLink" style="visibility:hidden; display:none">
+							<fmt:message key="follow.info.text2"/>
+							<a style="cursor: pointer;" onclick="javascript:removeFollower('${command.requestedUser}');"><fmt:message key="follow.link.text.remove"/></a>							
+						</div>
+						<div id="followLink">
+							<fmt:message key="follow.info.text1"/>
+							<a style="cursor: pointer;" onclick="javascript:addFollower('${command.requestedUser}');"><fmt:message key="follow.link.text.follow"/></a>
+						</div>
+					</div>
+					</c:otherwise>
+				</c:choose>
+			<br/>
 			<!-- display user's tag relations -->			
 			<li>
 				<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.title"/></c:set>

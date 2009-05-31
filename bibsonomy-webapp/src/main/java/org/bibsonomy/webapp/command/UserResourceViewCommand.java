@@ -20,6 +20,7 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	private User user;
 	private int bookmarkCount = 0;
 	private int bibtexCount = 0;
+	private boolean isFollowerOfUser = false;
 	
 	/**
 	 * defines the similarity measure by which the related users are computed  
@@ -91,6 +92,22 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public String getUserSimilarity() {
 		return userSimilarity;
+	}
+
+	/**
+	 * Get boolean if user is following this user or if not
+	 * @return true if user already follows this user and false if not
+	 */
+	public boolean isFollowerOfUser() {
+		return this.isFollowerOfUser;
+	}
+
+	/**
+	 * Set if user is following this use or if not
+	 * @param isFollowerOfUser
+	 */
+	public void setFollowerOfUser(boolean isFollowerOfUser) {
+		this.isFollowerOfUser = isFollowerOfUser;
 	}	
 	
 

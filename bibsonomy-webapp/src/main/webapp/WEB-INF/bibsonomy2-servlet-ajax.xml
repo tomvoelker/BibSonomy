@@ -68,6 +68,17 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/ajax/handleFollower">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="followerAjaxController" />
+						<property name="allowedFields" >
+							<list>
+								<value>requestedUserName</value>
+								<value>action</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -90,6 +101,9 @@
 		<property name="logic" ref="logic" />
 		<property name="userSettings" ref="userSettings" />
 		<property name="tagRecommender" ref="multiplexingTagRecommender" />
+	</bean>
+	<bean id="followerAjaxController" class="org.bibsonomy.webapp.controller.ajax.FollowerAjaxController" scope="request">
+		<property name="logic" ref="logic" />
 	</bean>
 
 </beans>
