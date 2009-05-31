@@ -421,6 +421,10 @@ div.bibentry {
 	display: none;
 }
 
+.input {
+	margin: 5px;
+}
+
 .reqinput {
 	background-color: #e5f3fa;
 }

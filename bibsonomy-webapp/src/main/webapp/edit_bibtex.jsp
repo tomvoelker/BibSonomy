@@ -275,11 +275,15 @@ td.expl_s {
 <tr>
   <td class="expl">BibTeX key*</td>
   <td>
-    <input class="reqinput" type="text" name="bibtexKey" value='<c:out value="${bibtexHandlerBean.bibtexKey}"/>' style="width: 10em;"/>
+    <input class="reqinput" type="text" id="lbibtexKey" name="bibtexKey" value='<c:out value="${bibtexHandlerBean.bibtexKey}"/>' style="width: 10em;"/>
     <div class="errmsg"><c:out value="${bibtexHandlerBean.errors.bibtexKey}"/></div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.bibtexKey}"/></div>
   </td>
-  <td class="expl_s">a memorable key without spaces</td>
+  <td class="expl_s" style="vertical-align: middle;">
+  	<a id="bibTexKeyReloadLink" style="cursor:pointer">
+  		<img id="bibTexKeyReloadButton" src="/resources/image/button_reload-inactive.png" alt="reloading tags" title="reloading tags" onclick="javascript:generateBibTexKey(this)" />
+    </a>
+  	a memorable key without spaces</td>
 </tr>
 
 
@@ -393,7 +397,7 @@ td.expl_s {
 <tr>
   <td class="expl">year*</td>
   <td>
-    <input class="reqinput" type="text" name="year" value='<c:out value="${bibtexHandlerBean.year}"/>' style="width: 10em;"/>
+    <input class="reqinput" type="text" name="year" id="lyear" value='<c:out value="${bibtexHandlerBean.year}"/>' style="width: 10em;"/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.year}"/></div>    
   </td>
   <td></td>

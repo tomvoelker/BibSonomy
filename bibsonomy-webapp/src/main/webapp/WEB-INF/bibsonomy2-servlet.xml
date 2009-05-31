@@ -389,6 +389,11 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="buttonPageController"/>
 					</bean>
+				</entry>
+				<entry key="/post_bookmark">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="postBookmarkPageController"/>
+					</bean>
 				</entry>	
 			</map>
 		</property>
@@ -593,6 +598,9 @@
 		<property name="view" value="BUTTONS"></property>
 	</bean>
 
+	<bean id="postBookmarkPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="POST_BOOKMARK_PAGE"></property>
+	</bean>
 
 	<bean id="bibtexkeyPageController" class="org.bibsonomy.webapp.controller.BibtexkeyPageController" scope="request">
 		<property name="logic" ref="logic"/>

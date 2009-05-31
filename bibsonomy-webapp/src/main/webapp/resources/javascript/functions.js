@@ -1847,6 +1847,60 @@ function addSystemTags(){
 	
 }
 
+﻿function generateBibTexKey(obj) {
+    var button = document.getElementById("bibTexKeyReloadButton");
+    button.setAttribute("src","/resources/image/button_reload.png");
+	
+    var buffer = "";
+    var authors = document.getElementById("lauthor").value;
+    var year = document.getElementById("lyear").value;
+
+    /* get author */
+    var first = getFirstPersonsLastName(authors);
+    if (first == null) {
+        first = getFirstPersonsLastName(editors);
+        if (first == null) {
+            first = "noauthororeditor";
+        }
+    }
+    buffer += first;
+
+    /* the year */ 
+    if (year != null) {
+        buffer += year.trim();
+    }
+
+    document.getElementById("lbibtexKey").value = buffer.toLowerCase();
+    button.setAttribute("src","/resources/image/button_reload-inactive.png");
+}
+
+function getFirstPersonsLastName(person) {
+    if (person != null) {
+        var firstauthor;
+        /*
+		 * check, if there is more than one author
+		 */
+        var firstand = person.indexOf("\n");
+        if (firstand < 0) {
+            firstauthor = person;
+        } else {
+            firstauthor = person.substring(0, firstand);				
+        }
+        /*
+         * first author extracted, get its last name
+         */
+        var lastspace = firstauthor.lastIndexOf(' ');
+        var lastname;
+        if (lastspace < 0) {
+            lastname = firstauthor;
+        } else {
+            lastname = firstauthor.substring(lastspace + 1, firstauthor.length);
+        }
+        return lastname;
+    }
+    return null;
+}
+
 //get the value of a node by a windowevent
 function getNodeValueByEvent(event){
 	node = xget_event(event);
