@@ -40,7 +40,7 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
 /**
- * Class for encapsulating database access of recommenders.
+ * Class for encapsulating database access of recommenders. Implements {@link DBLogic}.
  * 
  * @author fei
  */

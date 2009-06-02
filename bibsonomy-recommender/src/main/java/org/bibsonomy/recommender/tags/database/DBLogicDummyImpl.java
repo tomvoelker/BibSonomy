@@ -1,0 +1,228 @@
+package org.bibsonomy.recommender.tags.database;
+
+import java.sql.SQLException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.RecommendedTag;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.recommender.tags.database.params.Pair;
+import org.bibsonomy.recommender.tags.database.params.RecQueryParam;
+import org.bibsonomy.recommender.tags.database.params.RecSettingParam;
+import org.bibsonomy.recommender.tags.database.params.SelectorSettingParam;
+import org.bibsonomy.recommender.tags.database.params.TasEntry;
+
+/**
+ * @author rja
+ * @version $Id$
+ */
+public class DBLogicDummyImpl implements DBLogic {
+
+	@Override
+	public Long addQuery(String userName, Date date, Post<? extends Resource> post, int postID) throws SQLException {
+		return new Long(0);
+	}
+
+	@Override
+	public int addRecommendation(Long queryId, Long settingsId, SortedSet<RecommendedTag> tags, long latency) throws SQLException {
+		return 0;
+	}
+
+	@Override
+	public Long addRecommender(Long queryId, String recId, String recDescr, byte[] recMeta) throws SQLException {
+		return new Long(0);
+	}
+
+	@Override
+	public Long addResultSelector(Long qid, String selectorInfo, byte[] selectorMeta) throws SQLException {
+		return new Long(0);
+	}
+
+	@Override
+	public void addSelectedRecommender(Long qid, Long sid) throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void connectWithPost(Post<? extends Resource> post, int postID) throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public List<Long> getActiveRecommenderIDs(Long qid) throws SQLException {
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
+	public List<Long> getAllNotSelectedRecommenderIDs(Long qid) throws SQLException {
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
+	public List<Long> getAllRecommenderIDs(Long qid) throws SQLException {
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
+	public Integer getContentIDForQuery(Long queryID) throws SQLException {
+		return 0;
+	}
+
+	@Override
+	public Integer getContentIDForQuery(String userName, Date date, Integer postID) {
+		return 0;
+	}
+
+	@Override
+	public <T extends Resource> List<Pair<String, Integer>> getMostPopularTagsForResource(Class<T> resourceType, String intraHash, int range) throws SQLException {
+		final List<Pair<String, Integer>> mostPopularTagsForResource = new LinkedList<Pair<String,Integer>>();
+
+		mostPopularTagsForResource.add(new Pair<String, Integer>("mpResource1", 10));
+		mostPopularTagsForResource.add(new Pair<String, Integer>("mpResource2", 8));
+		mostPopularTagsForResource.add(new Pair<String, Integer>("mpResource3", 6));
+		mostPopularTagsForResource.add(new Pair<String, Integer>("mpResource4", 4));
+		mostPopularTagsForResource.add(new Pair<String, Integer>("mpResource5", 2));
+
+
+		return mostPopularTagsForResource;
+	}
+
+	@Override
+	public List<Pair<String, Integer>> getMostPopularTagsForUser(String username, int range) throws SQLException {
+		final List<Pair<String, Integer>> mostPopularTagsForUser = new LinkedList<Pair<String,Integer>>();
+
+		mostPopularTagsForUser.add(new Pair<String, Integer>("mpUser1", 10));
+		mostPopularTagsForUser.add(new Pair<String, Integer>("mpUser2", 8));
+		mostPopularTagsForUser.add(new Pair<String, Integer>("mpUser3", 6));
+		mostPopularTagsForUser.add(new Pair<String, Integer>("mpUser4", 4));
+		mostPopularTagsForUser.add(new Pair<String, Integer>("mpUser5", 2));
+
+
+		return mostPopularTagsForUser;
+	}
+
+	@Override
+	public List<TasEntry> getNewestEntries(Integer offset, Integer range) throws SQLException {
+		return Collections.EMPTY_LIST;	
+	}
+
+	@Override
+	public <T extends Resource> Integer getNumberOfTagsForResource(Class<T> resourceType, String intraHash) throws SQLException {
+		return 5;
+	}
+
+	@Override
+	public Integer getNumberOfTagsForUser(String username) throws SQLException {
+		return 5;
+	}
+
+	@Override
+	public <T extends Resource> Integer getNumberOfTasForResource(Class<T> resourceType, String intraHash) throws SQLException {
+		return 5;
+	}
+
+	@Override
+	public Integer getNumberOfTasForUser(String username) throws SQLException {
+		return 5;
+	}
+
+	@Override
+	public List<RecQueryParam> getQueriesForRecommender(Long sid) throws SQLException {
+		return Collections.EMPTY_LIST;	
+	}
+
+	@Override
+	public RecQueryParam getQuery(Long qid) throws SQLException {
+		return new RecQueryParam();
+	}
+
+	@Override
+	public Long getQueryForPost(String user_name, Date date, Integer postID) throws SQLException {
+		return new Long(0);
+	}
+
+	@Override
+	public SortedSet<RecommendedTag> getRecommendations(Long qid, Long sid) throws SQLException {
+		return new TreeSet<RecommendedTag>();
+	}
+
+	@Override
+	public void getRecommendations(Long qid, Long sid, Collection<RecommendedTag> recommendedTags) throws SQLException {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public SortedSet<RecommendedTag> getRecommendations(Long qid) throws SQLException {
+		return new TreeSet<RecommendedTag>();
+	}
+
+	@Override
+	public void getRecommendations(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public RecSettingParam getRecommender(Long sid) throws SQLException {
+		return new RecSettingParam();
+	}
+
+	@Override
+	public List<Pair<Long, Long>> getRecommenderSelectionCount(Long qid) throws SQLException {
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
+	public List<Long> getSelectedRecommenderIDs(Long qid) throws SQLException {
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
+	public List<RecommendedTag> getSelectedTags(Long qid) throws SQLException {
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
+	public SelectorSettingParam getSelector(Long sid) throws SQLException {
+		return new SelectorSettingParam();
+	}
+
+	@Override
+	public List<String> getTagNamesForPost(Integer cid) throws SQLException {
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
+	public List<String> getTagNamesForRecQuery(Long sid, Long qid) throws SQLException {
+		return Collections.EMPTY_LIST;
+	}
+
+	@Override
+	public Integer guessPostFromQuery(Long query_id) throws SQLException {
+		return 0;
+	}
+
+	@Override
+	public Long guessQueryFromPost(Integer content_id) throws SQLException {
+		return new Long(0);
+	}
+
+	@Override
+	public boolean logRecommendation(Long qid, Long sid, long latency, SortedSet<RecommendedTag> tags, SortedSet<RecommendedTag> preset) throws SQLException {
+		return false;
+	}
+
+	@Override
+	public int storeRecommendation(Long qid, Long rid, Collection<RecommendedTag> result) throws SQLException {
+		return 0;
+	}
+
+}
