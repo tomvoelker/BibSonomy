@@ -21,6 +21,11 @@
 				<link rel="stylesheet" type="text/css" href="http://www.bibsonomy.org/resources/css/style.css" />
 				<link rel="icon" href="http://www.bibsonomy.org/resources/images/favicon.png" type="image/png" />
 				<script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/chrome.js">&amp;nbsp;</script>
+                <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/util.js">&amp;nbsp;</script>
+                <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/recommender.js">&amp;nbsp;</script>
+                <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/jquery_126_min.js">&amp;nbsp;</script>
+                <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/jquery_corner.js">&amp;nbsp;</script>
+                <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/jquery_form_224.js">&amp;nbsp;</script> 
 				
 				<title><c:out value="${pageTitle}"/></title>
 			</head>
