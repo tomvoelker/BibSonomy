@@ -17,6 +17,8 @@
 	 -->
 	 <bean id="tagRecommender" class="org.bibsonomy.recommender.tags.DefaultTagRecommender" scope="singleton"/>
 	
+	<bean id="recoDBLogic" class="org.bibsonomy.recommender.tags.database.DBAccess" factory-method="getInstance"/>
+	
 	<!--+
 	    | Multiplexing tag recommender
 	    +-->
@@ -25,6 +27,7 @@
 		<property name="distRecommenders" ref="distRecommenderList"/>
 		<property name="localRecommenders" ref="localRecommenderList"/>
 		<property name="resultSelector" ref="selectOneWithoutReplacement"/>
+		<property name="dbLogic" ref="recoDBLogic"/>
 	</bean>	  
 
 	<util:list id="localRecommenderList" list-class="java.util.ArrayList">
@@ -44,10 +47,12 @@
 	<bean id="mostPopularByUserRecommender" class="org.bibsonomy.recommender.tags.popular.MostPopularByUserTagRecommender">
 		<property name="numberOfTagsToRecommend" value="5"/>
 		<property name="cleanTags" value="true"/>
+		<property name="dbLogic" ref="recoDBLogic"/>
 	</bean>
 	<bean id="mostPopularByResourceRecommender" class="org.bibsonomy.recommender.tags.popular.MostPopularByResourceTagRecommender">
 		<property name="numberOfTagsToRecommend" value="5"/>
 		<property name="cleanTags" value="true"/>
+		<property name="dbLogic" ref="recoDBLogic"/>
 	</bean>	
 	<!--+
 	    | merges both into the 0.6 mix 
@@ -77,6 +82,7 @@
 		<!-- to get "almost all" tags of the user -->
 		<property name="numberOfTagsToRecommend" value="10000"/>
 		<property name="cleanTags" value="true"/>
+		<property name="dbLogic" ref="recoDBLogic"/>
 	</bean>
 	<!--+ 
 	    | comes pretty close to our 'old' recommender from Jens, sorts title tags by their usage count 
