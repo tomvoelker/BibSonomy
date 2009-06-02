@@ -126,17 +126,23 @@
 	 <!--+ 
 	     | strategy for uniform random recommender selection
 	     +-->
-	 <bean id="uniformRandomSelection" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectOne" scope="singleton"/>
+	 <bean id="uniformRandomSelection" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectOne" scope="singleton">
+	 	<property name="dbLogic" ref="recoDBLogic"/>
+	 </bean>
 
 	 <!--+ 
 	     | strategy for uniform random recommender selection
 	     +-->
-	 <bean id="selectOneWithoutReplacement" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectOneWithoutReplacement" scope="singleton"/>
+	 <bean id="selectOneWithoutReplacement" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectOneWithoutReplacement" scope="singleton">
+	 	<property name="dbLogic" ref="recoDBLogic"/>
+	 </bean>
 	 
 	 <!--+
 	     | manager for logging recommender's performance
 	     +-->
-	 <bean id="tagRecommenderStatistics" class="org.bibsonomy.recommender.tags.database.RecommenderStatisticsManagerImpl"/>
+	 <bean id="tagRecommenderStatistics" class="org.bibsonomy.recommender.tags.database.RecommenderStatisticsManagerImpl">
+	 	<property name="dbLogic" ref="recoDBLogic"/>
+	 </bean>
 
 
 </beans>
