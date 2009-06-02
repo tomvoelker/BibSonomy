@@ -3,8 +3,10 @@ package org.bibsonomy.recommender.tags.database;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -23,6 +25,12 @@ import org.bibsonomy.recommender.tags.database.params.TasEntry;
  */
 public class DBLogicDummyImpl implements DBLogic {
 
+	private Map<Pair<Long, Long>, Collection<RecommendedTag>> recoMap = new HashMap<Pair<Long,Long>, Collection<RecommendedTag>>(); 
+	
+	private Map<String, Long> recos = new HashMap<String, Long>();
+	
+	
+	
 	@Override
 	public Long addQuery(String userName, Date date, Post<? extends Resource> post, int postID) throws SQLException {
 		return new Long(0);
@@ -30,12 +38,13 @@ public class DBLogicDummyImpl implements DBLogic {
 
 	@Override
 	public int addRecommendation(Long queryId, Long settingsId, SortedSet<RecommendedTag> tags, long latency) throws SQLException {
-		return 0;
+		return recoMap.put(new Pair<Long, Long>(queryId, settingsId), tags).size();
 	}
 
 	@Override
 	public Long addRecommender(Long queryId, String recId, String recDescr, byte[] recMeta) throws SQLException {
-		return new Long(0);
+		if (!recos.containsKey(recId)) recos.put(recId, new Long(recos.size())); 
+		return recos.get(recId);
 	}
 
 	@Override
@@ -57,7 +66,7 @@ public class DBLogicDummyImpl implements DBLogic {
 
 	@Override
 	public List<Long> getActiveRecommenderIDs(Long qid) throws SQLException {
-		return new LinkedList<Long>();
+		return new LinkedList<Long>(recos.values());
 	}
 
 	@Override
@@ -67,17 +76,17 @@ public class DBLogicDummyImpl implements DBLogic {
 
 	@Override
 	public List<Long> getAllRecommenderIDs(Long qid) throws SQLException {
-		return new LinkedList<Long>();
+		return new LinkedList<Long>(recos.values());
 	}
 
 	@Override
 	public Integer getContentIDForQuery(Long queryID) throws SQLException {
-		return 0;
+		return 0; // TODO
 	}
 
 	@Override
 	public Integer getContentIDForQuery(String userName, Date date, Integer postID) {
-		return 0;
+		return 0; // TODO
 	}
 
 	@Override
@@ -110,7 +119,7 @@ public class DBLogicDummyImpl implements DBLogic {
 
 	@Override
 	public List<TasEntry> getNewestEntries(Integer offset, Integer range) throws SQLException {
-		return new LinkedList<TasEntry>();
+		return new LinkedList<TasEntry>(); // TODO
 	}
 
 	@Override
@@ -150,13 +159,12 @@ public class DBLogicDummyImpl implements DBLogic {
 
 	@Override
 	public SortedSet<RecommendedTag> getRecommendations(Long qid, Long sid) throws SQLException {
-		return new TreeSet<RecommendedTag>();
+		return new TreeSet<RecommendedTag>(recoMap.get(new Pair<Long, Long>(qid, sid)));
 	}
 
 	@Override
 	public void getRecommendations(Long qid, Long sid, Collection<RecommendedTag> recommendedTags) throws SQLException {
-		// TODO Auto-generated method stub
-
+		recommendedTags.addAll(recoMap.get(new Pair<Long, Long>(qid, sid)));
 	}
 
 	@Override
@@ -221,7 +229,7 @@ public class DBLogicDummyImpl implements DBLogic {
 
 	@Override
 	public int storeRecommendation(Long qid, Long rid, Collection<RecommendedTag> result) throws SQLException {
-		return 0;
+		return recoMap.put(new Pair<Long, Long>(qid, rid), result).size();
 	}
 
 }
