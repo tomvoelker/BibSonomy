@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!-- 
+		configuration file for BibSonomy's (tag) recommendation services
+	
+	 -->
+	
+	
+	<!-- 
+		Simple tag recommender
+	 -->
+	<bean id="tagRecommender" class="org.bibsonomy.recommender.tags.DefaultTagRecommender" scope="singleton"/>
+	
+	<bean id="recoDBLogic" class="org.bibsonomy.recommender.tags.database.DBLogicDummyImpl"/>
+	
+	
+	<!--+
+	    | Multiplexing tag recommender
+	    +-->
+	<bean id="multiplexingTagRecommender" class="org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender" scope="singleton">
+	    <property name="queryTimeout" value="100"/>
+		<property name="distRecommenders" ref="distRecommenderList"/>
+		<property name="localRecommenders" ref="localRecommenderList"/>
+		<property name="resultSelector" ref="uniformRandomSelection"/>
+		<property name="dbLogic" ref="recoDBLogic"/>
+	</bean>	  
+
+	<util:list id="localRecommenderList" list-class="java.util.ArrayList">
+<!--  		<ref bean="tagRecommender"/>-->
+
+<!--  		<ref bean="mostPopularMixRecommender"/>-->
+<!--  		<ref bean="jensRecommender"/>-->
+
+		<ref bean="titleRecommender"/>
+		<ref bean="fixedTagsRecommender"/>
+	</util:list>
+	
+	<util:list id="distRecommenderList" list-class="java.util.ArrayList">
+<!--  		<ref bean="metaInfoRecommender"/>-->
+<!--  		<ref bean="distRecommender1"/>-->
+	</util:list>
+	
+	<!--+
+		| Simple tag recommenders
+		+-->
+	<bean id="mostPopularByUserRecommender" class="org.bibsonomy.recommender.tags.popular.MostPopularByUserTagRecommender">
+		<property name="numberOfTagsToRecommend" value="5"/>
+		<property name="cleanTags" value="true"/>
+		<property name="dbLogic" ref="recoDBLogic"/>
+	</bean>
+	<bean id="mostPopularByResourceRecommender" class="org.bibsonomy.recommender.tags.popular.MostPopularByResourceTagRecommender">
+		<property name="numberOfTagsToRecommend" value="5"/>
+		<property name="cleanTags" value="true"/>
+		<property name="dbLogic" ref="recoDBLogic"/>
+	</bean>	
+	<!--+
+	    | merges both into the 0.6 mix 
+	    +-->
+	<bean id="mostPopularMixRecommender" class="org.bibsonomy.recommender.tags.meta.WeightedMergingTagRecommender">
+		<property name="numberOfTagsToRecommend" value="5"/>
+		<property name="tagRecommenders">
+			<list>
+				<ref bean="mostPopularByUserRecommender"/>
+				<ref bean="mostPopularByResourceRecommender"/>
+			</list>
+		</property>
+		<property name="weights">
+			<list>
+				<value>0.4</value>
+				<value>0.6</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+	
+	<bean id="titleRecommender" class="org.bibsonomy.recommender.tags.simple.SimpleContentBasedTagRecommender">
+		<property name="cleanTags" value="true"/>
+	</bean>
+	<bean id="allTagsOfUserRecommender"  class="org.bibsonomy.recommender.tags.popular.MostPopularByUserTagRecommender">
+		<!-- to get "almost all" tags of the user -->
+		<property name="numberOfTagsToRecommend" value="10000"/>
+		<property name="cleanTags" value="true"/>
+		<property name="dbLogic" ref="recoDBLogic"/>
+	</bean>
+	<!--+ 
+	    | comes pretty close to our 'old' recommender from Jens, sorts title tags by their usage count 
+	    +-->
+	<bean id="jensRecommender" class="org.bibsonomy.recommender.tags.meta.TagsFromFirstWeightedBySecondTagRecommender">
+		<property name="firstTagRecommender" ref="titleRecommender"/>
+		<property name="secondTagRecommender" ref="allTagsOfUserRecommender"/>
+		<property name="numberOfTagsToRecommend" value="5"/>
+	</bean>
+	
+	
+	
+	<!-- 
+		always recommends the same tags
+	 -->
+	<bean id="fixedTagsRecommender" class="org.bibsonomy.recommender.tags.simple.FixedTagsTagRecommender" >
+		<constructor-arg>
+			<list>
+				<value>tag1</value>
+				<value>tag2</value>
+				<value>tag3</value>
+				<value>tag4</value>
+				<value>tag5</value>
+			</list>
+		</constructor-arg>
+	</bean>
+	
+	
+	
+	<!--+
+		| A tag recommender which uses html meta informations for bookmarks
+		+-->
+	<bean id="metaInfoRecommender" class="org.bibsonomy.recommender.tags.simple.MetaInfoTagRecommender"/>
+
+	<!--+
+		| A simple tag recommender
+		+-->
+	<bean id="distRecommender1" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://gromit:8080/recommender-servlet/TagRecommenderServlet</value>
+		</property>
+	</bean>
+    
+	<!--+
+		| A tag recommender mockup
+		+-->
+	<!-- 
+	<bean id="distRecommender2" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://localhost:8080/bibsonomy-recommender-servlet/DummyRecommenderServlet</value>
+		</property>
+	</bean>	 
+	-->
+	 <!--+ 
+	     | recommendation selector mockup
+	     +-->
+	 <bean id="dummySelector" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectAll" scope="singleton"/>
+
+	 <!--+ 
+	     | strategy for uniform random recommender selection
+	     +-->
+	 <bean id="uniformRandomSelection" class="org.bibsonomy.recommender.tags.multiplexer.strategy.SelectOne" scope="singleton">
+	 	<property name="dbLogic" ref="recoDBLogic"/>
+	 </bean>
+	 
+	 <!--+
+	     | manager for logging recommender's performance
+	     +-->
+	 <bean id="tagRecommenderStatistics" class="org.bibsonomy.recommender.tags.database.RecommenderStatisticsManagerImpl">
+	 	<property name="dbLogic" ref="recoDBLogic"/>
+	 </bean>
+
+
+</beans>

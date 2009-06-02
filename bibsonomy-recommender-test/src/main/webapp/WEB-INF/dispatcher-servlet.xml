@@ -7,12 +7,16 @@
 	                    http://www.springframework.org/schema/util 
 	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
+	<import resource="recommender.xml"/>	
+
 
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map>
 				<entry key="/postBookmark"><ref bean="bookmarkController"/></entry>
-				<entry key="/postPublication"><ref bean="publicationController"/></entry>				
+				<entry key="/postPublication"><ref bean="publicationController"/></entry>
+				<entry key="/ajax/getBookmarkRecommendedTags"><ref bean="ajaxGetBookmarkRecommendedTagsController"/></entry>
+				<entry key="/ajax/getPublicationRecommendedTags"><ref bean="ajaxGetPublicationRecommendedTagsController"/></entry>
 			</map>
 		</property>
 	</bean>
@@ -27,6 +31,17 @@
 		<property name="successView" value="home"/>
 	</bean>
 
+	<!-- controller for handling recommendation requests -->
+	<bean id="ajaxGetBookmarkRecommendedTagsController"
+		class="org.bibsonomy.recommender.webapp.controller.ajax.GetBookmarkRecommendedTagsController">
+		<property name="tagRecommender"	ref="multiplexingTagRecommender" />
+		<property name="successView" value="ajax/xmlSnippet"/>
+	</bean>
+	<bean id="ajaxGetPublicationRecommendedTagsController"
+		class="org.bibsonomy.recommender.webapp.controller.ajax.GetPublicationRecommendedTagsController">
+		<property name="tagRecommender" ref="multiplexingTagRecommender" />
+		<property name="successView" value="ajax/xmlSnippet"/>
+	</bean>
 
 
 	<!--  #################### view resolver #################### -->
@@ -36,5 +51,6 @@
 		<property name="prefix" value="/WEB-INF/jsp/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
+	
 	
 </beans>
