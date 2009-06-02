@@ -21,6 +21,10 @@
     
 		<jsp:attribute name="content">
     
+     
+    
+    
+    
           <style type="text/css">
             textarea, input[type=text] {
               width: 100%;
@@ -46,7 +50,7 @@
             <h2>post a publication</h2>
 
 
-            <form:form method="post">
+            <form:form method="post" id="postPublicationForm">
               <input type="hidden" name="postID" value="${command.postID}"/>
 
               <fieldset>
@@ -361,6 +365,106 @@
               </form:form>
     
           </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+     <script type="text/javascript">
+        <![CDATA[
+         function clearTagField() {
+  var sg = document.getElementById("tagField");
+  while(sg.hasChildNodes()) 
+    sg.removeChild(sg.firstChild);
+}
+   
+    
+         function handleRecommendedTags(msg) {
+            var tagSuggestions = [];
+            var target = 'tagField';
+
+            // lookup and clear target node
+            var tagField = document.getElementById(target) 
+            clearTagField();
+            
+            // lookup tags
+            var root = msg.getElementsByTagName('tags').item(0);
+            if( root == null ) {
+              // FIXME: DEBUG
+              alert("Invalid Ajax response: <tags/> not found.");
+            }
+            
+            // append each tag to target field
+            for (var iNode = 0; iNode < root.childNodes.length; iNode++) {
+              var node = root.childNodes.item(iNode);
+              // work around firefox' phantom nodes
+              if( (node.nodeType == 1) && (node.tagName == 'tag') ) {
+                // collect tag informations
+                var tagName       = node.getAttribute('name');
+                var tagScore      = node.getAttribute('score');
+                var tagConfidence = node.getAttribute('confidence');
+                
+                // create link element from tag
+                var newTag = document.createElement('a');
+                var newText= document.createTextNode(tagName + " ");
+                newTag.setAttribute('href', "javascript:copytag('inpf', '"
+                              +node.getAttribute('name')
+                              +"')");
+                newTag.appendChild(newText);
+                tagField.appendChild(newTag);
+                
+                // append tag to suggestion list
+                var suggestion = new Object;
+                suggestion.label      = tagName;
+                suggestion.score      = tagScore;
+                suggestion.confidence = tagConfidence;
+                tagSuggestions.push(suggestion);
+              }
+            }
+
+            // enable reload button
+            var link = document.getElementById("fsReloadLink");
+                      var button = document.getElementById("fsReloadButton");
+                  link.setAttribute("href","javascript:reloadRecommendation()");
+                  button.setAttribute("src","http://www.bibsonomy.org/resources/image/button_reload.png");
+          }
+
+    /* setup jQuery to update recommender with form data */
+    var options = { 
+              url:  'ajax/getPublicationRecommendedTags', 
+              success:       showResponse 
+          }; 
+      $('#postPublicationForm').ajaxSubmit(options); 
+
+    function showResponse(responseText, statusText)  { 
+      handleRecommendedTags(responseText);
+    } 
+
+     function reloadRecommendation() {
+          var link = document.getElementById("fsReloadLink");
+          var button = document.getElementById("fsReloadButton");
+          link.setAttribute("href","#");
+          button.setAttribute("src","http://www.bibsonomy.org/resources/image/button_reload-inactive.png");
+
+          var options = { 
+                  url:  'ajax/getPublicationRecommendedTags', 
+                  success:       showResponse 
+              }; 
+          $('#postPublicationForm').ajaxSubmit(options); 
+      }
+
+          
+        ]]>
+      </script> 
+    
+    
+    
+    
+    
             
 		</jsp:attribute>				
 	</layout:layout>
