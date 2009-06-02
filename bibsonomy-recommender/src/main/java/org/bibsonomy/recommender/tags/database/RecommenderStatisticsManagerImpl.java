@@ -19,10 +19,12 @@ public class RecommenderStatisticsManagerImpl implements org.bibsonomy.recommend
 	public static int UNKNOWN_POSTID = -1;
 	private static final Random rand = new Random();
 	
+	private DBLogic dbLogic;
+	
 	@Override
 	public void connectPostWithRecommendation(Post<? extends Resource> post, int postID) {
 		try {
-			DBAccess.connectWithPost(post, postID);
+			dbLogic.connectWithPost(post, postID);
 		} catch (SQLException ex) {
 			log.error("Could connect post with recommendations.", ex);
 		}
@@ -36,6 +38,14 @@ public class RecommenderStatisticsManagerImpl implements org.bibsonomy.recommend
 	@Override
 	public int getNewPID() {
 		return rand.nextInt(Integer.MAX_VALUE);
+	}
+
+	public DBLogic getDbLogic() {
+		return this.dbLogic;
+	}
+
+	public void setDbLogic(DBLogic dbLogic) {
+		this.dbLogic = dbLogic;
 	}
 	
 	

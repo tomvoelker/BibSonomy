@@ -3,17 +3,12 @@ package org.bibsonomy.recommender.tags.multiplexer.strategy;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.Vector;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.RecommendedTag;
-import org.bibsonomy.model.comparators.RecommendedTagComparator;
-import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
-import org.bibsonomy.recommender.tags.database.DBAccess;
+import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.database.params.Pair;
 
 /**
@@ -25,7 +20,7 @@ import org.bibsonomy.recommender.tags.database.params.Pair;
 public class SelectOneWithoutReplacement implements RecommendationSelector {
 	private static final Logger log = Logger.getLogger(SelectOneWithoutReplacement.class);
 	private String info = "Strategy for selecting one recommender.";
-
+	private DBLogic dbLogic;
 
 	/**
 	 * Selection strategy which selects recommender (uniform) randomly.
@@ -39,14 +34,14 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 		log.debug("Selecting result.");
 		
 		// get list of recommenders which delivered tags in given query
-		final List<Long> listActive = DBAccess.getActiveRecommenderIDs(qid);
+		final List<Long> listActive = dbLogic.getActiveRecommenderIDs(qid);
 		// get list of all recommenders for given query which where not selected previously during 
 		// this post process
 		//final List<Long> listAll    = DBAccess.getAllNotSelectedRecommenderIDs(qid);
 		
 		// get list of all recommenders for this post process with corresponding number of 
 		// queries where they were selected
-		final List<Pair<Long,Long>> selectionCount = DBAccess.getRecommenderSelectionCount(qid);
+		final List<Pair<Long,Long>> selectionCount = dbLogic.getRecommenderSelectionCount(qid);
 		
 		//--------------------------------------------------------------------
 		// create list of all recommenders from which the next one shall be drawn
@@ -71,7 +66,7 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 					new Double(Math.floor((Math.random()*listAll.size()))).intValue()
 				);
 		// store selection in database
-		DBAccess.addSelectedRecommender(qid, sid);
+		dbLogic.addSelectedRecommender(qid, sid);
 		log.debug("Selected setting " + sid + " out of "+listActive.size()+"/"+listAll.size());
 		
 		// check if selected recommender delivered tags
@@ -90,7 +85,7 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 		};
 		
 		// finally get recommended tags
-		DBAccess.getRecommendations(qid, sid, recommendedTags);
+		dbLogic.getRecommendations(qid, sid, recommendedTags);
 	}	
 
 	public String getInfo() {
@@ -110,6 +105,14 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 	public void setMeta(byte[] meta) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public DBLogic getDbLogic() {
+		return this.dbLogic;
+	}
+
+	public void setDbLogic(DBLogic dbLogic) {
+		this.dbLogic = dbLogic;
 	}
 
 

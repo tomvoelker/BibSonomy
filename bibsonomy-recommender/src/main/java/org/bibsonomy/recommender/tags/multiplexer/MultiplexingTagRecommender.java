@@ -16,6 +16,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.recommender.tags.TagRecommenderConnector;
 import org.bibsonomy.recommender.tags.database.DBAccess;
+import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.multiplexer.strategy.RecommendationSelector;
 import org.bibsonomy.recommender.tags.multiplexer.strategy.SelectAll;
 import org.bibsonomy.services.recommender.TagRecommender;
@@ -53,6 +54,8 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * {@link #getRecommendedTags(Post)}.
 	 */
 	private int numberOfTagsToRecommend = DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND;
+	
+	private DBLogic dbLogic;
 	
 	/**
 	 * constructor.
@@ -156,12 +159,12 @@ public class MultiplexingTagRecommender implements TagRecommender {
 
 		try {
 			// each set of queries is identified by an unique id:
-			qid = DBAccess.addQuery(post.getUser().getName(), ts, post, postID);
+			qid = dbLogic.addQuery(post.getUser().getName(), ts, post, postID);
 			
 			// query remote recommenders
 			for( TagRecommenderConnector con: getDistRecommenders() ) {
 				// each recommender is identified by an unique id:
-				Long sid = DBAccess.addRecommender(qid, con.getId(), con.getInfo(), con.getMeta());
+				Long sid = dbLogic.addRecommender(qid, con.getId(), con.getInfo(), con.getMeta());
 				RecommenderDispatcher dispatcher = 
 					new RecommenderDispatcher(con, post, qid, sid, null);
 				dispatchers.add(dispatcher);
@@ -170,7 +173,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			// query local recommenders
 			for( TagRecommender rec: getLocalRecommenders() ) {
 				// each recommender is identified by an unique id:
-				Long sid = DBAccess.addRecommender(qid, rec.getClass().getCanonicalName().toString(), rec.getInfo(), null);
+				Long sid = dbLogic.addRecommender(qid, rec.getClass().getCanonicalName().toString(), rec.getInfo(), null);
 				// query recommender
 				// FIXME: local recommenders are also aborded when timout is reached,
 				//        so their might be now recommendations at all
@@ -250,12 +253,12 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		// collected responses
 		// TODO current primitive synchronization prohibits parallel result selection
 		synchronized(lockResults) {
-			Long rid = DBAccess.addResultSelector(qid, 
+			Long rid = dbLogic.addResultSelector(qid, 
 					resultSelector.getInfo(), 
 					resultSelector.getMeta()
 					);
 			resultSelector.selectResult(qid, recommendedTags);
-			DBAccess.storeRecommendation(qid, rid, recommendedTags);
+			dbLogic.storeRecommendation(qid, rid, recommendedTags);
 		}
 		
 		// trim number of recommended tags if it exceeds numberOfTagsToRecommend
@@ -284,7 +287,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			SortedSet<RecommendedTag> tags) throws SQLException {
 		// avoid conflicts with selectResult
 		synchronized(lockResults) {
-			DBAccess.addRecommendation(qid,recId,tags,queryTime);
+			dbLogic.addRecommendation(qid,recId,tags,queryTime);
 		}
 		return true;
 	}
@@ -416,6 +419,12 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		public void abortQuery() {
 			abort = true;
 		}
+	}
+	public DBLogic getDbLogic() {
+		return this.dbLogic;
+	}
+	public void setDbLogic(DBLogic dbLogic) {
+		this.dbLogic = dbLogic;
 	}
 
 

@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.recommender.tags.database.DBAccess;
+import org.bibsonomy.recommender.tags.database.DBLogic;
 
 /**
  * @author fei
@@ -17,13 +18,15 @@ public class SelectAll implements RecommendationSelector {
 	private static final Logger log = Logger.getLogger(SelectAll.class);
 	private String info = "Strategy for selecting all recommended Tags.";
 	
+	private DBLogic dbLogic;
+	
 	/**
 	 * Selection strategy which simply selects each recommended tag
 	 */
 	@Override
 	public void selectResult(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
 		log.debug("Selecting result.");
-		DBAccess.getRecommendations(qid, recommendedTags);
+		dbLogic.getRecommendations(qid, recommendedTags);
 	}
 
 	public String getInfo() {
@@ -44,6 +47,14 @@ public class SelectAll implements RecommendationSelector {
 	public void setMeta(byte[] meta) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public DBLogic getDbLogic() {
+		return this.dbLogic;
+	}
+
+	public void setDbLogic(DBLogic dbLogic) {
+		this.dbLogic = dbLogic;
 	}
 
 

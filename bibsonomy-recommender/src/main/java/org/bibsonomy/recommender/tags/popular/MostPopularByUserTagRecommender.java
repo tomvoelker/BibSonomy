@@ -9,7 +9,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tags.AbstractTagRecommender;
-import org.bibsonomy.recommender.tags.database.DBAccess;
+import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.database.params.Pair;
 import org.bibsonomy.services.recommender.TagRecommender;
 
@@ -23,6 +23,9 @@ import org.bibsonomy.services.recommender.TagRecommender;
 public class MostPopularByUserTagRecommender extends AbstractTagRecommender implements TagRecommender {
 	private static final Logger log = Logger.getLogger(MostPopularByUserTagRecommender.class);
 	
+	private DBLogic dbLogic;
+
+	
 	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 		final String username = post.getUser().getName();
 		if (username != null) {
@@ -30,9 +33,9 @@ public class MostPopularByUserTagRecommender extends AbstractTagRecommender impl
 				/*
 				 * we get the count to normalize the score
 				 */
-				final int count = DBAccess.getNumberOfTasForUser(username);
+				final int count = dbLogic.getNumberOfTasForUser(username);
 				
-				final List<Pair<String,Integer>> tagsWithCount = DBAccess.getMostPopularTagsForUser(username, numberOfTagsToRecommend);
+				final List<Pair<String,Integer>> tagsWithCount = dbLogic.getMostPopularTagsForUser(username, numberOfTagsToRecommend);
 				for (final Pair<String,Integer> tagWithCount : tagsWithCount) {
 					final String tag = getCleanedTag(tagWithCount.getFirst());
 					if (tag != null) {
@@ -47,5 +50,13 @@ public class MostPopularByUserTagRecommender extends AbstractTagRecommender impl
 
 	public String getInfo() {
 		return "Most Popular Tags By User Recommender";
+	}
+
+	public DBLogic getDbLogic() {
+		return this.dbLogic;
+	}
+
+	public void setDbLogic(DBLogic dbLogic) {
+		this.dbLogic = dbLogic;
 	}
 }

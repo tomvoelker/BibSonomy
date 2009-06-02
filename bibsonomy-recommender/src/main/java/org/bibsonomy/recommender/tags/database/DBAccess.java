@@ -44,7 +44,7 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  * 
  * @author fei
  */
-public class DBAccess extends AbstractDatabaseManager {
+public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	private static final Logger log = Logger.getLogger(DBAccess.class);
 	
 	//------------------------------------------------------------------------
@@ -53,10 +53,12 @@ public class DBAccess extends AbstractDatabaseManager {
 	/**
 	 * Initialize iBatis layer.
 	 */
-	private static final SqlMapClient sqlMap;
-	private static final SqlMapClient sqlBibMap;  // access to bibsonomy's db
+	private final SqlMapClient sqlMap;
+	private final SqlMapClient sqlBibMap;  // access to bibsonomy's db
 
-	static {
+	private static DBLogic instance = null;;
+	
+	private DBAccess() {
 		try {
 			// initialize database client for recommender logs
 			String resource = "SqlMapConfig_recommender.xml";
@@ -73,12 +75,20 @@ public class DBAccess extends AbstractDatabaseManager {
 			throw new RuntimeException ("Error initializing DBAccess class. Cause: " + e);
 		}
 	}
-
+	
 	/**
-	 * Get (unique) database handler for querying the recommender database.
-	 * @return The default SqlMap which can be used to query the database.
+	 * @return An instance of this implementation of {@link DBLogic}
 	 */
-	public static SqlMapClient getSqlMapInstance () {
+	public static DBLogic getInstance() {
+		if (instance == null) instance = new DBAccess();
+		return instance;
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getSqlMapInstance()
+	 */
+	public SqlMapClient getSqlMapInstance () {
 		return sqlMap;
 	}
 
@@ -86,31 +96,24 @@ public class DBAccess extends AbstractDatabaseManager {
 	 * Get (unique) database handler for querying bibsonomy's database.
 	 * @return The SqlMap which can be used to query bibsonomy's database
 	 */
-	private static SqlMapClient getSqlBibMapInstance () {
+	private SqlMapClient getSqlBibMapInstance () {
 		return sqlBibMap;
 	}
 
 	//------------------------------------------------------------------------
 	// database access interface
 	//------------------------------------------------------------------------
-	/**
-	 * Add new query to database.
-	 * 
-	 * @param userName user who submitted post
-	 * @param date querie's timestamp
-	 * @param post user's post
-	 * @return unique query id
-	 * 
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#addQuery(java.lang.String, java.sql.Timestamp, org.bibsonomy.model.Post, int)
 	 */
 	@SuppressWarnings("unchecked")
-	public static Long addQuery(
-			String userName, Timestamp date, 
+	public Long addQuery(
+			String userName, Date date, 
 			Post<? extends Resource> post,
 			int postID) throws SQLException {
 		// construct parameter
 		RecQueryParam recQuery = new RecQueryParam();
-		recQuery.setTimeStamp(date);
+		recQuery.setTimeStamp(new Timestamp(date.getTime()));
 		recQuery.setUserName(userName);
 		recQuery.setPid(postID);
 		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) )
@@ -131,16 +134,10 @@ public class DBAccess extends AbstractDatabaseManager {
 		return queryId;
 	}
 	
-	/**
-	 * Add recommender to given query.
-	 * 
-	 * @param queryId
-	 * @param recId
-	 * @param recMeta
-	 * @return unique identifier for given recommender settings
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#addRecommender(java.lang.Long, java.lang.String, java.lang.String, byte[])
 	 */
-	public static Long addRecommender(
+	public Long addRecommender(
 			Long queryId, String recId, String recDescr, byte[] recMeta ) throws SQLException {
 		Long settingId = null;
 
@@ -164,15 +161,10 @@ public class DBAccess extends AbstractDatabaseManager {
 		return settingId;
 	}		
 
-	/**
-	 * Add result selector to given query.
-	 * @param qid query id
-	 * @param resultSelector
-	 * 
-	 * @return
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#addResultSelector(java.lang.Long, java.lang.String, byte[])
 	 */
-	public static Long addResultSelector(Long qid, String selectorInfo, byte[] selectorMeta ) throws SQLException {
+	public Long addResultSelector(Long qid, String selectorInfo, byte[] selectorMeta ) throws SQLException {
 		Long selectorID = null;
 
 		SqlMapClient sqlMap = getSqlMapInstance();
@@ -195,14 +187,10 @@ public class DBAccess extends AbstractDatabaseManager {
 		return selectorID;
 	}
 
-	/**
-	 * Add id of recommender selected for given query.
-	 * 
-	 * @param qid query_id 
-	 * @param sid recommender's setting id
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#addSelectedRecommender(java.lang.Long, java.lang.Long)
 	 */
-	public static void addSelectedRecommender(Long qid, Long sid) throws SQLException {
+	public void addSelectedRecommender(Long qid, Long sid) throws SQLException {
 		SqlMapClient sqlMap = getSqlMapInstance();
 	   	try {
     		sqlMap.startTransaction();
@@ -219,17 +207,10 @@ public class DBAccess extends AbstractDatabaseManager {
     	}				
 	}
 	
-	/**
-	 * Add recommender's recommended tags.
-	 * 
-	 * @param queryId unique id identifying query
-	 * @param settingsId unique id identifying recommender
-	 * @param tags recommended tags
-	 * @param latency 
-	 * @return number of recommendations added
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#addRecommendation(java.lang.Long, java.lang.Long, java.util.SortedSet, long)
 	 */
-	public static int addRecommendation(
+	public int addRecommendation(
 			Long queryId, Long settingsId,
 			SortedSet<RecommendedTag> tags,
 			long latency ) throws SQLException {
@@ -259,15 +240,10 @@ public class DBAccess extends AbstractDatabaseManager {
 		return tags.size();
 	}
 
-	/**
-	 * Connect postID with recommendation.
-	 *    For each post process an unique id is generated. This is used for mapping 
-	 *    posts to recommendations and vice verca.  
-	 * @param post post as stored in bibsonomy
-	 * @param post's random id as generated in PostBookmarkController
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#connectWithPost(org.bibsonomy.model.Post, int)
 	 */
-	public static void connectWithPost(Post<? extends Resource> post, int postID) throws SQLException {
+	public void connectWithPost(Post<? extends Resource> post, int postID) throws SQLException {
 		SqlMapClient sqlMap = getSqlMapInstance();
 
 		PostRecParam postMap = new PostRecParam();
@@ -280,15 +256,10 @@ public class DBAccess extends AbstractDatabaseManager {
 		sqlMap.insert("connectWithPost", postMap);
 	};
 	
-	/**
-	 * Get sorted list of tags recommended in a given query by a given recommender. 
-	 * 
-	 * @param qid
-	 * @param sid
-	 * @return tags recommended in query identified by qid and recommender identified by sid
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommendations(java.lang.Long, java.lang.Long)
 	 */
-	public static SortedSet<RecommendedTag> getRecommendations(Long qid, Long sid) throws SQLException {
+	public SortedSet<RecommendedTag> getRecommendations(Long qid, Long sid) throws SQLException {
 	    SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 	    getRecommendations(qid, sid, result);
 	    
@@ -297,16 +268,11 @@ public class DBAccess extends AbstractDatabaseManager {
 	}	
 
 
-	/**
-	 * Append tags which were recommended in a given query by a given recommender to a given collection. 
-	 * 
-	 * @param qid
-	 * @param sid
-	 * @return tags recommended in query identified by qid and recommender identified by sid
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommendations(java.lang.Long, java.lang.Long, java.util.Collection)
 	 */
 	@SuppressWarnings("unchecked")
-	public static void getRecommendations(Long qid, Long sid, Collection<RecommendedTag> recommendedTags) throws SQLException {
+	public void getRecommendations(Long qid, Long sid, Collection<RecommendedTag> recommendedTags) throws SQLException {
 		// TODO ugly inefficient implementation
 		log.warn("Inefficient implementation");
 		
@@ -318,72 +284,52 @@ public class DBAccess extends AbstractDatabaseManager {
 	    recommendedTags.addAll(queryResult);
 	}	
 	
-	/**
-	 * Get sorted list of tags recommended in a given query. 
-	 * 
-	 * @param qid
-	 * @return tags recommended in query identified by qid and all recommenders 
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommendations(java.lang.Long)
 	 */
-	public static SortedSet<RecommendedTag> getRecommendations(Long qid) throws SQLException {
+	public SortedSet<RecommendedTag> getRecommendations(Long qid) throws SQLException {
 	    SortedSet<RecommendedTag> result = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 	    getRecommendations(qid, result);
 	    // all done.
 	    return result;
 	}		
 
-	/**
-	 * Append tags which are recommended in a given query to given collection 
-	 * 
-	 * @param qid query id
-	 * @param recommendedTags collection where recommended tags should be appended
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommendations(java.lang.Long, java.util.Collection)
 	 */
 	@SuppressWarnings("unchecked")
-	public static void getRecommendations(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
+	public void getRecommendations(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
 		// TODO ugly inefficient implementation
 		log.warn("Inefficient implementation");
 	    List<RecommendedTag> queryResult = sqlMap.queryForList("getRecommendationsByQid", qid);
 	    recommendedTags.addAll(queryResult);
 	}
 	
-	/**
-	 * Get (unsorted) list of selected tags for a given query. 
-	 * 
-	 * @param qid
-	 * @return tags recommended in query identified by qid and all recommenders 
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getSelectedTags(java.lang.Long)
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<RecommendedTag> getSelectedTags(Long qid) throws SQLException {
+	public List<RecommendedTag> getSelectedTags(Long qid) throws SQLException {
 	    List<RecommendedTag> queryResult = sqlMap.queryForList("getSelectedRecommendationsByQid", qid);
 	    // all done.
 	    return queryResult;
 	}		
 	
-	/**
-	 * Get list of recommender settings which where selected for given query.
-	 * 
-	 * @param qid query_id
-	 * @return list of recommender settings 
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getSelectedRecommenderIDs(java.lang.Long)
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<Long> getSelectedRecommenderIDs(Long qid) throws SQLException {
+	public List<Long> getSelectedRecommenderIDs(Long qid) throws SQLException {
 		List<Long> queryResult = (List<Long>)getSqlMapInstance().queryForList("getQuerySelection", qid);
 	    // all done.
 	    return queryResult;
 	}
 	
-	/**
-	 * Get list of newest tas entries
-	 * @param offset
-	 * @param range
-	 * @return list of range number of new entries, starting by offset 
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getNewestEntries(java.lang.Integer, java.lang.Integer)
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<TasEntry> getNewestEntries(Integer offset, Integer range) throws SQLException {
+	public List<TasEntry> getNewestEntries(Integer offset, Integer range) throws SQLException {
 		TasParam param = new TasParam();
 		param.setOffset(offset);
 		param.setRange(range);
@@ -392,17 +338,11 @@ public class DBAccess extends AbstractDatabaseManager {
 		return queryResult;
 	}
 	
-	/**
-	 * Get user's most popular tag names with corresponding tag frequencies 
-	 * 
-	 * @param username
-	 * @param range - the number of tags to get 
-	 * 
-	 * @return list of pairs [tagname,frequency]
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getMostPopularTagsForUser(java.lang.String, int)
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<Pair<String,Integer>> getMostPopularTagsForUser(final String username, final int range) throws SQLException {
+	public List<Pair<String,Integer>> getMostPopularTagsForUser(final String username, final int range) throws SQLException {
 		final PostParam param = new PostParam();
 		param.setUserName(username);
 		param.setRange(range);
@@ -410,18 +350,11 @@ public class DBAccess extends AbstractDatabaseManager {
 		return getSqlBibMapInstance().queryForList("getMostPopularTagsForUser", param);
 	}
 	
-	/**
-	 * Gets the most popular tags of the given resource.
-	 * 
-	 * @param <T> The type of the resource.
-	 * @param resourceType
-	 * @param intraHash
-	 * @param range
-	 * @return The most popular tags of the given resource.
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getMostPopularTagsForResource(java.lang.Class, java.lang.String, int)
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Resource> List<Pair<String, Integer>> getMostPopularTagsForResource(final Class<T> resourceType, final String intraHash, final int range) throws SQLException {
+	public <T extends Resource> List<Pair<String, Integer>> getMostPopularTagsForResource(final Class<T> resourceType, final String intraHash, final int range) throws SQLException {
 		final PostParam param = new PostParam();
 		param.setIntraHash(intraHash);
 		param.setRange(range);
@@ -433,39 +366,27 @@ public class DBAccess extends AbstractDatabaseManager {
 		}
 		throw new UnsupportedResourceTypeException("Unknown resource type " + resourceType);
 	}
-	/**
-	 * Get number of tags used by given user. 
-	 * @param username
-	 * @return number of tags used by given user
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getNumberOfTagsForUser(java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
-	public static Integer getNumberOfTagsForUser(String username) throws SQLException {
+	public Integer getNumberOfTagsForUser(String username) throws SQLException {
 		return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTagsForUser", username);
 	}
 	
-	/**
-	 * Get number of TAS of the given user. 
-	 * @param username
-	 * @return number of TAS of given user
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getNumberOfTasForUser(java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
-	public static Integer getNumberOfTasForUser(String username) throws SQLException {
+	public Integer getNumberOfTasForUser(String username) throws SQLException {
 		return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTasForUser", username);
 	}
 	
-	/**
-	 * Get number of tags attached to a given resource.. 
-	 * @param <T> 
-	 * @param resourceType - type of the resource 
-	 * @param intraHash - hash of the resource
-	 * 
-	 * @return The number of tags attached to the resource.
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getNumberOfTagsForResource(java.lang.Class, java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Resource> Integer getNumberOfTagsForResource(final Class<T> resourceType, final String intraHash) throws SQLException {
+	public <T extends Resource> Integer getNumberOfTagsForResource(final Class<T> resourceType, final String intraHash) throws SQLException {
 		if (BibTex.class.equals(resourceType)) {
 			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTagsForBibTeX", intraHash);
 		} else if (Bookmark.class.equals(resourceType)) {
@@ -474,17 +395,11 @@ public class DBAccess extends AbstractDatabaseManager {
 		throw new UnsupportedResourceTypeException("Unknown resource type " + resourceType);
 	}
 	
-	/**
-	 * Get number of TAS for a given resource.. 
-	 * @param <T> 
-	 * @param resourceType - type of the resource 
-	 * @param intraHash - hash of the resource
-	 * 
-	 * @return The number of TAS of the resource.
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getNumberOfTasForResource(java.lang.Class, java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Resource> Integer getNumberOfTasForResource(final Class<T> resourceType, final String intraHash) throws SQLException {
+	public <T extends Resource> Integer getNumberOfTasForResource(final Class<T> resourceType, final String intraHash) throws SQLException {
 		if (BibTex.class.equals(resourceType)) {
 			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTasForBibTeX", intraHash);
 		} else if (Bookmark.class.equals(resourceType)) {
@@ -493,132 +408,93 @@ public class DBAccess extends AbstractDatabaseManager {
 		throw new UnsupportedResourceTypeException("Unknown resource type " + resourceType);
 	}
 	
-	/**
-	 * Get list of all tags from given recommender and query
-	 * @param sid recommender's setting id
-	 * @param qid query id
-	 * @return list of all tags from given recommender and query
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getTagNamesForRecQuery(java.lang.Long, java.lang.Long)
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<String> getTagNamesForRecQuery(Long sid, Long qid) throws SQLException {
+	public List<String> getTagNamesForRecQuery(Long sid, Long qid) throws SQLException {
 		RecQuerySettingParam param = new RecQuerySettingParam();
 		param.setQid(qid);
 		param.setSid(sid);
 		return (List<String>)sqlMap.queryForList("getTagNamesForRecQuery", param);
 	}
 	
-	/**
-	 * Get list of all tags chosen by user for given post
-	 * @param cid post's content_id
-	 * @return list of all tags chosen by user for given post
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getTagNamesForPost(java.lang.Integer)
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<String> getTagNamesForPost(Integer cid) throws SQLException {
+	public List<String> getTagNamesForPost(Integer cid) throws SQLException {
 		return (List<String>)sqlBibMap.queryForList("getTagNamesForCID", cid);
 	}
 	
-	/**
-	 * Returns details for given recommender.
-	 * @param sid Recommender's setting id
-	 * @return Details for given recommender if found -- null otherwise
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommender(java.lang.Long)
 	 */
-	public static RecSettingParam getRecommender(Long sid) throws SQLException {
+	public RecSettingParam getRecommender(Long sid) throws SQLException {
 		return (RecSettingParam)getSqlMapInstance().queryForObject("getRecommenderByID", sid);
 	}
 	
-	/**
-	 * Get list of all recommenders (id) which delivered tags in given query.
-	 * @param qid query id
-	 * @return list of ids
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getActiveRecommenderIDs(java.lang.Long)
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<Long> getActiveRecommenderIDs(Long qid) throws SQLException {
+	public List<Long> getActiveRecommenderIDs(Long qid) throws SQLException {
 		return (List<Long>)getSqlMapInstance().queryForList("getRecommenderIDsForQuery", qid);
 	}
 
-	/**
-	 * Get list of all recommenders (id) which where queried.
-	 * @param qid query id
-	 * @return list of ids
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getAllRecommenderIDs(java.lang.Long)
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<Long> getAllRecommenderIDs(Long qid) throws SQLException {
+	public List<Long> getAllRecommenderIDs(Long qid) throws SQLException {
 		return (List<Long>)getSqlMapInstance().queryForList("getAllRecommenderIDsForQuery", qid);
 	}
-	/**
-	 * Get list of all recommenders (id) which where queried.
-	 * @param qid query id
-	 * @return list of ids
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommenderSelectionCount(java.lang.Long)
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<Pair<Long,Long>> getRecommenderSelectionCount(Long qid) throws SQLException {
+	public List<Pair<Long,Long>> getRecommenderSelectionCount(Long qid) throws SQLException {
 		return (List<Pair<Long,Long>>)getSqlMapInstance().queryForList("getRecommenderSelectionCount", qid);
 	}
 	
 	
-	/**
-	 * Get list of all recommenders (id) which where queried and not selected previously 
-	 * during given post process.
-	 * 
-	 * @param qid query id
-	 * @return list of ids
-	 * @throws SQLException 
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getAllNotSelectedRecommenderIDs(java.lang.Long)
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<Long> getAllNotSelectedRecommenderIDs(Long qid) throws SQLException {
+	public List<Long> getAllNotSelectedRecommenderIDs(Long qid) throws SQLException {
 		return (List<Long>)getSqlMapInstance().queryForList("getAllNotSelectedRecommenderIDsForQuery", qid);
 	}
 	
 	
-	/**
-	 * Returns details for given selector.
-	 * @param sid Result selector's setting id
-	 * @return Details for given recommender if found -- null otherwise
-	 * @throws SQLException 
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getSelector(java.lang.Long)
 	 */
-	public static SelectorSettingParam getSelector(Long sid) throws SQLException {
+	public SelectorSettingParam getSelector(Long sid) throws SQLException {
 		return (SelectorSettingParam)getSqlMapInstance().queryForObject("getSelectorByID", sid);
 	}
 	
-	/**
-	 * Return query information for given query id
-	 * @param qid querie's id
-	 * @return RecQueryParam on success, null otherwise
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getQuery(java.lang.Long)
 	 */
-	public static RecQueryParam getQuery(Long qid) throws SQLException {
+	public RecQueryParam getQuery(Long qid) throws SQLException {
 		return (RecQueryParam)sqlMap.queryForObject("getQueryByID", qid);
 	}
 
-	/**
-	 * Return list of all queries for given recommender 
-	 * @param sid recommender's query
-	 * @return list of all queries for given recommender
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getQueriesForRecommender(java.lang.Long)
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<RecQueryParam> getQueriesForRecommender(Long sid) throws SQLException {
+	public List<RecQueryParam> getQueriesForRecommender(Long sid) throws SQLException {
 		return (List<RecQueryParam>)sqlMap.queryForList("getQueriesBySID", sid);
 	}
 	
 	
-	/**
-	 * Tries to guess query_id from given content id.
-	 * 
-	 * @param content_id
-	 * @return nearest query_id, if guess is possible -- otherwise null
-	 * @throws SQLException
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#guessQueryFromPost(java.lang.Integer)
 	 */
 	@SuppressWarnings("unchecked")
-	static public Long guessQueryFromPost(Integer content_id) throws SQLException {
+	public Long guessQueryFromPost(Integer content_id) throws SQLException {
 		Long result  = null;
 		TasEntry tas = null;
 		
@@ -640,15 +516,11 @@ public class DBAccess extends AbstractDatabaseManager {
 		return result; 
 	}
 
-	/**
-	 * Guess content_id for given query_id.
-	 * 
-	 * @param query_id
-	 * @return nearest content_id if found -- otherwise null
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#guessPostFromQuery(java.lang.Long)
 	 */
 	@SuppressWarnings("unchecked")
-	static public Integer guessPostFromQuery(Long query_id) throws SQLException {
+	public Integer guessPostFromQuery(Long query_id) throws SQLException {
 		Integer result  = null;
 		
 		// get query information
@@ -672,13 +544,10 @@ public class DBAccess extends AbstractDatabaseManager {
 	}
 	
 	
-	/**
-	 * Get queryID for given postID, user_name and date
-	 * @param postID
-	 * @return
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getQueryForPost(java.lang.String, java.util.Date, java.lang.Integer)
 	 */
-	static public Long getQueryForPost(String user_name, Date date, Integer postID) throws SQLException {
+	public Long getQueryForPost(String user_name, Date date, Integer postID) throws SQLException {
 		SqlMapClient sqlMap = getSqlMapInstance();
 		
 		PostRecParam postParam = new PostRecParam();
@@ -691,11 +560,10 @@ public class DBAccess extends AbstractDatabaseManager {
 		return (Long) sqlMap.queryForObject("getQueryForPost", postParam);
 	}
 	
-	/**
-	 * Get contentID for given queryID
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getContentIDForQuery(java.lang.Long)
 	 */
-	static public Integer getContentIDForQuery(Long queryID) throws SQLException {
+	public Integer getContentIDForQuery(Long queryID) throws SQLException {
 		SqlMapClient sqlMap = getSqlMapInstance();
 		SqlMapClient bibMap = getSqlBibMapInstance();
 		Integer retVal = null;
@@ -724,11 +592,10 @@ public class DBAccess extends AbstractDatabaseManager {
 		return retVal;
 	}
 	
-	/**
-	 * Get contentID for given query data
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getContentIDForQuery(java.lang.String, java.util.Date, java.lang.Integer)
 	 */
-	static public Integer getContentIDForQuery(String userName, Date date, Integer postID) {
+	public Integer getContentIDForQuery(String userName, Date date, Integer postID) {
 		log.error("NOT IMPLEMENTED");
 		return null;
 	}
@@ -739,7 +606,7 @@ public class DBAccess extends AbstractDatabaseManager {
 	 * 
 	 * @return unique identifier for given settings
 	 */
-	private static Long insertRecommenderSetting(String recId, String recDescr, byte[] recMeta) throws SQLException {
+	private Long insertRecommenderSetting(String recId, String recDescr, byte[] recMeta) throws SQLException {
 		Long settingId = null;
 
 		SqlMapClient sqlMap = getSqlMapInstance();
@@ -776,7 +643,7 @@ public class DBAccess extends AbstractDatabaseManager {
 	 * @return unique identifier for given settings
 	 * @throws SQLException 
 	 */
-	private static Long insertSelectorSetting(String selectorInfo, byte[] selectorMeta) throws SQLException {
+	private Long insertSelectorSetting(String selectorInfo, byte[] selectorMeta) throws SQLException {
 		Long selectorID = null;
 
 		SqlMapClient sqlMap = getSqlMapInstance();
@@ -803,15 +670,10 @@ public class DBAccess extends AbstractDatabaseManager {
 
 		return selectorID;
 	}	
-	/**
-	 * Store selected recommended tags.
-	 * 
-	 * @param qid query id
-	 * @param rid result selector id
-	 * @param result set of recommended tags
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#storeRecommendation(java.lang.Long, java.lang.Long, java.util.Collection)
 	 */
-	public static int storeRecommendation(Long qid, Long rid, Collection<RecommendedTag> result) throws SQLException {
+	public int storeRecommendation(Long qid, Long rid, Collection<RecommendedTag> result) throws SQLException {
 		SqlMapClient sqlMap = getSqlMapInstance();
 		try {
 			sqlMap.startTransaction();
@@ -847,7 +709,7 @@ public class DBAccess extends AbstractDatabaseManager {
 	 * @return true on success, false otherwise
 	 * @throws SQLException 
 	 */
-	static private boolean storeBibTexPost(String userName, Long qid, Post<BibTex> post,
+	private boolean storeBibTexPost(String userName, Long qid, Post<BibTex> post,
 			String oldHash, boolean update ) throws SQLException {
 		// TODO Auto-generated method stub
 		log.warn("storeBibTexPost not tested.");
@@ -882,7 +744,7 @@ public class DBAccess extends AbstractDatabaseManager {
 	 * @return true on success, false otherwise
 	 * @throws SQLException 
 	 */
-	static private boolean storeBookmarkPost(String userName, Long qid, Post<Bookmark> post,
+	private boolean storeBookmarkPost(String userName, Long qid, Post<Bookmark> post,
 			String oldHash, boolean update ) throws SQLException {
 		final BookmarkParam param = new BookmarkParam();
 		param.setResource(post.getResource());
@@ -912,17 +774,10 @@ public class DBAccess extends AbstractDatabaseManager {
 	//------------------------------------------------------------------------
 	// logging interface implementation
 	//------------------------------------------------------------------------
-	/**
-	 * Log recommender event.
-	 * @param qid unique query id for identifying interrelated recommender responses
-	 * @param sid unique id identifying recommender's settings
-	 * @param latency 
-	 * @param tags tags calculated by recommender
-	 * @param preset predetermined tags, null if none given
-	 * @return true on success, false otherwise
-	 * @throws SQLException 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#logRecommendation(java.lang.Long, java.lang.Long, long, java.util.SortedSet, java.util.SortedSet)
 	 */
-	static public boolean logRecommendation(
+	public boolean logRecommendation(
 			Long qid,
 			Long sid,
 			long latency,

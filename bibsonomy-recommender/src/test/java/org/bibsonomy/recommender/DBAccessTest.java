@@ -3,10 +3,10 @@ package org.bibsonomy.recommender;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import java.util.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -19,11 +19,12 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
+import org.bibsonomy.recommender.tags.database.DBAccess;
+import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.database.params.RecQueryParam;
 import org.bibsonomy.recommender.tags.database.params.RecSettingParam;
 import org.bibsonomy.recommender.tags.database.params.SelectorSettingParam;
-import org.bibsonomy.recommender.tags.database.DBAccess;
+import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.recommender.testutil.JNDITestDatabaseBinder;
 import org.junit.After;
 import org.junit.Before;
@@ -37,6 +38,9 @@ import org.junit.Test;
 public class DBAccessTest {
 	private static final Logger log = Logger.getLogger(DBAccessTest.class);
 
+	private DBLogic dbLogic;
+
+	
 	/**
 	 * Method for interactive testing.
 	 */
@@ -58,6 +62,7 @@ public class DBAccessTest {
 	public void setUp() {
 		// bind datasource access via JNDI
 		JNDITestDatabaseBinder.bind();
+		dbLogic = DBAccess.getInstance();
 	}
 	
 	@After
@@ -75,8 +80,8 @@ public class DBAccessTest {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
 		// store and retrieve query
-		Long qid = DBAccess.addQuery(post.getUser().getName(), ts, post, MultiplexingTagRecommender.getUnknownPID());
-		RecQueryParam retVal = DBAccess.getQuery(qid);
+		Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, MultiplexingTagRecommender.getUnknownPID());
+		RecQueryParam retVal = dbLogic.getQuery(qid);
 		
 		String    queryUN = retVal.getUserName();
 		assertEquals(post.getUser().getName(), queryUN);
@@ -95,8 +100,8 @@ public class DBAccessTest {
 		// store and retrieve recommender informations
 		Long sid;
 		RecSettingParam retVal = null;
-		sid = DBAccess.addRecommender(qid, recId, recInfo, recMeta.getBytes());
-		retVal = DBAccess.getRecommender(sid);
+		sid = dbLogic.addRecommender(qid, recId, recInfo, recMeta.getBytes());
+		retVal = dbLogic.getRecommender(sid);
 		assertEquals(recId, retVal.getRecId());
 		assertArrayEquals(recMeta.getBytes(), retVal.getRecMeta());
 	}
@@ -113,8 +118,8 @@ public class DBAccessTest {
 		// store and retrieve recommender informations
 		Long sid = null;
 		SelectorSettingParam retVal = null;
-		sid = DBAccess.addResultSelector(qid, selectorInfo, selectorMeta.getBytes());
-		retVal = DBAccess.getSelector(sid);
+		sid = dbLogic.addResultSelector(qid, selectorInfo, selectorMeta.getBytes());
+		retVal = dbLogic.getSelector(sid);
 		assertEquals(selectorInfo, retVal.getInfo());
 		assertArrayEquals(selectorMeta.getBytes(), retVal.getMeta());
 	}	
@@ -131,8 +136,8 @@ public class DBAccessTest {
 		// store and retrieve recommender informations
 		Long sid = null;
 		SelectorSettingParam retVal = null;
-		sid = DBAccess.addResultSelector(qid, selectorInfo, selectorMeta);
-		retVal = DBAccess.getSelector(sid);
+		sid = dbLogic.addResultSelector(qid, selectorInfo, selectorMeta);
+		retVal = dbLogic.getSelector(sid);
 		assertEquals(selectorInfo, retVal.getInfo());
 		assertArrayEquals(null, retVal.getMeta());
 	}		
@@ -149,9 +154,9 @@ public class DBAccessTest {
 		// create tags
 		SortedSet<RecommendedTag> tags = createRecommendedTags(nr);
 		// store tags
-		int count = DBAccess.storeRecommendation(qid, rid, tags);
+		int count = dbLogic.storeRecommendation(qid, rid, tags);
 		// fetch tags
-		List<RecommendedTag> result = DBAccess.getSelectedTags(new Long(0));
+		List<RecommendedTag> result = dbLogic.getSelectedTags(new Long(0));
 		
 		// compare tags
 		SortedSet<RecommendedTag> sort = new TreeSet<RecommendedTag>();
@@ -196,8 +201,8 @@ public class DBAccessTest {
 		int postID = (int)Math.floor(Math.random()*Integer.MAX_VALUE);
 		
 		// store and retrieve query
-		Long qid = DBAccess.addQuery(post.getUser().getName(), ts, post, postID);
-		Long  id = DBAccess.getQueryForPost(post.getUser().getName(), (Date)ts, postID);
+		Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, postID);
+		Long  id = dbLogic.getQueryForPost(post.getUser().getName(), (Date)ts, postID);
 		
 		assertEquals(qid, id);
 	}

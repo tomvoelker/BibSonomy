@@ -10,6 +10,7 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tags.AbstractTagRecommender;
 import org.bibsonomy.recommender.tags.database.DBAccess;
+import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.database.params.Pair;
 import org.bibsonomy.services.recommender.TagRecommender;
 
@@ -23,6 +24,8 @@ import org.bibsonomy.services.recommender.TagRecommender;
 public class MostPopularByResourceTagRecommender extends AbstractTagRecommender implements TagRecommender {
 	private static final Logger log = Logger.getLogger(MostPopularByResourceTagRecommender.class);
 
+	private DBLogic dbLogic;
+	
 	protected void addRecommendedTagsInternal(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post) {
 
 		final Resource resource = post.getResource();
@@ -38,10 +41,10 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 				/*
 				 * we get the count to normalize the score
 				 */
-				final int count = DBAccess.getNumberOfTasForResource(resource.getClass(), intraHash);
+				final int count = dbLogic.getNumberOfTasForResource(resource.getClass(), intraHash);
 				log.debug("Resource has " + count + " TAS.");
 
-				final List<Pair<String,Integer>> tagsWithCount = DBAccess.getMostPopularTagsForResource(resource.getClass(), intraHash, numberOfTagsToRecommend);
+				final List<Pair<String,Integer>> tagsWithCount = dbLogic.getMostPopularTagsForResource(resource.getClass(), intraHash, numberOfTagsToRecommend);
 				if (tagsWithCount != null && !tagsWithCount.isEmpty()) {
 					for (final Pair<String,Integer> tagWithCount : tagsWithCount) {
 						final String tag = getCleanedTag(tagWithCount.getFirst());
@@ -63,5 +66,13 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 
 	public String getInfo() {
 		return "Most Popular Tags By Resource Recommender";
+	}
+
+	public DBLogic getDbLogic() {
+		return this.dbLogic;
+	}
+
+	public void setDbLogic(DBLogic dbLogic) {
+		this.dbLogic = dbLogic;
 	}
 }
