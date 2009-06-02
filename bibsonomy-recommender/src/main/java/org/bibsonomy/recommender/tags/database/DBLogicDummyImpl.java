@@ -2,7 +2,6 @@ package org.bibsonomy.recommender.tags.database;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,17 +57,17 @@ public class DBLogicDummyImpl implements DBLogic {
 
 	@Override
 	public List<Long> getActiveRecommenderIDs(Long qid) throws SQLException {
-		return Collections.EMPTY_LIST;
+		return new LinkedList<Long>();
 	}
 
 	@Override
 	public List<Long> getAllNotSelectedRecommenderIDs(Long qid) throws SQLException {
-		return Collections.EMPTY_LIST;
+		return new LinkedList<Long>();
 	}
 
 	@Override
 	public List<Long> getAllRecommenderIDs(Long qid) throws SQLException {
-		return Collections.EMPTY_LIST;
+		return new LinkedList<Long>();
 	}
 
 	@Override
@@ -111,7 +110,7 @@ public class DBLogicDummyImpl implements DBLogic {
 
 	@Override
 	public List<TasEntry> getNewestEntries(Integer offset, Integer range) throws SQLException {
-		return Collections.EMPTY_LIST;	
+		return new LinkedList<TasEntry>();
 	}
 
 	@Override
@@ -136,7 +135,7 @@ public class DBLogicDummyImpl implements DBLogic {
 
 	@Override
 	public List<RecQueryParam> getQueriesForRecommender(Long sid) throws SQLException {
-		return Collections.EMPTY_LIST;	
+		return new LinkedList<RecQueryParam>();	
 	}
 
 	@Override
@@ -177,17 +176,17 @@ public class DBLogicDummyImpl implements DBLogic {
 
 	@Override
 	public List<Pair<Long, Long>> getRecommenderSelectionCount(Long qid) throws SQLException {
-		return Collections.EMPTY_LIST;
+		return new LinkedList<Pair<Long,Long>>();
 	}
 
 	@Override
 	public List<Long> getSelectedRecommenderIDs(Long qid) throws SQLException {
-		return Collections.EMPTY_LIST;
+		return new LinkedList<Long>();
 	}
 
 	@Override
 	public List<RecommendedTag> getSelectedTags(Long qid) throws SQLException {
-		return Collections.EMPTY_LIST;
+		return new LinkedList<RecommendedTag>();
 	}
 
 	@Override
@@ -197,12 +196,12 @@ public class DBLogicDummyImpl implements DBLogic {
 
 	@Override
 	public List<String> getTagNamesForPost(Integer cid) throws SQLException {
-		return Collections.EMPTY_LIST;
+		return new LinkedList<String>();
 	}
 
 	@Override
 	public List<String> getTagNamesForRecQuery(Long sid, Long qid) throws SQLException {
-		return Collections.EMPTY_LIST;
+		return new LinkedList<String>();
 	}
 
 	@Override
