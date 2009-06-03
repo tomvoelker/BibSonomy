@@ -17,7 +17,7 @@
 	
 		
 		
-	<layout:layout pageTitle="An error occured!">
+	<layout:layout pageTitle="Recommender Test Page">
 		<!--+
     	 	| html header extension: page specific javascript
     	 	+-->
@@ -220,7 +220,7 @@
 		      /* setup jQuery to update recommender with form data */
 		      var options = { 
 			            url:  'ajax/getBookmarkRecommendedTags', 
-			            success:       showResponse 
+			            success:       showResponse, 
 			        }; 
 		      $('#postBookmarkForm').ajaxSubmit(options); 
 		
