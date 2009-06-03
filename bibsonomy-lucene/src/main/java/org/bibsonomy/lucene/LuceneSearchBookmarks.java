@@ -54,7 +54,7 @@ public class LuceneSearchBookmarks {
 
 			Context initContext = new InitialContext();
 			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			Boolean loadIndexIntoRAM = (Boolean) envContext.lookup("luceneIndexBookmarksLoadIntoRAM");
+			//Boolean loadIndexIntoRAM = (Boolean) envContext.lookup("luceneIndexBookmarksLoadIntoRAM");
 			String lucenePath = (String) envContext.lookup("luceneIndexPathBoomarks");
 			this.lucenePath = lucenePath;
 
@@ -91,7 +91,7 @@ public class LuceneSearchBookmarks {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+/*			
 			if (loadIndexIntoRAM) {
 				// load a copy of index in memory
 				// changes will have no effect on original index!
@@ -104,31 +104,32 @@ public class LuceneSearchBookmarks {
 				LOGGER.debug("LuceneBookmark: index loaded into RAM in "+ (endtime-starttime) + "ms");
 			}
 			else
-			{	
+			}
+*/				
 				// load and hold index on physical hard disk
 				LOGGER.debug("LuceneBookmark: use index from disk");
 				LOGGER.debug("this.searcher-0: " + this.searcher);
 				this.searcher = new IndexSearcher( lucenePath );
 				LOGGER.debug("this.searcher-1: " + this.searcher);
-			}
+//			}
 		} catch (final NamingException e) {
-			LOGGER.debug("LuceneBookmark: NamingException "+ e.getExplanation() + " ## " + e.getMessage());
+			LOGGER.error("LuceneBookmark: NamingException "+ e.getExplanation() + " ## " + e.getMessage());
+			LOGGER.error("Environment variable luceneIndexPathBoomarks not present.");
 			/*
 			 * FIXME: rethrowing the exception as runtime ex is maybe not the best solution
 			 */
 			throw new RuntimeException(e);
 		} catch (CorruptIndexException e) {
-			LOGGER.debug("LuceneBookmark: CorruptIndexException "+ e.getMessage());
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("LuceneBookmark: CorruptIndexException "+ e.getMessage());
+			//e.printStackTrace();
 		} catch (IOException e) {
-			LOGGER.debug("LuceneBookmark: IOException "+ e.getMessage());
+			LOGGER.error("LuceneBookmark: IOException "+ e.getMessage());
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		} catch (RuntimeException e) {
-			LOGGER.debug("LuceneBookmark: RuntimeException "+ e.getMessage());
+			LOGGER.warn("LuceneBookmark: RuntimeException "+ e.getMessage());
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 

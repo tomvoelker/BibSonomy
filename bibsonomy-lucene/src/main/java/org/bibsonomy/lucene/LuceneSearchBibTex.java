@@ -50,7 +50,7 @@ public class LuceneSearchBibTex {
 
 			Context initContext = new InitialContext();
 			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			Boolean loadIndexIntoRAM = (Boolean) envContext.lookup("luceneIndexPublicationsLoadIntoRAM");
+			//Boolean loadIndexIntoRAM = (Boolean) envContext.lookup("luceneIndexPublicationsLoadIntoRAM");
 			String lucenePath = (String) envContext.lookup("luceneIndexPathPublications");
 			this.lucenePath = lucenePath;
 			
@@ -78,17 +78,13 @@ public class LuceneSearchBibTex {
 				if (null != this.searcher) this.searcher.close();
 			} catch (IOException e) {
 				LOGGER.debug("LuceneBibTex: IOException on searcher.close: "+ e.getMessage());
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			} catch (RuntimeException e)
 			{
 				LOGGER.debug("LuceneBibTex: RuntimeException on searcher.close: "+ e.getMessage());
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
 
 			
-			if (loadIndexIntoRAM) {
+/*			if (loadIndexIntoRAM) {
 				// load a copy of index in memory
 				// changes will have no effect on original index!
 				// make sure complete index fill fit into memory!
@@ -101,30 +97,26 @@ public class LuceneSearchBibTex {
 			}
 			else
 			{	
+*/			
 				// load and hold index on physical hard disk
 				LOGGER.debug("LuceneBibTex: use index from disk");
 				LOGGER.debug("this.searcher-0: " + this.searcher);
 				this.searcher = new IndexSearcher( lucenePath );
 				LOGGER.debug("this.searcher-1: " + this.searcher);
-			}
+//			}
 		} catch (final NamingException e) {
-			LOGGER.debug("LuceneBookmark: NamingException "+ e.getExplanation() + " ## " + e.getMessage());
-			/*
-			 * FIXME: rethrowing the exception as runtime ex is maybe not the best solution
-			 */
+			LOGGER.error("LuceneBibTex: NamingException "+ e.getExplanation() + " ## " + e.getMessage());
+			LOGGER.error("Environment variable luceneIndexPathPublications not present.");
+			// TODO: Zeige 500er Fehler an: Lucene: 
 			throw new RuntimeException(e);
 		} catch (CorruptIndexException e) {
-			LOGGER.debug("LuceneBookmark: CorruptIndexException "+ e.getMessage());
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("LuceneBibTex: CorruptIndexException "+ e.getMessage());
+			// TODO: Zeige 500er Fehler an: Lucene: 
 		} catch (IOException e) {
-			LOGGER.debug("LuceneBookmark: IOException "+ e.getMessage());
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("LuceneBibTex: IOException "+ e.getMessage());
+			// TODO: Zeige 500er Fehler an: Lucene: 
 		} catch (RuntimeException e) {
-			LOGGER.debug("LuceneBookmark: RuntimeException "+ e.getMessage());
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.warn("LuceneBibTex: RuntimeException "+ e.getMessage());
 		}
 	}
 
@@ -269,8 +261,7 @@ public class LuceneSearchBibTex {
 				}	 
 
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.debug("LuceneBibTex: ParseException (old): "+ e.getMessage());
 			}		
 
 
@@ -429,8 +420,7 @@ public class LuceneSearchBibTex {
 					try {
 						date = dateFormat.parse(doc.get(lField_date));
 					} catch (java.text.ParseException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						LOGGER.debug("LuceneBibTex: ParseException (date): "+ e.getMessage());
 					}
 
 					
@@ -519,8 +509,7 @@ public class LuceneSearchBibTex {
 				}	 
 
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER.debug("LuceneBibTex: ParseException: "+ e.getMessage());
 			}		
 
 
