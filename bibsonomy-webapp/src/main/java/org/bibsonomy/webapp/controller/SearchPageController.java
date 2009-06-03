@@ -1,10 +1,15 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.systemstags.SystemTags;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResultList;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.SearchViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -85,6 +90,17 @@ public class SearchPageController extends SingleResourceListController implement
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
 			this.setList(command, resourceType, groupingEntity, groupingName, command.getRequestedTagsList(), null, null, null, search, command.getListCommand(resourceType).getEntriesPerPage());
+
+			final ListCommand<?> listCommand = command.getListCommand(resourceType);
+			final List<?> list = listCommand.getList();
+
+			log.debug("SearchPageController: list="+list);
+			if (list instanceof ResultList) {
+				ResultList<Post<?>> resultList = (ResultList<Post<?>>) list;
+				listCommand.setTotalCount(resultList.getTotalCount()); 
+				log.debug("SearchPageController: resultList.getTotalCount()="+resultList.getTotalCount());
+			}			
+			
 			this.postProcessAndSortList(command, resourceType);
 			
 		}
