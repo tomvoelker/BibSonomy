@@ -28,6 +28,7 @@ import org.apache.lucene.store.RAMDirectory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 
 public class LuceneSearchBibTex {
@@ -288,7 +289,7 @@ public class LuceneSearchBibTex {
 	 * @throws IOException 
 	 * @throws CorruptIndexException 
 	 * */
-	public List<Post<BibTex>> searchLucene(int groupId, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset) throws IOException {
+	public ResultList<Post<BibTex>> searchLucene(int groupId, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset) throws IOException {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
 			
 
@@ -324,7 +325,7 @@ public class LuceneSearchBibTex {
 		}
 
 		
-		List<Post<BibTex>> postBibTexList = new ArrayList<Post<BibTex>>();
+		ResultList<Post<BibTex>> postBibTexList = new ResultList<Post<BibTex>>();
 
 		LOGGER.debug("LuceneBibTex: groupID  " + groupId);
 		LOGGER.debug("LuceneBibTex: UserName  " + UserName);
@@ -412,6 +413,8 @@ public class LuceneSearchBibTex {
 
 				int hitslimit = (((offset+limit)<topDocs.totalHits)?(offset+limit):topDocs.totalHits);
 
+				postBibTexList.setTotalCount (topDocs.totalHits);
+				
 				LOGGER.debug("LuceneBibTex:  offset / limit / hitslimit / hits.length():  " + offset + " / " + limit + " / " + hitslimit + " / " + topDocs.totalHits);
 				
 				for(int i = offset; i < hitslimit; i++){

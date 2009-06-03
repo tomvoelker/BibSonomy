@@ -31,6 +31,7 @@ import org.apache.lucene.store.RAMDirectory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 
 
@@ -247,7 +248,7 @@ public class LuceneSearchBookmarks {
 	 * @throws IOException 
 	 * @throws CorruptIndexException 
 	 * */
-	public List<Post<Bookmark>> searchLucene(int groupId, String search_terms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset) throws IOException {
+	public ResultList<Post<Bookmark>> searchLucene(int groupId, String search_terms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset) throws IOException {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBookmarks.class);
 			
 		// field names in Lucene index
@@ -278,7 +279,7 @@ public class LuceneSearchBookmarks {
 		
 		
 		
-		List<Post<Bookmark>> postBookmarkList = new ArrayList<Post<Bookmark>>();
+		ResultList<Post<Bookmark>> postBookmarkList = new ResultList<Post<Bookmark>>();
 
 
 		// sucheergebnis darf einträge, die die gruppe "private" beinhalten nicht anzeigen, es sei denn, sie gehören dem angemeldeten benutzer
@@ -372,6 +373,8 @@ public class LuceneSearchBookmarks {
 
 				int hitslimit = (((offset+limit)<topDocs.totalHits)?(offset+limit):topDocs.totalHits);
 
+				postBookmarkList.setTotalCount (topDocs.totalHits);
+				
 				LOGGER.debug("LuceneBookmark:  offset / limit / hitslimit / hits.length():  " + offset + " / " + limit + " / " + hitslimit + " / " + topDocs.totalHits);
 				
 				for(int i = offset; i < hitslimit; i++){
