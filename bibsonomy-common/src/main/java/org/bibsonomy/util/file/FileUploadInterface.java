@@ -23,6 +23,8 @@
 
 package org.bibsonomy.util.file;
 
+import java.io.File;
+
 /**
  * @author  Christian Kramer
  * @version $Id$
@@ -35,6 +37,14 @@ public interface FileUploadInterface {
 	 */
 	public abstract void writeUploadedFiles(final String docPath) throws Exception;
 
+	/**
+	 * 
+	 * @param docPath
+	 * @return file
+	 * @throws Exception
+	 */
+	public abstract File writeUploadedFilesAndReturnFile(final String docPath) throws Exception;
+	
 	/**
 	 * @return fileHash
 	 */
