@@ -63,7 +63,7 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 			 */
 			try {
 				// add the list to the HandleFile-Object
-				final FileUploadInterface up = new HandleFileUpload(list);
+				final FileUploadInterface up = new HandleFileUpload(list, HandleFileUpload.fileUploadExt);
 				
 				// create a new document object
 				final Document doc = new Document();
