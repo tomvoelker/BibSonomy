@@ -50,6 +50,57 @@
 		   	<td></td>
 		   	</tr>
 		  </table> 
+		  
+		  <c:choose>
+		  	<c:when test="${not empty command.newBookmarks}">
+		  		<br />
+		  		<h2><fmt:message key="settings.firefox.newBookmarks"/>:</h2>
+		  		<div>
+		  		<table>
+		  			<c:forEach items="${command.newBookmarks}" var="mapEntry">
+    					<tr>
+        					<td>${mapEntry.value}</td>
+        					<!-- <td>${mapEntry.key}</td> -->
+			    		</tr>
+					</c:forEach>
+				</table>
+				</div>
+		  	</c:when>
+		  </c:choose>
+		  
+		  <c:choose>
+		  <c:when test="${not empty command.updatedBookmark}">
+		  
+		  <br />
+		  <h2><fmt:message key="settings.firefox.updatedBookmarks"/>:</h2>
+		  <div>
+		  	<table>
+		  	<c:forEach items="${command.updatedBookmark}" var="mapEntry">
+    			<tr>
+        			<td>${mapEntry.value}</td>
+        			<!-- <td>${mapEntry.key}</td> -->
+			    </tr>
+			</c:forEach>
+			</table>
+		  </div>
+		  </c:when>
+		  </c:choose>
+		  
+		  <c:choose>
+		  <c:when test="${not empty command.nonCreatedBookmark}">
+		  <h2><fmt:message key="settings.firefox.nonImportedBookmarks"/>:</h2>
+		  	<div>
+		  		<table>
+		  			<c:forEach items="${command.nonCreatedBookmark}" var="mapEntry">
+    					<tr>
+        					<td>${mapEntry}</td>
+			    		</tr>
+					</c:forEach>
+				</table>
+			</div>
+		  </c:when>
+		  </c:choose>
+		  
 		  <input name="importType" type="hidden" value="firefox"/>
 
 		</form:form>
