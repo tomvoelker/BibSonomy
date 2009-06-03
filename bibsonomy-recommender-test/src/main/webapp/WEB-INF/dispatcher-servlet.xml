@@ -13,6 +13,7 @@
 	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map>
+			    <entry key="/"><ref bean="frontPageController"/></entry>
 				<entry key="/postBookmark"><ref bean="bookmarkController"/></entry>
 				<entry key="/postPublication"><ref bean="publicationController"/></entry>
 				<entry key="/ajax/getBookmarkRecommendedTags"><ref bean="ajaxGetBookmarkRecommendedTagsController"/></entry>
@@ -23,6 +24,9 @@
 	
 	
     <!--  #################### controller #################### -->
+   	<bean id="frontPageController" class="org.bibsonomy.recommender.webapp.controller.FrontPageController">
+	</bean>
+	
 	<bean id="bookmarkController" class="org.bibsonomy.recommender.webapp.controller.BookmarkController">
 		<property name="formView" value="bookmarkForm"/>
 	</bean>
