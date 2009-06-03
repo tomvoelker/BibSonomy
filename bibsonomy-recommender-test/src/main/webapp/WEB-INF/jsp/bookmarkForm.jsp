@@ -144,7 +144,7 @@
                         </c:if>
 
                       
-                	<form:form id="postBookmarkForm" action="/postBookmark" method="post">
+                	<form:form id="postBookmarkForm" action="postBookmark" method="post">
 	                	<div id="fsform">
 	                		<fieldset class="fsOuter">
 								<fieldset class="fsInner">
@@ -183,7 +183,7 @@
                                         <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
 		                                <form:hidden path="intraHashToUpdate"/>
 										<input type="reset"  tabindex="5" value="${reset}" />
-										<input type="submit" tabindex="6" value="${save}" onclick="clear_tags();"/>
+										<!-- <input type="submit" tabindex="6" value="${save}" onclick="clear_tags();"/> -->
 									</div>
 	
 							</fieldset>
