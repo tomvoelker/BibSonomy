@@ -8,7 +8,8 @@
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
-
+	<jsp:directive.attribute name="headerExt" fragment="true" />
+	
     <fmt:setBundle basename="messages" scope="request"/>
 
 	<jsp:output doctype-root-element="html"	doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
@@ -28,6 +29,8 @@
                 <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/jquery_form_224.js">&amp;nbsp;</script> 
 				
 				<title><c:out value="${pageTitle}"/></title>
+				
+				<jsp:invoke fragment="headerExt"/>
 			</head>
 			<body style="background-color: #e5f3fa;">
 
