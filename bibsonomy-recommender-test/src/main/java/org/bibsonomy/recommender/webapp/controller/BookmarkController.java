@@ -43,6 +43,15 @@ public class BookmarkController extends SimpleFormController {
 	@Override
 	protected ModelAndView onSubmit(Object command, BindException errors) throws Exception {
 		
+		
+		if (command instanceof EditBookmarkCommand) {
+			final EditBookmarkCommand epCmd = (EditBookmarkCommand) command;
+			
+			final Post<Bookmark> post = epCmd.getPost();
+			
+			System.out.println(post);
+		}
+		
 		System.out.println("got command " + command);
 		System.out.println("got errors  " + errors);
 		
