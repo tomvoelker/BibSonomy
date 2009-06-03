@@ -1,6 +1,8 @@
 package org.bibsonomy.webapp.command;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,6 +39,12 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	
 	private String tagSort;
 
+	private Map<String, String> newBookmarks = null;
+
+	private Map<String, String> updatedBookmarks = null;
+
+	private List<String> nonCreatedBookmarks = null;
+	
 	/**
 	 * Constructor.
 	 */
@@ -93,6 +101,30 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	public String getTagSort() {
 		return tagSort;
+	}
+
+	public Map<String, String> getNewBookmarks() {
+		return this.newBookmarks;
+	}
+
+	public Map<String, String> getUpdatedBookmark() {
+		return this.updatedBookmarks;
+	}
+
+	public List<String> getNonCreatedBookmark() {
+		return this.nonCreatedBookmarks;
+	}
+
+	public void setNewBookmarks(Map<String, String> newBookmarks) {
+		this.newBookmarks = newBookmarks;
+	}
+
+	public void setUpdatedBookmarks(Map<String, String> updatedBookmarks) {
+		this.updatedBookmarks = updatedBookmarks;
+	}
+
+	public void setNonCreatedBookmarks(List<String> nonCreatedBookmarks) {
+		this.nonCreatedBookmarks = nonCreatedBookmarks;
 	}
 
 
