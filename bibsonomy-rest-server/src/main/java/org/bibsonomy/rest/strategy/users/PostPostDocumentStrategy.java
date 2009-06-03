@@ -52,7 +52,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 		
 		try {
 			// create a fileupload object to get the filename and filehash
-			FileUploadInterface up = new HandleFileUpload(this.items);
+			FileUploadInterface up = new HandleFileUpload(this.items, HandleFileUpload.fileUploadExt);
 			
 			// fill the document object with all necessary informations
 			doc.setUserName(this.userName);
