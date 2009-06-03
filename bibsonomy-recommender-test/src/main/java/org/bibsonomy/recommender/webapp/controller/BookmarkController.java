@@ -11,6 +11,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.recommender.webapp.command.EditBookmarkCommand;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.SimpleFormController;
 
@@ -34,7 +35,10 @@ public class BookmarkController extends SimpleFormController {
 		
 		final Post<Bookmark> post = new Post<Bookmark>();
 		
-		post.setResource(new Bookmark());
+		Bookmark bookmark = new Bookmark();
+		// bookmark.setUrl("http://www.bibsonomy.org");
+		
+		post.setResource(bookmark);
 		cmd.setPost(post);
 		
 		return cmd;
@@ -59,5 +63,17 @@ public class BookmarkController extends SimpleFormController {
 		return super.onSubmit(command, errors);
 	}
 	
+	
+	@Override
+	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+		super.initBinder(request, binder);
+
+		System.out.println("FOLKE:BINDING");
+		/*
+		 * setting the dis/allowed fields for the binder
+		 */
+		//binder.setAllowedFields(allowedFields);
+		//binder.setDisallowedFields(disallowedFields);
+	}
 }
 

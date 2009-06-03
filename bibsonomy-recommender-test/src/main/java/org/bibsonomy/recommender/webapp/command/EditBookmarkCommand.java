@@ -16,6 +16,10 @@ public class EditBookmarkCommand extends EditPostCommand<Bookmark> {
 	public void setUrl(final String url){
 		getPost().getResource().setUrl(url);
 	}
+
+	public String getUrl(){
+		return getPost().getResource().getUrl();
+	}
 	
 	/**
 	 * Sets the title of a post.
@@ -27,6 +31,10 @@ public class EditBookmarkCommand extends EditPostCommand<Bookmark> {
 		getPost().getResource().setTitle(title);
 	}
 	
+	public String getDescription(){
+		return getPost().getResource().getTitle();
+	}
+
 	/**
 	 * Sets the description of a post.
 	 * Needed for the (old) postBookmark button and "copy" links.
@@ -35,5 +43,9 @@ public class EditBookmarkCommand extends EditPostCommand<Bookmark> {
 	 */
 	public void setExtended(final String description){
 		getPost().setDescription(description);
+	}
+
+	public String getExtended(){
+		return getPost().getDescription();
 	}
 }
