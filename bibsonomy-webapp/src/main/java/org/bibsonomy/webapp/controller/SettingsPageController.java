@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -13,11 +12,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.TimeZone;
 import java.util.Vector;
 
 import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -27,11 +24,9 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.util.HashUtils;
-import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.file.FileUploadInterface;
-import org.bibsonomy.util.file.FileUtil;
+import org.bibsonomy.util.file.HandleFileUpload;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -50,48 +45,50 @@ import resources.Tag;
  *          voigtmannc Exp $
  */
 public class SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
-	// TODO
+
 	private static final Log log = LogFactory.getLog(SearchPageController.class);
 
+	/**
+	 * logic interface for the database connectivity
+	 */
 	private LogicInterface logic;
 
-	private UserSettings userSettings;
-
+	/**
+	 * path of the document
+	 */
 	private String docpath;
 
 	/**
 	 * hold current errors
 	 */
 	private Errors errors = null;
-
-	private final Map<String, FileItem> fieldMap = null;
-	private String fileHash;
-	private String fileName;
-	private String md5hash;
-	private FileItem upFile;
+	
+	/**
+	 * settings of the user
+	 */
+	private UserSettings userSettings;
 
 	/**
 	 * @param command
 	 * @return the view
 	 */
 	public View workOn(SettingsViewCommand command) {
-		log.info("WorkOn called");
-		log.debug(this.getClass().getSimpleName());
+
 		command.setPageTitle("settings");
-		log.info("Command getGrouping: " + command.getGrouping());
-		log.info("importType: " + command.getImportType());
-		log.info("overwrite: " + command.getOverwrite());
-		log.info("file: " + command.getFile());
 
 		switch (command.getSelTab()) {
 		case 0: {
+			//called by the my profile tab
+			workOnMyProfileTab(command);
 			break;
 		}
 		case 1: {
+			//called by the setting tab
 			workOnSettingsTab(command);
 			break;
 		}
 		case 2: {
+			//called by the importation tab
 			workOnImportTab(command);
 			break;
 		}
@@ -100,102 +97,137 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			break;
 		}
 		}
+		
+		if(errors.hasErrors()) {
+			return Views.ERROR;
+		}
 
 		return Views.SETTINGSPAGE;
 	}
+	
+	private void workOnMyProfileTab(SettingsViewCommand command) {
+		
+	}
 
-	@SuppressWarnings("unchecked")
 	private void workOnImportTab(SettingsViewCommand command) {
 
 		// retrieve and parse bookmark.html file
 
 		User loginUser = command.getContext().getLoginUser();
 
-		if (command.getFile() != null && loginUser != null) {
+		if (loginUser != null) {
 
-			// FileItem fileItem = command.getFile().getFileItem();
+			//firefox import
+			if ("firefox".equals(command.getImportType())) {
 
-			final List<FileItem> list = new LinkedList<FileItem>();
-			list.add(command.getFile().getFileItem());
+				importFirefoxBookmarks(command, loginUser);
 
-			FileUploadInterface up;
-			// try {
-			try {
-				handleBookmarkFile(list);
-			} catch (Exception ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
+			
 			}
-
-			String bookmarkFileName = this.fileName;
-
-			if (!bookmarkFileName.equals("") && StringUtils.matchExtension(bookmarkFileName, "html")) {
-
-				int groupID = Integer.MIN_VALUE;
-
-				if ("private".equals(command.getGrouping())) {
-
-					groupID = GroupUtils.getPrivateGroup().getGroupId();
-				} else if ("public".equals(command.getGrouping())) {
-
-					groupID = GroupUtils.getPublicGroup().getGroupId();
-				}
-
-				String pathToTmpSore = FileUtil.getDocumentPath(this.docpath, this.fileHash);
-
-				File bookmarkFile = new File(pathToTmpSore);
-
-				try {
-					this.upFile.write(bookmarkFile);
-
-					this.upFile.delete();
-				} catch (Exception e) {
-					//TODO still to catch
-				}
-
-				List<Post<?>> bookmarksFromFirefox = null;
+			//delicious import
+			else if ("delicious".equals(command.getImportType())) {
 				
-				try {
-					bookmarksFromFirefox = getBookmarksFromFirefox(bookmarkFile, loginUser, command.getGrouping());
-				} catch (FileNotFoundException ex) {
-					// TODO Auto-generated catch block
-					ex.printStackTrace();
-				}
+			}
+			//jabref import
+			else if ("jabref".equals(command.getImportType())) {
 
-				bookmarkFile.delete();
-
-				Iterator<Post<?>> bookmarkIt = bookmarksFromFirefox.iterator();
-
-				List<String> createdPosts = new ArrayList<String>();
-
-				while (bookmarkIt.hasNext()) {
-					Post<?> nextBookmark = bookmarkIt.next();
-
-					List<?> singletonList = Collections.singletonList(nextBookmark);
-
-					List<String> createdPost = null;
-
-					try {
-						createdPost = this.logic.createPosts((List<Post<?>>) singletonList);
-					} catch (IllegalArgumentException e) {
-						if (command.getOverwrite()) {
-
-							createdPost = this.logic.updatePosts((List<Post<?>>) singletonList, PostUpdateOperation.UPDATE_ALL);
-						}
-					}
-
-					if (createdPost != null) {
-
-						createdPosts.addAll(createdPost);
-					}
-				}
-			} else {
-				// TODO add error message to errors object
 			}
 		}
 
 	}
 
+	@SuppressWarnings("unchecked")
+	private void importFirefoxBookmarks(SettingsViewCommand command, User loginUser) {
+
+		// checks whether a file for import is chosen or not
+		if (command.getFile() != null && command.getFile().getSize() > 0) {
+
+			final List<FileItem> list = new LinkedList<FileItem>();
+			// retrieves chosen import file
+			list.add(command.getFile().getFileItem());
+
+			FileUploadInterface up = null;
+
+			try {
+				
+				up = new HandleFileUpload(list, HandleFileUpload.firfoxImportExt);
+			} catch (Exception importEx) {
+				// TODO Auto-generated catch block
+				importEx.printStackTrace();
+			}
+
+			File bookmarkFile = null;
+
+			try {
+				//writes the file into the temporary directory and returns a handle of the file object
+				bookmarkFile = up.writeUploadedFilesAndReturnFile(this.docpath);
+
+			} catch (Exception e) {
+				// TODO still to catch
+			}
+
+			List<Post<?>> bookmarksFromFirefox = null;
+
+			try {
+				//extracts all the bookmarks in the file
+				bookmarksFromFirefox = getBookmarksFromFirefox(bookmarkFile, loginUser, command.getGrouping());
+			} catch (FileNotFoundException ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
+
+			bookmarkFile.delete();
+
+			Iterator<Post<?>> bookmarkIt = bookmarksFromFirefox.iterator();
+
+			//stores all newly added bookmarks
+			Map<String, String> newBookmarkEntries = new HashMap<String, String>();
+
+			//stores all the updated bookmarks
+			Map<String, String> updatedBookmarkEntries = new HashMap<String, String>();
+
+			//stores all the non imported bookmarks
+			List<String> nonCreatedBookmarkEntries = new ArrayList<String>();
+
+			while (bookmarkIt.hasNext()) {
+				Post<?> nextBookmark = bookmarkIt.next();
+
+				List<?> singletonList = Collections.singletonList(nextBookmark);
+
+				String bookmarkUrl = ((Post<Bookmark>) singletonList.get(0)).getResource().getUrl();
+
+				try {
+					//throws an exception if the bookmark already exists in the system
+					List<String> createdPostHash = this.logic.createPosts((List<Post<?>>) singletonList);
+					newBookmarkEntries.put(createdPostHash.get(0), bookmarkUrl);
+				} catch (IllegalArgumentException e) {
+					//checks whether the update bookmarks checkbox is checked
+					if (command.getOverwrite()) {
+
+						List<String> createdPostHash = this.logic.updatePosts((List<Post<?>>) singletonList, PostUpdateOperation.UPDATE_ALL);
+						updatedBookmarkEntries.put(createdPostHash.get(0), bookmarkUrl);
+					} else {
+						nonCreatedBookmarkEntries.add(bookmarkUrl);
+					}
+				}
+			}
+			
+			//stores the result to the command object, that the data can be accessed by the jsp side
+			if(newBookmarkEntries.size() > 0) {
+				command.setNewBookmarks(newBookmarkEntries);
+			}
+			//stores the result to the command object, that the data can be accessed by the jsp side
+			if(updatedBookmarkEntries.size() > 0) {
+				command.setUpdatedBookmarks(updatedBookmarkEntries);
+			}
+			//stores the result to the command object, that the data can be accessed by the jsp side
+			if(nonCreatedBookmarkEntries.size() > 0) {
+				command.setNonCreatedBookmarks(nonCreatedBookmarkEntries);
+			}
+		}
+	}
+
+	
 	private void workOnSettingsTab(SettingsViewCommand command) {
 		command.getContext().getLoginUser().getSettings().getTagboxStyle();
 		command.getContext().getLoginUser().getSettings().getTagboxSort();
@@ -206,13 +238,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 */
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
-	}
-
-	/**
-	 * @param userSettings
-	 */
-	public void setUserSettings(UserSettings userSettings) {
-		this.userSettings = userSettings;
 	}
 
 	/**
@@ -242,41 +267,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 	public void setDocpath(String docpath) {
 		this.docpath = docpath;
-	}
-
-	private void handleBookmarkFile(final List<FileItem> items) throws Exception {
-		Map<String, FileItem> fieldMap = new HashMap<String, FileItem>();
-
-		// copy items into global field map
-		for (final FileItem temp : items) {
-			if ("file".equals(temp.getFieldName())) {
-				fieldMap.put(temp.getFieldName(), temp);
-			}
-		}
-
-		this.upFile = fieldMap.get("file");
-		final String filename = this.upFile.getName();
-		if (filename != null) {
-			this.fileName = FilenameUtils.getName(filename);
-		} else {
-			this.fileName = "";
-		}
-
-		// check file extensions which we accept
-		if (this.fileName.equals("") || !StringUtils.matchExtension(this.fileName, "html")) {
-			throw new Exception("Please check your file. Only html files are accepted.");
-		}
-
-		// format date
-		final Date currDate = new Date();
-		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		df.setTimeZone(TimeZone.getDefault());
-		final String currDateFormatted = df.format(currDate);
-
-		// create hash over file content
-		this.md5hash = HashUtils.getMD5Hash(this.upFile.get());
-
-		this.fileHash = StringUtils.getMD5Hash(this.upFile.getFieldName() + Math.random() + currDateFormatted);
 	}
 
 	private List<Post<?>> getBookmarksFromFirefox(File bookmarkFile, User currUser, String groupName) throws FileNotFoundException {
@@ -443,11 +433,9 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 						}
 					}
 					bookmarkPost.setDate(fakeDate);
-
-					// bookmark.setToIns(true);
 					bookmarkPost.setUser(user);
 					bookmarkPost.addGroup(groupName);
-					// bookmark.setGroupid(groupid);
+
 					// descriptions are saved in a sibling of of a node
 					// containing a link
 					if (currentNode.getNextSibling() != null && "dd".equals(currentNode.getNextSibling().getNodeName())) {
@@ -459,5 +447,13 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			}
 		}
 		return bookmarks;
+	}
+
+	public UserSettings getUserSettings() {
+		return this.userSettings;
+	}
+
+	public void setUserSettings(UserSettings userSettings) {
+		this.userSettings = userSettings;
 	}
 }
