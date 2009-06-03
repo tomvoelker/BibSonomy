@@ -49,12 +49,16 @@ public class HandleFileUpload implements FileUploadInterface {
 	private final String fileName;
 	private final String md5hash;
 	private final FileItem upFile;
+	
+	public static final String[] firfoxImportExt = {"html"}; 
+	public static final String[] fileUploadExt   = {"pdf", "ps", "djv", "djvu", "txt"};
 
 	/**
 	 * @param items
+	 * @param allowedExt 
 	 * @throws Exception
 	 */
-	public HandleFileUpload(final List<FileItem> items) throws Exception {
+	public HandleFileUpload(final List<FileItem> items, String[] allowedExt) throws Exception {
 		this.fieldMap = new HashMap<String, FileItem>();
 
 		// copy items into global field map
@@ -72,8 +76,9 @@ public class HandleFileUpload implements FileUploadInterface {
 			this.fileName = "";
 		}
 
+		// "pdf", "ps", "djv", "djvu", "txt"
 		// check file extensions which we accept
-		if (this.fileName.equals("") || !StringUtils.matchExtension(this.fileName, "pdf", "ps", "djv", "djvu", "txt")) {
+		if (this.fileName.equals("") || !StringUtils.matchExtension(this.fileName, allowedExt)) {
 			throw new Exception("Please check your file. Only PDF, PS, TXT or DJVU files are accepted.");
 		}
 
@@ -95,6 +100,19 @@ public class HandleFileUpload implements FileUploadInterface {
 	 */
 	public void writeUploadedFiles(final String docPath) throws Exception {
 		this.upFile.write(new File((FileUtil.getDocumentPath(docPath, this.fileHash))));
+	}
+	
+	/*
+	 * @see org.bibsonomy.util.fileutil.FileUploadInterface#writeUploadedFilesAndReturnFile(java.lang.String,
+	 *      java.lang.String)
+	 */
+	public File writeUploadedFilesAndReturnFile(final String docPath) throws Exception {
+		
+		File file = new File(FileUtil.getDocumentPath(docPath, this.fileHash));
+		
+		this.upFile.write(file);
+		
+		return file;
 	}
 
 	/*
