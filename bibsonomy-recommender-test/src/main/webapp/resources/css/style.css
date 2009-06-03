@@ -1,0 +1,1137 @@
+.bmicon_unselected a {
+	background-image: url(/resources/image/starblue_unselected.png);
+	margin: 0px;
+	padding: 0px;
+	background-repeat: no-repeat;
+	float: right;
+	width: 16px;
+	height: 16px;
+}
+
+.bmicon_unselected a:hover {
+	background-image: url(/resources/image/starblue_hover.png);
+	margin: 0px;
+	padding: 0px;
+	background-repeat: no-repeat;
+	float: right;
+	width: 16px;
+	height: 16px;
+}
+
+.bmicon_selected a {
+	background-image: url(/resources/image/starblue_selected.png);
+	margin: 0px;
+	padding: 0px;
+	background-repeat: no-repeat;
+	float: right;
+	width: 16px;
+	height: 16px;
+}
+
+#topNavBar {
+	width: 95%;
+	text-align: right;
+	padding: 0px;
+	margin: 0 auto 15px;
+	margin-top: 10px;
+	margin-bottom: 2px;
+	font-size: 70%;
+	min-width: 900px;
+}
+
+#nice_tnav { 
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: #AEAEAE;
+}
+
+#nice_tnav ul {
+	margin: 0px;
+	padding: 1px;
+	background-color: #EEEEEE;
+}
+
+#nice_tnav li {
+	display: inline;
+	list-style-type: none;
+	font-size: 85%;
+}
+
+#nice_tnav li a {
+	color: #5f5f5f;
+	text-decoration: none;
+	padding-left: 10px;
+	padding-right: 10px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #EEEEEE;
+}
+
+#nice_tnav li a:hover {
+	color: #334d55;
+	text-decoration: none;
+	background-color: #EEEEEE;
+	border-width: 1px;
+	border-style: solid;
+	padding: 10px 10px 2px;
+	border-top-color: #6F6F6F;
+	border-left-color: #6F6F6F;
+	border-right-color: #6F6F6F;
+	border-bottom-color: #000000;
+	border-bottom-width: 0;
+}
+
+#nice_tnav li .selected {
+	color: #000000;
+	background-color: #EEEEEE;
+	text-decoration: none;
+	border-width: 1px;
+	border-style: solid;
+	padding: 10px 10px 2px;
+	border-top-color: #6F6F6F;
+	border-left-color: #6F6F6F;
+	border-right-color: #6F6F6F;
+	border-bottom-color: #000000;
+	border-bottom-width: 0;
+}
+
+#nice_tnav .checked {
+	color: #000000;
+	text-decoration: none;
+	background-color: #FFFFFF;
+	border-width: 1px;
+	border-style: solid;
+	padding: 10px 10px 2px;
+	border-top-color: #6F6F6F;
+	border-left-color: #6F6F6F;
+	border-right-color: #6F6F6F;
+	border-bottom-color: #000000;
+	border-bottom-width: 0;
+}
+
+#bookmarkbibtexoptions {
+	list-style-image: none;
+	list-style-position: outside;
+	list-style-type: none;
+}
+
+#bookmarkbibtexoptions ul {
+	margin: 0px;
+	padding: 0px;
+	padding-right: 20px;
+	text-align: right;
+}
+
+#bookmarkbibtexoptions li {
+	text-align: center;
+	display: inline;
+	height: 15px;
+	width: 15px;
+}
+
+#bookmarkbibtexoptions a:hover {
+	text-decoration: underline;
+	background-color: #006699;
+	color: #ffffff;
+}
+
+/* Drop Down Menu */
+#nice_tnav .nicedropmenudiv {
+	min-width: 200px;
+	position: absolute;
+	border-right: 1px solid #6F6F6F;
+	border-left: 1px solid #6F6F6F;
+	border-bottom: 1px solid #6F6F6F;
+	border-top: 0;
+	background-color: #FBFBFB;
+	padding-top: 0;
+	margin-top: 0;
+	z-index: 100;
+	visibility: hidden;
+	opacity: 0.9;
+}
+
+#nice_tnav .nicedropmenudiv a {
+	display: block;
+	margin: 0;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-decoration: none;
+	color: #5f5f5f;
+}
+
+#nice_tnav .nicedropmenudiv a:hover {
+	color: white;
+	margin: 0;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-decoration: none;
+	background-color: #069;
+}
+
+/* Drop Down Menu */
+.dropmenudiv {
+	position: absolute;
+	top: 0;
+	border: 1px solid #ccc;
+	background-color: #eee;
+	border-bottom-width: 0;
+	line-height: 18px;
+	z-index: 100;
+	visibility: hidden;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.dropmenudiv a {
+	width: auto;
+	display: block;
+	text-indent: 3px;
+	border-bottom: 1px solid #ccc;
+	text-decoration: none;
+	font-weight: bold;
+	color: #069;
+}
+
+* html .dropmenudiv a { /*IE only hack*/
+	width: 100%;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	margin: 5px 0px 0px 0px;
+	padding: 0px;
+}
+
+a,a:link,a:visited {
+	color: #069;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #f00;
+	text-decoration: none;
+}
+
+h1,div.h1 {
+	font-family: Verdana, Arial, sans-serif;
+	font-size: 120%;
+	color: #334d55;
+	margin: 6px 0px 0px 0px;
+	padding: 0px 0px 0px 10px;
+	float: left;
+}
+
+h2 {
+	font-size: 114%;
+	color: #069;
+	margin: 6px 10px 10px 0px;
+	padding: 0px;
+}
+
+h3,.sidebar_h {
+	font-size: 105%;
+	color: #334d55;
+	margin: 0px;
+	padding: 5px;
+}
+
+#sidebar a,#sidebar a:link,#sidebar a:visited {
+	color: #2F3321;
+	text-decoration: none;
+}
+
+h4 {
+	font-size: 105%;
+	font-weight: normal;
+	font-style: italic;
+	color: #334d55;
+	margin: 0px;
+	padding: 0px;
+}
+
+h5 {
+	font-size: 100%;
+	color: #334d55;
+	margin: 0px;
+	padding: 0px;
+}
+
+img {
+	border: 0px;
+	margin: 0px 2px 0px 2px;
+	padding: 0px;
+}
+
+ul {
+	padding: 0px;
+	list-style: none;
+	margin: 5px 0px 5px 0px;
+}
+
+td {
+	vertical-align: top;
+}
+
+.errmsg {
+	color: #f00;
+	font-size: 80%;
+}
+
+.postBookmarkNotValidTip {
+	background: #FFFFFF none repeat scroll 0 0;
+	border: 1px solid #FF0000;
+	font-size: 10pt;
+	left: 50%;
+	padding: 2px;
+	position: absolute;
+	top: 15px;
+	z-index: 100;
+}
+
+td.expl_s,td.expl, span.expl, span.expl_s {
+	font-size: 80%;
+}
+
+td.expl,span.expl {
+	text-align: right;
+	font-weight: bold;
+}
+
+td.expl2 {
+	text-align: right;
+	width: 10%;
+	color: #aaa;
+	padding: 0px 1em 0.5em 0px;
+}
+
+td.chunkybib {
+	font-size: 80%;
+}
+
+.boxed {
+	border: 1px solid #ccc;
+	background-color: #eee;
+	margin: 1em 0em 1em 0em;
+	padding: 0.5em;
+}
+
+.bibentry {
+	font-family: monospace;
+	font-size: 90%;
+}
+
+div.bibentry {
+	margin: 0px 0.5em 0px 20px;
+	padding: 0px;
+}
+
+.smalltext {
+	font-size: 80%;
+	padding: 5px;
+}
+
+.sidebar_h {
+	font-weight: bold;
+}
+
+.floatul li {
+	margin-left: .5em;
+	display: inline;
+	font-size: 80%;
+}
+
+.toggler {
+	margin-right: .3em;
+	cursor: pointer;
+	color: #069;
+}
+
+#groups li {
+	list-style: square;
+	margin: 0em 0em 0em 2em;
+	padding: .5em 0em .5em 0em;
+}
+
+#groupmembers li {
+	display: inline;
+	font-size: 90%;
+	margin-right: 1em;
+}
+
+#sidebarroundcorner {
+	float: right;
+	width: 23%;
+	padding: 3px;
+	background-color: #D8EBAE;
+}
+
+#bookbox,#bibbox,.bookbox {
+	margin: 1%; 
+	width: 47%;
+	float: left;
+}
+
+#outer,#general {
+	float: left;
+	width: 73%;
+}
+
+#general,#general_fixed, #general_100 {
+	margin: 1%;
+}
+
+#general_fixed {
+	float: left;
+	width: 700px;
+}
+
+
+#itembox {
+	margin: 5px 10px 5px 10px;
+	clear: both;
+}
+
+#specialsearch {
+	display: inline;
+	margin: 6px 0px 0px 0px;
+	padding: 0px;
+}
+
+#welcomeTop {
+	clear: both;
+	font-size: 80%;
+	color: #fff;
+	padding: 3px 0px 9px 0px;
+	margin: 0px 0px 0px 12px;
+}
+
+.smallform {
+	display: inline;
+	margin: 0px;
+	padding: 0px;
+}
+
+.oldentry {
+	color: #069;
+	display: none;
+}
+
+.reqinput {
+	background-color: #e5f3fa;
+}
+
+input[type=text],input[type=password],input[type=file],textarea,select
+	{
+	border: 1px solid #069;
+	padding: 2px;
+	font-family: monospace;
+	font-weight: normal;
+}
+
+input[type=submit],input[type=button],input[type=reset] {
+	border: 1px solid #069;
+	background-color: #eee;
+	padding: 2px;
+}
+
+h1 input[type=text],h1 select {
+	font-size: 83.33%;
+}
+
+td.tleft input[type=text],td.tleft input[type=password] {
+	font-size: 125%;
+}
+
+li.uploadinfo {
+	margin-bottom: 1.5em;
+	line-height: 1em;
+	display: block;
+	font-size: 80%;
+}
+
+.tleft {
+	text-align: left;
+	padding: 0px;
+}
+
+.tright {
+	text-align: right;
+	padding: 0px;
+}
+
+#bibtex,#bookmark,ul.bblist {
+	clear: both;
+	margin-top: 1em;
+}
+
+.nextprev,.actions,.listh span {
+	font-size: 80%;
+	color: #aaa;
+}
+
+.nextprev {
+	float: left;
+}
+
+.actions {
+	float: right;
+}
+
+.kiste {
+	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	clear: left;
+}
+
+.listh span {
+	margin-right: .5em;
+}
+
+.listh {
+	margin: 0 0 .5em 0;
+	padding: 0;
+}
+
+.listhButtons {
+	float: right;
+	margin-right: 0 ! important;
+	margin-top: -1.2em;
+	padding: 0;
+}
+
+.listhButtons a {
+	border: 1px solid #6F6F6F;
+	background-color: #EEEEEE;
+	color: #5F5F5F;
+	padding-left: 2px;
+	padding-right: 2px;
+	margin: 0;
+}
+
+.listhButtons a:hover {
+	border: 1px solid #6F6F6F;
+	background-color: #006699;
+	color: #FFFFFF;
+}
+
+h2.listh {
+	float: left;
+}
+
+.listh img {
+	margin: 0px;
+	margin-bottom: -3px;
+}
+
+.bibextra {
+	font-size: 80%;
+	color: #aaa;
+}
+
+#footer {
+	clear: both;
+	border-top: 1px solid #ccc;
+	font-size: 75%;
+	color: #aaa;
+	padding: 5px 10px 5px 10px;
+	margin: 0px 0px 2px 0px;
+}
+
+#copytag {
+	color: #069;
+	font-size: 100%;
+	text-align: justify;
+}
+
+#copytag li {
+	display: inline;
+	cursor: pointer;
+}
+
+#sidebar ul {
+	list-style: none;
+	font-size: 95%;
+	margin: 3px 0;
+	padding: 5px;
+}
+
+/* hack to fix IE/Win's broken rendering of block-level anchors in lists */
+#sidebar li {
+	border-bottom: 1px solid #ccc;
+}
+
+/* fix for browsers that don't need the hack */
+html>body #sidebar li {
+	border-bottom: none;
+}
+
+.tagcloud {
+	overflow: hidden;
+	text-align: justify;
+	font-size: 70%;
+}
+
+.tagcloud li {
+	display: inline;
+	padding: 0em .1em 0em .1em;
+	line-height: 1.5em;
+}
+
+.tagcloud a,.taglist a {
+	color: #069;
+}
+
+.tagcloud a:hover,.taglist a:hover {
+	color: #000000;
+	text-decoration: none;
+}
+
+.taglist {
+	font-size: 70%;
+}
+
+.taglist li {
+	display: block;
+}
+
+.options {
+	font-size: 80%;
+	cursor: pointer;
+}
+
+.tagtiny a, .tagtiny {
+	color: #8D9964 ! important;
+	font-size: 85%;
+}
+
+.tagnormal a, .tagnormal {
+	color: #8C9963 ! important;
+	font-size: 95%;
+}
+
+.taglarge a, .taglarge {
+    color: #383d27 ! important;
+    font-size: 105%;
+}
+
+.taghuge a, .taghuge {
+	color: #2F3321 ! important;
+	font-size: 115%;
+}
+
+.tagone a {
+	color: #3399cc;
+}
+
+.tagten a {
+	font-size: 140%;
+	color: #3F472E;
+}
+
+li.bm {
+	margin-bottom: 1.5em;
+	line-height: 1em;
+	display: block;
+}
+
+.bmtitle {
+	font-size: 100%;
+	font-weight: bold;
+}
+
+.bmdesc {
+	font-size: 70%;
+	color: #aaa;
+}
+
+.bmmeta {
+	color: #555;
+	font-size: 70%;
+}
+
+.bmtags { /*  font-weight:bold; */
+	
+}
+
+.bmfoot {
+	color: #aaa;
+	font-size: 70%;
+	border-bottom: 1px solid #eee;
+	clear: left;
+}
+
+.bmfoot:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.bmaction {
+	float: left;
+}
+
+.bmrating {
+	float: right;
+}
+
+.bmown {
+	border-left: 3px solid #aaa;
+	padding-left: 0.3em;
+}
+
+.action {
+	font-size: 80%;
+	background-color: #eee;
+}
+
+.tags_first {
+	font-size: 170%;
+	line-height: 1.5em;
+}
+
+.tags_second {
+	font-size: 150%;
+	line-height: 1.4em;
+}
+
+.tags_third {
+	font-size: 130%;
+	line-height: 1.3em;
+}
+
+.tags_fourth {
+	font-size: 110%;
+	line-height: 1.2em;
+}
+
+.tags_fifth {
+	font-size: 90%;
+	line-height: 1.1em;
+}
+
+td.upperconcept {
+	text-align: right;
+}
+
+.box_upperconcept {
+	font-size: 80%;
+	line-height: 1.2em;
+	text-indent: -3em;
+	margin-left: 3em;
+}
+
+li.box_upperconcept a {
+	color: #2F3321 ! important;
+}
+
+li.box_lowerconcept a {
+	color: #768053 ! important;
+}
+
+.box_lowerconcept {
+	display: inline;
+	font-size: 90%;
+	line-height: 1.1em;
+}
+
+.box_arrow {
+	display: inline;
+	font-size: 80%;
+	line-height: 1.2em;
+}
+
+.box_lowerconcept_elements {
+	display: inline;
+}
+
+.box_pic {
+	display: inline;
+}
+
+.tagtextfield {
+	display: inline;
+}
+
+.recommended {
+	font-weight: bold;
+}
+
+.suggtag a {
+  font-size: 80%;
+  color: black;
+}
+
+/* FAQ */
+ul.faq {
+	font-size: 95%;
+	padding: 3px 0 15px 12px;
+}
+
+li.faq {
+	list-style-type: disc;
+	padding: 3px 0 15px 3px;
+	list-style-position: outside;
+}
+
+li.faq p {
+	margin: 5px 0 0 0;
+	font-size: 90%;
+}
+
+li.faq dt {
+	margin: 5px 0 0 0;
+	font-size: 90%;
+}
+
+li.faq dd {
+	margin: 0 0 0 50px;
+	font-size: 90%;
+}
+
+.einrueckung1 {
+	margin-left: 1em;
+}
+
+.einrueckung2 {
+	margin-left: 7.5em;
+}
+
+.einrueckung3 {
+	margin-left: 0.5em;
+}
+
+.autocomplete {
+	border: 1px solid #006699;
+	background-color: white;
+	cursor: pointer;
+}
+
+.ac_results {
+	border: 1px solid #006699;
+	background-color: white;
+	cursor: pointer;
+}
+
+.ac_results ul {
+	width: 100%;
+	list-style-position: outside;
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+
+.ac_results li {
+	margin: 0px;
+	padding: 0px 5px;
+	cursor: pointer;
+	display: block;
+	/* 
+	if width will be 100% horizontal scrollbar will apear 
+	when scroll mode will be used
+	*/
+	/*width: 100%;*/
+	font: menu;
+	font-size: 12px;
+	/* 
+	it is very important, if line-height not setted or setted 
+	in relative units scroll will be broken in firefox
+	*/
+	line-height: 16px;
+	overflow: hidden;
+}
+
+.ac_loading {
+	background: white url('/resources/image/indicator.gif') right center no-repeat;
+}
+
+.ac_odd {
+	background-color: #eee;
+}
+
+.ac_over {
+	background-color: #006699;
+	color: white;
+}
+
+
+/* tooltip */
+span.info {
+	position: relative;
+	z-index: 24;
+	background-color: #eee;
+	border: 1px solid #ccc;
+	color: #000;
+}
+
+span.info:hover {
+	z-index: 25;
+}
+
+span.info > div{
+	display: none;
+}
+
+span.info:hover > div {
+	display: block;
+	position: absolute;
+	top: 2em;
+	left: 2em;
+	width: 50em;
+	border: 1px solid #ccc;
+	background-color: #eee;
+	color: #000;
+	padding: 5px;
+}
+
+/* advanced search */
+#searchbox {
+	margin: 5px 5px 5px 5px;
+	padding: 5px 5px 5px 5px;
+	width: 70%;
+	float: left;
+}
+
+.scroller {
+	height: 250px;
+	width: 100%;
+	font-family: Arial, Helvetica, sans-serif;
+	overflow: auto;
+	overflow-x: hidden;
+	overflow-y: scroll;
+	background-color: #fff;
+	border: 1px solid #069;
+}
+
+.title_search {
+	font-size: 70%;
+	font-weight: bold;
+	color: #069;
+}
+
+.result_table {
+	border-spacing: 0px;
+	width: 100%;
+}
+
+.result_table td {
+	border-bottom: 1px solid #BBBBBB;
+}
+
+.result_table tr:hover {
+	background-color: #EEEEEE;
+	cursor: pointer;
+}
+
+/* tabs */
+#tab ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+#tab li {
+	float: left;
+	border: 1px solid #BBB;
+	border-bottom-width: 0;
+	margin: 0;
+}
+
+#tab a {
+	text-decoration: none;
+	display: block;
+	background: #EEE;
+	padding: 3px;
+	width: 7em;
+	text-align: center;
+	font-size: 80%;
+}
+
+#tab a:hover {
+	background-color: white;
+}
+
+#tab #selected {
+	border-color: #069;
+}
+
+#tab #selected a {
+	position: relative;
+	top: 1px;
+	background: white;
+	color: #069;
+}
+
+#tab_content {
+	border: 1px solid #069;
+	clear: both;
+	padding: 0.5em 1em;
+}
+
+#tab_content hr {
+	border: 0px;
+	border-top: 1px solid #AAA;
+}
+
+.error {
+	color: #ff6600;
+}
+
+/* full screen (without tagclouds) */
+#fullscreen {
+	margin: 5px 10px 2% 10px;
+}
+
+/* 3 columns on page */
+.threecolbox {
+	margin: 5px 1% 2% 1%;
+	width: 30%;
+	float: left;
+	padding-right: 5px;
+}
+
+#main {
+	width: 95%;
+	margin: 0pt auto;
+	border: 2px solid #2E4B73;
+	margin-bottom: 15px;
+	min-width: 900px;
+}
+
+#main_header {
+	background-color: #069;
+	height: 70px;
+}
+
+#heading h1 {
+	color: #FFFFFF;
+}
+
+#heading h1 a {
+	color: #FFFFFF;
+}
+
+#mainHeaderRightBox {
+	text-align: right;
+	color: #FFFFFF;
+	font-size: 70%;
+	vertical-align: middle;
+	float: right;
+	padding: 0;
+	margin: 0;
+	border-spacing: 0;
+}
+
+#mainHeaderRightBox a {
+	color: #FFFFFF;
+}
+
+.info_bold {
+ 	font-size: 75%;
+ 	font-weight: bold;
+  	color: #069;
+  	padding: 0px;
+
+}
+
+table.vmiddle td{
+	vertical-align:middle;
+}
+
+.info {
+  	color: #069;
+  	margin: 3px 10px 10px 0px;
+  	padding: 0px;
+}
+
+.popular{
+	overflow-x:hidden;
+	width:100%;	
+}
+
+.unapi-id {
+  display: none;
+}
+
+
+fieldset {
+	padding: 5px;
+	display: block;
+}
+
+fieldset > div {
+	margin: 8px 0px 2px 0px;
+}
+
+fieldset #tagField, fieldset #suggested, fieldset #copytags {
+	margin: 0;
+	padding: 0;
+	min-height: 2.5ex;
+}
+
+#post.resource.url {
+	margin: 0px;
+	padding: 0px;
+}
+
+.fsnoborder {
+	border:0px;
+	padding-top: 1px;
+	padding-bottom: 1px;
+	margin-top: 8px;
+	padding-left: 0px;
+}
+
+.fsnoborder legend{
+	padding-left: 2px;	
+	margin-left: 0px;	
+}
+
+#fsgroupBoxleft, #fsgroupBoxright {
+	border: 1px solid #069;
+	background-color: #eee;
+	padding:10px;
+	min-height: 15ex;
+}
+
+#groupBoxleft, #groupBoxright {
+	position: relative;
+	display: inline;
+	width: 49.8%;
+}
+
+
+#groupBoxleft {
+	float:left;
+}
+
+#groupBoxright {
+	float:right;
+}
+
+
+.clearfloat {
+  clear: both;
+}
+
+.p {
+padding-top:1px;	
+}
+
+/* export formats */
+#exports ul {
+	list-style: none;
+}
+
+#exports li {
+	float:left;
+	padding-left: 1em;
+}
+
