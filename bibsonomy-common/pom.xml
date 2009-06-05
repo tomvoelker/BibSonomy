@@ -54,9 +54,14 @@
 			<version>0.6-beta2</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- 
+			the following jar has been manually deployed to our artifactory proxy
+			(it's basically a subset of fastutil/fastutil/5.0.9, extracted by
+			autojar). dbe, 20090506
+		 --> 
 		<dependency>
-			<groupId>fastutil</groupId>
-			<artifactId>fastutil</artifactId>
+			<groupId>it.unimi.dsi.fastutil.chars</groupId>
+			<artifactId>charopenhashset</artifactId>
 			<version>5.0.9</version>
 		</dependency>
 		<dependency>
