@@ -224,11 +224,11 @@ td.expl_s {
       tags of copied item
     </td>
     <td>
-      <ul id="copytag" >
+      <div id="copytags">
         <c:forEach var="elem" items="${bibtexHandlerBean.copytag}">
-          <li ><c:out value='${elem}'/></li>
+          <a href="javascript:copytag('inpf', '${f:escapeXml(elem)}')"><c:out value='${elem}'/></a>
         </c:forEach>
-      </ul>    
+      </div> 
     </td>
     <td>
     </td>
