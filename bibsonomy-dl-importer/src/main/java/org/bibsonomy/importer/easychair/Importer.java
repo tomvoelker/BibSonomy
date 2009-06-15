@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Properties;
 
 import org.bibsonomy.importer.filter.PostFilterChain;
+import org.bibsonomy.importer.reader.PostListReader;
+import org.bibsonomy.importer.reader.XMLPostListReader;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -38,7 +40,7 @@ public class Importer {
 		/*
 		 * The reader which will read and parse the XML.
 		 */
-		final XMLPostListReader reader = new XMLPostListReader(new BufferedReader(new InputStreamReader(new FileInputStream(args[0]), "UTF-8")));
+		final PostListReader reader = new XMLPostListReader(new BufferedReader(new InputStreamReader(new FileInputStream(args[0]), "UTF-8")));
 
 		/*
 		 * The filter chain to preprocess the posts.
