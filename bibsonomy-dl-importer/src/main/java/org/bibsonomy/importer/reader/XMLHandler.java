@@ -1,4 +1,4 @@
-package org.bibsonomy.importer.easychair;
+package org.bibsonomy.importer.reader;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,7 +10,8 @@ import org.xml.sax.helpers.DefaultHandler;
 
 
 /**
- * Callback handler for the SAX parser.
+ * Callback handler for the SAX parser, reading EasyChair XML.
+ * 
  * 
  * @author rja
  * @version $Id$
