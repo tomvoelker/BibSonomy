@@ -64,6 +64,7 @@ public class BibtexShowHandler extends HttpServlet{
 		 * checked against the database */
 		String requTitle     = request.getParameter("title");
 		String requHash      = request.getParameter("hash");
+		String defaultTags   = request.getParameter("tags");
 		/* if we want to copy an entry from another user, we have to know
 		 * the username; if a username is given, we assume that the user
 		 * wants to copy this entry*/
@@ -112,6 +113,12 @@ public class BibtexShowHandler extends HttpServlet{
 			 * and can ask the database just for the hash */
 			final Bibtex bibtex = new Bibtex();
 			final BibtexHandlerBean bean = new BibtexHandlerBean(bibtex);
+
+			/*
+			 * rja, 2009-06-16: added tags given in URL to allow external (copy) 
+			 * links to populate tag field with default tags (needed by Hypertext 2009) 
+			 */
+			if (defaultTags != null && defaultTags.trim().length() > 0) bibtex.setTags(defaultTags);
 
 			bibtex.setTitle(requTitle);
 			bibtex.setAuthor(request.getParameter("author"));
