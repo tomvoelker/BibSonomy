@@ -94,7 +94,6 @@ public class SearchPageController extends SingleResourceListController implement
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final List<?> list = listCommand.getList();
 
-			log.debug("SearchPageController: list="+list);
 			if (list instanceof ResultList) {
 				ResultList<Post<?>> resultList = (ResultList<Post<?>>) list;
 				listCommand.setTotalCount(resultList.getTotalCount()); 
