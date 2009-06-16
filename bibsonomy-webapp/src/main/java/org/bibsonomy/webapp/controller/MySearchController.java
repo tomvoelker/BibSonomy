@@ -73,8 +73,9 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		// retrieve and set the requested resource lists, along with total
 		// counts
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			// FIXME determine the maximum items per page dynamically
-			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, 1000);
+			// FIXME: we should deliver items dynamically via ajax, 
+			//        displaying a 'wheel of fortune' until all items are loaded
+			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, Integer.MAX_VALUE);
 			this.postProcessAndSortList(command, resourceType);
 		}
 
