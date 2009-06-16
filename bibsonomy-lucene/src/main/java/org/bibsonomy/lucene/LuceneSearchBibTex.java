@@ -2,9 +2,7 @@ package org.bibsonomy.lucene;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import javax.naming.Context;
@@ -19,13 +17,15 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Hits;
+import org.apache.lucene.search.BooleanFilter;
+import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.RangeFilter;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.store.RAMDirectory;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.exceptions.LuceneException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
@@ -36,29 +36,38 @@ public class LuceneSearchBibTex {
 	private final static LuceneSearchBibTex singleton = new LuceneSearchBibTex();
 	private IndexSearcher searcher; 
 	private PerFieldAnalyzerWrapper analyzer;
-	private String lucenePath;
-		
+	
+	
+	String lField_contentid = "content_id";
+	String lField_group = "group";
+	String lField_date = "date";
+	String lField_user = "user_name";
+	String lField_desc = "desc";
+	String lField_ext = "ext";
+	String lField_url = "url";
+	String lField_tas = "tas";
+	String lField_author = "author";
+	String lField_year = "year";
+	String lField_merged = "mergedfields";	
 
 	private LuceneSearchBibTex() {
 		reloadIndex();
 	}
 	
 
-	public void reloadIndex() throws RuntimeException {
+	public void reloadIndex() {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
 		try {
 
 			Context initContext = new InitialContext();
 			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			//Boolean loadIndexIntoRAM = (Boolean) envContext.lookup("luceneIndexPublicationsLoadIntoRAM");
 			String lucenePath = (String) envContext.lookup("luceneIndexPathPublications");
-			this.lucenePath = lucenePath;
 			
 			LOGGER.debug("LuceneBibTex: use index: " + lucenePath);
 
 			/* set current path to lucene index, given by environment parameter in tomcat's context.xml
 			 * 
-			 *   <Environment name="luceneIndexPath" type="java.lang.String" value="/home/bibsonomy/lucene"/>
+			 *   <Environment name="luceneIndexPathPublications" type="java.lang.String" value="/home/bibsonomy/lucene"/>
 			 */
 
 
@@ -74,6 +83,7 @@ public class LuceneSearchBibTex {
 			}
 			
 			
+			// if there is already a searcher
 			try {
 				if (null != this.searcher) this.searcher.close();
 			} catch (IOException e) {
@@ -83,40 +93,25 @@ public class LuceneSearchBibTex {
 				LOGGER.debug("LuceneBibTex: RuntimeException on searcher.close: "+ e.getMessage());
 			}
 
-			
-/*			if (loadIndexIntoRAM) {
-				// load a copy of index in memory
-				// changes will have no effect on original index!
-				// make sure complete index fill fit into memory!
-				LOGGER.debug("LuceneBibTex: load index into RAM");
-				long starttime = System.currentTimeMillis();
-				RAMDirectory BibTexIndexRAM = new RAMDirectory ( lucenePath );
-				this.searcher = new IndexSearcher( BibTexIndexRAM );
-				long endtime = System.currentTimeMillis();
-				LOGGER.debug("LuceneBibTex: index loaded into RAM in "+ (endtime-starttime) + "ms");
-			}
-			else
-			{	
-*/			
-				// load and hold index on physical hard disk
-				LOGGER.debug("LuceneBibTex: use index from disk");
-				LOGGER.debug("this.searcher-0: " + this.searcher);
-				this.searcher = new IndexSearcher( lucenePath );
-				LOGGER.debug("this.searcher-1: " + this.searcher);
-//			}
+			// load and hold index on physical hard disk
+			LOGGER.debug("LuceneBibTex: use index from disk");
+			LOGGER.debug("this.searcher-0: " + this.searcher);
+			this.searcher = new IndexSearcher( lucenePath );
+			LOGGER.debug("this.searcher-1: " + this.searcher);
+
 		} catch (final NamingException e) {
 			LOGGER.error("LuceneBibTex: NamingException "+ e.getExplanation() + " ## " + e.getMessage());
 			LOGGER.error("Environment variable luceneIndexPathPublications not present.");
-			// TODO: Zeige 500er Fehler an: Lucene: 
-			throw new RuntimeException(e);
+			throw new LuceneException("error.lucene");
 		} catch (CorruptIndexException e) {
 			LOGGER.error("LuceneBibTex: CorruptIndexException "+ e.getMessage());
-			// TODO: Zeige 500er Fehler an: Lucene: 
+			throw new LuceneException("error.lucene");
 		} catch (IOException e) {
 			LOGGER.error("LuceneBibTex: IOException "+ e.getMessage());
-			// TODO: Zeige 500er Fehler an: Lucene: 
+			throw new LuceneException("error.lucene");
 		} catch (RuntimeException e) {
 			LOGGER.warn("LuceneBibTex: RuntimeException "+ e.getMessage());
+			throw new LuceneException("error.lucene");
 		}
 	}
 
@@ -128,171 +123,21 @@ public class LuceneSearchBibTex {
 		return singleton;
 	}
 
-
-
-	/** get ArrayList of strings of field id from lucene index
-	 * 
-	 * for pagination see http://www.gossamer-threads.com/lists/lucene/general/70516#70516
-	 * 
-	 * @param String idname fieldname of returning value
-	 * @throws IOException 
-	 * @throws CorruptIndexException 
-	 * */
-	public ArrayList<Integer> searchLucene(String idname, String search_terms, int groupId, int limit, int offset) throws IOException {
-		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
-			
-
-		if (this.searcher == null)
-		{
-			LOGGER.error("LuceneBibTex: searcher is NULL!");
-			
-		}
-		
-		Boolean debug = false;
-		String queryFields = "";
-		String querystring = "";
-
-
-		ArrayList<String> bibTexField = new ArrayList<String> ();
-		ArrayList<String> bibTexFieldAll = new ArrayList<String> ();
-
-		bibTexField.add("user_name");
-		bibTexField.add("author");
-		bibTexField.add("editor");
-		bibTexField.add("title");
-		bibTexField.add("journal");
-		bibTexField.add("booktitle");
-		bibTexField.add("volume");
-		bibTexField.add("number");
-		bibTexField.add("chapter");
-		bibTexField.add("edition");
-		bibTexField.add("month");
-		bibTexField.add("day");
-		bibTexField.add("howPublished");
-		bibTexField.add("institution");
-		bibTexField.add("organization");
-		bibTexField.add("publisher");
-		bibTexField.add("address");
-		bibTexField.add("school");
-		bibTexField.add("series");
-		bibTexField.add("bibtexKey");
-		bibTexField.add("url");
-		bibTexField.add("type");
-		bibTexField.add("description");
-		bibTexField.add("annote");
-		bibTexField.add("note");
-		bibTexField.add("pages");
-		bibTexField.add("bKey");
-		bibTexField.add("crossref");
-		bibTexField.add("misc");
-		bibTexField.add("bibtexAbstract");
-		bibTexField.add("year");
-		bibTexField.add("tas");		
-		
-		bibTexFieldAll.addAll(bibTexField);
-		bibTexFieldAll.add("content_id");
-		bibTexFieldAll.add("group");
-		bibTexFieldAll.add("date");
-		bibTexFieldAll.add("entrytype");
-		bibTexFieldAll.add("interhash");
-		bibTexFieldAll.add("intrahash");
-
-		
-		for (String btField:bibTexField)
-		{
-			queryFields += btField + ":("+ search_terms +") ";
-		}
-		if (GroupID.INVALID.getId() == groupId)
-		{
-			// query without groupID
-			querystring = queryFields;
-		}
-		else
-		{
-			// query with groupID
-			querystring = "group:\""+groupId+"\" AND ("+queryFields+")" ;
-		}
-
-		LOGGER.debug("LuceneBibTex-Querystring (assembled): " + querystring);
-
-		// declare ArrayList cidsArray for list of String to return
-		final ArrayList<Integer> cidsArray = new ArrayList<Integer>();
-
-
-		// do not search for nothing in lucene index
-		if ( (search_terms != null) && (!search_terms.isEmpty()) )
-		{
-
-
-			// open lucene index
-			//IndexReader reader = IndexReader.open(luceneIndexPath);
-
-
-			QueryParser myParser = new QueryParser("description", analyzer);
-			Query query;
-			Sort sort = new Sort("date",true);
-/* sort first by date and then by score. This is not necessary, because there are 
- * no or only few entries with same date (date is with seconds) 			
-  			Sort sort = new Sort(new SortField[]{
-												new SortField("date",true),
-												SortField.FIELD_SCORE	
-						});
-*/			
-			try {
-				query = myParser.parse(querystring);
-				LOGGER.debug("LuceneBibTex-Querystring (analyzed):  " + query.toString());
-				LOGGER.debug("LuceneBibTex-Query will be sorted by:  " + sort);
-				
-				LOGGER.debug("LuceneBibTex: searcher:  " + searcher);
-				
-
-				long starttimeQuery = System.currentTimeMillis();
-				final Hits hits = this.searcher.search(query,sort);
-				long endtimeQuery = System.currentTimeMillis();
-				LOGGER.debug("LuceneBibTex pure query time: " + (endtimeQuery-starttimeQuery) + "ms");
-
-				int hitslimit = (((offset+limit)<hits.length())?(offset+limit):hits.length());
-
-				LOGGER.debug("LuceneBibTex:  offset / limit / hitslimit / hits.length():  " + offset + " / " + limit + " / " + hitslimit + " / " + hits.length());
-				
-				for(int i = offset; i < hitslimit; i++){
-					Document doc = hits.doc(i);
-					cidsArray.add(Integer.parseInt(doc.get(idname)));
-				}	 
-
-			} catch (ParseException e) {
-				LOGGER.debug("LuceneBibTex: ParseException (old): "+ e.getMessage());
-			}		
-
-
-		}
-
-		return cidsArray;
-	};
-
 	
+	/**
+	 * full text search for search:all and search:username
+	 * 
+	 * @param groupId
+	 * @param search_terms
+	 * @param requestedUserName
+	 * @param UserName
+	 * @param GroupNames
+	 * @return queryString
+	 */
 	
-	/** get ArrayList of strings of field id from lucene index
-	 * 
-	 * for pagination see http://www.gossamer-threads.com/lists/lucene/general/70516#70516
-	 * 
-	 * @param String idname fieldname of returning value
-	 * @throws IOException 
-	 * @throws CorruptIndexException 
-	 * */
-	public ResultList<Post<BibTex>> searchLucene(int groupId, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset) throws IOException {
-		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
-			
+	private QuerySortContainer getFulltextQueryFilter (int groupId, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames) {
 
-		String lField_contentid = "content_id";
-		String lField_group = "group";
-		String lField_date = "date";
-		String lField_user = "user_name";
-		String lField_desc = "desc";
-		String lField_ext = "ext";
-		String lField_url = "url";
-		String lField_tas = "tas";
-		String lField_merged = "mergedfields";
+		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
 
 		String allowedGroupNames = "";
 		String allowedGroupNamesQuery = "";
@@ -301,88 +146,307 @@ public class LuceneSearchBibTex {
 		String userQuery = "";
 		String privateGroupQuery = "";
 		String groupIdQuery = "";
-		String querystring = "";
+		String queryString = "";
+
+		QuerySortContainer qf = new QuerySortContainer();
+		
+		int allowedGroupsIterator = 0;
+		for ( String groupName : GroupNames){
+			if (allowedGroupsIterator>0) allowedGroupNames += " ";
+			allowedGroupNames += groupName;
+			allowedGroupsIterator++;
+		}
+		
+		LOGGER.debug("LuceneBibTex: allowedGroups: " + allowedGroupNames);		
+
+		mergedFiledQuery = lField_merged + ":("+ search_terms +") ";
+		allowedGroupNamesQuery = lField_group+":("+allowedGroupNames+")";
+		privateGroupQuery = lField_group+":(private)";
+			
+		if ( (UserName != null) && (!UserName.isEmpty()) )
+		{
+			userQuery  = lField_user + ":("+ UserName +")";
+		}
+
+		if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
+		{
+			requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
+		}
+/*
+		if ( (UserName != null) && (!UserName.isEmpty()) )
+		{
+			userQuery  = lField_user + ":("+ UserName +")";
+		}
+*/
+		if (GroupID.INVALID.getId() != groupId)
+		{
+			groupIdQuery = " AND " + lField_group+":("+groupId+")";
+		}
+
+		// assemble query string 
+		queryString = mergedFiledQuery + requestedUserNameQuery + groupIdQuery ;
+		if (!userQuery.isEmpty()) { // logged in user 
+			queryString += " AND ( " + allowedGroupNamesQuery + " OR ("+privateGroupQuery+" AND "+userQuery+") ) ";
+		}
+		else
+		{
+			queryString += " AND " + allowedGroupNamesQuery;
+		}
+
+		QueryParser myParser = new QueryParser("description", analyzer);
+		Query query = null;
+		Sort sort = new Sort("date",true);
+		try {
+			query = myParser.parse(queryString);
+		} catch (ParseException e) {
+			LOGGER.debug("LuceneSearchBibTex: ParseException: "+ e.getMessage());
+		}
+
+		qf.setQuery(query);
+		qf.setSort(sort);
+		
+		return qf;
+		
+	}
+	
+	private QuerySortContainer getAuthorQueryFilter (int groupId,  String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear) {
+		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
+
+		String searchQuery = "";
+		String requestedUserNameQuery = "";
+		String requestedGroupNameQuery = "";
+		String groupIdQuery  = "";
+		String yearQuery = "";
+		Boolean includeLowerBound = false;
+		Boolean includeUpperBound = false;
+
+		String queryString = "";
+
+		
+		// debug
+		firstYear = "1900"; lastYear = "2222";
+		
+		
+		QuerySortContainer qf = new QuerySortContainer();
+
+
+		LOGGER.debug("-----groupId:      " + groupId);
+		LOGGER.debug("-----search:       " + search);
+		LOGGER.debug("-----reqUserName:  " + requestedUserName);
+		LOGGER.debug("-----reqGroupName: " + requestedGroupName);
+		LOGGER.debug("-----year:         " + year);
+		LOGGER.debug("-----firstYear:    " + firstYear);
+		LOGGER.debug("-----lastYear:     " + lastYear);
+		
+		queryString = "+(+mergedfields:telefon) +((group:kde group:public) (+group:private +user_name:bugsbunny))";
+		
+		
+		if ( (search != null) && (!search.isEmpty()) )
+		{
+			searchQuery = lField_author + ":("+ search +")";
+		}
+
+		if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
+		{
+			requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
+		}
+/*		
+		if ( (requestedGroupName != null) && (!requestedGroupName.isEmpty()) )
+		{
+			requestedGroupNameQuery  = " AND " + lField_user + ":("+ requestedGroupName +")";
+		}
+*/
+		if (GroupID.INVALID.getId() != groupId)
+		{
+			groupIdQuery = " AND " + lField_group+":("+groupId+")";
+		}
+
+		
+		if ( (year != null) && (!year.isEmpty()) )
+		{
+			yearQuery = " AND " + lField_year + ":"+ year;
+		}
+		else
+		{
+
+			// firstYear != null, lastYear != null
+			if ( (firstYear != null) && (lastYear != null) )
+			{
+				if ( (!firstYear.isEmpty()) && (!lastYear.isEmpty()) )
+				{
+					includeLowerBound = true; 
+					includeUpperBound = true;
+				}
+			}
+	
+			// firstYear != null, lastYear == null
+			if ( (firstYear != null) && (lastYear == null) )
+			{
+				if (!firstYear.isEmpty())
+				{
+					includeLowerBound = true; 
+				}
+				else
+				{
+					includeLowerBound = false; 
+				}
+				includeUpperBound = false; 
+			}
+	
+			// firstYear == null, lastYear != null
+			if ( (firstYear == null) && (lastYear != null) )
+			{
+				includeLowerBound = false; 
+				if (!lastYear.isEmpty())
+				{
+					includeUpperBound = true; 
+				}
+				else
+				{
+					includeUpperBound = false; 
+				}
+			}
+		}
+
+		
+		// assemble query string 
+		queryString = searchQuery + requestedUserNameQuery + groupIdQuery;
+
+		QueryParser myParser = new QueryParser(lField_desc, analyzer);
+		Query query = null;
+		
+		try {
+			query = myParser.parse(queryString);
+		} catch (ParseException e) {
+			LOGGER.debug("LuceneSearchBibTex: ParseException: "+ e.getMessage());
+		}
+		
+		FilteredQuery filteredQuery = null;
+
+		// if upper or lower bound is given, then use filter
+		if (includeLowerBound || includeUpperBound)
+		{
+			RangeFilter rangeFilter=new RangeFilter(lField_year , firstYear, lastYear, includeLowerBound, includeUpperBound);
+			filteredQuery=new FilteredQuery(query,rangeFilter);
+			qf.setQuery(filteredQuery);
+		}
+		else
+		{
+			qf.setQuery(query);
+		}
+        
+
+		Sort sort = new Sort("date",true);
+		qf.setSort(sort);
+        
+		LOGGER.debug("LuceneSearchBibTex: sort: "+  qf.getSort().toString());
+		LOGGER.debug("LuceneSearchBibTex: query: "+  qf.getQuery().toString());
+		
+// resourceType, groupingEntity, groupingName, tags, hash, order, filter, start, start + itemsPerPage, search		
+/*
+author
+group
+UserName
+GroupName
+year
+
+#requestedUserName#
+
+SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
+b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
+b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
+b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, b.scraperid,
+b.simhash1 AS interHash, b.simhash2 AS intraHash, t.tag_name, h.ctr as count,NULL AS `group`, NULL AS group_name
+
+FROM bibtex b, tas t, bibhash h,  
+
+~~~
+~	    tas t1
+~		<iterate property="tagIndex">
+~			<isGreaterThan property="tagIndex[].index" compareValue="1">
+~				JOIN tas t$tagIndex[].index$ USING (content_id)
+~			</isGreaterThan>
+~		</iterate>
+~~~ 
+	(SELECT content_id FROM search_bibtex s
+	WHERE MATCH (s.author) AGAINST (#search# IN BOOLEAN MODE) 
+		AND s.group = #groupType#
+~~~		AND s.content_id = t1.content_id
+
+isNotNull "requestedUserName"
+		AND s.user_name = #requestedUserName#
+
+isNotNull "requestedGroupName"
+		AND s.user_name IN (SELECT user_name 
+			FROM groupids g JOIN groups gs ON (g.group = gs.group)
+	        	WHERE g.group_name = #requestedGroupName#)
+
+
+~~~
+~ 		AND 
+~		<iterate property="tagIndex" conjunction="AND">
+~		  <isEqual property="caseSensitiveTagNames" compareValue="true">
+~		    t$tagIndex[].index$.tag_name = #tagIndex[].tagName#
+~		  </isEqual>
+~		  <isEqual property="caseSensitiveTagNames" compareValue="false">
+~		    t$tagIndex[].index$.tag_lower = lower(#tagIndex[].tagName#)
+~		  </isEqual>
+~		</iterate>
+~~~
+
+	ORDER BY s.date DESC LIMIT #limit# OFFSET #offset#) AS tt 
+WHERE b.content_id = tt.content_id    
+	AND t.content_id = tt.content_id 
+
+isNotNull "year"
+	CAST(b.year AS SIGNED) = #year#
+
+isNotNull "firstYear" AND isNotNull "lastYear"
+	CAST(b.year AS SIGNED) BETWEEN #firstYear# AND #lastYear#
+
+isNotNull "firstYear" AND isNull "lastYear"
+	CAST(b.year AS SIGNED) >= #firstYear#
+
+isNotNull "lastYear" AND isNull "firstYear"
+	CAST(b.year AS SIGNED) <= #lastYear#
+
+	AND b.simhash$simHash$ = h.hash AND h.type = $simHash$
+
+
+ORDER BY b.date DESC, b.content_id DESC;
+ */
+		
+		
+		return qf;
+	}
+
+	/** get ArrayList of strings of field id from lucene index
+	 * 
+	 * for pagination see http://www.gossamer-threads.com/lists/lucene/general/70516#70516
+	 * 
+	 * @param String idname fieldname of returning value
+	 * */
+	private ResultList<Post<BibTex>> searchLucene(QuerySortContainer qs, int limit, int offset) {
+		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
+
+		Query query = qs.getQuery(); 
+		Sort sort = qs.getSort(); 
+		
 		
 		if (this.searcher == null)
 		{
 			LOGGER.error("LuceneBibTex: searcher is NULL!");
-			
-/*
-  			LOGGER.error("LuceneBibTex: trying to get a searcher ... !");
- 			
-			
-			LOGGER.debug("LuceneBibTex: searcher:  " + searcher);
- */			
 		}
-
 		
 		ResultList<Post<BibTex>> postBibTexList = new ResultList<Post<BibTex>>();
 
-		LOGGER.debug("LuceneBibTex: groupID  " + groupId);
-		LOGGER.debug("LuceneBibTex: UserName  " + UserName);
-		LOGGER.debug("LuceneBibTex: GroupNames.toString()  " + GroupNames.toString());
-
-
-
 		// do not search for nothing in lucene index
-		if ( (search_terms != null) && (!search_terms.isEmpty()) )
+		if (query != null)
 		{
 
-			int allowedGroupsIterator = 0;
-			for ( String groupName : GroupNames){
-				if (allowedGroupsIterator>0) allowedGroupNames += " ";
-				allowedGroupNames += groupName;
-				allowedGroupsIterator++;
-			}
-			
-			LOGGER.debug("LuceneBibTex: allowedGroups: " + allowedGroupNames);		
-
-			mergedFiledQuery = lField_merged + ":("+ search_terms +") ";
-			allowedGroupNamesQuery = lField_group+":("+allowedGroupNames+")";
-			privateGroupQuery = lField_group+":(private)";
-				
-			if ( (UserName != null) && (!UserName.isEmpty()) )
-			{
-				userQuery  = lField_user + ":("+ UserName +")";
-			}
-
-			if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
-			{
-				requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
-			}
-
-			if ( (UserName != null) && (!UserName.isEmpty()) )
-			{
-				userQuery  = lField_user + ":("+ UserName +")";
-			}
-
-			if (GroupID.INVALID.getId() != groupId)
-			{
-				groupIdQuery = " AND " + lField_group+":("+groupId+")";
-			}
-
-			// assemble query string 
-			querystring = mergedFiledQuery + requestedUserNameQuery + groupIdQuery ;
-			if (!userQuery.isEmpty()) { // logged in user 
-				querystring += " AND ( " + allowedGroupNamesQuery + " OR ("+privateGroupQuery+" AND "+userQuery+") ) ";
-			}
-			else
-			{
-				querystring += " AND " + allowedGroupNamesQuery;
-			}
-			
-				
-			LOGGER.debug("LuceneBibTex-Querystring (assembled): " + querystring);			
-			
-			
-
-			// open lucene index
-			//IndexReader reader = IndexReader.open(luceneIndexPath);
 
 
-			QueryParser myParser = new QueryParser("description", analyzer);
-			Query query;
-			Sort sort = new Sort("date",true);
+
 /* sort first by date and then by score. This is not necessary, because there are 
  * no or only few entries with same date (date is with seconds) 			
   			Sort sort = new Sort(new SortField[]{
@@ -391,7 +455,7 @@ public class LuceneSearchBibTex {
 						});
 */			
 			try {
-				query = myParser.parse(querystring);
+				//query = myParser.parse(querystring);
 				LOGGER.debug("LuceneBibTex-Querystring (analyzed):  " + query.toString());
 				LOGGER.debug("LuceneBibTex-Query will be sorted by:  " + sort);
 				
@@ -508,8 +572,8 @@ public class LuceneSearchBibTex {
 					
 				}	 
 
-			} catch (ParseException e) {
-				LOGGER.debug("LuceneBibTex: ParseException: "+ e.getMessage());
+			} catch (IOException e) {
+				LOGGER.debug("LuceneBibTex: IOException: "+ e.getMessage());
 			}		
 
 
@@ -518,5 +582,20 @@ public class LuceneSearchBibTex {
 		//return cidsArray;
 		return postBibTexList;
 	};
+
+	
+	public ResultList<Post<BibTex>> search(int groupId, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset) {
+		return searchLucene(getFulltextQueryFilter(groupId, search_terms, requestedUserName, UserName, GroupNames), limit, offset);
+	}
+	
+	// resourceType, groupingEntity, groupingName, tags, hash, order, filter, start, start + itemsPerPage, search
+/*
+	 (Class<T>, GroupingEntity, String, List<String>, String, Order, FilterEntity, int, int, String)
+*/
+	
+	public ResultList<Post<BibTex>> searchAuthor(int groupId, String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, int limit, int offset) {
+	
+		return searchLucene(getAuthorQueryFilter(groupId, search, requestedUserName, requestedGroupName, year, firstYear, lastYear), limit, offset);
+	}
 
 }
