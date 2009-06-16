@@ -31,6 +31,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.SimHash;
 
@@ -651,20 +652,20 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 	/**
 	 * Prepares queries to retrieve posts which match a fulltext search in lucene index <br/>
-	 * 
-	 * @param groupType
+	 * @param groupId 
 	 * @param search
 	 * @param requestedUserName
+	 * @param UserName 
+	 * @param GroupNames 
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return list of bibtex posts
-	 * @throws IOException 
 	 */
 
-	public List<Post<BibTex>> getBibTexSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames, final int limit, final int offset, final DBSession session) {
+	public ResultList<Post<BibTex>> getBibTexSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames, final int limit, final int offset, final DBSession session) {
 		final Logger LOGGER = Logger.getLogger(BibTexDatabaseManager.class);
-		List<Post<BibTex>> postBibtexList = new ArrayList<Post<BibTex>>();
+		ResultList<Post<BibTex>> postBibtexList = new ResultList<Post<BibTex>>();
 /*
 		final BibTexParam param = new BibTexParam();
 		param.setGroupId(groupId);
@@ -675,22 +676,20 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 */
 		// get list of ids from lucene
 
+
 		final LuceneSearchBibTex lucene = LuceneSearchBibTex.getInstance();
 
-		ArrayList<Integer> contentIds = new ArrayList<Integer>();
-		try {
-			long starttimeQuery = System.currentTimeMillis();
 
-//			contentIds = lucene.searchLucene(groupId, search, requestedUserName, limit, offset);
-			postBibtexList = lucene.searchLucene(groupId, search, requestedUserName, UserName, GroupNames, limit, offset);
+//		ArrayList<Integer> contentIds = new ArrayList<Integer>();
+		long starttimeQuery = System.currentTimeMillis();
 
-			long endtimeQuery = System.currentTimeMillis();
-			LOGGER.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+//		contentIds = lucene.searchLucene(groupId, search, requestedUserName, limit, offset);
+		postBibtexList = lucene.search(groupId, search, requestedUserName, UserName, GroupNames, limit, offset);
 
-		} catch (IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
+		long endtimeQuery = System.currentTimeMillis();
+		LOGGER.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+
+		
 
 /*
 		long starttimeTable = System.currentTimeMillis();
@@ -1606,6 +1605,59 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		
 		return this.bibtexList("getBibTexByAuthor",param,session);
 	}
+
+	/**
+	 * @see BibTexDatabaseManager#getBibTexByAuthor(BibTexParam, DBSession)
+	 * 
+	 * @param search
+	 * @param groupType
+	 * @param requestedUserName
+	 * @param requestedGroupName 
+	 * @param year 
+	 * @param firstYear 
+	 * @param lastYear 
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of bibtex entries
+	 */
+	public List<Post<BibTex>> getBibTexByAuthorLucene(String search, int groupType, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, final int limit, final int offset, final int simHash, final DBSession session){
+		final Logger LOGGER = Logger.getLogger(BibTexDatabaseManager.class);
+		ResultList<Post<BibTex>> postBibtexList = new ResultList<Post<BibTex>>();
+		
+		/*
+		BibTexParam param = new BibTexParam();
+		param.setSearch(search);
+		param.setGroupType(groupType);
+		param.setRequestedUserName(requestedUserName);
+		param.setRequestedGroupName(requestedGroupName);
+		param.setYear(year);
+		param.setFirstYear(firstYear);
+		param.setLastYear(lastYear);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setSimHash(HashID.INTER_HASH);
+		*/
+
+		// TODO Lucene
+
+		final LuceneSearchBibTex lucene = LuceneSearchBibTex.getInstance();
+
+
+//		ArrayList<Integer> contentIds = new ArrayList<Integer>();
+		long starttimeQuery = System.currentTimeMillis();
+
+//		contentIds = lucene.searchLucene(groupId, search, requestedUserName, limit, offset);
+		//(Resource resourceType, GroupingEntity groupingEntity, String groupingName, ArrayList<String> tags, String hash, Order order, FilterEntity filter, int offset, int limit, String search)
+		postBibtexList = lucene.searchAuthor(groupType, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, limit, offset);
+		
+		long endtimeQuery = System.currentTimeMillis();
+		LOGGER.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+
+		return postBibtexList;
+	}
+	
+	
 	/**
 	 * <em>/author/MaxMustermann</em><br/><br/>
 	 * This method prepares queries which retrieve all publications for a given

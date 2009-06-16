@@ -5,7 +5,14 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
@@ -23,13 +30,47 @@ import org.bibsonomy.common.enums.DatabaseType;
  */
 public class GetBibTexByAuthor extends BibTexChainElement {
 
+	private static final Logger LOGGER = Logger.getLogger(GetBibtexSearch.class);
+
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, DBSession session) {
 		// uncomment following for a quick hack to access secondary datasource
 		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
+
+		String searchMode = "";
+		try {
+			Context initContext = new InitialContext();
+			Context envContext = (Context) initContext.lookup("java:/comp/env");
+			searchMode = (String) envContext.lookup("searchMode");
+		} catch (NamingException ex) {
+			LOGGER.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
+		}
+		
+		/*
+		 * param's params needed for 
+			param.getSearch();
+			param.getGroupType();
+			param.getRequestedUserName();
+			param.getRequestedGroupName();
+			param.getYear();
+			param.getFirstYear();
+			param.getLastYear();
+			param.getLimit();
+			param.getOffset();
+			param.getSimHash();
+		 */
+		
+		
+		if ("authorlucene".equals(searchMode)) {
+			LOGGER.debug("Using Lucene in GetBibtexByAuthor");
+			return this.db.getBibTexByAuthorLucene(param.getSearch(), param.getGroupType(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getYear(), 
+					param.getFirstYear(), param.getLastYear(), param.getLimit(), param.getOffset(), param.getSimHash(), session);
+		}
+		
 		return this.db.getBibTexByAuthor(param, session);
 	}
 
+	
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
 		return (present(param.getSearchEntity()) &&

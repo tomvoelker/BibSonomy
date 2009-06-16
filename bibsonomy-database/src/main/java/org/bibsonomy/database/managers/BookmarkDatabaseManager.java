@@ -26,6 +26,7 @@ import org.bibsonomy.lucene.LuceneSearchBookmarks;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.SimHash;
 
@@ -570,16 +571,16 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param session
 	 * @return list of bookmark posts
 	 */
-	public List<Post<Bookmark>> getBookmarkSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames,  final int limit, final int offset, final DBSession session) {
+	public ResultList<Post<Bookmark>> getBookmarkSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames,  final int limit, final int offset, final DBSession session) {
 		final Logger LOGGER = Logger.getLogger(BookmarkDatabaseManager.class);
-		List<Post<Bookmark>> postBookmarkList = new ArrayList<Post<Bookmark>>();
+		ResultList<Post<Bookmark>> postBookmarkList = new ResultList<Post<Bookmark>>();
 
 
 		// get search results from lucene
 
 		final LuceneSearchBookmarks lucene = LuceneSearchBookmarks.getInstance();
 
-		ArrayList<Integer> contentIds = new ArrayList<Integer>();
+//		ArrayList<Integer> contentIds = new ArrayList<Integer>();
 		try {
 			long starttimeQuery = System.currentTimeMillis();
 
