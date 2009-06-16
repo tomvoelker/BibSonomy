@@ -590,9 +590,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 			long endtimeQuery = System.currentTimeMillis();
 			LOGGER.debug("LuceneBookmark complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
-		} catch (IOException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
 		}
 /*
 		long starttimeTable = System.currentTimeMillis();
