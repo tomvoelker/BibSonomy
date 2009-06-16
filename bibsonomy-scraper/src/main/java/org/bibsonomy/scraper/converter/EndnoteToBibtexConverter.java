@@ -124,54 +124,51 @@ public class EndnoteToBibtexConverter {
 		
 		
 		
-		//initialise all necessary vars
-		String _tempLine = null;
-		String _tempData = null;
-		
-		String _endnoteType = null;
-		Map<String,String> _resultBibtexFields = new HashMap<String,String>();
+	
+		final Map<String,String> map = new HashMap<String,String>();
 		
 		try {
 			// need to get every line (i.e. %T Foo %K bar)
-			Matcher _eachLineMatcher = _eachLinePattern.matcher(entry);
+			final Matcher _eachLineMatcher = _eachLinePattern.matcher(entry);
 			
 			//process each line
 			while (_eachLineMatcher.find()){
 				
-				_tempLine = _eachLineMatcher.group(0).trim();
-				_endnoteType = _eachLineMatcher.group(2).trim();
-				_tempData = _eachLineMatcher.group(3).trim();
+				final String _tempData = _eachLineMatcher.group(3).trim();
 				
 				if (_tempData == null){
 					continue;
 				}
+
+				final String _tempLine = _eachLineMatcher.group(0).trim();
+				final String _endnoteType = _eachLineMatcher.group(2).trim();
 				
 				/*
 				 * map the reference type
 				 */
 				if (endnoteToBibtexEntryTypeMap.containsKey(_tempLine)) {
-					_resultBibtexFields.put("type", endnoteToBibtexEntryTypeMap.get(_tempLine));
+					map.put("type", endnoteToBibtexEntryTypeMap.get(_tempLine));
 				} else {
 					/*
 					 * handle standard fields
 					 */
 					if (endnoteToBibtexFieldMap.containsKey(_endnoteType)) {
 						final String bibtexFieldName = endnoteToBibtexFieldMap.get(_endnoteType);
-						if (_resultBibtexFields.containsKey(bibtexFieldName)) {
+						if (map.containsKey(bibtexFieldName)) {
 							/*
 							 * field already contained: special handling!
 							 */
 							if ("author".equals(bibtexFieldName)) {
-								final String newAuthor = _resultBibtexFields.get(bibtexFieldName) + " and " + _tempData;
-								_resultBibtexFields.put(bibtexFieldName, newAuthor);
+								final String newAuthor = map.get(bibtexFieldName) + " and " + _tempData;
+								map.put(bibtexFieldName, newAuthor);
 							}
 							
 							if ("editor".equals(bibtexFieldName)) {
-								final String newEditor = _resultBibtexFields.get(bibtexFieldName) + " and " + _tempData;
-								_resultBibtexFields.put(bibtexFieldName, newEditor);
+								final String newEditor = map.get(bibtexFieldName) + " and " + _tempData;
+								map.put(bibtexFieldName, newEditor);
 							}
 						} else {
-							_resultBibtexFields.put(bibtexFieldName, _tempData);
+							map.put(bibtexFieldName, _tempData);
 						}
 					}
 				}
@@ -180,30 +177,32 @@ public class EndnoteToBibtexConverter {
 			/*
 			 * special handling for ISBN/ISSN
 			 */
-			if (_resultBibtexFields.containsKey("isbn")) {
-				final String isbn = _resultBibtexFields.get("isbn");
+			if (map.containsKey("isbn")) {
+				final String isbn = map.get("isbn");
 				if (isbn.length() == 8 || isbn.length() == 9) {
-					_resultBibtexFields.remove("isbn");
-					_resultBibtexFields.put("issn", isbn);
+					map.remove("isbn");
+					map.put("issn", isbn);
 				}
 			}
 			
 			/*
 			 * build the bibtex key
 			 */
+			String year = map.get("year");
+			if (year != null && year.length() != 4) {
+				// if year is not valid (sometimes it contains day, month and/or time), ignore it
+				year = null;
+			}
+			map.put("key", BibTexUtils.generateBibtexKey(map.get("author"), map.get("editor"), year, map.get("title")));
 			
-			if(_resultBibtexFields.get("year").length() == 4)
-				_resultBibtexFields.put("key", BibTexUtils.generateBibtexKey(_resultBibtexFields.get("author"), _resultBibtexFields.get("editor"), _resultBibtexFields.get("year"), _resultBibtexFields.get("title")));
-			else // if year ist not valid (sometimes it contains day, month and/or time)
-				_resultBibtexFields.put("key", BibTexUtils.generateBibtexKey(_resultBibtexFields.get("author"), _resultBibtexFields.get("editor"), null, _resultBibtexFields.get("title")));
 			/*
 			 * build abstract
 			 */
 			if(abstractEntry != null)
-				_resultBibtexFields.put("abstract", abstractEntry);
+				map.put("abstract", abstractEntry);
 			
 		} catch (RuntimeException e){
-			e.printStackTrace();
+			log.fatal("Could not process the data: " + e);
 		} catch (Exception e){
 			log.fatal("Could not process the data: " + e);
 		}
@@ -218,7 +217,7 @@ public class EndnoteToBibtexConverter {
 		 * abstract={this is a shot example}}
 		 * 
 		 */
-		return buildBibtex(_resultBibtexFields);
+		return buildBibtex(map);
 	}
 	
 	//method to build a String with the complete Bibtex part
