@@ -18,10 +18,10 @@ import org.junit.Test;
 public class IEScraperTest {
 
 	private final String expectedBibtex = 
-		"@misc{ieKey,\n" +
+		"@misc{noauthororeditor2008,\n" +
 		"booktitle = {Michael May and Bettina Berendt and Antoine Cornuejols and Joao Gama and Fosca Giannotti and Andreas Hotho and Donato Malerba and Ernestina Menesalvas and Katharina Morik and Rasmus Pedersen and Lorenza Saitta and Yucel Saygin and Assaf Schuster and Koen Vanhoof. Research Challenges in Ubiquitous Knowledge Discovery. Next Generation of Data Mining(Chapman & Hall / Crc Data Mining and Knowledge Discovery Series), Chapman & Hall / CRC},\n" +
-		"year = {2008},\n" +
-		"date = {2008}\n" +
+		"date = {2008},\n" +
+		"year = {2008}\n" +
 		",url = {http://www.example.com/reasearch_challenges.html}\n" +
 		"}";
 

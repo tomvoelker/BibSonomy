@@ -29,7 +29,7 @@ public class IEScraper implements Scraper {
 
 	private static final Pattern yearPattern = Pattern.compile("\\d{4}");
 
-	
+
 	/**
 	 * Extract a valid Bibtex entry from a given publication snippet by using information extraction.
 	 */
@@ -96,12 +96,19 @@ public class IEScraper implements Scraper {
 	 * @param map
 	 * @return
 	 */
-	private StringBuffer getBibtex(HashMap<String, String> map) {
+	private StringBuffer getBibtex(final HashMap<String, String> map) {
+		/*
+		 * extract year (needed already here for bibtex key)
+		 */
+		map.put("year", getYearFromDate(map.get("date")));
+		/*
+		 * generate bibtex key
+		 */
+		final String bibtexKey = BibTexUtils.generateBibtexKey(map.get("author"), map.get("editor"), map.get("year"), map.get("title"));
 		/*
 		 * start with a stringbuffer which contains start of bibtex entry
 		 */
-		final StringBuffer bib = new StringBuffer("@misc{ieKey,\n");
-
+		final StringBuffer bib = new StringBuffer("@misc{" + bibtexKey + ",\n");
 		/*
 		 * iterate over fields of hashmap
 		 */
@@ -121,21 +128,8 @@ public class IEScraper implements Scraper {
 				if ("author".equals(key) || "editor".equals(key)) {
 					value = cleanPerson(value);
 				}
-				/*
-				 * extract year from date
-				 */
-				if ("date".equals(key)) {
-					/*
-					 * look for YYYY, extract and append it
-					 */
-					final Matcher m = yearPattern.matcher(value);
-					if (m.find()) {
-						bib.append("year = {" + m.group() + "},\n");
-					}
-				}
 				bib.append(key + " = {" + value + "},\n");
 			}
-
 		}
 
 		/*
@@ -145,6 +139,25 @@ public class IEScraper implements Scraper {
 		bib.replace(pos, pos + 1, "\n}");
 
 		return bib;
+	}
+
+	/**
+	 * Extracts the year from the date string.
+	 * 
+	 * @param date
+	 * @return
+	 */
+	private String getYearFromDate(final String date) {
+		if (date != null) {
+			/*
+			 * look for YYYY, extract and append it
+			 */
+			final Matcher m = yearPattern.matcher(date);
+			if (m.find()) {
+				return m.group();
+			}
+		}
+		return null;
 	}
 
 	/** Returns a self description of this scraper.
