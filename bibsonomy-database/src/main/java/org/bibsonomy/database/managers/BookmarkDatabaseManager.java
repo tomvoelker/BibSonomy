@@ -581,16 +581,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		final LuceneSearchBookmarks lucene = LuceneSearchBookmarks.getInstance();
 
 //		ArrayList<Integer> contentIds = new ArrayList<Integer>();
-		try {
-			long starttimeQuery = System.currentTimeMillis();
+		long starttimeQuery = System.currentTimeMillis();
 
-			//contentIds = lucene.searchLucene("contentid", search, groupId, limit, offset);
-			postBookmarkList = lucene.searchLucene(groupId, search, requestedUserName, UserName, GroupNames, limit, offset);
-			
-			long endtimeQuery = System.currentTimeMillis();
-			LOGGER.debug("LuceneBookmark complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+		//contentIds = lucene.searchLucene("contentid", search, groupId, limit, offset);
+		postBookmarkList = lucene.searchLucene(groupId, search, requestedUserName, UserName, GroupNames, limit, offset);
+		
+		long endtimeQuery = System.currentTimeMillis();
+		LOGGER.debug("LuceneBookmark complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
-		}
 /*
 		long starttimeTable = System.currentTimeMillis();
 		LuceneHelper luceneTTable = new LuceneHelper();
