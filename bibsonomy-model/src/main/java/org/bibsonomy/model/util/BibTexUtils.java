@@ -362,6 +362,16 @@ public class BibTexUtils {
 	}
 
 	/**
+	 * @see #generateBibtexKey(String, String, String, String)
+	 * @param bib
+	 * @return
+	 */
+	public static String generateBibtexKey(final BibTex bib) {
+		if (bib == null) return "";
+		return generateBibtexKey(bib.getAuthor(), bib.getEditor(), bib.getYear(), bib.getTitle());
+	}
+	
+	/**
 	 * Generates a bibtex key of the form "first persons lastname from authors
 	 * or editors" or "noauthororeditor" concatenated with year.
 	 * 
@@ -403,10 +413,30 @@ public class BibTexUtils {
 		if (title != null) {
 			/* best guess: pick first word with more than 4 characters, longest first word */
 			// FIXME: what do we want to do inside this if statement?
+			buffer.append(getFirstRelevantWord(title).toLowerCase());
 		}
 
 		return buffer.toString().toLowerCase();
 	}
+	
+	
+	/**
+	 * Relevant = longer than four characters (= 0-9a-z)
+	 * 
+	 * @param title
+	 * @return
+	 */
+	private static String getFirstRelevantWord(final String title) {
+		final String[] split = title.split("\\s");
+		for (final String s: split) {
+			final String ss = s.replaceAll("[^a-zA-Z0-9]", "");
+			if (ss.length() > 4) {
+				return ss;
+			}
+		}
+		return "";
+	}
+	
 
 	/**
 	 * Tries to extract the last name of the first person.
