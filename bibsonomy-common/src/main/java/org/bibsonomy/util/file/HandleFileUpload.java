@@ -79,7 +79,7 @@ public class HandleFileUpload implements FileUploadInterface {
 		// "pdf", "ps", "djv", "djvu", "txt"
 		// check file extensions which we accept
 		if (this.fileName.equals("") || !StringUtils.matchExtension(this.fileName, allowedExt)) {
-			throw new Exception("Please check your file. Only PDF, PS, TXT or DJVU files are accepted.");
+			throw new Exception("Please check your file. Only " + getExceptionExtensions(allowedExt) + " files are accepted.");
 		}
 
 		// format date
@@ -92,6 +92,27 @@ public class HandleFileUpload implements FileUploadInterface {
 		this.md5hash = HashUtils.getMD5Hash(this.upFile.get());
 
 		this.fileHash = StringUtils.getMD5Hash(this.upFile.getFieldName() + Math.random() + currDateFormatted);
+	}
+	
+	/**
+	 * Converts the given files extensions to upper cases and connects them with "," and "or", e.g.:
+	 * input:
+	 *   "pdf", "ps", "djv", "djvu", "txt"
+	 * output:
+	 *   "PDF, PS, TXT or DJVU"
+	 * @param allowedExt
+	 * @return
+	 */
+	private static String getExceptionExtensions(final String[] allowedExt) {
+		final StringBuffer buf = new StringBuffer();
+		for (int i = 0; i < allowedExt.length - 1; i++) {
+			buf.append(allowedExt[i].toUpperCase() + ", ");
+		}
+		if (allowedExt.length > 1) {
+			buf.append(" or ");
+		}
+		buf.append(allowedExt[allowedExt.length - 1]);
+		return buf.toString();
 	}
 
 	/*
