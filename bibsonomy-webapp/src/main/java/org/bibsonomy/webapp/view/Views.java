@@ -72,7 +72,7 @@ public enum Views implements View {
 	 * authors overview page
 	 */
 	AUTHORSPAGE("authors"),
-	
+		
 	/**
 	 * concept page shows all suptags of an requested tag
 	 */
@@ -152,6 +152,11 @@ public enum Views implements View {
 	 * author page
 	 */
 	AUTHORPAGE("author"),
+	
+	/**
+	 * the author tag showing all resources of a specified author and a given tag or list of tags
+	 */
+	AUTHORTAGPAGE("authortag"),
 	
 	/**
 	 * search page
