@@ -65,7 +65,7 @@
 		<dependency>
 			<groupId>au.com.bytecode.opencsv</groupId>
 			<artifactId>opencsv</artifactId>
-			<version>1.8-JAESCHKE</version>
+			<version>1.8</version>
 		</dependency>
 			
 	</dependencies>
