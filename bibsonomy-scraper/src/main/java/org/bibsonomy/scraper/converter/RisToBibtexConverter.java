@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.bibsonomy.model.util.BibTexUtils;
+
 /**
  * @author aho
  *
@@ -19,20 +21,26 @@ public class RisToBibtexConverter {
 	public static void main(String[] args) {
 
 		String bsp = "TY  - BOOK\n"+
-"JF  - Lecture Notes in Computer Science : Engineering Self-Organising Systems\n"+
-"T1  - T-Man: Gossip-Based Overlay Topology Management\n"+
-"SP  - 1\n"+
-"EP  - 15\n"+
-"PY  - 2006///\n"+
-"UR  - http://dx.doi.org/10.1007/11734697_1\n"+
-"M3  - 10.1007/11734697_1\n"+
-"AU  - M�rk Jelasity\n"+
-"AU  - Ozalp Babaoglu\n"+
-"ER  -\n";
+		"JF  - Lecture Notes in Computer Science : Engineering Self-Organising Systems\n"+
+		"T1  - T-Man: Gossip-Based Overlay Topology Management\n"+
+		"SP  - 1\n"+
+		"EP  - 15\n"+
+		"PY  - 2006///\n"+
+		"UR  - http://dx.doi.org/10.1007/11734697_1\n"+
+		"M3  - 10.1007/11734697_1\n"+
+		"AU  - M�rk Jelasity\n"+
+		"AU  - Ozalp Babaoglu\n"+
+		"ER  -\n";
 
 		System.out.println(new RisToBibtexConverter().RisToBibtex(bsp));
 
 	}
+
+	/**
+	 * String array that maps from month number to month string label
+	 */
+	private final static String[] MONTHS = new String[] { "jan", "feb", "mar", "apr", "may",
+		"jun", "jul", "aug", "sep", "oct", "nov", "dec" };
 
 	/** Function is taken from JabRef importer
 	 * 
@@ -40,22 +48,17 @@ public class RisToBibtexConverter {
 	 * @return The resulting BibTeX string.
 	 */
 	public String RisToBibtex(String Ris) {
-		// String array that maps from month number to month string label:
-		String[] MONTHS = new String[] { "jan", "feb", "mar", "apr", "may",
-				"jun", "jul", "aug", "sep", "oct", "nov", "dec" };
-
 		/**
 		 * Parse the entries in the source, and return a List of BibtexEntry
 		 * objects.
 		 */
 
-		String Type = "", Author = "", Editor = "", StartPage = "", EndPage = "", comment = "";
-		SortedMap<String,String> hm = new TreeMap<String,String>();
-
-		String[] fields = Ris.split("\n");
+		String type = "", author = "", editor = "", startPage = "", endPage = "", comment = "";
+		final SortedMap<String,String> hm = new TreeMap<String,String>();
+		final String[] fields = Ris.split("\n");
 
 		for (int j = 0; j < fields.length; j++) {
-			StringBuffer current = new StringBuffer(fields[j]);
+			final StringBuffer current = new StringBuffer(fields[j]);
 			boolean done = false;
 			/*
 			 * what is done here?
@@ -83,22 +86,22 @@ public class RisToBibtexConverter {
 				String val = entry.substring(6).trim();
 				if (lab.equals("TY")) {
 					if (val.equals("BOOK"))
-						Type = "book";
+						type = "book";
 					else if (val.equals("JOUR") || val.equals("MGZN"))
-						Type = "article";
+						type = "article";
 					else if (val.equals("THES"))
-						Type = "phdthesis";
+						type = "phdthesis";
 					else if (val.equals("UNPB"))
-						Type = "unpublished";
+						type = "unpublished";
 					else if (val.equals("RPRT"))
-						Type = "techreport";
+						type = "techreport";
 					else if (val.equals("CONF"))
-						Type = "inproceedings";
+						type = "inproceedings";
 					else if (val.equals("CHAP"))
-						Type = "incollection";//"inbook";
+						type = "incollection";//"inbook";
 
 					else
-						Type = "other";
+						type = "other";
 				} else if (lab.equals("T1") || lab.equals("TI"))
 					hm.put("title", val);//Title
 				// =
@@ -107,31 +110,31 @@ public class RisToBibtexConverter {
 						|| lab.equals("BT")) {
 					hm.put("booktitle", val);
 				} else if (lab.equals("A1") || lab.equals("AU")) {
-					if (Author.equals("")) // don't add " and " for the first author
-						Author = val;
+					if (author.equals("")) // don't add " and " for the first author
+						author = val;
 					else
-						Author += " and " + val;
+						author += " and " + val;
 				} else if (lab.equals("A2")) {
-					if (Editor.equals("")) // don't add " and " for the first editor
-						Editor = val;
+					if (editor.equals("")) // don't add " and " for the first editor
+						editor = val;
 					else
-						Editor += " and " + val;
+						editor += " and " + val;
 				} else if (lab.equals("JA") || lab.equals("JF")
 						|| lab.equals("JO")) {
-					if (Type.equals("inproceedings"))
+					if (type.equals("inproceedings"))
 						hm.put("booktitle", val);
 					else
 						hm.put("journal", val);
 				}
 
 				else if (lab.equals("SP"))
-					StartPage = val;
+					startPage = val;
 				else if (lab.equals("PB"))
 					hm.put("publisher", val);
 				else if (lab.equals("AD") || lab.equals("CY"))
 					hm.put("address", val);
 				else if (lab.equals("EP"))
-					EndPage = val;
+					endPage = val;
 				else if (lab.equals("SN"))
 					hm.put("issn", val);
 				else if (lab.equals("VL"))
@@ -180,24 +183,25 @@ public class RisToBibtexConverter {
 		// fix authors
 		//	        if (Author.length() > 0) {
 		//	            Author = AuthorList.fixAuthor_lastNameFirst(Author);
-		hm.put("author", Author);
+		hm.put("author", author);
 		//	        }
 		//	        if (Editor.length() > 0) {
 		//	            Editor = AuthorList.fixAuthor_lastNameFirst(Editor);
-		hm.put("editor", Editor);
+		hm.put("editor", editor);
 		//	        }
 		//	        if (comment.length() > 0) {
 		hm.put("comment", comment);
 		//	        }
 
-		hm.put("pages", StartPage + "--" + EndPage);
+		hm.put("pages", startPage + "--" + endPage);
 		//	        BibtexEntry b = new BibtexEntry(BibtexFields.DEFAULT_BIBTEXENTRY_ID, Globals
 		//	                        .getEntryType(Type)); // id assumes an existing database so don't
 
 		// Remove empty fields:
 		boolean first=true;
-		StringBuffer bibtexString = new StringBuffer();
-		bibtexString.append("@").append(Type).append("{keyhere,\n");
+		final StringBuffer bibtexString = new StringBuffer();
+		final String bibtexKey = BibTexUtils.generateBibtexKey(hm.get("author"), hm.get("editor"), hm.get("year"), hm.get("title"));
+		bibtexString.append("@").append(type).append("{" + bibtexKey	+ ",\n");
 		final Set<String> keySet = hm.keySet();
 		for (final String key: keySet) {
 			final String content = hm.get(key);
@@ -208,7 +212,7 @@ public class RisToBibtexConverter {
 					bibtexString.append(",\n");
 				}
 				bibtexString.append(key).append("={").append(content).append(
-						"}");
+				"}");
 			}
 		}
 		bibtexString.append("\n}\n");
