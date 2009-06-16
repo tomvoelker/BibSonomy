@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.LuceneException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.webapp.command.BaseCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -177,6 +178,12 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 			response.setHeader("Retry-After", Long.toString(e.getRetryAfter()));
 			errors.reject(e.getMessage(), new Object[]{e.getRetryAfter()}, "Service unavailable");
 			log.warn("Could not complete controller.", e);
+			view = Views.ERROR;
+		}
+		catch (LuceneException le) {
+			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+			errors.reject(le.getMessage(), new Object[]{le}, "Internal Server Error");
+			log.error("Could not complete controller.", le);
 			view = Views.ERROR;
 		}
 		catch (Exception ex) {
