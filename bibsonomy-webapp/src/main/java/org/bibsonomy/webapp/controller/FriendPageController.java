@@ -11,6 +11,7 @@ import org.bibsonomy.webapp.command.UserResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -22,6 +23,12 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 
 	public View workOn(final UserResourceViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
+		
+		if(command.getContext().isUserLoggedIn() == false){
+			log.info("Trying to access a friendpage without being logged in");
+			return new ExtendedRedirectView("/login");
+		}
+		
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
 
