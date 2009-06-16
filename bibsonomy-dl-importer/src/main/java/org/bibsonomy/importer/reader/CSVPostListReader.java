@@ -86,6 +86,11 @@ public class CSVPostListReader implements PostListReader {
 					post.setResource(new BibTex());
 					post.getResource().setTitle(l[2]);
 					post.getResource().setAbstract(l[5]);
+					/*
+					 * remember paper id as content_id to allow addition of 
+					 * other metadata referencing the paper id
+					 */
+					post.getResource().setMisc("paperId = {" + l[1] + "}, session = {" + l[0] + "}");
 					addAuthor(post.getResource(), l[6], l[7], l[8]);
 				} else {
 					/*
