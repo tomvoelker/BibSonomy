@@ -281,7 +281,7 @@ td.expl_s {
   </td>
   <td class="expl_s" style="vertical-align: middle;">
   	<a id="bibTexKeyReloadLink" style="cursor:pointer">
-  		<img id="bibTexKeyReloadButton" src="/resources/image/button_reload-inactive.png" alt="reloading tags" title="reloading tags" onclick="javascript:generateBibTexKey(this)" />
+  		<img id="bibTexKeyReloadButton" src="/resources/image/button_reload.png" alt="reloading tags" title="reloading tags" onclick="javascript:generateBibTexKey(this)" />
     </a>
   	a memorable key without spaces</td>
 </tr>

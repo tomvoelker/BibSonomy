@@ -1849,7 +1849,7 @@ function addSystemTags(){
 
 ﻿function generateBibTexKey(obj) {
     var button = document.getElementById("bibTexKeyReloadButton");
-    button.setAttribute("src","/resources/image/button_reload.png");
+    button.setAttribute("src","/resources/image/button_reload-inactive.png");
 	
     var buffer = "";
     var authors = document.getElementById("lauthor").value;
@@ -1871,7 +1871,7 @@ function addSystemTags(){
     }
 
     document.getElementById("lbibtexKey").value = buffer.toLowerCase();
-    button.setAttribute("src","/resources/image/button_reload-inactive.png");
+    button.setAttribute("src","/resources/image/button_reload.png");
 }
 
 function getFirstPersonsLastName(person) {
