@@ -8,10 +8,13 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.ResultList;
 //import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.AuthorResourceCommand;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -70,6 +73,16 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
 			this.setList(command, resourceType, groupingEntity, null, requTags, null, null, null, null, command.getListCommand(resourceType).getEntriesPerPage());
+
+			final ListCommand<?> listCommand = command.getListCommand(resourceType);
+			final List<?> list = listCommand.getList();
+
+			if (list instanceof ResultList) {
+				ResultList<Post<?>> resultList = (ResultList<Post<?>>) list;
+				listCommand.setTotalCount(resultList.getTotalCount()); 
+				log.debug("AuthorPageController: resultList.getTotalCount()="+resultList.getTotalCount());
+			}			
+			
 			this.postProcessAndSortList(command, resourceType);
 		}		
 		
