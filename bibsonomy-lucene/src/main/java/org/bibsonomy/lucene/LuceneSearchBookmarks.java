@@ -21,6 +21,7 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.LuceneException;
@@ -120,6 +121,9 @@ public class LuceneSearchBookmarks {
 	public ResultList<Post<Bookmark>> searchLucene(int groupId, String search_terms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset)  {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBookmarks.class);
 			
+//		String orderBy = "relevance"; 
+		String orderBy = "date"; 
+		
 		// field names in Lucene index
 		String lField_contentid = "content_id";
 		String lField_group = "group";
@@ -219,7 +223,6 @@ public class LuceneSearchBookmarks {
 
 			QueryParser myParser = new QueryParser(lField_desc, analyzer);
 			Query query;
-			Sort sort = new Sort("date",true);
 /* sort first by date and then by score. This is not necessary, because there are 
  * no or only few entries with same date (date is with seconds) 			
   			Sort sort = new Sort(new SortField[]{
@@ -227,6 +230,24 @@ public class LuceneSearchBookmarks {
 												SortField.FIELD_SCORE	
 						});
 */			
+
+			Sort sort = null;
+			if ("relevance".equals(orderBy)) {
+				myParser.setDefaultOperator(QueryParser.Operator.OR); // is default
+				sort = new Sort(new SortField[]{
+						SortField.FIELD_SCORE,	
+						new SortField("date",true)
+	  			});
+			}
+			else 
+			{ // orderBy=="date"
+				myParser.setDefaultOperator(QueryParser.Operator.AND);
+				sort = new Sort("date",true);
+			}
+
+			LOGGER.debug("LuceneBookmark: QueryParser.DefaultOperator: "+ myParser.getDefaultOperator() );
+
+			
 			try {
 				query = myParser.parse(querystring);
 				LOGGER.debug("LuceneBookmark-Querystring (analyzed):  " + query.toString());
@@ -260,6 +281,8 @@ public class LuceneSearchBookmarks {
 					}
 					bookmark.setUrl(doc.get(lField_url));
 					bookmark.setTitle(doc.get(lField_desc));
+//					bookmark.setTitle(doc.get(lField_desc)+ " (" + topDocs.scoreDocs[i].score + ")" );  // show document score
+					
 
 					for (String group: doc.get(lField_group).split(",")) {
 						postBookmark.addGroup(group);

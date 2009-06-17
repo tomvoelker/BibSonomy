@@ -23,6 +23,7 @@ import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RangeFilter;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.LuceneException;
@@ -136,8 +137,10 @@ public class LuceneSearchBibTex {
 	 */
 	
 	private QuerySortContainer getFulltextQueryFilter (int groupId, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames) {
-
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
+
+//		String orderBy = "relevance"; 
+		String orderBy = "date"; 
 
 		String allowedGroupNames = "";
 		String allowedGroupNamesQuery = "";
@@ -195,7 +198,24 @@ public class LuceneSearchBibTex {
 
 		QueryParser myParser = new QueryParser("description", analyzer);
 		Query query = null;
-		Sort sort = new Sort("date",true);
+
+		Sort sort = null;
+		if ("relevance".equals(orderBy)) {
+			myParser.setDefaultOperator(QueryParser.Operator.OR); // is default
+			sort = new Sort(new SortField[]{
+					SortField.FIELD_SCORE,	
+					new SortField("date",true)
+  			});
+		}
+		else 
+		{ // orderBy=="date"
+			myParser.setDefaultOperator(QueryParser.Operator.AND);
+			sort = new Sort("date",true);
+		}
+
+		LOGGER.debug("LuceneSearchBibTex: QueryParser.DefaultOperator: "+ myParser.getDefaultOperator() );
+
+		
 		try {
 			query = myParser.parse(queryString);
 		} catch (ParseException e) {
@@ -211,6 +231,9 @@ public class LuceneSearchBibTex {
 	
 	private QuerySortContainer getAuthorQueryFilter (int groupId,  String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear) {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
+
+//		String orderBy = "relevance"; 
+		String orderBy = "date"; 
 
 		String searchQuery = "";
 		String requestedUserNameQuery = "";
@@ -315,6 +338,23 @@ public class LuceneSearchBibTex {
 		QueryParser myParser = new QueryParser(lField_desc, analyzer);
 		Query query = null;
 		
+
+		Sort sort = null;
+		if ("relevance".equals(orderBy)) {
+			myParser.setDefaultOperator(QueryParser.Operator.OR); // is default
+			sort = new Sort(new SortField[]{
+					SortField.FIELD_SCORE,	
+					new SortField("date",true)
+  			});
+		}
+		else 
+		{ // orderBy=="date"
+			myParser.setDefaultOperator(QueryParser.Operator.AND);
+			sort = new Sort("date",true);
+		}
+
+		LOGGER.debug("LuceneSearchBibTex: QueryParser.DefaultOperator: "+ myParser.getDefaultOperator() );
+
 		try {
 			query = myParser.parse(queryString);
 		} catch (ParseException e) {
@@ -334,9 +374,7 @@ public class LuceneSearchBibTex {
 		{
 			qf.setQuery(query);
 		}
-        
-
-		Sort sort = new Sort("date",true);
+    		
 		qf.setSort(sort);
         
 		LOGGER.debug("LuceneSearchBibTex: sort: "+  qf.getSort().toString());
