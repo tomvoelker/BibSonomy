@@ -118,7 +118,7 @@ public class LuceneSearchBookmarks {
 	 * @param String idname fieldname of returning value
 	 * @param char LuceneIndex lucene index to use b for bookmark, p for publications
 	 * */
-	public ResultList<Post<Bookmark>> searchLucene(int groupId, String search_terms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset)  {
+	public ResultList<Post<Bookmark>> searchLucene(String group, String search_terms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset)  {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBookmarks.class);
 			
 //		String orderBy = "relevance"; 
@@ -157,7 +157,7 @@ public class LuceneSearchBookmarks {
 
 		// sucheergebnis darf einträge, die die gruppe "private" beinhalten nicht anzeigen, es sei denn, sie gehören dem angemeldeten benutzer
 		
-		LOGGER.debug("LuceneBookmark: groupID  " + groupId);
+		LOGGER.debug("LuceneBookmark: group  " + group);
 		LOGGER.debug("LuceneBookmark: UserName  " + UserName);
 		LOGGER.debug("LuceneBookmark: GroupNames.toString()  " + GroupNames.toString());
 
@@ -199,9 +199,9 @@ public class LuceneSearchBookmarks {
 				userQuery  = lField_user + ":("+ UserName +")";
 			}
 
-			if (GroupID.INVALID.getId() != groupId)
+			if ((null!=group) && (!group.isEmpty()))
 			{
-				groupIdQuery = " AND " + lField_group+":("+groupId+")";
+				groupIdQuery = " AND " + lField_group+":("+group+")";
 			}
 
 			// assemble query string 
@@ -284,8 +284,8 @@ public class LuceneSearchBookmarks {
 //					bookmark.setTitle(doc.get(lField_desc)+ " (" + topDocs.scoreDocs[i].score + ")" );  // show document score
 					
 
-					for (String group: doc.get(lField_group).split(",")) {
-						postBookmark.addGroup(group);
+					for (String g: doc.get(lField_group).split(",")) {
+						postBookmark.addGroup(g);
 					}
 
 					for (String tag: doc.get(lField_tas).split(" ")) {

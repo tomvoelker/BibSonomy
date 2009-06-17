@@ -136,7 +136,7 @@ public class LuceneSearchBibTex {
 	 * @return queryString
 	 */
 	
-	private QuerySortContainer getFulltextQueryFilter (int groupId, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames) {
+	private QuerySortContainer getFulltextQueryFilter (String group, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames) {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
 
 //		String orderBy = "relevance"; 
@@ -181,9 +181,9 @@ public class LuceneSearchBibTex {
 			userQuery  = lField_user + ":("+ UserName +")";
 		}
 */
-		if (GroupID.INVALID.getId() != groupId)
+		if ((null!=group) && (!group.isEmpty()))
 		{
-			groupIdQuery = " AND " + lField_group+":("+groupId+")";
+			groupIdQuery = " AND " + lField_group+":("+group+")";
 		}
 
 		// assemble query string 
@@ -229,7 +229,7 @@ public class LuceneSearchBibTex {
 		
 	}
 	
-	private QuerySortContainer getAuthorQueryFilter (int groupId,  String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear) {
+	private QuerySortContainer getAuthorQueryFilter (String group,  String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear) {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
 
 //		String orderBy = "relevance"; 
@@ -247,13 +247,14 @@ public class LuceneSearchBibTex {
 
 		
 		// debug
-		firstYear = "1900"; lastYear = "2222";
+		//firstYear = "1900"; 
+		//lastYear = "2222";
 		
 		
 		QuerySortContainer qf = new QuerySortContainer();
 
 
-		LOGGER.debug("-----groupId:      " + groupId);
+		LOGGER.debug("-----group:    " + group);
 		LOGGER.debug("-----search:       " + search);
 		LOGGER.debug("-----reqUserName:  " + requestedUserName);
 		LOGGER.debug("-----reqGroupName: " + requestedGroupName);
@@ -261,7 +262,7 @@ public class LuceneSearchBibTex {
 		LOGGER.debug("-----firstYear:    " + firstYear);
 		LOGGER.debug("-----lastYear:     " + lastYear);
 		
-		queryString = "+(+mergedfields:telefon) +((group:kde group:public) (+group:private +user_name:bugsbunny))";
+//		queryString = "+(+mergedfields:telefon) +((group:kde group:public) (+group:private +user_name:bugsbunny))";
 		
 		
 		if ( (search != null) && (!search.isEmpty()) )
@@ -279,9 +280,9 @@ public class LuceneSearchBibTex {
 			requestedGroupNameQuery  = " AND " + lField_user + ":("+ requestedGroupName +")";
 		}
 */
-		if (GroupID.INVALID.getId() != groupId)
+		if ((null!=group) && (!group.isEmpty()))
 		{
-			groupIdQuery = " AND " + lField_group+":("+groupId+")";
+			groupIdQuery = " AND " + lField_group+":("+group+")";
 		}
 
 		
@@ -376,10 +377,8 @@ public class LuceneSearchBibTex {
 		}
     		
 		qf.setSort(sort);
-        
-		LOGGER.debug("LuceneSearchBibTex: sort: "+  qf.getSort().toString());
-		LOGGER.debug("LuceneSearchBibTex: query: "+  qf.getQuery().toString());
-		
+
+
 // resourceType, groupingEntity, groupingName, tags, hash, order, filter, start, start + itemsPerPage, search		
 /*
 author
@@ -622,8 +621,8 @@ ORDER BY b.date DESC, b.content_id DESC;
 	};
 
 	
-	public ResultList<Post<BibTex>> search(int groupId, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset) {
-		return searchLucene(getFulltextQueryFilter(groupId, search_terms, requestedUserName, UserName, GroupNames), limit, offset);
+	public ResultList<Post<BibTex>> search(String group, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset) {
+		return searchLucene(getFulltextQueryFilter(group, search_terms, requestedUserName, UserName, GroupNames), limit, offset);
 	}
 	
 	// resourceType, groupingEntity, groupingName, tags, hash, order, filter, start, start + itemsPerPage, search
@@ -631,9 +630,8 @@ ORDER BY b.date DESC, b.content_id DESC;
 	 (Class<T>, GroupingEntity, String, List<String>, String, Order, FilterEntity, int, int, String)
 */
 	
-	public ResultList<Post<BibTex>> searchAuthor(int groupId, String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, int limit, int offset) {
-	
-		return searchLucene(getAuthorQueryFilter(groupId, search, requestedUserName, requestedGroupName, year, firstYear, lastYear), limit, offset);
+	public ResultList<Post<BibTex>> searchAuthor(String group, String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, int limit, int offset) {
+		return searchLucene(getAuthorQueryFilter(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear), limit, offset);
 	}
 
 }
