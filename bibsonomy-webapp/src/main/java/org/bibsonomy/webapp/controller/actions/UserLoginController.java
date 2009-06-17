@@ -32,7 +32,18 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
-/** This controller handles the registration of users.
+import filters.InitUserFilter;
+
+/** This controller handles the login of users. It provides the following 
+ * authentication mechanisms:
+ * <ul>
+ * <li>OpenID</li>
+ * <li>username + cleartext password as POST request</li>
+ * <li>username + reminder password as POST request</li>
+ * </ul>
+ * 
+ * <p>For other authentication mechanisms (X.509/LDAP, OpenID, HTTP Basic Auth, 
+ * Cookie) have a look at {@link InitUserFilter} </p>
  * 
  * @author rja
  * @version $Id$
