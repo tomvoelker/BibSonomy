@@ -56,7 +56,7 @@
 	<bean id="luceneUpdateCronTriggerWithoutIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
  		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
- 		<property name="cronExpression" value="22 1/2 * * * ?" /> <!-- *:01,03,...:22 -->
+ 		<property name="cronExpression" value="22 1/10 * * * ?" /> <!-- *:01,11,..,51:22 -->
 		<property name="jobDetail" ref="luceneUpdateJobWithoutIndexOptimization" />
 	</bean>
  
