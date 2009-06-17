@@ -576,6 +576,11 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		ResultList<Post<Bookmark>> postBookmarkList = new ResultList<Post<Bookmark>>();
 
 
+		GroupDatabaseManager groupDb;
+		groupDb = GroupDatabaseManager.getInstance();
+		String group = groupDb.getGroupNameByGroupId(groupId, session);
+		
+		
 		// get search results from lucene
 
 		final LuceneSearchBookmarks lucene = LuceneSearchBookmarks.getInstance();
@@ -584,7 +589,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		long starttimeQuery = System.currentTimeMillis();
 
 		//contentIds = lucene.searchLucene("contentid", search, groupId, limit, offset);
-		postBookmarkList = lucene.searchLucene(groupId, search, requestedUserName, UserName, GroupNames, limit, offset);
+		postBookmarkList = lucene.searchLucene(group, search, requestedUserName, UserName, GroupNames, limit, offset);
 		
 		long endtimeQuery = System.currentTimeMillis();
 		LOGGER.debug("LuceneBookmark complete query time: " + (endtimeQuery-starttimeQuery) + "ms");

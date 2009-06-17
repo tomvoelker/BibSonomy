@@ -317,6 +317,17 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Returns group name for a given group id
+	 * 
+	 * @param groupID
+	 * @param session a db session
+	 * @return groupName if group exists, null otherwise
+	 */
+	public String getGroupNameByGroupId(final int groupID, final DBSession session) {
+		return this.queryForObject("getGroupNameByGroupId", groupID, String.class, session);
+	}
+
+	/**
 	 * Stores a group in the database.
 	 * 
 	 * FIXME: update isn't implemented.

@@ -61,9 +61,9 @@ public class GetBibTexByAuthor extends BibTexChainElement {
 		 */
 		
 		
-		if ("authorlucene".equals(searchMode)) {
+		if ("lucene".equals(searchMode)) {
 			LOGGER.debug("Using Lucene in GetBibtexByAuthor");
-			return this.db.getBibTexByAuthorLucene(param.getSearch(), param.getGroupType(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getYear(), 
+			return this.db.getBibTexByAuthorLucene(param.getRawSearch(), param.getGroupType(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getYear(), 
 					param.getFirstYear(), param.getLastYear(), param.getLimit(), param.getOffset(), param.getSimHash(), session);
 		}
 		

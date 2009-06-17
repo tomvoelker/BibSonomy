@@ -676,7 +676,11 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 */
 		// get list of ids from lucene
 
-
+		// get groupname by group 
+		GroupDatabaseManager groupDb;
+		groupDb = GroupDatabaseManager.getInstance();
+		String group = groupDb.getGroupNameByGroupId(groupId, session);
+		
 		final LuceneSearchBibTex lucene = LuceneSearchBibTex.getInstance();
 
 
@@ -684,7 +688,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		long starttimeQuery = System.currentTimeMillis();
 
 //		contentIds = lucene.searchLucene(groupId, search, requestedUserName, limit, offset);
-		postBibtexList = lucene.search(groupId, search, requestedUserName, UserName, GroupNames, limit, offset);
+		postBibtexList = lucene.search(group, search, requestedUserName, UserName, GroupNames, limit, offset);
 
 		long endtimeQuery = System.currentTimeMillis();
 		LOGGER.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
@@ -1640,6 +1644,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		*/
 
 		// TODO Lucene
+		
+		GroupDatabaseManager groupDb;
+		groupDb = GroupDatabaseManager.getInstance();
+		String group = groupDb.getGroupNameByGroupId(groupType, session);
 
 		final LuceneSearchBibTex lucene = LuceneSearchBibTex.getInstance();
 
@@ -1649,7 +1657,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 //		contentIds = lucene.searchLucene(groupId, search, requestedUserName, limit, offset);
 		//(Resource resourceType, GroupingEntity groupingEntity, String groupingName, ArrayList<String> tags, String hash, Order order, FilterEntity filter, int offset, int limit, String search)
-		postBibtexList = lucene.searchAuthor(groupType, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, limit, offset);
+		postBibtexList = lucene.searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, limit, offset);
 		
 		long endtimeQuery = System.currentTimeMillis();
 		LOGGER.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");

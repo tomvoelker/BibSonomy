@@ -112,4 +112,10 @@
 		DELETE FROM groups WHERE `group` = #groupId#
 	</delete>
 
+	<select id="getGroupNameByGroupId" resultClass="String" parameterClass="int">
+		SELECT group_name
+		FROM groupids
+		WHERE `group` = #groupId#
+	</select>
+
 </sqlMap>
