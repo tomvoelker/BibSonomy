@@ -41,8 +41,11 @@ public class GetBookmarksSearch extends BookmarkChainElement {
 			LOGGER.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
 		}
 		
+		//LOGGER.debug("------------param.getRawSearch(): " + param.getRawSearch());
+		//LOGGER.debug("------------param.getSearch(): " + param.getSearch());
+		
 		if ("lucene".equals(searchMode)) {
-			return this.db.getBookmarkSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
+			return this.db.getBookmarkSearchLucene(param.getGroupId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
 		}
 	
 		return this.db.getBookmarkSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);

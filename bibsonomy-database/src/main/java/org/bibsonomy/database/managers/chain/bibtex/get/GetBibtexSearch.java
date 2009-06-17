@@ -42,7 +42,7 @@ public class GetBibtexSearch extends BibTexChainElement {
 		}
 		
 		if ("lucene".equals(searchMode)) {
-			return this.db.getBibTexSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
+			return this.db.getBibTexSearchLucene(param.getGroupId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
 		}
 
 		// default = database

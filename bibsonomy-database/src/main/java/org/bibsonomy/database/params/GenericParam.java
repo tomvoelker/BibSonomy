@@ -130,7 +130,13 @@ public abstract class GenericParam {
 	 * The default simHash is defined in {@link HashID}.
 	 */
 	private HashID simHash;	
+
+	/* modified search parameter */
 	private String search;
+
+	/* not modified search parameter */
+	private String rawSearch;
+	
 	/** This is the current user. */
 	private String userName;
 	private String description;
@@ -286,8 +292,13 @@ public abstract class GenericParam {
 		return this.search;
 	}
 
+	public String getRawSearch() {
+		return this.rawSearch;
+	}
+
 	public void setSearch(String search) {
 		if (search != null) {
+			this.rawSearch = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " $2");;
 			this.search = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " +$2");
 		}
 	}
