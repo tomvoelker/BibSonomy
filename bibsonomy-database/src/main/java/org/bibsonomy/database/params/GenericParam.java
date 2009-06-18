@@ -298,7 +298,7 @@ public abstract class GenericParam {
 
 	public void setSearch(String search) {
 		if (search != null) {
-			this.rawSearch = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " $2");;
+			this.rawSearch = search;
 			this.search = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " +$2");
 		}
 	}
