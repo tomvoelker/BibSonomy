@@ -245,7 +245,7 @@ public class DBLogic implements LogicInterface {
 	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, String search) {
 
 		// check allowed start-/end-values 
-		if (grouping.equals(GroupingEntity.ALL) && !present(tags)) {
+		if (grouping.equals(GroupingEntity.ALL) && !present(tags) && !present(search)) {
 			this.permissionDBManager.checkStartEnd(start, end, "post");
 		}
 		// check maximum number of allowed tags
