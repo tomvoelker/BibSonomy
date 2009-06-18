@@ -2,7 +2,6 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -19,15 +18,12 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.database.util.LuceneHelper;
 import org.bibsonomy.lucene.LuceneSearchBibTex;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
