@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="greaterOrEqual" class="org.bibsonomy.util.filter.posts.comparator.GreaterOrEqual"/>
+	<bean id="equals" class="org.bibsonomy.util.filter.posts.comparator.Equals"/>
+	<bean id="matches" class="org.bibsonomy.util.filter.posts.comparator.Matches"/>
+
+		<bean id="postFilter" class="org.bibsonomy.util.filter.posts.PostFilter">
+			<property name="matcher">
+				<bean class="org.bibsonomy.util.filter.posts.matcher.BooleanAllAndMatcher">
+					<property name="matchers">
+						<list>
+							<bean class="org.bibsonomy.util.filter.posts.matcher.BeanPropertyMatcher">
+								<property name="propertyName"  value="resource.year"/>
+								<property name="comparator" ref="greaterOrEqual"/>
+								<property name="propertyValue" value="1992"/>
+							</bean>
+							<bean class="org.bibsonomy.util.filter.posts.matcher.BeanPropertyMatcher">
+								<property name="propertyName"  value="resource.publisher"/>
+								<property name="comparator" ref="equals"/>
+								<property name="propertyValue" value="Springer"/>
+							</bean>
+							<bean class="org.bibsonomy.util.filter.posts.matcher.BooleanOrMatcher">
+								<property name="left">
+									<bean class="org.bibsonomy.util.filter.posts.matcher.BeanPropertyMatcher">
+										<property name="propertyName"  value="resource.address"/>
+										<property name="comparator" ref="matches"/>
+										<property name="propertyValue" value=".*Berlin.*"/>
+									</bean>
+								</property>
+								<property name="right">
+									<bean class="org.bibsonomy.util.filter.posts.matcher.BeanPropertyMatcher">
+										<property name="propertyName"  value="resource.address"/>
+										<property name="comparator" ref="matches"/>
+										<property name="propertyValue" value=".*Heidelberg.*"/>
+									</bean>
+								</property>
+							</bean>
+						</list>
+					</property>
+				</bean>
+			</property>
+			<property name="modifier">
+				<bean class="org.bibsonomy.util.filter.posts.modifier.PropertyModifier">
+					<property name="propertyName" value="resource.address"/>
+					<property name="newPropertyValue" value="Berlin/Heidelberg"/>
+				</bean>
+			</property>
+		</bean>
+		
+</beans>
