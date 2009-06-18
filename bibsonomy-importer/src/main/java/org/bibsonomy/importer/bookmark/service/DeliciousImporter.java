@@ -1,6 +1,5 @@
 package org.bibsonomy.importer.bookmark.service;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,7 +14,8 @@ import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
 
 /**
  * 
- * Imports bookmarks and relations from Delicious.
+ * Imports bookmarks and relations from Delicious. To get an instance of this 
+ * class, use the {@link DeliciousImporterFactory}.
  * 
  * @author:  rja
  * @version: $Id$
@@ -30,6 +30,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	 * The URL to contact Delicious.
 	 */
 	private final URL apiURL;
+	private final String userAgent;
 
 
 	private String password;
@@ -37,24 +38,14 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 
 
 	/**
-	 * Default constructor using the default {@link #apiURL}.
-	 *  
-	 * @throws MalformedURLException
-	 */
-	public DeliciousImporter() throws MalformedURLException {
-		/*
-		 * TODO: there was a reason we use "-1" as port ... please document it 
-		 * here
-		 */
-		this.apiURL = new URL ("https", "api.del.icio.us", -1, "/v1/posts/all");
-	}
-
-	/**
 	 * Constructor which allows to give a specific {@link #apiURL}.
-	 * @param apiUrl
+	 * @param apiUrl - the URL to contact delicious
+	 * @param userAgent - the userAgent this importer shall use to identify 
+	 * itself in the corresponding HTTP header
 	 */
-	public DeliciousImporter(final URL apiUrl) {
+	protected DeliciousImporter(final URL apiUrl, final String userAgent) {
 		this.apiURL = apiUrl;
+		this.userAgent = userAgent;
 	}
 
 	@Override
