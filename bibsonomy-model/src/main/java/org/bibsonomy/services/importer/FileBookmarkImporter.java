@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.User;
 
 /**
  * Allows to import lists of bookmarks from a file. 
@@ -16,13 +17,15 @@ import org.bibsonomy.model.Post;
 public interface FileBookmarkImporter {
 
 	/**
-	 * Sets the file which contains the bookmarks.
+	 * initializes the file which contains the bookmarks, the current user and his group.
 	 * 
 	 * @param file 
+	 * @param user 
+	 * @param groupName 
 	 * @throws IOException - if the file could not be opened/read. 
 	 * 
 	 */
-	public void setFile(File file) throws IOException;
+	public void initialize(File file, User user, String groupName) throws IOException;
 	
 	/**
 	 * Returns the bookmarks extracted from the given file (see {@link #setFile(File)}). 
