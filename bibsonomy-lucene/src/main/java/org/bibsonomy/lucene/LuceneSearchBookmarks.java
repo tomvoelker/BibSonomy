@@ -173,7 +173,7 @@ public class LuceneSearchBookmarks {
 
 			int allowedGroupsIterator = 0;
 			for ( String groupName : GroupNames){
-				if (allowedGroupsIterator>0) allowedGroupNames += " ";
+				if (allowedGroupsIterator>0) allowedGroupNames += " OR ";
 				allowedGroupNames += groupName;
 				allowedGroupsIterator++;
 			}
