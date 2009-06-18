@@ -1,12 +1,14 @@
 package org.bibsonomy.services.importer;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
 /**
- * Allows to import lists of bookmarks from remote services. 
+ * Allows to import lists of bookmarks from a file. 
  * 
  * @author rja
  * @version $Id$
@@ -14,19 +16,18 @@ import org.bibsonomy.model.Post;
 public interface FileBookmarkImporter {
 
 	/**
-	 * Sets the credentials used to authenticate the user against the remote
-	 * service.
+	 * Sets the file which contains the bookmarks.
 	 * 
-	 * @param userName 
-	 * @param password - could be also an API key or the like.
+	 * @param file 
+	 * @throws IOException - if the file could not be opened/read. 
+	 * 
 	 */
-	public void setCredentials(final String userName, final String password);
+	public void setFile(File file) throws IOException;
 	
 	/**
-	 * Returns the bookmarks retrieved from the remote service with the given 
-	 * credentials (see {@link #setCredentials(String, String)}).
+	 * Returns the bookmarks extracted from the given file (see {@link #setFile(File)}). 
 	 * 
-	 * @return A list of bookmark posts, queried from the service.
+	 * @return A list of bookmark posts, extracted from the given file.
 	 */
 	public List<Post<Bookmark>> getPosts();
 	
