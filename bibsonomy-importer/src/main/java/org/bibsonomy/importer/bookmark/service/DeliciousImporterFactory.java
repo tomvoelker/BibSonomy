@@ -5,6 +5,8 @@ import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
+import org.bibsonomy.services.importer.RemoteServiceBookmarkImporterFactory;
 
 /**
  * Creates a new instance of the {@link DeliciousImporter}.
@@ -14,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
  * $Author$
  * 
  */
-public class DeliciousImporterFactory {
+public class DeliciousImporterFactory implements RemoteServiceBookmarkImporterFactory {
 
 	private static final Log log = LogFactory.getLog(DeliciousImporterFactory.class);
 	
@@ -36,7 +38,7 @@ public class DeliciousImporterFactory {
 	}
 	
 	
-	public DeliciousImporter getDeliciousImporter() {
+	public RemoteServiceBookmarkImporter getImporter() {
 		return new DeliciousImporter(apiUrl, userAgent);
 	}
 
