@@ -47,10 +47,12 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		 * FIXME: the query supports only ONE tag!
 		 */
 		final List<String> requTags = command.getRequestedTagsList();
-		boolean tags = false;
-		if(requTags.size() > 0){
-			tags = true;
-		}
+		/*
+		 * remember if tags were given by user - if so, forward to special page 
+		 * FIXME: if only system tags are contained, this handling is wrong 
+		 */
+		final boolean hasTags = requTags.size() > 0;
+		
 		// check for further system tags
 		List<String> sysTags = SystemTagsUtil.extractSystemTagsFromString(authorQuery, " ");
 		if (sysTags.size() > 0) {
@@ -90,7 +92,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		if ("html".equals(command.getFormat())) {
 			this.setTags(command, BibTex.class, groupingEntity, null, null, requTags, null, null, 0, 1000, null);
 			this.endTiming();
-			if(tags){
+			if(hasTags){
 				//this.setRelatedTags(command, Resource.class, groupingEntity, authorQuery, null, requTags, Order.ADDED, 0, 20, null);
 				return Views.AUTHORTAGPAGE;
 			}
