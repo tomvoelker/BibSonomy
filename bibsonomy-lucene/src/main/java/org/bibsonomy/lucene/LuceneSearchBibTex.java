@@ -136,12 +136,12 @@ public class LuceneSearchBibTex {
 	 * @return queryString
 	 */
 	
-	private QuerySortContainer getFulltextQueryFilter (String group, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames) {
+	private QuerySortContainer getFulltextQueryFilter (String group, String search_terms, String requestedUserName, String UserName, Set<String> GroupNames) {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
 
 //		String orderBy = "relevance"; 
 		String orderBy = "date"; 
-
+		
 		String allowedGroupNames = "";
 		String allowedGroupNamesQuery = "";
 		String mergedFiledQuery = "";
@@ -152,7 +152,7 @@ public class LuceneSearchBibTex {
 		String queryString = "";
 
 		QuerySortContainer qf = new QuerySortContainer();
-		
+	
 		int allowedGroupsIterator = 0;
 		for ( String groupName : GroupNames){
 			if (allowedGroupsIterator>0) allowedGroupNames += " OR ";
@@ -162,25 +162,30 @@ public class LuceneSearchBibTex {
 		
 		LOGGER.debug("LuceneBibTex: allowedGroups: " + allowedGroupNames);		
 
-		mergedFiledQuery = lField_merged + ":("+ search_terms +") ";
+		if ( (search_terms != null) && (!search_terms.isEmpty()) )
+		{
+			/* parse search_terms for forbidden characters
+			 * forbidden characters are those, which will harm the lucene query
+			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
+			 */
+			search_terms = search_terms.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
+			mergedFiledQuery = lField_merged + ":("+ search_terms +") ";
+		}
 		allowedGroupNamesQuery = lField_group+":("+allowedGroupNames+")";
 		privateGroupQuery = lField_group+":(private)";
 			
 		if ( (UserName != null) && (!UserName.isEmpty()) )
 		{
+			UserName = UserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
 			userQuery  = lField_user + ":("+ UserName +")";
 		}
 
 		if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
 		{
+			requestedUserName = requestedUserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
 			requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
 		}
-/*
-		if ( (UserName != null) && (!UserName.isEmpty()) )
-		{
-			userQuery  = lField_user + ":("+ UserName +")";
-		}
-*/
+
 		if ((null!=group) && (!group.isEmpty()))
 		{
 			groupIdQuery = " AND " + lField_group+":("+group+")";
@@ -245,14 +250,11 @@ public class LuceneSearchBibTex {
 
 		String queryString = "";
 
-		
 		// debug
 		//firstYear = "1900"; 
 		//lastYear = "2222";
 		
-		
 		QuerySortContainer qf = new QuerySortContainer();
-
 
 		LOGGER.debug("-----group:    " + group);
 		LOGGER.debug("-----search:       " + search);
@@ -267,11 +269,17 @@ public class LuceneSearchBibTex {
 		
 		if ( (search != null) && (!search.isEmpty()) )
 		{
+			/* parse search_terms for forbidden characters
+			 * forbidden characters are those, which will harm the lucene query
+			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
+			 */
+			search = search.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
 			searchQuery = lField_author + ":("+ search +")";
 		}
 
 		if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
 		{
+			requestedUserNameQuery = requestedUserNameQuery.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
 			requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
 		}
 /*		
@@ -288,6 +296,7 @@ public class LuceneSearchBibTex {
 		
 		if ( (year != null) && (!year.isEmpty()) )
 		{
+			year = year.replaceAll("\\D", "");
 			yearQuery = " AND " + lField_year + ":"+ year;
 		}
 		else
@@ -298,6 +307,8 @@ public class LuceneSearchBibTex {
 			{
 				if ( (!firstYear.isEmpty()) && (!lastYear.isEmpty()) )
 				{
+					firstYear = firstYear.replaceAll("\\D", "");
+					lastYear = lastYear.replaceAll("\\D", "");
 					includeLowerBound = true; 
 					includeUpperBound = true;
 				}
@@ -308,6 +319,7 @@ public class LuceneSearchBibTex {
 			{
 				if (!firstYear.isEmpty())
 				{
+					firstYear = firstYear.replaceAll("\\D", "");
 					includeLowerBound = true; 
 				}
 				else
@@ -323,6 +335,7 @@ public class LuceneSearchBibTex {
 				includeLowerBound = false; 
 				if (!lastYear.isEmpty())
 				{
+					lastYear = lastYear.replaceAll("\\D", "");
 					includeUpperBound = true; 
 				}
 				else

@@ -150,8 +150,6 @@ public class LuceneSearchBookmarks {
 			
 		}
 		
-		
-		
 		ResultList<Post<Bookmark>> postBookmarkList = new ResultList<Post<Bookmark>>();
 
 
@@ -170,6 +168,11 @@ public class LuceneSearchBookmarks {
 		// do not search for nothing in lucene index
 		if ( (search_terms != null) && (!search_terms.isEmpty()) )
 		{
+			/* parse search_terms for forbidden characters
+			 * forbidden characters are those, which will harm the lucene query
+			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
+			 */
+			search_terms = search_terms.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
 
 			int allowedGroupsIterator = 0;
 			for ( String groupName : GroupNames){
@@ -186,17 +189,14 @@ public class LuceneSearchBookmarks {
 				
 			if ( (UserName != null) && (!UserName.isEmpty()) )
 			{
+				UserName = UserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
 				userQuery  = lField_user + ":("+ UserName +")";
 			}
 
 			if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
 			{
+				requestedUserName = requestedUserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
 				requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
-			}
-
-			if ( (UserName != null) && (!UserName.isEmpty()) )
-			{
-				userQuery  = lField_user + ":("+ UserName +")";
 			}
 
 			if ((null!=group) && (!group.isEmpty()))
