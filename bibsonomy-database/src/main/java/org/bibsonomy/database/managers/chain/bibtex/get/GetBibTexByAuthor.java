@@ -10,9 +10,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
@@ -20,7 +17,6 @@ import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.common.enums.DatabaseType;
 
 /**
  * Returns a list of BibTex's for given author.
@@ -30,7 +26,7 @@ import org.bibsonomy.common.enums.DatabaseType;
  */
 public class GetBibTexByAuthor extends BibTexChainElement {
 
-	private static final Logger LOGGER = Logger.getLogger(GetBibtexSearch.class);
+	private static final Logger LOGGER = Logger.getLogger(GetBibTexByAuthor.class);
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, DBSession session) {
@@ -63,8 +59,9 @@ public class GetBibTexByAuthor extends BibTexChainElement {
 		
 		if ("lucene".equals(searchMode)) {
 			LOGGER.debug("Using Lucene in GetBibtexByAuthor");
+			List<String> tagIndex = null;
 			return this.db.getBibTexByAuthorLucene(param.getRawSearch(), param.getGroupType(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getYear(), 
-					param.getFirstYear(), param.getLastYear(), param.getLimit(), param.getOffset(), param.getSimHash(), session);
+					param.getFirstYear(), param.getLastYear(), param.getLimit(), param.getOffset(), param.getSimHash(), tagIndex, session);
 		}
 		
 		return this.db.getBibTexByAuthor(param, session);

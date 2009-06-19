@@ -1621,7 +1621,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @param session
 	 * @return list of bibtex entries
 	 */
-	public List<Post<BibTex>> getBibTexByAuthorLucene(String search, int groupType, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, final int limit, final int offset, final int simHash, final DBSession session){
+	public List<Post<BibTex>> getBibTexByAuthorLucene(String search, int groupType, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, final int limit, final int offset, final int simHash, final List<String> tagIndex, final DBSession session){
 		final Logger LOGGER = Logger.getLogger(BibTexDatabaseManager.class);
 		ResultList<Post<BibTex>> postBibtexList = new ResultList<Post<BibTex>>();
 		
@@ -1650,10 +1650,10 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 
 //		ArrayList<Integer> contentIds = new ArrayList<Integer>();
 		long starttimeQuery = System.currentTimeMillis();
-
+		
 //		contentIds = lucene.searchLucene(groupId, search, requestedUserName, limit, offset);
 		//(Resource resourceType, GroupingEntity groupingEntity, String groupingName, ArrayList<String> tags, String hash, Order order, FilterEntity filter, int offset, int limit, String search)
-		postBibtexList = lucene.searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, limit, offset);
+		postBibtexList = lucene.searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, limit, offset);
 		
 		long endtimeQuery = System.currentTimeMillis();
 		LOGGER.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
