@@ -74,14 +74,14 @@ public class SimpleBibTeXParser {
 	public List<String> getWarnings() {
 		return this.warnings;
 	}
-	
+
 	/**
 	 * Clears the warnings.
 	 */
 	public void clearWarnings() {
 		this.warnings.clear();
 	}
-	
+
 
 	public SimpleBibTeXParser() {
 		this.warnings = new LinkedList<String>();
@@ -97,6 +97,19 @@ public class SimpleBibTeXParser {
 	 * @throws IOException
 	 */
 	public BibTex parseBibTeX (final String bibtex) throws ParseException, IOException {
+		final List<BibTex> list = parseInternal(bibtex, true);
+		if (list.size() > 0)
+			return list.get(0);
+		return null;
+	}
+
+	public List<BibTex> parseBibTeXs (final String bibtex) throws ParseException, IOException { 
+		return parseInternal(bibtex, false);
+	}
+
+	private List<BibTex> parseInternal (final String bibtex, final boolean firstEntryOnly) throws ParseException, IOException {
+		final List<BibTex> result = new LinkedList<BibTex>();
+
 		final BibtexParser parser = new BibtexParser(true);
 		/*
 		 * To allow several "keywords" fields (as done by Connotea), we set the policy
@@ -147,13 +160,18 @@ public class SimpleBibTeXParser {
 					continue;
 				}
 			}
-			// fill other fields from entry
-			return fillBibtexFromEntry((BibtexEntry) potentialEntry);
+			/*
+			 * add entry to result list
+			 */
+			result.add(fillBibtexFromEntry((BibtexEntry) potentialEntry));
+			/*
+			 * skip remaining entries
+			 */
+			if (firstEntryOnly) {
+				return result;
+			}
 		}
-		/*
-		 * no entry found
-		 */
-		return null;
+		return result;
 	}
 
 	/** Expands all macros, crossrefs and person lists. Any exceptions occuring are put into 
@@ -296,6 +314,18 @@ public class SimpleBibTeXParser {
 			for (final BibtexPerson person:personList) {
 				/*
 				 * build one person
+				 * 
+				 * FIXME: what is done here breaks author names whose last name
+				 * consists of several parts, e.g.,
+				 * Vander Wal, Thomas 
+				 * If written as
+				 * Thomas Vander Wal,
+				 * "Vander" is interpreted as second name and the name is 
+				 * treated in the wrong way at several occasions.
+				 * Thus, we must ensure to store all author names as
+				 * lastname, firstname
+				 * and only change the order in the JSPs.
+				 *  
 				 */
 				final StringBuffer personName = new StringBuffer();
 				/*
