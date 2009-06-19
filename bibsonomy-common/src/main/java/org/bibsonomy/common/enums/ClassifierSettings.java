@@ -48,7 +48,13 @@ public enum ClassifierSettings {
 	PROBABILITY_LIMIT,
 
 	/** testing mode will not effect user table */
-	TESTING;
+	TESTING,
+	
+	/** last classification date to track changes in user profiles */
+	LASTCLASSIFICATION,
+	
+	/** last classification date to track changes in user profiles */
+	CLASSIFY_COST;
 
 	/**
 	 * @param setting
