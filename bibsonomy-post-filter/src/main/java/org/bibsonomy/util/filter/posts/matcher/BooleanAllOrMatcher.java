@@ -2,6 +2,7 @@ package org.bibsonomy.util.filter.posts.matcher;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.springframework.beans.factory.annotation.Required;
 
 
 /**
@@ -36,6 +37,7 @@ public class BooleanAllOrMatcher implements Matcher {
 		return matchers;
 	}
 
+	@Required
 	public void setMatchers(Matcher[] matchers) {
 		this.matchers = matchers;
 	}

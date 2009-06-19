@@ -4,6 +4,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.filter.posts.comparator.Comparator;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.factory.annotation.Required;
 
 
 /**
@@ -54,6 +55,7 @@ public class BeanPropertyMatcher<T> implements Matcher {
 		return propertyName;
 	}
 
+	@Required
 	public void setPropertyName(String propertyName) {
 		this.propertyName = propertyName;
 	}
@@ -62,6 +64,7 @@ public class BeanPropertyMatcher<T> implements Matcher {
 		return propertyValue;
 	}
 
+	@Required
 	public void setPropertyValue(T propertyValue) {
 		this.propertyValue = propertyValue;
 	}
@@ -70,6 +73,7 @@ public class BeanPropertyMatcher<T> implements Matcher {
 		return comparator;
 	}
 
+	@Required
 	public void setComparator(Comparator<T> comparator) {
 		this.comparator = comparator;
 	}

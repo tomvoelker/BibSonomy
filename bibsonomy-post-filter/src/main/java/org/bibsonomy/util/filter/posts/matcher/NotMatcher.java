@@ -2,6 +2,7 @@ package org.bibsonomy.util.filter.posts.matcher;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.springframework.beans.factory.annotation.Required;
 
 /**
  * Boolean AND.
@@ -31,11 +32,12 @@ public class NotMatcher implements Matcher {
 	}
 	
 	
-	public Matcher getLeft() {
+	public Matcher getMatcher() {
 		return matcher;
 	}
-	public void setLeft(Matcher left) {
-		this.matcher = left;
+	@Required
+	public void setMatcher(Matcher matcher) {
+		this.matcher = matcher;
 	}
 
 }
