@@ -23,7 +23,6 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.LuceneException;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -172,7 +171,7 @@ public class LuceneSearchBookmarks {
 			 * forbidden characters are those, which will harm the lucene query
 			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
 			 */
-			search_terms = search_terms.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
+			search_terms = search_terms.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
 
 			int allowedGroupsIterator = 0;
 			for ( String groupName : GroupNames){
@@ -189,13 +188,13 @@ public class LuceneSearchBookmarks {
 				
 			if ( (UserName != null) && (!UserName.isEmpty()) )
 			{
-				UserName = UserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
+				UserName = UserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
 				userQuery  = lField_user + ":("+ UserName +")";
 			}
 
 			if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
 			{
-				requestedUserName = requestedUserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
+				requestedUserName = requestedUserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
 				requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
 			}
 

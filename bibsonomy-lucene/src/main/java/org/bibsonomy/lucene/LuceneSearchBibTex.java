@@ -167,7 +167,7 @@ public class LuceneSearchBibTex {
 			 * forbidden characters are those, which will harm the lucene query
 			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
 			 */
-			search_terms = search_terms.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
+			search_terms = search_terms.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
 			mergedFiledQuery = lField_merged + ":("+ search_terms +") ";
 		}
 		allowedGroupNamesQuery = lField_group+":("+allowedGroupNames+")";
@@ -175,13 +175,13 @@ public class LuceneSearchBibTex {
 			
 		if ( (UserName != null) && (!UserName.isEmpty()) )
 		{
-			UserName = UserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
+			UserName = UserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
 			userQuery  = lField_user + ":("+ UserName +")";
 		}
 
 		if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
 		{
-			requestedUserName = requestedUserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
+			requestedUserName = requestedUserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
 			requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
 		}
 
@@ -273,13 +273,13 @@ public class LuceneSearchBibTex {
 			 * forbidden characters are those, which will harm the lucene query
 			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
 			 */
-			search = search.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
+			search = search.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
 			searchQuery = lField_author + ":("+ search +")";
 		}
 
 		if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
 		{
-			requestedUserNameQuery = requestedUserNameQuery.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
+			requestedUserNameQuery = requestedUserNameQuery.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
 			requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
 		}
 		
