@@ -40,11 +40,11 @@ public class PostFilterTest {
 
 	private static final String SPRING_BEAN_DEFINITION_FILE = "postFilterTest-beans.xml";
 	private static final String EXAMPLE_BIBTEX_FILE = "postFilterTest.bib";
-	
+
 	@Test
 	public void testGetFilteredAndUpdatedPosts() {
 		final List<Post<? extends Resource>> posts = getPosts();
-		
+
 		/*
 		 * configure matcher
 		 */
@@ -59,7 +59,7 @@ public class PostFilterTest {
 		final BooleanAllAndMatcher andMatcher = new BooleanAllAndMatcher(new Matcher[] {
 				yearMatcher, publisherMatcher, new BooleanOrMatcher(addressMatcher, address2Matcher)
 		});
-		
+
 		/*
 		 * configure modifier
 		 */
@@ -68,7 +68,7 @@ public class PostFilterTest {
 		 * configure filter
 		 */
 		final PostFilter filter = new PostFilter(andMatcher, addressModifier);
-		
+
 		/*
 		 * filter posts
 		 */
@@ -82,7 +82,7 @@ public class PostFilterTest {
 		final List<Post<? extends Resource>> filteredAndUpdatedPosts = filter.getFilteredAndUpdatedPosts(posts);
 		System.out.println("Got " + filteredAndUpdatedPosts.size() + " from filter");
 		Assert.assertEquals(10, filteredAndUpdatedPosts.size());
-		
+
 		/*
 		 * check result
 		 */
@@ -90,8 +90,8 @@ public class PostFilterTest {
 			final BibTex resource = (BibTex) post.getResource();
 			Assert.assertEquals("Berlin/Heidelberg", resource.getAddress());
 		}
-		
-		
+
+
 	}
 
 	private List<Post<? extends Resource>> getPosts() {
@@ -116,7 +116,7 @@ public class PostFilterTest {
 			Assert.fail(e.getMessage());		}
 		System.out.println("Got " + bibtex.size() + " posts from file.");
 		Assert.assertEquals(300, bibtex.size());
-		
+
 		/*
 		 * copy into posts
 		 */
@@ -134,42 +134,35 @@ public class PostFilterTest {
 	 */
 	@Test
 	public void testGetFilteredAndUpdatedPostsUsingSpringXML() {
-		final org.springframework.core.io.Resource res = new ClassPathResource(SPRING_BEAN_DEFINITION_FILE);
-		final BeanFactory factory = new XmlBeanFactory(res);
-		
-		final Object bean = factory.getBean("postFilter");
-		if (bean instanceof PostFilter) {
-			final PostFilter filter = (PostFilter) bean;
-			/*
-			 * get posts
-			 */
-			final List<Post<? extends Resource>> posts = getPosts();
-			/*
-			 * filter posts
-			 */
-			final List<Post<? extends Resource>> filteredPosts = filter.getFilteredPosts(posts);
-			System.out.println("Got " + filteredPosts.size() + " from filter.");
-			Assert.assertEquals(13, filteredPosts.size());
+		final PostFilter filter = new PostFilterFactory().getPostFilterFromBeanDefinitionInClasspath(SPRING_BEAN_DEFINITION_FILE);
+		System.err.println(filter.getMatcher());
+		/*
+		 * get posts
+		 */
+		final List<Post<? extends Resource>> posts = getPosts();
+		/*
+		 * filter posts
+		 */
+		final List<Post<? extends Resource>> filteredPosts = filter.getFilteredPosts(posts);
+		System.out.println("Got " + filteredPosts.size() + " from filter.");
+		Assert.assertEquals(13, filteredPosts.size());
 
-			/*
-			 * modify posts
-			 */
-			final List<Post<? extends Resource>> filteredAndUpdatedPosts = filter.getFilteredAndUpdatedPosts(posts);
-			System.out.println("Got " + filteredAndUpdatedPosts.size() + " from filter");
-			Assert.assertEquals(10, filteredAndUpdatedPosts.size());
-			
-			/*
-			 * check result
-			 */
-			for (Post<? extends Resource> post : filteredPosts) {
-				final BibTex resource = (BibTex) post.getResource();
-				Assert.assertEquals("Berlin/Heidelberg", resource.getAddress());
-			}
+		/*
+		 * modify posts
+		 */
+		final List<Post<? extends Resource>> filteredAndUpdatedPosts = filter.getFilteredAndUpdatedPosts(posts);
+		System.out.println("Got " + filteredAndUpdatedPosts.size() + " from filter");
+		Assert.assertEquals(10, filteredAndUpdatedPosts.size());
+
+		/*
+		 * check result
+		 */
+		for (Post<? extends Resource> post : filteredPosts) {
+			final BibTex resource = (BibTex) post.getResource();
+			Assert.assertEquals("Berlin/Heidelberg", resource.getAddress());
 		}
-
-		
 	}
-	
+
 	private static String getFileAsString (final String fileName) throws IOException {
 		return getStreamAsString(new FileInputStream(fileName));
 	}
@@ -182,7 +175,7 @@ public class PostFilterTest {
 			content.append(line);
 		}
 		reader.close();
-		
+
 		return content.toString();
 	}
 

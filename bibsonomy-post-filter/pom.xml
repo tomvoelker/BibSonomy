@@ -30,6 +30,34 @@
 					</compilerArguments>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<configuration>
+							<tasks>
+								<java classname="org.antlr.Tool" classpathref="maven.plugin.classpath" fork="true" dir="src/main/antlr">
+									<arg line="-o ${project.build.directory}/generated-sources/antlr/" />
+									<arg value="org/bibsonomy/util/filter/posts/parser/FilterRule.g" />
+								</java>
+							</tasks>
+							<sourceRoot>${project.build.directory}/generated-sources/antlr</sourceRoot>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>				
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.antlr</groupId>
+						<artifactId>antlr</artifactId>
+						<version>3.0.1</version>
+						<scope>compile</scope>
+					</dependency>				
+				</dependencies>
+			</plugin>
 		</plugins>
 
 		<extensions>
