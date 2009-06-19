@@ -1,5 +1,9 @@
 package org.bibsonomy.util.filter.posts.matcher;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.springframework.beans.factory.annotation.Required;
@@ -12,17 +16,17 @@ import org.springframework.beans.factory.annotation.Required;
  * $Author$
  * 
  */
-public class BooleanAllAndMatcher implements Matcher {
+public class BooleanAllAndMatcher implements AllMatcher {
 
-	private Matcher[] matchers;
+	private List<Matcher> matchers;
 	
 	public BooleanAllAndMatcher() {
-		// TODO Auto-generated constructor stub
+		matchers = new LinkedList<Matcher>();
 	}
 	
 	public BooleanAllAndMatcher(Matcher[] matchers) {
 		super();
-		this.matchers = matchers;
+		this.matchers = Arrays.asList(matchers);
 	}
 
 	@Override
@@ -33,13 +37,25 @@ public class BooleanAllAndMatcher implements Matcher {
 		return true;
 	}
 
+
 	public Matcher[] getMatchers() {
-		return matchers;
+		return matchers.toArray(new Matcher[matchers.size()]);
 	}
-	
+
 	@Required
 	public void setMatchers(Matcher[] matchers) {
-		this.matchers = matchers;
+		this.matchers = Arrays.asList(matchers);
+	}
+
+	@Override
+	public String toString() {
+		return "&" + matchers;
+	}
+
+	@Override
+	public void addMatcher(Matcher matcher) {
+		this.matchers.add(matcher);
+		
 	}
 }
 

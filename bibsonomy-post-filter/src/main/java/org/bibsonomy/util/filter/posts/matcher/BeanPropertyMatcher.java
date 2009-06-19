@@ -78,7 +78,10 @@ public class BeanPropertyMatcher<T> implements Matcher {
 		this.comparator = comparator;
 	}
 
-	
+	@Override
+	public String toString() {
+		return propertyName + " " + comparator + " '" + propertyValue + "'"; 
+	}
 
 
 }
