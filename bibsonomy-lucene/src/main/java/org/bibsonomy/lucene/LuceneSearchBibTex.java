@@ -3,6 +3,7 @@ package org.bibsonomy.lucene;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.naming.Context;
@@ -17,7 +18,6 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanFilter;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -25,7 +25,6 @@ import org.apache.lucene.search.RangeFilter;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.LuceneException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -234,7 +233,7 @@ public class LuceneSearchBibTex {
 		
 	}
 	
-	private QuerySortContainer getAuthorQueryFilter (String group,  String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear) {
+	private QuerySortContainer getAuthorQueryFilter (String group,  String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, List<String> tagList) {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
 
 //		String orderBy = "relevance"; 
@@ -245,6 +244,7 @@ public class LuceneSearchBibTex {
 		String requestedGroupNameQuery = "";
 		String groupIdQuery  = "";
 		String yearQuery = "";
+		String tagListQuery = ""; 
 		Boolean includeLowerBound = false;
 		Boolean includeUpperBound = false;
 
@@ -282,12 +282,12 @@ public class LuceneSearchBibTex {
 			requestedUserNameQuery = requestedUserNameQuery.replaceAll("[\\&\\|\\(\\)\\[\\]\\~\\*\\^\\?\\:\\\\]", " ");
 			requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
 		}
-/*		
+		
 		if ( (requestedGroupName != null) && (!requestedGroupName.isEmpty()) )
 		{
-			requestedGroupNameQuery  = " AND " + lField_user + ":("+ requestedGroupName +")";
+			requestedGroupNameQuery  = " AND " + lField_group + ":("+ requestedGroupName +")";
 		}
-*/
+
 		if ((null!=group) && (!group.isEmpty()))
 		{
 			groupIdQuery = " AND " + lField_group+":("+group+")";
@@ -345,9 +345,28 @@ public class LuceneSearchBibTex {
 			}
 		}
 
+		// TagIndex
+		if ( (tagList != null) && (!tagList.isEmpty()) )
+		{
+			int tagListIterator = 0;
+			LOGGER.debug("LuceneSearchBibTex: tagList == "+ tagList.toString() );
+			for ( String tagItem : tagList){
+				if (tagListIterator>0) tagListQuery += " ";
+				tagListQuery += tagItem;
+				tagListIterator++;
+			}
+
+			tagListQuery = " AND " + lField_tas + ":(" + tagListQuery + ")";
+
+		}
+		else
+		{
+			LOGGER.debug("LuceneSearchBibTex: tagList == null!");
+		}
+		
 		
 		// assemble query string 
-		queryString = searchQuery + requestedUserNameQuery + groupIdQuery;
+		queryString = searchQuery + requestedUserNameQuery + groupIdQuery + tagListQuery;
 
 		QueryParser myParser = new QueryParser(lField_desc, analyzer);
 		Query query = null;
@@ -407,7 +426,7 @@ b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.p
 b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
 b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, b.scraperid,
 b.simhash1 AS interHash, b.simhash2 AS intraHash, t.tag_name, h.ctr as count,NULL AS `group`, NULL AS group_name
-
+.toString()
 FROM bibtex b, tas t, bibhash h,  
 
 ~~~
@@ -417,6 +436,9 @@ FROM bibtex b, tas t, bibhash h,
 ~				JOIN tas t$tagIndex[].index$ USING (content_id)
 ~			</isGreaterThan>
 ~		</iterate>
+
+?? tas t1 JOIN tas t2 USING (content_id) JOIN tas t3 USING (content_id) JOIN tas t4 USING (content_id) ??
+
 ~~~ 
 	(SELECT content_id FROM search_bibtex s
 	WHERE MATCH (s.author) AGAINST (#search# IN BOOLEAN MODE) 
@@ -442,6 +464,10 @@ isNotNull "requestedGroupName"
 ~		    t$tagIndex[].index$.tag_lower = lower(#tagIndex[].tagName#)
 ~		  </isEqual>
 ~		</iterate>
+
+?? AND t1.tag_name = #tagIndex[].tagName# AND t2.tag_name = #tagIndex[].tagName# AND t3.tag_name = #tagIndex[].tagName# AND t4.tag_name = #tagIndex[].tagName#
+??     tX.tag_lower= lower(#tagIndex[].tagName#)
+
 ~~~
 
 	ORDER BY s.date DESC LIMIT #limit# OFFSET #offset#) AS tt 
@@ -643,8 +669,8 @@ ORDER BY b.date DESC, b.content_id DESC;
 	 (Class<T>, GroupingEntity, String, List<String>, String, Order, FilterEntity, int, int, String)
 */
 	
-	public ResultList<Post<BibTex>> searchAuthor(String group, String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, int limit, int offset) {
-		return searchLucene(getAuthorQueryFilter(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear), limit, offset);
+	public ResultList<Post<BibTex>> searchAuthor(String group, String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, List<String> tagList, int limit, int offset) {
+		return searchLucene(getAuthorQueryFilter(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList), limit, offset);
 	}
 
 }
