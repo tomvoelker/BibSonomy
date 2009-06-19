@@ -82,5 +82,10 @@ public class PostFilter {
 		this.modifier = modifier;
 	}
 
+	@Override
+	public String toString() {
+		return matcher + " : " + modifier;
+	}
+	
 }
 
