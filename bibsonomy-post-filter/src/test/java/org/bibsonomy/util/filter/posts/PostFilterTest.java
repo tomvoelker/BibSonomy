@@ -41,17 +41,9 @@ public class PostFilterTest {
 	private static final String SPRING_BEAN_DEFINITION_FILE = "postFilterTest-beans.xml";
 	private static final String EXAMPLE_BIBTEX_FILE = "postFilterTest.bib";
 	
-
-	@Test
-	public void testGetFilteredPosts() {
-//		fail("Not yet implemented");
-	}
-
 	@Test
 	public void testGetFilteredAndUpdatedPosts() {
 		final List<Post<? extends Resource>> posts = getPosts();
-		
-		
 		
 		/*
 		 * configure matcher
@@ -108,7 +100,7 @@ public class PostFilterTest {
 		 */
 		String streamAsString = null;
 		try {
-			streamAsString = getStreamAsString(this.getClass().getClassLoader().getResourceAsStream(EXAMPLE_BIBTEX_FILE));
+			streamAsString = getStreamAsString(PostFilterTest.class.getClassLoader().getResourceAsStream(EXAMPLE_BIBTEX_FILE));
 		} catch (IOException e) {
 			Assert.fail(e.getMessage());
 		}
