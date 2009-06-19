@@ -15,6 +15,9 @@ public class Equals<T> implements Comparator<T> {
 		return a.equals(b);
 	}
 
-	
+	@Override
+	public String toString() {
+		return "=";
+	}
 }
 

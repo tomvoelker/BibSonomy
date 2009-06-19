@@ -15,6 +15,9 @@ public class LessOrEqual<T extends Comparable<T>> implements Comparator<T> {
 		return a.compareTo(b) < 0;
 	}
 
-	
+	@Override
+	public String toString() {
+		return "<=";
+	}
 }
 
