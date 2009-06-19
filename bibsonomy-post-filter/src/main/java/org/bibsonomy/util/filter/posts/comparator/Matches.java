@@ -14,6 +14,11 @@ public class Matches implements Comparator<String> {
 	public boolean compare(String a, String b) {
 		return a.matches(b);
 	}
+	
+	@Override
+	public String toString() {
+		return "=~";
+	}
 
 	
 }

@@ -17,6 +17,9 @@ public class Contains implements Comparator<String> {
 		return a.contains(b);
 	}
 
-	
+	@Override
+	public String toString() {
+		return "=/";
+	}
 }
 
