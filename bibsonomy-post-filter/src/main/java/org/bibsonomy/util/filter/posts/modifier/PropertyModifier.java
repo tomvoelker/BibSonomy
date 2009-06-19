@@ -4,6 +4,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.beans.PropertyValue;
 import org.springframework.beans.factory.annotation.Required;
 
 
@@ -64,6 +65,11 @@ public class PropertyModifier<T> implements Modifier {
 	@Required
 	public void setNewPropertyValue(T newPropertyValue) {
 		this.newPropertyValue = newPropertyValue;
+	}
+	
+	@Override
+	public String toString() {
+		return propertyName + " := " + "'" + newPropertyValue + "'";
 	}
 	
 	

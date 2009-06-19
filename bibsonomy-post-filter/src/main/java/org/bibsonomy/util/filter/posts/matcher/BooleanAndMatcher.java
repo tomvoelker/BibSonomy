@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Required;
  * $Author$
  * 
  */
-public class BooleanAndMatcher implements Matcher {
+public class BooleanAndMatcher implements BinaryMatcher {
 
 	private Matcher left;
 	private Matcher right;
@@ -48,6 +48,11 @@ public class BooleanAndMatcher implements Matcher {
 	@Required
 	public void setRight(Matcher right) {
 		this.right = right;
+	}
+	
+	@Override
+	public String toString() {
+		return "(" + left + " & " + right + ")";
 	}
 }
 
