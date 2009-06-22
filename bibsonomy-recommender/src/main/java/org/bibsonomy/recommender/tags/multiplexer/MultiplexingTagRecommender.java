@@ -15,7 +15,6 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.recommender.tags.TagRecommenderConnector;
-import org.bibsonomy.recommender.tags.database.DBAccess;
 import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.multiplexer.strategy.RecommendationSelector;
 import org.bibsonomy.recommender.tags.multiplexer.strategy.SelectAll;
@@ -36,17 +35,20 @@ import org.bibsonomy.services.recommender.TagRecommender;
 public class MultiplexingTagRecommender implements TagRecommender {
 	private static final Logger log = Logger.getLogger(MultiplexingTagRecommender.class);
 	Object lockResults = new Object();              // while selecting a result,
-													// no further recommender answers 
-													// should be added to database
+	// no further recommender answers 
+	// should be added to database
 	private List<TagRecommender> localRecommenders;         // recommenders with object reference
 	private List<TagRecommenderConnector> distRecommenders;    // recommenders with remote access
-	
+
 	private long queryTimeout = 100;                // timeout for querying distant recommenders
 	private RecommendationSelector resultSelector;
-	
+
+
+	private PostPrivacyFilter postPrivacyFilter;
+
 	/** indicates that post identifier was not given */
 	public static int UNKNOWN_POSTID = -1;
-	
+
 	/** FIXME: reuse AbstractTagRecommender */
 	private static final int DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND = 5;
 	/**
@@ -54,9 +56,9 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * {@link #getRecommendedTags(Post)}.
 	 */
 	private int numberOfTagsToRecommend = DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND;
-	
+
 	private DBLogic dbLogic;
-	
+
 	/**
 	 * constructor.
 	 */
@@ -64,6 +66,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		localRecommenders = new ArrayList<TagRecommender>();
 		distRecommenders  = new ArrayList<TagRecommenderConnector>();
 		resultSelector    = new SelectAll();
+		postPrivacyFilter = new PostPrivacyFilter();
 	}
 	/**
 	 * destructor
@@ -71,7 +74,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	protected void finalize() {
 		disconnectRecommenders();
 	}
-	
+
 	//------------------------------------------------------------------------
 	// Implementation of recommender registration
 	//------------------------------------------------------------------------
@@ -95,7 +98,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		getDistRecommenders().add(recommender);
 		return true;
 	}
-	
+
 	/** 
 	 * @return false if none of the registered recommenders could be initialized
 	 */
@@ -126,32 +129,35 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		}
 		return true;
 	}
-	
+
 	//------------------------------------------------------------------------
 	// TagRecommender interface implementation
 	//------------------------------------------------------------------------
-    /**
-     * Extends TagRecommender's interface with a parameter which is used to map
-     * recommender queries to posts in BibSonomy:
-     *   When the postBookmark-Form is displayed, a random postID is generated and
-     *   passed to the recommender via a hidden field.
-     *   After storing the post, the postBookmarkController calls updateQuery()
-     *   with the corresponding username, date, postID and Hash.
-     *   
-     * @param post The post for which tag recommendations are requested.
-     * @param postID ID for mapping posts to recommender queries
-     * @return Set of recommended Tags.
-     */
+	/**
+	 * Extends TagRecommender's interface with a parameter which is used to map
+	 * recommender queries to posts in BibSonomy:
+	 *   When the postBookmark-Form is displayed, a random postID is generated and
+	 *   passed to the recommender via a hidden field.
+	 *   After storing the post, the postBookmarkController calls updateQuery()
+	 *   with the corresponding username, date, postID and Hash.
+	 *
+	 * @param recommendedTags 
+	 * @param post The post for which tag recommendations are requested.
+	 * @param postID ID for mapping posts to recommender queries
+	 * @return Set of recommended Tags.
+	 */
 	public void addRecommendedTags(
 			Collection<RecommendedTag> recommendedTags, 
 			Post<? extends Resource> post, 
 			int postID) {
+
 		log.debug("querying["+localRecommenders+", "+distRecommenders+"]");
+
 		// SortedSet holding recommenders results
 		SortedSet<RecommendedTag> result = null;
 		// id identifying this query
 		Long qid = null;
-		
+
 		// list for managing pending recommenders
 		List<RecommenderDispatcher> dispatchers = new ArrayList<RecommenderDispatcher>();
 		// query's time stamp
@@ -160,17 +166,38 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		try {
 			// each set of queries is identified by an unique id:
 			qid = dbLogic.addQuery(post.getUser().getName(), ts, post, postID);
-			
-			// query remote recommenders
-			for( TagRecommenderConnector con: getDistRecommenders() ) {
-				// each recommender is identified by an unique id:
-				Long sid = dbLogic.addRecommender(qid, con.getId(), con.getInfo(), con.getMeta());
-				RecommenderDispatcher dispatcher = 
-					new RecommenderDispatcher(con, post, qid, sid, null);
-				dispatchers.add(dispatcher);
-				dispatcher.start();
-			};
-			// query local recommenders
+
+			/*
+			 * TODO: the filteredPost is null, when it is non public!
+			 * Thus: check for null posts and ignore them for suggestion.
+			 * (or: ignore the remote recommenders, see below)
+			 * 
+			 * TODO: local recommenders should get the unfiltered posts, such that
+			 * we get some suggestions for sure.
+			 * 
+			 *  For the challenge, we just put all participants recommenders into
+			 *  the distRecommender list, such that they don't get private posts.
+			 * 
+			 */
+			final Post<? extends Resource> filteredPost = postPrivacyFilter.filterPost(post);
+			if (filteredPost != null) {
+				// query remote recommenders
+				for( TagRecommenderConnector con: getDistRecommenders() ) {
+					// each recommender is identified by an unique id:
+					Long sid = dbLogic.addRecommender(qid, con.getId(), con.getInfo(), con.getMeta());
+					RecommenderDispatcher dispatcher = 
+						new RecommenderDispatcher(con, filteredPost, qid, sid, null);
+					dispatchers.add(dispatcher);
+					dispatcher.start();
+				}
+			}
+
+
+			/*
+			 * query local recommenders
+			 * 
+			 * they get the unfiltered post, since we trust them
+			 */
 			for( TagRecommender rec: getLocalRecommenders() ) {
 				// each recommender is identified by an unique id:
 				Long sid = dbLogic.addRecommender(qid, rec.getClass().getCanonicalName().toString(), rec.getInfo(), null);
@@ -182,7 +209,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 				dispatchers.add(dispatcher);
 				dispatcher.start();
 			};
-			
+
 		} catch (SQLException ex) {
 			// TODO Auto-generated catch block
 			log.error(ex.getMessage(), ex);
@@ -197,7 +224,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		for( RecommenderDispatcher disp: dispatchers ) {
 			disp.abortQuery();
 		};
-		
+
 		if( qid!=null )
 			try {
 				selectResult(qid, recommendedTags);
@@ -217,20 +244,23 @@ public class MultiplexingTagRecommender implements TagRecommender {
 
 	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
 		return getRecommendedTags(post, UNKNOWN_POSTID);
-    };
-	
-    /**
-     * Extends TagRecommender's interface with a parameter which is used to map
-     * recommender queries to posts in BibSonomy:
-     *   When the postBookmark-Form is displayed, a random postID is generated and
-     *   passed to the recommender via a hidden field.
-     *   After storing the post, the postBookmarkController calls updateQuery()
-     *   with the corresponding username, date, postID and Hash.
-     *   
-     * @param post The post for which tag recommendations are requested.
-     * @param postID ID for mapping posts to recommender queries
-     * @return Set of recommended Tags.
-     */
+	};
+
+	/**
+	 * Extends TagRecommender's interface with a parameter which is used to map
+	 * recommender queries to posts in BibSonomy:
+	 *   When the postBookmark-Form is displayed, a random postID is generated and
+	 *   passed to the recommender via a hidden field.
+	 *   After storing the post, the postBookmarkController calls updateQuery()
+	 *   with the corresponding username, date, postID and Hash.
+	 *   
+	 *   FIXME: is this method still needed? The post ID should be set inside 
+	 *   the post (using contentID) ...
+	 *   
+	 * @param post The post for which tag recommendations are requested.
+	 * @param postID ID for mapping posts to recommender queries
+	 * @return Set of recommended Tags.
+	 */
 	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post, int postID) {
 		final SortedSet<RecommendedTag> recommendedTags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 		addRecommendedTags(recommendedTags, post, postID);
@@ -256,17 +286,17 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			Long rid = dbLogic.addResultSelector(qid, 
 					resultSelector.getInfo(), 
 					resultSelector.getMeta()
-					);
+			);
 			resultSelector.selectResult(qid, recommendedTags);
 			dbLogic.storeRecommendation(qid, rid, recommendedTags);
 		}
-		
+
 		// trim number of recommended tags if it exceeds numberOfTagsToRecommend
 		if( recommendedTags.size()>getNumberOfTagsToRecommend() ) {
 			Iterator<RecommendedTag> itr = recommendedTags.iterator();
 			int pos = 0;
 			while(itr.hasNext()) {
-			    itr.next(); 
+				itr.next(); 
 				pos++;
 				if( pos>getNumberOfTagsToRecommend() )
 					itr.remove();
@@ -351,7 +381,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		private boolean abort = false;
 		Post<? extends Resource> post;
 		SortedSet<RecommendedTag> recommendedTags;
-		
+
 		/**
 		 * Constructor for creating a query dispatcher.
 		 * @param recommender Recommender whos query should be dispatched
@@ -371,7 +401,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			this.recommendedTags = recommendedTags;
 			log.debug(System.getProperty("file.encoding"));
 		}
-		
+
 		/**
 		 * Get managed recommender's info.
 		 * @return recommender's info text
@@ -411,7 +441,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			} else {
 				log.info("Recommender " + recommender.getInfo() + " timed out (" + time + ")");
 			}
-				
+
 		}
 		/**
 		 * Tell dispatcher that he timed out.
@@ -428,7 +458,13 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	}
 	@Override
 	public void setFeedback(Post<? extends Resource> post) {
-		// TODO
+		final Post<? extends Resource> filteredPost = postPrivacyFilter.filterPost(post);
+		/*
+		 * TODO: local recommenders should get the real post, distRecommenders
+		 * the filtered post. be careful: the filtered post might be null, i.e.,
+		 * it is non-public.
+		 *
+		 */
 		throw new RuntimeException("not implemented");
 	}
 
