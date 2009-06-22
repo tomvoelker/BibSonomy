@@ -23,7 +23,9 @@ public interface TagRecommender {
 	 * Provide tag recommendations for the given post.
 	 * 
 	 * @param post A post describing the resource for which recommendations should be produced.
-	 * The post should contain valid intra- and inter-hashes as well as the name of the posting user.
+	 * The post should contain valid intra- and inter-hashes as well as the name of the posting 
+	 * user. The method {@link Post#getContentId()} can be called to get a unique id for this
+	 * post which later can be used by {@link #setFeedback(Post)} to connect the two posts.  
 	 * <br/>
 	 * The post might also contain already some tags (e.g., when the user changes a post) and the
 	 * recommender should/could take those into account.
@@ -46,6 +48,16 @@ public interface TagRecommender {
 	 * @param post
 	 */
 	public void addRecommendedTags(final Collection<RecommendedTag> recommendedTags, final Post<? extends Resource> post);
+	
+	/**
+	 * Finishes the recommendation process and provides as feedback the post as 
+	 * it will be stored. The method {@link Post#getContentId()} provides an ID
+	 * to connect this post with the one of the {@link #getRecommendedTags(Post)}
+	 * call.
+	 * 
+	 * @param post The complete post as it will be stored.
+	 */
+	public void setFeedback(final Post<? extends Resource> post);
 	
 	
 	/** Provide some short information about this recommender.
