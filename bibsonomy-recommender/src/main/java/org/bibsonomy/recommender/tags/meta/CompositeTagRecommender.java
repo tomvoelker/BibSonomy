@@ -54,4 +54,12 @@ public class CompositeTagRecommender implements TagRecommender {
 		}
 	}
 
+	@Override
+	public void setFeedback(Post<? extends Resource> post) {
+		for (final TagRecommender t: recommender) {
+			t.setFeedback(post);
+		}
+		
+	}
+
 }

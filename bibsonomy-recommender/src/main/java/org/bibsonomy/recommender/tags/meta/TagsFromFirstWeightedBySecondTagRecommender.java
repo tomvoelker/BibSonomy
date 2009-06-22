@@ -248,4 +248,10 @@ public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagReco
 	public void setSecondTagRecommender(TagRecommender secondTagRecommender) {
 		this.secondTagRecommender = secondTagRecommender;
 	}
+
+	@Override
+	protected void setFeedbackInternal(Post<? extends Resource> post) {
+		this.firstTagRecommender.setFeedback(post);
+		this.secondTagRecommender.setFeedback(post);
+	}
 }

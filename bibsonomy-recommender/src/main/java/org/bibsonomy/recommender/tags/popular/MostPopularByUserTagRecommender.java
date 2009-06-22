@@ -59,4 +59,11 @@ public class MostPopularByUserTagRecommender extends AbstractTagRecommender impl
 	public void setDbLogic(DBLogic dbLogic) {
 		this.dbLogic = dbLogic;
 	}
+
+	@Override
+	protected void setFeedbackInternal(Post<? extends Resource> post) {
+		/*
+		 * this recommender ignores feedback
+		 */
+	}
 }

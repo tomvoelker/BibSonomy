@@ -26,6 +26,8 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
+import sun.reflect.misc.MethodUtil;
+
 /**
  * Class for encapsulating webservice queries to recommenders
  * @author fei
@@ -161,6 +163,12 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	@Override
 	public String getId() {
 		return getAddress().toString();
+	}
+
+	@Override
+	public void setFeedback(Post<? extends Resource> post) {
+		// TODO
+		throw new RuntimeException("not implemented");
 	}
 
 	

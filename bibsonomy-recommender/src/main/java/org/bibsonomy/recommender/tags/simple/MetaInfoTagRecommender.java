@@ -111,4 +111,11 @@ public class MetaInfoTagRecommender extends AbstractTagRecommender implements Ta
 	public String getId() {
 		return MetaInfoTagRecommender.class.getName();
 	}
+
+	@Override
+	protected void setFeedbackInternal(Post<? extends Resource> post) {
+		/*
+		 * ignored
+		 */
+	}
 }

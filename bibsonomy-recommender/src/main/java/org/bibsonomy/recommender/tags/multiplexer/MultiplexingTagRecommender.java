@@ -426,6 +426,11 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	public void setDbLogic(DBLogic dbLogic) {
 		this.dbLogic = dbLogic;
 	}
+	@Override
+	public void setFeedback(Post<? extends Resource> post) {
+		// TODO
+		throw new RuntimeException("not implemented");
+	}
 
 
 }

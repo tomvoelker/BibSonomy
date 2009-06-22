@@ -94,4 +94,11 @@ public class DummyTagRecommender implements TagRecommender, TagRecommenderConnec
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public void setFeedback(Post<? extends Resource> post) {
+		/*
+		 * this recommender ignores feedback
+		 */
+	}
 }

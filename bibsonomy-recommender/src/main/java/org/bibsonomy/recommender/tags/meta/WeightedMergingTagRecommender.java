@@ -150,4 +150,13 @@ public class WeightedMergingTagRecommender extends AbstractTagRecommender {
 	public void setTagRecommenders(TagRecommender[] tagRecommenders) {
 		this.tagRecommenders = tagRecommenders;
 	}
+
+
+	@Override
+	protected void setFeedbackInternal(Post<? extends Resource> post) {
+		for (final TagRecommender reco: tagRecommenders) {
+			reco.setFeedback(post);
+		}
+		
+	}
 }

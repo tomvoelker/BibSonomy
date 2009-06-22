@@ -72,6 +72,15 @@ public abstract class AbstractTagRecommender implements TagRecommender {
 	
 	protected abstract void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post);
 
+	@Override
+	public void setFeedback(Post<? extends Resource> post) {
+		log.debug("got post with id " + post.getContentId() + " as feedback.");
+		setFeedbackInternal(post);
+	}
+
+	protected abstract void setFeedbackInternal(Post<? extends Resource> post);
+
+	
 	/**
 	 * @return The current value of cleanTags. Defaults to <code>false</code>.
 	 */

@@ -63,4 +63,11 @@ public class SimpleContentBasedTagRecommender extends AbstractTagRecommender {
 		return new TermProcessingIterator(s);
 	}
 
+	@Override
+	protected void setFeedbackInternal(Post<? extends Resource> post) {
+		/*
+		 * ignored
+		 */
+	}
+
 }

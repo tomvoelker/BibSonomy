@@ -75,4 +75,11 @@ public class MostPopularByResourceTagRecommender extends AbstractTagRecommender 
 	public void setDbLogic(DBLogic dbLogic) {
 		this.dbLogic = dbLogic;
 	}
+
+	@Override
+	protected void setFeedbackInternal(Post<? extends Resource> post) {
+		/*
+		 * this recommender ignores feedback
+		 */
+	}
 }
