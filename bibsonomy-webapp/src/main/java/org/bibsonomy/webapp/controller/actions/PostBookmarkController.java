@@ -33,6 +33,7 @@ import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
 import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
+import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
@@ -53,6 +54,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 
 	private static final Log log = LogFactory.getLog(PostBookmarkController.class);
 	private Errors errors = null;
+	private TagRecommender tagRecommender;
 
 	/**
 	 * FIXME: system tag handling should be done by system tags ... not by this
@@ -64,11 +66,6 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
 	
 	private static final String LOGIN_NOTICE = "login.notice.post.bookmark";
-	
-	/**
-	 * Interface for logging performance of tag recommendations
-	 */
-	private RecommenderStatisticsManager recommenderStatistics;
 
 	/**
 	 * Returns an instance of the command the controller handles.
@@ -96,7 +93,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * set default values.
 		 */
 		command.getPost().getResource().setUrl("http://");
-		command.setPostID(recommenderStatistics.getUnknownPID());
+		command.setPostID(RecommenderStatisticsManager.getUnknownPID());
 		return command;
 	}
 
@@ -163,8 +160,8 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		 * For each post process an unique identifier is generated. 
 		 * This is used for mapping posts to recommendations.
 		 */
-		if(command.getPostID()==recommenderStatistics.getUnknownPID())
-			command.setPostID(recommenderStatistics.getNewPID());
+		if(command.getPostID() == RecommenderStatisticsManager.getUnknownPID())
+			command.setPostID(RecommenderStatisticsManager.getNewPID());
 
 		/*
 		 * decide, what to do
@@ -362,23 +359,39 @@ public class PostBookmarkController extends SingleResourceListController impleme
 			log.warn("could not update post");
 			return Views.ERROR;
 		}
-		
 		/*
 		 * update recommender table such that recommendations are linked to the final post
 		 */
+		setRecommendationFeedback(post, command.getPostID());
+		
+		/*
+		 * leave if and reach final redirect
+		 */
+		return finalRedirect(command.isJump(), loginUserName, post.getResource().getUrl());
+	}
+
+	/**
+	 * Update recommender table such that recommendations are linked to the final 
+	 * post.
+	 * 
+	 * @param post - the final post as saved in the database.
+	 * @param postID - the ID of the post during the posting process.
+	 */
+	private void setRecommendationFeedback(final Post<Bookmark> post, final int postID) {
 		try {
-			recommenderStatistics.connectPostWithRecommendation(posts.get(0), command.getPostID());
+			/*
+		     * To allow the recommender to identify the post and connect it with
+		     * the post we provided at recommendation time, we give it the post
+		     * id using the contentid field. 
+		     */
+			post.setContentId(postID);
+			tagRecommender.setFeedback(post);
 		} catch (final Exception ex) {
 			log.warn("Could not connect post with recommendation.");
 			/*
 			 * fail silently to not confuse user with error 500 when recommender fails 
 			 */
 		}
-		
-		/*
-		 * leave if and reach final redirect
-		 */
-		return finalRedirect(command.isJump(), loginUserName, post.getResource().getUrl());
 	}
 
 	
@@ -512,7 +525,7 @@ public class PostBookmarkController extends SingleResourceListController impleme
 		/*
 		 * update recommender table such that recommendations are linked to the final post
 		 */
-		getRecommenderStatistics().connectPostWithRecommendation(posts.get(0), command.getPostID());
+		setRecommendationFeedback(post, command.getPostID());
 
 		return finalRedirect(command.isJump(), loginUserName, post.getResource().getUrl());
 	}
@@ -765,18 +778,20 @@ public class PostBookmarkController extends SingleResourceListController impleme
 	}
 
 	/**
-	 * set manager for logging performance of (tag) recommendations
-	 * @param recommenderStatistics
+	 * @return The tag recommender associated with this controller.
 	 */
-	public void setRecommenderStatistics(RecommenderStatisticsManager recommenderStatistics) {
-		this.recommenderStatistics = recommenderStatistics;
+	public TagRecommender getTagRecommender() {
+		return this.tagRecommender;
 	}
 
 	/**
-	 * get manager used for logging performance of (tag) recommendations
+	 * The tag recommender is necessary to allow giving it feedback about the
+	 * post as it is stored in the database.
+	 * 
+	 * @param tagRecommender
 	 */
-	public RecommenderStatisticsManager getRecommenderStatistics() {
-		return this.recommenderStatistics;
+	public void setTagRecommender(TagRecommender tagRecommender) {
+		this.tagRecommender = tagRecommender;
 	}
 
 }

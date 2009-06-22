@@ -24,7 +24,6 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
-import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManagerImpl;
 
 import resources.Bibtex;
 import beans.BibtexHandlerBean;
@@ -37,8 +36,6 @@ public class BibtexShowHandler extends HttpServlet{
 	private static final Logger log = Logger.getLogger(BibtexShowHandler.class);
 
 	private DataSource dataSource;
-
-	private RecommenderStatisticsManager recommenderStatistics = new RecommenderStatisticsManagerImpl();
 
 	public void init(ServletConfig config) throws ServletException{	
 		super.init(config); 
@@ -260,7 +257,7 @@ public class BibtexShowHandler extends HttpServlet{
 			 * add post id (for recommender) to bean
 			 */
 
-			bean.setPostID(recommenderStatistics.getNewPID());
+			bean.setPostID(RecommenderStatisticsManager.getNewPID());
 
 
 			/* Bean wird dem request angehängt */

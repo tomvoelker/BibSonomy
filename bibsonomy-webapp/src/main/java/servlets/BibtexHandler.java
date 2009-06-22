@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,20 +45,23 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.log4j.Logger;
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
-import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManagerImpl;
 import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.util.TagStringUtils;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.core.io.ClassPathResource;
 
 import resources.Bibtex;
 import resources.Tag;
@@ -95,7 +99,7 @@ public class BibtexHandler extends HttpServlet {
 	
 	private static final Scraper scraper = new KDEScraperFactory().getScraper();
 	
-	private RecommenderStatisticsManager recommenderStatistics = new RecommenderStatisticsManagerImpl();
+	private TagRecommender tagRecommender;// todo;
 
 	/*
 	 * The dataSource lookup code is added to the init() method to avoid the
@@ -109,6 +113,15 @@ public class BibtexHandler extends HttpServlet {
 		} catch (NamingException ex) {
 			throw new ServletException("Cannot retrieve java:/comp/env/bibsonomy", ex);
 		}
+		/*
+		 * initialize tag recommender using Spring
+		 */
+		final BeanFactory factory = new XmlBeanFactory(new ClassPathResource("bibsonomy2-servlet-recommender.xml"));
+		final Object bean = factory.getBean("multiplexingTagRecommender", TagRecommender.class);
+		if (bean instanceof TagRecommender) {
+			this.tagRecommender = (TagRecommender) bean;
+		}
+		
 	}
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
@@ -352,7 +365,7 @@ public class BibtexHandler extends HttpServlet {
 					// put bibtex object into bean
 					final BibtexHandlerBean bibBean = new BibtexHandlerBean (bibtex);
 					
-					bibBean.setPostID(recommenderStatistics.getNewPID());
+					bibBean.setPostID(RecommenderStatisticsManager.getNewPID());
 
 
 					contentman.prepareStatementsForBibtex(conn);
@@ -422,21 +435,16 @@ public class BibtexHandler extends HttpServlet {
 						 */
 						if (bibSuccessCounter == 1) {
 							/*
-							 * create new post
+							 * copy post into new model, such that the recommender
+							 * can handle it
 							 */
-							final Post<BibTex> post = new Post<BibTex>();
-							post.setUser(new User(currUser));
-							post.setResource(new BibTex());
-							
-							final Bibtex first = bibtexList.getFirst();
-							post.getResource().setIntraHash(first.getSimHash(HashID.INTRA_HASH.getId()));
-							post.setDate(first.getDate());
+							final Post<BibTex> post = copyPostIntoNewModel(currUser, bibtexList.getFirst(), bean.getPostID());
 							
 							/*
 							 * update recommender table such that recommendations are linked to the final post
 							 */
 							try {
-								recommenderStatistics.connectPostWithRecommendation(post, bean.getPostID());
+								tagRecommender.setFeedback(post);
 							} catch (final Exception ex) {
 								log.warn("Could not connect post with recommendation.");
 								/*
@@ -577,7 +585,74 @@ public class BibtexHandler extends HttpServlet {
 			groupman.closeStatements();
 		}
 
-	} // END OF doPost
+	}
+
+	/**
+	 * Copies the post into the new model.
+	 * 
+	 * @param currUser
+	 * @param bibtex
+	 * @param postID - to allow the recommender to identify the post.
+	 * @return
+	 */
+	private Post<BibTex> copyPostIntoNewModel(String currUser, final Bibtex bibtex, final int postID) {
+		/*
+		 * post
+		 */
+		final Post<BibTex> post = new Post<BibTex>();
+		post.setUser(new User(currUser));
+		post.setResource(new BibTex());
+		post.setDate(bibtex.getDate());
+		post.setContentId(postID);
+		post.setDescription(bibtex.getDescription());
+		post.setGroups(Collections.singleton(new Group(bibtex.getGroup())));
+		/*
+		 * tags
+		 */
+		for (final String t: bibtex.getTags()) {
+			post.addTag(t);
+		}
+		/*
+		 * bibtex
+		 */
+		final BibTex resource = post.getResource();
+		resource.setAbstract(bibtex.getAbstract());
+		resource.setAddress(bibtex.getAddress());
+		resource.setAnnote(bibtex.getAnnote());
+		resource.setAuthor(bibtex.getAuthor());
+		resource.setBibtexKey(bibtex.getBibtexKey());
+		resource.setBooktitle(bibtex.getBooktitle());
+		resource.setChapter(bibtex.getChapter());
+		resource.setCrossref(bibtex.getCrossref());
+		resource.setDay(bibtex.getDay());
+		resource.setEdition(bibtex.getEdition());
+		resource.setEditor(bibtex.getEditor());
+		resource.setEntrytype(bibtex.getEntrytype());
+		resource.setHowpublished(bibtex.getHowpublished());
+		resource.setInstitution(bibtex.getInstitution());
+		resource.setJournal(bibtex.getJournal());
+		resource.setMisc(bibtex.getMisc());
+		resource.setMonth(bibtex.getMonth());
+		resource.setNote(bibtex.getNote());
+		resource.setNumber(bibtex.getNumber());
+		resource.setOrganization(bibtex.getOrganization());
+		resource.setPages(bibtex.getPages());
+		resource.setPrivnote(bibtex.getPrivnote());
+		resource.setPublisher(bibtex.getPublisher());
+		resource.setSchool(bibtex.getSchool());
+		resource.setSeries(bibtex.getSeries());
+		resource.setTitle(bibtex.getTitle());
+		resource.setType(bibtex.getType());
+		resource.setUrl(bibtex.getUrl());
+		resource.setVolume(bibtex.getVolume());
+		resource.setYear(bibtex.getYear());
+		/*
+		 * new hashes
+		 */
+		resource.recalculateHashes();
+		
+		return post;
+	}
 
 
 	private static String buildRelevantForTagString(final Collection<String> relevantForGroups) {
