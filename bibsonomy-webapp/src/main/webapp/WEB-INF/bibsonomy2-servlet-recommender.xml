@@ -15,7 +15,7 @@
 	<!-- 
 		Simple tag recommender
 	 -->
-	 <bean id="tagRecommender" class="org.bibsonomy.recommender.tags.DefaultTagRecommender" scope="singleton"/>
+	<bean id="tagRecommender" class="org.bibsonomy.recommender.tags.DefaultTagRecommender" scope="singleton"/>
 	
 	<bean id="recoDBLogic" class="org.bibsonomy.recommender.tags.database.DBAccess" factory-method="getInstance"/>
 	
@@ -137,12 +137,5 @@
 	 	<property name="dbLogic" ref="recoDBLogic"/>
 	 </bean>
 	 
-	 <!--+
-	     | manager for logging recommender's performance
-	     +-->
-	 <bean id="tagRecommenderStatistics" class="org.bibsonomy.recommender.tags.database.RecommenderStatisticsManagerImpl">
-	 	<property name="dbLogic" ref="recoDBLogic"/>
-	 </bean>
-
 
 </beans>
