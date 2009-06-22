@@ -26,8 +26,6 @@ import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 
-import sun.reflect.misc.MethodUtil;
-
 /**
  * Class for encapsulating webservice queries to recommenders
  * @author fei
