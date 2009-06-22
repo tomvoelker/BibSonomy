@@ -25,8 +25,15 @@ package org.bibsonomy.model.util;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
+import org.antlr.runtime.ANTLRStringStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.RecognitionException;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.util.tagparser.TagString3Lexer;
+import org.bibsonomy.model.util.tagparser.TagString3Parser;
 
 /**
  * @author Dominik Benz
@@ -107,5 +114,32 @@ public class TagUtils {
 			return sb.toString();
 		}
 		return sb.delete(sb.length() - delim.length(), sb.length()).toString();
-	}	
+	}
+	
+	
+	/**
+	 * Parses the incoming tag string and returns a set of tags
+	 * 
+	 * @param tagString
+	 * @return a set of tags
+	 * @throws RecognitionException
+	 */
+	public static Set<Tag> parse(final String tagString) throws RecognitionException {
+		final Set<Tag> tags = new TreeSet<Tag>();
+
+		if (tagString != null) {
+			/*
+			 * prepare parser
+			 */
+			final CommonTokenStream tokens = new CommonTokenStream();
+			tokens.setTokenSource(new TagString3Lexer(new ANTLRStringStream(tagString)));
+			final TagString3Parser parser = new TagString3Parser(tokens, tags);
+			/*
+			 * parse
+			 */
+			parser.tagstring();
+		}
+		return tags;
+	}
+	
 }
