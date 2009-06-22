@@ -57,4 +57,11 @@ public class FixedTagsTagRecommender implements TagRecommender {
 	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
 		return tags;
 	}
+
+	@Override
+	public void setFeedback(Post<? extends Resource> post) {
+		/*
+		 * ignored
+		 */
+	}
 }
