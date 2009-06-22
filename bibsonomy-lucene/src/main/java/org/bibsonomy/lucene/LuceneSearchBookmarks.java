@@ -117,7 +117,7 @@ public class LuceneSearchBookmarks {
 	 * @param String idname fieldname of returning value
 	 * @param char LuceneIndex lucene index to use b for bookmark, p for publications
 	 * */
-	public ResultList<Post<Bookmark>> searchLucene(String group, String search_terms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset)  {
+	public ResultList<Post<Bookmark>> searchLucene(String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset)  {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBookmarks.class);
 			
 //		String orderBy = "relevance"; 
@@ -165,13 +165,13 @@ public class LuceneSearchBookmarks {
 
 
 		// do not search for nothing in lucene index
-		if ( (search_terms != null) && (!search_terms.isEmpty()) )
+		if ( (searchTerms != null) && (!searchTerms.isEmpty()) )
 		{
 			/* parse search_terms for forbidden characters
 			 * forbidden characters are those, which will harm the lucene query
 			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
 			 */
-			search_terms = search_terms.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
+			searchTerms = Utils.removeSpecialLuceneChars(searchTerms);
 
 			int allowedGroupsIterator = 0;
 			for ( String groupName : GroupNames){
@@ -182,19 +182,19 @@ public class LuceneSearchBookmarks {
 			
 			LOGGER.debug("LuceneBookmark: allowedGroups: " + allowedGroupNames);
 			
-			mergedFiledQuery = lField_merged + ":("+ search_terms +") ";
+			mergedFiledQuery = lField_merged + ":("+ searchTerms +") ";
 			allowedGroupNamesQuery = lField_group+":("+allowedGroupNames+")";
 			privateGroupQuery = lField_group+":(private)";
 				
 			if ( (UserName != null) && (!UserName.isEmpty()) )
 			{
-				UserName = UserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
+				UserName = Utils.removeSpecialLuceneChars(UserName);
 				userQuery  = lField_user + ":("+ UserName +")";
 			}
 
 			if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
 			{
-				requestedUserName = requestedUserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
+				requestedUserName = Utils.removeSpecialLuceneChars(requestedUserName);
 				requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
 			}
 

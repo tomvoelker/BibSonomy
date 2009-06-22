@@ -128,14 +128,14 @@ public class LuceneSearchBibTex {
 	 * full text search for search:all and search:username
 	 * 
 	 * @param groupId
-	 * @param search_terms
+	 * @param searchTerms
 	 * @param requestedUserName
 	 * @param UserName
 	 * @param GroupNames
 	 * @return queryString
 	 */
 	
-	private QuerySortContainer getFulltextQueryFilter (String group, String search_terms, String requestedUserName, String UserName, Set<String> GroupNames) {
+	private QuerySortContainer getFulltextQueryFilter (String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames) {
 		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
 
 //		String orderBy = "relevance"; 
@@ -161,27 +161,27 @@ public class LuceneSearchBibTex {
 		
 		LOGGER.debug("LuceneBibTex: allowedGroups: " + allowedGroupNames);		
 
-		if ( (search_terms != null) && (!search_terms.isEmpty()) )
+		if ( (searchTerms != null) && (!searchTerms.isEmpty()) )
 		{
 			/* parse search_terms for forbidden characters
 			 * forbidden characters are those, which will harm the lucene query
 			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
 			 */
-			search_terms = search_terms.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
-			mergedFiledQuery = lField_merged + ":("+ search_terms +") ";
+			searchTerms = Utils.removeSpecialLuceneChars(searchTerms);
+			mergedFiledQuery = lField_merged + ":("+ searchTerms +") ";
 		}
 		allowedGroupNamesQuery = lField_group+":("+allowedGroupNames+")";
 		privateGroupQuery = lField_group+":(private)";
 			
 		if ( (UserName != null) && (!UserName.isEmpty()) )
 		{
-			UserName = UserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
+			UserName = Utils.removeSpecialLuceneChars(UserName);
 			userQuery  = lField_user + ":("+ UserName +")";
 		}
 
 		if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
 		{
-			requestedUserName = requestedUserName.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
+			requestedUserName = Utils.removeSpecialLuceneChars(requestedUserName);
 			requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
 		}
 
@@ -273,13 +273,13 @@ public class LuceneSearchBibTex {
 			 * forbidden characters are those, which will harm the lucene query
 			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
 			 */
-			search = search.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
+			search = Utils.removeSpecialLuceneChars(search);
 			searchQuery = lField_author + ":("+ search +")";
 		}
 
 		if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
 		{
-			requestedUserNameQuery = requestedUserNameQuery.replaceAll("[\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
+			requestedUserNameQuery = Utils.removeSpecialLuceneChars(requestedUserNameQuery);
 			requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
 		}
 		
