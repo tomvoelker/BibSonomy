@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -8,19 +9,24 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.importer.bookmark.file.FirefoxImporter;
+import org.bibsonomy.importer.bookmark.service.DeliciousImporterFactory;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.importer.FileBookmarkImporter;
 import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
+import org.bibsonomy.util.file.FileUploadInterface;
+import org.bibsonomy.util.file.HandleFileUpload;
 import org.bibsonomy.webapp.command.actions.ImportCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author mwa
@@ -29,21 +35,22 @@ import org.bibsonomy.webapp.view.Views;
 public class ImportController implements MinimalisticController<ImportCommand>{
 
 	private static final Log log = LogFactory.getLog(ImportController.class);
-	/**
-	 * The RemoteServiceBookmarkImporter interface
-	 */
-	RemoteServiceBookmarkImporter importer;
-	
+
 	/**
 	 * FileBookmarkImporter interface
 	 */
-	FileBookmarkImporter fileImporter;
+	private FileBookmarkImporter fileImporter;
 	
 	/**
 	 * logic interface for the database connectivity
 	 */
 	private LogicInterface logic;
 		
+	/**
+	 * path of the document
+	 */
+	private String docpath;
+	
 	/**
 	 * Main method which starts the import
 	 */
@@ -53,6 +60,8 @@ public class ImportController implements MinimalisticController<ImportCommand>{
 		
 		if(command.getImportType().equals("delicious")){
 			try {
+				DeliciousImporterFactory importerFactory = new DeliciousImporterFactory();
+				RemoteServiceBookmarkImporter importer = importerFactory.getImporter();
 				importer.setCredentials(command.getUserName(), command.getPassWord());
 				posts = importer.getPosts();
 			} catch (IOException ex) {
@@ -60,7 +69,9 @@ public class ImportController implements MinimalisticController<ImportCommand>{
 			}
 		}else if(command.getImportType().equals("firefox")){
 			try{
-				fileImporter.initialize(command.getFile(), command.getContext().getLoginUser(), command.getGrouping());
+				File file = buildFile(command.getFile());
+				fileImporter = new FirefoxImporter();
+				fileImporter.initialize(file, command.getContext().getLoginUser(), command.getGrouping());
 				posts = fileImporter.getPosts();
 			} catch (IOException ex) {
 				log.error(ex.getMessage());
@@ -71,7 +82,7 @@ public class ImportController implements MinimalisticController<ImportCommand>{
 			storePosts(command, posts);
 		}
 	
-		return new ExtendedRedirectView(Views.SETTINGSPAGE.getName());				
+		return Views.IMPORT_SUCCESS;
 	
 	}
 	
@@ -98,13 +109,13 @@ public class ImportController implements MinimalisticController<ImportCommand>{
 			try {
 				// throws an exception if the bookmark already exists in the
 				// system
-				List<String> createdPostHash = this.logic.createPosts((List<Post<?>>) singletonList);
+				List<String> createdPostHash = logic.createPosts((List<Post<?>>) singletonList);
 				newBookmarkEntries.put(createdPostHash.get(0), bookmarkUrl);
 			} catch (IllegalArgumentException e) {
 				// checks whether the update bookmarks checkbox is checked
-				if (command.isOverWrite()) {
+				if (command.isOverwrite()) {
 
-					List<String> createdPostHash = this.logic.updatePosts((List<Post<?>>) singletonList, PostUpdateOperation.UPDATE_ALL);
+					List<String> createdPostHash = logic.updatePosts((List<Post<?>>) singletonList, PostUpdateOperation.UPDATE_ALL);
 					updatedBookmarkEntries.put(createdPostHash.get(0), bookmarkUrl);
 				} else {
 					nonCreatedBookmarkEntries.add(bookmarkUrl);
@@ -131,6 +142,42 @@ public class ImportController implements MinimalisticController<ImportCommand>{
 	}
 	
 	/**
+	 * Build a File Object from a CommonsMultiPartFile Object
+	 * 
+	 * @param command
+	 * @return
+	 */
+	private File buildFile(CommonsMultipartFile file) {
+
+		final List<FileItem> list = new LinkedList<FileItem>();
+		// retrieves chosen import file
+		list.add(file.getFileItem());
+
+		FileUploadInterface up = null;
+
+		try {
+
+			up = new HandleFileUpload(list, HandleFileUpload.firfoxImportExt);
+		} catch (Exception importEx) {
+			log.error(importEx.getMessage());
+		}
+
+		File bookmarkFile = null;
+
+		try {
+			// writes the file into the temporary directory and returns a
+			// handle of the file object
+			bookmarkFile = up.writeUploadedFilesAndReturnFile(this.docpath);
+
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return null;
+		}
+		return bookmarkFile;
+
+	}
+	
+	/**
 	 * Return a new instance of an ImportCommand 
 	 */
 	public ImportCommand instantiateCommand() {
@@ -138,25 +185,24 @@ public class ImportController implements MinimalisticController<ImportCommand>{
 	}
 
 	/**
-	 * @return a RemoteServiceBookmarkImporter
+	 * @param logic logic interface
 	 */
-	public RemoteServiceBookmarkImporter getImporter() {
-		return this.importer;
+	public void setLogic(LogicInterface logic) {
+		this.logic = logic;
 	}
 
 	/**
-	 * @param importer
+	 * @return a string
 	 */
-	public void setImporter(RemoteServiceBookmarkImporter importer) {
-		this.importer = importer;
+	public String getDocpath() {
+		return this.docpath;
 	}
 
-	public FileBookmarkImporter getFileImporter() {
-		return this.fileImporter;
-	}
-
-	public void setFileImporter(FileBookmarkImporter fileImporter) {
-		this.fileImporter = fileImporter;
+	/**
+	 * @param docpath
+	 */
+	public void setDocpath(String docpath) {
+		this.docpath = docpath;
 	}
 	
 }
