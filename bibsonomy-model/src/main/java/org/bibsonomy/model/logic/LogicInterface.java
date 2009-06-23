@@ -229,7 +229,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param groupName the group to change
 	 * @param userName the user to remove
 	 */
-	public void removeUserFromGroup(String groupName, String userName);
+	public void deleteUserFromGroup(String groupName, String userName);
 
 	/**
 	 * Adds a user to the database.
@@ -278,7 +278,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param resourceHash
 	 * @return The hash of the created document.
 	 */
-	public String addDocument(Document doc, String resourceHash);
+	public String createDocument(Document doc, String resourceHash);
 
 	/**
 	 * Get a document from an existing Bibtex entry
@@ -310,7 +310,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param status  - the status of the address (e.g. "blocked") 
 	 * @author Robert Jäschke
 	 */
-	public void addInetAddressStatus (InetAddress address, InetAddressStatus status);
+	public void createInetAddressStatus (InetAddress address, InetAddressStatus status);
 
 	/** 
 	 * Returns the current status of an InetAddress.
@@ -324,7 +324,7 @@ public interface LogicInterface extends PostLogicInterface {
 	/** Removes the address from the the list of stati for InetAddresses. Since
 	 * currently one address can have only one status, it is not neccessary to
 	 * say which status for that address should be removed. TODO: see comment 
-	 * for {@link #addInetAddressStatus(InetAddress, InetAddressStatus)}.
+	 * for {@link #createInetAddressStatus(InetAddress, InetAddressStatus)}.
 	 * 
 	 * @param address - the InetAddress which should be removed from the status list.
 	 * @author Robert Jäschke
@@ -513,6 +513,6 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param requestedUser
 	 * @param relation
 	 */
-	public void insertUserRelationship(User loggedInUser, User requestedUser, UserRelation relation);
+	public void createUserRelationship(User loggedInUser, User requestedUser, UserRelation relation);
 	
 }
