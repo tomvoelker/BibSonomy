@@ -33,7 +33,7 @@
 	</select>
 		
 	<select id="getDocuments" resultMap="DocumentCommon.document" parameterClass="documentParam">
-		SELECT d.hash, d.name, d.md5hash 
+		SELECT d.hash, d.name, d.md5hash, d.user_name 
 		FROM document d, bibtex b 
 		WHERE b.simhash$requestedSimHash$ = #resourceHash#
 			AND d.content_id = b.content_id

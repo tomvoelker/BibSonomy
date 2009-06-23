@@ -3,8 +3,9 @@
 
 <sqlMap namespace="DocumentCommon">
 	<resultMap id="document" class="document" groupBy="md5hash">
-		<result property="fileHash"      column="hash"     javaType="string" />
-    	<result property="fileName"      column="name"     javaType="string" />
-    	<result property="md5hash"		 column="md5hash"  javaType="string" />
+		<result property="fileHash"      column="hash"      javaType="string" />
+    	<result property="fileName"      column="name"      javaType="string" />
+    	<result property="md5hash"		 column="md5hash"   javaType="string" />
+    	<result property="userName"		 column="user_name" javaType="string" />
 	</resultMap>
 </sqlMap>
