@@ -181,7 +181,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager{
 				throw new IllegalStateException("No document for this bibtex entry");
 			}
 		} catch (NullPointerException e){
-			throw new ResourceNotFoundException("Bibtex resource doesn't exists.");
+			throw new ResourceNotFoundException("BibTeX resource doesn't exists.");
 		}
 	}
 }
