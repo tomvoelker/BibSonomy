@@ -78,7 +78,7 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 				up.writeUploadedFiles(docpath);
 				
 				// ... and add it to the db
-				logic.addDocument(doc, command.getResourceHash());
+				logic.createDocument(doc, command.getResourceHash());
 				
 				/*
 				 * finally add the document object to the command object to 

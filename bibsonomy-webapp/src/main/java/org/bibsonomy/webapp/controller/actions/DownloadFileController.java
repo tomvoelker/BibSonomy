@@ -91,7 +91,7 @@ public class DownloadFileController implements MinimalisticController<DownloadFi
 					/*
 					 * delete entry in database
 					 */
-					logic.deleteDocument(requestedUser, intrahash, fileName);
+					logic.deleteDocument(document, intrahash);
 					new File(FileUtil.getDocumentPath(docpath, document.getFileHash())).delete();
 					/*
 					 * return to bibtex details page
