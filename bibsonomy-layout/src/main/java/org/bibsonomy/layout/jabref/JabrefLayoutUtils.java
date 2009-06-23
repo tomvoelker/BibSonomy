@@ -49,7 +49,7 @@ public class JabrefLayoutUtils {
 	 * @return
 	 */
 	public static String userLayoutHash (final String user, final LayoutPart part) {
-		return StringUtils.getMD5Hash("user." + user + "." + part + layoutFileExtension).toLowerCase();
+		return StringUtils.getMD5Hash("user." + user.toLowerCase() + "." + part + layoutFileExtension).toLowerCase();
 	}
 	
 	/** Builds the name of a custom user layout, for the map and elsewhere. Typically "custom_" + userName.
