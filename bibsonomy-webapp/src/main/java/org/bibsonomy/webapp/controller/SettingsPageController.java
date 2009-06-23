@@ -1,29 +1,10 @@
 package org.bibsonomy.webapp.controller;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.importer.bookmark.file.FirefoxImporter;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.services.importer.FileBookmarkImporter;
-import org.bibsonomy.util.file.FileUploadInterface;
-import org.bibsonomy.util.file.HandleFileUpload;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -41,24 +22,11 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	private static final Log log = LogFactory.getLog(SearchPageController.class);
 
 	/**
-	 * logic interface for the database connectivity
-	 */
-	private LogicInterface logic;
-
-	/**
-	 * path of the document
-	 */
-	private String docpath;
-
-	/**
 	 * hold current errors
 	 */
 	private Errors errors = null;
-
-	/**
-	 * settings of the user
-	 */
-	private UserSettings userSettings;
+	
+	private LogicInterface logic;
 
 	/**
 	 * @param command
@@ -80,12 +48,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			break;
 		}
 		case 2: {
-			// called by the importation tab
-			workOnImportTab(command);
-
-			if (errors.hasErrors()) {
-				return Views.ERROR;
-			}
 			break;
 		}
 		default: {
@@ -97,7 +59,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		if (errors.hasErrors()) {
 
 			if (errors.hasFieldErrors("error.general.login")) {
-
 				return Views.SETTINGSPAGE;
 			}
 
@@ -111,147 +72,13 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 	}
 
-	private void workOnImportTab(SettingsViewCommand command) {
-
-		// retrieve and parse bookmark.html file
-
-		User loginUser = command.getContext().getLoginUser();
-
-		if (loginUser.getName() != null) {
-
-			// firefox import
-			if ("firefox".equals(command.getImportType())) {
-
-				importFirefoxBookmarks(command, loginUser);
-
-			}
-			// delicious import
-			else if ("delicious".equals(command.getImportType())) {
-
-			}
-			// jabref import
-			else if ("jabref".equals(command.getImportType())) {
-
-				importJabrefLayout(command, loginUser);
-			}
-		} else {
-			errors.reject("error.general.login");
-		}
-	}
-
 	private void importJabrefLayout(SettingsViewCommand command, User loginUser) {
 
-	}
-
-	@SuppressWarnings("unchecked")
-	private void importFirefoxBookmarks(SettingsViewCommand command, User loginUser) {
-
-		// checks whether a file for import is chosen or not
-		if (command.getFile() != null && command.getFile().getSize() > 0) {
-
-			final List<FileItem> list = new LinkedList<FileItem>();
-			// retrieves chosen import file
-			list.add(command.getFile().getFileItem());
-
-			FileUploadInterface up = null;
-
-			try {
-
-				up = new HandleFileUpload(list, HandleFileUpload.firfoxImportExt);
-			} catch (Exception importEx) {
-				// TODO Auto-generated catch block
-				importEx.printStackTrace();
-			}
-
-			File bookmarkFile = null;
-
-			try {
-				// writes the file into the temporary directory and returns a
-				// handle of the file object
-				bookmarkFile = up.writeUploadedFilesAndReturnFile(this.docpath);
-
-			} catch (Exception e) {
-				// TODO still to catch
-			}
-
-			List<Post<Bookmark>> bookmarksFromFirefox = null;
-
-			// extracts all the bookmarks in the file
-			FileBookmarkImporter firefoxBookmarkImporter = new FirefoxImporter();
-			
-			try {
-				firefoxBookmarkImporter.initialize(bookmarkFile, loginUser, command.getGrouping());
-				bookmarksFromFirefox = firefoxBookmarkImporter.getPosts();
-			} catch (IOException ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
-			}
-
-			bookmarkFile.delete();
-
-			Iterator<Post<Bookmark>> bookmarkIt = bookmarksFromFirefox.iterator();
-
-			// stores all newly added bookmarks
-			Map<String, String> newBookmarkEntries = new HashMap<String, String>();
-
-			// stores all the updated bookmarks
-			Map<String, String> updatedBookmarkEntries = new HashMap<String, String>();
-
-			// stores all the non imported bookmarks
-			List<String> nonCreatedBookmarkEntries = new ArrayList<String>();
-
-			while (bookmarkIt.hasNext()) {
-				Post<?> nextBookmark = bookmarkIt.next();
-
-				List<?> singletonList = Collections.singletonList(nextBookmark);
-
-				String bookmarkUrl = ((Post<Bookmark>) singletonList.get(0)).getResource().getUrl();
-
-				try {
-					// throws an exception if the bookmark already exists in the
-					// system
-					List<String> createdPostHash = this.logic.createPosts((List<Post<?>>) singletonList);
-					newBookmarkEntries.put(createdPostHash.get(0), bookmarkUrl);
-				} catch (IllegalArgumentException e) {
-					// checks whether the update bookmarks checkbox is checked
-					if (command.getOverwrite()) {
-
-						List<String> createdPostHash = this.logic.updatePosts((List<Post<?>>) singletonList, PostUpdateOperation.UPDATE_ALL);
-						updatedBookmarkEntries.put(createdPostHash.get(0), bookmarkUrl);
-					} else {
-						nonCreatedBookmarkEntries.add(bookmarkUrl);
-					}
-				}
-			}
-
-			// stores the result to the command object, that the data can be
-			// accessed by the jsp side
-			if (newBookmarkEntries.size() > 0) {
-				command.setNewBookmarks(newBookmarkEntries);
-			}
-			// stores the result to the command object, that the data can be
-			// accessed by the jsp side
-			if (updatedBookmarkEntries.size() > 0) {
-				command.setUpdatedBookmarks(updatedBookmarkEntries);
-			}
-			// stores the result to the command object, that the data can be
-			// accessed by the jsp side
-			if (nonCreatedBookmarkEntries.size() > 0) {
-				command.setNonCreatedBookmarks(nonCreatedBookmarkEntries);
-			}
-		}
 	}
 
 	private void workOnSettingsTab(SettingsViewCommand command) {
 		command.getContext().getLoginUser().getSettings().getTagboxStyle();
 		command.getContext().getLoginUser().getSettings().getTagboxSort();
-	}
-
-	/**
-	 * @param logic
-	 */
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
 	}
 
 	/**
@@ -275,19 +102,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		this.errors = errors;
 	}
 
-	public String getDocpath() {
-		return this.docpath;
-	}
-
-	public void setDocpath(String docpath) {
-		this.docpath = docpath;
-	}
-
-	public UserSettings getUserSettings() {
-		return this.userSettings;
-	}
-
-	public void setUserSettings(UserSettings userSettings) {
-		this.userSettings = userSettings;
+	public void setLogic(LogicInterface logic) {
+		this.logic = logic;
 	}
 }
