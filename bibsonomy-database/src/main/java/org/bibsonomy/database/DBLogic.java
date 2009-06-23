@@ -1072,18 +1072,18 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#deleteDocument(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void deleteDocument(final String userName, final String resourceHash, final String fileName){
-		final String lowerCaseUserName = userName.toLowerCase();
+	public void deleteDocument(final Document document, final String resourceHash){
+		final String userName = document.getUserName();
 		this.ensureLoggedIn();
-		this.permissionDBManager.ensureWriteAccess(this.loginUser, lowerCaseUserName);
+		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 
 		final DBSession session = openSession();
 		try {
 			// create a DocumentParam object
 			final DocumentParam docParam = new DocumentParam();
-			docParam.setFileName(fileName);
+			docParam.setFileName(document.getFileName());
 			docParam.setResourceHash(resourceHash);
-			docParam.setUserName(lowerCaseUserName);
+			docParam.setUserName(userName);
 
 			// FIXME: remove deprecated method
 			final boolean valid = this.docDBManager.validateResource(docParam, session);
@@ -1102,7 +1102,7 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
-		log.info("API - Document deleted: " + fileName + " from User: " + lowerCaseUserName);
+		log.info("API - Document deleted: " + document.getFileName() + " from User: " + userName);
 	}
 
 	/* (non-Javadoc)
