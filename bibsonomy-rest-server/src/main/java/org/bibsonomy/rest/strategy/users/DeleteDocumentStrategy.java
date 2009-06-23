@@ -1,6 +1,7 @@
 package org.bibsonomy.rest.strategy.users;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.strategy.AbstractDeleteStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -13,9 +14,8 @@ import org.bibsonomy.rest.strategy.Context;
  */
 public class DeleteDocumentStrategy extends AbstractDeleteStrategy {
 	
-	private final String userName;
+	private final Document document;
 	private final String resourceHash;
-	private final String fileName;
 	
 	/**
 	 * @param context
@@ -25,9 +25,10 @@ public class DeleteDocumentStrategy extends AbstractDeleteStrategy {
 	 */
 	public DeleteDocumentStrategy(final Context context, final String userName, final String resourceHash, final String fileName) {
 		super(context);
-		this.userName = userName;
+		this.document = new Document();
+		this.document.setUserName(userName);
+		this.document.setFileName(fileName);
 		this.resourceHash = resourceHash;
-		this.fileName = fileName;
 	}
 	
 	@Override
@@ -37,7 +38,7 @@ public class DeleteDocumentStrategy extends AbstractDeleteStrategy {
 
 	@Override
 	protected boolean delete() throws InternServerException {
-		this.getLogic().deleteDocument(this.userName, this.resourceHash, this.fileName);
+		this.getLogic().deleteDocument(this.document, this.resourceHash);
 		// no exception -> assume success
 		return true;
 	}
