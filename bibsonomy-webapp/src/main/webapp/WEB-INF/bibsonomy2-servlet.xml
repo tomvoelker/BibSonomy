@@ -405,6 +405,19 @@
 						<property name="controllerBeanName" value="followersViewController"/>
 					</bean>
 				</entry>
+				<entry key="import">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="importController"/>
+						<property name="allowedFields">
+							<list>
+								<value>file</value>
+								<value>grouping</value>
+								<value>importType</value>
+								<value>overwrite</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -453,8 +466,6 @@
 	
 	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
 		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="docpath"><value>${project.document.path}</value></property>
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request">
@@ -704,6 +715,14 @@
 	</bean>	
 	
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
+	
+	<bean id="importController" class="org.bibsonomy.webapp.controller.actions.ImportController" scope="request">
+		<property name="docpath">
+			<value>${project.document.path}</value>
+		</property>
+		<property name="logic" ref="logic"/>
+	</bean>
+	
 	
 	<!--  #################### factory beans #################### -->
 	
