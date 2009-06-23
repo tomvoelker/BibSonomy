@@ -491,7 +491,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#removeUserFromGroup(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public void removeUserFromGroup(final String groupName, final String userName) {
+	public void deleteUserFromGroup(final String groupName, final String userName) {
 		// TODO: take care of toLowerCase()!
 		// FIXME: IMPORTANT: not everybody may do this!
 		// better do nothing than anything horribly wrong:
@@ -982,7 +982,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#addDocument(org.bibsonomy.model.Document, java.lang.String)
 	 */
 	@Override
-	public String addDocument(final Document doc, final String resourceHash) {
+	public String createDocument(final Document doc, final String resourceHash) {
 		this.ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(doc, this.loginUser);
 		return this.storeDocument(doc, resourceHash).getFileHash();
@@ -996,7 +996,7 @@ public class DBLogic implements LogicInterface {
 	 * @param resourceHash 
 	 * @return doc
 	 */
-	public Document storeDocument(final Document doc, final String resourceHash){
+	private Document storeDocument(final Document doc, final String resourceHash){
 		final DBSession session = openSession();
 
 		try {
@@ -1109,7 +1109,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#addInetAddressStatus(java.net.InetAddress, org.bibsonomy.common.enums.InetAddressStatus)
 	 */
 	@Override
-	public void addInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
+	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
 		this.ensureLoggedIn();
 		// only admins are allowed to change the status of an address
 		this.permissionDBManager.ensureAdminAccess(this.loginUser);
@@ -1478,7 +1478,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#insertUserRelationship()
 	 */
 	@Override
-	public void insertUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+	public void createUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
 		this.ensureLoggedIn();
 		
 		final DBSession session = openSession();
