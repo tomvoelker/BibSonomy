@@ -22,7 +22,7 @@
 		<c:set var="valueButton"><fmt:message key="settings.firefox.button.text"/></c:set>
 		
 		<h2><fmt:message key="settings.firefox.header"/></h2>
-		<form:form id="settingImportForm" action="/settingsnew?selTab=${command.selTab}" method="post" enctype="multipart/form-data">
+		<form:form id="settingImportForm" action="/import" method="post" enctype="multipart/form-data">
 		  <table> 
 		   <tr>
 		   <td><form:label path="file" ><fmt:message key="settings.firefox.fileselect"/></form:label></td>
@@ -196,5 +196,35 @@
 		    </tr>
 		  </table>
 		</form>	
+		
+		<form:form id="settingImportForm" action="/settingsnew?selTab=${command.selTab}" method="post" enctype="multipart/form-data">
+			<table>
+		    <tr> 
+		      <td>begin.layout</td>
+		      <td><c:choose>
+		        <c:when test="${empty layoutBean.beginName}"><input name="file.begin" type="file" size="20"/></c:when>
+		        <c:otherwise><c:out value="${layoutBean.beginName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.beginHash}&amp;action=delete">delete</a></c:otherwise>
+		      </c:choose></td>
+		      <td>(appears at the beginning of the output, optional)</td>
+		    </tr><tr>
+		      <td>item.layout</td>
+		      <td><c:choose>
+		        <c:when test="${empty layoutBean.itemName}"><input name="file.item" type="file" size="20"/></c:when>
+		        <c:otherwise><c:out value="${layoutBean.itemName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.itemHash}&amp;action=delete">delete</a></c:otherwise>
+		      </c:choose></td>
+		      <td>(used to render each publication item)</td>
+		    </tr><tr>
+		      <td>end.layout</td>
+		      <td><c:choose>
+		        <c:when test="${empty layoutBean.endName}"><input name="file.end" type="file" size="20"/></c:when>
+		        <c:otherwise><c:out value="${layoutBean.endName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.endHash}&amp;action=delete">delete</a></c:otherwise>
+		      </c:choose></td>
+		      <td>(appears at the end of the output, optional)</td>
+		    </tr><tr>
+		      <td><input type="submit" value="upload" /><div class="errmsg"><c:out value="${layoutBean.error}"/></div></td>
+		      <td></td>
+		    </tr>
+		  </table>
+		</form:form>
 		
 </jsp:root>
