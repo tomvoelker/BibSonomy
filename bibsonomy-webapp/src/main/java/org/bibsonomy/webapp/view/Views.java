@@ -178,6 +178,9 @@ public enum Views implements View {
 	 */
 	RELEVANTFORPAGE("relevantfor"),
 
+	/** success view, shown if a resource import was successful **/
+	IMPORT_SUCCESS("import_success"),
+	
 	
 	/* *****************************************************
 	 * AJAX views
