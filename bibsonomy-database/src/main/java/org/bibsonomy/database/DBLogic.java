@@ -26,7 +26,6 @@ import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
@@ -43,7 +42,6 @@ import org.bibsonomy.database.managers.TagRelationDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.params.DocumentParam;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
@@ -236,7 +234,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPosts(java.lang.Class, org.bibsonomy.common.enums.GroupingEntity, java.lang.String, java.util.List, java.lang.String, org.bibsonomy.model.enums.Order, org.bibsonomy.common.enums.FilterEntity, int, int, java.lang.String)
 	 */
@@ -355,7 +353,7 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getGroupDetails(java.lang.String)
 	 */
@@ -504,7 +502,7 @@ public class DBLogic implements LogicInterface {
 //		}
 	}
 
-	
+
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#deletePosts(java.lang.String, java.util.List)
 	 */
@@ -564,7 +562,7 @@ public class DBLogic implements LogicInterface {
 			final String oldIntraHash = post.getResource().getIntraHash();
 			post.getResource().recalculateHashes();			
 			this.validateGroups(post, session);
-			
+
 			/*
 			 * change group IDs to spam group IDs 
 			 */
@@ -974,7 +972,7 @@ public class DBLogic implements LogicInterface {
 			}
 		} 
 		throw new UnsupportedOperationException("Currently only ALL authors can be listed.");
-		
+
 	}
 
 
@@ -982,62 +980,53 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#addDocument(org.bibsonomy.model.Document, java.lang.String)
 	 */
 	@Override
-	public String createDocument(final Document doc, final String resourceHash) {
+	public String createDocument(final Document document, final String resourceHash) {
+		final String userName = document.getUserName();
 		this.ensureLoggedIn();
-		this.permissionDBManager.ensureWriteAccess(doc, this.loginUser);
-		return this.storeDocument(doc, resourceHash).getFileHash();
-	}
+		/*
+		 * users can only modify their own documents
+		 */
+		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 
-	/**
-	 * TODO: this method is very probably broken and allows EVERYBODY to upload 
-	 * documents for other users.
-	 * 
-	 * @param doc
-	 * @param resourceHash 
-	 * @return doc
-	 */
-	private Document storeDocument(final Document doc, final String resourceHash){
 		final DBSession session = openSession();
-
 		try {
-			// create a DocumentParam object
-			final DocumentParam docParam = new DocumentParam();
-			docParam.setUserName(doc.getUserName());
-			docParam.setResourceHash(resourceHash);
-			docParam.setFileHash(doc.getFileHash());
-			docParam.setFileName(doc.getFileName());
-			docParam.setMd5hash(doc.getMd5hash());
-
-			// FIXME remove deprecated method
-			final boolean valid = this.docDBManager.validateResource(docParam, session);
-			final boolean existingDoc = this.docDBManager.checkForExistingDocuments(docParam, session);
-
-			/*
-			 * valid means that the resource is a bibtex entry and the given user is
-			 * the owner of this entry.
-			 */
-			if (valid){
+			if (resourceHash != null) {
 				/*
-				 * we have to handle if there is an existing document or not.
-				 * if there is an existing document for this resource we have to update it,
-				 * if not just write it to the db.
+				 * document shall be attached to a post
 				 */
-				if (existingDoc){
-					//update
-					this.docDBManager.updateDocument(docParam, session);
+				final Post<BibTex> post = bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				if (post != null) {
+					/*
+					 * post really exists!
+					 */
+					final boolean existingDoc = this.docDBManager.checkForExistingDocuments(userName, resourceHash, document.getFileName(), session);
+					if (existingDoc) {
+						/*
+						 * the post has already a file with that name attached ...
+						 */
+						this.docDBManager.updateDocument(post.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
+								
+					} else {
+						//add
+						this.docDBManager.addDocument(userName, post.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
+					}
+
 				} else {
-					//add
-					this.docDBManager.addDocument(docParam, session);
+					throw new ValidationException("Could not find a post with hash '" + resourceHash + "'.");
 				}
+				
 			} else {
-				throw new ValidationException("You are not authorized to perform the requested operation.");
+				/*
+				 * TODO: do the same with documents which have no post attached ...
+				 */
 			}
 		} finally {
 			session.close();
 		}
-		log.info("API - New file added to db: " + doc.getFileName() + " from User: " + doc.getUserName());
-		return doc;
+		log.info("created new file " + document.getFileName() + " for user " + userName);
+		return document.getFileHash();
 	}
+
 
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDocument(java.lang.String, java.lang.String, java.lang.String)
@@ -1046,6 +1035,10 @@ public class DBLogic implements LogicInterface {
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
 		final String lowerCaseUserName = userName.toLowerCase();
 		this.ensureLoggedIn();
+		/*
+		 * users can only access their own documents
+		 */
+		this.permissionDBManager.ensureWriteAccess(this.loginUser, lowerCaseUserName);
 
 		final DBSession session = openSession();
 		try {
@@ -1075,34 +1068,40 @@ public class DBLogic implements LogicInterface {
 	public void deleteDocument(final Document document, final String resourceHash){
 		final String userName = document.getUserName();
 		this.ensureLoggedIn();
+		/*
+		 * users can only modify their own documents
+		 */
 		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 
 		final DBSession session = openSession();
 		try {
-			// create a DocumentParam object
-			final DocumentParam docParam = new DocumentParam();
-			docParam.setFileName(document.getFileName());
-			docParam.setResourceHash(resourceHash);
-			docParam.setUserName(userName);
-
-			// FIXME: remove deprecated method
-			final boolean valid = this.docDBManager.validateResource(docParam, session);
-
-			/*
-			 * valid means that the resource is a bibtex entry and the given user is
-			 * the owner of this entry.
-			 */
-			if (valid){
-				this.docDBManager.deleteDocument(docParam, session);
+			if (resourceHash != null) {
+				/*
+				 * the document belongs to a post --> check if the user owns the post
+				 */
+				final Post<BibTex> post = bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				if (post != null) {
+					/*
+					 * the given resource hash belongs to a post of the user
+					 * -> delete the corresponding document
+					 */
+					if (this.docDBManager.checkForExistingDocuments(userName, resourceHash, document.getFileName(), session)) {
+					   this.docDBManager.deleteDocument(post.getContentId(), userName, document.getFileName(), session);
+					}
+				} else {
+					throw new ValidationException("Could not find a post with hash '" + resourceHash + "'.");
+				}
 			} else {
-				throw new ValidationException("You are not authorized to perform the requested operation.");
+				/*
+				 * the document does not belong to a post --> delete it
+				 * TODO: check, if this works. 
+				 */
+				this.docDBManager.deleteDocument(DocumentDatabaseManager.DEFAULT_CONTENT_ID, userName, document.getFileName(), session);
 			}
-		} catch (NullPointerException e) {
-			throw new ResourceNotFoundException("The requested bibtex resource doesn't exists.");
 		} finally {
 			session.close();
 		}
-		log.info("API - Document deleted: " + document.getFileName() + " from User: " + userName);
+		log.debug("deleted document " + document.getFileName() + " from user " + userName);
 	}
 
 	/* (non-Javadoc)
@@ -1306,7 +1305,7 @@ public class DBLogic implements LogicInterface {
 		// assemle param object
 		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, null, loginUser);
 		param.setUserRelation(relation);
-		
+
 		final DBSession session = openSession();
 		try {
 			// start chain
@@ -1315,18 +1314,18 @@ public class DBLogic implements LogicInterface {
 		finally {
 			session.close();
 		}		
-		
+
 //		try {
-//			if (tags.size() == 1 && tags.get(0).startsWith("sys:user:")) {
-//				// TODO: proper system tag handling
-//				final String tag = tags.get(0);
-//				final String username = tag.substring(tag.lastIndexOf(":") + 1, tag.length());
-//				System.out.println("requested user " + username);
-//				return this.userDBManager.getUsersByUserAndFolkrank(username, this.loginUser.getName(), end, session);
-//			}
-//			return this.userDBManager.getUserByFolkrank(param, session);
+//		if (tags.size() == 1 && tags.get(0).startsWith("sys:user:")) {
+//		// TODO: proper system tag handling
+//		final String tag = tags.get(0);
+//		final String username = tag.substring(tag.lastIndexOf(":") + 1, tag.length());
+//		System.out.println("requested user " + username);
+//		return this.userDBManager.getUsersByUserAndFolkrank(username, this.loginUser.getName(), end, session);
+//		}
+//		return this.userDBManager.getUserByFolkrank(param, session);
 //		} finally {
-//			session.close();
+//		session.close();
 //		}
 	}
 
@@ -1427,7 +1426,7 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	
+
 
 
 	/* (non-Javadoc)
@@ -1455,13 +1454,13 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void deleteUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
 		this.ensureLoggedIn();
-		
+
 		final DBSession session = openSession();
 		try{
 			UserParam param = new UserParam();
 			param.setUserName(loggedInUser.getName());
 			param.setRequestedUserName(requestedUser.getName());
-			
+
 			if (UserRelation.FOLLOWER_OF.equals(relation)){
 				this.userDBManager.deleteFollowerOfUser(param, session);
 			}
@@ -1471,7 +1470,7 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
-		
+
 	}
 
 	/* (non-Javadoc)
@@ -1480,13 +1479,13 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void createUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
 		this.ensureLoggedIn();
-		
+
 		final DBSession session = openSession();
 		try{
 			UserParam param = new UserParam();
 			param.setUserName(loggedInUser.getName());
 			param.setRequestedUserName(requestedUser.getName());
-			
+
 			if (UserRelation.FOLLOWER_OF.equals(relation)){
 				this.userDBManager.addFollowerOfUser(param, session);
 			}

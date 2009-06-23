@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
@@ -16,7 +15,6 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.params.beans.TagIndex;
-import org.bibsonomy.lucene.LuceneSearchBookmarks;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -162,8 +160,6 @@ public abstract class GenericParam {
 	/** The type of a ID is by default DS_CONTENT_ID * */
 	private ConstantID idsType;
 	private int newContentId;
-	// FIXME does this belong into BookmarkParam?
-	private int contendIDbyBookmark;
 	private String url;
 	private ConstantID contentType;
 	
@@ -424,14 +420,6 @@ public abstract class GenericParam {
 
 	public void setNewContentId(int newContentId) {
 		this.newContentId = newContentId;
-	}
-
-	public int getContendIDbyBookmark() {
-		return this.contendIDbyBookmark;
-	}
-
-	public void setContendIDbyBookmark(int contendIDbyBookmark) {
-		this.contendIDbyBookmark = contendIDbyBookmark;
 	}
 
 	public Set<Tag> getTags() {
