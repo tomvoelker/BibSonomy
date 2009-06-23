@@ -272,13 +272,16 @@ public interface LogicInterface extends PostLogicInterface {
 	public void addUserToGroup(String groupName, String userName);
 
 	/**
-	 * Adds a document to an existing bibtex entry
+	 * Adds a document. If the resourceHash is given, the document is connected
+	 * to the corresponding post. Otherwise, the document is independent of any
+	 * post (e.g., a layout file.
 	 * 
-	 * @param doc
+	 * @param document
 	 * @param resourceHash
+	 * 
 	 * @return The hash of the created document.
 	 */
-	public String createDocument(Document doc, String resourceHash);
+	public String createDocument(Document document, String resourceHash);
 
 	/**
 	 * Get a document from an existing Bibtex entry
@@ -291,13 +294,15 @@ public interface LogicInterface extends PostLogicInterface {
 	public Document getDocument(String userName, String resourceHash, String fileName);
 
 	/**
-	 * Deletes an existing document out of the DB
-	 * 
-	 * @param userName
-	 * @param resourceHash
-	 * @param fileName
+	 * Deletes an existing document. If the resourceHash is given, the document
+	 * is assumed to be connected to the corresponding resource (identified by 
+	 * the user name in the document). Otherwise the document is independent of
+	 * any post.
+     *
+	 * @param document - the document which should be deleted.  
+	 * @param resourceHash - the hash of a post the document belongs to.
 	 */
-	public void deleteDocument(String userName, String resourceHash, String fileName);
+	public void deleteDocument(Document document, String resourceHash);
 
 	/**
 	 * Adds an InetAddress (IP) with the given status to the list of addresses.
