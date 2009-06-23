@@ -51,8 +51,20 @@ public class HandleFileUpload implements FileUploadInterface {
 	private final String md5hash;
 	private final FileItem upFile;
 	
-	public static final String[] firfoxImportExt = {"html"}; 
+	/**
+	 * firefox extion
+	 */
+	public static final String[] firfoxImportExt = {"html"};
+	
+	/**
+	 * pdf, ps, djv, djvu, txt extensions
+	 */
 	public static final String[] fileUploadExt   = {"pdf", "ps", "djv", "djvu", "txt"};
+	
+	/**
+	 * layout defintion extension
+	 */
+	public static final String[] fileLayoutExt   = {"layout"};
 
 	/**
 	 * @param items
