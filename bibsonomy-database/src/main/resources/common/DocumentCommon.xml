@@ -21,7 +21,7 @@
 	
 
 	<sql id="allDocumentAttributes">
-		d.fileHash, d.fileName, d.md5hash, d.user_name AS doc_user_name, d.date AS doc_date,
+		d.hash, d.fileName, d.md5hash, d.user_name AS doc_user_name, d.date AS doc_date
 	</sql>
 	
 </sqlMap>
