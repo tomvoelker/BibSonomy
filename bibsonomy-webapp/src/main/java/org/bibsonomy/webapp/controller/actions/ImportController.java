@@ -73,6 +73,8 @@ public class ImportController implements MinimalisticController<ImportCommand>{
 				fileImporter = new FirefoxImporter();
 				fileImporter.initialize(file, command.getContext().getLoginUser(), command.getGrouping());
 				posts = fileImporter.getPosts();
+				
+				file.delete();
 			} catch (IOException ex) {
 				log.error(ex.getMessage());
 			}
