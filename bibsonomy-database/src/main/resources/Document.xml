@@ -25,7 +25,7 @@
 		
 	<select id="getDocumentsForPost" resultMap="DocumentCommon.document" parameterClass="documentParam">
 		SELECT d.*
-		  FROM document d JOIN bibtex.b USING (content_id)
+		  FROM document d JOIN bibtex b USING (content_id)
 	      WHERE b.simhash$requestedSimHash$ = #resourceHash#
 			AND d.user_name = #userName# 
 	</select>
