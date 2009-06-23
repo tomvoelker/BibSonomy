@@ -1005,7 +1005,7 @@ public class DBLogic implements LogicInterface {
 						 * the post has already a file with that name attached ...
 						 */
 						this.docDBManager.updateDocument(post.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
-								
+
 					} else {
 						//add
 						this.docDBManager.addDocument(userName, post.getContentId(), document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
@@ -1014,7 +1014,7 @@ public class DBLogic implements LogicInterface {
 				} else {
 					throw new ValidationException("Could not find a post with hash '" + resourceHash + "'.");
 				}
-				
+
 			} else {
 				/*
 				 * TODO: do the same with documents which have no post attached ...
@@ -1035,24 +1035,36 @@ public class DBLogic implements LogicInterface {
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
 		final String lowerCaseUserName = userName.toLowerCase();
 		this.ensureLoggedIn();
-		/*
-		 * users can only access their own documents
-		 */
-		this.permissionDBManager.ensureWriteAccess(this.loginUser, lowerCaseUserName);
+
 
 		final DBSession session = openSession();
 		try {
-			/*
-			 * we just forward this task to getPostDetails from the 
-			 * BibTeXDatabaseManager and extract the documents.
-			 */
-			final Post<BibTex> post = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-			if (post != null) {
-				for (final Document document : post.getResource().getDocuments()) {
-					if (document.getFileName().equals(fileName)) {
-						return document;
+			if (resourceHash != null) {
+				/*
+				 * we just forward this task to getPostDetails from the 
+				 * BibTeXDatabaseManager and extract the documents.
+				 */
+				final Post<BibTex> post = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				if (post != null && post.getResource().getDocuments() != null) {
+					/*
+					 * post found and post contains documents (bibtexdbmanager
+					 * checks, if user might access documents and only then 
+					 * inserts them)
+					 */
+					for (final Document document : post.getResource().getDocuments()) {
+						if (document.getFileName().equals(fileName)) {
+							return document;
+						}
 					}
-				}
+				} 
+			} else {
+				/*
+				 * users can only access their own documents
+				 */
+				this.permissionDBManager.ensureWriteAccess(this.loginUser, lowerCaseUserName);
+				/*
+				 * TODO: implement access to non post-connected documents
+				 */
 			}
 		} finally {
 			session.close();
@@ -1086,7 +1098,7 @@ public class DBLogic implements LogicInterface {
 					 * -> delete the corresponding document
 					 */
 					if (this.docDBManager.checkForExistingDocuments(userName, resourceHash, document.getFileName(), session)) {
-					   this.docDBManager.deleteDocument(post.getContentId(), userName, document.getFileName(), session);
+						this.docDBManager.deleteDocument(post.getContentId(), userName, document.getFileName(), session);
 					}
 				} else {
 					throw new ValidationException("Could not find a post with hash '" + resourceHash + "'.");
