@@ -526,13 +526,13 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 * runs the test defined by {@link #removeUserFromGroup(String, String)} with certain arguments
 	 */
 	@Test
-	public void removeUserFromGroupTest() {
-		removeUserFromGroup("grooouuup!", "userTest");
+	public void deleteUserFromGroupTest() {
+		deleteUserFromGroup("grooouuup!", "userTest");
 	}
-	public void removeUserFromGroup(String groupName, String userName) {
-		serverLogic.removeUserFromGroup(groupName, userName);
+	public void deleteUserFromGroup(String groupName, String userName) {
+		serverLogic.deleteUserFromGroup(groupName, userName);
 		EasyMock.replay(serverLogic);
-		clientLogic.removeUserFromGroup(groupName, userName);
+		clientLogic.deleteUserFromGroup(groupName, userName);
 		EasyMock.verify(serverLogic);
 		assertLogin();
 	}
@@ -625,7 +625,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		}
 	}
 
-	public String addDocument(Document doc, String resourceHash) {
+	public String createDocument(Document doc, String resourceHash) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -635,12 +635,12 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 
-	public void deleteDocument(String userName, String resourceHash, String fileName) {
+	public void deleteDocument(Document document, String fileName) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void addInetAddressStatus(InetAddress address, InetAddressStatus status) {
+	public void createInetAddressStatus(InetAddress address, InetAddressStatus status) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -802,7 +802,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public void insertUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+	public void createUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
 		// TODO Auto-generated method stub
 		
 	}
