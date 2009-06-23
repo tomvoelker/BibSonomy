@@ -164,7 +164,7 @@ public class RestLogic implements LogicInterface {
 		return execute(new GetUserDetailsQuery(userName));
 	}
 
-	public void removeUserFromGroup(String groupName, String userName) {
+	public void deleteUserFromGroup(String groupName, String userName) {
 		execute(new RemoveUserFromGroupQuery(userName, groupName));
 	}
 
@@ -211,7 +211,7 @@ public class RestLogic implements LogicInterface {
 		return execute(new ChangeUserQuery(user.getName(), user));
 	}
 
-	public String addDocument(Document doc, String resourceHash) {
+	public String createDocument(Document doc, String resourceHash) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -226,7 +226,7 @@ public class RestLogic implements LogicInterface {
 
 	}	
 
-	public void addInetAddressStatus(InetAddress address, InetAddressStatus status) {
+	public void createInetAddressStatus(InetAddress address, InetAddressStatus status) {
 		// TODO Auto-generated method stub
 
 	}
@@ -364,7 +364,7 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void insertUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+	public void createUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
 		// TODO Auto-generated method stub
 		
 	}
