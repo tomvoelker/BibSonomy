@@ -70,17 +70,6 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Check if the logged in user has write access to the given document.
-	 * 
-	 * @param document
-	 * @param loginUser
-	 */
-	public void ensureWriteAccess(final Document document, final User loginUser) {
-		// delegate write access check
-		ensureWriteAccess(loginUser, document.getUserName());
-	}
-
-	/**
 	 * Throws an exception if the loginUser.getName and userName doesn't match.
 	 * 
 	 * @param loginUser
