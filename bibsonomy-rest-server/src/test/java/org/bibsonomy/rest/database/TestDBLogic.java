@@ -676,7 +676,7 @@ public class TestDBLogic implements LogicInterface {
 	public void deleteUser(String userName) {
 	}
 
-	public void removeUserFromGroup(String groupName, String userName) {
+	public void deleteUserFromGroup(String groupName, String userName) {
 	}
 
 	public String createGroup(Group group) {
@@ -710,7 +710,7 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
-	public String addDocument(Document doc, String resourceHash) {
+	public String createDocument(Document doc, String resourceHash) {
 		return null;
 	}
 
@@ -723,7 +723,7 @@ public class TestDBLogic implements LogicInterface {
 
 	}
 
-	public void addInetAddressStatus(InetAddress address, InetAddressStatus status) {
+	public void createInetAddressStatus(InetAddress address, InetAddressStatus status) {
 		// TODO Auto-generated method stub
 
 	}
@@ -866,7 +866,7 @@ public class TestDBLogic implements LogicInterface {
 
 
 	@Override
-	public void insertUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+	public void createUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
 		// TODO Auto-generated method stub
 		
 	}

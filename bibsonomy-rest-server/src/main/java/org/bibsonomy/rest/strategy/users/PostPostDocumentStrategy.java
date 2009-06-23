@@ -61,7 +61,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 			doc.setMd5hash(up.getMd5Hash());
 			
 			// add document to post
-			this.getLogic().addDocument(doc, this.resourceHash);
+			this.getLogic().createDocument(doc, this.resourceHash);
 			
 			// write the file to the hdd
 			up.writeUploadedFiles(this.docPath);

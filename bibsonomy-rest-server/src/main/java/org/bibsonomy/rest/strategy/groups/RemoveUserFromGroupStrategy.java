@@ -27,7 +27,7 @@ public class RemoveUserFromGroupStrategy extends Strategy {
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
 		writer = new EscapingPrintWriter(outStream);
-		this.getLogic().removeUserFromGroup(this.groupName, this.userName);
+		this.getLogic().deleteUserFromGroup(this.groupName, this.userName);
 		// no exception -> assume success
 		this.getRenderer().serializeOK(writer);
 	}
