@@ -6,7 +6,22 @@
 		<result property="fileHash"      column="hash"      javaType="string" />
     	<result property="fileName"      column="name"      javaType="string" />
     	<result property="md5hash"		 column="md5hash"   javaType="string" />
-    	<result property="userName"		 column="user_name" javaType="string" />
-    	<result property="date"          column="date"      javaType="date" />
+    	<!-- 
+    		Prepended doc_ to columns to not mix it with bibtex table columns.
+    		Without that, the query getBibTexByTagNamesForUserWithPDF returns 
+    		posts with empty documents (which breaks some other things ...).
+    		Also, without that on the 'date' column, we can't get the documents
+    		date (the post date would be used instead).
+    		Thus, use always the SQL snippet "allDocumentAttributes" below in
+    		the SELECT statements.
+    	 -->
+    	<result property="userName"		 column="doc_user_name" javaType="string" />
+    	<result property="date"          column="doc_date"      javaType="date" />
 	</resultMap>
+	
+
+	<sql id="allDocumentAttributes">
+		d.fileHash, d.fileName, d.md5hash, d.user_name AS doc_user_name, d.date AS doc_date,
+	</sql>
+	
 </sqlMap>

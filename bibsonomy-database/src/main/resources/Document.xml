@@ -15,7 +15,7 @@
 	</update>
 	
 	<select id="getDocumentForPost" resultMap="DocumentCommon.document" parameterClass="documentParam">
-		SELECT d.*
+		SELECT <include refid="allDocumentAttributes"/> 
 		  FROM document d JOIN bibtex.b USING (content_id)
 		  WHERE b.simhash$requestedSimHash$=#resourceHash# 
 		    AND b.user_name = #userName#
@@ -24,7 +24,7 @@
 	</select>	
 		
 	<select id="getDocumentsForPost" resultMap="DocumentCommon.document" parameterClass="documentParam">
-		SELECT d.*
+		SELECT <include refid="allDocumentAttributes"/>
 		  FROM document d JOIN bibtex b USING (content_id)
 	      WHERE b.simhash$requestedSimHash$ = #resourceHash#
 			AND d.user_name = #userName# 
