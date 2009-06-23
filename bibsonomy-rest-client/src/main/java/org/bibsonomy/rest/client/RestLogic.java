@@ -221,7 +221,7 @@ public class RestLogic implements LogicInterface {
 		return null;
 	}
 
-	public void deleteDocument(String userName, String resourceHash, String fileName) {
+	public void deleteDocument(Document document, String resourceHash) {
 		// TODO Auto-generated method stub
 
 	}	
