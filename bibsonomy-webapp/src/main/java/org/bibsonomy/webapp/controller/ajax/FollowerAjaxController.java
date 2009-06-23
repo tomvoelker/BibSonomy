@@ -60,7 +60,7 @@ public class FollowerAjaxController extends AjaxController implements Minimalist
 	 */
 	private void addFollower(FollowerAjaxCommand command){
 		User user = new User(command.getRequestedUserName());
-		logic.insertUserRelationship(command.getContext().getLoginUser(),user, UserRelation.FOLLOWER_OF);
+		logic.createUserRelationship(command.getContext().getLoginUser(),user, UserRelation.FOLLOWER_OF);
 	}
 	
 	/**
