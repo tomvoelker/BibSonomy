@@ -65,9 +65,9 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		final Document document  = new Document();
 		document.setUserName("testuser1");
-		this.permissionDb.ensureWriteAccess(document, new User("testuser1"));
+		this.permissionDb.ensureWriteAccess(new User("testuser1"), document.getUserName());
 		try {
-			this.permissionDb.ensureWriteAccess(document, new User("testuser2"));
+			this.permissionDb.ensureWriteAccess(new User("testuser2"), document.getUserName());
 			fail("expected exception");
 		} catch (ValidationException ignore) {
 		}
