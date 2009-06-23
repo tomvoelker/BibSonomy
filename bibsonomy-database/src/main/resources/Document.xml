@@ -14,7 +14,7 @@
 		  WHERE d.content_id = #contentId# 
 	</update>
 	
-	<select id="getDocumentForPost" resultClass="DocumentCommon.document" parameterClass="documentParam">
+	<select id="getDocumentForPost" resultMap="DocumentCommon.document" parameterClass="documentParam">
 		SELECT d.*
 		  FROM document d JOIN bibtex.b USING (content_id)
 		  WHERE b.simhash$requestedSimHash$=#resourceHash# 
