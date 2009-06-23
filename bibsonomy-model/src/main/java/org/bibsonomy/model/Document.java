@@ -23,6 +23,8 @@
 
 package org.bibsonomy.model;
 
+import java.util.Date;
+
 /**
  * This Class defines a Document
  * 
@@ -49,6 +51,11 @@ public class Document {
 	 * md5hash over content of the file 
 	 */
 	private String md5hash;
+	
+	/**
+	 * The date at which the document has been saved.
+	 */
+	private Date date;
 
 	/**
 	 * @return md5hash
