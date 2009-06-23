@@ -1,10 +1,10 @@
 package org.bibsonomy.webapp.command.actions;
 
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.webapp.command.BaseCommand;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author mwa
@@ -13,7 +13,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
 public class ImportCommand extends BaseCommand{
 	
 	/** when true, duplicate entries will be overwritten **/
-	private boolean overWrite;
+	private boolean overwrite;
 	
 	/** the import-type describes which kind of import will be used 
 	 *  e.g. FireFox import, Delicious import etc.. **/
@@ -28,7 +28,7 @@ public class ImportCommand extends BaseCommand{
 	private String grouping;
 	
 	/** the file to import **/
-	private File file;
+	private CommonsMultipartFile file;
 	
 	private Map<String, String> newBookmarks = null;
 
@@ -39,14 +39,14 @@ public class ImportCommand extends BaseCommand{
 	/**
 	 * @return true if duplicate entries shall be overwritten
 	 */
-	public boolean isOverWrite() {
-		return this.overWrite;
+	public boolean isOverwrite() {
+		return this.overwrite;
 	}
 	/**
 	 * @param overWrite
 	 */
-	public void setOverWrite(boolean overWrite) {
-		this.overWrite = overWrite;
+	public void setOverwrite(boolean overwrite) {
+		this.overwrite = overwrite;
 	}
 	/**
 	 * @return the actual import-type
@@ -132,10 +132,10 @@ public class ImportCommand extends BaseCommand{
 	public void setGrouping(String grouping) {
 		this.grouping = grouping;
 	}
-	public File getFile() {
+	public CommonsMultipartFile getFile() {
 		return this.file;
 	}
-	public void setFile(File file) {
+	public void setFile(CommonsMultipartFile file) {
 		this.file = file;
 	}
 		
