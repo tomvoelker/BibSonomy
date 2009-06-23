@@ -138,8 +138,13 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 					// macth discripor with a bibtex field
 					
 					if(line.startsWith("AU: ")){
-						author = line.substring(4);
-						author = author.replaceAll(",", " and");
+						String tmp = line.substring(4);
+						
+						if(author == null) {
+							author = tmp.replaceAll(",", " and");
+						} else {
+							author = author + " and " + tmp.replaceAll(",", " and");
+						}
 					}else if(line.startsWith("TI: ")){
 						title = line.substring(4);
 					}else if(line.startsWith("SO: ")){
