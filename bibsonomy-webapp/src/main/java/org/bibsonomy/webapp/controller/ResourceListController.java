@@ -104,16 +104,15 @@ public abstract class ResourceListController {
 				}
 			}
 			
-			// check if a certain resourcetype is queried
-			// TODO: better source out 
+			// check if limitation to a single resourcetype is requested			
 			Class<? extends Resource> resourcetype = Resource.class;
-			if (ResourceType.BIBTEX.getLabel().equalsIgnoreCase(cmd.getResourcetype()) ) {
+			if (this.isBibtexOnlyRequested(cmd)) {
 				resourcetype = BibTex.class;
 			}
-			if (ResourceType.BOOKMARK.getLabel().equalsIgnoreCase(cmd.getResourcetype()) ) {
+			else if (this.isBookmarkOnlyRequested(cmd)) {
 				resourcetype = Bookmark.class;
-			}			
-			
+			}
+					
 			// fetch tags, store them in bean
 			this.setTags(cmd, resourcetype, groupingEntity, groupingName, regex, tags, hash, order, start, end, search);
 			
@@ -252,4 +251,34 @@ public abstract class ResourceListController {
 		Long elapsed = System.currentTimeMillis() - this.startTime;
 		log.info("Processing time: " + elapsed + " ms");
 	}
+	
+	/**
+	 * Check if only Bibtexs are requested
+	 * 
+	 * @param <V> - type of the current command object
+	 * @param cmd - the current command object
+	 * @return true if only bibtexs are requested, false otherwise
+	 */
+	private  <V extends ResourceViewCommand> Boolean isBibtexOnlyRequested(V cmd) {
+		if (ResourceType.BIBTEX.getLabel().equalsIgnoreCase(cmd.getResourcetype()) || 
+			(this.listsToInitialise != null && this.listsToInitialise.size() == 1 && this.listsToInitialise.contains(BibTex.class)) ) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Check if only Bookmarks are requested
+	 * 
+	 * @param <V> - type of the current command object
+	 * @param cmd - the current command object
+	 * @return true if only bookmarks are requested, false otherwise
+	 */
+	private  <V extends ResourceViewCommand> Boolean isBookmarkOnlyRequested(V cmd) {
+		if (ResourceType.BOOKMARK.getLabel().equalsIgnoreCase(cmd.getResourcetype()) || 
+			(this.listsToInitialise != null && this.listsToInitialise.size() == 1 && this.listsToInitialise.contains(Bookmark.class)) ) {
+			return true;
+		}
+		return false;
+	}	
 }
