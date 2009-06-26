@@ -465,7 +465,11 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		 * it is non-public.
 		 *
 		 */
-		throw new RuntimeException("not implemented");
+		try {
+			dbLogic.connectWithPost(post, post.getContentId());
+		} catch (SQLException e) {
+			throw new RuntimeException("Could not connect post: " + e);
+		}
 	}
 
 
