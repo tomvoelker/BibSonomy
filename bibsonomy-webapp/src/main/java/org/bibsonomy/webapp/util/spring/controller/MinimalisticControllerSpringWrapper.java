@@ -182,8 +182,8 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		}
 		catch (LuceneException le) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-			errors.reject(le.getMessage(), new Object[]{le}, "Internal Server Error");
-			log.error("Could not complete controller.", le);
+			errors.reject(le.getMessage(), new Object[]{le}, "Internal Server Error (LuceneException)");
+			log.error("Could not complete controller (LuceneException).", le);
 			view = Views.ERROR;
 		}
 		catch (Exception ex) {
