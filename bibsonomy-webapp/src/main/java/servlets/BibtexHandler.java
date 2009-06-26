@@ -57,11 +57,7 @@ import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.util.TagStringUtils;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.ClassPathResource;
 
 import resources.Bibtex;
 import resources.Tag;
@@ -99,7 +95,7 @@ public class BibtexHandler extends HttpServlet {
 	
 	private static final Scraper scraper = new KDEScraperFactory().getScraper();
 	
-	private TagRecommender tagRecommender;// todo;
+	private SpringWrapper springWrapper = SpringWrapper.getInstance();
 
 	/*
 	 * The dataSource lookup code is added to the init() method to avoid the
@@ -113,15 +109,6 @@ public class BibtexHandler extends HttpServlet {
 		} catch (NamingException ex) {
 			throw new ServletException("Cannot retrieve java:/comp/env/bibsonomy", ex);
 		}
-		/*
-		 * initialize tag recommender using Spring
-		 */
-		final BeanFactory factory = new XmlBeanFactory(new ClassPathResource("bibsonomy2-servlet-recommender.xml"));
-		final Object bean = factory.getBean("multiplexingTagRecommender", TagRecommender.class);
-		if (bean instanceof TagRecommender) {
-			this.tagRecommender = (TagRecommender) bean;
-		}
-		
 	}
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
@@ -444,9 +431,9 @@ public class BibtexHandler extends HttpServlet {
 							 * update recommender table such that recommendations are linked to the final post
 							 */
 							try {
-								tagRecommender.setFeedback(post);
+								springWrapper.getTagRecommender().setFeedback(post);
 							} catch (final Exception ex) {
-								log.warn("Could not connect post with recommendation.");
+								log.warn("Could not connect post with recommendation: " + ex);
 								/*
 								 * fail silently to not confuse user with error 500 when recommender fails 
 								 */
