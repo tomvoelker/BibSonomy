@@ -19,7 +19,7 @@
 </form>
 </h1>
 <%-------------------------- Path Navigation -----------------------%>
-<%@include file="/boxes/path_navi.jsp" %>
+<%@include file="/boxes/path_navi2.jsp" %>
 <%-------------------------- Navigatopm -----------------------%>
 <%@include file="/boxes/navi.jsp" %>    
 
@@ -43,7 +43,7 @@
       associated with their papers or that show up in the paper titles.
 
       <b>Want to organize your conference visit? Just <a href="/register">get a ${projectName} account</a> and
-      start copying and annoting the papers you are interested in!</b>
+      start copying and annotating the papers you are interested in!</b>
 
     </div>
 
