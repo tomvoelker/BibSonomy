@@ -19,7 +19,7 @@
 </form>
 </h1>
 <%-------------------------- Path Navigation -----------------------%>
-<%@include file="/boxes/path_navi2.jsp" %>
+<%@include file="/boxes/path_navi.jsp" %>
 <%-------------------------- Navigatopm -----------------------%>
 <%@include file="/boxes/navi.jsp" %>    
 
