@@ -23,6 +23,12 @@
 <%-------------------------- Navigatopm -----------------------%>
 <%@include file="/boxes/navi.jsp" %>    
 
+<style type="text/css">
+#full {
+ font-size: 80%;
+}
+
+</style>
 
 
   <div id="full">
