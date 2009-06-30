@@ -92,10 +92,54 @@ public class BibtexHandler extends HttpServlet {
 	private static String tempPath = null;
 
 	private static final String LOGIN_INFO = "login.notice.post.publication";
-	
+
 	private static final Scraper scraper = new KDEScraperFactory().getScraper();
-	
+
 	private SpringWrapper springWrapper = SpringWrapper.getInstance();
+
+
+	private static final HashSet<String> standardFieldNames = new HashSet<String>();
+	static {
+		/*
+		 * TODO: have a look into the Bibtex object, is has a list of fields;
+		 * use this list!
+		 */
+		// TODO: change keywords here
+		standardFieldNames.add("abstract");
+		standardFieldNames.add("address");
+		standardFieldNames.add("annote");
+		standardFieldNames.add("author");
+		standardFieldNames.add("booktitle");
+		standardFieldNames.add("chapter");
+		standardFieldNames.add("crossref");
+		standardFieldNames.add("edition");
+		standardFieldNames.add("editor");
+		standardFieldNames.add("howpublished");
+		standardFieldNames.add("institution");
+		standardFieldNames.add("journal");
+		standardFieldNames.add("key");
+		standardFieldNames.add("month");
+		standardFieldNames.add("note");
+		standardFieldNames.add("number");
+		standardFieldNames.add("organization");
+		standardFieldNames.add("pages");
+		standardFieldNames.add("publisher");
+		standardFieldNames.add("school");
+		standardFieldNames.add("series");
+		standardFieldNames.add("title");
+		standardFieldNames.add("type");
+		standardFieldNames.add("volume");
+		standardFieldNames.add("year");
+		// added, because otherwise "day" will go to "misc"
+		standardFieldNames.add("day");
+		// standard fields for bibsonomy
+		standardFieldNames.add("description");
+		standardFieldNames.add("tags");
+		standardFieldNames.add("url");
+		standardFieldNames.add("keywords");
+		standardFieldNames.add("comment");	// added because CiteULike uses it for (private) comments, which we put into our field, too
+		standardFieldNames.add("biburl");   // added because this way it is not added to "misc"
+	}
 
 	/*
 	 * The dataSource lookup code is added to the init() method to avoid the
@@ -309,7 +353,7 @@ public class BibtexHandler extends HttpServlet {
 					description    = request.getParameter("description"); // nur desc der URL!!!
 					group          = request.getParameter("group");
 					String snippet = request.getParameter("selection");
-					
+
 					/*
 					 * TODO: another dirty scraper hack ... read comment above private class ScraperId ...
 					 */
@@ -351,7 +395,7 @@ public class BibtexHandler extends HttpServlet {
 					bibtex.setScraperid(scraperid);
 					// put bibtex object into bean
 					final BibtexHandlerBean bibBean = new BibtexHandlerBean (bibtex);
-					
+
 					bibBean.setPostID(RecommenderStatisticsManager.getNewPID());
 
 
@@ -426,7 +470,7 @@ public class BibtexHandler extends HttpServlet {
 							 * can handle it
 							 */
 							final Post<BibTex> post = copyPostIntoNewModel(currUser, bibtexList.getFirst(), bean.getPostID());
-							
+
 							/*
 							 * update recommender table such that recommendations are linked to the final post
 							 */
@@ -516,7 +560,7 @@ public class BibtexHandler extends HttpServlet {
 				}
 				return;
 			} 
-			
+
 			/*
 			 * FIXME: hack to do a redirect ("after POST") when everything is OK 
 			 */
@@ -637,15 +681,15 @@ public class BibtexHandler extends HttpServlet {
 		 * new hashes
 		 */
 		resource.recalculateHashes();
-		
+
 		return post;
 	}
 
 
 	private static String buildRelevantForTagString(final Collection<String> relevantForGroups) {
 		final StringBuffer buf = new StringBuffer();
-        if (relevantForGroups != null) {
-  			for(final String group: relevantForGroups) {
+		if (relevantForGroups != null) {
+			for(final String group: relevantForGroups) {
 				if (group != null && !group.trim().equals("")) {
 					buf.append(SystemTagsUtil.buildSystemTagString(SystemTags.RELEVANTFOR, group) + " ");
 				}
@@ -925,7 +969,7 @@ public class BibtexHandler extends HttpServlet {
 		// get set of all current fieldnames - like address, author etc.
 		ArrayList<String> nonStandardFieldNames = new ArrayList<String>(entry.getFields().keySet());
 		// remove standard fields from list to retrieve nonstandard ones
-		nonStandardFieldNames.removeAll(getStandardFieldNames());
+		nonStandardFieldNames.removeAll(standardFieldNames);
 
 		// iter over arraylist to retrieve nonstandard field values
 		StringBuffer miscBuffer = new StringBuffer();
@@ -989,6 +1033,19 @@ public class BibtexHandler extends HttpServlet {
 		field = (BibtexString) entry.getFieldValue("type");  		if (field != null) bib.setType(field.getContent());          
 		field = (BibtexString) entry.getFieldValue("description");	if (field != null) bib.setDescription(field.getContent());
 
+		
+		/*
+		 * rja, 2009-06-30
+		 * CiteULike uses the "comment" field to export (private) notes in the form
+		 * 
+		 * comment = {(private-note)This is a test note!}, 
+		 * 
+		 * Thus, we here extract the field and remove the "(private-note)" part
+		 */
+		field = (BibtexString) entry.getFieldValue("comment");	if (field != null) bib.setPrivnote(field.getContent().replace("(private-note)", ""));
+		
+		
+		
 		/*
 		 * parse person names for author + editor
 		 */
@@ -1121,49 +1178,6 @@ public class BibtexHandler extends HttpServlet {
 		}
 	}
 
-
-	private HashSet getStandardFieldNames() {
-		/*
-		 * TODO: have a look into the Bibtex object, is has a list of fields;
-		 * use this list!
-		 */
-		// TODO: change keywords here
-		HashSet<String> fields = new HashSet<String>();
-		fields.add("abstract");
-		fields.add("address");
-		fields.add("annote");
-		fields.add("author");
-		fields.add("booktitle");
-		fields.add("chapter");
-		fields.add("crossref");
-		fields.add("edition");
-		fields.add("editor");
-		fields.add("howpublished");
-		fields.add("institution");
-		fields.add("journal");
-		fields.add("key");
-		fields.add("month");
-		fields.add("note");
-		fields.add("number");
-		fields.add("organization");
-		fields.add("pages");
-		fields.add("publisher");
-		fields.add("school");
-		fields.add("series");
-		fields.add("title");
-		fields.add("type");
-		fields.add("volume");
-		fields.add("year");
-		// added, because otherwise "day" will go to "misc"
-		fields.add("day");
-		// standard fields for bibsonomy
-		fields.add("description");
-		fields.add("tags");
-		fields.add("url");
-		fields.add("keywords");
-		fields.add("biburl");   // added because this way it is not added to "misc"
-		return fields;
-	}
 
 	/*
 	 * //for entrytype parsing private boolean isStandardType (String type){
