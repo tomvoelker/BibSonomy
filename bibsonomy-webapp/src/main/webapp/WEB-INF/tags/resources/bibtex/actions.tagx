@@ -83,9 +83,8 @@
 				<!-- DELETE -->					         
 				<c:set var="deleteTitle"><fmt:message key="bibtex.actions.delete.title"/></c:set>
                 
-                <c:url var="deleteUrl" value="/BibtexHandler" context="${projectContext}">
-                   <c:param name="hash" value="${post.resource.intraHash}" />
-                   <c:param name="requTask" value="delete" />
+                <c:url var="deleteUrl" value="/actions/deletePost" context="${projectContext}">
+                   <c:param name="resourceHash" value="${post.resource.intraHash}" />
                    <c:param name="ckey" value="${ckey}" />
                 </c:url>
                <a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}">

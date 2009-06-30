@@ -405,6 +405,17 @@
 						<property name="controllerBeanName" value="followersViewController"/>
 					</bean>
 				</entry>
+				<entry key="/actions/deletePost">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deletePostController"/>
+						<property name="allowedFields">
+							<list>
+								<value>resourceHash</value>
+								<value>ckey</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="import">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="importController"/>

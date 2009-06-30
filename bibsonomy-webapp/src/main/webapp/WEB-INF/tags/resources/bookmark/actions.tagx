@@ -17,9 +17,8 @@
 				<c:set var="edit"><fmt:message key="bookmark.actions.edit.title"/></c:set>
 	
 				<!-- DELETE link -->
-				<c:url var="url_delete" value="/bookmarkHandler" context="${projectContext}">
-					<c:param name="delete" value="${post.resource.hash}" />
-					<c:param name="user" value="${post.user.name}" />
+				<c:url var="url_delete" value="/actions/deletePost" context="${projectContext}">
+					<c:param name="resourceHash" value="${post.resource.hash}" />
 					<c:param name="ckey" value="${ckey}" />
 				</c:url>
 				<c:set var="deleteTitle"><fmt:message key="bookmark.actions.delete.title"/></c:set>
