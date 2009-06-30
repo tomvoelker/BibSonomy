@@ -37,7 +37,7 @@
           </c:otherwise>
         </c:choose></span>
         <%-- DELETE --%>          
-        | <a href="/action/deletePost?resourceHash=${resource.hash}&amp;ckey=${ckey}" title="delete this post from your repository">delete</a><%-- 
+        | <a href="/deletePost?resourceHash=${resource.hash}&amp;ckey=${ckey}" title="delete this post from your repository">delete</a><%-- 
   --%></c:otherwise>
     </c:choose>
 </c:if>

@@ -405,7 +405,7 @@
 						<property name="controllerBeanName" value="followersViewController"/>
 					</bean>
 				</entry>
-				<entry key="/actions/deletePost">
+				<entry key="/deletePost">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="deletePostController"/>
 						<property name="allowedFields">

@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.actions.DeletePostCommand;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -18,12 +19,12 @@ import org.springframework.validation.Errors;
  * @author Christian Kramer
  * @version $Id$
  */
-public class DeletePostController implements MinimalisticController<DeletePostCommand>{
+public class DeletePostController implements MinimalisticController<DeletePostCommand>, ErrorAware{
 	private static final Logger log = Logger.getLogger(DeletePostController.class);
 	
 	private RequestLogic requestLogic;
 	private LogicInterface logic;
-	private Errors errors = null;
+	private Errors errors;
 
 	@Override
 	public DeletePostCommand instantiateCommand() {
@@ -35,7 +36,7 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 		RequestWrapperContext context = command.getContext();
 		
 		/*
-		 * user has to be logged in to delete homself
+		 * user has to be logged in to delete himself
 		 */
 		if (!context.isUserLoggedIn()){
 			errors.reject("error.general.login");
@@ -78,6 +79,21 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
+	
+	/**
+	 * @return errors
+	 */
+	public Errors getErrors() {
+		return this.errors;
+	}
+
+	/**
+	 * @param errors
+	 */
+	public void setErrors(final Errors errors) {
+		this.errors = errors;
+	}
+	
 	
 	/**
 	 * @param requestLogic
