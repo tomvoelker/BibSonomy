@@ -4,8 +4,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -87,9 +89,17 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			 */
 			BibTexUtils.addFieldIfNotContained(bibtexEntries, "url", sc.getUrl().toString());
 			/*
-			 * append abstract
+			 * at first, try to extract the abstract via DOM
 			 */
-			final String abstrct = extractAbstract(document);
+			String abstrct = extractAbstract(document);
+			
+			/*
+			 * if this fails, try to extract the abstract via REGEX
+			 */
+			if (abstrct == null) {
+				abstrct = extractAbstract(sc);
+			}
+			
 			if (abstrct != null) {
 				BibTexUtils.addFieldIfNotContained(bibtexEntries, "abstract", abstrct);
 			} else // log if abstract is not available
@@ -108,6 +118,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 		}
 	}
 
+	
 	/**
 	 * extract the abstract
 	 * 
@@ -187,6 +198,69 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			}
 		}
 		return abstrct;
+	}
+	
+	/**
+	 * This method is called when the extraction of the abstract
+	 * via DOM is failed.
+	 * Here we're trying to get the abstract via REGEX
+	 * 
+	 * Structure like above
+	 */
+	final String extractAbstract(final ScrapingContext sc) {
+		String content = null;
+		
+		try {
+			content = sc.getPageContent();
+			
+			/*
+			 * removing whole tags like: <p class"abstract"><font color.....</p>
+			 */
+			String pattern = "<\\s*p\\s+class=[\"|\']abstract[\"|\']>\\s*<\\s*font\\s+color.*?<\\s*/\\s*p\\s*>";
+			content = content.replaceAll(pattern, "");
+			
+			/*
+			 * searching for occurrences of <p class="abstract">...</p>
+			 */
+			pattern = ".*<\\s*p\\s+class=[\"|\']abstract[\"|\']>\\s*(.*?)<\\s*/\\s*p\\s*>.*";
+			Pattern p = Pattern.compile(pattern, Pattern.MULTILINE | Pattern.DOTALL);
+			Matcher m = p.matcher(content);
+			
+			while (m.matches() && m.group(1) != null) {
+				content = m.group(1);
+				content = content.trim();
+				
+				/*
+				 *  removing inner paragraphs and other tags
+				 */
+				String tagPattern = "<\\s*[/]?\\s*\\w+?\\s*>";
+				pattern = ".*" + tagPattern + ".*";
+				p = Pattern.compile(pattern, Pattern.MULTILINE | Pattern.DOTALL);
+				m = p.matcher(content);
+				
+				while (m.matches()) {
+					content = content.replaceAll(tagPattern, "");
+					m = p.matcher(content);
+				}
+
+				/*
+				 * removing linebreaks and multiple whitespaces
+				 */
+				content = content.replaceAll("\\s{2,}", " ");
+				
+				/*
+				 * unescape html characters
+				 */
+				content = StringEscapeUtils.unescapeHtml(content);
+				
+				return content;
+			}
+			
+		} catch (ScrapingException ex) {
+			ex.printStackTrace();
+		}
+		
+		return content;
 	}
 
 	/**
