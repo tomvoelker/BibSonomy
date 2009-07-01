@@ -35,7 +35,7 @@
      <c:when test="${bibCounter > 0}">
    	   <p>Below you can tag your imported BibTeX entries.</p>
   	
-       <form name="tagging" action="/TagHandler" method=post>
+       <form name="tagging" action="/batchEdit_new" method=post>
   	     <table style="margin: 1em 0em 0em 0em;">
   		   <tr>
   		     <th>Your tags</th>
@@ -44,14 +44,14 @@
   			 
   		   <c:forEach var="bub" items="${bibtexUploadBean.bibtex}">
   		     <tr>
-  			   <td><input type="text" name="${bub.hash}" size="40" value="<c:out value='${bub.fullTagString}'/>"/>
-     			   <input type="hidden" name="0${bub.hash}" value="<c:out value='${bub.fullTagString}'/>"/>
+  			   <td><input type="text" name="newTags['${bub.hash}']" size="40" value="<c:out value='${bub.fullTagString}'/>"/>
+     			   <input type="hidden" name="oldTags['${bub.hash}']" value="<c:out value='${bub.fullTagString}'/>"/>
   			   </td>
   			   <td class="chunkybib"><mtl:bibclean value="${bub.chunky}"/></td>   
   			 </tr>
   		   </c:forEach> 
   		 </table>
-  		 <input type="hidden" name="requTask" value="bibtex" />
+  		 <!-- <input type="hidden" name="requTask" value="bibtex" /> -->
          <input type="hidden" name="ckey" value="${ckey}"/>
   	     <input type="submit" value="update" />
   	   </form>

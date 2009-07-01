@@ -405,6 +405,21 @@
 						<property name="controllerBeanName" value="followersViewController"/>
 					</bean>
 				</entry>
+				<entry key="/batchEdit_new">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="batchEditController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>oldTags[*]</value>
+								<value>newTags[*]</value>
+								<value>tags</value>
+								<value>delete[*]</value>
+								<value>referer</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/deletePost">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="deletePostController"/>
@@ -477,6 +492,8 @@
 	
 	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
 		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="docpath"><value>${project.document.path}</value></property>
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request">
@@ -641,6 +658,10 @@
 	<bean id="postBookmarkPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="POST_BOOKMARK_PAGE"></property>
 	</bean>
+	
+	<bean id="batchEditController" class="org.bibsonomy.webapp.controller.actions.BatchEditController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
 
 	<bean id="bibtexkeyPageController" class="org.bibsonomy.webapp.controller.BibtexkeyPageController" scope="request">
 		<property name="logic" ref="logic"/>
@@ -727,14 +748,6 @@
 	
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
 	
-	<bean id="importController" class="org.bibsonomy.webapp.controller.actions.ImportController" scope="request">
-		<property name="docpath">
-			<value>${project.document.path}</value>
-		</property>
-		<property name="logic" ref="logic"/>
-	</bean>
-	
-	
 	<!--  #################### factory beans #################### -->
 	
 	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" factory-method="getInstance"/>
@@ -770,7 +783,7 @@
 	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-	</bean>		
+	</bean>
 	
 	<!--  #################### interceptors #################### -->
 

@@ -53,9 +53,8 @@
           <h2><fmt:message key="batchedit.info"/></h2>
 
           <c:if test="${not empty listView.list}">
-             
             
-            <form id="batchedit" action="/TagHandler" method="POST">
+            <form id="batchedit" action="/batchEdit_new" method="POST">
               <table>
 
                 <tr>
@@ -87,15 +86,16 @@
                     <c:when test="${post.user.name eq command.context.loginUser.name}">
                       <tr>
                         <td>
-                          <input type="text" name="${post.resource.intraHash}" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
+                
+                          <input type="text" name="newTags['${post.resource.intraHash}']" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
                           <!-- to see if the tags have been changed, we also send the original tags -->
-                          <input type="hidden" name="0${post.resource.intraHash}" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
+                          <input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
                         </td>
                         <td class="chunkybib">
                           <jsp:invoke fragment="shortPostDescription"/>
                         </td>   
                         <td>
-                          <input type="checkbox" name="d${post.resource.intraHash}"/> <fmt:message key="batchedit.deletePost"/>
+                          <input type="checkbox" name="delete['${post.resource.intraHash}']" onclick="checkDeleteAll(this)" /> <fmt:message key="batchedit.deletePost"/>
                         </td>
                       </tr>
                     </c:when>
@@ -118,7 +118,6 @@
                     <input type="hidden" name="ckey" value="${ckey}"/>
                     <!-- TODO: somehow a hack: removing the bedit(bib|url)/ by cutting at the first '/' -->
                     <input type="hidden" name="referer" value="/${fn:escapeXml(fn:substringAfter(requPath, '/'))}"/>
-                    <input type="hidden" name="requTask" value="${listView.resourcetype}" />
                   </td>
                 </tr>
                    
@@ -161,18 +160,22 @@
 
         <!-- TODO: i18n -->
         <script type="text/javascript">
-          <![CDATA[
-            var deleteAllChecked = false;
-            
+          <![CDATA[            
             function deleteAll() {
-              if (!deleteAllChecked) {
+			  var deleteAllCheckBox = document.getElementById("deleteAllId");
+			  if (!deleteAllCheckBox) {
+				  // not found
+				  return;
+			  }
+			  
+			  var deleteAllChecked = deleteAllCheckBox.checked
+
+              if (deleteAllChecked) {
                 if (!confirm(getString("batchedit.deleteAll.confirm"))) {
-                  document.getElementById("deleteAllId").checked = false;
+                  deleteAllCheckBox.checked = false;
                   return;
                 }
               }
-            
-              deleteAllChecked = !deleteAllChecked;
             
               var inp = document.getElementById("batchedit").getElementsByTagName("input");
               for (var i = 0; i<inp.length; i++) {
@@ -181,6 +184,33 @@
                 }
               }
             }
+
+			function checkDeleteAll(input) {
+				if (input) {
+					if (input.type.toLowerCase() == "checkbox") {
+						if (!input.checked) {
+							document.getElementById("deleteAllId").checked = false;
+						} else {
+							var oneNotChecked = false;
+							var inp = document.getElementById("batchedit").getElementsByTagName("input");
+							for (var i= 0; i<inp.length; i++) {
+								if (inp[i].type.toLowerCase() == "checkbox") {
+					                  if (!inp[i].checked && inp[i].id != "deleteAllId") {
+						                  oneNotChecked = true;
+						                  break;
+					                  }
+					            }
+							}
+
+							if (!oneNotChecked) {
+								// all posts are marked to delete
+								document.getElementById("deleteAllId").checked = true;
+							}
+						}
+					}
+				}
+			}
+            
             maximizeById("general");
           ]]>
         </script>
