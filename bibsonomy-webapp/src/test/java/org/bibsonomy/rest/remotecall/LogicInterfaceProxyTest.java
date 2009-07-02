@@ -629,6 +629,11 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public Document getDocument(String userName, String fileHash) {
+		
+		return null;
+	}
 
 	public Document getDocument(String userName, String resourceHash, String fileName) {
 		// TODO Auto-generated method stub
