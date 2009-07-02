@@ -983,6 +983,9 @@ public class DBLogic implements LogicInterface {
 	public String createDocument(final Document document, final String resourceHash) {
 		final String userName = document.getUserName();
 		this.ensureLoggedIn();
+		
+		final int layoutContentID = 0;
+		
 		/*
 		 * users can only modify their own documents
 		 */
@@ -1016,9 +1019,8 @@ public class DBLogic implements LogicInterface {
 				}
 
 			} else {
-				/*
-				 * TODO: do the same with documents which have no post attached ...
-				 */
+				//TODO check whether a layout file with this filehash already exists the database
+				this.docDBManager.addDocument(userName, layoutContentID, document.getFileHash(), document.getFileName(), document.getMd5hash(), session);
 			}
 		} finally {
 			session.close();
@@ -1028,6 +1030,11 @@ public class DBLogic implements LogicInterface {
 	}
 
 
+	public Document getDocument(final String userName, final String fileHash) {
+		
+		return null;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#getDocument(java.lang.String, java.lang.String, java.lang.String)
 	 */
