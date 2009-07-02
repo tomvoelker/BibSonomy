@@ -216,6 +216,11 @@ public class RestLogic implements LogicInterface {
 		return null;
 	}
 
+	public Document getDocument(final String userName, final String fileHash) {
+		
+		return null;
+	}
+	
 	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
 		// TODO Auto-generated method stub
 		return null;
