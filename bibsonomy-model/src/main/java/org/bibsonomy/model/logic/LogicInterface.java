@@ -284,6 +284,14 @@ public interface LogicInterface extends PostLogicInterface {
 	public String createDocument(Document document, String resourceHash);
 
 	/**
+	 * Get a (layout) document file for a non post connected document
+	 * @param userName
+	 * @param fileHash
+	 * @return document
+	 */
+	public Document getDocument(final String userName, final String fileHash);
+	
+	/**
 	 * Get a document from an existing Bibtex entry
 	 * @param userName 
 	 * @param resourceHash 
