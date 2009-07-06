@@ -46,7 +46,7 @@ if ($#ARGV != 1) {
 } 
 
 # don't run twice
-if (am_i_running($ENV{'TMP'}."/batch_tagtag.pid")) {
+if (am_i_running($ENV{'TMP'}."/batch_tagtag_single.pid")) {
   print STDERR "another instance of " . $PROGRAM_NAME . " is running on $ENV{'hostname'}. Aborting this job.\n";
   exit;
 }
