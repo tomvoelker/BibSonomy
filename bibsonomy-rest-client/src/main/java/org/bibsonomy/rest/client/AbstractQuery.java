@@ -1,21 +1,21 @@
 /**
- *  
+ *
  *  BibSonomy-Rest-Client - The REST-client.
- *   
- *  Copyright (C) 2006 - 2008 Knowledge & Data Engineering Group, 
+ *
+ *  Copyright (C) 2006 - 2008 Knowledge & Data Engineering Group,
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
- *  
+ *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public License
  *  as published by the Free Software Foundation; either version 2
  *  of the License, or (at your option) any later version.
- * 
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU Lesser General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -23,6 +23,7 @@
 
 package org.bibsonomy.rest.client;
 
+import java.io.File;
 import java.io.Reader;
 
 import org.apache.commons.httpclient.HttpStatus;
@@ -51,7 +52,7 @@ public abstract class AbstractQuery<T> {
 	protected static final String URL_POSTS_ADDED = RestProperties.getInstance().getAddedPostsUrl();
 	protected static final String URL_POSTS_POPULAR = RestProperties.getInstance().getPopularPostsUrl();
 	protected static final String URL_CONCEPTS = RestProperties.getInstance().getConceptUrl();
-	
+
 	private String apiKey;
 	private String username;
 	private String apiURL;
@@ -60,9 +61,9 @@ public abstract class AbstractQuery<T> {
 	private int statusCode = -1;
 	private RenderingFormat renderingFormat = RenderingFormat.XML;
 	private ProgressCallback callback;
-	
+
 	protected Reader downloadedDocument;
-	
+
 	private T result;
 	private boolean executed = false;
 
@@ -75,11 +76,27 @@ public abstract class AbstractQuery<T> {
 		return downloadedDocument;
 	}
 
+	protected final Reader performMultipartPostRequest(final String url, final File file) throws ErrorPerformingRequestException {
+
+		final PostWorker worker;
+		final Reader result;
+		final String absoluteUrl;
+		absoluteUrl = this.apiURL + url;
+
+		worker = new PostWorker(this.username, this.apiKey);
+		worker.setProxyHost(this.proxyHost);
+		worker.setProxyPort(this.proxyPort);
+		result = worker.perform(absoluteUrl, file);
+		this.statusCode = worker.getHttpResult();
+
+		return result;
+	}
+
 	protected final Reader performRequest(final HttpMethod method, final String url, final String requestBody) throws ErrorPerformingRequestException {
 		final HttpWorker worker;
 		final Reader result;
 		final String absoluteUrl;
-		absoluteUrl = apiURL + url;
+		absoluteUrl = this.apiURL + url;
 
 		switch (method) {
 		case POST:
@@ -119,7 +136,7 @@ public abstract class AbstractQuery<T> {
 	/**
 	 * Execute this query. The query blocks until a result from the server is
 	 * received.
-	 * 
+	 *
 	 * @param username
 	 *            username at bibsonomy.org
 	 * @param apiKey
@@ -131,7 +148,7 @@ public abstract class AbstractQuery<T> {
 		this.username = username;
 		this.apiKey = apiKey;
 		this.executed = true;
-		this.result = doExecute();
+		this.result = this.doExecute();
 	}
 
 	/**
@@ -148,7 +165,7 @@ public abstract class AbstractQuery<T> {
 	 */
 	public final int getHttpStatusCode() throws IllegalStateException {
 		if (this.statusCode == -1) throw new IllegalStateException("Execute the query first.");
-		return statusCode;
+		return this.statusCode;
 	}
 
 	/**
@@ -172,8 +189,8 @@ public abstract class AbstractQuery<T> {
 	void setApiURL(final String apiURL) {
 		this.apiURL = apiURL;
 	}
-	
-	
+
+
 
 	/**
 	 * @return the {@link RenderingFormat} to use.
@@ -196,24 +213,24 @@ public abstract class AbstractQuery<T> {
 	void setProgressCallback(final ProgressCallback callback) {
 		this.callback = callback;
 	}
-	
+
 	public boolean isSuccess() {
-		if (this.getHttpStatusCode() == HttpStatus.SC_OK || this.getHttpStatusCode() == HttpStatus.SC_CREATED)
+		if ((this.getHttpStatusCode() == HttpStatus.SC_OK) || (this.getHttpStatusCode() == HttpStatus.SC_CREATED))
 			return true;
-		return false;						
+		return false;
 	}
-	
+
 	public String getError() {
 		if (this.downloadedDocument == null) throw new IllegalStateException("Execute the query first.");
-		return RendererFactory.getRenderer(getRenderingFormat()).parseError(this.downloadedDocument);
-	}	
-	
-	public void setProxyHost(String proxyHost) {
+		return RendererFactory.getRenderer(this.getRenderingFormat()).parseError(this.downloadedDocument);
+	}
+
+	public void setProxyHost(final String proxyHost) {
 		this.proxyHost = proxyHost;
 	}
 
-	public void setProxyPort(int proxyPort) {
+	public void setProxyPort(final int proxyPort) {
 		this.proxyPort = proxyPort;
 	}
-	
+
 }

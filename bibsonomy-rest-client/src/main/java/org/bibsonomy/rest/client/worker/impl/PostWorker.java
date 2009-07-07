@@ -1,21 +1,21 @@
 /**
- *  
+ *
  *  BibSonomy-Rest-Client - The REST-client.
- *   
- *  Copyright (C) 2006 - 2008 Knowledge & Data Engineering Group, 
+ *
+ *  Copyright (C) 2006 - 2008 Knowledge & Data Engineering Group,
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
- *  
+ *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Lesser General Public License
  *  as published by the Free Software Foundation; either version 2
  *  of the License, or (at your option) any later version.
- * 
+ *
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU Lesser General Public License for more details.
- *  
+ *
  *  You should have received a copy of the GNU Lesser General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -23,12 +23,15 @@
 
 package org.bibsonomy.rest.client.worker.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
+import org.apache.commons.httpclient.methods.MultipartPostMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.client.worker.HttpWorker;
 
@@ -42,26 +45,59 @@ public final class PostWorker extends HttpWorker {
 		super(username, apiKey);
 	}
 
+	@SuppressWarnings("deprecation")
+	public Reader perform(final String url, final File file) throws ErrorPerformingRequestException {
+
+		LOGGER.debug("POST Multipart: URL: " + url);
+
+		if (this.proxyHost != null) {
+			this.getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
+		}
+
+		final MultipartPostMethod post = new MultipartPostMethod(url);
+
+		post.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
+		post.addRequestHeader(HEADER_AUTHORIZATION, this.encodeForAuthorization());
+		post.addRequestHeader("Content-Type", "multipart/form-data");
+
+		try {
+			post.addParameter("file", file);
+
+			this.getHttpClient().getHttpConnectionManager().getParams().setConnectionTimeout(5000);
+
+			this.httpResult = this.getHttpClient().executeMethod(post);
+			LOGGER.debug("HTTP result: " + this.httpResult);
+			LOGGER.debug("XML response:\n" + post.getResponseBodyAsString());
+			LOGGER.debug("===================================================");
+			return new StringReader(post.getResponseBodyAsString());
+		} catch (final IOException e) {
+			LOGGER.debug(e.getMessage(), e);
+			throw new ErrorPerformingRequestException(e);
+		} finally {
+			post.releaseConnection();
+		}
+	}
+
 	public Reader perform(final String url, final String requestBody) throws ErrorPerformingRequestException {
 		LOGGER.debug("POST: URL: " + url);
-		
+
 		// dirty but working
-		if (this.proxyHost != null){
-			getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
+		if (this.proxyHost != null) {
+			this.getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
 		}
 
 		final PostMethod post = new PostMethod(url);
-		post.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());
+		post.addRequestHeader(HEADER_AUTHORIZATION, this.encodeForAuthorization());
 		post.setDoAuthentication(true);
 		post.setFollowRedirects(false);
 
 		post.setRequestEntity(new StringRequestEntity(requestBody));
 
 		try {
-			this.httpResult = getHttpClient().executeMethod(post);
+			this.httpResult = this.getHttpClient().executeMethod(post);
 			LOGGER.debug("HTTP result: " + this.httpResult);
 			LOGGER.debug("XML response:\n" + post.getResponseBodyAsString());
-			LOGGER.debug("===================================================");			
+			LOGGER.debug("===================================================");
 			return new StringReader(post.getResponseBodyAsString());
 		} catch (final IOException e) {
 			LOGGER.debug(e.getMessage(), e);
