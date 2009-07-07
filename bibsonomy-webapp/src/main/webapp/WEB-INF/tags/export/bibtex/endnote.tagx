@@ -11,11 +11,15 @@
 	
 	<jsp:directive.attribute name="bib" type="org.bibsonomy.model.BibTex" required="true"/>	
 
-<jsp:text>%0 ${mtl:getRISEntryType(bib.entrytype)}</jsp:text>    
+<jsp:text>%0 ${mtl:getRISEntryType(bib.entrytype)}</jsp:text>
+<c:if test="${not empty bib.bibtexKey}"><jsp:text>
+%1 ${bib.bibtexKey}</jsp:text></c:if>    
 <c:if test="${not empty bib.authorList}"><c:forEach var="person" varStatus="status" items="${bib.authorList}">
 %A ${person.name}</c:forEach></c:if>        
 <c:if test="${not empty bib.booktitle}"><jsp:text>
 %B ${bib.booktitle}</jsp:text></c:if>
+<c:if test="${not empty bib.miscFields['isbn']}"><jsp:text>
+%@ ${bib.miscFields['isbn']}</jsp:text></c:if>
 <c:if test="${not empty bib.address}"><jsp:text>
 %C ${bib.address}</jsp:text></c:if>  
 <c:if test="${not empty bib.year}"><jsp:text>
@@ -34,6 +38,8 @@
 %P ${bib.pages}</jsp:text></c:if>
 <c:if test="${not empty bib.title}"><jsp:text>
 %T ${bib.title}</jsp:text></c:if>
+<c:if test="${not empty bib.miscFields['doi']}"><jsp:text>
+%R ${bib.miscFields['doi']}</jsp:text></c:if>
 <c:if test="${not empty bib.url}"><jsp:text>
 %U ${bib.url}</jsp:text></c:if>
 <c:if test="${not empty bib.volume}"><jsp:text>
