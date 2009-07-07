@@ -24,10 +24,12 @@ public class GetTagsByUser extends TagChainElement {
 		if (param.getTagIndex() != null && param.getTagIndex().size() > 0) {
 			// retrieve related tags
 			return this.db.getRelatedTagsForUser(param.getUserName(),
-					param.getRequestedUserName(), 
-					param.getTagIndex(),
-					param.getGroups(),
-					session);
+							param.getRequestedUserName(), 
+							param.getTagIndex(),
+							param.getGroups(),
+							param.getLimit(),
+							param.getOffset(),
+							session);
 		}
 		// retrieve all tags from user
 		return this.db.getTagsByUser(param, session);

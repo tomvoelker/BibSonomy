@@ -286,7 +286,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		param.addTagName("text");
 		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		visibleGroupIDs.add(0);
-		List<Tag> tags = this.tagDb.getRelatedTagsForUser(null,"hotho", param.getTagIndex(), visibleGroupIDs, this.dbSession);
+		List<Tag> tags = this.tagDb.getRelatedTagsForUser(null,"hotho", param.getTagIndex(), visibleGroupIDs, 0, 10, this.dbSession);
 	}
 	
 	@Test

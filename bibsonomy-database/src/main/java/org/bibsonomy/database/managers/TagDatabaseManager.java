@@ -693,12 +693,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return list of tags
 	 */
-	public List<Tag> getRelatedTagsForUser(final String userName, final String requestedUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public List<Tag> getRelatedTagsForUser(final String userName, final String requestedUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
 		final TagParam param = new TagParam();
 		param.setUserName(userName);
 		param.setRequestedUserName(requestedUserName);
 		param.addGroups(visibleGroupIDs);
 		param.setTagIndex(tagIndex);
+		param.setLimit(limit);
+		param.setOffset(offset);
 		return this.queryForList("getRelatedTagsRestricted", param, Tag.class, session);
 	}
 

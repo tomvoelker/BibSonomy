@@ -21,7 +21,13 @@ public class GetTagsByFriendOfUser extends TagChainElement {
 	protected List<Tag> handle(final TagParam param, final DBSession session) {
 		if (param.getTagIndex() != null && param.getTagIndex().size() > 0) {
 			// retrieve related tags
-			return this.db.getRelatedTagsForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), param.getGroups(), session);
+			return this.db.getRelatedTagsForUser(param.getUserName(), 
+												 param.getRequestedUserName(), 
+												 param.getTagIndex(), 
+												 param.getGroups(),
+												 param.getLimit(),
+												 param.getOffset(),
+												 session);
 		}
 		// retrieve all tags from friend that are visible to his friends
 		return this.db.getTagsByFriendOfUser(param, session);
