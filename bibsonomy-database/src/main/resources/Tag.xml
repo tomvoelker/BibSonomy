@@ -159,8 +159,8 @@
 	<select id="getTagsByAuthor" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
 		SELECT tag_name, count(tag_name) AS tag_ctr 
 		FROM tas t1, search_bibtex s 
-		WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE) 			 
-			AND t1.content_type = #contentType#
+		WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE)
+			<include refid="getTagsByResourceType"/>
 			AND t1.content_id = s.content_id
 			<include refid="restrictToGroups"/> 
 		GROUP BY t1.tag_name ORDER BY tag_name COLLATE utf8_unicode_ci
