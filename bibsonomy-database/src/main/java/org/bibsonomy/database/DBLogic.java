@@ -244,7 +244,7 @@ public class DBLogic implements LogicInterface {
 
 		// check allowed start-/end-values 
 		if (grouping.equals(GroupingEntity.ALL) && !present(tags) && !present(search)) {
-			this.permissionDBManager.checkStartEnd(start, end, "post");
+			this.permissionDBManager.checkStartEnd(loginUser, start, end, "post");
 		}
 		// check maximum number of allowed tags
 		if (this.permissionDBManager.exceedsMaxmimumSize(tags)) {
@@ -378,7 +378,7 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final TagSimilarity relation) {
 		if (grouping.equals(GroupingEntity.ALL)) {
-			this.permissionDBManager.checkStartEnd(start, end, "Tag");
+			this.permissionDBManager.checkStartEnd(loginUser, start, end, "Tag");
 		}				
 		final DBSession session = openSession();
 		final List<Tag> result;
