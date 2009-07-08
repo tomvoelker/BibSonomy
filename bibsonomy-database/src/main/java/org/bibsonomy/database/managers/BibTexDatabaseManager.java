@@ -1316,7 +1316,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			final Post<BibTex> post = list.get(0);
 			// attach document hash 
 			if (this.permissionDb.isAllowedToAccessPostsDocuments(userName, post, session)) {
-				post.getResource().setDocuments(this.docDb.getDocuments(userName, resourceHash, session));
+				post.getResource().setDocuments(this.docDb.getDocumentsForPost(userName, resourceHash, session));
 			}
 			
 			// add private note

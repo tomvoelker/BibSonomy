@@ -118,7 +118,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager{
 	 * @param session
 	 * @return A document.
 	 */
-	public List<Document> getDocuments(final String userName, final String resourceHash, final DBSession session) {
+	public List<Document> getDocumentsForPost(final String userName, final String resourceHash, final DBSession session) {
 		// create the docParam object
 		final DocumentParam docParam = new DocumentParam();
 
