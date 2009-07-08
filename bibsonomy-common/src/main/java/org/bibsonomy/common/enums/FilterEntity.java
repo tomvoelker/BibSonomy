@@ -53,7 +53,14 @@ public enum FilterEntity {
 	 * Use this when you ONLY want to retrieve resources which are 
 	 * viewable for your groups
 	 */
-	MY_GROUP_POSTS;	
+	MY_GROUP_POSTS,
 	
+	
+	/**
+	 * Some pages apply filtering, e.g., the homepage does not show posts
+	 * which contain a blacklisted tag. Setting the filter to this entity
+	 * should turn off such filtering. 
+	 */
+	UNFILTERED;	
 	
 }
