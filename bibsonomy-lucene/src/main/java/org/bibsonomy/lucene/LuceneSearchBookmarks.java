@@ -171,7 +171,7 @@ public class LuceneSearchBookmarks {
 			 * forbidden characters are those, which will harm the lucene query
 			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
 			 */
-			searchTerms = Utils.removeSpecialLuceneChars(searchTerms);
+			searchTerms = Utils.replaceSpecialLuceneChars(searchTerms);
 
 			int allowedGroupsIterator = 0;
 			for ( String groupName : GroupNames){
@@ -188,13 +188,13 @@ public class LuceneSearchBookmarks {
 				
 			if ( (UserName != null) && (!UserName.isEmpty()) )
 			{
-				UserName = Utils.removeSpecialLuceneChars(UserName);
+				UserName = Utils.replaceSpecialLuceneChars(UserName);
 				userQuery  = lField_user + ":("+ UserName +")";
 			}
 
 			if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
 			{
-				requestedUserName = Utils.removeSpecialLuceneChars(requestedUserName);
+				requestedUserName = Utils.replaceSpecialLuceneChars(requestedUserName);
 				requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
 			}
 
@@ -300,7 +300,7 @@ public class LuceneSearchBookmarks {
 					long starttime2Query = System.currentTimeMillis();
 					bookmark.setCount(this.searcher.docFreq(new Term("intrahash", doc.get("intrahash"))));
 					long endtime2Query = System.currentTimeMillis();
-					LOGGER.debug("LuceneBookmark query time for postcount: " + (endtime2Query-starttime2Query) + "ms");
+//					LOGGER.debug("LuceneBookmark query time for postcount: " + (endtime2Query-starttime2Query) + "ms");
 //					LOGGER.debug("LuceneBookmark:  ContentID (intrahash) = bookmark.getCount:  " + postBookmark.getContentId() + " ("+ doc.get("intrahash") +") = " + bookmark.getCount());
 
 					

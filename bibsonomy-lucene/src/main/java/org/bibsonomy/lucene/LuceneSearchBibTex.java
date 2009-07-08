@@ -167,7 +167,7 @@ public class LuceneSearchBibTex {
 			 * forbidden characters are those, which will harm the lucene query
 			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
 			 */
-			searchTerms = Utils.removeSpecialLuceneChars(searchTerms);
+			searchTerms = Utils.replaceSpecialLuceneChars(searchTerms);
 			mergedFiledQuery = lField_merged + ":("+ searchTerms +") ";
 		}
 		allowedGroupNamesQuery = lField_group+":("+allowedGroupNames+")";
@@ -175,13 +175,13 @@ public class LuceneSearchBibTex {
 			
 		if ( (UserName != null) && (!UserName.isEmpty()) )
 		{
-			UserName = Utils.removeSpecialLuceneChars(UserName);
+			UserName = Utils.replaceSpecialLuceneChars(UserName);
 			userQuery  = lField_user + ":("+ UserName +")";
 		}
 
 		if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
 		{
-			requestedUserName = Utils.removeSpecialLuceneChars(requestedUserName);
+			requestedUserName = Utils.replaceSpecialLuceneChars(requestedUserName);
 			requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
 		}
 
@@ -273,13 +273,13 @@ public class LuceneSearchBibTex {
 			 * forbidden characters are those, which will harm the lucene query
 			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
 			 */
-			search = Utils.removeSpecialLuceneChars(search);
+			search = Utils.replaceSpecialLuceneChars(search);
 			searchQuery = lField_author + ":("+ search +")";
 		}
 
 		if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
 		{
-			requestedUserNameQuery = Utils.removeSpecialLuceneChars(requestedUserNameQuery);
+			requestedUserNameQuery = Utils.replaceSpecialLuceneChars(requestedUserNameQuery);
 			requestedUserNameQuery  = " AND " + lField_user + ":("+ requestedUserName +")";
 		}
 		
@@ -349,10 +349,10 @@ public class LuceneSearchBibTex {
 		if ( (tagList != null) && (!tagList.isEmpty()) )
 		{
 			int tagListIterator = 0;
-			LOGGER.debug("LuceneSearchBibTex: tagList == "+ tagList.toString() );
+			LOGGER.debug("LuceneSearchBibTex: tagList == "+ Utils.replaceSpecialLuceneChars(tagList.toString()) );
 			for ( String tagItem : tagList){
 				if (tagListIterator>0) tagListQuery += " ";
-				tagListQuery += tagItem;
+				tagListQuery += Utils.replaceSpecialLuceneChars(tagItem);
 				tagListIterator++;
 			}
 
@@ -621,7 +621,7 @@ ORDER BY b.date DESC, b.content_id DESC;
 					long starttime2Query = System.currentTimeMillis();
 					bibTex.setCount(this.searcher.docFreq(new Term("intrahash", doc.get("intrahash"))));
 					long endtime2Query = System.currentTimeMillis();
-					LOGGER.debug("LuceneBibTex query time for postcount: " + (endtime2Query-starttime2Query) + "ms");
+//					LOGGER.debug("LuceneBibTex query time for postcount: " + (endtime2Query-starttime2Query) + "ms");
 //					LOGGER.debug("LuceneBibTex:  ContentID (intrahash) = bibTex.getCount:  " + postBibTex.getContentId() + " ("+ doc.get("intrahash") +") = " + bibTex.getCount());
 					
 					postBibTex.setDate(date);

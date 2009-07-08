@@ -10,11 +10,33 @@ package org.bibsonomy.lucene;
 public class Utils {
 
 	/**
-	 * remove special lucene characters used in queries like ?*~:()[]{}&|:\
+	 * 
+	 * @param s source
+	 * @param r replacement - SpecialLuceneCharacters will be replaced by r 
+	 * @return
+	 */
+	
+	public static String replaceSpecialLuceneChars(String s, String r) {
+		s = s.replaceAll("[\\,\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", r);
+		return s;
+	}
+
+	
+	/**
+	 * replace special lucene characters used in queries like ?*~:()[]{}&|:\ with " "
 	 * @return the String
 	 */
-	public static String removeSpecialLuceneChars(String s) {
-		s = s.replaceAll("[\\,\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", " ");
+	public static String replaceSpecialLuceneChars(String s) {
+		s = replaceSpecialLuceneChars (s, " ");
+		return s;
+	}
+
+	/**
+	 * remove special lucene characters used in queries like ?*~:()[]{}&|:\ 
+	 * @return the String
+	 */
+	public static String resmoveSpecialLuceneChars(String s) {
+		s = replaceSpecialLuceneChars (s, "");
 		return s;
 	}
 
