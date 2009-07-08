@@ -2,14 +2,13 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.InvalidModelException;
@@ -21,7 +20,6 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.database.util.LuceneHelper;
 import org.bibsonomy.lucene.LuceneSearchBookmarks;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -307,6 +305,9 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkForHomepage(final BookmarkParam param, final DBSession session) {
+		if (FilterEntity.UNFILTERED.equals(param.getFilter())) {
+			return this.bookmarkList("getBookmarkForHomepageUnfiltered", param, session);
+		}
 		return this.bookmarkList("getBookmarkForHomepage", param, session);
 	}
 
