@@ -119,6 +119,21 @@
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 	
+	<!-- This is the query for the unfiltered home page, i.e., posts which contain blacklisted tags are NOT filtered -->
+	<select id="getBookmarkForHomepageUnfiltered" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT <include refid="bookmarkAttributes"/>,
+		       u.book_url, u.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name
+		  FROM (
+		    SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash
+	      	  FROM bookmark b
+	      	  WHERE b.group = #groupType#
+  		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) as b
+		    LEFT JOIN tas AS t USING (content_id)
+		    JOIN urls u USING (book_url_hash)
+		  ORDER BY b.date DESC, b.content_id DESC
+	</select>
+	
 	<!-- <select id="getBookmarkPopular" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT <include refid="bookmarkAttributes"/>, t.tag_name, u.book_url, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
 		FROM temp_bookmark b
