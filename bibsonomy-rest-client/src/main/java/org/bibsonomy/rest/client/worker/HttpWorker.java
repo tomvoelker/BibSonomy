@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.client.worker;
 
+import java.io.UnsupportedEncodingException;
+
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.params.HttpClientParams;
@@ -30,7 +32,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.rest.RestProperties;
 
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -78,7 +80,13 @@ public abstract class HttpWorker {
 	 * @return Basic + Base64 encoded(username + ':' + password)
 	 */
 	protected String encodeForAuthorization() {
-		return HEADER_AUTH_BASIC + new BASE64Encoder().encode((this.username + ":" + this.apiKey).getBytes());
+		String retVal = HEADER_AUTH_BASIC;
+		try {
+			retVal += new String(Base64.encodeBase64((this.username + ":" + this.apiKey).getBytes()), UTF8 );
+		} catch (UnsupportedEncodingException e1) {
+			retVal += new String(Base64.encodeBase64((this.username + ":" + this.apiKey).getBytes()));
+		}
+		return retVal;
 	}
 
 	/**
