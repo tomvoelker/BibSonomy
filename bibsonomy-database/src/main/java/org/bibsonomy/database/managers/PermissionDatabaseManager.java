@@ -52,8 +52,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param end
 	 * @param itemType
 	 */
-	public void checkStartEnd(final Integer start, final Integer end, final String itemType) {
-		if (end > 1000) {
+	public void checkStartEnd(final User loginUser, final Integer start, final Integer end, final String itemType) {
+		if (!Role.ADMIN.equals(loginUser.getRole()) && end > 1000) {
 			throw new ValidationException("You are not authorized to retrieve more than the last 1000 " + itemType + " items.");
 		}
 	}

@@ -34,7 +34,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// ok
 		for (int i = 0; i <= 1000; i++) {
 			try {
-				this.permissionDb.checkStartEnd(0, i, "test");
+				this.permissionDb.checkStartEnd(new User(), 0, i, "test");
 			} catch (ValidationException ignore) {
 				fail("no exception expected");
 			}
@@ -42,9 +42,19 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// not ok
 		for (int i = 1001; i < 10000; i++) {
 			try {
-				this.permissionDb.checkStartEnd(0, i, "test");
+				this.permissionDb.checkStartEnd(new User(), 0, i, "test");
 				fail("expected exception");
 			} catch (ValidationException ignore) {
+			}
+		}
+		// OK 
+		final User admin = new User();
+		admin.setRole(Role.ADMIN);
+		for (int i = 1001; i < 10000; i++) {
+			try {
+				this.permissionDb.checkStartEnd(admin, 0, i, "test");
+			} catch (ValidationException ignore) {
+				fail("no exception expected");
 			}
 		}
 	}
