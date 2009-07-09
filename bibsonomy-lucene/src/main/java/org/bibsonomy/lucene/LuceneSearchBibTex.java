@@ -15,6 +15,7 @@ import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -27,6 +28,7 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.bibsonomy.common.exceptions.LuceneException;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.LuceneIndexStatistics;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
@@ -36,6 +38,7 @@ public class LuceneSearchBibTex {
 	private final static LuceneSearchBibTex singleton = new LuceneSearchBibTex();
 	private IndexSearcher searcher; 
 	private PerFieldAnalyzerWrapper analyzer;
+	private String lucenePath = null;
 	
 	
 	String lField_contentid = "content_id";
@@ -61,7 +64,7 @@ public class LuceneSearchBibTex {
 
 			Context initContext = new InitialContext();
 			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			String lucenePath = (String) envContext.lookup("luceneIndexPathPublications");
+			lucenePath = (String) envContext.lookup("luceneIndexPathPublications");
 			
 			LOGGER.debug("LuceneBibTex: use index: " + lucenePath);
 
@@ -673,4 +676,11 @@ ORDER BY b.date DESC, b.content_id DESC;
 		return searchLucene(getAuthorQueryFilter(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList), limit, offset);
 	}
 
+	
+	public LuceneIndexStatistics getStatistics() {
+		return Utils.getStatistics(lucenePath);
+	}
+	
+	
+	
 }
