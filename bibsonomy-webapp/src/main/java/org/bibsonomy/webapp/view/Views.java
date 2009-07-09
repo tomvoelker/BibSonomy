@@ -169,6 +169,11 @@ public enum Views implements View {
 	ADMINPAGE("admin"),
 	
 	/**
+	 * admin page
+	 */
+	ADMINLUCENEPAGE("adminlucene"),
+
+	/**
 	 * additional posts 
 	 */
 	MY_GROUP_POSTS_PAGE("myGroupPosts"), 

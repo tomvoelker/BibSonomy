@@ -1,0 +1,90 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8"
+		language="java" pageEncoding="UTF-8" session="true" />
+
+	<c:set var="bookmarksIndex" value="${command.bookmarksIndex}" />
+	<c:set var="publicationsIndex" value="${command.publicationsIndex}" />
+	
+	<layout:layout 
+		basketSize="" 
+		searchString="" 
+		pageTitle="${command.pageTitle}" 
+		loginUserName="${command.context.loginUser.name}"
+		requPath="">
+		<jsp:attribute name="heading">
+			<a href="/?filter=no">${projectName} all</a> :: <a rel="path_menu"
+				href="/admin_lucene"><fmt:message key="navi.admin_lucene" /></a>
+		</jsp:attribute>	
+		<jsp:attribute name="content">
+	
+
+<div>
+	<h2>
+			Hallo Welt!
+	</h2>
+	<p>Action: ${command.action}</p>
+	<p>envContextString: ${command.envContextString}</p>
+	<p>luceneBookmarksPath: ${command.luceneBookmarksPath}</p>
+	<p>lucenePublicationsPath: ${command.lucenePublicationsPath}</p>
+	<p>luceneDataSourceUrl: ${command.luceneDataSourceUrl}</p>
+	<p>luceneDataSourceUsername: ${command.luceneDataSourceUsername}</p>
+
+	<p>
+	bookmarksIndex.getInstance: ${bookmarksIndex.instance}<br />
+	bookmarksIndex.getNumDocs: ${bookmarksIndex.numDocs}<br />
+	bookmarksIndex.numDeletedDocs: ${bookmarksIndex.numDeletedDocs}<br />
+	bookmarksIndex.newestDate: ${bookmarksIndex.newestDate}<br />
+	bookmarksIndex.lastModified: ${bookmarksIndex.lastModified}<br />
+	bookmarksIndex.CurrentVersion: ${bookmarksIndex.currentVersion}<br />
+	
+	bookmarksIndex.isCurrent:
+	<c:choose>
+		<c:when test="${bookmarksIndex.current}">
+			true
+		</c:when>
+		<c:otherwise>
+			false
+		</c:otherwise>
+	</c:choose>
+	
+	</p>
+
+	<p>
+	publicationsIndex.getInstance: ${publicationsIndex.instance}<br />
+	publicationsIndex.getNumDocs: ${publicationsIndex.numDocs}<br />
+	publicationsIndex.numDeletedDocs: ${publicationsIndex.numDeletedDocs}<br />
+	publicationsIndex.newestDate: ${publicationsIndex.newestDate}<br />
+	publicationsIndex.lastModified: ${publicationsIndex.lastModified}<br />
+	publicationsIndex.CurrentVersion: ${publicationsIndex.currentVersion}<br />
+	publicationsIndex.isCurrent:
+	<c:choose>
+		<c:when test="${publicationsIndex.current}">
+			true
+		</c:when>
+		<c:otherwise>
+			false
+		</c:otherwise>
+	</c:choose>
+	</p>
+
+</div>    
+            
+		</jsp:attribute>				
+	</layout:layout>
+
+
+
+</jsp:root>

@@ -188,6 +188,16 @@
 						</property>
 					</bean>
 				</entry>
+					<entry key="/admin_lucene">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="adminLuceneController"/>
+						<property name="allowedFields">
+							<list>
+								<value>action</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/generalAjax">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="generalAjaxController"/>
@@ -699,6 +709,11 @@
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
+	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.AdminLuceneController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+
 	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.AdminAjaxController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
