@@ -53,6 +53,10 @@ import bibtex.parser.ParseException;
 /**
  * Provides parsing of BibTeX entries represented by {@link String}s into {@link BibTex} objects.
  * 
+ * FIXME: before using this in BibSonomy, it must be properly tested! Currently,
+ * it puts too many fields into 'misc'.
+ * 
+ * 
  * @author rja
  * @version $Id$
  */
@@ -283,6 +287,17 @@ public class SimpleBibTeXParser {
 		 * (not needed for the scraping service!)
 		 */
 
+		/*
+		 * rja, 2009-06-30 (added this to BibTeXHandler and copied it here - but deactivated it)
+		 * CiteULike uses the "comment" field to export (private) notes in the form
+		 * 
+		 * comment = {(private-note)This is a test note!}, 
+		 * 
+		 * Thus, we here extract the field and remove the "(private-note)" part
+		 */
+		//field = (BibtexString) entry.getFieldValue("comment");	if (field != null) bib.setPrivnote(field.getContent().replace("(private-note)", ""));
+		
+		
 		/*
 		 * parse person names for author + editor
 		 */

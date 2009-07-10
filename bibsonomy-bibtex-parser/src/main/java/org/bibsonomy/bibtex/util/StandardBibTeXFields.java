@@ -36,49 +36,6 @@ import java.util.Set;
  */
 public class StandardBibTeXFields {
 
-	private final static Set<String> standardBibSonomyFields = new HashSet<String>();
-
-	static {
-		standardBibSonomyFields.add("abstract");
-		standardBibSonomyFields.add("address");
-		standardBibSonomyFields.add("annote");
-		standardBibSonomyFields.add("author");
-		standardBibSonomyFields.add("booktitle");
-		standardBibSonomyFields.add("chapter");
-		standardBibSonomyFields.add("crossref");
-		standardBibSonomyFields.add("edition");
-		standardBibSonomyFields.add("editor");
-		standardBibSonomyFields.add("howpublished");
-		standardBibSonomyFields.add("institution");
-		standardBibSonomyFields.add("journal");
-		standardBibSonomyFields.add("key");
-		standardBibSonomyFields.add("month");
-		standardBibSonomyFields.add("note");
-		standardBibSonomyFields.add("number");
-		standardBibSonomyFields.add("organization");
-		standardBibSonomyFields.add("pages");
-		standardBibSonomyFields.add("publisher");
-		standardBibSonomyFields.add("school");
-		standardBibSonomyFields.add("series");
-		standardBibSonomyFields.add("title");
-		standardBibSonomyFields.add("type");
-		standardBibSonomyFields.add("volume");
-		standardBibSonomyFields.add("year");
-		// added, because otherwise "day" will go to "misc"
-		standardBibSonomyFields.add("day");
-		// standard fields for bibsonomy
-		standardBibSonomyFields.add("description");
-		standardBibSonomyFields.add("tags");
-		standardBibSonomyFields.add("url");
-		standardBibSonomyFields.add("keywords");
-		standardBibSonomyFields.add("biburl");   // added because this way it is not added to "misc"
-	}
-
-
-	public static Set<String> getStandardBibSonomyFields() {
-		return standardBibSonomyFields;
-	}
-	
 	private final static Set<String> standardBibTeXFields = new HashSet<String>();
 
 	static {
@@ -108,6 +65,31 @@ public class StandardBibTeXFields {
 		standardBibTeXFields.add("volume");
 		standardBibTeXFields.add("year");
 	}
+	
+	
+	private final static Set<String> standardBibSonomyFields = new HashSet<String>();
+
+	static {
+		standardBibSonomyFields.addAll(standardBibTeXFields);
+	
+		// added, because otherwise "day" will go to "misc"
+		standardBibSonomyFields.add("day");
+		// standard fields for bibsonomy
+		standardBibSonomyFields.add("description");
+		standardBibSonomyFields.add("tags");
+		standardBibSonomyFields.add("url");
+		standardBibSonomyFields.add("keywords");
+		
+		standardBibSonomyFields.add("comment");	 // used by CiteULike for private comments, read by BibSonomy (not written)
+		standardBibSonomyFields.add("biburl");   // added because this way it is not added to "misc"
+	}
+
+
+	public static Set<String> getStandardBibSonomyFields() {
+		return standardBibSonomyFields;
+	}
+	
+
 
 
 	public static Set<String> getStandardBibTeXFields() {
