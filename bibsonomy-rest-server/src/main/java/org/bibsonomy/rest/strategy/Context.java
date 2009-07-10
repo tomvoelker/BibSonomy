@@ -82,12 +82,15 @@ public final class Context {
 	private HashMap<String, String> additionalInfos;
 
 	/**
-	 * @param authUserName  The authUserName to set.
+	 * @param doc 
+	 * @param logic 
 	 * @param url
 	 * @param httpMethod
 	 *            httpMethod used in the request: GET, POST, PUT or DELETE
 	 * @param parameterMap
 	 *            map of the attributes
+	 * @param items 
+	 * @param additionalInfos 
 	 * @throws NoSuchResourceException
 	 *             if the requested url doesnt exist
 	 * @throws ValidationException
