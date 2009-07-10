@@ -120,7 +120,7 @@
       {
          "type" : "Tag",
          "label" : "${mtl:quoteJSON(tag.name)}", 
-         "count" : ${tag.globalcount}
+         "count" : ${tag.usercount}
       }<c:if test="${not status.last}">,</c:if>
       </c:forEach>
 
