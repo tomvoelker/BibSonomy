@@ -28,7 +28,6 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.bibsonomy.common.exceptions.LuceneException;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.LuceneIndexStatistics;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;

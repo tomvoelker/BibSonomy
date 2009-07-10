@@ -12,7 +12,6 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
-import org.bibsonomy.model.LuceneIndexStatistics;
 
 /**
  * Utility class to provide some often used methods 
