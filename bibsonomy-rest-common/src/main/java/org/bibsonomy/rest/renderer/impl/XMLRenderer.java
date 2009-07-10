@@ -204,7 +204,7 @@ public class XMLRenderer implements Renderer {
 					xmlDocument.setHref(urlRenderer.createHrefForResourceDocument(post.getUser().getName(), bibtex.getIntraHash(), document.getFileName()));
 					xmlDocuments.getDocument().add(xmlDocument);
 				}
-				xmlPost.getDocuments().add(xmlDocuments);
+				xmlPost.setDocuments(xmlDocuments);
 			}
 		}
 

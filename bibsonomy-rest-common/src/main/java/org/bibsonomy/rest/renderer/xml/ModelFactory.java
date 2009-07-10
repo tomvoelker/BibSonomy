@@ -30,20 +30,17 @@ import static org.bibsonomy.model.util.ModelValidationUtils.checkPost;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkTag;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
 
-import java.io.ObjectOutputStream.PutField;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
@@ -159,7 +156,7 @@ public class ModelFactory {
 		return tag;
 	}
 
-	
+
 	private List<Tag> createTags(final List<TagsType> xmlTags, final int depth) {
 		final List<Tag> rVal = new ArrayList<Tag>();
 		for (final TagsType xmlSubTags : xmlTags) {
@@ -180,7 +177,7 @@ public class ModelFactory {
 		if (xmlTag.getScore() != null ) tag.setScore(xmlTag.getScore().doubleValue());
 		return tag;
 	}		
-	
+
 	public Post<Resource> createPost(final PostType xmlPost) {
 		checkPost(xmlPost);
 
@@ -246,6 +243,21 @@ public class ModelFactory {
 			bibtex.setVolume(xmlBibtex.getVolume());
 			bibtex.setYear(xmlBibtex.getYear());
 			bibtex.setPrivnote(xmlBibtex.getPrivnote());
+
+
+			/*
+			 * check, of the post contains documents
+			 */
+			if (xmlPost.getDocuments() != null) {
+				final List<Document> documents = new LinkedList<Document>();
+				for (final DocumentType xmlDocument : xmlPost.getDocuments().getDocument()) {
+					final Document document = new Document();
+					document.setFileName(xmlDocument.getFilename());
+					document.setMd5hash(xmlDocument.getMd5Hash());
+					documents.add(document);
+				}
+				bibtex.setDocuments(documents);
+			}
 
 			checkBibTeX(bibtex);
 
