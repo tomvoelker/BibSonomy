@@ -2,6 +2,8 @@ package org.bibsonomy.webapp.controller.actions;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
+import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostBookmarkValidator;
 import org.bibsonomy.webapp.validation.PostPostValidator;
@@ -38,6 +40,11 @@ public class PostBookmarkController extends PostPostController<Bookmark> {
 	@Override
 	protected PostPostValidator<Bookmark> getValidator() {
 		return new PostBookmarkValidator();
+	}
+
+	@Override
+	protected EditPostCommand<Bookmark> instantiateEditPostCommand() {
+		return new EditBookmarkCommand();
 	}
 
 }

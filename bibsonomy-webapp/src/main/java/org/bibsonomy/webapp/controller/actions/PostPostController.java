@@ -73,7 +73,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
 	 */
 	public EditPostCommand<RESOURCE> instantiateCommand() {
-		final EditPostCommand<RESOURCE> command = new EditPostCommand<RESOURCE>();
+		final EditPostCommand<RESOURCE> command = instantiateEditPostCommand();
 		/*
 		 * initialize lists
 		 */
@@ -95,6 +95,12 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		command.setPostID(RecommenderStatisticsManager.getUnknownPID());
 		return command;
 	}
+	
+	/**
+	 * Instantiated the correct command for this controller.
+	 * @return
+	 */
+	protected abstract EditPostCommand<RESOURCE> instantiateEditPostCommand();
 	
 	/**
 	 * Instantiates a resource which the controller puts into the commands post.
