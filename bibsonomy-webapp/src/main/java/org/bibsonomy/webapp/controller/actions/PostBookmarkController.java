@@ -14,12 +14,10 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class PostBookmarkController extends PostPostController<Bookmark> {
-	private static final String LOGIN_NOTICE = "login.notice.post.bookmark";
-
 	
 	@Override
 	protected View getPostView() {
-		return Views.POST_BOOKMARK;
+		return Views.POST_BOOKMARK; // TODO: this could be configured using Spring!
 	}
 
 	@Override

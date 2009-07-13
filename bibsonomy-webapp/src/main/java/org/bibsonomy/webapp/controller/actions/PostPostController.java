@@ -65,7 +65,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
 	
-	private static final String LOGIN_NOTICE = "login.notice.post.bookmark"; // FIXME: refactor
+	private static final String LOGIN_NOTICE = "login.notice.post.";
 
 	/**
 	 * Returns an instance of the command the controller handles.
@@ -141,7 +141,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 			 * the source code (although we could/should inject it using 
 			 * Spring)
 			 */
-			return new ExtendedRedirectView("/login?notice=" + LOGIN_NOTICE + "&referer=/postBookmark?" + safeURIEncode(context.getQueryString())); // FIXME: refactor
+			return new ExtendedRedirectView("/login?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + "&referer=/postBookmark?" + safeURIEncode(context.getQueryString())); // FIXME: refactor
 		}
 
 		/*

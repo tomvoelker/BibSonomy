@@ -279,9 +279,13 @@ public enum Views implements View {
 	LOGIN("actions/login"),
 	
 	/**
-	 * Show (eventually someday) the new postBookmark
+	 * the postBookmark dialog
 	 */
 	POST_BOOKMARK("actions/post/postBookmark"),
+	/**
+	 * the postPublication dialog
+	 */
+	POST_PUBLICATION("actions/post/postPublication"),
 	
 	/**
      * Show a form to request a password reminder.
