@@ -450,6 +450,8 @@
 								<value>grouping</value>
 								<value>importType</value>
 								<value>overwrite</value>
+								<value>userName</value>
+								<value>passWord</value>
 							</list>
 						</property>
 					</bean>
@@ -742,6 +744,9 @@
 			<value type="java.lang.Integer">3</value>
 		</property>
 	</bean>
+		
+	<!--<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.ButtonPageController"/>-->	
+
 	<!-- <bean id="purposeTagsPageController" class="org.bibsonomy.webapp.controller.PurposeTagsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
