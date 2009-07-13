@@ -13,7 +13,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.antlr.runtime.RecognitionException;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
@@ -30,8 +30,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-
-import com.sun.mail.util.BASE64EncoderStream;
 
 /**
  * 
@@ -87,12 +85,12 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			Element resource = (Element)postList.item(i);
 								
 			Post<Bookmark> post = new Post<Bookmark>();
-			
-			post.getResource().setTitle(resource.getAttribute("description"));
-			post.getResource().setUrl(resource.getAttribute("href"));
+			Bookmark bookmark = new Bookmark();
+			bookmark.setTitle(resource.getAttribute("description"));
+			bookmark.setUrl(resource.getAttribute("href"));
 			try {
 				post.getTags().addAll(TagUtils.parse(resource.getAttribute("tag")));
-			} catch (RecognitionException e) {
+			} catch (Exception e) {
 				throw new IOException(e);
 			}
 			
@@ -116,7 +114,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 					post.getGroups().add(new Group(GroupID.PUBLIC.getId()));
 				}
 			}
-			
+			post.setResource(bookmark);
 			posts.add(post);
 			
 		}
@@ -140,7 +138,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 			try {
 				Tag tag = new Tag(resource.getAttribute("name"));
 				tag.getSubTags().addAll(TagUtils.parse(resource.getAttribute("tags")));
-			} catch (RecognitionException e) {
+			} catch (Exception e) {
 				throw new IOException(e);
 			}
 		}
@@ -165,7 +163,7 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 		
 		URLConnection connection = apiURL.openConnection();
 		connection.setRequestProperty("User-Agent", userAgent);
-		connection.setRequestProperty("Authorization", "Basic "+BASE64EncoderStream.encode(userNameAndPassword.getBytes()));
+		connection.setRequestProperty("Authorization", "Basic "+new Base64().encode(userNameAndPassword.getBytes()));
 		
 		InputStream inputStream = connection.getInputStream();
 		
