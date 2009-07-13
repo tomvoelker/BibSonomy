@@ -1,0 +1,29 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:form="http://www.springframework.org/tags/form">
+	
+	<!-- This tag can be used to support the bookmark import from delicious or firefox -->
+	
+	<jsp:directive.attribute name="importType"  type="java.lang.String" required="false"/>
+	
+	<c:choose>
+		<c:when test="${empty importType}">
+			<post:firefoxImport/><br/>
+			<post:deliciousImport/>
+		</c:when>
+		<c:otherwise>
+			<c:if test="${importType eq 'delicious'}">
+				<post:deliciousImport/>	
+			</c:if>
+			<c:if test="${importType eq 'firefox'}">
+				<post:firefoxImport/>
+			</c:if>
+		</c:otherwise>
+	</c:choose>
+	
+</jsp:root>

@@ -1,0 +1,71 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form">
+	
+	<!-- This tag can be used to support the bookmark import from delicious -->
+	
+	<c:set var="valueButton"><fmt:message key="settings.firefox.button.text"/></c:set>
+	
+	<!-- Display userName and passWord to supply the user's credentials -->
+	<div id="fsform">
+		<form:form action="/import" method="post">
+			<fieldset class="fsInner">
+				<legend>Delicious</legend>
+				
+				<h2><fmt:message key="settings.delicious.header"/></h2><br/>
+				<table>
+					<tr>
+						<td>
+							<form:label path="userName">
+							<fmt:message key="navi.username" />:
+						</form:label>
+						</td>
+						<td>
+							<form:input path="userName"/>
+							<form:errors path="userName"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<form:label path="passWord">
+							<fmt:message key="navi.password" />:
+						</form:label>
+						</td>
+						<td>
+							<form:password path="passWord"/>
+							<form:errors path="passWord"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- import bundles? -->
+							<fmt:message key="import.bundles"/>:
+						</td>
+						<td>
+							<form:checkbox path="bundles"/>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- overwrite duplicates? -->
+							<fmt:message key="import.overwrite">
+					    		<fmt:param>${projectName}</fmt:param>
+					    	</fmt:message>:
+						</td>
+						<td>
+							<form:checkbox path="overwrite"/>
+						</td>
+					</tr>
+				</table>
+				<!-- The hidden field contains respective the importType -->
+				<input name="importType" type="hidden" value="delicious"/>
+				<input type="submit" value="${valueButton}" />
+			</fieldset>
+		</form:form>
+	</div>
+	
+</jsp:root>

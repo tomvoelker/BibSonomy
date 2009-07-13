@@ -1,0 +1,124 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requestedUser="${command.userName}" requPath="${requPath}">
+		
+		<jsp:attribute name="heading">
+			<fmt:message key="import.results"/>
+		</jsp:attribute>
+		
+		<jsp:attribute name="content">
+			
+			<c:set var="success" value="${true}"/>
+			
+			<div style="margin-left:15px;margin-top:15px; padding-bottom: 13px;width:65%">	
+				
+				<!-- display potential errors -->
+				<spring:hasBindErrors name="command">
+	                <c:if test="${not empty errors.globalErrors}">
+	                  <c:set var="success" value="${false}"/>
+	                  <fieldset class="fsInner">
+	                  	<legend style="color:#FF0000"><fmt:message key="error.import.failed"/></legend>
+	                    <c:forEach var="error" items="${errors.globalErrors}">
+	                    	<spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>
+	                    </c:forEach>
+	                    <c:if test="${not empty command.errorMessage}">
+	                   		<div style="font-style: italic;"><c:out value="${command.errorMessage}"/></div>
+	                   	</c:if>
+	                  </fieldset>
+	                </c:if>
+             	</spring:hasBindErrors>
+             	
+				<!-- in case of existing errors, look into the importType and redraw the 
+					 respective form -->
+				<c:choose>
+					<c:when test="${success == false or empty command.importType}">		
+						<post:import importType="${command.importType}"/>
+					</c:when>
+					<c:otherwise>
+						<!-- make some output about the import results -->	
+						
+							<h1>
+								<fmt:message key="import.totalcount">
+									<fmt:param value="${command.totalCount}"/>
+								</fmt:message>
+							</h1><br/>
+							<!-- Show new created resources -->
+							<c:if test="${not empty command.newBookmarks}">
+						  		<br/>
+						  		<fieldset class="fsInner">
+									<legend style="color:##55AA68"><fmt:message key="import.created"/></legend>
+							  		<div style="font-size: 105%;font-style: italic;">	
+								  		<fmt:message key="import.newBookmarks">
+								  				<fmt:param value="${fn:length(command.newBookmarks)}"/>
+								  		</fmt:message>
+							  		</div>
+				
+							  		<div style="font-size:80%">
+							  			<c:forEach items="${command.newBookmarks}" var="mapEntry">
+					    					<p><a href="${mapEntry.key}">${mapEntry.value}</a></p>
+										</c:forEach>
+									</div>
+								</fieldset>
+								<br/>
+						  	</c:if>
+						  
+						  	<!-- Show updated resources -->
+							<c:if test="${not empty command.updatedBookmarks}">
+								
+								<br/>
+								<fieldset class="fsInner">
+									<legend style="color:#55AA68"><fmt:message key="import.updated"/></legend>
+									<div style="font-size: 105%;font-style: italic;">	
+										<fmt:message key="import.updatedBookmarks">
+											<fmt:param value="${fn:length(command.updatedBookmarks)}"/>
+										</fmt:message>
+									</div>
+									<div style="font-size:80%">
+										<c:forEach items="${command.updatedBookmarks}" var="mapEntry">
+						    				<p><a href="${mapEntry.key}">${mapEntry.value}</a></p>
+										</c:forEach>
+									</div>
+								</fieldset>
+							</c:if>
+							 
+							<!-- Show all resources which couldn't get updated -->
+							<c:if test="${not empty command.nonCreatedBookmarks}">
+								<br/>
+								<fieldset class="fsInner">
+									<legend style="color:#FF0000"><fmt:message key="import.failed"/></legend>
+									<div style="font-size: 105%;font-style: italic;">	
+										<fmt:message key="import.nonImportedBookmarks">
+											<fmt:param value="${fn:length(command.nonCreatedBookmarks)}"/>
+										</fmt:message>
+									</div>
+								</fieldset><br/>
+								<post:import importType="${command.importType}"/>
+							</c:if>
+							
+							<c:if test="${command.bundles}">
+								<fmt:message key="import.newBundles">
+									<fmt:param value="${fn:length(command.storedConcepts)}"/>
+								</fmt:message>
+							</c:if>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</jsp:attribute>
+		
+	</layout:paneLayout>
+
+</jsp:root>

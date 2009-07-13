@@ -12,6 +12,9 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  */
 public class ImportCommand extends BaseCommand{
 	
+	/** also import bundles? **/
+	private boolean bundles;
+	
 	/** when true, duplicate entries will be overwritten **/
 	private boolean overwrite;
 	
@@ -27,6 +30,8 @@ public class ImportCommand extends BaseCommand{
 	/** the grouping-type, private or public **/
 	private String grouping;
 	
+	private int totalCount;
+	
 	/** the file to import **/
 	private CommonsMultipartFile file;
 	
@@ -36,6 +41,8 @@ public class ImportCommand extends BaseCommand{
 
 	private List<String> nonCreatedBookmarks = null;
 	
+	private List<String> storedConcepts = null;
+	private String errorMessage;
 	/**
 	 * @return true if duplicate entries shall be overwritten
 	 */
@@ -137,6 +144,30 @@ public class ImportCommand extends BaseCommand{
 	}
 	public void setFile(CommonsMultipartFile file) {
 		this.file = file;
+	}
+	public int getTotalCount() {
+		return this.totalCount;
+	}
+	public void setTotalCount(int totalCount) {
+		this.totalCount = totalCount;
+	}
+	public String getErrorMessage() {
+		return this.errorMessage;
+	}
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+	public boolean isBundles() {
+		return this.bundles;
+	}
+	public void setBundles(boolean bundles) {
+		this.bundles = bundles;
+	}
+	public List<String> getStoredConcepts() {
+		return this.storedConcepts;
+	}
+	public void setStoredConcepts(List<String> storedConcepts) {
+		this.storedConcepts = storedConcepts;
 	}
 		
 }
