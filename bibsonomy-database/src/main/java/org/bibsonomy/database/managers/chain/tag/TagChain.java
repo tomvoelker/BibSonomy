@@ -5,6 +5,7 @@ import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.tag.get.GetAllTags;
 import org.bibsonomy.database.managers.chain.tag.get.GetPopularTags;
 import org.bibsonomy.database.managers.chain.tag.get.GetRelatedTags;
+import org.bibsonomy.database.managers.chain.tag.get.GetRelatedTagsByAuthorAndTags;
 import org.bibsonomy.database.managers.chain.tag.get.GetRelatedTagsForGroup;
 import org.bibsonomy.database.managers.chain.tag.get.GetSimilarTags;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByAuthor;
@@ -40,6 +41,7 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 	private final ChainElement<Tag, TagParam> getPopularTags;
 	private final ChainElement<Tag, TagParam> getTagsByFriendOfUser;
 	private final ChainElement<Tag, TagParam> getTagsByBibtexkey;
+	private final ChainElement<Tag, TagParam> getRelatedTagsByAuthorAndTag;
 	
 
 	
@@ -61,6 +63,7 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 		this.getPopularTags = new GetPopularTags();
 		this.getTagsByFriendOfUser = new GetTagsByFriendOfUser();
 		this.getTagsByBibtexkey = new GetTagsByBibtexkey();
+		this.getRelatedTagsByAuthorAndTag = new GetRelatedTagsByAuthorAndTags();
 
 		
 		this.getTagsByUser.setNext(this.getTagsByGroup);
@@ -69,13 +72,15 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 		this.getAllTags.setNext(this.getSimilarTags);
 		this.getSimilarTags.setNext(this.getRelatedTags);
 		this.getRelatedTags.setNext(this.getTagsByAuthor);
-		this.getTagsByAuthor.setNext(getTagsViewable);
+		this.getTagsByAuthor.setNext(this.getRelatedTagsByAuthorAndTag);
+		this.getRelatedTagsByAuthorAndTag.setNext(getTagsViewable);
 		this.getTagsViewable.setNext(this.getTagsByRegularExpression);
 		this.getTagsByRegularExpression.setNext(this.getRelatedTagsForGroup);
 		this.getRelatedTagsForGroup.setNext(this.getTagsByHash);
 		this.getTagsByHash.setNext(this.getTagsByHashForUser);
 		this.getTagsByHashForUser.setNext(this.getPopularTags);
 		this.getPopularTags.setNext(this.getTagsByBibtexkey);
+		
 	}
 
 	public ChainElement<Tag, TagParam> getFirstElement() {

@@ -980,4 +980,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getTagsByBibtexkey", param, Tag.class, session);
 	}
 	
+	/**
+	 * Retrieve tags from a resource of a specific author tagged with a tag
+	 * @param param
+	 * @param session
+	 * @return a list of tags
+	 */
+	public List<Tag> getRelatedTagsByAuthorAndTag(final TagParam param, final DBSession session){
+		return this.queryForList("getRelatedTagsByAuthorAndTag", param, Tag.class, session);
+	}
+	
 }
