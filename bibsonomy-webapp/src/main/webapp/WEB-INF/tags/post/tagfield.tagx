@@ -17,7 +17,7 @@
         <form:input cssClass="tagInput" id="inpf" path="tags" tabindex="4" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()"  />
         
         <!-- name="tags"  -->
-		<div class="postBookmarkNotValidTip"><form:errors path="tags" /></div>
+		<div class="dissError"><form:errors path="tags" /></div>
 
         <!-- allow user to confirm tags containing comma or semicolon -->
         <c:if test="${containsComma}">

@@ -36,7 +36,7 @@
 	              <form:option label="friends" value="friends"/>
 	              <form:options items="${groups}" itemValue="name" itemLabel="name"/>
 	            </form:select>
-	            <div class="postBookmarkNotValidTip"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+	            <div class="dissError"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 		</fieldset>
 	</div>	
 	<script type="text/javascript">
