@@ -1,11 +1,9 @@
 package org.bibsonomy.webapp.command;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
-import org.bibsonomy.common.enums.ClassifierSettings;
-import org.bibsonomy.model.LuceneIndexStatistics;
+import org.bibsonomy.lucene.LuceneIndexStatistics;
 
 /**
  * Bean for classifier settings
@@ -21,7 +19,9 @@ public class LuceneIndexSettingsCommand {
 	private int numDeletedDocs;
 	private String newestDate;
 	private long lastModified;
+	private String lastModifiedString;
 	private long currentVersion;
+	private String currentVersionString;
 	private boolean isCurrent;
 
 	/**
@@ -132,6 +132,8 @@ public class LuceneIndexSettingsCommand {
 	 */
 	public void setLastModified(long lastModified) {
 		this.lastModified = lastModified;
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss,S");
+		setLastModifiedString(df.format(lastModified));
 	}
 
 
@@ -150,6 +152,8 @@ public class LuceneIndexSettingsCommand {
 	 */
 	public void setCurrentVersion(long currentVersion) {
 		this.currentVersion = currentVersion;
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss,S");
+		setCurrentVersionString(df.format(lastModified));
 	}
 
 
@@ -168,6 +172,42 @@ public class LuceneIndexSettingsCommand {
 	 */
 	public void setCurrent(boolean isCurrent) {
 		this.isCurrent = isCurrent;
+	}
+
+
+
+	/**
+	 * @return the lastModifiedString
+	 */
+	public String getLastModifiedString() {
+		return this.lastModifiedString;
+	}
+
+
+
+	/**
+	 * @param lastModifiedString the lastModifiedString to set
+	 */
+	private void setLastModifiedString(String lastModifiedString) {
+		this.lastModifiedString = lastModifiedString;
+	}
+
+
+
+	/**
+	 * @return the currentVersionString
+	 */
+	public String getCurrentVersionString() {
+		return this.currentVersionString;
+	}
+
+
+
+	/**
+	 * @param currentVersionString the currentVersionString to set
+	 */
+	private void setCurrentVersionString(String currentVersionString) {
+		this.currentVersionString = currentVersionString;
 	}
 
 	
