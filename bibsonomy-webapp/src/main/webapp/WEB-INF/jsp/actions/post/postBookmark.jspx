@@ -12,340 +12,97 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post">
 
-	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+    <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+ 
+	<layout:postPostLayout command="${command}" requPath="${requPath}" resourceType="Bookmark" selectedNaviTab="nav_postBook">
 
-	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="nav_postBook">
-	    <!--+
-    	 	| html header extension: page specific javascript
-    	 	+-->
-		<jsp:attribute name="headerExt">
-			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
-	    	<script type="text/javascript" src="${resdir}/javascript/util.js">&amp;nbsp;</script>
-	    	<script type="text/javascript" src="${resdir}/javascript/recommender.js">&amp;nbsp;</script>
-	    	<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js">&amp;nbsp;</script> 
-	    </jsp:attribute>
-	    
-		<jsp:attribute name="heading">
-			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.editBookmark" /></a> 
-		</jsp:attribute>
+		<jsp:attribute name="generalInformation">
+			<form:label cssClass="fsLabel" path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label>
+			<form:input cssClass="fsInput" path="post.resource.url" tabindex="1"/>
+			<div class="dissError"><form:errors path="post.resource.url" /></div>
 
-		<jsp:attribute name="content">
-		
-			<script type="text/javascript">
-              //<mtl:cdata>
-				<![CDATA[
-					function checkUrlForTitle(  ){
-						//alert(document.getElementById("postBookmark.resource.url").value);
-						var req = new XMLHttpRequest();
-						req.open("GET", '/generalAjax?action=getTitleForUrl&pageURL='+encodeURIComponent(document.getElementById("post.resource.url").value), true); // Request starten
-						req.onreadystatechange = function() {
-						    if ( req.readyState == 4 ) {
-						        if ( req.status == 200 ) {
-						            var result = eval( "(" + req.responseText + ")" );
-			
-									if ( (result.pageTitle != "")&&(document.getElementById("post.resource.title").value=="") ) {
-										var pageTitle = "<a href=\"javascript:setSuggestionFromUrlTitle('"+ result.pageTitle +"')\">" + result.pageTitle + "</a> ";
-										document.getElementById( "suggestion.title" ).innerHTML = pageTitle;
-									}
-			
-									if (result.pageDescription != "") {
-										var pageDescription = "<a href=\"javascript:setSuggestionFromUrlDescription('"+ result.pageDescription +"')\">" + result.pageDescription + "</a> ";
-										document.getElementById( "suggestion.description" ).innerHTML = pageDescription;
-									}
-						        }
-						    }
-						};
-						
-						req.send(null);
-					}
-			
-					function setSuggestionFromUrlDescription(tagname){
-						document.getElementById('post.description').value=tagname;
-						document.getElementById('suggestion.description').innerHTML = "";
-					}
-			
-					function setSuggestionFromUrlTitle(tagname){
-						document.getElementById('post.resource.title').value=tagname;
-						document.getElementById( "suggestion.title" ).innerHTML ="";
-					}
-
-					/**
-					 * Ajax callback function for inserting recommended tags:
-					 *    1) insert tags to form's recommendations field
-					 *    2) append recommended tags to potential suggestions
-					 *    3) enable recommendation reload button
-					 */
-					function handleRecommendedTags(msg) {
-						var tagSuggestions = [];
-						var target = 'tagField';
-
-						// lookup and clear target node
-						var tagField = document.getElementById(target) 
-						clearTagField();
-						
-						// lookup tags
-						var root = msg.getElementsByTagName('tags').item(0);
-						if( root == null ) {
-							// FIXME: DEBUG
-							alert("Invalid Ajax response: <tags/> not found.");
-						}
-						// append each tag to target field
-						for (var iNode = 0; iNode < root.childNodes.length; iNode++) {
-							var node = root.childNodes.item(iNode);
-							// work around firefox' phantom nodes
-							if( (node.nodeType == 1) && (node.tagName == 'tag') ) {
-								// collect tag informations
-								var tagName       = node.getAttribute('name');
-								var tagScore      = node.getAttribute('score');
-								var tagConfidence = node.getAttribute('confidence');
-								
-								// create link element from tag
-								var newTag = document.createElement('a');
-								var newText= document.createTextNode(tagName + " ");
-								newTag.setAttribute('href', "javascript:copytag('inpf', '"
-															+node.getAttribute('name')
-															+"')");
-								newTag.appendChild(newText);
-								tagField.appendChild(newTag);
-								
-								// append tag to suggestion list
-								var suggestion = new Object;
-								suggestion.label      = tagName;
-								suggestion.score      = tagScore;
-								suggestion.confidence = tagConfidence;
-								tagSuggestions.push(suggestion);
-							}
-						}
-
-						// add recommended tags to suggestions
-						populateSuggestionsFromRecommendations(tagSuggestions);
-
-						// enable reload button
-						var link = document.getElementById("fsReloadLink");
-	                    var button = document.getElementById("fsReloadButton");
-			            link.setAttribute("href","javascript:reloadRecommendation()");
-			  	        button.setAttribute("src","${resdir}/image/button_reload.png");
-					}
-          
-                    /**
-                     * handler for the 'reload recommendations button'
-                     * FIXME: all js-functions for recommendations should be located in a single file.
-                     */
-                      function reloadRecommendation() {
-                          var link = document.getElementById("fsReloadLink");
-                          var button = document.getElementById("fsReloadButton");
-                          link.setAttribute("href","#");
-                          button.setAttribute("src","${resdir}/image/button_reload-inactive.png");
-                
-                          clearTagField();      
-                
-                          $('#postBookmarkForm').ajaxSubmit({url:'/ajax/getBookmarkRecommendedTags', success: showResponse}); 
-                      }
-          
-				]]>
-              //</mtl:cdata>
-			</script>					
-				<errors:global errors="${errors}"/>
-     			<div style="float left;width:97%;margin-left:10px; padding-bottom: 13px;">
-						<h2 style="text-align: center; margin-bottom: 0"><fmt:message key="post.resource.editbookmark"/></h2>
-                        
-                        <c:if test="${not empty command.diffPost}">
-                          <p>
-                          	<fmt:message key="post.bookmark.edit.existent" />
-                          </p>
-                        </c:if>
-
-                      
-                	<form:form id="postBookmarkForm" action="/postBookmark" method="post">
-	                	<div id="fsform">
-	                		<fieldset class="fsOuter">
-								<fieldset class="fsInner">
-									<legend><fmt:message key="general"/></legend>
-									<form:label cssClass="fsLabel" path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label>
-									<form:input cssClass="fsInput" path="post.resource.url" tabindex="1"/>
-									<div class="postBookmarkNotValidTip"><form:errors path="post.resource.url" /></div>
-
-									<form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
-									<form:input cssClass="fsInput" path="post.resource.title" tabindex="2"/>
-									<div class="postBookmarkNotValidTip"><form:errors path="post.resource.title" /></div>
-	                                <div class="fsSuggestion" id="suggestion.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+			<form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
+			<form:input cssClass="fsInput" path="post.resource.title" tabindex="2"/>
+			<div class="dissError"><form:errors path="post.resource.title" /></div>
+            <div class="fsSuggestion" id="suggestion.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 	                                
-									<form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
-									<form:textarea cssClass="fsInput" path="post.description" tabindex="3" rows="3" onkeyup="sz(this);" />
-									<div class="fsSuggestion" id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
-								</fieldset>
-								
-						    	<post:tagfield containsComma="${command.containsComma}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
-
-                                    <post:groupBox post="${command.post}" groups="${loginUser.groups}"/>
-  
-									<c:if test="${not empty loginUser.groups}">
-										<post:relevantForBox groups="${loginUser.groups}"/>
-									</c:if>	
-	
-									<div class="clearfloat p">
-										<post:tagSets groups="${loginUser.groups}"/>
-									</div>
-	
-	
-									<div class="clearfloat p">
-										<c:set var="save"><fmt:message key="save"/></c:set>
-		                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
-		                                <input type="hidden" name="postID" value="${command.postID}"/>
-		                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-	                                       <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
-		                                <form:hidden path="intraHashToUpdate"/>
-										<input type="reset"  tabindex="5" value="${reset}" />
-										<input type="submit" tabindex="6" value="${save}" onclick="clear_tags();"/>
-									</div>
-	
-							</fieldset>
-						</div>
-					</form:form>
-
-         
-                    <div id="scrapable" style="display:none">
-                      <br/>
-                      <form:form action="/BibtexHandler" method="post" id="bibtex_snippet">      
-                          <fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
-                              <fieldset class="fsnoborder" style="position:relative;">
-                                <h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2>
-                                <p>
-                                  <fmt:message key="post.resource.bookmark_a_publication"/>:<c:out value=" "/>
-                                  <fmt:message key="post.meta.save_as_publication" var="post_publication"/>
-                                  <input id="button" type="submit" name="submit" value="${post_publication}"/>
-                                </p>
-                                <textarea style="width: 100%;" id="bib" name="selection" rows="15" class="reqinput"><c:out value=" "/></textarea>
-                                <input type="hidden" name="requTask" value="upload" />
-                                
-                              </fieldset>
-                          </fieldset>   
-                      </form:form>
-                    </div>
-                    
-				</div>
-					
-				<script type="text/javascript">
-                //<mtl:cdata>
-				<![CDATA[
-					$(".postBookmarkNotValidTip").mouseover(function() {
-						$(this).fadeOut('slow');
-					});
-
-					$("#command fieldset input").focus(function() {
-						$(this).parent("fieldset").find('.postBookmarkNotValidTip').not(':hidden').fadeOut('slow');
-					});
-					//hide empty error fields
-					$(".postBookmarkNotValidTip:empty").hide("1");
-				]]>
-                //</mtl:cdata>
-				</script>
-		</jsp:attribute>
-		
-    
-    
-    
-    
-    
-		<jsp:attribute name="sidebar">
-            <!-- display user's tag relations -->     
-            <li>
-              <c:set var="tagRelationsTitle"><fmt:message key="tagrelations.title"/></c:set>
-              <span class="sidebar_h">
-                <a href="/relations/${fn:escapeXml(command.context.loginUser.name)}" title="${tagRelationsTitle}">
-                  <fmt:message key="tagrelations"/>
-                </a>
-              </span> 
-              <tags:concepts cmd="${command.concepts}" usersOwnRelations="${true}" requestedUserName="${command.context.loginUser.name}"/>
-            </li>
-		
-			<!-- display tags -->
-			<li>
-				<span class="sidebar_h"><fmt:message key="tags"/></span>
-				<tags:cloud requPath="tag/" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" copytag="${true}" targetId="inpf"/>
-			</li>
+			<form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
+			<form:textarea cssClass="fsInput" path="post.description" tabindex="3" rows="3" onkeyup="sz(this);" />
+			<div class="fsSuggestion" id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 		</jsp:attribute>
 
-       <jsp:attribute name="beforeBodyClose">
-       
-       
-       
-       
-       
-       
-        <script type="text/javascript">
-      //<mtl:cdata>
-    <![CDATA[   
-      /* try to get title from url */
-      checkUrlForTitle();
+        <jsp:attribute name="detailedInformation">
+            <!-- 
+               | check, if this bookmark can be scraped
+               -->	
+            <div id="scrapable" style="display:none">
+            <br/>
+                <form:form action="/BibtexHandler" method="post" id="bibtex_snippet">      
+                  <fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
+                    <fieldset class="fsnoborder" style="position:relative;">
+                      <h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2>
+                      <p>
+                        <fmt:message key="post.resource.bookmark_a_publication"/>:<c:out value=" "/>
+                        <fmt:message key="post.meta.save_as_publication" var="post_publication"/>
+                        <input id="button" type="submit" name="submit" value="${post_publication}"/>
+                      </p>
+                      <textarea style="width: 100%;" id="bib" name="selection" rows="15" class="reqinput"><c:out value=" "/></textarea>
+                      <input type="hidden" name="requTask" value="upload" />
+                   </fieldset>
+                 </fieldset>   
+               </form:form>
+            </div>
 
-
-      /* setup jQuery to update recommender with form data */
-      var options = { 
-	            url:  '/ajax/getBookmarkRecommendedTags', 
-	            success:       showResponse 
-	        }; 
-      $('#postBookmarkForm').ajaxSubmit(options); 
-
-	  /* jQuery's response containing recommended tags */
-	  function showResponse(responseText, statusText)  { 
-	    handleRecommendedTags(responseText);
-	  } 
-      
-      /* get user's tags for suggestions */
-      $.ajax({
-          type: "GET",
-          url: "/json/tags/user/${command.context.loginUser.name}",
-          data: "",
-          success: function(data){
-                      populateSuggestionsFromJSON(data);
-                     }
-      });
-
-      function scraping(){
-        var url = document.getElementById("post.resource.url").value;
-        if(url.length > 'http://'.length){
-          var req = ajaxInit();
-          if(req){
-            req.open("GET", '/scrapingservice?url='+encodeURIComponent(url)+'&format=bibtex&doIE=false&selection='+encodeURIComponent(document.getElementById("post.description").value), true); // Request starten
-            req.onreadystatechange = function() {
-                if ( req.readyState == 4 ) {
-                    if ( req.status == 200 ) {
-                      handle(req);
-                    }
+           <!-- 
+              | corresponding JavaScript ...
+              -->
+           <script type="text/javascript">
+              //<mtl:cdata>
+              <![CDATA[   
+              function scraping(){
+                var url = document.getElementById("post.resource.url").value;
+                if(url.length > 'http://'.length){
+                  var req = ajaxInit();
+                  if(req){
+                    req.open("GET", '/scrapingservice?url='+encodeURIComponent(url)+'&format=bibtex&doIE=false&selection='+encodeURIComponent(document.getElementById("post.description").value), true); // Request starten
+                    req.onreadystatechange = function() {
+                        if ( req.readyState == 4 ) {
+                            if ( req.status == 200 ) {
+                              handle(req);
+                            }
+                        }
+                    };
+                    req.send(null);
+                  }
                 }
-            };
-            req.send(null);
-          }
-        }
-      }
+              }
+        
+              function handle(request){
+                var textfield = document.getElementById("bib");
+                if(request.responseText != ''){
+                  textfield.value = request.responseText;
+                  showHide("scrapable");
+                }
+              }
+        
+              function showHide(id){
+                var bibtexBox = document.getElementById(id);
+                if(bibtexBox.value != ''){
+                  bibtexBox.style.display = '';
+                }else{
+                  bibtexBox.style.display = 'hidden';
+                }
+              }
+              
+              scraping();
 
-      function handle(request){
-        var textfield = document.getElementById("bib");
-        if(request.responseText != ''){
-          textfield.value = request.responseText;
-          showHide("scrapable");
-        }
-      }
+              ]]> 
+             //</mtl:cdata>
+          </script>
 
-      function showHide(id){
-        var bibtexBox = document.getElementById(id);
-        if(bibtexBox.value != ''){
-          bibtexBox.style.display = '';
-        }else{
-          bibtexBox.style.display = 'hidden';
-        }
-      }
-      
-      scraping();
-    
-      
-    ]]> 
-      //</mtl:cdata>
-  </script>
        
        </jsp:attribute>
 
-	</layout:paneLayout>
+	</layout:postPostLayout>
 
 </jsp:root>

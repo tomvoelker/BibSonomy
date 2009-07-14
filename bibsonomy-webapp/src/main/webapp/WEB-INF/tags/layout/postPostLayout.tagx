@@ -1,0 +1,192 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post">
+
+    <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
+    <jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of the resource this page handles (e.g., 'Bookmark', or 'Publication'). First letter upper case, remaining lower case."/>
+    <jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
+    
+    <jsp:directive.attribute name="generalInformation" fragment="true" required="true" description="The form fields to enter general information."/>
+    <jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
+  
+
+	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
+	    <!--+
+    	 	| html header extension: page specific javascript
+    	 	+-->
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+	    	<script type="text/javascript" src="${resdir}/javascript/util.js">&amp;nbsp;</script>
+	    	<script type="text/javascript" src="${resdir}/javascript/recommender.js">&amp;nbsp;</script>
+	    	<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js">&amp;nbsp;</script>
+            <!--
+               | two scripts just for the post page - one resource specific 
+               -->
+            <script type="text/javascript" src="${resdir}/javascript/post${resourceType}.js">&amp;nbsp;</script>
+            <script type="text/javascript" src="${resdir}/javascript/postPost.js">&amp;nbsp;</script>
+	    </jsp:attribute>
+	    
+            
+        <jsp:attribute name="heading">
+          <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.edit${resourceType}" /></a> 
+        </jsp:attribute>
+      
+		<jsp:attribute name="content">
+
+           <!-- 
+              | show global errors
+              -->
+           <errors:global errors="${errors}"/>
+		
+		   <div style="float left;width:97%;margin-left:10px; padding-bottom: 13px;">
+		   
+              <h2 style="text-align: center; margin-bottom: 0"><fmt:message key="post.resource.edit${resourceType}"/></h2><!-- TODO: generalize -->
+
+              <!-- 
+                 | user is posting an existing resource ...
+                 -->
+              <c:if test="${not empty command.diffPost}">
+                 <p><fmt:message key="post.${resourceType}.edit.existent" /></p><!-- TODO: generalize -->
+              </c:if>
+
+
+              <!-- 
+                 | form starts here
+                 -->
+              <form:form id="post${resourceType}Form" action="/post${resourceType}" method="post">
+	             <div id="fsform">
+	                <fieldset class="fsOuter">
+                      
+                                <!--
+                                   | general information 
+                                   -->
+								<fieldset class="fsInner">
+									<legend><fmt:message key="general"/></legend>
+                                    <jsp:invoke fragment="generalInformation"/>
+								</fieldset>
+
+                                <!--
+                                   | tags 
+                                   -->
+						    	<post:tagfield containsComma="${command.containsComma}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
+
+                                <!--
+                                   | groups 
+                                   -->
+                                <post:groupBox post="${command.post}" groups="${loginUser.groups}"/>
+								<c:if test="${not empty loginUser.groups}">
+									<post:relevantForBox groups="${loginUser.groups}"/>
+								</c:if>	
+								<div class="clearfloat p">
+									<post:tagSets groups="${loginUser.groups}"/>
+								</div>
+	
+                                <!--
+                                   | buttons 
+                                   -->
+								<div class="clearfloat p">
+									<c:set var="save"><fmt:message key="save"/></c:set>
+	                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
+	                                <input type="hidden" name="postID" value="${command.postID}"/>
+	                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+	                                <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
+	                                <form:hidden path="intraHashToUpdate"/>
+									<input type="reset"  tabindex="5" value="${reset}" />
+									<input type="submit" tabindex="6" value="${save}" onclick="clear_tags();"/>
+								</div>
+	
+                                <c:if test="${not empty detailedInformation}">
+                                    <jsp:invoke fragment="detailedInformation"/>
+                                </c:if>
+  
+				    </fieldset>
+			     </div>
+			  </form:form>
+           </div>
+
+		</jsp:attribute>
+		
+    
+    
+		<jsp:attribute name="sidebar">
+            <!-- display user's tag relations -->     
+            <li>
+              <c:set var="tagRelationsTitle"><fmt:message key="tagrelations.title"/></c:set>
+              <span class="sidebar_h">
+                <a href="/relations/${fn:escapeXml(command.context.loginUser.name)}" title="${tagRelationsTitle}">
+                  <fmt:message key="tagrelations"/>
+                </a>
+              </span> 
+              <tags:concepts cmd="${command.concepts}" usersOwnRelations="${true}" requestedUserName="${command.context.loginUser.name}"/>
+            </li>
+		
+			<!-- display tags -->
+			<li>
+				<span class="sidebar_h"><fmt:message key="tags"/></span>
+				<tags:cloud requPath="tag/" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" copytag="${true}" targetId="inpf"/>
+			</li>
+		</jsp:attribute>
+
+
+
+
+       <jsp:attribute name="beforeBodyClose">
+          <script type="text/javascript">
+             //<mtl:cdata>
+             <![CDATA[
+                // vanishing error boxes
+                $(".dissError").mouseover(function() {
+                  $(this).fadeOut('slow');
+                });
+                $("#command fieldset input").focus(function() {
+                  $(this).parent("fieldset").find('.dissError').not(':hidden').fadeOut('slow');
+                });
+                $(".dissError:empty").hide("1");
+
+
+                // try to get title from url
+                checkUrlForTitle();
+          
+          
+                /* setup jQuery to update recommender with form data */
+                var options = { 
+         	            url:  '/ajax/getBookmarkRecommendedTags', 
+          	            success:       showResponse 
+        	    }; 
+                $('#postBookmarkForm').ajaxSubmit(options); 
+          
+           	    /* jQuery's response containing recommended tags */
+           	    function showResponse(responseText, statusText)  { 
+          	      handleRecommendedTags(responseText);
+          	    } 
+                
+                /* get user's tags for suggestions */
+                $.ajax({
+                    type: "GET",
+                    url: "/json/tags/user/${command.context.loginUser.name}",
+                    data: "",
+                    success: function(data){
+                                populateSuggestionsFromJSON(data);
+                               }
+                });
+          
+             ]]> 
+             //</mtl:cdata>
+          </script>
+       
+       </jsp:attribute>
+
+	</layout:paneLayout>
+
+</jsp:root>

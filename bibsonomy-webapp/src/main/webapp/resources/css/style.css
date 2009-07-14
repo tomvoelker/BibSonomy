@@ -282,7 +282,7 @@ td {
 	font-size: 80%;
 }
 
-.postBookmarkNotValidTip {
+.dissError {
 	background: #FFFFFF none repeat scroll 0 0;
 	border: 1px solid #FF0000;
 	font-size: 10pt;
