@@ -53,23 +53,19 @@ function handleRecommendedTags(msg) {
 	populateSuggestionsFromRecommendations(tagSuggestions);
 
 	// enable reload button
-	var link = document.getElementById("fsReloadLink");
-                var button = document.getElementById("fsReloadButton");
-          link.setAttribute("href","javascript:reloadRecommendation()");
-	        button.setAttribute("src","${resdir}/image/button_reload.png");
+	document.getElementById("fsReloadLink").setAttribute("href","javascript:reloadRecommendation()");
+	document.getElementById("fsReloadButton").setAttribute("src","/resources/image/button_reload.png");
 }
-     
+ 
 /**
  * handler for the 'reload recommendations button'
  */
 function reloadRecommendation() {
-    var link = document.getElementById("fsReloadLink");
-    var button = document.getElementById("fsReloadButton");
-    link.setAttribute("href","#");
-    button.setAttribute("src","${resdir}/image/button_reload-inactive.png");
+    document.getElementById("fsReloadLink").setAttribute("href","#");
+    document.getElementById("fsReloadButton").setAttribute("src","/resources/image/button_reload-inactive.png");
 
     clearTagField();      
 
-    $('#postBookmarkForm').ajaxSubmit({url:'/ajax/getBookmarkRecommendedTags', success: showResponse}); 
+    $('#postForm').ajaxSubmit(tagRecoOptions); 
 }
      

@@ -31,3 +31,11 @@ function setSuggestionFromUrlTitle(tagname){
 	document.getElementById('post.resource.title').value=tagname;
 	document.getElementById( "suggestion.title" ).innerHTML ="";
 }
+
+// setup jQuery to update recommender with form data
+var tagRecoOptions = { 
+   url:  '/ajax/getBookmarkRecommendedTags', 
+   success: function showResponse(responseText, statusText) { 
+	 handleRecommendedTags(responseText);
+   } 
+}; 

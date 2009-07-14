@@ -64,7 +64,7 @@
               <!-- 
                  | form starts here
                  -->
-              <form:form id="post${resourceType}Form" action="/post${resourceType}" method="post">
+              <form:form id="postForm" action="/post${resourceType}" method="post">
 	             <div id="fsform">
 	                <fieldset class="fsOuter">
                       
@@ -158,20 +158,10 @@
                 // try to get title from url
                 checkUrlForTitle();
           
-          
-                /* setup jQuery to update recommender with form data */
-                var options = { 
-         	            url:  '/ajax/getBookmarkRecommendedTags', 
-          	            success:       showResponse 
-        	    }; 
-                $('#postBookmarkForm').ajaxSubmit(options); 
-          
-           	    /* jQuery's response containing recommended tags */
-           	    function showResponse(responseText, statusText)  { 
-          	      handleRecommendedTags(responseText);
-          	    } 
-                
-                /* get user's tags for suggestions */
+                // tagRecoOptions defined in post*.js
+                $('#postForm').ajaxSubmit(tagRecoOptions); 
+                          
+                // get user's tags for suggestions
                 $.ajax({
                     type: "GET",
                     url: "/json/tags/user/${command.context.loginUser.name}",
