@@ -629,6 +629,17 @@ public class BibTexUtils {
 		 * ignore empty bibtex and empty field values
 		 */
 		if (bibtex == null || fieldValue == null || fieldValue.trim().equals("")) return;
+		
+		// remove last comma if there is one (before closing last curly bracket)
+		String bib = bibtex.toString();
+		Pattern p = Pattern.compile(".+}\\s*,\\s*}\\s*$", Pattern.MULTILINE | Pattern.DOTALL);
+		Matcher m = p.matcher(bib);
+		
+		if (m.matches()) {
+			final int lastIndex = bib.lastIndexOf(",");
+			bibtex.replace(lastIndex, lastIndex + 1, "");
+		}
+		
 		final int lastIndexOf = bibtex.lastIndexOf("}");
 		if (lastIndexOf > 0) {
 			bibtex.replace(lastIndexOf, bibtex.length(), "," + fieldName + " = {" + fieldValue + "}\n}");
