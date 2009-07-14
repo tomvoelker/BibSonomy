@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -51,9 +52,13 @@ public class WormbaseScraper extends AbstractUrlScraper {
 
 				// convert bibtex
 				final EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
-				final String bibtex = converter.processEntry(endnote);
+				String bibtex = converter.processEntry(endnote);
 
 				if(bibtex != null){
+					// append url
+					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+					
+					// add downloaded bibtex to result 
 					sc.setBibtexResult(bibtex);
 					return true;
 				}else

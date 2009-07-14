@@ -2,8 +2,10 @@ package org.bibsonomy.scraper.url.kde.karlsruhe;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -45,6 +47,19 @@ public class BibliographyScraper extends AbstractUrlScraper {
 				
 				// clean up - links and span
 				page = page.replaceAll("<[^>]*>", "");
+				
+				/*
+				 * TODO: uncomment theese lines to add the url to our bibtex entry.
+				 * but here is the problem: the example url contains a '}'. means:
+				 * we have to change something inside the PseudoLexer. (Line 270)
+				 * 
+				// append url
+				page = BibTexUtils.addFieldIfNotContained(page, "url", sc.getUrl().toString());
+				
+				// remove multiple commas
+				Pattern p = Pattern.compile(",(\\s*),", Pattern.MULTILINE);
+				Matcher m = p.matcher(page);
+				page = m.replaceAll(",$1");*/
 				
 				sc.setBibtexResult(page);
 				return true;

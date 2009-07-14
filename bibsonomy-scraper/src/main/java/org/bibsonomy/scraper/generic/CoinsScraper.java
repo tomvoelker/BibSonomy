@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -408,7 +409,12 @@ public class CoinsScraper implements Scraper {
 
 			// return bibtex
 			if(bibtex != null){
+				// append url
+				BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+				
+				// add downloaded bibtex to result 
 				sc.setBibtexResult(bibtex.toString());
+				
 				return true;
 			}else
 				throw new ScrapingFailureException("span not contains a book or journal");

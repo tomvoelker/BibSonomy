@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -58,7 +59,14 @@ public class DBLPScraper extends AbstractUrlScraper {
 
 		final Matcher m = DBLP_PATTERN.matcher(pageContent);	
 		if (m.matches()) {
-			sc.setBibtexResult(m.group(1));
+			StringBuffer bibtexResult = new StringBuffer(m.group(1));
+			
+			// append url
+			BibTexUtils.addFieldIfNotContained(bibtexResult, "url", sc.getUrl().toString());
+			
+			// add downloaded bibtex to result 
+			sc.setBibtexResult(bibtexResult.toString().trim());
+			
 			return true;
 		}else
 			throw new PageNotSupportedException("no bibtex snippet available");

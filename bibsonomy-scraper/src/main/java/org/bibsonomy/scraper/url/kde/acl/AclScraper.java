@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -57,6 +58,10 @@ public class AclScraper extends AbstractUrlScraper {
 			if(bibtex.contains(ERROR_CODE_300))
 				throw new PageNotSupportedException("This aclweb.org page is not supported. BibTeX is not available.");
 
+			// append url
+			bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+			
+			// add downloaded bibtex to result 
 			sc.setBibtexResult(bibtex);
 			return true;
 		}else

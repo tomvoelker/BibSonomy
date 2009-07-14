@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -51,6 +52,10 @@ public class GoogleSonomyScraper extends AbstractUrlScraper {
 				bibtex = getContentWithCookie(sc.getUrl(), cookie);
 				
 				if(bibtex != null){
+					// append url
+					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+					
+					// add downloaded bibtex to result 
 					sc.setBibtexResult(bibtex);
 					return true;
 				}else

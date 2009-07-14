@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -218,6 +219,10 @@ public class UsenixScraper extends AbstractUrlScraper {
 					String bibResult = resultBibtex.toString();
 					bibResult = bibResult.substring(0, bibResult.length()-2) + "\n}\n";
 
+					// append url
+					bibResult = BibTexUtils.addFieldIfNotContained(bibResult, "url", sc.getUrl().toString());
+					
+					// add downloaded bibtex to result 
 					sc.setBibtexResult(bibResult);
 					return true;
 					

@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -67,6 +68,10 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 				// clean up
 				bibtex = bibtex.replace("<br>", "");
 
+				// append url
+				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+				
+				// add downloaded bibtex to result 
 				sc.setBibtexResult(bibtex);
 				return true;
 

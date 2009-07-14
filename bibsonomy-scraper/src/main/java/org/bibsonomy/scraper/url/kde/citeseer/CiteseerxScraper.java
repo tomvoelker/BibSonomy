@@ -61,6 +61,9 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 					System.out.println("no match");
 				}
 				
+				// append url
+				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+				
 				sc.setBibtexResult(bibtex);
 				return true;
 

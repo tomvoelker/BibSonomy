@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -77,13 +78,14 @@ public class ProlaScraper extends AbstractUrlScraper {
 
 		// check if selected page is a bibtex page
 		if(sc.getUrl().getQuery() != null && sc.getUrl().getQuery().contains(PROLA_APS_BIBTEX_PARAM)){
-			String bibtex = sc.getPageContent();
-
 			//remove comments bevor reference
-			bibtex = cleanBibtexEntry(bibtex);
+			final StringBuffer bibtex = new StringBuffer(cleanBibtexEntry(sc.getPageContent()));
+			
+			// append url
+			BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
 
 			// add downloaded bibtex to result 
-			sc.setBibtexResult(bibtex);
+			sc.setBibtexResult(bibtex.toString().trim());
 			return true;						
 		}
 
@@ -139,10 +141,14 @@ public class ProlaScraper extends AbstractUrlScraper {
 				if(downloadedBibtex != null){
 
 					//remove comments bevor reference
-					downloadedBibtex = cleanBibtexEntry(downloadedBibtex);
-
+					final StringBuffer bibtex = new StringBuffer(cleanBibtexEntry(downloadedBibtex));
+					
+					// append url
+					BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+					
 					// add downloaded bibtex to result 
-					sc.setBibtexResult(downloadedBibtex);
+					sc.setBibtexResult(bibtex.toString().trim());
+					
 					return true;						
 				}else
 					throw new ScrapingException("ProlaScraper: can't get bibtex from this article");

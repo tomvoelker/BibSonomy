@@ -109,6 +109,8 @@ public class JMLRScraper extends AbstractUrlScraper {
 			appendField(bibtex, "page", page);
 			// add volume
 			appendField(bibtex, "volume", volume);
+			// add url
+			appendField(bibtex, "url", sc.getUrl().toString());
 
 			// remove last ","
 			bibtex.deleteCharAt(bibtex.lastIndexOf(","));

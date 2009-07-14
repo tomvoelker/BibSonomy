@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -193,6 +194,9 @@ public class EprintScraper implements Scraper {
 		// finish
 		bibtexBuffer.append("}");
 
+		// append url
+		BibTexUtils.addFieldIfNotContained(bibtexBuffer, "url", scrapingContext.getUrl().toString());
+		
 		scrapingContext.setBibtexResult(bibtexBuffer.toString());
 		
 		return true;

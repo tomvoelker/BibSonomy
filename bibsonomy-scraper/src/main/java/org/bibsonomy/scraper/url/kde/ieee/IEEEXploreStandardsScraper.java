@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -64,7 +65,11 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 					// clean up
 					bibtex = bibtex.replace("<br>", "");
 					
-					sc.setBibtexResult(bibtex);
+					// append url
+					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+					
+					// add downloaded bibtex to result 
+					sc.setBibtexResult(bibtex.toString().trim());
 					return true;
 					
 				}else{

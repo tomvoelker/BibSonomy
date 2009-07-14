@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -50,6 +51,10 @@ public class L3SScraper extends AbstractUrlScraper {
 				
 				//-- bibtex string may not be empty
 				if (bibtexresult != null && !"".equals(bibtexresult)) {
+					// append url
+					bibtexresult = BibTexUtils.addFieldIfNotContained(bibtexresult, "url", sc.getUrl().toString());
+					
+					// add downloaded bibtex to result 
 					sc.setBibtexResult(bibtexresult);
 	
 					return true;
