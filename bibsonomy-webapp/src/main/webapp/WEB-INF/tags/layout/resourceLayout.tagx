@@ -18,7 +18,8 @@
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
-	<jsp:directive.attribute name="contentHeading" type="java.lang.String" required="false"/>	
+	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
+	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>	
 	
 	<!-- 
 		store some locale messages in variables to be
@@ -50,7 +51,7 @@
             <link rel="alternate" type="application/rdf+xml" title="${swrcFeed} /${requPath}" href="${swrcUrl}" />
             <!-- UnAPI service -->
             <link rel="unapi-server" type="application/xml" title="unAPI" href="${projectHome}unapi"/>
-
+            <jsp:invoke fragment="headerExt"/>
 		</jsp:attribute>
 		<jsp:attribute name="content">
 			<div id="bookmarkbibtexoptions">
@@ -62,7 +63,9 @@
 				</ul>
 			</div>
 			<c:if test="${not empty contentHeading}">
-				<div style="padding:1em;">${contentHeading}</div>
+				<div style="padding:1em;">
+					<jsp:invoke fragment="contentHeading"/>
+				</div>
 			</c:if>
 			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
