@@ -561,4 +561,25 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.insert("insertFollowerOfUser", param, session);
 	}
 
+	
+	/**
+	 * Check if one user follows another one.
+	 * 
+	 * @param possibleFollower - a possible follower
+	 * @param targetUser - a user which is to be followed
+	 * @param session - DB session
+	 * @return true if sourceUser follows the possible
+	 */
+	public Boolean isFollowerOfUser(User possibleFollower, User targetUser, final DBSession session) {
+		if (possibleFollower == null || targetUser == null) {
+			return false;
+		}
+		List<User> followingUsers = this.getFollowersOfUser(possibleFollower.getName(), session);		
+		for (User u : followingUsers) {
+			if ( u.getName().equals(targetUser.getName()) ) {
+				return true;
+			}
+		}
+		return false;
+	}	
 }
