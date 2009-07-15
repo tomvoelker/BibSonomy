@@ -13,20 +13,23 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${(command.requestedUser eq command.context.loginUser.name) ? 'nav_my' : ''}" contentHeading="The following bookmark and bibtex posts of user ${fn:escapeXml(command.requestedUser)} might be interesting for you:">
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${(command.requestedUser eq command.context.loginUser.name) ? 'nav_my' : ''}">
 	
+		<!-- include javascript -->
+		<jsp:attribute name="headerExt">
+			<script type="text/javascript" src="${resdir}/javascript/follower.js">&amp;nbsp;</script>
+		</jsp:attribute>
+	
+		<!-- create menu -->
 		<jsp:attribute name="heading">
-		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.user"/></a> :: 
-		<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${fn:escapeXml(command.requestedUser)}'/></a><span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>
-		<!-- 
-			<a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value="${fn:escapeXml(command.context.loginUser.name)}"/></a><c:out value=")"/>
-		 -->										
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.user"/></a> :: 
+			<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a><span style="font-size:65%"><c:out value=" "/>(<fmt:message key="personalized"/>)</span>										
 		</jsp:attribute>
 		
-		<jsp:attribute name="sidebar">
-		<script type="text/javascript" src="${resdir}/javascript/follower.js">&amp;nbsp;</script>
+		<!--  create sidebar -->
+		<jsp:attribute name="sidebar">		
 		
-				<!-- we need to switch if the user already follows this user or not -->
+				<!-- we need to switch if the user already follows this user or not 
 				<c:if test="${command.context.loginUser.name != command.requestedUser}">
 				<c:choose>
 					<c:when test="${command.followerOfUser eq true}">
@@ -56,6 +59,8 @@
 				</c:choose>
 				<br/>
 				</c:if>
+				-->
+
 			
 			<!-- display user's tag relations 			
 			<li>
@@ -89,6 +94,41 @@
 				<users:related cmd="${command.relatedUserCommand}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
 			</li>			
       			
+		</jsp:attribute>
+		
+		<!--  heading for the content pane of the given page -->
+		<jsp:attribute name="contentHeading">
+		
+			<c:if test="${command.context.loginUser.name != command.requestedUser}">
+		
+				<c:set var="userPageLink">
+					<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a>
+				</c:set>
+			
+				<fmt:message key="followersPage.contentHeading">
+					<fmt:param value="${userPageLink}"/>
+				</fmt:message>
+				${mtl:ch('nbsp')}
+				<c:choose>				
+					<c:when test="${command.followerOfUser eq true}">
+						<span id="removeLink">
+							<a style="cursor: pointer;" onclick="javascript:removeFollower('${command.requestedUser}');"><fmt:message key="follow.link.text.removeLong"/></a>
+						</span>
+						<span id="followLink" style="visibility:hidden; display:none">
+							<fmt:message key="follow.info.text1"/>
+							<a style="cursor: pointer;" onclick="javascript:addFollower('${command.requestedUser}');"><fmt:message key="follow.link.text.followLong"/></a>
+						</span>
+					</c:when>
+					<c:otherwise>
+						<span id="removeLink" style="visibility:hidden; display:none">
+							<a style="cursor: pointer;" onclick="javascript:removeFollower('${command.requestedUser}');"><fmt:message key="follow.link.text.removeLong"/></a>							
+						</span>
+						<span id="followLink">
+							<a style="cursor: pointer;" onclick="javascript:addFollower('${command.requestedUser}');"><fmt:message key="follow.link.text.followLong"/></a>
+						</span>
+					</c:otherwise>
+				</c:choose>				
+			</c:if>
 		</jsp:attribute>
 		
 	</layout:resourceLayout>
