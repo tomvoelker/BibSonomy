@@ -21,13 +21,10 @@
 						<phase>generate-sources</phase>
 						<configuration>
 							<tasks>
-								<java classname="org.antlr.Tool"
-									classpathref="maven.plugin.classpath" fork="true"
-									dir="src/main/antlr">
-									<arg
-										line="-o ${project.build.directory}/generated-sources/antlr/" />
-									<arg
-										value="helpers/parser/TagString.g3" />
+								<java classname="org.antlr.Tool" classpathref="maven.plugin.classpath"
+									fork="true" dir="src/main/antlr">
+									<arg line="-o ${project.build.directory}/generated-sources/antlr/" />
+									<arg value="helpers/parser/TagString.g3" />
 								</java>
 							</tasks>
 							<sourceRoot>
@@ -74,12 +71,16 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-rest-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-scraper</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-layout</artifactId>
-			</dependency>
+		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-rest-client</artifactId>
@@ -101,7 +102,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-bibtex-parser</artifactId>
+			<artifactId>bibsonomy-bibtex-parser
+			</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
@@ -132,7 +134,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springmodules</groupId>
-			<artifactId>spring-modules-springmvc-extra</artifactId>
+			<artifactId>spring-modules-springmvc-extra
+			</artifactId>
 			<version>0.8a</version>
 		</dependency>
 		<dependency>
@@ -234,10 +237,10 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-lucene</artifactId>
 		</dependency>
-		<!-- 
-			*** beanutils 1.7.0 contain a memory leak *** 
-			we don't have a direct dependency to beanutils, but some lib needs it
-			so we override here to the leak-free version 1.8.0
+		<!--
+			*** beanutils 1.7.0 contain a memory leak *** we don't have a direct
+			dependency to beanutils, but some lib needs it so we override here to
+			the leak-free version 1.8.0
 		-->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
@@ -258,7 +261,8 @@
 	<distributionManagement>
 		<site>
 			<!-- copy site documentation via scp to gromit -->
-			<id>bibsonomy-webapp-website-documentation</id>
+			<id>bibsonomy-webapp-website-documentation
+			</id>
 			<url>
 				scp://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
 			</url>
