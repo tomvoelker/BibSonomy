@@ -11,7 +11,8 @@ import org.bibsonomy.model.Document;
 
 /**
  * @author Christian Kramer
- * @version $Id$
+ * @version $Id: DocumentDatabaseManager.java,v 1.10 2009-07-15 08:26:19
+ *          voigtmannc Exp $
  */
 public class DocumentDatabaseManager extends AbstractDatabaseManager {
 
@@ -146,6 +147,30 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getDocumentsForPost", docParam, Document.class, session);
 	}
 
+	/** Returns the named document for the given user name and hash.
+	  * 
+	  * @param userName
+	  * @param resourceHash
+	  * @param session
+	  * @return A document.
+	  */
+	public List getDocumentsForPost(final String userName, final String resourceHash, final DBSession session) {
+		// create the docParam object
+		final DocumentParam docParam = new DocumentParam();
+
+		// fill the docParam object
+		docParam.setResourceHash(resourceHash);
+		docParam.setUserName(userName);
+
+		// get the requested document
+		final List doc = getDocumentsForPost(docParam, session);
+		if (doc == null) {
+			throw new IllegalStateException("No documents for this BibTeX entry");
+		}
+		return doc;
+
+	}
+
 	/**
 	 * Returns the named document for the given user name and hash.
 	 * 
@@ -177,6 +202,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 
 	/**
 	 * deletes a document which is not connected to a post
+	 * 
 	 * @param contentId
 	 * @param userName
 	 * @param fileHash
@@ -193,10 +219,10 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	private void deleteDocumentForPost(final DocumentParam docParam, final DBSession session) {
-		
+
 		this.delete("deleteDoc", docParam, session);
 	}
-	
+
 	/**
 	 * This method deletes an existing document
 	 * 
