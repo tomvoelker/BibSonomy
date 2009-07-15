@@ -31,5 +31,5 @@ public interface RemoteServiceBookmarkImporter {
 	 * @throws IOException - if the remote service could not be called.
 	 */
 	public List<Post<Bookmark>> getPosts() throws IOException;
-	
+		
 }

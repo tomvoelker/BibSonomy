@@ -20,4 +20,13 @@ public interface RelationImporter {
 	 */
 	public List<Tag> getRelations() throws IOException;
 	
+	/**
+	 * Sets the credentials used to authenticate the user against the remote
+	 * service.
+	 * 
+	 * @param userName 
+	 * @param password - could be also an API key or the like.
+	 */
+	public void setCredentials(final String userName, final String password);
+	
 }
