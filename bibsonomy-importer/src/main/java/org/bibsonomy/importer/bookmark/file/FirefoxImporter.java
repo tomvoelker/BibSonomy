@@ -230,5 +230,11 @@ public class FirefoxImporter implements FileBookmarkImporter, RelationImporter {
 			}
 		}
 	}
+
+	@Override
+	public void setCredentials(String userName, String password) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 

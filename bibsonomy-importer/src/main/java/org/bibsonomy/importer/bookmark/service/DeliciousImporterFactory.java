@@ -3,8 +3,6 @@ package org.bibsonomy.importer.bookmark.service;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
 import org.bibsonomy.services.importer.RemoteServiceBookmarkImporterFactory;
 
@@ -17,8 +15,17 @@ import org.bibsonomy.services.importer.RemoteServiceBookmarkImporterFactory;
  * 
  */
 public class DeliciousImporterFactory implements RemoteServiceBookmarkImporterFactory {
-
-	private static final Log log = LogFactory.getLog(DeliciousImporterFactory.class);
+	
+	public static final String BUNDLES_URL_PATH = "/v1/tags/bundles/all";
+	public static final String POSTS_URL_PATH = "/v1/posts/all";
+	
+	/*
+	 * TODO: there was a reason we use "-1" as port ... please document it 
+	 * here
+	 */
+	private static final int PORT = -1;
+	private static final String HTTPS = "https";
+	private static final String DELICIOUS_API_URL = "api.del.icio.us";
 	
 	private URL apiUrl;
 	private String userAgent;
@@ -29,11 +36,7 @@ public class DeliciousImporterFactory implements RemoteServiceBookmarkImporterFa
 	 * @throws MalformedURLException
 	 */
 	public DeliciousImporterFactory() throws MalformedURLException {
-		/*
-		 * TODO: there was a reason we use "-1" as port ... please document it 
-		 * here
-		 */
-		this.apiUrl = new URL ("https", "api.del.icio.us", -1, "/v1/posts/all");
+		buildURL(POSTS_URL_PATH);
 		this.userAgent = "Wget/1.9.1";
 	}
 	
@@ -71,6 +74,10 @@ public class DeliciousImporterFactory implements RemoteServiceBookmarkImporterFa
 	 */
 	public void setUserAgent(String userAgent) {
 		this.userAgent = userAgent;
+	}
+	
+	public void buildURL(String urlPath) throws MalformedURLException{
+		this.apiUrl = new URL (HTTPS, DELICIOUS_API_URL, PORT, urlPath);
 	}
 }
 

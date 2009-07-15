@@ -2,6 +2,7 @@ package org.bibsonomy.importer.bookmark.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
@@ -54,6 +55,11 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 
 	private String password;
 	private String userName;
+	
+	public static final String HEADER_USER_AGENT = "User-Agent";
+	public static final String HEADER_AUTHORIZATION = "Authorization";
+	public static final String HEADER_AUTH_BASIC = "Basic ";
+	public static final String UTF8 = "UTF-8";
 
 
 	/**
@@ -127,22 +133,19 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	 */
 	public List<Tag> getRelations() throws IOException {
 		final List<Tag> relations = new LinkedList<Tag>();
-		
 		//open a connection to delicious and retrieve a document
 		Document document = getDocument();
-		
-		NodeList bundles = document.getElementsByTagName("bundles");
-	
+		NodeList bundles = document.getElementsByTagName("bundle");
 		for(int i = 0; i < bundles.getLength(); i++){
 			Element resource = (Element)bundles.item(i);
 			try {
 				Tag tag = new Tag(resource.getAttribute("name"));
 				tag.getSubTags().addAll(TagUtils.parse(resource.getAttribute("tags")));
+				relations.add(tag);
 			} catch (Exception e) {
 				throw new IOException(e);
 			}
 		}
-		
 		return relations;
 	}
 
@@ -158,13 +161,10 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 	 * @throws IOException
 	 */
 	private Document getDocument() throws IOException{
-		
-		String userNameAndPassword = userName+":"+password;
-		
+				
 		URLConnection connection = apiURL.openConnection();
-		connection.setRequestProperty("User-Agent", userAgent);
-		connection.setRequestProperty("Authorization", "Basic "+new Base64().encode(userNameAndPassword.getBytes()));
-		
+		connection.setRequestProperty(HEADER_USER_AGENT, userAgent);
+		connection.setRequestProperty(HEADER_AUTHORIZATION, encodeForAuthorization());
 		InputStream inputStream = connection.getInputStream();
 		
 		// Get a JAXP parser factory object
@@ -211,6 +211,21 @@ public class DeliciousImporter implements RemoteServiceBookmarkImporter, Relatio
 		return document;
 			
 	}	
+	
+	/**
+	 * Encode the username and password for BASIC authentication
+	 * 
+	 * @return Basic + Base64 encoded(username + ':' + password)
+	 */
+	protected String encodeForAuthorization() {
+		String retVal = HEADER_AUTH_BASIC;
+		try {
+			retVal += new String(Base64.encodeBase64((this.userName + ":" + this.password).getBytes()), UTF8 );
+		} catch (UnsupportedEncodingException e1) {
+			retVal += new String(Base64.encodeBase64((this.userName + ":" + this.password).getBytes()));
+		}
+		return retVal;
+	}
 	
 }
 
