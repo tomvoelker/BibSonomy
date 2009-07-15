@@ -42,7 +42,7 @@
 								<value>grouping</value>
 								<value>importType</value>
 								<value>overwrite</value>
-								<value>file</value>
+								<value>file</value> 
 								<value>tagBoxStyle</value>
 								<value>tagSort</value>
 							</list>
@@ -457,6 +457,21 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/jabrefImport">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="importJabRefLayout"/>
+						<property name="allowedFields">
+							<list>
+								<value>fileBegin</value>
+								<value>fileItem</value>
+								<value>fileEnd</value>
+								<value>action</value>
+								<value>ckey</value>
+								<value>hash</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -495,6 +510,10 @@
 		</property>
 	</bean>
 	
+	<bean id="uploadHandler" class="org.bibsonomy.rest.utils.impl.HandleFileUpload" scope="request">
+		<property name="docpath" value="${project.document.path}"/>
+	</bean>
+	
 	<bean id="relationsController" class="org.bibsonomy.webapp.controller.RelationsController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
@@ -505,8 +524,8 @@
 	
 	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
 		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="docpath"><value>${project.document.path}</value></property>
+		<!-- <property name="userSettings" ref="userSettings"/> -->
+		<!-- <property name="docpath"><value>${project.document.path}</value></property> -->
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request">
@@ -616,13 +635,6 @@
 		<property name="requestLogic" ref="requestLogic"/>
 	</bean>
 
-	<bean id="importController" class="org.bibsonomy.webapp.controller.actions.ImportController" scope="request">
-		<property name="docpath">
-			<value>${project.document.path}</value>
-		</property>
-		<property name="logic" ref="logic"/>
-	</bean>
-
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
@@ -678,7 +690,7 @@
 	<bean id="postBookmarkPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="POST_BOOKMARK_PAGE"></property>
 	</bean>
-	
+
 	<bean id="batchEditController" class="org.bibsonomy.webapp.controller.actions.BatchEditController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
@@ -776,6 +788,17 @@
 	
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
 	
+	<bean id="importController" class="org.bibsonomy.webapp.controller.actions.ImportController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="uploadFileHandler" ref="uploadHandler"/>
+	</bean>
+	
+	<bean id="importJabRefLayout" class="org.bibsonomy.webapp.controller.actions.JabRefImportController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="uploadFileHandler" ref="uploadHandler"/>
+	</bean>
+	
+	
 	<!--  #################### factory beans #################### -->
 	
 	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" factory-method="getInstance"/>
@@ -811,7 +834,7 @@
 	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-	</bean>
+	</bean>		
 	
 	<!--  #################### interceptors #################### -->
 
