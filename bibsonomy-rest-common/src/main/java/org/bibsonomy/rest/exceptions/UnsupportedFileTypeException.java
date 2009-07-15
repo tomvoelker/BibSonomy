@@ -1,0 +1,68 @@
+/**
+ *  
+ *  BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
+ *   
+ *  Copyright (C) 2006 - 2008 Knowledge & Data Engineering Group, 
+ *                            University of Kassel, Germany
+ *                            http://www.kde.cs.uni-kassel.de/
+ *  
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public License
+ *  as published by the Free Software Foundation; either version 2
+ *  of the License, or (at your option) any later version.
+ * 
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Lesser General Public License for more details.
+ *  
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ */
+
+package org.bibsonomy.rest.exceptions;
+
+/**
+ * @author rja
+ * @version $Id: UnsupportedResourceTypeException.java,v 1.7 2007-10-30 17:37:35
+ *          jillig Exp $
+ */
+public class UnsupportedFileTypeException extends RuntimeException {
+
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Constructs a new unsupported file type exception with the specified
+	 * allowed extensions. The cause is not initialized, and may subsequently be
+	 * initialized by a call to {@link #initCause(Throwable)}.
+	 * 
+	 * @param allowedExt
+	 * 				the supported file type extensions.
+	 *            
+	 */
+	public UnsupportedFileTypeException(final String [] allowedExt) {
+		super("Please check your file. Only " + getExceptionExtensions(allowedExt) + " files are accepted.");
+	}
+	
+	/**
+	 * Converts the given files extensions to upper cases and connects them with "," and "or", e.g.:
+	 * input:
+	 *   "pdf", "ps", "djv", "djvu", "txt"
+	 * output:
+	 *   "PDF, PS, TXT or DJVU"
+	 * @param allowedExt
+	 * @return
+	 */
+	private static String getExceptionExtensions(final String[] allowedExt) {
+		final StringBuffer buf = new StringBuffer();
+		for (int i = 0; i < allowedExt.length - 1; i++) {
+			buf.append(allowedExt[i].toUpperCase() + ", ");
+		}
+		if (allowedExt.length > 1) {
+			buf.append("or ");
+		}
+		buf.append(allowedExt[allowedExt.length - 1].toUpperCase());
+		return buf.toString();
+	}
+}
