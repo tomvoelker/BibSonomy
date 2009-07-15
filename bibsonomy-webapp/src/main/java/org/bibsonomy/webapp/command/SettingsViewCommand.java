@@ -46,6 +46,36 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private List<String> nonCreatedBookmarks = null;
 	
 	/**
+	 * name of the begin layout file
+	 */
+	private String beginName = null;
+	
+	/**
+	 * hash of the begin layout file
+	 */
+	private String beginHash = null;
+	
+	/**
+	 * name of the item layout file
+	 */
+	private String itemName = null;
+	
+	/**
+	 * hash of the begin layout file
+	 */
+	private String itemHash = null;
+	
+	/**
+	 * name of the end layout file
+	 */
+	private String endName = null;
+	
+	/**
+	 * hash of the end layout file
+	 */
+	private String endHash = null;
+	
+	/**
 	 * Constructor.
 	 */
 	public SettingsViewCommand() {
@@ -125,6 +155,54 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	public void setNonCreatedBookmarks(List<String> nonCreatedBookmarks) {
 		this.nonCreatedBookmarks = nonCreatedBookmarks;
+	}
+
+	public String getBeginName() {
+		return this.beginName;
+	}
+
+	public String getBeginHash() {
+		return this.beginHash;
+	}
+
+	public String getItemName() {
+		return this.itemName;
+	}
+
+	public String getItemHash() {
+		return this.itemHash;
+	}
+
+	public String getEndName() {
+		return this.endName;
+	}
+
+	public String getEndHash() {
+		return this.endHash;
+	}
+
+	public void setBeginName(String beginName) {
+		this.beginName = beginName;
+	}
+
+	public void setBeginHash(String beginHash) {
+		this.beginHash = beginHash;
+	}
+
+	public void setItemName(String itemName) {
+		this.itemName = itemName;
+	}
+
+	public void setItemHash(String itemHash) {
+		this.itemHash = itemHash;
+	}
+
+	public void setEndName(String endName) {
+		this.endName = endName;
+	}
+
+	public void setEndHash(String endHash) {
+		this.endHash = endHash;
 	}
 
 
