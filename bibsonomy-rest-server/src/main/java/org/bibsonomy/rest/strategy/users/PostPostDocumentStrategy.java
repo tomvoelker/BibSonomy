@@ -9,8 +9,8 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.util.file.FileUploadInterface;
-import org.bibsonomy.util.file.HandleFileUpload;
+import org.bibsonomy.rest.utils.FileUploadInterface;
+import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 
 
 /**
@@ -48,27 +48,25 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 
 	@Override
 	protected String create() {
-		Document doc = new Document();
+		
+		Document doc = null;
+	
+		FileUploadInterface up = new HandleFileUpload();
+		
+		up.setUp(this.items, HandleFileUpload.fileUploadExt);
 		
 		try {
-			// create a fileupload object to get the filename and filehash
-			FileUploadInterface up = new HandleFileUpload(this.items, HandleFileUpload.fileUploadExt);
 			
-			// fill the document object with all necessary informations
-			doc.setUserName(this.userName);
-			doc.setFileName(up.getFileName());
-			doc.setFileHash(up.getFileHash());
-			doc.setMd5hash(up.getMd5Hash());
+			doc = up.writeUploadedFile(this.docPath, this.userName);
 			
-			// add document to post
 			this.getLogic().createDocument(doc, this.resourceHash);
 			
-			// write the file to the hdd
-			up.writeUploadedFiles(this.docPath);
-			uri = this.projectHome + "api/users/" + doc.getUserName() + "/posts/" + this.resourceHash + "/documents/" + doc.getFileName(); 
+			uri = this.projectHome + "api/users/" + doc.getUserName() + "/posts/" + this.resourceHash + "/documents/" + doc.getFileName();
 			
 			return uri;
+			
 		} catch (Exception ex) {
+			// TODO Auto-generated catch block
 			throw new BadRequestOrResponseException(ex.getMessage());
 		}
 	}
