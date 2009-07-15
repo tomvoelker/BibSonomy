@@ -37,7 +37,7 @@
 		
 			  		<div style="font-size:80%">
 			  			<c:forEach items="${command.newBookmarks}" var="mapEntry">
-		   					<p><a href="bookmark/${mapEntry.key}">${mapEntry.value}</a></p>
+		   					<p><a href="url/${mapEntry.key}">${mapEntry.value}</a></p>
 						</c:forEach>
 					</div>
 				</fieldset>
@@ -56,7 +56,7 @@
 					</div>
 					<div style="font-size:80%">
 						<c:forEach items="${command.updatedBookmarks}" var="mapEntry">
-		    				<p><a href="bookmark/${mapEntry.key}">${mapEntry.value}</a></p>
+		    				<p><a href="url/${mapEntry.key}">${mapEntry.value}</a></p>
 						</c:forEach>
 					</div>
 				</fieldset>
