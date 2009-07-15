@@ -2,6 +2,9 @@ package org.bibsonomy.webapp.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
+import org.bibsonomy.layout.jabref.LayoutPart;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
@@ -25,7 +28,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 * hold current errors
 	 */
 	private Errors errors = null;
-	
+
 	private LogicInterface logic;
 
 	/**
@@ -48,6 +51,8 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			break;
 		}
 		case 2: {
+
+			checkInstalledJabrefLayout(command);
 			break;
 		}
 		default: {
@@ -72,9 +77,35 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 	}
 
-	private void importJabrefLayout(SettingsViewCommand command, User loginUser) {
+	/**
+	 * checks whether the user has already uploaded jabref layout definitions
+	 * @param command
+	 */
+	private void checkInstalledJabrefLayout(SettingsViewCommand command) {
 
+		LayoutPart[] values = LayoutPart.values();
+
+		for (LayoutPart layoutpart : values) {
+
+			String fileHash = JabrefLayoutUtils.userLayoutHash(command.getContext().getLoginUser().getName(), layoutpart);
+
+			Document document = this.logic.getDocument(command.getContext().getLoginUser().getName(), fileHash);
+
+			if (document != null) {
+				if ("begin".equals(layoutpart.getName())) {
+					command.setBeginHash(fileHash);
+					command.setBeginName(document.getFileName());
+				} else if ("end".equals(layoutpart.getName())) {
+					command.setEndHash(fileHash);
+					command.setEndName(document.getFileName());
+				} else if ("item".equals(layoutpart.getName())) {
+					command.setItemHash(fileHash);
+					command.setItemName(document.getFileName());
+				}
+			}
+		}
 	}
+
 
 	private void workOnSettingsTab(SettingsViewCommand command) {
 		command.getContext().getLoginUser().getSettings().getTagboxStyle();
