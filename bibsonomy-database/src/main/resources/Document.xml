@@ -30,10 +30,25 @@
 			AND d.user_name = #userName# 
 	</select>
 	
+	<select id="getDocumentForLayout" resultMap="DocumentCommon.document" parameterClass="documentParam">
+		SELECT <include refid="allDocumentAttributes"/>
+			FROM document d 
+			WHERE d.user_name=#userName#
+			AND d.hash=#fileHash# 
+			AND d.content_id=#contentId#
+	</select>
+	
 	<delete id="deleteDoc" parameterClass="documentParam">
 		DELETE FROM document 
 		WHERE content_id = #contentId# 
 		AND user_name = #userName#
 		AND name = #fileName#
+	</delete>
+	
+	<delete id="deleteDocWithNoPost" parameterClass="documentParam">
+		DELETE FROM document 
+		WHERE content_id = #contentId# 
+		AND user_name = #userName#
+		AND hash = #fileHash#
 	</delete>
 </sqlMap>
