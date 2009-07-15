@@ -12,9 +12,6 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  */
 public class ImportCommand extends BaseCommand{
 	
-	/** also import bundles? **/
-	private boolean bundles;
-	
 	/** when true, duplicate entries will be overwritten **/
 	private boolean overwrite;
 	
@@ -42,7 +39,12 @@ public class ImportCommand extends BaseCommand{
 	private List<String> nonCreatedBookmarks = null;
 	
 	private List<String> storedConcepts = null;
+	
 	private String errorMessage;
+	
+	/** for delicious import only, import bookmarks or bundles? **/
+	private String importData;
+	
 	/**
 	 * @return true if duplicate entries shall be overwritten
 	 */
@@ -133,41 +135,89 @@ public class ImportCommand extends BaseCommand{
 	public void setNonCreatedBookmarks(List<String> nonCreatedBookmarks) {
 		this.nonCreatedBookmarks = nonCreatedBookmarks;
 	}
+	/**
+	 * 
+	 * @return
+	 */
 	public String getGrouping() {
 		return this.grouping;
 	}
+	/**
+	 * 
+	 * @param grouping
+	 */
 	public void setGrouping(String grouping) {
 		this.grouping = grouping;
 	}
+	/**
+	 * 
+	 * @return
+	 */
 	public CommonsMultipartFile getFile() {
 		return this.file;
 	}
+	/**
+	 * 
+	 * @param file
+	 */
 	public void setFile(CommonsMultipartFile file) {
 		this.file = file;
 	}
+	/**
+	 * 
+	 * @return
+	 */
 	public int getTotalCount() {
 		return this.totalCount;
 	}
+	/**
+	 * 
+	 * @param totalCount
+	 */
 	public void setTotalCount(int totalCount) {
 		this.totalCount = totalCount;
 	}
+	/**
+	 * 
+	 * @return
+	 */
 	public String getErrorMessage() {
 		return this.errorMessage;
 	}
+	/**
+	 * 
+	 * @param errorMessage
+	 */
 	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
-	public boolean isBundles() {
-		return this.bundles;
-	}
-	public void setBundles(boolean bundles) {
-		this.bundles = bundles;
-	}
+	/**
+	 * 
+	 * @return
+	 */
 	public List<String> getStoredConcepts() {
 		return this.storedConcepts;
 	}
+	/**
+	 * 
+	 * @param storedConcepts
+	 */
 	public void setStoredConcepts(List<String> storedConcepts) {
 		this.storedConcepts = storedConcepts;
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public String getImportData() {
+		return this.importData;
+	}
+	/**
+	 * 
+	 * @param importData
+	 */
+	public void setImportData(String importData) {
+		this.importData = importData;
 	}
 		
 }

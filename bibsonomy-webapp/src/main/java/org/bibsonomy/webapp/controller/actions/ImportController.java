@@ -86,17 +86,25 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 			if(command.getImportType().equals("delicious")){
 				try {
 					DeliciousImporterFactory importerFactory = new DeliciousImporterFactory();
-					RemoteServiceBookmarkImporter importer = importerFactory.getImporter();
-					importer.setCredentials(command.getUserName(), command.getPassWord());
-					posts = importer.getPosts();
 					
-					if(command.isBundles()){
+					/** import posts or bundles? **/
+					if(command.getImportData().equals("posts")){
+						RemoteServiceBookmarkImporter importer = importerFactory.getImporter();
+						importer.setCredentials(command.getUserName(), command.getPassWord());
+						posts = importer.getPosts();
+					}else if(command.getImportData().equals("bundles")){
+						importerFactory.buildURL(DeliciousImporterFactory.BUNDLES_URL_PATH);
 						RelationImporter relationImporter = (RelationImporter) importerFactory.getImporter();
+						relationImporter.setCredentials(command.getUserName(), command.getPassWord());
 						relations = relationImporter.getRelations();
+					}else{
+						errors.reject("error.import.failed");
+						return Views.ERROR;
 					}
+					
 				} catch (IOException ex) {
 					errors.reject("error.furtherInformations");
-					log.error("IOEXception at ImportController: "+ex.getStackTrace());
+					log.error("IOEXception at ImportController: "+ex.getMessage());
 					command.setErrorMessage(ex.getMessage());
 				}
 			}else if(command.getImportType().equals("firefox")){
@@ -117,7 +125,9 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 			command.setTotalCount(posts != null?posts.size():0);
 						
 			/** store the posts **/
-			storePosts(command, posts);	
+			if(posts.size() > 0){
+				storePosts(command, posts);	
+			}
 			
 			/** if available store relations **/
 			if(relations.size() > 0){
@@ -242,7 +252,9 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 	 * Return a new instance of an ImportCommand 
 	 */
 	public ImportCommand instantiateCommand() {
-		return new ImportCommand();
+		ImportCommand command = new ImportCommand();
+		command.setImportData("posts");
+		return command;
 	}
 
 	/**

@@ -19,6 +19,34 @@
 				<h2><fmt:message key="settings.delicious.header"/></h2><br/>
 				<table>
 					<tr>
+						<td style="vertical-align:middle">
+							<fmt:message key="import.kind"/>
+						</td>
+						<td style="vertical-align:middle">
+							<table style="border: 1px solid #C3C0C1;">
+								<!-- which kind of data will be imported? posts or bundles? -->
+								<tr>
+									<td>
+										<fmt:message key="settings.firefox.button.text"/>:
+									</td>
+									<td>
+										<form:radiobutton path="importData" value="posts" onclick="enableCheckBox()"/>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<fmt:message key="import.bundles"/>:
+									</td>
+									<td>
+										<form:radiobutton path="importData" value="bundles" onclick="disableCheckBox()"/>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<tr><td><br/></td></tr>
+					<!-- username and password -->
+					<tr>
 						<td>
 							<form:label path="userName">
 							<fmt:message key="navi.username" />:
@@ -39,16 +67,8 @@
 							<form:password path="passWord"/>
 							<form:errors path="passWord"/>
 						</td>
-					</tr>
-					<tr>
-						<td>
-							<!-- import bundles? -->
-							<fmt:message key="import.bundles"/>:
-						</td>
-						<td>
-							<form:checkbox path="bundles"/>
-						</td>
-					</tr>
+					</tr>					
+					<!-- overwrite duplicates? -->
 					<tr>
 						<td>
 							<!-- overwrite duplicates? -->
@@ -57,7 +77,7 @@
 					    	</fmt:message>:
 						</td>
 						<td>
-							<form:checkbox path="overwrite"/>
+							<form:checkbox path="overwrite" id="overwrite"/>
 						</td>
 					</tr>
 				</table>
@@ -67,5 +87,17 @@
 			</fieldset>
 		</form:form>
 	</div>
+	
+	<script type="text/javascript">
+		<![CDATA[
+			function disableCheckBox(){
+				document.getElementById("overwrite").disabled = true;
+			}
+		
+			function enableCheckBox(){
+				document.getElementById("overwrite").disabled = false;
+			}
+		]]>
+</script>
 	
 </jsp:root>

@@ -452,6 +452,7 @@
 								<value>overwrite</value>
 								<value>userName</value>
 								<value>passWord</value>
+								<value>importData</value>
 							</list>
 						</property>
 					</bean>
@@ -615,6 +616,13 @@
 		<property name="requestLogic" ref="requestLogic"/>
 	</bean>
 
+	<bean id="importController" class="org.bibsonomy.webapp.controller.actions.ImportController" scope="request">
+		<property name="docpath">
+			<value>${project.document.path}</value>
+		</property>
+		<property name="logic" ref="logic"/>
+	</bean>
+
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
@@ -744,7 +752,7 @@
 			<value type="java.lang.Integer">3</value>
 		</property>
 	</bean>
-		
+			
 	<!--<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.ButtonPageController"/>-->	
 
 	<!-- <bean id="purposeTagsPageController" class="org.bibsonomy.webapp.controller.PurposeTagsPageController" scope="request">

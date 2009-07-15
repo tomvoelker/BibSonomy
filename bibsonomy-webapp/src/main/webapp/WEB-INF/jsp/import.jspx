@@ -50,70 +50,7 @@
 					</c:when>
 					<c:otherwise>
 						<!-- make some output about the import results -->	
-						
-							<h1>
-								<fmt:message key="import.totalcount">
-									<fmt:param value="${command.totalCount}"/>
-								</fmt:message>
-							</h1><br/>
-							<!-- Show new created resources -->
-							<c:if test="${not empty command.newBookmarks}">
-						  		<br/>
-						  		<fieldset class="fsInner">
-									<legend style="color:##55AA68"><fmt:message key="import.created"/></legend>
-							  		<div style="font-size: 105%;font-style: italic;">	
-								  		<fmt:message key="import.newBookmarks">
-								  				<fmt:param value="${fn:length(command.newBookmarks)}"/>
-								  		</fmt:message>
-							  		</div>
-				
-							  		<div style="font-size:80%">
-							  			<c:forEach items="${command.newBookmarks}" var="mapEntry">
-					    					<p><a href="${mapEntry.key}">${mapEntry.value}</a></p>
-										</c:forEach>
-									</div>
-								</fieldset>
-								<br/>
-						  	</c:if>
-						  
-						  	<!-- Show updated resources -->
-							<c:if test="${not empty command.updatedBookmarks}">
-								
-								<br/>
-								<fieldset class="fsInner">
-									<legend style="color:#55AA68"><fmt:message key="import.updated"/></legend>
-									<div style="font-size: 105%;font-style: italic;">	
-										<fmt:message key="import.updatedBookmarks">
-											<fmt:param value="${fn:length(command.updatedBookmarks)}"/>
-										</fmt:message>
-									</div>
-									<div style="font-size:80%">
-										<c:forEach items="${command.updatedBookmarks}" var="mapEntry">
-						    				<p><a href="${mapEntry.key}">${mapEntry.value}</a></p>
-										</c:forEach>
-									</div>
-								</fieldset>
-							</c:if>
-							 
-							<!-- Show all resources which couldn't get updated -->
-							<c:if test="${not empty command.nonCreatedBookmarks}">
-								<br/>
-								<fieldset class="fsInner">
-									<legend style="color:#FF0000"><fmt:message key="import.failed"/></legend>
-									<div style="font-size: 105%;font-style: italic;">	
-										<fmt:message key="import.nonImportedBookmarks">
-											<fmt:param value="${fn:length(command.nonCreatedBookmarks)}"/>
-										</fmt:message>
-									</div>
-								</fieldset><br/>
-								<post:import importType="${command.importType}"/>
-							</c:if>
-							
-							<c:if test="${command.bundles}">
-								<fmt:message key="import.newBundles">
-									<fmt:param value="${fn:length(command.storedConcepts)}"/>
-								</fmt:message>
-							</c:if>
+						<post:importResults command="${command}"/>
 					</c:otherwise>
 				</c:choose>
 			</div>
