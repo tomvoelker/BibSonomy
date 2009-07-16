@@ -29,23 +29,37 @@
 	    | Multiplexing tag recommender
 	    +-->
 	<bean id="multiplexingTagRecommender" class="org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender" scope="singleton">
-	    <property name="queryTimeout" value="100"/>
-		<property name="distRecommenders" ref="distRecommenderList"/>
+	    <property name="queryTimeout" value="1000"/>
+		<property name="distRecommenders" ref="dc09RecommenderList"/>
 		<property name="localRecommenders" ref="localRecommenderList"/>
+		<property name="postModifiers" ref="postModifierList"/>
 		<property name="resultSelector" ref="selectOneWithoutReplacement"/>
 		<property name="dbLogic" ref="recoDBLogic"/>
 	</bean>	  
 
 	<util:list id="localRecommenderList" list-class="java.util.ArrayList">
 <!--  		<ref bean="tagRecommender"/>-->
+<!-- 
   		<ref bean="mostPopularMixRecommender"/>
   		<ref bean="jensRecommender"/>
+ -->  		
 	</util:list>
 	
 	<util:list id="distRecommenderList" list-class="java.util.ArrayList">
 <!--  		<ref bean="metaInfoRecommender"/>-->
 <!--  		<ref bean="distRecommender1"/>-->
 	</util:list>
+	
+	<util:list id="postModifierList" list-class="java.util.ArrayList">
+  		<ref bean="dc09NameToIDMapper"/>
+	</util:list>
+	
+	<!--+
+	    | name mapper
+	    +-->
+	<bean id="dc09NameToIDMapper" class="org.bibsonomy.recommender.tags.multiplexer.DC09NameToIDMapping">
+		<property name="dbLogic" ref="recoDBLogic"/>
+	</bean>	    
 	
 	<!--+
 		| Simple tag recommenders
@@ -143,5 +157,7 @@
 	 	<property name="dbLogic" ref="recoDBLogic"/>
 	 </bean>
 	 
+	<!--  #################### imports #################### -->
 
+    <import resource="bibsonomy2-servlet-recommender-dc09.xml"/>	
 </beans>

@@ -90,6 +90,9 @@ public class GetBookmarkRecommendedTagsController extends AjaxController impleme
 			 */
 			command.getPost().setUser(loginUser);
 
+			// FIXME: post's grouping is not handled - this is necessary if we don't want private
+			//        posts to be send to remote recommenders
+			
 			/*
 			 * get the recommended tags for the post from the command
 			 */

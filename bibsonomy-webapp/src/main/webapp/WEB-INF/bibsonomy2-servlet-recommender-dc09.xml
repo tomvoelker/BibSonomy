@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!-- 
+		configuration file for BibSonomy's (tag) recommendation services
+	 -->
+	 
+	<util:list id="dc09RecommenderList" list-class="java.util.ArrayList">
+		<ref bean="distRecommender1"/>
+	</util:list>
+	
+	<!--+
+		| A first tag recommender
+		+-->
+	<bean id="distRecommender1" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://dmz85:8080/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
+	<!--+
+		| A second tag recommender
+		+-->
+	<bean id="distRecommender2" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://localhost:8180/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
+</beans>
