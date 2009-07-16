@@ -12,22 +12,37 @@
 	 
 	<util:list id="dc09RecommenderList" list-class="java.util.ArrayList">
 		<ref bean="distRecommender1"/>
+		<ref bean="distRecommender2"/>
+		<ref bean="distRecommender3"/>
 	</util:list>
 	
+	
 	<!--+
-		| A first tag recommender
-		+-->
+	 	| Xiance
+	 	+-->
 	<bean id="distRecommender1" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
 		<property name="address">
-			<value>http://dmz85:8080/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
+			<value>http://141.51.167.111/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
 		</property>
 	</bean>	 
+
 	<!--+
-		| A second tag recommender
-		+-->
+	 	| Ivan Cantador
+	 	+-->
 	<bean id="distRecommender2" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
 		<property name="address">
-			<value>http://localhost:8180/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
+			<value>http://nets.ii.uam.es:8080/GlasgowTagRecommender/GlasgowTagRecommenderServlet</value>
 		</property>
 	</bean>	 
+
+	<!--+
+	 	| Hao Cao
+	 	+-->
+	<bean id="distRecommender3" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://141.51.167.112/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
+	 
+	
 </beans>
