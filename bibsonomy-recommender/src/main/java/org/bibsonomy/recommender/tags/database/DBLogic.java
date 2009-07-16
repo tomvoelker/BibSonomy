@@ -225,6 +225,22 @@ public interface DBLogic {
 	 */
 	@SuppressWarnings("unchecked")
 	public abstract <T extends Resource> Integer getNumberOfTasForResource(final Class<T> resourceType, final String intraHash) throws SQLException;
+	
+	/**
+	 * Maps BibSonomy's user name to corresponding user id
+	 * 
+	 * @param userName user's name
+	 * @return user's id, null if user name doesn't exist
+	 */
+	public abstract Integer getUserIDByName(String userName);
+
+	/**
+	 * Maps BibSonomy's user id to corresponding user name
+	 * 
+	 * @param userID user's id
+	 * @return user's name, null if user id doesn't exist
+	 */
+	public abstract String getUserNameByID(int userID);
 
 	/**
 	 * Get list of all tags from given recommender and query

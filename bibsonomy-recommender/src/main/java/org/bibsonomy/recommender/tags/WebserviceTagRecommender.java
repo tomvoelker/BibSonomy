@@ -117,13 +117,13 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 			result = renderer.parseRecommendedTagList(input);
 
 		} catch (HttpException e) {
-			log.fatal("Fatal protocol violation: " + e.getMessage(), e);
+			log.fatal("Fatal protocol violation("+getAddress()+"): " + e.getMessage(), e);
 		} catch (UnsupportedEncodingException ex) {
 			// returns InputStream with default encoding if a exception
 			// is thrown with utf-8 support
-			log.fatal("Encoding error: " + ex.getMessage(), ex);
+			log.fatal("Encoding error("+getAddress()+"): " + ex.getMessage(), ex);
 		} catch (IOException e) {
-			log.fatal("Fatal transport error: " + e.getMessage(), e);
+			log.fatal("Fatal transport error("+getAddress()+"): " + e.getMessage(), e);
 		} finally {
 			// Release the connection.
 			cnct.releaseConnection();

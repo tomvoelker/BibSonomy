@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -45,6 +46,8 @@ public class MultiplexingTagRecommender implements TagRecommender {
 
 
 	private PostPrivacyFilter postPrivacyFilter;
+	
+	private List<PostModifier> postModifiers;
 
 	/** indicates that post identifier was not given */
 	public static int UNKNOWN_POSTID = -1;
@@ -67,6 +70,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		distRecommenders  = new ArrayList<TagRecommenderConnector>();
 		resultSelector    = new SelectAll();
 		postPrivacyFilter = new PostPrivacyFilter();
+		setPostModifiers(new LinkedList<PostModifier>());
 	}
 	/**
 	 * destructor
@@ -180,6 +184,9 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			 * 
 			 */
 			final Post<? extends Resource> filteredPost = postPrivacyFilter.filterPost(post);
+			// apply post modifiers
+			for( PostModifier pm : getPostModifiers() )
+				pm.alterPost(filteredPost);
 			if (filteredPost != null) {
 				// query remote recommenders
 				for( TagRecommenderConnector con: getDistRecommenders() ) {
@@ -470,6 +477,12 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		} catch (SQLException e) {
 			throw new RuntimeException("Could not connect post: " + e);
 		}
+	}
+	public void setPostModifiers(List<PostModifier> postModifiers) {
+		this.postModifiers = postModifiers;
+	}
+	public List<PostModifier> getPostModifiers() {
+		return postModifiers;
 	}
 
 

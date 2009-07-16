@@ -408,6 +408,30 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		throw new UnsupportedResourceTypeException("Unknown resource type " + resourceType);
 	}
 	
+	/**
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getUserIDByName(String)
+	 */
+	public Integer getUserIDByName(String userName) {
+		try {
+			return (Integer)getSqlBibMapInstance().queryForObject("getUserIDByName", userName);
+		} catch (SQLException ex) {
+			log.error("Couldn't map user " + userName + " to the corresponding id.", ex);
+			return null;
+		}
+	}
+
+	/**
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getUserNameByID(int)
+	 */
+	public String getUserNameByID(int userID) {
+		try {
+			return (String)getSqlBibMapInstance().queryForObject("getUserNameByID", userID);
+		} catch (SQLException ex) {
+			log.error("Couldn't map user id " + userID+ " to the corresponding user name.", ex);
+			return null;
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getTagNamesForRecQuery(java.lang.Long, java.lang.Long)
 	 */

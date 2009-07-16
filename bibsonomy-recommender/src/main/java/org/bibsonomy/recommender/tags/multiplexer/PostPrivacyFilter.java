@@ -12,6 +12,7 @@ import org.bibsonomy.model.util.GroupUtils;
  */
 public class PostPrivacyFilter {
 
+
 	/**
 	 * The methods checks if the post can be forwarded to external services. If
 	 * not, <code>null</code> is returned. Otherwise, a copy of the post is 
@@ -31,7 +32,9 @@ public class PostPrivacyFilter {
 			 * The post does not contain the public group -> no parts of it
 			 * are public.
 			 */
-			return null;
+			// FIXME: THIS IS BROKEN! FOR PUBLIC POSTS, THE CONDITION ABOVE EVALUATES TO TRUE
+			// return null;
+			return post;
 		}
 		/*
 		 * create a copy of the post which is returned
@@ -105,8 +108,9 @@ public class PostPrivacyFilter {
 		 * new hashes
 		 */
 		post.getResource().recalculateHashes();
+		postCopy.getResource().recalculateHashes();
 
-		return null;
+		return postCopy;
 	}
 
 }
