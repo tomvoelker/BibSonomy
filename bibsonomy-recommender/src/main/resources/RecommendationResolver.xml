@@ -121,7 +121,7 @@
 		    AND b.group = 0
 	</select>	
 	
-		<!-- +
+	<!-- +
 		 | Get number of tags used by 
 		 + --> 
 	<select id="getNumberOfTagsForBibTeX" parameterClass="string" resultClass="integer">
@@ -132,7 +132,7 @@
 		    AND b.group = 0
 	</select>
 	
-		<!-- +
+	<!-- +
 		 | Get number of TAS 
 		 + --> 
 	<select id="getNumberOfTasForBibTeX" parameterClass="string" resultClass="integer">
@@ -142,6 +142,25 @@
 		  WHERE b.simhash2 = #intraHash#
 		    AND b.group = 0
 	</select>	
+
+	<!-- +
+		 | Get user name for given user id 
+		 + --> 
+	<select id="getUserNameByID" parameterClass="integer" resultClass="string">
+		SELECT user_name 
+		  FROM user 
+		  WHERE id = #id#
+	</select>	
+
+	<!-- +
+		 | Get user id for given user name 
+		 + --> 
+	<select id="getUserIDByName" parameterClass="string" resultClass="integer">
+		SELECT id 
+		  FROM user 
+		  WHERE user_name = #name#
+	</select>	
+
 
 	<!--+
 		| Get list of top five query_ids nearest to given post
