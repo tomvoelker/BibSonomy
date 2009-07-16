@@ -232,4 +232,14 @@ public class DBLogicDummyImpl implements DBLogic {
 		return recoMap.put(new Pair<Long, Long>(qid, rid), result).size();
 	}
 
+	@Override
+	public Integer getUserIDByName(String userName) {
+		return 0;
+	}
+
+	@Override
+	public String getUserNameByID(int userID) {
+		return "nouser";
+	}
+
 }
