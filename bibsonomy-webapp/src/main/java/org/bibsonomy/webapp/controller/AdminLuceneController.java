@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.controller;
 
-import java.util.List;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -10,7 +8,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.bibsonomy.common.enums.Classifier;
-import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.lucene.LuceneSearchBibTex;
@@ -104,9 +101,6 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		command.publicationsIndex.setIndexStatistics(publicationsIndex.getStatistics());
 
 		
-		
-		
-		command.setAction("ActionText");
 
 		return Views.ADMINLUCENEPAGE;
 	}

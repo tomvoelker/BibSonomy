@@ -31,54 +31,82 @@
 		<jsp:attribute name="content">
 	
 
-<div>
+<style type="text/css">
+.ls-description {clear:left; float: left; width: 11em; margin: 2px;}
+.ls-value {float: left; margin: 2px;}
+.cgrey { color: grey; }
+.csilver { color: silver; }
+
+</style>
+
+
+<div style="margin:8px">
 	<h2>
-			Hallo Welt!
+			Lucene Index Statistics 
 	</h2>
-	<p>Action: ${command.action}</p>
-	<p>envContextString: ${command.envContextString}</p>
-	<p>luceneBookmarksPath: ${command.luceneBookmarksPath}</p>
-	<p>lucenePublicationsPath: ${command.lucenePublicationsPath}</p>
-	<p>luceneDataSourceUrl: ${command.luceneDataSourceUrl}</p>
-	<p>luceneDataSourceUsername: ${command.luceneDataSourceUsername}</p>
 
-	<p>
-	bookmarksIndex.getInstance: ${bookmarksIndex.instance}<br />
-	bookmarksIndex.getNumDocs: ${bookmarksIndex.numDocs}<br />
-	bookmarksIndex.numDeletedDocs: ${bookmarksIndex.numDeletedDocs}<br />
-	bookmarksIndex.newestDate: ${bookmarksIndex.newestDate}<br />
-	bookmarksIndex.lastModified: ${bookmarksIndex.lastModified}<br />
-	bookmarksIndex.CurrentVersion: ${bookmarksIndex.currentVersion}<br />
-	
-	bookmarksIndex.isCurrent:
-	<c:choose>
-		<c:when test="${bookmarksIndex.current}">
-			true
-		</c:when>
-		<c:otherwise>
-			false
-		</c:otherwise>
-	</c:choose>
-	
-	</p>
+	<div style="width: 100%; margin: .5%;" >
+		<fieldset style="padding:5px;">
+			<legend><label style="font-weight: bold;">General properties (context.xml)</label></legend>
+			<div class="ls-description">envContextString:</div><div class="ls-value">${command.envContextString}</div>
+			<div class="ls-description">bookmarksPath:</div><div class="ls-value">${command.luceneBookmarksPath}</div>
+			<div class="ls-description">publicationsPath:</div><div class="ls-value">${command.lucenePublicationsPath}</div>
+			<div class="ls-description">dataSourceUrl:</div><div class="ls-value" title="${command.luceneDataSourceUrl}">${command.luceneDataSourceUrlShort}</div>
+			<div class="ls-description">dataSourceUsername:</div><div class="ls-value">${command.luceneDataSourceUsername}</div>
 
-	<p>
-	publicationsIndex.getInstance: ${publicationsIndex.instance}<br />
-	publicationsIndex.getNumDocs: ${publicationsIndex.numDocs}<br />
-	publicationsIndex.numDeletedDocs: ${publicationsIndex.numDeletedDocs}<br />
-	publicationsIndex.newestDate: ${publicationsIndex.newestDate}<br />
-	publicationsIndex.lastModified: ${publicationsIndex.lastModified}<br />
-	publicationsIndex.CurrentVersion: ${publicationsIndex.currentVersion}<br />
-	publicationsIndex.isCurrent:
-	<c:choose>
-		<c:when test="${publicationsIndex.current}">
-			true
-		</c:when>
-		<c:otherwise>
-			false
-		</c:otherwise>
-	</c:choose>
-	</p>
+		</fieldset>
+	</div>
+
+	<div style="width: 49%; float:left; margin: .5%;">
+		<fieldset style="padding:5px;">
+			<legend><label style="font-weight: bold;">Bookmark index</label></legend>
+			<div class="ls-description">Instance-ID:</div><div class="ls-value">${bookmarksIndex.instance}</div>
+			<div class="ls-description">containing docs:</div><div class="ls-value">${bookmarksIndex.numDocs}</div>
+			<div class="ls-description">deleted docs:</div><div class="ls-value">${bookmarksIndex.numDeletedDocs}</div>
+			<div class="ls-description">newest date:</div><div class="ls-value">${bookmarksIndex.newestDate}</div>
+			<div class="ls-description">last modified date:</div><div class="ls-value">${bookmarksIndex.lastModifiedString}</div>
+			<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${bookmarksIndex.currentVersionString}</div>
+			<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${bookmarksIndex.current} / 
+				<c:choose>
+					<c:when test="${bookmarksIndex.current}">
+						true
+					</c:when>
+					<c:otherwise>
+						false
+					</c:otherwise>
+				</c:choose>
+			</div>
+
+		</fieldset>
+	
+	</div>
+
+	<div style="width: 49%; float:right; margin: .5%;">
+		<fieldset style="padding:5px;">
+			<legend><label style="font-weight: bold;">BibTex index</label></legend>
+
+			<div class="ls-description">Instance-ID:</div><div class="ls-value">${publicationsIndex.instance}</div>
+			<div class="ls-description">containing docs:</div><div class="ls-value">${publicationsIndex.numDocs}</div>
+			<div class="ls-description">deleted docs:</div><div class="ls-value">${publicationsIndex.numDeletedDocs}</div>
+			<div class="ls-description">newest date:</div><div class="ls-value">${publicationsIndex.newestDate}</div>
+			<div class="ls-description">last modified date:</div><div class="ls-value">${publicationsIndex.lastModifiedString}</div>
+			<div class="ls-description cgrey">current version:</div><div class="ls-value cgrey">${publicationsIndex.currentVersionString}</div>
+			<div class="ls-description csilver">isCurrent:</div><div class="ls-value csilver">${publicationsIndex.current} / 
+				<c:choose>
+					<c:when test="${publicationsIndex.current}">
+						true
+					</c:when>
+					<c:otherwise>
+						false
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</fieldset>
+
+	</div>
+
+
+
 
 </div>    
             
