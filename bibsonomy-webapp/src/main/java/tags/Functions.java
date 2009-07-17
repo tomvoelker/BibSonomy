@@ -393,6 +393,14 @@ public class Functions  {
 	}
 
 
+	/**
+	 * @return The list of available bibtex entry types
+	 */
+	public static String[] getBibTeXEntryTypes() {
+		return bibtexEntryTypes;
+	}
+
+	
 	/** Maps BibTeX entry types to SWRC entry types.
 	 * 
 	 * TODO: stolen from old code in {@link EntryType} ... 
