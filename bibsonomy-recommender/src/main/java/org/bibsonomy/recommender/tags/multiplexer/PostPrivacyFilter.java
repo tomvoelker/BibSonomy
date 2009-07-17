@@ -33,8 +33,8 @@ public class PostPrivacyFilter {
 			 * are public.
 			 */
 			// FIXME: THIS IS BROKEN! FOR PUBLIC POSTS, THE CONDITION ABOVE EVALUATES TO TRUE
-			// return null;
-			return post;
+			return null;
+			// return post;
 		}
 		/*
 		 * create a copy of the post which is returned
