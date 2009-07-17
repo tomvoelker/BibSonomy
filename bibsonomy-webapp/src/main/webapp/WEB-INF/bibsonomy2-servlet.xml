@@ -370,6 +370,12 @@
 						<property name="allowedFields" ref="bookmarkRequestParameters"/>
 					</bean>
 				</entry>
+				<entry key="/postPublication">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="postPublicationController"/>
+						<property name="allowedFields" ref="publicationRequestParameters"/>
+					</bean>
+				</entry> 
 				<entry key="/actions/admin/group">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupAdminPageController"/>
