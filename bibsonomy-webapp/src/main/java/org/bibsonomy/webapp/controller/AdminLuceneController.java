@@ -10,6 +10,7 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.lucene.LuceneSearchBibTex;
 import org.bibsonomy.lucene.LuceneSearchBookmarks;
 import org.bibsonomy.model.User;
@@ -19,6 +20,7 @@ import org.bibsonomy.webapp.command.AdminLuceneViewCommand;
 import org.bibsonomy.webapp.command.AdminStatisticsCommand;
 import org.bibsonomy.webapp.command.AdminViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
@@ -46,11 +48,19 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	public View workOn(AdminLuceneViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 
-		final User loginUser = command.getContext().getLoginUser();
-		if (loginUser.getRole().equals(Role.DEFAULT)) {
-			/** TODO: redirect to login page as soon as it is available */
-		}
+		final RequestWrapperContext context = command.getContext();
+		final User loginUser = context.getLoginUser();
 
+		/* Check user role
+		 * 
+		 * If user is not logged in or not an admin: show error message
+		 */
+		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
+			log.warn("User " + loginUser.getName() + " tried to access lucene admin page without having role " + Role.ADMIN);
+			throw new ValidationException("error.method_not_allowed");
+		}
+		
+		
 		command.setPageTitle("admin lucene");
 		
 		Context initContext = null;
