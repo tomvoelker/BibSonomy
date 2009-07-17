@@ -504,6 +504,26 @@
 		<value>postID</value>								
 	</util:list>
 
+<!-- publication request parameters -->
+	<util:list id="publicationRequestParameters">
+		<value>post.resource.url</value>
+  		<value>post.resource.title</value>
+  		<value>post.description</value>
+  		<value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
+  		<value>tags</value>
+  		<value>url</value>
+  		<value>description</value>
+  		<value>extended</value>
+  		<value>copytag</value>
+  		<value>abstractGrouping</value>
+  		<value>groups</value>
+  		<value>intraHashToUpdate</value>
+  		<value>jump</value>
+  		<value>relevantGroups</value>
+  		<value>acceptComma</value>
+  		<value>postID</value>        
+ 	</util:list>
+
     <!--  #################### controller #################### -->
 	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
 		<property name="logic" ref="logic"/>
