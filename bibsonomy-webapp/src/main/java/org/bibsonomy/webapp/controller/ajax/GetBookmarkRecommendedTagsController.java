@@ -36,7 +36,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author fei
  * @version $Id$
  */
-public class GetBookmarkRecommendedTagsController extends AjaxController implements MinimalisticController<AjaxRecommenderCommand<Bookmark>> {
+public class GetBookmarkRecommendedTagsController extends RecommendationsAjaxController<Bookmark> implements MinimalisticController<AjaxRecommenderCommand<Bookmark>> {
 	private static final Log log = LogFactory.getLog(GetBookmarkRecommendedTagsController.class);
 
 	/**
@@ -92,6 +92,10 @@ public class GetBookmarkRecommendedTagsController extends AjaxController impleme
 
 			// FIXME: post's grouping is not handled - this is necessary if we don't want private
 			//        posts to be send to remote recommenders
+			/*
+			 * initialize groups
+			 */
+			initPostGroups(command, command.getPost());
 			
 			/*
 			 * get the recommended tags for the post from the command

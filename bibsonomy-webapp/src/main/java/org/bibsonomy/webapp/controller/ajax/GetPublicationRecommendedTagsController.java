@@ -35,7 +35,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author fei
  * @version $Id$
  */
-public class GetPublicationRecommendedTagsController extends AjaxController implements MinimalisticController<AjaxPublicationRecommenderCommand> {
+public class GetPublicationRecommendedTagsController extends RecommendationsAjaxController<BibTex> implements MinimalisticController<AjaxPublicationRecommenderCommand> {
 	private static final Log log = LogFactory.getLog(GetPublicationRecommendedTagsController.class);
 
 	/**
@@ -90,6 +90,11 @@ public class GetPublicationRecommendedTagsController extends AjaxController impl
 			 * the user name)
 			 */
 			command.getPost().setUser(loginUser);
+			
+			/*
+			 * initialize groups
+			 */
+			initPostGroups(command, command.getPost());
 
 			/*
 			 * get the recommended tags for the post from the command
