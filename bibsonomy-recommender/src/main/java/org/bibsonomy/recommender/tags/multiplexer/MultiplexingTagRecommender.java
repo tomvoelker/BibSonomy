@@ -184,10 +184,10 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			 * 
 			 */
 			final Post<? extends Resource> filteredPost = postPrivacyFilter.filterPost(post);
-			// apply post modifiers
-			for( PostModifier pm : getPostModifiers() )
-				pm.alterPost(filteredPost);
 			if (filteredPost != null) {
+				// apply post modifiers
+				for( PostModifier pm : getPostModifiers() )
+					pm.alterPost(filteredPost);
 				// query remote recommenders
 				for( TagRecommenderConnector con: getDistRecommenders() ) {
 					// each recommender is identified by an unique id:
