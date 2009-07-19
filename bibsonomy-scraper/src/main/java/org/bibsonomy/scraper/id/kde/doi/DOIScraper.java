@@ -91,6 +91,11 @@ public class DOIScraper implements Scraper {
 			if (ValidationUtils.present(redirectUrl)) {
 				scrapingContext.setUrl(redirectUrl);
 			}
+			
+			/*
+			 * remove text selection
+			 */
+			scrapingContext.setSelectedText(null);
 		} else if (isSupportedSelection(selection)) {
 			/*
 			 * selection contains a DOI -> extract it
@@ -100,6 +105,11 @@ public class DOIScraper implements Scraper {
 			if (ValidationUtils.present(redirectUrl)) {
 				scrapingContext.setUrl(redirectUrl);
 			}
+			
+			/*
+			 * remove text selection
+			 */
+			scrapingContext.setSelectedText(null);
 		}
 		/*
 		 * always return false, such that the "real" scrapers can do their work
