@@ -44,15 +44,6 @@
 			<url>http://www.kde.cs.uni-kassel.de/hotho</url>
 		</developer>
 		<developer>
-			<name>Miranda Grahl</name>
-			<id>mgr</id>
-			<email>mgr@cs.uni-kassel.de</email>
-			<roles>
-				<role>Project leader</role>
-				<role>Developer</role>
-			</roles>
-		</developer>
-		<developer>
 			<name>Dominik Benz</name>
 			<id>dbe</id>
 			<email>dbe@cs.uni-kassel.de</email>
@@ -63,7 +54,7 @@
 			<url>http://www.kde.cs.uni-kassel.de/benz</url>
 		</developer>
 		<developer>
-			<name>Robert Jaeschke</name>
+			<name>Robert Jäschke</name>
 			<id>rja</id>
 			<email>jaeschke@cs.uni-kassel.de</email>
 			<roles>
@@ -73,15 +64,14 @@
 			<url>http://www.kde.cs.uni-kassel.de/jaeschke</url>
 		</developer>
 		<developer>
-			<name>Manuel Bork</name>
-			<id>mbork</id>
-			<email>manuel.bork@uni-kassel.de</email>
+			<name>Folke Eisterlehner</name>
+			<id>fei</id>
+			<email>eisterlehner@cs.uni-kassel.de</email>
 			<roles>
+				<role>Project leader</role>
 				<role>Developer</role>
 			</roles>
-			<url>
-				http://www.se.eecs.uni-kassel.de/se/index.php?mbork
-			</url>
+			<url>http://www.kde.cs.uni-kassel.de/eisterlehner</url>
 		</developer>
 		<developer>
 			<name>Jens Illig</name>
@@ -95,14 +85,6 @@
 			<name>Christian Schenk</name>
 			<id>cschenk</id>
 			<email>schenk@innofinity.de</email>
-			<roles>
-				<role>Developer</role>
-			</roles>
-		</developer>
-		<developer>
-			<name>Stefan Stützer</name>
-			<id>sts</id>
-			<email>stuetzer@cs.uni-kassel.de</email>
 			<roles>
 				<role>Developer</role>
 			</roles>
@@ -159,31 +141,31 @@
 		</developer>
 	</developers>
   	<mailingLists>
-    	<mailingList>
-      		<name>BibSononomy-Discuss: For BibSonomy users</name>
-      		<subscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss</subscribe>
-      		<unsubscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss</unsubscribe>
-      		<post>bibsonomy-discuss@cs.uni-kassel.de</post>
-      		<archive>https://mail.cs.uni-kassel.de/pipermail/bibsonomy-discuss</archive>
-      		<!--  
-      		<otherArchives>
-        		<otherArchive></otherArchive>
-      		</otherArchives>
-      		-->
-    	</mailingList>
-    	<mailingList>
-      		<name>Api-Discuss: for users and developers of the BibSonomy-API.</name>
-      		<subscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</subscribe>
-      		<unsubscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</unsubscribe>
-      		<post>api-discuss@cs.uni-kassel.de</post>
-      		<archive>https://mail.cs.uni-kassel.de/pipermail/api-discuss</archive>
-    	</mailingList>
+    		<mailingList>
+      			<name>BibSononomy-Discuss: For BibSonomy users</name>
+	      		<subscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss</subscribe>
+      			<unsubscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/bibsonomy-discuss</unsubscribe>
+      			<post>bibsonomy-discuss@cs.uni-kassel.de</post>
+	      		<archive>https://mail.cs.uni-kassel.de/pipermail/bibsonomy-discuss</archive>
+    		</mailingList>
+	    	<mailingList>
+      			<name>Api-Discuss: for users and developers of the BibSonomy-API.</name>
+      			<subscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</subscribe>
+	      		<unsubscribe>https://mail.cs.uni-kassel.de/mailman/listinfo/api-discuss</unsubscribe>
+      			<post>api-discuss@cs.uni-kassel.de</post>
+      			<archive>https://mail.cs.uni-kassel.de/pipermail/api-discuss</archive>
+	    	</mailingList>
   	</mailingLists>	  	
 	<repositories>
 		<repository>
 			<id>biblicious</id>
 			<name>Artifactory-Maven-Proxy auf biblicious.org</name>
 			<url>http://www.biblicious.org:8088/artifactory/repo</url>
+		</repository>
+		<repository>
+			<id>dev.bibsonomy.org</id>
+			<name>Official Source Code Releases of selected BibSonomy Modules</name>
+			<url>http://dev.bibsonomy.org/maven2/</url>
 		</repository>
 	</repositories>
 	<pluginRepositories>
@@ -204,6 +186,7 @@
 		<module>bibsonomy-scraper</module>
 		<module>bibsonomy-scrapingservice</module>
 		<module>bibsonomy-layout</module>
+		<module>bibsonomy-importer</module>
 		<module>bibsonomy-database</module>
 		<module>bibsonomy-logging</module>
 		<module>bibsonomy-lucene</module>
@@ -251,12 +234,17 @@
 				</executions>
 			</plugin>
 			<plugin>
+        			<groupId>org.apache.maven.plugins</groupId>
+	        		<artifactId>maven-war-plugin</artifactId>
+        			<version>2.0</version>
+        		</plugin>	
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>tomcat-maven-plugin</artifactId>
 				<configuration>
-					<server>tomcat_gandalf</server>
+					<server>tomcat_gromit</server>
 					<url>
-						http://gandalf.cs.uni-kassel.de:8080/manager
+						http://gromit.cs.uni-kassel.de:8080/manager
 					</url>
 				</configuration>
 			</plugin>
@@ -290,7 +278,7 @@
 						<exclude>target/**</exclude>
 					</excludes>
 					<properties>
-						<year>${project.inceptionYear} - 2008</year>
+						<year>${project.inceptionYear} - 2009</year>
 						<description>
 							${project.name} - ${project.description}
 						</description>
@@ -353,10 +341,7 @@
 			<uniqueVersion>false</uniqueVersion>
 			<id>bibsonomyReleases</id>
 			<name>Repository for BibSonomy Releases</name>
-			<!--
-			    <url>scp://bugs:/home/bibsonomyupload/wwwupload/maven2</url>
-			    -->
-			<url>scp://eisterlehner.de:/home/folke/tmp</url>
+			<url>scp://bugs:/home/bibsonomyupload/www/maven2</url>
 			<layout>default</layout>
 		</repository>
 		<!--  use internal maven artifactory proxy for snapshot releases; username + password is defined in settings.xml -->
@@ -458,6 +443,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-importer</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-layout</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -480,11 +470,6 @@
 				<groupId>commons-httpclient</groupId>
 				<artifactId>commons-httpclient</artifactId>
 				<version>3.1</version>
-			</dependency>
-			<dependency>
-		                <groupId>commons-codec</groupId>
-				<artifactId>commons-codec</artifactId>
-				<version>1.3</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-logging</groupId>
@@ -513,12 +498,6 @@
 				<version>1.0.b2</version>
 				<scope>provided</scope>
 			</dependency>
-			<!--dependency>
-				<groupId>org.apache.ibatis</groupId>
-				<artifactId>ibatis-sqlmap</artifactId>
-				<version>SNAPSHOT</version>
-				<classifier>r737724</classifier>
-				</dependency-->
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
@@ -531,11 +510,6 @@
 				<version>4.3.1</version>
 				<!-- scope>test</scope -->
 			</dependency>
-			<!--dependency>
-				<groupId>com.sun.xml.bind</groupId>
-				<artifactId>jaxb-impl</artifactId>
-				<version>2.0.3</version>
-				</dependency-->
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>jstl</artifactId>
@@ -557,9 +531,6 @@
 				<artifactId>dom4j</artifactId>
 				<version>1.6.1</version>
 			</dependency>
-			<!-- 
-				let's upgrade to 1.4 
-			-->
 			<dependency>
 				<groupId>commons-pool</groupId>
 				<artifactId>commons-pool</artifactId>
@@ -569,6 +540,11 @@
 				<groupId>commons-dbcp</groupId>
 				<artifactId>commons-dbcp</artifactId>
 				<version>1.2.1</version>
+			</dependency>
+			<dependency>
+		                <groupId>commons-codec</groupId>
+				<artifactId>commons-codec</artifactId>
+				<version>1.3</version>
 			</dependency>
 		</dependencies>
 
