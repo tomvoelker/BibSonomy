@@ -398,6 +398,10 @@ public enum Views implements View {
 	 * /layout/* pages which are rendered by JabRef 
 	 */
 	LAYOUT("layout"),
+	/**
+	 * /csv/ pages rendered by the CSVView
+	 */
+	CSV("csv"),
 	
 	/**
 	 * to edit the tags of publications
@@ -545,6 +549,8 @@ public enum Views implements View {
 			return BATCHEDITURL;
 		if ("tagcloud".equals(format))
 			return AJAX_TAGCLOUD;
+		if ("csv".equals(format))
+			return CSV;
 		
 		throw new BadRequestOrResponseException("Invalid format specification.");
 	}
