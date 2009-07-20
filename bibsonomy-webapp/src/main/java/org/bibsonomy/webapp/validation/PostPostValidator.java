@@ -45,7 +45,6 @@ public abstract class PostPostValidator<RESOURCE extends Resource> implements Va
 		 */
 		Assert.notNull(command);
 
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "post.resource.url", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "post.resource.title", "error.field.valid.title");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tags", "error.field.valid.tags");
 		

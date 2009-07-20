@@ -55,7 +55,10 @@
             <form:label cssClass="fsLabel" path="post.resource.editor" ><fmt:message key="post.resource.editor"/>*</form:label>
             <form:textarea cssClass="fsInput" path="post.resource.editor" tabindex="4" rows="3" onkeyup="sz(this);" />
             <div class="dissError"><form:errors path="post.resource.editor" /></div>
-	                                
+	                            
+            <form:label cssClass="fsLabel" path="post.resource.year" ><fmt:message key="post.resource.year"/></form:label>
+            <form:input cssClass="fsInput fsSmall" path="post.resource.year" tabindex="2"/>
+            <div class="dissError"><form:errors path="post.resource.year" /></div>    
 
 		</jsp:attribute>
 

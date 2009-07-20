@@ -4,6 +4,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 /**
  * @author fba
  * @version $Id$
@@ -18,6 +19,10 @@ public class PostBookmarkValidator extends PostPostValidator<Bookmark> {
 
 	@Override
 	protected void validateResource(final Errors errors, final Bookmark resource) {
+		
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "post.resource.url", "error.field.required");
+
+		
 		/*
 		 * clean url
 		 */
