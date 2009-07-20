@@ -51,7 +51,6 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 				if (m.matches()) {
 					url = url.replace("summary", "summary?doi=");
 					try {
-						System.err.println(url);
 						sc.setUrl(new URL(url));
 					} catch (MalformedURLException ex) {
 						throw new ScrapingException("Couldn't build new URL");
