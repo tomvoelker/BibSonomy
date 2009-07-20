@@ -71,6 +71,22 @@ public class CiteseerxScraperTest {
 		
 		
 	}
+	
+	@Test
+	@Ignore
+	public void testTemporaryMalformed() throws MalformedURLException {
+		final String url = "http://citeseerx.ist.psu.edu/viewdoc/summary10.1.1.14.7185&description=Conceptual+Clustering+of+Text+Clusters";
+		final ScrapingContext sc = new ScrapingContext(new URL(url));
+		final CiteseerxScraper scraper = new CiteseerxScraper();
+		
+		try {
+			final boolean scrape = scraper.scrape(sc);
+			System.out.println(sc.getBibtexResult());
+			Assert.assertTrue(scrape);
+		} catch (ScrapingException ex) {
+			Assert.fail(ex.getMessage());
+		}
+	}
 
 	@Test
 	@Ignore

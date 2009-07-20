@@ -1,5 +1,8 @@
 package org.bibsonomy.scraper.url.kde.citeseer;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -11,6 +14,7 @@ import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * @author tst
@@ -35,6 +39,26 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 			sc.setScraper(this);
 			
+			try {
+				// test if url is valid
+				WebUtils.getContentAsString(sc.getUrl());
+			} catch (IOException e) {
+				// if not, try to solve the known citeseerx problem
+				String url = sc.getUrl().toString();
+				Pattern p = Pattern.compile(".*summary\\d+.*");
+				Matcher m = p.matcher(url);
+				
+				if (m.matches()) {
+					url = url.replace("summary", "summary?doi=");
+					try {
+						System.err.println(url);
+						sc.setUrl(new URL(url));
+					} catch (MalformedURLException ex) {
+						throw new ScrapingException("Couldn't build new URL");
+					}
+				}
+			}
+
 			// check for selected bibtex snippet
 			if(sc.getSelectedText() != null){
 				sc.setBibtexResult(sc.getSelectedText());
