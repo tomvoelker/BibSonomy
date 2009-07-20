@@ -193,6 +193,10 @@
                    <div class="dissError"><form:errors path="post.resource.note" /></div>
 
                 
+                
+                   <a style="background: orange; width: 10em; border: 2px solid black; margin: 2em; padding: .5em;" href="javascript:location.href='http://'+location.host+'/postPublication?intraHashToUpdate='+location.pathname.substring(9,41)">***EditPubl***</a>
+
+                
        
           </fieldset>
        </jsp:attribute>
