@@ -77,7 +77,7 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 			return this.handle(param, session);
 		}
 		if (this.next != null) return this.next.perform(param, session, chainStatus);
-		throw new RuntimeException("Can't handle request.");
+		throw new RuntimeException("Can't handle request for param object: " + param.toStringByReflection());
 	}
 
 	/**

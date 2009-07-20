@@ -7,6 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
@@ -636,5 +638,15 @@ public abstract class GenericParam {
 	 */
 	public void setGroupNames(Set<String> groupNames) {
 		this.groupNames = groupNames;
+	}
+	
+	/**
+	 * Introspect the current param object and return a string representation of the form attribute = value
+	 * for all attributes of this object.
+	 * 
+	 * @return - a string representation of the given object by introspection.
+	 */
+	public String toStringByReflection() {
+		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}
 }
