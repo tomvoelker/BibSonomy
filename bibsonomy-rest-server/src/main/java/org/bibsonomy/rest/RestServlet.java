@@ -3,6 +3,7 @@ package org.bibsonomy.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
@@ -34,7 +35,7 @@ import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.file.MultiPartRequestParser;
 
-import sun.misc.BASE64Decoder;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -291,8 +292,7 @@ public final class RestServlet extends HttpServlet {
 
 		final String basicCookie;
 		try {
-			final BASE64Decoder decoder = new BASE64Decoder();
-			basicCookie = new String(decoder.decodeBuffer(authentication.substring(HTTP_AUTH_BASIC_IDENTIFIER.length())));
+			basicCookie = new String(Base64.decodeBase64(authentication.substring(HTTP_AUTH_BASIC_IDENTIFIER.length()).getBytes()),"UTF-8");
 		} catch (final IOException e) {
 			throw new BadRequestOrResponseException("error decoding authorization header: " + e.toString());
 		}

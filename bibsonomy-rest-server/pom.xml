@@ -39,6 +39,10 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
+		<dependency>
+		        <groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
