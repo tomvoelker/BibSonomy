@@ -52,7 +52,7 @@ public class BibTex extends Resource {
 	 * {@link #author} nor an {@link #editor} defined.
 	 * TODO: rename to something like sortingKey ?
 	 */
-	private String bKey;
+	private String key;
 
 	// TODO: document me..
 	private String misc;
@@ -209,15 +209,15 @@ public class BibTex extends Resource {
 	/**
 	 * @return bkey
 	 */
-	public String getBKey() {
-		return this.bKey;
+	public String getKey() {
+		return this.key;
 	}
 
 	/**
-	 * @param bkey
+	 * @param key
 	 */
-	public void setBKey(String bkey) {
-		this.bKey = bkey;
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	/**
