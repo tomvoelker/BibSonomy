@@ -45,6 +45,10 @@
   width: 75%;
 }
 
+.fsSmall {
+  max-width: 15em;
+}
+
 #tagField {
   float: left;
   width: 73%; /* 2% space for reload button */   
