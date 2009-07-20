@@ -170,7 +170,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		catch (ValidationException notValid) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			errors.reject(notValid.getMessage());
-			log.error("Could not complete controller.", notValid);
+			log.error("Could not complete controller (ValidationException)", notValid);
 			view = Views.ERROR;
 		}
 		catch (ServiceUnavailableException e) {
@@ -189,7 +189,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		catch (Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
-			log.error("Could not complete controller.", ex);
+			log.error("Could not complete controller (general Exception)", ex);
 			view = Views.ERROR;
 		}
 		
