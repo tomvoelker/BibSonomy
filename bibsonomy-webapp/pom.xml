@@ -253,6 +253,13 @@
 			<version>1.8.0</version>
 		</dependency>
 
+		<!-- used to export CSV -->
+		<dependency>
+			<groupId>au.com.bytecode.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>1.8</version>
+		</dependency>		
+
 	</dependencies>
 	<properties>
 		<wtpversion>1.5</wtpversion>
