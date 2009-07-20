@@ -441,7 +441,7 @@
 		        #resource.organization#, #resource.publisher#, #resource.address#, #resource.school#,
 		        #resource.series#, #resource.bibtexKey#, #groupId#, #date#, #userName#,
 		        #resource.url#, #description#, #resource.annote#, #resource.note#, #resource.pages#,
-		        #resource.BKey#, #resource.number#, #resource.crossref#, #resource.misc#, #resource.bibtexAbstract#,
+		        #resource.key#, #resource.number#, #resource.crossref#, #resource.misc#, #resource.bibtexAbstract#,
 		        #resource.type#, #resource.day#, #resource.scraperId#, #resource.simHash0#, #resource.simHash1#,
 		        #resource.simHash2#, #resource.simHash3#)
 	</insert>
