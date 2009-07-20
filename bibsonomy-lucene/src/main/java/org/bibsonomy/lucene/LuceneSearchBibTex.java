@@ -571,7 +571,7 @@ ORDER BY b.date DESC, b.content_id DESC;
 					bibTex.setAnnote(doc.get("annote"));
 					bibTex.setAuthor(doc.get("author"));
 					bibTex.setBibtexKey(doc.get("bibtexKey"));
-					bibTex.setBKey(doc.get("bKey"));
+					bibTex.setKey(doc.get("bKey"));
 					bibTex.setBooktitle(doc.get("booktitle"));
 					bibTex.setChapter(doc.get("chapter"));
 					//bibTex.setCount(doc.get(""));
