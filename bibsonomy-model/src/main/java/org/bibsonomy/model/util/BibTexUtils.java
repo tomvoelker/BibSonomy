@@ -65,6 +65,10 @@ public class BibTexUtils {
 	private static final Pattern DOI_PATTERN = Pattern.compile("http://.+/(.+?/.+?$)");
 	private static final Pattern MISC_FIELD_PATTERN = Pattern.compile("([a-zA-Z0-9]+)\\s*=\\s*\\{(.*?)\\}");
 
+	private static final String[] ENTRYTYPES = {"article", "book", "booklet", "inbook", "incollection", "inproceedings",
+		"manual", "mastersthesis", "misc", "phdthesis", "proceedings", "techreport", "unpublished"};
+
+
 	private static final Set<String> EXCLUDE_FIELDS = new HashSet<String>(Arrays.asList(new String[] { 
 			"abstract",        // added separately
 			"bibtexAbstract",  // added separately
@@ -89,6 +93,12 @@ public class BibTexUtils {
 	}));
 
 
+	/**
+	 * @return The available types for bibtex entries.
+	 */
+	public static String[] getEntryTypes() {
+		return ENTRYTYPES;
+	}
 
 	/**
 	 * Builds a string from a given bibtex object which can be used to build an OpenURL
@@ -275,7 +285,13 @@ public class BibTexUtils {
 						&& o != null 
 						&& ! EXCLUDE_FIELDS.contains(d.getName()) ) {
 
-					buffer.append("  " + d.getName() + " = {" + ((String) o) + "},\n");
+					/*
+					 * Strings containing whitespace give empty fields ... we ignore them 
+					 */
+					final String value = ((String) o);
+					if (ValidationUtils.present(value)) {
+						buffer.append("  " + d.getName() + " = {" + value + "},\n");
+					}
 				}
 			}
 			/*
@@ -370,7 +386,7 @@ public class BibTexUtils {
 		if (bib == null) return "";
 		return generateBibtexKey(bib.getAuthor(), bib.getEditor(), bib.getYear(), bib.getTitle());
 	}
-	
+
 	/**
 	 * Generates a bibtex key of the form "first persons lastname from authors
 	 * or editors" or "noauthororeditor" concatenated with year.
@@ -418,8 +434,8 @@ public class BibTexUtils {
 
 		return buffer.toString().toLowerCase();
 	}
-	
-	
+
+
 	/**
 	 * Relevant = longer than four characters (= 0-9a-z)
 	 * 
@@ -436,7 +452,7 @@ public class BibTexUtils {
 		}
 		return "";
 	}
-	
+
 
 	/**
 	 * Tries to extract the last name of the first person.
