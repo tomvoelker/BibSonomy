@@ -12,6 +12,6 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
 	
 	<span>${command.tagcloud.sort}</span>
-	<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" showPlain="true"/>
+	<tags:cloud requPath="${requPath}" tagSizeMode="user" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}" showPlain="true"/>
 	
 </jsp:root>
