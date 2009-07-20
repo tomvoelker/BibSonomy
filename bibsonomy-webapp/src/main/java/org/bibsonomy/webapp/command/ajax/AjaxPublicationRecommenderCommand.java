@@ -48,7 +48,7 @@ public class AjaxPublicationRecommenderCommand extends AjaxRecommenderCommand<Bi
 	public void setGroup         (String ri) {getPost().getGroups().add(new Group(ri));         }
 	public void setUser          (String un) {getPost().getResource().setUrl(un);           }
 	public void setAnnote        (String an) {getPost().getResource().setAnnote(an);        }
-	public void setKey           (String ke) {getPost().getResource().setBKey(ke);  	       }
+	public void setKey           (String ke) {getPost().getResource().setKey(ke);  	       }
 	public void setNote          (String no) {getPost().getResource().setNote(no);          }
 	public void setNumber        (String nu) {getPost().getResource().setNumber(nu);	       }
 	public void setPages         (String pa) {getPost().getResource().setPages(pa);	       }
