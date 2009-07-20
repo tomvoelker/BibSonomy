@@ -268,7 +268,7 @@ public class SimpleBibTeXParser {
 		field = (BibtexString) entry.getFieldValue("howpublished"); if (field != null) bibtex.setHowpublished(field.getContent()); 
 		field = (BibtexString) entry.getFieldValue("institution");	if (field != null) bibtex.setInstitution(field.getContent());  
 		field = (BibtexString) entry.getFieldValue("journal");      if (field != null) bibtex.setJournal(field.getContent());      
-		field = (BibtexString) entry.getFieldValue("key");	        if (field != null) bibtex.setBKey(field.getContent());
+		field = (BibtexString) entry.getFieldValue("key");	        if (field != null) bibtex.setKey(field.getContent());
 		field = (BibtexString) entry.getFieldValue("month");        if (field != null) bibtex.setMonth(field.getContent());        
 		field = (BibtexString) entry.getFieldValue("note");         if (field != null) bibtex.setNote(field.getContent());         
 		field = (BibtexString) entry.getFieldValue("number");       if (field != null) bibtex.setNumber(field.getContent());       
