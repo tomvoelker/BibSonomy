@@ -504,25 +504,53 @@
 		<value>postID</value>								
 	</util:list>
 
-<!-- publication request parameters -->
-	<util:list id="publicationRequestParameters">
-		<value>post.resource.url</value>
-  		<value>post.resource.title</value>
-  		<value>post.description</value>
-  		<value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
-  		<value>tags</value>
-  		<value>url</value>
-  		<value>description</value>
-  		<value>extended</value>
-  		<value>copytag</value>
-  		<value>abstractGrouping</value>
-  		<value>groups</value>
-  		<value>intraHashToUpdate</value>
-  		<value>jump</value>
-  		<value>relevantGroups</value>
-  		<value>acceptComma</value>
-  		<value>postID</value>        
- 	</util:list>
+	<!-- publication request parameters -->
+	 <util:list id="publicationRequestParameters">
+	  <value>post.description</value>
+	  <value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
+	  <value>post.resource.url</value>
+	  <value>post.resource.title</value>
+	  <value>post.resource.author</value>
+	  <value>post.resource.editor</value>
+	  <value>post.resource.entrytype</value>
+	  <value>post.resource.bibtexKey</value>
+	  <value>post.resource.year</value>
+	  <value>post.resource.booktitle</value>
+	  <value>post.resource.journal</value>
+	  <value>post.resource.volume</value>
+	  <value>post.resource.number</value>
+	  <value>post.resource.series</value>
+	  <value>post.resource.pages</value>
+	  <value>post.resource.month</value>
+	  <value>post.resource.day</value>
+	  <value>post.resource.publisher</value>
+	  <value>post.resource.edition</value>
+	  <value>post.resource.chapter</value>
+	  <value>post.resource.bKey</value>
+	  <value>post.resource.type</value>
+	  <value>post.resource.howpublished</value>
+	  <value>post.resource.institution</value>
+	  <value>post.resource.organization</value>
+	  <value>post.resource.school</value>
+	  <value>post.resource.crossref</value>
+	  <value>post.resource.misc</value>
+	  <value>post.resource.abstract</value>
+	  <value>post.resource.privnote</value>
+	  <value>post.resource.note</value>
+	  <value>post.resource.annote</value>
+	  <value>tags</value>
+	  <value>url</value>
+	  <value>description</value>
+	  <value>extended</value>
+	  <value>copytag</value>
+	  <value>abstractGrouping</value>
+	  <value>groups</value>
+	  <value>intraHashToUpdate</value>
+	  <value>jump</value>
+	  <value>relevantGroups</value>
+	  <value>acceptComma</value>
+	  <value>postID</value>        
+	 </util:list>
 
     <!--  #################### controller #################### -->
 	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
