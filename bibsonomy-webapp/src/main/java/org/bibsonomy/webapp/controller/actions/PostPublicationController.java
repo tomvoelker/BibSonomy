@@ -10,7 +10,14 @@ import org.bibsonomy.webapp.validation.PostPublicationValidator;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * @author fba
+ * Posting/editing one (!) publication posts.
+ * 
+ * TODO:
+ * - scraper id must be written into DB
+ * - scraper metadata must be handled
+ * 
+ * 
+ * @author rja
  * @version $Id$
  */
 public class PostPublicationController extends PostPostController<BibTex> {
