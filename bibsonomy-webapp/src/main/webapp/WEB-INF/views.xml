@@ -28,6 +28,9 @@
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 	</bean>
 	
+	<!-- renders CSV for both bookmarks and publications -->
+	<bean id="csv" class="org.bibsonomy.webapp.view.CSVView"/>
+	
 	<bean id="downloadFile" class="org.bibsonomy.webapp.view.DocumentDownloadView"/>
 
 <!-- 
