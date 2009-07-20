@@ -23,9 +23,6 @@ import org.bibsonomy.util.filter.posts.matcher.BooleanOrMatcher;
 import org.bibsonomy.util.filter.posts.matcher.Matcher;
 import org.bibsonomy.util.filter.posts.modifier.PropertyModifier;
 import org.junit.Test;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.core.io.ClassPathResource;
 
 import bibtex.parser.ParseException;
 
