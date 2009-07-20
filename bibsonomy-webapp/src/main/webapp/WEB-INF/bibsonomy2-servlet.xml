@@ -538,6 +538,8 @@
 	  <value>post.resource.privnote</value>
 	  <value>post.resource.note</value>
 	  <value>post.resource.annote</value>
+  	  <value>post.resource.address</value>
+      <value>post.resource.key</value>	  
 	  <value>tags</value>
 	  <value>url</value>
 	  <value>description</value>
