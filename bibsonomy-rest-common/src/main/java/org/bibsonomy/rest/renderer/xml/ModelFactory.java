@@ -214,7 +214,7 @@ public class ModelFactory {
 			bibtex.setAuthor(xmlBibtex.getAuthor());
 			bibtex.setAbstract(xmlBibtex.getBibtexAbstract());
 			bibtex.setBibtexKey(xmlBibtex.getBibtexKey());
-			bibtex.setBKey(xmlBibtex.getBKey());
+			bibtex.setKey(xmlBibtex.getBKey());
 			bibtex.setBooktitle(xmlBibtex.getBooktitle());
 			bibtex.setChapter(xmlBibtex.getChapter());
 			bibtex.setCrossref(xmlBibtex.getCrossref());

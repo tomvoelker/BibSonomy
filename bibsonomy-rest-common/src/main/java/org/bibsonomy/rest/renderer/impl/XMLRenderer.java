@@ -242,7 +242,7 @@ public class XMLRenderer implements Renderer {
 			xmlBibtex.setAuthor(bibtex.getAuthor());
 			xmlBibtex.setBibtexAbstract(bibtex.getAbstract());
 			xmlBibtex.setBibtexKey(bibtex.getBibtexKey());
-			xmlBibtex.setBKey(bibtex.getBKey());
+			xmlBibtex.setBKey(bibtex.getKey());
 			xmlBibtex.setBooktitle(bibtex.getBooktitle());
 			xmlBibtex.setChapter(bibtex.getChapter());
 			xmlBibtex.setCrossref(bibtex.getCrossref());
