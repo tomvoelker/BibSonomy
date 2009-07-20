@@ -1077,4 +1077,20 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(1,posts.size());
 		assertEquals(posts.get(0).getResource().getBibtexKey(), "test bibtexKey");
 	}
+	
+	
+	@Test
+	public void getBibTexByFollowedUsers() {
+		/*
+		 * testuser 1 follows testuser 2, who has two posts.
+		 */
+		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>(0);
+		visibleGroupIDs.add(1);
+		visibleGroupIDs.add(2);
+		List<Post<BibTex>> posts = this.bibTexDb.getBibTexByFollowedUsers("testuser1", visibleGroupIDs, 10, 0, this.dbSession);
+		assertEquals(2, posts.size());
+		assertEquals("testuser2", posts.get(0).getUser().getName());
+		assertEquals("testuser2", posts.get(1).getUser().getName());
+	}
+	
 }

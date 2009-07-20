@@ -188,6 +188,24 @@
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
+	
+	<select id="getBibTexByFollowedUsers" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, g.group, h.ctr AS count
+		FROM bibtex b, bibhash h,
+			(SELECT content_id, date                <!-- publications from users of group which currUser may see -->
+			 FROM bibtex b, followers f
+			 WHERE f.user_name = #userName#         <!-- retrieve all people wich currUser is following -->
+			       AND b.user_name = f.f_user_name  <!-- take alle rows, which are owned by followed users -->			       									
+			       AND b.group IN 					<!--  iterate over all groups the logged-in user may see -->
+			       		(<iterate property="groups" conjunction=",">$groups[]$</iterate>)
+			 ORDER BY date DESC
+			 LIMIT #limit# OFFSET #offset# ) AS bb
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
+		WHERE t.group = g.group                                                  <!-- join groupname -->
+		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
+		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		ORDER BY bb.date DESC, bb.content_id DESC
+	</select>	
 
 	<select id="getBibTexFromBasketForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, NULL AS `group`, NULL AS group_name

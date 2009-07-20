@@ -2,6 +2,8 @@ package org.bibsonomy.database.managers.chain.bibtex;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchEntity;
@@ -11,6 +13,7 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByAuthorAndTag;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByConceptByTag;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByConceptForGroup;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByConceptForUser;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByFollowedUsers;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByFriends;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHash;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHashForUser;
@@ -331,5 +334,17 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setTagIndex(null);
 		this.bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, this.chainStatus);
 		assertEquals(GetBibtexFromBasketForUser.class, this.chainStatus.getChainElement().getClass());
+	}
+	
+	/**
+	 * tests getBibtexByFollowedUsers
+	 */
+	@Test
+	public void getBibtexByFollowedUsers() {
+		this.bibtexParam.setGrouping(GroupingEntity.FOLLOWER);
+		this.bibtexParam.addGroups(new ArrayList<Integer>(0));
+		this.bibtexParam.setUserName("testuser2");
+		this.bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, this.chainStatus);
+		assertEquals(GetBibtexByFollowedUsers.class, this.chainStatus.getChainElement().getClass());		
 	}
 }

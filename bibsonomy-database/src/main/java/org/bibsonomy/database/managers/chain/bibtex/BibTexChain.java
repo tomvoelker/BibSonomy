@@ -7,6 +7,7 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByAuthorAndTag;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByConceptByTag;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByConceptForGroup;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByConceptForUser;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByFollowedUsers;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByFriends;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHash;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHashForUser;
@@ -56,6 +57,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByConceptByTag;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByConceptForGroup;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexFromBasketForUser;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByFollowedUsers;
 
 	/**
 	 * Constructs the chain
@@ -83,6 +85,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexByConceptForGroup = new GetBibtexByConceptForGroup();
 		this.getBibTexByKey = new GetBibtexByKey();
 		this.getBibTexFromBasketForUser = new GetBibtexFromBasketForUser();
+		this.getBibTexByFollowedUsers = new GetBibtexByFollowedUsers();
 
 		this.getBibTexForHomePage.setNext(this.getBibTexForPopular);
 		this.getBibTexForPopular.setNext(this.getBibTexForUser);
@@ -98,7 +101,8 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 
 		this.getBibTexByUserFriends.setNext(this.getBibTexByUserAndTagsFriends);
 		this.getBibTexByUserAndTagsFriends.setNext(this.getBibTexByFriends);
-		this.getBibTexByFriends.setNext(this.getBibTexSearch);
+		this.getBibTexByFriends.setNext(this.getBibTexByFollowedUsers);
+		this.getBibTexByFollowedUsers.setNext(this.getBibTexSearch);
 		this.getBibTexSearch.setNext(getBibTexSearchForGroup);
 		this.getBibTexSearchForGroup.setNext(getBibTexByAuthor);
 		this.getBibTexByAuthor.setNext(this.getBibTexByAuthorAndTag);

@@ -1826,4 +1826,25 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		return 0;
 	}
 	
+	
+	/**
+	 * Get bibtex by followed users.
+	 * 
+	 * @param loginUserName
+	 * @param visibleGroupIDs
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return
+	 */
+	public List<Post<BibTex>> getBibTexByFollowedUsers(final String loginUserName, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setUserName(loginUserName);
+		param.setGroups(visibleGroupIDs);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		return this.bibtexList("getBibTexByFollowedUsers",param,session);
+	} 
+	
+	
 }
