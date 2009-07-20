@@ -104,6 +104,10 @@
                    <form:input cssClass="fsInput" path="post.resource.publisher" tabindex="2"/>
                    <div class="dissError"><form:errors path="post.resource.publisher" /></div>
 
+                   <form:label cssClass="fsLabel" path="post.resource.address" ><fmt:message key="post.resource.address"/></form:label>
+                   <form:input cssClass="fsInput" path="post.resource.address" tabindex="2"/>
+                   <div class="dissError"><form:errors path="post.resource.address" /></div>
+
 
                    <form:label cssClass="fsLabel" path="post.resource.edition" ><fmt:message key="post.resource.edition"/></form:label>
                    <form:input cssClass="fsInput fsSmall" path="post.resource.edition" tabindex="2"/>
@@ -119,9 +123,9 @@
                    <div class="dissError"><form:errors path="post.resource.url" /></div>
 
 
-                   <form:label cssClass="fsLabel" path="post.resource.BKey" ><fmt:message key="post.resource.BKey"/></form:label>
-                   <form:input cssClass="fsInput fsSmall" path="post.resource.BKey" tabindex="2"/>
-                   <div class="dissError"><form:errors path="post.resource.BKey" /></div>
+                   <form:label cssClass="fsLabel" path="post.resource.key" ><fmt:message key="post.resource.key"/></form:label>
+                   <form:input cssClass="fsInput fsSmall" path="post.resource.key" tabindex="2"/>
+                   <div class="dissError"><form:errors path="post.resource.key" /></div>
 
 
                    <form:label cssClass="fsLabel" path="post.resource.type" ><fmt:message key="post.resource.type"/></form:label>
