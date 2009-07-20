@@ -12,7 +12,7 @@
 		<result property="howpublished"   column="howpublished"   javaType="string" />
 		<result property="institution"    column="institution"    javaType="string" />
 		<result property="journal"        column="journal"        javaType="string" />
-		<result property="BKey"           column="bkey"           javaType="string" />
+		<result property="key"            column="bkey"           javaType="string" />
 		<result property="month"          column="month"          javaType="string" />
 		<result property="note"           column="note"           javaType="string" />
 		<result property="number"         column="number"         javaType="string" />
