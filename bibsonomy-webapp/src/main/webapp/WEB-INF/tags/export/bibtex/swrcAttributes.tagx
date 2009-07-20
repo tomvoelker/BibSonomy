@@ -68,9 +68,9 @@
 		</swrc:journal>
 	</c:if>
 	
-	<c:if test ="${!empty post.resource.BKey}">
+	<c:if test ="${!empty post.resource.key}">
 		<swrc:key>
-			<c:out value="${post.resource.BKey}"/>
+			<c:out value="${post.resource.key}"/>
 		</swrc:key>
 	</c:if>
 	

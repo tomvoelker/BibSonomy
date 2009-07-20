@@ -38,8 +38,8 @@
 		    -->
 		    <c:out value="${bibtex['misc']}"/><jsp:text>,<br/></jsp:text>
 		</c:if>
-		<c:if test="${not empty bibtex.BKey}">
-			<jsp:text>	key = {${bibtex.BKey}},<br/></jsp:text>	
+		<c:if test="${not empty bibtex.key}">
+			<jsp:text>	key = {${bibtex.key}},<br/></jsp:text>	
 		</c:if>	
 		<c:if test="${not empty post.description}">
 			<jsp:text>	description = {${post.description}},<br/></jsp:text>

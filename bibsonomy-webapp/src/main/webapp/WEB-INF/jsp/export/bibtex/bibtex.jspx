@@ -38,8 +38,8 @@
     </c:if>
   
 	<!-- special fields: misc, key, description, abstract, keywords, biburl -->
-	<c:if test="${not empty bibtex.BKey}">
-	<jsp:text>key = {${bibtex.BKey}},
+	<c:if test="${not empty bibtex.key}">
+	<jsp:text>key = {${bibtex.key}},
 	</jsp:text>	
 	</c:if>	
 	<c:if test="${not empty post.description}">
