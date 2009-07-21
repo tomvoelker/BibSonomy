@@ -29,6 +29,7 @@ public class UserBean implements Serializable {
 	private String defaultLanguage = "en"; // the default language
 	private String apiKey = null; // the API key
 	private int logLevel = 0;
+	private boolean confirmDelete = true;
 
 	private Set<String> groups = new HashSet<String>(); // groups the user is in
 	private List<String> friends = new LinkedList<String>(); // the friends of the user	
@@ -174,5 +175,17 @@ public class UserBean implements Serializable {
 
 	public void setLogLevel(int logLevel) {
 		this.logLevel = logLevel;
+	}
+
+
+
+	public String getConfirmDelete() {
+		return this.confirmDelete ? "true" : "false";
+	}
+
+
+
+	public void setConfirmDelete(String confirmDelete) {
+		this.confirmDelete = "true".equals(confirmDelete);
 	}
 }

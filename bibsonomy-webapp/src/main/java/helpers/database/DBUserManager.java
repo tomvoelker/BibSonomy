@@ -35,7 +35,7 @@ public class DBUserManager extends DBManager {
 			if (c.init()) { // initialize database
 				// prepare Statement
 				c.stmt = c.conn.prepareStatement(" 	SELECT user_email,user_homepage,user_realname,openurl," 
-											+ "			birthday,gender,hobbies,place,profession,interests,place,profilegroup," + LOG_LEVEL + " " 
+											+ "			birthday,gender,hobbies,place,profession,interests,place,profilegroup,confirmDelete" + LOG_LEVEL + " " 
 											+ " 	FROM user WHERE user_name = ?");
 				c.stmt.setString(1, bean.getName());
 				c.rst = c.stmt.executeQuery();
@@ -54,6 +54,7 @@ public class DBUserManager extends DBManager {
 					bean.setHobbies(c.rst.getString("hobbies"));	
 					bean.setProfileGroup(c.rst.getInt("profilegroup"));
 					bean.setLogLevel(c.rst.getInt(LOG_LEVEL));
+					bean.setConfirmDelete(c.rst.getBoolean("confirmDelete") ? "true" : "false");
 				}
 				
 				// get friends of user
@@ -110,7 +111,7 @@ public class DBUserManager extends DBManager {
 						                                 COL_TAGBOX_MINFREQ + "," +
 						                                 COL_TAGBOX_TOOLTIP + "," +
 						                                 COL_LIST_ITEMCOUNT + "," +
-						                                 LOG_LEVEL + "," +
+						                                 LOG_LEVEL + ",confirmDelete," +
 						                         "       GROUP_CONCAT(group_name SEPARATOR ' ') AS groups" +
 						                         "  FROM user " +
 						                         "  LEFT JOIN groups USING (user_name) " +
@@ -143,6 +144,7 @@ public class DBUserManager extends DBManager {
 					user.setTagboxTooltip(c.rst.getInt(COL_TAGBOX_TOOLTIP));
 					user.setItemcount(c.rst.getInt(COL_LIST_ITEMCOUNT));
 					user.setLogLevel(c.rst.getInt(LOG_LEVEL));
+					user.setConfirmDelete(c.rst.getBoolean("confirmDelete") ? "true" : "false");
 					/*
 					 * set groups
 					 */
@@ -199,7 +201,8 @@ public class DBUserManager extends DBManager {
  						                              COL_LIST_ITEMCOUNT + " = ?,  " +
  						                              COL_DEFAULT_LANG + " = ?, " +
  						                              COL_API_KEY + " = ?, " +
- 						                              LOG_LEVEL + " = ?" +
+ 						                              LOG_LEVEL + " = ?," +
+ 						                              "confirmDelete = ? " +
 						                         "  WHERE user_name = ?");
 				c.stmt.setInt(1, user.getTagboxStyle());
 				c.stmt.setInt(2, user.getTagboxSort());
@@ -209,7 +212,8 @@ public class DBUserManager extends DBManager {
 				c.stmt.setString(6, user.getDefaultLanguage());
 				c.stmt.setString(7, user.getApiKey());
 				c.stmt.setInt(8, user.getLogLevel());
-				c.stmt.setString(9, user.getName());
+				c.stmt.setBoolean(9, "true".equals(user.getConfirmDelete()));
+				c.stmt.setString(10, user.getName());
 				
 				return c.stmt.executeUpdate() == 1; // return true, if exactly one row got updated 
 			}
@@ -234,7 +238,7 @@ public class DBUserManager extends DBManager {
 				
 				// prepare Statement
 				c.stmt = c.conn.prepareStatement("	UPDATE user SET user_email = ?, user_homepage = ?, user_realname = ?, openurl = ?, birthday = ?," 
-											+ "		gender = ?, place = ?, profession = ?, interests = ?, hobbies = ? , profilegroup = ?, log_level = ? "	
+											+ "		gender = ?, place = ?, profession = ?, interests = ?, hobbies = ? , profilegroup = ?, log_level = ?, confirmDelete = ? "	
 						 					+ "		WHERE user_name = ?");
 				c.stmt.setString(1, bean.getEmail());
 				c.stmt.setString(2, bean.getHomepage());
@@ -248,8 +252,9 @@ public class DBUserManager extends DBManager {
 				c.stmt.setString(10, bean.getHobbies());
 				c.stmt.setInt(11, bean.getProfileGroup());
 				c.stmt.setInt(12, bean.getLogLevel());
+				c.stmt.setBoolean(13, "true".equals(bean.getConfirmDelete()));
 				
-				c.stmt.setString(13, bean.getName());
+				c.stmt.setString(14, bean.getName());
 				return c.stmt.executeUpdate() == 1; // return true, if exactly one row got updated 
 			}
 		} catch (SQLException e) {

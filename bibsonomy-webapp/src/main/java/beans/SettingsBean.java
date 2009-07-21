@@ -30,7 +30,6 @@ public class SettingsBean extends UserBean implements Serializable {
 	private String profession= "";
 	private String interests = "";
 	private String hobbies	 = "";
-	private int logLevel  = 0; 
 	private int	   profileGroup = 1; // 0 = public, 1 = private, 2 = friends
 	private String action    = ""; // what this bean shall do, at the moment only "update" (i.e. write values to DB)
 	private boolean validCkey = false;
@@ -263,14 +262,6 @@ public class SettingsBean extends UserBean implements Serializable {
 			e.printStackTrace();
 		}		
 		return s;
-	}
-
-	public int getLogLevel() {
-		return this.logLevel;
-	}
-
-	public void setLogLevel(int logLevel) {
-		this.logLevel = logLevel;
 	}
 	
 }

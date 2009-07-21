@@ -181,8 +181,8 @@
 		<hr/>
     
         <%-- ------------------------ log level -------------------------- --%>
-        <h2>logging</h2>
-        <form name="logLevel" method="post" action="/settings">
+        <h2>options</h2>
+        <form name="options" method="post" action="/settings">
         <table>
           <tr>
             <td>log clicks to external pages</td>
@@ -191,6 +191,15 @@
 		            <option <c:if test="${user.logLevel == 0}">selected="true"</c:if> value="0">yes</option>
 		            <option <c:if test="${user.logLevel == 1}">selected="true"</c:if> value="1">no</option>
 		          </select>
+            </td>
+          </tr> 
+          <tr>
+            <td>ask for confirmation when deleting posts</td>
+            <td>
+              <select name="confirmDelete">
+                <option <c:if test="${user.confirmDelete == 'true'}">selected="true"</c:if> value="true">yes</option>
+                <option <c:if test="${user.confirmDelete == 'false'}">selected="true"</c:if> value="false">no</option>
+              </select>
             </td>
           </tr> 
           <tr>
