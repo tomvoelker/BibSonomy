@@ -38,7 +38,7 @@
 	        <fmt:message key="tagrelations.all.text.partOne"/>
 		    <c:if test="${command.context.userLoggedIn}">
 				<fmt:message key="tagrelations.all.text.partTwo">
-			    	<fmt:param><a href="/relations/${command.context.loginUser.name}">myRelations</a></fmt:param>
+			    	<fmt:param><a href="/relations/${fn:escapeXml(command.context.loginUser.name)}">myRelations</a></fmt:param>
 			      	<fmt:param><a href="/edit_tags"><fmt:message key="navi.editTags"/></a></fmt:param>
 			    </fmt:message>
 		    </c:if>
@@ -53,7 +53,7 @@
 			<tr>
 			<td class="upperconcept">
 				<c:set var="tagName"><mtl:encode value='${upperTag.name}'/></c:set>
-				<a style="font-size:${(upperTag.usercount * 10) + 80}%" title="${upperTag.usercount} users"  href="/concept/tag/${tagName}"><c:out value="${tagName}"/></a>
+				<a style="font-size: ${(upperTag.usercount * 10) + 80}%" title="${upperTag.usercount} users"  href="/concept/tag/${tagName}"><c:out value="${tagName}"/></a>
 			</td>
 			<td>&#8592;</td>
 			<td>
@@ -61,7 +61,7 @@
 				<c:forEach var="relation" items="${upperTag.subTags}">
 					<c:set var="link"><mtl:encode value='${relation.name}'/></c:set>
 			        <li class="box_lowerconcept"> 
-			    		<a href="/tag/${link}"><c:out value="${relation.name}"/></a>
+			    		<a href="/tag/${fn:escapeXml(link)}"><c:out value="${relation.name}"/></a>
 			    		<c:out value="&#32;"/>
 			        </li>
 		        </c:forEach>
