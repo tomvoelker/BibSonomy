@@ -53,7 +53,7 @@
 			<tr>
 			<td class="upperconcept">
 				<c:set var="tagName"><mtl:encode value='${upperTag.name}'/></c:set>
-				<a style="font-size: ${(upperTag.usercount * 10) + 80}%" title="${upperTag.usercount} users"  href="/concept/tag/${tagName}"><c:out value="${tagName}"/></a>
+				<a style="font-size: ${(upperTag.usercount * 10) + 80}%" title="${upperTag.usercount} users"  href="/concept/tag/${fn:escapeXml(tagName)}"><c:out value="${tagName}"/></a>
 			</td>
 			<td>&#8592;</td>
 			<td>
