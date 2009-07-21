@@ -25,10 +25,13 @@ package org.bibsonomy.model;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TreeSet;
+
+import org.bibsonomy.model.util.TagUtils;
 
 /**
  * This class represents a tag.
+ * 
+ * @see TagUtils for the empty tag  
  * 
  * @version $Id$
  */
