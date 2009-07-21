@@ -108,6 +108,22 @@ function hideNextList() {
   }
 }
 
+function confirmDelete(e) {
+  var event = xget_event(e);
+  // highlight post
+  var li = getParent(event, "bm");
+  li.style.background="#fdd";
+  // get confirmation
+  var del = confirm(getString("post.meta.delete.confirm"))
+  li.style.background="transparent";
+  return del;
+}
+
+function getParent(node, class) {
+   if (node.className == class) return node;
+   return getParent(node.parentNode, class);
+}
+
 // textarea resize
 function sz(t) {
 	a=t.value.split('\n');
