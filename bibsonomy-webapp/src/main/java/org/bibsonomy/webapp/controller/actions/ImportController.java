@@ -27,36 +27,34 @@ import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
 import org.bibsonomy.webapp.command.actions.ImportCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.ValidationAwareController;
+import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.ImportValidator;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
  * @author mwa
  * @version $Id: ImportController.java,v 1.3 2009-06-23 14:23:15 voigtmannc Exp
  *          $
  */
-public class ImportController implements MinimalisticController<ImportCommand>, ErrorAware {
+public class ImportController implements MinimalisticController<ImportCommand>, ErrorAware, ValidationAwareController<ImportCommand> {
 
 	private static final Log log = LogFactory.getLog(ImportController.class);
-
-	/**
-	 * FileBookmarkImporter interface
-	 */
-	private FileBookmarkImporter fileImporter;
 
 	/**
 	 * logic interface for the database connectivity
 	 */
 	private LogicInterface logic;
 
-	/**
-	 * handle file upload
-	 */
-	private FileUploadInterface uploadFileHandler = null;
+    /**
+     * The factory used to get a Delicious Importer. 
+     */
+    private DeliciousImporterFactory importerFactory;
 
+	
 	private Errors errors = null;
 
 	public View workOn(ImportCommand command) {
@@ -70,61 +68,62 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 		 **/
 		if (command.getImportType() != null) {
 
-			/** Validate the command **/
-			ImportValidator validator = new ImportValidator();
-			validator.validate(command, errors);
-
 			/** display potential errors **/
 			if (errors.hasErrors()) {
 				log.debug("Import couldn't get started due to existing errors in form");
+				/*
+				 * TODO: why are you adding error messages? There ARE already 
+				 * errors messages ... those should be meaningful enough!
+				 */
 				errors.reject("error.requiredFields");
 				errors.rejectValue("errorMessage", "error.requiredFields ");
 				return Views.IMPORT;
 			}
 
-			if (command.getImportType().equals("delicious")) {
+			if ("delicious".equals(command.getImportType())) {
 				try {
-					DeliciousImporterFactory importerFactory = new DeliciousImporterFactory();
 
 					/** import posts or bundles? **/
-					if (command.getImportData().equals("posts")) {
-						RemoteServiceBookmarkImporter importer = importerFactory.getImporter();
+					if ("posts".equals(command.getImportData())) {
+						final RemoteServiceBookmarkImporter importer = importerFactory.getBookmarkImporter();
 						importer.setCredentials(command.getUserName(), command.getPassWord());
 						posts = importer.getPosts();
-					} else if (command.getImportData().equals("bundles")) {
-						importerFactory.buildURL(DeliciousImporterFactory.BUNDLES_URL_PATH);
-						RelationImporter relationImporter = (RelationImporter) importerFactory.getImporter();
+					} else if ("bundles".equals(command.getImportData())) {
+						final RelationImporter relationImporter = importerFactory.getRelationImporter();
 						relationImporter.setCredentials(command.getUserName(), command.getPassWord());
 						relations = relationImporter.getRelations();
 					} else {
 						errors.reject("error.import.failed");
 						return Views.ERROR;
 					}
-
 				} catch (IOException ex) {
 					errors.reject("error.furtherInformations");
-					log.error("IOEXception at ImportController: " + ex.getMessage());
 					command.setErrorMessage(ex.getMessage());
+					log.error("Delicious-Import failed.", ex);
 				}
-			} else if (command.getImportType().equals("firefox")) {
+			} else if ("firefox".equals(command.getImportType())) {
 				try {
+					final FileUploadInterface uploadFileHandler = new HandleFileUpload();
 					uploadFileHandler.setUp(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firfoxImportExt);
-
-					File file = uploadFileHandler.writeUploadedFile();
-
-					fileImporter = new FirefoxImporter();
+					final File file = uploadFileHandler.writeUploadedFile();
+					/*
+					 * FileBookmarkImporter interface
+					 */
+					final FileBookmarkImporter fileImporter = new FirefoxImporter();
 					fileImporter.initialize(file, command.getContext().getLoginUser(), command.getGrouping());
 					posts = fileImporter.getPosts();
-
+					/*
+					 * clear temporary file
+					 */
 					file.delete();
 
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 					errors.reject("error.furtherInformations");
 					command.setErrorMessage(ex.getMessage());
 				}
 			}
 
-			/** how many posts where found? **/
+			/** how many posts were found? **/
 			command.setTotalCount(posts != null ? posts.size() : 0);
 
 			/** store the posts **/
@@ -148,10 +147,9 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 	 * @param command
 	 */
 	private void storeRelations(List<Tag> relations, ImportCommand command) {
-
 		command.setStoredConcepts(new LinkedList<String>());
 		for (Tag tag : relations) {
-			String conceptName = this.logic.createConcept(tag, GroupingEntity.USER, command.getContext().getLoginUser().getName());
+			final String conceptName = this.logic.createConcept(tag, GroupingEntity.USER, command.getContext().getLoginUser().getName());
 			command.getStoredConcepts().add(conceptName);
 		}
 	}
@@ -166,32 +164,32 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 	private void storePosts(ImportCommand command, List<Post<Bookmark>> posts) {
 
 		// stores all newly added bookmarks
-		Map<String, String> newBookmarkEntries = new HashMap<String, String>();
+		final Map<String, String> newBookmarkEntries = new HashMap<String, String>();
 
 		// stores all the updated bookmarks
-		Map<String, String> updatedBookmarkEntries = new HashMap<String, String>();
+		final Map<String, String> updatedBookmarkEntries = new HashMap<String, String>();
 
 		// stores all the non imported bookmarks
-		List<String> nonCreatedBookmarkEntries = new ArrayList<String>();
+		final List<String> nonCreatedBookmarkEntries = new ArrayList<String>();
 
-		for (Post<Bookmark> post : posts) {
+		for (final Post<Bookmark> post : posts) {
 
 			if (post.getUser() == null) {
 				post.setUser(command.getContext().getLoginUser());
 			}
 
-			List<?> singletonList = Collections.singletonList(post);
-			String title = post.getResource().getTitle();
+			final List<?> singletonList = Collections.singletonList(post);
+			final String title = post.getResource().getTitle();
 			try {
 				// throws an exception if the bookmark already exists in the
 				// system
-				List<String> createdPostHash = logic.createPosts((List<Post<?>>) singletonList);
+				final List<String> createdPostHash = logic.createPosts((List<Post<?>>) singletonList);
 				newBookmarkEntries.put(createdPostHash.get(0), title);
 			} catch (IllegalArgumentException e) {
 				// checks whether the update bookmarks checkbox is checked
 				if (command.isOverwrite()) {
 
-					List<String> createdPostHash = logic.updatePosts((List<Post<?>>) singletonList, PostUpdateOperation.UPDATE_ALL);
+					final List<String> createdPostHash = logic.updatePosts((List<Post<?>>) singletonList, PostUpdateOperation.UPDATE_ALL);
 					updatedBookmarkEntries.put(createdPostHash.get(0), title);
 				} else {
 					nonCreatedBookmarkEntries.add(title);
@@ -221,7 +219,7 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 	 * Return a new instance of an ImportCommand
 	 */
 	public ImportCommand instantiateCommand() {
-		ImportCommand command = new ImportCommand();
+		final ImportCommand command = new ImportCommand();
 		command.setImportData("posts");
 		return command;
 	}
@@ -234,23 +232,6 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 		this.logic = logic;
 	}
 
-	/**
-	 * returns the FileUploadInterface
-	 * 
-	 * @return FileUploadInterface
-	 */
-	public FileUploadInterface getUploadFileHandler() {
-		return this.uploadFileHandler;
-	}
-
-	/**
-	 * sets the FileUploadInterface
-	 * 
-	 * @param uploadFileHandler
-	 */
-	public void setUploadFileHandler(FileUploadInterface uploadFileHandler) {
-		this.uploadFileHandler = uploadFileHandler;
-	}
 
 	@Override
 	public Errors getErrors() {
@@ -260,6 +241,36 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
+	}
+
+	/**
+	 * This factory returns pre-configured Delicious-Importers.
+	 * 
+	 * @return The factory.
+	 */
+	public DeliciousImporterFactory getImporterFactory() {
+		return this.importerFactory;
+	}
+
+	/**
+	 * This factory returns pre-configured Delicious-Importers.
+	 * 
+	 * @param importerFactory
+	 */
+	@Required
+	public void setImporterFactory(DeliciousImporterFactory importerFactory) {
+		this.importerFactory = importerFactory;
+	}
+
+	@Override
+	public Validator<ImportCommand> getValidator() {
+		return new ImportValidator();
+	}
+
+	@Override
+	public boolean isValidationRequired(ImportCommand command) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
