@@ -447,7 +447,7 @@
 						</property>
 					</bean>
 				</entry>
-				<entry key="import">
+				<entry key="/import">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="importController"/>
 						<property name="allowedFields">
