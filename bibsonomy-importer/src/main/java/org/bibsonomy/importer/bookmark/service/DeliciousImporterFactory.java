@@ -3,8 +3,8 @@ package org.bibsonomy.importer.bookmark.service;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.bibsonomy.services.importer.RelationImporter;
 import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
-import org.bibsonomy.services.importer.RemoteServiceBookmarkImporterFactory;
 
 /**
  * Creates a new instance of the {@link DeliciousImporter}.
@@ -14,10 +14,10 @@ import org.bibsonomy.services.importer.RemoteServiceBookmarkImporterFactory;
  * $Author$
  * 
  */
-public class DeliciousImporterFactory implements RemoteServiceBookmarkImporterFactory {
+public class DeliciousImporterFactory {
 	
-	public static final String BUNDLES_URL_PATH = "/v1/tags/bundles/all";
-	public static final String POSTS_URL_PATH = "/v1/posts/all";
+	private static final String BUNDLES_URL_PATH = "/v1/tags/bundles/all";
+	private static final String POSTS_URL_PATH = "/v1/posts/all";
 	
 	/*
 	 * TODO: there was a reason we use "-1" as port ... please document it 
@@ -27,7 +27,6 @@ public class DeliciousImporterFactory implements RemoteServiceBookmarkImporterFa
 	private static final String HTTPS = "https";
 	private static final String DELICIOUS_API_URL = "api.del.icio.us";
 	
-	private URL apiUrl;
 	private String userAgent;
 	
 	/**
@@ -36,35 +35,21 @@ public class DeliciousImporterFactory implements RemoteServiceBookmarkImporterFa
 	 * @throws MalformedURLException
 	 */
 	public DeliciousImporterFactory() throws MalformedURLException {
-		buildURL(POSTS_URL_PATH);
 		this.userAgent = "Wget/1.9.1";
 	}
 	
-	
-	public RemoteServiceBookmarkImporter getImporter() {
-		return new DeliciousImporter(apiUrl, userAgent);
+
+	public RelationImporter getRelationImporter() throws MalformedURLException {
+		return new DeliciousImporter(buildURL(BUNDLES_URL_PATH), userAgent);
 	}
 
-
-	public URL getApiUrl() {
-		return apiUrl;
+	public RemoteServiceBookmarkImporter getBookmarkImporter() throws MalformedURLException {
+		return new DeliciousImporter(buildURL(POSTS_URL_PATH), userAgent);
 	}
-
-
-	/**
-	 * The URL used to access the Delicious API.
-	 * 
-	 * @param apiUrl
-	 */
-	public void setApiUrl(URL apiUrl) {
-		this.apiUrl = apiUrl;
-	}
-
 
 	public String getUserAgent() {
 		return userAgent;
 	}
-
 
 	/**
 	 * The user agent string the importer shall use to identify itself against
@@ -76,8 +61,8 @@ public class DeliciousImporterFactory implements RemoteServiceBookmarkImporterFa
 		this.userAgent = userAgent;
 	}
 	
-	public void buildURL(String urlPath) throws MalformedURLException{
-		this.apiUrl = new URL (HTTPS, DELICIOUS_API_URL, PORT, urlPath);
+	private URL buildURL(final String urlPath) throws MalformedURLException {
+		return new URL (HTTPS, DELICIOUS_API_URL, PORT, urlPath);
 	}
 }
 
