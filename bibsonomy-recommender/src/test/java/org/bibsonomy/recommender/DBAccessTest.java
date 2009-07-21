@@ -80,7 +80,7 @@ public class DBAccessTest {
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 		
 		// store and retrieve query
-		Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, MultiplexingTagRecommender.getUnknownPID());
+		Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, MultiplexingTagRecommender.getUnknownPID(), 1234);
 		RecQueryParam retVal = dbLogic.getQuery(qid);
 		
 		String    queryUN = retVal.getUserName();
@@ -201,7 +201,7 @@ public class DBAccessTest {
 		int postID = (int)Math.floor(Math.random()*Integer.MAX_VALUE);
 		
 		// store and retrieve query
-		Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, postID);
+		Long qid = dbLogic.addQuery(post.getUser().getName(), ts, post, postID, 1234);
 		Long  id = dbLogic.getQueryForPost(post.getUser().getName(), (Date)ts, postID);
 		
 		assertEquals(qid, id);

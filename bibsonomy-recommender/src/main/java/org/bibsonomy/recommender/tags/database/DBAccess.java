@@ -110,12 +110,14 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	public Long addQuery(
 			String userName, Date date, 
 			Post<? extends Resource> post,
-			int postID) throws SQLException {
+			int postID,
+			int queryTimeout ) throws SQLException {
 		// construct parameter
 		RecQueryParam recQuery = new RecQueryParam();
 		recQuery.setTimeStamp(new Timestamp(date.getTime()));
 		recQuery.setUserName(userName);
 		recQuery.setPid(postID);
+		recQuery.setQueryTimeout(queryTimeout);
 		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) )
 			recQuery.setContentType(new Integer(1));
 		else if( BibTex.class.isAssignableFrom(post.getResource().getClass()) )
@@ -463,7 +465,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Long> getActiveRecommenderIDs(Long qid) throws SQLException {
-		return (List<Long>)getSqlMapInstance().queryForList("getRecommenderIDsForQuery", qid);
+		return (List<Long>)getSqlMapInstance().queryForList("getActiveRecommenderIDsForQuery", qid);
 	}
 
 	/* (non-Javadoc)

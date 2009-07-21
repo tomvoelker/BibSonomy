@@ -32,7 +32,7 @@ public class DBLogicDummyImpl implements DBLogic {
 	
 	
 	@Override
-	public Long addQuery(String userName, Date date, Post<? extends Resource> post, int postID) throws SQLException {
+	public Long addQuery(String userName, Date date, Post<? extends Resource> post, int postID, int queryTimeout) throws SQLException {
 		return new Long(0);
 	}
 

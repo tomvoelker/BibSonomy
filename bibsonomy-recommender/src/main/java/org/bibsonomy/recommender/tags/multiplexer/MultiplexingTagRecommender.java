@@ -41,7 +41,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	private List<TagRecommender> localRecommenders;         // recommenders with object reference
 	private List<TagRecommenderConnector> distRecommenders;    // recommenders with remote access
 
-	private long queryTimeout = 100;                // timeout for querying distant recommenders
+	private int queryTimeout = 100;                // timeout for querying distant recommenders
 	private RecommendationSelector resultSelector;
 
 
@@ -169,7 +169,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 
 		try {
 			// each set of queries is identified by an unique id:
-			qid = dbLogic.addQuery(post.getUser().getName(), ts, post, postID);
+			qid = dbLogic.addQuery(post.getUser().getName(), ts, post, postID, getQueryTimeout());
 
 			/*
 			 * TODO: the filteredPost is null, when it is non public!
@@ -346,10 +346,10 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		return localRecommenders;
 	}
 
-	public void setQueryTimeout(long queryTimeout) {
+	public void setQueryTimeout(int queryTimeout) {
 		this.queryTimeout = queryTimeout;
 	}
-	public long getQueryTimeout() {
+	public int getQueryTimeout() {
 		return queryTimeout;
 	}
 
@@ -438,14 +438,13 @@ public class MultiplexingTagRecommender implements TagRecommender {
 				log.error("Error querying recommender " + recommender.getInfo(), e);
 			}
 			time = System.currentTimeMillis()-time;
-			// add query result, if not timed out
+			// add query result
+			try {
+				addQueryResponse(qid, recId, time, recommendedTags);
+			} catch (SQLException ex) {
+				log.error("Error storing recommender query response.", ex);
+			}
 			if( !abort ) {
-				try {
-					addQueryResponse(qid, recId, time, recommendedTags);
-				} catch (SQLException ex) {
-					// TODO Auto-generated catch block
-					log.error(ex.getMessage(), ex);
-				}
 				log.info("run finished in time " + time);
 			} else {
 				log.info("Recommender " + recommender.getInfo() + " timed out (" + time + ")");

@@ -21,6 +21,19 @@
 		   JOIN recommender_querymap m ON (m.query_id=#id# AND m.query_id=r.query_id) 
 		WHERE r.query_id = #id#
 	</select>	
+	
+	
+	<!-- +
+		 | Get list of recommenders which delivered tags in given query
+		 + -->  
+	<select id="getActiveRecommenderIDsForQuery" parameterClass="long" resultClass="long">
+		SELECT DISTINCT r.setting_id 
+		FROM log_recommender l
+		   JOIN recommender_querymap m ON (m.query_id=l.query_id)
+		   JOIN recommender_result r ON (r.query_id=m.query_id AND r.rec_latency&lt;=l.timeout)
+		WHERE l.query_id = #id#
+	</select>	
+	
 	<!-- +
 		 | Get list of all recommenders used in given query
 		 + -->  
@@ -376,8 +389,8 @@
 	    | Add recommender query.
 	  	+-->
 	<insert id="addRecommenderQuery" parameterClass="recQuery">
-		INSERT INTO log_recommender (user_name, date, content_type, post_id)
-		VALUES ( #userName#, #timeStamp#, #contentType#, #pid# )
+		INSERT INTO log_recommender (user_name, date, content_type, post_id, timeout)
+		VALUES ( #userName#, #timeStamp#, #contentType#, #pid#, #queryTimeout# )
  		<selectKey resultClass="java.lang.Long" keyProperty="qid">
 			SELECT LAST_INSERT_ID() AS value
 	    </selectKey>

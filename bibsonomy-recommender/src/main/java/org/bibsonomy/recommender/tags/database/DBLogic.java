@@ -30,12 +30,13 @@ public interface DBLogic {
 	 * @param userName user who submitted post
 	 * @param date querie's timestamp
 	 * @param post user's post
+	 * @param timeout querie's timeout value
 	 * @return unique query id
 	 * 
 	 * @throws SQLException 
 	 */
 	@SuppressWarnings("unchecked")
-	public abstract Long addQuery(String userName, Date date, Post<? extends Resource> post, int postID) throws SQLException;
+	public abstract Long addQuery(String userName, Date date, Post<? extends Resource> post, int postID, int  timeout) throws SQLException;
 
 	/**
 	 * Add recommender to given query.
