@@ -29,11 +29,9 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 
 	private Errors errors = null;
 	private LogicInterface logic;
+	
+	private String docpath;
 
-	/**
-	 * handle file upload
-	 */
-	private FileUploadInterface uploadFileHandler;
 
 	public View workOn(UploadFileCommand command) {
 		log.debug("workOn started");
@@ -65,6 +63,9 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 			list.add(command.getFile().getFileItem());
 
 			try {
+				final HandleFileUpload uploadFileHandler = new HandleFileUpload();
+				uploadFileHandler.setDocpath(docpath);
+				
 				uploadFileHandler.setUp(list, HandleFileUpload.fileUploadExt);
 
 				final Document doc = uploadFileHandler.writeUploadedFile(context.getLoginUser().getName());
@@ -123,8 +124,12 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 		return true;
 	}
 
-	public void setUploadFileHandler(FileUploadInterface uploadFileHandler) {
-		this.uploadFileHandler = uploadFileHandler;
+	public String getDocpath() {
+		return this.docpath;
+	}
+
+	public void setDocpath(String docpath) {
+		this.docpath = docpath;
 	}
 
 }
