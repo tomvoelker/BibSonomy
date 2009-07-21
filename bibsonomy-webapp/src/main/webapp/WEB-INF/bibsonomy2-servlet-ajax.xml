@@ -75,10 +75,22 @@
 							<list>
 								<value>requestedUserName</value>
 								<value>action</value>
+								<value>ckey</value>
 							</list>
 						</property>
 					</bean>
 				</entry>
+				<!-- <entry key="/ajax/pickUnpick">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="basketManagerController" />
+						<property name="allowedFields" >
+							<list>
+								<value>requestedUserName</value>
+								<value>action</value>
+							</list>
+						</property>
+					</bean>
+				</entry> -->
 			</map>
 		</property>
 	</bean>
@@ -105,5 +117,8 @@
 	<bean id="followerAjaxController" class="org.bibsonomy.webapp.controller.ajax.FollowerAjaxController" scope="request">
 		<property name="logic" ref="logic" />
 	</bean>
+	<!-- <bean id="basketManagerController" class="org.bibsonomy.webapp.controller.ajax.BasketManagerController" scope="request">
+		<property name="logic" ref="logic" />
+	</bean> -->
 
 </beans>

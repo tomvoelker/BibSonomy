@@ -44,7 +44,7 @@
 	                <fmt:message var="deleteFriendTitle" key="follow.actions.delete.title"><fmt:param value="${fn:escapeXml(user.name)}"/></fmt:message>
                   <a
     	             class="action" 
-    	             onClick="javascript:removeFollowerFollowerPage('${user.name}', this);"
+    	             onClick="javascript:removeFollowerFollowerPage('${user.name}', this, '${command.context.ckey}');"
     	             style="cursor: pointer;"
     	             title="${deleteFriendTitle}">
     		        <fmt:message key="follow.link.text.remove"/>

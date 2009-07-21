@@ -7,11 +7,11 @@
 *
 */
 
-function addFollower(name, infoText, linkText){
+function addFollower(name, ckey){
 	$.ajax({  
-		type: "GET",  
+		type: "POST",  
 		url: "/ajax/handleFollower",  
-		data: "requestedUserName="+ name +"&action=addFollower",
+		data: "requestedUserName="+ name +"&action=addFollower&ckey=" + ckey,
 		complete: function changeText(){
 			document.getElementById("followLink").style.visibility='hidden';
 			document.getElementById("followLink").style.display="none";
@@ -21,11 +21,11 @@ function addFollower(name, infoText, linkText){
 	});
 }
 
-function removeFollower(name, infoText, linkText){
+function removeFollower(name, ckey){
 	$.ajax({  
-		type: "GET",  
+		type: "POST",  
 		url: "/ajax/handleFollower",  
-		data: "requestedUserName="+ name +"&action=removeFollower",
+		data: "requestedUserName="+ name +"&action=removeFollower&ckey=" + ckey,
 		complete: function changeText(){
 			document.getElementById("removeLink").style.visibility='hidden';
 			document.getElementById("removeLink").style.display="none";
@@ -35,12 +35,12 @@ function removeFollower(name, infoText, linkText){
 	});	
 }
 
-function removeFollowerFollowerPage(name, element){
+function removeFollowerFollowerPage(name, element, ckey){
 	
 	$.ajax({  
-		type: "GET",  
+		type: "POST",  
 		url: "/ajax/handleFollower",  
-		data: "requestedUserName="+ name +"&action=removeFollower",
+		data: "requestedUserName="+ name +"&action=removeFollower&ckey=" + ckey,
 		complete: function changeText(){
 		element.parentNode.style.display='none';
 		element.parentNode.style.visibility='hidden';

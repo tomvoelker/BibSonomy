@@ -6,10 +6,12 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.ajax.FollowerAjaxCommand;
 import org.bibsonomy.webapp.controller.AjaxController;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 /**
  * This controller catches ajax requests on the /ajax/handleFollower url
@@ -18,9 +20,11 @@ import org.bibsonomy.webapp.view.Views;
  * @author Christian Kramer
  * @version $Id$
  */
-public class FollowerAjaxController extends AjaxController implements MinimalisticController<FollowerAjaxCommand>{
+public class FollowerAjaxController extends AjaxController implements MinimalisticController<FollowerAjaxCommand>, ErrorAware{
 	private static final Logger log = Logger.getLogger(FollowerAjaxController.class);
 	private LogicInterface logic;
+	
+	private Errors errors;
 
 	@Override
 	public FollowerAjaxCommand instantiateCommand() {
@@ -34,6 +38,12 @@ public class FollowerAjaxController extends AjaxController implements Minimalist
 		if (!command.getContext().getUserLoggedIn()){
 			log.debug("someone tried to access this ajax controller manually and isn't logged in");
 			return new ExtendedRedirectView("/");
+		}
+		
+		//check if ckey is valid
+		if (!command.getContext().isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+			return Views.ERROR;
 		}
 		
 		// switch between add or remove and call the right method
@@ -72,6 +82,16 @@ public class FollowerAjaxController extends AjaxController implements Minimalist
 	private void removeFollower(FollowerAjaxCommand command){
 		User user = new User(command.getRequestedUserName());
 		logic.deleteUserRelationship(command.getContext().getLoginUser(),user, UserRelation.FOLLOWER_OF);
+	}
+
+	@Override
+	public Errors getErrors() {
+		return this.errors;
+	}
+
+	@Override
+	public void setErrors(final Errors errors) {
+		this.errors = errors;
 	}
 
 }
