@@ -104,7 +104,7 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 			} else if ("firefox".equals(command.getImportType())) {
 				try {
 					final FileUploadInterface uploadFileHandler = new HandleFileUpload();
-					uploadFileHandler.setUp(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firfoxImportExt);
+					uploadFileHandler.setUp(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firefoxImportExt);
 					final File file = uploadFileHandler.writeUploadedFile();
 					/*
 					 * FileBookmarkImporter interface
