@@ -118,13 +118,15 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 					/*
 					 * handle special output formats
 					 */
+					final String bibtexString = bean.getBibtex();
+					System.out.println(bibtexString);
 					if ("bibtex".equals(format)) {
 						/* *******************************************
 						 * text/x-bibtex
 						 * *******************************************/
 						// should be: text/x-bibtex (according to /etc/mime.types)
 						response.setContentType("text/plain");
-						response.getOutputStream().write(bean.getBibtex().getBytes("UTF-8"));
+						response.getOutputStream().write(bibtexString.getBytes("UTF-8"));
 						return;
 					} else if ("rdf+xml".equals(format)) {
 						/* *******************************************
@@ -135,7 +137,7 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 						 * BibTeX -> model
 						 */
 						final SimpleBibTeXParser parser = new SimpleBibTeXParser();
-						final BibTex bibtex = parser.parseBibTeX(bean.getBibtex());
+						final BibTex bibtex = parser.parseBibTeX(bibtexString);
 						/*
 						 * model -> RDF
 						 */

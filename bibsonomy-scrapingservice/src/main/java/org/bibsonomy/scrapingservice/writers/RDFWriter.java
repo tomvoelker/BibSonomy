@@ -161,7 +161,7 @@ public class RDFWriter {
 		addProperty(resource, "edition", bibtex.getEdition());
 		addProperty(resource, "howpublished", bibtex.getHowpublished());
 		addProperty(resource, "journal", bibtex.getJournal());
-		addProperty(resource, "key", bibtex.getBKey());
+		addProperty(resource, "key", bibtex.getKey());
 		addProperty(resource, "number", bibtex.getNumber());
 		addProperty(resource, "month", bibtex.getMonth());
 		addProperty(resource, "note", bibtex.getNote());
