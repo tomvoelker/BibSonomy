@@ -1,7 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -48,14 +47,8 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 		if (context.isValidCkey() && !errors.hasErrors()){
 			log.debug("User is logged in, ckey is valid");
 			
-			// create list for resourcehashes
-			List<String> posts = new ArrayList<String>();
-			
-			// add the resource hash
-			posts.add(command.getResourceHash());
-			
-			// delete it
-			logic.deletePosts(context.getLoginUser().getName(), posts);
+			// delete the post
+			logic.deletePosts(context.getLoginUser().getName(), Collections.singletonList(command.getResourceHash()));
 			
 		} else {
 			errors.reject("error.field.valid.ckey");
