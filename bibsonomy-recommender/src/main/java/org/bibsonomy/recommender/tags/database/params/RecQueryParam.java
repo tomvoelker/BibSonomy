@@ -16,9 +16,12 @@ public class RecQueryParam {
 	private Long qid;
 	/** ID for mapping posts to recommender queries */
 	private int pid;
+	/** content typ: 1 for bookmar, 2 for bibtex */
 	private Integer contentType;
 	private String userName;
 	private Timestamp timeStamp;
+	/** querie's timeout value */
+	private int queryTimeout;
 	private Post<? extends Resource> post;
 	private List<RecommendedTag> tags;
 	private List<RecommendedTag> preset;
@@ -70,5 +73,11 @@ public class RecQueryParam {
 	}
 	public int getPid() {
 		return pid;
+	}
+	public void setQueryTimeout(int queryTimeout) {
+		this.queryTimeout = queryTimeout;
+	}
+	public int getQueryTimeout() {
+		return queryTimeout;
 	}
 }
