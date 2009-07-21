@@ -58,7 +58,7 @@ public class HandleFileUpload implements FileUploadInterface {
 	/**
 	 * firefox extion
 	 */
-	public static final String[] firfoxImportExt = { "html" };
+	public static final String[] firefoxImportExt = { "html" };
 
 	/**
 	 * pdf, ps, djv, djvu, txt extensions
