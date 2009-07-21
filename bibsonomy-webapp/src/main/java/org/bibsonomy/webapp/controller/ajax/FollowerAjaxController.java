@@ -8,6 +8,7 @@ import org.bibsonomy.webapp.command.ajax.FollowerAjaxCommand;
 import org.bibsonomy.webapp.controller.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -32,7 +33,7 @@ public class FollowerAjaxController extends AjaxController implements Minimalist
 		
 		if (!command.getContext().getUserLoggedIn()){
 			log.debug("someone tried to access this ajax controller manually and isn't logged in");
-			return Views.HOMEPAGE;
+			return new ExtendedRedirectView("/");
 		}
 		
 		// switch between add or remove and call the right method
