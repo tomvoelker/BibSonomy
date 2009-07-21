@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.view;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -77,7 +79,14 @@ public class CSVView extends AbstractView {
 				if (publicationList != null) {
 					for (final Post<BibTex> post : publicationList) {
 						final BibTex resource = post.getResource();
-						csvWriter.writeNext(getArray(post, resource.getAuthor(), resource.getEditor()));
+						csvWriter.writeNext(getArray(post, resource.getAuthor(), resource.getEditor(), resource.getBibtexKey(), 
+								resource.getAnnote(), resource.getBooktitle(), resource.getCrossref(), resource.getAddress(), 
+								resource.getEntrytype(), resource.getChapter(), resource.getEdition(), resource.getDay(), 
+								resource.getHowpublished(), resource.getInstitution(), resource.getJournal(), resource.getMonth(), 
+								resource.getKey(), resource.getNumber(), resource.getOrganization(), resource.getNote(), 
+								resource.getPages(), resource.getPublisher(), resource.getSchool(), resource.getSeries(),
+								resource.getType(), resource.getVolume(), resource.getYear(), resource.getPrivnote(), 
+								resource.getMisc(), resource.getAbstract()));
 					}
 				}
 
@@ -88,7 +97,7 @@ public class CSVView extends AbstractView {
 				if (bookmarkList != null) {
 					for (final Post<Bookmark> post : bookmarkList) {
 						final Bookmark resource = post.getResource();
-						csvWriter.writeNext(getArray(post, null, null));
+						csvWriter.writeNext(getArray(post, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null));
 					}
 				}
 
@@ -122,17 +131,52 @@ public class CSVView extends AbstractView {
 	}
 
 
-	private String[] getArray(final Post<? extends Resource> post, final String author, final String editor) {
+	private String[] getArray(final Post<? extends Resource> post, final String author, final String editor, String bibtexKey, String annote, String booktitle, String crossref, String address, String entrytype, String chapter, String edition, String day, String howpublished, String institution, String journal, String month, String key, String number, String organization, String note, String pages, String publisher, String school, String series, String type, String volume, String year, String privnote, String misc, String bibtexAbstract) {
 		final Resource resource = post.getResource();
 		return new String[] {
+				// common fields of post
 				post.getResource().getIntraHash(),
 				post.getUser().getName(),
 				post.getDate().toString(),
 				tagsToString(post.getTags()),
 				groupsToString(post.getGroups()),
+				post.getDescription(),
+				
 				resource.getTitle(),
+				
+				// publication-only fields
+				bibtexKey,
+				// from here: sorted by alphabet
+				address,
+				annote,
 				author,
-				editor
+				entrytype,
+				booktitle,
+				chapter,
+				crossref,
+				day,
+				edition,
+				editor,
+				howpublished,
+				institution,
+				journal,
+				key,
+				month,
+				note,
+				number,
+				organization,
+				pages,
+				publisher,
+				school,
+				series,
+				type,
+				volume,
+				year,
+
+				// remaining "special" fields
+				privnote,
+				misc,
+				bibtexAbstract
 		};
 	}
 
