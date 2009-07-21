@@ -23,6 +23,8 @@ import org.bibsonomy.services.recommender.TagRecommender;
 public class DummyTagRecommender implements TagRecommender, TagRecommenderConnector {
 	private static final Logger log = Logger.getLogger(DummyTagRecommender.class);
 	private boolean init = false;
+	private long wait = (long)(Math.random()*1000); 
+	private Integer id = 0;
 	
 	/**  
 	 * Do nothing.
@@ -30,19 +32,18 @@ public class DummyTagRecommender implements TagRecommender, TagRecommenderConnec
 	 */
 	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		log.info("Dummy recommender: addRecommendedTags.");
-		long wait = (long)(Math.random()*1000); 
 
 		// create informative recommendation:
-		for( int i=0; i<(int)(10*Math.random()); i++) {
+		for( int i=0; i<(int)(7*Math.random())+3; i++) {
 			double score = Math.random();
 			double confidence = Math.random();
 			DecimalFormat df = new DecimalFormat( "0.00" );
-			String re = "Dummy("+df.format(score)+","+df.format(confidence)+"["+wait+"])";
+			String re = "Dummy("+df.format(score)+","+df.format(confidence)+"["+getWait()+"])";
 			recommendedTags.add(new RecommendedTag(re, score, confidence));
 		};
 		
 		try {
-			Thread.sleep(wait);
+			Thread.sleep(getWait());
 		} catch (InterruptedException e) {
 			// nothing to do.
 		}
@@ -81,6 +82,7 @@ public class DummyTagRecommender implements TagRecommender, TagRecommenderConnec
 	public boolean initialize(Properties props) throws Exception {
 		// TODO Auto-generated method stub
 		log.info("initialized!");
+		init = true;
 		return true;
 	}
 
@@ -91,8 +93,7 @@ public class DummyTagRecommender implements TagRecommender, TagRecommenderConnec
 
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return "DummyTagRecommender-"+id;
 	}
 
 	@Override
@@ -100,5 +101,17 @@ public class DummyTagRecommender implements TagRecommender, TagRecommenderConnec
 		/*
 		 * this recommender ignores feedback
 		 */
+	}
+
+	public void setWait(long wait) {
+		this.wait = wait;
+	}
+
+	public long getWait() {
+		return wait;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 }
