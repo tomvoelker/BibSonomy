@@ -66,6 +66,10 @@ public class UserSettings {
 	 */
 	private int logLevel;
 
+	/**
+	 * Shall the web interface ask the user before it really deletes something?
+	 */
+	private boolean confirmDelete = true;
 
 
 	/**
@@ -158,5 +162,18 @@ public class UserSettings {
 
 	public void setLogLevel(int logLevel) {
 		this.logLevel = logLevel;
+	}
+
+	public boolean isConfirmDelete() {
+		return this.confirmDelete;
+	}
+
+	public void setConfirmDelete(boolean confirmDelete) {
+		this.confirmDelete = confirmDelete;
 	}	
+	
+	public boolean getConfirmDelete() {
+		return this.confirmDelete;
+	}
+	
 }
