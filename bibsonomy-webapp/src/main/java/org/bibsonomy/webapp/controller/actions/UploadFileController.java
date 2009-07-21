@@ -7,7 +7,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.webapp.command.actions.UploadFileCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
