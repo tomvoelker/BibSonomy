@@ -71,6 +71,15 @@ public class HandleFileUpload implements FileUploadInterface {
 	public static final String[] fileLayoutExt = { "layout" };
 
 	/**
+	 * Used to compute the file hash.
+	 */
+	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	static {
+		df.setTimeZone(TimeZone.getDefault());
+	}
+
+	
+	/**
 	 * initializes the file upload handler
 	 * 
 	 * @param items
@@ -104,16 +113,10 @@ public class HandleFileUpload implements FileUploadInterface {
 			throw new UnsupportedFileTypeException(allowedExt);
 		}
 
-		// format date
-		final Date currDate = new Date();
-		final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		df.setTimeZone(TimeZone.getDefault());
-		final String currDateFormatted = df.format(currDate);
-
 		// create hash over file content
 		this.md5hash = HashUtils.getMD5Hash(this.upFile.get());
 
-		this.fileHash = StringUtils.getMD5Hash(this.upFile.getName() + Math.random() + currDateFormatted);
+		this.fileHash = StringUtils.getMD5Hash(this.upFile.getName() + Math.random() + df.format(new Date()));
 	}
 
 	/**
@@ -200,7 +203,7 @@ public class HandleFileUpload implements FileUploadInterface {
 		
 		Document document = null;
 
-		File file = new File(FileUtil.getDocumentPath(this.docpath, fileHash));
+		final File file = new File(FileUtil.getDocumentPath(this.docpath, fileHash));
 
 		try {
 			this.upFile.write(file);
