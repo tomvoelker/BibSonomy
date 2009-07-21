@@ -59,9 +59,10 @@
 		SELECT r.upper AS
 			tag_name, GROUP_CONCAT(DISTINCT r.lower ORDER BY r.lower SEPARATOR ' ') AS subtags, 
 			tagCount.usercount AS user_count
-		FROM tagtagrelations r, (SELECT upper, COUNT(DISTINCT user_name) AS usercount, COUNT(upper COLLATE utf8_unicode_ci) AS count
-		FROM tagtagrelations r GROUP BY upper COLLATE utf8_unicode_ci ORDER BY
-		usercount DESC,count DESC LIMIT 50) AS tagCount
+		FROM tagtagrelations r, (SELECT upper, COUNT(DISTINCT user_name) AS usercount, 
+			COUNT(upper COLLATE utf8_unicode_ci) AS count
+			FROM tagtagrelations r GROUP BY upper COLLATE utf8_unicode_ci ORDER BY
+			usercount DESC,count DESC LIMIT 50) AS tagCount
 		WHERE tagCount.upper=r.upper
 		GROUP BY tagCount.upper
 		ORDER BY tagCount.upper COLLATE utf8_unicode_ci,
