@@ -2,12 +2,14 @@ package org.bibsonomy.database.managers.chain.bookmark;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByConceptForUser;
+import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByFollowedUsers;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByFriends;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHash;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHashForUser;
@@ -235,4 +237,17 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
 		assertEquals(GetBookmarksSearch.class, this.chainStatus.getChainElement().getClass());
 	}
+	
+	/**
+	 * tests getBookmarkByFollowedUsers
+	 */
+	public void getBookmarkByFollowedUsers() {
+		this.bookmarkParam.setGrouping(GroupingEntity.FOLLOWER);
+		this.bookmarkParam.addGroups(new ArrayList<Integer>(0));
+		this.bookmarkParam.setUserName("testuser2");
+		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
+		assertEquals(GetBookmarksByFollowedUsers.class, this.chainStatus.getChainElement().getClass());		
+	}
+	
+	
 }

@@ -1256,4 +1256,24 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		}
 		return 0;
 	}
+	
+	
+	/**
+	 * Get Bookmarks of users which the logged-in users is following.
+	 * 
+	 * @param loginUserName - 
+	 * @param visibleGroupIDs
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return
+	 */
+	public List<Post<Bookmark>> getBookmarkByFollowedUsers(final String loginUserName, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
+		BookmarkParam param = new BookmarkParam();
+		param.setUserName(loginUserName);
+		param.setGroups(visibleGroupIDs);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		return this.bookmarkList("getBookmarkByFollowedUsers",param,session);
+	}
 }

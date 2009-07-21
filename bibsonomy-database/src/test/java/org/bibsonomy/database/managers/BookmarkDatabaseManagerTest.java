@@ -674,4 +674,23 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(param, this.dbSession);
 		assertEquals(3, posts.size());
 	}
+	
+	@Test
+	public void getBookmarkByFollowedUsers() {
+		/*
+		 * testuser 1 follows testuser 2 and 3, who have 3 bookmark posts
+		 */
+		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		visibleGroupIDs.add(0);
+		visibleGroupIDs.add(1);
+		visibleGroupIDs.add(2);
+		List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkByFollowedUsers("testuser1", visibleGroupIDs, 10, 0, this.dbSession);
+		assertEquals(3, posts.size());
+		assertEquals("testuser2", posts.get(0).getUser().getName());
+		assertEquals("20592a292e53843965c1bb42bfd51876", posts.get(0).getResource().getIntraHash());		
+		assertEquals("testuser3", posts.get(1).getUser().getName());
+		assertEquals("965a65fdc161e354f3828050390e2b06", posts.get(1).getResource().getIntraHash());
+		assertEquals("testuser2", posts.get(2).getUser().getName());
+		assertEquals("7eda282d1d604c702597600a06f8a6b0", posts.get(2).getResource().getIntraHash());
+	}
 }

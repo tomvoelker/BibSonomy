@@ -174,6 +174,27 @@
 		      AND b.content_id = bb.content_id                                   <!-- join title, description, ... -->
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
+	
+	<select id="getBookmarkByFollowedUsers" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT bb.content_id, b.book_url_hash AS interHash, b.book_url_hash AS intraHash, b.book_description AS title,
+		       b.book_extended AS description, bb.date, u.book_url, u.book_url_ctr AS count, t.tag_name, g.group_name,
+		       t.user_name, b.`group`
+	    FROM urls u, bookmark b,
+	         (SELECT content_id, date                  <!-- bookmarks from users of group which currUser may see -->
+	          FROM bookmark b, followers f
+	          WHERE f.user_name = #userName#           <!-- to see, which users are followed by currUser -->
+	                AND b.user_name = f.f_user_name    <!-- take alle rows, which are owned by users currUsers is following -->
+			       AND b.group IN 					   <!--  iterate over all groups the logged-in user may see -->
+			       		(<iterate property="groups" conjunction=",">$groups[]$</iterate>)
+	   	      ORDER BY date DESC
+       	      LIMIT #limit# OFFSET #offset#) AS bb
+	   	LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas -->
+		WHERE t.group = g.group                                                  <!-- join groupname -->
+		      AND u.book_url_hash = b.book_url_hash                              <!-- join url -->
+		      AND b.content_id = bb.content_id                                   <!-- join title, description, ... -->
+		ORDER BY bb.date DESC, bb.content_id DESC
+	</select>	
+
 
 	<select id="getBookmarkByHash" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT b.content_id, t.tag_name, title, description, b.user_name, b.date, 
