@@ -18,19 +18,19 @@ public class ImportValidator implements Validator<ImportCommand>{
 
 	@Override
 	public void validate(Object target, Errors errors) {
-		ImportCommand command = (ImportCommand) target;
+		final ImportCommand command = (ImportCommand) target;
 		
 		Assert.notNull(command);
 		
 		/** look into the for each importType required fields **/
-		if(command.getImportType().equals("delicious")){
+		if("delicious".equals(command.getImportType())) {
 			if(command.getUserName().length() == 0){
 				errors.rejectValue("userName", "error.field.required");
 			}
 			if(command.getPassWord().length() == 0){
 				errors.rejectValue("passWord", "error.field.required");
 			}
-		}else if(command.getImportType().equals("firefox")){
+		} else if("firefox".equals(command.getImportType())) {
 			if(command.getFile() == null || command.getFile().getSize() == 0){
 				errors.rejectValue("file", "error.field.required");
 			}
