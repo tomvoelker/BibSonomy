@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.importer.FileBookmarkImporter;
 import org.bibsonomy.services.importer.RelationImporter;
 import org.bibsonomy.util.XmlUtils;
@@ -34,8 +36,6 @@ import org.w3c.dom.NodeList;
  */
 public class FirefoxImporter implements FileBookmarkImporter, RelationImporter {
 
-	public static final String IMPORTED_TAG = "imported";
-	
 	private static final Log log = LogFactory.getLog(FirefoxImporter.class);
 
 	private final List<Post<Bookmark>> posts = new LinkedList<Post<Bookmark>>();
@@ -75,7 +75,7 @@ public class FirefoxImporter implements FileBookmarkImporter, RelationImporter {
 				createBookmarks(mainFolder, null, currUser, groupName);
 			}
 		} catch (final Exception e) {
-			log.fatal("Error on importing FireFox bookmarks: " + e);
+			log.fatal("Error on importing FireFox bookmarks.", e);
 		}
 	}
 	
@@ -92,9 +92,9 @@ public class FirefoxImporter implements FileBookmarkImporter, RelationImporter {
 	 *            <Bookmark>bookmarks
 	 * @return
 	 */
-	private void createBookmarks(Node folder, Vector<String> upperTags, User user, String groupName) {
-		// if no add_time attribute can be found fakeDate is used
-		Date fakeDate = new Date();
+	private void createBookmarks(final Node folder, final Vector<String> upperTags, final User user, final String groupName) {
+		// the post gets today's time
+		final Date today = new Date();
 
 		// every node requires his own tags
 		Vector<String> tags;
@@ -212,10 +212,10 @@ public class FirefoxImporter implements FileBookmarkImporter, RelationImporter {
 							}
 						} else {
 							// really no tags found -> set imported tag
-							bookmarkPost.addTag(IMPORTED_TAG);
+							bookmarkPost.setTags(Collections.singleton(TagUtils.getEmptyTag()));
 						}
 					}
-					bookmarkPost.setDate(fakeDate);
+					bookmarkPost.setDate(today);
 					bookmarkPost.setUser(user);
 					bookmarkPost.addGroup(groupName);
 
