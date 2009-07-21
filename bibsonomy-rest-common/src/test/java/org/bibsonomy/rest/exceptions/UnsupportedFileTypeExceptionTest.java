@@ -21,7 +21,7 @@ public class UnsupportedFileTypeExceptionTest {
 		}
 		
 		try {
-			throw new UnsupportedFileTypeException(HandleFileUpload.firfoxImportExt);
+			throw new UnsupportedFileTypeException(HandleFileUpload.firefoxImportExt);
 		} catch (UnsupportedFileTypeException e) {
 			assertEquals("Please check your file. Only HTML files are accepted.", e.getMessage());
 		}
