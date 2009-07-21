@@ -29,6 +29,8 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 	private static final Pattern bibtexPattern = Pattern.compile("<h2>BibTeX.*?</h2>\\s*<div class=\"content\">\\s*(@.*?)\\s*</div>", Pattern.MULTILINE | Pattern.DOTALL);
 	private static final Pattern abstractPattern = Pattern.compile("Abstract:.*?<p class=\"para4\">(.*?)</p>", Pattern.MULTILINE | Pattern.DOTALL);
 	
+	private static final Pattern brokenUrlFixPattern = Pattern.compile(".*summary\\d+.*");
+
 	
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
@@ -45,8 +47,7 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 			} catch (IOException e) {
 				// if not, try to solve the known citeseerx problem
 				String url = sc.getUrl().toString();
-				Pattern p = Pattern.compile(".*summary\\d+.*");
-				Matcher m = p.matcher(url);
+				final Matcher m = brokenUrlFixPattern.matcher(url);
 				
 				if (m.matches()) {
 					url = url.replace("summary", "summary?doi=");
