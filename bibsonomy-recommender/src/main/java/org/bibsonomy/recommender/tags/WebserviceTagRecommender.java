@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
@@ -21,6 +22,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.renderer.Renderer;
@@ -124,11 +126,16 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 			log.fatal("Encoding error("+getAddress()+"): " + ex.getMessage(), ex);
 		} catch (IOException e) {
 			log.fatal("Fatal transport error("+getAddress()+"): " + e.getMessage(), e);
+		} catch (Exception e) {
+			log.fatal("Unknown error ("+getAddress()+")", e);
 		} finally {
 			// Release the connection.
 			cnct.releaseConnection();
 		}  		
-		return result;
+		if( result!=null )
+			return result;
+		else 
+			return new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 	}
 
 	public boolean connect() throws Exception {

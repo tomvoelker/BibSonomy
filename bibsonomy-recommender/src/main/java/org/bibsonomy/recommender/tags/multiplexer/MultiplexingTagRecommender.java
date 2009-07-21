@@ -422,19 +422,21 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		 * Dispatch and collect query.
 		 */
 		public void run() {
-			// TODO ImplementMe
-			log.warn("run() not implemented.");
 			// for query-time logging
 			long time = System.currentTimeMillis();
 			SortedSet<RecommendedTag> preset = null;
 			// actually query the recommender
-			if( (recommendedTags!=null) && (recommendedTags.size()>0) ) {
-				preset = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
-				preset.addAll(recommendedTags);
-				recommender.addRecommendedTags(recommendedTags, post);
-			} else
-				recommendedTags = recommender.getRecommendedTags(post);
-			// calculate query-time
+			try {
+				if( (recommendedTags!=null) && (recommendedTags.size()>0) ) {
+					preset = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+					preset.addAll(recommendedTags);
+					recommender.addRecommendedTags(recommendedTags, post);
+				} else
+					recommendedTags = recommender.getRecommendedTags(post);
+				// calculate query-time
+			} catch( Exception e ) {
+				log.error("Error querying recommender " + recommender.getInfo(), e);
+			}
 			time = System.currentTimeMillis()-time;
 			// add query result, if not timed out
 			if( !abort ) {
