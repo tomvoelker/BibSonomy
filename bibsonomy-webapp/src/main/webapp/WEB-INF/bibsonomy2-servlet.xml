@@ -566,10 +566,6 @@
 		</property>
 	</bean>
 	
-	<bean id="uploadHandler" class="org.bibsonomy.rest.utils.impl.HandleFileUpload" scope="request">
-		<property name="docpath" value="${project.document.path}"/>
-	</bean>
-	
 	<bean id="relationsController" class="org.bibsonomy.webapp.controller.RelationsController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
@@ -846,12 +842,12 @@
 	
 	<bean id="importController" class="org.bibsonomy.webapp.controller.actions.ImportController" scope="request">
 		<property name="logic" ref="logic"/>
-		<property name="uploadFileHandler" ref="uploadHandler"/>
+		<property name="uploadFactory" ref="uploadHandleFactory"/>
 	</bean>
 	
 	<bean id="importJabRefLayout" class="org.bibsonomy.webapp.controller.actions.JabRefImportController" scope="request">
 		<property name="logic" ref="logic"/>
-		<property name="uploadFileHandler" ref="uploadHandler"/>
+		<property name="uploadFactory" ref="uploadHandleFactory"/>
 	</bean>
 	
 	
