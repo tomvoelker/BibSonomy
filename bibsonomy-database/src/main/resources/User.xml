@@ -92,7 +92,10 @@
 			JOIN weights w USING (id)
 			WHERE r.item=#requestedUserName# AND r.dim = 1
 			AND w.dim = 1
-			AND w.item != #requestedUserName# 
+			AND w.item != #requestedUserName#
+			<isNotNull property="userName">
+			AND w.item NOT IN (SELECT f_user_name FROM followers WHERE user_name=#userName#)
+			</isNotNull> 
 		ORDER BY 2 DESC
 		LIMIT #limit#
 	</select>	
@@ -103,6 +106,9 @@
 		WHERE measure_id = #userRelation.id# 
 		AND u1 = #requestedUserName#
 		AND u2 != #requestedUserName#
+		<isNotNull property="userName">		
+		AND u2 NOT IN (SELECT f_user_name FROM followers WHERE user_name=#userName#)
+		</isNotNull>
 		ORDER by 2 DESC 
 		LIMIT #limit# OFFSET #offset#
 	</select>

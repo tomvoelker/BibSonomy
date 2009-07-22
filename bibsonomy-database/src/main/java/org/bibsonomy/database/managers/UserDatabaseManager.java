@@ -483,15 +483,17 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Returns a list of users which are related to a given user by folkrank.
 	 * 
-	 * @param requestedUsername - the given user  
+	 * @param requestedUsername - the given user
+	 * @param loginUserName - the logged-in user  
 	 * @param limit
 	 * @param offset
 	 * @param session - the DB session
 	 * @return a list of users, related by folkrank to the given user. 
 	 */
-	public List<User> getRelatedUsersByFolkrankAndUser(final String requestedUsername, int limit, int offset, final DBSession session) {
+	public List<User> getRelatedUsersByFolkrankAndUser(final String requestedUsername, final String loginUserName, int limit, int offset, final DBSession session) {
 		UserParam param = new UserParam();
 		param.setRequestedUserName(requestedUsername);
+		param.setUserName(loginUserName);
 		param.setOffset(offset);
 		param.setLimit(limit);
 		return this.queryForList("getRelatedUsersByFolkrankAndUser", param, User.class, session);
@@ -504,14 +506,16 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param requestedUserName - the requested user
 	 * @param relation - the type of user relation
+	 * @param loginUserName - the name of the logged-in user
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return a list of users, related to the requestedUser by the given relation
 	 */
-	public List<User> getRelatedUsersBySimilarity(final String requestedUserName, final UserRelation relation, final int limit, final int offset, final DBSession session) {
+	public List<User> getRelatedUsersBySimilarity(final String requestedUserName, final String loginUserName, final UserRelation relation, final int limit, final int offset, final DBSession session) {
 		UserParam param = new UserParam();
 		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
 		param.setUserRelation(relation);
 		return this.queryForList("getRelatedUsersBySimilarity", param, User.class, session);
 	}

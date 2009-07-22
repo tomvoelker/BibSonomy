@@ -25,12 +25,14 @@ public class GetRelatedUsersByUser extends UserChainElement {
 		 * handle folkrank separately
 		 */
 		if (UserRelation.FOLKRANK.equals(param.getUserRelation())) {
-			return this.userDB.getRelatedUsersByFolkrankAndUser(param.getRequestedGroupName(), 
+			return this.userDB.getRelatedUsersByFolkrankAndUser(param.getRequestedGroupName(),
+																param.getUserName(),
 																param.getLimit(), 
 																param.getOffset(), 
 																session);				
 		}
 		return this.userDB.getRelatedUsersBySimilarity(param.getRequestedUserName(), 
+													   param.getUserName(),
 													   param.getUserRelation(), 
 													   param.getLimit(), 
 													   param.getOffset(), 
