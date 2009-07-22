@@ -16,9 +16,15 @@
 		<ref bean="distRecommender3"/>
 		<ref bean="distRecommender4"/>
 		<ref bean="distRecommender5"/>
-	<!-- 
+		<ref bean="distRecommender6"/>
+		<ref bean="distRecommender7"/>
+		<ref bean="distRecommender8"/>
+		<ref bean="distRecommender9"/>
+		<ref bean="distRecommender10"/>
+		<ref bean="distRecommender11"/>
+		<!-- 
 		<ref bean="testRecommender"/>
-	-->
+		 -->
 	</util:list>
 	
 	
@@ -67,7 +73,62 @@
 		</property>
 	</bean>	 
 
+	<!--+
+	 	| Domenico Gendarmi  
+	 	+-->
+	<bean id="distRecommender6" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://141.51.167.113:8080/PrompterShared/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
 
+	<!--+
+	 	| Domenico Gendarmi  
+	 	+-->
+	<bean id="distRecommender7" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://141.51.167.113:8080/PrompterPersonalSemantic/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
+
+	<!--+
+	 	| Domenico Gendarmi  
+	 	+-->
+	<bean id="distRecommender8" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://141.51.167.113:8080/PrompterSharedSemantic/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
+
+	<!--+
+	 	| Domenico Gendarmi  
+	 	+-->
+	<bean id="distRecommender9" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://141.51.167.113:8080/PrompterSocialSemantic/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
+
+	<!--+
+	 	| Philipp Schaer 
+	 	+-->
+	<bean id="distRecommender10" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://multiweb.gesis.org/bibsonomy/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
+	
+	<!--+
+	 	| Szymon Chojnacki
+	 	+-->
+	<bean id="distRecommender11" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://213.135.36.105:8080/bibsonomy-recommender-servlet-2.0.3/TagTRecommenderServlet</value>
+		</property>
+	</bean>	 
+	
+	
+	
 	<!--+
 	 	| 
 	 	+-->
@@ -83,7 +144,7 @@
 	 	+-->
 	<bean id="testRecommender" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
 		<property name="address">
-			<value>http://localhost:8180/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
+			<value>http://localhost:8088/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
 		</property>
 	</bean>	 
 	 
