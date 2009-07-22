@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.controller.actions;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.fileupload.FileItem;
@@ -16,6 +15,7 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.utils.FileUploadInterface;
+import org.bibsonomy.rest.utils.impl.FileUploadFactory;
 import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.actions.JabRefImportCommand;
@@ -45,10 +45,10 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 	private LogicInterface logic = null;
 	
 
-	/**
-	 * handle file upload
-	 */
-	private FileUploadInterface uploadFileHandler = null;
+    /**
+     * the factory used to get an instance of a FileUploadHandler.
+     */
+    private FileUploadFactory uploadFactory;
 
 	/**
 	 * An instance of the (new!) layout renderer. We need it here to unload
@@ -69,6 +69,8 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 
 		if (user != null) {
 
+			
+			
 			// creates a new layout in the database
 			if (DELETE.equals(command.getAction())) {
 
@@ -81,7 +83,7 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 					if (document != null) {
 						this.logic.deleteDocument(document, null);
 
-						new File(FileUtil.getDocumentPath(uploadFileHandler.getDocpath(), hash)).delete();
+						new File(FileUtil.getDocumentPath(this.uploadFactory.getDocpath(), hash)).delete();
 						/*
 						 * delete layout object from exporter
 						 */
@@ -101,7 +103,10 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 				if (command.getFileBegin() != null && command.getFileBegin().getSize() > 0) {
 					
 					List<FileItem> list = Collections.singletonList(command.getFileBegin().getFileItem());
-					uploadFileHandler.setUp(list, HandleFileUpload.fileLayoutExt);					
+					final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(list, HandleFileUpload.fileLayoutExt);
+					
+					
+//					uploadFileHandler.setUp(list, HandleFileUpload.fileLayoutExt);					
 					hashedName = JabrefLayoutUtils.userLayoutHash(user.getName(), LayoutPart.BEGIN);
 					
 					try {
@@ -115,7 +120,8 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 				if (command.getFileItem() != null && command.getFileItem().getSize() > 0) {
 					
 					List<FileItem> list = Collections.singletonList(command.getFileItem().getFileItem());
-					uploadFileHandler.setUp(list, HandleFileUpload.fileLayoutExt);
+					final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(list, HandleFileUpload.fileLayoutExt);
+					
 					hashedName = JabrefLayoutUtils.userLayoutHash(user.getName(), LayoutPart.ITEM);
 					
 					try {
@@ -129,7 +135,7 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 				if (command.getFileEnd() != null && command.getFileEnd().getSize() > 0) {
 
 					List<FileItem> list = Collections.singletonList(command.getFileEnd().getFileItem());
-					uploadFileHandler.setUp(list, HandleFileUpload.fileLayoutExt);
+					final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(list, HandleFileUpload.fileLayoutExt);
 					hashedName = JabrefLayoutUtils.userLayoutHash(user.getName(), LayoutPart.END);
 					
 					try {
@@ -191,11 +197,11 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 		this.logic = logic;
 	}
 
-	public FileUploadInterface getUploadFileHandler() {
-		return this.uploadFileHandler;
+	public FileUploadFactory getUploadFactory() {
+		return this.uploadFactory;
 	}
 
-	public void setUploadFileHandler(FileUploadInterface uploadFileHandler) {
-		this.uploadFileHandler = uploadFileHandler;
+	public void setUploadFactory(FileUploadFactory uploadFactory) {
+		this.uploadFactory = uploadFactory;
 	}
 }
