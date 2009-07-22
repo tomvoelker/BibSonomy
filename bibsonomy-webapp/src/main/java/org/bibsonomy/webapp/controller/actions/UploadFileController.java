@@ -7,6 +7,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.rest.utils.FileUploadInterface;
+import org.bibsonomy.rest.utils.impl.FileUploadFactory;
 import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.webapp.command.actions.UploadFileCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -29,7 +31,11 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 	private Errors errors = null;
 	private LogicInterface logic;
 	
-	private String docpath;
+	
+    /**
+     * the factory used to get an instance of a FileUploadHandler.
+     */
+    private FileUploadFactory uploadFactory;
 
 
 	public View workOn(UploadFileCommand command) {
@@ -62,10 +68,12 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 			list.add(command.getFile().getFileItem());
 
 			try {
-				final HandleFileUpload uploadFileHandler = new HandleFileUpload();
-				uploadFileHandler.setDocpath(docpath);
 				
-				uploadFileHandler.setUp(list, HandleFileUpload.fileUploadExt);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(list, HandleFileUpload.fileUploadExt);
+//				final HandleFileUpload uploadFileHandler = new HandleFileUpload();
+//				uploadFileHandler.setDocpath(docpath);
+				
+//				uploadFileHandler.setUp(list, HandleFileUpload.fileUploadExt);
 
 				final Document doc = uploadFileHandler.writeUploadedFile(context.getLoginUser().getName());
 				
@@ -123,12 +131,11 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 		return true;
 	}
 
-	public String getDocpath() {
-		return this.docpath;
+	public FileUploadFactory getUploadFactory() {
+		return this.uploadFactory;
 	}
 
-	public void setDocpath(String docpath) {
-		this.docpath = docpath;
+	public void setUploadFactory(FileUploadFactory uploadFactory) {
+		this.uploadFactory = uploadFactory;
 	}
-
 }
