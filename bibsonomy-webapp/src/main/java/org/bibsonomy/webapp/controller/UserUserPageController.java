@@ -13,6 +13,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
+import org.bibsonomy.webapp.config.Parameters;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RankingUtil;
@@ -50,7 +51,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		
 		// if we're in the personalized view, we have to retrieve all posts first & then 
 		// re-rank them 
-		final int entriesPerPage = Integer.MAX_VALUE;
+		final int entriesPerPage = Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
 		command.setSortPage("ranking");
 		command.setSortPageOrder("desc");
 				
@@ -71,6 +72,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 						
 			final int origEntriesPerPage = listCommand.getEntriesPerPage();
 			this.setList(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, entriesPerPage);
+			listCommand.setEntriesPerPage(origEntriesPerPage);
 										
 			// compute the ranking for each post in the list
 			RankingUtil.computeRanking(loginUserTags, targetUserTags, command.getListCommand(resourceType).getList(), RankingType.TFIDF, false);
@@ -80,15 +82,11 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 
 			// show only the top ranked resources for each resource type
 			if (command.getListCommand(resourceType).getList().size() > origEntriesPerPage) {
-				if (BibTex.class.equals(resourceType)) {
-					command.getBibtex().setList(command.getBibtex().getList().subList(listCommand.getStart(), origEntriesPerPage));
-				}
-				if (Bookmark.class.equals(resourceType)) {
-					command.getBookmark().setList(command.getBookmark().getList().subList(listCommand.getStart(), origEntriesPerPage));
-				}				
+				this.restrictResourceList(command, resourceType, listCommand.getStart(), listCommand.getStart() + origEntriesPerPage);				
 			}
+			
+			// set total nr. 
 			this.setTotalCount(command, resourceType, groupingEntity, groupingName, requTags, null, null, null, null, origEntriesPerPage, null);
-			listCommand.setEntriesPerPage(origEntriesPerPage);
 		}
 
 

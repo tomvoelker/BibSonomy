@@ -281,4 +281,24 @@ public abstract class ResourceListController {
 		}
 		return false;
 	}	
+	
+	
+	/**
+	 * Restrict result lists by range from startIndex to endIndex.
+	 * 
+	 * @param <T> - resource type
+	 * @param <V> - command type
+	 * @param cmd - the command object
+	 * @param resourceType - the requested resourcetype
+	 * @param startIndex - start index
+	 * @param endIndex - end index
+	 */
+	protected <V extends SimpleResourceViewCommand> void restrictResourceList(V cmd, Class<? extends Resource> resourceType, final int startIndex, final int endIndex) {			
+			if (BibTex.class.equals(resourceType)) {
+				cmd.getBibtex().setList(cmd.getBibtex().getList().subList(startIndex, endIndex));
+			}
+			if (Bookmark.class.equals(resourceType)) {
+				cmd.getBookmark().setList(cmd.getBookmark().getList().subList(startIndex, endIndex));
+			}				
+	}
 }
