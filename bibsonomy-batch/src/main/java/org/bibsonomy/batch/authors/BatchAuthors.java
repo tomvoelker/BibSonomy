@@ -108,6 +108,10 @@ public class BatchAuthors {
 		String bibtexAuthor;
 		
 		while(rs.next()) {
+			// clear names
+			authorsAndEditors = "";
+			bibtexAuthor = "";
+			
 			if(rs.getString(1) != null) {
 				authorsAndEditors += rs.getString(1);
 			}
@@ -203,18 +207,18 @@ public class BatchAuthors {
 			c++;
 			if(!authorMap.containsKey(authorName)) {
 				subNames = authorName.split(" ");
-				Author a = new Author(enc.encode(getFirstName(subNames)),
-						enc.encode(getMiddleName(subNames)),
-						enc.encode(getLastName(subNames)),
-						enc.encode(authorName));				
+				Author a = new Author(getFirstName(subNames),
+						getMiddleName(subNames),
+						getLastName(subNames),
+						authorName);				
 				a.getContentIds().add(rs.getLong(3));
 				a.setAuthorId(rs.getLong(1));
 				authorMap.put(authorName, a);	
 			} else {
 				authorMap.get(authorName).getContentIds().add(rs.getLong(3));
 				// check if author already got the requested bibtex representation. if not, add the current one
-				if(!authorMap.get(enc.encode(authorName)).getBibtexNames().contains(authorName)) {
-					authorMap.get(enc.encode(authorName)).addBibtexName(authorName);
+				if(!authorMap.get(authorName).getBibtexNames().contains(authorName)) {
+					authorMap.get(authorName).addBibtexName(authorName);
 				}
 			}
 			
@@ -279,9 +283,11 @@ public class BatchAuthors {
 				//updateAuthorMap.get(s).setAuthorId(authorMap.get(s).getAuthorId());
 				
 				// remove existing id's for update author
-				for(long l : a.getContentIds()) {
-					if(authorMap.get(s).getContentIds().contains(l)) {
-						a.getContentIds().remove(l);
+				Iterator<Long> iter = a.getContentIds().iterator();
+				
+				while (iter.hasNext()) {
+					if (authorMap.get(s).getContentIds().contains(iter.next())) {
+						iter.remove();
 					}
 				}
 				
