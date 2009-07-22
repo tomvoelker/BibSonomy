@@ -72,6 +72,12 @@ public class TagRecommenderServlet extends HttpServlet {
 	/** post parameter for the post id */
 	public final String ID_POSTID   = "postID";
 	
+	/** url map for the getRecommendation method */
+	private static final String METHOD_GETRECOMMENDEDTAGS = "getRecommendedTags";
+	/** url map for the setFeedback method */
+	private static final String METHOD_SETFEEDBACK = "setFeedback";
+
+	
 	/** the tag recommender */
 	TagRecommender recommender;
 	
@@ -133,12 +139,7 @@ public class TagRecommenderServlet extends HttpServlet {
 	// private helpers
 	//------------------------------------------------------------------------
 	private void handleRequest(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		// query data: the (xml)-encoded post for tag recommendation  
-		final String dataString = request.getParameter(ID_RECQUERY);
-
-		// query feedback: the (xml)-encoded post for feedback
-		final String feedbackString = request.getParameter(ID_FEEDBACK);
+			HttpServletResponse response) throws IOException, ServletException {
 
 		// query postID: recommendation's post id
 		Integer postID = null;
@@ -150,13 +151,23 @@ public class TagRecommenderServlet extends HttpServlet {
 		if( postID==null )
 			postID = UNKNOWN_POSTID;
 
-		if( dataString!=null ) {
+		// determine whether we should recommend tags or set recommender's feedback
+		String methodName = request.getPathInfo();
+		if( methodName!=null )
+			methodName = methodName.replace("/", "");
+		if( (methodName==null)||(METHOD_GETRECOMMENDEDTAGS.equals(methodName)) ) {
+			// query data: the (xml)-encoded post for tag recommendation  
+			final String dataString = request.getParameter(ID_RECQUERY);
 			// generate list of recommended tags
 			dispatchQuery(response, dataString, postID);
-		}; 
-		if( feedbackString!=null ) {
+		} else if( METHOD_SETFEEDBACK.equals(methodName) ) {
+			// query feedback: the (xml)-encoded post for feedback
+			final String feedbackString = request.getParameter(ID_FEEDBACK);
 			// forward feedback to recommender
 			dispatchFeedback(response, feedbackString, postID);
+		} else {
+			// unknown method requested
+			throw new ServletException("Method " + methodName + " not implemented." ); 
 		}
 	}
 
