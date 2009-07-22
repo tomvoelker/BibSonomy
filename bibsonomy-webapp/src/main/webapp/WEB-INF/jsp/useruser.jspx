@@ -89,7 +89,9 @@
 					<fmt:message key="users.similar.for">
 						<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
 					</fmt:message>
-					<c:out value=" "/><a href="${mtl:setParam(cmd.requPath, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
+					<!-- requPath + query -->
+					<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
+					<c:out value=" "/><a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
 				</span>
 				<users:related cmd="${command.relatedUserCommand}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
 			</li>			

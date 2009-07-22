@@ -77,10 +77,12 @@
 			</li>
 			
 			<!-- display similar users -->
-			<li>
-				<span class="sidebar_h">
+			<li>				
+				<span class="sidebar_h">					 
+					<!-- requPath + query -->
+					<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
 					<fmt:message key="users.similar"/>
-					<c:out value=" "/><a href="${mtl:setParam(cmd.requPath, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
+					<c:out value=" "/><a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
 				</span>
 				<users:related cmd="${command.relatedUserCommand}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
 			</li>

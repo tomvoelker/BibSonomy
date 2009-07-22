@@ -14,12 +14,15 @@
 	<!-- entrytype whose entries per page will be in/decreased -->
 	<c:set var="entryTypeEntriesPerPage" value="${entryType}.entriesPerPage"/>
 	
+	<!-- requPath + query -->
+	<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
+	
 	<span class="actions">
 		<fmt:message key="${titleKey}"/>${mtl:ch('nbsp')}<fmt:message key="list.entriesPerPage" />:${mtl:ch('nbsp')}
 		<c:forEach var="num" items="${fn:split(allEntryCounts, ',')}">
 		
 			<!-- build url --> 
-			<c:url var="numListUrl" value="/${mtl:setParam(requPath,entryTypeEntriesPerPage,num)}" context="${projectContext}">
+			<c:url var="numListUrl" value="/${mtl:setParam(requPathAndQuery,entryTypeEntriesPerPage,num)}" context="${projectContext}">
 				<!-- <c:param name="${entryType}.entriesPerPage" value="${num}" /> -->
 			</c:url>
 	

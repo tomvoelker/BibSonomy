@@ -120,9 +120,11 @@
 				<c:url var="aboutUrl" value="${helpLangUrl}/contact" context="${projectContext}"/>
 				<a href="${aboutUrl}"><fmt:message key="navi.about"/></a>	
 				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
-				<c:url var="langUrlDe" value="/${mtl:setParam(requPath, 'lang', 'de')}" context="${projectContext}"/>
+				<!-- requPath + query -->
+				<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
+				<c:url var="langUrlDe" value="/${mtl:setParam(requPathAndQuery, 'lang', 'de')}" context="${projectContext}"/>
 				<a href="${langUrlDe}"><img alt="de" src="${resdir}/image/lang_de.png"/></a>
-				<c:url var="langUrlEn" value="/${mtl:setParam(requPath, 'lang', 'en')}" context="${projectContext}"/>					
+				<c:url var="langUrlEn" value="/${mtl:setParam(requPathAndQuery, 'lang', 'en')}" context="${projectContext}"/>					
 				<a href="${langUrlEn}"><img alt="en" src="${resdir}/image/lang_en.png"/></a>					
 			</div>
 			

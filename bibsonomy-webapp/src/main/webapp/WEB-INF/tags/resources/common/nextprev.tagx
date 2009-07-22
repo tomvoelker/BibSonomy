@@ -10,13 +10,16 @@
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
+	
+	<!-- requPath + query -->
+	<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
 
 	<c:if test="${disableListNavigation == false}">	
 		<span class="nextprev">
 		
             <!-- ********** FIRST ************** -->
 	        <c:if test="${listView.totalCount > 0}">
-	            <c:url var="firstUrl" value="/${mtl:setParam(requPath,listViewStartParamName,0)}" context="${projectContext}">
+	            <c:url var="firstUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,0)}" context="${projectContext}">
 	              <!-- <c:param name="${listViewStartParamName}" value="0" /> -->
 	            </c:url>
 	            <fmt:message var="gotoFirst" key="goto.first"/>
@@ -29,7 +32,7 @@
             <c:if test="${!(listView.numCurrentItems == 0 and listView.curPage.start == 0)}">
 				<c:choose>				
 					<c:when test="${listView.previousPage != null}">
-				       <c:url var="previousUrl" value="/${mtl:setParam(requPath,listViewStartParamName,listView.previousPage.start)}" context="${projectContext}">
+				       <c:url var="previousUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,listView.previousPage.start)}" context="${projectContext}">
 	                      <!-- <c:param name="${listViewStartParamName}" value="${listView.previousPage.start}" /> -->
 	                   </c:url>
 	                   <fmt:message var="gotoPrevious" key="goto.previous"/>
@@ -45,7 +48,7 @@
             <!-- ********** PREVIOUS PAGES ************** -->
 			<c:if test="${not empty listView.previousPages and listView.totalCount > 0}">
 				<c:forEach var="page" items="${listView.previousPages}">
-                    <c:url var="previousPagesUrl" value="/${mtl:setParam(requPath,listViewStartParamName,page.start)}" context="${projectContext}">
+                    <c:url var="previousPagesUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,page.start)}" context="${projectContext}">
                        <!-- <c:param name="${listViewStartParamName}" value="${page.start}"/> -->
                     </c:url>
 					<a href="${fn:escapeXml(previousPagesUrl)}">${page.number}</a>
@@ -66,7 +69,7 @@
 			<c:if test="${not empty listView.nextPages and listView.totalCount > 0}">
 				<c:forEach var="page" items="${listView.nextPages}">
 					<c:out value=" "/>${mtl:ch('list.pagenumber.delim')}<c:out value=" "/>
-                    <c:url var="nextPagesUrl" value="/${mtl:setParam(requPath,listViewStartParamName,page.start)}" context="${projectContext}">
+                    <c:url var="nextPagesUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,page.start)}" context="${projectContext}">
                        <!-- <c:param name="${listViewStartParamName}" value="${page.start}"/> -->
                     </c:url>
                     <a href="${fn:escapeXml(nextPagesUrl)}">${page.number}</a>
@@ -79,7 +82,7 @@
             <c:if test="${listView.numCurrentItems > 0}">
 				<c:choose>
 					<c:when test="${listView.nextPage != null}">
-	                   <c:url var="nextUrl" value="/${mtl:setParam(requPath,listViewStartParamName,listView.nextPage.start)}" context="${projectContext}">
+	                   <c:url var="nextUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,listView.nextPage.start)}" context="${projectContext}">
 	                    <!-- <c:param name="${listViewStartParamName}" value="${listView.nextPage.start}" /> -->
 	                   </c:url>
 	                   <fmt:message var="gotoNext" key="goto.next"/>
@@ -95,7 +98,7 @@
       
             <!-- ********** LAST ************** -->
             <c:if test="${listView.totalCount > 0}">
-	            <c:url var="lastUrl" value="/${mtl:setParam(requPath,listViewStartParamName,listView.last)}" context="${projectContext}">
+	            <c:url var="lastUrl" value="/${mtl:setParam(requPathAndQuery,listViewStartParamName,listView.last)}" context="${projectContext}">
 	              <!-- <c:param name="${listViewStartParamName}" value="${listView.last}" /> -->
 	            </c:url>
 	            <fmt:message var="gotoLast" key="goto.last"/>
@@ -107,7 +110,7 @@
 
 	<c:if test="${command.context.userLoggedIn and empty disableActions}">
 		<span class="actions">
-			<c:set var="editUrlTemplate">/bediturl/<c:out value='${requPath}' escapeXml="true"/></c:set>
+			<c:set var="editUrlTemplate">/bediturl/<c:out value='${requPathAndQuery}' escapeXml="true"/></c:set>
 			<c:url var="editUrl" value="${editUrlTemplate}" context="${projectContext}"/>
 			<fmt:message var="editPageTags" key="post.meta.edit.title"/>
 			<a href="${editUrl}" title="${editPageTags}"><fmt:message key="post.meta.edit"/></a>
