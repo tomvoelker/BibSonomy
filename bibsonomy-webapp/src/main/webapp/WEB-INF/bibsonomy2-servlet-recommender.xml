@@ -30,7 +30,7 @@
 	    +-->
 	<bean id="multiplexingTagRecommender" class="org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender" scope="singleton">
 	    <property name="queryTimeout" value="1000"/>
-		<property name="distRecommenders" ref="dc09RecommenderList"/>
+		<property name="distRecommenders" ref="distRecommenderList"/>
 		<property name="localRecommenders" ref="localRecommenderList"/>
 		<property name="postModifiers" ref="postModifierList"/>
 		<property name="resultSelector" ref="selectOneWithoutReplacement"/>
@@ -123,11 +123,13 @@
 	<!--+
 		| A simple tag recommender
 		+-->
+
 	<bean id="distRecommender1" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
 		<property name="address">
 			<value>http://gromit:8080/recommender-servlet/TagRecommenderServlet</value>
 		</property>
 	</bean>
+
     
 	<!--+
 		| A tag recommender mockup

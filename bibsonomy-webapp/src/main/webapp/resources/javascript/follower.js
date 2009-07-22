@@ -47,3 +47,17 @@ function removeFollowerFollowerPage(name, element, ckey){
 	}
 	});	
 }
+
+function addFollowerFollowerPage(name, element, ckey){
+	
+	$.ajax({  
+		type: "POST",  
+		url: "/ajax/handleFollower",  
+		data: "requestedUserName="+ name +"&action=addFollower&ckey=" + ckey,
+		complete: function changeText(){
+		element.parentNode.setAttribute("class", "");
+		document.getElementById("followedUsers").appendChild(element.parentNode);
+		element.parentNode.removeChild(element);
+	}
+	});	
+}
