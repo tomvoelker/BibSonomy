@@ -24,10 +24,7 @@
 package org.bibsonomy.rest.utils;
 
 import java.io.File;
-import java.util.List;
 
-import org.apache.commons.fileupload.FileItem;
-import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.User;
 
@@ -68,20 +65,5 @@ public interface FileUploadInterface {
 	 * @return
 	 * @throws Exception
 	 */
-	public Document writeUploadedFile(String userName) throws Exception;
-	
-	/**
-	 * initializes the file upload handler
-	 * @param items
-	 * @param allowedExt
-	 * @throws UnsupportedFileTypeException
-	 */
-	public void setUp(final List<FileItem> items, String[] allowedExt) throws UnsupportedFileTypeException;
-	
-	/**
-	 * returns the current document path
-	 * @return String
-	 */
-	public String getDocpath();
-	
+	public Document writeUploadedFile(String userName) throws Exception;	
 }
