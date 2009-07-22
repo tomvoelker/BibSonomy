@@ -20,6 +20,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.utils.FileUploadInterface;
+import org.bibsonomy.rest.utils.impl.FileUploadFactory;
 import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.services.importer.FileBookmarkImporter;
 import org.bibsonomy.services.importer.RelationImporter;
@@ -54,7 +55,11 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
      */
     private DeliciousImporterFactory importerFactory;
 
-	
+    /**
+     * the factory used to get an instance of a FileUploadHandler.
+     */
+    private FileUploadFactory uploadFactory;
+
 	private Errors errors = null;
 
 	public View workOn(ImportCommand command) {
@@ -103,8 +108,11 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 				}
 			} else if ("firefox".equals(command.getImportType())) {
 				try {
-					final FileUploadInterface uploadFileHandler = new HandleFileUpload();
-					uploadFileHandler.setUp(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firefoxImportExt);
+					
+					final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firefoxImportExt);
+					
+//					final FileUploadInterface uploadFileHandler = new HandleFileUpload();
+//					uploadFileHandler.setUp(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firefoxImportExt);
 					final File file = uploadFileHandler.writeUploadedFile();
 					/*
 					 * FileBookmarkImporter interface
@@ -271,6 +279,14 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 	public boolean isValidationRequired(ImportCommand command) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	public FileUploadFactory getUploadFactory() {
+		return this.uploadFactory;
+	}
+
+	public void setUploadFactory(FileUploadFactory uploadFactory) {
+		this.uploadFactory = uploadFactory;
 	}
 
 }
