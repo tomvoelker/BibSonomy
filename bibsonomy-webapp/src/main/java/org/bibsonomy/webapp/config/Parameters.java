@@ -16,5 +16,7 @@ public class Parameters {
 	
 	public static final Integer NUM_PUBLICATIONS_ON_HOMEPAGE = 20;
 	
+	public static final Integer NUM_RESOURCES_FOR_PERSONALIZED_RANKING = 1000;
+	
 
 }
