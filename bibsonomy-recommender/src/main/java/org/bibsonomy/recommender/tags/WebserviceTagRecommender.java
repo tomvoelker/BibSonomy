@@ -49,7 +49,12 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	public final String ID_RECQUERY = "data";
 	/** post parameter for the post id */
 	public final String ID_POSTID   = "postID";
-	
+
+	/** url map for the getRecommendation method */
+	private static final String METHOD_GETRECOMMENDEDTAGS = "getRecommendedTags";
+	/** url map for the setFeedback method */
+	private static final String METHOD_SETFEEDBACK = "setFeedback";
+
 	//------------------------------------------------------------------------
 	// constructors
 	//------------------------------------------------------------------------
@@ -98,7 +103,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		};
 
 		// send request
-		InputStreamReader input = sendRequest(data);
+		InputStreamReader input = sendRequest(data, "");
 
 		// Deal with the response.
 		SortedSet<RecommendedTag> result = null;
@@ -129,11 +134,12 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		// Create a method instance.
 		NameValuePair[] data = {
 				new NameValuePair(ID_FEEDBACK, sw.toString()),
+				new NameValuePair(ID_RECQUERY, sw.toString()), // for downward compatibility
 				new NameValuePair(ID_POSTID, post.getContentId().toString())
 		};
 
 		// send request
-		InputStreamReader input = sendRequest(data);
+		InputStreamReader input = sendRequest(data, "/"+METHOD_SETFEEDBACK);
 
 		// Deal with the response.
 		if( input!=null ) {
@@ -201,9 +207,9 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	}
 	
 	
-	private InputStreamReader sendRequest(NameValuePair[] data) {
+	private InputStreamReader sendRequest(NameValuePair[] data, String methodPath) {
 		// Create a method instance.
-		PostMethod cnct = new PostMethod(getAddress().toString());
+		PostMethod cnct = new PostMethod(getAddress().toString()+methodPath);
 		cnct.setRequestBody(data);
 		
 		
@@ -215,7 +221,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 			int statusCode = client.executeMethod(cnct);
 
 			if (statusCode != HttpStatus.SC_OK) {
-				log.error("Method failed: " + cnct.getStatusLine());
+				log.error("Method at " + getAddress().toString() + " failed: " + cnct.getStatusLine());
 			} else {
 				// Read the response body.
 				responseBody = cnct.getResponseBody();
