@@ -458,6 +458,69 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			abort = true;
 		}
 	}
+	/**
+	 * Threaded class for dispatching and collecting a single recommender query.
+	 * 
+	 * @author fei
+	 */
+	public class FeedbackDispatcher extends Thread {
+		private TagRecommender recommender;
+		private boolean abort = false;
+		Post<? extends Resource> post;
+
+		/**
+		 * Constructor for creating a query dispatcher.
+		 * @param recommender Recommender whos query should be dispatched
+		 * @param post user's post to query the recommender for
+		 * @param qid unique id identifying set of queries
+		 * @param recId 
+		 * @param recommendedTags previously recommended tags
+		 */
+		public FeedbackDispatcher(TagRecommender recommender,
+				Post<? extends Resource> post) {
+			this.recommender = recommender;
+			this.post = post;
+		}
+
+		/**
+		 * Get managed recommender's info.
+		 * @return recommender's info text
+		 */
+		public String getInfo() {
+			// just return recommenders info
+			return recommender.getInfo();
+		}
+
+		/**
+		 * Dispatch and collect query.
+		 */
+		public void run() {
+			// for query-time logging
+			long time = System.currentTimeMillis();
+			SortedSet<RecommendedTag> preset = null;
+			// actually query the recommender
+			try {
+				recommender.setFeedback(this.post);
+			} catch( Exception e ) {
+				log.error("Error setting feedback for recommender " + recommender.getInfo(), e);
+			}
+			time = System.currentTimeMillis()-time;
+			if( !abort ) {
+				log.info("run finished in time " + time);
+			} else {
+				log.info("Setting feedback for recommender " + recommender.getInfo() + " timed out (" + time + ")");
+			}
+		}
+
+		/**
+		 * Tell dispatcher that he timed out.
+		 */
+		public void abortQuery() {
+			abort = true;
+		}
+	}
+	
+	
 	public DBLogic getDbLogic() {
 		return this.dbLogic;
 	}
@@ -466,18 +529,56 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	}
 	@Override
 	public void setFeedback(Post<? extends Resource> post) {
-		final Post<? extends Resource> filteredPost = postPrivacyFilter.filterPost(post);
-		/*
-		 * TODO: local recommenders should get the real post, distRecommenders
-		 * the filtered post. be careful: the filtered post might be null, i.e.,
-		 * it is non-public.
-		 *
-		 */
 		try {
 			dbLogic.connectWithPost(post, post.getContentId());
 		} catch (SQLException e) {
 			throw new RuntimeException("Could not connect post: " + e);
 		}
+		
+		
+		/*
+		 * TODO: the filteredPost is null, when it is non public!
+		 * Thus: check for null posts and ignore them for suggestion.
+		 * (or: ignore the remote recommenders, see below)
+		 * 
+		 * TODO: local recommenders should get the unfiltered posts, such that
+		 * we get some suggestions for sure.
+		 * 
+		 *  For the challenge, we just put all participants recommenders into
+		 *  the distRecommender list, such that they don't get private posts.
+		 * 
+		 */
+		// list for managing pending recommenders
+		List<FeedbackDispatcher> dispatchers = new ArrayList<FeedbackDispatcher>();
+		final Post<? extends Resource> filteredPost = postPrivacyFilter.filterPost(post);
+		if (filteredPost != null) {
+			// apply post modifiers
+			for( PostModifier pm : getPostModifiers() )
+				pm.alterPost(filteredPost);
+			// send feedback to remote recommenders
+			for( TagRecommenderConnector con: getDistRecommenders() ) {
+				FeedbackDispatcher dispatcher = 
+					new FeedbackDispatcher(con, post);
+				dispatchers.add(dispatcher);
+				dispatcher.start();
+			}
+		}
+
+
+		/*
+		 * set feedback for local recommenders
+		 * 
+		 * they get the unfiltered post, since we trust them
+		 */
+		for( TagRecommender rec: getLocalRecommenders() ) {
+			// query recommender
+			// FIXME: local recommenders are also aborded when timout is reached,
+			//        so their might be now recommendations at all
+			FeedbackDispatcher dispatcher = 
+				new FeedbackDispatcher(rec, post);
+			dispatchers.add(dispatcher);
+			dispatcher.start();
+		};
 	}
 	public void setPostModifiers(List<PostModifier> postModifiers) {
 		this.postModifiers = postModifiers;

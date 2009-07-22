@@ -41,6 +41,18 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	Renderer renderer;
 	final Logger log = Logger.getLogger(WebserviceTagRecommender.class);
 	
+	// FIXME: These values are also used in TagRecommenderServlet and should
+	//        be defined in a class commonly accessible
+	/** post parameter for the feedback (xml-)post model */
+	public final String ID_FEEDBACK = "feedback";
+	/** post parameter for the recommendation (xml-)post model */
+	public final String ID_RECQUERY = "data";
+	/** post parameter for the post id */
+	public final String ID_POSTID   = "postID";
+	
+	//------------------------------------------------------------------------
+	// constructors
+	//------------------------------------------------------------------------
 	/**
 	 * Constructor
 	 */
@@ -55,89 +67,97 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		client = new HttpClient();
 		this.renderer = XMLRenderer.getInstance();
 	}
+	//------------------------------------------------------------------------
+	// WebserviceTagRecommender interface
+	//------------------------------------------------------------------------
+	public void setAddress(URI address) {
+		this.address = address;
+	}
+
+	public URI getAddress() {
+		return address;
+	}
 	
+	//------------------------------------------------------------------------
+	// TagRecommender interface
+	//------------------------------------------------------------------------
 	public void addRecommendedTags(
 			Collection<RecommendedTag> recommendedTags,
 			Post<? extends Resource> post) {
+		// render post
+		// FIXME: choose buffer size
+		StringWriter sw = new StringWriter(100);
+		renderPost(post, sw);
+		
+		
+		// Create a method instance.
+		PostMethod cnct = new PostMethod(getAddress().toString());
+		NameValuePair[] data = {
+				new NameValuePair(ID_RECQUERY, sw.toString()),
+				new NameValuePair(ID_POSTID, post.getContentId().toString())
+		};
+
+		// send request
+		InputStreamReader input = sendRequest(data);
+
+		// Deal with the response.
+		SortedSet<RecommendedTag> result = null;
+		if( input!=null ) {
+			result = renderer.parseRecommendedTagList(input);
+		}
+		if( result!=null )
+			recommendedTags.addAll(result);
+	}
+
+
+	public SortedSet<RecommendedTag> getRecommendedTags(
+			Post<? extends Resource> post) {
+		SortedSet<RecommendedTag> retVal = 
+			new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+		addRecommendedTags(retVal, post);
+		return retVal;
+	}
+
+
+	@Override
+	public void setFeedback(Post<? extends Resource> post) {
+		// render post
+		// FIXME: choose buffer size
+		StringWriter sw = new StringWriter(100);
+		renderPost(post, sw);
+		
+		// Create a method instance.
+		NameValuePair[] data = {
+				new NameValuePair(ID_FEEDBACK, sw.toString()),
+				new NameValuePair(ID_POSTID, post.getContentId().toString())
+		};
+
+		// send request
+		InputStreamReader input = sendRequest(data);
+
+		// Deal with the response.
+		if( input!=null ) {
+			String status = renderer.parseStat(input);
+			log.info("Feedback status: " + status);
+		}
+	}
+
+	public byte[] getMeta() {
+		return getAddress().toString().getBytes();
 	}
 
 	public String getInfo() {
 		return "Webservice";
 	}
 
-	public SortedSet<RecommendedTag> getRecommendedTags(
-			Post<? extends Resource> post) {
-		// serialize post
-		// FIXME choose buffer size
-		StringWriter sw = new StringWriter(100);
-		final ViewModel vm = new ViewModel();
-		// we use rest-api's xml rederer which perfoms some validation tests which our
-		// post model has to pass:
-		// 1) set hashes
-		// 2) append 'empty' tag
-		// 3) set empty title
-		if( post.getResource().getInterHash()==null || post.getResource().getInterHash().length()==0 )
-			post.getResource().setInterHash("abc");
-		if( post.getResource().getIntraHash()==null || post.getResource().getIntraHash().length()==0 )
-			post.getResource().setIntraHash("abc");
-		if( (post.getTags()==null) || (post.getTags().size()==0) ) {
-			Set tags = new HashSet<Tag>();
-			tags.add(TagUtils.getEmptyTag());
-			post.setTags(tags);
-		}
-		if( post.getResource().getTitle()==null ) {
-			post.getResource().setTitle("");
-		}
-		renderer.serializePost(sw, post, vm);		
-
-		// Create a method instance.
-		PostMethod cnct = new PostMethod(getAddress().toString());
-		NameValuePair[] data = {
-				new NameValuePair("data", sw.toString())
-		};
-
-		cnct.setRequestBody(data);
-		SortedSet<RecommendedTag> result = null;
-		try {
-			// Execute the method.
-			int statusCode = client.executeMethod(cnct);
-
-			if (statusCode != HttpStatus.SC_OK) {
-				log.error("Method failed: " + cnct.getStatusLine());
-			}
-
-			// Read the response body.
-			byte[] responseBody = cnct.getResponseBody();
-
-			// Deal with the response.
-			// Use caution: ensure correct character encoding and is not binary data
-			log.info("Got response: " + new String(responseBody));
-
-			InputStreamReader input = null;
-			// returns InputStream with correct encoding
-			input = new InputStreamReader(cnct.getResponseBodyAsStream(), "UTF-8");
-			result = renderer.parseRecommendedTagList(input);
-
-		} catch (HttpException e) {
-			log.fatal("Fatal protocol violation("+getAddress()+"): " + e.getMessage(), e);
-		} catch (UnsupportedEncodingException ex) {
-			// returns InputStream with default encoding if a exception
-			// is thrown with utf-8 support
-			log.fatal("Encoding error("+getAddress()+"): " + ex.getMessage(), ex);
-		} catch (IOException e) {
-			log.fatal("Fatal transport error("+getAddress()+"): " + e.getMessage(), e);
-		} catch (Exception e) {
-			log.fatal("Unknown error ("+getAddress()+")", e);
-		} finally {
-			// Release the connection.
-			cnct.releaseConnection();
-		}  		
-		if( result!=null )
-			return result;
-		else 
-			return new TreeSet<RecommendedTag>(new RecommendedTagComparator());
+	@Override
+	public String getId() {
+		return getAddress().toString();
 	}
 
+	//------------------------------------------------------------------------
+	// TagRecommenderConnector interface
+	//------------------------------------------------------------------------
 	public boolean connect() throws Exception {
 		// TODO Auto-generated method stub
 		return false;
@@ -152,29 +172,76 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-	public byte[] getMeta() {
-		return getAddress().toString().getBytes();
-	}
-
-	public void setAddress(URI address) {
-		this.address = address;
-	}
-
-	public URI getAddress() {
-		return address;
-	}
-
-	@Override
-	public String getId() {
-		return getAddress().toString();
-	}
-
-	@Override
-	public void setFeedback(Post<? extends Resource> post) {
-		// TODO
-		throw new RuntimeException("not implemented");
-	}
-
 	
+	
+	//------------------------------------------------------------------------
+	// private helpers
+	//------------------------------------------------------------------------
+
+	private void renderPost(Post<? extends Resource> post, StringWriter sw) {
+		final ViewModel vm = new ViewModel();
+		// we use rest-api's xml rederer which perfoms some validation tests which our
+		// post model has to pass:
+		// 1) set hashes
+		// 2) append 'empty' tag
+		// 3) set empty title
+		if( post.getResource().getInterHash()==null || post.getResource().getInterHash().length()==0 )
+			post.getResource().setInterHash("abc");
+		if( post.getResource().getIntraHash()==null || post.getResource().getIntraHash().length()==0 )
+			post.getResource().setIntraHash("abc");
+		if( (post.getTags()==null) || (post.getTags().size()==0) ) {
+			Set<Tag> tags = new HashSet<Tag>();
+			tags.add(TagUtils.getEmptyTag());
+			post.setTags(tags);
+		}
+		if( post.getResource().getTitle()==null ) {
+			post.getResource().setTitle("");
+		}
+		renderer.serializePost(sw, post, vm);		
+	}
+	
+	
+	private InputStreamReader sendRequest(NameValuePair[] data) {
+		// Create a method instance.
+		PostMethod cnct = new PostMethod(getAddress().toString());
+		cnct.setRequestBody(data);
+		
+		
+		InputStreamReader input = null;
+		byte[] responseBody = null;
+		
+		try {
+			// Execute the method.
+			int statusCode = client.executeMethod(cnct);
+
+			if (statusCode != HttpStatus.SC_OK) {
+				log.error("Method failed: " + cnct.getStatusLine());
+			} else {
+				// Read the response body.
+				responseBody = cnct.getResponseBody();
+				input        = new InputStreamReader(cnct.getResponseBodyAsStream(), "UTF-8");
+			}
+
+		} catch (HttpException e) {
+			log.fatal("Fatal protocol violation("+getAddress()+"): " + e.getMessage(), e);
+		} catch (UnsupportedEncodingException ex) {
+			// returns InputStream with default encoding if a exception
+			// is thrown with utf-8 support
+			log.fatal("Encoding error("+getAddress()+"): " + ex.getMessage(), ex);
+		} catch (IOException e) {
+			log.fatal("Fatal transport error("+getAddress()+"): " + e.getMessage(), e);
+		} catch (Exception e) {
+			log.fatal("Unknown error ("+getAddress()+")", e);
+		} finally {
+			// Release the connection.
+			cnct.releaseConnection();
+		}  	
+		
+		// all done.
+		if( responseBody!=null ) {
+			log.debug("Got response: " + new String(responseBody));
+			return input;
+		} else 
+			return null;
+	}
 }
