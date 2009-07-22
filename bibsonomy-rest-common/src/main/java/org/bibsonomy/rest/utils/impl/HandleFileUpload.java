@@ -53,8 +53,8 @@ public class HandleFileUpload implements FileUploadInterface {
 	private String md5hash;
 	private FileItem upFile;
 
-	private String docpath = null;
-
+	private String docPath;
+	
 	/**
 	 * firefox extion
 	 */
@@ -78,15 +78,13 @@ public class HandleFileUpload implements FileUploadInterface {
 		df.setTimeZone(TimeZone.getDefault());
 	}
 
-	
 	/**
-	 * initializes the file upload handler
-	 * 
-	 * @param items
-	 * @param allowedExt
-	 * @throws UnsupportedFileTypeException
+	 * default constructor
 	 */
-	public void setUp(final List<FileItem> items, String[] allowedExt) throws UnsupportedFileTypeException {
+	protected HandleFileUpload(final List<FileItem> items, String[] allowedExt, String docPath) {
+
+		this.docPath = docPath;
+		
 		if (items.size() == 1) {
 
 			this.upFile = items.get(0);
@@ -120,13 +118,6 @@ public class HandleFileUpload implements FileUploadInterface {
 	}
 
 	/**
-	 * default constructor
-	 */
-	public HandleFileUpload() {
-
-	}
-
-	/**
 	 * writes an uploaded file to the disk and returns the object
 	 * 
 	 * @return file
@@ -134,10 +125,10 @@ public class HandleFileUpload implements FileUploadInterface {
 	 */
 	public File writeUploadedFile() throws Exception {
 
-		File file = new File(FileUtil.getDocumentPath(this.docpath, this.fileHash));
+		File file = new File(FileUtil.getDocumentPath(this.docPath, this.fileHash));
 
 		try {
-			this.upFile.write(new File((FileUtil.getDocumentPath(this.docpath, this.fileHash))));
+			this.upFile.write(new File((FileUtil.getDocumentPath(this.docPath, this.fileHash))));
 		} catch (Exception ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
@@ -147,11 +138,11 @@ public class HandleFileUpload implements FileUploadInterface {
 	}
 
 	@Override
-	public Document writeUploadedFile(String docpath, String userName) throws Exception {
+	public Document writeUploadedFile(String docPath, String userName) throws Exception {
 
 		Document document = null;
 
-		File file = new File(FileUtil.getDocumentPath(docpath, fileHash));
+		File file = new File(FileUtil.getDocumentPath(docPath, fileHash));
 
 		try {
 			this.upFile.write(file);
@@ -177,7 +168,7 @@ public class HandleFileUpload implements FileUploadInterface {
 
 		Document document = null;
 
-		File file = new File(FileUtil.getDocumentPath(this.docpath, fileHash));
+		File file = new File(FileUtil.getDocumentPath(this.docPath, fileHash));
 
 		try {
 			this.upFile.write(file);
@@ -203,7 +194,7 @@ public class HandleFileUpload implements FileUploadInterface {
 		
 		Document document = null;
 
-		final File file = new File(FileUtil.getDocumentPath(this.docpath, fileHash));
+		final File file = new File(FileUtil.getDocumentPath(this.docPath, fileHash));
 
 		try {
 			this.upFile.write(file);
@@ -222,14 +213,5 @@ public class HandleFileUpload implements FileUploadInterface {
 		}
 
 		return document;
-	}
-
-	@Override
-	public String getDocpath() {
-		return this.docpath;
-	}
-
-	public void setDocpath(String docpath) {
-		this.docpath = docpath;
 	}
 }
