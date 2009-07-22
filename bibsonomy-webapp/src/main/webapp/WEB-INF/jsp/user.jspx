@@ -84,7 +84,7 @@
 					<fmt:message key="users.similar"/>
 					<c:out value=" "/><a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
 				</span>
-				<users:related cmd="${command.relatedUserCommand}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
+				<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${false}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
 			</li>
 			
 			<!-- display tags -->
