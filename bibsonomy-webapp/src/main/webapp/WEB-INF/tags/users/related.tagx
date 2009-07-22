@@ -7,6 +7,8 @@
 	<jsp:directive.attribute name="cmd" type="org.bibsonomy.webapp.command.RelatedUserCommand" required="true" />
 	<jsp:directive.attribute name="userSimilarity" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false" />
+	<jsp:directive.attribute name="ckey" type="java.lang.String"/>
+	<jsp:directive.attribute name="displayFollowLink" type="java.lang.Boolean"/>
 
 	<!--  counter for the ranking position of similar users -->
 	<c:set var="userRank" value="${0}"/>
@@ -56,6 +58,13 @@
 			<li class="${userclass}">			  
 		      <a title="${userTitle}" rel="${userSimilarityRef}" href="${userUrl}">${fn:escapeXml(user.name)}</a>
 		      <c:out value=" "/>
+		      	<c:if test="${displayFollowLink}">	      
+				<a class="action"
+						onClick="javascript:addFollowerFollowerPage('${user.name}', this, '${ckey}');"
+						style="cursor: pointer;" title="${addFriendTitle}">
+    		        <fmt:message key="follow.link.text.follow" />
+                </a>		  
+                </c:if>    		      
 		    </li>
 		</c:forEach>
 	</ul> 	
