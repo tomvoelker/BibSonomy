@@ -108,7 +108,12 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		// Deal with the response.
 		SortedSet<RecommendedTag> result = null;
 		if( input!=null ) {
-			result = renderer.parseRecommendedTagList(input);
+			try {
+				result = renderer.parseRecommendedTagList(input);
+			} catch( Exception e ) {
+				log.error("Error parsing recommender response ("+getAddress().toString()+").", e);
+				result = null;
+			}
 		}
 		if( result!=null )
 			recommendedTags.addAll(result);
