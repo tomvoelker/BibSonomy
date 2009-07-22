@@ -418,7 +418,7 @@
 				</entry>	
 				<entry key="/followers">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="followersViewController"/>
+						<property name="controllerBeanName" value="followersPageController"/>
 					</bean>
 				</entry>
 				<entry key="/batchEdit_new">
@@ -570,8 +570,14 @@
 		<property name="logic" ref="logic"/>
 	</bean>
 	
-	<bean id="followersViewController" class="org.bibsonomy.webapp.controller.FollowersViewController" scope="request">
+	<bean id="followersPageController" class="org.bibsonomy.webapp.controller.FollowersPageController" scope="request">
 		<property name="logic" ref="logic"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>		
 	</bean>
 	
 	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
