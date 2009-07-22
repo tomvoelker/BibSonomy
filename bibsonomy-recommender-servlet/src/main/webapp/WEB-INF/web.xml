@@ -50,9 +50,15 @@
 	     -->
 	    <param-value>mypackage.MyTagRecommender</param-value>
 	</context-param>
-
+<!-- 
 	<servlet-mapping>
 		<servlet-name>TagRecommenderServlet</servlet-name>
 		<url-pattern>/TagRecommenderServlet</url-pattern>
 	</servlet-mapping>
+ -->
+	<servlet-mapping>
+		<servlet-name>TagRecommenderServlet</servlet-name>
+		<url-pattern>/TagRecommenderServlet/*</url-pattern>
+	</servlet-mapping>
+
 </web-app>

@@ -44,7 +44,7 @@
 			Query Recommender
 	</a></li>
 	<li>
-		<a href="TagRecommenderServlet?feedback=%3Cbibsonomy+stat%3D%22ok%22%3E+++++%3Cpost+postingdate%3D%222009-03-26T12%3A12%3A12.179%2B01%3A00%22%3E+++++++++%3Cuser+name%3D%22foo%22+href%3D%22http%3A%2F%2Fwww.bibsonomy.org%2Fapi%2Fusers%2Ffoo%22%2F%3E+++++++++%3Cgroup+name%3D%22bar%22+href%3D%22http%3A%2F%2Fwww.bibsonomy.org%2Fapi%2Fgroups%2Fbar%22%2F%3E+++++++++%3Ctag+name%3D%22foobar%22+href%3D%22http%3A%2F%2Fwww.bibsonomy.org%2Fapi%2Ftags%2Ffoobar%22%2F%3E+++++++++%3Cbibtex+year%3D%222009%22+title%3D%22foo+and+bar%22+intrahash%3D%22abc%22+interhash%3D%22abc%22+href%3D%22http%3A%2F%2Fwww.bibsonomy.org%2Fapi%2Fusers%2Ffoo%2Fposts%2Fabc%22+entrytype%3D%22twse%22+bibtexKey%3D%22test%22%2F%3E+++++%3C%2Fpost%3E+%3C%2Fbibsonomy%3E&amp;postID=23">
+		<a href="TagRecommenderServlet/setFeedback?feedback=%3Cbibsonomy+stat%3D%22ok%22%3E+++++%3Cpost+postingdate%3D%222009-03-26T12%3A12%3A12.179%2B01%3A00%22%3E+++++++++%3Cuser+name%3D%22foo%22+href%3D%22http%3A%2F%2Fwww.bibsonomy.org%2Fapi%2Fusers%2Ffoo%22%2F%3E+++++++++%3Cgroup+name%3D%22bar%22+href%3D%22http%3A%2F%2Fwww.bibsonomy.org%2Fapi%2Fgroups%2Fbar%22%2F%3E+++++++++%3Ctag+name%3D%22foobar%22+href%3D%22http%3A%2F%2Fwww.bibsonomy.org%2Fapi%2Ftags%2Ffoobar%22%2F%3E+++++++++%3Cbibtex+year%3D%222009%22+title%3D%22foo+and+bar%22+intrahash%3D%22abc%22+interhash%3D%22abc%22+href%3D%22http%3A%2F%2Fwww.bibsonomy.org%2Fapi%2Fusers%2Ffoo%2Fposts%2Fabc%22+entrytype%3D%22twse%22+bibtexKey%3D%22test%22%2F%3E+++++%3C%2Fpost%3E+%3C%2Fbibsonomy%3E&amp;postID=23">
 			Set Feedback for Recommender
 	</a></li>
 </ul>
