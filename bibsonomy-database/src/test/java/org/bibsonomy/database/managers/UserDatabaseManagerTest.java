@@ -260,7 +260,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		 * fetch the two related users of testuser1 by jaccard measure
 		 */
 		final String requestedUserName = "testuser1";
-		List<User> users = this.userDb.getRelatedUsersBySimilarity(requestedUserName, UserRelation.JACCARD, 0, 10, this.dbSession);
+		List<User> users = this.userDb.getRelatedUsersBySimilarity(requestedUserName, null, UserRelation.JACCARD, 0, 10, this.dbSession);
 		assertEquals(2, users.size());
 		assertEquals("testuser2", users.get(0).getName());
 		assertEquals(5, users.get(0).getPrediction());
@@ -269,7 +269,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		/*
 		 * we don't have data for cosine similarity in the DB
 		 */
-		users = this.userDb.getRelatedUsersBySimilarity(requestedUserName, UserRelation.COSINE, 0, 10, this.dbSession);
+		users = this.userDb.getRelatedUsersBySimilarity(requestedUserName, null, UserRelation.COSINE, 0, 10, this.dbSession);
 		assertEquals(0, users.size());
 		
 	}
