@@ -23,7 +23,11 @@
 
 package org.bibsonomy.rest.client.worker.impl;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -93,6 +97,61 @@ public final class GetWorker extends HttpWorker {
 		}
 
 		return new StringReader(sb.toString());
+	}
+	
+	/**
+	 * Download the file
+	 * @param url
+	 * @param file
+	 * @throws ErrorPerformingRequestException
+	 * @author Waldemar Biller
+	 */
+	public void performFileDownload(final String url, File file) throws ErrorPerformingRequestException {
+		
+		LOGGER.debug("GET: URL: " + url);
+		
+		// dirty but working
+		if (this.proxyHost != null){
+			getHttpClient().getHostConfiguration().setProxy(this.proxyHost, this.proxyPort);
+		}
+		
+		final GetMethod get = new GetMethod(url);
+		get.addRequestHeader(HEADER_AUTHORIZATION, encodeForAuthorization());
+		get.setDoAuthentication(true);
+		get.setFollowRedirects(true);
+		
+		try {
+			this.httpResult = getHttpClient().executeMethod(get);
+			LOGGER.debug("HTTP result: " + this.httpResult);
+			LOGGER.debug("Content-Type:" + get.getRequestHeaders("Content-Type"));
+			LOGGER.debug("===================================================");			
+			if (get.getResponseBodyAsStream() != null) {
+				
+				// read the file from the source and write it to 
+				// the target given by the file parametetr
+				InputStream in = get.getResponseBodyAsStream();
+				DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)));
+				
+				int bytesRead = 0;
+				int b = 0;
+				do {
+					b = in.read();
+					dos.write(b);
+					callCallback(bytesRead++, get.getResponseContentLength());
+				} while(b > -1);
+				
+				in.close();
+				dos.close();
+				
+				return;
+			}
+		} catch (final IOException e) {
+			LOGGER.debug(e.getMessage(), e);
+			throw new ErrorPerformingRequestException(e);
+		} finally {
+			get.releaseConnection();
+		}
+		throw new ErrorPerformingRequestException("No Answer.");
 	}
 
 	private void callCallback(final int bytesRead, final long responseContentLength) {

@@ -34,7 +34,7 @@ public class CreatePostDocumentQuery extends AbstractQuery<String> {
 	protected String doExecute() throws ErrorPerformingRequestException {
 
 		this.downloadedDocument = this.performMultipartPostRequest(URL_USERS + "/" + this.username + "/posts/" + this.resourceHash + "/documents", this.file);
-		return this.downloadedDocument.toString();
+		return null;
 	}
 
 }

@@ -59,6 +59,14 @@ public abstract class AbstractQuery<T> {
 	private String proxyHost;
 	private int proxyPort;
 	private int statusCode = -1;
+	public int getStatusCode() {
+		return this.statusCode;
+	}
+
+	public void setStatusCode(int statusCode) {
+		this.statusCode = statusCode;
+	}
+
 	private RenderingFormat renderingFormat = RenderingFormat.XML;
 	private ProgressCallback callback;
 
@@ -66,6 +74,14 @@ public abstract class AbstractQuery<T> {
 
 	private T result;
 	private boolean executed = false;
+
+	public boolean isExecuted() {
+		return this.executed;
+	}
+
+	public void setExecuted(boolean executed) {
+		this.executed = executed;
+	}
 
 	protected final Reader performGetRequest(final String url) throws ErrorPerformingRequestException {
 		final GetWorker worker = new GetWorker(this.username, this.apiKey, this.callback);
@@ -90,6 +106,27 @@ public abstract class AbstractQuery<T> {
 		this.statusCode = worker.getHttpResult();
 
 		return result;
+	}
+
+	/**
+	 * Run GET worker to download a file
+	 * @param url
+	 * @param file
+	 * @throws ErrorPerformingRequestException
+	 * @author Waldemar Biller
+	 */
+	protected final void performFileDownload(final String url, final File file) throws ErrorPerformingRequestException {
+		final GetWorker worker;
+		final String absoluteUrl;
+		absoluteUrl = this.apiURL + url;
+
+		worker = new GetWorker(this.username, this.apiKey, this.callback);
+
+		worker.setProxyHost(this.proxyHost);
+		worker.setProxyPort(this.proxyPort);
+
+		worker.performFileDownload(absoluteUrl, file);
+		this.statusCode = worker.getHttpResult();
 	}
 
 	protected final Reader performRequest(final HttpMethod method, final String url, final String requestBody) throws ErrorPerformingRequestException {
