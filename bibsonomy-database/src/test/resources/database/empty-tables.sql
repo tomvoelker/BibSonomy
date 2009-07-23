@@ -85,6 +85,8 @@ DELETE FROM `useruser_similarity2`;
 DELETE FROM `useruser_similarity_measures`;
 DELETE FROM `weights`;
 
+ALTER TABLE `classifier_settings` AUTO_INCREMENT=0;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
