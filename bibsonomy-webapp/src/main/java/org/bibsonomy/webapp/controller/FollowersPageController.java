@@ -19,7 +19,7 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RankingUtil;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.RankingUtil.RankingType;
+import org.bibsonomy.webapp.util.RankingUtil.RankingMethod;
 import org.bibsonomy.webapp.view.Views;
 
 import static org.bibsonomy.util.ValidationUtils.present;
@@ -49,13 +49,11 @@ public class FollowersPageController extends SingleResourceListController implem
 			groupingEntity = GroupingEntity.USER;
 			groupingName = command.getRequestedUser();
 		}
-		Integer rankingPeriod = 0;
-		if (present(command.getRankingPeriod()) && command.getRankingPeriod() > 0) {
-			rankingPeriod = command.getRankingPeriod();
-		}
-		Integer start = rankingPeriod * Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
-		command.setRankingPeriodStart(start + 1);
-		command.setRankingPeriodEnd(start + Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING);		
+		
+		// ranking settings
+		Integer start = command.getRanking().getPeriod() * Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
+		command.getRanking().setPeriodStart(start + 1);
+		command.getRanking().setPeriodEnd(start + Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING);		
 		
 		
 		// handle case when only tags are requested
@@ -67,6 +65,7 @@ public class FollowersPageController extends SingleResourceListController implem
 		command.setSortPageOrder("desc");
 		command.setPersonalized(true);
 		command.setDuplicates("no");
+		
 		
 		// determine which lists to initalize depending on the output format
 		// and the requested resourcetype
@@ -91,7 +90,7 @@ public class FollowersPageController extends SingleResourceListController implem
 			listCommand.setStart(origStart);
 										
 			// compute the ranking for each post in the list
-			RankingUtil.computeRanking(loginUserTags, targetUserTags, command.getListCommand(resourceType).getList(), RankingType.TFIDF, false);
+			RankingUtil.computeRanking(loginUserTags, targetUserTags, command.getListCommand(resourceType).getList(), command.getRanking().getMethodObj(), command.getRanking().getNormalize());
 
 			// post-process & sort
 			this.postProcessAndSortList(command, resourceType);

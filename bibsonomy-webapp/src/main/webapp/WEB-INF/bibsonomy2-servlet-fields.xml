@@ -54,7 +54,7 @@
 				<value>personalized</value>
 				<value>userSimilarity</value>
 				<value>notags</value><!-- boolean (to remove tags from /publ/ page) -->
-				<value>rankingPeriod</value> <!-- ranking period for personalized ranking -->
+				<value>ranking.*</value> <!-- ranking information -->
 			</list>
 		</constructor-arg>
 	</bean>

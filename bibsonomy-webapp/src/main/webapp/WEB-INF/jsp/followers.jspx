@@ -21,7 +21,7 @@
 		  <a rel="path_menu" href="#"><img alt=""
 				src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message
 				key="navi.followees" /></a> ::
-	    	<form:form cssClass="smallform" action="/followers">
+	    	<form:form cssClass="smallform" action="/followers" method="GET">
 				<form:select path="requestedUser">
 					<fmt:message var="allTitle" key="navi.all.persons" />
 					<form:option value="" label="${allTitle}" />
@@ -30,8 +30,10 @@
 							label="${mtl:encodeURI(user.name)}" />
 					</c:forEach>				
 				</form:select>
+				<input type="hidden" name="ranking.method" value="${command.ranking.method}"/>
+				<input type="hidden" name="ranking.normalize" value="${command.ranking.normalize}"/>
 				<fmt:message var="go" key="navi.go" />
-				<input id="button" type="submit" name="submit" value="${go}"/>
+				<input id="button" type="submit" value="${go}" />
 			</form:form>							
 		</jsp:attribute>
 
@@ -63,8 +65,9 @@
 						<fmt:param value="${fn:escapeXml(user.name)}" />
 					</fmt:message>
                   <a class="action"
-						onClick="javascript:removeFollowerFollowerPage('${user.name}', this, '${command.context.ckey}');"
-						style="cursor: pointer;" title="${deleteFriendTitle}">
+						onclick="javascript:removeFollowerFollowerPage('${user.name}', this, '${command.context.ckey}');return false;"
+						style="cursor: pointer;" title="${deleteFriendTitle}"
+						href="/ajax/handleFollower?requestedUserName=${user.name}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=followers">
     		        <fmt:message key="follow.link.text.remove" />
                   </a>
                 </li>
@@ -83,39 +86,84 @@
 				<users:related cmd="${command.relatedUserCommand}" displayFollowLink="${true}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
 			</li>          
 
-          <!--  add a friend
+          <!-- add a follower -->
           <li>
-          	<span class="sidebar_h"><fmt:message key="friends.addfriend"/></span>
-          	<label for="requestedUserName"><fmt:message key="user"/> </label><c:out value=" "/>
-            <input type="text" size="20" name="requestedUserName" id="requestedUserName"/><c:out value=" "/>
-            <fmt:message var="addFriend" key="friends.button.add"/>
-            <input type="submit" name="submit" value="${addFriend}"/>
-          </li>-->            			
+          	<span class="sidebar_h"><fmt:message key="follow.addFollower"/></span>
+          	<form:form action="/ajax/handleFollower" method="POST">
+          		<label for="requestedUserName"><fmt:message key="user"/> </label><c:out value=" "/>
+            	<input size="20" type="text" name="requestedUserName" id="requestedUserName"/>
+            	<fmt:message var="addFollower" key="follow"/>
+            	<input type="hidden" name="forward" value="followers"/>
+            	<input type="hidden" name="ckey" value="${ckey}"/>
+            	<input type="hidden" name="action" value="addFollower"/>
+            	<input type="submit" name="submit" value="${addFollower}"/>            	
+            </form:form>
+          </li>
+          
+          
+          <!--  ranking settings -->
+          <li>
+          	<span class="sidebar_h"><fmt:message key="navi.settings"/></span>
+          	<form:form  method="GET">
+          		<form:select path="ranking.method">          		
+          			<form:option value="tfidf"><fmt:message key="ranking.tfidf"/></form:option>
+          			<form:option value="tag_overlap"><fmt:message key="ranking.tag_overlap"/></form:option>
+          		</form:select>
+          		<br/>
+          		<form:select path="ranking.normalize">
+          			<form:option value="true"><fmt:message key="ranking.normalized"/></form:option>
+          			<form:option value="false"><fmt:message key="ranking.not_normalized"/></form:option>
+          		</form:select>
+          		<input type="hidden" name="requestedUser" value="${command.requestedUser}"/>
+          		<br/>          		
+          		<input type="submit" name="submit" value="${go}"/>
+          	</form:form>          	
+          </li>
+                      			
 		</jsp:attribute>
 		
+		<!-- content heading -->
 		<jsp:attribute name="contentHeading">
+			<fmt:message key="followersPage.about">
+				<fmt:param>${projectHome}help/basic</fmt:param>
+			</fmt:message>		
+			<c:out value=" "/>
+			<c:set var="ofUsers">
+				<c:choose>
+					<c:when test="${empty command.requestedUser or command.requestedUser eq ''}">
+						<fmt:message key="followersPage.entries.ofAllFollowedUsers"/>
+					</c:when>
+					<c:otherwise>
+						<fmt:message key="followersPage.entries.ofUser">
+							<fmt:param><a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a></fmt:param>
+						</fmt:message>
+					</c:otherwise>
+				</c:choose>
+			</c:set>
 			<c:choose>
-				<c:when test="${empty command.rankingPeriod or command.rankingPeriod == 0}">
+				<c:when test="${empty command.ranking.period or command.ranking.period == 0}">
 					<fmt:message key="followersPage.all.mostRecent.contentHeading">
-						<fmt:param>${command.rankingPeriodEnd}</fmt:param>
+						<fmt:param>${command.ranking.periodEnd}</fmt:param>
+						<fmt:param>${ofUsers}</fmt:param>
 					</fmt:message>
 				</c:when>	
 				<c:otherwise>
 					<fmt:message key="followersPage.all.recent.contentHeading">
-						<fmt:param>${command.rankingPeriodStart}</fmt:param>
-						<fmt:param>${command.rankingPeriodEnd}</fmt:param>
+						<fmt:param>${command.ranking.periodStart}</fmt:param>
+						<fmt:param>${command.ranking.periodEnd}</fmt:param>
+						<fmt:param>${ofUsers}</fmt:param>
 					</fmt:message>
 				</c:otherwise>
 			</c:choose>
 			${mtl:ch('nbsp')}
 			<fmt:message key="Show"/>
-			${mtl:ch('nbsp')}			
+			${mtl:ch('nbsp')}
 			<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
-			<c:if test="${not empty command.rankingPeriod and command.rankingPeriod > 0}">
-				<a href="${mtl:setParam(requPathAndQuery, 'rankingPeriod', command.prevRankingPeriod)}" ><fmt:message key="younger"/></a>
+			<c:if test="${not empty command.ranking.period and command.ranking.period > 0}">
+				<a href="${mtl:setParam(requPathAndQuery, 'ranking.period', command.ranking.prevPeriod)}" ><fmt:message key="younger"/></a>
 				| 
 			</c:if>			
-			<a href="${mtl:setParam(requPathAndQuery, 'rankingPeriod', command.nextRankingPeriod)}" ><fmt:message key="older"/></a>
+			<a href="${mtl:setParam(requPathAndQuery, 'ranking.period', command.ranking.nextPeriod)}" ><fmt:message key="older"/></a>
 			${mtl:ch('nbsp')}
 			<fmt:message key="posts"/>.			
 			

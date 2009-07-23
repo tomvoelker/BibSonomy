@@ -42,10 +42,11 @@ function removeFollowerFollowerPage(name, element, ckey){
 		url: "/ajax/handleFollower",  
 		data: "requestedUserName="+ name +"&action=removeFollower&ckey=" + ckey,
 		complete: function changeText(){
+		element.setAttribute("href", "");
 		element.parentNode.style.display='none';
 		element.parentNode.style.visibility='hidden';
 	}
-	});	
+	});		
 }
 
 function addFollowerFollowerPage(name, element, ckey){
@@ -55,9 +56,10 @@ function addFollowerFollowerPage(name, element, ckey){
 		url: "/ajax/handleFollower",  
 		data: "requestedUserName="+ name +"&action=addFollower&ckey=" + ckey,
 		complete: function changeText(){
+		element.setAttribute("href", "");
 		element.parentNode.setAttribute("class", "");
 		document.getElementById("followedUsers").appendChild(element.parentNode);
 		element.parentNode.removeChild(element);
-	}
+	}		
 	});	
 }

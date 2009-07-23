@@ -18,7 +18,7 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RankingUtil;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.RankingUtil.RankingType;
+import org.bibsonomy.webapp.util.RankingUtil.RankingMethod;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -75,7 +75,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 			listCommand.setEntriesPerPage(origEntriesPerPage);
 										
 			// compute the ranking for each post in the list
-			RankingUtil.computeRanking(loginUserTags, targetUserTags, command.getListCommand(resourceType).getList(), RankingType.TFIDF, false);
+			RankingUtil.computeRanking(loginUserTags, targetUserTags, command.getListCommand(resourceType).getList(), RankingMethod.TFIDF, false);
 
 			// post-process & sort
 			this.postProcessAndSortList(command, resourceType);

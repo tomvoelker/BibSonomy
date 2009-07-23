@@ -60,8 +60,9 @@
 		      <c:out value=" "/>
 		      	<c:if test="${displayFollowLink}">	      
 				<a class="action"
-						onClick="javascript:addFollowerFollowerPage('${user.name}', this, '${ckey}');"
-						style="cursor: pointer;" title="${addFriendTitle}">
+						onClick="javascript:addFollowerFollowerPage('${user.name}', this, '${ckey}');return false;"
+						style="cursor: pointer;" title="${addFriendTitle}"
+						href="/ajax/handleFollower?requestedUserName=${user.name}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=followers">
     		        <fmt:message key="follow.link.text.follow" />
                 </a>		  
                 </c:if>    		      

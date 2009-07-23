@@ -75,6 +75,7 @@
 							<list>
 								<value>requestedUserName</value>
 								<value>action</value>
+								<value>forward</value>
 								<value>ckey</value>
 							</list>
 						</property>
