@@ -14,19 +14,8 @@ import org.bibsonomy.model.User;
 public class FollowersViewCommand extends TagResourceViewCommand {
 	private List<User> followersOfUser;
 	private List<User> userIsFollowing;
-	/** 
-	 * the ranking period; starting from 1:
-	 *   - 1: the most recent 1000 posts
-	 *   - 2: most recent 1001 to 2000
-	 *   - 3: most recent 2001 to 3000... 
-	*/
-	private Integer rankingPeriod;
-	
-	/**
-     * Start-/End values for ranking periods
-    */ 
-	private Integer rankingPeriodStart;
-	private Integer rankingPeriodEnd;
+
+	private RankingCommand ranking = new RankingCommand();
 	
 	/**
 	 * defines the similarity measure by which the related users are computed  
@@ -67,43 +56,6 @@ public class FollowersViewCommand extends TagResourceViewCommand {
 		this.userIsFollowing = userIsFollowing;
 	}
 
-	public void setRankingPeriod(Integer rankingPeriod) {
-		this.rankingPeriod = rankingPeriod;
-	}
-
-	public Integer getRankingPeriod() {
-		return rankingPeriod;
-	}
-
-	public void setRankingPeriodStart(Integer rankingPeriodStart) {
-		this.rankingPeriodStart = rankingPeriodStart;
-	}
-
-	public Integer getRankingPeriodStart() {
-		return rankingPeriodStart;
-	}
-
-	public void setRankingPeriodEnd(Integer rankingPeriodEnd) {
-		this.rankingPeriodEnd = rankingPeriodEnd;
-	}
-
-	public Integer getRankingPeriodEnd() {
-		return rankingPeriodEnd;
-	}
-	
-	public Integer getNextRankingPeriod() {
-		if (this.rankingPeriod == null) {
-			return 1;
-		}
-		return this.rankingPeriod + 1;
-	}
-	
-	public Integer getPrevRankingPeriod() {
-		if (this.rankingPeriod == null || this.rankingPeriod == 0) {
-			return 0;
-		}
-		return this.rankingPeriod - 1;
-	}
 
 	public void setUserSimilarity(String userSimilarity) {
 		this.userSimilarity = userSimilarity;
@@ -111,6 +63,14 @@ public class FollowersViewCommand extends TagResourceViewCommand {
 
 	public String getUserSimilarity() {
 		return userSimilarity;
+	}
+
+	public void setRanking(RankingCommand ranking) {
+		this.ranking = ranking;
+	}
+
+	public RankingCommand getRanking() {
+		return ranking;
 	}	
 
 	
