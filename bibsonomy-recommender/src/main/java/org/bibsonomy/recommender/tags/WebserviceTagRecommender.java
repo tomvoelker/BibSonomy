@@ -16,6 +16,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Post;
@@ -24,6 +25,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender.FeedbackDispatcher;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
@@ -96,15 +98,24 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		
 		
 		// Create a method instance.
-		PostMethod cnct = new PostMethod(getAddress().toString());
 		NameValuePair[] data = {
 				new NameValuePair(ID_RECQUERY, sw.toString()),
 				new NameValuePair(ID_POSTID, post.getContentId().toString())
 		};
-
+		// Create a method instance.
 		// send request
-		InputStreamReader input = sendRequest(data, "");
-
+		// FIXME: THIS IS JUST FOR DOWNWARD COMPATIBILITY DURING THE DC09 RECOMMENDER CHALLENGE
+		//        Replace the following three lines of code with:
+		//        InputStreamReader input = sendRequest(data, "/"+METHOD_GETRECOMMENDEDTAGS);
+		PostMethod cnct = new PostMethod(getAddress().toString());
+		cnct.setRequestBody(data);
+		InputStreamReader input = sendRequest(cnct);
+		if( input==null ) {
+			cnct = new PostMethod(getAddress().toString()+"/"+METHOD_GETRECOMMENDEDTAGS);
+			cnct.setRequestBody(data);
+			input = sendRequest(cnct); 
+		}
+		
 		// Deal with the response.
 		SortedSet<RecommendedTag> result = null;
 		if( input!=null ) {
@@ -117,6 +128,8 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		}
 		if( result!=null )
 			recommendedTags.addAll(result);
+		
+		cnct.releaseConnection();
 	}
 
 
@@ -144,13 +157,17 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		};
 
 		// send request
-		InputStreamReader input = sendRequest(data, "/"+METHOD_SETFEEDBACK);
+		PostMethod cnct = new PostMethod(getAddress().toString()+"/"+METHOD_SETFEEDBACK);
+		cnct.setRequestBody(data);
+		InputStreamReader input = sendRequest(cnct);
 
 		// Deal with the response.
 		if( input!=null ) {
 			String status = renderer.parseStat(input);
 			log.info("Feedback status: " + status);
 		}
+		
+		cnct.releaseConnection();
 	}
 
 	public byte[] getMeta() {
@@ -212,12 +229,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	}
 	
 	
-	private InputStreamReader sendRequest(NameValuePair[] data, String methodPath) {
-		// Create a method instance.
-		PostMethod cnct = new PostMethod(getAddress().toString()+methodPath);
-		cnct.setRequestBody(data);
-		
-		
+	private InputStreamReader sendRequest(PostMethod cnct) {
 		InputStreamReader input = null;
 		byte[] responseBody = null;
 		
@@ -245,7 +257,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 			log.fatal("Unknown error ("+getAddress()+")", e);
 		} finally {
 			// Release the connection.
-			cnct.releaseConnection();
+			// cnct.releaseConnection();
 		}  	
 		
 		// all done.
