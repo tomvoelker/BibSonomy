@@ -26,7 +26,7 @@ public class RankingUtil {
 	private static final Logger LOGGER = Logger.getLogger(UserPageController.class);
 	
 	
-	public enum RankingType {
+	public enum RankingMethod {
 		TAG_OVERLAP,
 		TFIDF;
 	}
@@ -39,7 +39,7 @@ public class RankingUtil {
 	 * @param targetUserTags
 	 * @param posts
 	 */
-	public static <T extends Resource> void computeRanking(List<Tag> sourceUserTags, List<Tag> targetUserTags, List<Post<T>> posts, RankingType rtype, Boolean normalize) {
+	public static <T extends Resource> void computeRanking(List<Tag> sourceUserTags, List<Tag> targetUserTags, List<Post<T>> posts, RankingMethod rtype, Boolean normalize) {
 		// first, build map of target user's tags
 		HashMap<String, Integer> tagGlobalCounts = new HashMap<String,Integer>();
 		HashMap<String, Integer> tagUserCounts = new HashMap<String,Integer>();
@@ -54,7 +54,7 @@ public class RankingUtil {
 			}
 		}		
 		// compute a ranking value for each post
-		if (RankingType.TFIDF.equals(rtype)) {
+		if (RankingMethod.TFIDF.equals(rtype)) {
 			for (Post<T> post : posts) {
 				for (Tag tag : post.getTags()) {
 					if (tagGlobalCounts.get(tag.getName()) != null  && targetUserTags.contains(tag) ) {					
@@ -67,7 +67,7 @@ public class RankingUtil {
 				}
 			}			
 		}
-		if (RankingType.TAG_OVERLAP.equals(rtype)) {
+		if (RankingMethod.TAG_OVERLAP.equals(rtype)) {
 			for (Post<T> post : posts) {
 				for (Tag tag : post.getTags()) {
 					if (tagGlobalCounts.get(tag.getName()) != null  && targetUserTags.contains(tag) ) {
