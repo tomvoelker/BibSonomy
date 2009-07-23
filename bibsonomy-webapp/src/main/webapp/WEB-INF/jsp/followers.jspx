@@ -105,14 +105,16 @@
           <li>
           	<span class="sidebar_h"><fmt:message key="navi.settings"/></span>
           	<form:form  method="GET">
+          		<fmt:message key="ranking.method"/>:<c:out value=" "/>
           		<form:select path="ranking.method">          		
           			<form:option value="tfidf"><fmt:message key="ranking.tfidf"/></form:option>
           			<form:option value="tag_overlap"><fmt:message key="ranking.tag_overlap"/></form:option>
           		</form:select>
           		<br/>
+          		<fmt:message key="ranking.normalize"/>:<c:out value=" "/>
           		<form:select path="ranking.normalize">
-          			<form:option value="true"><fmt:message key="ranking.normalized"/></form:option>
-          			<form:option value="false"><fmt:message key="ranking.not_normalized"/></form:option>
+          			<form:option value="true"><fmt:message key="yes"/></form:option>
+          			<form:option value="false"><fmt:message key="no"/></form:option>
           		</form:select>
           		<input type="hidden" name="requestedUser" value="${command.requestedUser}"/>
           		<br/>          		
@@ -125,7 +127,7 @@
 		<!-- content heading -->
 		<jsp:attribute name="contentHeading">
 			<fmt:message key="followersPage.about">
-				<fmt:param>${projectHome}help/basic</fmt:param>
+				<fmt:param>${projectHome}help/basic/groups_and_friends#followers</fmt:param>
 			</fmt:message>		
 			<c:out value=" "/>
 			<c:set var="ofUsers">

@@ -50,6 +50,10 @@
 				        	<fmt:message key="navi.my"/>
 				        	<fmt:message key="navi.bibtex.cap"/>
 				        </a>
+				        <a href="/followers">
+				        	<fmt:message key="navi.my.plural"/>
+				        	<fmt:message key="navi.followers.cap"/>
+				        </a>				        
 					  </div>						
 				</li>
 				<li>
