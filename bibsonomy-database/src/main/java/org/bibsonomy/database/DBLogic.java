@@ -1669,11 +1669,11 @@ public class DBLogic implements LogicInterface {
 			param.setUserName(loggedInUser.getName());
 			param.setRequestedUserName(requestedUser.getName());
 
-//			if (UserRelation.FOLLOWER_OF.equals(relation)) {
-//				if (this.userDBManager.isFollowerOfUser(loggedInUser, requestedUser, session)) {
-//					this.userDBManager.deleteFollowerOfUser(param, session);
-//				}
-//			}
+			if (UserRelation.FOLLOWER_OF.equals(relation)) {
+				if (this.userDBManager.isFollowerOfUser(loggedInUser, requestedUser, session)) {
+					this.userDBManager.deleteFollowerOfUser(param, session);
+				}
+			}
 			if (UserRelation.FRIEND_OF.equals(relation)) {
 				this.userDBManager.deleteFriendOfUser(param, session);
 			}
@@ -1698,11 +1698,11 @@ public class DBLogic implements LogicInterface {
 			param.setUserName(loggedInUser.getName());
 			param.setRequestedUserName(requestedUser.getName());
 
-//			if (UserRelation.FOLLOWER_OF.equals(relation)) {
-//				if (this.userDBManager.isFollowerOfUser(loggedInUser, requestedUser, session) == false) {
-//					this.userDBManager.addFollowerOfUser(param, session);
-//				}
-//			}
+			if (UserRelation.FOLLOWER_OF.equals(relation)) {
+				if (this.userDBManager.isFollowerOfUser(loggedInUser, requestedUser, session) == false) {
+					this.userDBManager.addFollowerOfUser(param, session);
+				}
+			}
 		} finally {
 			session.close();
 		}
