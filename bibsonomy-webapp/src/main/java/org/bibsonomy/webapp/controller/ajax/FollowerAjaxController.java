@@ -4,6 +4,7 @@ import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.webapp.command.ajax.FollowerAjaxCommand;
 import org.bibsonomy.webapp.controller.AjaxController;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -12,6 +13,9 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
+
+import static org.bibsonomy.util.ValidationUtils.present;
+
 
 /**
  * This controller catches ajax requests on the /ajax/handleFollower url
@@ -40,6 +44,8 @@ public class FollowerAjaxController extends AjaxController implements Minimalist
 			return new ExtendedRedirectView("/");
 		}
 		
+		log.error("********* AJAX controller; userName: " + command.getRequestedUserName() + ", action: " + command.getAction() + ", ckey: " + command.getContext().getCkey() + ", forward: " + command.getForward());
+		
 		//check if ckey is valid
 		if (!command.getContext().isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
@@ -52,6 +58,15 @@ public class FollowerAjaxController extends AjaxController implements Minimalist
 		}		
 		if ("removeFollower".equals(command.getAction()) && command.getRequestedUserName() != null){
 			this.removeFollower(command);
+		}
+				
+		// forward to a certain page, if requested 
+		if (present(command.getForward())) {
+//			if (EnumUtils.searchEnumByName(Views.values(), command.getForward()) == null) {
+//				errors.reject("error.invalid_forward_page");
+//				return Views.ERROR;
+//			}
+			return new ExtendedRedirectView("/" + command.getForward());
 		}
 		
 		return Views.AJAX;

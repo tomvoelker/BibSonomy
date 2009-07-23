@@ -41,11 +41,17 @@
 					<div style="margin-top: 10px">
 						<div id="removeLink">
 							<fmt:message key="follow.info.text2"/>
-							<a style="cursor: pointer;" onclick="javascript:removeFollower('${command.requestedUser}', '${command.context.ckey}');"><fmt:message key="follow.link.text.remove"/></a>
+							<a style="cursor: pointer;" 
+							   onclick="javascript:removeFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
+							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${command.requestedUser}">
+							<fmt:message key="follow.link.text.remove"/></a>
 						</div>
 						<div id="followLink" style="visibility:hidden; display:none">
 							<fmt:message key="follow.info.text1"/>
-							<a style="cursor: pointer;" onclick="javascript:addFollower('${command.requestedUser}', '${command.context.ckey}');"><fmt:message key="follow.link.text.follow"/></a>
+							<a style="cursor: pointer;" 
+							   onclick="javascript:addFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
+							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${command.requestedUser}">
+							   <fmt:message key="follow.link.text.follow"/></a>
 						</div>
 					</div>
 					</c:when>
@@ -53,11 +59,17 @@
 					<div style="margin-top: 10px">
 						<div id="removeLink" style="visibility:hidden; display:none">
 							<fmt:message key="follow.info.text2"/>
-							<a style="cursor: pointer;" onclick="javascript:removeFollower('${command.requestedUser}', '${command.context.ckey}');"><fmt:message key="follow.link.text.remove"/></a>							
+							<a style="cursor: pointer;" 
+							   onclick="javascript:removeFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
+							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${command.requestedUser}">
+							   <fmt:message key="follow.link.text.remove"/></a>							
 						</div>
 						<div id="followLink">
 							<fmt:message key="follow.info.text1"/>
-							<a style="cursor: pointer;" onclick="javascript:addFollower('${command.requestedUser}', '${command.context.ckey}');"><fmt:message key="follow.link.text.follow"/></a>
+							<a style="cursor: pointer;" 
+							   onclick="javascript:addFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
+							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${command.requestedUser}">
+							   <fmt:message key="follow.link.text.follow"/></a>
 						</div>
 					</div>
 					</c:otherwise>

@@ -114,19 +114,31 @@
 				<c:choose>				
 					<c:when test="${command.followerOfUser eq true}">
 						<span id="removeLink">
-							<a style="cursor: pointer;" onclick="javascript:removeFollower('${command.requestedUser}');"><fmt:message key="follow.link.text.removeLong"/></a>
+							<a style="cursor: pointer;" 
+							   onclick="javascript:removeFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
+							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
+							   <fmt:message key="follow.link.text.removeLong"/></a>
 						</span>
 						<span id="followLink" style="visibility:hidden; display:none">
 							<fmt:message key="follow.info.text1"/>
-							<a style="cursor: pointer;" onclick="javascript:addFollower('${command.requestedUser}');"><fmt:message key="follow.link.text.followLong"/></a>
+							<a style="cursor: pointer;" 
+							   onclick="javascript:addFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
+							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
+							   <fmt:message key="follow.link.text.followLong"/></a>
 						</span>
 					</c:when>
 					<c:otherwise>
 						<span id="removeLink" style="visibility:hidden; display:none">
-							<a style="cursor: pointer;" onclick="javascript:removeFollower('${command.requestedUser}');"><fmt:message key="follow.link.text.removeLong"/></a>							
+							<a style="cursor: pointer;" 
+							   onclick="javascript:removeFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
+							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
+							   <fmt:message key="follow.link.text.removeLong"/></a>							
 						</span>
 						<span id="followLink">
-							<a style="cursor: pointer;" onclick="javascript:addFollower('${command.requestedUser}');"><fmt:message key="follow.link.text.followLong"/></a>
+							<a style="cursor: pointer;" 
+							   onclick="javascript:addFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
+							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=personalized/user/${command.requestedUser}">
+							   <fmt:message key="follow.link.text.followLong"/></a>
 						</span>
 					</c:otherwise>
 				</c:choose>				
