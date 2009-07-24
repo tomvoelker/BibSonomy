@@ -95,6 +95,9 @@ public class GetPublicationRecommendedTagsController extends RecommendationsAjax
 			 * initialize groups
 			 */
 			initPostGroups(command, command.getPost());
+			
+			// set postID for recommender
+			command.getPost().setContentId(command.getPostID());
 
 			/*
 			 * get the recommended tags for the post from the command

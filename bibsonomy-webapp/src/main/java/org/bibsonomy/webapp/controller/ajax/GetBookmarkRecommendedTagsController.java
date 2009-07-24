@@ -90,18 +90,19 @@ public class GetBookmarkRecommendedTagsController extends RecommendationsAjaxCon
 			 */
 			command.getPost().setUser(loginUser);
 
-			// FIXME: post's grouping is not handled - this is necessary if we don't want private
-			//        posts to be send to remote recommenders
 			/*
 			 * initialize groups
 			 */
 			initPostGroups(command, command.getPost());
 			
+			// set postID for recommender
+			command.getPost().setContentId(command.getPostID());
+			
 			/*
 			 * get the recommended tags for the post from the command
 			 */
 			if (getTagRecommender() != null)	{
-				SortedSet<RecommendedTag> result = getTagRecommender().getRecommendedTags(command.getPost(), command.getPostID()); 
+				SortedSet<RecommendedTag> result = getTagRecommender().getRecommendedTags(command.getPost(), command.getPostID());
 				command.setRecommendedTags(result);
 				Renderer renderer = XMLRenderer.getInstance();
 				StringWriter sw = new StringWriter(100);
