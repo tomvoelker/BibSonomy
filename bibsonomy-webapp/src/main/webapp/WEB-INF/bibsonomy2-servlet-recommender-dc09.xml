@@ -22,6 +22,7 @@
 		<ref bean="distRecommender9"/>
 		<ref bean="distRecommender10"/>
 		<ref bean="distRecommender11"/>
+		<ref bean="distRecommender12"/>
 		<!-- 
 		<ref bean="testRecommender"/>
 		 -->
@@ -123,10 +124,18 @@
 	 	+-->
 	<bean id="distRecommender11" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
 		<property name="address">
-			<value>http://213.135.36.105:8080/bibsonomy-recommender-servlet-2.0.3/TagTRecommenderServlet</value>
+			<value>http://213.135.36.105:8080/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
 		</property>
 	</bean>	 
 	
+	<!--+
+	 	| Sanghun Ju
+	 	+-->
+	<bean id="distRecommender12" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://ecml.jongseo.com:8080/TagRecommenderServlet</value>
+		</property>
+	</bean>	 
 	
 	
 	<!--+
