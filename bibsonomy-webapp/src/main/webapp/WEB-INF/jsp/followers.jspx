@@ -108,7 +108,7 @@
           <!--  ranking settings -->
           <li>
           	<span class="sidebar_h"><fmt:message key="navi.settings"/></span>
-          	<form:form  method="GET">
+          	<form:form  method="GET" action="/followers">
           		<fmt:message key="ranking.method"/>:<c:out value=" "/>
           		<form:select path="ranking.method">          		
           			<form:option value="tfidf"><fmt:message key="ranking.tfidf"/></form:option>
