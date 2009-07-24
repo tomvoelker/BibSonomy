@@ -13,7 +13,7 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
 		
-	<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
+	<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}"
 		command="${command}" requPath="${requPath}"
