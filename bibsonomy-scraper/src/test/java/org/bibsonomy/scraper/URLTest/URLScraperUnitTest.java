@@ -73,6 +73,7 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	private String scrapedReference = null;
 	private String id = null;
 	private String bibFile = null;
+	private boolean enabled = false;
 	private Exception exception = null;
 	
 	/**
@@ -337,6 +338,21 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	 */
 	public void setExpectedRefrence(String expectedRefrence) {
 		this.expectedRefrence = expectedRefrence;
+	}
+
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isEnabled() {
+		return this.enabled;
+	}
+
+	/**
+	 * 
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	/**

@@ -13,14 +13,16 @@
 	<xsd:complexType name="URLTestTyp">
     	<xsd:sequence>
     		<!-- test description -->
-	    	<xsd:element name="TestDescription" type="xsd:string"/>
-	    	<!-- publication example for URL test -->
-	        <xsd:element name="URL" type="xsd:string"/>
-	        <!-- path to bib file which conatins the expected result -->
-        	<xsd:element name="BibFile" type="xsd:string"/>
-        	<!-- package and class name from the associated scraper sub class -->
-    	    <xsd:element name="Scraper" type="xsd:string"/>
-	    </xsd:sequence>
-	    <xsd:attribute name="id" type="xsd:string"/>
+    		<xsd:element name="TestDescription" type="xsd:string"/>
+    		<!-- publication example for URL test -->
+    		<xsd:element name="URL" type="xsd:string"/>
+    		<!-- path to bib file which conatins the expected result -->
+    		<xsd:element name="BibFile" type="xsd:string"/>
+    		<!-- package and class name from the associated scraper sub class -->
+    		<xsd:element name="Scraper" type="xsd:string"/>
+    		<!-- test should be run or not -->
+    		<xsd:element name="Enabled" type="xsd:boolean"></xsd:element>
+    	</xsd:sequence>
+    	<xsd:attribute name="id" type="xsd:string"/>
 	</xsd:complexType>
 </xsd:schema>

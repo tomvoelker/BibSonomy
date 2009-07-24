@@ -85,5 +85,11 @@ public abstract class ScraperUnitTest extends TestCase{
 	public Scraper getScraper() {
 		return this.scraper;
 	}
+	
+	/**
+	 * returns true if the test is enabled in UnitTestData.xml
+	 * @return
+	 */
+	public abstract boolean isEnabled();
 
 }

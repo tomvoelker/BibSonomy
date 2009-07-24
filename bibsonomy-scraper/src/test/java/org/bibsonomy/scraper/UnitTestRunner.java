@@ -71,11 +71,12 @@ public class UnitTestRunner {
 
 			int error = 0;
 			for (final ScraperUnitTest test : unitTests){
-				final TestResult result = test.run();
-				test.setTestResult(result);
-				if (test.isTestFailed())	error++;
+				if (test.isEnabled()) {
+					final TestResult result = test.run();
+					test.setTestResult(result);
+					if (test.isTestFailed())	error++;
+				}
 			}
-
 
 			log.info(LINE);
 			log.info("Tests run: " + unitTests.size() + ", Failures: " + error);

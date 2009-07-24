@@ -51,6 +51,7 @@ public class XMLUnitTestHandler extends DefaultHandler {
 	private static final String ELEMENT_URL = "URL";
 	private static final String ELEMENT_BIB_FILE = "BibFile";
 	private static final String ELEMENT_SCRAPER = "Scraper";
+	private static final String ELEMENT_ENABLED = "Enabled";
 	private static final String ATTRIBUTE_ID = "id";
 	
 	private static final String PATH_TO_BIBS = "org/bibsonomy/scraper/data/";
@@ -105,7 +106,13 @@ public class XMLUnitTestHandler extends DefaultHandler {
 				currentTest.setExpectedRefrence(null);
 			}
 			charBuffer = null;
-		}else if(localName.equals(ELEMENT_SCRAPER)){
+		} else if (localName.equals(ELEMENT_ENABLED)) {
+			if (charBuffer.toString().equals("false")) {
+				currentTest.setEnabled(false);
+			} else {
+				currentTest.setEnabled(true);
+			}
+		} else if (localName.equals(ELEMENT_SCRAPER)) {
 			Scraper scraper;
 			try {
 				scraper = (Scraper) Class.forName(charBuffer.toString()).newInstance();
@@ -138,6 +145,8 @@ public class XMLUnitTestHandler extends DefaultHandler {
 		}else if(localName.equals(ELEMENT_BIB_FILE)){
 			charBuffer = new StringBuffer();
 		}else if(localName.equals(ELEMENT_SCRAPER)){
+			charBuffer = new StringBuffer();
+		}else if(localName.equals(ELEMENT_ENABLED)){
 			charBuffer = new StringBuffer();
 		}
 	}
