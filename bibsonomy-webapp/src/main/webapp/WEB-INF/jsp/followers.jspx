@@ -12,6 +12,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
+		
+	<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}"
 		command="${command}" requPath="${requPath}"
@@ -73,13 +75,15 @@
                 </li>
               </c:forEach>
             </ul>
+            <span id="posts.refresh" style="display:none;visibility:hidden;">
+            	<a style="margin:0.5em;color:#ff6600;" href="${requPathAndQuery}"><fmt:message key="posts.refresh"/></a>
+            </span>
           </li>
           
 			<!-- display similar users -->
 			<li>				
 				<span class="sidebar_h">					 
-					<!-- requPath + query -->
-					<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
+					<!-- requPath + query -->					
 					<fmt:message key="users.similar.your"/>
 					<c:out value=" "/><a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
 				</span>
