@@ -71,8 +71,10 @@
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 	    <property name="triggers">
 	        <list>
+	        	<!-- 
 	            <ref bean="luceneUpdateCronTriggerWithoutIndexOptimization" />
 	            <ref bean="luceneUpdateCronTriggerWithIndexOptimization" />
+	             -->
 	        </list>
 	    </property>
 	</bean>
