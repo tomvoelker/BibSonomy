@@ -23,7 +23,9 @@
 
 package org.bibsonomy.recommender;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -57,11 +59,41 @@ import org.bibsonomy.rest.renderer.impl.XMLRenderer;
  * @author fei
  */
 public class ServletClient {
-	private final static Logger log = Logger.getLogger(ServletClient.class);
-	//private final static String REC_URL = "http://localhost:8080/bibsonomy-recommender-servlet/SimpleContentBasedTagRecommenderServlet";
-	private final static String REC_URL = "http://localhost:8080/bibsonomy-recommender-servlet/DummyTagRecommenderServlet";
+	/** usage string */
+	private static final String MSG_USAGE = "usage: ServletClient <recommender' s base url> <user name>";
 	
-	public static void main( String[] args ) {
+	/** post parameter for the feedback (xml-)post model */
+	public final static String ID_FEEDBACK = "feedback";
+	/** post parameter for the recommendation (xml-)post model */
+	public final static String ID_RECQUERY = "data";
+	/** post parameter for the post id */
+	public final static String ID_POSTID   = "postID";
+
+	/** url map for the getRecommendation method */
+	private static final String METHOD_GETRECOMMENDEDTAGS = "getRecommendedTags";
+	/** url map for the setFeedback method */
+	private static final String METHOD_SETFEEDBACK = "setFeedback";
+	
+	public static void main( String[] args ) throws IOException {
+		//--------------------------------------------------------------------
+		// read parameters
+		//--------------------------------------------------------------------
+		if( args.length<2 ) {
+			usage();
+			return;
+		}
+		String recommenderURL = args[0];
+		String userName       = args[1];
+		
+		System.out.println("URL: "+recommenderURL+"\t User Name: "+userName);
+		
+		ServletClient client = new ServletClient();
+		
+		client.queryRecommender(recommenderURL, createBibTeXPost(userName));
+		client.sendFeedback(recommenderURL, createBibTeXPost(userName));
+	}
+
+	private void queryRecommender(String recommenderURL, Post<?> post) throws IOException {
 		//--------------------------------------------------------------------
 		// serialize a post
 		//--------------------------------------------------------------------
@@ -72,77 +104,120 @@ public class ServletClient {
 		vm.setStartValue(0);
 		vm.setEndValue(10);
 		vm.setUrlToNextResources("www.bibsonomy.org/foo/bar");
-		renderer.serializePost(sw, createBibTeXPost(), vm);
+		renderer.serializePost(sw, post, vm);
 
-		log.debug("Querying recommender for post: " + sw.toString());
 	
 		//--------------------------------------------------------------------
 		// query recommender
 		//--------------------------------------------------------------------
-		// setup http post request
-		HttpClient client = new HttpClient();
-		PostMethod   post = new PostMethod(REC_URL);
-
+		System.out.println("Querying recommender for post: " + sw.toString());
+		// Create a method instance.
 		NameValuePair[] data = {
-				new NameValuePair("data", sw.toString())
+				new NameValuePair(ID_RECQUERY, sw.toString()), 
+				new NameValuePair(ID_POSTID, "0")
 		};
-		post.setRequestBody(data);
+		PostMethod   cnct  = new PostMethod(recommenderURL+"/"+METHOD_GETRECOMMENDEDTAGS);
+		cnct.setRequestBody(data);
 
-		try {
-		      // Execute the method.
-		      int statusCode = client.executeMethod(post);
+		InputStreamReader response = sendRequest(cnct);
 
-		      if (statusCode != HttpStatus.SC_OK) {
-		        log.error("Method failed: " + post.getStatusLine());
-		      }
-		      // Read the response body.
-		      byte[] responseBody = post.getResponseBody();
-
-		      log.debug(new String(responseBody));
-		} catch (HttpException e) {
-		      log.error("Fatal protocol violation.", e);
-		      return;
-		} catch (IOException e) {
-		      log.error("Fatal transport error: ", e);
-		      return;
-		} finally {
-		      // Release the connection.
-		      post.releaseConnection();
-		}
-		
 		//--------------------------------------------------------------------
 		// handle response
 		//--------------------------------------------------------------------
-		// parse xml data
-		InputStreamReader input = null;
-		try {
-			// returns InputStream with correct encoding
-			input = new InputStreamReader(post.getResponseBodyAsStream(), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-		   	  log.error("Unsupported encoding", e);
-		   	  return;
-		} catch (IOException e) {
-		      log.error("Fatal transport error: ", e);
-		      return;
-		};
-		SortedSet<RecommendedTag> result = renderer.parseRecommendedTagList(input);
+		SortedSet<RecommendedTag> result = renderer.parseRecommendedTagList(response);
 			
 		// write out recommended tags
 		for( RecommendedTag tag : result ) {
 			System.out.println("Got tag: " + tag.toString());
 		}
+		cnct.releaseConnection();
+		
+
 	}
 	
+	private void sendFeedback(String recommenderURL, Post<?> post) throws IOException {
+		//--------------------------------------------------------------------
+		// serialize a post
+		//--------------------------------------------------------------------
+		Renderer renderer;
+		renderer = XMLRenderer.getInstance();
+		StringWriter sw = new StringWriter(100);
+		final ViewModel vm = new ViewModel();
+		vm.setStartValue(0);
+		vm.setEndValue(10);
+		vm.setUrlToNextResources("www.bibsonomy.org/foo/bar");
+		renderer.serializePost(sw, post, vm);
+		
+		//--------------------------------------------------------------------
+		// send feedback
+		//--------------------------------------------------------------------
+		System.out.println("Setting feedback...");
+		// Create a method instance.
+		NameValuePair[] feedback = {
+				new NameValuePair(ID_FEEDBACK, sw.toString()), 
+				new NameValuePair(ID_POSTID, "0")
+		};
+		PostMethod cnct = new PostMethod(recommenderURL+"/"+METHOD_SETFEEDBACK);
+		cnct.setRequestBody(feedback);
+
+		InputStreamReader response = sendRequest(cnct);
+
+		//--------------------------------------------------------------------
+		// handle response
+		//--------------------------------------------------------------------
+		// parse xml data
+		renderer = XMLRenderer.getInstance();
+		if( response!=null )
+			System.out.println("Status: " + renderer.parseStat(response));
+		cnct.releaseConnection();
+	}
+	
+	/**
+	 * send an http request
+	 * @param post
+	 * @return
+	 */
+	private InputStreamReader sendRequest(PostMethod   post) {
+		InputStreamReader result = null;
+		HttpClient client  = new HttpClient();
+		
+		try {
+		      // Execute the method.
+		      int statusCode = client.executeMethod(post);
+
+		      if (statusCode != HttpStatus.SC_OK) {
+		        System.err.println("Method failed: " + post.getStatusLine());
+		      }
+		      // Read the response body.
+		      result = new InputStreamReader(post.getResponseBodyAsStream(),"UTF-8");
+		} catch (HttpException e) {
+		      System.err.println("Fatal protocol violation." + e.toString());
+		} catch (UnsupportedEncodingException e) {
+		   	  System.err.println("Unsupported encoding" + e.toString());
+		} catch (IOException e) {
+			  System.err.println("Fatal transport error: " + e.toString());
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * prints usage information to stdout
+	 */
+	private static void usage() {
+		System.out.println(MSG_USAGE);
+	}
+
 	/**
 	 * helper function for creating an example post
 	 * 
 	 * @return a mockup post
 	 */
 	@SuppressWarnings("unused")
-	private static Post<? extends Resource> createBookmarkPost() {
+	private static Post<? extends Resource> createBookmarkPost(String userName) {
 		final Post<Resource> post = new Post<Resource>();
 		final User user = new User();
-		user.setName("foo");
+		user.setName(userName);
 		final Group group = new Group();
 		group.setName("bar");
 		final Tag tag = new Tag();
@@ -166,14 +241,15 @@ public class ServletClient {
 	
 	/**
 	 * helper function for creating an example post
+	 * @param userName 
 	 * 
 	 * @return a mockup post
 	 */
 	@SuppressWarnings("unused")
-	private static Post<? extends Resource> createBibTeXPost() {
+	private static Post<? extends Resource> createBibTeXPost(String userName) {
 		final Post<Resource> post = new Post<Resource>();
 		final User user = new User();
-		user.setName("foo");
+		user.setName(userName);
 		final Group group = new Group();
 		group.setName("bar");
 		final Tag tag = new Tag();
