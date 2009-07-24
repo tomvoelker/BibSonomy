@@ -29,7 +29,7 @@
 	    | Multiplexing tag recommender
 	    +-->
 	<bean id="multiplexingTagRecommender" class="org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender" scope="singleton">
-	    <property name="queryTimeout" value="3000"/>
+	    <property name="queryTimeout" value="2000"/>
 		<property name="distRecommenders" ref="dc09RecommenderList"/>
 		<property name="localRecommenders" ref="localRecommenderList"/>
 		<property name="postModifiers" ref="postModifierList"/>
