@@ -73,7 +73,7 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	private String scrapedReference = null;
 	private String id = null;
 	private String bibFile = null;
-	private boolean enabled = false;
+	private boolean enabled = true;
 	private Exception exception = null;
 	
 	/**

@@ -21,7 +21,7 @@
     		<!-- package and class name from the associated scraper sub class -->
     		<xsd:element name="Scraper" type="xsd:string"/>
     		<!-- test should be run or not -->
-    		<xsd:element name="Enabled" type="xsd:boolean"></xsd:element>
+    		<xsd:element name="Enabled" type="xsd:boolean" maxOccurs="1" minOccurs="0" />
     	</xsd:sequence>
     	<xsd:attribute name="id" type="xsd:string"/>
 	</xsd:complexType>

@@ -109,8 +109,6 @@ public class XMLUnitTestHandler extends DefaultHandler {
 		} else if (localName.equals(ELEMENT_ENABLED)) {
 			if (charBuffer.toString().equals("false")) {
 				currentTest.setEnabled(false);
-			} else {
-				currentTest.setEnabled(true);
 			}
 		} else if (localName.equals(ELEMENT_SCRAPER)) {
 			Scraper scraper;
