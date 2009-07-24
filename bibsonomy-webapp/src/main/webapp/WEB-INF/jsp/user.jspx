@@ -92,7 +92,7 @@
 			<li>				
 				<span class="sidebar_h">					 
 					<!-- requPath + query -->
-					<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
+					<c:set var="requPathAndQuery" value="/${requPath}${requQueryString}"/>
 					<fmt:message key="users.similar"/>
 					<c:out value=" "/><a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
 				</span>
