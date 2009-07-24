@@ -96,17 +96,6 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		StringWriter sw = new StringWriter(100);
 		renderPost(post, sw);
 		
-		if( sw!=null )
-			log.debug("StringWriter: " + sw);
-		else 
-			log.debug("StringWriter is NULL");
-		if( post!=null ) {
-			log.debug("Post: " + post);
-			log.debug("ContendID: " + post.getContentId());
-		}
-		else
-			log.debug("Post is NULL");
-		
 		// Create a method instance.
 		NameValuePair[] data = {
 				new NameValuePair(ID_RECQUERY, sw.toString()),
