@@ -15,6 +15,7 @@ import java.util.TreeSet;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -64,14 +65,15 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	 * Constructor
 	 */
 	public WebserviceTagRecommender(URI address) {
-		// Create an instance of HttpClient.
-		client = new HttpClient();
+		this();
 		this.setAddress(address);
-		this.renderer = XMLRenderer.getInstance();
 	}
 	
 	public WebserviceTagRecommender() {
-		client = new HttpClient();
+		// Create an instance of HttpClient.
+		MultiThreadedHttpConnectionManager connectionManager = 
+      		new MultiThreadedHttpConnectionManager();
+      	client = new HttpClient(connectionManager);
 		this.renderer = XMLRenderer.getInstance();
 	}
 	//------------------------------------------------------------------------
