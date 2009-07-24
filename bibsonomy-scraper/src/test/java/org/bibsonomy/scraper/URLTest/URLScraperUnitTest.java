@@ -341,7 +341,7 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	}
 
 	/**
-	 * 
+	 * returns true if the test is enabled
 	 * @return
 	 */
 	public boolean isEnabled() {
@@ -349,7 +349,7 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	}
 
 	/**
-	 * 
+	 * sets the test to enabled state
 	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
