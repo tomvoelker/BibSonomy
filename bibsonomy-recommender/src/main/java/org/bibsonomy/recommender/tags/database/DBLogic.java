@@ -50,6 +50,25 @@ public interface DBLogic {
 	public abstract Long addRecommender(Long queryId, String recId, String recDescr, byte[] recMeta) throws SQLException;
 
 	/**
+	 * adds given recommender (identified by it's id) to given query
+	 * 
+	 * @param qid query's id
+	 * @param sid recommender's id
+	 * @throws SQLException
+	 */
+	public void addRecommenderToQuery(Long qid, Long sid ) throws SQLException;
+
+	
+	/**
+	 * insert recommender setting into table - if given setting already exists,
+	 * return its id. This should always be embedded into a transaction.
+	 * 
+	 * @return unique identifier for given settings
+	 */
+	public Long insertRecommenderSetting(String recId, String recDescr, byte[] recMeta) throws SQLException;
+
+	
+	/**
 	 * Add result selector to given query.
 	 * @param qid query id
 	 * @param resultSelector
@@ -58,6 +77,24 @@ public interface DBLogic {
 	 * @throws SQLException 
 	 */
 	public abstract Long addResultSelector(Long qid, String selectorInfo, byte[] selectorMeta) throws SQLException;
+
+	/**
+	 * set selection strategy which was applied in given query
+	 * 
+	 * @param qid query's id
+	 * @param rid result selector's id
+	 * @throws SQLException
+	 */
+	public void setResultSelectorToQuery(Long qid, Long rid ) throws SQLException;
+
+   /**
+	 * insert selector setting into table - if given setting already exists,
+	 * return its id. This should always be embedded into a transaction.
+	 * 
+	 * @return unique identifier for given settings
+	 * @throws SQLException 
+	 */
+	public Long insertSelectorSetting(String selectorInfo, byte[] selectorMeta) throws SQLException;
 
 	/**
 	 * Add id of recommender selected for given query.

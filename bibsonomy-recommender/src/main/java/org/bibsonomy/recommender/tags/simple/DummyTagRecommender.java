@@ -34,7 +34,7 @@ public class DummyTagRecommender implements TagRecommender, TagRecommenderConnec
 		log.info("Dummy recommender: addRecommendedTags.");
 
 		// create informative recommendation:
-		for( int i=0; i<(int)(7*Math.random())+3; i++) {
+		for( int i=0; i</*(int)(7*Math.random())+*/5; i++) {
 			double score = Math.random();
 			double confidence = Math.random();
 			DecimalFormat df = new DecimalFormat( "0.00" );

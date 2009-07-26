@@ -8,6 +8,7 @@ import java.util.SortedSet;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
+import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
 import org.bibsonomy.recommender.tags.multiplexer.strategy.RecommendationSelector;
 import org.bibsonomy.recommender.tags.database.DBAccess;
 import org.bibsonomy.recommender.tags.database.DBLogic;
@@ -27,7 +28,7 @@ public class SelectCounter implements RecommendationSelector {
 	/**
 	 * Selection strategy which simply selects each recommended tag
 	 */
-	public void selectResult(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
+	public void selectResult(Long qid, RecommendedTagResultManager resultCache, Collection<RecommendedTag> recommendedTags) throws SQLException {
 		log.debug("Selecting result.");
 		dbLogic.getRecommendations(qid, recommendedTags);
 		setRecoCounter(dbLogic.getActiveRecommenderIDs(qid).size());

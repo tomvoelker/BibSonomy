@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 import org.bibsonomy.model.RecommendedTag;
+import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
 
 /**
  * @author fei
@@ -14,10 +15,11 @@ public interface RecommendationSelector {
 	 * Selects recommendations for given query
 	 * 
 	 * @param qid
+	 * @param resultCache 
 	 * @return
 	 * @throws Exception
 	 */
-	public void selectResult(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException;
+	public void selectResult(Long qid, RecommendedTagResultManager resultCache, Collection<RecommendedTag> recommendedTags) throws SQLException;
 	
 	/**
 	 * selector specific meta informations

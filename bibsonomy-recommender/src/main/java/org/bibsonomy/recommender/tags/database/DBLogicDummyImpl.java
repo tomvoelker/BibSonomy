@@ -30,7 +30,6 @@ public class DBLogicDummyImpl implements DBLogic {
 	private Map<String, Long> recos = new HashMap<String, Long>();
 	
 	
-	
 	@Override
 	public Long addQuery(String userName, Date date, Post<? extends Resource> post, int postID, int queryTimeout) throws SQLException {
 		return new Long(0);
@@ -240,6 +239,33 @@ public class DBLogicDummyImpl implements DBLogic {
 	@Override
 	public String getUserNameByID(int userID) {
 		return "nouser";
+	}
+
+
+	public void addRecommenderToQuery(Long qid, Long sid) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Long insertRecommenderSetting(String recId, String recDescr,
+			byte[] recMeta) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long insertSelectorSetting(String selectorInfo, byte[] selectorMeta)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setResultSelectorToQuery(Long qid, Long rid)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

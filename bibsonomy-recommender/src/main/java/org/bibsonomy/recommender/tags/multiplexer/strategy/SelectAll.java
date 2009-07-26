@@ -2,13 +2,11 @@ package org.bibsonomy.recommender.tags.multiplexer.strategy;
 
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.SortedSet;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.RecommendedTag;
-import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
-import org.bibsonomy.recommender.tags.database.DBAccess;
 import org.bibsonomy.recommender.tags.database.DBLogic;
+import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
 
 /**
  * @author fei
@@ -24,7 +22,7 @@ public class SelectAll implements RecommendationSelector {
 	 * Selection strategy which simply selects each recommended tag
 	 */
 	@Override
-	public void selectResult(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
+	public void selectResult(Long qid, RecommendedTagResultManager resultCache, Collection<RecommendedTag> recommendedTags) throws SQLException {
 		log.debug("Selecting result.");
 		dbLogic.getRecommendations(qid, recommendedTags);
 	}

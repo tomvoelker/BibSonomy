@@ -138,6 +138,8 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#addRecommender(java.lang.Long, java.lang.String, java.lang.String, byte[])
+	 * TODO: remove call to 'insertRecommenderSetting' 
+	 *       and put a corresponding foreign key constraint to the db
 	 */
 	public Long addRecommender(
 			Long queryId, String recId, String recDescr, byte[] recMeta ) throws SQLException {
@@ -161,8 +163,25 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
     	}		
 		
 		return settingId;
-	}		
+	}
 
+	/**
+	 * adds given recommender (identified by it's id) to given query
+	 * 
+	 * @param qid query's id
+	 * @param sid recommender's id
+	 * @throws SQLException
+	 */
+	public void addRecommenderToQuery(Long qid, Long sid ) throws SQLException {
+		SqlMapClient sqlMap = getSqlMapInstance();
+
+    	// connect query with setting
+    	RecQuerySettingParam queryMap = new RecQuerySettingParam();
+    	queryMap.setQid(qid);
+    	queryMap.setSid(sid);
+    	sqlMap.insert("addRecommenderQuerySetting", queryMap);
+	}			
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#addResultSelector(java.lang.Long, java.lang.String, byte[])
 	 */
@@ -189,6 +208,27 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		return selectorID;
 	}
 
+	/**
+	 * set selection strategy which was applied in given query
+	 * 
+	 * @param qid query's id
+	 * @param rid result selector's id
+	 * @throws SQLException
+	 */
+	public void setResultSelectorToQuery(Long qid, Long rid )  {
+		// connect query with setting
+		SelectorQueryMapParam queryMap = new SelectorQueryMapParam();
+		queryMap.setQid(qid);
+		queryMap.setSid(rid);
+		log.info("Storing selection for " + qid + " ("+rid+")");
+		try {
+			sqlMap.insert("addSelectorQuerySetting", queryMap);
+		} catch (SQLException ex) {
+			log.error("ERROR STORING RECOMMENDER SELECTION");
+		}		
+	}
+
+	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#addSelectedRecommender(java.lang.Long, java.lang.Long)
 	 */
@@ -220,7 +260,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		SqlMapClient sqlMap = getSqlMapInstance();
 	   	try {
     		sqlMap.startTransaction();
-    		
+    		sqlMap.startBatch();
     		// insert recommender response
     		// #qid#, #sid#, #latency#, #score#, #confidence#, #tagName# )
     		RecResponseParam response = new RecResponseParam();
@@ -233,7 +273,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
     			response.setScore( tag.getScore() );
     			sqlMap.insert("addRecommenderResponse", response);
     		}    		
-    		
+    		sqlMap.executeBatch();
     		sqlMap.commitTransaction();
     	} finally {
     		sqlMap.endTransaction();
@@ -632,7 +672,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	 * 
 	 * @return unique identifier for given settings
 	 */
-	private Long insertRecommenderSetting(String recId, String recDescr, byte[] recMeta) throws SQLException {
+	public Long insertRecommenderSetting(String recId, String recDescr, byte[] recMeta) throws SQLException {
 		Long settingId = null;
 
 		SqlMapClient sqlMap = getSqlMapInstance();
@@ -669,7 +709,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	 * @return unique identifier for given settings
 	 * @throws SQLException 
 	 */
-	private Long insertSelectorSetting(String selectorInfo, byte[] selectorMeta) throws SQLException {
+	public Long insertSelectorSetting(String selectorInfo, byte[] selectorMeta) throws SQLException {
 		Long selectorID = null;
 
 		SqlMapClient sqlMap = getSqlMapInstance();
@@ -703,7 +743,11 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		SqlMapClient sqlMap = getSqlMapInstance();
 		try {
 			sqlMap.startTransaction();
-
+			sqlMap.startBatch();
+			
+			// set store applied selection strategie's id
+			setResultSelectorToQuery(qid, rid);
+			
 			// insert recommender response
 			// #qid#, #score#, #confidence#, #tagName# )
 			SelectorTagParam response = new SelectorTagParam();
@@ -715,7 +759,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 				response.setScore( tag.getScore() );
 				sqlMap.insert("addSelectedTag", response);
 			}    		
-
+			sqlMap.executeBatch();
 			sqlMap.commitTransaction();
 		} finally {
 			sqlMap.endTransaction();

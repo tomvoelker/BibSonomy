@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.recommender.tags.database.DBLogic;
+import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
 
 /**
  * This selection strategy selects exactly one recommender.
@@ -27,7 +28,7 @@ public class SelectOne implements RecommendationSelector {
 	 * recommender is chosen. 
 	 */
 	@Override
-	public void selectResult(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
+	public void selectResult(Long qid, RecommendedTagResultManager resultCache, Collection<RecommendedTag> recommendedTags) throws SQLException {
 		// TODO Auto-generated method stub
 		
 		log.debug("Selecting result.");
@@ -39,8 +40,10 @@ public class SelectOne implements RecommendationSelector {
 		
 		
 		// if no recommendation available, append nothing
-		if( listAll.size()==0 || listActive.size()==0 ) 
+		if( listAll.size()==0 || listActive.size()==0 ) {
+			log.debug("No results available!");
 			return;
+		};
 		
 		// select recommender
 		Long sid = listAll.get(
