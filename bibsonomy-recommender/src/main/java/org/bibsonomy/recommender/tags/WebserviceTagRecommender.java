@@ -62,7 +62,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	private static final String METHOD_SETFEEDBACK = "setFeedback";
 	
 	private static final int SOCKET_TIMEOUT_MS = 10000;
-	private static final int HTTP_CONNECTION_TIMEOUT_MS = 0;
+	private static final int HTTP_CONNECTION_TIMEOUT_MS = 10000;
 
 	//------------------------------------------------------------------------
 	// constructors
