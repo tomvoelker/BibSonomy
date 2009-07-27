@@ -1,10 +1,10 @@
 <p>\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}\begin{title}\format[HTMLChars,FormatPagesForHTML]{\title}. \end{title}\begin{journal}In: <i>\format[HTMLChars]{\journal}</i> \end{journal}\begin{volume}\format[HTMLChars] {\volume} \end{volume}\begin{year}(\format[HTMLChars] {\year}), \end{year}\begin{number}Nr. \format[HTMLChars]{\number}, \end{number}\begin{pages}S. \format[FormatPagesForHTML]{\pages}\end{pages}<br/>
 \begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a> \end{url}
 <script type="text/javascript"><!-- 
-\begin{abstract}document.write("<a href=\\"javascript:toggleInfo('\bibsonomyIntrahash/\bibsonomyUsername','abstract')\\">[Kurzfassung]</a>&nbsp;"); \end{abstract} document.write("<a href=\\"javascript:toggleInfo('\bibsonomyIntrahash/\bibsonomyUsername','bibtex')\\">[BibTeX]</a>"); 
+\begin{abstract}document.write("<a href=\\"javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','abstract')\\">[Kurzfassung]</a>&nbsp;"); \end{abstract} document.write("<a href=\\"javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','bibtex')\\">[BibTeX]</a>"); 
 --></script>
-<span id="abs_\bibsonomyIntrahash/\bibsonomyUsername" style="display:none"><br/>\format[HTMLChars,FormatPagesForHTML]{\abstract}<br/></span>
-<pre id="bib_\bibsonomyIntrahash/\bibsonomyUsername" style="display:none">
+<span id="abs_\bibsonomyIntrahash\bibsonomyUsername" style="display:none"><br/>\format[HTMLChars,FormatPagesForHTML]{\abstract}<br/></span>
+<pre id="bib_\bibsonomyIntrahash\bibsonomyUsername" style="display:none">
 @\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
   author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
   title = {\format[HTMLChars]{\title}}\end{title}\begin{editor},
