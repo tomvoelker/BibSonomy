@@ -73,6 +73,9 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 		 **/
 		if (command.getImportType() != null) {
 
+			/** look for eventual errors **/
+			this.getValidator().validate(command, errors);
+			
 			/** display potential errors **/
 			if (errors.hasErrors()) {
 				log.debug("Import couldn't get started due to existing errors in form");
