@@ -19,6 +19,9 @@ import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
+import org.apache.commons.httpclient.params.HttpConnectionParams;
+import org.apache.commons.httpclient.params.HttpParams;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
@@ -57,6 +60,9 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	private static final String METHOD_GETRECOMMENDEDTAGS = "getRecommendedTags";
 	/** url map for the setFeedback method */
 	private static final String METHOD_SETFEEDBACK = "setFeedback";
+	
+	private static final int SOCKET_TIMEOUT_MS = 10000;
+	private static final int HTTP_CONNECTION_TIMEOUT_MS = 0;
 
 	//------------------------------------------------------------------------
 	// constructors
@@ -74,6 +80,11 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		MultiThreadedHttpConnectionManager connectionManager = 
       		new MultiThreadedHttpConnectionManager();
       	client = new HttpClient(connectionManager);
+      	HttpConnectionManagerParams connectionParams = connectionManager.getParams();
+      	connectionParams.setSoTimeout(SOCKET_TIMEOUT_MS);
+      	connectionParams.setConnectionTimeout(HTTP_CONNECTION_TIMEOUT_MS);
+      	connectionManager.setParams(connectionParams);
+
 		this.renderer = XMLRenderer.getInstance();
 	}
 	//------------------------------------------------------------------------
@@ -232,7 +243,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	
 	private InputStreamReader sendRequest(PostMethod cnct) {
 		InputStreamReader input = null;
-		byte[] responseBody = null;
+		// byte[] responseBody = null;
 		
 		try {
 			// Execute the method.
@@ -242,7 +253,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 				log.error("Method at " + getAddress().toString() + " failed: " + cnct.getStatusLine());
 			} else {
 				// Read the response body.
-				responseBody = cnct.getResponseBody();
+				// responseBody = cnct.getResponseBody();
 				input        = new InputStreamReader(cnct.getResponseBodyAsStream(), "UTF-8");
 			}
 
@@ -262,10 +273,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		}  	
 		
 		// all done.
-		if( responseBody!=null ) {
-			log.debug("Got response: " + new String(responseBody));
-			return input;
-		} else 
-			return null;
+		// log.debug("Got response: " + new String(responseBody));
+		return input;
 	}
 }
