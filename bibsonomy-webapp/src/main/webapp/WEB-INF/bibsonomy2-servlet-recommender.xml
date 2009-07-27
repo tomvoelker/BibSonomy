@@ -33,6 +33,7 @@
 		<property name="distRecommenders" ref="dc09RecommenderList"/>
 		<property name="localRecommenders" ref="localRecommenderList"/>
 		<property name="postModifiers" ref="postModifierList"/>
+		<property name="tagModifiers" ref="tagFilterList"/>
 		<property name="resultSelector" ref="selectOneWithoutReplacement"/>
 		<property name="dbLogic" ref="recoDBLogic"/>
 	</bean>	  
@@ -53,12 +54,21 @@
 	<util:list id="postModifierList" list-class="java.util.ArrayList">
   		<ref bean="dc09NameToIDMapper"/>
 	</util:list>
-	
+		
+	<util:list id="tagFilterList" list-class="java.util.ArrayList">
+  		<ref bean="scoringFilter"/>
+	</util:list>
 	<!--+
 	    | name mapper
 	    +-->
-	<bean id="dc09NameToIDMapper" class="org.bibsonomy.recommender.tags.multiplexer.DC09NameToIDMapping">
+	<bean id="dc09NameToIDMapper" class="org.bibsonomy.recommender.tags.multiplexer.modifiers.DC09NameToIDMapping">
 		<property name="dbLogic" ref="recoDBLogic"/>
+	</bean>	    
+	
+	<!--+
+	    | invalid scoring filter
+	    +-->
+	<bean id="scoringFilter" class="org.bibsonomy.recommender.tags.multiplexer.modifiers.InvalidScoringFilter">
 	</bean>	    
 	
 	<!--+
