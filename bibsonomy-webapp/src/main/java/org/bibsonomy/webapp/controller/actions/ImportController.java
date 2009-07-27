@@ -76,12 +76,6 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 			/** display potential errors **/
 			if (errors.hasErrors()) {
 				log.debug("Import couldn't get started due to existing errors in form");
-				/*
-				 * TODO: why are you adding error messages? There ARE already 
-				 * errors messages ... those should be meaningful enough!
-				 */
-				errors.reject("error.requiredFields");
-				errors.rejectValue("errorMessage", "error.requiredFields ");
 				return Views.IMPORT;
 			}
 
@@ -102,8 +96,7 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 						return Views.ERROR;
 					}
 				} catch (IOException ex) {
-					errors.reject("error.furtherInformations");
-					command.setErrorMessage(ex.getMessage());
+					errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occured: {0}");
 					log.error("Delicious-Import failed.", ex);
 				}
 			} else if ("firefox".equals(command.getImportType())) {
@@ -126,8 +119,7 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 					file.delete();
 
 				} catch (final Exception ex) {
-					errors.reject("error.furtherInformations");
-					command.setErrorMessage(ex.getMessage());
+					errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occured: {0}");
 				}
 			}
 
