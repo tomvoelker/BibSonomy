@@ -1,2 +1,33 @@
 \begingroup{year}<h3>\year</h3>\endgroup{year}
-<p>\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}\begin{title}\format[HTMLChars]{\title}. \end{title}\begin{editor}In: \format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\editor} (Hrsg.): \end{editor}<i>\begin{booktitle}\format[HTMLChars]{\booktitle}. \end{booktitle}</i>\begin{address}\format[HTMLChars]{\address}: \end{address}\begin{publisher}\format[HTMLChars]{\publisher}, \end{publisher}\begin{year}\format[HTMLChars]{\year}\end{year}\begin{pages}, S. \format[FormatPagesForHTML]{\pages}\end{pages}<br/><a href="http://www.bibsonomy.org/bib/bibtex/\bibsonomyIntrahash/\bibsonomyUsername" target="_bibtex">[BibTeX]</a> <a href="http://www.bibsonomy.org/endnote/bibtex/\bibsonomyIntrahash/\bibsonomyUsername" target="_bibtex">[Endnote]</a>\begin{url} <a href="\url" target="_new">[URL]</a>\end{url}</p>
+<p>\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}\begin{title}\format[HTMLChars,FormatPagesForHTML]{\title}. \end{title}\begin{editor}In: \format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\editor} (Hrsg.): \end{editor}\begin{booktitle}<i>\format[HTMLChars,FormatPagesForHTML]{\booktitle}</i>. \end{booktitle}\begin{edition}\format[HTMLChars]{\edition}. Aufl. \end{edition}\begin{address}\format[HTMLChars]{\address}: \end{address}\begin{publisher}\format[HTMLChars]{\publisher}, \end{publisher}\begin{year}\format[HTMLChars]{\year}\end{year}\begin{volume} (\end{volume}\begin{series}\format[HTMLChars]{\series} \end{series}\begin{volume}\format[HTMLChars]{\volume})\end{volume}\begin{pages}, S. \format[FormatPagesForHTML]{\pages}\end{pages}<br/>
+\begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a> \end{url}
+<script type="text/javascript"><!-- 
+\begin{abstract}document.write("<a href=\\"javascript:toggleInfo('\bibsonomyIntrahash/\bibsonomyUsername','abstract')\\">[Kurzfassung]</a>&nbsp;"); \end{abstract} document.write("<a href=\\"javascript:toggleInfo('\bibsonomyIntrahash/\bibsonomyUsername','bibtex')\\">[BibTeX]</a>"); 
+--></script>
+<span id="abs_\bibsonomyIntrahash/\bibsonomyUsername" style="display:none"><br/>\format[HTMLChars,FormatPagesForHTML]{\abstract}<br/></span>
+<pre id="bib_\bibsonomyIntrahash/\bibsonomyUsername" style="display:none">
+@\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
+  author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
+  title = {\format[HTMLChars]{\title}}\end{title}\begin{editor},
+  editor = {\format[HTMLChars]{\editor}}\end{editor}\begin{booktitle},
+  booktitle = {\format[HTMLChars]{\booktitle}}\end{booktitle}\begin{series},
+  series = {\format[HTMLChars]{\series}}\end{series}\begin{journal},
+  journal = {\format[HTMLChars]{\journal}}\end{journal}\begin{publisher},
+  publisher = {\format[HTMLChars]{\publisher}}\end{publisher}\begin{school},
+  school = {\format[HTMLChars]{\school}}\end{school}\begin{type},
+  type = {\format[HTMLChars]{\type}}\end{type}\begin{address},
+  address = {\format[HTMLChars]{\address}}\end{address}\begin{year},
+  year = {\format[HTMLChars]{\year}}\end{year}\begin{volume},
+  volume = {\format[HTMLChars]{\volume}}\end{volume}\begin{number},
+  number = {\format[HTMLChars]{\number}}\end{number}\begin{pages},
+  pages = {\format[HTMLChars]{\pages}}\end{pages}\begin{edition},
+  edition = {\format[HTMLChars]{\edition}}\end{edition}\begin{note},
+  note = {\format[HTMLChars]{\note}}\end{note}\begin{url},
+  url = {\format[HTMLChars]{\url}}\end{url}\begin{doi},
+  doi = {\format[HTMLChars]{\doi}}\end{doi}\begin{isbn},
+  isbn = {\format[HTMLChars]{\isbn}}\end{isbn}\begin{keywords},
+  keywords = {\format[HTMLChars]{\keywords}}\end{keywords}\begin{abstract},
+  abstract = {\format[HTMLChars]{\abstract}}\end{abstract}
+  }
+</pre></p>
+
