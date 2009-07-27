@@ -48,13 +48,13 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		 */
 		final List<String> requTags = command.getRequestedTagsList();
 		/*
-		 * remember if tags were given by user - if so, forward to special page 
-		 * FIXME: if only system tags are contained, this handling is wrong 
+		 * remember if tags were given by user - if so, forward to special page
+		 * (this also checks of only systemtags are contained) 
 		 */
-		final boolean hasTags = requTags.size() > 0;
-		
-		// check for further system tags
 		List<String> sysTags = SystemTagsUtil.extractSystemTagsFromString(authorQuery, " ");
+		final boolean hasTags = requTags.size() > 0 && requTags.size() > sysTags.size();
+		
+		// check for further system tags		
 		if (sysTags.size() > 0) {
 			// remove them from the query
 			authorQuery = removeSystemtagsFromQuery(authorQuery, sysTags);
