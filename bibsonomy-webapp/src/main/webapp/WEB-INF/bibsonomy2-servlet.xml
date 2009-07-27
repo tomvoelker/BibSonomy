@@ -846,17 +846,6 @@
 	
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
 	
-	<bean id="importController" class="org.bibsonomy.webapp.controller.actions.ImportController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="uploadFactory" ref="uploadHandleFactory"/>
-	</bean>
-	
-	<bean id="importJabRefLayout" class="org.bibsonomy.webapp.controller.actions.JabRefImportController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="uploadFactory" ref="uploadHandleFactory"/>
-	</bean>
-	
-	
 	<!--  #################### factory beans #################### -->
 	
 	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" factory-method="getInstance"/>
@@ -893,6 +882,15 @@
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 	</bean>		
+	
+	<bean id="deliciousImporterFactory" class="org.bibsonomy.importer.bookmark.service.DeliciousImporterFactory">
+		<property name="bundlesPath" value="/v1/tags/bundles/all"/>
+		<property name="postsPath" value="/v1/posts/all"/>
+		<property name="port" value="-1"/>
+		<property name="protocol" value="https"/>
+		<property name="host" value="api.del.icio.us"/>
+		<property name="userAgent" value="Wget/1.9.1"/>
+	</bean>
 	
 	<!--  #################### interceptors #################### -->
 
