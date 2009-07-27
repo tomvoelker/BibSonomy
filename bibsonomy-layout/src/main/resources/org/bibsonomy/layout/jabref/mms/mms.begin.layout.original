@@ -55,8 +55,8 @@ function toggleInfo(articleid,info) {
   display : none;
   }
 
-pre {
-  white-space : pre;
+div {
+  white-space : div;
   }
 
 </style>
