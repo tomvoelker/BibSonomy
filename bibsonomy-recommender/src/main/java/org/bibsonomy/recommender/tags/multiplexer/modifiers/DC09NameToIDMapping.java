@@ -1,4 +1,4 @@
-package org.bibsonomy.recommender.tags.multiplexer;
+package org.bibsonomy.recommender.tags.multiplexer.modifiers;
 
 import java.util.HashMap;
 
@@ -14,16 +14,16 @@ import org.bibsonomy.recommender.tags.database.DBLogic;
  * @author fei
  * @version $Id$
  */
-public class DC09IDToNameMapping implements PostModifier {
-	private static final Logger log = Logger.getLogger(DC09IDToNameMapping.class);
+public class DC09NameToIDMapping implements PostModifier {
+	private static final Logger log = Logger.getLogger(DC09NameToIDMapping.class);
 	private static final String UNKOWNUSER = null;
 	private static final Integer UNKNOWNID = Integer.MIN_VALUE;
 	
 	/** used for mapping user names to ids and vice versa */
 	private DBLogic dbLogic;
 	
-	/** used for caching id->name mappings */
-	private HashMap<Integer,String> idMap;
+	/** used for caching name->id mappings */
+	private HashMap<String,Integer> nameMap;
 	
 	//------------------------------------------------------------------------
 	// public interface 
@@ -31,8 +31,8 @@ public class DC09IDToNameMapping implements PostModifier {
 	/**
 	 * constructor
 	 */
-	public DC09IDToNameMapping() {
-		idMap   = new HashMap<Integer, String>(2000);
+	public DC09NameToIDMapping() {
+		nameMap = new HashMap<String, Integer>(2000);
 	}
 	
 	/**
@@ -42,15 +42,15 @@ public class DC09IDToNameMapping implements PostModifier {
 	 */
 	@Override
 	public void alterPost(Post<? extends Resource> post) {
-		Integer userID  = Integer.parseInt(post.getUser().getName()); 
-		String userName = null;
-		if( (userName = idMap.get(userID))==null )
-			userName = this.getDbLogic().getUserNameByID(userID);
+		String userName = post.getUser().getName();
+		Integer userID = null;
+		if( (userID = nameMap.get(userName))==null )
+			userID = this.getDbLogic().getUserIDByName(userName);
 		
-		if( userName==null )
-			userName= UNKOWNUSER;
-		post.getUser().setName(userName);
-		log.debug("Mapping id "+userID+" to name "+userName);
+		if( userID==null )
+			userID = UNKNOWNID;
+		post.getUser().setName(userID.toString());
+		log.debug("Mapping user "+userName+" to id "+userID);
 	}
 
 	//------------------------------------------------------------------------

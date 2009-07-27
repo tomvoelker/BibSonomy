@@ -18,6 +18,8 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.recommender.tags.TagRecommenderConnector;
 import org.bibsonomy.recommender.tags.database.DBLogic;
+import org.bibsonomy.recommender.tags.multiplexer.modifiers.PostModifier;
+import org.bibsonomy.recommender.tags.multiplexer.modifiers.RecommendedTagModifier;
 import org.bibsonomy.recommender.tags.multiplexer.strategy.RecommendationSelector;
 import org.bibsonomy.recommender.tags.multiplexer.strategy.SelectAll;
 import org.bibsonomy.services.recommender.TagRecommender;
@@ -52,6 +54,9 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	private PostPrivacyFilter postPrivacyFilter;
 	
 	private List<PostModifier> postModifiers;
+	
+	/** before storing recommended tags, all these filters are applied */
+	private List<RecommendedTagModifier> tagModifiers;
 
 	/** indicates that post identifier was not given */
 	public static int UNKNOWN_POSTID = -1;
@@ -86,7 +91,8 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		resultSelector    = new SelectAll();
 		postPrivacyFilter = new PostPrivacyFilter();
 		resultCache       = new RecommendedTagResultManager();
-		setPostModifiers(new LinkedList<PostModifier>());
+		postModifiers     = new LinkedList<PostModifier>();
+		tagModifiers      = new LinkedList<RecommendedTagModifier>();
 	}
 	/**
 	 * destructor
@@ -377,16 +383,11 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * @throws SQLException
 	 */
 	private void selectResult(Long qid, Collection<RecommendedTag> recommendedTags) throws SQLException {
-		// assure that no further results are added while evaluating 
-		// collected responses
-		// TODO current primitive synchronization prohibits parallel result selection
-		log.debug("("+qid+")Entering 'selectResult'");
+		log.debug("("+qid+")starting result selection");
 		
-		synchronized(lockResults) {
-			log.debug("("+qid+")starting result selection");
-			resultSelector.selectResult(qid, resultCache, recommendedTags);
-			dbLogic.storeRecommendation(qid, selectorID, recommendedTags);
-		}
+		// select result
+		resultSelector.selectResult(qid, resultCache, recommendedTags);
+		dbLogic.storeRecommendation(qid, selectorID, recommendedTags);
 
 		// trim number of recommended tags if it exceeds numberOfTagsToRecommend
 		if( recommendedTags.size()>getNumberOfTagsToRecommend() ) {
@@ -404,6 +405,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		resultCache.releaseQuery(qid);
 		log.debug("("+qid+")Released query from result cache ("+resultCache.getNrOfCachedQueries()+" remaining).");
 	}
+	
 	/**
 	 * Publish individual (asynchronous) recommender's response.
 	 * 
@@ -416,6 +418,9 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	private synchronized boolean addQueryResponse(
 			Long qid, Long sid, long queryTime,
 			SortedSet<RecommendedTag> tags) throws SQLException {
+		// filter out invalid recommendations
+		for( RecommendedTagModifier filter : getTagModifiers() )
+			filter.alterTags(tags);
 		
 		// put result to resultCache (if query is still active)
 		if( queryTime<=getQueryTimeout() )
@@ -730,5 +735,11 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		} catch (SQLException ex) {
 			log.fatal("Could not store result selection strategy", ex);
 		}
+	}
+	public void setTagModifiers(List<RecommendedTagModifier> tagModifiers) {
+		this.tagModifiers = tagModifiers;
+	}
+	public List<RecommendedTagModifier> getTagModifiers() {
+		return tagModifiers;
 	}
 }
