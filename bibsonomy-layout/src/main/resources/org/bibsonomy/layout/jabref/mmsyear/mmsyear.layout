@@ -4,8 +4,8 @@
 <script type="text/javascript"><!-- 
 \begin{abstract}document.write("<a href=\\"javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','abstract')\\">[Kurzfassung]</a>&nbsp;"); \end{abstract} document.write("<a href=\\"javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','bibtex')\\">[BibTeX]</a>"); 
 --></script>
-<span id="abs_\bibsonomyIntrahash\bibsonomyUsername" style="display:none"><br/>\format[HTMLChars,FormatPagesForHTML]{\abstract}<br/></span>
-<pre id="bib_\bibsonomyIntrahash\bibsonomyUsername" style="display:none">
+\begin{abstract}<span id="abs_\bibsonomyIntrahash\bibsonomyUsername" style="display:none"><br/>\format[HTMLChars,FormatPagesForHTML]{\abstract}<br/></span>\end{abstract}
+<div id="bib_\bibsonomyIntrahash\bibsonomyUsername" style="display:none;white-space:pre;max-width:100%;">
 @\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
   author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
   title = {\format[HTMLChars]{\title}}\end{title}\begin{editor},
@@ -29,5 +29,5 @@
   keywords = {\format[HTMLChars]{\keywords}}\end{keywords}\begin{abstract},
   abstract = {\format[HTMLChars]{\abstract}}\end{abstract}
   }
-</pre></p>
+</div></p>
 
