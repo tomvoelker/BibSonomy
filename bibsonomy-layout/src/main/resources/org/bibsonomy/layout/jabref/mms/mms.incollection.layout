@@ -1,6 +1,10 @@
-<p>\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}\begin{title}\format[HTMLChars,FormatPagesForHTML]{\title}. \end{title}\begin{editor}In: \format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\editor} (Hrsg.): \end{editor}<i>\begin{booktitle}\format[HTMLChars,FormatPagesForHTML]{\booktitle}. \end{booktitle}</i>\begin{address}\format[HTMLChars]{\address}: \end{address}\begin{publisher}\format[HTMLChars]{\publisher}, \end{publisher}\begin{year}\format[HTMLChars]{\year}, \end{year}\begin{pages}S. \format[FormatPagesForHTML]{\pages}\end{pages}<br/>
-\begin{url}<a href="\url">[Volltext]</a> \end{url}\begin{abstract}<a href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','abstract')">[Kurzfassung]</a> <span id="abs_\bibsonomyIntrahash\bibsonomyUsername" class="abstract noshow"><br/>\format[HTMLChars,FormatPagesForHTML]{\abstract}<br/></span>\end{abstract}<a href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','bibtex')">[BibTeX]</a>
-<code id="bib_\bibsonomyIntrahash\bibsonomyUsername" class="bibtex noshow">
+<p>\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}\begin{title}\format[HTMLChars,FormatPagesForHTML]{\title}. \end{title}\begin{editor}In: \format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\editor} (Hrsg.): \end{editor}\begin{booktitle}<i>\format[HTMLChars,FormatPagesForHTML]{\booktitle}</i>. \end{booktitle}\begin{edition}\format[HTMLChars]{\edition}. Aufl. \end{edition}\begin{address}\format[HTMLChars]{\address}: \end{address}\begin{publisher}\format[HTMLChars]{\publisher}, \end{publisher}\begin{year}\format[HTMLChars]{\year}\end{year}\begin{volume} (\end{volume}\begin{series}\format[HTMLChars]{\series} \end{series}\begin{volume}\format[HTMLChars]{\volume})\end{volume}\begin{pages}, S. \format[FormatPagesForHTML]{\pages}\end{pages}<br/>
+\begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a> \end{url}
+<script type="text/javascript"><!-- 
+\begin{abstract}document.write("<a href=\\"javascript:toggleInfo('\format{\bibsonomyIntrahash\bibsonomyUsername}','abstract')\\">[Kurzfassung]</a>&nbsp;"); \end{abstract} document.write("<a href=\\"javascript:toggleInfo('\format{\bibsonomyIntrahash\bibsonomyUsername}','bibtex')\\">[BibTeX]</a>"); 
+--></script>
+<span id="abs_\format{\bibsonomyIntrahash\bibsonomyUsername}" class="abstract noshow"><br/>\format[HTMLChars,FormatPagesForHTML]{\abstract}<br/></span>
+<code id="bib_\format{\bibsonomyIntrahash\bibsonomyUsername}" class="bibtex noshow">
 @\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
   author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
   title = {\format[HTMLChars]{\title}}\end{title}\begin{editor},
@@ -9,7 +13,8 @@
   series = {\format[HTMLChars]{\series}}\end{series}\begin{journal},
   journal = {\format[HTMLChars]{\journal}}\end{journal}\begin{publisher},
   publisher = {\format[HTMLChars]{\publisher}}\end{publisher}\begin{school},
-  school = {\format[HTMLChars]{\school}}\end{school}\begin{address},
+  school = {\format[HTMLChars]{\school}}\end{school}\begin{type},
+  type = {\format[HTMLChars]{\type}}\end{type}\begin{address},
   address = {\format[HTMLChars]{\address}}\end{address}\begin{year},
   year = {\format[HTMLChars]{\year}}\end{year}\begin{volume},
   volume = {\format[HTMLChars]{\volume}}\end{volume}\begin{number},
@@ -18,7 +23,8 @@
   edition = {\format[HTMLChars]{\edition}}\end{edition}\begin{note},
   note = {\format[HTMLChars]{\note}}\end{note}\begin{url},
   url = {\format[HTMLChars]{\url}}\end{url}\begin{doi},
-  doi = {\format[HTMLChars]{\doi}}\end{doi}\begin{keywords},
+  doi = {\format[HTMLChars]{\doi}}\end{doi}\begin{isbn},
+  isbn = {\format[HTMLChars]{\isbn}}\end{isbn}\begin{keywords},
   keywords = {\format[HTMLChars]{\keywords}}\end{keywords}\begin{abstract},
   abstract = {\format[HTMLChars]{\abstract}}\end{abstract}
   }
