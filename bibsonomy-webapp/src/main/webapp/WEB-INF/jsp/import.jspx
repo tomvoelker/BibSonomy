@@ -21,31 +21,16 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
-			
-			<c:set var="success" value="${true}"/>
-			
+						
 			<div style="margin-left:15px;margin-top:15px; padding-bottom: 13px;width:65%">	
 				
 				<!-- display potential errors -->
-				<spring:hasBindErrors name="command">
-	                <c:if test="${not empty errors.globalErrors}">
-	                  <c:set var="success" value="${false}"/>
-	                  <fieldset class="fsInner">
-	                  	<legend style="color:#FF0000"><fmt:message key="error.import.failed"/></legend>
-	                    <c:forEach var="error" items="${errors.globalErrors}">
-	                    	<spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>
-	                    </c:forEach>
-	                    <c:if test="${not empty command.errorMessage}">
-	                   		<div style="font-style: italic;"><c:out value="${command.errorMessage}"/></div>
-	                   	</c:if>
-	                  </fieldset>
-	                </c:if>
-             	</spring:hasBindErrors>
+				<errors:global errors="${errors}"/>
              	
 				<!-- in case of existing errors, look into the importType and redraw the 
 					 respective form -->
 				<c:choose>
-					<c:when test="${success == false or empty command.importType}">		
+					<c:when test="${command.totalCount == 0 or empty command.importType}">		
 						<post:import importType="${command.importType}"/>
 					</c:when>
 					<c:otherwise>
