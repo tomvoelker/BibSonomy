@@ -74,12 +74,20 @@ public class ConfigUtil {
 	 * @return The value.
 	 */
 	public static String getEnvironmentVariable(final String key) {
+		String string = null;
 		try {
-			return ((String) ((Context) new InitialContext().lookup("java:/comp/env")).lookup(key));
+			string = ((String) ((Context) new InitialContext().lookup("java:/comp/env")).lookup(key));
 		} catch (NamingException ex) {
 			log.warn("Could not get environment variable '" + key + "'.", ex);
 		}
-		return null;
+		
+		/*
+		 * try to use system environment variables
+		 */
+		if (string == null || string.trim().equals("")) {
+			string = System.getenv(key);
+		}
+		return string;
 	}
 	
 }
