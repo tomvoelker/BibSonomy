@@ -227,7 +227,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			Post<? extends Resource> post, 
 			int postID) {
 
-		log.debug("querying["+localRecommenders+", "+distRecommenders+"]");
+		log.debug("["+postID+"]querying["+localRecommenders+", "+distRecommenders+"]");
 
 		// id identifying this query
 		Long qid = null;
@@ -274,7 +274,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 						dispatcher.start();
 					} else {
 						// TODO: this is only for initial debugging
-						log.fatal("Didn't find recommender id - THIS SHOULD NEVER HAPPEN");
+						log.fatal("("+qid+")Didn't find recommender id - THIS SHOULD NEVER HAPPEN");
 					}
 				}
 			}
@@ -300,12 +300,12 @@ public class MultiplexingTagRecommender implements TagRecommender {
 					dispatcher.start();
 				} else {
 					// TODO: this is only for initial debugging
-					log.fatal("Didn't find recommender id - THIS SHOULD NEVER HAPPEN");
+					log.fatal("("+qid+")Didn't find recommender id - THIS SHOULD NEVER HAPPEN");
 				}
 			};
 
 		} catch (SQLException ex) {
-			log.error(ex.getMessage(), ex);
+			log.error("("+qid+")"+ex.getMessage(), ex);
 		}
 		// wait for recommender systems' answers
 		long startSleep = System.currentTimeMillis();
@@ -321,14 +321,14 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		for( RecommenderDispatcher disp: dispatchers ) {
 			disp.abortQuery();
 		};
-		log.debug("Waited for "+(System.currentTimeMillis()-startSleep)+" ms");
+		log.debug("("+qid+")Waited for "+(System.currentTimeMillis()-startSleep)+" ms");
 
 		if( qid!=null )
 			try {
 				selectResult(qid, recommendedTags);
 			} catch (SQLException ex) {
 				// TODO Auto-generated catch block
-				log.error(ex.getMessage(), ex);
+				log.error("("+qid+")"+ex.getMessage(), ex);
 			}
 	}
 
@@ -380,10 +380,10 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		// assure that no further results are added while evaluating 
 		// collected responses
 		// TODO current primitive synchronization prohibits parallel result selection
-		log.debug("Entering 'selectResult'");
+		log.debug("("+qid+")Entering 'selectResult'");
 		
 		synchronized(lockResults) {
-			log.debug("starting result selection");
+			log.debug("("+qid+")starting result selection");
 			resultSelector.selectResult(qid, resultCache, recommendedTags);
 			dbLogic.storeRecommendation(qid, selectorID, recommendedTags);
 		}
@@ -402,7 +402,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		
 		// remove query from result cache
 		resultCache.releaseQuery(qid);
-		log.debug("Released query from result cache ("+resultCache.getNrOfCachedQueries()+" remaining).");
+		log.debug("("+qid+")Released query from result cache ("+resultCache.getNrOfCachedQueries()+" remaining).");
 	}
 	/**
 	 * Publish individual (asynchronous) recommender's response.
@@ -514,7 +514,6 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			this.qid = qid;
 			this.sid = sid;
 			this.recommendedTags = recommendedTags;
-			log.debug(System.getProperty("file.encoding"));
 		}
 
 		/**
@@ -543,19 +542,19 @@ public class MultiplexingTagRecommender implements TagRecommender {
 					recommendedTags = recommender.getRecommendedTags(post);
 				// calculate query-time
 			} catch( Exception e ) {
-				log.error("Error querying recommender " + recommender.getInfo(), e);
+				log.error("("+qid+")Error querying recommender " + recommender.getInfo(), e);
 			}
 			time = System.currentTimeMillis()-time;
 			// add query result
 			try {
 				addQueryResponse(qid, sid, time, recommendedTags);
 			} catch (SQLException ex) {
-				log.error("Error storing recommender query response.", ex);
+				log.error("("+qid+")Error storing recommender query response.", ex);
 			}
 			if( !abort ) {
-				log.info("run finished in time " + time);
+				log.info("("+qid+")run finished in time " + time);
 			} else {
-				log.info("Recommender " + recommender.getInfo() + " timed out (" + time + ")");
+				log.info("("+qid+")Recommender " + recommender.getInfo() + " timed out (" + time + ")");
 			}
 
 		}

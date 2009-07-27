@@ -34,7 +34,7 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 	public void selectResult(Long qid, RecommendedTagResultManager resultCache, Collection<RecommendedTag> recommendedTags) throws SQLException {
 		// TODO Auto-generated method stub
 		
-		log.debug("Selecting result.");
+		log.debug("("+qid+")Selecting result.");
 		
 		// get list of recommenders which delivered tags in given query
 		// TODO: use the set interface
@@ -43,7 +43,7 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 		// final List<Long> listActive = dbLogic.getActiveRecommenderIDs(qid);
 		// log.debug("Result cache check for query "+qid+" : "+ listActive.size() +" / " + resultCache.getActiveRecommender(qid).size());
 
-		log.debug("Selecting result #1");
+		log.debug("("+qid+")Selecting result #1");
 		// get list of all recommenders for this post process with corresponding number of 
 		// queries where they were selected
 		final List<Pair<Long,Long>> selectionCount = dbLogic.getRecommenderSelectionCount(qid);
@@ -57,16 +57,16 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 		if( !selectionCount.isEmpty() )
 			last = selectionCount.get(0).getSecond();
 		// collect those recommenders which were selected least 
-		log.debug("Selecting result #2");
+		log.debug("("+qid+")Selecting result #2");
 		while( !selectionCount.isEmpty() && (selectionCount.get(0).getSecond()==last) ) {
 			listAll.add(selectionCount.get(0).getFirst());
 			selectionCount.remove(0);
 		}
-		log.debug("Selecting result #3");
+		log.debug("("+qid+")Selecting result #3");
 
 		// if no recommendation available, append nothing
 		if( listAll.size()==0 || listActive.size()==0 ) {
-			log.debug("No results available!");
+			log.debug("("+qid+")No results available!");
 			return;
 		}
 		// select recommender
@@ -75,7 +75,7 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 				);
 		// store selection in database
 		dbLogic.addSelectedRecommender(qid, sid);
-		log.debug("Selected setting " + sid + " out of "+listActive.size()+"/"+listAll.size());
+		log.debug("("+qid+")Selected setting " + sid + " out of "+listActive.size()+"/"+listAll.size());
 		
 		// check if selected recommender delivered tags
 		boolean isActive = false;
@@ -89,7 +89,7 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 			sid = listActive.get(
 					new Double(Math.floor((Math.random()*listActive.size()))).intValue()
 				);
-			log.debug("Selected setting not active, fall back is " + sid);
+			log.debug("("+qid+")Selected setting not active, fall back is " + sid);
 		};
 		
 		// finally get recommended tags
@@ -98,7 +98,7 @@ public class SelectOneWithoutReplacement implements RecommendationSelector {
 			recommendedTags.addAll(cachedResult);
 		} else {
 			// this shouldn't happen!
-			log.error("Selected result not cached -> fetching it from database");
+			log.error("("+qid+")Selected result not cached -> fetching it from database");
 			dbLogic.getRecommendations(qid, sid, recommendedTags);
 		}
 			
