@@ -40,8 +40,7 @@ public class ImportCommand extends BaseCommand{
 	
 	private List<String> storedConcepts = null;
 	
-	private String errorMessage;
-	
+
 	/** for delicious import only, import bookmarks or bundles? **/
 	private String importData;
 	
@@ -176,20 +175,6 @@ public class ImportCommand extends BaseCommand{
 	 */
 	public void setTotalCount(int totalCount) {
 		this.totalCount = totalCount;
-	}
-	/**
-	 * 
-	 * @return
-	 */
-	public String getErrorMessage() {
-		return this.errorMessage;
-	}
-	/**
-	 * 
-	 * @param errorMessage
-	 */
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
 	}
 	/**
 	 * 
