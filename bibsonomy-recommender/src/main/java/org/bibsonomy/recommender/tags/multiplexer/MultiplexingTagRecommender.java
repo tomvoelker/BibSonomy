@@ -415,7 +415,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * @return true on success, false otherwise
 	 * @throws SQLException 
 	 */
-	private synchronized boolean addQueryResponse(
+	private boolean addQueryResponse(
 			Long qid, Long sid, long queryTime,
 			SortedSet<RecommendedTag> tags) throws SQLException {
 		// filter out invalid recommendations
