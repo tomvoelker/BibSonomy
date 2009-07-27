@@ -16,35 +16,26 @@ import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
  */
 public class DeliciousImporterFactory {
 	
-	private static final String BUNDLES_URL_PATH = "/v1/tags/bundles/all";
-	private static final String POSTS_URL_PATH = "/v1/posts/all";
+	private String bundlesPath = "/v1/tags/bundles/all";
+	private String postsPath   = "/v1/posts/all";
 	
 	/*
 	 * TODO: there was a reason we use "-1" as port ... please document it 
 	 * here
 	 */
-	private static final int PORT = -1;
-	private static final String HTTPS = "https";
-	private static final String DELICIOUS_API_URL = "api.del.icio.us";
+	private int port = -1;
+	private String protocol = "https";
+	private String host = "api.del.icio.us";
 	
-	private String userAgent;
-	
-	/**
-	 * Default constructor using the default {@link #apiURL}.
-	 *  
-	 * @throws MalformedURLException
-	 */
-	public DeliciousImporterFactory() throws MalformedURLException {
-		this.userAgent = "Wget/1.9.1";
-	}
+	private String userAgent = "Wget/1.9.1";
 	
 
 	public RelationImporter getRelationImporter() throws MalformedURLException {
-		return new DeliciousImporter(buildURL(BUNDLES_URL_PATH), userAgent);
+		return new DeliciousImporter(buildURL(bundlesPath), userAgent);
 	}
 
 	public RemoteServiceBookmarkImporter getBookmarkImporter() throws MalformedURLException {
-		return new DeliciousImporter(buildURL(POSTS_URL_PATH), userAgent);
+		return new DeliciousImporter(buildURL(postsPath), userAgent);
 	}
 
 	public String getUserAgent() {
@@ -61,8 +52,48 @@ public class DeliciousImporterFactory {
 		this.userAgent = userAgent;
 	}
 	
-	private URL buildURL(final String urlPath) throws MalformedURLException {
-		return new URL (HTTPS, DELICIOUS_API_URL, PORT, urlPath);
+	private URL buildURL(final String path) throws MalformedURLException {
+		return new URL (protocol, host, port, path);
+	}
+
+	public String getBundlesPath() {
+		return bundlesPath;
+	}
+
+	public void setBundlesPath(String bundlesPath) {
+		this.bundlesPath = bundlesPath;
+	}
+
+	public String getPostsPath() {
+		return postsPath;
+	}
+
+	public void setPostsPath(String postsPath) {
+		this.postsPath = postsPath;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public String getProtocol() {
+		return protocol;
+	}
+
+	public void setProtocol(String protocol) {
+		this.protocol = protocol;
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
 	}
 }
 
