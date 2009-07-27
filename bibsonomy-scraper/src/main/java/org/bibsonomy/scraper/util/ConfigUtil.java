@@ -34,6 +34,9 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 
 /**
+ * 
+ * TODO: remove this class and use Spring for configuration.
+ * 
  * @author rja
  * @version $Id$
  */
@@ -47,7 +50,6 @@ public class ConfigUtil {
 	 * path so settings.properties
 	 */
 	private static final String PATH_TO_SETTINGSFILE = "scraper.properties";
-	
 
 	/** Loads the configuration file for the scrapers. If no file could be found,
 	 *  empty properties are returned.
