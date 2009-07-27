@@ -140,6 +140,21 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		param.setSimHash(simHash);
 		return this.queryForObject("getBibTexByHashCount", param, Integer.class, session);
 	}
+	
+	/** 
+	 * @param requHash
+	 * @param simHash
+	 * @param userName
+	 * @param session
+	 * @return number of publications for a given hash and a user
+	 */
+	public Integer getBibTexByHashAndUserCount(final String requHash, final HashID simHash, final String userName, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setHash(requHash);
+		param.setSimHash(simHash);
+		param.setUserName(userName);
+		return this.queryForObject("getBibTexByHashAndUserCount", param, Integer.class, session);
+	}
 
 	/**
 	 * <em>/tag/EinTag</em>, <em>/viewable/EineGruppe/EinTag</em><br/><br/>

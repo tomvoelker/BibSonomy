@@ -6,6 +6,7 @@ import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTa
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTagNamesCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesDuplicateCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForGroupCount;
+import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashAndUserCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesPopularDaysCount;
@@ -28,6 +29,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 	//private final GetResourcesForUserAndGroupByTagCount getResourcesForUserAndGroupByTagCount;
 	private final GetResourcesPopularDaysCount getResourcesPopularDays;
 	private final GetResourcesForHashCount getResourcesForHashCount;
+	private final GetResourcesForHashAndUserCount getResourcesForHashAndUserCount;
 	
 	/**
 	 * Default Constructor
@@ -42,6 +44,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 		//getResourcesForUserAndGroupByTagCount = new GetResourcesForUserAndGroupByTagCount();
 		getResourcesPopularDays = new GetResourcesPopularDaysCount();
 		getResourcesForHashCount = new GetResourcesForHashCount();
+		getResourcesForHashAndUserCount = new GetResourcesForHashAndUserCount();
 		
 		getResourcesForGroupCount.setNext(getResourcesForUserCount);
 		getResourcesForUserCount.setNext(getResourcesByTagNamesAndUserCount);
@@ -52,6 +55,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 		getResourcesPopularDays.setNext(getResourcesForHashCount);
 		//getResourcesForUserAndGroupCount.setNext(getResourcesForUserAndGroupByTagCount);
 		//getResourcesForUserAndGroupByTagCount.setNext(getResourcesPopularDays);
+		getResourcesForHashCount.setNext(getResourcesForHashAndUserCount);
 	}
 	
 	public ChainElement<Integer, StatisticsParam> getFirstElement() {

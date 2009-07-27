@@ -215,6 +215,11 @@
 		SELECT book_url_ctr FROM urls WHERE book_url_hash = #hash#
 	</select>
 
+	<select id="getBookmarkByHashAndUserCount" resultClass="int" parameterClass="bookmarkParam">
+		SELECT u.book_url_ctr FROM urls u LEFT JOIN bookmark b ON (b.book_url_hash = u.book_url_hash)
+		WHERE b.book_url_hash = #hash# AND b.user_name = #userName#
+	</select>
+
 	<select id="getBookmarkByHashForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*,bb.content_id, t.tag_name, title, description, bb.user_name, bb.date,
 		       bb.book_url_hash AS interhash,bb.book_url_hash AS intrahash, u.book_url, u.book_url_ctr AS count, g.group_name

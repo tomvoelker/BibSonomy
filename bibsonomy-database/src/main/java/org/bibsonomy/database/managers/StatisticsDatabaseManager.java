@@ -127,6 +127,28 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		if (count == null) return 0;
 		return count;		
 	}
+	
+	/**
+	 * @param resourceType
+	 * @param requHash 
+	 * @param simHash 
+	 * @param userName
+	 * @param session
+	 * @return a statistical number (int)
+	 */
+	public int getNumberOfResourcesForHashAndUser(final Class<? extends Resource> resourceType, final String requHash, final HashID simHash, final String userName, final DBSession session) {
+		final Integer count;
+		if (resourceType == BibTex.class) {
+			count = this.bibtexDBManager.getBibTexByHashAndUserCount(requHash, simHash, userName, session);
+		} else if (resourceType == Bookmark.class) {
+			count = this.bookmarkDBManager.getBookmarkByHashAndUserCount(requHash, simHash, userName, session);
+		} else {
+			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
+		}
+		// to not get NPEs 
+		if (count == null) return 0;
+		return count;		
+	}
 
 	/**
 	 * Returns the number of resources of the given group

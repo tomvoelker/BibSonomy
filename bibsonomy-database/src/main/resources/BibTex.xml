@@ -248,6 +248,11 @@
 		SELECT ctr FROM bibhash WHERE hash = #hash# AND type = #simHash#
 	</select>
 
+	<select id="getBibTexByHashAndUserCount" resultClass="int" parameterClass="bibtexParam">
+		SELECT ctr FROM bibhash h LEFT JOIN bibtx b ON (h.hash = b.simhash$simhash$)
+		WHERE h.hash = #hash# AND h.type = #simHash# AND b.user_name = #userName#
+	</select>
+
 	<select id="getBibTexByHashForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT g.*,t.tag_name,h.ctr AS count, <include refid ="bibtexAttributes2"/>
 		FROM (SELECT * 

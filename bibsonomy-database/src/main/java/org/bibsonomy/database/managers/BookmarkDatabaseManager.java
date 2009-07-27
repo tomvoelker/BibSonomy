@@ -425,6 +425,21 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setSimHash(simHash);
 		return this.queryForObject("getBookmarkByHashCount", param, Integer.class, session);
 	}
+	
+	/**
+	 * @param requHash 
+	 * @param simHash 
+	 * @param userName
+	 * @param session
+	 * @return number of bookmarks for the given hash and a user
+	 */
+	public Integer getBookmarkByHashAndUserCount(final String requHash, final HashID simHash, final String userName, final DBSession session) {
+		final BookmarkParam param = new BookmarkParam();
+		param.setHash(requHash);
+		param.setSimHash(simHash);
+		param.setUserName(userName);
+		return this.queryForObject("getBookmarkByHashAndUserCount", param, Integer.class, session);
+	}
 
 	/**
 	 * Prepares a query which retrieves the bookmark (which is represented by
