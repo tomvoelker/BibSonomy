@@ -123,6 +123,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 		cnct.setRequestBody(data);
 		InputStreamReader input = sendRequest(cnct);
 		if( input==null ) {
+			cnct.releaseConnection();
 			cnct = new PostMethod(getAddress().toString()+"/"+METHOD_GETRECOMMENDEDTAGS);
 			cnct.setRequestBody(data);
 			input = sendRequest(cnct); 
