@@ -38,7 +38,19 @@ public class UrlPageController extends SingleResourceListController implements M
 	public View workOn(UrlCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
-
+		
+		GroupingEntity groupingEntity;
+		String groupingName = "";
+		
+		if(command.getRequestedUser() != null && !command.getRequestedUser().equals("")){
+			groupingEntity = GroupingEntity.USER;
+			groupingName = command.getRequestedUser();
+			
+		}else{
+			groupingEntity = GroupingEntity.ALL;
+			groupingName = null;
+		}
+		
 		// no URL hash given -> error
 		final String requHash = command.getRequUrlHash();
 		if (!ValidationUtils.present(command.getRequUrl()) && !ValidationUtils.present(requHash)) {
@@ -48,7 +60,7 @@ public class UrlPageController extends SingleResourceListController implements M
 		
 		// handle the case when only tags are requested
 		command.setResourcetype(ResourceType.BOOKMARK.getLabel());
-		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, requHash, null, 0, 1000, null);
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, null, requHash, null, 0, 1000, null);
 		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
@@ -65,10 +77,10 @@ public class UrlPageController extends SingleResourceListController implements M
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final int entriesPerPage = listCommand.getEntriesPerPage();
 			
-			this.setList(command, resourceType, GroupingEntity.ALL, null, null, requHash, null, null, null, entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, groupingName, null, requHash, null, null, null, entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 			
-			this.setTotalCount(command, resourceType, GroupingEntity.ALL, null, null, requHash, null, null, null, entriesPerPage, null);
+			this.setTotalCount(command, resourceType, groupingEntity, groupingName, null, requHash, null, null, null, entriesPerPage, null);
 		}
 
 		if (ValidationUtils.present(command.getBookmark().getList())) {	
@@ -82,7 +94,7 @@ public class UrlPageController extends SingleResourceListController implements M
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			// FIXME: here we assume, bookmarks are handled, further above we use listsToInitialize ...
-			setTags(command, Bookmark.class, GroupingEntity.ALL, null, null, null, requHash, null, 0, 1000, null);
+			setTags(command, Bookmark.class, groupingEntity, groupingName, null, null, requHash, null, 0, 1000, null);
 
 			return Views.URLPAGE;	
 		}
