@@ -10,6 +10,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.util.DBSession;
@@ -270,5 +271,25 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		 * user name == group name
 		 */
 		return loginUser.getName().equals(group.getName());
+	}
+	
+	
+	/**
+	 * Checks if a user relationship between the logged-in user 
+	 * and a requested user may be created.
+	 * 
+	 * @param loginUser - the logged-in user
+	 * @param requestedUser - the requested user
+	 * @param relation - the relation to be created
+	 * @return true if everyhing is OK and the relationship may be created
+	 */
+	public boolean checkUserRelationship(User loginUser, User requestedUser, UserRelation relation) {
+		if (requestedUser == null) {
+			return false;
+		}
+		if ("dblp".equalsIgnoreCase(requestedUser.getName())) {
+			throw new ValidationException("error.relationship_with_dblp");
+		}
+		return true;
 	}
 }

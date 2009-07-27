@@ -1691,6 +1691,7 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void createUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
 		this.ensureLoggedIn();
+		this.permissionDBManager.checkUserRelationship(loggedInUser, requestedUser, relation);
 
 		final DBSession session = openSession();
 		try {
