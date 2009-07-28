@@ -159,6 +159,21 @@
 	<layout name="endnote">
 		<displayName>EndNote</displayName>
 		<description xml:lang="en">
+			This is an output in EndNote format which is used by EndNote, another
+			bibliography management tool.
+		</description>
+		<description xml:lang="de">
+			Es wird eine Ausgabe in EndNote Format erzeugt, welche von EndNote verwendet wird.
+			EndNote ist ein weiteres Bibliographie-Werkzeug.
+		</description>
+		<directory>endnote</directory>
+		<baseFileName>EndNote</baseFileName>
+		<mimeType>text/plain</mimeType>
+		<extension>.txt</extension>
+	</layout>
+	<layout name="ris_endnote">
+		<displayName>RIS (EndNote)</displayName>
+		<description xml:lang="en">
 			This is an output in RIS which is used by EndNote, another
 			bibliography management tool.
 		</description>
@@ -166,8 +181,23 @@
 			Es wird eine Ausgabe in RIS erzeugt, welche von EndNote verwendet wird.
 			EndNote ist ein weiteres Bibliographie-Werkzeug.
 		</description>
-		<directory>endnote</directory>
-		<baseFileName>EndNote</baseFileName>
+		<directory>ris_endnote</directory>
+		<baseFileName>ris</baseFileName>
+		<mimeType>text/plain</mimeType>
+		<extension>.txt</extension>
+	</layout>
+	<layout name="ris_refman">
+		<displayName>RIS (ReferenceManager)</displayName>
+		<description xml:lang="en">
+			This is an output in RIS which is used by ReferenceManager, another
+			bibliography management tool.
+		</description>
+		<description xml:lang="de">
+			Es wird eine Ausgabe in RIS erzeugt, welche vom ReferenceManager verwendet wird.
+			ReferenceManager ist ein weiteres Bibliographie-Werkzeug.
+		</description>
+		<directory>ris_refman</directory>
+		<baseFileName>ris</baseFileName>
 		<mimeType>text/plain</mimeType>
 		<extension>.txt</extension>
 	</layout>
