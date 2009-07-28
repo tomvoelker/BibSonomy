@@ -482,8 +482,8 @@ public class Functions  {
 	 * @param Author
 	 * @return value between 0 and 100 %
 	 */
-	public static double getAuthorFontSize(final Author author) {		
-		return ((author.getCtr() * 100) / 1000) + 50;
+	public static double authorFontSize(final Author author, final Integer maxCount) {		
+		return ((author.getCtr() * 100) / (maxCount / 2) ) + 50;
 	}
 
 	/** Returns the host name of a URL.

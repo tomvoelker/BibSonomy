@@ -27,7 +27,7 @@
 				<div style="text-align:justify;" class="tags_first">
 				<c:forEach var="author" items="${command.authorList}">
 					<a	class="${mtl:getTagSize(author.ctr, command.maxCount)}" 
-						style="font-size:${mtl:authorFontSize(author)}%; padding:0.3em;" 
+						style="font-size:${mtl:authorFontSize(author, command.maxCount)}%; padding:0.3em;"
 						title="${fn:escapeXml(author.firstName)}${' '}${fn:escapeXml(author.lastName)}: ${author.ctr}${' '}${posts}" 
 						href="/author/${fn:escapeXml(author.firstName)}${'+'}${fn:escapeXml(author.lastName)}">
 					<c:out value="${author.lastName}"/>

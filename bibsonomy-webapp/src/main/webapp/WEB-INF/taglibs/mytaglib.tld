@@ -288,13 +288,7 @@
   <function>
   	<name>authorFontSize</name>
   	<function-class>tags.Functions</function-class>
-  	<function-signature>Double getAuthorFontSize(org.bibsonomy.model.Author)</function-signature>
-  </function>
-
-  <function>
-  	<name>getAuthorSize</name>
-  	<function-class>tags.Functions</function-class>
-  	<function-signature>String getAuthorSize(java.lang.Integer, java.lang.Integer)</function-signature>
+  	<function-signature>Double authorFontSize(org.bibsonomy.model.Author, java.lang.Integer)</function-signature>
   </function>
   
   <function>
