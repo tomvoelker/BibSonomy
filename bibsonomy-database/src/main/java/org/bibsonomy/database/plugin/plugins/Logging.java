@@ -1,5 +1,6 @@
 package org.bibsonomy.database.plugin.plugins;
 
+import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GroupParam;
@@ -142,6 +143,24 @@ public class Logging extends AbstractDatabasePlugin {
 		return new Runnable(){
 			public void run(){
 				insert("logFriendDelete", param, session);
+			}
+		};
+	}
+	
+	@Override
+	public Runnable onDeleteBasketItem(final BasketParam param, final DBSession session){
+		return new Runnable(){
+			public void run(){
+				insert("logBasketItemDelete", param, session);
+			}
+		};
+	}
+	
+	@Override
+	public Runnable onDeleteAllBasketItems(final String userName, final DBSession session){
+		return new Runnable(){
+			public void run(){
+				insert("logDeleteAllFromBasket", userName, session);
 			}
 		};
 	}

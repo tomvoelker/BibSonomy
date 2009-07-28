@@ -8,4 +8,27 @@
 		FROM collector 
 		WHERE user_name = #userName#
 	</select>
+	
+	<insert id="createBasketItem" parameterClass="basketParam">
+		INSERT IGNORE INTO collector (user_name, content_id) 
+		VALUES (#userName#, #contentId#)
+	</insert>
+	
+	<update id="updateBasketItem" parameterClass="basketParam">
+		UPDATE collector 
+		SET content_id = #newContentId#
+		WHERE content_id = #contentId#
+			AND user_name = #userName#
+	</update>
+	
+	<delete id="deleteBasketItem" parameterClass="basketParam">
+		DELETE FROM collector
+		WHERE content_id = #contentId#
+			AND user_name = #userName#
+	</delete>
+	
+	<delete id="deleteAllItems" parameterClass="String">
+		DELETE FROM collector
+		WHERE user_name = #userName#
+	</delete>
 </sqlMap>

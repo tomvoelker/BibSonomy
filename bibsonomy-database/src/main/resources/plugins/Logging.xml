@@ -53,6 +53,21 @@
 		SELECT g.user_name, g.group, g.defaultgroup, g.start_date
 		FROM groups g WHERE g.user_name = #userName# AND g.group = #groupId#
 	</insert>
+	
+	<insert id="logBasketItemDelete" parameterClass="basketParam">
+		INSERT INTO log_collector (user_name, content_id, add_date)
+		SELECT c.user_name, c.content_id, c.date FROM collector c, bibtex b
+		WHERE c.content_id = b.content_id
+		AND b.simhash$simHash$ = #hash#
+		AND b.user_name = #requestedUserName# AND c.user_name = #userName#
+	</insert>
+	
+	<insert id="logDeleteAllFromBasket" parameterClass="String">
+		INSERT INTO log_collector (user_name, content_id, add_date)
+		SELECT c.user_name, c.content_id, c.date 
+			FROM collector c
+			WHERE c.user_name = #userName#;	
+	</insert>
 
 	<insert id="logUser" parameterClass="String">
 		INSERT INTO log_user (	user_name,  user_email, user_password, user_homepage, user_realname, spammer,

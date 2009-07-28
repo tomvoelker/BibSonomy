@@ -30,6 +30,7 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.AuthorDatabaseManager;
+import org.bibsonomy.database.managers.BasketDatabaseManager;
 import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
@@ -40,6 +41,7 @@ import org.bibsonomy.database.managers.StatisticsDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.TagRelationDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
+import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -96,6 +98,7 @@ public class DBLogic implements LogicInterface {
 	private final DBSessionFactory dbSessionFactory;
 	private final StatisticsDatabaseManager statisticsDBManager;
 	private final TagRelationDatabaseManager tagRelationsDBManager;
+	private final BasketDatabaseManager basketDBManager;
 
 	private final User loginUser;
 
@@ -124,6 +127,8 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager = PermissionDatabaseManager.getInstance();
 		this.statisticsDBManager = StatisticsDatabaseManager.getInstance();
 		this.tagRelationsDBManager = TagRelationDatabaseManager.getInstance();
+		
+		this.basketDBManager = BasketDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;
 	}
@@ -617,6 +622,7 @@ public class DBLogic implements LogicInterface {
 			post.getResource().recalculateHashes();
 			this.validateGroups(post, session);
 
+			
 			/*
 			 * change group IDs to spam group IDs
 			 */
@@ -848,6 +854,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<String> updatePosts(List<Post<?>> posts, PostUpdateOperation operation) {
+		System.out.println("called");
 		this.ensureLoggedIn();
 		/*
 		 * check permissions
@@ -1708,5 +1715,87 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#createBasketItems()
+	 */
+	@Override
+	public int createBasketItems(List<Post<BibTex>> posts){
+		this.ensureLoggedIn();
+		
+		final DBSession session = openSession();
+		
+		int basketSize = 0;
+		
+		try {
+			for (Post<BibTex> p:posts){
+				// its still not necessary to use crudable 
+				p = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), p.getResource().getIntraHash(), p.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
+	
+				// create param
+				BasketParam param = new BasketParam();
+				param.setUserName(this.loginUser.getName());
+				param.setContentId(p.getContentId());
+				param.setRequestedUserName(p.getUser().getName());
+				
+				// and write it to the database
+				this.basketDBManager.createItem(param, session);
+				
+			}
+			
+			// get actual basket size
+			basketSize = this.basketDBManager.getNumBasketEntries(this.loginUser.getName(), session);
+		} catch (Exception ex) {
+			log.error(ex);
+		} finally {
+			session.close();
+		}
+		return basketSize;
 
+	}
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#deleteBasketItems()
+	 */
+	@Override
+	public int deleteBasketItems(List<Post<BibTex>> posts, final boolean clearBasket) {
+		this.ensureLoggedIn();
+		
+		final DBSession session = openSession();
+		
+		int basketSize = 0;
+		
+		try {
+			// decide which delete function will be called
+			if (clearBasket){
+				// clear all in basket
+				this.basketDBManager.deleteAllItems(this.loginUser.getName(), session);
+			} else {
+				// delete specific post
+				for (Post<BibTex> p:posts){
+					p = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), p.getResource().getIntraHash(), p.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
+		
+					// create param
+					BasketParam param = new BasketParam();			
+					param.setUserName(this.loginUser.getName());
+					param.setContentId(p.getContentId());
+					param.setRequestedUserName(p.getUser().getName());
+					param.setHash(p.getResource().getIntraHash());
+					
+					// delete it
+					this.basketDBManager.deleteItem(param, session);
+				}	
+			}
+			
+			// get actual basketsize
+			basketSize = this.basketDBManager.getNumBasketEntries(this.loginUser.getName(), session);
+		} catch (Exception ex) {
+			log.error(ex);
+		} finally {
+			session.close();
+		}
+		
+		return basketSize;
+
+	}
 }

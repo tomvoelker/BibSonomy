@@ -37,6 +37,8 @@
 	<typeAlias alias="adminParam"         type="org.bibsonomy.database.params.AdminParam" />
 	<typeAlias alias="statisticsParam"    type="org.bibsonomy.database.params.StatisticsParam" />	
 	<typeAlias alias="tagSetParam"    	  type="org.bibsonomy.database.params.TagSetParam" />
-	<typeAlias alias="authorParam"    	  type="org.bibsonomy.database.params.AuthorParam" />	
+	<typeAlias alias="authorParam"    	  type="org.bibsonomy.database.params.AuthorParam" />
+	<typeAlias alias="basketParam"    	  type="org.bibsonomy.database.params.BasketParam" />	
+		
 
 </sqlMap>
