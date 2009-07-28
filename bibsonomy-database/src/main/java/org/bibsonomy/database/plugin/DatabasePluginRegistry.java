@@ -3,7 +3,9 @@ package org.bibsonomy.database.plugin;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.plugin.plugins.Basket;
 import org.bibsonomy.database.plugin.plugins.BibTexExtra;
 import org.bibsonomy.database.plugin.plugins.Logging;
 import org.bibsonomy.database.util.DBSession;
@@ -32,6 +34,7 @@ public class DatabasePluginRegistry {
 		// XXX: shouldn't be wired statically...
 		this.add(new Logging());
 		this.add(new BibTexExtra());
+		this.add(new Basket());
 	}
 
 	public static DatabasePluginRegistry getInstance() {
@@ -158,6 +161,26 @@ public class DatabasePluginRegistry {
 	public void onDeleteFriendship(UserParam param, DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
 			this.executeRunnable(plugin.onDeleteFriendship(param, session));
+		}
+	}
+	
+	/**
+	 * @param param
+	 * @param session
+	 */
+	public void onDeleteBasketItem(final BasketParam param, final DBSession session){
+		for (final DatabasePlugin plugin : this.plugins.values()) {
+			this.executeRunnable(plugin.onDeleteBasketItem(param, session));
+		}
+	}
+	
+	/**
+	 * @param userName
+	 * @param session
+	 */
+	public void onDeleteAllBasketItems(final String userName, final DBSession session){
+		for (final DatabasePlugin plugin : this.plugins.values()){
+			this.executeRunnable(plugin.onDeleteAllBasketItems(userName, session));
 		}
 	}
 }

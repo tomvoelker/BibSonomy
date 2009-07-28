@@ -44,6 +44,7 @@ public abstract class AbstractDatabaseManagerTest {
 	protected AdminDatabaseManager adminDb;
 	protected PermissionDatabaseManager permissionDb;
 	protected StatisticsDatabaseManager statisticsDb;
+	protected BasketDatabaseManager basketDb;
 
 	protected GenericParam generalParam;
 	protected BookmarkParam bookmarkParam;
@@ -82,6 +83,7 @@ public abstract class AbstractDatabaseManagerTest {
 			this.adminDb = AdminDatabaseManager.getInstance();
 			this.permissionDb = PermissionDatabaseManager.getInstance();
 			this.statisticsDb = StatisticsDatabaseManager.getInstance();
+			this.basketDb = BasketDatabaseManager.getInstance();
 
 			// initialize parameter objects
 			this.resetParameters();

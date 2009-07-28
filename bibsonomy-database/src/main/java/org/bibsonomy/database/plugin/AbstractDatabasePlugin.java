@@ -1,6 +1,7 @@
 package org.bibsonomy.database.plugin;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DBSession;
 
@@ -74,6 +75,14 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 	}
 
 	public Runnable onDeleteFriendship(UserParam param, DBSession session) {
+		return null;
+	}
+
+	public Runnable onDeleteBasketItem(BasketParam param, DBSession session) {
+		return null;
+	}
+	
+	public Runnable onDeleteAllBasketItems(String userName, DBSession session) {
 		return null;
 	}
 }

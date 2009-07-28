@@ -1,5 +1,6 @@
 package org.bibsonomy.database.plugin;
 
+import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.util.DBSession;
 
@@ -67,12 +68,12 @@ public interface DatabasePlugin {
 	/**
 	 * Called when a Bookmark is updated.
 	 * 
-	 * @param newNontentId
+	 * @param newContentId
 	 * @param contentId
 	 * @param session
 	 * @return runnable
 	 */
-	public Runnable onBookmarkUpdate(int newNontentId, int contentId, DBSession session);
+	public Runnable onBookmarkUpdate(int newContentId, int contentId, DBSession session);
 
 	/**
 	 * Called when a TagRelation is deleted.
@@ -158,4 +159,23 @@ public interface DatabasePlugin {
 	 * @return runnable
 	 */
 	public Runnable onDeleteFriendship(final UserParam param, final DBSession session);
+	
+	/**
+	 * Called when a basket item will be deleted
+	 * 
+	 * @param param
+	 * @param session
+	 * @return runnable
+	 */
+	public Runnable onDeleteBasketItem(final BasketParam param, final DBSession session);
+	
+	/**
+	 * Called when all basket items will be deleted
+	 * 
+	 * @param userName 
+	 * @param session 
+	 * @return runnable
+	 * 
+	 */
+	public Runnable onDeleteAllBasketItems(final String userName, final DBSession session);
 }
