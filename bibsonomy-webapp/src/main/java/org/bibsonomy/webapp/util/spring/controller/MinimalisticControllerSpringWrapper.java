@@ -167,12 +167,12 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 			log.warn("Could not complete controller (invalid URL scheme) : " + malformed.getMessage());
 			view = Views.ERROR;
 		}
-		catch (ValidationException notValid) {
+		catch (ValidationException nv) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			errors.reject(notValid.getMessage());
-			log.error("Could not complete controller (ValidationException)", notValid);
+			errors.reject(nv.getMessage());
+			log.warn("Could not complete controller (ValidationException), occured in: " + nv.getStackTrace()[0] + ", msg is: " + nv.getMessage());
 			view = Views.ERROR;
-		}
+		} 		
 		catch (ServiceUnavailableException e) {
 			response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 			response.setHeader("Retry-After", Long.toString(e.getRetryAfter()));
