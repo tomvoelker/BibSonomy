@@ -41,6 +41,7 @@ import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Author;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -374,4 +375,15 @@ public class RestLogic implements LogicInterface {
 		
 	}
 
+	@Override
+	public int createBasketItems(List<Post<BibTex>> posts) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int deleteBasketItems(List<Post<BibTex>> posts, boolean clearAll) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
