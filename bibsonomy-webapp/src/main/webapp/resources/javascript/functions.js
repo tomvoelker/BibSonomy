@@ -1511,8 +1511,10 @@ function unicodeCollation(ersterWert, zweiterWert){
     	       if (divs[y].className == "bmtitle") {
     	          var spans = divs[y].getElementsByTagName("a");
     	          for (z=0; z<spans.length; z++) {
-					var post = spans[z].getAttribute("href").replace(/^.*bibtex./, "");
-					param += post + " ";
+    	        	if (spans[z].getAttribute("href").match(/^.*\/documents\/.*/) == null){
+    					var post = spans[z].getAttribute("href").replace(/^.*bibtex./, "");
+    					param += post + " ";
+    	        	}
     	          }
     	       }
     	    }
