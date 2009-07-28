@@ -36,8 +36,10 @@ import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Author;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -527,5 +529,23 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param relation
 	 */
 	public void createUserRelationship(User loggedInUser, User requestedUser, UserRelation relation);
+	
+	/**
+	 * Create basket items
+	 * 
+	 * @param posts
+	 * @return size of basket
+	 */
+	public int createBasketItems(List<Post<BibTex>> posts);
+	
+	/**
+	 * Delete basket items
+	 * 
+	 * @param posts
+	 * @param clearBasket 
+	 * @return size of basket
+	 */
+	public int deleteBasketItems(List<Post<BibTex>> posts, boolean clearBasket);
+	
 	
 }
