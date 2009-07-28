@@ -158,17 +158,23 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * 				the requested grouping (GROUP or USER) 
 	 * @param groupingName -
 	 * 				the name of the requested user / group
+	 * @param filter -
+	 *              the requested filter entity
 	 * @param session -
 	 *           	DB session
 	 * @return <code>true</code> if the logged-in user is allowed to access the
 	 *         documents of the requested user / group.
 	 */
-	public boolean isAllowedToAccessUsersOrGroupDocuments(final User loginUser, final GroupingEntity grouping, final String groupingName, final DBSession session) {
+	public boolean isAllowedToAccessUsersOrGroupDocuments(final User loginUser, final GroupingEntity grouping, final String groupingName, FilterEntity filter, final DBSession session) {
+		boolean isAllowed = false;
 		if (grouping != null) {
 			// user
 			if (grouping.equals(GroupingEntity.USER)) {
 				if (loginUser.getName() != null) {
-					return loginUser.getName().equals(groupingName);
+					isAllowed = loginUser.getName().equals(groupingName);
+					if (!isAllowed && FilterEntity.JUST_PDF.equals(filter)) {
+						throw new ValidationException("error.pdf_only_not_authorized_for_user");
+					}
 				}
 			}
 			// group
@@ -177,10 +183,13 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 				/*
 				 * check group membership and if the group allows shared documents
 				 */
-				return group != null && UserUtils.getListOfGroupIDs(loginUser).contains(group.getGroupId()) && group.isSharedDocuments();
+				isAllowed = group != null && UserUtils.getListOfGroupIDs(loginUser).contains(group.getGroupId()) && group.isSharedDocuments();
+				if (!isAllowed && FilterEntity.JUST_PDF.equals(filter)) {
+					throw new ValidationException("error.pdf_only_not_authorized_for_group");
+				}
 			}
 		}
-		return false;
+		return isAllowed;
 	}
 
 	/**

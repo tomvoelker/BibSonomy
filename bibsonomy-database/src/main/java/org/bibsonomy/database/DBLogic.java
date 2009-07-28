@@ -295,7 +295,7 @@ public class DBLogic implements LogicInterface {
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 				// check permissions for displaying links to documents
-				param.setDocumentsAttached(this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, session));
+				param.setDocumentsAttached(this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, filter, session));
 
 				// this is save because of RTTI-check of resourceType argument
 				// which is of class T

@@ -1117,7 +1117,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 				return this.getBibTexDuplicate(param, session);
 			}
 			
-			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
+			log.warn("Filter " + param.getFilter().name() + " not supported");
 		}
 		
 		// posts including documents
