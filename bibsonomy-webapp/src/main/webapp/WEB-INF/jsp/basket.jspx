@@ -27,7 +27,7 @@
           <li>
             <span class="sidebar_h">
               <fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
-              <a href="/Collector?requTask=unpickAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}" title="${fn:escapeXml(removeAllVerbose)}"><fmt:message key="basket.removeAll"/></a>
+              <a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}" title="${fn:escapeXml(removeAllVerbose)}"><fmt:message key="basket.removeAll"/></a>
             </span>
           </li>
           <c:if test="${not empty command.bibtex and not empty command.context.loginUser.groups}">

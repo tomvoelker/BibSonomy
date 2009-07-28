@@ -119,9 +119,9 @@ function confirmDelete(e) {
   return del;
 }
 
-function getParent(node, class) {
-   if (node.className == class) return node;
-   return getParent(node.parentNode, class);
+function getParent(node, clazz) {
+   if (node.className == clazz) return node;
+   return getParent(node.parentNode, clazz);
 }
 
 // textarea resize
@@ -1492,11 +1492,11 @@ function unicodeCollation(ersterWert, zweiterWert){
     
     
     function pickAll(evt) {
-       pickUnpickAll(evt, "pick");
+       pickUnpickAll(evt, "pickAll");
     }
     
     function unpickAll(evt) {
-       pickUnpickAll(evt, "unpick");
+       pickUnpickAll(evt, "unpickAll");
     }
 
     function pickUnpickAll(evt, pickUnpick) {
@@ -1517,7 +1517,7 @@ function unicodeCollation(ersterWert, zweiterWert){
     	       }
     	    }
     	}
-    	updateCollector(pickUnpick + "=" + encodeURIComponent(param));
+    	updateCollector("action=" + pickUnpick + "&requestedResourceHash=" + encodeURIComponent(param));
     	
     	breakEvent(evt);    	
     }    
@@ -1552,7 +1552,7 @@ function unicodeCollation(ersterWert, zweiterWert){
     	var request = ajaxInit();
     	if(request){
 	    	// build URL for AJAX request
-			var url = "/ajax/pickUnpickPublication?ckey=" + ckey;
+			var url = "/ajax/pickUnpickPost?ckey=" + ckey;
 			request.open('POST', url, true);
 			request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			request.setRequestHeader("Content-length", param.length);
@@ -1571,10 +1571,10 @@ function unicodeCollation(ersterWert, zweiterWert){
 	           		var pickctr = document.getElementById("pickctr").childNodes[0];
 	           		
 	           		// parse XML input
-	       		    var xml = request.responseXML.documentElement;
-
+	       		    var xml = request.responseText;
+	       		    
 					// update counter   	           		
-   	           		pickctr.nodeValue = xml.getAttribute("count");
+   	           		pickctr.nodeValue = xml;
 	         	}
 	        }
 	    }

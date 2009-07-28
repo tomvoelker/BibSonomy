@@ -14,25 +14,27 @@
 
 		<!-- PICK / UNPICK -->
 		<c:choose>
-			<c:when test="${not empty unpick and unpick}">
+			<c:when test="${not empty pick and unpick}">
 				<!-- This means we are on a page which wants to show unpick links 
                      instead of pick links. Typically: the basket page.  -->
-				<c:url var="unpick_url" value="/Collector" context="${projectContext}">
-					<c:param name="unpick" value="${post.resource.intraHash}" />
+				<c:url var="unpick_url" value="/ajax/pickUnpickPost" context="${projectContext}">
+					<c:param name="requestedResourceHash" value="${post.resource.intraHash}" />
 					<c:param name="user" value="${post.user.name}" />
 					<c:param name="ckey" value="${ckey}" />
+					<c:param name="action" value="unpick" />
 				</c:url>
 				<c:set var="unpickTitle"><fmt:message key="bibtex.actions.unpick.title"/></c:set>
-				<a title="${unpickTitle}" href="${fn:escapeXml(unpick_url)}">
+				<a title="${unpickTitle}" href="${fn:escapeXml(unpick_url)}" onclick="pickUnpickPublication(event);">
 					<fmt:message key="bibtex.actions.unpick"/>
 				</a>
 			</c:when>
 			<c:otherwise>
                 <!-- all other pages show a link which allows to pick the publication -->
-				<c:url var="pick_url" value="/Collector" context="${projectContext}">
-					<c:param name="pick" value="${post.resource.intraHash}" />
+				<c:url var="pick_url" value="/ajax/pickUnpickPost" context="${projectContext}">
+					<c:param name="requestedResourceHash" value="${post.resource.intraHash}" />
 					<c:param name="user" value="${post.user.name}" />
 					<c:param name="ckey" value="${ckey}" />
+					<c:param name="action" value="pick" />
 				</c:url>
 				<c:set var="pickTitle"><fmt:message key="bibtex.actions.pick.title"/></c:set>
 				<a onclick="pickUnpickPublication(event);" title="${pickTitle}" href="${fn:escapeXml(pick_url)}">

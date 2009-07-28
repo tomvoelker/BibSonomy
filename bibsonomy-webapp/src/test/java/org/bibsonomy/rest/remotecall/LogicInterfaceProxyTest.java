@@ -812,4 +812,15 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		
 	}
 
+	@Override
+	public int createBasketItems(List<Post<BibTex>> posts) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int deleteBasketItems(List<Post<BibTex>> posts, boolean clearAll) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }
