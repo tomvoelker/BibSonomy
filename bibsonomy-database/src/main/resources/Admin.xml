@@ -99,6 +99,12 @@
 		ORDER BY updated_at DESC LIMIT 25
 	</select>
 	 
+	<select id="getClassifierUserDetails" resultMap="AdminCommon.userPredictionDetails" parameterClass="string">
+		SELECT <include refid="commonPredictionAttributes"/>
+		FROM prediction
+		WHERE user_name = #userName#
+	</select>
+	 
 	 <!--  
 	 <select id="getClassifierComparison" resultMap="AdminCommon.userPredictionAndSpammer" parameterClass="adminParam">
 	 	SELECT a.user_name,u.spammer, u.updated_by, u.updated_at, a.prediction, a.algorithm, a.mode

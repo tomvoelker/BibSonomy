@@ -357,6 +357,15 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Stores classifier's meta information in given user object
+	 * 
+	 * @param user the user object
+	 */
+	public User getClassifierUserDetails(final User user, final DBSession session) {
+		return this.queryForObject("getClassifierUserDetails", user.getName(), user, session);
+	}
+	
+	/**
 	 * Retrieves a comparison of classification results of admins and the
 	 * automatic classifier
 	 * 
@@ -373,4 +382,5 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		log.debug("Get BibTex for users: " + param.getInterval() + " " + param.getLimit());
 		return this.queryForList("getBibtexUsers", param, User.class, session);
 	}
+
 }

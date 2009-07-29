@@ -47,15 +47,19 @@ public interface DBSession extends Closeable {
 	 *            The SQL query which should be executed.
 	 * @param param
 	 *            A parameter object
+	 * @param result
+	 *            An optional result object instance that should be populated 
+	 *            with result data (if null, a new object will be returned)
 	 * @param statementType
-	 *            Defines whether it sould be a select, insert, update or delete
+	 *            Defines whether it should be a select, insert, update or delete
 	 * @param queryFor
 	 *            Defines whether we want to retrieve an object or a list from a
 	 *            select
 	 * @param ignoreException
 	 *            if this argument is set to true, no rollback will be triggered
 	 *            in case of an exception
-	 * @return An object in case of a select statement, null otherwise
+	 * @return An object in case of a select statement which is the populated 
+	 *            result object if supplied, null otherwise
 	 */
-	public Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, final boolean ignoreException);
+	public Object transactionWrapper(final String query, final Object param, Object result, final StatementType statementType, final QueryFor queryFor, final boolean ignoreException);
 }

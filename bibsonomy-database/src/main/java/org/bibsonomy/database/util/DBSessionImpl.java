@@ -164,9 +164,14 @@ public class DBSessionImpl implements DBSession {
 	/*
 	 * @see org.bibsonomy.database.util.DBSession.transactionWrapper(String, Object, StatementType, QueryFor, boolean)
 	 */
-	public Object transactionWrapper(final String query, final Object param, final StatementType statementType, final QueryFor queryFor, final boolean ignoreException) {
+	public Object transactionWrapper(final String query, final Object param, final Object result, final StatementType statementType, final QueryFor queryFor, final boolean ignoreException) {
 		try {
-			return this.executeQuery(this.getSqlMapExecutor(), query, param, statementType, queryFor);
+			// determine, whether a result object was supplied which should be populated by ibatis
+			// or a new result object should be returned
+			if( result==null )
+				return this.executeQuery(this.getSqlMapExecutor(), query, param, statementType, queryFor);
+			else
+				return this.executeQuery(this.getSqlMapExecutor(), query, param, result, statementType, queryFor);
 		} catch (final Exception ex) {
 			String msg = "Couldn't execute query '" + query + "'";
 			/*
@@ -240,6 +245,33 @@ public class DBSessionImpl implements DBSession {
 			break;
 		case DELETE:
 			sqlMap.delete(query, param);
+			break;
+		default:
+			throw new UnsupportedOperationException();
+		}
+		return rVal;
+	}
+	
+	/**
+	 * Executes a query and fills given result object.
+	 * 
+	 * @param sqlMap Ibatis query executor
+	 * @param query string identifying the query (this is the id as used in the sqlmap.xml file)
+	 * @param param querie's parameter object
+	 * @param statementType MUST BE SELECT - otherwise UnsupportedOperationException() is thrown
+	 * @param queryFor MUST BE Object - otherwise UnsupportedOperationException() is thrown
+	 * @return the result object, eventually filled with values by Ibatis
+	 * @throws SQLException
+	 */
+	private Object executeQuery(final SqlMapExecutor sqlMap, final String query, final Object param, final Object result, final StatementType statementType, final QueryFor queryFor) throws SQLException {
+		Object rVal = null;
+		switch (statementType) {
+		case SELECT:
+			switch (queryFor) {
+			case OBJECT:
+				rVal = sqlMap.queryForObject(query, param, result);
+				break;
+			}
 			break;
 		default:
 			throw new UnsupportedOperationException();

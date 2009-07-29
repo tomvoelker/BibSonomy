@@ -65,7 +65,16 @@ public class AbstractDatabaseManager {
 	protected <T> T queryForObject(final String query, final Object param, Class<T> type, final DBSession session) {
 		return this.queryForObject(query, param, type, false, session);
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	protected <T> T queryForObject(final String query, final Object param, T result, final boolean ignoreException, final DBSession session) {
+		return (T) this.queryForAnything(query, param, result, QueryFor.OBJECT, ignoreException, session);
+	}
+	
+	protected <T> T queryForObject(final String query, final Object param, T result, final DBSession session) {
+		return this.queryForObject(query, param, result, false, session);
+	}
+	
 	/**
 	 * @see #queryForObject(String, Object, DBSession)
 	 */
@@ -85,9 +94,20 @@ public class AbstractDatabaseManager {
 	 */
 	@SuppressWarnings("unchecked")
 	private Object queryForAnything(final String query, final Object param, final QueryFor queryFor, final boolean ignoreException, final DBSession session) {
-		return session.transactionWrapper(query, param, StatementType.SELECT, queryFor, ignoreException);
+		return session.transactionWrapper(query, param, null, StatementType.SELECT, queryFor, ignoreException);
 	}
-
+	
+	/**
+	 * This is a convenience method, which calls the <em>queryForObject</em>-
+	 * or the <em>queryForList</em>-method on the sqlMap. We encapsulate this
+	 * method here to catch exceptions, namely SQLException, which can be thrown
+	 * from that call.
+	 */
+	@SuppressWarnings("unchecked")
+	private Object queryForAnything(final String query, final Object param, Object result, final QueryFor queryFor, final boolean ignoreException, final DBSession session) {
+		return session.transactionWrapper(query, param, result, StatementType.SELECT, queryFor, ignoreException);
+	}
+	
 	/**
 	 * Inserts an object into the database.
 	 */
@@ -126,6 +146,6 @@ public class AbstractDatabaseManager {
 	 * delete statements.
 	 */
 	private void insertUpdateDelete(final String query, final Object param, final StatementType statementType, final boolean ignoreException, final DBSession session) {
-		session.transactionWrapper(query, param, statementType, null, ignoreException);
+		session.transactionWrapper(query, param, null, statementType, null, ignoreException);
 	}
 }

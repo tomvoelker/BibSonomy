@@ -23,6 +23,13 @@
 		<result property="updatedBy"   	column="updated_by" javaType="string" />
 	</resultMap>
 
+	<resultMap id="userPredictionDetails" class="user">
+		<result property="prediction"   column="prediction" javaType="integer" />
+		<result property="algorithm"   	column="algorithm"  javaType="string" />
+		<result property="mode"         column="mode"       javaType="string" />
+		<result property="confidence"   column="confidence" javaType="double" />
+	</resultMap>
+
 	<sql id="commonPredictionAttributes">
 		prediction, algorithm, mode, confidence
 	</sql>

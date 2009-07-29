@@ -224,6 +224,8 @@ public class DBLogic implements LogicInterface {
 				 * only admin any myself may see which group I'm a member of
 				 */
 				user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, session));
+				// fill user's spam informations
+				this.adminDBManager.getClassifierUserDetails(user, session);
 			} else {
 				/*
 				 * only the user himself or the admin gets the full details

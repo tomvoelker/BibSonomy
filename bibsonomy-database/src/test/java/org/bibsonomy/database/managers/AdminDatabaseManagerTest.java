@@ -111,4 +111,45 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String result = this.adminDb.flagSpammer(user, "classifier", "off", this.dbSession);
 		assertEquals(user.getName(), result);
 	}
+	
+	
+	/**
+	 * tests populating given user object with spam flags
+	 */
+	@Test
+	public void getClassifierUserDetails() {
+		final User user = new User();
+		user.setName("testspammer2");
+		user.setEmail("testMail@nomail.com");
+		user.setHobbies("spamming, flaming");
+		user.setSpammer(true);
+		user.setToClassify(1);
+		user.setPrediction(1);
+		user.setConfidence(0.2);
+		user.setMode("D");
+		user.setAlgorithm("testlogging");
+		//flag spammer (flagging does not change: user is no spammer)
+		final String result = this.adminDb.flagSpammer(user, "fei", "off", this.dbSession);
+		
+		// remove spam informations
+		user.setSpammer(null);
+		user.setToClassify(null);
+		user.setPrediction(null);
+		user.setConfidence(null);
+		user.setMode(null);
+		
+		// populate user with spam informations
+		User userRead = this.adminDb.getClassifierUserDetails(user, this.dbSession);
+		
+		// assure, that spam data is read but no other informations lost
+		assertEquals(user, userRead);
+		assertEquals("testMail@nomail.com", user.getEmail());
+		assertEquals("spamming, flaming", user.getHobbies());
+		// assertEquals(true, user.isSpammer());
+		// assertEquals(0, user.getToClassify());
+		assertEquals(1, user.getPrediction());
+		assertEquals(0.2, user.getConfidence());
+		assertEquals("D", user.getMode());
+		assertEquals("testlogging", user.getAlgorithm());
+	}
 }
