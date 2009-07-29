@@ -36,18 +36,12 @@ import org.bibsonomy.webapp.view.Views;
  * @author fei
  * @version $Id$
  */
-public class GetBookmarkRecommendedTagsController extends RecommendationsAjaxController<Bookmark> implements MinimalisticController<AjaxRecommenderCommand<Bookmark>> {
+public class GetBookmarkRecommendedTagsController extends RecommendationsAjaxController<Bookmark> {
 	private static final Log log = LogFactory.getLog(GetBookmarkRecommendedTagsController.class);
 
-	/**
-	 * Provides tag recommendations to the user.
-	 */
-	private MultiplexingTagRecommender tagRecommender = null;
-	
 	//------------------------------------------------------------------------
 	// MinimalisticController interface
 	//------------------------------------------------------------------------
-	
 	public AjaxRecommenderCommand<Bookmark> instantiateCommand() {
 		final AjaxRecommenderCommand<Bookmark> command = new AjaxRecommenderCommand<Bookmark>();
 		/*
@@ -71,84 +65,6 @@ public class GetBookmarkRecommendedTagsController extends RecommendationsAjaxCon
 		 */
 		command.getPost().getResource().setUrl("http://");
 		return command;
-	}
-
-	public View workOn(AjaxRecommenderCommand<Bookmark> command) {
-		final RequestWrapperContext context = command.getContext();
-		
-		/*
-		 * only users which are logged in might post bookmarks -> send them to
-		 * login page
-		 */
-		if (!context.isUserLoggedIn()) {
-			command.setResponseString("");
-		} else {		
-			final User loginUser = context.getLoginUser();
-			/*
-			 * set the user of the post to the loginUser (the recommender might need
-			 * the user name)
-			 */
-			command.getPost().setUser(loginUser);
-
-			/*
-			 * initialize groups
-			 */
-			initPostGroups(command, command.getPost());
-			
-			// set postID for recommender
-			command.getPost().setContentId(command.getPostID());
-			
-			/*
-			 * get the recommended tags for the post from the command
-			 */
-			if (getTagRecommender() != null)	{
-				SortedSet<RecommendedTag> result = getTagRecommender().getRecommendedTags(command.getPost(), command.getPostID());
-				command.setRecommendedTags(result);
-				Renderer renderer = XMLRenderer.getInstance();
-				StringWriter sw = new StringWriter(100);
-				renderer.serializeRecommendedTags(sw, command.getRecommendedTags());
-				command.setResponseString(sw.toString());
-			}
-		}
-		return Views.AJAX_RESPONSE;
-	}
-	
-	//------------------------------------------------------------------------
-	// private helper
-	//------------------------------------------------------------------------
-	private static Post<? extends Resource> createPost() {
-		final Post<Resource> post = new Post<Resource>();
-		final User user = new User();
-		user.setName("foo");
-		final Group group = new Group();
-		group.setName("bar");
-		final Tag tag = new Tag();
-		tag.setName("foobar");
-		post.setUser(user);
-		post.getGroups().add(group);
-		post.getTags().add(tag);
-		post.setDate(new Date(System.currentTimeMillis()));
-		final BibTex bibtex = new BibTex();
-		bibtex.setTitle("foo and bar");
-		bibtex.setIntraHash("abc");
-		bibtex.setInterHash("abc");
-		bibtex.setYear("2009");
-		bibtex.setBibtexKey("test");
-		bibtex.setEntrytype("twse");
-		post.setResource(bibtex);
-		
-		return post;
-	}	
-
-	//------------------------------------------------------------------------
-	// Getter/Setter
-	//------------------------------------------------------------------------
-	public void setTagRecommender(MultiplexingTagRecommender tagRecommender) {
-		this.tagRecommender = tagRecommender;
-	}
-
-	public MultiplexingTagRecommender getTagRecommender() {
-		return tagRecommender;
 	}
 
 }

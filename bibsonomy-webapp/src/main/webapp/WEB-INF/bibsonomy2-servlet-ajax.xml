@@ -107,13 +107,20 @@
 		class="org.bibsonomy.webapp.controller.ajax.GetBookmarkRecommendedTagsController"
 		scope="request">
 		<property name="logic" ref="logic" />
+		<!-- used for accessing spam informations -->
+		<property name="adminLogic" ref="adminLogic"/>  
 		<property name="userSettings" ref="userSettings" />
 		<property name="tagRecommender"	ref="multiplexingTagRecommender" />
+		<!-- tag recommender used for spammer -->
+		<property name="spamTagRecommender" ref="jensRecommender"/>
 	</bean>
+	
 	<bean id="ajaxGetPublicationRecommendedTagsController"
 		class="org.bibsonomy.webapp.controller.ajax.GetPublicationRecommendedTagsController"
 		scope="request">
 		<property name="logic" ref="logic" />
+		<!-- used for accessing spam informations -->
+		<property name="adminLogic" ref="adminLogic"/>
 		<property name="userSettings" ref="userSettings" />
 		<property name="tagRecommender" ref="multiplexingTagRecommender" />
 	</bean>
