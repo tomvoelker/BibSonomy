@@ -12,7 +12,10 @@
 	 
 	<util:list id="dc09RecommenderList" list-class="java.util.ArrayList">
 		<ref bean="distRecommender1"/>
-		<ref bean="distRecommender2"/>
+		<!-- moved to our machines
+			<ref bean="distRecommender2"/>
+		 -->
+		<ref bean="distRecommender2-local"/>
 		<ref bean="distRecommender3"/>
 		<ref bean="distRecommender4"/>
 		<ref bean="distRecommender5"/>
@@ -25,6 +28,7 @@
 		<ref bean="distRecommender12"/>
 		<ref bean="distRecommender13"/>
 		<!-- 
+		<ref bean="testRecommender-local"/>
 		<ref bean="testRecommender"/>
 		<ref bean="testRecommender1"/>
 		<ref bean="testRecommender2"/>
@@ -33,7 +37,6 @@
 		<ref bean="testRecommender5"/>
 		<ref bean="testRecommender6"/>
 		<ref bean="testRecommender7"/>
-		<ref bean="testRecommender-local"/>
 		 -->
 	</util:list>
 	
@@ -55,6 +58,18 @@
 			<value>http://nets.ii.uam.es:8080/GlasgowTagRecommender/GlasgowTagRecommenderServlet</value>
 		</property>
 	</bean>	 
+
+	<!--+
+	 	| Ivan Cantador's local installation
+	 	+-->
+	<bean id="distRecommender2-local" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
+		<property name="address">
+			<value>http://141.51.167.114:8080/GlasgowTagRecommender/GlasgowTagRecommenderServlet</value>
+		</property>
+	</bean>	 
+
+
+
 
 	<!--+
 	 	| Hao Cao
