@@ -123,6 +123,8 @@
 		<property name="adminLogic" ref="adminLogic"/>
 		<property name="userSettings" ref="userSettings" />
 		<property name="tagRecommender" ref="multiplexingTagRecommender" />
+		<!-- tag recommender used for spammer -->
+		<property name="spamTagRecommender" ref="jensRecommender"/>
 	</bean>
 	<bean id="followerAjaxController" class="org.bibsonomy.webapp.controller.ajax.FollowerAjaxController" scope="request">
 		<property name="logic" ref="logic" />
