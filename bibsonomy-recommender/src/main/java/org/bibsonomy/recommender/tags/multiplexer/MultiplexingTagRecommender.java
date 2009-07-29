@@ -503,7 +503,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		MultiplexingTagRecommender.feedbackThreadCounter++;
 	}
 	public static synchronized void decFeedbackCounter() {
-		MultiplexingTagRecommender.queryThreadCounter--;
+		MultiplexingTagRecommender.feedbackThreadCounter--;
 	}
 	
 	/**
