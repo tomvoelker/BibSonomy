@@ -205,7 +205,6 @@ public class MultiplexingTagRecommenderTest {
 	 * @throws Exception 
 	 */
 	@Test
-	@Ignore
 	public void testMultiThreading() throws Exception {
 		// create dummy recommenders
 		List<TagRecommenderConnector> recos = new ArrayList<TagRecommenderConnector>(NROFRECOS);

@@ -79,6 +79,12 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	private boolean initialized = false;
 
 	private DBLogic dbLogic;
+	
+	/** debug variable counting the number of open query threads */
+	private static int queryThreadCounter = 0;
+	/** debug variable counting the number of open feedback threads */
+	private static int feedbackThreadCounter = 0;
+	
 	//------------------------------------------------------------------------
 	// Instance initialization
 	//------------------------------------------------------------------------
@@ -329,13 +335,15 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		};
 		log.debug("("+qid+")Waited for "+(System.currentTimeMillis()-startSleep)+" ms");
 
-		if( qid!=null )
+		if( qid!=null ) {
 			try {
 				selectResult(qid, recommendedTags);
 			} catch (SQLException ex) {
 				// TODO Auto-generated catch block
 				log.error("("+qid+")"+ex.getMessage(), ex);
 			}
+		};
+		log.debug("("+qid+") Running threads: "+queryThreadCounter+" query threads and "+feedbackThreadCounter+" feedback threads");
 	}
 
 	/** Simply adds recommendations to the given collection of recommended tags. 
@@ -485,6 +493,19 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	//------------------------------------------------------------------------
 	// Implementation of dispatching recommendation queries
 	//------------------------------------------------------------------------
+	public static synchronized void incQueryCounter() {
+		MultiplexingTagRecommender.queryThreadCounter++;
+	}
+	public static synchronized void decQueryCounter() {
+		MultiplexingTagRecommender.queryThreadCounter--;
+	}
+	public static synchronized void incFeedbackCounter() {
+		MultiplexingTagRecommender.feedbackThreadCounter++;
+	}
+	public static synchronized void decFeedbackCounter() {
+		MultiplexingTagRecommender.queryThreadCounter--;
+	}
+	
 	/**
 	 * Threaded class for dispatching and collecting a single recommender query.
 	 * 
@@ -519,7 +540,11 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			this.qid = qid;
 			this.sid = sid;
 			this.recommendedTags = recommendedTags;
+			
+			MultiplexingTagRecommender.incQueryCounter();
 		}
+		
+		
 
 		/**
 		 * Get managed recommender's info.
@@ -561,7 +586,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			} else {
 				log.info("("+qid+")Recommender " + recommender.getInfo() + " timed out (" + time + ")");
 			}
-
+			MultiplexingTagRecommender.decQueryCounter();
 		}
 		/**
 		 * Tell dispatcher that he timed out.
@@ -592,6 +617,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 				Post<? extends Resource> post) {
 			this.recommender = recommender;
 			this.post = post;
+			MultiplexingTagRecommender.incFeedbackCounter();
 		}
 
 		/**
@@ -622,6 +648,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			} else {
 				log.info("Setting feedback for recommender " + recommender.getInfo() + " timed out (" + time + ")");
 			}
+			MultiplexingTagRecommender.decFeedbackCounter();
 		}
 
 		/**

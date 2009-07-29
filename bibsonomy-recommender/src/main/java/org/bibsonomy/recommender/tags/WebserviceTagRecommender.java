@@ -22,6 +22,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.commons.httpclient.params.HttpConnectionParams;
 import org.apache.commons.httpclient.params.HttpParams;
+import org.apache.commons.httpclient.util.IdleConnectionTimeoutThread; 
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
@@ -29,6 +30,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.recommender.tags.database.IdleClosingConnectionManager;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender.FeedbackDispatcher;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.renderer.Renderer;
@@ -62,8 +64,12 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	private static final String METHOD_SETFEEDBACK = "setFeedback";
 	
 	private static final int SOCKET_TIMEOUT_MS = 10000;
-	private static final int HTTP_CONNECTION_TIMEOUT_MS = 10000;
+	private static final int HTTP_CONNECTION_TIMEOUT_MS = 1000;
+	private static final long IDLE_TIMEOUT_MS = 3000;
 
+	// MultiThreadedHttpConnectionManager 
+	IdleClosingConnectionManager connectionManager;
+	IdleConnectionTimeoutThread idleConnectionHandler;
 	//------------------------------------------------------------------------
 	// constructors
 	//------------------------------------------------------------------------
@@ -77,14 +83,25 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	
 	public WebserviceTagRecommender() {
 		// Create an instance of HttpClient.
-		MultiThreadedHttpConnectionManager connectionManager = 
-      		new MultiThreadedHttpConnectionManager();
+		connectionManager = new IdleClosingConnectionManager();// MultiThreadedHttpConnectionManager();
       	client = new HttpClient(connectionManager);
+      	
+      	// set default timeouts
       	HttpConnectionManagerParams connectionParams = connectionManager.getParams();
       	connectionParams.setSoTimeout(SOCKET_TIMEOUT_MS);
       	connectionParams.setConnectionTimeout(HTTP_CONNECTION_TIMEOUT_MS);
       	connectionManager.setParams(connectionParams);
-
+      	log.debug("MAXCONNECTIONS: "+connectionParams.getMaxTotalConnections());
+      	log.debug("MAXCONNECTIONSPERHOST: "+connectionParams.getDefaultMaxConnectionsPerHost());
+      	
+      	
+      	
+      	// handle idle connections
+      	connectionManager.closeIdleConnections(IDLE_TIMEOUT_MS);
+      	idleConnectionHandler = new IdleConnectionTimeoutThread();
+      	idleConnectionHandler.addConnectionManager(connectionManager);
+      	idleConnectionHandler.start();
+      	
 		this.renderer = XMLRenderer.getInstance();
 	}
 	//------------------------------------------------------------------------
