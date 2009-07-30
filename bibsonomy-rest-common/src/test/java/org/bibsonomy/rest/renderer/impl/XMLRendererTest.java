@@ -310,6 +310,7 @@ public class XMLRendererTest {
 		user2.getGroups().add(new Group("kde"));
 		users.add(user2);
 		this.renderer.serializeUsers(sw, users, vm);
+		System.out.println(sw.toString());
 		compareWithFile(sw, "ExampleResultUsers1.txt");
 	}
 

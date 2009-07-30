@@ -146,6 +146,12 @@ public class XMLRenderer implements Renderer {
 			xmlPosts.setEnd(BigInteger.valueOf(viewModel.getEndValue()));
 			if (viewModel.getUrlToNextResources() != null) xmlPosts.setNext(viewModel.getUrlToNextResources());
 			xmlPosts.setStart(BigInteger.valueOf(viewModel.getStartValue()));
+		} else if( posts!=null ) {
+			xmlPosts.setStart(BigInteger.valueOf(0));
+			xmlPosts.setEnd(BigInteger.valueOf(posts.size()));
+		} else {
+			xmlPosts.setStart(BigInteger.valueOf(0));
+			xmlPosts.setEnd(BigInteger.valueOf(0));
 		}
 		for (final Post<? extends Resource> post : posts) {
 			final PostType xmlPost = createXmlPost(post);
@@ -300,6 +306,12 @@ public class XMLRenderer implements Renderer {
 			xmlUsers.setEnd(BigInteger.valueOf(viewModel.getEndValue()));
 			if (viewModel.getUrlToNextResources() != null) xmlUsers.setNext(viewModel.getUrlToNextResources());
 			xmlUsers.setStart(BigInteger.valueOf(viewModel.getStartValue()));
+		} else if( users!=null ) {
+			xmlUsers.setStart(BigInteger.valueOf(0));
+			xmlUsers.setEnd(BigInteger.valueOf(users.size()));
+		} else {
+			xmlUsers.setStart(BigInteger.valueOf(0));
+			xmlUsers.setEnd(BigInteger.valueOf(0));
 		}
 		for (final User user : users) {
 			xmlUsers.getUser().add(createXmlUser(user));
@@ -349,6 +361,8 @@ public class XMLRenderer implements Renderer {
 			for (final Group group: groups) {
 				group2.add(createXmlGroup(group));
 			}
+			xmlUser.getGroups().setStart(BigInteger.valueOf(0));
+			xmlUser.getGroups().setEnd(BigInteger.valueOf(groups.size()));
 		}
 		return xmlUser;
 	}
@@ -359,6 +373,12 @@ public class XMLRenderer implements Renderer {
 			xmlTags.setEnd(BigInteger.valueOf(viewModel.getEndValue()));
 			if (viewModel.getUrlToNextResources() != null) xmlTags.setNext(viewModel.getUrlToNextResources());
 			xmlTags.setStart(BigInteger.valueOf(viewModel.getStartValue()));
+		} else if( tags!=null ) {
+			xmlTags.setStart(BigInteger.valueOf(0));
+			xmlTags.setEnd(BigInteger.valueOf(tags.size()));
+		} else {
+			xmlTags.setStart(BigInteger.valueOf(0));
+			xmlTags.setEnd(BigInteger.valueOf(0));
 		}
 		for (final Tag tag : tags) {
 			xmlTags.getTag().add(createXmlTag(tag));
@@ -433,10 +453,16 @@ public class XMLRenderer implements Renderer {
 
 	public void serializeGroups(final Writer writer, final List<Group> groups, final ViewModel viewModel) throws InternServerException {
 		final GroupsType xmlGroups = new GroupsType();
-		if (viewModel != null) {
+		if ( viewModel != null ) {
 			xmlGroups.setEnd(BigInteger.valueOf(viewModel.getEndValue()));
 			if (viewModel.getUrlToNextResources() != null) xmlGroups.setNext(viewModel.getUrlToNextResources());
 			xmlGroups.setStart(BigInteger.valueOf(viewModel.getStartValue()));
+		} else if( groups!=null ) {
+			xmlGroups.setStart(BigInteger.valueOf(0));
+			xmlGroups.setEnd(BigInteger.valueOf(groups.size()));
+		} else {
+			xmlGroups.setStart(BigInteger.valueOf(0));
+			xmlGroups.setEnd(BigInteger.valueOf(0));
 		}
 		for (final Group group : groups) {
 			xmlGroups.getGroup().add(createXmlGroup(group));
@@ -816,8 +842,10 @@ public class XMLRenderer implements Renderer {
 		serialize(writer, xmlDoc);		
 	}
 
-	public void serializeRecommendedTags(Writer writer, Collection<RecommendedTag> tags) {
+	public void serializeRecommendedTags(Writer writer, Collection<RecommendedTag> tags) {		
 		final TagsType xmlTags = new TagsType();
+		xmlTags.setStart(BigInteger.valueOf(0));
+		xmlTags.setEnd(BigInteger.valueOf(tags.size()));
 		if (tags != null) {
 			for (final RecommendedTag tag : tags) {
 				xmlTags.getTag().add(createXmlRecommendedTag(tag));

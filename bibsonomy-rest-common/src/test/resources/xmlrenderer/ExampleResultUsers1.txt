@@ -2,10 +2,10 @@
 <bibsonomy stat="ok">
     <users start="20" next="http://www.bibsonomy.org/api/foo/bar" end="30">
         <user realname="Dr. FOO BaR" password="raboof" name="testname" href="http://www.bibsonomy.org/api/users/testname" homepage="http://foo.bar.com" email="mail@foo.bar">
-            <groups/>
+            <groups start="0" end="0"/>
         </user>
         <user name="foobar" href="http://www.bibsonomy.org/api/users/foobar">
-            <groups>
+            <groups start="0" end="1">
                 <group name="kde" href="http://www.bibsonomy.org/api/groups/kde"/>
             </groups>
         </user>
