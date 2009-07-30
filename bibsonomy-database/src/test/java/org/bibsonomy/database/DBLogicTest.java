@@ -49,10 +49,16 @@ public class DBLogicTest extends AbstractDBLogicBase {
 
 	/** used for testing ordering */
 	private long orderValue;
-	private static final String TEST_USER_NAME = "jaeschke";
+	private static final String TEST_USER_NAME    = "jaeschke";
+	private static final String TEST_SPAMMER_NAME       = "testspammer2";
+	private static final String TEST_SPAMMER_EMAIL      = "testspammer@bibsonomy.org";
+	private static final String TEST_SPAMMER_ALGORITHM  = "testlogging";
+	private static final int    TEST_SPAMMER_PREDICTION = 1;
+	private static final double TEST_SPAMMER_CONFIDENCE = 0.23;
 	private Set<String> testUserNameSet;
 	private static final String TEST_REQUEST_USER_NAME = "jaeschke";
 	private static final String TEST_REQUEST_HASH = "7d85e1092613fd7c91d6ba5dfcf4a044";
+
 
 	protected LogicInterface getDbLogic() {
 		if (this.dbLogic == null) {
@@ -450,5 +456,28 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		tags.add("web");
 		List<User> user = this.getDbLogic().getUsers(null, null, null, tags, null, Order.FOLKRANK, null, null, 0, 20);
 		assertEquals(20, user.size());
+	}
+	
+	/**
+	 * tests getUserDetails
+	 */
+	@Test
+	public void getUserDetails() {
+		// admin or the user himself has access to spam information
+		LogicInterface dbl  = this.getDbLogic(TEST_SPAMMER_NAME);
+		User spammer        = dbl.getUserDetails(TEST_SPAMMER_NAME);
+		assertEquals(TEST_SPAMMER_NAME, spammer.getName());
+		assertEquals(TEST_SPAMMER_ALGORITHM, spammer.getAlgorithm());
+		assertEquals(TEST_SPAMMER_PREDICTION, spammer.getPrediction());
+		assertEquals(TEST_SPAMMER_CONFIDENCE, spammer.getConfidence());
+		assertEquals(TEST_SPAMMER_EMAIL, spammer.getEmail());
+		
+		// one can not read spam informations about other users
+		dbl     = this.getDbLogic(TEST_USER_NAME);
+		spammer = dbl.getUserDetails(TEST_SPAMMER_NAME);
+		assertEquals(null, spammer.getAlgorithm());
+		assertEquals(null, spammer.getPrediction());
+		assertEquals(null, spammer.getConfidence());
+		
 	}
 }

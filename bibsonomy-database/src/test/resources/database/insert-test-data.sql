@@ -299,7 +299,9 @@ INSERT INTO `log_prediction` VALUES
 -- 
 -- Data for table `prediction`
 -- 
-
+-- (user_name, prediction, timestamp, updated_at, algorithm, mode, evaluator, confidence)
+INSERT INTO `prediction` VALUES
+('testspammer2', 1, UNIX_TIMESTAMP(NOW()), '2008-06-18 14:27:35', 'testlogging', 'D', 0, 0.42);
 
 
 
