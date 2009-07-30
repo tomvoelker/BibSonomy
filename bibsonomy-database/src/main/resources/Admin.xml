@@ -103,6 +103,8 @@
 		SELECT <include refid="commonPredictionAttributes"/>
 		FROM prediction
 		WHERE user_name = #userName#
+		ORDER BY timestamp DESC
+		LIMIT 1
 	</select>
 	 
 	 <!--  

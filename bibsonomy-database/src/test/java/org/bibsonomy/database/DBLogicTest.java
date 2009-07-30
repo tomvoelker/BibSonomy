@@ -35,7 +35,6 @@ import org.junit.Test;
  * @author Jens Illig
  * @version $Id$
  */
-@Ignore
 public class DBLogicTest extends AbstractDBLogicBase {
 
 	private static final Logger log = Logger.getLogger(DBLogicTest.class);
@@ -142,6 +141,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * tests getPostsByTagName
 	 */
 	@Test
+	@Ignore
 	public void getPostsByTagName() {
 		LogicInterface anonymousAccess = this.getDbLogic(null);
 		this.bibTexPostsList = anonymousAccess.getPosts(BibTex.class, GroupingEntity.ALL, "", this.taglist, "", null, null, 0, 5, null);
@@ -157,6 +157,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * tests getPostsByTagNameForUser
 	 */
 	@Test
+	@Ignore
 	public void getPostsByTagNameForUser() {
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, "", null, null, 0, 10, null);
 		assertEquals(10, this.bibTexPostsList.size());
@@ -170,6 +171,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * tests getPostsByConceptForUser
 	 */
 	@Test
+	@Ignore
 	public void getPostsByConceptForUser() {
 		this.taglist = Arrays.asList(new String[] { "->researcher" });
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, taglist, "", Order.ADDED, null, 0, 2, null);
@@ -184,6 +186,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * tests getPostsForUser
 	 */
 	@Test
+	@Ignore
 	public void getPostsForUser() {
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, null, "", null, null, 0, 10, null);
 		assertEquals(10, this.bibTexPostsList.size());
@@ -197,6 +200,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * tests getPostsByHash
 	 */
 	@Test
+	@Ignore
 	public void getPostsByHash() {
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), TEST_REQUEST_HASH, null, null, 0, 5, null);
 		assertEquals(5, this.bibTexPostsList.size());
@@ -212,6 +216,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * tests getPostsByHashForUser
 	 */
 	@Test
+	@Ignore
 	public void getPostsByHashForUser() {
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.USER, TEST_REQUEST_USER_NAME, new ArrayList<String>(), TEST_REQUEST_HASH, null, null, 0, 19, null);
 		assertEquals(1, this.bibTexPostsList.size());
@@ -241,6 +246,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * tests getPostsForUsersInGroup
 	 */
 	@Test
+	@Ignore
 	public void getPostsForUsersInGroup() {
 		final HashSet<String> usersInGroup = new HashSet<String>();
 		usersInGroup.addAll( this.getUserNamesByGroupId( GroupID.KDE, this.dbSession) );
@@ -256,6 +262,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * tests getPostsForGroupByTag
 	 */
 	@Test
+	@Ignore
 	public void getPostsForGroupByTag() {
 		final LogicInterface anonymousAccess = getDbLogic("");
 		final HashSet<String> usersInGroup = new HashSet<String>();
@@ -272,6 +279,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * tests getBibtexOfFriendByTags
 	 */
 	@Test
+	@Ignore
 	public void getBibtexOfFriendByTags() {
 		final LogicInterface buzzsAccess = getDbLogic("buzz");
 		final List<String> tags = Arrays.asList(new String[] { "java" });
@@ -296,6 +304,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * tests getBibtexOfFriendByUser
 	 */
 	@Test
+	@Ignore
 	public void getBibtexOfFriendByUser() {
 		final LogicInterface buzzsAccess = getDbLogic("buzz");
 		this.bibTexPostsList = buzzsAccess.getPosts(BibTex.class, GroupingEntity.FRIEND, "apo", new ArrayList<String>(0), null, Order.ADDED, null, 0, 19, null);
@@ -317,6 +326,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * tests getPosts with friends
 	 */
 	@Test
+	@Ignore
 	public void getBibtexByFriends() {
 		final LogicInterface mwkustersAccess = getDbLogic("mwkuster");
 		final HashSet<Integer> mustGroups = new HashSet<Integer>();
@@ -337,6 +347,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * tests getPosts with popular
 	 */
 	@Test
+	@Ignore
 	public void getPostsPopular() {
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", null, null, Order.POPULAR, null, 0, 10, null);
 		assertEquals(10, this.bibTexPostsList.size());
@@ -351,6 +362,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * TODO fix this comment
 	 */
 	@Test
+	@Ignore
 	public void getPostsHome() {
 		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, TEST_REQUEST_USER_NAME, taglist, null, null, null, 0, 15, null);
 		assertEquals(15, this.bibTexPostsList.size());
