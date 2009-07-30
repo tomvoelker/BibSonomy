@@ -137,7 +137,9 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 			// set postID for recommender
 			command.getPost().setContentId(command.getPostID());
 
-			if( dbUser.isSpammer() ) {///*(dbUser.isSpammer()==true)&&(dbUser.getPrediction()==1||dbUser.getAlgorithm()==USERSPAMALGORITHM) */) {
+			if( (dbUser.isSpammer()==true)&&
+					(   (dbUser.getPrediction()==null && dbUser.getAlgorithm()==null) ||
+						(dbUser.getPrediction().equals(1) || dbUser.getAlgorithm().equals(USERSPAMALGORITHM)))  ) {
 				// the user is a spammer
 				log.debug("Filtering out recommendation request from spammer");
 				if ( getSpamTagRecommender()!=null )	{
