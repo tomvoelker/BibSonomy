@@ -14,7 +14,7 @@
     <script type="text/javascript">
   	  //<mtl:cdata>
 	  <![CDATA[
-      var myurl = "javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;extended='+";
+      var myurl = "javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+";
       if (window.getSelection) {
         myurl  += "encodeURIComponent(window.getSelection())";
       } else if (document.getSelection) {
