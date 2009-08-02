@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
 
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.FileAppender;
@@ -22,7 +21,7 @@ import org.apache.log4j.SimpleLayout;
 import org.bibsonomy.util.tex.TexEncode;
 
 /**
- * @author nmrd
+ * @author claus
  * @version $Id$
  */
 public class BatchAuthors {
@@ -193,19 +192,23 @@ public class BatchAuthors {
 	 */
 	private static Map<String, Author> fetchAuthors(AuthorDB db) throws SQLException {
 		ResultSet rs = db.getAuthors();
-
-		TexEncode enc = new TexEncode();
 		Map<String, Author> authorMap = new HashMap<String, Author>();
-		
 		String authorName;
+		String bibtexName;
 		String[] subNames;
 		int c = 0;
+		TexEncode enc = new TexEncode();
 		
 		while(rs.next()) {
-			authorName = rs.getString(2);			
+			authorName = rs.getString(2);
+			bibtexName = authorName;
+			
 			if (authorName == null) continue;
+			
 			c++;
-			if(!authorMap.containsKey(authorName)) {
+			authorName = enc.encode(authorName);
+			
+			if (!authorMap.containsKey(authorName)) {
 				subNames = authorName.split(" ");
 				Author a = new Author(getFirstName(subNames),
 						getMiddleName(subNames),
@@ -217,8 +220,8 @@ public class BatchAuthors {
 			} else {
 				authorMap.get(authorName).getContentIds().add(rs.getLong(3));
 				// check if author already got the requested bibtex representation. if not, add the current one
-				if(!authorMap.get(authorName).getBibtexNames().contains(authorName)) {
-					authorMap.get(authorName).addBibtexName(authorName);
+				if(!authorMap.get(authorName).getBibtexNames().contains(bibtexName)) {
+					authorMap.get(authorName).addBibtexName(bibtexName);
 				}
 			}
 			
@@ -232,22 +235,11 @@ public class BatchAuthors {
 		}
 		
 		// clean memory
-		rs = null;
+		rs  = null;
 		enc = null;
 		System.gc();
 		
 		return authorMap;
-	}
-	
-	
-	/**
-	 * returns a sorted tree map which represents a hashmap
-	 * 
-	 * @param map
-	 * @return
-	 */
-	private static TreeMap<String, Author> sortHashMap(Map<String, Author> map) {
-		return new TreeMap<String, Author>(map);
 	}
 	
 	
@@ -260,72 +252,68 @@ public class BatchAuthors {
 	 * @throws SQLException
 	 */
 	private static void blastData(AuthorDB db, Map<String, Author> bibtexAuthorMap, Map<String, Author> authorMap) throws SQLException {
-		//Map<String, Author> updateAuthorMap = new HashMap<String, Author>();
-		//Map<String, Author> insertAuthorMap = new HashMap<String, Author>();
 		ArrayList<Author> insertAuthors = new ArrayList<Author>();
 		ArrayList<Author> updateAuthors = new ArrayList<Author>();
-		
-		ArrayList<Long> removeList = new ArrayList<Long>();
 		
 		String s;		
 		Author a;
 		Iterator<String> it = bibtexAuthorMap.keySet().iterator();
+
 		logger.info("Computing which authors to insert / update...");		
+		
 		while (it.hasNext()) {
-		//for(String s : sortHashMap(bibtexAuthorMap).keySet()) {
 			s = it.next();
 			a = bibtexAuthorMap.get(s);
+			
 			if(authorMap.containsKey(s)) {
-				// updateAuthorMap.put(s, bibtexAuthorMap.get(s));
 				// set author id
 				a.setAuthorId(authorMap.get(s).getAuthorId());
-									
-				//updateAuthorMap.get(s).setAuthorId(authorMap.get(s).getAuthorId());
+				int ctr = authorMap.get(s).getContentIds().size();
+				
+				// if there isn't an old id in the update user, add it to delete list
+				if (lastId == 0) {
+					for (long l : authorMap.get(s).getContentIds()) {
+						if (!a.getContentIds().contains(l)) {
+							a.getDeletedContentIds().add(l);
+						}
+					}
+				}
 				
 				// remove existing id's for update author
 				Iterator<Long> iter = a.getContentIds().iterator();
-				
 				while (iter.hasNext()) {
 					if (authorMap.get(s).getContentIds().contains(iter.next())) {
 						iter.remove();
 					}
 				}
 				
-				// if there isn't an old id in the update user, add it to delete list 
-				for(long l : authorMap.get(s).getContentIds()) {
-					if(!a.getContentIds().contains(l)) {
-						a.getDeletedContentIds().add(l);
-					}
-				}
+				a.setCtr(ctr + a.getContentIds().size() - a.getDeletedContentIds().size());
 				
-				if(authorMap.get(s).getBibtexNames().size() != a.getBibtexNames().size()) {
-					for(int i = 0; i < a.getBibtexNames().size(); ++i) {
-						if(authorMap.get(s).getBibtexNames().contains(a.getBibtexNames().get(i))) {
-							a.getBibtexNames().remove(i);
-						}
+				Iterator<String> nameIter = a.getBibtexNames().iterator();
+				while (nameIter.hasNext()) {
+					if (authorMap.get(s).getBibtexNames().contains(nameIter.next())) {
+						nameIter.remove();
 					}
 				}
 				
 				// remember author to update
-				updateAuthors.add(a);
-				
-				authorMap.remove(s);
-				//bibtexAuthorMap.remove(s);
+				if (a.getContentIds().size() > 0 
+						|| a.getBibtexNames().size() > 0 
+						|| a.getDeletedContentIds().size() > 0) {
+					updateAuthors.add(a);
+				}
 				
 			} else {
-				//insertAuthorMap.put(s, bibtexAuthorMap.get(s));
 				insertAuthors.add(a);
-				authorMap.remove(s);
-				//bibtexAuthorMap.remove(s);
 			}
 		}
 		
 		logger.info("Calling GC...");
 		System.gc();
 		
+		
 		logger.info("Inserting authors...");
 		for (int i = 0; i < insertAuthors.size(); i++) { 
-		// for(String s : sortHashMap(insertAuthorMap).keySet()) {
 			if (i % 10000 == 0) {
 				logger.info("nr. of bibtex authors inserted: " + i);
 				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
@@ -345,7 +333,6 @@ public class BatchAuthors {
 		
 		logger.info("Updating authors...");
 		for (int j = 0; j < updateAuthors.size(); j++) {
-		// for(String s : sortHashMap(updateAuthorMap).keySet()) {
 			if (j % 10000 == 0) {
 				logger.info("nr. of bibtex authors updated: " + j);
 				long memUsed = ( Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory() ) / 1024;
