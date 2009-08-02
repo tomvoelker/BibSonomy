@@ -1,11 +1,10 @@
 package org.bibsonomy.batch.authors;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Vector;
 
 /**
- * @author nmrd
+ * @author claus
  * @version $Id$
  */
 public class Author {
@@ -17,6 +16,7 @@ public class Author {
 	private String middleName;
 	private String lastName;
 	private Vector<String> bibtexNames;
+	private int ctr;
 	
 	
 	/**
@@ -138,6 +138,14 @@ public class Author {
 	 */
 	public void addBibtexName(final String bibtexName) {
 		this.bibtexNames.add(bibtexName);
+	}
+	
+	public int getCtr() {
+		return ctr;
+	}
+
+	public void setCtr(int ctr) {
+		this.ctr = ctr;
 	}
 	
 	public String toString() {
