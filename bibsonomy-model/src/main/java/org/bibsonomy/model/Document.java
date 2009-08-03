@@ -23,6 +23,7 @@
 
 package org.bibsonomy.model;
 
+import java.io.File;
 import java.util.Date;
 
 /**
@@ -56,6 +57,11 @@ public class Document {
 	 * The date at which the document has been saved.
 	 */
 	private Date date;
+	
+	/**
+	 * The actual file ... sometimes it's contained in the document!
+	 */
+	private File file;
 
 	/**
 	 * @return md5hash
@@ -115,5 +121,21 @@ public class Document {
 	 */
 	public void setFileHash(String fileHash) {
 		this.fileHash = fileHash;
+	}
+
+	public Date getDate() {
+		return this.date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public File getFile() {
+		return this.file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
 	}
 }
