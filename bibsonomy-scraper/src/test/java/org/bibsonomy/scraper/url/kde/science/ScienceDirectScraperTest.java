@@ -24,6 +24,7 @@
 package org.bibsonomy.scraper.url.kde.science;
 
 import org.bibsonomy.scraper.UnitTestRunner;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -35,7 +36,7 @@ import static org.junit.Assert.assertTrue;
  *
  */
 public class ScienceDirectScraperTest {
-	
+
 	/**
 	 * starts URL test with id url_28
 	 */
@@ -55,5 +56,26 @@ public class ScienceDirectScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_141"));
 	}
-	
+
+	@Test
+	public void testCleanBibtex() {
+		final ScienceDirectScraper s = new ScienceDirectScraper();
+
+		final String in = "@article{jaeschke2008tag,\n" + 
+		"title = {Tag Recos},\n" +
+		"pages = \"56 - 70\",\n" + 
+		"year  = 2008\n" +
+		"}";
+
+		final String expected = "@article{jaeschke2008tag,\n" + 
+		"title = {Tag Recos},\n" +
+		"pages = \"56--70\",\n" +
+		"year  = 2008\n" +
+		"}";
+
+		final String out = s.cleanBibTeX(in);
+
+		Assert.assertEquals(expected, out);
+	}
+
 }

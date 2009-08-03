@@ -67,6 +67,8 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	private static final Pattern patternUiokey   = Pattern.compile(PATTERN_UIOKEY);
 	private static final Pattern patternMD5      = Pattern.compile(PATTERN_MD5);
 
+	private static final Pattern patternBrokenPages = Pattern.compile("(.*pages = \"[0-9]+) - ([0-9]+\".*)", Pattern.DOTALL); 
+	
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SCIENCE_CITATION_HOST), Pattern.compile(SCIENCE_CITATION_PATH + ".*")));
 
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
@@ -125,7 +127,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 			if (acct != null && userId != null && uiokey != null && md5 != null) {
 				final String postContent = "_ob=DownloadURL&_method=finish&_acct=" + acct + "&_userid=" + userId + "&_docType=FLA&_ArticleListID=" + arList + "&_uoikey=" + uiokey + "&count=1&md5=" + md5 + "&JAVASCRIPT_ON=Y&format=cite-abs&citation-type=BIBTEX&Export=Export&RETURN_URL=http%3A%2F%2Fwww.sciencedirect.com%2Fscience%2Fhome";
 
-				final String bibtex = WebUtils.getPostContentAsString(new URL(SCIENCE_CITATION_URL), postContent, "latin1").replace("\r","");
+				final String bibtex = cleanBibTeX(WebUtils.getPostContentAsString(new URL(SCIENCE_CITATION_URL), postContent, "latin1"));
 
 				/*
 				 * Job done
@@ -143,6 +145,34 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
+	}
+
+
+	/**
+	 * Fixes some errors in BibTeX source code of ScienceDirect:
+	 * - pages field should be XX--YY, not "XX - YY"
+	 * - removing \r
+	 *  
+	 * @param bibtex
+	 * @return
+	 */
+	protected String cleanBibTeX(final String bibtex) {
+		if (bibtex != null) {
+			/*
+			 * replace \r
+			 */
+			final String result = bibtex.replace("\r","");
+			/*
+			 * fix "pages" field
+			 */
+			final Matcher matcher = patternBrokenPages.matcher(result);
+			if (matcher.matches()) {
+				return matcher.replaceFirst("$1--$2");
+			}
+			
+			return result;
+		}
+		return null;
 	}
 
 
