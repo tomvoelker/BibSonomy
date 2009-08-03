@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.view;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -72,6 +70,55 @@ public class CSVView extends AbstractView {
 				 */
 				final ServletOutputStream outputStream = response.getOutputStream();
 				final CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+				/*
+				 * write header
+				 */
+				csvWriter.writeNext(new String[]{
+						"# intrahash",
+						"user",
+						"date",
+						"tags",
+						"groups",
+						"description",
+						
+						"title",
+												
+						// publication-only fields
+						"bibtexKey",
+						// from here: sorted by alphabet
+						"address",
+						"annote",
+						"author",
+						"entrytype",
+						"booktitle",
+						"chapter",
+						"crossref",
+						"day",
+						"edition",
+						"editor",
+						"howpublished",
+						"institution",
+						"journal",
+						"key",
+						"month",
+						"note",
+						"number",
+						"organization",
+						"pages",
+						"publisher",
+						"school",
+						"series",
+						"type",
+						"volume",
+						"year",
+
+						// remaining "special" fields
+						"private note",
+						"misc",
+						"abstract"
+						
+				});
+				
 				/*
 				 * write publications
 				 */
