@@ -74,7 +74,7 @@ public class CSVView extends AbstractView {
 				 * write header
 				 */
 				csvWriter.writeNext(new String[]{
-						"# intrahash",
+						"intrahash",
 						"user",
 						"date",
 						"tags",
