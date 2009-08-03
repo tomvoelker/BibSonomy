@@ -64,6 +64,13 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 
 	public View workOn(ImportCommand command) {
 
+		/*
+		 * FIXME: check for login & ckey!
+		 * 
+		 * see PostPostController how this should be done
+		 */
+		
+		
 		List<Post<Bookmark>> posts = new LinkedList<Post<Bookmark>>();
 		List<Tag> relations = new LinkedList<Tag>();
 
