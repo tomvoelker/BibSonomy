@@ -23,6 +23,8 @@
 
 package org.bibsonomy.common.exceptions;
 
+import java.util.Date;
+
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id: ResourceNotFoundException.java,v 1.2 2007-10-30 17:37:35 jillig
@@ -34,6 +36,7 @@ public class ResourceMovedException extends RuntimeException {
 
 	private final String newIntraHash;
 	private final String userName;
+	private final Date date;
 	
 	/**
 	 * Constructs a new resource moved exception with the specified resource
@@ -46,12 +49,16 @@ public class ResourceMovedException extends RuntimeException {
 	 * @param newIntraHash 
 	 * 			  the intra hash of the new resource when the resource changed 
 	 * @param userName 
-	 * 			  the name of the user who owns the resource 
+	 * 			  the name of the user who owns the resource
+	 * @param date
+	 * 			  the new date of the resource. This is necessary to identify 
+	 *            resources whose date has not changed.  
 	 */
-	public ResourceMovedException(final String intraHash, final String newIntraHash, final String userName) {
+	public ResourceMovedException(final String intraHash, final String newIntraHash, final String userName, final Date date) {
 		super("The requested resource (with ID " + intraHash + ") has been moved to new ID " + newIntraHash + ". \n");
 		this.newIntraHash = newIntraHash;
 		this.userName = userName;
+		this.date = date;
 	}
 	
 	/**
@@ -66,6 +73,13 @@ public class ResourceMovedException extends RuntimeException {
 	 */
 	public String getUserName() {
 		return this.userName;
+	}
+
+	/**
+	 * @return The new posting date of the resource. 
+	 */
+	public Date getDate() {
+		return this.date;
 	}
 	
 	
