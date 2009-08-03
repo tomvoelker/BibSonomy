@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.User;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
@@ -27,6 +28,12 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public final static int SETTINGS_IDX = 1;
 	public final static int IMPORTS_IDX = 2;
 	
+	private boolean hasOwnGroup;
+	
+	private List<User> friendsOfUser;
+	
+	private List<User> userFriends;
+	
 	private String grouping;
 	
 	private String importType;
@@ -35,9 +42,29 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	
 	private CommonsMultipartFile file;
 	
-	private String tagBoxStyle;
+	private int tagboxStyle;
 	
-	private String tagSort;
+	private int tagSort;
+	
+	private int tagboxTooltip;
+	
+	private String defaultLanguage;
+	
+	private int tagboxMinfreq;
+	
+	private int itemcount;
+	
+	private int privlevel;
+	
+	private int sharedDocuments;
+	
+	private int logLevel;
+	
+	private String oldPassword;
+	
+	private String newPassword1;
+	
+	private String newPassword2;
 
 	private Map<String, String> newBookmarks = null;
 
@@ -109,12 +136,12 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.overwrite = overwrite;
 	}
 
-	public void setTagBoxStyle(String tagBoxStyle) {
-		this.tagBoxStyle = tagBoxStyle;
+	public void setTagboxStyle(int tagboxStyle) {
+		this.tagboxStyle = tagboxStyle;
 	}
 
-	public String getTagBoxStyle() {
-		return tagBoxStyle;
+	public int getTagboxStyle() {
+		return tagboxStyle;
 	}
 
 	public CommonsMultipartFile getFile() {
@@ -125,12 +152,44 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.file = file;
 	}
 
-	public void setTagSort(String tagSort) {
+	public void setTagSort(int tagSort) {
 		this.tagSort = tagSort;
 	}
 
-	public String getTagSort() {
+	public int getTagSort() {
 		return tagSort;
+	}
+
+	public void setTagboxTooltip(int toolTip) {
+		this.tagboxTooltip = toolTip;
+	}
+
+	public int getTagboxTooltip() {
+		return tagboxTooltip;
+	}
+
+	public void setDefaultLanguage(String defaultLanguage) {
+		this.defaultLanguage = defaultLanguage;
+	}
+
+	public String getDefaultLanguage() {
+		return defaultLanguage;
+	}
+
+	public void setTagboxMinfreq(int tagboxMinfreq) {
+		this.tagboxMinfreq = tagboxMinfreq;
+	}
+
+	public int getTagboxMinfreq() {
+		return tagboxMinfreq;
+	}
+
+	public void setItemcount(int itemcount) {
+		this.itemcount = itemcount;
+	}
+
+	public int getItemcount() {
+		return itemcount;
 	}
 
 	public Map<String, String> getNewBookmarks() {
@@ -157,6 +216,29 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.nonCreatedBookmarks = nonCreatedBookmarks;
 	}
 
+	public void setPrivlevel(int privlevel) {
+		this.privlevel = privlevel;
+	}
+
+	public int getPrivlevel() {
+		return privlevel;
+	}
+
+	public void setSharedDocuments(int sharedDocuments) {
+		this.sharedDocuments = sharedDocuments;
+	}
+
+	public int getSharedDocuments() {
+		return sharedDocuments;
+	}
+
+	public void setLogLevel(int logLevel) {
+		this.logLevel = logLevel;
+	}
+
+	public int getLogLevel() {
+		return logLevel;
+	}
 	public String getBeginName() {
 		return this.beginName;
 	}
@@ -205,5 +287,67 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.endHash = endHash;
 	}
 
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
+	}
+
+	/**
+	 * Returns current password of user as typed into form.
+	 * 
+	 * @return
+	 */
+	public String getOldPassword() {
+		return oldPassword;
+	}
+
+	public void setNewPassword1(String newPassword1) {
+		this.newPassword1 = newPassword1;
+	}
+
+	/**
+	 * Returns the new password of user as typed into form.
+	 * 
+	 * @return
+	 */
+	public String getNewPassword1() {
+		return newPassword1;
+	}
+
+	public void setNewPassword2(String newPassword2) {
+		this.newPassword2 = newPassword2;
+	}
+
+	/**
+	 * Returns the new password of user as typed into form to confirm <code>newPassword1</code>.
+	 * 
+	 * @return
+	 */
+	public String getNewPassword2() {
+		return newPassword2;
+	}
+	
+	public void setHasOwnGroup(boolean hasOwnGroup) {
+		this.hasOwnGroup = hasOwnGroup;
+	}
+
+	public boolean getHasOwnGroup() {
+		return hasOwnGroup;
+	}
+
+	public void setFriendsOfUser(List<User> friendsOfUser) {
+		this.friendsOfUser = friendsOfUser;
+	}
+
+	public List<User> getFriendsOfUser() {
+		return friendsOfUser;
+	}
+
+	public void setUserFriends(List<User> userFriends) {
+		this.userFriends = userFriends;
+	}
+
+	public List<User> getUserFriends() {
+		return userFriends;
+	}
 
 }

@@ -39,12 +39,18 @@
 							<list>
 								<value>selTab</value>
 								<value>ckey</value>
+								<value>requestedUser</value>
 								<value>grouping</value>
 								<value>importType</value>
 								<value>overwrite</value>
 								<value>file</value> 
-								<value>tagBoxStyle</value>
+								<!-- FIXME delete this if no errors occur 
+								value>tagboxStyle</value>
 								<value>tagSort</value>
+								<value>tagboxTooltip</value>
+								<value>defaultLanguage</value>
+								<value>tagboxMinfreq</value>
+								<value>itemcount</value-->
 							</list>
 						</property>
 					</bean>

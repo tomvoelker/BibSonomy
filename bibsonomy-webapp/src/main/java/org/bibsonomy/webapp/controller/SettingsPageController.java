@@ -1,10 +1,13 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.layout.jabref.LayoutPart;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
@@ -15,14 +18,19 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
+import beans.GroupSettingsBean;
+import beans.SettingsBean;
+
 /**
  * @author Steffen
  * @version $Id: SettingsPageController.java,v 1.2 2009-05-20 12:03:21
  *          voigtmannc Exp $
  */
-public class SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
+public class SettingsPageController implements
+		MinimalisticController<SettingsViewCommand>, ErrorAware {
 
-	private static final Log log = LogFactory.getLog(SearchPageController.class);
+	private static final Log log = LogFactory
+			.getLog(SearchPageController.class);
 
 	/**
 	 * hold current errors
@@ -38,7 +46,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	public View workOn(SettingsViewCommand command) {
 
 		command.setPageTitle("settings");
-
+		
 		switch (command.getSelTab()) {
 		case 0: {
 			// called by the my profile tab
@@ -74,11 +82,28 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	}
 
 	private void workOnMyProfileTab(SettingsViewCommand command) {
-
+//		<%-- ------------------------ change settings -------------------------- --%>
+//		<jsp:useBean id="settingsBean" class="beans.SettingsBean" scope="request">
+//		  <jsp:setProperty name="settingsBean" property="*"/>
+//		  <jsp:setProperty name="settingsBean" property="name" value="${user.name}"/>
+//		  <jsp:setProperty name="settingsBean" property="validCkey" value="${validckey}"/>
+//		</jsp:useBean>
+//		
+//		<% settingsBean.queryDB(); %> <%-- write data to database (if neccessary) --%>	
+		
+		User loginUser = command.getContext().getLoginUser();
+		command.setFriendsOfUser(logic.getFriendsOfUser(loginUser));
+		command.setUserFriends(logic.getUserFriends(loginUser));	
+		/*SettingsBean settingsBean = new SettingsBean();
+		// TODO which properties are set via property="*"?
+		settingsBean.setName(loginUser.getName());
+		settingsBean.setValidCkey(command.getContext().isValidCkey());
+		settingsBean.queryDB();*/
 	}
 
 	/**
 	 * checks whether the user has already uploaded jabref layout definitions
+	 * 
 	 * @param command
 	 */
 	private void checkInstalledJabrefLayout(SettingsViewCommand command) {
@@ -87,9 +112,11 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 		for (LayoutPart layoutpart : values) {
 
-			String fileHash = JabrefLayoutUtils.userLayoutHash(command.getContext().getLoginUser().getName(), layoutpart);
+			String fileHash = JabrefLayoutUtils.userLayoutHash(command
+					.getContext().getLoginUser().getName(), layoutpart);
 
-			Document document = this.logic.getDocument(command.getContext().getLoginUser().getName(), fileHash);
+			Document document = this.logic.getDocument(command.getContext()
+					.getLoginUser().getName(), fileHash);
 
 			if (document != null) {
 				if ("begin".equals(layoutpart.getName())) {
@@ -106,10 +133,35 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		}
 	}
 
-
 	private void workOnSettingsTab(SettingsViewCommand command) {
-		command.getContext().getLoginUser().getSettings().getTagboxStyle();
-		command.getContext().getLoginUser().getSettings().getTagboxSort();
+		User loginUser = command.getContext().getLoginUser();
+		// FIXME check other tabs if they need those info(queries) too, then remove them from settings.jspx.
+		Group group = logic.getGroupDetails(loginUser.getName());
+		//List<User> users = logic.getUsers(resourceType, grouping, groupingName, tags, hash, order, relation, search, start, end);
+		//logic.updateUser(user);
+		
+		//command.setApiKey(loginUser.getApiKey());
+		command.setTagboxStyle(loginUser
+				.getSettings().getTagboxStyle());
+		command.setTagSort(loginUser.getSettings()
+				.getTagboxSort());
+		command.setTagboxTooltip(loginUser
+				.getSettings().getTagboxTooltip());
+		command.setDefaultLanguage(loginUser
+				.getSettings().getDefaultLanguage());
+		command.setTagboxMinfreq(loginUser
+				.getSettings().getTagboxMinfreq());
+		command.setItemcount(loginUser.getSettings()
+				.getListItemcount());
+		command.setLogLevel(loginUser.getSettings().getLogLevel());
+		
+		// FIXME necessary?
+		command.setHasOwnGroup(group != null);
+		if(command.getHasOwnGroup()) {
+			GroupSettingsBean b = new GroupSettingsBean();
+			b.setUsername(loginUser.getName());
+			b.queryDB();
+		}
 	}
 
 	/**

@@ -10,7 +10,7 @@ import java.util.List;
  * @version $Id$
  * @param <T> type of the tab content
  */
-public class TabsCommand<T> extends BaseCommand {
+public class TabsCommand<T> extends ResourceViewCommand {
 
 	/** id of current selected tab */
 	protected Integer selTab = 1;	

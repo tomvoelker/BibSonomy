@@ -1,0 +1,141 @@
+<jsp:root version="2.0"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:spring="http://www.springframework.org/tags"
+  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	<!-- ############################################# profile tab ############################################# -->	
+		<fmt:message var="saveChanges" key="settings.saveChanges" />
+		<fmt:message var="male" key="settings.male"/>
+		<fmt:message var="female" key="settings.female"/>
+		<fmt:message var="public" key="settings.public"/>
+		<fmt:message var="private" key="settings.private"/>
+		<fmt:message var="friends" key="settings.friends"/>
+		
+        <p>
+        	<fmt:message key="settings.profileInfo"><fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param><fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param></fmt:message>
+        </p>
+		
+		<form:form name="account" method="post">		
+	
+        <h2><fmt:message key="settings.generalInformation" /></h2>		
+    
+		<table>
+		  <tr>
+		    <td width="180px"><fmt:message key="settings.userName"/></td>
+		    <td><c:out value="${command.context.loginUser.name}"/></td>
+		  </tr><tr>
+		    <td><fmt:message key="settings.realname"/></td>
+		    <td><input type="text" size="30" name="realname" value="${command.context.loginUser.realname}"/></td>
+		  </tr><tr>
+		    <td><fmt:message key="settings.gender"/></td>
+		    <td><form:select path="context.loginUser.gender">
+		    		<form:option label="${male}" value="m"/>
+		    		<form:option label="${female}" value="f"/>
+		    </form:select></td>
+		  </tr><tr>
+		    <td><fmt:message key="settings.birthday"/></td>
+		    <td><input type="text" size="10" name="birthday" value="${command.context.loginUser.birthday}"/>
+		    <!-- FIXME errormsg -->
+		    	<span class="errmsg">${settingsBean.errors.birthday}</span>format: YYYY-MM-DD</td>
+		  </tr><tr>
+		    <td><fmt:message key="settings.place"/></td>
+		    <td><input type="text" size="30" name="place" value="${command.context.loginUser.place}"/></td>
+		  </tr><tr>
+		    <td><fmt:message key="settings.profileViewableFor"/></td>
+		    <td><form:select path="context.loginUser.profileGroup">
+		    	<form:option label="${public}" value="0"/>
+		    	<form:option label="${private}" value="1"/>
+		    	<form:option label="${friends}" value="2"/>
+		    </form:select>
+			</td>
+		  </tr>
+		</table>
+		<hr/>
+		
+		<h2><fmt:message key="settings.contact" /></h2>		
+		<table>
+		  <tr>
+		    <td width="180px"><fmt:message key="settings.email"/></td>
+		    <td><input type="text" size="30" name="email" value="${command.context.loginUser.email}"/>
+                <fmt:message key="settings.mandatory"/>
+                <!-- FIXME errormsg -->
+		        <span class="errmsg">${settingsBean.errors.email}</span></td>
+		  </tr><tr>
+		    <td><fmt:message key="settings.homepage"/></td>
+		    <td><input type="text" size="30" name="homepage" value="${command.context.loginUser.homepage}"/>
+		    <!-- FIXME errormsg -->
+		        <span class="errmsg">${settingsBean.errors.homepage}</span></td>
+		  </tr><tr>
+		    <td>openURL</td>
+		    <td><input type="text" size="30" name="openurl" value="${command.context.loginUser.openurl}"/>
+		    	<fmt:message key="settings.openURLDescription"><fmt:param><a href="http://www.exlibrisgroup.com/sfx_openurl.htm">openURL</a></fmt:param></fmt:message>
+		        <!-- FIXME errormsg -->
+		        <span class="errmsg">${settingsBean.errors.openurl}</span></td>
+		  </tr>
+		</table>
+		
+		<hr/>
+		<h2><fmt:message key="settings.aboutMe"/></h2>	
+		<table>
+		  <tr>
+		    <td width="180px"><fmt:message key="settings.profession"/></td>
+		    <td><input type="text" size="30" name="profession" value="${command.context.loginUser.profession}"/></td>		        
+		  </tr><tr>
+		    <td><fmt:message key="settings.scientificInterests"/></td>
+		    <td><textarea cols="30" rows="4" name="interests"><c:out value="${command.context.loginUser.interests}"/></textarea></td>
+		  </tr><tr>
+		    <td><fmt:message key="settings.hobbies"/></td>
+		    <td><textarea cols="30" rows="4" name="hobbies"><c:out value="${command.context.loginUser.hobbies}"/></textarea></td>
+		  </tr>
+		</table>
+		
+		<hr/>
+		<h2><fmt:message key="settings.myFriends"/></h2>			  
+		<table>		
+		<tr>
+			<td width="180px"><fmt:message key="settings.friendOf"/></td>
+			<td>
+				<c:if test="${empty command.userFriends}"><fmt:message key="settings.noFriends"/></c:if>
+				<ul>
+					<c:forEach var="myfr1" items="${command.userFriends}">			
+		 				<li><a href="/user/${mtl:encodeURI(myfr1.name)}"><c:out value="${myfr1.name}"/></a></li>		 		
+					</c:forEach>
+				</ul>
+			</td>
+		</tr>		
+		<tr>
+			<td><fmt:message key="settings.myFriendsAre"><fmt:param><a href="/friends"><fmt:message key="friends"/></a></fmt:param></fmt:message></td>
+			<td>
+				<c:if test="${empty command.friendsOfUser}">
+				<fmt:message key="settings.noFriends"/> (
+				<fmt:message key="settings.addFriendsNow">
+					<fmt:param>
+						<a href="/friends">
+							<fmt:message key="settings.add"/>
+						</a>
+					</fmt:param>
+				</fmt:message>) 
+				</c:if>
+				<ul>
+					<c:forEach var="myfr2" items="${command.friendsOfUser}">			
+		 				<li><a href="/user/${mtl:encodeURI(myfr2.name)}"><c:out value="${myfr2.name}"/></a></li>		 		
+					</c:forEach>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td><br/>
+				<input type="hidden" name="action" value="update"/>
+		        <input type="hidden" name="ckey" value="${ckey}"/>
+		        <input type="submit" value="${saveChanges}"/>
+		    </td>		   
+		</tr>
+	</table>
+	</form:form>	
+</jsp:root>

@@ -10,16 +10,33 @@
   xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	<!-- ############################################# settings tab ############################################# -->
+		<fmt:message var="cloud" key="settings.cloud"/>
+		<fmt:message var="list" key="settings.list"/>
+		<fmt:message var="alphabet" key="settings.alphabet"/>
+		<fmt:message var="frequency" key="settings.frequency"/>
+		<fmt:message var="yes" key="settings.yes"/>
+		<fmt:message var="no" key="settings.no"/>
+		<fmt:message var="english" key="settings.english"/>
+		<fmt:message var="german" key="settings.german"/>
+		<fmt:message var="setlayout" key="settings.setlayout"/>
+		<fmt:message var="cancel" key="settings.cancel"/>
+		<fmt:message var="adduser" key="settings.adduser"/>
+		<fmt:message var="change" key="settings.change"/>
+		<fmt:message var="generateapikey" key="settings.generateapikey"/>
+		<fmt:message var="updatesettings" key="settings.updatesettings" />
+		<fmt:message var="changepassword" key="settings.changepassword" />
+		<fmt:message var="deleteaccount" key="settings.deleteaccount" />
+		
 		<!-- style settings -->		
 		<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
-		  <form:form id="styleSettingsForm" method="POST" action="/settings">
+		  <form:form id="styleSettingsForm" method="POST">
 		  <table>
 		    <tr>
 		      <td><fmt:message key="settings.tag.showAs"/> </td>
 		      <td>
-		        <form:select path="tagBoxStyle" id="tagBoxStyleSelect">
-		          <form:option label="cloud" value="0" />
-		          <form:option label="list" value="1"/>
+		        <form:select path="tagboxStyle" id="tagBoxStyleSelect">
+		          <form:option label="${cloud}" value="0" />
+		          <form:option label="${list}" value="1"/>
 		        </form:select>
 		      </td>
 		    </tr>
@@ -27,129 +44,114 @@
 		        <td><fmt:message key="settings.tag.sortBy"/> </td>
 		        <td>
 		          <form:select path="tagSort" id="tagSortSelect">
-		            <form:option label="alphabet" value="0"/>
-		            <form:option label="frequency" value="1"/>    
+		            <form:option label="${alphabet}" value="0"/>
+		            <form:option label="${frequency}" value="1"/>    
 		          </form:select>
 		        </td>
 		      </tr>
 		      <tr>
-		        <td>show only tags with minimal frequency</td>
+		        <td><fmt:message key="settings.tag.onlyMinFreq"/></td>
 		        <td>
-		          <input type="text" name="minfreq" size="3" value="<c:out value='${user.tagboxMinfreq}'/>" />
+		          <form:input path="tagboxMinfreq" size="3"/>
 		        </td>
 		      </tr>
 		      <tr>
-		        <td>show tooltips for tags</td>
+		        <td><fmt:message key="settings.tag.showTooltipsForTags"/></td>
 		        <td>
-		          <select name="tooltip">
-		            <option <c:if test="${user.tagboxTooltip == 0}">selected="true"</c:if> >no</option>
-		            <option <c:if test="${user.tagboxTooltip == 1}">selected="true"</c:if> >yes</option>
-		          </select>
+		          <form:select path="tagboxTooltip" id="tagboxTooltipSelect">
+		            <form:option label="${no}" value="0"/>
+		            <form:option label="${yes}" value="1"/>
+		          </form:select>
 		        </td>
 		      </tr> 
 		
 		      <tr>
-		        <td>show that many items per page</td>
+		        <td><fmt:message key="settings.tag.itemsPerPage"/></td>
 		        <td>
-		           <input type="text" name="items" size="3" value="<c:out value='${user.itemcount}'/>" />
+		           <form:input path="itemcount" size="3"/>
 		        </td>
 		      </tr> 
-		      
+		            
 		       <tr>
-		        <td>default language</td>
+		        <td><fmt:message key="settings.tag.defaultLanguage"/></td>
 		        <td>
-		           <select name="lang">
-		            <option <c:if test="${user.defaultLanguage == 'en'}">selected="true"</c:if> value="en">english</option>
-		            <option <c:if test="${user.defaultLanguage == 'de'}">selected="true"</c:if> value="de">german</option>
-		          </select>
+		           <form:select path="defaultLanguage" id="defaultLanguageSelect">
+		            <form:option label="${english}" value="en"/>
+		            <form:option label="${german}" value="de"/>
+		          </form:select>
 		        </td>
 		      </tr> 
 		      
 		      <tr>
 		        <td>
-		          <input type="submit" name="tagbox_style" value="set layout"/>
+		          <input type="submit" name="tagbox_style" value="${setlayout}"/>
 		          <input type="hidden" name="ckey" value="${ckey}"/>
 		        </td>
 		    </tr>    	   
-		      
 		  </table>
 		</form:form>
 		
 		<hr/>
 		
 		<!-- add a group -->
-		<h2>group</h2>		
+		<h2><fmt:message key="settings.group"/></h2>		
 		<c:choose>
-		  <c:when test="${hasOwnGroup}">
+		  <c:when test="${command.hasOwnGroup}">
 		
-		  <%-- ------------------------ GROUP HANDLING -------------------------- --%>
-		  <jsp:useBean id="gsBean" class="beans.GroupSettingsBean" scope="request">
-		    <jsp:setProperty name="gsBean" property="*"/>
-		    <jsp:setProperty name="gsBean" property="username" value="${user.name}"/>
-		  </jsp:useBean>
-		  <% gsBean.queryDB(); %> <%-- write data to database (if neccessary) --%>
-		
-		
-		<c:choose><!-- ####################### TODO: unify this red box handling, put it into style.css #######################-->
-		
-		<c:when test="${not empty param.user and not empty param.group and param.group eq user.name}">
-		  <!-- User clicked link in email and wants to add (or cancel) user -->
-		  <div id="groups" style="border: .2em solid red; padding: .2em;">
-		  <!-- cancel request only if right params existing -->
-		  <h3>cancel join request for user <a href="/user/<mtl:encode value='${param.user}'/>"><c:out value="${param.user}"/></a></h3>
-		  <form name="groupcanceladduser" method="post" action="/JoinGroupHandler">
-		    <input type="hidden" name="user" value="<c:out value='${param.user}'/>">
-		    <input type="hidden" name="cancel" value="<c:out value='true'/>">
-		    <label for="inputreason">reason</label> 
-		    <input type="text" size="30" name="reason" id="inputreason"/>
-		    <input type="submit" value="cancel"/>
-		  </form>
-		</c:when>
-		
-		<c:otherwise>
-		  <div id="groups">
-		</c:otherwise>
-		</c:choose>
-		
-		  <h3>add user to my group</h3>
-		  <form name="groupusers" method="post" action="/SettingsHandler">
-		    <label for="laddgu">username</label> <input type="text" size="30" name="add_group_user" id="laddgu" value="<c:out value='${param.user}'/>" />
-		    <input type="hidden" name="ckey" value="${ckey}"/>
-		    <input type="submit" value="add user" />
-		  </form>
-		
+		<!-- ####################### TODO: unify this red box handling, put it into style.css ####################### -->
+		<div id="groups"
+			style="${not empty param.user and not empty param.group and param.group eq user.name?'border: .2em solid red; padding: .2em;':''}">
+			<c:if test="${not empty param.user and not empty param.group and param.group eq user.name}">
+				<!-- TODO move to controller -->
+			  <!-- User clicked link in email and wants to add (or cancel) user -->	  
+			  <!-- cancel request only if right params existing -->
+			  <h3><fmt:message key="settings.cancelJoinRequest"><fmt:param><a href="/user/${mtl:encodeURI(param.user)}"><c:out value="${param.user}"/></a></fmt:param></fmt:message></h3>
+			  <form:form name="groupcanceladduser" method="post" action="/JoinGroupHandler">
+			    <input type="hidden" name="user" value="${param.user}" />
+			    <input type="hidden" name="cancel" value="true" />
+			    <label for="inputreason"><fmt:message key="settings.reason" /></label> 
+			    <input type="text" size="30" name="reason" id="inputreason"/>
+			    <input type="submit" value="${cancel} }"/>
+			  </form:form>
+			</c:if>
+			  <h3><fmt:message key="settings.addusertomygroup"/></h3>
+			  <form:form name="groupusers" method="post" action="/SettingsHandler">
+			    <label for="laddgu"><fmt:message key="settings.username"/></label> 
+			    <form:input path="requestedUser" />
+			    <input type="hidden" name="ckey" value="${ckey}"/>
+			    <input type="submit" value="${adduser}" />
+			  </form:form>
 		  </div>
 		 
-		  <h3>privacy level</h3> 
-		  <form name="groupPrivLevel" method="post" action="/settings">
-		    member list is 
-		    <select name="privlevel">
-		      <option value="0" <c:if test="${gsBean.privlevel eq 0}">selected="true"</c:if>>public</option>
-		      <option value="1" <c:if test="${gsBean.privlevel eq 1}">selected="true"</c:if>>hidden</option>
-		      <option value="2" <c:if test="${gsBean.privlevel eq 2}">selected="true"</c:if>>public for members</option>
-		    </select>
+		  <h3><fmt:message key="settings.privacylevel"/></h3> 
+		  <form:form name="groupPrivLevel" method="post" action="/settingsnew">
+		    <fmt:message key="settings.memberlistis"/>
+		    <form:select path="privlevel">
+		      <form:option value="0"><fmt:message key="settings.public"/></form:option>
+		      <form:option value="1"><fmt:message key="settings.private"/></form:option>
+		      <form:option value="2"><fmt:message key="settings.publicformembers"/></form:option>
+		    </form:select>
 		    <input type="hidden" value="update_privlevel" name="action"/>
-		    <input type="submit" value="change" />
-		  </form>
+		    <input type="submit" value="${change}" />
+		  </form:form>
 		  
-		  <h3>shared documents</h3> 
-		  <form name="groupSharedDocuments" method="post" action="/settings">
-		    shared documents are  
-		    <select name="sharedDocuments">
-		      <option value="0" <c:if test="${gsBean.sharedDocuments eq 0}">selected="true"</c:if>>disabled</option>
-		      <option value="1" <c:if test="${gsBean.sharedDocuments eq 1}">selected="true"</c:if>>enabled</option>
-		    </select>
+		  <h3><fmt:message key="settings.shareddocuments"/></h3> 
+		  <form:form name="groupSharedDocuments" method="post" action="/settingsnew">
+		    <fmt:message key="settings.shareddocumentsare"/>  
+		    <form:select path="sharedDocuments">
+		      <form:option value="0"><fmt:message key="settings.disabled"/></form:option>
+		      <form:option value="1"><fmt:message key="settings.enabled"/></form:option>
+		    </form:select>
 		    <input type="hidden" value="update_shared_documents" name="action"/>
-		    <input type="submit" value="change" />
-		  </form>		  
+		    <input type="submit" value="${change}" />
+		  </form:form>		  
 		  
 		</c:when>
 		<c:otherwise>
 		  
-		<h3>add a group</h3>
+		<h3><fmt:message key="settings.addagroup"/></h3>
 		<p>
-		  If you want a group added to the system, create a user account with the desired group name and write an E-Mail to 
-		  <jsp:directive.include file="/boxes/emailaddress.jsp" />.
+		  <fmt:message key="settings.addgroupdescription"><fmt:param><jsp:directive.include file="/boxes/emailaddress.jsp" /></fmt:param></fmt:message>.
 		</p>
 		
 		</c:otherwise>
@@ -159,7 +161,7 @@
 		<!-- ####################### TODO: unify this red box handling, put it into style.css #######################-->
 		<c:if test="${not (empty param.user or empty param.group or param.group eq user.name)}">
 		  <div id="groups" style="border: .2em solid red; padding: .2em;">
-		  Sorry, you're not logged in with the corresponding group account. Please <a href="/login">login</a> as user <c:out value="${param.group}"/>.
+		  	<fmt:message key="settings.notloggedinwithgroupaccount"><fmt:param><a href="/login">login</a></fmt:param><fmt:param><c:out value="${param.group}"/></fmt:param></fmt:message>
 		  </div>
 		</c:if>
 		
@@ -167,112 +169,118 @@
 		
 		<!-- API -->
 		<h2>API</h2>
-		<form name="apiKey" method="post" action="/settings">
-		<c:choose>
-			<c:when test="${apiKey.rows[0].api_key eq null}">			
-				<p>
-					BibSonomy now provides <a href="/help/doc/api.html">API</a> access for all users.					
-					Just click the button below to get access. Your generated API key will be displayed here.  					 
+		<form:form name="apiKey" method="post" action="/settingsnew">
+		  <c:choose>
+			<c:when test="${command.context.loginUser.apiKey eq null}">			
+              <p>
+              		<fmt:message key="settings.apisupport"><fmt:param><a href="/help/doc/api.html">API</a></fmt:param></fmt:message>  					 
 				</p>	
 			</c:when>
 			<c:otherwise>
 				<p>
-					Your API key is: <tt style="font-size: 14px;">${apiKey.rows[0].api_key}</tt><br/><br/>
-					Refer to the <a href="/help/doc/api.html">API Documentation</a> or write an email to
-					<%@include file="/boxes/emailaddress_api_support.jsp" %> if you have questions or
-					comments. 
+					<fmt:message key="settings.yourapikey"/> <tt style="font-size: 14px;">${command.context.loginUser.apiKey}</tt><br/><br/>
+					<fmt:message key="settings.questionsregardingapi">
+						<fmt:param>
+							<a href="/help/doc/api.html"><fmt:message key="settings.apidoc"/></a>
+						</fmt:param>
+						<fmt:param>
+							<jsp:directive.include file="/boxes/emailaddress_api_support.jsp" />
+						</fmt:param>
+					</fmt:message>
 				</p>		
 			</c:otherwise>
 		</c:choose>
 		<input type="hidden" name="ckey" value="${ckey}"/>
 		<input type="hidden" name="apikey" value="true"/>
-		<input type="submit" value="(re)generate API key"/> 
-		</form>
+		<input type="submit" value="${generateapikey}"/> 
+		</form:form>
 		<hr/>
     
         <!-- log level -->
-        <h2>logging</h2>
-        <form name="logLevel" method="post" action="/settings">
+        <h2><fmt:message key="settings.logging" /></h2>
+        <form:form name="logLevel" method="post" action="/settingsnew">
         <table>
           <tr>
-            <td>log clicks to external pages</td>
+            <td><fmt:message key="settings.logclicks"/></td>
             <td>
-		          <select name="logLevel">
-		            <option <c:if test="${user.logLevel == 0}">selected="true"</c:if> value="0">yes</option>
-		            <option <c:if test="${user.logLevel == 1}">selected="true"</c:if> value="1">no</option>
-		          </select>
+		          <form:select path="logLevel">
+		            <form:option value="0"><fmt:message key="settings.yes"/></form:option>
+		            <form:option value="1"><fmt:message key="settings.no"/></form:option>
+		          </form:select>
             </td>
           </tr> 
           <tr>
             <td>
-              <input type="submit" value="update settings"/>
+              <input type="submit" value="${updatesettings}"/>
               <input type="hidden" name="ckey" value="${ckey}"/>
             </td>
           </tr>
         </table>
-        </form>
+        </form:form>
         <hr/>    
         
 					
           
-          
-          
-          
+                    
 		<!-- password change -->
 		<jsp:useBean id="registrationHandlerBean" class="beans.RegistrationHandlerBean" scope="request"/>
 		
-		<h2>change password</h2>
-		<form name="password" method="post" action="/passwordchange_process">
+		<h2><fmt:message key="settings.changepassword"/></h2>
+		<form:form name="password" method="post" action="/passwordchange_process">
 		  <table>
 		    <tr>
-			  <td>current password</td>
+			  <td><fmt:message key="settings.currentpassword"/></td>
 			  <td>
-			    <input type="password" size="30" name="currPass" value="" maxlength="30">
+			    <form:password path="oldPassword" maxlength="30" />
 			    <div class="errmsg">${registrationHandlerBean.errors.currPass}</div>
 			  </td>
 			  <td></td>
 			</tr>
 		    <tr>
-			  <td>new password</td>
+			  <td><fmt:message key="settings.newpassword"/></td>
 			  <td>
-			    <input type="password" size="30" name="password1" value="" maxlength="30">
+			    <form:password path="newPassword1" size="30" maxlength="30" />
 			    <div class="errmsg">${registrationHandlerBean.errors.password1}</div>
 			  </td>
-			  <td>(required :: without spaces)</td>
+			  <td><fmt:message key="settings.passwordwithoutspaces"/></td>
 			</tr>
 			<tr>
-			  <td>new password</td>
+			  <td><fmt:message key="settings.newpassword"/></td>
 			  <td>
-				 <input type="password" size="30" name="password2" value="">
+				 <form:password path="newPassword2" size="30" maxlength="30" />
 				 <div class="errmsg">${registrationHandlerBean.errors.password2}</div>
 			  </td>
-			  <td>(please confirm password)</td>
+			  <td><fmt:message key="settings.confirmpassword"/></td>
 			</tr>
 			<tr>
-			  <td><input type="submit" value="change password"></td>
+			  <td><input type="submit" value="${changepassword}" /></td>
 			  <td></td>
 			</tr>
 		  </table>
-		</form>
+		</form:form>
 		
 		<hr/>
 		
 		<!-- delete account -->
-		<h2>delete my account</h2>		
-		<form name="delete" method="post" action="/actions/goodBye">
+		<h2><fmt:message key="settings.deletemyaccount"/></h2>		
+		<form:form method="post" action="/actions/goodBye">
 		  <table>
 		     <tr>
-		       <td>really?</td>
-		       <td><input type="text" size="30" name="delete" value="no"/></td>
-		       <td>(type <em>yes</em> to delete your account)</td>
+		       <td><fmt:message key="settings.really"/>?</td>
+		       <td><input type="text" name="delete" value="no" size="30"/></td>
+		       <td>
+		       <fmt:message key="settings.yestodeleteaccount">
+		       	<fmt:param><em>yes</em></fmt:param>
+		       </fmt:message>
+		       </td>
 		     </tr>
 		     <tr>
-		       <td><input type="submit" value="delete account">
+		       <td><input type="submit" value="${deleteaccount}" />
 		           <input type="hidden" name="ckey" value="${ckey}"/>
 		       </td>
 		       <td></td>
 		       <td></td>
 		     </tr>
 		  </table>		
-		</form>		
+		</form:form>		
 </jsp:root>

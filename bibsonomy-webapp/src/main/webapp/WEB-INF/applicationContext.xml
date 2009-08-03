@@ -45,7 +45,7 @@
 	  <property name="arguments" value="false" /> <!-- optimizeIndex true|false -->
 	  <property name="concurrent" value="false" />
 	</bean>
-	
+
 	<bean id="luceneUpdateJobWithIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	  <property name="targetObject" ref="LuceneUpdater" />
 	  <property name="targetMethod" value="updateAndReloadIndex" />
@@ -67,7 +67,6 @@
 		<property name="jobDetail" ref="luceneUpdateJobWithIndexOptimization" />
 	</bean>
 
-	
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 	    <property name="triggers">
 	        <list>

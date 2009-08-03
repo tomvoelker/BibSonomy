@@ -11,7 +11,6 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:sql="http://java.sun.com/jsp/jstl/sql">
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	
 	<sql:setDataSource dataSource="jdbc/bibsonomy" var="dataSource"/> 
 	<!-- SQL Queries for Groups, Groupusers and Friends -->
 
@@ -22,27 +21,9 @@
   <sql:param>${user.name}</sql:param>
 </sql:query>
 
-<!-- get users, which have user.name as friend -->
-<sql:query var="fr1" dataSource="${dataSource}">
-  SELECT user_name FROM friends WHERE f_user_name = ?
-  <sql:param value="${user.name}"/>  
-</sql:query>
-
-<!-- get all friends of user -->
-<sql:query var="fr2" dataSource="${dataSource}">
-  SELECT f_user_name FROM friends WHERE user_name = ?
-  <sql:param>${user.name}</sql:param>
-</sql:query>
-
-<!-- get API key of user -->
-<sql:query var="apiKey" dataSource="${dataSource}">
-  SELECT api_key FROM user WHERE user_name = ?
-  <sql:param value="${user.name}"/>  
-</sql:query>
 	<!--  get users for own group   -->
-
-<c:set var="hasOwnGroup" value="false"/>
-<c:forEach var="row" items="${gadmin.rows}">
+	<c:set var="hasOwnGroup" value="false" />
+	<c:forEach var="row" items="${gadmin.rows}">
   <c:if test="${row.user_name eq user.name}">
 <!--      get all users of usergroup -->
     <sql:query var="gu" dataSource="${dataSource}">
@@ -60,7 +41,7 @@
 		<jsp:attribute name="tabcontent">
 			<c:choose>
 				<c:when test="${command.selTab == 0}">
-					<jsp:directive.include file="/settings_profile.jsp"/>
+					<jsp:directive.include file="actions/settingsProfile.jspx"/>
 				</c:when>
 				<c:when test="${command.selTab == 1}">
 					<jsp:directive.include file="actions/settingsSettings.jspx"/>
