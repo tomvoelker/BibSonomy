@@ -532,7 +532,6 @@
 		<URL>http://www.opticsinfobase.org/josaa/abstract.cfm?uri=josaa-25-5-1084</URL>
 		<BibFile>OSAScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.osa.OSAScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_94">
 		<TestDescription>PsyContent Scraper url test 1</TestDescription>
