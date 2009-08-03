@@ -22,6 +22,8 @@ public class ImportValidator implements Validator<ImportCommand>{
 		
 		Assert.notNull(command);
 		
+		Assert.notNull(command.getImportType());
+		
 		/** look into the for each importType required fields **/
 		if("delicious".equals(command.getImportType())) {
 			if(command.getUserName().length() == 0){
