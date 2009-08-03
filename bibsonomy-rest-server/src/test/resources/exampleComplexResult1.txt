@@ -2,17 +2,17 @@
 <bibsonomy stat="ok">
     <users start="0" end="3">
         <user realname="Manuel Bork" name="mbork" href="http://www.bibsonomy.org/api/users/mbork" homepage="http://www.manuelbork.de" email="manuel.bork@uni-kassel.de">
-            <groups>
+            <groups start="0" end="1">
                 <group name="public" href="http://www.bibsonomy.org/api/groups/public"/>
             </groups>
         </user>
         <user realname="Andreas Hotho" name="hotho" href="http://www.bibsonomy.org/api/users/hotho" homepage="http://www.bibsonomy.org" email="andreas.hotho@uni-kassel.de">
-            <groups>
+            <groups start="0" end="1">
                 <group name="public" href="http://www.bibsonomy.org/api/groups/public"/>
             </groups>
         </user>
         <user realname="Joern Dreyer" name="butonic" href="http://www.bibsonomy.org/api/users/butonic" homepage="http://www.butonic.org" email="joern.dreyer@uni-kassel.de">
-            <groups>
+            <groups start="0" end="1">
                 <group name="public" href="http://www.bibsonomy.org/api/groups/public"/>
             </groups>
         </user>
