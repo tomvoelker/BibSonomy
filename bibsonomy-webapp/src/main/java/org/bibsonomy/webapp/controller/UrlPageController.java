@@ -39,14 +39,19 @@ public class UrlPageController extends SingleResourceListController implements M
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
-		GroupingEntity groupingEntity;
-		String groupingName = "";
+		final GroupingEntity groupingEntity;
+		final String groupingName;
 		
 		if(command.getRequestedUser() != null && !command.getRequestedUser().equals("")){
+			/*
+			 * handle /url/HASH/USER
+			 */
 			groupingEntity = GroupingEntity.USER;
 			groupingName = command.getRequestedUser();
-			
-		}else{
+		} else {
+			/*
+			 * handle /url/HASH
+			 */
 			groupingEntity = GroupingEntity.ALL;
 			groupingName = null;
 		}
