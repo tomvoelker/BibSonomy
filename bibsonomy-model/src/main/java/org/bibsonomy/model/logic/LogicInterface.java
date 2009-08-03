@@ -533,16 +533,18 @@ public interface LogicInterface extends PostLogicInterface {
 	/**
 	 * Create basket items
 	 * 
-	 * @param posts
+	 * @param posts - list of posts which should be added to the basket
 	 * @return size of basket
 	 */
 	public int createBasketItems(List<Post<BibTex>> posts);
 	
 	/**
-	 * Delete basket items
+	 * Delete basket items 
 	 * 
-	 * @param posts
-	 * @param clearBasket 
+	 * @param posts - list of posts which should be deleted from the basket
+	 * @param clearBasket - this should be true if the whole basket should be dropped, in all other cases false. It's necessary because 
+	 * 		you have to differ if you want to delete some posts or all. This parameter is true if you call the "Remove all from Basket"-link
+	 * 		on the new basket page.
 	 * @return size of basket
 	 */
 	public int deleteBasketItems(List<Post<BibTex>> posts, boolean clearBasket);
