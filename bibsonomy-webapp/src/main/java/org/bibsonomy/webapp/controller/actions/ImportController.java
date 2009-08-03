@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,8 +15,10 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.importer.bookmark.file.FirefoxImporter;
 import org.bibsonomy.importer.bookmark.service.DeliciousImporterFactory;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.FileUploadFactory;
@@ -28,10 +29,12 @@ import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
 import org.bibsonomy.webapp.command.actions.ImportCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.ImportValidator;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
@@ -50,101 +53,116 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 	 */
 	private LogicInterface logic;
 
-    /**
-     * The factory used to get a Delicious Importer. 
-     */
-    private DeliciousImporterFactory importerFactory;
+	/**
+	 * The factory used to get a Delicious Importer. 
+	 */
+	private DeliciousImporterFactory importerFactory;
 
-    /**
-     * the factory used to get an instance of a FileUploadHandler.
-     */
-    private FileUploadFactory uploadFactory;
+	/**
+	 * the factory used to get an instance of a FileUploadHandler.
+	 */
+	private FileUploadFactory uploadFactory;
 
 	private Errors errors = null;
 
 	public View workOn(ImportCommand command) {
+		final RequestWrapperContext context = command.getContext();
 
 		/*
-		 * FIXME: check for login & ckey!
-		 * 
-		 * see PostPostController how this should be done
+		 * only users which are logged in might post -> send them to
+		 * login page
 		 */
-		
-		
+		if (!context.isUserLoggedIn()) {
+			/*
+			 * FIXME: send user back to this controller
+			 */
+			return new ExtendedRedirectView("/login");
+		}
+
+		final User loginUser = context.getLoginUser();
+
+		/*
+		 * check credentials to fight CSRF attacks 
+		 * 
+		 */
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+			/*
+			 * FIXME: correct URL?
+			 */
+			return Views.IMPORT;
+		}
+
+
+
+
+		if (errors.hasErrors()) {
+			return Views.IMPORT;
+		}
+
+
+
 		List<Post<Bookmark>> posts = new LinkedList<Post<Bookmark>>();
 		List<Tag> relations = new LinkedList<Tag>();
 
-		/**
-		 * if importType is not set, the controller is loaded the first time and
-		 * no data is submitted
-		 **/
-		if (command.getImportType() != null) {
+		final String importType = command.getImportType();
+		final String importData = command.getImportData();
+		
+		if ("delicious".equals(importType)) {
+			try {
 
-			/** look for eventual errors **/
-			this.getValidator().validate(command, errors);
-			
-			/** display potential errors **/
-			if (errors.hasErrors()) {
-				log.debug("Import couldn't get started due to existing errors in form");
-				return Views.IMPORT;
-			}
-
-			if ("delicious".equals(command.getImportType())) {
-				try {
-
-					/** import posts or bundles? **/
-					if ("posts".equals(command.getImportData())) {
-						final RemoteServiceBookmarkImporter importer = importerFactory.getBookmarkImporter();
-						importer.setCredentials(command.getUserName(), command.getPassWord());
-						posts = importer.getPosts();
-					} else if ("bundles".equals(command.getImportData())) {
-						final RelationImporter relationImporter = importerFactory.getRelationImporter();
-						relationImporter.setCredentials(command.getUserName(), command.getPassWord());
-						relations = relationImporter.getRelations();
-					} else {
-						errors.reject("error.import.failed");
-						return Views.ERROR;
-					}
-				} catch (IOException ex) {
-					errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occured: {0}");
-					log.error("Delicious-Import failed.", ex);
-				}
-			} else if ("firefox".equals(command.getImportType())) {
-				try {
-					
-					final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firefoxImportExt);
-					
-//					final FileUploadInterface uploadFileHandler = new HandleFileUpload();
-//					uploadFileHandler.setUp(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firefoxImportExt);
-					final File file = uploadFileHandler.writeUploadedFile();
+				/** import posts or bundles? **/
+				if ("posts".equals(importData)) {
+					final RemoteServiceBookmarkImporter importer = importerFactory.getBookmarkImporter();
+					importer.setCredentials(command.getUserName(), command.getPassWord());
+					posts = importer.getPosts();
+				} else if ("bundles".equals(importData)) {
+					final RelationImporter relationImporter = importerFactory.getRelationImporter();
+					relationImporter.setCredentials(command.getUserName(), command.getPassWord());
+					relations = relationImporter.getRelations();
+				} else {
 					/*
-					 * FileBookmarkImporter interface
+					 * FIXME: why did import fail (missing data?)? giv a hint to the user!
 					 */
-					final FileBookmarkImporter fileImporter = new FirefoxImporter();
-					fileImporter.initialize(file, command.getContext().getLoginUser(), command.getGrouping());
-					posts = fileImporter.getPosts();
-					/*
-					 * clear temporary file
-					 */
-					file.delete();
-
-				} catch (final Exception ex) {
-					errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occured: {0}");
+					errors.reject("error.import.failed");
 				}
+			} catch (IOException ex) {
+				errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occured: {0}");
+				log.error("Delicious-Import failed.", ex);
 			}
+		} else if ("firefox".equals(importType)) {
+			try {
 
-			/** how many posts were found? **/
-			command.setTotalCount(posts != null ? posts.size() : 0);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firefoxImportExt);
 
-			/** store the posts **/
-			if (posts.size() > 0) {
-				storePosts(command, posts);
+				final Document document = uploadFileHandler.writeUploadedFile();
+				/*
+				 * FileBookmarkImporter interface
+				 */
+				final FileBookmarkImporter fileImporter = new FirefoxImporter();
+				fileImporter.initialize(document.getFile(), loginUser, command.getGrouping());
+				posts = fileImporter.getPosts();
+				/*
+				 * clear temporary file
+				 */
+				document.getFile().delete();
+
+			} catch (final Exception ex) {
+				errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occured: {0}");
 			}
+		}
 
-			/** if available store relations **/
-			if (relations.size() > 0) {
-				storeRelations(relations, command);
-			}
+		/** how many posts were found? **/
+		command.setTotalCount(posts != null ? posts.size() : 0);
+
+		/** store the posts **/
+		if (posts.size() > 0) {
+			storePosts(command, posts);
+		}
+
+		/** if available store relations **/
+		if (relations.size() > 0) {
+			storeRelations(relations, command);
 		}
 
 		return Views.IMPORT;

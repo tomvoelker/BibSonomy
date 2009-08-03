@@ -1,9 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collections;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -46,11 +44,18 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 		// back to uploadPage
 		if (!context.isUserLoggedIn()) {
 			errors.reject("error.general.login");
+			return Views.ERROR;
 		}
 
-		log.debug("user is logged in so start working");
-
-		if (errors.hasErrors()) {
+		/*
+		 * check credentials to fight CSRF attacks 
+		 * 
+		 */
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+			/*
+			 * FIXME: correct URL?
+			 */
 			return Views.ERROR;
 		}
 
@@ -60,31 +65,22 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 		 */
 		if (command.getFile() != null) {
 			log.debug("file is available so start the interesting part");
-			/*
-			 * create the interface, the item list to provide multiple files in
-			 * the future and the add the fileitem to the list
-			 */
-			final List<FileItem> list = new LinkedList<FileItem>();
-			list.add(command.getFile().getFileItem());
 
 			try {
 				
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(list, HandleFileUpload.fileUploadExt);
-//				final HandleFileUpload uploadFileHandler = new HandleFileUpload();
-//				uploadFileHandler.setDocpath(docpath);
-				
-//				uploadFileHandler.setUp(list, HandleFileUpload.fileUploadExt);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.fileUploadExt);
 
-				final Document doc = uploadFileHandler.writeUploadedFile(context.getLoginUser().getName());
+				final Document document = uploadFileHandler.writeUploadedFile();
+				document.setUserName(context.getLoginUser().getName());
 				
 				// ... and add it to the db
-				logic.createDocument(doc, command.getResourceHash());
+				logic.createDocument(document, command.getResourceHash());
 
 				/*
 				 * finally add the document object to the command object to make
 				 * it accessible in the view
 				 */
-				command.setDoc(doc);
+				command.setDoc(document);
 
 			} catch (Exception ex) {
 				errors.reject("error.upload.failed", new Object[] { ex.getLocalizedMessage() }, "Sorry, we could not process your upload request, an unknown error occurred.");

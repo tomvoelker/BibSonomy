@@ -21,6 +21,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -78,15 +79,10 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 
 		/*
 		 * check credentials to fight CSRF attacks 
-		 * 
-		 * We do this that late to not
-		 * cause the error message pop up on the first call to the controller.
-		 * Otherwise, the form would be empty and the hidden ckey field not
-		 * sent.
 		 */
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
-			return new ExtendedRedirectView("/settings?selTab=2");
+			return Views.SETTINGSPAGE;
 		}
 
 
@@ -125,6 +121,14 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 			writeLayoutPart(loginUser, command.getFileEnd(), LayoutPart.END);
 		}
 
+		
+		if (errors.hasErrors()) {
+			return Views.SETTINGSPAGE;
+		}
+		
+		/*
+		 * success
+		 */
 		return new ExtendedRedirectView("/settings?selTab=2");
 	}
 
