@@ -1,11 +1,8 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
-import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
@@ -21,6 +18,7 @@ import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.actions.JabRefImportCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.springframework.validation.Errors;
@@ -43,18 +41,18 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 	 * logic database interface
 	 */
 	private LogicInterface logic = null;
-	
 
-    /**
-     * the factory used to get an instance of a FileUploadHandler.
-     */
-    private FileUploadFactory uploadFactory;
+
+	/**
+	 * the factory used to get an instance of a FileUploadHandler.
+	 */
+	private FileUploadFactory uploadFactory;
 
 	/**
 	 * An instance of the (new!) layout renderer. We need it here to unload
 	 * custom user layouts.
 	 */
-	private JabrefLayoutRenderer jabrefLayoutRenderer = null;
+	private final JabrefLayoutRenderer jabrefLayoutRenderer = JabrefLayoutRenderer.getInstance();
 
 	private static final String DELETE = "delete";
 
@@ -63,103 +61,100 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 	@Override
 	public View workOn(JabRefImportCommand command) {
 
-		jabrefLayoutRenderer = JabrefLayoutRenderer.getInstance();
-		
-		User user = command.getContext().getLoginUser();
+		final RequestWrapperContext context = command.getContext();
 
-		if (user != null) {
-
-			
-			
-			// creates a new layout in the database
-			if (DELETE.equals(command.getAction())) {
-
-				if (command.getContext().isValidCkey()) {
-
-					final String hash = command.getHash();
-
-					Document document = this.logic.getDocument(user.getName(), hash);
-
-					if (document != null) {
-						this.logic.deleteDocument(document, null);
-
-						new File(FileUtil.getDocumentPath(this.uploadFactory.getDocpath(), hash)).delete();
-						/*
-						 * delete layout object from exporter
-						 */
-						jabrefLayoutRenderer.unloadUserLayout(user.getName());
-					}
-				}
-
-				// deletes a layout definition of the user from the database
-			} else if (CREATE.equals(command.getAction())) {
-
-				List<Document> documents = new ArrayList<Document>();
-
-				Document buildDocument = null;
-				
-				String hashedName = null;
-				
-				if (command.getFileBegin() != null && command.getFileBegin().getSize() > 0) {
-					
-					List<FileItem> list = Collections.singletonList(command.getFileBegin().getFileItem());
-					final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(list, HandleFileUpload.fileLayoutExt);
-					
-					
-//					uploadFileHandler.setUp(list, HandleFileUpload.fileLayoutExt);					
-					hashedName = JabrefLayoutUtils.userLayoutHash(user.getName(), LayoutPart.BEGIN);
-					
-					try {
-						buildDocument = uploadFileHandler.writeUploadedFile(hashedName, user);
-						documents.add(buildDocument);
-					} catch (Exception ex) {
-						// TODO Auto-generated catch block
-						ex.printStackTrace();
-					}
-				}
-				if (command.getFileItem() != null && command.getFileItem().getSize() > 0) {
-					
-					List<FileItem> list = Collections.singletonList(command.getFileItem().getFileItem());
-					final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(list, HandleFileUpload.fileLayoutExt);
-					
-					hashedName = JabrefLayoutUtils.userLayoutHash(user.getName(), LayoutPart.ITEM);
-					
-					try {
-						buildDocument = uploadFileHandler.writeUploadedFile(hashedName, user);
-						documents.add(buildDocument);
-					} catch (Exception ex) {
-						// TODO Auto-generated catch block
-						ex.printStackTrace();
-					}
-				}
-				if (command.getFileEnd() != null && command.getFileEnd().getSize() > 0) {
-
-					List<FileItem> list = Collections.singletonList(command.getFileEnd().getFileItem());
-					final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(list, HandleFileUpload.fileLayoutExt);
-					hashedName = JabrefLayoutUtils.userLayoutHash(user.getName(), LayoutPart.END);
-					
-					try {
-						buildDocument = uploadFileHandler.writeUploadedFile(hashedName, user);
-						documents.add(buildDocument);
-					} catch (Exception ex) {
-						// TODO Auto-generated catch block
-						ex.printStackTrace();
-					}
-				}
-
-				for (Document doc : documents) {
-
-					if (this.logic.createDocument(doc, null) != null) {
-						System.out.println("success");
-					}
-				}
-			}
-		} else {
-
+		/*
+		 * only users which are logged in might post -> send them to
+		 * login page
+		 */
+		if (!context.isUserLoggedIn()) {
+			/*
+			 * FIXME: send user back to this controller
+			 */
 			return new ExtendedRedirectView("/login");
 		}
 
-		return new ExtendedRedirectView("/settingsnew?selTab=2");
+		final User loginUser = context.getLoginUser();
+
+		/*
+		 * check credentials to fight CSRF attacks 
+		 * 
+		 * We do this that late to not
+		 * cause the error message pop up on the first call to the controller.
+		 * Otherwise, the form would be empty and the hidden ckey field not
+		 * sent.
+		 */
+		if (!context.isValidCkey()) {
+			errors.reject("error.field.valid.ckey");
+			return new ExtendedRedirectView("/settings?selTab=2");
+		}
+
+
+		/*
+		 * delete a layout
+		 */
+		if (DELETE.equals(command.getAction())) {
+			final String hash = command.getHash();
+
+			final Document document = this.logic.getDocument(loginUser.getName(), hash);
+
+			if (document != null) {
+				this.logic.deleteDocument(document, null);
+
+				new File(FileUtil.getDocumentPath(this.uploadFactory.getDocpath(), hash)).delete();
+				/*
+				 * delete layout object from exporter
+				 */
+				jabrefLayoutRenderer.unloadUserLayout(loginUser.getName());
+			} else {
+				errors.reject("error.document_not_found");
+			}
+
+		} else if (CREATE.equals(command.getAction())) {
+			/*
+			 * .beginLAYOUT
+			 */
+			writeLayoutPart(loginUser, command.getFileBegin(), LayoutPart.BEGIN);
+			/*
+			 * .item LAYOUT
+			 */
+			writeLayoutPart(loginUser, command.getFileItem(), LayoutPart.ITEM);
+			/*
+			 * .end LAYOUT
+			 */
+			writeLayoutPart(loginUser, command.getFileEnd(), LayoutPart.END);
+		}
+
+		return new ExtendedRedirectView("/settings?selTab=2");
+	}
+
+	/**
+	 * Writes the file of the specified layout part to disk and into the 
+	 * database.
+	 * 
+	 * @param loginUser
+	 * @param fileItem
+	 * @param layoutPart
+	 */
+	private void writeLayoutPart(final User loginUser, final CommonsMultipartFile fileItem, final LayoutPart layoutPart) {
+		if (fileItem != null && fileItem.getSize() > 0) {
+			try {
+				final String hashedName = JabrefLayoutUtils.userLayoutHash(loginUser.getName(), layoutPart);				
+				
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(fileItem.getFileItem()), HandleFileUpload.fileLayoutExt);
+				/*
+				 * write file to disk
+				 */
+				final Document uploadedFile = uploadFileHandler.writeUploadedFile(hashedName, loginUser);
+				/*
+				 * store row in database
+				 */
+				this.logic.createDocument(uploadedFile, null);
+			} catch (Exception ex) {
+				log.error("Could not add custom " + layoutPart + " layout.", ex);
+				throw new RuntimeException("Could not add custom " + layoutPart + " layout: " + ex.getMessage());
+			}
+		}
 	}
 
 	@Override
@@ -172,7 +167,6 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 
 	@Override
 	public Errors getErrors() {
-		// TODO Auto-generated method stub
 		return this.errors;
 	}
 
