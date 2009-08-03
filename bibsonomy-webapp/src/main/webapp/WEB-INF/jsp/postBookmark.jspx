@@ -16,7 +16,7 @@
 	<jsp:attribute name="headerExt"/>
 	
 	<jsp:attribute name="heading">
-		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.buttons" /></a>
+		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.postBookmark" /></a>
 	</jsp:attribute>
 	
 	<jsp:attribute name="content">
