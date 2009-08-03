@@ -29,6 +29,7 @@ import static org.junit.Assert.assertNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
@@ -55,7 +56,7 @@ public class BibtexUtilsTest {
 	"eprint    = \"hep-ph/0509225\",\n" +
 	"archivePrefix = \"arXiv\",\n" + 
 	"SLACcitation  = \"%%CITATION = HEP-PH/0509225;%%\"\n";
-	
+
 	private final static String bibtex = bibtexStart + "}";
 
 	/**
@@ -76,7 +77,7 @@ public class BibtexUtilsTest {
 		final String addFieldIfNotContained = BibTexUtils.addFieldIfNotContained(bibtex, "year", FIELD_VALUE);
 		assertEquals(bibtex, addFieldIfNotContained);
 	}
-	
+
 	/**
 	 * Tests with a field not occuring in the entry
 	 */
@@ -87,7 +88,7 @@ public class BibtexUtilsTest {
 		final String expected = bibtexStart + "," + FIELD_NAME + " = {" + FIELD_VALUE + "}\n}";
 		assertEquals(expected, buf.toString());
 	}
-	
+
 	/**
 	 * tests generation of bibtex string
 	 */
@@ -111,15 +112,15 @@ public class BibtexUtilsTest {
 			"  volume = {3},\n" +
 			"  year = {2525},\n" + 
 			"  abstract = {This is a nice abstract.}\n}";
-				
+
 		System.out.print(BibTexUtils.toBibtexString(bib));		
 		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib));
-					
+
 		// add some misc fields
 		bib.addMiscField("extraKey", "extraVal");
 		bib.addMiscField("extraKey2", "extraVal2");
 		bib.setAbstract(null);
-				
+
 		final String expectedBibtex2 = 
 			"@inproceedings{KIE,\n" +
 			"  author = {Hans Dampf and Peter Silie},\n" +
@@ -129,10 +130,73 @@ public class BibtexUtilsTest {
 			"  year = {2525},\n" + 
 			"  extraKey = {extraVal},\n" + 
 			"  extraKey2 = {extraVal2}\n}";
-		
+
 		System.out.println(BibTexUtils.toBibtexString(bib));
 		assertEquals(expectedBibtex2, BibTexUtils.toBibtexString(bib));		
 	}
+
+	/**
+	 * Prior to 2009-08-03, {@link BibTexUtils#MISC_FIELD_PATTERN} did not match
+	 * on misc fields, which contained a line break. Thus, fields containing a
+	 * line break got lost. Adding {@link Pattern#DOTALL} solved that problem.
+	 * This test documents the solution 
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testToBibtexString() throws Exception {
+		final BibTex bib = new BibTex();
+
+		bib.setYear("2004");
+		bib.setTitle("La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer");
+		bib.setPrivnote("");
+		bib.setNote("Tome I");
+		bib.setMisc(
+				"q6 = {It needs.\n" + 
+				"To trials.\n" + 
+				"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
+				"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" + 
+				"Maintenance age. \n" + 
+				"Studies programs.}, q3a = {Reminder 2004). \n" + 
+				"Preventive 2007). \n" + 
+		"For not.}");
+		bib.setEntrytype("book");
+		bib.setEditor("John Libbey Eurotext");
+		bib.setEdition("John Libbey Eurotext");
+		bib.setBibtexKey("Selmes2004");
+		bib.setAbstract("Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.");
+		bib.setAuthor("Jacques Selmès and Christian Derouesné");
+
+		
+		final String expected = 
+			"@book{Selmes2004,\n" + 
+			"  author = {Jacques Selmès and Christian Derouesné},\n" +
+			"  edition = {John Libbey Eurotext},\n" +
+			"  editor = {John Libbey Eurotext},\n" +
+			"  note = {Tome I},\n" +
+			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +
+			"  year = {2004},\n" +
+			"  q6 = {It needs.\n" +
+			"To trials.\n" +
+			"Health rises.},\n" +
+			"  q3a = {Reminder 2004). \n" +
+			"Preventive 2007). \n" +
+			"For not.},\n" +
+			"  q7 = {Payment costs.},\n" +
+			"  q3b = {Establishment followed.},\n" +
+			"  q1e = {This \n" + 
+			"Cost-effectiveness paper.},\n" +
+			"  q9 = {Payment costs.},\n" +
+			"  q1a = {Participation health. \n" +
+			"Maintenance age. \n" +
+			"Studies programs.},\n" +
+			"  abstract = {Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.}\n" +
+			"}";
+
+		assertEquals(expected, BibTexUtils.toBibtexString(bib));
+		
+	}
+
 
 	/**
 	 * tests generateBibtexKey
@@ -228,7 +292,7 @@ public class BibtexUtilsTest {
 		BibTexUtils.removeDuplicates(posts);
 		assertEquals(1, posts.size());
 	}
-	
+
 	/**
 	 * tests serializeMiscFields
 	 */
@@ -256,6 +320,6 @@ public class BibtexUtilsTest {
 		assertEquals("value1", bib.getMiscField("key1"));
 		assertEquals("value2", bib.getMiscField("key2"));
 	}
-	
-	
+
+
 }
