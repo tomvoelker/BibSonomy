@@ -31,12 +31,15 @@ import java.util.TimeZone;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.file.FileUtil;
 
 /**
@@ -47,10 +50,10 @@ import org.bibsonomy.util.file.FileUtil;
  *          $
  */
 public class HandleFileUpload implements FileUploadInterface {
+	
+	private static final Log log = LogFactory.getLog(HandleFileUpload.class);
 
-	private String fileHash;
-	private String fileName;
-	private String md5hash;
+	private Document document = new Document();
 	private FileItem upFile;
 
 	private String docPath;
@@ -81,12 +84,11 @@ public class HandleFileUpload implements FileUploadInterface {
 	/**
 	 * default constructor
 	 */
-	protected HandleFileUpload(final List<FileItem> items, String[] allowedExt, String docPath) {
+	protected HandleFileUpload(final List<FileItem> items, final String[] allowedExt, final String docPath) {
 
 		this.docPath = docPath;
 		
 		if (items.size() == 1) {
-
 			this.upFile = items.get(0);
 		} else {
 
@@ -99,22 +101,21 @@ public class HandleFileUpload implements FileUploadInterface {
 		}
 
 		final String filename = this.upFile.getName();
-		if (filename != null) {
-			this.fileName = FilenameUtils.getName(filename);
-		} else {
-			this.fileName = "";
+		if (ValidationUtils.present(filename)) {
+			this.document.setFileName(FilenameUtils.getName(filename));
 		}
 
 		// "pdf", "ps", "djv", "djvu", "txt"
 		// check file extensions which we accept
-		if (this.fileName.equals("") || !StringUtils.matchExtension(this.fileName, allowedExt)) {
+		if (!ValidationUtils.present(document.getFileName()) || !StringUtils.matchExtension(document.getFileName(), allowedExt)) {
 			throw new UnsupportedFileTypeException(allowedExt);
 		}
 
 		// create hash over file content
-		this.md5hash = HashUtils.getMD5Hash(this.upFile.get());
+		this.document.setMd5hash(HashUtils.getMD5Hash(this.upFile.get()));
 
-		this.fileHash = StringUtils.getMD5Hash(this.upFile.getName() + Math.random() + df.format(new Date()));
+		// compute random file hash
+		this.document.setFileHash(StringUtils.getMD5Hash(this.upFile.getName() + Math.random() + df.format(new Date())));
 	}
 
 	/**
@@ -123,95 +124,25 @@ public class HandleFileUpload implements FileUploadInterface {
 	 * @return file
 	 * @throws Exception
 	 */
-	public File writeUploadedFile() throws Exception {
-
-		File file = new File(FileUtil.getDocumentPath(this.docPath, this.fileHash));
-
-		try {
-			this.upFile.write(new File((FileUtil.getDocumentPath(this.docPath, this.fileHash))));
-		} catch (Exception ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-
-		return file;
-	}
-
 	@Override
-	public Document writeUploadedFile(String docPath, String userName) throws Exception {
+	public Document writeUploadedFile() throws Exception {
 
-		Document document = null;
-
-		File file = new File(FileUtil.getDocumentPath(docPath, fileHash));
+		document.setFile(new File(FileUtil.getDocumentPath(docPath, document.getFileHash())));
 
 		try {
-			this.upFile.write(file);
-
-			document = new Document();
-
-			document.setUserName(userName);
-			document.setFileName(this.fileName);
-
-			document.setFileHash(fileHash);
-			document.setMd5hash(this.md5hash);
-
+			this.upFile.write(document.getFile());
 		} catch (Exception ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
+			log.error("Could not write uploaded file.", ex);
+			throw ex;
 		}
 
 		return document;
 	}
 
 	@Override
-	public Document writeUploadedFile(String fileHash, User loginUser) throws Exception {
-
-		Document document = null;
-
-		File file = new File(FileUtil.getDocumentPath(this.docPath, fileHash));
-
-		try {
-			this.upFile.write(file);
-
-			document = new Document();
-
-			document.setUserName(loginUser.getName());
-			document.setFileName(this.fileName);
-
-			document.setFileHash(fileHash);
-			document.setMd5hash(this.md5hash);
-
-		} catch (Exception ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-
-		return document;
+	public Document writeUploadedFile(final String fileHash, final User loginUser) throws Exception {
+		document.setFileHash(fileHash);
+		return writeUploadedFile();
 	}
 
-	@Override
-	public Document writeUploadedFile(String userName) throws Exception {
-		
-		Document document = null;
-
-		final File file = new File(FileUtil.getDocumentPath(this.docPath, fileHash));
-
-		try {
-			this.upFile.write(file);
-
-			document = new Document();
-
-			document.setUserName(userName);
-			document.setFileName(this.fileName);
-
-			document.setFileHash(fileHash);
-			document.setMd5hash(this.md5hash);
-
-		} catch (Exception ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
-		}
-
-		return document;
-	}
 }

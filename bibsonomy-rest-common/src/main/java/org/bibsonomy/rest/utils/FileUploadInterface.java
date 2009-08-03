@@ -23,8 +23,6 @@
 
 package org.bibsonomy.rest.utils;
 
-import java.io.File;
-
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.User;
 
@@ -35,11 +33,13 @@ import org.bibsonomy.model.User;
 public interface FileUploadInterface {
 
 	/**
-	 * writes the uploaded file to the disk
-	 * @return file
+	 * Writes the uploaded file to the disk and returns the file together
+	 * with meta information in the document
+	 *
+	 * @return The document describing the file (including the file!).
 	 * @throws Exception
 	 */
-	public File writeUploadedFile() throws Exception;
+	public Document writeUploadedFile() throws Exception;
 
 	/**
 	 * Stores the created file on the hard drive and returns a document object
@@ -49,21 +49,5 @@ public interface FileUploadInterface {
 	 * @throws Exception
 	 */
 	public Document writeUploadedFile(String hashedName, User loginUser) throws Exception;
-	
-	/**
-	 * 
-	 * @param docpath
-	 * @param userName
-	 * @return
-	 * @throws Exception
-	 */
-	public Document writeUploadedFile(String docpath, String userName) throws Exception;
-	
-	/**
-	 * 
-	 * @param userName
-	 * @return
-	 * @throws Exception
-	 */
-	public Document writeUploadedFile(String userName) throws Exception;	
+
 }
