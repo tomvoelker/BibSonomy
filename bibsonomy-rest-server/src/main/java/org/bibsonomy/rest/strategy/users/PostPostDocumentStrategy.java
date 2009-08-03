@@ -24,9 +24,10 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 	private final String userName;
 	private final String resourceHash;
 	private final List<FileItem> items;
-	private final String docPath;
 	private final String projectHome;
 	private String uri;
+	
+	private FileUploadFactory fileUploadFactory;
 	
 	/**
 	 * @param context
@@ -38,8 +39,9 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 		this.userName = userName;
 		this.resourceHash = resourceHash;
 		this.items = context.getItemList();
-		this.docPath = context.getAdditionalInfos().get("docPath");
 		this.projectHome = context.getAdditionalInfos().get("projectHome");
+		this.fileUploadFactory = new FileUploadFactory();
+		this.fileUploadFactory.setDocpath(context.getAdditionalInfos().get("docPath"));
 	}
 	
 	@Override
@@ -50,17 +52,19 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 	@Override
 	protected String create() {
 		
-		Document doc = null;
-	
-		FileUploadInterface up = new FileUploadFactory().getFileUploadHandler(this.items, HandleFileUpload.fileUploadExt);
+		final FileUploadInterface up = fileUploadFactory.getFileUploadHandler(this.items, HandleFileUpload.fileUploadExt);
 		
 		try {
+
+			final Document document = up.writeUploadedFile();
+			/*
+			 * add user name to document (needed by createDocument) 
+			 */
+			document.setUserName(this.userName);
 			
-			doc = up.writeUploadedFile(this.docPath, this.userName);
+			this.getLogic().createDocument(document, this.resourceHash);
 			
-			this.getLogic().createDocument(doc, this.resourceHash);
-			
-			uri = this.projectHome + "api/users/" + doc.getUserName() + "/posts/" + this.resourceHash + "/documents/" + doc.getFileName();
+			uri = this.projectHome + "api/users/" + this.userName + "/posts/" + this.resourceHash + "/documents/" + document.getFileName();
 			
 			return uri;
 			
