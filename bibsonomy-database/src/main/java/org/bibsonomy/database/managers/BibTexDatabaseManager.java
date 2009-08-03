@@ -1356,7 +1356,18 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 			/*
 			 * Resource has been changed and thus could be found in logging table. We send back the new resource hash. 
 			 */
-			throw new ResourceMovedException(resourceHash, loggedList.get(0).getResource().getIntraHash(), userName);
+			final Post<BibTex> loggedPost = loggedList.get(0);
+			if (!resourceHash.equals(loggedPost.getResource().getIntraHash())) {
+				/*
+				 * TODO: quick fix to break loops when the hash has not changed.
+				 * This does not help in the case of more complex change patterns 
+				 * (e.g., A -> B -> A). To fix that, we have to respect the 
+				 * date given to the exception and implement a query which 
+				 * returns the latest post with given hash+username whose 
+				 * posting date is smaller or equal to the given date.  
+				 */
+				throw new ResourceMovedException(resourceHash, loggedPost.getResource().getIntraHash(), userName, loggedPost.getDate());
+			}
 		}
 		log.debug("BibTeX-post from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");
 		return null;
