@@ -4,8 +4,6 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
 
 /**
  * Manages Basket functionalities
@@ -48,19 +46,27 @@ public class BasketDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * creates basket items
-	 * @param param 
+	 * @param userName - name of the user from whose basket we want to delete the item
+	 * @param contentId 
 	 * @param session 
 	 */
-	public void createItem(final BasketParam param, final DBSession session){
+	public void createItem(final String userName, final int contentId, final DBSession session){
+		final BasketParam param = new BasketParam();			
+		param.setUserName(userName);
+		param.setContentId(contentId);
 		this.insert("createBasketItem", param, session);
 	}
 	
 	/**
 	 * deletes basket items
-	 * @param param 
+	 * @param userName - name of the user from whose basket we want to delete the item
+	 * @param contentId 
 	 * @param session 
 	 */
-	public void deleteItem(final BasketParam param, final DBSession session){
+	public void deleteItem(final String userName, final int contentId, final DBSession session){
+		final BasketParam param = new BasketParam();			
+		param.setUserName(userName);
+		param.setContentId(contentId);
 		this.plugins.onDeleteBasketItem(param, session);
 		this.delete("deleteBasketItem", param, session);
 	}

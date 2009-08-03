@@ -41,7 +41,6 @@ import org.bibsonomy.database.managers.StatisticsDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.TagRelationDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
-import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GenericParam;
@@ -1731,22 +1730,32 @@ public class DBLogic implements LogicInterface {
 		
 		try {
 			for (Post<BibTex> p:posts){
-				// its still not necessary to use crudable 
-				p = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), p.getResource().getIntraHash(), p.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
-	
-				// create param
-				BasketParam param = new BasketParam();
-				param.setUserName(this.loginUser.getName());
-				param.setContentId(p.getContentId());
-				param.setRequestedUserName(p.getUser().getName());
+				/*
+				 * get the complete post from the database 
+				 */
+				final Post<BibTex> copy = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), p.getResource().getIntraHash(), p.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
 				
-				// and write it to the database
-				this.basketDBManager.createItem(param, session);
+				/*
+				 * post might be null, because 
+				 * a) it does not exist
+				 * b) user may not access it
+				 */
+				if (copy == null) {
+					/*
+					 * FIXME: proper exception message!
+					 */
+					throw new ValidationException("You are not authorized to perform the requested operation"); 
+				}
 				
+				/*
+				 * insert the post from the user's basket
+				 */
+				this.basketDBManager.createItem(this.loginUser.getName(), copy.getContentId(), session);
 			}
 			
+			
 			// get actual basket size
-			basketSize = this.basketDBManager.getNumBasketEntries(this.loginUser.getName(), session);
+			return this.basketDBManager.getNumBasketEntries(this.loginUser.getName(), session);
 		} catch (Exception ex) {
 			log.error(ex);
 		} finally {
@@ -1765,8 +1774,6 @@ public class DBLogic implements LogicInterface {
 		
 		final DBSession session = openSession();
 		
-		int basketSize = 0;
-		
 		try {
 			// decide which delete function will be called
 			if (clearBasket){
@@ -1774,30 +1781,39 @@ public class DBLogic implements LogicInterface {
 				this.basketDBManager.deleteAllItems(this.loginUser.getName(), session);
 			} else {
 				// delete specific post
-				for (Post<BibTex> p:posts){
-					p = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), p.getResource().getIntraHash(), p.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
-		
-					// create param
-					BasketParam param = new BasketParam();			
-					param.setUserName(this.loginUser.getName());
-					param.setContentId(p.getContentId());
-					param.setRequestedUserName(p.getUser().getName());
-					param.setHash(p.getResource().getIntraHash());
+				for (final Post<BibTex> p:posts){
+					/*
+					 * get the complete post from the database 
+					 */
+					final Post<BibTex> copy = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), p.getResource().getIntraHash(), p.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
 					
-					// delete it
-					this.basketDBManager.deleteItem(param, session);
+					/*
+					 * post might be null, because 
+					 * a) it does not exist
+					 * b) user may not access it
+					 */
+					if (copy == null) {
+						/*
+						 * FIXME: proper exception message!
+						 */
+						throw new ValidationException("You are not authorized to perform the requested operation"); 
+					}
+					
+					/*
+					 * delete the post from the user's basket
+					 */
+					this.basketDBManager.deleteItem(this.loginUser.getName(), copy.getContentId(), session);
 				}	
 			}
 			
 			// get actual basketsize
-			basketSize = this.basketDBManager.getNumBasketEntries(this.loginUser.getName(), session);
+			return this.basketDBManager.getNumBasketEntries(this.loginUser.getName(), session);
 		} catch (Exception ex) {
 			log.error(ex);
 		} finally {
 			session.close();
 		}
 		
-		return basketSize;
-
+		return 0;
 	}
 }

@@ -3,7 +3,6 @@ package org.bibsonomy.database.managers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.bibsonomy.database.params.BasketParam;
 import org.junit.Test;
 
 /**
@@ -31,29 +30,19 @@ public class BasketDatabaseManagerTest extends AbstractDatabaseManagerTest{
 	public void createAndDeleteBasketItem(){
 		int basketSize = 0;
 		
-		// build param
-		BasketParam param = new BasketParam();
-		param.setContentId(14);
-		param.setUserName("testuser1");
-		param.setRequestedUserName("testuser2");
-		
 		// get actual basketsize
 		basketSize = this.basketDb.getNumBasketEntries("testuser1", this.dbSession);
 		assertEquals(2, basketSize);
 		
 		// create new basket item with content id 14
-		this.basketDb.createItem(param, this.dbSession);
+		this.basketDb.createItem("testuser1", 14, this.dbSession);
 		
 		// get actual basketsize
 		basketSize = this.basketDb.getNumBasketEntries("testuser1", this.dbSession);
 		assertEquals(3, basketSize);
 		
-		// prepare param
-		param.setContentId(14);
-		param.setUserName("testuser1");
-		
 		// delete basket item with content id 14
-		this.basketDb.deleteItem(param, this.dbSession);
+		this.basketDb.deleteItem("testuser1", 14, this.dbSession);
 		
 		// get actual basket size
 		basketSize = this.basketDb.getNumBasketEntries("testuser1", this.dbSession);
