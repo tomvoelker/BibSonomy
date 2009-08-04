@@ -69,7 +69,7 @@ public class UserSettings {
 	/**
 	 * Shall the web interface ask the user before it really deletes something?
 	 */
-	private boolean confirmDelete = true;
+	private boolean confirmDelete;
 
 
 	/**
@@ -164,14 +164,26 @@ public class UserSettings {
 		this.logLevel = logLevel;
 	}
 
+	/**
+	 * gets currents confirmation status
+	 * @return boolean 
+	 */
 	public boolean isConfirmDelete() {
 		return this.confirmDelete;
 	}
 
+	/**
+	 * sets the current confirmations status
+	 * @param confirmDelete
+	 */
 	public void setConfirmDelete(boolean confirmDelete) {
 		this.confirmDelete = confirmDelete;
 	}	
 	
+	/**
+	 * retrieves the current confirmation status
+	 * @return boolean
+	 */
 	public boolean getConfirmDelete() {
 		return this.confirmDelete;
 	}
