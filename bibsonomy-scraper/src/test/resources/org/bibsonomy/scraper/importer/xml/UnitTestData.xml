@@ -193,14 +193,12 @@
 		<URL>http://www3.interscience.wiley.com/journal/104530788/abstract?CRETRY=1&amp;SRETRY=0</URL>
 		<BibFile>WileyIntersienceScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_34">
 		<TestDescription>URL scraping test with a citation download page from intersience wiley</TestDescription>
 		<URL>http://www3.interscience.wiley.com/tools/citex?clienttype=1&amp;subtype=1&amp;mode=1&amp;version=1&amp;id=104530788&amp;redirect=/cgi-bin/abstract/104530788/ABSTRACT</URL>
 		<BibFile>WileyIntersienceScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_35">
 		<TestDescription>URL (with eutils host) scraping test with publication from pubmed</TestDescription>
@@ -623,7 +621,6 @@
 		<URL>http://www3.interscience.wiley.com/journal/118514708/abstract</URL>
 		<BibFile>WileyIntersienceScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_110">
 		<TestDescription>Cambridge Journals Url Test</TestDescription>
@@ -703,7 +700,6 @@
 		<URL>http://prod.informaworld.com/smpp/title~content=t748423783~db=all</URL>
 		<BibFile>InformaworldUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_124">
 		<TestDescription>Test for liinwww.ira.uka.de/bibliography</TestDescription>
@@ -797,16 +793,16 @@
 	</URLTest>
 	<URLTest id="url_140">
 		<TestDescription>Test for scientificcommons.org</TestDescription>
-		<URL>http://en.scientificcommons.org/40722437</URL>
+		<URL>http://en.scientificcommons.org/42505917</URL>
 		<BibFile>ScientificcommonsScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.scientificcommons.ScientificcommonsScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_141">
 		<TestDescription>test for siencedirect</TestDescription>
 		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B758F-4K5HWKT-1&amp;_user=4861060&amp;_coverDate=06%2F30%2F2006&amp;_alid=881430000&amp;_rdoc=2&amp;_fmt=high&amp;_orig=search&amp;_cdi=12925&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_ct=3&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=e807b2be40761ad201d828604e7d3b36</URL>
 		<BibFile>ScienceDirectScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_142">
 		<TestDescription>test for springerlink</TestDescription>
@@ -867,7 +863,6 @@
 		<URL>http://apps.isiknowledge.com/full_record.do?product=UA&amp;search_mode=GeneralSearch&amp;qid=1&amp;SID=Z282mBKih2ciA@iGHOp&amp;page=1&amp;doc=2&amp;colname=WOS</URL>
 		<BibFile>IsiScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.isi.IsiScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_152">
 		<TestDescription>RSOC Scraper url test, alternate host</TestDescription>
