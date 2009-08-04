@@ -35,6 +35,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -99,9 +100,12 @@ public class CasesJournalScraper extends AbstractUrlScraper {
 		 */
 		BibTexUtils.addFieldIfNotContained(bibtex, "url", url);
 		
-		scrapingContext.setBibtexResult(bibtex);
+		if(bibtex != null) {
+			scrapingContext.setBibtexResult(bibtex);
+			return true;
+		}else
+			throw new ScrapingFailureException("getting bibtex failed");
 		
-		return false;
 	}
 
 	/**
