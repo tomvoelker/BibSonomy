@@ -27,14 +27,14 @@
 			user_name, user_email, user_password, user_realname, user_homepage, 
 			api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date, 
 			spammer, updated_by, updated_at, role, to_classify, lang, tagbox_style, tagbox_sort, tagbox_minfreq, 
-			tagbox_tooltip, list_itemcount, log_level
+			tagbox_tooltip, list_itemcount, log_level, confirmDelete
 			<isNotNull property="reminderPassword">,tmp_password, tmp_request_date</isNotNull>			   
 			)
 		VALUES (
 			#name#, #email#, #password#, #realname#, #homepage#, 
 			#apiKey#, #birthday#, #gender#, #hobbies#, #interests#, #IPAddress#, #openURL#, #place#, #profession#, #registrationDate#, 
 			#spammer#,#updatedBy#, #updatedAt#, #role#, #toClassify#, #settings.defaultLanguage#, #settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, 
-			#settings.tagboxTooltip#, #settings.listItemcount#, #settings.logLevel#
+			#settings.tagboxTooltip#, #settings.listItemcount#, #settings.logLevel#, #settings.confirmDelete#
 			<isNotNull property="reminderPassword">,#reminderPassword#,#reminderPasswordRequestDate#</isNotNull>	
 			)
 	</insert>
