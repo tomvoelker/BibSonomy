@@ -16,6 +16,7 @@ public class CasesJournalScraperTest {
 	 * starts URL test with id url_154
 	 */
 	@Test
+	@Ignore
 	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_154"));
