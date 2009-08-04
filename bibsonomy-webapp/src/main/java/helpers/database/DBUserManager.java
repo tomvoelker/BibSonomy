@@ -35,7 +35,7 @@ public class DBUserManager extends DBManager {
 			if (c.init()) { // initialize database
 				// prepare Statement
 				c.stmt = c.conn.prepareStatement(" 	SELECT user_email,user_homepage,user_realname,openurl," 
-											+ "			birthday,gender,hobbies,place,profession,interests,place,profilegroup,confirmDelete" + LOG_LEVEL + " " 
+											+ "			birthday,gender,hobbies,place,profession,interests,place,profilegroup,confirmDelete," + LOG_LEVEL + " " 
 											+ " 	FROM user WHERE user_name = ?");
 				c.stmt.setString(1, bean.getName());
 				c.rst = c.stmt.executeQuery();
