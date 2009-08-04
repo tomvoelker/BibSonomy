@@ -46,9 +46,9 @@ import servlets.listeners.InitialConfigListener;
 import beans.UserBean;
 
 /**
- * This Filter reads user information/settings from DB or Cookies and makes it available
- * for following filters/servlets/JSPs.
- *
+ * This Filter reads user information/settings from DB or Cookies and makes it
+ * available for following filters/servlets/JSPs.
+ * 
  */
 public class InitUserFilter implements Filter {
 
@@ -58,8 +58,8 @@ public class InitUserFilter implements Filter {
 	private final static Logger log = Logger.getLogger(InitUserFilter.class);
 
 	/**
-	 * The filter configuration object we are associated with.  If this value
-	 * is null, this filter instance is not currently configured.
+	 * The filter configuration object we are associated with. If this value is
+	 * null, this filter instance is not currently configured.
 	 */
 	protected FilterConfig filterConfig = null;
 
@@ -68,16 +68,16 @@ public class InitUserFilter implements Filter {
 	 */
 	protected OpenID openIDLogic = null;
 	protected OpenIdConsumerManager manager = null;
-	
+
 	/**
 	 * Constants to describe Cookie and Bean informations
 	 */
-	public static final String USER_COOKIE_NAME     	   = "_currUser";
-	public static final String OPENID_COOKIE_NAME		   = "_openIDUser";
-	public static final String SETTINGS_COOKIE_NAME		   = "_styleSettings";
-	public static final String REQ_ATTRIB_USER      	   = "user";
-	public static final String REQ_ATTRIB_LANGUAGE         =  SessionLocaleResolver.class.getName() + ".LOCALE";	
-	public static final String REQ_ATTRIB_LOGIN_USER       = "loginUser";
+	public static final String USER_COOKIE_NAME = "_currUser";
+	public static final String OPENID_COOKIE_NAME = "_openIDUser";
+	public static final String SETTINGS_COOKIE_NAME = "_styleSettings";
+	public static final String REQ_ATTRIB_USER = "user";
+	public static final String REQ_ATTRIB_LANGUAGE = SessionLocaleResolver.class.getName() + ".LOCALE";
+	public static final String REQ_ATTRIB_LOGIN_USER = "loginUser";
 	/**
 	 * Enables X.509 authentication.
 	 */
@@ -87,18 +87,20 @@ public class InitUserFilter implements Filter {
 	 * Take this filter out of service.
 	 */
 	public void destroy() {
-		this.filterConfig = null;		
+		this.filterConfig = null;
 	}
 
 	/**
 	 * Place this filter into service.
-	 *
-	 * @param filterConfig The filter configuration object
+	 * 
+	 * @param filterConfig
+	 *            The filter configuration object
 	 */
 	public void init(FilterConfig filterConfig) throws ServletException {
 		this.filterConfig = filterConfig;
 		/*
-		 * if true, we use X.509 certificates instead of passwords in DB for authentication
+		 * if true, we use X.509 certificates instead of passwords in DB for
+		 * authentication
 		 */
 		useX509forAuth = "true".equals(this.filterConfig.getInitParameter("useX509forAuth"));
 		try {
@@ -110,44 +112,43 @@ public class InitUserFilter implements Filter {
 		this.openIDLogic.setManager(manager);
 	}
 
-
-	/** 
+	/**
 	 * This method does the main work
 	 * 
-	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
+	 *      javax.servlet.ServletResponse, javax.servlet.FilterChain)
 	 */
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-		final HttpServletRequest httpServletRequest = (HttpServletRequest)request;
+		final HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
 		final String requPath = httpServletRequest.getServletPath();
 		/*
-		 * ignore resource files (CSS, JPEG/PNG, JavaScript) ... 
+		 * ignore resource files (CSS, JPEG/PNG, JavaScript) ...
 		 */
 		if (requPath.startsWith(STATIC_RESOURCES) || requPath.startsWith(API)) {
 			chain.doFilter(request, response);
 			return;
-		} 
-
+		}
 
 		/*
-		 * try to authenticate with the given username & password;
-		 * if successful, get user details
+		 * try to authenticate with the given username & password; if
+		 * successful, get user details
 		 */
 
 		DBLogicUserInterfaceFactory dbLogicFactory = new DBLogicUserInterfaceFactory();
 		dbLogicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
 		User loginUser = null;
-				
-		final String userCookie = getCookie(httpServletRequest,USER_COOKIE_NAME);
+
+		final String userCookie = getCookie(httpServletRequest, USER_COOKIE_NAME);
 		final String openIDCookie = getCookie(httpServletRequest, OPENID_COOKIE_NAME);
-		
+
 		// check user authentication
-		try {			
+		try {
 			if (userCookie != null) {
 				log.info("found user cookie");
-				/* 
-				 * user has Cookie set: try to authenticate 
+				/*
+				 * user has Cookie set: try to authenticate
 				 */
 				final String userCookieParts[] = userCookie.split("%20");
 				if (userCookieParts.length >= 2) {
@@ -161,79 +162,79 @@ public class InitUserFilter implements Filter {
 					/*
 					 * something is wrong with the cookie: log!
 					 */
-					String ip_address = ((HttpServletRequest)request).getHeader("x-forwarded-for");
+					String ip_address = ((HttpServletRequest) request).getHeader("x-forwarded-for");
 					log.warn("Someone manipulated the user cookie (IP: " + ip_address + ") : " + userCookie);
-				}			
+				}
 			} else if (openIDCookie != null) {
 				log.info("found OpenID cookie");
-				
-				/* 
+
+				/*
 				 * user has OpenID cookie set
 				 */
 				final String openIdCookieParts[] = openIDCookie.split("%20");
 				if (openIdCookieParts.length >= 3) {
 					final String userName = decode(openIdCookieParts[0]);
-					final String openID   = decode(openIdCookieParts[1]);
+					final String openID = decode(openIdCookieParts[1]);
 					final String password = openIdCookieParts[2];
-					
+
 					final HttpSession session = httpServletRequest.getSession(true);
-					
+
 					final RequestLogic requestLogic = new RequestLogic(httpServletRequest);
-					
+
 					final HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 					final ResponseLogic responseLogic = new ResponseLogic(httpServletResponse);
 					final CookieLogic cookieLogic = new CookieLogic(requestLogic, responseLogic);
-					
+
 					/*
-					 *  check if cookie is still valid  
-					 */		
+					 * check if cookie is still valid
+					 */
 					String openIDSession = (String) session.getAttribute(OpenID.OPENID_SESSION_ATTRIBUTE);
-					
+
 					if (openIDSession != null) {
 						/*
 						 * valid OpenID session
 						 */
 						LogicInterface logic = dbLogicFactory.getLogicAccess(userName, password);
-						loginUser = logic.getUserDetails(userName);		
-					} else {						
+						loginUser = logic.getUserDetails(userName);
+					} else {
 						/*
-						 * OpenID session expired --> reauthenticate at OpenID provider
-						 */	
+						 * OpenID session expired --> reauthenticate at OpenID
+						 * provider
+						 */
 						StringBuffer referer = httpServletRequest.getRequestURL();
 						String queryString = requestLogic.getParametersAsQueryString();
-						
-						if (queryString != null && queryString.length() > 1)
-							referer.append(queryString);
-						
+
+						if (queryString != null && queryString.length() > 1) referer.append(queryString);
+
 						String returnTo = InitialConfigListener.getProjectHome() + "login?referer=" + URLEncoder.encode(referer.toString(), "UTF-8");
-						
+
 						/*
-						 *  delete old openid cookie
+						 * delete old openid cookie
 						 */
 						cookieLogic.deleteOpenIDCookie();
-						
+
 						/*
 						 * redirect user to openID provider
 						 */
 						String url;
 						try {
-							url = openIDLogic.authOpenIdRequest(requestLogic, openID, InitialConfigListener.getProjectHome() ,returnTo.toString(), false);
+							url = openIDLogic.authOpenIdRequest(requestLogic, openID, InitialConfigListener.getProjectHome(), returnTo.toString(), false);
 							httpServletResponse.sendRedirect(url);
 						} catch (OpenIDException ex) {
 							log.error("OpenID provider url not valid");
 							ex.printStackTrace();
 						}
 						return;
-					}					
+					}
 				} else {
 					/*
 					 * something is wrong with the cookie: log!
 					 */
-					String ip_address = ((HttpServletRequest)request).getHeader("x-forwarded-for");
+					String ip_address = ((HttpServletRequest) request).getHeader("x-forwarded-for");
 					log.warn("Someone manipulated the openid cookie (IP: " + ip_address + ") : " + openIDCookie);
-				}	
-				
-			} else if (useX509forAuth) {			
+				}
+
+			} else if (useX509forAuth) {
 				/*
 				 * special handling for SAP X.509 certificates
 				 */
@@ -244,25 +245,26 @@ public class InitUserFilter implements Filter {
 					 */
 					String uname = getUserName(httpServletRequest);
 					/*
-					 *  FIXME: here we should put user into DB, if not already contained, i.e., 
-					 *  INSERT IGNORE INTO user VALUES ...  
+					 * FIXME: here we should put user into DB, if not already
+					 * contained, i.e., INSERT IGNORE INTO user VALUES ...
 					 */
 					try {
 						final LogicInterface logic = dbLogicFactory.getLogicAccess(uname, "*");
 						loginUser = logic.getUserDetails(uname);
 					} catch (ValidationException e) {
 					}
-										
+
 					/*
-					 * this should not be neccessary, if we got the user from the database ...
+					 * this should not be neccessary, if we got the user from
+					 * the database ...
 					 */
 					if (loginUser == null) {
 						loginUser = new User();
 						loginUser.setName(uname);
 					}
-				} catch (Exception e)  {
+				} catch (Exception e) {
 					log.info("Certificate authentication failed.", e);
-				}				
+				}
 			} else {
 				final String[] auth = decodeAuthHeader(httpServletRequest);
 				if (auth != null && auth.length == 2) {
@@ -272,12 +274,14 @@ public class InitUserFilter implements Filter {
 					log.info("Authentication for user '" + auth[0] + "' using HTTP basic auth.");
 
 					/*
-					 * FIXME: The password is expected to be already MD5-encoded (as in the cookie).
-					 * This is typically not the case (i.e., user enters password in browser), but 
-					 * we decided to do it this way because we implemented this mechanism exclusively
-					 * for integration of publication lists into CMS. There cookie handling is often
-					 * difficult and one does not want the cleartext password to be written into the 
-					 * CMS (at least in our (eecs) scenario).
+					 * FIXME: The password is expected to be already MD5-encoded
+					 * (as in the cookie). This is typically not the case (i.e.,
+					 * user enters password in browser), but we decided to do it
+					 * this way because we implemented this mechanism
+					 * exclusively for integration of publication lists into
+					 * CMS. There cookie handling is often difficult and one
+					 * does not want the cleartext password to be written into
+					 * the CMS (at least in our (eecs) scenario).
 					 */
 
 					// try to authenticate user
@@ -285,15 +289,15 @@ public class InitUserFilter implements Filter {
 					loginUser = logic.getUserDetails(auth[0]);
 				}
 			}
-		}
-		catch (ValidationException valEx) {
+		} catch (ValidationException valEx) {
 			log.info("Login failed.", valEx);
 		}
-		
+
 		if (loginUser == null) {
 			log.info("user not found in DB or user has no cookie set");
 			/*
-			 * user is not in DB/authenticated properly: get/set values from Cookie 
+			 * user is not in DB/authenticated properly: get/set values from
+			 * Cookie
 			 */
 			loginUser = new User();
 
@@ -308,11 +312,11 @@ public class InitUserFilter implements Filter {
 				// check for manipulated cookie
 				if (settingsCookieParts.length == 5) {
 					log.info("settings cookie is valid, using it");
-					loginUser.getSettings().setTagboxStyle		(Integer.parseInt(settingsCookieParts[0]));
-					loginUser.getSettings().setTagboxSort		(Integer.parseInt(settingsCookieParts[1]));
-					loginUser.getSettings().setTagboxMinfreq	(Integer.parseInt(settingsCookieParts[2]));
-					loginUser.getSettings().setTagboxTooltip	(Integer.parseInt(settingsCookieParts[3]));
-					loginUser.getSettings().setListItemcount	(Integer.parseInt(settingsCookieParts[4]));
+					loginUser.getSettings().setTagboxStyle(Integer.parseInt(settingsCookieParts[0]));
+					loginUser.getSettings().setTagboxSort(Integer.parseInt(settingsCookieParts[1]));
+					loginUser.getSettings().setTagboxMinfreq(Integer.parseInt(settingsCookieParts[2]));
+					loginUser.getSettings().setTagboxTooltip(Integer.parseInt(settingsCookieParts[3]));
+					loginUser.getSettings().setListItemcount(Integer.parseInt(settingsCookieParts[4]));
 				}
 			}
 		}
@@ -321,38 +325,36 @@ public class InitUserFilter implements Filter {
 		 * put bean into request for following Servlets/JSPs
 		 */
 		httpServletRequest.setAttribute(REQ_ATTRIB_LOGIN_USER, loginUser);
-				
+
 		/*
-		 * for backwards compatibility, we copy here the data from the user object into a
-		 * "BibSonomy 1" UserBean Object
-		 */				
+		 * for backwards compatibility, we copy here the data from the user
+		 * object into a "BibSonomy 1" UserBean Object
+		 */
 		// TODO copy contents loginUser -> user
 		final UserBean userBean = createUserBean(loginUser);
 		httpServletRequest.setAttribute(REQ_ATTRIB_USER, userBean);
 
-		// add default language to request if no language is set	
-		if (httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE) == null)
-			httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(userBean.getDefaultLanguage()));
-		
+		// add default language to request if no language is set
+		if (httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE) == null) httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(userBean.getDefaultLanguage()));
+
 		log.info("finished: " + loginUser);
 
 		// Pass control on to the next filter
-		chain.doFilter(request, response);		
+		chain.doFilter(request, response);
 
 	}
 
-	
-	/** 
+	/**
 	 * Returns the value of a cookie with the given name.
 	 * 
 	 * @param request
 	 * @param cookieName
 	 * @return
 	 */
-	public static String getCookie (HttpServletRequest request, String cookieName) {
+	public static String getCookie(HttpServletRequest request, String cookieName) {
 		Cookie cookieList[] = request.getCookies();
 		if (cookieList != null) {
-			for (Cookie theCookie:cookieList) {
+			for (Cookie theCookie : cookieList) {
 				if (theCookie.getName().equals(cookieName)) {
 					return theCookie.getValue();
 				}
@@ -361,47 +363,45 @@ public class InitUserFilter implements Filter {
 		return null;
 	}
 
-	/** Extracts the auth header, decodes it and returns an array containing at 
+	/**
+	 * Extracts the auth header, decodes it and returns an array containing at
 	 * position 0 the user name and at position 1 the user password.
 	 * 
 	 * @author rja
-	 * @return <code>new String[]{username, password}</code> or <code>null</code>, 
-	 * if no auth header found.
-	 *  
+	 * @return <code>new String[]{username, password}</code> or
+	 *         <code>null</code>, if no auth header found.
+	 * 
 	 * @throws IOException
 	 */
 	private String[] decodeAuthHeader(final HttpServletRequest request) {
 		final String authHeader = request.getHeader("authorization");
 		if (authHeader != null) {
 			// Decode it, using any base 64 decoder
-			final String userpassDecoded = new String (Base64.decodeBase64(authHeader.split("\\s+")[1].getBytes()));
+			final String userpassDecoded = new String(Base64.decodeBase64(authHeader.split("\\s+")[1].getBytes()));
 			// split user name and password
 			return userpassDecoded.split(":");
 		}
 		return null;
 	}
 
-
-
-	/* ***************************************************
+	/*
+	 * ***************************************************
 	 * 
 	 * the following methods are X.509 specific
 	 * 
-	 * written by Torsten Leidig 
+	 * written by Torsten Leidig
 	 * 
-	 * ***************************************************/
-
-
-
+	 * **************************************************
+	 */
 
 	public static String getUserName(HttpServletRequest request) throws CertificateException {
 		return getUserIdFromCertificate(getCert(request));
 	}
 
 	public static X509Certificate getCert(HttpServletRequest request) throws CertificateException {
-		X509Certificate[] certs = (X509Certificate[])request.getAttribute("javax.servlet.request.X509Certificate");
+		X509Certificate[] certs = (X509Certificate[]) request.getAttribute("javax.servlet.request.X509Certificate");
 		if (certs != null) {
-			return certs[0]; // on index 0 shall be the client cert         
+			return certs[0]; // on index 0 shall be the client cert
 		}
 
 		// get cert from IIS reverse proxy send in request header
@@ -415,10 +415,8 @@ public class InitUserFilter implements Filter {
 		byte[] decodedBytes = Base64.decodeBase64(certificate.getBytes());
 		ByteArrayInputStream bais = new ByteArrayInputStream(decodedBytes);
 		CertificateFactory cf = CertificateFactory.getInstance("X.509");
-		return (X509Certificate)cf.generateCertificate(bais);
+		return (X509Certificate) cf.generateCertificate(bais);
 	}
-
-
 
 	public static String getUserIdFromCertificate(X509Certificate cert) {
 
@@ -446,18 +444,18 @@ public class InitUserFilter implements Filter {
 	}
 
 	private static UserBean createUserBean(User loginUser) {
-		
+
 		// general info
 		UserBean userBean = new UserBean();
 		userBean.setEmail(loginUser.getEmail());
-		userBean.setHomepage(loginUser.getHomepage() == null? null : loginUser.getHomepage().toString());
+		userBean.setHomepage(loginUser.getHomepage() == null ? null : loginUser.getHomepage().toString());
 		userBean.setName(loginUser.getName());
 		userBean.setOpenurl(loginUser.getOpenURL());
 		userBean.setRealname(loginUser.getRealname());
 		userBean.setRole(loginUser.getRole());
 		userBean.setApiKey(loginUser.getApiKey());
-		
-		//settings
+
+		// settings
 		final UserSettings settings = loginUser.getSettings();
 		userBean.setTagboxMinfreq(settings.getTagboxMinfreq());
 		userBean.setTagboxSort(settings.getTagboxSort());
@@ -467,16 +465,23 @@ public class InitUserFilter implements Filter {
 		userBean.setDefaultLanguage(settings.getDefaultLanguage());
 		userBean.setLogLevel(settings.getLogLevel());
 		
-		//basket size
+		
+		if(loginUser.getSettings().getConfirmDelete())
+			userBean.setConfirmDelete("true");
+		else
+			userBean.setConfirmDelete("false");
+
+
+		// basket size
 		userBean.setPostsInBasket(loginUser.getBasket().getNumPosts());
-				
-		//groups
-		for(Group g : loginUser.getGroups()) {
-			/* 
-			 * Ignore public, private, friends - because we don't want to see 
-             * them on the basket page and also not in the "groups" menu. The 
-             * UserBean contains a method "getAllGroups" to get those groups, 
-             * too.
+
+		// groups
+		for (Group g : loginUser.getGroups()) {
+			/*
+			 * Ignore public, private, friends - because we don't want to see
+			 * them on the basket page and also not in the "groups" menu. The
+			 * UserBean contains a method "getAllGroups" to get those groups,
+			 * too.
 			 */
 			if (!GroupID.isSpecialGroupId(g.getGroupId())) {
 				userBean.addGroup(g.getName());
@@ -484,8 +489,10 @@ public class InitUserFilter implements Filter {
 		}
 		return userBean;
 	}
-	
-	/** Encodes a string with {@link URLEncoder#encode(String, String)} with UTF-8.
+
+	/**
+	 * Encodes a string with {@link URLEncoder#encode(String, String)} with
+	 * UTF-8.
 	 * 
 	 * @param s
 	 * @return
@@ -497,8 +504,11 @@ public class InitUserFilter implements Filter {
 			return s;
 		}
 	}
-	
-	/** Decodes a string with {@link URLDecoder#decode(String, String)} with UTF-8.
+
+	/**
+	 * Decodes a string with {@link URLDecoder#decode(String, String)} with
+	 * UTF-8.
+	 * 
 	 * @param s
 	 * @return
 	 */
@@ -509,5 +519,5 @@ public class InitUserFilter implements Filter {
 			return s;
 		}
 	}
-	
+
 }
