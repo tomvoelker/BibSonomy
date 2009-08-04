@@ -244,6 +244,16 @@ public class SessionSettingsFilter implements Filter {
 			update = true;
 		}
 		
+		paramValue =  httpServletRequest.getParameter("confirmDelete");
+		if (paramValue != null) {
+			
+			if("true".equals(paramValue))			
+				user.setConfirmDelete("true");
+			else
+				user.setConfirmDelete("false");
+		}
+		
+		
 		return update;
 	}
 
