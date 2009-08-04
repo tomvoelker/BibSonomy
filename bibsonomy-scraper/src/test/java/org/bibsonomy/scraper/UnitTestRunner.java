@@ -126,8 +126,11 @@ public class UnitTestRunner {
 			for(ScraperUnitTest test : unitTests){
 				if(test.getScraperTestId().equals(testId)){
 					TestResult result = test.run();
-					if(result.errorCount() > 0 || result.failureCount() > 0)
+					test.setTestResult(result);
+					if(result.errorCount() > 0 || result.failureCount() > 0) {
+						test.printTestFailure();
 						return false;
+					}
 					else
 						return true;
 				}

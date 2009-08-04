@@ -669,7 +669,6 @@
 		<URL>http://hirsla.lsh.is/lsh/handle/2336/11284</URL>
 		<BibFile>OpenrepositoryScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_119">
 		<TestDescription>Test for arrts.gtcni.org.uk/gtcni (openrepository)</TestDescription>
@@ -802,7 +801,6 @@
 		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B758F-4K5HWKT-1&amp;_user=4861060&amp;_coverDate=06%2F30%2F2006&amp;_alid=881430000&amp;_rdoc=2&amp;_fmt=high&amp;_orig=search&amp;_cdi=12925&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_ct=3&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=e807b2be40761ad201d828604e7d3b36</URL>
 		<BibFile>ScienceDirectScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_142">
 		<TestDescription>test for springerlink</TestDescription>
@@ -875,5 +873,11 @@
 		<URL>http://portal.acm.org/citation.cfm?id=1105676</URL>
 		<BibFile>ACMBasicScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_154">
+		<TestDescription>CasesJournal url test</TestDescription>
+		<URL>http://casesjournal.com/casesjournal/article/view/8280</URL>
+		<BibFile>CasesJournalScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper</Scraper>
 	</URLTest>
 </test:Tests>

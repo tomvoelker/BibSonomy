@@ -170,13 +170,21 @@ public class RisToBibtexConverter {
 					hm.put("url", val);
 				else if ((lab.equals("Y1") || lab.equals("PY"))
 						&& val.length() >= 4) {
-					String[] parts = val.split("/");
+
+					// handle the case of spaces instead of slashes (ie. 2007 Jan)
+					String delim = "/";
+					if (val.indexOf("/") == -1
+							&& val.indexOf(" ") != -1) {
+						delim = " ";
+					}
+					
+					String[] parts = val.split(delim);
 					hm.put("year", parts[0]);
 					if ((parts.length > 1) && (parts[1].length() > 0)) {
 						try {
 							int month = Integer.parseInt(parts[1]);
 							if ((month > 0) && (month <= 12)) {
-								//System.out.println(Globals.MONTHS[month-1]);
+								// System.out.println(Globals.MONTHS[month-1]);
 								hm.put("month", "#" + MONTHS[month - 1] + "#");
 							}
 						} catch (NumberFormatException ex) {

@@ -46,6 +46,7 @@ import org.bibsonomy.scraper.url.kde.biomed.BioMedCentralScraper;
 import org.bibsonomy.scraper.url.kde.blackwell.BlackwellSynergyScraper;
 import org.bibsonomy.scraper.url.kde.bmj.BMJScraper;
 import org.bibsonomy.scraper.url.kde.cambridge.CambridgeScraper;
+import org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper;
 import org.bibsonomy.scraper.url.kde.cell.CellScraper;
 import org.bibsonomy.scraper.url.kde.citebase.CiteBaseScraper;
 import org.bibsonomy.scraper.url.kde.citeseer.CiteseerxScraper;
@@ -182,6 +183,7 @@ public class UrlCompositeScraper extends CompositeScraper implements UrlScraper 
 		addScraper(new AGUScraper());
 		addScraper(new CellScraper());
 		addScraper(new IsiScraper());
+		addScraper(new CasesJournalScraper());
 	}
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
