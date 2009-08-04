@@ -52,7 +52,8 @@
 		<result property="tagboxStyle"     column="tagbox_style"   javaType="integer" />
 		<result property="tagboxTooltip"   column="tagbox_tooltip" javaType="integer" />	
 		<result property="logLevel"        column="log_level"      javaType="integer" />
-		<result property="defaultLanguage" column="lang" 	       javaType="string" />			
+		<result property="defaultLanguage" column="lang" 	       javaType="string" />	
+		<result property="confirmDelete"   column="confirmDelete"  javaType="boolean" />				
 	</resultMap>	
 
 	<sql id="allUserAttributes">
@@ -67,7 +68,7 @@
 	</sql>
 
 	<sql id="userSettingsAttributes">
-		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, lang, log_level
+		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, lang, log_level, confirmDelete
 	</sql>	
 
 </sqlMap>
