@@ -861,6 +861,7 @@
 		<URL>http://apps.isiknowledge.com/full_record.do?product=UA&amp;search_mode=GeneralSearch&amp;qid=1&amp;SID=Z282mBKih2ciA@iGHOp&amp;page=1&amp;doc=2&amp;colname=WOS</URL>
 		<BibFile>IsiScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.isi.IsiScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_152">
 		<TestDescription>RSOC Scraper url test, alternate host</TestDescription>
