@@ -142,6 +142,7 @@ public class HandleFileUpload implements FileUploadInterface {
 	@Override
 	public Document writeUploadedFile(final String fileHash, final User loginUser) throws Exception {
 		document.setFileHash(fileHash);
+		document.setUserName(loginUser.getName());
 		return writeUploadedFile();
 	}
 
