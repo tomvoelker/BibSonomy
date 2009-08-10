@@ -27,6 +27,8 @@ public class MySearchCommand extends SimpleResourceViewCommand{
 	private	String[]	bibtexHash;
 	private String[]	bibtexUrls;
 	private int    simHash;
+	
+	private String requGroup;
 
 	/**
 	 * default constructor
@@ -229,5 +231,21 @@ public class MySearchCommand extends SimpleResourceViewCommand{
 		buf.append("]");		
 		
 		return buf.toString();
+	}
+
+	/**
+	 * 
+	 * @return the requested group
+	 */
+	public String getRequGroup() {
+		return this.requGroup;
+	}
+
+	/**
+	 * sets the requested group
+	 * @param requGroup
+	 */
+	public void setRequGroup(String requGroup) {
+		this.requGroup = requGroup;
 	}	
 }

@@ -26,8 +26,10 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * This controller retrieve all bibtex informations of a currently logged in user and 
- * builds relation tables between several bibtex information fields like author, title and tags.
+ * This controller retrieve all bibtex informations of a currently logged in
+ * user and builds relation tables between several bibtex information fields
+ * like author, title and tags.
+ * 
  * @author Christian Voigtmann
  * @version $Id$
  */
@@ -40,31 +42,37 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		/*
 		 * FIXME: implement this for a group!
 		 */
-		
+
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
-		
+
 		/*
-		 * only users which are logged in might post bookmarks 
-		 * -> send them to login page
+		 * only users which are logged in might post bookmarks -> send them to
+		 * login page
 		 */
 		if (!command.getContext().isUserLoggedIn()) {
 			/*
 			 * FIXME: We need to add the ?referer= parameter such that the user
-			 * is send back to this controller after login.
-			 * This is not so simple, because we cannot access the query path
-			 * and for POST requests we would need to build the parameters by
-			 * ourselves. 
+			 * is send back to this controller after login. This is not so
+			 * simple, because we cannot access the query path and for POST
+			 * requests we would need to build the parameters by ourselves.
 			 */
 			return new ExtendedRedirectView("/login");
 		}
-		
+
 		final User user = command.getContext().getLoginUser();
-		
-		
+
 		// set grouping entity, grouping name, tags
-		final GroupingEntity groupingEntity = GroupingEntity.USER;
-		final String groupingName = user.getName();
+		// final GroupingEntity groupingEntity = GroupingEntity.USER;
+		// final String groupingName = user.getName();
+
+		String groupingName = command.getRequGroup();
+		GroupingEntity groupingEntity = GroupingEntity.GROUP;
+
+		if (groupingName == null) {
+			groupingName = user.getName();
+			groupingEntity = GroupingEntity.USER;
+		}
 
 		// determine which lists to initalize depending on the output format
 		// and the requested resourcetype
@@ -73,8 +81,8 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		// retrieve and set the requested resource lists, along with total
 		// counts
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			// FIXME: we should deliver items dynamically via ajax, 
-			//        displaying a 'wheel of fortune' until all items are loaded
+			// FIXME: we should deliver items dynamically via ajax,
+			// displaying a 'wheel of fortune' until all items are loaded
 			this.setList(command, resourceType, groupingEntity, groupingName, null, null, null, null, null, Integer.MAX_VALUE);
 			this.postProcessAndSortList(command, resourceType);
 		}
@@ -84,9 +92,9 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		 */
 		final ListCommand<Post<BibTex>> bibtex = command.getBibtex();
 
-		final SortedSet<String> titles  = new TreeSet<String>();
+		final SortedSet<String> titles = new TreeSet<String>();
 		final SortedSet<String> authors = new TreeSet<String>();
-		final SortedSet<String> tags    = new TreeSet<String>();
+		final SortedSet<String> tags = new TreeSet<String>();
 
 		/**
 		 * read title, author and tag information form bibtex
@@ -97,12 +105,11 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			titles.add(title);
 
 			String author = buildAuthorsAndEditors(bibtexEntry.getResource().getAuthor(), bibtexEntry.getResource().getEditor());
-			
+
 			List<String> authorsLastNames = extractAuthorsLastNames(author);
-			for (String lastName: authorsLastNames) {						
-				authors.add(lastName);							
+			for (String lastName : authorsLastNames) {
+				authors.add(lastName);
 			}
-			
 
 			for (Tag tag : bibtexEntry.getTags()) {
 				tags.add(tag.getName());
@@ -122,7 +129,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		this.endTiming();
 
 		/**
-		 * return view to show the mySearch.jspx side 
+		 * return view to show the mySearch.jspx side
 		 */
 		return Views.MYSEARCH;
 	}
@@ -143,7 +150,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		SortedSet<Integer>[] authorTitle = new TreeSet[authorList.size()];
 		SortedSet<Integer>[] tagAuthor = new TreeSet[tagList.size()];
 		SortedSet<Integer>[] titleAuthor = new TreeSet[titleList.size()];
-		
+
 		/**
 		 * string arrays for hash and url informations for the several bibtex
 		 */
@@ -160,7 +167,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			String hash = bibtexEntry.getResource().getSimHash2();
 			String url = bibtexEntry.getResource().getUrl();
 			String author = buildAuthorsAndEditors(bibtexEntry.getResource().getAuthor(), bibtexEntry.getResource().getEditor());
-			
+
 			// tag --> title relation
 			for (Tag tag : tags) {
 				if (tagTitle[tagList.indexOf(tag.getName())] == null) {
@@ -229,9 +236,10 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		command.setTitleAuthor(titleAuthor);
 		command.setBibtexHash(bibtexHashs);
 		command.setBibtexUrls(bibtexUrls);
-		
+
 		/**
-		 * simhash is needed by the javascript code in the mySearch.jspx side to complete the bibtex hash string
+		 * simhash is needed by the javascript code in the mySearch.jspx side to
+		 * complete the bibtex hash string
 		 */
 		command.setSimHash(HashID.getSimHash(2).getId());
 	}
@@ -262,6 +270,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 
 	/**
 	 * extract the last names of the authors
+	 * 
 	 * @param authors
 	 * @return string list of the last names of the authors
 	 */
@@ -296,7 +305,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 			 */
 			int i = 0;
 			while (i < nameList.size() - 1) { // iterate up to the last but one
-												// part
+				// part
 				final String part = nameList.get(i++);
 				/*
 				 * stop, if this is the last abbreviated forename
