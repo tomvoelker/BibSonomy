@@ -719,6 +719,12 @@
 	
 	<!-- we need this rule, since without it, mySearch is catched by the next rule -->
 	<rule>
+		<name>/mySearch/GROUP</name>
+		<from>^/mySearch/+([^/]+)$</from>
+		<set type="parameter" name="requGroup">$1</set>
+		<to last="true">/mySearch</to>
+	</rule>
+	<rule>
 		<name>mySearch</name>
 		<from>^/mySearch</from>
 		<to last="true">/mySearch</to>

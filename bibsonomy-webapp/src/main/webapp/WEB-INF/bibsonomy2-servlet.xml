@@ -405,6 +405,11 @@
 				<entry key="/mySearch">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="mySearchController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requGroup</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/buttons">
