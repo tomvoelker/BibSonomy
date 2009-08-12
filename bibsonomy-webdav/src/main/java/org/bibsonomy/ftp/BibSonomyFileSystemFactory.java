@@ -1,11 +1,12 @@
 package org.bibsonomy.ftp;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.ftpserver.ftplet.FileSystemFactory;
 import org.apache.ftpserver.ftplet.FileSystemView;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.ftplet.FtpFile;
 import org.apache.ftpserver.ftplet.User;
-import org.apache.log4j.Logger;
 
 /**
  * @author Christian Schenk
@@ -13,7 +14,7 @@ import org.apache.log4j.Logger;
  */
 public class BibSonomyFileSystemFactory implements FileSystemFactory {
 
-	private static final Logger log = Logger.getLogger(BibSonomyFileSystemFactory.class);
+	private static final Log log = LogFactory.getLog(BibSonomyFileSystemFactory.class);
 
 	/** Special file that contains all publications */
 	private static final String ALL_BIBTEX = "bibtex-all.bib";
