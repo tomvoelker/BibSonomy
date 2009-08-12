@@ -54,7 +54,8 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -96,7 +97,7 @@ import org.xml.sax.SAXParseException;
  * @version $Id$
  */
 public class XMLRenderer implements Renderer {
-	private static final Logger log = Logger.getLogger(XMLRenderer.class);
+	private static final Log log = LogFactory.getLog(XMLRenderer.class);
 	private static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.rest.renderer.xml";
 	private static XMLRenderer renderer;
 	
