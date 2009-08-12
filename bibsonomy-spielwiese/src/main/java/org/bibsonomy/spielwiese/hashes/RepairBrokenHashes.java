@@ -13,7 +13,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
 
@@ -35,7 +36,7 @@ import org.bibsonomy.model.BibTex;
  */
 public class RepairBrokenHashes {
 
-	private static final Logger log = Logger.getLogger(RepairBrokenHashes.class);
+	private static final Log log = LogFactory.getLog(RepairBrokenHashes.class);
 
 	private PreparedStatement stmtSelectAll;
 	private BufferedWriter writer;
