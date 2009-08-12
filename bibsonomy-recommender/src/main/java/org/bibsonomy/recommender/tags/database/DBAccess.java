@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
@@ -45,7 +46,7 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  * @author fei
  */
 public class DBAccess extends AbstractDatabaseManager implements DBLogic {
-	private static final Logger log = Logger.getLogger(DBAccess.class);
+	private static final Log log = LogFactory.getLog(DBAccess.class);
 	
 	//------------------------------------------------------------------------
 	// database logic interface

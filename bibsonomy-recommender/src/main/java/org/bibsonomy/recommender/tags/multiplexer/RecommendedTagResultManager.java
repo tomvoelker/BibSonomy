@@ -5,7 +5,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.RecommendedTag;
 
 /**
@@ -15,7 +16,7 @@ import org.bibsonomy.model.RecommendedTag;
  * @version $Id$
  */
 public class RecommendedTagResultManager {
-	private static final Logger log = Logger.getLogger(RecommendedTagResultManager.class);
+	private static final Log log = LogFactory.getLog(RecommendedTagResultManager.class);
 	
 	/** 
 	 * we store a list of recommendations for each recommender 

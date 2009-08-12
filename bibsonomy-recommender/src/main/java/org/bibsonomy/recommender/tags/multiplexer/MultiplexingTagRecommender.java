@@ -11,7 +11,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
@@ -37,7 +38,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * @author fei
  */
 public class MultiplexingTagRecommender implements TagRecommender {
-	private static final Logger log = Logger.getLogger(MultiplexingTagRecommender.class);
+	private static final Log log = LogFactory.getLog(MultiplexingTagRecommender.class);
 	Object lockResults = new Object();              // while selecting a result,
 	// no further recommender answers 
 	// should be added to database

@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -36,7 +37,7 @@ import org.junit.Test;
  * @version $Id$
  */
 public class DBAccessTest {
-	private static final Logger log = Logger.getLogger(DBAccessTest.class);
+	private static final Log log = LogFactory.getLog(DBAccessTest.class);
 
 	private DBLogic dbLogic;
 

@@ -6,7 +6,8 @@ import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
@@ -21,7 +22,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * @version $Id$
  */
 public class DummyTagRecommender implements TagRecommender, TagRecommenderConnector {
-	private static final Logger log = Logger.getLogger(DummyTagRecommender.class);
+	private static final Log log = LogFactory.getLog(DummyTagRecommender.class);
 	private boolean init = false;
 	private long wait = (long)(Math.random()*1000); 
 	private Integer id = 0;

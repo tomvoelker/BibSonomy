@@ -4,6 +4,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
@@ -22,7 +24,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * @version $Id$
  */
 public class MostPopularByResourceTagRecommender extends AbstractTagRecommender implements TagRecommender {
-	private static final Logger log = Logger.getLogger(MostPopularByResourceTagRecommender.class);
+	private static final Log log = LogFactory.getLog(MostPopularByResourceTagRecommender.class);
 
 	private DBLogic dbLogic;
 	

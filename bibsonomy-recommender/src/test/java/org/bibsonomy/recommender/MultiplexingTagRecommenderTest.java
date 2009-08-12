@@ -1,6 +1,7 @@
 package org.bibsonomy.recommender;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,7 +13,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -29,10 +31,8 @@ import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
 import org.bibsonomy.recommender.tags.simple.DummyTagRecommender;
 import org.bibsonomy.recommender.testutil.JNDITestDatabaseBinder;
 import org.bibsonomy.recommender.testutil.SelectCounter;
-import org.bibsonomy.services.recommender.TagRecommender;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -40,7 +40,7 @@ import org.junit.Test;
  * @version $Id$
  */
 public class MultiplexingTagRecommenderTest {
-	private static final Logger log = Logger.getLogger(MultiplexingTagRecommenderTest.class);
+	private static final Log log = LogFactory.getLog(MultiplexingTagRecommenderTest.class);
 	private DBLogic dbLogic;
 	private static final int NROFRECOS = 10;
 	private static final int MSTOWAIT = 1000;

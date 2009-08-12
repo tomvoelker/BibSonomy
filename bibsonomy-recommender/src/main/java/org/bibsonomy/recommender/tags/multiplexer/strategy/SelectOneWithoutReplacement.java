@@ -8,7 +8,8 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.database.params.Pair;
@@ -21,7 +22,7 @@ import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
  * @version $Id$
  */
 public class SelectOneWithoutReplacement implements RecommendationSelector {
-	private static final Logger log = Logger.getLogger(SelectOneWithoutReplacement.class);
+	private static final Log log = LogFactory.getLog(SelectOneWithoutReplacement.class);
 	private String info = "Strategy for selecting one recommender.";
 	private DBLogic dbLogic;
 

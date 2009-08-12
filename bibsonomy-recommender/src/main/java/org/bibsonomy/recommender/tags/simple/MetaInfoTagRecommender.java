@@ -5,7 +5,8 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
@@ -26,7 +27,7 @@ import org.w3c.dom.NodeList;
  * @version $Id$
  */
 public class MetaInfoTagRecommender extends AbstractTagRecommender implements TagRecommenderConnector {
-	private static final Logger log = Logger.getLogger(MetaInfoTagRecommender.class);
+	private static final Log log = LogFactory.getLog(MetaInfoTagRecommender.class);
 	
 	protected void addRecommendedTagsInternal(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) ) {

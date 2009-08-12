@@ -2,14 +2,15 @@ package org.bibsonomy.recommender.tags.database;
 
 import org.apache.commons.httpclient.HttpConnection;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author fei
  * @version $Id$
  */
 public class IdleClosingConnectionManager extends MultiThreadedHttpConnectionManager {
-	final Logger log = Logger.getLogger(IdleClosingConnectionManager.class);
+	final Log log = LogFactory.getLog(IdleClosingConnectionManager.class);
 	
 	@Override
 	public void releaseConnection(HttpConnection conn) {

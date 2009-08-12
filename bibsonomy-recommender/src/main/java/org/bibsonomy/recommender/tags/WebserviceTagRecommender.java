@@ -15,15 +15,12 @@ import java.util.TreeSet;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.URIException;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
-import org.apache.commons.httpclient.params.HttpConnectionParams;
-import org.apache.commons.httpclient.params.HttpParams;
-import org.apache.commons.httpclient.util.IdleConnectionTimeoutThread; 
-import org.apache.log4j.Logger;
+import org.apache.commons.httpclient.util.IdleConnectionTimeoutThread;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
@@ -31,7 +28,6 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.recommender.tags.database.IdleClosingConnectionManager;
-import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender.FeedbackDispatcher;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
@@ -47,7 +43,7 @@ public class WebserviceTagRecommender implements TagRecommenderConnector {
 	private URI address;
 	// serializes post
 	Renderer renderer;
-	final Logger log = Logger.getLogger(WebserviceTagRecommender.class);
+	final Log log = LogFactory.getLog(WebserviceTagRecommender.class);
 	
 	// FIXME: These values are also used in TagRecommenderServlet and should
 	//        be defined in a class commonly accessible

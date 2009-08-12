@@ -3,7 +3,8 @@ package org.bibsonomy.recommender.tags.multiplexer.strategy;
 import java.sql.SQLException;
 import java.util.Collection;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
@@ -13,7 +14,7 @@ import org.bibsonomy.recommender.tags.multiplexer.RecommendedTagResultManager;
  * @version $Id$
  */
 public class SelectAll implements RecommendationSelector {
-	private static final Logger log = Logger.getLogger(SelectAll.class);
+	private static final Log log = LogFactory.getLog(SelectAll.class);
 	private String info = "Strategy for selecting all recommended Tags.";
 	
 	private DBLogic dbLogic;

@@ -8,6 +8,8 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 
 /**
@@ -15,7 +17,7 @@ import org.apache.log4j.Logger;
  * @version $Id$
  */
 public class StopWordRemover implements TermProcessor {
-	private static final Logger log = Logger.getLogger(StopWordRemover.class);
+	private static final Log log = LogFactory.getLog(StopWordRemover.class);
 	private static Collection<String> stopWords = null;
 	private static final String stopWordFile = "multilangST.txt";
 	private static StopWordRemover instance;

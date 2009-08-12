@@ -4,7 +4,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.SortedSet;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
@@ -22,7 +23,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * @version $Id$
  */
 public class TagsFromFirstWeightedBySecondTagRecommender extends AbstractTagRecommender {
-	private static final Logger log = Logger.getLogger(TagsFromFirstWeightedBySecondTagRecommender.class);
+	private static final Log log = LogFactory.getLog(TagsFromFirstWeightedBySecondTagRecommender.class);
 
 	protected TagRecommender firstTagRecommender;
 	protected TagRecommender secondTagRecommender;

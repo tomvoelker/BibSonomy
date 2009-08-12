@@ -3,7 +3,8 @@ package org.bibsonomy.recommender.tags.meta;
 import java.util.Collection;
 import java.util.SortedSet;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
@@ -19,7 +20,7 @@ import org.bibsonomy.services.recommender.TagRecommender;
  * @version $Id$
  */
 public class TagsFromFirstWeightedBySecondFilledByThirdTagRecommender extends TagsFromFirstWeightedBySecondTagRecommender {
-	private static final Logger log = Logger.getLogger(TagsFromFirstWeightedBySecondFilledByThirdTagRecommender.class);
+	private static final Log log = LogFactory.getLog(TagsFromFirstWeightedBySecondFilledByThirdTagRecommender.class);
 
 	private TagRecommender thirdTagRecommender;
 

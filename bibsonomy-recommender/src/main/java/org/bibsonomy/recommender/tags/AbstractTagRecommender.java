@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
@@ -21,7 +22,7 @@ import org.bibsonomy.util.TagStringUtils;
  */
 public abstract class AbstractTagRecommender implements TagRecommender {
 
-	private static final Logger log = Logger.getLogger(AbstractTagRecommender.class);
+	private static final Log log = LogFactory.getLog(AbstractTagRecommender.class);
 	
 	private static final int DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND = 5;
 	/**

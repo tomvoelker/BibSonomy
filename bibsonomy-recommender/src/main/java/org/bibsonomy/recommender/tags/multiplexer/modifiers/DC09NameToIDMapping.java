@@ -2,7 +2,8 @@ package org.bibsonomy.recommender.tags.multiplexer.modifiers;
 
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tags.database.DBLogic;
@@ -15,7 +16,7 @@ import org.bibsonomy.recommender.tags.database.DBLogic;
  * @version $Id$
  */
 public class DC09NameToIDMapping implements PostModifier {
-	private static final Logger log = Logger.getLogger(DC09NameToIDMapping.class);
+	private static final Log log = LogFactory.getLog(DC09NameToIDMapping.class);
 	private static final String UNKOWNUSER = null;
 	private static final Integer UNKNOWNID = Integer.MIN_VALUE;
 	
