@@ -3,13 +3,14 @@ package DBLP.parser;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /*
  * this class checks the dblp entries and store them into DBLPParseResult
  */
 public class DBLPParseResultManager{
 
-	private static final Logger log = Logger.getLogger(DBLPParseResultManager.class);
+	private static final Log log = LogFactory.getLog(DBLPParseResultManager.class);
 	
 	private DBLPParseResult result;
 	

@@ -10,7 +10,8 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.tidy.Tidy;
 
@@ -24,7 +25,7 @@ import DBLP.parser.DBLPEntry;
  */
 public class HTTPBibtexUpdate extends HTTPUpdate {
 
-	private static final Logger log = Logger.getLogger(HTTPBibtexUpdate.class);
+	private static final Log log = LogFactory.getLog(HTTPBibtexUpdate.class);
 	
 	public HTTPBibtexUpdate (String baseURL, String user, String passhash) throws MalformedURLException, IOException {
 		super (baseURL, user, passhash);

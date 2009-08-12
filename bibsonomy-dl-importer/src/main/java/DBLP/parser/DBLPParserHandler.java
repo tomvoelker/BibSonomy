@@ -1,12 +1,12 @@
 package DBLP.parser;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -15,7 +15,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class DBLPParserHandler extends DefaultHandler {
 	
-	private static final Logger log = Logger.getLogger(DBLPParserHandler.class);
+	private static final Log log = LogFactory.getLog(DBLPParserHandler.class);
 	
 	public static final String FIELD_CHAPTER = "chapter";
 	public static final String FIELD_SCHOOL = "school";

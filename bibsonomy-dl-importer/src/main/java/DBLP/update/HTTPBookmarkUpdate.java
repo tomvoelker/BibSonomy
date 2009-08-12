@@ -12,7 +12,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import DBLP.DBLPException;
 import DBLP.db.DBHandler;
@@ -24,7 +25,7 @@ import DBLP.parser.DBLPParseResult;
  */
 public class HTTPBookmarkUpdate extends HTTPUpdate {			
 
-	private static final Logger log = Logger.getLogger(HTTPBookmarkUpdate.class);
+	private static final Log log = LogFactory.getLog(HTTPBookmarkUpdate.class);
 	
 	private static final String dblpHomeUrlHash = "4f5c70202dd14bb2186b0872fe494886"; // TODO: it's not useful, to have this as a constant here :-(
 

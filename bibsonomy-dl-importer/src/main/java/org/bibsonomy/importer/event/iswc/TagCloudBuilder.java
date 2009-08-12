@@ -8,21 +8,19 @@ import java.sql.SQLException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 
 public class TagCloudBuilder {
 
-	private static final MyLogger log = new MyLogger();
-	//private static final Logger log = Logger.getLogger(TagCloudBuilder.class);
+	private static final Log log = LogFactory.getLog(TagCloudBuilder.class);
 	
 	public static void main(String[] args) {
 		

@@ -11,7 +11,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import DBLP.DBLPException;
 
@@ -22,7 +23,7 @@ public class HTTPUpdate {
 	private String userCookie = null;
 	private String sessionCookie = null;
 	
-	private static final Logger log = Logger.getLogger(HTTPUpdate.class);
+	private static final Log log = LogFactory.getLog(HTTPUpdate.class);
 	
 	public HTTPUpdate (String baseURL, String user, String passHash) throws MalformedURLException, IOException {
 		this.baseURL = baseURL;

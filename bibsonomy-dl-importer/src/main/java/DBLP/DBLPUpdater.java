@@ -4,7 +4,8 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import DBLP.constants.DBLPConstantsReader;
 import DBLP.constants.DBLPConstantsResult;
@@ -25,7 +26,7 @@ public class DBLPUpdater {
 	}
 	
 
-	private final static Logger log = Logger.getLogger(DBLPUpdater.class);
+	private final static Log log = LogFactory.getLog(DBLPUpdater.class);
 
 	
 	public static void main(String[] args) throws MalformedURLException {

@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import DBLP.db.DBHandler;
 import DBLP.parser.DBLPEntry;
@@ -14,7 +15,7 @@ import DBLP.parser.DBLPParseResult;
 
 public class BibtexUpdate{
 
-	private static final Logger log = Logger.getLogger(BibtexUpdate.class);
+	private static final Log log = LogFactory.getLog(BibtexUpdate.class);
 	
 	private HTTPBibtexUpdate httpBibUpdate = null;
 	private DBLPParseResult presult = null;

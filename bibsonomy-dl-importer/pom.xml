@@ -30,10 +30,6 @@
 			<artifactId>bibsonomy-model</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>jtidy</groupId>
 			<artifactId>jtidy</artifactId>
 			<version>4aug2000r7-dev</version>

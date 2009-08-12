@@ -5,13 +5,14 @@ import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import DBLP.db.DBHandler;
 
 public class CheckDeletedEntries{
 
-	private static final Logger log = Logger.getLogger(CheckDeletedEntries.class);
+	private static final Log log = LogFactory.getLog(CheckDeletedEntries.class);
 	
 	private HashSet<String> db_bookmark;
 	private HashSet<String> db_bibtex;
