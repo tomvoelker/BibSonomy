@@ -6,7 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * 
@@ -16,8 +17,7 @@ import org.apache.log4j.Logger;
  */
 public class WhiteListReader {
 
-	private static final Logger LOGGER = Logger
-			.getLogger(WhiteListReader.class);
+	private static final Log LOGGER = LogFactory.getLog(WhiteListReader.class);
 	private String _whiteListFile;
 	private HashMap<String, String> _whiteList;
 
