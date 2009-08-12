@@ -1,15 +1,14 @@
 package org.bibsonomy.webapp.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -30,7 +29,7 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class UserPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
-	private static final Logger LOGGER = Logger.getLogger(UserPageController.class);
+	private static final Log LOGGER = LogFactory.getLog(UserPageController.class);
 
 	public View workOn(final UserResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());

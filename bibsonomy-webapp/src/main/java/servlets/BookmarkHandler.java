@@ -48,7 +48,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Document;
@@ -69,7 +70,7 @@ import filters.ActionValidationFilter;
 import filters.SessionSettingsFilter;
 
 public class BookmarkHandler extends HttpServlet{ 
-	private static final Logger log = Logger.getLogger(BookmarkHandler.class);
+	private static final Log log = LogFactory.getLog(BookmarkHandler.class);
 	private static final long serialVersionUID = 3839748679655351876L;
 	private DataSource dataSource;
 

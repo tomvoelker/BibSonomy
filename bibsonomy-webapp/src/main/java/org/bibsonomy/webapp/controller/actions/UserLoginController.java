@@ -4,7 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -49,7 +50,7 @@ import filters.InitUserFilter;
  * @version $Id$
  */
 public class UserLoginController implements MinimalisticController<UserLoginCommand>, ErrorAware, ValidationAwareController<UserLoginCommand>, RequestAware, CookieAware {
-	private static final Logger log = Logger.getLogger(UserLoginController.class);
+	private static final Log log = LogFactory.getLog(UserLoginController.class);
 
 	protected LogicInterface adminLogic;
 	private Errors errors = null;

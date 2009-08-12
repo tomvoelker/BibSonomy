@@ -5,14 +5,15 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import resources.Bibtex;
 
 
 public class DBDBLPManager extends DBManager {
 
-	private static final Logger log = Logger.getLogger(DBDBLPManager.class);
+	private static final Log log = LogFactory.getLog(DBDBLPManager.class);
 	
 	public static int deleteDuplicates (String user) {
 		DBContext c = new DBContext();

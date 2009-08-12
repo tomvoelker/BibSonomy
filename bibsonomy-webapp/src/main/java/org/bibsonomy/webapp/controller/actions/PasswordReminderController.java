@@ -10,7 +10,8 @@ import java.util.Random;
 
 import net.tanesha.recaptcha.ReCaptcha;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.User;
@@ -41,7 +42,7 @@ import resources.Resource;
  * @version $Id$
  */
 public class PasswordReminderController implements MinimalisticController<PasswordReminderCommand>, ErrorAware, ValidationAwareController<PasswordReminderCommand>, RequestAware {
-	private static final Logger log = Logger.getLogger(PasswordReminderController.class);
+	private static final Log log = LogFactory.getLog(PasswordReminderController.class);
 
 	private int maxMinutesPasswordReminderValid = 60; 
 

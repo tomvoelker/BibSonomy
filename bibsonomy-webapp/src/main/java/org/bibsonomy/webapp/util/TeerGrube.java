@@ -5,7 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /** This class collects entities in a queue and counts how often they're added. 
  * Every add-call increases the penalty waiting time of that entity.
@@ -15,7 +16,7 @@ import org.apache.log4j.Logger;
  */
 public class TeerGrube {
 
-	private static final Logger log = Logger.getLogger(TeerGrube.class);
+	private static final Log log = LogFactory.getLog(TeerGrube.class);
 	
 	/**
 	 * How long to wait for each retry? Default: 3 seconds.

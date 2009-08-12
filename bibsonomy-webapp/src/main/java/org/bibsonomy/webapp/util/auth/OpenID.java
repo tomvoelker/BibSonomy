@@ -7,14 +7,13 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.openid4java.OpenIDException;
-import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.consumer.InMemoryNonceVerifier;
 import org.openid4java.consumer.VerificationResult;
-import org.openid4java.discovery.DiscoveryException;
 import org.openid4java.discovery.DiscoveryInformation;
 import org.openid4java.discovery.Identifier;
 import org.openid4java.message.AuthRequest;
@@ -41,7 +40,7 @@ public class OpenID implements Serializable {
 	/**
 	 * Logger
 	 */
-	private static final Logger log = Logger.getLogger(OpenID.class);
+	private static final Log log = LogFactory.getLog(OpenID.class);
 	
 	/**
 	 * manager for openID authentication

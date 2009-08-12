@@ -8,7 +8,8 @@ import java.util.Random;
 
 import javax.servlet.http.Cookie;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.util.StringUtils;
 
 /** Some methods to help handling cookies.
@@ -17,7 +18,7 @@ import org.bibsonomy.util.StringUtils;
  * @version $Id$
  */
 public class CookieLogic implements RequestAware, ResponseAware {
-	private static final Logger log = Logger.getLogger(CookieLogic.class);
+	private static final Log log = LogFactory.getLog(CookieLogic.class);
 	
 	private RequestLogic requestLogic;
 	private ResponseLogic responseLogic;

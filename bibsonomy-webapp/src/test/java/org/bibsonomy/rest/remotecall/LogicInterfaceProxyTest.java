@@ -13,7 +13,8 @@ import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -78,7 +79,7 @@ import org.mortbay.resource.Resource;
  */
 //@Ignore // was inserted due to the strange umlaut behaviour on shaun - fix ASAP!!
 public class LogicInterfaceProxyTest implements LogicInterface {
-	private static final Logger log = Logger.getLogger(LogicInterfaceProxyTest.class);
+	private static final Log log = LogFactory.getLog(LogicInterfaceProxyTest.class);
 	private static final String LOGIN_USER_NAME = LogicInterfaceProxyTest.class.getSimpleName();
 	private static final String API_KEY = "A P I äöü K e y";
 	//private static final String API_KEY = "yetAnother Strange API KEY";

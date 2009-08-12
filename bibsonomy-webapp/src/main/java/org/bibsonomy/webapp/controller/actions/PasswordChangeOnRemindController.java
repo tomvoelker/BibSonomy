@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
@@ -27,7 +28,7 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class PasswordChangeOnRemindController implements MinimalisticController<PasswordChangeOnRemindCommand>, ErrorAware, ValidationAwareController<PasswordChangeOnRemindCommand>, RequestAware, CookieAware{
-	private static final Logger log = Logger.getLogger(PasswordChangeOnRemindController.class);
+	private static final Log log = LogFactory.getLog(PasswordChangeOnRemindController.class);
 	
 	private LogicInterface adminLogic;
 	private CookieLogic cookieLogic;

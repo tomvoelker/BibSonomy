@@ -5,7 +5,8 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.StringTokenizer;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import beans.SettingsBean;
 import beans.UserBean;
@@ -22,7 +23,7 @@ public class DBUserManager extends DBManager {
 	private final static String COL_API_KEY   	   = "api_key";
 	private final static String LOG_LEVEL   	   = "log_level";
 	
-	private final static Logger log = Logger.getLogger(DBUserManager.class); 
+	private final static Log log = LogFactory.getLog(DBUserManager.class); 
 	
 	/**
 	 * Gets the settings for a user and saves them in bean.

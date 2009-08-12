@@ -2,7 +2,8 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
@@ -19,7 +20,7 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class UserRelationsController extends SingleResourceListControllerWithTags implements MinimalisticController<UserRelationCommand> {
-	private static final Logger LOGGER = Logger.getLogger(AuthorPageController.class);
+	private static final Log LOGGER = LogFactory.getLog(AuthorPageController.class);
 
 	public View workOn(UserRelationCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());

@@ -23,7 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import resources.Resource;
 import beans.RegistrationHandlerBean;
@@ -32,7 +33,7 @@ import filters.SessionSettingsFilter;
 
 public class RegistrationHandler extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(RegistrationHandler.class);
+	private static final Log log = LogFactory.getLog(RegistrationHandler.class);
 	private DataSource dataSource;
 	private static final long serialVersionUID = 3691036578076309554L;
 

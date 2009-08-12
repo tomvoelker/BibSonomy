@@ -14,7 +14,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Filter sets everything in the response what could make clients
@@ -24,7 +25,7 @@ import org.apache.log4j.Logger;
  */
 public class NoCacheFilter implements Filter {
 
-	private final static Logger log = Logger.getLogger(NoCacheFilter.class);
+	private final static Log log = LogFactory.getLog(NoCacheFilter.class);
 	
 	public void destroy() {
 	}

@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
-import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.LogicInterfaceFactory;
 
 /**
  * Bean for retrieving Tags using the logicinterface 
@@ -23,7 +21,7 @@ import org.bibsonomy.model.logic.LogicInterfaceFactory;
  * @version $Id$
  */
 public class TagCloudBean {
-	private static final Logger LOGGER = Logger.getLogger(TagCloudBean.class);
+	private static final Log LOGGER = LogFactory.getLog(TagCloudBean.class);
 
 	/** the username of the current user */
 	private String username = null;

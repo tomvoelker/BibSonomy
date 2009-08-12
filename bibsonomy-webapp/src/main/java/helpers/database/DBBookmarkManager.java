@@ -11,7 +11,8 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Random;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import resources.Bookmark;
 
@@ -20,7 +21,7 @@ import resources.Bookmark;
  */
 public class DBBookmarkManager {
 	
-	private static final Logger log = Logger.getLogger(DBBookmarkManager.class);
+	private static final Log log = LogFactory.getLog(DBBookmarkManager.class);
 	
 	private static final String SQL_INSERT_BOOKMARK = "INSERT INTO bookmark " 
 		+ "(content_id,book_url_hash,book_description,book_extended,`group`,date,user_name, rating) "

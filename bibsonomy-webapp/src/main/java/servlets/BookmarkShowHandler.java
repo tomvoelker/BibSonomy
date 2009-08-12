@@ -24,7 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.UrlCompositeScraper;
 
@@ -34,7 +35,7 @@ import beans.UserBean;
 
 public class BookmarkShowHandler extends HttpServlet{
 
-	private static final Logger log = Logger.getLogger(DBBibtexManager.class);
+	private static final Log log = LogFactory.getLog(DBBibtexManager.class);
 	private static final long serialVersionUID = 3833747689652301876L;
 	private DataSource dataSource;
 

@@ -4,13 +4,14 @@ import helpers.constants;
 
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.ScrapingContext;
 
 
 public class DBScraperMetadataManager extends DBManager {
 
-	private static final Logger log = Logger.getLogger(DBScraperMetadataManager.class);
+	private static final Log log = LogFactory.getLog(DBScraperMetadataManager.class);
 	
 	/** Saves the metadata a scraper produced in the database.
 	 *  

@@ -4,7 +4,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Locale;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -45,7 +46,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	 */
 	private String successRedirect = "/register_success";
 
-	private static final Logger log = Logger.getLogger(UserRegistrationController.class);
+	private static final Log log = LogFactory.getLog(UserRegistrationController.class);
 
 	protected LogicInterface logic;
 	protected LogicInterface adminLogic;

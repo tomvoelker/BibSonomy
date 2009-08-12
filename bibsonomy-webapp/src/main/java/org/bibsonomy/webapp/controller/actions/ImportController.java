@@ -301,10 +301,16 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 		return false;
 	}
 
+	/**
+	 * @return FileUploadFactory
+	 */
 	public FileUploadFactory getUploadFactory() {
 		return this.uploadFactory;
 	}
 
+	/**
+	 * @param uploadFactory
+	 */
 	public void setUploadFactory(FileUploadFactory uploadFactory) {
 		this.uploadFactory = uploadFactory;
 	}

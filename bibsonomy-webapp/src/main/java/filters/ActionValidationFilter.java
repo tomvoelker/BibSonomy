@@ -12,7 +12,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import resources.Resource;
 import beans.UserBean;
@@ -29,7 +30,7 @@ public class ActionValidationFilter implements Filter {
 	public static final String REQUEST_ATTRIB_VALID_CREDENTIAL = "validckey"; // true or false
 	public static final String REQUEST_ATTRIB_CREDENTIAL = "ckey";            // current ckey
 	private static final String REQUEST_PARAM_CREDENTIAL = "ckey";             // ckey from request
-	private final static Logger log = Logger.getLogger(ActionValidationFilter.class);
+	private final static Log log = LogFactory.getLog(ActionValidationFilter.class);
 
 	protected FilterConfig filterConfig = null;
 

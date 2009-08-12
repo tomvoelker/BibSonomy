@@ -1,7 +1,6 @@
 package org.bibsonomy.webapp.command.ajax;
 
 import org.bibsonomy.webapp.command.AjaxCommand;
-import org.bibsonomy.webapp.util.RequestLogic;
 
 /**
  * @author Christian Kramer

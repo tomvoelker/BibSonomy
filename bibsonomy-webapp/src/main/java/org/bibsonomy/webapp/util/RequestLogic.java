@@ -8,7 +8,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
 import org.springframework.web.servlet.support.RequestContext;
 
@@ -31,7 +32,7 @@ public class RequestLogic {
 	private static final String HEADER_X_FORWARDED_FOR = "x-forwarded-for";
 	private static final String HEADER_ACCEPT = "accept";
 
-	private static final Logger log = Logger.getLogger(RequestLogic.class);
+	private static final Log log = LogFactory.getLog(RequestLogic.class);
 
 	/**
 	 * The HTTP request this object is handling.

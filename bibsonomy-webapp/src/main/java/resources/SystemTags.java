@@ -4,7 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Class for handling system tags. 
@@ -13,7 +14,7 @@ import org.apache.log4j.Logger;
  * @version $Id$
  */
 public class SystemTags {
-    private static final Logger LOGGER = Logger.getLogger(SystemTags.class);
+    private static final Log LOGGER = LogFactory.getLog(SystemTags.class);
     
     /** prefix for each system tag */
     public static final String SYSTEM_PREFIX = "sys:";

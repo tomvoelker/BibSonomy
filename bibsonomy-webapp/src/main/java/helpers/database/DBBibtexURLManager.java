@@ -5,7 +5,8 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.LinkedList;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.extra.BibTexExtra;
 
 import resources.Bibtex;
@@ -22,7 +23,7 @@ public class DBBibtexURLManager extends DBManager {
 			                                           "    AND b.user_name = ? " +
 			                                           "  ORDER BY u.date DESC";
 	
-	private static final Logger log = Logger.getLogger(DBBibtexURLManager.class);
+	private static final Log log = LogFactory.getLog(DBBibtexURLManager.class);
 
 	public static boolean createURL (BibTexExtra url, String hash, String user, boolean validCkey) {
 		DBContext c = new DBContext();

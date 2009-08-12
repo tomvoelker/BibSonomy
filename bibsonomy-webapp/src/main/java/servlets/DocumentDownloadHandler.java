@@ -27,14 +27,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.util.StringUtils;
 
 import beans.UserBean;
 import filters.SessionSettingsFilter;
 
 public class DocumentDownloadHandler extends HttpServlet{ 
-	private static final Logger log = Logger.getLogger(DocumentDownloadHandler.class);
+	private static final Log log = LogFactory.getLog(DocumentDownloadHandler.class);
 	
 	private static final long serialVersionUID = 3839748679655351876L;
 	private DataSource dataSource;

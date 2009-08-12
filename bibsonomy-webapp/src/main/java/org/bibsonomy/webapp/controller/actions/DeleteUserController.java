@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.actions.DeleteUserCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -20,7 +21,7 @@ import org.springframework.validation.Errors;
  */
 public class DeleteUserController implements MinimalisticController<DeleteUserCommand>, ErrorAware, ValidationAwareController<DeleteUserCommand> {
 
-	private static final Logger log = Logger.getLogger(DeleteUserController.class);
+	private static final Log log = LogFactory.getLog(DeleteUserController.class);
 	
 	private LogicInterface logic;
 	private Errors errors = null;

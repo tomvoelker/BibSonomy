@@ -16,7 +16,8 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.io.DOMReader;
 import org.junit.After;
@@ -31,7 +32,7 @@ import org.junit.BeforeClass;
  * @version $Id$
  */
 public abstract class AbstractWebServiceTest {
-	private static final Logger log = Logger.getLogger(AbstractWebServiceTest.class);
+	private static final Log log = LogFactory.getLog(AbstractWebServiceTest.class);
 
 	private HttpClient client;
 	private static AuthScope authScope;

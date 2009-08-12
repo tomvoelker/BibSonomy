@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
@@ -49,7 +50,7 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 	 */
 	private String successRedirect = "";
 	
-	private static final Logger log = Logger.getLogger(UserOpenIDRegistrationController.class);
+	private static final Log log = LogFactory.getLog(UserOpenIDRegistrationController.class);
 
 	public View workOn(UserOpenIDRegistrationCommand command) {
 		log.debug("workOn() called");

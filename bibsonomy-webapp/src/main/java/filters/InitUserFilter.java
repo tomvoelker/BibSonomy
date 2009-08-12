@@ -23,7 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
@@ -39,7 +40,6 @@ import org.bibsonomy.webapp.util.auth.OpenID;
 import org.bibsonomy.webapp.util.auth.OpenIdConsumerManager;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerException;
-import org.openid4java.consumer.ConsumerManager;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import servlets.listeners.InitialConfigListener;
@@ -55,7 +55,7 @@ public class InitUserFilter implements Filter {
 	public static final String STATIC_RESOURCES = "/resources";
 	public static final String API = "/api";
 
-	private final static Logger log = Logger.getLogger(InitUserFilter.class);
+	private final static Log log = LogFactory.getLog(InitUserFilter.class);
 
 	/**
 	 * The filter configuration object we are associated with. If this value is

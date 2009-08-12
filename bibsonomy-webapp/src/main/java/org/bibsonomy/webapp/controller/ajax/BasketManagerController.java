@@ -3,7 +3,8 @@ package org.bibsonomy.webapp.controller.ajax;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
@@ -23,7 +24,7 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class BasketManagerController extends AjaxController implements MinimalisticController<BasketManagerCommand>, ErrorAware{
-	private static final Logger log = Logger.getLogger(BasketManagerController.class);
+	private static final Log log = LogFactory.getLog(BasketManagerController.class);
 	
 	private Errors errors;
 	

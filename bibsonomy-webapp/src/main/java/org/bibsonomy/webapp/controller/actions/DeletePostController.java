@@ -2,7 +2,8 @@ package org.bibsonomy.webapp.controller.actions;
 
 import java.util.Collections;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.actions.DeletePostCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -19,7 +20,7 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class DeletePostController implements MinimalisticController<DeletePostCommand>, ErrorAware{
-	private static final Logger log = Logger.getLogger(DeletePostController.class);
+	private static final Log log = LogFactory.getLog(DeletePostController.class);
 	
 	private RequestLogic requestLogic;
 	private LogicInterface logic;

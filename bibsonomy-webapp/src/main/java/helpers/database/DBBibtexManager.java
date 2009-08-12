@@ -13,7 +13,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import resources.Bibtex;
 import servlets.BibtexHandler.BibtexException;
@@ -21,7 +22,7 @@ import servlets.BibtexHandler.BibtexException;
 
 public class DBBibtexManager {
 
-	private static final Logger log = Logger.getLogger(DBBibtexManager.class);
+	private static final Log log = LogFactory.getLog(DBBibtexManager.class);
 	
 	/*
 	 * SQL Statements

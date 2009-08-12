@@ -44,7 +44,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
@@ -84,7 +85,7 @@ import filters.SessionSettingsFilter;
 public class BibtexHandler extends HttpServlet {
 
 	private static final long serialVersionUID = 3258132444744921394L;
-	private static final Logger log = Logger.getLogger(BibtexHandler.class);
+	private static final Log log = LogFactory.getLog(BibtexHandler.class);
 
 	private static final String AND = " and ";
 

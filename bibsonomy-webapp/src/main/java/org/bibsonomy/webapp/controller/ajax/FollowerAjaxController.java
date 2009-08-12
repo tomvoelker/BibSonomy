@@ -1,10 +1,12 @@
 package org.bibsonomy.webapp.controller.ajax;
 
-import org.apache.log4j.Logger;
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.webapp.command.ajax.FollowerAjaxCommand;
 import org.bibsonomy.webapp.controller.AjaxController;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -13,8 +15,6 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 
 /**
@@ -25,7 +25,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
  * @version $Id$
  */
 public class FollowerAjaxController extends AjaxController implements MinimalisticController<FollowerAjaxCommand>, ErrorAware{
-	private static final Logger log = Logger.getLogger(FollowerAjaxController.class);
+	private static final Log log = LogFactory.getLog(FollowerAjaxController.class);
 	private LogicInterface logic;
 	
 	private Errors errors;

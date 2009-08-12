@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import beans.AdminBean;
 import beans.UserBean;
@@ -32,7 +33,7 @@ public class AdminHandler extends HttpServlet {
 	
 	private static final long serialVersionUID = 3691036578076309554L;
 	private static Set<String> allowedUsers = null;
-	private static final Logger log = Logger.getLogger(AdminHandler.class);
+	private static final Log log = LogFactory.getLog(AdminHandler.class);
 	
 	public void init(ServletConfig config) throws ServletException{
 	

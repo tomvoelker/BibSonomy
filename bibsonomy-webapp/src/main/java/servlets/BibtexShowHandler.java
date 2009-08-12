@@ -21,7 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
 
@@ -33,7 +34,7 @@ public class BibtexShowHandler extends HttpServlet{
 
 	private static final String SYS_RELEVANT_FOR = SystemTags.RELEVANTFOR.getPrefix();
 	private static final long serialVersionUID = 3833747689652301876L;
-	private static final Logger log = Logger.getLogger(BibtexShowHandler.class);
+	private static final Log log = LogFactory.getLog(BibtexShowHandler.class);
 
 	private DataSource dataSource;
 

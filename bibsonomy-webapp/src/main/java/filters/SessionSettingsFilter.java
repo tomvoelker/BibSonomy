@@ -15,7 +15,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.util.UserUtils;
 
 import beans.UserBean;
@@ -27,7 +28,7 @@ import beans.UserBean;
  */
 public class SessionSettingsFilter implements Filter {
 
-	private final static Logger log = Logger.getLogger(SessionSettingsFilter.class);
+	private final static Log log = LogFactory.getLog(SessionSettingsFilter.class);
 	
     /**
      * The filter configuration object we are associated with.  If this value

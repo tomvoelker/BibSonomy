@@ -1,12 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.TagSet;
-import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.webapp.command.actions.GroupAdminCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -26,7 +21,7 @@ import org.springframework.validation.Errors;
  */
 public class GroupAdminPageController extends SingleResourceListController implements MinimalisticController<GroupAdminCommand>, ErrorAware, ValidationAwareController<GroupAdminCommand>, RequestAware {
 	
-	private static final Logger log = Logger.getLogger(GroupAdminPageController.class);
+	private static final Log log = LogFactory.getLog(GroupAdminPageController.class);
 	
 	public View workOn(GroupAdminCommand command) {
 		log.debug("--> GroupAdminPageController: workOn() called");

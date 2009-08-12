@@ -5,7 +5,8 @@ import java.sql.SQLException;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import resources.Bibtex;
 import resources.Bookmark;
@@ -24,7 +25,7 @@ public class DBStatisticsManager extends DBManager {
 	private static final String contentTypeBookmark    = "content_type = " + Bookmark.CONTENT_TYPE;
 	private static final String contentTypePublication = "content_type = " + Bibtex.CONTENT_TYPE;
 
-	private static final Logger log = Logger.getLogger(DBStatisticsManager.class);
+	private static final Log log = LogFactory.getLog(DBStatisticsManager.class);
 
 
 

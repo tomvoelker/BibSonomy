@@ -195,10 +195,16 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 		this.logic = logic;
 	}
 
+	/**
+	 * @return FileUploadFactory
+	 */
 	public FileUploadFactory getUploadFactory() {
 		return this.uploadFactory;
 	}
 
+	/**
+	 * @param uploadFactory
+	 */
 	public void setUploadFactory(FileUploadFactory uploadFactory) {
 		this.uploadFactory = uploadFactory;
 	}

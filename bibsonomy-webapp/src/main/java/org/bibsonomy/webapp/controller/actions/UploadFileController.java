@@ -2,7 +2,8 @@ package org.bibsonomy.webapp.controller.actions;
 
 import java.util.Collections;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.utils.FileUploadInterface;
@@ -24,7 +25,7 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class UploadFileController implements MinimalisticController<UploadFileCommand>, ErrorAware, ValidationAwareController<UploadFileCommand> {
-	private static final Logger log = Logger.getLogger(UploadFileController.class);
+	private static final Log log = LogFactory.getLog(UploadFileController.class);
 
 	private Errors errors = null;
 	private LogicInterface logic;
@@ -127,11 +128,17 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 		return true;
 	}
 
+	/**
+	 * @return FileUploadFactory
+	 */
 	public FileUploadFactory getUploadFactory() {
 		return this.uploadFactory;
 	}
 
-	public void setUploadFactory(FileUploadFactory uploadFactory) {
+	/**
+	 * @param uploadFactory
+	 */
+	public void setUploadFactory(final FileUploadFactory uploadFactory) {
 		this.uploadFactory = uploadFactory;
 	}
 }

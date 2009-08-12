@@ -12,7 +12,8 @@ import java.util.TreeSet;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -21,13 +22,12 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
 import org.bibsonomy.webapp.command.actions.BatchEditCommand;
-//import org.bibsonomy.webapp.command.actions.BatchEditCommand.BatchEditResource;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.Views;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
+import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 
@@ -40,7 +40,7 @@ import org.springframework.validation.Errors;
 public class BatchEditController implements MinimalisticController<BatchEditCommand>, ErrorAware{
 	private static final String CHECKBOX_CHECKED_VALUE = "on";
 	private static final int HASH_LENGTH = 32;
-	private static final Logger log = Logger.getLogger(BatchEditController.class);
+	private static final Log log = LogFactory.getLog(BatchEditController.class);
 	
 	private LogicInterface logic;
 	

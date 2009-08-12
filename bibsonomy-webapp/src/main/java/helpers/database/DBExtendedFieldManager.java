@@ -13,7 +13,8 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import resources.Bibtex;
 import resources.ExtendedFieldMap;
@@ -22,7 +23,7 @@ import resources.Resource;
 
 public class DBExtendedFieldManager extends DBManager {
 
-	private static final Logger log = Logger.getLogger(DBExtendedFieldManager.class);
+	private static final Log log = LogFactory.getLog(DBExtendedFieldManager.class);
 
 	/**
 	 * Gets all extended fields which exist for this group. The method only gets the metadata 

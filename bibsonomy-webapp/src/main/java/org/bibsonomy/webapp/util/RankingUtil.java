@@ -3,7 +3,8 @@ package org.bibsonomy.webapp.util;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -23,7 +24,7 @@ public class RankingUtil {
 	 */
 	private static int MAX_TAG_GLOBALCOUNT = 200000;
 	
-	private static final Logger LOGGER = Logger.getLogger(UserPageController.class);
+	private static final Log LOGGER = LogFactory.getLog(UserPageController.class);
 	
 	
 	public enum RankingMethod {

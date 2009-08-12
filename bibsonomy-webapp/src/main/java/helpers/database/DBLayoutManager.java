@@ -5,7 +5,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.layout.jabref.LayoutPart;
 
@@ -14,7 +15,7 @@ import beans.LayoutBean;
 
 public class DBLayoutManager extends DBManager {
 
-	private static final Logger log = Logger.getLogger(DBLayoutManager.class);
+	private static final Log log = LogFactory.getLog(DBLayoutManager.class);
 	
 	public static void getLayoutSettingsForUser (LayoutBean bean) {
 		DBContext c = new DBContext();

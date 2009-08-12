@@ -25,7 +25,8 @@ import net.tanesha.recaptcha.ReCaptcha;
 import net.tanesha.recaptcha.ReCaptchaFactory;
 import net.tanesha.recaptcha.ReCaptchaResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import servlets.listeners.InitialConfigListener;
 import beans.UserBean;
@@ -36,7 +37,7 @@ public class JoinGroupHandler extends HttpServlet {
 
 	private static final long serialVersionUID = 385676755112385793L;
 
-	private static final Logger log = Logger.getLogger(JoinGroupHandler.class);
+	private static final Log log = LogFactory.getLog(JoinGroupHandler.class);
 
 	private static final String reCaptchaPublicKey = InitialConfigListener.getInitParam("ReCaptchaPublicKey");
 	private static final String reCaptchaPrivateKey = InitialConfigListener.getInitParam("ReCaptchaPrivateKey");
