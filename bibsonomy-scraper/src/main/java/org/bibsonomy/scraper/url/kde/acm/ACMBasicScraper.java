@@ -8,7 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -29,7 +30,7 @@ import org.w3c.dom.NodeList;
  */
 public class ACMBasicScraper extends AbstractUrlScraper {
 	
-	private Logger log = Logger.getLogger(ACMBasicScraper.class);
+	private Log log = LogFactory.getLog(ACMBasicScraper.class);
 	
 	private static final String info = "ACM Scraper: This scraper parses a publication page from the " + href("http://portal.acm.org/portal.cfm", "ACM Digital Library");
 

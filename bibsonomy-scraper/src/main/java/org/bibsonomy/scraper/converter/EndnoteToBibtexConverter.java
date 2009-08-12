@@ -32,7 +32,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 
 
@@ -43,7 +44,7 @@ import org.bibsonomy.model.util.BibTexUtils;
  */
 public class EndnoteToBibtexConverter {
 	
-	private static final Logger log = Logger.getLogger(EndnoteToBibtexConverter.class);
+	private static final Log log = LogFactory.getLog(EndnoteToBibtexConverter.class);
 	
 	private static Map<String,String> endnoteToBibtexEntryTypeMap = new HashMap<String,String>();
 	private static Map<String,String> endnoteToBibtexFieldMap     = new HashMap<String,String>();

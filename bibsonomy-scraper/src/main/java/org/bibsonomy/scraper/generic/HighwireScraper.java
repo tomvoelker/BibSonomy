@@ -31,7 +31,8 @@ import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -40,7 +41,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 public class HighwireScraper implements Scraper {
-	private static final Logger log 	= Logger.getLogger(HighwireScraper.class);
+	private static final Log log 	= LogFactory.getLog(HighwireScraper.class);
 	private static final String info 	= "Highwire Scraper: This scraper parses a publication page from one of these <a href=\"/scraperinfo_highwire\">journals hosted by Highwire Press</a>  " +
 	"and extracts the adequate BibTeX entry. Author: KDE";
 

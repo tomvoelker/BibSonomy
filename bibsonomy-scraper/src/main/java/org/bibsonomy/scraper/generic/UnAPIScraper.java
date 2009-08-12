@@ -30,7 +30,8 @@ import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -49,7 +50,7 @@ import org.w3c.dom.NodeList;
  */
 public class UnAPIScraper implements Scraper {
 
-	private static final Logger log = Logger.getLogger(UnAPIScraper.class);
+	private static final Log log = LogFactory.getLog(UnAPIScraper.class);
 
 
 	public String getInfo() {

@@ -28,7 +28,8 @@ import java.util.List;
 
 import junit.framework.TestResult;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
 import org.bibsonomy.scraper.importer.IUnitTestImporter;
@@ -44,7 +45,7 @@ public class UnitTestRunner {
 
 	private static final String LINE = "------------------------------------------------------------------------";
 
-	private Logger log = Logger.getLogger(UnitTestRunner.class);
+	private Log log = LogFactory.getLog(UnitTestRunner.class);
 
 	/**
 	 * Importer which reads the tests from a external sources.

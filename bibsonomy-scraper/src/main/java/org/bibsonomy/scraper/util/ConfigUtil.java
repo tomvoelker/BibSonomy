@@ -31,7 +31,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * 
@@ -44,7 +45,7 @@ public class ConfigUtil {
 	/**
 	 * Logger
 	 */
-	private static final Logger log = Logger.getLogger(ConfigUtil.class);
+	private static final Log log = LogFactory.getLog(ConfigUtil.class);
 
 	/**
 	 * path so settings.properties

@@ -26,7 +26,8 @@ package org.bibsonomy.scraper;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * This class implements the standard output for occcured Exceptions outside the testing.
@@ -35,7 +36,7 @@ import org.apache.log4j.Logger;
  */
 public class ParseFailureMessage {
 	
-	private static final Logger log = Logger.getLogger(ParseFailureMessage.class);
+	private static final Log log = LogFactory.getLog(ParseFailureMessage.class);
 	
 	/**
 	 * Standardoutput for Exceptions

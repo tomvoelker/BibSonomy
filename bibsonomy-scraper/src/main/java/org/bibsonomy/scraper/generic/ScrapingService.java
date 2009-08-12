@@ -36,7 +36,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -48,7 +49,7 @@ import org.bibsonomy.util.WebUtils;
 @Deprecated
 public class ScrapingService extends AbstractUrlScraper {
 
-	private static final Logger log = Logger.getLogger(ScrapingService.class);
+	private static final Log log = LogFactory.getLog(ScrapingService.class);
 	private static String baseurl = "";
 	private final static String info = "This scraper handles several URLs by forwarding them to an external service.";
 	

@@ -32,17 +32,13 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import junit.framework.TestResult;
-
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScraperUnitTest;
 import org.bibsonomy.scraper.ScrapingContext;
-import org.junit.Ignore;
-
-import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.junit.Ignore;
 
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexFile;
@@ -57,7 +53,7 @@ import bibtex.parser.ParseException;
 @Ignore
 public class URLScraperUnitTest extends ScraperUnitTest {
 	
-	private static final Logger log = Logger.getLogger(URLScraperUnitTest.class);
+	private static final Log log = LogFactory.getLog(URLScraperUnitTest.class);
 	
 	/**
 	 * Name of test method.

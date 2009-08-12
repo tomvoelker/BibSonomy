@@ -28,7 +28,8 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.converter.picatobibtex.PicaParser;
 import org.bibsonomy.scraper.converter.picatobibtex.PicaRecord;
 import org.bibsonomy.scraper.converter.picatobibtex.Row;
@@ -40,7 +41,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @version $Id$
  */
 public class PicaToBibtexConverter {
-	private static final Logger log = Logger.getLogger(PicaToBibtexConverter.class);
+	private static final Log log = LogFactory.getLog(PicaToBibtexConverter.class);
 	
 	private PicaRecord pica;
 	private String url;

@@ -34,10 +34,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 
@@ -51,7 +52,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class BlackwellSynergyScraper extends AbstractUrlScraper {
 	
-	private static final Logger log = Logger.getLogger(BlackwellSynergyScraper.class);
+	private static final Log log = LogFactory.getLog(BlackwellSynergyScraper.class);
 
 	/**
 	 * scraper info

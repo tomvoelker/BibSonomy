@@ -32,7 +32,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -64,7 +65,7 @@ public class CiteBaseScraper extends AbstractUrlScraper {
 	private static final String BIBTEX_STRING_ON_ARXIV = "BibTeX";
 	private static final String BIBTEX_ABSTRACT_TAG = "div";
 
-	private static final Logger log = Logger.getLogger(CiteBaseScraper.class);
+	private static final Log log = LogFactory.getLog(CiteBaseScraper.class);
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + CITEBASE_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	

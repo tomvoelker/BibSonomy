@@ -27,7 +27,8 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.PropertyConfigurator;
 import org.bibsonomy.scraper.InformationExtraction.IEScraper;
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
@@ -47,7 +48,7 @@ import org.bibsonomy.scraper.snippet.SnippetScraper;
  */
 public class ReachabilityTestRunner {
 	
-	private static final Logger log = Logger.getLogger(ReachabilityTestRunner.class);
+	private static final Log log = LogFactory.getLog(ReachabilityTestRunner.class);
 	
 	/**
 	 * Importer which reads the tests from a external sources.
