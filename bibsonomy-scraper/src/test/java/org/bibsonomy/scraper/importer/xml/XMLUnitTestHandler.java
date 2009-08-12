@@ -29,7 +29,8 @@ import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScraperUnitTest;
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
@@ -44,7 +45,7 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class XMLUnitTestHandler extends DefaultHandler {
 	
-	private Logger log = Logger.getLogger(XMLUnitTestHandler.class);
+	private Log log = LogFactory.getLog(XMLUnitTestHandler.class);
 	
 	private static final String ELEMENT_URL_TEST = "URLTest";
 	private static final String ELEMENT_Test_DESCRIPTION = "TestDescription";

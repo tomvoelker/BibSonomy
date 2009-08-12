@@ -27,7 +27,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -42,7 +43,7 @@ import org.bibsonomy.scraper.exceptions.UsageFailureException;
 public class CompositeScraper implements Scraper {
 
 	private List<Scraper> _scrapers = new LinkedList<Scraper>();
-	private static final Logger log = Logger.getLogger(CompositeScraper.class);
+	private static final Log log = LogFactory.getLog(CompositeScraper.class);
 
 	/**
 	 * Call scrapers until one is successful.

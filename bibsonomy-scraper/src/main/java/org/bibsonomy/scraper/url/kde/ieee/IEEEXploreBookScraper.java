@@ -1,6 +1,5 @@
 package org.bibsonomy.scraper.url.kde.ieee;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -13,11 +12,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.XmlUtils;
@@ -33,7 +33,7 @@ import org.w3c.dom.NodeList;
  *
  */
 public class IEEEXploreBookScraper extends AbstractUrlScraper {
-	private static final Logger log = Logger.getLogger(IEEEXploreBookScraper.class);
+	private static final Log log = LogFactory.getLog(IEEEXploreBookScraper.class);
 	private static final String info = "IEEEXplore Book Scraper: This scraper creates a BibTeX entry for the books at " +
 	href("http://ieeexplore.ieee.org/books/bkbrowse.jsp", "IEEEXplore");
 

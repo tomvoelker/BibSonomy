@@ -27,10 +27,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 /**
@@ -40,7 +41,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class PionScraper extends AbstractUrlScraper {
 
-	private static final Logger log = Logger.getLogger(PionScraper.class);
+	private static final Log log = LogFactory.getLog(PionScraper.class);
 
 	private static final String INFO = "Pion Scraper: Scraper for publications from " + href("http://pion.co.uk/", "Pion");
 

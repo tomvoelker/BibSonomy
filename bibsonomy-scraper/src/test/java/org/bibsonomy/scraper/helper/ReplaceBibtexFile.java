@@ -23,17 +23,13 @@
 
 package org.bibsonomy.scraper.helper;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
 
@@ -48,7 +44,7 @@ public class ReplaceBibtexFile {
 	
 	private static final String PATH_TO_BIBS = "src/test/resources/org/bibsonomy/scraper/data/";
 	
-	private static Logger log = Logger.getLogger(ReplaceBibtexFile.class);
+	private static Log log = LogFactory.getLog(ReplaceBibtexFile.class);
 
 	/**
 	 * enter test ids here

@@ -23,21 +23,16 @@
 
 package org.bibsonomy.scraper.url.kde.isi;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.WebUtils;
 
 /**
  * @author tst
@@ -51,7 +46,7 @@ import org.bibsonomy.util.WebUtils;
  */
 public class IsiScraper extends AbstractUrlScraper {
 	
-	private static final Logger log = Logger.getLogger(IsiScraper.class);
+	private static final Log log = LogFactory.getLog(IsiScraper.class);
 
 	private static final String INFO = "Scrapes publications from " + href("http://apps.isiknowledge.com/", "ISI Web of Knowledge");
 

@@ -9,11 +9,12 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
@@ -29,7 +30,7 @@ import org.w3c.dom.NodeList;
  *
  */
 public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
-	private static final Logger log = Logger.getLogger(IEEEXploreJournalProceedingsScraper.class);
+	private static final Log log = LogFactory.getLog(IEEEXploreJournalProceedingsScraper.class);
 	private static final String info = "IEEEXplore Journal Scraper: This scraper creates a BibTeX entry for the journals and proceedings at " +
 	href("http://ieeexplore.ieee.org/", "IEEEXplore");
 

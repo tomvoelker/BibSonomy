@@ -1,14 +1,14 @@
 package org.bibsonomy.scraper.url.kde.ieee;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
  *
  */
 public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
-	private static final Logger log = Logger.getLogger(IEEEXploreStandardsScraper.class);
+	private static final Log log = LogFactory.getLog(IEEEXploreStandardsScraper.class);
 	private static final String info = "IEEEXplore Standards Scraper: This scraper creates a BibTeX entry for the standards at " +
 			                           href("http://ieeexplore.ieee.org/", "IEEEXplore");
 
