@@ -10,7 +10,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
@@ -41,7 +42,7 @@ public class LuceneSearchBookmarks {
 	}
 
 	public void reloadIndex() {
-		final Logger LOGGER = Logger.getLogger(LuceneSearchBookmarks.class);
+		final Log LOGGER = LogFactory.getLog(LuceneSearchBookmarks.class);
 		try {
 
 			Context initContext = new InitialContext();
@@ -131,7 +132,7 @@ public class LuceneSearchBookmarks {
 	public ResultList<Post<Bookmark>> searchLucene(String group,
 			String searchTerms, String requestedUserName, String UserName,
 			Set<String> GroupNames, int limit, int offset) {
-		final Logger LOGGER = Logger.getLogger(LuceneSearchBookmarks.class);
+		final Log LOGGER = LogFactory.getLog(LuceneSearchBookmarks.class);
 
 		// String orderBy = "relevance";
 		String orderBy = "date";

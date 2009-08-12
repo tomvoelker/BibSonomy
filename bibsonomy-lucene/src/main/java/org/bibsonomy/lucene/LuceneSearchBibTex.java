@@ -10,12 +10,12 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -58,7 +58,7 @@ public class LuceneSearchBibTex {
 	
 
 	public void reloadIndex() {
-		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
+		final Log LOGGER = LogFactory.getLog(LuceneSearchBibTex.class);
 		try {
 
 			Context initContext = new InitialContext();
@@ -138,7 +138,7 @@ public class LuceneSearchBibTex {
 	 */
 	
 	private QuerySortContainer getFulltextQueryFilter (String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames) {
-		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
+		final Log LOGGER = LogFactory.getLog(LuceneSearchBibTex.class);
 
 //		String orderBy = "relevance"; 
 		String orderBy = "date"; 
@@ -236,7 +236,7 @@ public class LuceneSearchBibTex {
 	}
 	
 	private QuerySortContainer getAuthorQueryFilter (String group,  String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, List<String> tagList) {
-		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
+		final Log LOGGER = LogFactory.getLog(LuceneSearchBibTex.class);
 
 //		String orderBy = "relevance"; 
 		String orderBy = "date"; 
@@ -505,7 +505,7 @@ ORDER BY b.date DESC, b.content_id DESC;
 	 * @param String idname fieldname of returning value
 	 * */
 	private ResultList<Post<BibTex>> searchLucene(QuerySortContainer qs, int limit, int offset) {
-		final Logger LOGGER = Logger.getLogger(LuceneSearchBibTex.class);
+		final Log LOGGER = LogFactory.getLog(LuceneSearchBibTex.class);
 
 		Query query = qs.getQuery(); 
 		Sort sort = qs.getSort(); 

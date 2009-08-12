@@ -2,7 +2,8 @@ package org.bibsonomy.lucene;
 
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
@@ -56,7 +57,7 @@ public class Utils {
 	
 	
 	public static String getNewestRecordDateFromIndex(IndexReader reader) throws CorruptIndexException, IOException {
-		final Logger LOGGER = Logger.getLogger(LuceneUpdater.class);
+		final Log LOGGER = LogFactory.getLog(LuceneUpdater.class);
 		String newestDate = "";
 		
 /*		System.out.println( "reader.maxDoc():  " + reader.maxDoc());
@@ -95,7 +96,7 @@ public class Utils {
 	
 	
 	public static LuceneIndexStatistics getStatistics(String lucenePath) {
-		final Logger LOGGER = Logger.getLogger(LuceneUpdater.class);
+		final Log LOGGER = LogFactory.getLog(LuceneUpdater.class);
 		
 		// open Lucene index for reading
 		IndexReader reader=null;
