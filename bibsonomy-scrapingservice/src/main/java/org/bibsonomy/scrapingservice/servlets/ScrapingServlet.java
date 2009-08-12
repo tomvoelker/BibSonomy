@@ -35,7 +35,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.scraper.KDEScraperFactory;
@@ -67,7 +68,7 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 	 */
 	private static final long serialVersionUID = -5145534846771334947L;
 
-	private static final Logger log = Logger.getLogger(ScrapingServlet.class);
+	private static final Log log = LogFactory.getLog(ScrapingServlet.class);
 
 	/**
 	 * Scrapers used in this servlet.
