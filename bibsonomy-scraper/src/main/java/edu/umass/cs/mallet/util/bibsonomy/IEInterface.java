@@ -40,6 +40,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import edu.umass.cs.mallet.base.fst.CRF4;
 import edu.umass.cs.mallet.base.fst.Transducer;
 import edu.umass.cs.mallet.base.pipe.Pipe;
@@ -57,7 +60,7 @@ import edu.umass.cs.mallet.base.types.TokenSequence;
 public class IEInterface{
 	String seperator = "";
 
-	private static Logger logger = Logger.getLogger(IEInterface.class.getName());
+	private static Log logger = LogFactory.getLog(IEInterface.class.getName());
 
 	private File crfFile;
 	public CRF4 crf = null;
@@ -189,7 +192,7 @@ public class IEInterface{
 
 		//xxx
 
-		logger.log(Level.INFO, "Load CRF successfully\n");
+		logger.info("Load CRF successfully\n");
 
 		return true;
 	}
@@ -647,7 +650,7 @@ public class IEInterface{
 			FileOutputStream fos = new FileOutputStream (outputFileStr);
 			taggedOut = new PrintStream (fos);
 		} catch (IOException e) {
-			logger.warning ("Couldn't open output file '"+ outputFileStr+"'");
+			logger.warn("Couldn't open output file '"+ outputFileStr+"'");
 		}
 		
 		if(taggedOut == null){
@@ -1143,7 +1146,7 @@ public class IEInterface{
 			FileOutputStream fos = new FileOutputStream (outputFileStr);
 			taggedOut = new PrintStream (fos);
 		} catch (IOException e) {
-			logger.warning ("Couldn't open output file '"+ outputFileStr+"'");
+			logger.warn("Couldn't open output file '"+ outputFileStr+"'");
 		}
 		
 		if(taggedOut == null){
