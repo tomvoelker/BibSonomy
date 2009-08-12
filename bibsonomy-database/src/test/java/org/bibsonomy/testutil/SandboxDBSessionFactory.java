@@ -5,7 +5,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashSet;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.DatabaseType;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
@@ -28,7 +29,7 @@ import org.bibsonomy.database.util.DatabaseUtils;
 @Deprecated
 public class SandboxDBSessionFactory extends DatabaseUtils implements DBSessionFactory {
 
-	private static final Logger log = Logger.getLogger(SandboxDBSessionFactory.class);
+	private static final Log log = LogFactory.getLog(SandboxDBSessionFactory.class);
 	private static final HashSet<String> firewalledMethods = new HashSet<String>();
 	private DBSession realDbSession = null;
 	private DBSession dbSessionProxy = null;

@@ -6,7 +6,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
@@ -26,7 +27,7 @@ import org.bibsonomy.model.enums.Order;
 public class GetBibtexViewable extends BibTexChainElement {
 
 	@SuppressWarnings("hiding")
-	private static final Logger log = Logger.getLogger(GetBibtexViewable.class);
+	private static final Log log = LogFactory.getLog(GetBibtexViewable.class);
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {

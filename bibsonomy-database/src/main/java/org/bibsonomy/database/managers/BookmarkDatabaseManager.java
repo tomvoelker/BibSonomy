@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
@@ -39,7 +40,7 @@ import org.bibsonomy.model.util.SimHash;
  */
 public class BookmarkDatabaseManager extends AbstractDatabaseManager implements CrudableContent<Bookmark, BookmarkParam> {
 
-	private static final Logger log = Logger.getLogger(BookmarkDatabaseManager.class);
+	private static final Log log = LogFactory.getLog(BookmarkDatabaseManager.class);
 
 	private final static BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
 	private final GeneralDatabaseManager generalDb;
@@ -588,7 +589,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @return list of bookmark posts
 	 */
 	public ResultList<Post<Bookmark>> getBookmarkSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames,  final int limit, final int offset, final DBSession session) {
-		final Logger LOGGER = Logger.getLogger(BookmarkDatabaseManager.class);
+		final Log LOGGER = LogFactory.getLog(BookmarkDatabaseManager.class);
 		ResultList<Post<Bookmark>> postBookmarkList = new ResultList<Post<Bookmark>>();
 
 

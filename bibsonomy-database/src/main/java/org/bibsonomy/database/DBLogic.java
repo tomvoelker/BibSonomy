@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -82,7 +83,7 @@ import org.bibsonomy.util.ValidationUtils;
  */
 public class DBLogic implements LogicInterface {
 
-	private static final Logger log = Logger.getLogger(DBLogic.class);
+	private static final Log log = LogFactory.getLog(DBLogic.class);
 
 	private final Map<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>> allDatabaseManagers;
 	private final AuthorDatabaseManager authorDBManager;

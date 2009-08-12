@@ -4,7 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
@@ -26,7 +27,7 @@ import org.bibsonomy.model.enums.Order;
  */
 public abstract class HashElement<L, P extends GenericParam> {
 
-	protected static final Logger log = Logger.getLogger(HashElement.class);
+	protected static final Log log = LogFactory.getLog(HashElement.class);
 	protected final GeneralDatabaseManager generalDb;
 	protected final GroupDatabaseManager groupDb;
 

@@ -59,6 +59,9 @@ public class BibTexHashingManager extends HashingManager<BibTexHashElement> {
 
 	private GetBibtexOfFriendsByUser getBibTexOfFriendsByUser;
 
+	/**
+	 * 
+	 */
 	public BibTexHashingManager() {
 		this.getBibTexByHash = new GetBibtexByHash();
 		this.getBibTexByHashForUser = new GetBibtexByHashForUser();
@@ -83,6 +86,7 @@ public class BibTexHashingManager extends HashingManager<BibTexHashElement> {
 		this.getBibTexOfFriendsByUser = new GetBibtexOfFriendsByUser();
 	}
 
+	@SuppressWarnings("cast")
 	@Override
 	protected StringBuilder additionalElementToHash(BibTexHashElement element) {
 		StringBuilder sb = new StringBuilder();

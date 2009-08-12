@@ -2,7 +2,8 @@ package org.bibsonomy.database;
 
 import static org.junit.Assert.fail;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.testutil.ParamUtils;
@@ -18,7 +19,7 @@ import org.junit.Test;
 @Ignore
 public class PerfTest extends AbstractDatabaseManagerTest {
 
-	private static final Logger log = Logger.getLogger(PerfTest.class);
+	private static final Log log = LogFactory.getLog(PerfTest.class);
 
 	/** This is used for the great switch statement in callMethod() */
 	private enum Method {

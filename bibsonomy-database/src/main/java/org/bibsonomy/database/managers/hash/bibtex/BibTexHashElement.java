@@ -23,11 +23,17 @@ public abstract class BibTexHashElement extends HashElement<Post<BibTex>, BibTex
 		this.db = BibTexDatabaseManager.getInstance();
 	}
 
+	/**
+	 * @return boolean
+	 */
 	public boolean isBibtexKey() {
 		return this.bibtexKey;
 	}
 
-	public void setBibtexKey(boolean bibtexKey) {
+	/**
+	 * @param bibtexKey
+	 */
+	public void setBibtexKey(final boolean bibtexKey) {
 		this.bibtexKey = bibtexKey;
 	}
 }

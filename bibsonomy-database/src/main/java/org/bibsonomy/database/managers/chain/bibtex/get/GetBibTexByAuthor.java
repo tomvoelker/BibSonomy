@@ -9,7 +9,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
@@ -26,7 +27,7 @@ import org.bibsonomy.model.enums.Order;
  */
 public class GetBibTexByAuthor extends BibTexChainElement {
 
-	private static final Logger LOGGER = Logger.getLogger(GetBibTexByAuthor.class);
+	private static final Log LOGGER = LogFactory.getLog(GetBibTexByAuthor.class);
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, DBSession session) {

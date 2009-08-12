@@ -3,7 +3,8 @@ package org.bibsonomy.database.util;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -34,7 +35,7 @@ import org.bibsonomy.util.StringUtils;
  */
 public class LogicInterfaceHelper {
 	
-	protected static final Logger logger = Logger.getLogger(ChainElement.class);
+	protected static final Log logger = LogFactory.getLog(ChainElement.class);
 
 	/**
 	 * Builds a param object for the given parameters from the LogicInterface.

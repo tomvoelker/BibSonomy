@@ -13,7 +13,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.AbstractDBLogicBase;
@@ -37,7 +38,7 @@ import org.junit.Test;
  */
 public class DBLogicTest extends AbstractDBLogicBase {
 
-	private static final Logger log = Logger.getLogger(DBLogicTest.class);
+	private static final Log log = LogFactory.getLog(DBLogicTest.class);
 
 	private LogicInterface dbLogic;
 	private List<Post<BibTex>> bibTexPostsList;

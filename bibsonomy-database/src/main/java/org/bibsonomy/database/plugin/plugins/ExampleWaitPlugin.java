@@ -1,6 +1,7 @@
 package org.bibsonomy.database.plugin.plugins;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.database.util.DBSession;
 
@@ -12,7 +13,7 @@ import org.bibsonomy.database.util.DBSession;
  * @version $Id$
  */
 public class ExampleWaitPlugin extends AbstractDatabasePlugin {
-	private static final Logger log = Logger.getLogger(ExampleWaitPlugin.class);
+	private static final Log log = LogFactory.getLog(ExampleWaitPlugin.class);
 
 	private final Runnable waitRunnable = new Runnable() {
 		public void run() {

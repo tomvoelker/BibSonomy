@@ -8,13 +8,12 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.DBLogic;
 import org.junit.Ignore;
 
@@ -28,7 +27,7 @@ import org.junit.Ignore;
 @Ignore
 public class TestDatabaseLoader {
 
-	private final static Logger log = Logger.getLogger(TestDatabaseLoader.class);
+	private final static Log log = LogFactory.getLog(TestDatabaseLoader.class);
 	/** Holds the database schema (script is at /src/main/resources) */
 	private final String schemaFilename = "bibsonomy-db-schema.sql";
 	/** Holds the test data (script is found at /src/test/resources) */

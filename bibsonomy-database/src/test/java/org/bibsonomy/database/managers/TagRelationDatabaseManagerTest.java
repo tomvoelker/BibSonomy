@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.beans.TagIndex;
@@ -26,7 +27,7 @@ import org.junit.Test;
  */
 public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
-	private static final Logger log = Logger.getLogger(TagRelationDatabaseManagerTest.class);
+	private static final Log log = LogFactory.getLog(TagRelationDatabaseManagerTest.class);
 	private Tag tag;
 	private Tag subTag;
 	private Tag superTag;

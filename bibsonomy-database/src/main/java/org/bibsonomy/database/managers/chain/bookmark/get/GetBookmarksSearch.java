@@ -8,6 +8,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
@@ -25,7 +27,7 @@ import org.bibsonomy.model.ResultList;
  */
 public class GetBookmarksSearch extends BookmarkChainElement {
 	
-	private static final Logger LOGGER = Logger.getLogger(GetBookmarksSearch.class);
+	private static final Log LOGGER = LogFactory.getLog(GetBookmarksSearch.class);
 
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, DBSession session) {

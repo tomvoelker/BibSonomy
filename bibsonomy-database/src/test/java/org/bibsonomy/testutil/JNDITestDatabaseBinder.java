@@ -7,6 +7,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.mockejb.jndi.MockContextFactory;
 
@@ -25,7 +27,7 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
  */
 public final class JNDITestDatabaseBinder {
 
-	private static final Logger log = Logger.getLogger(JNDITestDatabaseBinder.class);
+	private static final Log log = LogFactory.getLog(JNDITestDatabaseBinder.class);
 
 	/**
 	 * Don't create instances of this class - use the static methods instead.

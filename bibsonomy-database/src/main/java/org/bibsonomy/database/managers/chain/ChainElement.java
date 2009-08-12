@@ -2,6 +2,8 @@ package org.bibsonomy.database.managers.chain;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
@@ -23,7 +25,7 @@ import org.bibsonomy.database.util.IbatisDBSessionFactory;
  */
 public abstract class ChainElement<L, P extends GenericParam> implements ChainPerform<P, List<L>, L> {
 
-	protected static final Logger log = Logger.getLogger(ChainElement.class);
+	protected static final Log log = LogFactory.getLog(ChainElement.class);
 	protected final GeneralDatabaseManager generalDb;
 	protected final GroupDatabaseManager groupDb;
 	/** The next element of the chain */

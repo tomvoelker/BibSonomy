@@ -1,38 +1,24 @@
 package org.bibsonomy.database.systemstags.executable;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.ResourceType;
-import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
-import org.bibsonomy.database.DBLogic;
 import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
-import org.bibsonomy.database.managers.BibTexDatabaseManager;
-import org.bibsonomy.database.managers.BookmarkDatabaseManager;
-import org.bibsonomy.database.managers.CrudableContent;
-import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
-import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.database.util.DBSessionFactory;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 
 /**
@@ -48,7 +34,7 @@ import org.bibsonomy.model.logic.LogicInterface;
  * @version $Id$
  */
 public class ForGroupTag extends SystemTag {
-	private static final Logger log = Logger.getLogger(ForGroupTag.class);
+	private static final Log log = LogFactory.getLog(ForGroupTag.class);
 	//------------------------------------------------------------------------
 	/**
 	 * This database manager is needed to ensure that a user is allowed to write

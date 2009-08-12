@@ -5,7 +5,8 @@ import java.net.UnknownHostException;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 import com.ibatis.sqlmap.client.extensions.ResultGetter;
@@ -27,7 +28,7 @@ import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
  */
 public class InetAddressTypeHandlerCallback implements TypeHandlerCallback {
 
-	private static final Logger log = Logger.getLogger(InetAddressTypeHandlerCallback.class);
+	private static final Log log = LogFactory.getLog(InetAddressTypeHandlerCallback.class);
 
 	public Object getResult(final ResultGetter getter) throws SQLException {
 		final String value = getter.getString();

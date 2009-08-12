@@ -7,7 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
@@ -44,7 +45,7 @@ import org.bibsonomy.model.util.SimHash;
  */
 public class BibTexDatabaseManager extends AbstractDatabaseManager implements CrudableContent<BibTex, BibTexParam> {
 
-	private static final Logger log = Logger.getLogger(BibTexDatabaseManager.class);
+	private static final Log log = LogFactory.getLog(BibTexDatabaseManager.class);
 
 	private static final BibTexDatabaseManager singleton = new BibTexDatabaseManager();
 	private final BibTexExtraDatabaseManager extraDb;
@@ -675,7 +676,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 
 	public ResultList<Post<BibTex>> getBibTexSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames, final int limit, final int offset, final DBSession session) {
-		final Logger LOGGER = Logger.getLogger(BibTexDatabaseManager.class);
+		final Log LOGGER = LogFactory.getLog(BibTexDatabaseManager.class);
 		ResultList<Post<BibTex>> postBibtexList = new ResultList<Post<BibTex>>();
 /*
 		final BibTexParam param = new BibTexParam();
@@ -1648,7 +1649,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @return list of bibtex entries
 	 */
 	public List<Post<BibTex>> getBibTexByAuthorLucene(String search, int groupType, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, final int limit, final int offset, final int simHash, final List<String> tagIndex, final DBSession session){
-		final Logger LOGGER = Logger.getLogger(BibTexDatabaseManager.class);
+		final Log LOGGER = LogFactory.getLog(BibTexDatabaseManager.class);
 		ResultList<Post<BibTex>> postBibtexList = new ResultList<Post<BibTex>>();
 		
 		/*

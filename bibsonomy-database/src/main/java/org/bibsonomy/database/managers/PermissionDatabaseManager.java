@@ -5,7 +5,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -14,7 +15,6 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -33,7 +33,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	private final static PermissionDatabaseManager singleton = new PermissionDatabaseManager();
 	private final GroupDatabaseManager groupDb;
 
-	private static final Logger log = Logger.getLogger(PermissionDatabaseManager.class);
+	private static final Log log = LogFactory.getLog(PermissionDatabaseManager.class);
 
 	private PermissionDatabaseManager() {
 		this.groupDb = GroupDatabaseManager.getInstance();

@@ -8,6 +8,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchEntity;
@@ -25,7 +27,7 @@ import org.bibsonomy.model.Post;
  */
 public class GetBibtexSearch extends BibTexChainElement {
 	
-	private static final Logger LOGGER = Logger.getLogger(GetBibtexSearch.class);
+	private static final Log LOGGER = LogFactory.getLog(GetBibtexSearch.class);
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, DBSession session) {

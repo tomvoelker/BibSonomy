@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.InetAddressStatus;
@@ -14,8 +15,6 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.AdminParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
-
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 
 /**
  * Provides functionalities which are typically only available to admins. This
@@ -30,7 +29,7 @@ import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	private final static AdminDatabaseManager singleton = new AdminDatabaseManager();
-	protected static final Logger log = Logger.getLogger(AdminDatabaseManager.class);
+	protected static final Log log = LogFactory.getLog(AdminDatabaseManager.class);
 
 	private AdminDatabaseManager() {
 	}
