@@ -3,10 +3,11 @@ package org.bibsonomy.spielwiese;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.apache.catalina.realm.GenericPrincipal;
 import org.apache.catalina.realm.RealmBase;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * A realm that accepts every username as long as the password is
@@ -30,7 +31,7 @@ import org.apache.catalina.realm.RealmBase;
  */
 public class BibSonomyRealm extends RealmBase {
 
-	private final static Logger log = Logger.getLogger(BibSonomyRealm.class.getSimpleName());
+	private final static Log log = LogFactory.getLog(BibSonomyRealm.class.getSimpleName());
 
 	@Override
 	protected String getName() {
