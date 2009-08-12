@@ -12,14 +12,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.log4j.Logger;
-//import org.bibsonomy.rest.RestServlet;
 
 
 /**
@@ -29,7 +28,7 @@ import org.apache.log4j.Logger;
 
 public class LogMe extends HttpServlet {
 	
-	private static final Logger log = Logger.getLogger(LogMe.class);
+	private static final Log log = LogFactory.getLog(LogMe.class);
 
 	public static List<String> getMatches(Pattern pattern, String text, int splitAtSpace) {
 		List<String> matches = new ArrayList<String>();
@@ -173,7 +172,7 @@ public class LogMe extends HttpServlet {
 			}
 			
 			
-			Log LogData = new Log();
+			org.bibsonomy.logging.Log LogData = new org.bibsonomy.logging.Log();
 			
 			LogData.setAhref(req.getParameter("ahref"));
 			LogData.setAcontent(req.getParameter("acontent"));
