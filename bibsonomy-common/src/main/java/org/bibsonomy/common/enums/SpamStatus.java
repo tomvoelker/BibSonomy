@@ -23,8 +23,6 @@
 
 package org.bibsonomy.common.enums;
 
-import org.apache.log4j.Logger;
-
 /**
  * Defines different states of a user
  * 

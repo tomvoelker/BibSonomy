@@ -35,7 +35,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author rja
@@ -53,7 +54,7 @@ public class WebUtils {
 	 */
 	private static final String USER_AGENT = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";
 
-	private static final Logger log = Logger.getLogger(WebUtils.class);
+	private static final Log log = LogFactory.getLog(WebUtils.class);
 
 	private static final String CHARSET = "charset=";
 
