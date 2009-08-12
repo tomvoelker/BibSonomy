@@ -135,7 +135,6 @@ public class CasesJournalScraper extends AbstractUrlScraper {
 		return bibtex;
 	}
 
-	@Override
 	public String getInfo() {
 		return INFO;
 	}
