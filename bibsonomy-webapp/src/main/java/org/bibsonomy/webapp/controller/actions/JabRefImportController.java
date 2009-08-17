@@ -129,7 +129,7 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 		/*
 		 * success
 		 */
-		return new ExtendedRedirectView("/settings?selTab=2");
+		return new ExtendedRedirectView("/settingsnew?selTab=2");
 	}
 
 	/**
@@ -145,7 +145,7 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 			try {
 				final String hashedName = JabrefLayoutUtils.userLayoutHash(loginUser.getName(), layoutPart);				
 				
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(fileItem.getFileItem()), HandleFileUpload.fileLayoutExt);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(fileItem.getFileItem()), HandleFileUpload.fileLayoutExt, false);
 				/*
 				 * write file to disk
 				 */
