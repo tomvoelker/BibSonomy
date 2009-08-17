@@ -133,7 +133,7 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 		} else if ("firefox".equals(importType)) {
 			try {
 
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firefoxImportExt);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firefoxImportExt, true);
 
 				final Document document = uploadFileHandler.writeUploadedFile();
 				/*
@@ -142,6 +142,7 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 				final FileBookmarkImporter fileImporter = new FirefoxImporter();
 				fileImporter.initialize(document.getFile(), loginUser, command.getGrouping());
 				posts = fileImporter.getPosts();
+				
 				/*
 				 * clear temporary file
 				 */
