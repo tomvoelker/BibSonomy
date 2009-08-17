@@ -54,9 +54,11 @@ public class HandleFileUpload implements FileUploadInterface {
 	private static final Log log = LogFactory.getLog(HandleFileUpload.class);
 
 	private Document document = new Document();
+	
 	private FileItem upFile;
 
 	private final String docPath;
+	
 	private final boolean isTempPath;
 	
 	
@@ -74,6 +76,11 @@ public class HandleFileUpload implements FileUploadInterface {
 	 * layout defintion extension
 	 */
 	public static final String[] fileLayoutExt = { "layout" };
+	
+	/**
+	 * bibtex, endnote extension
+	 */
+	public static final String[] bibtexEndnoteExt = {"bib, endnote"};
 
 	/**
 	 * Used to compute the file hash.
