@@ -69,7 +69,7 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 
 			try {
 				
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.fileUploadExt);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.fileUploadExt, false);
 
 				final Document document = uploadFileHandler.writeUploadedFile();
 				document.setUserName(context.getLoginUser().getName());
