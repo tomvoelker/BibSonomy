@@ -80,7 +80,7 @@ public class HandleFileUpload implements FileUploadInterface {
 	/**
 	 * bibtex, endnote extension
 	 */
-	public static final String[] bibtexEndnoteExt = {"bib, endnote"};
+	public static final String[] bibtexEndnoteExt = {"bib", "endnote"};
 
 	/**
 	 * Used to compute the file hash.
