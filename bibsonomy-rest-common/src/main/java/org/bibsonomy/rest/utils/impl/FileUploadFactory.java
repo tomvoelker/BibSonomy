@@ -16,8 +16,8 @@ public class FileUploadFactory {
 	
 	public FileUploadFactory(){};
 	
-	public FileUploadInterface getFileUploadHandler(final List<FileItem> items, String[] allowedExt) {
-		return new HandleFileUpload(items, allowedExt, this.docpath);
+	public FileUploadInterface getFileUploadHandler(final List<FileItem> items, String[] allowedExt, final boolean isTempPath) {
+		return new HandleFileUpload(items, allowedExt, this.docpath, isTempPath);
 	}
 	
 	public String getDocpath() {
