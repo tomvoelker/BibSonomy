@@ -56,7 +56,9 @@ public class HandleFileUpload implements FileUploadInterface {
 	private Document document = new Document();
 	private FileItem upFile;
 
-	private String docPath;
+	private final String docPath;
+	private final boolean isTempPath;
+	
 	
 	/**
 	 * firefox extion
@@ -84,9 +86,10 @@ public class HandleFileUpload implements FileUploadInterface {
 	/**
 	 * default constructor
 	 */
-	protected HandleFileUpload(final List<FileItem> items, final String[] allowedExt, final String docPath) {
+	protected HandleFileUpload(final List<FileItem> items, final String[] allowedExt, final String docPath, final boolean isTempPath) {
 
 		this.docPath = docPath;
+		this.isTempPath = isTempPath;
 		
 		if (items.size() == 1) {
 			this.upFile = items.get(0);
@@ -127,7 +130,14 @@ public class HandleFileUpload implements FileUploadInterface {
 	@Override
 	public Document writeUploadedFile() throws Exception {
 
-		document.setFile(new File(FileUtil.getDocumentPath(docPath, document.getFileHash())));
+		final String documentPath;
+		if (isTempPath) {
+			documentPath = docPath + "/" + document.getFileHash();
+		} else {
+			documentPath = FileUtil.getDocumentPath(docPath, document.getFileHash());
+		}
+		
+		document.setFile(new File(documentPath));
 
 		try {
 			this.upFile.write(document.getFile());
