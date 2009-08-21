@@ -42,6 +42,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 		this.projectHome = context.getAdditionalInfos().get("projectHome");
 		this.fileUploadFactory = new FileUploadFactory();
 		this.fileUploadFactory.setDocpath(context.getAdditionalInfos().get("docPath"));
+		this.fileUploadFactory.setTempPath(false);
 	}
 	
 	@Override
