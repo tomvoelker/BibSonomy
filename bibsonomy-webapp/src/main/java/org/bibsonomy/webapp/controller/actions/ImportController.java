@@ -133,7 +133,7 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 		} else if ("firefox".equals(importType)) {
 			try {
 
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firefoxImportExt, true);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firefoxImportExt);
 
 				final Document document = uploadFileHandler.writeUploadedFile();
 				/*
