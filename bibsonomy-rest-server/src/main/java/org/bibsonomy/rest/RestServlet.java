@@ -235,6 +235,8 @@ public final class RestServlet extends HttpServlet {
 			log.error(e.getMessage());
 			/*
 			 * sending new location
+			 * TODO: add date using  
+			 * 
 			 */
 			response.setHeader("Location", UrlRenderer.getInstance().createHrefForResource(e.getUserName(), e.getNewIntraHash()));
 			sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
