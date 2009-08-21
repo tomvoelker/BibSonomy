@@ -54,11 +54,9 @@ public class HandleFileUpload implements FileUploadInterface {
 	private static final Log log = LogFactory.getLog(HandleFileUpload.class);
 
 	private Document document = new Document();
-	
 	private FileItem upFile;
 
 	private final String docPath;
-	
 	private final boolean isTempPath;
 	
 	
@@ -139,7 +137,7 @@ public class HandleFileUpload implements FileUploadInterface {
 
 		final String documentPath;
 		if (isTempPath) {
-			documentPath = docPath + document.getFileHash();
+			documentPath = docPath + "/" + document.getFileHash();
 		} else {
 			documentPath = FileUtil.getDocumentPath(docPath, document.getFileHash());
 		}
