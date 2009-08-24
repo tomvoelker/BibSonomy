@@ -44,9 +44,9 @@ import org.springframework.validation.Errors;
  * @version $Id: ImportController.java,v 1.3 2009-06-23 14:23:15 voigtmannc Exp
  *          $
  */
-public class ImportController implements MinimalisticController<ImportCommand>, ErrorAware, ValidationAwareController<ImportCommand> {
+public class ImportBookmarksController implements MinimalisticController<ImportCommand>, ErrorAware, ValidationAwareController<ImportCommand> {
 
-	private static final Log log = LogFactory.getLog(ImportController.class);
+	private static final Log log = LogFactory.getLog(ImportBookmarksController.class);
 
 	/**
 	 * logic interface for the database connectivity
@@ -65,7 +65,7 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 
 	private Errors errors = null;
 
-	public View workOn(ImportCommand command) {
+	public View workOn(final ImportCommand command) {
 		final RequestWrapperContext context = command.getContext();
 
 		/*
@@ -140,7 +140,7 @@ public class ImportController implements MinimalisticController<ImportCommand>, 
 				 * FileBookmarkImporter interface
 				 */
 				final FileBookmarkImporter fileImporter = new FirefoxImporter();
-				fileImporter.initialize(document.getFile(), loginUser, command.getGrouping());
+				fileImporter.initialize(document.getFile(), loginUser, command.getGroup());
 				posts = fileImporter.getPosts();
 				
 				/*

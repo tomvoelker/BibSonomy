@@ -17,15 +17,15 @@ public class ImportCommand extends BaseCommand{
 	
 	/** the import-type describes which kind of import will be used 
 	 *  e.g. FireFox import, Delicious import etc.. **/
-	private String importType;
+	private String type;
 	
 	/** in case of an import from a remote service 
 	 *  userName and passWord are required **/
 	private String userName;
 	private String passWord;
 	
-	/** the grouping-type, private or public **/
-	private String grouping;
+	/** the group: private or public **/
+	private String group;
 	
 	private int totalCount;
 	
@@ -51,7 +51,7 @@ public class ImportCommand extends BaseCommand{
 		return this.overwrite;
 	}
 	/**
-	 * @param overWrite
+	 * @param overwrite
 	 */
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
@@ -60,13 +60,13 @@ public class ImportCommand extends BaseCommand{
 	 * @return the actual import-type
 	 */
 	public String getImportType() {
-		return this.importType;
+		return this.type;
 	}
 	/**
-	 * @param importType
+	 * @param type
 	 */
-	public void setImportType(String importType) {
-		this.importType = importType;
+	public void setType(String type) {
+		this.type = type;
 	}
 	/**
 	 * @return the userName, required for importing resources form a remote service
@@ -138,15 +138,15 @@ public class ImportCommand extends BaseCommand{
 	 * 
 	 * @return
 	 */
-	public String getGrouping() {
-		return this.grouping;
+	public String getGroup() {
+		return this.group;
 	}
 	/**
 	 * 
-	 * @param grouping
+	 * @param group
 	 */
-	public void setGrouping(String grouping) {
-		this.grouping = grouping;
+	public void setGroup(String group) {
+		this.group = group;
 	}
 	/**
 	 * 

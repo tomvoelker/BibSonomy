@@ -31,7 +31,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  */
 public class JabRefImportController implements MinimalisticController<JabRefImportCommand>, ErrorAware {
 
-	private static final Log log = LogFactory.getLog(ImportController.class);
+	private static final Log log = LogFactory.getLog(ImportBookmarksController.class);
 
 	/**
 	 * hold current errors

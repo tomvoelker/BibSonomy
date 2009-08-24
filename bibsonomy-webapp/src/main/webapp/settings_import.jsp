@@ -1,7 +1,7 @@
 	<%-- ############################################# import tab ############################################# --%>
 		<%-- ------------------------ firefox import -------------------------- --%>
 		<h2>import your bookmarks from Firefox:</h2>
-		<form enctype="multipart/form-data" method="POST" action="/bookmarkHandler?import=firefox">
+		<form enctype="multipart/form-data" method="POST" action="/import/firefox">
 		  <table> 
 		   <tr>
 		   <td>select your file:</td>
@@ -13,7 +13,10 @@
 		      </c:forEach></select></td>
 		    </tr>
 		   <tr><td></td><td><input type="checkbox" name="overwrite" value="yes">Firefox bookmarks overwrite ${projectName} bookmarks</td></tr>
-		   <tr><td><input type="submit" value="import bookmarks"></td><td></td></tr>
+		   <tr><td>
+              <input type="hidden" name="ckey" value="${ckey}"/>
+              <input type="submit" value="import bookmarks">
+           </td><td></td></tr>
 		  </table> 
 		</form>
 		
@@ -21,17 +24,16 @@
 		
 		<%-- ------------------------ delicious import -------------------------- --%>
 		<h2>import your Delicious data:</h2>
-		<form method="POST" action="/bookmarkHandler">
+		<form method="POST" action="/import/delicious">
 	  	<table>
-	    	<tr><td>username</td><td><input type="text" name="username" size="30"/></td></tr>
-	    	<tr><td>password</td><td><input type="password" name="password" size="30"/></td></tr>
+	    	<tr><td>username</td><td><input type="text" name="userName" size="30"/></td></tr>
+	    	<tr><td>password</td><td><input type="password" name="passWord" size="30"/></td></tr>
 	    	<tr>
 	      		<td colspan="2">group settings will be transferred from Delicious</td>
 	    	</tr>
 	    	<tr><td></td><td><input type="checkbox" name="overwrite" value="yes">Delicious bookmarks overwrite ${projectName} bookmarks</td></tr>
 	    	<tr><td>
 	      		<input type="hidden" name="ckey" value="${ckey}"/>
-	      		<input type="hidden" name="import" value="delicious"/>
 	      		<input type="submit" value="import bookmarks"/>
 	    	</td><td></td></tr>
 	  	</table>
