@@ -14,7 +14,7 @@
 	
 	<!-- Display userName and passWord to supply the user's credentials -->
 	<div id="fsform">
-		<form:form action="/import" method="post" enctype="multipart/form-data">
+		<form:form action="/import/firefox" method="post" enctype="multipart/form-data">
 			<fieldset class="fsInner">
 				
 				<legend>Firefox</legend>
@@ -34,12 +34,12 @@
 					<tr>
 						<td>
 							<!-- set the visibility of the resources -->
-							<form:label path="grouping">
+							<form:label path="group">
 								<fmt:message key="post.resource.viewablefor"/>:
 							</form:label>
 						</td>
 						<td>
-							<form:select path="grouping" id="viewablebox">
+							<form:select path="group" id="viewablebox">
 							<form:option label="${public}" value="public"/>
 							<form:option label="${private}" value="private"/>
 						</form:select>
@@ -57,9 +57,8 @@
 						</td>
 					</tr>
 				</table>
+                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 				<input type="submit" value="${valueButton}" />
-				<!-- The hidden field contains respective the importType -->
-				<input name="importType" type="hidden" value="firefox"/>
 			</fieldset>
 		</form:form>
 	</div>
