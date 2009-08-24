@@ -14,6 +14,19 @@
 		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="urlMap">
 			<map merge="true">
+				<entry key="/generalAjax">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="generalAjaxController"/>
+						 <property name="allowedFields">
+                            <list>
+                                <value>action</value>
+								<value>pageURL</value>
+								<value>q</value>
+								<value>requestedUser</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<!-- get recommendations for user -->
 				<entry key="/ajax/getBookmarkRecommendedTags">
 					<bean parent="controllerBase">
@@ -83,7 +96,7 @@
 				</entry>
 				<entry key="/ajax/pickUnpickPost">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="basketManagerController" />
+						<property name="controllerBeanName"	value="basketController" />
 						<property name="allowedFields" >
 							<list>
 								<value>requestedResourceHash</value>
@@ -102,6 +115,13 @@
 	<!--+
 		| ajax controller
 		+-->
+
+	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.GeneralAjaxController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>	
+		
+		
 	<!-- controller for handling recommendation requests -->
 	<bean id="ajaxGetBookmarkRecommendedTagsController"
 		class="org.bibsonomy.webapp.controller.ajax.GetBookmarkRecommendedTagsController"
@@ -126,10 +146,14 @@
 		<!-- tag recommender used for spammer -->
 		<property name="spamTagRecommender" ref="jensRecommender"/>
 	</bean>
+	
+	
 	<bean id="followerAjaxController" class="org.bibsonomy.webapp.controller.ajax.FollowerAjaxController" scope="request">
 		<property name="logic" ref="logic" />
 	</bean>
-	<bean id="basketManagerController" class="org.bibsonomy.webapp.controller.ajax.BasketManagerController" scope="request">
+	
+	
+	<bean id="basketController" class="org.bibsonomy.webapp.controller.ajax.BasketController" scope="request">
 		<property name="logic" ref="logic" />
 		<property name="requestLogic" ref="requestLogic"/>
 	</bean>

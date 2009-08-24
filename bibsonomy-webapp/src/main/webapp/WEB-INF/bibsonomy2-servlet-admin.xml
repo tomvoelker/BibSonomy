@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	                    http://www.springframework.org/schema/beans/spring-beans.xsd
+	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+
+
+	<!--  #################### url mapping #################### -->
+	<!--+
+		| url mapping for admin requests
+		| TODO: put everything below /admin/
+		+-->
+	<bean id="adminUrlMapping" parent="urlMapping"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="urlMap">
+			<map merge="true">
+				<entry key="/admin">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="adminPageController" />
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+								<value>interval</value>
+								<value>limit</value>
+								<value>aclUserInfo</value>
+								<value>action</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/admin_userinfo">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="adminPageController" />
+						<property name="allowedFields">
+							<list>
+								<value>userinfo</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/admin_lucene">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="adminLuceneController" />
+						<property name="allowedFields">
+							<list>
+								<value>action</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/ajax">
+				    <!-- 
+				    	TODO: this is admin stuff and the URL really not good - 
+				    	      rename it to /admin/ajax/* or the like
+				     -->
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="adminAjaxController"/>
+						 <property name="allowedFields">
+                            <list>
+                                <value>action</value>
+								<value>userName</value>
+								<value>value</value>
+								<value>key</value>
+								<value>evaluator</value>
+							</list>
+						</property>
+					</bean>
+				</entry>				
+			</map>
+		</property>
+	</bean>
+
+
+
+	<!--  #################### controller #################### -->
+	
+	<bean id="adminPageController" class="org.bibsonomy.webapp.controller.AdminPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+	
+	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.AdminLuceneController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+
+	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.AdminAjaxController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+		
+</beans>

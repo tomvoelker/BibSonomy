@@ -170,72 +170,14 @@
 						<property name="controllerBeanName" value="popularPageController"/>
 					</bean>
 				</entry>
-				<entry key="/admin">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="adminPageController"/>
-						<property name="allowedFields">
-							<list>
-								<value>selTab</value>
-								<value>interval</value>
-								<value>limit</value>
-								<value>aclUserInfo</value>
-								<value>action</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-					<entry key="/admin_userinfo">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="adminPageController"/>
-						<property name="allowedFields">
-							<list>
-								<value>userinfo</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-					<entry key="/admin_lucene">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="adminLuceneController"/>
-						<property name="allowedFields">
-							<list>
-								<value>action</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<entry key="/generalAjax">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="generalAjaxController"/>
-						 <property name="allowedFields">
-                            <list>
-                                <value>action</value>
-								<value>pageURL</value>
-								<value>q</value>
-								<value>requestedUser</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<entry key="/ajax">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="adminAjaxController"/>
-						 <property name="allowedFields">
-                            <list>
-                                <value>action</value>
-								<value>userName</value>
-								<value>value</value>
-								<value>key</value>
-								<value>evaluator</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
 				<entry key="/tags">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="popularTagsPageController"/>						
 					</bean>
 				</entry>	
+
+
+
 <!--CK-->
 				<entry key="/purpose">
 					<bean parent="controllerBase">
@@ -248,160 +190,7 @@
 					</bean>
 				</entry>
 <!--CK-->				
-				<!-- actions  -->
-				<entry key="/register">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="userRegistrationController"/>
-						<property name="allowedFields">	
-							<list>
-								<value>registerUser.name</value>
-								<value>registerUser.email</value>
-								<value>registerUser.password</value>
-								<value>registerUser.homepage</value>
-								<value>registerUser.realname</value>
-								<value>passwordCheck</value>
-								<!-- for admins which want to register a new user -->
-								<value>ckey</value>
-								<!-- for recaptcha -->
-								<value>recaptcha_response_field</value>
-								<value>recaptcha_challenge_field</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<entry key="/register_success">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="userRegistrationSuccessController"/>
-					</bean>
-				</entry>
-				<entry key="/register_openid_success">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="userOpenIDRegistrationSuccessController"/>
-					</bean>
-				</entry>
-				
-				<!-- actions  -->
-				<entry key="/registerOpenID">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="userOpenIDRegistrationController"/>
-						<property name="allowedFields">	
-							<list>		
-								<!-- for admins which want to register a new user -->
-								<value>ckey</value>
-								<value>step</value>
-								<value>registerUser.name</value>
-								<value>registerUser.email</value>
-								<value>registerUser.openID</value>
-								<value>registerUser.password</value>
-								<value>registerUser.homepage</value>
-								<value>registerUser.realname</value>
-								<value>registerUser.gender</value>
-								<value>registerUser.place</value>																
-							</list>
-						</property>
-					</bean>
-				</entry>
-				
-				<entry key="/login">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="userLoginController"/>
-						<property name="allowedFields">
-							<list>
-								<value>username</value>
-								<value>password</value>
-								<value>referer</value>
-								<value>notice</value>
-								<value>openID</value>							
-							</list>
-						</property>
-					</bean>
-				</entry>
-				
-				<entry key="/uploadFile">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="uploadFileController"/>
-						<property name="allowedFields">
-							<list>
-								<value>file</value>
-								<value>resourceHash</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				
-				<entry key="/downloadFile">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="downloadFileController"/>
-						<property name="allowedFields">
-							<list>
-								<value>intrahash</value>
-								<value>requestedUser</value>
-								<value>filename</value>
-								<value>ckey</value>
-								<value>action</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				
-				<entry key="/reminder">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="passwordReminderController"/>
-						<property name="allowedFields">
-							<list>
-								<value>userName</value>
-								<value>userEmail</value>
-								<value>recaptcha_response_field</value>
-								<value>recaptcha_challenge_field</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				
-				<entry key="/change_password">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="passwordChangeOnRemindController"/>
-						<property name="allowedFields">
-							<list>
-								<value>userName</value>
-								<value>newPassword</value>
-								<value>passwordCheck</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<entry key="/postBookmark">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="postBookmarkController"/>
-						<property name="allowedFields" ref="bookmarkRequestParameters"/>
-					</bean>
-				</entry>
-				<entry key="/postPublication">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="postPublicationController"/>
-						<property name="allowedFields" ref="publicationRequestParameters"/>
-					</bean>
-				</entry> 
-				<entry key="/actions/admin/group">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="groupAdminPageController"/>
-					</bean>
-				</entry>
-				<entry key="/actions/goodBye">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="deleteUserController"/>
-						<property name="allowedFields">
-							<list>
-								<value>delete</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<entry key="/postBookmarkSuccess">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="postBookmarkSuccessController"/>
-					</bean>
-				</entry>
+
 				<entry key="/mySearch">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="mySearchController"/>
@@ -422,148 +211,17 @@
 						<property name="controllerBeanName" value="relationsController"/>
 					</bean>
 				</entry>
-				<entry key="/post_bookmark">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="postBookmarkPageController"/>
-					</bean>
-				</entry>	
 				<entry key="/followers">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="followersPageController"/>
-					</bean>
-				</entry>
-				<entry key="/batchEdit_new">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="batchEditController"/>
-						<property name="allowedFields">
-							<list>
-								<value>ckey</value>
-								<value>oldTags[*]</value>
-								<value>newTags[*]</value>
-								<value>tags</value>
-								<value>delete[*]</value>
-								<value>referer</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<entry key="/deletePost">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="deletePostController"/>
-						<property name="allowedFields">
-							<list>
-								<value>resourceHash</value>
-								<value>ckey</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<entry key="/import">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="importController"/>
-						<property name="allowedFields">
-							<list>
-								<value>file</value>
-								<value>grouping</value>
-								<value>importType</value>
-								<value>overwrite</value>
-								<value>userName</value>
-								<value>passWord</value>
-								<value>importData</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
-				<entry key="/jabrefImport">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="importJabRefLayout"/>
-						<property name="allowedFields">
-							<list>
-								<value>fileBegin</value>
-								<value>fileItem</value>
-								<value>fileEnd</value>
-								<value>action</value>
-								<value>ckey</value>
-								<value>hash</value>
-							</list>
-						</property>
 					</bean>
 				</entry>
 			</map>
 		</property>
 	</bean>
 	
-	
-    <!--  #################### request parameter lists #################### -->
-	<!-- bookmark request parameters -->
-	<util:list id="bookmarkRequestParameters">
-		<value>post.resource.url</value>
-		<value>post.resource.title</value>
-		<value>post.description</value>
-		<value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
-		<value>tags</value>
-		<value>url</value>
-		<value>description</value>
-		<value>extended</value>
-		<value>copytag</value>
-		<value>abstractGrouping</value>
-		<value>groups</value>
-		<value>intraHashToUpdate</value>
-		<value>jump</value>
-		<value>relevantGroups</value>
-		<value>acceptComma</value>
-		<value>postID</value>								
-	</util:list>
 
-	<!-- publication request parameters -->
-	 <util:list id="publicationRequestParameters">
-	  <value>post.description</value>
-	  <value>post.date</value> <!-- only allowed for DBLP and used by DBLP updater -->
-	  <value>post.resource.url</value>
-	  <value>post.resource.title</value>
-	  <value>post.resource.author</value>
-	  <value>post.resource.editor</value>
-	  <value>post.resource.entrytype</value>
-	  <value>post.resource.bibtexKey</value>
-	  <value>post.resource.year</value>
-	  <value>post.resource.booktitle</value>
-	  <value>post.resource.journal</value>
-	  <value>post.resource.volume</value>
-	  <value>post.resource.number</value>
-	  <value>post.resource.series</value>
-	  <value>post.resource.pages</value>
-	  <value>post.resource.month</value>
-	  <value>post.resource.day</value>
-	  <value>post.resource.publisher</value>
-	  <value>post.resource.edition</value>
-	  <value>post.resource.chapter</value>
-	  <value>post.resource.bKey</value>
-	  <value>post.resource.type</value>
-	  <value>post.resource.howpublished</value>
-	  <value>post.resource.institution</value>
-	  <value>post.resource.organization</value>
-	  <value>post.resource.school</value>
-	  <value>post.resource.crossref</value>
-	  <value>post.resource.misc</value>
-	  <value>post.resource.abstract</value>
-	  <value>post.resource.privnote</value>
-	  <value>post.resource.note</value>
-	  <value>post.resource.annote</value>
-  	  <value>post.resource.address</value>
-      <value>post.resource.key</value>	  
-	  <value>tags</value>
-	  <value>url</value>
-	  <value>description</value>
-	  <value>extended</value>
-	  <value>copytag</value>
-	  <value>abstractGrouping</value>
-	  <value>groups</value>
-	  <value>intraHashToUpdate</value>
-	  <value>jump</value>
-	  <value>relevantGroups</value>
-	  <value>acceptComma</value>
-	  <value>postID</value>        
-	 </util:list>
+
 
     <!--  #################### controller #################### -->
 	<bean id="homepageController" class="org.bibsonomy.webapp.controller.HomepageController" scope="request">
@@ -752,13 +410,6 @@
 		<property name="requestLogic" ref="requestLogic"/>
 	</bean>
 
-	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="BUTTONS"></property>
-	</bean>
-
-	<bean id="postBookmarkPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
-		<property name="view" value="POST_BOOKMARK_PAGE"></property>
-	</bean>
 
 	<bean id="batchEditController" class="org.bibsonomy.webapp.controller.actions.BatchEditController" scope="request">
 		<property name="logic" ref="logic"/>
@@ -795,26 +446,6 @@
 		</property>
 	</bean>
 	
-	<bean id="adminPageController" class="org.bibsonomy.webapp.controller.AdminPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-	</bean>
-	
-	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.AdminLuceneController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-	</bean>
-
-	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.AdminAjaxController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-	</bean>
-		
-	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.GeneralAjaxController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-	</bean>	
-	
 	<bean id="popularTagsPageController" class="org.bibsonomy.webapp.controller.PopularTagsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
@@ -834,8 +465,6 @@
 		</property>
 	</bean>
 			
-	<!--<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.ButtonPageController"/>-->	
-
 	<!-- <bean id="purposeTagsPageController" class="org.bibsonomy.webapp.controller.PurposeTagsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
@@ -845,19 +474,14 @@
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>-->
-	<!-- 
-	    This bean provides admin access to the logic interface by predicting 
-	    to be a user with role "admin". 
-	 -->
-	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="request">
-	    <!-- name the admin user will have when accessing the logic interface -->
-		<property name="adminUserName" value="admin"/>
-		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-	</bean>	
 	
-	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
+	
+	
+	
 	
 	<!--  #################### factory beans #################### -->
+
+	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
 	
 	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" factory-method="getInstance"/>
 
@@ -892,16 +516,18 @@
 	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-	</bean>		
-	
-	<bean id="deliciousImporterFactory" class="org.bibsonomy.importer.bookmark.service.DeliciousImporterFactory">
-		<property name="bundlesPath" value="/v1/tags/bundles/all"/>
-		<property name="postsPath" value="/v1/posts/all"/>
-		<property name="port" value="-1"/>
-		<property name="protocol" value="https"/>
-		<property name="host" value="api.del.icio.us"/>
-		<property name="userAgent" value="Wget/1.9.1"/>
 	</bean>
+
+	<!-- 
+	    This bean provides admin access to the logic interface by predicting 
+	    to be a user with role "admin". 
+	 -->
+	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="request">
+	    <!-- name the admin user will have when accessing the logic interface -->
+		<property name="adminUserName" value="admin"/>
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+	</bean>	
+	
 	
 	<!--  #################### interceptors #################### -->
 
@@ -935,10 +561,18 @@
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"/>
 	
 
-	<!--  #################### imports #################### -->
+	<!--  #################### static views #################### -->
+	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="BUTTONS"></property>
+	</bean>
 
+
+
+	<!--  #################### imports #################### -->
+    <import resource="bibsonomy2-servlet-fields.xml"/>
     <import resource="bibsonomy2-servlet-recommender.xml"/>	
     <import resource="bibsonomy2-servlet-actions.xml"/>
     <import resource="bibsonomy2-servlet-ajax.xml"/>	
-    <import resource="bibsonomy2-servlet-fields.xml"/> 
+    <import resource="bibsonomy2-servlet-admin.xml"/>
+
 </beans>

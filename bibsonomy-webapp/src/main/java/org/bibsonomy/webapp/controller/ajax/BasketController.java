@@ -23,8 +23,8 @@ import org.springframework.validation.Errors;
  * @author Christian Kramer
  * @version $Id$
  */
-public class BasketManagerController extends AjaxController implements MinimalisticController<BasketManagerCommand>, ErrorAware{
-	private static final Log log = LogFactory.getLog(BasketManagerController.class);
+public class BasketController extends AjaxController implements MinimalisticController<BasketManagerCommand>, ErrorAware {
+	private static final Log log = LogFactory.getLog(BasketController.class);
 	
 	private Errors errors;
 	
@@ -38,14 +38,17 @@ public class BasketManagerController extends AjaxController implements Minimalis
 
 	@Override
 	public View workOn(BasketManagerCommand command) {
-		log.info(this.getClass().getSimpleName());
+		log.debug(this.getClass().getSimpleName());
 		
 		// user has to be logged in
 		if (!command.getContext().isUserLoggedIn()){
+			/*
+			 * TODO: send to login page with meaningful help message
+			 */
 			return new ExtendedRedirectView("/");
 		}
 		
-		//check if ckey is valid
+		// check if ckey is valid
 		if (!command.getContext().isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
@@ -62,7 +65,7 @@ public class BasketManagerController extends AjaxController implements Minimalis
 		}
 		
 		// create list of posts by hash data and given username
-		List<Post<BibTex>> posts = createObjects(command);
+		final List<Post<BibTex>> posts = createObjects(command);
 
 		// decide which method will be called
 		if (command.getAction().startsWith("pick")){
@@ -86,23 +89,23 @@ public class BasketManagerController extends AjaxController implements Minimalis
 	 */
 	private List<Post<BibTex>> createObjects(BasketManagerCommand command){
 		// create new list and necessary variables
-		List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
-		Post<BibTex> post;
-		User user;
-		BibTex bib;
+		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
 		
 		// get the has string
-		String hash = command.getRequestedResourceHash();
+		final String hash = command.getRequestedResourceHash();
 		
 		// if its bigger than 33 chars split it else easy handling
 		if (hash.length() > 33){
-			for (String s:hash.split(" ")){
-				post = new Post<BibTex>();
-				user = new User();
-				bib = new BibTex();
+			/*
+			 * add several posts - "pick all"
+			 */
+			for (final String s:hash.split(" ")){
+				final Post<BibTex> post = new Post<BibTex>();
+				final User user = new User();
+				final BibTex bib = new BibTex();
 				
 				// split string i.e. 1717560e1867fcb75197fe8689e1cc0d/daill
-				String[] hashAndOwner = s.split("/");
+				final String[] hashAndOwner = s.split("/");
 
 				user.setName(hashAndOwner[1]);
 				
@@ -113,9 +116,12 @@ public class BasketManagerController extends AjaxController implements Minimalis
 				posts.add(post);
 			}
 		} else {
-			post = new Post<BibTex>();
-			user = new User();
-			bib = new BibTex();
+			/*
+			 * add one post - "pick one"
+			 */
+			final Post<BibTex> post = new Post<BibTex>();
+			final User user = new User();
+			final BibTex bib = new BibTex();
 			
 			bib.setIntraHash(hash);
 			post.setResource(bib);
@@ -128,20 +134,11 @@ public class BasketManagerController extends AjaxController implements Minimalis
 				
 		return posts;
 	}
-	
-	/**
-	 * set logic
-	 */
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
-	}
-	
-	@Override
+
 	public Errors getErrors() {
 		return this.errors;
 	}
 
-	@Override
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
