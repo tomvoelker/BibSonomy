@@ -676,7 +676,6 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 */
 
 	public ResultList<Post<BibTex>> getBibTexSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames, final int limit, final int offset, final DBSession session) {
-		final Log LOGGER = LogFactory.getLog(BibTexDatabaseManager.class);
 		ResultList<Post<BibTex>> postBibtexList = new ResultList<Post<BibTex>>();
 /*
 		final BibTexParam param = new BibTexParam();
@@ -703,7 +702,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		postBibtexList = lucene.search(group, search, requestedUserName, UserName, GroupNames, limit, offset);
 
 		long endtimeQuery = System.currentTimeMillis();
-		LOGGER.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+		log.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
 		
 
@@ -1649,7 +1648,6 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 	 * @return list of bibtex entries
 	 */
 	public List<Post<BibTex>> getBibTexByAuthorLucene(String search, int groupType, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, final int limit, final int offset, final int simHash, final List<String> tagIndex, final DBSession session){
-		final Log LOGGER = LogFactory.getLog(BibTexDatabaseManager.class);
 		ResultList<Post<BibTex>> postBibtexList = new ResultList<Post<BibTex>>();
 		
 		/*
@@ -1683,7 +1681,7 @@ public class BibTexDatabaseManager extends AbstractDatabaseManager implements Cr
 		postBibtexList = lucene.searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, limit, offset);
 		
 		long endtimeQuery = System.currentTimeMillis();
-		LOGGER.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+		log.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
 		return postBibtexList;
 	}

@@ -589,7 +589,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @return list of bookmark posts
 	 */
 	public ResultList<Post<Bookmark>> getBookmarkSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames,  final int limit, final int offset, final DBSession session) {
-		final Log LOGGER = LogFactory.getLog(BookmarkDatabaseManager.class);
+
 		ResultList<Post<Bookmark>> postBookmarkList = new ResultList<Post<Bookmark>>();
 
 
@@ -609,7 +609,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		postBookmarkList = lucene.searchLucene(group, search, requestedUserName, UserName, GroupNames, limit, offset);
 		
 		long endtimeQuery = System.currentTimeMillis();
-		LOGGER.debug("LuceneBookmark complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+		log.debug("LuceneBookmark complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
 /*
 		long starttimeTable = System.currentTimeMillis();
