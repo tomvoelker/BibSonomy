@@ -745,6 +745,21 @@
 	</rule>
 
 
+	<!-- ############## actions ############### -->
+	<rule>
+		<name>/import/delicious</name>
+		<from>^/import/delicious</from>
+		<set type="parameter" name="type">delicious</set>
+		<to last="true">/import/bookmarks</to>
+	</rule>
+	<rule>
+		<name>/import/firefox</name>
+		<from>^/import/firefox</from>
+		<set type="parameter" name="type">firefox</set>
+		<to last="true">/import/bookmarks</to>
+	</rule>
+	
+
 
 
 	<!-- ############## new actions - testing! ############### -->
