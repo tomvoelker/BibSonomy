@@ -121,6 +121,7 @@ public class UserValidator implements Validator<User> {
 				name.indexOf('-') != -1 ||
 				name.indexOf('+') != -1 ||
 				name.indexOf('/') != -1 ||
+				name.indexOf('\\') != -1 ||
 				name.indexOf(':') != -1 ||
 				name.indexOf('&') != -1 ||
 				name.indexOf('?') != -1 ||
