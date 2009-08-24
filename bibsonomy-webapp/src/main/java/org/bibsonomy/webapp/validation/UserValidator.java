@@ -118,6 +118,8 @@ public class UserValidator implements Validator<User> {
 				"null".equals(name) ||
 				name.length()      > 30 ||
 				name.matches("(?s).*\\s.*") ||
+				// FIXME: replace the blacklist below with a white list like
+				// name.matches(".*[^\\w\\.äöüÄÖU]") ||				
 				name.indexOf('-') != -1 ||
 				name.indexOf('+') != -1 ||
 				name.indexOf('/') != -1 ||
