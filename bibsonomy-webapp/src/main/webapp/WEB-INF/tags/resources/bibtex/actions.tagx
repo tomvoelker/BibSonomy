@@ -89,9 +89,21 @@
                    <c:param name="resourceHash" value="${post.resource.intraHash}" />
                    <c:param name="ckey" value="${ckey}" />
                 </c:url>
-               <a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}">
-                  <fmt:message key="bibtex.actions.delete"/>
-               </a>                
+                <c:choose>
+                	<!-- SHOW A CONFIRM WINDOW -->
+                	<c:when test="${command.context.loginUser.settings.confirmDelete}">
+                    	<a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}" 
+                    		onclick="javascript: return confirmDelete(event);">
+                         		<fmt:message key="bibtex.actions.delete"/>
+                      	</a>
+                	</c:when>
+                	<!-- JUST DELETE -->
+                	<c:otherwise>
+                    	<a href="${fn:escapeXml(deleteUrl)}" title="${deleteTitle}">
+                    		<fmt:message key="bibtex.actions.delete"/>
+                    	</a>
+                	</c:otherwise>
+                </c:choose>                
 			</c:otherwise>
 		</c:choose>
 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>

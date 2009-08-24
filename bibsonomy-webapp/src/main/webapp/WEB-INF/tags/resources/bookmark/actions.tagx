@@ -32,10 +32,21 @@
 				</a>
                 <!-- a href="${fn:escapeXml(url_edit_new)}">EDIT NEW</a-->
 	            <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
-			    <a href="${fn:escapeXml(url_delete)}"
-			       title="${deleteTitle}">		       
-			       <fmt:message key="bookmark.actions.delete"/>
-			    </a>
+			    <c:choose>
+			    	<!-- SHOW A CONFIRM WINDOW -->
+			    	<c:when test="${command.context.loginUser.settings.confirmDelete}">
+			    		<a href="${fn:escapeXml(url_delete)}" title="${deleteTitle}" 
+			    			onclick="javascript: return confirmDelete(event);">
+			    			<fmt:message key="bookmark.actions.delete"/>
+			    		</a>
+			    	</c:when>
+			    	<!-- JUST DELETE -->
+			    	<c:otherwise>
+			    		<a href="${fn:escapeXml(url_delete)}" title="${deleteTitle}">		       
+			       			<fmt:message key="bookmark.actions.delete"/>
+			    		</a>
+			    	</c:otherwise>
+			    </c:choose>
 			</c:if>
 	
 			<c:if test="${loginUserName ne post.user.name}">
