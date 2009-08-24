@@ -8,7 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.ajax.BasketManagerCommand;
 import org.bibsonomy.webapp.controller.AjaxController;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -28,7 +27,6 @@ public class BasketController extends AjaxController implements MinimalisticCont
 	
 	private Errors errors;
 	
-	private LogicInterface logic;
 	private RequestLogic requestLogic;
 
 	@Override

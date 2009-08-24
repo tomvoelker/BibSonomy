@@ -89,6 +89,7 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 			errors.reject("error.field.valid.ckey");
 			/*
 			 * FIXME: correct URL?
+			 * FIXME: don't do this on first call of form!
 			 */
 			return Views.IMPORT;
 		}
