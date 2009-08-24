@@ -51,56 +51,7 @@
 		   	</tr>
 		  </table> 
 		  
-		  <c:choose>
-		  	<c:when test="${not empty command.newBookmarks}">
-		  		<br />
-		  		<h2><fmt:message key="settings.firefox.newBookmarks"/>:</h2>
-		  		<div>
-		  		<table>
-		  			<c:forEach items="${command.newBookmarks}" var="mapEntry">
-    					<tr>
-        					<td>${mapEntry.value}</td>
-        					<!-- <td>${mapEntry.key}</td> -->
-			    		</tr>
-					</c:forEach>
-				</table>
-				</div>
-		  	</c:when>
-		  </c:choose>
-		  
-		  <c:choose>
-		  <c:when test="${not empty command.updatedBookmark}">
-		  
-		  <br />
-		  <h2><fmt:message key="settings.firefox.updatedBookmarks"/>:</h2>
-		  <div>
-		  	<table>
-		  	<c:forEach items="${command.updatedBookmark}" var="mapEntry">
-    			<tr>
-        			<td>${mapEntry.value}</td>
-        			<!-- <td>${mapEntry.key}</td> -->
-			    </tr>
-			</c:forEach>
-			</table>
-		  </div>
-		  </c:when>
-		  </c:choose>
-		  
-		  <c:choose>
-		  <c:when test="${not empty command.nonCreatedBookmark}">
-		  <h2><fmt:message key="settings.firefox.nonImportedBookmarks"/>:</h2>
-		  	<div>
-		  		<table>
-		  			<c:forEach items="${command.nonCreatedBookmark}" var="mapEntry">
-    					<tr>
-        					<td>${mapEntry}</td>
-			    		</tr>
-					</c:forEach>
-				</table>
-			</div>
-		  </c:when>
-		  </c:choose>
-		  
+		  <input name="ckey" type="hidden" value="${command.context.ckey}"/>
 		  <input name="importType" type="hidden" value="firefox"/>
 
 		</form:form>
@@ -159,72 +110,55 @@
 		<h2>JabRef layout file</h2>
 		
 		<p>
-		For an explanation on how to write such export filters, have a look at 
-		<a href="http://jabref.sourceforge.net/help/CustomExports.php">the JabRef page</a>.
-		You (and only you!) can use these layouts to show ${projectName}'s publication lists
-		in a format of your choice. After uploading the correct file(s) have a look at
-		<a href="/layout/custom/user/${userName}">my${projectName}</a> to see 
-		how it looks.
+		<fmt:message key="settings.jabref.explain">
+			<fmt:param><a href="/layout/custom/user/${userName}">${projectName}</a></fmt:param>		
+		</fmt:message>
 		</p>
+			
+		<c:set var="actionJabRef" />
+		<!--<c:set var="ckey" value="${command.context.ckey}" />-->
 		
-		<form enctype="multipart/form-data" method="post" action="/LayoutHandler" style="display:inline;">
-		  <table>
-		    <tr> 
-		      <td>begin.layout</td>
-		      <td><c:choose>
-		        <c:when test="${empty layoutBean.beginName}"><input name="file.begin" type="file" size="20"/></c:when>
-		        <c:otherwise><c:out value="${layoutBean.beginName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.beginHash}&amp;action=delete">delete</a></c:otherwise>
-		      </c:choose></td>
-		      <td>(appears at the beginning of the output, optional)</td>
-		    </tr><tr>
-		      <td>item.layout</td>
-		      <td><c:choose>
-		        <c:when test="${empty layoutBean.itemName}"><input name="file.item" type="file" size="20"/></c:when>
-		        <c:otherwise><c:out value="${layoutBean.itemName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.itemHash}&amp;action=delete">delete</a></c:otherwise>
-		      </c:choose></td>
-		      <td>(used to render each publication item)</td>
-		    </tr><tr>
-		      <td>end.layout</td>
-		      <td><c:choose>
-		        <c:when test="${empty layoutBean.endName}"><input name="file.end" type="file" size="20"/></c:when>
-		        <c:otherwise><c:out value="${layoutBean.endName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.endHash}&amp;action=delete">delete</a></c:otherwise>
-		      </c:choose></td>
-		      <td>(appears at the end of the output, optional)</td>
-		    </tr><tr>
-		      <td><input type="submit" value="upload" /><div class="errmsg"><c:out value="${layoutBean.error}"/></div></td>
-		      <td></td>
-		    </tr>
-		  </table>
-		</form>	
-		
-		<form:form id="settingImportForm" action="/settingsnew?selTab=${command.selTab}" method="post" enctype="multipart/form-data">
+		<form:form id="settingImportForm" action="/jabrefImport" method="post" enctype="multipart/form-data">
 			<table>
 		    <tr> 
 		      <td>begin.layout</td>
 		      <td><c:choose>
-		        <c:when test="${empty layoutBean.beginName}"><input name="file.begin" type="file" size="20"/></c:when>
-		        <c:otherwise><c:out value="${layoutBean.beginName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.beginHash}&amp;action=delete">delete</a></c:otherwise>
+		        <c:when test="${empty command.beginName}">
+		        	<c:set var="actionJabRef" value="create"/>
+		        	<input name="fileBegin" type="file" size="20"/>
+		        </c:when>
+		        <c:otherwise><c:out value="${command.beginName}"/><a class="action" href="/jabrefImport?hash=${command.beginHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a></c:otherwise>
 		      </c:choose></td>
-		      <td>(appears at the beginning of the output, optional)</td>
+		      <td><fmt:message key="settings.jabref.beginning"/></td>
 		    </tr><tr>
 		      <td>item.layout</td>
 		      <td><c:choose>
-		        <c:when test="${empty layoutBean.itemName}"><input name="file.item" type="file" size="20"/></c:when>
-		        <c:otherwise><c:out value="${layoutBean.itemName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.itemHash}&amp;action=delete">delete</a></c:otherwise>
+		        <c:when test="${empty command.itemName}">
+		        	<c:set var="actionJabRef" value="create"/>
+		        	<input name="fileItem" type="file" size="20"/>
+		        </c:when>
+		        <c:otherwise><c:out value="${command.itemName}"/><a class="action" href="/jabrefImport?hash=${command.itemHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a></c:otherwise>
 		      </c:choose></td>
-		      <td>(used to render each publication item)</td>
+		      <td><fmt:message key="settings.jabref.item"/></td>
 		    </tr><tr>
 		      <td>end.layout</td>
 		      <td><c:choose>
-		        <c:when test="${empty layoutBean.endName}"><input name="file.end" type="file" size="20"/></c:when>
-		        <c:otherwise><c:out value="${layoutBean.endName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.endHash}&amp;action=delete">delete</a></c:otherwise>
+		        <c:when test="${empty command.endName}">
+		        	<c:set var="actionJabRef" value="create"/>
+		        	<input name="fileEnd" type="file" size="20"/>
+		        </c:when>
+		        <c:otherwise><c:out value="${command.endName}"/><a class="action" href="/jabrefImport?hash=${command.endHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a></c:otherwise>
 		      </c:choose></td>
-		      <td>(appears at the end of the output, optional)</td>
+		      <td><fmt:message key="settings.jabref.end"/></td>
 		    </tr><tr>
 		      <td><input type="submit" value="upload" /><div class="errmsg"><c:out value="${layoutBean.error}"/></div></td>
 		      <td></td>
 		    </tr>
 		  </table>
-		</form:form>
-		
+		  
+		  <input name="ckey" type="hidden" value="${command.context.ckey}"/>
+		  <input name="action" type="hidden" value="${actionJabRef}"/> 
+		  <input name="importType" type="hidden" value="jabref"/>
+		  
+		</form:form>		
 </jsp:root>
