@@ -135,13 +135,15 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		param.setUpdatedAt(new Date());
 		param.setGroupRange(Integer.MIN_VALUE);
 
+		// first update user table so that user is flagged as spammer
 		session.beginTransaction();
+		boolean predictionChange = checkPredictionChange(param, session);
 
 		try {
 
 			if (!("classifier").equals(updatedBy)) {
 				this.update("flagSpammer", param, session);
-				this.updateGroupIds(param, session);
+				// this.updateGroupIds(param, session);
 			} else if ("off".equals(testMode)) {
 				// gets user data to check if to_classify is still set to 1
 				List<User> userData = this.queryForList("getClassifierUserBeforeUpdate", param, User.class, session);
@@ -149,27 +151,51 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 				// already classified the specific user
 				if (userData.get(0).getToClassify() == 1) {
 					// only change user settings when prediction changes
-					if (checkPredictionChange(param, session)) {
+					if (predictionChange) {
 						this.update("flagSpammer", param, session);
-						this.updateGroupIds(param, session);
+						// this.updateGroupIds(param, session);
 					}
 				}
 			}
 			
 			// update log tables
-			if (checkPredictionChange(param, session)) {
+			if (predictionChange) {
 
 				// logs all predictions ever made
 				this.insert("logPrediction", param, session);
-				
+
 				// logs the current prediction
 				this.insert("logCurrentPrediction", param, session);
-				
+
 			}
-			
+
 			session.commitTransaction();
 
 		} finally {
+			// in case of failure, session should be locked in DbSessionImpl
+			session.endTransaction();
+		}
+
+		// update group ids in a second step
+		session.beginTransaction();
+
+		try {
+
+			if (!("classifier").equals(updatedBy)) {
+				this.updateGroupIds(param, session);
+			} else if ("off".equals(testMode)) {
+				// only change user settings when prediction changes
+				if (predictionChange) {
+					this.updateGroupIds(param, session);
+				}
+			}
+
+			
+
+			session.commitTransaction();
+
+		} finally {
+			// end transaction in any case
 			session.endTransaction();
 		}
 
@@ -358,12 +384,13 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Stores classifier's meta information in given user object
 	 * 
-	 * @param user the user object
+	 * @param user
+	 *            the user object
 	 */
 	public User getClassifierUserDetails(final User user, final DBSession session) {
 		return this.queryForObject("getClassifierUserDetails", user.getName(), user, session);
 	}
-	
+
 	/**
 	 * Retrieves a comparison of classification results of admins and the
 	 * automatic classifier
