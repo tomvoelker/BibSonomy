@@ -450,7 +450,14 @@ public enum Views implements View {
 	/**
 	 * show followers
 	 */
-	FOLLOWERS("followers");
+	FOLLOWERS("followers"),
+	
+	/**
+	 * show followers
+	 */
+	EDIT_TAGS("actions/edit/edittags");
+	
+
 	
 	
 	
