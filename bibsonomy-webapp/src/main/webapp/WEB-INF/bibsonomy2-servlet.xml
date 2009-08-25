@@ -174,11 +174,13 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="popularTagsPageController"/>						
 					</bean>
-				</entry>	
-
-
-
-<!--CK-->
+				</entry>			
+				<entry key="/edit_tags">
+				<bean parent="controllerBase">
+						<property name="controllerBeanName" value="EditTagsPageController"/>						
+					</bean>
+				</entry>
+				<!--CK-->
 				<entry key="/purpose">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="purposeTagsPageController"/>
@@ -190,7 +192,6 @@
 					</bean>
 				</entry>
 <!--CK-->				
-
 				<entry key="/mySearch">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="mySearchController"/>
@@ -216,6 +217,65 @@
 						<property name="controllerBeanName" value="followersPageController"/>
 					</bean>
 				</entry>
+				<entry key="/batchEdit_new">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="batchEditController"/>
+						<property name="allowedFields">
+							<list>
+								<value>ckey</value>
+								<value>oldTags[*]</value>
+								<value>newTags[*]</value>
+								<value>tags</value>
+								<value>delete[*]</value>
+								<value>refe rer</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/deletePost">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="deletePostController"/>
+						<property name="allowedFields">
+							<list>
+								<value>resourceHash</value>
+								<value>ckey</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/import">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="importController"/>
+						<property name="allowedFields">
+							<list>
+								<value>file</value>
+								<value>grouping</value>
+								<value>importType</value>
+								<value>overwrite</value>
+								<value>userName</value>
+								<value>passWord</value>
+								<value>importData</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+				<entry key="/jabrefImport">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="importJabRefLayout"/>
+						<property name="allowedFields">
+							<list>
+								<value>fileBegin</value>
+								<value>fileItem</value>
+								<value>fileEnd</value>
+								<value>action</value>
+								<value>ckey</value>
+								<value>hash</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
+=======
+>>>>>>> 1.110
 			</map>
 		</property>
 	</bean>
@@ -356,7 +416,12 @@
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
-	
+<!-- EDIT TAGS!!! -->	
+	<bean id="EditTagsPageController" class="org.bibsonomy.webapp.controller.EditTagsPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 		<property name="requestLogic" ref="requestLogic"/>

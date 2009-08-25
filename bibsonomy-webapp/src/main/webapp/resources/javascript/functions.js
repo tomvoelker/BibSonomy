@@ -294,11 +294,14 @@ function filter_tags(e) {
  * and clears the suggestions
  */
 function setActiveInputField(id) {
-	var sg = document.getElementById("suggested");
-	while(sg.hasChildNodes())
-		sg.removeChild(sg.firstChild);
-
+	
 	activeField = id;
+	
+	var sg = document.getElementById("suggested");
+	if(sg){
+		while(sg.hasChildNodes())
+			sg.removeChild(sg.firstChild);
+	}
 }
 
 /*
