@@ -149,30 +149,12 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		 * check it here.
 		 */
 
+		
 		final User loginUser = context.getLoginUser();
 		final Post<RESOURCE> post = command.getPost();
 
-		/*
-		 * set the user of the post to the loginUser (the recommender might need
-		 * the user name)
-		 */
-		post.setUser(loginUser);
-
-		/*
-		 * initialize groups
-		 */
-		initPostGroups(command, post);
-		/*
-		 * initialize relevantFor-tags FIXME: candidate for system tags
-		 */
-		initRelevantForTags(command, post);
-		
-		/*
-		 * For each post process an unique identifier is generated. 
-		 * This is used for mapping posts to recommendations.
-		 */
-		if(command.getPostID() == RecommenderStatisticsManager.getUnknownPID())
-			command.setPostID(RecommenderStatisticsManager.getNewPID());
+		// set user, init post groups, relevant for tags (FIXME: candidate for system tags) and recommender
+		this.initPost(command);
 
 		/*
 		 * decide, what to do
@@ -191,12 +173,13 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	}
 
 	/**
+	 * TODO extract method; used by many controllers
 	 * Encodes the given String with URLEncoder. If that fails, returns an empty string.
 	 * 
 	 * @param s
 	 * @return
 	 */
-	private static String safeURIEncode(final String s) {
+	protected String safeURIEncode(final String s) {
 		try {
 			return URLEncoder.encode(s, "UTF-8");
 		} catch (Exception ex) {
@@ -221,7 +204,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	 *            the login user.
 	 * @return The post view.
 	 */
-	private View getPostPostView(final EditPostCommand<RESOURCE> command, final User loginUser) {
+	protected View getPostPostView(final EditPostCommand<RESOURCE> command, final User loginUser) {
 		/*
 		 * initialize tag sets for groups
 		 */
@@ -439,8 +422,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		}
 		return new ExtendedRedirectView(postUrl);
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	private View handleCreatePost(final EditPostCommand<RESOURCE> command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post) {
 		final String loginUserName = loginUser.getName();
 
@@ -448,33 +430,14 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		 * no intra hash given --> user posts a new entry (which might already
 		 * exist!)
 		 */
-
+		
 		/*
 		 * check, if post already exists
 		 */
-		post.getResource().recalculateHashes();
-		final Post<RESOURCE> dbPost = (Post<RESOURCE>) logic.getPostDetails(post.getResource().getIntraHash(), loginUserName);
-		if (dbPost != null) {
-			log.debug("user already owns this post ... handling update");
-			/*
-			 * post exists -> warn user
-			 */
-			errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
-			/*
-			 * the next time this will be handled as an update 
-			 */
-			command.setIntraHashToUpdate(post.getResource().getIntraHash());
-			/*
-			 * exchange posts
-			 * TODO: show diff post to user!
-			 */
-			command.setDiffPost(post);
-			populateCommandWithPost(command, dbPost);
-			/*
-			 * in any case: return to view
-			 */
+		if (this.setDiffPost(command)) {
 			return getPostPostView(command, loginUser);
 		}
+		
 		log.debug("wow, post is completely new! So ... return until no errors and then store it");
 		/*
 		 * parse the tags
@@ -552,7 +515,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	 * @param command
 	 * @param dbPost
 	 */
-	private void populateCommandWithPost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> dbPost) {
+	protected void populateCommandWithPost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> dbPost) {
 		/*
 		 * put post into command
 		 */
@@ -625,6 +588,74 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 				}
 			}
 		}
+	}
+
+	/**
+	 * sets user; inits post groups, relevant tags and recommender
+	 * 
+	 * @param command
+	 */
+	protected void initPost(final EditPostCommand<RESOURCE> command) {
+		final RequestWrapperContext context = command.getContext();
+		final Post<RESOURCE> post = command.getPost();
+		/* 
+		 * set the user of the post to the loginUser (the recommender might need
+		 * the user name)
+		 */
+		post.setUser(context.getLoginUser());
+		
+		/*
+		 * initialize groups
+		 */
+		this.initPostGroups(command, post);
+		/*
+		 * initialize relevantFor-tags FIXME: candidate for system tags
+		 */
+		this.initRelevantForTags(command, post);
+		/*
+		 * For each post process an unique identifier is generated. 
+		 * This is used for mapping posts to recommendations.
+		 */
+		if (command.getPostID() == RecommenderStatisticsManager.getUnknownPID()) {
+			command.setPostID(RecommenderStatisticsManager.getNewPID());
+		}
+	}
+	
+	/**
+	 * checks if the user already bookmarked the resource of the command
+	 * if the user owns the resource => diff post will be set
+	 * 
+	 * @param command
+	 * @return  if user already owns resource
+	 */
+	@SuppressWarnings("unchecked")
+	protected boolean setDiffPost(final EditPostCommand<RESOURCE> command) {
+		final RequestWrapperContext context = command.getContext();
+		final Post<RESOURCE> post = command.getPost();
+		final String loginUserName = context.getLoginUser().getName();
+		final RESOURCE resource = post.getResource();
+		resource.recalculateHashes();
+		
+		/*
+		 * is resource already owned by the user?
+		 */
+		final Post<RESOURCE> dbPost = (Post<RESOURCE>) logic.getPostDetails(resource.getIntraHash(), loginUserName);
+		if (dbPost != null) {
+			log.debug("set diff post");
+			// already posted; warn user
+			errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
+			
+			// set intraHash, diff post and set dbPost as post of command
+			command.setIntraHashToUpdate(resource.getIntraHash());
+			
+			command.setDiffPost(post);
+			
+			this.populateCommandWithPost(command, dbPost);
+			
+			return true;
+		}
+		
+		return false;		
 	}
 
 	/**

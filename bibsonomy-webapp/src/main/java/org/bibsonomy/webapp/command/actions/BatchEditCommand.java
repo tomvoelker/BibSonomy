@@ -11,7 +11,7 @@ import org.bibsonomy.webapp.command.UserResourceViewCommand;
  */
 public class BatchEditCommand extends UserResourceViewCommand {
 	/**
-	 * this tags will be added to all resources
+	 * these tags will be added to all resources
 	 */
 	private String tags;
 	
