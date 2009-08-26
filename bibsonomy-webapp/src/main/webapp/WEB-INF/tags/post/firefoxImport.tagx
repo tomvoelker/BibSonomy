@@ -14,7 +14,7 @@
 	
 	<!-- Display userName and passWord to supply the user's credentials -->
 	<div id="fsform">
-		<form:form action="/import/firefox" method="post" enctype="multipart/form-data">
+		<form:form action="/import/firefox?ckey=${ckey}" method="post" enctype="multipart/form-data">
 			<fieldset class="fsInner">
 				
 				<legend>Firefox</legend>
@@ -60,6 +60,7 @@
                 <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 				<input type="submit" value="${valueButton}" />
 			</fieldset>
+			<input name="ckey" type="hidden" value="${command.context.ckey}"/>
 		</form:form>
 	</div>
 	
