@@ -104,7 +104,7 @@ public class PostPublicationController extends PostPostController<BibTex> {
 					}
 					
 					// show view
-					return this.getPostView();
+					return this.getPostPostView(command, loginUser);
 					
 				} catch (ScrapingException ex) {
 					// scraping failed no bibtex scraped
@@ -134,7 +134,7 @@ public class PostPublicationController extends PostPostController<BibTex> {
 					publicationCommand.setScrapedBibTex(this.scrapedBibtex);
 				}
 				
-				return this.getPostView();
+				return this.getPostPostView(command, loginUser);
 			}
 		}
 		
