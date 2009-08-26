@@ -20,9 +20,10 @@
 		<c:set var="private"><fmt:message key="post.resource.private"/></c:set>
 		<c:set var="public"><fmt:message key="post.resource.public"/></c:set>
 		<c:set var="valueButton"><fmt:message key="settings.firefox.button.text"/></c:set>
+		<input name="ckey" type="hidden" value="${command.context.ckey}"/>
 		
 		<h2><fmt:message key="settings.firefox.header"/></h2>
-		<form:form id="settingImportForm" action="/import" method="post" enctype="multipart/form-data">
+		<form:form id="settingImportForm" action="/import/firefox?ckey=${ckey}" method="post" enctype="multipart/form-data">
 		  <table> 
 		   <tr>
 		   <td><form:label path="file" ><fmt:message key="settings.firefox.fileselect"/></form:label></td>
@@ -51,7 +52,6 @@
 		   	</tr>
 		  </table> 
 		  
-		  <input name="ckey" type="hidden" value="${command.context.ckey}"/>
 		  <input name="importType" type="hidden" value="firefox"/>
 
 		</form:form>
@@ -61,7 +61,7 @@
 		<!-- delicious import -->
 		
 		<h2><fmt:message key="settings.delicious.header" /></h2>
-		<form:form id="settingImportForm" action="/settingsnew?selTab=${command.selTab}" method="post">
+		<form:form id="settingImportForm" action="/import/bookmarks?ckey=${ckey}" method="post">
 	  	<table>
 	    	<tr><td><fmt:message key="navi.username" /></td>
 	    		<td><input type="text" name="username" size="30"/></td>
@@ -90,7 +90,6 @@
 	    	</td>
 	    	</tr>
 	  	</table>
-	  	<input name="ckey" type="hidden" value="${ckey}"/>
 	  	<input name="importType" type="hidden" value="delicious"/>
 	  	
 	  	</form:form>
@@ -116,9 +115,8 @@
 		</p>
 			
 		<c:set var="actionJabRef" />
-		<!--<c:set var="ckey" value="${command.context.ckey}" />-->
 		
-		<form:form id="settingImportForm" action="/jabrefImport" method="post" enctype="multipart/form-data">
+		<form:form id="settingImportForm" action="/import/jabref?ckey=${ckey}" method="post" enctype="multipart/form-data">
 			<table>
 		    <tr> 
 		      <td>begin.layout</td>
@@ -156,7 +154,6 @@
 		    </tr>
 		  </table>
 		  
-		  <input name="ckey" type="hidden" value="${command.context.ckey}"/>
 		  <input name="action" type="hidden" value="${actionJabRef}"/> 
 		  <input name="importType" type="hidden" value="jabref"/>
 		  
