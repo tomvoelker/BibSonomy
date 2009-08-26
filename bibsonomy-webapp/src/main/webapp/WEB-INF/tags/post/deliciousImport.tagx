@@ -12,7 +12,7 @@
 	
 	<!-- Display userName and passWord to supply the user's credentials -->
 	<div id="fsform">
-		<form:form action="/import" method="post">
+		<form:form action="/import/delicious?ckey=${ckey}" method="post">
 			<fieldset class="fsInner">
 				<legend>Delicious</legend>
 				
@@ -85,6 +85,7 @@
 				<input name="importType" type="hidden" value="delicious"/>
 				<input type="submit" value="${valueButton}" />
 			</fieldset>
+			<input name="ckey" type="hidden" value="${command.context.ckey}"/>
 		</form:form>
 	</div>
 	
