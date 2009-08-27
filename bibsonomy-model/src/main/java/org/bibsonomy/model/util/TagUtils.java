@@ -43,6 +43,8 @@ public class TagUtils {
 
 	private static final Tag emptyTag = new Tag("system:unfiled");
 	
+	private static final Tag importedTag = new Tag("imported");
+	
 	/**
 	 * Get the maximum user count of all tags contained in a list
 	 * 
@@ -83,6 +85,14 @@ public class TagUtils {
 	 */
 	public static Tag getEmptyTag() {
 		return emptyTag;
+	}
+	
+	/**
+	 * If the corresponding post has been imported
+	 * @return The imported tag ({@value #importedTag})
+	 */
+	public static Tag getImportedTag() {
+		return importedTag;
 	}
 	
 	/**
@@ -140,6 +150,5 @@ public class TagUtils {
 			parser.tagstring();
 		}
 		return tags;
-	}
-	
+	}	
 }
