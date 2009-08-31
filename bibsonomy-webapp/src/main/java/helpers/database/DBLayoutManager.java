@@ -2,8 +2,6 @@ package helpers.database;
 
 
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
@@ -12,6 +10,12 @@ import org.bibsonomy.layout.jabref.LayoutPart;
 import beans.LayoutBean;
 
 
+/**
+ * Still used to display the active layouts on the /settings page.
+ * 
+ * @author rja
+ *
+ */
 public class DBLayoutManager extends DBManager {
 
 	private static final Logger log = Logger.getLogger(DBLayoutManager.class);
@@ -45,44 +49,5 @@ public class DBLayoutManager extends DBManager {
 			c.close(); // close database connection
 		}
 	}
-
 	
-	public static boolean deleteLayout (String user, String hash) {
-		DBContext c = new DBContext();
-		try {
-			if (c.init()) { // initialize database
-				// prepare Statement 
-				c.stmt = c.conn.prepareStatement("DELETE FROM document WHERE user_name = ? AND hash = ?");
-				c.stmt.setString(1, user);
-				c.stmt.setString(2, hash);
-				return c.stmt.executeUpdate() > 0;
-			}
-		} catch (SQLException e) {
-			log.fatal("could not delete layout settings for user " + user + ": " + e);
-		} finally {
-			c.close(); // close database connection
-		}
-		return false;
-	}
-	
-	public static boolean insertLayout (String user, String hash, String fileName) {
-		DBContext c = new DBContext();
-		try {
-			if (c.init()) { // initialize database
-				// prepare Statement 
-				c.stmt = c.conn.prepareStatement("INSERT INTO document (hash, content_id, name, user_name, date) VALUES (?, ?, ?, ?, ?)");
-				c.stmt.setString(1, hash);
-				c.stmt.setInt(2, 0);
-				c.stmt.setString(3, fileName);
-				c.stmt.setString(4, user);
-				c.stmt.setTimestamp(5, new Timestamp(new Date().getTime()));
-				return c.stmt.executeUpdate() > 0;
-			}
-		} catch (SQLException e) {
-			log.fatal("could not insert layout settings for user " + user + ": " + e);
-		} finally {
-			c.close(); // close database connection
-		}
-		return false;
-	}
 }

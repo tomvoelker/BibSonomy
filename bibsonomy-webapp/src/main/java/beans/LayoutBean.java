@@ -9,6 +9,13 @@ import helpers.database.DBLayoutManager;
 
 import java.io.Serializable;
 
+/**
+ * Still used to display the active layouts on the /settings page.
+ * 
+ * 
+ * @author rja
+ *
+ */
 public class LayoutBean implements Serializable {
 
 	private static final long serialVersionUID = 5842480477147103044L;
