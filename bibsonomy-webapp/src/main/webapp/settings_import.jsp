@@ -44,7 +44,7 @@
 		<jsp:useBean id="layoutBean" class="beans.LayoutBean" scope="request">
 		  <jsp:setProperty name="layoutBean" property="username" value="${user.name}"/>
 		</jsp:useBean>
-		
+
 		<a name="layout"></a>
 		
 		<h2>JabRef layout file</h2>
@@ -58,27 +58,27 @@
 		how it looks.
 		</p>
 		
-		<form enctype="multipart/form-data" method="post" action="/LayoutHandler" style="display:inline;">
+		<form enctype="multipart/form-data" method="post" action="/import/jabref?ckey=${ckey}" style="display:inline;">
 		  <table>
 		    <tr> 
 		      <td>begin.layout</td>
 		      <td><c:choose>
 		        <c:when test="${empty layoutBean.beginName}"><input name="file.begin" type="file" size="20"/></c:when>
-		        <c:otherwise><c:out value="${layoutBean.beginName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.beginHash}&amp;action=delete">delete</a></c:otherwise>
+		        <c:otherwise><c:out value="${layoutBean.beginName} "/><a class="action" href="/import/jabref?action=delete&amp;hash=${layoutBean.beginHash}">delete</a></c:otherwise>
 		      </c:choose></td>
 		      <td>(appears at the beginning of the output, optional)</td>
 		    </tr><tr>
 		      <td>item.layout</td>
 		      <td><c:choose>
 		        <c:when test="${empty layoutBean.itemName}"><input name="file.item" type="file" size="20"/></c:when>
-		        <c:otherwise><c:out value="${layoutBean.itemName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.itemHash}&amp;action=delete">delete</a></c:otherwise>
+		        <c:otherwise><c:out value="${layoutBean.itemName} "/><a class="action" href="/import/jabref?action=delete&amp;hash=${layoutBean.itemHash}">delete</a></c:otherwise>
 		      </c:choose></td>
 		      <td>(used to render each publication item)</td>
 		    </tr><tr>
 		      <td>end.layout</td>
 		      <td><c:choose>
 		        <c:when test="${empty layoutBean.endName}"><input name="file.end" type="file" size="20"/></c:when>
-		        <c:otherwise><c:out value="${layoutBean.endName} "/><a class="action" href="/LayoutHandler?hash=${layoutBean.endHash}&amp;action=delete">delete</a></c:otherwise>
+		        <c:otherwise><c:out value="${layoutBean.endName} "/><a class="action" href="/import/jabref?action=delete&amp;hash=${layoutBean.endHash}">delete</a></c:otherwise>
 		      </c:choose></td>
 		      <td>(appears at the end of the output, optional)</td>
 		    </tr><tr>
