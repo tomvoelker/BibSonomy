@@ -48,10 +48,10 @@
                         <fmt:message key="import.kind"/>
                       </td>
                       <td>
-                        <form:radiobutton path="importData" value="posts" onclick="enableCheckBox()"/>
+                        <form:radiobutton path="importData" value="posts"/>
                         <fmt:message key="bookmarks"/>
   
-                        <form:radiobutton path="importData" value="bundles" onclick="disableCheckBox()"/>
+                        <form:radiobutton path="importData" value="bundles"/>
                         <fmt:message key="import.bundles"/>
                       </td>
                     </tr>
@@ -75,17 +75,5 @@
 				<input type="submit" value="${valueButton}" />
 			</fieldset>
 		</form:form>
-	
-	<script type="text/javascript">
-		<![CDATA[
-			function disableCheckBox(){
-				document.getElementById("overwrite").disabled = true;
-			}
-		
-			function enableCheckBox(){
-				document.getElementById("overwrite").disabled = false;
-			}
-		]]>
-</script>
 	
 </jsp:root>
