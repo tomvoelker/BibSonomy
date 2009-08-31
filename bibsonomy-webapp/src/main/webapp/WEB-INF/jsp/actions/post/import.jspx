@@ -17,12 +17,12 @@
 	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requestedUser="${command.userName}" requPath="${requPath}">
 		
 		<jsp:attribute name="heading">
-			<fmt:message key="import.results"/>
+			<fmt:message key="import"/>
 		</jsp:attribute>
 		
 		<jsp:attribute name="content">
 						
-			<div style="margin-left:15px;margin-top:15px; padding-bottom: 13px;width:65%">	
+			<div id="general">	
 				
 				<!-- display potential errors -->
 				<errors:global errors="${errors}"/>
@@ -38,7 +38,10 @@
 						<post:importResults command="${command}"/>
 					</c:otherwise>
 				</c:choose>
-			</div>
+		
+        	</div>
+      
+      
 		</jsp:attribute>
 		
 	</layout:paneLayout>

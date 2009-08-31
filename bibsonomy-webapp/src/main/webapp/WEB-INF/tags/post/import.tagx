@@ -13,8 +13,11 @@
 	
 	<c:choose>
 		<c:when test="${empty importType}">
-			<post:firefoxImport/><br/>
+
+			<post:firefoxImport/>
+      
 			<post:deliciousImport/>
+
 		</c:when>
 		<c:otherwise>
 			<c:if test="${importType eq 'delicious'}">
