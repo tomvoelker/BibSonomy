@@ -82,7 +82,10 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 		 */
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
-			return Views.SETTINGSPAGE;
+			/*
+			 * FIXME: use new settings page when complete
+			 */
+			return Views.ERROR;
 		}
 
 
@@ -91,22 +94,28 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 		 */
 		if (DELETE.equals(command.getAction())) {
 			final String hash = command.getHash();
-
-			final Document document = this.logic.getDocument(loginUser.getName(), hash);
+			final String userName = loginUser.getName();
+			
+			log.debug("attempting to delete layout " + hash + " for user " + userName);
+			
+			final Document document = this.logic.getDocument(userName, hash);
 
 			if (document != null) {
+				log.debug("deleting layout " + document.getFileName() + " for user " + userName);
+				
 				this.logic.deleteDocument(document, null);
 
 				new File(FileUtil.getDocumentPath(this.uploadFactory.getDocpath(), hash)).delete();
 				/*
 				 * delete layout object from exporter
 				 */
-				jabrefLayoutRenderer.unloadUserLayout(loginUser.getName());
+				jabrefLayoutRenderer.unloadUserLayout(userName);
 			} else {
 				errors.reject("error.document_not_found");
 			}
 
 		} else if (CREATE.equals(command.getAction())) {
+			log.debug("creating layouts for user " + loginUser.getName());
 			/*
 			 * .beginLAYOUT
 			 */
@@ -123,7 +132,10 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 
 		
 		if (errors.hasErrors()) {
-			return Views.SETTINGSPAGE;
+			/*
+			 * FIXME: use new settings page when complete
+			 */
+			return Views.ERROR;
 		}
 		
 		/*
@@ -142,6 +154,7 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 	 */
 	private void writeLayoutPart(final User loginUser, final CommonsMultipartFile fileItem, final LayoutPart layoutPart) {
 		if (fileItem != null && fileItem.getSize() > 0) {
+			log.debug("writing layout part " + layoutPart + " with file " + fileItem.getOriginalFilename());
 			try {
 				final String hashedName = JabrefLayoutUtils.userLayoutHash(loginUser.getName(), layoutPart);				
 				

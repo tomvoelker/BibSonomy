@@ -116,7 +116,7 @@
 			
 		<c:set var="actionJabRef" />
 		
-		<form:form id="settingImportForm" action="/import/jabref?ckey=${ckey}" method="post" enctype="multipart/form-data">
+		<form:form id="settingImportForm" action="/import/jabref?action=create&amp;ckey=${ckey}" method="post" enctype="multipart/form-data">
 			<table>
 		    <tr> 
 		      <td>begin.layout</td>
