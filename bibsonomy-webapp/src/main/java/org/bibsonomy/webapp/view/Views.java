@@ -184,7 +184,7 @@ public enum Views implements View {
 	RELEVANTFORPAGE("relevantfor"),
 
 	/** import view **/
-	IMPORT("import"),
+	IMPORT("actions/post/import"),
 	
 	
 	/* *****************************************************
@@ -453,7 +453,7 @@ public enum Views implements View {
 	FOLLOWERS("followers"),
 	
 	/**
-	 * show followers
+	 * edit tags
 	 */
 	EDIT_TAGS("actions/edit/edittags");
 	
