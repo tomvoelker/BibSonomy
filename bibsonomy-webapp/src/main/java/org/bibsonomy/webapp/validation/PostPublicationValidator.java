@@ -1,15 +1,27 @@
 package org.bibsonomy.webapp.validation;
 
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.util.UrlUtils;
 import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.io.IOException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.springframework.validation.Errors;
+
+import bibtex.parser.ParseException;
+
 /**
  * @author fba
  * @version $Id$
  */
 public class PostPublicationValidator extends PostPostValidator<BibTex> {
+	
+	private static final Log logger = LogFactory.getLog(PostPublicationValidator.class);
 	
 	@Override
 	@SuppressWarnings("unchecked")
@@ -65,14 +77,44 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 		}
 		
 		/*
-		 * TODO: test validity using the BibTeXParser
-		 * - It might be a good idea to parse only, if there are no errors, yet (?)
-		 * - It would be nice to extract from the parser error message, which field
-		 *   is affected and add a corresponding error message to the field. I.e., 
-		 *   use global errors only, if we really don't know, what is broken.
-		 */
-		
+		 * test validity using the BibTeXParser
+		 */		
+		if (!this.parse(bibtex)) {
+			// parsing failed
+			errors.reject("error.parse.bibtex.failed");
+		}
 	}
+	
+	/**
+	 * parses the BibTex object to validate it and returns true if no exception
+	 * is thrown otherwise false
+	 * 
+	 * @param	bibtex	the bibtex object to parse
+	 * @return	if parsing was successful
+	 */
+	private boolean parse(final BibTex bibtex) {
+		if (bibtex == null) {
+			return true;
+		}
+		
+		// get string and init parser
+		final String bibTexAsString = BibTexUtils.toBibtexString(bibtex);
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+		
+		try {
+			parser.parseBibTeX(bibTexAsString);
+		} catch (ParseException ex) {
+			// parsing failed
+			return false;
+		} catch (IOException ex) {
+			logger.warn("exception while parsing bibtex string", ex);
+			return false;
+		}
+		
+		// parsing successful		
+		return true;
+	}
+	
 	
 	private static boolean containsWhiteSpace(final String s) {
 		return s.matches("\\s");

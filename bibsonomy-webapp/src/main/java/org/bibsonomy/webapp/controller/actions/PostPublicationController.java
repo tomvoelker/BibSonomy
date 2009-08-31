@@ -36,7 +36,7 @@ import bibtex.parser.ParseException;
  */
 public class PostPublicationController extends PostPostController<BibTex> {
 	
-	private static final String IMPORT_TAG = "imported ";
+	private static final String IMPORT_TAG = "imported";
 	private static final Log logger = LogFactory.getLog(PostPublicationController.class);
 	
 	@Override
@@ -86,13 +86,13 @@ public class PostPublicationController extends PostPostController<BibTex> {
 					final BibTex scrapedBibTex = this.scrapeBibtex(url, selection);
 					
 					// check if a bibtex was scraped
-					if (scrapedBibTex != null) {
-						publicationCommand.setTags(IMPORT_TAG);	
-						
+					if (scrapedBibTex != null) {						
 						// set recommender, ...
 						this.initPost(command);
-					
-						this.populateCommandWithPost(command, post); // update tags
+						
+						// set and update tags
+						post.addTag(IMPORT_TAG);
+						this.populateCommandWithPost(command, post);
 						
 						// save result
 						post.setResource(scrapedBibTex);
