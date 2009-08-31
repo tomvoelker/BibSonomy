@@ -66,6 +66,9 @@ public class ActionValidationFilter implements Filter {
 			
 			/*
 			 * get credential from request parameter
+			 * 
+			 * FIXME: This does not work with multipart-requests! Thus, on such
+			 * requests we must otherwise send the ckey.
 			 */
 			String requestCredential = request.getParameter(REQUEST_PARAM_CREDENTIAL);
 			/*
