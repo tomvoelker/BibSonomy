@@ -8,17 +8,15 @@
 	
 	<!-- This tag can be used to support the bookmark import from delicious -->
 	
-	<c:set var="private"><fmt:message key="post.resource.private"/></c:set>
-	<c:set var="public"><fmt:message key="post.resource.public"/></c:set>
 	<c:set var="valueButton"><fmt:message key="settings.firefox.button.text"/></c:set>
 	
-	<!-- Display userName and passWord to supply the user's credentials -->
-	<div id="fsform">
+
 		<form:form action="/import/firefox?ckey=${ckey}" method="post" enctype="multipart/form-data">
-			<fieldset class="fsInner">
+			<fieldset style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
 				
-				<legend>Firefox</legend>
-				<h2><fmt:message key="settings.firefox.header"/></h2><br/>
+				<legend><fmt:message key="import.firefox"/></legend>
+				<h2><fmt:message key="settings.firefox.header"/></h2>
+        
 				<table>
 					<tr>
 						<td>
@@ -40,28 +38,27 @@
 						</td>
 						<td>
 							<form:select path="group" id="viewablebox">
-							<form:option label="${public}" value="public"/>
-							<form:option label="${private}" value="private"/>
+							<form:option label="public" value="public"/>
+							<form:option label="private" value="private"/>
 						</form:select>
 						</td>
 					</tr>
 					<tr>
 						<td>
-							<!-- overwrite duplicates? -->
-							<fmt:message key="import.overwrite">
-					    		<fmt:param>${projectName}</fmt:param>
-					    	</fmt:message>:
 						</td>
 						<td>
+                            <!-- overwrite duplicates? -->
 							<form:checkbox path="overwrite"/>
+                            <fmt:message key="import.overwrite">
+                                <fmt:param><fmt:message key="import.firefox"/></fmt:param>
+                                <fmt:param>${projectName}</fmt:param>
+                            </fmt:message>
 						</td>
 					</tr>
 				</table>
                 <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 				<input type="submit" value="${valueButton}" />
 			</fieldset>
-			<input name="ckey" type="hidden" value="${command.context.ckey}"/>
 		</form:form>
-	</div>
 	
 </jsp:root>

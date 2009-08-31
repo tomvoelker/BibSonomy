@@ -26,54 +26,54 @@
 						
 			<!-- Show new created resources -->
 			<c:if test="${not empty command.newBookmarks}">
-		  		<fieldset class="fsInner">
-					<legend style="color:##55AA68"><fmt:message key="import.created"/></legend>
-			  		<div style="font-size: 105%;font-style: italic;">	
+		  		<fieldset style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+					<legend>
 				  		<fmt:message key="import.newResources">
 				  				<fmt:param value="${fn:length(command.newBookmarks)}"/>
 				  				<fmt:param value="${bookmarks}"/>
 				  		</fmt:message>
-			  		</div>
+			  		</legend>
 		
-			  		<div style="font-size:80%">
+			  		<ul>
 			  			<c:forEach items="${command.newBookmarks}" var="mapEntry">
-		   					<p><a href="/url/${mapEntry.key}">${mapEntry.value}</a></p>
+		   					<li class="bm"><a href="/url/${mapEntry.key}"><c:out value="${mapEntry.value}"/></a></li>
 						</c:forEach>
-					</div>
+					</ul>
 				</fieldset>
-				<br/>
 		  	</c:if>
 		  
 		  	<!-- Show updated resources -->
 			<c:if test="${not empty command.updatedBookmarks}">
-				<fieldset class="fsInner">
-					<legend style="color:#55AA68"><fmt:message key="import.updated"/></legend>
-					<div style="font-size: 105%;font-style: italic;">	
+				<fieldset style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+					<legend>
 						<fmt:message key="import.updatedResources">
 							<fmt:param value="${fn:length(command.updatedBookmarks)}"/>
 							<fmt:param value="${bookmarks}"/>
 						</fmt:message>
-					</div>
-					<div style="font-size:80%">
+                    </legend>
+          
+					<ul>
 						<c:forEach items="${command.updatedBookmarks}" var="mapEntry">
-		    				<p><a href="/url/${mapEntry.key}">${mapEntry.value}</a></p>
+		    				<li class="bm"><a href="/url/${mapEntry.key}"><c:out value="${mapEntry.value}"/></a></li>
 						</c:forEach>
-					</div>
+					</ul>
 				</fieldset>
 			</c:if>
 			 
 			<!-- Show all resources which couldn't get updated -->
 			<c:if test="${not empty command.nonCreatedBookmarks}">
-				<fieldset class="fsInner">
-					<legend style="color:#FF0000"><fmt:message key="import.failed"/></legend>
-					<div style="font-size: 105%;font-style: italic;">	
+				<fieldset style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+					<legend><fmt:message key="import.failed"/></legend>
+          
 						<fmt:message key="import.nonImportedResources">
 							<fmt:param value="${fn:length(command.nonCreatedBookmarks)}"/>
 							<fmt:param value="${bookmarks}"/>
 						</fmt:message>
-					</div>
-				</fieldset><br/>
+            
+				</fieldset>
+
 				<post:import importType="${command.importType}"/>
+        
 			</c:if>
 		</c:when>
 		<c:otherwise>
@@ -83,25 +83,21 @@
 					<fmt:param value="${concepts}"/>
 				</fmt:message>
 			</h2>
-			<fieldset class="fsInner">
-					<legend style="color:##55AA68"><fmt:message key="import.created"/></legend>
-			  		<div style="font-size: 105%;font-style: italic;">	
+			<fieldset style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+					<legend><fmt:message key="import.created"/></legend>
+
 						<fmt:message key="import.newResources">
 							<fmt:param value="${fn:length(command.storedConcepts)}"/>
 							<fmt:param value="${concepts}"/>
 						</fmt:message>
-					</div>
-					<div style="font-size:80%">
+
+					<ul>
 						<c:forEach items="${command.storedConcepts}" var="concept">
-							<p><a href="relations/${command.context.loginUser.name}"><c:out value="${concept}"/></a></p>
+							<li><a href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/tag/${fn:escapeXml(concept)}"><c:out value="${concept}"/></a></li>
 						</c:forEach>
-					</div>
+					</ul>
 			</fieldset>
 		</c:otherwise>
 	</c:choose>
-	<c:if test="${empty command.nonCreatedBookmarks or command.importData eq 'bundles'}">
-		<form:form action="import">
-			<p><input type="submit" value="${back}"/></p>
-		</form:form>
-	</c:if>
+
 </jsp:root>

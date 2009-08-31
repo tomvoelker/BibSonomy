@@ -11,40 +11,14 @@
 	<c:set var="valueButton"><fmt:message key="settings.firefox.button.text"/></c:set>
 	
 	<!-- Display userName and passWord to supply the user's credentials -->
-	<div id="fsform">
-		<form:form action="/import/delicious?ckey=${ckey}" method="post">
-			<fieldset class="fsInner">
-				<legend>Delicious</legend>
+		<form:form action="/import/delicious" method="post">
+			<fieldset style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+		
+        		<legend><fmt:message key="import.delicious"/></legend>
 				
-				<h2><fmt:message key="settings.delicious.header"/></h2><br/>
+				<h2><fmt:message key="settings.delicious.header"/></h2>
+        
 				<table>
-					<tr>
-						<td style="vertical-align:middle">
-							<fmt:message key="import.kind"/>
-						</td>
-						<td style="vertical-align:middle">
-							<table style="border: 1px solid #C3C0C1;">
-								<!-- which kind of data will be imported? posts or bundles? -->
-								<tr>
-									<td>
-										<fmt:message key="settings.firefox.button.text"/>:
-									</td>
-									<td>
-										<form:radiobutton path="importData" value="posts" onclick="enableCheckBox()"/>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<fmt:message key="import.bundles"/>:
-									</td>
-									<td>
-										<form:radiobutton path="importData" value="bundles" onclick="disableCheckBox()"/>
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-					<tr><td><br/></td></tr>
 					<!-- username and password -->
 					<tr>
 						<td>
@@ -68,26 +42,39 @@
 							<form:errors path="passWord"/>
 						</td>
 					</tr>					
+
+                    <tr><!-- posts or bundles? -->
+                      <td>
+                        <fmt:message key="import.kind"/>
+                      </td>
+                      <td>
+                        <form:radiobutton path="importData" value="posts" onclick="enableCheckBox()"/>
+                        <fmt:message key="bookmarks"/>
+  
+                        <form:radiobutton path="importData" value="bundles" onclick="disableCheckBox()"/>
+                        <fmt:message key="import.bundles"/>
+                      </td>
+                    </tr>
+
+
 					<!-- overwrite duplicates? -->
 					<tr>
 						<td>
-							<!-- overwrite duplicates? -->
-							<fmt:message key="import.overwrite">
-					    		<fmt:param>${projectName}</fmt:param>
-					    	</fmt:message>:
+							
 						</td>
-						<td>
+						<td><!-- overwrite duplicates? -->
 							<form:checkbox path="overwrite" id="overwrite"/>
+                            <fmt:message key="import.overwrite">
+                                <fmt:param><fmt:message key="import.delicious"/></fmt:param>
+                                <fmt:param>${projectName}</fmt:param>
+                            </fmt:message>
 						</td>
 					</tr>
 				</table>
-				<!-- The hidden field contains respective the importType -->
-				<input name="importType" type="hidden" value="delicious"/>
+                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>                
 				<input type="submit" value="${valueButton}" />
 			</fieldset>
-			<input name="ckey" type="hidden" value="${command.context.ckey}"/>
 		</form:form>
-	</div>
 	
 	<script type="text/javascript">
 		<![CDATA[
