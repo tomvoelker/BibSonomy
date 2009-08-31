@@ -1,6 +1,5 @@
 package beans;
 
-import helpers.database.DBAuthorTagsManager;
 import helpers.database.DBUserTagsManager;
 
 import java.util.SortedSet;
@@ -48,10 +47,6 @@ public class TagConceptBean implements Serializable {
 	}
 
 	public SortedSet<TagConcept> getTags() {
-		// author tags
-		if (requAuthor != null) {			
-			tags = DBAuthorTagsManager.getSortedTagsForAuthors(requAuthor, sortOrder);
-		} else 
 		if (currUser != null) {
 			tags = DBUserTagsManager.getSortedTagsForUser(requUser, currUser, sortOrder, withMarkedSupertags, minfreq);
 		}
