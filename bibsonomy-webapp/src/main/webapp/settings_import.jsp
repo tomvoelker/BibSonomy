@@ -1,7 +1,7 @@
 	<%-- ############################################# import tab ############################################# --%>
 		<%-- ------------------------ firefox import -------------------------- --%>
 		<h2>import your bookmarks from Firefox:</h2>
-		<form enctype="multipart/form-data" method="POST" action="/import/firefox">
+		<form enctype="multipart/form-data" method="POST" action="/import/firefox?ckey=${ckey}">
 		  <table> 
 		   <tr>
 		   <td>select your file:</td>
@@ -14,7 +14,6 @@
 		    </tr>
 		   <tr><td></td><td><input type="checkbox" name="overwrite" value="yes">Firefox bookmarks overwrite ${projectName} bookmarks</td></tr>
 		   <tr><td>
-              <input type="hidden" name="ckey" value="${ckey}"/>
               <input type="submit" value="import bookmarks">
            </td><td></td></tr>
 		  </table> 
