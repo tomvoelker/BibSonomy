@@ -23,10 +23,14 @@
 
 package org.bibsonomy.util.tex;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.bibsonomy.util.RegexUtil;
 
 
 /**
- * Framework to encode TeX Macros to unicode
+ * Framework to encode TeX Macros to unicode.
  * 
  * @author Christian Claus
  * @version $Id$
@@ -34,16 +38,18 @@ import java.util.HashMap;
 public class TexEncode {
 
 	private static HashMap<String, String> texMap = new HashMap<String, String>();
+	private static Pattern texRegexpPattern;
+	private static Matcher texRegexpMatcher;
 	private static final String CURLS = "[()]*[{}]*[\\[\\]]*";
 
-	// marko with most count of curly brackets have to lead this array
+	// macro with the highest count of curly brackets have to lead this array
 	private static final String[] TEX = { 
 		"{\\c{C}}",		"{\\c{c}}", 	"{{\\\"\\i}}", 
 		"{{\\^\\i}}",	"{{\\`\\i}}", 	"{{\\'\\i}}", 
 		"{{\\aa}}", 	"{{\\AA}}", 	"{{\\ae}}", 
 		"{{\\AE}}", 	"{{\\ss}}",		"{\\\"{A}}", 
-		"{\\\"{O}}", 	"{\\\"{U}}", 	"{\\\"{o}}", 
-		"{\\\"{o}}", 	"{\\\"{o}}", 	"{\\\"A}", 
+		"{\\\"{O}}", 	"{\\\"{U}}", 	"{\\\"{a}}", 
+		"{\\\"{o}}", 	"{\\\"{u}}", 	"{\\\"A}", 
 		"{\\\"O}", 		"{\\\"U}", 		"{\\\"a}", 
 		"{\\\"e}", 		"{\\\"u}", 		"{\\\"o}", 
 		"{\\`a}", 		"{\\`e}", 		"{\\`o}", 
@@ -68,7 +74,7 @@ public class TexEncode {
 		"\u00E5", 		"\u00C5", 		"\u00E6", 
 		"\u00C6", 		"\u00DF",		"\u00C4", 
 		"\u00D6", 		"\u00DC", 		"\u00E4", 		
-		"\u00FC", 		"\u00F6",		"\u00C4", 
+		"\u00F6", 		"\u00FC",		"\u00C4", 
 		"\u00D6", 		"\u00DC", 		"\u00E4", 
 		"\u00EB", 		"\u00FC", 		"\u00F6", 
 		"\u00E0", 		"\u00E8", 		"\u00F2", 
@@ -90,32 +96,44 @@ public class TexEncode {
 
 	/**
 	 * initializes the HashMap 'texMap' with TeX macros as key and a
-	 * referenced Unicode value as value
-	 * 
+	 * referenced Unicode value as value. Also builds the regex 
+	 * for matching the tex macros.
 	 */
 	static {
 		if(TEX.length == UNICODE.length) {
+			StringBuffer texRegexp = new StringBuffer();
+			texRegexp.append("(");
 			for(int i = 0; i < TEX.length; ++i) {
+				// build tex -> unicode map
 				texMap.put(TEX[i], UNICODE[i]);
+				// build regex
+				texRegexp.append(RegexUtil.quoteForRegex(TEX[i]));
+				texRegexp.append("|");
 			}
-		}
+			// delete last "|", add closing bracket
+			texRegexp.deleteCharAt(texRegexp.length() - 1);
+			texRegexp.append(")");
+			// compile pattern
+			texRegexpPattern = Pattern.compile(texRegexp.toString());
+		}		
 	}
 
 
 	/**
-	 * encodes a String, containing TeX macros to it's Unicode representation
+	 * encodes a String, containing TeX macros to it's Unicode representation.
 	 * 
 	 * @param s
 	 * @return Unicode representation of the String
 	 */
 	public String encode(String s) {
-		if (s != null) {
-			for (int i = 0; i < TEX.length; ++i) {
-				while (s.contains(TEX[i])) {
-					s = s.replace(TEX[i], UNICODE[i]);
-				}
-			}
-			return s.trim().replaceAll(CURLS, "");
+		if (s != null) {			
+			 texRegexpMatcher = texRegexpPattern.matcher(s);
+			 StringBuffer sb = new StringBuffer();
+			 while (texRegexpMatcher.find()) {
+				 texRegexpMatcher.appendReplacement(sb, texMap.get(texRegexpMatcher.group()));
+			 }
+			 texRegexpMatcher.appendTail(sb);
+			return sb.toString().trim().replaceAll(CURLS, "");
 		}
 		return "";
 	}
@@ -192,4 +210,6 @@ public class TexEncode {
 	public String[] getUNICODE() {
 		return UNICODE;
 	}	
+	
+
 }
