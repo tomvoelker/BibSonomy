@@ -38,16 +38,20 @@ public class TeXEncodeTest extends TestCase {
 	 * 
 	 */
 	public void testEncoding() {
-		String unclean = "";
-		String clean = "ÇçïîìíåÅæÆßÄÖÜäääÄÖÜäëüöàèòùêôâûáéóúÉñÄÖÜäüöÑÄÖÜäüöííèÇçÃãËëÄÖÜäüö";
-		
+		StringBuffer unclean = new StringBuffer();
+		StringBuffer clean = new StringBuffer();
+		//String clean = "ÇçïîìíåÅæÆßÄÖÜäöüÄÖÜäëüöàèòùêôâûáéóúÉñÄÖÜäüöÑÄÖÜäüöííèÇçÃãËëÄÖÜäüö";
+						
 		encoder = new TexEncode();
 		
 		for(String s : encoder.getTEX()) {
-			unclean += s;
+			unclean.append(s);
+		}
+		for (String s: encoder.getUNICODE()) {
+			clean.append(s);
 		}
 
-		assertEquals(clean, encoder.encode(unclean));
+		assertEquals(clean.toString(), encoder.encode(unclean.toString()));
 	}
 	
 	/**
@@ -60,7 +64,7 @@ public class TeXEncodeTest extends TestCase {
 
 		encoder = new TexEncode();
 		
-		assertEquals(encoder.encode(unclean), clean);
+		assertEquals(clean, encoder.encode(unclean));
 	}
 	
 	/**
