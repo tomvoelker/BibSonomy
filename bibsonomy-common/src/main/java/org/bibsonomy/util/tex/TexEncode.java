@@ -26,9 +26,6 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.util.RegexUtil;
-
-
 /**
  * Framework to encode TeX Macros to unicode.
  * 
@@ -107,7 +104,7 @@ public class TexEncode {
 				// build tex -> unicode map
 				texMap.put(TEX[i], UNICODE[i]);
 				// build regex
-				texRegexp.append(RegexUtil.quoteForRegex(TEX[i]));
+				texRegexp.append(Pattern.quote(TEX[i]));
 				texRegexp.append("|");
 			}
 			// delete last "|", add closing bracket
