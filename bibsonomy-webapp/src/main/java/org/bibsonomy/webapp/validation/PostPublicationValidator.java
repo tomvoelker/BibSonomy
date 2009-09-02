@@ -17,6 +17,7 @@ import bibtex.parser.ParseException;
 
 /**
  * @author fba
+ * @author dzo
  * @version $Id$
  */
 public class PostPublicationValidator extends PostPostValidator<BibTex> {
@@ -77,9 +78,32 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 		}
 		
 		/*
+		 * get bibtex as string; called here to parse bibtex misc field; side effect of toBibtexString
+		 */
+		final String bibTexAsString = BibTexUtils.toBibtexString(bibtex);
+		
+		/*
+		 * test misc field using the BibTeXParser
+		 */
+		final String misc = bibtex.getMisc();
+		if (present(misc)) {
+			// build a bibtex string only with attributes of the misc field and parse it
+			final StringBuffer miscBuffer = new StringBuffer();
+			
+			miscBuffer.append("@misc{id,\n");
+			miscBuffer.append(misc);
+			miscBuffer.append("\n}");
+			
+			if (!this.parse(miscBuffer.toString())) {
+				errors.rejectValue("post.resource.misc", "error.field.valid.misc");
+				return; // skip parsing entire bibtex => parsing fails
+			}
+		}
+		
+		/*
 		 * test validity using the BibTeXParser
-		 */		
-		if (!this.parse(bibtex)) {
+		 */
+		if (!this.parse(bibTexAsString)) {
 			// parsing failed
 			errors.reject("error.parse.bibtex.failed");
 		}
@@ -92,13 +116,12 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 	 * @param	bibtex	the bibtex object to parse
 	 * @return	if parsing was successful
 	 */
-	private boolean parse(final BibTex bibtex) {
-		if (bibtex == null) {
+	private boolean parse(final String bibTexAsString) {
+		if (bibTexAsString == null) {
 			return true;
 		}
 		
-		// get string and init parser
-		final String bibTexAsString = BibTexUtils.toBibtexString(bibtex);
+		// init parser
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
 		
 		try {
