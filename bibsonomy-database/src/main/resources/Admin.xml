@@ -136,7 +136,7 @@
 		UPDATE $groupIdTable$ SET `group` = 
 		<dynamic prepend="IF">
 			<isEqual property="spammer" compareValue="true">
-				((`group` >= 0), `group` + #groupRange#, `group`)
+				((`group` &gt;= 0), `group` + #groupRange#, `group`)
 			</isEqual>
 			<isEqual property="spammer" compareValue="false">
 				((`group` &lt; 0), `group` - #groupRange#, `group`)

@@ -33,13 +33,17 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 	private static final Log log = LogFactory.getLog(UserDatabaseManager.class);
 	private final static UserDatabaseManager singleton = new UserDatabaseManager();
-	private final BasketDatabaseManager basketDb;
+	
+	private final BasketDatabaseManager basketDBManager;
 	private final DatabasePluginRegistry plugins;
+	private final AdminDatabaseManager adminDBManager;
+	
 	private static final UserChain chain = new UserChain();
 
 	private UserDatabaseManager() {
-		this.basketDb = BasketDatabaseManager.getInstance();
+		this.basketDBManager = BasketDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
+		this.adminDBManager = AdminDatabaseManager.getInstance();
 	}
 
 	/**
@@ -83,7 +87,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			/*
 			 * user exists: get number of posts in his basket
 			 */
-			final int numPosts = this.basketDb.getNumBasketEntries(lowerCaseUsername, session);
+			final int numPosts = this.basketDBManager.getNumBasketEntries(lowerCaseUsername, session);
 			user.getBasket().setNumPosts(numPosts);
 			/*
 			 * get the settings of the user
@@ -303,50 +307,59 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 *   <li>sets his password to inactive</li>
 	 * </ul>
 	 * 
-	 * @param user 
-	 * 			- a user to be deleteed
+	 * @param userName
+	 * 			- the name of the user to be deleteed
 	 * @param session 
 	 * 			- DB session
 	 * @throws UnsupportedOperationException
 	 * 			- when this user is a group, he cannot be deleted
 	 */
-	public void deleteUser(final User user, final DBSession session) {
-		if (user == null || present(user.getName()) == false) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Username not set");
+	public void deleteUser(final String userName, final DBSession session) {
+		if (!present(userName)) {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "user name not set");
+		}
+		/*
+		 * We can't use a global (i.e., class attribute) manager, since the 
+		 * GroupDatabaseManager contains a UserDatabaseManager and thus we 
+		 * have a circular dependency in the constructors.
+		 */
+		final GroupDatabaseManager groupDBManager = GroupDatabaseManager.getInstance();
+		
+		/*
+		 * if user is a group stop deleting and throw exception
+		 */
+		if (present(groupDBManager.getGroupByName(userName, session))){
+			throw new UnsupportedOperationException("User " + userName +  " is a group and thus can't be deleted. Please contact the webmaster.");
 		}
 		
-		GroupDatabaseManager _groupDBManager = GroupDatabaseManager.getInstance();
-		AdminDatabaseManager _adminDBManager = AdminDatabaseManager.getInstance();
+		/*
+		 * a deleted user the folllowing properties:
+		 * - his password "hash" is "inactive" (literally!)
+		 * - his role is "DELETED"
+		 * - his spam status is "true"
+		 * - his algorithm is "self_deleted"
+		 * - the groups of all his posts are set to spam groups
+		 */
+		final User user = this.getUserDetails(userName, session);
+		user.setPassword("inactive"); // FIXME: this must be documented and refactored into a constant!
+		user.setRole(Role.DELETED);   // this is new - use it to check if a user has been deleted!
+		user.setSpammer(true);        // FIXME: Why is this necessary here, and is not performed by the flagSpammer method below?
+		this.updateUser(user, session);
+
 		
-		Group _testGroup = _groupDBManager.getGroupByName(user.getName(), session);
-		
-		// if user is a group stop deleting and throw exception
-		if (_testGroup != null){
-			throw new UnsupportedOperationException("User " + user.getName() +  " is a group and can't be deleted");
+		/*
+		 * before deleting user remove it from all non-special groups
+		 */
+		final List<Group> groups = groupDBManager.getGroupsForUser(userName, true, session);
+		for (final Group group: groups){
+			groupDBManager.removeUserFromGroup(group.getName(), userName, session);
 		}
 		
-		// reset user password, set spammer flag
-		final User localUser = this.getUserDetails(user.getName(), session);
-		
-		localUser.setPassword("inactive"); // FIXME: this must be documented and refactored into a constant!
-		localUser.setRole(Role.DELETED);   // this is new - use it to check if a user has been deleted!
-		
-		// FIXME: Why is this necessary here, and is not performed by the flagSpammer method below?
-		if (!localUser.isSpammer()){
-			localUser.setSpammer(true);
-		}		
-		this.updateUser(localUser, session);
-				
-		// before deleting user remove it from all non-special groups
-		List<Group> groups = _groupDBManager.getGroupsForUser(localUser.getName(), true, session);
-		 
-		for(Group g : groups){
-			_groupDBManager.removeUserFromGroup(g.getName(), localUser.getName(), session);
-		}
-		
-		// flag user as spammer & all his posts as spam
-		localUser.setAlgorithm("self_deleted");
-		_adminDBManager.flagSpammer(localUser, "on_delete", session);				
+		/*
+		 * flag user as spammer & all his posts as spam
+		 */
+		user.setAlgorithm("self_deleted");
+		adminDBManager.flagSpammer(user, "on_delete", session);				
 	}
 
 	/**

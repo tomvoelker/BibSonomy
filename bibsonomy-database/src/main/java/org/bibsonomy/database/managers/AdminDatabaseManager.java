@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -21,8 +22,9 @@ import org.bibsonomy.model.User;
  * might include flagging a user as spammer, setting the status of an
  * InetAddress (IP) and other things.
  * 
- * @author Robert Jaeschke
+ * @author Robert Jäschke
  * @author Stefan Stützer
+ * @author Beate Krause
  * @version $Id: AdminDatabaseManager.java,v 1.14 2008-11-04 17:25:11 beatekr
  *          Exp $
  */
@@ -30,6 +32,17 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 	private final static AdminDatabaseManager singleton = new AdminDatabaseManager();
 	protected static final Log log = LogFactory.getLog(AdminDatabaseManager.class);
+
+	/**
+	 * Holds the names of the tables where group ids must be updated, when
+	 * a user is flagged as spammer or deleted.
+	 * 
+	 * TODO: Make database names constants.
+	 */
+	private final List<String> tableNames = Arrays.asList(new String[]{
+			"tas", "grouptas", "bibtex", "bookmark", "search_bibtex", "search_bookmark"
+	}
+	);
 
 	private AdminDatabaseManager() {
 	}
@@ -137,11 +150,17 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 		// first update user table so that user is flagged as spammer
 		session.beginTransaction();
+		/*
+		 * FIXME: What's the outcome when this method is called by deleteUser()?
+		 */
 		boolean predictionChange = checkPredictionChange(param, session);
 
 		try {
 
-			if (!("classifier").equals(updatedBy)) {
+			if (! "classifier".equals(updatedBy)) {
+				/*
+				 * FIXME: is this the "deleteUser" case? (document!)
+				 */
 				this.update("flagSpammer", param, session);
 				// this.updateGroupIds(param, session);
 			} else if ("off".equals(testMode)) {
@@ -157,7 +176,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 					}
 				}
 			}
-			
+
 			// update log tables
 			if (predictionChange) {
 
@@ -181,7 +200,10 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 		try {
 
-			if (!("classifier").equals(updatedBy)) {
+			if (! "classifier".equals(updatedBy)) {
+				/*
+				 * FIXME: this is (only?) the deleteUser() case? Document!
+				 */
 				this.updateGroupIds(param, session);
 			} else if ("off".equals(testMode)) {
 				// only change user settings when prediction changes
@@ -190,7 +212,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 				}
 			}
 
-			
+
 
 			session.commitTransaction();
 
@@ -243,18 +265,6 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		return true;
 	}
 
-	/**
-	 * Updates the groupids of a user to set its posts viewable or not in
-	 * dependence of its spammer status
-	 * 
-	 * @param param
-	 * @param session
-	 */
-	public void updateGroupIds(final AdminParam param, final DBSession session) {
-		final boolean spammer = param.isSpammer();
-
-		this.updateGroupId(param, session);
-	}
 
 	/**
 	 * Updates group ids in different tables
@@ -264,18 +274,8 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 *            the current db session
 	 */
-	private void updateGroupId(final AdminParam param, final DBSession session) {
-
-		// TODO: make database names constants
-		List<String> tableNames = new ArrayList<String>();
-		tableNames.add("tas");
-		tableNames.add("grouptas");
-		tableNames.add("bibtex");
-		tableNames.add("bookmark");
-		tableNames.add("search_bibtex");
-		tableNames.add("search_bookmark");
-
-		for (String table : tableNames) {
+	private void updateGroupIds(final AdminParam param, final DBSession session) {
+		for (final String table : tableNames) {
 			param.setGroupIdTable(table);
 			this.update("updateGroupIds", param, session);
 		}

@@ -489,18 +489,18 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void deleteUser(final String userName) {
 		// TODO: take care of toLowerCase()!
-		final String[] tables = { "bookmark", "bibtex", "tas", "search_bibtex", "search_bookmark" };
 
 		this.ensureLoggedIn();
-		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
-
-		final User deleteUserParam = new User();
-
-		deleteUserParam.setName(userName);
-
+		/*
+		 * only an admin or the user himself may delete the account
+		 */
+		if (!this.permissionDBManager.isAdminOrSelf(loginUser, userName)) {
+			throw new ValidationException("You are not authorized to perform the requested operation.");
+		}
+		
 		final DBSession session = openSession();
 		try {
-			userDBManager.deleteUser(deleteUserParam, session);
+			userDBManager.deleteUser(userName, session);
 		} finally {
 			session.close();
 		}

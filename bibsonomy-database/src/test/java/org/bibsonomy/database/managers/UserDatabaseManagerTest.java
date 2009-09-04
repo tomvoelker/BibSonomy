@@ -1,7 +1,6 @@
 package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
@@ -15,12 +14,10 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.BeforeClass;
@@ -195,7 +192,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// calls the deleteUser method of the UserDataBaseManager class
 		// this method is overloaded so you have one method with a String parameter
 		// and the new one with a User object parameter
-		this.userDb.deleteUser(user, this.dbSession);
+		this.userDb.deleteUser(user.getName(), this.dbSession);
 		
 		// get the old user details out of the testdb
 		final User newTestuser = this.userDb.getUserDetails(user.getName(), this.dbSession);
@@ -226,7 +223,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// if anybody tries to delete a user which is a group should get an exception
 		try {
-			this.userDb.deleteUser(testUserIsGroup, this.dbSession);
+			this.userDb.deleteUser(testUserIsGroup.getName(), this.dbSession);
 			fail("expected exception");
 		} catch (RuntimeException ignore) {
 		}
