@@ -18,12 +18,15 @@ public class GetPostDocumentQuery extends AbstractQuery<File> {
 	private final String resourceHash;
 	private boolean fileExists;
 
+	public GetPostDocumentQuery(final String username, final String resourceHash, final String fileName, final String directory) {
+		this(username, resourceHash, fileName, directory, directory, directory);
+	}
 	/**
 	 * @param username
 	 * @param resourceHash the resource hash of a specific post
 	 * @param fileName the file name of the document
 	 */
-	public GetPostDocumentQuery(final String username, final String resourceHash, final String fileName) {
+	public GetPostDocumentQuery(final String username, final String resourceHash, final String fileName, final String fileDirectory, final String pdfDirectory, final String psDirectory) {
 
 		if ((username == null) || (username.length() == 0)) throw new IllegalArgumentException("no username given");
 		if ((resourceHash == null) || (resourceHash.length() == 0)) throw new IllegalArgumentException("no resourceHash given");
@@ -31,12 +34,19 @@ public class GetPostDocumentQuery extends AbstractQuery<File> {
 
 		this.username = username;
 		this.resourceHash = resourceHash;
-
+		
 		// create the file
 		try {
-
-			this.document = new File("bibsonomy_docs/" + fileName);
+			if(getExtension(fileName).equals("pdf")) {
+				this.document = new File(pdfDirectory + "/" + fileName);
+			} else if(getExtension(fileName).equals("ps")){
+				this.document = new File(psDirectory + "/" + fileName);
+			} else {
+				this.document = new File(fileDirectory + "/" + fileName);
+			}
+			
 			this.fileExists = !this.document.createNewFile();
+			
 		} catch (final IOException ex) {
 			throw new IllegalArgumentException("could not create new file " + this.document.getAbsolutePath());
 		}
@@ -52,5 +62,15 @@ public class GetPostDocumentQuery extends AbstractQuery<File> {
 		}
 		return this.document;
 	}
+	
+	private String getExtension(String filename) {
+        if(filename != null) {
+            int i = filename.lastIndexOf('.');
+            if(i>0 && i<filename.length()-1) {
+                return filename.substring(i+1).toLowerCase();
+            }
+        }
+        return null;
+    }
 
 }
