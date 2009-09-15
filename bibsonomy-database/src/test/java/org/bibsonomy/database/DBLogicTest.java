@@ -17,11 +17,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.managers.AbstractDBLogicBase;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
@@ -492,5 +495,197 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertEquals(null, spammer.getPrediction());
 		assertEquals(null, spammer.getConfidence());
 		
+	}
+	
+	/**
+	 * tests {@link PostUpdateOperation#UPDATE_TAGS} for a bibtex
+	 */
+	@Test
+	public void testPostUpdateTagOnlyOperationBibTex() {
+		final LogicInterface dbl = this.getDbLogic(TEST_REQUEST_USER_NAME);
+		/*
+		 *  create a post (a bibtex)
+		 */
+		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
+		
+		// add tags
+		final Tag centerTag = new Tag("testCenterTag");
+		final Tag secondTag = new Tag("secondTag");
+		post.getTags().add(centerTag);
+		post.getTags().add(secondTag);
+		
+		post.getUser().setName(TEST_REQUEST_USER_NAME);
+
+		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		posts.add(post);
+		final List<String> createPosts = dbl.createPosts(posts);
+		assertEquals(1, createPosts.size());
+		
+		final Post<? extends Resource> savedPost = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		assertNotNull(savedPost);
+		
+		// get the contentId if more than tags were updated the contentId changes
+		final int contentId = savedPost.getContentId();
+		
+		// build the expected tag set
+		final Set<Tag> expectedTags = new HashSet<Tag>(savedPost.getTags());
+		
+		// abstract
+		final String expectedBibtexAbstract = ((BibTex) savedPost.getResource()).getAbstract();
+		/*
+		 * modify the post; add and remove one tag
+		 */
+		final Tag newTag = new Tag("newTag");
+		savedPost.getTags().add(newTag);
+		savedPost.getTags().remove(centerTag);
+		
+		expectedTags.remove(centerTag);
+		expectedTags.add(newTag);
+		
+		final BibTex bibtex = (BibTex) savedPost.getResource();
+		bibtex.setAbstract("PostUpdateOperation.UPDATE_TAGS");
+		
+		/*
+		 * update the post
+		 */
+		final List<Post<?>> updates = new LinkedList<Post<?>>();
+		updates.add(savedPost);
+		
+		final List<String> updatedPosts = dbl.updatePosts(updates, PostUpdateOperation.UPDATE_TAGS);
+		assertEquals(1, updatedPosts.size());
+		
+		/*
+		 * check if only tags were updated
+		 */
+		final Post<? extends Resource> updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		assertNotNull(updatedResource);
+		
+		// check content id
+		assertEquals(contentId, updatedResource.getContentId());
+		
+		// check tags
+		this.checkTagsOfPost(updatedResource, expectedTags);
+		
+		// check changed
+		assertEquals(expectedBibtexAbstract, ((BibTex) updatedResource.getResource()).getAbstract());
+	}
+	
+	private void checkTagsOfPost(final Post<?> post, final Set<Tag> expectedTags) {
+		final Set<Tag> tags = post.getTags();
+		assertEquals(expectedTags.size(), tags.size());
+		
+		for (final Tag tag : tags) {
+			assertTrue("Tag " + tag + "wasn't expected", expectedTags.contains(tag));
+		}
+	}
+	
+	/**
+	 * tests {@link PostUpdateOperation#UPDATE_TAGS} for a bookmark
+	 */
+	@Test
+	public void testPostUpdateTagOnlyOperationBookmark() {
+		final LogicInterface dbl = this.getDbLogic(TEST_REQUEST_USER_NAME);
+		
+		/*
+		 *  create a post (a bookmark)
+		 */
+		final Post<Bookmark> post = ModelUtils.generatePost(Bookmark.class);
+		
+		// add tags
+		final Tag centerTag = new Tag("testCenterTag");
+		final Tag secondTag = new Tag("secondTag");
+		post.getTags().add(centerTag);
+		post.getTags().add(secondTag);
+		
+		post.getUser().setName(TEST_REQUEST_USER_NAME);
+		final Bookmark bookmarkB = post.getResource();
+		final String url = bookmarkB.getUrl();
+		
+		final List<Post<?>> posts = new LinkedList<Post<?>>();
+		posts.add(post);
+		final List<String> createPosts = dbl.createPosts(posts);
+		assertEquals(1, createPosts.size());
+		
+		final Post<? extends Resource> savedPost = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		
+		// get the contentId if more than tags were updated the contentId changes
+		final int contentId = savedPost.getContentId();
+		
+		// build the expected tag set
+		final Set<Tag> expectedTags = new HashSet<Tag>(savedPost.getTags());
+		
+		/*
+		 * modify the post; add and remove one tag
+		 */
+		final Tag newTag = new Tag("newTag");
+		savedPost.getTags().add(newTag);
+		savedPost.getTags().remove(centerTag);
+		
+		expectedTags.remove(centerTag);
+		expectedTags.add(newTag);
+		
+		// update url (not tags)
+		final Bookmark bookmark = (Bookmark) savedPost.getResource();
+		bookmark.setUrl("http://test2.com");
+		
+		/*
+		 * update the post
+		 */
+		final List<Post<?>> updates = new LinkedList<Post<?>>();
+		updates.add(savedPost);
+		
+		final List<String> updatedPosts = dbl.updatePosts(updates, PostUpdateOperation.UPDATE_TAGS);
+		assertEquals(1, updatedPosts.size());
+		
+		/*
+		 * check if only tags were updated
+		 */
+		final Post<? extends Resource> updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		assertNotNull(updatedResource);
+		
+		// check content id
+		assertEquals(contentId, updatedResource.getContentId());
+		
+		// check tags
+		this.checkTagsOfPost(updatedResource, expectedTags);
+		
+		// check if url was not updated
+		assertEquals(url, ((Bookmark) updatedResource.getResource()).getUrl());
+	}
+	
+	/**
+	 * tests the {@link PostUpdateOperation#UPDATE_ALL}	
+	 */
+	@Test
+	public void updateOperationAll() {
+		final LogicInterface dbl = this.getDbLogic(TEST_REQUEST_USER_NAME);
+		
+		final Post<Bookmark> post = ModelUtils.generatePost(Bookmark.class);
+		post.getResource().setUrl("http://www.notest.org");
+		post.getResource().recalculateHashes();
+		
+		final List<Post<?>> create = new LinkedList<Post<?>>();
+		create.add(post);
+		
+		final List<String> createdPosts = dbl.createPosts(create);
+		assertEquals(1, createdPosts.size());
+		
+		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0), TEST_REQUEST_USER_NAME);
+		
+		final Bookmark createdBookmark = (Bookmark) createdPost.getResource();
+		
+		final String newURL = "http://www.testAll2.com";
+		createdBookmark.setUrl(newURL);
+		
+		final List<Post<?>> update = new LinkedList<Post<?>>();
+		update.add(createdPost);
+		
+		final List<String> updatedPosts = dbl.updatePosts(update, PostUpdateOperation.UPDATE_ALL);
+		assertEquals(1, updatedPosts.size());
+		
+		final Post<?> updatedPost = dbl.getPostDetails(updatedPosts.get(0), TEST_REQUEST_USER_NAME);
+		
+		final Bookmark updatedBookmark = (Bookmark) updatedPost.getResource();
+		assertEquals(newURL, updatedBookmark.getUrl());
 	}
 }

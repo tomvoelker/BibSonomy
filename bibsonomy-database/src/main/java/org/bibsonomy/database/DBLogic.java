@@ -27,6 +27,7 @@ import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
@@ -630,22 +631,11 @@ public class DBLogic implements LogicInterface {
 			 */
 			PostUtils.setGroupIds(post, this.loginUser);
 
-			SystemTag stt;
-			for (Tag tag : post.getTags()) {
-				stt = SystemTagFactory.createExecutableTag(this, dbSessionFactory, tag);
-				if (stt != null) {
-					stt.performBefore(post, session);
-				}
-			}
+			this.systemTagPerformBefore(session, post, new HashSet<Tag>());
 
 			man.storePost(this.loginUser.getName(), post, oldIntraHash, update, session);
 
-			for (Tag tag : post.getTags()) {
-				stt = SystemTagFactory.createExecutableTag(this, dbSessionFactory, tag);
-				if (stt != null) {
-					stt.performAfter(post, session);
-				}
-			}
+			this.systemTagPerformAfter(session, post, new HashSet<Tag>());
 
 			// if we don't get an exception here, we assume the resource has
 			// been successfully stored
@@ -855,15 +845,131 @@ public class DBLogic implements LogicInterface {
 	 * org.bibsonomy.common.enums.PostUpdateOperation)
 	 */
 	@Override
-	public List<String> updatePosts(List<Post<?>> posts, PostUpdateOperation operation) {
-		System.out.println("called");
+	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
+//		System.out.println("called");
+		log.debug("updatePosts called");
+		
 		this.ensureLoggedIn();
 		/*
 		 * check permissions
 		 */
-		for (Post<?> post : posts) {
+		for (final Post<?> post : posts) {
 			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 		}
+		
+		switch (operation) {
+			case UPDATE_TAGS:
+				return this.updateOnlyTagsOfPosts(posts);
+			// TODO: implement operation UPDATE_DOCUMENTS
+//			case UPDATE_DOCUMENTS:
+//				return this.updateOnlyDocumentsOfPosts(posts);
+		}
+		
+		/*
+		 *  default PostUpdateOperation is UPDATE_ALL
+		 */
+		return this.updatePosts(posts);
+	}
+
+	/**
+	 * updates only the tags of the posts
+	 * 
+	 * @param 	posts the posts to update
+	 * @return	the (new) hashes of the updated resources
+	 */
+	private List<String> updateOnlyTagsOfPosts(final List<Post<?>> posts) {
+		final List<String> hashes = new LinkedList<String>();
+		
+		for (final Post<?> post : posts) {
+			hashes.add(this.updateTagsOfPost(post));
+		}
+		
+		return hashes;
+	}
+
+	/**
+	 * updates only the tags of the given post
+	 * 
+	 * @param post	the post to update
+	 * @return	the (new) hash of the updated resource
+	 */
+	private String updateTagsOfPost(final Post<?> post) {
+		final DBSession session = openSession();
+		try {
+			/*
+			 *  get old tags by finding old post in database
+			 */
+			final String oldIntraHash = post.getResource().getIntraHash();
+			final String username = post.getUser().getName();
+			final Post<?> oldPost = this.getPostDetails(oldIntraHash, username);
+			if (oldPost == null) {
+				throw new ResourceNotFoundException(oldIntraHash);
+			}
+			
+			/*
+			 * delete old tags
+			 */
+			this.tagDBManager.deleteTags(oldPost, session);
+			
+			/*
+			 * save new tags
+			 */
+			post.getResource().recalculateHashes();
+			
+			this.systemTagPerformBefore(session, post, oldPost.getTags());
+			
+			// insert new tags
+			this.tagDBManager.insertTags(post, session);
+		
+			this.systemTagPerformAfter(session, post, oldPost.getTags());
+			
+			return post.getResource().getIntraHash();
+		} finally {
+			session.close();
+		}
+	}
+	
+	/**
+	 * performs the before action of all system tags of the post
+	 * 
+	 * @param session
+	 * @param post
+	 * @param alreadyExecutedTags all system tags already executed (during last save or update)
+	 */
+	private void systemTagPerformBefore(final DBSession session, final Post<?> post, final Set<Tag> alreadyExecutedTags) {
+		SystemTag stt;
+		for (final Tag tag : post.getTags()) {
+			stt = SystemTagFactory.createExecutableTag(this, this.dbSessionFactory, tag);
+			if (stt != null && !alreadyExecutedTags.contains(stt)) {
+				stt.performBefore(post, session);
+			}
+		}
+	}
+
+	/**
+	 * performs the after action of all system tags of the post
+	 * 
+	 * @param session
+	 * @param post
+	 * @param alreadyExecutedTags  all system tags already executed (during last save or update)
+	 */
+	private void systemTagPerformAfter(final DBSession session, final Post<?> post, final Set<Tag> alreadyExecutedTags) {
+		SystemTag stt;
+		for (final Tag tag : post.getTags()) {
+			stt = SystemTagFactory.createExecutableTag(this, this.dbSessionFactory, tag);
+			if (stt != null && !alreadyExecutedTags.contains(stt)) {
+				stt.performAfter(post, session);
+			}
+		}
+	}
+
+	/**
+	 * updates the posts (including tag and doc)
+	 * 
+	 * @param posts
+	 * @return
+	 */
+	private List<String> updatePosts(final List<Post<?>> posts) {
 		/*
 		 * update posts FIXME: implement properly (see createPosts)
 		 */
