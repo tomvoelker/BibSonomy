@@ -23,13 +23,7 @@
 
 package org.bibsonomy.model;
 
-import java.net.URL;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.model.util.UserUtils;
 
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.
