@@ -47,7 +47,7 @@
 		<baseFileName>simplehtmlyear</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
-	</layout>	
+	</layout>
 	<layout name="tablerefs">
 		<displayName>HTML table</displayName>
 		<description xml:lang="en">
@@ -331,6 +331,21 @@
 		</description>
 		<directory>mmsyear</directory>
 		<baseFileName>mmsyear</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="listrefs" public="false">
+		<displayName>HTML list</displayName>
+		<description xml:lang="en">
+			A more structured HTML output with each entry as an item in a
+			list and additional JavaScript search function.
+		</description>
+		<description xml:lang="de">
+			Erzeugt eine strukturierte HTML-Ausgabe, bei der jede Publikation als Eintrag 
+			in einer Liste dargestellt wird und bietet weiterhin Suchfunktionen mittels JavaScript.
+		</description>
+		<directory>listrefs</directory>
+		<baseFileName>listrefs</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
