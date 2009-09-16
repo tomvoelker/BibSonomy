@@ -52,40 +52,27 @@ public class ExtendedFieldsHandler extends HttpServlet{
 		 */
 		final String action = request.getParameter("action");
 		final boolean validCkey = ActionValidationFilter.isValidCkey(request);
-		if (validCkey && ("addURL".equals(action) || "deleteURL".equals(action) || "updatePrivateNote".equals(action))) {
+		if (validCkey && ("addURL".equals(action) || "deleteURL".equals(action))) {
 			final String hash = request.getParameter("hash");
-			if ("updatePrivateNote".equals(action)) {
-				/*
-				 * FIXME: missing check, if currUser owns this publication!
-				 */
-				final String privnote    = request.getParameter("privnote");
-				final String oldprivnote = request.getParameter("oldprivnote");
-				if (((privnote == null && oldprivnote != null) || (privnote != null && (oldprivnote == null || !privnote.equals(oldprivnote))))) {
-					/*
-					 * something has changed --> write it to DB
-					 */
-					DBPrivnoteManager.setPrivnoteForUser(privnote, currUser, hash);
-				}
-
-			} else {
-				/*
-				 * add / delete extra URL
-				 */
-				final String urlString = request.getParameter("url");
-				final URL url2;
-				try {
-					url2 = new URL(urlString);
-				} catch (final MalformedURLException ex) {
-					request.setAttribute("error", "The URL you entered is invalid (" + ex.getMessage() + ").");
-					getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
-					return;
-				}
-				if ("addURL".equals(action)) {
-					DBBibtexURLManager.createURL (new BibTexExtra(url2, request.getParameter("text"), null), hash, currUser, validCkey);
-				} else if ("deleteURL".equals(action)) {
-					DBBibtexURLManager.deleteURL (new BibTexExtra(url2, null, null), hash, currUser, validCkey);
-				}
+			
+			/*
+			 * add / delete extra URL
+			 */
+			final String urlString = request.getParameter("url");
+			final URL url2;
+			try {
+				url2 = new URL(urlString);
+			} catch (final MalformedURLException ex) {
+				request.setAttribute("error", "The URL you entered is invalid (" + ex.getMessage() + ").");
+				getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
+				return;
 			}
+			if ("addURL".equals(action)) {
+				DBBibtexURLManager.createURL (new BibTexExtra(url2, request.getParameter("text"), null), hash, currUser, validCkey);
+			} else if ("deleteURL".equals(action)) {
+				DBBibtexURLManager.deleteURL (new BibTexExtra(url2, null, null), hash, currUser, validCkey);
+			}
+			
 			response.sendRedirect("/bibtex/" + HashID.INTRA_HASH.getId() + URLEncoder.encode(hash, "UTF-8") + "/" + URLEncoder.encode(currUser, "UTF-8"));
 			return;
 		}
@@ -125,6 +112,33 @@ public class ExtendedFieldsHandler extends HttpServlet{
 			return;
 		}
 
+		/*
+		 * action update private note
+		 */
+		final String action = request.getParameter("action");
+		final boolean validCkey = ActionValidationFilter.isValidCkey(request);
+		if (action != null && validCkey) {
+			if ("updatePrivateNote".equals(action)) {		
+				final String hash = request.getParameter("hash");
+				
+				/*
+				 * FIXME: missing check, if currUser owns this publication!
+				 */
+				final String privnote    = request.getParameter("privnote");
+				final String oldprivnote = request.getParameter("oldprivnote");
+				if (((privnote == null && oldprivnote != null) || (privnote != null && (oldprivnote == null || !privnote.equals(oldprivnote))))) {
+					/*
+					 * something has changed --> write it to DB
+					 */
+					DBPrivnoteManager.setPrivnoteForUser(privnote, currUser, hash);
+					
+				}
+				
+				response.sendRedirect("/bibtex/" + HashID.INTRA_HASH.getId() + URLEncoder.encode(hash, "UTF-8") + "/" + URLEncoder.encode(currUser, "UTF-8"));
+				return;
+			}
+		}
+		
 		DBExtendedFieldManager eman = new DBExtendedFieldManager();
 
 		/*
