@@ -81,15 +81,15 @@
 	
 	
 	var authors = new Array(<c:forEach var='author' items='${command.authors}' varStatus="loopStatus">
-								"<c:out value='${author}'/>"<c:if test="${not loopStatus.last}">,</c:if>
+								"${mtl:quoteJSON(author)}"<c:if test="${not loopStatus.last}">,</c:if>
 							</c:forEach>);
 							
 	var tags = new Array(<c:forEach var='tag' items='${command.tags}' varStatus="loopStatus">
-								"<c:out value='${tag}'/>"<c:if test="${not loopStatus.last}">,</c:if>
+								"${mtl:quoteJSON(tag)}"<c:if test="${not loopStatus.last}">,</c:if>
 						</c:forEach>);
 	
 	var titles = new Array(<c:forEach var='title' items='${command.titles}' varStatus="loopStatus">
-								"<mtl:bibclean value='${title}'/>"<c:if test="${not loopStatus.last}">,</c:if>
+								"${mtl:quoteJSON(mtl:cleanBibtex(title))}"<c:if test="${not loopStatus.last}">,</c:if>
 							</c:forEach>);
 							
 	/**
