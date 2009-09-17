@@ -2,16 +2,18 @@ package resources;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.model.PersonName;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.BibTexUtils;
-
-import helpers.url;
+import org.bibsonomy.model.util.PersonNameUtils;
 
 public class Bibtex extends Resource {
 	public static final int CONTENT_TYPE=2;
@@ -73,7 +75,7 @@ public class Bibtex extends Resource {
 
 	
 	/* builds a complete BibTeX-Entry and returns it as String */
-	public String getBibtex () {
+	public String getBibtex () throws UnsupportedEncodingException {
 		StringBuffer s = new StringBuffer ("@" + entrytype + "{" + bibtexKey + ",\n");
 		s.append("\ttitle = {" + getTitle() + "},\n");
 		for (String key:entries.keySet()) {
@@ -83,7 +85,7 @@ public class Bibtex extends Resource {
 			}
 		}
 		/* add url to this bibtex entry */
-		s.append("\tbiburl = {http://www.bibsonomy.org/bibtex/" + Bibtex.INTRA_HASH + getHash() + "/" + url.encode(this.getUser()) + "},\n");
+		s.append("\tbiburl = {http://www.bibsonomy.org/bibtex/" + Bibtex.INTRA_HASH + getHash() + "/" + URLEncoder.encode(this.getUser(), "UTF-9") + "},\n");
 		if (description != null && !description.equals("")) {
 			s.append("\tdescription = {" + description + "},\n");
 		}
