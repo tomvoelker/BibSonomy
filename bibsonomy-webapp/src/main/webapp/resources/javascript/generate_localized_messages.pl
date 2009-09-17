@@ -40,13 +40,16 @@ foreach my $file (@files) {
 		    $line = encode("utf-8", decode("iso-8859-1", $line));
 		}
 
-		my @keyValuePair = split("=", $line);
+		my ($key, $value) = split("=", $line);
+		# remove leading/trailing whitespace
+		$key = trim($key);
+		$value = trim($value);
 		# escape backslashes
-		$keyValuePair[1] =~ s/\\/\\\\/g;		
+		$value =~ s/\\/\\\\/g;		
 		# escape quotation marks & backslashes
-		$keyValuePair[1] =~ s/\"/\\\"/g;
-		if (scalar @keyValuePair == 2 and length($keyValuePair[0]) > 0 and length($keyValuePair[1]) > 0 and not (substr($keyValuePair[0],0,1) eq '#')) {
-			$pairs .= '   "'.$keyValuePair[0].'" : "' . $keyValuePair[1] . '",' . "\n";
+		$value =~ s/\"/\\\"/g;
+		if (length($key) > 0 and length($value) > 0 and not (substr($key,0,1) eq '#')) {
+			$pairs .= '   "'.$key.'" : "'.$value.'",' . "\n";
 		}
 	}
 	
@@ -59,4 +62,11 @@ foreach my $file (@files) {
 	print "\n done.\n\n";
 	close JS;
 	close M;
+}
+
+sub trim($){
+    my $string = shift;
+    $string =~ s/^\s+//;
+    $string =~ s/\s+$//;
+    return $string;
 }
