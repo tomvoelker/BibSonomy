@@ -1,6 +1,5 @@
 package helpers.database;
 
-import helpers.ModifyGroupId;
 import helpers.constants;
 
 import java.net.MalformedURLException;
@@ -13,7 +12,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 
@@ -92,101 +90,6 @@ public class DBAdminManager extends DBManager {
 			c.close(); // close database connection
 		}
 
-	}
-
-	/**
-	 * We flag a user as spammer and change group settings of 
-	 * all his posts to make sure they do not show up.
-	 *   
-	 * @param bean
-	 * @param spammer
-	 */
-	public static void flagSpammer (final AdminBean bean, final boolean spammer) {
-		final DBContext c = new DBContext();
-		try {
-			if (c.init()) {//initialize database
-				/*
-				 * update user table
-				 */
-				if (spammer) {
-					c.stmt = c.conn.prepareStatement("UPDATE user " +
-							                         "  SET " +
-							                         "    spammer = " + constants.SQL_CONST_SPAMMER_TRUE + ", " +
-							                         "    updated_by = ?, " +
-							                         "    updated_at = ?, " +
-							                         "    to_classify = " + constants.SQL_CONST_TO_CLASSIFY_FALSE + 
-							                         "  WHERE " +
-							                         "    user_name = ? AND " +
-							                         "    spammer = " + constants.SQL_CONST_SPAMMER_FALSE);	
-				} else {
-					c.stmt = c.conn.prepareStatement("UPDATE user SET spammer = " + constants.SQL_CONST_SPAMMER_FALSE + ", updated_by = ?, updated_at = ?" +
-							                         " WHERE user_name = ? AND spammer = " + constants.SQL_CONST_SPAMMER_TRUE);
-				}
-				/*
-				 * update resource tables
-				 */
-				c.stmt.setString(1, bean.getCurrUser());
-				c.stmt.setTimestamp(2, new Timestamp(new Date().getTime()));
-				c.stmt.setString(3, bean.getUser());
-				if(c.stmt.executeUpdate() == 1) {
-					/*
-					 * user has been (un)flagged as spammer ... set info output and change his posts
-					 */
-					if (spammer) 
-						bean.addInfo("user `" + bean.getUser() + "` flagged as spammer!"); 
-					else 
-						bean.addInfo("user `" + bean.getUser() + "` UNflagged as spammer!");  
-
-					/*
-					 * get old group ids and new group ids, depending upon if this user is a spammer or not 
-					 */
-					int newPriv = ModifyGroupId.getGroupId(constants.SQL_CONST_GROUP_PRIVATE, spammer);
-					int newFrnd = ModifyGroupId.getGroupId(constants.SQL_CONST_GROUP_FRIENDS, spammer);
-					int newPubl = ModifyGroupId.getGroupId(constants.SQL_CONST_GROUP_PUBLIC,  spammer);
-					int oldPriv = ModifyGroupId.getGroupId(constants.SQL_CONST_GROUP_PRIVATE, !spammer);
-					int oldFrnd = ModifyGroupId.getGroupId(constants.SQL_CONST_GROUP_FRIENDS, !spammer);
-					int oldPubl = ModifyGroupId.getGroupId(constants.SQL_CONST_GROUP_PUBLIC,  !spammer);
-
-
-					/*
-					 * modify all groupids in tables
-					 * 
-					 * The updates are done with LOW_PRIORITY. This only affects MyISAM tables and helps 
-					 * to prevent locking of SELECT statements.
-					 * see also http://dev.mysql.com/doc/refman/5.1/en/table-locking.html
-					 * 
-					 * This may delay spammer flagging and therefore slow it down. However, this is really
-					 * only relevant for the SpammerKickerButton and not for the admin page, since the 
-					 * latter uses AJAX.   
-					 */
-					for (int i = 0; i < spammerUpdateTables.length; i++) {
-						// private
-						c.stmt = c.conn.prepareStatement("UPDATE LOW_PRIORITY " + spammerUpdateTables[i] + " SET `group` = "  + newPriv + " WHERE user_name = ? AND `group` = " + oldPriv);
-						c.stmt.setString(1, bean.getUser());
-						c.stmt.executeUpdate();
-						// public
-						c.stmt = c.conn.prepareStatement("UPDATE LOW_PRIORITY " + spammerUpdateTables[i] + " SET `group` = "  + newPubl + " WHERE user_name = ? AND `group` = " + oldPubl);
-						c.stmt.setString(1, bean.getUser());
-						c.stmt.executeUpdate();
-						// friends
-						c.stmt = c.conn.prepareStatement("UPDATE LOW_PRIORITY " + spammerUpdateTables[i] + " SET `group` = "  + newFrnd + " WHERE user_name = ? AND `group` = " + oldFrnd);
-						c.stmt.setString(1, bean.getUser());
-						c.stmt.executeUpdate();					
-					}
-
-				} else {
-					if (spammer)
-						bean.addError("user `" + bean.getUser() + " could not be flagged as spammer. Either he is already flagged or you misspelled the name.");
-					else 
-						bean.addError("user `" + bean.getUser() + " could not be UNflagged as spammer. Either he is already UNflagged or you misspelled the name.");
-				}
-
-			}
-		}catch (final SQLException e) {
-			bean.addError("Sorry, an error occured: " + e);
-		} finally {
-			c.close(); // close database connection
-		}
 	}
 
 	/**
@@ -301,27 +204,5 @@ public class DBAdminManager extends DBManager {
 			bean.addError("Sorry, an error occured: " + e);
 		}		
 	}
-	
-	/**
-	 * Generate an API key for the given user
-	 * @param bean The AdminBean
-	 * @author sts
-	 */
-	public static void updateApiKey(AdminBean bean) {
-		DBContext c = new DBContext();
-		String apiKey = UserUtils.generateApiKey();
-		
-		try {
-			if (c.init()) {
-				c.stmt = c.conn.prepareStatement("UPDATE user SET api_key = ? WHERE user_name = ?");
-				c.stmt.setString(1, apiKey);
-				c.stmt.setString(2, bean.getUser());
-				if (c.stmt.executeUpdate() == 1)
-					bean.addInfo("Generated api key '" + apiKey + "' for user " + bean.getUser());
-			}
-		} catch (SQLException ex) {
-			bean.addError("Sorry, an error occured during api key generation: " + ex);
-			ex.printStackTrace();
-		}				
-	}
+
 }

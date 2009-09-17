@@ -8,8 +8,6 @@
 package servlets;
 
 import helpers.constants;
-import helpers.mail;
-import helpers.database.DBAdminManager;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -19,7 +17,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import javax.mail.MessagingException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -34,7 +31,6 @@ import javax.sql.DataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import beans.AdminBean;
 import beans.UserBean;
 import filters.ActionValidationFilter;
 import filters.SessionSettingsFilter;
@@ -205,41 +201,7 @@ public class SettingsHandler extends HttpServlet{
 				}
 
 
-				/*
-				 * delete an account
-				 */
-				if ("yes".equals(request.getParameter("delete"))) {
-
-					int spammer = constants.SQL_CONST_SPAMMER_FALSE;
-					// get spammer status of user
-					stmtP = conn.prepareStatement("SELECT spammer FROM user WHERE user_name = ?");
-					stmtP.setString(1, currUser);
-					rst = stmtP.executeQuery();
-					if (rst.next()) {
-						spammer = rst.getInt("spammer");
-
-						// set posts to private (spammer!)
-						AdminBean bean = new AdminBean();
-						bean.setUser(currUser);
-						DBAdminManager.flagSpammer(bean, true);
-
-						// deactivate in database
-						stmtP = conn.prepareStatement("UPDATE user SET user_password = ?, spammer = " + spammer + " WHERE user_name = ?");
-						stmtP.setString(1, "inactive");
-						stmtP.setString(2, currUser);
-						stmtP.executeUpdate();
-
-						try {
-							mail.sendMail(new String[] {"register@bibsonomy.org"},  "User deleted his account", "name is " + currUser, "register@bibsonomy.org");
-						} catch (MessagingException e) {
-							log.fatal("Could not send info mail.", e);
-						}
-						session.invalidate();
-						redirectPage = "/logout";
-					} else {
-						throw new SQLException ("Wrong password");
-					}
-				}
+			
 
 				conn.commit();
 				response.sendRedirect(redirectPage);

@@ -5,7 +5,6 @@
 
 package beans;
 import helpers.constants;
-import helpers.database.DBAdminEvaluator;
 import helpers.database.DBAdminManager;
 
 import java.io.Serializable;
@@ -31,18 +30,6 @@ public class AdminBean implements Serializable {
 		if (action.equals("add_group") && isValidUser() && isValidPrivlevel()) {
 			// write data into database
 			DBAdminManager.addGroupToSystem (this);
-		}else if(action.equals("flag_spammer") && isValidUser()){
-			// flag current user as spammer
-			DBAdminManager.flagSpammer(this, true);
-		}else if (action.equals("unflag_spammer") && isValidUser()) {
-			// unflag current user  
-			DBAdminManager.flagSpammer (this, false);
-		}else if (action.equals("flag_spammer_evaluator") && isValidUser()){
-			// flag user in evaluation
-			DBAdminEvaluator.flagSpammer(this, true); 
-		}else if (action.equals("unflag_spammer_evaluator") && isValidUser()){
-			// flag user in evaluation 
-			DBAdminEvaluator.flagSpammer(this, false); 
 		}else if (action.equals("remove_user") && isValidUser()) {	
 			DBAdminManager.removeUserFromSpammerlist(this);
 		}else if (action.equals("addtag") && isValidTag()) {
@@ -51,8 +38,6 @@ public class AdminBean implements Serializable {
 			DBAdminManager.flagSpammerTag(this, false, 1);
 		}else if (action.equals("cleantag")) {
 			DBAdminManager.flagSpammerTag(this, true, 0);
-		} else if (action.equals("gen_api_key")) {
-			DBAdminManager.updateApiKey(this);
 		}
 	}
 	
