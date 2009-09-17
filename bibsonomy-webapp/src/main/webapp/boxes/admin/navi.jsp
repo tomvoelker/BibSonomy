@@ -14,6 +14,4 @@
 
 <a href="/admin.jsp">admin</a> &middot;
 
-<a style="border: 1px solid #aaa; padding:2px; background: #eee;" title="killSpammer" href="javascript:location.href='${projectHome}admin.jsp?action=flag_spammer&amp;user='+encodeURIComponent(location.href.replace(/.*\//, ''))" inclick="return false;">SpammerKillerButton</a>
-
 </p>
