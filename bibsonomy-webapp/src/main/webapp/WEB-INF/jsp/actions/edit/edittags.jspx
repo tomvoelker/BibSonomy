@@ -9,7 +9,13 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common">
-
+	
+	<jsp:directive.page language="java"/>
+	<jsp:directive.page import="java.lang.*,java.util.*"/>
+	<jsp:directive.page import="servlets.listeners.*"/>
+	<jsp:directive.page import="helpers.*"/>
+	<jsp:directive.page import="resources.*"/>
+	
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
 
@@ -27,8 +33,20 @@
 				<input type="text" size="20" name="tag" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" id="inpf"/>
 		</form>	-->
 	</jsp:attribute>
+	
+
 
 	<jsp:attribute name="content">
+	<div style="margin-top: 20px; margin-left: 10px; margin-bottom: 10px;">
+		<script type='text/javascript' src='jquery_autocomplete.js'></script> 	
+		<script type="text/javascript">
+		$(document).ready(function(){
+			$("#inpf").autocomplete("admin_suggest.jsp?type=2", {
+				width: 260,
+				selectFirst: true
+			});
+		});
+		</script>
 		
 		<c:if test="${!empty updatedResourcesCount || !empty updatedRelationsCount}">
   			<h2><fmt:message key="edittags.update.partOne" /></h2>
@@ -50,7 +68,7 @@
     	<table>      
       	<tr>
         	<td><fmt:message key="edittags.main.replace" />:</td>
-        	<td><input name="delTags" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off"  size="30" value="" tabindex="1" title="these tags will be removed from every posts which contains ALL of these tags" id="inpf"/></td>
+        	<td><input name="delTags" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="on"  size="30" value="" tabindex="1" title="these tags will be removed from every posts which contains ALL of these tags" id="inpf" class="ac_spam"/></td>
         	<td rowspan="2" style="padding-left:1em; border: 1px solid black; font-size:smaller;">
         		<fmt:message key="edittags.example.partOne" />&#160;
         		<a href="${projectHome}tag/folksonomy" onFocus="switchField('inpDel','inpfNew')">folksonomy</a>&#160;<fmt:message key="edittags.example.partand" />&#160;
@@ -60,6 +78,41 @@
         		<a href="${projectHome}tag/system">system</a>&#160;<fmt:message key="edittags.example.partand" />&#160;
         		<a href="${projectHome}tag/bookmarking">bookmarking</a>. <fmt:message key="edittags.example.partFour" />&#160;     
         		<a href="${projectHome}tag/folksonomy">folksonomy</a>&#160;<em><fmt:message key="edittags.example.partand" /></em>&#160;<a href="${projectHome}tag/project">project</a>       	
+
+        	<hr />
+        			
+			<div class="bmtitel">
+				<b><a href="${root}">${projectName}</a></b>
+			</div>
+     		<span class="bmmeta">
+        
+			<fmt:message key="edittags.example.to" />&#160;
+			
+			<a href="/user/${command.userName}/bibtex">bibtex</a>&#160;
+			<a href="/user/${command.userName}/folksonomy">folksonomy</a>&#160;
+			<a href="/user/${command.userName}/project">project</a>&#160;
+			<fmt:message key="edittags.example.by" />&#160;<a href="/user/${command.userName}"><c:out value='${command.userName}' /></a>&#160;
+       		<fmt:message key="edittags.example.on" />&#160;<c:out value='${command.date}' />
+			</span>
+			
+			<div class="bmtitel">
+				<b><a href="${root}">${projectName}</a></b>
+			</div>
+     
+			<span class="bmmeta">
+        
+			<fmt:message key="edittags.example.to" />&#160;
+			
+			<a href="/user/${command.userName}/bibtex">bibtex</a>&#160;
+			<a href="/user/${command.userName}/bookmarking">bookmarking</a>&#160;
+			<a href="/user/${command.userName}/social">social</a>&#160;
+			<a href="/user/${command.userName}/system">system</a>&#160;
+			<fmt:message key="edittags.example.by" />&#160;<a href="/user/${command.userName}"><c:out value='${command.userName}' /></a>&#160;
+       		<fmt:message key="edittags.example.on" />&#160;<c:out value='${command.date}' />
+			</span>
+			
+
+
         	</td>
         </tr>
       	<tr>
@@ -70,17 +123,20 @@
         	<td><fmt:message key="edittags.main.updaterelations" />: </td>
         	<td colspan="2">
         		<input type="checkbox" name="updaterelations" value="yes" tabindex="3"/>
-        		<fmt:message key="edittags.main.NoteOne" />: <em><fmt:message key="edittags.main.NoteTwo" />.</em>
+        		<fmt:message key="edittags.main.NoteOne" />: <em><fmt:message key="edittags.main.NoteTwo" /></em>
         	</td>
         </tr>
       	<tr>
         	<td style="width: 150px">
-        		<input type="hidden" name="ckey" value="${ckey}"/>
-         		<input type="submit" tabindex="4"/><input type="reset" tabindex="5"/>
+
         	</td>
         <td></td>
 		</tr>
 	</table>
+	<input type="hidden" name="ckey" value="${ckey}"/>
+    <fmt:message var="reset" key="edittags.button.reset"/>
+    <fmt:message var="send" key="edittags.button.send"/>
+    &#160;<input type="submit" value="${send}" tabindex="4"/>&#160;<input type="reset" value="${reset}" tabindex="5"/>
 	</form>
   
 	<hr />
@@ -89,25 +145,48 @@
 
 	<h2><fmt:message key="edittags.main.insertRelationsOne" /></h2>
 	<form action="/RelationsHandler?do=insert" method="post">
-    	<fmt:message key="edittags.main.insertRelationsTwo" />: 
-		<input onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="lower" size="30" value="" tabindex="6" title="enter the subtag(s) here" id="insert_lo"/>&#8594;
-		<input onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="upper" size="15" value="" tabindex="7" title="enter the supertag(s) here" id="insert_up"/>
-		<input type="submit" value="Insert relation" tabindex="8"/> 
-		<input type="reset" value="Reset" tabindex="9"/>
-		<input type="hidden" name="ckey" value="${ckey}"/>
+		<table>
+			<tr>
+				<td></td>
+				<td><span style="font-size:10px">supertag</span></td>
+				<td><span style="font-size:10px">subtag</span></td>
+			</tr>
+			<tr>
+    			<td><fmt:message key="edittags.main.insertRelationsTwo" />:&#160;</td>
+    			<td><input onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="upper" size="15" value="" tabindex="7" title="enter the supertag(s) here" id="insert_up"/>&#8592;</td>
+   				<td><input onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="lower" size="30" value="" tabindex="6" title="enter the subtag(s) here" id="insert_lo"/>&#160;
+    				<fmt:message var="insertRelation" key="edittags.button.insertRelations"/>
+					<input type="submit" value="${insertRelation}" tabindex="8"/>&#160;
+    				<fmt:message var="reset" key="edittags.button.reset"/>
+					<input type="reset" value="${reset}" tabindex="9"/>
+					<input type="hidden" name="ckey" value="${ckey}"/></td>
+			</tr>
+		</table>
 	</form>
   
       
 	<h2><fmt:message key="edittags.main.deleteRelationsOne" /></h2>
 	<form action="/RelationsHandler?do=delete" method="post">
-		<fmt:message key="edittags.main.deleteRelationsTwo" />:
-    	<input onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="lower" size="30" value="" tabindex="10" title="enter the subtag(s) here" id="delete_lo"/>&#8594; 
-    	<input onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="upper" size="15" value="" tabindex="11" title="enter the supertag(s) here" id="delete_up"/>
-    	<input type="submit" value="Delete Relation" tabindex="12"/> 
-    	<input type="reset" value="Reset" tabindex="13"/>
-    	<input type="hidden" name="ckey" value="${ckey}"/>
+		<table>
+			<tr>
+				<td></td>
+				<td><span style="font-size:10px">supertag</span></td>
+				<td><span style="font-size:10px">subtag</span></td>
+			</tr>
+			<tr>
+				<td><fmt:message key="edittags.main.deleteRelationsTwo" />:&#160;</td>				
+				<td><input onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="upper" size="15" value="" tabindex="11" title="enter the supertag(s) here" id="delete_up"/>&#8592;</td>
+				<td><input onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="lower" size="30" value="" tabindex="10" title="enter the subtag(s) here" id="delete_lo"/>&#160;
+					<fmt:message var="deleteRelation" key="edittags.button.deleteRelations"/>
+    				<input type="submit" value="${deleteRelation}" tabindex="12"/>&#160;
+        			<fmt:message var="reset" key="edittags.button.reset"/>
+    				<input type="reset" value="${reset}" tabindex="13"/>
+    				<input type="hidden" name="ckey" value="${ckey}"/></td>
+    		</tr>
+    	</table>
 	</form>
-	<hr />  
+	<hr /> 
+	</div>
 	</jsp:attribute>
 		
 	<jsp:attribute name="sidebar">			

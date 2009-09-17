@@ -2,6 +2,9 @@ package org.bibsonomy.webapp.command;
 
 import org.bibsonomy.model.User;
 
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 
 /**
  * @author hba
@@ -10,6 +13,9 @@ import org.bibsonomy.model.User;
 public class EditTagsPageViewCommand extends ResourceViewCommand {
 
 	private User user;
+	private String userName = "test";
+	private Date date = new Date();
+	private SimpleDateFormat dateformat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
 
 	/** the group whode resources are requested */
 	private ConceptsCommand concepts = null;
@@ -48,6 +54,24 @@ public class EditTagsPageViewCommand extends ResourceViewCommand {
 	 */
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getUserName(){
+		return this.userName;
+	}
+	
+	/**
+	 * @param user
+	 */
+	public void setUserName(String userName){
+		this.userName = userName;
+	}
+	
+	public String getDate(){
+		return dateformat.format(date);
 	}
 
 }

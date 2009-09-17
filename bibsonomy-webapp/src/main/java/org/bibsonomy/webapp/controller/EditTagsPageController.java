@@ -1,8 +1,12 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
+import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.webapp.command.EditTagsPageViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -35,10 +39,15 @@ public class EditTagsPageController extends SingleResourceListControllerWithTags
 		final String groupingName = command.getContext().getLoginUser().getName();
 
 		command.setPageTitle("edit tags :: " + groupingName);
+		command.setUserName(groupingName);
 		
 		if (command.getFormat().equals("html")) {
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 20000, null);
 
+			final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
+			command.getConcepts().setConceptList(concepts);
+			command.getConcepts().setNumConcepts(concepts.size());
+			
 			// log if a user has reached threshold
 			if (command.getTagcloud().getTags().size() > 19999) {
 				LOGGER.error("User " + groupingName + " has reached threshold of 20000 tags on user page");
