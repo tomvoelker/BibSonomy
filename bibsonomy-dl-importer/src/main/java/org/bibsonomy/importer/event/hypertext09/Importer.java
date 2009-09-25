@@ -240,7 +240,7 @@ public class Importer {
 		bibtex.setMonth(getProperty("field.month"));
 		//bibtex.setMonth(getProperty("field.doi"));
 		//bibtex.setUrl(getProperty("field.url"));
-		//bibtex.setMonth(getProperty("field.isbn"));
+		bibtex.addMiscField("isbn", getProperty("field.isbn"));
 		//bibtex.setPages(getProperty("field.pages"));
 		//bibtex.setEditor(getProperty("field.editor"));
 		//bibtex.setSeries(getProperty("field.series"));
