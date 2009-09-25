@@ -9,12 +9,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -28,10 +24,11 @@ import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
-import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
 /**
+ * Importer for EC-TEL 2009
+ * 
  * @author rja
  * @version $Id$
  */
@@ -93,17 +90,36 @@ public class Importer {
 			 * parse misc field, to access paper ID and track
 			 */
 			BibTexUtils.parseMiscField(bibtex);
-			final Integer paperId = post.getContentId();
+			bibtex.addMiscField("paperId", post.getContentId().toString());
+			
+			/*
+			 * add default tags
+			 */
+			final Set<Tag> tags = post.getTags();
+			tags.add(new Tag(getProperty("default.tag")));
+			/*
+			 * clean session id
+			 */
 			final String sessionId = bibtex.getMiscField("topic");
-
-			/*
-			 * filter post to clean tags
-			 */
-//			postFilter.filterPost(post);
-			/*
-			 * add default tags (paperId / sessionId)
-			 */
-			addDefaultTags(post.getTags(), paperId.toString(), sessionId);
+			if (sessionId.startsWith("WS")) {
+				final String[] parts = sessionId.split(":");
+				/*
+				 * add workshop ID as tag
+				 */
+				tags.add(new Tag(getCamelCase(parts[0])));
+				/*
+				 * add short workshop name as tag
+				 */
+				if ("WS 10".equals(parts[0])) {
+					tags.add(new Tag(getCamelCase(parts[1])));
+				} else if ("WS 4".equals(parts[0])) {
+					tags.add(new Tag("SemHE-09"));
+				} else if ("WS 8".equals(parts[0])) {
+					tags.add(new Tag("lms-ale-09"));
+				}
+			} else {
+				tags.add(new Tag(getCamelCase(sessionId)));
+			}
 			/*
 			 * add tags as misc field such that they're included in toBibtexString()
 			 */
@@ -207,12 +223,6 @@ public class Importer {
 		return buf.toString();
 	}
 
-	private void addDefaultTags(final Set<Tag> tags, final String paperId, final String sessionId) {
-		tags.add(new Tag(getProperty("default.tag")));
-		tags.add(new Tag(paperId));
-		tags.add(new Tag(getCamelCase(sessionId)));
-	}
-
 	private static void printTags(final Post<BibTex> post) {
 		System.out.print("[");
 		for (final Tag t: post.getTags()) {
@@ -242,32 +252,6 @@ public class Importer {
 	}
 
 	/**
-	 * Read tags from CSV file.
-	 * 
-	 * @param tags
-	 * @throws UnsupportedEncodingException
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	private static Map<String, Set<String>> readTags(final InputStreamReader reader) throws UnsupportedEncodingException, FileNotFoundException, IOException {
-		final Map<String, Set<String>> tags = new HashMap<String, Set<String>>();
-		final CSVReader csvReader = new CSVReader(reader);
-		String[] line;
-		while ((line = csvReader.readNext()) != null) {
-			if (line.length > 1) {
-				final String paperId = line[0];
-				final String tag = line[1];
-				if (!tags.containsKey(paperId)) {
-					tags.put(paperId, new HashSet<String>());
-				}
-				tags.get(paperId).add(tag);
-			}
-		}
-		csvReader.close();
-		return tags;
-	}
-
-	/**
 	 * Fills the remaining bibtex fields with defaults. 
 	 * 
 	 * @param bibtex
@@ -288,7 +272,7 @@ public class Importer {
 		//bibtex.setPages(getProperty("field.pages"));
 		bibtex.setEditor(getProperty("field.editor"));
 		bibtex.setSeries(getProperty("field.series"));
-		bibtex.setSeries(getProperty("field.volume"));
+		bibtex.setVolume(getProperty("field.volume"));
 		bibtex.setBooktitle(getProperty("field.booktitle"));
 		bibtex.setPublisher(getProperty("field.publisher"));
 		bibtex.setAddress(getProperty("field.address"));

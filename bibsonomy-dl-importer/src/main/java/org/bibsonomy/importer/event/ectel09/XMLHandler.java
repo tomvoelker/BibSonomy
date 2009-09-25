@@ -10,7 +10,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 
 /**
- * Callback handler for the SAX parser, reading Ectel09 XML.
+ * Callback handler for the SAX parser, reading EC-TEL 2009 XML.
  * 
  * 
  * @author rja
