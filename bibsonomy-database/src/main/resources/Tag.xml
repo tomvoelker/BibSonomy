@@ -96,14 +96,14 @@
 		  <include refid="inGroups"/>) 
 		 UNION ALL
 		 (SELECT tag_name 
-		  FROM tas t, groups g, friends f
+		  FROM tas t1, groups g, friends f
 		  WHERE f.f_user_name = #userName# AND g.user_name = f.user_name
-		        AND t.user_name = f.user_name AND g.group = #groupId# AND t.group = $groupType$
+		        AND t1.user_name = f.user_name AND g.group = #groupId# AND t1.group = $groupType$
 		        <include refid="getTagsByResourceType"/>)     
 		 UNION ALL
 		 (SELECT tag_name
-		  FROM tas t, groups g
-		  WHERE t.user_name = #userName# AND g.user_name = t.user_name
+		  FROM tas t1, groups g
+		  WHERE t1.user_name = #userName# AND g.user_name = t1.user_name
 		        AND g.group = #groupId#
 		        <include refid="getTagsByResourceType"/>)) AS tagsalias
 		GROUP BY tag_name LIMIT #limit# OFFSET #offset#
