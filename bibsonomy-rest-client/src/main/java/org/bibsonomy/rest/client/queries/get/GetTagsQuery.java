@@ -47,7 +47,6 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 	private GroupingEntity grouping = GroupingEntity.ALL;
 	private String groupingValue;
 	private ResourceType resourceType = ResourceType.ALL;
-	public String url2;
 
 	/**
 	 * Gets bibsonomy's tags list
@@ -138,11 +137,8 @@ public final class GetTagsQuery extends AbstractQuery<List<Tag>> {
 		}
 		
 		if (! (this.resourceType == null && this.resourceType.equals(ResourceType.ALL)) ) {
-			//FIXME: remove this workaround and fix the bug -> https://gforge.cs.uni-kassel.de/tracker/index.php?func=detail&aid=868&group_id=52&atid=278
-			if(this.grouping != GroupingEntity.GROUP)
-				url += "&resourcetype=" + this.resourceType.getLabel();
-		}
-		url2 = url + "&format=" + getRenderingFormat().toString().toLowerCase();
+			url += "&resourcetype=" + this.resourceType.getLabel();
+		}		
 		this.downloadedDocument = performGetRequest(url + "&format=" + getRenderingFormat().toString().toLowerCase());
 		return null;
 	}
