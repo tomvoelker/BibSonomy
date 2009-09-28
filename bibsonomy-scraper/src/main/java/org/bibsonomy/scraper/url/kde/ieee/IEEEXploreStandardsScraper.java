@@ -179,5 +179,13 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "IEEEXplore Standards";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://ieeexplore.ieee.org/";
+	}
 	
 }

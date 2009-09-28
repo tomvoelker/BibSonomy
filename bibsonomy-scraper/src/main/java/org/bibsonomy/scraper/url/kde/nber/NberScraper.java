@@ -75,4 +75,12 @@ public class NberScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "NBER";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.nber.org/";
+	}
+
 }

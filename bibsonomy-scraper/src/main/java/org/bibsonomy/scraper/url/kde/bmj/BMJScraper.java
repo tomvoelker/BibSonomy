@@ -86,4 +86,12 @@ public class BMJScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "BMJ";
+	}
+
+	public String getSupportedSiteURL() {
+		return BMJ_HOST_NAME;
+	}
+
 }

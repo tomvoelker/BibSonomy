@@ -181,4 +181,12 @@ public class MetapressScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "MetaPress";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://metapress.com";
+	}
 }

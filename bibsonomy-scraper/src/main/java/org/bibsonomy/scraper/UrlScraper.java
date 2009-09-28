@@ -54,5 +54,15 @@ public interface UrlScraper extends Scraper {
 	 * the given URL.
 	 */
 	public abstract boolean supportsUrl(final URL url);
+	
+	/**
+	 * @return The name of the site, which gets scraped with this.
+	 */
+	public abstract String getSupportedSiteName();
+	
+	/**
+	 * @return The URL of the site, which gets scraped with this.
+	 */
+	public abstract String getSupportedSiteURL();
 
 }

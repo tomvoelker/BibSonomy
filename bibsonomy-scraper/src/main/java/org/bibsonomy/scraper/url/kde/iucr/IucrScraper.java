@@ -152,4 +152,12 @@ public class IucrScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "International Union of Crystallography";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.iucr.org/";
+	}
+
 }

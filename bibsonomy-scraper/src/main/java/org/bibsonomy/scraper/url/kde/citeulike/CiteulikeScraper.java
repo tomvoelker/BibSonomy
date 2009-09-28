@@ -82,4 +82,13 @@ public class CiteulikeScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "CiteULike";
+	}
+
+	public String getSupportedSiteURL() {
+		// TODO Auto-generated method stub
+		return "http://www.citeulike.org/";
+	}
+
 }

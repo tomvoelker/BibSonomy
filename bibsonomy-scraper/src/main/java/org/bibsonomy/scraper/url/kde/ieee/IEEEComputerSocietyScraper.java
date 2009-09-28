@@ -101,4 +101,12 @@ public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "IEEE Computer Society";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www2.computer.org/portal/web/guest/home";
+	}
 }

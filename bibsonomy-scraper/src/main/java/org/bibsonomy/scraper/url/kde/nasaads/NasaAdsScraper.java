@@ -185,4 +185,12 @@ public class NasaAdsScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "SAO/NASA (ADS)";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://adsabs.harvard.edu/";
+	}
+
 }

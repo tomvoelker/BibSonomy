@@ -181,4 +181,13 @@ public class ProlaScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		// TODO Auto-generated method stub
+		return "Prola";
+	}
+
+	public String getSupportedSiteURL() {
+		return PROLA_APS_URL_BASE;
+	}
 }

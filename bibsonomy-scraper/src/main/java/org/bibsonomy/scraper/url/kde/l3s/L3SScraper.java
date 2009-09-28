@@ -70,4 +70,12 @@ public class L3SScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return pattern;
 	}
+
+	public String getSupportedSiteName() {
+		return "Forschungszentrum L3S";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.l3s.de";
+	}
 }

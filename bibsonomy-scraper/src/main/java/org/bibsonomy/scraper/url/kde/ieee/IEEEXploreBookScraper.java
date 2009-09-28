@@ -297,4 +297,14 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		// TODO Auto-generated method stub
+		return "IEEEXplore Books";
+	}
+
+	public String getSupportedSiteURL() {
+		// TODO Auto-generated method stub
+		return "http://ieeexplore.ieee.org/books/bkbrowse.jsp";
+	}
 }

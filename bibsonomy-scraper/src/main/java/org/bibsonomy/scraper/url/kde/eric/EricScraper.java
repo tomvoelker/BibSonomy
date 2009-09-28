@@ -100,4 +100,12 @@ public class EricScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "ERIC";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.eric.ed.gov/";
+	}
+
 }

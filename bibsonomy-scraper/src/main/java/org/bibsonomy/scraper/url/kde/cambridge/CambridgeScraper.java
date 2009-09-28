@@ -178,4 +178,12 @@ public class CambridgeScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "Cambridge Journals";
+	}
+
+	public String getSupportedSiteURL() {
+		return CAMBRIDGE_HOST_NAME;
+	}
+
 }

@@ -71,4 +71,14 @@ public class BibliographyScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		// TODO Auto-generated method stub
+		return "LIIN";
+	}
+
+	public String getSupportedSiteURL() {
+		// TODO Auto-generated method stub
+		return "http://liinwww.ira.uka.de/";
+	}
 }

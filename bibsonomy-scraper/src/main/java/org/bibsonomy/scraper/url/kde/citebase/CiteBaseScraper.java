@@ -99,6 +99,8 @@ public class CiteBaseScraper extends AbstractUrlScraper {
 	public String getInfo() {
 		return info;
 	}
+	
+	
 
 	/**
 	 * Extracts URLs from specific and page-unique elements. Unique means, that the node value (here: CiteBase)
@@ -141,5 +143,13 @@ public class CiteBaseScraper extends AbstractUrlScraper {
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
+	}
+
+	public String getSupportedSiteName() {
+		return "Citebase";
+	}
+
+	public String getSupportedSiteURL() {
+		return CITEBASE_HOST_NAME;
 	}
 }

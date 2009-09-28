@@ -318,5 +318,13 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 
 return patterns;
 }
+
+	public String getSupportedSiteName() {
+		return "InterScience";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www3.interscience.wiley.com";
+	}
 	
 }

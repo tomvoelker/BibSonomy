@@ -117,4 +117,12 @@ public class CellScraper extends AbstractUrlScraper {
 		return INFO;
 	}
 
+	public String getSupportedSiteName() {
+		return "Cell";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.cell.com/";
+	}
+
 }

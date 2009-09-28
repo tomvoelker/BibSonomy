@@ -143,4 +143,12 @@ public class IsiScraper extends AbstractUrlScraper {
 		return INFO;
 	}
 
+	public String getSupportedSiteName() {
+		return "ISI Web of Knowledge";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://apps.isiknowledge.com/";
+	}
+
 }

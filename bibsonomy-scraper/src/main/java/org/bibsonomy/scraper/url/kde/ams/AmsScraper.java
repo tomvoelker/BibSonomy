@@ -99,4 +99,12 @@ public class AmsScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "American Meteorological Society";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://ams.allenpress.com";
+	}
+
 }

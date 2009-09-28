@@ -69,4 +69,12 @@ public class SSRNScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "SSRN";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://ssrn.com/";
+	}
+
 }

@@ -79,5 +79,13 @@ public class OpacScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "OPAC";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://opac.bibliothek.uni-kassel.de/";
+	}
+
 
 }

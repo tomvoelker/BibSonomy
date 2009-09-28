@@ -243,4 +243,12 @@ public class LibrarythingScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "Librarything";
+	}
+
+	public String getSupportedSiteURL() {
+		return URL_LIBRARYTHING_PAGE;
+	}
+
 }

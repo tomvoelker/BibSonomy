@@ -139,5 +139,13 @@ public class CasesJournalScraper extends AbstractUrlScraper {
 		return INFO;
 	}
 
+	public String getSupportedSiteName() {
+		return "CasesJournal";
+	}
+
+	public String getSupportedSiteURL() {
+		return CASES_JOURNAL_URL_BASE;
+	}
+
 	
 }

@@ -188,4 +188,12 @@ public class PsyContentScraper extends AbstractUrlScraper{
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "Psy CONTENT";
+	}
+
+	public String getSupportedSiteURL() {
+		return PSYCONTENT_HOST_NAME;
+	}
 }

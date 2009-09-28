@@ -208,4 +208,12 @@ public class AnnualreviewsScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "Annual Reviews";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://arjournals.annualreviews.org";
+	}
+
 }

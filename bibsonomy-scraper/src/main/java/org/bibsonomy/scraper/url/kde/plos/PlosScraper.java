@@ -148,4 +148,12 @@ public class PlosScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "PLoS";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.plos.org/journals/index.php";
+	}
 }

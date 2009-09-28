@@ -143,4 +143,12 @@ public class ScientificcommonsScraper extends AbstractUrlScraper{
 		return INFO;
 	}
 
+	public String getSupportedSiteName() {
+		return "Scientific Commons";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.scientificcommons.org/";
+	}
+
 }

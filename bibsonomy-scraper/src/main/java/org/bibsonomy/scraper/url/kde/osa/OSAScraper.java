@@ -210,5 +210,13 @@ public class OSAScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "OSA";
+	}
+
+	public String getSupportedSiteURL() {
+		return OSA_HOST_NAME;
+	}
+
 
 }

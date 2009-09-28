@@ -96,4 +96,12 @@ public class InformaWorldScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "Informaworld";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://informaworld.com/";
+	}
+
 }

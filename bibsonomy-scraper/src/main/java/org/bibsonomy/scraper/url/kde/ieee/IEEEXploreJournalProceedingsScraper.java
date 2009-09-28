@@ -301,4 +301,12 @@ public class IEEEXploreJournalProceedingsScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "IEEEXplore Journal";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://ieeexplore.ieee.org/";
+	}
+
 }

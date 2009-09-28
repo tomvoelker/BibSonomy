@@ -99,5 +99,13 @@ public class PubMedCentralScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "PudMedCentral";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.pubmedcentral.nih.gov/";
+	}
+
 	
 }

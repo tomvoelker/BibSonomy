@@ -203,4 +203,16 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+
+
+	public String getSupportedSiteName() {
+		return "SpringerLink";
+	}
+
+
+
+	public String getSupportedSiteURL() {
+		return SPRINGER_CITATION_URL;
+	}
 }

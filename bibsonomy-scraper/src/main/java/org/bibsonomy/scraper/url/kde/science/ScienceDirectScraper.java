@@ -185,4 +185,14 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+
+	public String getSupportedSiteName() {
+		return "ScienceDirect";
+	}
+
+
+	public String getSupportedSiteURL() {
+		return SCIENCE_CITATION_URL;
+	}
+
 }

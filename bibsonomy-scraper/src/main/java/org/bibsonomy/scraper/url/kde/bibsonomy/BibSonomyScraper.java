@@ -97,4 +97,12 @@ public class BibSonomyScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "BibSonomy";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.bibsonomy.org";
+	}
 }

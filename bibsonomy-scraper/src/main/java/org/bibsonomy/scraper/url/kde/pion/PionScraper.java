@@ -66,4 +66,12 @@ public class PionScraper extends AbstractUrlScraper {
 		
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "Pion";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://pion.co.uk/";
+	}
 }

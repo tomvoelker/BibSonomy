@@ -67,4 +67,12 @@ public class CiteseerBasicScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "CiteSeer";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://citeseer.ist.psu.edu/";
+	}
 }

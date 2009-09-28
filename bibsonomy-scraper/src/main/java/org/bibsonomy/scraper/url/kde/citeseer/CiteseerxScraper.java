@@ -99,4 +99,12 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "CiteSeer";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://citeseer.ist.psu.edu/";
+	}
+
 }

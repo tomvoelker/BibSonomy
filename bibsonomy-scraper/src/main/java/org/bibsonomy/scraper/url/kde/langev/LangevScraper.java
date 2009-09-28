@@ -66,4 +66,13 @@ public class LangevScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "GSLIS";
+	}
+
+	public String getSupportedSiteURL() {
+		// TODO Auto-generated method stub
+		return "http://www.lis.illinois.edu/";
+	}
+
 }

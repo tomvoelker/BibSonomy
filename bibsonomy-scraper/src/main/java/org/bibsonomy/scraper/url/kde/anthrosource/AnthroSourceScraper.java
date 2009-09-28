@@ -70,4 +70,12 @@ public class AnthroSourceScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "AnthroSource";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.anthrosource.net";
+	}
+
 }

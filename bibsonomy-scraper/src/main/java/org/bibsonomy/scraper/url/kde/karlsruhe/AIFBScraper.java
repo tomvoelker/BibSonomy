@@ -272,4 +272,12 @@ public class AIFBScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "AIFB";
+	}
+
+	public String getSupportedSiteURL() {
+		return AIFB_HOST_NAME;
+	}
+
 }

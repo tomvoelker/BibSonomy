@@ -127,4 +127,12 @@ public class PubMedScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "PudMed";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.ncbi.nlm.nih.gov/sites/entrez/";
+	}
+
 }

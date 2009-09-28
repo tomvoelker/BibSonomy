@@ -142,5 +142,13 @@ public class GoogleSonomyScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "Google Scholar";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://scholar.google.com";
+	}
 	
 }

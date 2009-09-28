@@ -296,5 +296,15 @@ public class DLibScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		// TODO Auto-generated method stub
+		return "D-Lib";
+	}
+
+	public String getSupportedSiteURL() {
+		// TODO Auto-generated method stub
+		return "http://dlib.org/";
+	}
 	
 }

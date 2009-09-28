@@ -106,4 +106,12 @@ public class SpiresScraper extends AbstractUrlScraper{
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "SLAC";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://slac.stanford.edu/";
+	}
+
 }

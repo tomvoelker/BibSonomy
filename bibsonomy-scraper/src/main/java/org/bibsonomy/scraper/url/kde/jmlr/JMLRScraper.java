@@ -134,4 +134,12 @@ public class JMLRScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "Journal of Machine Learning Research";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://jmlr.csail.mit.edu/";
+	}
+
 }

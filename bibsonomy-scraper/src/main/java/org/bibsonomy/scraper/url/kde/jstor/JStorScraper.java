@@ -214,4 +214,12 @@ public class JStorScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "JSTOR";
+	}
+
+	public String getSupportedSiteURL() {
+		return JSTOR_HOST_NAME;
+	}
 }

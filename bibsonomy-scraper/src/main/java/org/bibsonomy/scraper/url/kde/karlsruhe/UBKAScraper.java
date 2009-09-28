@@ -187,4 +187,12 @@ public class UBKAScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "UBKA";
+	}
+
+	public String getSupportedSiteURL() {
+		return UBKA_HOST_NAME;
+	}
+
 }

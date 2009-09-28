@@ -417,4 +417,14 @@ public class AipScitationScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		// TODO Auto-generated method stub
+		return "Aip Scitation";
+	}
+
+	public String getSupportedSiteURL() {
+		// TODO Auto-generated method stub
+		return URL_AIP_CITATION_PAGE;
+	}
+
 }

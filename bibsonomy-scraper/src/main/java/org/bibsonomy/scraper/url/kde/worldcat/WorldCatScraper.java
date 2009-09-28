@@ -139,4 +139,12 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "Worldcat";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.worldcat.org";
+	}
+
 }

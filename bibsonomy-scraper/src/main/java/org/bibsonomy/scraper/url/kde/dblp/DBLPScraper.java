@@ -84,5 +84,15 @@ public class DBLPScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		// TODO Auto-generated method stub
+		return "DBLP";
+	}
+
+	public String getSupportedSiteURL() {
+		// TODO Auto-generated method stub
+		return DBLP_HOST_NAME1;
+	}
 }
 

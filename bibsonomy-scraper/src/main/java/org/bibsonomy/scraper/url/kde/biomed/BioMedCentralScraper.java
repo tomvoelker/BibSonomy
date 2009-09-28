@@ -94,4 +94,12 @@ public class BioMedCentralScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "Biomed Central";
+	}
+
+	public String getSupportedSiteURL() {
+		return BIOMEDCENTRAL_HOST_NAME;
+	}
+
 }

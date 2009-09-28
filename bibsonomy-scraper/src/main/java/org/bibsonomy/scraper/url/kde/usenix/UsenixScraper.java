@@ -307,4 +307,12 @@ public class UsenixScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "USENIX";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://usenix.org/";
+	}
+
 }
