@@ -175,24 +175,6 @@
 						<property name="controllerBeanName" value="popularTagsPageController"/>						
 					</bean>
 				</entry>
-				<entry key="/edit_tags">
-				<bean parent="controllerBase">
-						<property name="controllerBeanName" value="EditTagsPageController"/>						
-					</bean>
-				</entry>
-<!--CK-->
-				<entry key="/purpose">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="purposeTagsPageController"/>
-					</bean>
-				</entry>
-				<entry key="/purposes">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="purposeUrlController"/>
-					</bean>
-				</entry>
-<!--CK-->				
-
 				<entry key="/mySearch">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="mySearchController"/>
@@ -235,12 +217,6 @@
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</list>
 		</property>
-	</bean>
-	
-	<!-- EDIT TAGS!!! -->	
-	<bean id="EditTagsPageController" class="org.bibsonomy.webapp.controller.EditTagsPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
 	<bean id="relationsController" class="org.bibsonomy.webapp.controller.RelationsController" scope="request">
@@ -418,11 +394,6 @@
 		<property name="requestLogic" ref="requestLogic"/>
 	</bean>
 
-
-	<bean id="batchEditController" class="org.bibsonomy.webapp.controller.actions.BatchEditController" scope="request">
-		<property name="logic" ref="logic"/>
-	</bean>
-
 	<bean id="bibtexkeyPageController" class="org.bibsonomy.webapp.controller.BibtexkeyPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
@@ -472,20 +443,6 @@
 			<value type="java.lang.Integer">3</value>
 		</property>
 	</bean>
-			
-	<!-- <bean id="purposeTagsPageController" class="org.bibsonomy.webapp.controller.PurposeTagsPageController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-	</bean>
-
-	<bean id="purposeUrlController" class="org.bibsonomy.webapp.controller.PurposeUrlController" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-	</bean>-->
-	
-	
-	
-	
 	
 	<!--  #################### factory beans #################### -->
 
