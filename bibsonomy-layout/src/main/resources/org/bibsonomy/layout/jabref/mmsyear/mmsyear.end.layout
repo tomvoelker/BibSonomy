@@ -1,14 +1,39 @@
 <!-- 
-<p>
-  <a href="http://validator.w3.org/check?uri=referer"><img
-    src="http://www.w3.org/Icons/valid-xhtml10-blue"
-    style="border:0;width:88px;height:31px"
-    alt="Valid XHTML 1.0 Transitional" />
-    </a>
-  <a href="http://jigsaw.w3.org/css-validator/check/referer"><img
-    src="http://jigsaw.w3.org/css-validator/images/vcss-blue"    
-    style="border:0;width:88px;height:31px"
-    alt="CSS ist valide!" />
-    </a>
-</p>
+	This software is distributed under a Creative Commons Attribution 3.0 License
+	http://creativecommons.org/licenses/by/3.0/
+
+	*Attribution*
+	JavaScript by Mark Schenk, Dominik Benz and Michael Domhardt
+	JabRef export filter and css by Michael Domhardt http://mensch-maschine-systemtechnik.de/
+	BibSonomy and Typo3 integration by Dominik Benz
+	Content by BibSonomy - Lesezeichen und Referenzen teilen - in blau! http://bibsonomy.org/
 -->
+
+<script type="text/javascript">
+<!-- 
+function visible() {
+	for (var i = 0; i < document.getElementsByName("DependOnJS").length; i++) {
+		document.getElementsByName("DependOnJS")[i].style.display = "inline";
+	}
+}
+visible();
+
+function toggleInfo(articleid,info) {
+	var abs = document.getElementById('abs_'+articleid);
+	var bib = document.getElementById('bib_'+articleid);
+	
+	if (abs && info == 'abstract') {
+		if(abs.id.indexOf('abs_') != -1) {
+			abs.style.display = ( abs.style.display == 'none' ? '' : 'none' );
+		}
+	} else if (bib && info == 'bibtex') {
+		if(bib.id.indexOf('bib_') != -1) {
+			bib.style.display = ( bib.style.display == 'none' ? '' : 'none' );
+		}	
+	} else { 
+		return;
+	}
+}
+-->
+</script>
+</body></html>

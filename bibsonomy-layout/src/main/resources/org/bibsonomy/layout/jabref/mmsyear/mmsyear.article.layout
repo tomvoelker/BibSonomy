@@ -1,11 +1,7 @@
 \begingroup{year}<h3>\year</h3>\endgroup{year}
-<p>\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}\begin{title}\format[HTMLChars,FormatPagesForHTML]{\title}. \end{title}\begin{journal}In: <i>\format[HTMLChars]{\journal}</i> \end{journal}\begin{volume}\format[HTMLChars] {\volume} \end{volume}\begin{year}(\format[HTMLChars] {\year}), \end{year}\begin{number}Nr. \format[HTMLChars]{\number}, \end{number}\begin{pages}S. \format[FormatPagesForHTML]{\pages}\end{pages}<br/>
-\begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a> \end{url}
-<script type="text/javascript"><!-- 
-\begin{abstract}document.write("<a href=\\"javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','abstract')\\">[Kurzfassung]</a>&nbsp;"); \end{abstract} document.write("<a href=\\"javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','bibtex')\\">[BibTeX]</a>"); 
---></script>
-\begin{abstract}<span id="abs_\bibsonomyIntrahash\bibsonomyUsername" style="display:none"><br/>\format[HTMLChars,FormatPagesForHTML]{\abstract}<br/></span>\end{abstract}
-<div id="bib_\bibsonomyIntrahash\bibsonomyUsername" style="display:none;white-space:pre;max-width:100%;">
+<div style="margin-bottom:1em">\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}\begin{title}\format[HTMLChars,FormatPagesForHTML]{\title}. \end{title}\begin{journal}In: <i>\format[HTMLChars]{\journal}</i> \end{journal}\begin{volume}\format[HTMLChars] {\volume} \end{volume}\begin{year}(\format[HTMLChars] {\year}), \end{year}\begin{number}Nr. \format[HTMLChars]{\number}, \end{number}\begin{pages}S. \format[FormatPagesForHTML]{\pages}\end{pages}<br/>
+\begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a>&nbsp;\end{url}\begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','abstract')">[Kurzfassung]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','bibtex')">[BibTeX]</a>
+\begin{abstract}<p id="abs_\bibsonomyIntrahash\bibsonomyUsername" style="display:none">\format[HTMLChars,FormatPagesForHTML]{\abstract}</p>\end{abstract}<p id="bib_\bibsonomyIntrahash\bibsonomyUsername" style="display:none;white-space:pre;max-width:100%;">
 @\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
   author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
   title = {\format[HTMLChars]{\title}}\end{title}\begin{editor},
@@ -25,8 +21,9 @@
   note = {\format[HTMLChars]{\note}}\end{note}\begin{url},
   url = {\format[HTMLChars]{\url}}\end{url}\begin{doi},
   doi = {\format[HTMLChars]{\doi}}\end{doi}\begin{isbn},
-  isbn = {\format[HTMLChars]{\isbn}}\end{isbn}\begin{keywords},
+  isbn = {\format[HTMLChars]{\isbn}}\end{isbn}\begin{issn},
+  issn = {\format[HTMLChars]{\issn}}\end{issn}\begin{keywords},
   keywords = {\format[HTMLChars]{\keywords}}\end{keywords}\begin{abstract},
   abstract = {\format[HTMLChars]{\abstract}}\end{abstract}
   }
-</div></p>
+</p></div>

@@ -1,10 +1,7 @@
 \begingroup{year}<h3>\year</h3>\endgroup{year}
-\begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a> \end{url}
-<script type="text/javascript"><!-- 
-\begin{abstract}document.write("<a href=\\"javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','abstract')\\">[Kurzfassung]</a>&nbsp;"); \end{abstract} document.write("<a href=\\"javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','bibtex')\\">[BibTeX]</a>"); 
---></script>
-\begin{abstract}<span id="abs_\bibsonomyIntrahash\bibsonomyUsername" style="display:none"><br/>\format[HTMLChars,FormatPagesForHTML]{\abstract}<br/></span>\end{abstract}
-<div id="bib_\bibsonomyIntrahash\bibsonomyUsername" style="display:none;white-space:pre;max-width:100%;">
+<div style="margin-bottom:1em">\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}<i>\begin{title}\format[HTMLChars]{\title}. \end{title}</i>\begin{address}\format[HTMLChars]{\address}, \end{address}\begin{school}\format[HTMLChars]{\school}, \end{school}\begin{type}\format[HTMLChars]{\type}, \end{type}\begin{year}\format[HTMLChars]{\year}\end{year}<br/>
+\begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a>&nbsp;\end{url}\begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','abstract')">[Kurzfassung]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','bibtex')">[BibTeX]</a>
+\begin{abstract}<p id="abs_\bibsonomyIntrahash\bibsonomyUsername" style="display:none">\format[HTMLChars,FormatPagesForHTML]{\abstract}</p>\end{abstract}<p id="bib_\bibsonomyIntrahash\bibsonomyUsername" style="display:none;white-space:pre;max-width:100%;">
 @\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
   author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
   title = {\format[HTMLChars]{\title}}\end{title}\begin{editor},
@@ -14,8 +11,8 @@
   journal = {\format[HTMLChars]{\journal}}\end{journal}\begin{publisher},
   publisher = {\format[HTMLChars]{\publisher}}\end{publisher}\begin{school},
   school = {\format[HTMLChars]{\school}}\end{school}\begin{address},
-  address = {\format[HTMLChars]{\address}}\end{address}\begin{type},
   type = {\format[HTMLChars]{\type}}\end{type}\begin{year},
+  address = {\format[HTMLChars]{\address}}\end{address}\begin{type},
   year = {\format[HTMLChars]{\year}}\end{year}\begin{volume},
   volume = {\format[HTMLChars]{\volume}}\end{volume}\begin{number},
   number = {\format[HTMLChars]{\number}}\end{number}\begin{pages},
@@ -28,5 +25,5 @@
   keywords = {\format[HTMLChars]{\keywords}}\end{keywords}\begin{abstract},
   abstract = {\format[HTMLChars]{\abstract}}\end{abstract}
   }
-</div></p>
+</p></div>
 
