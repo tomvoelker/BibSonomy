@@ -16,6 +16,7 @@ import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -36,7 +37,6 @@ import bibtex.parser.ParseException;
  */
 public class PostPublicationController extends PostPostController<BibTex> {
 	
-	private static final String IMPORT_TAG = "imported";
 	private static final Log logger = LogFactory.getLog(PostPublicationController.class);
 	
 	@Override
@@ -46,6 +46,11 @@ public class PostPublicationController extends PostPostController<BibTex> {
 
 	@Override
 	protected String getRedirectUrl(Post<BibTex> post) {
+		/*
+		 * FIXME: this isn't necessary the right URL - it might be the PDF!
+		 * Thus, we need to store the original URL.
+		 * Or maybe it's better to redirect to the /bibtex/HASH/USER page?
+		 */
 		return post.getResource().getUrl();
 	}
 	
@@ -61,18 +66,23 @@ public class PostPublicationController extends PostPostController<BibTex> {
 		 */
 		if (!context.isUserLoggedIn()) {
 			// TODO: refactor @see PostPostController#workOn
-			return new ExtendedRedirectView("/login?notice=" + "login.notice.post." + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + "&referer=/postPublication?" + this.safeURIEncode(context.getQueryString())); 
+			return new ExtendedRedirectView("/login?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + "&referer=/postPublication?" + this.safeURIEncode(context.getQueryString())); 
 		}
 		
 		final User loginUser = context.getLoginUser();
 		
-		// check if the controller was called by a bookmarklet
+		/*
+		 * Check if the controller was called by a bookmarklet which just 
+		 * delivers URL + selection which should be passed to the scrapers.
+		 */
 		if (command instanceof EditPublicationCommand) {
 			final EditPublicationCommand publicationCommand = (EditPublicationCommand) command;
 			final String url = publicationCommand.getUrl();
 			
-			if (url != null) {
-				// scrape site and parse bibtex
+			if (ValidationUtils.present(url)) {
+				/*
+				 * scrape the website and parse bibtex
+				 */
 				String selection = publicationCommand.getSelection();
 				
 				if (selection == null) {
@@ -90,9 +100,10 @@ public class PostPublicationController extends PostPostController<BibTex> {
 						// set recommender, ...
 						this.initPost(command);
 						
-						// set and update tags
-						post.addTag(IMPORT_TAG);
-						this.populateCommandWithPost(command, post);
+						/*
+						 * FIXME: why is this needed? Shouldn't be necessary!
+						 */
+						// this.populateCommandWithPost(command, post);
 						
 						// save result
 						post.setResource(scrapedBibTex);
@@ -105,6 +116,10 @@ public class PostPublicationController extends PostPostController<BibTex> {
 					
 					// show view
 					return this.getPostPostView(command, loginUser);
+					
+					/*
+					 * FIXME: adjust logging / error handling
+					 */
 					
 				} catch (ScrapingException ex) {
 					// scraping failed no bibtex scraped

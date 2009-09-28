@@ -65,7 +65,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
 	
-	private static final String LOGIN_NOTICE = "login.notice.post.";
+	protected static final String LOGIN_NOTICE = "login.notice.post.";
 
 	/**
 	 * Returns an instance of the command the controller handles.
@@ -121,9 +121,9 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	public View workOn(final EditPostCommand<RESOURCE> command) {
 		final RequestWrapperContext context = command.getContext();
 		/*
-		 * FIXME: i18n
+		 * TODO: i18n
 		 */
-		command.setPageTitle("post a new bookmark"); // FIXME: refactor
+		command.setPageTitle("edit a post");
 
 		/*
 		 * only users which are logged in might post -> send them to
@@ -153,7 +153,10 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		final User loginUser = context.getLoginUser();
 		final Post<RESOURCE> post = command.getPost();
 
-		// set user, init post groups, relevant for tags (FIXME: candidate for system tags) and recommender
+		/*
+		 * set user, init post groups, relevant for tags (FIXME: candidate for 
+		 * system tags) and recommender
+		 */
 		this.initPost(command);
 
 		/*
@@ -161,10 +164,8 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		 */
 		final String intraHashToUpdate = command.getIntraHashToUpdate();
 		if (ValidationUtils.present(intraHashToUpdate)) {
-
 			log.debug("intra hash to update found -> handling update of existing post");
 			return handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
-
 		}
 
 		log.debug("no intra hash given -> new post");
@@ -642,7 +643,10 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		final Post<RESOURCE> dbPost = (Post<RESOURCE>) logic.getPostDetails(resource.getIntraHash(), loginUserName);
 		if (dbPost != null) {
 			log.debug("set diff post");
-			// already posted; warn user
+			/*
+			 * already posted; warn user FIXME: this is bookmark-only and does 
+			 * not work for publications
+			 */
 			errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
 			
 			// set intraHash, diff post and set dbPost as post of command
