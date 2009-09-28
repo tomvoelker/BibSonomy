@@ -39,7 +39,6 @@ public class SearchPageController extends SingleResourceListController implement
 		
 		// no search given -> error 
 		if (command.getRequestedSearch().length() == 0){
-			log.error("Invalid query /search without search term");
 			throw new MalformedURLSchemeException("error.search_page_without_search");	
 		}
 		String search = command.getRequestedSearch();
