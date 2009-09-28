@@ -45,7 +45,9 @@ foreach my $file (@files) {
 		$key = trim($key);
 		$value = trim($value);
 		# escape backslashes
-		$value =~ s/\\/\\\\/g;		
+		$value =~ s/\\/\\\\/g;
+		# but keep backslashes indicating unicode chars
+		$value =~ s/\\\\u/\\u/g;		
 		# escape quotation marks & backslashes
 		$value =~ s/\"/\\\"/g;
 		if (length($key) > 0 and length($value) > 0 and not (substr($key,0,1) eq '#')) {
