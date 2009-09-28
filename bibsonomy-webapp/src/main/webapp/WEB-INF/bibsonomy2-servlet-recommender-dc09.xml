@@ -12,21 +12,10 @@
 	 
 	<util:list id="dc09RecommenderList" list-class="java.util.ArrayList">
 		<ref bean="distRecommender1"/>
-		<!-- moved to our machines
-			<ref bean="distRecommender2"/>
-		 -->
-		<ref bean="distRecommender2-local"/>
 		<ref bean="distRecommender3"/>
 		<ref bean="distRecommender4"/>
 		<ref bean="distRecommender5"/>
-		<ref bean="distRecommender6"/>
-		<ref bean="distRecommender7"/>
-		<ref bean="distRecommender8"/>
-		<ref bean="distRecommender9"/>
-		<ref bean="distRecommender10"/>
 		<ref bean="distRecommender11"/>
-		<ref bean="distRecommender12"/>
-		<ref bean="distRecommender13"/>
 		<!-- 
 		<ref bean="testRecommender-local"/>
 		<ref bean="testRecommender"/>
@@ -49,27 +38,6 @@
 			<value>http://141.51.167.111:8080/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
 		</property>
 	</bean>	 
-
-	<!--+
-	 	| Ivan Cantador
-	 	+-->
-	<bean id="distRecommender2" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
-		<property name="address">
-			<value>http://nets.ii.uam.es:8080/GlasgowTagRecommender/GlasgowTagRecommenderServlet</value>
-		</property>
-	</bean>	 
-
-	<!--+
-	 	| Ivan Cantador's local installation
-	 	+-->
-	<bean id="distRecommender2-local" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
-		<property name="address">
-			<value>http://141.51.167.114:8080/GlasgowTagRecommender/GlasgowTagRecommenderServlet</value>
-		</property>
-	</bean>	 
-
-
-
 
 	<!--+
 	 	| Hao Cao
@@ -99,51 +67,6 @@
 	</bean>	 
 
 	<!--+
-	 	| Domenico Gendarmi  
-	 	+-->
-	<bean id="distRecommender6" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
-		<property name="address">
-			<value>http://141.51.167.113:8080/PrompterShared/TagRecommenderServlet</value>
-		</property>
-	</bean>	 
-
-	<!--+
-	 	| Domenico Gendarmi  
-	 	+-->
-	<bean id="distRecommender7" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
-		<property name="address">
-			<value>http://141.51.167.113:8080/PrompterPersonalSemantic/TagRecommenderServlet</value>
-		</property>
-	</bean>	 
-
-	<!--+
-	 	| Domenico Gendarmi  
-	 	+-->
-	<bean id="distRecommender8" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
-		<property name="address">
-			<value>http://141.51.167.113:8080/PrompterSharedSemantic/TagRecommenderServlet</value>
-		</property>
-	</bean>	 
-
-	<!--+
-	 	| Domenico Gendarmi  
-	 	+-->
-	<bean id="distRecommender9" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
-		<property name="address">
-			<value>http://141.51.167.113:8080/PrompterSocialSemantic/TagRecommenderServlet</value>
-		</property>
-	</bean>	 
-
-	<!--+
-	 	| Philipp Schaer 
-	 	+-->
-	<bean id="distRecommender10" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
-		<property name="address">
-			<value>http://multiweb.gesis.org/bibsonomy/TagRecommenderServlet</value>
-		</property>
-	</bean>	 
-	
-	<!--+
 	 	| Szymon Chojnacki
 	 	+-->
 	<bean id="distRecommender11" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
@@ -151,25 +74,7 @@
 			<value>http://213.135.36.105:8080/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
 		</property>
 	</bean>	 
-	
-	<!--+
-	 	| Sanghun Ju
-	 	+-->
-	<bean id="distRecommender12" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
-		<property name="address">
-			<value>http://ecml.jongseo.com:8080/TagRecommenderServlet</value>
-		</property>
-	</bean>	 
-	
-	
-	<!--+
-	 	| Tereza Iofciu 
-	 	+-->
-	<bean id="distRecommender13" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
-		<property name="address">
-			<value>http://out.l3s.uni-hannover.de:8081/bibsonomy-recommender-servlet/TagRecommenderServlet</value>
-		</property>
-	</bean>	 
+
 
 	<!--+
 	 	| 
