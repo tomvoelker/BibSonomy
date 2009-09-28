@@ -30,6 +30,18 @@
 	    	<tr>
 	      		<td colspan="2">group settings will be transferred from Delicious</td>
 	    	</tr>
+                    <tr><!-- posts or bundles? -->
+                      <td>
+                      import only 
+                      </td>
+                      <td>
+                        <input type="radio" name="importData" value="posts" selected="true"/>
+                        bookmarks
+  
+                        <input type="radio" name="importData" value="bundles"/>
+                        bundles
+                      </td>
+                    </tr>        
 	    	<tr><td></td><td><input type="checkbox" name="overwrite" value="yes">Delicious bookmarks overwrite ${projectName} bookmarks</td></tr>
 	    	<tr><td>
 	      		<input type="hidden" name="ckey" value="${ckey}"/>

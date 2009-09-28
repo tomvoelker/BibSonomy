@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -107,35 +106,31 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 		List<Tag> relations = new LinkedList<Tag>();
 
 		final String importType = command.getImportType();
-		final String importData = command.getImportData();
-		
-		if ("delicious".equals(importType)) {
-			try {
-
-				/** import posts or bundles? **/
+		try {
+			if ("delicious".equals(importType)) {
+				/*
+				 * TODO: we want to have checkboxes, not radio buttons!
+				 */
+				final String importData = command.getImportData();
+				/*
+				 * import posts/bundles from Delicious
+				 */
 				if ("posts".equals(importData)) {
 					final RemoteServiceBookmarkImporter importer = importerFactory.getBookmarkImporter();
 					importer.setCredentials(command.getUserName(), command.getPassWord());
 					posts = importer.getPosts();
-				} else if ("bundles".equals(importData)) {
+				} 
+				if ("bundles".equals(importData)) {
 					final RelationImporter relationImporter = importerFactory.getRelationImporter();
 					relationImporter.setCredentials(command.getUserName(), command.getPassWord());
 					relations = relationImporter.getRelations();
-				} else {
-					/*
-					 * FIXME: why did import fail (missing data?)? giv a hint to the user!
-					 */
-					errors.reject("error.import.failed");
-				}
-			} catch (IOException ex) {
-				errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occured: {0}");
-				log.error("Delicious-Import failed.", ex);
-			}
-		} else if ("firefox".equals(importType)) {
-			try {
+				} 
 
+			} else if ("firefox".equals(importType)) {
+				/*
+				 * import posts/relations from Firefox
+				 */
 				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firefoxImportExt);
-
 				final Document document = uploadFileHandler.writeUploadedFile();
 				/*
 				 * FileBookmarkImporter interface
@@ -143,15 +138,18 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 				final FileBookmarkImporter fileImporter = new FirefoxImporter();
 				fileImporter.initialize(document.getFile(), loginUser, command.getGroup());
 				posts = fileImporter.getPosts();
-				
 				/*
 				 * clear temporary file
 				 */
 				document.getFile().delete();
-
-			} catch (final Exception ex) {
-				errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occured: {0}");
 			}
+
+		} catch (Exception ex) {
+			/*
+			 * FIXME: too general error key!
+			 */
+			errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occurred: {0}");
+			log.error("Delicious/Firefox-Import failed.", ex);
 		}
 
 		/** how many posts were found? **/
