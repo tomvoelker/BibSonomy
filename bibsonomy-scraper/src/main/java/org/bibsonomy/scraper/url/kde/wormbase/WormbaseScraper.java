@@ -76,4 +76,14 @@ public class WormbaseScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		// TODO Auto-generated method stub
+		return "Wormbase";
+	}
+
+	public String getSupportedSiteURL() {
+		// TODO Auto-generated method stub
+		return "http://www.wormbase.org";
+	}
+
 }

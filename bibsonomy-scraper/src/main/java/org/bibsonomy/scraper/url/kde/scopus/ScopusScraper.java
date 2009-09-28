@@ -77,4 +77,12 @@ public class ScopusScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "SCOPUS";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.scopus.com";
+	}
 }

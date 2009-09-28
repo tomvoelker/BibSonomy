@@ -125,4 +125,12 @@ public class AGUScraper extends AbstractUrlScraper {
 		return INFO;
 	}
 
+	public String getSupportedSiteName() {
+		return "AGU";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.agu.org/pubs";
+	}
+
 }

@@ -131,4 +131,12 @@ public class NatureScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "nature.com";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://www.nature.com/";
+	}
+
 }

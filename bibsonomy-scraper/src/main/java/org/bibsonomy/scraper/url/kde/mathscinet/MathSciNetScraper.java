@@ -159,5 +159,13 @@ public class MathSciNetScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "AMS";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://ams.org/";
+	}
 	
 }

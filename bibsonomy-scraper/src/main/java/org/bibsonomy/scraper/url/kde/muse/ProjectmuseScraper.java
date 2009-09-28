@@ -231,4 +231,12 @@ public class ProjectmuseScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "MUSE";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://muse.jhu.edu/";
+	}
 }

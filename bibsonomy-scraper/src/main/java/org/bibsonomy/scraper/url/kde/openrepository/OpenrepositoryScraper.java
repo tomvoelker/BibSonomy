@@ -137,4 +137,12 @@ public class OpenrepositoryScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "Open Repository";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://openrepository.com/";
+	}
+
 }

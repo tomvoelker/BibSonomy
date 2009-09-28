@@ -206,4 +206,12 @@ public class LiebertScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "Liebert";
+	}
+
+	public String getSupportedSiteURL() {
+		return LIEBERT_HOST_NAME;
+	}
 }

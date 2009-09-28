@@ -206,5 +206,13 @@ public class ACSScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "ACS Publication";
+	}
+
+	public String getSupportedSiteURL() {
+		return ACS_HOST_NAME;
+	}
+
 
 }

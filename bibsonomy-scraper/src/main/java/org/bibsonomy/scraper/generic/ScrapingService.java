@@ -110,5 +110,21 @@ public class ScrapingService extends AbstractUrlScraper {
 		// return false, this scraper is deprecated
 		return false;
 	}
+
+	/**
+	 * @return The name of the site, which gets scraped with this. ATTENTION: UNDEFINED (returns null) FOR SCRAPER SERVICES! 
+	 * Only defined for concrete URLScraper! 
+	 */
+	public String getSupportedSiteName() {
+		return null;
+	}
+
+	/**
+	 * @return The URL of the site, which gets scraped with this. ATTENTION: UNDEFINED (returns null) FOR SCRAPER SERVICES! 
+	 * Only defined for concrete URLScraper! 
+	 */
+	public String getSupportedSiteURL() {
+		return null;
+	}
 	
 }

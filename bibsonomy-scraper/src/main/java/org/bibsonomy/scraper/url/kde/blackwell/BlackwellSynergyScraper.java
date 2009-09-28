@@ -237,4 +237,14 @@ public class BlackwellSynergyScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		// TODO Auto-generated method stub
+		return "Blackwell Synergy";
+	}
+
+	public String getSupportedSiteURL() {
+		// TODO Auto-generated method stub
+		return "http://blackwell-synergy.com";
+	}
+
 }

@@ -243,4 +243,13 @@ public class IngentaconnectScraper extends AbstractUrlScraper{
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		// TODO Auto-generated method stub
+		return "Ingentaconnect";
+	}
+
+	public String getSupportedSiteURL() {
+		return INGENTA_CITATION_URL;
+	}
+
 }

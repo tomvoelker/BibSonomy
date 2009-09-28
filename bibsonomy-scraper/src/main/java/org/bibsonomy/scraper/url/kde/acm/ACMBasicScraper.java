@@ -314,4 +314,15 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 		return patterns; 
 	}
 
+
+	public String getSupportedSiteName() {
+		return "ACM";
+	}
+
+
+	public String getSupportedSiteURL() {
+		// TODO Auto-generated method stub
+		return ACM_HOST_NAME;
+	}
+
 }

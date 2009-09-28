@@ -93,4 +93,14 @@ public class EditLibScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		// TODO Auto-generated method stub
+		return "Ed/ITLib";
+	}
+
+	public String getSupportedSiteURL() {
+		// TODO Auto-generated method stub
+		return EDITLIB_HOST_NAME;
+	}
+
 }

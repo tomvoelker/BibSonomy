@@ -99,5 +99,13 @@ public class ArxivScraper extends AbstractUrlScraper {
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
+
+	public String getSupportedSiteName() {
+		return "arXiv";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://arxiv.org";
+	}
 	
 }

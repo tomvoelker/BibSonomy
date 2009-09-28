@@ -96,4 +96,12 @@ public class RSOCScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
+	public String getSupportedSiteName() {
+		return "RSOC";
+	}
+
+	public String getSupportedSiteURL() {
+		return "http://royalsocietypublishing.org/";
+	}
+
 }
