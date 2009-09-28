@@ -197,7 +197,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		}
 		
 		if(this.search != null && this.search.length() > 0){
-			url += "&search" +this.search;
+			url += "&search=" +this.search;
 		}
 		log.debug("GetPostsQuery doExecute() called - URL: "+url);
 		this.downloadedDocument = performGetRequest(url + "&format=" + getRenderingFormat().toString().toLowerCase());
