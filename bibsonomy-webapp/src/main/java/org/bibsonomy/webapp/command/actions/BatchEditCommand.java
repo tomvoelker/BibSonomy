@@ -28,7 +28,7 @@ public class BatchEditCommand extends UserResourceViewCommand {
 	/**
 	 * hashes of the resources which will be deleted (hash as key and "on" as value (checkbox))
 	 */
-	private Map<String, String> delete;
+	private Map<String, Boolean> delete;
 	
 	/**
 	 * 
@@ -80,14 +80,14 @@ public class BatchEditCommand extends UserResourceViewCommand {
 	/**
 	 * @return the delete
 	 */
-	public Map<String, String> getDelete() {
+	public Map<String, Boolean> getDelete() {
 		return this.delete;
 	}
 
 	/**
 	 * @param delete the delete to set
 	 */
-	public void setDelete(Map<String, String> delete) {
+	public void setDelete(Map<String, Boolean> delete) {
 		this.delete = delete;
 	}
 
