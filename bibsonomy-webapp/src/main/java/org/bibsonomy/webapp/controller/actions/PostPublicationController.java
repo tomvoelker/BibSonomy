@@ -12,7 +12,6 @@ import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -36,9 +35,11 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public class PostPublicationController extends PostPostController<BibTex> {
-	
+
 	private static final Log logger = LogFactory.getLog(PostPublicationController.class);
-	
+
+	private Scraper scraper;
+
 	@Override
 	protected View getPostView() {
 		return Views.POST_PUBLICATION; // TODO: this could be configured using Spring!
@@ -53,7 +54,7 @@ public class PostPublicationController extends PostPostController<BibTex> {
 		 */
 		return post.getResource().getUrl();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.webapp.controller.actions.PostPostController#workOn(org.bibsonomy.webapp.command.actions.EditPostCommand)
@@ -68,9 +69,9 @@ public class PostPublicationController extends PostPostController<BibTex> {
 			// TODO: refactor @see PostPostController#workOn
 			return new ExtendedRedirectView("/login?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + "&referer=/postPublication?" + this.safeURIEncode(context.getQueryString())); 
 		}
-		
+
 		final User loginUser = context.getLoginUser();
-		
+
 		/*
 		 * Check if the controller was called by a bookmarklet which just 
 		 * delivers URL + selection which should be passed to the scrapers.
@@ -78,130 +79,151 @@ public class PostPublicationController extends PostPostController<BibTex> {
 		if (command instanceof EditPublicationCommand) {
 			final EditPublicationCommand publicationCommand = (EditPublicationCommand) command;
 			final String url = publicationCommand.getUrl();
-			
+
 			if (ValidationUtils.present(url)) {
 				/*
 				 * scrape the website and parse bibtex
 				 */
 				String selection = publicationCommand.getSelection();
-				
+
 				if (selection == null) {
 					selection = "";
 				}
-				
+
 				try {
 					final Post<BibTex> post = publicationCommand.getPost();
-					
-					// scrape bibtex
-					final BibTex scrapedBibTex = this.scrapeBibtex(url, selection);
-					
-					// check if a bibtex was scraped
-					if (scrapedBibTex != null) {						
-						// set recommender, ...
-						this.initPost(command);
-						
+
+					/*
+					 * scrape bibtex
+					 */
+					final ScrapingContext scrapingContext = this.scrapeBibtex(url, selection);
+					if (ValidationUtils.present(scrapingContext)) {
 						/*
-						 * FIXME: why is this needed? Shouldn't be necessary!
+						 * parse bibtex
 						 */
-						// this.populateCommandWithPost(command, post);
-						
-						// save result
-						post.setResource(scrapedBibTex);
-						
-						// if user already owns resource set diff post
-						this.setDiffPost(command);
-					} else {
-						this.getErrors().reject("error.scrape.nothing");
+						final String scrapedBibtex = scrapingContext.getBibtexResult();
+						if (ValidationUtils.present(scrapedBibtex)) {
+							logger.debug("parsing bibtex \"" + scrapedBibtex + "\"");
+							/*
+							 * FIXME: if the parser is thread-safe, we can use 
+							 * the same for each infocation
+							 */
+							try {
+								final BibTex parsedBibTex = new SimpleBibTeXParser().parseBibTeX(scrapedBibtex);
+
+								/*
+								 * store scraper metadata
+								 */
+								if (scrapingContext.getMetaResult() != null) {
+									/*
+									 * FIXME: NEVER use old code!
+									 */
+									int scraperId = new DBScraperMetadataManager().insertMetadata(scrapingContext);
+									if (scraperId > 0) {
+										parsedBibTex.setScraperId(scraperId);
+									}
+								}
+
+
+								// check if a bibtex was scraped
+								if (ValidationUtils.present(parsedBibTex)) {						
+									// set recommender, ...
+									this.initPost(command);
+
+									/*
+									 * FIXME: why is this needed? Shouldn't be necessary!
+									 */
+									// this.populateCommandWithPost(command, post);
+
+									// save result
+									post.setResource(parsedBibTex);
+
+									// if user already owns resource set diff post
+									this.setDiffPost(command);
+									
+									/*
+									 * FIXME: put scraper into command to show 
+									 * user the metadata 
+									 */
+								} else {
+									this.getErrors().reject("error.scrape.nothing");
+								}
+
+								// show view
+								return this.getPostPostView(command, loginUser);
+							} catch (IOException ex) {
+								// exception while parsing bibtex 
+								logger.fatal("error while paring bibtex \"" + scrapedBibtex + "\"", ex);
+								this.getErrors().reject("error.parse.bibtex.failed", new Object[]{scrapedBibtex}, "Error parsing BibTeX: {0}");
+
+								publicationCommand.setScrapedBibTex(scrapedBibtex);
+
+							} catch (ParseException ex) {
+								// exception while parsing bibtex; inform user and show him the scraped bibtex
+								logger.fatal("error while paring bibtex \"" + scrapedBibtex + "\"", ex);
+								this.getErrors().reject("error.parse.bibtex.failed", new Object[]{scrapedBibtex}, "Error parsing BibTeX: {0}");
+
+								publicationCommand.setScrapedBibTex(scrapedBibtex);
+
+							}
+						}
 					}
-					
-					// show view
-					return this.getPostPostView(command, loginUser);
-					
 					/*
 					 * FIXME: adjust logging / error handling
 					 */
-					
+
 				} catch (ScrapingException ex) {
 					// scraping failed no bibtex scraped
 					logger.fatal("scraping failed", ex);
 					this.getErrors().reject("error.scrape.failed");
-					
+
 					return Views.ERROR;
-					
 				} catch (MalformedURLException ex) {
 					// wrong url format
 					logger.warn("can't parse url \"" + url + "\"", ex);
 					this.getErrors().rejectValue("url", "error.field.valid.url");
-					
+
 					return Views.ERROR;
 				} catch (IOException ex) {
-					// exception while parsing bibtex 
-					logger.fatal("error while parsing bibtex", ex);
-					this.getErrors().rejectValue("url", "error.field.valid.url");
-					
-					publicationCommand.setScrapedBibTex(this.scrapedBibtex);
-					
-				} catch (ParseException ex) {
-					// exception while parsing bibtex; inform user and show him the scraped bibtex
-					logger.fatal("error while paring bibtex \"" + this.scrapedBibtex + "\"", ex);
-					this.getErrors().reject("error.parse.bibtex.failed");
-					
-					publicationCommand.setScrapedBibTex(this.scrapedBibtex);
+					// scraping failed no bibtex scraped
+					logger.fatal("scraping failed", ex);
+					this.getErrors().reject("error.scrape.failed");
+
+					return Views.ERROR;
 				}
-				
+
 				return this.getPostPostView(command, loginUser);
 			}
 		}
-		
+
 		// handle update or create a publication
 		return super.workOn(command);
 	}
 
-	
-	private String scrapedBibtex; // hack to get the scraped bibtex string when a ParseException or an IOException while parsing occurs
-	
 	/**
-	 * scrapes a BibTeX from the specified URL and selected text; parses the result in a {@link BibTex} object
+	 * Scrapes the given URL/selection and on success returns the scraping 
+	 * context containing the result (plus additional metadata).
 	 * 
-	 * @param urlString
+	 * @param url
 	 * @param selectedText
-	 * @return	a BibTex object or null if scraper scraped nothing
+	 * @return
 	 * @throws ScrapingException
 	 * @throws IOException
-	 * @throws ParseException
 	 */
-	private BibTex scrapeBibtex(final String urlString, final String selectedText) throws ScrapingException, IOException, ParseException {
-		logger.debug("scraping url \"" + urlString + "\" with selected text " + "\"");
-		final URL url = new URL(urlString);
-		final Scraper scraper = new KDEScraperFactory().getScraper();
-		
-		final ScrapingContext context = new ScrapingContext(url);
+	private ScrapingContext scrapeBibtex(final String url, final String selectedText) throws ScrapingException, IOException {
+		logger.debug("scraping url \"" + url + "\" with selected text " + "\"" + selectedText + "\"");
+		final ScrapingContext context = new ScrapingContext(new URL(url));
 		context.setSelectedText(selectedText);
-		
-		int id = -1;
-		
-		// scrape
+		/*
+		 * scrape
+		 */
 		if (scraper.scrape(context)) {
-			if (context.getMetaResult() != null) {
-				id = new DBScraperMetadataManager().insertMetadata(context);
-			}
-			
-			// parse result string in a BibTex object	
-			this.scrapedBibtex = context.getBibtexResult();
-			
-			logger.debug("parsing bibtex \"" + this.scrapedBibtex + "\"");
-			final BibTex parseBibTeX = new SimpleBibTeXParser().parseBibTeX(this.scrapedBibtex);
-			
-			if (id > 0) {
-				parseBibTeX.setScraperId(id);
-			}
-			
-			return parseBibTeX;
+			return context;
 		}
-		
 		return null;
 	}
-	
+
+
 	@Override
 	protected BibTex instantiateResource() {
 		final BibTex publication = new BibTex();
@@ -216,6 +238,14 @@ public class PostPublicationController extends PostPostController<BibTex> {
 	@Override
 	protected EditPostCommand<BibTex> instantiateEditPostCommand() {
 		return new EditPublicationCommand();
+	}
+
+	public Scraper getScraper() {
+		return this.scraper;
+	}
+
+	public void setScraper(Scraper scraper) {
+		this.scraper = scraper;
 	}
 
 }
