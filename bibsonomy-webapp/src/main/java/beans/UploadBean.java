@@ -1,13 +1,8 @@
-/*
- * BookBean is used by processBook.jsp to check the integrity 
- * and validate the entries on post_bookmark/retry_post_bookmark.jsp.
- *
-*/
 package beans;
 
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.LinkedList;
-import java.io.Serializable;
 
 import resources.Bibtex;
 /**
@@ -28,7 +23,7 @@ public class UploadBean implements Serializable {
 	
 	private LinkedList <Bibtex>bibtex;
 	
-	private Hashtable <String,String>errors;
+	private final Hashtable <String,String>errors;
 	
 	public boolean validate() {
 	    boolean allOk=true;
@@ -56,7 +51,7 @@ public class UploadBean implements Serializable {
 	  }
 	
 	public String getErrorMsg(String s) {
-	    String errorMsg =(String)errors.get(s.trim());
+	    String errorMsg =errors.get(s.trim());
 	    return (errorMsg == null) ? "":errorMsg;
 	  }
 	

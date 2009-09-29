@@ -26,7 +26,8 @@ import filters.SessionSettingsFilter;
 
 
 /**
- * This servlet is used to handle update requests for DBLP 
+ * This servlet is used to handle update requests for DBLP / highwire and to 
+ * gather statistics for the admin_statistics.jsp page
  *
  */
 public class AdminHandler extends HttpServlet {
@@ -35,6 +36,7 @@ public class AdminHandler extends HttpServlet {
 	private static Set<String> allowedUsers = null;
 	private static final Log log = LogFactory.getLog(AdminHandler.class);
 	
+	@Override
 	public void init(ServletConfig config) throws ServletException{
 	
 		
@@ -49,6 +51,7 @@ public class AdminHandler extends HttpServlet {
 		allowedUsers.add("beate");
 	}	
 	
+	@Override
 	public void doGet (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		/*
 		 * check user name (only admins are allowed)
@@ -102,6 +105,7 @@ public class AdminHandler extends HttpServlet {
 		}
 	}
 
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		/*
 		 * check user name (only admins are allowed)
