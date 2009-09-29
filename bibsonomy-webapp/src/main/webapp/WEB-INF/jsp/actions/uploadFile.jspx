@@ -29,7 +29,7 @@
 					  
                      <p><fmt:message key="bibtex.upload.file.helptext"/> </p>
 					  
-                      <form:form action="/uploadFile/${command.resourceHash}" method="POST" enctype="multipart/form-data">
+                      <form:form action="/uploadFile/${command.resourceHash}?ckey=${ckey}" method="POST" enctype="multipart/form-data">
 		                <form:label path="file" ><fmt:message key="bibtex.upload.file.label"/>:</form:label>
 						<input type="file" name="file"/>
 						<fmt:message key="bibtex.upload.file.button" var="submit"/>
