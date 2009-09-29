@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DBSession;
@@ -21,7 +22,7 @@ public class GetBookmarksByHashForUser extends BookmarkChainElement {
 
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		return this.db.getPostsByHashForUser(param, session);
+		return this.db.getPostsByHashForUser(param.getUserName(), param.getHash(), param.getRequestedUserName(), param.getGroups(), HashID.getSimHash(param.getSimHash()), session);
 	}
 
 	@Override

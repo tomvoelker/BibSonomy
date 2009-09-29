@@ -1,7 +1,6 @@
 package org.bibsonomy.database.managers;
 
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,7 +18,6 @@ import org.bibsonomy.lucene.LuceneSearch;
 import org.bibsonomy.lucene.LuceneSearchBookmarks;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.enums.Order;
 
 
@@ -58,7 +56,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	protected List<Post<Bookmark>> bookmarkList(final String query, final BookmarkParam param, final DBSession session) {
 		return queryForList(query, param, session);
 	}
-
+	
 	/**
 	 * <em>/tag/EinTag</em>, <em>/viewable/EineGruppe/EinTag</em><br/><br/>
 	 * 
@@ -465,7 +463,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	 * @param hashType
 	 * @return list of bookmark posts
 	 * 
-	 * @deprecated replaced by {@link PostDatabaseManager#getPostsByHashForUser(String, String, String, List, DBSession, HashID)}
+	 * @deprecated replaced by {@link PostDatabaseManager#getPostsByHashForUser(String, String, String, List, HashID, DBSession)}
 	 */
 	@Deprecated
 	public List<Post<Bookmark>> getBookmarkByHashForUser(final String userName, final String requBibtex, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session, final HashID hashType) {
@@ -553,7 +551,6 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 		return this.bookmarkList("getBookmarkSearchForGroup", param, session);
 	}
 	
-	
 	/**
 	 * @see BookmarkDatabaseManager#getBookmarkSearchForGroup(BookmarkParam, DBSession)
 	 * 
@@ -577,56 +574,6 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkSearchForGroup", param, session);
 	}
-
-	/**
-	 * TODO: improve documentation
-	 * 
-	 * @param groupId
-	 * @param search
-	 * @param requestedUserName
-	 * @param UserName 
-	 * @param GroupNames 
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of bookmark posts
-	 */
-	public ResultList<Post<Bookmark>> getBookmarkSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames,  final int limit, final int offset, final DBSession session) {
-		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-		final String group = groupDb.getGroupNameByGroupId(groupId, session);
-		
-		// get search results from lucene
-		final LuceneSearchBookmarks lucene = LuceneSearchBookmarks.getInstance();
-
-//		ArrayList<Integer> contentIds = new ArrayList<Integer>();
-		long starttimeQuery = System.currentTimeMillis();
-
-		//contentIds = lucene.searchLucene("contentid", search, groupId, limit, offset);
-		final ResultList<Post<Bookmark>> postBookmarkList = lucene.searchLucene(group, search, requestedUserName, UserName, GroupNames, limit, offset);
-		
-		long endtimeQuery = System.currentTimeMillis();
-		log.debug("LuceneBookmark complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
-
-/*
-		long starttimeTable = System.currentTimeMillis();
-		LuceneHelper luceneTTable = new LuceneHelper();
-		// create temp. table
-		luceneTTable.createTTable(session);
-
-		// delete all content in temp. table
-		luceneTTable.truncateTTable(session);
-
-		// store content ids in temp. table
-		luceneTTable.fillTTable(contentIds, session);
-		long endtimeTable = System.currentTimeMillis();
-		LOGGER.debug("LuceneBookmark: filled temp. table with requested lucene ids in " + (endtimeTable-starttimeTable) + "ms");
-
-
-		return this.bookmarkList("getBookmarkSearchLucene", param, session);
-*/
-		return postBookmarkList;
-	}
-
 
 	/**
 	 * Returns the number of bookmarks for a given search.

@@ -45,7 +45,7 @@ public class GetBookmarksSearch extends BookmarkChainElement {
 		//LOGGER.debug("------------param.getSearch(): " + param.getSearch());
 		
 		if ("lucene".equals(searchMode)) {
-			return this.db.getBookmarkSearchLucene(param.getGroupId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
+			return this.db.getPostsSearchLucene(param.getGroupId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
 		}
 	
 		return this.db.getBookmarkSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);

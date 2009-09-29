@@ -223,11 +223,11 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		String userName = "testuser1";
 		String requestedUserName = "testuser2";
 		final ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
-		List<Post<Bookmark>> post = this.bookmarkDb.getPostsByHashForUser(null, requBibtex, requestedUserName, visibleGroupIDs, this.dbSession, null);
+		List<Post<Bookmark>> post = this.bookmarkDb.getPostsByHashForUser(null, requBibtex, requestedUserName, visibleGroupIDs, null, this.dbSession);
 		assertEquals(0, post.size());
 
 		requestedUserName = "testuser1";
-		post = this.bookmarkDb.getPostsByHashForUser(userName, requBibtex, requestedUserName, visibleGroupIDs, this.dbSession, null);
+		post = this.bookmarkDb.getPostsByHashForUser(userName, requBibtex, requestedUserName, visibleGroupIDs, null, this.dbSession);
 		assertEquals(1, post.size());
 	}
 

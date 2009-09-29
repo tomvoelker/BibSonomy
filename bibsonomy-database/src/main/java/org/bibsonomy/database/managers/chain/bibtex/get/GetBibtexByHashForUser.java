@@ -22,7 +22,7 @@ public class GetBibtexByHashForUser extends BibTexChainElement {
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getPostsByHashForUser(param.getUserName(), param.getHash(), param.getRequestedUserName(), param.getGroups(), session, HashID.getSimHash(param.getSimHash()));
+		return this.db.getPostsByHashForUser(param.getUserName(), param.getHash(), param.getRequestedUserName(), param.getGroups(), HashID.getSimHash(param.getSimHash()), session);
 	}
 
 	@Override

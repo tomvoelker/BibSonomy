@@ -147,14 +147,15 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getDocumentsForPost", docParam, Document.class, session);
 	}
 
-	/** Returns the named document for the given user name and hash.
-	  * 
-	  * @param userName
-	  * @param resourceHash
-	  * @param session
-	  * @return A document.
-	  */
-	public List getDocumentsForPost(final String userName, final String resourceHash, final DBSession session) {
+	/**
+	 * Returns the named documents for the given user name and hash
+	 * 
+	 * @param userName
+	 * @param resourceHash
+	 * @param session
+	 * @return a list of documents
+	 */
+	public List<Document> getDocumentsForPost(final String userName, final String resourceHash, final DBSession session) {
 		// create the docParam object
 		final DocumentParam docParam = new DocumentParam();
 
@@ -163,7 +164,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		docParam.setUserName(userName);
 
 		// get the requested document
-		final List doc = getDocumentsForPost(docParam, session);
+		final List<Document> doc = getDocumentsForPost(docParam, session);
 		if (doc == null) {
 			throw new IllegalStateException("No documents for this BibTeX entry");
 		}

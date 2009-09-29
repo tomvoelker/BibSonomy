@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,7 +74,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected List<Post<R>> postList(final String query, final P param, final DBSession session) {
 		return queryForList(query, param, session);
 	}
-//	
+
 //	/**
 //	 * <em>/tag/EinTag</em>, <em>/viewable/EineGruppe/EinTag</em><br/><br/>
 //	 * 
@@ -81,21 +82,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 //	 * be set to public) which have all of the given tags attached. On the
 //	 * <em>/viewable/</em> page only posts are shown which are set viewable to
 //	 * the given group and which have all of the given tags attached.
-//	 * 
-//	 * @param param
-//	 * @param session
-//	 * @return list of posts
-//	 */
-//	public List<Post<R>> getPostsByTagNames(final P param, final DBSession session) {
-//		if (Order.FOLKRANK.equals(param.getOrder())){
-//			param.setGroupId(GroupID.PUBLIC.getId());
-//			return this.postList("get" + this.getResourceClassName() + "ByTagNamesAndFolkrank", param, session);
-//		}
-//		return this.postList("get" + this.getResourceClassName() + "ByTagNames", param, session);
-//	}
-//	
-//	
-//	/**
 //	 * @param groupType
 //	 * @param tagIndex
 //	 * @param limit
@@ -112,7 +98,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 //		
 //		return this.getPostsByTagNames(param, session);
 //	}	
-//	
+
 //	/**
 //	 * <em>/user/MaxMustermann/EinTag</em><br/><br/>
 //	 * 
@@ -123,18 +109,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 //	 * built in a way, that not only public posts are retrieved, but also
 //	 * friends or private or other groups, depending upon if userName us allowed
 //	 * to see them.
-//	 * 
-//	 * @param param
-//	 * @param session
-//	 * @return list of posts
-//	 */
-//	public List<Post<R>> getPostsByTagNamesForUser(final P param, final DBSession session) {
-//		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-//		return this.postList("get" + this.resourceClassName + "ByTagNamesForUser", param, session);
-//	}
-//	
-//	/**
-//	 * @see PostDatabaseManager#getPostsByTagNamesForUser(ResourcesParam, DBSession)
 //	 * 
 //	 * @param requestedUserName 
 //	 * @param userName 
@@ -156,9 +130,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 //		param.setLimit(limit);
 //		param.setOffset(offset);
 //		
-//		return this.getPostsByTagNamesForUser(param, session);
+//		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+//		return this.postList("get" + this.resourceClassName + "ByTagNamesForUser", param, session);
 //	}
-//	
+
 //	/**
 //	 * Counts the number of visible bookmark entries for a given list of tags
 //	 * 
@@ -325,18 +300,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 //	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
 //	 * separate temporary tables which are filled by an external script.
 //	 * 
-//	 * @param param
-//	 * @param session
-//	 * @return list of posts
-//	 */
-//	public List<Post<R>> getPostsPopular(final P param, final DBSession session) {
-//		return this.postList("get" + this.resourceClassName + "Popular", param, session);
-//	}
-//	
-//	/**
-//	 * 
-//	 * @see PostDatabaseManager#getPostsPopular(ResourcesParam, DBSession)
-//	 * 
 //	 * @param limit 
 //	 * @param offset 
 //	 * @param session
@@ -347,7 +310,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 //		param.setOffset(offset);
 //		param.setLimit(limit);
 //		
-//		return this.getPostsPopular(param, session);
+//		return this.postList("get" + this.resourceClassName + "Popular", param, session);
 //	}
 //	
 //	/**
@@ -491,27 +454,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * the given hash) for a given user. Since user name is given, full group
 	 * checking is done, i.e. everbody who may see the resoucre will see it.
 	 * 
-	 * @param param
-	 * @param session
-	 * @return list of posts
-	 */
-	public List<Post<R>> getPostsByHashForUser(final P param, final DBSession session) {
-		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
-		return this.postList("get" + this.resourceClassName + "ByHashForUser", param, session);
-	}
-	
-	/**
-	 * @see PostDatabaseManager#getPostsByHashForUser(ResourcesParam, DBSession)
-	 * 
 	 * @param userName
 	 * @param requHash
 	 * @param requestedUserName
 	 * @param visibleGroupIDs
-	 * @param session
 	 * @param hashType
+	 * @param session
 	 * @return list of resource posts
 	 */
-	public List<Post<R>> getPostsByHashForUser(final String userName, final String requHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session, final HashID hashType) {
+	public List<Post<R>> getPostsByHashForUser(final String userName, final String requHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final HashID hashType, final DBSession session) {
 		final P param = this.getNewParam();
 		param.setUserName(userName);
 		param.setRequestedUserName(requestedUserName);
@@ -519,7 +470,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setHash(requHash);
 		param.setSimHash(hashType);
 		
-		return this.getPostsByHashForUser(param, session);
+		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
+		return this.postList("get" + this.resourceClassName + "ByHashForUser", param, session);
 	}
 //	
 //	/**
@@ -638,37 +590,37 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 //		return this.getPostsSearchForGroup(param, session);
 //	}
 //
-//	/**
-//	 * @see PostDatabaseManager#getPostsSearchLucene(ResourcesParam, DBSession) TODO: method removed???
-//	 * 
-//	 * @param groupId
-//	 * @param search
-//	 * @param requestedUserName
-//	 * @param UserName 
-//	 * @param GroupNames 
-//	 * @param limit
-//	 * @param offset
-//	 * @param session
-//	 * @return list of posts
-//	 */
-//	public List<Post<R>> getPostsSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames,  final int limit, final int offset, final DBSession session) {
-//		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-//		final String group = groupDb.getGroupNameByGroupId(groupId, session);
-//		
-//		// get search results from lucene
-//		final LuceneSearch<R> lucene = this.getLuceneSearch();
-//
-////		ArrayList<Integer> contentIds = new ArrayList<Integer>();
-//		long starttimeQuery = System.currentTimeMillis();
-//
-//		// FIXME : lucene integration
-//		//contentIds = lucene.searchLucene("contentid", search, groupId, limit, offset);
-//		final List<Post<R>> postpostList = lucene.searchLucene(group, search, requestedUserName, UserName, GroupNames, limit, offset);
-//		
-//		long endtimeQuery = System.currentTimeMillis();
-//		log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
-//
-///*
+	/**
+	 * FIXME: check implementation
+	 * TODO: improve documentation
+	 * 
+	 * @param groupId
+	 * @param search
+	 * @param requestedUserName
+	 * @param UserName 
+	 * @param GroupNames 
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of posts
+	 */
+	public List<Post<R>> getPostsSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames,  final int limit, final int offset, final DBSession session) {
+		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+		final String group = groupDb.getGroupNameByGroupId(groupId, session);
+		
+		// get search results from lucene
+		final LuceneSearch<R> lucene = this.getLuceneSearch();
+
+//		ArrayList<Integer> contentIds = new ArrayList<Integer>();
+		long starttimeQuery = System.currentTimeMillis();
+
+		// FIXME : lucene integration
+//		contentIds = lucene.searchLucene("contentid", search, groupId, limit, offset);
+		final List<Post<R>> postpostList = lucene.searchLucene(group, search, requestedUserName, UserName, GroupNames, limit, offset);
+		
+		long endtimeQuery = System.currentTimeMillis();
+		log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+		
 //		long starttimeTable = System.currentTimeMillis();
 //		LuceneHelper luceneTTable = new LuceneHelper();
 //		// create temp. table
@@ -684,9 +636,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 //
 //
 //		return this.postList("getBookmarkSearchLucene", param, session);
-//*/
-//		return postpostList;
-//	}
+		return postpostList;
+	}
 //
 //	/**
 //	 * Returns the number of bookmarks for a given search.
@@ -983,28 +934,23 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 //		
 //		return this.postList("get" + this.resourceClassName + "ByFollowedUsers", param, session);
 //	}
-//	
+//
 //	/**
 //	 * Returns a contentId for a given bookmark.
 //	 * 
-//	 * @param param
-//	 * @param session
-//	 * @return contentId for a given bookmark
-//	 */
-//	public Integer getContentIDForPost(final P param, final DBSession session) {
-//		return this.queryForObject("getContentIDFor" + this.resourceClassName, param, Integer.class, session);
-//	}
-//
-//	/**
-//	 * @param requBookmark
+//	 * @param hash
 //	 * @param userName
 //	 * @param session
 //	 * @return contentId for a given bookmark
 //	 */
-//	public Integer getContentIDForPost(final String requBookmark, final String userName, final DBSession session) {
+//	public Integer getContentIDForPost(final String hash, final String userName, final DBSession session) {
+//		if (present(hash) == false || present(userName) == false) {
+//			throw new RuntimeException("Hash and user name must be set");
+//		}
 //		final P param = this.getNewParam();
-//		param.setHash(requBookmark);
+//		param.setHash(hash);
 //		param.setUserName(userName);
+//		
 //		return this.queryForObject("getContentIDFor" + this.resourceClassName, param, Integer.class, session);
 //	}
 	
@@ -1023,7 +969,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	@Override
 	public Post<R> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
-		final List<Post<R>> list = this.getPostsByHashForUser(authUser, resourceHash, userName, visibleGroupIDs, session, HashID.INTRA_HASH);
+		final List<Post<R>> list = this.getPostsByHashForUser(authUser, resourceHash, userName, visibleGroupIDs, HashID.INTRA_HASH, session);
 		
 		if (list.isEmpty()) {
 			log.debug(this.resourceClassName + "-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");
@@ -1072,7 +1018,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					);
 				}
 				// if yes, check if a post exists with the old intrahash				
-				oldPostsInDB = this.getPostsByHashForUser(userName, oldIntraHash, userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
+				oldPostsInDB = this.getPostsByHashForUser(userName, oldIntraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
 			} else {
 				if (update) {
 					throw new IllegalArgumentException("Could not update post: no intrahash specified.");
@@ -1083,7 +1029,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * get posts with the intrahash of the given post to check for possible duplicates 
 			 */
-			final List<Post<R>> newPostInDB = this.getPostsByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
+			final List<Post<R>> newPostInDB = this.getPostsByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
 
 			/*
 			 * check if user is trying to create a resource that already exists
@@ -1100,7 +1046,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 							"Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
 							" already exists in your collection (intrahash: " + intraHash + ")");
 				} else if (!intraHash.equals(oldIntraHash)) {
-					// XXX: bibtex not
 					/* 
 					 * Although we're doing an update, the old intra hash is different from the new one
 					 * in principle, this is OK, but not when the new hash already exists. Because that
@@ -1248,7 +1193,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setUserName(userName);
 		param.setHash(resourceHash);
 		
-		final List<Post<R>> posts = this.getPostsByHashForUser(userName, resourceHash, userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
+		final List<Post<R>> posts = this.getPostsByHashForUser(userName, resourceHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
 		
 		if (posts.isEmpty()) {
 			log.debug("post with hash \"" + resourceHash + "\" not found");

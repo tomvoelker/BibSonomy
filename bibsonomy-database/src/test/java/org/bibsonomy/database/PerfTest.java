@@ -2,8 +2,11 @@ package org.bibsonomy.database;
 
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.testutil.ParamUtils;
@@ -145,7 +148,7 @@ public class PerfTest extends AbstractDatabaseManagerTest {
 			this.bookmarkDb.getBookmarkByHashCount(param, this.dbSession);
 			break;
 		case getBookmarkByHashForUser:
-			this.bookmarkDb.getPostsByHashForUser(param, this.dbSession);
+			this.bookmarkDb.getPostsByHashForUser(param.getUserName(), param.getHash(), param.getRequestedUserName(), new ArrayList<Integer>(), HashID.INTRA_HASH, this.dbSession);
 			break;
 		case getBookmarkSearch:
 			this.bookmarkDb.getBookmarkSearch(param, this.dbSession);

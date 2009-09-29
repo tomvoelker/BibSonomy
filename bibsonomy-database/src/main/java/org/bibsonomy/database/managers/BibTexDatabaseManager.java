@@ -10,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
@@ -21,7 +20,6 @@ import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.lucene.LuceneSearch;
 import org.bibsonomy.lucene.LuceneSearchBibTex;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.enums.Order;
@@ -549,9 +547,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexSearch(final BibTexParam param, final DBSession session) {
-		
 		return this.bibtexList("getBibTexSearch", param, session);
-		
 	}
 	
 	/**
@@ -1173,69 +1169,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.queryForObject("getBibTexForUserCount", param, Integer.class, session);
 	}
-
-	/**
-	 * <em>/bibtex/023847123ffa8976a969786f876f78e68/MaxMustermann</em><br/><br/>
-	 * 
-	 * Prepares a query which retrieves all bibtex posts whose hash no. requSim
-	 * is equal to requBibtex and they're owned by requUser. Full group checking
-	 * is done.<br/>
-	 * 
-	 * Additionally, if requUser = currUser, the document table is joined so
-	 * that we can present the user a link to the uploaded document.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bibtex posts
-	 * 
-	 * @deprecated replaced by {@link PostDatabaseManager#getPostsByHashForUser(org.bibsonomy.database.params.ResourcesParam, DBSession)}
-	 */
-	@Deprecated // use getPostsByHashForUser
-	public List<Post<BibTex>> getBibTexByHashForUser(final BibTexParam param, final DBSession session) {
-		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
-		return this.bibtexList("getBibTexByHashForUser", param, session);
-	}
-
-	/**
-	 * Returns a list containg BibTeX posts by INTER-Hash for a user
-	 * 
-	 * @param loginUserName
-	 * @param interHash
-	 * @param requestedUserName
-	 * @param visibleGroupIDs 
-	 * @param session
-	 * @return List<Post<BibTex>> a list of BibTeX posts
-	 */
-	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String interHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
-		return this.getBibTexByHashForUser(loginUserName, interHash, requestedUserName, visibleGroupIDs, session, HashID.INTER_HASH);
-	}
-
-	/**
-	 * @see BibTexDatabaseManager#getBibTexByHashForUser(BibTexParam, DBSession)
-	 * 
-	 * Returns a list containg BibTeX posts by hash for a user
-	 * 
-	 * @param loginUserName
-	 * @param intraHash
-	 * @param requestedUserName
-	 * @param visibleGroupIDs
-	 * @param session
-	 * @param hashType
-	 * @return List<Post<BibTex>> a list of BibTeX posts
-	 * 
-	 * @deprecated replaced by {@link PostDatabaseManager#getPostsByHashForUser(String, String, String, List, DBSession, HashID)}
-	 */
-	@Deprecated
-	public List<Post<BibTex>> getBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session, final HashID hashType) {
-		final BibTexParam param = new BibTexParam();
-		param.setUserName(loginUserName);
-		param.addGroups(visibleGroupIDs);
-		param.setRequestedUserName(requestedUserName);
-		param.setHash(intraHash);
-		param.setSimHash(hashType);
-		
-		return this.getBibTexByHashForUser(param, session);
-	}
 	
 	private List<Post<BibTex>> getLoggedBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session, final HashID hashType) {
 		final BibTexParam param = new BibTexParam();
@@ -1244,11 +1177,9 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setRequestedUserName(requestedUserName);
 		param.setHash(intraHash);
 		param.setSimHash(hashType);
-		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		
-		final List<Post<BibTex>> bibtexList = this.bibtexList("getLoggedHashesByHashForUser", param, session);
-		
-		return bibtexList;
+		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);		
+		return this.bibtexList("getLoggedHashesByHashForUser", param, session);
 	}
 
 	/**
@@ -1320,8 +1251,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			
 			return post;
 		}
-		
-		// XXXDZ: what about the second try (it will return null);
 		
 		/*
 		 * post null => not found => second try: look into logging table
@@ -1638,42 +1567,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		return this.bibtexList("getBibTexByFollowedUsers",param,session);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.PostDatabaseManager#insertPost(org.bibsonomy.model.Post, org.bibsonomy.database.util.DBSession)
-	 */
-	@Override
-	protected void insertPost(final Post<BibTex> post, final DBSession session) {
-		if (present(post.getResource()) == false) throw new InvalidModelException("There is no resource for this post.");
-		if (present(post.getGroups()) == false) throw new InvalidModelException("There are no groups for this post.");
-		/*if (post.getGroups().contains(GroupID.PUBLIC) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");
-		if (post.getGroups().contains(GroupID.PRIVATE) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");*/
-		
-		final BibTexParam param = new BibTexParam();
-		param.setResource(post.getResource());
-		param.setRequestedContentId(post.getContentId());
-		param.setDescription(post.getDescription());
-		param.setDate(post.getDate());
-		param.setUserName(((post.getUser() != null) ? post.getUser().getName() : ""));
-		
-		/* nur ein eintrag pro post in der bibtex tabelle*/
-		for (final Group group : post.getGroups()) {
-			param.setGroupId(group.getGroupId());
-			this.insertPost(param, session);
-		}
-		
-		/*
-		MULTIPLE GROUPS FOR A POST
-		if(post.getGroups().size() > 1){
-			param.setGroupId(GroupID.MULTIPLE.getId());
-		}else if(param.getGroups().contains(GroupID.PUBLIC)){
-			param.setGroupId(GroupID.PUBLIC.getId());
-		}else{
-			param.setGroupId(GroupID.PRIVATE.getId());
-		}
-		this.insertBibTex(param, session);*/
-	}
-	
 	/*	XXXDZ: check implementation
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#insertPost(org.bibsonomy.database.params.ResourcesParam, org.bibsonomy.database.util.DBSession)
@@ -1694,6 +1587,10 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		}
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManager#informPlugin(org.bibsonomy.database.managers.PostDatabaseManager.Action, java.lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
+	 */
 	@Override
 	protected void informPlugin(org.bibsonomy.database.managers.PostDatabaseManager.Action action, Integer newContentId, Integer oldContentId, DBSession session) {
 		switch (action) {
@@ -1739,6 +1636,10 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		insert.setDescription(post.getDescription());
 		insert.setDate(post.getDate());
 		insert.setUserName(((post.getUser() != null) ? post.getUser().getName() : ""));
+		
+		// in field group in table bookmark, insert the id for PUBLIC, PRIVATE or the id of the FIRST group in list
+		final int groupId = post.getGroups().iterator().next().getGroupId();
+		insert.setGroupId(groupId);
 		
 		return insert;
 	}

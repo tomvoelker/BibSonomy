@@ -3,6 +3,7 @@ package org.bibsonomy.database.managers.hash.bibtex.get;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.hash.bibtex.BibTexHashElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
@@ -31,6 +32,6 @@ public class GetBibtexByHashForUser extends BibTexHashElement {
 	 */
 	@Override
 	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {
-		return this.db.getPostsByHashForUser(param, session);
+		return this.db.getPostsByHashForUser(param.getUserName(), param.getHash(), param.getRequestedUserName(), param.getGroups(), HashID.getSimHash(param.getSimHash()), session);
 	}
 }
