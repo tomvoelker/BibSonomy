@@ -108,7 +108,7 @@ import org.bibsonomy.scraper.url.kde.wormbase.WormbaseScraper;
  * @author rja
  *
  */
-public class UrlCompositeScraper extends CompositeScraper implements UrlScraper {
+public class UrlCompositeScraper extends CompositeScraper<UrlScraper> implements UrlScraper {
 
 	/**
 	 * Public constructor adding the active scrapers.

@@ -27,17 +27,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.scraper.CompositeScraper;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.UrlCompositeScraper;
 
 
 /** General scraper for IEEE Explore
  * @author rja
  *
  */
-public class IEEEXploreScraper extends CompositeScraper {
+public class IEEEXploreScraper extends UrlCompositeScraper {
+	private static final String SITE_URL = "http://ieeexplore.ieee.org/";
+
+	private static final String SITE_NAME = "IEEEXplore";
+
 	private static final String info = "IEEEXplore Scraper: This scraper creates a BibTeX entry for the media at " + 
-	"<a href=\"http://ieeexplore.ieee.org/\">IEEEXplore</a> . Author: KDE";
+	AbstractUrlScraper.href(SITE_URL, SITE_NAME) + ".";
 
 	private static final String HOST = "ieeexplore.ieee.org";
 	private static final String XPLORE_PATH = "/Xplore";
@@ -50,11 +55,10 @@ public class IEEEXploreScraper extends CompositeScraper {
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(SEARCH_PATH + ".*")));
 	}
 	
+	/**
+	 * 
+	 */
 	public IEEEXploreScraper() {
-		/*
-		 * TODO: can we remove this scraper and add this code directly into URLCompositeScraper?
-		 * Tests for this scraper are broken because this code doesn't starts the chain anymore 
-		 */
 		addScraper(new IEEEXploreJournalProceedingsScraper());
 		addScraper(new IEEEXploreBookScraper());
 		addScraper(new IEEEXploreStandardsScraper());
@@ -66,6 +70,16 @@ public class IEEEXploreScraper extends CompositeScraper {
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
+	}
+	
+	@Override
+	public String getSupportedSiteName() {
+		return SITE_NAME;
+	}
+	
+	@Override
+	public String getSupportedSiteURL() {
+		return SITE_URL;
 	}
 
 }

@@ -39,10 +39,12 @@ import org.bibsonomy.scraper.exceptions.UsageFailureException;
  * This scraper contains other scrapers and the scrape method calls them
  * until a scraper is successful.
  * 
+ * @param <S> Type of scraper this scraper contains.
+ * 
  */
-public class CompositeScraper implements Scraper {
+public class CompositeScraper<S extends Scraper> implements Scraper {
 
-	private List<Scraper> _scrapers = new LinkedList<Scraper>();
+	private List<S> _scrapers = new LinkedList<S>();
 	private static final Log log = LogFactory.getLog(CompositeScraper.class);
 
 	/**
@@ -52,7 +54,7 @@ public class CompositeScraper implements Scraper {
 	 */
 	public boolean scrape(final ScrapingContext scrapingContext) throws ScrapingException {
 		try {
-			for (final Scraper scraper : _scrapers) {
+			for (final S scraper : _scrapers) {
 				if (scraper.scrape(scrapingContext)) {
 					return true;
 				}
@@ -97,7 +99,7 @@ public class CompositeScraper implements Scraper {
 	 * 
 	 * @param scraper
 	 */
-	public void addScraper(final Scraper scraper) {
+	public void addScraper(final S scraper) {
 		_scrapers.add(scraper);
 	}
 
@@ -111,14 +113,14 @@ public class CompositeScraper implements Scraper {
 	 */
 	public Collection<Scraper> getScraper () {
 		final LinkedList<Scraper> scrapers = new LinkedList<Scraper>();
-		for (final Scraper scraper : _scrapers) {
+		for (final S scraper : _scrapers) {
 			scrapers.addAll(scraper.getScraper());
 		}
 		return scrapers;
 	}
 
-	public boolean supportsScrapingContext(ScrapingContext scrapingContext){
-		for (final Scraper scraper : _scrapers){
+	public boolean supportsScrapingContext(final ScrapingContext scrapingContext){
+		for (final S scraper : _scrapers){
 			if (scraper.supportsScrapingContext(scrapingContext)){
 				return true;
 			}
