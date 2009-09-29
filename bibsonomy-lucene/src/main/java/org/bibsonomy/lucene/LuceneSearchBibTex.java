@@ -32,7 +32,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 
-public class LuceneSearchBibTex {
+public class LuceneSearchBibTex implements LuceneSearch<BibTex> {
 
 	private final static LuceneSearchBibTex singleton = new LuceneSearchBibTex();
 	private IndexSearcher searcher; 
@@ -661,8 +661,12 @@ ORDER BY b.date DESC, b.content_id DESC;
 		return postBibTexList;
 	};
 
-	
-	public ResultList<Post<BibTex>> search(String group, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset) {
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.LuceneSearch#searchLucene(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Set, int, int)
+	 */
+	@Override
+	public ResultList<Post<BibTex>> searchLucene(String group, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset) {
 		return searchLucene(getFulltextQueryFilter(group, search_terms, requestedUserName, UserName, GroupNames), limit, offset);
 	}
 	
@@ -679,7 +683,4 @@ ORDER BY b.date DESC, b.content_id DESC;
 	public LuceneIndexStatistics getStatistics() {
 		return Utils.getStatistics(lucenePath);
 	}
-	
-	
-	
 }

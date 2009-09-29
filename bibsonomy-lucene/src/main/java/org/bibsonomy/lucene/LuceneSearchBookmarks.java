@@ -30,7 +30,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 
-public class LuceneSearchBookmarks {
+public class LuceneSearchBookmarks implements LuceneSearch<Bookmark> {
 
 	private final static LuceneSearchBookmarks singleton = new LuceneSearchBookmarks();
 	private IndexSearcher searcher;
@@ -129,6 +129,7 @@ public class LuceneSearchBookmarks {
 	 *            LuceneIndex lucene index to use b for bookmark, p for
 	 *            publications
 	 */
+	@Override
 	public ResultList<Post<Bookmark>> searchLucene(String group,
 			String searchTerms, String requestedUserName, String UserName,
 			Set<String> GroupNames, int limit, int offset) {
@@ -338,12 +339,7 @@ public class LuceneSearchBookmarks {
 		return postBookmarkList;
 	}
 
-	
 	public LuceneIndexStatistics getStatistics() {
 		return Utils.getStatistics(lucenePath);
 	}
-
-	
-	
-	
 }
