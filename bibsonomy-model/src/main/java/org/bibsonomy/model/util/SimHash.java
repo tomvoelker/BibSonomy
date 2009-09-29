@@ -32,13 +32,36 @@ import java.util.TreeSet;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.util.StringUtils;
 
 /**
  * Similarity hashes for publications are calculated here.
  */
 public class SimHash {
-
+	
+	/**
+	 * FIXME: refactor: remove instanceof checks
+	 * 
+	 * @param resource the object whose hash is to be calculated
+	 * @param simHash the type of hash to be calculated
+	 * @return the corresponding simhash for a resource.
+	 * 
+	 */
+	public static String getSimHash(final Resource resource, final HashID simHash) {
+		if (resource instanceof Bookmark) {
+			final Bookmark bookmark = (Bookmark) resource;
+			return SimHash.getSimHash(bookmark, simHash);
+		}
+		
+		if (resource instanceof BibTex) {
+			final BibTex bibTex = (BibTex) resource;
+			return SimHash.getSimHash(bibTex, simHash);
+		}
+		
+		return null;
+	}
+	
 	/**
 	 * @param bibtex the object whose hash is to be calculated
 	 * @param simHash the type of hash to be calculated
