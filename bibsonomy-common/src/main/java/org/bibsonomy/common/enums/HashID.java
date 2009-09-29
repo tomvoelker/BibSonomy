@@ -80,6 +80,13 @@ public enum HashID {
 			throw new RuntimeException("SimHash " + simHash + " doesn't exist.");
 		}
 	}
+	
+	/**
+	 * @return an HashID array that contains all HashIDs
+	 */
+	public static HashID[] getAllHashIDs() {
+		return new HashID[] { SIM_HASH0, SIM_HASH1, SIM_HASH2, SIM_HASH3 };
+	}
 
 	/**
 	 * @return an integer array that contains all ids.
