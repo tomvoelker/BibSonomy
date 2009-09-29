@@ -57,7 +57,7 @@
                  | user is posting an existing resource ...
                  -->
               <c:if test="${not empty command.diffPost}">
-                 <p><fmt:message key="post.${resourceType}.edit.existent" /></p><!-- TODO: generalize -->
+                 <p><fmt:message key="post.edit.existent" /></p>
               </c:if>
 
 
