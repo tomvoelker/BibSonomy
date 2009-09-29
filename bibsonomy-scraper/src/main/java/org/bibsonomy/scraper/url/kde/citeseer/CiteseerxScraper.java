@@ -22,8 +22,11 @@ import org.bibsonomy.util.WebUtils;
  */
 public class CiteseerxScraper extends AbstractUrlScraper {
 	
-	private static final String INFO = "CiteSeerX beta Scraper: This scraper parses a publication page from the " +
-									   "Scientific Literature Digital Library and Search Engine " + href("http://citeseerx.ist.psu.edu/", "CiteSeerX");
+	private static final String SITE_NAME = "CiteSeerX";
+	private static final String SITE_URL  = "http://citeseerx.ist.psu.edu/";
+
+	private static final String INFO = "CiteSeerX alpha Scraper: This scraper parses a publication page from the " +
+									   "Scientific Literature Digital Library and Search Engine " + href(SITE_URL, SITE_NAME);
 	
 	private static final String HOST = "citeseerx.ist.psu.edu";
 	private static final Pattern bibtexPattern = Pattern.compile("<h2>BibTeX.*?</h2>\\s*<div class=\"content\">\\s*(@.*?)\\s*</div>", Pattern.MULTILINE | Pattern.DOTALL);
@@ -100,11 +103,11 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "CiteSeer";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://citeseer.ist.psu.edu/";
+		return SITE_URL;
 	}
 
 }
