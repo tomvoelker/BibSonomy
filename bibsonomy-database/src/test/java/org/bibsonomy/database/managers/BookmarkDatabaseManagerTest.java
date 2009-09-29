@@ -27,7 +27,6 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -224,11 +223,11 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		String userName = "testuser1";
 		String requestedUserName = "testuser2";
 		final ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
-		List<Post<Bookmark>> post = this.bookmarkDb.getBookmarkByHashForUser(null, requBibtex, requestedUserName, visibleGroupIDs, this.dbSession, null);
+		List<Post<Bookmark>> post = this.bookmarkDb.getPostsByHashForUser(null, requBibtex, requestedUserName, visibleGroupIDs, this.dbSession, null);
 		assertEquals(0, post.size());
 
 		requestedUserName = "testuser1";
-		post = this.bookmarkDb.getBookmarkByHashForUser(userName, requBibtex, requestedUserName, visibleGroupIDs, this.dbSession, null);
+		post = this.bookmarkDb.getPostsByHashForUser(userName, requBibtex, requestedUserName, visibleGroupIDs, this.dbSession, null);
 		assertEquals(1, post.size());
 	}
 

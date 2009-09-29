@@ -21,7 +21,7 @@ public class GetBookmarksByHashForUser extends BookmarkChainElement {
 
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		return this.db.getBookmarkByHashForUser(param, session);
+		return this.db.getPostsByHashForUser(param, session);
 	}
 
 	@Override

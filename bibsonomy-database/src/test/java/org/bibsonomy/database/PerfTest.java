@@ -145,7 +145,7 @@ public class PerfTest extends AbstractDatabaseManagerTest {
 			this.bookmarkDb.getBookmarkByHashCount(param, this.dbSession);
 			break;
 		case getBookmarkByHashForUser:
-			this.bookmarkDb.getBookmarkByHashForUser(param, this.dbSession);
+			this.bookmarkDb.getPostsByHashForUser(param, this.dbSession);
 			break;
 		case getBookmarkSearch:
 			this.bookmarkDb.getBookmarkSearch(param, this.dbSession);

@@ -1,33 +1,26 @@
 package org.bibsonomy.database.managers;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.exceptions.InvalidModelException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
-import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.ResourcesParam;
 import org.bibsonomy.database.params.beans.TagIndex;
-import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.lucene.LuceneSearch;
 import org.bibsonomy.lucene.LuceneSearchBookmarks;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.util.SimHash;
 
 
 /**
@@ -36,29 +29,26 @@ import org.bibsonomy.model.util.SimHash;
  * @author Miranda Grahl
  * @author Jens Illig
  * @author Christian Schenk
+ * @author Daniel Zoller
  * @version $Id$
  */
-public class BookmarkDatabaseManager extends AbstractDatabaseManager implements CrudableContent<Bookmark, BookmarkParam> {
-
+public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, BookmarkParam> {
 	private static final Log log = LogFactory.getLog(BookmarkDatabaseManager.class);
 
 	private final static BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
-	private final GeneralDatabaseManager generalDb;
-	private final TagDatabaseManager tagDb;
-	private final DatabasePluginRegistry plugins;
+	
 	private static final BookmarkChain chain = new BookmarkChain();
-
-	private BookmarkDatabaseManager() {
-		this.generalDb = GeneralDatabaseManager.getInstance();
-		this.tagDb = TagDatabaseManager.getInstance();
-		this.plugins = DatabasePluginRegistry.getInstance();
-	}
-
+	private static final HashID[] hashRange = { HashID.SIM_HASH0 };
+	
 	/**
 	 * @return BookmarkDatabaseManager
 	 */
 	public static BookmarkDatabaseManager getInstance() {
 		return singleton;
+	}
+
+	private BookmarkDatabaseManager() {
+		super();
 	}
 
 	/**
@@ -106,6 +96,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setLimit(limit);
 		param.setOffset(offset);
 
+		// duplicated code
 		if (Order.FOLKRANK.equals(param.getOrder())){
 			param.setGroupId(GroupID.PUBLIC.getId());
 			return this.bookmarkList("getBookmarkByTagNamesAndFolkrank", param, session);
@@ -343,6 +334,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	/**
 	 * @see BookmarkDatabaseManager#getBookmarkPopular(BookmarkParam, DBSession)
 	 * 
+	 * @param limit 
+	 * @param offset 
 	 * @param session
 	 * @return list of bookmark posts
 	 */
@@ -359,6 +352,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param days
 	 * @param limit
 	 * @param offset
+	 * @param session 
 	 * 
 	 * @return list of bookmark posts
 	 */
@@ -418,12 +412,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param requHash 
 	 * @param simHash 
 	 * @param session
-	 * @return number of bookmarks for the given hash
+	 * @return number of  for the given hash
 	 */
 	public Integer getBookmarkByHashCount(final String requHash, final HashID simHash, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setHash(requHash);
 		param.setSimHash(simHash);
+		
 		return this.queryForObject("getBookmarkByHashCount", param, Integer.class, session);
 	}
 	
@@ -450,7 +445,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param param
 	 * @param session
 	 * @return list of bookmark posts
+	 * 
+	 * @deprecated  replaced by {@link PostDatabaseManager#getPostsByHashForUser(ResourcesParam, DBSession)}
 	 */
+	@Deprecated
 	public List<Post<Bookmark>> getBookmarkByHashForUser(final BookmarkParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkByHashForUser", param, session);
@@ -466,7 +464,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param session
 	 * @param hashType
 	 * @return list of bookmark posts
+	 * 
+	 * @deprecated replaced by {@link PostDatabaseManager#getPostsByHashForUser(String, String, String, List, DBSession, HashID)}
 	 */
+	@Deprecated
 	public List<Post<Bookmark>> getBookmarkByHashForUser(final String userName, final String requBibtex, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session, final HashID hashType) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setUserName(userName);
@@ -518,7 +519,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	/**
 	 * @see BookmarkDatabaseManager#getBookmarkSearch(BookmarkParam, DBSession)
 	 * 
-	 * @param groupType
+	 * @param groupId
 	 * @param search
 	 * @param requestedUserName
 	 * @param limit
@@ -578,35 +579,30 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	}
 
 	/**
-	 * @see BookmarkDatabaseManager#getBookmarkSearchLucene(BookmarkParam, DBSession)
+	 * TODO: improve documentation
 	 * 
-	 * @param groupType
+	 * @param groupId
 	 * @param search
 	 * @param requestedUserName
+	 * @param UserName 
+	 * @param GroupNames 
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return list of bookmark posts
 	 */
 	public ResultList<Post<Bookmark>> getBookmarkSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames,  final int limit, final int offset, final DBSession session) {
-
-		ResultList<Post<Bookmark>> postBookmarkList = new ResultList<Post<Bookmark>>();
-
-
-		GroupDatabaseManager groupDb;
-		groupDb = GroupDatabaseManager.getInstance();
-		String group = groupDb.getGroupNameByGroupId(groupId, session);
-		
+		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+		final String group = groupDb.getGroupNameByGroupId(groupId, session);
 		
 		// get search results from lucene
-
 		final LuceneSearchBookmarks lucene = LuceneSearchBookmarks.getInstance();
 
 //		ArrayList<Integer> contentIds = new ArrayList<Integer>();
 		long starttimeQuery = System.currentTimeMillis();
 
 		//contentIds = lucene.searchLucene("contentid", search, groupId, limit, offset);
-		postBookmarkList = lucene.searchLucene(group, search, requestedUserName, UserName, GroupNames, limit, offset);
+		final ResultList<Post<Bookmark>> postBookmarkList = lucene.searchLucene(group, search, requestedUserName, UserName, GroupNames, limit, offset);
 		
 		long endtimeQuery = System.currentTimeMillis();
 		log.debug("LuceneBookmark complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
@@ -694,11 +690,14 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setUserName(userName);
 		param.setLimit(limit);
 		param.setOffset(offset);
+		
+		// duplicated code
 		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
 			// show users own bookmarks, which are private, public or for friends
 			param.setRequestedUserName(param.getUserName());
 			return getBookmarkForUser(param, session);
-		}				
+		}
+		
 		return this.bookmarkList("getBookmarkViewable", param, session);
 	}
 
@@ -755,6 +754,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setUserName(userName);
 		param.setLimit(limit);
 		param.setOffset(offset);
+		
+		// duplicated code
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkForGroup", param, session);
 	}
@@ -776,10 +777,13 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 
 	/**
 	 * Returns the number of bookmarks belonging to this group
-	 * 
+	 *  
 	 * @see BookmarkDatabaseManager#getBookmarkForGroupCount(BookmarkParam, DBSession)
 	 * 
+	 * @param requestedUserName 
+	 * @param userName
 	 * @param groupId
+	 * @param visibleGroupIDs 
 	 * @param session
 	 * @return the (approximated) number of bookmarks for the given group, see method above
 	 * 
@@ -791,6 +795,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setUserName(userName);
 		param.setGroups(visibleGroupIDs);
 		param.setGroupId(groupId);
+		
+		// duplicated code
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.queryForObject("getBookmarkForGroupCount", param, Integer.class, session);
 	}
@@ -826,6 +832,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setGroups(visibleGroupIDs);
 		param.setUserName(userName);
 		param.setTagIndex(tagIndex);
+		
+		// duplicated code
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkForGroupByTag", param, session);
 	}
@@ -868,8 +876,8 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setGroups(visibleGroupIDs);
 		param.setLimit(limit);
 		param.setOffset(offset);
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		return this.bookmarkList("getBookmarkForUser", param, session);
+		
+		return this.getBookmarkForUser(param, session);
 	}
 
 	/**
@@ -902,73 +910,10 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setUserName(userName);
 		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
+		
+		// Duplicated code
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		return this.queryForObject("getBookmarkForUserCount", param, Integer.class, session);
-	}
-
-	/**
-	 * Inserts a bookmark into the database.
-	 */
-	private void insertBookmark(final BookmarkParam param, final DBSession session) {
-		// Start transaction
-		session.beginTransaction();
-		try {
-			// Insert bookmark
-			this.insert("insertBookmark", param, session);
-			// compute only a single simHash, as all simHashes are equal for bookmarks
-			final HashID simHash = HashID.getSimHash(0);
-			param.setSimHash(simHash);
-			param.setHash(SimHash.getSimHash(param.getResource(), simHash));
-			this.insertBookmarkHash(param, session);
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
-	}
-
-	/**
-	 * Inserts a post with a bookmark into the database.
-	 */
-	private void insertBookmarkPost(final Post<Bookmark> post, final DBSession session) {
-		if (present(post.getResource()) == false) throw new InvalidModelException("There is no resource for this post.");
-		if (present(post.getGroups()) == false) throw new InvalidModelException("There are no groups for this post.");
-		/*if (post.getGroups().contains(GroupID.PUBLIC) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");
-		if (post.getGroups().contains(GroupID.PRIVATE) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");*/
-
-		final BookmarkParam param = new BookmarkParam();
-		param.setResource(post.getResource());
-		param.setDate(post.getDate());
-		param.setRequestedContentId(post.getContentId());
-		param.setHash(post.getResource().getIntraHash());
-		param.setDescription(post.getDescription());
-		param.setUserName(post.getUser().getName());
-		param.setUrl(post.getResource().getUrl());
-
-		//in field group in table bookmark, insert the id for PUBLIC, PRIVATE or the id of the FIRST group in list
-		final int groupId =  post.getGroups().iterator().next().getGroupId();
-		param.setGroupId(groupId);
-
-		this.insertBookmark(param, session);
-	}
-
-	// Insert counter, hash and URL of bookmark
-	private void insertBookmarkHash(final BookmarkParam param, final DBSession session) {
-		this.insert("insertBookmarkHash", param, session);
-	}
-
-	// Decrements one count in url table after deleting
-	private void updateBookmarkHash(final BookmarkParam param, final DBSession session) {
-		this.insert("updateBookmarkHash", param, session);
-	}
-
-	/**
-	 * Deletes a bookmark.
-	 * 
-	 * @param param
-	 * @param session
-	 */
-	public void deleteBookmark(final BookmarkParam param, final DBSession session) {
-		this.delete("deleteBookmark", param, session);
 	}
 
 	/**
@@ -993,181 +938,6 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setHash(requBookmark);
 		param.setUserName(userName);
 		return this.queryForObject("getContentIDForBookmark", param, Integer.class, session);
-	}
-
-	public List<Post<Bookmark>> getPosts(final BookmarkParam param, final DBSession session) {
-		return chain.getFirstElement().perform(param, session);
-	}
-
-	public Post<Bookmark> getPostDetails(String authUser, String resourceHash, String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
-		final List<Post<Bookmark>> list = getBookmarkByHashForUser(authUser, resourceHash, userName, visibleGroupIDs, session, HashID.INTRA_HASH);
-		if (list.size() >= 1) {
-			if (list.size() > 1) {
-				log.warn("multiple Bookmark-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
-			}
-			/*
-			 * return the first post
-			 */
-			return list.get(0);
-		}
-
-		log.debug("Bookmark-post from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");
-		return null;
-	}
-
-	public boolean deletePost(final String userName, final String resourceHash, final DBSession session) {
-		return this.deletePost(userName, resourceHash, false, session);
-	}
-
-	private boolean deletePost(final String userName, final String resourceHash, boolean update, final DBSession session) {
-		// TODO: test removal (tas and bibtex ...)
-		session.beginTransaction();
-		try {
-			// Used for userName, hash and contentId
-			final BookmarkParam param = new BookmarkParam();
-			param.setRequestedUserName(userName);
-			param.setUserName(userName);
-			param.setHash(resourceHash);
-
-			final List<Post<Bookmark>> bookmarks = this.getBookmarkByHashForUser(param, session);
-			if (bookmarks.size() == 0) {
-				// Bookmark doesn't exist
-				return false;
-			}
-
-			final Post<? extends Resource> oneBookmark = bookmarks.get(0);
-			param.setRequestedContentId(oneBookmark.getContentId());
-
-			if (update == false) {
-				this.plugins.onBookmarkDelete(param.getRequestedContentId(), session);
-			}
-			// Delete al tags according bookmark
-			this.tagDb.deleteTags(oneBookmark, session);
-			// Update SimHashes - as for bookmarks currently all simhashes are the same, 
-			// we only update one and are done		
-			// TODO: isn't it better to replace this zero by a constant?
-			final HashID simHash = HashID.getSimHash(0);
-			param.setSimHash(simHash);
-			param.setHash(SimHash.getSimHash(((Bookmark) oneBookmark.getResource()), simHash));
-			// Decrement counter in url table
-			this.updateBookmarkHash(param, session);
-			// Delete entry from table bookmark
-			this.deleteBookmark(param, session);
-
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
-		return true;
-	}
-
-	/**
-	 * The method assumes that the hashes of the given resource have been recalculated before calling this method!
-	 * 
-	 * @see org.bibsonomy.database.managers.CrudableContent#storePost(java.lang.String, org.bibsonomy.model.Post, java.lang.String, boolean, org.bibsonomy.database.util.DBSession)
-	 */
-	public boolean storePost(final String userName, final Post<Bookmark> post, final String oldIntraHash, boolean update, final DBSession session)  {
-		/*
-		 * FIXME: we need to overwrite the userName in the post with the given userName
-		 * (which comes from loginUser.getName() in DBLogic) - otherwise one can store
-		 * posts under another name! 
-		 */
-		session.beginTransaction();
-		try {
-			/*
-			 * the current intra hash of the resource
-			 */
-			final String intraHash = post.getResource().getIntraHash();
-
-			/*
-			 * the bookmark with the "old" intrahash, i.e. the one that was sent
-			 * within the create/update bookmark request
-			 */
-			final List<Post<Bookmark>> oldBookmarkInDb;
-			if (oldIntraHash != null) {
-				/*
-				 * check if the hash sent within the request is correct
-				 */
-				if (!update && !oldIntraHash.equals(intraHash)) {
-					throw new IllegalArgumentException(
-							"Could not create new bookmark: The requested intrahash " 
-							+ oldIntraHash + " is not correct for this bookmark (correct intrahash is " 
-							+ intraHash + ")."
-					);
-				}
-				// if yes, check if a bookmark exists with the old intrahash				
-				oldBookmarkInDb = this.getBookmarkByHashForUser(userName, oldIntraHash, userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
-			} else {
-				if (update) {
-					throw new IllegalArgumentException("Could not update bookmark: no intrahash specified.");
-				}
-				oldBookmarkInDb = null;
-			}
-
-			/*
-			 * get posts with the intrahash of the given post to check for possible duplicates 
-			 */
-			final List<Post<Bookmark>> newBookmarkInDb = this.getBookmarkByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), session, HashID.INTRA_HASH);
-
-			/*
-			 * check if user is trying to create a bookmark that already exists
-			 */
-			if (newBookmarkInDb != null && !newBookmarkInDb.isEmpty()) {
-				/*
-				 * new bookmark exists ... 
-				 */
-				if (!update) {
-					/*
-					 * we don't do an update, so this is not allowed
-					 */
-					throw new IllegalArgumentException("Could not create new bookmark: This bookmark already exists in your collection (intrahash: " + intraHash + ")");
-				} else if (!intraHash.equals(oldIntraHash)) {
-					/* 
-					 * Although we're doing an update, the old intra hash is different from the new one
-					 * in principle, this is OK, but not when the new hash already exists. Because that
-					 * way we would delete the post with the old hash and post the new one - resulting
-					 * in two posts with the same (new hash)
-					 */
-					throw new IllegalArgumentException("Could not create new bookmark: This bookmark already exists in your collection (intrahash: " + intraHash + ")");
-				}
-
-			}
-
-			/*
-			 * ALWAYS get a new contentId
-			 */
-			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
-
-			/*
-			 * on update, do a delete first ...
-			 */
-			if (update) {
-				if (oldBookmarkInDb != null && !oldBookmarkInDb.isEmpty()) {
-					/*
-					 * Bookmark entry DOES EXIST for this user -> delete old Bookmark post 
-					 */
-					final Post<?> oldBookmarkPost = oldBookmarkInDb.get(0);
-					this.plugins.onBookmarkUpdate(post.getContentId(), oldBookmarkPost.getContentId(), session);
-					this.deletePost(userName, oldBookmarkPost.getResource().getIntraHash(), true, session);
-				} else {
-					/*
-					 * not found -> throw exception
-					 */
-					log.warn("Bookmark with hash " + oldIntraHash + " does not exist for user " + userName);
-					throw new ResourceNotFoundException(oldIntraHash);
-				}
-			}
-
-			this.insertBookmarkPost(post, session);
-
-			// add the tags
-			this.tagDb.insertTags(post, session);
-
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
-		}
-		return update;
 	}
 
 	/**
@@ -1270,6 +1040,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		if (result != null) {
 			return result;
 		}
+		
 		return 0;
 	}
 	
@@ -1282,7 +1053,7 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return
+	 * @return list of bookmark posts
 	 */
 	public List<Post<Bookmark>> getBookmarkByFollowedUsers(final String loginUserName, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		BookmarkParam param = new BookmarkParam();
@@ -1291,5 +1062,81 @@ public class BookmarkDatabaseManager extends AbstractDatabaseManager implements 
 		param.setLimit(limit);
 		param.setOffset(offset);
 		return this.bookmarkList("getBookmarkByFollowedUsers",param,session);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManager#informPlugin(org.bibsonomy.database.managers.PostDatabaseManager.Action, java.lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
+	 */
+	@Override
+	protected void informPlugin(org.bibsonomy.database.managers.PostDatabaseManager.Action action, Integer newContentId, Integer oldContentId, DBSession session) {
+		switch (action) {
+			case UPDATE:
+				this.plugins.onBookmarkUpdate(oldContentId, newContentId, session);
+				break;
+			case CREATE:
+				this.plugins.onBookmarkInsert(newContentId, session);
+			case DELETE:
+				this.plugins.onBookmarkDelete(newContentId, session);
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getChain()
+	 */
+	@Override
+	protected FirstChainElement<Post<Bookmark>, BookmarkParam> getChain() {
+		return chain;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getHashRange()
+	 */
+	@Override
+	protected HashID[] getHashRange() {
+		return hashRange;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getInsertParam(org.bibsonomy.model.Post, org.bibsonomy.database.util.DBSession)
+	 */
+	@Override
+	protected BookmarkParam getInsertParam(final Post<Bookmark> post, final DBSession session) {
+		final BookmarkParam insert = this.getNewParam();
+		
+		insert.setResource(post.getResource());
+		insert.setDate(post.getDate());
+		insert.setRequestedContentId(post.getContentId());
+		insert.setHash(post.getResource().getIntraHash());
+		insert.setDescription(post.getDescription());
+		insert.setUserName(post.getUser().getName());
+		insert.setUrl(post.getResource().getUrl());	
+
+		// in field group in table bookmark, insert the id for PUBLIC, PRIVATE or the id of the FIRST group in list
+		final int groupId = post.getGroups().iterator().next().getGroupId();
+		insert.setGroupId(groupId);
+		
+		return insert;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getLuceneSearch()
+	 */
+	@Override
+	protected LuceneSearch<Bookmark> getLuceneSearch() {
+		return LuceneSearchBookmarks.getInstance();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getNewParam()
+	 */
+	@Override
+	protected BookmarkParam getNewParam() {
+		return new BookmarkParam();
 	}
 }

@@ -32,7 +32,6 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
@@ -68,8 +67,9 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// get post with SIM_HASH0 = hash0
 		final List<Post<BibTex>> posts = this.bibTexDb.getBibTexByHash(hash0, HashID.SIM_HASH0, 10, 0, this.dbSession);
 		assertNotNull(posts);
-		assertEquals(1, posts.get(0).getGroups().size());
 		assertEquals(1, posts.size());
+		assertEquals(1, posts.get(0).getGroups().size());
+		
 		// check inter- and intra hash
 		assertEquals(hash1, posts.get(0).getResource().getInterHash()); 
 		assertEquals(hash2, posts.get(0).getResource().getIntraHash());
@@ -106,7 +106,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		// check inter & simhash0 for a intrahash
 		intraHash = "b77ddd8087ad8856d77c740c8dc2864a";
-		posts = this.bibTexDb.getBibTexByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, this.dbSession, HashID.INTRA_HASH);
+		posts = this.bibTexDb.getPostsByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, this.dbSession, HashID.INTRA_HASH);
 		assertEquals(1, posts.size());
 		assertEquals("d9eea4aa159d70ecfabafa0c91bbc9f0", posts.get(0).getResource().getInterHash());
 		assertEquals("9abf98937435f05aec3d58b214a2ac58", posts.get(0).getResource().getSimHash0());
@@ -115,7 +115,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		loginUserName = "testuser1";
 		requestedUserName = "testuser1";
 		intraHash = "b77ddd8087ad8856d77c740c8dc2864a";
-		posts = this.bibTexDb.getBibTexByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, this.dbSession, HashID.INTRA_HASH);
+		posts = this.bibTexDb.getPostsByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, this.dbSession, HashID.INTRA_HASH);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		assertEquals("d9eea4aa159d70ecfabafa0c91bbc9f0", posts.get(0).getResource().getInterHash());
@@ -126,7 +126,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		loginUserName = "testuser2";
 		requestedUserName = "testuser1";
 		intraHash = "522833042311cc30b8775772335424a7";
-		posts = this.bibTexDb.getBibTexByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, this.dbSession, HashID.INTRA_HASH);
+		posts = this.bibTexDb.getPostsByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, this.dbSession, HashID.INTRA_HASH);
 		assertNotNull(posts);
 		assertEquals("d9eea4aa159d70ecfabafa0c91bbc9f0", posts.get(0).getResource().getInterHash());
 		assertEquals("92e8d9c7588eced69419b911b31580ee", posts.get(0).getResource().getSimHash0());
@@ -135,19 +135,19 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		loginUserName = "testspammer";
 		requestedUserName = "testspammer";
 		intraHash = "";
-		posts = this.bibTexDb.getBibTexByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, this.dbSession, HashID.INTRA_HASH);
+		posts = this.bibTexDb.getPostsByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, this.dbSession, HashID.INTRA_HASH);
 		assertNotNull(posts);
 		assertEquals(0, posts.size());
 		
 		// spammer are able to see own post
 		intraHash = "65e49a5791c3dae2356d26fb9040fe29";
-		posts = this.bibTexDb.getBibTexByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, this.dbSession, HashID.INTRA_HASH);
+		posts = this.bibTexDb.getPostsByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, this.dbSession, HashID.INTRA_HASH);
 		assertEquals(1, posts.size());
 		assertEquals("b386bdfc8ac7b76ca96e6784736c4b95", posts.get(0).getResource().getSimHash0());
 		
 		loginUserName = "";
 		requestedUserName = "testuser1";
-		posts = this.bibTexDb.getBibTexByHashForUser("testuser1", intraHash, "testspammer", visibleGroupIDs, this.dbSession, HashID.INTRA_HASH);
+		posts = this.bibTexDb.getPostsByHashForUser("testuser1", intraHash, "testspammer", visibleGroupIDs, this.dbSession, HashID.INTRA_HASH);
 		assertTrue(posts.size() == 0);
 	}
 	
@@ -694,10 +694,10 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests getPosts
 	 */
 	@Test
-	@Ignore
+	@Ignore  // XXXDZ: why 
 	// TODO: need assertByTagNames?
 	public void getPosts() {
-		BibTexParam param = new BibTexParam();
+		final BibTexParam param = new BibTexParam();
 		List<TagIndex> tagIndex = new ArrayList<TagIndex>();
 		param.setHash("");
 		param.setGroupId(GroupID.INVALID.getId());
@@ -910,14 +910,14 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		param.setRequestedUserName("testuser1");
 		param.setHash("14143c6508fe645ca312d0aa5d0e791b");
 		param.setSimHash(HashID.INTRA_HASH);
-		List<Post<BibTex>> posts = this.bibTexDb.getBibTexByHashForUser(param, this.dbSession);
+		List<Post<BibTex>> posts = this.bibTexDb.getPostsByHashForUser(param, this.dbSession);
 		assertNotNull(posts);
 		assertTrue(posts.size() == 1);
 		
 		Boolean succ = this.bibTexDb.deletePost(param.getRequestedUserName(), param.getHash(), this.dbSession);
 		
 		if (succ) {
-			assertEquals(0, this.bibTexDb.getBibTexByHashForUser(param, this.dbSession).size());
+			assertEquals(0, this.bibTexDb.getPostsByHashForUser(param, this.dbSession).size());
 		}
 		else {
 			fail("Post could not be deleted");
@@ -935,20 +935,20 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final BibTexParam postParam = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
 		param.setSimHash(HashID.INTRA_HASH);
 		List<Post<BibTex>> post2 = this.bibTexDb.getPosts(postParam, this.dbSession);
-		posts = this.bibTexDb.getBibTexByHashForUser(param, this.dbSession);
+		posts = this.bibTexDb.getPostsByHashForUser(param, this.dbSession);
 		assertEquals(0, posts.size());
 		assertEquals(0, post2.size());
 		
 		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
 		post2 = this.bibTexDb.getPosts(postParam, this.dbSession);
-		posts = this.bibTexDb.getBibTexByHashForUser(param, this.dbSession);
+		posts = this.bibTexDb.getPostsByHashForUser(param, this.dbSession);
 		assertEquals(1, posts.size());
 		assertEquals(1, post2.size());
 		
 		succ = this.bibTexDb.deletePost(param.getRequestedUserName(), param.getHash(), this.dbSession);
 		
 		if (succ) {
-			assertEquals(0, this.bibTexDb.getBibTexByHashForUser(param, this.dbSession).size());
+			assertEquals(0, this.bibTexDb.getPostsByHashForUser(param, this.dbSession).size());
 		}
 		else {
 			fail("Post could not be deleted");

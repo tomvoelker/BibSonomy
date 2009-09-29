@@ -17,6 +17,9 @@ import org.bibsonomy.model.Post;
  */
 public class GetBibtexByHashForUser extends BibTexHashElement {
 
+	/**
+	 * TODO: improve documentation
+	 */
 	public GetBibtexByHashForUser() {
 		setHash(true);
 		setRequestedUserName(true);
@@ -28,6 +31,6 @@ public class GetBibtexByHashForUser extends BibTexHashElement {
 	 */
 	@Override
 	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexByHashForUser(param, session);
+		return this.db.getPostsByHashForUser(param, session);
 	}
 }
