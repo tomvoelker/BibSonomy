@@ -34,11 +34,11 @@
 
 <%-- ---------------- MANUAL BIBTEX INPUT ---------------- --%>
 <h2>Enter your publication data here:</h2>
-<form method="POST" action="<%=response.encodeURL("/ShowBibtexEntry")%>" name="post_bibtex">
+<form method="POST" action="/postPublication" name="post_bibtex">
 <table>
   <tr>
     <td class="expl">type*</td>
-    <td><select name="entrytype" class="reqinput">
+    <td><select name="post.resource.entrytype" class="reqinput">
       <c:forEach var="et" items="${bibtexHandlerBean.entrytypes}">
         <option value="${et}">${et}</option>
       </c:forEach>
@@ -50,22 +50,22 @@
   </tr>
   <tr>
     <td class="expl">title*</td>
-    <td><input type="text" name="title" size="60" class="reqinput"></td>
+    <td><input type="text" name="post.resource.title" size="60" class="reqinput"></td>
     <td></td>
   </tr>
   <tr>
     <td class="expl">authors*</td>
-    <td><input type="text" name="author" size="60" class="reqinput" onkeyup="toggle_required_author_editor()"></td>
+    <td><input type="text" name="post.resource.author" size="60" class="reqinput" onkeyup="toggle_required_author_editor()"></td>
     <td></td>
   </tr>
   <tr>
     <td class="expl">editors*</td>
-    <td><input type="text" name="editor" size="60" class="reqinput" onkeyup="toggle_required_author_editor()"></td>
+    <td><input type="text" name="post.resource.editor" size="60" class="reqinput" onkeyup="toggle_required_author_editor()"></td>
     <td></td>
   </tr>
   <tr>
     <td class="expl">year*</td>
-    <td><input type="text" name="year" size="10" class="reqinput"></td>
+    <td><input type="text" name="post.resource.year" size="10" class="reqinput"></td>
     <td></td>
   </tr>
   <tr>

@@ -778,11 +778,16 @@
 		<to type="permanent-redirect" last="true">/help/faq/$1</to>
 	</rule>
 
-	<!-- old postBookmark form - used by the buttons! -->
+	<!-- old postBookmark/Publication forms - used by the buttons! -->
 	<rule>
 		<name>/ShowBookmarkEntry</name>
 		<from>^/ShowBookmarkEntry$</from>
 		<to last="true">/postBookmark</to>
+	</rule>
+	<rule>
+		<name>/ShowBibtexEntry</name>
+		<from>^/ShowBibtexEntry$</from>
+		<to last="true">/postPublication</to>
 	</rule>
 
 
