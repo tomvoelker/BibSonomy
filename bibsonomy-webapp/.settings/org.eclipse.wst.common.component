@@ -6,8 +6,8 @@
 <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
 <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/java"/>
 <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/resources"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/target/generated-sources/antlr"/>
+<wb-resource deploy-path="/WEB-INF/classes" source-path="/target/generated-sources/antlr"/>
 <property name="java-output-path" value="build/classes"/>
-        <property name="context-root"/>
+        <property name="context-root" value="/bibsonomy2"/>
 </wb-module>
 </project-modules>
