@@ -72,7 +72,7 @@
                                    | general information 
                                    -->
 								<fieldset class="fsInner">
-									<legend><fmt:message key="general"/></legend>
+									<legend><fmt:message key="post.resource.fields.general"/></legend>
                                     <jsp:invoke fragment="generalInformation"/>
 								</fieldset>
 

@@ -68,7 +68,7 @@
 
         <jsp:attribute name="detailedInformation">
             <fieldset class="fsInner">
-                <legend><fmt:message key="detailedInformation"/></legend>
+                <legend><fmt:message key="post.resource.fields.detailed"/></legend>
                 
                    <form:label cssClass="fsLabel" path="post.resource.booktitle" ><fmt:message key="post.resource.booktitle"/></form:label>
                    <form:input cssClass="fsInput" path="post.resource.booktitle" tabindex="2"/>
@@ -171,7 +171,7 @@
           </fieldset>
           
           <fieldset class="fsInner">
-                <legend><fmt:message key="commentsAndNotes"/></legend>
+                <legend><fmt:message key="post.resource.fields.comments"/></legend>
                 
                 <!-- 
                    | TODO: explain difference between fields!
