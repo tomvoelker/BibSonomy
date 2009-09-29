@@ -38,11 +38,8 @@ import org.bibsonomy.scraper.UrlCompositeScraper;
  */
 public class IEEEXploreScraper extends UrlCompositeScraper {
 	private static final String SITE_URL = "http://ieeexplore.ieee.org/";
-
 	private static final String SITE_NAME = "IEEEXplore";
-
-	private static final String info = "IEEEXplore Scraper: This scraper creates a BibTeX entry for the media at " + 
-	AbstractUrlScraper.href(SITE_URL, SITE_NAME) + ".";
+	private static final String info = "This scraper creates a BibTeX entry for the media at " + AbstractUrlScraper.href(SITE_URL, SITE_NAME) + ".";
 
 	private static final String HOST = "ieeexplore.ieee.org";
 	private static final String XPLORE_PATH = "/Xplore";
