@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.webapp.command.PostCommand;
 
@@ -27,7 +27,21 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	
 	private Post<RESOURCE> diffPost;
 	
+	/**
+	 * If the user edits his own post, this field is used to identify the post. 
+	 */
 	private String intraHashToUpdate;
+	/**
+	 * If the user wants to copy a post from another user, this field is used.
+	 * NOTE: the name must be "hash" since this was the case in the old system.
+	 * There might exist web pages which use parameter name!
+	 */
+	private String hash;
+	/**
+	 * This is the user who owns the post which should be copied.
+	 */
+	private String user;
+	
 	
 	/**
 	 * When the tag field contains commas, it is only accepted, if this boolean is set to <code>true</code> 
@@ -170,11 +184,54 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 		this.containsComma = containsComma;
 	}
 
+	/**
+	 * The post id is used to uniquely identify a post until it is stored in the
+	 * database. The recommender service needs this to assign recommenders to 
+	 * posting processes.
+	 *  
+	 * @param postID
+	 */
 	public void setPostID(int postID) {
 		this.postID = postID;
 	}
 
+	/**
+	 * @see #setPostID(int)
+	 * @return
+	 */
 	public int getPostID() {
 		return postID;
+	}
+
+	/**
+	 * @return The intra hash of the post which should be copied. Must be used 
+	 * together with the name of the user.
+	 */
+	public String getHash() {
+		return this.hash;
+	}
+
+	/**
+	 * Sets the intra hash of the post which should be copied. Must be used 
+	 * together with the name of the user.
+	 * 
+	 * @param hash
+	 */
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+
+	/**
+	 * @return The name of the user whose post should be copied.
+	 */
+	public String getUser() {
+		return this.user;
+	}
+
+	/** 
+	 * @param user The name of the user whose post should be copied.
+	 */
+	public void setUser(String user) {
+		this.user = user;
 	}
 }

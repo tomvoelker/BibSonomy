@@ -150,6 +150,18 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		 */
 
 		
+		/*
+		 * handle copying of a post using intra hash + user name
+		 */
+		if (ValidationUtils.present(command.getHash()) && ValidationUtils.present(command.getUser())) {
+			/*
+			 * hash + user given: user wants to copy a post
+             * FIXME: really ensure, that the tag field is not filled
+             *        (otherwise the post is automatically saved ...)
+			 */
+			command.setPost((Post<RESOURCE>) logic.getPostDetails(command.getHash(), command.getUser()));
+		}
+
 		final User loginUser = context.getLoginUser();
 		final Post<RESOURCE> post = command.getPost();
 
@@ -289,18 +301,19 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		 */
 		org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
 		/*
-		 * check, if the URL has changed
+		 * check, if the post has changed
 		 */
 		post.getResource().recalculateHashes();
 		if (!intraHashToUpdate.equals(post.getResource().getIntraHash())) {
 			/*
-			 * URL has changed -> check, if new URL already bookmarked
+			 * post has changed -> check, if new post has already been bookmarked
 			 */
 			final Post<RESOURCE> dbPost = (Post<RESOURCE>) logic.getPostDetails(post.getResource().getIntraHash(), loginUserName);
 			if (dbPost != null) {
 				log.debug("user already owns this post ... handling update");
 				/*
 				 * post exists -> warn user
+				 * FIXME: bookmark-specific!
 				 */
 				errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
 			}
