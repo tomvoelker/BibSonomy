@@ -785,10 +785,12 @@
 		<to last="true">/postBookmark</to>
 	</rule>
 	<rule>
-		<name>/ShowBibtexEntry</name>
-		<from>^/ShowBibtexEntry$</from>
+		<name>/BibtexHandler</name>
+		<condition type="method">GET</condition>
+		<from>^/BibtexHandler$</from>
 		<to last="true">/postPublication</to>
 	</rule>
+	
 
 
 </urlrewrite>
