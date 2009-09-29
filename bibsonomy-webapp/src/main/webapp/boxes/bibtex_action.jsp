@@ -18,7 +18,7 @@
     <c:choose>
       <c:when test="${user.name ne resource.user}">
         <%-- different users -- COPY --%>
-        <c:url var="copy_url" value="${projectHome}ShowBibtexEntry">
+        <c:url var="copy_url" value="${projectHome}postPublication">
 	      <c:param name="hash" value="${resource.hash}"/>
 		  <c:param name="user" value="${resource.user}"/>
 		  <c:param name="copytag" value="${resource.tagString}"/>
@@ -30,10 +30,10 @@
         <%-- (FAST TAG) EDIT --%>
         <span><c:choose>
           <c:when test="${not empty noedittags}">
-            | <a href="/ShowBibtexEntry?hash=${resource.hash}" title="edit this post">edit</a>
+            | <a href="/postPublication?intraHashToUpdate=${resource.hash}" title="edit this post">edit</a>
           </c:when>
           <c:otherwise>
-            | <a onclick="editTags(this,'${ckey}');return false;" tags='<c:out value="${resource.fullTagString}"/>' hashsum="${resource.hash}" href="/ShowBibtexEntry?hash=${resource.hash}" title="edit this entry">edit</a>
+            | <a onclick="editTags(this,'${ckey}');return false;" tags='<c:out value="${resource.fullTagString}"/>' hashsum="${resource.hash}" href="/postPublication?intraHashToUpdate=${resource.hash}" title="edit this entry">edit</a>
           </c:otherwise>
         </c:choose></span>
         <%-- DELETE --%>          

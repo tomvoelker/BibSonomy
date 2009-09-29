@@ -1654,13 +1654,14 @@ function editTags(obj, ckey) {
     var parent = obj.parentNode;
     var type = "bookmark";
 
-    if (link.match(/hash/))	{
+    if (link.search(/^\/postPublication/) != -1)	{
     	type = "bibtex";
     	targetChild = 2;
     	parent.removeChild(parent.childNodes[targetChild]);
     }
 
 	// remove the other childnodes
+	// FIXME: this is a bad heuristic!
 	parent.removeChild(parent.childNodes[targetChild]);
 	
 	// creates Form Element

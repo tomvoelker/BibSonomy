@@ -49,7 +49,7 @@
 		<c:choose>
 			<c:when test="${loginUserName ne post.user.name}">
 				<!-- different users - COPY -->
-				<c:url var="copy_url" value="${projectHome}ShowBibtexEntry" context="${projectContext}">
+				<c:url var="copy_url" value="${projectHome}postPublication" context="${projectContext}">
 					<c:param name="hash" value="${post.resource.intraHash}" />
 					<c:param name="user" value="${post.user.name}" />
 					<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
@@ -65,7 +65,7 @@
 				<c:choose>
 					<c:when test="${noedittags}">
 						<c:set var="editTitle"><fmt:message key="bibtex.actions.edit.title"/></c:set>
-             			<a href="/ShowBibtexEntry?hash=${post.resource.intraHash}" title="${editTitle}">
+             			<a href="/postPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
 							<fmt:message key="bibtex.actions.edit"/>
 						</a>
 					</c:when>
@@ -73,7 +73,7 @@
 						<c:set var="editTitle"><fmt:message key="bibtex.actions.edit.title"/></c:set>
              			<a onclick="editTags(this,'${ckey}');return false;"
 							tags="${fn:escapeXml(mtl:toTagString(post.tags))}"
-							href="/ShowBibtexEntry?hash=${post.resource.intraHash}"
+							href="/postPublication?intraHashToUpdate=${post.resource.intraHash}"
 							name="${post.resource.intraHash}"
 							title="${editTagsTitle}">
 							<fmt:message key="bibtex.actions.edit"/>
