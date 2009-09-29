@@ -154,10 +154,6 @@
                 });
                 $(".dissError:empty").hide("1");
 
-
-                // try to get title from url
-                checkUrlForTitle();
-          
                 // tagRecoOptions defined in post*.js
                 $('#postForm').ajaxSubmit(tagRecoOptions); 
                           

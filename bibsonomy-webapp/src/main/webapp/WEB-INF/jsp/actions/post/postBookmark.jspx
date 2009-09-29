@@ -95,7 +95,8 @@
               }
               
               scraping();
-
+              // try to get title from url
+              checkUrlForTitle();
               ]]> 
              //</mtl:cdata>
           </script>
