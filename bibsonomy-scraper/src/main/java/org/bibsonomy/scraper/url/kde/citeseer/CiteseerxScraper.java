@@ -84,9 +84,7 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 				final Matcher abstractMatcher = abstractPattern.matcher(page);
 				if (abstractMatcher.find()) {
 					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "abstract", abstractMatcher.group(1));
-				} else {
-					System.out.println("no match");
-				}
+				} 
 				
 				// append url
 				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());

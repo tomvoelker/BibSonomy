@@ -55,7 +55,7 @@ import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.dlib.DLibScraper;
 import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
 import org.bibsonomy.scraper.url.kde.eric.EricScraper;
-import org.bibsonomy.scraper.url.kde.googlesonomy.GoogleSonomyScraper;
+import org.bibsonomy.scraper.url.kde.googlesonomy.GoogleScholarScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEXploreScraper;
 import org.bibsonomy.scraper.url.kde.informaworld.InformaWorldScraper;
@@ -177,7 +177,7 @@ public class UrlCompositeScraper extends CompositeScraper implements UrlScraper 
 		addScraper(new AmsScraper());
 		addScraper(new BibliographyScraper());
 		addScraper(new WormbaseScraper());
-		addScraper(new GoogleSonomyScraper());
+		addScraper(new GoogleScholarScraper());
 		addScraper(new DLibScraper());
 		addScraper(new ScientificcommonsScraper());
 		addScraper(new AGUScraper());

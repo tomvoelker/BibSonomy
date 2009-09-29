@@ -30,11 +30,13 @@ import org.w3c.dom.NodeList;
  */
 public class ACMBasicScraper extends AbstractUrlScraper {
 	
+	private static final String SITE_NAME = "ACM Digital Library";
+	private static final String SITE_URL  = "http://portal.acm.org/";
+	private static final String info      = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
+	
 	private Log log = LogFactory.getLog(ACMBasicScraper.class);
 	
-	private static final String info = "ACM Scraper: This scraper parses a publication page from the " + href("http://portal.acm.org/portal.cfm", "ACM Digital Library");
 
-	private static final String ACM_HOST_NAME        = "http://portal.acm.org/";
 	private static final String BIBTEX_STRING_ON_ACM = "BibTeX";
 
 	private static final String BROKEN_END = "},\n }";
@@ -62,7 +64,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			 * author = {The Author}, title = {This is the title}...}</pre>
 			 */
 			for (final String path: pathsToScrape) {
-				final Document doc = XmlUtils.getDOM(new URL(ACM_HOST_NAME + path));
+				final Document doc = XmlUtils.getDOM(new URL(SITE_URL + path));
 
 				final NodeList pres = doc.getElementsByTagName("pre");
 				for (int i = 0; i < pres.getLength(); i++) {
@@ -316,13 +318,12 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 
 
 	public String getSupportedSiteName() {
-		return "ACM";
+		return SITE_NAME;
 	}
 
 
 	public String getSupportedSiteURL() {
-		// TODO Auto-generated method stub
-		return ACM_HOST_NAME;
+		return SITE_URL;
 	}
 
 }
