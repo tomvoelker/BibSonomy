@@ -46,7 +46,9 @@ import org.bibsonomy.util.WebUtils;
  */
 public class IOPScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "IOPScraper: Scraper for electronic journals from " + href("http://www.iop.org/EJ", "IOP");
+	private static final String SITE_NAME = "IOP";
+
+	private static final String INFO = "Scraper for electronic journals from " + href("http://www.iop.org/EJ", SITE_NAME);
 
 	/*
 	 * URL parts
@@ -55,7 +57,7 @@ public class IOPScraper extends AbstractUrlScraper {
 
 	private static final String IOP_URL_PATH_START = "/EJ";
 
-	private static final String IOP_EJ_URL_BASE = "http://www.iop.org";
+	private static final String IOP_EJ_URL_BASE = "http://www.iop.org/";
 
 	/*
 	 * needed regular expressions to extract download citation link
@@ -150,7 +152,7 @@ public class IOPScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 	public String getSupportedSiteName() {
-		return "IOP";
+		return SITE_NAME;
 	}
 	public String getSupportedSiteURL() {
 		return IOP_EJ_URL_BASE;
