@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.command.actions;
 
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.scraper.ScrapingContext;
 
 /**
  * FIXME: check the methods here
@@ -22,9 +23,10 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 	private String url;
 	
 	/**
-	 * the scraped bibtex
+	 * The metadata from scraping
 	 */
-	private String scrapedBibTex;
+	private ScrapingContext scrapingContext;
+	
 	
 	/**
 	 * @return the url
@@ -74,19 +76,22 @@ public class EditPublicationCommand extends EditPostCommand<BibTex> {
 		return this.selection;
 	}
 
-
 	/**
-	 * @param scrapedBibTex the scrapedBibTex to set
+	 * @return The scraping context which describes where this bookmark is 
+	 * coming from.
 	 */
-	public void setScrapedBibTex(String scrapedBibTex) {
-		this.scrapedBibTex = scrapedBibTex;
+	public ScrapingContext getScrapingContext() {
+		return this.scrapingContext;
 	}
 
-
 	/**
-	 * @return the scrapedBibTex
+	 * The scraping context allows us to show the user meta information about
+	 * the scraping process.
+	 * 
+	 * @param scrapingContext
 	 */
-	public String getScrapedBibTex() {
-		return scrapedBibTex;
+	public void setScrapingContext(ScrapingContext scrapingContext) {
+		this.scrapingContext = scrapingContext;
 	}
 }
+

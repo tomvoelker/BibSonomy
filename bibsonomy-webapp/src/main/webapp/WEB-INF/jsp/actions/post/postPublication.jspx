@@ -191,8 +191,24 @@
                    <form:label cssClass="fsLabel" path="post.resource.note" ><fmt:message key="post.resource.note"/></form:label>
                    <form:textarea cssClass="fsInput" path="post.resource.note" tabindex="35" rows="3" onkeyup="sz(this);" />
                    <div class="dissError"><form:errors path="post.resource.note" /></div>
-
-               
+       
+          </fieldset>
+          
+          
+          <fieldset class="fsInner">
+                <legend><fmt:message key="post.resource.fields.meta"/></legend>
+                <c:if test="${not empty command.scrapingContext}">
+                  <dl>
+                    <dt>url</dt>
+                      <dd><a href="${fn:escapeXml(command.scrapingContext.url)}"><c:out value="${command.scrapingContext.url}"/></a></dd>
+                    <dt>selection</dt>
+                      <dd><c:out value="${command.scrapingContext.selectedText}"/></dd>
+                    <dt>scraper</dt>
+                      <dd><a href="/scraperinfo#${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</dd>
+                    <dt>result</dt>
+                      <dd><pre style="max-width: 600px; overflow: scroll;"><c:out value="${command.scrapingContext.bibtexResult}"/></pre></dd>
+                  </dl>
+                </c:if>
           </fieldset>
        </jsp:attribute>
 

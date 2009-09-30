@@ -100,6 +100,10 @@ public class PostPublicationController extends PostPostController<BibTex> {
 					final ScrapingContext scrapingContext = this.scrapeBibtex(url, selection);
 					if (ValidationUtils.present(scrapingContext)) {
 						/*
+						 * store scraping context to show user meta information
+						 */
+						publicationCommand.setScrapingContext(scrapingContext);
+						/*
 						 * parse bibtex
 						 */
 						final String scrapedBibtex = scrapingContext.getBibtexResult();
@@ -156,16 +160,10 @@ public class PostPublicationController extends PostPostController<BibTex> {
 								// exception while parsing bibtex 
 								logger.fatal("error while paring bibtex \"" + scrapedBibtex + "\"", ex);
 								this.getErrors().reject("error.parse.bibtex.failed", new Object[]{scrapedBibtex}, "Error parsing BibTeX: {0}");
-
-								publicationCommand.setScrapedBibTex(scrapedBibtex);
-
 							} catch (ParseException ex) {
 								// exception while parsing bibtex; inform user and show him the scraped bibtex
 								logger.fatal("error while paring bibtex \"" + scrapedBibtex + "\"", ex);
 								this.getErrors().reject("error.parse.bibtex.failed", new Object[]{scrapedBibtex}, "Error parsing BibTeX: {0}");
-
-								publicationCommand.setScrapedBibTex(scrapedBibtex);
-
 							}
 						}
 					}
