@@ -1,59 +1,28 @@
-/**
- * Generate an empty lucene index
- */
 package org.bibsonomy.batch.searchlucene;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
-import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.bibsonomy.batch.searchlucene.database.LuceneLogicImpl;
 
 
 /**
+ * Generates empty index files for lucene. The path of the index files is configured 
+ * in 'lucene.properties'
+ *  
  * @author sst
- *
+ * @author fei
  */
-
-
 public class GenerateEmptyLuceneIndex {
 
-	public static void main(String[] args) throws CorruptIndexException, LockObtainFailedException, IOException
-	  
+	public static void main(String[] args) throws CorruptIndexException, LockObtainFailedException, IOException, ClassNotFoundException, SQLException
 	{
-
-		// ADJUST THIS!
-		// Lucene index path
-		// any existing index in this path would be deleted!
-		// if path does not exist, it would be created
-		String luceneBasePath = "/home/abc/def/bibsonomy/";
-		final String luceneBookmarksPath = luceneBasePath+"lucene_bookmarks/"; 
-		final String lucenePublicationsPath = luceneBasePath+"lucene_publications/"; 
-
-		
-
-		// Use default analyzer
-		SimpleAnalyzer analyzer_bm = new SimpleAnalyzer();
-		SimpleAnalyzer analyzer_pub = new SimpleAnalyzer();
-
-
-//		Bookmark
-		System.out.println("generate empty lucene index in "+luceneBookmarksPath );
-		IndexWriter writer_bm = new IndexWriter(luceneBookmarksPath, analyzer_bm,true); // true überschreibt aktuellen index
-		writer_bm.close();
-
-		
-//		BibTex
-		IndexWriter writer_pub = new IndexWriter(lucenePublicationsPath, analyzer_pub,true); // true überschreibt aktuellen index
-		writer_pub.close();
-		System.out.println("generate empty lucene index in "+lucenePublicationsPath );
-
-		
-		System.out.println("done.");
-
+		GenerateLuceneIndex indexer = new GenerateLuceneIndex();
+		indexer.setLogic(LuceneLogicImpl.getInstance());
+		indexer.createEmptyIndex();
+		indexer.shutdown();
 	}
-
-
-
+	
 }

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+ "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Lucene">
+	<!--+ 
+		| Result mappings.
+	 	+-->
+    <resultMap id="Lucene.groupIDs" class="groupParam">
+        <result property="groupID"   column="group" javaType="integer"/>
+        <result property="groupName" column="group_name" javaType="string"/>
+    </resultMap>
+
+    <resultMap id="Lucene.tasEntry" class="tasParam">
+        <result property="contentID" column="content_id" javaType="integer"/>
+        <result property="tagName"   column="tag_name"   javaType="string"/>
+    </resultMap>
+    
+    <resultMap id="Lucene.groupedTasEntry" class="tasParam">
+        <result property="contentID" column="content_id" javaType="integer"/>
+        <result property="tagName"   column="tags"   javaType="string"/>
+    </resultMap>
+
+    <resultMap id="Lucene.groupTasEntry" class="groupTasParam">
+        <result property="contentID" column="content_id" javaType="integer"/>
+        <result property="groupID"     column="group"   javaType="integer"/>
+    </resultMap>
+    
+	<!--+ 
+		| Queries.
+	 	+-->
+	 <!-- get number of tag assignments -->
+	<select id="getTasCount" resultClass="integer">
+		SELECT COUNT(*)
+		FROM tas
+	</select>    
+	
+	<!-- get group ids with corresponding group names --> 
+	<select id="getGroupIDs" resultMap="groupIDs">
+		SELECT `group`, group_name
+		FROM groupids
+	</select>    
+	
+	<!-- get list of tag assignments -->
+	<select id="getTasEntries" parameterClass="listParam" resultMap="tasEntry">
+		SELECT content_id, tag_name
+		FROM tas
+		LIMIT #offset#,#size#
+	</select>
+	
+	<!-- get postwise concatenated list of tag assignments -->
+	<select id="getGroupedTasEntries" parameterClass="listParam" resultMap="groupedTasEntry">
+		SELECT content_id, GROUP_CONCAT(tag_name SEPARATOR ' ') AS tags 
+		FROM tas 
+		GROUP BY content_id 
+		LIMIT #offset#,#size#
+	</select>
+	
+	<!-- get list of  content id/group id pairs -->
+	<select id="getGroupTasEntries" parameterClass="listParam" resultMap="groupTasEntry">
+		SELECT DISTINCT content_id, `group` 
+		FROM grouptas
+		LIMIT #offset#,#size#
+	</select>
+	
+	       
+</sqlMap>
