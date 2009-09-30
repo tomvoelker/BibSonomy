@@ -60,7 +60,7 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 		/*
 		 * key
 		 */
-		if (!present(bibtex.getBibtexKey()) || containsWhiteSpace(bibtex.getEntrytype())) {
+		if (!present(bibtex.getBibtexKey()) || containsWhiteSpace(bibtex.getBibtexKey())) {
 			errors.rejectValue("post.resource.bibtexKey", "error.field.valid.bibtexKey");
 		}
 		/*
@@ -72,29 +72,22 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 		/*
 		 * author/editor
 		 */
-		if (!present(bibtex.getAuthor()) && ! present(bibtex.getEditor())) {
+		if (!present(bibtex.getAuthor()) && !present(bibtex.getEditor())) {
 			errors.rejectValue("post.resource.author", "error.field.valid.authorOrEditor");
 			errors.rejectValue("post.resource.editor", "error.field.valid.authorOrEditor");
 		}
 		
-		/*
-		 * get bibtex as string; called here to parse bibtex misc field; side effect of toBibtexString
-		 */
-		final String bibTexAsString = BibTexUtils.toBibtexString(bibtex);
 		
 		/*
 		 * test misc field using the BibTeXParser
 		 */
 		final String misc = bibtex.getMisc();
 		if (present(misc)) {
-			// build a bibtex string only with attributes of the misc field and parse it
-			final StringBuffer miscBuffer = new StringBuffer();
-			
-			miscBuffer.append("@misc{id,\n");
-			miscBuffer.append(misc);
-			miscBuffer.append("\n}");
-			
-			if (!this.parse(miscBuffer.toString())) {
+			/*
+			 * build a bibtex string only with attributes of the misc field and 
+			 * parse it
+			 */
+			if (!this.parse("@misc{id,\n" + misc + "\n}")) {
 				errors.rejectValue("post.resource.misc", "error.field.valid.misc");
 				return; // skip parsing entire bibtex => parsing fails
 			}
@@ -103,8 +96,14 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 		/*
 		 * test validity using the BibTeXParser
 		 */
+		final String bibTexAsString = BibTexUtils.toBibtexString(bibtex);
+		
 		if (!this.parse(bibTexAsString)) {
-			// parsing failed
+			/*
+			 * parsing failed
+			 * 
+			 * FIXME: give the error message to the user (!?)
+			 */
 			errors.reject("error.parse.bibtex.failed");
 		}
 	}
@@ -117,7 +116,7 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 	 * @return	if parsing was successful
 	 */
 	private boolean parse(final String bibTexAsString) {
-		if (bibTexAsString == null) {
+		if (!present(bibTexAsString)) {
 			return true;
 		}
 		
