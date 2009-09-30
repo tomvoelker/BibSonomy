@@ -21,7 +21,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.scraper.url.kde.googlesonomy;
+package org.bibsonomy.scraper.url.kde.googlescholar;
 
 import static org.junit.Assert.assertTrue;
 
@@ -34,7 +34,7 @@ import org.junit.Test;
  * @author tst
  * @version $Id$
  */
-public class GoogleSonomyScraperTest {
+public class GoogleScholarScraperTest {
 
 	/**
 	 * starts URL test with id url_138

@@ -1,4 +1,4 @@
-package org.bibsonomy.scraper.url.kde.googlesonomy;
+package org.bibsonomy.scraper.url.kde.googlescholar;
 
 import java.io.IOException;
 import java.util.Collections;

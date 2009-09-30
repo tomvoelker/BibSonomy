@@ -779,10 +779,10 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_138">
-		<TestDescription>Url test for GoogleSonomyScraper (Firefox plugin support)</TestDescription>
+		<TestDescription>Url test for GoogleScholarScraper (Firefox plugin support)</TestDescription>
 		<URL>http://scholar.google.de/scholar.bib?hl=de&amp;lr=&amp;output=search&amp;q=info:uIi8lf4TwdUJ:scholar.google.com/&amp;output=citation&amp;oe=ASCII&amp;oi=citation</URL>
-		<BibFile>GoogleSonomyScraperUnitURLTest1.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.googlesonomy.GoogleSonomyScraper</Scraper>
+		<BibFile>GoogleScholarScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_139">
 		<TestDescription>Test for scientificcommons.org</TestDescription>
