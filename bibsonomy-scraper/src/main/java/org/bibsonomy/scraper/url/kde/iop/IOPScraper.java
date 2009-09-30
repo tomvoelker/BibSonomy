@@ -46,18 +46,20 @@ import org.bibsonomy.util.WebUtils;
  */
 public class IOPScraper extends AbstractUrlScraper {
 
-	private static final String SITE_NAME = "IOP";
-
-	private static final String INFO = "Scraper for electronic journals from " + href("http://www.iop.org/EJ", SITE_NAME);
-
 	/*
 	 * URL parts
 	 */
-	private static final String IOP_HOST = "iop.org";
-
+	private static final String IOP_HOST           = "iop.org";
 	private static final String IOP_URL_PATH_START = "/EJ";
+	private static final String IOP_EJ_URL_BASE    = "http://www.iop.org";
 
-	private static final String IOP_EJ_URL_BASE = "http://www.iop.org/";
+	private static final String SITE_NAME = "IOP";
+	
+	private static final String SITE_URL = IOP_EJ_URL_BASE + IOP_URL_PATH_START;
+
+	private static final String INFO = "Scraper for electronic journals from " + href(SITE_URL, SITE_NAME);
+
+
 
 	/*
 	 * needed regular expressions to extract download citation link
@@ -114,8 +116,8 @@ public class IOPScraper extends AbstractUrlScraper {
 					if(hrefMatcher.find()){
 						String href = hrefMatcher.group();
 
-						// cut of the leading herf=" and the ending "
-						href = href.substring(6, href.length()-1);
+						// cut of the leading href="/ and the ending "
+						href = href.substring(6, href.length() - 1);
 
 						// build url to citation of this article
 						citationLink = IOP_EJ_URL_BASE + href;
@@ -155,7 +157,7 @@ public class IOPScraper extends AbstractUrlScraper {
 		return SITE_NAME;
 	}
 	public String getSupportedSiteURL() {
-		return IOP_EJ_URL_BASE;
+		return SITE_URL;
 	}
 
 }
