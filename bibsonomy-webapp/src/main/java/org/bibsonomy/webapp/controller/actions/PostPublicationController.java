@@ -51,6 +51,7 @@ public class PostPublicationController extends PostPostController<BibTex> {
 		 * FIXME: this isn't necessary the right URL - it might be the PDF!
 		 * Thus, we need to store the original URL.
 		 * Or maybe it's better to redirect to the /bibtex/HASH/USER page?
+		 * 
 		 */
 		return post.getResource().getUrl();
 	}
