@@ -197,17 +197,21 @@
           <c:if test="${not empty command.scrapingContext}">
           
              <fieldset class="fsInner">
-                <legend><fmt:message key="post.resource.fields.meta"/></legend>
-                  <dl>
-                    <dt><fmt:message key="post.resource.fields.meta.url"/></dt>
-                      <dd><a href="${fn:escapeXml(command.scrapingContext.url)}"><c:out value="${command.scrapingContext.url}"/></a></dd>
-                    <dt><fmt:message key="post.resource.fields.meta.selectedText"/></dt>
-                      <dd><c:out value="${command.scrapingContext.selectedText}"/></dd>
-                    <dt><fmt:message key="post.resource.fields.meta.scraper"/></dt>
-                      <dd><a href="/scraperinfo#${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</dd>
-                    <dt><fmt:message key="post.resource.fields.meta.bibtexResult"/></dt>
-                      <dd><pre style="max-width: 600px; overflow: scroll;"><c:out value="${command.scrapingContext.bibtexResult}"/></pre></dd>
-                  </dl>
+                <legend><fmt:message key="post.resource.fields.scraper"/></legend>
+
+                  <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.url"/></span>
+                  <span class="fsInput"><a href="${fn:escapeXml(command.scrapingContext.url)}"><c:out value="${command.scrapingContext.url}"/></a></span>
+
+                  <c:if test="${not empty command.scrapingContext.selectedText}">
+                      <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.selectedText"/></span>
+                      <span class="fsInput"><c:out value="${command.scrapingContext.selectedText}"/></span>
+                  </c:if>
+
+                  <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.scraper"/></span>
+                  <span class="fsInput"><a href="/scraperinfo#${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</span>
+
+                  <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.result"/></span>
+                  <pre class="fsInput" style="max-width: 800px; overflow: scroll;"><c:out value="${command.scrapingContext.bibtexResult}"/></pre>
              </fieldset>
           
          </c:if>
