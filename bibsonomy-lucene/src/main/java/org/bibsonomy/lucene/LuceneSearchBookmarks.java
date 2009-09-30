@@ -70,6 +70,10 @@ public class LuceneSearchBookmarks implements LuceneSearch<Bookmark> {
 				// numbers will be deleted by SimpleAnalyser but group has only
 				// numbers, therefore use SimpleKeywordAnalyzer
 				this.analyzer.addAnalyzer("group", new SimpleKeywordAnalyzer());
+				// usernames also might contain numbers - 
+				// as the user_name field is not analyzed (which makes pretty sense)
+				// the user_name shouldn't be normalized as well
+				this.analyzer.addAnalyzer("user_name", new SimpleKeywordAnalyzer());
 			}
 
 			// close searcher if opened before

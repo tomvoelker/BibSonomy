@@ -37,7 +37,6 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
     </dependency>
 	<dependency>
 		<groupId>org.apache.ibatis</groupId>
@@ -87,6 +86,29 @@
           <artifactId>dbcp</artifactId> 
           <version>6.0.18</version>
       </dependency> 
+		<dependency>
+			<groupId>org.mockejb</groupId>
+			<artifactId>mockejb</artifactId>
+			<version>0.6-beta2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-batch</artifactId>
+			<scope>test</scope>
+			<version>2.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database</artifactId>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
       
 		<dependency>
 			<groupId>mysql</groupId>
