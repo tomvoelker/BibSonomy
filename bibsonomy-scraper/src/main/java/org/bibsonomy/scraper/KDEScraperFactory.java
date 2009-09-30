@@ -43,8 +43,8 @@ public class KDEScraperFactory {
 	/**
 	 * @return The scrapers produced by this factory.
 	 */
-	public CompositeScraper getScraper () {
-		final CompositeScraper scraper = getScraperWithoutIE();
+	public CompositeScraper<Scraper> getScraper () {
+		final CompositeScraper<Scraper> scraper = getScraperWithoutIE();
 
 		/*
 		 * If nothing works: do information extraction using MALLET.
@@ -57,8 +57,8 @@ public class KDEScraperFactory {
 	 *  @return All scrapers produced by this factory without the {@link IEScraper}. 
 	 *  
 	 */
-	public CompositeScraper getScraperWithoutIE() {
-		final CompositeScraper scraper = new CompositeScraper();
+	public CompositeScraper<Scraper> getScraperWithoutIE() {
+		final CompositeScraper<Scraper> scraper = new CompositeScraper<Scraper>();
 
 		/*
 		 * first scraper: the DOIScraper, because it replaces dx.doi.org URLs 
@@ -67,7 +67,7 @@ public class KDEScraperFactory {
 		 */
 		scraper.addScraper(new DOIScraper());
 		
-		scraper.addScraper(new UrlCompositeScraper());
+		scraper.addScraper(new KDEUrlCompositeScraper());
 		
 		// this scraper always crawls the content and thus accepts ALL URLs!
 		scraper.addScraper(new UnAPIScraper());
