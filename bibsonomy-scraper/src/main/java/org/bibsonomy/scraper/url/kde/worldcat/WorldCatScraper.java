@@ -48,7 +48,9 @@ import org.bibsonomy.util.id.ISBNUtils;
  */
 public class WorldCatScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "Worldcat Scraper: Scraper for publications from " + href("http://www.worldcat.org", "worldcat") + ". Author: KDE";
+	private static final String SITE_NAME = "Worldcat";
+	private static final String SITE_URL = "http://www.worldcat.org/";
+	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME) + ".";
 
 	private static final String WORLDCAT_URL = "http://www.worldcat.org/search?qt=worldcat_org_all&q=";
 
@@ -140,11 +142,11 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "Worldcat";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.worldcat.org";
+		return SITE_URL;
 	}
 
 }

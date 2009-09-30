@@ -44,7 +44,9 @@ import org.bibsonomy.util.WebUtils;
  */
 public class ProjectmuseScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "MUSE Scraper: Scraper for citations from " + href("http://muse.jhu.edu/", "Project MUSE");
+	private static final String SITE_NAME = "Project MUSE";
+	private static final String SITE_URL = "http://muse.jhu.edu/";
+	private static final String INFO = "Scraper for citations from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String HOST = "muse.jhu.edu";
 
@@ -233,10 +235,10 @@ public class ProjectmuseScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "MUSE";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://muse.jhu.edu/";
+		return SITE_URL;
 	}
 }

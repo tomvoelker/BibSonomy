@@ -42,7 +42,9 @@ import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
  */
 public class SpringerScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "Springer Scraper: Scraper for books from " + href("http://www.springer.com/?SGWID=1-102-0-0-0", "Springer");
+	private static final String SITE_NAME = "Springer";
+	private static final String SITE_URL = "http://www.springer.com/";
+	private static final String INFO = "Scraper for books from " + href(SITE_URL, SITE_NAME)+".";
 	
 	/**
 	 * Host
@@ -79,13 +81,11 @@ public class SpringerScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		// TODO Auto-generated method stub
-		return "Springer";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		// TODO Auto-generated method stub
-		return "http://www.springer.com/";
+		return SITE_URL;
 	}
 
 }

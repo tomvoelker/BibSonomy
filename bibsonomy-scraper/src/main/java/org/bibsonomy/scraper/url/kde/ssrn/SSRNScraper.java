@@ -41,9 +41,13 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class SSRNScraper extends AbstractUrlScraper {
 
+	private static final String SITE_URL = "http://ssrn.com/";
+	private static final String SITE_NAME = "SSRN";
+	private static final String INFO = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME) +
+	"and extracts the adequate BibTeX entry.";
+	
 	private static final Log log = LogFactory.getLog(SSRNScraper.class);
 
-	private static final String INFO = "currently not available";
 
 	private static final String HOST = "ssrn.com";
 	
@@ -70,11 +74,11 @@ public class SSRNScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "SSRN";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://ssrn.com/";
+		return SITE_URL;
 	}
 
 }

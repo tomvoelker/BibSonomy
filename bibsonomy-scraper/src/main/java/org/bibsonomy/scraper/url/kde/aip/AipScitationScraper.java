@@ -61,14 +61,12 @@ public class AipScitationScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "AIP Scitation";
 	private static final String SITE_URL = "http://scitation.aip.org/";
-
 	private static final String INFO = "Extracts publications from " + href(SITE_URL, SITE_NAME) + 
 	". Publications can be entered as a selected BibTeX snippet or by posting the page of the reference.";
 
 	private static final Pattern hostPattern = Pattern.compile(".*" + "aip.org");
 	private static final Pattern pathPattern = AbstractUrlScraper.EMPTY_PATTERN;
 
-	private static final String URL_AIP_CITATION_PAGE             = SITE_URL;
 	private static final String URL_AIP_CITATION_BIBTEX_PAGE_PATH = "/getabs/servlet/GetCitation";
 	private static final String URL_AIP_CITATION_BIBTEX_PAGE      = SITE_URL + "getabs/servlet/GetCitation?";
 	private static final String URL_SPIE_AIP_CITATION_BIBTEX_PAGE = "http://spiedl.aip.org/getabs/servlet/GetCitation?";
@@ -155,7 +153,7 @@ public class AipScitationScraper extends AbstractUrlScraper {
 					 * if html content, build new link to bibtex content
 					 */
 				}else if(urlConn.getContentType().startsWith(AIP_CONTENT_TYPE_HTML)){
-					String aipContent2 = WebUtils.getContentAsString(new URL(URL_AIP_CITATION_PAGE + "journals/help_system/getabs/actions/download_citation_form.jsp"), cookie);
+					String aipContent2 = WebUtils.getContentAsString(new URL(SITE_URL + "journals/help_system/getabs/actions/download_citation_form.jsp"), cookie);
 					
 					StringBuffer bibtexLink = getBibtexFromAIP(aipContent2, URL_AIP_CITATION_BIBTEX_PAGE, selectcheck);
 
@@ -424,7 +422,7 @@ public class AipScitationScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteURL() {
-		return URL_AIP_CITATION_PAGE;
+		return SITE_URL;
 	}
 
 }

@@ -44,7 +44,10 @@ import org.bibsonomy.util.WebUtils;
  *
  */
 public class PubMedCentralScraper extends AbstractUrlScraper {
-	private static final String info = "PudMedCentral Scraper: This scraper parses a publication page of citations from " + href("http://www.pubmedcentral.nih.gov/", "PubMedCentral");
+	private static final String SITE_URL = "http://www.pubmedcentral.nih.gov/";
+	private static final String SITE_NAME = "PubMedCentral";
+	private static final String info = "This scraper parses a publication page of citations from " + href(SITE_URL, SITE_NAME)+".";
+	
 	private static final String HOST = "pubmedcentral.nih.gov";
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	
@@ -100,11 +103,11 @@ public class PubMedCentralScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "PudMedCentral";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.pubmedcentral.nih.gov/";
+		return SITE_URL;
 	}
 
 	

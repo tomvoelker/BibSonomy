@@ -23,7 +23,9 @@ import org.bibsonomy.util.WebUtils;
  */ 
 public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "IEEE compüuter society Scraper: Scraper for publications from " + href("http://www2.computer.org/portal/web/guest/home", "IEEE Computer Society");
+	private static final String SITE_NAME = "IEEE Computer Society";
+	private static final String SITE_URL = "http://www2.computer.org/portal/web/guest/home";
+	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME);
 	private static final String HOST_OLD= "csdl2.computer.org";
 	private static final String HOST_NEW = "computer.org";
 
@@ -103,10 +105,10 @@ public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "IEEE Computer Society";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www2.computer.org/portal/web/guest/home";
+		return SITE_URL;
 	}
 }

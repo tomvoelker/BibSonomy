@@ -46,11 +46,13 @@ import org.bibsonomy.util.WebUtils;
  */
 public class AIFBScraper extends AbstractUrlScraper {
 	
-	private static final String info = "AIFB Scraper: This scraper parses institute, research group and people-specific pages from the " +
-									   href("http://www.aifb.uni-karlsruhe.de/", "Institut AIFB Universität Karlsruhe");
+	private static final String SITE_NAME = "Institut AIFB Universität Karlsruhe";
+	private static final String AIFB_HOST_NAME = "http://www.aifb.uni-karlsruhe.de";
+	private static final String SITE_URL = AIFB_HOST_NAME+"/";
+	private static final String info = "This scraper parses institute, research group and people-specific pages from the " +
+									   href("http://www.aifb.uni-karlsruhe.de/", SITE_NAME);
 
 	private static final String AIFB_HOST = "aifb.uni-karlsruhe.de";
-	private static final String AIFB_HOST_NAME = "http://www.aifb.uni-karlsruhe.de";
 	private static final String AIFB_DEPT_PATH = "/Forschungsgruppen/";
 	private static final String AIFB_PERSON_PATH = "/Personen/viewPerson";	
 	private static final String AIFB_PUBL_PATH = "/Publikationen/showPublikation";

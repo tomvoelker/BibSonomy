@@ -49,17 +49,16 @@ public class IOPScraper extends AbstractUrlScraper {
 	/*
 	 * URL parts
 	 */
-	private static final String IOP_HOST           = "iop.org";
+
 	private static final String IOP_URL_PATH_START = "/EJ";
 	private static final String IOP_EJ_URL_BASE    = "http://www.iop.org";
-
 	private static final String SITE_NAME = "IOP";
-	
 	private static final String SITE_URL = IOP_EJ_URL_BASE + IOP_URL_PATH_START;
 
 	private static final String INFO = "Scraper for electronic journals from " + href(SITE_URL, SITE_NAME);
 
-
+	private static final String IOP_HOST           = "iop.org";
+	
 
 	/*
 	 * needed regular expressions to extract download citation link

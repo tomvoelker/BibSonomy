@@ -48,11 +48,14 @@ import org.bibsonomy.util.WebUtils;
  */
 public class LibrarythingScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "LibrarythingScraper: extracts publication from " + href("http://www.librarything.com/work-info", "librarything") + 
+	private static final String SITE_NAME = "librarything";
+	private static final String URL_LIBRARYTHING_PAGE = "http://www.librarything.com";
+	private static final String SITE_URL = URL_LIBRARYTHING_PAGE+"/";
+	private static final String INFO = "Extracts publication from " + href("http://www.librarything.com/work-info", SITE_NAME) + 
 	". If a http://www.librarything.com/work page is selectd, then the scraper trys to download the according work-info page.";
 
 
-	private static final String URL_LIBRARYTHING_PAGE = "http://www.librarything.com";
+	
 
 	private static final String URL_LIBRARYTHING_PAGE_HOST = "librarything.com";
 
@@ -89,7 +92,7 @@ public class LibrarythingScraper extends AbstractUrlScraper {
 	private String title = null;
 	private String year = null;
 	private String misc = null;
-	private String key = "librarything";
+	private String key = SITE_NAME;
 
 	/**
 	 * This Scraper works only with the following URL-prefixes and no selected text.

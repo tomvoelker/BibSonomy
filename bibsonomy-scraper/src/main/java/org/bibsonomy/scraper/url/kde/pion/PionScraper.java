@@ -41,9 +41,13 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class PionScraper extends AbstractUrlScraper {
 
+	private static final String SITE_NAME = "Pion";
+
+	private static final String SITE_URL = "http://pion.co.uk/";
+
 	private static final Log log = LogFactory.getLog(PionScraper.class);
 
-	private static final String INFO = "Pion Scraper: Scraper for publications from " + href("http://pion.co.uk/", "Pion");
+	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String HOST = "pion.co.uk";
 
@@ -68,10 +72,10 @@ public class PionScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "Pion";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://pion.co.uk/";
+		return SITE_URL;
 	}
 }

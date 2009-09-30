@@ -46,9 +46,11 @@ import org.w3c.dom.NodeList;
  *
  */
 public class SpiresScraper extends AbstractUrlScraper{
+	private static final String SITE_NAME = "SLAC National Accelerator Laboratory";
+	private static final String SITE_URL = "http://slac.stanford.edu/";
 	private static final String FORMAT_WWWBRIEFBIBTEX = "FORMAT=WWWBRIEFBIBTEX";
 
-	private static final String info = "Spires Scraper: Gets publications from " + href("slac.stanford.edu", "SLAC National Accelerator Laboratory");
+	private static final String info = "Gets publications from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
 	static {
@@ -107,11 +109,11 @@ public class SpiresScraper extends AbstractUrlScraper{
 	}
 
 	public String getSupportedSiteName() {
-		return "SLAC";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://slac.stanford.edu/";
+		return SITE_URL;
 	}
 
 }

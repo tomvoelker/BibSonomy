@@ -48,7 +48,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  */
 public class ACSScraper extends AbstractUrlScraper {
 
-	private static final String info = "ACS Publication Scraper: This Scraper parses a publication from " + href("http://www.acs.org/", "ACS");
+	private static final String SITE_NAME = "ACS";
+	private static final String SITE_URL = "http://www.acs.org/";
+	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String ACS_HOST_NAME  = "http://pubs.acs.org";
 	private static final String ACS_PATH = "/doi/abs/";

@@ -18,7 +18,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class BibliographyScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "LIIN Scraper: Scrapes BibTeX refrences from " + href("http://liinwww.ira.uka.de/", "LIIN");
+	private static final String SITE_NAME = "LIIN";
+	private static final String SITE_URL = "http://liinwww.ira.uka.de/";
+	private static final String INFO = "Scrapes BibTeX refrences from " + href(SITE_URL, SITE_NAME);
 	
 	private static final String HOST = "liinwww.ira.uka.de";
 	private static final String PATH = "/cgi-bin/bibshow";
@@ -74,11 +76,11 @@ public class BibliographyScraper extends AbstractUrlScraper {
 
 	public String getSupportedSiteName() {
 		// TODO Auto-generated method stub
-		return "LIIN";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
 		// TODO Auto-generated method stub
-		return "http://liinwww.ira.uka.de/";
+		return SITE_URL;
 	}
 }

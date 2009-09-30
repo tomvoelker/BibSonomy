@@ -43,11 +43,14 @@ import org.bibsonomy.util.WebUtils;
  */
 public class EditLibScraper extends AbstractUrlScraper {
 
-	private static final String info = "Ed/ITLib Scraper: This Scraper parses a publication from " + href("http://www.editlib.org", "Ed/ITLib");
+	private static final String SITE_NAME = "Ed/ITLib";
+	private static final String EDITLIB_HOST_NAME  = "http://www.editlib.org";
+	private static final String SITE_URL = EDITLIB_HOST_NAME+"/";
+
+	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String EDITLIB_HOST  = "editlib.org";
 	private static final String EDITLIB_PATH  = "/index.cfm";
-	private static final String EDITLIB_HOST_NAME  = "http://www.editlib.org";
 	private static final String EDITLIB_ABSTRACT_PATH = "/index.cfm?fuseaction=Reader.ViewAbstract&paper_id=";
 	private static final String EDITLIB_BIBTEX_PATH = "/index.cfm?fuseaction=Reader.ChooseCitationFormat&paper_id=";
 	private static final String EDITLIB_BIBTEX_DOWNLOAD_PATH = "/index.cfm/files/citation_{id}.bib?fuseaction=Reader.ExportAbstract&citationformat=BibTex&paper_id=";
@@ -95,12 +98,12 @@ public class EditLibScraper extends AbstractUrlScraper {
 
 	public String getSupportedSiteName() {
 		// TODO Auto-generated method stub
-		return "Ed/ITLib";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
 		// TODO Auto-generated method stub
-		return EDITLIB_HOST_NAME;
+		return SITE_URL;
 	}
 
 }

@@ -45,7 +45,11 @@ import org.bibsonomy.util.WebUtils;
  */
 public class InformaWorldScraper extends AbstractUrlScraper {
 
-	private static final String info = "Informaworld Scraper: This scraper parses a publication from " + href("http://www.informaworld.com/", "informaworld");
+	private static final String SITE_NAME = "Informaworld";
+
+	private static final String SITE_URL = "http://www.informaworld.com/";
+
+	private static final String info = "This scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String INFORMAWORLD_HOST_NAME  = "informaworld.com";
 	private static final String INFORMAWORLD_BIBTEX_DOWNLOAD_PATH = "/smpp/content?file.txt&tab=citation&popup=&group=&expanded=&mode=&maction=&backurl=&citstyle=endnote&showabs=false&format=file&toemail=&subject=&fromname=&fromemail=&content={id}&selecteditems={sid}";
@@ -97,11 +101,11 @@ public class InformaWorldScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "Informaworld";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://informaworld.com/";
+		return SITE_URL;
 	}
 
 }

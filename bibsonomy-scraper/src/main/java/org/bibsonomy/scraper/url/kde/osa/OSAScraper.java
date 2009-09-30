@@ -50,10 +50,14 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  */
 public class OSAScraper extends AbstractUrlScraper {
 
-	private static final String info = "Optical Society of America Scraper: This Scraper parses a publication from the " + href("http://josaa.osa.org/", "Optical Society of America");
+	
+	private static final String SITE_NAME = "Optical Society of America";
+	private static final String OSA_HOST_NAME  = "http://www.opticsinfobase.org";
+	private static final String SITE_URL  = OSA_HOST_NAME+"/";
+	private static final String info = "This Scraper parses a publication from the " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String OSA_HOST  = "opticsinfobase.org";
-	private static final String OSA_HOST_NAME  = "http://www.opticsinfobase.org";
+	
 
 	private static final String OSA_BIBTEX_DOWNLOAD_PATH = "/custom_tags/IB_Download_Citations.cfm";
 
@@ -211,11 +215,11 @@ public class OSAScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "OSA";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return OSA_HOST_NAME;
+		return SITE_URL;
 	}
 
 

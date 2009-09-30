@@ -51,7 +51,11 @@ import org.bibsonomy.util.WebUtils;
  */
 public class NasaAdsScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "NasaAdsScraper: Extracts publications from " + href("http://adsabs.harvard.edu/", "The SAO/NASA Astrophysics Data System") + 
+	private static final String SITE_NAME = "The SAO/NASA Astrophysics Data System";
+
+	private static final String SITE_URL = "http://adsabs.harvard.edu/";
+
+	private static final String INFO = "Extracts publications from " + href(SITE_URL, SITE_NAME) + 
 	". Publications can be entered as a marked bibtex snippet (one or more publications) or by the page of a single reference.";
 
 	/*
@@ -186,11 +190,11 @@ public class NasaAdsScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "SAO/NASA (ADS)";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://adsabs.harvard.edu/";
+		return SITE_URL;
 	}
 
 }

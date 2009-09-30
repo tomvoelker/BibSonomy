@@ -34,7 +34,7 @@ import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
@@ -53,11 +53,13 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @version $Id$
  */
 public class _SSRNScraper implements Scraper {
-
-	private static final String info = "SSRN Scraper: This Scraper parses a publication from http://papers.ssrn.com/ "+
-	"and extracts the adequate BibTeX entry. Author: KDE";
-
+	private static final String SITE_NAME = "SSRN";
 	private static final String SSRN_HOST_NAME  = "http://papers.ssrn.com";
+	private static final String SITE_URL  = SSRN_HOST_NAME+"/";
+	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME) +
+	"and extracts the adequate BibTeX entry.";
+
+	
 	private static final String SSRN_ABSTRACT_PATH = "/sol3/papers.cfm?abstract_id=";
 	private static final String SSRN_BIBTEX_PATH = "/sol3/RefExport.cfm";
 	private static final String SSRN_BIBTEX_PARAMS = "?function=download&format=2&abstract_id=";
@@ -190,5 +192,16 @@ public class _SSRNScraper implements Scraper {
 	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	//added this, because this does not extend AbtractUrlScraper... is this class deprecated? ... see SSRNScraper
+	/** Builds a href to the URL with the given anchor text.
+	 *  
+	 * @param url
+	 * @param text
+	 * @return
+	 */
+	public static String href(final String url, final String text) {
+		return "<a href=\"" + url + "\">" + text + "</a>";
 	}
 }

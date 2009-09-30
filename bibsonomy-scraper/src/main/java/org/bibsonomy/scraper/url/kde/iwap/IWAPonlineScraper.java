@@ -41,7 +41,11 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class IWAPonlineScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "IWAP Scraper: This Scraper supports papers from " + href("http://www.iwaponline.com", "IWA Publishing");
+	private static final String SITE_NAME = "IWA Publishing";
+
+	private static final String SITE_URL = "http://www.iwaponline.com";
+
+	private static final String INFO = "This Scraper supports papers from " + href(SITE_URL, SITE_NAME) +".";
 
 	/*
 	 * host
@@ -224,12 +228,10 @@ public class IWAPonlineScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		// TODO Auto-generated method stub
-		return "IWA";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		// TODO Auto-generated method stub
-		return "http://www.iwaponline.com/";
+		return SITE_URL;
 	}
 }

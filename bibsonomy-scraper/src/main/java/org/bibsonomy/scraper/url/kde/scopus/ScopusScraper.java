@@ -41,10 +41,12 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class ScopusScraper extends AbstractUrlScraper {
 
+	private static final String SITE_NAME = "SCOPUS";
+	private static final String SITE_URL = "http://www.scopus.com/";
+	private static final String INFO = "Scraper for journals from the " + href(SITE_URL, SITE_NAME)+".";
+	
 	private static final Log log = LogFactory.getLog(ScopusScraper.class);
-
-	private static final String INFO = "currently not available";
-
+	
 	private static final String HOST = "scopus.com";
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST + "$"), AbstractUrlScraper.EMPTY_PATTERN));
@@ -79,10 +81,10 @@ public class ScopusScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "SCOPUS";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.scopus.com";
+		return SITE_URL;
 	}
 }

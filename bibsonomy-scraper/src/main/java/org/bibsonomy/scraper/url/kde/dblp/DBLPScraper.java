@@ -20,11 +20,12 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  * @version $Id$
  */
 public class DBLPScraper extends AbstractUrlScraper {
-
-	private static final String info = "DBLP Scraper: This scraper parses a publication page from the " + href("http://dblp.uni-trier.de", "University of Trier Digital Bibliography & Library Project");
+	private static final String SITE_NAME = "University of Trier Digital Bibliography & Library Project";
+	private static final String DBLP_HOST_NAME1  = "http://dblp.uni-trier.de";
+	private static final String SITE_URL  = DBLP_HOST_NAME1+"/";
+	private static final String info = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String DBLP_HOST1  = "dblp.uni-trier.de";
-	private static final String DBLP_HOST_NAME1  = "http://dblp.uni-trier.de";
 	private static final String DBLP_HOST_NAME2  = "http://search.mpi-inf.mpg.de/dblp/";
 	private static final String DBLP_HOST2  = "search.mpi-inf.mpg.de";
 	private static final String DBLP_PATH2  = "/dblp/";
@@ -86,13 +87,11 @@ public class DBLPScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		// TODO Auto-generated method stub
-		return "DBLP";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		// TODO Auto-generated method stub
-		return DBLP_HOST_NAME1;
+		return SITE_URL;
 	}
 }
 

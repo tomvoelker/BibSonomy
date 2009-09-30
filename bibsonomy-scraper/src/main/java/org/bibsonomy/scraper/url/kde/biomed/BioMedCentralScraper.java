@@ -41,10 +41,13 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class BioMedCentralScraper extends AbstractUrlScraper {
 
-	private static final String info = "BioMed Central Scraper: This Scraper parse a publication from " + href("http://www.biomedcentral.com/", "BioMed Central</a>");
+	private static final String SITE_NAME = "BioMed Central";
+	private static final String BIOMEDCENTRAL_HOST_NAME  = "http://www.biomedcentral.com";
+	private static final String SITE_URL = BIOMEDCENTRAL_HOST_NAME+"/";
+
+	private static final String info = "This Scraper parse a publication from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String BIOMEDCENTRAL_HOST  = "biomedcentral.com";
-	private static final String BIOMEDCENTRAL_HOST_NAME  = "http://www.biomedcentral.com";
 	private static final String BIOMEDCENTRAL_BIBTEX_PATH = "citation";
 	private static final String BIOMEDCENTRAL_BIBTEX_PARAMS = "?format=bibtex&include=cit&direct=0&action=submit";
 
@@ -95,11 +98,11 @@ public class BioMedCentralScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "Biomed Central";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return BIOMEDCENTRAL_HOST_NAME;
+		return SITE_URL;
 	}
 
 }

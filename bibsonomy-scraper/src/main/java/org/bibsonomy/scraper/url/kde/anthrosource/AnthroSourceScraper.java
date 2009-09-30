@@ -40,9 +40,13 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class AnthroSourceScraper extends AbstractUrlScraper {
 	
+	private static final String SITE_NAME = "AnthroSource";
+
+	private static final String SITE_URL = "http://www.anthrosource.net/";
+
 	private Log log = LogFactory.getLog(AnthroSourceScraper.class);
 
-	private static final String info = "AnthroSource Scraper: This Scraper parses a publication from " + href("http://www.anthrosource.net/", "anthrosource");
+	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String AS_HOST  = "anthrosource.net";
 	private static final String AS_ABSTRACT_PATH = "/doi/abs/";
@@ -71,11 +75,11 @@ public class AnthroSourceScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "AnthroSource";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.anthrosource.net";
+		return SITE_URL;
 	}
 
 }

@@ -23,15 +23,15 @@ import org.bibsonomy.util.WebUtils;
  */
 public class ProlaScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "ProlaScraper: For selected BibTeX snippets and articles from " + href("http://prola.aps.org/" , "PROLA");
+	private static final String SITE_NAME = "PROLA";
+	private static final String PROLA_APS_URL_BASE = "http://prola.aps.org";
+	private static final String SITE_URL = PROLA_APS_URL_BASE+"/";
+	private static final String INFO = "For selected BibTeX snippets and articles from " + href(SITE_URL , SITE_NAME)+".";
 
 	/*
 	 * needed URLs and components
 	 */
 	private static final String PROLA_APS_HOST = "prola.aps.org";
-
-	private static final String PROLA_APS_URL_BASE = "http://prola.aps.org";
-
 	private static final String PROLA_APS_BIBTEX_PARAM = "type=bibtex";
 
 	/*
@@ -184,10 +184,10 @@ public class ProlaScraper extends AbstractUrlScraper {
 
 	public String getSupportedSiteName() {
 		// TODO Auto-generated method stub
-		return "Prola";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return PROLA_APS_URL_BASE;
+		return SITE_URL;
 	}
 }

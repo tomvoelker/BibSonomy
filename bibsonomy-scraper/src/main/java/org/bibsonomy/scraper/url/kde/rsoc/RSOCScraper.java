@@ -44,7 +44,11 @@ import org.bibsonomy.util.WebUtils;
  */
 public class RSOCScraper extends AbstractUrlScraper {
 
-	private static final String info = "RSOC Scraper: This Scraper parses a journal from " + href("http://royalsocietypublishing.org/", "Royal Society Publishing");
+	private static final String SITE_NAME = "Royal Society Publishing";
+
+	private static final String SITE_URL = "http://royalsocietypublishing.org/";
+
+	private static final String info = "This Scraper parses a journal from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final Pattern downloadLinkPattern = Pattern.compile("<a href=\\\"([^\\\"]*)\\\">Download to citation manager</a>");
 
@@ -97,11 +101,11 @@ public class RSOCScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "RSOC";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://royalsocietypublishing.org/";
+		return SITE_URL;
 	}
 
 }

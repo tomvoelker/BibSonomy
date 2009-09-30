@@ -45,6 +45,13 @@ import org.bibsonomy.util.WebUtils;
  */
 public class ScientificcommonsScraper extends AbstractUrlScraper{
 
+	
+	private static final String SITE_NAME = "ScientificCommons.org";
+
+	private static final String SITE_URL = "http://www.scientificcommons.org/";
+
+	private static final String INFO = "Scraper for journals from the " + href(SITE_URL, SITE_NAME)+".";
+	
 	private static final String HOST = "scientificcommons.org";
 	
 	private static final String DOWNLOAD_URL = "http://en.scientificcommons.org/export/bibtex/";
@@ -57,7 +64,7 @@ public class ScientificcommonsScraper extends AbstractUrlScraper{
 	private static final Pattern PATTERN_AUTHORNAME_1 = Pattern.compile("author = \\{([^\\,]*)\\,");
 	private static final Pattern PATTERN_AUTHORNAME_2 = Pattern.compile("author = \\{(.*) and");
 	
-	private static final String INFO = "ScientificCommons Scraper: Scraper for journals from the " + href("http://www.scientificcommons.org/", "ScientificCommons.org");
+	
 	
 	
 	@Override
@@ -144,11 +151,11 @@ public class ScientificcommonsScraper extends AbstractUrlScraper{
 	}
 
 	public String getSupportedSiteName() {
-		return "Scientific Commons";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.scientificcommons.org/";
+		return SITE_URL;
 	}
 
 }

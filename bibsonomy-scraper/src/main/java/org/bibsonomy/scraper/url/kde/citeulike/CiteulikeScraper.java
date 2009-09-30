@@ -44,7 +44,11 @@ import org.bibsonomy.util.WebUtils;
  */
 public class CiteulikeScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "CiteULike Scraper: scrapes publications from " + href("http://www.citeulike.org/", "CiteUlike");
+	private static final String SITE_NAME = "CiteUlike";
+
+	private static final String SITE_URL = "http://www.citeulike.org/";
+
+	private static final String INFO = "Scrapes publications from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String HOST = "citeulike.org";
 
@@ -83,12 +87,11 @@ public class CiteulikeScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "CiteULike";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		// TODO Auto-generated method stub
-		return "http://www.citeulike.org/";
+		return SITE_URL;
 	}
 
 }

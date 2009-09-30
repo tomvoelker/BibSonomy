@@ -47,7 +47,9 @@ import org.bibsonomy.util.WebUtils;
  */
 public class MathSciNetScraper extends AbstractUrlScraper {
 	
-	private static final String INFO = "MathSciNetScraper: Extracts publications from " + href("http://www.ams.org/mathscinet/" , "MathSciNet") + 
+	private static final String SITE_NAME = "MathSciNet";
+	private static final String SITE_URL = "http://www.ams.org/mathscinet/";
+	private static final String INFO = "Extracts publications from " + href(SITE_URL , SITE_NAME) + 
 	". Publications can be entered as a marked bibtex snippet or by posting the page of the reference.";
 
 	
@@ -161,11 +163,11 @@ public class MathSciNetScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "AMS";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://ams.org/";
+		return SITE_URL;
 	}
 	
 }

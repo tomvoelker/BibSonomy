@@ -52,13 +52,14 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class BlackwellSynergyScraper extends AbstractUrlScraper {
 	
+	private static final String SITE_NAME = "Blackwell Synergy";
+	private static final String SITE_URL = "http://blackwell-synergy.com";
+	private static final String INFO = "This Scraper parse a publication from " + href(SITE_URL, SITE_NAME)+".";
+	
+	
 	private static final Log log = LogFactory.getLog(BlackwellSynergyScraper.class);
 
-	/**
-	 * scraper info
-	 */
-	private static final String INFO = "currently disabled";
-	
+		
 	/**
 	 * pattern for form inputs
 	 */
@@ -238,13 +239,11 @@ public class BlackwellSynergyScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		// TODO Auto-generated method stub
-		return "Blackwell Synergy";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		// TODO Auto-generated method stub
-		return "http://blackwell-synergy.com";
+		return SITE_URL;
 	}
 
 }

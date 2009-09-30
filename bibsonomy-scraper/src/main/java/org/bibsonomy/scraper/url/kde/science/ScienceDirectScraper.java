@@ -46,7 +46,11 @@ import org.bibsonomy.util.WebUtils;
  *
  */
 public class ScienceDirectScraper extends AbstractUrlScraper {
-	private static final String info = "ScienceDirect Scraper: This scraper parses a publication page from " + href("http://www.sciencedirect.com/", "ScienceDirect");
+	private static final String SITE_NAME = "ScienceDirect";
+
+	private static final String SITE_URL = "http://www.sciencedirect.com/";
+
+	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String SCIENCE_CITATION_HOST     = "sciencedirect.com";
 	private static final String SCIENCE_CITATION_PATH     = "/science";
@@ -187,12 +191,12 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 
 
 	public String getSupportedSiteName() {
-		return "ScienceDirect";
+		return SITE_NAME;
 	}
 
 
 	public String getSupportedSiteURL() {
-		return SCIENCE_CITATION_URL;
+		return SITE_URL;
 	}
 
 }

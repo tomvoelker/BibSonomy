@@ -48,7 +48,9 @@ import org.bibsonomy.util.WebUtils;
  */
 public class AGUScraper extends AbstractUrlScraper {
 	
-	private static final String INFO = "AGU Scraper: For Publications from the " + href("http://www.agu.org/pubs", "American Geophysical Union (AGU)");
+	private static final String SITE_NAME = "American Geophysical Union (AGU)";
+	private static final String SITE_URL = "http://www.agu.org/pubs/";
+	private static final String INFO = "For Publications from the " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final String HOST = "agu.org";
 	
@@ -130,7 +132,7 @@ public class AGUScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.agu.org/pubs";
+		return SITE_URL;
 	}
 
 }

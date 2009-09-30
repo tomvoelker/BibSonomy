@@ -42,7 +42,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  */
 public class NberScraper extends AbstractUrlScraper {
 
-	private static final String info = "NBER Scraper: This Scraper parses a publication from " + href("http://www.nber.org/", "National Bureau of Economic Research");
+	private static final String SITE_URL = "http://www.nber.org/";
+	private static final String SITE_NAME = "National Bureau of Economic Research";
+	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String NBER_HOST  = "www.nber.org";
 
@@ -76,11 +78,11 @@ public class NberScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "NBER";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.nber.org/";
+		return SITE_URL;
 	}
 
 }

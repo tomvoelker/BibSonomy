@@ -42,10 +42,13 @@ import org.bibsonomy.util.WebUtils;
  */
 public class BMJScraper extends AbstractUrlScraper {
 
-	private static final String info = "BMJ Scraper: This Scraper parses a publication from " + href("http://www.bmj.com/", "BMJ");
+	private static final String SITE_NAME = "BMJ";
+	private static final String BMJ_HOST_NAME  = "http://www.bmj.com";
+	private static final String SITE_URL = BMJ_HOST_NAME+"/";
+
+	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String BMJ_HOST  = "bmj.com";
-	private static final String BMJ_HOST_NAME  = "http://www.bmj.com";
 	private static final String BMJ_ABSTRACT_PATH = "/cgi/content/full/";
 	private static final String BMJ_BIBTEX_PATH = "/cgi/citmgr?gca=";
 	private static final String BMJ_BIBTEX_DOWNLOAD_PATH = "/cgi/citmgr?type=bibtex&gca=";
@@ -87,11 +90,11 @@ public class BMJScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "BMJ";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return BMJ_HOST_NAME;
+		return SITE_URL;
 	}
 
 }

@@ -18,7 +18,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class JMLRScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "JMLR Scraper: Scraper for papers from " + href("http://jmlr.csail.mit.edu/", "Journal of Machine Learning Research");
+	private static final String SITE_NAME = "Journal of Machine Learning Research";
+	private static final String SITE_URL = "http://jmlr.csail.mit.edu/";
+	private static final String INFO = "Scraper for papers from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String HOST = "jmlr.csail.mit.edu";
 
@@ -135,11 +137,11 @@ public class JMLRScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "Journal of Machine Learning Research";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://jmlr.csail.mit.edu/";
+		return SITE_URL;
 	}
 
 }

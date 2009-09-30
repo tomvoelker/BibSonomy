@@ -25,7 +25,7 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "CiteSeerX";
 	private static final String SITE_URL  = "http://citeseerx.ist.psu.edu/";
 
-	private static final String INFO = "CiteSeerX alpha Scraper: This scraper parses a publication page from the " +
+	private static final String INFO = "This scraper parses a publication page from the " +
 									   "Scientific Literature Digital Library and Search Engine " + href(SITE_URL, SITE_NAME);
 	
 	private static final String HOST = "citeseerx.ist.psu.edu";

@@ -51,7 +51,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  */
 public class MetapressScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "Meta Press Scraper: Scraper for publications from " + href("http://metapress.com/home/main.mpx", "Meta Press");
+	private static final String SITE_URL = "http://metapress.com/";
+	private static final String SITE_NAME = "Meta Press";
+	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String HOST = "metapress.com";
 
@@ -183,10 +185,10 @@ public class MetapressScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "MetaPress";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://metapress.com";
+		return SITE_URL;
 	}
 }

@@ -47,10 +47,9 @@ import org.bibsonomy.util.WebUtils;
  */
 public class DLibScraper extends AbstractUrlScraper {
 	
-	/**
-	 * Scraper info
-	 */
-	private static final String INFO = "Scraper for metadata from " + href("http://www.dlib.org/", "dlib.org");
+	private static final String SITE_URL = "http://www.dlib.org/";
+	private static final String SITE_NAME = "D-Lib";
+	private static final String INFO = "Scraper for metadata from " + href(SITE_URL, SITE_NAME)+".";
 
 	/**
 	 * D-Lib host
@@ -298,13 +297,11 @@ public class DLibScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		// TODO Auto-generated method stub
-		return "D-Lib";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		// TODO Auto-generated method stub
-		return "http://dlib.org/";
+		return SITE_URL;
 	}
 	
 }

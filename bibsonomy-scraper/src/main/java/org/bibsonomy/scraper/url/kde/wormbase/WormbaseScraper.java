@@ -25,7 +25,9 @@ import org.bibsonomy.util.WebUtils;
  */
 public class WormbaseScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "Scraper for papers from " + href("http://www.wormbase.org", "Wormbase");
+	private static final String SITE_NAME = "Wormbase";
+	private static final String SITE_URL = "http://www.wormbase.org/";
+	private static final String INFO = "Scraper for papers from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "wormbase.org"), AbstractUrlScraper.EMPTY_PATTERN));
 	
@@ -78,12 +80,12 @@ public class WormbaseScraper extends AbstractUrlScraper {
 
 	public String getSupportedSiteName() {
 		// TODO Auto-generated method stub
-		return "Wormbase";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
 		// TODO Auto-generated method stub
-		return "http://www.wormbase.org";
+		return SITE_URL;
 	}
 
 }

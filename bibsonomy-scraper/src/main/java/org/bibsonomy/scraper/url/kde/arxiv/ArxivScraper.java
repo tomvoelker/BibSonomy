@@ -47,7 +47,9 @@ import org.bibsonomy.util.WebUtils;
  */
 public class ArxivScraper extends AbstractUrlScraper {
 	
-	private static final String info = "arXiv Scraper: This scraper parses a publication page from " + href("http://arxiv.org/", "arXiv");
+	private static final String SITE_NAME = "arXiv";
+	private static final String SITE_URL = "http://arxiv.org/";
+	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final String ARXIV_HOST = "arxiv.org";
 	
@@ -101,11 +103,11 @@ public class ArxivScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "arXiv";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://arxiv.org";
+		return SITE_URL;
 	}
 	
 }

@@ -47,10 +47,12 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  */
 public class LiebertScraper extends AbstractUrlScraper {
 
-	private static final String info = "Liebertonline Scraper: This Scraper parses a publication from " + href("http://www.liebertonline.com/", "Liebert Online");
+	private static final String SITE_NAME = "Liebert Online";
+	private static final String LIEBERT_HOST_NAME  = "http://www.liebertonline.com";	
+	private static final String SITE_URL  = LIEBERT_HOST_NAME+"/";
+	private static final String info = "This Scraper parses a publication from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String LIEBERT_HOST  = "liebertonline.com";
-	private static final String LIEBERT_HOST_NAME  = "http://www.liebertonline.com";
 	private static final String LIEBERT_ABSTRACT_PATH = "/doi/abs/";
 	private static final String LIEBERT_BIBTEX_PATH = "/action/showCitFormats";
 	private static final String LIEBERT_BIBTEX_PATH_AND_QUERY = "/action/showCitFormats?doi=";
@@ -208,10 +210,10 @@ public class LiebertScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "Liebert";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return LIEBERT_HOST_NAME;
+		return SITE_URL;
 	}
 }

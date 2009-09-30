@@ -46,10 +46,12 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class IsiScraper extends AbstractUrlScraper {
 	
+	private static final String SITE_NAME = "ISI Web of Knowledge";
+	private static final String SITE_URL = "http://apps.isiknowledge.com/";
+	private static final String INFO = "Scrapes publications from " + href(SITE_URL, SITE_NAME)+".";
+
 	private static final Log log = LogFactory.getLog(IsiScraper.class);
-
-	private static final String INFO = "Scrapes publications from " + href("http://apps.isiknowledge.com/", "ISI Web of Knowledge");
-
+	
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(
 			Pattern.compile(".*" + "apps.isiknowledge.com"), 
 			Pattern.compile("/full_record.do" + ".*")
@@ -144,11 +146,11 @@ public class IsiScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "ISI Web of Knowledge";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://apps.isiknowledge.com/";
+		return SITE_URL;
 	}
 
 }

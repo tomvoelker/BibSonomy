@@ -47,10 +47,12 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class IngentaconnectScraper extends AbstractUrlScraper{
 
-	private static final String info = "Ingentaconnect Scraper: This scraper parses a publication page from " + href("http://www.ingentaconnect.com/", "Ingentaconnect");
+	private static final String SITE_NAME = "Ingentaconnect";
+	private static final String SITE_URL = "http://www.ingentaconnect.com/";
+	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String INGENTA_HOST = "ingentaconnect.com";
-	private static final String INGENTA_CITATION_URL = "http://www.ingentaconnect.com/";
+
 
 	private static final Pattern exportPattern = Pattern.compile("BibText Export\" href=\"(.*)\"");
 
@@ -67,7 +69,7 @@ public class IngentaconnectScraper extends AbstractUrlScraper{
 			/* 
 			 * create query URL
 			 */
-			String URLString = INGENTA_CITATION_URL.substring(0, INGENTA_CITATION_URL.length()-1);
+			String URLString = SITE_URL.substring(0, SITE_URL.length()-1);
 			String page = sc.getPageContent();
 			final Matcher m = exportPattern.matcher(page);
 			if (m.find()) {
@@ -205,7 +207,7 @@ public class IngentaconnectScraper extends AbstractUrlScraper{
 		/*
 		 * receive cookie from springer
 		 */
-		URL mainURL = new URL(INGENTA_CITATION_URL);
+		URL mainURL = new URL(SITE_URL);
 		HttpURLConnection urlConn;
 		urlConn = (HttpURLConnection) mainURL.openConnection();
 		urlConn.setAllowUserInteraction(false);
@@ -245,11 +247,11 @@ public class IngentaconnectScraper extends AbstractUrlScraper{
 
 	public String getSupportedSiteName() {
 		// TODO Auto-generated method stub
-		return "Ingentaconnect";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return INGENTA_CITATION_URL;
+		return SITE_URL;
 	}
 
 }

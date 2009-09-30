@@ -55,11 +55,12 @@ import org.w3c.dom.NodeList;
 public class CiteBaseScraper extends AbstractUrlScraper {
 
 //	http://www.citebase.org/abstract?id=oai:arXiv.org:cs/0408047
-
-	private static final String info = "citebase Scraper: This scraper parses a publication page from " + href("http://www.citebase.org/", "Citebase");
+	private static final String SITE_NAME = "Citebase";
+	private static final String CITEBASE_HOST_NAME = "http://www.citebase.org";
+	private static final String SITE_URL = CITEBASE_HOST_NAME+"/";
+	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String CITEBASE_HOST = "citebase.org";
-	private static final String CITEBASE_HOST_NAME = "http://www.citebase.org";
 	//private static final String CITEBASE_STRING_ON_ARXIV = "CiteBase"; //TODO: never used locally
 
 	private static final String BIBTEX_STRING_ON_ARXIV = "BibTeX";
@@ -146,7 +147,7 @@ public class CiteBaseScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "Citebase";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {

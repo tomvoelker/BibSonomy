@@ -51,12 +51,15 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  *
  */
 public class SpringerLinkScraper extends AbstractUrlScraper {
-	private static final String info = "SpringerLink Scraper: This scraper parses a publication page from " + href("http://springerlink.com/", "SpringerLink");
+	private static final String SITE_NAME = "SpringerLink";
+	private static final String SITE_URL = "http://springerlink.com/";
+	private static final String info = "This scraper parses a publication page from " + href("http://springerlink.com/", SITE_NAME)+".";
+	
 	private static final String userAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";	
 
 	private static final Pattern contentPattern = Pattern.compile("content\\/(.+?)\\/");
 	private static final Pattern idPattern = Pattern.compile("id=([^\\&]*)");
-	private static final String SPRINGER_CITATION_URL = "http://springerlink.com/";
+
 	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
 	private static final String SPRINGER_CITATION_HOST_DE = "springerlink.de";
 	
@@ -169,7 +172,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 		/*
 		 * receive cookie from springer
 		 */
-		URL mainURL = new URL(SPRINGER_CITATION_URL + "home/main.mpx");
+		URL mainURL = new URL(SITE_URL + "home/main.mpx");
 		HttpURLConnection urlConn;
 		urlConn = (HttpURLConnection) mainURL.openConnection();
 		urlConn.setAllowUserInteraction(false);
@@ -207,12 +210,12 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 
 
 	public String getSupportedSiteName() {
-		return "SpringerLink";
+		return SITE_NAME;
 	}
 
 
 
 	public String getSupportedSiteURL() {
-		return SPRINGER_CITATION_URL;
+		return SITE_URL;
 	}
 }

@@ -50,7 +50,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class WileyIntersienceScraper extends AbstractUrlScraper {
 	
-	private static final String INFO = "WileyIntersienceScraper: Extracts publications from the abstract page of " + href("http://www3.interscience.wiley.com/cgi-bin/home?CRETRY=1&SRETRY=0","interscience.wiley.com") + ". Author: KDE";
+	private static final String SITE_NAME = "InterScience";
+	private static final String SITE_URL = "http://www3.interscience.wiley.com";
+	private static final String INFO = "Extracts publications from the abstract page of " + href(SITE_URL,SITE_NAME) + ".";
 
 	/*
 	 * urls and host from intersience.wiley.com 
@@ -320,11 +322,11 @@ return patterns;
 }
 
 	public String getSupportedSiteName() {
-		return "InterScience";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www3.interscience.wiley.com";
+		return SITE_URL;
 	}
 	
 }

@@ -25,7 +25,9 @@ import org.bibsonomy.util.WebUtils;
  */
 public class EricScraper extends AbstractUrlScraper {
 	
-	private static final String INFO = "ERIC Scraper: Scraper for publications from the " + href("http://www.eric.ed.gov/", "Education Resources Information Center");
+	private static final String SITE_URL = "http://www.eric.ed.gov/";
+	private static final String SITE_NAME = "Education Resources Information Center";
+	private static final String INFO = "Scraper for publications from the " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final String ERIC_HOST = "eric.ed.gov";
 	
@@ -101,11 +103,11 @@ public class EricScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "ERIC";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.eric.ed.gov/";
+		return SITE_URL;
 	}
 
 }

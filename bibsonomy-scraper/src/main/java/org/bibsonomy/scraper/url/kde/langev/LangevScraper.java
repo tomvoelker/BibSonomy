@@ -40,7 +40,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class LangevScraper extends AbstractUrlScraper {
 
-	private static final String info = "ISRL Scraper: This scraper parses a publication page from the " + href("http://www.isrl.uiuc.edu/", "The Graduate School of Library and Information Science at the University of Illinois");
+	private static final String SITE_NAME = "The Graduate School of Library and Information Science at the University of Illinois";
+	private static final String SITE_URL = "http://www.isrl.uiuc.edu/";
+	private static final String info = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final String ISRL_HOST  = "isrl.uiuc.edu";
 	private static final Pattern ISRL_PATTERN = Pattern.compile(".*<pre>\\s*(@[A-Za-z]+\\s*\\{.+?\\})\\s*</pre>.*", Pattern.MULTILINE | Pattern.DOTALL);
@@ -67,12 +69,11 @@ public class LangevScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "GSLIS";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		// TODO Auto-generated method stub
-		return "http://www.lis.illinois.edu/";
+		return SITE_URL;
 	}
 
 }

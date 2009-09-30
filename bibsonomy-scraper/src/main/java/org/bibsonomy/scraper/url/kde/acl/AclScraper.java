@@ -26,7 +26,11 @@ import org.bibsonomy.util.WebUtils;
  */
 public class AclScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "ACL Scraper: Scraper for (PDF) references from " + href("http://aclweb.org/", "Association for Computational Linguistics");
+	private static final String SITE_NAME = "Association for Computational Linguistics";
+
+	private static final String SITE_URL = "http://aclweb.org/";
+
+	private static final String INFO = "Scraper for (PDF) references from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String ERROR_CODE_300 = "<TITLE>300 Multiple Choices</TITLE>";
 
@@ -74,12 +78,12 @@ public class AclScraper extends AbstractUrlScraper {
 
 	public String getSupportedSiteName() {
 		// TODO Auto-generated method stub
-		return "ACL";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
 		// TODO Auto-generated method stub
-		return "http://aclweb.org/";
+		return SITE_URL;
 	}
 
 }

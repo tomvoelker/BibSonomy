@@ -21,7 +21,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class UsenixScraper extends AbstractUrlScraper {
 	
-	private static final String INFO = "USENIX Scraper: Scraper for papers from events which are postetd on " + href("http://usenix.org/", "USENIX");
+	private static final String SITE_NAME = "USENIX";
+	private static final String SITE_URL = "http://usenix.org/";
+	private static final String INFO = "Scraper for papers from events which are postetd on " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static final String HOST = "usenix.org";
 	
@@ -308,11 +310,11 @@ public class UsenixScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "USENIX";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://usenix.org/";
+		return SITE_URL;
 	}
 
 }

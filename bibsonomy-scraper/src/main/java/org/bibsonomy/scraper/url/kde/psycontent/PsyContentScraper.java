@@ -48,10 +48,12 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  */
 public class PsyContentScraper extends AbstractUrlScraper{
 
-	private static final String info = "Psy CONTENT Scraper: This Scraper parses a publication from "+ href("http://psycontent.metapress.com/", "Psy CONTENT");
+	private static final String SITE_NAME = "Psy CONTENT";
+	private static final String PSYCONTENT_HOST_NAME  = "http://psycontent.metapress.com";	
+	private static final String SITE_URL  = PSYCONTENT_HOST_NAME+"/";
+	private static final String info = "This Scraper parses a publication from "+ href(SITE_URL, SITE_NAME)+".";
 
 	private static final String PSYCONTENT_HOST  = "psycontent.metapress.com";
-	private static final String PSYCONTENT_HOST_NAME  = "http://psycontent.metapress.com";
 	private static final String PSYCONTENT_ABSTRACT_PATH = "/content/";
 	private static final String PSYCONTENT_RIS_PATH = "/export.mpx?mode=ris&code=";
 
@@ -190,10 +192,10 @@ public class PsyContentScraper extends AbstractUrlScraper{
 	}
 
 	public String getSupportedSiteName() {
-		return "Psy CONTENT";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return PSYCONTENT_HOST_NAME;
+		return SITE_URL;
 	}
 }

@@ -41,8 +41,12 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
  */
 public class CiteseerBasicScraper extends AbstractUrlScraper {
 
-	private static final String info = "CiteSeer Scraper: This scraper parses a publication page from the " +
-	"Scientific Literature Digital Library " + href("http://citeseer.ist.psu.edu/", "CiteSeer");
+	private static final String SITE_NAME = "CiteSeer";
+
+	private static final String CITE_URL = "http://citeseer.ist.psu.edu/";
+
+	private static final String info = "This scraper parses a publication page from the " +
+	"Scientific Literature Digital Library " + href(CITE_URL, SITE_NAME)+".";
 
 	private static final String  CS_HOST_NAME   = "citeseer.ist.psu.edu";
 	private static final Pattern bibPattern = Pattern.compile(".*<pre>\\s*(@[A-Za-z]+\\s*\\{.+?\\})\\s*</pre>.*", Pattern.MULTILINE | Pattern.DOTALL);
@@ -69,10 +73,10 @@ public class CiteseerBasicScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "CiteSeer";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://citeseer.ist.psu.edu/";
+		return CITE_URL;
 	}
 }

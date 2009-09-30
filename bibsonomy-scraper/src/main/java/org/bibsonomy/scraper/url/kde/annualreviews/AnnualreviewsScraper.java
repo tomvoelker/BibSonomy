@@ -51,7 +51,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  */
 public class AnnualreviewsScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "Annual Rewiews Scraper: Supports journals from " + href("http://arjournals.annualreviews.org/", "Annual Reviews");
+	private static final String SITE_NAME = "Annual Reviews";
+	private static final String SITE_URL = "http://arjournals.annualreviews.org/";
+	private static final String INFO = "Supports journals from " + href(SITE_URL, SITE_NAME);
 
 	/**
 	 * HOST from anualreviews
@@ -209,7 +211,7 @@ public class AnnualreviewsScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "Annual Reviews";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {

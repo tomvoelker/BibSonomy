@@ -43,8 +43,10 @@ import org.bibsonomy.util.WebUtils;
  * @version $Id$
  */
 public class PubMedScraper extends AbstractUrlScraper {
-	private static final String info = "PudMed Scraper: This scraper parses a publication page of citations from "
-			+ href("http://www.ncbi.nlm.nih.gov/sites/entrez/", "PubMed");
+	private static final String SITE_NAME = "PubMed";
+	private static final String SITE_URL = "http://www.ncbi.nlm.nih.gov/";
+	private static final String info = "This scraper parses a publication page of citations from "
+			+ href(SITE_URL, SITE_NAME)+".";
 
 	private static final String HOST = "ncbi.nlm.nih.gov";
 	private static final String PUBMED_EUTIL_HOST = "eutils.ncbi.nlm.nih.gov";
@@ -128,11 +130,11 @@ public class PubMedScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "PudMed";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.ncbi.nlm.nih.gov/sites/entrez/";
+		return SITE_URL;
 	}
 
 }

@@ -47,14 +47,16 @@ import org.w3c.dom.NodeList;
  */
 public class CasesJournalScraper extends AbstractUrlScraper {
 	
-	private static final String INFO = "CasesJournal: For selected BibTeX snippets and articles from " + href("http://casesjournal.com/" , "CASES_JOURNAL");
+	private static final String SITE_NAME = "Cases Journal";
+	private static final String CASES_JOURNAL_URL_BASE = "http://casesjournal.com";	
+	private static final String SITE_URL = CASES_JOURNAL_URL_BASE+"/";
+	private static final String INFO = "For selected BibTeX snippets and articles from " + href(SITE_URL , SITE_NAME)+".";
 
 	/*
 	 * needed URLs and components
 	 */
 	private static final String CASES_JOURNAL_HOST = "casesjournal.com";
 	private static final String CASES_JOURNAL_PATH  = "/casesjournal";
-	private static final String CASES_JOURNAL_URL_BASE = "http://casesjournal.com";
 	
 	private static final String CASES_JOURNAL_ID_PREFIX = "view/";
 	private static final String CASES_JOURNAL_BIBTEX_PATH = "/rt/captureCite/{id}/0/BibtexCitationPlugin";
@@ -140,11 +142,11 @@ public class CasesJournalScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "CasesJournal";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return CASES_JOURNAL_URL_BASE;
+		return SITE_URL;
 	}
 
 	

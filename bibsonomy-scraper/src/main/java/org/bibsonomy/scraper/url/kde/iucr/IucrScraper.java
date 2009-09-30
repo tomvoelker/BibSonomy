@@ -70,12 +70,13 @@ import org.bibsonomy.util.WebUtils;
  */
 public class IucrScraper extends AbstractUrlScraper {
 
+	private static final String SITE_NAME = "International Union of Crystallography";
+	private static final String SITE_URL = "http://www.iucr.org/";
+	private static final String INFO = "Scraper for journals from the " + href(SITE_URL, SITE_NAME) +".";
+	
 	/*
 	 * messages
 	 */
-
-	private static final String INFO = "IUCr Scraper: Scraper for journals from the " + href("http://www.iucr.org/", "International Union of Crystallography");
-
 	private static final String USEAGE_FAILURE_MESSAGE = "Please open the publication in a new browser tab and post it again.";
 
 	/*
@@ -153,11 +154,11 @@ public class IucrScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "International Union of Crystallography";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.iucr.org/";
+		return SITE_URL;
 	}
 
 }

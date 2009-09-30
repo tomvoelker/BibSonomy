@@ -46,7 +46,9 @@ import org.bibsonomy.util.WebUtils;
  */
 public class BibSonomyScraper extends AbstractUrlScraper {
 
-	private static final String INFO = "BibSonomyScraper: If you don't like the copy button from " + href("http://www.bibsonomy.org", "BibSonomy") + ", use your postPublication button.";
+	private static final String SITE_NAME = "BibSonomy";
+	private static final String SITE_URL = "http://www.bibsonomy.org";
+	private static final String INFO = "If you don't like the copy button from " + href(SITE_URL, SITE_NAME) + ", use your postPublication button.";
 
 	private static final String BIBSONOMY_HOST = "bibsonomy.org";
 	private static final String BIBSONOMY_BIB_PATH = "/bib/bibtex";
@@ -99,10 +101,10 @@ public class BibSonomyScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "BibSonomy";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.bibsonomy.org";
+		return SITE_URL;
 	}
 }

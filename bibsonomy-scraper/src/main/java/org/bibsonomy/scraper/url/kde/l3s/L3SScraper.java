@@ -18,7 +18,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  *
  */
 public class L3SScraper extends AbstractUrlScraper {
-	private static final String info 	= "L3S Scraper: Scrapes publications from " + href("http://www.l3s.de", "L3S");
+	private static final String SITE_NAME = "Forschungszentrum L3S";
+	private static final String SITE_URL = "http://www.l3s.de";
+	private static final String info 	= "Scrapes publications from " + href(SITE_URL, SITE_NAME);
 	
 	private static final String L3S_URL = "l3s.de";
 	private static Pattern patternTd = Pattern.compile("<td class=\" value text\">([^<]*)</td>", Pattern.MULTILINE | Pattern.DOTALL);
@@ -72,10 +74,10 @@ public class L3SScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "Forschungszentrum L3S";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.l3s.de";
+		return SITE_URL;
 	}
 }

@@ -46,6 +46,8 @@ import org.bibsonomy.util.WebUtils;
  */
 public class OpenrepositoryScraper extends AbstractUrlScraper {
 
+	private static final String SITE_URL = "http://openrepository.com/";
+	private static final String SITE_NAME = "Open Repository";
 	private static final String SUPPORTED_HOST_OPENREPOSITORY = "openrepository.com";
 	private static final String SUPPORTED_HOST_E_SPACE = "e-space.mmu.ac.uk";
 	private static final String SUPPORTED_HOST_E_SPACE_PATH = "/e-space";
@@ -58,12 +60,7 @@ public class OpenrepositoryScraper extends AbstractUrlScraper {
 
 	private static final String PATTERN_HANDLE = "handle/(.*)";
 
-	private static final String INFO = "Open Repository Scraper: Supports the following repositories: "
-		+ href("http://" + SUPPORTED_HOST_OPENREPOSITORY, "Open Repository") + ", " 
-		+ href("http://" + SUPPORTED_HOST_E_SPACE, "MMU Repository") + ", "
-		+ href("http://" + SUPPORTED_HOST_EXETER, "Exeter Research and Institutional Content archive") + ", "
-		+ href("http://" + SUPPORTED_HOST_GTCNI, "ARRT Space") + ", "
-		+ href("http://" + SUPPORTED_HOST_HIRSLA, "HIRSLA") + ".";
+	private static final String INFO = "Supports the following repository: " + href(SITE_URL, SITE_NAME) + ".";
 
 	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>(); 
 	
@@ -138,11 +135,11 @@ public class OpenrepositoryScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "Open Repository";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://openrepository.com/";
+		return SITE_URL;
 	}
 
 }

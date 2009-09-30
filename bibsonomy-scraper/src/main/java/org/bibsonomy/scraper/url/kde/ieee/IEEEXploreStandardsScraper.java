@@ -28,12 +28,14 @@ import org.w3c.dom.NodeList;
  *
  */
 public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
-	private static final Log log = LogFactory.getLog(IEEEXploreStandardsScraper.class);
-	private static final String info = "IEEEXplore Standards Scraper: This scraper creates a BibTeX entry for the standards at " +
-			                           href("http://ieeexplore.ieee.org/", "IEEEXplore");
+	private static final String SITE_NAME 	= "IEEEXplore Standards";
+	private static final String SITE_URL  	= "http://ieeexplore.ieee.org/";
+	private static final String info 		= "This scraper creates a BibTeX entry for the standards at " + href(SITE_URL, SITE_NAME)+".";
 
-	private static final String IEEE_HOST        	  = "ieeexplore.ieee.org";
-	private static final String IEEE_HOST_NAME        	  = "http://ieeexplore.ieee.org/";
+	
+	private static final Log log = LogFactory.getLog(IEEEXploreStandardsScraper.class);
+	
+	private static final String IEEE_HOST        	 	  = "ieeexplore.ieee.org";
 	private static final String IEEE_STANDARDS_PATH   	  = "xpl";
 	private static final String IEEE_STANDARDS		 	  = "@misc";
 	private static final String IEEE_STANDARDS_IDENTIFIER = "punumber";
@@ -181,11 +183,11 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "IEEEXplore Standards";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://ieeexplore.ieee.org/";
+		return SITE_URL;
 	}
 	
 }

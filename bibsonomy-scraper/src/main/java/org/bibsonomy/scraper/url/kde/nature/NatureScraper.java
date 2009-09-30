@@ -46,6 +46,10 @@ import org.bibsonomy.util.WebUtils;
  */
 public class NatureScraper extends AbstractUrlScraper {
 
+	private static final String SITE_URL = "http://www.nature.com/";
+
+	private static final String SITE_NAME = "Nature";
+
 	/**
 	 * Host
 	 */
@@ -54,7 +58,7 @@ public class NatureScraper extends AbstractUrlScraper {
 	/**
 	 * INFO
 	 */
-	private static final String INFO = "Nature Scraper: Scraper for publications from " + href("http://www.nature.com/", "nature.com");
+	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME)+".";
 
 	/**
 	 * pattern for links
@@ -132,11 +136,11 @@ public class NatureScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "nature.com";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.nature.com/";
+		return SITE_URL;
 	}
 
 }

@@ -46,7 +46,9 @@ import org.bibsonomy.util.WebUtils;
  */
 public class CellScraper extends AbstractUrlScraper {
 	
-	private static String INFO = "Cell Scraper: Scraper for Journals from " + href("http://www.cell.com/", "Cell") + " and " + href("http://www.cell.com/biophysj/home", "Biophysical Journal");
+	private static final String SITE_NAME = "Cell";
+	private static final String SITE_URL = "http://www.cell.com/";
+	private static String INFO = "Scraper for Journals from " + href(SITE_URL, SITE_NAME)+".";
 	
 	private static String HOST_CELL = "cell.com";
 	private static String PATH_BIOPHYSICAL = "/biophysj/";
@@ -118,11 +120,11 @@ public class CellScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "Cell";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.cell.com/";
+		return SITE_URL;
 	}
 
 }

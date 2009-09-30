@@ -33,9 +33,11 @@ import org.w3c.dom.NodeList;
  *
  */
 public class IEEEXploreBookScraper extends AbstractUrlScraper {
+	private static final String SITE_NAME = "IEEEXplore Books";
+	private static final String SITE_URL = "http://ieeexplore.ieee.org/books/bkbrowse.jsp";
 	private static final Log log = LogFactory.getLog(IEEEXploreBookScraper.class);
-	private static final String info = "IEEEXplore Book Scraper: This scraper creates a BibTeX entry for the books at " +
-	href("http://ieeexplore.ieee.org/books/bkbrowse.jsp", "IEEEXplore");
+	private static final String info = "This scraper creates a BibTeX entry for the books at " +
+	href(SITE_URL, SITE_NAME);
 
 	private static final String IEEE_HOST = "ieeexplore.ieee.org";
 	private static final String IEEE_HOST_NAME = "http://ieeexplore.ieee.org/";
@@ -299,12 +301,10 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		// TODO Auto-generated method stub
-		return "IEEEXplore Books";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		// TODO Auto-generated method stub
-		return "http://ieeexplore.ieee.org/books/bkbrowse.jsp";
+		return SITE_URL;
 	}
 }

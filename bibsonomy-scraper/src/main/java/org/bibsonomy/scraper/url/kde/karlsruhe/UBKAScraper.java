@@ -32,10 +32,12 @@ import org.bibsonomy.util.WebUtils;
  */
 public class UBKAScraper extends AbstractUrlScraper {
 
-	private static final String info = "UBKA Scraper: This scraper parses a publication page from the " + href("http://www.ubka.uni-karlsruhe.de/hylib/ka_opac.html", "University Library (UB) Karlsruhe");
+	private static final String SITE_NAME = "University Library (UB) Karlsruhe";
+	private static final String UBKA_HOST_NAME = "http://www.ubka.uni-karlsruhe.de";
+	private static final String SITE_URL = UBKA_HOST_NAME+"/";
+	private static final String info = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String UBKA_HOST = "ubka.uni-karlsruhe.de";
-	private static final String UBKA_HOST_NAME = "http://www.ubka.uni-karlsruhe.de";
 	private static final String UBKA_SEARCH_NAME = "http://www.ubka.uni-karlsruhe.de/hylib-bin/suche.cgi";
 	private static final String UBKA_SEARCH_PATH = "/hylib-bin/suche.cgi";
 
@@ -188,11 +190,11 @@ public class UBKAScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "UBKA";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return UBKA_HOST_NAME;
+		return SITE_URL;
 	}
 
 }

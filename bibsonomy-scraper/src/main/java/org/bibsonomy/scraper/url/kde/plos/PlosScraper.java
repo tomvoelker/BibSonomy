@@ -46,10 +46,9 @@ import org.bibsonomy.util.WebUtils;
  */
 public class PlosScraper extends AbstractUrlScraper {
 
-	/**
-	 * INFO
-	 */
-	private static final String INFO = "PLoS Scraper: Scraper for journals from " + href("http://www.plos.org/journals/index.php", "PLoS");
+	private static final String SITE_NAME = "PLoS";
+	private static final String SITE_URL = "http://www.plos.org/journals/index.php";
+	private static final String INFO = "Scraper for journals from " + href(SITE_URL, SITE_NAME)+".";
 
 	/**
 	 * ending of plos journal URLs
@@ -150,10 +149,10 @@ public class PlosScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "PLoS";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://www.plos.org/journals/index.php";
+		return SITE_URL;
 	}
 }

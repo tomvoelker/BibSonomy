@@ -47,11 +47,13 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  * @version $Id$
  */
 public class CambridgeScraper extends AbstractUrlScraper {
-
-	private static final String info = "Cambridge Journals Scraper: This Scraper parses a journal from " + href("http://journals.cambridge.org/", "Cambridge Journals");
+	
+	private static final String SITE_NAME = "Cambridge Journals";
+	private static final String CAMBRIDGE_HOST_NAME  = "http://journals.cambridge.org";
+	private static final String SITE_URL = CAMBRIDGE_HOST_NAME+"/";
+	private static final String info = "This Scraper parses a journal from " + href(SITE_URL, SITE_NAME)+".";
 
 	private static final String CAMBRIDGE_HOST  = "journals.cambridge.org";
-	private static final String CAMBRIDGE_HOST_NAME  = "http://journals.cambridge.org";
 	private static final String CAMBRIDGE_ABSTRACT_PATH = "/action/displayAbstract";
 	private static final String CAMBRIDGE_BIBTEX_DOWNLOAD_PATH = "/action/exportCitation?org.apache.struts.taglib.html.TOKEN=51cf342977f2aaa784c6ddfa66c3572c&emailid=&Download=Download&displayAbstract=No&format=BibTex&componentIds=";
 
@@ -179,11 +181,11 @@ public class CambridgeScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "Cambridge Journals";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return CAMBRIDGE_HOST_NAME;
+		return SITE_URL;
 	}
 
 }

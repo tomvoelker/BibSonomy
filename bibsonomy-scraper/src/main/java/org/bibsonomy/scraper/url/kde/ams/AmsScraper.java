@@ -49,7 +49,9 @@ import org.bibsonomy.util.WebUtils;
  */
 public class AmsScraper extends AbstractUrlScraper {
 	
-	private static final String INFO = "For references from ams.allenpress.com";
+	private static final String SITE_NAME = "American Meteorological Society";
+	private static final String SITE_URL = "http://ams.allenpress.com/";
+	private static final String INFO = "For references from the "+href(SITE_URL, SITE_NAME)+".";
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*ams.allenpress.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	
@@ -100,11 +102,11 @@ public class AmsScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		return "American Meteorological Society";
+		return SITE_NAME;
 	}
 
 	public String getSupportedSiteURL() {
-		return "http://ams.allenpress.com";
+		return SITE_URL;
 	}
 
 }
