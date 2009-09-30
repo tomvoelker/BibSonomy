@@ -21,7 +21,7 @@ public class GetBookmarksByConceptForGroup extends BookmarkChainElement {
 
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		return this.db.getBookmarkByConceptForGroup(param, session);
+		return this.db.getPostsByConceptForGroup(param, session);
 	}
 
 	@Override

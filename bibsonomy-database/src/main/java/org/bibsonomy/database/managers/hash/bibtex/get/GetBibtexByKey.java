@@ -32,7 +32,7 @@ public class GetBibtexByKey extends BibTexHashElement {
 	 */
 	@Override
 	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexByKey(param, session);
+		return this.db.getPostsByKey(param, session);
 	}
 
 	protected boolean canHandle(final BibTexParam param) {

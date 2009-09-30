@@ -101,7 +101,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	private BibTexExtraParam buildURLParam(final String hash, final String username, final String url, final String text, final DBSession session) {
-		final int contentId = this.bibtexDb.getContentIdForBibTex(hash, username, session);
+		final int contentId = this.bibtexDb.getContentIDForPost(hash, username, session);
 		final BibTexExtraParam param = new BibTexExtraParam();
 		param.setRequestedContentId(contentId);
 		try {

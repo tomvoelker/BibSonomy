@@ -476,7 +476,7 @@ public class DBLogic implements LogicInterface {
 	 *            software key to be validated
 	 * @return true iff the given software key is valid.
 	 */
-	public boolean validateSoftwareKey(@SuppressWarnings("unused") final String softwareKey) {
+	public boolean validateSoftwareKey(final String softwareKey) {
 		// FIXME: impl. a software key
 		return true;
 	}

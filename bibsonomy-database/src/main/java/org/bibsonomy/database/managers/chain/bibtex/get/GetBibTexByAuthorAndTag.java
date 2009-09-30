@@ -73,7 +73,7 @@ public class GetBibTexByAuthorAndTag extends BibTexChainElement {
 				}
 			}
 
-			return this.db.getBibTexByAuthorLucene(param.getRawSearch(), param.getGroupType(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getYear(), 
+			return this.db.getPostsByAuthorLucene(param.getRawSearch(), param.getGroupType(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getYear(), 
 					param.getFirstYear(), param.getLastYear(), param.getLimit(), param.getOffset(), param.getSimHash(), tagList, session);
 		}		
 		

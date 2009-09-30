@@ -27,6 +27,7 @@ public class GetBookmarksByTagNames extends BookmarkChainElement {
 		if (param.getTagIndex().size() == 0) {
 			posts = this.db.getBookmarkForHomepage(param, session);
 		} else {
+			// GroupID.getGroupId(param.getGroupType(), false), param.getTagIndex(), param.getLimit(), param.getOffset()
 			posts = this.db.getBookmarkByTagNames(param, session);
 		}
 		return posts;

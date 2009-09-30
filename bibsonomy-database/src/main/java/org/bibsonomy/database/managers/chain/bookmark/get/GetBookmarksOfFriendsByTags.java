@@ -1,7 +1,7 @@
 package org.bibsonomy.database.managers.chain.bookmark.get;
 
-import static org.bibsonomy.util.ValidationUtils.present;
 import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class GetBookmarksOfFriendsByTags extends BookmarkChainElement {
 		 */
 		if (this.generalDb.isFriendOf(param.getUserName(), param.getRequestedUserName(), session)) {
 			param.setGroupId(GroupID.FRIENDS.getId());
-			return this.db.getBookmarkByTagNamesForUser(param, session);
+			return this.db.getBookmarkByTagNamesForUser(param.getRequestedUserName(), param.getUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), session);
 		}
 		return new ArrayList<Post<Bookmark>>();
 	}

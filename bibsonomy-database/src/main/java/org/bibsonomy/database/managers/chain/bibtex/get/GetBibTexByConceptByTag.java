@@ -23,7 +23,7 @@ public class GetBibTexByConceptByTag extends BibTexChainElement{
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexByConceptByTag(param, session);
+		return this.db.getPostsByConceptByTag(param, session);
 	}
 
 	@Override

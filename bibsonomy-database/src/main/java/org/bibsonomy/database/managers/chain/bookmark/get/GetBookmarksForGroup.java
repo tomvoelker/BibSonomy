@@ -29,7 +29,8 @@ public class GetBookmarksForGroup extends BookmarkChainElement {
 			return new ArrayList<Post<Bookmark>>(0);
 		}
 		param.setGroupId(groupId);
-		return this.db.getBookmarkForGroup(param, session);
+		// TODO: loginuser or requested user
+		return this.db.getBookmarkForGroup(param.getGroupId(), param.getGroups(), param.getUserName(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override

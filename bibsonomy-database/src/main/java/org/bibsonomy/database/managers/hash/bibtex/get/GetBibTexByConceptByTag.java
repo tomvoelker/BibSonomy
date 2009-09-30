@@ -15,6 +15,9 @@ import org.bibsonomy.model.enums.Order;
  */
 public class GetBibTexByConceptByTag extends BibTexHashElement {
 
+	/**
+	 * TODO improve docs
+	 */
 	public GetBibTexByConceptByTag() {
 		setTagIndex(true);
 		setNumSimpleConceptsOverNull(true);
@@ -28,6 +31,6 @@ public class GetBibTexByConceptByTag extends BibTexHashElement {
 	 */
 	@Override
 	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexByConceptByTag(param, session);
+		return this.db.getPostsByConceptByTag(param, session);
 	}
 }

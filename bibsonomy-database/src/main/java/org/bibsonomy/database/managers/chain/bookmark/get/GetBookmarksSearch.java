@@ -48,18 +48,15 @@ public class GetBookmarksSearch extends BookmarkChainElement {
 			return this.db.getPostsSearchLucene(param.getGroupId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
 		}
 	
-		return this.db.getBookmarkSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
-		
-		
-/*		
-		if (SearchEntity.LUCENE.equals(param.getSearchEntity())) {
-			//param.getGroups();   // gruppen, die der eingeloggte user sehen darf
-			//param.getUserName(); // eingeloggter user
-			//param.getGroupNames(); // gruppennamen der gruppen, die der eingeloggte user sehen darf
-			return this.db.getBookmarkSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
-		}
-		return this.db.getBookmarkSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
-*/
+		return this.db.getPostsSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
+		// TODO: remove code???
+//		if (SearchEntity.LUCENE.equals(param.getSearchEntity())) {
+//			//param.getGroups();   // gruppen, die der eingeloggte user sehen darf
+//			//param.getUserName(); // eingeloggter user
+//			//param.getGroupNames(); // gruppennamen der gruppen, die der eingeloggte user sehen darf
+//			return this.db.getBookmarkSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
+//		}
+//		return this.db.getBookmarkSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
 	}
 	
 	@Override

@@ -32,8 +32,8 @@ public class GetBookmarksViewable extends BookmarkChainElement {
 			return new ArrayList<Post<Bookmark>>(0);
 		}
 		param.setGroupId(groupId);
-		if (present(param.getTagIndex()) == true) return this.db.getBookmarkViewableByTag(param, session);
-		return this.db.getBookmarkViewable(param, session);
+		if (present(param.getTagIndex()) == true) return this.db.getBookmarkViewable(param.getGroupId(), param.getUserName(), param.getLimit(), param.getOffset(), session);
+		return this.db.getBookmarkViewable(param.getGroupId(), param.getUserName(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override

@@ -17,6 +17,9 @@ import org.bibsonomy.model.enums.Order;
  */
 public class GetBibtexByTagNames extends BibTexHashElement {
 
+	/**
+	 * TODO : improve doc
+	 */
 	public GetBibtexByTagNames() {
 		setTagIndex(true);
 		setNumSimpleTagsOverNull(true);
@@ -30,6 +33,6 @@ public class GetBibtexByTagNames extends BibTexHashElement {
 	 */
 	@Override
 	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexByTagNames(param, session);
+		return this.db.getBibTexByTagNames(param.getGroupId(), param.getTagIndex(), param.getLimit(), param.getOffset(), session);
 	}
 }

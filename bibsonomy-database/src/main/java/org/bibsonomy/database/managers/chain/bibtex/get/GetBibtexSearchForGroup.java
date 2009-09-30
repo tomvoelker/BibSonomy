@@ -32,7 +32,8 @@ public class GetBibtexSearchForGroup extends BibTexChainElement {
 		}
 		param.setGroupId(groupId);
 		
-		return this.db.getBibTexSearchForGroup(param, session);
+		// TODO: rawSearch or search???
+		return this.db.getPostsSearchForGroup(param.getGroupId(), param.getGroups(), param.getRawSearch(), param.getUserName(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override

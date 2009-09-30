@@ -143,7 +143,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		final BibTexParam param = this.bibtexParam;
 		param.setHash(HASH);
 		param.setSimHash(HashID.INTER_HASH);
-		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
+		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(HASH, HashID.INTER_HASH, 50, 0, this.dbSession).get(0);
 
 		Integer currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		// +1 for the future contentId
@@ -171,7 +171,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		param.setRequestedContentId(CONTENTID);
 		param.setHash(HASH);
 		param.setSimHash(HashID.INTRA_HASH);
-		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
+		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(HASH, HashID.INTER_HASH, 50, 0, this.dbSession).get(0);
 
 		Integer result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
 		assertEquals(0, result);
@@ -249,7 +249,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		param.setSimHash(HashID.INTRA_HASH);
 		final TagParam tagparam = this.tagParam;
 		tagparam.setRequestedContentId(CONTENTID);
-		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(param, this.dbSession).get(0);
+		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(HASH, HashID.INTRA_HASH, 50, 0, this.dbSession).get(0);
 
 		Integer res_original = this.generalDb.countTasIds(tagparam, this.dbSession);
 		Integer result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);

@@ -92,7 +92,6 @@ public class AbstractDatabaseManager {
 	 * method here to catch exceptions, namely SQLException, which can be thrown
 	 * from that call.
 	 */
-	@SuppressWarnings("unchecked")
 	private Object queryForAnything(final String query, final Object param, final QueryFor queryFor, final boolean ignoreException, final DBSession session) {
 		return session.transactionWrapper(query, param, null, StatementType.SELECT, queryFor, ignoreException);
 	}
@@ -103,7 +102,6 @@ public class AbstractDatabaseManager {
 	 * method here to catch exceptions, namely SQLException, which can be thrown
 	 * from that call.
 	 */
-	@SuppressWarnings("unchecked")
 	private Object queryForAnything(final String query, final Object param, Object result, final QueryFor queryFor, final boolean ignoreException, final DBSession session) {
 		return session.transactionWrapper(query, param, result, StatementType.SELECT, queryFor, ignoreException);
 	}

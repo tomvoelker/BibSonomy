@@ -18,6 +18,9 @@ import org.bibsonomy.model.enums.Order;
  */
 public class GetBibTexByAuthor extends BibTexHashElement {
 
+	/**
+	 * TODO: improve docs
+	 */
 	public GetBibTexByAuthor() {
 		setSearch(true);
 		setGroupingEntity(GroupingEntity.VIEWABLE);
@@ -30,6 +33,6 @@ public class GetBibTexByAuthor extends BibTexHashElement {
 	 */
 	@Override
 	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexByAuthor(param, session);
+		return this.db.getPostsByAuthor(param, session);
 	}
 }

@@ -28,6 +28,6 @@ public class GetBibtexByConceptForGroup extends BibTexHashElement {
 
 	@Override
 	public List<Post<BibTex>> perform(BibTexParam param, DBSession session) {
-		return this.db.getBibTexByConceptForGroup(param, session);
+		return this.db.getPostsByConceptForGroup(param, session);
 	}
 }

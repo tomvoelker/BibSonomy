@@ -21,7 +21,7 @@ public class GetBookmarksByFollowedUsers extends BookmarkChainElement {
 
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		return this.db.getBookmarkByFollowedUsers(param.getUserName(), 
+		return this.db.getPostsByFollowedUsers(param.getUserName(), 
 												  param.getGroups(),
 												  param.getLimit(),
 												  param.getOffset(),

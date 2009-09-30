@@ -21,7 +21,7 @@ public class GetBibtexByConceptForGroup extends BibTexChainElement {
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) { 
-		return this.db.getBibTexByConceptForGroup(param, session);
+		return this.db.getPostsByConceptForGroup(param, session);
 	}
 
 	@Override

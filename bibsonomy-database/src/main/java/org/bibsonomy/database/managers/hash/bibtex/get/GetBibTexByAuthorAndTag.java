@@ -16,6 +16,9 @@ import org.bibsonomy.model.enums.Order;
  */
 public class GetBibTexByAuthorAndTag extends BibTexHashElement {
 
+	/**
+	 * 
+	 */
 	public GetBibTexByAuthorAndTag() {
 		setSearch(true);
 		setTagIndex(true);

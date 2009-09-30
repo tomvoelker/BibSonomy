@@ -1,6 +1,5 @@
 package org.bibsonomy.database.managers.chain.bibtex.get;
 
-import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
@@ -11,7 +10,6 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns all BibTex's of users you are following.
@@ -24,11 +22,7 @@ public class GetBibtexByFollowedUsers extends BibTexChainElement {
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexByFollowedUsers(param.getUserName(), 
-												param.getGroups(), 
-												param.getLimit(), 
-												param.getOffset(), 
-												session);
+		return this.db.getPostsByFollowedUsers(param.getUserName(), param.getGroups(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override

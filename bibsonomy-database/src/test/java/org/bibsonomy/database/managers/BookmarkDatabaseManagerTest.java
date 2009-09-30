@@ -72,18 +72,18 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getBookmarkByTagNamesCount() {
-		int groupId = GroupID.PUBLIC.getId();	
-		List<TagIndex> tagIndex = new ArrayList<TagIndex>();		
-		TagIndex t1 = new TagIndex("suchmaschine",1);	
-		TagIndex t2 = new TagIndex("google",2);	
-		TagIndex t3 = new TagIndex("yahoo",3);	
+		final int groupId = GroupID.PUBLIC.getId();	
+		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();		
+		final TagIndex t1 = new TagIndex("suchmaschine",1);	
+		final TagIndex t2 = new TagIndex("google",2);	
+		final TagIndex t3 = new TagIndex("yahoo",3);	
 				
 		tagIndex.add(t1);			
-		assertEquals(3, this.bookmarkDb.getBookmarkByTagNamesCount(tagIndex, groupId, this.dbSession));
+		assertEquals(3, this.bookmarkDb.getPostsByTagNamesCount(tagIndex, groupId, this.dbSession));
 		tagIndex.add(t2);
-		assertEquals(1, this.bookmarkDb.getBookmarkByTagNamesCount(tagIndex, groupId, this.dbSession));
+		assertEquals(1, this.bookmarkDb.getPostsByTagNamesCount(tagIndex, groupId, this.dbSession));
 		tagIndex.add(t3);
-		assertEquals(0, this.bookmarkDb.getBookmarkByTagNamesCount(tagIndex, groupId, this.dbSession));
+		assertEquals(0, this.bookmarkDb.getPostsByTagNamesCount(tagIndex, groupId, this.dbSession));
 	}
 
 	/**
@@ -175,9 +175,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getBookmarkPopular() {
-		BookmarkParam param = new BookmarkParam();
-		param.setDays(0);
-		final List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkPopular(param, this.dbSession);
+		// TODO: intraHash correct?
+		final List<Post<Bookmark>> posts = this.bookmarkDb.getPostsPopular(0, 30, 0, HashID.INTER_HASH, this.dbSession);
 		assertEquals(1, posts.size());
 	}
 
@@ -204,7 +203,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkByHashCount() {
 		Integer count = -1;
 		final String requHash = "b7aa3a91885e432c6c95bec0145c3968";
-		count = this.bookmarkDb.getBookmarkByHashCount(requHash, HashID.INTRA_HASH, this.dbSession);
+		count = this.bookmarkDb.getPostsByHashCount(requHash, HashID.INTRA_HASH, this.dbSession);
 		assertTrue(count >= 0);
 	}
 
@@ -243,10 +242,10 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String requestedUserName = "testuser1";
 		final String search = "suchmaschine";
 		final int groupId = GroupID.PUBLIC.getId();
-		List<Post<Bookmark>> post = this.bookmarkDb.getBookmarkSearch(groupId, search, requestedUserName, 10, 0, this.dbSession);
+		List<Post<Bookmark>> post = this.bookmarkDb.getPostsSearch(groupId, search, requestedUserName, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
 		// you don't need requestedUserName
-		post = this.bookmarkDb.getBookmarkSearch(groupId, search, null, 10, 0, this.dbSession);
+		post = this.bookmarkDb.getPostsSearch(groupId, search, null, 10, 0, this.dbSession);
 		assertEquals(1, post.size());
 	}
 
@@ -263,10 +262,10 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String search = "suchmaschine";
 		final GroupID groupType = GroupID.PUBLIC;
 		Integer count = -1;
-		count = this.bookmarkDb.getBookmarkSearchCount(groupType, search, requestedUserName, this.dbSession);
+		count = this.bookmarkDb.getPostsSearchCount(groupType, search, requestedUserName, this.dbSession);
 		assertEquals(1, count);
 		count = -1;
-		count = this.bookmarkDb.getBookmarkSearchCount(groupType, search, null, this.dbSession);
+		count = this.bookmarkDb.getPostsSearchCount(groupType, search, null, this.dbSession);
 		assertEquals(1, count);
 	}
 	
@@ -287,7 +286,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		visibleGroupIDs.add(0);
 
-		List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkSearch(groupId, search, userName, limit, offset, this.dbSession);
+		List<Post<Bookmark>> posts = this.bookmarkDb.getPostsSearch(groupId, search, userName, limit, offset, this.dbSession);
 		assertEquals(1, posts.size());
 		
 	}
@@ -363,18 +362,19 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	// FIXME: test is only successfully when running alone
 	@Ignore
+	@Test
 	public void getBookmarkForGroupCount() {
 		//approximated number of bookmarks, users own private/friends bookmarks are not included
 		Integer count = -1;
-		String requestedUserName = "";
-		String loginUserName = "";
-		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		final String requestedUserName = "";
+		final String loginUserName = "";
+		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		
-		count = this.bookmarkDb.getBookmarkForGroupCount(requestedUserName, loginUserName, 3, visibleGroupIDs, this.dbSession);
+		count = this.bookmarkDb.getPostsForGroupCount(requestedUserName, loginUserName, 3, visibleGroupIDs, this.dbSession);
 		assertEquals(4, count);
-		count = this.bookmarkDb.getBookmarkForGroupCount(requestedUserName, loginUserName, 3, visibleGroupIDs, this.dbSession);
+		count = this.bookmarkDb.getPostsForGroupCount(requestedUserName, loginUserName, 3, visibleGroupIDs, this.dbSession);
 		assertEquals(4, count);
-		count = this.bookmarkDb.getBookmarkForGroupCount(requestedUserName, loginUserName, 4, visibleGroupIDs, this.dbSession);
+		count = this.bookmarkDb.getPostsForGroupCount(requestedUserName, loginUserName, 4, visibleGroupIDs, this.dbSession);
 		assertEquals(2, count);
 	}
 
@@ -459,19 +459,20 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	// FIXME: test is only successfully when running alone
 	@Ignore
+	@Test
 	public void getBookmarkForUserCount() {
 		Integer count = -1;
 		int groupId = 0;
 		String requestedUserName = "testuser1";
 		String loginUserName = "";
 		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
-		count =  this.bookmarkDb.getBookmarkForUserCount(requestedUserName, loginUserName, groupId, visibleGroupIDs, this.dbSession);	
+		count =  this.bookmarkDb.getPostsForUserCount(requestedUserName, loginUserName, groupId, visibleGroupIDs, this.dbSession);	
 		assertEquals(2, count);
 		requestedUserName = "testuser2";
-		count =  this.bookmarkDb.getBookmarkForUserCount(requestedUserName, loginUserName, groupId, visibleGroupIDs, this.dbSession);	
+		count =  this.bookmarkDb.getPostsForUserCount(requestedUserName, loginUserName, groupId, visibleGroupIDs, this.dbSession);	
 		assertEquals(2, count);
 		requestedUserName = "testuser3";
-		count =  this.bookmarkDb.getBookmarkForUserCount(requestedUserName, loginUserName, groupId, visibleGroupIDs, this.dbSession);	
+		count =  this.bookmarkDb.getPostsForUserCount(requestedUserName, loginUserName, groupId, visibleGroupIDs, this.dbSession);	
 		assertEquals(1, count);
 	}
 	
@@ -616,7 +617,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getContentIDForBookmark() {
 		final String requBibtex = "7eda282d1d604c702597600a06f8a6b0";
 		final String userName = "testuser2";
-		assertEquals(3, this.bookmarkDb.getContentIDForBookmark(requBibtex, userName, this.dbSession));
+		assertEquals(3, this.bookmarkDb.getContentIDForPost(requBibtex, userName, this.dbSession));
 	}
 	
 	/**
@@ -679,11 +680,11 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		/*
 		 * testuser 1 follows testuser 2 and 3, who have 3 bookmark posts
 		 */
-		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		visibleGroupIDs.add(0);
 		visibleGroupIDs.add(1);
 		visibleGroupIDs.add(2);
-		List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkByFollowedUsers("testuser1", visibleGroupIDs, 10, 0, this.dbSession);
+		final List<Post<Bookmark>> posts = this.bookmarkDb.getPostsByFollowedUsers("testuser1", visibleGroupIDs, 10, 0, this.dbSession);
 		assertEquals(3, posts.size());
 		assertEquals("testuser2", posts.get(0).getUser().getName());
 		assertEquals("20592a292e53843965c1bb42bfd51876", posts.get(0).getResource().getIntraHash());		

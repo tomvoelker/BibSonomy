@@ -3,7 +3,6 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,22 +72,13 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
+	 * XXXDZ
+	 * 
 	 * <em>/bibtex/023847123ffa8976a969786f876f78e68</em><br/><br/>
 	 * 
 	 * Prepares a query which retrieves all publications whose hash
 	 * simHash is equal to a given hash. Only public posts are
 	 * retrieved.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexByHash(final BibTexParam param, final DBSession session) {
-		return this.bibtexList("getBibTexByHash", param, session);
-	}
-
-	/**
-	 * @see BibTexDatabaseManager#getBibTexByHash(BibTexParam, DBSession)
 	 * 
 	 * @param hash
 	 * @param hashId
@@ -106,70 +96,16 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setOffset(offset);
 		return this.bibtexList("getBibTexByHash", param, session);
 	}
-
-	/**
-	 * Returns the number of publications for a given hash.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return number of publications for a given hash
-	 */
-	public Integer getBibTexByHashCount(final BibTexParam param, final DBSession session) {
-		return this.queryForObject("getBibTexByHashCount", param, Integer.class, session);
-	}
 	
 	/**
-	 * @see BibTexDatabaseManager#getBibTexByHashCount(BibTexParam, DBSession)
+	 * XXXDZ
 	 * 
-	 * @param requHash
-	 * @param simHash
-	 * @param session
-	 * @return number of publications for a given hash
-	 */
-	public Integer getBibTexByHashCount(final String requHash, final HashID simHash, final DBSession session) {
-		BibTexParam param = new BibTexParam();
-		param.setHash(requHash);
-		param.setSimHash(simHash);
-		return this.queryForObject("getBibTexByHashCount", param, Integer.class, session);
-	}
-	
-	/** 
-	 * @param requHash
-	 * @param simHash
-	 * @param userName
-	 * @param session
-	 * @return number of publications for a given hash and a user
-	 */
-	public Integer getBibTexByHashAndUserCount(final String requHash, final HashID simHash, final String userName, final DBSession session) {
-		BibTexParam param = new BibTexParam();
-		param.setHash(requHash);
-		param.setSimHash(simHash);
-		param.setUserName(userName);
-		return this.queryForObject("getBibTexByHashAndUserCount", param, Integer.class, session);
-	}
-
-	/**
 	 * <em>/tag/EinTag</em>, <em>/viewable/EineGruppe/EinTag</em><br/><br/>
 	 * 
 	 * On the <em>/tag</em> page only public entries are shown (groupType must
 	 * be set to public) which have all of the given tags attached. On the
 	 * <em>/viewable/</em> page only posts are shown which are set viewable to
 	 * the given group and which have all of the given tags attached.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexByTagNames(final BibTexParam param, final DBSession session) {
-		if (Order.FOLKRANK.equals(param.getOrder())){
-			param.setGroupId(GroupID.PUBLIC.getId());
-			return this.bibtexList("getBibTexByTagNamesAndFolkrank", param, session);
-		}
-		return this.bibtexList("getBibTexByTagNames", param, session);
-	}
-	
-	/**
-	 * @see BibTexDatabaseManager#getBibTexByTagNames(BibTexParam, DBSession)
 	 * 
 	 * @param groupId
 	 * @param tagIndex
@@ -179,7 +115,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getBibTexByTagNames(final Integer groupId, final List<TagIndex> tagIndex, final int limit, final int offset, final DBSession session) {
-		BibTexParam param = new BibTexParam();
+		final BibTexParam param = new BibTexParam();
 		param.setGroupId(groupId);
 		param.setLimit(limit);
 		param.setOffset(offset);
@@ -192,21 +128,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
-	 * Counts the number of visible bibtex entries for a given list of tags
+	 * TODO: remove me!!!
 	 * 
-	 * @param tagIndex a list of tags
-	 * @param session DB session
-	 * @param groupId a group id
-	 * @return the number of visible bibtex entries
-	 */
-	public Integer getBibtexByTagNamesCount(final List<TagIndex> tagIndex, final int groupId, final DBSession session) {
-		BibTexParam param = new BibTexParam();
-		param.setGroupId(groupId);
-		param.setTagIndex(tagIndex);		
-		return this.queryForObject("getBibTexByTagNamesCount", param, Integer.class, session);
-	}
-
-	/**
 	 * <em>/user/MaxMustermann/EinTag</em><br/><br/>
 	 * 
 	 * This method prepares queries which retrieve all publications for a given
@@ -221,6 +144,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param session
 	 * @return list of bibtex posts
 	 */
+	@Deprecated
 	public List<Post<BibTex>> getBibTexByTagNamesForUser(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		HashID.getSimHash(param.getSimHash()); // ensures correct simHash is set (exception would be thrown otherwise)
@@ -242,6 +166,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
+	 * XXXDZ
+	 * 
 	 * @see BibTexDatabaseManager#getBibTexByTagNamesForUser(BibTexParam, DBSession)
 	 * 
 	 * @param requestedUserName
@@ -265,31 +191,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
-	 * Retrieves the number of bibtex items tagged by the tags present in tagIndex by user requestedUserName
-	 * being visible to the logged in user
+	 * TODO: remove me
 	 * 
-	 * @param requestedUserName
-	 * 			owner of the bibtex items
-	 * @param loginUserName
-	 * 			logged in user
-	 * @param tagIndex
-	 * 			a list of tags
-	 * @param visibleGroupIDs
-	 * 			a list of groupIDs the logged in user is member of
-	 * @param session
-	 * 			DB session
-	 * @return the corresponding number of visible bibtex items
-	 */
-	public Integer getBibTexByTagNamesForUserCount(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session) {
-		BibTexParam param = new BibTexParam();
-		param.addGroups(visibleGroupIDs);
-		param.setRequestedUserName(requestedUserName);
-		param.setUserName(loginUserName);
-		param.setTagIndex(tagIndex);
-		return this.queryForObject("getBibTexByTagNamesForUserCount", param, Integer.class, session);
-	}
-
-	/**
 	 * <em>/concept/user/MaxMustermann/EinTag</em><br/><br/>
 	 * 
 	 * This method prepares queries which retrieve all publications for a given
@@ -314,6 +217,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
+	 * XXXDZ
+	 * 
 	 * @see BibTexDatabaseManager#getBibTexByConceptForUser(BibTexParam, DBSession)
 	 * 
 	 * @param loginUser
@@ -340,24 +245,12 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
+	 * XXXDZ
+	 * 
 	 * <em>/concept/group/EineGruppe/EinTag</em><br/><br/>
 	 * 
 	 * This method retrieves all bibtex of all group members of the given group
 	 * which are tagged at least with one of the concept tags or its subtags.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexByConceptForGroup(final BibTexParam param, final DBSession session) {
-		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
-		return this.bibtexList("getBibTexByConceptForGroup", param, session);
-	}
-
-	/**
-	 * @see BibTexDatabaseManager#getBibTexByConceptForGroup(BibTexParam, DBSession)
-	 * 
-	 * Returns a BibTex for a given concept and a user.
 	 * 
 	 * @param loginUser
 	 * @param conceptName
@@ -379,6 +272,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
+	 * TODO: remove me
+	 * 
 	 * <em>/friends</em><br/><br/>
 	 * 
 	 * Prepares queries which show all posts of users which have userName as
@@ -395,6 +290,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
+	 * XXXDZ
+	 * 
 	 * @see BibTexDatabaseManager#getBibTexByUserFriends(BibTexParam, DBSession)
 	 * 
 	 * @param loginUser
@@ -416,6 +313,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
+	 * TODO: remove me!!!
+	 * 
 	 * This method prepares a query which retrieves all publications the user
 	 * has in his basket list. The result is shown on the page
 	 * <em>/basket</em>. Since every user can only see his <em>own</em>
@@ -431,6 +330,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
+	 * XXXDZ
+	 * 
 	 * @see BibTexDatabaseManager#getBibTexFromBasketForUser(BibTexParam, DBSession)
 	 * 
 	 * @param loginUser
@@ -449,6 +350,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
+	 * TODO: remove!!
+	 * 
 	 * This method prepares queries which retrieve all publications for the home
 	 * page of BibSonomy. These are typically the X last posted entries. Only
 	 * public posts are shown.
@@ -481,6 +384,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
+	 * TODO: remove me
+	 * 
 	 * This method prepares queries which retrieve all publications for the
 	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
 	 * separate temporary tables which are filled by an external script.
@@ -492,44 +397,10 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	public List<Post<BibTex>> getBibTexPopular(final BibTexParam param, final DBSession session) {
 		return this.bibtexList("getBibTexPopular", param, session);
 	}
-
-	/**
-	 * @see BibTexDatabaseManager#getBibTexPopular(BibTexParam, DBSession)
-	 * 
-	 * @param limit
-	 * @param offset
-	 * @param simHash
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexPopular(final int limit, final int offset, final HashID simHash, final DBSession session) {
-		final BibTexParam param = new BibTexParam();
-		param.setLimit(limit);
-		param.setOffset(offset);
-		param.setSimHash(simHash);
-		return this.bibtexList("getBibTexPopular", param, session);
-	}
 	
 	/**
-	 * @see BibTexDatabaseManager#getBibTexPopular(BibTexParam, DBSession)
+	 * TODO: remove me !
 	 * 
-	 * @param days
-	 * @param limit
-	 * @param offset 
-	 * @param session
-	 * @param simHash
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexPopular(final int days, final int limit, final int offset, final HashID simHash, final DBSession session) {
-		final BibTexParam param = new BibTexParam();
-		param.setDays(days);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		param.setSimHash(simHash);
-		return this.bibtexList("getBibTexPopular", param, session);
-	}
-	
-	/**
 	 * <em>/search/ein+lustiger+satz</em><br/><br/>
 	 * 
 	 * Prepares queries to retrieve posts which match a fulltext search in the
@@ -551,62 +422,12 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
-	 * @see BibTexDatabaseManager#getBibTexSearchForGroup(BibTexParam, DBSession)
-	 * 
-	 * @param groupId
-	 * @param visibleGroupIDs
-	 * @param search
-	 * @param userName
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of bibtex entries
-	 */
-	public List<Post<BibTex>> getBibTexSearchForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String search, final String userName, final int limit, final int offset, final DBSession session) {
-		final BibTexParam param = new BibTexParam();
-		param.setGroupId(groupId);
-		param.setSearch(search);
-		param.setUserName(userName);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		param.setGroups(visibleGroupIDs);
-		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
-		return this.bibtexList("getBibTexSearchForGroup", param, session);
-	}
-	
-	
-	/**
+	 * TODO: DatabaseUtils call missing!
 	 * <em>/search/ein+lustiger+satz+group%3AmyGroup</em><br/><br/>
 	 * 
 	 * Prepares queries to retrieve posts which match a fulltext search in the
 	 * fulltext search table with the requested group<br/>
 	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexSearchForGroup(final BibTexParam param, final DBSession session) {
-		return this.bibtexList("getBibTexSearchForGroup", param, session);
-	}
-
-	/**
-	 * @see BibTexDatabaseManager#getBibTexSearch(GroupID, String, String, int, int, DBSession)
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bibtex posts
-	 * @throws IOException 
-	 * /
-	public List<Post<BibTex>> getBibTexSearchLucene(final BibTexParam param, final DBSession session) throws IOException {
-
-		return this.getBibTexSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
-		
-	}
-*/	
-	
-	/**
-	 * @see BibTexDatabaseManager#getBibTexSearch(BibTexParam, DBSession)
-	 * 
 	 * @param groupId
 	 * @param search
 	 * @param requestedUserName
@@ -615,29 +436,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param session
 	 * @return list of bibtex posts
 	 */
-
-	public List<Post<BibTex>> getBibTexSearch(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
-		final BibTexParam param = new BibTexParam();
-		param.setGroupId(groupId);
-		param.setSearch(search);
-		param.setRequestedUserName(requestedUserName);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		return this.bibtexList("getBibTexSearch", param, session);
-	}
-	
-	/**
-	 * @see BibTexDatabaseManager#getBibTexSearch(BibTexParam, DBSession)
-	 * 
-	 * @param groupId
-	 * @param search
-	 * @param requestedUserName
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-
 	public List<Post<BibTex>> getBibTexSearchForGroup(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setGroupId(groupId);
@@ -645,103 +443,12 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setRequestedUserName(requestedUserName);
 		param.setLimit(limit);
 		param.setOffset(offset);
-		return this.bibtexList("getBibTexSearch", param, session);
-	}
-
-	/**
-	 * Prepares queries to retrieve posts which match a fulltext search in lucene index <br/>
-	 * @param groupId 
-	 * @param search
-	 * @param requestedUserName
-	 * @param UserName 
-	 * @param GroupNames 
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames, final int limit, final int offset, final DBSession session) {
-		// postBibtexList = new ResultList<Post<BibTex>>();
-/*
-		final BibTexParam param = new BibTexParam();
-		param.setGroupId(groupId);
-		param.setSearch(search);
-		param.setRequestedUserName(requestedUserName);
-		param.setLimit(limit);
-		param.setOffset(offset);
-*/
-		// get list of ids from lucene
-
-		// get groupname by group 
-		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-		String group = groupDb.getGroupNameByGroupId(groupId, session);
 		
-		final LuceneSearchBibTex lucene = LuceneSearchBibTex.getInstance();
-
-
-//		ArrayList<Integer> contentIds = new ArrayList<Integer>();
-		long starttimeQuery = System.currentTimeMillis();
-
-//		contentIds = lucene.searchLucene(groupId, search, requestedUserName, limit, offset);
-		final List<Post<BibTex>> postBibtexList = lucene.searchLucene(group, search, requestedUserName, UserName, GroupNames, limit, offset);
-
-		long endtimeQuery = System.currentTimeMillis();
-		log.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
-
-		
-
-/*
-		long starttimeTable = System.currentTimeMillis();
-		LuceneHelper luceneTTable = new LuceneHelper();
-		// create temp. table
-		luceneTTable.createTTable(session);
-
-		// delete all content in temp. table
-		luceneTTable.truncateTTable(session);
-
-		// store content ids in temp. table
-		luceneTTable.fillTTable(contentIds, session);
-		long endtimeTable = System.currentTimeMillis();
-		LOGGER.debug("LuceneBibTex: filled temp. table with requested lucene ids in " + (endtimeTable-starttimeTable) + "ms");
-*/
-
-//		return this.bibtexList("getBibTexSearchLucene", param, session);
-		return postBibtexList;
-	}
-
-	
-	/**
-	 * Returns the number of publications for a given search.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return number of publications for a given search
-	 */
-	public Integer getBibTexSearchCount(final BibTexParam param, final DBSession session) {
-		return this.queryForObject("getBibTexSearchCount", param, Integer.class, session);
+		return this.bibtexList("getBibTexSearch", param, session); // FIXME: why not SearchForGroup (was in param method)
 	}
 
 	/**
-	 * @see BibTexDatabaseManager#getBibTexSearchCount(BibTexParam, DBSession)
-	 * 
-	 * @param groupType
-	 * @param search 
-	 * @param requestedUserName
-	 * @param session
-	 * @return number of publications for a given search
-	 */
-	public Integer getBibTexSearchCount(final GroupID groupType, final String search, final String requestedUserName, final DBSession session) {
-		final BibTexParam param = new BibTexParam();
-		param.setGroupType(groupType);
-		param.setSearch(search);
-		param.setRequestedUserName(requestedUserName);
-		return this.queryForObject("getBibTexSearchCount", param, Integer.class, session);
-	}
-
-	/**
-	 * <em>/viewable/EineGruppe</em><br/><br/>
-	 * 
-	 * Prepares queries to retrieve posts which are set viewable to group.
+	 * TODO param get requested group name => remove me
 	 * 
 	 * @param param
 	 * @param session
@@ -757,7 +464,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
-	 * @see BibTexDatabaseManager#getBibTexViewable(BibTexParam, DBSession)
+	 * XXXDZ
+	 * 
+	 * <em>/viewable/EineGruppe</em><br/><br/>
+	 * 
+	 * Prepares queries to retrieve posts which are set viewable to group.
 	 * 
 	 * @param requestedGroupName
 	 * @param loginUserName 
@@ -785,6 +496,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
+	 * TODO: remove param
+	 * 
 	 * Returns viewable BibTexs for a given tag.
 	 * 
 	 * @param param
@@ -802,6 +515,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
+	 * XXXDZ
+	 * 
 	 * @see BibTexDatabaseManager#getBibTexViewableByTag(BibTexParam, DBSession)
 	 * 
 	 * @param groupId
@@ -838,7 +553,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param session
 	 * @return list of bibtex posts
 	 */
-	public List<Post<BibTex>> getBibTexDuplicate(final BibTexParam param, final DBSession session) {
+	private List<Post<BibTex>> getBibTexDuplicate(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.bibtexList("getBibTexDuplicate", param, session);
 	}
@@ -857,29 +572,20 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setRequestedUserName(requestedUserName);
 		param.setGroups(visibleGroupIDs);
 		param.setSimHash(simHash);
-		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
-		return this.bibtexList("getBibTexDuplicate", param, session);
-	}
-
-	/**
-	 * Returns the number of duplicates (i.e. BibTex posts) of a given user.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return number of duplicates
-	 */
-	public Integer getBibTexDuplicateCount(final BibTexParam param, final DBSession session) {
-		return this.queryForObject("getBibTexDuplicateCount", param, Integer.class, session);
+		
+		return this.getBibTexDuplicate(param, session);
 	}
 	
 	/**
-	 * @see BibTexDatabaseManager#getBibTexDuplicateCount(BibTexParam, DBSession)
+	 * TODO: move to PostDatabaseManager ??
+	 * TODO: check method
+	 * 
+	 * Returns the number of duplicates (i.e. BibTex posts) of a given user.
 	 * 
 	 * @param requestedUserName
 	 * @param session
 	 * @return number of duplicates
 	 */
-	// TODO: check method
 	public Integer getBibTexDuplicateCount(final String requestedUserName, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setRequestedUserName(requestedUserName);
@@ -960,45 +666,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
-	 * Returns the number of publications belonging to the group.<br/><br/>
-	 * 
-	 * TODO: these are just approximations - users own private/friends bookmarks
-	 * and friends bookmarks are not included (same for publications).
-	 * 
-	 * @param param
-	 * @param session
-	 * @return number of publications belonging to the given group
-	 */
-	public Integer getBibTexForGroupCount(final BibTexParam param, final DBSession session) {
-		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
-		return this.queryForObject("getBibTexForGroupCount", param, Integer.class, session);
-	}
-	
-	/**
-	 * @param requestedUserName 
-	 * @param userName 
-	 * @see BibTexDatabaseManager#getBibTexForGroupCount(BibTexParam, DBSession)
-	 * 
-	 * Returns the number of publications
-	 * 
-	 * @param groupId
-	 * @param visibleGroupIDs 
-	 * @param session
-	 * @return the (approximated) number of resources posted to the group with the given groupID
-	 * 
-	 * visibleGroupIDs && userName && (userName != requestedUserName) optional
-	 */
-	public Integer getBibTexForGroupCount(final String requestedUserName, final String userName, final int groupId, final List<Integer> visibleGroupIDs, DBSession session) {
-		BibTexParam param = new BibTexParam();
-		param.setRequestedUserName(requestedUserName);
-		param.setUserName(userName);
-		param.setGroups(visibleGroupIDs);
-		param.setGroupId(groupId);
-		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
-		return this.queryForObject("getBibTexForGroupCount", param, Integer.class, session);
-	}
-
-	/**
 	 * <em>/group/EineGruppe/EinTag+NochEinTag</em><br/><br/>
 	 * 
 	 * Does basically the same as getBibTexForGroup with the additionaly
@@ -1027,6 +694,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
+	 * XXXDZ
+	 * 
 	 * @see BibTexDatabaseManager#getBibTexForGroupByTag(BibTexParam, DBSession)
 	 * 
 	 * @param tagIndex
@@ -1129,45 +798,9 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setGroupId(groupId);
 		param.setLimit(limit);
 		param.setOffset(offset);
+		
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.bibtexList("getBibTexForUser", param, session);
-	}
-
-	/**
-	 * Returns the number of publications for a given user.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return number of publications for a given user
-	 */
-	public Integer getBibTexForUserCount(final BibTexParam param, final DBSession session) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		return this.queryForObject("getBibTexForUserCount", param, Integer.class, session);
-	}
-
-	/**
-	 * @see BibTexDatabaseManager#getBibTexForUserCount(BibTexParam, DBSession)
-	 * 
-	 * Returns the number of publications for a given user
-	 * 
-	 * @param requestedUserName
-	 * @param userName 
-	 * @param groupId 
-	 * @param visibleGroupIDs 
-	 * @param session
-	 * @return the number of publications of the requested user which the logged in user is allowed to see
-	 * 
-	 * groupId or
-	 * visibleGroupIDs && userName && (userName != requestedUserName)
-	 */
-	public Integer getBibTexForUserCount(final String requestedUserName, final String userName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
-		final BibTexParam param = new BibTexParam();
-		param.setRequestedUserName(requestedUserName);
-		param.setUserName(userName);
-		param.setGroupId(groupId);
-		param.setGroups(visibleGroupIDs);
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		return this.queryForObject("getBibTexForUserCount", param, Integer.class, session);
 	}
 	
 	private List<Post<BibTex>> getLoggedBibTexByHashForUser(final String loginUserName, final String intraHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session, final HashID hashType) {
@@ -1181,16 +814,10 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);		
 		return this.bibtexList("getLoggedHashesByHashForUser", param, session);
 	}
-
-	/**
-	 * Return a contentId for a BibTex with a given hash and for a given user.
-	 * 
-	 * @param hash
-	 * @param userName
-	 * @param session
-	 * @return contentId
-	 */
-	public int getContentIdForBibTex(final String hash, final String userName, final DBSession session) {
+	
+	// FIXME: change one of the sql statment ids to Id or ID
+	@Override
+	public Integer getContentIDForPost(final String hash, final String userName, final DBSession session) {
 		if (present(hash) == false || present(userName) == false) {
 			throw new RuntimeException("Hash and user name must be set");
 		}
@@ -1219,7 +846,213 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		
 		return posts;
 	}
+	
+	/**
+	 * TODO: param.getGroup() : String
+	 * 
+	 * @param param 
+	 * @param session 
+	 * @return list of bibtex entries
+	 */
+	public List<Post<BibTex>> getPostsByAuthor(final BibTexParam param, final DBSession session){
+		return this.bibtexList("getBibTexByAuthor",param,session);
+	}
+	
+	/**
+	 * <em>/author/MaxMustermann</em><br/><br/>
+	 * This method prepares queries which retrieve all publications for a given
+	 * author name (restricted by group public).
+	 * 
+	 * @param search
+	 * @param groupType
+	 * @param requestedUserName
+	 * @param requestedGroupName 
+	 * @param year 
+	 * @param firstYear 
+	 * @param lastYear 
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of bibtex entries
+	 */
+	public List<Post<BibTex>> getPostsByAuthor(final String search, final GroupID groupType, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int limit, final int offset, final DBSession session){
+		BibTexParam param = new BibTexParam();
+		param.setSearch(search);
+		param.setGroupType(groupType);
+		param.setRequestedUserName(requestedUserName);
+		param.setRequestedGroupName(requestedGroupName);
+		param.setYear(year);
+		param.setFirstYear(firstYear);
+		param.setLastYear(lastYear);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setSimHash(HashID.INTER_HASH);
+		
+		return this.bibtexList("get" + this.resourceClassName + "ByAuthor",param,session);
+	}
 
+	/**
+	 * TODO: improve doc
+	 * FIXME: check method
+	 * TODO: move time logging into Lucene!? @see {@link PostDatabaseManager#getPostsSearchLucene(int, String, String, String, java.util.Set, int, int, DBSession)}
+	 * 
+	 * @param search
+	 * @param groupType
+	 * @param requestedUserName
+	 * @param requestedGroupName 
+	 * @param year 
+	 * @param firstYear 
+	 * @param lastYear 
+	 * @param limit
+	 * @param offset
+	 * @param simHash 
+	 * @param tagIndex 
+	 * @param session
+	 * @return list of bibtex entries
+	 */
+	public List<Post<BibTex>> getPostsByAuthorLucene(String search, int groupType, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, final int limit, final int offset, final int simHash, final List<String> tagIndex, final DBSession session){
+		ResultList<Post<BibTex>> postBibtexList = new ResultList<Post<BibTex>>();
+		
+//		BibTexParam param = new BibTexParam();
+//		param.setSearch(search);
+//		param.setGroupType(groupType);
+//		param.setRequestedUserName(requestedUserName);
+//		param.setRequestedGroupName(requestedGroupName);
+//		param.setYear(year);
+//		param.setFirstYear(firstYear);
+//		param.setLastYear(lastYear);
+//		param.setLimit(limit);
+//		param.setOffset(offset);
+//		param.setSimHash(HashID.INTER_HASH);
+
+		// TODO Lucene		
+		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+		String group = groupDb.getGroupNameByGroupId(groupType, session);
+
+		final LuceneSearchBibTex lucene = LuceneSearchBibTex.getInstance();
+
+//		List<Integer> contentIds = new ArrayList<Integer>();
+		long starttimeQuery = System.currentTimeMillis();
+		
+//		contentIds = lucene.searchLucene(groupId, search, requestedUserName, limit, offset);
+		//(Resource resourceType, GroupingEntity groupingEntity, String groupingName, ArrayList<String> tags, String hash, Order order, FilterEntity filter, int offset, int limit, String search)
+		postBibtexList = lucene.searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, limit, offset);
+		
+		long endtimeQuery = System.currentTimeMillis();
+		log.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+
+		return postBibtexList;
+	}
+	
+	
+	/**
+	 * TODO GroupID in getPostsByAuthorAndTag; remove me
+	 * 
+	 * @param param 
+	 * @param session 
+	 * @return list of bibtex entries
+	 */
+    public List<Post<BibTex>> getBibTexByAuthorAndTag(final BibTexParam param, final DBSession session){
+		return this.bibtexList("getBibTexByAuthorAndTag",param,session);
+	}
+    
+    /**
+     * <em>/author/MaxMustermann</em><br/><br/>
+	 * This method prepares queries which retrieve all publications for a given
+	 * author name and TagName(restricted by group public).
+	 * 
+     * @param search
+     * @param groupType
+     * @param requestedUserName 
+     * @param requestedGroupName 
+     * @param tagIndex
+     * @param year 
+     * @param firstYear 
+     * @param lastYear 
+     * @param limit
+     * @param offset
+     * @param session
+     * @return list of bibtex entries
+     */
+    public List<Post<BibTex>> getPostsByAuthorAndTag(final String search, final GroupID groupType, final String requestedUserName, final String requestedGroupName, final List<TagIndex> tagIndex, final String year, final String firstYear, final String lastYear, final int limit, final int offset, final DBSession session){
+		final BibTexParam param = this.getNewParam();
+		param.setSearch(search);
+		param.setGroupType(groupType);
+		param.setRequestedUserName(requestedUserName);
+		param.setRequestedGroupName(requestedGroupName);
+		param.setTagIndex(tagIndex);
+		param.setYear(year);
+		param.setFirstYear(firstYear);
+		param.setLastYear(lastYear);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setSimHash(HashID.INTER_HASH);
+		
+		return this.bibtexList("getBibTexByAuthorAndTag",param,session);
+	}
+
+	/**
+	 * <em>/bibtexkey/KEY</em> Returns a list of bibtex posts for a given
+	 * bibtexKey
+	 * 
+	 * @param param		a bibtex parameter object
+	 * @param session	a database session
+	 * @return list of bibtex posts
+	 */
+	public List<Post<BibTex>> getPostsByKey(BibTexParam param, DBSession session) {
+		return this.bibtexList("getBibTexByKey",param,session);
+	}
+	
+	// FIXME: change SQL id to getGroupBibTexCount and remove method
+	@Override
+	public int getGroupPostsCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){
+		BibTexParam param = new BibTexParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.setGroups(visibleGroupIDs);
+		
+		return (Integer) this.queryForObject("getGroupBibtexCount", param, session);
+	}
+	
+	// FIXME: change SQL id to getGroupBibTexCountByTag and remove method
+	@Override
+	public int getGroupPostsCountByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session){
+		BibTexParam param = new BibTexParam();
+		param.setTagIndex(tagIndex);
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.setGroups(visibleGroupIDs);
+		
+		return (Integer) this.queryForObject("getGroupBibtexCountByTag", param, session);
+	}
+	
+	// FIXME: change SQL id to getBibTexForMyGroupPosts and remove method
+	@Override
+	public List<Post<BibTex>> getPostsForMyGroupPosts(final String requestedUserName, final String loginUserName, final int limit, final int offset, final List<Integer> visibleGroupIDs, final DBSession session) {
+		BibTexParam param = new BibTexParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setGroups(visibleGroupIDs);
+		
+		return this.bibtexList("getBibtexForMyGroupPosts",param,session);
+	}
+	
+	// FIXME: change SQL id to getBibTexForMyGroupPosts and remove method
+	@Override
+	public List<Post<BibTex>> getPostsForMyGroupPostsByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final int limit, final int offset, final List<Integer> visibleGroupIDs, final DBSession session){
+		BibTexParam param = new BibTexParam();
+		param.setRequestedUserName(requestedUserName);
+		param.setUserName(loginUserName);
+		param.setTagIndex(tagIndex);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		param.setGroups(visibleGroupIDs);
+		
+		return this.bibtexList("getBibtexForMyGroupPostsByTag",param,session);
+	}
+	
 	/**
 	 * Gets the details of a post, including all extra data like (TODO!) 
 	 * given the INTRA-HASH of the post and the user name.
@@ -1281,293 +1114,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		return null;
 	}
 	
-	/**
-	 * <em>/author/MaxMustermann</em><br/><br/>
-	 * This method prepares queries which retrieve all publications for a given
-	 * author name (restricted by group public).
-	 * @param param 
-	 * @param session 
-	 * @return list of bibtex entries
-	 */
-	public List<Post<BibTex>> getBibTexByAuthor(final BibTexParam param, final DBSession session){
-		return this.bibtexList("getBibTexByAuthor",param,session);
-	}
-	
-	/**
-	 * @see BibTexDatabaseManager#getBibTexByAuthor(BibTexParam, DBSession)
-	 * 
-	 * @param search
-	 * @param groupType
-	 * @param requestedUserName
-	 * @param requestedGroupName 
-	 * @param year 
-	 * @param firstYear 
-	 * @param lastYear 
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of bibtex entries
-	 */
-	public List<Post<BibTex>> getBibTexByAuthor(final String search, final GroupID groupType, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int limit, final int offset, final DBSession session){
-		BibTexParam param = new BibTexParam();
-		param.setSearch(search);
-		param.setGroupType(groupType);
-		param.setRequestedUserName(requestedUserName);
-		param.setRequestedGroupName(requestedGroupName);
-		param.setYear(year);
-		param.setFirstYear(firstYear);
-		param.setLastYear(lastYear);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		param.setSimHash(HashID.INTER_HASH);
-		
-		return this.bibtexList("getBibTexByAuthor",param,session);
-	}
-
-	/**
-	 * @see BibTexDatabaseManager#getBibTexByAuthor(BibTexParam, DBSession)
-	 * 
-	 * @param search
-	 * @param groupType
-	 * @param requestedUserName
-	 * @param requestedGroupName 
-	 * @param year 
-	 * @param firstYear 
-	 * @param lastYear 
-	 * @param limit
-	 * @param offset
-	 * @param simHash 
-	 * @param tagIndex 
-	 * @param session
-	 * @return list of bibtex entries
-	 */
-	public List<Post<BibTex>> getBibTexByAuthorLucene(String search, int groupType, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, final int limit, final int offset, final int simHash, final List<String> tagIndex, final DBSession session){
-		ResultList<Post<BibTex>> postBibtexList = new ResultList<Post<BibTex>>();
-		
-		/*
-		BibTexParam param = new BibTexParam();
-		param.setSearch(search);
-		param.setGroupType(groupType);
-		param.setRequestedUserName(requestedUserName);
-		param.setRequestedGroupName(requestedGroupName);
-		param.setYear(year);
-		param.setFirstYear(firstYear);
-		param.setLastYear(lastYear);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		param.setSimHash(HashID.INTER_HASH);
-		*/
-
-		// TODO Lucene
-		
-		GroupDatabaseManager groupDb;
-		groupDb = GroupDatabaseManager.getInstance();
-		String group = groupDb.getGroupNameByGroupId(groupType, session);
-
-		final LuceneSearchBibTex lucene = LuceneSearchBibTex.getInstance();
-
-
-//		ArrayList<Integer> contentIds = new ArrayList<Integer>();
-		long starttimeQuery = System.currentTimeMillis();
-		
-//		contentIds = lucene.searchLucene(groupId, search, requestedUserName, limit, offset);
-		//(Resource resourceType, GroupingEntity groupingEntity, String groupingName, ArrayList<String> tags, String hash, Order order, FilterEntity filter, int offset, int limit, String search)
-		postBibtexList = lucene.searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, limit, offset);
-		
-		long endtimeQuery = System.currentTimeMillis();
-		log.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
-
-		return postBibtexList;
-	}
-	
-	
-	/**
-	 * <em>/author/MaxMustermann</em><br/><br/>
-	 * This method prepares queries which retrieve all publications for a given
-	 * author name and TagName(restricted by group public).
-	 * @param param 
-	 * @param session 
-	 * @return list of bibtex entries
-	 */
-    public List<Post<BibTex>> getBibTexByAuthorAndTag(final BibTexParam param, final DBSession session){
-		return this.bibtexList("getBibTexByAuthorAndTag",param,session);
-	}
-    
-    /**
-     * @see BibTexDatabaseManager#getBibTexByAuthorAndTag(BibTexParam, DBSession)
-	 * 
-     * @param search
-     * @param groupType
-     * @param requestedUserName 
-     * @param requestedGroupName 
-     * @param tagIndex
-     * @param year 
-     * @param firstYear 
-     * @param lastYear 
-     * @param limit
-     * @param offset
-     * @param session
-     * @return list of bibtex entries
-     */
-    public List<Post<BibTex>> getBibTexByAuthorAndTag(final String search, final GroupID groupType, final String requestedUserName, final String requestedGroupName, final List<TagIndex> tagIndex, final String year, final String firstYear, final String lastYear, final int limit, final int offset, final DBSession session){
-		BibTexParam param = new BibTexParam();
-		param.setSearch(search);
-		param.setGroupType(groupType);
-		param.setRequestedUserName(requestedUserName);
-		param.setRequestedGroupName(requestedGroupName);
-		param.setTagIndex(tagIndex);
-		param.setYear(year);
-		param.setFirstYear(firstYear);
-		param.setLastYear(lastYear);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		param.setSimHash(HashID.INTER_HASH);
-		return this.bibtexList("getBibTexByAuthorAndTag",param,session);
-	}
-
-    /**
-	 * <em>/concept/tag/TAGNAME</em> --
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexByConceptByTag(final BibTexParam param, final DBSession session) {
-		return this.bibtexList("getBibTexByConceptByTag", param, session);
-	}
-
-	/**
-	 * <em>/bibtexkey/KEY</em> Returns a list of bibtex entries for a given
-	 * bibtexKey
-	 * 
-	 * @param param
-	 *            a bibtex parameter object
-	 * @param session
-	 *            a database session
-	 * @return list of bibtex entries
-	 */
-	public List<Post<BibTex>> getBibTexByKey(BibTexParam param, DBSession session) {
-		return this.bibtexList("getBibTexByKey",param,session);
-	}
-	
-	/**
-	 * 
-	 * @param requestedUserName
-	 * @param loginUserName
-	 * @param visibleGroupIDs
-	 * @param session
-	 * @return number of publications that are available for some groups
-	 */
-	public int getGroupBibtexCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){
-		BibTexParam param = new BibTexParam();
-		param.setRequestedUserName(requestedUserName);
-		param.setUserName(loginUserName);
-		param.setGroups(visibleGroupIDs);
-		
-		return (Integer) this.queryForObject("getGroupBibtexCount", param, session);
-	}
-	
-	/**
-	 * @param requestedUserName
-	 * @param loginUserName
-	 * @param tagIndex
-	 * @param visibleGroupIDs
-	 * @param session
-	 * @return number of publications that are available for some groups and tagged by a tag of the tagIndex
-	 */
-	public int getGroupBibtexCountByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, final DBSession session){
-		BibTexParam param = new BibTexParam();
-		param.setTagIndex(tagIndex);
-		param.setRequestedUserName(requestedUserName);
-		param.setUserName(loginUserName);
-		param.setGroups(visibleGroupIDs);
-		
-		return (Integer) this.queryForObject("getGroupBibtexCountByTag", param, session);
-	}
-	
-	/**
-	 * 
-	 * @param requestedUserName
-	 * @param loginUserName
-	 * @param limit 
-	 * @param offset 
-	 * @param visibleGroupIDs
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexForMyGroupPosts(final String requestedUserName, final String loginUserName, final int limit, final int offset, final List<Integer> visibleGroupIDs, final DBSession session) {
-		BibTexParam param = new BibTexParam();
-		param.setRequestedUserName(requestedUserName);
-		param.setUserName(loginUserName);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		param.setGroups(visibleGroupIDs);
-		
-		return this.bibtexList("getBibtexForMyGroupPosts",param,session);
-	}
-	
-	/**
-	 * @param requestedUserName
-	 * @param loginUserName
-	 * @param tagIndex
-	 * @param limit
-	 * @param offset
-	 * @param visibleGroupIDs
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexForMyGroupPostsByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final int limit, final int offset, final List<Integer> visibleGroupIDs, final DBSession session){
-		BibTexParam param = new BibTexParam();
-		param.setRequestedUserName(requestedUserName);
-		param.setUserName(loginUserName);
-		param.setTagIndex(tagIndex);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		param.setGroups(visibleGroupIDs);
-		
-		return this.bibtexList("getBibtexForMyGroupPostsByTag",param,session);
-	}
-	
-	/**
-	 * @param days
-	 * @param session
-	 * @return the number of days when a publication was popular
-	 */
-	public int getBibTexPopularDays(final int days, final DBSession session) {
-		// build param
-		final BibTexParam param = new BibTexParam();
-		param.setDays(days);
-		
-		final Integer result = this.queryForObject("getBibTexPopularDays", param, Integer.class, session);
-		
-		if (result != null) {
-			return result;
-		}
-		
-		return 0;
-	}
-	
-	
-	/**
-	 * Get bibtex by followed users.
-	 * 
-	 * @param loginUserName
-	 * @param visibleGroupIDs
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexByFollowedUsers(final String loginUserName, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
-		BibTexParam param = new BibTexParam();
-		param.setUserName(loginUserName);
-		param.setGroups(visibleGroupIDs);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		return this.bibtexList("getBibTexByFollowedUsers",param,session);
-	}
-	
-	/*	XXXDZ: check implementation
+	/*	XXX: check implementation
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#insertPost(org.bibsonomy.database.params.ResourcesParam, org.bibsonomy.database.util.DBSession)
 	 */

@@ -30,7 +30,8 @@ public class GetBookmarksSearchForGroup extends BookmarkChainElement {
 		}
 		param.setGroupId(groupId);
 		
-		return this.db.getBookmarkSearchForGroup(param, session);
+		// TODO: rawSearch or search???
+		return this.db.getPostsSearchForGroup(param.getGroupId(), param.getGroups(), param.getRawSearch(), param.getUserName(), param.getLimit(), param.getOffset(), session);
 	}
 	
 	@Override
