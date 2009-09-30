@@ -35,7 +35,7 @@ public class HTTPBibtexUpdate extends HTTPUpdate {
 	 * delete the given publication
 	 */
 	private void deletePost(String hash) throws IOException, DBLPException {
-		callURL(new URL(baseURL + "BibtexHandler?hash=" + hash + "&requTask=delete&ckey="+ cKey));
+		callURL(new URL(baseURL + "deletePost?resourceHash=" + hash + "&ckey="+ cKey));
 	}
 
 

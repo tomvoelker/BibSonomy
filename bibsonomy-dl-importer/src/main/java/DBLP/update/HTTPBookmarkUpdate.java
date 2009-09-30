@@ -29,18 +29,15 @@ public class HTTPBookmarkUpdate extends HTTPUpdate {
 	
 	private static final String dblpHomeUrlHash = "4f5c70202dd14bb2186b0872fe494886"; // TODO: it's not useful, to have this as a constant here :-(
 
-	private String user = null;
-	
 	public HTTPBookmarkUpdate (String baseURL, String user, String passhash) throws MalformedURLException, IOException {
 		super (baseURL, user, passhash);
-		this.user = user;
 	}
 	
 	/*
 	 * delete the given publication bookmarkHandler?delete=&user=
 	 */
 	private void deletePost(String urlhash) throws IOException, DBLPException {
-		callURL(new URL((baseURL + "bookmarkHandler?delete=" + urlhash + "&user=" + user + "&ckey=" + cKey)));
+		callURL(new URL((baseURL + "deletePost?resourceHash=" + urlhash + "&ckey=" + cKey)));
 	}
 
 	/*
