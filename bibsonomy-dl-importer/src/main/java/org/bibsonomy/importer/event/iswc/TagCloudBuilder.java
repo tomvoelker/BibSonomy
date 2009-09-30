@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,10 +50,7 @@ public class TagCloudBuilder {
 		/*
 		 * build hashset for tracks
 		 */
-		final HashSet<String> trackSet = new HashSet<String>();
-		for (String track:tracks) {
-			trackSet.add(track);
-		}
+		final HashSet<String> trackSet = new HashSet<String>(Arrays.asList(tracks));
 		
 		
 		
