@@ -193,23 +193,25 @@
                    <div class="dissError"><form:errors path="post.resource.note" /></div>
        
           </fieldset>
+
+          <c:if test="${not empty command.scrapingContext}">
           
-          
-          <fieldset class="fsInner">
+             <fieldset class="fsInner">
                 <legend><fmt:message key="post.resource.fields.meta"/></legend>
-                <c:if test="${not empty command.scrapingContext}">
                   <dl>
-                    <dt>url</dt>
+                    <dt><fmt:message key="post.resource.fields.meta.url"/></dt>
                       <dd><a href="${fn:escapeXml(command.scrapingContext.url)}"><c:out value="${command.scrapingContext.url}"/></a></dd>
-                    <dt>selection</dt>
+                    <dt><fmt:message key="post.resource.fields.meta.selectedText"/></dt>
                       <dd><c:out value="${command.scrapingContext.selectedText}"/></dd>
-                    <dt>scraper</dt>
+                    <dt><fmt:message key="post.resource.fields.meta.scraper"/></dt>
                       <dd><a href="/scraperinfo#${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</dd>
-                    <dt>result</dt>
+                    <dt><fmt:message key="post.resource.fields.meta.bibtexResult"/></dt>
                       <dd><pre style="max-width: 600px; overflow: scroll;"><c:out value="${command.scrapingContext.bibtexResult}"/></pre></dd>
                   </dl>
-                </c:if>
-          </fieldset>
+             </fieldset>
+          
+         </c:if>
+ 
        </jsp:attribute>
 
 	</layout:postPostLayout>
