@@ -32,6 +32,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.services.searcher.LuceneSearch;
 import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.bibsonomy.util.ExceptionUtils;
 import org.junit.After;
@@ -417,3 +418,4 @@ public class LuceneUpdaterTest extends AbstractDatabaseManagerTest {
 		return null;
 	}
 }
+

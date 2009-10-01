@@ -12,30 +12,28 @@ import org.apache.log4j.Logger;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.mockejb.jndi.MockContextFactory;
 
-import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
-
 /**
- * Helper class for binding a test database resource via JNDI to enable database access
- * without a running application server, which usually provides the JNDI tree.
+ * Helper class for binding a test database resource via JNDI to enable database
+ * access without a running application server, which usually provides the JNDI
+ * tree.
  * 
  * @author Dominik Benz
- * @version $Id$
+ * @version $Id: JNDITestDatabaseBinder.java,v 1.1 2009-09-30 16:58:16 folke Exp
+ *          $
  */
-/**
- * @author bkr
- *
- */
+
 public final class JNDITestDatabaseBinder {
 	/** logging */
-	private static final Logger log = Logger.getLogger(JNDITestDatabaseBinder.class);
-	
+	private static final Logger log = Logger
+			.getLogger(JNDITestDatabaseBinder.class);
+
 	/** context name for environment variables */
 	public static final String CONTEXTNAME = "java:/comp/env/";
-	
+
 	/** name of the property file which configures lucene */
 	private static final String LUCENEPROPERTYFILENAME = "lucene.properties";
 
-	/** property key for database url*/
+	/** property key for database url */
 	private static final String PROPERTY_DB_URL = "db.url";
 
 	/** property key for database username */
@@ -51,32 +49,34 @@ public final class JNDITestDatabaseBinder {
 	}
 
 	/**
-	 * Main method: read configuration file 'database.properties', create SQL Data Source and
-	 * register it via JNDI
+	 * Main method: read configuration file 'database.properties', create SQL
+	 * Data Source and register it via JNDI
 	 */
 	public static final void bind() {
 		bindDatabaseContext("bibsonomy_lucene", LUCENEPROPERTYFILENAME);
 		bindVariablesContext(CONTEXTNAME, LUCENEPROPERTYFILENAME);
 	}
 
-	private static void bindDatabaseContext(final String contextName, final String fileName) {
+	private static void bindDatabaseContext(final String contextName,
+			final String fileName) {
 		final InitialContext ctx;
 		final DataSource ds = getBasicDataSource(fileName);
-		try {			
+		try {
 			// create Mock JNDI context
 			MockContextFactory.setAsInitial();
 			ctx = new InitialContext();
-			ctx.bind("java:/comp/env/jdbc/"+contextName, ds);
-		}
-		catch (NamingException ex) {
-			log.error("Error when trying to bind test database connection '" + contextName + "' via JNDI");
+			ctx.bind("java:/comp/env/jdbc/" + contextName, ds);
+		} catch (NamingException ex) {
+			log.error("Error when trying to bind test database connection '"
+					+ contextName + "' via JNDI");
 			log.error(ex.getMessage());
 		}
-		
+
 	}
 
 	/**
-	 * Reads all properties (key=value) from given properties file and stores them in given context
+	 * Reads all properties (key=value) from given properties file and stores
+	 * them in given context
 	 * 
 	 * @param contextName
 	 * @param fileName
@@ -96,8 +96,14 @@ public final class JNDITestDatabaseBinder {
 			MockContextFactory.setAsInitial();
 			ctx = new InitialContext();
 			for( Object key : props.keySet() ) {
-				try {			
-					ctx.bind(contextName+key, props.getProperty((String)key));
+				try {
+					// FIXME: this is a dirty hack, as lucene expects some booleans
+					String booleanCompare = props.getProperty((String)key).toLowerCase();
+					if( "true".compareTo(booleanCompare)==0 || "false".compareTo(booleanCompare)==0 ) {
+						ctx.bind(contextName+key, new Boolean(booleanCompare));
+					} else {
+						ctx.bind(contextName+key, props.getProperty((String)key));
+					}
 				}
 				catch (NamingException ex) {
 					log.error("Error binding environment variable:'" + contextName + "' via JNDI");
@@ -109,28 +115,28 @@ public final class JNDITestDatabaseBinder {
 		}
 
 	}
-	
+
 	/**
 	 * factory for property instances
 	 */
 	public static Properties getLuceneProperties() {
-		final Properties props = new Properties();		
+		final Properties props = new Properties();
 		try {
 			// read properties
-			props.load(JNDITestDatabaseBinder.class.getClassLoader().getResourceAsStream(LUCENEPROPERTYFILENAME));		
+			props.load(JNDITestDatabaseBinder.class.getClassLoader()
+					.getResourceAsStream(LUCENEPROPERTYFILENAME));
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
 		return props;
 	}
-	
+
 	/**
 	 * Go back to original state
 	 */
 	public static void unbind() {
 		MockContextFactory.revertSetAsInitial();
 	}
-	
 
 	/**
 	 * Create sql data source according to configuration in given property file
@@ -140,10 +146,11 @@ public final class JNDITestDatabaseBinder {
 	 */
 	private static DataSource getBasicDataSource(final String configFile) {
 
-		final Properties props = new Properties();		
+		final Properties props = new Properties();
 		try {
 			// read database properties
-			props.load(JNDITestDatabaseBinder.class.getClassLoader().getResourceAsStream(configFile));		
+			props.load(JNDITestDatabaseBinder.class.getClassLoader()
+					.getResourceAsStream(configFile));
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -152,7 +159,7 @@ public final class JNDITestDatabaseBinder {
 		dataSource.setUrl(props.getProperty(PROPERTY_DB_URL));
 		dataSource.setUsername(props.getProperty(PROPERTY_DB_USERNAME));
 		dataSource.setPassword(props.getProperty(PROPERTY_DB_PASSWORD));
-		
+
 		return dataSource;
-	}	
+	}
 }

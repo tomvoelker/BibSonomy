@@ -31,6 +31,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
+import org.bibsonomy.services.searcher.LuceneSearch;
 
 public class LuceneSearchBibTex implements LuceneSearch<BibTex> {
 
@@ -669,7 +670,6 @@ ORDER BY b.date DESC, b.content_id DESC;
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.lucene.LuceneSearch#searchLucene(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Set, int, int)
 	 */
-	@Override
 	public ResultList<Post<BibTex>> searchLucene(String group, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset) {
 		return searchLucene(getFulltextQueryFilter(group, search_terms, requestedUserName, UserName, GroupNames), limit, offset);
 	}

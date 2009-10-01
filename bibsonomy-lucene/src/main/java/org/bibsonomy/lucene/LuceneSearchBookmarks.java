@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.naming.Context;
@@ -25,10 +26,12 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.bibsonomy.common.exceptions.LuceneException;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
+import org.bibsonomy.services.searcher.LuceneSearch;
 
 public class LuceneSearchBookmarks implements LuceneSearch<Bookmark> {
 
@@ -133,7 +136,6 @@ public class LuceneSearchBookmarks implements LuceneSearch<Bookmark> {
 	 *            LuceneIndex lucene index to use b for bookmark, p for
 	 *            publications
 	 */
-	@Override
 	public ResultList<Post<Bookmark>> searchLucene(String group,
 			String searchTerms, String requestedUserName, String UserName,
 			Set<String> GroupNames, int limit, int offset) {
@@ -345,5 +347,12 @@ public class LuceneSearchBookmarks implements LuceneSearch<Bookmark> {
 
 	public LuceneIndexStatistics getStatistics() {
 		return Utils.getStatistics(lucenePath);
+	}
+
+	public ResultList<Post<BibTex>> searchAuthor(String group, String search,
+			String requestedUserName, String requestedGroupName, String year,
+			String firstYear, String lastYear, List<String> tagList, int limit,
+			int offset) {
+		throw new UnsupportedOperationException("Author search not available for bookmarks");
 	}
 }
