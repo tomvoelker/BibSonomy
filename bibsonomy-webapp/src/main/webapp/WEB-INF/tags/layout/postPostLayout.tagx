@@ -44,14 +44,15 @@
       
 		<jsp:attribute name="content">
 
-           <!-- 
-              | show global errors
-              -->
-           <errors:global errors="${errors}"/>
 		
 		   <div style="float left;width:97%;margin-left:10px; padding-bottom: 13px;">
-		   
+
               <h2 style="text-align: center; margin-bottom: 0"><fmt:message key="post.resource.edit${resourceType}"/></h2><!-- TODO: generalize -->
+
+              <!-- 
+                 | show global errors
+                 -->
+              <errors:global errors="${errors}"/>
 
               <!-- 
                  | user is posting an existing resource ...

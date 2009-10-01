@@ -166,17 +166,17 @@ public class PostPublicationController extends PostPostController<BibTex> {
 					/*
 					 * the parser did not return any result ...
 					 */
-					this.getErrors().reject("error.scrape.nothing", new Object[]{url, scrapedBibtex}, "The BibTeX {0} we scraped from {1} could not be parsed.");
+					this.getErrors().reject("error.scrape.nothing", new Object[]{url, scrapedBibtex}, "The BibTeX\n\n{0}\n\nwe scraped from {1} could not be parsed.");
 				} catch (IOException ex) {
 					/*
 					 * exception while parsing bibtex
 					 */ 
-					this.getErrors().reject("error.parse.bibtex.failed", new Object[]{scrapedBibtex, ex.getMessage()}, "Error parsing BibTeX: {0}. Message was: {1}");
+					this.getErrors().reject("error.parse.bibtex.failed", new Object[]{scrapedBibtex, ex.getMessage()}, "Error parsing BibTeX:\n\n{0}\n\nMessage was: {1}");
 				} catch (ParseException ex) {
 					/*
 					 * exception while parsing bibtex; inform user and show him the scraped bibtex
 					 */
-					this.getErrors().reject("error.parse.bibtex.failed", new Object[]{scrapedBibtex, ex.getMessage()}, "Error parsing BibTeX: {0}. Message was: {1}");
+					this.getErrors().reject("error.parse.bibtex.failed", new Object[]{scrapedBibtex, ex.getMessage()}, "Error parsing BibTeX:\n\n{0}\n\nMessage was: {1}");
 				}
 			} // if (isSuccess && ValidationUtils.present(scrapedBibtex))
 			else {
@@ -193,12 +193,12 @@ public class PostPublicationController extends PostPostController<BibTex> {
 			/*
 			 * scraping failed no bibtex scraped
 			 */
-			this.getErrors().reject("error.scrape.failed", new Object[]{url, ex.getMessage()}, "Could not scrape the URL {0}. Message was: {1}");
+			this.getErrors().reject("error.scrape.failed", new Object[]{url, ex.getMessage()}, "Could not scrape the URL {0}.\nMessage was: {1}");
 		} catch (MalformedURLException ex) {
 			/*
 			 * wrong url format
 			 */
-			this.getErrors().reject("error.scrape.failed", new Object[]{url, ex.getMessage()}, "Could not scrape the URL {0}. Message was: {1}");
+			this.getErrors().reject("error.scrape.failed", new Object[]{url, ex.getMessage()}, "Could not scrape the URL {0}.\nMessage was: {1}");
 		}
 		/*
 		 * A URL or selection to scrape was given ... but we did not 
