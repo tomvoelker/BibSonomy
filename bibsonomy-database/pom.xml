@@ -33,11 +33,6 @@
 			<artifactId>bibsonomy-model</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-lucene</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>org.apache.ibatis</groupId>
 			<artifactId>ibatis-sqlmap</artifactId>
 			<!-- version>2.3.4.726</version-->

@@ -22,10 +22,11 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.lucene.LuceneSearch;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.SimHash;
+import org.bibsonomy.services.searcher.LuceneSearch;
 
 /**
  * TODO: rename count methods???
@@ -61,6 +62,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected final DatabasePluginRegistry plugins;
 	protected final PermissionDatabaseManager permissionDb;
 	protected final String resourceClassName;
+	
+	/** instance of the lucene searcher */
+	private LuceneSearch<R> luceneSearch; 
 	
 	/**
 	 * inits the database managers and resource class name
@@ -1233,5 +1237,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * @return the lucene search instance to use
 	 */
-	protected abstract LuceneSearch<R> getLuceneSearch();
+	protected LuceneSearch<R> getLuceneSearch() {
+		return luceneSearch;
+	}
+
+	public void setLuceneSearch(LuceneSearch<R> luceneSearch) {
+		this.luceneSearch = luceneSearch;
+	}
 }

@@ -16,8 +16,6 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.lucene.LuceneSearch;
-import org.bibsonomy.lucene.LuceneSearchBibTex;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
@@ -929,14 +927,12 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 		String group = groupDb.getGroupNameByGroupId(groupType, session);
 
-		final LuceneSearchBibTex lucene = LuceneSearchBibTex.getInstance();
-
 //		List<Integer> contentIds = new ArrayList<Integer>();
 		long starttimeQuery = System.currentTimeMillis();
 		
 //		contentIds = lucene.searchLucene(groupId, search, requestedUserName, limit, offset);
 		//(Resource resourceType, GroupingEntity groupingEntity, String groupingName, ArrayList<String> tags, String hash, Order order, FilterEntity filter, int offset, int limit, String search)
-		postBibtexList = lucene.searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, limit, offset);
+		postBibtexList = getLuceneSearch().searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, limit, offset);
 		
 		long endtimeQuery = System.currentTimeMillis();
 		log.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
@@ -1189,15 +1185,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		insert.setGroupId(groupId);
 		
 		return insert;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getLuceneSearch()
-	 */
-	@Override
-	protected LuceneSearch<BibTex> getLuceneSearch() {
-		return LuceneSearchBibTex.getInstance();
 	}
 
 	/*

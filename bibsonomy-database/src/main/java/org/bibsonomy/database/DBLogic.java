@@ -69,6 +69,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.services.searcher.LuceneSearch;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -1922,5 +1923,19 @@ public class DBLogic implements LogicInterface {
 		}
 		
 		return 0;
+	}
+
+	public void setLuceneBibTexSearch(LuceneSearch<BibTex> luceneBibTexSearch) {
+		if(this.bibtexDBManager!=null)
+			this.bibtexDBManager.setLuceneSearch(luceneBibTexSearch);
+		else
+			log.error("Trying to set up lucene search while there is no publication database manager");
+	}
+
+	public void setLuceneBookmarkSearch(LuceneSearch<Bookmark> luceneBookmarkSearch) {
+		if(this.bookmarkDBManager!=null)
+			this.bookmarkDBManager.setLuceneSearch(luceneBookmarkSearch);
+		else
+			log.error("Trying to set up lucene search while there is no bookmark database manager");
 	}
 }

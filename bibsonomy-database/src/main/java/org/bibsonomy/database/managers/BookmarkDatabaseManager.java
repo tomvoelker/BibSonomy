@@ -11,8 +11,6 @@ import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.lucene.LuceneSearch;
-import org.bibsonomy.lucene.LuceneSearchBookmarks;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
@@ -550,14 +548,6 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 		return insert;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getLuceneSearch()
-	 */
-	@Override
-	protected LuceneSearch<Bookmark> getLuceneSearch() {
-		return LuceneSearchBookmarks.getInstance();
-	}
 
 	/*
 	 * (non-Javadoc)
