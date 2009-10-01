@@ -78,6 +78,17 @@ public class ScrapingContext {
 	}
 
 	/**
+	 * If a selection is given, you can use this constructor.
+	 * @param url
+	 * @param selectedText
+	 */
+	public ScrapingContext(final URL url, final String selectedText) {
+		this.url = url;
+		this.selectedText = selectedText;
+	}
+
+	
+	/**
 	 * Gets the content of the current URL as String.
 	 * If the URL is not accessible, we set the content to "". 
 	 * When scrapers see empty content although they need it, they should 
