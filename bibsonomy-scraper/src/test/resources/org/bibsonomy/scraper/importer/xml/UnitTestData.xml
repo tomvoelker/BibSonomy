@@ -316,7 +316,7 @@
 	</URLTest>
 	<URLTest id="url_56">
 		<TestDescription>DBLP scraping test (html page)</TestDescription>
-		<URL>http://search.mpi-inf.mpg.de/dblp/show.php?key=journals/ws/JaschkeHSGS08</URL>
+		<URL>http://dblp.uni-trier.de/rec/bibtex/journals/ws/JaschkeHSGS08</URL>
 		<BibFile>DBLPScraperUnitTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
 	</URLTest>
