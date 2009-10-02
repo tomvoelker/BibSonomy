@@ -28,7 +28,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory; 
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -41,8 +41,6 @@ import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Author;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -71,7 +69,6 @@ import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
 import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
-import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ExceptionUtils;
 
 public class RestLogic implements LogicInterface {
@@ -378,27 +375,14 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public int createBasketItems(List<Post<BibTex>> posts) {
+	public int createBasketItems(List<Post<? extends Resource>> posts) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int deleteBasketItems(List<Post<BibTex>> posts, boolean clearAll) {
+	public int deleteBasketItems(List<Post<? extends Resource>> posts, boolean clearAll) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-	@Override
-	public void setBibTexSearch(ResourceSearch<BibTex> bibTexSearch) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setBookmarkSearch(ResourceSearch<Bookmark> bookmarkSearch) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
