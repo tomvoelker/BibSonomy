@@ -119,10 +119,5 @@ public class SimpleBibTeXParserTest {
 		}
 		
 	}
-	
-	public void testParseBibtexPost() {
-		
-		
-	}
 
 }
