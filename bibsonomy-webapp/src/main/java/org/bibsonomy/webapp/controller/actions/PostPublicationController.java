@@ -30,6 +30,12 @@ import bibtex.parser.ParseException;
 /**
  * Posting/editing one (!) publication posts.
  * 
+ * TODO:
+ * <ul>
+ * <li>{@link SimpleBibTeXParser} stores warnings in a list - maybe we should
+ * show those to the user?</li>
+ * </ul>
+ * 
  * @author rja
  * @author dzo
  * @version $Id$
@@ -87,7 +93,9 @@ public class PostPublicationController extends PostPostController<BibTex> {
 			} // if (ValidationUtils.present(url) || ValidationUtils.present(selection))
 		} 
 
-		// handle update or create a publication
+		/*
+		 * handle update or create of a publication
+		 */
 		return super.workOn(command);
 	}
 
@@ -158,8 +166,6 @@ public class PostPublicationController extends PostPostController<BibTex> {
 						publicationCommand.setScrapingContext(scrapingContext);
 						/*
 						 * return to view 
-						 * XXX: is this correct here? Why not 
-						 * complete workOn()?
 						 */
 						return this.getPostPostView(command, loginUser);
 					} // if (ValidationUtils.present(parsedBibTex))

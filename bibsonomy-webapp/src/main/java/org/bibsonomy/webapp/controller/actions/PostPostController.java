@@ -254,7 +254,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private View handleUpdatePost(EditPostCommand<RESOURCE> command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post, final String intraHashToUpdate) {
+	private View handleUpdatePost(final EditPostCommand<RESOURCE> command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post, final String intraHashToUpdate) {
 		final String loginUserName = loginUser.getName();
 		/*
 		 * we're editing an existing post
@@ -299,7 +299,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		/*
 		 * validate post
 		 */
-		org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
+		validatePost(command);
 		/*
 		 * check, if the post has changed
 		 */
@@ -369,6 +369,15 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		 * leave if and reach final redirect
 		 */
 		return finalRedirect(command.isJump(), loginUserName, getRedirectUrl(post));
+	}
+
+	/**
+	 * Validates the post using the validator returned by {@link #getValidator()}.
+	 * 
+	 * @param command
+	 */
+	private void validatePost(final EditPostCommand<RESOURCE> command) {
+		org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
 	}
 	
 	/**
@@ -466,10 +475,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 			log.warn("error parsing tags", e);
 			errors.rejectValue("tags", "error.field.valid.tags.parseerror");
 		}
-		/*
-		 * post is completely new -> validate!
-		 */
-		org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
+		validatePost(command);
 
 		/*
 		 * return to form until validation passes
