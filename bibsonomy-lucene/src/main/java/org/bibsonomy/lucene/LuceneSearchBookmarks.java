@@ -31,9 +31,9 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
-import org.bibsonomy.services.searcher.LuceneSearch;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
-public class LuceneSearchBookmarks implements LuceneSearch<Bookmark> {
+public class LuceneSearchBookmarks implements ResourceSearch<Bookmark> {
 
 	private final static LuceneSearchBookmarks singleton = new LuceneSearchBookmarks();
 	private IndexSearcher searcher;
@@ -136,7 +136,7 @@ public class LuceneSearchBookmarks implements LuceneSearch<Bookmark> {
 	 *            LuceneIndex lucene index to use b for bookmark, p for
 	 *            publications
 	 */
-	public ResultList<Post<Bookmark>> searchLucene(String group,
+	public ResultList<Post<Bookmark>> searchPosts(String group,
 			String searchTerms, String requestedUserName, String UserName,
 			Set<String> GroupNames, int limit, int offset) {
 		final Log LOGGER = LogFactory.getLog(LuceneSearchBookmarks.class);
@@ -349,10 +349,11 @@ public class LuceneSearchBookmarks implements LuceneSearch<Bookmark> {
 		return Utils.getStatistics(lucenePath);
 	}
 
-	public ResultList<Post<BibTex>> searchAuthor(String group, String search,
+	public ResultList<Post<Bookmark>> searchAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,
 			String firstYear, String lastYear, List<String> tagList, int limit,
 			int offset) {
 		throw new UnsupportedOperationException("Author search not available for bookmarks");
 	}
+
 }

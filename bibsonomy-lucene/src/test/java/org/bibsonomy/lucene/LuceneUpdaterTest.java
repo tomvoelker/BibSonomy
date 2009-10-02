@@ -32,7 +32,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.services.searcher.LuceneSearch;
+import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.bibsonomy.util.ExceptionUtils;
 import org.junit.After;
@@ -121,12 +121,12 @@ public class LuceneUpdaterTest extends AbstractDatabaseManagerTest {
 		updater.reloadIndex();
 		
 		// prepare searcher
-		LuceneSearch<BibTex> bibtexSearcher = LuceneSearchBibTex.getInstance();
+		ResourceSearch<BibTex> bibtexSearcher = LuceneSearchBibTex.getInstance();
 
 		// search for all relevant fields
 		for( String term : bibtexSearchTerms ) {
 			log.info("Searching for " + term);
-			ResultList<Post<BibTex>> resultList = bibtexSearcher.searchLucene(null, term, toInsert.getUser().getName()+"noIse", toInsert.getUser().getName(), allowedGroups, 1, 0);
+			ResultList<Post<BibTex>> resultList = bibtexSearcher.searchPosts(null, term, toInsert.getUser().getName()+"noIse", toInsert.getUser().getName(), allowedGroups, 1, 0);
 			
 			assertEquals(0, resultList.size());
 		}
@@ -136,7 +136,7 @@ public class LuceneUpdaterTest extends AbstractDatabaseManagerTest {
 		// search for all relevant fields
 		for( String term : bibtexSearchTerms ) {
 			log.info("Searching for " + term);
-			ResultList<Post<BibTex>> resultList = bibtexSearcher.searchLucene(null, term, toInsert.getUser().getName(), toInsert.getUser().getName(), allowedGroups, 1000, 0);
+			ResultList<Post<BibTex>> resultList = bibtexSearcher.searchPosts(null, term, toInsert.getUser().getName(), toInsert.getUser().getName(), allowedGroups, 1000, 0);
 			
 			assertEquals(1, resultList.size());
 		}
@@ -173,13 +173,13 @@ public class LuceneUpdaterTest extends AbstractDatabaseManagerTest {
 		updater.reloadIndex();
 
 		// prepare searcher
-		LuceneSearch<BibTex> bibtexSearcher = LuceneSearchBibTex.getInstance();
-		LuceneSearch<Bookmark> bookmarkSearcher = LuceneSearchBookmarks.getInstance();
+		ResourceSearch<BibTex> bibtexSearcher = LuceneSearchBibTex.getInstance();
+		ResourceSearch<Bookmark> bookmarkSearcher = LuceneSearchBookmarks.getInstance();
 
 		// search for all relevant fields
 		for( String term : bibtexSearchTerms ) {
 			log.info("Searching for " + term);
-			ResultList<Post<BibTex>> resultList = bibtexSearcher.searchLucene(null, term, null, bibtexPost.getUser().getName(), allowedGroups, 1, 0);
+			ResultList<Post<BibTex>> resultList = bibtexSearcher.searchPosts(null, term, null, bibtexPost.getUser().getName(), allowedGroups, 1, 0);
 			
 			assertEquals(1, resultList.size());
 		}
@@ -202,7 +202,7 @@ public class LuceneUpdaterTest extends AbstractDatabaseManagerTest {
 		// search again
 		for( String term : bibtexSearchTerms ) {
 			log.info("Searching for " + term);
-			ResultList<Post<BibTex>> resultList = bibtexSearcher.searchLucene(null, term, null, bibtexPost.getUser().getName(), allowedGroups, 1000, 0);
+			ResultList<Post<BibTex>> resultList = bibtexSearcher.searchPosts(null, term, null, bibtexPost.getUser().getName(), allowedGroups, 1000, 0);
 			
 			assertEquals(1, resultList.size());
 		}
@@ -228,13 +228,13 @@ public class LuceneUpdaterTest extends AbstractDatabaseManagerTest {
 		// search for bibtex posts
 		for( String term : bibtexSearchTerms ) {
 			log.debug("Searching for " + term);
-			ResultList<Post<BibTex>> bibtexList = bibtexSearcher.searchLucene(null, term, null, bibtexPost.getUser().getName(), allowedGroups, 1000, 0);
+			ResultList<Post<BibTex>> bibtexList = bibtexSearcher.searchPosts(null, term, null, bibtexPost.getUser().getName(), allowedGroups, 1000, 0);
 			assertEquals(2, bibtexList.size());
 		}
 		// search for bookmark posts
 		for( String term : bookmarkSearchTerms ) {
 			log.debug("Searching for " + term);
-			ResultList<Post<Bookmark>> bookmarkList = bookmarkSearcher.searchLucene(null, term, null, bookmarkPost.getUser().getName(), allowedGroups, 1000, 0);
+			ResultList<Post<Bookmark>> bookmarkList = bookmarkSearcher.searchPosts(null, term, null, bookmarkPost.getUser().getName(), allowedGroups, 1000, 0);
 			assertEquals(1, bookmarkList.size());
 		}
 

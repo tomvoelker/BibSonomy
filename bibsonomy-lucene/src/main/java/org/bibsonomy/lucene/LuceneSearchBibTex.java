@@ -31,9 +31,9 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
-import org.bibsonomy.services.searcher.LuceneSearch;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
-public class LuceneSearchBibTex implements LuceneSearch<BibTex> {
+public class LuceneSearchBibTex implements ResourceSearch<BibTex> {
 
 	private final static LuceneSearchBibTex singleton = new LuceneSearchBibTex();
 	private IndexSearcher searcher; 
@@ -666,25 +666,23 @@ ORDER BY b.date DESC, b.content_id DESC;
 		return postBibTexList;
 	};
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.lucene.LuceneSearch#searchLucene(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.util.Set, int, int)
-	 */
-	public ResultList<Post<BibTex>> searchLucene(String group, String search_terms, final String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset) {
-		return searchLucene(getFulltextQueryFilter(group, search_terms, requestedUserName, UserName, GroupNames), limit, offset);
-	}
-	
-	// resourceType, groupingEntity, groupingName, tags, hash, order, filter, start, start + itemsPerPage, search
-/*
-	 (Class<T>, GroupingEntity, String, List<String>, String, Order, FilterEntity, int, int, String)
-*/
-	
-	public ResultList<Post<BibTex>> searchAuthor(String group, String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, List<String> tagList, int limit, int offset) {
-		return searchLucene(getAuthorQueryFilter(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList), limit, offset);
-	}
-
 	
 	public LuceneIndexStatistics getStatistics() {
 		return Utils.getStatistics(lucenePath);
+	}
+
+
+	public ResultList<Post<BibTex>> searchAuthor(String group, String search,
+			String requestedUserName, String requestedGroupName, String year,
+			String firstYear, String lastYear, List<String> tagList, int limit,
+			int offset) {
+		return searchLucene(getAuthorQueryFilter(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList), limit, offset);
+	}
+
+
+	public ResultList<Post<BibTex>> searchPosts(String group,
+			String searchTerms, String requestedUserName, String UserName,
+			Set<String> GroupNames, int limit, int offset) {
+		return searchLucene(getFulltextQueryFilter(group, searchTerms, requestedUserName, UserName, GroupNames), limit, offset);
 	}
 }
