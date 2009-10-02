@@ -491,9 +491,16 @@
 	    <!-- name the admin user will have when accessing the logic interface -->
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+		<property name="bibTexSearch" ref="luceneBibTexSearch"/>
+		<property name="bookmarkSearch" ref="luceneBookmarkSearch"/>
 	</bean>	
 	
+		<!-- lucene bibtex searcher -->
+	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.LuceneSearchBibTex" factory-method="getInstance"/>
 	
+	<!-- lucene bookmark searcher -->
+	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.LuceneSearchBookmarks" factory-method="getInstance"/>
+
 	<!--  #################### interceptors #################### -->
 
 	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
