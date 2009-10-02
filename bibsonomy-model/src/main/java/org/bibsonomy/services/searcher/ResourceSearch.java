@@ -3,18 +3,18 @@ package org.bibsonomy.services.searcher;
 import java.util.List;
 import java.util.Set;
 
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 
 /**
+ * Interface for resource search operations
  * 
  * @author dzo
  *
  * @param <R>
  */
-public interface LuceneSearch<R extends Resource> {
+public interface ResourceSearch<R extends Resource> {
 	/**
 	 * TODO: document me
 	 * 
@@ -27,11 +27,12 @@ public interface LuceneSearch<R extends Resource> {
 	 * @param offset
 	 * @return
 	 */
-	public ResultList<Post<R>> searchLucene(String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset);
+	public ResultList<Post<R>> searchPosts(String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset);
 
 	
 	/**
 	 * TODO: document me
+	 * FIXME: This should be just a variant of searchPosts
 	 * 
 	 * @param group
 	 * @param search
@@ -45,7 +46,7 @@ public interface LuceneSearch<R extends Resource> {
 	 * @param offset
 	 * @return
 	 */
-	ResultList<Post<BibTex>> searchAuthor(String group, String search,
+	ResultList<Post<R>> searchAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,
 			String firstYear, String lastYear, List<String> tagList, int limit,
 			int offset);

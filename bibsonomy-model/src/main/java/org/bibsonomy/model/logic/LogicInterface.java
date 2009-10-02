@@ -37,6 +37,7 @@ import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -44,6 +45,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * This interface is an adapter to BibSonomy's core functionality. <br/>
@@ -549,5 +551,17 @@ public interface LogicInterface extends PostLogicInterface {
 	 */
 	public int deleteBasketItems(List<Post<BibTex>> posts, boolean clearBasket);
 	
+	/**
+	 * Sets the lucene searcher to use for publications (see {@link ResourceSearch})
+	 * 
+	 * @param luceneBibTexSearch the lucene searcher for publications
+	 */
+	public void setBibTexSearch(ResourceSearch<BibTex> bibTexSearch);
 	
+	/**
+	 * Sets the lucene searcher to use for bookmarks (see {@link ResourceSearch})
+	 * 
+	 * @param luceneBookmarkSearch the lucene searcher for bookmarks
+	 */
+	public void setBookmarkSearch(ResourceSearch<Bookmark> bookmarkSearch);
 }
