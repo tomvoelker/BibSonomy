@@ -442,8 +442,8 @@
 		DELETE FROM bookmark WHERE content_id = #requestedContentId#
 	</delete>
 
-	<select id="getContentIDForBookmark" resultClass="int" parameterClass="bookmarkParam">
-		SELECT content_id FROM bookmark WHERE book_url_hash = #hash# AND user_name = #userName#
+	<select id="getContentIdForBookmark" resultClass="int" parameterClass="bookmarkParam">
+		SELECT content_id FROM bookmark WHERE book_url_hash = #hash# AND user_name = #requestedUserName#
 	</select>
 	
 	<select id="getBookmarkByConceptByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
@@ -536,7 +536,7 @@
 		AND t1.content_type = #contentType#
 	</select>
 	
-	<select id="getBookmarksForMyGroupPosts" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+	<select id="getBookmarkForMyGroupPosts" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
 			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name 
 		
@@ -556,7 +556,7 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 	
-	<select id="getBookmarksForMyGroupPostsByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+	<select id="getBookmarkForMyGroupPostsByTag" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
 			   bb.book_url, bb.book_url_ctr AS count, t.tag_name, t.user_name 
 		

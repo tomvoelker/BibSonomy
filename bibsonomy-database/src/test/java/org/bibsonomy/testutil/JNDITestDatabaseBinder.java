@@ -9,7 +9,6 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Logger;
 import org.mockejb.jndi.MockContextFactory;
 
 import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;

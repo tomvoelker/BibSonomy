@@ -33,7 +33,7 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 		 */
 		if (this.generalDb.isFriendOf(param.getUserName(), param.getRequestedUserName(), session)) {
 			param.setGroupId(GroupID.FRIENDS.getId());
-			return this.db.getBibTexForUser(param, session);
+			return this.db.getPostsForUser(param, session);
 		}
 		return new ArrayList<Post<BibTex>>();
 	}

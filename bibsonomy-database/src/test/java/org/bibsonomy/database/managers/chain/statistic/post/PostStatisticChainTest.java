@@ -1,18 +1,13 @@
 package org.bibsonomy.database.managers.chain.statistic.post;
 
-import static org.bibsonomy.util.ValidationUtils.present;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.enums.Order;
 import org.junit.Test;
 
 /**

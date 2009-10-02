@@ -22,23 +22,23 @@ import org.bibsonomy.model.Resource;
 public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 
 	private final static StatisticsDatabaseManager singleton = new StatisticsDatabaseManager();
-
-	private final BibTexDatabaseManager bibtexDBManager;
-	private final BookmarkDatabaseManager bookmarkDBManager;
+	
 	private static final PostStatisticChain postchain = new PostStatisticChain();
 	private static final TagStatisticChain tagChain = new TagStatisticChain();
-
-
-	private StatisticsDatabaseManager() {
-		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
-		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
-	}
-
+	
 	/**
 	 * @return StatisticsDatabaseManager
 	 */
 	public static StatisticsDatabaseManager getInstance() {
 		return singleton;
+	}
+
+	private final BibTexDatabaseManager bibtexDBManager;
+	private final BookmarkDatabaseManager bookmarkDBManager;
+
+	private StatisticsDatabaseManager() {
+		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
+		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 	}
 
 	/**
@@ -51,8 +51,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		// FIXME: this is ugly, but using chain elements forces us to use lists as return types
 		final Integer count = postchain.getFirstElement().perform(param, session).get(0);
 		// to not get NPEs later
-		if (count == null) return 0;
-		return count;
+		return count == null ? 0 : count;
 	}
 
 	/**
@@ -64,10 +63,8 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		// FIXME: this is ugly, but using chain elements forces us to use lists as return types
 		final Integer count = tagChain.getFirstElement().perform(param, session).get(0);
 		// to not get NPEs later
-		if (count == null) return 0;
-		return count;
+		return count == null ? 0 : count;
 	}
-
 
 	/**
 	 * @param param
@@ -81,7 +78,6 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 
 		return result;
 	}
-
 
 	/**
 	 * @param resourceType
@@ -103,10 +99,8 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
 		// to not get NPEs 
-		if (count == null) return 0;
-		return count;
+		return count == null ? 0 : count;
 	}
-
 
 	/**
 	 * @param resourceType
@@ -126,8 +120,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
 		// to not get NPEs 
-		if (count == null) return 0;
-		return count;		
+		return count == null ? 0 : count;		
 	}
 	
 	/**
@@ -149,8 +142,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
 		// to not get NPEs 
-		if (count == null) return 0;
-		return count;		
+		return count == null ? 0 : count;		
 	}
 
 	/**
@@ -176,8 +168,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
 		// to not get NPEs 
-		if (count == null) return 0;
-		return count;
+		return count == null ? 0 : count;
 	}
 
 	/**
@@ -200,8 +191,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
 		// to not get NPEs 
-		if (count == null) return 0;
-		return count;
+		return count == null ? 0 : count;
 	}
 
 	/**
@@ -226,8 +216,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
 		// to not get NPEs 
-		if (count == null) return 0;
-		return count;
+		return count == null ? 0 : count;
 	}
 
 	/**
@@ -246,8 +235,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
 		// to not get NPEs 
-		if (count == null) return 0;
-		return count;
+		return count == null ? 0 : count;
 	}
 
 	/**
@@ -281,8 +269,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
 		// to not get NPEs 
-		if (count == null) return 0;
-		return count;
+		return count == null ? 0 : count;
 	}
 
 	/**
@@ -305,8 +292,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
 		// to not get NPEs 
-		if (count == null) return 0;
-		return count;
+		return count == null ? 0 : count;
 	}
 
 	/**
@@ -327,7 +313,6 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 			throw new UnsupportedResourceTypeException("Resource type " + resourceType + " not supported for this query.");
 		}
 		// to not get NPEs 
-		if (count == null) return 0;
-		return count;
+		return count == null ? 0 : count;
 	}
 }

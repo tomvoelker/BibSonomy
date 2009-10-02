@@ -37,7 +37,7 @@ public class GetBibtexViewable extends BibTexChainElement {
 			return new ArrayList<Post<BibTex>>(0);
 		}
 		param.setGroupId(groupId);
-		if (present(param.getTagIndex()) == true) return this.db.getBibTexViewableByTag(param, session);
+		if (present(param.getTagIndex())) return this.db.getPostsViewableByTag(param, session);
 		return this.db.getBibTexViewable(param, session);
 	}
 

@@ -100,18 +100,18 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		tagIndex.add(new TagIndex("suchmaschine", 1));
 		String requestedUserName = "testuser1";
 		// get public posts of testuser1
-		List<Post<Bookmark>> posts = this.bookmarkDb.getBookmarkByTagNamesForUser(requestedUserName, null, tagIndex, GroupID.PUBLIC.getId(), visibleGroupIDs, 10, 0, this.dbSession);
+		List<Post<Bookmark>> posts = this.bookmarkDb.getPostsByTagNamesForUser(requestedUserName, null, tagIndex, GroupID.PUBLIC.getId(), visibleGroupIDs, 10, 0, this.dbSession);
 		assertEquals(1, posts.size());
 		// get private post of testuser1
-		posts = this.bookmarkDb.getBookmarkByTagNamesForUser(requestedUserName, null, tagIndex, GroupID.PRIVATE.getId(), visibleGroupIDs, 10, 0, this.dbSession);
+		posts = this.bookmarkDb.getPostsByTagNamesForUser(requestedUserName, null, tagIndex, GroupID.PRIVATE.getId(), visibleGroupIDs, 10, 0, this.dbSession);
 		assertEquals(1, posts.size());
 		// get public post of testuser1 (but groupId is now invalid)
-		posts = this.bookmarkDb.getBookmarkByTagNamesForUser(requestedUserName, null, tagIndex, GroupID.INVALID.getId(), visibleGroupIDs, 10, 0, this.dbSession);
+		posts = this.bookmarkDb.getPostsByTagNamesForUser(requestedUserName, null, tagIndex, GroupID.INVALID.getId(), visibleGroupIDs, 10, 0, this.dbSession);
 		assertEquals(1, posts.size());
 		// get friends posts of testuers1 for testuser2
 		final List<TagIndex> tagIndex2 = new ArrayList<TagIndex>();
 		tagIndex2.add(new TagIndex("friends", 1));
-		posts = this.bookmarkDb.getBookmarkByTagNamesForUser("testuser1", "testuser2", tagIndex2, GroupID.FRIENDS.getId(), visibleGroupIDs, 10, 0, this.dbSession);
+		posts = this.bookmarkDb.getPostsByTagNamesForUser("testuser1", "testuser2", tagIndex2, GroupID.FRIENDS.getId(), visibleGroupIDs, 10, 0, this.dbSession);
 		assertEquals(1, posts.size());
 	}
 
@@ -146,7 +146,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBookmarkByUserFriends() {
 		final String loginUser = "testuser2";
-		List<Post<Bookmark>>  posts1 = this.bookmarkDb.getBookmarkByUserFriends(loginUser, 10, 0, this.dbSession);
+		List<Post<Bookmark>>  posts1 = this.bookmarkDb.getPostsByUserFriends(loginUser, HashID.INTRA_HASH, 10, 0, this.dbSession);
 		assertEquals(1, posts1.size());
 	}
 
@@ -617,7 +617,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getContentIDForBookmark() {
 		final String requBibtex = "7eda282d1d604c702597600a06f8a6b0";
 		final String userName = "testuser2";
-		assertEquals(3, this.bookmarkDb.getContentIDForPost(requBibtex, userName, this.dbSession));
+		assertEquals(3, this.bookmarkDb.getContentIdForPost(requBibtex, userName, this.dbSession));
 	}
 	
 	/**

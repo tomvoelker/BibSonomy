@@ -24,7 +24,7 @@ public class GetBookmarksForUser extends BookmarkChainElement {
 
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		return this.db.getBookmarkForUser(param, session);
+		return this.db.getPostsForUser(param, session);
 	}
 
 	@Override

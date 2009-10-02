@@ -122,7 +122,8 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	 * @param session 
 	 * @return list of bookmark posts
 	 */
-	public List<Post<Bookmark>> getBookmarkByTagNamesForUser(final String requestedUserName, final String userName, final List<TagIndex> tagIndex, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
+	@Deprecated
+	private List<Post<Bookmark>> getBookmarkByTagNamesForUser(final String requestedUserName, final String userName, final List<TagIndex> tagIndex, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setRequestedUserName(requestedUserName);
 		param.setUserName(userName);
@@ -187,44 +188,6 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 		
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.bookmarkList("getBookmarkByConceptForUser", param, session);
-	}
-
-	/**
-	 * TODO remove method => getBookmarkByUserFriends 
-	 * 
-	 * <em>/friends</em><br/><br/>
-	 * 
-	 * Prepares queries which show all posts of users which have currUser as
-	 * their friend.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bookmark posts
-	 */
-	public List<Post<Bookmark>> getBookmarkByUserFriends(final BookmarkParam param, final DBSession session) {
-		// groupType must be set to friends
-		param.setGroupType(GroupID.FRIENDS);
-		return this.bookmarkList("getBookmarkByUserFriends", param, session);
-	}
-
-	/**
-	 * XXXDZ
-	 * 
-	 * @see BookmarkDatabaseManager#getBookmarkByUserFriends(BookmarkParam, DBSession)
-	 * 
-	 * @param user
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of bookmark posts
-	 */
-	public List<Post<Bookmark>> getBookmarkByUserFriends(final String user, final int limit, final int offset, final DBSession session) {
-		final BookmarkParam param = new BookmarkParam();
-		param.setUserName(user);
-		param.setGroupType(GroupID.FRIENDS); // groupType must be set to friends
-		param.setLimit(limit);
-		param.setOffset(offset);
-		return this.bookmarkList("getBookmarkByUserFriends", param, session);
 	}
 
 	/**
@@ -296,7 +259,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	}
 
 	/**
-	 * XXXDZ
+	 * XXX: requestedGroupName
 	 * 
 	 * <em>/viewable/EineGruppe</em><br/><br/>
 	 * 
@@ -309,6 +272,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	 * @param session
 	 * @return list of bookmarks
 	 */
+	@Deprecated
 	public List<Post<Bookmark>> getBookmarkViewable(final int groupId, final String userName, final int limit, final int offset, final DBSession session) {
 		final BookmarkParam param = new BookmarkParam();
 		param.setGroupId(groupId);
@@ -316,30 +280,13 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 		param.setLimit(limit);
 		param.setOffset(offset);
 		
-		// duplicated code
 		if (GroupID.isSpecialGroupId(param.getGroupId())) {
 			// show users own bookmarks, which are private, public or for friends
 			param.setRequestedUserName(param.getUserName());
-			return getBookmarkForUser(param, session);
+			return getPostsForUser(param, session);
 		}
 		
 		return this.bookmarkList("getBookmarkViewable", param, session);
-	}
-
-	/**
-	 * TODO: method without param
-	 * @param param
-	 * @param session
-	 * @return list of bookmarks
-	 */
-	private List<Post<Bookmark>> getBookmarkViewableByTag(final BookmarkParam param, final DBSession session) {
-		if (GroupID.isSpecialGroupId(param.getGroupId()) == true) {
-			// show users own bookmarks, which are private, public or for friends
-			param.setRequestedUserName(param.getUserName());
-			// TODO:
-			return this.getBookmarkByTagNamesForUser(param.getRequestedUserName(), param.getUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), session);
-		}
-		return this.bookmarkList("getBookmarkViewableByTag", param, session);
 	}
 
 	/**
@@ -418,29 +365,9 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	}
 
 	/**
-	 * TODO: remove me!
-	 * 
-	 * <em>/user/MaxMustermann</em><br/><br/>
-	 * 
-	 * This method prepares queries which retrieve all bookmarks for a given
-	 * user name (requestedUserName). Additionally the group to be shown can be
-	 * restricted. The queries are built in a way, that not only public posts
-	 * are retrieved, but also friends or private or other groups, depending
-	 * upon if userName is allowed to see them.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bookmark posts
-	 */
-	public List<Post<Bookmark>> getBookmarkForUser(final BookmarkParam param, final DBSession session) {
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		return this.bookmarkList("getBookmarkForUser", param, session);
-	}
-
-	/**
 	 * XXXDZ
 	 * 
-	 * @see BookmarkDatabaseManager#getBookmarkForUser(BookmarkParam, DBSession)
+	 * @see BookmarkDatabaseManager#getPostsForUser(BookmarkParam, DBSession)
 	 * 
 	 * @param userName
 	 * @param requestedUserName
@@ -460,51 +387,25 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 		param.setLimit(limit);
 		param.setOffset(offset);
 		
-		return this.getBookmarkForUser(param, session);
-	}
-	
-	// FIXME: getBookmark__s__ForMyGroupPost sql id
-	@Override
-	public List<Post<Bookmark>> getPostsForMyGroupPosts(final String requestedUserName, final String loginUserName, final int limit, final int offset, final List<Integer> visibleGroupIDs, final DBSession session) {
-		BookmarkParam param = new BookmarkParam();
-		param.setRequestedUserName(requestedUserName);
-		param.setUserName(loginUserName);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		param.setGroups(visibleGroupIDs);
-
-		return this.bookmarkList("getBookmarksForMyGroupPosts",param,session);
+		return this.getPostsForUser(param, session);
 	}
 
-	// FIXME: getBookmark__s__ForMyGroupPost sql id
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManager#onPostDelete(java.lang.Integer, org.bibsonomy.database.util.DBSession)
+	 */
 	@Override
-	public List<Post<Bookmark>> getPostsForMyGroupPostsByTag(final String requestedUserName, final String loginUserName, final List<TagIndex> tagIndex, final int limit, final int offset, final List<Integer> visibleGroupIDs, final DBSession session){
-		final BookmarkParam param = new BookmarkParam();
-		param.setRequestedUserName(requestedUserName);
-		param.setUserName(loginUserName);
-		param.setTagIndex(tagIndex);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		param.setGroups(visibleGroupIDs);
-
-		return this.bookmarkList("getBookmarksForMyGroupPostsByTag",param,session);
+	protected void onPostDelete(final Integer contentId, final DBSession session) {
+		this.plugins.onBookmarkDelete(contentId, session);	
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.PostDatabaseManager#informPlugin(org.bibsonomy.database.managers.PostDatabaseManager.Action, java.lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManager#onPostUpdate(java.lang.Integer, java.lang.Integer, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected void informPlugin(org.bibsonomy.database.managers.PostDatabaseManager.Action action, Integer newContentId, Integer oldContentId, DBSession session) {
-		switch (action) {
-			case UPDATE:
-				this.plugins.onBookmarkUpdate(oldContentId, newContentId, session);
-				break;
-			case CREATE:
-				this.plugins.onBookmarkInsert(newContentId, session);
-			case DELETE:
-				this.plugins.onBookmarkDelete(newContentId, session);
-		}
+	protected void onPostUpdate(Integer oldContentId, Integer newContentId, DBSession session) {
+		this.plugins.onBookmarkUpdate(oldContentId, newContentId, session);
 	}
 
 	/*

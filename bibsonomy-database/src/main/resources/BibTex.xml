@@ -219,7 +219,7 @@
 		ORDER BY c.date DESC, content_id DESC		
 	</select>
 	
-	<select id="getBibTexForHomePage" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+	<select id="getBibTexForHomepage" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, b.ctr as count, NULL AS `group`, NULL AS group_name
 		FROM (SELECT b.*, h.ctr
 		      FROM bibtex b FORCE INDEX (group_date_content_id_idx), bibhash h
@@ -743,7 +743,7 @@
 		ORDER BY b.date DESC;	
 	</select>
 	
-	<select id="getGroupBibtexCount" resultClass="int" parameterClass="bibtexParam">
+	<select id="getGroupBibTexCount" resultClass="int" parameterClass="bibtexParam">
 		SELECT COUNT(DISTINCT t1.content_id) 
 		FROM grouptas t1
 		WHERE t1.user_name = #requestedUserName#
@@ -752,7 +752,7 @@
 		AND t1.content_type = #contentType#
 	</select>
 	
-	<select id="getGroupBibtexCountByTag" resultClass="int" parameterClass="bibtexParam">
+	<select id="getGroupBibTexCountByTag" resultClass="int" parameterClass="bibtexParam">
 		SELECT COUNT(DISTINCT t1.content_id) 
 		FROM grouptas t1
 		<iterate property="tagIndex">
@@ -767,7 +767,7 @@
 		AND t1.content_type = #contentType#
 	</select>
 	
-	<select id="getBibtexForMyGroupPosts" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+	<select id="getBibTexForMyGroupPosts" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
 		FROM (SELECT <include refid ="allBibtexAttributes"/>,b.simhash1,b.simhash2, 
 			  h.ctr AS count,gts.group
@@ -786,7 +786,7 @@
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 	
-	<select id="getBibtexForMyGroupPostsByTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+	<select id="getBibTexForMyGroupPostsByTag" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
 		FROM (SELECT <include refid ="allBibtexAttributes"/>,b.simhash1,b.simhash2, 
 			  h.ctr AS count,gt1.group

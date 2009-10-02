@@ -30,6 +30,6 @@ public class GetBibtexForUser extends BibTexHashElement {
 	 */
 	@Override
 	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexForUser(param, session);
+		return this.db.getPostsForUser(param, session);
 	}
 }

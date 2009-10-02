@@ -39,15 +39,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class SystemtagsTest extends AbstractDBLogicBase {
 
-	/*
-	// just for debugging
-	public static void main( String[] args ) {
-		SystemtagsTest test = new SystemtagsTest();
-		test.setUp();
-		test.testForGroupTag();
-	}
-	*/
-	
+	@Override
 	@Before
 	@Ignore
 	public void setUp() {
@@ -108,7 +100,6 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		Assert.assertNotNull(map.get("for"));
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testArgumentExtraction() {
 		Tag testTag1 = new Tag("for:kde");
