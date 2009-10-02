@@ -42,6 +42,7 @@ import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -70,6 +71,7 @@ import org.bibsonomy.rest.client.queries.post.CreateUserQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeGroupQuery;
 import org.bibsonomy.rest.client.queries.put.ChangePostQuery;
 import org.bibsonomy.rest.client.queries.put.ChangeUserQuery;
+import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ExceptionUtils;
 
 public class RestLogic implements LogicInterface {
@@ -386,4 +388,17 @@ public class RestLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public void setBibTexSearch(ResourceSearch<BibTex> bibTexSearch) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setBookmarkSearch(ResourceSearch<Bookmark> bookmarkSearch) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
