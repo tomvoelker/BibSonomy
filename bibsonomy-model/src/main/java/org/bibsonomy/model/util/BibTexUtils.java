@@ -356,22 +356,44 @@ public class BibTexUtils {
 
 
 	/**
-	 * Create a bibtex string with some bibsonomy-specific information:
+	 * Creates a bibtex string with some bibsonomy-specific information using 
+	 * {@link #toBibtexString(Post)}.
+	 * 
 	 * <ul>
-	 * 		<li>tags in keywords fields/li>
-	 * 		<li>URL to bibtex details page in biburl field</li>
+	 * 		<li>tags in <code>keywords</code> field</li>
+	 * 		<li>URL to bibtex details page in <code>biburl</code> field</li>
+	 * 		<li>description in the <code>description</code> field</li>
 	 * </ul>
+	 * 
+	 * @see #toBibtexString(Post)
 	 * 
 	 * @param post 
 	 * 			- a bibtex post
 	 * @param bibsonomyUrl 
 	 * 			- the bibsonomy URL to link to for the bibtex details page
 	 * 
-	 * @return A String representation of the posts in BibTeX format.
+	 * @return A string representation of the posts in BibTeX format.
 	 */
-	public static String toBibtexString(Post<BibTex> post, String bibsonomyUrl) {
-		BibTex bib = post.getResource();		
-		bib.addMiscField("biburl", bibsonomyUrl + "bibtex/" + HashID.INTRA_HASH.getId() + bib.getIntraHash() + "/" + post.getUser().getName());
+	public static String toBibtexString(final Post<BibTex> post, final String bibsonomyUrl) {
+		post.getResource().addMiscField("biburl", bibsonomyUrl + "bibtex/" + HashID.INTRA_HASH.getId() + post.getResource().getIntraHash() + "/" + post.getUser().getName());
+		return toBibtexString(post);
+	}
+	
+	/**
+	 * Creates a BibTeX string containing more than only the fields in the 
+	 * BibTeX object:
+	 * 
+	 * <ul>
+	 * 		<li>tags in the <code>keywords</code> field</li>
+	 *      <li>description in the <code>description</code> field</li>
+	 * </ul>
+	 * 
+	 * @param post - a BibTeX post.
+	 * 
+	 * @return A string representation of the post in BibTeX format.
+	 */
+	public static String toBibtexString(final Post<BibTex> post) {
+		final BibTex bib = post.getResource();	
 		bib.addMiscField("keywords", TagUtils.toTagString(post.getTags(), " "));
 		bib.addMiscField("description", post.getDescription());
 		return BibTexUtils.toBibtexString(bib);
