@@ -393,6 +393,10 @@ public class BibTexUtils {
 	 * @return A string representation of the post in BibTeX format.
 	 */
 	public static String toBibtexString(final Post<BibTex> post) {
+		/*
+		 * if you add fields here, you have to add them also 
+		 * in SimpleBibTeXParser.updateWithParsedBibTeX!
+		 */
 		final BibTex bib = post.getResource();	
 		bib.addMiscField("keywords", TagUtils.toTagString(post.getTags(), " "));
 		bib.addMiscField("description", post.getDescription());
