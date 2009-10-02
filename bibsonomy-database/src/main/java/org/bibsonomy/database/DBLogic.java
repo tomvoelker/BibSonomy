@@ -111,7 +111,7 @@ public class DBLogic implements LogicInterface {
 	 *            - the user which wants to use the logic.
 	 * @param dbSessionFactory
 	 */
-	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final ResourceSearch<BibTex> bibTexSearch, final ResourceSearch<Bookmark> bookmarkSearch) {
+	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory) {
 		this.loginUser = loginUser;
 
 		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
@@ -133,7 +133,10 @@ public class DBLogic implements LogicInterface {
 		this.basketDBManager = BasketDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;
-		
+	}
+	
+	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final ResourceSearch<BibTex> bibTexSearch, final ResourceSearch<Bookmark> bookmarkSearch) {
+		this(loginUser, dbSessionFactory);
 		this.bibtexDBManager.setResourceSearch(bibTexSearch);
 		this.bookmarkDBManager.setResourceSearch(bookmarkSearch);
 	}
