@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.ajax.BasketManagerCommand;
 import org.bibsonomy.webapp.controller.AjaxController;
@@ -63,7 +64,7 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		}
 		
 		// create list of posts by hash data and given username
-		final List<Post<BibTex>> posts = createObjects(command);
+		final List<Post<? extends Resource>> posts = createObjects(command);
 
 		// decide which method will be called
 		if (command.getAction().startsWith("pick")){
@@ -85,9 +86,9 @@ public class BasketController extends AjaxController implements MinimalisticCont
 	 * @param command
 	 * @return List<Post<BibTex>>
 	 */
-	private List<Post<BibTex>> createObjects(BasketManagerCommand command){
+	private List<Post<? extends Resource>> createObjects(BasketManagerCommand command){
 		// create new list and necessary variables
-		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
+		final List<Post<? extends Resource>> posts = new ArrayList<Post<? extends Resource>>();
 		
 		// get the has string
 		final String hash = command.getRequestedResourceHash();
