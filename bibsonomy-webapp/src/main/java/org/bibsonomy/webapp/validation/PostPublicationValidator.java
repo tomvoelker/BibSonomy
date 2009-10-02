@@ -76,20 +76,37 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 			errors.rejectValue("post.resource.author", "error.field.valid.authorOrEditor");
 			errors.rejectValue("post.resource.editor", "error.field.valid.authorOrEditor");
 		}
-		
-		
+
+		/*
+		 * initialize parser
+		 * 
+		 * XXX: if the parser is thread safe, we can use a single instance for
+		 * several calls.
+		 */
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+
 		/*
 		 * test misc field using the BibTeXParser
 		 */
 		final String misc = bibtex.getMisc();
 		if (present(misc)) {
 			/*
-			 * build a bibtex string only with attributes of the misc field and 
-			 * parse it
+			 * parse a bibtex string only with attributes of the misc field 
 			 */
-			if (!this.parse("@misc{id,\n" + misc + "\n}")) {
+			try {
+				parser.parseBibTeX("@misc{id,\n" + misc + "\n}");
+			} catch (ParseException ex) {
 				errors.rejectValue("post.resource.misc", "error.field.valid.misc");
-				return; // skip parsing entire bibtex => parsing fails
+				/*
+				 * stop parsing remaining entry - would fail anyway.
+				 */
+				return;
+			} catch (IOException ex) {
+				errors.rejectValue("post.resource.misc", "error.field.valid.misc");
+				/*
+				 * stop parsing remaining entry - would fail anyway.
+				 */
+				return;
 			}
 		}
 		
@@ -97,44 +114,19 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 		 * test validity using the BibTeXParser
 		 */
 		final String bibTexAsString = BibTexUtils.toBibtexString(bibtex);
-		
-		if (!this.parse(bibTexAsString)) {
-			/*
-			 * parsing failed
-			 * 
-			 * FIXME: give the error message to the user (!?)
-			 */
-			errors.reject("error.parse.bibtex.failed");
-		}
-	}
-	
-	/**
-	 * parses the BibTex object to validate it and returns true if no exception
-	 * is thrown otherwise false
-	 * 
-	 * @param	bibtex	the bibtex object to parse
-	 * @return	if parsing was successful
-	 */
-	private boolean parse(final String bibTexAsString) {
-		if (!present(bibTexAsString)) {
-			return true;
-		}
-		
-		// init parser
-		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
-		
 		try {
 			parser.parseBibTeX(bibTexAsString);
 		} catch (ParseException ex) {
-			// parsing failed
-			return false;
+			/*
+			 * parsing failed
+			 */
+			errors.reject("error.parse.bibtex.failed", new Object[]{bibTexAsString, ex.getMessage()}, "Error parsing your post:\n\n{0}\n\nMessage was: {1}");
 		} catch (IOException ex) {
-			logger.warn("exception while parsing bibtex string", ex);
-			return false;
+			/*
+			 * parsing failed
+			 */
+			errors.reject("error.parse.bibtex.failed", new Object[]{bibTexAsString, ex.getMessage()}, "Error parsing your post:\n\n{0}\n\nMessage was: {1}");
 		}
-		
-		// parsing successful		
-		return true;
 	}
 	
 	
