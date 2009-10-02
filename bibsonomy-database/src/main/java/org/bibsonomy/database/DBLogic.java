@@ -111,7 +111,7 @@ public class DBLogic implements LogicInterface {
 	 *            - the user which wants to use the logic.
 	 * @param dbSessionFactory
 	 */
-	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory) {
+	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final ResourceSearch<BibTex> bibTexSearch, final ResourceSearch<Bookmark> bookmarkSearch) {
 		this.loginUser = loginUser;
 
 		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
@@ -133,6 +133,9 @@ public class DBLogic implements LogicInterface {
 		this.basketDBManager = BasketDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;
+		
+		this.bibtexDBManager.setResourceSearch(bibTexSearch);
+		this.bookmarkDBManager.setResourceSearch(bookmarkSearch);
 	}
 
 	/**
@@ -1829,7 +1832,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#createBasketItems()
 	 */
 	@Override
-	public int createBasketItems(List<Post<BibTex>> posts){
+	public int createBasketItems(List<Post<? extends Resource>> posts){
 		this.ensureLoggedIn();
 		
 		final DBSession session = openSession();
@@ -1837,11 +1840,12 @@ public class DBLogic implements LogicInterface {
 		int basketSize = 0;
 		
 		try {
-			for (Post<BibTex> p:posts){
+			for (final Post<? extends Resource> post:posts){
+				if (post.getResource() instanceof Bookmark) throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the basket");				
 				/*
 				 * get the complete post from the database 
 				 */
-				final Post<BibTex> copy = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), p.getResource().getIntraHash(), p.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
+				final Post<BibTex> copy = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), post.getResource().getIntraHash(), post.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
 				
 				/*
 				 * post might be null, because 
@@ -1877,7 +1881,7 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#deleteBasketItems()
 	 */
 	@Override
-	public int deleteBasketItems(List<Post<BibTex>> posts, final boolean clearBasket) {
+	public int deleteBasketItems(List<Post<? extends Resource>> posts, final boolean clearBasket) {
 		this.ensureLoggedIn();
 		
 		final DBSession session = openSession();
@@ -1889,11 +1893,12 @@ public class DBLogic implements LogicInterface {
 				this.basketDBManager.deleteAllItems(this.loginUser.getName(), session);
 			} else {
 				// delete specific post
-				for (final Post<BibTex> p:posts){
+				for (final Post<? extends Resource> post:posts){
+					if (post.getResource() instanceof Bookmark) throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the basket");
 					/*
 					 * get the complete post from the database 
 					 */
-					final Post<BibTex> copy = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), p.getResource().getIntraHash(), p.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
+					final Post<BibTex> copy = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), post.getResource().getIntraHash(), post.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
 					
 					/*
 					 * post might be null, because 
@@ -1925,17 +1930,4 @@ public class DBLogic implements LogicInterface {
 		return 0;
 	}
 
-	public void setBibTexSearch(ResourceSearch<BibTex> bibTexSearch) {
-		if(this.bibtexDBManager!=null)
-			this.bibtexDBManager.setResourceSearch(bibTexSearch);
-		else
-			log.error("Trying to set up lucene search while there is no publication database manager");
-	}
-
-	public void setBookmarkSearch(ResourceSearch<Bookmark> bookmarkSearch) {
-		if(this.bookmarkDBManager!=null)
-			this.bookmarkDBManager.setResourceSearch(bookmarkSearch);
-		else
-			log.error("Trying to set up lucene search while there is no bookmark database manager");
-	}
 }
