@@ -39,18 +39,12 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 		if (loginName != null) {
 			final User loggedInUser = getLoggedInUser(loginName, password);
 			if (loggedInUser.getName() != null) {
-				LogicInterface dbLogic = new DBLogic(loggedInUser, this.dbSessionFactory);
-				dbLogic.setBibTexSearch(bibTexSearch);
-				dbLogic.setBookmarkSearch(bookmarkSearch);
-				return dbLogic;
+				return new DBLogic(loggedInUser, this.dbSessionFactory, bibTexSearch, bookmarkSearch);
 			}
 			throw new ValidationException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
 		// guest access
-		LogicInterface dbLogic = new DBLogic(new User(), this.dbSessionFactory);
-		dbLogic.setBibTexSearch(bibTexSearch);
-		dbLogic.setBookmarkSearch(bookmarkSearch);
-		return dbLogic;
+		return new DBLogic(new User(), this.dbSessionFactory, bibTexSearch, bookmarkSearch);
 	}
 
 	/**
