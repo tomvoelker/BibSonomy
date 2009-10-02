@@ -33,6 +33,9 @@ import java.util.List;
 
 import org.bibsonomy.bibtex.util.StandardBibTeXFields;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.BibtexUtilsTest;
 
 import bibtex.dom.BibtexAbstractValue;
 import bibtex.dom.BibtexEntry;
@@ -48,10 +51,9 @@ import bibtex.expansions.PersonListExpander;
 import bibtex.parser.BibtexParser;
 import bibtex.parser.ParseException;
 
-
-
 /**
- * Provides parsing of BibTeX entries represented by {@link String}s into {@link BibTex} objects.
+ * Provides parsing of BibTeX entries represented by {@link String}s into
+ * {@link BibTex} objects.
  * 
  * FIXME: before using this in BibSonomy, it must be properly tested! Currently,
  * it puts too many fields into 'misc'.
@@ -86,42 +88,107 @@ public class SimpleBibTeXParser {
 		this.warnings.clear();
 	}
 
-
 	public SimpleBibTeXParser() {
 		this.warnings = new LinkedList<String>();
 	}
 
-	/** Parses one BibTeX entry into a {@link BibTex} object.
+	/**
+	 * Parses one BibTeX entry into a {@link BibTex} object.
 	 * 
-	 * @param bibtex - the BibTeX entry as string.
+	 * @param bibtex -
+	 *            the BibTeX entry as string.
 	 * @return The filled {@link BibTex} object.
 	 * 
-	 * @throws ParseException If a serious error during parsing occured. 
+	 * @throws ParseException
+	 *             If a serious error during parsing occured.
 	 * 
 	 * @throws IOException
 	 */
-	public BibTex parseBibTeX (final String bibtex) throws ParseException, IOException {
+	public BibTex parseBibTeX(final String bibtex) throws ParseException, IOException {
 		final List<BibTex> list = parseInternal(bibtex, true);
 		if (list.size() > 0)
 			return list.get(0);
 		return null;
 	}
 
-	public List<BibTex> parseBibTeXs (final String bibtex) throws ParseException, IOException { 
+	/**
+	 * Parses the given BibTeX entry and puts fields which are not part of the
+	 * {@link BibTex} class into the Post.
+	 * 
+	 * @param bibtex -
+	 *            the string which contains one (!) BibTeX-Entry.
+	 * 
+	 * @return The post which contains all data of the BibTeX-Entry.
+	 */
+	public Post<BibTex> parseBibTeXPost(final String bibtex) {
+		/*
+		 * FIXME: must be implemented! e.g., tags must be copied into post and
+		 * so on ...
+		 */
+		return null;
+	}
+
+	/**
+	 * Builds a BibTeX-String from the BibTex contained in the post and parses
+	 * this string into a Post. Then, all fields in the new post which were
+	 * contained in the string are copied into the new post.
+	 * 
+	 * Purpose: To ensure that we show only valid and normalized BibTeX entries
+	 * (e.g., on /bib/ pages; currently, we also need this for /layout/, since
+	 * there all posts are parsed through the JabRef parser) we send all posts
+	 * through the parser and thereby normalize them before we store them in the
+	 * DB.
+	 * 
+	 * @see BibTexUtils#toBibtexString(Post) - all fields added there have to be
+	 * copied here, to!
+	 * @param post
+	 */
+	public void updateWithParsedBibTeX(final Post<BibTex> post) {
+		/*
+		 * FIXME: must be implemented!
+		 * 
+		 * The code below is just an example how it could work.
+		 */
+		final Post<BibTex> copyPost = createParsedCopy(post);
+		/*
+		 * all fields which toBibtexString adds must be added here!
+		 */
+		post.setResource(copyPost.getResource());
+		post.setTags(copyPost.getTags());
+		post.setDescription(copyPost.getDescription());
+	}
+
+	/**
+	 * Parses the given post and returns a copy where all fields which are put
+	 * into a BibTeX string in {@link BibTexUtils#toBibtexString(Post)} are put
+	 * into the copy.
+	 * 
+	 * @param post
+	 * @return
+	 */
+	public Post<BibTex> createParsedCopy(final Post<BibTex> post) {
+		/*
+		 * parseBibTeXPost must ensure to add all fields which 
+		 * BibTexUtils.toBibtexString(post) puts into the string. 
+		 */
+		return parseBibTeXPost(BibTexUtils.toBibtexString(post));
+	}
+
+	public List<BibTex> parseBibTeXs(final String bibtex) throws ParseException, IOException {
 		return parseInternal(bibtex, false);
 	}
 
-	private List<BibTex> parseInternal (final String bibtex, final boolean firstEntryOnly) throws ParseException, IOException {
+	private List<BibTex> parseInternal(final String bibtex, final boolean firstEntryOnly) throws ParseException, IOException {
 		final List<BibTex> result = new LinkedList<BibTex>();
 
 		final BibtexParser parser = new BibtexParser(true);
 		/*
-		 * To allow several "keywords" fields (as done by Connotea), we set the policy
-		 * to keep all fields, such that we can access all keywords.
+		 * To allow several "keywords" fields (as done by Connotea), we set the
+		 * policy to keep all fields, such that we can access all keywords.
 		 * 
 		 * Default was KEEP_FIRST, changed by rja on 2008-08-26.
 		 */
-		//		parser.setMultipleFieldValuesPolicy(BibtexMultipleFieldValuesPolicy.KEEP_ALL);
+		// parser.setMultipleFieldValuesPolicy(BibtexMultipleFieldValuesPolicy.KEEP_ALL);
 		final BibtexFile bibtexFile = new BibtexFile();
 
 		/*
@@ -129,35 +196,33 @@ public class SimpleBibTeXParser {
 		 */
 		parser.parse(bibtexFile, new BufferedReader(new StringReader(bibtex)));
 
-
 		// boolean topComment = false;
-		// String topLevelComment;//stores comment or snippet, depending on bibtex entries
+		// String topLevelComment;//stores comment or snippet, depending on
+		// bibtex entries
 
 		// boolean standard = true;
 
-		/* 
+		/*
 		 * expand all macros, crossrefs and author/editor field
 		 */
 		expandMacrosCrossRefsPersonLists(bibtexFile);
 
-
-
-		/* ****************************************************************
+		/***********************************************************************
 		 * iterate over all entries and put them in BibTex objects
-		 * ****************************************************************/
-		for (Object potentialEntry:bibtexFile.getEntries()) {
+		 **********************************************************************/
+		for (Object potentialEntry : bibtexFile.getEntries()) {
 
 			if (!(potentialEntry instanceof BibtexEntry)) {
 				/*
-				 * Process top level comment, but drop macros, because
-				 * they are already expanded!
+				 * Process top level comment, but drop macros, because they are
+				 * already expanded!
 				 */
 				if (potentialEntry instanceof BibtexToplevelComment) {
 					/*
-					 * Retrieve and process Toplevel Comment if
-					 * needed??? BibtexToplevelComment comment =
-					 * (BibtexToplevelComment) potentialEntry; String
-					 * topLevelComment = comment.getContent();
+					 * Retrieve and process Toplevel Comment if needed???
+					 * BibtexToplevelComment comment = (BibtexToplevelComment)
+					 * potentialEntry; String topLevelComment =
+					 * comment.getContent();
 					 */
 					continue;
 				} else {
@@ -178,8 +243,9 @@ public class SimpleBibTeXParser {
 		return result;
 	}
 
-	/** Expands all macros, crossrefs and person lists. Any exceptions occuring are put into 
-	 * the {@link #warnings}.
+	/**
+	 * Expands all macros, crossrefs and person lists. Any exceptions occuring
+	 * are put into the {@link #warnings}.
 	 * 
 	 * @param bibtexFile
 	 */
@@ -204,7 +270,7 @@ public class SimpleBibTeXParser {
 	}
 
 	/**
-	 * This method does the main BibTeX work - after parsing it gets all field 
+	 * This method does the main BibTeX work - after parsing it gets all field
 	 * values from the parsed entry and fills the BibTex object.
 	 * 
 	 * @param entry
@@ -213,9 +279,9 @@ public class SimpleBibTeXParser {
 	private BibTex fillBibtexFromEntry(BibtexEntry entry) {
 		final BibTex bibtex = new BibTex();
 
-		/* ************************************************
-		 * process non standard bibtex fields 
-		 * ************************************************/
+		/***********************************************************************
+		 * process non standard bibtex fields
+		 **********************************************************************/
 
 		// get set of all current fieldnames - like address, author etc.
 		final ArrayList<String> nonStandardFieldNames = new ArrayList<String>(entry.getFields().keySet());
@@ -226,9 +292,9 @@ public class SimpleBibTeXParser {
 
 		// iter over arraylist to retrieve nonstandard field values
 		final StringBuffer miscBuffer = new StringBuffer();
-		for (final String key:nonStandardFieldNames) {
+		for (final String key : nonStandardFieldNames) {
 			final String value = ((BibtexString) entry.getFieldValue(key)).getContent();
-			miscBuffer.append(key + " = {"	+ value + "},\n");
+			miscBuffer.append(key + " = {" + value + "},\n");
 			bibtex.addMiscField(key, value);
 		}
 		// remove last colon
@@ -238,10 +304,9 @@ public class SimpleBibTeXParser {
 
 		bibtex.setMisc(miscBuffer.toString());
 
-		/* ************************************************
-		 * process standard bibtex fields 
-		 * ************************************************/
-
+		/***********************************************************************
+		 * process standard bibtex fields
+		 **********************************************************************/
 
 		/*
 		 * add mandatory fields
@@ -252,52 +317,104 @@ public class SimpleBibTeXParser {
 		bibtex.setEntrytype(entry.getEntryType());
 
 		BibtexString field = null;
-		field = (BibtexString) entry.getFieldValue("title"); if (field != null) bibtex.setTitle(field.getContent());
-		field = (BibtexString) entry.getFieldValue("year");  if (field != null) bibtex.setYear(field.getContent()); 
+		field = (BibtexString) entry.getFieldValue("title");
+		if (field != null)
+			bibtex.setTitle(field.getContent());
+		field = (BibtexString) entry.getFieldValue("year");
+		if (field != null)
+			bibtex.setYear(field.getContent());
 
 		/*
 		 * add optional fields
 		 */
-		field = (BibtexString) entry.getFieldValue("crossref");     if (field != null) bibtex.setCrossref(field.getContent());     
-		field = (BibtexString) entry.getFieldValue("address");      if (field != null) bibtex.setAddress(field.getContent());      
-		field = (BibtexString) entry.getFieldValue("annote");       if (field != null) bibtex.setAnnote(field.getContent());       
-		field = (BibtexString) entry.getFieldValue("booktitle");    if (field != null) bibtex.setBooktitle(field.getContent());    
-		field = (BibtexString) entry.getFieldValue("chapter");      if (field != null) bibtex.setChapter(field.getContent());      
-		field = (BibtexString) entry.getFieldValue("day");          if (field != null) bibtex.setDay(field.getContent());
-		field = (BibtexString) entry.getFieldValue("edition");      if (field != null) bibtex.setEdition(field.getContent());      
-		field = (BibtexString) entry.getFieldValue("howpublished"); if (field != null) bibtex.setHowpublished(field.getContent()); 
-		field = (BibtexString) entry.getFieldValue("institution");	if (field != null) bibtex.setInstitution(field.getContent());  
-		field = (BibtexString) entry.getFieldValue("journal");      if (field != null) bibtex.setJournal(field.getContent());      
-		field = (BibtexString) entry.getFieldValue("key");	        if (field != null) bibtex.setKey(field.getContent());
-		field = (BibtexString) entry.getFieldValue("month");        if (field != null) bibtex.setMonth(field.getContent());        
-		field = (BibtexString) entry.getFieldValue("note");         if (field != null) bibtex.setNote(field.getContent());         
-		field = (BibtexString) entry.getFieldValue("number");       if (field != null) bibtex.setNumber(field.getContent());       
-		field = (BibtexString) entry.getFieldValue("organization"); if (field != null) bibtex.setOrganization(field.getContent()); 
-		field = (BibtexString) entry.getFieldValue("pages");        if (field != null) bibtex.setPages(field.getContent());        
-		field = (BibtexString) entry.getFieldValue("publisher");    if (field != null) bibtex.setPublisher(field.getContent());    
-		field = (BibtexString) entry.getFieldValue("school");       if (field != null) bibtex.setSchool(field.getContent());       
-		field = (BibtexString) entry.getFieldValue("series");       if (field != null) bibtex.setSeries(field.getContent());       
-		field = (BibtexString) entry.getFieldValue("url");          if (field != null) bibtex.setUrl(field.getContent());           
-		field = (BibtexString) entry.getFieldValue("volume");		if (field != null) bibtex.setVolume(field.getContent());        
-		field = (BibtexString) entry.getFieldValue("abstract");		if (field != null) bibtex.setAbstract(field.getContent());
-		field = (BibtexString) entry.getFieldValue("type");  		if (field != null) bibtex.setType(field.getContent());          
+		field = (BibtexString) entry.getFieldValue("crossref");
+		if (field != null)
+			bibtex.setCrossref(field.getContent());
+		field = (BibtexString) entry.getFieldValue("address");
+		if (field != null)
+			bibtex.setAddress(field.getContent());
+		field = (BibtexString) entry.getFieldValue("annote");
+		if (field != null)
+			bibtex.setAnnote(field.getContent());
+		field = (BibtexString) entry.getFieldValue("booktitle");
+		if (field != null)
+			bibtex.setBooktitle(field.getContent());
+		field = (BibtexString) entry.getFieldValue("chapter");
+		if (field != null)
+			bibtex.setChapter(field.getContent());
+		field = (BibtexString) entry.getFieldValue("day");
+		if (field != null)
+			bibtex.setDay(field.getContent());
+		field = (BibtexString) entry.getFieldValue("edition");
+		if (field != null)
+			bibtex.setEdition(field.getContent());
+		field = (BibtexString) entry.getFieldValue("howpublished");
+		if (field != null)
+			bibtex.setHowpublished(field.getContent());
+		field = (BibtexString) entry.getFieldValue("institution");
+		if (field != null)
+			bibtex.setInstitution(field.getContent());
+		field = (BibtexString) entry.getFieldValue("journal");
+		if (field != null)
+			bibtex.setJournal(field.getContent());
+		field = (BibtexString) entry.getFieldValue("key");
+		if (field != null)
+			bibtex.setKey(field.getContent());
+		field = (BibtexString) entry.getFieldValue("month");
+		if (field != null)
+			bibtex.setMonth(field.getContent());
+		field = (BibtexString) entry.getFieldValue("note");
+		if (field != null)
+			bibtex.setNote(field.getContent());
+		field = (BibtexString) entry.getFieldValue("number");
+		if (field != null)
+			bibtex.setNumber(field.getContent());
+		field = (BibtexString) entry.getFieldValue("organization");
+		if (field != null)
+			bibtex.setOrganization(field.getContent());
+		field = (BibtexString) entry.getFieldValue("pages");
+		if (field != null)
+			bibtex.setPages(field.getContent());
+		field = (BibtexString) entry.getFieldValue("publisher");
+		if (field != null)
+			bibtex.setPublisher(field.getContent());
+		field = (BibtexString) entry.getFieldValue("school");
+		if (field != null)
+			bibtex.setSchool(field.getContent());
+		field = (BibtexString) entry.getFieldValue("series");
+		if (field != null)
+			bibtex.setSeries(field.getContent());
+		field = (BibtexString) entry.getFieldValue("url");
+		if (field != null)
+			bibtex.setUrl(field.getContent());
+		field = (BibtexString) entry.getFieldValue("volume");
+		if (field != null)
+			bibtex.setVolume(field.getContent());
+		field = (BibtexString) entry.getFieldValue("abstract");
+		if (field != null)
+			bibtex.setAbstract(field.getContent());
+		field = (BibtexString) entry.getFieldValue("type");
+		if (field != null)
+			bibtex.setType(field.getContent());
 
 		/*
-		 * FIXME: description, keywords, tags, etc. missing but necessary for proper operation in BibSonomy 
-		 * (not needed for the scraping service!)
+		 * FIXME: description, keywords, tags, etc. missing but necessary for
+		 * proper operation in BibSonomy (not needed for the scraping service!)
 		 */
 
 		/*
-		 * rja, 2009-06-30 (added this to BibTeXHandler and copied it here - but deactivated it)
-		 * CiteULike uses the "comment" field to export (private) notes in the form
+		 * rja, 2009-06-30 (added this to BibTeXHandler and copied it here - but
+		 * deactivated it) CiteULike uses the "comment" field to export
+		 * (private) notes in the form
 		 * 
-		 * comment = {(private-note)This is a test note!}, 
+		 * comment = {(private-note)This is a test note!},
 		 * 
 		 * Thus, we here extract the field and remove the "(private-note)" part
 		 */
-		//field = (BibtexString) entry.getFieldValue("comment");	if (field != null) bib.setPrivnote(field.getContent().replace("(private-note)", ""));
-		
-		
+		// field = (BibtexString) entry.getFieldValue("comment"); if (field !=
+		// null) bib.setPrivnote(field.getContent().replace("(private-note)",
+		// ""));
+
 		/*
 		 * parse person names for author + editor
 		 */
@@ -307,13 +424,18 @@ public class SimpleBibTeXParser {
 		return bibtex;
 	}
 
-	/** Extracts all persons from the given field value and concatenates their names
-	 * with {@value #AND}.
+	/**
+	 * Extracts all persons from the given field value and concatenates their
+	 * names with {@value #AND}.
+	 * 
+	 * FIXME: our normalization breaks author names with two lastnames (e.g.,
+	 * "Vander Wal") - we have to use comma as separator (i.e., "lastname,
+	 * firstname")
 	 * 
 	 * @param fieldValue
 	 * @return The persons names concatenated with " and ".
 	 */
-	private String createPersonString (final BibtexAbstractValue fieldValue) {
+	private String createPersonString(final BibtexAbstractValue fieldValue) {
 		if (fieldValue != null && fieldValue instanceof BibtexPersonList) {
 			/*
 			 * cast into a person list and extract the persons
@@ -326,54 +448,55 @@ public class SimpleBibTeXParser {
 			/*
 			 * build person names
 			 */
-			for (final BibtexPerson person:personList) {
+			for (final BibtexPerson person : personList) {
 				/*
 				 * build one person
 				 * 
 				 * FIXME: what is done here breaks author names whose last name
-				 * consists of several parts, e.g.,
-				 * Vander Wal, Thomas 
-				 * If written as
-				 * Thomas Vander Wal,
-				 * "Vander" is interpreted as second name and the name is 
-				 * treated in the wrong way at several occasions.
-				 * Thus, we must ensure to store all author names as
-				 * lastname, firstname
-				 * and only change the order in the JSPs.
-				 *  
+				 * consists of several parts, e.g., Vander Wal, Thomas If
+				 * written as Thomas Vander Wal, "Vander" is interpreted as
+				 * second name and the name is treated in the wrong way at
+				 * several occasions. Thus, we must ensure to store all author
+				 * names as lastname, firstname and only change the order in the
+				 * JSPs.
+				 * 
 				 */
 				final StringBuffer personName = new StringBuffer();
 				/*
 				 * first name
 				 */
 				final String first = person.getFirst();
-				if (first != null) personName.append(first);
+				if (first != null)
+					personName.append(first);
 				/*
 				 * between first and last name
 				 */
 				final String preLast = person.getPreLast();
-				if (preLast != null) personName.append(" " + preLast);
+				if (preLast != null)
+					personName.append(" " + preLast);
 				/*
 				 * last name
 				 */
 				final String last = person.getLast();
-				if (last != null) personName.append(" " + last);
+				if (last != null)
+					personName.append(" " + last);
 				/*
-				 * "others" has a special meaning in BibTeX (it's converted to "et al."),
-				 * so we must not ignore it! 
+				 * "others" has a special meaning in BibTeX (it's converted to
+				 * "et al."), so we must not ignore it!
 				 */
-				if (person.isOthers()) personName.append("others");
+				if (person.isOthers())
+					personName.append("others");
 				/*
 				 * next name
 				 */
 				personBuffer.append(personName.toString().trim() + AND);
 			}
-			/* 
-			 * remove last " and " 
+			/*
+			 * remove last " and "
 			 */
 			if (personBuffer.length() > AND.length()) {
 				return personBuffer.substring(0, personBuffer.length() - AND.length());
-			} 
+			}
 		}
 		return null;
 	}

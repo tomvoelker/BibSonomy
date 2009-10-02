@@ -75,7 +75,7 @@ public class SimpleBibTeXParserTest {
 			fail(ex.getMessage());		
 		}
 	}
-
+	
 	
 	@Test
 	public void testParseBibTeX2() {
@@ -93,6 +93,36 @@ public class SimpleBibTeXParserTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());		
 		}
+	}
+	
+	@Test
+	public void testParse3() {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+		try {
+			final String foo = 
+				"@article{foo,\n" +
+				"author = {{Hartmann}, L. and {Burkert}, A.},\n" +
+				"title = {Hallo}\n}";
+			final BibTex bibtex = parser.parseBibTeX(foo);
+
+			
+			System.out.println(bibtex);
+//			assertEquals("Foo Barness", bibtex.getTitle());
+//			assertEquals("M. Mustermann", bibtex.getAuthor());
+//			assertEquals("article", bibtex.getEntrytype());
+//			assertEquals("foo", bibtex.getBibtexKey());
+
+		} catch (ParseException ex) {
+			fail(ex.getMessage());
+		} catch (IOException ex) {
+			fail(ex.getMessage());		
+		}
+		
+	}
+	
+	public void testParseBibtexPost() {
+		
+		
 	}
 
 }
