@@ -217,11 +217,16 @@ public class SimpleBibTeXParser {
 		 * process non standard bibtex fields 
 		 * ************************************************/
 
-		// get set of all current fieldnames - like address, author etc.
+		/*
+		 * get set of all current fieldnames - like address, author etc. 
+		 */
 		final ArrayList<String> nonStandardFieldNames = new ArrayList<String>(entry.getFields().keySet());
-		// remove standard fields from list to retrieve nonstandard ones
-		// FIXME: this needs to be adopted according to where we use the parser!
-		// in BibSonomy this must be the standardBibSonomyFields!
+		/*
+		 * remove standard fields from list to retrieve nonstandard ones
+		 * 
+		 * FIXME: this needs to be adopted according to where we use the parser!
+		 * in BibSonomy this must be the standardBibSonomyFields!
+		 */
 		nonStandardFieldNames.removeAll(StandardBibTeXFields.getStandardBibTeXFields());
 
 		// iter over arraylist to retrieve nonstandard field values
