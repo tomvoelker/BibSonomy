@@ -54,6 +54,12 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		/*
 		 * FIXME: must be implemented! e.g., tags must be copied into post and
 		 * so on ...
+		 * 
+		 * call parseBibTex
+		 */
+//		this.parseBibTeX(bibtex)
+		/*
+		 * put description/tags from ?? where?? into post
 		 */
 		return null;
 	}
@@ -61,7 +67,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	/**
 	 * Builds a BibTeX-String from the BibTex contained in the post and parses
 	 * this string into a Post. Then, all fields in the new post which were
-	 * contained in the string are copied into the new post.
+	 * contained in the string are copied back into the new post.
 	 * 
 	 * Purpose: To ensure that we show only valid and normalized BibTeX entries
 	 * (e.g., on /bib/ pages; currently, we also need this for /layout/, since
@@ -84,8 +90,12 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 * all fields which toBibtexString adds must be added here!
 		 */
 		post.setResource(copyPost.getResource());
-		post.setTags(copyPost.getTags());
-		post.setDescription(copyPost.getDescription());
+		/*
+		 * We don't need to copy those fields back, because they're not touched/
+		 * normalized by the parser.
+		 */
+//		post.setTags(copyPost.getTags());
+//		post.setDescription(copyPost.getDescription());
 	}
 
 	/**
