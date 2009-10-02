@@ -909,34 +909,23 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @return list of bibtex entries
 	 */
 	public List<Post<BibTex>> getPostsByAuthorLucene(String search, int groupType, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, final int limit, final int offset, final int simHash, final List<String> tagIndex, final DBSession session){
-		ResultList<Post<BibTex>> postBibtexList = new ResultList<Post<BibTex>>();
+		ResultList<Post<BibTex>> postBibtexList;
 		
-//		BibTexParam param = new BibTexParam();
-//		param.setSearch(search);
-//		param.setGroupType(groupType);
-//		param.setRequestedUserName(requestedUserName);
-//		param.setRequestedGroupName(requestedGroupName);
-//		param.setYear(year);
-//		param.setFirstYear(firstYear);
-//		param.setLastYear(lastYear);
-//		param.setLimit(limit);
-//		param.setOffset(offset);
-//		param.setSimHash(HashID.INTER_HASH);
+		if( getResourceSearch()!=null ) {
+			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+			String group = groupDb.getGroupNameByGroupId(groupType, session);
 
-		// TODO Lucene		
-		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-		String group = groupDb.getGroupNameByGroupId(groupType, session);
+			long starttimeQuery = System.currentTimeMillis();
 
-//		List<Integer> contentIds = new ArrayList<Integer>();
-		long starttimeQuery = System.currentTimeMillis();
-		
-//		contentIds = lucene.searchLucene(groupId, search, requestedUserName, limit, offset);
-		//(Resource resourceType, GroupingEntity groupingEntity, String groupingName, ArrayList<String> tags, String hash, Order order, FilterEntity filter, int offset, int limit, String search)
-		postBibtexList = getLuceneSearch().searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, limit, offset);
-		
-		long endtimeQuery = System.currentTimeMillis();
-		log.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+			postBibtexList = getResourceSearch().searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, limit, offset);
 
+			long endtimeQuery = System.currentTimeMillis();
+			log.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+		} else {
+			postBibtexList = new ResultList<Post<BibTex>>();
+			log.error("No resource searcher available.");
+		}
+			
 		return postBibtexList;
 	}
 	

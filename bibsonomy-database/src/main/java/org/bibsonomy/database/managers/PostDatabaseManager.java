@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,7 +27,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.SimHash;
-import org.bibsonomy.services.searcher.LuceneSearch;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * TODO: rename count methods???
@@ -64,7 +65,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected final String resourceClassName;
 	
 	/** instance of the lucene searcher */
-	private LuceneSearch<R> luceneSearch; 
+	private ResourceSearch<R> resourceSearch; 
 	
 	/**
 	 * inits the database managers and resource class name
@@ -575,37 +576,24 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return list of posts
 	 */
 	public List<Post<R>> getPostsSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames,  final int limit, final int offset, final DBSession session) {
-		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-		final String group = groupDb.getGroupNameByGroupId(groupId, session);
-		
-		// get search results from lucene
-		final LuceneSearch<R> lucene = this.getLuceneSearch();
+		List<Post<R>> postpostList;
 
-//		ArrayList<Integer> contentIds = new ArrayList<Integer>();
-		long starttimeQuery = System.currentTimeMillis();
+		if( this.getResourceSearch()!=null ) {
+			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+			final String group = groupDb.getGroupNameByGroupId(groupId, session);
 
-		// FIXME : lucene integration
-//		contentIds = lucene.searchLucene("contentid", search, groupId, limit, offset);
-		final List<Post<R>> postpostList = lucene.searchLucene(group, search, requestedUserName, UserName, GroupNames, limit, offset);
+			// get search results from lucene
+			final ResourceSearch<R> lucene = this.getResourceSearch();
+
+			long starttimeQuery = System.currentTimeMillis();
+			postpostList = lucene.searchPosts(group, search, requestedUserName, UserName, GroupNames, limit, offset);
+			long endtimeQuery = System.currentTimeMillis();
+			log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+		} else {
+			postpostList = new LinkedList<Post<R>>();
+			log.error("No resource searcher available.");
+		}
 		
-		long endtimeQuery = System.currentTimeMillis();
-		log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
-		
-//		long starttimeTable = System.currentTimeMillis();
-//		LuceneHelper luceneTTable = new LuceneHelper();
-//		// create temp. table
-//		luceneTTable.createTTable(session);
-//
-//		// delete all content in temp. table
-//		luceneTTable.truncateTTable(session);
-//
-//		// store content ids in temp. table
-//		luceneTTable.fillTTable(contentIds, session);
-//		long endtimeTable = System.currentTimeMillis();
-//		LOGGER.debug("LuceneBookmark: filled temp. table with requested lucene ids in " + (endtimeTable-starttimeTable) + "ms");
-//
-//
-//		return this.postList("getBookmarkSearchLucene", param, session);
 		return postpostList;
 	}
 	
@@ -1237,11 +1225,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * @return the lucene search instance to use
 	 */
-	protected LuceneSearch<R> getLuceneSearch() {
-		return luceneSearch;
+	protected ResourceSearch<R> getResourceSearch() {
+		return resourceSearch;
 	}
 
-	public void setLuceneSearch(LuceneSearch<R> luceneSearch) {
-		this.luceneSearch = luceneSearch;
+	public void setResourceSearch(ResourceSearch<R> resourceSearch) {
+		this.resourceSearch = resourceSearch;
 	}
 }
