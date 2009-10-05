@@ -39,7 +39,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.client.RestLogicFactory;
-import org.bibsonomy.services.searcher.LuceneSearch;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.testutil.ModelUtils;
 import org.easymock.EasyMock;
