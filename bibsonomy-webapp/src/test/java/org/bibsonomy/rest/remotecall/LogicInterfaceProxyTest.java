@@ -39,6 +39,8 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.client.RestLogicFactory;
+import org.bibsonomy.services.searcher.LuceneSearch;
+import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.testutil.ModelUtils;
 import org.easymock.EasyMock;
 import org.easymock.IArgumentMatcher;
@@ -814,14 +816,26 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	@Override
-	public int createBasketItems(List<Post<? extends Resource>> posts) {
+	public int createBasketItems(List<Post<BibTex>> posts) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int deleteBasketItems(List<Post<? extends Resource>> posts, boolean clearAll) {
+	public int deleteBasketItems(List<Post<BibTex>> posts, boolean clearBasket) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void setBibTexSearch(ResourceSearch<BibTex> bibTexSearch) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setBookmarkSearch(ResourceSearch<Bookmark> bookmarkSearch) {
+		// TODO Auto-generated method stub
+		
 	}
 }
