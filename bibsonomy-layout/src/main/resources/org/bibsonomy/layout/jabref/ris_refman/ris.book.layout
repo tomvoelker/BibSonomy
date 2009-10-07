@@ -1,20 +1,21 @@
 TY  - BOOK
-\begin{author}\format[FormatChars,RisAuthors(AU)]{\author}\end{author}
-\begin{editor}\format[FormatChars,RisAuthors(A2)]{\editor}\end{editor}
-\begin{title}T1  - \format[FormatChars]{\title}\end{title}
-\begin{publisher}PB  - \format[FormatChars]{\publisher}\end{publisher}
-\begin{address}AD  - \format[FormatChars]{\address}\end{address}
-\begin{year}PY  - \format[FormatChars]{\year}\end{year}\begin{month}/\format[FormatChars,RisMonth]{\month}\end{month}
-\begin{volume}VL  - \format[FormatChars]{\volume}\end{volume}
-\begin{number}IS  - \format[FormatChars]{\number}\end{number}
-\begin{pages}SP  - \format[FormatChars,FirstPage]{\pages}
-EP  - \format[FormatChars,LastPage]{\pages}\end{pages}
-\begin{url}UR  - \url\end{url}
-\begin{doi}M3  - \doi\end{doi}
-\begin{keywords}\format[FormatChars,RisKeywords]{\keywords}\end{keywords}
-\begin{pdf}L1  - \pdf\end{pdf}
-\begin{isbn}SN  - \format[FormatChars]{\isbn}\end{isbn}
-\begin{comment}N1  - \format[FormatChars]{\comment}\end{comment}
-\begin{notes}N1  - \format[FormatChars]{\notes}\end{notes}
-\begin{abstract}AB  - \format[FormatChars]{\abstract}\end{abstract}
+\format[FormatChars,RisAuthors(AU)]{\author}
+\format[FormatChars,RisAuthors(A2)]{\editor}
+T1  - \format[FormatChars]{\title}
+PB  - \format[FormatChars]{\publisher}
+AD  - \format[FormatChars]{\address}
+PY  - \format[FormatChars]{\year}/\format[FormatChars,RisMonth]{\month}
+VL  - \format[FormatChars]{\volume}
+IS  - \format[FormatChars]{\number}
+SP  - \format[FormatChars,FirstPage]{\pages}
+EP  - \format[FormatChars,LastPage]{\pages}
+UR  - \url
+M3  - \doi
+\format[FormatChars,RisKeywords]{\keywords}
+L1  - \pdf
+SN  - \format[FormatChars]{\isbn}
+N1  - \format[FormatChars]{\comment}
+N1  - \format[FormatChars]{\notes}
+AB  - \format[FormatChars]{\abstract}
 ER  -
+
