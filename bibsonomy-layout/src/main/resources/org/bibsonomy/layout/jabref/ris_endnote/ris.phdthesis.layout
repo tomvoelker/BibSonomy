@@ -1,15 +1,16 @@
 TY  - THES
-\begin{author}\format[FormatChars,RisAuthors(AU)]{\author}\end{author}
-\begin{title}T1  - \format[FormatChars]{\title}\end{title}
-\begin{year}PY  - \format[FormatChars]{\year}\end{year}\begin{month}/\format[FormatChars,RisMonth]{\month}\end{month}
-\begin{school}PB  - \format[FormatChars]{\school}\end{school}
-\begin{pages}SP  - \format[FormatChars,FirstPage]{\pages}
-EP  - \format[FormatChars,LastPage]{\pages}\end{pages}
-\begin{url}UR  - \url\end{url}
-\begin{doi}DO  - \doi\end{doi}
-\begin{keywords}\format[FormatChars,RisKeywords]{\keywords}\end{keywords}
-\begin{pdf}L1  - \pdf\end{pdf}
-\begin{comment}N1  - \format[FormatChars]{\comment}\end{comment}
-\begin{notes}N1  - \format[FormatChars]{\notes}\end{notes}
-\begin{abstract}AB  - \format[FormatChars]{\abstract}\end{abstract}
+\format[FormatChars,RisAuthors(AU)]{\author}
+T1  - \format[FormatChars]{\title}
+PY  - \format[FormatChars]{\year}/\format[FormatChars,RisMonth]{\month}
+PB  - \format[FormatChars]{\school}
+SP  - \format[FormatChars,FirstPage]{\pages}
+EP  - \format[FormatChars,LastPage]{\pages}
+UR  - \url
+DO  - \doi
+\format[FormatChars,RisKeywords]{\keywords}
+L1  - \pdf
+N1  - \format[FormatChars]{\comment}
+N1  - \format[FormatChars]{\notes}
+AB  - \format[FormatChars]{\abstract}
 ER  -
+
