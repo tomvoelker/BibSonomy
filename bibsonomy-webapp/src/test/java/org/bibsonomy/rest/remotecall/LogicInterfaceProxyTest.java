@@ -814,13 +814,15 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		
 	}
 
-	public int createBasketItems(List<Post<BibTex>> posts) {
+	@Override
+	public int createBasketItems(List<Post<? extends org.bibsonomy.model.Resource>> posts) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 
-	public int deleteBasketItems(List<Post<BibTex>> posts, boolean clearBasket) {
+	@Override
+	public int deleteBasketItems(List<Post<? extends org.bibsonomy.model.Resource>> posts, boolean clearBasket) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
