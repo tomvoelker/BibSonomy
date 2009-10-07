@@ -1,0 +1,34 @@
+#main_header {
+	background-color:#DF430D;
+	height:70px;
+}
+
+#main {
+	border: 2px solid #DF430D;
+
+}
+
+a, a:link, a:visited {
+	color:#DF430D;
+}
+
+h2 {
+	color:#DF430D;
+}
+
+.listhButtons a:hover {
+background-color:#DF430D;
+border:1px solid #6F6F6F;
+color:#FFFFFF;
+}
+
+
+.sidebarroundcorner {
+background-color:#9ADFCF;
+float:right;
+padding:3px;
+width:23%;
+margin-top: 2ex;
+margin-right:2ex;
+}
+

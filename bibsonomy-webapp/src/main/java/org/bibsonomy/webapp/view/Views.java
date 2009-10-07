@@ -455,10 +455,14 @@ public enum Views implements View {
 	/**
 	 * edit tags
 	 */
-	EDIT_TAGS("actions/edit/edittags");
+	EDIT_TAGS("actions/edit/edittags"),
 	
 
 	
+	/**
+	 * PUMA the first page you see when entering the application
+	 */
+	PUMAHOMEPAGE("pumahome");
 	
 	
 	
