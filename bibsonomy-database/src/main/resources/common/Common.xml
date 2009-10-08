@@ -345,6 +345,15 @@
 		</dynamic>
 	</sql>
 	
+	<!-- dynamic AND for systag user -->
+	<sql id="sysTagsEntryType">
+		<dynamic prepend="AND">
+			<isNotNull property="entryType">		
+				b.entrytype = #entryType#
+			</isNotNull>
+		</dynamic>
+	</sql>
+	
 	<!-- dynamic AND for systag group -->
 	<sql id="sysTagsGroup">
 		<dynamic prepend="AND">

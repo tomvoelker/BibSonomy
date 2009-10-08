@@ -273,8 +273,13 @@ public class LogicInterfaceHelper {
             	logger.debug("Set firstyear to " + tagValue + "after matching year system tag");
             	return true;            	
             }			
-			
-		}		
+		} else if (tagName.equals("entrytype")){
+			if (param instanceof BibTexParam) {
+				((BibTexParam) param).setEntryType(tagValue);
+				logger.debug("Set entry type to " + tagValue +" after matching entrytype system tag");
+				return true;
+			}
+		}
 		
 		return false;
 	}

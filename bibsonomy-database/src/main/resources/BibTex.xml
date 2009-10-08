@@ -35,6 +35,7 @@
 		AND b.simhash$simHash$ = h.hash
 		AND h.type= $simHash$		
 		<include refid="restrictToGroups"/>
+		<include refid="sysTagsEntryType"/>
 		ORDER BY date DESC 			
 	</select>	
 
@@ -99,6 +100,7 @@
 				AND tt.content_id=t.content_id
 				AND <include refid="bibtexSimHash"/>
 				AND g.group = b.group
+				<include refid="sysTagsEntryType"/>
 				ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 	
@@ -119,6 +121,7 @@
 				AND tt.content_id=t.content_id
 				AND <include refid="bibtexSimHash"/>
 				AND g.group = b.group
+				<include refid="sysTagsEntryType"/>
 				ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 	
@@ -139,6 +142,7 @@
 				AND tt.content_id=t.content_id
 				AND <include refid="bibtexSimHash"/>
 				AND g.group = b.group
+				<include refid="sysTagsEntryType"/>
 				ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 
@@ -168,6 +172,7 @@
 		      AND <include refid="bibtexSimHash"/>
 		      AND tt.content_id = t.content_id
 		      AND g.group = b.group
+		      <include refid="sysTagsEntryType"/>
 		      <!-- AND b.group IN (0,1,2)" TODO: WOZU sollte das gut sein?? bei der Bookmark Query war es auch drin! -->
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
@@ -186,6 +191,7 @@
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		      <include refid="sysTagsEntryType"/>
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 	
@@ -225,6 +231,7 @@
 		      FROM bibtex b FORCE INDEX (group_date_content_id_idx), bibhash h
 		      WHERE `group` = #groupType#
 		            AND <include refid="bibtexSimHash"/>
+		            <include refid="sysTagsEntryType"/>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
 		LEFT OUTER JOIN tas t ON b.content_id=t.content_id
@@ -339,7 +346,7 @@
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g     
 		WHERE t.group = g.group                                              
 			AND <include refid="bibtexSimHash"/>                            	<!-- join counts, ... -->
-			<include refid="sysTagsYear"/>										<!-- sys:year: systemtag -->        
+			<include refid="sysTagsYear"/>										<!-- sys:year: systemtag -->
 			AND b.content_id = bb.content_id 									<!-- join title, description, ... -->
 		ORDER BY bb.date DESC, bb.content_id DESC								<!-- order for output -->
 	</select> 
@@ -376,6 +383,11 @@
 		      FROM bibtex b2, bibhash h
 		      WHERE b2.group = #groupId#
 		            AND <include refid="bibtexSimHash2"/>
+		            <dynamic prepend="AND">
+						<isNotNull property="entryType">		
+							b2.entrytype = #entryType#
+						</isNotNull>
+					</dynamic>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
 		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id
@@ -395,6 +407,7 @@
 		WHERE b.content_id = tt.content_id
 		      AND t.content_id = tt.content_id 
 		      AND <include refid="bibtexSimHash"/>
+		      <include refid="sysTagsEntryType"/>
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 
@@ -409,6 +422,7 @@
 		      <include refid="inGroups2"/>
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		      <include refid="sysTagsEntryType"/>
 		ORDER BY b.simhash1 DESC, bb.date DESC
 	</select>
 
@@ -445,6 +459,7 @@
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		      <include refid="sysTagsEntryType"/>
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
@@ -481,6 +496,7 @@
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		      <include refid="sysTagsEntryType"/>
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 	
@@ -517,6 +533,7 @@
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		      <include refid="sysTagsEntryType"/>
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
@@ -535,6 +552,7 @@
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      <include refid="sysTagsYear"/>									 <!-- sys:year: systemtag -->
+		      <include refid="sysTagsEntryType"/>	
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select> 
@@ -547,6 +565,7 @@
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		      <include refid="sysTagsEntryType"/>
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select> 
 	
@@ -557,6 +576,7 @@
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
+		      <include refid="sysTagsEntryType"/>
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select> 
 
@@ -567,6 +587,11 @@
 		      WHERE <include refid="bibtexSimHash3"/>
 		            AND t1.user_name = #requestedUserName#
 		            <include refid="restrictToGroups"/>
+		        	<dynamic prepend="AND">
+						<isNotNull property="entryType">		
+							entrytype = #entryType#
+						</isNotNull>
+		     		</dynamic>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
@@ -581,6 +606,11 @@
 		      WHERE <include refid="bibtexSimHash3"/>
 		            AND t1.user_name = #requestedUserName#
 		            <include refid="restrictToGroups"/>
+		            <dynamic prepend="AND">
+						<isNotNull property="entryType">		
+							t1.entrytype = #entryType#
+						</isNotNull>
+		     		</dynamic>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT JOIN document d USING(content_id) 
@@ -597,6 +627,12 @@
 		            AND t1.user_name = #requestedUserName#
 		            <include refid="restrictToGroups"/>
 		      AND d.content_id = t1.content_id
+		      	<include refid="restrictToGroups"/>
+		             <dynamic prepend="AND">
+						<isNotNull property="entryType">		
+							t1.entrytype = #entryType#
+						</isNotNull>
+		     		</dynamic>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
@@ -658,6 +694,7 @@
 		WHERE b.content_id = tt.content_id    
 		      AND t.content_id = tt.content_id 
 		      <include refid="sysTagsYear"/>
+		      <include refid="sysTagsEntryType"/>
 		      AND <include refid="bibtexSimHash"/>
 		ORDER BY b.date DESC, b.content_id DESC;
 	</select>
@@ -675,7 +712,8 @@
 		      ORDER BY s.date DESC LIMIT #limit# OFFSET #offset#) AS tt 		
 		WHERE b.content_id = tt.content_id  		
 		      AND t.content_id = tt.content_id 	
-		      <include refid="sysTagsYear"/>	
+		      <include refid="sysTagsYear"/>
+		      <include refid="sysTagsEntryType"/>	
 		      AND <include refid="bibtexSimHash"/> 
 		ORDER BY b.date DESC, b.content_id DESC;
 	</select>
@@ -703,6 +741,9 @@
 			   		 ORDER BY t.date DESC
 			   		 LIMIT #limit# OFFSET #offset# ) AS b 
 			   JOIN tas t ON b.content_id = t.content_id
+			   	<isNotNull property="entryType">		
+					WHERE b.entrytype = #entryType#
+				</isNotNull>
 			   ORDER BY b.date DESC;	
 	</select>
 
@@ -740,6 +781,9 @@
 			   	LIMIT #limit# OFFSET #offset# 
 		) AS b 
 		JOIN tas t ON b.content_id = t.content_id
+		<isNotNull property="entryType">		
+		 WHERE b.entrytype = #entryType#
+		</isNotNull>
 		ORDER BY b.date DESC;	
 	</select>
 	
@@ -779,6 +823,7 @@
 			  AS gts
 		      LEFT JOIN bibtex b ON (b.content_id = gts.content_id), bibhash h
 			  WHERE <include refid="bibtexSimHash"/>
+			  <include refid="sysTagsEntryType"/>
 			  ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
@@ -803,7 +848,7 @@
 			  </iterate>
 		      LEFT JOIN bibtex b ON (b.content_id = gt1.content_id), bibhash h
 			  WHERE <include refid="bibtexSimHash"/>
-			  
+			  <include refid="sysTagsEntryType"/>
 			  AND
 			  
 			  <iterate property="tagIndex" conjunction="AND">

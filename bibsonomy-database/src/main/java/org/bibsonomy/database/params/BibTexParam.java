@@ -39,6 +39,11 @@ public class BibTexParam extends ResourcesParam<BibTex> implements SingleResourc
 	 */
 	private boolean documentsAttached;
 	
+	/**
+	 * defines the entry type of the requested bibtex entries
+	 */
+	private String entryType;
+	
 	public BibTexParam() {
 		super();
 		
@@ -102,5 +107,13 @@ public class BibTexParam extends ResourcesParam<BibTex> implements SingleResourc
 
 	public void setDocumentsAttached(boolean documentsAttached) {
 		this.documentsAttached = documentsAttached;
+	}
+	
+	public String getEntryType() {
+		return this.entryType;
+	}
+
+	public void setEntryType(String entryType) {
+		this.entryType = entryType;
 	}
 }
