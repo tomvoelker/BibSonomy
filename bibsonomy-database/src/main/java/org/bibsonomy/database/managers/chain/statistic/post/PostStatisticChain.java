@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.chain.statistic.post;
 
 import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
+import org.bibsonomy.database.managers.chain.statistic.post.get.DefaultCatchAllCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTagNamesAndUserCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesByTagNamesCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesDuplicateCount;
@@ -30,6 +31,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 	private final GetResourcesPopularDaysCount getResourcesPopularDays;
 	private final GetResourcesForHashCount getResourcesForHashCount;
 	private final GetResourcesForHashAndUserCount getResourcesForHashAndUserCount;
+	private final DefaultCatchAllCount defaultCatchAllCount;
 	
 	/**
 	 * Default Constructor
@@ -45,6 +47,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 		getResourcesPopularDays = new GetResourcesPopularDaysCount();
 		getResourcesForHashCount = new GetResourcesForHashCount();
 		getResourcesForHashAndUserCount = new GetResourcesForHashAndUserCount();
+		defaultCatchAllCount = new DefaultCatchAllCount();
 		
 		getResourcesForGroupCount.setNext(getResourcesForUserCount);
 		getResourcesForUserCount.setNext(getResourcesByTagNamesAndUserCount);
@@ -56,6 +59,8 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 		//getResourcesForUserAndGroupCount.setNext(getResourcesForUserAndGroupByTagCount);
 		//getResourcesForUserAndGroupByTagCount.setNext(getResourcesPopularDays);
 		getResourcesForHashCount.setNext(getResourcesForHashAndUserCount);
+		getResourcesForHashAndUserCount.setNext(defaultCatchAllCount);
+		
 	}
 	
 	public ChainElement<Integer, StatisticsParam> getFirstElement() {
