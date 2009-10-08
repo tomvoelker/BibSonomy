@@ -345,7 +345,7 @@
 		</dynamic>
 	</sql>
 	
-	<!-- dynamic AND for systag user -->
+	<!-- dynamic AND for systag entrytype -->
 	<sql id="sysTagsEntryType">
 		<dynamic prepend="AND">
 			<isNotNull property="entryType">		
