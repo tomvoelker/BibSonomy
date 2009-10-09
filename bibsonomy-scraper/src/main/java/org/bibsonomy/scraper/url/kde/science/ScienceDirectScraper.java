@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.AbstractUrlScraper;
@@ -63,14 +64,20 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	private static final String PATTERN_USER_ID            = "<input type=hidden name=_userid value=(.+?)>"; // "&_userid=([^&]*)";
 	private static final String PATTERN_UIOKEY             = "<input type=hidden name=_uoikey value=(.+?)>"; //"&_uoikey=([^&]*)";
 	private static final String PATTERN_MD5                = "<input type=hidden name=md5 value=(.+?)>";
+	private static final String PATTERN_KEYWORDS		   = "keywords = \"(.+)\",";
+	private static final String PATTERN_QUOTE_START		   = "\\s*=\\s*\"";
+	private static final String PATTERN_QUOTE_END		   = "\\\"\\s*,\\s*$|\\\"\\s*$";
 
-	private static final Pattern patternDownload = Pattern.compile(PATTERN_DOWNLOAD_PAGE_LINK);
-	private static final Pattern patternAcct     = Pattern.compile(PATTERN_ACCT);
-	private static final Pattern patternArList   = Pattern.compile(PATTERN_ARTICLE_LIST_ID);
-	private static final Pattern patternUserId   = Pattern.compile(PATTERN_USER_ID);
-	private static final Pattern patternUiokey   = Pattern.compile(PATTERN_UIOKEY);
-	private static final Pattern patternMD5      = Pattern.compile(PATTERN_MD5);
-
+	private static final Pattern patternDownload	= Pattern.compile(PATTERN_DOWNLOAD_PAGE_LINK);
+	private static final Pattern patternAcct		= Pattern.compile(PATTERN_ACCT);
+	private static final Pattern patternArList		= Pattern.compile(PATTERN_ARTICLE_LIST_ID);
+	private static final Pattern patternUserId		= Pattern.compile(PATTERN_USER_ID);
+	private static final Pattern patternUiokey		= Pattern.compile(PATTERN_UIOKEY);
+	private static final Pattern patternMD5			= Pattern.compile(PATTERN_MD5);
+	private static final Pattern patternKeywords	= Pattern.compile(PATTERN_KEYWORDS);
+	private static final Pattern patternQuoteStart	= Pattern.compile(PATTERN_QUOTE_START, Pattern.MULTILINE);
+	private static final Pattern patternQuoteEnd	= Pattern.compile(PATTERN_QUOTE_END, Pattern.MULTILINE);
+	
 	private static final Pattern patternBrokenPages = Pattern.compile("(.*pages = \"[0-9]+) - ([0-9]+\".*)", Pattern.DOTALL); 
 	
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SCIENCE_CITATION_HOST), Pattern.compile(SCIENCE_CITATION_PATH + ".*")));
@@ -130,8 +137,32 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 
 			if (acct != null && userId != null && uiokey != null && md5 != null) {
 				final String postContent = "_ob=DownloadURL&_method=finish&_acct=" + acct + "&_userid=" + userId + "&_docType=FLA&_ArticleListID=" + arList + "&_uoikey=" + uiokey + "&count=1&md5=" + md5 + "&JAVASCRIPT_ON=Y&format=cite-abs&citation-type=BIBTEX&Export=Export&RETURN_URL=http%3A%2F%2Fwww.sciencedirect.com%2Fscience%2Fhome";
-
-				final String bibtex = cleanBibTeX(WebUtils.getPostContentAsString(new URL(SCIENCE_CITATION_URL), postContent, "latin1"));
+				
+				// merge multiple keyword fields
+				String _bibtex = WebUtils.getPostContentAsString(new URL(SCIENCE_CITATION_URL), postContent, "latin1");
+				final StringBuilder _keywords = new StringBuilder();
+				final String _delim = ", ";
+				
+				Matcher _m = patternKeywords.matcher(_bibtex);
+				
+				while (_m.find()) {
+					_keywords.append(_m.group(1));
+					_keywords.append(_delim);
+					_bibtex = _bibtex.replace(_m.group(), "");
+				}
+				
+				_keywords.delete(_keywords.lastIndexOf(_delim), _keywords.lastIndexOf(_delim) + 1);
+				
+				// change quotes to curly brackets. it could be possible, that the abstract contains double quotes
+				_m = patternQuoteStart.matcher(_bibtex);
+				_bibtex = _m.replaceAll(" = {");
+				_m = patternQuoteEnd.matcher(_bibtex);
+				_bibtex = _m.replaceAll("},");
+				
+				// add keyword field
+				_bibtex = BibTexUtils.addFieldIfNotContained(_bibtex, "keywords", _keywords.toString());
+				
+				final String bibtex = cleanBibTeX(_bibtex);
 
 				/*
 				 * Job done

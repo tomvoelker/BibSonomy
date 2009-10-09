@@ -164,7 +164,7 @@
 		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6TYF-4NB99GY-1&amp;_user=4861060&amp;_coverDate=06%2F30%2F2007&amp;_alid=724597580&amp;_rdoc=1&amp;_fmt=high&amp;_orig=search&amp;_cdi=5617&amp;_sort=d&amp;_st=4&amp;_docanchor=&amp;_ct=1&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=7adb7eb1b4e2ed495f2b202e7e608c0d</URL>
 		<BibFile>ScienceDirectScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_29">
 		<TestDescription>URL scraping test with publication from slac spires</TestDescription>
@@ -805,7 +805,7 @@
 		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B758F-4K5HWKT-1&amp;_user=4861060&amp;_coverDate=06%2F30%2F2006&amp;_alid=881430000&amp;_rdoc=2&amp;_fmt=high&amp;_orig=search&amp;_cdi=12925&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_ct=3&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=e807b2be40761ad201d828604e7d3b36</URL>
 		<BibFile>ScienceDirectScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_142">
 		<TestDescription>test for springerlink</TestDescription>
