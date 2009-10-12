@@ -33,6 +33,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * 
@@ -78,16 +79,23 @@ public class ConfigUtil {
 		String string = null;
 		try {
 			string = ((String) ((Context) new InitialContext().lookup("java:/comp/env")).lookup(key));
+			if (ValidationUtils.present(string)) log.debug("Got config variable '" + key + "' via JNDI.");
 		} catch (NamingException ex) {
-			log.warn("Could not get environment variable '" + key + "'.", ex);
+			log.debug("Could not get config variable '" + key + "'.", ex);
 		}
 		
 		/*
 		 * try to use system environment variables
 		 */
-		if (string == null || string.trim().equals("")) {
+		if (!ValidationUtils.present(string)) {
 			string = System.getenv(key);
+			if (ValidationUtils.present(string)) log.debug("Got config variable '" + key + "' via system environment.");
 		}
+		
+		if (!ValidationUtils.present(string)) {
+			log.warn("Could not get config variable '" + key + "'.");
+		}
+		
 		return string;
 	}
 	
