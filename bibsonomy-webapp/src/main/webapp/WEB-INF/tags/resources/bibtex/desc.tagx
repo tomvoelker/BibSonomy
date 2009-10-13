@@ -82,7 +82,8 @@
 		<c:when test="${post.resource.entrytype eq 'mastersthesis' or post.resource.entrytype eq 'phdthesis'}">
 			<bib:author post="${post}"/>
 			<bib:school post="${post}"/>
-			<bib:address post="${post}"/>			
+			<bib:address post="${post}"/>
+			<bib:type post="${post}"/>			
 			<bib:year post="${post}" braces="true" month="true"/>
 			<bib:note post="${post}"/>
 		</c:when>
