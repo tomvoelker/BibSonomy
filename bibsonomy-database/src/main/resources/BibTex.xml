@@ -704,7 +704,7 @@
 		FROM bibtex b, tas t, bibhash h,
 		     (SELECT s.content_id FROM search_bibtex s, <include refid="tagFromQuery"/>
 		      WHERE MATCH(s.author) AGAINST (#search# IN BOOLEAN MODE)
-		            AND s.group = #groupType#
+		            AND s.group = #groupId#
 		            AND s.content_id = t1.content_id
 		            <include refid="sysTagsUser"/>
 		            <include refid="sysTagsGroup"/>

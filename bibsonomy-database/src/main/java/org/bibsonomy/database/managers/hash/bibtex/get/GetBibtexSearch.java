@@ -25,6 +25,6 @@ public class GetBibtexSearch extends BibTexHashElement {
 	 */
 	@Override
 	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexSearch(param, session);
+		return this.db.getPostsSearch(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
 	}
 }

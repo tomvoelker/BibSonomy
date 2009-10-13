@@ -21,7 +21,7 @@ public class GetBibtexFromBasketForUser extends BibTexChainElement {
 	
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexFromBasketForUser(param.getUserName(), param.getLimit(), param.getOffset(), session);
+		return this.db.getPostsFromBasketForUser(param.getUserName(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override

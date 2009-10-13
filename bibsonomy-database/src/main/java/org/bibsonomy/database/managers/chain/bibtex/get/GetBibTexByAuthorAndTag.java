@@ -78,7 +78,7 @@ public class GetBibTexByAuthorAndTag extends BibTexChainElement {
 		}		
 		
 		
-		return this.db.getBibTexByAuthorAndTag(param, session);
+		return this.db.getPostsByAuthorAndTag(param.getSearch(), param.getGroupId(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getTagIndex(), param.getYear(), param.getFirstYear(), param.getLastYear(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override

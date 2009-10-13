@@ -33,6 +33,6 @@ public class GetBibtexByConceptForUser extends BibTexHashElement {
 	 */
 	@Override
 	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexByConceptForUser(param, session);
+		return this.db.getBibTexByConceptForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), param.getGroups(), false, param.getLimit(), param.getOffset(), session);
 	}
 }

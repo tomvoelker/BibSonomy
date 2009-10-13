@@ -25,10 +25,9 @@ public class GetBookmarksByTagNames extends BookmarkChainElement {
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
 		final List<Post<Bookmark>> posts;
 		if (param.getTagIndex().size() == 0) {
-			posts = this.db.getBookmarkForHomepage(param, session);
+			posts = this.db.getPostsForHomepage(param.getLimit(), param.getOffset(), session);
 		} else {
-			// GroupID.getGroupId(param.getGroupType(), false), param.getTagIndex(), param.getLimit(), param.getOffset()
-			posts = this.db.getBookmarkByTagNames(param, session);
+			posts = this.db.getPostsByTagNames(param.getGroupId(), param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), session);
 		}
 		return posts;
 	}

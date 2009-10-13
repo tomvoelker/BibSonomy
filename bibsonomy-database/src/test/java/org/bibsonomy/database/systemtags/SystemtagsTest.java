@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
@@ -253,7 +254,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		User user = this.userDb.getUserDetails(name, this.dbSession);
 		if( user.getName()!=null ) {
 			final List<Post<Bookmark>> posts = 
-				this.bookmarkDb.getBookmarkForUser(null, name, GroupID.INVALID.getId(), new ArrayList<Integer>(), Integer.MAX_VALUE, 0, this.dbSession);
+				this.bookmarkDb.getPostsForUser(null, name, HashID.INTRA_HASH, GroupID.INVALID.getId(), new ArrayList<Integer>(), Integer.MAX_VALUE, 0, this.dbSession);
 			for( Post<Bookmark> post : posts ) {
 				this.bookmarkDb.deletePost(name, post.getResource().getHash(), this.dbSession);
 			}

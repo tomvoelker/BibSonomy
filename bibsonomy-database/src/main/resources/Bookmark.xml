@@ -9,7 +9,7 @@
 		      FROM <include refid="tagFromQuery"/>
 		      WHERE <include refid="tagWhereQuery"/>
 			        AND t1.content_type = #contentType#
-			        AND t1.group = #groupType#
+			        AND t1.group = #groupId#
 		      ORDER BY t1.date DESC
 		      LIMIT #limit# OFFSET #offset#) AS tt
 		WHERE b.content_id = tt.content_id 
@@ -202,7 +202,7 @@
 		FROM (SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date, content_id
 		      FROM bookmark
 		      WHERE book_url_hash = #hash#
-		            AND bookmark.group = #groupType#
+		            AND bookmark.group = #groupId#
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
 		LEFT OUTER JOIN tas t ON b.content_id = t.content_id, urls u

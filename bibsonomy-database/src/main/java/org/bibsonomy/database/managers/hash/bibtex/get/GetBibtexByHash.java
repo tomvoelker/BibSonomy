@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.hash.bibtex.get;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.hash.bibtex.BibTexHashElement;
 import org.bibsonomy.database.params.BibTexParam;
@@ -29,6 +30,6 @@ public class GetBibtexByHash extends BibTexHashElement {
 	 */
 	@Override
 	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexByHash(param.getHash(), HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), session);
+		return this.db.getPostsByHash(param.getHash(), HashID.getSimHash(param.getSimHash()), GroupID.PUBLIC.getId(), param.getLimit(), param.getOffset(), session);
 	}
 }

@@ -23,7 +23,7 @@ public class GetBookmarksForHomePage extends BookmarkChainElement {
 
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		return this.db.getBookmarkForHomepage(param, session);
+		return this.db.getPostsForHomepage(param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override

@@ -20,7 +20,6 @@ import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
@@ -63,71 +62,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
-	 * Can be used to start a query that retrieves a list of BibTexs.
-	 */
-	@SuppressWarnings("unchecked")
-	protected List<Post<BibTex>> bibtexList(final String query, final BibTexParam param, final DBSession session) {
-		return queryForList(query, param, session);
-	}
-
-	/**
-	 * XXXDZ
-	 * 
-	 * <em>/bibtex/023847123ffa8976a969786f876f78e68</em><br/><br/>
-	 * 
-	 * Prepares a query which retrieves all publications whose hash
-	 * simHash is equal to a given hash. Only public posts are
-	 * retrieved.
-	 * 
-	 * @param hash
-	 * @param hashId
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	@Deprecated
-	public List<Post<BibTex>> getBibTexByHash(final String hash, final HashID hashId, final int limit, final int offset, final DBSession session) {
-		final BibTexParam param = new BibTexParam();
-		param.setSimHash(hashId);
-		param.setHash(hash);
-		param.setGroupType(GroupID.PUBLIC);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		return this.bibtexList("getBibTexByHash", param, session);
-	}
-	
-	/**
-	 * XXXDZ
-	 * 
-	 * <em>/tag/EinTag</em>, <em>/viewable/EineGruppe/EinTag</em><br/><br/>
-	 * 
-	 * On the <em>/tag</em> page only public entries are shown (groupType must
-	 * be set to public) which have all of the given tags attached. On the
-	 * <em>/viewable/</em> page only posts are shown which are set viewable to
-	 * the given group and which have all of the given tags attached.
-	 * 
-	 * @param groupId
-	 * @param tagIndex
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexByTagNames(final Integer groupId, final List<TagIndex> tagIndex, final int limit, final int offset, final DBSession session) {
-		final BibTexParam param = new BibTexParam();
-		param.setGroupId(groupId);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		param.setTagIndex(tagIndex);
-		if (Order.FOLKRANK.equals(param.getOrder())){
-			param.setGroupId(GroupID.PUBLIC.getId());
-			return this.bibtexList("getBibTexByTagNamesAndFolkrank", param, session);
-		}
-		return this.bibtexList("getBibTexByTagNames", param, session);
-	}
-
-	/**
 	 * TODO: remove me!!!
 	 * 
 	 * <em>/user/MaxMustermann/EinTag</em><br/><br/>
@@ -152,46 +86,28 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		// if user wants to retrieve documents
 		if (present(param.getFilter())) {
 			if (param.isDocumentsAttached() && param.getFilter().equals(FilterEntity.JUST_PDF)) {
-				return this.bibtexList("getJustBibTexByTagNamesForUserWithPDF", param, session);
+				return this.postList("getJustBibTexByTagNamesForUserWithPDF", param, session);
 			}
 			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
 		
 		// posts including documents
 		if (param.isDocumentsAttached()) {
-			return this.bibtexList("getBibTexByTagNamesForUserWithPDF", param, session);
+			return this.postList("getBibTexByTagNamesForUserWithPDF", param, session);
 		}
 		// posts only
-		return this.bibtexList("getBibTexByTagNamesForUser", param, session);
+		return this.postList("getBibTexByTagNamesForUser", param, session);
+	}
+	
+	/**
+	 */
+	public List<Post<BibTex>> getBibTexByConceptForUser(final BibTexParam param, final DBSession session) {
+		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
+		return this.postList("getBibTexByConceptForUser", param, session);
 	}
 	
 	/**
 	 * XXXDZ
-	 * 
-	 * @see BibTexDatabaseManager#getBibTexByTagNamesForUser(BibTexParam, DBSession)
-	 * 
-	 * @param requestedUserName
-	 * @param limit
-	 * @param offset
-	 * @param tagIndex
-	 * @param groupId
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexByTagNamesForUser(final String requestedUserName, final int limit, final int offset, final List<TagIndex> tagIndex, final int groupId, final DBSession session) {
-		BibTexParam param = new BibTexParam();
-		param.setRequestedUserName(requestedUserName);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		param.setTagIndex(tagIndex);
-		param.setGroupId(groupId);
-		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		HashID.getSimHash(param.getSimHash()); // ensures correct simHash is set (exception would be thrown otherwise)
-		return this.bibtexList("getBibTexByTagNamesForUser", param, session);
-	}
-
-	/**
-	 * TODO: remove me
 	 * 
 	 * <em>/concept/user/MaxMustermann/EinTag</em><br/><br/>
 	 * 
@@ -206,20 +122,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * built in a way, that not only public posts are retrieved, but also
 	 * friends or private or other groups, depending upon if userName us allowed
 	 * to see them.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexByConceptForUser(final BibTexParam param, final DBSession session) {
-		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
-		return this.bibtexList("getBibTexByConceptForUser", param, session);
-	}
-	
-	/**
-	 * XXXDZ
-	 * 
-	 * @see BibTexDatabaseManager#getBibTexByConceptForUser(BibTexParam, DBSession)
 	 * 
 	 * @param loginUser
 	 * @param requestedUserName
@@ -241,7 +143,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setLimit(limit);
 		param.setOffset(offset);
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
-		return this.bibtexList("getBibTexByConceptForUser", param, session);
+		return this.postList("getBibTexByConceptForUser", param, session);
 	}
 
 	/**
@@ -268,44 +170,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setLimit(limit);
 		param.setOffset(offset);
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
-		return this.bibtexList("getBibTexByConceptForGroup", param, session);
-	}
-
-	/**
-	 * TODO: remove me!!!
-	 * 
-	 * This method prepares a query which retrieves all publications the user
-	 * has in his basket list. The result is shown on the page
-	 * <em>/basket</em>. Since every user can only see his <em>own</em>
-	 * basket page, we use userName as restriction for the user name and not
-	 * requestedUserName.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexFromBasketForUser(final BibTexParam param, final DBSession session) {
-		return this.bibtexList("getBibTexFromBasketForUser", param, session);
-	}
-
-	/**
-	 * XXXDZ
-	 * 
-	 * @see BibTexDatabaseManager#getBibTexFromBasketForUser(BibTexParam, DBSession)
-	 * 
-	 * @param loginUser
-	 * @param limit TODO
-	 * @param offset TODO
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexFromBasketForUser(final String loginUser, final int limit, final int offset, final DBSession session) {
-		final BibTexParam param = new BibTexParam();
-		param.setUserName(loginUser);
-		param.setSimHash(HashID.INTER_HASH);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		return this.bibtexList("getBibTexFromBasketForUser", param, session);
+		return this.postList("getBibTexByConceptForGroup", param, session);
 	}
 
 	/**
@@ -319,65 +184,27 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param session
 	 * @return list of bibtex posts
 	 */
-	public List<Post<BibTex>> getBibTexForHomePage(final BibTexParam param, final DBSession session) {
+	public List<Post<BibTex>> getBibTexForHomepage(final BibTexParam param, final DBSession session) {
 		param.setGroupType(GroupID.PUBLIC);
 		param.setSimHash(HashID.INTER_HASH);
-		return this.bibtexList("getBibTexForHomepage", param, session);
+		return this.postList("getBibTexForHomepage", param, session);
 	}
 
 	/**
-	 * @see BibTexDatabaseManager#getBibTexForHomePage(BibTexParam, DBSession)
+	 * @see BibTexDatabaseManager#getBibTexForHomepage(BibTexParam, DBSession)
 	 * 
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return list of bibtex posts
 	 */
-	public List<Post<BibTex>> getBibTexForHomePage(final int limit, final int offset, final DBSession session) {
+	public List<Post<BibTex>> getBibTexForHomepage(final int limit, final int offset, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setLimit(limit);
 		param.setOffset(offset);
 		param.setGroupType(GroupID.PUBLIC);
 		param.setSimHash(HashID.INTER_HASH);
-		return this.bibtexList("getBibTexForHomepage", param, session);
-	}
-
-	/**
-	 * TODO: remove me
-	 * 
-	 * This method prepares queries which retrieve all publications for the
-	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
-	 * separate temporary tables which are filled by an external script.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexPopular(final BibTexParam param, final DBSession session) {
-		return this.bibtexList("getBibTexPopular", param, session);
-	}
-	
-	/**
-	 * TODO: remove me !
-	 * 
-	 * <em>/search/ein+lustiger+satz</em><br/><br/>
-	 * 
-	 * Prepares queries to retrieve posts which match a fulltext search in the
-	 * fulltext search table.<br/>
-	 * 
-	 * The search string, as given by the user will be mangled up in the method
-	 * to do what the user expects (AND searching). Unfortunately this also
-	 * destroys some other features (e.g. <em>phrase searching</em>).<br/>
-	 * 
-	 * If requestedUser is given, only (public) posts from the given user are
-	 * searched. Otherwise all (public) posts are searched.
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	public List<Post<BibTex>> getBibTexSearch(final BibTexParam param, final DBSession session) {
-		return this.bibtexList("getBibTexSearch", param, session);
+		return this.postList("getBibTexForHomepage", param, session);
 	}
 	
 	/**
@@ -403,7 +230,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setLimit(limit);
 		param.setOffset(offset);
 		
-		return this.bibtexList("getBibTexSearch", param, session); // FIXME: why not SearchForGroup (was in param method)
+		return this.postList("getBibTexSearch", param, session); // FIXME: why not SearchForGroup (was in param method)
 	}
 
 	/**
@@ -419,11 +246,12 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			param.setRequestedUserName(param.getUserName());
 			return getPostsForUser(param, session);
 		}
-		return this.bibtexList("getBibTexViewable", param, session);
+		return this.postList("getBibTexViewable", param, session);
 	}
 	
 	/**
 	 * XXXDZ
+	 * TODO: check method
 	 * 
 	 * @see BibTexDatabaseManager#getPostsViewableByTag(GenericParam, DBSession)
 	 * 
@@ -435,7 +263,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param session
 	 * @return list of bibtex posts
 	 */
-	// TODO: check method
 	public List<Post<BibTex>> getBibTexViewableByTag(final int groupId, final List<TagIndex> tagIndex, final HashID simHash, final int limit, final int offset, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setGroupId(groupId);
@@ -448,7 +275,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			param.setRequestedUserName(param.getUserName());
 			return getBibTexByTagNamesForUser(param, session);
 		}
-		return this.bibtexList("getBibTexViewableByTag", param, session);
+		return this.postList("getBibTexViewableByTag", param, session);
 	}
 
 	/**
@@ -456,18 +283,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * requested user. Duplicates are BibTex posts which have the same simhash1,
 	 * but a different simhash0 (the latter is always true within the posts of a
 	 * single user).
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of bibtex posts
-	 */
-	private List<Post<BibTex>> getBibTexDuplicate(final BibTexParam param, final DBSession session) {
-		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
-		return this.bibtexList("getBibTexDuplicate", param, session);
-	}
-
-	/**
-	 * @see BibTexDatabaseManager#getBibTexDuplicate(BibTexParam, DBSession)
 	 * 
 	 * @param requestedUserName
 	 * @param visibleGroupIDs
@@ -481,7 +296,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setGroups(visibleGroupIDs);
 		param.setSimHash(simHash);
 		
-		return this.getBibTexDuplicate(param, session);
+		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
+		return this.postList("getBibTexDuplicate", param, session);
 	}
 	
 	/**
@@ -501,16 +317,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 
 	/**
-	 * <em>/group/EineGruppe</em><br/><br/>
 	 * 
-	 * Prepares queries which show all publications of all users belonging to
-	 * the group. This is an aggregated view of all posts of the group members.<br/>
-	 * Full viewable-for checking is done, i.e. everybody sees everything he is
-	 * allowed to see.<br/>
-	 * 
-	 * See also
-	 * http://www.bibsonomy.org/bibtex/1d28c9f535d0f24eadb9d342168836199 page
-	 * 92, formula (9) for formal semantics of this query.
 	 * 
 	 * @param param
 	 * @param session
@@ -522,21 +329,30 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		if ( present(param.getFilter()) ) {
 			// just entries with document attached
 			if (param.isDocumentsAttached() && param.getFilter().equals(FilterEntity.JUST_PDF)) {
-				return this.bibtexList("getJustBibTexForGroupWithPDF", param, session);
+				return this.postList("getJustBibTexForGroupWithPDF", param, session);
 			}
 			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
 
 		// posts including documents
 		if (param.isDocumentsAttached()) {
-			return this.bibtexList("getBibTexForGroupWithPDF", param, session);
+			return this.postList("getBibTexForGroupWithPDF", param, session);
 		}
 		// posts only
-		return this.bibtexList("getBibTexForUsersInGroup", param, session);
+		return this.postList("getBibTexForUsersInGroup", param, session);
 	}
 
 	/**
-	 * @see BibTexDatabaseManager#getBibTexForUsersInGroup(BibTexParam, DBSession)
+	 * <em>/group/EineGruppe</em><br/><br/>
+	 * 
+	 * Prepares queries which show all publications of all users belonging to
+	 * the group. This is an aggregated view of all posts of the group members.<br/>
+	 * Full viewable-for checking is done, i.e. everybody sees everything he is
+	 * allowed to see.<br/>
+	 * 
+	 * See also
+	 * http://www.bibsonomy.org/bibtex/1d28c9f535d0f24eadb9d342168836199 page
+	 * 92, formula (9) for formal semantics of this query.
 	 * 
 	 * @param loginUserName
 	 * @param groupId
@@ -547,7 +363,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param session
 	 * @return list of bibtex posts
 	 */
-	public List<Post<BibTex>> getBibTexForUsersInGroup(final String loginUserName, final Integer groupId, final List<Integer> groups, final HashID simHash, final int limit, final int offset, final DBSession session) {
+	public List<Post<BibTex>> getBibTexForGroup(final String loginUserName, final int groupId, final List<Integer> groups, final HashID simHash, final int limit, final int offset, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setUserName(loginUserName);
 		param.setGroupId(groupId);
@@ -560,20 +376,22 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		if ( present(param.getFilter()) ) {
 			// just entries with document attached
 			if (param.isDocumentsAttached() && param.getFilter().equals(FilterEntity.JUST_PDF)) {
-				return this.bibtexList("getJustBibTexForGroupWithPDF", param, session);
+				return this.postList("getJustBibTexForGroupWithPDF", param, session);
 			}
 			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
 
 		// posts including documents
 		if (param.isDocumentsAttached()) {
-			return this.bibtexList("getBibTexForGroupWithPDF", param, session);
+			return this.postList("getBibTexForGroupWithPDF", param, session);
 		}
 		// posts only
-		return this.bibtexList("getBibTexForUsersInGroup", param, session);
+		return this.postList("getBibTexForUsersInGroup", param, session);
 	}
 
 	/**
+	 * FIXME: filter
+	 * 
 	 * <em>/group/EineGruppe/EinTag+NochEinTag</em><br/><br/>
 	 * 
 	 * Does basically the same as getBibTexForGroup with the additionaly
@@ -583,41 +401,43 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param session
 	 * @return list of bibtex posts
 	 */
+	@Deprecated
 	public List<Post<BibTex>> getBibTexForGroupByTag(final BibTexParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		
 		// if user wants to retrieve documents
 		if ( present(param.getFilter()) ) {
 			if (param.isDocumentsAttached() && param.getFilter().equals(FilterEntity.JUST_PDF)) {
-				return this.bibtexList("getJustBibTexForGroupByTagWithPDF", param, session);
+				return this.postList("getJustBibTexForGroupByTagWithPDF", param, session);
 			}
 			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
 		// posts including documents
 		if (param.isDocumentsAttached()) {
-			return this.bibtexList("getBibTexForGroupByTagWithPDF", param, session);
+			return this.postList("getBibTexForGroupByTagWithPDF", param, session);
 		}
 		// posts only
-		return this.bibtexList("getBibTexForGroupByTag", param, session);
+		return this.postList("getBibTexForGroupByTag", param, session);
 	}
 
 	/**
 	 * XXXDZ
-	 * 
-	 * @see BibTexDatabaseManager#getBibTexForGroupByTag(BibTexParam, DBSession)
-	 * 
-	 * @param tagIndex
 	 * @param groupId
 	 * @param visibleGroupIDs
 	 * @param loginUser
+	 * @param tagIndex
 	 * @param limit
 	 * @param offset
 	 * @param session
+	 * 
+	 * @see BibTexDatabaseManager#getBibTexForGroupByTag(BibTexParam, DBSession)
+	 * 
 	 * @return list of bibtex posts
 	 * 
 	 * groupType is always FRIEND (repareGetPostForGroup())
 	 */
-	public List<Post<BibTex>> getBibTexForGroupByTag(final List<TagIndex> tagIndex, final int groupId, final List<Integer> visibleGroupIDs, final String loginUser, final int limit, final int offset, final DBSession session) {
+	@Override
+	public List<Post<BibTex>> getPostsForGroupByTag(final int groupId, final List<Integer> visibleGroupIDs, final String loginUser, final List<TagIndex> tagIndex, final int limit, final int offset, final DBSession session) {
 		final BibTexParam param = new BibTexParam();
 		param.setTagIndex(tagIndex);
 		param.setGroupId(groupId);
@@ -628,20 +448,21 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		
+		// FIXME: filter!!!
 		// if user wants to retrieve documents
 		if (present(param.getFilter())) {
 			if (param.isDocumentsAttached() && param.getFilter().equals(FilterEntity.JUST_PDF)) {
-				return this.bibtexList("getJustBibTexForGroupByTagWithPDF", param, session);
+				return this.postList("getJustBibTexForGroupByTagWithPDF", param, session);
 			}
 			throw new IllegalArgumentException("Filter " + param.getFilter().name() + " not supported");
 		}
 
 		// posts including documents
 		if (param.isDocumentsAttached()) {
-			return this.bibtexList("getBibTexForGroupByTagWithPDF", param, session);
+			return this.postList("getBibTexForGroupByTagWithPDF", param, session);
 		}
 		// posts only
-		return this.bibtexList("getBibTexForGroupByTag", param, session);
+		return this.postList("getBibTexForGroupByTag", param, session);
 	}
 
 	/*
@@ -657,11 +478,11 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		if (present(param.getFilter())) {
 			// retrieve only entries with a document attached
 			if (param.isDocumentsAttached() && param.getFilter().equals(FilterEntity.JUST_PDF)) {
-				return this.bibtexList("getJustBibTexForUserWithPDF", param, session);
+				return this.postList("getJustBibTexForUserWithPDF", param, session);
 			}			
 			// retrieve duplicate entries
 			if (param.getFilter().equals(FilterEntity.DUPLICATES)) {
-				return this.getBibTexDuplicate(param, session);
+				return this.getBibTexDuplicate(param.getRequestedUserName(), param.getGroups(), HashID.getSimHash(param.getSimHash()), session);
 			}
 			
 			log.warn("Filter " + param.getFilter().name() + " not supported");
@@ -669,10 +490,10 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		
 		// posts including documents
 		if (param.isDocumentsAttached()) {
-			return this.bibtexList("getBibTexForUserWithPDF", param, session);
+			return this.postList("getBibTexForUserWithPDF", param, session);
 		}
 		// posts only
-		return this.bibtexList("getBibTexForUser", param, session);
+		return this.postList("getBibTexForUser", param, session);
 	}
 
 	/*
@@ -690,7 +511,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setOffset(offset);
 		
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		return this.bibtexList("getBibTexForUser", param, session);
+		return this.postList("getBibTexForUser", param, session);
 		// FIXME: with groupId = -1 test failed
 //		return super.getPostsForUser(userName, requestedUserName, simHash, groupId, visibleGroupIDs, limit, offset, session);
 	}
@@ -704,7 +525,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setSimHash(hashType);
 		
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);		
-		return this.bibtexList("getLoggedHashesByHashForUser", param, session);
+		return this.postList("getLoggedHashesByHashForUser", param, session);
 	}
 	
 	/*
@@ -734,7 +555,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @return list of bibtex entries
 	 */
 	public List<Post<BibTex>> getPostsByAuthor(final BibTexParam param, final DBSession session){
-		return this.bibtexList("getBibTexByAuthor",param,session);
+		return this.postList("getBibTexByAuthor",param,session);
 	}
 	
 	/**
@@ -767,7 +588,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setOffset(offset);
 		param.setSimHash(HashID.INTER_HASH);
 		
-		return this.bibtexList("get" + this.resourceClassName + "ByAuthor",param,session);
+		return this.postList("get" + this.resourceClassName + "ByAuthor",param,session);
 	}
 
 	/**
@@ -809,18 +630,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			
 		return postBibtexList;
 	}
-	
-	
-	/**
-	 * TODO GroupID in getPostsByAuthorAndTag; remove me
-	 * 
-	 * @param param 
-	 * @param session 
-	 * @return list of bibtex entries
-	 */
-    public List<Post<BibTex>> getBibTexByAuthorAndTag(final BibTexParam param, final DBSession session){
-		return this.bibtexList("getBibTexByAuthorAndTag",param,session);
-	}
     
     /**
      * <em>/author/MaxMustermann</em><br/><br/>
@@ -828,7 +637,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * author name and TagName(restricted by group public).
 	 * 
      * @param search
-     * @param groupType
+     * @param groupId
      * @param requestedUserName 
      * @param requestedGroupName 
      * @param tagIndex
@@ -840,10 +649,10 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
      * @param session
      * @return list of bibtex entries
      */
-    public List<Post<BibTex>> getPostsByAuthorAndTag(final String search, final GroupID groupType, final String requestedUserName, final String requestedGroupName, final List<TagIndex> tagIndex, final String year, final String firstYear, final String lastYear, final int limit, final int offset, final DBSession session){
+    public List<Post<BibTex>> getPostsByAuthorAndTag(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final List<TagIndex> tagIndex, final String year, final String firstYear, final String lastYear, final int limit, final int offset, final DBSession session){
 		final BibTexParam param = this.getNewParam();
 		param.setSearch(search);
-		param.setGroupType(groupType);
+		param.setGroupId(groupId);
 		param.setRequestedUserName(requestedUserName);
 		param.setRequestedGroupName(requestedGroupName);
 		param.setTagIndex(tagIndex);
@@ -854,7 +663,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setOffset(offset);
 		param.setSimHash(HashID.INTER_HASH);
 		
-		return this.bibtexList("getBibTexByAuthorAndTag",param,session);
+		return this.postList("getBibTexByAuthorAndTag",param,session);
 	}
 
 	/**
@@ -866,7 +675,34 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @return list of bibtex posts
 	 */
 	public List<Post<BibTex>> getPostsByKey(BibTexParam param, DBSession session) {
-		return this.bibtexList("getBibTexByKey",param,session);
+		return this.postList("getBibTexByKey",param,session);
+	}
+	
+	/**
+	 * TODO: add more parameters
+	 * 
+	 * <em>/bibtexkey/KEY</em> Returns a list of bibtex posts for a given
+	 * bibtexKey
+	 * @param bibtexKey 
+	 * @param requestedUserName 
+	 * @param groupId 
+	 * @param entryType 
+	 * @param limit 
+	 * @param offset 
+	 * @param session	a database session
+	 * @return list of bibtex posts
+	 */
+	public List<Post<BibTex>> getPostsByKey(final String bibtexKey, String requestedUserName, int groupId, String entryType, int limit, int offset, final DBSession session) {
+		final BibTexParam param = this.getNewParam();
+		param.setBibtexKey(bibtexKey);
+		param.setRequestedUserName(requestedUserName);
+		param.setGroupId(groupId);
+		param.setEntryType(entryType);
+		
+		param.setLimit(limit);
+		param.setOffset(offset);
+		
+		return this.postList("getBibTexByKey",param,session);
 	}
 	
 	/**

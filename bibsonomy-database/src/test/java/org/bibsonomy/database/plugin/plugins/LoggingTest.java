@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -143,7 +144,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		final BibTexParam param = this.bibtexParam;
 		param.setHash(HASH);
 		param.setSimHash(HashID.INTER_HASH);
-		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(HASH, HashID.INTER_HASH, 50, 0, this.dbSession).get(0);
+		final Post<BibTex> someBibTexPost = this.bibTexDb.getPostsByHash(HASH, HashID.INTER_HASH, GroupID.PUBLIC.getId(), 50, 0, this.dbSession).get(0);
 
 		Integer currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		// +1 for the future contentId
@@ -171,7 +172,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		param.setRequestedContentId(CONTENTID);
 		param.setHash(HASH);
 		param.setSimHash(HashID.INTRA_HASH);
-		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(HASH, HashID.INTER_HASH, 50, 0, this.dbSession).get(0);
+		final Post<BibTex> someBibTexPost = this.bibTexDb.getPostsByHash(HASH, HashID.INTER_HASH, GroupID.PUBLIC.getId(), 50, 0, this.dbSession).get(0);
 
 		Integer result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
 		assertEquals(0, result);
@@ -190,7 +191,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		final String HASH = "0008bae834cc2af4a63fead1fd04b3e1";
 		final BookmarkParam param = this.bookmarkParam;
 		param.setHash(HASH);
-		final Post<Bookmark> someBookmarkPost = this.bookmarkDb.getBookmarkByHash(param, this.dbSession).get(0);
+		final Post<Bookmark> someBookmarkPost = this.bookmarkDb.getPostsByHash(HASH, HashID.INTRA_HASH, GroupID.PUBLIC.getId(), 10, 0, this.dbSession).get(0);
 
 		Integer currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		param.setNewContentId(currentContentId + 1); // +1, next content_id
@@ -213,11 +214,11 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		final String HASH = "00319006d9b0105704533e49661ffab6";
 		// ContentId of the Bookmark with the Hash above
 		final int CONTENTID = 716849;
+		final Post<Bookmark> someBookmarkPost = this.bookmarkDb.getPostsByHash(HASH, HashID.INTRA_HASH, GroupID.PUBLIC.getId(), 10, 0, this.dbSession).get(0);
+
 		final BookmarkParam param = this.bookmarkParam;
 		param.setRequestedContentId(CONTENTID);
 		param.setHash(HASH);
-		final Post<Bookmark> someBookmarkPost = this.bookmarkDb.getBookmarkByHash(param, this.dbSession).get(0);
-
 		Integer result = this.generalDb.countRequestedContentIdFromBookmark(param, this.dbSession);
 		assertEquals(0, result);
 
@@ -249,7 +250,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		param.setSimHash(HashID.INTRA_HASH);
 		final TagParam tagparam = this.tagParam;
 		tagparam.setRequestedContentId(CONTENTID);
-		final Post<BibTex> someBibTexPost = this.bibTexDb.getBibTexByHash(HASH, HashID.INTRA_HASH, 50, 0, this.dbSession).get(0);
+		final Post<BibTex> someBibTexPost = this.bibTexDb.getPostsByHash(HASH, HashID.INTRA_HASH, GroupID.PUBLIC.getId(), 50, 0, this.dbSession).get(0);
 
 		Integer res_original = this.generalDb.countTasIds(tagparam, this.dbSession);
 		Integer result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);

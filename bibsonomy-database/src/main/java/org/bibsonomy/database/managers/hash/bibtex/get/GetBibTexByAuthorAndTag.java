@@ -32,6 +32,6 @@ public class GetBibTexByAuthorAndTag extends BibTexHashElement {
 	 */
 	@Override
 	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexByAuthorAndTag(param, session);
+		return this.db.getPostsByAuthorAndTag(param.getSearch(), param.getGroupId(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getTagIndex(), param.getYear(), param.getFirstYear(), param.getLastYear(), param.getLimit(), param.getOffset(), session);
 	}
 }

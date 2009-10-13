@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers.hash.bibtex.get;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.hash.bibtex.BibTexHashElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
@@ -16,8 +17,8 @@ import org.bibsonomy.model.enums.Order;
 public class GetBibtexForHomePageOrPopular extends BibTexHashElement {
 
 	public GetBibtexForHomePageOrPopular() {
-		addToOrders(Order.POPULAR);
-		addToOrders(Order.ADDED);
+		this.addToOrders(Order.POPULAR);
+		this.addToOrders(Order.ADDED);
 	}
 
 	/**
@@ -25,12 +26,15 @@ public class GetBibtexForHomePageOrPopular extends BibTexHashElement {
 	 * popular bibtex entries of bibSonomy are returned
 	 */
 	@Override
-	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {
+	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {		
 		if (param.getOrder() == Order.POPULAR) {
-			return this.db.getBibTexPopular(param, session);
-		} else if (param.getOrder() == Order.ADDED) {
-			return this.db.getBibTexForHomePage(param, session);
+			return this.db.getPostsPopular(param.getLimit(), param.getOffset(), HashID.getSimHash(param.getSimHash()), session);
 		}
+		
+		if (param.getOrder() == Order.ADDED) {
+			return this.db.getPostsForHomepage(param.getLimit(), param.getOffset(), session);
+		}
+		
 		return null;
 	}
 }

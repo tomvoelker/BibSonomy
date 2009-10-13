@@ -24,7 +24,7 @@ public class GetBibtexByTagNames extends BibTexChainElement {
 	// Tag pages can only contain public posts. Take notice when adapt it for new method / db
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexByTagNames(param.getGroupId(), param.getTagIndex(), param.getLimit(), param.getOffset(), session);
+		return this.db.getPostsByTagNames(param.getGroupId(), param.getTagIndex(), null, param.getLimit(), param.getOffset(), session);
 		//TODO: check method: return this.db.getBibTexByTagNames(param, session);
 	}
 

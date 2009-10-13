@@ -31,7 +31,7 @@ public class GetBookmarksForGroupAndTag extends BookmarkChainElement {
 			return new ArrayList<Post<Bookmark>>(0);
 		}
 		param.setGroupId(groupId);
-		return this.db.getBookmarkForGroupByTag(param, session);
+		return this.db.getPostsForGroupByTag(param.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), 10, 0, session);
 	}
 
 	@Override

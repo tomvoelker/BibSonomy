@@ -33,6 +33,6 @@ public class GetBibtexByTagNames extends BibTexHashElement {
 	 */
 	@Override
 	public List<Post<BibTex>> perform(final BibTexParam param, final DBSession session) {
-		return this.db.getBibTexByTagNames(param.getGroupId(), param.getTagIndex(), param.getLimit(), param.getOffset(), session);
+		return this.db.getPostsByTagNames(param.getGroupId(), param.getTagIndex(), null, param.getLimit(), param.getOffset(), session);
 	}
 }
