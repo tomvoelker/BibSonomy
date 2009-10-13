@@ -481,6 +481,8 @@
 	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+		<property name="bibTexSearch" ref="luceneBibTexSearch"/>
+		<property name="bookmarkSearch" ref="luceneBookmarkSearch"/>
 	</bean>
 
 	<!-- 
@@ -494,13 +496,29 @@
 		<property name="bibTexSearch" ref="luceneBibTexSearch"/>
 		<property name="bookmarkSearch" ref="luceneBookmarkSearch"/>
 	</bean>	
+
+	<!-- 
+	    This bean provides access to the logic interface for searchers
+	 -->
+	<bean id="searchLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="request">
+	    <!-- name the admin user will have when accessing the logic interface -->
+		<property name="adminUserName" value="admin"/>
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
+	</bean>	
 	
-		<!-- lucene bibtex searcher -->
-	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.LuceneSearchBibTex" factory-method="getInstance"/>
+	<!-- lucene bibtex searcher -->
+	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.LuceneSearchBibTex" factory-method="getInstance" scope="request">
+		<property name="dbLogic" ref="searchLogic"/>
+		<property name="indexUpdater" ref="LuceneUpdater"/>
+	</bean>
 	
 	<!-- lucene bookmark searcher -->
-	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.LuceneSearchBookmarks" factory-method="getInstance"/>
+	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.LuceneSearchBookmarks" factory-method="getInstance" scope="request">
+		<property name="dbLogic" ref="searchLogic"/>
+		<property name="indexUpdater" ref="LuceneUpdater"/>
+	</bean>
 
+ 
 	<!--  #################### interceptors #################### -->
 
 	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
