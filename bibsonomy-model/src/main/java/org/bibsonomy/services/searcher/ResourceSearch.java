@@ -6,6 +6,7 @@ import java.util.Set;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.User;
 
 /**
  * Interface for resource search operations
@@ -50,4 +51,12 @@ public interface ResourceSearch<R extends Resource> {
 			String requestedUserName, String requestedGroupName, String year,
 			String firstYear, String lastYear, List<String> tagList, int limit,
 			int offset);
+
+
+	/**
+	 * flags/unflags user as spammer, depending on user.getPrediction()
+	 * 
+	 * @param user
+	 */
+	public void flagSpammer(User user);
 }
