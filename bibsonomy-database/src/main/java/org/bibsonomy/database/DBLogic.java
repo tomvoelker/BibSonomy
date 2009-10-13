@@ -103,6 +103,9 @@ public class DBLogic implements LogicInterface {
 	private final BasketDatabaseManager basketDBManager;
 
 	private final User loginUser;
+	
+	/** references to resource searcher for maintenance (e.g. flagging of spam) */
+	List<ResourceSearch<? extends Resource>> resourceSearcher;
 
 	/**
 	 * Returns an implementation of the DBLogic.
@@ -133,10 +136,16 @@ public class DBLogic implements LogicInterface {
 		this.basketDBManager = BasketDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;
+		
+		this.resourceSearcher = new LinkedList<ResourceSearch<? extends Resource>>();
+	
 	}
 	
 	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final ResourceSearch<BibTex> bibTexSearch, final ResourceSearch<Bookmark> bookmarkSearch) {
 		this(loginUser, dbSessionFactory);
+	
+		this.resourceSearcher.add(bookmarkSearch);
+		this.resourceSearcher.add(bibTexSearch);
 		this.bibtexDBManager.setResourceSearch(bibTexSearch);
 		this.bookmarkDBManager.setResourceSearch(bookmarkSearch);
 	}
@@ -1076,6 +1085,10 @@ public class DBLogic implements LogicInterface {
 			try {
 				final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
 				flagSpammerUserName = this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
+				// flag/unflag spammer in search index
+				for( ResourceSearch<? extends Resource> searcher : resourceSearcher ) {
+					searcher.flagSpammer(user);
+				}
 			} finally {
 				session.close();
 			}
