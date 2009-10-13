@@ -3,6 +3,7 @@ package org.bibsonomy.lucene;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -26,14 +27,20 @@ import org.apache.lucene.search.RangeFilter;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
+import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.LuceneException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
-public class LuceneSearchBibTex implements ResourceSearch<BibTex> {
+public class LuceneSearchBibTex extends LuceneSearch<BibTex> {
+	final Log LOGGER = LogFactory.getLog(LuceneSearchBibTex.class);
 
 	private final static LuceneSearchBibTex singleton = new LuceneSearchBibTex();
 	private IndexSearcher searcher; 
@@ -59,7 +66,6 @@ public class LuceneSearchBibTex implements ResourceSearch<BibTex> {
 	
 
 	public void reloadIndex() {
-		final Log LOGGER = LogFactory.getLog(LuceneSearchBibTex.class);
 		try {
 
 			Context initContext = new InitialContext();
@@ -684,5 +690,11 @@ ORDER BY b.date DESC, b.content_id DESC;
 			String searchTerms, String requestedUserName, String UserName,
 			Set<String> GroupNames, int limit, int offset) {
 		return searchLucene(getFulltextQueryFilter(group, searchTerms, requestedUserName, UserName, GroupNames), limit, offset);
+	}
+
+
+	@Override
+	protected Class<BibTex> getResourceType() {
+		return BibTex.class;
 	}
 }

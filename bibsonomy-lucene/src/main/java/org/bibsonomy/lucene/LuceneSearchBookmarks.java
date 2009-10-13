@@ -33,7 +33,7 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
-public class LuceneSearchBookmarks implements ResourceSearch<Bookmark> {
+public class LuceneSearchBookmarks extends LuceneSearch<Bookmark> {
 
 	private final static LuceneSearchBookmarks singleton = new LuceneSearchBookmarks();
 	private IndexSearcher searcher;
@@ -355,5 +355,8 @@ public class LuceneSearchBookmarks implements ResourceSearch<Bookmark> {
 			int offset) {
 		throw new UnsupportedOperationException("Author search not available for bookmarks");
 	}
-
+	@Override
+	protected Class<Bookmark> getResourceType() {
+		return Bookmark.class;
+	}
 }
