@@ -1,7 +1,6 @@
 package org.bibsonomy.database.managers;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -34,15 +33,12 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	protected static final Log log = LogFactory.getLog(AdminDatabaseManager.class);
 
 	/**
-	 * Holds the names of the tables where group ids must be updated, when
-	 * a user is flagged as spammer or deleted.
+	 * Holds the names of the tables where group ids must be updated, when a
+	 * user is flagged as spammer or deleted.
 	 * 
 	 * TODO: Make database names constants.
 	 */
-	private final List<String> tableNames = Arrays.asList(new String[]{
-			"tas", "grouptas", "bibtex", "bookmark", "search_bibtex", "search_bookmark"
-	}
-	);
+	private final List<String> tableNames = Arrays.asList(new String[] { "tas", "grouptas", "bibtex", "bookmark", "search_bibtex", "search_bookmark" });
 
 	private AdminDatabaseManager() {
 	}
@@ -157,7 +153,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 		try {
 
-			if (! "classifier".equals(updatedBy)) {
+			if (!"classifier".equals(updatedBy)) {
 				/*
 				 * FIXME: is this the "deleteUser" case? (document!)
 				 */
@@ -187,8 +183,14 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 				this.insert("logCurrentPrediction", param, session);
 
 			}
-
+			
+			// set session counter to 0, so that transaction will be commited in 
+			// session wrapper
 			session.commitTransaction();
+		}
+
+		catch (final Exception ex) {
+			log.error(ex.getMessage(), ex);
 
 		} finally {
 			// in case of failure, session should be locked in DbSessionImpl
@@ -196,11 +198,12 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		// update group ids in a second step
+		// start the transaction
 		session.beginTransaction();
 
 		try {
 
-			if (! "classifier".equals(updatedBy)) {
+			if (!"classifier".equals(updatedBy)) {
 				/*
 				 * FIXME: this is (only?) the deleteUser() case? Document!
 				 */
@@ -211,12 +214,17 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 					this.updateGroupIds(param, session);
 				}
 			}
-
-
-
+			// set session counter to 0, so that transaction will be commited in 
+			// session wrapper
 			session.commitTransaction();
+		}
 
-		} finally {
+		catch (final Exception ex) {
+			log.error(ex.getMessage(), ex);
+		}
+
+		finally {
+
 			// end transaction in any case
 			session.endTransaction();
 		}
@@ -264,7 +272,6 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		}
 		return true;
 	}
-
 
 	/**
 	 * Updates group ids in different tables
