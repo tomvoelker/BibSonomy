@@ -200,6 +200,11 @@
 						<property name="controllerBeanName" value="followersPageController"/>
 					</bean>
 				</entry>
+				<entry key="/scraper_info">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="scraperInfoController"/>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -444,6 +449,9 @@
 		</property>
 	</bean>
 	
+	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request">
+		<property name="logic" ref="logic"/>
+	</bean>
 	<!--  #################### factory beans #################### -->
 
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
