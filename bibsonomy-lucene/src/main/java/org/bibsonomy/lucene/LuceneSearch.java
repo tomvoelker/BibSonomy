@@ -13,6 +13,8 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
+//FIXME: remove this comment (used only for triggering cvs-commit)
+
 /**
  * abstract parent class for lucene search
  * 

@@ -33,6 +33,8 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
+//FIXME: remove this comment (used only for triggering cvs-commit)
+
 public class LuceneSearchBookmarks extends LuceneSearch<Bookmark> {
 
 	private final static LuceneSearchBookmarks singleton = new LuceneSearchBookmarks();

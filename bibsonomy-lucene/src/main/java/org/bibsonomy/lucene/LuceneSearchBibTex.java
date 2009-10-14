@@ -39,6 +39,8 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
+//FIXME: remove this comment (used only for triggering cvs-commit)
+
 public class LuceneSearchBibTex extends LuceneSearch<BibTex> {
 	final Log LOGGER = LogFactory.getLog(LuceneSearchBibTex.class);
 
