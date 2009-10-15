@@ -186,7 +186,8 @@ public enum Views implements View {
 	/** import view **/
 	IMPORT("actions/post/import"),
 	
-	
+	/** scraper info list **/
+	SCRAPER_INFO("scraperList"),
 	/* *****************************************************
 	 * AJAX views
 	 * *****************************************************/
