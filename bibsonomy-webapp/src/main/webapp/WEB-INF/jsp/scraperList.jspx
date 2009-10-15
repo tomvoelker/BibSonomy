@@ -24,10 +24,42 @@
 		<jsp:attribute name="content">
     
           <div id="general">
-             <c:forEach var="scraper" items="${command.scraperList}" varStatus="status">
-            	<a href="${scraper.supportedSiteURL}">
-            			<span style="font-size: 75%">${scraper.supportedSiteName}</span></a><span> | </span>
-            </c:forEach>
+          <h2 style="margin-bottom:0.5cm"><fmt:message key="scraper_info.link_header"/></h2> 
+         
+          <fmt:message key="scraper_info.scraper_link_description"/>
+          
+			<!-- "list-style-type", mit dem man die "bullets" definieren kann (grafik oder square hab ich ausprobiert) werden von 
+			dem "display: inline" style (der die Elemente horizontal anordnet) überschrieben. Deswegen diese Lösung mit dem | -->
+			            
+            <ul style="margin-top:0.5cm; margin-bottom:0.5cm;">
+	            <c:forEach var="scraper" items="${command.scraperList}" varStatus="status">
+		            <li style="display: inline">
+		            	<a href="${scraper.supportedSiteURL}">
+		            			<span style="font-size: 75%">${scraper.supportedSiteName}</span>
+            			</a>
+            			<span> | </span>
+	            	</li>
+            	</c:forEach>
+            </ul>
+           
+          <fmt:message key="scraper_info.scraper_detail_pre"/>
+        
+          <h2 style="margin-top:1cm; margin-bottom:0.5cm;">
+          	<fmt:message key="scraper_info.scraper_details_header"/>
+          	<a href=<fmt:message key="scraper_info.scraper_help_link"/>>
+          		<img src="${resdir}/image/questionmark.gif" alt="?"/>
+       		</a>
+          </h2>
+          
+          
+          <ul style="margin-left:0.5cm; list-style-type: square;">
+	            <c:forEach var="scraper" items="${command.scraperList}" varStatus="status">
+		            <li>
+		            	<dt style="padding-top: 1em;">${scraper.class.simpleName}:</dt> 
+    					<dd>${scraper.info}</dd>
+	            	</li>
+            	</c:forEach>
+            </ul>  
           </div>
             
 		</jsp:attribute>				
