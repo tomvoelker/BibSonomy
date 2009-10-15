@@ -47,7 +47,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  */
 public class JStorScraper extends AbstractUrlScraper {
 
-	private static final String info = "JSTOR Scraper: This Scraper parses a publication from " + href("http://www.jstor.org/", "JSTOR");
+	private static final String info = "This Scraper parses a publication from " + href("http://www.jstor.org/", "JSTOR");
 
 	private static final String JSTOR_HOST  = "jstor.org";
 	private static final String JSTOR_HOST_NAME  = "http://www.jstor.org";
