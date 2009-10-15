@@ -25,6 +25,7 @@
 package org.bibsonomy.bibtex.parser;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
@@ -76,14 +77,17 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		final Post<BibTex> post = new Post<BibTex>();
 		post.setResource(parsedBibTeX);
 		/*
+		 * get misc fields for next steps
+		 */
+		final HashMap<String, String> miscFields = parsedBibTeX.getMiscFields();
+		/*
 		 * put description/tags from misc fields into post
 		 */
-		post.setDescription(parsedBibTeX.getMiscField("description"));
+		post.setDescription(miscFields.remove("description"));
 		/*
 		 * parse tags
 		 */
-		final String keywords = parsedBibTeX.getMiscField("keywords");
-		
+		final String keywords = miscFields.remove("keywords");
 		try {
 			post.setTags(TagUtils.parse(keywords));
 		} catch (RecognitionException ex) {
@@ -91,7 +95,16 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 			 * silently ignore tag parsing errors ....
 			 */
 		}
-		
+		/*
+		 * remove other misc fields which should not be stored 
+		 */
+		miscFields.remove("intrahash");
+		miscFields.remove("interhash");
+		miscFields.remove("biburl");
+		/*
+		 * re-write misc field to fix above changes
+		 */
+		BibTexUtils.serializeMiscFields(parsedBibTeX);
 		return post;
 	}
 

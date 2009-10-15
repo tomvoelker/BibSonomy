@@ -10,11 +10,8 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Test;
-
-import sun.awt.X11.Depth;
 
 import bibtex.parser.ParseException;
 
@@ -55,6 +52,7 @@ public class PostBibTeXParserTest {
 			 * check the post
 			 */
 			final BibTex resource = post.getResource();
+			
 			resource.recalculateHashes();
 			assertEquals("New York, NY, USA", resource.getAddress());
 			assertEquals("Dominik Benz and Folke Eisterlehner and Andreas Hotho and Robert Jäschke and Beate Krause and Gerd Stumme", resource.getAuthor());
@@ -69,6 +67,7 @@ public class PostBibTeXParserTest {
 			assertEquals("2009", resource.getYear());
 			assertEquals("978-1-60558-486-7", resource.getMiscField("isbn"));
 			assertEquals("10.1145/1557914.1557969", resource.getMiscField("doi"));
+
 			/*
 			 * If we don't turn expansion of months off (in the 
 			 * MacroReferenceExpander), the parser will change this to "June".
@@ -92,19 +91,15 @@ public class PostBibTeXParserTest {
 			}
 			assertEquals(tags, post.getTags());
 
-			
 			/*
 			 * second step: create BibTeX from the post, parse it and compare
 			 * the created post with the original post
 			 */
 			final Post<BibTex> secondParsedPost = parser.parseBibTeXPost(BibTexUtils.toBibtexString(post));
 			secondParsedPost.getResource().recalculateHashes();
-			/*
-			 * we ignore the "misc" field, since the order of entries might be 
-			 * different (the "misc" fields represented as set are checked,
-			 * though!)
-			 */
-			ModelUtils.assertPropertyEquality(post, secondParsedPost, 5, null, new String[]{"resource.misc"});
+			
+			ModelUtils.assertPropertyEquality(post, secondParsedPost, 5, null, new String[]{});
+
 			
 		} catch (ParseException ex) {
 			fail(ex.getMessage());
