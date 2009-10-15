@@ -21,7 +21,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package comparators;
+package org.bibsonomy.model.comparators;
 
 import java.util.Iterator;
 import java.util.SortedSet;
