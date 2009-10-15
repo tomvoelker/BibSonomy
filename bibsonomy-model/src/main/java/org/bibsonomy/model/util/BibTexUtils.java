@@ -400,7 +400,14 @@ public class BibTexUtils {
 		final BibTex bib = post.getResource();	
 		bib.addMiscField("keywords", TagUtils.toTagString(post.getTags(), " "));
 		bib.addMiscField("description", post.getDescription());
-		return BibTexUtils.toBibtexString(bib);
+		final String bibtexString = BibTexUtils.toBibtexString(bib);
+		/*
+		 * restore post
+		 */
+		bib.getMiscFields().remove("keywords");
+		bib.getMiscFields().remove("description");
+		BibTexUtils.serializeMiscFields(bib);
+		return bibtexString;
 	}
 
 	/**
