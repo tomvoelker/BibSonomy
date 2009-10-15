@@ -39,7 +39,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.rest.RestServlet;
 import org.bibsonomy.rest.client.RestLogicFactory;
-import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.testutil.ModelUtils;
 import org.easymock.EasyMock;
 import org.easymock.IArgumentMatcher;
@@ -825,17 +824,5 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public int deleteBasketItems(List<Post<? extends org.bibsonomy.model.Resource>> posts, boolean clearBasket) {
 		// TODO Auto-generated method stub
 		return 0;
-	}
-
-
-	public void setBibTexSearch(ResourceSearch<BibTex> bibTexSearch) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	public void setBookmarkSearch(ResourceSearch<Bookmark> bookmarkSearch) {
-		// TODO Auto-generated method stub
-		
 	}
 }
