@@ -37,6 +37,7 @@ import org.bibsonomy.model.BibTex;
 import bibtex.dom.BibtexAbstractValue;
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexFile;
+import bibtex.dom.BibtexMacroReference;
 import bibtex.dom.BibtexPerson;
 import bibtex.dom.BibtexPersonList;
 import bibtex.dom.BibtexString;
@@ -116,6 +117,9 @@ public class SimpleBibTeXParser {
 
 		final BibtexParser parser = new BibtexParser(true);
 		/*
+		 * configure the parser
+		 */
+		/*
 		 * To allow several "keywords" fields (as done by Connotea), we set the policy
 		 * to keep all fields, such that we can access all keywords.
 		 * 
@@ -185,7 +189,12 @@ public class SimpleBibTeXParser {
 	 */
 	private void expandMacrosCrossRefsPersonLists(final BibtexFile bibtexFile) {
 		try {
-			new MacroReferenceExpander(true, true, false, false).expand(bibtexFile);
+			/*
+			 * rja, 2009-10-15; changed second parameter to "false" because 
+			 * otherwise we can't store months as "jun", since the parser
+			 * always expands them to "June".
+			 */
+			new MacroReferenceExpander(true, false, false, false).expand(bibtexFile);
 		} catch (ExpansionException ee) {
 			warnings.add(ee.getMessage());
 		}
@@ -210,7 +219,7 @@ public class SimpleBibTeXParser {
 	 * @param entry
 	 * @return
 	 */
-	private BibTex fillBibtexFromEntry(BibtexEntry entry) {
+	protected BibTex fillBibtexFromEntry(final BibtexEntry entry) {
 		final BibTex bibtex = new BibTex();
 
 		/* ************************************************
@@ -274,7 +283,6 @@ public class SimpleBibTeXParser {
 		field = (BibtexString) entry.getFieldValue("institution");	if (field != null) bibtex.setInstitution(field.getContent());  
 		field = (BibtexString) entry.getFieldValue("journal");      if (field != null) bibtex.setJournal(field.getContent());      
 		field = (BibtexString) entry.getFieldValue("key");	        if (field != null) bibtex.setKey(field.getContent());
-		field = (BibtexString) entry.getFieldValue("month");        if (field != null) bibtex.setMonth(field.getContent());        
 		field = (BibtexString) entry.getFieldValue("note");         if (field != null) bibtex.setNote(field.getContent());         
 		field = (BibtexString) entry.getFieldValue("number");       if (field != null) bibtex.setNumber(field.getContent());       
 		field = (BibtexString) entry.getFieldValue("organization"); if (field != null) bibtex.setOrganization(field.getContent()); 
@@ -288,9 +296,20 @@ public class SimpleBibTeXParser {
 		field = (BibtexString) entry.getFieldValue("type");  		if (field != null) bibtex.setType(field.getContent());          
 
 		/*
-		 * FIXME: description, keywords, tags, etc. missing but necessary for proper operation in BibSonomy 
-		 * (not needed for the scraping service!)
+		 * special handling for month - it can be a macro!
 		 */
+		final BibtexAbstractValue month = entry.getFieldValue("month");
+		if (month instanceof BibtexMacroReference) {
+			bibtex.setMonth(((BibtexMacroReference) month).getKey());
+		} else {
+			field = (BibtexString) month;        if (field != null) bibtex.setMonth(field.getContent());        
+		}
+
+		/*
+		 * parse person names for author + editor
+		 */
+		bibtex.setAuthor(createPersonString(entry.getFieldValue("author")));
+		bibtex.setEditor(createPersonString(entry.getFieldValue("editor")));
 
 		/*
 		 * rja, 2009-06-30 (added this to BibTeXHandler and copied it here - but deactivated it)
@@ -299,18 +318,16 @@ public class SimpleBibTeXParser {
 		 * comment = {(private-note)This is a test note!}, 
 		 * 
 		 * Thus, we here extract the field and remove the "(private-note)" part
+		 * 
+		 * FIXME: add a test for this!
 		 */
-		//field = (BibtexString) entry.getFieldValue("comment");	if (field != null) bib.setPrivnote(field.getContent().replace("(private-note)", ""));
+		field = (BibtexString) entry.getFieldValue("comment");	if (field != null) bibtex.setPrivnote(field.getContent().replace("(private-note)", ""));
 		
-		
-		/*
-		 * parse person names for author + editor
-		 */
-		bibtex.setAuthor(createPersonString(entry.getFieldValue("author")));
-		bibtex.setEditor(createPersonString(entry.getFieldValue("editor")));
-
 		return bibtex;
 	}
+	
+	
+	
 
 	/** Extracts all persons from the given field value and concatenates their names
 	 * with {@value #AND}.

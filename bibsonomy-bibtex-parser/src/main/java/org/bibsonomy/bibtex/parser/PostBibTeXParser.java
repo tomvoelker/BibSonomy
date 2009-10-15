@@ -24,9 +24,19 @@
 
 package org.bibsonomy.bibtex.parser;
 
+import java.io.IOException;
+import java.util.Set;
+
+import org.antlr.runtime.RecognitionException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.TagUtils;
+
+import bibtex.dom.BibtexEntry;
+import bibtex.dom.BibtexString;
+import bibtex.parser.ParseException;
 
 /**
  * Provides parsing of BibTeX entries represented by {@link String}s into
@@ -49,21 +59,67 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	 *            the string which contains one (!) BibTeX-Entry.
 	 * 
 	 * @return The post which contains all data of the BibTeX-Entry.
+	 * @throws IOException 
+	 * @throws ParseException 
 	 */
-	public Post<BibTex> parseBibTeXPost(final String bibtex) {
+	public Post<BibTex> parseBibTeXPost(final String bibtex) throws ParseException, IOException {
 		/*
 		 * FIXME: must be implemented! e.g., tags must be copied into post and
 		 * so on ...
 		 * 
 		 * call parseBibTex
 		 */
-//		this.parseBibTeX(bibtex)
+		final BibTex parsedBibTeX = parseBibTeX(bibtex);
 		/*
-		 * put description/tags from ?? where?? into post
+		 * create post and set resource into post
 		 */
-		return null;
+		final Post<BibTex> post = new Post<BibTex>();
+		post.setResource(parsedBibTeX);
+		/*
+		 * put description/tags from misc fields into post
+		 */
+		post.setDescription(parsedBibTeX.getMiscField("description"));
+		/*
+		 * parse tags
+		 */
+		final String keywords = parsedBibTeX.getMiscField("keywords");
+		
+		try {
+			post.setTags(TagUtils.parse(keywords));
+		} catch (RecognitionException ex) {
+			/*
+			 * silently ignore tag parsing errors ....
+			 */
+		}
+		
+		return post;
 	}
 
+	/** Additionally to org.bibsonomy.bibtex.parser.SimpleBibTeXParser#fillBibtexFromEntry(bibtex.dom.BibtexEntry)
+	 * this method handles description, keywords, etc. which are not part of 
+	 * {@link BibTex} but of {@link Post}.
+	 * 
+	 * All additionaly fields are added as "misc" field to the resulting bibtex.
+	 * 
+	 * 
+	 * @see org.bibsonomy.bibtex.parser.SimpleBibTeXParser#fillBibtexFromEntry(bibtex.dom.BibtexEntry)
+	 */
+	@Override
+	protected BibTex fillBibtexFromEntry(final BibtexEntry entry) {
+		final BibTex bibtex = super.fillBibtexFromEntry(entry);
+		
+		/*
+		 * FIXME: description, keywords, tags, etc. missing but necessary for proper operation in BibSonomy 
+		 * (not needed for the scraping service!)
+		 */
+		BibtexString field = null;
+		field = (BibtexString) entry.getFieldValue("description"); if (field != null) bibtex.addMiscField("description", field.getContent());
+		field = (BibtexString) entry.getFieldValue("keywords");    if (field != null) bibtex.addMiscField("keywords", field.getContent());
+
+		
+		return bibtex;
+	}
+	
 	/**
 	 * Builds a BibTeX-String from the BibTex contained in the post and parses
 	 * this string into a Post. Then, all fields in the new post which were
@@ -78,8 +134,10 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	 * @see BibTexUtils#toBibtexString(Post) - all fields added there have to be
 	 * copied here, to!
 	 * @param post
+	 * @throws IOException 
+	 * @throws ParseException 
 	 */
-	public void updateWithParsedBibTeX(final Post<BibTex> post) {
+	public void updateWithParsedBibTeX(final Post<BibTex> post) throws ParseException, IOException {
 		/*
 		 * FIXME: must be implemented!
 		 * 
@@ -107,8 +165,10 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	 * 
 	 * @param post
 	 * @return
+	 * @throws IOException 
+	 * @throws ParseException 
 	 */
-	public Post<BibTex> getParsedCopy(final Post<BibTex> post) {
+	public Post<BibTex> getParsedCopy(final Post<BibTex> post) throws ParseException, IOException {
 		/*
 		 * parseBibTeXPost must ensure to add all fields which 
 		 * BibTexUtils.toBibtexString(post) puts into the string. 
