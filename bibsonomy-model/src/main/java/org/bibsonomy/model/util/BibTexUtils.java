@@ -231,8 +231,8 @@ public class BibTexUtils {
 	 * @param bib the bibtex object
 	 */
 	public static void serializeMiscFields(final BibTex bib) {
-		HashMap<String,String> miscFields = bib.getMiscFields();
-		StringBuffer miscFieldsSerialized = new StringBuffer();
+		final HashMap<String,String> miscFields = bib.getMiscFields();
+		final StringBuffer miscFieldsSerialized = new StringBuffer();
 		// loop over misc fields, if any
 		if (miscFields != null && miscFields.values().size() > 0) {
 			for (String key : miscFields.keySet()) {
