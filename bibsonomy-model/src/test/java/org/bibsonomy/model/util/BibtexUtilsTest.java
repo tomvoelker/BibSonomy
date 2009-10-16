@@ -113,7 +113,7 @@ public class BibtexUtilsTest {
 			"  year = {2525},\n" + 
 			"  abstract = {This is a nice abstract.}\n}";
 
-		System.out.print(BibTexUtils.toBibtexString(bib));		
+//		System.out.print(BibTexUtils.toBibtexString(bib));		
 		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib));
 
 		// add some misc fields
@@ -131,7 +131,7 @@ public class BibtexUtilsTest {
 			"  extraKey = {extraVal},\n" + 
 			"  extraKey2 = {extraVal2}\n}";
 
-		System.out.println(BibTexUtils.toBibtexString(bib));
+//		System.out.println(BibTexUtils.toBibtexString(bib));
 		assertEquals(expectedBibtex2, BibTexUtils.toBibtexString(bib));		
 	}
 
@@ -167,7 +167,7 @@ public class BibtexUtilsTest {
 		bib.setAbstract("Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.");
 		bib.setAuthor("Jacques Selmès and Christian Derouesné");
 
-		
+
 		final String expected = 
 			"@book{Selmes2004,\n" + 
 			"  author = {Jacques Selmès and Christian Derouesné},\n" +
@@ -194,7 +194,7 @@ public class BibtexUtilsTest {
 			"}";
 
 		assertEquals(expected, BibTexUtils.toBibtexString(bib));
-		
+
 	}
 
 
@@ -315,10 +315,55 @@ public class BibtexUtilsTest {
 		BibTexUtils.serializeMiscFields(bib);
 		bib.getMiscFields().clear();
 		BibTexUtils.parseMiscField(bib);
-		System.out.println(bib.getMisc());
+//		System.out.println(bib.getMisc());
 		assertEquals(2, bib.getMiscFields().values().size());
 		assertEquals("value1", bib.getMiscField("key1"));
 		assertEquals("value2", bib.getMiscField("key2"));
+	}
+
+	/**
+	 * Tests that toBibtexString() does not add misc fields to the post.
+	 */
+	@Test
+	public void toBibtexString2() {
+		final BibTex bib = new BibTex();
+		bib.setEntrytype("inproceedings");
+		bib.setBibtexKey("KIE");
+		bib.setTitle("The most wonderfult title on earth");
+		bib.setAuthor("Hans Dampf and Peter Silie");
+		bib.setJournal("Journal of the most wonderful articles on earth");
+		bib.setYear("2525");
+		bib.setVolume("3");
+		bib.setAbstract("This is a nice abstract.");
+		bib.setPrivnote("This is private!");
+
+		final String originalMisc = "doi = {my doi}, isbn = {999-12345-123-x}, vgwort = {12}";
+		final String cleanedMisc  = 
+			"  isbn = {999-12345-123-x},\n" +
+			"  vgwort = {12},\n" +
+			"  doi = {my doi}";
+		bib.setMisc(originalMisc);
+
+		final Post<BibTex> post = new Post<BibTex>();
+		post.setResource(bib);
+		post.setDescription("Eine feine kleine Beschreibung.");
+		post.addTag("foo");
+		post.addTag("bar");
+		post.addTag("blubb");
+		post.addTag("babba");
+
+		/*
+		 * Create a bibtex string - the method adds and removes some
+		 * misc fields! Nevertheless, we should have the same misc fields
+		 * afterwards. 
+		 */
+		BibTexUtils.toBibtexString(post);
+		/*
+		 * The fields are parsed and then serialized. Inbetween, some fields
+		 * have been added (keywords, description). We must ensure, that they're
+		 * removed again such that we have the original misc fields!
+		 */
+		assertEquals(cleanedMisc, bib.getMisc());
 	}
 
 

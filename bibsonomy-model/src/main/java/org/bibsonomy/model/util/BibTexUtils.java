@@ -290,7 +290,7 @@ public class BibTexUtils {
 	 * @return String bibtexString
 	 * 
 	 */
-	public static String toBibtexString(BibTex bib) {
+	public static String toBibtexString(final BibTex bib) {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(bib.getClass());
 
