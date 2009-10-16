@@ -322,6 +322,10 @@ public class SimpleBibTeXParser {
 		 * FIXME: add a test for this!
 		 */
 		field = (BibtexString) entry.getFieldValue("comment");	if (field != null) bibtex.setPrivnote(field.getContent().replace("(private-note)", ""));
+		/*
+		 * we export our private notes as "privnote" - add it here
+		 */
+		field = (BibtexString) entry.getFieldValue("privnote");	if (field != null) bibtex.setPrivnote(field.getContent());
 		
 		return bibtex;
 	}

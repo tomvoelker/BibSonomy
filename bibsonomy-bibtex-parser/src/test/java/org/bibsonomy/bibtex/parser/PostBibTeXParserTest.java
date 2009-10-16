@@ -44,6 +44,7 @@ public class PostBibTeXParserTest {
 		"isbn = {978-1-60558-486-7},\n" +
 		"doi = {10.1145/1557914.1557969},\n" +
 		"month = jun,\n" +
+		"comment = {(private-note)This is a test note!},\n" + 
 		"abstract = {In this demo we present BibSonomy, a social bookmark and publication sharing system.},\n" +
 		"biburl = {http://www.bibsonomy.org/bibtex/299cafad8ce2afb5879c6c85c14cc5259/jaeschke},\n" + 
 		"keywords = {2009 bibsonomy demo ht09 myown},\n" +
@@ -58,7 +59,7 @@ public class PostBibTeXParserTest {
 			 * check the post
 			 */
 			final BibTex resource = post.getResource();
-			
+
 			resource.recalculateHashes();
 			assertEquals("New York, NY, USA", resource.getAddress());
 			assertEquals("Dominik Benz and Folke Eisterlehner and Andreas Hotho and Robert Jäschke and Beate Krause and Gerd Stumme", resource.getAuthor());
@@ -73,6 +74,13 @@ public class PostBibTeXParserTest {
 			assertEquals("2009", resource.getYear());
 			assertEquals("978-1-60558-486-7", resource.getMiscField("isbn"));
 			assertEquals("10.1145/1557914.1557969", resource.getMiscField("doi"));
+			/*
+			 * CiteULike uses the "comment" field to export (private) notes in the form
+			 * 
+			 * comment = {(private-note)This is a test note!}, 
+			 * 
+			 */
+			assertEquals("This is a test note!", resource.getPrivnote());
 
 			/*
 			 * If we don't turn expansion of months off (in the 
@@ -80,7 +88,7 @@ public class PostBibTeXParserTest {
 			 */
 			assertEquals("jun", resource.getMonth());
 			assertEquals("In this demo we present BibSonomy, a social bookmark and publication sharing system.", resource.getAbstract());
-			
+
 			/*
 			 * post's fields
 			 */
@@ -103,10 +111,10 @@ public class PostBibTeXParserTest {
 			 */
 			final Post<BibTex> secondParsedPost = parser.parseBibTeXPost(BibTexUtils.toBibtexString(post));
 			secondParsedPost.getResource().recalculateHashes();
-			
+
 			ModelUtils.assertPropertyEquality(post, secondParsedPost, 5, null, new String[]{});
 
-			
+
 		} catch (ParseException ex) {
 			fail(ex.getMessage());
 		} catch (IOException ex) {
@@ -121,7 +129,39 @@ public class PostBibTeXParserTest {
 
 	@Test
 	public void testGetParsedCopy() {
-//		fail("Not yet implemented");
+		final BibTex bib = new BibTex();
+		bib.setEntrytype("inproceedings");
+		bib.setBibtexKey("KIE");
+		bib.setTitle("The most wonderfult title on earth");
+		bib.setAuthor("Hans Dampf and Peter Silie");
+		bib.setJournal("Journal of the most wonderful articles on earth");
+		bib.setYear("2525");
+		bib.setVolume("3");
+		bib.setAbstract("This is a nice abstract.");
+		bib.setPrivnote("This is private!");
+
+		bib.setMisc("doi = {my doi}, isbn = {999-12345-123-x}, vgwort = {12}");
+
+		final Post<BibTex> post = new Post<BibTex>();
+		post.setResource(bib);
+		post.setDescription("Eine feine kleine Beschreibung.");
+		post.addTag("foo");
+		post.addTag("bar");
+		post.addTag("blubb");
+		post.addTag("babba");
+
+		final PostBibTeXParser parser = new PostBibTeXParser();
+
+		try {
+			final Post<BibTex> parsedCopy = parser.getParsedCopy(post);
+
+			ModelUtils.assertPropertyEquality(post, parsedCopy, 5, null, new String[]{});
+		} catch (ParseException ex) {
+			fail(ex.getMessage());
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+
 	}
 
 }

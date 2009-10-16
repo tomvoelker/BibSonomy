@@ -79,13 +79,13 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 */
 		final HashMap<String, String> miscFields = parsedBibTeX.getMiscFields();
 		/*
-		 * put description/tags from misc fields into post
+		 * put description from misc fields into post
 		 */
-		post.setDescription(miscFields.remove(BibTexUtils.ADDITIONAL_POST_FIELD_DESCRIPTION));
+		post.setDescription(miscFields.remove(BibTexUtils.ADDITIONAL_MISC_FIELD_DESCRIPTION));
 		/*
 		 * parse tags
 		 */
-		final String keywords = miscFields.remove(BibTexUtils.ADDITIONAL_POST_FIELD_KEYWORDS);
+		final String keywords = miscFields.remove(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS);
 		try {
 			post.setTags(TagUtils.parse(keywords));
 		} catch (RecognitionException ex) {
@@ -94,11 +94,15 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 			 */
 		}
 		/*
-		 * remove other misc fields which should not be stored 
+		 * remove other misc fields which should not be stored as misc field 
+		 * (but rather as regular field/column)
 		 */
 		miscFields.remove("intrahash");
 		miscFields.remove("interhash");
-		miscFields.remove(BibTexUtils.ADDITIONAL_POST_FIELD_BIBURL);
+		for (final String additionalMiscField: BibTexUtils.ADDITIONAL_MISC_FIELDS) {
+			miscFields.remove(additionalMiscField);	
+		}
+		
 		/*
 		 * re-write misc field to fix above changes
 		 */
@@ -120,7 +124,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	protected BibTex fillBibtexFromEntry(final BibtexEntry entry) {
 		final BibTex bibtex = super.fillBibtexFromEntry(entry);
 		
-		for (final String additionalField: BibTexUtils.ADDITIONAL_POST_FIELDS) {
+		for (final String additionalField: BibTexUtils.ADDITIONAL_MISC_FIELDS) {
 			final BibtexString field = (BibtexString) entry.getFieldValue(additionalField); 
 			if (field != null) bibtex.addMiscField(additionalField, field.getContent());
 			
