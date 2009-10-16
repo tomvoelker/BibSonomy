@@ -75,8 +75,8 @@ public class SimpleBibTeXParserTest {
 			fail(ex.getMessage());		
 		}
 	}
-	
-	
+
+
 	@Test
 	public void testParseBibTeX2() {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
@@ -94,7 +94,7 @@ public class SimpleBibTeXParserTest {
 			fail(ex.getMessage());		
 		}
 	}
-	
+
 	@Test
 	public void testParse3() {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
@@ -105,7 +105,7 @@ public class SimpleBibTeXParserTest {
 				"title = {Hallo}\n}";
 			final BibTex bibtex = parser.parseBibTeX(foo);
 
-			
+
 			System.out.println(bibtex);
 //			assertEquals("Foo Barness", bibtex.getTitle());
 //			assertEquals("M. Mustermann", bibtex.getAuthor());
@@ -117,7 +117,90 @@ public class SimpleBibTeXParserTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());		
 		}
-		
+
+	}
+
+	/**
+	 * Currently, we normalize author names, i.e., 
+	 * 
+	 * Knuth, D.E.
+	 * 
+	 * becomes
+	 * 
+	 * D.E. Knuth. 
+	 * 
+	 * In principle, this is bad, because it breaks names like
+	 * 
+	 * Vander Wal, Martin
+	 * 
+	 * (BibTeX then thinks "Vander" is a second surname).
+	 * 
+	 * Nevertheless, we document this "feature" here because we can't just 
+	 * change it without changing other methods (like author handling).
+	 */
+	@Test
+	public void testAuthorNormalization() {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+
+		try {
+			final BibTex parsedBibTeX = parser.parseBibTeX(
+					"@article{foo,\n" +
+					"  author = {Knuth, D.E.}\n" + 
+					"}"
+			);
+			
+			assertEquals("D.E. Knuth", parsedBibTeX.getAuthor());
+
+		} catch (ParseException ex) {
+			fail(ex.getMessage());
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}	
+	}
+
+	/**
+	 * We disabled month normalization, this is documented here.
+	 * 
+	 * Why did we disable it? Otherwise, a month like "jun" would be normalized
+	 * to "June" and using this with BibTeX destroys I18N! (there are some 
+	 * BibTeX styles, which can substitute "jun" by the correct word, depending
+	 * on the language you have set for your document. This works only with the
+	 * abbreviations!).
+	 */
+	@Test
+	public void testMonthNormalization() {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+
+		try {
+			final BibTex parsedBibTeX = parser.parseBibTeX(
+					"@article{foo,\n" +
+					"  month = jun\n" + 
+					"}"
+			);
+			
+			assertEquals("jun", parsedBibTeX.getMonth());
+
+		} catch (ParseException ex) {
+			fail(ex.getMessage());
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}	
+	}
+
+	protected BibTex getExampleBibtex() {
+		final BibTex bib = new BibTex();
+		bib.setEntrytype("inproceedings");
+		bib.setBibtexKey("KIE");
+		bib.setTitle("The most wonderfult title on earth");
+		bib.setAuthor("Hans Dampf and Peter Silie");
+		bib.setJournal("Journal of the most wonderful articles on earth");
+		bib.setYear("2525");
+		bib.setVolume("3");
+		bib.setAbstract("This is a nice abstract.");
+		bib.setPrivnote("This is private!");
+
+		bib.setMisc("doi = {my doi}, isbn = {999-12345-123-x}, vgwort = {12}");
+		return bib;
 	}
 
 }

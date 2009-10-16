@@ -16,10 +16,13 @@ import org.junit.Test;
 import bibtex.parser.ParseException;
 
 /**
+ * XXX: Since this class extends {@link SimpleBibTeXParserTest}, JUnit runs the
+ * test from there twice. Not so nice. :-(
+ * 
  * @author rja
  * @version $Id$
  */
-public class PostBibTeXParserTest {
+public class PostBibTeXParserTest extends SimpleBibTeXParserTest {
 
 	/**
 	 * Parses a BibTeX string and checks the created post.
@@ -124,24 +127,29 @@ public class PostBibTeXParserTest {
 
 	@Test
 	public void testUpdateWithParsedBibTeX() {
-//		fail("Not yet implemented");
+		final BibTex bib = getExampleBibtex();
+		final Post<BibTex> post = getExamplePost(bib);
+
+		final PostBibTeXParser parser = new PostBibTeXParser();
+
+		try {
+			/*
+			 * the resource is exchanged by a parsed version
+			 */
+			parser.updateWithParsedBibTeX(post);
+
+			ModelUtils.assertPropertyEquality(bib, post.getResource(), 5, null, new String[]{});
+
+		} catch (ParseException ex) {
+			fail(ex.getMessage());
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}	
 	}
 
-	@Test
-	public void testGetParsedCopy() {
-		final BibTex bib = new BibTex();
-		bib.setEntrytype("inproceedings");
-		bib.setBibtexKey("KIE");
-		bib.setTitle("The most wonderfult title on earth");
-		bib.setAuthor("Hans Dampf and Peter Silie");
-		bib.setJournal("Journal of the most wonderful articles on earth");
-		bib.setYear("2525");
-		bib.setVolume("3");
-		bib.setAbstract("This is a nice abstract.");
-		bib.setPrivnote("This is private!");
 
-		bib.setMisc("doi = {my doi}, isbn = {999-12345-123-x}, vgwort = {12}");
-
+	
+	private Post<BibTex> getExamplePost(final BibTex bib) {
 		final Post<BibTex> post = new Post<BibTex>();
 		post.setResource(bib);
 		post.setDescription("Eine feine kleine Beschreibung.");
@@ -149,6 +157,14 @@ public class PostBibTeXParserTest {
 		post.addTag("bar");
 		post.addTag("blubb");
 		post.addTag("babba");
+		return post;
+	}
+
+
+
+	@Test
+	public void testGetParsedCopy() {
+		final Post<BibTex> post = getExamplePost(getExampleBibtex());
 
 		final PostBibTeXParser parser = new PostBibTeXParser();
 

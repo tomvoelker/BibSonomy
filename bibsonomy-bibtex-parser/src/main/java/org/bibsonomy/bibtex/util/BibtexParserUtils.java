@@ -106,7 +106,7 @@ public class BibtexParserUtils {
 	 */
 	public void nextEntry() {
 		if (!this.hasNextEntry()) {
-			throw new ValidationException("No more BibTex entries.");
+			throw new ValidationException("No more BibTeX entries.");
 		}
 		this.currentEntryId++;
 		Object entry = this.getBibfile().getEntries().get( this.getCurrentEntryId() );
@@ -158,10 +158,10 @@ public class BibtexParserUtils {
 			
 		} catch (ParseException ex) {
 			log.error(ex.getMessage());
-			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "Error while parsing Bibtex.");
+			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "Error while parsing BibTeX.");
 		} catch (IOException ex) {
 			log.error(ex.getMessage());
-			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "I/O Error while parsing Bibtex.");
+			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "I/O Error while parsing BibTeX.");
 		} catch (ExpansionException ex) {			
 			log.error(ex.getMessage());
 			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "Error when trying to normalize authors.");
@@ -201,8 +201,8 @@ public class BibtexParserUtils {
 	 * @return
 	 */
 	private static String getFormattedPersonString(BibtexEntry entry, personField field) {
-		StringBuffer personBuffer = new StringBuffer();
-		BibtexAbstractValue fieldValue = entry.getFieldValue(field.getLabel());
+		final StringBuffer personBuffer = new StringBuffer();
+		final BibtexAbstractValue fieldValue = entry.getFieldValue(field.getLabel());
 		log.debug("fieldValue: " + fieldValue);
 		if (fieldValue instanceof BibtexPersonList) {
 			BibtexPersonList personsString = (BibtexPersonList) fieldValue;
@@ -214,18 +214,18 @@ public class BibtexParserUtils {
 				for (BibtexPerson person:personList) {
 										
 					// build one person					
-					StringBuffer personString = new StringBuffer();
-					String first = person.getFirst();
+					final StringBuffer personString = new StringBuffer();
+					final String first = person.getFirst();
 					if (first != null) {
 						personString.append(first);
 					}
 					
-					String preLast = person.getPreLast();
+					final String preLast = person.getPreLast();
 					if (preLast != null) {
 						personString.append(" " + preLast);
 					}
 					
-					String last = person.getLast();
+					final String last = person.getLast();
 					if (last != null) {
 						personString.append(" " + last);
 					}

@@ -40,9 +40,8 @@ import bibtex.parser.ParseException;
 /**
  * Provides parsing of BibTeX entries represented by {@link String}s into
  * {@link BibTex} objects.
- * 
- * FIXME: before using this in BibSonomy, it must be properly tested! Currently,
- * it puts too many fields into 'misc'.
+ *
+ * This class is thread-safe.
  * 
  * 
  * @author rja
@@ -63,10 +62,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	 */
 	public Post<BibTex> parseBibTeXPost(final String bibtex) throws ParseException, IOException {
 		/*
-		 * FIXME: must be implemented! e.g., tags must be copied into post and
-		 * so on ...
-		 * 
-		 * call parseBibTex
+		 * call parseBibTeX
 		 */
 		final BibTex parsedBibTeX = parseBibTeX(bibtex);
 		/*
@@ -152,13 +148,11 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	 */
 	public void updateWithParsedBibTeX(final Post<BibTex> post) throws ParseException, IOException {
 		/*
-		 * FIXME: must be implemented!
-		 * 
-		 * The code below is just an example how it could work.
+		 * parse the bibtex in the post
 		 */
 		final Post<BibTex> copyPost = getParsedCopy(post);
 		/*
-		 * all fields which toBibtexString adds must be added here!
+		 * exchange the bibtex in the post by the parsed version
 		 */
 		post.setResource(copyPost.getResource());
 		/*
