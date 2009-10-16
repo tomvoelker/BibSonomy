@@ -58,6 +58,25 @@ import org.bibsonomy.util.ValidationUtils;
  */
 public class BibTexUtils {
 
+	/**
+	 * This field from the post is added to the BibTeX string (in addition to 
+	 * all fields from the resource) 
+	 */
+	public static final String ADDITIONAL_POST_FIELD_DESCRIPTION = "description";
+	/**
+	 * This field from the post is added to the BibTeX string (in addition to 
+	 * all fields from the resource)
+	 */
+	public static final String ADDITIONAL_POST_FIELD_KEYWORDS = "keywords";
+	/**
+	 * This fields from the post are added to the BibTeX string (in addition to 
+	 * all fields from the resource)
+	 */
+	public static final String[] ADDITIONAL_POST_FIELDS = new String[] {
+		ADDITIONAL_POST_FIELD_DESCRIPTION,
+		ADDITIONAL_POST_FIELD_KEYWORDS
+	};
+	
 	/*
 	 * patterns used for matching
 	 */
@@ -398,14 +417,18 @@ public class BibTexUtils {
 		 * in SimpleBibTeXParser.updateWithParsedBibTeX!
 		 */
 		final BibTex bib = post.getResource();	
-		bib.addMiscField("keywords", TagUtils.toTagString(post.getTags(), " "));
-		bib.addMiscField("description", post.getDescription());
+		bib.addMiscField(ADDITIONAL_POST_FIELD_KEYWORDS, TagUtils.toTagString(post.getTags(), " "));
+		bib.addMiscField(ADDITIONAL_POST_FIELD_DESCRIPTION, post.getDescription());
 		final String bibtexString = BibTexUtils.toBibtexString(bib);
 		/*
-		 * restore post
+		 * restore post's misc field by removing the additional fields
 		 */
-		bib.getMiscFields().remove("keywords");
-		bib.getMiscFields().remove("description");
+		for (final String additionalField: ADDITIONAL_POST_FIELDS) {
+			bib.getMiscFields().remove(additionalField);	
+		}
+		/*
+		 * restore misc field
+		 */
 		BibTexUtils.serializeMiscFields(bib);
 		return bibtexString;
 	}
