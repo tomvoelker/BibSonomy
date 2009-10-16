@@ -81,6 +81,12 @@
 			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-common</artifactId>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>		
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
