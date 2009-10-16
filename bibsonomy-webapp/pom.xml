@@ -96,6 +96,16 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+		</dependency>			
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+			<scope>test</scope>
+			<type>test-jar</type>
+		</dependency>			
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-bibtex-parser
 			</artifactId>
 		</dependency>
