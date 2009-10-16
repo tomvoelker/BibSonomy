@@ -62,25 +62,31 @@ public class BibTexUtils {
 	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource) 
 	 */
-	public static final String ADDITIONAL_POST_FIELD_BIBURL = "biburl";
+	public static final String ADDITIONAL_MISC_FIELD_BIBURL = "biburl";
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource) 
 	 */
-	public static final String ADDITIONAL_POST_FIELD_DESCRIPTION = "description";
+	public static final String ADDITIONAL_MISC_FIELD_DESCRIPTION = "description";
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource)
 	 */
-	public static final String ADDITIONAL_POST_FIELD_KEYWORDS = "keywords";
+	public static final String ADDITIONAL_MISC_FIELD_KEYWORDS = "keywords";
+	/**
+	 * This field from the post is added to the BibTeX string (in addition to 
+	 * all fields from the resource)
+	 */
+	public static final String ADDITIONAL_MISC_FIELD_PRIVNOTE = "privnote";
 	/**
 	 * This fields from the post are added to the BibTeX string (in addition to 
 	 * all fields from the resource)
 	 */
-	public static final String[] ADDITIONAL_POST_FIELDS = new String[] {
-		ADDITIONAL_POST_FIELD_DESCRIPTION,
-		ADDITIONAL_POST_FIELD_KEYWORDS,
-		ADDITIONAL_POST_FIELD_BIBURL
+	public static final String[] ADDITIONAL_MISC_FIELDS = new String[] {
+		ADDITIONAL_MISC_FIELD_DESCRIPTION,
+		ADDITIONAL_MISC_FIELD_KEYWORDS,
+		ADDITIONAL_MISC_FIELD_BIBURL,
+		ADDITIONAL_MISC_FIELD_PRIVNOTE
 	};
 	
 	/*
@@ -400,7 +406,7 @@ public class BibTexUtils {
 	 * @return A string representation of the posts in BibTeX format.
 	 */
 	public static String toBibtexString(final Post<BibTex> post, final String bibsonomyUrl) {
-		post.getResource().addMiscField(ADDITIONAL_POST_FIELD_BIBURL, bibsonomyUrl + "bibtex/" + HashID.INTRA_HASH.getId() + post.getResource().getIntraHash() + "/" + post.getUser().getName());
+		post.getResource().addMiscField(ADDITIONAL_MISC_FIELD_BIBURL, bibsonomyUrl + "bibtex/" + HashID.INTRA_HASH.getId() + post.getResource().getIntraHash() + "/" + post.getUser().getName());
 		return toBibtexString(post);
 	}
 	
@@ -423,13 +429,13 @@ public class BibTexUtils {
 		 * in SimpleBibTeXParser.updateWithParsedBibTeX!
 		 */
 		final BibTex bib = post.getResource();	
-		bib.addMiscField(ADDITIONAL_POST_FIELD_KEYWORDS, TagUtils.toTagString(post.getTags(), " "));
-		bib.addMiscField(ADDITIONAL_POST_FIELD_DESCRIPTION, post.getDescription());
+		bib.addMiscField(ADDITIONAL_MISC_FIELD_KEYWORDS, TagUtils.toTagString(post.getTags(), " "));
+		bib.addMiscField(ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());
 		final String bibtexString = BibTexUtils.toBibtexString(bib);
 		/*
 		 * restore post's misc field by removing the additional fields
 		 */
-		for (final String additionalField: ADDITIONAL_POST_FIELDS) {
+		for (final String additionalField: ADDITIONAL_MISC_FIELDS) {
 			bib.getMiscFields().remove(additionalField);	
 		}
 		/*
