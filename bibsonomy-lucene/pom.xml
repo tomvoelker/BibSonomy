@@ -6,7 +6,7 @@
   <artifactId>bibsonomy-lucene</artifactId>
   <packaging>jar</packaging>
   <version>2.0.3</version>
-  <name>Bibsonomy-Lucene</name>
+  <name>BibSonomy-Lucene</name>
 
 	<build>
 		<plugins>
