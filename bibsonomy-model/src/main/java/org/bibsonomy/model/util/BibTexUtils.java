@@ -62,6 +62,11 @@ public class BibTexUtils {
 	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource) 
 	 */
+	public static final String ADDITIONAL_POST_FIELD_BIBURL = "biburl";
+	/**
+	 * This field from the post is added to the BibTeX string (in addition to 
+	 * all fields from the resource) 
+	 */
 	public static final String ADDITIONAL_POST_FIELD_DESCRIPTION = "description";
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
@@ -74,7 +79,8 @@ public class BibTexUtils {
 	 */
 	public static final String[] ADDITIONAL_POST_FIELDS = new String[] {
 		ADDITIONAL_POST_FIELD_DESCRIPTION,
-		ADDITIONAL_POST_FIELD_KEYWORDS
+		ADDITIONAL_POST_FIELD_KEYWORDS,
+		ADDITIONAL_POST_FIELD_BIBURL
 	};
 	
 	/*
@@ -394,7 +400,7 @@ public class BibTexUtils {
 	 * @return A string representation of the posts in BibTeX format.
 	 */
 	public static String toBibtexString(final Post<BibTex> post, final String bibsonomyUrl) {
-		post.getResource().addMiscField("biburl", bibsonomyUrl + "bibtex/" + HashID.INTRA_HASH.getId() + post.getResource().getIntraHash() + "/" + post.getUser().getName());
+		post.getResource().addMiscField(ADDITIONAL_POST_FIELD_BIBURL, bibsonomyUrl + "bibtex/" + HashID.INTRA_HASH.getId() + post.getResource().getIntraHash() + "/" + post.getUser().getName());
 		return toBibtexString(post);
 	}
 	
