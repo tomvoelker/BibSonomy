@@ -156,6 +156,18 @@ public class PostBibTeXParserTest {
 			final Post<BibTex> parsedCopy = parser.getParsedCopy(post);
 
 			ModelUtils.assertPropertyEquality(post, parsedCopy, 5, null, new String[]{});
+
+			/*
+			 * The misc field is parsed and then serialized back again also in
+			 * the original post! Thus, we here manually check if no additional
+			 * fields were added.
+			 */
+			assertEquals(
+					"  isbn = {999-12345-123-x},\n" +
+					"  vgwort = {12},\n" + 
+					"  doi = {my doi}", 
+					parsedCopy.getResource().getMisc());
+
 		} catch (ParseException ex) {
 			fail(ex.getMessage());
 		} catch (IOException ex) {
