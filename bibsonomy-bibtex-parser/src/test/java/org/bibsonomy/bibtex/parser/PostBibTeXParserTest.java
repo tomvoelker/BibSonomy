@@ -21,6 +21,12 @@ import bibtex.parser.ParseException;
  */
 public class PostBibTeXParserTest {
 
+	/**
+	 * Parses a BibTeX string and checks the created post.
+	 * 
+	 * Then, creates a BibTeX string from the created post, parses it and checks
+	 * the newly created post against the original post.
+	 */
 	@Test
 	public void testParseBibTeXPost() {
 		final String bibtex = "@inproceedings{benz2009managing,\n" + 

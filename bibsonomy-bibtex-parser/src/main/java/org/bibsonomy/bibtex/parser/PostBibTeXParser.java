@@ -26,12 +26,10 @@ package org.bibsonomy.bibtex.parser;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Set;
 
 import org.antlr.runtime.RecognitionException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
 
@@ -83,11 +81,11 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		/*
 		 * put description/tags from misc fields into post
 		 */
-		post.setDescription(miscFields.remove("description"));
+		post.setDescription(miscFields.remove(BibTexUtils.ADDITIONAL_POST_FIELD_DESCRIPTION));
 		/*
 		 * parse tags
 		 */
-		final String keywords = miscFields.remove("keywords");
+		final String keywords = miscFields.remove(BibTexUtils.ADDITIONAL_POST_FIELD_KEYWORDS);
 		try {
 			post.setTags(TagUtils.parse(keywords));
 		} catch (RecognitionException ex) {
@@ -100,7 +98,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 */
 		miscFields.remove("intrahash");
 		miscFields.remove("interhash");
-		miscFields.remove("biburl");
+		miscFields.remove(BibTexUtils.ADDITIONAL_POST_FIELD_BIBURL);
 		/*
 		 * re-write misc field to fix above changes
 		 */
@@ -108,11 +106,12 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		return post;
 	}
 
-	/** Additionally to org.bibsonomy.bibtex.parser.SimpleBibTeXParser#fillBibtexFromEntry(bibtex.dom.BibtexEntry)
+	/** 
+	 * In addition to org.bibsonomy.bibtex.parser.SimpleBibTeXParser#fillBibtexFromEntry(bibtex.dom.BibtexEntry)
 	 * this method handles description, keywords, etc. which are not part of 
 	 * {@link BibTex} but of {@link Post}.
 	 * 
-	 * All additionaly fields are added as "misc" field to the resulting bibtex.
+	 * All additional fields are added as "misc" field to the resulting bibtex.
 	 * 
 	 * 
 	 * @see org.bibsonomy.bibtex.parser.SimpleBibTeXParser#fillBibtexFromEntry(bibtex.dom.BibtexEntry)
@@ -121,14 +120,11 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	protected BibTex fillBibtexFromEntry(final BibtexEntry entry) {
 		final BibTex bibtex = super.fillBibtexFromEntry(entry);
 		
-		/*
-		 * FIXME: description, keywords, tags, etc. missing but necessary for proper operation in BibSonomy 
-		 * (not needed for the scraping service!)
-		 */
-		BibtexString field = null;
-		field = (BibtexString) entry.getFieldValue("description"); if (field != null) bibtex.addMiscField("description", field.getContent());
-		field = (BibtexString) entry.getFieldValue("keywords");    if (field != null) bibtex.addMiscField("keywords", field.getContent());
-
+		for (final String additionalField: BibTexUtils.ADDITIONAL_POST_FIELDS) {
+			final BibtexString field = (BibtexString) entry.getFieldValue(additionalField); 
+			if (field != null) bibtex.addMiscField(additionalField, field.getContent());
+			
+		}
 		
 		return bibtex;
 	}
