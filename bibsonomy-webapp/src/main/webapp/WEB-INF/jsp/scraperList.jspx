@@ -46,12 +46,11 @@
 		  
 		  
 		  <fmt:message key="scraper_info.scraper_help_link" var="link"/>
-		  
 
           <h2 style="margin-top:1cm; margin-bottom:0.5cm;">
           	<fmt:message key="scraper_info.scraper_details_header"/>
-          	<a href="${link}"  >
-          		<img src="${resdir}/image/questionmark.gif" alt="?"/>
+          	<a href="${link}">
+          		<img src="${resdir}/image/questionmark.png" alt="?"/>
        		</a>
           </h2>
           
