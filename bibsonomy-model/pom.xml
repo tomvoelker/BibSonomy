@@ -69,6 +69,7 @@
 			</extension>
 		</extensions>
 	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.antlr</groupId>
