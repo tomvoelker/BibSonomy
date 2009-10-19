@@ -38,16 +38,17 @@
 	</bean>
 
 	<bean id="LuceneUpdater" class="org.bibsonomy.lucene.LuceneUpdater"/>
+	<bean id="luceneUpdateManager" class="org.bibsonomy.lucene.index.LuceneUpdateManager"/>
 
 	<bean id="luceneUpdateJobWithoutIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-	  <property name="targetObject" ref="LuceneUpdater" />
+	  <property name="targetObject" ref="luceneUpdateManager" />
 	  <property name="targetMethod" value="updateAndReloadIndex" />
 	  <property name="arguments" value="false" /> <!-- optimizeIndex true|false -->
 	  <property name="concurrent" value="false" />
 	</bean>
 
 	<bean id="luceneUpdateJobWithIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-	  <property name="targetObject" ref="LuceneUpdater" />
+	  <property name="targetObject" ref="luceneUpdateManager" />
 	  <property name="targetMethod" value="updateAndReloadIndex" />
 	  <property name="arguments" value="true" /> <!-- optimizeIndex true|false -->
 	  <property name="concurrent" value="false" />
