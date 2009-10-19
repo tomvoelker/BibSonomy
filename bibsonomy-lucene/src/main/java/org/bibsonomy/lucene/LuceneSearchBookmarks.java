@@ -52,7 +52,7 @@ public class LuceneSearchBookmarks extends LuceneSearch<Bookmark> {
 
 			Context initContext = new InitialContext();
 			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			lucenePath = (String) envContext.lookup("luceneIndexPathBoomarks");
+			lucenePath = (String) envContext.lookup("luceneIndexPathBookmark");
 
 			
 			LOGGER.debug("LuceneBookmark: use index: " + lucenePath);

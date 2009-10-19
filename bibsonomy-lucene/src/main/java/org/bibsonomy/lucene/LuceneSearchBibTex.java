@@ -72,7 +72,7 @@ public class LuceneSearchBibTex extends LuceneSearch<BibTex> {
 
 			Context initContext = new InitialContext();
 			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			lucenePath = (String) envContext.lookup("luceneIndexPathPublications");
+			lucenePath = (String) envContext.lookup("luceneIndexPathBibTex");
 			
 			LOGGER.debug("LuceneBibTex: use index: " + lucenePath);
 

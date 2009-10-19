@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -26,15 +29,17 @@ public abstract class LuceneSearch<R extends Resource> implements ResourceSearch
 	private static final Logger log = Logger.getLogger(LuceneSearch.class);
 	
 	/** logic interface for retrieving data from bibsonomy */
-	private LogicInterface dbLogic;
+	private LuceneDBInterface<R> dbLogic;
 	
 	/** lucene index updater */
 	private LuceneUpdater indexUpdater;
 	
 	/** known resource types */
 	List<Class<? extends Resource>> resourceTypes = new LinkedList<Class<? extends Resource>>(); 
-	
-	
+
+	/** reload the index -- has to be called after each index change */
+	public abstract void reloadIndex();
+
 	/**
 	 * flag/unflag spammer, depending on user.getPrediction()
 	 */
@@ -43,18 +48,13 @@ public abstract class LuceneSearch<R extends Resource> implements ResourceSearch
 		switch( user.getPrediction() ) {
 		case 0:
 			log.debug("unflag non-spammer");
-			List<Post<R>> userPosts = this.getDbLogic().getPosts(
-						getResourceType(), 
-						GroupingEntity.USER, 
-						user.getName(), 
-						new LinkedList<String>(), "", 
-						Order.ADDED,
-						FilterEntity.UNFILTERED, 
-						0, 
-						Integer.MAX_VALUE, 
-						"");
+			List<Post<R>> userPosts = this.getDbLogic().getPostsForUser(
+					user.getName(), user.getName(), 
+					HashID.INTER_HASH, 
+					GroupID.PUBLIC.getId(), new LinkedList<Integer>(), 
+					Integer.MAX_VALUE, 0);
 			for( Post<R> post : userPosts ) {
-				log.debug("removing post "+post.getResource().getTitle());
+				log.debug("adding post "+post.getResource().getTitle());
 			}
 			if( indexUpdater!=null ) {
 				indexUpdater.unflagEntryAsSpam(userPosts);
@@ -76,11 +76,11 @@ public abstract class LuceneSearch<R extends Resource> implements ResourceSearch
 	/** inserts all posts for given spammer into the index */
 	abstract protected Class<R> getResourceType();
 
-	public void setDbLogic(LogicInterface dbLogic) {
+	public void setDbLogic(LuceneDBInterface<R> dbLogic) {
 		this.dbLogic = dbLogic;
 	}
 
-	public LogicInterface getDbLogic() {
+	public LuceneDBInterface<R> getDbLogic() {
 		return dbLogic;
 	}
 
