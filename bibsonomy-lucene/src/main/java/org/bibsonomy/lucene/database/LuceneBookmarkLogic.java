@@ -1,0 +1,118 @@
+package org.bibsonomy.lucene.database;
+
+import java.io.Reader;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.lucene.database.params.BibTexParam;
+import org.bibsonomy.lucene.database.params.BookmarkParam;
+import org.bibsonomy.lucene.database.params.ResourcesParam;
+import org.bibsonomy.lucene.database.results.Pair;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+
+import com.ibatis.common.resources.Resources;
+import com.ibatis.sqlmap.client.SqlMapClient;
+import com.ibatis.sqlmap.client.SqlMapClientBuilder;
+
+/**
+ * class for accessing the bibsonomy database 
+ * 
+ * @author fei
+ *
+ */
+public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
+	private final Log log = LogFactory.getLog(LuceneBookmarkLogic.class);
+
+	/** singleton pattern's instance reference */
+	protected static LuceneDBLogic<Bookmark> instance = null;
+	
+	/**
+	 * constructor disabled for enforcing singleton pattern 
+	 */
+	private LuceneBookmarkLogic() {
+		super();
+	}
+	
+	/**
+	 * @return An instance of this implementation of {@link LuceneDBInterface}
+	 */
+	public static LuceneDBInterface<Bookmark> getInstance() {
+		if (instance == null) instance = new LuceneBookmarkLogic();
+		return instance;
+	}
+	
+	//------------------------------------------------------------------------
+	// db interface implementation
+	//------------------------------------------------------------------------
+
+	
+	//------------------------------------------------------------------------
+	// abstract LuceneDBLogic interface implemetation
+	//------------------------------------------------------------------------
+	@Override
+	protected ResourcesParam<Bookmark> getResourcesParam() {
+		return new BookmarkParam();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	protected List<Post<Bookmark>> getPostsForUserInternal(ResourcesParam<Bookmark> param) {
+		List<Post<Bookmark>> retVal = null;
+		try {
+			retVal = (List<Post<Bookmark>>)this.sqlMap.queryForList("getBookmarkForUser", param);
+		} catch (SQLException e) {
+			log.error("Error fetching bookmarks for user " + param.getUserName(), e);
+		}
+
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	protected List<Integer> getContentIdsToDeleteInternal(Pair<Date, Date> param) throws SQLException {
+		return (List<Integer>)this.sqlMap.queryForList("getBookmarkContentIdsToDelete", param);
+	}
+	
+	@Override
+	protected HashMap<String, String> getContentFields() {
+		HashMap<String, String> contentFields = new HashMap<String, String>();
+		
+		contentFields.put("content_id", "");
+		contentFields.put("group", "");
+		contentFields.put("date", "");
+		contentFields.put("user_name", "");
+		contentFields.put("desc", "");
+		contentFields.put("ext", "");
+		contentFields.put("url", "");
+		contentFields.put("tas", "");
+		
+		return contentFields;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	protected List<HashMap<String, Object>> getPostsForTimeRange(Date fromDate, Date toDate) {
+		Pair<Date,Date> param = new Pair<Date,Date>();
+		param.setFirst(fromDate);
+		param.setSecond(toDate);
+		
+		List<HashMap<String,Object>> retVal = null;
+		try {
+			retVal = (List<HashMap<String,Object>>)this.sqlMap.queryForList("getBookmarkPostsForTimeRange", param);
+		} catch (SQLException e) {
+			log.error("Error fetching publications for given time range", e);
+		}
+		
+		return retVal;
+	}
+}

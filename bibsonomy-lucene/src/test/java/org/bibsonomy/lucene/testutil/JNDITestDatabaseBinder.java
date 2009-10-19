@@ -65,6 +65,7 @@ public final class JNDITestDatabaseBinder {
 			// create Mock JNDI context
 			MockContextFactory.setAsInitial();
 			ctx = new InitialContext();
+			ctx.bind("java:comp/env/jdbc/" + contextName, ds);
 			ctx.bind("java:/comp/env/jdbc/" + contextName, ds);
 		} catch (NamingException ex) {
 			log.error("Error when trying to bind test database connection '"

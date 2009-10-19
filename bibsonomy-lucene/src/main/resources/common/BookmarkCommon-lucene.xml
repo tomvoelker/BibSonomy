@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="BookmarkCommon">
+	<resultMap id="bookmark" class="bookmark" extends="Common.resource">
+    	<result property="url"      column="book_url"  javaType="string" />
+	</resultMap>
+
+	<resultMap id="bookmarkPost" class="post" extends="Common.posts">
+		<result property="resource"   resultMap="BookmarkCommon.bookmark" />
+	</resultMap>
+
+	<sql id="bookmarkAttributes">
+		b.content_id, b.book_description as title, b.book_extended as description, b.user_name, b.date, b.book_url_hash AS intraHash, b.book_url_hash AS interHash
+	</sql>	
+</sqlMap>

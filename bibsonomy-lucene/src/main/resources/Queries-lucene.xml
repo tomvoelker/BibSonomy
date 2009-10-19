@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" 
+ "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Lucene">
+
+	<!-- get date of most recent tas entry  -->
+	<select id="getNewestRecordDateFromTas" resultClass="date">
+		SELECT date 
+		FROM tas 
+		ORDER BY date DESC 
+		LIMIT 1
+	</select>
+
+	<!-- get list of all publications for given user -->
+	<select id="getBibTexForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
+		FROM (SELECT t1.*, h.ctr AS count
+		      FROM bibtex t1, bibhash h
+		      WHERE <include refid="bibtexSimHash3"/>
+		            AND t1.user_name = #requestedUserName#
+		            <include refid="restrictToGroups"/>
+		        	<dynamic prepend="AND">
+						<isNotNull property="entryType">		
+							entrytype = #entryType#
+						</isNotNull>
+		     		</dynamic>
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b2
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
+		WHERE b2.group = g.group
+		ORDER BY b2.date DESC, b2.content_id DESC
+	</select>
+	
+	<!-- get list of all bookmarks for given user -->
+	<select id="getBookmarkForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
+		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name
+		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
+		             u.book_url, u.book_url_ctr, t1.group, t1.user_name
+		      FROM bookmark t1, urls u
+		      WHERE u.book_url_hash = t1.book_url_hash
+		            AND t1.user_name = #requestedUserName#
+		            <include refid="restrictToGroups"/>
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS bb
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g
+		WHERE bb.group = g.group
+		ORDER BY bb.date DESC, bb.content_id DESC
+	</select>
+	
+	<!--  get list of content ids which will should be deleted from index -->
+	<select id="getBibTexContentIdsToDelete"  resultClass="integer" parameterClass="pair">
+		SELECT content_id
+		FROM log_bibtex 
+		WHERE log_date &gt; #first# 
+		AND log_date &lt;= #second# 
+		ORDER BY date
+	</select>
+	
+	<!--  get list of content ids which will should be deleted from index -->
+	<select id="getBookmarkContentIdsToDelete"  resultClass="integer" parameterClass="pair">
+		SELECT content_id
+		FROM log_bookmark 
+		WHERE log_date &gt; #first# 
+		AND log_date &lt;= #second# 
+		ORDER BY date
+	</select>
+	
+	<!--+ 
+		| get list of bibtex posts within a given time range
+		| Parameter: 
+		|    Pair.first  = fromDate 
+		|    Pair.second = toDate 
+		+-->
+	<select id="getBibTexPostsForTimeRange" parameterClass="pair" resultClass="java.util.HashMap">
+		SELECT IFNULL(g.grouptags, CAST(gi.group_name AS CHAR)) as  `group`, 
+			b.content_id,   b.user_name,   b.date,         t.tas_id,         b.author, 
+			b.editor,       b.title,       b.journal,      b.booktitle,      b.volume,
+			b.number,       b.chapter,     b.edition,      b.month,          b.day,
+			b.howPublished, b.institution, b.organization, b.publisher,      b.address,
+			b.school,       b.series,      b.bibtexKey,    b.url,            b.type,
+			b.description,  b.annote,      b.note,         b.pages,          b.bKey,
+			b.crossref,     b.misc,        b.bibtexAbstract,                 b.year,
+			b.entrytype,    
+			b.simhash1 AS interhash,       b.simhash2 AS intrahash,
+			GROUP_CONCAT(t.tag_name SEPARATOR ' ') as tas
+		FROM bibtex b 
+		  JOIN groupids AS gi on gi.group=b.group
+		  JOIN tas t USING (content_id) 
+		  LEFT JOIN (
+		     SELECT content_id, `group` , GROUP_CONCAT(tag_name separator ' ') AS grouptags
+		     FROM grouptas 
+		     WHERE (grouptas.group >= 0) 
+		       AND (grouptas.date &gt; #first#  AND  grouptas.date &lt;= #second#)
+		     GROUP BY content_id
+		     ) AS g USING (content_id) 
+		WHERE (b.group &gt;= 0) 
+		  AND (b.date &gt; #first# AND b.date &lt;= #second# )
+		GROUP by content_id;
+	</select>		
+				
+	<!--+ 
+		| get list of bookmark posts within a given time range
+		| Parameter: 
+		|    Pair.first  = fromDate 
+		|    Pair.second = toDate 
+		+-->
+	<select id="getBookmarkPostsForTimeRange" parameterClass="pair" resultClass="java.util.HashMap">
+		SELECT IFNULL(g.grouptags, CAST(gi.group_name AS CHAR)) AS  `group`, 
+		    b.content_id, b.book_extended as ext, b.book_description as `desc`,
+			b.user_name, b.date, u.book_url as url, b.book_url_hash, t.tas_id, GROUP_CONCAT(t.tag_name SEPARATOR ' ') as tas 
+		FROM bookmark b JOIN groupids as gi on gi.group=b.group JOIN urls u USING (book_url_hash)
+		  JOIN tas t USING (content_id) 
+		  LEFT JOIN (
+		     SELECT content_id, `group` , group_concat(tag_name separator ' ') AS grouptags
+			 FROM grouptas 
+			 WHERE (grouptas.group &gt;= 0) 
+			   AND (grouptas.date &gt; #first# AND grouptas.date &lt;= #second# )
+		     GROUP BY content_id
+		     ) AS g USING (content_id) 
+		WHERE (b.group &gt;= 0) 
+		  AND (b.date &gt; #first# AND b.date &lt;= #second# )
+	    GROUP BY content_id
+	</select>				
+</sqlMap>

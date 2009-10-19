@@ -1,0 +1,21 @@
+<!DOCTYPE sqlMapConfig PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<!-- data source -->
+	<transactionManager type="JDBC">
+		<dataSource type="JNDI">
+			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy_lucene"/>
+		</dataSource>
+	</transactionManager>
+
+	<!-- queries to include -->
+	<sqlMap resource="common/LuceneGenerateIndexTypeAliases.xml" />
+	<sqlMap resource="common/TypeAliases-lucene.xml" />
+	<sqlMap resource="common/Common-lucene.xml" />
+	<sqlMap resource="common/BookmarkCommon-lucene.xml" />
+	<sqlMap resource="common/BibTexCommon-lucene.xml" />
+	<sqlMap resource="common/LuceneCommon.xml" />
+
+	<sqlMap resource="LuceneGenerateIndexQueries.xml" />
+	<sqlMap resource="Queries-lucene.xml" />
+</sqlMapConfig>
+
