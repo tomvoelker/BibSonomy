@@ -887,4 +887,10 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper</Scraper>
 		<Enabled>false</Enabled>
 	</URLTest>
+	<URLTest id="url_155">
+		<TestDescription>acm test</TestDescription>
+		<URL>http://portal.acm.org/citation.cfm?id=553876</URL>
+		<BibFile>ACMBasicScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
+	</URLTest>
 </test:Tests>

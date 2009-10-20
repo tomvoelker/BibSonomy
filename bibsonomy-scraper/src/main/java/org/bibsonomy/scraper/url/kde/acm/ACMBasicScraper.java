@@ -35,14 +35,21 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	private static final String info      = "This scraper parses a publication page from the " + href(SITE_URL, SITE_NAME);
 	
 	private Log log = LogFactory.getLog(ACMBasicScraper.class);
-	
 
 	private static final String BIBTEX_STRING_ON_ACM = "BibTeX";
 
 	private static final String BROKEN_END = "},\n }";
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "portal.acm.org"), AbstractUrlScraper.EMPTY_PATTERN));
-
+	
+	private static final String P_TAG_CLASS_FONT     = "<\\s*p\\s+class=[\"|\']abstract[\"|\']>\\s*<\\s*font\\s+color.*?<\\s*/\\s*p\\s*>";
+	private static final String P_TAG_CLASS          = ".*(<\\s*p\\s+class=[\"|\']abstract[\"|\']>.*)";
+	private static final String P_TAG_CLASS_ENCLOSED = ".*<\\s*p\\s+class=[\"|\']abstract[\"|\']>\\s*(.*?)<\\s*/\\s*p\\s*>.*";
+	private static final String P_START_TAG          = "(<\\s*p\\s*>)(.*)";
+	private static final String P_END_TAG            = "(<\\s*/\\s*p\\s*>)(.*)";
+	private static final String HTML_TAG             = "\\<.*?\\>";
+	private static final String MULTIPLE_WHITESPACE  = "\\s{2,}";
+	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
@@ -219,37 +226,100 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			/*
 			 * removing whole tags like: <p class"abstract"><font color.....</p>
 			 */
-			String pattern = "<\\s*p\\s+class=[\"|\']abstract[\"|\']>\\s*<\\s*font\\s+color.*?<\\s*/\\s*p\\s*>";
-			content = content.replaceAll(pattern, "");
+			content = content.replaceAll(P_TAG_CLASS_FONT, "");
+			
+			/*
+			 * calculate deep of <p class="abstract"> tag and build the abstract
+			 */
+			int index = 0;
+			
+			Pattern p = Pattern.compile(P_TAG_CLASS, Pattern.MULTILINE | Pattern.DOTALL);
+			Matcher m = p.matcher(content);
+			StringBuilder _content = new StringBuilder();
+			
+			if (m.find()) {
+				_content.append(m.group(1));
+			}
+			
+			int pStartIndex = 0;
+			int pEndIndex   = 0;
+			int deep        = 1;
+			int c           = 1;
+			
+			// it could be < p> or <p>... also </ p> or </p> or < /p> a.s.o.
+			int pStartLength = 0;
+			int pEndLength   = 0;
+			
+			// to make searching in html a little bit more secure
+			boolean moreStartTags = true;
+			boolean updateContent = true;
+			
+			do {
+				p = Pattern.compile(P_END_TAG, Pattern.MULTILINE | Pattern.DOTALL);
+				m = p.matcher(_content);
+				
+				if (m.find(index)) {
+					pEndIndex = m.start();
+					pEndLength = m.group(1).length();
+				}
+				
+				p = Pattern.compile(P_START_TAG, Pattern.MULTILINE | Pattern.DOTALL);
+				m = p.matcher(_content);
+				
+				if (m.find(index)) {
+					pStartIndex = m.start();
+					pStartLength = m.group(1).length();
+				} else {
+					moreStartTags = false;
+				}
+				
+				if (pEndIndex < pStartIndex || !moreStartTags) {
+					deep--;
+					index = pEndIndex;
+					_content.delete(index, pEndLength + index);
+				} else {
+					index = pStartIndex;
+					deep++;
+					_content.delete(index, pStartLength + index);
+				}
+				
+				c++;
+				
+				/*
+				 * unfortunately we could enter an endless loop if the html is corrupt
+				 * and in this fact, the following lines could make the stuff more secure
+				 */
+				if (c > 10) {
+					updateContent = false;
+					break;
+				}
+			} while (deep > 1); 
+			
+			if (updateContent) {
+				content = _content.toString();
+			}
 			
 			/*
 			 * searching for occurrences of <p class="abstract">...</p>
 			 */
-			pattern = ".*<\\s*p\\s+class=[\"|\']abstract[\"|\']>\\s*(.*?)<\\s*/\\s*p\\s*>.*";
-			Pattern p = Pattern.compile(pattern, Pattern.MULTILINE | Pattern.DOTALL);
-			Matcher m = p.matcher(content);
+			p = Pattern.compile(P_TAG_CLASS_ENCLOSED, Pattern.MULTILINE | Pattern.DOTALL);
+			m = p.matcher(content);
 			
-			while (m.matches() && m.group(1) != null) {
+			if (m.matches() && m.group(1) != null) {
 				content = m.group(1);
 				content = content.trim();
 				
 				/*
 				 *  removing inner paragraphs and other tags
 				 */
-				String tagPattern = "<\\s*[/]?\\s*\\w+?\\s*>";
-				pattern = ".*" + tagPattern + ".*";
-				p = Pattern.compile(pattern, Pattern.MULTILINE | Pattern.DOTALL);
+				p = Pattern.compile(HTML_TAG, Pattern.MULTILINE | Pattern.DOTALL);
 				m = p.matcher(content);
+				content = m.replaceAll("");
 				
-				while (m.matches()) {
-					content = content.replaceAll(tagPattern, "");
-					m = p.matcher(content);
-				}
-
 				/*
 				 * removing linebreaks and multiple whitespaces
 				 */
-				content = content.replaceAll("\\s{2,}", " ");
+				content = content.replaceAll(MULTIPLE_WHITESPACE, " ");
 				
 				/*
 				 * unescape html characters
