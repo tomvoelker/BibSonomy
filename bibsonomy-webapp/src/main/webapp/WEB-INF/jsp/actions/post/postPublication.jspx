@@ -215,6 +215,13 @@
              </fieldset>
           
          </c:if>
+         
+         <c:if test="${command.context.loginUser.spammer eq true}">
+         	<fieldset class="fsInner">
+         		<span class="fsLabel"><fmt:message key="captcha"/></span>
+         		<span class="fsInput">${command.captchaHTML}<form:errors cssClass="errmsg" path="recaptcha_response_field" /></span>
+         	</fieldset>
+         </c:if>
  
        </jsp:attribute>
 

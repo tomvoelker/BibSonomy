@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -36,13 +37,17 @@ import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
+import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.captcha.Captcha;
 import org.bibsonomy.webapp.validation.PostPostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 
 /**
@@ -55,6 +60,10 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	private static final Log log = LogFactory.getLog(PostPostController.class);
 	private Errors errors = null;
 	private TagRecommender tagRecommender;
+	private Captcha captcha;
+	private CookieLogic cookieLogic;
+	private RequestLogic requestLogic;
+
 
 	/**
 	 * FIXME: system tag handling should be done by system tags ... not by this
@@ -119,6 +128,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
 	public View workOn(final EditPostCommand<RESOURCE> command) {
+		final Locale locale = requestLogic.getLocale();
 		final RequestWrapperContext context = command.getContext();
 		/*
 		 * TODO: i18n
@@ -144,11 +154,15 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 			return new ExtendedRedirectView("/login?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + "&referer=/postBookmark?" + safeURIEncode(context.getQueryString())); // FIXME: refactor
 		}
 
-		/*
-		 * TODO: spammers must have a valid captcha, so add captcha to JSP and
-		 * check it here.
-		 */
 
+		/*
+		 * If user is spammer block him silently by entering captcha again and again
+		 */
+		if (command.getContext().getLoginUser().isSpammer()){
+			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
+			
+			errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
+		}
 		
 		/*
 		 * handle copying of a post using intra hash + user name
@@ -832,6 +846,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
+	
 
 	/**
 	 * @return The tag recommender associated with this controller.
@@ -849,5 +864,24 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	public void setTagRecommender(TagRecommender tagRecommender) {
 		this.tagRecommender = tagRecommender;
 	}
+	
+	/** Give this controller an instance of {@link Captcha}.
+	 * 
+	 * @param captcha
+	 */
+	@Required
+	public void setCaptcha(Captcha captcha) {
+		this.captcha = captcha;
+	}
+
+	public void setCookieLogic(CookieLogic cookieLogic) {
+		this.cookieLogic = cookieLogic;
+	}
+
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
+	}
+	
+	
 
 }
