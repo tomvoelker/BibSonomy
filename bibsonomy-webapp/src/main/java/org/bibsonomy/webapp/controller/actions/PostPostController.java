@@ -37,7 +37,6 @@ import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
-import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -61,7 +60,6 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	private Errors errors = null;
 	private TagRecommender tagRecommender;
 	private Captcha captcha;
-	private CookieLogic cookieLogic;
 	private RequestLogic requestLogic;
 
 
@@ -874,10 +872,11 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		this.captcha = captcha;
 	}
 
-	public void setCookieLogic(CookieLogic cookieLogic) {
-		this.cookieLogic = cookieLogic;
-	}
-
+	/** Give this controller an instance of {@link RequestLogic}.
+	 * 
+	 * @param requestLogic
+	 */
+	@Required
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
