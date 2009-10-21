@@ -175,6 +175,16 @@
 						<property name="controllerBeanName" value="popularTagsPageController"/>						
 					</bean>
 				</entry>
+				<entry key="/post_bibtex_temp">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="postBibtexController"/>
+						<property name="allowedFields">
+							<list>
+								<value>selTab</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/mySearch">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="mySearchController"/>
@@ -382,6 +392,11 @@
 		</property>
 	</bean>	 	
 	
+	
+	<bean id="postBibtexController" class="org.bibsonomy.webapp.controller.PostBibtexController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
 	<!-- 
 		Implements the UnAPI specification http://unapi.info/
 		* returns an overview of the supported formats
@@ -565,8 +580,6 @@
 	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BUTTONS"></property>
 	</bean>
-
-
 
 	<!--  #################### imports #################### -->
     <import resource="bibsonomy2-servlet-fields.xml"/>
