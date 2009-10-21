@@ -8,6 +8,10 @@
 
 <!-- 
 **************************************************************
+CREATE DATABASE logging;
+
+USE logging;
+
 CREATE TABLE `clicklog` (
   `id` int(11) NOT NULL auto_increment,
   `logdate` datetime default NULL,
@@ -30,7 +34,10 @@ CREATE TABLE `clicklog` (
   `abmown` tinyint(4) default NULL,
   `referer` varchar(250) default NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+GRANT ALL PRIVILEGES ON *.* TO logger@localhost IDENTIFIED BY 'loggerpassword'
+
 **************************************************************
  -->
 
