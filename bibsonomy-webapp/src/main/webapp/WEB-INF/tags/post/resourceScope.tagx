@@ -1,0 +1,24 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form">
+	
+	<!-- TODO: replace this with a taglib function that returns these values/ remove from calling postBibtex.jspx -->
+	<jsp:directive.attribute name="resourceScopes"  type="java.util.Collection" required="true"/>
+	
+	<!-- This tag can be used to display a dropdownbox for the scope of his posts (bookmark, publication) -->
+	<select name="resourceScope" id="lgroup">
+   	      <c:forEach var="group" items="${resourceScopes}">
+   	      		<fmt:message key="resource_scope.${group}" var="group_locale" />
+   	        	<option 
+	              value="${group}">
+              <c:out value='${group_locale}'/>
+             </option>
+          </c:forEach>
+    </select>
+	
+	
+</jsp:root>
