@@ -64,9 +64,10 @@ public class PubMedCentralScraper extends AbstractUrlScraper {
 				String _origUrl = sc.getUrl().toString();
 				
 				//find the string in the content that contains the list_uid for hubmed.org
-				p = Pattern.compile("pubmed/(\\d+)\">PubMed record");
+				p = Pattern.compile("meta.+content=\"(\\d+)\"");
 				m = p.matcher(sc.getPageContent());
 
+				
 				//if the uid will be found, the bibtex string would be extracted from hubmed
 				if (m.find()){
 					String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + m.group(1);
