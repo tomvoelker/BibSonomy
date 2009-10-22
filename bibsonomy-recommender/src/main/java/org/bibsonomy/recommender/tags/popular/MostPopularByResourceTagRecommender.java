@@ -6,12 +6,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Logger;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tags.AbstractTagRecommender;
-import org.bibsonomy.recommender.tags.database.DBAccess;
 import org.bibsonomy.recommender.tags.database.DBLogic;
 import org.bibsonomy.recommender.tags.database.params.Pair;
 import org.bibsonomy.services.recommender.TagRecommender;
