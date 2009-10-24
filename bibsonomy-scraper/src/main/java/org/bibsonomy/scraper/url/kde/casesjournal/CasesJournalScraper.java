@@ -43,16 +43,18 @@ import org.bibsonomy.util.WebUtils;
  */
 public class CasesJournalScraper extends AbstractUrlScraper {
 	
-	private static final String SITE_NAME = "Cases Journal";
-	private static final String CASES_JOURNAL_URL_BASE = "http://casesjournal.com";	
-	private static final String SITE_URL = CASES_JOURNAL_URL_BASE+"/";
-	private static final String INFO = "For selected BibTeX snippets and articles from " + href(SITE_URL , SITE_NAME)+".";
+	private static final String SITE_NAME				= "Cases Journal";
+	private static final String CASES_JOURNAL_URL_BASE	= "http://casesjournal.com";	
+	private static final String SITE_URL				= CASES_JOURNAL_URL_BASE+"/";
+	private static final String INFO					= "For selected BibTeX snippets and articles from " + href(SITE_URL , SITE_NAME)+".";
 
 	/*
 	 * needed URLs and components
 	 */
-	private static final String CASES_JOURNAL_HOST = "casesjournal.com";
-	private static final String CASES_JOURNAL_PATH  = "/content";
+	private static final String CASES_JOURNAL_HOST			= "casesjournal.com";
+	private static final String CASES_JOURNAL_PATH			= "/content";
+	private static final String CASES_JOURNAL_POST_STRING	= "action=submit&format=bibtex&include=cit";
+	private static final String CASES_JOURNAL_CITATION_URL	= "/citation";
 	
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + CASES_JOURNAL_HOST), Pattern.compile(CASES_JOURNAL_PATH + ".*")));
 
@@ -67,12 +69,12 @@ public class CasesJournalScraper extends AbstractUrlScraper {
 		
 		final String url = scrapingContext.getUrl().toString();
 		String bibtex = null;
-		String _url = url + "/citation";
+		String _url = url + CASES_JOURNAL_CITATION_URL;
 		
 		scrapingContext.setScraper(this);
 		
 		try {
-			bibtex = WebUtils.getPostContentAsString(new URL(_url), "action=submit&format=bibtex");
+			bibtex = WebUtils.getPostContentAsString(new URL(_url), CASES_JOURNAL_POST_STRING);
 		} catch (MalformedURLException ex) {
 			ex.printStackTrace();
 		} catch (IOException ex) {
