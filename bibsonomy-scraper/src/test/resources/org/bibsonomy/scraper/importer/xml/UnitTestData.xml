@@ -882,10 +882,10 @@
 	</URLTest>
 	<URLTest id="url_154">
 		<TestDescription>CasesJournal url test</TestDescription>
-		<URL>http://casesjournal.com/casesjournal/article/view/8280</URL>
+		<URL>http://www.casesjournal.com/content/2/1/164</URL>
 		<BibFile>CasesJournalScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_155">
 		<TestDescription>acm test</TestDescription>
