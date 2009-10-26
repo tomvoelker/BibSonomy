@@ -114,7 +114,7 @@
 					    	<fmt:message key="post_bibtex.pub_snippet.snippet" />
 					    </td>
 					    <td>
-					    	<textarea name="selection" cols="58" rows="10"  class="reqinput" onkeyup="sz(this);" >Text </textarea>
+					    	<textarea name="selection" cols="58" rows="10"  class="reqinput" onkeyup="sz(this);" ><fmt:message key="post_bibtex.pub_snippet.enter_bibtex_here" /> </textarea>
 				    	</td>
 					  </tr>
 					  <tr>
@@ -158,13 +158,13 @@
 						<fmt:message key="post_bibtex.upload.description" />
 					</p>
 
-					<form name="upload" method="post" enctype="multipart/form-data" action="/BibtexHandler">
+					<form name="upload" method="post" enctype="multipart/form-data" action="/BibtexHandler?requTask=upload">
 						<input type="hidden" name="requTask" value="upload" />
 						<table>
 						  <tr>
 						    <td class="expl"><fmt:message key="post_bibtex.upload.my_file" /></td>
 						    <td><input type="file" name="file" value="" size="50"  class="reqinput" />
-						    <!--  file error-->
+						    <!--  TODO: add file errormsg here-->
 						    </td>
 						  </tr>
 						  <tr>
