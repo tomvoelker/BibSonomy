@@ -43,6 +43,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Scraper for RIS citations from Metapress.com
@@ -78,11 +79,12 @@ public class MetapressScraper extends AbstractUrlScraper {
 			String url = PREFIX_DOWNLOAD_URL + matcherHref.group(1) + SUFFIX_DOWNLOAD_URL;
 
 			String ris = null;
+			
 			try {
 				URL downloadUrl = new URL(url);
-				String cookie = getCookies(downloadUrl);
-				ris = getContent(downloadUrl, cookie);
-
+				String cookie = WebUtils.getCookies(sc.getUrl());
+				ris = WebUtils.getContentAsString(downloadUrl, cookie);
+				
 				if(ris!=null){
 					RisToBibtexConverter converter = new RisToBibtexConverter();
 					String bibtex = converter.RisToBibtex(ris);
@@ -105,79 +107,6 @@ public class MetapressScraper extends AbstractUrlScraper {
 			}
 		}else
 			throw new PageNotSupportedException("no RIS download available");
-	}
-
-	/** FIXME: refactor
-	 * @param queryURL
-	 * @param cookie
-	 * @return
-	 * @throws IOException
-	 */
-	private String getContent(URL queryURL, String cookie) throws IOException {
-
-		HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-		 * pages require it to download content.
-		 */
-		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-
-		//insert cookie
-		urlConn.setRequestProperty("Cookie", cookie);
-
-		urlConn.connect();
-
-		StringWriter out = new StringWriter();
-		InputStream in = new BufferedInputStream(urlConn.getInputStream());
-		int b;
-		while ((b = in.read()) >= 0) {
-			out.write(b);
-		}
-		urlConn.disconnect();
-
-		return out.toString();
-	}
-
-	/** FIXME: refactor
-	 * @param queryURL
-	 * @return
-	 * @throws IOException
-	 */
-	private String getCookies(URL queryURL) throws IOException {
-		HttpURLConnection urlConn = null;
-
-		urlConn = (HttpURLConnection) queryURL.openConnection();
-
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-
-		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-		 * pages require it to download content.
-		 */
-		urlConn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-
-		urlConn.connect();
-		/*
-		 * extract cookie from connection
-		 */
-		List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
-
-		StringBuffer cookieString = new StringBuffer();
-
-		for(String cookie : cookies) {
-			cookieString.append(cookie.substring(0, cookie.indexOf(";") + 1) + " ");
-		}
-
-		urlConn.disconnect();
-
-		return cookieString.toString();
 	}
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
