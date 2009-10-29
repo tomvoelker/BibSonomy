@@ -64,9 +64,9 @@ public class PubMedScraper extends AbstractUrlScraper {
 		String bibtexresult = null;
 		sc.setScraper(this);
 
-		Pattern pa = null;
-		Matcher ma = null;
-
+		Pattern pa = Pattern.compile("meta.+content=\"(\\d+)\"");
+		Matcher ma = pa.matcher(sc.getPageContent());
+		
 		// save the original URL
 		String _origUrl = sc.getUrl().toString();
 
@@ -98,6 +98,9 @@ public class PubMedScraper extends AbstractUrlScraper {
 							+ ma.group(1);
 					bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
 				}
+			} else if (ma.find()) {
+				String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group(1);
+				bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
 			}
 
 			// replace the humbed url through the original URL
