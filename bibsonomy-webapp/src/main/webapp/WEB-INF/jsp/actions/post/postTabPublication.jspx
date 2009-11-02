@@ -65,16 +65,19 @@
 									      </c:forEach>
 									    </select></div>
 									    <div style="float:right">
-									    <span style="font-size: 80%; font-weight: bold; text-align: right; vertical-align: top;"><fmt:message key="post.resource.bibtexKey"/>*</span><input type="text" name="post.resource.bibtexKey" size="10" class="reqinput"/>
+									    <input type="text" name="post.resource.bibtexKey" size="10" class="reqinput"/><span style="font-size: 80%; font-weight: bold; text-align: right; vertical-align: top; margin-left: 5px;"><fmt:message key="post.resource.bibtexKey"/>*</span>
 									    </div>
 									    </div>
 								    </td>
 								  </tr>
+								  
+								  <!-- 
 								  <tr>
 								    <td class="expl"><fmt:message key="post.resource.bibtexKey"/>*</td>
 								    <td><input type="text" name="post.resource.bibtexKey" size="10" class="reqinput"/></td>
 								    <td></td>
-								  </tr>
+								  </tr> -->
+								  
 								  <tr>
 								    <td class="expl"><fmt:message key="post.resource.title"/>*</td>
 								    <td><input type="text" name="post.resource.title" size="60" tabindex="2" class="reqinput"/></td>
