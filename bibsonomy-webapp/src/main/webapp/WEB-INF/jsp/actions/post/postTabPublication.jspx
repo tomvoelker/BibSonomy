@@ -54,7 +54,7 @@
 					<form method="POST" action="/postPublication" name="post_bibtex">
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative;">
-								<fieldset class="fsInner">
+								
 								<table>
 								  <tr>
 								    <td class="expl"><fmt:message key="post.resource.entrytype"/>*</td>
@@ -104,7 +104,7 @@
 								    <td></td>
 								  </tr>
 								</table>
-							</fieldset>
+							
 							</fieldset>
 						</div>
 					</form>
@@ -128,7 +128,7 @@
 				<form method="POST" action="/BibtexHandler">
 					<div id="fsform">
 						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative;">
-							<fieldset class="fsInner">
+							
 								<input type="hidden" name="requTask" value="upload" />
 								<table>
 								  <tr>
@@ -157,7 +157,7 @@
 								    <td></td>
 								  </tr>
 								</table>
-							</fieldset>
+							
 						</fieldset>
 					</div>
 				</form>
@@ -186,7 +186,7 @@
 					<form name="upload" method="post" enctype="multipart/form-data" action="/BibtexHandler?requTask=upload">
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative;">
-								<fieldset class="fsInner">
+								
 									<input type="hidden" name="requTask" value="upload" />
 									<table>
 									  <tr>
@@ -275,7 +275,7 @@
 									  </tr>
 									
 									</table>
-								</fieldset>
+								
 							</fieldset>
 						</div>
 					</form>
