@@ -14,7 +14,7 @@ import org.bibsonomy.common.enums.ResourceScope;
 
 public class PostBibtexCommand extends TabsCommand<Object>{
 	
-	String[] tabTitleFmtKeys = {"post_bibtex.manual.title", "post_bibtex.pub_snippet.title", "post_bibtex.bibtex_endnote.title"};
+	String[] tabTitleFmtKeys = {"post_bibtex.manual.title", "post_bibtex.pub_snippet.title", "post_bibtex.bibtex_endnote.title", "post_bibtex.doi_isbn.title"};
 	
 	Collection<String> resourceTypes = null;
 	Collection<String> resourceScopes = null;
