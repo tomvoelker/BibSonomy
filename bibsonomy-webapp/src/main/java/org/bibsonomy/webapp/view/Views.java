@@ -190,7 +190,7 @@ public enum Views implements View {
 	SCRAPER_INFO("scraperList"),
 	
 	/** scraper info list **/
-	POST_BIBTEX("actions/post/postBibtex"),
+	POST_BIBTEX("actions/post/postTabPublication"),
 	/* *****************************************************
 	 * AJAX views
 	 * *****************************************************/
