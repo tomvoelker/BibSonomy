@@ -188,6 +188,9 @@ public enum Views implements View {
 	
 	/** scraper info list **/
 	SCRAPER_INFO("scraperList"),
+	
+	/** scraper info list **/
+	POST_BIBTEX("postBibtex"),
 	/* *****************************************************
 	 * AJAX views
 	 * *****************************************************/
