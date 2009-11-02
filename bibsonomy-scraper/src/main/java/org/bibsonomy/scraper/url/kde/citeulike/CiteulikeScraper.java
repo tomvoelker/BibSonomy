@@ -24,6 +24,7 @@
 package org.bibsonomy.scraper.url.kde.citeulike;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -54,6 +55,12 @@ public class CiteulikeScraper extends AbstractUrlScraper {
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
 
+	private static final String ARTICLE_POSTS = "article-posts";
+	
+	private static final String ARTICLE = "article";
+
+	private static final String BIBTEX = "/bibtex";
+
 	public String getInfo() {
 		return INFO;
 	}
@@ -61,10 +68,20 @@ public class CiteulikeScraper extends AbstractUrlScraper {
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
 
-		// build bibtex download URL
 		String downloadUrl = sc.getUrl().toString();
-		downloadUrl = downloadUrl.replace(HOST, HOST + "/bibtex");
+		
+		// build bibtex download URL
+		if (downloadUrl.contains(ARTICLE_POSTS)) {
+			downloadUrl = downloadUrl.replace(ARTICLE_POSTS, ARTICLE);
+			try {
+				downloadUrl = WebUtils.getRedirectUrl(new URL(downloadUrl)).toString();
+			} catch (MalformedURLException ex) {
+				throw new InternalFailureException(ex);
+			}
+		}
 
+		downloadUrl = downloadUrl.replace(HOST, HOST + BIBTEX);
+		
 		// download
 		String bibtex = null;
 		try {

@@ -55,4 +55,14 @@ public class CiteulikeScraperTest {
 		assertTrue(runner.runSingleTest("url_132"));
 	}
 	
+	/**
+	 * starts URL test with id url_156
+	 */
+	@Test
+	@Ignore
+	public void urlTestRun3(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_156"));
+	}
+	
 }

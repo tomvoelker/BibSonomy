@@ -893,4 +893,10 @@
 		<BibFile>ACMBasicScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_156">
+		<TestDescription>Citeulike url test</TestDescription>
+		<URL>http://www.citeulike.org/article-posts/2599016</URL>
+		<BibFile>CiteulikeScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper</Scraper>
+	</URLTest>
 </test:Tests>
