@@ -175,7 +175,7 @@
 						<property name="controllerBeanName" value="popularTagsPageController"/>						
 					</bean>
 				</entry>
-				<entry key="/post_bibtex">
+				<entry key="/post_publication">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="postBibtexController"/>
 						<property name="allowedFields">
