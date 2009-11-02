@@ -168,29 +168,6 @@ td.expl_s {
 
 
 <tr>
-  <td class="expl">viewable for</td>
-  <td><%@include file="/boxes/groupselection.jsp" %></td>
-  <td></td>
-</tr>
-
-<!-- insert start @CK -->
-<tr>
-  <td class="expl">Helps me to </td>
-   <td><!--
-  <select name="purpose_relation">
-									<option value="help">helps me to</option>
-  </select> -->
-    <input class="reqinput" type="text" size="60" name="purpose" />
-  </td>
-</tr>
-<!-- insert end @CK -->
-
-    <tr>
-      <td height="40"  class="expl">
-	    <ul id="suggTags">
-	      <li>suggested</li>
-	    </ul>
-	  </td>
       <td class="expl">&nbsp;</td>
 	  <td>
         <div id="suggested" class="suggtag"><!-- This comment is needed, otherwise this will result in a self-closing element --></div>
@@ -276,13 +253,13 @@ td.expl_s {
   <td class="expl">BibTeX key*</td>
   <td>
     <input class="reqinput" type="text" id="lbibtexKey" name="bibtexKey" value='<c:out value="${bibtexHandlerBean.bibtexKey}"/>' style="width: 10em;"/>
+  	<a id="bibTexKeyReloadLink" style="cursor:pointer">
+  		<img id="bibTexKeyReloadButton" src="/resources/image/button_reload.png" alt="generate BibTeX key" title="generate BibTeX key" onclick="javascript:generateBibTexKey(this)" />
+    </a>
     <div class="errmsg"><c:out value="${bibtexHandlerBean.errors.bibtexKey}"/></div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.bibtexKey}"/></div>
   </td>
   <td class="expl_s" style="vertical-align: middle;">
-  	<a id="bibTexKeyReloadLink" style="cursor:pointer">
-  		<img id="bibTexKeyReloadButton" src="/resources/image/button_reload.png" alt="reloading tags" title="reloading tags" onclick="javascript:generateBibTexKey(this)" />
-    </a>
   	a memorable key without spaces</td>
 </tr>
 
