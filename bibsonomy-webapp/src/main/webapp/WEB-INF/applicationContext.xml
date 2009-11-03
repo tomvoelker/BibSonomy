@@ -36,43 +36,75 @@
 		<property name="mailHost"><value>${mail.smtp.host}</value></property>
 		<property name="messageSource" ref="messageSource"/>
 	</bean>
+	
+	<!--+
+	    | lucene index updater
+	    +-->
+	<bean id="luceneBibTexManager" class="org.bibsonomy.lucene.index.LuceneBibTexManager" factory-method="getInstance"/>
+	<bean id="luceneBookmarkManager" class="org.bibsonomy.lucene.index.LuceneBookmarkManager" factory-method="getInstance"/>
 
-	<bean id="LuceneUpdater" class="org.bibsonomy.lucene.LuceneUpdater"/>
-	<bean id="luceneUpdateManager" class="org.bibsonomy.lucene.index.LuceneUpdateManager"/>
-
-	<bean id="luceneUpdateJobWithoutIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-	  <property name="targetObject" ref="luceneUpdateManager" />
+	<!-- update jobs without index optimization -->
+	<bean id="luceneUpdateBibTexJobWithoutIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	  <property name="targetObject" ref="luceneBibTexManager" />
+	  <property name="targetMethod" value="updateAndReloadIndex" />
+	  <property name="arguments" value="false" /> <!-- optimizeIndex true|false -->
+	  <property name="concurrent" value="false" />
+	</bean>
+	<bean id="luceneUpdateBookmarkJobWithoutIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	  <property name="targetObject" ref="luceneBookmarkManager" />
 	  <property name="targetMethod" value="updateAndReloadIndex" />
 	  <property name="arguments" value="false" /> <!-- optimizeIndex true|false -->
 	  <property name="concurrent" value="false" />
 	</bean>
 
-	<bean id="luceneUpdateJobWithIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-	  <property name="targetObject" ref="luceneUpdateManager" />
+	<!-- update jobs without index optimization -->
+	<bean id="luceneUpdateBibTexJobWithIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	  <property name="targetObject" ref="luceneBibTexManager" />
+	  <property name="targetMethod" value="updateAndReloadIndex" />
+	  <property name="arguments" value="true" /> <!-- optimizeIndex true|false -->
+	  <property name="concurrent" value="false" />
+	</bean>
+	<bean id="luceneUpdateBookmarkJobWithIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	  <property name="targetObject" ref="luceneBookmarkManager" />
 	  <property name="targetMethod" value="updateAndReloadIndex" />
 	  <property name="arguments" value="true" /> <!-- optimizeIndex true|false -->
 	  <property name="concurrent" value="false" />
 	</bean>
 
-	<bean id="luceneUpdateCronTriggerWithoutIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<!-- lucene index update cron jobs -->
+	<bean id="luceneUpdateBibTexCronTriggerWithoutIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
  		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
- 		<property name="cronExpression" value="22 1/10 * * * ?" /> <!-- *:01,11,..,51:22 -->
-		<property name="jobDetail" ref="luceneUpdateJobWithoutIndexOptimization" />
+ 		<property name="cronExpression" value="22 1/2 * * * ?" /> <!-- *:01,11,..,51:22 -->
+		<property name="jobDetail" ref="luceneUpdateBibTexJobWithoutIndexOptimization" />
+	</bean>
+	<bean id="luceneUpdateBookmarkCronTriggerWithoutIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
+ 		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
+ 		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
+ 		<property name="cronExpression" value="55 1/3 * * * ?" /> <!-- *:01,11,..,51:22 -->
+		<property name="jobDetail" ref="luceneUpdateBookmarkJobWithoutIndexOptimization" />
 	</bean>
  
-	<bean id="luceneUpdateCronTriggerWithIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="luceneUpdateBibTexCronTriggerWithIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
  		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
  		<property name="cronExpression" value="1 0 2 * * ?" />  <!-- @02:00:01 -->
-		<property name="jobDetail" ref="luceneUpdateJobWithIndexOptimization" />
+		<property name="jobDetail" ref="luceneUpdateBibTexJobWithIndexOptimization" />
+	</bean>
+ 	<bean id="luceneUpdateBookmarkCronTriggerWithIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
+ 		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
+ 		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
+ 		<property name="cronExpression" value="1 0 2 * * ?" />  <!-- @02:00:01 -->
+		<property name="jobDetail" ref="luceneUpdateBookmarkJobWithIndexOptimization" />
 	</bean>
 
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 	    <property name="triggers">
 	        <list>
-	            <ref bean="luceneUpdateCronTriggerWithoutIndexOptimization" />
-	            <ref bean="luceneUpdateCronTriggerWithIndexOptimization" />
+	            <ref bean="luceneUpdateBibTexCronTriggerWithoutIndexOptimization" />
+	            <ref bean="luceneUpdateBookmarkCronTriggerWithoutIndexOptimization" />
+	            <ref bean="luceneUpdateBibTexCronTriggerWithIndexOptimization" />
+	            <ref bean="luceneUpdateBookmarkCronTriggerWithIndexOptimization" />
 	        </list>
 	    </property>
 	</bean>

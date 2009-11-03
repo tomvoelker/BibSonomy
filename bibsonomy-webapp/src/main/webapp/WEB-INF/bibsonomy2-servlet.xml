@@ -507,28 +507,11 @@
 		<property name="bookmarkSearch" ref="luceneBookmarkSearch"/>
 	</bean>	
 
-	<!-- 
-	    This bean provides access to the logic interface for searchers
-	 -->
-	<bean id="searchBibTexLogic" class="org.bibsonomy.lucene.database.LuceneBibTexLogic" factory-method="getInstance">
-	</bean>	
-	<!-- 
-	    This bean provides access to the logic interface for searchers
-	 -->
-	<bean id="searchBookmarkLogic" class="org.bibsonomy.lucene.database.LuceneBookmarkLogic" factory-method="getInstance">
-	</bean>	
-	
 	<!-- lucene bibtex searcher -->
-	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.LuceneSearchBibTex" factory-method="getInstance" scope="request">
-		<property name="dbLogic" ref="searchBibTexLogic"/>
-		<property name="indexUpdater" ref="LuceneUpdater"/>
-	</bean>
+	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.search.delegate.LuceneDelegateBibTexSearch" factory-method="getInstance"/>
 	
 	<!-- lucene bookmark searcher -->
-	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.LuceneSearchBookmarks" factory-method="getInstance" scope="request">
-		<property name="dbLogic" ref="searchBookmarkLogic"/>
-		<property name="indexUpdater" ref="LuceneUpdater"/>
-	</bean>
+	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.delegate.LuceneDelegateBookmarkSearch" factory-method="getInstance"/>
 
  
 	<!--  #################### interceptors #################### -->
