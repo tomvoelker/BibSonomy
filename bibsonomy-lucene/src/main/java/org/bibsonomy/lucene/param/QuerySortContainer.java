@@ -21,7 +21,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.lucene;
+package org.bibsonomy.lucene.param;
 
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;

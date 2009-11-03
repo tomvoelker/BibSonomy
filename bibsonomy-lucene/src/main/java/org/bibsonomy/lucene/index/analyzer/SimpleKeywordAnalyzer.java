@@ -1,4 +1,4 @@
-package org.bibsonomy.lucene;
+package org.bibsonomy.lucene.index.analyzer;
 
 import java.io.Reader;
 

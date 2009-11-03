@@ -1,4 +1,4 @@
-package org.bibsonomy.lucene;
+package org.bibsonomy.lucene.util;
 
 public class Log {
 

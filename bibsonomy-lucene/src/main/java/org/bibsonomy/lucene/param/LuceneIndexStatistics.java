@@ -1,5 +1,5 @@
 
-package org.bibsonomy.lucene;
+package org.bibsonomy.lucene.param;
 
 /**
  * This class defines a user. An unknown user has an empty (<code>null</code>) name.

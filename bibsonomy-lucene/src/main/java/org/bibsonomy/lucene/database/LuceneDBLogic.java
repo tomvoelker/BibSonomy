@@ -92,34 +92,6 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		return retVal;
 	}
 	
-	/**
-	 * get all public posts within a given time range
-	 * 
-	 * FIXME: use bibsonomy model classes
-	 * 
-	 * @param fromDate
-	 * @param toDate
-	 * @return
-	 */
-	public List<HashMap<String, String>> retrieveRecordsFromDatabase(Date fromDate, Date toDate) {
-		List<HashMap<String, Object>> posts  = getPostsForTimeRange(fromDate, toDate);
-		List<HashMap<String, String>> retVal = new LinkedList<HashMap<String,String>>();
-		
-		// ugly conversion: convert each object to the corresponding string representation
-		for( HashMap<String,Object> post : posts ) {
-			HashMap<String,String> newPost = new HashMap<String, String>();
-			for( String key : post.keySet() ) {
-				Object oldVal = post.get(key);
-				String newVal = (oldVal==null)?"":oldVal.toString();
-				newPost.put(key, newVal);
-			}
-			retVal.add(newPost);
-		}
-		
-		log.debug("retrieveRecordsFromDatabase: " + posts.size());
-		return retVal;
-	}
-	
 
 	//------------------------------------------------------------------------
 	// abstract interface definition
@@ -129,7 +101,4 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 	protected abstract ResourcesParam<R> getResourcesParam();
 	
 	protected abstract HashMap<String, String> getContentFields();
-	protected abstract List<HashMap<String, Object>> getPostsForTimeRange(Date fromDate, Date toDate);
-
-
 }

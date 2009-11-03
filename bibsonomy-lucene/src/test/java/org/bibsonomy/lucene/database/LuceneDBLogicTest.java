@@ -24,7 +24,7 @@ import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.lucene.testutil.JNDITestDatabaseBinder;
+import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -159,12 +159,12 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		Date toDate = new Date(end - end%1000 + 1000);
 		
 		// retrieve posts
-		List<HashMap<String, String>> posts = luceneBibTexLogic.retrieveRecordsFromDatabase(fromDate, toDate);
+		List<HashMap<String, Object>> posts = luceneBibTexLogic.getPostsForTimeRange(fromDate, toDate);
 
 		assertEquals(refPosts.size(), posts.size());
 		HashMap<String, Boolean> testMap = new HashMap<String, Boolean>();
-		for( HashMap<String, String> post : posts ) {
-			String title = post.get("title");
+		for( HashMap<String, Object> post : posts ) {
+			String title = (String)post.get("title");
 			testMap.put(title, true);
 		}
 		for( Post<? extends Resource> post : refPosts ) {

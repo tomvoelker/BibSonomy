@@ -1,4 +1,4 @@
-package org.bibsonomy.lucene;
+package org.bibsonomy.lucene.search;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -26,6 +26,9 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.bibsonomy.common.exceptions.LuceneException;
+import org.bibsonomy.lucene.index.analyzer.SimpleKeywordAnalyzer;
+import org.bibsonomy.lucene.param.LuceneIndexStatistics;
+import org.bibsonomy.lucene.util.Utils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -35,7 +38,7 @@ import org.bibsonomy.services.searcher.ResourceSearch;
 
 //FIXME: remove this comment (used only for triggering cvs-commit)
 
-public class LuceneSearchBookmarks extends LuceneSearch<Bookmark> {
+public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 
 	private final static LuceneSearchBookmarks singleton = new LuceneSearchBookmarks();
 	private IndexSearcher searcher;
@@ -323,8 +326,12 @@ public class LuceneSearchBookmarks extends LuceneSearch<Bookmark> {
 					postBookmark.setContentId(Integer.parseInt(doc
 							.get(lField_contentid)));
 					long starttime2Query = System.currentTimeMillis();
-					bookmark.setCount(this.searcher.docFreq(new Term(
-							"intrahash", doc.get("intrahash"))));
+					if( doc.get("intrahash")!=null ) {
+						bookmark.setCount(this.searcher.docFreq(new Term(
+								"intrahash", doc.get("intrahash"))));
+					} else {
+						bookmark.setCount(1);
+					}
 					long endtime2Query = System.currentTimeMillis();
 
 					postBookmark.setDate(date);

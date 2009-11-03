@@ -1,4 +1,4 @@
-package org.bibsonomy.lucene;
+package org.bibsonomy.lucene.util;
 
 import java.sql.Connection;
 import java.sql.SQLException;

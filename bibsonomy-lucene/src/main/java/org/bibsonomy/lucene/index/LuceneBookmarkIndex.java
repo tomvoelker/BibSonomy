@@ -2,6 +2,7 @@ package org.bibsonomy.lucene.index;
 
 import java.util.HashMap;
 
+import org.bibsonomy.lucene.param.RecordType;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 
@@ -39,5 +40,10 @@ public class LuceneBookmarkIndex extends LuceneResourceIndex<Bookmark> {
 	public static LuceneResourceIndex<Bookmark> getInstance() {
 		if (instance == null) instance = new LuceneBookmarkIndex();
 		return instance;
+	}
+
+	@Override
+	protected RecordType getRecordType() {
+		return RecordType.Bookmark;
 	}
 }

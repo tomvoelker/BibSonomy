@@ -8,12 +8,15 @@ import java.util.HashMap;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.Term;
+import org.bibsonomy.lucene.param.LuceneData;
+import org.bibsonomy.lucene.param.RecordType;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.junit.Ignore;
 import org.junit.Test;
 
-
+@Ignore
 public class LuceneDataTest {
 
 	private static final Logger log       = Logger.getLogger(LuceneDataTest.class);

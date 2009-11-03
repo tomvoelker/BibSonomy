@@ -101,7 +101,7 @@ public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	protected List<HashMap<String, Object>> getPostsForTimeRange(Date fromDate, Date toDate) {
+	public List<HashMap<String, Object>> getPostsForTimeRange(Date fromDate, Date toDate) {
 		Pair<Date,Date> param = new Pair<Date,Date>();
 		param.setFirst(fromDate);
 		param.setSecond(toDate);
@@ -113,6 +113,7 @@ public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
 			log.error("Error fetching publications for given time range", e);
 		}
 		
+		log.debug("retrieveRecordsFromDatabase: " + retVal.size());
 		return retVal;
 	}
 }

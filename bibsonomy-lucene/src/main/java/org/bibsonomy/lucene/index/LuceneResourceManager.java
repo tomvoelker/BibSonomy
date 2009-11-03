@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -14,10 +15,16 @@ import javax.naming.NamingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.CorruptIndexException;
-import org.bibsonomy.lucene.LuceneSearch;
-import org.bibsonomy.lucene.Utils;
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
+import org.bibsonomy.lucene.param.LuceneData;
+import org.bibsonomy.lucene.search.LuceneResourceSearch;
+import org.bibsonomy.lucene.search.delegate.LuceneDelegateResourceSearch;
+import org.bibsonomy.lucene.util.Utils;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -32,8 +39,8 @@ import org.springframework.core.io.FileSystemResource;
  * 
  * @author fei
  */
-public class LuceneUpdateManager {
-	private static final Log log = LogFactory.getLog(LuceneUpdateManager.class);
+public class LuceneResourceManager<R extends Resource> {
+	private static final Log log = LogFactory.getLog(LuceneResourceManager.class);
 
 	/** flag indicating whether to update the index or not */
 	private Boolean luceneUpdaterEnabled = true;
@@ -43,14 +50,14 @@ public class LuceneUpdateManager {
 	private int alreadyRunning = 0; // das geht bestimmt irgendwie besser
 	private int maxAlreadyRunningTrys = 20;
 
-	/** maps each known resource type to the corresponding indexer */ 
-	HashMap<Class<? extends Resource>, LuceneResourceIndex<? extends Resource>> indexMap;
+	/** the resource index */ 
+	private LuceneResourceIndex<R> resourceIndex;
 	
-	/** maps each known resource type to the corresponding database logic */ 
-	HashMap<Class<? extends Resource>, LuceneDBInterface<? extends Resource>> logicMap;
-
-	/** maps each known resource type to the corresponding index searcher */ 
-	HashMap<Class<? extends Resource>, LuceneSearch<? extends Resource>> searchMap;
+	/** the database manager */
+	private LuceneDBInterface<R> dbLogic;
+	
+	/** the lucene index searcher */
+	private LuceneResourceSearch<R> searcher;
 	
 	/** MAGIC KEY identifying the context environment for this class */
 	private static final String CONTEXT_ENV_NAME = "java:/comp/env";
@@ -58,31 +65,11 @@ public class LuceneUpdateManager {
 	/** MAGIC KEY identifying context variables for this class */
 	private static final String CONTEXT_ENABLE_FLAG= "enableLuceneUpdater";
 	
-	/** spring bean factory for initializing instances */
-	private static BeanFactory beanFactory;
-	
-	/** singleton pattern's class instance */
-	private static LuceneUpdateManager instance;
-
-	/**
-	 * static initialization
-	 */
-	static {
-		ApplicationContext context = new ClassPathXmlApplicationContext(
-		        new String[] {"LuceneContext.xml"});
-
-		// an ApplicationContext is also a BeanFactory (via inheritance)
-		beanFactory = context;
-	}
-	
 	/**
 	 * constructor
 	 */
-	public LuceneUpdateManager() {
+	public LuceneResourceManager() {
 		init();
-		this.indexMap = new HashMap<Class<? extends Resource>, LuceneResourceIndex<? extends Resource>>();
-		this.logicMap = new HashMap<Class<? extends Resource>, LuceneDBInterface<? extends Resource>>();
-		this.searchMap= new HashMap<Class<? extends Resource>, LuceneSearch<? extends Resource>>();
 	}
 	
 	/**
@@ -100,32 +87,6 @@ public class LuceneUpdateManager {
 			log.error("NamingException requesting JNDI environment variables 'luceneIndexPathBoomarks' and 'luceneIndexPathPublications' ("+e.getMessage()+")", e);
 		}
 
-	}
-	
-	/**
-	 * singleton pattern's instantiation method
-	 * 
-	 * @return
-	 */
-	public static LuceneUpdateManager getInstance() {
-		if( instance==null ) {
-			return (LuceneUpdateManager)beanFactory.getBean("luceneUpdateManager");
-		};
-		
-		return instance;
-	}
-
-	/**
-	 * singleton pattern's instantiation method for spring bean initilization 
-	 * 
-	 * @return
-	 */
-	public static LuceneUpdateManager getPreInitInstance() {
-		if( instance==null ) {
-			return new LuceneUpdateManager();
-		};
-		
-		return instance;
 	}
 	
 	/**
@@ -165,16 +126,15 @@ public class LuceneUpdateManager {
 		}
 		alreadyRunning = 1;
 		log.debug("reloadIndex - run and reset alreadyRunning ("+alreadyRunning+"/"+maxAlreadyRunningTrys+")");
-		
-		
 
-		// 
-		// cycle through each resource type and update the corresponding index
-		//
-		for( Class<? extends Resource> resourceType : indexMap.keySet() ) {
-			LuceneResourceIndex<? extends Resource> luceneIndex = indexMap.get(resourceType);
-			LuceneDBInterface<? extends Resource> luceneLogic = logicMap.get(resourceType);
-			
+		// assure that flagging and unflagging of spammers as well as index updating is mutual exclusive
+		synchronized(this) {
+			// 
+			// update the index
+			//
+			LuceneResourceIndex<? extends Resource> luceneIndex = this.resourceIndex;
+			LuceneDBInterface<? extends Resource> luceneLogic   = this.dbLogic;
+
 			//  get date of newest record in index := retrieveFromDate
 			Date retrieveFromDate = luceneIndex.getNewestRecordDateFromIndex();
 			//  get date of newest record from tas := retrieveToDate
@@ -189,7 +149,7 @@ public class LuceneUpdateManager {
 			//----------------------------------------------------------------
 
 			//  get content_ids from log-table within retrieveTimePeriod		
-			List<Integer> contentIdsToDelete = logicMap.get(resourceType).getContentIdsToDelete(retrieveFromDate, retrieveToDate);
+			List<Integer> contentIdsToDelete = dbLogic.getContentIdsToDelete(retrieveFromDate, retrieveToDate);
 
 			//  delete records in lucene index matching this content_ids
 			status = false;
@@ -200,7 +160,7 @@ public class LuceneUpdateManager {
 			} catch (IOException e) {
 				log.error("IOException while deleteDocumentsInIndex1 ("+e.getMessage()+")");
 			}
-			
+
 			// TODO: when does this happen? shouldn't such an error be catched above?
 			if (!status) 
 				log.error("Error on deleting documents in index");
@@ -208,14 +168,14 @@ public class LuceneUpdateManager {
 			//----------------------------------------------------------------
 			//  2) get new records to insert into index with single new sql command 
 			//----------------------------------------------------------------
-			List<HashMap<String, String>> posts = new ArrayList<HashMap<String, String>>();
-			posts = luceneLogic.retrieveRecordsFromDatabase(retrieveFromDate, retrieveToDate);
+			List<HashMap<String, Object>> posts = new ArrayList<HashMap<String, Object>>();
+			posts = luceneLogic.getPostsForTimeRange(retrieveFromDate, retrieveToDate);
 
 			ArrayList<Integer> contentIdsToInsert = new ArrayList<Integer>(); 
-			for (HashMap<String, String> content : posts) {
-				contentIdsToInsert.add(Integer.parseInt(content.get("content_id"))); 
+			for (HashMap<String, Object> content : posts) {
+				contentIdsToInsert.add(((Long)content.get("content_id")).intValue()); 
 			}
-			
+
 			status = false;
 			//  delete records in lucene index which whom are going to be inserted
 			try {
@@ -234,7 +194,6 @@ public class LuceneUpdateManager {
 			} catch (IOException e) {
 				log.error("IO error while writing new posts to index ", e);
 			}
-			
 		}
 		
 		// all done.
@@ -270,14 +229,10 @@ public class LuceneUpdateManager {
 			return;	
 		}
 
-		for( Class<? extends Resource> resourceType : searchMap.keySet() ) {
-			LuceneSearch<? extends Resource> luceneSearcher = searchMap.get(resourceType);
-
-			// do the actual work
-			log.debug("reload search index");
-			luceneSearcher.reloadIndex();
-			log.debug("reload search index done");
-		}
+		// do the actual work
+		log.debug("reload search index");
+		searcher.reloadIndex();
+		log.debug("reload search index done");
 
 		alreadyRunning = 0;
 	}
@@ -324,28 +279,102 @@ public class LuceneUpdateManager {
 		}
 		reloadIndex();
 	}
-
-	public void setIndexMap(HashMap<Class<? extends Resource>, LuceneResourceIndex<? extends Resource>> indexMap) {
-		this.indexMap = indexMap;
+	
+	//------------------------------------------------------------------------
+	// spam handling
+	//------------------------------------------------------------------------
+	/**
+	 * flag/unflag spammer, depending on user.getPrediction()
+	 */
+	public void  flagSpammer(User user) {
+		log.debug("flagSpammer called for user " + user.getName());
+		switch( user.getPrediction() ) {
+		case 0:
+			log.debug("unflag non-spammer");
+			List<Post<R>> userPosts = this.getDbLogic().getPostsForUser(
+					user.getName(), user.getName(), 
+					HashID.INTER_HASH, 
+					GroupID.PUBLIC.getId(), new LinkedList<Integer>(), 
+					Integer.MAX_VALUE, 0);
+			unflagEntryAsSpam(userPosts);
+			break;
+		case 1:
+			log.debug("flag spammer");
+			flagEntryAsSpam(user.getName());
+			break;
+		}
+	}
+	
+	/**
+	 * flags an entry as spammer. This is the same like deleting one entry from index 
+	 * - no it IS deleting one entry from index
+	 * FIXME: check whether this is thread safe!!!
+	 *  
+	 */
+	protected void flagEntryAsSpam(String username) {
+		// assure that flagging and unflagging of spammers as well as index updating is mutual exclusive
+		synchronized(this) {
+			try {
+				resourceIndex.deleteDocumentsInIndex(username);
+			} catch (Exception e) {
+				log.error("Error removing spam posts for user " +username+ " from index", e);
+			}
+		}
 	}
 
-	public HashMap<Class<? extends Resource>, LuceneResourceIndex<? extends Resource>> getIndexMap() {
-		return this.indexMap;
+	/** 
+	 * flags an entry as non-spammer. This is the same like adding one entry to the index - no it IS adding one entry to the index 
+	 * FIXME: check whether this is thread safe!!!
+	 * 
+	 * @param recordContent
+	 * @param recordType
+	 */
+	protected void unflagEntryAsSpam(List<Post<R>> userPosts) {
+		// assure that flagging and unflagging of spammers as well as index updating is mutual exclusive
+		synchronized(this) {
+
+			//  insert new records into index
+			if( (userPosts!=null) && (userPosts.size()>0) ) {
+				// convert ResultList<Post<?>> into LuceneData
+				List<LuceneData> recordContentArrayList = new LinkedList<LuceneData>();
+				for (Post<?> post : userPosts ) {
+					LuceneData data = new LuceneData(null);
+					data.setPost(post);
+					recordContentArrayList.add(data);
+				}
+
+				try {
+					resourceIndex.insertRecordsIntoIndex(recordContentArrayList, false);
+				} catch (Exception e) {
+					log.error("Error unflagging spam posts.", e);
+				}
+			}
+		}
 	}
 
-	public void setSearchMap(HashMap<Class<? extends Resource>, LuceneSearch<? extends Resource>> searchMap) {
-		this.searchMap = searchMap;
+
+
+	public void setResourceIndex(LuceneResourceIndex<R> resourceIndex) {
+		this.resourceIndex = resourceIndex;
 	}
 
-	public HashMap<Class<? extends Resource>, LuceneSearch<? extends Resource>> getSearchMap() {
-		return this.searchMap;
+	public LuceneResourceIndex<R> getResourceIndex() {
+		return resourceIndex;
 	}
 
-	public void setLogicMap(HashMap<Class<? extends Resource>, LuceneDBInterface<? extends Resource>> logicMap) {
-		this.logicMap = logicMap;
+	public void setDbLogic(LuceneDBInterface<R> dbLogic) {
+		this.dbLogic = dbLogic;
 	}
 
-	public HashMap<Class<? extends Resource>, LuceneDBInterface<? extends Resource>> getLogicMap() {
-		return this.logicMap;
+	public LuceneDBInterface<R> getDbLogic() {
+		return dbLogic;
+	}
+
+	public void setSearcher(LuceneResourceSearch<R> searcher) {
+		this.searcher = searcher;
+	}
+
+	public LuceneResourceSearch<R> getSearcher() {
+		return searcher;
 	}
 }

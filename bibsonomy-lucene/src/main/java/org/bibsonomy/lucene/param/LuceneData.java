@@ -1,4 +1,4 @@
-package org.bibsonomy.lucene;
+package org.bibsonomy.lucene.param;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,6 +11,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 
@@ -420,5 +421,16 @@ public class LuceneData {
 		
 	}
 		
+	@SuppressWarnings("unchecked")
+	public void setPost(Post<? extends Resource> post) {
+		// FIXME: remove this test by refactoring
+		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) ){
+			setContentType(RecordType.Bookmark);
+			setPostBookmark((Post<Bookmark>)post);
+		} else if( BibTex.class.isAssignableFrom(post.getResource().getClass()) ){
+			setContentType(RecordType.BibTex);
+			setPostBibTex((Post<BibTex>)post);
+		}
+	}
 	
 }

@@ -1,4 +1,4 @@
-package org.bibsonomy.lucene;
+package org.bibsonomy.lucene.util;
 
 import java.io.IOException;
 
@@ -13,6 +13,7 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
+import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 
 /**
  * Utility class to provide some often used methods 
@@ -57,7 +58,7 @@ public class Utils {
 	
 	
 	public static String getNewestRecordDateFromIndex(IndexReader reader) throws CorruptIndexException, IOException {
-		final Log LOGGER = LogFactory.getLog(LuceneUpdater.class);
+		final Log LOGGER = LogFactory.getLog(Utils.class);
 		String newestDate = "";
 		
 /*		System.out.println( "reader.maxDoc():  " + reader.maxDoc());
@@ -96,7 +97,7 @@ public class Utils {
 	
 	
 	public static LuceneIndexStatistics getStatistics(String lucenePath) {
-		final Log LOGGER = LogFactory.getLog(LuceneUpdater.class);
+		final Log LOGGER = LogFactory.getLog(Utils.class);
 		
 		// open Lucene index for reading
 		IndexReader reader=null;

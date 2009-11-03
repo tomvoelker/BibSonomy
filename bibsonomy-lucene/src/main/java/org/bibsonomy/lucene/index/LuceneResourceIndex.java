@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.naming.Context;
@@ -28,9 +29,15 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
-import org.bibsonomy.lucene.DBToolJDNIResource;
-import org.bibsonomy.lucene.LuceneData;
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.lucene.LuceneUpdater;
+import org.bibsonomy.lucene.param.LuceneData;
+import org.bibsonomy.lucene.param.RecordType;
+import org.bibsonomy.lucene.util.DBToolJDNIResource;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.User;
 import org.bibsonomy.util.tex.TexEncode;
 
 import com.mysql.jdbc.Connection;
@@ -39,6 +46,7 @@ import com.mysql.jdbc.Connection;
  * abstract base class for managing lucene resource indices
  * 
  * TODO: should we use a singleton?
+ * TODO: implement a consistent management of read/write access
  *  
  * @author fei
  *
@@ -130,7 +138,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			doc = searcher.doc(topDocs.scoreDocs[0].doc);
 			// parse date
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
-			newestDate = dateFormatter.parse("1815-12-10 00:00:00.0");
+			newestDate = dateFormatter.parse(doc.get(FLD_DATE));//dateFormatter.parse("1815-12-10 00:00:00.0");
 			searcher.close();
 		} catch (ParseException e) {
 			log.error("ParseException while parsing *:* in getNewestRecordDateFromIndex ("+e.getMessage()+")");
@@ -178,6 +186,37 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		return allDocsDeleted;
 	}
 	
+	/**
+	 * delete all documents of a given user from index
+	 * 
+	 * @param username
+	 * @return
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 */
+	public boolean deleteDocumentsInIndex(String username) throws CorruptIndexException, IOException {
+		boolean allDocsDeleted = true;
+		int s = 0;
+
+		if (username.length() > 0) {
+			Term term = new Term("user_name", username );
+
+			s = indexReader.deleteDocuments(term);
+			if (s == 0) {
+				log.debug("Documents from user " + username + " NOT deleted ("+s+")!");
+				allDocsDeleted = false;
+			} else {
+				log.debug("Document from user " + username + " deleted ("+s+" occurences)!");
+				allDocsDeleted = true;
+			}
+		} else {
+			log.debug("Username is empty, no documents deleted!");
+			allDocsDeleted = false;
+		}
+
+		return allDocsDeleted;
+	}
+
 	/**
 	 * deletes all resources of a given user from the index
 	 * 
@@ -337,7 +376,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	@Deprecated
-	public boolean insertRecordsIntoIndex2(List<HashMap<String, String>> contents, boolean optimize) throws CorruptIndexException, IOException {
+	public boolean insertRecordsIntoIndex2(List<HashMap<String, Object>> contents, boolean optimize) throws CorruptIndexException, IOException {
 		//--------------------------------------------------------------------
 		// open index for writing
 		// TODO: implement a more efficient read/write-mode management
@@ -361,7 +400,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 
 		HashMap<String, String> contentFields = getContentFields();
 		
-		for (HashMap<String, String> content : contents) {
+		for (HashMap<String, Object> content : contents) {
 			
 			for (String contentField : contentFields.keySet()) {
 				if (content.get(contentField) == null) {
@@ -376,24 +415,24 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			for (String contentField : contentFields.keySet()) {
 
 				if (contentField == "content_id") {
-					doc.add(new Field(contentField, content.get(contentField), Field.Store.YES, Field.Index.NOT_ANALYZED));
+					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 				} else if (contentField == "group") {
-					doc.add(new Field(contentField, content.get(contentField), Field.Store.YES, Field.Index.NOT_ANALYZED));
+					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 				} else if (contentField == "date") {
-					doc.add(new Field(contentField, content.get(contentField), Field.Store.YES,Field.Index.NOT_ANALYZED));
+					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES,Field.Index.NOT_ANALYZED));
 				} else if (contentField == "year") {
-					doc.add(new Field(contentField, content.get(contentField), Field.Store.YES,Field.Index.NOT_ANALYZED));
+					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES,Field.Index.NOT_ANALYZED));
 				} else if ((contentField == "author")||(contentField == "tas")) {
-					doc.add(new Field(contentField, content.get(contentField), Field.Store.YES,Field.Index.ANALYZED));
-					mergedfields = mergedfields + " " + tex.encode(content.get(contentField));
+					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES,Field.Index.ANALYZED));
+					mergedfields = mergedfields + " " + tex.encode(content.get(contentField).toString());
 				} else if (contentField == "user_name") {
-					doc.add(new Field(contentField, content.get(contentField), Field.Store.YES,Field.Index.NOT_ANALYZED));
-					mergedfields = mergedfields + " " + tex.encode(content.get(contentField));
+					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES,Field.Index.NOT_ANALYZED));
+					mergedfields = mergedfields + " " + tex.encode(content.get(contentField).toString());
 				} else if ((contentField == "intrahash") || (contentField == "interhash")) {
-					doc.add(new Field(contentField, content.get(contentField), Field.Store.YES, Field.Index.NOT_ANALYZED));
+					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 				} else {
-					doc.add(new Field(contentField, tex.encode(content.get(contentField)), Field.Store.YES, Field.Index.NO));
-					mergedfields = mergedfields + " " + tex.encode(content.get(contentField));
+					doc.add(new Field(contentField, tex.encode(content.get(contentField).toString()), Field.Store.YES, Field.Index.NO));
+					mergedfields = mergedfields + " " + tex.encode(content.get(contentField).toString());
 				}
 			}
 			// TODO Field.Store.NO
@@ -440,6 +479,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		return false;
 	}
 
+	
 	/**
 	 * get list of fields this resource consists of
 	 * @return
@@ -456,11 +496,16 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * disables write operations on the index
 	 */
 	//public abstract void setReadMode();
-	
+
 	/**
 	 * get managed resource type
 	 */
 	protected abstract Class<? extends Resource> getResourceType();
+	
+	/**
+	 * get managed resource record type
+	 */
+	protected abstract RecordType getRecordType();
 
 	/**
 	 * get managed resource name

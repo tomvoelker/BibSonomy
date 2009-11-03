@@ -1,9 +1,8 @@
-package org.bibsonomy.lucene;
+package org.bibsonomy.lucene.search;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -27,21 +26,19 @@ import org.apache.lucene.search.RangeFilter;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
-import org.bibsonomy.common.enums.FilterEntity;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.LuceneException;
+import org.bibsonomy.lucene.index.analyzer.SimpleKeywordAnalyzer;
+import org.bibsonomy.lucene.param.LuceneIndexStatistics;
+import org.bibsonomy.lucene.param.QuerySortContainer;
+import org.bibsonomy.lucene.util.Utils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.services.searcher.ResourceSearch;
 
 //FIXME: remove this comment (used only for triggering cvs-commit)
 
-public class LuceneSearchBibTex extends LuceneSearch<BibTex> {
+public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 	final Log LOGGER = LogFactory.getLog(LuceneSearchBibTex.class);
 
 	private final static LuceneSearchBibTex singleton = new LuceneSearchBibTex();

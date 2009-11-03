@@ -4,47 +4,51 @@
 	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
-	<bean id="luceneBibTexIndex" class="org.bibsonomy.lucene.index.LuceneBibTexIndex" factory-method="getInstance">
-	</bean>
+	<!--+
+	    | lucene indexes 
+	    +-->
+	<bean id="luceneBibTexIndex" class="org.bibsonomy.lucene.index.LuceneBibTexIndex" factory-method="getInstance"/>
+	<bean id="luceneBookmarkIndex" class="org.bibsonomy.lucene.index.LuceneBookmarkIndex" factory-method="getInstance"/>
 
-	<bean id="luceneBookmarkIndex" class="org.bibsonomy.lucene.index.LuceneBookmarkIndex" factory-method="getInstance">
-	</bean>
+	<!--+
+	    | lucene database access logics 
+	    +-->
+	<bean id="luceneBibTexLogic" class="org.bibsonomy.lucene.database.LuceneBibTexLogic" factory-method="getInstance"/>
+	<bean id="luceneBookmarkLogic" class="org.bibsonomy.lucene.database.LuceneBookmarkLogic" factory-method="getInstance"/>
 
-	<bean id="luceneBibTexLogic" class="org.bibsonomy.lucene.database.LuceneBibTexLogic" factory-method="getInstance">
-	</bean>
+	<!--+
+	    | lucene index searcher 
+	    +-->
+	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.search.LuceneSearchBibTex" factory-method="getInstance"/>
+	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.LuceneSearchBookmarks" factory-method="getInstance"/>
 
-	<bean id="luceneBookmarkLogic" class="org.bibsonomy.lucene.database.LuceneBookmarkLogic" factory-method="getInstance">
+	
+	<!--+
+	    | lucene index manager (e.g. spam) 
+	    +-->
+	<bean id="luceneBibTexManager" class="org.bibsonomy.lucene.index.LuceneBibTexManager" factory-method="getPreInitInstance">
+		<property name="resourceIndex" ref="luceneBibTexIndex"/>
+		<property name="dbLogic" ref="luceneBibTexLogic"/>
+		<property name="searcher" ref="luceneBibTexSearch"/>
 	</bean>
-
-	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.LuceneSearchBibTex" factory-method="getInstance">
-	</bean>
-
-	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.LuceneSearchBookmarks" factory-method="getInstance">
+	<bean id="luceneBookmarkManager" class="org.bibsonomy.lucene.index.LuceneBookmarkManager" factory-method="getPreInitInstance">
+		<property name="resourceIndex" ref="luceneBookmarkIndex"/>
+		<property name="dbLogic" ref="luceneBookmarkLogic"/>
+		<property name="searcher" ref="luceneBookmarkSearch"/>
 	</bean>
 	
-	<bean id="luceneUpdateManager" class="org.bibsonomy.lucene.index.LuceneUpdateManager" factory-method="getPreInitInstance">
-		<property name="indexMap" ref="luceneIndexes"/>
-		<property name="logicMap" ref="luceneLogics"/>
-		<property name="searchMap" ref="luceneSearcher"/>
+	
+	<!--+
+	    | lucene's resource search interface implementation
+	    | (delegating requests to index searcher and mangager)   
+	    +-->
+	<bean id="luceneDelegateBookmarkSearch" class="org.bibsonomy.lucene.search.delegate.LuceneDelegateBookmarkSearch" factory-method="getPreInitInstance">
+		<property name="resourceManager" ref="luceneBookmarkManager"/>
+		<property name="resourceSearcher" ref="luceneBookmarkSearch"/>
 	</bean>
-
-	<bean id="bibTexType" class="org.bibsonomy.model.Resource" factory-method="getResource">
-		<constructor-arg value="BibTex"/>
+	<bean id="luceneDelegateBibTexSearch" class="org.bibsonomy.lucene.search.delegate.LuceneDelegateBibTexSearch" factory-method="getPreInitInstance">
+		<property name="resourceManager" ref="luceneBibTexManager"/>
+		<property name="resourceSearcher" ref="luceneBibTexSearch"/>
 	</bean>
-	<bean id="bookmarkType" class="org.bibsonomy.model.Resource" factory-method="getResource">
-		<constructor-arg value="Bookmark"/>
-	</bean>
-	  
-	<util:map id="luceneIndexes">
-		<entry key-ref="bibTexType" value-ref="luceneBibTexIndex"/>
-		<entry key-ref="bookmarkType" value-ref="luceneBookmarkIndex"/>
-	</util:map>
-	<util:map id="luceneSearcher">
-		<entry key-ref="bibTexType" value-ref="luceneBibTexSearch"/>
-		<entry key-ref="bookmarkType" value-ref="luceneBookmarkSearch"/>
-	</util:map>
-	<util:map id="luceneLogics">
-		<entry key-ref="bibTexType" value-ref="luceneBibTexLogic"/>
-		<entry key-ref="bookmarkType" value-ref="luceneBookmarkLogic"/>
-	</util:map>
+	
 </beans>

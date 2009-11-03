@@ -1,4 +1,4 @@
-package org.bibsonomy.lucene.testutil;
+package org.bibsonomy.lucene.util;
 
 import java.io.IOException;
 import java.util.Properties;

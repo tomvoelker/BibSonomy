@@ -1,4 +1,4 @@
-package org.bibsonomy.lucene;
+package org.bibsonomy.lucene.param;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

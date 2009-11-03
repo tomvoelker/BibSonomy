@@ -1,4 +1,4 @@
-package org.bibsonomy.lucene;
+package org.bibsonomy.lucene.param;
 
 /**
  * This is a bookmark, which is derived from {@link Resource}.

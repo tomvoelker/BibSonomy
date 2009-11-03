@@ -60,7 +60,7 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @return
 	 */
 	@Deprecated
-	public List<HashMap<String, String>> retrieveRecordsFromDatabase(Date fromDate, Date toDate);
+	public List<HashMap<String, Object>> getPostsForTimeRange(Date fromDate, Date toDate);
 
 	//------------------------------------------------------------------------
 	// methods for building the index
