@@ -30,6 +30,16 @@
     font-size: 80%;
 }
 
+.fsFloatLabel {
+    font-weight: bold;
+    font-size: 80%;
+}
+
+.fsFloatInput{
+	margin-left 10px;
+    margin-right 5px;
+}
+
 .fsInput, #inpf {
     margin-bottom: 2px;
 }
