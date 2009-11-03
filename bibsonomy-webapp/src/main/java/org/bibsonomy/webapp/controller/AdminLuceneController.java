@@ -11,8 +11,11 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.exceptions.ValidationException;
-import org.bibsonomy.lucene.LuceneSearchBibTex;
-import org.bibsonomy.lucene.LuceneSearchBookmarks;
+import org.bibsonomy.lucene.search.delegate.LuceneDelegateBibTexSearch;
+import org.bibsonomy.lucene.search.delegate.LuceneDelegateBookmarkSearch;
+import org.bibsonomy.lucene.search.delegate.LuceneDelegateResourceSearch;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -97,8 +100,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		}
 		
 		
-		LuceneSearchBookmarks bookmarksIndex = LuceneSearchBookmarks.getInstance();
-		LuceneSearchBibTex publicationsIndex = LuceneSearchBibTex.getInstance();
+		LuceneDelegateResourceSearch<Bookmark> bookmarksIndex    = LuceneDelegateBookmarkSearch.getInstance();
+		LuceneDelegateResourceSearch<BibTex>   publicationsIndex = LuceneDelegateBibTexSearch.getInstance();
 
 		// Infos über die einzelnen Indexe
 		// Anzahl Einträge, letztes Update, ...
@@ -107,8 +110,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		command.bookmarksIndex.setInstance(bookmarksIndex.toString());
 		command.publicationsIndex.setInstance(publicationsIndex.toString());
 		
-		command.bookmarksIndex.setIndexStatistics(bookmarksIndex.getStatistics());
-		command.publicationsIndex.setIndexStatistics(publicationsIndex.getStatistics());
+//		command.bookmarksIndex.setIndexStatistics(bookmarksIndex.getStatistics());
+//		command.publicationsIndex.setIndexStatistics(publicationsIndex.getStatistics());
 
 		
 
@@ -116,6 +119,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	}
 
 	public AdminLuceneViewCommand instantiateCommand() {
+		log.info("Strange things are happening..."); 
 		return new AdminLuceneViewCommand();
 	}
 

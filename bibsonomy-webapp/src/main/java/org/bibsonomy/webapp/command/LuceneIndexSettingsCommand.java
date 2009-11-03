@@ -3,7 +3,7 @@ package org.bibsonomy.webapp.command;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
-import org.bibsonomy.lucene.LuceneIndexStatistics;
+import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 
 /**
  * Bean for classifier settings
