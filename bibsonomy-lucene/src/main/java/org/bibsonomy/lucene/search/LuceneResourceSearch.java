@@ -5,19 +5,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.bibsonomy.common.enums.FilterEntity;
-import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.lucene.LuceneUpdater;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
-import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * abstract parent class for lucene search

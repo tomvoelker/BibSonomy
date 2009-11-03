@@ -1,13 +1,10 @@
 package org.bibsonomy.lucene.index;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.naming.Context;
@@ -29,15 +26,10 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TopDocs;
-import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.lucene.LuceneUpdater;
 import org.bibsonomy.lucene.param.LuceneData;
 import org.bibsonomy.lucene.param.RecordType;
 import org.bibsonomy.lucene.util.DBToolJDNIResource;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.User;
 import org.bibsonomy.util.tex.TexEncode;
 
 import com.mysql.jdbc.Connection;
