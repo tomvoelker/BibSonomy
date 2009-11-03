@@ -1,6 +1,6 @@
 package org.bibsonomy.lucene.index;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -11,33 +11,21 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
-import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
-import org.bibsonomy.lucene.index.GenerateLuceneIndex;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.lucene.LuceneUpdater;
 import org.bibsonomy.lucene.database.LuceneBibTexLogic;
-import org.bibsonomy.lucene.database.LuceneBookmarkLogic;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
-import org.bibsonomy.lucene.database.LuceneDBLogic;
-import org.bibsonomy.lucene.search.LuceneSearchBibTex;
-import org.bibsonomy.lucene.search.LuceneSearchBookmarks;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateBibTexSearch;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateBookmarkSearch;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateResourceSearch;
@@ -46,7 +34,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -149,9 +136,10 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
 
 		// update index
-		LuceneUpdater updater = new LuceneUpdater();
-		updater.updateIndex(false);
-		updater.reloadIndex();
+		this.luceneBibTexUpdater.updateIndex(false);
+		this.luceneBookmarkUpdater.updateIndex(false);
+		this.luceneBibTexUpdater.reloadIndex();
+		this.luceneBookmarkUpdater.reloadIndex();
 		
 		// prepare searcher
 		ResourceSearch<BibTex> bibtexSearcher = LuceneDelegateBibTexSearch.getInstance();
