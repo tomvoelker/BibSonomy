@@ -64,8 +64,8 @@
 									        <option value="${et}">${et}</option> 
 									      </c:forEach>
 									    </select></div>
-									    <div style="float:right">
-									    <input type="text" name="post.resource.bibtexKey" size="10" class="reqinput"/><span style="font-size: 80%; font-weight: bold; text-align: right; vertical-align: top; margin-left: 5px;"><fmt:message key="post.resource.bibtexKey"/>*</span>
+									    <div style="float:left; margin-left: 5px">
+									    <input type="text" name="post.resource.bibtexKey" size="20" class="reqinput"/><span style="font-size: 80%; font-weight: bold; text-align: right; vertical-align: top; margin-left: 5px;"><fmt:message key="post.resource.bibtexKey"/>*</span>
 									    </div>
 									    </div>
 								    </td>
