@@ -18,6 +18,23 @@
 					<target>1.5</target>
 				</configuration>
 			</plugin>
+	<plugin>
+          <!-- NOTE: We don't need a groupId specification because the group is
+               org.apache.maven.plugins ...which is assumed by default.
+            -->
+          <artifactId>maven-assembly-plugin</artifactId>
+          <configuration>
+            <descriptorRefs>
+              <descriptorRef>jar-with-dependencies</descriptorRef>
+            </descriptorRefs>
+            <archive>
+              <manifest>
+		<mainClass>org.bibsonomy.lucene.index.GenerateLuceneIndex</mainClass>
+              </manifest>
+            </archive>
+
+          </configuration>
+	</plugin>
 		</plugins>
 		<extensions>
 			<extension>
@@ -26,6 +43,7 @@
 				<version>1.0-beta-2</version>
 			</extension>
 		</extensions>
+
 	</build>
 	<parent>
 		<groupId>org.bibsonomy</groupId>
@@ -95,7 +113,6 @@
 			<groupId>org.mockejb</groupId>
 			<artifactId>mockejb</artifactId>
 			<version>0.6-beta2</version>
-			<scope>test</scope>
 		</dependency>
 <!--
 		<dependency>
