@@ -1150,3 +1150,28 @@ padding-top:1px;
   font-size: 65%;
   color: #ffff99;
 }
+
+
+
+.fsLabel {
+	float: left;
+	width: 20%;
+    text-align: right;
+    font-weight: bold;
+    font-size: 80%;
+    margin-right: 5px;
+}
+
+.fsFloatLabel {
+    font-weight: bold;
+    font-size: 80%;
+}
+
+.fsFloatInput{
+	margin-left: 10px;
+    margin-right: 5px;
+}
+
+.fsInput, #inpf {
+    margin-bottom: 2px;
+}
