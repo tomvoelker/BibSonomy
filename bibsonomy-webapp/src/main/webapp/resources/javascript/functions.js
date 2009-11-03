@@ -1873,9 +1873,10 @@ function addSystemTags(){
     var button = document.getElementById("bibTexKeyReloadButton");
     button.setAttribute("src","/resources/image/button_reload-inactive.png");
 	
-    var buffer = "";
+    var buffer  = "";
     var authors = document.getElementById("lauthor").value;
-    var year = document.getElementById("lyear").value;
+    var year    = document.getElementById("lyear").value;
+    var title   = document.getElementById("ltitle").value;
 
     /* get author */
     var first = getFirstPersonsLastName(authors);
@@ -1892,6 +1893,11 @@ function addSystemTags(){
         buffer += year.trim();
     }
 
+    /* first relevant word of the title */
+	if (title != null) {
+		buffer += getFirstRelevantWord(title).toLowerCase();
+	}
+    
     document.getElementById("lbibtexKey").value = buffer.toLowerCase();
     button.setAttribute("src","/resources/image/button_reload.png");
 }
@@ -1921,6 +1927,18 @@ function getFirstPersonsLastName(person) {
         return lastname;
     }
     return null;
+}
+
+function getFirstRelevantWord(title) {
+	split = title.split(" ");
+	for (i in split) {
+		var regex = new RegExp("[^a-zA-Z0-9]", "g");
+		ss = split[i].replace(regex, "");
+		if (ss.length > 4) {
+			return ss;
+		}
+	}
+	return "";
 }
 
 //get the value of a node by a windowevent

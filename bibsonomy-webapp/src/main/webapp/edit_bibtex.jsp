@@ -267,7 +267,7 @@ td.expl_s {
 <tr>
   <td class="expl">title*</td>
   <td>
-    <textarea class="reqinput" name="title" rows="3" ><c:out value="${bibtexHandlerBean.title}"/></textarea>
+    <textarea class="reqinput" id="ltitle" name="title" rows="3" ><c:out value="${bibtexHandlerBean.title}"/></textarea>
     <div class="errmsg">${bibtexHandlerBean.errors.title}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.title}"/></div>
   </td>
