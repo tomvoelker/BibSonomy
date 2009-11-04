@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+  <!--+
+      | property mapping configuration
+      +-->
+  <util:map id="bibTexPropertyMap" map-class="java.util.HashMap">
+    <entry key="resource.address">
+      <map>
+	<entry key="luceneName"    value="address"/>
+      </map>
+    </entry>
+    <entry key="resource.annote">
+      <map>
+	<entry key="luceneName"    value="annote"/>
+      </map>
+    </entry>
+    <entry key="resource.author">
+      <map>
+	<entry key="luceneName"    value="author"/>
+      </map>
+    </entry>
+    <entry key="resource.key">
+      <map>
+	<entry key="luceneName"    value="bKey"/>
+      </map>
+    </entry>
+    <entry key="resource.abstract">
+      <map>
+	<entry key="luceneName"    value="bibtexAbstract"/>
+      </map>
+    </entry>
+    <entry key="resource.bibtexKey">
+      <map>
+	<entry key="luceneName"    value="bibtexKey"/>
+      </map>
+    </entry>
+    <entry key="resource.booktitle">
+      <map>
+	<entry key="luceneName"    value="booktitle"/>
+      </map>
+    </entry>
+    <entry key="resource.chapter">
+      <map>
+	<entry key="luceneName"    value="chapter"/>
+      </map>
+    </entry>
+    <entry key="contentId">
+      <map>
+	<entry key="luceneName"    value="content_id"/>
+      </map>
+    </entry>
+    <entry key="resource.crossref">
+      <map>
+	<entry key="luceneName"    value="crossref"/>
+      </map>
+    </entry>
+    <entry key="date">
+      <map>
+	<entry key="luceneName"    value="date"/>
+      </map>
+    </entry>
+    <entry key="resource.day">
+      <map>
+	<entry key="luceneName"    value="day"/>
+      </map>
+    </entry>
+    <entry key="description">
+      <map>
+	<entry key="luceneName"    value="description"/>
+      </map>
+    </entry>
+    <entry key="resource.edition">
+      <map>
+	<entry key="luceneName"    value="edition"/>
+      </map>
+    </entry>
+    <entry key="resource.editor">
+      <map>
+	<entry key="luceneName"    value="editor"/>
+      </map>
+    </entry>
+    <entry key="resource.entrytype">
+      <map>
+	<entry key="luceneName"    value="entryType"/>
+      </map>
+    </entry>
+    <entry key="groups">
+      <map>
+	<entry key="luceneName"    value="group"/>
+	<entry key="itemProperty"  value="name"/>
+      </map>
+    </entry>
+    <entry key="resource.howpublished">
+      <map>
+	<entry key="luceneName"    value="howPublished"/>
+      </map>
+    </entry>
+    <entry key="resource.institution">
+      <map>
+	<entry key="luceneName"    value="institution"/>
+      </map>
+    </entry>
+    <entry key="resource.interHash">
+      <map>
+	<entry key="luceneName"    value="interhash"/>
+      </map>
+    </entry>
+    <entry key="resource.intraHash">
+      <map>
+	<entry key="luceneName"    value="intrahash"/>
+      </map>
+    </entry>
+    <entry key="resource.journal">
+      <map>
+	<entry key="luceneName"    value="journal"/>
+      </map>
+    </entry>
+    <entry key="resource.misc">
+      <map>
+	<entry key="luceneName"    value="misc"/>
+      </map>
+    </entry>
+    <entry key="resource.month">
+      <map>
+	<entry key="luceneName"    value="month"/>
+      </map>
+    </entry>
+    <entry key="resource.note">
+      <map>
+	<entry key="luceneName"    value="note"/>
+      </map>
+    </entry>
+    <entry key="resource.number">
+      <map>
+	<entry key="luceneName"    value="number"/>
+      </map>
+    </entry>
+    <entry key="resource.organization">
+      <map>
+	<entry key="luceneName"    value="organization"/>
+      </map>
+    </entry>
+    <entry key="resource.pages">
+      <map>
+	<entry key="luceneName"    value="pages"/>
+      </map>
+    </entry>
+    <entry key="resource.publisher">
+      <map>
+	<entry key="luceneName"    value="publisher"/>
+      </map>
+    </entry>
+    <entry key="resource.school">
+      <map>
+	<entry key="luceneName"    value="school"/>
+      </map>
+    </entry>
+    <entry key="resource.series">
+      <map>
+	<entry key="luceneName"    value="series"/>
+      </map>
+    </entry>
+    <entry key="tags">
+      <map>
+	<entry key="luceneName"    value="tas"/>
+	<entry key="itemProperty"  value="name"/>
+      </map>
+    </entry>
+    <entry key="resource.title">
+      <map>
+	<entry key="luceneName"    value="title"/>
+      </map>
+    </entry>
+    <entry key="resource.type">
+      <map>
+	<entry key="luceneName"    value="type"/>
+      </map>
+    </entry>
+    <entry key="resource.url">
+      <map>
+	<entry key="luceneName"    value="url"/>
+      </map>
+    </entry>
+    <entry key="user.name">
+      <map>
+	<entry key="luceneName"    value="user_name"/>
+      </map>
+    </entry>
+    <entry key="resource.volume">
+      <map>
+	<entry key="luceneName"    value="volume"/>
+      </map>
+    </entry>
+    <entry key="resource.year">
+      <map>
+	<entry key="luceneName"    value="year"/>
+      </map>
+    </entry>
+  </util:map>
+</beans>

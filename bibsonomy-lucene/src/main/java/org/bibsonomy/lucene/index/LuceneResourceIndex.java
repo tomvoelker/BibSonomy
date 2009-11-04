@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -278,7 +279,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		
 		for (LuceneData luceneDataContent : contents) {
 			
-			HashMap<String, String> content = luceneDataContent.getContent();
+			Map<String, String> content = luceneDataContent.getContent();
 			
 			for (String contentField : contentFields.keySet()) {
 				if (content.get(contentField) == null) {

@@ -50,5 +50,5 @@
 		<property name="resourceManager" ref="luceneBibTexManager"/>
 		<property name="resourceSearcher" ref="luceneBibTexSearch"/>
 	</bean>
-	
+
 </beans>

@@ -160,10 +160,14 @@
 			<artifactId>commons-logging</artifactId>
 		</dependency>
 		<dependency>
+		        <groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.1</version>
+		</dependency>
+		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
-		
   		<dependency>
   			<groupId>org.bibsonomy</groupId>
   			<artifactId>bibsonomy-model</artifactId>

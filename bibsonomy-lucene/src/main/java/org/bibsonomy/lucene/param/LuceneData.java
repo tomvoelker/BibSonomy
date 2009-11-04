@@ -1,12 +1,20 @@
 package org.bibsonomy.lucene.param;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.Arrays;
 import java.util.TreeSet;
 
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.NullArgumentException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -14,14 +22,40 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+/**
+ * FIXME: refactor this class and handle bookmark in the same way as bibtex
+ * 
+ * @author sst, fei
+ *
+ */
 public class LuceneData {
+	private static final Log log = LogFactory.getLog(LuceneData.class);
+	private static final String LUCENE_CONTEXT_XML = "LuceneBibTexFields.xml";
+	private static final String CFG_LUCENENAME = "luceneName";
+	
+	private static String CFG_ITEMPROPERTY   = "itemProperty";
+	private static String CFG_LIST_DELIMITER = " ";
 
-
-	private HashMap<String,String> bibtexContent;	
+	private Map<String,String> bibtexContent;	
 	private HashMap<String,String> bookmarkContent;	
 	private RecordType contentType;
 	
+	/** spring bean factory for initializing instances */
+	private static BeanFactory beanFactory;
+	
+	/**
+	 * static initialization
+	 */
+	static {
+		ApplicationContext context = new ClassPathXmlApplicationContext(
+		        new String[] {LUCENE_CONTEXT_XML});
+
+		// an ApplicationContext is also a BeanFactory (via inheritance)
+		beanFactory = context;
+	}
 	
 /*	
 	public LuceneData() {
@@ -389,8 +423,8 @@ public class LuceneData {
 	
 	
 	
-	public HashMap<String,String> getContent(){
-		HashMap<String,String> content;
+	public Map<String,String> getContent(){
+		Map<String,String> content;
 		if (RecordType.BibTex == this.contentType) {
 			content =  this.bibtexContent; 
 		} else if (RecordType.Bookmark == this.contentType) {
@@ -414,13 +448,19 @@ public class LuceneData {
 		this.setBookmarkUrl(bookmarkPost.getResource().getUrl());
 	}
 		
+
+	/**
+	 * read property values from given post and store them in the corresponding hashmap
+	 * @param post
+	 */
+	public void setPostBibTex (Post<BibTex> post) {
 		
-	public void setPostBibTex (Post<BibTex> BibTexpost)
-	{
+		this.bibtexContent = extractPost(post);
 		
-		
+		// all done.
+		return;
 	}
-		
+
 	@SuppressWarnings("unchecked")
 	public void setPost(Post<? extends Resource> post) {
 		// FIXME: remove this test by refactoring
@@ -431,6 +471,97 @@ public class LuceneData {
 			setContentType(RecordType.BibTex);
 			setPostBibTex((Post<BibTex>)post);
 		}
+	}
+	
+
+	/**
+	 * read property values from given object as defined in given propertyMap
+	 * 
+	 * @param post
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String,String> extractPost(Post<? extends Resource> post) {
+		Map<String,String> postContent = new HashMap<String, String>();
+		
+		//--------------------------------------------------------------------
+		// read bibtex properties from spring configuration file
+		//--------------------------------------------------------------------
+		// FIXME: remove this test by refactoring
+		Map<String,Map<String,Object>> resourcePropertyMap;
+		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) ){
+			resourcePropertyMap = (Map<String, Map<String,Object>>) beanFactory.getBean("bookmarkPropertyMap");
+		} else if( BibTex.class.isAssignableFrom(post.getResource().getClass()) ){
+			resourcePropertyMap = (Map<String, Map<String,Object>>) beanFactory.getBean("bibTexPropertyMap");
+		} else {
+			log.error("Unknown resource type");
+			return new HashMap<String,String>();
+		}
+
+		
+		// cycle though all properties and store the corresponding
+		// values in the content hash map
+		for( String propertyName : resourcePropertyMap.keySet() ) {
+			// log.debug("Reading property "+propertyName);
+
+			// extract property value from object
+			Object property = null;
+			String propertyValue = "";
+			try {
+				// get property from post object
+				property = PropertyUtils.getProperty(post, propertyName);
+				if( property!=null ) {
+					// only handly non-null values
+					if( property instanceof Iterable<?> ) {
+						// if property is a collection - concatenate all items in a single value
+						for( Object item : (Iterable<?>)property ) {
+							if(!"".equals(propertyValue))
+								propertyValue += CFG_LIST_DELIMITER;
+							propertyValue += extractPropertyValue(resourcePropertyMap, propertyName, item);
+						}
+					} else {
+						propertyValue = extractPropertyValue(resourcePropertyMap, propertyName, property);
+					}
+				}
+			} catch (Exception e) {
+				log.error("Error reading property '"+propertyName+"' from post object.", e);
+			}
+			
+			String luceneName = (String)resourcePropertyMap.get(propertyName).get(CFG_LUCENENAME);
+			if( (propertyValue!=null) && (!"".equals(propertyValue.trim())) ) {
+				// log.debug("Extracted '"+propertyValue+"' from property '"+propertyName+"' to '"+luceneName+"'");
+				postContent.put(luceneName, propertyValue);
+			} else {
+				postContent.put(luceneName, "");
+			}
+		}
+		
+		// all done.
+		return postContent;
+	}
+
+	/**
+	 * extracts property value from given object
+	 * 
+	 * @param bibTexPropertyMap
+	 * @param propertyName
+	 * @param item
+	 * @throws IllegalAccessException
+	 * @throws InvocationTargetException
+	 * @throws NoSuchMethodException
+	 */
+	private static String extractPropertyValue( 
+			Map<String, Map<String, Object>> bibTexPropertyMap, 
+			String propertyName, Object item) 
+	throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		String itemProperty = (String)bibTexPropertyMap.get(propertyName).get(CFG_ITEMPROPERTY);
+		String itemValue;
+		if( itemProperty!=null ) {
+			itemValue = (String)PropertyUtils.getNestedProperty(item, itemProperty);
+		} else {
+			itemValue = item.toString();
+		}
+		return itemValue;
 	}
 	
 }
