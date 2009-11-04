@@ -1151,7 +1151,7 @@ padding-top:1px;
   color: #ffff99;
 }
 
-
+/* postTabPublication */
 
 .fsLabel {
 	float: left;
@@ -1174,4 +1174,8 @@ padding-top:1px;
 
 .fsInput, #inpf {
     margin-bottom: 2px;
+}
+
+.fsFloatHelpLabel {
+    font-size: 75%;
 }
