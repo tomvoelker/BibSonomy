@@ -11,6 +11,7 @@
 	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="inboxSize" type="java.lang.Integer" required="true"/>
 	<jsp:directive.attribute name="basketSize" type="java.lang.Integer" required="true"/>
 	<jsp:directive.attribute name="searchString" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>	
@@ -177,6 +178,11 @@
 					<div id="mainHeaderRightBox">
 						<c:choose>
 						<c:when test="${!empty loginUserName}">
+								<c:url var="inboxUrl" value="/inbox" context="${projectContext}"/>
+								<span id="pickctr">${inboxSize}</span>&amp;nbsp;
+								<fmt:message key="navi.inInbox"/>&amp;nbsp;
+								<a href="${inboxUrl}"><fmt:message key="navi.inbox"/></a>
+								<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 								<c:url var="basketUrl" value="/basket" context="${projectContext}"/>
 								<span id="pickctr">${basketSize}</span>&amp;nbsp;
 								<fmt:message key="navi.pickedIn"/>&amp;nbsp;
