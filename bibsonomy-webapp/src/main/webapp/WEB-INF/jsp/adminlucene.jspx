@@ -19,6 +19,7 @@
 	<c:set var="publicationsIndex" value="${command.publicationsIndex}" />
 	
 	<layout:layout 
+	  	inboxSize="" 
 		basketSize="" 
 		searchString="" 
 		pageTitle="${command.pageTitle}" 

@@ -35,6 +35,7 @@
     <layout:layout requPath="${requPath}" 
       loginUserName="${command.context.loginUser.name}"
       basketSize="${command.context.loginUser.basket.numPosts}" 
+      inboxSize="${command.context.loginUser.inbox.numPosts}" 
       pageTitle="${pageTitle}" 
       searchString=""
       selectedNaviTab="nav_my"

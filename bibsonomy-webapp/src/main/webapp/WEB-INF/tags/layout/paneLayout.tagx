@@ -33,5 +33,5 @@
 		</c:otherwise>
 	</c:choose>	
 
-	<layout:layout loginUserName="${loginUserName}" beforeBodyClose="${beforeBodyClose}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" headerExt="${headerExt}" requestedUser="${requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" content="${content}" fullscreen="${fullscreen}" selectedNaviTab="${selectedNaviTab}"/>
+	<layout:layout loginUserName="${loginUserName}" beforeBodyClose="${beforeBodyClose}" searchString="hurz" inboxSize="${command.context.loginUser.inbox.numPosts}" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" headerExt="${headerExt}" requestedUser="${requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" content="${content}" fullscreen="${fullscreen}" selectedNaviTab="${selectedNaviTab}"/>
 </jsp:root>
