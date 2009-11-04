@@ -271,7 +271,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		//--------------------------------------------------------------------
 		// insert records into the index
 		//--------------------------------------------------------------------
-		HashMap<String, String> contentFields = new HashMap<String, String>();
+		HashMap<String, String> contentFields = getContentFields();//new HashMap<String, String>();
 		
 		String mergedfieldname = "mergedfields";
 
