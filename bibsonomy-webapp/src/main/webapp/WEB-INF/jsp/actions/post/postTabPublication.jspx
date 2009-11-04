@@ -46,18 +46,18 @@
 					
 					<!-- USED TRANSLATIONVARIABLES IN TAB0 -->
 					<fmt:message key="post_bibtex.button_label_check" var="button_label_check" />
-				
+        
 					<h2><fmt:message key="post_bibtex.manual.heading"/></h2>
 					<p>
 					    <fmt:message key="post_bibtex.manual.description" />
 					</p>				
-					<form method="POST" action="/postPublication" name="post_publication">
+					<form method="post" action="/postPublication" name="post_publication">
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative;">
   
                               <div>
                                 <label class="fsLabel" for="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/></label>
-                                <select id="post.resource.entrytype" name="post.resource.entrytype" multiple="false" tabindex="1" size="1">
+                                <select id="post.resource.entrytype" name="post.resource.entrytype" tabindex="1" size="1">
                                   <c:forEach var="et" items="${mtl:getBibTeXEntryTypes()}">
                                     <option value="${fn:escapeXml(et)}"><c:out value="${et}"/></option> 
                                   </c:forEach>
@@ -102,7 +102,7 @@
 				<p>
 				 	<fmt:message key="post_bibtex.pub_snippet.description" />
 			    </p>
-				<form method="POST" action="/BibtexHandler">
+				<form method="post" action="/BibtexHandler">
 					<div id="fsform">
 						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative;">
 							
