@@ -144,6 +144,11 @@ public class User {
 	private Basket basket;
 
 	/**
+	 * Inbox of this user where he gets Posts sent by other users
+	 */
+	private Inbox inbox;
+
+	/**
 	 * Holds the friends of this user
 	 */
 	private List<User> friends;
@@ -214,6 +219,7 @@ public class User {
 	public User(final String name) {
 		this.setName(name); 
 		this.basket = new Basket();
+		this.inbox=new Inbox();
 		this.settings = new UserSettings();
 		this.role = Role.NOBODY; // TODO: check, if this has any bad implications!
 	}
@@ -557,6 +563,23 @@ public class User {
 		this.basket = basket;
 	}
 
+	
+	/**
+	 * @return inbox
+	 */
+	public Inbox getInbox() {
+		return this.inbox;
+	}
+
+	/**
+	 * @param inbox
+	 */
+	public void setInbox(Inbox inbox) {
+		this.inbox = inbox;
+	}
+
+	
+	
 	/**
 	 * @return a List of friends
 	 */
@@ -566,7 +589,23 @@ public class User {
 		}
 		return this.friends;
 	}
-
+	
+	
+	/**
+	 * @return a List with names of user's friends
+	 */
+	public List<String> getFriendsAsString(){
+		if (this.friends==null) {
+			this.friends=new LinkedList<User>();
+		}
+		List<String> friendsAsString = new LinkedList<String>();
+		for (User friend:friends) {
+			friendsAsString.add(friend.getName());
+		}
+		return friendsAsString;
+	}
+	
+	
 	/**
 	 * Returns the first friend of this user.<br/>
 	 * 
@@ -592,6 +631,17 @@ public class User {
 		this.friends.add(friend);
 	}
 
+	/**
+	 * 
+	 * @param friends
+	 */
+	public void addFriends (final List<User> friends) {
+		// call getFriends to initialize this.friends
+		this.getFriends();
+		this.friends.addAll(friends);
+	}
+	
+	
 	/**
 	 * @return The role of the user.
 	 */
