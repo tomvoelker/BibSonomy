@@ -134,7 +134,12 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="basketPageController"/>
 					</bean>
-				</entry>				
+				</entry>	
+				<entry key="/inbox">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="inboxPageController"/>
+					</bean>
+				</entry>			
 				<entry key="/unapi">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="UnAPIController"/>
@@ -380,7 +385,19 @@
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
 			</list>
 		</property>
-	</bean>	 	
+	</bean>	 
+	
+	<bean id="inboxPageController" class="org.bibsonomy.webapp.controller.InboxPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
+	</bean>	 
+		
 	
 	
 	
