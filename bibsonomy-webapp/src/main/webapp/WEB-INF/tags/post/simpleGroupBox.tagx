@@ -27,9 +27,9 @@
 	
 			<div style="float: left; margin-right: 1ex;">
 	           <!-- radio buttons for public, private, other -->
-	           <input type="radiobutton" id="abstractGrouping" name="abstractGrouping" onclick="toggleGroupBox()" value="public" />  <span class="expl"><fmt:message key="post.resource.public"/></span><br/>
-	           <input type="radiobutton" id="abstractGrouping" name="abstractGrouping" onclick="toggleGroupBox()" value="private" /> <span class="expl"><fmt:message key="post.resource.private"/></span><br/>
-	           <input type="radiobutton" name="abstractGrouping" onclick="toggleGroupBox()" value="other" id="post.groups.other"/>  <span class="expl"><fmt:message key="post.resource.other"/></span>
+	           <input type="radio" id="abstractGrouping" name="abstractGrouping" onclick="toggleGroupBox()" value="public" />  <span class="expl"><fmt:message key="post.resource.public"/></span><br/>
+	           <input type="radio" id="abstractGrouping" name="abstractGrouping" onclick="toggleGroupBox()" value="private" /> <span class="expl"><fmt:message key="post.resource.private"/></span><br/>
+	           <input type="radio" name="abstractGrouping" onclick="toggleGroupBox()" value="other" id="post.groups.other"/>  <span class="expl"><fmt:message key="post.resource.other"/></span>
 			</div>
 	            <!-- select box for "other" groups TODO: allow multiple groups-->
 	            <select multiple="false" name="groups" size="5" id="post.groups.other2">
