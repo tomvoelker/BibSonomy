@@ -157,13 +157,13 @@
 								  	<!-- +++BLOCK ONE+++ -->
 								  	<!-- ROW ONE -->
 								  	<div style="margin-bottom:2px;">
-									    <span class="fsLabel"><fmt:message key="post_bibtex.upload.my_file" /></span>
+									    <label class="fsLabel"><fmt:message key="post_bibtex.upload.my_file" /></label>
 									    <input type="file" name="file" value="" size="50"  class="reqinput" />
 									</div>
 								  	
 								  	<!-- ROW TWO -->
 								  	<div style="margin-bottom:2px;">
-									    <span class="fsLabel"><fmt:message key="post_bibtex.upload.upload_description" /></span>
+									    <label class="fsLabel"><fmt:message key="post_bibtex.upload.upload_description" /></label>
 									    <input type="text" name="description" value="" size="60" />
 									</div>
 								    
@@ -180,7 +180,7 @@
 									    <!-- ROW ONE -->
 									    <div style="margin-bottom:2px; float: left; width:100%">
 										    <div style="width:15%; float:left">
-											    <span class="fsLabel"><fmt:message key="post_bibtex.upload.option.character_encoding" /></span>
+											    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.character_encoding" /></label>
 											</div>
 											<div style="width:35%; float:left">
 											    <select name="encoding" id="lencoding">
@@ -206,7 +206,7 @@
 											    </select>
 											</div>
 											<div style="width:50%; float:left">
-												<span class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.character_encoding_help" /></span>
+												<label class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.character_encoding_help" /></label>
 											</div>										    
 										</div>
 										
@@ -214,7 +214,7 @@
 									  	<!-- ROW TWO -->
 									  	<div style="margin-bottom:2px; float:left; width:100%">
 									  		 <div style="width:15%; float:left">
-											    <span class="fsLabel"><fmt:message key="post_bibtex.upload.option.viewable" /></span>
+											    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.viewable" /></label>
 											 </div>
 											 <div style="width:35%; float:left" >
 											    <post:groupBox groups="${loginUser.groups}"/>
@@ -225,7 +225,7 @@
 								    	<!-- ROW THREE -->
 									    <div style="margin-bottom:2px; float:left; width:100%">
 									    	 <div style="width:15%; float:left">
-											    <span class="fsLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter" /></span>
+											    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter" /></label>
 											 </div>
 											 <div style="width:35%; float:left" >
 											    <select name="delimiter" onchange="updateSubstitute(this);">
@@ -235,7 +235,7 @@
 											      </select>
 											  </div>
 											  <div style="width:50%; float:left">
-											    	<span class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter_help" /></span>
+											    	<label class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter_help" /></label>
 											  </div>
 										 </div>
 									    
@@ -243,13 +243,13 @@
 									  	<!-- ROW FOUR -->
 									  	<div style="margin-bottom:2px; float:left; width:100%">
 									  		<div style="width:15%; float:left">
-											    <span class="fsLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute" /></span>
+											    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute" /></label>
 											</div>
 											<div style="width:35%; float:left" >
 											    <input type="text" value="_" name="whitespace" size="2" maxlength="1" disabled="disabled" />
 											</div>
 										    <div style="width:50%; float:left">
-										    	<span class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute_help" /></span>
+										    	<label class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute_help" /></label>
 										   	</div>
 										</div>
 								</fieldset>
