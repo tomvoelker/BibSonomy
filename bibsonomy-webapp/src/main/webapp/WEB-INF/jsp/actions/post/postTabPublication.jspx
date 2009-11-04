@@ -23,7 +23,7 @@
 	
 	 <layout:tabLayout 
 			command="${command}" 
-			pageTitle="Post Bibtex" 
+			pageTitle="post publication" 
 			requPath="${requPath}">
 			 
 		<jsp:attribute name="heading">
