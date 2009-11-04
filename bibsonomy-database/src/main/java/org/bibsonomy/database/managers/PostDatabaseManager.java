@@ -97,6 +97,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return this.postList("get" + this.resourceClassName + "ByConceptByTag", param, session);
 	}
 	
+	
+	/**
+	 * @param param
+	 * @param session
+	 * @return a lists of Posts of type R with the inbox content
+	 */
+	public List<Post<R>> getPostsFromInbox(final P param, final DBSession session) {
+		return this.postList("get" + this.resourceClassName + "FromInbox", param, session);
+	}
 	/**
 	 * XXX: add parameters to method?
 	 * <em>/concept/tag/TAGNAME</em>

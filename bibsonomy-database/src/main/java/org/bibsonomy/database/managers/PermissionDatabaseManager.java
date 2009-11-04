@@ -206,6 +206,17 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		if( groupID==GroupID.INVALID.getId() )
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 	}
+	
+	/**
+	 * Ensures that the user has a friend with the given name
+	 * @param user
+	 * @param possibleFriend
+	 */
+	public void ensureFriendOfUser(final User user, final String possibleFriend) {
+		if (!user.getFriendsAsString().contains(possibleFriend)) {
+			throw new ValidationException("You are not authorized to send Posts to users you are not friends with.");
+		}
+	}
 
 	/**
 	 * Ensures that the user is an admin.
