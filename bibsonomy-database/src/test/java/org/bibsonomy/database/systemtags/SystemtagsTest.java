@@ -24,6 +24,7 @@ import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
+import org.bibsonomy.model.InboxMessage;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -209,7 +210,36 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 			// ignore
 		}
 	}
-	
+	/**
+	 *  test funtionality of the ForFriend SystemTag
+	 */
+	@Test
+	public void testForFriendTag(){
+		/*
+		 * Send an Inbox Message
+		 */
+		// create users
+		User testUser1 = createTestUser("senderUser");
+		User testUser2 = createTestUser("receiverUser");
+		testUser1.addFriend(testUser2);
+		
+		// create post
+		Set<Tag> tags = new HashSet<Tag>();
+		Tag tag = new Tag();
+		tag.setName("send:receiverUser");
+		tags.add(tag); 
+		
+		List<Post<?>> posts = new LinkedList<Post<?>>();
+		posts.add(createTestPost(testUser1, tags));
+		
+		// store posts
+		DBLogicUserInterfaceFactory logicFactory = new DBLogicUserInterfaceFactory();
+		logicFactory.setDbSessionFactory(getDbSessionFactory());
+		LogicInterface logic = logicFactory.getLogicAccess(testUser1.getName(), "password");
+		logic.createPosts(posts);
+		List<InboxMessage> messages = this.inboxDb.getInboxMessages("receiverUser", dbSession);
+		Assert.assertEquals(1, messages.size());
+	}
 	//------------------------------------------------------------------------
 	// helpers
 	//------------------------------------------------------------------------
