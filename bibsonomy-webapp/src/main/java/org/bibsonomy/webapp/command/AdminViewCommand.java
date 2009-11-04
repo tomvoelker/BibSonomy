@@ -13,6 +13,10 @@ import org.bibsonomy.model.User;
  */
 public class AdminViewCommand extends TabsCommand<User> {
 
+	/*
+	 * Titles of the tabs - order must match the following public 
+	 * integer definitions!
+	 */
 	private static final String[] tabTitles = {
 		"navi.newregistrations",
 		"navi.admin_spammer",
@@ -24,6 +28,18 @@ public class AdminViewCommand extends TabsCommand<User> {
 		"navi.classifier_nospammer",
 		"navi.classifier_evaluate"
 	};
+	/*
+	 * If you change order here, change it also in the above array!
+	 */
+	public final static int MOST_RECENT = 1;
+	public final static int ADMIN_SPAMMER_INDEX = 2;
+	public final static int ADMIN_UNSURE_INDEX = 3;
+	public final static int ADMIN_NOSPAMMER_INDEX = 4;
+	public final static int CLASSIFIER_SPAMMER_INDEX = 5;
+	public final static int CLASSIFIER_SPAMMER_UNSURE_INDEX = 6;
+	public final static int CLASSIFIER_NOSPAMMER_UNSURE_INDEX = 7;
+	public final static int CLASSIFIER_NOSPAMMER_INDEX	= 8;
+	public final static int CLASSIFIER_EVALUATE = 9;
 
 	/** Command containing current admin settings */
 	private AdminSettingsCommand settingsCommand = new AdminSettingsCommand();
