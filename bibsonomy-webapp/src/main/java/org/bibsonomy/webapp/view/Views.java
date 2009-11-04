@@ -69,6 +69,11 @@ public enum Views implements View {
 	TAGPAGE("tag"),
 	
 	/**
+	 * inbox page
+	 */
+	
+	INBOX("inbox"),
+	/**
 	 * authors overview page
 	 */
 	AUTHORSPAGE("authors"),
@@ -82,6 +87,8 @@ public enum Views implements View {
 	 * friends page show all tags whose are viewable for friends by a friend of you
 	 */
 	FRIENDSPAGE("friends"),
+	
+	
 	
 	/**
 	 * friend page shows all posts which are set viewable for friends of the requested user
