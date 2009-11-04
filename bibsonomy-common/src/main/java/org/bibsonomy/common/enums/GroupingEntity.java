@@ -85,8 +85,13 @@ public enum GroupingEntity {
 	 * for constraining the entities in the list to the ones contained in the
 	 * basket collection of a given user
 	 */
-	BASKET;
-
+	BASKET, 
+	
+	/**
+	 * for constraining the entities in the list to the ones contained in the 
+	 * inbox of the given user
+	 */
+	INBOX;
 	/**
 	 * @param groupingEntity name of the GroupingEntity Instance to retrieve
 	 * @return the corresponding GroupingEntity-enum for the given string argument.
