@@ -71,7 +71,7 @@
                               </div>
                   
                               <label class="fsLabel" for="post.resource.title" ><fmt:message key="post.resource.title"/></label>
-                              <extarea class="fsInput" id="post.resource.title" name="post.resource.title" tabindex="3" rows="2" onkeyup="sz(this);" ></textarea>
+                              <textarea class="fsInput" id="post.resource.title" name="post.resource.title" tabindex="3" rows="2" onkeyup="sz(this);" ></textarea>
                   
                               <label class="fsLabel" for="post.resource.author" ><fmt:message key="post.resource.author"/></label>
                               <textarea class="fsInput" id="post.resource.author" name="post.resource.author" tabindex="4" rows="3" onkeyup="sz(this);" ></textarea>
