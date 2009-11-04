@@ -221,6 +221,17 @@ INSERT INTO `ids` VALUES
 (12, 28, 'grouptas id');
 
 
+
+--
+-- Data for table `inboxMail`
+--
+
+INSERT INTO `inboxMail` VALUES
+(1, 'testuser1', 'testuser2', '2009-10-08 14:23:00'),
+(5, 'testuser3', 'testuser2', '2009-10-08 14:23:32'),
+(10, 'testuser3', 'testuser2', '2009-10-08 14:23:32');
+
+
 -- 
 -- Data for table `inetAddressStates`
 -- 
