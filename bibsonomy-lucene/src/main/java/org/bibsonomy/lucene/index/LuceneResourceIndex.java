@@ -123,6 +123,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		QueryParser qp = new QueryParser(COL_CONTENT_ID,new StandardAnalyzer());
 		Sort sort = new Sort(FLD_DATE,true);
 
+		// FIXME: dates shouldn't be stored in a text format
 		// search over all elements sort them reverse by date and return 1 top document (newest one)
 		TopDocs topDocs = null;
 		Document doc = null;
@@ -132,7 +133,6 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			// parse date
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
 			newestDate = dateFormatter.parse(doc.get(FLD_DATE));//dateFormatter.parse("1815-12-10 00:00:00.0");
-			searcher.close();
 		} catch (ParseException e) {
 			log.error("ParseException while parsing *:* in getNewestRecordDateFromIndex ("+e.getMessage()+")");
 		} catch (java.text.ParseException e) {
@@ -140,6 +140,12 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			newestDate = new Date();
 		} catch (IOException e) {
 			log.error("Error reading index file " + this.luceneIndexPath);
+		} finally {
+			try {
+				searcher.close();
+			} catch (IOException e) {
+				log.error("Error closing index "+this.luceneIndexPath+" for searching", e);
+			}
 		}
 		
 		if( newestDate!=null )

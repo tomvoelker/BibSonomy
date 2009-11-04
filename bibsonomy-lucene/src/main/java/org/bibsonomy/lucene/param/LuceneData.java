@@ -15,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.lucene.param.typehandler.LuceneTypeHandler;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -35,9 +36,9 @@ public class LuceneData {
 	private static final Log log = LogFactory.getLog(LuceneData.class);
 	private static final String LUCENE_CONTEXT_XML = "LuceneBibTexFields.xml";
 	private static final String CFG_LUCENENAME = "luceneName";
-	
-	private static String CFG_ITEMPROPERTY   = "itemProperty";
-	private static String CFG_LIST_DELIMITER = " ";
+	private static final String CFG_TYPEHANDLER = "typeHandler";
+	private static final String CFG_ITEMPROPERTY   = "itemProperty";
+	private static final String CFG_LIST_DELIMITER = " ";
 
 	private Map<String,String> bibtexContent;	
 	private HashMap<String,String> bookmarkContent;	
@@ -454,7 +455,6 @@ public class LuceneData {
 	 * @param post
 	 */
 	public void setPostBibTex (Post<BibTex> post) {
-		
 		this.bibtexContent = extractPost(post);
 		
 		// all done.
@@ -555,11 +555,20 @@ public class LuceneData {
 			String propertyName, Object item) 
 	throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		String itemProperty = (String)bibTexPropertyMap.get(propertyName).get(CFG_ITEMPROPERTY);
-		String itemValue;
-		if( itemProperty!=null ) {
-			itemValue = (String)PropertyUtils.getNestedProperty(item, itemProperty);
+		LuceneTypeHandler typeHandler  = (LuceneTypeHandler)bibTexPropertyMap.get(propertyName).get(CFG_TYPEHANDLER);
+		String itemValue = null;
+		// get the string value for the given object
+		if( typeHandler!=null ) {
+			// if a type handler is set, use the type handler for rendering the string
+			itemValue = typeHandler.getValue(item);
 		} else {
-			itemValue = item.toString();
+			// if no type handler is set, look for an item property
+			if( itemProperty!=null ) {
+				itemValue = (String)PropertyUtils.getNestedProperty(item, itemProperty);
+			} else {
+				// if no type handler or item property is set use Object.toString()
+				itemValue = item.toString();
+			}
 		}
 		return itemValue;
 	}
