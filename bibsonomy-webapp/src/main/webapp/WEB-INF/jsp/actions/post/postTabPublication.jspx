@@ -120,7 +120,7 @@
 			  				
 			  				<!-- ROW THREE -->
 					    	<label class="fsLabel" for=""><fmt:message key="post_bibtex.pub_snippet.snippet_viewable" /></label>
-				    		<post:groupBox groups="${loginUser.groups}"/>
+				    		<post:simpleGroupBox groups="${loginUser.groups}"/>
 				    	
 				    		<input type="submit" style="float:right" name="submit" value="${button_label_post}" />
 							
@@ -217,7 +217,7 @@
 											    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.viewable" /></label>
 											 </div>
 											 <div style="width:35%; float:left" >
-											    <post:groupBox groups="${loginUser.groups}"/>
+											    <post:simpleGroupBox groups="${loginUser.groups}"/>
 											 </div>
 											 
 										</div>
