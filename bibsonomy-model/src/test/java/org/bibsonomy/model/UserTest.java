@@ -28,6 +28,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
 /**
@@ -64,6 +67,11 @@ public class UserTest {
 		user.addFriend(new User());
 		user.addFriend(new User());
 		assertEquals(2, user.getFriends().size());
+		List<User> friendsList = new ArrayList<User>();
+		friendsList.add(new User());
+		friendsList.add(new User());
+		user.addFriends(friendsList);
+		assertEquals(4, user.getFriends().size());
 
 		// don't call getFriends before addFriend
 		user = new User();
