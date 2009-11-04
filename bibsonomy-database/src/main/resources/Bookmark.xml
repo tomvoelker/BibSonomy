@@ -254,6 +254,22 @@
 		ORDER BY bb.date DESC, bb.content_id
 	</select>
 
+
+	<select id="getBookmarkFromInbox" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT bb.content_id, bb.book_url_hash AS interhash, bb.book_url_hash AS intrahash, title, description, bb.date,
+		       bb.user_name, bb.book_url, bb.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name   
+		FROM (SELECT b.content_id, b.book_url_hash, b.book_description AS title, b.book_extended AS description, b.date,
+		             b.user_name, u.book_url, u.book_url_ctr
+		      FROM bookmark b, urls u, inboxMail i
+		      WHERE u.book_url_hash = b.book_url_hash
+		      	AND b.content_id = i.content_id
+		      	AND i.receiver_user=#requestedUserName#
+		      ORDER BY i.date DESC
+		      LIMIT #limit# OFFSET #offset#) AS bb
+		LEFT OUTER JOIN tas AS t ON t.content_id = bb.content_id
+		ORDER BY bb.date DESC, bb.content_id
+		</select>
+	
 	<select id="getBookmarkSearchLucene" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam" >
 		SELECT	b2.content_id, b2.book_url_hash AS interhash, b2.book_url_hash AS intrahash, title, description, b2.date,
 				b2.user_name, b2.book_url, b2.book_url_ctr AS count, t.tag_name, NULL AS `group`, NULL AS group_name

@@ -18,6 +18,7 @@
 	<typeAlias alias="tagset"             type="org.bibsonomy.model.TagSet" />
 	<typeAlias alias="document"           type="org.bibsonomy.model.Document" />
 	<typeAlias alias="author"			  type="org.bibsonomy.model.Author" />
+	<typeAlias alias="inboxMessage"		  type="org.bibsonomy.model.InboxMessage" />
 	<!-- Extras -->
 	<typeAlias alias="bibtexExtra"        type="org.bibsonomy.model.extra.BibTexExtra" />
 	<typeAlias alias="extendedFields"     type="org.bibsonomy.model.extra.ExtendedFields" />
@@ -39,6 +40,7 @@
 	<typeAlias alias="tagSetParam"    	  type="org.bibsonomy.database.params.TagSetParam" />
 	<typeAlias alias="authorParam"    	  type="org.bibsonomy.database.params.AuthorParam" />
 	<typeAlias alias="basketParam"    	  type="org.bibsonomy.database.params.BasketParam" />	
+	<typeAlias alias="inboxParam"		  type="org.bibsonomy.database.params.InboxParam" />
 		
 
 </sqlMap>

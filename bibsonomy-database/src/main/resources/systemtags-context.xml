@@ -16,10 +16,15 @@
 		+-->
 	<util:map id="executableSystemTagMap" map-class="java.util.HashMap">
 		<entry key="for" value-ref="forGroupTag"/>
+		<entry key="send" value-ref="forFriendTag"/>
 	</util:map>
 	
 	<!--+
 	    | 'for:group' system tag
 	    +-->
 	<bean id="forGroupTag" class="org.bibsonomy.database.systemstags.executable.ForGroupTag"/>
+	<!-- +
+		 | 'send:user' system tag
+		 +-->
+	<bean id="forFriendTag" class="org.bibsonomy.database.systemstags.executable.ForFriendTag"/>
 </beans>

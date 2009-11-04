@@ -8,7 +8,7 @@
 		version 5.0.5+ (dbe, 20071010)
 	-->	
 	<settings
-		defaultStatementTimeout="30"
+		defaultStatementTimeout="300"
 	/>
 
 	<typeAlias alias="date" type="java.util.Date" />
@@ -41,6 +41,7 @@
 	<sqlMap resource="common/DocumentCommon.xml" />
 	<sqlMap resource="common/AdminCommon.xml" />
 	<sqlMap resource="common/AuthorCommon.xml"/>
+	<sqlMap resource="common/InboxCommon.xml"/>
 
 	<sqlMap resource="General.xml" />
 	<sqlMap resource="Tag.xml" />
@@ -56,6 +57,7 @@
 	<sqlMap resource="Statistics.xml"/>
 	<sqlMap resource="Author.xml"/>
 	<sqlMap resource="Lucene.xml"/>
+	<sqlMap resource="Inbox.xml"/>
 
 	<!-- Plugins -->
 	<sqlMap resource="plugins/Logging.xml"/>

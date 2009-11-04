@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Inbox">
+
+	<insert id="createInboxItem" parameterClass="inboxParam">
+		INSERT IGNORE INTO inboxMail (sender_user, receiver_user, content_id, date) 
+		VALUES (#sender#, #receiver#, #contentId#, NOW())
+	</insert>
+	
+	<select id="getNumInboxItems" resultClass="Integer" parameterClass="String">
+		SELECT COUNT(content_Id) AS count
+		FROM inboxMail 
+		WHERE receiver_user=#receiver#
+	</select>
+	
+	<select id="getInboxItems" resultMap ="InboxCommon.inboxMessages" parameterClass="String">
+		SELECT content_id, sender_user, receiver_user
+		FROM inboxMail
+		WHERE receiver_user=#receiver#
+	</select>
+	
+	<delete id="deleteInboxItem" parameterClass="inboxParam">
+		DELETE FROM inboxMail
+		WHERE receiver_user=#receiver# 
+			AND content_Id=#contentId#	
+	</delete>
+	
+	<delete id="deleteAllInboxItems" parameterClass="String">
+		DELETE FROM inboxMail
+		WHERE receiver_user=#receiver#
+	</delete>
+	
+</sqlMap>
