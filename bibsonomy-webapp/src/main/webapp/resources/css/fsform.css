@@ -23,24 +23,21 @@
     margin: 8px 0px 0px 0px;
 }
 
-
 .fsLabel {
     text-align: right;
+}
+
+.fsFloatLabel, .fsLabel {
     font-weight: bold;
     font-size: 80%;
 }
 
-.fsFloatLabel {
-    font-weight: bold;
-    font-size: 80%;
-}
-
-.fsFloatInput{
+.fsFloatInput {
 	margin-left: 10px;
     margin-right: 5px;
 }
 
-.fsInput, #inpf {
+.fsInput, #inpf, .fsFloatInput {
     margin-bottom: 2px;
 }
 
