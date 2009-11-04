@@ -41,9 +41,28 @@ public class IEEEXploreBookScraperTest {
 	 */
 	@Test
 	@Ignore
-	public void urlTestRun(){
+	public void urlTestRun1(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_36"));
 	}
 	
+	/**
+	 * starts URL test with id url_157
+	 */
+	@Test
+	@Ignore
+	public void urlTestRun2(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_157"));
+	}
+	
+	/**
+	 * starts URL test with id url_158
+	 */
+	@Test
+	@Ignore
+	public void urlTestRun3(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_158"));
+	}
 }

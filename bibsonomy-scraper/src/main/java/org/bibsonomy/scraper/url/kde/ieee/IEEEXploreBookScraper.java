@@ -1,13 +1,8 @@
 package org.bibsonomy.scraper.url.kde.ieee;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.net.ConnectException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +15,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -39,57 +35,82 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 	private static final String info = "This scraper creates a BibTeX entry for the books at " +
 	href(SITE_URL, SITE_NAME);
 
-	private static final String IEEE_HOST = "ieeexplore.ieee.org";
-	private static final String IEEE_HOST_NAME = "http://ieeexplore.ieee.org/";
-	private static final String IEEE_BOOK_PATH = "books";
-	private static final String IEEE_BOOK	   = "@book";
+	private static final String IEEE_HOST        = "ieeexplore.ieee.org";
+	private static final String IEEE_BOOK_PATH   = "books";
+	private static final String IEEE_SEARCH_PATH = "search";
+	private static final String IEEE_BOOK	     = "@book";
 
 	private static final String CONST_ISBN     = "ISBN: ";
 	private static final String CONST_PAGES    = "Page(s): ";
+	private static final String CONST_ON_PAGES = "On page(s): ";
 	private static final String CONST_EDITION  = "Edition: ";
+	private static final String CONST_VOLUME   = "Volume: ";
 	private static final String CONST_DATE	   = "Publication Date: ";
+	
+	private static final String EXPORT_BKN_URL   = "http://ieeexplore.ieee.org/books/bkCiteAction";
+	private static final String EXPORT_ARNUM_URL = "http://ieeexplore.ieee.org/xpls/citationAct";
 
-	private static final Pattern pattern = Pattern.compile("bkn=([^&]*)");
+	private static final Pattern URL_PATTERN_BKN      = Pattern.compile("bkn=([^&]*)");
+	private static final Pattern URL_PATTERN_ARNUMBER = Pattern.compile("arnumber=([^&]*)");
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile("/" + IEEE_BOOK_PATH + ".*")));
+	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
 
+	static {
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_BOOK_PATH + ".*")));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + IEEE_HOST), Pattern.compile(IEEE_SEARCH_PATH + ".*")));
+	}
+	
 	public boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
-
-		final Matcher matcher = pattern.matcher(sc.getUrl().toString());
+		
+		String bibtex = null;
+		
+		Matcher matcher = URL_PATTERN_BKN.matcher(sc.getUrl().toString());
 		if(matcher.find()){
-			String downUrl = "http://ieeexplore.ieee.org/books/bkCiteAction?dlSelect=cite_abs&fileFormate=BibTex&arnumber=<arnumber>" + matcher.group(1) + "</arnumber>";
-			String bibtex = null;
+			String postContent = "dlSelect=cite_abs&fileFormate=BibTex&arnumber=<arnumber>" + matcher.group(1) + "</arnumber>";
 			try {
-				bibtex = getContentAsStringPostRequest(new URL(downUrl));
-			} catch (MalformedURLException ex) {
+				bibtex = WebUtils.getPostContentAsString(new URL(EXPORT_BKN_URL), postContent);
+			} catch (IOException ex) {
 				throw new InternalFailureException(ex);
 			}
-
-			if(bibtex != null){
-				// clean up
-				bibtex = bibtex.replace("<br>", "");
-
-				// append url
-				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
-				
-				// add downloaded bibtex to result 
-				sc.setBibtexResult(bibtex);
-				return true;
-
-			}else{
-				log.debug("IEEEXploreBookScraper: direct bibtex download failed. Use JTidy to get bibliographic data.");
-				sc.setBibtexResult(ieeeBookScrape(sc));
-				return true;
-
+		}
+		
+		if (bibtex == null || bibtex.equals("")) {
+			matcher = URL_PATTERN_ARNUMBER.matcher(sc.getUrl().toString());
+			if(matcher.find()){
+				String postContent = "Submit=Download&arnumber=<arnumber>" + matcher.group(1) + "</arnumber>&dlSelect=cite_abs&fileFormate=BibTex";
+				try {
+					bibtex = WebUtils.getPostContentAsString(new URL(EXPORT_ARNUM_URL), postContent);
+				} catch (IOException ex) {
+					throw new InternalFailureException(ex);
+				}
 			}
+		}
+		
+		if(bibtex != null){
+			// clean up
+			bibtex = bibtex.replace("<br>", "");
+
+			// append url
+			bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+			
+			// add downloaded bibtex to result 
+			sc.setBibtexResult(bibtex);
+			return true;
+
 		}else{
 			log.debug("IEEEXploreBookScraper use JTidy to get Bibtex from " + sc.getUrl().toString());
 			sc.setBibtexResult(ieeeBookScrape(sc));
 			return true;
+
 		}
 	}
 
+	/**
+	 * @param sc
+	 * @return bibtex
+	 * @throws ScrapingException
+	 */
 	public String ieeeBookScrape (ScrapingContext sc) throws ScrapingException {
 		try{
 			//-- init all NodeLists and Node
@@ -113,16 +134,18 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 			String bibtexkey	= null;
 			String _tempabs		= null;
 			String _format		= null;
+			String ident1		= null;
+			String ident2		= null;
 
 			//-- get the html doc and parse the DOM
 			final Document doc = XmlUtils.getDOM(sc.getPageContent());
-//			tidy.setMakeClean(true);
-//			tidy.setDropFontTags(true);
-//			
 
-			/*-- Search title and extract --
+			/*
+			 * -- Search title and extract --
 			 * The title has always the css-class "headNavBlueXLarge".
-			 * */
+			 *
+			 * FIXME: this part could be deprecated. don't knot it at all...
+			 *
 			pres = null;
 			pres = doc.getElementsByTagName("span"); //get all <span>-Tags
 			for (int i = 0; i < pres.getLength(); i++) {
@@ -134,17 +157,46 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 				if ("headNavBlueXLarge".equals(own.getValue())){
 					title = curr.getFirstChild().getNodeValue();
 				}
+			} */
+			
+			if (title == null || title.equals("")) {
+				ident1 = "<title>";
+				ident2 = "</title>";
+				if (sc.getPageContent().contains(ident1) && sc.getPageContent().contains(ident2)) {
+					int _startIndex = sc.getPageContent().indexOf(ident1) + ident1.length();
+					int _endIndex   = sc.getPageContent().indexOf(ident2);
+					title = sc.getPageContent().substring(_startIndex, _endIndex);
+					title = title.replaceAll("IEEEXplore#\\s", "");
+				}
 			}
-
-			//get the abstract block
-			String ident1 = "<strong>Abstract</strong>";
-			String ident2 = "<strong>Table of Contents </strong>";
+			
+			/* 
+			 * get the abstract block
+			 * 
+			 * FIXME: this part could be deprecated. don't knot it at all...
+			 * 
+			ident1 = "<strong>Abstract</strong>";
+			ident2 = "<strong>Table of Contents </strong>";
 			if (sc.getPageContent().indexOf(ident1) != -1 && sc.getPageContent().indexOf(ident2) != -1 ){
 				_tempabs = sc.getPageContent().substring(sc.getPageContent().indexOf(ident1)+ident1.length(),sc.getPageContent().indexOf(ident2)).replaceAll("\\s\\s+", "").replaceAll("(<.+?>)", "").trim();
 				abstr = _tempabs;			
+			} */
+			
+			ident1 = "<span class=\"sectionHeaders\">Abstract</span>";
+			ident2 = "<td class=\"bodyCopyGrey\"><p class=\"bodyCopyGreySpaced\"><strong>";
+			if (sc.getPageContent().contains(ident1) && sc.getPageContent().contains(ident2)) {
+				int _startIndex = sc.getPageContent().indexOf(ident1) + ident1.length();
+				int _endIndex   = sc.getPageContent().indexOf(ident2);
+				_tempabs = sc.getPageContent().substring(_startIndex, _endIndex);
+				abstr = _tempabs.replaceAll("\\s\\s+", "").replaceAll("(<.+?>)", "").trim();
 			}
-
-			//get the book formats like hardcover
+			
+			/* 
+			 * get the book formats like hardcover
+			 * 
+			 * FIXME: this part could be deprecated. don't knot it at all...
+			 * 
+			 *
 			ident1 = "<td class=\"bodyCopyBlackLarge\" nowrap>Hardcover</td>";
 			ident2 = "<td class=\"bodyCopyBlackLarge\" nowrap><span class=\"sectionHeaders\">&raquo;</span>";
 			if (sc.getPageContent().indexOf(ident1) != -1){
@@ -152,8 +204,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 
 				_format = _format.substring(_format.indexOf(CONST_ISBN) + CONST_ISBN.length());
 				isbn = _format.substring(0,_format.indexOf("&nbsp;"));
-			}
-
+			}*/
 
 			/*-- get all <p>-Tags to extract the standard informations
 			 *  In every standard page the css-class "bodyCopyBlackLargeSpaced"
@@ -175,13 +226,21 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 								String date = temp.item(j).getNodeValue().substring(18);
 								year = date.substring(date.length()-5).trim();
 								month = date.substring(0,date.length()-4).trim();
-								publisher = temp.item(j+2).getNodeValue().trim();
+								// not correct in all cases
+								// publisher = temp.item(j+2).getNodeValue().trim();
 							}
 							if (temp.item(j).getNodeValue().indexOf(CONST_PAGES) != -1){
 								numpages = temp.item(j).getNodeValue().substring(CONST_PAGES.length()).trim();
+							} else if (temp.item(j).getNodeValue().indexOf(CONST_ON_PAGES) != -1) {
+								numpages = temp.item(j).getNodeValue().substring(CONST_ON_PAGES.length()).trim();
 							}
 							if (temp.item(j).getNodeValue().indexOf(CONST_EDITION) != -1){
 								edition = temp.item(j).getNodeValue().substring(CONST_EDITION.length()).trim();
+							} else if (temp.item(j).getNodeValue().indexOf(CONST_VOLUME) != -1) {
+								edition = temp.item(j).getNodeValue().substring(CONST_VOLUME.length()).trim();
+							}
+							if (isbn == "" && temp.item(j).getNodeValue().indexOf(CONST_ISBN) != -1){
+								isbn= temp.item(j).getNodeValue().substring(CONST_ISBN.length()).trim();
 							}
 						}
 						break;
@@ -190,17 +249,19 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 			}
 
 			/*-- Search authors and save them --
-			 * */
+			 * 
+			 * FIXME: this part could be deprecated. don't knot it at all...
+			 * 
 			pres = null;
 			pres = doc.getElementsByTagName("a"); //get all <a>-Tags
 
 			//init vars to count authors to form a bibtex String
 			int numaut = 0;
-
-			/*
-			 * iterate trhough the a tags and search the attribute value "<in>aud)" 
+			
+			 *
+			 * iterate through the a tags and search the attribute value "<in>aud)" 
 			 * to identify the authors in the source of the ieeexplore page
-			 * */
+			 * 
 			for (int i = 39; i < pres.getLength(); i++) {
 				Node curr = pres.item(i);
 				Element g = (Element)curr;
@@ -224,71 +285,49 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 						}
 					}
 				}
+			} */
+			
+			/*
+			 * get authors
+			 */
+			if (authors == null || authors.equals("")) {
+				ident1 = "<font color=990000><b>";
+				ident2 = "<br>";
+				int _startIndex = sc.getPageContent().indexOf(ident1) + ident1.length();
+				if (sc.getPageContent().contains(ident1) && sc.getPageContent().indexOf(ident2, _startIndex) != -1) {
+					int _endIndex = sc.getPageContent().indexOf(ident2, _startIndex);
+					authors = sc.getPageContent().substring(_startIndex, _endIndex);
+					authors = authors.replaceAll("\\s\\s+", "").replaceAll("(<.+?>)", "").trim();
+					authors = authors.replaceAll("&nbsp;&nbsp;", " and ");
+					
+					if (authors.endsWith(" and ")) {
+						authors = authors.substring(0, authors.length() - 5);
+					}
+				}
 			}
-
+			
 			//-- kill special chars and add the year to bibtexkey
-			bibtexkey = bibtexkey.replaceAll("[^0-9A-Za-z]", "") + ":" + year;
-
+			if ((isbn == null || !isbn.equals(""))
+					&& (year == null || !year.equals(""))) {
+				bibtexkey = isbn.replaceAll("-", "");
+				bibtexkey = bibtexkey.replaceAll("[^0-9A-Za-z]", "") + ":" + year;
+			}
+				
 			//create the book-bibtex
-
-			return type + " { " + bibtexkey + ", " 
-			+ "author = {" + authors + "}, " 
-			+ "title = {" + title + "}, " 
-			+ "year = {" + year + "}, " 
-			+ "url = {" + url + "}, "
-			+ "pages = {" + numpages + "}, "
-			+ "edition = {" + edition + "}, " 
-			+ "publisher = {" + publisher + "}, "
-			+ "isbn = {" + isbn + "}, " 
-			+ "abstract = {" + abstr + "}, "
-			+ "month = {" + month + "}}";
+			return type + " { " + bibtexkey + ", \n" 
+			+ "author = {" + authors + "}, \n" 
+			+ "title = {" + title + "}, \n" 
+			+ "year = {" + year + "}, \n" 
+			+ "url = {" + url + "}, \n"
+			+ "pages = {" + numpages + "}, \n"
+			+ "edition = {" + edition + "}, \n" 
+			+ "publisher = {" + publisher + "}, \n"
+			+ "isbn = {" + isbn + "}, \n" 
+			+ "abstract = {" + abstr + "}, \n"
+			+ "month = {" + month + "}\n}";
 
 		}catch(Exception e){
 			throw new InternalFailureException(e);
-		}
-	}
-
-	/** FIXME: refactor
-	 * @param inputURL
-	 * @return
-	 * @throws ScrapingException
-	 */
-	public String getContentAsStringPostRequest(final URL inputURL) throws ScrapingException {
-		HttpURLConnection urlConn = null;
-		try {
-			urlConn = (HttpURLConnection) inputURL.openConnection();
-			urlConn.setAllowUserInteraction(false);
-			urlConn.setDoInput(true);
-			urlConn.setDoOutput(false);
-			urlConn.setUseCaches(false);
-			urlConn.setRequestMethod("POST");
-			/*
-			 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-			 * pages require it to download content.
-			 */
-			urlConn.setRequestProperty(
-					"User-Agent",
-			"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-			urlConn.connect();
-
-			// write content into string buffer
-			final StringWriter out = new StringWriter();
-			final InputStreamReader in = new InputStreamReader(urlConn.getInputStream(), "utf-8");
-			int b;
-			while ((b = in.read()) >= 0) {
-				out.write(b);
-			}
-			urlConn.disconnect();
-			in.close();
-			out.flush();
-			out.close();
-			return out.toString();
-		} catch (final ConnectException cex) {
-			log.fatal("Could not get content for URL " + inputURL.toString() + " : " + cex.getMessage());
-			throw new InternalFailureException(cex);
-		} catch (final IOException ioe) {
-			log.fatal("Could not get content for URL " + inputURL.toString() + " : " + ioe.getMessage());
-			throw new InternalFailureException(ioe);
 		}
 	}
 

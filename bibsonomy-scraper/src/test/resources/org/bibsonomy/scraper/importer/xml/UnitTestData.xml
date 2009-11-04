@@ -899,4 +899,16 @@
 		<BibFile>CiteulikeScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_157">
+		<TestDescription>URL scraping test with books from ieeexplore</TestDescription>
+		<URL>http://ieeexplore.ieee.org/search/freesrchabstract.jsp?arnumber=5286085&amp;isnumber=5284878&amp;punumber=5284806&amp;k2dockey=5286085@ieecnfs&amp;query=%28limpens+freddy%3Cin%3Eau%29&amp;pos=0&amp;access=no</URL>
+		<BibFile>IEEEXploreBookScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreBookScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_158">
+		<TestDescription>URL scraping test with books from ieeexplore</TestDescription>
+		<URL>http://ieeexplore.ieee.org/search/srchabstract.jsp?arnumber=4383076&amp;isnumber=4407525&amp;punumber=10376&amp;k2dockey=4383076@ieeejrns&amp;query=%28%28hotho%29%3Cin%3Eau+%29&amp;pos=0&amp;access=n0</URL>
+		<BibFile>IEEEXploreBookScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreBookScraper</Scraper>
+	</URLTest>
 </test:Tests>

@@ -23,12 +23,7 @@
 
 package org.bibsonomy.scraper.url.kde.ieee;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.UrlCompositeScraper;
 
 
@@ -41,17 +36,6 @@ public class IEEEXploreScraper extends UrlCompositeScraper {
 	private static final String SITE_NAME = "IEEEXplore";
 	private static final String info = "This scraper creates a BibTeX entry for the media at " + AbstractUrlScraper.href(SITE_URL, SITE_NAME) + ".";
 
-	private static final String HOST = "ieeexplore.ieee.org";
-	private static final String XPLORE_PATH = "/Xplore";
-	private static final String SEARCH_PATH = "/search/";
-
-	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
-
-	static {
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(XPLORE_PATH + ".*")));
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), Pattern.compile(SEARCH_PATH + ".*")));
-	}
-	
 	/**
 	 * 
 	 */
@@ -65,10 +49,6 @@ public class IEEEXploreScraper extends UrlCompositeScraper {
 		return info;
 	}
 
-	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
-		return patterns;
-	}
-	
 	@Override
 	public String getSupportedSiteName() {
 		return SITE_NAME;
