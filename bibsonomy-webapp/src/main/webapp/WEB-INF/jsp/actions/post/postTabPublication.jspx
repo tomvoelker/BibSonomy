@@ -23,7 +23,7 @@
 	
 	 <layout:tabLayout 
 			command="${command}" 
-			pageTitle="Post Bibtex" 
+			pageTitle="post publication" 
 			requPath="${requPath}">
 			 
 		<jsp:attribute name="heading">
@@ -54,47 +54,36 @@
 					<form method="POST" action="/postPublication" name="post_bibtex">
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative;">
-								<!-- ROW ONE -->
-								<div style="margin-bottom:2px;">
-									<span class="fsLabel"><fmt:message key="post.resource.entrytype"/></span>
-								    <select name="post.resource.entrytype" tabindex="1" class="reqinput">
-								      <c:forEach var="et" items="${command.resourceTypes}">
-								        <option value="${et}">${et}</option> 
-								      </c:forEach>
-								    </select>
-							    
-								    <input type="text" class="fsFloatInput reqinput" name="post.resource.bibtexKey" size="20" />
-								    <span class="fsFloatLabel"><fmt:message key="post.resource.bibtexKey"/>*</span>
-								</div>		
-							    <!-- ROW TWO -->
-							    <div style="margin-bottom:2px;">
-								    <span class="fsLabel"><fmt:message key="post.resource.title"/>*</span>
-								    <input type="text" name="post.resource.title" size="60" tabindex="2" class="reqinput"/>
-								</div>
-								
-								<!-- ROW THREE -->
-								<div style="margin-bottom:2px;">
-									<span class="fsLabel"><fmt:message key="post.resource.author"/>*</span>
-								    <input type="text" name="post.resource.author" size="60" tabindex="3" class="reqinput" onkeyup="toggle_required_author_editor()"/>
-								</div>
-								    
-							  	<!-- ROW FOUR -->
-							  	<div style="margin-bottom:2px;">
-								  	<span class="fsLabel"><fmt:message key="post.resource.editor"/>*</span>
-								    <input type="text" name="post.resource.editor" size="60" tabindex="4" class="reqinput" onkeyup="toggle_required_author_editor()"/>
-								</div>
-							    
-							  
-							  	<!-- ROW FIVE -->
-							  	<div style="margin-bottom:2px;">
-								  	<span class="fsLabel"><fmt:message key="post.resource.year"/>*</span>
-								    <input type="text" name="post.resource.year" size="60" tabindex="5" class="reqinput" onkeyup="toggle_required_author_editor()"/>
-								</div>
-							    
-							  	<div style="width:20%">
-							    		<input type="submit" style="float:right" name="submit" value="${button_label_check}"/>
-								</div>
-							
+  
+                              <div>
+                                <label class="fsLabel" for="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/></label>
+                                <form:select multiple="false" path="post.resource.entrytype" tabindex="1" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}"/>
+
+                                <select id="post.resource.entrytype" name="post.resource.entrytype" multiple="false" tabindex="1" size="1">
+                                  <c:forEach var="et" items="${mtl:getBibTeXEntryTypes()}">
+                                    <option value="${fn:escapeXml(et)}"><c:out value="${et}"/></option> 
+                                  </c:forEach>
+                                </select>
+                                  
+                        
+                                <input type="text" class="fsFloatInput" id="post.resource.bibtexKey" name="post.resource.bibtexKey" tabindex="2"/>
+                                <label class="fsFloatLabel" style="clear: none !important;" for="post.resource.bibtexKey" ><fmt:message key="post.resource.bibtexKey"/></label>
+                              </div>
+                  
+                              <label class="fsLabel" for="post.resource.title" ><fmt:message key="post.resource.title"/></label>
+                              <extarea class="fsInput" id="post.resource.title" name="post.resource.title" tabindex="3" rows="2" onkeyup="sz(this);" ></textarea>
+                  
+                              <label class="fsLabel" for="post.resource.author" ><fmt:message key="post.resource.author"/></label>
+                              <textarea class="fsInput" id="post.resource.author" name="post.resource.author" tabindex="4" rows="3" onkeyup="sz(this);" ></textarea>
+                  
+                              <label class="fsLabel" for="post.resource.editor" ><fmt:message key="post.resource.editor"/></label>
+                              <textarea class="fsInput" id="post.resource.editor" name="post.resource.editor" tabindex="5" rows="3" onkeyup="sz(this);"></textarea>
+                                                
+                              <label class="fsLabel" for="post.resource.year" ><fmt:message key="post.resource.year"/></label>
+                              <input type="text" class="fsInput fsSmall" id="post.resource.year" name="post.resource.year" tabindex="6"/>
+  
+  				    		  <input type="submit" style="float:right" name="submit" value="${button_label_check}"/>
+  							
 							</fieldset>
 						</div>
 					</form>
@@ -120,27 +109,20 @@
 						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative;">
 							
 							<input type="hidden" name="requTask" value="upload" />
+              
 							<!-- ROW ONE -->
-							<div style="margin-bottom:2px;">
-						    	<span class="fsLabel"><fmt:message key="post_bibtex.pub_snippet.snippet" /></span>
-						    	<textarea name="selection" cols="58" rows="10"  class="reqinput" onkeyup="sz(this);" ><fmt:message key="post_bibtex.pub_snippet.enter_bibtex_here" /> </textarea>
-						    </div>
+						    <label class="fsLabel" for="selection"><fmt:message key="post_bibtex.pub_snippet.snippet" />*</label>
+						    <textarea class="fsInput" name="selection" rows="10" onkeyup="sz(this);" ><fmt:message key="post_bibtex.pub_snippet.enter_bibtex_here" /> </textarea>
 					  
 					  		<!-- ROW TWO -->
-					  		<div style="margin-bottom:2px;">
-							    <span class="fsLabel"><fmt:message key="post_bibtex.pub_snippet.snippet_description" /></span>
-							    <input type="text" name="description" size="60" /> 
-							</div>
+						    <label class="fsLabel" for="description"><fmt:message key="post_bibtex.pub_snippet.snippet_description" /></label>
+							<input type="text" class="fsInput" name="description" /> 
 			  				
 			  				<!-- ROW THREE -->
-			  				<div style="margin-bottom:2px;">
-						    	<span class="fsLabel"><fmt:message key="post_bibtex.pub_snippet.snippet_viewable" /></span>
-					    		<post:resourceScope resourceScopes="${command.resourceScopes}" />
-					    	</div>
+					    	<label class="fsLabel" for=""><fmt:message key="post_bibtex.pub_snippet.snippet_viewable" /></label>
+				    		<post:groupBox groups="${loginUser.groups}"/>
 				    	
-				    		<div style="width:20%">
-					    		<input type="submit" style="float:right" name="submit" value="${button_label_post}" />
-					    	</div>
+				    		<input type="submit" style="float:right" name="submit" value="${button_label_post}" />
 							
 						</fieldset>
 					</div>
@@ -235,7 +217,7 @@
 											    <span class="fsLabel"><fmt:message key="post_bibtex.upload.option.viewable" /></span>
 											 </div>
 											 <div style="width:35%; float:left" >
-											    <post:resourceScope resourceScopes="${command.resourceScopes}" />
+											    <post:groupBox groups="${loginUser.groups}"/>
 											 </div>
 											 
 										</div>

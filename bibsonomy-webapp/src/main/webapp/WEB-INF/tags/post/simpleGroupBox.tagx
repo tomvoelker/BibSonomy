@@ -8,35 +8,34 @@
 
     <!-- 
     
-        Shows form fields to choose group(s) the post should be viewable for.
+        Shows form fields to choose group(s) for viewability.
+        
+        In contrast to groupBox, does not need a post!
+        
         Consists of three radio buttons: public, private, other
         and a select box which contains the group "friends" plus other possible groups.     
     
      -->
 
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
-    <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
 	<div id="groupBoxleft">
 		<fieldset id="fsgroupBoxleft">
 			<legend>
-				<form:label path="groups">
-					<fmt:message key="post.resource.viewablefor"/>*
-				</form:label>
+				<label for="groups"><fmt:message key="post.resource.viewablefor"/>*</label>
 			</legend>
 	
 			<div style="float: left; margin-right: 1ex;">
 	           <!-- radio buttons for public, private, other -->
-	           <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="public" />  <span class="expl"><fmt:message key="post.resource.public"/></span><br/>
-	           <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="private" /> <span class="expl"><fmt:message key="post.resource.private"/></span><br/>
-	           <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="other" id="post.groups.other"/>  <span class="expl"><fmt:message key="post.resource.other"/></span>
+	           <input type="radiobutton" id="abstractGrouping" name="abstractGrouping" onclick="toggleGroupBox()" value="public" />  <span class="expl"><fmt:message key="post.resource.public"/></span><br/>
+	           <input type="radiobutton" id="abstractGrouping" name="abstractGrouping" onclick="toggleGroupBox()" value="private" /> <span class="expl"><fmt:message key="post.resource.private"/></span><br/>
+	           <input type="radiobutton" name="abstractGrouping" onclick="toggleGroupBox()" value="other" id="post.groups.other"/>  <span class="expl"><fmt:message key="post.resource.other"/></span>
 			</div>
 	            <!-- select box for "other" groups TODO: allow multiple groups-->
-	            <form:select multiple="false" path="groups" size="5" id="post.groups.other2">
-	              <form:option label="friends" value="friends"/>
+	            <select multiple="false" name="groups" size="5" id="post.groups.other2">
+	              <option label="friends" value="friends"/>
 	              <form:options items="${groups}" itemValue="name" itemLabel="name"/>
-	            </form:select>
-	            <div class="dissError"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+	            </select>
 		</fieldset>
 	</div>	
 	<script type="text/javascript">

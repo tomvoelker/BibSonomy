@@ -14,20 +14,20 @@ public class TabsCommand<T> extends ResourceViewCommand {
 
 	/** id of current selected tab */
 	protected Integer selTab = 1;	
-	
+
 	/** list of defined tabs */
 	protected List<TabCommand> tabs = new ArrayList<TabCommand>();
-	
+
 	/** the content of the current selected tab */
 	protected List<T> content;
-	
+
 	/**
 	 * @return content of tab
 	 */
 	public List<T> getContent() {
 		return this.content;
 	}
-	
+
 	/**
 	 * Sets the content of the current selected tab
 	 * @param content
@@ -35,7 +35,7 @@ public class TabsCommand<T> extends ResourceViewCommand {
 	public void setContent(List<T> content) {
 		this.content = content;
 	}
-	
+
 	/**
 	 * @return ID of current selected tab
 	 */
@@ -64,12 +64,26 @@ public class TabsCommand<T> extends ResourceViewCommand {
 	public void setTabs(List<TabCommand> tabs) {
 		this.tabs = tabs;
 	}
-	
+
 	/**
-	 * Adds a single tab 
-	 * @param tab The tab
+	 * Adds a single tab with the the given id and title.
+	 * 
+	 * @param id 
+	 * @param title 
 	 */
 	public void addTab(final Integer id, final String title) {
 		tabs.add(new TabCommand(id, title));
-	}	
+	}
+
+	/**
+	 * Adds for each title a tab.
+	 * 
+	 * @param titles
+	 */
+	public void addTabs(final String[] titles) {
+		for(int i=0; i<titles.length; i++) {
+			addTab(i, titles[i]);
+		}
+	}
+
 }
