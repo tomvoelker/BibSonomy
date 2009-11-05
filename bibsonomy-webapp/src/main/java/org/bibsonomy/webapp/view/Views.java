@@ -190,14 +190,9 @@ public enum Views implements View {
 	 */
 	RELEVANTFORPAGE("relevantfor"),
 
-	/** import view **/
-	IMPORT("actions/post/import"),
-	
 	/** scraper info list **/
 	SCRAPER_INFO("scraperList"),
-	
-	/** scraper info list **/
-	POST_BIBTEX("actions/post/postTabPublication"),
+
 	/* *****************************************************
 	 * AJAX views
 	 * *****************************************************/
@@ -292,11 +287,19 @@ public enum Views implements View {
 	/**
 	 * the postBookmark dialog
 	 */
-	POST_BOOKMARK("actions/post/postBookmark"),
+	EDIT_BOOKMARK("actions/post/postBookmark"),
 	/**
 	 * the postPublication dialog
 	 */
-	POST_PUBLICATION("actions/post/postPublication"),
+	EDIT_PUBLICATION("actions/post/postPublication"),
+	/**
+	 * post publication
+	 */
+	POST_PUBLICATION("actions/post/postTabPublication"),
+	/** 
+	 * import view 
+	 */
+	IMPORT("actions/post/import"),
 	
 	/**
      * Show a form to request a password reminder.

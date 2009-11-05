@@ -252,9 +252,9 @@ td.expl_s {
 <tr>
   <td class="expl">BibTeX key*</td>
   <td>
-    <input class="reqinput" type="text" id="lbibtexKey" name="bibtexKey" value='<c:out value="${bibtexHandlerBean.bibtexKey}"/>' style="width: 10em;"/>
-  	<a id="bibTexKeyReloadLink" style="cursor:pointer">
-  		<img id="bibTexKeyReloadButton" src="/resources/image/button_reload.png" alt="generate BibTeX key" title="generate BibTeX key" onclick="javascript:generateBibTexKey(this)" />
+    <input class="reqinput" type="text" id="post.resource.bibtexKey" name="bibtexKey" value='<c:out value="${bibtexHandlerBean.bibtexKey}"/>' style="width: 10em;"/>
+  	<a style="cursor:pointer">
+  		<img src="/resources/image/button_reload.png" alt="generate BibTeX key" title="generate BibTeX key" onclick="javascript:generateBibTexKey(this)" />
     </a>
     <div class="errmsg"><c:out value="${bibtexHandlerBean.errors.bibtexKey}"/></div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.bibtexKey}"/></div>
@@ -267,7 +267,7 @@ td.expl_s {
 <tr>
   <td class="expl">title*</td>
   <td>
-    <textarea class="reqinput" id="ltitle" name="title" rows="3" ><c:out value="${bibtexHandlerBean.title}"/></textarea>
+    <textarea class="reqinput" id="post.resource.title" name="title" rows="3" ><c:out value="${bibtexHandlerBean.title}"/></textarea>
     <div class="errmsg">${bibtexHandlerBean.errors.title}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.title}"/></div>
   </td>
@@ -277,7 +277,7 @@ td.expl_s {
 <tr>
   <td class="expl">authors*</td>
   <td>
-    <textarea class="reqinput" name="author" id="lauthor" onkeyup="toggle_required_author_editor(); sz(this);"" rows="3"><c:out value="${bibtexHandlerBean.authorLineBreak}"/></textarea>
+    <textarea class="reqinput" name="author" id="post.resource.author" onkeyup="toggle_required_author_editor(); sz(this);"" rows="3"><c:out value="${bibtexHandlerBean.authorLineBreak}"/></textarea>
     <div class="errmsg">${bibtexHandlerBean.errors.author}</div>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.author}"/></div>
   </td>
@@ -374,7 +374,7 @@ td.expl_s {
 <tr>
   <td class="expl">year*</td>
   <td>
-    <input class="reqinput" type="text" name="year" id="lyear" value='<c:out value="${bibtexHandlerBean.year}"/>' style="width: 10em;"/>
+    <input class="reqinput" type="text" name="year" id="post.resource.year" value='<c:out value="${bibtexHandlerBean.year}"/>' style="width: 10em;"/>
     <div class="oldentry"><c:out value="${bibtexHandlerBean.oldentry.year}"/></div>    
   </td>
   <td></td>

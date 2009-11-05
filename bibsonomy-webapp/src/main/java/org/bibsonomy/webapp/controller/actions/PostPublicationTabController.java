@@ -22,7 +22,7 @@ public class PostPublicationTabController extends MultiResourceListController im
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		this.endTiming();
-		return Views.POST_BIBTEX;			
+		return Views.POST_PUBLICATION;			
 	}
 	
 	public PostPublicationTabCommand instantiateCommand() {

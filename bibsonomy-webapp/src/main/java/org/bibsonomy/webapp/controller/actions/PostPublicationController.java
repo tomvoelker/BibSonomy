@@ -48,7 +48,7 @@ public class PostPublicationController extends PostPostController<BibTex> {
 
 	@Override
 	protected View getPostView() {
-		return Views.POST_PUBLICATION; // TODO: this could be configured using Spring!
+		return Views.EDIT_PUBLICATION; // TODO: this could be configured using Spring!
 	}
 
 	@Override

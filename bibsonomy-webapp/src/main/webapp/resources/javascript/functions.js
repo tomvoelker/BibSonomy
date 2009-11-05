@@ -1869,37 +1869,25 @@ function addSystemTags(){
 	
 }
 
-﻿function generateBibTexKey(obj) {
-    var button = document.getElementById("bibTexKeyReloadButton");
-    button.setAttribute("src","/resources/image/button_reload-inactive.png");
-	
+function generateBibTexKey(obj) {
     var buffer  = "";
-    var authors = document.getElementById("lauthor").value;
-    var year    = document.getElementById("lyear").value;
-    var title   = document.getElementById("ltitle").value;
 
     /* get author */
-    var first = getFirstPersonsLastName(authors);
-    if (first == null) {
-        first = getFirstPersonsLastName(editors);
-        if (first == null) {
-            first = "noauthororeditor";
-        }
-    }
-    buffer += first;
+    buffer += getFirstPersonsLastName(document.getElementById("post.resource.author").value);
 
     /* the year */ 
+    var year = document.getElementById("post.resource.year").value;
     if (year != null) {
         buffer += year.trim();
     }
 
     /* first relevant word of the title */
+    var title = document.getElementById("post.resource.title").value;
 	if (title != null) {
 		buffer += getFirstRelevantWord(title).toLowerCase();
 	}
     
-    document.getElementById("lbibtexKey").value = buffer.toLowerCase();
-    button.setAttribute("src","/resources/image/button_reload.png");
+    document.getElementById("post.resource.bibtexKey").value = buffer.toLowerCase();
 }
 
 function getFirstPersonsLastName(person) {
@@ -1926,7 +1914,7 @@ function getFirstPersonsLastName(person) {
         }
         return lastname;
     }
-    return null;
+    return "";
 }
 
 function getFirstRelevantWord(title) {
