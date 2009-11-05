@@ -171,16 +171,6 @@ public enum Views implements View {
 	SEARCHPAGE("search"),
 	
 	/**
-	 * admin page
-	 */
-	ADMINPAGE("admin"),
-	
-	/**
-	 * admin page
-	 */
-	ADMINLUCENEPAGE("adminlucene"),
-
-	/**
 	 * additional posts 
 	 */
 	MY_GROUP_POSTS_PAGE("myGroupPosts"), 
@@ -229,7 +219,23 @@ public enum Views implements View {
 	 * a tag cloud (to reload it using AJAX)
 	 */
 	AJAX_TAGCLOUD("ajax/tagcloud"),
-	
+
+	/* *****************************************************
+	 * ADMIN views
+	 * *****************************************************/	
+	/**
+	 * spam admin page
+	 */
+	ADMIN_SPAM("actions/admin/spam"),
+	/**
+	 * lucene admin page
+	 */
+	ADMIN_LUCENE("actions/admin/lucene"),
+	/**
+	 * Show the page for administrating groups
+	 */
+	ADMIN_GROUP("actions/admin/group"),
+
 
 	/* *****************************************************
 	 * action views
@@ -285,15 +291,19 @@ public enum Views implements View {
 	LOGIN("actions/login"),
 	
 	/**
-	 * the postBookmark dialog
+	 * The dialog to EDIT a bookmark (big dialog).
 	 */
-	EDIT_BOOKMARK("actions/post/postBookmark"),
+	EDIT_BOOKMARK("actions/post/editBookmark"),
 	/**
-	 * the postPublication dialog
+	 * The dialog to EDIT a publication (big dialog).
 	 */
-	EDIT_PUBLICATION("actions/post/postPublication"),
+	EDIT_PUBLICATION("actions/post/editPublication"),
 	/**
-	 * post publication
+	 * The dialog to enter a URL for posting (small dialog).
+	 */
+	POST_BOOKMARK("actions/post/postBookmark"), 	
+	/**
+	 * The dialog to post one or more publications (tabbed view)
 	 */
 	POST_PUBLICATION("actions/post/postTabPublication"),
 	/** 
@@ -321,15 +331,25 @@ public enum Views implements View {
 	 */
 	DOWNLOAD_FILE("downloadFile"),
 	
+	
 	/**
-	 * Show the page for administrating groups
+	 * to edit the tags of publications
 	 */
-	ADMINISTRATE_GROUP("actions/admin/group"),
-
+	BATCHEDITBIB("actions/edit/batcheditbib"),
+	/**
+	 * to edit the tags of bookmarks 
+	 */
+	BATCHEDITURL("actions/edit/batchediturl"),
+	/**
+	 * edit tags
+	 */
+	EDIT_TAGS("actions/edit/edittags"),
+	
 	
 	
 	/* *****************************************************
-	 * query independent views
+	 * query independent views to show bookmark or 
+	 * publication lists
 	 * *****************************************************/
 
 	/**
@@ -418,19 +438,20 @@ public enum Views implements View {
 	CSV("csv"),
 	
 	/**
-	 * to edit the tags of publications
-	 */
-	BATCHEDITBIB("actions/edit/batcheditbib"),
-	/**
-	 * to edit the tags of bookmarks 
-	 */
-	BATCHEDITURL("actions/edit/batchediturl"),
-	
-	/**
 	 * show the export page
 	 */
 	EXPORT("export"),
+
 	
+	
+	
+	
+	/* *************************************************************************
+	 * TODO: The following views have been added by not so careful developers 
+	 * who forgot to put them at the correct place above this comment. Please
+	 * have a look and see, into which section your view fits best!  
+	 *  
+	 * *************************************************************************/
 	/**
 	 * Show the page for the purpose tags
 	 */
@@ -452,11 +473,6 @@ public enum Views implements View {
 	BUTTONS("buttons"),
 	
 	/**
-	 * show post_bookmark view
-	 */
-	POST_BOOKMARK_PAGE("postBookmark"), 
-	
-	/**
 	 * show relations
 	 */
 	RELATIONS("relations"), 
@@ -466,11 +482,7 @@ public enum Views implements View {
 	 */
 	FOLLOWERS("followers"),
 	
-	/**
-	 * edit tags
-	 */
-	EDIT_TAGS("actions/edit/edittags"),
-	
+
 
 	
 	/**

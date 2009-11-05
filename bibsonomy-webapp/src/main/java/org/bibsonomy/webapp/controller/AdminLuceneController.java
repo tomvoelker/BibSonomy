@@ -115,7 +115,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 
 		
 
-		return Views.ADMINLUCENEPAGE;
+		return Views.ADMIN_LUCENE;
 	}
 
 	public AdminLuceneViewCommand instantiateCommand() {

@@ -36,7 +36,7 @@ public class GroupAdminPageController extends SingleResourceListController imple
 		
 		command.setGroup(this.logic.getGroupDetails(groupName));
 		System.out.println("tagsets: "+command.getGroup().getTagSets().size());
-		return Views.ADMINISTRATE_GROUP;
+		return Views.ADMIN_GROUP;
 	}
 	
 	public GroupAdminCommand instantiateCommand() {

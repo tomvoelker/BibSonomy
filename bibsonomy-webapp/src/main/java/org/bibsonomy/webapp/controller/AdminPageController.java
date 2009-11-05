@@ -79,7 +79,7 @@ public class AdminPageController implements MinimalisticController<AdminViewComm
 
 		}
 
-		return Views.ADMINPAGE;
+		return Views.ADMIN_SPAM;
 	}
 
 	public AdminViewCommand instantiateCommand() {
