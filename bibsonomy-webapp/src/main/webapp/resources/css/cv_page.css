@@ -1,0 +1,50 @@
+/*
+ * Stylesheet for /cv_page
+ * @author Philipp Beau
+ */
+ 
+hr.line {
+	width: 700px;
+	margin-left: 25px;
+	border-style: solid;
+	border-color: #EEEEEE;
+	border-width: 2px 0px 0px 0px;
+}
+
+table.innerTable {
+	font-family: "Times New Roman";
+	font-size: 80%;
+}
+
+td.button {
+	width:15px;
+}
+
+table td {
+	width: 300px;
+	padding-bottom: 5px;
+	vertical-align: top;
+}
+
+table tr {
+	padding-top: 0px;
+}
+.align {
+	margin-left: 25px;
+	padding-top: 2px;
+}	
+
+p {
+	width: 600px;	
+}
+
+table.innerTable {
+	font-family: "Times New Roman";
+	font-size: 80%;
+}
+
+h2 {
+	margin: 5px 0px 10px 5px;
+}
+
+

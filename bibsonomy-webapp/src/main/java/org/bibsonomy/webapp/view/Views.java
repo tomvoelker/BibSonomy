@@ -39,6 +39,11 @@ public enum Views implements View {
 	USERPAGE("user"),
 	
 	/**
+	 * the user specific curriculum vitae page
+	 */
+	CVPAGE("cvpage"),
+	
+	/**
 	 * user-user page to highlight the relevant posts / tags of user 2 to user 1 
 	 */
 	USERUSERPAGE("useruser"),

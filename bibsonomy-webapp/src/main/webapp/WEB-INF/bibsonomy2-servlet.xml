@@ -60,6 +60,16 @@
 						<property name="controllerBeanName" value="userPageController"/>
 					</bean>
 				</entry>	
+				<entry key="/cvpage">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="cvPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedUser</value>
+							</list>
+						</property>
+					</bean>
+				</entry>		
 				<entry key="/relations">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userRelationsController"/>
@@ -74,7 +84,7 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupsPageController"/>
 					</bean>
-				</entry>	
+				</entry>
 				<entry key="/group">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupPageController"/>
@@ -259,6 +269,11 @@
 			</list>
 		</property>
 	</bean>
+	
+	<bean id="cvPageController" class="org.bibsonomy.webapp.controller.CvPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>	
 	
 	<bean id="mySearchController" class="org.bibsonomy.webapp.controller.MySearchController" scope="request">
 		<property name="logic" ref="logic"/>

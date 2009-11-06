@@ -376,6 +376,18 @@
 		<set type="parameter" name="requUser">$1</set>
 		<to last="true">/UserFOAFOutput.jsp</to>
 	</rule>
+	
+	
+	<!-- ############## Curriculum vitae pages ############### -->
+	
+	<!-- /cv/user/USER -->
+	<rule>
+		<name>/cv/user/USER</name>
+		<from>^/+cv/+user/(.+)$</from>
+		<set type="parameter" name="requestedUser">$1</set>
+		<to last="true">/cvpage</to>
+	</rule>
+	
 	<!-- /bibtexkey/KEY/USER -->
 	<rule>
 		<name>/bibtexkey/user</name>
@@ -442,7 +454,6 @@
 		<from>^/+viewable/+([^/]+)/$</from>
 		<to type="redirect" last="true">/viewable/${escape:$1}</to>
 	</rule>
-
 
 	<!-- ############## group pages ############### -->
 	<!-- /group/GROUP/TAG -->
