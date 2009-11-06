@@ -80,7 +80,7 @@ public class DatabasePluginRegistry {
 
 	public void onBibTexUpdate(final int oldContentId, final int newContentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onBibTexUpdate(oldContentId, newContentId, session));
+			this.executeRunnable(plugin.onBibTexUpdate(newContentId, oldContentId, session));
 		}
 	}
 
@@ -98,7 +98,7 @@ public class DatabasePluginRegistry {
 
 	public void onBookmarkUpdate(final int oldContentId, final int newContentId, final DBSession session) {
 		for (final DatabasePlugin plugin : this.plugins.values()) {
-			this.executeRunnable(plugin.onBookmarkUpdate(oldContentId, newContentId, session));
+			this.executeRunnable(plugin.onBookmarkUpdate(newContentId, oldContentId, session));
 		}
 	}
 
