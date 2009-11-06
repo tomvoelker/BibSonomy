@@ -12,6 +12,7 @@
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 >
     
 	
@@ -30,7 +31,10 @@
 			<fmt:message key="post_bibtex.heading" />
 		</jsp:attribute>
 		
-		
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+	    	
+	    </jsp:attribute>
 			
 		<jsp:attribute name="tabcontent">
 			<!-- ================================= -->
@@ -53,7 +57,7 @@
 					</p>				
 					<form method="post" action="/postPublication" name="post_publication">
 						<div id="fsform">
-							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative;">
+							<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
   
                               <div>
                                 <label class="fsLabel" for="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/></label>
@@ -69,18 +73,18 @@
                               </div>
                   
                               <label class="fsLabel" for="post.resource.title" ><fmt:message key="post.resource.title"/></label>
-                              <textarea class="fsInput" id="post.resource.title" name="post.resource.title" tabindex="3" rows="2" onkeyup="sz(this);" ></textarea>
+                              <textarea class="fsInput" id="post.resource.title" name="post.resource.title" tabindex="3" rows="2" onkeyup="sz(this);" ><!-- dont delete --></textarea>
                   
                               <label class="fsLabel" for="post.resource.author" ><fmt:message key="post.resource.author"/></label>
-                              <textarea class="fsInput" id="post.resource.author" name="post.resource.author" tabindex="4" rows="3" onkeyup="sz(this);" ></textarea>
+                              <textarea class="fsInput" id="post.resource.author" name="post.resource.author" tabindex="4" rows="3" onkeyup="sz(this);" ><!-- dont delete --></textarea>
                   
                               <label class="fsLabel" for="post.resource.editor" ><fmt:message key="post.resource.editor"/></label>
-                              <textarea class="fsInput" id="post.resource.editor" name="post.resource.editor" tabindex="5" rows="3" onkeyup="sz(this);"></textarea>
+                              <textarea class="fsInput" id="post.resource.editor" name="post.resource.editor" tabindex="5" rows="3" onkeyup="sz(this);"><!-- dont delete --></textarea>
                                                 
                               <label class="fsLabel" for="post.resource.year" ><fmt:message key="post.resource.year"/></label>
                               <input type="text" class="fsInput fsSmall" id="post.resource.year" name="post.resource.year" tabindex="6"/>
   
-  				    		  <input type="submit" style="float:right" name="submit" value="${button_label_check}"/>
+  				    		  <input type="submit" class="fsFormSubmit" name="submit" value="${button_label_check}"/>
   							
 							</fieldset>
 						</div>
@@ -104,7 +108,7 @@
 			    </p>
 				<form method="post" action="/BibtexHandler">
 					<div id="fsform">
-						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative;">
+						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
 							
 							<input type="hidden" name="requTask" value="upload" />
               
@@ -113,14 +117,13 @@
 						    <textarea class="fsInput" name="selection" rows="10" onkeyup="sz(this);" ><fmt:message key="post_bibtex.pub_snippet.enter_bibtex_here" /> </textarea>
 					  
 					  		<!-- ROW TWO -->
-						    <label class="fsLabel" for="description"><fmt:message key="post_bibtex.pub_snippet.snippet_description" /></label>
+						    <label class="fsLabel" for="description"><fmt:message key="post_bibtex.description" /></label>
 							<input type="text" class="fsInput" name="description" /> 
 			  				
 			  				<!-- ROW THREE -->
-					    	<label class="fsLabel" for=""><fmt:message key="post_bibtex.pub_snippet.snippet_viewable" /></label>
 				    		<post:simpleGroupBox groups="${loginUser.groups}"/>
 				    	
-				    		<input type="submit" style="float:right" name="submit" value="${button_label_post}" />
+				    		<input type="submit" class="fsFormSubmit" name="submit" value="${button_label_post}" />
 							
 						</fieldset>
 					</div>
@@ -149,107 +152,87 @@
 
 					<form name="upload" method="post" enctype="multipart/form-data" action="/BibtexHandler?requTask=upload">
 						<div id="fsform">
-							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative;">
+							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
 									<input type="hidden" name="requTask" value="upload" />
 									
 								  	<!-- +++BLOCK ONE+++ -->
 								  	<!-- ROW ONE -->
-								  	<div style="margin-bottom:2px;">
-									    <label class="fsLabel"><fmt:message key="post_bibtex.upload.my_file" /></label>
-									    <input type="file" name="file" value="" size="50"  class="reqinput" />
-									</div>
-								  	
-								  	<!-- ROW TWO -->
-								  	<div style="margin-bottom:2px;">
-									    <label class="fsLabel"><fmt:message key="post_bibtex.upload.upload_description" /></label>
-									    <input type="text" name="description" value="" size="60" />
-									</div>
+								    <label class="fsLabel"><fmt:message key="post_bibtex.upload.my_file" /></label>
+								    <input type="file" name="file" value="" size="50"  class="reqinput fsInput" />
 								    
-								    <div style="width:20%">
-								    	<input type="submit" style="float:right" name="submit" value="${button_label_upload}" />
-								    </div>
+							  	 
+								  	<!-- ROW TWO -->
+								    <label class="fsLabel"><fmt:message key="post_bibtex.description" /></label>
+								    <input type="text" class="fsInput" name="description" value="" />
 
+							    	
 
+									<!-- ROW THREE -->
+								    <div class="fsFloatInput">
+								    	<post:simpleGroupBox groups="${command.context.loginUser.groups}"/>
+									</div>   
+									
+									<input type="submit" class="fsFormSubmit" name="submit" value="${button_label_upload}" />
+									 
 									<!-- +++BLOCK TWO+++ -->
-									<fieldset class="fsInner" style="background-color:#EEEEEE; border:1px solid #006699; position:relative;">
+									<fieldset class="fsInner" style="clear: both; width:96%; background-color:#EEEEEE; border:1px solid #006699; position:relative; float:left">
 										<legend><fmt:message key="post_bibtex.upload.options" /></legend>
 									    
 									    
 									    <!-- ROW ONE -->
-									    <div style="margin-bottom:2px; float: left; width:100%">
-										    <div style="width:15%; float:left">
-											    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.character_encoding" /></label>
-											</div>
-											<div style="width:35%; float:left">
-											    <select name="encoding" id="lencoding">
-											      	<option value="UTF-8">UTF-8</option>
-											      	<option value="ISO-8859-1">ISO-8859-1</option>
-											      	<option value="ISO-8859-2">ISO-8859-2</option>
-											      	<option value="ISO-8859-3">ISO-8859-3</option>
-											      	<option value="ISO-8859-4">ISO-8859-4</option>
-											      	<option value="ISO-8859-5">ISO-8859-5</option>
-											      	<option value="ISO-8859-6">ISO-8859-6</option>
-											      	<option value="ISO-8859-7">ISO-8859-7</option>
-											      	<option value="ISO-8859-8">ISO-8859-8</option>
-											      	<option value="ISO-8859-9">ISO-8859-9</option>
-											      	<option value="ISO-8859-10">ISO-8859-10</option>
-											      	<option value="ISO-8859-13">ISO-8859-13</option>
-											      	<option value="ISO-8859-14">ISO-8859-14</option>
-											      	<option value="ISO-8859-15">ISO-8859-15</option>
-											      	<option value="ISO-8859-16">ISO-8859-16</option>
-											      	<option value="US-ASCII">US-ASCII</option>
-											      	<option value="UTF-16">UTF-16</option>
-											      	<option value="UTF-16BE">UTF-16BE</option>
-											      	<option value="UTF-16LE">UTF-16LE</option>
-											    </select>
-											</div>
-											<div style="width:50%; float:left">
-												<label class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.character_encoding_help" /></label>
-											</div>										    
-										</div>
+										    
+											<label class="fsLabel"><fmt:message key="post_bibtex.upload.option.character_encoding" /></label>
+										    <select name="encoding" class="fsInput" id="lencoding">
+										      	<option value="UTF-8">UTF-8</option>
+										      	<option value="ISO-8859-1">ISO-8859-1</option>
+										      	<option value="ISO-8859-2">ISO-8859-2</option>
+										      	<option value="ISO-8859-3">ISO-8859-3</option>
+										      	<option value="ISO-8859-4">ISO-8859-4</option>
+										      	<option value="ISO-8859-5">ISO-8859-5</option>
+										      	<option value="ISO-8859-6">ISO-8859-6</option>
+										      	<option value="ISO-8859-7">ISO-8859-7</option>
+										      	<option value="ISO-8859-8">ISO-8859-8</option>
+										      	<option value="ISO-8859-9">ISO-8859-9</option>
+										      	<option value="ISO-8859-10">ISO-8859-10</option>
+										      	<option value="ISO-8859-13">ISO-8859-13</option>
+										      	<option value="ISO-8859-14">ISO-8859-14</option>
+										      	<option value="ISO-8859-15">ISO-8859-15</option>
+										      	<option value="ISO-8859-16">ISO-8859-16</option>
+										      	<option value="US-ASCII">US-ASCII</option>
+										      	<option value="UTF-16">UTF-16</option>
+										      	<option value="UTF-16BE">UTF-16BE</option>
+										      	<option value="UTF-16LE">UTF-16LE</option>
+										    </select>
+										    <!--<buttons:help NonJSTarget="blub" JSTarget="bla"/>-->
+										    <img style="margin-left: 1%; margin-top:0.5%; float: left; width: 1.5%;" src="${resdir}/image/questionmark.png" alt="?"/>
+											<!-- <label class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.character_encoding_help" /></label>  -->
+										    
 										
 
-									  	<!-- ROW TWO -->
-									  	<div style="margin-bottom:2px; float:left; width:100%">
-									  		 <div style="width:15%; float:left">
-											    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.viewable" /></label>
-											 </div>
-											 <div style="width:35%; float:left" >
-											    <post:simpleGroupBox groups="${loginUser.groups}"/>
-											 </div>
-											 
-										</div>
+									  	
+
 									    	
-								    	<!-- ROW THREE -->
-									    <div style="margin-bottom:2px; float:left; width:100%">
-									    	 <div style="width:15%; float:left">
-											    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter" /></label>
-											 </div>
-											 <div style="width:35%; float:left" >
-											    <select name="delimiter" onchange="updateSubstitute(this);">
-											        <option value=" ">' ' (${whitespace})</option>
-											        <option value=",">, (${comma})</option>
-											        <option value=";">; (${semicolon})</option>
-											      </select>
-											  </div>
-											  <div style="width:50%; float:left">
-											    	<label class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter_help" /></label>
-											  </div>
-										 </div>
+								    	<!-- ROW TWO -->
+									    
+									    	 
+										    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter" /></label>
+										    <select name="delimiter" class="fsInput" onchange="updateSubstitute(this);">
+										        <option value=" ">' ' (${whitespace})</option>
+										        <option value=",">, (${comma})</option>
+										        <option value=";">; (${semicolon})</option>
+									        </select>
+									    	<!-- <label class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter_help" /></label>  -->
+											 
+										 
 									    
 									  
-									  	<!-- ROW FOUR -->
-									  	<div style="margin-bottom:2px; float:left; width:100%">
-									  		<div style="width:15%; float:left">
+									  	<!-- ROW THREE -->
+									  	
 											    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute" /></label>
-											</div>
-											<div style="width:35%; float:left" >
-											    <input type="text" value="_" name="whitespace" size="2" maxlength="1" disabled="disabled" />
-											</div>
-										    <div style="width:50%; float:left">
-										    	<label class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute_help" /></label>
-										   	</div>
-										</div>
+											    <input type="text" class="fsInput" value="_" name="whitespace" size="2" maxlength="1" disabled="disabled" />
+										    	<!-- <label class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute_help" /></label> -->
+										
+
 								</fieldset>
 							</fieldset>
 						</div>
@@ -275,35 +258,18 @@
 
 					
 						<div id="fsform">
-							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative;">
+							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
 								
 									<input type="hidden" name="requTask" value="upload" />
 									
 									 <form name="upload" method="post" action="/BibtexHandler?requTask=upload">
-									 	<div style="width:100%; float:left">
-										  	<div style="width:15%; float:left">
-										    	<fmt:message key="post_bibtex.doi_isbn.isbn" />
-										    </div>
-										    <div style="width:50%; float:left">
-										    	<input type="text" name="selection" value="" size="40" />
-										    </div>
-										    <div style="width:5%; float:left">
-										    	<input type="submit" name="submit" value="${button_label_check}" />
-										    </div>
-									  	</div>
-									  </form>
-									  <form name="upload" method="post" action="/BibtexHandler?requTask=upload">
-										  <div style="width:100%; float:left">
-										  	<div style="width:15%; float:left">
-										    	<fmt:message key="post_bibtex.doi_isbn.doi" />
-										    </div>
-										    <div style="width:50%; float:left">
-										    	<input type="text" name="selection" value="" size="40" />
-										    </div>
-										    <div style="width:5%; float:left">
-										      <input type="submit" name="submit" value="${button_label_check}" />
-										    </div>
-										  </div>
+										    	<label class="fsLabel"><fmt:message key="post_bibtex.doi_isbn.isbn" /></label>
+										    	<input type="text" class="fsInput" name="selection" value="" />
+
+										    	<label class="fsLabel"><fmt:message key="post_bibtex.doi_isbn.doi" /></label>
+										    	<input type="text" name="selection" value="" class="fsInput" />
+
+										      	<input type="submit" class="fsFormSubmit" name="submit" value="${button_label_check}" />
 									  </form>
 								  
 							</fieldset>
