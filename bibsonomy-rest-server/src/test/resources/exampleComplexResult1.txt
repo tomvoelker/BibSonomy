@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomy stat="ok">
-    <users start="0" end="3">
-        <user realname="Manuel Bork" name="mbork" href="http://www.bibsonomy.org/api/users/mbork" homepage="http://www.manuelbork.de" email="manuel.bork@uni-kassel.de">
-            <groups start="0" end="1">
-                <group name="public" href="http://www.bibsonomy.org/api/groups/public"/>
+    <users end="3" start="0">
+        <user href="http://www.bibsonomy.org/api/users/mbork" homepage="http://www.manuelbork.de" email="manuel.bork@uni-kassel.de" realname="Manuel Bork" name="mbork">
+            <groups end="1" start="0">
+                <group href="http://www.bibsonomy.org/api/groups/public" name="public"/>
             </groups>
         </user>
-        <user realname="Andreas Hotho" name="hotho" href="http://www.bibsonomy.org/api/users/hotho" homepage="http://www.bibsonomy.org" email="andreas.hotho@uni-kassel.de">
-            <groups start="0" end="1">
-                <group name="public" href="http://www.bibsonomy.org/api/groups/public"/>
+        <user href="http://www.bibsonomy.org/api/users/hotho" homepage="http://www.bibsonomy.org" email="andreas.hotho@uni-kassel.de" realname="Andreas Hotho" name="hotho">
+            <groups end="1" start="0">
+                <group href="http://www.bibsonomy.org/api/groups/public" name="public"/>
             </groups>
         </user>
-        <user realname="Joern Dreyer" name="butonic" href="http://www.bibsonomy.org/api/users/butonic" homepage="http://www.butonic.org" email="joern.dreyer@uni-kassel.de">
-            <groups start="0" end="1">
-                <group name="public" href="http://www.bibsonomy.org/api/groups/public"/>
+        <user href="http://www.bibsonomy.org/api/users/butonic" homepage="http://www.butonic.org" email="joern.dreyer@uni-kassel.de" realname="Joern Dreyer" name="butonic">
+            <groups end="1" start="0">
+                <group href="http://www.bibsonomy.org/api/groups/public" name="public"/>
             </groups>
         </user>
     </users>
