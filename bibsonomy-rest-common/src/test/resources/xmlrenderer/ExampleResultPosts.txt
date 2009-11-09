@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomy stat="ok">
-    <posts start="0" next="www.bibsonomy.org/foo/bar" end="10">
+    <posts next="www.bibsonomy.org/foo/bar" end="10" start="0">
         <post>
-            <user name="foo" href="http://www.bibsonomy.org/api/users/foo"/>
-            <group name="bar" href="http://www.bibsonomy.org/api/groups/bar"/>
-            <tag name="foobar" href="http://www.bibsonomy.org/api/tags/foobar"/>
-            <bibtex title="foo and bar" intrahash="abc" interhash="abc" href="http://www.bibsonomy.org/api/users/foo/posts/abc"/>
+            <user href="http://www.bibsonomy.org/api/users/foo" name="foo"/>
+            <group href="http://www.bibsonomy.org/api/groups/bar" name="bar"/>
+            <tag href="http://www.bibsonomy.org/api/tags/foobar" name="foobar"/>
+            <bibtex href="http://www.bibsonomy.org/api/users/foo/posts/abc" interhash="abc" intrahash="abc" title="foo and bar"/>
         </post>
         <post>
-            <user name="foo" href="http://www.bibsonomy.org/api/users/foo"/>
-            <tag name="foobar" href="http://www.bibsonomy.org/api/tags/foobar"/>
-            <bookmark url="www.foobar.de" title="bookmarktitle" intrahash="12345678" interhash="12345678" href="http://www.bibsonomy.org/api/users/foo/posts/12345678"/>
+            <user href="http://www.bibsonomy.org/api/users/foo" name="foo"/>
+            <tag href="http://www.bibsonomy.org/api/tags/foobar" name="foobar"/>
+            <bookmark href="http://www.bibsonomy.org/api/users/foo/posts/12345678" intrahash="12345678" interhash="12345678" url="www.foobar.de" title="bookmarktitle"/>
         </post>
     </posts>
 </bibsonomy>

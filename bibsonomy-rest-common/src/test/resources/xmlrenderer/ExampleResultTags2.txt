@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomy stat="ok">
-    <tags start="0" next="http://www.bibsonomy.org/foo/bar" end="10">
-        <tag usercount="0" name="foo" href="http://www.bibsonomy.org/api/tags/foo" globalcount="0"/>
+    <tags next="http://www.bibsonomy.org/foo/bar" end="10" start="0">
+        <tag href="http://www.bibsonomy.org/api/tags/foo" usercount="0" globalcount="0" name="foo"/>
     </tags>
 </bibsonomy>

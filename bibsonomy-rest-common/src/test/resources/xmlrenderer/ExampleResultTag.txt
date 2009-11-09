@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomy stat="ok">
-    <tag usercount="0" name="foo" href="http://www.bibsonomy.org/api/tags/foo" globalcount="0"/>
+    <tag href="http://www.bibsonomy.org/api/tags/foo" usercount="0" globalcount="0" name="foo"/>
 </bibsonomy>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomy stat="ok">
-    <user name="foo" href="http://www.bibsonomy.org/api/users/foo">
-        <groups start="0" end="0"/>
+    <user href="http://www.bibsonomy.org/api/users/foo" name="foo">
+        <groups end="0" start="0"/>
     </user>
 </bibsonomy>

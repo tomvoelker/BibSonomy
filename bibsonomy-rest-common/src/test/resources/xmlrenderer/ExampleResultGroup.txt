@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomy stat="ok">
-    <group realname="TestGroup" name="foo" href="http://www.bibsonomy.org/api/groups/foo" homepage="http://www.example.com/" description="foo bar :)"/>
+    <group href="http://www.bibsonomy.org/api/groups/foo" description="foo bar :)" homepage="http://www.example.com/" realname="TestGroup" name="foo"/>
 </bibsonomy>

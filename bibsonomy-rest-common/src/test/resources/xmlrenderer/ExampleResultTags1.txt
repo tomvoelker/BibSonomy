@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomy stat="ok">
-    <tags start="0" next="http://www.bibsonomy.org/foo/bar" end="10"/>
+    <tags next="http://www.bibsonomy.org/foo/bar" end="10" start="0"/>
 </bibsonomy>

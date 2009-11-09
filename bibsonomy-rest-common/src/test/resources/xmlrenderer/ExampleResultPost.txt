@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <bibsonomy stat="ok">
     <post>
-        <user name="foo" href="http://www.bibsonomy.org/api/users/foo"/>
-        <tag name="bar" href="http://www.bibsonomy.org/api/tags/bar"/>
-        <bookmark url="www.foobar.org" title="bookmarktitle" intrahash="aabbcc" interhash="aabbcc" href="http://www.bibsonomy.org/api/users/foo/posts/aabbcc"/>
+        <user href="http://www.bibsonomy.org/api/users/foo" name="foo"/>
+        <tag href="http://www.bibsonomy.org/api/tags/bar" name="bar"/>
+        <bookmark href="http://www.bibsonomy.org/api/users/foo/posts/aabbcc" intrahash="aabbcc" interhash="aabbcc" url="www.foobar.org" title="bookmarktitle"/>
     </post>
 </bibsonomy>
