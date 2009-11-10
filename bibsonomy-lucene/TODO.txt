@@ -1,0 +1,4 @@
+1) Remove possible write-locks on startup
+2) Use post's date and not its change_date
+   -> we need a different way for keeping track of indexe's last post
+      (e.g. add a change_date column)
