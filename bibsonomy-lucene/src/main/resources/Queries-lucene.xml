@@ -222,5 +222,18 @@
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
 
+<!--
+alternative query for determining tas updates
+ 
+SELECT t.content_id, t.change_date
+FROM tas t
+  JOIN bibtex b 
+    ON (t.content_id=b.content_id 
+    AND TIMESTAMPDIFF(SECOND, t.change_date, b.change_date) < 10 )
+WHERE t.change_date > '2009-11-10 01:08:23'
+  AND t.change_date <= '2009-11-10 01:20:23'
+  AND content_type=2
+GROUP BY t.content_id
+ -->
 		
 </sqlMap>
