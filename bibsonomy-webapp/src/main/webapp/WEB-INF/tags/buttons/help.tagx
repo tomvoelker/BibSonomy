@@ -1,0 +1,48 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	
+	<!-- TODO: Handle error when submitting NonJSTarget (cant find setter for attribute...) -->
+	<jsp:directive.attribute name="NonJSTarget" type="java.lang.String" required="false" />
+	<jsp:directive.attribute name="JSMessage" 	type="java.lang.String" required="true" />
+	
+	
+	<script type="text/javascript" src="${resdir}/javascript/wz_tooltip.js" ><!--  --></script>
+
+	<fmt:message key="${JSMessage}" var="helptext"/>
+	
+	<c:choose>
+		
+		<c:when test="${not empty NonJSTarget}">
+			<a href="${NonJSTarget}" onmouseover="Tip('${helptext}')" onmouseout="UnTip()" >
+				<img class="help_icon" style="visibility:hidden; margin-left: 1%; margin-top:0.5%; float: left; width: 1.5%;" src="${resdir}/image/questionmark.png" alt="?"/>
+			</a>
+		</c:when>
+		
+		<c:when test="${empty NonJSTarget}">
+			<a href=" " onmouseover="Tip('${helptext}')" onmouseout="UnTip()" >
+				<img class="help_icon" onmouseover="Tip('Some text')" onmouseout="UnTip()" style=" margin-left: 1%; margin-top:0.5%; float: left; width: 1.5%;" src="${resdir}/image/questionmark.png" alt="?"/>
+			</a>
+		</c:when>
+	</c:choose>
+	 
+	<!-- If JS is active visibility will be set back on, which has only effect, in case no non-js-target was given -->
+	
+	
+
+
+<script>
+$(document).ready(function () {
+	$(".help_icon").css("visibility", "visible");
+});
+
+
+</script>
+	
+	
+	
+	
+</jsp:root>
