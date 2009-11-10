@@ -47,6 +47,17 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> implements Lucen
 	}
 	
 	@Override
+	public Integer getLastTasId() {
+		Integer retVal = 0;
+		try {
+			retVal = (Integer)sqlMap.queryForObject("getLastTasId");
+		} catch (SQLException e) {
+			log.error("Error determining last tas entry.", e);
+		}
+		return retVal;
+	}
+	
+	@Override
 	public int getTasSize() {
 		Integer retVal = 0;
 		try {

@@ -62,10 +62,22 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 			return new LinkedList<Post<R>>();
 	}
 
-	public Date getNewestRecordDateFromTas(){
+	public Date getNewestRecordDateFromTas() {
 		Date retVal = null;
 		try {
 			retVal = (Date)this.sqlMap.queryForObject("getNewestRecordDateFromTas");
+		} catch (SQLException e) {
+			log.error("Error determining last tas entry", e);
+		}
+		
+		return retVal;
+	}
+	
+	@Override
+	public Integer getNewestContentIdFromTas() {
+		Integer retVal = 0;
+		try {
+			retVal = (Integer)this.sqlMap.queryForObject("getNewestContentIdFromTas");
 		} catch (SQLException e) {
 			log.error("Error determining last tas entry", e);
 		}
@@ -91,14 +103,45 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 
 		return retVal;
 	}
+	/**
+	 * get list of all posts where in the given time range only the tag assignments
+	 * have changed
+	 * 
+	 * @param retrieveFromDate
+	 * @param retrieveToDate
+	 * @return
+	 */
+	@Override
+	public List<Post<R>> getUpdatedPostsForTimeRange(Date fromDate, Date toDate) {
+		List<Post<R>> retVal = null;
+		
+		ResourcesParam<R> param = this.getResourcesParam();
+		param.setFromDate(fromDate);
+		param.setToDate(toDate);
+		
+		try {
+			retVal = getUpdatedPostsForTimeRange(param);
+		} catch (SQLException e) {
+			log.error("Error getting content ids to delete", e);
+		}
+		if( retVal==null ) {
+			retVal = new LinkedList<Post<R>>();
+		}
+		
+		log.debug("getContentIdsToDelete - count: " + retVal.size());
+
+		return retVal;	
+	}
 	
 
 	//------------------------------------------------------------------------
 	// abstract interface definition
 	//------------------------------------------------------------------------
 	protected abstract List<Post<R>> getPostsForUserInternal(ResourcesParam<R> param);
+	protected abstract List<Post<R>> getUpdatedPostsForTimeRange(ResourcesParam<R> param)throws SQLException;
 	protected abstract List<Integer> getContentIdsToDeleteInternal(Pair<Date, Date> param) throws SQLException;
 	protected abstract ResourcesParam<R> getResourcesParam();
 	
+	@Deprecated
 	protected abstract HashMap<String, String> getContentFields();
 }

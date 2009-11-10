@@ -15,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.SimpleAnalyzer;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
@@ -72,7 +73,7 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 				/** lucene analyzer, must be the same as at indexing */
 				// SimpleAnalyzer analyzer = new SimpleAnalyzer();
 				this.analyzer = new PerFieldAnalyzerWrapper(
-						new SimpleAnalyzer());
+						new StandardAnalyzer());
 
 				// let field group of analyzer use SimpleKeywordAnalyzer
 				// numbers will be deleted by SimpleAnalyser but group has only

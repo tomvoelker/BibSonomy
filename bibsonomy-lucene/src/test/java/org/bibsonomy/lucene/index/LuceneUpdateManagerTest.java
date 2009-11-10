@@ -55,7 +55,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	private static final String LUCENE_MAGIC_TITLE  = "luceneTitle";
 	
 	/** time offset between concurrent postings [ms] */
-	private static final long CONCURRENCY_OFFSET    = 4000;
+	private static final long CONCURRENCY_OFFSET    = 5;
 	
 	private LuceneResourceManager<BibTex> luceneBibTexUpdater;
 	private LuceneResourceManager<Bookmark> luceneBookmarkUpdater;
@@ -117,7 +117,6 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * tests visibility of private posts
 	 */
 	@Test
-	@Ignore
 	public void privatePosts() {
 		// set up data structures
 		Set<String> allowedGroups = new TreeSet<String>();
@@ -173,6 +172,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws IOException 
 	 */
 	@Test
+	@Ignore
 	public void updateIndices() throws IOException, ClassNotFoundException, SQLException {
 		// set up data structures
 		Set<String> allowedGroups = new TreeSet<String>();
@@ -280,6 +280,48 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		}
 	}
 
+	/**
+	 * tests some internel index functions
+	 */
+	@Test
+	public void searchTest() {
+		/*
+		Integer lastTasId = this.luceneBibTexIndex.getLastTasIdFromIndex();
+		log.debug("Last tas_id: " + lastTasId);
+		*/
+		// set up data structures
+		Set<String> allowedGroups = new TreeSet<String>();
+		allowedGroups.add("public");
+
+		//--------------------------------------------------------------------
+		// TEST 1: insert special post into test database and search for it
+		//--------------------------------------------------------------------
+		// store test post in database
+		DatabasePluginRegistry.getInstance().clearPlugins();
+		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
+		Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
+		String title = "luceneTitle1";
+		bibtexPost.getResource().setTitle(title);
+		
+		this.bibTexDb.storePost(bibtexPost.getUser().getName(), bibtexPost, null, false, this.dbSession);
+
+		// update index
+		this.luceneBibTexUpdater.updateIndex(false);
+		this.luceneBookmarkUpdater.updateIndex(false);
+		this.luceneBibTexUpdater.reloadIndex();
+		this.luceneBookmarkUpdater.reloadIndex();
+
+		// prepare searcher
+		ResourceSearch<BibTex> bibtexSearcher = LuceneDelegateBibTexSearch.getInstance();
+		ResourceSearch<Bookmark> bookmarkSearcher = LuceneDelegateBookmarkSearch.getInstance();
+
+		ResultList<Post<BibTex>> resultList = bibtexSearcher.searchPosts(null, title, null, bibtexPost.getUser().getName(), allowedGroups, 1, 0);
+		assertEquals(1, resultList.size());
+
+		resultList = bibtexSearcher.searchPosts(null, title+"2", null, bibtexPost.getUser().getName(), allowedGroups, 1, 0);
+		assertEquals(0, resultList.size());
+
+	}
 
 	//------------------------------------------------------------------------
 	// private helpers
@@ -481,6 +523,9 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		this.luceneUpdater.setIndexMap(indexMap);
 		this.luceneUpdater.setSearchMap(searchMap);
 		*/
+		this.luceneBibTexIndex     = LuceneBibTexIndex.getInstance();
+		this.luceneBookmarkIndex   = LuceneBookmarkIndex.getInstance();
+		
 		this.luceneBibTexUpdater   = LuceneBibTexManager.getInstance();
 		this.luceneBookmarkUpdater = LuceneBookmarkManager.getInstance();
 	}

@@ -60,6 +60,22 @@ public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
 	// abstract LuceneDBLogic interface implemetation
 	//------------------------------------------------------------------------
 	@Override
+	protected HashMap<String, String> getContentFields() {
+		HashMap<String, String> contentFields = new HashMap<String, String>();
+		
+		contentFields.put("content_id", "");
+		contentFields.put("group", "");
+		contentFields.put("date", "");
+		contentFields.put("user_name", "");
+		contentFields.put("desc", "");
+		contentFields.put("ext", "");
+		contentFields.put("url", "");
+		contentFields.put("tas", "");
+		
+		return contentFields;
+	}
+
+	@Override
 	protected ResourcesParam<Bookmark> getResourcesParam() {
 		return new BookmarkParam();
 	}
@@ -76,27 +92,19 @@ public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
 
 		return retVal;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	protected List<Post<Bookmark>> getUpdatedPostsForTimeRange(ResourcesParam<Bookmark> param) throws SQLException {
+		List<Post<Bookmark>> retVal = null;
+		retVal = (List<Post<Bookmark>>)this.sqlMap.queryForList("getUpdatedBookmarkPostsForTimeRange", param);
+		return retVal;
+	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List<Integer> getContentIdsToDeleteInternal(Pair<Date, Date> param) throws SQLException {
 		return (List<Integer>)this.sqlMap.queryForList("getBookmarkContentIdsToDelete", param);
-	}
-	
-	@Override
-	protected HashMap<String, String> getContentFields() {
-		HashMap<String, String> contentFields = new HashMap<String, String>();
-		
-		contentFields.put("content_id", "");
-		contentFields.put("group", "");
-		contentFields.put("date", "");
-		contentFields.put("user_name", "");
-		contentFields.put("desc", "");
-		contentFields.put("ext", "");
-		contentFields.put("url", "");
-		contentFields.put("tas", "");
-		
-		return contentFields;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -116,4 +124,5 @@ public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
 		log.debug("retrieveRecordsFromDatabase: " + retVal.size());
 		return retVal;
 	}
+
 }

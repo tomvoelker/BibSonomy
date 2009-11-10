@@ -41,9 +41,15 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @return
 	 */
 	public Date getNewestRecordDateFromTas();
+
+	/**
+	 * get most recent post's date
+	 * @return
+	 */
+	public Integer getNewestContentIdFromTas();
 	
 	/**
-	 * get list of content ids to delete from index
+	 * get list of content ids to delete from index with fromDate<date<=date
 	 * 
 	 * @param fromDate
 	 * @param toDate
@@ -61,11 +67,27 @@ public interface LuceneDBInterface<R extends Resource> {
 	 */
 	@Deprecated
 	public List<HashMap<String, Object>> getPostsForTimeRange(Date fromDate, Date toDate);
+	
 
+	/**
+	 * get list of all posts where in the given time range only the tag assignments
+	 * have changed
+	 * 
+	 * @param retrieveFromDate
+	 * @param retrieveToDate
+	 * @return
+	 */
+	public List<Post<R>> getUpdatedPostsForTimeRange(Date fromDate, Date toDate);
+	
 	//------------------------------------------------------------------------
 	// methods for building the index
 	// TODO: maybe we should introduce a special class hierarchy
 	//------------------------------------------------------------------------
+	/** 
+	 * get newest tas_id from database 
+	 */
+	public Integer getLastTasId();
+	
 	/** 
 	 * get number of TAS entries 
 	 */
@@ -108,4 +130,5 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @throws SQLException
 	 */
 	public List<GroupTasParam> getGroupTasEntries(Integer skip, Integer max);
+
 }

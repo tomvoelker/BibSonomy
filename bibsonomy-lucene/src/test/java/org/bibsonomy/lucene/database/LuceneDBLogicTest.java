@@ -230,13 +230,13 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		
 		Date postDate = this.luceneBibTexLogic.getNewestRecordDateFromTas();
 		// compare modulo milliseconds 
-		assertEquals(bibtexPost.getDate().getTime()-bibtexPost.getDate().getTime()%1000, postDate.getTime());
+		assertEquals(bibtexPost.getDate().getTime()-bibtexPost.getDate().getTime()%5000, postDate.getTime()-postDate.getTime()%5000);
 
 		Post<Bookmark> bookmarkPost = this.generateBookmarkDatabaseManagerTestPost();
 		this.bookmarkDb.storePost(bookmarkPost.getUser().getName(), bookmarkPost, null, false, this.dbSession);
 		
 		postDate = this.luceneBookmarkLogic.getNewestRecordDateFromTas();
-		assertEquals(bookmarkPost.getDate().getTime()-bookmarkPost.getDate().getTime()%1000, postDate.getTime());
+		assertEquals(bookmarkPost.getDate().getTime()-bookmarkPost.getDate().getTime()%5000, postDate.getTime()-postDate.getTime()%5000);
 	}
 	
 	/**

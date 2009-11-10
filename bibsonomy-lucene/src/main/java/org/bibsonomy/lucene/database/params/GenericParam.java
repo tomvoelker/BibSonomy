@@ -180,6 +180,9 @@ public abstract class GenericParam {
 	 * retrieve resources via their bibtexkey 
 	 */
 	private String bibtexKey;
+	
+	private Date fromDate;
+	private Date toDate;
 
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
@@ -647,5 +650,21 @@ public abstract class GenericParam {
 	 */
 	public String toStringByReflection() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
+
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
+	}
+
+	public Date getFromDate() {
+		return fromDate;
+	}
+
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
+	}
+
+	public Date getToDate() {
+		return toDate;
 	}
 }

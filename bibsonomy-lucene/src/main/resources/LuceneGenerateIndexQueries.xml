@@ -29,6 +29,12 @@
 		| Queries.
 	 	+-->
 	 <!-- get number of tag assignments -->
+	<select id="getLastTasId" resultClass="integer">
+		SELECT MAX(tas_id)
+		FROM tas
+	</select>    
+	
+	 <!-- get number of tag assignments -->
 	<select id="getTasCount" resultClass="integer">
 		SELECT COUNT(*)
 		FROM tas

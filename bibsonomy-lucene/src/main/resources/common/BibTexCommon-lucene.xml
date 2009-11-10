@@ -78,6 +78,20 @@
 		<include refid="commonBibtexAttributes2"/>, b2.scraperid
 	</sql>
 
+	<!-- ignoring column 'date' -->
+	<sql id="commonBibtexAttributes3">
+		b2.address, b2.annote, b2.booktitle, b2.chapter, b2.crossref, b2.edition, b2.howpublished,
+		b2.institution, b2.journal, b2.bkey, b2.month, b2.note, b2.number, b2.organization, b2.pages, b2.publisher,
+		b2.school, b2.series, b2.type, b2.volume, b2.day, b2.url, b2.content_id, b2.description, b2.bibtexKey,
+		b2.misc, b2.bibtexAbstract, b2.user_name, b2.title, b2.author, b2.editor, b2.year, b2.entrytype,
+		<include refid="bibtexSimHashes2"/>
+	</sql>
+
+	<!-- ignoring column 'date' -->
+	<sql id="bibtexAttributes3">
+		<include refid="commonBibtexAttributes3"/>, b2.scraperid
+	</sql>
+
 	<sql id="bibtexSimHashes">
 		b.simhash1 AS interHash, b.simhash2 AS intraHash
 	</sql>

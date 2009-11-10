@@ -146,5 +146,12 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 		log.debug("retrieveRecordsFromDatabase: " + retVal.size());
 		return retVal;
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	protected List<Post<BibTex>> getUpdatedPostsForTimeRange(ResourcesParam<BibTex> param) throws SQLException {
+		List<Post<BibTex>> retVal = null;
+		retVal = (List<Post<BibTex>>)this.sqlMap.queryForList("getUpdatedBibTexPostsForTimeRange", param);
+		return retVal;
+	}
 }
