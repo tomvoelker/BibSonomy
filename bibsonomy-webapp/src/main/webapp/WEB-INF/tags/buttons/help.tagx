@@ -16,11 +16,11 @@
           <c:when test="${not empty helpUrl}">
             <!-- the given path is relative to projectHome/help -->
             <a href="${projectHome}help${helpUrl}">
-  		      <img style="width:15px; padding-bottom:5px" src="${resdir}/image/questionmark.png" alt="?"/>
+  		      <img src="${resdir}/image/questionmark.png" alt="?"/>
             </a>
           </c:when>
           <c:otherwise>
-              <img style="width:15px; padding-bottom:5px" src="${resdir}/image/questionmark.png" alt="?"/>
+              <img src="${resdir}/image/questionmark.png" alt="?"/>
           </c:otherwise>
         </c:choose>
 		<div><fmt:message key="${message}"/> ${helpText}</div>
