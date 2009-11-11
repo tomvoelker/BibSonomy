@@ -5,12 +5,23 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
-	<!-- TODO: Handle error when submitting NonJSTarget (cant find setter for attribute...) -->
+	
+	<jsp:directive.attribute name="JSMessage" type="java.lang.String" required="true" />
+	
+	
+	<span class="help" style="float:left; margin-right:5px; padding-top:-5px">
+		<img style="width:15px; padding-bottom:5px" class="" src="${resdir}/image/questionmark.png" alt="?"/>
+		<div ><label style="font-size: 80%"><fmt:message key="${JSMessage}"/></label></div>
+	</span> 
+
+	
+	
+	
+	
+	<!-- JS solution - right now css seams cheaper
 	<jsp:directive.attribute name="NonJSTarget" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="JSMessage" 	type="java.lang.String" required="true" />
-	
-	
-	<script type="text/javascript" src="${resdir}/javascript/wz_tooltip.js" ><!--  --></script>
+	<script type="text/javascript" src="${resdir}/javascript/wz_tooltip.js" />
 
 	<fmt:message key="${JSMessage}" var="helptext"/>
 	
@@ -18,31 +29,30 @@
 		
 		<c:when test="${not empty NonJSTarget}">
 			<a href="${NonJSTarget}" onmouseover="Tip('${helptext}')" onmouseout="UnTip()" >
-				<img class="help_icon" style="visibility:hidden; margin-left: 1%; margin-top:0.5%; float: left; width: 1.5%;" src="${resdir}/image/questionmark.png" alt="?"/>
+				<img class="fsHelp" src="${resdir}/image/questionmark.png" alt="?"/>
 			</a>
 		</c:when>
 		
 		<c:when test="${empty NonJSTarget}">
 			<a href=" " onmouseover="Tip('${helptext}')" onmouseout="UnTip()" >
-				<img class="help_icon" onmouseover="Tip('Some text')" onmouseout="UnTip()" style=" margin-left: 1%; margin-top:0.5%; float: left; width: 1.5%;" src="${resdir}/image/questionmark.png" alt="?"/>
+				<img class="fsHelp" src="${resdir}/image/questionmark.png" alt="?"/>
 			</a>
 		</c:when>
 	</c:choose>
 	 
-	<!-- If JS is active visibility will be set back on, which has only effect, in case no non-js-target was given -->
+	
 	
 	
 
 
 <script>
 $(document).ready(function () {
-	$(".help_icon").css("visibility", "visible");
+	$(".fsHelp").css("visibility", "visible");
 });
 
 
 </script>
-	
-	
+-->
 	
 	
 </jsp:root>
