@@ -142,6 +142,9 @@
 	</delete>
 	
 	<insert id="insertFollowerOfUser" parameterClass="userParam">
-		INSERT INTO followers (user_name, f_user_name, fellowship_date) VALUES (#userName#,#requestedUserName#,NOW())
+		INSERT IGNORE INTO followers (user_name, f_user_name, fellowship_date) VALUES (#userName#,#requestedUserName#,NOW())
+	</insert>
+	<insert id="insertFriendOfUser" parameterClass="userParam">
+		INSERT IGNORE INTO friends (user_name, f_user_name, friendship_date) VALUES (#userName#,#requestedUserName#,NOW())
 	</insert>
 </sqlMap>
