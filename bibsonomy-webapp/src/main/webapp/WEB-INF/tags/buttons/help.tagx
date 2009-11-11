@@ -6,12 +6,11 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	
-	<jsp:directive.attribute name="JSMessage" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="message" type="java.lang.String" required="true" />
 	
-	
-	<span class="help" style="float:left; margin-right:5px; padding-top:-5px">
-		<img style="width:15px; padding-bottom:5px" class="" src="${resdir}/image/questionmark.png" alt="?"/>
-		<div ><label style="font-size: 80%"><fmt:message key="${JSMessage}"/></label></div>
+	<span class="help">
+		<img style="width:15px; padding-bottom:5px" src="${resdir}/image/questionmark.png" alt="?"/>
+		<div><fmt:message key="${message}"/></div>
 	</span> 
 
 	
