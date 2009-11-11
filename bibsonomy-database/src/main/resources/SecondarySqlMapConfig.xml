@@ -8,7 +8,7 @@
 		version 5.0.5+ (dbe, 20071010)
 	-->	
 	<settings
-		defaultStatementTimeout="300"
+		defaultStatementTimeout="30"
 	/>
 
 	<typeAlias alias="date" type="java.util.Date" />
