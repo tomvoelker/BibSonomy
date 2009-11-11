@@ -895,6 +895,28 @@ span.info:hover > div {
 	padding: 5px;
 }
 
+/* help tooltip */
+span.help:hover {
+	z-index: 25;
+}
+
+span.help > div{
+	display: none;
+}
+
+span.help:hover > div {
+	display: block;
+	position: absolute;
+	top: 2em;
+	left: 2em;
+	width: 50em;
+	border: 1px solid #ccc;
+	background-color: #eee;
+	color: #000;
+	padding: 5px;
+}
+
+
 /* advanced search */
 #searchbox {
 	margin: 5px 5px 5px 5px;
