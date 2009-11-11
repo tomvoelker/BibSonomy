@@ -133,8 +133,8 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			command.getConcepts().setNumConcepts(concepts.size());
 
 			// log if a user has reached threshold
-			if (command.getTagcloud().getTags().size() > 19999) {
-				LOGGER.error("User " + groupingName + " has reached threshold of 20000 tags on user page");
+			if (command.getTagcloud().getTags().size() >= 20000) {
+				LOGGER.debug("User " + groupingName + " has reached threshold of 20000 tags on user page");
 			}
 			
 			// retrieve similar users, by the given user similarity measure
