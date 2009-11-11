@@ -168,7 +168,7 @@
 
 							    	
 
-									<!-- ROW THREE -->
+									<!-- ROW THREE --> 
 								    <div class="fsLabel"><!--  --></div>
 								    <post:simpleGroupBox groups="${command.context.loginUser.groups}"/>
 									
@@ -183,6 +183,7 @@
 									    <!-- ROW ONE -->
 										    
 											<label class="fsLabel"><fmt:message key="post_bibtex.upload.option.character_encoding" /></label>
+											<buttons:help  JSMessage="post_bibtex.upload.option.character_encoding_help"/>
 										    <select name="encoding" class="fsInput" id="lencoding">
 										      	<option value="UTF-8">UTF-8</option>
 										      	<option value="ISO-8859-1">ISO-8859-1</option>
@@ -204,9 +205,9 @@
 										      	<option value="UTF-16BE">UTF-16BE</option>
 										      	<option value="UTF-16LE">UTF-16LE</option>
 										    </select>
-										    <!--<buttons:help NonJSTarget="blub" JSTarget="bla"/>-->
-										    <img style="margin-left: 1%; margin-top:0.5%; float: left; width: 1.5%;" src="${resdir}/image/questionmark.png" alt="?"/>
-											<!-- <label class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.character_encoding_help" /></label>  -->
+										    
+										    
+											
 										    
 										
 
@@ -214,24 +215,23 @@
 
 									    	
 								    	<!-- ROW TWO -->
-									    
-									    	 
 										    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter" /></label>
+										    <buttons:help  JSMessage="post_bibtex.upload.option.tag_delimiter_help" />
 										    <select name="delimiter" class="fsInput" onchange="updateSubstitute(this);">
 										        <option value=" ">' ' (${whitespace})</option>
 										        <option value=",">, (${comma})</option>
 										        <option value=";">; (${semicolon})</option>
 									        </select>
-									    	<!-- <label class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter_help" /></label>  -->
-											 
-										 
+									    	
 									    
 									  
 									  	<!-- ROW THREE -->
-									  	
-											    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute" /></label>
-											    <input type="text" class="fsInput" value="_" name="whitespace" size="2" maxlength="1" disabled="disabled" />
-										    	<!-- <label class="fsHelpFloatLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute_help" /></label> -->
+										    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute" /></label>
+										    <buttons:help  JSMessage="post_bibtex.upload.option.whitespace_substitute_help"/>
+										    <!-- TODO: Ask cause of disabled -->
+										    <input type="text" class="fsSmall" style="float:left" value="_" name="whitespace" size="2" maxlength="1" disabled="disabled" />
+									    	
+									    	
 										
 
 								</fieldset>
