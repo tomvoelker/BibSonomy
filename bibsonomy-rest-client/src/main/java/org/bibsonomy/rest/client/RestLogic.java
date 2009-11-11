@@ -388,4 +388,5 @@ public class RestLogic implements LogicInterface {
 	public int deleteMessages(String userName, List<Integer> contentIds) {
 		return 0;
 	}
+	
 }
