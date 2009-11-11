@@ -14,7 +14,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.managers.AbstractDBLogicBase;
 import org.bibsonomy.database.params.BibTexParam;
@@ -125,7 +125,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		Assert.assertEquals(0, tags.size());
 	}
 	
-	@Test
+	/*@Test
 	public void testForGroupTag() {
 		// create users
 		User testUser1 = createTestUser("forgroupuser1");
@@ -209,7 +209,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		} catch (ValidationException ex){
 			// ignore
 		}
-	}
+	}*/
 	/**
 	 *  test funtionality of the ForFriend SystemTag
 	 */
@@ -221,7 +221,14 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		// create users
 		User testUser1 = createTestUser("senderUser");
 		User testUser2 = createTestUser("receiverUser");
-		testUser1.addFriend(testUser2);
+		testUser2.addFriend(testUser1);
+		DBLogicUserInterfaceFactory logicFactory = new DBLogicUserInterfaceFactory();
+		logicFactory.setDbSessionFactory(getDbSessionFactory());
+		LogicInterface logic = logicFactory.getLogicAccess(testUser2.getName(), "password");
+		//UserParam param = new UserParam();
+		//param.setU
+		//this.userDb.createFriendOfUser(param, dbSession);
+		logic.createUserRelationship(testUser2, testUser1, UserRelation.OF_FRIEND);
 		
 		// create post
 		Set<Tag> tags = new HashSet<Tag>();
@@ -233,9 +240,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		posts.add(createTestPost(testUser1, tags));
 		
 		// store posts
-		DBLogicUserInterfaceFactory logicFactory = new DBLogicUserInterfaceFactory();
-		logicFactory.setDbSessionFactory(getDbSessionFactory());
-		LogicInterface logic = logicFactory.getLogicAccess(testUser1.getName(), "password");
+		logic = logicFactory.getLogicAccess(testUser1.getName(), "password");
 		logic.createPosts(posts);
 		List<InboxMessage> messages = this.inboxDb.getInboxMessages("receiverUser", dbSession);
 		Assert.assertEquals(1, messages.size());
