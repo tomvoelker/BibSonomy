@@ -207,16 +207,6 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 	}
 	
-	/**
-	 * Ensures that the user has a friend with the given name
-	 * @param user
-	 * @param possibleFriend
-	 */
-	public void ensureFriendOfUser(final User user, final String possibleFriend) {
-		if (!user.getFriendsAsString().contains(possibleFriend)) {
-			throw new ValidationException("You are not authorized to send Posts to users you are not friends with.");
-		}
-	}
 
 	/**
 	 * Ensures that the user is an admin.
@@ -302,9 +292,14 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param requestedUser - the requested user
 	 * @param relation - the relation to be created
 	 * @return true if everyhing is OK and the relationship may be created
+	 * 
+	 * 
+	 */
+	/*
+	 * FIXME: Why do we need loginUser and relation?
 	 */
 	public boolean checkUserRelationship(User loginUser, User requestedUser, UserRelation relation) {
-		if (requestedUser == null) {
+		if (!present(requestedUser)) {
 			return false;
 		}
 		if ("dblp".equalsIgnoreCase(requestedUser.getName())) {

@@ -35,12 +35,14 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private final static UserDatabaseManager singleton = new UserDatabaseManager();
 	
 	private final BasketDatabaseManager basketDBManager;
+	private final InboxDatabaseManager inboxDBManager;
 	private final DatabasePluginRegistry plugins;
 	private final AdminDatabaseManager adminDBManager;
 	
 	private static final UserChain chain = new UserChain();
 
 	private UserDatabaseManager() {
+		this.inboxDBManager = InboxDatabaseManager.getInstance();
 		this.basketDBManager = BasketDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.adminDBManager = AdminDatabaseManager.getInstance();
@@ -85,10 +87,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			user = new User();
 		} else {
 			/*
-			 * user exists: get number of posts in his basket
+			 * user exists: get number of posts in his basket and inbox
 			 */
 			final int numPosts = this.basketDBManager.getNumBasketEntries(lowerCaseUsername, session);
 			user.getBasket().setNumPosts(numPosts);
+			final int inboxMessages = this.inboxDBManager.getNumInboxItems(lowerCaseUsername, session);
+			user.getInbox().setNumPosts(inboxMessages);
 			/*
 			 * get the settings of the user
 			 */
@@ -461,6 +465,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getUserFriends", authUser, User.class, session);
 	}
 
+
 	/**
 	 * Returns a list of friends for the given user. This list contains all users, which
 	 * <code>authUser</code> has in his/her friend list.
@@ -571,6 +576,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * This method adds a user as a follower of another user to the db.
 	 * 
+	 * FIXME: rename to createFollowerOfUser
+	 * FIXME: use Strings, not params!
+	 * 
 	 * @param param
 	 * @param session
 	 */
@@ -578,6 +586,18 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.insert("insertFollowerOfUser", param, session);
 	}
 
+	
+	/**
+	 * Adds a friend to the user's friend list
+	 * 
+	 * FIXME: use Strings, not params!
+	 * 
+	 * @param param
+	 * @param session
+	 */
+	public void createFriendOfUser(final UserParam param, final DBSession session) {
+		this.insert("insertFriendOfUser", param, session);	
+	}
 	
 	/**
 	 * Check if one user follows another one.
@@ -588,12 +608,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return true if sourceUser follows the possible
 	 */
 	public Boolean isFollowerOfUser(User possibleFollower, User targetUser, final DBSession session) {
-		if (possibleFollower == null || targetUser == null) {
+		if (!present(possibleFollower) || !present(targetUser)) {
 			return false;
 		}
-		List<User> followingUsers = this.getFollowersOfUser(possibleFollower.getName(), session);		
-		for (User u : followingUsers) {
-			if ( u.getName().equals(targetUser.getName()) ) {
+		final List<User> followingUsers = this.getFollowersOfUser(possibleFollower.getName(), session);		
+		for (final User u : followingUsers) {
+			if ( u.getName().equalsIgnoreCase(targetUser.getName()) ) {
 				return true;
 			}
 		}

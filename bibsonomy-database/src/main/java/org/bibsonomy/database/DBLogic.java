@@ -38,6 +38,7 @@ import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
 import org.bibsonomy.database.managers.DocumentDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
+import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.StatisticsDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
@@ -101,6 +102,7 @@ public class DBLogic implements LogicInterface {
 	private final StatisticsDatabaseManager statisticsDBManager;
 	private final TagRelationDatabaseManager tagRelationsDBManager;
 	private final BasketDatabaseManager basketDBManager;
+	private final InboxDatabaseManager inboxDBManager;
 
 	private final User loginUser;
 	
@@ -134,6 +136,7 @@ public class DBLogic implements LogicInterface {
 		this.tagRelationsDBManager = TagRelationDatabaseManager.getInstance();
 		
 		this.basketDBManager = BasketDatabaseManager.getInstance();
+		this.inboxDBManager = InboxDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;
 		
@@ -629,6 +632,8 @@ public class DBLogic implements LogicInterface {
 			throw new IllegalStateException("The resource(s) with ID(s) " + missingResources + " do(es) not exist and could hence not be deleted.");
 		}
 	}
+	
+	
 
 	/**
 	 * Adds/updates a post in the database.
@@ -1804,13 +1809,23 @@ public class DBLogic implements LogicInterface {
 			param.setUserName(loggedInUser.getName());
 			param.setRequestedUserName(requestedUser.getName());
 
-			if (UserRelation.FOLLOWER_OF.equals(relation)) {
-				if (this.userDBManager.isFollowerOfUser(loggedInUser, requestedUser, session)) {
-					this.userDBManager.deleteFollowerOfUser(param, session);
-				}
-			}
-			if (UserRelation.FRIEND_OF.equals(relation)) {
+			switch (relation) {
+			case FOLLOWER_OF:
+				this.userDBManager.deleteFollowerOfUser(param, session);
+				break;
+			/*
+			 * FIXME: This should be the OF_FRIEND relation:
+			 * * A FRIEND OF B means: A is in B's list, therefore only B can delete it
+			 * What we delete here is the Relation loggedInUser OF_FRIEND requestedUser
+			 * Thus relation=OF_FRIEND 
+			 * Otherwise (as it is now) we have loggedInUser as sourceUser in the FOLLOWER_OF-relation
+			 * and as targetUser in the FRIEND_OF-relation
+			 */
+			case FRIEND_OF:
 				this.userDBManager.deleteFriendOfUser(param, session);
+				break;
+			default:
+				break;
 			}
 		} finally {
 			session.close();
@@ -1824,20 +1839,35 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.LogicInterface#insertUserRelationship()
 	 */
 	@Override
-	public void createUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+	public void createUserRelationship(final User user, final User relatedUser, final UserRelation relation) {
 		this.ensureLoggedIn();
-		this.permissionDBManager.checkUserRelationship(loggedInUser, requestedUser, relation);
+		this.permissionDBManager.checkUserRelationship(user, relatedUser, relation);
+		this.permissionDBManager.isAdminOrSelf(loginUser, user.getName());
 
 		final DBSession session = openSession();
 		try {
-			UserParam param = new UserParam();
-			param.setUserName(loggedInUser.getName());
-			param.setRequestedUserName(requestedUser.getName());
+			/*
+			 * FIXME: move param object into UserDataBaseManager
+			 */
+			final UserParam param = new UserParam();
+			param.setUserName(user.getName());
+			param.setRequestedUserName(relatedUser.getName());
 
-			if (UserRelation.FOLLOWER_OF.equals(relation)) {
-				if (this.userDBManager.isFollowerOfUser(loggedInUser, requestedUser, session) == false) {
+			switch (relation) {
+			case FOLLOWER_OF:
+				if (this.userDBManager.isFollowerOfUser(user, relatedUser, session) == false) {
 					this.userDBManager.addFollowerOfUser(param, session);
 				}
+				break;
+			case OF_FRIEND:
+				/* this means user adds a new friend (related user) therefore related user becomes a friend user
+				 * and that means (user, relatedUser)\in OF_FRIEND
+				 * and (relatedUser, user)\in FRIEND_OF
+				 */
+				this.userDBManager.createFriendOfUser(param, session);
+				break;
+			default:
+				break;
 			}
 		} finally {
 			session.close();
@@ -1943,6 +1973,39 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 		
+		return 0;
+	}
+
+	/**
+	 * Delete the users Message (given by the unique contentId) from his inbox
+	 * @param userName
+	 * @param contentIds
+	 * @return size of Inbox
+	 */
+	public int deleteMessages(String userName, List<Integer> contentIds) {
+		/*
+		 * check permissions
+		 */
+		this.ensureLoggedIn();
+		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
+		/*
+		 * delete the messages 
+		 */
+		String userNameInLowerCase = userName.toLowerCase();
+		final DBSession session = openSession();
+		try {
+			for (final int contentId : contentIds) {
+				/*
+				 * delete from inbox
+				 */
+				// TODO would be nice to know about the resourcetype or the
+				// instance behind this contentId
+				this.inboxDBManager.deleteItem(userNameInLowerCase, contentId, session);
+				return this.inboxDBManager.getNumInboxItems(userNameInLowerCase, session);
+			}
+		} finally {
+			session.close();
+		}
 		return 0;
 	}
 
