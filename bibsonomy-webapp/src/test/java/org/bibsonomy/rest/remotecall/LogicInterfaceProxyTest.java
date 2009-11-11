@@ -825,4 +825,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	@Override
+	public int deleteMessages(String userName, List<Integer> contentIds) {
+		return 0;
+	}
 }
