@@ -180,7 +180,7 @@
 										    
 											<label class="fsLabel"><fmt:message key="post_bibtex.upload.option.character_encoding" /></label>
 											<buttons:help message="post_bibtex.upload.option.character_encoding_help"/>
-										    <select name="encoding" class="fsInput" id="lencoding">
+										    <select name="encoding" class="fsInput fsSmall" id="lencoding">
 										      	<option value="UTF-8">UTF-8</option>
 										      	<option value="ISO-8859-1">ISO-8859-1</option>
 										      	<option value="ISO-8859-2">ISO-8859-2</option>
@@ -213,7 +213,7 @@
 								    	<!-- ROW TWO -->
 										    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter" /></label>
 										    <buttons:help message="post_bibtex.upload.option.tag_delimiter_help" />
-										    <select name="delimiter" class="fsInput" onchange="updateSubstitute(this);">
+										    <select name="delimiter" class="fsInput fsSmall" onchange="updateSubstitute(this);">
 										        <option value=" ">' ' (<fmt:message key="delimiters.whitespace"/>)</option>
 										        <option value=",">, (<fmt:message key="delimiters.comma"/>)</option>
 										        <option value=";">; (<fmt:message key="delimiters.semicolon"/>)</option>
