@@ -34,7 +34,7 @@ public class GetBookmarksViewable extends BookmarkChainElement {
 		}
 		
 		if (present(param.getTagIndex())) {
-			return this.db.getPostsViewableByTag(param.getRequestedUserName(), param.getTagIndex(), groupId, param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+			return this.db.getPostsViewableByTag(param.getRequestedUserName(), param.getTagIndex(), groupId, param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 		}
 		return this.db.getPostsViewable(param.getRequestedGroupName(), param.getUserName(), groupId, HashID.INTRA_HASH, param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}

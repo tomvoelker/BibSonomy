@@ -167,7 +167,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	/** 
-	 * TODODZ: fix sql statement
 	 * <em>/tag/EinTag</em>, <em>/viewable/EineGruppe/EinTag</em><br/><br/>
 	 * 
 	 * On the <em>/tag</em> page only public entries are shown (groupType must
@@ -306,8 +305,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 	
 	/**
-	 * TODO: refactor use other {@link PostDatabaseManager#getPostsPopular(int, int, int, HashID, DBSession)}}?!?
-	 * 
 	 * This method prepares queries which retrieve all resources for the
 	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
 	 * separate temporary tables which are filled by an external script.
@@ -507,7 +504,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param userName
 	 * @param limit
 	 * @param offset
-	 * @param systemTags TODO
+	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
@@ -523,7 +520,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	/**
-	 * FIXME: check implementation
+	 * TODO: check implementation
 	 * TODO: improve documentation
 	 * 
 	 * @param groupId
@@ -557,7 +554,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 	
 	/**
-	 * TODODZ: check method with groupId
 	 * Returns the number of posts for a given search.
 	 * 
 	 * @param groupId
@@ -575,10 +571,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return this.queryForObject("get" + this.resourceClassName + "SearchCount", param, Integer.class, session);
 	}
 	
-	/**
-	 * XXX: requestedGroupName or id???
-	 * XXX: requestedGroupName only used in bibtex statment
-	 *  
+	/**  
 	 * <em>/viewable/EineGruppe</em><br/><br/>
 	 * 
 	 * Prepares queries to retrieve posts which are set viewable to group.
@@ -609,7 +602,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 	
 	/**
-	 * TODODZ: add filter
 	 * TODO: check method
 	 * 
 	 * Returns viewable BibTexs for a given tag.
@@ -617,15 +609,16 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param requestedUserName
 	 * @param tagIndex
 	 * @param groupId
+	 * @param filter
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsViewableByTag(final String requestedUserName, final List<TagIndex> tagIndex, final int groupId, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsViewableByTag(final String requestedUserName, final List<TagIndex> tagIndex, final int groupId, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		if (GroupID.isSpecialGroupId(groupId)) {
-			return this.getPostsByTagNamesForUser(requestedUserName, tagIndex, groupId, null, limit, offset, null, systemTags, session);
+			return this.getPostsByTagNamesForUser(requestedUserName, tagIndex, groupId, null, limit, offset, filter, systemTags, session);
 		}
 		
 		final P param = this.createParam(null, requestedUserName, limit, offset);
@@ -701,7 +694,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 	
 	/**
-	 * TODO: name!!
 	 * TODO: improve docs
 	 * 
 	 * @param requestedUserName

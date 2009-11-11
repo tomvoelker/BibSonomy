@@ -24,7 +24,6 @@ public class GetBookmarksPopular extends BookmarkChainElement {
 
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		// TODODZ: hashid
 		return this.db.getPostsPopular(param.getDays(), param.getLimit(), param.getOffset(), HashID.getSimHash(param.getSimHash()), session);
 	}
 
