@@ -78,28 +78,7 @@ public class IsiScraper extends AbstractUrlScraper {
 	@Override
 	protected boolean scrapeInternal(ScrapingContext sc)throws ScrapingException {
 		sc.setScraper(this);
-
-		log.debug("Observed Scraper called: IsiScraper is called with " + sc.getUrl().toString());
 		
-		/*
-		 * scraping won't work with the plain url, we get from the user. there is no article-id
-		 * or any other thing like that embedded in the url.
-		 * 
-		 * below, sid is used as article id, but thats wrong. sid means the session id - which is
-		 * different to the JSessionID in this case.
-		 * 
-		 * however theese are the url parameters:
-		 *   product:	  dunno
-		 *   search_mode: some different search modes: GeneralSearch, Refine by Science & Technology, ...
-		 *   qid:		  incremental count of search requests
-		 *   SID:		  like explained above, session id
-		 *   page:		  stands for the pages of search results 
-		 *   doc:		  stands for the numbered search results
-		 *   colname:	  stands for the selected database: WOS means Web of Science
-		 * 
-		 * as example:
-		 * /full_record.do?product=UA&search_mode=GeneralSearch&qid=5&SID=S1eoH2J6gDCAKM551@h&page=1&doc=1&colname=WOS
-		 * 
 		try {
 
 			final URL pageUrl = sc.getUrl();
@@ -163,8 +142,7 @@ public class IsiScraper extends AbstractUrlScraper {
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
 		}
-		*/
-		
+	
 		return false;		
 	}
 

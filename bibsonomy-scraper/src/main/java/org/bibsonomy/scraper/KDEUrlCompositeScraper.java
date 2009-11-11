@@ -177,7 +177,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new ScientificcommonsScraper());
 		addScraper(new AGUScraper());
 		addScraper(new CellScraper());
-//		addScraper(new IsiScraper());
+		addScraper(new IsiScraper());
 		addScraper(new CasesJournalScraper());
 	}
 

@@ -863,10 +863,11 @@
 	</URLTest>
 	<URLTest id="url_151">
 		<TestDescription>url test for isi scraper</TestDescription>
-		<URL>http://apps.isiknowledge.com/full_record.do?product=UA&amp;search_mode=GeneralSearch&amp;qid=1&amp;SID=W2O7eLLHgDLCa6Ool9j&amp;page=1&amp;doc=1&amp;colname=WOS</URL>
+		<URL>http://apps.isiknowledge.com/full_record.do?product=UA&amp;search_mode=GeneralSearch&amp;qid=1&amp;SID=N2L59PB4hgkcaodaihL&amp;page=1&amp;doc=1&amp;colname=WOS</URL>
 		<BibFile>IsiScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.isi.IsiScraper</Scraper>
 		<Enabled>false</Enabled>
+		<Description>Important: To run the test, insert an url with fresh SID. Otherwise the test will fail</Description>
 	</URLTest>
 	<URLTest id="url_152">
 		<TestDescription>RSOC Scraper url test, alternate host</TestDescription>
@@ -910,5 +911,11 @@
 		<URL>http://ieeexplore.ieee.org/search/srchabstract.jsp?arnumber=4383076&amp;isnumber=4407525&amp;punumber=10376&amp;k2dockey=4383076@ieeejrns&amp;query=%28%28hotho%29%3Cin%3Eau+%29&amp;pos=0&amp;access=n0</URL>
 		<BibFile>IEEEXploreBookScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreBookScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_159">
+		<TestDescription>URL scraping test with books from ieeexplore</TestDescription>
+		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6VRG-4P2J0DY-2&amp;_user=4861060&amp;_rdoc=1&amp;_fmt=&amp;_orig=search&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=79ade29e7ed69e54fd25657532c9f419</URL>
+		<BibFile>ScienceDirectScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
 	</URLTest>
 </test:Tests>
