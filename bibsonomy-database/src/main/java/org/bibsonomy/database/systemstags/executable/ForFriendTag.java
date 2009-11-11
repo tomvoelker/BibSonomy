@@ -2,6 +2,8 @@ package org.bibsonomy.database.systemstags.executable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -28,6 +30,7 @@ public class ForFriendTag extends SystemTag {
 	 * posts to given user.
 	 */
 	private final PermissionDatabaseManager permissionDb;
+	private final GeneralDatabaseManager generalDb; //needed to check: Is sender friend of receiver?
 	private final InboxDatabaseManager inboxDb;
 
 	/**
@@ -38,6 +41,7 @@ public class ForFriendTag extends SystemTag {
 		// initialize database manager
 		this.permissionDb = PermissionDatabaseManager.getInstance();
 		this.inboxDb = InboxDatabaseManager.getInstance();
+		this.generalDb=GeneralDatabaseManager.getInstance();
 	}
 
 	@Override
@@ -49,14 +53,19 @@ public class ForFriendTag extends SystemTag {
 	public <T extends Resource> void performAfter(Post<T> post, final DBSession session) {
 		log.debug("performing after access");
 		/*
-		 * Check: Is receiver a friend of the current user?
+		 * Check: Is the user (sender) in the list of friends of the receiver?
 		 */
-		String friendName = getValue();
-		//permissionDb.ensureFriendOfUser(post.getUser(), friendName);
+		// create the receiver as user
+		String receiver = getValue().toLowerCase();
+
+		// check if the user (sender) is a friend of the receiver
+		if (!generalDb.isFriendOf(post.getUser().getName(), receiver, session)){
+			throw new ValidationException("You can only send posts to users that have added you as a friend.");
+		}
 		/*
 		 * get InboxDatabaseManager to store the Message
 		 */
-		inboxDb.createItem(post.getUser().getName(), friendName, post.getContentId(), session);
+		inboxDb.createItem(post.getUser().getName(), receiver, post.getContentId(), session);
 		
 	}
 
