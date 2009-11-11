@@ -33,7 +33,6 @@
 		
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
-	    	
 	    </jsp:attribute>
 			
 		<jsp:attribute name="tabcontent">
@@ -140,9 +139,6 @@
 				<c:when test="${command.selTab == 2}">
 					
 					<!-- USED TRANSLATIONVARIABLES IN TAB2 -->
-					<fmt:message key="delimiters.comma" var="comma" />
-					<fmt:message key="delimiters.semicolon" var="semicolon" />
-					<fmt:message key="delimiters.whitespace" var="whitespace" />
 					<fmt:message key="post_bibtex.button_label_upload" var="button_label_upload" />
 					
 					<h2><fmt:message key="post_bibtex.upload.heading" /></h2>
@@ -183,7 +179,7 @@
 									    <!-- ROW ONE -->
 										    
 											<label class="fsLabel"><fmt:message key="post_bibtex.upload.option.character_encoding" /></label>
-											<buttons:help  JSMessage="post_bibtex.upload.option.character_encoding_help"/>
+											<buttons:help message="post_bibtex.upload.option.character_encoding_help"/>
 										    <select name="encoding" class="fsInput" id="lencoding">
 										      	<option value="UTF-8">UTF-8</option>
 										      	<option value="ISO-8859-1">ISO-8859-1</option>
@@ -216,18 +212,18 @@
 									    	
 								    	<!-- ROW TWO -->
 										    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter" /></label>
-										    <buttons:help  JSMessage="post_bibtex.upload.option.tag_delimiter_help" />
+										    <buttons:help message="post_bibtex.upload.option.tag_delimiter_help" />
 										    <select name="delimiter" class="fsInput" onchange="updateSubstitute(this);">
-										        <option value=" ">' ' (${whitespace})</option>
-										        <option value=",">, (${comma})</option>
-										        <option value=";">; (${semicolon})</option>
+										        <option value=" ">' ' (<fmt:message key="delimiters.whitespace"/>)</option>
+										        <option value=",">, (<fmt:message key="delimiters.comma"/>)</option>
+										        <option value=";">; (<fmt:message key="delimiters.semicolon"/>)</option>
 									        </select>
 									    	
 									    
 									  
 									  	<!-- ROW THREE -->
 										    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute" /></label>
-										    <buttons:help  JSMessage="post_bibtex.upload.option.whitespace_substitute_help"/>
+										    <buttons:help message="post_bibtex.upload.option.whitespace_substitute_help"/>
 										    <!-- TODO: Ask cause of disabled -->
 										    <input type="text" class="fsSmall" style="float:left" value="_" name="whitespace" size="2" maxlength="1" disabled="disabled" />
 									    	
