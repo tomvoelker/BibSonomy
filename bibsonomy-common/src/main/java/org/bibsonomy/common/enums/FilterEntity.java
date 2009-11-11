@@ -61,6 +61,16 @@ public enum FilterEntity {
 	 * which contain a blacklisted tag. Setting the filter to this entity
 	 * should turn off such filtering. 
 	 */
-	UNFILTERED;	
+	UNFILTERED,
+	
+	/**
+	 * use this if user is allowed to access documents
+	 */
+	POSTS_WITH_DOCUMENTS,
+	
+	/**
+	 * use this if user isn't allowed to access documents
+	 */
+	JUST_POSTS;
 	
 }
