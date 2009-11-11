@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
@@ -24,14 +25,13 @@ public class GetBibtexForGroup extends BibTexChainElement {
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		// final Integer groupId = this.groupDb.getGroupIdByGroupName(param.getRequestedGroupName(), session);
 		final Group group = this.groupDb.getGroupByName(param.getRequestedGroupName(), session);
-		if (group == null || group.getGroupId() == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(group.getGroupId())) {
-			log.debug("group " + param.getRequestedGroupName() + " not found or special group");
+		if (!present(group) || group.getGroupId() == GroupID.INVALID.getId() || GroupID.isSpecialGroupId(group.getGroupId())) {
+			log.debug("group '" + param.getRequestedGroupName() + "' not found or special group");
 			return new ArrayList<Post<BibTex>>(0);			
 		}
-		param.setGroupId(group.getGroupId());		
-		return this.db.getBibTexForUsersInGroup(param, session);
+		
+		return this.db.getPostsForGroup(group.getGroupId(), param.getGroups(), param.getUserName(), HashID.getSimHash(param.getSimHash()), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 	@Override

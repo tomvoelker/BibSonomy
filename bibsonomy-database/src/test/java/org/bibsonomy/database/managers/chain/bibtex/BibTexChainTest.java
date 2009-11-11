@@ -216,7 +216,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setHash(null);
 		this.bibtexParam.setOrder(null);
 		this.bibtexParam.setTagIndex(null);
-		this.bibtexParam.setGroupId(-1);
+		this.bibtexParam.setGroupId(GroupID.INVALID.getId());
 		this.bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, this.chainStatus);
 		assertEquals(GetBibtexForUser.class, this.chainStatus.getChainElement().getClass());
 	}

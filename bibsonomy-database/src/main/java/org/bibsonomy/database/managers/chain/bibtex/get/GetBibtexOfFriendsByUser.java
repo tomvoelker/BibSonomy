@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
@@ -32,8 +33,8 @@ public class GetBibtexOfFriendsByUser extends BibTexChainElement {
 		 * see the posts
 		 */
 		if (this.generalDb.isFriendOf(param.getUserName(), param.getRequestedUserName(), session)) {
-			param.setGroupId(GroupID.FRIENDS.getId());
-			return this.db.getPostsForUser(param, session);
+			final int groupId = GroupID.FRIENDS.getId();
+			return this.db.getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), groupId, param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 		}
 		return new ArrayList<Post<BibTex>>();
 	}

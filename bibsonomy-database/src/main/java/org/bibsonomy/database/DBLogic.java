@@ -317,8 +317,14 @@ public class DBLogic implements LogicInterface {
 			if (resourceType == BibTex.class) {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 				// check permissions for displaying links to documents
-				param.setDocumentsAttached(this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, filter, session));
-
+				final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, filter, session);
+				
+				if (!allowedToAccessUsersOrGroupDocuments) {
+					param.setFilter(FilterEntity.JUST_POSTS);
+				} else if (!present(filter)) {
+					param.setFilter(FilterEntity.POSTS_WITH_DOCUMENTS);
+				}
+				
 				// this is save because of RTTI-check of resourceType argument
 				// which is of class T
 				result = ((List) this.bibtexDBManager.getPosts(param, session));
@@ -632,8 +638,6 @@ public class DBLogic implements LogicInterface {
 			throw new IllegalStateException("The resource(s) with ID(s) " + missingResources + " do(es) not exist and could hence not be deleted.");
 		}
 	}
-	
-	
 
 	/**
 	 * Adds/updates a post in the database.
@@ -867,7 +871,6 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
-//		System.out.println("called");
 		log.debug("updatePosts called");
 		
 		this.ensureLoggedIn();

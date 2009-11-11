@@ -1,13 +1,15 @@
 package org.bibsonomy.database.managers;
 
-import java.util.LinkedList;
+import java.util.Collection;
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.beans.TagIndex;
+import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -38,48 +40,40 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	}
 
 	private BookmarkDatabaseManager() {
-		super();
 	}
-	
-	/**
-	 * XXX: requestedGroupName only used in bibtex statment
-	 * 
-	 * <em>/viewable/EineGruppe</em><br/><br/>
-	 * 
-	 * Prepares queries to retrieve posts which are set viewable to group.
-	 * 
-	 * @param groupId
-	 * @param userName
-	 * @param limit
-	 * @param offset
-	 * @param session
-	 * @return list of bookmarks
+
+	/*
+	 * FIXME: username: check sql statements: bibtex needs username, bookmark not
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getPostsByTagNamesForUser(java.lang.String, java.util.List, int, java.util.List, int, int, org.bibsonomy.common.enums.FilterEntity, java.util.Collection, org.bibsonomy.database.util.DBSession)
 	 */
-	public List<Post<Bookmark>> getBookmarkViewable(final int groupId, final String userName, final int limit, final int offset, final DBSession session) {
-		if (GroupID.isSpecialGroupId(groupId)) {
-			// show users own bookmarks, which are private, public or for friends
-			return this.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, new LinkedList<Integer>(), limit, offset, session);
-		}
-		
-		final BookmarkParam param = new BookmarkParam();
+	@Override
+	public List<Post<Bookmark>> getPostsByTagNamesForUser(String requestedUserName, List<TagIndex> tagIndex, int groupId, List<Integer> visibleGroupIDs, int limit, int offset, FilterEntity filter, Collection<SystemTag> systemTags, DBSession session) {
+		final BookmarkParam param = this.getNewParam();
+		param.setRequestedUserName(requestedUserName);
+		// XXX: username not set
+		param.setTagIndex(tagIndex);
 		param.setGroupId(groupId);
-		param.setUserName(userName);
+		param.setGroups(visibleGroupIDs);
+		param.setFilter(filter);
 		param.setLimit(limit);
 		param.setOffset(offset);
+		param.addAllToSystemTags(systemTags);
 		
-		return this.postList("getBookmarkViewable", param, session);
+		HashID.getSimHash(param.getSimHash()); 
+		return this.getPostsByTagNamesForUser(param, session);
 	}
 	
-	// TODO: remove me
 	@Override
-	public List<Post<Bookmark>> getPostsForHomepage(int limit, int offset, DBSession session) {
-		// FIXME: add filter!!!
-//		if (FilterEntity.UNFILTERED.equals(param.getFilter())) {
-//			return this.postList("get" + this.resourceClassName + "ForHomepageUnfiltered", param, session);
-//		}
-		return super.getPostsForHomepage(limit, offset, session);
+	protected List<Post<Bookmark>> getPostsForHomepage(BookmarkParam param, DBSession session) {
+		final FilterEntity filter = param.getFilter();
+		
+		if (FilterEntity.UNFILTERED.equals(filter)) {
+			return this.postList("getBookmarkForHomepageUnfiltered", param, session);
+		}
+		
+		return super.getPostsForHomepage(param, session);
 	}
-	
 	
 	@Override
 	public List<Post<Bookmark>> getPostsFromBasketForUser(String loginUser, int limit, int offset, DBSession session) {

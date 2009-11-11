@@ -30,7 +30,7 @@ public class GetBibTexByAuthor extends BibTexChainElement {
 	private static final Log LOGGER = LogFactory.getLog(GetBibTexByAuthor.class);
 
 	@Override
-	protected List<Post<BibTex>> handle(final BibTexParam param, DBSession session) {
+	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		// uncomment following for a quick hack to access secondary datasource
 		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
 
@@ -43,21 +43,6 @@ public class GetBibTexByAuthor extends BibTexChainElement {
 			LOGGER.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
 		}
 		
-		/*
-		 * param's params needed for 
-			param.getSearch();
-			param.getGroupType();
-			param.getRequestedUserName();
-			param.getRequestedGroupName();
-			param.getYear();
-			param.getFirstYear();
-			param.getLastYear();
-			param.getLimit();
-			param.getOffset();
-			param.getSimHash();
-		 */
-		
-		
 		if ("lucene".equals(searchMode)) {
 			LOGGER.debug("Using Lucene in GetBibtexByAuthor");
 			List<String> tagIndex = null;
@@ -65,7 +50,7 @@ public class GetBibTexByAuthor extends BibTexChainElement {
 					param.getFirstYear(), param.getLastYear(), param.getLimit(), param.getOffset(), param.getSimHash(), tagIndex, session);
 		}
 		
-		return this.db.getPostsByAuthor(param, session);
+		return this.db.getPostsByAuthor(param.getRawSearch(), param.getGroupId(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 	

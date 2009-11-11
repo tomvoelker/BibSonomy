@@ -41,14 +41,11 @@ public class GetBookmarksSearch extends BookmarkChainElement {
 			LOGGER.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
 		}
 		
-		//LOGGER.debug("------------param.getRawSearch(): " + param.getRawSearch());
-		//LOGGER.debug("------------param.getSearch(): " + param.getSearch());
-		
 		if ("lucene".equals(searchMode)) {
 			return this.db.getPostsSearchLucene(param.getGroupId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
 		}
 	
-		return this.db.getPostsSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
+		return this.db.getPostsSearch(param.getGroupType(), param.getRawSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
 		// TODO: remove code???
 //		if (SearchEntity.LUCENE.equals(param.getSearchEntity())) {
 //			//param.getGroups();   // gruppen, die der eingeloggte user sehen darf

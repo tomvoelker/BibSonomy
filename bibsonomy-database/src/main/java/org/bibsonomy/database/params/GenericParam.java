@@ -2,9 +2,12 @@ package org.bibsonomy.database.params;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
@@ -17,12 +20,14 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.params.beans.TagIndex;
+import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * This is the most generic param. All fields which are not specific to
@@ -181,6 +186,8 @@ public abstract class GenericParam {
 	 * retrieve resources via their bibtexkey 
 	 */
 	private String bibtexKey;
+	
+	private final Map<String, SystemTag> systemTags;
 
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
@@ -196,7 +203,7 @@ public abstract class GenericParam {
 		this.idsType = ConstantID.IDS_UNDEFINED_CONTENT_ID;
 		this.limit = 10;
 		this.offset = 0;
-		this.friendOf=false;
+		this.friendOf = false;
 		this.simHash = HashID.SIM_HASH; // the default hash type
 		
 		this.grouping = GroupingEntity.ALL;
@@ -206,12 +213,9 @@ public abstract class GenericParam {
 		//when using this field the value of days must be greater 0 
 		this.days = -1;
 		
+		this.systemTags = new HashMap<String, SystemTag>();
 	}
-
-	/**
-	 * Implementations of this class will have to implement this method to
-	 * identify their content type.
-	 */
+	
 	public boolean isCaseSensitiveTagNames() {
 		return this.caseSensitiveTagNames;
 	}
@@ -648,5 +652,36 @@ public abstract class GenericParam {
 	 */
 	public String toStringByReflection() {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
+	}
+
+	/**
+	 * adds a system tag to the map
+	 * uses the system tag name as key
+	 * @param tag
+	 */
+	public void addToSystemTags(final SystemTag tag) {
+		if (tag != null) {
+			this.systemTags.put(tag.getName(), tag);
+		}
+	}
+	
+	/**
+	 * adds a collection of system tags to system tags
+	 * 
+	 * @param systemTags	the collection to add to system tags
+	 */
+	public void addAllToSystemTags(final Collection<SystemTag> systemTags) {
+		if (ValidationUtils.present(systemTags)) {
+			for (final SystemTag tag : systemTags) {
+				this.addToSystemTags(tag);
+			}
+		}
+	}
+
+	/**
+	 * @return a map of system tags [tag name => systemTag, …]
+	 */
+	public Map<String, SystemTag> getSystemTags() {
+		return Collections.unmodifiableMap(this.systemTags);
 	}
 }

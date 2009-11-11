@@ -19,6 +19,8 @@ import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
+import org.bibsonomy.database.systemstags.database.EntryTypeSystemTag;
+import org.bibsonomy.database.systemstags.database.YearSystemTag;
 import org.bibsonomy.database.systemstags.xml.SystemTagType;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
@@ -89,9 +91,11 @@ public class LogicInterfaceHelper {
 			param.setSearch(search);
 			param.setSearchEntity(SearchEntity.ALL);
 		}
+		
 		if (grouping != GroupingEntity.GROUP) {
 			param.setRequestedUserName(groupingName);
 		}
+		
 		param.setRequestedGroupName(groupingName);
 		
 		// add filters
@@ -103,8 +107,6 @@ public class LogicInterfaceHelper {
 		param.addGroupsAndGroupnames(UserUtils.getListOfGroups(loginUser));
 		//  - private / friends groups are set later on 
 		//    (@see org.bibsonomy.database.util.DatabaseUtils.prepareGetPostForUser)
-		
-		
 
 		param.setOrder(order);
 		param.setOffset(start);
@@ -179,7 +181,6 @@ public class LogicInterfaceHelper {
 	}
 
 	private static boolean handleSystemTag(String tag, GenericParam param) {
-
 		logger.debug("working on possible system tag " + tag);
 		String tagName;
 		String tagValue;
@@ -247,38 +248,52 @@ public class LogicInterfaceHelper {
 				// do nothing for bookmarks here
 				return true;
 			}
+			
+			// TODO: factory!!
+			final YearSystemTag yearTag = new YearSystemTag();
+			yearTag.setName("Year");
+			param.addToSystemTags(yearTag);
+			
 			// 1st case: year explicitly given
             if (tagValue.matches("[12]{1}[0-9]{3}")) {
+            	yearTag.setYear(tagValue);
             	((BibTexParam) param).setYear(tagValue);
-            	logger.debug("Set year to " + tagValue + "after matching year system tag");
+            	logger.debug("Set year to " + tagValue + " after matching year system tag");
             	return true;
             } 
             // 2nd case: range (e.g. 2001-2006)
             else if (tagValue.matches("[12]{1}[0-9]{3}-[12]{1}[0-9]{3}")) {
                 String[] years = tagValue.split("-");
-                ((BibTexParam) param).setFirstYear(years[0]);
-                ((BibTexParam) param).setLastYear(years[1]);
+                yearTag.setFirstYear(years[0]);
+                yearTag.setLastYear(years[1]);
+                ((BibTexParam) param).setFirstYear(tagValue);
+                ((BibTexParam) param).setLastYear(tagValue);
             	logger.debug("Set firstyear/lastyear to " + years[0] + "/" + years[1] + "after matching year system tag");
             	return true;
             }
             // 3rd case: upper bound (e.g -2005) means all years before 2005 
             else if(tagValue.matches("-[12]{1}[0-9]{3}")) {
+            	yearTag.setLastYear(tagValue.substring(1,tagValue.length()));
             	((BibTexParam) param).setLastYear(tagValue.substring(1,tagValue.length()));
             	logger.debug("Set lastyear to " + tagValue + "after matching year system tag");
             	return true;
             }
             // 4th case: lower bound (e.g 1998-) means all years since 1998 
             else if(tagValue.matches("[12]{1}[0-9]{3}-")) {
+            	yearTag.setFirstYear(tagValue.substring(0,tagValue.length()-1));
             	((BibTexParam) param).setFirstYear(tagValue.substring(0,tagValue.length()-1));
             	logger.debug("Set firstyear to " + tagValue + "after matching year system tag");
             	return true;            	
             }			
 		} else if (tagName.equals("entrytype")){
-			if (param instanceof BibTexParam) {
-				((BibTexParam) param).setEntryType(tagValue);
-				logger.debug("Set entry type to " + tagValue +" after matching entrytype system tag");
-				return true;
-			}
+			// TODO: this should be done by a factory!!!
+			final EntryTypeSystemTag sysTag = new EntryTypeSystemTag();
+			sysTag.setEntryType(tagValue);
+			sysTag.setName("EntryType");
+			
+			param.addToSystemTags(sysTag);
+			logger.debug("Set entry type to '" + tagValue +"' after matching entrytype system tag");
+			return true;
 		}
 		
 		return false;

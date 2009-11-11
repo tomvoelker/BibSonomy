@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +30,11 @@ public class StatisticsDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		super.setUp();
 		this.visibleGroupIDs = new ArrayList<Integer>();
 	}
-
+	
 	/**
 	 * tests getNumberOfResourcesForUser
 	 */
+	@Ignore
 	@Test
 	public void getNumberOfResourcesForUser() {
 		// testuser1 has got 6 bookmarks and 2 bibtexs
@@ -50,6 +52,7 @@ public class StatisticsDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests getNumberOfResourcesForGroup
 	 */
 	@Ignore
+	@Test
 	// FIXME: Test schlägt fehl!
 	// FIXME: wenn visibleGroupIDs gesetzt ist, dann muss auch userName gesetzt sein
 	public void getNumberOfResourcesForGroup() {
@@ -66,8 +69,9 @@ public class StatisticsDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests getNumberOfResourcesForTags
 	 */
 	@Ignore
+	@Test
 	public void getNumberOfResourcesForTags() {
-		List<TagIndex> tagIndex = new ArrayList<TagIndex>();		
+		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();		
 		TagIndex t1 = new TagIndex("suchmaschine",1);	
 		TagIndex t2 = new TagIndex("bibsonomy",1);	
 				
@@ -83,8 +87,9 @@ public class StatisticsDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests getNumberOfResourcesForUserAndTags
 	 */
 	@Ignore
+	@Test
 	public void getNumberOfResourcesForUserAndTags() {
-		List<TagIndex> tagIndex = new ArrayList<TagIndex>();		
+		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();		
 		TagIndex t1 = new TagIndex("suchmaschine",1);	
 		TagIndex t2 = new TagIndex("bibsonomy",1);	
 				
@@ -96,8 +101,10 @@ public class StatisticsDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(2, this.statisticsDb.getNumberOfResourcesForUserAndTags(BibTex.class, tagIndex, "testuser1", "testuser1", this.visibleGroupIDs, this.dbSession));
 	}
 	
+	@Ignore
+	@Test
 	public void getResourcesPopularDaysTest(){
-		int days = 2;
+		final int days = 2;
 		assertTrue(this.statisticsDb.getPopularDays(BibTex.class, days, this.dbSession) != 0);
 		assertTrue(this.statisticsDb.getPopularDays(Bookmark.class, days, this.dbSession) != 0);
 	}

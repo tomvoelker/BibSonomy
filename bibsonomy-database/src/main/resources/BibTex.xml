@@ -46,7 +46,7 @@
 		      FROM <include refid="tagFromQuery"/>
 		      WHERE <include refid="tagWhereQuery"/>
 			        AND t1.content_type = #contentType#
-			        AND t1.group = #groupType#
+			        AND t1.group = #groupId#
 		      ORDER BY t1.date DESC
 		      LIMIT #limit# OFFSET #offset#) AS tt
 		WHERE b.content_id = tt.content_id
@@ -399,8 +399,10 @@
 		      WHERE b2.group = #groupId#
 		            AND <include refid="bibtexSimHash2"/>
 		            <dynamic prepend="AND">
-						<isNotNull property="entryType">		
-							b2.entrytype = #entryType#
+		            	<isNotNull property="systemTags.EntryType">
+							<isNotNull property="systemTags.EntryType.entryType">		
+								b2.entrytype = #systemTags.EntryType.entryType#
+							</isNotNull>
 						</isNotNull>
 					</dynamic>
 		      ORDER BY date DESC
@@ -445,7 +447,7 @@
 		SELECT count(*) FROM (<include refid ="duplicatesCount"/>) AS duplicates
 	</select>
 
-	<select id="getBibTexForUsersInGroup" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+	<select id="getBibTexForGroup" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, g.group_name, h.ctr as count, g.group
 		FROM bibtex b, bibhash h,
 		     ((SELECT content_id, date                <!-- publications from users of group which currUser may see -->
@@ -603,9 +605,11 @@
 		            AND t1.user_name = #requestedUserName#
 		            <include refid="restrictToGroups"/>
 		        	<dynamic prepend="AND">
-						<isNotNull property="entryType">		
-							entrytype = #entryType#
-						</isNotNull>
+		        		<isNotNull property="systemTags.EntryType">
+		        			<isNotNull property="systemTags.EntryType.entryType">
+		        				entrytype = #systemTags.EntryType.entryType#
+		        			</isNotNull>
+		        		</isNotNull>
 		     		</dynamic>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
@@ -622,8 +626,10 @@
 		            AND t1.user_name = #requestedUserName#
 		            <include refid="restrictToGroups"/>
 		            <dynamic prepend="AND">
-						<isNotNull property="entryType">		
-							t1.entrytype = #entryType#
+		            	<isNotNull property="systemTags.EntryType">
+							<isNotNull property="systemTags.EntryType.entryType">		
+								t1.entrytype = #systemTags.EntryType.entryType#
+							</isNotNull>
 						</isNotNull>
 		     		</dynamic>
 		      ORDER BY date DESC
@@ -644,8 +650,10 @@
 		      AND d.content_id = t1.content_id
 		      	<include refid="restrictToGroups"/>
 		             <dynamic prepend="AND">
-						<isNotNull property="entryType">		
-							t1.entrytype = #entryType#
+		             	<isNotNull property="systemTags.EntryType">
+							<isNotNull property="systemTags.EntryType.entryType">		
+								t1.entrytype = #systemTags.EntryType.entryType#
+							</isNotNull>
 						</isNotNull>
 		     		</dynamic>
 		      ORDER BY date DESC
@@ -702,7 +710,7 @@
 		FROM bibtex b, tas t, bibhash h,   
 		     (SELECT content_id FROM search_bibtex s
 		      WHERE MATCH (s.author) AGAINST (#search# IN BOOLEAN MODE) 
-		            AND s.group = #groupType#
+		            AND s.group = #groupId#
 		            <include refid="sysTagsUser"/>
 		            <include refid="sysTagsGroup"/>
 		      ORDER BY s.date DESC LIMIT #limit# OFFSET #offset#) AS tt 
@@ -756,9 +764,12 @@
 			   		 ORDER BY t.date DESC
 			   		 LIMIT #limit# OFFSET #offset# ) AS b 
 			   JOIN tas t ON b.content_id = t.content_id
-			   	<isNotNull property="entryType">		
-					WHERE b.entrytype = #entryType#
-				</isNotNull>
+			   <isNotNull property="systemTags.EntryType">
+					<isNotNull property="systemTags.EntryType.entryType">		
+						WHERE b.entrytype = #systemTags.EntryType.entryType#
+					</isNotNull>
+			   </isNotNull>
+			   
 			   ORDER BY b.date DESC;	
 	</select>
 
@@ -796,8 +807,10 @@
 			   	LIMIT #limit# OFFSET #offset# 
 		) AS b 
 		JOIN tas t ON b.content_id = t.content_id
-		<isNotNull property="entryType">		
-		 WHERE b.entrytype = #entryType#
+		<isNotNull property="systemTags.EntryType">
+			<isNotNull property="systemTags.EntryType.entryType">		
+				WHERE b.entrytype = #systemTags.EntryType.entryType#
+			</isNotNull>
 		</isNotNull>
 		ORDER BY b.date DESC;	
 	</select>

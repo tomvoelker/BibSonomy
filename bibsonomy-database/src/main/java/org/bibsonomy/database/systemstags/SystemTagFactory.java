@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,20 +21,18 @@ import org.bibsonomy.database.systemstags.xml.SystemTagsCollection;
 import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.logic.PostLogicInterface;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author Andreas Koch
  * @version $Id$
  */
-
 public class SystemTagFactory {
 	private static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.database.systemstags.xml";
 	// TODO path
 	private static final String BIBSONOMY_SYSTEMTAGS_XML = "../bibsonomy-webapp/src/main/webapp/WEB-INF/systemtags.xml";
-	private static HashMap<String, SystemTagType> systemTagMap;
-	private static HashMap<String, SystemTag> executableSystemTagMap;
+	private static Map<String, SystemTagType> systemTagMap;
+	private static Map<String, SystemTag> executableSystemTagMap;
 
 	/*
 	 * useable in the xml configuration --> see systemtags.xml
@@ -53,7 +52,7 @@ public class SystemTagFactory {
 	/**
 	 * @return map with executables system tags
 	 */
-	public static HashMap<String, SystemTag> getExecutableSystemTagMap() {
+	public static Map<String, SystemTag> getExecutableSystemTagMap() {
 		if (executableSystemTagMap == null) {
 			executableSystemTagMap = new HashMap<String, SystemTag>();
 		}
@@ -63,7 +62,7 @@ public class SystemTagFactory {
 	/**
 	 * @return map with system tags
 	 */
-	public static HashMap<String, SystemTagType> getSystemTagMap() {
+	public static Map<String, SystemTagType> getSystemTagMap() {
 		if (systemTagMap == null) {
 			renewSystemTagMap(BIBSONOMY_SYSTEMTAGS_XML);
 		}
@@ -80,7 +79,7 @@ public class SystemTagFactory {
 	 * 
 	 * @return map with system tags according to the systemtags file
 	 */
-	public static HashMap<String, SystemTagType> renewSystemTagMap(String systemtagsFile) {
+	public static Map<String, SystemTagType> renewSystemTagMap(String systemtagsFile) {
 		systemTagMap = new HashMap<String, SystemTagType>();
 		importConfiguration(systemtagsFile);
 		return systemTagMap;
@@ -120,7 +119,7 @@ public class SystemTagFactory {
 	 * @return null, if given tag doesn't match to a known system tag.
 	 */
 	public static SystemTag createExecutableTag(LogicInterface dbLogic, DBSessionFactory sessionFactory, Tag tag) {
-		if( !SystemTagFactory.isSystemTag(tag.getName()))
+		if (!SystemTagFactory.isSystemTag(tag.getName()))
 			return null;
 		String name = SystemTagFactory.extractName(tag.getName());
 		SystemTag retVal = null;

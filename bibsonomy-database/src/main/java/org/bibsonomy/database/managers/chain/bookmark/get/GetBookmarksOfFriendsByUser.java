@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DBSession;
@@ -32,9 +33,10 @@ public class GetBookmarksOfFriendsByUser extends BookmarkChainElement {
 		 * see the posts
 		 */
 		if (this.generalDb.isFriendOf(param.getUserName(), param.getRequestedUserName(), session)) {
-			param.setGroupId(GroupID.FRIENDS.getId());
-			return this.db.getPostsForUser(param, session);
+			final int groupId = GroupID.FRIENDS.getId();
+			return this.db.getPostsForUser(param.getUserName(), param.getRequestedUserName(), HashID.getSimHash(param.getSimHash()), groupId, param.getGroups(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 		}
+		
 		return new ArrayList<Post<Bookmark>>();
 	}
 

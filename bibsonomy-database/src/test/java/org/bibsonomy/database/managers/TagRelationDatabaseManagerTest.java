@@ -83,9 +83,9 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		final ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		tagIndex.add(new TagIndex("researcher", 1));
 		
-		final int countBefore = bibTexDb.getBibTexByConceptForUser("jaeschke", "jaeschke", tagIndex, visibleGroupIDs, false, 100, 0, this.dbSession).size();
+		final int countBefore = bibTexDb.getPostsByConceptForUser("jaeschke", "jaeschke", visibleGroupIDs, tagIndex, false, 100, 0, null, this.dbSession).size();
 		this.tagRelDb.deleteRelation("researcher", "shannon", "jaeschke", this.dbSession);
-		final int countAfter = bibTexDb.getBibTexByConceptForUser("jaeschke", "jaeschke", tagIndex, visibleGroupIDs, false, 100, 0, this.dbSession).size();
+		final int countAfter = bibTexDb.getPostsByConceptForUser("jaeschke", "jaeschke", visibleGroupIDs, tagIndex, false, 100, 0, null, this.dbSession).size();
 		log.debug("before: " + countBefore);
 		log.debug("after: " + countAfter);
 		assertTrue(countBefore > countAfter);

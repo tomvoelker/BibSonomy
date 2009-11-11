@@ -33,7 +33,7 @@ public class GetBookmarksOfFriendsByTags extends BookmarkChainElement {
 		 */
 		if (this.generalDb.isFriendOf(param.getUserName(), param.getRequestedUserName(), session)) {
 			param.setGroupId(GroupID.FRIENDS.getId());
-			return this.db.getPostsByTagNamesForUser(param.getRequestedUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), session);
+			return this.db.getPostsByTagNamesForUser(param.getRequestedUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getFilter(), param.getSystemTags().values(), session);
 		}
 		return new ArrayList<Post<Bookmark>>();
 	}

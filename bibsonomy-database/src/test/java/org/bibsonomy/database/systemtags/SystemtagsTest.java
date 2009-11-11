@@ -107,13 +107,13 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 	
 	@Test
 	public void testArgumentExtraction() {
-		Tag testTag1 = new Tag("for:kde");
-		Tag testTag2 = new Tag("sys:for:kde");
-		Tag testTag3 = new Tag("system:for:kde");
+		final Tag testTag1 = new Tag("for:kde");
+		final Tag testTag2 = new Tag("sys:for:kde");
+		final Tag testTag3 = new Tag("system:for:kde");
 		Set<Tag> tags = new HashSet<Tag>();
 		tags.add(testTag1);tags.add(testTag2);tags.add(testTag3);
 		
-		for( Tag tag:tags ) {
+		for (Tag tag : tags) {
 			Assert.assertEquals("for", SystemTagFactory.extractName(tag.getName()));
 			String result = "";
 			String expected = "kde";
@@ -210,6 +210,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 			// ignore
 		}
 	}*/
+	
 	/**
 	 *  test funtionality of the ForFriend SystemTag
 	 */
@@ -245,6 +246,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		List<InboxMessage> messages = this.inboxDb.getInboxMessages("receiverUser", dbSession);
 		Assert.assertEquals(1, messages.size());
 	}
+	
 	//------------------------------------------------------------------------
 	// helpers
 	//------------------------------------------------------------------------
@@ -289,7 +291,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		User user = this.userDb.getUserDetails(name, this.dbSession);
 		if( user.getName()!=null ) {
 			final List<Post<Bookmark>> posts = 
-				this.bookmarkDb.getPostsForUser(null, name, HashID.INTRA_HASH, GroupID.INVALID.getId(), new ArrayList<Integer>(), Integer.MAX_VALUE, 0, this.dbSession);
+				this.bookmarkDb.getPostsForUser(null, name, HashID.INTRA_HASH, GroupID.INVALID.getId(), new ArrayList<Integer>(), null, Integer.MAX_VALUE, 0, null, this.dbSession);
 			for( Post<Bookmark> post : posts ) {
 				this.bookmarkDb.deletePost(name, post.getResource().getHash(), this.dbSession);
 			}
@@ -446,8 +448,5 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		posts = this.bibTexDb.getPosts(param, this.dbSession);
 		
 		Assert.assertEquals(2, posts.size());
-		
 	}
-	
-	
 }

@@ -278,7 +278,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		final String USER = "jaeschke", LOWER = "shannon", UPPER = "researcher";
 		final ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		tagIndex.add(new TagIndex("researcher", 1));
-		final int countBefore = bibTexDb.getBibTexByConceptForUser(USER, USER, tagIndex, visibleGroupIDs, false, 100, 0, this.dbSession).size();
+		final int countBefore = bibTexDb.getPostsByConceptForUser(USER, USER, visibleGroupIDs, tagIndex, false, 100, 0, null, this.dbSession).size();
 		final TagRelationParam trp = new TagRelationParam();
 		trp.setOwnerUserName(USER);
 		trp.setLowerTagName(LOWER);
@@ -286,7 +286,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		Integer result = this.generalDb.countTagRelation(trp, this.dbSession);
 		assertEquals(0, result);
 		this.tagRelDb.deleteRelation(UPPER, LOWER, USER, this.dbSession);
-		final int countAfter = bibTexDb.getBibTexByConceptForUser(USER, USER, tagIndex, visibleGroupIDs, false, 100, 0, this.dbSession).size();
+		final int countAfter = bibTexDb.getPostsByConceptForUser(USER, USER, visibleGroupIDs, tagIndex, false, 100, 0, null, this.dbSession).size();
 		result = this.generalDb.countTagRelation(trp, this.dbSession);
 		assertTrue(countBefore > countAfter);
 		assertEquals(1, result);

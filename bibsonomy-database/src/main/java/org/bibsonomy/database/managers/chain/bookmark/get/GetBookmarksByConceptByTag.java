@@ -21,7 +21,7 @@ public class GetBookmarksByConceptByTag extends BookmarkChainElement{
 
 	@Override
 	protected List<Post<Bookmark>> handle(BookmarkParam param, DBSession session) {
-		return this.db.getPostsByConceptByTag(param, session);
+		return this.db.getPostsByConceptByTag(param.getTagIndex(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 	@Override

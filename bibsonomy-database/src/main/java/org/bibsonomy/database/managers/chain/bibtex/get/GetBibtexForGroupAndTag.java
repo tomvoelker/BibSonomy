@@ -31,7 +31,7 @@ public class GetBibtexForGroupAndTag extends BibTexChainElement {
 			return new ArrayList<Post<BibTex>>(0);
 		}
 		param.setGroupId(group.getGroupId());
-		return this.db.getBibTexForGroupByTag(param, session);
+		return this.db.getPostsForGroupByTag(param.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 	@Override

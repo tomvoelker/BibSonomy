@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DBSession;
@@ -31,9 +32,11 @@ public class GetBookmarksViewable extends BookmarkChainElement {
 			log.debug("groupId " + param.getRequestedGroupName() + "not found");
 			return new ArrayList<Post<Bookmark>>(0);
 		}
-		param.setGroupId(groupId);
-		if (present(param.getTagIndex()) == true) return this.db.getBookmarkViewable(param.getGroupId(), param.getUserName(), param.getLimit(), param.getOffset(), session);
-		return this.db.getBookmarkViewable(param.getGroupId(), param.getUserName(), param.getLimit(), param.getOffset(), session);
+		
+		if (present(param.getTagIndex())) {
+			return this.db.getPostsViewableByTag(param.getRequestedUserName(), param.getTagIndex(), groupId, param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		}
+		return this.db.getPostsViewable(param.getRequestedGroupName(), param.getUserName(), groupId, HashID.INTRA_HASH, param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 	@Override

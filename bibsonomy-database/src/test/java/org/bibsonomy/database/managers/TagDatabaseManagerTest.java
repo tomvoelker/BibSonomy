@@ -247,7 +247,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getTagsByBookmarkHash() {
 		String loginUserName = "hotho";
 		String hash = "palim palim";
-		ArrayList<Integer> visibleGroups = new ArrayList<Integer>();
+		final List<Integer> visibleGroups = new ArrayList<Integer>();
 		visibleGroups.add(0);
 		List<Tag> tags = this.tagDb.getTagsByBookmarkHash(loginUserName, hash, visibleGroups, 0, 20, this.dbSession);
 	}
@@ -263,7 +263,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String loginUserName = "hotho";
 		final String requestedUserName = "hotho";
 		final String hash = "palim palim";
-		ArrayList<Integer> visibleGroups = new ArrayList<Integer>();
+		final List<Integer> visibleGroups = new ArrayList<Integer>();
 		visibleGroups.add(0);		
 		List<Tag> tags = this.tagDb.getTagsByBookmarkHashForUser(loginUserName, requestedUserName, hash, visibleGroups, 0, 20, this.dbSession);
 	}
@@ -313,7 +313,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		 * fetch tags from public bibtex entries with the key "test bibtexkey"
 		 * (should be 3)
 		 */
-		ArrayList<Integer> visibleGroups = new ArrayList<Integer>();
+		final List<Integer> visibleGroups = new ArrayList<Integer>();
 		visibleGroups.add(GroupID.PUBLIC.getId());
 		String requestedUserName = null;
 		String loginUserName = null;

@@ -16,6 +16,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -37,7 +39,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.ModelUtils;
@@ -62,9 +63,9 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getBibTexByHash() {
-		String hash0 = "9abf98937435f05aec3d58b214a2ac58";
-		String hash1 = "d9eea4aa159d70ecfabafa0c91bbc9f0";
-		String hash2 = "b77ddd8087ad8856d77c740c8dc2864a";
+		final String hash0 = "9abf98937435f05aec3d58b214a2ac58";
+		final String hash1 = "d9eea4aa159d70ecfabafa0c91bbc9f0";
+		final String hash2 = "b77ddd8087ad8856d77c740c8dc2864a";
 		// get post with SIM_HASH0 = hash0
 		final List<Post<BibTex>> posts = this.bibTexDb.getPostsByHash(hash0, HashID.SIM_HASH0, GroupID.PUBLIC.getId(), 10, 0, this.dbSession);
 		assertNotNull(posts);
@@ -100,7 +101,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		String loginUserName = "";
 		String requestedUserName = "testuser1";
 		String intraHash = "";
-		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>(0);
+		final List<Integer> visibleGroupIDs = new ArrayList<Integer>(0);
 		posts = this.bibTexDb.getPostsByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, HashID.INTRA_HASH, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(0, posts.size());
@@ -155,15 +156,15 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getBibTexByAuthor
 	 */
-	@Ignore
-	// FIXME: Test läuft nur einzeln erfolgreich
+	@Test
+	@Ignore // FIXME: Test läuft nur einzeln erfolgreich
 	// TODO: extend test with year, firstYear, lastYear
 	public void getBibTexByAuthor() {
-		String search = "author";
-		String requestedGroupName = "testgroup1";
-		String requestedUserName = "testuser1";
-		GroupID groupType = GroupID.PUBLIC;
-		final List<Post<BibTex>> post = this.bibTexDb.getPostsByAuthor(search, groupType, requestedUserName, requestedGroupName, null, null, null, 10, 0, this.dbSession);
+		final String search = "author";
+		final String requestedGroupName = "testgroup1";
+		final String requestedUserName = "testuser1";
+		final int groupId = GroupID.PUBLIC.getId();
+		final List<Post<BibTex>> post = this.bibTexDb.getPostsByAuthor(search, groupId, requestedUserName, requestedGroupName, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 	}
 	
@@ -171,19 +172,20 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests getBibTexByAuthorAndTag
 	 */
 	@Ignore
+	@Test
 	// TODO: extend test with year, firstYear, lastYear
 	public void getBibTexByAuthorAndTag() {
-		String search = "author";
-		String requestedGroupName = "testgroup1";
-		String requestedUserName = "testuser1";
+		final String search = "author";
+		final String requestedGroupName = "testgroup1";
+		final String requestedUserName = "testuser1";
 		int groupType = GroupID.PUBLIC.getId();
-		List<TagIndex> tagIndex = new ArrayList<TagIndex>();
+		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();
 		tagIndex.add(new TagIndex("testtag", 1));
-		List<Post<BibTex>> post = this.bibTexDb.getPostsByAuthorAndTag(search, groupType, requestedUserName, requestedGroupName, tagIndex, null, null, null, 10, 0, this.dbSession);
+		List<Post<BibTex>> post = this.bibTexDb.getPostsByAuthorAndTag(search, groupType, requestedUserName, requestedGroupName, tagIndex, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		tagIndex.add(new TagIndex("testtag", 2));
-		post = this.bibTexDb.getPostsByAuthorAndTag(search, groupType, requestedUserName, requestedGroupName, tagIndex, null, null, null, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsByAuthorAndTag(search, groupType, requestedUserName, requestedGroupName, tagIndex, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 	}
@@ -195,7 +197,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBibTexByTagNames() {
 		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();
 		tagIndex.add(new TagIndex("testtag", 1));
-		final List<Post<BibTex>> posts = this.bibTexDb.getPostsByTagNames(GroupID.INVALID.getId(), tagIndex, null, 10, 0, this.dbSession);
+		final List<Post<BibTex>> posts = this.bibTexDb.getPostsByTagNames(GroupID.PUBLIC.getId(), tagIndex, null, 10, 0, this.dbSession);
 		assertEquals(1, posts.size());
 		this.assertByTagNames(tagIndex, posts);
 	}
@@ -221,30 +223,30 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBibTexByTagNamesForUser() {
 		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();
 		tagIndex.add(new TagIndex("testtag", 1));
-		List<Post<BibTex>> posts = this.bibTexDb.getPostsByTagNamesForUser("testuser1", tagIndex, GroupID.PUBLIC.getId(), new LinkedList<Integer>(), 10, 0, this.dbSession);
+		List<Post<BibTex>> posts = this.bibTexDb.getPostsByTagNamesForUser("testuser1", tagIndex, GroupID.PUBLIC.getId(), new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		//this.assertByTagNames(posts); // no param?!?
 
-		posts = this.bibTexDb.getPostsByTagNamesForUser("testuser1", tagIndex, GroupID.INVALID.getId(), new LinkedList<Integer>(), 10, 0, this.dbSession);
+		posts = this.bibTexDb.getPostsByTagNamesForUser("testuser1", tagIndex, GroupID.INVALID.getId(), new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		
 		final List<TagIndex> tagIndex2 = new ArrayList<TagIndex>();
 		tagIndex2.add(new TagIndex("privatebibtex", 1));
-		posts = this.bibTexDb.getPostsByTagNamesForUser("testuser2", tagIndex2, GroupID.PRIVATE.getId(), new LinkedList<Integer>(), 10, 0, this.dbSession);
+		posts = this.bibTexDb.getPostsByTagNamesForUser("testuser2", tagIndex2, GroupID.PRIVATE.getId(), new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		
 		final List<TagIndex> tagIndex3 = new ArrayList<TagIndex>();
 		tagIndex3.add(new TagIndex("friendbibtex", 1));
-		posts = this.bibTexDb.getPostsByTagNamesForUser("testuser2", tagIndex3, GroupID.FRIENDS.getId(), new LinkedList<Integer>(), 10, 0, this.dbSession);
+		posts = this.bibTexDb.getPostsByTagNamesForUser("testuser2", tagIndex3, GroupID.FRIENDS.getId(), new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		
 		final List<TagIndex> tagIndex4 = new ArrayList<TagIndex>();
 		tagIndex4.add(new TagIndex("bibtexgroup", 1));
-		posts = this.bibTexDb.getPostsByTagNamesForUser("testuser1", tagIndex4, 3, new LinkedList<Integer>(), 10, 0, this.dbSession);
+		posts = this.bibTexDb.getPostsByTagNamesForUser("testuser1", tagIndex4, 3, new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 	}
@@ -280,37 +282,37 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		tagIndex.add(new TagIndex("testbibtex", 1));
 		String requestedUserName = "testuser1";
 		Boolean caseSensitive = false;
-		List<Post<BibTex>> posts = this.bibTexDb.getBibTexByConceptForUser(null, requestedUserName, tagIndex, visibleGroupIDs, caseSensitive, 10, 0, this.dbSession);
+		List<Post<BibTex>> posts = this.bibTexDb.getPostsByConceptForUser(null, requestedUserName, visibleGroupIDs, tagIndex, caseSensitive, 10, 0, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		
 		String loginUser = "testuser1";
-		posts = this.bibTexDb.getBibTexByConceptForUser(loginUser, requestedUserName, tagIndex, visibleGroupIDs, caseSensitive, 10, 0, this.dbSession);
+		posts = this.bibTexDb.getPostsByConceptForUser(loginUser, requestedUserName, visibleGroupIDs, tagIndex, caseSensitive, 10, 0, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(2, posts.size());
 		
 		visibleGroupIDs.add(3); // testuser1 & testuser2 are members of group 3
 		loginUser = "testuser2";
-		posts = this.bibTexDb.getBibTexByConceptForUser(loginUser, requestedUserName, tagIndex, visibleGroupIDs, caseSensitive, 10, 0, this.dbSession);
+		posts = this.bibTexDb.getPostsByConceptForUser(loginUser, requestedUserName, visibleGroupIDs, tagIndex, caseSensitive, 10, 0, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(2, posts.size());
 		
-		List<TagIndex> tagIndex2 = new ArrayList<TagIndex>();
+		final List<TagIndex> tagIndex2 = new ArrayList<TagIndex>();
 		tagIndex2.add(new TagIndex("friendbibtex", 1));
 		loginUser = "testuser1";
 		requestedUserName = "testuser2";
-		posts = this.bibTexDb.getBibTexByConceptForUser(loginUser, requestedUserName, tagIndex2, visibleGroupIDs, caseSensitive, 10, 0, this.dbSession);
+		posts = this.bibTexDb.getPostsByConceptForUser(loginUser, requestedUserName, visibleGroupIDs, tagIndex2, caseSensitive, 10, 0, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		
 		// test it with casesensitive and caseinsensitive tagnames
-		List<TagIndex> tagIndex3 = new ArrayList<TagIndex>();
+		final List<TagIndex> tagIndex3 = new ArrayList<TagIndex>();
 		tagIndex3.add(new TagIndex("TESTbibTEX", 1));
 
-		List<Post<BibTex>> post2 = this.bibTexDb.getBibTexByConceptForUser(null, "testuser1", tagIndex3, visibleGroupIDs, caseSensitive, 10, 0, this.dbSession);
+		List<Post<BibTex>> post2 = this.bibTexDb.getPostsByConceptForUser(null, "testuser1", visibleGroupIDs, tagIndex3, caseSensitive, 10, 0, null, this.dbSession);
 		assertEquals(1, post2.size());
 		caseSensitive = true;
-		post2 = this.bibTexDb.getBibTexByConceptForUser(null, "testuser1", tagIndex3, visibleGroupIDs, caseSensitive, 10, 0, this.dbSession);
+		post2 = this.bibTexDb.getPostsByConceptForUser(null, "testuser1", visibleGroupIDs, tagIndex3, caseSensitive, 10, 0, null, this.dbSession);
 		assertEquals(0, post2.size());
 	}
 
@@ -320,7 +322,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBibTexByUserFriends() {
 		String userName = "testuser1";
-		List<Post<BibTex>> post = this.bibTexDb.getPostsByUserFriends(userName, HashID.INTER_HASH, 10, 0, this.dbSession);
+		List<Post<BibTex>> post = this.bibTexDb.getPostsByUserFriends(userName, HashID.INTER_HASH, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 	}
 
@@ -343,8 +345,9 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	// FIXME: test is only successfully when running alone
 	@Ignore
-	public void getBibTexForHomePage() {
-		List<Post<BibTex>> post = this.bibTexDb.getBibTexForHomepage(10, 0, this.dbSession);
+	@Test
+	public void getBibTexForHomepage() {
+		List<Post<BibTex>> post = this.bibTexDb.getPostsForHomepage(null, 10, 0, null, this.dbSession);
 		assertEquals(2, post.size());
 	}
 
@@ -354,11 +357,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	//TEST GEÄNDERT, IST NURNOCH ERFOLGREICH WENN EIN ELEMENT GEFUNDEN WIRD WEGEN NEUEM POPULAR STATEMENT
 	public void getBibTexPopular() {
-//		BibTexParam param = new BibTexParam();
-//		param.setDays(0);
-//		param.setOffset(0);
-//		param.setLimit(10);
-//		param.setSimHash(HashID.INTER_HASH);
 		List<Post<BibTex>> l = this.bibTexDb.getPostsPopular(0, 10, 0, HashID.INTER_HASH, this.dbSession);
 		assertEquals(1, l.size());
 	}
@@ -388,16 +386,16 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getBibTexSearchCount() {
-		GroupID groupType = GroupID.PUBLIC;
+		final int groupId = GroupID.PUBLIC.getId();
 		String search = "search string";
 		String requestedUserName = "testuser1";
 		
 		Integer count = -1;
-		count = this.bibTexDb.getPostsSearchCount(groupType, search, requestedUserName, this.dbSession);
+		count = this.bibTexDb.getPostsSearchCount(groupId, search, requestedUserName, this.dbSession);
 		assertEquals(1, count);
 
 		count = -1;
-		count = this.bibTexDb.getPostsSearchCount(groupType, search, null, this.dbSession);
+		count = this.bibTexDb.getPostsSearchCount(groupId, search, null, this.dbSession);
 		assertEquals(1, count);
 	}
 	
@@ -419,11 +417,11 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		visibleGroupIDs.add(0);
 
-		List<Post<BibTex>> posts = this.bibTexDb.getBibTexSearchForGroup(groupId, search, userName, limit, offset, this.dbSession);
+		List<Post<BibTex>> posts = this.bibTexDb.getPostsSearchForGroup(groupId, new LinkedList<Integer>(), search, userName, limit, offset, null, this.dbSession);
 		assertEquals(1, posts.size());
 
 		search = "search test string bibtext";
-		posts = this.bibTexDb.getBibTexSearchForGroup(groupId, search, userName, limit, offset, this.dbSession);
+		posts = this.bibTexDb.getPostsSearchForGroup(groupId, new LinkedList<Integer>(), search, userName, limit, offset, null, this.dbSession);
 		assertEquals(1, posts.size());
 	}
 
@@ -436,28 +434,29 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	// FIXME: test is only successfully when running alone
 	@Ignore
+	@Test
 	public void getBibTexViewable() {
 		String requestedGroupName = "public";
 		String loginUserName = "testuser1";
 		int groupId = 0;
-		List<Post<BibTex>> post = this.bibTexDb.getPostsViewable(requestedGroupName, loginUserName, groupId, HashID.INTER_HASH, 10, 0, this.dbSession);
+		List<Post<BibTex>> post = this.bibTexDb.getPostsViewable(requestedGroupName, loginUserName, groupId, HashID.INTER_HASH, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		requestedGroupName = "testgroup1";
 		groupId = 3;
-		post = this.bibTexDb.getPostsViewable(requestedGroupName, null, groupId, HashID.INTER_HASH, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsViewable(requestedGroupName, null, groupId, HashID.INTER_HASH, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		requestedGroupName = "private";
 		loginUserName = "testuser2";
 		groupId = 1;
-		post = this.bibTexDb.getPostsViewable(requestedGroupName, loginUserName, groupId, HashID.INTER_HASH, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsViewable(requestedGroupName, loginUserName, groupId, HashID.INTER_HASH, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		requestedGroupName = "";
 		loginUserName = "testuser1";
 		groupId = -1;
-		post = this.bibTexDb.getPostsViewable(requestedGroupName, loginUserName, groupId, HashID.INTER_HASH, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsViewable(requestedGroupName, loginUserName, groupId, HashID.INTER_HASH, 10, 0, null, this.dbSession);
 		assertEquals(0, post.size());
 
 	}
@@ -470,9 +469,9 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	// TODO: really broken SQL?
 	public void getBibTexDuplicate() {
 		String requestedUserName = "testuser1";
-		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		visibleGroupIDs.add(GroupID.PUBLIC.getId());
-		List<Post<BibTex>> post = this.bibTexDb.getBibTexDuplicate(requestedUserName, visibleGroupIDs, HashID.INTER_HASH, this.dbSession);
+		List<Post<BibTex>> post = this.bibTexDb.getPostsDuplicate(requestedUserName, visibleGroupIDs, HashID.INTER_HASH, this.dbSession, null);
 		assertEquals(1, post.size());
 
 	}
@@ -484,7 +483,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBibTexDuplicateCount() {
 		Integer count = -1;
 		String requestedUserName = "testuser1";
-		count = this.bibTexDb.getBibTexDuplicateCount(requestedUserName, this.dbSession);
+		count = this.bibTexDb.getPostsDuplicateCount(requestedUserName, this.dbSession);
 		assertEquals(1, count);
 	}
 
@@ -493,28 +492,29 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	// FIXME: test is only successfully when running alone
 	@Ignore
+	@Test
 	public void getBibTexForUsersInGroup() {
-		ArrayList<Integer> groups = new ArrayList<Integer>();
+		List<Integer> groups = new ArrayList<Integer>();
 		groups.add(GroupID.PUBLIC.getId());
 		String loginUserName = "testuser1";
-		List<Post<BibTex>> post = this.bibTexDb.getBibTexForGroup(loginUserName, 3, groups, HashID.INTER_HASH, 10, 0, this.dbSession);
+		List<Post<BibTex>> post = this.bibTexDb.getPostsForGroup(3, groups, loginUserName, HashID.INTER_HASH, null, 10, 0, null, this.dbSession);
 		assertEquals(3, post.size());
 		
-		post = this.bibTexDb.getBibTexForGroup(loginUserName, 4, groups, HashID.INTER_HASH, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsForGroup(4, groups, loginUserName, HashID.INTER_HASH, null, 10, 0, null, this.dbSession);
 		assertEquals(2, post.size());
 		
 		loginUserName = "testuser2";
-		post = this.bibTexDb.getBibTexForGroup(loginUserName, 3, groups, HashID.INTER_HASH, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsForGroup(3, groups, loginUserName, HashID.INTER_HASH, null, 10, 0, null, this.dbSession);
 		assertEquals(3, post.size());
 		
-		post = this.bibTexDb.getBibTexForGroup(loginUserName, 4, groups, HashID.INTER_HASH, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsForGroup(4, groups, loginUserName, HashID.INTER_HASH, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		groups = new ArrayList<Integer>();
-		post = this.bibTexDb.getBibTexForGroup(null, 4, groups, HashID.INTER_HASH, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsForGroup(4, groups, null, HashID.INTER_HASH, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
-		post = this.bibTexDb.getBibTexForGroup(null, 3, groups, HashID.INTER_HASH, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsForGroup(3, groups, null, HashID.INTER_HASH, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 	}
 
@@ -547,36 +547,34 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	// TODO: group id 0 und 2 ?
-	
 	public void getBibTexForGroupByTag() {
-		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		visibleGroupIDs.add(GroupID.PUBLIC.getId());
 		List<TagIndex> tagIndex = new ArrayList<TagIndex>();
 		tagIndex.add(new TagIndex("testbibtex", 1));
 		String loginUser = "testuser1";
 		int groupId = 4;
-		//groupId = 0;
 		
-		List<Post<BibTex>> post = this.bibTexDb.getPostsForGroupByTag(groupId, visibleGroupIDs, loginUser, tagIndex, 10, 0, this.dbSession);
+		List<Post<BibTex>> post = this.bibTexDb.getPostsForGroupByTag(groupId, visibleGroupIDs, loginUser, tagIndex, null, 10, 0, null, this.dbSession);
 		assertEquals(2, post.size());
 		
 		tagIndex.add(new TagIndex("testtag", 2));
-		post = this.bibTexDb.getPostsForGroupByTag(groupId, visibleGroupIDs, loginUser, tagIndex, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsForGroupByTag(groupId, visibleGroupIDs, loginUser, tagIndex, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		tagIndex = new ArrayList<TagIndex>();
 		tagIndex.add(new TagIndex("privatebibtex", 1));
 		loginUser = "testuser2";
-		post = this.bibTexDb.getPostsForGroupByTag(groupId, visibleGroupIDs, loginUser, tagIndex, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsForGroupByTag(groupId, visibleGroupIDs, loginUser, tagIndex, null, 10, 0, null, this.dbSession);
 		assertEquals(0, post.size());
 		
 		groupId = 3;
-		post = this.bibTexDb.getPostsForGroupByTag(groupId, visibleGroupIDs, loginUser, tagIndex, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsForGroupByTag(groupId, visibleGroupIDs, loginUser, tagIndex, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		tagIndex = new ArrayList<TagIndex>();
 		tagIndex.add(new TagIndex("friendbibtex", 1));
-		post = this.bibTexDb.getPostsForGroupByTag(groupId, visibleGroupIDs, loginUser, tagIndex, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsForGroupByTag(groupId, visibleGroupIDs, loginUser, tagIndex, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 	}
@@ -588,27 +586,33 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBibTexForUser() {
 		String requestedUserName = "testuser1";
 		int groupId = 3;
-		List<Integer> groups = new ArrayList<Integer>();
+		final List<Integer> groups = new ArrayList<Integer>();
 		
-		List<Post<BibTex>> post = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0, this.dbSession);
+		List<Post<BibTex>> post = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		groupId = 0;
-		post = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		groupId = -1;
-		post = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
+		assertEquals(2, post.size());
+		
+		groups.add(GroupID.PUBLIC.getId());
+		post = this.bibTexDb.getPostsForUser("testuser2", requestedUserName, HashID.INTRA_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
+		
+		groups.clear();
 		
 		requestedUserName = "testuser2";
 		groupId = 1;
-		post = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 		requestedUserName = "testuser2";
 		groupId = 2;
-		post = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0, this.dbSession);
+		post = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
 		assertEquals(1, post.size());
 		
 	}
@@ -620,24 +624,20 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getBibTeXForUserWithDocuments() {
 		final String requestedUserName = "testuser1";
-		final BibTexParam param = new BibTexParam();
-		param.setRequestedUserName(requestedUserName);
-		param.setSimHash(HashID.INTER_HASH);
-		param.setGroupId(GroupID.INVALID.getId());
-		param.setDocumentsAttached(true);
-		param.setLimit(10);
-		param.setOffset(0);
+		final int groupId = GroupID.PUBLIC.getId();
+		final HashID simHash = HashID.INTER_HASH;
+		final FilterEntity filter = FilterEntity.POSTS_WITH_DOCUMENTS;
+		final int offset = 0;
+		final int limit = 10;		
+		final List<Post<BibTex>> posts = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, simHash, groupId, Collections.singletonList(0), filter, limit, offset, null, this.dbSession);
 		
-		final List<Post<BibTex>> posts = this.bibTexDb.getPostsForUser(param, this.dbSession);
-		
-		assertFalse(posts.isEmpty());
 		// testuser 1 has 1 public post
-		assertEquals(1,posts.size());
+		assertEquals(1, posts.size());
 		// this post has two documents
-		assertEquals(2,posts.get(0).getResource().getDocuments().size());
+		assertEquals(2, posts.get(0).getResource().getDocuments().size());
 		// order might matter .. then the following assertions fail -> disable them
-		assertEquals("00000000000000000000000000000000", posts.get(0).getResource().getDocuments().get(0).getMd5hash());
-		assertEquals("00000000000000000000000000000001", posts.get(0).getResource().getDocuments().get(1).getMd5hash());
+		assertEquals("00000000000000000000000000000000", posts.get(offset).getResource().getDocuments().get(offset).getMd5hash());
+		assertEquals("00000000000000000000000000000001", posts.get(offset).getResource().getDocuments().get(1).getMd5hash());
 		
 	}
 	
@@ -693,11 +693,11 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests getPosts
 	 */
 	@Test
-	@Ignore  // XXXDZ: why 
+	@Ignore
 	// TODO: need assertByTagNames?
 	public void getPosts() {
 		final BibTexParam param = new BibTexParam();
-		List<TagIndex> tagIndex = new ArrayList<TagIndex>();
+		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();
 		param.setHash("");
 		param.setGroupId(GroupID.INVALID.getId());
 		List<Post<BibTex>> posts = this.bibTexDb.getPosts(param, this.dbSession);
@@ -823,8 +823,8 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests storePostBibTexUpdatePlugin
 	 */
-	// FIXME: Test läuft nur einzeln erfolgreich
-	@Ignore
+	@Ignore // FIXME: Test läuft nur einzeln erfolgreich
+	@Test
 	public void storePostBibTexUpdatePlugin() {
 		final String hash = "b77ddd8087ad8856d77c740c8dc2864a";		
 		final String loginUserName = "testuser1";
@@ -837,7 +837,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		List<BibTexExtra> extras = this.bibTexExtraDb.getURL(hash, loginUserName, this.dbSession);
 		assertEquals(1, extras.size());
 
-		// TODO: ist das nicht immer public? XXX <====
+		// TODO: ist das nicht immer public?
 		// this.bibtexParam.setGroupType(GroupID.PRIVATE); 
 		this.postDuplicate(hash);
 
@@ -1060,16 +1060,11 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getBibtexByKey() {
-		final BibTexParam param = new BibTexParam();
-		param.setBibtexKey("test %");
-		param.setGrouping(GroupingEntity.USER);
-		param.setOrder(Order.ADDED);
-		param.setHash(null);
-		param.setRequestedUserName("testuser1");
-		param.setLimit(20);
-		param.setOffset(0);
-		param.setGroupId(GroupID.PUBLIC.getId());
-		final List<Post<BibTex>> posts = this.bibTexDb.getPostsByKey(param, this.dbSession);
+		final String bibtexKey = "test %";
+		final String requestedUserName = "testuser1";
+		final int groupId = GroupID.PUBLIC.getId();
+		
+		final List<Post<BibTex>> posts = this.bibTexDb.getPostsByKey(bibtexKey, requestedUserName, groupId, 20, 0, null, this.dbSession);
 		assertEquals(1,posts.size());
 		assertEquals(posts.get(0).getResource().getBibtexKey(), "test bibtexKey");
 	}

@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
@@ -36,9 +37,14 @@ public class GetBibtexViewable extends BibTexChainElement {
 			log.debug("groupId " + param.getRequestedGroupName() + " not found");
 			return new ArrayList<Post<BibTex>>(0);
 		}
+		
 		param.setGroupId(groupId);
-		if (present(param.getTagIndex())) return this.db.getPostsViewableByTag(param, session);
-		return this.db.getBibTexViewable(param, session);
+		
+		if (present(param.getTagIndex())) {
+			return this.db.getPostsViewableByTag(param.getGroupId(), param.getTagIndex(), HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), session);
+		}
+		
+		return this.db.getPostsViewable(param.getRequestedGroupName(), param.getUserName(), groupId, HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 	@Override
