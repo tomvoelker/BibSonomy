@@ -201,30 +201,6 @@
        
           </fieldset>
           
-          <fieldset class="fsInner">
-                <legend><fmt:message key="post.resource.fields.comments"/></legend>
-                
-                <!-- 
-                   | TODO: explain difference between fields!
-                   -->
-                
-                   <form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
-                   <form:textarea cssClass="fsInput" path="post.description" tabindex="32" rows="3" onkeyup="sz(this);" />
-
-                   <form:label cssClass="fsLabel" path="post.resource.privnote" ><fmt:message key="post.resource.privnote"/></form:label>
-                   <form:textarea cssClass="fsInput" path="post.resource.privnote" tabindex="33" rows="3" onkeyup="sz(this);" />
-                   <div class="dissError"><form:errors path="post.resource.privnote" /></div>
-
-                   <form:label cssClass="fsLabel" path="post.resource.annote" ><fmt:message key="post.resource.annote"/></form:label>
-                   <form:input cssClass="fsInput" path="post.resource.annote" tabindex="34"/>
-                   <div class="dissError"><form:errors path="post.resource.annote" /></div>
-
-                   <form:label cssClass="fsLabel" path="post.resource.note" ><fmt:message key="post.resource.note"/></form:label>
-                   <form:textarea cssClass="fsInput" path="post.resource.note" tabindex="35" rows="3" onkeyup="sz(this);" />
-                   <div class="dissError"><form:errors path="post.resource.note" /></div>
-       
-          </fieldset>
-
           <c:if test="${not empty command.scrapingContext}">
           
              <fieldset class="fsInner">
