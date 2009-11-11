@@ -896,6 +896,20 @@ span.info:hover > div {
 }
 
 /* help tooltip */
+span.help{
+	position: relative;
+	float:left; 
+	margin-right:5px; 
+	padding-top:-5px;
+	font-size: 90%;
+	}
+	
+	
+span.help > img {
+	width:10px;
+	padding-bottom:5px;
+}
+
 span.help:hover {
 	z-index: 25;
 }
