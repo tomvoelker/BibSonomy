@@ -6,18 +6,32 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	
-	<jsp:directive.attribute name="message" type="java.lang.String" required="true" />
+    <jsp:directive.attribute name="message" type="java.lang.String" required="true" description="The key for the message that should be shown."/>
+	<jsp:directive.attribute name="helpPath" type="java.lang.String" required="false" description="An optional path for the help URL which is linked under the question mark. The given path must be relative to projectHome/help."/>
+    <jsp:directive.attribute name="helpText" fragment="true" required="false" description="A JSP fragment which is inserted after the message."/>
 	
+  
 	<span class="help">
-		<img style="width:15px; padding-bottom:5px" src="${resdir}/image/questionmark.png" alt="?"/>
-		<div><fmt:message key="${message}"/></div>
+        <c:choose>
+          <c:when test="${not empty helpUrl}">
+            <!-- the given path is relative to projectHome/help -->
+            <a href="${projectHome}help${helpUrl}">
+  		      <img style="width:15px; padding-bottom:5px" src="${resdir}/image/questionmark.png" alt="?"/>
+            </a>
+          </c:when>
+          <c:otherwise>
+              <img style="width:15px; padding-bottom:5px" src="${resdir}/image/questionmark.png" alt="?"/>
+          </c:otherwise>
+        </c:choose>
+		<div><fmt:message key="${message}"/> ${helpText}</div>
 	</span> 
 
 	
 	
 	
 	
-	<!-- JS solution - right now css seams cheaper
+	<!-- 
+      JS solution - right now css seams cheaper
 	<jsp:directive.attribute name="NonJSTarget" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="JSMessage" 	type="java.lang.String" required="true" />
 	<script type="text/javascript" src="${resdir}/javascript/wz_tooltip.js" />
