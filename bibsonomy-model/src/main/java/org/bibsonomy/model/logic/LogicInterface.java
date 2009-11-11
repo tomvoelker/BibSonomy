@@ -548,4 +548,12 @@ public interface LogicInterface extends PostLogicInterface {
 	 */
 	public int deleteBasketItems(List<Post<? extends Resource>> posts, boolean clearBasket);
 	
+	/**
+	 * Delete Messages from the inbox by contentId
+	 * @param userName = receiver = owner of the inbox
+	 * @param contentIds
+	 * @return the new size of the inbox
+	 */
+	public int deleteMessages(String userName, List<Integer> contentIds);
+	
 }

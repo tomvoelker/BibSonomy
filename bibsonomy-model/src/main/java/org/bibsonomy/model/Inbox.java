@@ -23,7 +23,6 @@
 
 package org.bibsonomy.model;
 
-import java.util.List;
 
 /**
  * The Inbox, that stores posts sent by friends
@@ -33,33 +32,8 @@ import java.util.List;
  */
 public class Inbox {
 
-	private List<Post<Bookmark>> bookmarks;
-	private List<Post<BibTex>> publications;
-
-	private int numBookmarks;
-	private int numPublications;
 	private int numPosts;
 
-	/**
-	 * @return numBookmarks
-	 */
-	public int getNumBookmarks() {
-		return this.numBookmarks;
-	}
-
-	/**
-	 * @param numBookmarks
-	 */
-	public void setNumBookmarks(int numBookmarks) {
-		this.numBookmarks = numBookmarks;
-	}
-
-	/**
-	 * @return numPublications
-	 */
-	public int getNumPublications() {
-		return this.numPublications;
-	}
 
 	public int getNumPosts() {
 		return this.numPosts;
@@ -67,11 +41,5 @@ public class Inbox {
 	
 	public void setNumPosts(int numPosts) {
 		this.numPosts=numPosts;
-	}
-	/**
-	 * @param numPublications
-	 */
-	public void setNumPublications(int numPublications) {
-		this.numPublications = numPublications;
 	}
 }
