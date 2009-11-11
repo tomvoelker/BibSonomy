@@ -41,9 +41,12 @@ public enum UserRelation {
 	TFIDF(2),
 	/** users related based on folkrank computation */
 	FOLKRANK(3),	
-	/** source user is friend of target user (i.e. u1 -> u2) */
+	/** The FRIEND_OF and OF_FRIEND relations are rather difficult.
+	 *  Before using either be sure to know exactly which one you want. 
+	 */
+	/** source user is friend of target user (i.e. u1 -> u2) i.e. source user is in target users friend list*/
 	FRIEND_OF(4),
-	/** target user is friend of source user (i.e, u1 <- u2) */
+	/** target user is friend of source user (i.e, u1 <- u2) i.e. target user is in source users friend list*/
 	OF_FRIEND(5),
 	/** source user is curious about the target user */
 	CURIOUS_ABOUT(6), 
