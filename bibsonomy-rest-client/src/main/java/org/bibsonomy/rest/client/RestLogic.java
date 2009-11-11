@@ -385,4 +385,7 @@ public class RestLogic implements LogicInterface {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	public int deleteMessages(String userName, List<Integer> contentIds) {
+		return 0;
+	}
 }
