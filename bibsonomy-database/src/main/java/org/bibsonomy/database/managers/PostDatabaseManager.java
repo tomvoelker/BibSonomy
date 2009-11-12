@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
@@ -24,11 +26,15 @@ import org.bibsonomy.database.params.SingleResourceParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
@@ -42,7 +48,7 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  * 
  * @version $Id$
  * @param <R> the resource
- * @param <P> the param TODO: remove & by making SingleResourceParam an abstract class
+ * @param <P> the param
  */
 public abstract class PostDatabaseManager<R extends Resource, P extends ResourcesParam<R> & SingleResourceParam<R>> extends AbstractDatabaseManager implements CrudableContent<R, P> {
 	private static final Log log = LogFactory.getLog(PostDatabaseManager.class);
@@ -57,7 +63,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected final String resourceClassName;
 		
 	/** instance of the lucene searcher */
-	private ResourceSearch<R> resourceSearch; 
+	private ResourceSearch<R> resourceSearch;
+	
+	// TODO: remove logic and sessionfactory! (systemfactory needs dbSessionFactory and logic)
+	private DBSessionFactory dbSessionFactory;
+	private LogicInterface dbLogic; 
 	
 	/**
 	 * inits the database managers and resource class name
@@ -961,18 +971,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		
 		return list.get(0);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.CrudableContent#storePost(java.lang.String, org.bibsonomy.model.Post, java.lang.String, boolean, org.bibsonomy.database.util.DBSession)
-	 */
-	@Override	
-	public boolean storePost(String userName, Post<R> post, String oldIntraHash, boolean update, DBSession session) {
+	
+	@Override
+	public boolean createPost(String userName, Post<R> post, DBSession session) {
 		/*
 		 * FIXME: we need to overwrite the userName in the post with the given userName
 		 * (which comes from loginUser.getName() in DBLogic) - otherwise one can store
-		 * posts under another name! 
-		 */
+		 * posts under another name!
+		 */ 
 		session.beginTransaction();
 		try {
 			/*
@@ -981,59 +987,16 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			final String intraHash = post.getResource().getIntraHash();
 
 			/*
-			 * the resource with the "old" intrahash, i.e. the one that was sent
-			 * within the create/update resource request
-			 */
-			final List<Post<R>> oldPostsInDB;
-			if (present(oldIntraHash)) {
-				/*
-				 * check if the hash sent within the request is correct
-				 */
-				if (!update && !oldIntraHash.equals(intraHash)) {
-					throw new IllegalArgumentException(
-							"Could not create new " + this.resourceClassName + ": The requested intrahash " 
-							+ oldIntraHash + " is not correct for this " + this.resourceClassName + " (correct intrahash is " 
-							+ intraHash + ")."
-					);
-				}
-				// if yes, check if a post exists with the old intrahash				
-				oldPostsInDB = this.getPostsByHashForUser(userName, oldIntraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
-			} else {
-				if (update) {
-					throw new IllegalArgumentException("Could not update post: no intrahash specified.");
-				}
-				oldPostsInDB = null;
-			}
-
-			/*
 			 * get posts with the intrahash of the given post to check for possible duplicates 
 			 */
-			final List<Post<R>> newPostInDB = this.getPostsByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
+			final Post<R> postInDB = this.getPostByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
 
 			/*
 			 * check if user is trying to create a resource that already exists
 			 */
-			if (present(newPostInDB)) {
-				/*
-				 * new resource exists ... 
-				 */
-				if (!update) {
-					/*
-					 * we don't do an update, so this is not allowed
-					 */
-					throw new IllegalArgumentException(
-							"Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
+			if (present(postInDB)) {
+				throw new IllegalArgumentException("Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
 							" already exists in your collection (intrahash: " + intraHash + ")");
-				} else if (!intraHash.equals(oldIntraHash)) {
-					/* 
-					 * Although we're doing an update, the old intra hash is different from the new one
-					 * in principle, this is OK, but not when the new hash already exists. Because that
-					 * way we would delete the post with the old hash and post the new one - resulting
-					 * in two posts with the same (new hash)
-					 */
-					throw new IllegalArgumentException("Could not create new " + this.resourceClassName + ": This " + this.resourceClassName + " already exists in your collection (intrahash: " + intraHash + ")");
-				}
-
 			}
 
 			/*
@@ -1041,39 +1004,177 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
 			
+			this.systemTagPerformBefore(session, post, new HashSet<Tag>());
+			
 			/*
 			 * on update, do a delete first ...
 			 */
-			if (update) {
-				if (present(oldPostsInDB)) {
-					/*
-					 * Resource entry DOES EXIST for this user -> delete old post 
-					 */
-					final Post<?> oldPost = oldPostsInDB.get(0);
-					
-					this.onPostUpdate(oldPost.getContentId(), post.getContentId(), session);
-					
-					this.deletePost(userName, oldPost.getResource().getIntraHash(), true, session);
-				} else {
-					/*
-					 * not found -> throw exception
-					 */
-					log.warn(this.resourceClassName + " with hash " + oldIntraHash + " does not exist for user " + userName);
-					throw new ResourceNotFoundException(oldIntraHash);
-				}
-			}
-
 			this.insertPost(post, session);
 
 			// add the tags
 			this.tagDb.insertTags(post, session);
+			
+			this.systemTagPerformAfter(session, post, new HashSet<Tag>());
 
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
 		
-		return update;
+		return true;
+	}
+	
+	private Post<R> getPostByHashForUser(final String userName, final String requHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final HashID hashType, final DBSession session) {
+		final List<Post<R>> posts = this.getPostsByHashForUser(userName, requHash, requestedUserName, visibleGroupIDs, hashType, session);
+		
+		if (present(posts)) {
+			if (posts.size() > 1) {
+				log.warn("multiple " + this.resourceClassName + " with hash " + requHash + " found for user " + userName);
+			}
+			
+			return posts.get(0);
+		}
+		
+		// post not found
+		return null;
+	}
+	
+	@Override
+	public boolean updatePost(final String userName, final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session) {
+		/*
+		 * the current intra hash of the resource
+		 */
+		final String intraHash = post.getResource().getIntraHash();
+
+		/*
+		 * the resource with the "old" intrahash, i.e. the one that was sent
+		 * within the create/update resource request
+		 */
+		final Post<R> oldPost;
+		if (present(oldHash)) {
+			// if yes, check if a post exists with the old intrahash
+			oldPost = this.getPostByHashForUser(userName, oldHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
+			
+			/*
+			 * check if post to update is in db
+			 */
+			if (!present(oldPost)) {
+				/*
+				 * not found -> throw exception
+				 */
+				log.warn(this.resourceClassName + " with hash " + oldHash + " does not exist for user " + userName);
+				throw new ResourceNotFoundException(oldHash);
+			}
+			
+		} else {
+			throw new IllegalArgumentException("Could not update post: no intrahash specified.");
+		}
+
+		/*
+		 * get posts with the intrahash of the given post to check for possible duplicates 
+		 */
+		final List<Post<R>> newPostsInDB = this.getPostsByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
+
+		/*
+		 * check if user is trying to create a resource that already exists
+		 */
+		if (present(newPostsInDB)) {
+			/*
+			 * new resource exists ... 
+			 */
+			if (!intraHash.equals(oldHash)) {
+				/* 
+				 * Although we're doing an update, the old intra hash is different from the new one
+				 * in principle, this is OK, but not when the new hash already exists. Because that
+				 * way we would delete the post with the old hash and post the new one - resulting
+				 * in two posts with the same (new hash)
+				 */
+				throw new IllegalArgumentException("Could not update " + this.resourceClassName + ": This " + this.resourceClassName + " already exists in your collection (intrahash: " + intraHash + ")");
+			}
+		}
+		
+		/*
+		 * now execute the postupdate operation
+		 */	
+		if (present(operation)) {
+			switch (operation) {
+				case UPDATE_TAGS:
+					return this.updateTagsOfPost(post, oldPost, session);
+//				case UPDATE_DOCUMENTS: // TODO: implement update documents operation
+//					return this.updateDocumentsOfPost(post, oldPost, session);
+			}
+		}
+		
+		/*
+		 * as default update all parts of a post
+		 */
+		session.beginTransaction();
+		try {
+			
+			/*
+			 * ALWAYS get a new contentId
+			 */
+			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
+			
+			/*
+			 * inform the listeners
+			 */
+			this.onPostUpdate(oldPost.getContentId(), post.getContentId(), session);
+			/*
+			 * delete old post
+			 */
+			this.deletePost(userName, oldPost.getResource().getIntraHash(), true, session);
+
+			this.systemTagPerformBefore(session, post, oldPost.getTags());
+			
+			this.insertPost(post, session);
+
+			// add the tags
+			this.tagDb.insertTags(post, session);
+			
+			this.systemTagPerformAfter(session, post, oldPost.getTags());
+
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * updates only the tags of the given post
+	 * 
+	 * @param post	the post to update
+	 * @param oldPost	the old post in database
+ 	 * @param session
+	 */
+	private boolean updateTagsOfPost(final Post<R> post, final Post<R> oldPost, final DBSession session) {
+		session.beginTransaction();
+		try {
+			/*
+			 * delete old tags
+			 */
+			this.tagDb.deleteTags(oldPost, session);
+			
+			/*
+			 * save new tags
+			 */
+			post.getResource().recalculateHashes();
+			
+			this.systemTagPerformBefore(session, post, oldPost.getTags());
+			
+			// insert new tags
+			this.tagDb.insertTags(post, session);
+		
+			this.systemTagPerformAfter(session, post, oldPost.getTags());
+			
+			session.commitTransaction();			
+		} finally {
+			session.endTransaction();
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -1208,6 +1309,40 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		
 		return true;
 	}
+	
+	/**
+	 * performs the before action of all system tags of the post
+	 * 
+	 * @param session
+	 * @param post
+	 * @param alreadyExecutedTags all system tags already executed (during last save or update)
+	 */
+	private void systemTagPerformBefore(final DBSession session, final Post<?> post, final Set<Tag> alreadyExecutedTags) {
+		SystemTag stt;
+		for (final Tag tag : post.getTags()) {
+			stt = SystemTagFactory.createExecutableTag(this.dbLogic, this.dbSessionFactory, tag);
+			if (stt != null && !alreadyExecutedTags.contains(stt)) {
+				stt.performBefore(post, session);
+			}
+		}
+	}
+
+	/**
+	 * performs the after action of all system tags of the post
+	 * 
+	 * @param session
+	 * @param post
+	 * @param alreadyExecutedTags  all system tags already executed (during last save or update)
+	 */
+	private void systemTagPerformAfter(final DBSession session, final Post<?> post, final Set<Tag> alreadyExecutedTags) {
+		SystemTag stt;
+		for (final Tag tag : post.getTags()) {
+			stt = SystemTagFactory.createExecutableTag(this.dbLogic, this.dbSessionFactory, tag);
+			if (stt != null && !alreadyExecutedTags.contains(stt)) {
+				stt.performAfter(post, session);
+			}
+		}
+	}
 
 	/**
 	 * called when a post was deleted successfully
@@ -1287,5 +1422,19 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	public void setResourceSearch(ResourceSearch<R> resourceSearch) {
 		this.resourceSearch = resourceSearch;
+	}
+
+	/**
+	 * @param dbSessionFactory the dbSessionFactory to set
+	 */
+	public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
+		this.dbSessionFactory = dbSessionFactory;
+	}
+
+	/**
+	 * @param dbLogic the dbLogic to set
+	 */
+	public void setDbLogic(LogicInterface dbLogic) {
+		this.dbLogic = dbLogic;
 	}
 }

@@ -27,7 +27,6 @@ import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
@@ -51,8 +50,6 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.systemstags.SystemTag;
-import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
@@ -151,6 +148,12 @@ public class DBLogic implements LogicInterface {
 		this.resourceSearcher.add(bibTexSearch);
 		this.bibtexDBManager.setResourceSearch(bibTexSearch);
 		this.bookmarkDBManager.setResourceSearch(bookmarkSearch);
+		
+		// TODO: @see PostDatabaseManager
+		this.bibtexDBManager.setDbLogic(this);
+		this.bookmarkDBManager.setDbLogic(this);
+		this.bibtexDBManager.setDbSessionFactory(this.dbSessionFactory);
+		this.bookmarkDBManager.setDbSessionFactory(this.dbSessionFactory);		
 	}
 
 	/**
@@ -640,37 +643,6 @@ public class DBLogic implements LogicInterface {
 	}
 
 	/**
-	 * Adds/updates a post in the database.
-	 */
-	private <T extends Resource> String storePost(final Post<T> post, final boolean update) {
-		final DBSession session = openSession();
-		try {
-			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
-			final String oldIntraHash = post.getResource().getIntraHash();
-			post.getResource().recalculateHashes();
-			this.validateGroups(post, session);
-
-			
-			/*
-			 * change group IDs to spam group IDs
-			 */
-			PostUtils.setGroupIds(post, this.loginUser);
-
-			this.systemTagPerformBefore(session, post, new HashSet<Tag>());
-
-			man.storePost(this.loginUser.getName(), post, oldIntraHash, update, session);
-
-			this.systemTagPerformAfter(session, post, new HashSet<Tag>());
-
-			// if we don't get an exception here, we assume the resource has
-			// been successfully stored
-			return post.getResource().getIntraHash();
-		} finally {
-			session.close();
-		}
-	}
-
-	/**
 	 * Check for each group of a post if the groups actually exist and if the
 	 * posting user is allowed to post. If yes, insert the correct group ID into
 	 * the given post's groups.
@@ -857,9 +829,35 @@ public class DBLogic implements LogicInterface {
 		 */
 		final List<String> hashes = new LinkedList<String>();
 		for (final Post<?> post : posts) {
-			hashes.add(this.storePost(post, false));
+			hashes.add(this.createPost(post));
 		}
+		
 		return hashes;
+	}
+	
+	/**
+	 * Adds a post in the database.
+	 */
+	private <T extends Resource> String createPost(final Post<T> post) {
+		final DBSession session = openSession();
+		try {
+			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
+			post.getResource().recalculateHashes();
+			
+			this.validateGroups(post, session);
+			/*
+			 * change group IDs to spam group IDs
+			 */
+			PostUtils.setGroupIds(post, this.loginUser);
+
+			man.createPost(this.loginUser.getName(), post, session);
+
+			// if we don't get an exception here, we assume the resource has
+			// been successfully created
+			return post.getResource().getIntraHash();
+		} finally {
+			session.close();
+		}
 	}
 
 	/*
@@ -871,8 +869,6 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
-		log.debug("updatePosts called");
-		
 		this.ensureLoggedIn();
 		/*
 		 * check permissions
@@ -881,127 +877,46 @@ public class DBLogic implements LogicInterface {
 			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 		}
 		
-		switch (operation) {
-			case UPDATE_TAGS:
-				return this.updateOnlyTagsOfPosts(posts);
-			// TODO: implement operation UPDATE_DOCUMENTS
-//			case UPDATE_DOCUMENTS:
-//				return this.updateOnlyDocumentsOfPosts(posts);
-		}
-		
-		/*
-		 *  default PostUpdateOperation is UPDATE_ALL
-		 */
-		return this.updatePosts(posts);
-	}
-
-	/**
-	 * updates only the tags of the posts
-	 * 
-	 * @param 	posts the posts to update
-	 * @return	the (new) hashes of the updated resources
-	 */
-	private List<String> updateOnlyTagsOfPosts(final List<Post<?>> posts) {
 		final List<String> hashes = new LinkedList<String>();
-		
-		for (final Post<?> post : posts) {
-			hashes.add(this.updateTagsOfPost(post));
+		for (final Post<?> post: posts) {
+			hashes.add(this.updatePost(post, operation));
 		}
 		
 		return hashes;
 	}
-
+	
 	/**
-	 * updates only the tags of the given post
-	 * 
-	 * @param post	the post to update
-	 * @return	the (new) hash of the updated resource
+	 * Updates a post in the database.
 	 */
-	private String updateTagsOfPost(final Post<?> post) {
+	private <T extends Resource> String updatePost(final Post<T> post, final PostUpdateOperation operation) {
+		/*
+		 * open session
+		 */
 		final DBSession session = openSession();
+		
 		try {
-			/*
-			 *  get old tags by finding old post in database
-			 */
+			final CrudableContent<T, GenericParam> manager = getFittingDatabaseManager(post);
 			final String oldIntraHash = post.getResource().getIntraHash();
-			final String username = post.getUser().getName();
-			final Post<?> oldPost = this.getPostDetails(oldIntraHash, username);
-			if (oldPost == null) {
-				throw new ResourceNotFoundException(oldIntraHash);
-			}
-			
-			/*
-			 * delete old tags
-			 */
-			this.tagDBManager.deleteTags(oldPost, session);
-			
-			/*
-			 * save new tags
-			 */
 			post.getResource().recalculateHashes();
 			
-			this.systemTagPerformBefore(session, post, oldPost.getTags());
+			this.validateGroups(post, session);
 			
-			// insert new tags
-			this.tagDBManager.insertTags(post, session);
-		
-			this.systemTagPerformAfter(session, post, oldPost.getTags());
-			
+			/*
+			 * change group IDs to spam group IDs
+			 */
+			PostUtils.setGroupIds(post, this.loginUser);
+
+			/*
+			 * update post
+			 */
+			manager.updatePost(this.loginUser.getName(), post, oldIntraHash, operation, session);
+
+			// if we don't get an exception here, we assume the resource has
+			// been successfully updated
 			return post.getResource().getIntraHash();
 		} finally {
 			session.close();
 		}
-	}
-	
-	/**
-	 * performs the before action of all system tags of the post
-	 * 
-	 * @param session
-	 * @param post
-	 * @param alreadyExecutedTags all system tags already executed (during last save or update)
-	 */
-	private void systemTagPerformBefore(final DBSession session, final Post<?> post, final Set<Tag> alreadyExecutedTags) {
-		SystemTag stt;
-		for (final Tag tag : post.getTags()) {
-			stt = SystemTagFactory.createExecutableTag(this, this.dbSessionFactory, tag);
-			if (stt != null && !alreadyExecutedTags.contains(stt)) {
-				stt.performBefore(post, session);
-			}
-		}
-	}
-
-	/**
-	 * performs the after action of all system tags of the post
-	 * 
-	 * @param session
-	 * @param post
-	 * @param alreadyExecutedTags  all system tags already executed (during last save or update)
-	 */
-	private void systemTagPerformAfter(final DBSession session, final Post<?> post, final Set<Tag> alreadyExecutedTags) {
-		SystemTag stt;
-		for (final Tag tag : post.getTags()) {
-			stt = SystemTagFactory.createExecutableTag(this, this.dbSessionFactory, tag);
-			if (stt != null && !alreadyExecutedTags.contains(stt)) {
-				stt.performAfter(post, session);
-			}
-		}
-	}
-
-	/**
-	 * updates the posts (including tag and doc)
-	 * 
-	 * @param posts
-	 * @return
-	 */
-	private List<String> updatePosts(final List<Post<?>> posts) {
-		/*
-		 * update posts FIXME: implement properly (see createPosts)
-		 */
-		final List<String> hashes = new LinkedList<String>();
-		for (Post<?> post : posts) {
-			hashes.add(this.storePost(post, true));
-		}
-		return hashes;
 	}
 
 	/*

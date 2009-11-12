@@ -3,7 +3,6 @@ package org.bibsonomy.database.managers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -158,6 +157,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	// FIXME: test is only successfully when running alone
 	@Ignore
+	@Test
 	public void getBookmarkForHomepage() {
 		/*
 		 * parameter limit is set to 10 in the (old) param object,
@@ -416,6 +416,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	// FIXME: test is only successful when running alone
 	@Ignore
+	@Test
 	public void getBookmarkForUser() {
 		
 		final String requestedUserName = "testuser1";
@@ -568,27 +569,25 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
+	 * tests storePostWrongUsage
+	 */
+	@Test(expected = IllegalArgumentException.class)
+	public void storePostWrongUsage() {
+		final Post<Bookmark> toInsert = this.generateBookmarkDatabaseManagerTestPost();
+
+		this.bookmarkDb.updatePost(toInsert.getUser().getName(), toInsert, null, null, this.dbSession);
+	}
+	
+	/**
 	 * tests storePost
 	 */
 	@Test
 	public void storePost() {
 		final Post<Bookmark> toInsert = generateBookmarkDatabaseManagerTestPost();
-
-		try {
-			this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, null, true, this.dbSession);
-			fail("Should throw a throwable");
-		} catch (IllegalArgumentException ignore) {
-		}
-		try {
-			// try to create post with wrong intrahash
-			final String wrongIntraHashForPost = "37f7645843eece1b46ae5202b6b489d7";
-			this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, wrongIntraHashForPost, false, this.dbSession);
-			fail("Should throw a throwable");
-		} catch (IllegalArgumentException ignore) {
-		}
+		toInsert.getResource().recalculateHashes();
 
 		// no oldIntraHash and no update
-		this.bookmarkDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
+		this.bookmarkDb.createPost(toInsert.getUser().getName(), toInsert, this.dbSession);
 		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
 		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
@@ -603,10 +602,11 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(plugin);
 		assertFalse(plugin.isOnBibTexUpdate());
+		
 		final String hash = "37f7645843eece1b46ae5202b6b489d8";
 		param.setHash(hash);
 		final Post<Bookmark> someBookmarkPost = this.bookmarkDb.getPostsByHash(hash, HashID.INTRA_HASH, GroupID.PUBLIC.getId(), 10, 0, this.dbSession).get(0);
-		this.bookmarkDb.storePost(someBookmarkPost.getUser().getName(), someBookmarkPost, hash, true, this.dbSession);
+		this.bookmarkDb.updatePost(someBookmarkPost.getUser().getName(), someBookmarkPost, hash, null, this.dbSession);
 		assertTrue(plugin.isOnBookmarkUpdate());
 	}
 
@@ -649,6 +649,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests getPosts
 	 */
 	@Ignore
+	@Test
 	//FIXME: RuntimeException: Can't handle request
 	public void getPosts() {
 		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();

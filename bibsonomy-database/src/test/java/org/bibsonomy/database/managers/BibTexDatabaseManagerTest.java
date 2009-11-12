@@ -859,10 +859,10 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
 		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
-		
+		toInsert.getResource().recalculateHashes();
 		final String bibtexHashForUpdate = "14143c6508fe645ca312d0aa5d0e791b"; // INTRA-hash of toInsert
 
-		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
+		this.bibTexDb.createPost(toInsert.getUser().getName(), toInsert, this.dbSession);
 
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
 		param.setSimHash(HashID.INTRA_HASH);
@@ -900,7 +900,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// first: insert post such that we can delete it later
 		
 		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
-		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
+		this.bibTexDb.createPost(toInsert.getUser().getName(), toInsert, this.dbSession);
 
 		
 		// delete public post		
@@ -936,7 +936,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(0, posts.size());
 		assertEquals(0, post2.size());
 		
-		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
+		this.bibTexDb.createPost(toInsert.getUser().getName(), toInsert, this.dbSession);
 		post2 = this.bibTexDb.getPosts(postParam, this.dbSession);
 		posts = this.bibTexDb.getPostsByHashForUser(username, hash, requestedUserName, new ArrayList<Integer>(), HashID.INTRA_HASH, this.dbSession);
 		assertEquals(1, posts.size());
@@ -952,29 +952,14 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 	}
 
-	
 	/**
 	 * tests storePostWrongUsage
 	 */
-	@Test
+	@Test(expected = IllegalArgumentException.class)
 	public void storePostWrongUsage() {
 		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
 
-		// can't update without old hash
-		try {
-			this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, true, this.dbSession);
-			fail("Should throw a throwable");
-		} catch (Throwable t) {
-			assertTrue(t instanceof IllegalArgumentException);
-		}
-
-		// can't create new resource with old hash
-		try {
-			this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, "123456789", false, this.dbSession);
-			fail("Should throw a throwable");
-		} catch (Throwable t) {
-			assertTrue(t instanceof IllegalArgumentException);
-		}
+		this.bibTexDb.updatePost(toInsert.getUser().getName(), toInsert, null, null, this.dbSession);
 	}
 
 	/**
@@ -1009,7 +994,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		List<Post<BibTex>> someBibTexPost = this.bibTexDb.getPostsByHash(hash, HashID.INTRA_HASH, GroupID.PUBLIC.getId(), 10, 0, this.dbSession);
 		assertEquals(1, someBibTexPost.size());
 		// someBibTexPost.getGroups().clear();
-		this.bibTexDb.storePost(someBibTexPost.get(0).getUser().getName(), someBibTexPost.get(0), hash, true, this.dbSession);
+		this.bibTexDb.updatePost(someBibTexPost.get(0).getUser().getName(), someBibTexPost.get(0), hash, null, this.dbSession);
 	}
 
 	/**

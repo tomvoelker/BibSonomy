@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Post;
@@ -48,17 +49,26 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	 * @return true, if entry existed and was deleted
 	 */
 	public boolean deletePost(String userName, String resourceHash, DBSession session);
-
+	
 	/**
-	 * Create and update
+	 * create
 	 * 
-	 * @param userName 
-	 * @param post 
-	 * @param oldHash 
-	 * @param update 
-	 * @param session 
+	 * @param userName
+	 * @param post
+	 * @param session
+	 * @return true if entry was created
+	 */
+	public boolean createPost(String userName, Post<T> post, DBSession session);
+	
+	/**
+	 * update
 	 * 
+	 * @param userName
+	 * @param post
+	 * @param oldHash
+	 * @param operation
+	 * @param session
 	 * @return true, if entry existed and was updated
 	 */
-	public boolean storePost(String userName, Post<T> post, String oldHash, boolean update, DBSession session);
+	public boolean updatePost(String userName, Post<T> post, String oldHash, PostUpdateOperation operation, DBSession session);
 }

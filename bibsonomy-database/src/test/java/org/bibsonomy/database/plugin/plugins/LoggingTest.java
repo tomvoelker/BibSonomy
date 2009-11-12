@@ -9,6 +9,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GroupParam;
@@ -151,7 +152,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		param.setNewContentId(currentContentId + 1);
 		Integer result = this.generalDb.countNewContentIdFromBibTex(param, this.dbSession);
 		assertEquals(0, result);
-		this.bibTexDb.storePost(someBibTexPost.getUser().getName(), someBibTexPost, someBibTexPost.getResource().getIntraHash(), true, this.dbSession);
+		this.bibTexDb.updatePost(someBibTexPost.getUser().getName(), someBibTexPost, someBibTexPost.getResource().getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession);
 
 		currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		param.setNewContentId(currentContentId);
@@ -198,7 +199,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		Integer result = this.generalDb.countNewContentIdFromBookmark(param, this.dbSession);
 		assertEquals(0, result);
 
-		this.bookmarkDb.storePost(someBookmarkPost.getUser().getName(), someBookmarkPost, HASH, true, this.dbSession);
+		this.bookmarkDb.updatePost(someBookmarkPost.getUser().getName(), someBookmarkPost, HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 
 		currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		param.setNewContentId(currentContentId);
