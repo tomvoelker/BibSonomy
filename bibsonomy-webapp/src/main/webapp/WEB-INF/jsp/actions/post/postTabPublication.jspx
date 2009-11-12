@@ -86,7 +86,7 @@
                               <label class="fsLabel" for="post.resource.year" ><fmt:message key="post.resource.year"/></label>
                               <input type="text" class="fsInput fsSmall" id="post.resource.year" name="post.resource.year" tabindex="6"/>
   
-  				    		  <input type="submit" class="fsFormSubmit" name="submit" value="${button_label_check}"/>
+  				    		  <input type="submit" class="fsFormSubmit" style="clear:both; float:left" name="submit" value="${button_label_check}"/>
   							
 							</fieldset>
 						</div>
