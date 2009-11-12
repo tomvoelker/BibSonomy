@@ -3,6 +3,7 @@ package org.bibsonomy.rest.database;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -862,18 +863,22 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
+	
+	@Override
+	public List<User> getUserRelationship(String sourceUser, UserRelation relation) {
+		// TODO Auto-generated method stub
+		return new ArrayList<User>();
+	}
 
 	@Override
-	public void deleteUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+	public void deleteUserRelationship(String sourceUser, String targetUser, UserRelation relation) {
 		// TODO Auto-generated method stub
-		
 	}
 
 
 	@Override
-	public void createUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+	public void createUserRelationship(String sourceUser, String targetUser, UserRelation relation) {
 		// TODO Auto-generated method stub
-		
 	}
 
 
