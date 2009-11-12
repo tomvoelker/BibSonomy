@@ -190,7 +190,7 @@ public class DBLogic implements LogicInterface {
 		}
 		final DBSession session = openSession();
 		try {
-			return this.userDBManager.getUserFriends(loginUser.getName(), session);
+			return this.userDBManager.getUserRelation(loginUser.getName(), UserRelation.FRIEND_OF, session);
 		} finally {
 			session.close();
 		}
@@ -217,7 +217,7 @@ public class DBLogic implements LogicInterface {
 		}
 		final DBSession session = openSession();
 		try {
-			return this.userDBManager.getFriendsOfUser(loginUser.getName(), session);
+			return this.userDBManager.getUserRelation(loginUser.getName(), UserRelation.OF_FRIEND, session);
 		} finally {
 			session.close();
 		}
@@ -1712,85 +1712,102 @@ public class DBLogic implements LogicInterface {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bibsonomy.model.logic.LogicInterface#deleteUserRelationship()
-	 */
-	@Override
-	public void deleteUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
-		this.ensureLoggedIn();
-
-		final DBSession session = openSession();
-		try {
-			UserParam param = new UserParam();
-			param.setUserName(loggedInUser.getName());
-			param.setRequestedUserName(requestedUser.getName());
-
-			switch (relation) {
-			case FOLLOWER_OF:
-				this.userDBManager.deleteFollowerOfUser(param, session);
-				break;
-			/*
-			 * FIXME: This should be the OF_FRIEND relation:
-			 * * A FRIEND OF B means: A is in B's list, therefore only B can delete it
-			 * What we delete here is the Relation loggedInUser OF_FRIEND requestedUser
-			 * Thus relation=OF_FRIEND 
-			 * Otherwise (as it is now) we have loggedInUser as sourceUser in the FOLLOWER_OF-relation
-			 * and as targetUser in the FRIEND_OF-relation
-			 */
-			case FRIEND_OF:
-				this.userDBManager.deleteFriendOfUser(param, session);
-				break;
-			default:
-				break;
-			}
-		} finally {
-			session.close();
-		}
-
-	}
-
+	
+	
+	/******************
+	 * USER RELATIONS *
+	 *****************/
+	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.bibsonomy.model.logic.LogicInterface#insertUserRelationship()
 	 */
 	@Override
-	public void createUserRelationship(final User user, final User relatedUser, final UserRelation relation) {
+	/**
+	 * We create a UserRelation of the form (sourceUser, targetUser)\in relation
+	 * This Method only works for the FOLLOWER_OF and the OF_FRIEND relation
+	 * Other relation will result in an UnsupportedRelationException
+	 */
+	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
 		this.ensureLoggedIn();
-		this.permissionDBManager.checkUserRelationship(user, relatedUser, relation);
-		this.permissionDBManager.isAdminOrSelf(loginUser, user.getName());
+		//this.permissionDBManager.checkUserRelationship(sourceUser, targetUser, relation);
+		this.permissionDBManager.isAdminOrSelf(loginUser, sourceUser);
 
 		final DBSession session = openSession();
 		try {
-			/*
-			 * FIXME: move param object into UserDataBaseManager
-			 */
-			final UserParam param = new UserParam();
-			param.setUserName(user.getName());
-			param.setRequestedUserName(relatedUser.getName());
-
-			switch (relation) {
-			case FOLLOWER_OF:
-				if (this.userDBManager.isFollowerOfUser(user, relatedUser, session) == false) {
-					this.userDBManager.addFollowerOfUser(param, session);
-				}
-				break;
-			case OF_FRIEND:
-				/* this means user adds a new friend (related user) therefore related user becomes a friend user
-				 * and that means (user, relatedUser)\in OF_FRIEND
-				 * and (relatedUser, user)\in FRIEND_OF
-				 */
-				this.userDBManager.createFriendOfUser(param, session);
-				break;
-			default:
-				break;
-			}
+			this.userDBManager.createUserRelation(sourceUser, targetUser, relation, session);
 		} finally {
 			session.close();
 		}
 	}
+
+	
+	
+	
+	/** 
+	 * We return all Users that are in (the) relation with the sourceUser
+	 * as targets.
+	 * @param sourceUser = leftHandSide of the relation
+	 * @param relation = the User relation
+	 * @return all rightHandsides, that is all Users u with
+	 * (sourceUser, u)\in relation
+	 */
+	public List<User> getUserRelationship(String sourceUser, UserRelation relation){
+		this.ensureLoggedIn();
+		List<User> targetUsers;
+		// ask Robert about this method this.permissionDBManager.checkUserRelationship(sourceUser, targetUser, relation);
+		this.permissionDBManager.isAdminOrSelf(loginUser, sourceUser);
+
+		final DBSession session = openSession();
+		try {
+			// get all users that are in relation with sourceUser
+			targetUsers=this.userDBManager.getUserRelation(sourceUser, relation, session);
+		} finally {
+			// unsupported Relations will cause an UnsupportedRelationException
+			session.close();
+		}
+		return targetUsers;
+	}
+	
+	
+	
+	
+	
+	
+	
+
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.bibsonomy.model.logic.LogicInterface#deleteUserRelationship()
+	 */
+	/**
+	 * We delete a UserRelation of the form (sourceUser, targetUser)\in relation
+	 * This Method only works for the FOLLOWER_OF and the OF_FRIEND relation
+	 * Other relation will result in an UnsupportedRelationException
+	 * FIXME: use Strings (usernames) instead of users
+	 */
+	@Override
+	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
+		this.ensureLoggedIn();
+		// ask Robert about this method this.permissionDBManager.checkUserRelationship(sourceUser, targetUser, relation);
+		this.permissionDBManager.isAdminOrSelf(loginUser, sourceUser);
+
+		final DBSession session = openSession();
+		try {
+			this.userDBManager.deleteUserRelation(sourceUser, targetUser, relation, session);
+		} finally {
+			// unsupported Relations will cause an UnsupportedRelationException
+			session.close();
+		}
+	}
+
+	
+	
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.model.logic.LogicInterface#createBasketItems()

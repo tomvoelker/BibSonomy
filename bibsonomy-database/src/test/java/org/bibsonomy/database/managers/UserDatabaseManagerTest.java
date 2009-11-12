@@ -14,7 +14,6 @@ import java.util.List;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -53,7 +52,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getFriendsOfUser() {
-		final List<User> friends = this.userDb.getFriendsOfUser("testuser1", this.dbSession);
+		final List<User> friends = this.userDb.getUserRelation("testuser1", UserRelation.OF_FRIEND, this.dbSession);
 		assertNotNull(friends);
 		assertEquals(2, friends.size());
 	}
@@ -279,7 +278,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getUserFollowers(){
 		final String authUser = "testuser2";
 		
-		List<User> userFollowers = this.userDb.getUserFollowers(authUser, this.dbSession);
+		List<User> userFollowers = this.userDb.getUserRelation(authUser, UserRelation.OF_FOLLOWER, this.dbSession);
 		assertNotNull(userFollowers);
 		assertEquals(1, userFollowers.size());
 		assertEquals("testuser1", userFollowers.get(0).getName());
@@ -292,7 +291,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getFollowersOfUser(){
 		final String authUser = "testuser1";
 		
-		List<User> userFollowers = this.userDb.getFollowersOfUser(authUser, this.dbSession);
+		List<User> userFollowers = this.userDb.getUserRelation(authUser, UserRelation.FOLLOWER_OF, this.dbSession);
 		assertNotNull(userFollowers);
 		assertEquals(2, userFollowers.size());
 		assertEquals("testuser2", userFollowers.get(0).getName());
@@ -303,25 +302,34 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests insert AND delete
 	 */
 	@Test
-	public void insertAndDeleteFollowersOfUser(){
-		UserParam param = new UserParam();
-		param.setUserName("testuser3");
-		param.setRequestedUserName("testuser1");
+	public void insertAndDeleteUserRelations(){
+		String sourceUser="testuser3";
+		String targetUser="testuser1";
 		
-		List<User> followersOfUser = null;
+		List<User> followedByUser = null;
+		List<User> friendsOfUser = null;
 		
-		this.userDb.addFollowerOfUser(param, this.dbSession);
+		this.userDb.createUserRelation(sourceUser, targetUser, UserRelation.FOLLOWER_OF, this.dbSession);
+		this.userDb.createUserRelation(sourceUser, targetUser, UserRelation.OF_FRIEND, this.dbSession);
+		//FIXME: not FOLLOWERS but followees!
+		followedByUser = this.userDb.getUserRelation(sourceUser, UserRelation.FOLLOWER_OF, this.dbSession);
+		friendsOfUser = this.userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, this.dbSession);
 		
-		followersOfUser = this.userDb.getFollowersOfUser("testuser3", this.dbSession);
+		assertNotNull(followedByUser);
+		assertEquals(1, followedByUser.size());
+		assertEquals("testuser1", followedByUser.get(0).getName());
+		assertNotNull(friendsOfUser);
+		assertEquals(1, friendsOfUser.size());
+		assertEquals("testuser1", friendsOfUser.get(0).getName());
 		
-		assertNotNull(followersOfUser);
-		assertEquals(1, followersOfUser.size());
-		assertEquals("testuser1", followersOfUser.get(0).getName());
+		this.userDb.deleteUserRelation(sourceUser, targetUser, UserRelation.FOLLOWER_OF, this.dbSession);
+		this.userDb.deleteUserRelation(sourceUser, targetUser, UserRelation.OF_FRIEND, this.dbSession);
 		
-		this.userDb.deleteFollowerOfUser(param, this.dbSession);
-		
-		followersOfUser = this.userDb.getFollowersOfUser("testuser3", this.dbSession);
-		assertNotNull(followersOfUser);
-		assertEquals(0, followersOfUser.size());		
+		followedByUser = this.userDb.getUserRelation(sourceUser, UserRelation.FOLLOWER_OF, this.dbSession);
+		assertNotNull(followedByUser);
+		assertEquals(0, followedByUser.size());		
+		friendsOfUser = this.userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, this.dbSession);
+		assertNotNull(friendsOfUser);
+		assertEquals(0, friendsOfUser.size());		
 	}
 }

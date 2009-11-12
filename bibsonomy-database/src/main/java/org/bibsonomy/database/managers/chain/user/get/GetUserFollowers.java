@@ -21,7 +21,7 @@ public class GetUserFollowers extends UserChainElement{
 	
 	@Override
 	protected List<User> handle(UserParam param, DBSession session) {
-		return this.userDB.getUserFollowers(param.getUserName(), session);
+		return this.userDB.getUserRelation(param.getUserName(), UserRelation.OF_FOLLOWER, session);
 	}
 
 	@Override

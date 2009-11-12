@@ -125,7 +125,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		Assert.assertEquals(0, tags.size());
 	}
 	
-	/*@Test
+/*	@Test
 	public void testForGroupTag() {
 		// create users
 		User testUser1 = createTestUser("forgroupuser1");
@@ -229,7 +229,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		//UserParam param = new UserParam();
 		//param.setU
 		//this.userDb.createFriendOfUser(param, dbSession);
-		logic.createUserRelationship(testUser2, testUser1, UserRelation.OF_FRIEND);
+		logic.createUserRelationship(testUser2.getName(), testUser1.getName(), UserRelation.OF_FRIEND);
 		
 		// create post
 		Set<Tag> tags = new HashSet<Tag>();

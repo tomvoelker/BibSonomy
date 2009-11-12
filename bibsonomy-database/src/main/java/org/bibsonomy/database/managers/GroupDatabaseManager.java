@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
+import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagSetParam;
@@ -127,7 +128,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		Group group;
 		if ("friends".equals(groupname)) {
 			group = GroupUtils.getFriendsGroup();
-			group.setUsers(this.userDb.getFriendsOfUser(authUser,session));
+			group.setUsers(this.userDb.getUserRelation(authUser, UserRelation.OF_FRIEND, session));
 			return group;
 		}
 		if ("public".equals(groupname)) {

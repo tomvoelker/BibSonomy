@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.UnsupportedRelationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.user.UserChain;
 import org.bibsonomy.database.params.UserParam;
@@ -454,49 +455,138 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getOpenIDUser", openID, String.class, session);
 	}
 	
+	
+	
+	
+	//*****************
+	// USER RELATIONS *
+	//*****************
+	
 	/**
-	 * Returns all users which have authUser in their friend list.
-	 * 
-	 * @param authUser 
-	 * @param session
-	 * @return list of users
+	 * Create a relation between two users
+	 * @param sourceUser (left side of the relation)
+	 * @param targetUser (right side of the relation)
+	 * @param relation currently available: FOLLOWER_OF, OF_FRIEND 
+	 * (their duals not included intentionally, since these relations 
+	 * should only be modified by the targetUser (right hand side of the relation) 
+	 * @param session 
+	 * result: (sourceUser, targetUser) \in relation
 	 */
-	public List<User> getUserFriends(final String authUser, final DBSession session) {
-		return this.queryForList("getUserFriends", authUser, User.class, session);
-	}
-
-
-	/**
-	 * Returns a list of friends for the given user. This list contains all users, which
-	 * <code>authUser</code> has in his/her friend list.
-	 * 
-	 * @param authUser
-	 * @param session
-	 * @return a list of users
-	 */
-	public List<User> getFriendsOfUser(final String authUser, final DBSession session) {
-		return this.queryForList("getFriendsOfUser", authUser, User.class, session);
+	public void createUserRelation(final String sourceUser, final String targetUser, final UserRelation relation, final DBSession session) {
+		switch (relation) {
+			case FOLLOWER_OF:
+				/*
+				 *  sourceUser will now follow targetUser therefore
+				 *  (sourceUser, targetUser)\in FOLLOWER_OF
+				 *  
+				 */
+				break;
+			case OF_FRIEND:
+				/* 
+				 * this means: sourceUser adds a new friend (targetUser) and therefore 
+				 * (sourceUser, targetUser)\in OF_FRIEND
+				 * = targetUser is a friend of sourceUser = targetUser is in sourceUser's friendsList
+				 */
+				break;
+			default:
+				/* 
+				 * Since we use relations and there duals it is sometimes difficult to be sure which of our relation fits properly
+				 * Therefore it is not advised to add the dual relations.
+				 * In this method you can only choose those relations, where the sourceUser (left side of the relation) 
+				 * is allowed to create the relation.
+				 */
+				throw new UnsupportedRelationException();
+		}		
+		final UserParam param = new UserParam();
+		param.setUserName(sourceUser);
+		param.setRequestedUserName(targetUser);
+		this.insert("insertRelation_"+relation.toString(), param, session);
 	}
 	
 	/**
-	 * 
-	 * @param authUser
-	 * @param session
-	 * @return a list of user which the given user is following
+	 * Get every User, that is in a specified relation with a given user:
+	 * @param sourceUser - user on the left side of the relation
+	 * @param relation - currently available: FOLLOWER_OF, OF_FOLLOWER, OF_FRIEND, FRIEND_OF
+	 * @param session 
+	 * @return as List all users, that are in relation with the sourceUser i.e. All users u such that (sourceUser, u)\in relation
 	 */
-	public List<User> getUserFollowers(final String authUser, final DBSession session){
-		return this.queryForList("getUserFollowers", authUser, User.class, session);
+	public List<User> getUserRelation(final String sourceUser, final UserRelation relation, final DBSession session) {
+		switch (relation) {
+		case FOLLOWER_OF:
+			/*
+			 * get all Users, that the sourcerUser follows
+			 */
+			break;
+		case OF_FOLLOWER:
+			/*
+			 * get all users, that follow the sourceUser
+			 */
+			break;
+		case OF_FRIEND:
+			/*
+			 *  get all users, that sourceUser has in his friends list			 
+			 */
+			break;
+		case FRIEND_OF:
+			/*
+			 * get all users, that have sourceUser in their friends list
+			 */
+			break;
+		default:
+			/*
+			 * Other relations are not supported at this time 
+			 */
+			throw new UnsupportedRelationException();
+		}		
+		//list of all targetUsers for sourceUser in (the) relation
+		return this.queryForList("getRelation_"+relation.toString(), sourceUser, User.class, session);
 	}
 	
-	/**
-	 * 
-	 * @param authUser
-	 * @param session
-	 * @return a list of user which are following the given user
+
+	
+		/**
+	 * Delete a relation between two users (if present)
+	 * @param sourceUser (left side of the relation)
+	 * @param targetUser (right side of the relation)
+	 * @param relation currently available: FOLLOWER_OF, OF_FRIEND 
+	 * (their duals not included intentionally, since these relations 
+	 * should only be modified by the targetUser (right hand side of the relation) 
+	 * @param session 
+	 * result: (sourceUser, targetUser) \notin relation
 	 */
-	public List<User> getFollowersOfUser(final String authUser, final DBSession session){
-		return this.queryForList("getFollowersOfUser", authUser, User.class, session);
+	public void deleteUserRelation(final String sourceUser, final String targetUser, final UserRelation relation, final DBSession session) {
+		final UserParam param = new UserParam();
+		param.setUserName(sourceUser);
+		param.setRequestedUserName(targetUser);
+		switch (relation) {
+			case FOLLOWER_OF:
+				/*
+				 *  sourceUser will no longer follow targetUser therefore
+				 *	delete (sourceUser, targetUser) from FOLLOWER_OF
+			 	 *  
+			 	 */
+				this.plugins.onDeleteFellowship(param, session);
+				break;
+			case OF_FRIEND:
+				/* 
+				 * this means: sourceUser will no longer have targetUser as friend and therefore 
+				 * delete (sourceUser, targetUser) from  OF_FRIEND
+				 * = targetUser is no longer a friend of sourceUser = targetUser is no longer in sourceUser's friendsList
+				 */
+				this.plugins.onDeleteFriendship(param, session);
+				break;
+			default:
+				/* 
+				 * Since we use relations and there duals it is sometimes difficult to be sure which of our relation fits properly
+				 * Therefore it is not advised to add the dual relations.
+				 * In this method you can only choose those relations, where the sourceUser (left side of the relation) 
+				 * is allowed to create the relation.
+				 */
+				throw new UnsupportedRelationException();
+		}		
+		this.delete("deleteRelation_"+relation.toString(), param, session);
 	}
+	
 
 	/**
 	 * Returns a list of users which are related to a given user by folkrank.
@@ -549,55 +639,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return chain.getFirstElement().perform(param, session);
 	}
 	
-	/**
-	 * This method quits a friendship between logged in user and
-	 * requested user.
-	 * 
-	 * @param param
-	 * @param session
-	 */
-	public void deleteFriendOfUser(UserParam param, final DBSession session){
-		this.plugins.onDeleteFriendship(param, session);
-		this.delete("deleteFriendOfUser", param, session);
-	}
-	
-	/**
-	 * This method quits a fellowship between logged in user and
-	 * requested user.
-	 * 
-	 * @param param
-	 * @param session
-	 */
-	public void deleteFollowerOfUser(UserParam param, final DBSession session){
-		this.plugins.onDeleteFellowship(param, session);
-		this.delete("deleteFollowerOfUser", param, session);
-	}
-	
-	/**
-	 * This method adds a user as a follower of another user to the db.
-	 * 
-	 * FIXME: rename to createFollowerOfUser
-	 * FIXME: use Strings, not params!
-	 * 
-	 * @param param
-	 * @param session
-	 */
-	public void addFollowerOfUser(final UserParam param, final DBSession session){
-		this.insert("insertFollowerOfUser", param, session);
-	}
-
-	
-	/**
-	 * Adds a friend to the user's friend list
-	 * 
-	 * FIXME: use Strings, not params!
-	 * 
-	 * @param param
-	 * @param session
-	 */
-	public void createFriendOfUser(final UserParam param, final DBSession session) {
-		this.insert("insertFriendOfUser", param, session);	
-	}
 	
 	/**
 	 * Check if one user follows another one.
@@ -611,7 +652,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (!present(possibleFollower) || !present(targetUser)) {
 			return false;
 		}
-		final List<User> followingUsers = this.getFollowersOfUser(possibleFollower.getName(), session);		
+		final List<User> followingUsers = this.getUserRelation(possibleFollower.getName(), UserRelation.FOLLOWER_OF, session);		
 		for (final User u : followingUsers) {
 			if ( u.getName().equalsIgnoreCase(targetUser.getName()) ) {
 				return true;
@@ -619,4 +660,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		return false;
 	}	
+	
+	
 }
