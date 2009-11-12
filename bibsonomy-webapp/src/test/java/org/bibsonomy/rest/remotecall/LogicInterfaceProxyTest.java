@@ -801,17 +801,26 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		return null;
 	}
 
+
 	@Override
-	public void deleteUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+	public void createUserRelationship(String sourceUser, String targetUser, UserRelation relation) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void createUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+	public List<User> getUserRelationship(String sourceUser, UserRelation relation) {
+		//TODO Auto-generated method stub
+		return new ArrayList<User>();
+	}
+
+	
+	@Override
+	public void deleteUserRelationship(String sourceUser, String targetUser, UserRelation relation) {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 	@Override
 	public int createBasketItems(List<Post<? extends org.bibsonomy.model.Resource>> posts) {

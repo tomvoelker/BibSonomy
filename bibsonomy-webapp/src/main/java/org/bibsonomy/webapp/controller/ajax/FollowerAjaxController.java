@@ -75,6 +75,7 @@ public class FollowerAjaxController extends AjaxController implements Minimalist
 	/**
 	 * set the logic interface
 	 */
+	@Override
 	public void setLogic(LogicInterface logic){
 		this.logic = logic;
 	}
@@ -86,7 +87,7 @@ public class FollowerAjaxController extends AjaxController implements Minimalist
 	 */
 	private void addFollower(FollowerAjaxCommand command){
 		User user = new User(command.getRequestedUserName());
-		logic.createUserRelationship(command.getContext().getLoginUser(),user, UserRelation.FOLLOWER_OF);
+		logic.createUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.FOLLOWER_OF);
 	}
 	
 	/**
@@ -96,7 +97,7 @@ public class FollowerAjaxController extends AjaxController implements Minimalist
 	 */
 	private void removeFollower(FollowerAjaxCommand command){
 		User user = new User(command.getRequestedUserName());
-		logic.deleteUserRelationship(command.getContext().getLoginUser(),user, UserRelation.FOLLOWER_OF);
+		logic.deleteUserRelationship(command.getContext().getLoginUser().getName(),user.getName(), UserRelation.FOLLOWER_OF);
 	}
 
 	@Override
