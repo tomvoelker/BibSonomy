@@ -179,7 +179,7 @@
 						<c:choose>
 						<c:when test="${!empty loginUserName}">
 								<c:url var="inboxUrl" value="/inbox" context="${projectContext}"/>
-								<span id="pickctr">${inboxSize}</span>&amp;nbsp;
+								<span id="inboxctr">${inboxSize}</span>&amp;nbsp;
 								<fmt:message key="navi.inInbox"/>&amp;nbsp;
 								<a href="${inboxUrl}"><fmt:message key="navi.inbox"/></a>
 								<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
