@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.BibtexResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -46,6 +47,13 @@ public class BasketPageController extends SingleResourceListController implement
 			this.setList(command, resourceType, groupingEntity, loginUserName, null, null, null, null, null, entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 			
+			for (Object p : command.getListCommand(resourceType).getList()){
+				if (p instanceof Post){
+					Post postItem = (Post)p;
+					postItem.setPicked(true);
+				}
+			}
+
 			// the number of items in this user's basket has already been fetched
 			command.getListCommand(resourceType).setTotalCount(command.getContext().getLoginUser().getBasket().getNumPosts());
 		}	

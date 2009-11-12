@@ -34,7 +34,7 @@
 					<c:choose>
 						<c:when test="${listView.totalCount != 0}">
 							<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
-							${mtl:ch('nbsp')}<span title="${totalTitle}">(${listView.totalCount})</span>
+							${mtl:ch('nbsp')}<span id="ttlctr" title="${totalTitle}">(${listView.totalCount})</span>
 						</c:when>
 						<c:otherwise>
 							${mtl:ch('nbsp')}
