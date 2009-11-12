@@ -111,27 +111,17 @@
 			<c:url var="popularUrl" value="/popular" context="${projectContext}"/>
 			<a id="nav_popular" href="${popularUrl}"><fmt:message key="navi.popular"/></a>
 		</li>
-		<!-- CK-START -->
-		<li>
-			<c:url var="purposeUrl" value="/purpose" context="${projectContext}"/><a id="nav_purpose" href="${purposeUrl}"><fmt:message key="navi.purposetags"/></a>
-		</li>
-		<!-- CK-END -->
 	</ul>
 	</div>
 
-<!-- 2008/12/18, fei: commented out conditional as otherwise no tab is brought
-                      to front when user isn't logged in 
--->
-<!--<c:if test="${!empty loginUserName}"> -->
-		<script type="text/javascript">
-			<![CDATA[
-		  		cssdropdown.startchrome("nice_tnav");
-				if ("${selectedNaviTab}" != "" ) {
-					document.getElementById("${selectedNaviTab}").className = "checked";
-				} else {
-					// document.getElementById("nav_my").className = "checked";
-				}
-		  	]]>
-		</script>  
-<!-- </c:if> -->
+    <!-- selects the correct navigation tab -->
+	<script type="text/javascript">
+		<![CDATA[
+	  		cssdropdown.startchrome("nice_tnav");
+			if ("${selectedNaviTab}" != "" ) {
+				document.getElementById("${selectedNaviTab}").className = "checked";
+			}
+	  	]]>
+	</script>
+    
 </jsp:root>
