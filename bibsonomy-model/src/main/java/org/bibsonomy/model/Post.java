@@ -83,6 +83,11 @@ public class Post<T extends Resource> {
 	 * a ranking (used to sort a list of posts)
 	 */
 	private double ranking = 0.0;
+	
+	/**
+	 * identifier if this post is picked or not
+	 */
+	private boolean isPicked = false;
 
 	/**
 	 * @return contentId
@@ -239,5 +244,23 @@ public class Post<T extends Resource> {
 	 */
 	public double getRanking() {
 		return ranking;
+	}
+
+	/**
+	 * Returns if this post is picked or not
+	 * 
+	 * @return boolean
+	 */
+	public boolean isPicked() {
+		return this.isPicked;
+	}
+
+	/**
+	 * Set if this post is picked or not
+	 * 
+	 * @param isPicked
+	 */
+	public void setPicked(boolean isPicked) {
+		this.isPicked = isPicked;
 	}
 }
