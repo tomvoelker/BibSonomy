@@ -24,6 +24,7 @@
 package org.bibsonomy.rest.client;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -363,15 +364,21 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public void deleteUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+	public void deleteUserRelationship(String sourceUser, String targetUser, UserRelation relation) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void createUserRelationship(User loggedInUser, User requestedUser, UserRelation relation) {
+	public void createUserRelationship(String sourceUser, String targetUser, UserRelation relation) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public List<User> getUserRelationship(String sourceUser, UserRelation relation) {
+		// TODO Auto_generated method stub
+		return new ArrayList<User>();
 	}
 
 	@Override
