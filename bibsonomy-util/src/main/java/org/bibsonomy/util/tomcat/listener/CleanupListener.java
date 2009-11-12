@@ -84,7 +84,7 @@ public class CleanupListener implements LifecycleListener {
 		/*
 		 * print all running threads
 		 */
-		printRunningThreads(true);
+//		printRunningThreads(true);
 	}
 
 	/**
@@ -291,7 +291,7 @@ public class CleanupListener implements LifecycleListener {
 		/*
 		 * print all running threads
 		 */
-		printRunningThreads(true);
+//		printRunningThreads(true);
 
 		// disabled, because MySQL is loaded outside the webapp
 		// rja, 2009-04-17: enabled again, because we now have a chain to iBatis ...
@@ -301,7 +301,7 @@ public class CleanupListener implements LifecycleListener {
 		/*
 		 * check, if the timer thread really got cancelled 
 		 */
-		printRunningThreads(false);
+//		printRunningThreads(false);
 		
 		/*
 		 * if not ... do it the hard way (kill the thread)
