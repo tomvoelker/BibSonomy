@@ -52,19 +52,19 @@
 			</div>
 
 
-			<form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
+			<form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>* </form:label><buttons:help message="post.resource.title.help"/>
             <form:textarea cssClass="fsInput" path="post.resource.title" tabindex="3" rows="2" onkeyup="sz(this);" />
 			<div class="dissError"><form:errors path="post.resource.title" /></div>
 
-            <form:label cssClass="fsLabel" path="post.resource.author" ><fmt:message key="post.resource.author"/>*</form:label>
+            <form:label cssClass="fsLabel" path="post.resource.author" ><fmt:message key="post.resource.author"/>* </form:label><buttons:help message="post.resource.author.help"/>
             <form:textarea cssClass="fsInput" path="post.resource.author" tabindex="4" rows="3" onkeyup="sz(this);" />
             <div class="dissError"><form:errors path="post.resource.author" /></div>
 
-            <form:label cssClass="fsLabel" path="post.resource.editor" ><fmt:message key="post.resource.editor"/>*</form:label>
+            <form:label cssClass="fsLabel" path="post.resource.editor" ><fmt:message key="post.resource.editor"/>* </form:label><buttons:help message="post.resource.editor.help"/>
             <form:textarea cssClass="fsInput" path="post.resource.editor" tabindex="5" rows="3" onkeyup="sz(this);" />
             <div class="dissError"><form:errors path="post.resource.editor" /></div>
 	                            
-            <form:label cssClass="fsLabel" path="post.resource.year" ><fmt:message key="post.resource.year"/>*</form:label>
+            <form:label cssClass="fsLabel" path="post.resource.year" ><fmt:message key="post.resource.year"/>* </form:label><buttons:help message="post.resource.year.help"/>
             <form:input cssClass="fsInput fsSmall" path="post.resource.year" tabindex="6"/>
             <div class="dissError"><form:errors path="post.resource.year" /></div>    
 
