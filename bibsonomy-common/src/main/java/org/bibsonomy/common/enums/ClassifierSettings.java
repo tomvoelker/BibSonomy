@@ -29,6 +29,7 @@ import org.bibsonomy.util.EnumUtils;
  * Defines different settings to control the behaviour of the classifier
  * 
  * @author Stefan Stützer
+ * @author Beate Krause
  * @version $Id$
  */
 public enum ClassifierSettings {
@@ -47,14 +48,14 @@ public enum ClassifierSettings {
 	/** probability to seperate sure from unsure classifications */
 	PROBABILITY_LIMIT,
 
-	/** testing mode will not effect user table */
-	TESTING,
-	
 	/** last classification date to track changes in user profiles */
 	LASTCLASSIFICATION,
 	
 	/** last classification date to track changes in user profiles */
-	CLASSIFY_COST;
+	CLASSIFY_COST,
+	
+	/** expression to add to whitelist */
+	WHITELIST_EXP;
 
 	/**
 	 * @param setting
