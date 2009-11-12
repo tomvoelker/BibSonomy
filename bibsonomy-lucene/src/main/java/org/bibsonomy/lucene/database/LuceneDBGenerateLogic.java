@@ -4,6 +4,7 @@ import java.io.Reader;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,7 +68,7 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> implements Lucen
 		}
 		return retVal;
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<GroupParam> getGroupIDs() {
@@ -136,5 +137,6 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> implements Lucen
 		
 		return retVal;
 	}
+	
 
 }

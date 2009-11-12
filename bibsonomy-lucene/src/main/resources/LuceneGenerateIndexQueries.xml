@@ -34,11 +34,26 @@
 		FROM tas
 	</select>    
 	
-	 <!-- get number of tag assignments -->
+	<!-- get number of tag assignments -->
 	<select id="getTasCount" resultClass="integer">
 		SELECT COUNT(*)
 		FROM tas
-	</select>    
+	</select>   
+
+	<!-- get number of public bookmark posts -->
+	<select id="getBookmarkCount" resultClass="integer">
+		SELECT count(*) 
+		FROM bookmark b 
+		WHERE b.group &gt;= 0
+	</select>   
+
+	<!-- get number of public bibtex posts -->
+	<select id="getBibTexCount" resultClass="integer">
+		SELECT count(*) 
+		FROM bibtex b 
+		WHERE b.group &gt;= 0
+	</select>   
+	 
 	
 	<!-- get group ids with corresponding group names --> 
 	<select id="getGroupIDs" resultMap="groupIDs">
@@ -67,6 +82,34 @@
 		FROM grouptas
 		LIMIT #offset#,#size#
 	</select>
+
+	<!-- get list of all non-spam bookmarks -->
+	<select id="getBookmarksForIndex" parameterClass="bookmarkParam" resultMap="BookmarkCommon.bookmarkPost" resultClass="java.util.HashMap">
+		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
+		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name
+		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
+		             u.book_url, u.book_url_ctr, t1.group, t1.user_name
+		      FROM bookmark t1, urls u
+		      WHERE u.book_url_hash = t1.book_url_hash
+		        AND t1.group &gt;= 0
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS bb
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g
+		WHERE bb.group = g.group
+		ORDER BY bb.date DESC, bb.content_id DESC
+	</select>		
 	
-	       
+	<!-- get list of all non-spam bibtex posts -->
+	<select id="getBibTexForIndex" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
+		FROM (SELECT t1.*, h.ctr AS count
+		      FROM bibtex t1, bibhash h
+		      WHERE <include refid="bibtexSimHash3"/>
+		        AND t1.group &gt;= 0
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b2
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
+		WHERE b2.group = g.group
+		ORDER BY b2.date DESC, b2.content_id DESC
+	</select>
 </sqlMap>

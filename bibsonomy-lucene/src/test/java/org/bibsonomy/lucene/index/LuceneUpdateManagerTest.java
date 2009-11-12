@@ -172,7 +172,6 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws IOException 
 	 */
 	@Test
-	@Ignore
 	public void updateIndices() throws IOException, ClassNotFoundException, SQLException {
 		// set up data structures
 		Set<String> allowedGroups = new TreeSet<String>();
@@ -269,6 +268,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * tests handling of spam posts
 	 */
 	@Test
+	@Ignore
 	public void spamPosts() {
 		try {
 			SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
@@ -525,6 +525,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		*/
 		this.luceneBibTexIndex     = LuceneBibTexIndex.getInstance();
 		this.luceneBookmarkIndex   = LuceneBookmarkIndex.getInstance();
+		this.luceneBibTexIndex.reset();
+		this.luceneBookmarkIndex.reset();
 		
 		this.luceneBibTexUpdater   = LuceneBibTexManager.getInstance();
 		this.luceneBookmarkUpdater = LuceneBookmarkManager.getInstance();

@@ -126,6 +126,7 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @param optimizeindex
 	 */
 	private void updateIndexes(boolean optimizeindex)  {
+		// FIXME: this is not needed
 		Boolean status = false;
 
 		// don't run twice at the same time  - if something went wrong, delete alreadyRunning
@@ -160,56 +161,41 @@ public class LuceneResourceManager<R extends Resource> {
 			log.debug("retrieveToDate:   <= " +retrieveToDate);
 
 			//----------------------------------------------------------------
-			//  1) delete records in lucene index which were altered 
+			//  1) get posts which were altered and should be deleted from index  
 			//----------------------------------------------------------------
-
 			//  get content_ids from log-table within retrieveTimePeriod		
 			List<Integer> contentIdsToDelete = dbLogic.getContentIdsToDelete(retrieveFromDate, retrieveToDate);
 
-			/*
-			// lazy delete in insertion function for handling tas updates 
-			//  delete records in lucene index matching this content_ids
-			status = false;
-			try {
-				status = luceneIndex.deleteDocumentsInIndex(contentIdsToDelete);
-			} catch (CorruptIndexException e) {
-				log.error("CorruptIndexException while deleteDocumentsInIndex ("+e.getMessage()+")");
-			} catch (IOException e) {
-				log.error("IOException while deleteDocumentsInIndex1 ("+e.getMessage()+")");
-			}
-
-			// TODO: when does this happen? shouldn't such an error be catched above?
-			if (!status) 
-				log.error("Error on deleting documents in index");
-			 */
-
 			//----------------------------------------------------------------
-			//  2) get new records to insert into index with single new sql command 
+			//  2) get new records to insert into index 
 			//----------------------------------------------------------------
 			List<HashMap<String, Object>> posts = new ArrayList<HashMap<String, Object>>();
 			posts = luceneLogic.getPostsForTimeRange(retrieveFromDate, retrieveToDate);
 
-			// this list contains content_ids of all posts which will be altered, that is
-			// either newly inserted, deleted and re-inserted, or just tag-reassigned
-			List<Integer> contentIdsToUpdate = new ArrayList<Integer>(); 
-			Map<Integer, Map<String, Object>> contentToInsert = 
-				new HashMap<Integer, Map<String, Object>>();
-			
-			for (HashMap<String, Object> content : posts) {
-				contentIdsToUpdate.add(((Long)content.get("content_id")).intValue());
-				contentToInsert.put(((Long)content.get("content_id")).intValue(), content);
+			// FIXME: due to sloppy time constraints in SQL-Queries, we have to skip
+			//        posts which already were indexed to avoid duplicates
+			Iterator<HashMap<String, Object>> it = posts.iterator();
+			while (it.hasNext()) {
+				Map<String,Object> post = it.next();
+				Integer contentId = ((Long)post.get("content_id")).intValue();
+				if( this.resourceIndex.getRecordForContentId(contentId)!=null )
+					it.remove();
+				//contentIdsToDelete.add(contentId);
 			}
 			
+			//----------------------------------------------------------------
+			//  3) delete posts from lucene index which will be re-inserted 
+			//     afterwards 
+			//----------------------------------------------------------------
 			status = false;
-			//  delete posts from lucene index which will be re-inserted afterwards 
 			try {
-				status = deleteDocumentsInIndex(contentIdsToUpdate, contentToInsert);
+				status = deleteDocumentsInIndex(contentIdsToDelete);
 			} catch (IOException e) {
 				log.error("IOException while deleteDocumentsInIndex2 ("+e.getMessage()+")");
 			}
 
 			//----------------------------------------------------------------
-			//  3) update tag assignments of altered posts  
+			//  4) update tag assignments of altered posts  
 			//----------------------------------------------------------------
 			List<Post<R>> updatedPosts = luceneLogic.getUpdatedPostsForTimeRange(retrieveFromDate, retrieveToDate);
 			try {
@@ -219,23 +205,22 @@ public class LuceneResourceManager<R extends Resource> {
 			}
 
 			//----------------------------------------------------------------
-			//  4) write new records into the index 
+			//  5) write new records into the index 
 			//----------------------------------------------------------------
-			try {
-				luceneIndex.insertRecordsIntoIndex2(posts, optimizeindex);
-			} catch (CorruptIndexException e) {
-				log.error("Index corrupted while writing new posts to index ", e);
-			} catch (IOException e) {
-				log.error("IO error while writing new posts to index ", e);
-			}
+			luceneIndex.insertRecordsIntoIndex4(posts);
 
-}
+			//----------------------------------------------------------------
+			//  6) commit changes 
+			//----------------------------------------------------------------
+			luceneIndex.flush();
+		}
 		
 		// all done.
 		alreadyRunning = 0;
 		return;
 	}
 	
+
 	/**
 	 * reload each registered searcher's index 
 	 */
@@ -341,14 +326,17 @@ public class LuceneResourceManager<R extends Resource> {
 				// only delete entries from index which will be inserted afterwards
 				// FIXME: why should content_ids be parsed to integer beforehead???
 				
+				/*
 				int cnt;
-				if( (cnt = this.resourceIndex.deleteDocumentForContentId(contentId))==0 ) {
+				if( (cnt = this.resourceIndex.purgeDocumentForContentId(contentId))==0 ) {
 					log.debug("Document " +contentId+ " NOT deleted ("+cnt+")!");
 					allDocsDeleted = false;
 				}
 				else {
 					log.debug("Document " +contentId + " deleted ("+cnt+" occurences)!");
-				}
+				}*/
+				this.resourceIndex.deleteDocumentForContentId(contentId);
+				
 				// remove content_id from list so that contentIdsToUpdate only contains
 				// ids of documents where the tag assignments have changed
 				i.remove();
@@ -360,6 +348,29 @@ public class LuceneResourceManager<R extends Resource> {
 		return allDocsDeleted;
 	}	
 	
+	/**
+	 * delete resources from index 
+	 * 
+	 * @param indexReader index reader
+	 * @param contentIdsToDelete list of content ids which should be updated 
+	 * @param contentToInsert list of content ids which should be inserted and thus deleted, if they
+	 *                        already exist in the index
+	 * @return
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 */
+	protected boolean deleteDocumentsInIndex(List<Integer> contentIdsToDelete) throws CorruptIndexException, IOException {
+		boolean allDocsDeleted = true;
+		
+		Iterator<Integer> i = contentIdsToDelete.iterator();
+		while (i.hasNext()) {
+			Integer contentId = i.next();
+			this.resourceIndex.deleteDocumentForContentId(contentId);
+		}
+		
+		// FIXME: this isn't set correctly - do we need it anyway???
+		return allDocsDeleted;
+	}	
 	//------------------------------------------------------------------------
 	// spam handling
 	//------------------------------------------------------------------------
@@ -405,6 +416,7 @@ public class LuceneResourceManager<R extends Resource> {
 	/** 
 	 * flags an entry as non-spammer. This is the same like adding one entry to the index - no it IS adding one entry to the index 
 	 * FIXME: check whether this is thread safe!!!
+	 * FIXME: use generic postmodel converter (configured via spring)
 	 * 
 	 * @param recordContent
 	 * @param recordType

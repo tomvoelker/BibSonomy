@@ -13,6 +13,10 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.Field.Index;
+import org.apache.lucene.document.Field.Store;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.lucene.param.typehandler.LuceneTypeHandler;
@@ -23,6 +27,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.tex.TexEncode;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -34,11 +39,14 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class LuceneData {
 	private static final Log log = LogFactory.getLog(LuceneData.class);
-	private static final String LUCENE_CONTEXT_XML = "LuceneBibTexFields.xml";
+	private static final String LUCENE_CONTEXT_XML = "LuceneIndexConfig.xml";
 	private static final String CFG_LUCENENAME = "luceneName";
 	private static final String CFG_TYPEHANDLER = "typeHandler";
 	private static final String CFG_ITEMPROPERTY   = "itemProperty";
 	private static final String CFG_LIST_DELIMITER = " ";
+	private static final String CFG_FLDINDEX = "luceneIndex";
+	private static final String CFG_FLDSTORE = "luceneStore";
+	private static final String FLD_MERGEDFIELD = "mergedfields";
 
 	private Map<String,String> bibtexContent;	
 	private HashMap<String,String> bookmarkContent;	
@@ -540,6 +548,99 @@ public class LuceneData {
 		return postContent;
 	}
 
+	
+	/**
+	 * read property values from given object as defined in given propertyMap
+	 * 
+	 * @param post
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static Document readPost(Post<? extends Resource> post) {
+		Document retVal = new Document();
+		// FIXME: default values should be configured via spring
+		Index fldIndex = Field.Index.NOT_ANALYZED;
+		Store fldStore = Field.Store.YES;
+
+		TexEncode tex = new TexEncode();
+		
+		// FIXME: configure merged field via spring
+		String mergedField = "";
+
+		//--------------------------------------------------------------------
+		// read bibtex properties from spring configuration file
+		//--------------------------------------------------------------------
+		// FIXME: remove this test by refactoring
+		Map<String,Map<String,Object>> resourcePropertyMap;
+		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) ){
+			resourcePropertyMap = (Map<String, Map<String,Object>>) beanFactory.getBean("bookmarkPropertyMap");
+		} else if( BibTex.class.isAssignableFrom(post.getResource().getClass()) ){
+			resourcePropertyMap = (Map<String, Map<String,Object>>) beanFactory.getBean("bibTexPropertyMap");
+		} else {
+			log.error("Unknown resource type");
+			return retVal;
+		}
+
+		
+		// cycle though all properties and store the corresponding
+		// values in the content hash map
+		for( String propertyName : resourcePropertyMap.keySet() ) {
+			// log.debug("Reading property "+propertyName);
+
+
+			// extract property value from object
+			Object property = null;
+			String propertyValue = "";
+			try {
+				// get property from post object
+				property = PropertyUtils.getProperty(post, propertyName);
+				// only handle non-null values
+				if( property!=null ) {
+					// get property value
+					if( property instanceof Iterable<?> ) {
+						// if property is a collection - concatenate all items in a single value
+						for( Object item : (Iterable<?>)property ) {
+							if(!"".equals(propertyValue))
+								propertyValue += CFG_LIST_DELIMITER;
+							propertyValue += extractPropertyValue(resourcePropertyMap, propertyName, item);
+						}
+					} else {
+						propertyValue = extractPropertyValue(resourcePropertyMap, propertyName, property);
+					}
+					// get lucene index properties
+					if( resourcePropertyMap.get(propertyName).get(CFG_FLDINDEX)!=null) {
+						fldIndex = (Index) resourcePropertyMap.get(propertyName).get(CFG_FLDINDEX);
+					}
+					if( resourcePropertyMap.get(propertyName).get(CFG_FLDSTORE)!=null) {
+						fldStore = (Store) resourcePropertyMap.get(propertyName).get(CFG_FLDSTORE);
+					}
+				}
+			} catch (Exception e) {
+				log.error("Error reading property '"+propertyName+"' from post object.", e);
+			}
+			
+			String luceneName = (String)resourcePropertyMap.get(propertyName).get(CFG_LUCENENAME);
+			// FIXME: configure default value field wise via spring
+			String defaultValue = "";
+			if( (propertyValue!=null) && (luceneName!=null) && (!"".equals(propertyValue.trim())) ) {
+				// log.debug("Extracted '"+propertyValue+"' from property '"+propertyName+"' to '"+luceneName+"'");
+				retVal.add( new Field(luceneName, propertyValue, fldStore, fldIndex));
+				// FIXME: configure merged field via spring
+				mergedField += CFG_LIST_DELIMITER + propertyValue;
+			} else {
+				// add empty field
+				retVal.add( new Field(luceneName, defaultValue, fldStore, fldIndex));
+			}
+		}
+		
+		// store merged field
+		// FIXME: configure merged field via spring
+		retVal.add(new Field(FLD_MERGEDFIELD, tex.encode(mergedField), Field.Store.YES, Field.Index.ANALYZED));
+		
+		// all done.
+		return retVal;
+	}
+	
 	/**
 	 * extracts property value from given object
 	 * 

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!--+
+        | BibTex property mapping configuration
+        +-->
+	<util:map id="bookmarkPropertyMap" map-class="java.util.HashMap">
+		<entry key="contentId">
+			<map>
+				<entry key="luceneName" value="content_id" />
+				<entry key="dbName" value="content_id"/>
+			</map>
+		</entry>
+		<entry key="date">
+			<map>
+				<entry key="luceneName" value="date" />
+				<entry key="luceneIndex" value-ref="fieldNotAnalyzed"/>
+				<entry key="dbName" value="date"/>
+				<entry key="typeHandler" value-ref="dateConverter" />
+			</map>
+		</entry>
+		<entry key="resource.title">
+			<map>
+				<entry key="luceneName" value="desc" />
+				<entry key="luceneIndex" value-ref="fieldNotIndexed"/>
+				<entry key="dbName" value="book_description"/>
+			</map>
+		</entry>
+		<entry key="description">
+			<map>
+				<entry key="luceneName" value="ext" />
+				<entry key="luceneIndex" value-ref="fieldNotIndexed"/>
+				<entry key="dbName" value="book_extended"/>
+			</map>
+		</entry>
+		<entry key="groups">
+			<map>
+				<entry key="luceneName" value="group" />
+				<entry key="luceneIndex" value-ref="fieldNotAnalyzed"/>
+				<entry key="dbName" value="group"/>
+				<entry key="itemProperty" value="name" />
+			</map>
+		</entry>
+		<entry key="resource.intraHash">
+			<map>
+				<entry key="luceneName" value="intrahash" />
+				<entry key="dbName" value="book_url_hash"/>
+			</map>
+		</entry>
+		<entry key="tags">
+			<map>
+				<entry key="luceneName" value="tas" />
+				<entry key="luceneIndex" value-ref="fieldAnalyzed"/>
+				<entry key="dbName" value="tag_name"/>
+				<entry key="itemProperty" value="name" />
+			</map>
+		</entry>
+		<entry key="resource.url">
+			<map>
+				<entry key="luceneName" value="url" />
+				<entry key="luceneIndex" value-ref="fieldNotIndexed"/>
+				<entry key="dbName" value="book_url"/>
+			</map>
+		</entry>
+		<entry key="user.name">
+			<map>
+				<entry key="luceneName" value="user_name" />
+				<entry key="dbName" value="user_name"/>
+			</map>
+		</entry>
+	</util:map>
+	
+	
+</beans>

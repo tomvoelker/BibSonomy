@@ -3,6 +3,7 @@ package org.bibsonomy.lucene.database;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.lucene.database.params.GroupParam;
@@ -94,6 +95,11 @@ public interface LuceneDBInterface<R extends Resource> {
 	public int getTasSize();
 	
 	/**
+	 * get number of posts
+	 */
+	public int getNumberOfPosts();
+	
+	/**
 	 * get list of group ids with corresponding group names
 	 * @return
 	 * @throws SQLException
@@ -130,5 +136,14 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @throws SQLException
 	 */
 	public List<GroupTasParam> getGroupTasEntries(Integer skip, Integer max);
+
+	/**
+	 * get post entries for index creation
+	 * 
+	 * @param skip offset
+	 * @param max size
+	 * @return
+	 */
+	List<Post<R>> getPostEntries(Integer skip, Integer max);
 
 }

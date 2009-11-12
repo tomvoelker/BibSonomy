@@ -7,12 +7,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.lucene.database.params.BibTexParam;
 import org.bibsonomy.lucene.database.params.BookmarkParam;
+import org.bibsonomy.lucene.database.params.ListParam;
 import org.bibsonomy.lucene.database.params.ResourcesParam;
 import org.bibsonomy.lucene.database.results.Pair;
 import org.bibsonomy.model.BibTex;
@@ -152,6 +154,39 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 	protected List<Post<BibTex>> getUpdatedPostsForTimeRange(ResourcesParam<BibTex> param) throws SQLException {
 		List<Post<BibTex>> retVal = null;
 		retVal = (List<Post<BibTex>>)this.sqlMap.queryForList("getUpdatedBibTexPostsForTimeRange", param);
+		return retVal;
+	}
+	
+	//------------------------------------------------------------------------
+	// methods for building the index
+	// TODO: maybe we should introduce a special class hierarchy
+	//------------------------------------------------------------------------
+	@Override
+	public int getNumberOfPosts() {
+		Integer retVal = 0;
+		try {
+			retVal = (Integer)sqlMap.queryForObject("getBibTexCount");
+		} catch (SQLException e) {
+			log.error("Error determining bibtex size.", e);
+		}
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Post<BibTex>> getPostEntries(Integer skip, Integer max) {
+		BibTexParam param = new BibTexParam();
+		param.setOffset(skip);
+		param.setLimit(max);
+		
+		List<Post<BibTex>> retVal = null;
+		try {
+			retVal = (List<Post<BibTex>>)sqlMap.queryForList("getBibTexForIndex", param);
+		} catch (SQLException e) {
+			log.error("Error getting bibtex entries.", e);
+			retVal = new LinkedList<Post<BibTex>>();
+		}
+		
 		return retVal;
 	}
 }
