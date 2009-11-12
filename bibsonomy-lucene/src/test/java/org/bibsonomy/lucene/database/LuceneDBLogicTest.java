@@ -37,7 +37,6 @@ import org.bibsonomy.util.ExceptionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
@@ -146,7 +145,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 			// store test posts in database
 			Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 			refPosts.add(bibtexPost);
-			this.bibTexDb.storePost(bibtexPost.getUser().getName(), bibtexPost, null, false, this.dbSession);
+			this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
 			try {
 				Thread.sleep(POST_TIME_TO_WAIT);
 			} catch (InterruptedException e) {
@@ -193,7 +192,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 			// store test posts in database
 			Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 			refPosts.add(bibtexPost);
-			this.bibTexDb.storePost(bibtexPost.getUser().getName(), bibtexPost, null, false, this.dbSession);
+			this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
 			try {
 				Thread.sleep(POST_TIME_TO_WAIT);
 			} catch (InterruptedException e) {
@@ -226,14 +225,14 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// store test post in database
 		Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
-		this.bibTexDb.storePost(bibtexPost.getUser().getName(), bibtexPost, null, false, this.dbSession);
+		this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
 		
 		Date postDate = this.luceneBibTexLogic.getNewestRecordDateFromTas();
 		// compare modulo milliseconds 
 		assertEquals(bibtexPost.getDate().getTime()-bibtexPost.getDate().getTime()%5000, postDate.getTime()-postDate.getTime()%5000);
 
 		Post<Bookmark> bookmarkPost = this.generateBookmarkDatabaseManagerTestPost();
-		this.bookmarkDb.storePost(bookmarkPost.getUser().getName(), bookmarkPost, null, false, this.dbSession);
+		this.bookmarkDb.createPost(bookmarkPost.getUser().getName(), bookmarkPost, this.dbSession);
 		
 		postDate = this.luceneBookmarkLogic.getNewestRecordDateFromTas();
 		assertEquals(bookmarkPost.getDate().getTime()-bookmarkPost.getDate().getTime()%5000, postDate.getTime()-postDate.getTime()%5000);

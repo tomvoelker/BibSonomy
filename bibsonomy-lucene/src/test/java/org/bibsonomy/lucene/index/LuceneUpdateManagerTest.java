@@ -132,7 +132,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
 		Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost(GroupID.PRIVATE);
 		
-		this.bibTexDb.storePost(toInsert.getUser().getName(), toInsert, null, false, this.dbSession);
+		this.bibTexDb.createPost(toInsert.getUser().getName(), toInsert, this.dbSession);
 
 		// update index
 		this.luceneBibTexUpdater.updateIndex(false);
@@ -185,7 +185,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
 		Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		
-		this.bibTexDb.storePost(bibtexPost.getUser().getName(), bibtexPost, null, false, this.dbSession);
+		this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
 
 		// update index
 		this.luceneBibTexUpdater.updateIndex(false);
@@ -214,7 +214,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		// FIXME: the updater looks at the tas table to get the newest date, which is
 		//        1815 after deleting the post - so we add another post
 		final Post<BibTex> workaroundInsert = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
-		this.bibTexDb.storePost(workaroundInsert.getUser().getName(), workaroundInsert, null, false, this.dbSession);
+		this.bibTexDb.createPost(workaroundInsert.getUser().getName(), workaroundInsert, this.dbSession);
 		
 		// update index
 		this.luceneBibTexUpdater.updateIndex(false);
@@ -241,8 +241,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		bibtexPost.setDate(new Date(workaroundInsert.getDate().getTime()+CONCURRENCY_OFFSET));
 		
-		this.bookmarkDb.storePost(bookmarkPost.getUser().getName(), bookmarkPost, null, false, this.dbSession);
-		this.bibTexDb.storePost(bibtexPost.getUser().getName(), bibtexPost, null, false, this.dbSession);
+		this.bookmarkDb.createPost(bookmarkPost.getUser().getName(), bookmarkPost, this.dbSession);
+		this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
 		
 		// update index
 		this.luceneBibTexUpdater.updateIndex(false);
@@ -303,7 +303,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		String title = "luceneTitle1";
 		bibtexPost.getResource().setTitle(title);
 		
-		this.bibTexDb.storePost(bibtexPost.getUser().getName(), bibtexPost, null, false, this.dbSession);
+		this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
 
 		// update index
 		this.luceneBibTexUpdater.updateIndex(false);
