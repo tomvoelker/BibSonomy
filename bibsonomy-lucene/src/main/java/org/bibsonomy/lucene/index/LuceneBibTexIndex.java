@@ -17,7 +17,7 @@ public class LuceneBibTexIndex extends LuceneResourceIndex<BibTex> {
 	/** singleton instance */
 	protected static LuceneResourceIndex<BibTex> instance;
 	
-	
+	/*
 	@Override
 	protected HashMap<String, String> getContentFields() {
 		HashMap<String, String> contentFields = new HashMap<String, String>();
@@ -63,7 +63,8 @@ public class LuceneBibTexIndex extends LuceneResourceIndex<BibTex> {
 		
 		return contentFields;
 	}
-
+	*/
+	
 	@Override
 	protected Class<? extends Resource> getResourceType() {
 		return BibTex.class;
@@ -74,8 +75,10 @@ public class LuceneBibTexIndex extends LuceneResourceIndex<BibTex> {
 		return instance;
 	}
 
+	/*
 	@Override
 	protected RecordType getRecordType() {
 		return RecordType.BibTex;
 	}
+	*/
 }

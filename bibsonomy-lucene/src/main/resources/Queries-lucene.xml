@@ -120,6 +120,31 @@
 		  AND (b.date &gt; #first# AND b.date &lt;= #second# )
 		GROUP by content_id;
 	</select>		
+	
+	<!--+ 
+		| get list of bibtex posts within a given time range
+		| Parameter: 
+		|    fromDate 
+		|    toDate 
+		+-->
+	<select id="getBibTexPostsForTimeRange2" parameterClass="bibtexParam" resultMap="BibTexCommon.bibtexPost">
+			SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
+		FROM (SELECT t1.*, h.ctr AS count
+		      FROM bibtex t1, bibhash h
+		      WHERE <include refid="bibtexSimHash3"/>
+		      		AND t1.group &gt;= 0
+		        	<dynamic prepend="AND">
+						<isNotNull property="entryType">		
+							entrytype = #entryType#
+						</isNotNull>
+		     		</dynamic>
+		     		AND (t1.date &gt; #fromDate# AND t1.date &lt;= #toDate# )
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b2
+		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
+		WHERE b2.group = g.group
+		ORDER BY b2.date DESC, b2.content_id DESC
+	</select>
 				
 	<!--+ 
 		| get list of bookmark posts within a given time range
@@ -143,6 +168,28 @@
 		WHERE (b.group &gt;= 0) 
 		  AND (b.date &gt; #first# AND b.date &lt;= #second# )
 	    GROUP BY content_id
+	</select>
+	
+	<!--+ 
+		| get list of bookmark posts within a given time range
+		| Parameter: 
+		|    fromDate 
+		|    toDate 
+		+-->
+	<select id="getBookmarkForTimeRange2" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
+		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name
+		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
+		             u.book_url, u.book_url_ctr, t1.group, t1.user_name
+		      FROM bookmark t1, urls u
+		      WHERE u.book_url_hash = t1.book_url_hash
+		            AND t1.group &gt;=0
+		            AND (t1.date &gt; #fromDate# AND t1.date &lt;= #toDate# )
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS bb
+		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g
+		WHERE t.group = g.group
+		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 	
 	<!--+

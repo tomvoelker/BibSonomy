@@ -189,4 +189,23 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 		
 		return retVal;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Post<BibTex>> getPostsForTimeRange2(Date fromDate, Date toDate) {
+		BibTexParam param = new BibTexParam();
+		param.setFromDate(fromDate);
+		param.setToDate(toDate);
+		param.setLimit(Integer.MAX_VALUE);
+		
+		List<Post<BibTex>> retVal = null;
+		try {
+			retVal = (List<Post<BibTex>>)sqlMap.queryForList("getBibTexPostsForTimeRange2", param);
+		} catch (SQLException e) {
+			log.error("Error getting bookmark entries.", e);
+			retVal = new LinkedList<Post<BibTex>>();
+		}
+		
+		return retVal;
+	}
 }

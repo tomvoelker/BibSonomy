@@ -4,10 +4,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -16,8 +14,6 @@ import javax.naming.NamingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.KeywordAnalyzer;
-import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -29,22 +25,14 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.LockObtainFailedException;
-import org.bibsonomy.lucene.index.analyzer.SimpleKeywordAnalyzer;
-import org.bibsonomy.lucene.param.LuceneData;
 import org.bibsonomy.lucene.param.RecordType;
-import org.bibsonomy.lucene.util.DBToolJDNIResource;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.tex.TexEncode;
-
-import com.mysql.jdbc.Connection;
 
 /**
  * abstract base class for managing lucene resource indices
@@ -64,10 +52,9 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	/** indicating whether index is opended for writing or reading */
 	private AccessMode accessMode;
 	
-	private static final String FLD_TAS = "tas";
+	
 	private static final String FLD_DATE = "date";
 
-	private static final String COL_USER_NAME = "user_name";
 	private static final String COL_CONTENT_ID = "content_id";
 
 	protected static final Log log = LogFactory.getLog(LuceneResourceIndex.class);
@@ -77,7 +64,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	
 	/** MAGIC KEY identifying context variables for this class */
 	private static final String CONTEXT_INDEX_PATH = "luceneIndexPath";
-	private static final String FLD_MERGEDFIELD    = "mergedfields";
+
 
 	/** gives read only access to the lucene index */
 	IndexReader indexReader;
@@ -89,11 +76,6 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	private String luceneIndexPath;
 
 	private Analyzer analyzer;
-
-	
-	private static DBToolJDNIResource dbconn;
-	private static Connection connection;
-	
 	
 	/** list containing content ids of cached delete operations */
 	private List<Integer> contentIdsToDelete;
@@ -138,38 +120,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		this.analyzer = new StandardAnalyzer();
 	}
 	
-	/**
-	 * perform all cached operations to index
-	 */
-	public void flush() {
-		
-		// remove cached posts from index
-		log.debug("Performing " + contentIdsToDelete.size() + " delete operations");
-		this.ensureReadAccess();
-		
-		for( Integer contentId : contentIdsToDelete ) {
-			try {
-				this.purgeDocumentForContentId(contentId);
-			} catch (IOException e) {
-				log.error("Error deleting post "+contentId+" from index", e);
-			}
-		};
-		
-		// add given posts to index
-		log.debug("Performing " + postsToInsert.size() + " insert operations");
-		this.ensureWriteAccess();
-		try {
-			this.insertRecordsIntoIndex(postsToInsert);
-		} catch (IOException e) {
-			log.error("Error adding posts to index.", e);
-		}
-		// cleare all cached date
-		this.postsToInsert.clear();
-		this.contentIdsToDelete.clear();
-		
-		// FIXME: this shouldn't be necessary 
-		this.ensureReadAccess();
-	}
+
 	
 	/**
 	 * get most recent post's date from index
@@ -180,45 +131,47 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	public Date getNewestRecordDateFromIndex() {
-		this.ensureReadAccess();
-		
-		Date newestDate = null;
-
-		int hitsPerPage = 1;
-		
-		IndexSearcher searcher = new IndexSearcher(indexReader);
-		QueryParser qp = new QueryParser(COL_CONTENT_ID,new StandardAnalyzer());
-		Sort sort = new Sort(FLD_DATE,true);
-
-		// FIXME: dates shouldn't be stored in a text format
-		// search over all elements sort them reverse by date and return 1 top document (newest one)
-		TopDocs topDocs = null;
-		Document doc = null;
-		try {
-			topDocs = searcher.search(qp.parse("*:*"), null, hitsPerPage, sort);
-			doc = searcher.doc(topDocs.scoreDocs[0].doc);
-			// parse date
-			SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
-			newestDate = dateFormatter.parse(doc.get(FLD_DATE));//dateFormatter.parse("1815-12-10 00:00:00.0");
-		} catch (ParseException e) {
-			log.error("ParseException while parsing *:* in getNewestRecordDateFromIndex ("+e.getMessage()+")");
-		} catch (java.text.ParseException e) {
-			log.error("Error parsing date " + ((doc!=null)?doc.get(FLD_DATE):""));
-			newestDate = new Date();
-		} catch (IOException e) {
-			log.error("Error reading index file " + this.luceneIndexPath);
-		} finally {
+		synchronized(this) {
+			this.ensureReadAccess();
+			
+			Date newestDate = null;
+	
+			int hitsPerPage = 1;
+			
+			IndexSearcher searcher = new IndexSearcher(indexReader);
+			QueryParser qp = new QueryParser(COL_CONTENT_ID,new StandardAnalyzer());
+			Sort sort = new Sort(FLD_DATE,true);
+	
+			// FIXME: dates shouldn't be stored in a text format
+			// search over all elements sort them reverse by date and return 1 top document (newest one)
+			TopDocs topDocs = null;
+			Document doc = null;
 			try {
-				searcher.close();
+				topDocs = searcher.search(qp.parse("*:*"), null, hitsPerPage, sort);
+				doc = searcher.doc(topDocs.scoreDocs[0].doc);
+				// parse date
+				SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
+				newestDate = dateFormatter.parse(doc.get(FLD_DATE));//dateFormatter.parse("1815-12-10 00:00:00.0");
+			} catch (ParseException e) {
+				log.error("ParseException while parsing *:* in getNewestRecordDateFromIndex ("+e.getMessage()+")");
+			} catch (java.text.ParseException e) {
+				log.error("Error parsing date " + ((doc!=null)?doc.get(FLD_DATE):""));
+				newestDate = new Date();
 			} catch (IOException e) {
-				log.error("Error closing index "+this.luceneIndexPath+" for searching", e);
+				log.error("Error reading index file " + this.luceneIndexPath);
+			} finally {
+				try {
+					searcher.close();
+				} catch (IOException e) {
+					log.error("Error closing index "+this.luceneIndexPath+" for searching", e);
+				}
 			}
+			
+			if( newestDate!=null )
+				return newestDate; 
+			else
+				return new Date();
 		}
-		
-		if( newestDate!=null )
-			return newestDate; 
-		else
-			return new Date();
 	}
 	
 	/**
@@ -230,48 +183,40 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	public Document getRecordForContentId(Integer contentId) {
-		int hitsPerPage = 1;
-		
-		IndexSearcher searcher = new IndexSearcher(indexReader);
-		Sort sort = new Sort(FLD_DATE,true);
-		Query searchQuery = new TermQuery(new Term(COL_CONTENT_ID, contentId.toString()));
+		synchronized(this) {
+			ensureReadAccess();
+			
+			int hitsPerPage = 1;
 
-		// search over all elements sort them reverse by date and return first top document 
-		TopDocs topDocs = null;
-		Document doc = null;
-		try {
-			topDocs = searcher.search(searchQuery, null, hitsPerPage, sort);
-			if( topDocs.scoreDocs.length>0 )
-				doc     = searcher.doc(topDocs.scoreDocs[0].doc);
-		} catch (IOException e) {
-			log.error("Error reading index file " + this.luceneIndexPath);
-		} finally {
+			IndexSearcher searcher = new IndexSearcher(indexReader);
+			Sort sort = new Sort(FLD_DATE,true);
+			Query searchQuery = new TermQuery(new Term(COL_CONTENT_ID, contentId.toString()));
+
+			// search over all elements sort them reverse by date and return first top document 
+			TopDocs topDocs = null;
+			Document doc = null;
 			try {
-				searcher.close();
+				topDocs = searcher.search(searchQuery, null, hitsPerPage, sort);
+				if( topDocs.scoreDocs.length>0 )
+					doc     = searcher.doc(topDocs.scoreDocs[0].doc);
 			} catch (IOException e) {
-				log.error("Error closing index "+this.luceneIndexPath+" for searching", e);
+				log.error("Error reading index file " + this.luceneIndexPath);
+			} finally {
+				try {
+					searcher.close();
+				} catch (IOException e) {
+					log.error("Error closing index "+this.luceneIndexPath+" for searching", e);
+				}
 			}
+			return doc;
 		}
-		return doc;
 	}
 	
-	
-	/**
-	 * removes given post from index
-	 * 
-	 * @param contentId post's content id 
-	 * @return number of posts deleted from index
-	 * 
-	 * @throws StaleReaderException
-	 * @throws CorruptIndexException
-	 * @throws LockObtainFailedException
-	 * @throws IOException
-	 */
-	protected int purgeDocumentForContentId(Integer contentId) throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
-		Term term = new Term(COL_CONTENT_ID, contentId.toString() );
-		return indexReader.deleteDocuments(term);
-	}
 
+
+	//------------------------------------------------------------------------
+	// public index access interface (all operations are cached)
+	//------------------------------------------------------------------------
 	/**
 	 * cache given post for deletion
 	 * 
@@ -283,8 +228,10 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws LockObtainFailedException
 	 * @throws IOException
 	 */
-	protected void deleteDocumentForContentId(Integer contentId) {
-		this.contentIdsToDelete.add(contentId);
+	public void deleteDocumentForContentId(Integer contentId) {
+		synchronized(this) {
+			this.contentIdsToDelete.add(contentId);
+		}
 	}
 
 	/**
@@ -292,12 +239,74 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * 
 	 * @param doc post document to insert into the index
 	 */
-	protected void insertDocument(Document doc) {
-		this.postsToInsert.add(doc);
+	public void insertDocument(Document doc) {
+		synchronized(this) {
+			this.postsToInsert.add(doc);
+		}
+	}
+
+	/**
+	 * cache given post for insertion
+	 * 
+	 * @param doc post document to insert into the index
+	 */
+	public void insertDocuments(List<Document> docs) {
+		synchronized(this) {
+			this.postsToInsert.addAll(docs);
+		}
+	}
+	
+	/**
+	 * perform all cached operations to index
+	 */
+	public void flush() {
+		synchronized(this) {
+			//----------------------------------------------------------------
+			// remove cached posts from index
+			//----------------------------------------------------------------
+			log.debug("Performing " + contentIdsToDelete.size() + " delete operations");
+			if( contentIdsToDelete.size()>0 ) {
+				this.ensureReadAccess();
+				
+				// remove each cached post from index
+				for( Integer contentId : contentIdsToDelete ) {
+					try {
+						this.purgeDocumentForContentId(contentId);
+					} catch (IOException e) {
+						log.error("Error deleting post "+contentId+" from index", e);
+					}
+				}
+			}
+
+			//----------------------------------------------------------------
+			// add cached posts to index
+			//----------------------------------------------------------------
+			log.debug("Performing " + postsToInsert.size() + " insert operations");
+			if( postsToInsert.size()>0 ) {
+				this.ensureWriteAccess();
+				try {
+					this.insertRecordsIntoIndex(postsToInsert);
+				} catch (IOException e) {
+					log.error("Error adding posts to index.", e);
+				}
+			}
+			
+			//----------------------------------------------------------------
+			// clear all cached data
+			//----------------------------------------------------------------
+			this.postsToInsert.clear();
+			this.contentIdsToDelete.clear();
+			
+			
+			// FIXME: this shouldn't be necessary 
+			this.ensureReadAccess();
+		}
 	}
 	
 	/**
 	 * delete all documents of a given user from index
+	 * 
+	 * FIXME: write a cached version (aka List<Term> termsForDeletion)
 	 * 
 	 * @param username
 	 * @return
@@ -305,26 +314,30 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	public boolean deleteDocumentsInIndex(String username) throws CorruptIndexException, IOException {
-		boolean allDocsDeleted = true;
-		int s = 0;
-
-		if (username.length() > 0) {
-			Term term = new Term("user_name", username );
-
-			s = indexReader.deleteDocuments(term);
-			if (s == 0) {
-				log.debug("Documents from user " + username + " NOT deleted ("+s+")!");
-				allDocsDeleted = false;
+		synchronized(this) {
+			boolean allDocsDeleted = true;
+			int s = 0;
+	
+			// delete each post owned by given user
+			this.ensureReadAccess();
+			if (username.length() > 0) {
+				Term term = new Term("user_name", username );
+	
+				s = indexReader.deleteDocuments(term);
+				if (s == 0) {
+					log.debug("Documents from user " + username + " NOT deleted ("+s+")!");
+					allDocsDeleted = false;
+				} else {
+					log.debug("Document from user " + username + " deleted ("+s+" occurences)!");
+					allDocsDeleted = true;
+				}
 			} else {
-				log.debug("Document from user " + username + " deleted ("+s+" occurences)!");
-				allDocsDeleted = true;
+				log.debug("Username is empty, no documents deleted!");
+				allDocsDeleted = false;
 			}
-		} else {
-			log.debug("Username is empty, no documents deleted!");
-			allDocsDeleted = false;
+	
+			return allDocsDeleted;
 		}
-
-		return allDocsDeleted;
 	}
 
 	/**
@@ -337,6 +350,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
+	/*
 	protected boolean insertRecordsIntoIndex(List<LuceneData> contents, boolean optimize) throws CorruptIndexException, IOException {
 		//--------------------------------------------------------------------
 		// open index for writing
@@ -441,6 +455,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		// FIXME: why return false?
 		return false;
 	}
+	*/
 	
 	/**
 	 * caches given posts for insertion
@@ -455,63 +470,70 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	@SuppressWarnings("deprecation")
+	/*
 	public boolean insertRecordsIntoIndex4(List<HashMap<String, Object>> contents) {
-		//--------------------------------------------------------------------
-		// insert records into the index
-		//--------------------------------------------------------------------
-		String mergedfieldname = "mergedfields";
-
-		HashMap<String, String> contentFields = getContentFields();
-		
-		for (HashMap<String, Object> content : contents) {
-			
-			for (String contentField : contentFields.keySet()) {
-				if (content.get(contentField) == null) {
-					content.put(contentField, "");
-				} 
-			}
+		synchronized(this) {
+			//--------------------------------------------------------------------
+			// insert records into the index
+			//--------------------------------------------------------------------
+			String mergedfieldname = "mergedfields";
 	
-			String mergedfields = "";
-
-			Document doc = new Document();
-			TexEncode tex = new TexEncode();
-			for (String contentField : contentFields.keySet()) {
-
-				if (contentField == "content_id") {
-					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-				} else if (contentField == "group") {
-					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-				} else if (contentField == "date") {
-					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES,Field.Index.NOT_ANALYZED));
-				} else if (contentField == "year") {
-					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES,Field.Index.NOT_ANALYZED));
-				} else if ((contentField == "author")||(contentField == "tas")) {
-					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES,Field.Index.ANALYZED));
-					mergedfields = mergedfields + " " + tex.encode(content.get(contentField).toString());
-				} else if (contentField == "user_name") {
-					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES,Field.Index.NOT_ANALYZED));
-					mergedfields = mergedfields + " " + tex.encode(content.get(contentField).toString());
-				} else if ((contentField == "intrahash") || (contentField == "interhash")) {
-					doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-				} else {
-					doc.add(new Field(contentField, tex.encode(content.get(contentField).toString()), Field.Store.YES, Field.Index.NO));
-					mergedfields = mergedfields + " " + tex.encode(content.get(contentField).toString());
+			HashMap<String, String> contentFields = getContentFields();
+			
+			for (HashMap<String, Object> content : contents) {
+				
+				for (String contentField : contentFields.keySet()) {
+					if (content.get(contentField) == null) {
+						content.put(contentField, "");
+					} 
 				}
-			}
-			// TODO Field.Store.NO
-			doc.add(new Field(mergedfieldname, tex.encode(mergedfields), Field.Store.YES, Field.Index.ANALYZED));
+		
+				String mergedfields = "";
 	
-			log.debug("add doc to index: " + doc.get("content_id"));
-			
-			this.postsToInsert.add(doc);
+				Document doc = new Document();
+				TexEncode tex = new TexEncode();
+				for (String contentField : contentFields.keySet()) {
+	
+					if (contentField == "content_id") {
+						doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+					} else if (contentField == "group") {
+						doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+					} else if (contentField == "date") {
+						doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES,Field.Index.NOT_ANALYZED));
+					} else if (contentField == "year") {
+						doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES,Field.Index.NOT_ANALYZED));
+					} else if ((contentField == "author")||(contentField == "tas")) {
+						doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES,Field.Index.ANALYZED));
+						mergedfields = mergedfields + " " + tex.encode(content.get(contentField).toString());
+					} else if (contentField == "user_name") {
+						doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES,Field.Index.NOT_ANALYZED));
+						mergedfields = mergedfields + " " + tex.encode(content.get(contentField).toString());
+					} else if ((contentField == "intrahash") || (contentField == "interhash")) {
+						doc.add(new Field(contentField, content.get(contentField).toString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+					} else {
+						doc.add(new Field(contentField, tex.encode(content.get(contentField).toString()), Field.Store.YES, Field.Index.NO));
+						mergedfields = mergedfields + " " + tex.encode(content.get(contentField).toString());
+					}
+				}
+				// TODO Field.Store.NO
+				doc.add(new Field(mergedfieldname, tex.encode(mergedfields), Field.Store.YES, Field.Index.ANALYZED));
+		
+				log.debug("add doc to index: " + doc.get("content_id"));
+				
+				this.postsToInsert.add(doc);
+			}
+
+			// all done
+			log.info("Index "+luceneIndexPath+" updated.");
+			// FIXME: why return false?
+			return false;
 		}
-
-		// all done
-		log.info("Index "+luceneIndexPath+" updated.");
-		// FIXME: why return false?
-		return false;
 	}
-
+	*/
+	
+	//------------------------------------------------------------------------
+	// private index access interface
+	//------------------------------------------------------------------------
 	/**
 	 * write given post into the index
 	 * 
@@ -520,7 +542,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
-	public void insertRecordIntoIndex(Document post) throws CorruptIndexException, IOException {
+	private void insertRecordIntoIndex(Document post) throws CorruptIndexException, IOException {
 		indexWriter.addDocument(post);
 	}	
 
@@ -532,88 +554,29 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
-	public void insertRecordsIntoIndex(List<Document> posts) throws CorruptIndexException, IOException {
+	private void insertRecordsIntoIndex(List<Document> posts) throws CorruptIndexException, IOException {
 		for( Document post : posts ) {
 			this.insertRecordIntoIndex(post);
 		}
 	}	
 	
 	/**
-	 * update tag column in index for given posts
+	 * removes given post from index
 	 * 
-	 * FIXME: this is quickly hacked due to zeitnot and probably inefficient
+	 * @param contentId post's content id 
+	 * @return number of posts deleted from index
 	 * 
-	 * @param postsToUpdate list of posts whose tag
-	 *    assignments have changed
-	 * @throws IOException 
-	 * @throws LockObtainFailedException 
-	 * @throws CorruptIndexException 
-	 * @throws StaleReaderException 
+	 * @throws StaleReaderException
+	 * @throws CorruptIndexException
+	 * @throws LockObtainFailedException
+	 * @throws IOException
 	 */
-	@SuppressWarnings("unchecked")
-	public void updateTagAssignments(List<Post<R>> postsToUpdate) throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
-		// FIXME: use global type handling via spring!
-		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
-		TexEncode tex = new TexEncode();
-
-		// cache documents to update
-		List<Document> updatedDocuments = new LinkedList<Document>();
-		
-		// process each post
-		for( Post<R> post : postsToUpdate ) {
-			log.debug("Updating post " + post.getResource().getTitle() + " ("+post.getContentId()+")");
-			// get old post from index
-			Document doc = getRecordForContentId(post.getContentId());
-			
-			// skip post, if it is already updated in the index
-			if( doc.getField(FLD_DATE)!=null ) {
-				String dateString = doc.getField(FLD_DATE).stringValue();
-				Date entryDate = null;
-				try {
-					entryDate = dateFormatter.parse(dateString);
-				} catch (java.text.ParseException e) {
-					log.error("Error parsing index date "+entryDate);
-				}
-				if( entryDate.equals(post.getDate()) ) {
-					log.debug("Skipping unmodified update.");
-					continue;
-				}
-			}
-			// update field 'tas'
-			// FIXME: apply generic data extraction framework
-			doc.removeField(FLD_TAS);
-			doc.removeField(FLD_MERGEDFIELD);
-			String tags = "";
-			for( Tag tag : post.getTags() ) {
-				tags += " " + tag.getName();
-			};
-			doc.add(new Field(FLD_TAS, tex.encode(tags), Field.Store.YES, Field.Index.ANALYZED));
-			// update field  'mergedfield'
-			String mergedFields = "";
-			for( Field field : (List<Field>)doc.getFields() ) {
-				mergedFields += (field.stringValue()==null)?"":field.stringValue();
-				mergedFields += " ";
-			}
-			doc.add(new Field(FLD_MERGEDFIELD, tex.encode(mergedFields), Field.Store.YES, Field.Index.ANALYZED));
-			// update date 
-			// FIXME: this is for setting the index' last change date - overriding the post's real date
-			doc.removeField(FLD_DATE);
-			doc.add(new Field(FLD_DATE, dateFormatter.format(post.getDate()), Field.Store.YES,Field.Index.NOT_ANALYZED));			
-			// cache document for update
-			updatedDocuments.add(doc);
-			/*
-			if( this.purgeDocumentForContentId(post.getContentId())!=1 ) {
-				log.error("Error updating tag assignment");
-			}*/
-			this.contentIdsToDelete.add(post.getContentId());
-		}
-	
-		// finally write updated posts to index
-		// FIXME: implement an efficient read/write management for bundling insertions
-		//        and updates
-		// this.insertRecordsIntoIndex3(updatedDocuments);
-		this.postsToInsert.addAll(updatedDocuments);
+	private int purgeDocumentForContentId(Integer contentId) throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
+		Term term = new Term(COL_CONTENT_ID, contentId.toString() );
+		return indexReader.deleteDocuments(term);
 	}
+	
+
 
 	/**
 	 * closes all writer and reader and reopens the index readern
@@ -735,8 +698,8 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * get list of fields this resource consists of
 	 * @return
 	 */
-	@Deprecated
-	protected abstract HashMap<String, String> getContentFields();
+	//@Deprecated
+	//protected abstract HashMap<String, String> getContentFields();
 	
 	/**
 	 * disables read operations on the index
@@ -756,7 +719,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	/**
 	 * get managed resource record type
 	 */
-	protected abstract RecordType getRecordType();
+	//protected abstract RecordType getRecordType();
 
 	/**
 	 * get managed resource name

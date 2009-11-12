@@ -16,6 +16,7 @@ public class LuceneBookmarkIndex extends LuceneResourceIndex<Bookmark> {
 	/** singleton instance */
 	protected static LuceneResourceIndex<Bookmark> instance;
 	
+	/*
 	@Override
 	protected HashMap<String, String> getContentFields() {
 		HashMap<String, String> contentFields = new HashMap<String, String>();
@@ -31,7 +32,8 @@ public class LuceneBookmarkIndex extends LuceneResourceIndex<Bookmark> {
 		
 		return contentFields;
 	}
-
+*/
+	
 	@Override
 	protected Class<? extends Resource> getResourceType() {
 		return Bookmark.class;
@@ -42,8 +44,10 @@ public class LuceneBookmarkIndex extends LuceneResourceIndex<Bookmark> {
 		return instance;
 	}
 
+/*
 	@Override
 	protected RecordType getRecordType() {
 		return RecordType.Bookmark;
 	}
+	*/
 }

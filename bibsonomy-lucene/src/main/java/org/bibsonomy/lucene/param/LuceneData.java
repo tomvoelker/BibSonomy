@@ -33,10 +33,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * FIXME: refactor this class and handle bookmark in the same way as bibtex
- * 
+ * FIXME: remove this class - post conversion is now handled in LucenePostConverter
  * @author sst, fei
  *
  */
+@Deprecated
 public class LuceneData {
 	private static final Log log = LogFactory.getLog(LuceneData.class);
 	private static final String LUCENE_CONTEXT_XML = "LuceneIndexConfig.xml";
@@ -469,6 +470,7 @@ public class LuceneData {
 		return;
 	}
 
+	/*
 	@SuppressWarnings("unchecked")
 	public void setPost(Post<? extends Resource> post) {
 		// FIXME: remove this test by refactoring
@@ -480,15 +482,18 @@ public class LuceneData {
 			setPostBibTex((Post<BibTex>)post);
 		}
 	}
-	
+	*/
 
 	/**
 	 * read property values from given object as defined in given propertyMap
+	 * 
+	 * FIXME: use public static Document readPost(Post<? extends Resource> post)
 	 * 
 	 * @param post
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	public static Map<String,String> extractPost(Post<? extends Resource> post) {
 		Map<String,String> postContent = new HashMap<String, String>();
 		

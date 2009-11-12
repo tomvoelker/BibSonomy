@@ -1,6 +1,7 @@
 package org.bibsonomy.lucene.index;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +17,8 @@ import javax.naming.NamingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.StaleReaderException;
 import org.apache.lucene.store.LockObtainFailedException;
@@ -25,10 +28,13 @@ import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LuceneData;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateResourceSearch;
+import org.bibsonomy.lucene.util.LucenePostConverter;
 import org.bibsonomy.lucene.util.Utils;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.tex.TexEncode;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -75,6 +81,10 @@ public class LuceneResourceManager<R extends Resource> {
 			   retrieveFromdate - QUERY_TIME_OFFSET_MS */
 	private static final long QUERY_TIME_OFFSET_MS = 30*1000;
 
+	private static final String FLD_DATE        = "date";
+	private static final String FLD_MERGEDFIELD = "mergedfields";
+	private static final String FLD_TAS         = "tas";
+	
 	/**
 	 * constructor
 	 */
@@ -169,18 +179,15 @@ public class LuceneResourceManager<R extends Resource> {
 			//----------------------------------------------------------------
 			//  2) get new records to insert into index 
 			//----------------------------------------------------------------
-			List<HashMap<String, Object>> posts = new ArrayList<HashMap<String, Object>>();
-			posts = luceneLogic.getPostsForTimeRange(retrieveFromDate, retrieveToDate);
-
+			List<Post<R>> posts = luceneLogic.getPostsForTimeRange2(retrieveFromDate, retrieveToDate);
+			
 			// FIXME: due to sloppy time constraints in SQL-Queries, we have to skip
 			//        posts which already were indexed to avoid duplicates
-			Iterator<HashMap<String, Object>> it = posts.iterator();
+			Iterator<Post<R>> it = posts.iterator();
 			while (it.hasNext()) {
-				Map<String,Object> post = it.next();
-				Integer contentId = ((Long)post.get("content_id")).intValue();
-				if( this.resourceIndex.getRecordForContentId(contentId)!=null )
+				Post<R> post = it.next();
+				if( this.resourceIndex.getRecordForContentId(post.getContentId())!=null )
 					it.remove();
-				//contentIdsToDelete.add(contentId);
 			}
 			
 			//----------------------------------------------------------------
@@ -199,7 +206,7 @@ public class LuceneResourceManager<R extends Resource> {
 			//----------------------------------------------------------------
 			List<Post<R>> updatedPosts = luceneLogic.getUpdatedPostsForTimeRange(retrieveFromDate, retrieveToDate);
 			try {
-				luceneIndex.updateTagAssignments(updatedPosts);
+				this.updateTagAssignments(updatedPosts);
 			} catch (IOException e) {
 				log.error("Error updating posts where only tag assignments have changed", e);
 			}
@@ -207,8 +214,11 @@ public class LuceneResourceManager<R extends Resource> {
 			//----------------------------------------------------------------
 			//  5) write new records into the index 
 			//----------------------------------------------------------------
-			luceneIndex.insertRecordsIntoIndex4(posts);
-
+			for( Post<R> post : posts ) {
+				Document postDoc = LucenePostConverter.readPost(post);
+				luceneIndex.insertDocument(postDoc);
+			}
+			
 			//----------------------------------------------------------------
 			//  6) commit changes 
 			//----------------------------------------------------------------
@@ -220,6 +230,81 @@ public class LuceneResourceManager<R extends Resource> {
 		return;
 	}
 	
+	/**
+	 * update tag column in index for given posts
+	 * 
+	 * FIXME: this is quickly hacked due to zeitnot and probably inefficient
+	 * FIXME: this logic probably should move to the index manager
+	 * 
+	 * @param postsToUpdate list of posts whose tag
+	 *    assignments have changed
+	 * @throws IOException 
+	 * @throws LockObtainFailedException 
+	 * @throws CorruptIndexException 
+	 * @throws StaleReaderException 
+	 */
+	@SuppressWarnings("unchecked")
+	public void updateTagAssignments(List<Post<R>> postsToUpdate) throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
+		// FIXME: use global type handling via spring!
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
+		TexEncode tex = new TexEncode();
+
+		// cache documents to update
+		List<Document> updatedDocuments = new LinkedList<Document>();
+		
+		// process each post
+		for( Post<R> post : postsToUpdate ) {
+			log.debug("Updating post " + post.getResource().getTitle() + " ("+post.getContentId()+")");
+			// get old post from index
+			Document doc = this.resourceIndex.getRecordForContentId(post.getContentId());
+			
+			// skip post, if it is already updated in the index
+			if( doc.getField(FLD_DATE)!=null ) {
+				String dateString = doc.getField(FLD_DATE).stringValue();
+				Date entryDate = null;
+				try {
+					entryDate = dateFormatter.parse(dateString);
+				} catch (java.text.ParseException e) {
+					log.error("Error parsing index date "+entryDate);
+				}
+				if( entryDate.equals(post.getDate()) ) {
+					log.debug("Skipping unmodified update.");
+					continue;
+				}
+			}
+			// update field 'tas'
+			// FIXME: apply generic data extraction framework
+			doc.removeField(FLD_TAS);
+			doc.removeField(FLD_MERGEDFIELD);
+			String tags = "";
+			for( Tag tag : post.getTags() ) {
+				tags += " " + tag.getName();
+			};
+			doc.add(new Field(FLD_TAS, tex.encode(tags), Field.Store.YES, Field.Index.ANALYZED));
+			// update field  'mergedfield'
+			// FIXME: configure mergedfields via spring
+			String mergedFields = "";
+			for( Field field : (List<Field>)doc.getFields() ) {
+				mergedFields += (field.stringValue()==null)?"":field.stringValue();
+				mergedFields += " ";
+			}
+			doc.add(new Field(FLD_MERGEDFIELD, tex.encode(mergedFields), Field.Store.YES, Field.Index.ANALYZED));
+			// update date 
+			// FIXME: this is for setting the index' last change date - overriding the post's real date
+			doc.removeField(FLD_DATE);
+			doc.add(new Field(FLD_DATE, dateFormatter.format(post.getDate()), Field.Store.YES,Field.Index.NOT_ANALYZED));			
+			// cache document for update
+			updatedDocuments.add(doc);
+			/*
+			if( this.purgeDocumentForContentId(post.getContentId())!=1 ) {
+				log.error("Error updating tag assignment");
+			}*/
+			this.resourceIndex.deleteDocumentForContentId(post.getContentId());
+		}
+	
+		// finally write updated posts to index
+		this.resourceIndex.insertDocuments(updatedDocuments);
+	}
 
 	/**
 	 * reload each registered searcher's index 
@@ -388,6 +473,8 @@ public class LuceneResourceManager<R extends Resource> {
 					GroupID.PUBLIC.getId(), new LinkedList<Integer>(), 
 					Integer.MAX_VALUE, 0);
 			unflagEntryAsSpam(userPosts);
+			// flush changes to the index
+			this.resourceIndex.flush();
 			break;
 		case 1:
 			log.debug("flag spammer");
@@ -416,7 +503,6 @@ public class LuceneResourceManager<R extends Resource> {
 	/** 
 	 * flags an entry as non-spammer. This is the same like adding one entry to the index - no it IS adding one entry to the index 
 	 * FIXME: check whether this is thread safe!!!
-	 * FIXME: use generic postmodel converter (configured via spring)
 	 * 
 	 * @param recordContent
 	 * @param recordType
@@ -424,21 +510,11 @@ public class LuceneResourceManager<R extends Resource> {
 	protected void unflagEntryAsSpam(List<Post<R>> userPosts) {
 		// assure that flagging and unflagging of spammers as well as index updating is mutual exclusive
 		synchronized(this) {
-
 			//  insert new records into index
 			if( (userPosts!=null) && (userPosts.size()>0) ) {
-				// convert ResultList<Post<?>> into LuceneData
-				List<LuceneData> recordContentArrayList = new LinkedList<LuceneData>();
 				for (Post<?> post : userPosts ) {
-					LuceneData data = new LuceneData(null);
-					data.setPost(post);
-					recordContentArrayList.add(data);
-				}
-
-				try {
-					resourceIndex.insertRecordsIntoIndex(recordContentArrayList, false);
-				} catch (Exception e) {
-					log.error("Error unflagging spam posts.", e);
+					// cache document for writing 
+					resourceIndex.insertDocument(LucenePostConverter.readPost(post));
 				}
 			}
 		}

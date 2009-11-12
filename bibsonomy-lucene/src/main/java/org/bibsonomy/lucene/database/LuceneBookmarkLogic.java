@@ -149,4 +149,23 @@ public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
 		
 		return retVal;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Post<Bookmark>> getPostsForTimeRange2(Date fromDate, Date toDate) {
+		BookmarkParam param = new BookmarkParam();
+		param.setFromDate(fromDate);
+		param.setToDate(toDate);
+		param.setLimit(Integer.MAX_VALUE);
+		
+		List<Post<Bookmark>> retVal = null;
+		try {
+			retVal = (List<Post<Bookmark>>)sqlMap.queryForList("getBookmarkForTimeRange2", param);
+		} catch (SQLException e) {
+			log.error("Error getting bookmark entries.", e);
+			retVal = new LinkedList<Post<Bookmark>>();
+		}
+		
+		return retVal;
+	}
 }

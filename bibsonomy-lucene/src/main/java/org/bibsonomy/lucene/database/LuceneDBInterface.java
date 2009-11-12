@@ -68,6 +68,8 @@ public interface LuceneDBInterface<R extends Resource> {
 	 */
 	@Deprecated
 	public List<HashMap<String, Object>> getPostsForTimeRange(Date fromDate, Date toDate);
+
+	public List<Post<R>> getPostsForTimeRange2(Date fromDate, Date toDate);
 	
 
 	/**
