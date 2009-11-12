@@ -113,10 +113,10 @@
               
 							<!-- ROW ONE -->
 						    <label class="fsLabel" for="selection"><fmt:message key="post_bibtex.pub_snippet.snippet" />*</label>
-						    <textarea class="fsInput" name="selection" rows="10" onkeyup="sz(this);" ><fmt:message key="post_bibtex.pub_snippet.enter_bibtex_here" /> </textarea>
+						    <textarea class="fsInput" name="selection" rows="10" onkeyup="sz(this);" ><!-- don't delete me --></textarea>
 					  
 					  		<!-- ROW TWO -->
-						    <label class="fsLabel" for="description"><fmt:message key="post.description" />*</label>
+						    <label class="fsLabel" for="description"><fmt:message key="post.resource.description" />*</label>
 							<input type="text" class="fsInput" name="description" /> 
 			  				
 			  				<!-- ROW THREE -->
@@ -159,7 +159,7 @@
 								    
 							  	 
 								  	<!-- ROW TWO -->
-								    <label class="fsLabel"><fmt:message key="post.description" /></label>
+								    <label class="fsLabel"><fmt:message key="post.resource.description" /></label>
 								    <input type="text" class="fsInput" name="description" value="" />
 
 							    	

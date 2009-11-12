@@ -8,49 +8,32 @@
 	
     <jsp:directive.attribute name="message" type="java.lang.String" required="true" description="The key for the message that should be shown."/>
 	<jsp:directive.attribute name="helpPath" type="java.lang.String" required="false" description="An optional path for the help URL which is linked under the question mark. The given path must be relative to projectHome/help."/>
-	<jsp:directive.attribute name="nofloat" type="java.lang.String" required="false" description="If set to true, it will remove the float:left css property of the objects style."/>
+    <jsp:directive.attribute name="cssStyle" type="java.lang.String" required="false" description="style attribute for the span surrounding the help text"/>
+
     <jsp:directive.attribute name="helpText" fragment="true" required="false" description="A JSP fragment which is inserted after the message."/>
 	
-  	<c:choose>
-	  	<c:when test="${nofloat}">
-			<span class="help">
-		        <c:choose>
-		          <c:when test="${not empty helpUrl}">
-		            <!-- the given path is relative to projectHome/help -->
-		            <a href="${projectHome}help${helpUrl}">
-		  		      <img src="${resdir}/image/questionmark.png" alt="?"/>
-		            </a>
-		          </c:when>
-		          <c:otherwise>
-		              <img src="${resdir}/image/questionmark.png" alt="?"/>
-		          </c:otherwise>
-		        </c:choose>
-				<div><fmt:message key="${message}"/> ${helpText}</div>
-			</span> 
-		</c:when>
-		<c:otherwise>
-			<span class="help float_left">
-		        <c:choose>
-		          <c:when test="${not empty helpUrl}">
-		            <!-- the given path is relative to projectHome/help -->
-		            <a href="${projectHome}help${helpUrl}">
-		  		      <img src="${resdir}/image/questionmark.png" alt="?"/>
-		            </a>
-		          </c:when>
-		          <c:otherwise>
-		              <img src="${resdir}/image/questionmark.png" alt="?"/>
-		          </c:otherwise>
-		        </c:choose>
-				<div><fmt:message key="${message}"/> ${helpText}</div>
-			</span> 
-		</c:otherwise>
-	</c:choose>
+  
+	<span class="help" style="${cssStyle}">
+        <c:choose>
+          <c:when test="${not empty helpUrl}">
+            <!-- the given path is relative to projectHome/help -->
+            <a href="${projectHome}help${helpUrl}">
+  		      <img style="width:15px; padding-bottom:5px" src="${resdir}/image/questionmark.png" alt="?"/>
+            </a>
+          </c:when>
+          <c:otherwise>
+              <img style="width:15px; padding-bottom:5px" src="${resdir}/image/questionmark.png" alt="?"/>
+          </c:otherwise>
+        </c:choose>
+		<div><fmt:message key="${message}"/> ${helpText}</div>
+	</span> 
+
 	
 	
 	
 	
 	<!-- 
-      JS solution - right now css seems cheaper
+      JS solution - right now css seams cheaper
 	<jsp:directive.attribute name="NonJSTarget" type="java.lang.String" required="false" />
 	<jsp:directive.attribute name="JSMessage" 	type="java.lang.String" required="true" />
 	<script type="text/javascript" src="${resdir}/javascript/wz_tooltip.js" />
