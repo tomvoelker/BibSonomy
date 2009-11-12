@@ -33,9 +33,9 @@
 			</div>
 	            <!-- select box for "other" groups TODO: allow multiple groups-->
 	            <select multiple="false" name="groups" size="5" id="post.groups.other2">
-	              <option label="friends" value="friends"/>
+	              <option value="friends">friends</option>
                   <c:forEach var="group" items="${groups}">
-                     <option value="${fn:escapeXml(group)}"><c:out value="${group}"/></option> 
+                     <option value="${fn:escapeXml(group.name)}"><c:out value="${group.name}"/></option> 
                   </c:forEach>
 	            </select>
 		</fieldset>
