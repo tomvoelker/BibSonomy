@@ -508,26 +508,39 @@ public interface LogicInterface extends PostLogicInterface {
 	 */
 	public List<User> getFriendsOfUser(User loginUser);
 	
+	
+	
+	/** 
+	 * We return all Users that are in (the) relation with the sourceUser
+	 * as targets.
+	 * @param sourceUser = leftHandSide of the relation
+	 * @param relation = the User relation
+	 * @return all rightHandsides, that is all Users u with
+	 * (sourceUser, u)\in relation
+	 */
+	public List<User> getUserRelationship(String sourceUser, UserRelation relation);
+	
+	
 	/**
-	 * This method deletes a relationship between the logged in user
-	 * and the given user.
+	 * We delete a UserRelation of the form (sourceUser, targetUser)\in relation
+	 * sourceUser should be logged in to have access to this
 	 * 
-	 * @param loggedInUser 
-	 * @param requestedUser 
+	 * @param sourceUser 
+	 * @param targetUser 
 	 * @param relation 
 	 * 
 	 */
-	public void deleteUserRelationship(User loggedInUser, User requestedUser, UserRelation relation);
+	public void deleteUserRelationship(String sourceUser, String targetUser, UserRelation relation);
 	
 	/**
-	 * This method adds a relationship between the logged in user
-	 * and the given user
+	 * We create a UserRelation of the form (sourceUser, targetUser)\in relation
+	 * sourceUser should be logged in for this
 	 * 
-	 * @param loggedInUser
-	 * @param requestedUser
+	 * @param sourceUser
+	 * @param targetUser
 	 * @param relation
 	 */
-	public void createUserRelationship(User loggedInUser, User requestedUser, UserRelation relation);
+	public void createUserRelationship(String sourceUser, String targetUser, UserRelation relation);
 	
 	/**
 	 * Create basket items
