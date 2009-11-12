@@ -43,10 +43,10 @@
 			  <form:input cssClass="fsFloatInput" path="post.resource.bibtexKey" tabindex="2"/>
               <!-- reload button for BibTeX key -->
               <fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
+              <buttons:help message="post.resource.bibtexKey.help" nofloat="true"/>
               <a style="cursor:pointer">
                 <img src="${resdir}/image/button_reload.png" alt="${generateBibtexKey}" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)" />
               </a>
-              <buttons:help message="post.resource.bibtexKey.help"/>
               <form:label cssClass="fsFloatLabel" cssStyle="clear: none !important;" path="post.resource.bibtexKey" ><fmt:message key="post.resource.bibtexKey"/>* </form:label>
               <div class="dissError"><form:errors path="post.resource.bibtexKey" /></div>
 			</div>
