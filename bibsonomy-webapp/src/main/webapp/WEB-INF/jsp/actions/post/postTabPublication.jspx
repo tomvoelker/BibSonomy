@@ -68,6 +68,9 @@
                                   
                         
                                 <input type="text" class="fsFloatInput" id="post.resource.bibtexKey" name="post.resource.bibtexKey" tabindex="2"/>
+                                <a style="cursor:pointer">
+					              <img src="${resdir}/image/button_reload.png" alt="${generateBibtexKey}" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)" />
+					            </a>
                                 <label class="fsFloatLabel" style="clear: none !important;" for="post.resource.bibtexKey" ><fmt:message key="post.resource.bibtexKey"/></label>
                               </div>
                   
@@ -179,7 +182,7 @@
 									    <!-- ROW ONE -->
 										    
 											<label class="fsLabel"><fmt:message key="post_bibtex.upload.option.character_encoding" /></label>
-											<buttons:help message="post_bibtex.upload.option.character_encoding_help"/>
+											<buttons:help message="post_bibtex.upload.option.character_encoding_help" cssStyle="float:left"/>
 										    <select name="encoding" class="fsInput fsSmall" id="lencoding">
 										      	<option value="UTF-8">UTF-8</option>
 										      	<option value="ISO-8859-1">ISO-8859-1</option>
@@ -212,7 +215,7 @@
 									    	
 								    	<!-- ROW TWO -->
 										    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter" /></label>
-										    <buttons:help message="post_bibtex.upload.option.tag_delimiter_help" />
+										    <buttons:help message="post_bibtex.upload.option.tag_delimiter_help" cssStyle="float:left" />
 										    <select name="delimiter" class="fsInput fsSmall" onchange="updateSubstitute(this);">
 										        <option value=" ">' ' (<fmt:message key="delimiters.whitespace"/>)</option>
 										        <option value=",">, (<fmt:message key="delimiters.comma"/>)</option>
@@ -223,7 +226,7 @@
 									  
 									  	<!-- ROW THREE -->
 										    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute" /></label>
-										    <buttons:help message="post_bibtex.upload.option.whitespace_substitute_help"/>
+										    <buttons:help message="post_bibtex.upload.option.whitespace_substitute_help" cssStyle="float:left"/>
 										    <!-- TODO: Ask cause of disabled -->
 										    <input type="text" class="fsSmall" style="float:left" value="_" name="whitespace" size="2" maxlength="1" disabled="disabled" />
 									    	
@@ -282,4 +285,18 @@
 		</div>
 		</jsp:attribute>
 	</layout:tabLayout>
+	
+<script type="text/javascript">
+	showGenerateBibtexBlock();
+	maximizeById("general");
+	
+	function updateSubstitute(select) {
+	  var subs = document.upload.whitespace;
+	  if (select.options[select.options.selectedIndex].value == " ") {
+	    subs.disabled = true;;
+	  } else {
+	    subs.disabled = false;
+	  }
+	}
+</script>
 </jsp:root>
