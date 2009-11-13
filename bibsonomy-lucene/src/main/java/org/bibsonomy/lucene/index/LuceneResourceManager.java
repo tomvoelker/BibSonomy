@@ -205,6 +205,7 @@ public class LuceneResourceManager<R extends Resource> {
 			//  4) update tag assignments of altered posts  
 			//----------------------------------------------------------------
 			List<Post<R>> updatedPosts = luceneLogic.getUpdatedPostsForTimeRange(retrieveFromDate, retrieveToDate);
+			log.debug("Updating "+updatedPosts.size()+" posts");
 			try {
 				this.updateTagAssignments(updatedPosts);
 			} catch (IOException e) {
