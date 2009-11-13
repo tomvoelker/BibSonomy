@@ -20,7 +20,7 @@
                     <c:forEach var="error" items="${errors.globalErrors}">
                       <c:if test="${empty cssClass}"><c:set var="cssClass" value="error"/></c:if>
                       <pre class="${cssClass}">
-                        <spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}"/>
+                        <spring:message code="${error.code}" text="${error.defaultMessage}" arguments="${error.arguments}" htmlEscape="true"/>
                       </pre>
                     </c:forEach>
                   
