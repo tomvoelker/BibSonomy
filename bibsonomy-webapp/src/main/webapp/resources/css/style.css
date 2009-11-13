@@ -900,7 +900,11 @@ span.info:hover > div, span.help:hover > div {
 	color: #000;
 	padding: 5px;
 }
-	
+span.help > a, span.help > b {
+  font-weight: bold;
+  color: #006699;
+}
+
 /* advanced search */
 #searchbox {
 	margin: 5px 5px 5px 5px;
