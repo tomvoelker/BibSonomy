@@ -9,7 +9,7 @@ my $MAXTIME = 30;
 
 my $msg = "";
 
-my $user = "bibsonomy_rdonly";
+my $user = "bibsonomy";
 my $password = $ENV{'DB_PASS'}; 
 my $database = shift @ARGV;
 
@@ -22,6 +22,7 @@ $stm->execute();
 
 my %tobekilled = ();
 while(my $row=$stm->fetchrow_hashref) {
+	#print $row->{"State"} . "\n";
 	if (defined $row->{"State"} && ("statistics" eq $row->{"State"}) && ($row->{"Time"} > $MAXTIME)) {
 		# push @tobekilled, $row->{"Id"};
 		$tobekilled{$row->{"Id"}} = $row->{"Info"};
@@ -41,10 +42,8 @@ if (%tobekilled) {
 $dbh->disconnect();
 
 if ($msg) {
-#	open MAIL, "| mail -s \"Queries gekillt\" bibsonomy\@cs.uni-kassel.de" or die;
-#	print MAIL $msg;
-#	close MAIL;
+	open MAIL, "| mail -s \"Queries gekillt\" bibsonomy\@cs.uni-kassel.de" or die;
+	print MAIL $msg;
+	close MAIL;
     print STDERR $msg;
 }
-
-
