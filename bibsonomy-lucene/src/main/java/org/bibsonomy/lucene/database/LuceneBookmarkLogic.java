@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.lucene.database.params.BookmarkParam;
 import org.bibsonomy.lucene.database.params.ResourcesParam;
 import org.bibsonomy.lucene.database.results.Pair;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
@@ -52,32 +53,16 @@ public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
 	// abstract LuceneDBLogic interface implemetation
 	//------------------------------------------------------------------------
 	@Override
-	protected HashMap<String, String> getContentFields() {
-		HashMap<String, String> contentFields = new HashMap<String, String>();
-		
-		contentFields.put("content_id", "");
-		contentFields.put("group", "");
-		contentFields.put("date", "");
-		contentFields.put("user_name", "");
-		contentFields.put("desc", "");
-		contentFields.put("ext", "");
-		contentFields.put("url", "");
-		contentFields.put("tas", "");
-		
-		return contentFields;
-	}
-
-	@Override
 	protected ResourcesParam<Bookmark> getResourcesParam() {
 		return new BookmarkParam();
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	protected List<Post<Bookmark>> getPostsForUserInternal(ResourcesParam<Bookmark> param) {
-		List<Post<Bookmark>> retVal = null;
+	protected List<LucenePost<Bookmark>> getPostsForUserInternal(ResourcesParam<Bookmark> param) {
+		List<LucenePost<Bookmark>> retVal = null;
 		try {
-			retVal = (List<Post<Bookmark>>)this.sqlMap.queryForList("getBookmarkForUser", param);
+			retVal = (List<LucenePost<Bookmark>>)this.sqlMap.queryForList("getBookmarkForUser", param);
 		} catch (SQLException e) {
 			log.error("Error fetching bookmarks for user " + param.getUserName(), e);
 		}
@@ -97,6 +82,12 @@ public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
 	@Override
 	protected List<Integer> getContentIdsToDeleteInternal(Pair<Date, Date> param) throws SQLException {
 		return (List<Integer>)this.sqlMap.queryForList("getBookmarkContentIdsToDelete", param);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Integer> getContentIdsToDeleteInternal(Date lastLogDate) throws SQLException {
+		return (List<Integer>)this.sqlMap.queryForList("getBookmarkContentIdsToDelete2", lastLogDate);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -134,17 +125,17 @@ public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Post<Bookmark>> getPostEntries(Integer skip, Integer max) {
+	public List<LucenePost<Bookmark>> getPostEntries(Integer skip, Integer max) {
 		BookmarkParam param = new BookmarkParam();
 		param.setOffset(skip);
 		param.setLimit(max);
 		
-		List<Post<Bookmark>> retVal = null;
+		List<LucenePost<Bookmark>> retVal = null;
 		try {
-			retVal = (List<Post<Bookmark>>)sqlMap.queryForList("getBookmarksForIndex", param);
+			retVal = (List<LucenePost<Bookmark>>)sqlMap.queryForList("getBookmarksForIndex2", param);
 		} catch (SQLException e) {
 			log.error("Error getting bookmark entries.", e);
-			retVal = new LinkedList<Post<Bookmark>>();
+			retVal = new LinkedList<LucenePost<Bookmark>>();
 		}
 		
 		return retVal;
@@ -164,6 +155,24 @@ public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
 		} catch (SQLException e) {
 			log.error("Error getting bookmark entries.", e);
 			retVal = new LinkedList<Post<Bookmark>>();
+		}
+		
+		return retVal;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<LucenePost<Bookmark>> getNewPosts(Integer lastTasId) {
+		BookmarkParam param = new BookmarkParam();
+		param.setLastTasId(lastTasId);
+		param.setLimit(Integer.MAX_VALUE);
+		
+		List<LucenePost<Bookmark>> retVal = null;
+		try {
+			retVal = (List<LucenePost<Bookmark>>)sqlMap.queryForList("getBookmarkForTimeRange3", param);
+		} catch (SQLException e) {
+			log.error("Error getting bookmark entries.", e);
+			retVal = new LinkedList<LucenePost<Bookmark>>();
 		}
 		
 		return retVal;

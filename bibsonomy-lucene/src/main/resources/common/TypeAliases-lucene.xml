@@ -18,6 +18,9 @@
 	<typeAlias alias="document"           type="org.bibsonomy.model.Document" />
 	<typeAlias alias="author"			  type="org.bibsonomy.model.Author" />
 	
+	<!-- lucene model types -->
+	<typeAlias alias="lucenePost"         type="org.bibsonomy.lucene.param.LucenePost" />
+
 	<!-- misc types -->
 	<typeAlias alias="date"               type="java.util.Date" />
 	

@@ -1,5 +1,6 @@
 package org.bibsonomy.lucene.param;
 
+@Deprecated
 public enum RecordType {
 
 	Bookmark(0),

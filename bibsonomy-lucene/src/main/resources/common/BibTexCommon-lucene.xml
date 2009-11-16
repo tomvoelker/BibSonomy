@@ -45,6 +45,17 @@
 	<resultMap id="bibtexPost" class="post" extends="Common.posts">
 		<result property="resource"   resultMap="BibTexCommon.bibtex" />
 	</resultMap>
+
+	<resultMap id="luceneBibtexPost" class="lucenePost" extends="bibtexPost">
+		<result property="lastTasId"    column="tas_id" />
+	</resultMap>
+
+	<resultMap id="luceneLogBibtexPost" class="lucenePost" extends="bibtexPost">
+		<result property="lastTasId"    column="tas_id" />
+		<result property="lastLogDate"  column="log_date" />
+	</resultMap>
+	
+	
 	
 	<resultMap id="bibtexPostWithDocuments" class="post" extends="Common.posts">
 		<result property="resource"   resultMap="BibTexCommon.bibtexWithDocuments" />
@@ -77,6 +88,12 @@
 	<sql id="bibtexAttributes2">
 		<include refid="commonBibtexAttributes2"/>, b2.scraperid
 	</sql>
+	
+	<sql id="luceneBibtexAttributes2">
+		<include refid="bibtexAttributes2"/>,
+		t.tas_id
+	</sql>
+	
 
 	<!-- ignoring column 'date' -->
 	<sql id="commonBibtexAttributes3">
@@ -111,6 +128,11 @@
 	<sql id="bibtexSimHash3">
 		t1.simhash$simHash$ = h.hash AND h.type = $simHash$
 	</sql>	
+
+	<sql id="bibtexSimHash4">
+		b2.simhash$simHash$ = h.hash AND h.type = $simHash$
+	</sql>	
+
 
 	<sql id="duplicatesCount">
 		SELECT b0.simhash1,count(b0.simhash1) AS ctr

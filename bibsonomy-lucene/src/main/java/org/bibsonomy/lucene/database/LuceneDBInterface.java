@@ -9,6 +9,7 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.lucene.database.params.GroupParam;
 import org.bibsonomy.lucene.database.params.GroupTasParam;
 import org.bibsonomy.lucene.database.params.TasParam;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -35,7 +36,7 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @param offset
 	 * @return
 	 */
-	public List<Post<R>> getPostsForUser(final String userName, final String requestedUserName, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset);
+	public List<LucenePost<R>> getPostsForUser(final String userName, final String requestedUserName, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset);
 
 	/**
 	 * get most recent post's date
@@ -58,6 +59,13 @@ public interface LuceneDBInterface<R extends Resource> {
 	public List<Integer> getContentIdsToDelete(Date fromDate, Date toDate);
 	
 	/**
+	 * get list of content ids to delete from index with fromDate<date<=date
+	 * 
+	 * @param fromDate
+	 */
+	public List<Integer> getContentIdsToDelete(Date lastLogDate);
+
+	/**
 	 * get all public posts within a given time range
 	 * 
 	 * FIXME: use bibsonomy model classes
@@ -70,7 +78,8 @@ public interface LuceneDBInterface<R extends Resource> {
 	public List<HashMap<String, Object>> getPostsForTimeRange(Date fromDate, Date toDate);
 
 	public List<Post<R>> getPostsForTimeRange2(Date fromDate, Date toDate);
-	
+
+	public List<LucenePost<R>> getNewPosts(Integer lastTasId);
 
 	/**
 	 * get list of all posts where in the given time range only the tag assignments
@@ -146,6 +155,7 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @param max size
 	 * @return
 	 */
-	List<Post<R>> getPostEntries(Integer skip, Integer max);
+	List<LucenePost<R>> getPostEntries(Integer skip, Integer max);
+
 
 }

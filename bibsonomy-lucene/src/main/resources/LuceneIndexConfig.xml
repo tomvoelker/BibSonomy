@@ -8,6 +8,7 @@
 	    | type handler 
 	    +-->
 	<bean id="dateConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneDateFormatter"/>
+	<bean id="dateMSConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneDateMSFormatter"/>
 
 	<!--+
 	    | index field configurations 

@@ -2,7 +2,8 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
-
+	<!-- FIXME: model via inheritance -->
+	
 	<!--+
         | BibTex property mapping configuration
         +-->
@@ -72,6 +73,19 @@
 				<entry key="luceneName" value="date" />
 				<entry key="luceneIndex" value-ref="fieldNotAnalyzed"/>
 				<entry key="typeHandler" value-ref="dateConverter" />
+			</map>
+		</entry>
+		<entry key="lastLogDate">
+			<map>
+				<entry key="luceneName" value="last_log_date" />
+				<entry key="luceneIndex" value-ref="fieldNotAnalyzed"/>
+				<entry key="typeHandler" value-ref="dateMSConverter" />
+			</map>
+		</entry>
+		<entry key="lastTasId">
+			<map>
+				<entry key="luceneName" value="last_tas_id" />
+				<entry key="luceneIndex" value-ref="fieldNotAnalyzed"/>
 			</map>
 		</entry>
 		<entry key="resource.day">

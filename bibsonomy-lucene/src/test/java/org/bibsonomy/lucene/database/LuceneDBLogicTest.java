@@ -24,6 +24,7 @@ import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -37,6 +38,7 @@ import org.bibsonomy.util.ExceptionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
@@ -88,37 +90,21 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	public void getBibtexUserPosts() {
 		// get all public posts for the testuser
 		String requestedUserName = "testuser1";
-		int groupId = 3;
+		int groupId = -1;
 		final List<Integer> groups = new ArrayList<Integer>();
 		
-		List<Post<BibTex>> posts    = this.luceneBibTexLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
+		List<LucenePost<BibTex>> posts    = this.luceneBibTexLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
 		List<Post<BibTex>> postsRef = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 		
-		groupId = 0;
 		posts    = this.luceneBibTexLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
 		postsRef = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
-		assertEquals(postsRef.size(), posts.size());
-		
-		groupId = -1;
-		posts    = this.luceneBibTexLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
-		postsRef = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
-//		assertEquals(postsRef.size(), posts.size()); // FIXME: user gets all his posts
+		assertEquals(postsRef.size(), posts.size()); 
 		
 		requestedUserName = "testuser2";
-		groupId = 1;
 		posts    = this.luceneBibTexLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
 		postsRef = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
-		
-		requestedUserName = "testuser2";
-		groupId = 2;
-		posts    = this.luceneBibTexLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
-		postsRef = this.bibTexDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
-		assertEquals(postsRef.size(), posts.size());
-
-		//List<Post<Bookmark>> bookmarkPosts = this.dbLogic.getBookmarkForUser(TEST_USERNAME, TEST_USERNAME, GroupID.PUBLIC.getId(), visibleGroupIDs, Integer.MAX_VALUE, 0);
-
 	}
 	
 	/**
@@ -245,43 +231,50 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	public void getBookmarkUserPosts() {
 		// get all public posts for the testuser
 		String requestedUserName = "testuser1";
-		int groupId = 3;
+		int groupId = -1;
 		List<Integer> groups = new ArrayList<Integer>();
 		
-		List<Post<Bookmark>> posts    = this.luceneBookmarkLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
-		List<Post<Bookmark>> postsRef = this.bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);  
-		assertEquals(postsRef.size(), posts.size());
+		List<LucenePost<Bookmark>> posts;    
+		List<Post<Bookmark>> postsRef;
 		
-		groupId = 0;
 		posts    = this.luceneBookmarkLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
-		postsRef = this.bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);  
-		assertEquals(postsRef.size(), posts.size());
-		
-		// FIXME: why does this result differ???
-		/*
-		groupId = -1;
-		posts    = this.luceneBookmarkLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
-		postsRef = this.bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0, this.dbSession);  
-		assertEquals(postsRef.size(), posts.size());
-		*/
-		
-		requestedUserName = "testuser2";
-		groupId = 1;
-		posts    = this.luceneBookmarkLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
-		postsRef = this.bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);  
+		postsRef = this.bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);
 		assertEquals(postsRef.size(), posts.size());
 		
 		requestedUserName = "testuser2";
-		groupId = 2;
 		posts    = this.luceneBookmarkLogic.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, 10, 0);
 		postsRef = this.bookmarkDb.getPostsForUser(requestedUserName, requestedUserName, HashID.INTER_HASH, groupId, groups, null, 10, 0, null, this.dbSession);  
 		assertEquals(postsRef.size(), posts.size());
-
-
 	}
 	
-	
+	/**
+	 * tests confluence of lucene's and bibsonomy's database post queries 
+	 */
+	@Test
+	public void getBookmarkNewPosts() {
+		// FIXME: implement a test
+		List<LucenePost<Bookmark>> posts;    
+		List<LucenePost<Bookmark>> postsRef = null;
+		
+		posts = this.luceneBookmarkLogic.getNewPosts(12);
+		
+		// assertEquals(2, posts.size());
+	}
 
+	/**
+	 * tests confluence of lucene's and bibsonomy's database post queries 
+	 */
+	@Test
+	public void getBibTexNewPosts() {
+		// FIXME: implement a test
+		List<LucenePost<BibTex>> posts;    
+		List<LucenePost<BibTex>> postsRef = null;
+		
+		posts = this.luceneBibTexLogic.getNewPosts(12);
+		
+		// assertEquals(5, posts.size());
+	}
+	
 	//------------------------------------------------------------------------
 	// private helpers
 	//------------------------------------------------------------------------

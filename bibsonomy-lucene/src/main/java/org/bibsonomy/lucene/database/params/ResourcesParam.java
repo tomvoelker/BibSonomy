@@ -24,6 +24,12 @@ public class ResourcesParam<T extends Resource> extends GenericParam {
 	/** end date */
 	Date toDate;
 	
+	/** newest tas_id during last index update */
+	private Integer lastTasId;
+
+	/** newest change_date during last index update */
+	private Date lastLogDate;
+	
 	public ResourcesParam() {
 		super();
 	}
@@ -56,5 +62,21 @@ public class ResourcesParam<T extends Resource> extends GenericParam {
 
 	public Date getToDate() {
 		return toDate;
+	}
+
+	public void setLastTasId(Integer lastTasId) {
+		this.lastTasId = lastTasId;
+	}
+
+	public Integer getLastTasId() {
+		return lastTasId;
+	}
+
+	public void setLastLogDate(Date lastLogDate) {
+		this.lastLogDate = lastLogDate;
+	}
+
+	public Date getLastLogDate() {
+		return lastLogDate;
 	}
 }

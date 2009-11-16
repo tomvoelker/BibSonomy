@@ -26,6 +26,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LuceneData;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateResourceSearch;
 import org.bibsonomy.lucene.util.LucenePostConverter;
@@ -68,6 +69,12 @@ public class LuceneResourceManager<R extends Resource> {
 	
 	/** the lucene index searcher */
 	private LuceneResourceSearch<R> searcher;
+
+	/** keeps track of the newest tas_id during last index update */
+	private Integer lastTasId = null;
+
+	/** keeps track of the newest log_date during last index update */
+	private Long lastLogDate  = null;
 	
 	/** MAGIC KEY identifying the context environment for this class */
 	private static final String CONTEXT_ENV_NAME = "java:/comp/env";
@@ -135,7 +142,8 @@ public class LuceneResourceManager<R extends Resource> {
 	 * 
 	 * @param optimizeindex
 	 */
-	private void updateIndexes(boolean optimizeindex)  {
+	/*
+	private void updateIndexes2(boolean optimizeindex)  {
 		// FIXME: this is not needed
 		Boolean status = false;
 
@@ -186,20 +194,19 @@ public class LuceneResourceManager<R extends Resource> {
 			Iterator<Post<R>> it = posts.iterator();
 			while (it.hasNext()) {
 				Post<R> post = it.next();
-				if( this.resourceIndex.getRecordForContentId(post.getContentId())!=null )
+				Document doc;
+				if( 
+					(doc=this.resourceIndex.getRecordForContentId(post.getContentId()))!=null
+				   ) {
 					it.remove();
+				}
 			}
 			
 			//----------------------------------------------------------------
 			//  3) delete posts from lucene index which will be re-inserted 
 			//     afterwards 
 			//----------------------------------------------------------------
-			status = false;
-			try {
-				status = deleteDocumentsInIndex(contentIdsToDelete);
-			} catch (IOException e) {
-				log.error("IOException while deleteDocumentsInIndex2 ("+e.getMessage()+")");
-			}
+			deleteDocumentsInIndex(contentIdsToDelete);
 
 			//----------------------------------------------------------------
 			//  4) update tag assignments of altered posts  
@@ -211,7 +218,7 @@ public class LuceneResourceManager<R extends Resource> {
 			} catch (IOException e) {
 				log.error("Error updating posts where only tag assignments have changed", e);
 			}
-
+			
 			//----------------------------------------------------------------
 			//  5) write new records into the index 
 			//----------------------------------------------------------------
@@ -224,6 +231,98 @@ public class LuceneResourceManager<R extends Resource> {
 			//  6) commit changes 
 			//----------------------------------------------------------------
 			luceneIndex.flush();
+		}
+		
+		// all done.
+		alreadyRunning = 0;
+		return;
+	}
+	*/
+	
+	/**
+	 * updates the index, that is
+	 *  - adds new posts 
+	 *  - updates posts, where tag assignments have changed
+	 *  - removes deleted posts
+	 * 
+	 * For that, we keep track of the newest tas_id seen during index update. 
+	 * 
+	 * On each update, we query for all posts with greater tas_ids. These Posts are either new,
+	 * or belong to posts, where the tag assignments have changed. We delete all those posts 
+	 * from the index (for implementing the tag update). Afterwards, all these posts are
+	 * (re-)inserted.
+	 * 
+	 * To keep track of deleted posts, we further hold the last log_date t and query for
+	 * all content_ids from the log_table with a change_date >= t-epsilon. These posts are 
+	 * removed from the index together with the updated posts. 
+	 * 
+	 * @param optimizeindex indicate whether the index should be optimized
+	 */
+	private void updateIndexes(boolean optimizeindex)  {
+		// don't run twice at the same time  - if something went wrong, delete alreadyRunning
+		if ((alreadyRunning > 0) && (alreadyRunning<maxAlreadyRunningTrys) ) {
+			alreadyRunning++;
+			log.warn("reloadIndex - alreadyRunning ("+alreadyRunning+"/"+maxAlreadyRunningTrys+")");
+			return;	
+		}
+		alreadyRunning = 1;
+		log.debug("reloadIndex - run and reset alreadyRunning ("+alreadyRunning+"/"+maxAlreadyRunningTrys+")");
+
+		// assure that flagging and unflagging of spammers as well as index updating is mutual exclusive
+		synchronized(this) {
+			//----------------------------------------------------------------
+			//  0) initialize variables  
+			//----------------------------------------------------------------
+			// current time stamp for storing as 'lastLogDate' in the index
+			// FIXME: get this date from the log_table via 'getContentIdsToDelete'
+			long currentLogDate = System.currentTimeMillis();
+			
+			// FIXME: this should be done in the constructor
+			if( lastTasId==null )
+				lastTasId = this.resourceIndex.getLastTasId();
+			if( lastLogDate==null )
+				lastLogDate = this.resourceIndex.getLastLogDate()-QUERY_TIME_OFFSET_MS;
+			
+			//----------------------------------------------------------------
+			//  1) get new posts  
+			//----------------------------------------------------------------
+			List<LucenePost<R>> newPosts = this.dbLogic.getNewPosts(lastTasId);
+
+			//----------------------------------------------------------------
+			//  2) get posts to delete  
+			//----------------------------------------------------------------
+			List<Integer> contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(lastLogDate));
+
+
+			//----------------------------------------------------------------
+			//  3) remove posts from 1) & 2) from the index
+			//     and update field 'lastTasId'
+			//----------------------------------------------------------------
+			for( LucenePost<R> post : newPosts ) {
+				contentIdsToDelete.add(post.getContentId());
+				if( post.getLastTasId()>this.lastTasId )
+					this.lastTasId = post.getLastTasId();
+			}
+			this.deleteDocumentsInIndex(contentIdsToDelete);
+
+			//----------------------------------------------------------------
+			//  4) add all posts from 1) to the index  
+			//----------------------------------------------------------------
+			for( LucenePost<R> post : newPosts ) {
+				post.setLastLogDate(new Date(currentLogDate));
+				Document postDoc = LucenePostConverter.readPost(post);
+				this.resourceIndex.insertDocument(postDoc);
+			}
+
+			//----------------------------------------------------------------
+			//  6) commit changes 
+			//----------------------------------------------------------------
+			this.resourceIndex.flush();
+
+			//----------------------------------------------------------------
+			//  7) update variables 
+			//----------------------------------------------------------------
+			this.lastLogDate = currentLogDate-QUERY_TIME_OFFSET_MS;
 		}
 		
 		// all done.
@@ -244,6 +343,7 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @throws CorruptIndexException 
 	 * @throws StaleReaderException 
 	 */
+	/*
 	@SuppressWarnings("unchecked")
 	public void updateTagAssignments(List<Post<R>> postsToUpdate) throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
 		// FIXME: use global type handling via spring!
@@ -296,17 +396,17 @@ public class LuceneResourceManager<R extends Resource> {
 			doc.add(new Field(FLD_DATE, dateFormatter.format(post.getDate()), Field.Store.YES,Field.Index.NOT_ANALYZED));			
 			// cache document for update
 			updatedDocuments.add(doc);
-			/*
-			if( this.purgeDocumentForContentId(post.getContentId())!=1 ) {
-				log.error("Error updating tag assignment");
-			}*/
+			
+			//if( this.purgeDocumentForContentId(post.getContentId())!=1 ) {
+			//log.error("Error updating tag assignment");
+			//}
 			this.resourceIndex.deleteDocumentForContentId(post.getContentId());
 		}
 	
 		// finally write updated posts to index
 		this.resourceIndex.insertDocuments(updatedDocuments);
 	}
-
+	*/
 	/**
 	 * reload each registered searcher's index 
 	 */
@@ -437,6 +537,8 @@ public class LuceneResourceManager<R extends Resource> {
 	/**
 	 * delete resources from index 
 	 * 
+	 * FIXME: move this method to the resource index class
+	 * 
 	 * @param indexReader index reader
 	 * @param contentIdsToDelete list of content ids which should be updated 
 	 * @param contentToInsert list of content ids which should be inserted and thus deleted, if they
@@ -445,7 +547,7 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
-	protected boolean deleteDocumentsInIndex(List<Integer> contentIdsToDelete) throws CorruptIndexException, IOException {
+	protected boolean deleteDocumentsInIndex(List<Integer> contentIdsToDelete) {
 		boolean allDocsDeleted = true;
 		
 		Iterator<Integer> i = contentIdsToDelete.iterator();
@@ -468,18 +570,23 @@ public class LuceneResourceManager<R extends Resource> {
 		switch( user.getPrediction() ) {
 		case 0:
 			log.debug("unflag non-spammer");
-			List<Post<R>> userPosts = this.getDbLogic().getPostsForUser(
+			List<LucenePost<R>> userPosts = this.getDbLogic().getPostsForUser(
 					user.getName(), user.getName(), 
 					HashID.INTER_HASH, 
 					GroupID.PUBLIC.getId(), new LinkedList<Integer>(), 
 					Integer.MAX_VALUE, 0);
 			unflagEntryAsSpam(userPosts);
+			this.resourceIndex.unFlagUser(user.getName());
 			// flush changes to the index
-			this.resourceIndex.flush();
+			//this.resourceIndex.flush();
 			break;
 		case 1:
 			log.debug("flag spammer");
+			/*
 			flagEntryAsSpam(user.getName());
+			this.resourceIndex.flush();
+			*/
+			this.resourceIndex.flagUser(user.getName());
 			break;
 		}
 	}
@@ -494,7 +601,7 @@ public class LuceneResourceManager<R extends Resource> {
 		// assure that flagging and unflagging of spammers as well as index updating is mutual exclusive
 		synchronized(this) {
 			try {
-				resourceIndex.deleteDocumentsInIndex(username);
+				resourceIndex.flagUser(username);
 			} catch (Exception e) {
 				log.error("Error removing spam posts for user " +username+ " from index", e);
 			}
@@ -508,7 +615,7 @@ public class LuceneResourceManager<R extends Resource> {
 	 * @param recordContent
 	 * @param recordType
 	 */
-	protected void unflagEntryAsSpam(List<Post<R>> userPosts) {
+	protected void unflagEntryAsSpam(List<LucenePost<R>> userPosts) {
 		// assure that flagging and unflagging of spammers as well as index updating is mutual exclusive
 		synchronized(this) {
 			//  insert new records into index

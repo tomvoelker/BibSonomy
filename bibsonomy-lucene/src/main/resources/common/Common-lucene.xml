@@ -38,10 +38,6 @@
 		<result property="name" column="tag_name" javaType="string" />
 	</resultMap>
 
-
-
-
-
 	<!-- Should be used in conjunction with tagWhereQuery. -->
 	<sql id="tagFromQuery">
 	    tas t1

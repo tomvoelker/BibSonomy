@@ -13,13 +13,16 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
@@ -268,16 +271,63 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * tests handling of spam posts
 	 */
 	@Test
-	@Ignore
 	public void spamPosts() {
-		try {
-			SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
-			dateFormatter.parse("1815-12-10 00:00:00.0");
-			// Date newestDate = DateFormat.getInstance().parse("1815-12-10 00:00:00.0");
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// set up data structures
+		Set<String> allowedGroups = new TreeSet<String>();
+		allowedGroups.add("public");
+		List<Post<BibTex>> bibResultList;
+		List<Post<Bookmark>> bmResultList;
+
+		List<Post<BibTex>> bibRefList;
+		List<Post<Bookmark>> bmRefList;
+
+		// create testuser
+		String userName = "testuser1";
+		User user = new User(userName);
+		// prepare searcher
+		ResourceSearch<BibTex> bibtexSearcher = LuceneDelegateBibTexSearch.getInstance();
+		ResourceSearch<Bookmark> bookmarkSearcher = LuceneDelegateBookmarkSearch.getInstance();
+		
+		// flag user as spammer
+		user.setPrediction(1);
+		this.luceneBibTexUpdater.flagSpammer(user);
+		this.luceneBookmarkUpdater.flagSpammer(user);
+		this.luceneBibTexUpdater.updateIndex(false);
+		this.luceneBookmarkUpdater.updateIndex(false);
+		this.luceneBibTexUpdater.reloadIndex();
+		this.luceneBookmarkUpdater.reloadIndex();
+		
+		// search
+		bibResultList = bibtexSearcher.searchPosts(null, userName, null, userName, allowedGroups, 1, 0);
+		assertEquals(0, bibResultList.size());
+		bmResultList  = bookmarkSearcher.searchPosts(null, userName, null, userName, allowedGroups, 1, 0);
+		assertEquals(0, bmResultList.size());
+
+		
+		user.setPrediction(0);
+		this.luceneBibTexUpdater.flagSpammer(user);
+		this.luceneBookmarkUpdater.flagSpammer(user);
+		this.luceneBibTexUpdater.updateIndex(false);
+		this.luceneBookmarkUpdater.updateIndex(false);
+		this.luceneBibTexUpdater.reloadIndex();
+		this.luceneBookmarkUpdater.reloadIndex();
+		
+		// search
+		int groupId = 0;
+		final List<Integer> groups = new ArrayList<Integer>();
+		for( int i=0; i<10; i++ ) 
+			groups.add(i);
+		
+		bibResultList = bibtexSearcher.searchPosts(null, userName, null, userName, allowedGroups, 1000, 0);
+		bibRefList    = this.bibTexDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, null, 1000, 0, null, this.dbSession);
+		assertEquals(bibRefList.size(), bibResultList.size());
+
+		// FIXME: this test is broken - we only get public posts from the db logic
+		/*
+		bmResultList  = bookmarkSearcher.searchPosts(null, userName, null, userName, allowedGroups, 1000, 0);
+		bmRefList     = this.bookmarkDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, null, 1000, 0, null, this.dbSession);
+		assertEquals(bmRefList.size(), bmResultList.size());
+		*/
 	}
 
 	/**

@@ -17,6 +17,7 @@ import org.bibsonomy.lucene.database.params.BibTexParam;
 import org.bibsonomy.lucene.database.params.BookmarkParam;
 import org.bibsonomy.lucene.database.params.ResourcesParam;
 import org.bibsonomy.lucene.database.results.Pair;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -45,7 +46,7 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 	//------------------------------------------------------------------------
 	// db interface implementation
 	//------------------------------------------------------------------------
-	public List<Post<R>> getPostsForUser(final String userName, final String requestedUserName, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset) {
+	public List<LucenePost<R>> getPostsForUser(final String userName, final String requestedUserName, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset) {
 		final ResourcesParam<R> param = getResourcesParam();
 		param.setRequestedUserName(requestedUserName);
 		param.setSimHash(simHash);
@@ -54,12 +55,12 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		param.setLimit(limit);
 		param.setOffset(offset);
 		
-		List<Post<R>> retVal;
+		List<LucenePost<R>> retVal;
 		retVal = getPostsForUserInternal(param);
 		if( retVal!=null )
 			return retVal;
 		else 
-			return new LinkedList<Post<R>>();
+			return new LinkedList<LucenePost<R>>();
 	}
 
 	public Date getNewestRecordDateFromTas() {
@@ -103,6 +104,22 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 
 		return retVal;
 	}
+	
+	public List<Integer> getContentIdsToDelete(Date lastLogDate) {
+		List<Integer> retVal;
+		
+		try {
+			retVal = getContentIdsToDeleteInternal(lastLogDate);
+		} catch (SQLException e) {
+			log.error("Error getting content ids to delete", e);
+			retVal = new LinkedList<Integer>();
+		}
+		
+		log.debug("getContentIdsToDelete - count: " + retVal.size());
+
+		return retVal;
+	}
+	
 	/**
 	 * get list of all posts where in the given time range only the tag assignments
 	 * have changed
@@ -137,11 +154,10 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 	//------------------------------------------------------------------------
 	// abstract interface definition
 	//------------------------------------------------------------------------
-	protected abstract List<Post<R>> getPostsForUserInternal(ResourcesParam<R> param);
+	protected abstract List<LucenePost<R>> getPostsForUserInternal(ResourcesParam<R> param);
 	protected abstract List<Post<R>> getUpdatedPostsForTimeRange(ResourcesParam<R> param)throws SQLException;
 	protected abstract List<Integer> getContentIdsToDeleteInternal(Pair<Date, Date> param) throws SQLException;
+	protected abstract List<Integer> getContentIdsToDeleteInternal(Date lastLogDate) throws SQLException;
 	protected abstract ResourcesParam<R> getResourcesParam();
 	
-	@Deprecated
-	protected abstract HashMap<String, String> getContentFields();
 }

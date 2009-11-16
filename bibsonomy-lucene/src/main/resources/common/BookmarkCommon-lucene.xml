@@ -10,7 +10,32 @@
 		<result property="resource"   resultMap="BookmarkCommon.bookmark" />
 	</resultMap>
 
+	<resultMap id="luceneBookmarkPost" class="lucenePost" extends="BookmarkCommon.bookmarkPost">
+		<result property="lastTasId"    column="tas_id" />
+	</resultMap>
+
+	<resultMap id="luceneLogBookmarkPost" class="lucenePost" extends="BookmarkCommon.bookmarkPost">
+		<result property="lastTasId"    column="tas_id" />
+		<result property="lastLogDate"  column="log_date" />
+	</resultMap>
+
 	<sql id="bookmarkAttributes">
 		b.content_id, b.book_description as title, b.book_extended as description, b.user_name, b.date, b.book_url_hash AS intraHash, b.book_url_hash AS interHash
+	</sql>	
+
+	<sql id="luceneBookmarkAttributes">
+		g.*, b.content_id, b.user_name, b.book_description as title, b.book_extended as description, 
+		b.user_name, b.date, b.book_url_hash AS intraHash, b.book_url_hash AS interHash,
+		u.book_url, u.book_url_ctr AS count, 
+		g.*,
+		t.tag_name, 
+		t.tas_id
+	</sql>	
+		       
+	<sql id="luceneLogBookmarkAttributes">
+		g.*, b.content_id, b.book_description as title, b.book_extended as description, 
+		b.user_name, b.date, b.book_url_hash AS intraHash, b.book_url_hash AS interHash,
+		t.tag_name,
+		b.log_date
 	</sql>	
 </sqlMap>

@@ -21,6 +21,19 @@
 				<entry key="typeHandler" value-ref="dateConverter" />
 			</map>
 		</entry>
+		<entry key="lastLogDate">
+			<map>
+				<entry key="luceneName" value="last_log_date" />
+				<entry key="luceneIndex" value-ref="fieldNotAnalyzed"/>
+				<entry key="typeHandler" value-ref="dateMSConverter" />
+			</map>
+		</entry>
+		<entry key="lastTasId">
+			<map>
+				<entry key="luceneName" value="last_tas_id" />
+				<entry key="luceneIndex" value-ref="fieldNotAnalyzed"/>
+			</map>
+		</entry>
 		<entry key="resource.title">
 			<map>
 				<entry key="luceneName" value="desc" />

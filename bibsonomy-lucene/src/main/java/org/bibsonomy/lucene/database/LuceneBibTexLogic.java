@@ -17,6 +17,7 @@ import org.bibsonomy.lucene.database.params.BookmarkParam;
 import org.bibsonomy.lucene.database.params.ListParam;
 import org.bibsonomy.lucene.database.params.ResourcesParam;
 import org.bibsonomy.lucene.database.results.Pair;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -67,10 +68,10 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected List<Post<BibTex>> getPostsForUserInternal(ResourcesParam<BibTex> param) {
-		List<Post<BibTex>> retVal = null;
+	protected List<LucenePost<BibTex>> getPostsForUserInternal(ResourcesParam<BibTex> param) {
+		List<LucenePost<BibTex>> retVal = null;
 		try {
-			retVal = (List<Post<BibTex>>)this.sqlMap.queryForList("getBibTexForUser", param);
+			retVal = (List<LucenePost<BibTex>>)this.sqlMap.queryForList("getBibTexForUser", param);
 		} catch (SQLException e) {
 			log.error("Error fetching publications for user " + param.getUserName(), e);
 		}
@@ -84,53 +85,12 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 		return (List<Integer>)this.sqlMap.queryForList("getBibTexContentIdsToDelete", param);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	protected HashMap<String, String> getContentFields() {
-		HashMap<String, String> contentFields = new HashMap<String, String>();
-		
-		contentFields.put("content_id", "");
-		contentFields.put("group", "");
-		contentFields.put("date", "");
-		contentFields.put("user_name", "");
-		contentFields.put("author", "");
-		contentFields.put("editor", "");
-		contentFields.put("title", "");
-		contentFields.put("journal", "");
-		contentFields.put("booktitle", "");
-		contentFields.put("volume", "");
-		contentFields.put("number", "");
-		contentFields.put("chapter", "");
-		contentFields.put("edition", "");
-		contentFields.put("month", "");
-		contentFields.put("day", "");
-		contentFields.put("howPublished", "");
-		contentFields.put("institution", "");
-		contentFields.put("organization", "");
-		contentFields.put("publisher", "");
-		contentFields.put("address", "");
-		contentFields.put("school", "");
-		contentFields.put("series", "");
-		contentFields.put("bibtexKey", "");
-		contentFields.put("url", "");
-		contentFields.put("type", "");
-		contentFields.put("description", "");
-		contentFields.put("annote", "");
-		contentFields.put("note", "");
-		contentFields.put("pages", "");
-		contentFields.put("bKey", "");
-		contentFields.put("crossref", "");
-		contentFields.put("misc", "");
-		contentFields.put("bibtexAbstract", "");
-		contentFields.put("year", "");
-		contentFields.put("tas", "");
-		contentFields.put("entrytype", "");
-		contentFields.put("intrahash", "");
-		contentFields.put("interhash", "");
-		
-		return contentFields;
+	public List<Integer> getContentIdsToDeleteInternal(Date lastLogDate) throws SQLException {
+		return (List<Integer>)this.sqlMap.queryForList("getBibTexContentIdsToDelete2", lastLogDate);
 	}
 
-	
 	@SuppressWarnings("unchecked")
 	@Override
 	@Deprecated
@@ -174,17 +134,17 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Post<BibTex>> getPostEntries(Integer skip, Integer max) {
+	public List<LucenePost<BibTex>> getPostEntries(Integer skip, Integer max) {
 		BibTexParam param = new BibTexParam();
 		param.setOffset(skip);
 		param.setLimit(max);
 		
-		List<Post<BibTex>> retVal = null;
+		List<LucenePost<BibTex>> retVal = null;
 		try {
-			retVal = (List<Post<BibTex>>)sqlMap.queryForList("getBibTexForIndex", param);
+			retVal = (List<LucenePost<BibTex>>)sqlMap.queryForList("getBibTexForIndex2", param);
 		} catch (SQLException e) {
 			log.error("Error getting bibtex entries.", e);
-			retVal = new LinkedList<Post<BibTex>>();
+			retVal = new LinkedList<LucenePost<BibTex>>();
 		}
 		
 		return retVal;
@@ -202,10 +162,29 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 		try {
 			retVal = (List<Post<BibTex>>)sqlMap.queryForList("getBibTexPostsForTimeRange2", param);
 		} catch (SQLException e) {
-			log.error("Error getting bookmark entries.", e);
+			log.error("Error getting bibtex entries.", e);
 			retVal = new LinkedList<Post<BibTex>>();
 		}
 		
 		return retVal;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<LucenePost<BibTex>> getNewPosts(Integer lastTasId) {
+		BibTexParam param = new BibTexParam();
+		param.setLastTasId(lastTasId);
+		param.setLimit(Integer.MAX_VALUE);
+		
+		List<LucenePost<BibTex>> retVal = null;
+		try {
+			retVal = (List<LucenePost<BibTex>>)sqlMap.queryForList("getBibTexPostsForTimeRange3", param);
+		} catch (SQLException e) {
+			log.error("Error getting bibtex entries.", e);
+			retVal = new LinkedList<LucenePost<BibTex>>();
+		}
+		
+		return retVal;
+	}
+
 }

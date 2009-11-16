@@ -16,13 +16,14 @@
 	</select>
 
 	<!-- get list of all publications for given user -->
-	<select id="getBibTexForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
+	<select id="getBibTexForUser" resultMap="BibTexCommon.luceneLogBibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count, t.tas_id, b2.change_date AS log_date
 		FROM (SELECT t1.*, h.ctr AS count
 		      FROM bibtex t1, bibhash h
 		      WHERE <include refid="bibtexSimHash3"/>
 		            AND t1.user_name = #requestedUserName#
-		            <include refid="restrictToGroups"/>
+		            AND t1.group &gt;= 0
+		            <!-- <include refid="restrictToGroups"/> -->
 		        	<dynamic prepend="AND">
 						<isNotNull property="entryType">		
 							entrytype = #entryType#
@@ -32,24 +33,25 @@
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
 		WHERE b2.group = g.group
-		ORDER BY b2.date DESC, b2.content_id DESC
+		ORDER BY b2.date DESC, b2.content_id DESC, t.tas_id DESC
 	</select>
 	
 	<!-- get list of all bookmarks for given user -->
-	<select id="getBookmarkForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+	<select id="getBookmarkForUser" resultMap="BookmarkCommon.luceneLogBookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
-		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name
+		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name, t.tas_id, bb.change_date AS log_date
 		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
-		             u.book_url, u.book_url_ctr, t1.group, t1.user_name
+		             u.book_url, u.book_url_ctr, t1.group, t1.user_name, t1.change_date
 		      FROM bookmark t1, urls u
 		      WHERE u.book_url_hash = t1.book_url_hash
 		            AND t1.user_name = #requestedUserName#
-		            <include refid="restrictToGroups"/>
+		            <!-- <include refid="restrictToGroups"/> -->
+		            AND t1.group &gt;= 0
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS bb
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g
 		WHERE bb.group = g.group
-		ORDER BY bb.date DESC, bb.content_id DESC
+		ORDER BY bb.date DESC, bb.content_id DESC, t.tas_id DESC
 	</select>
 	
 	<!--  get list of content ids which will should be deleted from index -->
@@ -60,6 +62,13 @@
 		AND log_date &lt;= #second# 
 		ORDER BY date
 	</select>
+
+	<!--  get list of content ids which will should be deleted from index -->
+	<select id="getBibTexContentIdsToDelete2"  resultClass="integer" parameterClass="date">
+		SELECT content_id
+		FROM log_bibtex 
+		WHERE log_date &gt; #date# 
+	</select>
 	
 	<!--  get list of content ids which will should be deleted from index -->
 	<select id="getBookmarkContentIdsToDelete"  resultClass="integer" parameterClass="pair">
@@ -68,6 +77,13 @@
 		WHERE log_date &gt; #first# 
 		AND log_date &lt;= #second# 
 		ORDER BY date
+	</select>
+
+	<!--  get list of content ids which will should be deleted from index -->
+	<select id="getBookmarkContentIdsToDelete2"  resultClass="integer" parameterClass="date">
+		SELECT content_id
+		FROM log_bookmark 
+		WHERE log_date &gt; #date# 
 	</select>
 
 	<!--  get list of content ids which will should be deleted from index -->
@@ -145,6 +161,23 @@
 		WHERE b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
+	
+	<!--+ 
+		| get list of bibtex posts within a given time range
+		| Parameter: 
+		|    fromDate 
+		|    toDate 
+		+-->
+	<select id="getBibTexPostsForTimeRange3" parameterClass="bibtexParam" resultMap="BibTexCommon.luceneBibtexPost">
+		SELECT <include refid ="luceneBibtexAttributes2"/>, t.tag_name, g.*, h.ctr AS count
+		FROM tas t
+	      JOIN bibtex b2 USING (content_id)
+	      JOIN bibhash h ON (<include refid="bibtexSimHash4"/>)
+	      JOIN groupids g ON (b2.group = g.group)
+		WHERE t.tas_id &gt; #lastTasId#
+		  AND b2.group &gt;= 0
+		ORDER BY b2.date DESC, b2.content_id DESC, t.tas_id DESC
+	</select>
 				
 	<!--+ 
 		| get list of bookmark posts within a given time range
@@ -190,6 +223,23 @@
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g
 		WHERE t.group = g.group
 		ORDER BY bb.date DESC, bb.content_id DESC
+	</select>
+	
+	<!--+ 
+		| get list of bookmark posts within a given time range
+		| Parameter: 
+		|    fromDate 
+		|    toDate 
+		+-->
+	<select id="getBookmarkForTimeRange3" resultMap="BookmarkCommon.luceneBookmarkPost" parameterClass="bookmarkParam">
+	    SELECT <include refid ="luceneBookmarkAttributes"/>
+	    FROM tas t
+	      JOIN bookmark b USING (content_id)
+	      JOIN urls u USING (book_url_hash)
+	      JOIN groupids g ON (b.group = g.group)
+	    WHERE t.tas_id &gt; #lastTasId#
+	      AND b.group &gt;= 0
+	    ORDER BY b.date DESC, b.content_id DESC, t.tas_id DESC
 	</select>
 	
 	<!--+
@@ -239,7 +289,7 @@
 		| FIXME: we set post's date to the change_date to set the index' latest update time 
 		| FIXME: this is probably inefficient and should be simplified 
 	    +-->
-	<select id="getUpdatedBibTexPostsForTimeRange" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+	<select id="getUpdatedBibTexPostsForTimeRange2" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes3"/>, t.tag_name, g.*, b2.count, c.log_date AS date, c.log_date AS date2
 		FROM (SELECT lt.content_id, MAX(lt.log_date) AS log_date
 			  FROM log_tas lt
@@ -268,7 +318,38 @@
 		WHERE b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC
 	</select>
-
+	
+	
+	<!--+
+	    | get list of all bibtexs for given user
+		| Parameter: 
+		|    Param.fromDate 
+		|    Param.toDate
+		|
+		| FIXME: we set post's date to the change_date to set the index' latest update time 
+		| FIXME: this is probably inefficient and should be simplified 
+	    +-->
+	<select id="getUpdatedBibTexPostsForTimeRange" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
+		SELECT <include refid ="bibtexAttributes3"/>, t.tag_name, g.*, b2.count, b2.change_date AS date
+		FROM tas t
+		JOIN
+		     (SELECT t1.*, h.ctr AS count
+		      FROM bibtex t1, bibhash h
+		      WHERE <include refid="bibtexSimHash3"/>
+		            <include refid="restrictToGroups"/>
+		        	<dynamic prepend="AND">
+						<isNotNull property="entryType">		
+							entrytype = #entryType#
+						</isNotNull>
+		     		</dynamic>
+		      ORDER BY date DESC
+		      LIMIT #limit# OFFSET #offset#) AS b2 USING(content_id), groupids AS g
+		WHERE t.change_date &gt; #fromDate#       
+          AND t.change_date &lt;= #toDate#
+          AND ABS(TIMESTAMPDIFF(SECOND, t.change_date, b2.change_date))&lt;10
+		  AND b2.group = g.group
+		ORDER BY b2.date DESC, b2.content_id DESC
+	</select>
 <!--
 alternative query for determining tas updates
  
