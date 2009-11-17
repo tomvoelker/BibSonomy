@@ -95,6 +95,9 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * to be inserted for given users) 
 	 */
 	private Set<String> usersToFlag;
+
+	/** flag indicating whether the index should be optimized during next update */
+	private boolean optimizeIndex;
 	
 	/**
 	 * constructor disabled
@@ -106,6 +109,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		contentIdsToDelete = new LinkedList<Integer>();
 		postsToInsert      = new LinkedList<Document>();
 		usersToFlag        = new TreeSet<String>();
+		optimizeIndex      = false;
 	};
 	
 	/**
@@ -144,6 +148,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
+	/*
 	public Date getNewestRecordDateFromIndex() {
 		synchronized(this) {
 			this.ensureReadAccess();
@@ -187,7 +192,8 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 				return new Date();
 		}
 	}
-
+	*/
+	
 	/**
 	 * get latest log_date[ms] from index 
 	 * @return
@@ -204,7 +210,6 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			QueryParser qp = new QueryParser(FLD_LAST_LOG_DATE,new StandardAnalyzer());
 			Sort sort = new Sort(FLD_LAST_LOG_DATE,true);
 	
-			// FIXME: dates shouldn't be stored in a text format
 			// search over all elements sort them reverse by date and return 1 top document (newest one)
 			TopDocs topDocs = null;
 			Document doc = null;
@@ -283,6 +288,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
+	/*
 	public Document getRecordForContentId(Integer contentId) {
 		synchronized(this) {
 			ensureReadAccess();
@@ -312,9 +318,46 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			return doc;
 		}
 	}
+	*/
 	
+	/**
+	 * triggers index optimization during next update
+	 */
+	public void optimizeIndex() {
+		synchronized(this) {
+			this.optimizeIndex = true;
+		}
+	}
 
-
+	/**
+	 * flag given user as spammer - preventing further posts to be inserted and
+	 * mark user's posts for deletion from index
+	 * 
+	 * @param username
+	 * @return
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 */
+	public void flagUser(String username) {
+		synchronized(this) {
+			this.usersToFlag.add(username);
+		}
+	}
+	
+	/**
+	 * unflag given user as spammer - enabling further posts to be inserted 
+	 * 
+	 * @param username
+	 * @return
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 */
+	public void unFlagUser(String userName) {
+		synchronized(this) {
+			this.usersToFlag.remove(userName);
+		}
+	}
+	
 	//------------------------------------------------------------------------
 	// public index access interface (all operations are cached)
 	//------------------------------------------------------------------------
@@ -434,37 +477,6 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		}
 	}
 	
-
-
-	
-	/**
-	 * flag given user as spammer - preventing further posts to be inserted and
-	 * mark user's posts for deletion from index
-	 * 
-	 * @param username
-	 * @return
-	 * @throws CorruptIndexException
-	 * @throws IOException
-	 */
-	public void flagUser(String username) {
-		synchronized(this) {
-			this.usersToFlag.add(username);
-		}
-	}
-	
-	/**
-	 * unflag given user as spammer - enabling further posts to be inserted 
-	 * 
-	 * @param username
-	 * @return
-	 * @throws CorruptIndexException
-	 * @throws IOException
-	 */
-	public void unFlagUser(String userName) {
-		synchronized(this) {
-			this.usersToFlag.remove(userName);
-		}
-	}
 	//------------------------------------------------------------------------
 	// private index access interface
 	//------------------------------------------------------------------------
@@ -605,15 +617,13 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	private void closeIndexWriter() throws CorruptIndexException, IOException {
 		log.debug("Closing index "+luceneIndexPath+" for writing");
 		indexWriter.commit();
-		// FIXME: handle index-optimization
 		// optimize index if requested
-		/*
-		if (optimize) {
+		if( this.optimizeIndex ) {
 			log.debug("optimizing index " + luceneIndexPath);
 			indexWriter.optimize();
 			log.debug("optimizing index " + luceneIndexPath + " DONE");
+			this.optimizeIndex = false;
 		}
-		*/
 		// close index for writing
 		indexWriter.close();
 	}

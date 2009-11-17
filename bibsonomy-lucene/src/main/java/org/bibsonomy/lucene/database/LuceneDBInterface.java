@@ -99,6 +99,11 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * get newest tas_id from database 
 	 */
 	public Integer getLastTasId();
+
+	/** 
+	 * get latest log_date from database
+	 */
+	public Date getLastLogDate();
 	
 	/** 
 	 * get number of TAS entries 
@@ -156,6 +161,4 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @return
 	 */
 	List<LucenePost<R>> getPostEntries(Integer skip, Integer max);
-
-
 }

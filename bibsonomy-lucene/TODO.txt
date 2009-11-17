@@ -1,8 +1,12 @@
+0) !!!BLOCK MODE DURING INDEX CREATION PROBABLY CUTS TAG ASSIGNMENTS, LEADING TO DUPLICATES!!
+   -> ORDER BY content_id
+      manually keep track of last content_id retrieved
 1) Remove possible write-locks on startup
-2) Use post's date and not its change_date
-   -> we need a different way for keeping track of indexe's last post
-      (e.g. add a change_date column)
-3) Re-Implement 'optimize index' handling
-4) Cache Flagging of spammers
-   -> TreeSet<String> spamUserNames
-   -> check posts prior insertion against this list
+2) Startup
+   - handle possibly lost flagged spammers 
+   (spammers where flagged, but bibsonomy crashed before the index was updated)
+   
+   -> on startup: get all users which where flagged as spammers/non-spammers in time 
+      t >= lastLogDate-epsilon
+      
+3) refator class 'GenerateLuceneIndex'

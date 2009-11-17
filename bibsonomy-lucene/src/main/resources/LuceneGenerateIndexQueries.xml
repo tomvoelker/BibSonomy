@@ -54,6 +54,17 @@
 		WHERE b.group &gt;= 0
 	</select>   
 	 
+	<!-- get last log_date from bibtex table -->
+	<select id="getLastLogBibTex" resultClass="date">
+		SELECT MAX(log_date)
+		FROM log_bibtex
+	</select>
+
+	<!-- get last log_date from bibtex table -->
+	<select id="getLastLogBookmark" resultClass="date">
+		SELECT MAX(log_date)
+		FROM log_bookmark
+	</select>
 	
 	<!-- get group ids with corresponding group names --> 
 	<select id="getGroupIDs" resultMap="groupIDs">
@@ -125,6 +136,35 @@
 	 -->		
 	</select>
 	
+	<!-- get list of all non-spam bookmarks -->
+	<select id="getBookmarksForIndex3" parameterClass="bookmarkParam" resultMap="BookmarkCommon.bookmarkPost">
+		SELECT 
+			bb.*, 
+			t.tag_name,
+			g.*  
+		FROM 
+		( 
+		  SELECT <include refid ="luceneCommonBookmarkAttributes"/>, b.group
+		  FROM bookmark b 
+	      JOIN urls u USING (book_url_hash)
+		  WHERE b.group &gt;= 0
+		  LIMIT #limit# OFFSET #offset#
+		) AS bb
+		LEFT JOIN tas t USING (content_id)
+	    LEFT JOIN groupids g ON (bb.group = g.group)
+	<!-- 
+		SELECT <include refid ="luceneBookmarkAttributes"/>
+	    FROM tas t
+	      JOIN bookmark b USING (content_id)
+	      JOIN urls u USING (book_url_hash)
+	      JOIN groupids g ON (b.group = g.group)
+	    WHERE b.group &gt;= 0
+	      AND b.content_id &gt; #requestedContentId#
+	    ORDER BY b.content_id ASC, t.tas_id DESC
+	    LIMIT #limit#
+ 	-->
+	</select>
+	
 	<!-- get list of all non-spam bibtex posts -->
 	<select id="getBibTexForIndex" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
@@ -160,6 +200,35 @@
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
 		WHERE b2.group = g.group
 		ORDER BY b2.date DESC, b2.content_id DESC
+		 -->
+	</select>
+	
+	<!-- get list of all non-spam bibtex posts -->
+	<select id="getBibTexForIndex3" parameterClass="bibtexParam" resultMap="BibTexCommon.bibtexPost">
+		SELECT 
+			bb.*, 
+			t.tag_name,
+			g.*  
+		FROM 
+		( 
+		  SELECT <include refid ="commonBibtexAttributes2"/>, b2.group, h.ctr AS count, b2.scraperid
+		  FROM bibtex b2 
+	      JOIN bibhash h ON (<include refid="bibtexSimHash4"/>)
+		  WHERE b2.group &gt;= 0
+		  LIMIT #limit# OFFSET #offset#
+		) AS bb
+		LEFT JOIN tas t USING (content_id)
+	    LEFT JOIN groupids g ON (bb.group = g.group)
+		<!-- 
+		SELECT <include refid ="luceneBibtexAttributes2"/>, t.tag_name, g.*, h.ctr AS count
+		FROM tas t
+	      JOIN bibtex b2 USING (content_id)
+	      JOIN bibhash h ON (<include refid="bibtexSimHash4"/>)
+	      JOIN groupids g ON (b2.group = g.group)
+		WHERE b2.group &gt;= 0
+		  AND b2.content_id &gt; #requestedContentId#
+		ORDER BY b2.content_id ASC, t.tas_id DESC
+		LIMIT #limit#
 		 -->
 	</select>
 </sqlMap>

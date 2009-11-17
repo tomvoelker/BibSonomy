@@ -111,6 +111,8 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	 * tests whether all posts whithin a given time range are retrieved
 	 */
 	@Test
+	@Deprecated
+	@Ignore
 	public void retrieveRecordsFromDatabase() {
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());

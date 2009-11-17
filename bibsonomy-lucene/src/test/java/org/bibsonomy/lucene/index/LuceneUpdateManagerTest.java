@@ -28,6 +28,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.lucene.database.LuceneBibTexLogic;
+import org.bibsonomy.lucene.database.LuceneBookmarkLogic;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateBibTexSearch;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateBookmarkSearch;
@@ -383,10 +384,25 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws IOException 
 	 */
 	private void generateIndex() throws IOException, ClassNotFoundException, SQLException {
+		/*
 		GenerateLuceneIndex indexer = new GenerateLuceneIndex(JNDITestDatabaseBinder.getLuceneProperties());
 		indexer.setLogic(LuceneBibTexLogic.getInstance());
 		indexer.generateIndex();
+		*/
+		
+		// FIXME: configure this via spring
+		LuceneGenerateResourceIndex<BibTex> bibTexIndexer = 
+			new LuceneGenerateBibTexIndex(JNDITestDatabaseBinder.getLuceneProperties()); 
+		LuceneGenerateResourceIndex<Bookmark> bookmarkIndexer = 
+			new LuceneGenerateBookmarkIndex(JNDITestDatabaseBinder.getLuceneProperties());
+		
+		bibTexIndexer.setLogic(LuceneBibTexLogic.getInstance());
+		bookmarkIndexer.setLogic(LuceneBookmarkLogic.getInstance());
+		
+		bibTexIndexer.generateIndex();
+		bookmarkIndexer.generateIndex();
 	}
+	
 	/**
 	 * generate a BibTex Post, can't call setBeanPropertiesOn() because private
 	 * so copy & paste the setBeanPropertiesOn() into this method

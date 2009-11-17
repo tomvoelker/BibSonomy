@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xerces.impl.io.Latin1Reader;
 import org.bibsonomy.lucene.database.params.BookmarkParam;
 import org.bibsonomy.lucene.database.params.ResourcesParam;
 import org.bibsonomy.lucene.database.results.Pair;
@@ -113,6 +114,20 @@ public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
 	// TODO: maybe we should introduce a special class hierarchy
 	//------------------------------------------------------------------------
 	@Override
+	public Date getLastLogDate() {
+		Date retVal = null;
+		try {
+			retVal = (Date)sqlMap.queryForObject("getLastLogBookmark");
+		} catch (SQLException e) {
+			log.error("Error determining last log date.", e);
+		}
+		if( retVal==null )
+			return new Date(System.currentTimeMillis());
+		else
+			return retVal;
+	}
+
+	@Override
 	public int getNumberOfPosts() {
 		Integer retVal = 0;
 		try {
@@ -132,7 +147,7 @@ public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
 		
 		List<LucenePost<Bookmark>> retVal = null;
 		try {
-			retVal = (List<LucenePost<Bookmark>>)sqlMap.queryForList("getBookmarksForIndex2", param);
+			retVal = (List<LucenePost<Bookmark>>)sqlMap.queryForList("getBookmarksForIndex3", param);
 		} catch (SQLException e) {
 			log.error("Error getting bookmark entries.", e);
 			retVal = new LinkedList<LucenePost<Bookmark>>();

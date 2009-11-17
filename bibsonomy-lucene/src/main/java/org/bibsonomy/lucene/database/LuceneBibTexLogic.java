@@ -122,6 +122,20 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 	// TODO: maybe we should introduce a special class hierarchy
 	//------------------------------------------------------------------------
 	@Override
+	public Date getLastLogDate() {
+		Date retVal = null;
+		try {
+			retVal = (Date)sqlMap.queryForObject("getLastLogBibTex");
+		} catch (SQLException e) {
+			log.error("Error determining last log date.", e);
+		}
+		if( retVal==null )
+			return new Date(System.currentTimeMillis());
+		else
+			return retVal;
+	}
+
+	@Override
 	public int getNumberOfPosts() {
 		Integer retVal = 0;
 		try {
@@ -141,7 +155,7 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 		
 		List<LucenePost<BibTex>> retVal = null;
 		try {
-			retVal = (List<LucenePost<BibTex>>)sqlMap.queryForList("getBibTexForIndex2", param);
+			retVal = (List<LucenePost<BibTex>>)sqlMap.queryForList("getBibTexForIndex3", param);
 		} catch (SQLException e) {
 			log.error("Error getting bibtex entries.", e);
 			retVal = new LinkedList<LucenePost<BibTex>>();

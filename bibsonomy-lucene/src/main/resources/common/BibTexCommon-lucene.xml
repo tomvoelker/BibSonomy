@@ -42,7 +42,7 @@
 		<result property="documents"      resultMap="DocumentCommon.document" />
 	</resultMap>	
 
-	<resultMap id="bibtexPost" class="post" extends="Common.posts">
+	<resultMap id="bibtexPost" class="lucenepost" extends="Common.posts">
 		<result property="resource"   resultMap="BibTexCommon.bibtex" />
 	</resultMap>
 
@@ -52,7 +52,7 @@
 
 	<resultMap id="luceneLogBibtexPost" class="lucenePost" extends="bibtexPost">
 		<result property="lastTasId"    column="tas_id" />
-		<result property="lastLogDate"  column="log_date" />
+		<result property="lastLogDate"  column="log_date" javaType="date"/>
 	</resultMap>
 	
 	

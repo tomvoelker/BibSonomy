@@ -240,6 +240,14 @@ public class LuceneResourceManager<R extends Resource> {
 	*/
 	
 	/**
+	 * triggers index optimization during next update
+	 */
+	public void optimizeIndex() {
+		if( this.resourceIndex!=null )
+			this.resourceIndex.optimizeIndex();
+	}
+	
+	/**
 	 * updates the index, that is
 	 *  - adds new posts 
 	 *  - updates posts, where tag assignments have changed
