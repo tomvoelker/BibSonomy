@@ -1,6 +1,3 @@
-0) !!!BLOCK MODE DURING INDEX CREATION PROBABLY CUTS TAG ASSIGNMENTS, LEADING TO DUPLICATES!!
-   -> ORDER BY content_id
-      manually keep track of last content_id retrieved
 1) Remove possible write-locks on startup
 2) Startup
    - handle possibly lost flagged spammers 
@@ -9,4 +6,15 @@
    -> on startup: get all users which where flagged as spammers/non-spammers in time 
       t >= lastLogDate-epsilon
       
-3) refator class 'GenerateLuceneIndex'
+3) Startup
+   - don't crash on wrong configuration
+   -> assume default values or disable lucene search
+
+4) remove deprecated queries
+
+5) flagged spammers get lost on crash
+   -> recovery on startup OR use a sql-table for caching 
+   
+6) implement multiple deletion by multi-term-search
+
+7) centralize FLD_* constants (probably via spring?!)

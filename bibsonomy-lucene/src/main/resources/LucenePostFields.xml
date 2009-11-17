@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+
+	<!--+
+        | Post property mapping configuration
+        +-->
+	<bean id="postPropertyMap" class="org.springframework.beans.factory.config.MapFactoryBean">
+  		<property name="sourceMap">
+  			<map>
+				<entry key="contentId">
+					<map>
+						<entry key="luceneName" value="content_id" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+					</map>
+				</entry>
+				<entry key="date">
+					<map>
+						<entry key="luceneName" value="date" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+						<entry key="typeHandler" value-ref="dateConverter" />
+					</map>
+				</entry>
+				<entry key="lastLogDate">
+					<map>
+						<entry key="luceneName" value="last_log_date" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+						<entry key="typeHandler" value-ref="dateMSConverter" />
+					</map>
+				</entry>
+				<entry key="lastTasId">
+					<map>
+						<entry key="luceneName" value="last_tas_id" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+					</map>
+				</entry>
+				<entry key="description">
+					<map>
+						<entry key="luceneName" value="ext" />
+						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+					</map>
+				</entry>
+				<entry key="groups">
+					<map>
+						<entry key="luceneName" value="group" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+						<entry key="itemProperty" value="name" />
+					</map>
+				</entry>
+				<entry key="tags">
+					<map>
+						<entry key="luceneName" value="tas" />
+						<entry key="luceneIndex" value-ref="fieldAnalyzed" />
+						<entry key="itemProperty" value="name" />
+					</map>
+				</entry>
+				<entry key="user.name">
+					<map>
+						<entry key="luceneName" value="user_name" />
+					</map>
+				</entry>
+  			</map>
+  		</property>
+	</bean>
+</beans>

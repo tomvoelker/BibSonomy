@@ -139,8 +139,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		this.bibTexDb.createPost(toInsert.getUser().getName(), toInsert, this.dbSession);
 
 		// update index
-		this.luceneBibTexUpdater.updateIndex(false);
-		this.luceneBookmarkUpdater.updateIndex(false);
+		this.luceneBibTexUpdater.updateIndex();
+		this.luceneBookmarkUpdater.updateIndex();
 		this.luceneBibTexUpdater.reloadIndex();
 		this.luceneBookmarkUpdater.reloadIndex();
 		
@@ -192,8 +192,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
 
 		// update index
-		this.luceneBibTexUpdater.updateIndex(false);
-		this.luceneBookmarkUpdater.updateIndex(false);
+		this.luceneBibTexUpdater.updateIndex();
+		this.luceneBookmarkUpdater.updateIndex();
 		this.luceneBibTexUpdater.reloadIndex();
 		this.luceneBookmarkUpdater.reloadIndex();
 
@@ -221,8 +221,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		this.bibTexDb.createPost(workaroundInsert.getUser().getName(), workaroundInsert, this.dbSession);
 		
 		// update index
-		this.luceneBibTexUpdater.updateIndex(false);
-		this.luceneBookmarkUpdater.updateIndex(false);
+		this.luceneBibTexUpdater.updateIndex();
+		this.luceneBookmarkUpdater.updateIndex();
 		this.luceneBibTexUpdater.reloadIndex();
 		this.luceneBookmarkUpdater.reloadIndex();
 		
@@ -249,8 +249,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
 		
 		// update index
-		this.luceneBibTexUpdater.updateIndex(false);
-		this.luceneBookmarkUpdater.updateIndex(false);
+		this.luceneBibTexUpdater.updateIndex();
+		this.luceneBookmarkUpdater.updateIndex();
 		this.luceneBibTexUpdater.reloadIndex();
 		this.luceneBookmarkUpdater.reloadIndex();
 		
@@ -293,8 +293,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		user.setPrediction(1);
 		this.luceneBibTexUpdater.flagSpammer(user);
 		this.luceneBookmarkUpdater.flagSpammer(user);
-		this.luceneBibTexUpdater.updateIndex(false);
-		this.luceneBookmarkUpdater.updateIndex(false);
+		this.luceneBibTexUpdater.updateIndex();
+		this.luceneBookmarkUpdater.updateIndex();
 		this.luceneBibTexUpdater.reloadIndex();
 		this.luceneBookmarkUpdater.reloadIndex();
 		
@@ -308,8 +308,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		user.setPrediction(0);
 		this.luceneBibTexUpdater.flagSpammer(user);
 		this.luceneBookmarkUpdater.flagSpammer(user);
-		this.luceneBibTexUpdater.updateIndex(false);
-		this.luceneBookmarkUpdater.updateIndex(false);
+		this.luceneBibTexUpdater.updateIndex();
+		this.luceneBookmarkUpdater.updateIndex();
 		this.luceneBibTexUpdater.reloadIndex();
 		this.luceneBookmarkUpdater.reloadIndex();
 		
@@ -357,8 +357,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
 
 		// update index
-		this.luceneBibTexUpdater.updateIndex(false);
-		this.luceneBookmarkUpdater.updateIndex(false);
+		this.luceneBibTexUpdater.updateIndex();
+		this.luceneBookmarkUpdater.updateIndex();
 		this.luceneBibTexUpdater.reloadIndex();
 		this.luceneBookmarkUpdater.reloadIndex();
 

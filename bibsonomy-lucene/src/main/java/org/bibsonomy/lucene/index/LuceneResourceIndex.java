@@ -138,61 +138,6 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		this.analyzer = new StandardAnalyzer();
 	}
 	
-
-	
-	/**
-	 * get most recent post's date from index
-	 *  
-	 * @param reader
-	 * @return
-	 * @throws CorruptIndexException
-	 * @throws IOException
-	 */
-	/*
-	public Date getNewestRecordDateFromIndex() {
-		synchronized(this) {
-			this.ensureReadAccess();
-			
-			Date newestDate = null;
-	
-			int hitsPerPage = 1;
-			
-			IndexSearcher searcher = new IndexSearcher(indexReader);
-			QueryParser qp = new QueryParser(COL_CONTENT_ID,new StandardAnalyzer());
-			Sort sort = new Sort(FLD_DATE,true);
-	
-			// FIXME: dates shouldn't be stored in a text format
-			// search over all elements sort them reverse by date and return 1 top document (newest one)
-			TopDocs topDocs = null;
-			Document doc = null;
-			try {
-				topDocs = searcher.search(qp.parse("*:*"), null, hitsPerPage, sort);
-				doc = searcher.doc(topDocs.scoreDocs[0].doc);
-				// parse date
-				SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SS");
-				newestDate = dateFormatter.parse(doc.get(FLD_DATE));//dateFormatter.parse("1815-12-10 00:00:00.0");
-			} catch (ParseException e) {
-				log.error("ParseException while parsing *:* in getNewestRecordDateFromIndex ("+e.getMessage()+")");
-			} catch (java.text.ParseException e) {
-				log.error("Error parsing date " + ((doc!=null)?doc.get(FLD_DATE):""));
-				newestDate = new Date();
-			} catch (IOException e) {
-				log.error("Error reading index file " + this.luceneIndexPath);
-			} finally {
-				try {
-					searcher.close();
-				} catch (IOException e) {
-					log.error("Error closing index "+this.luceneIndexPath+" for searching", e);
-				}
-			}
-			
-			if( newestDate!=null )
-				return newestDate; 
-			else
-				return new Date();
-		}
-	}
-	*/
 	
 	/**
 	 * get latest log_date[ms] from index 
@@ -279,46 +224,6 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 				return -1;
 		}
 	}
-	
-	/**
-	 * get search for record containing given content_id
-	 *  
-	 * @param reader
-	 * @return
-	 * @throws CorruptIndexException
-	 * @throws IOException
-	 */
-	/*
-	public Document getRecordForContentId(Integer contentId) {
-		synchronized(this) {
-			ensureReadAccess();
-			
-			int hitsPerPage = 1;
-
-			IndexSearcher searcher = new IndexSearcher(indexReader);
-			Sort sort = new Sort(FLD_DATE,true);
-			Query searchQuery = new TermQuery(new Term(COL_CONTENT_ID, contentId.toString()));
-
-			// search over all elements sort them reverse by date and return first top document 
-			TopDocs topDocs = null;
-			Document doc = null;
-			try {
-				topDocs = searcher.search(searchQuery, null, hitsPerPage, sort);
-				if( topDocs.scoreDocs.length>0 )
-					doc     = searcher.doc(topDocs.scoreDocs[0].doc);
-			} catch (IOException e) {
-				log.error("Error reading index file " + this.luceneIndexPath);
-			} finally {
-				try {
-					searcher.close();
-				} catch (IOException e) {
-					log.error("Error closing index "+this.luceneIndexPath+" for searching", e);
-				}
-			}
-			return doc;
-		}
-	}
-	*/
 	
 	/**
 	 * triggers index optimization during next update
@@ -661,8 +566,6 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			}
 		}
 	}
-
-	
 
 	/**
 	 * get managed resource type

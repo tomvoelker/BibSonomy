@@ -1,55 +1,25 @@
 package org.bibsonomy.lucene.index;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Connection;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.Name;
-import javax.naming.NamingException;
-
-import org.bibsonomy.lucene.database.DBTool;
-import org.bibsonomy.lucene.database.LuceneBibTexLogic;
-import org.bibsonomy.lucene.database.LuceneBookmarkLogic;
-import org.bibsonomy.lucene.database.LuceneDBGenerateLogic;
-import org.bibsonomy.lucene.database.LuceneDBInterface;
-import org.bibsonomy.lucene.database.params.GroupParam;
-import org.bibsonomy.lucene.database.params.GroupTasParam;
-import org.bibsonomy.lucene.database.params.TasParam;
-import org.bibsonomy.lucene.index.analyzer.SimpleKeywordAnalyzer;
-import org.bibsonomy.lucene.param.LuceneData;
-import org.bibsonomy.lucene.param.LucenePost;
-import org.bibsonomy.lucene.param.typehandler.LuceneDateFormatter;
-import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
-import org.bibsonomy.lucene.util.LucenePostConverter;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.util.tex.TexEncode;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.KeywordAnalyzer;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.bibsonomy.lucene.database.LuceneDBInterface;
+import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.lucene.util.LucenePostConverter;
+import org.bibsonomy.model.Group;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 
 /**
  * reads bibsonomy data from data base and builds lucene index for bookmark
@@ -214,22 +184,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 		// create index, possibly overwriting existing index files
 		indexWriter  = new IndexWriter(this.luceneResourceIndexPath, analyzer, true, mfl); 
 	}
-	
-	/**
-	 * initialize internal data structures
-	 */
-	private void testContext() {
-		try {
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup(CONTEXT_ENV_NAME);
-			
-			String contextPathName = CONTEXT_INDEX_PATH+getResourceName();
-			String luceneIndexPath = (String) envContext.lookup(contextPathName);
-		} catch (NamingException e) {
-			log.error("NamingException requesting JNDI environment variables ' ("+e.getMessage()+")", e);
-		}
-	}
-	
+
 	
 	/**
 	 * creates index of bookmark entries
@@ -238,8 +193,6 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	public void createIndexFromDatabase() throws CorruptIndexException, IOException {
-		this.testContext();
-		
 		// number of post entries
 		log.info("Number of post entries: "+this.dbLogic.getNumberOfPosts());
 		
