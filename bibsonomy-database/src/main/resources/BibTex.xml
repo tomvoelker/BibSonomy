@@ -298,17 +298,24 @@
 
 
 	<select id="getBibTexFromInbox" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam" >
-		SELECT <include refid ="allBibtexAttributes"/>, t.tag_name, b.ctr AS count,
-		       b.interHash, b.intraHash, NULL AS `group`, NULL AS group_name
-		FROM (SELECT <include refid ="bibtexAttributes2"/>, h.ctr
-		      FROM bibtex b2, bibhash h, inboxMail i
-		      WHERE b2.content_id = i.content_id
-		      	AND <include refid="bibtexSimHash2"/>
-		      	AND i.receiver_user = #requestedUserName#
-		      ORDER BY i.date DESC
-		      LIMIT #limit# OFFSET #offset#) AS b
-		LEFT OUTER JOIN tas AS t ON t.content_id = b.content_id
-		ORDER BY b.date DESC, b.content_id
+		SELECT <include refid ="allBibtexAttributes"/>, b.tag_name, b.interHash, b.intraHash,
+				b.inbox_date, h.ctr AS count, NULL AS `group`, NULL AS group_name
+		FROM ((SELECT i.date AS inbox_date, <include refid ="bibtexAttributes2"/>, b2.simhash$simHash$, t.tag_name
+				FROM (SELECT * 
+						FROM inboxMail 
+						WHERE receiver_user=#requestedUserName#) AS i
+				INNER JOIN bibtex b2 ON i.content_id=b2.content_id
+				LEFT OUTER JOIN tas t ON t.content_id=b2.content_id) 
+				UNION	
+				(SELECT i.date AS inbox_date, <include refid ="bibtexAttributes2"/>, b2.simhash$simHash$, t.tag_name
+				FROM (SELECT * 
+						FROM inboxMail
+						WHERE receiver_user=#requestedUserName#) AS i
+				INNER JOIN log_bibtex b2 ON i.content_id=b2.content_id
+				LEFT OUTER JOIN log_tas t ON t.content_id=b2.content_id)) AS b
+		LEFT OUTER JOIN bibhash h ON <include refid="bibtexSimHash"/>
+		ORDER BY b.inbox_date DESC, b.content_id
+		LIMIT #limit# OFFSET #offset#
 	</select>
 	
 	
