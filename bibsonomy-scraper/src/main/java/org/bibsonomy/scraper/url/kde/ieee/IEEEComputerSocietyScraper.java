@@ -24,7 +24,7 @@ import org.bibsonomy.util.WebUtils;
 public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 
 	private static final String SITE_NAME = "IEEE Computer Society";
-	private static final String SITE_URL = "http://www2.computer.org/portal/web/guest/home";
+	private static final String SITE_URL = "http://www.computer.org/portal/web/guest/home";
 	private static final String INFO = "Scraper for publications from " + href(SITE_URL, SITE_NAME);
 	private static final String HOST_OLD= "csdl2.computer.org";
 	private static final String HOST_NEW = "computer.org";
@@ -33,7 +33,7 @@ public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 
 	private static final String LINK_SUFFIX = "BibTex</A>";
 	
-	private static final String DOWNLOAD_URL = "http://www2.computer.org/plugins/dl/doi/";
+	private static final String DOWNLOAD_URL = "http://www.computer.org/plugins/dl/doi/";
 	
 	private static final Pattern bibtexPattern = Pattern.compile("<div id=\"bibText-content\">(.*})</div>", Pattern.DOTALL);
 	
