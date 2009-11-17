@@ -6,6 +6,7 @@ import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
+import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Post;
@@ -32,6 +33,7 @@ public class ForFriendTag extends SystemTag {
 	private final PermissionDatabaseManager permissionDb;
 	private final GeneralDatabaseManager generalDb; //needed to check: Is sender friend of receiver?
 	private final InboxDatabaseManager inboxDb;
+	private final TagDatabaseManager tagDb;
 
 	/**
 	 * Constructor
@@ -42,6 +44,7 @@ public class ForFriendTag extends SystemTag {
 		this.permissionDb = PermissionDatabaseManager.getInstance();
 		this.inboxDb = InboxDatabaseManager.getInstance();
 		this.generalDb=GeneralDatabaseManager.getInstance();
+		this.tagDb = TagDatabaseManager.getInstance();
 	}
 
 	@Override
@@ -65,9 +68,17 @@ public class ForFriendTag extends SystemTag {
 		/*
 		 * get InboxDatabaseManager to store the Message
 		 */
+		//TODO: What if contentId is currently unknown? i.e. not stored in post
 		inboxDb.createItem(post.getUser().getName(), receiver, post.getContentId(), session);
-		
-	}
+		/*
+		 * rename forFriendTag from send:userName to sent:userName
+		 * We deactivate the systemTag to avoid resending the Message each time the sender updates his post
+		 */
+		this.tagDb.deleteTags(post, session);
+		this.getTag().setName("sent:"+receiver);
+		//this.replaceTags(post.getTags(), this.getTag().getName(), "sent:"+receiver);
+		this.tagDb.insertTags(post, session);
+}
 
 	@Override
 	public <T extends Resource> void performBefore(Post<T> post, final DBSession session) {
