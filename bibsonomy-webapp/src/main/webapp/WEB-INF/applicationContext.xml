@@ -47,13 +47,11 @@
 	<bean id="luceneUpdateBibTexJobWithoutIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	  <property name="targetObject" ref="luceneBibTexManager" />
 	  <property name="targetMethod" value="updateAndReloadIndex" />
-	  <property name="arguments" value="false" /> <!-- optimizeIndex true|false -->
 	  <property name="concurrent" value="false" />
 	</bean>
 	<bean id="luceneUpdateBookmarkJobWithoutIndexOptimization" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	  <property name="targetObject" ref="luceneBookmarkManager" />
 	  <property name="targetMethod" value="updateAndReloadIndex" />
-	  <property name="arguments" value="false" /> <!-- optimizeIndex true|false -->
 	  <property name="concurrent" value="false" />
 	</bean>
 
