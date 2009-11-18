@@ -3,6 +3,7 @@ package org.bibsonomy.lucene.search;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -21,13 +22,17 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RangeFilter;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.LuceneException;
 import org.bibsonomy.lucene.index.analyzer.SimpleKeywordAnalyzer;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
@@ -37,17 +42,16 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.ValidationUtils;
 
-//FIXME: remove this comment (used only for triggering cvs-commit)
+//FIXME: this needs further cleanup
 
 public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
+	private static final String CFG_RELEVANCE = "relevance";
 	final Log LOGGER = LogFactory.getLog(LuceneSearchBibTex.class);
+	final Log log = LogFactory.getLog(LuceneSearchBibTex.class);
 
 	private final static LuceneSearchBibTex singleton = new LuceneSearchBibTex();
-	private IndexSearcher searcher; 
-	private PerFieldAnalyzerWrapper analyzer;
-	private String lucenePath = null;
-	
 	
 	String lField_contentid = "content_id";
 	String lField_group = "group";
@@ -61,74 +65,12 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 	String lField_year = "year";
 	String lField_merged = "mergedfields";	
 
+	/**
+	 * constructor
+	 */
 	private LuceneSearchBibTex() {
 		reloadIndex();
 	}
-	
-
-	public void reloadIndex() {
-		try {
-
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			lucenePath = (String) envContext.lookup("luceneIndexPathBibTex");
-			
-			LOGGER.debug("LuceneBibTex: use index: " + lucenePath);
-
-			/* set current path to lucene index, given by environment parameter in tomcat's context.xml
-			 * 
-			 *   <Environment name="luceneIndexPathPublications" type="java.lang.String" value="/home/bibsonomy/lucene"/>
-			 */
-
-
-			if (this.analyzer == null)
-			{
-				/** lucene analyzer, must be the same as at indexing */
-				//SimpleAnalyzer analyzer = new SimpleAnalyzer();
-				this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer());
-	
-				// let field group of analyzer use SimpleKeywordAnalyzer
-				// numbers will be deleted by SimpleAnalyser but group has only numbers, therefore use SimpleKeywordAnalyzer 
-				this.analyzer.addAnalyzer("group", new SimpleKeywordAnalyzer());
-				// usernames also might contain numbers - 
-				// as the user_name field is not analyzed (which makes pretty sense)
-				// the user_name shouldn't be normalized as well
-				this.analyzer.addAnalyzer("user_name", new SimpleKeywordAnalyzer());
-			}
-			
-			
-			// if there is already a searcher
-			try {
-				if (null != this.searcher) this.searcher.close();
-			} catch (IOException e) {
-				LOGGER.debug("LuceneBibTex: IOException on searcher.close: "+ e.getMessage());
-			} catch (RuntimeException e)
-			{
-				LOGGER.debug("LuceneBibTex: RuntimeException on searcher.close: "+ e.getMessage());
-			}
-
-			// load and hold index on physical hard disk
-			LOGGER.debug("LuceneBibTex: use index from disk");
-			LOGGER.debug("this.searcher-0: " + this.searcher);
-			this.searcher = new IndexSearcher( lucenePath );
-			LOGGER.debug("this.searcher-1: " + this.searcher);
-
-		} catch (final NamingException e) {
-			LOGGER.error("LuceneBibTex: NamingException "+ e.getExplanation() + " ## " + e.getMessage());
-			LOGGER.error("Environment variable luceneIndexPathPublications not present.");
-			throw new LuceneException("error.lucene");
-		} catch (CorruptIndexException e) {
-			LOGGER.error("LuceneBibTex: CorruptIndexException "+ e.getMessage());
-			throw new LuceneException("error.lucene");
-		} catch (IOException e) {
-			LOGGER.error("LuceneBibTex: IOException "+ e.getMessage());
-			throw new LuceneException("error.lucene");
-		} catch (RuntimeException e) {
-			LOGGER.warn("LuceneBibTex: RuntimeException "+ e.getMessage());
-			throw new LuceneException("error.lucene");
-		}
-	}
-
 	
 	/**
 	 * @return LuceneSearchBookmarks
@@ -136,7 +78,6 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 	public static LuceneSearchBibTex getInstance() {
 		return singleton;
 	}
-
 	
 	/**
 	 * full text search for search:all and search:username
@@ -148,7 +89,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 	 * @param GroupNames
 	 * @return queryString
 	 */
-	
+	/*
 	private QuerySortContainer getFulltextQueryFilter (String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames) {
 		final Log LOGGER = LogFactory.getLog(LuceneSearchBibTex.class);
 
@@ -177,10 +118,10 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 
 		if ( (searchTerms != null) && (!searchTerms.isEmpty()) )
 		{
-			/* parse search_terms for forbidden characters
-			 * forbidden characters are those, which will harm the lucene query
-			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
-			 */
+			// parse search_terms for forbidden characters
+			// forbidden characters are those, which will harm the lucene query
+			// forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
+			//
 			searchTerms = Utils.replaceSpecialLuceneChars(searchTerms);
 			mergedFiledQuery = lField_merged + ":("+ searchTerms +") ";
 		}
@@ -246,7 +187,182 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		return qf;
 		
 	}
+	*/
+
+	/**
+     * <em>/author/MaxMustermann</em><br/><br/>
+	 * This method prepares queries which retrieve all publications for a given
+	 * author name (restricted by group public).
+	 * 
+	 * @param group
+	 * @param searchTerms
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param tagList
+	 * @return
+	 */
+	protected QuerySortContainer buildAuthorQuery(
+			String group,  
+			String searchTerms, 
+			String requestedUserName, String requestedGroupName, 
+			String year, String firstYear, String lastYear, 
+			List<String> tagList) {
+		// FIXME: configure this
+//		String orderBy = "relevance"; 
+		String orderBy = "date"; 
+		
+		// prepare input (analyze and escape)
+		try {
+			group              = parseToken(FLD_GROUP, group);
+			searchTerms        = parseToken(FLD_MERGEDFIELDS, searchTerms);
+			requestedUserName  = parseToken(FLD_USER, requestedUserName);
+			requestedGroupName = parseToken(FLD_GROUP, requestedGroupName);
+			year               = parseToken(FLD_YEAR, year);
+			firstYear          = parseToken(FLD_YEAR, firstYear);
+			lastYear           = parseToken(FLD_YEAR, lastYear);
+			// parse each tag name
+			if(ValidationUtils.present(tagList)) {
+				List<String> tags = new LinkedList<String>();
+				for(String tagName : tagList) {
+					tags.add(parseToken(FLD_GROUP, tagName)); 
+				}
+				tagList = tags;
+			}
+		} catch (IOException e) {
+			log.error("Error analyzing input", e);
+		}
+		QuerySortContainer qf = new QuerySortContainer();
+		
+		//--------------------------------------------------------------------
+		// set ordering
+		//--------------------------------------------------------------------
+		Sort sort = null;
+		if (CFG_RELEVANCE.equals(orderBy)) {
+			sort = new Sort(new SortField[]{
+					SortField.FIELD_SCORE,	
+					new SortField(FLD_DATE,true)
+  			});
+		} else { 
+			// orderBy=="date"
+			sort = new Sort("date",true);
+		}
+		qf.setSort(sort);
+		
+		//--------------------------------------------------------------------
+		// build query
+		//--------------------------------------------------------------------
+		BooleanQuery mainQuery       = new BooleanQuery();
+		BooleanQuery accessModeQuery = new BooleanQuery();
+		BooleanQuery privatePostQuery= new BooleanQuery();
+		//--------------------------------------------------------------------
+		// search terms
+		//--------------------------------------------------------------------
+		// we parse the (escaped) search term for enabling advanced lucene 
+		// search queries 
+		QueryParser searchTermParser = new QueryParser(FLD_AUTHOR, analyzer);
+		if (CFG_RELEVANCE.equals(orderBy)) {
+			searchTermParser.setDefaultOperator(QueryParser.Operator.OR); // is default
+		} else { 
+			// orderBy=="date"
+			searchTermParser.setDefaultOperator(QueryParser.Operator.AND);
+		}
+		Query authorQuery = null;
+		if( ValidationUtils.present(searchTerms) ) {
+			try {
+				authorQuery = searchTermParser.parse(searchTerms);
+			} catch (ParseException e) {
+				authorQuery = new TermQuery(new Term(FLD_AUTHOR, searchTerms) );
+			}
+			mainQuery.add(authorQuery, Occur.MUST);
+		}
+		//--------------------------------------------------------------------
+		// post owned by user
+		//--------------------------------------------------------------------
+		if ( ValidationUtils.present(requestedUserName) ) {
+			mainQuery.add(
+					new TermQuery(new Term(FLD_USER, requestedUserName)),
+					Occur.MUST
+					);
+		}
+		//--------------------------------------------------------------------
+		// post owned by group
+		// FIXME: this isn't used - what is the difference between 
+		//        'requestedGroupName' and 'group'?
+		//--------------------------------------------------------------------
+		/*
+		if ( ValidationUtils.present(requestedGroupName) ) {
+			mainQuery.add(
+					new TermQuery(new Term(FLD_GROUP, requestedGroupName)),
+					Occur.MUST
+					);
+		}
+		*/
+		//--------------------------------------------------------------------
+		// post owned by group
+		//--------------------------------------------------------------------
+		if ( ValidationUtils.present(group) ) {
+			mainQuery.add( new TermQuery(new Term(FLD_GROUP, group)), Occur.MUST );
+		}
+		
+		//--------------------------------------------------------------------
+		// exact year query
+		// FIXME: this wasn't used
+		//--------------------------------------------------------------------
+		boolean includeLowerBound = false;
+		boolean includeUpperBound = false;
+
+		if ( ValidationUtils.present(year) ) {
+			year = year.replaceAll("\\D", "");
+			mainQuery.add( new TermQuery(new Term(FLD_YEAR, year)), Occur.MUST );
+		} else {
+		//--------------------------------------------------------------------
+		// range query
+		//--------------------------------------------------------------------
+			// firstYear != null, lastYear != null
+			if( ValidationUtils.present(firstYear) ) {
+				firstYear = firstYear.replaceAll("\\D", "");
+				includeLowerBound = true;
+			}
+			// firstYear == null, lastYear != null
+			if( ValidationUtils.present(lastYear) ) {
+				lastYear = lastYear.replaceAll("\\D", "");
+				includeUpperBound = true; 
+			}
+		}
+		
+		//--------------------------------------------------------------------
+		// restrict to given tags
+		//--------------------------------------------------------------------
+		BooleanQuery tagQuery = new BooleanQuery();
+		if( ValidationUtils.present(tagList) ) {
+			for ( String tagItem : tagList){
+				tagQuery.add(new TermQuery(new Term(FLD_TAS, tagItem)), Occur.MUST);
+			}
+			mainQuery.add(tagQuery, Occur.MUST);
+		}
+		
+		//--------------------------------------------------------------------
+		// build final query
+		//--------------------------------------------------------------------
+		if (includeLowerBound || includeUpperBound) {
+			// if upper or lower bound is given, then use filter
+			FilteredQuery filteredQuery = null;
+			RangeFilter rangeFilter=new RangeFilter(FLD_YEAR , firstYear, lastYear, includeLowerBound, includeUpperBound);
+			filteredQuery=new FilteredQuery(mainQuery,rangeFilter);
+			qf.setQuery(filteredQuery);
+		} else {
+			qf.setQuery(mainQuery);
+		}
+		log.debug("Search query: " + qf.getQuery().toString());
+
+		// all done.
+		return qf;
+	}
 	
+	/*
 	private QuerySortContainer getAuthorQueryFilter (String group,  String search, String requestedUserName, String requestedGroupName, String year, String firstYear, String lastYear, List<String> tagList) {
 		final Log LOGGER = LogFactory.getLog(LuceneSearchBibTex.class);
 
@@ -283,10 +399,6 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		
 		if ( (search != null) && (!search.isEmpty()) )
 		{
-			/* parse search_terms for forbidden characters
-			 * forbidden characters are those, which will harm the lucene query
-			 * forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
-			 */
 			search = Utils.replaceSpecialLuceneChars(search);
 			searchQuery = lField_author + ":("+ search +")";
 		}
@@ -387,7 +499,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		
 
 		Sort sort = null;
-		if ("relevance".equals(orderBy)) {
+		if (CFG_RELEVANCE.equals(orderBy)) {
 			myParser.setDefaultOperator(QueryParser.Operator.OR); // is default
 			sort = new Sort(new SortField[]{
 					SortField.FIELD_SCORE,	
@@ -423,100 +535,23 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		}
     		
 		qf.setSort(sort);
-
-
-// resourceType, groupingEntity, groupingName, tags, hash, order, filter, start, start + itemsPerPage, search		
-/*
-author
-group
-UserName
-GroupName
-year
-
-#requestedUserName#
-
-SELECT b.address, b.annote, b.booktitle, b.chapter, b.crossref, b.edition, b.howpublished,
-b.institution, b.journal, b.bkey, b.month, b.note, b.number, b.organization, b.pages, b.publisher,
-b.school, b.series, b.type, b.volume, b.day, b.url, b.content_id, b.description, b.bibtexKey, b.misc,
-b.bibtexAbstract, b.user_name, b.date, b.title, b.author, b.editor, b.year, b.entrytype, b.scraperid,
-b.simhash1 AS interHash, b.simhash2 AS intraHash, t.tag_name, h.ctr as count,NULL AS `group`, NULL AS group_name
-.toString()
-FROM bibtex b, tas t, bibhash h,  
-
-~~~
-~	    tas t1
-~		<iterate property="tagIndex">
-~			<isGreaterThan property="tagIndex[].index" compareValue="1">
-~				JOIN tas t$tagIndex[].index$ USING (content_id)
-~			</isGreaterThan>
-~		</iterate>
-
-?? tas t1 JOIN tas t2 USING (content_id) JOIN tas t3 USING (content_id) JOIN tas t4 USING (content_id) ??
-
-~~~ 
-	(SELECT content_id FROM search_bibtex s
-	WHERE MATCH (s.author) AGAINST (#search# IN BOOLEAN MODE) 
-		AND s.group = #groupType#
-~~~		AND s.content_id = t1.content_id
-
-isNotNull "requestedUserName"
-		AND s.user_name = #requestedUserName#
-
-isNotNull "requestedGroupName"
-		AND s.user_name IN (SELECT user_name 
-			FROM groupids g JOIN groups gs ON (g.group = gs.group)
-	        	WHERE g.group_name = #requestedGroupName#)
-
-
-~~~
-~ 		AND 
-~		<iterate property="tagIndex" conjunction="AND">
-~		  <isEqual property="caseSensitiveTagNames" compareValue="true">
-~		    t$tagIndex[].index$.tag_name = #tagIndex[].tagName#
-~		  </isEqual>
-~		  <isEqual property="caseSensitiveTagNames" compareValue="false">
-~		    t$tagIndex[].index$.tag_lower = lower(#tagIndex[].tagName#)
-~		  </isEqual>
-~		</iterate>
-
-?? AND t1.tag_name = #tagIndex[].tagName# AND t2.tag_name = #tagIndex[].tagName# AND t3.tag_name = #tagIndex[].tagName# AND t4.tag_name = #tagIndex[].tagName#
-??     tX.tag_lower= lower(#tagIndex[].tagName#)
-
-~~~
-
-	ORDER BY s.date DESC LIMIT #limit# OFFSET #offset#) AS tt 
-WHERE b.content_id = tt.content_id    
-	AND t.content_id = tt.content_id 
-
-isNotNull "year"
-	CAST(b.year AS SIGNED) = #year#
-
-isNotNull "firstYear" AND isNotNull "lastYear"
-	CAST(b.year AS SIGNED) BETWEEN #firstYear# AND #lastYear#
-
-isNotNull "firstYear" AND isNull "lastYear"
-	CAST(b.year AS SIGNED) >= #firstYear#
-
-isNotNull "lastYear" AND isNull "firstYear"
-	CAST(b.year AS SIGNED) <= #lastYear#
-
-	AND b.simhash$simHash$ = h.hash AND h.type = $simHash$
-
-
-ORDER BY b.date DESC, b.content_id DESC;
- */
 		
+		buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList);
 		
 		return qf;
 	}
+	*/
 
 	/** get ArrayList of strings of field id from lucene index
 	 * 
 	 * for pagination see http://www.gossamer-threads.com/lists/lucene/general/70516#70516
 	 * 
+	 * FIXME: refactor this method
+	 * 
 	 * @param String idname fieldname of returning value
 	 * */
-	private ResultList<Post<BibTex>> searchLucene(QuerySortContainer qs, int limit, int offset) {
+	@Override
+	protected ResultList<Post<BibTex>> searchLucene(QuerySortContainer qs, int limit, int offset) {
 		final Log LOGGER = LogFactory.getLog(LuceneSearchBibTex.class);
 
 		Query query = qs.getQuery(); 
@@ -672,26 +707,6 @@ ORDER BY b.date DESC, b.content_id DESC;
 		//return cidsArray;
 		return postBibTexList;
 	};
-
-	
-	public LuceneIndexStatistics getStatistics() {
-		return Utils.getStatistics(lucenePath);
-	}
-
-
-	public ResultList<Post<BibTex>> searchAuthor(String group, String search,
-			String requestedUserName, String requestedGroupName, String year,
-			String firstYear, String lastYear, List<String> tagList, int limit,
-			int offset) {
-		return searchLucene(getAuthorQueryFilter(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList), limit, offset);
-	}
-
-
-	public ResultList<Post<BibTex>> searchPosts(String group,
-			String searchTerms, String requestedUserName, String UserName,
-			Set<String> GroupNames, int limit, int offset) {
-		return searchLucene(getFulltextQueryFilter(group, searchTerms, requestedUserName, UserName, GroupNames), limit, offset);
-	}
 
 
 	@Override

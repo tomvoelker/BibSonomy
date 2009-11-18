@@ -27,8 +27,13 @@ public class DocumentCacheComparator implements Comparator<Document> {
 		try {
 			Long date1  = Long.parseLong(o1.get(FLD_LAST_LOG_DATE));
 			Long date2  = Long.parseLong(o2.get(FLD_LAST_LOG_DATE));
-			if( (date1!=null) && (date2!=null) )
-				return date1.compareTo(date2);
+			if( (date1!=null) && (date2!=null) ) {
+				int cmp = date1.compareTo(date2);
+				if( cmp==0 )
+					return -1;
+				else
+					return cmp;
+			}
 		} catch(NumberFormatException e) {
 			return -1;
 		}

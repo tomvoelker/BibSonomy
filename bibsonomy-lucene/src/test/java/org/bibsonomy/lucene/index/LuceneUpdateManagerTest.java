@@ -280,6 +280,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		// set up data structures
 		Set<String> allowedGroups = new TreeSet<String>();
 		allowedGroups.add("public");
+		allowedGroups.add("testgroup1");
 		List<Post<BibTex>> bibResultList;
 		List<Post<Bookmark>> bmResultList;
 
@@ -318,7 +319,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		this.luceneBookmarkUpdater.reloadIndex();
 		
 		// search
-		int groupId = 0;
+		int groupId = -1;
 		final List<Integer> groups = new ArrayList<Integer>();
 		for( int i=0; i<10; i++ ) 
 			groups.add(i);
@@ -425,6 +426,22 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 
 		bmResultList = bookmarkSearcher.searchPosts(null, bmTitle+"2", null, bookmarkPost.getUser().getName(), allowedGroups, 10, 0);
 		assertEquals(0, bmResultList.size());
+		
+		//------------------------------------------------------------------------
+		// author search
+		//------------------------------------------------------------------------
+		// String group,  String search, String requestedUserName, String requestedGroupName, 
+		// String year, String firstYear, String lastYear, List<String> tagList) {
+
+		bibResultList = bibtexSearcher.searchAuthor(GroupID.PUBLIC.name(), "luceneAuthor", null, null, null, null, null, null, 1000, 0);
+
+		bibResultList = bibtexSearcher.searchAuthor(GroupID.PRIVATE.name(), "luceneAuthor", null, null, null, null, null, null, 1000, 0);
+
+		bibResultList = bibtexSearcher.searchAuthor(GroupID.PUBLIC.name(), "luceneAuthor", null, null, "1980", null, null, null, 1000, 0);
+
+		bibResultList = bibtexSearcher.searchAuthor(GroupID.PUBLIC.name(), "luceneAuthor", null, null, null, "1980", null, null, 1000, 0);
+
+		bibResultList = bibtexSearcher.searchAuthor(GroupID.PUBLIC.name(), "luceneAuthor", null, null, null, "1980", "2000", null, 1000, 0);
 
 	}
 

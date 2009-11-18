@@ -29,6 +29,7 @@ import org.apache.lucene.search.TopDocs;
 import org.bibsonomy.common.exceptions.LuceneException;
 import org.bibsonomy.lucene.index.analyzer.SimpleKeywordAnalyzer;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
+import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.util.Utils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -37,90 +38,30 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.User;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
-//FIXME: remove this comment (used only for triggering cvs-commit)
+//FIXME: this needs further cleanup
 
 public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
-
+	private static final Log log = LogFactory.getLog(LuceneSearchBookmarks.class);
+	
 	private final static LuceneSearchBookmarks singleton = new LuceneSearchBookmarks();
-	private IndexSearcher searcher;
-	private PerFieldAnalyzerWrapper analyzer = null;
-	private String lucenePath = null;
 
+	private static final String FLD_URL = "url";
+
+	private static final String FLD_DESC = "desc";
+
+	private static final String FLD_TAS = "tas";
+
+	private static final String FLD_CONTENT_ID = "content_id";
+
+	private static final String FLD_INTRAHASH = "intrahash";
+
+	private static final String FLD_EXT = "ext";
+	
+	/**
+	 * constructor
+	 */
 	private LuceneSearchBookmarks() {
 		reloadIndex();
-	}
-
-	public void reloadIndex() {
-		final Log LOGGER = LogFactory.getLog(LuceneSearchBookmarks.class);
-		try {
-
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			lucenePath = (String) envContext.lookup("luceneIndexPathBookmark");
-
-			
-			LOGGER.debug("LuceneBookmark: use index: " + lucenePath);
-
-			/*
-			 * set current path to lucene index, given by environment parameter
-			 * in tomcat's context.xml
-			 * 
-			 * <Environment name="luceneIndexPath" type="java.lang.String"
-			 * value="/home/bibsonomy/lucene"/>
-			 */
-
-			if (this.analyzer == null) {
-				/** lucene analyzer, must be the same as at indexing */
-				// SimpleAnalyzer analyzer = new SimpleAnalyzer();
-				this.analyzer = new PerFieldAnalyzerWrapper(
-						new StandardAnalyzer());
-
-				// let field group of analyzer use SimpleKeywordAnalyzer
-				// numbers will be deleted by SimpleAnalyser but group has only
-				// numbers, therefore use SimpleKeywordAnalyzer
-				this.analyzer.addAnalyzer("group", new SimpleKeywordAnalyzer());
-				// usernames also might contain numbers - 
-				// as the user_name field is not analyzed (which makes pretty sense)
-				// the user_name shouldn't be normalized as well
-				this.analyzer.addAnalyzer("user_name", new SimpleKeywordAnalyzer());
-			}
-
-			// close searcher if opened before
-			try {
-				if (null != this.searcher)
-					this.searcher.close();
-			} catch (IOException e) {
-				LOGGER.debug("LuceneBookmark: IOException on searcher.close: "
-						+ e.getMessage());
-			} catch (RuntimeException e) {
-				LOGGER
-						.debug("LuceneBookmark: RuntimeException on searcher.close: "
-								+ e.getMessage());
-			}
-
-			// load and hold index on physical hard disk
-			LOGGER.debug("LuceneBookmark: use index from disk");
-			LOGGER.debug("this.searcher-0: " + this.searcher);
-			this.searcher = new IndexSearcher(lucenePath);
-			LOGGER.debug("this.searcher-1: " + this.searcher);
-			// }
-		} catch (final NamingException e) {
-			LOGGER.error("LuceneBookmark: NamingException "
-					+ e.getExplanation() + " ## " + e.getMessage());
-			LOGGER
-					.error("Environment variable luceneIndexPathBoomarks not present.");
-			throw new LuceneException("error.lucene");
-		} catch (CorruptIndexException e) {
-			LOGGER.error("LuceneBookmark: CorruptIndexException "
-					+ e.getMessage());
-			throw new LuceneException("error.lucene");
-		} catch (IOException e) {
-			LOGGER.error("LuceneBookmark: IOException " + e.getMessage());
-			throw new LuceneException("error.lucene");
-		} catch (RuntimeException e) {
-			LOGGER.warn("LuceneBookmark: RuntimeException " + e.getMessage());
-			throw new LuceneException("error.lucene");
-		}
 	}
 
 	/**
@@ -130,6 +71,103 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 		return singleton;
 	}
 
+	/**
+	 * FIXME: refactor this method
+	 */
+	@Override
+	protected ResultList<Post<Bookmark>> searchLucene(
+			QuerySortContainer qf, int limit, int offset) {
+		ResultList<Post<Bookmark>> postBookmarkList = new ResultList<Post<Bookmark>>();
+		
+		Query query = qf.getQuery();
+		Sort sort = qf.getSort();
+
+		try {
+			log.debug("LuceneBookmark-Querystring (analyzed):  "+ query.toString());
+			log.debug("LuceneBookmark-Query will be sorted by: "+ sort);
+			log.debug("LuceneBookmark: searcher:  " + searcher);
+
+			long starttimeQuery = System.currentTimeMillis();
+			final TopDocs topDocs = searcher.search(query, null, offset
+					+ limit, sort);
+
+			long endtimeQuery = System.currentTimeMillis();
+			log.debug("LuceneBookmark pure query time: "
+					+ (endtimeQuery - starttimeQuery) + "ms");
+
+			int hitslimit = (((offset + limit) < topDocs.totalHits) ? (offset + limit)
+					: topDocs.totalHits);
+
+			postBookmarkList.setTotalCount(topDocs.totalHits);
+
+			log
+			.debug("LuceneBookmark:  offset / limit / hitslimit / hits.length():  "
+					+ offset + " / " + limit + " / " + hitslimit + " / " + topDocs.totalHits);
+
+			for (int i = offset; i < hitslimit; i++) {
+				Document doc = searcher.doc(topDocs.scoreDocs[i].doc);
+				Bookmark bookmark = new Bookmark();
+				SimpleDateFormat dateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd H:m:s.S");
+
+				Post<Bookmark> postBookmark = new Post<Bookmark>();
+				Date date = new Date();
+				try {
+					date = dateFormat.parse(doc.get(FLD_DATE));
+				} catch (java.text.ParseException e) {
+					log.debug("LuceneBibTex: ParseException: " + e.getMessage());
+				}
+				bookmark.setUrl(doc.get(FLD_URL));
+				bookmark.setTitle(doc.get(FLD_DESC));
+
+				for (String g : doc.get(FLD_GROUP).split(",")) {
+					postBookmark.addGroup(g);
+				}
+
+				for (String tag : doc.get(FLD_TAS).split(" ")) {
+					postBookmark.addTag(tag);
+				}
+
+				postBookmark.setContentId(Integer.parseInt(doc
+						.get(FLD_CONTENT_ID)));
+				bookmark.setIntraHash(doc.get("intrahash"));
+				bookmark.setInterHash(doc.get("intrahash")); // same as
+				// intrahash
+
+				postBookmark.setContentId(Integer.parseInt(doc
+						.get(FLD_CONTENT_ID)));
+				long starttime2Query = System.currentTimeMillis();
+				if( doc.get(FLD_INTRAHASH)!=null ) {
+					bookmark.setCount(this.searcher.docFreq(new Term(
+							FLD_INTRAHASH, doc.get(FLD_INTRAHASH))));
+				} else {
+					bookmark.setCount(1);
+				}
+				long endtime2Query = System.currentTimeMillis();
+
+				postBookmark.setDate(date);
+				postBookmark.setDescription(doc.get(FLD_EXT));
+				postBookmark.setResource(bookmark);
+				postBookmark.setUser(new User(doc.get(FLD_USER)));
+
+				postBookmarkList.add(postBookmark);
+
+			}
+
+		} catch (IOException e) {
+			log.debug("LuceneBibTex: IOException: " + e.getMessage());
+		}
+		return postBookmarkList;
+	}	
+
+	@Override
+	protected QuerySortContainer buildAuthorQuery(String group,
+			String searchTerms, String requestedUserName,
+			String requestedGroupName, String year, String firstYear,
+			String lastYear, List<String> tagList) {
+		throw new UnsupportedOperationException("Author search not available for bookmarks");
+	}
+	
 	/**
 	 * get List of postBookmark from lucene index
 	 * 
@@ -142,10 +180,13 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 	 *            LuceneIndex lucene index to use b for bookmark, p for
 	 *            publications
 	 */
+	/*
 	public ResultList<Post<Bookmark>> searchPosts(String group,
 			String searchTerms, String requestedUserName, String UserName,
 			Set<String> GroupNames, int limit, int offset) {
-		final Log LOGGER = LogFactory.getLog(LuceneSearchBookmarks.class);
+		
+		
+		final Log log = LogFactory.getLog(LuceneSearchBookmarks.class);
 
 		// String orderBy = "relevance";
 		String orderBy = "date";
@@ -171,7 +212,7 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 		String querystring = "";
 
 		if (this.searcher == null) {
-			LOGGER.error("LuceneBibTex: searcher is NULL!");
+			log.error("LuceneBibTex: searcher is NULL!");
 
 		}
 
@@ -180,9 +221,9 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 		// sucheergebnis darf einträge, die die gruppe "private" beinhalten
 		// nicht anzeigen, es sei denn, sie gehören dem angemeldeten benutzer
 
-		LOGGER.debug("LuceneBookmark: group  " + group);
-		LOGGER.debug("LuceneBookmark: UserName  " + UserName);
-		LOGGER.debug("LuceneBookmark: GroupNames.toString()  "
+		log.debug("LuceneBookmark: group  " + group);
+		log.debug("LuceneBookmark: UserName  " + UserName);
+		log.debug("LuceneBookmark: GroupNames.toString()  "
 				+ GroupNames.toString());
 
 		// declare ArrayList cidsArray for list of String to return
@@ -190,12 +231,14 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 
 		// do not search for nothing in lucene index
 		if ((searchTerms != null) && (!searchTerms.isEmpty())) {
-			/*
-			 * parse search_terms for forbidden characters forbidden characters
-			 * are those, which will harm the lucene query forbidden characters
-			 * are & | ( ) { } [ ] ~ * ^ ? : \
-			 */
+			
+			 // parse search_terms for forbidden characters forbidden characters
+			 // are those, which will harm the lucene query forbidden characters
+			 // are & | ( ) { } [ ] ~ * ^ ? : \
+			 
 			searchTerms = Utils.replaceSpecialLuceneChars(searchTerms);
+			// FIXME: why not use readily available escape function?
+			// String escaped = QueryParser.escape(userQuery);
 
 			int allowedGroupsIterator = 0;
 			for (String groupName : GroupNames) {
@@ -205,7 +248,7 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 				allowedGroupsIterator++;
 			}
 
-			LOGGER.debug("LuceneBookmark: allowedGroups: " + allowedGroupNames);
+			log.debug("LuceneBookmark: allowedGroups: " + allowedGroupNames);
 
 			mergedFiledQuery = lField_merged + ":(" + searchTerms + ") ";
 			allowedGroupNamesQuery = lField_group + ":(" + allowedGroupNames
@@ -238,7 +281,7 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 				querystring += " AND " + allowedGroupNamesQuery;
 			}
 
-			LOGGER.debug("LuceneBookmark-Querystring (assembled): "
+			log.debug("LuceneBookmark-Querystring (assembled): "
 					+ querystring);
 
 			// open lucene index
@@ -246,12 +289,12 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 
 			QueryParser myParser = new QueryParser(lField_desc, analyzer);
 			Query query;
-			/*
-			 * sort first by date and then by score. This is not necessary,
-			 * because there are no or only few entries with same date (date is
-			 * with seconds) Sort sort = new Sort(new SortField[]{ new
-			 * SortField("date",true), SortField.FIELD_SCORE });
-			 */
+			 //
+			 // sort first by date and then by score. This is not necessary,
+			 // because there are no or only few entries with same date (date is
+			 // with seconds) Sort sort = new Sort(new SortField[]{ new
+			 // SortField("date",true), SortField.FIELD_SCORE });
+			 //
 
 			Sort sort = null;
 			if ("relevance".equals(orderBy)) {
@@ -264,25 +307,25 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 				sort = new Sort("date", true);
 			}
 
-			LOGGER.debug("LuceneBookmark: QueryParser.DefaultOperator: "
+			log.debug("LuceneBookmark: QueryParser.DefaultOperator: "
 					+ myParser.getDefaultOperator());
 
 			try {
 				query = myParser.parse(querystring);
-				LOGGER.debug("LuceneBookmark-Querystring (analyzed):  "
+				log.debug("LuceneBookmark-Querystring (analyzed):  "
 						+ query.toString());
-				LOGGER
+				log
 						.debug("LuceneBookmark-Query will be sorted by:  "
 								+ sort);
 
-				LOGGER.debug("LuceneBookmark: searcher:  " + searcher);
+				log.debug("LuceneBookmark: searcher:  " + searcher);
 
 				long starttimeQuery = System.currentTimeMillis();
 				final TopDocs topDocs = searcher.search(query, null, offset
 						+ limit, sort);
 
 				long endtimeQuery = System.currentTimeMillis();
-				LOGGER.debug("LuceneBookmark pure query time: "
+				log.debug("LuceneBookmark pure query time: "
 						+ (endtimeQuery - starttimeQuery) + "ms");
 
 				int hitslimit = (((offset + limit) < topDocs.totalHits) ? (offset + limit)
@@ -290,7 +333,7 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 
 				postBookmarkList.setTotalCount(topDocs.totalHits);
 
-				LOGGER
+				log
 						.debug("LuceneBookmark:  offset / limit / hitslimit / hits.length():  "
 								+ offset + " / " + limit + " / " + hitslimit + " / " + topDocs.totalHits);
 
@@ -305,7 +348,7 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 					try {
 						date = dateFormat.parse(doc.get(lField_date));
 					} catch (java.text.ParseException e) {
-						LOGGER.debug("LuceneBibTex: ParseException: " + e.getMessage());
+						log.debug("LuceneBibTex: ParseException: " + e.getMessage());
 					}
 					bookmark.setUrl(doc.get(lField_url));
 					bookmark.setTitle(doc.get(lField_desc));
@@ -345,28 +388,22 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 				}
 
 			} catch (ParseException e) {
-				LOGGER.debug("LuceneBibTex: ParseException: " + e.getMessage());
+				log.debug("LuceneBibTex: ParseException: " + e.getMessage());
 			} catch (IOException e) {
-				LOGGER.debug("LuceneBibTex: IOException: " + e.getMessage());
+				log.debug("LuceneBibTex: IOException: " + e.getMessage());
 			}
 
 		}
 
 		return postBookmarkList;
 	}
+	*/
 
-	public LuceneIndexStatistics getStatistics() {
-		return Utils.getStatistics(lucenePath);
-	}
-
-	public ResultList<Post<Bookmark>> searchAuthor(String group, String search,
-			String requestedUserName, String requestedGroupName, String year,
-			String firstYear, String lastYear, List<String> tagList, int limit,
-			int offset) {
-		throw new UnsupportedOperationException("Author search not available for bookmarks");
-	}
 	@Override
 	protected Class<Bookmark> getResourceType() {
 		return Bookmark.class;
 	}
+
+
+
 }

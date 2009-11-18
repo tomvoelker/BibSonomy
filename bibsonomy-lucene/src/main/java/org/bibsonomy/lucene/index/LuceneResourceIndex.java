@@ -30,6 +30,8 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
 import org.bibsonomy.model.Resource;
@@ -105,7 +107,11 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * constructor disabled
 	 */
 	protected LuceneResourceIndex(){
-		init();
+		try {
+			init();
+		} catch (IOException e) {
+			disableIndex();
+		}
 		
 		// init data structures
 		contentIdsToDelete = new LinkedList<Integer>();
@@ -114,10 +120,13 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		optimizeIndex      = false;
 	};
 	
+
+
 	/**
 	 * initialize internal data structures
+	 * @throws IOException 
 	 */
-	private void init() {
+	private void init() throws IOException {
 		try {
 			Context initContext = new InitialContext();
 			Context envContext = (Context) initContext.lookup(CONTEXT_ENV_NAME);
@@ -128,6 +137,18 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			log.error("NamingException requesting JNDI environment variables ' ("+e.getMessage()+")", e);
 		}
 
+		try {
+			Directory dir = FSDirectory.getDirectory(luceneIndexPath);
+			if( IndexWriter.isLocked(dir) ) {
+				log.error("WARNING: Index "+luceneIndexPath+" is locked - forcibly unlock the index.");
+				IndexWriter.unlock(dir);
+				log.error("OK. Index unlocked.");
+			}
+		} catch (IOException e) {
+			log.fatal("Failed to unlock the index - dying.");
+			throw e; 
+		}
+		
 		try {
 			indexReader = IndexReader.open(luceneIndexPath);
 			accessMode = AccessMode.ReadOnly;
@@ -572,7 +593,14 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			}
 		}
 	}
-
+	
+	/**
+	 * disable this index when open fails
+	 * FIXME: implement me
+	 */
+	public void disableIndex() {
+	}
+	
 	/**
 	 * get managed resource type
 	 */
