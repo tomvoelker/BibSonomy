@@ -14,26 +14,52 @@ import org.bibsonomy.model.EvaluatorUser;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.webapp.command.AdminAjaxCommand;
+import org.bibsonomy.webapp.command.ajax.AdminAjaxCommand;
+import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.ValidationAwareController;
+import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.validation.AdminActionsValidator;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 /**
  * Controller for ajax requests on admin pages
  * 
  * @author Stefan Stützer
+ * @author Beate Krause
  * @version $Id$
  */
-public class AdminAjaxController extends AjaxController implements MinimalisticController<AdminAjaxCommand> {
+public class AdminAjaxController extends AjaxController implements MinimalisticController<AdminAjaxCommand> , ErrorAware, ValidationAwareController<AdminAjaxCommand>{
 
 	
 	private static final Log log = LogFactory.getLog(AdminAjaxController.class);
+	
+	private Errors errors;
 
 	public View workOn(AdminAjaxCommand command) {
 
 		final String action = command.getAction();
-
+		
+		/*
+		 * validate fields before values are entered into database
+		 */
+		org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
+		
+		/*
+		 * return to form until validation passes
+		 */
+		if (errors.hasErrors()) {
+			/*
+			 * Do not update database as some input fields contain errors
+			 */
+			this.setResponse(command, "Error in input: " + errors.getFieldError().getObjectName() + " " + errors.getFieldError().getRejectedValue());
+			return Views.AJAX;
+		}
+		/*
+		 * 	
+		 */
 		if ("flag_spammer".equals(action)) {
 			this.flagSpammer(command, true);
 			this.setResponse(command, command.getUserName() + " flagged as spammer");
@@ -42,7 +68,6 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 			this.flagSpammer(command, false);
 			this.setResponse(command, command.getUserName() + " flagged as nonspammer");
 		} else if ("flag_spammer_evaluator".equals(action)) {
-			log.debug("flagging a spammer");
 			this.flagSpammerEvaluator(command, true);
 			this.setResponse(command, command.getUserName() + " flagged as spammer");
 		} else if ("unflag_spammer_evaluator".equals(action)) {
@@ -61,6 +86,7 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 			return Views.AJAX_PREDICTIONS;
 		}
 		return Views.AJAX;
+		
 	}
 
 	private void flagSpammerEvaluator(AdminAjaxCommand cmd, boolean spammer) {
@@ -112,6 +138,9 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 		}
 	}
 
+	/*
+	 * updates settings of the classifier, for example algorithm, day- or night mode
+	 */
 	private void updateSettings(AdminAjaxCommand command) {
 		if (command.getKey() != null && command.getValue() != null) {
 			ClassifierSettings setting = ClassifierSettings.getClassifierSettings(command.getKey());
@@ -148,4 +177,27 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 	public AdminAjaxCommand instantiateCommand() {
 		return new AdminAjaxCommand();
 	}
+
+	@Override
+	public Errors getErrors() {
+		return errors;
+	}
+
+	@Override
+	public void setErrors(Errors errors) {
+		this.errors = errors;
+		
+	}
+
+	@Override
+	public Validator<AdminAjaxCommand> getValidator() {
+		return new AdminActionsValidator();
+	}
+
+	@Override
+	public boolean isValidationRequired(AdminAjaxCommand command) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	
 }
