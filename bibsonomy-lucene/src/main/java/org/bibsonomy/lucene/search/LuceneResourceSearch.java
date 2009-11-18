@@ -2,7 +2,6 @@ package org.bibsonomy.lucene.search;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -12,19 +11,12 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.Token;
-import org.apache.lucene.analysis.TokenStream;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -35,11 +27,10 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.LuceneException;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
-import org.bibsonomy.lucene.index.analyzer.SimpleKeywordAnalyzer;
+import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.util.Utils;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
@@ -74,7 +65,7 @@ public abstract class LuceneResourceSearch<R extends Resource> {
 	 * default field analyzer 
 	 * FIXME: configure this via spring
 	 */
-	protected PerFieldAnalyzerWrapper analyzer; 
+	private Analyzer analyzer; 
 
 
 	/** MAGIC KEY identifying the context environment for this class */
@@ -165,20 +156,6 @@ public abstract class LuceneResourceSearch<R extends Resource> {
 			log.error("NamingException requesting JNDI environment variables ' ("+e.getMessage()+")", e);
 		}
 
-		// FIXME: configure this via spring
-		if (this.analyzer == null) {
-			/** lucene analyzer, must be the same as at indexing */
-			//SimpleAnalyzer analyzer = new SimpleAnalyzer();
-			this.analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer());
-
-			// let field group of analyzer use SimpleKeywordAnalyzer
-			// numbers will be deleted by SimpleAnalyser but group has only numbers, therefore use SimpleKeywordAnalyzer 
-			this.analyzer.addAnalyzer("group", new StandardAnalyzer());
-			// usernames also might contain numbers - 
-			// as the user_name field is not analyzed (which makes pretty sense)
-			// the user_name shouldn't be normalized as well
-			this.analyzer.addAnalyzer("user_name", new StandardAnalyzer());
-		}
 	}
 	
 	/** reload the index -- has to be called after each index change */
@@ -249,7 +226,7 @@ public abstract class LuceneResourceSearch<R extends Resource> {
 		// search terms
 		//--------------------------------------------------------------------
 		// parse search terms for handling phrase search
-		QueryParser searchTermParser = new QueryParser(FLD_MERGEDFIELDS, analyzer);
+		QueryParser searchTermParser = new QueryParser(FLD_MERGEDFIELDS, getAnalyzer());
 		Query searchTermQuery = null;
 		try {
 			searchTermQuery = searchTermParser.parse(searchTerms);
@@ -352,7 +329,7 @@ public abstract class LuceneResourceSearch<R extends Resource> {
 	protected String parseToken(String fieldName, String param) throws IOException {
 		Token strToken = new Token();
 		if( ValidationUtils.present(param) ) {
-			this.analyzer.tokenStream(fieldName, new StringReader(param)).next(strToken);
+			this.getAnalyzer().tokenStream(fieldName, new StringReader(param)).next(strToken);
 			return QueryParser.escape(strToken.term());
 		} else
 			return "";
@@ -491,5 +468,15 @@ public abstract class LuceneResourceSearch<R extends Resource> {
 
 	public LuceneDBInterface<R> getDbLogic() {
 		return dbLogic;
+	}
+
+	public void setAnalyzer(Analyzer analyzer) {
+		this.analyzer = analyzer;
+	}
+
+	public Analyzer getAnalyzer() {
+		if( this.analyzer==null )
+			this.analyzer = new SpringPerFieldAnalyzerWrapper();
+		return analyzer;
 	}
 }

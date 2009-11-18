@@ -11,6 +11,22 @@
 	<bean id="dateMSConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneDateMSFormatter"/>
 
 	<!--+
+	    | analyzer (==tokenzizer/normalizer)
+	    +-->
+    <bean id="lucenePostFieldAnalyzer" class="org.springframework.beans.factory.config.MapFactoryBean">
+  		<property name="sourceMap">
+  			<map>
+  				<entry key="user_name" value-ref="luceneDefaultAnalyzer"/>
+  				<entry key="mergedfields" value-ref="luceneGermanAnalyzer"/>
+  			</map>
+  		</property>
+  	</bean>
+
+	<bean id="luceneDefaultAnalyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer"/>
+	
+	<bean id="luceneGermanAnalyzer" class="org.apache.lucene.analysis.de.GermanAnalyzer"/>
+
+	<!--+
 	    | index field configurations 
 	    +-->
 	<bean id="fieldNotIndexed" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">

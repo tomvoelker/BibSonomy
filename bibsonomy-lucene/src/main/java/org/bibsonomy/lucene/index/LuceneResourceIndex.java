@@ -33,6 +33,7 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
 import org.bibsonomy.model.Resource;
 
@@ -85,6 +86,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	/** path to the lucene index */
 	private String luceneIndexPath;
 
+	/** default field tokenizer */
 	private Analyzer analyzer;
 	
 	/** list containing content ids of cached delete operations */
@@ -158,7 +160,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			log.error("IOException while opening IndexReader in updateIndexes("+e.getMessage()+")", e);
 		}
 		
-		this.analyzer = new StandardAnalyzer();
+		this.setAnalyzer(new SpringPerFieldAnalyzerWrapper());
 	}
 	
 	
@@ -542,7 +544,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 
 	private void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IOException {
 		log.debug("Opening index "+luceneIndexPath+" for writing");
-		indexWriter = new IndexWriter(luceneIndexPath, analyzer, false, IndexWriter.MaxFieldLength.UNLIMITED);
+		indexWriter = new IndexWriter(luceneIndexPath, getAnalyzer(), false, IndexWriter.MaxFieldLength.UNLIMITED);
 		accessMode  = AccessMode.WriteOnly;
 	}
 
@@ -628,5 +630,15 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 
 	public Set<String> getUsersToFlag() {
 		return this.usersToFlag;
+	}
+
+	public void setAnalyzer(Analyzer analyzer) {
+		this.analyzer = analyzer;
+	}
+
+	public Analyzer getAnalyzer() {
+		if( this.analyzer==null )
+			this.analyzer = new SpringPerFieldAnalyzerWrapper();
+		return analyzer;
 	}
 }

@@ -5,26 +5,15 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.analysis.KeywordAnalyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.SimpleAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FilteredQuery;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.RangeFilter;
 import org.apache.lucene.search.Sort;
@@ -32,12 +21,7 @@ import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.BooleanClause.Occur;
-import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.exceptions.LuceneException;
-import org.bibsonomy.lucene.index.analyzer.SimpleKeywordAnalyzer;
-import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.QuerySortContainer;
-import org.bibsonomy.lucene.util.Utils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
@@ -262,7 +246,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		//--------------------------------------------------------------------
 		// we parse the (escaped) search term for enabling advanced lucene 
 		// search queries 
-		QueryParser searchTermParser = new QueryParser(FLD_AUTHOR, analyzer);
+		QueryParser searchTermParser = new QueryParser(FLD_AUTHOR, getAnalyzer());
 		if (CFG_RELEVANCE.equals(orderBy)) {
 			searchTermParser.setDefaultOperator(QueryParser.Operator.OR); // is default
 		} else { 

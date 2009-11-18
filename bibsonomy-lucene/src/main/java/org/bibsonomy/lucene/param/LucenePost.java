@@ -21,7 +21,23 @@ public class LucenePost<R extends Resource> extends Post<R> {
 
 	/** newest log_date during last index update */
 	private Date lastLogDate;
-
+	
+	//------------------------------------------------------------------------
+	// object interface
+	//------------------------------------------------------------------------
+	/**
+	 * treat two posts equally if their content_id coincides
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if( obj==null )
+			return false;
+		else if( !Post.class.isAssignableFrom(obj.getClass()) )
+			return false;
+		else
+			return (this.getContentId()==((Post<?>)obj).getContentId()); 
+	}
+	
 	//------------------------------------------------------------------------
 	// getter/setter
 	//------------------------------------------------------------------------

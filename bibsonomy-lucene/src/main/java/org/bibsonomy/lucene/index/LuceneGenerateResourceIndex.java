@@ -15,6 +15,7 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
+import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.LucenePostConverter;
 import org.bibsonomy.model.Group;
@@ -71,6 +72,8 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 
 	private String dbDriver;
 
+	/** default analyzer */
+	private Analyzer analyzer = null;
 	
 	/**
 	 * constructor
@@ -177,12 +180,8 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	public void createEmptyIndex() throws CorruptIndexException, LockObtainFailedException, IOException {
-		// Use default analyzer
-		// FIXME: this has to be configured via spring!
-		Analyzer analyzer = new PerFieldAnalyzerWrapper(new StandardAnalyzer());
-		
 		// create index, possibly overwriting existing index files
-		indexWriter  = new IndexWriter(this.luceneResourceIndexPath, analyzer, true, mfl); 
+		indexWriter  = new IndexWriter(this.luceneResourceIndexPath, getAnalyzer(), true, mfl); 
 	}
 
 	
@@ -271,16 +270,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 		return !flaggedAsSpammer;
 	}
 	
-	//------------------------------------------------------------------------
-	// getter/setter
-	//------------------------------------------------------------------------
-	public void setLogic(LuceneDBInterface<R> luceneDbLogic) {
-		dbLogic = luceneDbLogic;
-	}
-	
-	public LuceneDBInterface<R> getLogic() {
-		return this.dbLogic;
-	}
+
 
 
 	//------------------------------------------------------------------------
@@ -302,5 +292,26 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	    }
 		
 		return name;
+	}
+
+	//------------------------------------------------------------------------
+	// getter/setter
+	//------------------------------------------------------------------------
+	public void setLogic(LuceneDBInterface<R> luceneDbLogic) {
+		dbLogic = luceneDbLogic;
+	}
+	
+	public LuceneDBInterface<R> getLogic() {
+		return this.dbLogic;
+	}
+	
+	public void setAnalyzer(Analyzer analyzer) {
+		this.analyzer = analyzer;
+	}
+
+	public Analyzer getAnalyzer() {
+		if( this.analyzer==null )
+			this.analyzer = new SpringPerFieldAnalyzerWrapper();
+		return analyzer;
 	}
 }
