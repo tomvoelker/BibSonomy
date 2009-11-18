@@ -240,7 +240,10 @@ public enum Views implements View {
 	 * Show the page for administrating groups
 	 */
 	ADMIN_GROUP("actions/admin/group"),
-
+	/**
+	 * general admin page
+	 */
+	ADMIN("actions/admin/index"),
 
 	/* *****************************************************
 	 * action views
