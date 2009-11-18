@@ -91,6 +91,24 @@ public interface LuceneDBInterface<R extends Resource> {
 	 */
 	public List<Post<R>> getUpdatedPostsForTimeRange(Date fromDate, Date toDate);
 	
+	/**
+	 * get list of all users which where flagged as spammer since last 
+	 * index update
+	 * 
+	 * @param fromDate
+	 * @return
+	 */
+	public List<String> getSpamPredictionForTimeRange(Date fromDate);
+
+	/**
+	 * get list of all users which where flagged as spammer since last 
+	 * index update
+	 * 
+	 * @param fromDate
+	 * @return
+	 */
+	public List<String> getNonSpamPredictionForTimeRange(Date fromDate);
+
 	//------------------------------------------------------------------------
 	// methods for building the index
 	// TODO: maybe we should introduce a special class hierarchy

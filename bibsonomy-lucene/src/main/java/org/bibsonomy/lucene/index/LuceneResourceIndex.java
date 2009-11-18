@@ -2,6 +2,7 @@ package org.bibsonomy.lucene.index;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.LockObtainFailedException;
+import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
 import org.bibsonomy.model.Resource;
 
 /**
@@ -87,7 +89,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	private List<Integer> contentIdsToDelete;
 
 	/** list containing content ids of cached delete operations */
-	private List<Document> postsToInsert;
+	private Set<Document> postsToInsert;
 	
 	/** 
 	 * set of usernames which where flagged as spammers since last update
@@ -107,7 +109,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		
 		// init data structures
 		contentIdsToDelete = new LinkedList<Integer>();
-		postsToInsert      = new LinkedList<Document>();
+		postsToInsert      = new TreeSet<Document>(new DocumentCacheComparator());
 		usersToFlag        = new TreeSet<String>();
 		optimizeIndex      = false;
 	};
@@ -290,10 +292,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 */
 	public void insertDocument(Document doc) {
 		synchronized(this) {
-			if( !this.usersToFlag.contains(doc.get(FLD_USER_NAME)) ) { 
-				// skip users which where flagged as spammers
-				this.postsToInsert.add(doc);
-			}
+			this.postsToInsert.add(doc);
 		}
 	}
 
@@ -394,7 +393,10 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	private void insertRecordIntoIndex(Document post) throws CorruptIndexException, IOException {
-		indexWriter.addDocument(post);
+		if( !this.usersToFlag.contains(post.get(FLD_USER_NAME)) ) { 
+			// skip users which where flagged as spammers
+			indexWriter.addDocument(post);
+		}
 	}	
 
 	/**
@@ -405,7 +407,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
-	private void insertRecordsIntoIndex(List<Document> posts) throws CorruptIndexException, IOException {
+	private void insertRecordsIntoIndex(Collection<Document> posts) throws CorruptIndexException, IOException {
 		for( Document post : posts ) {
 			this.insertRecordIntoIndex(post);
 		}
@@ -488,6 +490,10 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		default:
 			// nothing to do
 		}
+		
+		this.postsToInsert.clear();
+		this.contentIdsToDelete.clear();
+		this.usersToFlag.clear();
 	}
 	
 	/**
@@ -584,6 +590,15 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		
 		return name;
 	}
+	
+	//------------------------------------------------------------------------
+	// getter/setter
+	//------------------------------------------------------------------------
+	public Set<Document> getPostsToInsert() {
+		return this.postsToInsert;
+	}
 
-
+	public Set<String> getUsersToFlag() {
+		return this.usersToFlag;
+	}
 }

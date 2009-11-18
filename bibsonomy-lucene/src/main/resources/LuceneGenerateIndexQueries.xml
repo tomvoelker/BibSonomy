@@ -70,7 +70,24 @@
 	<select id="getGroupIDs" resultMap="groupIDs">
 		SELECT `group`, group_name
 		FROM groupids
-	</select>    
+	</select>
+	
+	<!-- get users which where flagged as spammers since last index update --> 
+	<select id="getSpamPredictionForTimeRange" parameterClass="date" resultClass="string">
+		SELECT user_name
+		FROM prediction
+		WHERE prediction = 1
+		  AND updated_at &gt;= #date#
+	</select>
+
+	<!-- get users which where flagged as non-spammers since last index update --> 
+	<select id="getNonSpamPredictionForTimeRange" parameterClass="date" resultClass="string">
+		SELECT user_name
+		FROM prediction
+		WHERE prediction = 0
+		  AND updated_at &gt;= #date#
+	</select>
+	    
 	
 	<!-- get list of tag assignments -->
 	<select id="getTasEntries" parameterClass="listParam" resultMap="tasEntry">

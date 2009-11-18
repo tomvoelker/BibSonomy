@@ -21,6 +21,10 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Privlevel;
@@ -329,20 +333,54 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		bmRefList     = this.bookmarkDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, null, 1000, 0, null, this.dbSession);
 		assertEquals(bmRefList.size(), bmResultList.size());
 		*/
-	}
+		
+		// test update manager recovery
+		User spamUser = new User("testuser1");
+		spamUser.setPrediction(1);
+		spamUser.setSpammer(true);
+		spamUser.setAlgorithm("luceneTest");
+		this.adminDb.flagSpammer(spamUser, "lucene", this.dbSession);
+		
+		this.luceneBibTexIndex.reset();
+		this.luceneBookmarkIndex.reset();
+		this.luceneBibTexUpdater.recovery();
+		this.luceneBookmarkUpdater.recovery();
+		
+		assertEquals(true, this.luceneBibTexIndex.getUsersToFlag().contains("testuser1"));
+		assertEquals(true, this.luceneBookmarkIndex.getUsersToFlag().contains("testuser1"));
+
+		// FIXME: we get an SQL duplicate key violation exception, if we don't wait....
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			log.error("Error while going to sleep... Probably spam flagging will fail!", e);
+		}
+		
+		spamUser.setPrediction(0);
+		spamUser.setSpammer(false);
+		spamUser.setAlgorithm("luceneTest");
+		this.adminDb.flagSpammer(spamUser, "lucene", this.dbSession);
+		
+		this.luceneBibTexIndex.reset();
+		this.luceneBookmarkIndex.reset();
+		this.luceneBibTexUpdater.recovery();
+		this.luceneBookmarkUpdater.recovery();
+		
+		assertEquals(false, this.luceneBibTexIndex.getUsersToFlag().contains("testuser1"));
+		assertEquals(false, this.luceneBookmarkIndex.getUsersToFlag().contains("testuser1"));
+}
 
 	/**
 	 * tests some internel index functions
 	 */
 	@Test
 	public void searchTest() {
-		/*
-		Integer lastTasId = this.luceneBibTexIndex.getLastTasIdFromIndex();
-		log.debug("Last tas_id: " + lastTasId);
-		*/
 		// set up data structures
 		Set<String> allowedGroups = new TreeSet<String>();
 		allowedGroups.add("public");
+		allowedGroups.add("testgroup1");
+		allowedGroups.add("testgroup2");
+		allowedGroups.add("testgroup3");
 
 		//--------------------------------------------------------------------
 		// TEST 1: insert special post into test database and search for it
@@ -351,10 +389,18 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
 		Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
-		String title = "luceneTitle1";
-		bibtexPost.getResource().setTitle(title);
+		String bibTitle = "luceneTitle1";
+		bibtexPost.getResource().setTitle(bibTitle);
 		
 		this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
+
+		Post<Bookmark> bookmarkPost = this.generateBookmarkDatabaseManagerTestPost();
+		String bmTitle = "BrandNewluceneTitle2";
+		bookmarkPost.getUser().setName("brandNewLuceneName");
+		bookmarkPost.getResource().setTitle(bmTitle);
+		bookmarkPost.getResource().recalculateHashes();
+		
+		this.bookmarkDb.createPost(bookmarkPost.getUser().getName(), bookmarkPost, this.dbSession);
 
 		// update index
 		this.luceneBibTexUpdater.updateIndex();
@@ -366,11 +412,19 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		ResourceSearch<BibTex> bibtexSearcher = LuceneDelegateBibTexSearch.getInstance();
 		ResourceSearch<Bookmark> bookmarkSearcher = LuceneDelegateBookmarkSearch.getInstance();
 
-		ResultList<Post<BibTex>> resultList = bibtexSearcher.searchPosts(null, title, null, bibtexPost.getUser().getName(), allowedGroups, 1, 0);
-		assertEquals(1, resultList.size());
+		// search for bibtex
+		ResultList<Post<BibTex>> bibResultList = bibtexSearcher.searchPosts(null, bibTitle, null, bibtexPost.getUser().getName(), allowedGroups, 1, 0);
+		assertEquals(1, bibResultList.size());
 
-		resultList = bibtexSearcher.searchPosts(null, title+"2", null, bibtexPost.getUser().getName(), allowedGroups, 1, 0);
-		assertEquals(0, resultList.size());
+		bibResultList = bibtexSearcher.searchPosts(null, bibTitle+"2", null, bibtexPost.getUser().getName(), allowedGroups, 1, 0);
+		assertEquals(0, bibResultList.size());
+		
+		// search for bookmarks
+		ResultList<Post<Bookmark>> bmResultList = bookmarkSearcher.searchPosts(null, bmTitle, null, bookmarkPost.getUser().getName(), allowedGroups, 10, 0);
+		assertEquals(1, bmResultList.size());
+
+		bmResultList = bookmarkSearcher.searchPosts(null, bmTitle+"2", null, bookmarkPost.getUser().getName(), allowedGroups, 10, 0);
+		assertEquals(0, bmResultList.size());
 
 	}
 

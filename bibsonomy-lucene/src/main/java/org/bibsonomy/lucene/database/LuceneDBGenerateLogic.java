@@ -2,6 +2,7 @@ package org.bibsonomy.lucene.database;
 
 import java.io.Reader;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -137,6 +138,35 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> implements Lucen
 		
 		return retVal;
 	}
-	
 
+	@SuppressWarnings("unchecked")
+	@Override 
+	public List<String> getSpamPredictionForTimeRange(Date fromDate) {
+		List<String> retVal = null;
+		
+		try {
+			retVal = (List<String>)sqlMap.queryForList("getSpamPredictionForTimeRange", fromDate);
+		} catch (SQLException e) {
+			log.error("Error getting flagged users", e);
+			retVal = new LinkedList<String>();
+		}
+		
+		return retVal;
+	}
+
+	
+	@SuppressWarnings("unchecked")
+	@Override 
+	public List<String> getNonSpamPredictionForTimeRange(Date fromDate) {
+		List<String> retVal = null;
+		
+		try {
+			retVal = (List<String>)sqlMap.queryForList("getNonSpamPredictionForTimeRange", fromDate);
+		} catch (SQLException e) {
+			log.error("Error getting unflagged users", e);
+			retVal = new LinkedList<String>();
+		}
+		
+		return retVal;
+	}
 }

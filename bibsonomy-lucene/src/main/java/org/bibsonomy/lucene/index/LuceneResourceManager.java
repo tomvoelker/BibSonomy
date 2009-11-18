@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateResourceSearch;
 import org.bibsonomy.lucene.util.LucenePostConverter;
 import org.bibsonomy.lucene.util.Utils;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -312,6 +314,38 @@ public class LuceneResourceManager<R extends Resource> {
 		// FIXME: this isn't set correctly - do we need it anyway???
 		return allDocsDeleted;
 	}	
+	
+	/**
+	 * incorporate all database changes before startup which would otherwise
+	 * get lost (i.e. flagging of spam users)
+	 */
+	public void recovery() {
+		// get date of last index update
+		Date fromDate = new Date(this.resourceIndex.getLastLogDate());
+		
+		// get users which where flagged as spammers since then 
+		List<String> lostSpammer    = this.dbLogic.getSpamPredictionForTimeRange(fromDate);
+		
+		// get users which where unflagged since then 
+		List<String> lostNonSpammer = this.dbLogic.getNonSpamPredictionForTimeRange(fromDate);
+		
+		// flag lost spammers in index
+		User transientUser = new User();
+		for( String spammer : lostSpammer ) {
+			transientUser.setName(spammer);
+			transientUser.setPrediction(1);
+			transientUser.setSpammer(true);
+			flagSpammer(transientUser);
+		}
+
+		// unflag lost nonspammers in index
+		for( String spammer : lostNonSpammer ) {
+			transientUser.setName(spammer);
+			transientUser.setPrediction(0);
+			transientUser.setSpammer(false);
+			flagSpammer(transientUser);
+		}
+	}
 	
 	//------------------------------------------------------------------------
 	// spam handling
