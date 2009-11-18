@@ -22,8 +22,8 @@
 		requPath="${requPath}">
 
 		<jsp:attribute name="heading">	
-			<a href="/?filter=no">${projectName} all</a> :: <a rel="path_menu"
-				href="/admin"><fmt:message key="navi.admin" /></a>
+			<a href="/admin"><fmt:message key="navi.admin"/></a> :: <a rel="path_menu"
+				href="/admin/spam"><fmt:message key="navi.spam" /></a>
 		</jsp:attribute>
 
 		<jsp:attribute name="headerExt">
@@ -325,20 +325,22 @@
 					<td><input type="button" value="los"
 							onclick="javascript:updateSettings('probability_limit', document.getElementById('probability_limit').value)" /></td>
 				</tr>
+			
+				<!-- whitelist update -->
 				<tr>
-					<td>testing mode:</td>
-					<td>
-					
-						<form:select path="settingsCommand.testingOptions" id="testing"
-							size="1" multiple="false">
-							<c:forEach var="entry" items="${settingsCommand.testingOptions}">
-							 	<form:option id="${entry.value}" value="${entry.value}"
-									label="${entry.key}" />
-							</c:forEach>
-						</form:select>
-					</td>
+					<td>Whitelist update:</td>
+				<td><form:input path="settingsCommand.whitelistExp"
+							id="whitelist_exp" size="7" /></td>
 					<td><input type="button" value="los"
-							onclick="javascript:updateSettings('testing', document.getElementById('testing').value)" /></td>
+							onclick="javascript:updateSettings('whitelist_exp', document.getElementById('whitelist_exp').value)" /></td>
+				</tr>
+				<!-- set costs for classification -->
+				<tr>
+					<td>Costs:</td>
+				<td><form:input path="settingsCommand.classificationCosts"
+							id="classify_cost" size="7" /></td>
+					<td><input type="button" value="los"
+							onclick="javascript:updateSettings('classify_cost', document.getElementById('classify_cost').value)" /></td>
 				</tr>
 			</table>
 			</form:form>	
@@ -420,12 +422,11 @@
 				/** hack for preselect options in combobox */
 				function preselect() {
 					var mode = "${settingsCommand.mode}";
-					var algorithm = "${settingsCommand.algorithm}";
-					var testing = "${settingsCommand.testing}";					
+					var algorithm = "${settingsCommand.algorithm}";				
 					
 					document.getElementById(mode).selected = true;
 					document.getElementById(algorithm).selected = true;
-					document.getElementById(testing).selected = true;
+					
 				}
 				preselect();
 			</script>	
