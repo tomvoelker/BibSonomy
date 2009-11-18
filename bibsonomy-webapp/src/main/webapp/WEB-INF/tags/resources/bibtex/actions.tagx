@@ -11,35 +11,24 @@
     <jsp:directive.attribute name="unpick" type="java.lang.Boolean" required="false" description="If TRUE, unpick links (instead of pick links) are shown."/>
 
 	<c:if test="${command.context.userLoggedIn}">
-
+	
 		<!-- PICK / UNPICK -->
-		<c:url var="base_pickUnpick_url" value="/ajax/pickUnpickPost" context="${projectContext}">
+		<c:set var="pickUnpick" value="pick"></c:set>
+		<c:if test="${post.picked}">
+			<c:set var="pickUnpick" value="unpick"></c:set>
+		</c:if>
+		
+		<c:url var="pickUnpick_url" value="/ajax/pickUnpickPost" context="${projectContext}">
 			<c:param name="requestedResourceHash" value="${post.resource.intraHash}" />
 			<c:param name="user" value="${post.user.name}" />
 			<c:param name="ckey" value="${ckey}" />
+			<c:param name="action" value="${pickUnpick}"/>
 		</c:url>
 		
-		<c:choose>
-			<c:when test="${post.picked}">
-				<!-- This means we are on a page which wants to show unpick links 
-                     instead of pick links. Typically: the basket page.  -->
-				<c:url var="special_pickUnpick_url" value="${base_pickUnpick_url}">
-					<c:param name="action" value="unpick" />
-				</c:url>
-				<c:set var="pickUnpickTitle"><fmt:message key="bibtex.actions.unpick.title"/></c:set>
-				<c:set var="message"><fmt:message key="bibtex.actions.unpick"/></c:set>
-			</c:when>
-			<c:otherwise>
-                <!-- all other pages show a link which allows to pick the publication -->
-				<c:url var="special_pickUnpick_url" value="${base_pickUnpick_url}">
-					<c:param name="action" value="pick" />
-				</c:url>
-				<c:set var="pickUnpickTitle"><fmt:message key="bibtex.actions.pick.title"/></c:set>
-				<c:set var="message"><fmt:message key="bibtex.actions.pick"/></c:set>
-			</c:otherwise>
-		</c:choose>
-		
-		<a onclick="pickUnpickPublication(event);" title="${pickUnpickTitle}" href="${fn:escapeXml(special_pickUnpick_url)}">
+		<c:set var="pickUnpickTitle"><fmt:message key="bibtex.actions.${pickUnpick}.title"/></c:set>
+		<c:set var="message"><fmt:message key="bibtex.actions.${pickUnpick}"/></c:set>
+
+		<a onclick="pickUnpickPublication(event);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
 			<c:out value="${message}"></c:out>
 		</a>
 		
