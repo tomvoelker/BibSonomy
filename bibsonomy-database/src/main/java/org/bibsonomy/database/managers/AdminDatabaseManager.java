@@ -332,7 +332,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Updtaes a setting value
+	 * Updates a setting value
 	 * 
 	 * @param key
 	 *            setting
@@ -343,9 +343,19 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void updateClassifierSettings(final ClassifierSettings key, final String value, final DBSession session) {
 		final AdminParam param = new AdminParam();
+		
+		// set values for settings update
 		param.setKey(key.toString());
 		param.setValue(value);
-		this.update("updateClassifierSettings", param, session);
+		
+		// if classifier update is concerned with a whitelist update, 
+		// handle separately
+		if (ClassifierSettings.WHITELIST_EXP.equals(key)){
+			this.insert("insertClassifierWhitelist", param, session);
+		}else{
+			// rest is in classifier settings table
+			this.update("updateClassifierSettings", param, session);
+		}
 	}
 
 	/**

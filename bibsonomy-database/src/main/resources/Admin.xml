@@ -28,8 +28,7 @@
 	</update>
 	
 	<update id="flagSpammerEvaluation" parameterClass="adminParam">
-		UPDATE evaluation SET $evaluator$ = #prediction#, $evalDate$ = #updatedAt#
-		WHERE user_name = #userName#
+		UPDATE evaluation SET $evaluator$ = #prediction# WHERE user_name = #userName#
 	</update>
 
 	<select id="getAdminClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
@@ -92,6 +91,13 @@
 	<update id="updateClassifierSettings" parameterClass="adminParam">
 		UPDATE classifier_settings cs SET value = #value# WHERE cs.key = #key# 
 	</update>
+	
+	 <!--  
+	 	Inserts a regular expression into the whitelist
+	 -->
+	<insert id="insertClassifierWhitelist" parameterClass="adminParam">
+		INSERT INTO classifier_whitelist (white_regex) VALUES (#value#); 
+	</insert>
 
 	<select id="getClassifierHistory" resultMap="AdminCommon.userPrediction" parameterClass="string">
 		SELECT user_name, updated_at, <include refid="commonPredictionAttributes"/>  FROM log_prediction 
