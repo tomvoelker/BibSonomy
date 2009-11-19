@@ -42,8 +42,20 @@ import org.bibsonomy.util.ValidationUtils;
 public class PostUtils {
 
 	/**
-	 * Modifes the group IDs in the post to be spam group IDs or non-spam group IDs,
-	 * depending on the spamemr status of the given user.
+	 * sets the owner of the post to the user if current owner is null or name of current owner isn't present
+	 * @param post
+	 * @param user
+	 */
+	public static void populatePostWithUser(final Post<? extends Resource> post, final User user) {
+		final User postUser = post.getUser();
+		if (!ValidationUtils.present(postUser) || !ValidationUtils.present(postUser.getName())) {
+			post.setUser(user);
+		}
+ 	}
+	
+	/**
+	 * Modifies the group IDs in the post to be spam group IDs or non-spam group IDs,
+	 * depending on the spammer status of the given user.
 	 *  
 	 * @see #setGroupIds(Post, boolean)
 	 * @param post
