@@ -57,8 +57,6 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 		if( instance==null ) {
 			instance = (SpringPerFieldAnalyzerWrapper)beanFactory.getBean("luceneFieldWrapperAnalyzer");
 		}
-		if(instance.analyzer==null)
-			instance.init();
 		return instance;
 	}
 
@@ -71,8 +69,6 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 		if( instance==null ) {
 			instance = new SpringPerFieldAnalyzerWrapper();
 		};
-		if(instance.analyzer==null)
-			instance.init();
 		return instance;
 	}
 	
@@ -97,6 +93,7 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 
 	public void setFieldMap(Map<String, Object> fieldMap) {
 		this.fieldMap = fieldMap;
+		init();
 	}
 
 	public Map<String, Object> getFieldMap() {
@@ -105,6 +102,7 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 
 	public void setDefaultAnalyzer(Analyzer defaultAnalyzer) {
 		this.defaultAnalyzer = defaultAnalyzer;
+		init();
 	}
 
 	public Analyzer getDefaultAnalyzer() {
