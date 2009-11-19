@@ -1,5 +1,7 @@
 package org.bibsonomy.recommender.tags.multiplexer.modifiers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Collection;
 
 import org.bibsonomy.model.RecommendedTag;
@@ -16,29 +18,29 @@ public class InvalidScoringFilter implements RecommendedTagModifier {
 
 	@Override
 	public void alterTags(Collection<RecommendedTag> tags) {
-		for( RecommendedTag tag : tags ) {
-			double score      = tag.getScore();
-			double confidence = tag.getConfidence();
-			
-			// filter score
-			if( Double.isNaN(score) ) {
-				tag.setScore(Integer.MIN_VALUE);
-			} else if( score==Double.NEGATIVE_INFINITY ) {
-				tag.setScore(Integer.MIN_VALUE);
-			} else if( score==Double.POSITIVE_INFINITY ) {
-				tag.setScore(Integer.MAX_VALUE);
-			}
+		if (present(tags)) {
+			for (final RecommendedTag tag : tags) {
+				double score      = tag.getScore();
+				double confidence = tag.getConfidence();
+				
+				// filter score
+				if (Double.isNaN(score)) {
+					tag.setScore(Integer.MIN_VALUE);
+				} else if( score==Double.NEGATIVE_INFINITY ) {
+					tag.setScore(Integer.MIN_VALUE);
+				} else if( score==Double.POSITIVE_INFINITY ) {
+					tag.setScore(Integer.MAX_VALUE);
+				}
 
-			// filter confidence
-			if( Double.isNaN(confidence) ) {
-				tag.setConfidence(Integer.MIN_VALUE);
-			} else if( confidence==Double.NEGATIVE_INFINITY ) {
-				tag.setConfidence(Integer.MIN_VALUE);
-			} else if( confidence==Double.POSITIVE_INFINITY ) {
-				tag.setConfidence(Integer.MAX_VALUE);
+				// filter confidence
+				if( Double.isNaN(confidence) ) {
+					tag.setConfidence(Integer.MIN_VALUE);
+				} else if( confidence==Double.NEGATIVE_INFINITY ) {
+					tag.setConfidence(Integer.MIN_VALUE);
+				} else if( confidence==Double.POSITIVE_INFINITY ) {
+					tag.setConfidence(Integer.MAX_VALUE);
+				}
 			}
-			
 		}
 	}
-
 }
