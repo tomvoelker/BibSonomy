@@ -8,15 +8,13 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
-import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
 import org.bibsonomy.lucene.param.LucenePost;
+import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.lucene.util.LucenePostConverter;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -29,34 +27,11 @@ import org.bibsonomy.model.Resource;
  * @author sst
  * @author fei
  */
-public abstract class LuceneGenerateResourceIndex<R extends Resource> {
-	private static final String LUCENE_INDEX_PATH_PREFIX = "luceneIndexPath";
-
-	private static final Logger log = Logger.getLogger(LuceneGenerateResourceIndex.class);
-
-	/** name of the property file which configures lucene */
-	private static final String PROPERTYFILENAME = "lucene.properties";
+public abstract class LuceneGenerateResourceIndex<R extends Resource> extends LuceneBase {
+	protected static final Logger log = Logger.getLogger(LuceneGenerateResourceIndex.class);
 
 	/** reference to the configuration file */
 	Properties props = null;
-
-	/** keyword identifying unlimited field length in the lucene index */
-	private static final String KEY_UNLIMITED = "UNLIMITED";
-
-	/** keyword identifying limited field length in the lucene index */
-	private static final Object KEY_LIMITED = "LIMITED";
-
-	private static final int SQL_BLOCKSIZE = 1000;
-
-	private static final String FLD_LASTTASID = "lastTasId";
-
-	/** MAGIC KEY identifying the context environment for this class */
-	private static final String CONTEXT_ENV_NAME = "java:/comp/env";
-	
-	/** MAGIC KEY identifying context variables for this class */
-	private static final String CONTEXT_INDEX_PATH = "luceneIndexPath";
-
-	private static final String PROP_DB_DRIVER_NAME = "db.driver";
 
 	/** database logic */
 	private LuceneDBInterface<R> dbLogic;
@@ -310,8 +285,6 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	}
 
 	public Analyzer getAnalyzer() {
-		if( this.analyzer==null )
-			this.analyzer = new SpringPerFieldAnalyzerWrapper();
 		return analyzer;
 	}
 }

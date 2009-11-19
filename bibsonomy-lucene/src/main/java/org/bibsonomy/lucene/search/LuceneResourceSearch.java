@@ -14,6 +14,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Token;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -23,6 +24,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.exceptions.LuceneException;
@@ -30,7 +32,10 @@ import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.QuerySortContainer;
+import org.bibsonomy.lucene.util.LuceneBase;
+import org.bibsonomy.lucene.util.LucenePostConverter;
 import org.bibsonomy.lucene.util.Utils;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
@@ -39,17 +44,11 @@ import org.bibsonomy.util.ValidationUtils;
 /**
  * abstract parent class for lucene search
  * 
- * FIXME: better split org.bibsonomy.service.searcher.ResourceSearch into search/management tasks 
- * 
  * @author fei
  *
  * @param <R> resource type
  */
-public abstract class LuceneResourceSearch<R extends Resource> {
-
-
-	private static final String PARAM_RELEVANCE = "relevance";
-
+public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBase {
 	private static final Logger log = Logger.getLogger(LuceneResourceSearch.class);
 	
 	/** logic interface for retrieving data from bibsonomy */
@@ -58,39 +57,18 @@ public abstract class LuceneResourceSearch<R extends Resource> {
 	/** known resource types */
 	List<Class<? extends Resource>> resourceTypes = new LinkedList<Class<? extends Resource>>();
 
+	/** path to the managed resource index */
 	protected String luceneIndexPath;
+	
+	/** global reference to the lucene searcher */
 	protected IndexSearcher searcher; 
 
-	/** 
-	 * default field analyzer 
-	 * FIXME: configure this via spring
-	 */
+	/** default field analyzer */
 	private Analyzer analyzer; 
 
-
-	/** MAGIC KEY identifying the context environment for this class */
-	private static final String CONTEXT_ENV_NAME = "java:/comp/env";
-	
-	/** MAGIC KEY identifying context variables for this class */
-	private static final String CONTEXT_INDEX_PATH = "luceneIndexPath";
-
-	protected static final String FLD_MERGEDFIELDS = "mergedfields";
-
-	protected static final String FLD_GROUP = "group";
-
-	protected static final String FLD_AUTHOR= "author";
-
-	protected static final String FLD_USER = "user_name";
-	
-	protected static final String FLD_DATE = "date";
-	
-	protected static final String FLD_YEAR = "year";
-	
-	protected static final String FLD_TAS = "tas";	
 	//------------------------------------------------------------------------
 	// search interface
 	//------------------------------------------------------------------------
-	
 	/**
 	 * TODO: document me
 	 */
@@ -127,10 +105,73 @@ public abstract class LuceneResourceSearch<R extends Resource> {
 	// abstract interface
 	//------------------------------------------------------------------------
 	/**
-	 * do the actual work
+	 * query index for documents and create result list of post models 
 	 */
-	protected abstract ResultList<Post<R>> 
-	   searchLucene(QuerySortContainer buildFulltextQuery, int limit, int offset);
+	protected ResultList<Post<R>> searchLucene(QuerySortContainer qf, int limit, int offset) {
+		// initialize data structures
+		ResultList<Post<R>> postList = createEmptyResultList();
+		
+		Query query = qf.getQuery();
+		Sort  sort  = qf.getSort();
+		log.debug("Querystring:  "+ query.toString() + "sorted by: "+ sort);
+
+		try {
+			//----------------------------------------------------------------
+			// querying the index
+			//----------------------------------------------------------------
+
+			long starttimeQuery = System.currentTimeMillis();
+			final TopDocs topDocs = searcher.search(query, null, offset+limit, sort);
+			long endtimeQuery = System.currentTimeMillis();
+			log.debug("Query time: " + (endtimeQuery - starttimeQuery) + "ms");
+			
+			// determine number of posts to display
+			int hitslimit = (((offset+limit) < topDocs.totalHits) ? (offset+limit) : topDocs.totalHits);
+			postList.setTotalCount(topDocs.totalHits);
+
+			log.debug("offset / limit / hitslimit / hits.length():  "
+					+ offset + " / " + limit + " / " + hitslimit + " / " + topDocs.totalHits);
+
+			//----------------------------------------------------------------
+			// extract posts
+			//----------------------------------------------------------------
+			for (int i = offset; i < hitslimit; i++) {
+				// get document from index
+				Document       doc  = searcher.doc(topDocs.scoreDocs[i].doc);
+				// convert document to bibsonomy post model
+				Post<R> post = convertToPostModel(doc); 
+				
+				// set post frequency
+				starttimeQuery = System.currentTimeMillis();
+				int postFreq = 1;
+				if( doc.get(FLD_INTRAHASH)!=null ) {
+					postFreq = this.searcher.docFreq(new Term(FLD_INTRAHASH, doc.get(FLD_INTRAHASH)));
+				}
+				endtimeQuery = System.currentTimeMillis();
+				log.debug("PostFreq query time: " + (endtimeQuery - starttimeQuery) + "ms");
+				post.getResource().setCount(postFreq);
+				
+				postList.add(post);
+			}
+
+		} catch (IOException e) {
+			log.debug("LuceneBibTex: IOException: " + e.getMessage());
+		}
+		return postList;
+	}	
+
+	/**
+	 * create bibsonomy post model from given lucene document
+	 * @param doc
+	 * @return
+	 */
+	protected abstract Post<R> convertToPostModel(Document doc);
+
+	/**
+	 * create empty collection of managed post objects
+	 * @return
+	 */
+	protected abstract ResultList<Post<R>> createEmptyResultList();
 
 	/**
 	 * get managed resource type
@@ -182,6 +223,7 @@ public abstract class LuceneResourceSearch<R extends Resource> {
 	public LuceneIndexStatistics getStatistics() {
 		return Utils.getStatistics(luceneIndexPath);
 	}	
+	
 	//------------------------------------------------------------------------
 	// private helper
 	//------------------------------------------------------------------------
@@ -347,117 +389,7 @@ public abstract class LuceneResourceSearch<R extends Resource> {
 		
 		return name;
 	}
-	
-	
-	/**
-	 * full text search for search:all and search:username
-	 * 
-	 * FIXME: use this for bookmark and bibtex queries
-	 * FIXME: construct query objects directly
-	 * 
-	 * @param groupId
-	 * @param searchTerms
-	 * @param requestedUserName
-	 * @param UserName
-	 * @param GroupNames
-	 * @return queryString
-	 */
-	/*
-	protected QuerySortContainer getFulltextQueryFilter (String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames) {
-//		String orderBy = "relevance"; 
-		String orderBy = FLD_DATE; 
-		
-		String allowedGroupNames = "";
-		String allowedGroupNamesQuery = "";
-		String mergedFiledQuery = "";
-		String requestedUserNameQuery = "";
-		String userQuery = "";
-		String privateGroupQuery = "";
-		String groupIdQuery = "";
-		String queryString = "";
 
-		QuerySortContainer qf = new QuerySortContainer();
-		int allowedGroupsIterator = 0;
-		for ( String groupName : GroupNames){
-			if (allowedGroupsIterator>0) allowedGroupNames += " OR ";
-			allowedGroupNames += groupName;
-			allowedGroupsIterator++;
-		}
-		
-		log.debug("LuceneBibTex: allowedGroups: " + allowedGroupNames);		
-
-		if ( (searchTerms != null) && (!searchTerms.isEmpty()) )
-		{
-			// parse search_terms for forbidden characters
-			// forbidden characters are those, which will harm the lucene query
-			// forbidden characters are & | ( ) { } [ ] ~ * ^ ? : \
-			//searchTerms = Utils.replaceSpecialLuceneChars(searchTerms);
-			searchTerms = QueryParser.escape(searchTerms);
-			
-			mergedFiledQuery = FLD_MERGEDFIELDS + ":("+ searchTerms +") ";
-		}
-		allowedGroupNamesQuery = FLD_GROUP +":("+allowedGroupNames+")";
-		privateGroupQuery = FLD_GROUP +":(private)";
-			
-		if ( (UserName != null) && (!UserName.isEmpty()) )
-		{
-			UserName = Utils.replaceSpecialLuceneChars(UserName);
-			userQuery  = FLD_USER + ":("+ UserName +")";
-		}
-
-		if ( (requestedUserName != null) && (!requestedUserName.isEmpty()) )
-		{
-			requestedUserName = Utils.replaceSpecialLuceneChars(requestedUserName);
-			requestedUserNameQuery  = " AND " + FLD_USER + ":("+ requestedUserName +")";
-		}
-
-		if ((null!=group) && (!group.isEmpty()))
-		{
-			groupIdQuery = " AND " + FLD_GROUP +":("+group+")";
-		}
-
-		// assemble query string 
-		queryString = mergedFiledQuery + requestedUserNameQuery + groupIdQuery ;
-		if (!userQuery.isEmpty()) { // logged in user 
-			queryString += " AND ( " + allowedGroupNamesQuery + " OR ("+privateGroupQuery+" AND "+userQuery+") ) ";
-		}
-		else
-		{
-			queryString += " AND " + allowedGroupNamesQuery;
-		}
-
-		QueryParser myParser = new QueryParser("description", analyzer);
-		Query query = null;
-
-		Sort sort = null;
-		if (PARAM_RELEVANCE.equals(orderBy)) {
-			myParser.setDefaultOperator(QueryParser.Operator.OR); // is default
-			sort = new Sort(new SortField[]{
-					SortField.FIELD_SCORE,	
-					new SortField(FLD_DATE,true)
-  			});
-		}
-		else 
-		{ // orderBy=="date"
-			myParser.setDefaultOperator(QueryParser.Operator.AND);
-			sort = new Sort(FLD_DATE,true);
-		}
-
-		log.debug("LuceneSearchBibTex: QueryParser.DefaultOperator: "+ myParser.getDefaultOperator() );
-
-		
-		try {
-			query = myParser.parse(queryString);
-		} catch (ParseException e) {
-			log.debug("LuceneSearchBibTex: ParseException: "+ e.getMessage());
-		}
-
-		qf.setQuery(query);
-		qf.setSort(sort);
-		
-		return qf;
-	}
-	*/
 	
 	//------------------------------------------------------------------------
 	// getter/setter
@@ -475,8 +407,6 @@ public abstract class LuceneResourceSearch<R extends Resource> {
 	}
 
 	public Analyzer getAnalyzer() {
-		if( this.analyzer==null )
-			this.analyzer = new SpringPerFieldAnalyzerWrapper();
 		return analyzer;
 	}
 }

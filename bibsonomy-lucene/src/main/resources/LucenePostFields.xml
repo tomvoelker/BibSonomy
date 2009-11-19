@@ -13,6 +13,7 @@
 					<map>
 						<entry key="luceneName" value="content_id" />
 						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+						<entry key="typeHandler" value-ref="intConverter" />
 					</map>
 				</entry>
 				<entry key="date">
@@ -33,6 +34,7 @@
 					<map>
 						<entry key="luceneName" value="last_tas_id" />
 						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+						<entry key="typeHandler" value-ref="intConverter" />
 					</map>
 				</entry>
 				<entry key="description">
@@ -46,6 +48,7 @@
 						<entry key="luceneName" value="group" />
 						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
 						<entry key="itemProperty" value="name" />
+						<entry key="typeHandler" value-ref="groupsConverter" />
 					</map>
 				</entry>
 				<entry key="tags">
@@ -53,6 +56,8 @@
 						<entry key="luceneName" value="tas" />
 						<entry key="luceneIndex" value-ref="fieldAnalyzed" />
 						<entry key="itemProperty" value="name" />
+						<entry key="typeHandler" value-ref="tagsConverter" />
+						<entry key="itemDelimitier" value=" " />
 					</map>
 				</entry>
 				<entry key="user.name">

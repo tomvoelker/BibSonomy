@@ -1,32 +1,42 @@
 package org.bibsonomy.lucene.index;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
 import org.apache.lucene.index.CorruptIndexException;
-import org.bibsonomy.lucene.database.LuceneBibTexLogic;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
+import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
+import org.springframework.beans.factory.BeanFactory;
 
+/**
+ * generates lucene index for bibtex posts as configured in lucen.properties
+ * 
+ *  FIXME: configure via spring
+ *  
+ * @author fei
+ *
+ */
 public class LuceneGenerateBibTexIndex extends LuceneGenerateResourceIndex<BibTex>{
-
+	/** singleton pattern */
+	private static LuceneGenerateBibTexIndex instance;
+	
+	/** bean factory for obtaining instances configured via spring */
+	private static BeanFactory beanFactory;
+	
 	//------------------------------------------------------------------------
 	// constructor
 	//------------------------------------------------------------------------
 	public LuceneGenerateBibTexIndex(Properties props)
 	throws ClassNotFoundException, SQLException {
 		super(props);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public LuceneGenerateBibTexIndex()
 	throws ClassNotFoundException, SQLException {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	//------------------------------------------------------------------------
@@ -40,13 +50,35 @@ public class LuceneGenerateBibTexIndex extends LuceneGenerateResourceIndex<BibTe
 	 * @throws CorruptIndexException 
 	 */
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, CorruptIndexException, IOException {
+		// configure jndi context
 		JNDITestDatabaseBinder.bind();
-		LuceneGenerateResourceIndex<BibTex> indexer = new LuceneGenerateBibTexIndex();
-		indexer.setLogic(LuceneBibTexLogic.getInstance());
-		DriverManager.setLogWriter(new PrintWriter(System.out));
-		indexer.getLogic().getNumberOfPosts();
+
+		// create index
+		LuceneGenerateResourceIndex<BibTex> indexer = LuceneGenerateBibTexIndex.getInstance();
 		indexer.generateIndex();
 		indexer.shutdown();
+	}
+	//------------------------------------------------------------------------
+	// singleton pattern implementation
+	//------------------------------------------------------------------------
+	/**
+	 * get readily configured instance 
+	 */
+	public static LuceneGenerateBibTexIndex getInstance() {
+		if( instance==null ) {
+			beanFactory = LuceneSpringContextWrapper.getBeanFactory();
+			return (LuceneGenerateBibTexIndex)beanFactory.getBean("luceneBibTexIndexGenerator");
+		} else
+			return instance;
+	}
+	/**
+	 * singelton instance for spring instantiation
+	 */
+	public static LuceneGenerateBibTexIndex getPreInitInstance() throws ClassNotFoundException, SQLException {
+		if( instance==null )
+			return new LuceneGenerateBibTexIndex();
+		else
+			return instance;
 	}
 	
 	//------------------------------------------------------------------------

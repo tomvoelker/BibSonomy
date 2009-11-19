@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,6 +12,7 @@ import org.bibsonomy.lucene.database.params.GroupParam;
 import org.bibsonomy.lucene.database.params.GroupTasParam;
 import org.bibsonomy.lucene.database.params.ListParam;
 import org.bibsonomy.lucene.database.params.TasParam;
+import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.model.Resource;
 
 import com.ibatis.common.resources.Resources;
@@ -24,7 +24,7 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  * @author fei
  *
  */
-public abstract class LuceneDBGenerateLogic<R extends Resource> implements LuceneDBInterface<R> {
+public abstract class LuceneDBGenerateLogic<R extends Resource> extends LuceneBase implements LuceneDBInterface<R> {
 	private static final Log log = LogFactory.getLog(LuceneDBGenerateLogic.class);
 
 	/** path to the ibatis database configuration file */

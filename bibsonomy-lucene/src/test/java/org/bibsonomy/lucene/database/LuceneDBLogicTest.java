@@ -42,7 +42,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
-	private static final int POST_TIME_TO_WAIT = 1537;
+	private static final int POST_TIME_TO_WAIT = 1;
 
 	private static final Log log = LogFactory.getLog(LuceneDBLogicTest.class);
 	

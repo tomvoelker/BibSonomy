@@ -3,16 +3,18 @@ package org.bibsonomy.lucene.param.comparator;
 import java.util.Comparator;
 
 import org.apache.lucene.document.Document;
+import org.bibsonomy.lucene.util.LuceneBase;
 
 /**
  * comparator for avoiding duplicates in index-update-cache
  * 
+ * FIXME: we have to consider the case, that a post is updated between
+ *        two update sessions, after the user was unflagged as spammer
+ *        THIS UPDATE WILL BE LOST!!!
+ * 
  * @author fei
  */
-public class DocumentCacheComparator implements Comparator<Document> {
-
-	private static final String FLD_LAST_LOG_DATE = "last_log_date";
-	private static final String FLD_CONTENT_ID    = "content_id";
+public class DocumentCacheComparator extends LuceneBase implements Comparator<Document> {
 
 	@Override
 	public int compare(Document o1, Document o2) {

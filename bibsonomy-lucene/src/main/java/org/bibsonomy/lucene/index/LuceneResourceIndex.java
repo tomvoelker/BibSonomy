@@ -1,9 +1,7 @@
 package org.bibsonomy.lucene.index;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -26,15 +24,13 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
-import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
+import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.model.Resource;
 
 /**
@@ -47,35 +43,15 @@ import org.bibsonomy.model.Resource;
  *
  * @param <R>
  */
-public abstract class LuceneResourceIndex<R extends Resource> {
+public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase {
+	protected static final Log log = LogFactory.getLog(LuceneResourceIndex.class);
+
 	/** coding whether index is opened for writing or reading */
 	public static enum AccessMode {
 		None, ReadOnly, WriteOnly;
 	}
 	/** indicating whether index is opened for writing or reading */
 	private AccessMode accessMode;
-	
-	
-	private static final String FLD_DATE          = "date";
-	private static final String FLD_LAST_TAS_ID   = "last_tas_id";
-	private static final String FLD_LAST_LOG_DATE = "last_log_date";
-	private static final String FLD_USER_NAME     = "user_name";
-	
-	private static final String COL_CONTENT_ID = "content_id";
-
-	protected static final Log log = LogFactory.getLog(LuceneResourceIndex.class);
-
-	/** MAGIC KEY identifying the context environment for this class */
-	private static final String CONTEXT_ENV_NAME = "java:/comp/env";
-	
-	/** MAGIC KEY identifying context variables for this class */
-	private static final String CONTEXT_INDEX_PATH = "luceneIndexPath";
-
-
-
-
-
-
 
 	/** gives read only access to the lucene index */
 	IndexReader indexReader;
@@ -160,7 +136,6 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 			log.error("IOException while opening IndexReader in updateIndexes("+e.getMessage()+")", e);
 		}
 		
-		this.setAnalyzer(new SpringPerFieldAnalyzerWrapper());
 	}
 	
 	
@@ -448,7 +423,7 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	 * @throws IOException
 	 */
 	private int purgeDocumentForContentId(Integer contentId) throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
-		Term term = new Term(COL_CONTENT_ID, contentId.toString() );
+		Term term = new Term(FLD_CONTENT_ID, contentId.toString() );
 		return purgeDocuments(term);
 	}
 	
@@ -637,8 +612,6 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	}
 
 	public Analyzer getAnalyzer() {
-		if( this.analyzer==null )
-			this.analyzer = new SpringPerFieldAnalyzerWrapper();
 		return analyzer;
 	}
 }

@@ -28,6 +28,7 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.lucene.database.LuceneBibTexLogic;
 import org.bibsonomy.lucene.database.LuceneBookmarkLogic;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
+import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateBibTexSearch;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateBookmarkSearch;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateResourceSearch;
@@ -461,7 +462,9 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 			new LuceneGenerateBookmarkIndex(JNDITestDatabaseBinder.getLuceneProperties());
 		
 		bibTexIndexer.setLogic(LuceneBibTexLogic.getInstance());
+		bibTexIndexer.setAnalyzer(SpringPerFieldAnalyzerWrapper.getInstance());
 		bookmarkIndexer.setLogic(LuceneBookmarkLogic.getInstance());
+		bookmarkIndexer.setAnalyzer(SpringPerFieldAnalyzerWrapper.getInstance());
 		
 		bibTexIndexer.generateIndex();
 		bookmarkIndexer.generateIndex();

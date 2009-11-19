@@ -2,10 +2,9 @@ package org.bibsonomy.lucene.index;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.Bookmark;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * class for maintaining the lucene index
@@ -28,11 +27,7 @@ public class LuceneBookmarkManager extends LuceneResourceManager<Bookmark> {
 	 * static initialization
 	 */
 	static {
-		ApplicationContext context = new ClassPathXmlApplicationContext(
-		        new String[] {"LuceneContext.xml"});
-
-		// an ApplicationContext is also a BeanFactory (via inheritance)
-		beanFactory = context;
+		beanFactory = LuceneSpringContextWrapper.getBeanFactory();
 	}
 	
 	/**

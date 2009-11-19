@@ -8,16 +8,31 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.TokenStream;
+import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+/**
+ * this field wrapps lucene's PerFieldAnalyzerWrapper for making it
+ * configurable via spring
+ * 
+ * @author fei
+ *
+ */
 public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 	private static final Log log = LogFactory.getLog(SpringPerFieldAnalyzerWrapper.class);
 
-	/** spring bean factory for initializing instances */
+	/** singleton pattern's instance reference */
+	private static SpringPerFieldAnalyzerWrapper instance;
+
+	/** bean factory */
 	private static BeanFactory beanFactory;
+
+	/** map configuring the fieldwrapper */
+	private Map<String, Object> fieldMap;
 	
+	/** default analyzer */
+	private Analyzer defaultAnalyzer;
+
 	/** we delegate to this analyzer */
 	private PerFieldAnalyzerWrapper analyzer;
 
@@ -25,27 +40,75 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 	 * static initialization
 	 */
 	static {
-		ApplicationContext context = new ClassPathXmlApplicationContext(
-		        new String[] {"LuceneIndexConfig.xml"});
-
-		beanFactory = context;
+		beanFactory = LuceneSpringContextWrapper.getBeanFactory();
 	}
 	
-	@SuppressWarnings("unchecked")
-	public SpringPerFieldAnalyzerWrapper() {
-		Analyzer defaultAnalyzer = (Analyzer)beanFactory.getBean("luceneDefaultAnalyzer");
-		this.analyzer = new PerFieldAnalyzerWrapper(defaultAnalyzer);
-		
-		Map<String,Object> fieldMap = (Map<String,Object>)beanFactory.getBean("lucenePostFieldAnalyzer");
-		
-		for( String fieldName : fieldMap.keySet() ) {
-			analyzer.addAnalyzer(fieldName, (Analyzer)fieldMap.get(fieldName));
+	private SpringPerFieldAnalyzerWrapper() {
+		this.defaultAnalyzer = null;
+		this.fieldMap = null;
+	}
+	
+	/**
+	 * singleton pattern's pre-initialization instantiation method  
+	 * 
+	 * @return
+	 */
+	public static SpringPerFieldAnalyzerWrapper getInstance() {
+		if( instance==null ) {
+			instance = (SpringPerFieldAnalyzerWrapper)beanFactory.getBean("luceneFieldWrapperAnalyzer");
+		}
+		if(instance.analyzer==null)
+			instance.init();
+		return instance;
+	}
+
+	/**
+	 * singleton pattern's pre-initialization instantiation method  
+	 * 
+	 * @return
+	 */
+	public static SpringPerFieldAnalyzerWrapper getPreInitInstance() {
+		if( instance==null ) {
+			instance = new SpringPerFieldAnalyzerWrapper();
+		};
+		if(instance.analyzer==null)
+			instance.init();
+		return instance;
+	}
+	
+	/**
+	 * initialize internal data structures
+	 */
+	private void init() {
+		// initialize tokenizer if all necessary properties are set
+		if( (this.defaultAnalyzer!=null) && (this.fieldMap!=null) ) {
+			this.analyzer = new PerFieldAnalyzerWrapper(getDefaultAnalyzer());
+			
+			for( String fieldName : fieldMap.keySet() ) {
+				analyzer.addAnalyzer(fieldName, (Analyzer)fieldMap.get(fieldName));
+			}
 		}
 	}
 
 	@Override
 	public TokenStream tokenStream(String fieldName, Reader reader) {
 		return this.analyzer.tokenStream(fieldName, reader);
+	}
+
+	public void setFieldMap(Map<String, Object> fieldMap) {
+		this.fieldMap = fieldMap;
+	}
+
+	public Map<String, Object> getFieldMap() {
+		return fieldMap;
+	}
+
+	public void setDefaultAnalyzer(Analyzer defaultAnalyzer) {
+		this.defaultAnalyzer = defaultAnalyzer;
+	}
+
+	public Analyzer getDefaultAnalyzer() {
+		return defaultAnalyzer;
 	}
 	
 }

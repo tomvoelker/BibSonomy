@@ -19,6 +19,7 @@ import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.typehandler.LuceneTypeHandler;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -27,6 +28,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.tex.TexEncode;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -35,25 +37,23 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * class for converting bibsonomy post model objects to lucene
  * documents
  * 
+ * FIXME: refactor and 'springify' this class (i.e. non-static bean) 
+ * 
  * @author fei
  */
-public class LucenePostConverter {
+@SuppressWarnings("unchecked")
+public class LucenePostConverter extends LuceneBase {
 	private static final Log log = LogFactory.getLog(LucenePostConverter.class);
-
-	private static final String LUCENE_CONTEXT_XML = "LuceneIndexConfig.xml";
-
-	private static final String CFG_LUCENENAME = "luceneName";
-	private static final String CFG_TYPEHANDLER = "typeHandler";
-	private static final String CFG_ITEMPROPERTY   = "itemProperty";
-	private static final String CFG_LIST_DELIMITER = " ";
-	private static final String CFG_FLDINDEX = "luceneIndex";
-	private static final String CFG_FLDSTORE = "luceneStore";
-	
-	private static final String FLD_MERGEDFIELD = "mergedfields";
 
 	/** spring bean factory for initializing instances */
 	private static BeanFactory beanFactory;
 	
+	/** property map for handling BibTex posts */
+	private static Map<String,Map<String,Object>> bibTexPropertyMap;
+
+	/** property map for handling Bookmark posts */
+	private static Map<String,Map<String,Object>> bookmarkPropertyMap;
+
 	/**
 	 * static initialization
 	 */
@@ -63,6 +63,89 @@ public class LucenePostConverter {
 
 		// an ApplicationContext is also a BeanFactory (via inheritance)
 		beanFactory = context;
+		
+		// load property maps
+		bibTexPropertyMap   = (Map<String, Map<String,Object>>) beanFactory.getBean("bibTexPropertyMap");
+		bookmarkPropertyMap = (Map<String, Map<String,Object>>) beanFactory.getBean("bookmarkPropertyMap");
+	}
+	
+
+	/**
+	 * creates post model from given lucene document
+	 * 
+	 * @param doc
+	 * @return
+	 */
+	public static Post<BibTex> writeBibTexPost(Document doc) {
+		// FIXME: implements prototypes via spring
+		BibTex bibTex = new BibTex();
+		User user = new User();
+		Post<BibTex> post = new LucenePost<BibTex>();
+		post.setResource(bibTex);
+		post.setUser(user);
+		writePost(post, doc, bibTexPropertyMap);
+		// FIXME: hashes differ
+		post.getResource().recalculateHashes();
+		return post;
+	}
+
+	/**
+	 * creates post model from given lucene document
+	 * 
+	 * @param doc
+	 * @return
+	 */
+	public static Post<Bookmark> writeBookmarkPost(Document doc) {
+		// FIXME: implements prototypes via spring
+		Bookmark bookmark = new Bookmark();
+		User user = new User();
+		Post<Bookmark> post = new LucenePost<Bookmark>();
+		post.setResource(bookmark);
+		post.setUser(user);
+		writePost(post, doc, bookmarkPropertyMap);
+		post.getResource().recalculateHashes();
+		return post;
+	}
+
+	
+	/**
+	 * read property values from given lucene document and creates post model
+	 * 
+	 * @param post
+	 * @return
+	 */
+	public static void writePost(
+			Post<? extends Resource> post, 
+			Document doc, 
+			Map<String,Map<String,Object>> resourcePropertyMap) {
+
+		// cycle though all properties and store the corresponding
+		// values in the content hash map
+		for( String propertyName : resourcePropertyMap.keySet() ) {
+			// get lucene index properties
+			String fieldName   = (String)resourcePropertyMap.get(propertyName).get(CFG_LUCENENAME);
+			String propertyStr = doc.get(fieldName); 
+			
+			if( !ValidationUtils.present(propertyStr) )
+				continue;
+			
+			LuceneTypeHandler typeHandler = (LuceneTypeHandler)bibTexPropertyMap.get(propertyName).get(CFG_TYPEHANDLER);
+
+			Object propertyValue = null;
+			if( typeHandler!=null ) {
+				propertyValue = typeHandler.setValue(propertyStr);
+			} else
+				propertyValue = propertyStr;
+
+			// log.debug("Setting property " + propertyName + " to " + propertyValue.toString());
+			
+			try {
+				PropertyUtils.setNestedProperty(post, propertyName, propertyValue);
+			} catch (Exception e) {
+				log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
+			}
+
+		}
 	}
 	
 	/**
@@ -89,9 +172,9 @@ public class LucenePostConverter {
 		// FIXME: remove this test by refactoring
 		Map<String,Map<String,Object>> resourcePropertyMap;
 		if( Bookmark.class.isAssignableFrom(post.getResource().getClass()) ){
-			resourcePropertyMap = (Map<String, Map<String,Object>>) beanFactory.getBean("bookmarkPropertyMap");
+			resourcePropertyMap = bookmarkPropertyMap;
 		} else if( BibTex.class.isAssignableFrom(post.getResource().getClass()) ){
-			resourcePropertyMap = (Map<String, Map<String,Object>>) beanFactory.getBean("bibTexPropertyMap");
+			resourcePropertyMap = bibTexPropertyMap;
 		} else {
 			log.error("Unknown resource type");
 			return retVal;
@@ -112,16 +195,18 @@ public class LucenePostConverter {
 				property = PropertyUtils.getProperty(post, propertyName);
 				// only handle non-null values
 				if( property!=null ) {
+					LuceneTypeHandler typeHandler  = (LuceneTypeHandler)bibTexPropertyMap.get(propertyName).get(CFG_TYPEHANDLER);
+					
 					// get property value
-					if( property instanceof Iterable<?> ) {
+					if( (typeHandler==null) && (property instanceof Iterable<?>) ) {
 						// if property is a collection - concatenate all items in a single value
 						for( Object item : (Iterable<?>)property ) {
 							if(!"".equals(propertyValue))
 								propertyValue += CFG_LIST_DELIMITER;
-							propertyValue += extractPropertyValue(resourcePropertyMap, propertyName, item);
+							propertyValue += extractPropertyValue(resourcePropertyMap, null, propertyName, item);
 						}
 					} else {
-						propertyValue = extractPropertyValue(resourcePropertyMap, propertyName, property);
+						propertyValue = extractPropertyValue(resourcePropertyMap, typeHandler, propertyName, property);
 					}
 					// get lucene index properties
 					if( resourcePropertyMap.get(propertyName).get(CFG_FLDINDEX)!=null) {
@@ -151,7 +236,7 @@ public class LucenePostConverter {
 		
 		// store merged field
 		// FIXME: configure merged field via spring
-		retVal.add(new Field(FLD_MERGEDFIELD, tex.encode(mergedField), Field.Store.YES, Field.Index.ANALYZED));
+		retVal.add(new Field(FLD_MERGEDFIELDS, tex.encode(mergedField), Field.Store.YES, Field.Index.ANALYZED));
 		
 		// all done.
 		return retVal;
@@ -168,11 +253,10 @@ public class LucenePostConverter {
 	 * @throws NoSuchMethodException
 	 */
 	private static String extractPropertyValue( 
-			Map<String, Map<String, Object>> bibTexPropertyMap, 
+			Map<String, Map<String, Object>> bibTexPropertyMap, LuceneTypeHandler typeHandler,
 			String propertyName, Object item) 
 	throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		String itemProperty = (String)bibTexPropertyMap.get(propertyName).get(CFG_ITEMPROPERTY);
-		LuceneTypeHandler typeHandler  = (LuceneTypeHandler)bibTexPropertyMap.get(propertyName).get(CFG_TYPEHANDLER);
 		String itemValue = null;
 		// get the string value for the given object
 		if( typeHandler!=null ) {

@@ -5,26 +5,34 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
 	<!--+
-	    | type handler 
+	    | analyzer (==tokenizer/normalizer)
 	    +-->
-	<bean id="dateConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneDateFormatter"/>
-	<bean id="dateMSConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneDateMSFormatter"/>
-
-	<!--+
-	    | analyzer (==tokenzizer/normalizer)
-	    +-->
-    <bean id="lucenePostFieldAnalyzer" class="org.springframework.beans.factory.config.MapFactoryBean">
+    <bean id="luceneFieldAnalyzerMap" class="org.springframework.beans.factory.config.MapFactoryBean">
   		<property name="sourceMap">
   			<map>
-  				<entry key="user_name" value-ref="luceneDefaultAnalyzer"/>
+  				<entry key="user_name" value-ref="luceneStandardAnalyzer"/>
   				<entry key="mergedfields" value-ref="luceneGermanAnalyzer"/>
   			</map>
   		</property>
   	</bean>
 
-	<bean id="luceneDefaultAnalyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer"/>
+	<bean id="luceneStandardAnalyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer"/>
 	
 	<bean id="luceneGermanAnalyzer" class="org.apache.lucene.analysis.de.GermanAnalyzer"/>
+	
+	<bean id="luceneFieldWrapperAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper" factory-method="getPreInitInstance">
+		<property name="defaultAnalyzer" ref="luceneStandardAnalyzer"/>
+		<property name="fieldMap" ref="luceneFieldAnalyzerMap"/>
+	</bean>
+
+	<!--+
+	    | type handler 
+	    +-->
+	<bean id="intConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneIntegerFormatter"/>
+	<bean id="dateConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneDateFormatter"/>
+	<bean id="dateMSConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneDateMSFormatter"/>
+	<bean id="tagsConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneTagsFormatter"/>
+	<bean id="groupsConverter" class="org.bibsonomy.lucene.param.typehandler.LuceneGroupsFormatter"/>
 
 	<!--+
 	    | index field configurations 

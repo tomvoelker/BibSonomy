@@ -1,16 +1,10 @@
 package org.bibsonomy.lucene.index;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -19,30 +13,17 @@ import javax.naming.NamingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.StaleReaderException;
-import org.apache.lucene.store.LockObtainFailedException;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
-import org.bibsonomy.lucene.param.LuceneData;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
-import org.bibsonomy.lucene.search.delegate.LuceneDelegateResourceSearch;
+import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.lucene.util.LucenePostConverter;
-import org.bibsonomy.lucene.util.Utils;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.tex.TexEncode;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.xml.XmlBeanFactory;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.FileSystemResource;
 
 /**
  * class for maintaining the lucene index
@@ -52,7 +33,7 @@ import org.springframework.core.io.FileSystemResource;
  * 
  * @author fei
  */
-public class LuceneResourceManager<R extends Resource> {
+public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	private static final Log log = LogFactory.getLog(LuceneResourceManager.class);
 
 	/** flag indicating whether to update the index or not */
@@ -60,7 +41,7 @@ public class LuceneResourceManager<R extends Resource> {
 	
 	private boolean useUpdater = false;
 	
-	private int alreadyRunning = 0; // das geht bestimmt irgendwie besser
+	private int alreadyRunning        = 0; // das geht bestimmt irgendwie besser
 	private int maxAlreadyRunningTrys = 20;
 
 	/** the resource index */ 
@@ -77,12 +58,6 @@ public class LuceneResourceManager<R extends Resource> {
 
 	/** keeps track of the newest log_date during last index update */
 	private Long lastLogDate  = null;
-	
-	/** MAGIC KEY identifying the context environment for this class */
-	private static final String CONTEXT_ENV_NAME = "java:/comp/env";
-	
-	/** MAGIC KEY identifying context variables for this class */
-	private static final String CONTEXT_ENABLE_FLAG= "enableLuceneUpdater";
 
 	/** FIXME: to handle the special case, that a new post with an older date
 	           as 'retrieveFromIndex' was inserted after last index
@@ -90,10 +65,6 @@ public class LuceneResourceManager<R extends Resource> {
 			   retrieveFromdate - QUERY_TIME_OFFSET_MS */
 	private static final long QUERY_TIME_OFFSET_MS = 30*1000;
 
-	private static final String FLD_DATE        = "date";
-	private static final String FLD_MERGEDFIELD = "mergedfields";
-	private static final String FLD_TAS         = "tas";
-	
 	/**
 	 * constructor
 	 */

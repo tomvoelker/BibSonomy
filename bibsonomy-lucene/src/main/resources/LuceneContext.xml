@@ -3,13 +3,28 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
-
+	<!--+
+	    | lucene index generator 
+	    +-->
+	<bean id="luceneBibTexIndexGenerator" class="org.bibsonomy.lucene.index.LuceneGenerateBibTexIndex" factory-method="getPreInitInstance">
+		<property name="logic" ref="luceneBibTexLogic"/>
+		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
+	</bean>
+	<bean id="luceneBookmarkIndexGenerator" class="org.bibsonomy.lucene.index.LuceneGenerateBookmarkIndex" factory-method="getPreInitInstance">
+		<property name="logic" ref="luceneBibTexLogic"/>
+		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
+	</bean>
+	 
 	<!--+
 	    | lucene indexes 
 	    +-->
-	<bean id="luceneBibTexIndex" class="org.bibsonomy.lucene.index.LuceneBibTexIndex" factory-method="getInstance"/>
-	<bean id="luceneBookmarkIndex" class="org.bibsonomy.lucene.index.LuceneBookmarkIndex" factory-method="getInstance"/>
-
+	<bean id="luceneBibTexIndex" class="org.bibsonomy.lucene.index.LuceneBibTexIndex" factory-method="getInstance">
+		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
+	</bean>
+	<bean id="luceneBookmarkIndex" class="org.bibsonomy.lucene.index.LuceneBookmarkIndex" factory-method="getInstance">
+		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
+	</bean>
+	
 	<!--+
 	    | lucene database access logics 
 	    +-->
@@ -19,8 +34,12 @@
 	<!--+
 	    | lucene index searcher 
 	    +-->
-	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.search.LuceneSearchBibTex" factory-method="getInstance"/>
-	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.LuceneSearchBookmarks" factory-method="getInstance"/>
+	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.search.LuceneSearchBibTex" factory-method="getInstance">
+		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
+	</bean>
+	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.LuceneSearchBookmarks" factory-method="getInstance">
+		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
+	</bean>
 
 	
 	<!--+
@@ -52,8 +71,9 @@
 	</bean>
 	
 	<!--  #################### imports #################### -->
+	
+	<import resource="LuceneAnalyzerConfig.xml"/>
     <!-- 
-    <import resource="LuceneBibTexFields.xml"/>
     <import resource="LuceneBookmarkFields.xml"/>
     -->
 </beans>

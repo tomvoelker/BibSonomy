@@ -1,7 +1,5 @@
 package org.bibsonomy.lucene.database;
 
-
-
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;

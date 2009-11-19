@@ -10,24 +10,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.Term;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.lucene.param.LuceneData;
 import org.bibsonomy.lucene.param.LucenePost;
-import org.bibsonomy.lucene.param.RecordType;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -35,18 +26,87 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ExceptionUtils;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 
-public class LucenePostConverterTest {
+public class LucenePostConverterTest extends LuceneBase {
 	private static final Log log = LogFactory.getLog(LucenePostConverterTest.class);
+	
+	@Before
+	public void setUp() {
+		// bind datasource access via JNDI
+		JNDITestDatabaseBinder.bind();
+	}
+	
+	@Test
+	public void writeBookmarkPost() {
+		LucenePost<Bookmark> refPost =	generateBookmarkTestPost(
+			"testTitle", "testTag", "testAuthor", "testUser", 
+			new Date(System.currentTimeMillis()), GroupID.PUBLIC);
+		
+		Document doc = LucenePostConverter.readPost(refPost);
+		
+		Post<Bookmark> testPost = LucenePostConverter.writeBookmarkPost(doc); 
 
-	private static final String FLD_ADDRESS = "address";
-	private static final String FLD_AUTHOR = "author";
-	private static final String FLD_GROUP = "group";
-	private static final String FLD_YEAR = "year";
-	private static final String FLD_TAGS = "tas";
-	private static final String FLD_TITLE = "title";
+		//--------------------------------------------------------------------
+		// compare some elements
+		//--------------------------------------------------------------------
+		// title
+		assertEquals(refPost.getResource().getTitle(), testPost.getResource().getTitle());
+
+		// url
+		assertEquals(refPost.getResource().getUrl(), testPost.getResource().getUrl());
+
+		// tags
+		for( Tag tag : refPost.getTags() ) {
+			assertEquals(true, testPost.getTags().contains(tag));
+		}
+		// hashes
+		assertEquals(refPost.getResource().getIntraHash(), testPost.getResource().getIntraHash());
+		assertEquals(refPost.getResource().getInterHash(), testPost.getResource().getInterHash());
+
+		// groups
+		for( Group group : refPost.getGroups() ) {
+			assertEquals(true, testPost.getGroups().contains(group));
+		}
+	}
+	
+	@Test
+	public void writeBibTexPost() {
+		LucenePost<BibTex> refPost =	generateBibTexTestPost(
+			"testTitle", "testTag", "testAuthor", "testUser", 
+			new Date(System.currentTimeMillis()), GroupID.PUBLIC);
+		
+		Document doc = LucenePostConverter.readPost(refPost);
+		
+		Post<BibTex> testPost = LucenePostConverter.writeBibTexPost(doc); 
+
+		//--------------------------------------------------------------------
+		// compare some elements
+		//--------------------------------------------------------------------
+		// title
+		assertEquals(refPost.getResource().getTitle(), testPost.getResource().getTitle());
+		// url
+		assertEquals(refPost.getResource().getUrl(), testPost.getResource().getUrl());
+		// author
+		assertEquals(refPost.getResource().getAuthor(), testPost.getResource().getAuthor());
+		// year
+		assertEquals(refPost.getResource().getYear(), testPost.getResource().getYear());
+		// address
+		assertEquals(refPost.getResource().getYear(), testPost.getResource().getYear());
+		// tags
+		for( Tag tag : refPost.getTags() ) {
+			assertEquals(true, testPost.getTags().contains(tag));
+		}
+		// hashes
+		assertEquals(refPost.getResource().getIntraHash(), testPost.getResource().getIntraHash());
+		assertEquals(refPost.getResource().getInterHash(), testPost.getResource().getInterHash());
+		// groups
+		for( Group group : refPost.getGroups() ) {
+			assertEquals(true, testPost.getGroups().contains(group));
+		}
+	}
+	
 	
 	@Test
 	public void bibTexPost() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
@@ -94,6 +154,7 @@ public class LucenePostConverterTest {
 			String userName, Date postDate, GroupID groupID) {
 		
 		final LucenePost<BibTex> post = new LucenePost<BibTex>();
+		post.setContentId((int)Math.floor(Math.random()*Integer.MAX_VALUE));
 
 		final Group group = new Group(groupID);
 	
@@ -160,6 +221,7 @@ public class LucenePostConverterTest {
 			) {
 		
 		final LucenePost<Bookmark> post = new LucenePost<Bookmark>();
+		post.setContentId((int)Math.floor(Math.random()*Integer.MAX_VALUE));
 
 		final Group group = new Group(groupID);
 		post.getGroups().add(group);
