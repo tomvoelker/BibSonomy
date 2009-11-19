@@ -268,10 +268,9 @@
 					<a onclick="toggleSidebar();" style="float:left">
 						<img id="toggleSidebarButton" src="${resdir}/image/close.png"></img>
 					</a>
-					<div><fmt:message key="${navi.sidebar.toggle}"/></div>
+					<div><fmt:message key="navi.sidebar.toggle"/></div>
 					</span>
 					<div id="sidebarroundcorner" >
-						
 						<ul id="sidebar" style="height:100%; float:left">
 							<jsp:invoke fragment="sidebar"/>
 						</ul>
@@ -310,6 +309,8 @@
 					]]>
 					</script>
 				</c:if>
+				
+				
 				
 				<!-- page footer -->
 				<div id="footer">
