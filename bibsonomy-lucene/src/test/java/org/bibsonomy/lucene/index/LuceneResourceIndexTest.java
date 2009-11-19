@@ -1,6 +1,6 @@
 package org.bibsonomy.lucene.index;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -10,7 +10,6 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
-
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,13 +23,11 @@ import org.bibsonomy.lucene.util.LucenePostConverter;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ExceptionUtils;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

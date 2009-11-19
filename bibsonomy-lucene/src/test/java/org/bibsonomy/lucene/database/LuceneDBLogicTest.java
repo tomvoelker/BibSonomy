@@ -133,7 +133,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 			// store test posts in database
 			Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 			refPosts.add(bibtexPost);
-			this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
+			this.bibTexDb.createPost(bibtexPost, this.dbSession);
 			try {
 				Thread.sleep(POST_TIME_TO_WAIT);
 			} catch (InterruptedException e) {
@@ -180,7 +180,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 			// store test posts in database
 			Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 			refPosts.add(bibtexPost);
-			this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
+			this.bibTexDb.createPost(bibtexPost, this.dbSession);
 			try {
 				Thread.sleep(POST_TIME_TO_WAIT);
 			} catch (InterruptedException e) {
@@ -213,14 +213,14 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// store test post in database
 		Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
-		this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
+		this.bibTexDb.createPost(bibtexPost, this.dbSession);
 		
 		Date postDate = this.luceneBibTexLogic.getNewestRecordDateFromTas();
 		// compare modulo milliseconds 
 		assertEquals(bibtexPost.getDate().getTime()-bibtexPost.getDate().getTime()%10000, postDate.getTime()-postDate.getTime()%10000);
 
 		Post<Bookmark> bookmarkPost = this.generateBookmarkDatabaseManagerTestPost();
-		this.bookmarkDb.createPost(bookmarkPost.getUser().getName(), bookmarkPost, this.dbSession);
+		this.bookmarkDb.createPost(bookmarkPost, this.dbSession);
 		
 		postDate = this.luceneBookmarkLogic.getNewestRecordDateFromTas();
 		assertEquals(bookmarkPost.getDate().getTime()-bookmarkPost.getDate().getTime()%10000, postDate.getTime()-postDate.getTime()%10000);

@@ -11,8 +11,6 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,10 +19,6 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.search.BooleanClause.Occur;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Privlevel;
@@ -51,7 +45,6 @@ import org.bibsonomy.util.ExceptionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
@@ -140,7 +133,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
 		Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost(GroupID.PRIVATE);
 		
-		this.bibTexDb.createPost(toInsert.getUser().getName(), toInsert, this.dbSession);
+		this.bibTexDb.createPost(toInsert, this.dbSession);
 
 		// update index
 		this.luceneBibTexUpdater.updateIndex();
@@ -193,7 +186,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
 		Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		
-		this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
+		this.bibTexDb.createPost(bibtexPost, this.dbSession);
 
 		// update index
 		this.luceneBibTexUpdater.updateIndex();
@@ -222,7 +215,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		// FIXME: the updater looks at the tas table to get the newest date, which is
 		//        1815 after deleting the post - so we add another post
 		final Post<BibTex> workaroundInsert = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
-		this.bibTexDb.createPost(workaroundInsert.getUser().getName(), workaroundInsert, this.dbSession);
+		this.bibTexDb.createPost(workaroundInsert, this.dbSession);
 		
 		// update index
 		this.luceneBibTexUpdater.updateIndex();
@@ -249,8 +242,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		bibtexPost.setDate(new Date(workaroundInsert.getDate().getTime()+CONCURRENCY_OFFSET));
 		
-		this.bookmarkDb.createPost(bookmarkPost.getUser().getName(), bookmarkPost, this.dbSession);
-		this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
+		this.bookmarkDb.createPost(bookmarkPost, this.dbSession);
+		this.bibTexDb.createPost(bibtexPost, this.dbSession);
 		
 		// update index
 		this.luceneBibTexUpdater.updateIndex();
@@ -393,7 +386,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		String bibTitle = "luceneTitle1";
 		bibtexPost.getResource().setTitle(bibTitle);
 		
-		this.bibTexDb.createPost(bibtexPost.getUser().getName(), bibtexPost, this.dbSession);
+		this.bibTexDb.createPost(bibtexPost, this.dbSession);
 
 		Post<Bookmark> bookmarkPost = this.generateBookmarkDatabaseManagerTestPost();
 		String bmTitle = "BrandNewluceneTitle2";
@@ -401,7 +394,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		bookmarkPost.getResource().setTitle(bmTitle);
 		bookmarkPost.getResource().recalculateHashes();
 		
-		this.bookmarkDb.createPost(bookmarkPost.getUser().getName(), bookmarkPost, this.dbSession);
+		this.bookmarkDb.createPost(bookmarkPost, this.dbSession);
 
 		// update index
 		this.luceneBibTexUpdater.updateIndex();
