@@ -113,7 +113,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		
 		Query query = qf.getQuery();
 		Sort  sort  = qf.getSort();
-		log.debug("Querystring:  "+ query.toString() + "sorted by: "+ sort);
+		log.debug("Querystring:  "+ query.toString() + " sorted by: "+ sort);
 
 		try {
 			//----------------------------------------------------------------
@@ -250,7 +250,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			userName          = parseToken(FLD_USER, userName);
 			requestedUserName = parseToken(FLD_USER, requestedUserName);
 			group             = parseToken(FLD_GROUP, group);
-			searchTerms       = parseToken(FLD_MERGEDFIELDS, searchTerms);
+			searchTerms       = parseToken(FLD_AUTHOR, searchTerms);
 			// parse each group name
 			Set<String> groups= new TreeSet<String>();
 			for(String groupName : allowedGroups) {
