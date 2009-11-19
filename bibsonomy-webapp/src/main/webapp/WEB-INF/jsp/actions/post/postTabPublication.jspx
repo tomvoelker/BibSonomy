@@ -289,6 +289,11 @@
 			
 		</div>
 		</jsp:attribute>
+		<jsp:attribute name="sidebar">
+			<p>
+				<fmt:message key="post.resource.hint" />
+			</p>
+		</jsp:attribute>
 	</layout:tabLayout>
 	
 <script type="text/javascript">
