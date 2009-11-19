@@ -875,8 +875,9 @@ span.info {
 	color: #000;
 }
 span.help {
+	/* DO NOT PUT FLOAT:LEFT IN HERE BECAUSE IT DESTROYS LAYOUT FOR QUESTIONMARKS IN THE MID OF A LINE!
+	FLOAT:LEFT HAS TO BE OPTIONAL AND ADDED FOR ALL HELP-BUTTONS AFTER THE FIRST LABEL OF A LINE*/
 	position: relative;
-	float: left;
 	margin-right:5px; 
 	font-size: 90%;
 }
@@ -987,6 +988,7 @@ span.help > a, span.help > b {
 	border: 1px solid #069;
 	clear: both;
 	padding: 0.5em 1em;
+	min-width:725px;
 }
 
 #tab_content hr {
