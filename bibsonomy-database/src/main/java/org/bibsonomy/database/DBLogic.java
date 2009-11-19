@@ -821,6 +821,8 @@ public class DBLogic implements LogicInterface {
 		 * check permissions
 		 */
 		for (final Post<?> post : posts) {
+			PostUtils.populatePostWithUser(post, this.loginUser);
+			
 			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 		}
 		/*
@@ -841,7 +843,7 @@ public class DBLogic implements LogicInterface {
 	private <T extends Resource> String createPost(final Post<T> post) {
 		final DBSession session = openSession();
 		try {
-			final CrudableContent<T, GenericParam> man = getFittingDatabaseManager(post);
+			final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 			post.getResource().recalculateHashes();
 			
 			this.validateGroups(post, session);
@@ -850,7 +852,7 @@ public class DBLogic implements LogicInterface {
 			 */
 			PostUtils.setGroupIds(post, this.loginUser);
 
-			man.createPost(this.loginUser.getName(), post, session);
+			manager.createPost(post, session);
 
 			// if we don't get an exception here, we assume the resource has
 			// been successfully created
@@ -874,6 +876,8 @@ public class DBLogic implements LogicInterface {
 		 * check permissions
 		 */
 		for (final Post<?> post : posts) {
+			PostUtils.populatePostWithUser(post, this.loginUser);
+			
 			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 		}
 		
@@ -909,7 +913,7 @@ public class DBLogic implements LogicInterface {
 			/*
 			 * update post
 			 */
-			manager.updatePost(this.loginUser.getName(), post, oldIntraHash, operation, session);
+			manager.updatePost(post, oldIntraHash, operation, session);
 
 			// if we don't get an exception here, we assume the resource has
 			// been successfully updated

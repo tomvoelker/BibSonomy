@@ -777,14 +777,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return this.postList("get" + this.resourceClassName + "ForGroupByTag", param, session);
 	}
 
-	/**
-	 * @see PostDatabaseManager#getPostsForUser(String, String, HashID, int, List, FilterEntity, int, int, Collection, DBSession)
-	 * TODD: change to protected
-	 * 
-	 * @param param
-	 * @param session
-	 * @return list of posts
-	 */
 	protected List<Post<R>> getPostsForUser(final P param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.postList("get" + this.resourceClassName + "ForUser", param, session);
@@ -973,38 +965,42 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 	
 	@Override
-	public boolean createPost(String userName, Post<R> post, DBSession session) {
+	public boolean createPost(final Post<R> post, final DBSession session) {
+		this.systemTagPerformBefore(session, post, new HashSet<Tag>());
+		
+		final String userName = post.getUser().getName();
 		/*
 		 * FIXME: we need to overwrite the userName in the post with the given userName
 		 * (which comes from loginUser.getName() in DBLogic) - otherwise one can store
 		 * posts under another name!
 		 */ 
+		
+		/*
+		 * the current intra hash of the resource
+		 */
+		final String intraHash = post.getResource().getIntraHash();
+
+		/*
+		 * get posts with the intrahash of the given post to check for possible duplicates 
+		 */
+		
+		final Post<R> postInDB = this.getPostByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
+
+		/*
+		 * check if user is trying to create a resource that already exists
+		 */
+		if (present(postInDB)) {
+			throw new IllegalArgumentException("Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
+						" already exists in your collection (intrahash: " + intraHash + ")");
+		}
+		
 		session.beginTransaction();
 		try {
-			/*
-			 * the current intra hash of the resource
-			 */
-			final String intraHash = post.getResource().getIntraHash();
-
-			/*
-			 * get posts with the intrahash of the given post to check for possible duplicates 
-			 */
-			final Post<R> postInDB = this.getPostByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
-
-			/*
-			 * check if user is trying to create a resource that already exists
-			 */
-			if (present(postInDB)) {
-				throw new IllegalArgumentException("Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
-							" already exists in your collection (intrahash: " + intraHash + ")");
-			}
 
 			/*
 			 * ALWAYS get a new contentId
 			 */
 			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
-			
-			this.systemTagPerformBefore(session, post, new HashSet<Tag>());
 			
 			/*
 			 * on update, do a delete first ...
@@ -1013,14 +1009,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 			// add the tags
 			this.tagDb.insertTags(post, session);
-			
-			this.systemTagPerformAfter(session, post, new HashSet<Tag>());
 
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
 		
+		this.systemTagPerformAfter(session, post, new HashSet<Tag>());
 		return true;
 	}
 	
@@ -1040,7 +1035,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 	
 	@Override
-	public boolean updatePost(final String userName, final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session) {
+	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session) {
+		final String userName = post.getUser().getName();
 		/*
 		 * the current intra hash of the resource
 		 */
@@ -1069,6 +1065,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		} else {
 			throw new IllegalArgumentException("Could not update post: no intrahash specified.");
 		}
+		
+		/*
+		 * perform system tags before action
+		 */
+		this.systemTagPerformBefore(session, post, oldPost.getTags());
 
 		/*
 		 * get posts with the intrahash of the given post to check for possible duplicates 
@@ -1099,15 +1100,28 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		if (present(operation)) {
 			switch (operation) {
 				case UPDATE_TAGS:
-					return this.updateTagsOfPost(post, oldPost, session);
+					this.performUpdateOnlyTags(post, oldPost, session);
+					break;
 //				case UPDATE_DOCUMENTS: // TODO: implement update documents operation
 //					return this.updateDocumentsOfPost(post, oldPost, session);
+//					break;
+				default:
+					/*
+					 * as default update all parts of a post
+					 */
+					this.performUpdateAll(post, oldPost, session);
 			}
-		}
+		} else {
+			this.performUpdateAll(post, oldPost, session);
+		}		
 		
-		/*
-		 * as default update all parts of a post
-		 */
+		this.systemTagPerformAfter(session, post, oldPost.getTags());
+		
+		return true;
+	}
+	
+	private void performUpdateAll(Post<R> post, Post<R> oldPost, DBSession session) {
+		final String userName = post.getUser().getName();
 		session.beginTransaction();
 		try {
 			
@@ -1125,23 +1139,19 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			this.deletePost(userName, oldPost.getResource().getIntraHash(), true, session);
 
-			this.systemTagPerformBefore(session, post, oldPost.getTags());
+			
 			
 			this.insertPost(post, session);
 
 			// add the tags
 			this.tagDb.insertTags(post, session);
-			
-			this.systemTagPerformAfter(session, post, oldPost.getTags());
 
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
-		
-		return true;
 	}
-	
+
 	/**
 	 * updates only the tags of the given post
 	 * 
@@ -1149,7 +1159,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param oldPost	the old post in database
  	 * @param session
 	 */
-	private boolean updateTagsOfPost(final Post<R> post, final Post<R> oldPost, final DBSession session) {
+	private void performUpdateOnlyTags(final Post<R> post, final Post<R> oldPost, final DBSession session) {		
 		session.beginTransaction();
 		try {
 			/*
@@ -1162,19 +1172,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			post.getResource().recalculateHashes();
 			
-			this.systemTagPerformBefore(session, post, oldPost.getTags());
-			
 			// insert new tags
 			this.tagDb.insertTags(post, session);
-		
-			this.systemTagPerformAfter(session, post, oldPost.getTags());
 			
 			session.commitTransaction();			
 		} finally {
 			session.endTransaction();
 		}
-		
-		return true;
 	}
 	
 	/**

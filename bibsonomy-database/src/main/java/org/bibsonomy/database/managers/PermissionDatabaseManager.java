@@ -49,6 +49,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Checks whether the requested start- / end-values are OK
 	 * 
+	 * @param loginUser	
 	 * @param start
 	 * @param end
 	 * @param itemType
@@ -67,7 +68,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void ensureWriteAccess(final Post<? extends Resource> post, final User loginUser) {
 		// delegate write access check
-		ensureWriteAccess(loginUser, post.getUser().getName());
+		this.ensureIsAdminOrSelf(loginUser, post.getUser().getName());
 	}
 
 	/**
@@ -214,7 +215,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUser
 	 */
 	public void ensureAdminAccess(final User loginUser) {
-		if (present(loginUser.getName()) == false || loginUser.getRole().equals(Role.ADMIN) == false) {
+		if (present(loginUser.getName()) == false || Role.ADMIN.equals(loginUser.getRole()) == false) {
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
 	}
@@ -246,7 +247,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		switch (filter){
 		case ADMIN_SPAM_POSTS:
 			// Admin_SPAM_POSTS
-			if (loginUser.getRole().equals(Role.ADMIN)){
+			if (Role.ADMIN.equals(loginUser.getRole())){
 				return true;
 			} 
 		}
@@ -267,6 +268,17 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 				||
 				Role.ADMIN.equals(loginUser.getRole())                                // loginUser is admin
 		);
+	}
+	
+	/**
+	 * if {@link #isAdminOrSelf(User, String)} returns false this method throws a validation exception
+	 * @param loginUser
+	 * @param userName
+	 */
+	public void ensureIsAdminOrSelf(final User loginUser, final String userName) {
+		if (!this.isAdminOrSelf(loginUser, userName)) {
+			throw new ValidationException("You are not authorized to perform the requested operation.");
+		}
 	}
 
 

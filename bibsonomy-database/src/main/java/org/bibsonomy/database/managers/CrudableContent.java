@@ -53,22 +53,22 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	/**
 	 * create
 	 * 
-	 * @param userName
+	 * @param user
 	 * @param post
 	 * @param session
 	 * @return true if entry was created
 	 */
-	public boolean createPost(String userName, Post<T> post, DBSession session);
+	public boolean createPost(Post<T> post, DBSession session);
 	
 	/**
 	 * update
 	 * 
-	 * @param userName
+	 * @param user
 	 * @param post
 	 * @param oldHash
 	 * @param operation
 	 * @param session
 	 * @return true, if entry existed and was updated
 	 */
-	public boolean updatePost(String userName, Post<T> post, String oldHash, PostUpdateOperation operation, DBSession session);
+	public boolean updatePost(Post<T> post, String oldHash, PostUpdateOperation operation, DBSession session);
 }

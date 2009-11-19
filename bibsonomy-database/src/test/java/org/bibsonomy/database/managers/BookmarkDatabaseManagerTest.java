@@ -575,7 +575,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void storePostWrongUsage() {
 		final Post<Bookmark> toInsert = this.generateBookmarkDatabaseManagerTestPost();
 
-		this.bookmarkDb.updatePost(toInsert.getUser().getName(), toInsert, null, null, this.dbSession);
+		this.bookmarkDb.updatePost(toInsert, null, null, this.dbSession);
 	}
 	
 	/**
@@ -587,7 +587,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		toInsert.getResource().recalculateHashes();
 
 		// no oldIntraHash and no update
-		this.bookmarkDb.createPost(toInsert.getUser().getName(), toInsert, this.dbSession);
+		this.bookmarkDb.createPost(toInsert, this.dbSession);
 		final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
 		final List<Post<Bookmark>> posts = this.bookmarkDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
@@ -606,7 +606,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String hash = "37f7645843eece1b46ae5202b6b489d8";
 		param.setHash(hash);
 		final Post<Bookmark> someBookmarkPost = this.bookmarkDb.getPostsByHash(hash, HashID.INTRA_HASH, GroupID.PUBLIC.getId(), 10, 0, this.dbSession).get(0);
-		this.bookmarkDb.updatePost(someBookmarkPost.getUser().getName(), someBookmarkPost, hash, null, this.dbSession);
+		this.bookmarkDb.updatePost(someBookmarkPost, hash, null, this.dbSession);
 		assertTrue(plugin.isOnBookmarkUpdate());
 	}
 

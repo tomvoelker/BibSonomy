@@ -15,6 +15,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.managers.AbstractDBLogicBase;
 import org.bibsonomy.database.params.BibTexParam;
@@ -125,7 +126,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		Assert.assertEquals(0, tags.size());
 	}
 	
-/*	@Test
+	@Test
 	public void testForGroupTag() {
 		// create users
 		User testUser1 = createTestUser("forgroupuser1");
@@ -209,7 +210,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		} catch (ValidationException ex){
 			// ignore
 		}
-	}*/
+	}
 	
 	/**
 	 *  test funtionality of the ForFriend SystemTag

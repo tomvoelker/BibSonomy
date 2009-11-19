@@ -28,6 +28,7 @@ import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.params.BibTexParam;
@@ -862,7 +863,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		toInsert.getResource().recalculateHashes();
 		final String bibtexHashForUpdate = "14143c6508fe645ca312d0aa5d0e791b"; // INTRA-hash of toInsert
 
-		this.bibTexDb.createPost(toInsert.getUser().getName(), toInsert, this.dbSession);
+		this.bibTexDb.createPost(toInsert, this.dbSession);
 
 		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
 		param.setSimHash(HashID.INTRA_HASH);
@@ -900,7 +901,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// first: insert post such that we can delete it later
 		
 		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
-		this.bibTexDb.createPost(toInsert.getUser().getName(), toInsert, this.dbSession);
+		this.bibTexDb.createPost(toInsert, this.dbSession);
 
 		
 		// delete public post		
@@ -936,7 +937,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(0, posts.size());
 		assertEquals(0, post2.size());
 		
-		this.bibTexDb.createPost(toInsert.getUser().getName(), toInsert, this.dbSession);
+		this.bibTexDb.createPost(toInsert, this.dbSession);
 		post2 = this.bibTexDb.getPosts(postParam, this.dbSession);
 		posts = this.bibTexDb.getPostsByHashForUser(username, hash, requestedUserName, new ArrayList<Integer>(), HashID.INTRA_HASH, this.dbSession);
 		assertEquals(1, posts.size());
@@ -959,7 +960,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void storePostWrongUsage() {
 		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
 
-		this.bibTexDb.updatePost(toInsert.getUser().getName(), toInsert, null, null, this.dbSession);
+		this.bibTexDb.updatePost(toInsert, null, null, this.dbSession);
 	}
 
 	/**
@@ -994,7 +995,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		List<Post<BibTex>> someBibTexPost = this.bibTexDb.getPostsByHash(hash, HashID.INTRA_HASH, GroupID.PUBLIC.getId(), 10, 0, this.dbSession);
 		assertEquals(1, someBibTexPost.size());
 		// someBibTexPost.getGroups().clear();
-		this.bibTexDb.updatePost(someBibTexPost.get(0).getUser().getName(), someBibTexPost.get(0), hash, null, this.dbSession);
+		this.bibTexDb.updatePost(someBibTexPost.get(0), hash, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 	}
 
 	/**

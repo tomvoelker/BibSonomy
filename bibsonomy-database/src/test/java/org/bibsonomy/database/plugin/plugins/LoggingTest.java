@@ -152,7 +152,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		param.setNewContentId(currentContentId + 1);
 		Integer result = this.generalDb.countNewContentIdFromBibTex(param, this.dbSession);
 		assertEquals(0, result);
-		this.bibTexDb.updatePost(someBibTexPost.getUser().getName(), someBibTexPost, someBibTexPost.getResource().getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession);
+		this.bibTexDb.updatePost(someBibTexPost, someBibTexPost.getResource().getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession);
 
 		currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		param.setNewContentId(currentContentId);
@@ -199,7 +199,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 		Integer result = this.generalDb.countNewContentIdFromBookmark(param, this.dbSession);
 		assertEquals(0, result);
 
-		this.bookmarkDb.updatePost(someBookmarkPost.getUser().getName(), someBookmarkPost, HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession);
+		this.bookmarkDb.updatePost(someBookmarkPost, HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 
 		currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		param.setNewContentId(currentContentId);
