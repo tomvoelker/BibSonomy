@@ -1,10 +1,4 @@
 1) Remove possible write-locks on startup
-2) Startup
-   - handle possibly lost flagged spammers 
-   (spammers where flagged, but bibsonomy crashed before the index was updated)
-   
-   -> on startup: get all users which where flagged as spammers/non-spammers in time 
-      t >= lastLogDate-epsilon
       
 3) Startup
    - don't crash on wrong configuration
@@ -12,9 +6,10 @@
 
 4) remove deprecated queries
 
-5) flagged spammers get lost on crash
-   -> recovery on startup OR use a sql-table for caching 
-   
 6) implement multiple deletion by multi-term-search
 
 7) centralize FLD_* constants (probably via spring?!)
+
+8) deal with group-tas!
+
+9) Implements single application context for lucene
