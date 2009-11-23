@@ -26,6 +26,8 @@ package org.bibsonomy.bibtex.parser;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.antlr.runtime.RecognitionException;
 import org.bibsonomy.model.BibTex;
@@ -39,7 +41,7 @@ import bibtex.parser.ParseException;
 
 /**
  * Provides parsing of BibTeX entries represented by {@link String}s into
- * {@link BibTex} objects.
+ * {@link Post} objects.
  *
  * This class is thread-safe.
  * 
@@ -51,7 +53,8 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 
 	/**
 	 * Parses the given BibTeX entry and puts fields which are not part of the
-	 * {@link BibTex} class into the Post.
+	 * {@link BibTex} class into the Post. See {@link #fillPost(BibTex)} for 
+	 * details.
 	 * 
 	 * @param bibtex -
 	 *            the string which contains one (!) BibTeX-Entry.
@@ -66,14 +69,31 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 */
 		final BibTex parsedBibTeX = parseBibTeX(bibtex);
 		/*
-		 * create post and set resource into post
+		 * create post and put resource into post
 		 */
+		return fillPost(parsedBibTeX);
+	}
+	
+	/**
+	 * Puts the resource into a post. Does the following additional steps:
+	 * 
+	 *  <ul>
+	 *  <li>Sets description from misc field-</li>
+	 *  <li>Parses and sets tags from misc field-</li>
+	 *  <li>Removes additional misc fields intrahash, interhash, and {@link BibTexUtils#ADDITIONAL_MISC_FIELDS}.</li>
+	 *  <li>Re-Serializes misc fields.
+	 *  </ul>
+	 * 
+	 * @param bibtex
+	 * @return
+	 */
+	private Post<BibTex> fillPost(final BibTex bibtex) {
 		final Post<BibTex> post = new Post<BibTex>();
-		post.setResource(parsedBibTeX);
+		post.setResource(bibtex);
 		/*
 		 * get misc fields for next steps
 		 */
-		final HashMap<String, String> miscFields = parsedBibTeX.getMiscFields();
+		final HashMap<String, String> miscFields = bibtex.getMiscFields();
 		/*
 		 * put description from misc fields into post
 		 */
@@ -98,14 +118,40 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		for (final String additionalMiscField: BibTexUtils.ADDITIONAL_MISC_FIELDS) {
 			miscFields.remove(additionalMiscField);	
 		}
-		
 		/*
 		 * re-write misc field to fix above changes
 		 */
-		BibTexUtils.serializeMiscFields(parsedBibTeX);
+		BibTexUtils.serializeMiscFields(bibtex);
 		return post;
 	}
 
+	/**
+	 * Like {@link #parseBibTeXPost(String)} but for multiple entries.
+	 * 
+	 * @param bibtex - a BibTeX string containing one or more BibTeX entries.
+	 * @return A list of posts containing the parsed BibTeX entries as resources.
+	 * @throws ParseException
+	 * @throws IOException
+	 */
+	public List<Post<BibTex>> parseBibTeXPosts(final String bibtex) throws ParseException, IOException {
+		/*
+		 * parse entries
+		 */
+		final List<BibTex> parsedBibTeXs = parseBibTeXs(bibtex);
+		/*
+		 * contains resulting posts
+		 */
+		final List<Post<BibTex>> result = new LinkedList<Post<BibTex>>();
+		/*
+		 * create the posts
+		 */
+		for (final BibTex bibTex2: parsedBibTeXs) {
+			result.add(fillPost(bibTex2));
+		}
+		
+		return result;
+	}
+	
 	/** 
 	 * In addition to org.bibsonomy.bibtex.parser.SimpleBibTeXParser#fillBibtexFromEntry(bibtex.dom.BibtexEntry)
 	 * this method handles description, keywords, etc. which are not part of 
