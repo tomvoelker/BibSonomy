@@ -26,7 +26,14 @@
               <!-- img style="width:15px; padding-bottom:5px" src="${resdir}/image/info_blue.png" alt="?"/-->
           </c:otherwise>
         </c:choose>
-		<div><fmt:message key="${message}"/> ${helpText}</div>
+		<div>
+			<c:choose>
+				<c:when test="${not empty message}">
+					<fmt:message key="${message}"/>
+				</c:when>
+			</c:choose> 
+			<jsp:invoke fragment="helpText"><!-- --></jsp:invoke>
+		</div>
 	</span> 
 
 	
