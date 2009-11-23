@@ -348,19 +348,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		 */
 		final List<Post<?>> posts = new LinkedList<Post<?>>();
 		posts.add(post);
-		/*
-		 * Overwrite the date with the current date, if not posted by the DBLP user.
-		 * If DBLP does not provide a date, we have to set the date, too.
-		 */
-		if (!UserUtils.isDBLPUser(loginUserName) || post.getDate() == null) {
-			/*
-			 * update date TODO: don't we want to keep the posting date unchanged
-			 * and only update the date? --> actually, this does currently not work,
-			 * since the DBLogic doesn't set the date and thus we get a NPE from the
-			 * database
-			 */
-			post.setDate(new Date());	
-		}
+		setDate(post, loginUserName);
 		/*
 		 * update post in DB
 		 */
@@ -382,6 +370,22 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		 * leave if and reach final redirect
 		 */
 		return finalRedirect(command.isJump(), loginUserName, getRedirectUrl(post));
+	}
+
+	private void setDate(final Post<RESOURCE> post, final String loginUserName) {
+		/*
+		 * Overwrite the date with the current date, if not posted by the DBLP user.
+		 * If DBLP does not provide a date, we have to set the date, too.
+		 */
+		if (!UserUtils.isDBLPUser(loginUserName) || post.getDate() == null) {
+			/*
+			 * update date TODO: don't we want to keep the posting date unchanged
+			 * and only update the date? --> actually, this does currently not work,
+			 * since the DBLogic doesn't set the date and thus we get a NPE from the
+			 * database
+			 */
+			post.setDate(new Date());	
+		}
 	}
 
 	/**
@@ -512,13 +516,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 			return getPostPostView(command, loginUser);
 		}
 
-		/*
-		 * Overwrite the date with the current date, if not posted by the DBLP user.
-		 * If DBLP does not provide a date, we have to set the date, too.
-		 */
-		if (!UserUtils.isDBLPUser(loginUserName) || post.getDate() == null) {
-			post.setDate(new Date());
-		}
+		setDate(post, loginUserName);
 
 		/*
 		 * create list for posting
