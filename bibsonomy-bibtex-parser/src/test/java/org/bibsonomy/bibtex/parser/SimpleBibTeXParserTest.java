@@ -65,7 +65,7 @@ public class SimpleBibTeXParserTest {
 			assertEquals("behrendt2007", bibtex.getBibtexKey());
 			assertEquals("Springer", bibtex.getPublisher());
 			assertEquals("2007", bibtex.getYear());
-			assertEquals("http://ftubhan.tugraz.at/han/ZDB-2-STI/www.springerlink.com/content/wk5317/", bibtex.getMiscField("url"));
+			assertEquals("http://ftubhan.tugraz.at/han/ZDB-2-STI/www.springerlink.com/content/wk5317/", bibtex.getUrl());
 			assertEquals("ISR_07", bibtex.getMiscField("keywords"));
 			assertEquals("http://www.bibsonomy.org/bibtex/22407a08751c316c63686d37228a25b3d/diam_eter", bibtex.getMiscField("biburl"));
 

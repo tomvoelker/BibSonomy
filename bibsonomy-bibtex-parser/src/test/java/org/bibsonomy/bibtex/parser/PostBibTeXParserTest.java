@@ -78,6 +78,10 @@ public class PostBibTeXParserTest extends SimpleBibTeXParserTest {
 			assertEquals("978-1-60558-486-7", resource.getMiscField("isbn"));
 			assertEquals("10.1145/1557914.1557969", resource.getMiscField("doi"));
 			/*
+			 * The URL is stored in the url field of the resource - should not be contained in the misc fields!
+			 */
+			assertEquals(null, resource.getMiscField("url"));
+			/*
 			 * CiteULike uses the "comment" field to export (private) notes in the form
 			 * 
 			 * comment = {(private-note)This is a test note!}, 

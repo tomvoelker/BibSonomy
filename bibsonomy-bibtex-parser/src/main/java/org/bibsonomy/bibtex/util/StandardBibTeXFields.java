@@ -62,6 +62,7 @@ public class StandardBibTeXFields {
 		standardBibTeXFields.add("series");
 		standardBibTeXFields.add("title");
 		standardBibTeXFields.add("type");
+		standardBibTeXFields.add("url");
 		standardBibTeXFields.add("volume");
 		standardBibTeXFields.add("year");
 	}
