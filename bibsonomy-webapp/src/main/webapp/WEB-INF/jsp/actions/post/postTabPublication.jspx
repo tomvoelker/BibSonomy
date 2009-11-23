@@ -71,7 +71,6 @@
                                 <input type="text" class="fsFloatInput" id="post.resource.bibtexKey" name="post.resource.bibtexKey" tabindex="2"/>
                                 <!-- reload button for BibTeX key -->
                                 <fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
-                                
                                 <a style="cursor:pointer">
 					              <img src="${resdir}/image/button_reload.png" alt="${generateBibtexKey}" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)" />
 					            </a>
@@ -79,16 +78,16 @@
                                 <label class="fsFloatLabel" style="clear: none !important;" for="post.resource.bibtexKey" ><fmt:message key="post.resource.bibtexKey"/></label>
                               </div>
                   
-                              <label class="fsLabel" for="post.resource.title" ><fmt:message key="post.resource.title"/> </label><buttons:help cssStyle="float:left" message="post.resource.title.help"/>
+                              <label class="fsLabel" for="post.resource.title" ><fmt:message key="post.resource.title"/> </label><buttons:help message="post.resource.title.help"/>
                               <textarea class="fsInput" id="post.resource.title" name="post.resource.title" tabindex="3" rows="2" onkeyup="sz(this);" ><!-- dont delete --></textarea>
                   
-                              <label class="fsLabel" for="post.resource.author" ><fmt:message key="post.resource.author"/> </label><buttons:help cssStyle="float:left" message="post.resource.author.help"/>
+                              <label class="fsLabel" for="post.resource.author" ><fmt:message key="post.resource.author"/> </label><buttons:help message="post.resource.author.help"/>
                               <textarea class="fsInput" id="post.resource.author" name="post.resource.author" tabindex="4" rows="3" onkeyup="sz(this);" ><!-- dont delete --></textarea>
                   
-                              <label class="fsLabel" for="post.resource.editor" ><fmt:message key="post.resource.editor"/> </label><buttons:help cssStyle="float:left" message="post.resource.editor.help"/>
+                              <label class="fsLabel" for="post.resource.editor" ><fmt:message key="post.resource.editor"/> </label><buttons:help message="post.resource.editor.help"/>
                               <textarea class="fsInput" id="post.resource.editor" name="post.resource.editor" tabindex="5" rows="3" onkeyup="sz(this);"><!-- dont delete --></textarea>
                                                 
-                              <label class="fsLabel" for="post.resource.year" ><fmt:message key="post.resource.year"/> </label><buttons:help cssStyle="float:left" message="post.resource.year.help"/>
+                              <label class="fsLabel" for="post.resource.year" ><fmt:message key="post.resource.year"/> </label><buttons:help message="post.resource.year.help"/>
                               <input type="text" class="fsInput fsSmall" id="post.resource.year" name="post.resource.year" tabindex="6"/>
   
   				    		  <input type="submit" class="fsFormSubmit" style="clear:both; float:left" name="submit" value="${button_label_check}"/>
@@ -187,7 +186,7 @@
 									    <!-- ROW ONE -->
 										    
 											<label class="fsLabel"><fmt:message key="post_bibtex.upload.option.character_encoding" /></label>
-											<buttons:help  cssStyle="float:left" message="post_bibtex.upload.option.character_encoding_help"/>
+											<buttons:help message="post_bibtex.upload.option.character_encoding_help"/>
 										    <select name="encoding" class="fsInput fsSmall" id="lencoding">
 										      	<option value="UTF-8">UTF-8</option>
 										      	<option value="ISO-8859-1">ISO-8859-1</option>
@@ -220,7 +219,7 @@
 									    	
 								    	<!-- ROW TWO -->
 										    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter" /></label>
-										    <buttons:help  cssStyle="float:left" message="post_bibtex.upload.option.tag_delimiter_help"/>
+										    <buttons:help message="post_bibtex.upload.option.tag_delimiter_help"/>
 										    <select name="delimiter" class="fsInput fsSmall" onchange="updateSubstitute(this);">
 										        <option value=" ">' ' (<fmt:message key="delimiters.whitespace"/>)</option>
 										        <option value=",">, (<fmt:message key="delimiters.comma"/>)</option>
@@ -231,7 +230,7 @@
 									  
 									  	<!-- ROW THREE -->
 										    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute" /></label>
-										    <buttons:help  cssStyle="float:left" message="post_bibtex.upload.option.whitespace_substitute_help"/>
+										    <buttons:help message="post_bibtex.upload.option.whitespace_substitute_help"/>
 										    <!-- TODO: Ask cause of disabled -->
 										    <input type="text" class="fsSmall" style="float:left" value="_" name="whitespace" size="2" maxlength="1" disabled="disabled" />
 									    	
