@@ -46,7 +46,7 @@
               <a style="cursor:pointer">
                 <img src="${resdir}/image/button_reload.png" alt="${generateBibtexKey}" title="${generateBibtexKey}" onclick="javascript:generateBibTexKey(this)" />
               </a>
-              <buttons:help message="post.resource.bibtexKey.help"/>
+              <buttons:help message="post.resource.bibtexKey.help" cssStyle="float:none;"/>
               <form:label cssClass="fsFloatLabel" cssStyle="clear: none !important;" path="post.resource.bibtexKey" ><fmt:message key="post.resource.bibtexKey"/>* </form:label>
               <div class="dissError"><form:errors path="post.resource.bibtexKey" /></div>
 			</div>
