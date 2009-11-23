@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -71,7 +72,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
-	
+
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
 
 	/**
@@ -95,27 +96,27 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		command.setPost(new Post<RESOURCE>());
 		command.setAbstractGrouping(PUBLIC_GROUP.getName());
 		command.getPost().setResource(instantiateResource());
-		
+
 		/*
 		 * set default values.
 		 */
 		command.setPostID(RecommenderStatisticsManager.getUnknownPID());
 		return command;
 	}
-	
+
 	/**
 	 * Instantiated the correct command for this controller.
 	 * @return
 	 */
 	protected abstract EditPostCommand<RESOURCE> instantiateEditPostCommand();
-	
+
 	/**
 	 * Instantiates a resource which the controller puts into the commands post.
 	 * 
 	 * @return 
 	 */
 	protected abstract RESOURCE instantiateResource();
-	
+
 
 	/**
 	 * Main method which does the posting-procedure.
@@ -158,18 +159,18 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		 */
 		if (command.getContext().getLoginUser().isSpammer()){
 			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
-			
+
 			errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
 		}
-		
+
 		/*
 		 * handle copying of a post using intra hash + user name
 		 */
 		if (ValidationUtils.present(command.getHash()) && ValidationUtils.present(command.getUser())) {
 			/*
 			 * hash + user given: user wants to copy a post
-             * FIXME: really ensure, that the tag field is not filled
-             *        (otherwise the post is automatically saved ...)
+			 * FIXME: really ensure, that the tag field is not filled
+			 *        (otherwise the post is automatically saved ...)
 			 */
 			command.setPost((Post<RESOURCE>) logic.getPostDetails(command.getHash(), command.getUser()));
 		}
@@ -211,7 +212,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 			return s;
 		}
 	}
-	
+
 	/**
 	 * This methods does everything which needs to be done before proceeding to
 	 * the view. This includes:
@@ -252,9 +253,9 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		return getPostView();
 	}
 
-	
+
 	protected abstract View getPostView();
-	
+
 	/**
 	 * Handles the update of an existing post with the given intra hash.
 	 * 
@@ -376,7 +377,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		 * update recommender table such that recommendations are linked to the final post
 		 */
 		setRecommendationFeedback(post, command.getPostID());
-		
+
 		/*
 		 * leave if and reach final redirect
 		 */
@@ -391,7 +392,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	private void validatePost(final EditPostCommand<RESOURCE> command) {
 		org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
 	}
-	
+
 	/**
 	 * When the user shall be redirected to the page he is initially coming 
 	 * from (e.g., when he used the post bookmarklet), this method is used 
@@ -412,10 +413,10 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	private void setRecommendationFeedback(final Post<RESOURCE> post, final int postID) {
 		try {
 			/*
-		     * To allow the recommender to identify the post and connect it with
-		     * the post we provided at recommendation time, we give it the post
-		     * id using the contentid field. 
-		     */
+			 * To allow the recommender to identify the post and connect it with
+			 * the post we provided at recommendation time, we give it the post
+			 * id using the contentid field. 
+			 */
 			post.setContentId(postID);
 			tagRecommender.setFeedback(post);
 		} catch (final Exception ex) {
@@ -426,7 +427,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		}
 	}
 
-	
+
 	/**
 	 * Create the final redirect after successful creating / updating a post. if
 	 * jump is <code>true</code>, we redirect to the given postUrl. Otherwise
@@ -457,7 +458,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		}
 		return new ExtendedRedirectView(postUrl);
 	}
-	
+
 	private View handleCreatePost(final EditPostCommand<RESOURCE> command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post) {
 		final String loginUserName = loginUser.getName();
 
@@ -465,14 +466,14 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		 * no intra hash given --> user posts a new entry (which might already
 		 * exist!)
 		 */
-		
+
 		/*
 		 * check, if post already exists
 		 */
 		if (this.setDiffPost(command)) {
 			return getPostPostView(command, loginUser);
 		}
-		
+
 		log.debug("wow, post is completely new! So ... return until no errors and then store it");
 		/*
 		 * parse the tags
@@ -530,7 +531,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		log.debug("finally: creating a new post in the DB");
 		final String createPosts = logic.createPosts(posts).get(0);
 		log.debug("created post: " + createPosts);
-		
+
 		/*
 		 * update recommender table such that recommendations are linked to the final post
 		 */
@@ -635,7 +636,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		 * the user name)
 		 */
 		post.setUser(context.getLoginUser());
-		
+
 		/*
 		 * initialize groups
 		 */
@@ -652,7 +653,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 			command.setPostID(RecommenderStatisticsManager.getNewPID());
 		}
 	}
-	
+
 	/**
 	 * checks if the user already bookmarked the resource of the command
 	 * if the user owns the resource => diff post will be set
@@ -667,29 +668,41 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		final String loginUserName = context.getLoginUser().getName();
 		final RESOURCE resource = post.getResource();
 		resource.recalculateHashes();
-		
+
 		/*
 		 * is resource already owned by the user?
 		 */
-		final Post<RESOURCE> dbPost = (Post<RESOURCE>) logic.getPostDetails(resource.getIntraHash(), loginUserName);
-		if (dbPost != null) {
-			log.debug("set diff post");
+		try {
+			final Post<RESOURCE> dbPost = (Post<RESOURCE>) logic.getPostDetails(resource.getIntraHash(), loginUserName);
+
+			if (dbPost != null) {
+				log.debug("set diff post");
+				/*
+				 * already posted; warn user FIXME: this is bookmark-only and does 
+				 * not work for publications
+				 */
+				errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
+
+				// set intraHash, diff post and set dbPost as post of command
+				command.setIntraHashToUpdate(resource.getIntraHash());
+
+				command.setDiffPost(post);
+
+				this.populateCommandWithPost(command, dbPost);
+
+				return true;
+			}
+		} catch (final ResourceMovedException e) {
 			/*
-			 * already posted; warn user FIXME: this is bookmark-only and does 
-			 * not work for publications
+			 * getPostDetails() has a redirect mechanism that checks for posts 
+			 * in the log tables. If it find's a post with the given hash there,
+			 * it throws an exception, giving the hash of the next post. We want
+			 * to ignore this behavior, thus we ignore the exception
+			 * 
+			 * see https://www.kde.cs.uni-kassel.de/mediawiki/index.php/Bibsonomy:PostHashRedirect
+			 * and https://www.kde.cs.uni-kassel.de/mediawiki/index.php/Bibsonomy:PostPublicationUmziehen#gel.C3.B6schte.2Fge.C3.A4nderte_Posts_.28Hash-Redirect-Problem.29
 			 */
-			errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
-			
-			// set intraHash, diff post and set dbPost as post of command
-			command.setIntraHashToUpdate(resource.getIntraHash());
-			
-			command.setDiffPost(post);
-			
-			this.populateCommandWithPost(command, dbPost);
-			
-			return true;
 		}
-		
 		return false;		
 	}
 
@@ -844,7 +857,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
-	
+
 
 	/**
 	 * @return The tag recommender associated with this controller.
@@ -862,7 +875,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	public void setTagRecommender(TagRecommender tagRecommender) {
 		this.tagRecommender = tagRecommender;
 	}
-	
+
 	/** Give this controller an instance of {@link Captcha}.
 	 * 
 	 * @param captcha
@@ -880,7 +893,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
-	
-	
+
+
 
 }
