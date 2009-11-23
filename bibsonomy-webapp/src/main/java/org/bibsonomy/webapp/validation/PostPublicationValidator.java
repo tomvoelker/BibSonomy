@@ -27,7 +27,7 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 	@Override
 	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz) {
-		return EditPublicationCommand.class.equals(clazz);
+		return EditPublicationCommand.class.isAssignableFrom(clazz);
 	}
 
 	@Override
