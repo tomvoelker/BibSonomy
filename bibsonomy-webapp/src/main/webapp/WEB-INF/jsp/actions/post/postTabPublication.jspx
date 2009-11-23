@@ -130,6 +130,27 @@
 			  				<div class="fsLabel"><!--  --></div>
 			    			<post:simpleGroupBox groups="${command.context.loginUser.groups}"/>
 				    		
+				    		<!-- ROW FOUR -->
+						    <label class="fsLabel"><fmt:message key="import.edit_before_import" /></label>
+						    <buttons:help  cssStyle="float:left" message="import.edit_before_import.help" />
+						    <input type="checkbox" class="fsInput" name="editBeforeImport" value="" />
+						    
+						    
+						    
+						    <!-- ROW FIVE -->
+						    <label class="fsLabel"><fmt:message key="import.overwritten" /></label>
+						    
+                         			
+						    <buttons:help  cssStyle="float:left" message="empty">
+						    	<jsp:attribute name="helpText"> 
+						    		<fmt:message key="import.overwrite2">
+						        		<fmt:param><fmt:message key="import.newly_imported"/></fmt:param>
+						        		<fmt:param><fmt:message key="import.formerly_imported"/></fmt:param>
+				           			</fmt:message>
+						    	</jsp:attribute>
+						    </buttons:help>
+						    <input type="checkbox" class="fsInput" name="overwrite" value="" />
+				    		
 				    		<input type="submit" style="clear:both; float:left" class="fsFormSubmit" name="submit" value="${button_label_post}" />
 							
 						</fieldset>
@@ -174,6 +195,27 @@
 									<!-- ROW THREE --> 
 								    <div class="fsLabel"><!--  --></div>
 								    <post:simpleGroupBox groups="${command.context.loginUser.groups}"/>
+									
+								    <!-- ROW FOUR -->
+								    <label class="fsLabel"><fmt:message key="import.edit_before_import" /></label>
+								    <buttons:help  cssStyle="float:left" message="import.edit_before_import.help" />
+								    <input type="checkbox" class="fsInput" name="editBeforeImport" value="" />
+								    
+								    
+								    
+								    <!-- ROW FIVE -->
+								    <label class="fsLabel"><fmt:message key="import.overwritten" /></label>
+								    
+                           			
+								    <buttons:help  cssStyle="float:left" message="empty">
+								    	<jsp:attribute name="helpText"> 
+							    		<fmt:message key="import.overwrite2">
+						                		<fmt:param><fmt:message key="import.newly_imported"/></fmt:param>
+						                		<fmt:param><fmt:message key="import.formerly_imported"/></fmt:param>
+		                           				</fmt:message>
+								    	</jsp:attribute>
+								    </buttons:help>
+								    <input type="checkbox" class="fsInput" name="overwrite" value="" />
 									
 									 
 									<input type="submit" style="clear:both; float:left" class="fsFormSubmit" name="submit" value="${button_label_upload}" />
