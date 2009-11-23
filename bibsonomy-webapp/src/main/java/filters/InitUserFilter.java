@@ -38,6 +38,7 @@ import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.ResponseLogic;
 import org.bibsonomy.webapp.util.auth.OpenID;
 import org.bibsonomy.webapp.util.auth.OpenIdConsumerManager;
+import org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerException;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
@@ -52,6 +53,12 @@ import beans.UserBean;
  */
 public class InitUserFilter implements Filter {
 
+	/*
+	 * All X.509 users get the same password in the database, since it is never
+	 * used for authentication.
+	 */
+	private static final String X509_GENERIC_PASSWORD = "*";
+	
 	public static final String STATIC_RESOURCES = "/resources";
 	public static final String API = "/api";
 
@@ -136,8 +143,9 @@ public class InitUserFilter implements Filter {
 		 * successful, get user details
 		 */
 
-		DBLogicUserInterfaceFactory dbLogicFactory = new DBLogicUserInterfaceFactory();
-		dbLogicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
+		final DBLogicUserInterfaceFactory dbLogicFactory = new DBLogicUserInterfaceFactory();
+		final IbatisDBSessionFactory ibatisDBSessionFactory = new IbatisDBSessionFactory();
+		dbLogicFactory.setDbSessionFactory(ibatisDBSessionFactory);
 		User loginUser = null;
 
 		final String userCookie = getCookie(httpServletRequest, USER_COOKIE_NAME);
@@ -145,7 +153,46 @@ public class InitUserFilter implements Filter {
 
 		// check user authentication
 		try {
-			if (userCookie != null) {
+			/*
+			 * X.509 comes first, such that cookies can't override it ... (and
+			 * we can use blanco passwords in the database)
+			 */
+			if (useX509forAuth) {
+				/*
+				 * special handling for SAP X.509 certificates
+				 */
+				try {
+					log.info("no user cookie found, trying X.509");
+					/*
+					 * get user name from client certificate
+					 */
+					final String uname = getUserName(httpServletRequest);
+					/*
+					 */
+					try {
+						/*
+						 * We use a fixed ("*") empty password - since auth is 
+						 * done using certificates. Since X.509 auth comes first,
+						 * nobody can use a Cookie to be another user.
+						 */
+						final LogicInterface logic = dbLogicFactory.getLogicAccess(uname, X509_GENERIC_PASSWORD);
+						loginUser = logic.getUserDetails(uname);
+					} catch (ValidationException e) {
+						loginUser = createX509User(ibatisDBSessionFactory, uname);
+					}
+
+					/*
+					 * this should not be neccessary, if we got the user from
+					 * the database ...
+					 */
+					if (loginUser == null) {
+						loginUser = new User();
+						loginUser.setName(uname);
+					}
+				} catch (final Exception e) {
+					log.info("Certificate authentication failed.", e);
+				}
+			} else if (userCookie != null) {
 				log.info("found user cookie");
 				/*
 				 * user has Cookie set: try to authenticate
@@ -233,38 +280,6 @@ public class InitUserFilter implements Filter {
 					String ip_address = ((HttpServletRequest) request).getHeader("x-forwarded-for");
 					log.warn("Someone manipulated the openid cookie (IP: " + ip_address + ") : " + openIDCookie);
 				}
-
-			} else if (useX509forAuth) {
-				/*
-				 * special handling for SAP X.509 certificates
-				 */
-				try {
-					log.info("no user cookie found, trying X.509");
-					/*
-					 * get user name from client certificate
-					 */
-					String uname = getUserName(httpServletRequest);
-					/*
-					 * FIXME: here we should put user into DB, if not already
-					 * contained, i.e., INSERT IGNORE INTO user VALUES ...
-					 */
-					try {
-						final LogicInterface logic = dbLogicFactory.getLogicAccess(uname, "*");
-						loginUser = logic.getUserDetails(uname);
-					} catch (ValidationException e) {
-					}
-
-					/*
-					 * this should not be neccessary, if we got the user from
-					 * the database ...
-					 */
-					if (loginUser == null) {
-						loginUser = new User();
-						loginUser.setName(uname);
-					}
-				} catch (Exception e) {
-					log.info("Certificate authentication failed.", e);
-				}
 			} else {
 				final String[] auth = decodeAuthHeader(httpServletRequest);
 				if (auth != null && auth.length == 2) {
@@ -345,6 +360,40 @@ public class InitUserFilter implements Filter {
 	}
 
 	/**
+	 * Creates a user in the database for X.509.
+	 * 
+	 * The password is set to {@link #X509_GENERIC_PASSWORD}, the user name to
+	 * the given user name.
+	 * 
+	 * @param ibatisDBSessionFactory
+	 * @param uname
+	 * @return
+	 * @throws Exception
+	 */
+	private User createX509User(final IbatisDBSessionFactory ibatisDBSessionFactory, final String uname) throws Exception {
+		User loginUser;
+		/*
+		 * user not found in DB: create new user
+		 * 
+		 * TODO: use data from certificate
+		 */
+		loginUser = new User(uname);
+		loginUser.setPassword(X509_GENERIC_PASSWORD);
+		/*
+		 * get admin DB access
+		 */
+		final AdminLogicFactoryBean adminLogicFactory = new AdminLogicFactoryBean();
+		adminLogicFactory.setAdminUserName("admin");
+		adminLogicFactory.setDbSessionFactory(ibatisDBSessionFactory);
+		final LogicInterface adminLogic = (LogicInterface) adminLogicFactory.getObject();
+		/*
+		 * finally: create user
+		 */
+		adminLogic.createUser(loginUser);
+		return loginUser;
+	}
+
+	/**
 	 * Returns the value of a cookie with the given name.
 	 * 
 	 * @param request
@@ -394,11 +443,11 @@ public class InitUserFilter implements Filter {
 	 * **************************************************
 	 */
 
-	public static String getUserName(HttpServletRequest request) throws CertificateException {
+	private static String getUserName(HttpServletRequest request) throws CertificateException {
 		return getUserIdFromCertificate(getCert(request));
 	}
 
-	public static X509Certificate getCert(HttpServletRequest request) throws CertificateException {
+	private static X509Certificate getCert(HttpServletRequest request) throws CertificateException {
 		X509Certificate[] certs = (X509Certificate[]) request.getAttribute("javax.servlet.request.X509Certificate");
 		if (certs != null) {
 			return certs[0]; // on index 0 shall be the client cert
@@ -412,25 +461,27 @@ public class InitUserFilter implements Filter {
 		if (certificate == null) {
 			return null; // no cert from IisProxy
 		}
-		byte[] decodedBytes = Base64.decodeBase64(certificate.getBytes());
-		ByteArrayInputStream bais = new ByteArrayInputStream(decodedBytes);
-		CertificateFactory cf = CertificateFactory.getInstance("X.509");
+		final byte[] decodedBytes = Base64.decodeBase64(certificate.getBytes());
+		final ByteArrayInputStream bais = new ByteArrayInputStream(decodedBytes);
+		final CertificateFactory cf = CertificateFactory.getInstance("X.509");
 		return (X509Certificate) cf.generateCertificate(bais);
 	}
 
-	public static String getUserIdFromCertificate(X509Certificate cert) {
+	private static String getUserIdFromCertificate(final X509Certificate cert) {
 
 		if (cert == null) {
 			return null;
 		}
-
-		final String subjectDN = cert.getSubjectDN().getName();
+		/*
+		 * create new user
+		 */
+		final String subjectDN = cert.getSubjectX500Principal().getName();
 		return extractUidFromDN(subjectDN);
 	}
 
-	public static String extractUidFromDN(String subjectDN) {
+	private static String extractUidFromDN(final String subjectDN) {
 		String uid = null;
-		StringTokenizer tokenizer = new StringTokenizer(subjectDN, ",");
+		final StringTokenizer tokenizer = new StringTokenizer(subjectDN, ",");
 		if (tokenizer.hasMoreTokens()) {
 			uid = tokenizer.nextToken();
 		}
@@ -439,8 +490,7 @@ public class InitUserFilter implements Filter {
 		if (idx < 0) {
 			return null;
 		}
-		uid = uid.substring(idx + 1).trim().toUpperCase();
-		return uid.trim();
+		return uid.substring(idx + 1).trim().toUpperCase().trim();
 	}
 
 	private static UserBean createUserBean(User loginUser) {
@@ -464,8 +514,8 @@ public class InitUserFilter implements Filter {
 		userBean.setItemcount(settings.getListItemcount());
 		userBean.setDefaultLanguage(settings.getDefaultLanguage());
 		userBean.setLogLevel(settings.getLogLevel());
-		
-		
+
+
 		if(loginUser.getSettings().getConfirmDelete())
 			userBean.setConfirmDelete("true");
 		else
