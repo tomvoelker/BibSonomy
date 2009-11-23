@@ -461,6 +461,11 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		LuceneGenerateResourceIndex<Bookmark> bookmarkIndexer = 
 			new LuceneGenerateBookmarkIndex(JNDITestDatabaseBinder.getLuceneProperties());
 		
+		bibTexIndexer.createEmptyIndex();
+		bookmarkIndexer.createEmptyIndex();
+		bibTexIndexer.shutdown();
+		bookmarkIndexer.shutdown();
+		
 		bibTexIndexer.setLogic(LuceneBibTexLogic.getInstance());
 		bibTexIndexer.setAnalyzer(SpringPerFieldAnalyzerWrapper.getInstance());
 		bookmarkIndexer.setLogic(LuceneBookmarkLogic.getInstance());
@@ -468,6 +473,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		
 		bibTexIndexer.generateIndex();
 		bookmarkIndexer.generateIndex();
+		bibTexIndexer.shutdown();
+		bookmarkIndexer.shutdown();
 	}
 	
 	/**

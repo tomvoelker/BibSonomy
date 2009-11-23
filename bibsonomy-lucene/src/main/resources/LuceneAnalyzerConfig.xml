@@ -10,6 +10,7 @@
     <bean id="luceneFieldAnalyzerMap" class="org.springframework.beans.factory.config.MapFactoryBean">
   		<property name="sourceMap">
   			<map>
+  				<entry key="author" value-ref="luceneStandardAnalyzer"/>
   				<entry key="user_name" value-ref="luceneStandardAnalyzer"/>
   				<entry key="mergedfields" value-ref="luceneGermanAnalyzer"/>
   			</map>

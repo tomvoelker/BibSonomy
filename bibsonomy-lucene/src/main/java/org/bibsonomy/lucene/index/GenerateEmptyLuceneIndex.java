@@ -26,14 +26,10 @@ public class GenerateEmptyLuceneIndex {
 		// FIXME: move database configuration to a central place
 		JNDITestDatabaseBinder.bind();
 		
-		// FIXME: configure this via spring
 		LuceneGenerateResourceIndex<BibTex> bibTexIndexer = 
-			new LuceneGenerateBibTexIndex(); 
+			LuceneGenerateBibTexIndex.getInstance(); 
 		LuceneGenerateResourceIndex<Bookmark> bookmarkIndexer = 
-			new LuceneGenerateBookmarkIndex();
-		
-		bibTexIndexer.setLogic(LuceneBibTexLogic.getInstance());
-		bookmarkIndexer.setLogic(LuceneBookmarkLogic.getInstance());
+			LuceneGenerateBookmarkIndex.getInstance();
 		
 		bibTexIndexer.createEmptyIndex();
 		bibTexIndexer.shutdown();
