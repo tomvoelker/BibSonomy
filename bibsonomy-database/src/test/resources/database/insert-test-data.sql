@@ -218,7 +218,8 @@ INSERT INTO `ids` VALUES
 (4,  1,  'cycle id'),
 (5,  0,  'extended_fields_id'),
 (7,  0,  'scraper_metadata_id'),
-(12, 28, 'grouptas id');
+(12, 28, 'grouptas id'),
+(14, 3,  'message_id');
 
 
 
@@ -227,10 +228,19 @@ INSERT INTO `ids` VALUES
 --
 
 INSERT INTO `inboxMail` VALUES
-(1, 'testuser1', 'testuser2', '2009-10-08 14:23:00'),
-(5, 'testuser3', 'testuser2', '2009-10-08 14:23:32'),
-(10, 'testuser3', 'testuser2', '2009-10-08 14:23:32');
+(1, 1, 'hash1', 'testuser1', 'testuser2', '2009-10-08 14:23:00'),
+(2, 5, 'hash2', 'testuser3', 'testuser2', '2009-10-08 14:23:32'),
+(3, 10, 'hash3', 'testuser3', 'testuser2', '2009-10-08 14:23:32');
 
+--
+-- Data for table `inboxMail`
+--
+
+INSERT INTO `inbox_tas` VALUES
+(1, 'tag11'),
+(1, 'tag12'),
+(2,	'tag21'),
+(3, 'tag31');
 
 -- 
 -- Data for table `inetAddressStates`

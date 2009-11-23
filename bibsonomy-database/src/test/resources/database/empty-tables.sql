@@ -45,6 +45,7 @@ DELETE FROM `grouptas`;
 DELETE FROM `highwirelist`;
 DELETE FROM `ids`;
 DELETE FROM `inboxMail`;
+DELETE FROM `inbox_tas`;
 DELETE FROM `inetAddressStates`;
 DELETE FROM `log_bibtex`;
 DELETE FROM `log_bookmark`;
