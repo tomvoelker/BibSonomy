@@ -372,7 +372,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		return finalRedirect(command.isJump(), loginUserName, getRedirectUrl(post));
 	}
 
-	private void setDate(final Post<RESOURCE> post, final String loginUserName) {
+	protected void setDate(final Post<RESOURCE> post, final String loginUserName) {
 		/*
 		 * Overwrite the date with the current date, if not posted by the DBLP user.
 		 * If DBLP does not provide a date, we have to set the date, too.
