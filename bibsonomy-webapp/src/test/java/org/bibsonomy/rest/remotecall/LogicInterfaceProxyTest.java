@@ -831,12 +831,12 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 
 	@Override
 	public int deleteBasketItems(List<Post<? extends org.bibsonomy.model.Resource>> posts, boolean clearBasket) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 	
 	@Override
-	public int deleteMessages(String userName, List<Integer> contentIds) {
+	public int deleteInboxMessages(List<Post<? extends org.bibsonomy.model.Resource>> posts, final boolean clearInbox) {
+		// TODO Auto-generated method stub
 		return 0;
 	}
 }
