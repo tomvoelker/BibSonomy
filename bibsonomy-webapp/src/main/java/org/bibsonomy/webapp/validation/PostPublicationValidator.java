@@ -115,12 +115,9 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 		/*
 		 * test validity using the BibTeXParser
 		 */
-		final String bibTexAsString = BibTexUtils.toBibtexString(post);
+		final String bibTexAsString = BibTexUtils.toBibtexString(bibtex);
 		try {
-			/*
-			 * for saving: replace bibtex with parsed one
-			 */
-			parser.updateWithParsedBibTeX(post);
+			parser.parseBibTeX(bibTexAsString);
 		} catch (ParseException ex) {
 			/*
 			 * parsing failed
