@@ -448,7 +448,7 @@ public class BibTexUtils {
 	/**
 	 * @see #generateBibtexKey(String, String, String, String)
 	 * @param bib
-	 * @return
+	 * @return the generated bibtex key
 	 */
 	public static String generateBibtexKey(final BibTex bib) {
 		if (bib == null) return "";
@@ -730,4 +730,37 @@ public class BibTexUtils {
 		}
 	}
 
+	/**
+	 * replaces all " and "'s in author and editor with a new line
+	 * @param bibtex
+	 */
+	public static void prepareEditorAndAuthorFieldForView(final BibTex bibtex) {
+		final String author = prepareNameRepresentationForView(bibtex.getAuthor());
+		final String editor = prepareNameRepresentationForView(bibtex.getEditor());
+		
+		bibtex.setAuthor(author);
+		bibtex.setEditor(editor);
+	}
+	
+	private static String prepareNameRepresentationForView(final String string) {
+		return ValidationUtils.present(string) ? string.replaceAll(PersonNameUtils.PERSON_NAME_DELIMITER, "\n") : "";
+	}
+	
+	/**
+	 * reverses {@link #prepareEditorAndAuthorFieldForView(BibTex)}
+	 * (replaces new line with an " and ")
+	 * 
+	 * @param bibtex
+	 */
+	public static void prepareEditorAndAuthorFieldForDatabase(final BibTex bibtex) {
+		final String author = prepareNameRepresentationForDatabase(bibtex.getAuthor());
+		final String editor = prepareNameRepresentationForDatabase(bibtex.getEditor());
+		
+		bibtex.setAuthor(author);
+		bibtex.setEditor(editor);
+	}
+	
+	private static String prepareNameRepresentationForDatabase(final String string) {
+		return ValidationUtils.present(string) ? string.replaceAll("\n", PersonNameUtils.PERSON_NAME_DELIMITER) : "";
+	}
 }

@@ -36,6 +36,12 @@ import org.bibsonomy.model.PersonName;
  * @version $Id$
  */
 public class PersonNameUtils {
+	
+	/**
+	 * the delimiter used for separating person names
+	 */
+	public static final String PERSON_NAME_DELIMITER = " and ";
+
 	/**
 	 * Analyses a string of name of the form "J. T. Kirk" and "M. Scott"
 	 * 
@@ -46,7 +52,7 @@ public class PersonNameUtils {
 		final List<PersonName> authors = new LinkedList<PersonName>();
 		if (authorField != null) {
 			final Scanner t = new Scanner(authorField);
-			t.useDelimiter(" and ");
+			t.useDelimiter(PERSON_NAME_DELIMITER);
 			while (t.hasNext()) {
 				final PersonName a = new PersonName();
 				a.setName(t.next());
