@@ -28,13 +28,11 @@ import org.bibsonomy.rest.utils.impl.FileUploadFactory;
 import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.webapp.command.ListCommand;
-import org.bibsonomy.webapp.command.actions.PostMultiplePublicationCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-import org.eclipse.jdt.core.compiler.InvalidInputException;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -132,9 +130,21 @@ public class PostMultiplePublicationsController extends SingleResourceListContro
 				
 				/*
 				 * check, if it is an endnote or bibtex file
+				 * 
+				 * FIXME: please centralize file ending handling - the file upload handler might
+				 * have some methods for that
+				 * 
+				 * FIXME: the if-statement checks for "bib" and "endnote", but the 
+				 * exception suggests "bib" and "ris". 
 				 */
 				if(fileSuffix==null || !(fileSuffix.equals("bib") || fileSuffix.equals("endnote")))
-					throw new InvalidInputException("uploaded file has incorrect ending: .bib or .ris expected!");
+					/*
+					 * FIXME: don't throw exception (and never use Eclipse exceptions!) 
+					 * - use errors object instead
+					 */
+					//throw new InputFormatException("uploaded file has incorrect ending: .bib or .ris expected!");
+					errors.reject("error.upload.format.publication", "uploaded file has incorrect ending: .bib or .ris expected!");
+					
 				
 				if(fileSuffix.equals("endnote"))
 				{
