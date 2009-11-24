@@ -25,7 +25,6 @@ import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.InboxMessage;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -244,8 +243,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		// store posts
 		logic = logicFactory.getLogicAccess(testUser1.getName(), "password");
 		logic.createPosts(posts);
-		List<InboxMessage> messages = this.inboxDb.getInboxMessages("receiverUser", dbSession);
-		Assert.assertEquals(1, messages.size());
+		Assert.assertEquals(1, this.inboxDb.getNumInboxMessages("receiverUser", dbSession));
 	}
 	
 	//------------------------------------------------------------------------

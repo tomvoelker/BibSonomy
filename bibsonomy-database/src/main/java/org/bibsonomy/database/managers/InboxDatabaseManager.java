@@ -1,12 +1,12 @@
 package org.bibsonomy.database.managers;
 
-import java.util.List;
-
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.InboxParam;
 import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.model.InboxMessage;
-
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 /**
  * Manages Inbox functionalities
  *  
@@ -16,13 +16,14 @@ import org.bibsonomy.model.InboxMessage;
 
 public class InboxDatabaseManager extends AbstractDatabaseManager {
 	private final static InboxDatabaseManager singleton = new InboxDatabaseManager();
+	private final  GeneralDatabaseManager generalDb; 
 	
-	//private final DatabasePluginRegistry plugins;
-
-	//private InboxDatabaseManager() {
-	//	this.plugins = DatabasePluginRegistry.getInstance();
-	//}
-
+	
+	
+	protected InboxDatabaseManager(){
+		this.generalDb = GeneralDatabaseManager.getInstance();
+	}
+	
 	/**
 	 * @return a singleton instance of this InboxDatabaseManager
 	 */
@@ -31,74 +32,88 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Retrieve the number of entries currently present in the inbox of the
+	 * Retrieve the number of messages currently present in the inbox of the
 	 * given user.
 	 * 
 	 * @param receiver
 	 *            the username of the owner of the inbox
 	 * @param session
 	 *            the database session
-	 * @return the number of entries currently stored in the inbox
+	 * @return the number of messages currently stored in the inbox
 	 */
-	public int getNumInboxItems(String receiver, final DBSession session) {
-		return queryForObject("getNumInboxItems", receiver, Integer.class, session);
+	public int getNumInboxMessages(String receiver, final DBSession session) {
+		return queryForObject("getNumInboxMessages", receiver, Integer.class, session);
 	}
 	
 	
-	public List<InboxMessage> getInboxMessages(String receiver, final DBSession session) {
-		return queryForList("getInboxItems", receiver, session);
-	}
 	/**
-	 * creates inbox items
+	 * creates one inbox Message
 	 * @param sender - name of the user who sends the item
 	 * @param receiver - name of the user who'll receive the item in his inbox
-	 * @param contentId 
+	 * @param post
 	 * @param session 
 	 */
-	public void createItem(final String sender, final String receiver, final int contentId, final DBSession session){
+	public void createInboxMessage(final String sender, final String receiver, final Post<? extends Resource> post, final DBSession session){
+		final InboxParam param = new InboxParam();
+		// get a new Message Id
+		param.setMessageId(this.generalDb.getNewContentId(ConstantID.IDS_INBOX_MESSAGE_ID, session));
+		/*
+		 * store the Message (without tags)
+		 */
+		param.setSender(sender);
+		param.setContentId(post.getContentId());
+		param.setIntraHash(post.getResource().getIntraHash());
+		System.out.println("INTRAHASH!!!!!! "+post.getResource().getIntraHash());
+		param.setReceiver(receiver);
+		this.insert("createInboxMessage", param, session);
+		/*
+		 * store the Tags (as Strings)
+		 */
+		for (Tag tag: post.getTags()) {
+			param.setTagName(tag.getName());
+			this.insert("createInboxMessageTag", param, session);
+		}
+	}
+	
+	/**
+	 * deletes all inbox items belonging to one message
+	 * @param receiver - name of the user from whose inbox we want to delete the item
+	 * @param sender - name of the user that sent the post
+	 * @param intraHash to which we wish to erase the message
+	 * @param session 
+	 */
+	public void deleteInboxMessage(final String sender, final String receiver, final String intraHash, final DBSession session){
+		/* 
+		 * for the deletion of the message the message_id has to be retrieved
+		 */
 		final InboxParam param = new InboxParam();			
 		param.setSender(sender);
-		param.setContentId(contentId);
 		param.setReceiver(receiver);
-		this.insert("createInboxItem", param, session);
+		param.setIntraHash(intraHash);
+		//TODO: Was wenn keine MessageId gefunden wird?
+		int messageId = this.getMessageId(param, session);
+		/*
+		 * delete all entries (message and tags) with the now known message_id
+		 */
+		this.delete("deleteInboxMessage", messageId, session);
+		this.delete("deleteInboxMessageTags", messageId, session);
 	}
 	
-	/**
-	 * deletes inbox items
-	 * @param receiver - name of the user from whose inbox we want to delete the item
-	 * @param contentId 
-	 * @param session 
-	 */
-	public void deleteItem(final String receiver, final int contentId, final DBSession session){
-		final InboxParam param = new InboxParam();			
-		param.setReceiver(receiver);
-		param.setContentId(contentId);
-		//this.plugins.onDeleteBasketItem(param, session);
-		this.delete("deleteInboxItem", param, session);
+	
+	
+	
+	private int getMessageId(InboxParam param, DBSession session) {
+		return this.queryForObject("getInboxMessageId", param, Integer.class, session);
 	}
-	
-	/**
-	 * updates basket items
-	 * @param param 
-	 * @param session 
-	 */
-	/*public void updateItem(final BasketParam param, final DBSession session){
-		this.update("updateBasketItem", param, session);
-	}*/
-	
-	//public void getItem(final String receiver){
-		
-	//}
-	
 	/**
 	 * drops all inbox items of users inbox
 	 * 
 	 * @param receiver
 	 * @param session
 	 */
-	public void deleteAllItems(final String receiver, final DBSession session){
-		//this.plugins.onDeleteAllBasketItems(userName, session);
-		this.delete("deleteAllInboxItems", receiver, session);
+	public void deleteAllInboxMessages(final String receiver, final DBSession session){
+		//TODO: Tas have to be removed as well!!!
+		this.delete("deleteAllInboxMessages", receiver, session);
 	}
 		
 }

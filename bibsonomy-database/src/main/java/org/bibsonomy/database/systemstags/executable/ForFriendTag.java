@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
-import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.util.DBSession;
@@ -13,13 +12,10 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 /**
- * System tag 'sys:send:&lt;groupname&gt;'
- * Description: 
- *   If user tags a post with [sys:]for:&lt;groupname&gt;, a message is sent to 
- *   the inbox of the receiver. 
- *   
- *  Precondition: 
- *   User is friend of the receiver of this post
+ * This system tag creates a link to its post in the inbox of a specified user (the receiver)
+ * The link to the post is its content_id
+ * The link also receives all tags of the post including this one (deactivated and renamed to from:senderName)
+ * The tag is deactivated (renamed to sent:receiverName)
  * @author sdo
  * @version $Id$
  */
@@ -30,7 +26,6 @@ public class ForFriendTag extends SystemTag {
 	 * This database manager is needed to ensure that a user is allowed to send
 	 * posts to given user.
 	 */
-	private final PermissionDatabaseManager permissionDb;
 	private final GeneralDatabaseManager generalDb; //needed to check: Is sender friend of receiver?
 	private final InboxDatabaseManager inboxDb;
 	private final TagDatabaseManager tagDb;
@@ -41,7 +36,6 @@ public class ForFriendTag extends SystemTag {
 	public ForFriendTag() {
 		log.debug("initializing");
 		// initialize database manager
-		this.permissionDb = PermissionDatabaseManager.getInstance();
 		this.inboxDb = InboxDatabaseManager.getInstance();
 		this.generalDb=GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
@@ -55,29 +49,27 @@ public class ForFriendTag extends SystemTag {
 	@Override
 	public <T extends Resource> void performAfter(Post<T> post, final DBSession session) {
 		log.debug("performing after access");
+		String receiver = getValue().toLowerCase();
+		String sender = post.getUser().getName();
 		/*
 		 * Check: Is the user (sender) in the list of friends of the receiver?
 		 */
-		// create the receiver as user
-		String receiver = getValue().toLowerCase();
-
-		// check if the user (sender) is a friend of the receiver
-		if (!generalDb.isFriendOf(post.getUser().getName(), receiver, session)){
+		if (!generalDb.isFriendOf(sender, receiver, session)){
 			throw new ValidationException("You can only send posts to users that have added you as a friend.");
 		}
-		/*
-		 * get InboxDatabaseManager to store the Message
-		 */
-		//TODO: What if contentId is currently unknown? i.e. not stored in post
-		inboxDb.createItem(post.getUser().getName(), receiver, post.getContentId(), session);
+		//TODO: What if contentId is currently unknown? i.e. not stored in post => exception
+
 		/*
 		 * rename forFriendTag from send:userName to sent:userName
-		 * We deactivate the systemTag to avoid resending the Message each time the sender updates his post
+		 * We deactivate the systemTag to avoid sending the Message again and again each time the sender updates his post
 		 */
-		this.tagDb.deleteTags(post, session);
-		this.getTag().setName("sent:"+receiver);
-		//this.replaceTags(post.getTags(), this.getTag().getName(), "sent:"+receiver);
-		this.tagDb.insertTags(post, session);
+		this.tagDb.deleteTags(post, session);		// 1. delete all tags from the database (will be replaced by new ones)
+		this.getTag().setName("from:" + sender);	// 2. rename this tag for the receiver (store senderName)
+		inboxDb.createInboxMessage(sender, receiver, post, session); // 3. store the inboxMessage with tag from:senderName 
+		this.getTag().setName("sent:" + receiver);	// 4. rename this tag for the sender (store receiverName)
+		this.tagDb.insertTags(post, session);		// 5. store the tags for the sender with the confirmation tag: sent:userName
+
+
 }
 
 	@Override

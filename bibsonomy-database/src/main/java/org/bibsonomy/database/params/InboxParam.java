@@ -5,7 +5,9 @@ package org.bibsonomy.database.params;
  * @version $Id$
  */
 public class InboxParam extends GenericParam{
+	private int messageId;
 	private int contentId;
+	private String intraHash;
 	private String receiver;
 	private String sender;
 	
@@ -21,6 +23,34 @@ public class InboxParam extends GenericParam{
 	 */
 	public void setContentId(final int contentId) {
 		this.contentId = contentId;
+	}
+
+	/**
+	 * @return int
+	 */
+	public int getMessageId() {
+		return this.messageId;
+	}
+
+	/**
+	 * @param messageId
+	 */
+	public void setMessageId(final int messageId) {
+		this.messageId = messageId;
+	}
+
+	/**
+	 * @return intraHash
+	 */
+	public String getIntraHash() {
+		return this.intraHash;
+	}
+
+	/**
+	 * @param intraHash
+	 */
+	public void setIntraHash(String intraHash) {
+		this.intraHash = intraHash;
 	}
 
 	/**

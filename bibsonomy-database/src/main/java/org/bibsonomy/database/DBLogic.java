@@ -1917,35 +1917,37 @@ public class DBLogic implements LogicInterface {
 
 	/**
 	 * Delete the users Message (given by the unique contentId) from his inbox
-	 * @param userName
-	 * @param contentIds
+	 * @param sender 
+	 * @param receiver 
+	 * @param resourceHash 
 	 * @return size of Inbox
 	 */
-	public int deleteMessages(String userName, List<Integer> contentIds) {
+	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox) {
 		/*
 		 * check permissions
 		 */
 		this.ensureLoggedIn();
-		this.permissionDBManager.ensureWriteAccess(this.loginUser, userName);
 		/*
-		 * delete the messages 
+		 * delete one message from the inbox
 		 */
-		String userNameInLowerCase = userName.toLowerCase();
 		final DBSession session = openSession();
 		try {
-			for (final int contentId : contentIds) {
-				/*
-				 * delete from inbox
-				 */
-				// TODO would be nice to know about the resourcetype or the
-				// instance behind this contentId
-				this.inboxDBManager.deleteItem(userNameInLowerCase, contentId, session);
-				return this.inboxDBManager.getNumInboxItems(userNameInLowerCase, session);
+			if (clearInbox) {
+				this.inboxDBManager.deleteAllInboxMessages(loginUser.getName(), session);
+			} else {
+				for (final Post post: posts) {
+					final String sender = post.getUser().getName();
+					final String receiver = loginUser.getName();
+					final String resourceHash = post.getResource().getIntraHash();
+					if (!present(receiver) || !present(resourceHash)){
+						throw new ValidationException("You are not authorized to perform the requested operation");
+					}
+					this.inboxDBManager.deleteInboxMessage(sender, receiver, resourceHash, session);
+				}
 			}
+			return this.inboxDBManager.getNumInboxMessages(loginUser.getName(), session);
 		} finally {
 			session.close();
 		}
-		return 0;
 	}
-
 }
