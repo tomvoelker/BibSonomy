@@ -6,8 +6,9 @@ import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
+import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
@@ -31,7 +32,8 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 	}
 
 	@Override
-	protected void validateResource(final Errors errors, final BibTex bibtex) {
+	protected void validateResource(final Errors errors, Post<BibTex> post) {
+		final BibTex bibtex = post.getResource();
 		/*
 		 * clean url
 		 */
@@ -83,7 +85,7 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 		 * XXX: if the parser is thread safe, we can use a single instance for
 		 * several calls.
 		 */
-		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+		final PostBibTeXParser parser = new PostBibTeXParser();
 
 		/*
 		 * test misc field using the BibTeXParser
@@ -109,13 +111,16 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 				return;
 			}
 		}
-		
+
 		/*
 		 * test validity using the BibTeXParser
 		 */
-		final String bibTexAsString = BibTexUtils.toBibtexString(bibtex);
+		final String bibTexAsString = BibTexUtils.toBibtexString(post);
 		try {
-			parser.parseBibTeX(bibTexAsString);
+			/*
+			 * for saving: replace bibtex with parsed one
+			 */
+			parser.updateWithParsedBibTeX(post);
 		} catch (ParseException ex) {
 			/*
 			 * parsing failed

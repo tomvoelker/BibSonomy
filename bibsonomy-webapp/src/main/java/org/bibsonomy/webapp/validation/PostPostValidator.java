@@ -49,7 +49,7 @@ public abstract class PostPostValidator<RESOURCE extends Resource> implements Va
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tags", "error.field.valid.tags");
 		
 		final Post<RESOURCE> post = command.getPost();
-		validateResource(errors, post.getResource());
+		this.validateResource(errors, post);
 
 		/*
 		 * if no valid (after parsing) tags given, issue an error
@@ -74,7 +74,7 @@ public abstract class PostPostValidator<RESOURCE extends Resource> implements Va
 		
 	}
 	
-	protected abstract void validateResource(final Errors errors, final RESOURCE resource);
+	protected abstract void validateResource(final Errors errors, final Post<RESOURCE> resource);
 
 	/** Validates the groups from the command. Only some combinations are allowed, e.g., 
 	 * either private, public, or other - and with certain other groups only.
