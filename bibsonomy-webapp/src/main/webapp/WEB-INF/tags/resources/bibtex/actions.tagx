@@ -8,7 +8,6 @@
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 	<jsp:directive.attribute name="noedittags" type="java.lang.Boolean" required="false" />
 	<jsp:directive.attribute name="disableResourceLinks" type="java.lang.Boolean" required="true" />
-    <jsp:directive.attribute name="unpick" type="java.lang.Boolean" required="false" description="If TRUE, unpick links (instead of pick links) are shown."/>
 
 	<c:if test="${command.context.userLoggedIn}">
 	
@@ -31,6 +30,9 @@
 		<a onclick="pickUnpickPublication(event);" title="${pickUnpickTitle}" href="${fn:escapeXml(pickUnpick_url)}">
 			<c:out value="${message}"></c:out>
 		</a>
+
+
+
 		
 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 
