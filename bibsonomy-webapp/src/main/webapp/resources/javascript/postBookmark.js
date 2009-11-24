@@ -8,11 +8,11 @@ function checkUrlForTitle(  ){
 	    	if ( req.status == 200 ) {
 			    var result = eval( "(" + req.responseText + ")" );
 				if ( (result.pageTitle != "")&&(document.getElementById("post.resource.title").value=="") ) {
-					var pageTitle = "<a href=\"javascript:setSuggestionFromUrlTitle('"+ result.pageTitle +"')\">" + result.pageTitle + "</a> ";
+					var pageTitle = "<a href=\"javascript:setSuggestionFromUrlTitle('"+ result.pageTitle +"')\" tabindex=\"1\">" + result.pageTitle + "</a> ";
 					document.getElementById( "suggestion.title" ).innerHTML = pageTitle;
 				}
 				if (result.pageDescription != "") {
-					var pageDescription = "<a href=\"javascript:setSuggestionFromUrlDescription('"+ result.pageDescription +"')\">" + result.pageDescription + "</a> ";
+					var pageDescription = "<a href=\"javascript:setSuggestionFromUrlDescription('"+ result.pageDescription +"')\" tabindex=\"2\">" + result.pageDescription + "</a> ";
 					document.getElementById( "suggestion.description" ).innerHTML = pageDescription;
 				}
         	}

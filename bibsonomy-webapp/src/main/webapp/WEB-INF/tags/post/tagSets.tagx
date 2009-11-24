@@ -20,7 +20,7 @@
 			 		<div align="center">
 		 				<c:forEach var="tagset" items="${group.tagSets}" varStatus="status_t">
     						<span class="info_bold"><c:out value="${tagset.setName}"/>:</span>${mtl:ch('nbsp')}
-							<form:select path="" size="1" multiple="false" cssStyle="margin-right: 1em;">
+							<form:select path="" size="1" multiple="false" cssStyle="margin-right: 1em;" tabindex="2">
 								<!-- show "please select" hint -->
 								<fmt:message var="pleaseselect" key="form.input.select"/>
 								<form:option value="" label="${pleaseselect}"/>

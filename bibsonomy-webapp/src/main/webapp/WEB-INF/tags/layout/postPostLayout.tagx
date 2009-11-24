@@ -81,7 +81,6 @@
                                    | tags 
                                    -->
 						    	<post:tagfield containsComma="${command.containsComma}" tags="${command.tags}" recommendedTags="${command.recommendedTags}"/>
-
                                 <!--
                                    | groups 
                                    -->
@@ -103,8 +102,8 @@
 	                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 	                                <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
 	                                <form:hidden path="intraHashToUpdate"/>
-									<input type="reset"  tabindex="5" value="${reset}" />
-									<input type="submit" tabindex="6" value="${save}" onclick="clear_tags();"/>
+									<input type="reset" value="${reset}" tabindex="2"/>
+									<input type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
 								</div>
 	
                                 <c:if test="${not empty detailedInformation}">

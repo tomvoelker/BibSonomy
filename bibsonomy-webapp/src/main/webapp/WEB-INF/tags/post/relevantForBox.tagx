@@ -24,12 +24,12 @@
 			</legend>	
 
             <!-- select box for "other" groups -->
-            <form:select cssStyle="float:left; margin-right: 1ex;" path="relevantGroups" size="5" onchange="showTagSets(this)">
+            <form:select cssStyle="float:left; margin-right: 1ex;" path="relevantGroups" size="5" onchange="showTagSets(this)" tabindex="2">
               <fmt:message var="pleaseselect" key="form.input.select"/>
               <form:option value="" label="${pleaseselect}"/>
            	  <form:options items="${groups}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
             </form:select>
-
+			
             <span class="expl_s">
               <fmt:message key="post.resource.relevant"/>
             </span>

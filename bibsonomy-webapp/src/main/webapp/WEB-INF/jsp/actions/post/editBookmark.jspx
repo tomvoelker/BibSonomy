@@ -18,16 +18,16 @@
 
 		<jsp:attribute name="generalInformation">
 			<form:label cssClass="fsLabel" path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label>
-			<form:input cssClass="fsInput" path="post.resource.url" tabindex="1"/>
+			<form:input cssClass="fsInput" path="post.resource.url" tabindex="2"/>
 			<div class="dissError"><form:errors path="post.resource.url" /></div>
 
 			<form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
-			<form:input cssClass="fsInput" path="post.resource.title" tabindex="2"/>
+			<form:input cssClass="fsInput" path="post.resource.title" tabindex="1"/>
 			<div class="dissError"><form:errors path="post.resource.title" /></div>
             <div class="fsSuggestion" id="suggestion.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 	                                
 			<form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
-			<form:textarea cssClass="fsInput" path="post.description" tabindex="3" rows="3" onkeyup="sz(this);" />
+			<form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" onkeyup="sz(this);" />
 			<div class="fsSuggestion" id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 		</jsp:attribute>
 

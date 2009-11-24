@@ -37,6 +37,7 @@ function handleRecommendedTags(msg) {
 			newTag.setAttribute('href', "javascript:copytag('inpf', '"
 										+node.getAttribute('name')
 										+"')");
+			newTag.setAttribute('tabindex', '1');
 			newTag.appendChild(newText);
 			tagField.appendChild(newTag);
 			

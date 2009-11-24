@@ -27,15 +27,16 @@
 	
 			<div style="float: left; margin-right: 1ex;">
 	           <!-- radio buttons for public, private, other -->
-	           <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="public" />  <span class="expl"><fmt:message key="post.resource.public"/></span><br/>
-	           <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="private" /> <span class="expl"><fmt:message key="post.resource.private"/></span><br/>
-	           <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="other" id="post.groups.other"/>  <span class="expl"><fmt:message key="post.resource.other"/></span>
-			</div>
+	           <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="public" tabindex="2" />  <span class="expl"><fmt:message key="post.resource.public"/></span><br/>
+	           <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="private" tabindex="2" /> <span class="expl"><fmt:message key="post.resource.private"/></span><br/>
+	           <form:radiobutton path="abstractGrouping" onclick="toggleGroupBox()" value="other" tabindex="2" id="post.groups.other" />  <span class="expl"><fmt:message key="post.resource.other"/></span>
+			</div>	
 	            <!-- select box for "other" groups TODO: allow multiple groups-->
-	            <form:select multiple="false" path="groups" size="5" id="post.groups.other2">
+	            <form:select multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">
 	              <form:option label="friends" value="friends"/>
 	              <form:options items="${groups}" itemValue="name" itemLabel="name"/>
 	            </form:select>
+	            
 	            <div class="dissError"><form:errors path="post.groups" /><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 		</fieldset>
 	</div>	
