@@ -598,8 +598,8 @@ public class User {
 		if (this.friends==null) {
 			this.friends=new LinkedList<User>();
 		}
-		List<String> friendsAsString = new LinkedList<String>();
-		for (User friend:friends) {
+		final List<String> friendsAsString = new LinkedList<String>();
+		for (final User friend:friends) {
 			friendsAsString.add(friend.getName());
 		}
 		return friendsAsString;
