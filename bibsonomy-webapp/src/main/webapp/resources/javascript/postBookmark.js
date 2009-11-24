@@ -8,7 +8,7 @@ function checkUrlForTitle(  ){
 	    	if ( req.status == 200 ) {
 			    var result = eval( "(" + req.responseText + ")" );
 				if ( (result.pageTitle != "")&&(document.getElementById("post.resource.title").value=="") ) {
-					var pageTitle = "<a href=\"javascript:setSuggestionFromUrlTitle('"+ result.pageTitle +"')\" tabindex=\"1\">" + result.pageTitle + "</a> ";
+					var pageTitle = "<a href=\"javascript:setSuggestionFromUrlTitle('"+ result.pageTitle +"')\" tabindex=\"2\">" + result.pageTitle + "</a> ";
 					document.getElementById( "suggestion.title" ).innerHTML = pageTitle;
 				}
 				if (result.pageDescription != "") {
