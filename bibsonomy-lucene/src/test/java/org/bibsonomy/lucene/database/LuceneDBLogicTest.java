@@ -163,6 +163,8 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	 * tests whether all posts whithin a given time range are retrieved
 	 */
 	@Test
+	@Ignore
+	@Deprecated
 	public void getContentIdsToDelete() {
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
@@ -192,7 +194,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 
 		// end time - we ignore milliseconds
 		long end = System.currentTimeMillis();
-		Date toDate = new Date(end - end%1000);
+		Date toDate = new Date(end + 1000 - end%1000);
 		
 		// retrieve posts
 		List<Integer> posts = luceneBibTexLogic.getContentIdsToDelete(fromDate, toDate);
