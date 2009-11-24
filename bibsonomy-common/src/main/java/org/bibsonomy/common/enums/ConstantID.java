@@ -66,6 +66,8 @@ public enum ConstantID {
     IDS_RANKING_JOBS(11),
     /** id of the groupTasId in the ids table */
 	IDS_GROUPTAS_ID(12),
+	/** id of messageId in the ids table*/
+	IDS_INBOX_MESSAGE_ID(14),
 	/* other ids (not related to SQL tables! */
 	/** marks that no special content type has yet been assigned */
 	IDS_UNDEFINED_CONTENT_ID(-1);
