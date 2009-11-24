@@ -11,7 +11,6 @@
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="true"/>
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
-    <jsp:directive.attribute name="unpick" type="java.lang.Boolean" required="false" description="If TRUE, unpick links (instead of pick links) are shown."/>
 
 	<rc:list
 		titleKey="publications" 
@@ -44,7 +43,7 @@
 		
 		<!-- BibTeX action -->
 		<jsp:attribute name="actions">
-			<bib:actions loginUserName="${loginUserName}" unpick="${empty unpick ? false : unpick}" post="${post}" disableResourceLinks="${false}"/>
+			<bib:actions loginUserName="${loginUserName}" post="${post}" disableResourceLinks="${false}"/>
 		</jsp:attribute>
 		
 	</rc:list>
