@@ -96,6 +96,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * @param idsType type of the id to be created
 	 * @param session a db session
 	 * @return the next database-ID
+	 * TODO: rename this method (e.g. getNewId) and the corresponding queries since it handles any ConstantID 
 	 */
 	public Integer getNewContentId(final ConstantID idsType, final DBSession session) {
 		this.updateIds(idsType, session);
