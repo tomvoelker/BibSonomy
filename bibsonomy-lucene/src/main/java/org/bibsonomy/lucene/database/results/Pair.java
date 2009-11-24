@@ -44,6 +44,7 @@ public class Pair <T, U>
 		return hash;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals( Object oth )
 	{
@@ -55,7 +56,7 @@ public class Pair <T, U>
 		{
 			return false;
 		}
-		Pair<T, U> other = getClass().cast( oth );
+		final Pair<T, U> other = (Pair<T,U>) oth ;
 		return (getFirst() == null? other.getFirst() == null : getFirst().equals( other.getFirst() ))
 		&& (second == null? other.second == null : second.equals( other.second ));
 	}
