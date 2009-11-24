@@ -10,11 +10,11 @@
 	<name>BibSonomy-Post-Filter</name>
 	<version>2.0.4-SNAPSHOT</version>
 	<description>filters posts</description>
-	<!--	<parent>
+	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
 		<version>2.0.4-SNAPSHOT</version>
-		</parent>-->
+	</parent>
 
 	<build>
 		<plugins>
