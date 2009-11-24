@@ -99,7 +99,7 @@
                    <form:input cssClass="fsInput fsSmall" path="post.resource.pages" tabindex="14"/>
                    <div class="dissError"><form:errors path="post.resource.pages" /></div>
 
-                   <form:label cssClass="fsLabel" path="post.resource.month" ><fmt:message key="post.resource.month"/></form:label><buttons:help message="post.resource.booktitle.month}"/>
+                   <form:label cssClass="fsLabel" path="post.resource.month" ><fmt:message key="post.resource.month"/></form:label><buttons:help message="post.resource.month.help"/>
                    <form:input cssClass="fsInput fsSmall" path="post.resource.month" tabindex="15"/>
                    <div class="dissError"><form:errors path="post.resource.month" /></div>
 
