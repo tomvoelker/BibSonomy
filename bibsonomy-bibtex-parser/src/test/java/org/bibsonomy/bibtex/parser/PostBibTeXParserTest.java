@@ -9,6 +9,7 @@ import java.util.HashSet;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Test;
@@ -193,6 +194,23 @@ public class PostBibTeXParserTest extends SimpleBibTeXParserTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}
+
+	}
+	
+	/**
+	 * Checks that misc fields are initialized correctly.
+	 * 
+	 * @throws ParseException
+	 * @throws IOException
+	 */
+	@Test
+	public void testMisc() throws ParseException, IOException {
+		PostBibTeXParser parser = new PostBibTeXParser();
+		
+		Post<BibTex> post = parser.parseBibTeXPost("@article{jaeschke2006social,\ntitle={Social Foo},\nauthor={Robert Jäschke}\n}");
+		
+		post.getResource().recalculateHashes();
+		post.setUser(new User("rja"));
 
 	}
 

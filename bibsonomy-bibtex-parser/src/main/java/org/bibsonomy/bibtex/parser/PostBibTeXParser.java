@@ -34,6 +34,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.util.ValidationUtils;
 
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexString;
@@ -73,7 +74,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 */
 		return fillPost(parsedBibTeX);
 	}
-	
+
 	/**
 	 * Puts the resource into a post. Does the following additional steps:
 	 * 
@@ -93,30 +94,36 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		/*
 		 * get misc fields for next steps
 		 */
+		BibTexUtils.parseMiscField(bibtex);
 		final HashMap<String, String> miscFields = bibtex.getMiscFields();
 		/*
-		 * put description from misc fields into post
+		 * if a post does not have misc fields, we don't have to do anything
 		 */
-		post.setDescription(miscFields.remove(BibTexUtils.ADDITIONAL_MISC_FIELD_DESCRIPTION));
-		/*
-		 * parse tags
-		 */
-		final String keywords = miscFields.remove(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS);
-		try {
-			post.setTags(TagUtils.parse(keywords));
-		} catch (RecognitionException ex) {
+		if (ValidationUtils.present(miscFields)) {
 			/*
-			 * silently ignore tag parsing errors ....
+			 * put description from misc fields into post
 			 */
-		}
-		/*
-		 * remove other misc fields which should not be stored as misc field 
-		 * (but rather as regular field/column)
-		 */
-		miscFields.remove("intrahash");
-		miscFields.remove("interhash");
-		for (final String additionalMiscField: BibTexUtils.ADDITIONAL_MISC_FIELDS) {
-			miscFields.remove(additionalMiscField);	
+			post.setDescription(miscFields.remove(BibTexUtils.ADDITIONAL_MISC_FIELD_DESCRIPTION));
+			/*
+			 * parse tags
+			 */
+			final String keywords = miscFields.remove(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS);
+			try {
+				post.setTags(TagUtils.parse(keywords));
+			} catch (RecognitionException ex) {
+				/*
+				 * silently ignore tag parsing errors ....
+				 */
+			}
+			/*
+			 * remove other misc fields which should not be stored as misc field 
+			 * (but rather as regular field/column)
+			 */
+			miscFields.remove("intrahash");
+			miscFields.remove("interhash");
+			for (final String additionalMiscField: BibTexUtils.ADDITIONAL_MISC_FIELDS) {
+				miscFields.remove(additionalMiscField);	
+			}
 		}
 		/*
 		 * re-write misc field to fix above changes
@@ -148,10 +155,10 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		for (final BibTex bibTex2: parsedBibTeXs) {
 			result.add(fillPost(bibTex2));
 		}
-		
+
 		return result;
 	}
-	
+
 	/** 
 	 * In addition to org.bibsonomy.bibtex.parser.SimpleBibTeXParser#fillBibtexFromEntry(bibtex.dom.BibtexEntry)
 	 * this method handles description, keywords, etc. which are not part of 
@@ -165,16 +172,16 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	@Override
 	protected BibTex fillBibtexFromEntry(final BibtexEntry entry) {
 		final BibTex bibtex = super.fillBibtexFromEntry(entry);
-		
+
 		for (final String additionalField: BibTexUtils.ADDITIONAL_MISC_FIELDS) {
 			final BibtexString field = (BibtexString) entry.getFieldValue(additionalField); 
 			if (field != null) bibtex.addMiscField(additionalField, field.getContent());
-			
+
 		}
-		
+
 		return bibtex;
 	}
-	
+
 	/**
 	 * Builds a BibTeX-String from the BibTex contained in the post and parses
 	 * this string into a Post. Then, all fields in the new post which were
