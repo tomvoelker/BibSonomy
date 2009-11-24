@@ -13,9 +13,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -29,10 +26,10 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.model.util.tagparser.TagString3Lexer;
-import org.bibsonomy.model.util.tagparser.TagString3Parser;
 import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
 import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.util.ValidationUtils;
@@ -121,9 +118,6 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	/**
 	 * Main method which does the posting-procedure.
 	 * 
-	 * FIXME: for:group is missing FIXME: check for other features from
-	 * BookmarkShowHandler and Bibtexhandler
-	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
 	public View workOn(final EditPostCommand<RESOURCE> command) {
@@ -153,15 +147,17 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 			return new ExtendedRedirectView("/login?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + "&referer=/postBookmark?" + safeURIEncode(context.getQueryString())); // FIXME: refactor
 		}
 
+		final User loginUser = context.getLoginUser();
+
 
 		/*
 		 * If user is spammer block him silently by entering captcha again and again
 		 */
-		if (command.getContext().getLoginUser().isSpammer()){
+		if (loginUser.isSpammer()){
 			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
-
 			errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
 		}
+
 
 		/*
 		 * handle copying of a post using intra hash + user name
@@ -172,17 +168,25 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 			 * FIXME: really ensure, that the tag field is not filled
 			 *        (otherwise the post is automatically saved ...)
 			 */
-			command.setPost((Post<RESOURCE>) logic.getPostDetails(command.getHash(), command.getUser()));
+			command.setPost(getPostDetails(command.getHash(), command.getUser()));
+		} else {
+			/*
+			 * The post in the command is coming from the form: bring it into 
+			 * the format we're using internally. 
+			 */
+			this.preparePostAfterView(command.getPost());
 		}
 
-		final User loginUser = context.getLoginUser();
+		/*
+		 * this is the post we're working on for now ...
+		 */
 		final Post<RESOURCE> post = command.getPost();
 
 		/*
 		 * set user, init post groups, relevant for tags (FIXME: candidate for 
 		 * system tags) and recommender
 		 */
-		this.initPost(command);
+		this.initPost(command, post, loginUser);
 
 		/*
 		 * decide, what to do
@@ -247,16 +251,33 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		final List<Tag> concepts = this.logic.getConcepts(null, GroupingEntity.USER, loginUser.getName(), null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
 		command.getConcepts().setConceptList(concepts);
 		command.getConcepts().setNumConcepts(concepts.size());
-		
+
+		/*
+		 * prepare post from internal format into user's form format
+		 */
 		this.preparePostForView(command.getPost());
 		/*
 		 * return the view
 		 */
 		return getPostView();
 	}
-	
+
+	/**
+	 * Before a post is sent to the view, this method is called.
+	 * 
+	 * @param post
+	 */
 	protected void preparePostForView(final Post<RESOURCE> post) {
 		// do nothing	
+	}
+
+	/**
+	 * Immediately after a post is coming from the view, this method is called.
+	 * 
+	 * @param post
+	 */
+	protected void preparePostAfterView(final Post<RESOURCE> post) {
+		// do nothing		
 	}
 
 	protected abstract View getPostView();
@@ -283,7 +304,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 			 * ckey is invalid, so this is probably the first call --> get post
 			 * from DB
 			 */
-			final Post<RESOURCE> dbPost = (Post<RESOURCE>) logic.getPostDetails(intraHashToUpdate, loginUserName);
+			final Post<RESOURCE> dbPost = getPostDetails(intraHashToUpdate, loginUserName);
 			if (dbPost == null) {
 				/*
 				 * invalid intra hash: post could not be found
@@ -304,20 +325,7 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		/*
 		 * ckey is given, so user is already editing the post -> parse tags
 		 */
-		try {
-			/*
-			 * we use addAll here because there might already be system tags 
-			 * in the post which should not be overwritten 
-			 */
-			post.getTags().addAll(parse(command.getTags()));
-		} catch (final Exception e) {
-			log.warn("error parsing tags", e);
-			errors.rejectValue("tags", "error.field.valid.tags.parseerror");
-		}
-		/*
-		 * validate post
-		 */
-		this.validatePost(command);
+		cleanAndValidatePost(command, post);
 		/*
 		 * check, if the post has changed
 		 */
@@ -325,16 +333,14 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		if (!intraHashToUpdate.equals(post.getResource().getIntraHash())) {
 			/*
 			 * post has changed -> check, if new post has already been posted
-			 * FIXME: ResourceMovedException editing post A => B => A
 			 */
-			final Post<RESOURCE> dbPost = (Post<RESOURCE>) logic.getPostDetails(post.getResource().getIntraHash(), loginUserName);
+			final Post<RESOURCE> dbPost = getPostDetails(post.getResource().getIntraHash(), loginUserName);
 			if (dbPost != null) {
 				log.debug("user already owns this post ... handling update");
 				/*
 				 * post exists -> warn user
-				 * FIXME: bookmark-specific!
 				 */
-				errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
+				setDuplicateErrorMessage(post, errors);
 			}
 		}
 		/*
@@ -378,6 +384,78 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		return finalRedirect(command.isJump(), loginUserName, getRedirectUrl(post));
 	}
 
+	/**
+	 * The method {@link PostLogicInterface#getPostDetails(String, String)} throws
+	 * an exception, if the post with the requested hash+user does not exist but 
+	 * once existed and now has been moved. Since we just want to check, if the
+	 * post with the given hash exists NOW, we can ignore that exception and 
+	 * instead just return null.
+	 * 
+	 * @param intraHash
+	 * @param userName
+	 * @return
+	 * @see {https://www.kde.cs.uni-kassel.de/mediawiki/index.php/Bibsonomy:PostHashRedirect}
+	 * @see {https://www.kde.cs.uni-kassel.de/mediawiki/index.php/Bibsonomy:PostPublicationUmziehen#gel.C3.B6schte.2Fge.C3.A4nderte_Posts_.28Hash-Redirect-Problem.29}
+	 */
+	@SuppressWarnings("unchecked")
+	private Post<RESOURCE> getPostDetails(final String intraHash, final String userName) {
+		try {
+			return (Post<RESOURCE>) logic.getPostDetails(intraHash, userName);
+		} catch (final ResourceMovedException e) {
+			/*
+			 * getPostDetails() has a redirect mechanism that checks for posts 
+			 * in the log tables. If it find's a post with the given hash there,
+			 * it throws an exception, giving the hash of the next post. We want
+			 * to ignore this behavior, thus we ignore the exception
+			 * 
+			 * see https://www.kde.cs.uni-kassel.de/mediawiki/index.php/Bibsonomy:PostHashRedirect
+			 * and https://www.kde.cs.uni-kassel.de/mediawiki/index.php/Bibsonomy:PostPublicationUmziehen#gel.C3.B6schte.2Fge.C3.A4nderte_Posts_.28Hash-Redirect-Problem.29
+			 */
+		}
+		return null;
+	}
+
+	/**
+	 * When we detect that the user has changed the post such that it is equal to
+	 * an existing post, this method is called and shall provide the user with a
+	 * meaningful error message.
+	 * 
+	 * @param post
+	 */
+	protected abstract void setDuplicateErrorMessage(final Post<RESOURCE> post, final Errors errors);
+
+	/**
+	 * This method cleans and validates the post:
+	 * <ul>
+	 * <li>parsing tags</li>
+	 * <li>calling the validator</li>
+	 * <li>cleaning the post using {@link #cleanPost(Post)}</li>
+	 * </ul>
+	 * 
+	 * @param command
+	 * @param post
+	 */
+	private void cleanAndValidatePost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+		try {
+			/*
+			 * we use addAll here because there might already be system tags 
+			 * in the post which should not be overwritten
+			 */
+			post.getTags().addAll(TagUtils.parse(command.getTags()));
+		} catch (final Exception e) {
+			log.warn("error parsing tags", e);
+			errors.rejectValue("tags", "error.field.valid.tags.parseerror");
+		}
+		/*
+		 * validate post
+		 */
+		this.validatePost(command);
+		/*
+		 * clean post
+		 */
+		this.cleanPost(post);
+	}
+
 	protected void setDate(final Post<RESOURCE> post, final String loginUserName) {
 		/*
 		 * Overwrite the date with the current date, if not posted by the DBLP user.
@@ -400,14 +478,19 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	 * @param command
 	 */
 	private void validatePost(final EditPostCommand<RESOURCE> command) {
-		this.preparePostForDatabase(command.getPost());
-		
 		org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
 	}
-	
-	protected void preparePostForDatabase(Post<RESOURCE> post) {
-		// do nothing		
+
+	/**
+	 * After validation, the controller can clean the post, i.e., normalize tags 
+	 * or so. 
+	 * 
+	 * @param post
+	 */
+	protected void cleanPost(final Post<RESOURCE> post) {
+		// noop
 	}
+
 
 	/**
 	 * When the user shall be redirected to the page he is initially coming 
@@ -491,20 +574,11 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		}
 
 		log.debug("wow, post is completely new! So ... return until no errors and then store it");
+
 		/*
-		 * parse the tags
+		 * parses the tags, 
 		 */
-		try {
-			/*
-			 * we use addAll here because there might already be system tags 
-			 * in the post which should not be overwritten 
-			 */
-			post.getTags().addAll(parse(command.getTags()));
-		} catch (final Exception e) {
-			log.warn("error parsing tags", e);
-			errors.rejectValue("tags", "error.field.valid.tags.parseerror");
-		}
-		validatePost(command);
+		cleanAndValidatePost(command, post);
 
 		/*
 		 * return to form until validation passes
@@ -638,15 +712,12 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	 * 
 	 * @param command
 	 */
-	protected void initPost(final EditPostCommand<RESOURCE> command) {
-		final RequestWrapperContext context = command.getContext();
-		final Post<RESOURCE> post = command.getPost();
+	protected void initPost(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post, final User loginUser) {
 		/* 
 		 * set the user of the post to the loginUser (the recommender might need
 		 * the user name)
 		 */
-		post.setUser(context.getLoginUser());
-
+		post.setUser(loginUser);
 		/*
 		 * initialize groups
 		 */
@@ -682,36 +753,24 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		/*
 		 * is resource already owned by the user?
 		 */
-		try {
-			final Post<RESOURCE> dbPost = (Post<RESOURCE>) logic.getPostDetails(resource.getIntraHash(), loginUserName);
+		final Post<RESOURCE> dbPost = getPostDetails(resource.getIntraHash(), loginUserName);
 
-			if (dbPost != null) {
-				log.debug("set diff post");
-				/*
-				 * already posted; warn user FIXME: this is bookmark-only and does 
-				 * not work for publications
-				 */
-				errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
-
-				// set intraHash, diff post and set dbPost as post of command
-				command.setIntraHashToUpdate(resource.getIntraHash());
-
-				command.setDiffPost(post);
-
-				this.populateCommandWithPost(command, dbPost);
-
-				return true;
-			}
-		} catch (final ResourceMovedException e) {
+		if (dbPost != null) {
+			log.debug("set diff post");
 			/*
-			 * getPostDetails() has a redirect mechanism that checks for posts 
-			 * in the log tables. If it find's a post with the given hash there,
-			 * it throws an exception, giving the hash of the next post. We want
-			 * to ignore this behavior, thus we ignore the exception
-			 * 
-			 * see https://www.kde.cs.uni-kassel.de/mediawiki/index.php/Bibsonomy:PostHashRedirect
-			 * and https://www.kde.cs.uni-kassel.de/mediawiki/index.php/Bibsonomy:PostPublicationUmziehen#gel.C3.B6schte.2Fge.C3.A4nderte_Posts_.28Hash-Redirect-Problem.29
+			 * already posted; warn user FIXME: this is bookmark-only and does 
+			 * not work for publications
 			 */
+			errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
+
+			// set intraHash, diff post and set dbPost as post of command
+			command.setIntraHashToUpdate(resource.getIntraHash());
+
+			command.setDiffPost(post);
+
+			this.populateCommandWithPost(command, dbPost);
+
+			return true;
 		}
 		return false;		
 	}
@@ -831,31 +890,6 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 			s.append(tt.getName() + " ");
 		}
 		return s.toString();
-	}
-
-	/**
-	 * Parses the incoming tag string into a set of tags.
-	 * 
-	 * @param tagString
-	 * @return
-	 * @throws RecognitionException
-	 */
-	private Set<Tag> parse(final String tagString) throws RecognitionException {
-		final Set<Tag> tags = new TreeSet<Tag>();
-
-		if (tagString != null) {
-			/*
-			 * prepare parser
-			 */
-			final CommonTokenStream tokens = new CommonTokenStream();
-			tokens.setTokenSource(new TagString3Lexer(new ANTLRStringStream(tagString)));
-			final TagString3Parser parser = new TagString3Parser(tokens, tags);
-			/*
-			 * parse
-			 */
-			parser.tagstring();
-		}
-		return tags;
 	}
 
 	protected abstract PostPostValidator<RESOURCE> getValidator();

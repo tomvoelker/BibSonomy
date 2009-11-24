@@ -8,6 +8,7 @@ import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -25,6 +26,7 @@ import org.bibsonomy.webapp.validation.PostPostValidator;
 import org.bibsonomy.webapp.validation.PostPublicationValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 import bibtex.parser.ParseException;
 
@@ -121,8 +123,8 @@ public class PostPublicationController extends PostPostController<BibTex> {
 			final String scrapedBibtex = scrapingContext.getBibtexResult();
 			if (isSuccess && ValidationUtils.present(scrapedBibtex)) {
 				/*
-				 * XXX: if the parser is thread-safe, we can use 
-				 * the same instance for each invocation
+				 * When the parser is thread-safe (it currently is not!), we can 
+				 * use the same instance for each invocation.
 				 */
 				try {
 					final BibTex parsedBibTex = new SimpleBibTeXParser().parseBibTeX(scrapedBibtex);
@@ -147,12 +149,7 @@ public class PostPublicationController extends PostPostController<BibTex> {
 						 * initialize things needed for page 
 						 * (groups, etc.)
 						 */
-						this.initPost(command);
-						/*
-						 * FIXME: why is this needed? Shouldn't be necessary!
-						 */
-						// this.populateCommandWithPost(command, post);
-
+						this.initPost(command, command.getPost(), loginUser);
 						/*
 						 * save result
 						 */
@@ -223,8 +220,32 @@ public class PostPublicationController extends PostPostController<BibTex> {
 		BibTexUtils.prepareEditorAndAuthorFieldForView(post.getResource());
 	}
 
+
+	/** 
+	 * This controller exchanges the resource by a parsed version of it.
+	 * 
+	 * @see org.bibsonomy.webapp.controller.actions.PostPostController#cleanPost(org.bibsonomy.model.Post)
+	 */
 	@Override
-	protected void preparePostForDatabase(Post<BibTex> post) {
+	protected void cleanPost(final Post<BibTex> post) {
+		super.cleanPost(post);
+		try {
+			new PostBibTeXParser().updateWithParsedBibTeX(post);
+		} catch (ParseException ex) {
+			/*
+			 * we silently ignore parsing errors - they have been handled by the
+			 * validator
+			 */
+		} catch (IOException ex) {
+			/*
+			 * we silently ignore parsing errors - they have been handled by the
+			 * validator
+			 */
+		}
+	}
+
+	@Override
+	protected void preparePostAfterView(final Post<BibTex> post) {
 		/*
 		 * replace all new lines with an " and " to undo the preparePostForView action
 		 */
@@ -247,6 +268,12 @@ public class PostPublicationController extends PostPostController<BibTex> {
 		return new EditPublicationCommand();
 	}
 
+	@Override
+	protected void setDuplicateErrorMessage(Post<BibTex> post, Errors errors) {
+		errors.reject("error.duplicate.post");
+	}
+
+	
 	public Scraper getScraper() {
 		return this.scraper;
 	}

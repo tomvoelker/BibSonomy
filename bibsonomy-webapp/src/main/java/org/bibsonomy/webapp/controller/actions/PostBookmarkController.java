@@ -8,6 +8,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostBookmarkValidator;
 import org.bibsonomy.webapp.validation.PostPostValidator;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 /**
  * @author fba
@@ -43,6 +44,11 @@ public class PostBookmarkController extends PostPostController<Bookmark> {
 	@Override
 	protected EditPostCommand<Bookmark> instantiateEditPostCommand() {
 		return new EditBookmarkCommand();
+	}
+
+	@Override
+	protected void setDuplicateErrorMessage(Post<Bookmark> post, Errors errors) {
+		errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
 	}
 
 }
