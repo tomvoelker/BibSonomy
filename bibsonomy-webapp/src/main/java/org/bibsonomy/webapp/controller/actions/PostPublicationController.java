@@ -12,6 +12,7 @@ import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -212,9 +213,24 @@ public class PostPublicationController extends PostPostController<BibTex> {
 		 */
 		return Views.ERROR;
 	}
+	
+	@Override
+	protected void preparePostForView(Post<BibTex> post) {
+		/*
+		 * replace all " and "s by a new line in author and
+		 * editor field of the bibtex to separate multiple authors and editors
+		 */
+		BibTexUtils.prepareEditorAndAuthorFieldForView(post.getResource());
+	}
 
-
-
+	@Override
+	protected void preparePostForDatabase(Post<BibTex> post) {
+		/*
+		 * replace all new lines with an " and " to undo the preparePostForView action
+		 */
+		BibTexUtils.prepareEditorAndAuthorFieldForDatabase(post.getResource());
+	}
+	
 	@Override
 	protected BibTex instantiateResource() {
 		final BibTex publication = new BibTex();

@@ -247,12 +247,17 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		final List<Tag> concepts = this.logic.getConcepts(null, GroupingEntity.USER, loginUser.getName(), null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
 		command.getConcepts().setConceptList(concepts);
 		command.getConcepts().setNumConcepts(concepts.size());
+		
+		this.preparePostForView(command.getPost());
 		/*
 		 * return the view
 		 */
 		return getPostView();
 	}
-
+	
+	protected void preparePostForView(final Post<RESOURCE> post) {
+		// do nothing	
+	}
 
 	protected abstract View getPostView();
 
@@ -312,14 +317,15 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 		/*
 		 * validate post
 		 */
-		validatePost(command);
+		this.validatePost(command);
 		/*
 		 * check, if the post has changed
 		 */
 		post.getResource().recalculateHashes();
 		if (!intraHashToUpdate.equals(post.getResource().getIntraHash())) {
 			/*
-			 * post has changed -> check, if new post has already been bookmarked
+			 * post has changed -> check, if new post has already been posted
+			 * FIXME: ResourceMovedException editing post A => B => A
 			 */
 			final Post<RESOURCE> dbPost = (Post<RESOURCE>) logic.getPostDetails(post.getResource().getIntraHash(), loginUserName);
 			if (dbPost != null) {
@@ -394,7 +400,13 @@ public abstract class PostPostController<RESOURCE extends Resource> extends Sing
 	 * @param command
 	 */
 	private void validatePost(final EditPostCommand<RESOURCE> command) {
+		this.preparePostForDatabase(command.getPost());
+		
 		org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
+	}
+	
+	protected void preparePostForDatabase(Post<RESOURCE> post) {
+		// do nothing		
 	}
 
 	/**
