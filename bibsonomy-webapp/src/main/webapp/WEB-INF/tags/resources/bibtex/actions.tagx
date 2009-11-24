@@ -98,6 +98,33 @@
 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 	</c:if>
 
+	<c:if test="${command.pageTitle=='inbox'}">
+		<!-- REMOVE Message from Inbox -->
+		<c:url var="message_remove" value="/removeMessage" context="${projectContext}">
+			<c:param name="requestedResourceHash" value="${post.resource.intraHash}" />
+			<c:param name="user" value="${post.user.name}" />
+			<c:param name="ckey" value="${ckey}" />
+		</c:url>
+		<c:set var="removeTitle"><fmt:message key="bibtex.actions.removeMessage.title"/></c:set>
+		
+		<c:choose>
+		   	<!-- SHOW A CONFIRM WINDOW -->
+		   	<c:when test="${command.context.loginUser.settings.confirmDelete}">
+		   		<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
+		   			onclick="javascript: return confirmDelete(event);">
+		   			<fmt:message key="bibtex.actions.removeMessage"/>
+		   		</a>
+		   	</c:when>
+		   	<!-- JUST DELETE -->
+		   	<c:otherwise>
+		   		<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}">		       
+		      			<fmt:message key="bibtex.actions.removeMessage"/>
+		   		</a>
+		   	</c:otherwise>
+		</c:choose>
+		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+	</c:if>					
+
 	
 	<c:if test="${not disableResourceLinks}">
 
