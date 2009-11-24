@@ -47,11 +47,12 @@ public class BasketPageController extends SingleResourceListController implement
 			this.setList(command, resourceType, groupingEntity, loginUserName, null, null, null, null, null, entriesPerPage);
 			this.postProcessAndSortList(command, resourceType);
 			
-			for (Object p : command.getListCommand(resourceType).getList()){
-				if (p instanceof Post){
-					Post postItem = (Post)p;
-					postItem.setPicked(true);
-				}
+			/*
+			 * set all posts from basket page to "picked" such that their "pick"
+			 * link changes to "unpick"
+			 */
+			for (final Post<? extends Resource> post : command.getListCommand(resourceType).getList()){
+					post.setPicked(true);
 			}
 
 			// the number of items in this user's basket has already been fetched
