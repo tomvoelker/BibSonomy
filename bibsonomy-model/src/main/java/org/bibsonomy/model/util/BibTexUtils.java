@@ -265,7 +265,7 @@ public class BibTexUtils {
 		final HashMap<String,String> miscFields = bib.getMiscFields();
 		final StringBuffer miscFieldsSerialized = new StringBuffer();
 		// loop over misc fields, if any
-		if (miscFields != null && miscFields.values().size() > 0) {
+		if (ValidationUtils.present(miscFields)) {
 			for (String key : miscFields.keySet()) {
 				miscFieldsSerialized.append("  " + key + " = {" + miscFields.get(key) + "},\n");
 			}
@@ -448,7 +448,8 @@ public class BibTexUtils {
 	/**
 	 * @see #generateBibtexKey(String, String, String, String)
 	 * @param bib
-	 * @return the generated bibtex key
+	 * 
+	 * @return The generated BibTeX key.
 	 */
 	public static String generateBibtexKey(final BibTex bib) {
 		if (bib == null) return "";
