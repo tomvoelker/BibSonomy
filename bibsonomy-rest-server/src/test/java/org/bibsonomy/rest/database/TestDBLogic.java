@@ -896,7 +896,7 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 	@Override
-	public int deleteMessages(String userName, List<Integer> contentIds) {
+	public int deleteInboxMessages(List<Post<? extends Resource>> posts, final boolean clearInbox) {
 		return 0;
 	}
 
