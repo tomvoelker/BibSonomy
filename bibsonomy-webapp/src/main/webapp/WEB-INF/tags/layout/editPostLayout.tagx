@@ -19,7 +19,7 @@
     
     <jsp:directive.attribute name="generalInformation" fragment="true" required="true" description="The form fields to enter general information."/>
     <jsp:directive.attribute name="detailedInformation" fragment="true" required="false" description="The form fields to enter detailed information."/>
-  
+    <jsp:directive.attribute name="extraInformation" fragment="true" required="false" description="Extra information which shall be displayed outside the form."/>
 
 	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
 	    <!--+
@@ -114,6 +114,10 @@
 				    </fieldset>
 			     </div>
 			  </form:form>
+             
+              <c:if test="${not empty extraInformation}">
+                  <jsp:invoke fragment="extraInformation"/>
+              </c:if>
            </div>
 
 		</jsp:attribute>
