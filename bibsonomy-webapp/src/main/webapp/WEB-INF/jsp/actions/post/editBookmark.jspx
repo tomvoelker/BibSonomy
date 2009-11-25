@@ -18,11 +18,11 @@
 
 		<jsp:attribute name="generalInformation">
 			<form:label cssClass="fsLabel" path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label>
-			<form:input cssClass="fsInput" path="post.resource.url" tabindex="2"/>
+			<form:input cssClass="fsInput reqinput" path="post.resource.url" tabindex="2"/>
 			<div class="dissError"><form:errors path="post.resource.url" /></div>
 
 			<form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
-			<form:input cssClass="fsInput" path="post.resource.title" tabindex="2"/>
+			<form:input cssClass="fsInput reqinput" path="post.resource.title" tabindex="2"/>
 			<div class="dissError"><form:errors path="post.resource.title" /></div>
             <div class="fsSuggestion" id="suggestion.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
 	                                

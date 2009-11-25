@@ -36,10 +36,10 @@
 		<jsp:attribute name="generalInformation">
 			<div>
               <form:label cssClass="fsLabel" path="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/>* </form:label><buttons:help message="post.resource.entrytype.help"/>
-              <form:select multiple="false" path="post.resource.entrytype" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
+              <form:select multiple="false" path="post.resource.entrytype" cssClass="reqinput" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
               <div class="dissError"><form:errors path="post.resource.entrytype" /></div>
 			
-			  <form:input cssClass="fsFloatInput" path="post.resource.bibtexKey" tabindex="2"/>
+			  <form:input cssClass="fsFloatInput reqinput" path="post.resource.bibtexKey" tabindex="2"/>
               <!-- reload button for BibTeX key -->
               <fmt:message var="generateBibtexKey" key="post.resource.generateBibtexKey"/>
               <a style="cursor:pointer">
@@ -52,19 +52,19 @@
 
 
 			<form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>* </form:label><buttons:help message="post.resource.title.help"/>
-            <form:textarea cssClass="fsInput" path="post.resource.title" tabindex="2" rows="2" onkeyup="sz(this);" />
+            <form:textarea cssClass="fsInput reqinput" path="post.resource.title" tabindex="2" rows="2" onkeyup="sz(this);" />
 			<div class="dissError"><form:errors path="post.resource.title" /></div>
 
             <form:label cssClass="fsLabel" path="post.resource.author" ><fmt:message key="post.resource.author"/>* </form:label><buttons:help message="post.resource.author.help"/>
-            <form:textarea cssClass="fsInput" path="post.resource.author" tabindex="2" rows="3" onkeyup="sz(this);" />
+            <form:textarea cssClass="fsInput reqinput" path="post.resource.author" tabindex="2" rows="3" onkeyup="sz(this);" />
             <div class="dissError"><form:errors path="post.resource.author" /></div>
 
             <form:label cssClass="fsLabel" path="post.resource.editor" ><fmt:message key="post.resource.editor"/>* </form:label><buttons:help message="post.resource.editor.help"/>
-            <form:textarea cssClass="fsInput" path="post.resource.editor" tabindex="2" rows="3" onkeyup="sz(this);" />
+            <form:textarea cssClass="fsInput reqinput" path="post.resource.editor" tabindex="2" rows="3" onkeyup="sz(this);" />
             <div class="dissError"><form:errors path="post.resource.editor" /></div>
 	                            
             <form:label cssClass="fsLabel" path="post.resource.year" ><fmt:message key="post.resource.year"/>* </form:label><buttons:help message="post.resource.year.help"/>
-            <form:input cssClass="fsInput fsSmall" path="post.resource.year" tabindex="2"/>
+            <form:input cssClass="fsInput fsSmall reqinput" path="post.resource.year" tabindex="2"/>
             <div class="dissError"><form:errors path="post.resource.year" /></div>    
 
 		</jsp:attribute>

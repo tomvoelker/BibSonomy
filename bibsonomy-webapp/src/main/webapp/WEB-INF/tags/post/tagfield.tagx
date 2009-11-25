@@ -14,7 +14,7 @@
 		<legend><span class="fsLegend"><fmt:message key="post.resource.tags"/>*</span></legend>
 
         <span class="fsLabel" style="font-weight:normal;"> (<fmt:message key="post.resource.spaceseparated"/>)</span>
-        <form:input cssClass="tagInput" id="inpf" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
+        <form:input cssClass="tagInput reqinput" id="inpf" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
         
         <!-- name="tags"  -->
 		<div class="dissError"><form:errors path="tags" /></div>

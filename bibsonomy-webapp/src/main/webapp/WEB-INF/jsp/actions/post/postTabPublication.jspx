@@ -141,14 +141,7 @@
 						    <label class="fsLabel"><fmt:message key="import.overwritten" /></label>
 						    
                          			
-						    <buttons:help  cssStyle="float:left" message="empty">
-						    	<jsp:attribute name="helpText"> 
-						    		<fmt:message key="import.overwrite2">
-						        		<fmt:param><fmt:message key="import.newly_imported"/></fmt:param>
-						        		<fmt:param><fmt:message key="import.formerly_imported"/></fmt:param>
-				           			</fmt:message>
-						    	</jsp:attribute>
-						    </buttons:help>
+						    <buttons:help cssStyle="float:left" message="import.overwrite2"/>
 						    <input type="checkbox" class="fsInput" name="overwrite" value="" />
 				    		
 				    		<input type="submit" style="clear:both; float:left" class="fsFormSubmit" name="submit" value="${button_label_post}" />
@@ -207,16 +200,8 @@
 								    <label class="fsLabel"><fmt:message key="import.overwritten" /></label>
 								    
                            			
-								    <buttons:help  cssStyle="float:left" message="empty">
-								    	<jsp:attribute name="helpText"> 
-							    		<fmt:message key="import.overwrite2">
-						                		<fmt:param><fmt:message key="import.newly_imported"/></fmt:param>
-						                		<fmt:param><fmt:message key="import.formerly_imported"/></fmt:param>
-		                           				</fmt:message>
-								    	</jsp:attribute>
-								    </buttons:help>
+								    <buttons:help  cssStyle="float:left" message="import.overwrite2"/>
 								    <input type="checkbox" class="fsInput" name="overwrite" value="" />
-									
 									 
 									<input type="submit" style="clear:both; float:left" class="fsFormSubmit" name="submit" value="${button_label_upload}" />
 									 
