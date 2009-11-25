@@ -15,9 +15,9 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:layout inboxSize="" basketSize="" searchString=""
+	<layout:layout searchString=""
 		pageTitle="${command.pageTitle}"
-		loginUserName="${command.context.loginUser.name}" requPath="">
+		loginUser="${command.context.loginUser}" requPath="">
 		
 		<jsp:attribute name="heading">	
 			<a href="/admin"><fmt:message key="navi.admin"/></a>

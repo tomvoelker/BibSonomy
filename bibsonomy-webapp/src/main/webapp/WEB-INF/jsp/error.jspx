@@ -13,11 +13,9 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
 	<layout:layout 
-		inboxSize=""
-		basketSize="" 
 		searchString="" 
 		pageTitle="An error occured!" 
-		loginUserName="${command.context.loginUser.name}"
+		loginUser="${command.context.loginUser}"
 		requPath="">
 		<jsp:attribute name="heading">
 			<fmt:message key="error"/>

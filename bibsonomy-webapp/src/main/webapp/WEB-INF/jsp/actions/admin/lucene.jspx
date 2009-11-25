@@ -19,11 +19,9 @@
 	<c:set var="publicationsIndex" value="${command.publicationsIndex}" />
 	
 	<layout:layout 
-	  	inboxSize="" 
-		basketSize="" 
 		searchString="" 
 		pageTitle="${command.pageTitle}" 
-		loginUserName="${command.context.loginUser.name}"
+		loginUser="${command.context.loginUser}"
 		requPath="">
 		<jsp:attribute name="heading">
 			<a href="/?filter=no">${projectName} all</a> :: <a rel="path_menu"

@@ -12,8 +12,7 @@
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<layout:layout loginUserName="${command.context.loginUser.name}" searchString="hurz"   inboxSize="${command.context.loginUser.inbox.numPosts}" 
-	basketSize="${command.context.loginUser.basket.numPosts}"  pageTitle="${command.pageTitle}" displayIntroduction="false" requPath="${requPath}">
+	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${command.pageTitle}" displayIntroduction="false" requPath="${requPath}">
 		<jsp:attribute name="heading">
 			<fmt:message key="bibtex.upload.file.page"/>
 		</jsp:attribute>

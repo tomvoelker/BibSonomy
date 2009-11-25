@@ -18,8 +18,8 @@
       <jsp:attribute name="shortPostDescription"><bib:shortDescription post="${post}"/></jsp:attribute>
       <jsp:attribute name="title">  <bib:title post="${post}"/></jsp:attribute>
       <jsp:attribute name="desc">   <bib:desc post="${post}"/></jsp:attribute>
-      <jsp:attribute name="bmicon"> <bib:bmicon post="${post}" loginUserName="${loginUserName}"/></jsp:attribute>
-      <jsp:attribute name="actions"><bib:actions post="${post}" loginUserName="${loginUserName}" disableResourceLinks="${false}"/></jsp:attribute>
+      <jsp:attribute name="bmicon"> <bib:bmicon post="${post}" loginUserName="${loginUser.name}"/></jsp:attribute>
+      <jsp:attribute name="actions"><bib:actions post="${post}" loginUserName="${loginUser.name}" disableResourceLinks="${false}"/></jsp:attribute>
     </edit:batcheditSkeleton>
 
 </jsp:root>
