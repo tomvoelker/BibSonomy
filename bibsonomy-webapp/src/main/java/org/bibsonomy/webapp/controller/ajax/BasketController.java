@@ -91,7 +91,7 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		final List<Post<? extends Resource>> posts = new ArrayList<Post<? extends Resource>>();
 		
 		// get the has string
-		final String hash = command.getRequestedResourceHash();
+		final String hash = command.getHash();
 		
 		// if its bigger than 33 chars split it else easy handling
 		if (hash.length() > 33){
