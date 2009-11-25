@@ -8,10 +8,10 @@
     <%-- PICK --%>
     <c:choose>
       <c:when test="${empty unpick}">
-        <a onclick="pickUnpickPublication(event);" title="add this post to your basket" href="/ajax/pickUnpickPost?action=pick&amp;requestedResourceHash=${resource.hash}&amp;user=<mtl:encode value='${resource.user}'/>&amp;ckey=${ckey}">pick</a>
+        <a onclick="pickUnpickPublication(event);" title="add this post to your basket" href="/ajax/pickUnpickPost?action=pick&amp;hash=${resource.hash}&amp;user=<mtl:encode value='${resource.user}'/>&amp;ckey=${ckey}">pick</a>
       </c:when>
       <c:otherwise>
-        <a title="remove this post from your basket" href="/ajax/pickUnpickPost?action=unpick&amp;requestedResourceHash=${resource.hash}&amp;user=<mtl:encode value='${resource.user}'/>&amp;ckey=${ckey}">unpick</a>
+        <a title="remove this post from your basket" href="/ajax/pickUnpickPost?action=unpick&amp;hash=${resource.hash}&amp;user=<mtl:encode value='${resource.user}'/>&amp;ckey=${ckey}">unpick</a>
       </c:otherwise>
     </c:choose>
     <%-- user.name == resource.User ? --%>

@@ -1522,7 +1522,7 @@ function unicodeCollation(ersterWert, zweiterWert){
     	       }
     	    }
     	}
-    	updateCollector("action=" + pickUnpick + "&requestedResourceHash=" + encodeURIComponent(param));
+    	updateCollector("action=" + pickUnpick + "&hash=" + encodeURIComponent(param));
     	
     	breakEvent(evt);    	
     }    
@@ -1617,7 +1617,6 @@ function unicodeCollation(ersterWert, zweiterWert){
 	           		
 	           		// parse XML input
 	       		    var xml = request.responseText;
-	       		    
 	       		    
 					// update counter   	           		
    	           		pickctr.nodeValue = xml;
