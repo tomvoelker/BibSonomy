@@ -11,7 +11,7 @@
 		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
 	</bean>
 	<bean id="luceneBookmarkIndexGenerator" class="org.bibsonomy.lucene.index.LuceneGenerateBookmarkIndex" factory-method="getPreInitInstance">
-		<property name="logic" ref="luceneBibTexLogic"/>
+		<property name="logic" ref="luceneBookmarkLogic"/>
 		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
 	</bean>
 	 

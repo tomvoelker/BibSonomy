@@ -78,7 +78,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		// prepare input (analyze and escape)
 		try {
 			group              = parseToken(FLD_GROUP, group);
-			searchTerms        = parseToken(FLD_MERGEDFIELDS, searchTerms);
+			//searchTerms        = parseToken(FLD_AUTHOR, searchTerms);
 			requestedUserName  = parseToken(FLD_USER, requestedUserName);
 			requestedGroupName = parseToken(FLD_GROUP, requestedGroupName);
 			year               = parseToken(FLD_YEAR, year);

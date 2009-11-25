@@ -279,7 +279,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			userName          = parseToken(FLD_USER, userName);
 			requestedUserName = parseToken(FLD_USER, requestedUserName);
 			group             = parseToken(FLD_GROUP, group);
-			searchTerms       = parseToken(FLD_AUTHOR, searchTerms);
+			// searchTerms       = parseToken(FLD_MERGEDFIELDS, searchTerms);
 			// parse each group name
 			Set<String> groups= new TreeSet<String>();
 			for(String groupName : allowedGroups) {
@@ -298,6 +298,8 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		//--------------------------------------------------------------------
 		// parse search terms for handling phrase search
 		QueryParser searchTermParser = new QueryParser(FLD_MERGEDFIELDS, getAnalyzer());
+		// FIXME: configure default operator via spring
+		searchTermParser.setDefaultOperator(QueryParser.Operator.AND);
 		Query searchTermQuery = null;
 		try {
 			searchTermQuery = searchTermParser.parse(searchTerms);
