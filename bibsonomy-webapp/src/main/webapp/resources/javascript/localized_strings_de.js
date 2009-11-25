@@ -631,7 +631,7 @@ var LocalizedStrings = {
    "settings.addusertomygroup" : "Einen Benutzer zu meiner Gruppe hinzufügen",
    "settings.alphabet" : "Alphabet",
    "settings.apidoc" : "API-Dokumentation",
-   "settings.apisupport" : "BibSonomy bietet jetzt {0}-Zugriff für alle Benutzer. Um Zugriff zu erhalten klicken Sie auf den Button unten. Ihr generierter API-Schlüssel wird dann angezeigt.\	\	\	\",
+   "settings.apisupport" : "BibSonomy bietet jetzt {0}-Zugriff für alle Benutzer. Um Zugriff zu erhalten klicken Sie auf den Button unten. Ihr generierter API-Schlüssel wird dann angezeigt.",
    "settings.birthday" : "Geburtstag",
    "settings.cancel" : "abbrechen",
    "settings.cancelJoinRequest" : "Mitgliedsgesuch des Benutzers {0} zurückweisen",
