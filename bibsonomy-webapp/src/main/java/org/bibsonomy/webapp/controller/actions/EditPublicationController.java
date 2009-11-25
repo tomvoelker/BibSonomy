@@ -117,8 +117,10 @@ public class EditPublicationController extends EditPostController<BibTex> {
 		try {
 			/*
 			 * scrape bibtex
+			 * NOTE: if the given URL is null, we probably have to scrape a 
+			 * selection (e.g., ISBN) - therefore, we insert a null URL
 			 */
-			final ScrapingContext scrapingContext = new ScrapingContext(new URL(url), selection);
+			final ScrapingContext scrapingContext = new ScrapingContext(url == null ? null : new URL(url), selection);
 			final boolean isSuccess = scraper.scrape(scrapingContext);
 			final String scrapedBibtex = scrapingContext.getBibtexResult();
 			if (isSuccess && ValidationUtils.present(scrapedBibtex)) {
