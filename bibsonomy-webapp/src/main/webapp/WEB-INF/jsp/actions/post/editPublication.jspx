@@ -31,7 +31,7 @@
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
  
-	<layout:postPostLayout command="${command}" requPath="${requPath}" resourceType="Publication" selectedNaviTab="nav_postPub">
+	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Publication" selectedNaviTab="nav_postPub">
 
 		<jsp:attribute name="generalInformation">
 			<div class="fsRow">
@@ -285,6 +285,6 @@
  
        </jsp:attribute>
 
-	</layout:postPostLayout>
+	</layout:editPostLayout>
 
 </jsp:root>
