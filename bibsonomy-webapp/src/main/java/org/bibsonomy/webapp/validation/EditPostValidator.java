@@ -18,8 +18,8 @@ import org.springframework.validation.ValidationUtils;
  * @version $Id$
  * @param <RESOURCE> 
  */
-public abstract class PostPostValidator<RESOURCE extends Resource> implements Validator<EditPostCommand<RESOURCE>> {
-	private static final Log log = LogFactory.getLog(PostPostValidator.class);
+public abstract class EditPostValidator<RESOURCE extends Resource> implements Validator<EditPostCommand<RESOURCE>> {
+	private static final Log log = LogFactory.getLog(EditPostValidator.class);
 	
 	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz) {

@@ -21,9 +21,9 @@ import bibtex.parser.ParseException;
  * @author dzo
  * @version $Id$
  */
-public class PostPublicationValidator extends PostPostValidator<BibTex> {
+public class EditPublicationValidator extends EditPostValidator<BibTex> {
 	
-	private static final Log logger = LogFactory.getLog(PostPublicationValidator.class);
+	private static final Log logger = LogFactory.getLog(EditPublicationValidator.class);
 	
 	@Override
 	@SuppressWarnings("unchecked")

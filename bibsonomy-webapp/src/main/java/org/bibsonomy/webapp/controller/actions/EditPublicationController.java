@@ -22,8 +22,8 @@ import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.validation.PostPostValidator;
-import org.bibsonomy.webapp.validation.PostPublicationValidator;
+import org.bibsonomy.webapp.validation.EditPostValidator;
+import org.bibsonomy.webapp.validation.EditPublicationValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
@@ -259,8 +259,8 @@ public class EditPublicationController extends EditPostController<BibTex> {
 	}
 
 	@Override
-	protected PostPostValidator<BibTex> getValidator() {
-		return new PostPublicationValidator();
+	protected EditPostValidator<BibTex> getValidator() {
+		return new EditPublicationValidator();
 	}
 
 	@Override

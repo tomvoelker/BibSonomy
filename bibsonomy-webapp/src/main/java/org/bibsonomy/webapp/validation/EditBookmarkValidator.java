@@ -10,7 +10,7 @@ import org.springframework.validation.ValidationUtils;
  * @author fba
  * @version $Id$
  */
-public class PostBookmarkValidator extends PostPostValidator<Bookmark> {
+public class EditBookmarkValidator extends EditPostValidator<Bookmark> {
 	
 	@Override
 	@SuppressWarnings("unchecked")

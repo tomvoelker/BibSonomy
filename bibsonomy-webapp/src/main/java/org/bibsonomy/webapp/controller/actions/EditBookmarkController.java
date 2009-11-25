@@ -5,8 +5,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.validation.PostBookmarkValidator;
-import org.bibsonomy.webapp.validation.PostPostValidator;
+import org.bibsonomy.webapp.validation.EditBookmarkValidator;
+import org.bibsonomy.webapp.validation.EditPostValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
@@ -37,8 +37,8 @@ public class EditBookmarkController extends EditPostController<Bookmark> {
 	}
 
 	@Override
-	protected PostPostValidator<Bookmark> getValidator() {
-		return new PostBookmarkValidator();
+	protected EditPostValidator<Bookmark> getValidator() {
+		return new EditBookmarkValidator();
 	}
 
 	@Override
