@@ -36,7 +36,7 @@
 		<jsp:attribute name="generalInformation">
 			<div>
               <form:label cssClass="fsLabel" path="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/>* </form:label><buttons:help message="post.resource.entrytype.help"/>
-              <form:select multiple="false" path="post.resource.entrytype" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}"/>
+              <form:select multiple="false" path="post.resource.entrytype" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
               <div class="dissError"><form:errors path="post.resource.entrytype" /></div>
 			
 			  <form:input cssClass="fsFloatInput" path="post.resource.bibtexKey" tabindex="2"/>
@@ -75,7 +75,12 @@
 
         <jsp:attribute name="detailedInformation">
             <fieldset class="fsInner">
-                <legend><fmt:message key="post.resource.fields.detailed"/></legend>
+                <legend>
+                  <fmt:message key="post.resource.fields.detailed"/>
+                  (<a id="collapse" href="javascript:showAll()"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)
+                </legend>
+                
+                  
                                 
                    <form:label cssClass="fsLabel" path="post.resource.booktitle" ><fmt:message key="post.resource.booktitle"/></form:label><buttons:help message="post.resource.booktitle.help"/>
                    <form:input cssClass="fsInput" path="post.resource.booktitle" tabindex="2"/>
