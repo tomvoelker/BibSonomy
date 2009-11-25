@@ -186,7 +186,7 @@ public enum Views implements View {
 	RELEVANTFORPAGE("relevantfor"),
 
 	/** scraper info list **/
-	SCRAPER_INFO("scraperList"),
+	SCRAPER_INFO("scraperInfo"),
 
 	/* *****************************************************
 	 * AJAX views

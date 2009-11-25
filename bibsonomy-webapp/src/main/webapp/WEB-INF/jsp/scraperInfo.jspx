@@ -1,0 +1,80 @@
+<?xml version="1.0" ?>  
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"> 
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+	<layout:layout 
+		searchString="hurz" 
+		pageTitle="scraper info" 
+		loginUser="${command.context.loginUser}"
+		requPath="${requPath}">
+    
+        <jsp:attribute name="headerExt">
+            <style type="text/css">
+               ul.scraperList > li {
+                 display: inline;
+                 font-size: 80%;
+               }
+               dl.scraperList > dt {
+                 margin-top: 1em;
+               }
+               ul.scraperList > li:after {
+                 content:" | ";
+               }
+               dl.scraperList > dt:before {
+                 content:"\2022\00a0";
+               }
+            </style>
+        </jsp:attribute>
+		<jsp:attribute name="heading">
+			<fmt:message key="scraper_info.title"/>
+		</jsp:attribute>
+    	
+      
+		<jsp:attribute name="content">
+          <div id="general">
+          
+            <h2><fmt:message key="scraper_info.link_header"/></h2> 
+         
+            <p><fmt:message key="scraper_info.scraper_link_description"/></p>
+          
+            <ul class="scraperList">
+	            <c:forEach var="scraper" items="${command.scraperList}" varStatus="status">
+		            <li><a href="${scraper.supportedSiteURL}">${scraper.supportedSiteName}</a></li>
+            	</c:forEach>
+            </ul>
+
+            <fmt:message key="scraper_info.scraper_help_link" var="link"/>
+            <p>
+              <fmt:message key="scraper_info.scraper_detail_pre">
+                 <fmt:param>${link}</fmt:param>
+              </fmt:message>
+            </p>
+		  
+		  
+		    
+
+            <h2><fmt:message key="scraper_info.scraper_details_header"/></h2>
+          
+          
+            <dl class="scraperList">
+              <c:forEach var="scraper" items="${command.scraperList}" varStatus="status">
+		        <dt><a name="${scraper.class.simpleName}">${scraper.class.simpleName}</a>:</dt> 
+    			<dd>${scraper.info}</dd>
+              </c:forEach>
+            </dl>  
+          </div>
+          
+		</jsp:attribute>				
+	</layout:layout>
+
+</jsp:root>

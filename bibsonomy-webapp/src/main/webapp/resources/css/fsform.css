@@ -15,7 +15,7 @@
     border: 1px solid #069;
     background-color: #eee; 
     position: relative;
-    min-width: 700px;
+    min-width: 650px;
 }
 .fsOuter {
     padding: 0px 10px 10px 10px;
@@ -54,7 +54,7 @@
 }
 #copytags, .fsSuggestion, .fsInput, .tagInput, #suggested {
   float: left;
-  width: 75%;
+  width: 73%;
 }
 
 .fsSmall {
