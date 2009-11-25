@@ -84,7 +84,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 			this.useUpdater = true;
 		} catch (NamingException e) {
 			this.useUpdater = false;
-			log.error("NamingException requesting JNDI environment variables 'luceneIndexPathBoomarks' and 'luceneIndexPathPublications' ("+e.getMessage()+")", e);
+			log.error("NamingException requesting JNDI environment variables' ("+e.getMessage()+")", e);
 		}
 
 	}
@@ -192,6 +192,12 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	 * reload each registered searcher's index 
 	 */
 	public void reloadIndex() {
+		// if lucene updater is disabled, return without doing something
+		if (!luceneUpdaterEnabled) {
+			log.debug("lucene updater is disabled by user");
+			return;
+		}
+		
 		// don't run twice at the same time  - if something went wrong, delete alreadyRunning
 		if ((alreadyRunning > 0) && (alreadyRunning<maxAlreadyRunningTrys) ) {
 			alreadyRunning++;
@@ -202,13 +208,6 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 		log.debug("reloadIndex - run and reset alreadyRunning ("+alreadyRunning+"/"+maxAlreadyRunningTrys+")");
 
 		init();
-
-		// if lucene updater is disabled, return without doing something
-		if (!luceneUpdaterEnabled) {
-			log.debug("reloadIndex - lucene updater is disabled by user");
-			alreadyRunning = 0;
-			return;
-		}
 
 		if (!useUpdater) {
 			log.error("reloadIndex - LuceneUpdater deactivated!");
@@ -230,14 +229,14 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	 * @param optimizeIndex flag indicating whether the indices should be optimized after commiting changes
 	 */
 	public void updateIndex() {
-		init();
-
 		// if lucene updater is disabled, return without doing something
 		if (!luceneUpdaterEnabled) {
 			log.debug("reloadIndex - lucene updater is disabled");
 			alreadyRunning = 0;
 			return;
 		}
+
+		init();
 
 		if (!useUpdater) {
 			log.warn("updateIndex - LuceneUpdater deactivated!");

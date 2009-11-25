@@ -27,7 +27,6 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.exceptions.LuceneException;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.QuerySortContainer;
@@ -40,6 +39,8 @@ import org.bibsonomy.util.ValidationUtils;
 
 /**
  * abstract parent class for lucene search
+ * 
+ * FIXME: this class is probably not thread safe (reloadIndex vs. search...)
  * 
  * @author fei
  *
@@ -62,6 +63,9 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 
 	/** default field analyzer */
 	private Analyzer analyzer; 
+	
+	/** flag indicating whether the index was loaded successfully */
+	private boolean isReady = false;
 
 	//------------------------------------------------------------------------
 	// search interface
@@ -72,7 +76,10 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	public ResultList<Post<R>> searchPosts(String group,
 			String searchTerms, String requestedUserName, String UserName,
 			Set<String> GroupNames, int limit, int offset) {
-		return searchLucene(buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames), limit, offset);
+		if( isEnabled() )
+			return searchLucene(buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames), limit, offset);
+		else
+			return createEmptyResultList();
 	}
 	
 	/**
@@ -95,7 +102,10 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			String requestedUserName, String requestedGroupName, String year,
 			String firstYear, String lastYear, List<String> tagList, int limit,
 			int offset) {
-		return searchLucene(buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList), limit, offset);
+		if( isEnabled() )
+			return searchLucene(buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList), limit, offset);
+		else 
+			return createEmptyResultList();
 	}
 	
 	//------------------------------------------------------------------------
@@ -211,12 +221,13 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			// load and hold index on physical hard disk
 			log.debug("Reloading index from disk.");
 			this.searcher = new IndexSearcher( luceneIndexPath );
+			enableIndex();
 		} catch (Exception e) {
-			log.error("Error reloading index", e);
-			throw new LuceneException("Error reloading index"+e.getMessage());
+			log.error("Error reloading index, disabling searcher", e);
+			disableIndex();
 		}
 	}
-	
+
 	public LuceneIndexStatistics getStatistics() {
 		return Utils.getStatistics(luceneIndexPath);
 	}	
@@ -224,6 +235,27 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	//------------------------------------------------------------------------
 	// private helper
 	//------------------------------------------------------------------------
+	/**
+	 * check whether index is ready for searching
+	 */
+	private boolean isEnabled() {
+		return this.isReady;
+	}
+
+	/** 
+	 * disable search  
+	 */
+	private void disableIndex() {
+		this.isReady = false;
+	}
+
+	/** 
+	 * enable search  
+	 */
+	private void enableIndex() {
+		this.isReady = true;
+	}
+	
 	/**
 	 * construct lucene query filter for full text search 'search:all' and 'search:username':
 	 * 

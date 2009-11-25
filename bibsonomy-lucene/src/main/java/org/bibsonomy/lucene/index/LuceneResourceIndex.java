@@ -81,13 +81,16 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	/** flag indicating whether the index should be optimized during next update */
 	private boolean optimizeIndex;
 	
+	/** flag indicating whether the index was cleanly initialized */
+	private boolean isReady = false;
+	
 	/**
 	 * constructor disabled
 	 */
 	protected LuceneResourceIndex(){
 		try {
 			init();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			disableIndex();
 		}
 		
@@ -103,8 +106,9 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	/**
 	 * initialize internal data structures
 	 * @throws IOException 
+	 * @throws NamingException 
 	 */
-	private void init() throws IOException {
+	private void init() throws IOException, NamingException {
 		try {
 			Context initContext = new InitialContext();
 			Context envContext = (Context) initContext.lookup(CONTEXT_ENV_NAME);
@@ -113,6 +117,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 			this.luceneIndexPath = (String) envContext.lookup(contextPathName);
 		} catch (NamingException e) {
 			log.error("NamingException requesting JNDI environment variables ' ("+e.getMessage()+")", e);
+			throw e;
 		}
 
 		try {
@@ -130,12 +135,13 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 		try {
 			indexReader = IndexReader.open(luceneIndexPath);
 			accessMode = AccessMode.ReadOnly;
-		} catch (CorruptIndexException e) {
-			log.error("CorruptIndexException while opening IndexReader in updateIndexes ("+e.getMessage()+")", e);
-		} catch (IOException e) {
-			log.error("IOException while opening IndexReader in updateIndexes("+e.getMessage()+")", e);
+		} catch( IOException e) {
+			log.error("Error opening IndexReader ("+e.getMessage()+")", e);
+			throw e;
 		}
 		
+		// everything went fine - enable the index
+		enableIndex();
 	}
 	
 	
@@ -145,6 +151,10 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 */
 	public long getLastLogDate() {
 		synchronized(this) {
+			if( !isIndexEnabled() ) {
+				return 0;
+			}
+			
 			this.ensureReadAccess();
 			
 			Long lastLogDate = null;
@@ -165,7 +175,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 				lastLogDate = Long.parseLong(doc.get(FLD_LAST_LOG_DATE)); 
 			} catch (ParseException e) {
 				log.error("ParseException while parsing *:* in getNewestRecordDateFromIndex ("+e.getMessage()+")");
-			} catch (IOException e) {
+			} catch (Exception e) {
 				log.error("Error reading index file " + this.luceneIndexPath);
 			} finally {
 				try {
@@ -188,6 +198,10 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 */
 	public Integer getLastTasId() {
 		synchronized(this) {
+			if( !isIndexEnabled() ) {
+				return -1;
+			}
+			
 			this.ensureReadAccess();
 			
 			Integer lastTasId = null;
@@ -208,7 +222,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 				lastTasId = Integer.parseInt(doc.get(FLD_LAST_TAS_ID));
 			} catch (ParseException e) {
 				log.error("ParseException while parsing *:* in getLastTasId", e);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				log.error("Error reading index file " + this.luceneIndexPath);
 			} finally {
 				try {
@@ -310,6 +324,10 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 */
 	public void flush() {
 		synchronized(this) {
+			if( !isIndexEnabled() ) {
+				return;
+			}
+			
 			boolean readUpdate  = false;
 			boolean writeUpdate = false;
 			//----------------------------------------------------------------
@@ -378,7 +396,52 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 				ensureReadAccess();
 		}
 	}
+
 	
+	/**
+	 * closes all writer and reader and reopens the index reader
+	 */
+	public void reset() {
+		synchronized(this) {
+			if( !isIndexEnabled() ) {
+				return;
+			}
+			switch(this.accessMode) {
+			case ReadOnly:
+				accessMode = AccessMode.None;
+				try {
+					closeIndexReader();
+				} catch (IOException e) {
+					log.error("IOException while closing index reader", e);
+				}
+				try {
+					openIndexReader();
+				} catch (IOException e) {
+					log.error("Error opening index reader", e);
+				}
+				break;
+			case WriteOnly:
+				accessMode = AccessMode.None;
+				try {
+					closeIndexWriter();
+				} catch (IOException e) {
+					log.error("IOException while closing index reader", e);
+				}
+				try {
+					openIndexWriter();
+				} catch (IOException e) {
+					log.error("Error opening index reader", e);
+				}
+				break;
+			default:
+				// nothing to do
+			}
+
+			this.postsToInsert.clear();
+			this.contentIdsToDelete.clear();
+			this.usersToFlag.clear();
+		}
+	}	
 	//------------------------------------------------------------------------
 	// private index access interface
 	//------------------------------------------------------------------------
@@ -451,47 +514,6 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 */
 	private int purgeDocuments(Term searchTerm) throws CorruptIndexException, IOException {
 		return this.indexReader.deleteDocuments(searchTerm);
-	}
-	
-	
-	/**
-	 * closes all writer and reader and reopens the index readern
-	 */
-	public void reset() {
-		switch(this.accessMode) {
-		case ReadOnly:
-			accessMode = AccessMode.None;
-			try {
-				closeIndexReader();
-			} catch (IOException e) {
-				log.error("IOException while closing index reader", e);
-			}
-			try {
-				openIndexReader();
-			} catch (IOException e) {
-				log.error("Error opening index reader", e);
-			}
-			break;
-		case WriteOnly:
-			accessMode = AccessMode.None;
-			try {
-				closeIndexWriter();
-			} catch (IOException e) {
-				log.error("IOException while closing index reader", e);
-			}
-			try {
-				openIndexWriter();
-			} catch (IOException e) {
-				log.error("Error opening index reader", e);
-			}
-			break;
-		default:
-			// nothing to do
-		}
-		
-		this.postsToInsert.clear();
-		this.contentIdsToDelete.clear();
-		this.usersToFlag.clear();
 	}
 	
 	/**
@@ -576,7 +598,25 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 * FIXME: implement me
 	 */
 	public void disableIndex() {
+		this.isReady = false;
 	}
+	
+	/**
+	 * disable this index when initialization failed
+	 * FIXME: implement me
+	 */
+	private void enableIndex() {
+		this.isReady = true;
+	}
+
+	/**
+	 * checks, whether the index is readily initialized
+	 * @return true, if index is ready - false, otherwise
+	 */
+	private boolean isIndexEnabled() {
+		return this.isReady;
+	}
+	
 	
 	/**
 	 * get managed resource type
