@@ -48,9 +48,10 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 //		}
 
 		/*
-		 * title
+		 * title (ignored, if there are already errors - title is already 
+		 * checked in super class)
 		 */
-		if (!present(bibtex.getTitle())) {
+		if (!present(bibtex.getTitle()) && !errors.hasFieldErrors("post.resource.title")) {
 			errors.rejectValue("post.resource.title", "error.field.valid.title");
 		}
 		/*
@@ -76,7 +77,8 @@ public class PostPublicationValidator extends PostPostValidator<BibTex> {
 		 */
 		if (!present(bibtex.getAuthor()) && !present(bibtex.getEditor())) {
 			errors.rejectValue("post.resource.author", "error.field.valid.authorOrEditor");
-			errors.rejectValue("post.resource.editor", "error.field.valid.authorOrEditor");
+			// one error is enough
+			//errors.rejectValue("post.resource.editor", "error.field.valid.authorOrEditor");
 		}
 
 		/*
