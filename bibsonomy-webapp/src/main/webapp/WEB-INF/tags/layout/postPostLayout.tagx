@@ -30,6 +30,7 @@
 	    	<script type="text/javascript" src="${resdir}/javascript/util.js">&amp;nbsp;</script>
 	    	<script type="text/javascript" src="${resdir}/javascript/recommender.js">&amp;nbsp;</script>
 	    	<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js">&amp;nbsp;</script>
+            <script type="text/javascript" src="${resdir}/javascript/jquery_textarea_autoresize.js">&amp;nbsp;</script>
             <!--
                | two scripts just for the post page - one resource specific 
                -->
