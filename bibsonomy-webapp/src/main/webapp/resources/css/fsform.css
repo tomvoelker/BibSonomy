@@ -42,11 +42,15 @@
     margin-bottom: 2px;
 }
 
+.fsRow {
+   position: relative; 
+   clear: both;
+}
+
 .fsLabel {
   padding-right: 1em;
   width: 20%;
   float: left;
-  clear: both;
 }
 #copytags, .fsSuggestion, .fsInput, .tagInput, #suggested {
   float: left;

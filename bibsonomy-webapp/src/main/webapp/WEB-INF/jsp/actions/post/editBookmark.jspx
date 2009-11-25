@@ -17,18 +17,24 @@
 	<layout:postPostLayout command="${command}" requPath="${requPath}" resourceType="Bookmark" selectedNaviTab="nav_postBook">
 
 		<jsp:attribute name="generalInformation">
-			<form:label cssClass="fsLabel" path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label>
-			<form:input cssClass="fsInput reqinput" path="post.resource.url" tabindex="2"/>
-			<div class="dissError"><form:errors path="post.resource.url" /></div>
-
-			<form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
-			<form:input cssClass="fsInput reqinput" path="post.resource.title" tabindex="2"/>
-			<div class="dissError"><form:errors path="post.resource.title" /></div>
-            <div class="fsSuggestion" id="suggestion.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
-	                                
-			<form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
-			<form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" onkeyup="sz(this);" />
-			<div class="fsSuggestion" id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+            <div class="fsRow">
+			  <form:label cssClass="fsLabel" path="post.resource.url" ><fmt:message key="post.resource.url"/>*</form:label>
+			  <form:input cssClass="fsInput reqinput" path="post.resource.url" tabindex="2"/>
+			  <div class="dissError"><form:errors path="post.resource.url" /></div>
+            </div>
+            
+            <div class="fsRow">
+			  <form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>*</form:label>
+			  <form:input cssClass="fsInput reqinput" path="post.resource.title" tabindex="2"/>
+			  <div class="dissError"><form:errors path="post.resource.title" /></div>
+              <div class="fsSuggestion" id="suggestion.title"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+            </div>
+	                           
+            <div class="fsRow">     
+			  <form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label>
+			  <form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" onkeyup="sz(this);" />
+			  <div class="fsSuggestion" id="suggestion.description"><!-- This comment is needed, otherwise this will result in an self-closing element --></div>
+            </div>
 		</jsp:attribute>
 
         <jsp:attribute name="detailedInformation">

@@ -91,12 +91,7 @@ function showHideElement(id, display) {
 	var field = document.getElementById("post.resource." + id);			
 	
 	if (field.value == '') {
-	    // show/hide complete line
-	    field.style.display = display;
-	    do {
-	       field = field.previousSibling;
-	       field.style.display = display;
-	    } while (field != null && field.nodeName != 'LABEL');
+	    field.parentNode.style.display = display;
 	}
 }
 	
