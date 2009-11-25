@@ -261,7 +261,20 @@
 										    <!-- TODO: Ask cause of disabled -->
 										    <input type="text" class="fsSmall" style="float:left" value="_" name="whitespace" size="2" maxlength="1" disabled="disabled" />
 									    	
-									    	
+									   <script type="text/javascript">
+                                          //<mtl:cdata>
+                                          <![CDATA[
+                                          function updateSubstitute(select) {
+                                            var subs = document.upload.whitespace;
+                                            if (select.options[select.options.selectedIndex].value == " ") {
+                                              subs.disabled = true;;
+                                            } else {
+                                              subs.disabled = false;
+                                            }
+                                          }
+                                            ]]> 
+                                          //</mtl:cdata>
+                                       </script>
 										
 
 								</fieldset>
@@ -312,6 +325,7 @@
 				<!-- ================ -->
 			</c:choose>
 		
+            
 			
 		</div>
 		</jsp:attribute>
@@ -321,18 +335,4 @@
 			</p>
 		</jsp:attribute>
 	</layout:tabLayout>
-	
-<script type="text/javascript">
-	showGenerateBibtexBlock();
-	maximizeById("general");
-	
-	function updateSubstitute(select) {
-	  var subs = document.upload.whitespace;
-	  if (select.options[select.options.selectedIndex].value == " ") {
-	    subs.disabled = true;;
-	  } else {
-	    subs.disabled = false;
-	  }
-	}
-</script>
 </jsp:root>
