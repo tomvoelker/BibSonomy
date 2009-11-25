@@ -5,7 +5,7 @@ import java.util.HashMap;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
-import org.bibsonomy.webapp.controller.actions.PostPublicationController;
+import org.bibsonomy.webapp.controller.actions.EditPublicationController;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.validation.MapBindingResult;
@@ -17,7 +17,7 @@ import org.springframework.validation.MapBindingResult;
 public class PostPublicationValidatorTest {
 
 	final PostPublicationValidator validator = new PostPublicationValidator();
-	final PostPublicationController controller = new PostPublicationController();
+	final EditPublicationController controller = new EditPublicationController();
 	
 	
 	@Test
