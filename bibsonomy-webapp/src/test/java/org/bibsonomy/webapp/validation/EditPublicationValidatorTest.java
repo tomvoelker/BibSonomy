@@ -14,9 +14,9 @@ import org.springframework.validation.MapBindingResult;
  * @author rja
  * @version $Id$
  */
-public class PostPublicationValidatorTest {
+public class EditPublicationValidatorTest {
 
-	final PostPublicationValidator validator = new PostPublicationValidator();
+	final EditPublicationValidator validator = new EditPublicationValidator();
 	final EditPublicationController controller = new EditPublicationController();
 	
 	
