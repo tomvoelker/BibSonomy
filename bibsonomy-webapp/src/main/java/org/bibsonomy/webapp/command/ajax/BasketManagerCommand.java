@@ -7,7 +7,7 @@ import org.bibsonomy.webapp.command.AjaxCommand;
  * @version $Id$
  */
 public class BasketManagerCommand extends AjaxCommand{
-	private String requestedResourceHash;
+	private String hash;
 	private String user;
 
 
@@ -28,14 +28,14 @@ public class BasketManagerCommand extends AjaxCommand{
 	/**
 	 * @return String
 	 */
-	public String getRequestedResourceHash() {
-		return this.requestedResourceHash;
+	public String getHash() {
+		return this.hash;
 	}
 
 	/**
-	 * @param requestedResourceHash
+	 * @param hash
 	 */
-	public void setRequestedResourceHash(final String requestedResourceHash) {
-		this.requestedResourceHash = requestedResourceHash;
+	public void setHash(final String hash) {
+		this.hash = hash;
 	}
 }
