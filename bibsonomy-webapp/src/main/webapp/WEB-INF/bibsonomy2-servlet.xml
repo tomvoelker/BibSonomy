@@ -215,7 +215,7 @@
 						<property name="controllerBeanName" value="followersPageController"/>
 					</bean>
 				</entry>
-				<entry key="/scraper_info">
+				<entry key="/scraperinfo">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="scraperInfoController"/>
 					</bean>
