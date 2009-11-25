@@ -372,7 +372,7 @@
 
 		var pick = document.createElement("a");
 		pick.onclick = pickUnpickPublication;
-		pick.href = "/ajax/pickUnpickPost?action=pick&requestedResourceHash=" + bibtexhash + "&user=" + loginusername + "&ckey=" + ckey;
+		pick.href = "/ajax/pickUnpickPost?action=pick&hash=" + bibtexhash + "&user=" + encodeURIComponent(loginusername) + "&ckey=" + ckey;
 		pick.innerHTML = "pick";
 		
 		if (url != "") {
