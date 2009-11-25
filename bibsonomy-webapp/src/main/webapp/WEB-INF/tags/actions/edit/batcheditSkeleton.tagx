@@ -17,6 +17,7 @@
   
     <jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
     <jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
+    <jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
   
     <jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post"/>
     <jsp:directive.attribute name="title" fragment="true" required="true"/>
@@ -141,7 +142,7 @@
             
                   <c:if test="${post.user.name ne command.context.loginUser.name}">
                     <!-- show one post -->
-                    <rc:post post="${post}" otherPostsUrlPrefix="/url/" loginUserName="${loginUserName}" copyThisPost="${copyThisPost}" alreadyOwn="${alreadyOwn}">
+                    <rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" copyThisPost="${copyThisPost}" alreadyOwn="${alreadyOwn}">
       					<jsp:attribute name="title">  <jsp:invoke fragment="title"/>  </jsp:attribute>
       					<jsp:attribute name="actions"><jsp:invoke fragment="actions"/></jsp:attribute>
       					<jsp:attribute name="bmicon"> <jsp:invoke fragment="bmicon"/> </jsp:attribute>
