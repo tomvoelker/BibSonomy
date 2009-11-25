@@ -25,9 +25,11 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
     init_tagbox(tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser);
   }
   
-  if (sidebar) {  
-    add_filter();
-    init_sidebar();
+  if (!location.pathname.startsWith("/post_publication")){
+	  if (sidebar) {  
+	    add_filter();
+	    init_sidebar();
+	  }
   }
   
   add_tags_toggle();
