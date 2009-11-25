@@ -39,6 +39,12 @@
 			<!-- ================================= -->
 			<!--  !!!TABMENU DEFINED IN COMMAND!!! -->
 			<!-- ================================= -->
+
+
+      
+       <fmt:message var="post_button" key="post_bibtex.button_label_post" />
+      
+      
 		<div style="float left;width:97%;margin-left:10px; padding-bottom: 13px;">
 			<c:choose>
 			
@@ -47,13 +53,10 @@
 				<!-- ================== -->
 				<c:when test="${command.selTab == 0}">
 					
-					<!-- USED TRANSLATIONVARIABLES IN TAB0 -->
-					<fmt:message key="post_bibtex.button_label_check" var="button_label_check" />
         
 					<h2><fmt:message key="post_bibtex.manual.heading"/></h2>
-					<p>
-					    <fmt:message key="post_bibtex.manual.description" />
-					</p>				
+					<p><fmt:message key="post_bibtex.manual.description" /></p>
+          				
 					<form method="post" action="/postPublication" name="post_publication">
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
@@ -90,7 +93,7 @@
                               <label class="fsLabel" for="post.resource.year" ><fmt:message key="post.resource.year"/> </label><buttons:help message="post.resource.year.help"/>
                               <input type="text" class="fsInput fsSmall" id="post.resource.year" name="post.resource.year" tabindex="6"/>
   
-  				    		  <input type="submit" class="fsFormSubmit" style="clear:both; float:left" name="submit" value="${button_label_check}"/>
+  				    		  <input type="submit" class="fsFormSubmit" style="clear:both; float:left" name="submit" value="${post_button}"/>
   							
 							</fieldset>
 						</div>
@@ -105,50 +108,48 @@
 				<!-- ================== -->
 				<c:when test="${command.selTab == 1}">
 				
-				<!-- USED TRANSLATIONVARIABLES IN TAB1 -->
-				<fmt:message key="post_bibtex.button_label_post" var="button_label_post" />
-				
-				<h2><fmt:message key="post_bibtex.pub_snippet.heading" /></h2>
-				<p>
-				 	<fmt:message key="post_bibtex.pub_snippet.description" />
-			    </p>
-				<form method="post" action="/import/publications">
-					<div id="fsform">
-						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
-							
-							<input type="hidden" name="requTask" value="upload" />
-              
-							<!-- ROW ONE -->
-						    <label class="fsLabel" for="selection"><fmt:message key="post_bibtex.pub_snippet.snippet" />*</label>
-						    <textarea class="fsInput" name="selection" rows="10" onkeyup="sz(this);" ><!-- don't delete me --></textarea>
-					  
-					  		<!-- ROW TWO -->
-						    <label class="fsLabel" for="description"><fmt:message key="post.resource.description" />*</label>
-							<input type="text" class="fsInput" name="description" /> 
-			  				
-			  				<!-- ROW THREE -->
-			  				<div class="fsLabel"><!--  --></div>
-			    			<post:simpleGroupBox groups="${command.context.loginUser.groups}"/>
-				    		
-				    		<!-- ROW FOUR -->
-						    <label class="fsLabel"><fmt:message key="import.edit_before_import" /></label>
-						    <buttons:help  cssStyle="float:left" message="import.edit_before_import.help" />
-						    <input type="checkbox" class="fsInput" name="editBeforeImport" value="" />
-						    
-						    
-						    
-						    <!-- ROW FIVE -->
-						    <label class="fsLabel"><fmt:message key="import.overwritten" /></label>
-						    
-                         			
-						    <buttons:help cssStyle="float:left" message="import.overwrite2"/>
-						    <input type="checkbox" class="fsInput" name="overwrite" value="" />
-				    		
-				    		<input type="submit" style="clear:both; float:left" class="fsFormSubmit" name="submit" value="${button_label_post}" />
-							
-						</fieldset>
-					</div>
-				</form>
+		
+    		
+    				<h2><fmt:message key="post_bibtex.pub_snippet.heading" /></h2>
+    				<p><fmt:message key="post_bibtex.pub_snippet.description" /></p>
+            
+            
+    				<form method="post" action="/import/publications">
+    					<div id="fsform">
+    						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
+    							
+    							<input type="hidden" name="requTask" value="upload" />
+                  
+    							<div class="fsRow">
+    						      <label class="fsLabel" for="selection"><fmt:message key="post_bibtex.pub_snippet.snippet" />*</label>
+    						      <textarea class="fsInput" name="selection" rows="10" onkeyup="sz(this);" ><!-- don't delete me --></textarea>
+                                </div>
+    					  
+    					  		<div class="fsRow">
+    						      <label class="fsLabel" for="description"><fmt:message key="post.resource.description" />*</label>
+    							  <input type="text" class="fsInput" name="description" /> 
+    			  				</div>
+                    
+    			  				  <div class="fsLabel"><!--  --></div>
+    			    			  <post:simpleGroupBox groups="${command.context.loginUser.groups}"/>
+                    
+    				    		<div class="fsRow">
+    						      <label class="fsLabel"><fmt:message key="import.edit_before_import" /></label>
+    						      <buttons:help  cssStyle="float:left" message="import.edit_before_import.help" />
+    						      <input type="checkbox" class="fsInput" name="editBeforeImport" value="" />
+                                </div>
+    						    
+    						    <div class="fsRow">
+    						      <label class="fsLabel"><fmt:message key="import.overwritten" /></label>
+      						      <buttons:help cssStyle="float:left" message="import.overwrite2"/>
+    						      <input type="checkbox" class="fsInput" name="overwrite" value="" />
+                                </div>
+    				    		
+    				    		<input type="submit" style="clear:both; float:left" class="fsFormSubmit" name="submit" value="${post_button}" />
+    							
+    						</fieldset>
+    					</div>
+    				</form>
 				</c:when>
 				<!-- ================ -->
 				<!-- END CONTENT TAB 1-->
@@ -159,14 +160,9 @@
 				<!-- ================== -->
 				<c:when test="${command.selTab == 2}">
 					
-					<!-- USED TRANSLATIONVARIABLES IN TAB2 -->
-					<fmt:message key="post_bibtex.button_label_upload" var="button_label_upload" />
 					
 					<h2><fmt:message key="post_bibtex.upload.heading" /></h2>
-
-					<p>
-						<fmt:message key="post_bibtex.upload.description" />
-					</p>
+					<p><fmt:message key="post_bibtex.upload.description" /></p>
 
 					<form name="upload" method="post" enctype="multipart/form-data" action="/upload_batch">
 						<div id="fsform">
@@ -174,44 +170,41 @@
 									<input type="hidden" name="requTask" value="upload" />
 									
 								  	<!-- +++BLOCK ONE+++ -->
-								  	<!-- ROW ONE -->
-								    <label class="fsLabel"><fmt:message key="post_bibtex.upload.my_file" /></label>
-								    <input type="file" name="file" value="" size="50"  class="reqinput fsInput" />
-								    
+								  	<div class="fsRow">
+								      <label class="fsLabel"><fmt:message key="post_bibtex.upload.my_file" />*</label>
+								      <input type="file" name="file" value="" size="50"  class="reqinput fsInput" />
+								    </div>
 							  	 
-								  	<!-- ROW TWO -->
-								    <label class="fsLabel"><fmt:message key="post.resource.description" /></label>
-								    <input type="text" class="fsInput" name="description" value="" />
-
+								  	<div class="fsRow">
+								      <label class="fsLabel"><fmt:message key="post.resource.description" />*</label>
+								      <input type="text" class="fsInput" name="description" value="" />
+                                    </div>
 							    	
-
-									<!-- ROW THREE --> 
-								    <div class="fsLabel"><!--  --></div>
-								    <post:simpleGroupBox groups="${command.context.loginUser.groups}"/>
+								      <div class="fsLabel"><!--  --></div>
+								      <post:simpleGroupBox groups="${command.context.loginUser.groups}"/>
 									
-								    <!-- ROW FOUR -->
-								    <label class="fsLabel"><fmt:message key="import.edit_before_import" /></label>
-								    <buttons:help  cssStyle="float:left" message="import.edit_before_import.help" />
-								    <input type="checkbox" class="fsInput" name="editBeforeImport" value="" />
-								    
-								    
-								    
-								    <!-- ROW FIVE -->
-								    <label class="fsLabel"><fmt:message key="import.overwritten" /></label>
-								    
-                           			
-								    <buttons:help  cssStyle="float:left" message="import.overwrite2"/>
-								    <input type="checkbox" class="fsInput" name="overwrite" value="" />
 									 
-									<input type="submit" style="clear:both; float:left" class="fsFormSubmit" name="submit" value="${button_label_upload}" />
+									<input type="submit" style="clear:both; float:left" class="fsFormSubmit" name="submit" value="${post_button}" />
 									 
+                   
+                   
 									<!-- +++BLOCK TWO+++ -->
 									<fieldset class="fsInner" style="clear: both; width:96%; background-color:#EEEEEE; border:1px solid #006699; position:relative; float:left">
 										<legend><fmt:message key="post_bibtex.upload.options" /></legend>
 									    
-									    
-									    <!-- ROW ONE -->
-										    
+                                        <div class="fsRow"> 
+                                          <label class="fsLabel"><fmt:message key="import.edit_before_import" /></label>
+                                          <buttons:help  cssStyle="float:left" message="import.edit_before_import.help" />
+                                          <input type="checkbox" class="fsInput" name="editBeforeImport" value="" />
+                                        </div>
+                                        
+                                        <div class="fsRow">
+                                          <label class="fsLabel"><fmt:message key="import.overwritten" /></label>
+                                          <buttons:help  cssStyle="float:left" message="import.overwrite2"/>
+                                          <input type="checkbox" class="fsInput" name="overwrite" value="" />
+                                        </div>
+                      
+                                        <div class="fsRow">
 											<label class="fsLabel"><fmt:message key="post_bibtex.upload.option.character_encoding" /></label>
 											<buttons:help message="post_bibtex.upload.option.character_encoding_help"/>
 										    <select name="encoding" class="fsInput fsSmall" id="lencoding">
@@ -235,16 +228,9 @@
 										      	<option value="UTF-16BE">UTF-16BE</option>
 										      	<option value="UTF-16LE">UTF-16LE</option>
 										    </select>
-										    
-										    
-											
-										    
-										
-
-									  	
-
+                                        </div>
 									    	
-								    	<!-- ROW TWO -->
+								        <div class="fsRow">
 										    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.tag_delimiter" /></label>
 										    <buttons:help message="post_bibtex.upload.option.tag_delimiter_help"/>
 										    <select name="delimiter" class="fsInput fsSmall" onchange="updateSubstitute(this);">
@@ -252,14 +238,14 @@
 										        <option value=",">, (<fmt:message key="delimiters.comma"/>)</option>
 										        <option value=";">; (<fmt:message key="delimiters.semicolon"/>)</option>
 									        </select>
-									    	
-									    
-									  
-									  	<!-- ROW THREE -->
+                                        </div>
+                                        
+                                        <div class="fsRow">
 										    <label class="fsLabel"><fmt:message key="post_bibtex.upload.option.whitespace_substitute" /></label>
 										    <buttons:help message="post_bibtex.upload.option.whitespace_substitute_help"/>
 										    <!-- TODO: Ask cause of disabled -->
 										    <input type="text" class="fsSmall" style="float:left" value="_" name="whitespace" size="2" maxlength="1" disabled="disabled" />
+                                        </div>
 									    	
 									   <script type="text/javascript">
                                           //<mtl:cdata>
@@ -291,29 +277,26 @@
 				<!-- ================== -->
 				<c:when test="${command.selTab == 3}">
 					
-					<!-- USED TRANSLATIONVARIABLES IN TAB3 -->
-					<fmt:message key="post_bibtex.button_label_check" var="button_label_check" />
-					
 					<h2><fmt:message key="post_bibtex.doi_isbn.title" /></h2>
+					<p><fmt:message key="post_bibtex.doi_isbn.description" /></p>
 
-					<p>
-						<fmt:message key="post_bibtex.doi_isbn.description" />
-					</p>
-
-					
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
 								
 									<input type="hidden" name="requTask" value="upload" />
 									
-									 <form name="upload" method="post" action="/BibtexHandler?requTask=upload">
+									 <form name="upload" method="post" action="/postPublication">
+                                             <div class="fsRow">
 										    	<label class="fsLabel"><fmt:message key="post_bibtex.doi_isbn.isbn" /></label>
-										    	<input type="text" class="fsInput" name="selection" value="" />
+										    	<input type="text" class="fsInput" name="selection"/>
+                                             </div>
 
+                                             <div class="fsRow">
 										    	<label class="fsLabel"><fmt:message key="post_bibtex.doi_isbn.doi" /></label>
-										    	<input type="text" name="selection" value="" class="fsInput" />
-
-										      	<input type="submit" class="fsFormSubmit" name="submit" value="${button_label_check}" />
+										    	<input type="text" name="selection" class="fsInput" />
+                                             </div>
+                                             
+										     <input type="submit" style="clear:both; float:left" class="fsFormSubmit" name="submit" value="${post_button}" />
 									  </form>
 								  
 							</fieldset>

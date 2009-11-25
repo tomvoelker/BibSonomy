@@ -37,13 +37,13 @@
             </div>
 		</jsp:attribute>
 
-        <jsp:attribute name="detailedInformation">
+        <jsp:attribute name="extraInformation">
             <!-- 
                | check, if this bookmark can be scraped
                -->	
             <div id="scrapable" style="display:none">
-            <br/>
-                <form:form action="/BibtexHandler" method="post" id="bibtex_snippet">      
+                <br/>
+                <form:form action="/postPublication" method="post" id="bibtex_snippet">      
                   <fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
                     <fieldset class="fsnoborder" style="position:relative;">
                       <h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2>
@@ -53,7 +53,6 @@
                         <input id="button" type="submit" name="submit" value="${post_publication}"/>
                       </p>
                       <textarea style="width: 100%;" id="bib" name="selection" rows="15" class="reqinput"><c:out value=" "/></textarea>
-                      <input type="hidden" name="requTask" value="upload" />
                    </fieldset>
                  </fieldset>   
                </form:form>
