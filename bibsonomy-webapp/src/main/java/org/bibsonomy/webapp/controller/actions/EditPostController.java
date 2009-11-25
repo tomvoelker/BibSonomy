@@ -52,9 +52,9 @@ import org.springframework.validation.Errors;
  * @version $Id$
  * @param <RESOURCE> 
  */
-public abstract class PostPostController<RESOURCE extends Resource> extends SingleResourceListController implements MinimalisticController<EditPostCommand<RESOURCE>>, ErrorAware {
+public abstract class EditPostController<RESOURCE extends Resource> extends SingleResourceListController implements MinimalisticController<EditPostCommand<RESOURCE>>, ErrorAware {
 
-	private static final Log log = LogFactory.getLog(PostPostController.class);
+	private static final Log log = LogFactory.getLog(EditPostController.class);
 	private Errors errors = null;
 	private TagRecommender tagRecommender;
 	private Captcha captcha;

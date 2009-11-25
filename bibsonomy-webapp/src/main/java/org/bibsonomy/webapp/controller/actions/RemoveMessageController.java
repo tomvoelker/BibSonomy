@@ -97,7 +97,7 @@ public class RemoveMessageController implements MinimalisticController<RemoveMes
 		final List<Post<? extends Resource>> posts = new ArrayList<Post<? extends Resource>>();
 		
 		// get the has string
-		final String hash = command.getRequestedResourceHash();
+		final String hash = command.getHash();
 		/*
 		 * add one post - "pick one"
 		 */

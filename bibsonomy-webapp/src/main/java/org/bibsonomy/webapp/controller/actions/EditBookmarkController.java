@@ -14,7 +14,7 @@ import org.springframework.validation.Errors;
  * @author fba
  * @version $Id$
  */
-public class PostBookmarkController extends PostPostController<Bookmark> {
+public class EditBookmarkController extends EditPostController<Bookmark> {
 	
 	@Override
 	protected View getPostView() {

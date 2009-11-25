@@ -43,7 +43,7 @@ import bibtex.parser.ParseException;
  * @author ema
  * @version $Id$
  */
-public class PostMultiplePublicationsController extends SingleResourceListController implements MinimalisticController<PostMultiplePublicationCommand>, ErrorAware {
+public class ImportPublicationsController extends SingleResourceListController implements MinimalisticController<PostMultiplePublicationCommand>, ErrorAware {
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
 	
@@ -60,14 +60,14 @@ public class PostMultiplePublicationsController extends SingleResourceListContro
 	final List<String> nonCreatedBookmarkEntries = new ArrayList<String>();
 	private Errors errors = null;
 	
-	private PostPublicationController singlePublicationController;
+	private EditPublicationController editPublicationController;
 	
-    public PostPublicationController getSinglePublicationController() {
-		return this.singlePublicationController;
+    public EditPublicationController getEditPublicationController() {
+		return this.editPublicationController;
 	}
 
-	public void setSinglePublicationController(PostPublicationController singlePublicationController) {
-		this.singlePublicationController = singlePublicationController;
+	public void setEditPublicationController(EditPublicationController editPublicationController) {
+		this.editPublicationController = editPublicationController;
 	}
 
 	
@@ -192,8 +192,8 @@ public class PostMultiplePublicationsController extends SingleResourceListContro
 		 */
 		if(bibtex.size()==1){
 			command.setPost(bibtex.get(0));
-			singlePublicationController.setErrors(getErrors()); 
-			return singlePublicationController.workOn(command);
+			editPublicationController.setErrors(getErrors()); 
+			return editPublicationController.workOn(command);
 		} else {
 			/*
 			 * We have more than one bibtex, which means that this controller will forward to one calling the batcheditbib.jspx
