@@ -8,7 +8,6 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="basketSize" type="java.lang.Integer" required="true"/>
 	<jsp:directive.attribute name="searchString" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
 	
@@ -18,9 +17,9 @@
 			<c:url var="root" value="/" context="${projectContext}"/><a id="nav_home" href="${root}">Home</a>
 		</li>
 		<c:choose>
-			<c:when test="${!empty loginUserName}">
+			<c:when test="${not empty loginUserName}">
 				<li>
-					<c:url var="userUrl" value="/user/${loginUserName}" context="${projectContext}"/>
+					<c:url var="userUrl" value="/user/${mtl:encodeURI(loginUserName)}" context="${projectContext}"/>
 					<a id="nav_my" href="${userUrl}" rel="my_menu"><img src="${resdir}/image/nice_box_arrow.png" alt="" /> <fmt:message key="navi.my"/>${projectName}</a>
 				      <!-- dropdown menu for myBibSonomy -->  
 

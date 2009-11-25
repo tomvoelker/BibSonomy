@@ -10,9 +10,7 @@
 	
 	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true"/>
-	<jsp:directive.attribute name="inboxSize" type="java.lang.Integer" required="true"/>
-	<jsp:directive.attribute name="basketSize" type="java.lang.Integer" required="true"/>
+	<jsp:directive.attribute name="loginUser" type="org.bibsonomy.model.User" required="true"/>
 	<jsp:directive.attribute name="searchString" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="requestedUser" type="java.lang.String" required="false"/>	
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
@@ -58,19 +56,19 @@
 				<script type="text/javascript" src="${resdir}/javascript/chrome.js">&amp;nbsp;</script>
 				
 				<!-- enable logging with user permission -->
-				<c:if test="${command.context.loginUser.settings.logLevel != 1}">
+				<c:if test="${loginUser.settings.logLevel != 1}">
 				  <script type="text/javascript" src="${resdir}/javascript/logging.js">&amp;nbsp;</script>
 	              <script type="text/javascript">
 	              //<mtl:cdata>
 	              <![CDATA[
-						log_setUsername("${command.context.loginUser.name}");
+						log_setUsername("${loginUser.name}");
 				  ]]>
 				  //</mtl:cdata>
 				  </script>				  
 				</c:if>
 				
 				<!-- enable on-site spammer killing when user is admin -->
-				<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
+				<c:if test="${loginUser.role eq 'ADMIN'}">
 				  <script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
 				</c:if>
 
@@ -85,13 +83,13 @@
 				<jsp:invoke fragment="headerExt"/>
 			</head>
 			<body>
-									
+						
 			<div id="topNavBar">
 				<c:choose>
-					<c:when test="${!empty loginUserName}">
+					<c:when test="${not empty loginUser.name}">
 						<fmt:message key="navi.loggedInAs"/>&amp;nbsp;
-						<c:url var="userUrl" value="/user/${loginUserName}" context="${projectContext}"/>
-						<a href="${userUrl}"><c:out value="${loginUserName}" /></a>
+						<c:url var="userUrl" value="/user/${mtl:encodeURI(loginUser.name)}" context="${projectContext}"/>
+						<a href="${userUrl}"><c:out value="${mtl:encodeURI(loginUser.name)}" /></a>
 						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 						<c:url var="settingsUrl" value="/settings" context="${projectContext}"/>        
 						<a href="${settingsUrl}"><fmt:message key="navi.settings"/></a>
@@ -155,13 +153,13 @@
 							<c:set var="mode" value="requUser" />
 						</c:if>
 						<c:if test="${command.context.userLoggedIn and empty requestedUser}">
-							<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${command.context.loginUser.name}'/></a>
+							<a onclick="naviSwitchSpecial('explicit_user')" style="cursor:pointer"><fmt:message key="navi.search"/>:<c:out value='${loginUser.name}'/></a>
 							<c:set var="mode" value="requUser" />
 						</c:if>
 						<c:if test="${command.context.userLoggedIn}">
 						    <!-- <a onclick="naviSwitchSpecial('followers')" style="cursor:pointer"><fmt:message key="navi.followedUsers"/></a>  -->
 							<a style="color:black"><fmt:message key="navi.search"/> in group:</a>
-							<c:forEach var="grp" items="${command.context.loginUser.groups}">
+							<c:forEach var="grp" items="${loginUser.groups}">
 								<script type="text/javascript">
 									gOptions.push('${grp.name}');
 								</script>
@@ -177,14 +175,14 @@
 					
 					<div id="mainHeaderRightBox">
 						<c:choose>
-						<c:when test="${!empty loginUserName}">
+						<c:when test="${not empty loginUser.name}">
 								<c:url var="inboxUrl" value="/inbox" context="${projectContext}"/>
-								<span id="inboxctr">${inboxSize}</span>&amp;nbsp;
+								<span id="inboxctr">${loginUser.inbox.numPosts}</span>&amp;nbsp;
 								<fmt:message key="navi.inInbox"/>&amp;nbsp;
 								<a href="${inboxUrl}"><fmt:message key="navi.inbox"/></a>
 								<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 								<c:url var="basketUrl" value="/basket" context="${projectContext}"/>
-								<span id="pickctr">${basketSize}</span>&amp;nbsp;
+								<span id="pickctr">${loginUser.basket.numPosts}</span>&amp;nbsp;
 								<fmt:message key="navi.pickedIn"/>&amp;nbsp;
 								<a href="${basketUrl}"><fmt:message key="navi.basket"/></a>
 								<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
@@ -241,7 +239,7 @@
 				</div>
 				
 				<!-- Navigation -->
-				<menu:navi selectedNaviTab="${selectedNaviTab}" loginUserName="${loginUserName}" searchString="${searchString}" basketSize="${basketSize}" />
+				<menu:navi selectedNaviTab="${selectedNaviTab}" loginUserName="${loginUser.name}" searchString="${searchString}"/>
 				
 				<!-- main content pane -->
 				<div id="outer">
@@ -264,43 +262,11 @@
 				
 				<!-- sidebar -->
 				<c:if test="${sidebar != null}">
-					<span class="help">
-					<a onclick="toggleSidebar();" style="float:left">
-						<img id="toggleSidebarButton" src="${resdir}/image/close.png"></img>
-					</a>
-					<div><fmt:message key="navi.sidebar.toggle"/></div>
-					</span>
 					<div id="sidebarroundcorner" >
-						<ul id="sidebar" style="height:100%; float:left">
-							<jsp:invoke fragment="sidebar"/>
-						</ul>
+					<ul id="sidebar">
+						<jsp:invoke fragment="sidebar"/>
+					</ul>
 					</div>
-					
-					<script type="text/javascript">
-					  function toggleSidebar()
-					  {
-						  if ( $('#sidebarroundcorner').css('visibility') == 'visible' )
-						  {
-							  $('#sidebarroundcorner').css({
-								  'visibility' : 'collapse'
-							  });
-	
-							  $('#toggleSidebarButton').attr({
-								  'src' : '${resdir}/image/open.png'
-							  });
-						  } else {
-							  $('#sidebarroundcorner').css({
-								  'visibility' : 'visible'
-							  });
-	
-							  $('#toggleSidebarButton').attr({
-								  'src' : '${resdir}/image/close.png'
-							  });
-						  }
-					  }
-				    </script>
-					
-					
 				</c:if>
 				<c:if test="${fullscreen}">
 					<script type="text/javascript">
@@ -309,8 +275,6 @@
 					]]>
 					</script>
 				</c:if>
-				
-				
 				
 				<!-- page footer -->
 				<div id="footer">
@@ -324,7 +288,7 @@
 					<lp:email address="${projectEmail}"/>
 					<script type="text/javascript">
 					<![CDATA[
-						init(${command.context.loginUser.settings.tagboxStyle}, ${command.context.loginUser.settings.tagboxSort}, ${command.context.loginUser.settings.tagboxMinfreq}, "${requestedUser}", "${loginUserName}", "${ckey}", "${projectName}");
+						init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${requestedUser}", "${loginUser.name}", "${ckey}", "${projectName}");
 					]]>
 					</script>
 					<script type="text/javascript">

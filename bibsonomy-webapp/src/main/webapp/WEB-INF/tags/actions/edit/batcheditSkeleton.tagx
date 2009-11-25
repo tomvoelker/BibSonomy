@@ -34,9 +34,7 @@
     
     <!-- TODO: i18n -->
     <layout:layout requPath="${requPath}" 
-      loginUserName="${command.context.loginUser.name}"
-      basketSize="${command.context.loginUser.basket.numPosts}" 
-      inboxSize="${command.context.loginUser.inbox.numPosts}" 
+      loginUser="${command.context.loginUser}"
       pageTitle="${pageTitle}" 
       searchString=""
       selectedNaviTab="nav_my"
@@ -142,7 +140,7 @@
             
                   <c:if test="${post.user.name ne command.context.loginUser.name}">
                     <!-- show one post -->
-                    <rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${loginUserName}" copyThisPost="${copyThisPost}" alreadyOwn="${alreadyOwn}">
+                    <rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${command.context.loginUser.name}" copyThisPost="${copyThisPost}" alreadyOwn="${alreadyOwn}">
       					<jsp:attribute name="title">  <jsp:invoke fragment="title"/>  </jsp:attribute>
       					<jsp:attribute name="actions"><jsp:invoke fragment="actions"/></jsp:attribute>
       					<jsp:attribute name="bmicon"> <jsp:invoke fragment="bmicon"/> </jsp:attribute>

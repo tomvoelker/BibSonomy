@@ -38,16 +38,8 @@
 		<c:set var="disableListNavigation" value="${false}"/>
 	</c:if>	
 		
-	<c:choose>
-		<c:when test="${command.context.userLoggedIn}">
-			<c:set var="loginUserName" value="${command.context.loginUser.name}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var="loginUserName" value="${null}"/>
-		</c:otherwise>
-	</c:choose>
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	<layout:layout loginUserName="${loginUserName}" searchString="hurz" inboxSize="${command.context.loginUser.inbox.numPosts}" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
+	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
 		<jsp:attribute name="headerExt">
 			<c:set var="bibRssUrl" value="/publrss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${publicationRssFeed} /${requPath}" href="${bibRssUrl}" />
@@ -70,7 +62,7 @@
 			</c:if>		
 
 
-			<resources:bibtexs listView="${command.bibtex}" loginUserName="${loginUserName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 
 		</jsp:attribute>
 	</layout:layout>

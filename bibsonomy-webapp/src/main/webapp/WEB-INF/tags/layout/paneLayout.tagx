@@ -23,15 +23,6 @@
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
-	
-	<c:choose>
-		<c:when test="${command.context.userLoggedIn}">
-			<c:set var="loginUserName" value="${command.context.loginUser.name}"/>
-		</c:when>
-		<c:otherwise>
-			<c:set var="loginUserName" value="${null}"/>
-		</c:otherwise>
-	</c:choose>	
 
-	<layout:layout loginUserName="${loginUserName}" beforeBodyClose="${beforeBodyClose}" searchString="hurz" inboxSize="${command.context.loginUser.inbox.numPosts}" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" headerExt="${headerExt}" requestedUser="${requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" content="${content}" fullscreen="${fullscreen}" selectedNaviTab="${selectedNaviTab}"/>
+	<layout:layout loginUser="${command.context.loginUser}" beforeBodyClose="${beforeBodyClose}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" headerExt="${headerExt}" requestedUser="${requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" content="${content}" fullscreen="${fullscreen}" selectedNaviTab="${selectedNaviTab}"/>
 </jsp:root>

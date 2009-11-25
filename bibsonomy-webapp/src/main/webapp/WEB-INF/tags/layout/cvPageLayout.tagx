@@ -30,7 +30,7 @@
 	</c:if>	
 		
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	<layout:layout inboxSize="" loginUserName="${command.context.loginUser.name}" searchString="hurz" basketSize="${command.context.loginUser.basket.numPosts}" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.context.loginUser.name}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
+	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.context.loginUser.name}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
 		<jsp:attribute name="headerExt">
 			<jsp:invoke fragment="headerExt"/>		
 		</jsp:attribute>
