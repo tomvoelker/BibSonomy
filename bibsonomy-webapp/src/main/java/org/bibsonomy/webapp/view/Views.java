@@ -313,7 +313,7 @@ public enum Views implements View {
 	/**
 	 * The dialog to post one or more publications (tabbed view)
 	 */
-	POST_PUBLICATION("actions/post/postTabPublication"),
+	POST_PUBLICATION("actions/post/postPublication"),
 	/** 
 	 * import view 
 	 */
