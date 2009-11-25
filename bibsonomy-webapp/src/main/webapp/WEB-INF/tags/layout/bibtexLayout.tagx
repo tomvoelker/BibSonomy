@@ -70,7 +70,7 @@
 			</c:if>		
 
 
-			<resources:bibtexs listView="${command.bibtex}" unpick="${empty unpick ? false : unpick}" loginUserName="${loginUserName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+			<resources:bibtexs listView="${command.bibtex}" loginUserName="${loginUserName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 
 		</jsp:attribute>
 	</layout:layout>
