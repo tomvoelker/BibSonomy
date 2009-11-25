@@ -46,6 +46,7 @@ public class StandardBibTeXFields {
 		standardBibTeXFields.add("booktitle");
 		standardBibTeXFields.add("chapter");
 		standardBibTeXFields.add("crossref");
+		standardBibTeXFields.add("day");
 		standardBibTeXFields.add("edition");
 		standardBibTeXFields.add("editor");
 		standardBibTeXFields.add("howpublished");
