@@ -99,7 +99,7 @@
 						<property name="controllerBeanName"	value="basketController" />
 						<property name="allowedFields" >
 							<list>
-								<value>requestedResourceHash</value>
+								<value>hash</value>
 								<value>action</value>
 								<value>user</value>
 								<value>ckey</value>
