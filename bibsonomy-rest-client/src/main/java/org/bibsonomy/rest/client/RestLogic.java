@@ -207,7 +207,7 @@ public class RestLogic implements LogicInterface {
 		return resourceHashes;
 	}
 
-	public String updateUser(User user) {
+	public String updateUser(User user, final PostUpdateOperation operation) {
 		// accounts cannot be renamed
 		return execute(new ChangeUserQuery(user.getName(), user));
 	}
