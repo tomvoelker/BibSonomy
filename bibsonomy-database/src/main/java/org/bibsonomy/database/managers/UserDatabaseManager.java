@@ -139,9 +139,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param username
 	 * @param session
 	 */
-	public void updatePasswordForUser(User user, final DBSession session) {
+	public String updatePasswordForUser(User user, final DBSession session) {
 		if (this.getUserDetails(user.getName(), session).getName() == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update password for nonexistent user");
 		this.update("updatePasswordForUser", user, session);
+		return user.getName();
 	}
 
 	List<String> getUserNamesByGroupId(final Integer groupId, final DBSession session) {
