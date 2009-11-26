@@ -236,21 +236,28 @@
                 <!-- 
                    | TODO: explain difference between fields!
                    -->
-                
-                   <form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label><buttons:help cssStyle="float:left" message="post.resource.description.help"/>
-                   <form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" onkeyup="sz(this);" />
+                   <div class="fsRow">
+                     <form:label cssClass="fsLabel" path="post.description" ><fmt:message key="post.resource.description"/>, <fmt:message key="post.resource.comment"/></form:label><buttons:help cssStyle="float:left" message="post.resource.description.help"/>
+                     <form:textarea cssClass="fsInput" path="post.description" tabindex="2" rows="3" onkeyup="sz(this);" />
+                   </div>
+                   
+                   <div class="fsRow">
+                     <form:label cssClass="fsLabel" path="post.resource.privnote" ><fmt:message key="post.resource.privnote"/></form:label><buttons:help message="post.resource.privnote.help"/>
+                     <form:textarea cssClass="fsInput" path="post.resource.privnote" tabindex="2" rows="3" onkeyup="sz(this);" />
+                     <div class="dissError"><form:errors path="post.resource.privnote" /></div>
+                   </div>
+                   
+                   <div class="fsRow">
+                     <form:label cssClass="fsLabel" path="post.resource.annote" ><fmt:message key="post.resource.annote"/></form:label><buttons:help message="post.resource.annote.help"/>
+                     <form:input cssClass="fsInput" path="post.resource.annote" tabindex="2"/>
+                     <div class="dissError"><form:errors path="post.resource.annote" /></div>
+                   </div>
 
-                   <form:label cssClass="fsLabel" path="post.resource.privnote" ><fmt:message key="post.resource.privnote"/></form:label><buttons:help message="post.resource.privnote.help"/>
-                   <form:textarea cssClass="fsInput" path="post.resource.privnote" tabindex="2" rows="3" onkeyup="sz(this);" />
-                   <div class="dissError"><form:errors path="post.resource.privnote" /></div>
-
-                   <form:label cssClass="fsLabel" path="post.resource.annote" ><fmt:message key="post.resource.annote"/></form:label><buttons:help message="post.resource.annote.help"/>
-                   <form:input cssClass="fsInput" path="post.resource.annote" tabindex="2"/>
-                   <div class="dissError"><form:errors path="post.resource.annote" /></div>
-
-                   <form:label cssClass="fsLabel" path="post.resource.note" ><fmt:message key="post.resource.note"/></form:label><buttons:help message="post.resource.note.help"/>
-                   <form:textarea cssClass="fsInput" path="post.resource.note" tabindex="2" rows="3" onkeyup="sz(this);" />
-                   <div class="dissError"><form:errors path="post.resource.note" /></div>
+                   <div class="fsRow">
+                     <form:label cssClass="fsLabel" path="post.resource.note" ><fmt:message key="post.resource.note"/></form:label><buttons:help message="post.resource.note.help"/>
+                     <form:textarea cssClass="fsInput" path="post.resource.note" tabindex="2" rows="3" onkeyup="sz(this);" />
+                     <div class="dissError"><form:errors path="post.resource.note" /></div>
+                   </div>
        
           </fieldset>
           
@@ -269,19 +276,27 @@
              <fieldset class="fsInner">
                 <legend><fmt:message key="post.resource.fields.scraper"/></legend>
 
-                  <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.url"/></span>
-                  <span class="fsInput"><a href="${fn:escapeXml(command.scrapingContext.url)}"><c:out value="${command.scrapingContext.url}"/></a></span>
+                  <div class="fsRow">
+                    <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.url"/></span>
+                    <span class="fsInput"><a href="${fn:escapeXml(command.scrapingContext.url)}"><c:out value="${command.scrapingContext.url}"/></a></span>
+                  </div>
 
                   <c:if test="${not empty command.scrapingContext.selectedText}">
+                    <div class="fsRow">
                       <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.selectedText"/></span>
-                      <span class="fsInput"><c:out value="${command.scrapingContext.selectedText}"/></span>
+                      <span class="fsInput" style="max-width: 800px; overflow: scroll;"><c:out value="${command.scrapingContext.selectedText}"/></span>
+                    </div>
                   </c:if>
 
-                  <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.scraper"/></span>
-                  <span class="fsInput"><a href="/scraperinfo#${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</span>
+                  <div class="fsRow">
+                    <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.scraper"/></span>
+                    <span class="fsInput"><a href="/scraperinfo#${fn:escapeXml(command.scrapingContext.scraper.class.simpleName)}"><c:out value="${command.scrapingContext.scraper.class.simpleName}"/></a>: ${command.scrapingContext.scraper.info}</span>
+                  </div>
 
-                  <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.result"/></span>
-                  <pre class="fsInput" style="max-width: 800px; overflow: scroll;"><c:out value="${command.scrapingContext.bibtexResult}"/></pre>
+                  <div class="fsRow">
+                    <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.result"/></span>
+                    <pre class="fsInput" style="max-width: 800px; overflow: scroll;"><c:out value="${command.scrapingContext.bibtexResult}"/></pre>
+                  </div>
              </fieldset>
           
          </c:if>

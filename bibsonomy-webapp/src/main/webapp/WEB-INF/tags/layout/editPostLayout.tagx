@@ -100,8 +100,8 @@
 									<c:set var="save"><fmt:message key="save"/></c:set>
 	                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
 	                                <input type="hidden" name="postID" value="${command.postID}"/>
+                                    <input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
 	                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-	                                <input type="hidden" name="jump" value="${fn:escapeXml(command.jump)}"/>
 	                                <form:hidden path="intraHashToUpdate"/>
 									<input type="reset" value="${reset}" tabindex="2"/>
 									<input type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>

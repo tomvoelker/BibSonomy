@@ -50,6 +50,7 @@
                       <p>
                         <fmt:message key="post.resource.bookmark_a_publication"/>:<c:out value=" "/>
                         <fmt:message key="post.meta.save_as_publication" var="post_publication"/>
+                        <input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
                         <input id="button" type="submit" name="submit" value="${post_publication}"/>
                       </p>
                       <textarea style="width: 100%;" id="bib" name="selection" rows="15" class="reqinput"><c:out value=" "/></textarea>
