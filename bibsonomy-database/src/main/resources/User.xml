@@ -73,6 +73,12 @@
 		SET api_key = #apiKey# 
 		WHERE user_name = #name#
 	</update>
+	
+    <update id="updatePasswordForUser" parameterClass="user">
+		UPDATE user 
+		SET user_password = #password# 
+		WHERE user_name = #name#
+	</update>
 
 	<select id="getRelatedUsersByFolkrankAndTags" resultMap="UserCommon.userWithWeight" parameterClass="userParam"> 
 		SELECT w.item AS user_name, ROUND(SUM(weight),5) * 10000 AS weight
