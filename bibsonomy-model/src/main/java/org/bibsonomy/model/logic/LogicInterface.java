@@ -32,10 +32,10 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
-import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -248,7 +248,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param operation the user operation
 	 * @return userid the user id of the updated user
 	 */
-	public String updateUser(User user, final PostUpdateOperation operation);
+	public String updateUser(User user, final UserUpdateOperation operation);
 
 	/**
 	 * Adds a group to the database.
