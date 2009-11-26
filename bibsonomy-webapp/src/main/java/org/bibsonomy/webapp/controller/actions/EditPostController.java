@@ -151,7 +151,7 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 			 * the source code (although we could/should inject it using 
 			 * Spring)
 			 */
-			return new ExtendedRedirectView("/login?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + "&referer=/postBookmark?" + safeURIEncode(context.getQueryString())); // FIXME: refactor
+			return new ExtendedRedirectView("/login?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + "&referer=/editBookmark?" + safeURIEncode(context.getQueryString())); // FIXME: refactor
 		}
 
 		final User loginUser = context.getLoginUser();

@@ -203,7 +203,7 @@ public enum Views implements View {
 	AJAX_RESPONSE("ajax/snippetXML"),	
 	
 	/**
-	 * used by postBookmark to get the details for a given Url
+	 * used by editBookmark to get the details for a given Url
 	 */
 	AJAX_GET_TITLE_FOR_URL("ajax/jsonURLDetails"),		
 	/**
