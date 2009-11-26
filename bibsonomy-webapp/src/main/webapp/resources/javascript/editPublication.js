@@ -1,4 +1,4 @@
-// methods for postPublication page
+// methods for editPublication page
 
 // setup jQuery to update recommender with form data
 var tagRecoOptions = { 

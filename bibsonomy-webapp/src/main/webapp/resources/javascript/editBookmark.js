@@ -1,4 +1,4 @@
-// methods for postBookmark page
+// methods for editBookmark page
 
 function checkUrlForTitle(  ){
 	var req = new XMLHttpRequest();

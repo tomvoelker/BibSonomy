@@ -21,10 +21,10 @@
 				  </div>
 			</li>
 			<li>
-				<a id="nav_postBook" href="/post_bookmark">post bookmark</a>
+				<a id="nav_postBook" href="/postBookmark">post bookmark</a>
 			</li>
 			<li>
-				<a id="nav_postPub" href="/post_bibtex">post publication</a>
+				<a id="nav_postPub" href="/postPublication">post publication</a>
 			</li>
 		</c:when>
 	</c:choose>
