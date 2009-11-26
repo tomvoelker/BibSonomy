@@ -40,6 +40,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.scraper.KDEScraperFactory;
+import org.bibsonomy.scraper.KDEUrlCompositeScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -75,7 +76,7 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 	 */
 	private static final Scraper compositeScraper = new KDEScraperFactory().getScraperWithoutIE();
 	private static final Scraper ieScraper = new IEScraper();
-	private static final UrlCompositeScraper urlCompositeScraper = new UrlCompositeScraper();
+	private static final UrlCompositeScraper urlCompositeScraper = new KDEUrlCompositeScraper();
 
 	
 	public ScrapingServlet() {

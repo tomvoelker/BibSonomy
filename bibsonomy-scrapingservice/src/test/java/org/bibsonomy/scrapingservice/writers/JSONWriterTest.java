@@ -27,6 +27,7 @@ package org.bibsonomy.scrapingservice.writers;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import org.bibsonomy.scraper.KDEUrlCompositeScraper;
 import org.bibsonomy.scraper.UrlCompositeScraper;
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,7 +45,7 @@ public class JSONWriterTest {
 	public void testWrite() {
 		
 		final JSONWriter writer = new JSONWriter(System.out);
-		final UrlCompositeScraper scraper = new UrlCompositeScraper();
+		final UrlCompositeScraper scraper = new KDEUrlCompositeScraper();
 		
 		System.out.println("------------------------------------------------------");
 		try {
