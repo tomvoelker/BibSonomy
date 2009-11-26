@@ -51,8 +51,8 @@ public class ImportPublicationsController extends SingleResourceListController i
 	private static final Pattern fileEnding = Pattern.compile("\\.([a-zA-Z]+)");
 	private static final Log log = LogFactory.getLog(UploadFileController.class);
 
+	//will be filled when i have created the commands.
 	public static  final String ACTION_SAVE_BEFORE_EDIT ="";
-	public static  final String ACTION_SAVE_AFTER_EDIT ="";
 
 	private Errors errors = null;
 	
@@ -232,7 +232,6 @@ public class ImportPublicationsController extends SingleResourceListController i
 			if(!command.isEditBeforeImport())
 			{
 				savePublicationsForUser(postListCommand, command.isOverwrite(), loginUser, newBookmarkEntries, updatedBookmarkEntries, nonCreatedBookmarkEntries);
-				command.setFormAction(ACTION_SAVE_AFTER_EDIT);
 			} else { 
 			/*
 			 * if the user wants to edit the imported entries before saving
