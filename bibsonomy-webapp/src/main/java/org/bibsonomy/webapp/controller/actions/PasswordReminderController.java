@@ -13,6 +13,7 @@ import net.tanesha.recaptcha.ReCaptcha;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -170,7 +171,7 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 		user.setReminderPasswordRequestDate(new Date());
 
 		// update db
-		adminLogic.updateUser(user);
+		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
 
 		// send mail
 		mailUtils.sendPasswordReminderMail(user.getName(), user.getEmail(), inetAddress, locale, maxMinutesPasswordReminderValid, tempPassword);
