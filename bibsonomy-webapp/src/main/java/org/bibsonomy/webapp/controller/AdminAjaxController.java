@@ -8,6 +8,7 @@ import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.EvaluatorUser;
@@ -103,7 +104,7 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 			String evalDate = "date".concat(number);
 			
 			user.setEvalDate(evalDate);
-			this.logic.updateUser(user);
+			this.logic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
 		}
 	}
 
@@ -118,7 +119,7 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 			user.setToClassify(0);
 			user.setAlgorithm("admin");
 			user.setSpammer(spammer);
-			this.logic.updateUser(user);
+			this.logic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
 		}
 	}
 
@@ -134,7 +135,7 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 			user.setAlgorithm("admin");
 			user.setSpammer(spammer);
 			user.setPrediction(SpamStatus.UNKNOWN.getId());
-			this.logic.updateUser(user);
+			this.logic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
 		}
 	}
 
