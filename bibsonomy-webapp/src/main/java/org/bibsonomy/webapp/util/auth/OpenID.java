@@ -1,8 +1,6 @@
  package org.bibsonomy.webapp.util.auth;
 
 import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -162,38 +160,11 @@ public class OpenID implements Serializable {
 			 */
 			DiscoveryInformation discovered = (DiscoveryInformation) requestLogic.getSessionAttribute(OPENID_DISCOVERY_SESSION_ATTRIBUTE);
 
-			/*
-			 *  extract the receiving URL from the HTTP request
-			 */
-			StringBuffer receivingURL = requestLogic.getRequestURL();
-			
-			/*
-			 * workaround because the tomcat is behind a proxy
-			 */
-			StringBuffer newReceivingURL = new StringBuffer();
-						
-			URL requestURL = new URL(receivingURL.toString());
-			
-			String protocol = requestURL.getProtocol();
-			String host = requestURL.getHost();
-			String path = requestURL.getPath();
-			String contextPath = requestLogic.getContextPath();
-			// append port to url if given
-			Integer portNr = requestURL.getPort();
-			String port = (portNr==-1) ? "" : ":"+portNr.toString(); 
-			
-			if (path.startsWith(contextPath)) {
-				path = path.replace(contextPath, "");
-			}
-			
-			newReceivingURL.append(protocol).append("://").append(host).append(port).append(path);
-			String queryString = requestLogic.getQueryString();
-			if (queryString != null && queryString.length() > 0) newReceivingURL.append("?").append(requestLogic.getQueryString());
-			
+				
 			/*
 			 * verify the response
 			 */
-			VerificationResult verification = manager.verify(newReceivingURL.toString(), response, discovered);
+			VerificationResult verification = manager.verify(requestLogic.getCompleteRequestURL(), response, discovered);
 
 			/*
 			 * examine the verification result and extract the verified
@@ -238,8 +209,6 @@ public class OpenID implements Serializable {
 				return user; 
 			} 
 		} catch (OpenIDException e) {
-			log.error("OpenID verification failed: ", e);
-		} catch (MalformedURLException e) {
 			log.error("OpenID verification failed: ", e);
 		}
 		return null;
