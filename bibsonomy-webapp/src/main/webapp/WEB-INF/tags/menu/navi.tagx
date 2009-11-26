@@ -56,12 +56,11 @@
 					  </div>						
 				</li>
 				<li>
-                        <c:url var="postBookUrl" value="/post_bookmark" context="${projectContext}"/>
-						<!-- c:url var="postBookUrl" value="/actions/postBookmark" context="${projectContext}"/-->
+                        <c:url var="postBookUrl" value="/postBookmark" context="${projectContext}"/>
 						<a id="nav_postBook" href="${postBookUrl}"><fmt:message key="navi.postBookmark"/></a>
 				</li>
 				<li>
-						<c:url var="postBibUrl" value="/post_publication" context="${projectContext}"/>
+						<c:url var="postBibUrl" value="/postPublication" context="${projectContext}"/>
 						<a id="nav_postPub" href="${postBibUrl}"><fmt:message key="navi.postPublication"/></a> 
 				</li>
 			</c:when>

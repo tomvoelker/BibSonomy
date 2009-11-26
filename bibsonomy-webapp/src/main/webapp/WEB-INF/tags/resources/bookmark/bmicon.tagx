@@ -7,7 +7,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 
-    <a href="/postBookmark?c=b&amp;jump=no&amp;url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}">  
+    <a href="/editBookmark?url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}">  
        &amp;nbsp;
        <c:if test="${post.ranking > 0}">
 		<span class="ranking">${fn:substring(post.ranking,0,4)}</span>

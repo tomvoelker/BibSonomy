@@ -57,7 +57,7 @@
 					<h2><fmt:message key="post_bibtex.manual.heading"/></h2>
 					<p><fmt:message key="post_bibtex.manual.description" /></p>
           				
-					<form method="post" action="/postPublication" name="post_publication">
+					<form method="post" action="/editPublication" name="post_publication">
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
   
@@ -285,7 +285,7 @@
 								
 									<input type="hidden" name="requTask" value="upload" />
 									
-									 <form name="upload" method="post" action="/postPublication">
+									 <form name="upload" method="post" action="/editPublication">
                                              <div class="fsRow">
 										    	<label class="fsLabel"><fmt:message key="post_bibtex.doi_isbn.isbn" /></label>
 										    	<input type="text" class="fsInput" name="selection"/>

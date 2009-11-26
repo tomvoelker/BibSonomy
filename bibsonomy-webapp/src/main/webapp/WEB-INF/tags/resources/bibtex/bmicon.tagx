@@ -7,7 +7,7 @@
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
 	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
 
-		<a href="/postPublication?hash=${post.resource.intraHash}&amp;user=${mtl:encodeURI(post.user.name)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}">
+		<a href="/editPublication?hash=${post.resource.intraHash}&amp;user=${mtl:encodeURI(post.user.name)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}">
 			&amp;nbsp;
        	<c:if test="${post.ranking > 0}">
 		<span class="ranking">${fn:substring(post.ranking,0,4)}</span>

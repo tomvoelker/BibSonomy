@@ -34,8 +34,8 @@
             <!--
                | two scripts just for the post page - one resource specific 
                -->
-            <script type="text/javascript" src="${resdir}/javascript/post${resourceType}.js">&amp;nbsp;</script>
-            <script type="text/javascript" src="${resdir}/javascript/postPost.js">&amp;nbsp;</script>
+            <script type="text/javascript" src="${resdir}/javascript/edit${resourceType}.js">&amp;nbsp;</script>
+            <script type="text/javascript" src="${resdir}/javascript/editPost.js">&amp;nbsp;</script>
 	    </jsp:attribute>
 	    
             
