@@ -23,6 +23,7 @@ import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -698,7 +699,7 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
-	public String updateUser(User user) {
+	public String updateUser(User user, final UserUpdateOperation operation) {
 		this.dbUsers.put(user.getName(), user);
 		return null;
 	}
