@@ -4,6 +4,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
@@ -48,6 +49,6 @@ public class PutUserStrategy extends AbstractUpdateStrategy {
 		final User user = this.getRenderer().parseUser(this.doc);
 		// ensure to use the right user name
 		user.setName(this.userName);
-		return this.getLogic().updateUser(user);
+		return this.getLogic().updateUser(user, UserUpdateOperation.UPDATE_ALL);
 	}
 }
