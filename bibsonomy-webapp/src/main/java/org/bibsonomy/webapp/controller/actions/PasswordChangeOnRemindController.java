@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
@@ -63,7 +64,7 @@ public class PasswordChangeOnRemindController implements MinimalisticController<
 			
 			log.debug("writing the new password to the database");
 			// update user in database
-			adminLogic.updateUser(user);
+			adminLogic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
 			
 			log.debug("setting up new cookie");
 			// create a new cookie with the right login details
