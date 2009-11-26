@@ -1,5 +1,6 @@
 package org.bibsonomy.lucene.index;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -21,6 +22,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -28,6 +30,7 @@ import org.apache.lucene.store.LockObtainFailedException;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
 import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.model.Resource;
+import static org.apache.lucene.util.Version.*;
 
 /**
  * abstract base class for managing lucene resource indices
@@ -108,11 +111,11 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 		LuceneBase.initRuntimeConfiguration();
 		this.luceneIndexPath = getIndexBasePath()+CFG_LUCENE_INDEX_PREFIX+getResourceName();
 
+		Directory indexDirectory = FSDirectory.open(new File(luceneIndexPath));
 		try {
-			Directory dir = FSDirectory.getDirectory(luceneIndexPath);
-			if( IndexWriter.isLocked(dir) ) {
+			if( IndexWriter.isLocked(indexDirectory) ) {
 				log.error("WARNING: Index "+luceneIndexPath+" is locked - forcibly unlock the index.");
-				IndexWriter.unlock(dir);
+				IndexWriter.unlock(indexDirectory);
 				log.error("OK. Index unlocked.");
 			}
 		} catch (IOException e) {
@@ -121,7 +124,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 		}
 		
 		try {
-			indexReader = IndexReader.open(luceneIndexPath);
+			indexReader = IndexReader.open(indexDirectory);
 			accessMode = AccessMode.ReadOnly;
 		} catch( IOException e) {
 			log.error("Error opening IndexReader ("+e.getMessage()+")", e);
@@ -150,8 +153,11 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 			int hitsPerPage = 1;
 			
 			IndexSearcher searcher = new IndexSearcher(indexReader);
-			QueryParser qp = new QueryParser(FLD_LAST_LOG_DATE,new StandardAnalyzer());
-			Sort sort = new Sort(FLD_LAST_LOG_DATE,true);
+			QueryParser qp = 
+				new QueryParser(LUCENE_24, FLD_LAST_LOG_DATE,new StandardAnalyzer(LUCENE_24));
+			// sort by last_log_date of type LONG in reversed order
+			SortField sortField = new SortField(FLD_LAST_LOG_DATE, SortField.LONG, true); 
+			Sort sort = new Sort(sortField);
 	
 			// search over all elements sort them reverse by date and return 1 top document (newest one)
 			TopDocs topDocs = null;
@@ -197,14 +203,17 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 			int hitsPerPage = 1;
 			
 			IndexSearcher searcher = new IndexSearcher(indexReader);
-			QueryParser qp = new QueryParser(FLD_LAST_TAS_ID, new StandardAnalyzer());
-			Sort sort = new Sort(FLD_LAST_TAS_ID,true);
+			QueryParser qp = new QueryParser(LUCENE_24,FLD_LAST_TAS_ID, new StandardAnalyzer(LUCENE_24));
+			// order by last_tas_id of type INT in reversed order
+			SortField sortField = new SortField(FLD_LAST_TAS_ID,SortField.INT,true);
+			Sort sort = new Sort(sortField);
 	
 			// search over all elements sort them reverse by date and return 1 top document 
 			// newest one
 			TopDocs topDocs = null;
 			Document doc = null;
 			try {
+				// FIXME: construct query explicitly
 				topDocs = searcher.search(qp.parse("*:*"), null, hitsPerPage, sort);
 				doc = searcher.doc(topDocs.scoreDocs[0].doc);
 				lastTasId = Integer.parseInt(doc.get(FLD_LAST_TAS_ID));
@@ -529,7 +538,8 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 
 	private void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IOException {
 		log.debug("Opening index "+luceneIndexPath+" for writing");
-		indexWriter = new IndexWriter(luceneIndexPath, getAnalyzer(), false, IndexWriter.MaxFieldLength.UNLIMITED);
+		Directory indexDirectory = FSDirectory.open(new File(luceneIndexPath));
+		indexWriter = new IndexWriter(indexDirectory, getAnalyzer(), false, IndexWriter.MaxFieldLength.UNLIMITED);
 		accessMode  = AccessMode.WriteOnly;
 	}
 
@@ -549,7 +559,8 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 
 	private void openIndexReader() throws CorruptIndexException, IOException {
 		log.debug("Opening index "+luceneIndexPath+" for reading");
-		indexReader = IndexReader.open(luceneIndexPath);
+		Directory indexDirectory = FSDirectory.open(new File(luceneIndexPath));
+		indexReader = IndexReader.open(indexDirectory, false);
 		accessMode  = AccessMode.ReadOnly;
 	}
 

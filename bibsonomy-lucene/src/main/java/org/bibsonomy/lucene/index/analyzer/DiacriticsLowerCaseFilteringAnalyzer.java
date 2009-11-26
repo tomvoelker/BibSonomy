@@ -4,13 +4,14 @@ import java.io.Reader;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.lucene.analysis.ASCIIFoldingFilter;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.ISOLatin1AccentFilter;
 import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.StopFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardFilter;
 import org.apache.lucene.analysis.standard.StandardTokenizer;
+import org.apache.lucene.util.Version;
 
 /**
  * analyzer for normalizing diacritics (e.g. &auml; to a)
@@ -41,11 +42,11 @@ public class DiacriticsLowerCaseFilteringAnalyzer extends Analyzer {
 	 */
 	@Override
 	public TokenStream tokenStream(String fieldName, Reader reader) { 
-		TokenStream result = new StandardTokenizer(reader); 
+		TokenStream result = new StandardTokenizer(Version.LUCENE_24, reader); 
 		result = new StandardFilter(result); 
 		result = new LowerCaseFilter(result); 
-		result = new StopFilter(result, getStopSet()); 
-		result = new ISOLatin1AccentFilter(result); 
+		result = new StopFilter(true, result, getStopSet()); 
+		result = new ASCIIFoldingFilter(result); 
 		return result; 
 	}
 

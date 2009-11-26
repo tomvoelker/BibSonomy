@@ -17,15 +17,22 @@
   		</property>
   	</bean>
 
-	<bean id="luceneStandardAnalyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer"/>
+	<bean id="luceneStandardAnalyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer">
+		<constructor-arg ref="lucene24Compat"/>
+	</bean>
 
 	<bean id="luceneDiacriticsAnalyzer" class="org.bibsonomy.lucene.index.analyzer.DiacriticsLowerCaseFilteringAnalyzer"/>
 	
-	<bean id="luceneGermanAnalyzer" class="org.apache.lucene.analysis.de.GermanAnalyzer"/>
+	<bean id="luceneGermanAnalyzer" class="org.apache.lucene.analysis.de.GermanAnalyzer">
+		<constructor-arg ref="lucene24Compat"/>
+	</bean>
 	
 	<bean id="luceneFieldWrapperAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper" factory-method="getPreInitInstance">
 		<property name="defaultAnalyzer" ref="luceneStandardAnalyzer"/>
 		<property name="fieldMap" ref="luceneFieldAnalyzerMap"/>
 	</bean>
 
+	<bean id="lucene24Compat" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+ 		<property name="staticField" value="org.apache.lucene.util.Version.LUCENE_24"/>
+	</bean>
 </beans>

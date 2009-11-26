@@ -1,5 +1,6 @@
 package org.bibsonomy.lucene.index;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
@@ -11,6 +12,8 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexWriter;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.store.LockObtainFailedException;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LucenePost;
@@ -116,7 +119,8 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 	 */
 	public void createEmptyIndex() throws CorruptIndexException, LockObtainFailedException, IOException {
 		// create index, possibly overwriting existing index files
-		indexWriter  = new IndexWriter(this.luceneResourceIndexPath, getAnalyzer(), true, mfl); 
+		Directory indexDirectory = FSDirectory.open(new File(this.luceneResourceIndexPath));
+		indexWriter  = new IndexWriter(indexDirectory, getAnalyzer(), true, mfl); 
 	}
 
 	

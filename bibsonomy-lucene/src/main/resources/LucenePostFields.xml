@@ -20,7 +20,7 @@
 					<map>
 						<entry key="luceneName" value="date" />
 						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
-						<entry key="typeHandler" value-ref="dateConverter" />
+						<entry key="typeHandler" value-ref="dateMSConverter" />
 					</map>
 				</entry>
 				<entry key="lastLogDate">

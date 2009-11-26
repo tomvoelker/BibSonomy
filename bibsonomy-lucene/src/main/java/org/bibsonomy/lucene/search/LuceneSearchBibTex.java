@@ -1,5 +1,7 @@
 package org.bibsonomy.lucene.search;
 
+import static org.apache.lucene.util.Version.LUCENE_24;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,12 +13,13 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.Query;
-import org.apache.lucene.search.RangeFilter;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TermRangeFilter;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.util.LucenePostConverter;
@@ -104,11 +107,11 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		if (PARAM_RELEVANCE.equals(orderBy)) {
 			sort = new Sort(new SortField[]{
 					SortField.FIELD_SCORE,	
-					new SortField(FLD_DATE,true)
+					new SortField(FLD_DATE,SortField.STRING,true)
   			});
 		} else { 
 			// orderBy=="date"
-			sort = new Sort("date",true);
+			sort = new Sort(new SortField(FLD_DATE, SortField.STRING,true));
 		}
 		qf.setSort(sort);
 		
@@ -122,7 +125,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		//--------------------------------------------------------------------
 		// we parse the (escaped) search term for enabling advanced lucene 
 		// search queries 
-		QueryParser searchTermParser = new QueryParser(FLD_AUTHOR, getAnalyzer());
+		QueryParser searchTermParser = new QueryParser(LUCENE_24, FLD_AUTHOR, getAnalyzer());
 		if (PARAM_RELEVANCE.equals(orderBy)) {
 			searchTermParser.setDefaultOperator(QueryParser.Operator.OR); // is default
 		} else { 
@@ -210,7 +213,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		if (includeLowerBound || includeUpperBound) {
 			// if upper or lower bound is given, then use filter
 			FilteredQuery filteredQuery = null;
-			RangeFilter rangeFilter=new RangeFilter(FLD_YEAR , firstYear, lastYear, includeLowerBound, includeUpperBound);
+			Filter rangeFilter=new TermRangeFilter(FLD_YEAR , firstYear, lastYear, includeLowerBound, includeUpperBound);
 			filteredQuery=new FilteredQuery(mainQuery,rangeFilter);
 			qf.setQuery(filteredQuery);
 		} else {

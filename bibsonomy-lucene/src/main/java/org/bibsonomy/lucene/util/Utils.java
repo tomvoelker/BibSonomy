@@ -12,7 +12,9 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.util.Version;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 
 /**
@@ -56,7 +58,14 @@ public class Utils {
 	}
 
 	
-	
+	/**
+	 * FIXME: this is OLD
+	 * @param reader
+	 * @return
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 */
+	@Deprecated
 	public static String getNewestRecordDateFromIndex(IndexReader reader) throws CorruptIndexException, IOException {
 		final Log LOGGER = LogFactory.getLog(Utils.class);
 		String newestDate = "";
@@ -69,8 +78,8 @@ public class Utils {
 		int hitsPerPage = 1;
 		
 		IndexSearcher searcher = new IndexSearcher(reader);
-		QueryParser qp = new QueryParser("content_id",new StandardAnalyzer());
-		Sort sort = new Sort("date",true);
+		QueryParser qp = new QueryParser(Version.LUCENE_24, "content_id",new StandardAnalyzer(Version.LUCENE_24));
+		Sort sort = new Sort(new SortField("date", SortField.STRING,true));
 
 		// search over all elements sort them reverse by date and return 1 top document (newest one)
 		TopDocs topDocs = null;
@@ -96,6 +105,12 @@ public class Utils {
 	}
 	
 	
+	/**
+	 * FIXME: this is OLD
+	 * @param lucenePath
+	 * @return
+	 */
+	@Deprecated
 	public static LuceneIndexStatistics getStatistics(String lucenePath) {
 		final Log LOGGER = LogFactory.getLog(Utils.class);
 		
@@ -103,12 +118,13 @@ public class Utils {
 		IndexReader reader=null;
 		LuceneIndexStatistics indexStatistics = new LuceneIndexStatistics();
 
+		/*
 		try {
 			reader = IndexReader.open(lucenePath);
 			indexStatistics.setNewestRecordDate(Utils.getNewestRecordDateFromIndex(reader));
-			indexStatistics.setCurrent(reader.isCurrent());
-			indexStatistics.setLastModified(IndexReader.lastModified(lucenePath));
-			indexStatistics.setCurrentVersion(IndexReader.getCurrentVersion(lucenePath));
+			indexStatistics.setCurrent(reader.isCurrent());u
+			//indexStatistics.setLastModified(IndexReader.lastModified(lucenePath));
+			//indexStatistics.setCurrentVersion(IndexReader.getCurrentVersion(lucenePath));
 		} catch (CorruptIndexException e) {
 			LOGGER.error("CorruptIndexException in getStatistics ("+e.getMessage()+")");
 		} catch (IOException e) {
@@ -117,7 +133,7 @@ public class Utils {
 
 		indexStatistics.setNumDocs(reader.numDocs());
 		indexStatistics.setNumDeletedDocs(reader.numDeletedDocs());
-		
+		*/
 		return indexStatistics;
 	}
 	
