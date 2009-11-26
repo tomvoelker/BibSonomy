@@ -8,6 +8,7 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -63,7 +64,7 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 					user.setToClassify(0);
 					user.setAlgorithm("admin");
 					user.setSpammer(true);
-					this.logic.updateUser(user);
+					this.logic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
 				}else{
 					command.addInfo("The user was already flagged as a spammer.");
 				}
