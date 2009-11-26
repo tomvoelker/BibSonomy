@@ -127,6 +127,13 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 		 * TODO: i18n
 		 */
 		command.setPageTitle("edit a post");
+		/*
+		 * We store the referer in the command, to send the user back to the 
+		 * page he's coming from at the end of the posting process. 
+		 */
+		if (!ValidationUtils.present(command.getReferer())) {
+			command.setReferer(requestLogic.getReferer());
+		}
 
 		/*
 		 * only users which are logged in might post -> send them to
@@ -149,7 +156,13 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 
 		final User loginUser = context.getLoginUser();
 
-
+		
+		/*
+		 * After having handled the general issues (login, referer, etc.),
+		 * sub classes can now execute their workOn code 
+		 */
+		workOnCommand(command, loginUser);
+		
 		/*
 		 * If user is spammer block him silently by entering captcha again and again
 		 */
@@ -201,6 +214,8 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 		return handleCreatePost(command, context, loginUser, post);
 
 	}
+	
+	protected abstract void workOnCommand(final EditPostCommand<RESOURCE> command, final User loginUser);
 
 	/**
 	 * TODO extract method; used by many controllers
@@ -234,7 +249,7 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 	 *            the login user.
 	 * @return The post view.
 	 */
-	protected View getPostPostView(final EditPostCommand<RESOURCE> command, final User loginUser) {
+	protected View getEditPostView(final EditPostCommand<RESOURCE> command, final User loginUser) {
 		/*
 		 * initialize tag sets for groups
 		 */
@@ -319,7 +334,7 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 			/*
 			 * returning to view
 			 */
-			return getPostPostView(command, loginUser);
+			return getEditPostView(command, loginUser);
 		}
 		log.debug("ckey given, so parse tags, validate post, update post");
 		/*
@@ -349,7 +364,7 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 		if (errors.hasErrors()) {
 			log.debug("returning to view because of errors: " + errors.getErrorCount());
 			log.debug("post is " + post.getResource());
-			return getPostPostView(command, loginUser);
+			return getEditPostView(command, loginUser);
 		}
 		/*
 		 * the post to update has the given intra hash
@@ -381,7 +396,7 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 		/*
 		 * leave if and reach final redirect
 		 */
-		return finalRedirect(command.isJump(), loginUserName, getRedirectUrl(post));
+		return finalRedirect(loginUserName, command.getReferer());
 	}
 
 	/**
@@ -493,16 +508,6 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 
 
 	/**
-	 * When the user shall be redirected to the page he is initially coming 
-	 * from (e.g., when he used the post bookmarklet), this method is used 
-	 * to extract the URL from the post.
-	 * 
-	 * @param post
-	 * @return
-	 */
-	protected abstract String getRedirectUrl(final Post<RESOURCE> post);
-
-	/**
 	 * Update recommender table such that recommendations are linked to the final 
 	 * post.
 	 * 
@@ -528,26 +533,23 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 
 
 	/**
-	 * Create the final redirect after successful creating / updating a post. if
-	 * jump is <code>true</code>, we redirect to the given postUrl. Otherwise
-	 * we redirect to the user's page.
+	 * Create the final redirect after successful creating / updating a post. We 
+	 * redirect to the URL the user was initially coming from. If we don't have 
+	 * that URL (for whatever reason), we redirect to the user's page.
 	 * 
-	 * @param jump -
-	 *            indicates whether to jump to postUrl (<code>true</code>)
-	 *            or to the user's page.
-	 * @param userName -
-	 *            the name of the loginUser
-	 * @param postUrl -
-	 *            the URL of the post
+	 * @param userName - the name of the loginUser
+	 * @param referer - the URL of the page the user is initially coming from
+	 *        
 	 * @return
 	 */
-	protected View finalRedirect(final boolean jump, final String userName, final String postUrl) {
+	private View finalRedirect(final String userName, final String referer) {
+
 		/*
-		 * if resource was posted by bookmarklet (jump = true) -> redirect to
-		 * URL user is coming from
+		 * If there is no referer URL given, redirect to the user's home page. 
 		 */
-		if (!jump) {
+		if (!ValidationUtils.present(referer)) {
 			try {
+				log.debug("redirecting to user page");
 				return new ExtendedRedirectView("/user/" + URLEncoder.encode(userName, "UTF-8"));
 			} catch (UnsupportedEncodingException ex) {
 				log.error("Could not encode redirect URL.", ex);
@@ -555,7 +557,10 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 				return Views.ERROR;
 			}
 		}
-		return new ExtendedRedirectView(postUrl);
+		/*
+		 * redirect to referer URL
+		 */
+		return new ExtendedRedirectView(referer);
 	}
 
 	private View handleCreatePost(final EditPostCommand<RESOURCE> command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post) {
@@ -570,7 +575,7 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 		 * check, if post already exists
 		 */
 		if (this.setDiffPost(command)) {
-			return getPostPostView(command, loginUser);
+			return getEditPostView(command, loginUser);
 		}
 
 		log.debug("wow, post is completely new! So ... return until no errors and then store it");
@@ -586,7 +591,7 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 		if (errors.hasErrors()) {
 			log.debug("returning to view because of errors: " + errors.getErrorCount());
 			log.debug("post is " + post.getResource());
-			return getPostPostView(command, loginUser);
+			return getEditPostView(command, loginUser);
 		}
 
 		/*
@@ -599,7 +604,7 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 		 */
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
-			return getPostPostView(command, loginUser);
+			return getEditPostView(command, loginUser);
 		}
 
 		setDate(post, loginUserName);
@@ -621,7 +626,7 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 		 */
 		setRecommendationFeedback(post, command.getPostID());
 
-		return finalRedirect(command.isJump(), loginUserName, getRedirectUrl(post)); 
+		return finalRedirect(loginUserName, command.getReferer()); 
 	}
 
 	/**

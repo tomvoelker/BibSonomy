@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
@@ -20,11 +18,9 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
-import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.EditPostValidator;
 import org.bibsonomy.webapp.validation.EditPublicationValidator;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
@@ -45,8 +41,6 @@ import bibtex.parser.ParseException;
  */
 public class EditPublicationController extends EditPostController<BibTex> {
 
-	private static final Log logger = LogFactory.getLog(EditPublicationController.class);
-
 	private Scraper scraper;
 
 	@Override
@@ -54,34 +48,15 @@ public class EditPublicationController extends EditPostController<BibTex> {
 		return Views.EDIT_PUBLICATION; // TODO: this could be configured using Spring!
 	}
 
-	@Override
-	protected String getRedirectUrl(Post<BibTex> post) {
-		/*
-		 * FIXME: this isn't necessary the right URL - it might be the PDF!
-		 * Thus, we need to store the original URL.
-		 * Or maybe it's better to redirect to the /bibtex/HASH/USER page?
-		 * 
-		 */
-		return post.getResource().getUrl();
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.webapp.controller.actions.PostPostController#workOn(org.bibsonomy.webapp.command.actions.EditPostCommand)
+	/**
+	 * If the command has set a url or selection, the scrapers are called to fill
+	 * the command's post with the scraped data. 
+	 * 
+	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#workOnCommand(org.bibsonomy.webapp.command.actions.EditPostCommand, org.bibsonomy.model.User)
 	 */
 	@Override
-	public View workOn(final EditPostCommand<BibTex> command) {
-		final RequestWrapperContext context = command.getContext();
-		/*
-		 *  user logged in?
-		 */
-		if (!context.isUserLoggedIn()) {
-			// TODO: refactor @see PostPostController#workOn
-			return new ExtendedRedirectView("/login?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + "&referer=/postPublication?" + this.safeURIEncode(context.getQueryString())); 
-		}
-
-		final User loginUser = context.getLoginUser();
-
+	protected void workOnCommand(final EditPostCommand<BibTex> command, final User loginUser) {
 		/*
 		 * Check if the controller was called by a bookmarklet which just 
 		 * delivers URL + selection which should be passed to the scrapers.
@@ -92,17 +67,13 @@ public class EditPublicationController extends EditPostController<BibTex> {
 			final String selection = publicationCommand.getSelection();
 
 			if (ValidationUtils.present(url) || ValidationUtils.present(selection)) {
-				return handleScraper(command, loginUser, publicationCommand, url, selection);
+				handleScraper(command, loginUser, publicationCommand, url, selection);
 			} // if (ValidationUtils.present(url) || ValidationUtils.present(selection))
 		} 
-
-		/*
-		 * handle update or create of a publication
-		 */
-		return super.workOn(command);
 	}
 
-	private View handleScraper(final EditPostCommand<BibTex> command, final User loginUser, final EditPublicationCommand publicationCommand, final String url, String selection) {
+	
+	private void handleScraper(final EditPostCommand<BibTex> command, final User loginUser, final EditPublicationCommand publicationCommand, final String url, String selection) {
 		/*
 		 * We have a URL set which means we shall scrape!
 		 * 
@@ -167,12 +138,13 @@ public class EditPublicationController extends EditPostController<BibTex> {
 						/*
 						 * return to view 
 						 */
-						return this.getPostPostView(command, loginUser);
-					} // if (ValidationUtils.present(parsedBibTex))
-					/*
-					 * the parser did not return any result ...
-					 */
-					this.getErrors().reject("error.scrape.nothing", new Object[]{url, scrapedBibtex}, "The BibTeX\n\n{0}\n\nwe scraped from {1} could not be parsed.");
+//						return this.getEditPostView(command, loginUser);
+					} else {// if (ValidationUtils.present(parsedBibTex))
+						/*
+						 * the parser did not return any result ...
+						 */
+						this.getErrors().reject("error.scrape.nothing", new Object[]{scrapedBibtex, url}, "The BibTeX\n\n{0}\n\nwe scraped from {1} could not be parsed.");
+					}
 				} catch (IOException ex) {
 					/*
 					 * exception while parsing bibtex
@@ -210,9 +182,9 @@ public class EditPublicationController extends EditPostController<BibTex> {
 		 * A URL or selection to scrape was given ... but we did not 
 		 * return to the post form ... so something went wrong
 		 */
-		return Views.ERROR;
+//		return Views.ERROR;
 	}
-	
+
 	@Override
 	protected void preparePostForView(Post<BibTex> post) {
 		/*
@@ -253,7 +225,7 @@ public class EditPublicationController extends EditPostController<BibTex> {
 		 */
 		BibTexUtils.prepareEditorAndAuthorFieldForDatabase(post.getResource());
 	}
-	
+
 	@Override
 	protected BibTex instantiateResource() {
 		final BibTex publication = new BibTex();
@@ -275,7 +247,7 @@ public class EditPublicationController extends EditPostController<BibTex> {
 		errors.reject("error.duplicate.post");
 	}
 
-	
+
 	public Scraper getScraper() {
 		return this.scraper;
 	}

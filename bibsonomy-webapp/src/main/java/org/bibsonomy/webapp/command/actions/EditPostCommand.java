@@ -23,7 +23,6 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	
 	private Post<RESOURCE> post;
 	private String tags ;
-	private boolean jump = false;
 	
 	private Post<RESOURCE> diffPost;
 	
@@ -121,13 +120,6 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 		this.relevantTagSets = relevantTagSets;
 	}
 
-	public void setJump(boolean jump) {
-		this.jump = jump;
-	}
-
-	public boolean isJump() {
-		return jump;
-	}
 		
 	/** Sets the tags from the copied post.
 	 * Needed for the (old) "copy" links.
