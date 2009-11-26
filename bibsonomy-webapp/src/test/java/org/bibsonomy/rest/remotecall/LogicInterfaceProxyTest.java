@@ -26,6 +26,7 @@ import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -604,7 +605,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void updateUserTest() {
 		createUser(ModelUtils.getUser());
 	}
-	public String updateUser(User user) {
+	public String updateUser(User user, final UserUpdateOperation operation) {
 		EasyMock.expect(serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, "apiKey"))).andReturn("rVal");
 		EasyMock.replay(serverLogic);
 		Assert.assertEquals("rVal", clientLogic.createUser(user));
