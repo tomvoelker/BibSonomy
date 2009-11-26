@@ -24,7 +24,7 @@ function getRequiredFieldsForType(type) {
 		case "article":	
 			return new Array("journal","volume","number","pages","month","note"); break;
 		case "book": 
-			return new Array("booktitle","publisher","volume","number","series","address","edition","month","note"); break;
+			return new Array("publisher","volume","number","series","address","edition","month","note"); break;
 		case "booklet": 
 			return new Array("howpublished","address","month","note"); break;
 		case "inbook": 
