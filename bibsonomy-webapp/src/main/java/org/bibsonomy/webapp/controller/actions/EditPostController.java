@@ -141,17 +141,14 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 		 */
 		if (!context.isUserLoggedIn()) {
 			/*
-			 * FIXME: We need to add the ?referer= parameter such that the user
-			 * is send back to this controller after login. This is not so
-			 * simple, because we cannot access the query path and for POST
-			 * requests we would need to build the parameters by ourselves.
-			 * 
-			 * This is a quick hack, it works at least for GET requests.
-			 * What is ugly about it: we have the URL to postBookmark in
-			 * the source code (although we could/should inject it using 
-			 * Spring)
+			 * We add two referer headers: the inner for this controller to 
+			 * send the user back to the page he was initially coming from,
+			 * the outer for the login page to send the user back to this 
+			 * controller.
 			 */
-			return new ExtendedRedirectView("/login?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + "&referer=/editBookmark?" + safeURIEncode(context.getQueryString())); // FIXME: refactor
+			return new ExtendedRedirectView("/login" + 
+					"?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + 
+					"&referer=" + safeURIEncode(requestLogic.getCompleteRequestURL() + "&referer=" + safeURIEncode(requestLogic.getReferer()))); 
 		}
 
 		final User loginUser = context.getLoginUser();
