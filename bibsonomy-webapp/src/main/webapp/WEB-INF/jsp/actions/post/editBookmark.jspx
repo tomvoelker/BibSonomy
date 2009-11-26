@@ -43,7 +43,7 @@
                -->	
             <div id="scrapable" style="display:none">
                 <br/>
-                <form:form action="/postPublication" method="post" id="bibtex_snippet">      
+                <form:form action="/editPublication" method="post" id="bibtex_snippet">      
                   <fieldset style="border: 1px solid #069;background-color: #eee; position:relative;">
                     <fieldset class="fsnoborder" style="position:relative;">
                       <h2><fmt:message key="post.meta.recommended"/>: <fmt:message key="post.meta.save_as_publication"/></h2>

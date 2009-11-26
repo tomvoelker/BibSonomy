@@ -25,7 +25,7 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
     init_tagbox(tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser);
   }
   
-  if (!location.pathname.startsWith("/post_publication")){
+  if (!location.pathname.startsWith("/postPublication")){
 	  if (sidebar) {  
 	    add_filter();
 	    init_sidebar();
@@ -1721,7 +1721,7 @@ function editTags(obj, ckey) {
     var parent = obj.parentNode;
     var type = "bookmark";
 
-    if (link.search(/^\/postPublication/) != -1)	{
+    if (link.search(/^\/editPublication/) != -1)	{
     	type = "bibtex";
     	targetChild = 2;
     	parent.removeChild(parent.childNodes[targetChild]);
