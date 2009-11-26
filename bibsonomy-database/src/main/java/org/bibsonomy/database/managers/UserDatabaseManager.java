@@ -132,6 +132,18 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		user.setApiKey(UserUtils.generateApiKey());
 		this.update("updateApiKeyForUser", user, session);
 	}
+	
+	/**
+	 * Updates only the password of a current user
+	 * 
+	 * @param username
+	 * @param session
+	 */
+	public void updatePasswordForUser(final String username, final DBSession session) {
+		final User user = new User(username);
+		if (this.getUserDetails(user.getName(), session).getName() == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update password for nonexistent user");
+		this.update("updatePasswordForUser", user, session);
+	}
 
 	List<String> getUserNamesByGroupId(final Integer groupId, final DBSession session) {
 		return this.queryForList("getUserNamesByGroupId", groupId, String.class, session);
