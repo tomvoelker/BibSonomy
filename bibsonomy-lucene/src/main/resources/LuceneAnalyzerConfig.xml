@@ -12,12 +12,14 @@
   			<map>
   				<entry key="author" value-ref="luceneStandardAnalyzer"/>
   				<entry key="user_name" value-ref="luceneStandardAnalyzer"/>
-  				<entry key="mergedfields" value-ref="luceneGermanAnalyzer"/>
+  				<entry key="mergedfields" value-ref="luceneDiacriticsAnalyzer"/>
   			</map>
   		</property>
   	</bean>
 
 	<bean id="luceneStandardAnalyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer"/>
+
+	<bean id="luceneDiacriticsAnalyzer" class="org.bibsonomy.lucene.index.analyzer.DiacriticsLowerCaseFilteringAnalyzer"/>
 	
 	<bean id="luceneGermanAnalyzer" class="org.apache.lucene.analysis.de.GermanAnalyzer"/>
 	

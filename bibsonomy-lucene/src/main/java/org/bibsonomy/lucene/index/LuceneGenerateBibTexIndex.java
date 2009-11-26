@@ -29,11 +29,6 @@ public class LuceneGenerateBibTexIndex extends LuceneGenerateResourceIndex<BibTe
 	//------------------------------------------------------------------------
 	// constructor
 	//------------------------------------------------------------------------
-	public LuceneGenerateBibTexIndex(Properties props)
-	throws ClassNotFoundException, SQLException {
-		super(props);
-	}
-	
 	public LuceneGenerateBibTexIndex()
 	throws ClassNotFoundException, SQLException {
 		super();

@@ -36,6 +36,7 @@ public class LucenePostConverterTest extends LuceneBase {
 	public void setUp() {
 		// bind datasource access via JNDI
 		JNDITestDatabaseBinder.bind();
+		LuceneBase.initRuntimeConfiguration();
 	}
 	
 	@Test

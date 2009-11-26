@@ -21,12 +21,6 @@ public class LuceneGenerateBookmarkIndex extends LuceneGenerateResourceIndex<Boo
 	//------------------------------------------------------------------------
 	// constructor
 	//------------------------------------------------------------------------
-	public LuceneGenerateBookmarkIndex(Properties props)
-	throws ClassNotFoundException, SQLException {
-		super(props);
-		// TODO Auto-generated constructor stub
-	}
-
 	public LuceneGenerateBookmarkIndex()
 	throws ClassNotFoundException, SQLException {
 		super();

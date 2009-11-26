@@ -7,10 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.Token;
@@ -193,17 +189,8 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 * initialize internal data structures
 	 */
 	private void init() {
-		try {
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup(CONTEXT_ENV_NAME);
-			
-			String contextPathName = CONTEXT_INDEX_PATH+getResourceName();
-			this.luceneIndexPath = (String) envContext.lookup(contextPathName);
-			log.debug("Using index " + luceneIndexPath);
-		} catch (NamingException e) {
-			log.error("NamingException requesting JNDI environment variables ' ("+e.getMessage()+")", e);
-		}
-
+		LuceneBase.initRuntimeConfiguration();
+		this.luceneIndexPath = getIndexBasePath()+CFG_LUCENE_INDEX_PREFIX+getResourceName();
 	}
 	
 	/** reload the index -- has to be called after each index change */

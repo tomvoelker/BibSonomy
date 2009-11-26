@@ -1,6 +1,7 @@
 package org.bibsonomy.lucene.util;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -8,8 +9,11 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
+import org.bibsonomy.lucene.param.LuceneConfig;
+import org.bibsonomy.util.ValidationUtils;
 import org.mockejb.jndi.MockContextFactory;
 
 /**
@@ -22,7 +26,8 @@ import org.mockejb.jndi.MockContextFactory;
  *          $
  */
 
-public final class JNDITestDatabaseBinder {
+public final class JNDITestDatabaseBinder extends LuceneBase {
+
 	/** logging */
 	private static final Logger log = Logger
 			.getLogger(JNDITestDatabaseBinder.class);
@@ -54,7 +59,47 @@ public final class JNDITestDatabaseBinder {
 	 */
 	public static final void bind() {
 		bindDatabaseContext("bibsonomy_lucene", LUCENEPROPERTYFILENAME);
-		bindVariablesContext(CONTEXTNAME, LUCENEPROPERTYFILENAME);
+		bindLuceneConfig(CONTEXTNAME, LUCENEPROPERTYFILENAME);
+		// bindVariablesContext(CONTEXTNAME, LUCENEPROPERTYFILENAME);
+	}
+
+	private static void bindLuceneConfig(String contextName, String fileName) {
+		Context ctx;
+		
+		final Properties props = new Properties();		
+		try {
+			// read properties
+			props.load(JNDITestDatabaseBinder.class.getClassLoader().getResourceAsStream(fileName));		
+		} catch (IOException ex) {
+			throw new RuntimeException(ex);
+		}
+		
+		LuceneConfig config = new LuceneConfig();
+
+		// get properties
+		for( Object key : props.keySet() ) {
+			if( !ValidationUtils.present((key.toString()))||!(key.toString()).startsWith(CONTEXT_CONFIG_BEAN) )
+				continue;
+			else {
+				String propertyName = getPropertyName((String)key);
+				String propertyValue= props.getProperty((String)key);
+				try {
+					PropertyUtils.setNestedProperty(config, propertyName, propertyValue);
+					log.debug("Set lucene configuration property "+propertyName+" to "+propertyValue);
+				} catch (Exception e) {
+					log.warn("Error setting lucene configuration property "+propertyName+" to "+propertyValue+"('"+e.getMessage()+"')");
+				}
+			}
+		}
+		
+		// bind bean in context
+		try {
+			MockContextFactory.setAsInitial();
+			ctx = new InitialContext();
+			ctx.bind(contextName+CONTEXT_CONFIG_BEAN, config);
+		} catch (NamingException ex) {
+			log.error("Error binding environment variable:'" + contextName + "' via JNDI ('"+ex.getMessage()+"')");
+		}
 	}
 
 	private static void bindDatabaseContext(final String contextName,
@@ -97,13 +142,14 @@ public final class JNDITestDatabaseBinder {
 			MockContextFactory.setAsInitial();
 			ctx = new InitialContext();
 			for( Object key : props.keySet() ) {
+				String propertyName = getPropertyName((String)key);
 				try {
 					// FIXME: this is a dirty hack, as lucene expects some booleans
 					String booleanCompare = props.getProperty((String)key).toLowerCase();
 					if( "true".compareTo(booleanCompare)==0 || "false".compareTo(booleanCompare)==0 ) {
-						ctx.bind(contextName+key, new Boolean(booleanCompare));
+						ctx.bind(contextName+propertyName, new Boolean(booleanCompare));
 					} else {
-						ctx.bind(contextName+key, props.getProperty((String)key));
+						ctx.bind(contextName+propertyName, props.getProperty((String)key));
 					}
 				}
 				catch (NamingException ex) {
@@ -162,5 +208,17 @@ public final class JNDITestDatabaseBinder {
 		dataSource.setPassword(props.getProperty(PROPERTY_DB_PASSWORD));
 
 		return dataSource;
+	}	
+	
+	/**
+	 * extract property name 
+	 * @return
+	 */
+	private static String getPropertyName(String propertyKey) {
+		if (propertyKey.lastIndexOf('.') > 0) {
+	        propertyKey = propertyKey.substring(propertyKey.lastIndexOf('.')+1);
+	    }
+		
+		return propertyKey;
 	}
 }

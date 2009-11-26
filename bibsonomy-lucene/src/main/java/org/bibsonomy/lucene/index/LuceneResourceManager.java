@@ -6,10 +6,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
@@ -76,17 +72,8 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	 * initialize internal data structures
 	 */
 	private void init() {
-		try {
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup(CONTEXT_ENV_NAME);
-			
-			this.luceneUpdaterEnabled = (Boolean) envContext.lookup(CONTEXT_ENABLE_FLAG);
-			this.useUpdater = true;
-		} catch (NamingException e) {
-			this.useUpdater = false;
-			log.error("NamingException requesting JNDI environment variables' ("+e.getMessage()+")", e);
-		}
-
+		this.luceneUpdaterEnabled = getEnableUpdater();
+		this.useUpdater           = true;
 	}
 	
 	/**

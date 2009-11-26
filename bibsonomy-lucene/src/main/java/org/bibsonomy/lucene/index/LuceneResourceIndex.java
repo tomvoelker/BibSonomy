@@ -7,10 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
@@ -108,17 +104,9 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 * @throws IOException 
 	 * @throws NamingException 
 	 */
-	private void init() throws IOException, NamingException {
-		try {
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup(CONTEXT_ENV_NAME);
-			
-			String contextPathName = CONTEXT_INDEX_PATH+getResourceName();
-			this.luceneIndexPath = (String) envContext.lookup(contextPathName);
-		} catch (NamingException e) {
-			log.error("NamingException requesting JNDI environment variables ' ("+e.getMessage()+")", e);
-			throw e;
-		}
+	private void init() throws IOException {
+		LuceneBase.initRuntimeConfiguration();
+		this.luceneIndexPath = getIndexBasePath()+CFG_LUCENE_INDEX_PREFIX+getResourceName();
 
 		try {
 			Directory dir = FSDirectory.getDirectory(luceneIndexPath);

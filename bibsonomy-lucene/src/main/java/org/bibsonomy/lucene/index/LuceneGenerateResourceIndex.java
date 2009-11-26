@@ -45,8 +45,6 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 	/** writes the bookmark index */
 	IndexWriter indexWriter;
 
-	private String dbDriver;
-
 	/** default analyzer */
 	private Analyzer analyzer = null;
 	
@@ -56,33 +54,10 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 	 * @throws ClassNotFoundException 
 	 */
 	public LuceneGenerateResourceIndex() throws ClassNotFoundException, SQLException {
-		props = new Properties();		
-		try {
-			// read properties
-			props.load(LuceneGenerateResourceIndex.class.getClassLoader().getResourceAsStream(PROPERTYFILENAME));		
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-
 		// load configuration
 		init();
 	}
 
-	/**
-	 * constructor
-	 * @throws SQLException 
-	 * @throws ClassNotFoundException 
-	 */
-	public LuceneGenerateResourceIndex(final Properties props) throws ClassNotFoundException, SQLException {
-		//
-		// configuration
-		//		
-		this.props = props;
-		
-		// load configuration
-		init();
-	}
-	
 	/** 
 	 * reads in parameters from the properties file and stores them in 
 	 * the corresponding attributes
@@ -91,33 +66,18 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 	 * 
 	 */
 	private void init() throws ClassNotFoundException, SQLException {
-		//
-		// configuration
-		//
-		// 1) database
-		this.dbDriver = props.getProperty(PROP_DB_DRIVER_NAME);
-		Class.forName(this.dbDriver);
-
-		// 2) index files
-		this.luceneResourceIndexPath = props.getProperty(LUCENE_INDEX_PATH_PREFIX + getResourceName());
+		// initialize run time configuration
+		LuceneBase.initRuntimeConfiguration();
 		
-		// 3) index configuration
-		//    - maximum field length
-		String mflIn = props.getProperty("indexWriter.maximumFieldLength");
-		if( KEY_UNLIMITED.equals(mflIn) ) {
-			mfl = IndexWriter.MaxFieldLength.UNLIMITED;
-		}
-		else if( KEY_LIMITED.equals(mflIn) ) {
-			mfl = IndexWriter.MaxFieldLength.LIMITED;
-		} else {
-			Integer value;
-			try {
-				value = Integer.parseInt(mflIn);
-			} catch (NumberFormatException e) {
-				value = IndexWriter.DEFAULT_MAX_FIELD_LENGTH;
-			}
-			mfl = new IndexWriter.MaxFieldLength(value);
-		}
+		// 0) load database driver
+		//    FIXME: why is this necessary?
+		Class.forName(getDbDriverName());
+		
+		// 1) index files
+		this.luceneResourceIndexPath = getIndexBasePath()+CFG_LUCENE_INDEX_PREFIX+getResourceName();//props.getProperty(LUCENE_INDEX_PATH_PREFIX + getResourceName());
+		
+		// 2) maximal field width in the index
+		this.mfl = getMaximumFieldLength();
 	}
 
 	/**
@@ -198,6 +158,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 				// update management fields
 				postEntry.setLastLogDate(lastLogDate);
 				postEntry.setLastTasId(lastTasId);
+				
 				// create index document from post model
 				Document post = LucenePostConverter.readPost(postEntry);
 
@@ -215,6 +176,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 					log.info("Read "+(i+is)+" posts");
 				}
 			}
+			log.info("Ready.");
 		}
 
 		// optimize index

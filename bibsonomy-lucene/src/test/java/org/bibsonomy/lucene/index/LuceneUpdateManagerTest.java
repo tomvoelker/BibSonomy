@@ -449,17 +449,11 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws IOException 
 	 */
 	private void generateIndex() throws IOException, ClassNotFoundException, SQLException {
-		/*
-		GenerateLuceneIndex indexer = new GenerateLuceneIndex(JNDITestDatabaseBinder.getLuceneProperties());
-		indexer.setLogic(LuceneBibTexLogic.getInstance());
-		indexer.generateIndex();
-		*/
-		
 		// FIXME: configure this via spring
 		LuceneGenerateResourceIndex<BibTex> bibTexIndexer = 
-			new LuceneGenerateBibTexIndex(JNDITestDatabaseBinder.getLuceneProperties()); 
+			new LuceneGenerateBibTexIndex(); 
 		LuceneGenerateResourceIndex<Bookmark> bookmarkIndexer = 
-			new LuceneGenerateBookmarkIndex(JNDITestDatabaseBinder.getLuceneProperties());
+			new LuceneGenerateBookmarkIndex();
 		
 		bibTexIndexer.createEmptyIndex();
 		bookmarkIndexer.createEmptyIndex();
