@@ -26,6 +26,7 @@ import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -982,7 +983,7 @@ public class DBLogic implements LogicInterface {
 	 * .User)
 	 */
 	@Override
-	public String updateUser(final User user) {
+	public String updateUser(final User user, final UserUpdateOperation operation) {
 		/*
 		 * only logged in users can update user settings
 		 */
