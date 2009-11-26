@@ -41,6 +41,7 @@ import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
@@ -207,7 +208,7 @@ public class RestLogic implements LogicInterface {
 		return resourceHashes;
 	}
 
-	public String updateUser(User user, final PostUpdateOperation operation) {
+	public String updateUser(User user, final UserUpdateOperation operation) {
 		// accounts cannot be renamed
 		return execute(new ChangeUserQuery(user.getName(), user));
 	}
