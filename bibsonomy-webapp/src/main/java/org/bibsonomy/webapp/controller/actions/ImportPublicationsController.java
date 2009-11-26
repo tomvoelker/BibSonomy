@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -50,14 +51,9 @@ public class ImportPublicationsController extends SingleResourceListController i
 	private static final Pattern fileEnding = Pattern.compile("\\.([a-zA-Z]+)");
 	private static final Log log = LogFactory.getLog(UploadFileController.class);
 
-	// stores all newly added bookmarks
-	final Map<String, String> newBookmarkEntries = new HashMap<String, String>();
+	public static  final String ACTION_SAVE_BEFORE_EDIT ="";
+	public static  final String ACTION_SAVE_AFTER_EDIT ="";
 
-	// stores all the updated bookmarks
-	final Map<String, String> updatedBookmarkEntries = new HashMap<String, String>();
-	
-	// stores all the non imported bookmarks
-	final List<String> nonCreatedBookmarkEntries = new ArrayList<String>();
 	private Errors errors = null;
 	
 	private EditPublicationController editPublicationController;
@@ -105,70 +101,81 @@ public class ImportPublicationsController extends SingleResourceListController i
 		if(command.getSelection()!=null) {
 			snippet = command.getSelection();
 		} else if(command.getFile()!=null) {
+			
+			/*
+			 * Tab 3 (Upload BibTex/Endnote)
+			 */
+			/*
+			 * get temporary file from the command with the factory
+			 */
+			CommonsMultipartFile uploadedFile = command.getFile();
+			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), 
+                    																			  HandleFileUpload.bibtexEndnoteExt);
+			
+			Document uploadedDocument=null;
+			BufferedReader reader=null;
 			try {
-				/*
-				 * Tab 3 (Upload BibTex/Endnote)
-				 */
-				/*
-				 * get temporary file from the command with the factory
-				 */
-				CommonsMultipartFile uploadedFile = command.getFile();
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), 
-                        																			  HandleFileUpload.bibtexEndnoteExt);
-				final Document uploadedDocument = uploadFileHandler.writeUploadedFile();
-				BufferedReader reader = new BufferedReader(new FileReader(uploadedDocument.getFile()));
-
-				/*
-				 * extract the file ending
-				 */
-				String fileSuffix = null;
-				String uploadFileName = uploadedDocument.getFileName();
-				
-				Matcher patMat = fileEnding.matcher(uploadFileName);
-				if(patMat.find())
-					fileSuffix = patMat.group(1).toLowerCase(); 
-				
-				
-				/*
-				 * check, if it is an endnote or bibtex file
-				 * 
-				 * FIXME: please centralize file ending handling - the file upload handler might
-				 * have some methods for that
-				 * 
-				 * FIXME: the if-statement checks for "bib" and "endnote", but the 
-				 * exception suggests "bib" and "ris". 
-				 */
-				if(fileSuffix==null || !(fileSuffix.equals("bib") || fileSuffix.equals("endnote")))
-					/*
-					 * FIXME: don't throw exception (and never use Eclipse exceptions!) 
-					 * - use errors object instead
-					 */
-					//throw new InputFormatException("uploaded file has incorrect ending: .bib or .ris expected!");
-					errors.reject("error.upload.format.publication", "uploaded file has incorrect ending: .bib or .ris expected!");
-					
-				
-				if(fileSuffix.equals("endnote"))
-				{
+				uploadedDocument = uploadFileHandler.writeUploadedFile();
+				reader = new BufferedReader(new FileReader(uploadedDocument.getFile()));
+			} catch (FileNotFoundException ex1) {
+				errors.reject("error.upload.failed", "an error occurred during accessing your file.");
+			} catch (Exception ex1) {
+				errors.reject("error.upload.failed", "an error occurred during accessing your file.");
+			}
+			
+			if(reader==null)
+			{
+				//return to the old view showing the error.
+			}
+			
+			/*
+			 * extract the file ending
+			 */
+			String fileSuffix = null;
+			String uploadFileName = uploadedDocument.getFileName();
+			
+			Matcher patMat = fileEnding.matcher(uploadFileName);
+			if(patMat.find())
+				fileSuffix = patMat.group(1).toLowerCase(); 
+			
+			/*
+			 * in case the uploaded file is endnote				
+			 */
+			if(HandleFileUpload.bibtexEndnoteExt[1].equals(fileSuffix))
+			{
+				try {
 					EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
 					reader = (BufferedReader) converter.EndnoteToBibtex(reader);
+				} catch (Exception ex) {
+					errors.reject("error.upload.failed", "the submitted file does not contain valid endnotes.");
 				}
-				
-				/*
-				 * extract the file contents from the file
-				 */
-				
-				snippet = convertFileToString(reader);
-				
-				/*
-				 * clear temporary file
-				 */
-				uploadedDocument.getFile().delete();
-				
-			} catch (Exception ex) {
-				// TODO: error in file or error with filetype
 			}
+			
+			/*
+			 * extract the file contents from the file
+			 */
+			
+			try {
+				snippet = convertFileToString(reader);
+			} catch (Exception ex) {
+				errors.reject("error.upload.failed", "an error occurred during accessing your file.");
+			}
+			
+			if(snippet==null)
+			{
+				//return to the old view showing the error.
+			}
+			
+			/*
+			 * clear temporary file
+			 */
+			uploadedDocument.getFile().delete();
+				
+			
 		} else {
-			//TODO: error no file or snippet selected
+			errors.reject("error.upload.failed", "there was no bibtex or endnote entered.");
+			//this way of describing the error includes the bibtex snippet 
+			//3 opportunities that are ok: bibtex snippet or file and endnote file
 		}
 		
 		/*
@@ -178,13 +185,16 @@ public class ImportPublicationsController extends SingleResourceListController i
 		try {
 			bibtex = new PostBibTeXParser().parseBibTeXPosts(snippet); 
 		} catch (ParseException ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
+			errors.reject("error.upload.failed", "an error occurred during parsing process of your file.");
 		} catch (IOException ex) {
-			// TODO Auto-generated catch block
+			errors.reject("error.upload.failed", "an error occurred during parsing process of your file.");
 			ex.printStackTrace();
 		}
 	
+		if(bibtex==null)
+		{
+			//return to the old view showing the error.
+		}
 		
 		/*
 		 * if number of bibtexes contained is one, it can be edited in details, else we can use the 
@@ -211,15 +221,23 @@ public class ImportPublicationsController extends SingleResourceListController i
 			/*
 			 * if the user wants to save all imported entries and edit them afterwards
 			 */
+			// stores all newly added bookmarks
+			final Map<String, String> newBookmarkEntries = new HashMap<String, String>();
+
+			// stores all the updated bookmarks
+			final Map<String, String> updatedBookmarkEntries = new HashMap<String, String>();
+			
+			// stores all the non imported bookmarks
+			final List<String> nonCreatedBookmarkEntries = new ArrayList<String>();
 			if(!command.isEditBeforeImport())
 			{
-				savePublicationsForUser(postListCommand, command.isOverwrite(), loginUser);
-				//store a variable to determine the outlook of the batcheditbib.jspx (save/delete options labels for checkboxes)
+				savePublicationsForUser(postListCommand, command.isOverwrite(), loginUser, newBookmarkEntries, updatedBookmarkEntries, nonCreatedBookmarkEntries);
+				command.setFormAction(ACTION_SAVE_AFTER_EDIT);
 			} else { 
 			/*
 			 * if the user wants to edit the imported entries before saving
 			 */
-			/*set variable for adapted view*/
+				command.setFormAction(ACTION_SAVE_BEFORE_EDIT);
 			}
 			return Views.BATCHEDITBIB;
 		}
@@ -227,7 +245,7 @@ public class ImportPublicationsController extends SingleResourceListController i
 		
 	}
 
-	private void savePublicationsForUser(ListCommand<Post<BibTex>> postListCommand, boolean isOverwrite, User user)
+	private void savePublicationsForUser(ListCommand<Post<BibTex>> postListCommand, boolean isOverwrite, User user, Map<String, String> newBookmarkEntries, Map<String, String> updatedBookmarkEntries, List<String> nonCreatedBookmarkEntries)
 	{
 		for(Post<BibTex> post : postListCommand.getList())
 		{
