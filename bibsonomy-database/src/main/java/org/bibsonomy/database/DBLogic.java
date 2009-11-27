@@ -995,35 +995,48 @@ public class DBLogic implements LogicInterface {
 			this.permissionDBManager.ensureAdminAccess(loginUser);
 		}
 
-		/*
-		 * update only (!) spammer settings
-		 */
-		if (user.getPrediction() != null || user.getSpammer() != null) {
+		if(operation.equals(UserUpdateOperation.UPDATE_ALL)) {			
 			/*
-			 * only admins are allowed to change spammer settings
+			 * update only (!) spammer settings
 			 */
-			log.debug("Start update this framework");
-
-			this.permissionDBManager.ensureAdminAccess(loginUser);
-			/*
-			 * open session and update spammer settings
-			 */
-			DBSession session = this.openSession();
-			String flagSpammerUserName = null;
-			try {
-				final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
-				flagSpammerUserName = this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
-				// flag/unflag spammer in search index
-				for( ResourceSearch<? extends Resource> searcher : resourceSearcher ) {
-					searcher.flagSpammer(user);
+			if (user.getPrediction() != null || user.getSpammer() != null) {
+				/*
+				 * only admins are allowed to change spammer settings
+				 */
+				log.debug("Start update this framework");
+	
+				this.permissionDBManager.ensureAdminAccess(loginUser);
+				/*
+				 * open session and update spammer settings
+				 */
+				DBSession session = this.openSession();
+				String flagSpammerUserName = null;
+				try {
+					final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
+					flagSpammerUserName = this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
+					// flag/unflag spammer in search index
+					for( ResourceSearch<? extends Resource> searcher : resourceSearcher ) {
+						searcher.flagSpammer(user);
+					}
+				} finally {
+					session.close();
 				}
-			} finally {
-				session.close();
+				return flagSpammerUserName;
 			}
-			return flagSpammerUserName;
+	
+			return this.storeUser(user, true);
+		}else  {
+			String updatedUser = null;
+			
+			if(operation.equals(UserUpdateOperation.UPDATE_PASSWORD)) {
+				
+				final DBSession session = openSession();
+				
+				updatedUser = this.userDBManager.updatePasswordForUser(user, session);
+			}
+			
+			return updatedUser;
 		}
-
-		return this.storeUser(user, true);
 	}
 
 	/**
