@@ -1032,7 +1032,11 @@ public class DBLogic implements LogicInterface {
 				
 				final DBSession session = openSession();
 				
-				updatedUser = this.userDBManager.updatePasswordForUser(user, session);
+				try{
+					updatedUser = this.userDBManager.updatePasswordForUser(user, session);
+				}finally {
+					session.close();
+				}
 			}
 			
 			return updatedUser;
