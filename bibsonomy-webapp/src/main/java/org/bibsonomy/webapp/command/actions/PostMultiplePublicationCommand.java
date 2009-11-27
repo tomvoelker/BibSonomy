@@ -17,6 +17,20 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  */
 public class PostMultiplePublicationCommand extends EditPublicationCommand /*implements*/ {
 	
+	
+	/*
+	 * The action that will be started, when hitting the submission button on the edit page
+	 */
+	private String formAction;
+	
+	public String getFormAction() {
+		return this.formAction;
+	}
+
+	public void setFormAction(String formAction) {
+		this.formAction = formAction;
+	}
+
 	/*
 	 * Determines, if the bookmarks will be saved before being edited or afterwards
 	 */
