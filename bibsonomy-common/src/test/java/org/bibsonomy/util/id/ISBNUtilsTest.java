@@ -40,16 +40,9 @@ public class ISBNUtilsTest {
 	 */
 	@Test
 	public void getISBN13Test1(){
-		assertEquals("0123456789012", ISBNUtils.extractISBN("0123456789012"));
-	}
-	
-	/**
-	 * test ISBN13 detection 
-	 * only numbers
-	 */
-	@Test
-	public void getISBN13Test6(){
-		assertEquals("0123456789012", ISBNUtils.extractISBN("ysdfsdf0123456789012sdfsdf"));
+		assertEquals("9783456789012", ISBNUtils.extractISBN("9783456789012"));
+		assertEquals("9793456789012", ISBNUtils.extractISBN("9793456789012"));
+		assertEquals(null, ISBNUtils.extractISBN("9773456789012"));
 	}
 	
 	/**
@@ -58,7 +51,9 @@ public class ISBNUtilsTest {
 	 */
 	@Test
 	public void getISBN13Test2(){
-		assertEquals("012345678901X", ISBNUtils.extractISBN("012345678901X"));
+		assertEquals("978345678901X", ISBNUtils.extractISBN("978345678901X"));
+		assertEquals("979345678901X", ISBNUtils.extractISBN("979345678901X"));
+		assertEquals(null, ISBNUtils.extractISBN("977345678901X"));
 	}
 
 	/**
@@ -67,7 +62,20 @@ public class ISBNUtilsTest {
 	 */
 	@Test
 	public void getISBN13Test3(){
-		assertEquals("012345678901x", ISBNUtils.extractISBN("012345678901x"));
+		assertEquals("978345678901x", ISBNUtils.extractISBN("978345678901x"));
+		assertEquals("979345678901x", ISBNUtils.extractISBN("979345678901x"));
+		assertEquals(null, ISBNUtils.extractISBN("977345678901x"));
+	}
+	
+	/**
+	 * test ISBN13 detection 
+	 * only numbers
+	 */
+	@Test
+	public void getISBN13Test4(){
+		assertEquals("9783456789012", ISBNUtils.extractISBN("ysdfsdf9783456789012sdfsdf"));
+		assertEquals("9793456789012", ISBNUtils.extractISBN("ysdfsdf9793456789012sdfsdf"));
+		assertEquals(null, ISBNUtils.extractISBN("ysdfsdf9773456789012sdfsdf"));
 	}
 	
 	/**
@@ -98,6 +106,15 @@ public class ISBNUtilsTest {
 	}
 	
 	/**
+	 * test ISBN10 detection 
+	 * only numbers
+	 */
+	@Test
+	public void getISBN10Test4(){
+		assertEquals("0123456789", ISBNUtils.extractISBN("asdffsda0123456789avcsad"));
+	}
+	
+	/**
 	 * test clean up 
 	 */
 	@Test
@@ -113,11 +130,88 @@ public class ISBNUtilsTest {
 	public void getISBNTest1() throws Exception {
 		final String isbn09 = "01234567X";
 		final String isbn10 = "012345678X";
-		final String isbn13 = "012345678912x";
+		final String isbn13 = "978345678912x";
 
 		assertEquals(null, ISBNUtils.extractISBN(isbn09));
 		assertEquals("012345678X", ISBNUtils.extractISBN(isbn10));
-		assertEquals("012345678912x", ISBNUtils.extractISBN(isbn13));
+		assertEquals("978345678912x", ISBNUtils.extractISBN(isbn13));
 	}
+	
+	/**
+	 * test ISSN13 detection 
+	 * only numbers
+	 */
+	@Test
+	public void getISSN13Test1(){
+		assertEquals("9773456789012", ISBNUtils.extractISSN("9773456789012"));
+		assertEquals(null, ISBNUtils.extractISSN("9793456789012"));
+	}
+	
+	/**
+	 * test ISSN13 detection 
+	 * with X in checksum
+	 */
+	@Test
+	public void getISSN13Test2(){
+		assertEquals("977345678901X", ISBNUtils.extractISSN("977345678901X"));
+		assertEquals(null, ISBNUtils.extractISSN("979345678901X"));
+	}
+
+	/**
+	 * test ISSN13 detection 
+	 * with x in checksum
+	 */
+	@Test
+	public void getISSN13Test3(){
+		assertEquals("977345678901x", ISBNUtils.extractISSN("977345678901x"));
+		assertEquals(null, ISBNUtils.extractISSN("979345678901x"));
+	}
+	
+	/**
+	 * test ISSN13 detection 
+	 * only numbers
+	 */
+	@Test
+	public void getISSN13Test4(){
+		assertEquals("9773456789012", ISBNUtils.extractISSN("ysdfsdf9773456789012sdfsdf"));
+		assertEquals(null, ISBNUtils.extractISSN("ysdfsdf9793456789012sdfsdf"));
+	}
+	
+	/**
+	 * test ISSN8 detection 
+	 * only numbers
+	 */
+	@Test
+	public void getISSN8Test1(){
+		assertEquals("01234567", ISBNUtils.extractISSN("01234567"));
+	}
+	
+	/**
+	 * test ISSN8 detection 
+	 * with X in checksum
+	 */
+	@Test
+	public void getISSN8Test2(){
+		assertEquals("0123456X", ISBNUtils.extractISSN("0123456X"));
+	}
+	
+	/**
+	 * test ISSN8 detection 
+	 * with x in checksum
+	 */
+	@Test
+	public void getISSN8Test3(){
+		assertEquals("0123456x", ISBNUtils.extractISSN("0123456x"));
+	}
+	
+	/**
+	 * test ISSN8 detection 
+	 * only numbers
+	 */
+	@Test
+	public void getISSN8Test4(){
+		assertEquals("0123456x", ISBNUtils.extractISSN("asdfjkls0123456xyxdvoije"));
+	}
+	
 	
 }

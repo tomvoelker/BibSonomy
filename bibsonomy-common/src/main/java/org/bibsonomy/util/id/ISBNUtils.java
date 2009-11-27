@@ -34,8 +34,13 @@ public class ISBNUtils {
 	/*
 	 * pattern to match ISBN 10 and 13
 	 */
-	private static final Pattern isbnPattern = Pattern.compile("([^0-9]|^)(\\d{12}[\\dx]|\\d{9}[\\dx])([^0-9x]|$)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern isbnPattern = Pattern.compile("([^0-9]|^)(978\\d{9}[\\dx]|979\\d{9}[\\dx]|\\d{9}[\\dx])([^0-9x]|$)", Pattern.CASE_INSENSITIVE);
 
+	/*
+	 * pattern to match ISSN 8 and 13
+	 */
+	private static final Pattern issnPattern = Pattern.compile("([^0-9]|^)(977\\d{9}[\\dx]|\\d{7}[\\dx])([^0-9x]|$)", Pattern.CASE_INSENSITIVE);
+	
 	/**
 	 * Search substring with pattern format and returns it.
 	 * @param snippet 
@@ -46,6 +51,20 @@ public class ISBNUtils {
 			final Matcher isbnMatcher = isbnPattern.matcher(cleanISBN(snippet));
 			if (isbnMatcher.find())
 				return isbnMatcher.group(2);
+		}
+		return null;
+	}
+	
+	/**
+	 * Search substring with pattern format and returns it.
+	 * @param snippet 
+	 * @return ISSN, null if no ISSN is available
+	 */
+	public static String extractISSN(final String snippet) {
+		if (snippet != null) {
+			final Matcher issnMatcher = issnPattern.matcher(cleanISBN(snippet));
+			if (issnMatcher.find())
+				return issnMatcher.group(2);
 		}
 		return null;
 	}
