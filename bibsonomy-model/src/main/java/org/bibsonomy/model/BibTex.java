@@ -83,7 +83,6 @@ public class BibTex extends Resource {
 	private String month;
 	private String year;
 	private String type;
-	private int scraperId;
 	private String url;
 	private String privnote;
 	private HashMap<String, String> miscFields;
@@ -542,20 +541,6 @@ public class BibTex extends Resource {
 	}
 
 	/**
-	 * @return scraperId
-	 */
-	public int getScraperId() {
-		return this.scraperId;
-	}
-
-	/**
-	 * @param scraperId
-	 */
-	public void setScraperId(int scraperId) {
-		this.scraperId = scraperId;
-	}
-
-	/**
 	 * @return simHash0
 	 */
 	public String getSimHash0() {
@@ -659,10 +644,20 @@ public class BibTex extends Resource {
 		this.extraUrls = extraUrls;
 	}
 
+	/**
+	 * The meta data from the scraper which scraped this publication.
+	 * 
+	 * @return The scraper meta data
+	 */
 	public ScraperMetadata getScraperMetadata() {
 		return this.scraperMetadata;
 	}
 
+	/**
+	 * Set the metadata from the scraper which scraped this publication.
+	 * 
+	 * @param scraperMetadata
+	 */
 	public void setScraperMetadata(ScraperMetadata scraperMetadata) {
 		this.scraperMetadata = scraperMetadata;
 	}
