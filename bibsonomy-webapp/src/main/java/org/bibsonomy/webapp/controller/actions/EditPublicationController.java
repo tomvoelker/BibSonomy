@@ -140,7 +140,7 @@ public class EditPublicationController extends EditPostController<BibTex> {
 						 */
 						if (ValidationUtils.present(scrapingContext.getMetaResult())) {
 							final ScraperMetadata scraperMetadata = new ScraperMetadata();
-							scraperMetadata.setScraperClass(scrapingContext.getScraper().getClass());
+							scraperMetadata.setScraperClass(scrapingContext.getScraper().getClass().getName());
 							scraperMetadata.setMetaData(scrapingContext.getMetaResult());
 							scraperMetadata.setUrl(scrapingContext.getUrl());
 							setSessionAttribute(SESSION_ATTRIBUTE_SCRAPER_METADATA, scraperMetadata);
