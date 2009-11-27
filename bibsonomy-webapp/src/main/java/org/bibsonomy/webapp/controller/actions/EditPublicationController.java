@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
@@ -41,6 +43,8 @@ import bibtex.parser.ParseException;
  */
 public class EditPublicationController extends EditPostController<BibTex> {
 
+	private static final Log log = LogFactory.getLog(EditPublicationController.class);
+	
 	private Scraper scraper;
 
 	@Override
@@ -100,7 +104,9 @@ public class EditPublicationController extends EditPostController<BibTex> {
 				 * use the same instance for each invocation.
 				 */
 				try {
-					final BibTex parsedBibTex = new SimpleBibTeXParser().parseBibTeX(scrapedBibtex);
+					final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+					final BibTex parsedBibTex = parser.parseBibTeX(scrapedBibtex);
+					log.debug(parser.getWarnings());
 
 					/*
 					 * store scraper metadata using old code
@@ -228,8 +234,7 @@ public class EditPublicationController extends EditPostController<BibTex> {
 
 	@Override
 	protected BibTex instantiateResource() {
-		final BibTex publication = new BibTex();
-		return publication;
+		return new BibTex();
 	}
 
 	@Override

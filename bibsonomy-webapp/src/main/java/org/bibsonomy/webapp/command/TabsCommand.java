@@ -10,7 +10,7 @@ import java.util.List;
  * @version $Id$
  * @param <T> type of the tab content
  */
-public class TabsCommand<T> extends ResourceViewCommand {
+public class TabsCommand<T> extends ResourceViewCommand implements TabsCommandInterface<T> {
 
 	/** id of current selected tab */
 	protected Integer selTab = 1;	
@@ -21,66 +21,60 @@ public class TabsCommand<T> extends ResourceViewCommand {
 	/** the content of the current selected tab */
 	protected List<T> content;
 
-	/**
-	 * @return content of tab
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.TabsCommandInterface#getContent()
 	 */
 	public List<T> getContent() {
 		return this.content;
 	}
 
-	/**
-	 * Sets the content of the current selected tab
-	 * @param content
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.TabsCommandInterface#setContent(java.util.List)
 	 */
 	public void setContent(List<T> content) {
 		this.content = content;
 	}
 
-	/**
-	 * @return ID of current selected tab
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.TabsCommandInterface#getSelTab()
 	 */
 	public Integer getSelTab() {
 		return this.selTab;
 	}
 
-	/**
-	 * Sets the id of the current selected tab
-	 * @param selectedTab The tab ID
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.TabsCommandInterface#setSelTab(java.lang.Integer)
 	 */
 	public void setSelTab(Integer selectedTab) {
 		this.selTab = selectedTab;
 	}
 
-	/**
-	 * @return List of defined tabs 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.TabsCommandInterface#getTabs()
 	 */
 	public List<TabCommand> getTabs() {
 		return this.tabs;
 	}
 
-	/**
-	 * @param tabs Sets the tabs 
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.webapp.command.TabsCommandInterface#setTabs(java.util.List)
 	 */
 	public void setTabs(List<TabCommand> tabs) {
 		this.tabs = tabs;
 	}
 
 	/**
-	 * Adds a single tab with the the given id and title.
-	 * 
-	 * @param id 
-	 * @param title 
+	 * @param id
+	 * @param title
 	 */
-	public void addTab(final Integer id, final String title) {
+	protected void addTab(final Integer id, final String title) {
 		tabs.add(new TabCommand(id, title));
 	}
 
 	/**
-	 * Adds for each title a tab.
-	 * 
 	 * @param titles
 	 */
-	public void addTabs(final String[] titles) {
+	protected void addTabs(final String[] titles) {
 		for(int i=0; i<titles.length; i++) {
 			addTab(i, titles[i]);
 		}

@@ -572,6 +572,9 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 		 * check, if post already exists
 		 */
 		if (this.setDiffPost(command)) {
+			/*
+			 * post already exists -> let user edit that post
+			 */
 			return getEditPostView(command, loginUser);
 		}
 
