@@ -57,6 +57,9 @@ public class ForFriendTag extends SystemTag {
 		if (!generalDb.isFriendOf(sender, receiver, session)){
 			throw new ValidationException("You can only send posts to users that have added you as a friend.");
 		}
+		if (sender.equals(receiver)) {
+			throw new ValidationException("You can not send posts to yourself.");
+		}
 		//TODO: What if contentId is currently unknown? i.e. not stored in post => exception
 
 		/*
