@@ -30,6 +30,8 @@
 		<fmt:message var="updatesettings" key="settings.updatesettings" />
 		<fmt:message var="deleteaccount" key="settings.deleteaccount" />
 		
+		<settings:settingsResult statusID="${command.statusID}"></settings:settingsResult>
+		
 		<!-- style settings -->		
 		<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
 		  <form:form id="styleSettingsForm" method="POST">
@@ -223,41 +225,6 @@
         <hr/>    
         
 		<!-- password change -->
-		<!--<jsp:useBean id="registrationHandlerBean" class="beans.RegistrationHandlerBean" scope="request"/>
-		
-		<h2><fmt:message key="settings.changepassword"/></h2>
-		<form:form name="password" method="post" action="/actions/changePassword?ckey=${ckey}">
-		  <table>
-		    <tr>
-			  <td><fmt:message key="settings.currentpassword"/></td>
-			  <td>
-			    <form:password path="oldPassword" size="30" maxlength="30" />
-			    <div class="errmsg">${registrationHandlerBean.errors.currPass}</div>
-			  </td>
-			  <td></td>
-			</tr>
-		    <tr>
-			  <td><fmt:message key="settings.newpassword"/></td>
-			  <td>
-			    <form:password path="newPassword1" size="30" maxlength="30" />
-			    <div class="errmsg">${registrationHandlerBean.errors.password1}</div>
-			  </td>
-			  <td><fmt:message key="settings.passwordwithoutspaces"/></td>
-			</tr>
-			<tr>
-			  <td><fmt:message key="settings.newpassword"/></td>
-			  <td>
-				 <form:password path="newPassword2" size="30" maxlength="30" />
-				 <div class="errmsg">${registrationHandlerBean.errors.password2}</div>
-			  </td>
-			  <td><fmt:message key="settings.confirmpassword"/></td>
-			</tr>
-			<tr>
-			  <td><input type="submit" value="${changepassword}" /></td>
-			  <td></td>
-			</tr>
-		  </table>
-		</form:form>-->
 		
 		<settings:passwordChange ckey="${command.context.ckey}"/>
 		
