@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.SettingPageMsg;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -59,6 +60,10 @@ public class ChangePasswordController  implements
 		
 		RequestWrapperContext context = command.getContext();
 		
+		Integer statusID = null;
+		
+		String referer = "";
+		
 		/*
 		 * user has to be logged in to delete himself
 		 */
@@ -74,13 +79,19 @@ public class ChangePasswordController  implements
 			
 			//change password here
 			System.out.println("password can be changed here");
-			changePassword(context.getLoginUser(), command);
+			statusID = changePassword(context.getLoginUser(), command);
 			
 		} else {
 			errors.reject("error.field.valid.ckey");
 		}
 		
-
+		
+		if(statusID != null) {
+			referer = "/settingsnew?selTab=1" + "&statusID=" + statusID;
+		}else{ // error occurred
+			errors.reject("error.invalid_parameter");
+		}
+		
 		/*
 		 * if there are errors, show them
 		 */
@@ -88,14 +99,14 @@ public class ChangePasswordController  implements
 			return Views.ERROR;
 		}
 		
-		// go back where you've come from
-//		return new ExtendedRedirectView(requestLogic.getReferer());
-		return new ExtendedRedirectView("/");
+		return new ExtendedRedirectView(referer);
 	}
 	
-	private void changePassword(User user, ChangePasswordCommand command) {
+	private int changePassword(User user, ChangePasswordCommand command) {
 		
 		String curPassword = user.getPassword();
+		
+		Integer msgID = null;
 		
 		// create the md5 hash of the new password
 		final String hashedOldPassword = StringUtils.getMD5Hash(command.getOldPassword());
@@ -114,14 +125,17 @@ public class ChangePasswordController  implements
 				cookieLogic.addUserCookie(user.getName(), newPasswordHash);
 				
 				requestLogic.invalidateSession();
+				
+				msgID = SettingPageMsg.PASSWORD_CHANGED_SUCCESS.getId();
 			}else {
-				errors.reject("error.field.valid.passwordCheck");
+				msgID = SettingPageMsg.PASSWORD_RETYPE_ERROR.getId();
 			}
 		}else {// old password is wrong
 			
-			errors.reject("error.field.valid.passwordCheckOld");
-		}
+			msgID = SettingPageMsg.PASSWORD_CURRENT_ERROR.getId();
+		}	
 		
+		return msgID;
 	}
 
 	@Override
@@ -136,14 +150,26 @@ public class ChangePasswordController  implements
 		this.errors = errors;		
 	}
 
+	/**
+	 * sets the adming logic interface
+	 * @param adminLogic
+	 */
 	public void setAdminLogic(LogicInterface adminLogic) {
 		this.adminLogic = adminLogic;
 	}
 
+	/**
+	 * sets the cookie logic interface
+	 * @param cookieLogic
+	 */
 	public void setCookieLogic(CookieLogic cookieLogic) {
 		this.cookieLogic = cookieLogic;
 	}
 
+	/**
+	 * sets the request logic interface
+	 * @param requestLogic
+	 */
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
