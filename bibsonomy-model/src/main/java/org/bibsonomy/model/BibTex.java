@@ -83,6 +83,7 @@ public class BibTex extends Resource {
 	private String month;
 	private String year;
 	private String type;
+	private int scraperId;
 	private String url;
 	private String privnote;
 	private HashMap<String, String> miscFields;
@@ -661,4 +662,18 @@ public class BibTex extends Resource {
 	public void setScraperMetadata(ScraperMetadata scraperMetadata) {
 		this.scraperMetadata = scraperMetadata;
 	}
+	/**
+	 * @return scraperId
+	 */
+	public int getScraperId() {
+		return this.scraperId;
+	}
+
+	/**
+	 * @param scraperId
+	 */
+	public void setScraperId(int scraperId) {
+		this.scraperId = scraperId;
+	}
+
 }
