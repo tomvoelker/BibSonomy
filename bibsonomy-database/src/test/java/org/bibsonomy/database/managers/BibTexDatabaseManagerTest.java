@@ -765,7 +765,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		bibtex.setBooktitle(booktitle);
 		bibtex.setVolume(volume);
 		bibtex.setNumber(number);
-		bibtex.setScraperId(-1);
 		bibtex.setType("2");
 		bibtex.recalculateHashes();
 		post.setResource(resource);
