@@ -57,14 +57,14 @@ public class InboxDatabaseManagerTest extends AbstractDatabaseManagerTest{
 		assertEquals(4, inboxSize);
 
 		
-		// delete inbox item with content id 14 from inbox of testuser2
+		// delete the inboxMessage we created
 		this.inboxDb.deleteInboxMessage("testuser3", "testuser2", bookmarkPost.getResource().getIntraHash(), this.dbSession);
 		
 		// get actual inbox size
 		inboxSize = this.inboxDb.getNumInboxMessages("testuser2", this.dbSession);
 		assertEquals(3, inboxSize);
 		
-		// delete ALL items of testuser2's inbox
+		// delete ALL messages of testuser2's inbox
 		this.inboxDb.deleteAllInboxMessages("testuser2", this.dbSession);
 		
 		// get actual inbox size
