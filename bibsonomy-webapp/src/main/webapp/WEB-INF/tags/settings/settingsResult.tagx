@@ -1,0 +1,51 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post">
+	
+	<jsp:directive.attribute name="statusID"  type="java.lang.Integer" required="true"/>
+	
+	<!-- Make some output about the result of the import -->
+	
+	<c:set var="state"><fmt:message key="settings.status"/></c:set>
+	<c:set var="passwordChanged"><fmt:message key="settings.password.change.success"/></c:set>
+	<c:set var="wrongCurrentPassword"><fmt:message key="settings.password.change.current.error"/></c:set>
+	<c:set var="wrongRetypedPassword"><fmt:message key="settings.password.change.new.error"/></c:set>
+	<c:set var="apiGenerateSuccess"><fmt:message key="bibtex.upload.file.back"/></c:set>
+	<c:set var="apiGenerateError"><fmt:message key="bibtex.upload.file.back"/></c:set>
+
+					
+	<!-- Show the status message -->
+		
+	<c:choose>
+		<c:when test="${statusID == 0}">
+			<!-- no status message available -->
+		</c:when>
+		<c:otherwise>
+			<fieldset style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+				<legend>
+					${state}		  		
+				</legend>
+				  <c:if test="${statusID == 1}">	
+					${passwordChanged}
+				  </c:if>
+				  <c:if test="${statusID == 2}">	
+					${wrongCurrentPassword}
+				  </c:if>
+				  <c:if test="${statusID == 3}">	
+					${wrongRetypedPassword}
+				  </c:if>
+				  <c:if test="${statusID == 4}">	
+					${apiGenerateSuccess}
+				  </c:if>
+				  <c:if test="${statusID == 5}">	
+					${apiGenerateError}
+				  </c:if>  
+		    </fieldset>	
+   		</c:otherwise>
+   	</c:choose>
+</jsp:root>
