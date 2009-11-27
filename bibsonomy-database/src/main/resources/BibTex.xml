@@ -686,7 +686,7 @@
 		                    edition, month, bookTitle, howpublished, institution, organization, publisher,
 		                    address, school, series, bibtexKey, `group`, date, user_name, url, description,
 		                    annote, note, pages, bKey, number, crossref, misc, bibtexAbstract, type, day,
-		                    scraperid, simhash0, simhash1, simhash2, simhash3)
+		                    privnote, scraperid, simhash0, simhash1, simhash2, simhash3)
 		VALUES (#resource.title#, #resource.entrytype#, #resource.author#, #resource.editor#, #resource.year#,
 		        #requestedContentId#, #resource.journal#, #resource.volume#, #resource.chapter#, #resource.edition#,
 		        #resource.month#, #resource.booktitle#, #resource.howpublished#, #resource.institution#,
@@ -694,7 +694,7 @@
 		        #resource.series#, #resource.bibtexKey#, #groupId#, #date#, #userName#,
 		        #resource.url#, #description#, #resource.annote#, #resource.note#, #resource.pages#,
 		        #resource.key#, #resource.number#, #resource.crossref#, #resource.misc#, #resource.bibtexAbstract#,
-		        #resource.type#, #resource.day#, #resource.scraperId#, #resource.simHash0#, #resource.simHash1#,
+		        #resource.type#, #resource.day#, #resource.privnote#, #resource.scraperId#, #resource.simHash0#, #resource.simHash1#,
 		        #resource.simHash2#, #resource.simHash3#)
 	</insert>
 

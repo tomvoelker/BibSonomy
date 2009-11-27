@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
@@ -22,6 +23,7 @@ import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
@@ -467,18 +469,43 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 */
 	@Override
 	protected void insertPost(BibTexParam param, DBSession session) {
-		super.insertPost(param, session); // insert post and update/insert hashes
-		session.beginTransaction();
-		
-		try {
-			if (param.getResource().getPrivnote() != null) {
-				extraDb.updateBibTexPrivnoteForUser(param.getResource().getIntraHash(), param.getUserName(), param.getResource().getPrivnote(), session);
+		/*
+		 * store scraper meta data
+		 */
+		final ScraperMetadata scraperMetadata = param.getResource().getScraperMetadata();
+		if (present(scraperMetadata)) {
+			session.beginTransaction();
+			try {
+				/*
+				 * get a scraper id
+				 */
+				final int id = this.generalDb.getNewContentId(ConstantID.IDS_SCRAPER_METADATA, session);
+				/*
+				 * store id in metadata
+				 */
+				scraperMetadata.setId(id);
+				/*
+				 * store the metadata
+				 */
+				insertScraperMetadata(scraperMetadata, session);
+				/*
+				 * store the id in the post
+				 */
+				param.getResource().setScraperId(id);
+				session.commitTransaction();
+			} finally {
+				session.endTransaction();
 			}
-			
-			session.commitTransaction();
-		} finally {
-			session.endTransaction();
 		}
+
+		/*
+		 * store the post
+		 */
+		super.insertPost(param, session); // insert post and update/insert hashes
+	}
+	
+	private void insertScraperMetadata(final ScraperMetadata scraperMetadata, final DBSession session) {
+		this.insert("insertScraperMetadata", scraperMetadata, session);
 	}
 	
 	/*

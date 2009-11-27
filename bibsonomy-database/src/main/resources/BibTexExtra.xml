@@ -16,6 +16,11 @@
 		INSERT INTO bibtexurls (url, text, content_id)
 		VALUES (#bibtexExtra.url#, #bibtexExtra.text#, #requestedContentId#)
 	</insert>
+	
+	<insert id="insertScraperMetadata" parameterClass="scraperMetadata">
+	  INSERT INTO scraperMetaData (`id`,`metaResult`,`scraper`,`url`) 
+	    VALUES (#id#,#metaData#,#scraperClass#,#url#)
+	</insert>
 
 	<update id="updateBibTexURL" parameterClass="bibtexExtraParam">
 		UPDATE bibtexurls SET content_id = #newContentId# WHERE content_id = #requestedContentId#
