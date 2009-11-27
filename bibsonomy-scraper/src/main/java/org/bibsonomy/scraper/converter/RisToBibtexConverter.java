@@ -31,6 +31,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.id.ISBNUtils;
 
 /**
  * @author aho
@@ -158,8 +159,25 @@ public class RisToBibtexConverter {
 					hm.put("address", val);
 				else if (lab.equals("EP"))
 					endPage = val;
-				else if (lab.equals("SN"))
-					hm.put("issn", val);
+				else if (lab.equals("SN")) {
+					String[] _s = val.split(" "); 
+					String _isbn = "";
+					String _issn = "";
+					
+					for (int i = 0; i < _s.length; ++i) {
+						_s[i] = _s[i].trim();
+						if (ISBNUtils.extractISBN(_s[i]) != null) {
+							_isbn += ISBNUtils.extractISBN(_s[i]) + " ";
+						} else if (ISBNUtils.extractISSN(_s[i]) != null){
+							_issn += ISBNUtils.extractISSN(_s[i]) + " ";
+						}
+					}
+					
+					if (_isbn.length() > 0)
+						hm.put("isbn", _isbn.trim());
+					if (_issn.length() > 0)
+						hm.put("issn", _issn.trim());
+				}
 				else if (lab.equals("VL"))
 					hm.put("volume", val);
 				else if (lab.equals("IS"))

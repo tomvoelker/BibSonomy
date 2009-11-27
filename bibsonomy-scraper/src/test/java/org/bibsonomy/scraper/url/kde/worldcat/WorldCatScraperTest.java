@@ -36,7 +36,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Scraper URL tests #59 and #60 for WorldCatScraper
+ * Scraper URL tests #59 #60 #163 for WorldCatScraper
  * @author tst
  *
  */
@@ -63,9 +63,20 @@ public class WorldCatScraperTest {
 	}
 	
 	/**
+	 * starts URL test with id url_163
+	 */
+	@Test
+	@Ignore
+	public void url3TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_163"));
+	}
+	
+	/**
 	 * test getting URL 
 	 */
 	@Test
+	@Ignore
 	public void getUrlForIsbnTest(){
 		try {
 			assertTrue(WorldCatScraper.getUrlForIsbn("0123456789").toString().equals("http://www.worldcat.org/search?qt=worldcat_org_all&q=0123456789"));
