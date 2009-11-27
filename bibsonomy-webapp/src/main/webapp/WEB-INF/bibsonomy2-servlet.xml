@@ -44,6 +44,7 @@
 								<value>importType</value>
 								<value>overwrite</value>
 								<value>file</value> 
+								<value>statusID</value>
 								<!-- FIXME delete this if no errors occur 
 								value>tagboxStyle</value>
 								<value>tagSort</value>
