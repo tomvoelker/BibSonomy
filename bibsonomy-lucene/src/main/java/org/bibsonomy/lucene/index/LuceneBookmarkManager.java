@@ -15,6 +15,7 @@ import org.springframework.beans.factory.BeanFactory;
  * @author fei
  */
 public class LuceneBookmarkManager extends LuceneResourceManager<Bookmark> {
+	@SuppressWarnings("unused")
 	private static final Log log = LogFactory.getLog(LuceneBookmarkManager.class);
 
 	/** spring bean factory for initializing instances */

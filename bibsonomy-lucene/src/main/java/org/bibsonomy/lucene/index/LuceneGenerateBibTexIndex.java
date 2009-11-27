@@ -2,7 +2,6 @@ package org.bibsonomy.lucene.index;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
@@ -14,10 +13,7 @@ import org.springframework.beans.factory.BeanFactory;
 /**
  * generates lucene index for bibtex posts as configured in lucen.properties
  * 
- *  FIXME: configure via spring
- *  
  * @author fei
- *
  */
 public class LuceneGenerateBibTexIndex extends LuceneGenerateResourceIndex<BibTex>{
 	/** singleton pattern */

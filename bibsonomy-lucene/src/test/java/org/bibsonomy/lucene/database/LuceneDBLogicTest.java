@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,12 +39,9 @@ import org.bibsonomy.util.ExceptionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
-	private static final int POST_TIME_TO_WAIT = 1;
-
 	private static final Log log = LogFactory.getLog(LuceneDBLogicTest.class);
 	
 	private static final String LUCENE_MAGIC_AUTHOR = "luceneAuthor";
@@ -108,51 +106,32 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	}
 	
 	/**
-	 * tests whether all posts whithin a given time range are retrieved
+	 * tests whether all newly added posts are retrieved
 	 */
 	@Test
-	@Deprecated
-	@Ignore
 	public void retrieveRecordsFromDatabase() {
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
+		List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
 		//--------------------------------------------------------------------
 		// TEST 1: insert special posts into test database and search for it
 		//--------------------------------------------------------------------
-		// start time - we ignore milliseconds
-		long start = System.currentTimeMillis();
-		Date fromDate = new Date(start- start%1000);
-		try {
-			Thread.sleep(POST_TIME_TO_WAIT);
-		} catch (InterruptedException e) {
-			log.error("Thread interrupted", e);
-		}
-		List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
-		
+		Integer lastTasId = this.luceneBibTexLogic.getLastTasId();
 		for( int i=0; i<5; i++ ) {
 			// store test posts in database
 			Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 			refPosts.add(bibtexPost);
 			this.bibTexDb.createPost(bibtexPost, this.dbSession);
-			try {
-				Thread.sleep(POST_TIME_TO_WAIT);
-			} catch (InterruptedException e) {
-				log.error("Thread interrupted", e);
-			}
 		}
 
-		// end time - we ignore milliseconds
-		long end = System.currentTimeMillis();
-		Date toDate = new Date(end - end%1000 + 1000);
-		
 		// retrieve posts
-		List<HashMap<String, Object>> posts = luceneBibTexLogic.getPostsForTimeRange(fromDate, toDate);
+		List<? extends Post<BibTex>> posts = luceneBibTexLogic.getNewPosts(lastTasId);
 
 		assertEquals(refPosts.size(), posts.size());
-		HashMap<String, Boolean> testMap = new HashMap<String, Boolean>();
-		for( HashMap<String, Object> post : posts ) {
-			String title = (String)post.get("title");
-			testMap.put(title, true);
+		
+		Map<String,Boolean> testMap = new HashMap<String, Boolean>(); 
+		for( Post<? extends Resource> post : posts ) {
+			testMap.put(post.getResource().getTitle(), true);
 		}
 		for( Post<? extends Resource> post : refPosts ) {
 			assertNotNull(testMap.get(post.getResource().getTitle()));
@@ -163,12 +142,11 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	 * tests whether all posts whithin a given time range are retrieved
 	 */
 	@Test
-	@Ignore
-	@Deprecated
 	public void getContentIdsToDelete() {
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.Logging());
+		List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
 		
 		//--------------------------------------------------------------------
 		// TEST 1: insert and delete special posts into test database and search for it
@@ -176,28 +154,17 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		// start time - we ignore milliseconds
 		long start = System.currentTimeMillis();
 		Date fromDate = new Date(start- start%1000);
-		List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
 		
 		for( int i=0; i<5; i++ ) {
 			// store test posts in database
 			Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 			refPosts.add(bibtexPost);
 			this.bibTexDb.createPost(bibtexPost, this.dbSession);
-			try {
-				Thread.sleep(POST_TIME_TO_WAIT);
-			} catch (InterruptedException e) {
-				log.error("Thread interrupted", e);
-			}
 			// delete test post
 			this.bibTexDb.deletePost(bibtexPost.getUser().getName(), bibtexPost.getResource().getIntraHash(), this.dbSession);
 		}
-
-		// end time - we ignore milliseconds
-		long end = System.currentTimeMillis();
-		Date toDate = new Date(end + 1000 - end%1000);
-		
 		// retrieve posts
-		List<Integer> posts = luceneBibTexLogic.getContentIdsToDelete(fromDate, toDate);
+		List<Integer> posts = luceneBibTexLogic.getContentIdsToDelete(fromDate);
 
 		assertEquals(refPosts.size(), posts.size());
 	}

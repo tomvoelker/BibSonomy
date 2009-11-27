@@ -5,8 +5,6 @@ import java.sql.SQLException;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.store.LockObtainFailedException;
-import org.bibsonomy.lucene.database.LuceneBibTexLogic;
-import org.bibsonomy.lucene.database.LuceneBookmarkLogic;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;

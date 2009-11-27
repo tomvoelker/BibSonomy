@@ -1,8 +1,5 @@
 package org.bibsonomy.lucene.index;
 
-import java.util.HashMap;
-
-import org.bibsonomy.lucene.param.RecordType;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 

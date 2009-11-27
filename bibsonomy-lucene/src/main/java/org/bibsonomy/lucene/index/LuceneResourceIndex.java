@@ -3,24 +3,26 @@ package org.bibsonomy.lucene.index;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.naming.NamingException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.StaleReaderException;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.MatchAllDocsQuery;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TopDocs;
@@ -30,14 +32,10 @@ import org.apache.lucene.store.LockObtainFailedException;
 import org.bibsonomy.lucene.param.comparator.DocumentCacheComparator;
 import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.model.Resource;
-import static org.apache.lucene.util.Version.*;
 
 /**
  * abstract base class for managing lucene resource indices
  * 
- * TODO: should we use a singleton?
- * TODO: implement a consistent management of read/write access
- *  
  * @author fei
  *
  * @param <R>
@@ -60,6 +58,9 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	
 	/** path to the lucene index */
 	private String luceneIndexPath;
+
+	/** directory of the lucene index */
+	private Directory indexDirectory;
 
 	/** default field tokenizer */
 	private Analyzer analyzer;
@@ -111,7 +112,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 		LuceneBase.initRuntimeConfiguration();
 		this.luceneIndexPath = getIndexBasePath()+CFG_LUCENE_INDEX_PREFIX+getResourceName();
 
-		Directory indexDirectory = FSDirectory.open(new File(luceneIndexPath));
+		indexDirectory = FSDirectory.open(new File(luceneIndexPath));
 		try {
 			if( IndexWriter.isLocked(indexDirectory) ) {
 				log.error("WARNING: Index "+luceneIndexPath+" is locked - forcibly unlock the index.");
@@ -146,39 +147,27 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 				return Long.MAX_VALUE;
 			}
 			
-			this.ensureReadAccess();
-			
-			Long lastLogDate = null;
-	
-			int hitsPerPage = 1;
-			
-			IndexSearcher searcher = new IndexSearcher(indexReader);
-			QueryParser qp = 
-				new QueryParser(LUCENE_24, FLD_LAST_LOG_DATE,new StandardAnalyzer(LUCENE_24));
+			//----------------------------------------------------------------
+			// search over all elements sort them reverse by date 
+			// and return 1 top document (newest one)
+			//----------------------------------------------------------------
+			// get all documents
+			Query matchAll = new MatchAllDocsQuery();
 			// sort by last_log_date of type LONG in reversed order
 			SortField sortField = new SortField(FLD_LAST_LOG_DATE, SortField.LONG, true); 
 			Sort sort = new Sort(sortField);
-	
-			// search over all elements sort them reverse by date and return 1 top document (newest one)
-			TopDocs topDocs = null;
-			Document doc = null;
-			try {
-				topDocs = searcher.search(qp.parse("*:*"), null, hitsPerPage, sort);
-				doc = searcher.doc(topDocs.scoreDocs[0].doc);
-				// parse date
-				lastLogDate = Long.parseLong(doc.get(FLD_LAST_LOG_DATE)); 
-			} catch (ParseException e) {
-				log.error("ParseException while parsing *:* in getNewestRecordDateFromIndex ("+e.getMessage()+")");
-			} catch (Exception e) {
-				log.error("Error reading index file " + this.luceneIndexPath);
-			} finally {
+			
+			Long lastLogDate = null;
+			Document doc     = searchIndex(matchAll, 1, sort);
+			if( doc!=null ) {
 				try {
-					searcher.close();
-				} catch (IOException e) {
-					log.error("Error closing index "+this.luceneIndexPath+" for searching", e);
+					// parse date
+					lastLogDate = Long.parseLong(doc.get(FLD_LAST_LOG_DATE));
+				} catch(NumberFormatException e) {
+					log.error("Error parsing last_log_date " + doc.get(FLD_LAST_LOG_DATE));
 				}
 			}
-			
+
 			if( lastLogDate!=null )
 				return lastLogDate; 
 			else
@@ -196,36 +185,23 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 				return Integer.MAX_VALUE;
 			}
 			
-			this.ensureReadAccess();
-			
-			Integer lastTasId = null;
-	
-			int hitsPerPage = 1;
-			
-			IndexSearcher searcher = new IndexSearcher(indexReader);
-			QueryParser qp = new QueryParser(LUCENE_24,FLD_LAST_TAS_ID, new StandardAnalyzer(LUCENE_24));
+			//----------------------------------------------------------------
+			// search over all elements sort them reverse by last_tas_id
+			// and return 1 top document (newest one)
+			//----------------------------------------------------------------
+			// get all documents
+			Query matchAll = new MatchAllDocsQuery();
 			// order by last_tas_id of type INT in reversed order
 			SortField sortField = new SortField(FLD_LAST_TAS_ID,SortField.INT,true);
 			Sort sort = new Sort(sortField);
 	
-			// search over all elements sort them reverse by date and return 1 top document 
-			// newest one
-			TopDocs topDocs = null;
-			Document doc = null;
-			try {
-				// FIXME: construct query explicitly
-				topDocs = searcher.search(qp.parse("*:*"), null, hitsPerPage, sort);
-				doc = searcher.doc(topDocs.scoreDocs[0].doc);
-				lastTasId = Integer.parseInt(doc.get(FLD_LAST_TAS_ID));
-			} catch (ParseException e) {
-				log.error("ParseException while parsing *:* in getLastTasId", e);
-			} catch (Exception e) {
-				log.error("Error reading index file " + this.luceneIndexPath);
-			} finally {
+			Integer lastTasId = null;
+			Document doc = searchIndex(matchAll, 1, sort);
+			if( doc!=null ) {
 				try {
-					searcher.close();
-				} catch (IOException e) {
-					log.error("Error closing index "+this.luceneIndexPath+" for searching", e);
+					lastTasId = Integer.parseInt(doc.get(FLD_LAST_TAS_ID));
+				} catch( NumberFormatException e) {
+					log.error("Error parsing last_tas_id " + doc.get(FLD_LAST_TAS_ID));
 				}
 			}
 			
@@ -281,12 +257,6 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 * cache given post for deletion
 	 * 
 	 * @param contentId post's content id 
-	 * @return number of posts deleted from index
-	 * 
-	 * @throws StaleReaderException
-	 * @throws CorruptIndexException
-	 * @throws LockObtainFailedException
-	 * @throws IOException
 	 */
 	public void deleteDocumentForContentId(Integer contentId) {
 		synchronized(this) {
@@ -294,6 +264,17 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 		}
 	}
 
+	/**
+	 * cache given posts for deletion
+	 * 
+	 * @param contentIdsToDelete list of content ids which should be removed from the index
+	 */
+	protected void deleteDocumentsInIndex(List<Integer> contentIdsToDelete) {
+		synchronized(this) {
+			this.contentIdsToDelete.addAll(contentIdsToDelete);
+		}
+	}
+	
 	/**
 	 * cache given post for insertion
 	 * 
@@ -377,7 +358,6 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 			this.contentIdsToDelete.clear();
 			this.usersToFlag.clear();
 			
-
 			//----------------------------------------------------------------
 			// commit reader-changes 
 			//----------------------------------------------------------------
@@ -439,6 +419,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 			this.usersToFlag.clear();
 		}
 	}	
+	
 	//------------------------------------------------------------------------
 	// private index access interface
 	//------------------------------------------------------------------------
@@ -469,6 +450,39 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 		for( Document post : posts ) {
 			this.insertRecordIntoIndex(post);
 		}
+	}
+	
+	/**
+	 * query the index
+	 * 
+	 * @param searchQuery the search query
+	 * @param hitsPerPage maximal number of result items to retrieve
+	 * @param ordering sort ordering
+	 * @return
+	 */
+	private Document searchIndex(Query searchQuery, int hitsPerPage, Sort ordering) {
+		// prepare the index searcher
+		this.ensureReadAccess();
+		IndexSearcher searcher = new IndexSearcher(indexReader);
+
+		// query the index
+		Document doc     = null;
+		try {
+			TopDocs topDocs  = null;
+			topDocs = searcher.search(searchQuery, null, hitsPerPage, ordering);
+			doc = searcher.doc(topDocs.scoreDocs[0].doc);
+		} catch (Exception e) {
+			log.error("Error reading index file " + this.luceneIndexPath);
+		} finally {
+			try {
+				searcher.close();
+			} catch (IOException e) {
+				log.error("Error closing index "+this.luceneIndexPath+" for searching", e);
+			}
+		}
+		
+		// all done
+		return doc;
 	}	
 	
 	/**
@@ -483,7 +497,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 * @throws IOException
 	 */
 	private int purgeDocumentForContentId(Integer contentId) throws StaleReaderException, CorruptIndexException, LockObtainFailedException, IOException {
-		Term term = new Term(FLD_CONTENT_ID, contentId.toString() );
+		Term term = new Term(FLD_CONTENT_ID, contentId.toString());
 		return purgeDocuments(term);
 	}
 	
@@ -497,7 +511,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 */
 	private int purgeDocumentsForUser(String username) throws CorruptIndexException, IOException {
 		// delete each post owned by given user
-		Term term = new Term(FLD_USER_NAME, username );
+		Term term = new Term(FLD_USER_NAME, username);
 		return purgeDocuments(term);
 	}
 
@@ -538,7 +552,6 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 
 	private void openIndexWriter() throws CorruptIndexException, LockObtainFailedException, IOException {
 		log.debug("Opening index "+luceneIndexPath+" for writing");
-		Directory indexDirectory = FSDirectory.open(new File(luceneIndexPath));
 		indexWriter = new IndexWriter(indexDirectory, getAnalyzer(), false, IndexWriter.MaxFieldLength.UNLIMITED);
 		accessMode  = AccessMode.WriteOnly;
 	}
@@ -559,7 +572,6 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 
 	private void openIndexReader() throws CorruptIndexException, IOException {
 		log.debug("Opening index "+luceneIndexPath+" for reading");
-		Directory indexDirectory = FSDirectory.open(new File(luceneIndexPath));
 		indexReader = IndexReader.open(indexDirectory, false);
 		accessMode  = AccessMode.ReadOnly;
 	}
@@ -594,7 +606,6 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	
 	/**
 	 * disable this index when open fails
-	 * FIXME: implement me
 	 */
 	public void disableIndex() {
 		this.isReady = false;
@@ -602,7 +613,6 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	
 	/**
 	 * disable this index when initialization failed
-	 * FIXME: implement me
 	 */
 	private void enableIndex() {
 		this.isReady = true;

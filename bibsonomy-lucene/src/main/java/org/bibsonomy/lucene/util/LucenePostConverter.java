@@ -1,32 +1,21 @@
 package org.bibsonomy.lucene.util;
 
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.Arrays;
-import java.util.TreeSet;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
-import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.typehandler.LuceneTypeHandler;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.tex.TexEncode;
@@ -77,7 +66,7 @@ public class LucenePostConverter extends LuceneBase {
 	 * @return
 	 */
 	public static Post<BibTex> writeBibTexPost(Document doc) {
-		// FIXME: implements prototypes via spring
+		// FIXME: implement prototypes via spring
 		BibTex bibTex = new BibTex();
 		User user = new User();
 		Post<BibTex> post = new LucenePost<BibTex>();
@@ -96,7 +85,7 @@ public class LucenePostConverter extends LuceneBase {
 	 * @return
 	 */
 	public static Post<Bookmark> writeBookmarkPost(Document doc) {
-		// FIXME: implements prototypes via spring
+		// FIXME: implement prototypes via spring
 		Bookmark bookmark = new Bookmark();
 		User user = new User();
 		Post<Bookmark> post = new LucenePost<Bookmark>();

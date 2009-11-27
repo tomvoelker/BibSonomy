@@ -1,5 +1,7 @@
 package org.bibsonomy.lucene.search;
 
+import static org.apache.lucene.util.Version.LUCENE_24;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -10,13 +12,13 @@ import java.util.TreeSet;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.Token;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.TermAttribute;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.queryParser.QueryParser.Operator;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
@@ -36,7 +38,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.util.ValidationUtils;
-import static org.apache.lucene.util.Version.*;
 
 /**
  * abstract parent class for lucene search
@@ -67,7 +68,17 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	
 	/** flag indicating whether the index was loaded successfully */
 	private boolean isReady = false;
-
+	
+	/** default junction of search terms */
+	private Operator defaultSearchTermJunctor = null;
+	
+	/**
+	 * constructor
+	 */
+	public LuceneResourceSearch() {
+		this.defaultSearchTermJunctor = Operator.AND;
+	}
+	
 	//------------------------------------------------------------------------
 	// search interface
 	//------------------------------------------------------------------------
@@ -85,7 +96,6 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	
 	/**
 	 * TODO: document me
-	 * FIXME: This should be just a variant of searchPosts
 	 * 
 	 * @param group
 	 * @param search
@@ -212,7 +222,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		try {
 			// load and hold index on physical hard disk
 			log.debug("Reloading index from disk.");
-			this.searcher = new IndexSearcher( FSDirectory.open(new File(luceneIndexPath)));
+			this.searcher = new IndexSearcher(FSDirectory.open(new File(luceneIndexPath)));
 			enableIndex();
 		} catch (Exception e) {
 			log.error("Error reloading index, disabling searcher", e);
@@ -291,7 +301,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		// parse search terms for handling phrase search
 		QueryParser searchTermParser = new QueryParser(LUCENE_24, FLD_MERGEDFIELDS, getAnalyzer());
 		// FIXME: configure default operator via spring
-		searchTermParser.setDefaultOperator(QueryParser.Operator.AND);
+		searchTermParser.setDefaultOperator(getDefaultSearchTermJunctor());
 		Query searchTermQuery = null;
 		try {
 			searchTermQuery = searchTermParser.parse(searchTerms);
@@ -395,17 +405,18 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 */
 	protected String parseToken(String fieldName, String param) throws IOException {
 		if( ValidationUtils.present(param) ) {
-			// analyze the parameter
+			// use lucene's new token stream api (see org.apache.lucene.analysis' javadoc at package level)
 			TokenStream ts = this.getAnalyzer().tokenStream(fieldName, new StringReader(param));
-			// get the TermAttribute from the TokenStream
 		    TermAttribute termAtt = ts.addAttribute(TermAttribute.class);
 		    ts.reset();
 
+			// analyze the parameter - that is: concatenate its normalized tokens
 		    String analyzedString = "";
             while (ts.incrementToken()) {
             	analyzedString+=" "+termAtt.term();
 		    }
 
+            // escape lucene's special characters for preventing lucene injection hacks
 			return QueryParser.escape(analyzedString.trim());
 		} else
 			return "";
@@ -442,5 +453,13 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 
 	public Analyzer getAnalyzer() {
 		return analyzer;
+	}
+
+	public void setDefaultSearchTermJunctor(Operator defaultSearchTermJunctor) {
+		this.defaultSearchTermJunctor = defaultSearchTermJunctor;
+	}
+
+	public Operator getDefaultSearchTermJunctor() {
+		return defaultSearchTermJunctor;
 	}
 }

@@ -12,12 +12,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
 
 /**
- * FIXME: document me
+ * class for bookmark search
  * 
  * @author fei
  *
  */
 public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
+	@SuppressWarnings("unused")
 	private static final Log log = LogFactory.getLog(LuceneSearchBookmarks.class);
 	
 	private final static LuceneSearchBookmarks singleton = new LuceneSearchBookmarks();

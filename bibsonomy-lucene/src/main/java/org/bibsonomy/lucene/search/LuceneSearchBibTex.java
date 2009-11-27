@@ -29,7 +29,7 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
- * FIXME: document me
+ * class for bibtex search
  * 
  * @author fei
  *

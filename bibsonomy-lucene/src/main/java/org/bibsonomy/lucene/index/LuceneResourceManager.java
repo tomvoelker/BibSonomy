@@ -1,15 +1,12 @@
 package org.bibsonomy.lucene.index;
 
-import java.io.IOException;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
@@ -55,10 +52,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	/** keeps track of the newest log_date during last index update */
 	private Long lastLogDate  = null;
 
-	/** FIXME: to handle the special case, that a new post with an older date
-	           as 'retrieveFromIndex' was inserted after last index
-			   update, we enlarge the time window for all queries
-			   retrieveFromdate - QUERY_TIME_OFFSET_MS */
+	/** constant for querying for all posts which have been deleted since the last index update */
 	private static final long QUERY_TIME_OFFSET_MS = 30*1000;
 
 	/**
@@ -148,7 +142,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 				if( post.getLastTasId()>this.lastTasId )
 					this.lastTasId = post.getLastTasId();
 			}
-			this.deleteDocumentsInIndex(contentIdsToDelete);
+			this.resourceIndex.deleteDocumentsInIndex(contentIdsToDelete);
 
 			//----------------------------------------------------------------
 			//  4) add all posts from 1) to the index  
@@ -247,32 +241,6 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	// private helper methods
 	//------------------------------------------------------------------------
 	/**
-	 * delete resources from index 
-	 * 
-	 * FIXME: move this method to the resource index class
-	 * 
-	 * @param indexReader index reader
-	 * @param contentIdsToDelete list of content ids which should be updated 
-	 * @param contentToInsert list of content ids which should be inserted and thus deleted, if they
-	 *                        already exist in the index
-	 * @return
-	 * @throws CorruptIndexException
-	 * @throws IOException
-	 */
-	protected boolean deleteDocumentsInIndex(List<Integer> contentIdsToDelete) {
-		boolean allDocsDeleted = true;
-		
-		Iterator<Integer> i = contentIdsToDelete.iterator();
-		while (i.hasNext()) {
-			Integer contentId = i.next();
-			this.resourceIndex.deleteDocumentForContentId(contentId);
-		}
-		
-		// FIXME: this isn't set correctly - do we need it anyway???
-		return allDocsDeleted;
-	}	
-	
-	/**
 	 * incorporate all database changes before startup which would otherwise
 	 * get lost (i.e. flagging of spam users)
 	 */
@@ -322,43 +290,18 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 					Integer.MAX_VALUE, 0);
 			unflagEntryAsSpam(userPosts);
 			this.resourceIndex.unFlagUser(user.getName());
-			// flush changes to the index
-			//this.resourceIndex.flush();
 			break;
 		case 1:
 			log.debug("flag spammer");
-			/*
-			flagEntryAsSpam(user.getName());
-			this.resourceIndex.flush();
-			*/
 			this.resourceIndex.flagUser(user.getName());
 			break;
 		}
 	}
 	
-	/**
-	 * flags an entry as spammer. This is the same like deleting one entry from index 
-	 * - no it IS deleting one entry from index
-	 * FIXME: check whether this is thread safe!!!
-	 *  
-	 */
-	protected void flagEntryAsSpam(String username) {
-		// assure that flagging and unflagging of spammers as well as index updating is mutual exclusive
-		synchronized(this) {
-			try {
-				resourceIndex.flagUser(username);
-			} catch (Exception e) {
-				log.error("Error removing spam posts for user " +username+ " from index", e);
-			}
-		}
-	}
-
 	/** 
-	 * flags an entry as non-spammer. This is the same like adding one entry to the index - no it IS adding one entry to the index 
-	 * FIXME: check whether this is thread safe!!!
-	 * 
-	 * @param recordContent
-	 * @param recordType
+	 * flags an entry as non-spammer
+	 *  
+	 * @param userPosts all of the user's posts - these will be inserted into the index
 	 */
 	protected void unflagEntryAsSpam(List<LucenePost<R>> userPosts) {
 		// assure that flagging and unflagging of spammers as well as index updating is mutual exclusive

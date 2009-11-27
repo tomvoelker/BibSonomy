@@ -1,5 +1,10 @@
 package org.bibsonomy.lucene.param;
 
+/**
+ * bean for configuring lucene via JNDI
+ * 
+ * @author fei
+ */
 public class LuceneConfig {
 	/** configure search mode (lucene/database) */
 	private String searchMode;

@@ -2,7 +2,6 @@ package org.bibsonomy.lucene.index;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
@@ -24,7 +23,6 @@ public class LuceneGenerateBookmarkIndex extends LuceneGenerateResourceIndex<Boo
 	public LuceneGenerateBookmarkIndex()
 	throws ClassNotFoundException, SQLException {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	

@@ -32,7 +32,7 @@ public class Utils {
 	 * @param r replacement - SpecialLuceneCharacters will be replaced by r 
 	 * @return
 	 */
-	
+	@Deprecated
 	public static String replaceSpecialLuceneChars(String s, String r) {
 		s = s.replaceAll("[\\,\\&\\|\\(\\)\\[\\]\\{\\}\\~\\*\\^\\?\\:\\\\]", r);
 		return s;
@@ -43,6 +43,7 @@ public class Utils {
 	 * replace special lucene characters used in queries like ?*~:()[]{}&|:\ with " "
 	 * @return the String
 	 */
+	@Deprecated
 	public static String replaceSpecialLuceneChars(String s) {
 		s = replaceSpecialLuceneChars (s, " ");
 		return s;
@@ -52,6 +53,7 @@ public class Utils {
 	 * remove special lucene characters used in queries like ?*~:()[]{}&|:\ 
 	 * @return the String
 	 */
+	@Deprecated
 	public static String resmoveSpecialLuceneChars(String s) {
 		s = replaceSpecialLuceneChars (s, "");
 		return s;

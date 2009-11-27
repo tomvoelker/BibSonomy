@@ -167,18 +167,13 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 				Document post = LucenePostConverter.readPost(postEntry);
 
 				// add (non-spam) document to index
-				// FIXME: is this necessary?
+				// FIXME: is this check necessary?
 				if( isSpammer(postEntry) ) {
 					indexWriter.addDocument(post);
 					i++;
 				} else {
 					is++;
 				}			
-					
-				// FIXME: add status report
-				if( (i+is)%100000==0 ) {
-					log.info("Read "+(i+is)+" posts");
-				}
 			}
 			log.info("Ready.");
 		}
