@@ -6,7 +6,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-	<jsp:directive.attribute name="tabView" type="org.bibsonomy.webapp.command.TabsCommand" required="true"/>
+	<jsp:directive.attribute name="tabView" type="org.bibsonomy.webapp.command.TabsCommandInterface" required="true"/>
 
 	<c:if test="${!empty tabView.tabs}">
 		<ul id="tab">

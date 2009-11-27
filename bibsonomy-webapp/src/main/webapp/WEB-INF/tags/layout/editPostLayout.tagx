@@ -10,7 +10,9 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post">
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+  >
 
     <jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.actions.EditPostCommand" required="true"/>
     <jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
@@ -56,19 +58,27 @@
               <errors:global errors="${errors}"/>
 
               <!-- 
-                 | user is posting an existing resource ...
-                 -->
-              <c:if test="${not empty command.diffPost}">
-                 <p><fmt:message key="post.edit.existent" /></p>
-              </c:if>
-
-
-              <!-- 
                  | form starts here
                  -->
               <form:form id="postForm" action="/edit${resourceType}" method="post">
 	             <div id="fsform">
+               
+               
 	                <fieldset class="fsOuter">
+
+                                <!-- 
+                                    | user is posting an existing resource ...
+                                     -->
+                                <c:if test="${not empty command.diffPost}">
+                                  <fieldset class="fsInner">
+                                    <legend><fmt:message key="note"/></legend>
+                                    <p>
+                                      <span style="float:left; font-weight: bold; margin-right: 1em;"><fmt:message key="post.edit.existent" /></span>
+                                      <buttons:help message="post.edit.existent.help"/>
+                                    </p>
+                                  </fieldset>
+                                </c:if>
+
                       
                                 <!--
                                    | general information 

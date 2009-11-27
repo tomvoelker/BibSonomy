@@ -8,9 +8,7 @@
 	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
-
-	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.TabsCommand" required="true"/>
+	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.TabsCommandInterface" required="true"/>
 	<jsp:directive.attribute name="topcontent" fragment="true" required="false"/>			
 	<jsp:directive.attribute name="tabcontent" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
@@ -21,10 +19,11 @@
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>
+    <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
 				
 		
-	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" headerExt="${headerExt}" selectedNaviTab="${selectedNaviTab}">
+	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" headerExt="${headerExt}" selectedNaviTab="${selectedNaviTab}" beforeBodyClose="${beforeBodyClose}">
 		<jsp:attribute name="content">
 			<div id="fullscreen">			
 			
