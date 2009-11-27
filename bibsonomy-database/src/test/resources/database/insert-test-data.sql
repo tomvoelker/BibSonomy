@@ -211,8 +211,8 @@ INSERT INTO `highwirelist` VALUES
 -- 
 
 INSERT INTO `ids` VALUES 
-(0,  14, 'content_id'),
-(1,  24, 'tas id'),
+(0,  1073741824, 'content_id'),
+(1,  1073741824, 'tas id'),
 (2,  0,  'relation id'),
 (3,  0,  'question id'),
 (4,  1,  'cycle id'),
