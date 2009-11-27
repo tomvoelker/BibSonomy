@@ -1,5 +1,6 @@
 package org.bibsonomy.model;
 
+import java.io.Serializable;
 import java.net.URL;
 
 /**
@@ -8,8 +9,12 @@ import java.net.URL;
  * @author rja
  * @version $Id$
  */
-public class ScraperMetadata {
+public class ScraperMetadata implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -314704072107016413L;
 	private URL url;
 	private String metaData;
 	private String scraperClass;
