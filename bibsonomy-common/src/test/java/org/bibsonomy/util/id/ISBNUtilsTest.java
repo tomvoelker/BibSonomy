@@ -2,7 +2,7 @@
  *  
  *  BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *   
- *  Copyright (C) 2006 - 2008 Knowledge & Data Engineering Group, 
+ *  Copyright (C) 2006 - 2009 Knowledge & Data Engineering Group, 
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
  *  
@@ -23,8 +23,9 @@
 
 package org.bibsonomy.util.id;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 
 /**
@@ -40,6 +41,15 @@ public class ISBNUtilsTest {
 	@Test
 	public void getISBN13Test1(){
 		assertEquals("0123456789012", ISBNUtils.extractISBN("0123456789012"));
+	}
+	
+	/**
+	 * test ISBN13 detection 
+	 * only numbers
+	 */
+	@Test
+	public void getISBN13Test6(){
+		assertEquals("0123456789012", ISBNUtils.extractISBN("ysdfsdf0123456789012sdfsdf"));
 	}
 	
 	/**
@@ -103,12 +113,10 @@ public class ISBNUtilsTest {
 	public void getISBNTest1() throws Exception {
 		final String isbn09 = "01234567X";
 		final String isbn10 = "012345678X";
-		final String isbn12 = "01234567891x";
 		final String isbn13 = "012345678912x";
 
 		assertEquals(null, ISBNUtils.extractISBN(isbn09));
 		assertEquals("012345678X", ISBNUtils.extractISBN(isbn10));
-		assertEquals("0123456789", ISBNUtils.extractISBN(isbn12));
 		assertEquals("012345678912x", ISBNUtils.extractISBN(isbn13));
 	}
 	

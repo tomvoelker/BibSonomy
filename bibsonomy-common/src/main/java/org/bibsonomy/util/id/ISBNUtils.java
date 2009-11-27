@@ -2,7 +2,7 @@
  *  
  *  BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *   
- *  Copyright (C) 2006 - 2008 Knowledge & Data Engineering Group, 
+ *  Copyright (C) 2006 - 2009 Knowledge & Data Engineering Group, 
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
  *  
@@ -34,7 +34,7 @@ public class ISBNUtils {
 	/*
 	 * pattern to match ISBN 10 and 13
 	 */
-	private static final Pattern isbnPattern = Pattern.compile("(\\d{12}[\\dx]|\\d{9}[\\dx])", Pattern.CASE_INSENSITIVE);
+	private static final Pattern isbnPattern = Pattern.compile("([^0-9]|^)(\\d{12}[\\dx]|\\d{9}[\\dx])([^0-9x]|$)", Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * Search substring with pattern format and returns it.
@@ -45,7 +45,7 @@ public class ISBNUtils {
 		if (snippet != null) {
 			final Matcher isbnMatcher = isbnPattern.matcher(cleanISBN(snippet));
 			if (isbnMatcher.find())
-				return isbnMatcher.group(1);
+				return isbnMatcher.group(2);
 		}
 		return null;
 	}
