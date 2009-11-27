@@ -13,6 +13,8 @@ public class ScraperMetadata {
 	private URL url;
 	private String metaData;
 	private Class scraperClass;
+	private int postId;
+	
 	public URL getUrl() {
 		return this.url;
 	}
@@ -30,6 +32,12 @@ public class ScraperMetadata {
 	}
 	public void setScraperClass(Class scraperClass) {
 		this.scraperClass = scraperClass;
+	}
+	public int getPostId() {
+		return this.postId;
+	}
+	public void setPostId(int postId) {
+		this.postId = postId;
 	}
 	
 }
