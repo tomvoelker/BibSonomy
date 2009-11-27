@@ -51,9 +51,15 @@ public class RemoveMessageController implements MinimalisticController<RemoveMes
 		 */
 		if (context.isValidCkey() && !errors.hasErrors()){
 			log.debug("User is logged in, ckey is valid");
-			// delete the message
-			final List<Post<? extends Resource>> posts = createObjects(command);
-			logic.deleteInboxMessages(posts, false);
+			if (command.isClear()) {
+				//delete all messages
+				List<Post<?extends Resource>> posts= null;
+				logic.deleteInboxMessages(posts, true);
+			} else {
+				// delete the message
+				final List<Post<? extends Resource>> posts = createObjects(command);
+				logic.deleteInboxMessages(posts, false);
+			}
 		} else {
 			errors.reject("error.field.valid.ckey");
 		}

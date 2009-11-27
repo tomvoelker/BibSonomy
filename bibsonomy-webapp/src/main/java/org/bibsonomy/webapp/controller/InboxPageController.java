@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -35,6 +36,12 @@ public class InboxPageController extends SingleResourceListController implements
 			command.getListCommand(resourceType).setStart(0);
 			setList(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, 20);
 			postProcessAndSortList(command, resourceType);
+			for (Object p : command.getListCommand(resourceType).getList()){
+				if (p instanceof Post<?>){
+					Post<?> postItem = (Post<?>)p;
+					postItem.setInboxPost(true);
+				}
+			}
 		}
 												
 		// html format - retrieve tags and return HTML view

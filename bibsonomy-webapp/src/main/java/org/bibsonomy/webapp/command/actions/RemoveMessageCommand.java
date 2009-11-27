@@ -13,6 +13,22 @@ public class RemoveMessageCommand extends BaseCommand implements Serializable {
 	private static final long serialVersionUID = -6623936347565283765L;
 	private String hash;
 	private String user;
+	private boolean clear;
+
+	
+	/**
+	 * @return true if user wishes to delete all from his inbox
+	 */
+	public boolean isClear() {
+		return this.clear;
+	}
+
+	/**
+	 * @param clear
+	 */
+	public void setClear(boolean clear) {
+		this.clear = clear;
+	}
 
 	/**
 	 * @return String
