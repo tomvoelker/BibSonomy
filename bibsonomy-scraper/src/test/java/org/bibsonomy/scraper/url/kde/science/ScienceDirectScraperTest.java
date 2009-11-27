@@ -31,7 +31,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Scraper URL tests #28 for ScienceDirectScraper
+ * Scraper URL tests #28 #141 #159 #162 for ScienceDirectScraper
  * @author tst
  *
  */
@@ -65,6 +65,16 @@ public class ScienceDirectScraperTest {
 	public void url3TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_159"));
+	}
+	
+	/**
+	 * starts URL test with id url_162
+	 */
+	@Test
+	@Ignore
+	public void url4TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_162"));
 	}
 	
 	@Test

@@ -64,7 +64,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	private static final String PATTERN_USER_ID            = "<input type=hidden name=_userid value=(.+?)>"; // "&_userid=([^&]*)";
 	private static final String PATTERN_UIOKEY             = "<input type=hidden name=_uoikey value=(.+?)>"; //"&_uoikey=([^&]*)";
 	private static final String PATTERN_MD5                = "<input type=hidden name=md5 value=(.+?)>";
-	private static final String PATTERN_KEYWORDS		   = "keywords = \"(.+)\",";
+	private static final String PATTERN_KEYWORDS		   = "keywords = \"(.+)\"";
 	private static final String PATTERN_QUOTE_START		   = "\\s*=\\s*\"";
 	private static final String PATTERN_QUOTE_END		   = "\\\"\\s*,\\s*$|\\\"\\s*$";
 
@@ -148,7 +148,11 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 				while (_m.find()) {
 					_keywords.append(_m.group(1));
 					_keywords.append(_delim);
-					_bibtex = _bibtex.replace(_m.group(), "");
+					if (_bibtex.contains(_m.group() + ",")) {
+						_bibtex = _bibtex.replace(_m.group() + ",", "");
+					} else {
+						_bibtex = _bibtex.replace(_m.group(), "");
+					}
 				}
 				
 				_keywords.delete(_keywords.lastIndexOf(_delim), _keywords.lastIndexOf(_delim) + 1);
