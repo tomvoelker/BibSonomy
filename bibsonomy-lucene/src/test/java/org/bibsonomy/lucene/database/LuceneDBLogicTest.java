@@ -48,7 +48,10 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	private static final String LUCENE_MAGIC_TAG    = "luceneTag";
 	private static final String LUCENE_MAGIC_EDITOR = "luceneEditor";
 	private static final String LUCENE_MAGIC_TITLE  = "luceneTitle";
-
+	
+	/** constant for querying for all posts which have been deleted since the last index update */
+	private static final long QUERY_TIME_OFFSET_MS = 30*1000;
+	
 	/** username for test queries */
 	private static final String TEST_USERNAME = "testuser1";
 	
@@ -152,8 +155,8 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 		// TEST 1: insert and delete special posts into test database and search for it
 		//--------------------------------------------------------------------
 		// start time - we ignore milliseconds
-		long start = System.currentTimeMillis();
-		Date fromDate = new Date(start- start%1000);
+		long start    = System.currentTimeMillis();
+		long fromDate = start- start%1000;
 		
 		for( int i=0; i<5; i++ ) {
 			// store test posts in database
@@ -164,9 +167,9 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 			this.bibTexDb.deletePost(bibtexPost.getUser().getName(), bibtexPost.getResource().getIntraHash(), this.dbSession);
 		}
 		// retrieve posts
-		List<Integer> posts = luceneBibTexLogic.getContentIdsToDelete(fromDate);
+		List<Integer> posts = luceneBibTexLogic.getContentIdsToDelete(new Date(fromDate-QUERY_TIME_OFFSET_MS));
 
-		assertEquals(refPosts.size(), posts.size());
+		assertEquals(true, refPosts.size()<=posts.size());
 	}
 	
 	/**
