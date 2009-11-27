@@ -92,6 +92,8 @@ public class BibTex extends Resource {
 	
 	private List<BibTexExtra> extraUrls;
 	
+	private ScraperMetadata scraperMetadata;
+	
 	/**
 	 * A document attached to this bibtex resource.
 	 */
@@ -655,5 +657,13 @@ public class BibTex extends Resource {
 
 	public void setExtraUrls(List<BibTexExtra> extraUrls) {
 		this.extraUrls = extraUrls;
+	}
+
+	public ScraperMetadata getScraperMetadata() {
+		return this.scraperMetadata;
+	}
+
+	public void setScraperMetadata(ScraperMetadata scraperMetadata) {
+		this.scraperMetadata = scraperMetadata;
 	}
 }
