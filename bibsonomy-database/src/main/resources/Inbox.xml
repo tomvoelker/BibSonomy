@@ -32,6 +32,13 @@
 		LIMIT 1
 	</select>
 	
+	<!-- get all messageIds from the inbox of a user -->
+	<select id="getInboxMessageIds" resultClass="Integer" parameterClass="String">
+		SELECT i.message_id
+		FROM inboxMail i
+		WHERE i.receiver_user=#receiver#
+	</select>
+	
 	<!-- delete a message with a given messageId -->
 	<delete id="deleteInboxMessage" parameterClass="Integer">
 		DELETE FROM inboxMail
