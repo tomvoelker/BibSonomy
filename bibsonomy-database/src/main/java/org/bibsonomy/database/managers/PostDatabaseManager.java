@@ -966,56 +966,45 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	
 	@Override
 	public boolean createPost(final Post<R> post, final DBSession session) {
-		this.systemTagPerformBefore(session, post, new HashSet<Tag>());
-		
-		final String userName = post.getUser().getName();
-		/*
-		 * FIXME: we need to overwrite the userName in the post with the given userName
-		 * (which comes from loginUser.getName() in DBLogic) - otherwise one can store
-		 * posts under another name!
-		 */ 
-		
-		/*
-		 * the current intra hash of the resource
-		 */
-		final String intraHash = post.getResource().getIntraHash();
-
-		/*
-		 * get posts with the intrahash of the given post to check for possible duplicates 
-		 */
-		
-		final Post<R> postInDB = this.getPostByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
-
-		/*
-		 * check if user is trying to create a resource that already exists
-		 */
-		if (present(postInDB)) {
-			throw new IllegalArgumentException("Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
-						" already exists in your collection (intrahash: " + intraHash + ")");
-		}
-		
 		session.beginTransaction();
 		try {
-
+			this.systemTagPerformBefore(session, post, new HashSet<Tag>());
+			final String userName = post.getUser().getName();
+			/*	
+			 * FIXME: we need to overwrite the userName in the post with the given userName
+			 * (which comes from loginUser.getName() in DBLogic) - otherwise one can store
+			 * posts under another name!
+			 */ 
+			/*
+			 * the current intra hash of the resource
+			 */
+			final String intraHash = post.getResource().getIntraHash();
+			/*
+			 * get posts with the intrahash of the given post to check for possible duplicates 
+			 */
+			final Post<R> postInDB = this.getPostByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
+			/*
+			 * check if user is trying to create a resource that already exists
+			 */
+			if (present(postInDB)) {
+				throw new IllegalArgumentException("Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
+						" already exists in your collection (intrahash: " + intraHash + ")");
+			}
 			/*
 			 * ALWAYS get a new contentId
 			 */
 			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
-			
 			/*
 			 * on update, do a delete first ...
 			 */
 			this.insertPost(post, session);
-
 			// add the tags
 			this.tagDb.insertTags(post, session);
-
+			this.systemTagPerformAfter(session, post, new HashSet<Tag>());
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
-		
-		this.systemTagPerformAfter(session, post, new HashSet<Tag>());
 		return true;
 	}
 	
@@ -1037,71 +1026,71 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	@Override
 	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session) {
 		final String userName = post.getUser().getName();
-		/*
-		 * the current intra hash of the resource
-		 */
-		final String intraHash = post.getResource().getIntraHash();
-
-		/*
-		 * the resource with the "old" intrahash, i.e. the one that was sent
-		 * within the create/update resource request
-		 */
-		final Post<R> oldPost;
-		if (present(oldHash)) {
-			// if yes, check if a post exists with the old intrahash
-			oldPost = this.getPostByHashForUser(userName, oldHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
-			
+		session.beginTransaction();
+		try {
 			/*
-			 * check if post to update is in db
+			 * the current intra hash of the resource
 			 */
-			if (!present(oldPost)) {
+			final String intraHash = post.getResource().getIntraHash();
+			/*
+			 * the resource with the "old" intrahash, i.e. the one that was sent
+			 * within the create/update resource request
+			 */
+			final Post<R> oldPost;
+			if (present(oldHash)) {
+				// if yes, check if a post exists with the old intrahash
+				oldPost = this.getPostByHashForUser(userName, oldHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
 				/*
-				 * not found -> throw exception
+				 * check if post to update is in db
 				 */
-				log.warn(this.resourceClassName + " with hash " + oldHash + " does not exist for user " + userName);
-				throw new ResourceNotFoundException(oldHash);
-			}
+				if (!present(oldPost)) {
+					/*
+					 * not found -> throw exception
+					 */
+					log.warn(this.resourceClassName + " with hash " + oldHash + " does not exist for user " + userName);
+					throw new ResourceNotFoundException(oldHash);
+				}
 			
-		} else {
+			} else {
 			throw new IllegalArgumentException("Could not update post: no intrahash specified.");
-		}
-		
-		/*
-		 * perform system tags before action
-		 */
-		this.systemTagPerformBefore(session, post, oldPost.getTags());
-
-		/*
-		 * get posts with the intrahash of the given post to check for possible duplicates 
-		 */
-		final List<Post<R>> newPostsInDB = this.getPostsByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
-
-		/*
-		 * check if user is trying to create a resource that already exists
-		 */
-		if (present(newPostsInDB)) {
-			/*
-			 * new resource exists ... 
-			 */
-			if (!intraHash.equals(oldHash)) {
-				/* 
-				 * Although we're doing an update, the old intra hash is different from the new one
-				 * in principle, this is OK, but not when the new hash already exists. Because that
-				 * way we would delete the post with the old hash and post the new one - resulting
-				 * in two posts with the same (new hash)
-				 */
-				throw new IllegalArgumentException("Could not update " + this.resourceClassName + ": This " + this.resourceClassName + " already exists in your collection (intrahash: " + intraHash + ")");
 			}
-		}
 		
-		/*
-		 * now execute the postupdate operation
-		 */	
-		if (present(operation)) {
-			switch (operation) {
-				case UPDATE_TAGS:
-					this.performUpdateOnlyTags(post, oldPost, session);
-					break;
+			/*
+			 * perform system tags before action
+			 */
+			this.systemTagPerformBefore(session, post, oldPost.getTags());
+
+			/*
+			 * get posts with the intrahash of the given post to check for possible duplicates 
+			 */
+			final List<Post<R>> newPostsInDB = this.getPostsByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
+
+			/*
+			 * check if user is trying to create a resource that already exists
+			 */
+			if (present(newPostsInDB)) {
+				/*
+				 * new resource exists ... 
+				 */
+				if (!intraHash.equals(oldHash)) {
+					/* 
+					 * Although we're doing an update, the old intra hash is different from the new one
+					 * in principle, this is OK, but not when the new hash already exists. Because that
+					 * way we would delete the post with the old hash and post the new one - resulting
+					 * in two posts with the same (new hash)
+					 */
+					throw new IllegalArgumentException("Could not update " + this.resourceClassName + ": This " + this.resourceClassName + " already exists in your collection (intrahash: " + intraHash + ")");
+				}
+			}
+		
+			/*
+			 * now execute the postupdate operation
+			 */	
+			if (present(operation)) {
+				switch (operation) {
+					case UPDATE_TAGS:
+						this.performUpdateOnlyTags(post, oldPost, session);
+						break;
 //				case UPDATE_DOCUMENTS: // TODO: implement update documents operation
 //					return this.updateDocumentsOfPost(post, oldPost, session);
 //					break;
@@ -1110,13 +1099,16 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					 * as default update all parts of a post
 					 */
 					this.performUpdateAll(post, oldPost, session);
-			}
-		} else {
-			this.performUpdateAll(post, oldPost, session);
-		}		
+				}
+			} else {
+				this.performUpdateAll(post, oldPost, session);
+			}		
 		
-		this.systemTagPerformAfter(session, post, oldPost.getTags());
-		
+			this.systemTagPerformAfter(session, post, oldPost.getTags());
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
+		}
 		return true;
 	}
 	
