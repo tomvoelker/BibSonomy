@@ -918,4 +918,18 @@
 		<BibFile>ScienceDirectScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_160">
+		<TestDescription>Amazon.de scraping test</TestDescription>
+		<URL>http://www.amazon.de/gp/product/3426274914/ref=s9_top_bw_i3/278-8327421-8514538?pf_rd_m=A3JWKAKR8XB7XF&amp;pf_rd_s=center-4&amp;pf_rd_r=0QDEYW5TCNM11354JY22&amp;pf_rd_t=101&amp;pf_rd_p=473590033&amp;pf_rd_i=299956</URL>
+		<BibFile>AmazonScraperUnitURLTest9.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
+		<Enabled>true</Enabled>
+	</URLTest>
+	<URLTest id="url_161">
+		<TestDescription>Amazon.de scraping test</TestDescription>
+		<URL>http://www.amazon.de/Sebastian-Deisler-Zur%C3%BCck-Geschichte-Fu%C3%9Fballspielers/dp/3941378287%3FSubscriptionId%3DAKIAJOMMTFWDOHFJSJXQ%26tag%3Dws%26linkCode%3Dxm2%26camp%3D2025%26creative%3D165953%26creativeASIN%3D3941378287</URL>
+		<BibFile>AmazonScraperUnitURLTest10.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.amazon.AmazonScraper</Scraper>
+		<Enabled>true</Enabled>
+	</URLTest>
 </test:Tests>

@@ -114,4 +114,24 @@ public class AmazonScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_105"));
 	}
+	
+	/**
+	 * starts URL test with id url_160
+	 */
+	@Test
+	@Ignore
+	public void url9TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_160"));
+	}
+	
+	/**
+	 * starts URL test with id url_161
+	 */
+	@Test
+	@Ignore
+	public void url10TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_161"));
+	}
 }
