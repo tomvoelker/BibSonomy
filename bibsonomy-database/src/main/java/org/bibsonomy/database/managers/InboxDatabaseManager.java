@@ -1,5 +1,7 @@
 package org.bibsonomy.database.managers;
 
+import java.util.List;
+
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.InboxParam;
@@ -9,8 +11,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 /**
  * Manages Inbox functionalities
- *  
- *
+ * s.a. counting, creating and deleting messages from a users inbox 
  *  
  */
 
@@ -63,7 +64,6 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 		param.setSender(sender);
 		param.setContentId(post.getContentId());
 		param.setIntraHash(post.getResource().getIntraHash());
-		System.out.println("INTRAHASH!!!!!! "+post.getResource().getIntraHash());
 		param.setReceiver(receiver);
 		this.insert("createInboxMessage", param, session);
 		/*
@@ -90,8 +90,8 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 		param.setSender(sender);
 		param.setReceiver(receiver);
 		param.setIntraHash(intraHash);
-		//TODO: Was wenn keine MessageId gefunden wird?
 		int messageId = this.getMessageId(param, session);
+		//TODO: What happens if no MessageId can be found?
 		/*
 		 * delete all entries (message and tags) with the now known message_id
 		 */
@@ -111,9 +111,21 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	 * @param receiver
 	 * @param session
 	 */
+	
+	private List<Integer> getInboxMessageIds(final String receiver, final DBSession session) {
+		return this.queryForList("getInboxMessageIds", receiver, Integer.class, session);
+	}
+	
+	/**
+	 * @param receiver
+	 * @param session
+	 */
 	public void deleteAllInboxMessages(final String receiver, final DBSession session){
-		//TODO: Tas have to be removed as well!!!
+		// get all messageIds, that are to be deleted and erase their tags first
+		List<Integer> messageIds= getInboxMessageIds(receiver, session);
+		for (Integer messageId: messageIds) {
+			this.delete("deleteInboxMessageTags", messageId, session);
+		}
 		this.delete("deleteAllInboxMessages", receiver, session);
 	}
-		
 }
