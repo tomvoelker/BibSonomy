@@ -88,6 +88,12 @@ public class Post<T extends Resource> {
 	 * identifier if this post is picked or not
 	 */
 	private boolean isPicked = false;
+	
+	/**
+	 * identifier if post is in the inbox
+	 * use only to create the inbox page of a user
+	 */
+	private boolean isInboxPost=false;
 
 	/**
 	 * @return contentId
@@ -246,6 +252,23 @@ public class Post<T extends Resource> {
 		return ranking;
 	}
 
+	/**
+	 * Returns if this post is an inbox post or not
+	 * 
+	 * @return boolean
+	 */
+	public boolean isInboxPost() {
+		return this.isInboxPost;
+	}
+
+	/**
+	 * Set if this post is an inbox post or not
+	 * 
+	 * @param isInboxPost
+	 */
+	public void setInboxPost(boolean isInboxPost) {
+		this.isInboxPost = isInboxPost;
+	}
 	/**
 	 * Returns if this post is picked or not
 	 * 
