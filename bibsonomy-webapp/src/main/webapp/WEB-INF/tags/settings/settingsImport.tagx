@@ -1,0 +1,163 @@
+<jsp:root version="2.0"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:spring="http://www.springframework.org/tags"
+  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+  
+  <jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
+  
+	<!--   ############################################# import tab ############################################# -->
+		<!-- firefox import -->
+		
+		<c:set var="viewableFor" />
+		<c:set var="filepath" />
+		<c:set var="overwriteBiblicious" />
+		
+		<c:set var="private"><fmt:message key="post.resource.private"/></c:set>
+		<c:set var="public"><fmt:message key="post.resource.public"/></c:set>
+		<c:set var="valueButton"><fmt:message key="settings.firefox.button.text"/></c:set>
+		<input name="ckey" type="hidden" value="${command.context.ckey}"/>
+		
+		<h2><fmt:message key="settings.firefox.header"/></h2>
+		<form:form id="settingImportForm" action="/import/firefox?ckey=${ckey}" method="post" enctype="multipart/form-data">
+		  <table> 
+		   <tr>
+		   <td><form:label path="file" ><fmt:message key="settings.firefox.fileselect"/></form:label></td>
+		   <td><input type="file" name="file" size="20"/></td></tr>
+		   <tr>
+		      <td><fmt:message key="settings.firefox.viewalble"/></td>
+		      <td>
+			      <form:select path="grouping" id="viewablebox">
+				      <form:option label="${public}" value="public"/>
+				      <form:option label="${private}" value="private"/>
+			      </form:select>
+		      </td>
+		    </tr>
+		    
+		   <tr>
+		   <td></td>
+		   <td>
+		   		<form:checkbox path="overwrite" id="overwriteBox"/>
+		   		<fmt:message key="settings.firefox.overwrite"><fmt:param>${projectName}</fmt:param></fmt:message>
+		   </td>
+		   </tr>
+		   <tr><td>
+		   	<input type="submit" value="${valueButton}" />
+		   	</td>
+		   	<td></td>
+		   	</tr>
+		  </table> 
+		  
+		  <input name="importType" type="hidden" value="firefox"/>
+
+		</form:form>
+		
+		<hr/>
+		
+		<!-- delicious import -->
+		
+		<h2><fmt:message key="settings.delicious.header" /></h2>
+		<form:form id="settingImportForm" action="/import/bookmarks?ckey=${ckey}" method="post">
+	  	<table>
+	    	<tr><td><fmt:message key="navi.username" /></td>
+	    		<td><input type="text" name="username" size="30"/></td>
+	    	</tr>
+	    	<tr><td><fmt:message key="navi.password" /></td>
+	    		<td><input type="password" name="password" size="30"/></td>
+	    	</tr>
+	    	<tr>
+	      		<td colspan="2"><fmt:message key="settings.delicious.hint" /></td>
+	    	</tr>
+	    	<tr>
+	    	<td></td>
+	    	<td><input type="checkbox" name="overwrite" value="yes" />
+	    		<fmt:message key="settings.delicious.overwrite">
+	    			<fmt:param>${projectName}</fmt:param>
+	    		</fmt:message>
+	    	</td>
+	    	</tr>
+	    	<tr>
+	    	<td>
+	      		<!-- <input type="hidden" name="ckey" value="${ckey}"/>-->
+	      		<!-- <input type="hidden" name="import" value="delicious"/> -->
+	      		<input type="submit" value="${valueButton}"/>
+	    	</td>
+	    	<td>
+	    	</td>
+	    	</tr>
+	  	</table>
+	  	<input name="importType" type="hidden" value="delicious"/>
+	  	
+	  	</form:form>
+	  
+		<hr/>
+
+		<!-- handle layout file -->
+		
+		<c:set var="userName">${command.context.loginUser.name}</c:set>
+		
+		<jsp:useBean id="layoutBean" class="beans.LayoutBean" scope="request">
+		  <jsp:setProperty name="layoutBean" property="username" value="${user.name}"/>
+		</jsp:useBean>
+		
+		<a name="layout"></a>
+		
+		<h2>JabRef layout file</h2>
+		
+		<p>
+		<fmt:message key="settings.jabref.explain">
+			<fmt:param><a href="/layout/custom/user/${userName}">${projectName}</a></fmt:param>		
+		</fmt:message>
+		</p>
+			
+		<c:set var="actionJabRef" />
+		
+		<form:form id="settingImportForm" action="/import/jabref?action=create&amp;ckey=${ckey}" method="post" enctype="multipart/form-data">
+			<table>
+		    <tr> 
+		      <td>begin.layout</td>
+		      <td><c:choose>
+		        <c:when test="${empty command.beginName}">
+		        	<c:set var="actionJabRef" value="create"/>
+		        	<input name="fileBegin" type="file" size="20"/>
+		        </c:when>
+		        <c:otherwise><c:out value="${command.beginName}"/><a class="action" href="/import/jabref?hash=${command.beginHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a></c:otherwise>
+		      </c:choose></td>
+		      <td><fmt:message key="settings.jabref.beginning"/></td>
+		    </tr><tr>
+		      <td>item.layout</td>
+		      <td><c:choose>
+		        <c:when test="${empty command.itemName}">
+		        	<c:set var="actionJabRef" value="create"/>
+		        	<input name="fileItem" type="file" size="20"/>
+		        </c:when>
+		        <c:otherwise><c:out value="${command.itemName}"/><a class="action" href="/import/jabref?hash=${command.itemHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a></c:otherwise>
+		      </c:choose></td>
+		      <td><fmt:message key="settings.jabref.item"/></td>
+		    </tr><tr>
+		      <td>end.layout</td>
+		      <td><c:choose>
+		        <c:when test="${empty command.endName}">
+		        	<c:set var="actionJabRef" value="create"/>
+		        	<input name="fileEnd" type="file" size="20"/>
+		        </c:when>
+		        <c:otherwise><c:out value="${command.endName}"/><a class="action" href="/import/jabref?hash=${command.endHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a></c:otherwise>
+		      </c:choose></td>
+		      <td><fmt:message key="settings.jabref.end"/></td>
+		    </tr><tr>
+		      <td><input type="submit" value="upload" /><div class="errmsg"><c:out value="${layoutBean.error}"/></div></td>
+		      <td></td>
+		    </tr>
+		  </table>
+		  
+		  <input name="action" type="hidden" value="${actionJabRef}"/> 
+		  <input name="importType" type="hidden" value="jabref"/>
+		  
+		</form:form>		
+</jsp:root>
