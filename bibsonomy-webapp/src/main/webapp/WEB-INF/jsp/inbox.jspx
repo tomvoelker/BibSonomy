@@ -37,6 +37,13 @@
 				<input type="text" id="inpf" name="search" size="25" />
 			</form>
 		</jsp:attribute>
+		
+		<jsp:attribute name="contentHeading">
+			<fmt:message key="inboxPage.about">
+				<fmt:param>${command.context.loginUser.name}</fmt:param>
+			</fmt:message>		
+         </jsp:attribute>
+		
 		<jsp:attribute name="sidebar">
 			<li>
             	<span class="sidebar_h">
