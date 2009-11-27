@@ -30,7 +30,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Scraper URL tests #42, #46, #47, #48, #49, #50, #57, #105 for AmazonScraper
+ * Scraper URL tests #42, #46, #47, #48, #49, #50, #57, #105, #160, #161 for AmazonScraper
  * @author tst
  */
 public class AmazonScraperTest {
