@@ -47,6 +47,35 @@
 			    		</a>
 			    	</c:otherwise>
 			    </c:choose>
+			    
+			<c:if test="${post.inboxPost}">
+				<!-- REMOVE Message from Inbox -->
+				<c:url var="message_remove" value="/removeMessage" context="${projectContext}">
+					<c:param name="hash" value="${post.resource.hash}" />
+					<c:param name="user" value="${post.user.name}" />
+					<c:param name="ckey" value="${ckey}" />
+					<c:param name="clear" value="false" />
+				</c:url>
+				<c:set var="removeTitle"><fmt:message key="bookmark.actions.removeMessage.title"/></c:set>
+				
+			    <c:choose>
+			    	<!-- SHOW A CONFIRM WINDOW -->
+			    	<c:when test="${command.context.loginUser.settings.confirmDelete}">
+			    		<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
+			    			onclick="javascript: return confirmDelete(event);">
+			    			<fmt:message key="bookmark.actions.removeMessage"/>
+			    		</a>
+			    	</c:when>
+			    	<!-- JUST DELETE -->
+			    	<c:otherwise>
+			    		<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}">		       
+			       			<fmt:message key="bookmark.actions.removeMessage"/>
+			    		</a>
+			    	</c:otherwise>
+			    </c:choose>
+			    <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+			</c:if>					
+			    
 			</c:if>
 	
 			<c:if test="${loginUserName ne post.user.name}">

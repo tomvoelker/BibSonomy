@@ -100,12 +100,13 @@
 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 	</c:if>
 
-	<c:if test="${command.pageTitle=='inbox'}">
+	<c:if test="${post.inboxPost}">
 		<!-- REMOVE Message from Inbox -->
 		<c:url var="message_remove" value="/removeMessage" context="${projectContext}">
 			<c:param name="hash" value="${post.resource.intraHash}" />
 			<c:param name="user" value="${post.user.name}" />
 			<c:param name="ckey" value="${ckey}" />
+			<c:param name="clear" value="false" />
 		</c:url>
 		<c:set var="removeTitle"><fmt:message key="bibtex.actions.removeMessage.title"/></c:set>
 		
