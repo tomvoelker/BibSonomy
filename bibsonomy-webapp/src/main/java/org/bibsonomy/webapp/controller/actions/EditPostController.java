@@ -943,6 +943,25 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 		this.requestLogic = requestLogic;
 	}
 
+	/**
+	 * Sets a string attribute in the session.
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	protected void setSessionAttribute(final String key, final Object value) {
+		requestLogic.setSessionAttribute(key, value);
+	}
+	
+	/**
+	 * Gets a string attribute from the session.
+	 * 
+	 * @param key
+	 * @return
+	 */
+	protected Object getSessionAttribute(final String key) {
+		return requestLogic.getSessionAttribute(key);
+	}
 
 
 }

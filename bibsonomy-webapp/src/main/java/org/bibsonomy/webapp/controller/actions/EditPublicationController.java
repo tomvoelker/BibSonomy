@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.controller.actions;
 
-import helpers.database.DBScraperMetadataManager;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,6 +10,7 @@ import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.ScraperMetadata;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.Scraper;
@@ -43,8 +42,10 @@ import bibtex.parser.ParseException;
  */
 public class EditPublicationController extends EditPostController<BibTex> {
 
+	private static final String SESSION_ATTRIBUTE_SCRAPER_METADATA = "scraperMetaData";
+
 	private static final Log log = LogFactory.getLog(EditPublicationController.class);
-	
+
 	private Scraper scraper;
 
 	@Override
@@ -76,7 +77,7 @@ public class EditPublicationController extends EditPostController<BibTex> {
 		} 
 	}
 
-	
+
 	private void handleScraper(final EditPostCommand<BibTex> command, final User loginUser, final EditPublicationCommand publicationCommand, final String url, String selection) {
 		/*
 		 * We have a URL set which means we shall scrape!
@@ -109,18 +110,6 @@ public class EditPublicationController extends EditPostController<BibTex> {
 					log.debug(parser.getWarnings());
 
 					/*
-					 * store scraper metadata using old code
-					 * 
-					 * FIXME: NEVER use old code!
-					 */
-					if (scrapingContext.getMetaResult() != null) {
-						int scraperId = new DBScraperMetadataManager().insertMetadata(scrapingContext);
-						if (scraperId > 0) {
-							parsedBibTex.setScraperId(scraperId);
-						}
-					}
-
-					/*
 					 * check if a bibtex was scraped
 					 */
 					if (ValidationUtils.present(parsedBibTex)) {						
@@ -141,6 +130,21 @@ public class EditPublicationController extends EditPostController<BibTex> {
 						 * store scraping context to show user meta information
 						 */
 						publicationCommand.setScrapingContext(scrapingContext);
+						/*
+						 * clean old scraper metadata
+						 */
+						setSessionAttribute(SESSION_ATTRIBUTE_SCRAPER_METADATA, null);
+						/*
+						 * store scraper metadata in session (to later store it 
+						 * together with the post)
+						 */
+						if (ValidationUtils.present(scrapingContext.getMetaResult())) {
+							final ScraperMetadata scraperMetadata = new ScraperMetadata();
+							scraperMetadata.setScraperClass(scrapingContext.getScraper().getClass());
+							scraperMetadata.setMetaData(scrapingContext.getMetaResult());
+							scraperMetadata.setUrl(scrapingContext.getUrl());
+							setSessionAttribute(SESSION_ATTRIBUTE_SCRAPER_METADATA, scraperMetadata);
+						}						
 						/*
 						 * return to view 
 						 */
@@ -202,13 +206,17 @@ public class EditPublicationController extends EditPostController<BibTex> {
 
 
 	/** 
-	 * This controller exchanges the resource by a parsed version of it.
+	 * This controller exchanges the resource by a parsed version of it and 
+	 * additionally adds scraper metadata from the session (if available).
 	 * 
 	 * @see org.bibsonomy.webapp.controller.actions.EditPostController#cleanPost(org.bibsonomy.model.Post)
 	 */
 	@Override
 	protected void cleanPost(final Post<BibTex> post) {
 		super.cleanPost(post);
+		/*
+		 * exchange post with a parsed version
+		 */
 		try {
 			new PostBibTeXParser().updateWithParsedBibTeX(post);
 		} catch (ParseException ex) {
@@ -221,6 +229,13 @@ public class EditPublicationController extends EditPostController<BibTex> {
 			 * we silently ignore parsing errors - they have been handled by the
 			 * validator
 			 */
+		}
+		/*
+		 * store scraper metadata
+		 */
+		final Object scraperMetadata = getSessionAttribute(SESSION_ATTRIBUTE_SCRAPER_METADATA);
+		if (ValidationUtils.present(scraperMetadata)) {
+			post.getResource().setScraperMetadata((ScraperMetadata) scraperMetadata);
 		}
 	}
 
