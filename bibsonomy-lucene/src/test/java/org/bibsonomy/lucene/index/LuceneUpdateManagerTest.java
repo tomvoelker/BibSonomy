@@ -27,11 +27,9 @@ import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.lucene.database.LuceneBibTexLogic;
 import org.bibsonomy.lucene.database.LuceneBookmarkLogic;
-import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateBibTexSearch;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateBookmarkSearch;
-import org.bibsonomy.lucene.search.delegate.LuceneDelegateResourceSearch;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -62,12 +60,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	private LuceneResourceManager<BibTex> luceneBibTexUpdater;
 	private LuceneResourceManager<Bookmark> luceneBookmarkUpdater;
 	
-	private LuceneDBInterface<BibTex> luceneBibTexLogic;
-	private LuceneDBInterface<Bookmark> luceneBookmarkLogic;
 	private LuceneResourceIndex<BibTex> luceneBibTexIndex;
 	private LuceneResourceIndex<Bookmark> luceneBookmarkIndex;
-	private LuceneDelegateResourceSearch<BibTex> luceneBibTexSearch;
-	private LuceneDelegateResourceSearch<Bookmark> luceneBookmarkSearch;
 
 	/** search terms for each relevant bibtex search field */
 	String[] bibtexSearchTerms = {

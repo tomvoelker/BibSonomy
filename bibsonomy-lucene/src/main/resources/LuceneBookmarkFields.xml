@@ -14,6 +14,9 @@
 						<entry key="luceneName" value="desc" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
 						<entry key="dbName" value="book_description" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.intraHash">
@@ -27,6 +30,9 @@
 						<entry key="luceneName" value="url" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
 						<entry key="dbName" value="book_url" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 			</map>

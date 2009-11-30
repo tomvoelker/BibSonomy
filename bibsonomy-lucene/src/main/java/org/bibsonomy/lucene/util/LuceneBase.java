@@ -32,7 +32,11 @@ public class LuceneBase {
 	protected static final String CFG_LIST_DELIMITER = " ";
 	protected static final String CFG_FLDINDEX       = "luceneIndex";
 	protected static final String CFG_FLDSTORE       = "luceneStore";
-
+	protected static final String CFG_FULLTEXT_FLAG  = "fulltextSearch";
+	
+	/** delimiter to specify which field to search for */
+	protected static final String CFG_LUCENE_FIELD_SPECIFIER = ":";
+	
 	/** directory prefix for different resource indeces */
 	protected static final String CFG_LUCENE_INDEX_PREFIX = "lucene_";
 	

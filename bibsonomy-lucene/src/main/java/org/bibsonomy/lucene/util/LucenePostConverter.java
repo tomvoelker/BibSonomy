@@ -143,7 +143,6 @@ public class LucenePostConverter extends LuceneBase {
 	 * @param post
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static Document readPost(Post<? extends Resource> post) {
 		Document retVal = new Document();
 		// FIXME: default values should be configured via spring
@@ -213,10 +212,13 @@ public class LucenePostConverter extends LuceneBase {
 			// FIXME: configure default value field wise via spring
 			String defaultValue = "";
 			if( (propertyValue!=null) && (luceneName!=null) && (!"".equals(propertyValue.trim())) ) {
-				// log.debug("Extracted '"+propertyValue+"' from property '"+propertyName+"' to '"+luceneName+"'");
+				// add field to the lucene document
 				retVal.add( new Field(luceneName, propertyValue, fldStore, fldIndex));
-				// FIXME: configure merged field via spring
-				mergedField += CFG_LIST_DELIMITER + propertyValue;
+				// add term to full text search field, if configured accordingly 
+				if( ValidationUtils.present(resourcePropertyMap.get(propertyName).get(CFG_FULLTEXT_FLAG)) &&
+				    (Boolean)resourcePropertyMap.get(propertyName).get(CFG_FULLTEXT_FLAG) ) {
+					mergedField += CFG_LIST_DELIMITER + propertyValue;
+				}
 			} else {
 				// add empty field
 				retVal.add( new Field(luceneName, defaultValue, fldStore, fldIndex));
@@ -225,7 +227,7 @@ public class LucenePostConverter extends LuceneBase {
 		
 		// store merged field
 		// FIXME: configure merged field via spring
-		retVal.add(new Field(FLD_MERGEDFIELDS, tex.encode(mergedField), Field.Store.YES, Field.Index.ANALYZED));
+		retVal.add(new Field(FLD_MERGEDFIELDS, tex.encode(mergedField), Field.Store.NO, Field.Index.ANALYZED));
 		
 		// all done.
 		return retVal;

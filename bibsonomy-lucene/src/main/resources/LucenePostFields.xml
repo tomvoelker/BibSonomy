@@ -41,6 +41,9 @@
 					<map>
 						<entry key="luceneName" value="ext" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="groups">
@@ -49,6 +52,9 @@
 						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
 						<entry key="itemProperty" value="name" />
 						<entry key="typeHandler" value-ref="groupsConverter" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="tags">
@@ -58,11 +64,17 @@
 						<entry key="itemProperty" value="name" />
 						<entry key="typeHandler" value-ref="tagsConverter" />
 						<entry key="itemDelimitier" value=" " />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="user.name">
 					<map>
 						<entry key="luceneName" value="user_name" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
   			</map>

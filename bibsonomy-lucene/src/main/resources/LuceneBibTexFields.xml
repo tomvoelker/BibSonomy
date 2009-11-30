@@ -14,18 +14,27 @@
 					<map>
 						<entry key="luceneName" value="address" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.annote">
 					<map>
 						<entry key="luceneName" value="annote" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.author">
 					<map>
 						<entry key="luceneName" value="author" />
 						<entry key="luceneIndex" value-ref="fieldAnalyzed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.key">
@@ -38,6 +47,9 @@
 					<map>
 						<entry key="luceneName" value="bibtexAbstract" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.bibtexKey">
@@ -50,18 +62,27 @@
 					<map>
 						<entry key="luceneName" value="booktitle" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.chapter">
 					<map>
 						<entry key="luceneName" value="chapter" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.crossref">
 					<map>
 						<entry key="luceneName" value="crossref" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.day">
@@ -74,18 +95,27 @@
 					<map>
 						<entry key="luceneName" value="edition" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.editor">
 					<map>
 						<entry key="luceneName" value="editor" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.entrytype">
 					<map>
 						<entry key="luceneName" value="entrytype" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.howpublished">
@@ -98,6 +128,9 @@
 					<map>
 						<entry key="luceneName" value="institution" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.interHash">
@@ -116,12 +149,18 @@
 					<map>
 						<entry key="luceneName" value="journal" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.misc">
 					<map>
 						<entry key="luceneName" value="misc" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.month">
@@ -134,6 +173,9 @@
 					<map>
 						<entry key="luceneName" value="note" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.number">
@@ -146,6 +188,9 @@
 					<map>
 						<entry key="luceneName" value="organization" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.pages">
@@ -158,12 +203,18 @@
 					<map>
 						<entry key="luceneName" value="publisher" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.school">
 					<map>
 						<entry key="luceneName" value="school" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.series">
@@ -176,6 +227,9 @@
 					<map>
 						<entry key="luceneName" value="title" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.type">
@@ -188,6 +242,9 @@
 					<map>
 						<entry key="luceneName" value="url" />
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 				<entry key="resource.volume">
@@ -200,6 +257,9 @@
 					<map>
 						<entry key="luceneName" value="year" />
 						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+						<entry key="fulltextSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
 					</map>
 				</entry>
 			</map>

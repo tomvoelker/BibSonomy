@@ -304,6 +304,8 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		searchTermParser.setDefaultOperator(getDefaultSearchTermJunctor());
 		Query searchTermQuery = null;
 		try {
+			// disallow field specification in search query
+			searchTerms = searchTerms.replace(CFG_LUCENE_FIELD_SPECIFIER, "\\"+CFG_LUCENE_FIELD_SPECIFIER);
 			searchTermQuery = searchTermParser.parse(searchTerms);
 		} catch (ParseException e) {
 			searchTermQuery = new TermQuery(new Term(FLD_MERGEDFIELDS, searchTerms) );
