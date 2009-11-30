@@ -61,7 +61,7 @@
                     <form:form id="postForm" action="/editPublication" method="post">	
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
-  
+  								<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
                                 <post:publicationRequiredFields post="${post}"/>
                                 
                                 <input type="submit" class="fsFormSubmit" style="clear:both; float:left" name="submit" value="${post_button}"/>
@@ -89,7 +89,7 @@
     					<div id="fsform">
     						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
     							
-    							<input type="hidden" name="requTask" value="upload" />
+    							<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
                   
     							<div class="fsRow">
     						      <label class="fsLabel" for="selection"><fmt:message key="post_bibtex.pub_snippet.snippet" />*</label>
@@ -138,7 +138,7 @@
 					<form name="upload" method="post" enctype="multipart/form-data" action="/upload_batch">
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
-									<input type="hidden" name="requTask" value="upload" />
+									<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
 									
 								  	<!-- +++BLOCK ONE+++ -->
 								  	<div class="fsRow">
@@ -254,7 +254,7 @@
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
 								
-									<input type="hidden" name="requTask" value="upload" />
+									<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
 									
 									 <form name="upload" method="post" action="/editPublication">
                                              <div class="fsRow">
