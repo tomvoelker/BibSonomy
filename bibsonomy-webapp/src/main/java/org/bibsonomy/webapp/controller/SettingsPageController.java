@@ -169,7 +169,7 @@ public class SettingsPageController implements
 	 */
 	public SettingsViewCommand instantiateCommand() {
 		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setGrouping(GroupUtils.getPublicGroup().getName());
+		command.setGroup(GroupUtils.getPublicGroup().getName());
 		return command;
 	}
 
