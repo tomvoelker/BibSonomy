@@ -1028,17 +1028,23 @@ public class DBLogic implements LogicInterface {
 		}else  {
 			String updatedUser = null;
 			
-			if(operation.equals(UserUpdateOperation.UPDATE_PASSWORD)) {
-				
-				final DBSession session = openSession();
-				
-				try{
-					updatedUser = this.userDBManager.updatePasswordForUser(user, session);
-				}finally {
-					session.close();
-				}
-			}
+			final DBSession session = openSession();
 			
+			try{			
+				if(operation.equals(UserUpdateOperation.UPDATE_PASSWORD)) {
+										
+					updatedUser = this.userDBManager.updatePasswordForUser(user, session);
+		
+				}else if(operation.equals(UserUpdateOperation.UPDATE_SETTINGS)) {
+					
+					updatedUser = this.userDBManager.updateUserSettingsForUser(user, session);
+				}else if(operation.equals(UserUpdateOperation.UPDATE_API)) {
+					
+					this.userDBManager.updateApiKeyForUser(user.getName(), session);
+				}
+			}finally {
+				session.close();
+			}
 			return updatedUser;
 		}
 	}
