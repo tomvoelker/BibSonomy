@@ -17,12 +17,31 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 
 /**
- * This command takes a file or string containing publication information.
+ * This command takes a the information for displaying the import publication views. 
+ * The publications will be entered as a file or string containing the information. 
  *
  */
 public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object> {
 	
+	/********************************************
+	 * FROM WHERE WAS I CALLED - WHAT TASK TO DO
+	 ********************************************/
+	public final static String TASK_ENTER_PUBLICATIONS = "ENTER_PUBLICATIONS";
+	public final static String TASK_EDIT_PUBLICATIONS 	= "EDIT_PUBLICATIONS";
 	
+	/*
+	 * Containing the task name, determining whats to do in the controller.
+	 */
+	private String taskName;
+	
+	public String getTaskName() {
+		return this.taskName;
+	}
+
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
+
 	/****************************
 	 * FOR THE TAB FUNCTIONALITY
 	 ****************************/
