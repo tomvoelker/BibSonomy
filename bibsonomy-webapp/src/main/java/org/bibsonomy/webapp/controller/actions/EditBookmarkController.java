@@ -15,7 +15,7 @@ import org.springframework.validation.Errors;
  * @author fba
  * @version $Id$
  */
-public class EditBookmarkController extends EditPostController<Bookmark> {
+public class EditBookmarkController extends EditPostController<Bookmark, EditBookmarkCommand> {
 	
 	@Override
 	protected View getPostView() {
@@ -38,7 +38,7 @@ public class EditBookmarkController extends EditPostController<Bookmark> {
 	}
 
 	@Override
-	protected EditPostCommand<Bookmark> instantiateEditPostCommand() {
+	protected EditBookmarkCommand instantiateEditPostCommand() {
 		return new EditBookmarkCommand();
 	}
 

@@ -40,7 +40,7 @@ import bibtex.parser.ParseException;
  * @author dzo
  * @version $Id$
  */
-public class EditPublicationController extends EditPostController<BibTex> {
+public class EditPublicationController extends EditPostController<BibTex, EditPublicationCommand> {
 
 	private static final String SESSION_ATTRIBUTE_SCRAPER_METADATA = "scraperMetaData";
 
@@ -258,7 +258,7 @@ public class EditPublicationController extends EditPostController<BibTex> {
 	}
 
 	@Override
-	protected EditPostCommand<BibTex> instantiateEditPostCommand() {
+	protected EditPublicationCommand instantiateEditPostCommand() {
 		return new EditPublicationCommand();
 	}
 

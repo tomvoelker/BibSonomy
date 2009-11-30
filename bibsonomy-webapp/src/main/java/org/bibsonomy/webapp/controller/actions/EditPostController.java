@@ -52,7 +52,7 @@ import org.springframework.validation.Errors;
  * @version $Id$
  * @param <RESOURCE> 
  */
-public abstract class EditPostController<RESOURCE extends Resource> extends SingleResourceListController implements MinimalisticController<EditPostCommand<RESOURCE>>, ErrorAware {
+public abstract class EditPostController<RESOURCE extends Resource,C extends EditPostCommand<RESOURCE>> extends SingleResourceListController implements MinimalisticController<C>, ErrorAware {
 
 	private static final Log log = LogFactory.getLog(EditPostController.class);
 	private Errors errors = null;
@@ -77,8 +77,8 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
 	 */
-	public EditPostCommand<RESOURCE> instantiateCommand() {
-		final EditPostCommand<RESOURCE> command = instantiateEditPostCommand();
+	public C instantiateCommand() {
+		final C command = instantiateEditPostCommand();
 		/*
 		 * initialize lists
 		 */
@@ -105,7 +105,7 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 	 * Instantiated the correct command for this controller.
 	 * @return
 	 */
-	protected abstract EditPostCommand<RESOURCE> instantiateEditPostCommand();
+	protected abstract C instantiateEditPostCommand();
 
 	/**
 	 * Instantiates a resource which the controller puts into the commands post.
@@ -120,7 +120,7 @@ public abstract class EditPostController<RESOURCE extends Resource> extends Sing
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
-	public View workOn(final EditPostCommand<RESOURCE> command) {
+	public View workOn(final C command) {
 		final Locale locale = requestLogic.getLocale();
 		final RequestWrapperContext context = command.getContext();
 		/*
