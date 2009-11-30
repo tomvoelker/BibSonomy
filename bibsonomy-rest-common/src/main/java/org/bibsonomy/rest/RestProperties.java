@@ -71,6 +71,7 @@ public class RestProperties {
 		URL_ADDED_POSTS("added"),
 		URL_POPULAR_POSTS("popular"),
 		URL_DOCUMENTS("documents"),
+		URL_DATE_FORMAT("yyyy-MM-dd'T'HH:mm:ss.SSS"),
 		VALIDATE_XML_INPUT("false"),
 		VALIDATE_XML_OUTPUT("false");
 
