@@ -204,7 +204,7 @@
     
         <!-- log level -->
         <h2><fmt:message key="settings.logging" /></h2>
-        <form:form name="logLevel" method="post" action="/updateUserSettings">
+        <form:form name="test" method="post" action="/updateUserSettings">
         <table>
           <tr>
             <td><fmt:message key="settings.logclicks"/></td>
@@ -212,6 +212,15 @@
 		          <form:select path="logLevel">
 		            <form:option value="0"><fmt:message key="settings.yes"/></form:option>
 		            <form:option value="1"><fmt:message key="settings.no"/></form:option>
+		          </form:select>
+            </td>
+          </tr> 
+           <tr>
+            <td><fmt:message key="settings.confirm"/></td>
+            <td>
+		          <form:select path="confirmDelete">
+		            <form:option value="true"><fmt:message key="settings.yes"/></form:option>
+		            <form:option value="false"><fmt:message key="settings.no"/></form:option>
 		          </form:select>
             </td>
           </tr> 
