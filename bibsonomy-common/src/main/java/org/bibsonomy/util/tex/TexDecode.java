@@ -2,7 +2,7 @@
  *  
  *  BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *   
- *  Copyright (C) 2006 - 2008 Knowledge & Data Engineering Group, 
+ *  Copyright (C) 2006 - 2009 Knowledge & Data Engineering Group, 
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
  *  
@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * @author Christian Claus
  * @version $Id$
  */
-public class TexEncode {
+public class TexDecode {
 
 	private static HashMap<String, String> texMap = new HashMap<String, String>();
 	private static Pattern texRegexpPattern;
@@ -117,12 +117,12 @@ public class TexEncode {
 
 
 	/**
-	 * encodes a String, containing TeX macros to it's Unicode representation.
+	 * Decodes a String which contains TeX macros into it's Unicode representation.
 	 * 
 	 * @param s
 	 * @return Unicode representation of the String
 	 */
-	public String encode(String s) {
+	public static String decode(String s) {
 		if (s != null) {			
 			 texRegexpMatcher = texRegexpPattern.matcher(s);
 			 StringBuffer sb = new StringBuffer();
@@ -184,7 +184,7 @@ public class TexEncode {
 	 * 
 	 * @return HashMap of TeX->Unicode representation
 	 */
-	public HashMap<String, String> getTexMap() {
+	protected static HashMap<String, String> getTexMap() {
 		return texMap;
 	}
 
@@ -194,7 +194,7 @@ public class TexEncode {
 	 * 
 	 * @return String array of TeX macros
 	 */
-	public String[] getTEX() {
+	protected static String[] getTEX() {
 		return TEX;
 	}
 
@@ -204,7 +204,7 @@ public class TexEncode {
 	 * 
 	 * @return String array of Unicode signs
 	 */
-	public String[] getUNICODE() {
+	protected static String[] getUNICODE() {
 		return UNICODE;
 	}	
 	
