@@ -34,7 +34,7 @@
 		
 		<!-- style settings -->		
 		<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
-		  <form:form id="styleSettingsForm" method="POST">
+		  <form:form id="styleSettingsForm" method="POST" action="/updateUserSettings">
 		  <table>
 		    <tr>
 		      <td><fmt:message key="settings.tag.showAs"/> </td>
@@ -91,6 +91,7 @@
 		        <td>
 		          <input type="submit" name="tagbox_style" value="${setlayout}"/>
 		          <input type="hidden" name="ckey" value="${ckey}"/>
+		          <input type="hidden" name="action" value="layoutTagPost"/>
 		        </td>
 		    </tr>    	   
 		  </table>
@@ -174,12 +175,12 @@
 		
 		<!-- API -->
 		<h2>API</h2>
-		<form:form name="apiKey" method="post" action="/settingsnew">
+		<form:form name="apiKey" method="post" action="/updateUserSettings">
 		  <c:choose>
 			<c:when test="${command.context.loginUser.apiKey eq null}">			
               <p>
               		<fmt:message key="settings.apisupport"><fmt:param><a href="/help/doc/api.html">API</a></fmt:param></fmt:message>  					 
-				</p>	
+			  </p>	
 			</c:when>
 			<c:otherwise>
 				<p>
@@ -195,15 +196,15 @@
 				</p>		
 			</c:otherwise>
 		</c:choose>
-		<input type="hidden" name="ckey" value="${ckey}"/>
-		<input type="hidden" name="apikey" value="true"/>
 		<input type="submit" value="${generateapikey}"/> 
+		<input type="hidden" name="ckey" value="${ckey}"/>		
+		<input type="hidden" name="action" value="api"/>
 		</form:form>
 		<hr/>
     
         <!-- log level -->
         <h2><fmt:message key="settings.logging" /></h2>
-        <form:form name="logLevel" method="post" action="/settingsnew">
+        <form:form name="logLevel" method="post" action="/updateUserSettings">
         <table>
           <tr>
             <td><fmt:message key="settings.logclicks"/></td>
@@ -216,8 +217,9 @@
           </tr> 
           <tr>
             <td>
-              <input type="submit" value="${updatesettings}"/>
+              <input type="submit" value="${updatesettings}"/> 
               <input type="hidden" name="ckey" value="${ckey}"/>
+              <input type="hidden" name="action" value="logging"/>
             </td>
           </tr>
         </table>
