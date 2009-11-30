@@ -18,7 +18,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
 import org.bibsonomy.util.ValidationUtils;
-import org.bibsonomy.util.tex.TexEncode;
+import org.bibsonomy.util.tex.TexDecode;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -149,8 +149,6 @@ public class LucenePostConverter extends LuceneBase {
 		Index fldIndex = Field.Index.NOT_ANALYZED;
 		Store fldStore = Field.Store.YES;
 
-		TexEncode tex = new TexEncode();
-		
 		// FIXME: configure merged field via spring
 		String mergedField = "";
 
@@ -227,7 +225,7 @@ public class LucenePostConverter extends LuceneBase {
 		
 		// store merged field
 		// FIXME: configure merged field via spring
-		retVal.add(new Field(FLD_MERGEDFIELDS, tex.encode(mergedField), Field.Store.NO, Field.Index.ANALYZED));
+		retVal.add(new Field(FLD_MERGEDFIELDS, TexDecode.decode(mergedField), Field.Store.NO, Field.Index.ANALYZED));
 		
 		// all done.
 		return retVal;

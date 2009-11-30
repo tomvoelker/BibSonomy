@@ -6,19 +6,15 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Arrays;
 import java.util.TreeSet;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang.NullArgumentException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
-import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.lucene.param.typehandler.LuceneTypeHandler;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -27,7 +23,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.tex.TexEncode;
+import org.bibsonomy.util.tex.TexDecode;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -567,7 +563,6 @@ public class LuceneData {
 		Index fldIndex = Field.Index.NOT_ANALYZED;
 		Store fldStore = Field.Store.YES;
 
-		TexEncode tex = new TexEncode();
 		
 		// FIXME: configure merged field via spring
 		String mergedField = "";
@@ -640,7 +635,7 @@ public class LuceneData {
 		
 		// store merged field
 		// FIXME: configure merged field via spring
-		retVal.add(new Field(FLD_MERGEDFIELD, tex.encode(mergedField), Field.Store.YES, Field.Index.ANALYZED));
+		retVal.add(new Field(FLD_MERGEDFIELD, TexDecode.decode(mergedField), Field.Store.YES, Field.Index.ANALYZED));
 		
 		// all done.
 		return retVal;
