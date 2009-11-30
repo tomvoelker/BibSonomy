@@ -154,6 +154,7 @@ public class SettingsPageController implements
 		command.setItemcount(loginUser.getSettings()
 				.getListItemcount());
 		command.setLogLevel(loginUser.getSettings().getLogLevel());
+		command.setConfirmDelete(loginUser.getSettings().getConfirmDelete());
 		
 		// FIXME necessary?
 		command.setHasOwnGroup(group != null);
