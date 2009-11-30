@@ -31,7 +31,7 @@
 		   <tr>
 		      <td><fmt:message key="settings.firefox.viewalble"/></td>
 		      <td>
-			      <form:select path="grouping" id="viewablebox">
+			      <form:select path="group" id="viewablebox">
 				      <form:option label="${public}" value="public"/>
 				      <form:option label="${private}" value="private"/>
 			      </form:select>
@@ -125,7 +125,7 @@
 		        	<c:set var="actionJabRef" value="create"/>
 		        	<input name="fileBegin" type="file" size="20"/>
 		        </c:when>
-		        <c:otherwise><c:out value="${command.beginName}"/><a class="action" href="/jabrefImport?hash=${command.beginHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a></c:otherwise>
+		        <c:otherwise><c:out value="${command.beginName}"/><a class="action" href="/import/jabref?hash=${command.beginHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a></c:otherwise>
 		      </c:choose></td>
 		      <td><fmt:message key="settings.jabref.beginning"/></td>
 		    </tr><tr>
@@ -135,7 +135,7 @@
 		        	<c:set var="actionJabRef" value="create"/>
 		        	<input name="fileItem" type="file" size="20"/>
 		        </c:when>
-		        <c:otherwise><c:out value="${command.itemName}"/><a class="action" href="/jabrefImport?hash=${command.itemHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a></c:otherwise>
+		        <c:otherwise><c:out value="${command.itemName}"/><a class="action" href="/import/jabref?hash=${command.itemHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a></c:otherwise>
 		      </c:choose></td>
 		      <td><fmt:message key="settings.jabref.item"/></td>
 		    </tr><tr>
@@ -145,7 +145,7 @@
 		        	<c:set var="actionJabRef" value="create"/>
 		        	<input name="fileEnd" type="file" size="20"/>
 		        </c:when>
-		        <c:otherwise><c:out value="${command.endName}"/><a class="action" href="/jabrefImport?hash=${command.endHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a></c:otherwise>
+		        <c:otherwise><c:out value="${command.endName}"/><a class="action" href="/import/jabref?hash=${command.endHash}&amp;action=delete&amp;ckey=${mtl:encodeURI(ckey)}">delete</a></c:otherwise>
 		      </c:choose></td>
 		      <td><fmt:message key="settings.jabref.end"/></td>
 		    </tr><tr>
