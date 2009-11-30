@@ -63,6 +63,8 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	
 	private int logLevel;
 	
+	private boolean confirmDelete;
+	
 	private String oldPassword;
 	
 	private String newPassword1;
@@ -361,5 +363,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.statusID = statusID;
 	}
 
+	public boolean isConfirmDelete() {
+		return this.confirmDelete;
+	}
 
+	public void setConfirmDelete(boolean confirmDelete) {
+		this.confirmDelete = confirmDelete;
+	}
 }
