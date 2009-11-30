@@ -47,7 +47,11 @@ public enum UserUpdateOperation {
 	/**
 	 * Update only the core settings of a user (personal data, like homepage etc.)
 	 */
-	UPDATE_CORE(3);
+	UPDATE_CORE(3),
+	/**
+	 * Update only the API key of a user
+	 */
+	UPDATE_API(4);
 	
 	private int id;
 	
