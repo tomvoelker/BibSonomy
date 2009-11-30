@@ -48,11 +48,11 @@
 		    <td><input type="text" size="30" name="place" value="${command.context.loginUser.place}"/></td>
 		  </tr><tr>
 		    <td><fmt:message key="settings.profileViewableFor"/></td>
-		    <td><form:select path="context.loginUser.profileGroup">
-		    	<form:option label="${public}" value="0"/>
-		    	<form:option label="${private}" value="1"/>
-		    	<form:option label="${friends}" value="2"/>
-		    </form:select>
+		    <td>			     
+		    	<form:select path="group" id="viewablebox">
+					<form:option label="${public}" value="public"/>
+				    <form:option label="${private}" value="private"/>
+			    </form:select>
 			</td>
 		  </tr>
 		</table>
