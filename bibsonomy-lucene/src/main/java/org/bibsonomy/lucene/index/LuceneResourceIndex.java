@@ -125,8 +125,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 		}
 		
 		try {
-			indexReader = IndexReader.open(indexDirectory);
-			accessMode = AccessMode.ReadOnly;
+			openIndexReader();
 		} catch( IOException e) {
 			log.error("Error opening IndexReader ("+e.getMessage()+")", e);
 			throw e;
