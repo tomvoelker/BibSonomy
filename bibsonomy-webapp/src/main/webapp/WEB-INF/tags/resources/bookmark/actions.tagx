@@ -47,7 +47,20 @@
 			    		</a>
 			    	</c:otherwise>
 			    </c:choose>
-			    
+ 			</c:if>
+	
+			<c:if test="${loginUserName ne post.user.name}">
+				<!-- COPY link -->
+				<fmt:message var="copyTitle" key="bookmark.actions.copy.title"/>
+				<a
+					href="/editBookmark?url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}"
+					title="${copyTitle}">
+					<fmt:message key="bookmark.actions.copy"/>
+				</a>
+			</c:if>
+			
+			<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+									
 			<c:if test="${post.inboxPost}">
 				<!-- REMOVE Message from Inbox -->
 				<c:url var="message_remove" value="/removeMessage" context="${projectContext}">
@@ -75,22 +88,7 @@
 			    </c:choose>
 			    <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 			</c:if>					
-			    
-			</c:if>
-	
-			<c:if test="${loginUserName ne post.user.name}">
-				<!-- COPY link -->
-				<fmt:message var="copyTitle" key="bookmark.actions.copy.title"/>
-				<a
-					href="/editBookmark?url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}"
-					title="${copyTitle}">
-					<fmt:message key="bookmark.actions.copy"/>
-				</a>
-			</c:if>
-			
-			<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
-									
-	  </c:if>
+		  </c:if>
 	  
 	  <!-- flag / unflag as spam  -->		
       <fmt:message var="flagAsSpam" key="post.meta.flag_as_spam.title"/>
