@@ -29,6 +29,10 @@ import static org.bibsonomy.rest.RestProperties.Property.URL_POSTS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_TAGS;
 import static org.bibsonomy.rest.RestProperties.Property.URL_USERS;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.RestProperties.Property;
 
@@ -39,22 +43,29 @@ import org.bibsonomy.rest.RestProperties.Property;
  * @version $Id$
  */
 public class UrlRenderer {
+	private static final String SLASH = "/";
+	
 	private final String userUrlPrefix;
 	private final String groupUrlPrefix;
 	private final String tagUrlPrefix;
+
+	private final String partsDelimiter = SLASH;
 	private final String postsUrlDelimiter;
 	private final String documentsUrlDelimiter;
+	
+	private final DateFormat dateFormat;
 	
 	private static UrlRenderer urlRenderer;
 	
 	private UrlRenderer() {
 		final RestProperties properties = RestProperties.getInstance();
 		final String apiUrl = properties.get(API_URL);
-		this.userUrlPrefix = apiUrl + properties.get(URL_USERS) + "/";
-		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + "/";
-		this.tagUrlPrefix = apiUrl + properties.get(URL_TAGS) + "/";
-		this.postsUrlDelimiter = "/" + properties.get(URL_POSTS) + "/";
-		this.documentsUrlDelimiter = "/" + properties.get(Property.URL_DOCUMENTS) + "/";
+		this.userUrlPrefix = apiUrl + properties.get(URL_USERS) + partsDelimiter;
+		this.groupUrlPrefix = apiUrl + properties.get(URL_GROUPS) + partsDelimiter;
+		this.tagUrlPrefix = apiUrl + properties.get(URL_TAGS) + partsDelimiter;
+		this.postsUrlDelimiter = partsDelimiter + properties.get(URL_POSTS) + partsDelimiter;
+		this.documentsUrlDelimiter = partsDelimiter + properties.get(Property.URL_DOCUMENTS) + partsDelimiter;
+		this.dateFormat = new SimpleDateFormat(properties.get(Property.URL_DATE_FORMAT));
 	}
 
 	/**
@@ -103,6 +114,17 @@ public class UrlRenderer {
 	 */
 	public String createHrefForResource(final String userName, final String intraHash) {
 		return this.userUrlPrefix + userName + this.postsUrlDelimiter + intraHash;
+	}
+	
+	/** Creates a URL which points to the given resource.
+	 * 
+	 * @param userName - the name of the user which owns the resource.
+	 * @param intraHash - the intra hash of the resource.
+	 * @param date - the date at which the resource has been posted.
+	 * @return A URL which points to the given resource.
+	 */
+	public String createHrefForResource(final String userName, final String intraHash, final Date date) {
+		return this.userUrlPrefix + userName + this.postsUrlDelimiter + intraHash + this.partsDelimiter + dateFormat.format(date);
 	}
 	
 	/** Creates a URL which points to the given document attached to the given resource.
