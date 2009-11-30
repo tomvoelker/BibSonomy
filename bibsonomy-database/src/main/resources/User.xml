@@ -61,6 +61,18 @@
 		FROM user 
 		WHERE user_name = #userName#
 	</select>
+	
+	<update id="updateUserSettings" parameterClass="user">
+		UPDATE user 
+		SET log_level = #settings.logLevel#, 
+		lang = #settings.defaultLanguage#,
+		list_itemcount = #settings.listItemcount#,
+		tagbox_tooltip = #settings.tagboxTooltip#,
+		tagbox_minfreq = #settings.tagboxMinfreq#,
+		tagbox_sort = #settings.tagboxSort#,
+		tagbox_style = #settings.tagboxStyle#
+		WHERE user_name = #name#
+	</update>
 
 	<select id="getApiKeyForUser" resultClass="string" parameterClass="string">
 		SELECT api_key 
