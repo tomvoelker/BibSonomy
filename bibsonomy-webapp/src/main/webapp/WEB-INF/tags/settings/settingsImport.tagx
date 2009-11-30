@@ -33,7 +33,7 @@
 		   <tr>
 		      <td><fmt:message key="settings.firefox.viewalble"/></td>
 		      <td>
-			      <form:select path="grouping" id="viewablebox">
+			      <form:select path="group" id="viewablebox">
 				      <form:option label="${public}" value="public"/>
 				      <form:option label="${private}" value="private"/>
 			      </form:select>
