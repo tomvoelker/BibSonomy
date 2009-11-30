@@ -170,3 +170,9 @@ div.tipHeader {
 .important {
 	background-color: #ff0;
 }
+
+#spammerKillerButton {
+	border: 1px solid #aaa; 
+	padding:2px; 
+	background: #eee;
+}
