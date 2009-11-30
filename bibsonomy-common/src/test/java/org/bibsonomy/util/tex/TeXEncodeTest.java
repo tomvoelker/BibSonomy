@@ -2,7 +2,7 @@
  *  
  *  BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *   
- *  Copyright (C) 2006 - 2008 Knowledge & Data Engineering Group, 
+ *  Copyright (C) 2006 - 2009 Knowledge & Data Engineering Group, 
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
  *  
@@ -31,8 +31,6 @@ import junit.framework.TestCase;
  */
 public class TeXEncodeTest extends TestCase {
 	
-	private TexEncode encoder;
-	
 	/**
 	 * tests the complete map
 	 * 
@@ -42,16 +40,15 @@ public class TeXEncodeTest extends TestCase {
 		StringBuffer clean = new StringBuffer();
 		//String clean = "ÇçïîìíåÅæÆßÄÖÜäöüÄÖÜäëüöàèòùêôâûáéóúÉñÄÖÜäüöÑÄÖÜäüöííèÇçÃãËëÄÖÜäüö";
 						
-		encoder = new TexEncode();
 		
-		for(String s : encoder.getTEX()) {
+		for(String s : TexDecode.getTEX()) {
 			unclean.append(s);
 		}
-		for (String s: encoder.getUNICODE()) {
+		for (String s: TexDecode.getUNICODE()) {
 			clean.append(s);
 		}
 
-		assertEquals(clean.toString(), encoder.encode(unclean.toString()));
+		assertEquals(clean.toString(), TexDecode.decode(unclean.toString()));
 	}
 	
 	/**
@@ -62,9 +59,7 @@ public class TeXEncodeTest extends TestCase {
 		String unclean = "{\\\"A}foo{{\\ss}}bar";
 		String clean = "Äfooßbar";
 
-		encoder = new TexEncode();
-		
-		assertEquals(clean, encoder.encode(unclean));
+		assertEquals(clean, TexDecode.decode(unclean));
 	}
 	
 	/**
@@ -75,9 +70,7 @@ public class TeXEncodeTest extends TestCase {
 		String unclean = "foo  {\\\"{U}}  bar{\\\"A}";
 		String clean = "foo  Ü  barÄ";
 
-		encoder = new TexEncode();
-		
-		assertEquals(encoder.encode(unclean), clean);
+		assertEquals(TexDecode.decode(unclean), clean);
 	}
 	
 	/**
@@ -88,9 +81,7 @@ public class TeXEncodeTest extends TestCase {
 		String unclean = "foo{\\\"{U}}{\\\"A}bar";
 		String clean = "fooÜÄbar";
 
-		encoder = new TexEncode();
-		
-		assertEquals(encoder.encode(unclean), clean);
+		assertEquals(TexDecode.decode(unclean), clean);
 	}
 	
 	/**
@@ -100,9 +91,7 @@ public class TeXEncodeTest extends TestCase {
 		String unclean = "foo\\\"{U}\\\"Abar";
 		String clean = "fooÜÄbar";
 
-		encoder = new TexEncode();
-		
-		assertEquals(encoder.encode(unclean), clean);		
+		assertEquals(TexDecode.decode(unclean), clean);		
 	}
 	
 	/**
@@ -112,9 +101,7 @@ public class TeXEncodeTest extends TestCase {
 		String unclean = "{){{}/()as)[[)]";
 		String clean = "/as";
 
-		encoder = new TexEncode();
-		
-		assertEquals(encoder.encode(unclean), clean);		
+		assertEquals(TexDecode.decode(unclean), clean);		
 	}
 
 }
