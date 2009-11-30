@@ -18,7 +18,7 @@ import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.SimpleLayout;
-import org.bibsonomy.util.tex.TexEncode;
+import org.bibsonomy.util.tex.TexDecode;
 
 /**
  * @author claus
@@ -93,7 +93,7 @@ public class BatchAuthors {
 		// last content Id fetched
 		long lastContentId = 0;
 		
-		TexEncode enc = new TexEncode();
+		TexDecode enc = new TexDecode();
 		Map<String, Author> bibtexAuthorMap = new HashMap<String, Author>(1500000);
 		
 		// rs.getString(1) = author feld vom bibtex eintrag
@@ -132,7 +132,7 @@ public class BatchAuthors {
 			for(int i = 0; i < authors.length; i++) {
 				bibtexAuthor = authors[i];
 				authors[i] = authors[i].trim();
-				authors[i] = enc.encode(authors[i]);
+				authors[i] = enc.decode(authors[i]);
 				if(authors[i].length() > 2) {
 					// we split the author name already here - if we do it in the
 					// getFirstName... - functions, we consume a lot of temporary 
@@ -197,7 +197,7 @@ public class BatchAuthors {
 		String bibtexName;
 		String[] subNames;
 		int c = 0;
-		TexEncode enc = new TexEncode();
+		TexDecode enc = new TexDecode();
 		
 		while(rs.next()) {
 			authorName = rs.getString(2);
@@ -206,7 +206,7 @@ public class BatchAuthors {
 			if (authorName == null) continue;
 			
 			c++;
-			authorName = enc.encode(authorName);
+			authorName = enc.decode(authorName);
 			
 			if (!authorMap.containsKey(authorName)) {
 				subNames = authorName.split(" ");
