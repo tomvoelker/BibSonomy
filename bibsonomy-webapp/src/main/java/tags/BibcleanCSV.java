@@ -1,8 +1,11 @@
 package tags;
 
-import java.io.*;
-import javax.servlet.jsp.*;
-import javax.servlet.jsp.tagext.*;
+import java.io.IOException;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.TagSupport;
+
+import org.bibsonomy.util.tex.TexDecode;
 
 /**
  * Cleans up a string containing LaTeX markup and converts special chars to HTML special chars. 
@@ -17,6 +20,7 @@ public class BibcleanCSV extends TagSupport {
 		this.value = value;
 	}
 	
+	@Override
 	public int doStartTag() throws JspException {
 		try {
 			// TODO: escape HTML Entities
@@ -28,17 +32,14 @@ public class BibcleanCSV extends TagSupport {
 		return SKIP_BODY;
 	}
 
-	public static String cleanBibtex(String value) {
-		return value.replaceAll("\\{|\\}","").
-		       replaceAll("\\s+"," ").
-		       replaceAll("\\\\\"o", "ö").
-		       replaceAll("\\\\\"u", "ü").
-		       replaceAll("\\\\\"a", "ä").
-		       replaceAll("\\\\\"O", "Ö").
-		       replaceAll("\\\\\"U", "Ü").
-		       replaceAll("\\\\\"A", "Ä").
-		       replaceAll("\\\\\"s", "ß").
-		       trim();
+	/**
+	 * Decodes a string containing TeX macros into Unicode using {@link TexDecode}.
+	 * 
+	 * @param value
+	 * @return The decoded unicode string.
+	 */
+	public static String cleanBibtex(final String value) {
+		return TexDecode.decode(value).trim();
 	}
 
 	
