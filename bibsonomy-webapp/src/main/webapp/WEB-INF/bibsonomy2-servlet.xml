@@ -40,11 +40,11 @@
 								<value>selTab</value>
 								<value>ckey</value>
 								<value>requestedUser</value>
-								<value>grouping</value>
 								<value>importType</value>
 								<value>overwrite</value>
 								<value>file</value> 
 								<value>statusID</value>
+								<value>group</value>
 								<!-- FIXME delete this if no errors occur 
 								value>tagboxStyle</value>
 								<value>tagSort</value>
