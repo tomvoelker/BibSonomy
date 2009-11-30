@@ -22,6 +22,8 @@ public class SettingsCommand extends BaseCommand {
 	
 	private int tagboxStyle;
 
+	private boolean confirmDelete;
+	
 	public int getLogLevel() {
 		return this.logLevel;
 	}
@@ -76,5 +78,13 @@ public class SettingsCommand extends BaseCommand {
 
 	public void setTagboxStyle(int tagboxStyle) {
 		this.tagboxStyle = tagboxStyle;
+	}
+
+	public boolean isConfirmDelete() {
+		return this.confirmDelete;
+	}
+
+	public void setConfirmDelete(boolean confirmDelete) {
+		this.confirmDelete = confirmDelete;
 	}
 }
