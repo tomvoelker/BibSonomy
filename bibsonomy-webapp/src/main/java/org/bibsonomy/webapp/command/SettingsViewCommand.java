@@ -37,7 +37,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	
 	private List<User> userFriends;
 	
-	private String grouping;
+	private String group;
 	
 	private String importType;
 	
@@ -115,12 +115,12 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		setSelTab(MY_PROFILE_IDX);
 	}
 
-	public String getGrouping() {
-		return this.grouping;
+	public String getGroup() {
+		return this.group;
 	}
 
-	public void setGrouping(String grouping) {
-		this.grouping = grouping;
+	public void setGroup(String group) {
+		this.group = group;
 	}
 
 	public String getImportType() {
