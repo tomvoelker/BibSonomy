@@ -292,27 +292,6 @@
 			<p>
 				<fmt:message key="post.resource.hint"/>
 			</p>
-			
-			<h3 style="font-size: medium;">
-				<fmt:message key="buttons.mybibsonomy">
-					<fmt:param value="${projectName}"></fmt:param>
-				</fmt:message>
-			</h3>
-			<ul>
-				<li><buttons:myBibSonomy username="${command.context.loginUser.name}"/></li>
-			</ul>
-			
-			<h3 style="font-size: medium;">
-				<fmt:message key="buttons.shortcut_bookmarks"/>
-			</h3>
-			<ul>
-				<li><buttons:postBookmark/></li>
-				<li><buttons:postBookmarkPopUp/></li>
-			</ul>
-			
-			<h3 style="font-size: medium;">
-				<fmt:message key="buttons.shortcut_bibtex"/>
-			</h3>
 			<ul>
 				<li><buttons:postPublication/></li>
 				<li><buttons:postPublicationPopUp/></li>
