@@ -120,13 +120,16 @@ public class ChangePasswordController  implements
 								
 				user.setPassword(newPasswordHash);
 				
-				adminLogic.updateUser(user, UserUpdateOperation.UPDATE_PASSWORD);
+				String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_PASSWORD);
 				
 				cookieLogic.addUserCookie(user.getName(), newPasswordHash);
 				
 				requestLogic.invalidateSession();
 				
 				msgID = SettingPageMsg.PASSWORD_CHANGED_SUCCESS.getId();
+				
+				log.info("password of " + updatedUser + " has been changed successfully");
+				
 			}else {
 				msgID = SettingPageMsg.PASSWORD_RETYPE_ERROR.getId();
 			}
