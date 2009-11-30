@@ -60,7 +60,7 @@ public class UpdateUserSettingsController implements MinimalisticController<Upda
 			String action = command.getAction();
 			if(action.equals("logging")) {
 				// changes the log level
-				actionLogging(command.getLogLevel(), user);
+				actionLogging(command, user);
 			}else if(action.equals("api")) {
 				// changes the api key of a user
 				actionAPI(command, user);
@@ -88,10 +88,11 @@ public class UpdateUserSettingsController implements MinimalisticController<Upda
 		return new ExtendedRedirectView(requestLogic.getReferer());
 	}
 	
-	private void actionLogging(int logLevel, User user) {
+	private void actionLogging(UpdateUserSettingsCommand command, User user) {
 		
-		user.getSettings().setLogLevel(logLevel);
-		
+		user.getSettings().setLogLevel(command.getLogLevel());
+		user.getSettings().setConfirmDelete(command.isConfirmDelete());
+
 		String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
 		
 		log.info("logging settings of user " + updatedUser + " has been changed successfully");
