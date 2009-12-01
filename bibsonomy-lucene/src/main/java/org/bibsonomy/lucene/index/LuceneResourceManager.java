@@ -327,6 +327,8 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 		//  insert new records into index
 		if( (userPosts!=null) && (userPosts.size()>0) ) {
 			for (Post<?> post : userPosts ) {
+				// cache possible pre existing duplicate for deletion 
+				resourceIndex.deleteDocumentForContentId(post.getContentId());
 				// cache document for writing 
 				resourceIndex.insertDocument(LucenePostConverter.readPost(post));
 			}
