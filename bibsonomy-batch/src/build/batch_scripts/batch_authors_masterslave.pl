@@ -4,6 +4,11 @@ use DBI();
 use strict;
 require DBD::mysql;
 binmode( STDOUT, ":utf8" );
+#####################################
+# This script is obsolete and substituted by a java tool!
+#####################################
+
+exit(1);
 
 #####################################
 # database name as argument
@@ -13,7 +18,7 @@ if ( $#ARGV != 0 ) {
 	exit;
 }
 
-if ( am_i_running( $ENV{'TMP'} . "/batch_tags.pid" ) ) {
+if ( am_i_running( $ENV{'TMP'} . "/batch_authors.pid" ) ) {
 	print "another instance of batch_authors.pl is running on $ENV{'hostname'}. Aborting this job.\n";
 	exit;
 }
