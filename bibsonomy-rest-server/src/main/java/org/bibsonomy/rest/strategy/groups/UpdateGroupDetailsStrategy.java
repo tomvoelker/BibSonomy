@@ -2,6 +2,7 @@ package org.bibsonomy.rest.strategy.groups;
 
 import java.io.Writer;
 
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
@@ -36,6 +37,6 @@ public class UpdateGroupDetailsStrategy extends AbstractUpdateStrategy {
 		// ensure right groupname
 		final Group group = this.getRenderer().parseGroup(this.doc);
 		group.setName(this.groupName);
-		return this.getLogic().updateGroup(group);
+		return this.getLogic().updateGroup(group, GroupUpdateOperation.UPDATE_ALL);
 	}
 }
