@@ -265,9 +265,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		return this.postList("getLoggedHashesByHashForUser", param, session);
 	}
 	
-	/**
-	 * TODO: replace param firstYear LastYear Year with a SystemTag
-	 * 
+	/** 
 	 * <em>/author/MaxMustermann</em><br/><br/>
 	 * This method prepares queries which retrieve all publications for a given
 	 * author name (restricted by group public).
@@ -282,7 +280,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param session
 	 * @return list of bibtex entries
 	 */
-	public List<Post<BibTex>> getPostsByAuthor(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session){
+	public List<Post<BibTex>> getPostsByAuthor(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session){
 		final BibTexParam param = this.createParam(null, requestedUserName, limit, offset);
 		param.setSearch(search);
 		param.setGroupId(groupId);
@@ -357,6 +355,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setRequestedGroupName(requestedGroupName);
 		param.setTagIndex(tagIndex);
 		param.setSimHash(HashID.INTER_HASH);
+		param.addAllToSystemTags(systemTags);
 		
 		return this.postList("getBibTexByAuthorAndTag", param, session);
 	}
