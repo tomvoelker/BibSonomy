@@ -34,6 +34,7 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -190,7 +191,7 @@ public class RestLogic implements LogicInterface {
 		return execute(new CreateUserQuery(user));
 	}
 
-	public String updateGroup(final Group group) {
+	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
 		// groups cannot be renamed
 		return execute(new ChangeGroupQuery(group.getName(), group));
 	}
