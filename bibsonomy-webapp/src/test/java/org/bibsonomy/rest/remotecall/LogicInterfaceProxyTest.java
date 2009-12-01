@@ -555,7 +555,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		 */
 		group.setPrivlevel(null); 
 		
-		EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), operation)).andReturn(group.getName() + "-new");
+		EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(group.getName() + "-new");
 		EasyMock.replay(serverLogic);
 		Assert.assertEquals(group.getName() + "-new", clientLogic.updateGroup(group, operation));
 		EasyMock.verify(serverLogic);
