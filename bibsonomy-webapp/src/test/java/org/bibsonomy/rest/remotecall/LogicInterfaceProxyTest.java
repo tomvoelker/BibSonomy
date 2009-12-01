@@ -19,6 +19,7 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -544,9 +545,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	 */	
 	@Test
 	public void updateGroupTest() {
-		updateGroup(ModelUtils.getGroup());
+		updateGroup(ModelUtils.getGroup(), GroupUpdateOperation.UPDATE_ALL);
 	}
-	public String updateGroup(Group group) {
+	public String updateGroup(Group group, final GroupUpdateOperation operation) {
 		
 		/*
 		 * FIXME: remove this line. It is here only, because privlevel is not included 
@@ -554,9 +555,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		 */
 		group.setPrivlevel(null); 
 		
-		EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"))).andReturn(group.getName() + "-new");
+		EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), operation)).andReturn(group.getName() + "-new");
 		EasyMock.replay(serverLogic);
-		Assert.assertEquals(group.getName() + "-new", clientLogic.updateGroup(group));
+		Assert.assertEquals(group.getName() + "-new", clientLogic.updateGroup(group, operation));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
