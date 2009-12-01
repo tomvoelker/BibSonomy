@@ -7,13 +7,17 @@ package org.bibsonomy.common.enums;
 public enum GroupUpdateOperation {
 	
 	/**
-	 * Update all parts of the entity.
+	 * Update the settings of a group.
 	 */
 	UPDATE_SETTINGS(0),
 	/**
-	 * Update only the password of a user.
+	 * Adds new user to a group.
 	 */
-	ADD_NEW_USER(1);
+	ADD_NEW_USER(1),
+	/**
+	 * Update the whole group
+	 */
+	UPDATE_ALL(2);
 	
 	private int id;
 	
