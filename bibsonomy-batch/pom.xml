@@ -77,10 +77,10 @@
 	<distributionManagement>
 		<!-- deploy site documentation via scp to gromit -->
 		<site>
-			<id>bibsonomy-site-documentation-internal</id>
-			<name>Internal site documentation for BibSonomy modules</name>
+			<id>bibsonomy-bibtex-parser-website-documentation</id>
+			<name>Internal site documentation for this module</name>
 			<url>
-				scpexe://gromit:/home/bibsonomy/doc/
+				scpexe://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
 			</url>
 		</site>		
 	</distributionManagement>
