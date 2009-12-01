@@ -19,6 +19,7 @@ import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -804,7 +805,7 @@ public class DBLogic implements LogicInterface {
 	 * .Group)
 	 */
 	@Override
-	public String updateGroup(final Group group) {
+	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
 		this.ensureLoggedIn();
 		return this.storeGroup(group, true);
 	}
