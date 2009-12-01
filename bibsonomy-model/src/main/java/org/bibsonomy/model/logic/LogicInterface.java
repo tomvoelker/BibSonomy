@@ -30,6 +30,7 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
@@ -262,9 +263,10 @@ public interface LogicInterface extends PostLogicInterface {
 	 * Updates a group in the database.
 	 * 
 	 * @param group  the group to update
+	 * @param operation the operation which should be performed
 	 * @return groupID the group id of the updated group
 	 */
-	public String updateGroup(Group group);
+	public String updateGroup(Group group, final GroupUpdateOperation operation);
 
 	/**
 	 * Adds an existing user to an existing group.
