@@ -68,5 +68,20 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.4</version>
+		</dependency>
 	</dependencies>
+	<distributionManagement>
+		<!-- deploy site documentation via scp to gromit -->
+		<site>
+			<id>bibsonomy-site-documentation-internal</id>
+			<name>Internal site documentation for BibSonomy modules</name>
+			<url>
+				scpexe://gromit:/home/bibsonomy/doc/
+			</url>
+		</site>		
+	</distributionManagement>
 </project>
