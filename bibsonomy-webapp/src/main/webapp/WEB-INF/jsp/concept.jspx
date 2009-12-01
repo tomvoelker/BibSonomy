@@ -30,7 +30,7 @@
             </c:choose>
             
 			<form action="${formAction}" method="GET" class="smallform">
-			  <input type="text" size="20" name="tag" id="inpf" value="${command.requestedTags}"/>
+			  <input type="text" size="20" name="tag" id="inpf" value="${fn:escapeXml(command.requestedTags)}"/>
 			</form>										
 		</jsp:attribute>
 		
