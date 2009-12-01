@@ -67,4 +67,14 @@
 			<version>2.5.4</version>
 		</dependency>
 	</dependencies>
+	<distributionManagement>
+		<!-- deploy site documentation via scp to gromit -->
+		<site>
+			<id>bibsonomy-spielwiese-website-documentation</id>
+			<name>Internal site documentation for this module</name>
+			<url>
+				scpexe://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
+			</url>
+		</site>		
+	</distributionManagement>	
 </project>
