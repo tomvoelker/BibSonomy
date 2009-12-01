@@ -17,7 +17,7 @@
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.viewable"/></a> :: 
 			<a href="/viewable/${fn:escapeXml(command.requestedGroup)}"><c:out value='${command.requestedGroup}'/></a> ::
 			<form action="/viewable/${fn:escapeXml(command.requestedGroup)}" method="get" class="smallform">
-			  <input type="text" size="20" name="tag" id="inpf" value='${command.requestedTags}'/>
+			  <input type="text" size="20" name="tag" id="inpf" value='${fn:escapeXml(command.requestedTags)}'/>
 			</form>										
 		</jsp:attribute>
 		

@@ -17,7 +17,7 @@
 		<a rel="path_menu" href="#"><fmt:message key="navi.user"/><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}</a> :: 
 		<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
 		<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
-		  <input type="text" size="20" name="tag" id="inpf" value="${command.requestedTags}"/>
+		  <input type="text" size="20" name="tag" id="inpf" value="${fn:escapeXml(command.requestedTags)}"/>
 		</form>										
 		</jsp:attribute>
 		

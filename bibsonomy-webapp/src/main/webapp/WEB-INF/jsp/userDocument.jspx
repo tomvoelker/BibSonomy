@@ -22,7 +22,7 @@
 				  <input type="text" size="20" name="tag" id="inpf"/>			  
 			  </c:when>
 			  <c:otherwise>
-				  <input type="text" size="20" name="tag" id="inpf" value="${command.requestedTags}"/>
+				  <input type="text" size="20" name="tag" id="inpf" value="${fn:escapeXml(command.requestedTags)}"/>
 			  </c:otherwise>
 			  </c:choose>
 			</form>		
