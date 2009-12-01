@@ -44,7 +44,7 @@ import bibtex.parser.ParseException;
  * Provides parsing of BibTeX entries represented by {@link String}s into
  * {@link Post} objects.
  *
- * This class is thread-safe.
+ * This class is not thread-safe!
  * 
  * 
  * @author rja
