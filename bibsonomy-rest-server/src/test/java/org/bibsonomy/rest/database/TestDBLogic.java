@@ -16,6 +16,7 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -694,7 +695,7 @@ public class TestDBLogic implements LogicInterface {
 		return loginUser;
 	}
 
-	public String updateGroup(Group group) {
+	public String updateGroup(Group group, final GroupUpdateOperation operation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
