@@ -14,7 +14,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-    <edit:batcheditSkeleton listView="${command.bibtex}" listViewStartParamName="bibtex.start"> 
+    <edit:batcheditSkeleton listView="${command.bibtex}" listViewStartParamName="bibtex.start" otherPostsUrlPrefix="/bibtex"> 
       <jsp:attribute name="shortPostDescription"><bib:shortDescription post="${post}"/></jsp:attribute>
       <jsp:attribute name="title">  <bib:title post="${post}"/></jsp:attribute>
       <jsp:attribute name="desc">   <bib:desc post="${post}"/></jsp:attribute>

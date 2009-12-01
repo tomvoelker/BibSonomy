@@ -1663,7 +1663,7 @@ function sendEditTags(obj, type, ckey, link) {
 	
 	$.ajax( {
 		type :"POST",
-		url :"/TagHandler?requTask=" + type + "&" + hash + "=" + encodeURIComponent(tags.trim())
+		url :"/batchEdit_new?newTags['" + hash + "']=" + encodeURIComponent(tags.trim())
 				+ "&ckey=" + ckey,
 		dataType :"html",
 		global :"false"

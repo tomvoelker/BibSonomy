@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -86,15 +88,13 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		final Map<String, String> oldTagsMap = command.getOldTags();
 		final Map<String, Boolean> delete = command.getDelete();
 		
-		
-		
 		/*
 		 * get addTag string from command and parse it to a 
 		 * set of tags (which will be added to all posts)
 		 */
 		String addTagString = command.getTags();
 		
-		if (addTagString == null || addTagString.trim().isEmpty()) {
+		if (!present(addTagString)) {
 			addTagString = "";
 		}
 		
@@ -105,8 +105,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		} catch (final RecognitionException ex) {
 			log.warn("can't parse add tags for user " + username, ex);
 		}
-		
-		
 		
 		// create lists for delete and update action
 		final List<String> postsToDelete = new LinkedList<String>();
@@ -145,14 +143,14 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				newTags.addAll(addTags);
 				
 				if (oldTags.equals(newTags)) {
-					// tags haven't change, nothing to do
+					// tags haven't changed, nothing to do
 					continue;
 				}
 				
 				// update tags in post
 				final Post<? extends Resource> post = this.logic.getPostDetails(hash, username);
 				
-				if (post == null) {
+				if (!present(post)) {
 					log.warn("post with hash " + hash + " not found for user " + username + " while updating tags");
 				} else {
 					post.setTags(newTags);
@@ -168,25 +166,21 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * delete posts
 		 */
-		if (!postsToDelete.isEmpty()) {
-			log.debug("deleting "  + postsToDelete.size() + " posts");
+		if (present(postsToDelete)) {
+			log.debug("deleting "  + postsToDelete.size() + " posts for user " + username);
 			this.logic.deletePosts(username, postsToDelete);
 		}
 		
 		/*
 		 * update tags of posts
 		 */
-		if (!postsToUpdate.isEmpty()) {
-			log.debug("updating " + postsToUpdate.size() + " posts");
-			// only update tags
-			// FIXME: handle for:GROUP tags
-			this.logic.updatePosts(postsToUpdate, PostUpdateOperation.UPDATE_TAGS);
+		if (present(postsToUpdate)) {
+			log.debug("updating " + postsToUpdate.size() + " posts for user " + username);
+			this.logic.updatePosts(postsToUpdate, PostUpdateOperation.UPDATE_TAGS); // only update tags
 		}
 		
-		log.debug("finished batch edit");
+		log.debug("finished batch edit for user " + username);
 
-		
-		
 		// get referer to redirect to it
 		String referer = command.getReferer();
 		
