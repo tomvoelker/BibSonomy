@@ -25,20 +25,21 @@
 
 	<sql id="luceneCommonBookmarkAttributes">
 	    b.content_id, b.user_name, b.book_description as title, b.book_extended as description, 
-		b.date, b.book_url_hash AS intraHash, b.book_url_hash AS interHash,
-		u.book_url, u.book_url_ctr AS count
+		b.date, b.book_url_hash AS intraHash, b.book_url_hash AS interHash
 	</sql>
 	
 	<sql id="luceneBookmarkAttributes">
 		<include refid="luceneCommonBookmarkAttributes"/>,
 		g.*,
 		t.tag_name, 
-		t.tas_id
+		t.tas_id,
+		u.book_url, u.book_url_ctr AS count
 	</sql>	
 		       
 	<sql id="luceneLogBookmarkAttributes">
 		<include refid="luceneCommonBookmarkAttributes"/>,
 		b.log_date
 		t.tag_name,
+		u.book_url, u.book_url_ctr AS count
 	</sql>	
 </sqlMap>

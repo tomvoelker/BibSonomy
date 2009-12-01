@@ -33,10 +33,7 @@ public class LuceneDelegateResourceSearch<R extends Resource> implements Resourc
 	//------------------------------------------------------------------------
 	@Override
 	public void flagSpammer(User user) {
-		if(resourceManager!=null) 
-			resourceManager.flagSpammer(user);
-		else
-			log.error("Trying to update spam status, but no index manager available");
+		log.error("Deprecated spam interface.");
 	}
 
 	@Override

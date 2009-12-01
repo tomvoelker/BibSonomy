@@ -284,8 +284,9 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		
 		// flag user as spammer
 		user.setPrediction(1);
-		this.luceneBibTexUpdater.flagSpammer(user);
-		this.luceneBookmarkUpdater.flagSpammer(user);
+		user.setSpammer(true);
+		user.setAlgorithm("luceneTest");
+		this.adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
 		this.luceneBibTexUpdater.updateIndex();
 		this.luceneBookmarkUpdater.updateIndex();
 		this.luceneBibTexUpdater.reloadIndex();
@@ -297,10 +298,12 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		bmResultList  = bookmarkSearcher.searchPosts(null, userName, null, userName, allowedGroups, 1, 0);
 		assertEquals(0, bmResultList.size());
 
+		waitForDB();
 		
 		user.setPrediction(0);
-		this.luceneBibTexUpdater.flagSpammer(user);
-		this.luceneBookmarkUpdater.flagSpammer(user);
+		user.setSpammer(false);
+		user.setAlgorithm("luceneTest");
+		this.adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
 		this.luceneBibTexUpdater.updateIndex();
 		this.luceneBookmarkUpdater.updateIndex();
 		this.luceneBibTexUpdater.reloadIndex();
@@ -323,41 +326,69 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(bmRefList.size(), bmResultList.size());
 		*/
 		
-		// test update manager recovery
-		User spamUser = new User("testuser1");
-		spamUser.setPrediction(1);
-		spamUser.setSpammer(true);
-		spamUser.setAlgorithm("luceneTest");
-		this.adminDb.flagSpammer(spamUser, "lucene", this.dbSession);
 		
-		this.luceneBibTexIndex.reset();
-		this.luceneBookmarkIndex.reset();
-		this.luceneBibTexUpdater.recovery();
-		this.luceneBookmarkUpdater.recovery();
+		// test multiple flagging/unflagging operations
+		waitForDB();
+		user.setPrediction(1);
+		user.setSpammer(true);
+		user.setAlgorithm("luceneTest");
+		this.adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
+		waitForDB();
+		user.setPrediction(0);
+		user.setSpammer(false);
+		user.setAlgorithm("luceneTest");
+		this.adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
+		waitForDB();
+		user.setPrediction(1);
+		user.setSpammer(true);
+		user.setAlgorithm("luceneTest");
+		this.adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
+		this.luceneBibTexUpdater.updateIndex();
+		this.luceneBookmarkUpdater.updateIndex();
+		this.luceneBibTexUpdater.reloadIndex();
+		this.luceneBookmarkUpdater.reloadIndex();
 		
-		assertEquals(true, this.luceneBibTexIndex.getUsersToFlag().contains("testuser1"));
-		assertEquals(true, this.luceneBookmarkIndex.getUsersToFlag().contains("testuser1"));
+		// search
+		bibResultList = bibtexSearcher.searchPosts(null, userName, null, userName, allowedGroups, 1, 0);
+		assertEquals(0, bibResultList.size());
+		bmResultList  = bookmarkSearcher.searchPosts(null, userName, null, userName, allowedGroups, 1, 0);
+		assertEquals(0, bmResultList.size());
+		
+		// test multiple flagging/unflagging operations
+		waitForDB();
+		user.setPrediction(0);
+		user.setSpammer(false);
+		user.setAlgorithm("luceneTest");
+		this.adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
+		waitForDB();
+		user.setPrediction(1);
+		user.setSpammer(true);
+		user.setAlgorithm("luceneTest");
+		this.adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
+		waitForDB();
+		user.setPrediction(0);
+		user.setSpammer(false);
+		user.setAlgorithm("luceneTest");
+		this.adminDb.flagSpammer(user, "luceneAdmin", this.dbSession);
+		this.luceneBibTexUpdater.updateIndex();
+		this.luceneBookmarkUpdater.updateIndex();
+		this.luceneBibTexUpdater.reloadIndex();
+		this.luceneBookmarkUpdater.reloadIndex();
 
+		// search
+		bibResultList = bibtexSearcher.searchPosts(null, userName, null, userName, allowedGroups, 1000, 0);
+		bibRefList    = this.bibTexDb.getPostsForUser(userName, userName, HashID.INTER_HASH, groupId, groups, null, 1000, 0, null, this.dbSession);
+		assertEquals(bibRefList.size(), bibResultList.size());
+}
+
+	private void waitForDB() {
 		// FIXME: we get an SQL duplicate key violation exception, if we don't wait....
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			log.error("Error while going to sleep... Probably spam flagging will fail!", e);
 		}
-		
-		spamUser.setPrediction(0);
-		spamUser.setSpammer(false);
-		spamUser.setAlgorithm("luceneTest");
-		this.adminDb.flagSpammer(spamUser, "lucene", this.dbSession);
-		
-		this.luceneBibTexIndex.reset();
-		this.luceneBookmarkIndex.reset();
-		this.luceneBibTexUpdater.recovery();
-		this.luceneBookmarkUpdater.recovery();
-		
-		assertEquals(false, this.luceneBibTexIndex.getUsersToFlag().contains("testuser1"));
-		assertEquals(false, this.luceneBookmarkIndex.getUsersToFlag().contains("testuser1"));
-}
+	}
 
 	/**
 	 * tests some internel index functions

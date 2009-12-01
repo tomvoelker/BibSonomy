@@ -98,16 +98,6 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	 * @param optimizeindex indicate whether the index should be optimized
 	 */
 	private void updateIndexes()  {
-		// don't run twice at the same time  - if something went wrong, delete alreadyRunning
-		if ((alreadyRunning > 0) && (alreadyRunning<maxAlreadyRunningTrys) ) {
-			alreadyRunning++;
-			log.warn("reloadIndex - alreadyRunning ("+alreadyRunning+"/"+maxAlreadyRunningTrys+")");
-			return;	
-		}
-		alreadyRunning = 1;
-		log.debug("reloadIndex - run and reset alreadyRunning ("+alreadyRunning+"/"+maxAlreadyRunningTrys+")");
-
-		// assure that flagging and unflagging of spammers as well as index updating is mutual exclusive
 		synchronized(this) {
 			//----------------------------------------------------------------
 			//  0) initialize variables  
@@ -121,6 +111,11 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 				lastTasId = this.resourceIndex.getLastTasId();
 			if( lastLogDate==null )
 				lastLogDate = this.resourceIndex.getLastLogDate()-QUERY_TIME_OFFSET_MS;
+			
+			//----------------------------------------------------------------
+			//  0) flag/unflag spammer  
+			//----------------------------------------------------------------
+			this.updatePredictions();
 			
 			//----------------------------------------------------------------
 			//  1) get new posts  
@@ -217,8 +212,19 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 			return;
 		}
 
+		// don't run twice at the same time  - if something went wrong, delete alreadyRunning
+		if ((alreadyRunning > 0) && (alreadyRunning<maxAlreadyRunningTrys) ) {
+			alreadyRunning++;
+			log.warn("reloadIndex - alreadyRunning ("+alreadyRunning+"/"+maxAlreadyRunningTrys+")");
+			return;	
+		}
+		alreadyRunning = 1;
+		log.debug("reloadIndex - run and reset alreadyRunning ("+alreadyRunning+"/"+maxAlreadyRunningTrys+")");
+
+		// initialize data structures
 		init();
 
+		// check if the updater successfully initialized
 		if (!useUpdater) {
 			log.warn("updateIndex - LuceneUpdater deactivated!");
 			alreadyRunning = 0;
@@ -242,11 +248,27 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	//------------------------------------------------------------------------
 	/**
 	 * incorporate all database changes before startup which would otherwise
-	 * get lost (i.e. flagging of spam users)
+	 * get lost
 	 */
 	public void recovery() {
+	}
+	
+	//------------------------------------------------------------------------
+	// spam handling
+	//------------------------------------------------------------------------
+	/**
+	 * get spam prediction which were missed since last index update
+	 * 
+	 * FIXME: this code is due to the old spam-flagging-mechanism
+	 *        it is probably more efficient to get all un-flagged-posts directly via 
+	 *        a join with the user table
+	 */
+	private void updatePredictions() {
+		if( lastLogDate==null )
+			lastLogDate = this.resourceIndex.getLastLogDate()-QUERY_TIME_OFFSET_MS;
+		
 		// get date of last index update
-		Date fromDate = new Date(this.resourceIndex.getLastLogDate());
+		Date fromDate = new Date(lastLogDate);
 		
 		// get users which where flagged as spammers since then 
 		List<String> lostSpammer    = this.dbLogic.getSpamPredictionForTimeRange(fromDate);
@@ -272,13 +294,11 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 		}
 	}
 	
-	//------------------------------------------------------------------------
-	// spam handling
-	//------------------------------------------------------------------------
+	
 	/**
 	 * flag/unflag spammer, depending on user.getPrediction()
 	 */
-	public void  flagSpammer(User user) {
+	private void  flagSpammer(User user) {
 		log.debug("flagSpammer called for user " + user.getName());
 		switch( user.getPrediction() ) {
 		case 0:
@@ -303,15 +323,12 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	 *  
 	 * @param userPosts all of the user's posts - these will be inserted into the index
 	 */
-	protected void unflagEntryAsSpam(List<LucenePost<R>> userPosts) {
-		// assure that flagging and unflagging of spammers as well as index updating is mutual exclusive
-		synchronized(this) {
-			//  insert new records into index
-			if( (userPosts!=null) && (userPosts.size()>0) ) {
-				for (Post<?> post : userPosts ) {
-					// cache document for writing 
-					resourceIndex.insertDocument(LucenePostConverter.readPost(post));
-				}
+	private void unflagEntryAsSpam(List<LucenePost<R>> userPosts) {
+		//  insert new records into index
+		if( (userPosts!=null) && (userPosts.size()>0) ) {
+			for (Post<?> post : userPosts ) {
+				// cache document for writing 
+				resourceIndex.insertDocument(LucenePostConverter.readPost(post));
 			}
 		}
 	}
