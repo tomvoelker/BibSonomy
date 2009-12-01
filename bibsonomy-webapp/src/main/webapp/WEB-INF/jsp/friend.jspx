@@ -21,7 +21,7 @@
 			<a rel="path_menu" href="/friend"><img src="/resources/image/box_arrow.png" />&amp;nbsp;<fmt:message key="navi.friend"/></a> :: 
 			<a href="/friend/${mtl:encodeURI(param.requestedUser)}"><c:out value="${param.requestedUser}"/></a> ::
 			<form action="/friend/${mtl:encodeURI(param.requestedUser)}" method="GET" class="smallform">
-			  <input type="text" size="20" id="inpf" name="tag" value="${command.requestedTags}"/>
+			  <input type="text" size="20" id="inpf" name="tag" value="${fn:escapeXml(command.requestedTags)}"/>
 			</form>
 		  </h1> 		
         </jsp:attribute>
