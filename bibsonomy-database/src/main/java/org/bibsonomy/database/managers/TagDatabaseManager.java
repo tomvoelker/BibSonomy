@@ -636,7 +636,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Tag> getTagsByAuthor(final TagParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
-		return this.queryForList("getTagsByAuthor", param, Tag.class, session);
+		final long starttimeQuery = System.currentTimeMillis();
+		List<Tag> retVal = this.queryForList("getTagsByAuthor", param, Tag.class, session);
+		final long endtimeQuery = System.currentTimeMillis();
+		log.debug("DB author tag cloud query time: " + (endtimeQuery-starttimeQuery) + " ms");
+		
+		return retVal;
 	}
 
 	/**
