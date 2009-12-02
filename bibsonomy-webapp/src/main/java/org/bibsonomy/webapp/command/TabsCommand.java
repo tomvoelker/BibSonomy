@@ -12,6 +12,11 @@ import java.util.List;
  */
 public class TabsCommand<T> extends ResourceViewCommand implements TabsCommandInterface<T> {
 
+	/**
+	 * tabURL of the current tab
+	 */
+	private String tabURL = null; 
+	
 	/** id of current selected tab */
 	protected Integer selTab = 1;	
 
@@ -78,6 +83,14 @@ public class TabsCommand<T> extends ResourceViewCommand implements TabsCommandIn
 		for(int i=0; i<titles.length; i++) {
 			addTab(i, titles[i]);
 		}
+	}
+
+	public String getTabURL() {
+		return this.tabURL;
+	}
+
+	public void setTabURL(String tabURL) {
+		this.tabURL = tabURL;
 	}
 
 }
