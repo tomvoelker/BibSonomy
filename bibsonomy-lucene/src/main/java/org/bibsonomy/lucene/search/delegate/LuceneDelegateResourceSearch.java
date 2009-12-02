@@ -1,5 +1,6 @@
 package org.bibsonomy.lucene.search.delegate;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
@@ -71,6 +73,15 @@ public class LuceneDelegateResourceSearch<R extends Resource> implements Resourc
 		}
 	}
 	
+	@Override
+	public List<Tag> getTagsByAuthor(String group, String search,
+			String requestedUserName, String requestedGroupName, String year,
+			String firstYear, String lastYear, List<String> tagList) {
+		if(resourceSearcher!=null)
+			return resourceSearcher.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList);
+		else
+			return new LinkedList<Tag>();
+	}	
 	//------------------------------------------------------------------------
 	// getter/setter
 	//------------------------------------------------------------------------
@@ -89,4 +100,6 @@ public class LuceneDelegateResourceSearch<R extends Resource> implements Resourc
 	public LuceneResourceSearch<R> getResourceSearcher() {
 		return resourceSearcher;
 	}
+
+
 }

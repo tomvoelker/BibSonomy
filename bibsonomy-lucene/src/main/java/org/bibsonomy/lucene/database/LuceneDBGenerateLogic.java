@@ -3,8 +3,10 @@ package org.bibsonomy.lucene.database;
 import java.io.Reader;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -165,6 +167,21 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends LuceneBa
 		} catch (SQLException e) {
 			log.error("Error getting unflagged users", e);
 			retVal = new LinkedList<String>();
+		}
+		
+		return retVal;
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String,String> getUrlMap() {
+		Map<String,String> retVal = null;
+		
+		try {
+			retVal = (Map<String,String>)sqlMap.queryForMap("getUrlMap",null,"hash", "url");
+		} catch (SQLException e) {
+			log.error("Error getting unflagged users", e);
+			retVal = new HashMap<String,String>();
 		}
 		
 		return retVal;

@@ -2,6 +2,9 @@ package org.bibsonomy.lucene.param;
 
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.TopDocsCollector;
+import org.apache.lucene.search.TopFieldCollector;
+import org.bibsonomy.lucene.search.collector.TagCountCollector;
 
 /**
  * Container for a query string and a filter string for lucene 
@@ -28,6 +31,11 @@ public class QuerySortContainer {
 	 * filter
 	 */
 	private Sort sort;
+	
+	/**
+	 * TopDocs collector
+	 */
+	private TagCountCollector topDocsCollector;
 
 	/**
 	 * @return the query
@@ -57,6 +65,14 @@ public class QuerySortContainer {
 	public void setSort(Sort sort) {
 		this.sort = sort;
 		
+	}
+
+	public void setTagCountCollector(TagCountCollector topDocsCollector) {
+		this.topDocsCollector = topDocsCollector;
+	}
+
+	public TagCountCollector getTagCountCollector() {
+		return topDocsCollector;
 	}
 	
 }

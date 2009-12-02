@@ -20,23 +20,27 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParser.Operator;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.TopDocsCollector;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.store.FSDirectory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.QuerySortContainer;
+import org.bibsonomy.lucene.search.collector.TagCountCollector;
 import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.lucene.util.Utils;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -89,7 +93,9 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			String searchTerms, String requestedUserName, String UserName,
 			Set<String> GroupNames, int limit, int offset) {
 		if( isEnabled() )
-			return searchLucene(buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames), limit, offset);
+			return searchLucene(
+					buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames), 
+					limit, offset);
 		else
 			return createEmptyResultList();
 	}
@@ -114,9 +120,33 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			String firstYear, String lastYear, List<String> tagList, int limit,
 			int offset) {
 		if( isEnabled() )
-			return searchLucene(buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList), limit, offset);
+			return searchLucene(
+					buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, CFG_TAG_CLOUD_LIMIT), 
+					limit, offset);
 		else 
 			return createEmptyResultList();
+	}
+	
+	public List<Tag> getTagsByAuthor(String group, String search,
+			String requestedUserName, String requestedGroupName, String year,
+			String firstYear, String lastYear, List<String> tagList) {
+		List<Tag> retVal = null;
+		QuerySortContainer qf = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, CFG_TAG_CLOUD_LIMIT);
+		
+		// gather tags used by the author's posts
+		TagCountCollector tagCollector = qf.getTagCountCollector();
+		if( tagCollector!=null ) {
+			try {
+				searcher.search(qf.getQuery(), null, tagCollector);
+				retVal = tagCollector.getTags();
+			} catch (IOException e) {
+				log.error("Error building author tag cloud for " + search);
+				retVal = new LinkedList<Tag>();
+			}
+		}
+		
+		// all done.
+		return retVal;
 	}
 	
 	//------------------------------------------------------------------------
@@ -137,18 +167,18 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			//----------------------------------------------------------------
 			// querying the index
 			//----------------------------------------------------------------
-
+			int hitslimit = 0;
 			long starttimeQuery = System.currentTimeMillis();
 			final TopDocs topDocs = searcher.search(query, null, offset+limit, sort);
+			// determine number of posts to display
+			hitslimit = (((offset+limit) < topDocs.totalHits) ? (offset+limit) : topDocs.totalHits);
+			log.debug("offset / limit / hitslimit / hits.length():  "
+					+ offset + " / " + limit + " / " + hitslimit + " / " + topDocs.totalHits);
 			long endtimeQuery = System.currentTimeMillis();
 			log.debug("Query time: " + (endtimeQuery - starttimeQuery) + "ms");
 			
-			// determine number of posts to display
-			int hitslimit = (((offset+limit) < topDocs.totalHits) ? (offset+limit) : topDocs.totalHits);
-			postList.setTotalCount(topDocs.totalHits);
 
-			log.debug("offset / limit / hitslimit / hits.length():  "
-					+ offset + " / " + limit + " / " + hitslimit + " / " + topDocs.totalHits);
+			postList.setTotalCount(topDocs.totalHits);
 
 			//----------------------------------------------------------------
 			// extract posts
@@ -393,7 +423,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			String searchTerms, 
 			String requestedUserName, String requestedGroupName, 
 			String year, String firstYear, String lastYear, 
-			List<String> tagList);
+			List<String> tagList, int tagCntLimit);
 	
 	/** 
 	 * analyzes given input parameter

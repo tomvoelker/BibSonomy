@@ -40,6 +40,9 @@ public class LuceneBase {
 	/** directory prefix for different resource indeces */
 	protected static final String CFG_LUCENE_INDEX_PREFIX = "lucene_";
 	
+	/** max. number of posts to consider for building the author tag cloud */
+	protected static final Integer CFG_TAG_CLOUD_LIMIT = Integer.MAX_VALUE;
+	
 	/** the naming context for lucene classes */
 	protected static final String CONTEXT_ENV_NAME    = "java:/comp/env";
 	/** naming context for variables */

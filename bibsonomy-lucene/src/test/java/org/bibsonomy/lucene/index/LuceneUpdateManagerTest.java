@@ -44,6 +44,7 @@ import org.bibsonomy.util.ExceptionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
@@ -113,6 +114,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * tests visibility of private posts
 	 */
 	@Test
+	@Ignore
 	public void privatePosts() {
 		// set up data structures
 		Set<String> allowedGroups = new TreeSet<String>();
@@ -168,6 +170,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws IOException 
 	 */
 	@Test
+	@Ignore
 	public void updateIndices() throws IOException, ClassNotFoundException, SQLException {
 		// set up data structures
 		Set<String> allowedGroups = new TreeSet<String>();
@@ -264,6 +267,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * tests handling of spam posts
 	 */
 	@Test
+	@Ignore
 	public void spamPosts() {
 		// set up data structures
 		Set<String> allowedGroups = new TreeSet<String>();
@@ -461,6 +465,11 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		bibResultList = bibtexSearcher.searchAuthor(GroupID.PUBLIC.name(), "luceneAuthor", null, null, null, "1980", null, null, 1000, 0);
 
 		bibResultList = bibtexSearcher.searchAuthor(GroupID.PUBLIC.name(), "luceneAuthor", null, null, null, "1980", "2000", null, 1000, 0);
+
+		//------------------------------------------------------------------------
+		// tag cloud
+		//------------------------------------------------------------------------
+		List<Tag> authorTags = bibtexSearcher.getTagsByAuthor(GroupID.PUBLIC.name(), "luceneAuthor", null, null, null, null, null, null);
 
 	}
 

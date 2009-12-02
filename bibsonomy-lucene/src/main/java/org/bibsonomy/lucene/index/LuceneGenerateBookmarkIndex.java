@@ -2,8 +2,10 @@ package org.bibsonomy.lucene.index;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 
 import org.apache.lucene.index.CorruptIndexException;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.Bookmark;
@@ -17,6 +19,9 @@ public class LuceneGenerateBookmarkIndex extends LuceneGenerateResourceIndex<Boo
 	/** bean factory for obtaining instances configured via spring */
 	private static BeanFactory beanFactory;
 	
+	/** maps url hashs to corresponding urls */
+	Map<String,String> urlMap;
+
 	//------------------------------------------------------------------------
 	// constructor
 	//------------------------------------------------------------------------
@@ -73,7 +78,19 @@ public class LuceneGenerateBookmarkIndex extends LuceneGenerateResourceIndex<Boo
 	// implementations for abstract methods
 	//------------------------------------------------------------------------
 	@Override
+	protected void setUp() {
+		log.debug("Fetching url map");
+		this.urlMap = this.dbLogic.getUrlMap();
+	}
+	
+	@Override
 	protected Class<? extends Resource> getResourceType() {
 		return Bookmark.class;
+	}
+
+	@Override
+	protected void fillPost(LucenePost<Bookmark> postEntry) {
+		String bmUrl = urlMap.get(postEntry.getResource().getInterHash());
+		postEntry.getResource().setUrl(bmUrl);
 	}
 }

@@ -20,8 +20,10 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeFilter;
+import org.apache.lucene.search.TopFieldCollector;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.bibsonomy.lucene.param.QuerySortContainer;
+import org.bibsonomy.lucene.search.collector.TagCountCollector;
 import org.bibsonomy.lucene.util.LucenePostConverter;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -73,7 +75,8 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 			String searchTerms, 
 			String requestedUserName, String requestedGroupName, 
 			String year, String firstYear, String lastYear, 
-			List<String> tagList) {
+			List<String> tagList,
+			int tagCntLimit ) {
 		// FIXME: configure this
 //		String orderBy = "relevance"; 
 		String orderBy = "date"; 
@@ -220,6 +223,16 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 			qf.setQuery(mainQuery);
 		}
 		log.debug("Search query: " + qf.getQuery().toString());
+		
+		// set up collector
+		TagCountCollector collector;
+		try {
+			collector = new TagCountCollector(null, tagCntLimit, qf.getSort());
+		} catch (IOException e) {
+			log.error("Error building tag cloud collector");
+			collector = null;
+		};
+		qf.setTagCountCollector(collector);
 
 		// all done.
 		return qf;

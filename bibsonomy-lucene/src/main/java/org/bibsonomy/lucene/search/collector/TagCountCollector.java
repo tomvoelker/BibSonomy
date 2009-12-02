@@ -1,0 +1,108 @@
+package org.bibsonomy.lucene.search.collector;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.document.FieldSelector;
+import org.apache.lucene.document.MapFieldSelector;
+import org.apache.lucene.index.IndexReader;
+import org.apache.lucene.search.Collector;
+import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.Scorer;
+import org.apache.lucene.search.Sort;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.util.ValidationUtils;
+
+/**
+ * experimental hits collector for calculating author tag cloud
+ * 
+ * FIXME: springify this
+ * 
+ * @author fei
+ *
+ */
+public class TagCountCollector extends Collector {
+	private static final Log log = LogFactory.getLog(TagCountCollector.class);
+
+	private static final String FLD_TAS = "tas";
+	private static final String CFG_LIST_DELIMITER = " ";
+	
+	private Map<Integer,IndexReader> docToReaderMap;
+	private IndexReader lastReader = null;
+
+	/**
+	 * constructor
+	 * @throws IOException 
+	 */
+	public TagCountCollector(Filter filter, int nDocs, Sort sort) throws IOException {
+		// instantiate collector
+		docToReaderMap = new HashMap<Integer, IndexReader>();
+	}
+
+	@Override
+	public boolean acceptsDocsOutOfOrder() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void collect(int doc) throws IOException {
+		docToReaderMap.put(doc, lastReader);
+	}
+
+	@Override
+	public void setNextReader(IndexReader reader, int docBase) throws IOException {
+		this.lastReader  = reader;
+	}
+
+	@Override
+	public void setScorer(Scorer scorer) throws IOException {
+	}
+
+	/**
+	 * fetches tags and their corresponding counts from collected documents 
+	 * 
+	 * @return
+	 */
+	public List<Tag> getTags() {
+		Map<String,Integer> tagCounter = new HashMap<String,Integer>();
+		
+		List<Tag> retVal = new LinkedList<Tag>();
+		for( Integer docId : docToReaderMap.keySet() ) {
+			try {
+				FieldSelector tasSelector = new MapFieldSelector(FLD_TAS); 
+				Document doc = docToReaderMap.get(docId).document(docId, tasSelector);
+				String tags = doc.get(FLD_TAS);
+				if( ValidationUtils.present(tags) ) {
+					for(String tag : tags.split(CFG_LIST_DELIMITER)) {
+						Integer oldCnt = tagCounter.get(tag);
+						if( !ValidationUtils.present(oldCnt) )
+							oldCnt=1;
+						else
+							oldCnt+=1;
+						tagCounter.put(tag, oldCnt);
+					}
+				}
+			} catch (IOException e) {
+				log.error("Error fetching document " + docId + " from index.", e);
+			}
+
+		}
+		
+		for(String tag : tagCounter.keySet() ) {
+			Tag transientTag = new Tag();
+			transientTag.setName(tag);
+			transientTag.setUsercount(tagCounter.get(tag));
+			retVal.add(transientTag);
+		}
+		
+		// all done.
+		return retVal;
+	}
+}

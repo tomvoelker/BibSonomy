@@ -42,7 +42,7 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 	protected QuerySortContainer buildAuthorQuery(String group,
 			String searchTerms, String requestedUserName,
 			String requestedGroupName, String year, String firstYear,
-			String lastYear, List<String> tagList) {
+			String lastYear, List<String> tagList, int tagCloudLimit) {
 		throw new UnsupportedOperationException("Author search not available for bookmarks");
 	}
 	

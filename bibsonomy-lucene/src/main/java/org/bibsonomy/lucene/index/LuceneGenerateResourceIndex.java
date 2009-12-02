@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -37,7 +38,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 	Properties props = null;
 
 	/** database logic */
-	private LuceneDBInterface<R> dbLogic;
+	protected LuceneDBInterface<R> dbLogic;
 
 	/** path to the bookmark index */
 	private String luceneResourceIndexPath;
@@ -131,12 +132,15 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 	 * @throws IOException
 	 */
 	public void createIndexFromDatabase() throws CorruptIndexException, IOException {
+		// set up resource specific data structures
+		setUp();
+		
 		// number of post entries
 		log.info("Number of post entries: "+this.dbLogic.getNumberOfPosts());
 		
 		// initialize variables
 		Integer lastTasId = this.dbLogic.getLastTasId();
-		Date lastLogDate  = this.dbLogic.getLastLogDate(); 
+		Date lastLogDate  = this.dbLogic.getLastLogDate();
 
 		//
 		// get all relevant bookmarks from bookmark table
@@ -162,6 +166,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 				// update management fields
 				postEntry.setLastLogDate(lastLogDate);
 				postEntry.setLastTasId(lastTasId);
+				fillPost(postEntry);
 				
 				// create index document from post model
 				Document post = LucenePostConverter.readPost(postEntry);
@@ -229,6 +234,12 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 		
 		return name;
 	}
+	
+	/** fill given posts with additional data */
+	protected abstract void fillPost(LucenePost<R> postEntry);
+	
+	/** set up resource specific data structures */
+	protected abstract void setUp();
 
 	//------------------------------------------------------------------------
 	// getter/setter

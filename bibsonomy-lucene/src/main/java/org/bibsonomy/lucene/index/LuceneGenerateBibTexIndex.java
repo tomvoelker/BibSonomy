@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.apache.lucene.index.CorruptIndexException;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.BibTex;
@@ -76,8 +77,17 @@ public class LuceneGenerateBibTexIndex extends LuceneGenerateResourceIndex<BibTe
 	// implementations for abstract methods
 	//------------------------------------------------------------------------
 	@Override
+	protected void setUp() {
+	}
+	
+	@Override
 	protected Class<? extends Resource> getResourceType() {
 		return BibTex.class;
+	}
+
+	@Override
+	protected void fillPost(LucenePost<BibTex> postEntry) {
+		// nothing to do
 	}
 	
 }

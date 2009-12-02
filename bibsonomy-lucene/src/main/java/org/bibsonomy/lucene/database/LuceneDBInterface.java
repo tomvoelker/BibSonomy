@@ -179,4 +179,9 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @return
 	 */
 	List<LucenePost<R>> getPostEntries(Integer skip, Integer max);
+	
+	/**
+	 * get map from url-hashes to corresponding urls
+	 */
+	Map<String,String> getUrlMap();
 }
