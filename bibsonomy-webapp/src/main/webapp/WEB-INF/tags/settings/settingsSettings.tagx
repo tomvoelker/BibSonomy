@@ -39,7 +39,7 @@
 		    <tr>
 		      <td><fmt:message key="settings.tag.showAs"/> </td>
 		      <td>
-		        <form:select path="tagboxStyle" id="tagBoxStyleSelect">
+		        <form:select path="user.settings.tagboxStyle" id="tagBoxStyleSelect">
 		          <form:option label="${cloud}" value="0" />
 		          <form:option label="${list}" value="1"/>
 		        </form:select>
@@ -48,7 +48,7 @@
 		    <tr>
 		        <td><fmt:message key="settings.tag.sortBy"/> </td>
 		        <td>
-		          <form:select path="tagSort" id="tagSortSelect">
+		          <form:select path="user.settings.tagboxSort" id="tagSortSelect">
 		            <form:option label="${alphabet}" value="0"/>
 		            <form:option label="${frequency}" value="1"/>    
 		          </form:select>
@@ -57,13 +57,13 @@
 		      <tr>
 		        <td><fmt:message key="settings.tag.onlyMinFreq"/></td>
 		        <td>
-		          <form:input path="tagboxMinfreq" size="3"/>
+		          <form:input path="user.settings.tagboxMinfreq" size="3"/>
 		        </td>
 		      </tr>
 		      <tr>
 		        <td><fmt:message key="settings.tag.showTooltipsForTags"/></td>
 		        <td>
-		          <form:select path="tagboxTooltip" id="tagboxTooltipSelect">
+		          <form:select path="user.settings.tagboxTooltip" id="tagboxTooltipSelect">
 		            <form:option label="${no}" value="0"/>
 		            <form:option label="${yes}" value="1"/>
 		          </form:select>
@@ -73,14 +73,14 @@
 		      <tr>
 		        <td><fmt:message key="settings.tag.itemsPerPage"/></td>
 		        <td>
-		           <form:input path="itemcount" size="3"/>
+		           <form:input path="user.settings.listItemcount" size="3"/>
 		        </td>
 		      </tr> 
 		            
 		       <tr>
 		        <td><fmt:message key="settings.tag.defaultLanguage"/></td>
 		        <td>
-		           <form:select path="defaultLanguage" id="defaultLanguageSelect">
+		           <form:select path="user.settings.defaultLanguage" id="defaultLanguageSelect">
 		            <form:option label="${english}" value="en"/>
 		            <form:option label="${german}" value="de"/>
 		          </form:select>
@@ -131,25 +131,38 @@
 		 
 		  <h3><fmt:message key="settings.privacylevel"/></h3> 
 		  <form:form name="groupPrivLevel" method="post" action="/settingsnew">
-		    <fmt:message key="settings.memberlistis"/>
-		    <form:select path="privlevel">
-		      <form:option value="0"><fmt:message key="settings.public"/></form:option>
-		      <form:option value="1"><fmt:message key="settings.private"/></form:option>
-		      <form:option value="2"><fmt:message key="settings.publicformembers"/></form:option>
-		    </form:select>
-		    <input type="hidden" value="update_privlevel" name="action"/>
-		    <input type="submit" value="${change}" />
+		    
+		    <table>
+		    	<tr>
+		    		<td><fmt:message key="settings.memberlistis"/></td>
+		    		<td>
+		    			<form:select path="privlevel">
+		      				<form:option value="0"><fmt:message key="settings.public"/></form:option>
+		      				<form:option value="1"><fmt:message key="settings.private"/></form:option>
+		      				<form:option value="2"><fmt:message key="settings.publicformembers"/></form:option>
+		    			</form:select>
+		    		</td>
+		    		<td> <input type="submit" value="${change}" /></td>		    		
+		    	</tr>
+		    </table>
+		    <input type="hidden" name="ckey" value="${ckey}"/>		   		   
 		  </form:form>
 		  
 		  <h3><fmt:message key="settings.shareddocuments"/></h3> 
 		  <form:form name="groupSharedDocuments" method="post" action="/settingsnew">
-		    <fmt:message key="settings.shareddocumentsare"/>  
-		    <form:select path="sharedDocuments">
-		      <form:option value="0"><fmt:message key="settings.disabled"/></form:option>
-		      <form:option value="1"><fmt:message key="settings.enabled"/></form:option>
-		    </form:select>
-		    <input type="hidden" value="update_shared_documents" name="action"/>
-		    <input type="submit" value="${change}" />
+		    <table>
+		    	<tr>
+		    		<td><fmt:message key="settings.shareddocumentsare"/></td>
+		    		<td>
+		    			<form:select path="sharedDocuments">
+		      				<form:option value="0"><fmt:message key="settings.disabled"/></form:option>
+		      				<form:option value="1"><fmt:message key="settings.enabled"/></form:option>
+		    			</form:select>
+		    		</td>
+		    		<td><input type="submit" value="${change}" /></td>
+		    	</tr>
+		    </table>
+		    <input type="hidden" name="ckey" value="${ckey}"/>	
 		  </form:form>		  
 		  
 		</c:when>
@@ -209,7 +222,7 @@
           <tr>
             <td><fmt:message key="settings.logclicks"/></td>
             <td>
-		          <form:select path="logLevel">
+		          <form:select path="user.settings.logLevel">
 		            <form:option value="0"><fmt:message key="settings.yes"/></form:option>
 		            <form:option value="1"><fmt:message key="settings.no"/></form:option>
 		          </form:select>
@@ -237,7 +250,7 @@
         
 		<!-- password change -->
 		
-		<settings:passwordChange ckey="${command.context.ckey}"/>
+		<settings:passwordChange command="${command}"/>
 		
 		<hr/>
 		
