@@ -34,6 +34,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.util.TagStringUtils;
 import org.bibsonomy.util.ValidationUtils;
 
 import bibtex.dom.BibtexEntry;
@@ -51,6 +52,31 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public class PostBibTeXParser extends SimpleBibTeXParser {
+
+	/*
+	 * Specifies the delimiter for keywords and tags
+	 */
+	private String delimiter;
+	public String getDelimiter() {
+		return this.delimiter;
+	}
+
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
+	}
+
+	/*
+	 * Specifies the whitespace substitute for keywords and tags
+	 */
+	private String whitespace;
+
+	public String getWhitespace() {
+		return this.whitespace;
+	}
+
+	public void setWhitespace(String whitespace) {
+		this.whitespace = whitespace;
+	}
 
 	/**
 	 * Parses the given BibTeX entry and puts fields which are not part of the
@@ -109,7 +135,10 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 			 */
 			final String keywords = miscFields.remove(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS);
 			try {
-				post.setTags(TagUtils.parse(keywords));
+				if(!ValidationUtils.present(whitespace) && !ValidationUtils.present(delimiter))
+					post.setTags(TagUtils.parse(TagStringUtils.cleanTags(keywords, true,  delimiter, whitespace)));
+				else
+					post.setTags(TagUtils.parse(keywords));
 			} catch (RecognitionException ex) {
 				/*
 				 * silently ignore tag parsing errors ....

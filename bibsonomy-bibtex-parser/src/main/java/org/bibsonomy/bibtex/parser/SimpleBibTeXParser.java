@@ -69,6 +69,35 @@ public class SimpleBibTeXParser {
 	private static final String AND = " and ";
 
 	/**
+	 * Determines, if the parser will stop after the first parsing error 
+	 * or if it tries to parse all and store all warnings. 
+	 */
+	private boolean tryParseAll = false;
+	
+	public void setTryParseAll(boolean tryParseAll) {
+		this.tryParseAll = tryParseAll;
+	}
+
+	public boolean isTryParseAll() {
+		return this.tryParseAll;
+	}
+
+	/**
+	 * If tryParseAll is true, it holds all exceptions caught during the last parse process.
+	 */
+	private ParseException[] caughtExceptions = null;
+	
+	
+	
+	public ParseException[] getCaughtExceptions() {
+		return this.caughtExceptions;
+	}
+
+	public void setCaughtExceptions(ParseException[] caughtExceptions) {
+		this.caughtExceptions = caughtExceptions;
+	}
+
+	/**
 	 * Stores warnings occuring during parsing.
 	 */
 	private final List<String> warnings;
@@ -115,7 +144,7 @@ public class SimpleBibTeXParser {
 	private List<BibTex> parseInternal (final String bibtex, final boolean firstEntryOnly) throws ParseException, IOException {
 		final List<BibTex> result = new LinkedList<BibTex>();
 
-		final BibtexParser parser = new BibtexParser(true);
+		final BibtexParser parser = new BibtexParser(!tryParseAll);
 		/*
 		 * configure the parser
 		 */
@@ -179,6 +208,7 @@ public class SimpleBibTeXParser {
 				return result;
 			}
 		}
+		setCaughtExceptions(parser.getExceptions());
 		return result;
 	}
 
