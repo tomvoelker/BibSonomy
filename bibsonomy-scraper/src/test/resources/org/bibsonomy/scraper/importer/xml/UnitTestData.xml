@@ -7,10 +7,11 @@
 		<URL>http://portal.acm.org/citation.cfm?id=1015428&amp;coll=Portal&amp;dl=ACM&amp;CFID=22531872&amp;CFTOKEN=18437036</URL>
 		<BibFile>ACMBasicScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_2">
 		<TestDescription>URL test for a single aifb publication.</TestDescription>
-		<URL>http://www.aifb.uni-karlsruhe.de/Publikationen/showPublikation?publ_id=867</URL>
+		<URL>http://www.aifb.kit.edu/web/Inproceedings867</URL>
 		<BibFile>AIFBScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
 		<Enabled>false</Enabled>
@@ -61,6 +62,7 @@
 		<URL>http://scitation.aip.org/vsearch/servlet/VerityServlet?KEY=FREESR&amp;smode=results&amp;maxdisp=10&amp;possible1=star&amp;possible1zone=article&amp;fromyear=1893&amp;frommonth=Jan&amp;toyear=2007&amp;tomonth=Aug&amp;OUTLOG=NO&amp;viewabs=PSISDG&amp;key=DISPLAY&amp;docID=1&amp;page=0&amp;chapter=0</URL>
 		<BibFile>AipScitationScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_10">
 		<TestDescription>URL scraping test with arxiv publications</TestDescription>
