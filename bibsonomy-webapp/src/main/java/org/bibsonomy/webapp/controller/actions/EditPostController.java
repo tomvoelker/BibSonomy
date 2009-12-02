@@ -790,7 +790,7 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 	 *            the post whose groups should be populated from the command.
 	 * @see #initCommandGroups(EditPostCommand, Post)
 	 */
-	private void initPostGroups(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
+	protected void initPostGroups(final EditPostCommand<RESOURCE> command, final Post<RESOURCE> post) {
 		log.debug("initializing post's groups from command");
 		/*
 		 * we can avoid some checks here, because they're done in the validator
