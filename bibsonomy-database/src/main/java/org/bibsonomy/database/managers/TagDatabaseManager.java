@@ -1,7 +1,10 @@
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -18,6 +21,7 @@ import org.bibsonomy.database.params.beans.TagTagBatchParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -26,6 +30,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * Used to retrieve tags from the database.
@@ -45,6 +50,9 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	private final TagRelationDatabaseManager tagRelDb;
 	private final DatabasePluginRegistry plugins;
 	private static final TagChain chain = new TagChain();
+	
+	/** interface to a resource searcher for building an author's tag cloud */
+	private ResourceSearch<BibTex> authorSearch;
 
 	/**
 	 * Only a maximum of 10 tags can be set by the user. It serves to restrict
@@ -632,6 +640,42 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * Get all tags of a an author, which assigned to the authors
+	 * 
+	 * @param search
+	 * @param groupId
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param limit
+	 * @param offset
+	 * @param simHash
+	 * @param tagIndex
+	 * @param session
+	 * @return
+	 */
+	public List<Tag> getTagsByAuthorLucene(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int simHash, final List<String> tagIndex, final DBSession session) {
+		final List<Tag> retVal;
+		
+		if (present(authorSearch)) {
+			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+			String group = groupDb.getGroupNameByGroupId(groupId, session);
+			
+			final long starttimeQuery = System.currentTimeMillis();
+			retVal = authorSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex);
+			final long endtimeQuery = System.currentTimeMillis();
+			log.debug("Lucene author tag cloud query time: " + (endtimeQuery-starttimeQuery) + " ms");
+		} else {
+			retVal = new LinkedList<Tag>();
+			log.error("No author searcher available.");
+		}
+			
+		return retVal;
+	}
+	
+	/**
 	 * Get all tags of a given group
 	 * 
 	 * @param param
@@ -988,6 +1032,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Tag> getRelatedTagsByAuthorAndTag(final TagParam param, final DBSession session){
 		return this.queryForList("getRelatedTagsByAuthorAndTag", param, Tag.class, session);
+	}
+
+	public void setAuthorSearch(ResourceSearch<BibTex> authorSearch) {
+		this.authorSearch = authorSearch;
+	}
+
+	public ResourceSearch<BibTex> getAuthorSearch() {
+		return authorSearch;
 	}
 	
 }

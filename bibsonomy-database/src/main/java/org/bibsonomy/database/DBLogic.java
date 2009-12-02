@@ -150,6 +150,7 @@ public class DBLogic implements LogicInterface {
 		this.resourceSearcher.add(bibTexSearch);
 		this.bibtexDBManager.setResourceSearch(bibTexSearch);
 		this.bookmarkDBManager.setResourceSearch(bookmarkSearch);
+		this.tagDBManager.setAuthorSearch(bibTexSearch);
 		
 		// TODO: @see PostDatabaseManager
 		this.bibtexDBManager.setDbLogic(this);
