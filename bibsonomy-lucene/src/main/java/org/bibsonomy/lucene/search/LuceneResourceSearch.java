@@ -20,14 +20,12 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParser.Operator;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.TopDocsCollector;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.store.FSDirectory;
 import org.bibsonomy.common.enums.GroupID;
@@ -129,7 +127,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	
 	public List<Tag> getTagsByAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,
-			String firstYear, String lastYear, List<String> tagList) {
+			String firstYear, String lastYear, List<String> tagList, int limit) {
 		List<Tag> retVal = null;
 		QuerySortContainer qf = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, CFG_TAG_CLOUD_LIMIT);
 		
@@ -138,7 +136,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		if( tagCollector!=null ) {
 			try {
 				searcher.search(qf.getQuery(), null, tagCollector);
-				retVal = tagCollector.getTags();
+				retVal = tagCollector.getTags(searcher);
 			} catch (IOException e) {
 				log.error("Error building author tag cloud for " + search);
 				retVal = new LinkedList<Tag>();
@@ -146,7 +144,9 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		}
 		
 		// all done.
-		return retVal;
+		// FIXME: we simply cut off the list 
+		//      - we probably want get the n most popular tags
+		return retVal.subList(0, Math.min(limit, retVal.size()));
 	}
 	
 	//------------------------------------------------------------------------
@@ -494,4 +494,6 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	public Operator getDefaultSearchTermJunctor() {
 		return defaultSearchTermJunctor;
 	}
+
+
 }

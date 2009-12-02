@@ -15,7 +15,13 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Scorer;
+import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.Sort;
+import org.bibsonomy.lucene.index.LuceneBibTexIndex;
+import org.bibsonomy.lucene.index.LuceneResourceIndex;
+import org.bibsonomy.lucene.search.LuceneResourceSearch;
+import org.bibsonomy.lucene.search.LuceneSearchBibTex;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -35,6 +41,8 @@ public class TagCountCollector extends Collector {
 	
 	private Map<Integer,IndexReader> docToReaderMap;
 	private IndexReader lastReader = null;
+	private int lastDocBase = 0;
+	List<Integer> docIds;
 
 	/**
 	 * constructor
@@ -42,7 +50,8 @@ public class TagCountCollector extends Collector {
 	 */
 	public TagCountCollector(Filter filter, int nDocs, Sort sort) throws IOException {
 		// instantiate collector
-		docToReaderMap = new HashMap<Integer, IndexReader>();
+		this.docIds = new LinkedList<Integer>();
+		this.docToReaderMap = new HashMap<Integer, IndexReader>();
 	}
 
 	@Override
@@ -53,11 +62,13 @@ public class TagCountCollector extends Collector {
 
 	@Override
 	public void collect(int doc) throws IOException {
+		docIds.add(doc+lastDocBase);
 		docToReaderMap.put(doc, lastReader);
 	}
 
 	@Override
 	public void setNextReader(IndexReader reader, int docBase) throws IOException {
+		this.lastDocBase = docBase;
 		this.lastReader  = reader;
 	}
 
@@ -70,14 +81,23 @@ public class TagCountCollector extends Collector {
 	 * 
 	 * @return
 	 */
-	public List<Tag> getTags() {
+	public List<Tag> getTags(Searcher searcher) {
 		Map<String,Integer> tagCounter = new HashMap<String,Integer>();
 		
+		// FIXME: until the resource searcher is thread safe, we have to
+		//        access the document via the searcher, though we may 
+		//        get wrong documents (e.g.) after optimizing the index
+		
+		// Better retrieve documents like this:
+		// for( Integer docId : docToReaderMap.keySet() ) {
+		// ...
+		//    Document doc = docToReaderMap.get(docId).document(docId, tasSelector);
+		
 		List<Tag> retVal = new LinkedList<Tag>();
-		for( Integer docId : docToReaderMap.keySet() ) {
+		for( Integer docId : docIds ) {
 			try {
 				FieldSelector tasSelector = new MapFieldSelector(FLD_TAS); 
-				Document doc = docToReaderMap.get(docId).document(docId, tasSelector);
+				Document doc = searcher.doc(docId, tasSelector);
 				String tags = doc.get(FLD_TAS);
 				if( ValidationUtils.present(tags) ) {
 					for(String tag : tags.split(CFG_LIST_DELIMITER)) {
@@ -99,9 +119,10 @@ public class TagCountCollector extends Collector {
 			Tag transientTag = new Tag();
 			transientTag.setName(tag);
 			transientTag.setUsercount(tagCounter.get(tag));
+			// FIXME: we set user==global count
+			transientTag.setGlobalcount(tagCounter.get(tag));
 			retVal.add(transientTag);
 		}
-		
 		// all done.
 		return retVal;
 	}

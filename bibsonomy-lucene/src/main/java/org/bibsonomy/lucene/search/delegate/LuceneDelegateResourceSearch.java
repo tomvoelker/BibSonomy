@@ -76,9 +76,9 @@ public class LuceneDelegateResourceSearch<R extends Resource> implements Resourc
 	@Override
 	public List<Tag> getTagsByAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,
-			String firstYear, String lastYear, List<String> tagList) {
+			String firstYear, String lastYear, List<String> tagList, int limit) {
 		if(resourceSearcher!=null)
-			return resourceSearcher.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList);
+			return resourceSearcher.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, limit);
 		else
 			return new LinkedList<Tag>();
 	}	

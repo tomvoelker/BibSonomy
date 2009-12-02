@@ -469,7 +469,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		//------------------------------------------------------------------------
 		// tag cloud
 		//------------------------------------------------------------------------
-		List<Tag> authorTags = bibtexSearcher.getTagsByAuthor(GroupID.PUBLIC.name(), "luceneAuthor", null, null, null, null, null, null);
+		List<Tag> authorTags = bibtexSearcher.getTagsByAuthor(GroupID.PUBLIC.name(), "luceneAuthor", null, null, null, null, null, null, 1000);
 
 	}
 
