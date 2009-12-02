@@ -29,6 +29,7 @@ import java.util.Set;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 
 /**
@@ -56,7 +57,6 @@ public interface ResourceSearch<R extends Resource> {
 	
 	/**
 	 * TODO: document me
-	 * FIXME: This should be just a variant of searchPosts
 	 * 
 	 * @param group
 	 * @param search
@@ -75,11 +75,28 @@ public interface ResourceSearch<R extends Resource> {
 			String firstYear, String lastYear, List<String> tagList, int limit,
 			int offset);
 
-
+	/**
+	 * get tag cloud for given author
+	 * 
+	 * @param group
+	 * @param search
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param tagList
+	 * @return
+	 */
+	public List<Tag> getTagsByAuthor(String group, String search,
+			String requestedUserName, String requestedGroupName, String year,
+			String firstYear, String lastYear, List<String> tagList);
+			
 	/**
 	 * flags/unflags user as spammer, depending on user.getPrediction()
 	 * 
 	 * @param user
 	 */
+	@Deprecated
 	public void flagSpammer(User user);
 }
