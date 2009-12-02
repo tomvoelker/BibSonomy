@@ -33,7 +33,7 @@
 				</c:if>	
 										
 				<!-- Tabs -->			
-				<parts:tabheader tabView="${command}"/>				
+				<parts:tabheader tabView="${command}" tabURL="${command.tabURL}"/>				
 				<div id="tab_content">					
 					<c:if test="${!empty tabcontent}">
 						<jsp:invoke fragment="tabcontent"/>				
