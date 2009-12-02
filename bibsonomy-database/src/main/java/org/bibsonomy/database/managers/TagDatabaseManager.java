@@ -664,7 +664,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			String group = groupDb.getGroupNameByGroupId(groupId, session);
 			
 			final long starttimeQuery = System.currentTimeMillis();
-			retVal = authorSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex);
+			// FIXME: we arbitrarily choose a tag cloud limit of 1000
+			retVal = authorSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, 1000);
 			final long endtimeQuery = System.currentTimeMillis();
 			log.debug("Lucene author tag cloud query time: " + (endtimeQuery-starttimeQuery) + " ms");
 		} else {
