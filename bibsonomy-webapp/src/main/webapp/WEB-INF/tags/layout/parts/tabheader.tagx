@@ -6,17 +6,23 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
+	<jsp:directive.attribute name="tabURL" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="tabView" type="org.bibsonomy.webapp.command.TabsCommandInterface" required="true"/>
 
 	<c:if test="${!empty tabView.tabs}">
 		<ul id="tab">
 			<c:forEach var="tab" items="${tabView.tabs}">
 				<c:choose>
+					<c:when test="${empty tabURL}">
+						<c:set var="tabURL" value=""/>
+					</c:when>
+				</c:choose>
+				<c:choose>
 					<c:when test="${tabView.selTab eq tab.id}">
-						<li id="selected"><a href="?selTab=${tab.id}"><fmt:message key="${tab.title}"/></a></li>			
+						<li id="selected"><a href="${tabURL}?selTab=${tab.id}"><fmt:message key="${tab.title}"/></a></li>			
 					</c:when>
 					<c:otherwise>
-						<li><a href="?selTab=${tab.id}"><fmt:message key="${tab.title}"/></a></li>							
+						<li><a href="${tabURL}?selTab=${tab.id}"><fmt:message key="${tab.title}"/></a></li>							
 					</c:otherwise>
 				</c:choose>				
 			</c:forEach>
