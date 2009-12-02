@@ -29,6 +29,8 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public final static int SETTINGS_IDX = 1;
 	public final static int IMPORTS_IDX = 2;
 	
+	private User user;
+	
 	private boolean hasOwnGroup;
 	
 	private int statusID = SettingPageMsg.IDLE.getId();
@@ -45,31 +47,20 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	
 	private CommonsMultipartFile file;
 	
-	private int tagboxStyle;
-	
-	private int tagSort;
-	
-	private int tagboxTooltip;
-	
-	private String defaultLanguage;
-	
-	private int tagboxMinfreq;
-	
-	private int itemcount;
-	
 	private int privlevel;
 	
 	private int sharedDocuments;
 	
-	private int logLevel;
-	
 	private boolean confirmDelete;
 	
-	private String oldPassword;
+	/**
+	 * current password of user
+	 */
+	private String oldPassword = null;
 	
-	private String newPassword1;
+	private String newPassword = null;
 	
-	private String newPassword2;
+	private String newPasswordRetype = null;
 
 	private Map<String, String> newBookmarks = null;
 
@@ -141,60 +132,12 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.overwrite = overwrite;
 	}
 
-	public void setTagboxStyle(int tagboxStyle) {
-		this.tagboxStyle = tagboxStyle;
-	}
-
-	public int getTagboxStyle() {
-		return tagboxStyle;
-	}
-
 	public CommonsMultipartFile getFile() {
 		return this.file;
 	}
 
 	public void setFile(CommonsMultipartFile file) {
 		this.file = file;
-	}
-
-	public void setTagSort(int tagSort) {
-		this.tagSort = tagSort;
-	}
-
-	public int getTagSort() {
-		return tagSort;
-	}
-
-	public void setTagboxTooltip(int toolTip) {
-		this.tagboxTooltip = toolTip;
-	}
-
-	public int getTagboxTooltip() {
-		return tagboxTooltip;
-	}
-
-	public void setDefaultLanguage(String defaultLanguage) {
-		this.defaultLanguage = defaultLanguage;
-	}
-
-	public String getDefaultLanguage() {
-		return defaultLanguage;
-	}
-
-	public void setTagboxMinfreq(int tagboxMinfreq) {
-		this.tagboxMinfreq = tagboxMinfreq;
-	}
-
-	public int getTagboxMinfreq() {
-		return tagboxMinfreq;
-	}
-
-	public void setItemcount(int itemcount) {
-		this.itemcount = itemcount;
-	}
-
-	public int getItemcount() {
-		return itemcount;
 	}
 
 	public Map<String, String> getNewBookmarks() {
@@ -237,13 +180,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		return sharedDocuments;
 	}
 
-	public void setLogLevel(int logLevel) {
-		this.logLevel = logLevel;
-	}
-
-	public int getLogLevel() {
-		return logLevel;
-	}
 	public String getBeginName() {
 		return this.beginName;
 	}
@@ -296,40 +232,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.oldPassword = oldPassword;
 	}
 
-	/**
-	 * Returns current password of user as typed into form.
-	 * 
-	 * @return
-	 */
-	public String getOldPassword() {
-		return oldPassword;
-	}
 
-	public void setNewPassword1(String newPassword1) {
-		this.newPassword1 = newPassword1;
-	}
-
-	/**
-	 * Returns the new password of user as typed into form.
-	 * 
-	 * @return
-	 */
-	public String getNewPassword1() {
-		return newPassword1;
-	}
-
-	public void setNewPassword2(String newPassword2) {
-		this.newPassword2 = newPassword2;
-	}
-
-	/**
-	 * Returns the new password of user as typed into form to confirm <code>newPassword1</code>.
-	 * 
-	 * @return
-	 */
-	public String getNewPassword2() {
-		return newPassword2;
-	}
 	
 	public void setHasOwnGroup(boolean hasOwnGroup) {
 		this.hasOwnGroup = hasOwnGroup;
@@ -369,5 +272,33 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	public void setConfirmDelete(boolean confirmDelete) {
 		this.confirmDelete = confirmDelete;
+	}
+
+	public User getUser() {
+		return this.user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public String getOldPassword() {
+		return this.oldPassword;
+	}
+
+	public String getNewPassword() {
+		return this.newPassword;
+	}
+
+	public String getNewPasswordRetype() {
+		return this.newPasswordRetype;
+	}
+
+	public void setNewPassword(String newPassword) {
+		this.newPassword = newPassword;
+	}
+
+	public void setNewPasswordRetype(String newPasswordRetype) {
+		this.newPasswordRetype = newPasswordRetype;
 	}
 }
