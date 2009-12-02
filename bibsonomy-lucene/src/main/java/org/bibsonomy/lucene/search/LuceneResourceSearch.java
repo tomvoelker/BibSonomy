@@ -47,7 +47,9 @@ import org.bibsonomy.util.ValidationUtils;
 /**
  * abstract parent class for lucene search
  * 
- * FIXME: this class is probably not thread safe (reloadIndex vs. search...)
+ * FIXME: this class now should be thread safe - only one issue might retain:
+ *        what happens, if the update manager updated the index, but theire are
+ *        still resource searchers active - do their index searcher work correctly???
  * 
  * @author fei
  *

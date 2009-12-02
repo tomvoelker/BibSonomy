@@ -42,7 +42,6 @@ public class TagCountCollector extends Collector {
 	private Map<Integer,IndexReader> docToReaderMap;
 	private IndexReader lastReader = null;
 	private int lastDocBase = 0;
-	List<Integer> docIds;
 
 	/**
 	 * constructor
@@ -62,7 +61,6 @@ public class TagCountCollector extends Collector {
 
 	@Override
 	public void collect(int doc) throws IOException {
-		docIds.add(doc+lastDocBase);
 		docToReaderMap.put(doc, lastReader);
 	}
 
@@ -84,21 +82,10 @@ public class TagCountCollector extends Collector {
 	public List<Tag> getTags(Searcher searcher) {
 		Map<String,Integer> tagCounter = new HashMap<String,Integer>();
 		
-		// FIXME: until the resource searcher is thread safe, we have to
-		//        access the document via the searcher, though we may 
-		//        get wrong documents (e.g.) after optimizing the index
-		
-		// Better retrieve documents like this:
-		// for( Integer docId : docToReaderMap.keySet() ) {
-		// ...
-		//    Document doc = docToReaderMap.get(docId).document(docId, tasSelector);
-		
 		List<Tag> retVal = new LinkedList<Tag>();
-		// for( Integer docId : docIds ) {
 		for( Integer docId : docToReaderMap.keySet() ) {
 			try {
 				FieldSelector tasSelector = new MapFieldSelector(FLD_TAS); 
-				// Document doc = searcher.doc(docId, tasSelector);
 				Document doc = docToReaderMap.get(docId).document(docId, tasSelector);
 				String tags = doc.get(FLD_TAS);
 				if( ValidationUtils.present(tags) ) {
