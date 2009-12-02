@@ -94,10 +94,12 @@ public class TagCountCollector extends Collector {
 		//    Document doc = docToReaderMap.get(docId).document(docId, tasSelector);
 		
 		List<Tag> retVal = new LinkedList<Tag>();
-		for( Integer docId : docIds ) {
+		// for( Integer docId : docIds ) {
+		for( Integer docId : docToReaderMap.keySet() ) {
 			try {
 				FieldSelector tasSelector = new MapFieldSelector(FLD_TAS); 
-				Document doc = searcher.doc(docId, tasSelector);
+				// Document doc = searcher.doc(docId, tasSelector);
+				Document doc = docToReaderMap.get(docId).document(docId, tasSelector);
 				String tags = doc.get(FLD_TAS);
 				if( ValidationUtils.present(tags) ) {
 					for(String tag : tags.split(CFG_LIST_DELIMITER)) {

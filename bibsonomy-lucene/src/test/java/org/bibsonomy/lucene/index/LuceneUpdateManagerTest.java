@@ -23,7 +23,9 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.lucene.database.LuceneBibTexLogic;
 import org.bibsonomy.lucene.database.LuceneBookmarkLogic;
@@ -114,7 +116,6 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * tests visibility of private posts
 	 */
 	@Test
-	@Ignore
 	public void privatePosts() {
 		// set up data structures
 		Set<String> allowedGroups = new TreeSet<String>();
@@ -170,7 +171,6 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws IOException 
 	 */
 	@Test
-	@Ignore
 	public void updateIndices() throws IOException, ClassNotFoundException, SQLException {
 		// set up data structures
 		Set<String> allowedGroups = new TreeSet<String>();
@@ -267,7 +267,6 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * tests handling of spam posts
 	 */
 	@Test
-	@Ignore
 	public void spamPosts() {
 		// set up data structures
 		Set<String> allowedGroups = new TreeSet<String>();
@@ -471,6 +470,14 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		//------------------------------------------------------------------------
 		List<Tag> authorTags = bibtexSearcher.getTagsByAuthor(GroupID.PUBLIC.name(), "luceneAuthor", null, null, null, null, null, null, 1000);
 
+	}
+	
+	/**
+	 * tests locking of the resource searcher
+	 */
+	@Test
+	public void concurrencyAccess() {
+		// FIXME: implement me
 	}
 
 	//------------------------------------------------------------------------

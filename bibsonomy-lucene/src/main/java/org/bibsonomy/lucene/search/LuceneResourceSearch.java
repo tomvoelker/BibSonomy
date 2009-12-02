@@ -9,6 +9,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
@@ -53,6 +56,16 @@ import org.bibsonomy.util.ValidationUtils;
 public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBase {
 	private static final Logger log = Logger.getLogger(LuceneResourceSearch.class);
 	
+	/**
+	 *  read/write lock, allowing multiple searcher or exclusive an index update
+	 *	FIXME: we should use an implementation, which prefers writers for obtaining the lock 
+	 */
+	private ReadWriteLock lock = new ReentrantReadWriteLock(true);
+	/** write lock, used for blocking  index searcher */
+	private Lock w = lock.writeLock();
+	/** read lock, used for blocking the index update */
+	private Lock r = lock.readLock();
+	
 	/** logic interface for retrieving data from bibsonomy */
 	private LuceneDBInterface<R> dbLogic;
 	
@@ -90,12 +103,22 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	public ResultList<Post<R>> searchPosts(String group,
 			String searchTerms, String requestedUserName, String UserName,
 			Set<String> GroupNames, int limit, int offset) {
-		if( isEnabled() )
-			return searchLucene(
-					buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames), 
-					limit, offset);
-		else
-			return createEmptyResultList();
+		ResultList<Post<R>> retVal = null;
+
+		r.lock();
+		try {
+			if( isEnabled() ) {
+				retVal = searchLucene(
+						buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames), 
+						limit, offset);
+			} else
+				retVal = createEmptyResultList();
+		} finally {
+			r.unlock();
+		}
+
+		// all done.
+		return retVal;
 	}
 	
 	/**
@@ -117,36 +140,58 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			String requestedUserName, String requestedGroupName, String year,
 			String firstYear, String lastYear, List<String> tagList, int limit,
 			int offset) {
-		if( isEnabled() )
-			return searchLucene(
-					buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, CFG_TAG_CLOUD_LIMIT), 
-					limit, offset);
-		else 
-			return createEmptyResultList();
+		ResultList<Post<R>> retVal = null;
+		
+		r.lock();
+		try {
+			if( isEnabled() ) {
+				retVal = searchLucene(
+						buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, CFG_TAG_CLOUD_LIMIT), 
+						limit, offset);
+			} else 
+				retVal = createEmptyResultList();
+		} finally {
+			r.unlock();
+		}
+		
+		// all done.
+		return retVal;
 	}
 	
 	public List<Tag> getTagsByAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,
 			String firstYear, String lastYear, List<String> tagList, int limit) {
 		List<Tag> retVal = null;
-		QuerySortContainer qf = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, CFG_TAG_CLOUD_LIMIT);
 		
-		// gather tags used by the author's posts
-		TagCountCollector tagCollector = qf.getTagCountCollector();
-		if( tagCollector!=null ) {
-			try {
-				searcher.search(qf.getQuery(), null, tagCollector);
-				retVal = tagCollector.getTags(searcher);
-			} catch (IOException e) {
-				log.error("Error building author tag cloud for " + search);
+		r.lock();
+		try {
+			if( isEnabled() ) {
+				QuerySortContainer qf = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, CFG_TAG_CLOUD_LIMIT);
+
+				// gather tags used by the author's posts
+				TagCountCollector tagCollector = qf.getTagCountCollector();
+				if( tagCollector!=null ) {
+					try {
+						searcher.search(qf.getQuery(), null, tagCollector);
+						retVal = tagCollector.getTags(searcher);
+					} catch (IOException e) {
+						log.error("Error building author tag cloud for " + search);
+					}
+				}
+				// all done.
+				// FIXME: we simply cut off the list 
+				//      - we probably want get the n most popular tags
+				retVal = retVal.subList(0, Math.min(limit, retVal.size()));
+			};
+			
+			if( retVal==null )
 				retVal = new LinkedList<Tag>();
-			}
+		} finally {
+			r.unlock();
 		}
 		
 		// all done.
-		// FIXME: we simply cut off the list 
-		//      - we probably want get the n most popular tags
-		return retVal.subList(0, Math.min(limit, retVal.size()));
+		return retVal;
 	}
 	
 	//------------------------------------------------------------------------
@@ -240,23 +285,29 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	
 	/** reload the index -- has to be called after each index change */
 	public void reloadIndex() {
-		init();
-
-		// if there is already a searcher
-		try {
-			if (null != this.searcher) this.searcher.close();
-		} catch (IOException e) {
-			log.debug("Error closing searcher.", e);
-		}
+		w.lock();
 
 		try {
-			// load and hold index on physical hard disk
-			log.debug("Reloading index from disk.");
-			this.searcher = new IndexSearcher(FSDirectory.open(new File(luceneIndexPath)));
-			enableIndex();
-		} catch (Exception e) {
-			log.error("Error reloading index, disabling searcher", e);
-			disableIndex();
+			init();
+
+			// if there is already a searcher
+			try {
+				if (null != this.searcher) this.searcher.close();
+			} catch (IOException e) {
+				log.debug("Error closing searcher.", e);
+			}
+
+			try {
+				// load and hold index on physical hard disk
+				log.debug("Reloading index from disk.");
+				this.searcher = new IndexSearcher(FSDirectory.open(new File(luceneIndexPath)));
+				enableIndex();
+			} catch (Exception e) {
+				log.error("Error reloading index, disabling searcher", e);
+				disableIndex();
+			}
+		} finally {
+			w.unlock();
 		}
 	}
 
