@@ -17,11 +17,6 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.Sort;
-import org.bibsonomy.lucene.index.LuceneBibTexIndex;
-import org.bibsonomy.lucene.index.LuceneResourceIndex;
-import org.bibsonomy.lucene.search.LuceneResourceSearch;
-import org.bibsonomy.lucene.search.LuceneSearchBibTex;
-import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -49,7 +44,6 @@ public class TagCountCollector extends Collector {
 	 */
 	public TagCountCollector(Filter filter, int nDocs, Sort sort) throws IOException {
 		// instantiate collector
-		this.docIds = new LinkedList<Integer>();
 		this.docToReaderMap = new HashMap<Integer, IndexReader>();
 	}
 
