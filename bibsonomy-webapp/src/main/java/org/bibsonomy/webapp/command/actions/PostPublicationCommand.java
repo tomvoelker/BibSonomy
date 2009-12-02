@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.TabCommand;
 import org.bibsonomy.webapp.command.TabsCommandInterface;
@@ -23,6 +24,21 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  */
 public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object> {
 	
+	private final String TAB_URL = "/import/publications"; 
+	
+	/**
+	 * URL of the tabheader-anchor-links
+	 */
+	private String tabURL=null;
+	
+	public String getTabURL() {
+		return this.tabURL;
+	}
+
+	public void setTabURL(String tabURL) {
+		this.tabURL = tabURL;
+	}
+
 	/********************************************
 	 * FROM WHERE WAS I CALLED - WHAT TASK TO DO
 	 ********************************************/
@@ -60,7 +76,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/*
 	 *  id of current selected tab 
 	 */
-	protected Integer selTab = 1;
+	protected Integer selTab = null;
 	
 	
 	private void addTab(Integer id, String title) {
@@ -267,7 +283,12 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		addTabs(tabTitles);
 
 		//=== change default tab to the manual tab
-		selTab = 0;
+		
+		if(!ValidationUtils.present(selTab))
+			selTab = 0;
+		
+		this.setTabURL(TAB_URL);
+			
 	}
 
 	
