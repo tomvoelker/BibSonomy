@@ -47,6 +47,10 @@ public class SettingsPageController implements
 
 		command.setPageTitle("settings");
 		
+		if(!command.getContext().isUserLoggedIn()) {
+			return Views.LOGIN;
+		}
+		
 		switch (command.getSelTab()) {
 		case 0: {
 			// called by the my profile tab
@@ -135,34 +139,34 @@ public class SettingsPageController implements
 
 	private void workOnSettingsTab(SettingsViewCommand command) {
 		User loginUser = command.getContext().getLoginUser();
+		command.setUser(loginUser);
 		// FIXME check other tabs if they need those info(queries) too, then remove them from settings.jspx.
-		Group group = logic.getGroupDetails(loginUser.getName());
+//		Group group = logic.getGroupDetails(loginUser.getName());
 		//List<User> users = logic.getUsers(resourceType, grouping, groupingName, tags, hash, order, relation, search, start, end);
 		//logic.updateUser(user);
 		
-		//command.setApiKey(loginUser.getApiKey());
-		command.setTagboxStyle(loginUser
-				.getSettings().getTagboxStyle());
-		command.setTagSort(loginUser.getSettings()
-				.getTagboxSort());
-		command.setTagboxTooltip(loginUser
-				.getSettings().getTagboxTooltip());
-		command.setDefaultLanguage(loginUser
-				.getSettings().getDefaultLanguage());
-		command.setTagboxMinfreq(loginUser
-				.getSettings().getTagboxMinfreq());
-		command.setItemcount(loginUser.getSettings()
-				.getListItemcount());
-		command.setLogLevel(loginUser.getSettings().getLogLevel());
-		command.setConfirmDelete(loginUser.getSettings().getConfirmDelete());
-		
+//		command.getUser().getSettings().setTagboxStyle(loginUser
+//				.getSettings().getTagboxStyle());
+//		command.getUser().getSettings().setTagboxSort(loginUser.getSettings()
+//				.getTagboxSort());
+//		command.getUser().getSettings().setTagboxTooltip(loginUser
+//				.getSettings().getTagboxTooltip());
+//		command.getUser().getSettings().setDefaultLanguage(loginUser
+//				.getSettings().getDefaultLanguage());
+//		command.getUser().getSettings().setTagboxMinfreq(loginUser
+//				.getSettings().getTagboxMinfreq());
+//		command.getUser().getSettings().setListItemcount(loginUser.getSettings()
+//				.getListItemcount());
+//		command.getUser().getSettings().setLogLevel(loginUser.getSettings().getLogLevel());
+//		command.setConfirmDelete(loginUser.getSettings().getConfirmDelete());
+//		command.setHasOwnGroup(group != null);
 		// FIXME necessary?
-		command.setHasOwnGroup(group != null);
-		if(command.getHasOwnGroup()) {
-			GroupSettingsBean b = new GroupSettingsBean();
-			b.setUsername(loginUser.getName());
-			b.queryDB();
-		}
+		
+//		if(command.getHasOwnGroup()) {
+//			GroupSettingsBean b = new GroupSettingsBean();
+//			b.setUsername(loginUser.getName());
+//			b.queryDB();
+//		}
 	}
 
 	/**
