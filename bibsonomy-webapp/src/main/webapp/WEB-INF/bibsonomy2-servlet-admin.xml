@@ -59,7 +59,7 @@
 					</bean>
 				</entry>
 				
-				<entry key="/ajax">
+				<entry key="/admin/ajax">
 				    <!-- 
 				    	TODO: this is admin stuff and the URL really not good - 
 				    	      rename it to /admin/ajax/* or the like
@@ -87,6 +87,7 @@
 	
 	<bean id="adminPageController" class="org.bibsonomy.webapp.controller.AdminPageController" scope="request">
 		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
 	<bean id="spamPageController" class="org.bibsonomy.webapp.controller.SpamPageController" scope="request">

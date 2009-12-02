@@ -22,8 +22,10 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for admin page
  * 
  * @author Stefan Stützer
+ * @author Beate Krause
  * @version $Id$
- */
+ **/
+
 public class SpamPageController implements MinimalisticController<AdminViewCommand> {
 
 	private static final Log log = LogFactory.getLog(SpamPageController.class);

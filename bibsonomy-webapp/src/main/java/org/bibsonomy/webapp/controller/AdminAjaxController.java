@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.AdminActions;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -61,31 +62,43 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 		/*
 		 * 	
 		 */
-		if ("flag_spammer".equals(action)) {
+		log.debug(AdminActions.getAdminAction(action));
+		switch (AdminActions.getAdminAction(action)) {
+		case FLAG_SPAMMER:
 			this.flagSpammer(command, true);
 			this.setResponse(command, command.getUserName() + " flagged as spammer");
-			
-		} else if ("unflag_spammer".equals(action)) {
+			break;
+		case UNFLAG_SPAMMER:
 			this.flagSpammer(command, false);
 			this.setResponse(command, command.getUserName() + " flagged as nonspammer");
-		} else if ("flag_spammer_evaluator".equals(action)) {
-			this.flagSpammerEvaluator(command, true);
-			this.setResponse(command, command.getUserName() + " flagged as spammer");
-		} else if ("unflag_spammer_evaluator".equals(action)) {
-			this.flagSpammerEvaluator(command, false);
-			this.setResponse(command, command.getUserName() + " flagged as nonspammer");
-		} else if ("mark_uncertainUser".equals(action)) {
+		case MARK_UNCERTAIN_USER:
 			this.flagUnsureSpammer(command, false);
-		} else if ("update_settings".equals(action)) {
-			this.updateSettings(command);
-			this.setResponse(command, command.getKey() + " updated");
-		} else if ("latest_posts".equals(action)) {
+			this.setResponse(command, command.getUserName() + " flagged as uncertain user");
+		case LATEST_POSTS:
 			this.setLatestPosts(command);
 			return Views.AJAX_POSTS;
-		} else if ("prediction_history".equals(action)) {
+		case PREDICTION_HISTORY:
 			this.setPredictionHistory(command);
 			return Views.AJAX_PREDICTIONS;
+		case UPDATE_SETTINGS:
+			this.updateSettings(command);
+			this.setResponse(command, command.getKey() + " updated");
+			break;
+		default:
+			break;
 		}
+		
+		
+	/*	
+	 * TODO Discuss evaluator interface
+	} else if ("flag_spammer_evaluator".equals(action)) {
+		this.flagSpammerEvaluator(command, true);
+		this.setResponse(command, command.getUserName() + " flagged as spammer");
+	} else if ("unflag_spammer_evaluator".equals(action)) {
+		this.flagSpammerEvaluator(command, false);
+		this.setResponse(command, command.getUserName() + " flagged as nonspammer");
+	} */
+		
 		return Views.AJAX;
 		
 	}
