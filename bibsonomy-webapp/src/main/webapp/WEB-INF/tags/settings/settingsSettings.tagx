@@ -30,7 +30,10 @@
 		<fmt:message var="updatesettings" key="settings.updatesettings" />
 		<fmt:message var="deleteaccount" key="settings.deleteaccount" />
 		
-		<settings:settingsResult statusID="${command.statusID}"></settings:settingsResult>
+		<!-- display potential errors -->
+		<errors:global errors="${errors}"/>
+		
+		<!--<settings:settingsResult statusID="${command.statusID}"></settings:settingsResult>-->
 		
 		<!-- style settings -->		
 		<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
