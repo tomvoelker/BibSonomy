@@ -15,9 +15,10 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:layout searchString=""
-		pageTitle="${command.pageTitle}"
-		loginUser="${command.context.loginUser}" requPath="">
+	<layout:layout searchString="" 
+		pageTitle="${command.pageTitle}" 
+		loginUser="${command.context.loginUser}"
+		requPath="">
 		
 		<jsp:attribute name="heading">	
 			<a href="/admin"><fmt:message key="navi.admin"/></a>
@@ -29,6 +30,10 @@
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
+		
+		<!-- Admin Navigation -->	
+		<menu:adminNavi />	
+		
 		<div id="general">
 	
 		<div id="admin">
@@ -55,8 +60,9 @@
 		</div>
 		
 		</div>																																							
-        </div>    
-		</jsp:attribute>
+        </div>   
+        
+	    </jsp:attribute>
 		
 	</layout:layout>
 </jsp:root>

@@ -35,9 +35,6 @@
 		
 			<script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
 			
-			<!-- Admin Navigation -->	
-			<menu:adminNavi />	
-			
 			<p style="font-weight: bold; color: #ff0000;">
   				<c:forEach var="info" items="${command.infos}">Info: ${info}<br />
 			</c:forEach>
@@ -219,7 +216,7 @@
 				<c:forEach var="user" items="${command.content}" varStatus="status">
 				<tr>
 					<td>
-					  
+					    <!-- show info boxes of users -->
 						<a href="/user/${user.name}"><c:out value="${user.name}" /></a>
 						<a
 										onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${user.name}',this);return false;"
