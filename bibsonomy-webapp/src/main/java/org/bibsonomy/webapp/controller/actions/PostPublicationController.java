@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,16 +19,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
 import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.FileUploadFactory;
 import org.bibsonomy.rest.utils.impl.HandleFileUpload;
@@ -99,12 +95,6 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		command.setPost(new Post<BibTex>());
 		command.setAbstractGrouping(PUBLIC_GROUP.getName());
 		command.getPost().setResource(new BibTex());
-		
-		/*
-		 * default controller behaviour
-		 */
-		if(!ValidationUtils.present(command.getTaskName()))
-			command.setTaskName(PostPublicationCommand.TASK_ENTER_PUBLICATIONS);
 
 		return command;
 	}
@@ -113,8 +103,29 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	@Override
 	public View workOn(PostPublicationCommand command) {
 		log.debug("workOn started");
+		
+		
+		/*
+		 * default controller behaviour is to send the user to the first step of importing bookmarks (TASK_ENTER_PUBLICATIONS)
+		 */
+		if(!ValidationUtils.present(command.getTaskName()))
+			command.setTaskName(PostPublicationCommand.TASK_ENTER_PUBLICATIONS);
+		
+		
+		/******************************************************************************************************
+		 * if this controller was called for the first step of importing bookmarks to myBibsonomy, we forward 
+		 * to the view, where the DATA FOR THE IMPORT can be provided by the user.
+		 ******************************************************************************************************/
+		
 		if(PostPublicationCommand.TASK_ENTER_PUBLICATIONS.equals(command.getTaskName()))
 			return ShowEnterPublicationView(command);
+		
+		
+		/******************************************************************************************************
+		 * if this controller was called for the second step of importing bookmarks to myBibsonomy, we forward 
+		 * the user to a view, where he can EDIT and CLEAN UP his imported publications. 
+		 ******************************************************************************************************/
+		
 		/*
 		 * This variable will hold the information contained in the bibtex/endnote-file or selection field
 		 */
@@ -139,9 +150,10 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 
 			Document uploadedDocument=null;
 			BufferedReader reader=null;
-			File file = uploadedDocument.getFile();
+			File file = null;
 			try {
 				uploadedDocument = uploadFileHandler.writeUploadedFile();
+				file = uploadedDocument.getFile();
 				reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
 			} catch (FileNotFoundException ex1) {
 				errors.reject("error.upload.failed", "an error occurred during accessing your file.");
@@ -149,9 +161,9 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				errors.reject("error.upload.failed", "an error occurred during accessing your file.");
 			}
 
-			if(ValidationUtils.present(reader))
+			if(!ValidationUtils.present(reader))
 			{
-				//return to the old view showing the error.
+				return ShowEnterPublicationView(command);
 			}
 
 			/*
@@ -187,32 +199,41 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				errors.reject("error.upload.failed", "an error occurred during accessing your file.");
 			}
 
-						/*
+			/*
 			 * clear temporary file
 			 */
 			file.delete();
 		} else {
-			errors.reject("error.upload.failed", "there was no bibtex or endnote entered.");
-			//this way of describing the error includes the bibtex snippet 
-			//3 opportunities that are ok: bibtex snippet or file and endnote file
+			/*
+			 * This way of describing the error includes the bibtex snippet:
+			 * 3 opportunities that are ok: bibtex snippet or file and endnote file. 
+			 */
+			errors.reject("error.upload.failed", "there was no valid bibtex or endnote entered.");
+			return ShowEnterPublicationView(command);
 		}
 
 		if (!ValidationUtils.present(snippet)) 
 		{
-			errors.reject("error.upload.failed", "there was no bibtex or endnote entered.");
-			//return to the old view showing the error.
+			errors.reject("error.upload.failed", "there was no valid bibtex or endnote entered.");
+			return ShowEnterPublicationView(command);
 		}
 
-		/*
-		 * Exchange whitespace
-		 */
-		int i=42;
+		
+		
+		
 		/*
 		 * Parse the bibtex snippet	
 		 */
 		List<Post<BibTex>> bibtex = null;
+		ParseException[] parseErrors = null;
 		try {
-			bibtex = new PostBibTeXParser().parseBibTeXPosts(snippet); 
+			PostBibTeXParser parser = new PostBibTeXParser();
+			parser.setDelimiter(command.getDelimiter());
+			parser.setWhitespace(command.getWhitespace());
+			parser.setTryParseAll(true);
+			bibtex = parser.parseBibTeXPosts(snippet);
+			//fetch parser errors here
+			parseErrors = parser.getCaughtExceptions();
 		} catch (ParseException ex) {
 			errors.reject("error.upload.failed", "an error occurred during parsing process of your file.");
 		} catch (IOException ex) {
@@ -220,19 +241,30 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			ex.printStackTrace();
 		}
 	
-		if(bibtex==null)
+		
+		if(!ValidationUtils.present(bibtex))
 		{
-			//return to the old view showing the error.
+			errors.reject("error.upload.failed", "there was no bibtex or endnote entered.");
+			return ShowEnterPublicationView(command);
 		}
 		
 		/*
+		 * Prepare the posts for the edit operations:
 		 * add additional information from the form to the post (description, groups)... present in both upload tabs
 		 */
 		User loginUser = command.getContext().getLoginUser();
 		for(Post<BibTex> bib : bibtex)
 		{
-			initPost(command, bib, loginUser);
+			//the post has to belong to the user in order to be able to edit it
+			bib.setUser(loginUser);
+			//set visibility of this post for the groups, the user specified 
+			initPostGroups(command, bib);
+			//the descriiption
 			bib.setDescription(command.getDescription());
+			//if not present, a valid date has to be set
+			if(!ValidationUtils.present(bib.getDate()))
+				setDate(bib, loginUser.getName());
+			
 		}
 		
 		
@@ -244,9 +276,10 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		 */
 		if(bibtex.size()==1){
 			command.setPost(bibtex.get(0));
-			editPublicationController.setErrors(getErrors()); 
-			return editPublicationController.workOn(command);
-		} else {
+			//editPublicationController.setErrors(getErrors()); 
+			return super.workOn(command);
+		} else 
+		{
 			/*
 			 * We have more than one bibtex, which means that this controller will forward to one calling the batcheditbib.jspx
 			 */
@@ -256,9 +289,9 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			
 			command.setBibtex(postListCommand);
 			
-			/*
-			 * if the user wants to save all imported entries and edit them afterwards
-			 */
+			/**********************
+			 * STORE THE BOOKMARKS
+			 **********************/
 			// stores all newly added bookmarks
 			final Map<String, String> newBookmarkEntries = new HashMap<String, String>();
 
@@ -267,6 +300,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			
 			// stores all the non imported bookmarks
 			final List<String> nonCreatedBookmarkEntries = new ArrayList<String>();
+			
 			if(!command.isEditBeforeImport())
 			{
 				savePublicationsForUser(postListCommand, command.isOverwrite(), loginUser, newBookmarkEntries, updatedBookmarkEntries, nonCreatedBookmarkEntries);
@@ -276,6 +310,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			 * if the user wants to edit the imported entries before saving
 			 */
 				
+				//nothing to do
 			}
 			return Views.BATCHEDITBIB;
 		}
@@ -348,111 +383,12 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		}
 		reader.close();
 
-
-
 		return new String(snippet);
 
 	}
 
 	
-	@Override
-	protected void initPost(final EditPostCommand<BibTex> command, final Post<BibTex> post, final User loginUser) {
-		/* 
-		 * set the user of the post to the loginUser (the recommender might need
-		 * the user name)
-		 */
-		post.setUser(loginUser);
-		/*
-		 * initialize groups
-		 */
-		this.initPostGroups(command, post);
-		/*
-		 * initialize relevantFor-tags FIXME: candidate for system tags
-		 */
-		this.initRelevantForTags(command, post);
-		/*
-		 * For each post process an unique identifier is generated. 
-		 * This is used for mapping posts to recommendations.
-		 */
-		if (command.getPostID() == RecommenderStatisticsManager.getUnknownPID()) {
-			command.setPostID(RecommenderStatisticsManager.getNewPID());
-		}
-	}
 	
-		/**
-		 * Copy the groups from the command into the post (make proper groups from
-		 * them)
-		 * 
-		 * @param command -
-		 *            contains the groups as represented by the form fields.
-		 * @param post -
-		 *            the post whose groups should be populated from the command.
-		 * @see #initCommandGroups(EditPostCommand, Post)
-		 */
-		private void initPostGroups(final EditPostCommand<BibTex> command, final Post<BibTex> post) {
-			log.debug("initializing post's groups from command");
-			/*
-			 * we can avoid some checks here, because they're done in the validator
-			 * ...
-			 */
-			final Set<Group> postGroups = post.getGroups();
-			final String abstractGrouping = command.getAbstractGrouping();
-			if ("other".equals(abstractGrouping)) {
-				log.debug("found 'other' grouping");
-				/*
-				 * copy groups into post
-				 */
-				final List<String> groups = command.getGroups();
-				log.debug("groups in command: " + groups);
-				for (final String groupname : groups) {
-					postGroups.add(new Group(groupname));
-				}
-				log.debug("groups in post: " + postGroups);
-			} else {
-				log.debug("public or private post");
-				/*
-				 * if the post is private or public --> remove all groups and add
-				 * one (private or public)
-				 */
-				postGroups.clear();
-				postGroups.add(new Group(abstractGrouping));
-			}
-		}
-		
-		
-		/**
-		 * FIXME: system tag handling should be done by system tags ... not by this
-		 * controller.
-		 */
-		private static final String SYS_RELEVANT_FOR = SystemTags.RELEVANTFOR.getPrefix() + SystemTags.SYSTAG_DELIM;
-		
-		/**
-		 * Adds the relevant groups from the command as system tags to the post. 
-		 * 
-		 * @param command
-		 * @param post
-		 */
-		private void initRelevantForTags(final EditPostCommand<BibTex> command, final Post<BibTex> post) {
-			final Set<Tag> tags = post.getTags();
-			final List<Group> groups = command.getContext().getLoginUser().getGroups();
-			final List<String> relevantGroups = command.getRelevantGroups();
-			/*
-			 * null check neccessary, because Spring sets the list to null, when no group 
-			 * has been selected. :-(
-			 */
-			if (relevantGroups != null) {
-				for (final String relevantGroup : relevantGroups) {
-					/*
-					 * ignore groups the user is not a member of
-					 */
-					if (groups.contains(new Group(relevantGroup))) {
-						tags.add(new Tag(SYS_RELEVANT_FOR + relevantGroup));
-					} else {
-						log.info("ignored relevantFor group '" + relevantGroup + "' because user is not member of it");
-					}
-				}
-			}
-		}
 	
 	@Override
 	public Errors getErrors() {
