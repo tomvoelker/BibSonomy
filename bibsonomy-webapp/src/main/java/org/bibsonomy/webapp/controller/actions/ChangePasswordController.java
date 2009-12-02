@@ -6,8 +6,9 @@ import org.bibsonomy.common.enums.SettingPageMsg;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.webapp.command.actions.ChangePasswordCommand;
+import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SearchPageController;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -15,7 +16,6 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
@@ -24,10 +24,12 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class ChangePasswordController  implements
-		MinimalisticController<ChangePasswordCommand>, ErrorAware {
+		MinimalisticController<SettingsViewCommand>, ErrorAware {
 
 	private static final Log log = LogFactory
 			.getLog(SearchPageController.class);
+	
+	private static final String TAB_URL = "/settingsnew";
 
 	/**
 	 * hold current errors
@@ -50,25 +52,27 @@ public class ChangePasswordController  implements
 	private RequestLogic requestLogic;
 
 	@Override
-	public ChangePasswordCommand instantiateCommand() {
-		final ChangePasswordCommand command = new ChangePasswordCommand();
+	public SettingsViewCommand instantiateCommand() {
+		final SettingsViewCommand command = new SettingsViewCommand();
+		command.setGroup(GroupUtils.getPublicGroup().getName());
+		command.setTabURL(TAB_URL);
 		return command;
 	}
 
 	@Override
-	public View workOn(ChangePasswordCommand command) {
+	public View workOn(SettingsViewCommand command) {
 		
 		RequestWrapperContext context = command.getContext();
 		
 		Integer statusID = null;
-		
-		String referer = "";
 		
 		/*
 		 * user has to be logged in to delete himself
 		 */
 		if (!context.isUserLoggedIn()){
 			errors.reject("error.general.login");
+		}else {
+			command.setUser(context.getLoginUser());
 		}
 		
 		/*
@@ -86,12 +90,6 @@ public class ChangePasswordController  implements
 		}
 		
 		
-		if(statusID != null) {
-			referer = "/settingsnew?selTab=1" + "&statusID=" + statusID;
-		}else{ // error occurred
-			errors.reject("error.invalid_parameter");
-		}
-		
 		/*
 		 * if there are errors, show them
 		 */
@@ -99,10 +97,10 @@ public class ChangePasswordController  implements
 			return Views.ERROR;
 		}
 		
-		return new ExtendedRedirectView(referer);
+		return Views.SETTINGSPAGE;
 	}
 	
-	private int changePassword(User user, ChangePasswordCommand command) {
+	private int changePassword(User user, SettingsViewCommand command) {
 		
 		String curPassword = user.getPassword();
 		
