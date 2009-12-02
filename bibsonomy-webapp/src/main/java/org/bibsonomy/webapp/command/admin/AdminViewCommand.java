@@ -32,15 +32,15 @@ public class AdminViewCommand extends TabsCommand<User> {
 	/*
 	 * If you change order here, change it also in the above array!
 	 */
-	public final static int MOST_RECENT = 1;
-	public final static int ADMIN_SPAMMER_INDEX = 2;
-	public final static int ADMIN_UNSURE_INDEX = 3;
-	public final static int ADMIN_NOSPAMMER_INDEX = 4;
-	public final static int CLASSIFIER_SPAMMER_INDEX = 5;
-	public final static int CLASSIFIER_SPAMMER_UNSURE_INDEX = 6;
-	public final static int CLASSIFIER_NOSPAMMER_UNSURE_INDEX = 7;
-	public final static int CLASSIFIER_NOSPAMMER_INDEX	= 8;
-	public final static int CLASSIFIER_EVALUATE = 9;
+	public final static int MOST_RECENT = 0;
+	public final static int ADMIN_SPAMMER_INDEX = 1;
+	public final static int ADMIN_UNSURE_INDEX = 2;
+	public final static int ADMIN_NOSPAMMER_INDEX = 3;
+	public final static int CLASSIFIER_SPAMMER_INDEX = 4;
+	public final static int CLASSIFIER_SPAMMER_UNSURE_INDEX = 5;
+	public final static int CLASSIFIER_NOSPAMMER_UNSURE_INDEX = 6;
+	public final static int CLASSIFIER_NOSPAMMER_INDEX	= 7;
+	public final static int CLASSIFIER_EVALUATE = 8;
 
 	/** Command containing current admin settings */
 	private AdminSettingsCommand settingsCommand = new AdminSettingsCommand();
@@ -72,7 +72,7 @@ public class AdminViewCommand extends TabsCommand<User> {
 		addTabs(tabTitles);
 
 		// change default tab to classifier tab
-		selTab = 6;
+		setSelTab(CLASSIFIER_SPAMMER_UNSURE_INDEX);
 
 		// initialise info list
 		infos = new LinkedList<String>();
