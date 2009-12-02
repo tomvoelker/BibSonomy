@@ -86,11 +86,12 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param firstYear
 	 * @param lastYear
 	 * @param tagList
+	 * @param limit 
 	 * @return
 	 */
 	public List<Tag> getTagsByAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,
-			String firstYear, String lastYear, List<String> tagList);
+			String firstYear, String lastYear, List<String> tagList, int limit);
 			
 	/**
 	 * flags/unflags user as spammer, depending on user.getPrediction()
