@@ -58,8 +58,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	
 	private int sharedDocuments;
 	
-	private boolean confirmDelete;
-	
 	/**
 	 * current password of user
 	 */
@@ -271,14 +269,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	public void setStatusID(int statusID) {
 		this.statusID = statusID;
-	}
-
-	public boolean isConfirmDelete() {
-		return this.confirmDelete;
-	}
-
-	public void setConfirmDelete(boolean confirmDelete) {
-		this.confirmDelete = confirmDelete;
 	}
 
 	public User getUser() {
