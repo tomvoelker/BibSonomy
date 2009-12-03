@@ -64,6 +64,7 @@ public class DatabaseException extends RuntimeException {
 		
 		if (!present(list)) {
 			list = new LinkedList<AbstractDatabaseException>();
+			this.exceptions.put(hash, list);
 		}
 		
 		list.add(e);
