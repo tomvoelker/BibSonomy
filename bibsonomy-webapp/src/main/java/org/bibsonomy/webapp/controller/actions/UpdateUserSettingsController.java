@@ -5,13 +5,13 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.webapp.command.actions.UpdateUserSettingsCommand;
+import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
@@ -19,33 +19,37 @@ import org.springframework.validation.Errors;
  * @author cvo
  * @version $Id$
  */
-public class UpdateUserSettingsController implements MinimalisticController<UpdateUserSettingsCommand>, ErrorAware {
+public class UpdateUserSettingsController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
 	
 	private static final Log log = LogFactory.getLog(DeletePostController.class);
 
+	private static final String TAB_URL = "/settingsnew";
 
 	private LogicInterface adminLogic;
 	private Errors errors;
 	private RequestLogic requestLogic;
 	
 	@Override
-	public UpdateUserSettingsCommand instantiateCommand() {
-		
-		return new UpdateUserSettingsCommand();
+	public SettingsViewCommand instantiateCommand() {
+		final SettingsViewCommand command = new SettingsViewCommand();
+		command.setGroup(GroupUtils.getPublicGroup().getName());
+		command.setTabURL(TAB_URL);
+		command.setUser(new User());
+		return command;
 	}
 
 	@Override
-	public View workOn(UpdateUserSettingsCommand command) {
+	public View workOn(SettingsViewCommand command) {
 		// mit regenerate API key
-		
-		
+				
 		RequestWrapperContext context = command.getContext();
-		
+
 		/*
 		 * user has to be logged in to delete himself
 		 */
-		if (!context.isUserLoggedIn()){
+		if (!context.isUserLoggedIn()) {
 			errors.reject("error.general.login");
+			return Views.SETTINGSPAGE;
 		}
 		
 		User user = context.getLoginUser(); 
@@ -80,17 +84,17 @@ public class UpdateUserSettingsController implements MinimalisticController<Upda
 		 * if there are errors, show them
 		 */
 		if (errors.hasErrors()){
-			return Views.ERROR;
+			return Views.SETTINGSPAGE;
 		}
 		
 		
 		// go back where you've come from
-		return new ExtendedRedirectView(requestLogic.getReferer());
+		return Views.SETTINGSPAGE;
 	}
 	
-	private void actionLogging(UpdateUserSettingsCommand command, User user) {
+	private void actionLogging(SettingsViewCommand command, User user) {
 		
-		user.getSettings().setLogLevel(command.getLogLevel());
+		user.getSettings().setLogLevel(command.getUser().getSettings().getLogLevel());
 		user.getSettings().setConfirmDelete(command.isConfirmDelete());
 
 		String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
@@ -98,21 +102,21 @@ public class UpdateUserSettingsController implements MinimalisticController<Upda
 		log.info("logging settings of user " + updatedUser + " has been changed successfully");
 	}
 	
-	private void actionAPI(UpdateUserSettingsCommand command, User user) {
+	private void actionAPI(SettingsViewCommand command, User user) {
 		
 		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_API);
 		
 		log.info("api key of " + user.getName() + " has been changed successfully");
 	}
 	
-	private void actionLayoutTagPost(UpdateUserSettingsCommand command, User user) {
+	private void actionLayoutTagPost(SettingsViewCommand command, User user) {
 		
-		user.getSettings().setDefaultLanguage(command.getDefaultLanguage());
-		user.getSettings().setListItemcount(command.getItemcount());
-		user.getSettings().setTagboxTooltip(command.getTagboxTooltip());
-		user.getSettings().setTagboxMinfreq(command.getTagboxMinfreq());
-		user.getSettings().setTagboxSort(command.getTagSort());
-		user.getSettings().setTagboxStyle(command.getTagboxStyle());
+		user.getSettings().setDefaultLanguage(command.getUser().getSettings().getDefaultLanguage());
+		user.getSettings().setListItemcount(command.getUser().getSettings().getListItemcount());
+		user.getSettings().setTagboxTooltip(command.getUser().getSettings().getTagboxTooltip());
+		user.getSettings().setTagboxMinfreq(command.getUser().getSettings().getTagboxMinfreq());
+		user.getSettings().setTagboxSort(command.getUser().getSettings().getTagboxSort());
+		user.getSettings().setTagboxStyle(command.getUser().getSettings().getTagboxStyle());
 		
 		String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
 		
