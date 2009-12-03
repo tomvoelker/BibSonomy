@@ -242,9 +242,10 @@
           </tr> 
           <tr>
             <td>
-              <input type="submit" value="${updatesettings}"/> 
-              <input type="hidden" name="ckey" value="${ckey}"/>
-              <input type="hidden" name="action" value="logging"/>
+            	<input type="hidden" name="ckey" value="${ckey}"/>
+              	<input type="hidden" name="selTab" value="1"/>
+              	<input type="hidden" name="action" value="logging"/>
+              	<input type="submit" value="${updatesettings}"/>               
             </td>
           </tr>
         </table>
