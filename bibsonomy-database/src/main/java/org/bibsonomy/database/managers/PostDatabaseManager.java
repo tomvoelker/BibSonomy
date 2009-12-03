@@ -10,6 +10,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
@@ -519,14 +523,41 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return list of posts
 	 */
 	public List<Post<R>> getPostsSearchForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String search, final String userName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
-		final P param = this.createParam(userName, null, limit, offset);
-		param.setGroupId(groupId);
-		param.setSearch(search);
-		param.setGroups(visibleGroupIDs);
-		param.addAllToSystemTags(systemTags);
+	
+		String searchMode = "";
+		try {
+			Context initContext = new InitialContext();
+			Context envContext = (Context) initContext.lookup("java:/comp/env");
+			searchMode = (String) envContext.lookup("searchMode");
+		} catch (NamingException ex) {
+			log.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
+		}
 		
-		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
-		return this.postList("get" + this.resourceClassName + "SearchForGroup", param, session);
+		if ("lucene".equals(searchMode)) {
+			final List<Post<R>> postList;
+			final ResourceSearch<R> lucene = this.getResourceSearch();
+			if (present(lucene)) {
+				// get search results from lucene
+				final long starttimeQuery = System.currentTimeMillis();
+				postList = lucene.searchGroup(groupId, visibleGroupIDs, search, userName, limit, offset, null);
+				final long endtimeQuery = System.currentTimeMillis();
+				log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+			} else {
+				postList = new LinkedList<Post<R>>();
+				log.error("No resource searcher available.");
+			}
+			
+			return postList;
+		} else {
+			final P param = this.createParam(userName, null, limit, offset);
+			param.setGroupId(groupId);
+			param.setSearch(search);
+			param.setGroups(visibleGroupIDs);
+			param.addAllToSystemTags(systemTags);
+
+			DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+			return this.postList("get" + this.resourceClassName + "SearchForGroup", param, session);
+		}
 	}
 
 	/**

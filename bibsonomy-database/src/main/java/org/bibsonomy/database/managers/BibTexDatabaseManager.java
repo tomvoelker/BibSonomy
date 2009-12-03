@@ -5,6 +5,10 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collection;
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
@@ -70,11 +74,24 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 */
 	@Override
 	public List<Post<BibTex>> getPostsSearchForGroup(final int groupId, List<Integer> visibleGroups, final String search, final String requestedUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
-		final BibTexParam param = this.createParam(null, requestedUserName, limit, offset);
-		param.setGroupId(groupId);
-		param.setSearch(search);
+		String searchMode = "";
+		try {
+			Context initContext = new InitialContext();
+			Context envContext = (Context) initContext.lookup("java:/comp/env");
+			searchMode = (String) envContext.lookup("searchMode");
+		} catch (NamingException ex) {
+			log.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
+		}
 		
-		return this.postList("getBibTexSearch", param, session);
+		if ("lucene".equals(searchMode)) {
+			return super.getPostsSearchForGroup(groupId, visibleGroups, search, requestedUserName, limit, offset, systemTags, session);
+		} else {
+			final BibTexParam param = this.createParam(null, requestedUserName, limit, offset);
+			param.setGroupId(groupId);
+			param.setSearch(search);
+
+			return this.postList("getBibTexSearch", param, session);
+		}
 	}
 	
 	/**
