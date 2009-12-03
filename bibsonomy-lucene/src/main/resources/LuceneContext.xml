@@ -8,21 +8,21 @@
 	    +-->
 	<bean id="luceneBibTexIndexGenerator" class="org.bibsonomy.lucene.index.LuceneGenerateBibTexIndex" factory-method="getPreInitInstance">
 		<property name="logic" ref="luceneBibTexLogic"/>
-		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
+		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
 	</bean>
 	<bean id="luceneBookmarkIndexGenerator" class="org.bibsonomy.lucene.index.LuceneGenerateBookmarkIndex" factory-method="getPreInitInstance">
 		<property name="logic" ref="luceneBookmarkLogic"/>
-		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
+		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
 	</bean>
 	 
 	<!--+
 	    | lucene indexes 
 	    +-->
 	<bean id="luceneBibTexIndex" class="org.bibsonomy.lucene.index.LuceneBibTexIndex" factory-method="getInstance">
-		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
+		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
 	</bean>
 	<bean id="luceneBookmarkIndex" class="org.bibsonomy.lucene.index.LuceneBookmarkIndex" factory-method="getInstance">
-		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
+		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
 	</bean>
 	
 	<!--+
@@ -36,11 +36,11 @@
 	    +-->
 	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.search.LuceneSearchBibTex" factory-method="getInstance">
 		<property name="dbLogic" ref="luceneBibTexLogic"/>
-		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
+		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
 	</bean>
 	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.LuceneSearchBookmarks" factory-method="getInstance">
 		<property name="dbLogic" ref="luceneBookmarkLogic"/>
-		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
+		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
 	</bean>
 
 	
@@ -74,8 +74,10 @@
 	
 	<!--  #################### imports #################### -->
 	
+	<import resource="LuceneIndexConfig.xml"/>
+	
+	<!-- 
 	<import resource="LuceneAnalyzerConfig.xml"/>
-    <!-- 
     <import resource="LuceneBookmarkFields.xml"/>
     -->
 </beans>

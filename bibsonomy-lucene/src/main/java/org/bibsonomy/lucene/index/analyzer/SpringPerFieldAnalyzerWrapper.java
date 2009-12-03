@@ -1,6 +1,7 @@
 package org.bibsonomy.lucene.index.analyzer;
 
 import java.io.Reader;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -8,7 +9,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.TokenStream;
+import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
+import org.bibsonomy.util.ValidationUtils;
 import org.springframework.beans.factory.BeanFactory;
 
 /**
@@ -26,6 +29,9 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 
 	/** bean factory */
 	private static BeanFactory beanFactory;
+	
+	/** map configuring the index */
+	private Map<String,Map<String,Object>> propertyMap;
 
 	/** map configuring the fieldwrapper */
 	private Map<String, Object> fieldMap;
@@ -107,6 +113,24 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 
 	public Analyzer getDefaultAnalyzer() {
 		return defaultAnalyzer;
+	}
+
+	public void setPropertyMap(Map<String,Map<String,Object>> propertyMap) {
+		this.propertyMap = propertyMap;
+		
+		// update the fieldmap
+		this.fieldMap = new HashMap<String,Object>();
+		
+		for( String propertyName : propertyMap.keySet() ) {
+			String fieldName       = (String)propertyMap.get(propertyName).get(LuceneBase.CFG_LUCENENAME);
+			Analyzer fieldAnalyzer = (Analyzer)propertyMap.get(propertyName).get(LuceneBase.CFG_ANALYZER);
+			if( ValidationUtils.present(fieldAnalyzer) )
+				this.fieldMap.put(fieldName, fieldAnalyzer);
+		}
+	}
+
+	public Map<String,Map<String,Object>> getPropertyMap() {
+		return propertyMap;
 	}
 	
 }

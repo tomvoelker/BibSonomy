@@ -30,7 +30,6 @@ public class LuceneGenerateBookmarkIndex extends LuceneGenerateResourceIndex<Boo
 		super();
 	}
 
-	
 	//------------------------------------------------------------------------
 	// public interface
 	//------------------------------------------------------------------------

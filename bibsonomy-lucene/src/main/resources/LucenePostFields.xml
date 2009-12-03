@@ -62,7 +62,7 @@
 						<entry key="luceneName" value="tas" />
 						<entry key="luceneStore" value-ref="fieldStored" />
 						<entry key="luceneIndex" value-ref="fieldAnalyzed" />
-						<entry key="itemProperty" value="name" />
+						<entry key="fieldAnalyzer" value-ref="luceneWhitespaceAnalyzer" />
 						<entry key="typeHandler" value-ref="tagsConverter" />
 						<entry key="itemDelimitier" value=" " />
 						<entry key="fulltextSearch">
@@ -73,6 +73,7 @@
 				<entry key="user.name">
 					<map>
 						<entry key="luceneName" value="user_name" />
+						<entry key="fieldAnalyzer" value-ref="luceneStandardAnalyzer" />
 						<entry key="fulltextSearch">
 							<value type="java.lang.Boolean">true</value>
 						</entry>

@@ -24,63 +24,64 @@ public class LuceneBase {
 	//------------------------------------------------------------------------
 	// static configuration
 	//------------------------------------------------------------------------
-	protected static final String PARAM_RELEVANCE = "relevance";
+	public static final String PARAM_RELEVANCE = "relevance";
 
-	protected static final String CFG_LUCENENAME     = "luceneName";
-	protected static final String CFG_TYPEHANDLER    = "typeHandler";
-	protected static final String CFG_ITEMPROPERTY   = "itemProperty";
-	protected static final String CFG_LIST_DELIMITER = " ";
-	protected static final String CFG_FLDINDEX       = "luceneIndex";
-	protected static final String CFG_FLDSTORE       = "luceneStore";
-	protected static final String CFG_FULLTEXT_FLAG  = "fulltextSearch";
+	public static final String CFG_LUCENENAME     = "luceneName";
+	public static final String CFG_ANALYZER       = "fieldAnalyzer";
+	public static final String CFG_TYPEHANDLER    = "typeHandler";
+	public static final String CFG_ITEMPROPERTY   = "itemProperty";
+	public static final String CFG_LIST_DELIMITER = " ";
+	public static final String CFG_FLDINDEX       = "luceneIndex";
+	public static final String CFG_FLDSTORE       = "luceneStore";
+	public static final String CFG_FULLTEXT_FLAG  = "fulltextSearch";
 	
 	/** delimiter to specify which field to search for */
-	protected static final String CFG_LUCENE_FIELD_SPECIFIER = ":";
+	public static final String CFG_LUCENE_FIELD_SPECIFIER = ":";
 	
 	/** directory prefix for different resource indeces */
-	protected static final String CFG_LUCENE_INDEX_PREFIX = "lucene_";
+	public static final String CFG_LUCENE_INDEX_PREFIX = "lucene_";
 	
 	/** max. number of posts to consider for building the author tag cloud */
-	protected static final Integer CFG_TAG_CLOUD_LIMIT = Integer.MAX_VALUE;
+	public static final Integer CFG_TAG_CLOUD_LIMIT = Integer.MAX_VALUE;
 	
 	/** the naming context for lucene classes */
-	protected static final String CONTEXT_ENV_NAME    = "java:/comp/env";
+	public static final String CONTEXT_ENV_NAME    = "java:/comp/env";
 	/** naming context for variables */
-	protected static final String CONTEXT_INDEX_PATH  = "luceneIndexPath";
+	public static final String CONTEXT_INDEX_PATH  = "luceneIndexPath";
 	/** context variable determining whether lucene should update the index */
-	protected static final String CONTEXT_ENABLE_FLAG = "enableLuceneUpdater";
+	public static final String CONTEXT_ENABLE_FLAG = "enableLuceneUpdater";
 	/** context variable containing lucene's configuration */
-	protected static final String CONTEXT_CONFIG_BEAN = "luceneConfig";
+	public static final String CONTEXT_CONFIG_BEAN = "luceneConfig";
 		
 	/** name of the property file which configures lucene */
-	protected static final String PROPERTYFILENAME    = "lucene.properties";
-	protected static final String LUCENE_CONTEXT_XML  = "LuceneIndexConfig.xml";
+	public static final String PROPERTYFILENAME    = "lucene.properties";
+	public static final String LUCENE_CONTEXT_XML  = "LuceneIndexConfig.xml";
 
-	protected static final String FLD_MERGEDFIELDS  = "mergedfields";
-	protected static final String FLD_INTRAHASH     = "intrahash";
-	protected static final String FLD_GROUP         = "group";
-	protected static final String FLD_AUTHOR        = "author";
-	protected static final String FLD_USER          = "user_name";
-	protected static final String FLD_DATE          = "date";
-	protected static final String FLD_YEAR          = "year";
-	protected static final String FLD_TAS           = "tas";	
-	protected static final String FLD_ADDRESS       = "address";
-	protected static final String FLD_TAGS          = "tas";
-	protected static final String FLD_TITLE         = "title";	
-	protected static final String FLD_LAST_TAS_ID   = "last_tas_id";
-	protected static final String FLD_LAST_LOG_DATE = "last_log_date";
-	protected static final String FLD_USER_NAME     = "user_name";
-	protected static final String FLD_CONTENT_ID    = "content_id";
+	public static final String FLD_MERGEDFIELDS  = "mergedfields";
+	public static final String FLD_INTRAHASH     = "intrahash";
+	public static final String FLD_GROUP         = "group";
+	public static final String FLD_AUTHOR        = "author";
+	public static final String FLD_USER          = "user_name";
+	public static final String FLD_DATE          = "date";
+	public static final String FLD_YEAR          = "year";
+	public static final String FLD_TAS           = "tas";	
+	public static final String FLD_ADDRESS       = "address";
+	public static final String FLD_TAGS          = "tas";
+	public static final String FLD_TITLE         = "title";	
+	public static final String FLD_LAST_TAS_ID   = "last_tas_id";
+	public static final String FLD_LAST_LOG_DATE = "last_log_date";
+	public static final String FLD_USER_NAME     = "user_name";
+	public static final String FLD_CONTENT_ID    = "content_id";
 	
 	/** keyword identifying unlimited field length in the lucene index */
-	protected static final String KEY_UNLIMITED     = "UNLIMITED";
+	public static final String KEY_UNLIMITED     = "UNLIMITED";
 	/** keyword identifying limited field length in the lucene index */
-	protected static final Object KEY_LIMITED       = "LIMITED";
+	public static final Object KEY_LIMITED       = "LIMITED";
 
-	protected static final int SQL_BLOCKSIZE = 25000;
+	public static final int SQL_BLOCKSIZE = 25000;
 
-	protected static final String PROP_DB_DRIVER_NAME = "db.driver";	
-	protected static final String LUCENE_INDEX_PATH_PREFIX = "luceneIndexPath";
+	public static final String PROP_DB_DRIVER_NAME = "db.driver";	
+	public static final String LUCENE_INDEX_PATH_PREFIX = "luceneIndexPath";
 	
 	//------------------------------------------------------------------------
 	// runtime configuration

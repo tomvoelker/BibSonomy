@@ -33,6 +33,34 @@
 	</bean>
 
 	<!--+
+	    | analyzer (==tokenizer/normalizer)
+	    +-->
+	<bean id="luceneStandardAnalyzer" class="org.apache.lucene.analysis.standard.StandardAnalyzer">
+		<constructor-arg ref="lucene24Compat"/>
+	</bean>
+	<bean id="luceneGermanAnalyzer" class="org.apache.lucene.analysis.de.GermanAnalyzer">
+		<constructor-arg ref="lucene24Compat"/>
+	</bean>
+	<bean id="luceneWhitespaceAnalyzer" class="org.bibsonomy.lucene.index.analyzer.WhiteSpaceLowerCaseFilteringAnalyzer"/>
+	<bean id="luceneDiacriticsAnalyzer" class="org.bibsonomy.lucene.index.analyzer.DiacriticsLowerCaseFilteringAnalyzer"/>
+	<bean id="luceneSimpleKeywordAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SimpleKeywordAnalyzer"/>
+	
+	<bean id="luceneBookmarkFieldWrapperAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper" factory-method="getPreInitInstance">
+		<property name="defaultAnalyzer" ref="luceneStandardAnalyzer"/>
+		<property name="propertyMap" ref="bookmarkPropertyMap"/>
+	</bean>
+
+	<bean id="luceneBibTexFieldWrapperAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper" factory-method="getPreInitInstance">
+		<property name="defaultAnalyzer" ref="luceneStandardAnalyzer"/>
+		<property name="propertyMap" ref="bibTexPropertyMap"/>
+	</bean>
+
+
+	<bean id="lucene24Compat" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
+ 		<property name="staticField" value="org.apache.lucene.util.Version.LUCENE_24"/>
+	</bean>
+
+	<!--+
 	    | import resource field configurations 
 	    +-->
     <import resource="LucenePostFields.xml"/>

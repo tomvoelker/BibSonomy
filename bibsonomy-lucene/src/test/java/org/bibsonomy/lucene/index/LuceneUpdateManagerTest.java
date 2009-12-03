@@ -23,9 +23,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
-import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.lucene.database.LuceneBibTexLogic;
 import org.bibsonomy.lucene.database.LuceneBookmarkLogic;
@@ -46,7 +44,6 @@ import org.bibsonomy.util.ExceptionUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
@@ -110,7 +107,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	public void tearDown() {
 		JNDITestDatabaseBinder.unbind();
 	}
-	
+
 
 	/**
 	 * tests visibility of private posts

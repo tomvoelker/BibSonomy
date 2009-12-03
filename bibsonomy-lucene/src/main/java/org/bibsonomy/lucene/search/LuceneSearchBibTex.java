@@ -81,26 +81,6 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 //		String orderBy = "relevance"; 
 		String orderBy = "date"; 
 		
-		// prepare input (analyze and escape)
-		try {
-			group              = parseToken(FLD_GROUP, group);
-			//searchTerms        = parseToken(FLD_AUTHOR, searchTerms);
-			requestedUserName  = parseToken(FLD_USER, requestedUserName);
-			requestedGroupName = parseToken(FLD_GROUP, requestedGroupName);
-			year               = parseToken(FLD_YEAR, year);
-			firstYear          = parseToken(FLD_YEAR, firstYear);
-			lastYear           = parseToken(FLD_YEAR, lastYear);
-			// parse each tag name
-			if(ValidationUtils.present(tagList)) {
-				List<String> tags = new LinkedList<String>();
-				for(String tagName : tagList) {
-					tags.add(parseToken(FLD_TAS, tagName)); 
-				}
-				tagList = tags;
-			}
-		} catch (IOException e) {
-			log.error("Error analyzing input", e);
-		}
 		QuerySortContainer qf = new QuerySortContainer();
 		
 		//--------------------------------------------------------------------

@@ -238,19 +238,6 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		r.lock();
 		try {
 			if( isEnabled() ) {
-				log.error("LuceneSearch for groups not implemented.");
-				log.debug("\t groupName   : " +groupName );
-				log.debug("\t search      : " +search );
-				log.debug("\t authUserName: " +authUserName );
-				for( String name : visibleGroupNames ) {
-					log.debug("\t visibleGroup: " + name);
-				}
-				for( String user : groupMembers ) {
-					log.debug("\t member: " + user );
-				}
-				for( String friend : userGroupFriends ) {
-					log.debug("\t friend: " + friend);
-				}
 				return searchLucene(
 						buildGroupSearchQuery(groupName, visibleGroupNames, userGroupFriends, groupMembers, search, authUserName, limit, offset, systemTags),
 						limit, offset);
@@ -428,21 +415,6 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		//	String orderBy = "relevance"; 
 		String orderBy = FLD_DATE; 
 		
-		try {
-			userName          = parseToken(FLD_USER, userName);
-			requestedUserName = parseToken(FLD_USER, requestedUserName);
-			group             = parseToken(FLD_GROUP, group);
-			// searchTerms       = parseToken(FLD_MERGEDFIELDS, searchTerms);
-			// parse each group name
-			Set<String> groups= new TreeSet<String>();
-			for(String groupName : allowedGroups) {
-				groups.add(parseToken(FLD_GROUP, groupName)); 
-			}
-			allowedGroups = groups;
-		} catch (IOException e) {
-			log.error("Error analyzing input", e);
-		}
-
 		BooleanQuery mainQuery       = new BooleanQuery();
 		BooleanQuery accessModeQuery = new BooleanQuery();
 		BooleanQuery privatePostQuery= new BooleanQuery();
@@ -568,14 +540,6 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		//	String orderBy = "relevance"; 
 		String orderBy = FLD_DATE;
 
-		// prepare input
-		try {
-			authUserName      = parseToken(FLD_USER, authUserName);
-			groupName         = parseToken(FLD_GROUP, groupName);
-		} catch (IOException e) {
-			log.error("Error analyzing input", e);
-		}
-		
 		BooleanQuery mainQuery       = new BooleanQuery();
 		BooleanQuery groupMemberQuery = new BooleanQuery();
 		BooleanQuery accessModeQuery = new BooleanQuery();
