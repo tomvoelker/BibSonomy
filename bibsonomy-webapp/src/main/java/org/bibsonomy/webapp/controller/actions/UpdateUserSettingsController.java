@@ -95,7 +95,7 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 	private void actionLogging(SettingsViewCommand command, User user) {
 		
 		user.getSettings().setLogLevel(command.getUser().getSettings().getLogLevel());
-		user.getSettings().setConfirmDelete(command.isConfirmDelete());
+		user.getSettings().setConfirmDelete(command.getUser().getSettings().isConfirmDelete());
 
 		String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
 		
