@@ -541,7 +541,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				final long starttimeQuery = System.currentTimeMillis();
 				postList = lucene.searchGroup(groupId, visibleGroupIDs, search, userName, limit, offset, null);
 				final long endtimeQuery = System.currentTimeMillis();
-				log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+				log.debug("Lucene" + this.resourceClassName + " complete group search query time: " + (endtimeQuery-starttimeQuery) + "ms");
 			} else {
 				postList = new LinkedList<Post<R>>();
 				log.error("No resource searcher available.");
