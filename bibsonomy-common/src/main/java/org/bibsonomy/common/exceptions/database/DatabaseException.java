@@ -37,20 +37,20 @@ import java.util.Map;
 public class DatabaseException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	
-	private final Map<String, List<DatabaseException>> exceptions;
+	private final Map<String, List<AbstractDatabaseException>> exceptions;
 	
 	/**
 	 * initiate map
 	 */
 	public DatabaseException() {
-		this.exceptions = new HashMap<String, List<DatabaseException>>();
+		this.exceptions = new HashMap<String, List<AbstractDatabaseException>>();
 	}
 	
 	/**
 	 * @param hash the hash of the post
 	 * @return the exceptions for the post (represented by its hash)
 	 */
-	public List<DatabaseException> getExceptions(final String hash) {
+	public List<AbstractDatabaseException> getExceptions(final String hash) {
 		return this.exceptions.get(hash);
 	}
 	
@@ -59,11 +59,11 @@ public class DatabaseException extends RuntimeException {
 	 * @param hash the hash of the post
 	 * @param e the exception to add
 	 */
-	public void addToExceptions(final String hash, final DatabaseException e) {
-		List<DatabaseException> list = this.exceptions.get(hash);
+	public void addToExceptions(final String hash, final AbstractDatabaseException e) {
+		List<AbstractDatabaseException> list = this.exceptions.get(hash);
 		
 		if (!present(list)) {
-			list = new LinkedList<DatabaseException>();
+			list = new LinkedList<AbstractDatabaseException>();
 		}
 		
 		list.add(e);
