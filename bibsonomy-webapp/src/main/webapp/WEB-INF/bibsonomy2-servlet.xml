@@ -67,6 +67,7 @@
 						<property name="allowedFields">
 							<list>
 								<value>requestedUser</value>
+								<value>layout</value>
 							</list>
 						</property>
 					</bean>
@@ -274,6 +275,11 @@
 	<bean id="cvPageController" class="org.bibsonomy.webapp.controller.CvPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+			</list>
+		</property>
 	</bean>	
 	
 	<bean id="mySearchController" class="org.bibsonomy.webapp.controller.MySearchController" scope="request">
