@@ -35,9 +35,11 @@
 	    | lucene index searcher 
 	    +-->
 	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.search.LuceneSearchBibTex" factory-method="getInstance">
+		<property name="dbLogic" ref="luceneBibTexLogic"/>
 		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
 	</bean>
 	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.LuceneSearchBookmarks" factory-method="getInstance">
+		<property name="dbLogic" ref="luceneBookmarkLogic"/>
 		<property name="analyzer" ref="luceneFieldWrapperAnalyzer"/>
 	</bean>
 

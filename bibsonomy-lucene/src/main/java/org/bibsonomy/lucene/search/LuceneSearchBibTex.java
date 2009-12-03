@@ -94,7 +94,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 			if(ValidationUtils.present(tagList)) {
 				List<String> tags = new LinkedList<String>();
 				for(String tagName : tagList) {
-					tags.add(parseToken(FLD_GROUP, tagName)); 
+					tags.add(parseToken(FLD_TAS, tagName)); 
 				}
 				tagList = tags;
 			}

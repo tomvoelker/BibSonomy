@@ -75,7 +75,11 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 		
 		// 0) load database driver
 		//    FIXME: why is this necessary?
-		Class.forName(getDbDriverName());
+		try {
+			Class.forName(getDbDriverName());
+		} catch( Exception e ) {
+			log.error("Error loading the mysql driver. Please check, that the mysql connector library is available. ["+e.getMessage()+"]");
+		}
 		
 		// 1) index files
 		this.luceneResourceIndexPath = getIndexBasePath()+CFG_LUCENE_INDEX_PREFIX+getResourceName();//props.getProperty(LUCENE_INDEX_PATH_PREFIX + getResourceName());

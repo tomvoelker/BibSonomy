@@ -60,6 +60,7 @@
 				<entry key="tags">
 					<map>
 						<entry key="luceneName" value="tas" />
+						<entry key="luceneStore" value-ref="fieldStored" />
 						<entry key="luceneIndex" value-ref="fieldAnalyzed" />
 						<entry key="itemProperty" value="name" />
 						<entry key="typeHandler" value-ref="tagsConverter" />

@@ -137,6 +137,76 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		return retVal;	
 	}
 	
+	
+	/**
+	 * get group name
+	 * 
+	 * @param groupId
+	 * @return
+	 */
+	public String getGroupNameByGroupId(int groupId) {
+		String retVal = null;
+		
+		try {
+			retVal = (String)this.sqlMap.queryForObject("getGroupNameByGroupId", groupId);
+		} catch (SQLException e) {
+			log.error("Error getting group name", e);
+		}
+		if( retVal==null ) {
+			retVal = "";
+		}
+		
+		return retVal;	
+	}
+
+	/**
+	 * get given groups members
+	 * 
+	 * @param groupId
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> getGroupMembersByGroupId(int groupId) {
+		List<String> retVal = null;
+		
+		try {
+			retVal = (List<String>)this.sqlMap.queryForList("getGroupMembersByGroupId", groupId);
+		} catch (SQLException e) {
+			log.error("Error getting group members", e);
+		}
+		if( retVal==null ) {
+			retVal = new LinkedList<String>();
+		}
+		
+		return retVal;	
+	}
+
+	/**
+	 * get all members of the given group, which have the user as a friend
+	 * 
+	 * @param groupId
+	 * @param authUserName
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> getGroupFriendsByGroupIdForUser(int groupId, String authUserName) {
+		List<String> retVal = null;
+		
+		Pair<Integer,String> param = new Pair<Integer, String>();
+		param.setFirst(groupId);
+		param.setSecond(authUserName);
+		
+		try {
+			retVal = (List<String>)this.sqlMap.queryForList("getGroupFriendsByGroupIdForUser", param);
+		} catch (SQLException e) {
+			log.error("Error getting friends of given user for given group", e);
+		}
+		if( retVal==null ) {
+			retVal = new LinkedList<String>();
+		}
+		
+		return retVal;	
+	}
 
 	//------------------------------------------------------------------------
 	// abstract interface definition

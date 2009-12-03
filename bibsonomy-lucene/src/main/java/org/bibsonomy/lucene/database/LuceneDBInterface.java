@@ -109,6 +109,32 @@ public interface LuceneDBInterface<R extends Resource> {
 	 */
 	public List<String> getNonSpamPredictionForTimeRange(Date fromDate);
 
+	
+	/**
+	 * get group name
+	 * 
+	 * @param groupId
+	 * @return
+	 */
+	public String getGroupNameByGroupId(int groupId);
+
+	/**
+	 * get given groups members
+	 * 
+	 * @param groupId
+	 * @return
+	 */
+	public List<String> getGroupMembersByGroupId(int groupId);
+
+	/**
+	 * get all members of the given group, which have the user as a friend
+	 * 
+	 * @param groupId
+	 * @param authUserName
+	 * @return
+	 */
+	public List<String> getGroupFriendsByGroupIdForUser(int groupId, String authUserName);	
+	
 	//------------------------------------------------------------------------
 	// methods for building the index
 	// TODO: maybe we should introduce a special class hierarchy

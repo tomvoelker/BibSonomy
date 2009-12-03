@@ -1,5 +1,6 @@
 package org.bibsonomy.lucene.search.delegate;
 
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -73,6 +74,20 @@ public class LuceneDelegateResourceSearch<R extends Resource> implements Resourc
 		}
 	}
 	
+	@Override
+	public ResultList<Post<R>> searchGroup(
+			final int groupId, final List<Integer> visibleGroupIDs, 
+			final String search, final String authUserName, 
+			final int limit, final int offset, 
+			Collection<? extends Tag> systemTags ) {
+		if(resourceSearcher!=null) 
+			return resourceSearcher.searchGroup(groupId, visibleGroupIDs, search, authUserName, limit, offset, systemTags);
+		else {
+			log.error("Trying to search for posts, but no searcher available");
+			return new ResultList<Post<R>>();
+		}
+	}
+
 	@Override
 	public List<Tag> getTagsByAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,

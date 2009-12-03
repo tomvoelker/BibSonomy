@@ -5,6 +5,8 @@ import static org.apache.lucene.util.Version.LUCENE_24;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -196,6 +198,72 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		return retVal;
 	}
 	
+	/**
+	 * <em>/search/ein+lustiger+satz+group%3AmyGroup</em><br/><br/>
+	 * 
+	 * @param groupId group to search
+	 * @param visibleGroupIDs groups the user has access to
+	 * @param search the search query
+	 * @param userName
+	 * @param limit number of posts to display
+	 * @param offset first post in the result list
+	 * @param systemTags NOT IMPLEMENTED 
+	 * @return
+	 */
+	public ResultList<Post<R>> searchGroup(
+			final int groupId, final List<Integer> visibleGroupIDs, 
+			final String search, final String authUserName, 
+			final int limit, final int offset, 
+			Collection<? extends Tag> systemTags) {
+		ResultList<Post<R>> retVal = null;
+
+		//--------------------------------------------------------------------
+		// query bibsonomy's database for missing data
+		//--------------------------------------------------------------------
+		String groupName = this.dbLogic.getGroupNameByGroupId(groupId);
+		
+		// FIXME: didn't the chain's param object already contained the group name?
+		//        if so, we should consider passing them to this function
+		List<String> visibleGroupNames = new LinkedList<String>();
+		for( Integer gid : visibleGroupIDs) {
+			visibleGroupNames.add(this.dbLogic.getGroupNameByGroupId(gid));
+		}
+		
+		// get given groups members
+		List<String> groupMembers = this.dbLogic.getGroupMembersByGroupId(groupId);
+		
+		// get all members of the given group, which have the user as a friend
+		List<String> userGroupFriends = this.dbLogic.getGroupFriendsByGroupIdForUser(groupId, authUserName);
+		
+		r.lock();
+		try {
+			if( isEnabled() ) {
+				log.error("LuceneSearch for groups not implemented.");
+				log.debug("\t groupName   : " +groupName );
+				log.debug("\t search      : " +search );
+				log.debug("\t authUserName: " +authUserName );
+				for( String name : visibleGroupNames ) {
+					log.debug("\t visibleGroup: " + name);
+				}
+				for( String user : groupMembers ) {
+					log.debug("\t member: " + user );
+				}
+				for( String friend : userGroupFriends ) {
+					log.debug("\t friend: " + friend);
+				}
+				return searchLucene(
+						buildGroupSearchQuery(groupName, visibleGroupNames, userGroupFriends, groupMembers, search, authUserName, limit, offset, systemTags),
+						limit, offset);
+			} else
+				retVal = createEmptyResultList();
+		} finally {
+			r.unlock();
+		}
+
+		// all done.
+		return retVal;
+	}
+
 	//------------------------------------------------------------------------
 	// abstract interface
 	//------------------------------------------------------------------------
@@ -381,18 +449,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		//--------------------------------------------------------------------
 		// search terms
 		//--------------------------------------------------------------------
-		// parse search terms for handling phrase search
-		QueryParser searchTermParser = new QueryParser(LUCENE_24, FLD_MERGEDFIELDS, getAnalyzer());
-		// FIXME: configure default operator via spring
-		searchTermParser.setDefaultOperator(getDefaultSearchTermJunctor());
-		Query searchTermQuery = null;
-		try {
-			// disallow field specification in search query
-			searchTerms = searchTerms.replace(CFG_LUCENE_FIELD_SPECIFIER, "\\"+CFG_LUCENE_FIELD_SPECIFIER);
-			searchTermQuery = searchTermParser.parse(searchTerms);
-		} catch (ParseException e) {
-			searchTermQuery = new TermQuery(new Term(FLD_MERGEDFIELDS, searchTerms) );
-		}
+		Query searchTermQuery = parseSearchQuery(searchTerms);
 		
 		//--------------------------------------------------------------------
 		// allowed groups
@@ -455,6 +512,8 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		
 		return qf;
 	}
+
+
 	
 	/**
      * <em>/author/MaxMustermann</em><br/><br/>
@@ -478,6 +537,115 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			String year, String firstYear, String lastYear, 
 			List<String> tagList, int tagCntLimit);
 	
+	/**
+	 * construct lucene query filter for full text search 'search:group'
+	 * 
+	 * (mergedfields:searchTerms) 
+	 *    AND (user_name:groupMember_1 OR ... OR user_name:groupMember_n)
+	 *    AND (
+	 *       group:allowedGroup_1 OR ... OR group:allowedGroup_n OR 
+	 *       (group:private AND (user_name:userName OR user_name:groupFriend_1 OR ... OR user_name:groupFriend_n))
+	 *    )  
+	 * 
+	 * @param groupName the group to search 
+	 * @param visibleGroups list of group names the user is member of 
+	 * @param userGroupFriends list of users which are group members and have the user as friend 
+	 * @param groupMembers group members
+	 * @param search the search query
+	 * @param authUserName the user name
+	 * @param limit
+	 * @param offset
+	 * @param systemTags NOT IMPLEMENTED
+	 * @return
+	 */
+	protected QuerySortContainer buildGroupSearchQuery(
+			String groupName, List<String> visibleGroups,
+			List<String> userGroupFriends, List<String> groupMembers,
+			String search, String authUserName, 
+			final int limit, final int offset, 
+			Collection<? extends Tag> systemTags ) {
+		// FIXME: configure this
+		//	String orderBy = "relevance"; 
+		String orderBy = FLD_DATE;
+
+		// prepare input
+		try {
+			authUserName      = parseToken(FLD_USER, authUserName);
+			groupName         = parseToken(FLD_GROUP, groupName);
+		} catch (IOException e) {
+			log.error("Error analyzing input", e);
+		}
+		
+		BooleanQuery mainQuery       = new BooleanQuery();
+		BooleanQuery groupMemberQuery = new BooleanQuery();
+		BooleanQuery accessModeQuery = new BooleanQuery();
+		//--------------------------------------------------------------------
+		// search terms
+		//--------------------------------------------------------------------
+		Query searchTermQuery = parseSearchQuery(search);
+		
+		//--------------------------------------------------------------------
+		// restrict to group members
+		//--------------------------------------------------------------------
+		for ( String member: groupMembers ) {
+			Query memberQuery = new TermQuery(new Term(FLD_USER, member));
+			groupMemberQuery.add(memberQuery, Occur.SHOULD);
+		}
+		
+		//--------------------------------------------------------------------
+		// allowed groups
+		//--------------------------------------------------------------------
+		for ( String group : visibleGroups ) {
+			Query groupQuery = new TermQuery(new Term(FLD_GROUP, group));
+			accessModeQuery.add(groupQuery, Occur.SHOULD);
+		}
+		
+		//--------------------------------------------------------------------
+		// private post query
+		//--------------------------------------------------------------------
+		BooleanQuery privatePostQuery= new BooleanQuery();
+		privatePostQuery.add(new TermQuery(new Term(FLD_GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.MUST);
+		
+		BooleanQuery privatePostAllowanceQuery= new BooleanQuery();
+		// the post's owner may read the private post 
+		privatePostAllowanceQuery.add(new TermQuery(new Term(FLD_USER, authUserName)), Occur.SHOULD);
+		// the post's owner's friend may read the post
+		for( String friend : userGroupFriends ) {
+			privatePostAllowanceQuery.add(new TermQuery(new Term(FLD_USER, friend)), Occur.SHOULD);
+		}
+		
+		privatePostQuery.add(privatePostAllowanceQuery, Occur.MUST);
+		accessModeQuery.add(privatePostQuery, Occur.SHOULD);
+		
+		//--------------------------------------------------------------------
+		// build final query
+		//--------------------------------------------------------------------
+		mainQuery.add(searchTermQuery, Occur.MUST);
+		mainQuery.add(accessModeQuery, Occur.MUST);
+		
+		log.debug("Search query: " + mainQuery.toString());
+
+		//--------------------------------------------------------------------
+		// set ordering
+		//--------------------------------------------------------------------
+		Sort sort = null;
+		if (PARAM_RELEVANCE.equals(orderBy)) {
+			sort = new Sort(new SortField[]{SortField.FIELD_SCORE,new SortField(FLD_DATE, SortField.LONG,true)
+  			});
+		} else { 
+			// orderBy=="date"
+			// FIXME: why does the default operator depend on the ordering
+			// myParser.setDefaultOperator(QueryParser.Operator.AND);
+			sort = new Sort(new SortField(FLD_DATE,SortField.LONG,true));
+		}
+		
+		// all done
+		QuerySortContainer qf = new QuerySortContainer();
+		qf.setQuery(mainQuery);
+		qf.setSort(sort);
+		return qf;
+	};
+
 	/** 
 	 * analyzes given input parameter
 	 * 
@@ -506,6 +674,28 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		} else
 			return "";
 	}
+	
+	/**
+	 * build full text query for given query string
+	 * 
+	 * @param searchTerms
+	 * @return
+	 */
+	private Query parseSearchQuery(String searchTerms) {
+		// parse search terms for handling phrase search
+		QueryParser searchTermParser = new QueryParser(LUCENE_24, FLD_MERGEDFIELDS, getAnalyzer());
+		// FIXME: configure default operator via spring
+		searchTermParser.setDefaultOperator(getDefaultSearchTermJunctor());
+		Query searchTermQuery = null;
+		try {
+			// disallow field specification in search query
+			searchTerms = searchTerms.replace(CFG_LUCENE_FIELD_SPECIFIER, "\\"+CFG_LUCENE_FIELD_SPECIFIER);
+			searchTermQuery = searchTermParser.parse(searchTerms);
+		} catch (ParseException e) {
+			searchTermQuery = new TermQuery(new Term(FLD_MERGEDFIELDS, searchTerms) );
+		}
+		return searchTermQuery;
+	}	
 	
 	/**
 	 * get managed resource name

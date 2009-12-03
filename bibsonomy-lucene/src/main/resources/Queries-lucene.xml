@@ -3,6 +3,28 @@
  "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="Lucene">
 
+	<!-- get group name -->
+	<select id="getGroupNameByGroupId" resultClass="string" parameterClass="Integer">
+		SELECT group_name
+		FROM groupids
+		WHERE `group` = #groupId#
+	</select>
+
+	<!-- get given groups members -->
+	<select id="getGroupMembersByGroupId" resultClass="string" parameterClass="Integer">
+		SELECT user_name
+		FROM groups
+		WHERE `group` = #groupId#		 
+	</select>
+	
+	<!-- get all members of the given group, which have the user as a friend -->
+	<select id="getGroupFriendsByGroupIdForUser" resultClass="string" parameterClass="pair">
+		SELECT f.user_name
+		FROM `groups` g
+		   JOIN friends f USING (user_name)
+		WHERE g.group = #first# AND f.f_user_name = #second#
+	</select>
+
 	<!-- get date of most recent tas entry  -->
 	<select id="getNewestRecordDateFromTas" resultClass="date">
 		SELECT MAX(change_date) as date
