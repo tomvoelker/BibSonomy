@@ -65,7 +65,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/** instance of the lucene searcher */
 	private ResourceSearch<R> resourceSearch;
 	
-	// TODO: remove logic and sessionfactory! (systemfactory needs dbSessionFactory and logic)
+	// FIXME: remove logic and sessionfactory! (systemfactory needs dbSessionFactory and logic)
 	private DBSessionFactory dbSessionFactory;
 	private LogicInterface dbLogic; 
 	
@@ -964,17 +964,16 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return list.get(0);
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.CrudableContent#createPost(org.bibsonomy.model.Post, org.bibsonomy.database.util.DBSession)
+	 */
 	@Override
 	public boolean createPost(final Post<R> post, final DBSession session) {
 		session.beginTransaction();
 		try {
 			this.systemTagPerformBefore(session, post, new HashSet<Tag>());
 			final String userName = post.getUser().getName();
-			/*	
-			 * FIXME: we need to overwrite the userName in the post with the given userName
-			 * (which comes from loginUser.getName() in DBLogic) - otherwise one can store
-			 * posts under another name!
-			 */ 
 			/*
 			 * the current intra hash of the resource
 			 */
@@ -1023,6 +1022,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return null;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.managers.CrudableContent#updatePost(org.bibsonomy.model.Post, java.lang.String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.util.DBSession)
+	 */
 	@Override
 	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session) {
 		final String userName = post.getUser().getName();
@@ -1033,8 +1036,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			final String intraHash = post.getResource().getIntraHash();
 			/*
-			 * the resource with the "old" intrahash, i.e. the one that was sent
-			 * within the create/update resource request
+			 * the resource with the "old" intrahash, that was sent
+			 * within the update resource request
 			 */
 			final Post<R> oldPost;
 			if (present(oldHash)) {
@@ -1273,9 +1276,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected boolean deletePost(String userName, String resourceHash, boolean update, DBSession session) {
 		session.beginTransaction();
 		try {
-			final List<Post<R>> posts = this.getPostsByHashForUser(userName, resourceHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
+			final Post<R> post = this.getPostByHashForUser(userName, resourceHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
 			
-			if (posts.isEmpty()) {
+			if (!present(post)) {
 				log.debug("post with hash \"" + resourceHash + "\" not found");
 				return false;
 			}
@@ -1284,14 +1287,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			final P param = this.createParam(userName, userName);
 			param.setHash(resourceHash);
 			
-			final Post<R> onePost = posts.get(0);
-			param.setRequestedContentId(onePost.getContentId());
+			param.setRequestedContentId(post.getContentId());
 			
 			if (!update) {
-				this.onPostDelete(onePost.getContentId(), session);
+				this.onPostDelete(post.getContentId(), session);
 			}
 			
-			this.tagDb.deleteTags(onePost, session);
+			this.tagDb.deleteTags(post, session);
 			
 			this.insertOrUpdatePostHash(param, session, true);
 			
