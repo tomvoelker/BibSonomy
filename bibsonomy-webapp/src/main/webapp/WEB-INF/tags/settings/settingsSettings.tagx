@@ -234,7 +234,7 @@
            <tr>
             <td><fmt:message key="settings.confirm"/></td>
             <td>
-		          <form:select path="confirmDelete">
+		          <form:select path="user.settings.confirmDelete">
 		            <form:option value="true"><fmt:message key="settings.yes"/></form:option>
 		            <form:option value="false"><fmt:message key="settings.no"/></form:option>
 		          </form:select>
