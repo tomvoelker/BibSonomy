@@ -29,6 +29,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public final static int SETTINGS_IDX = 1;
 	public final static int IMPORTS_IDX = 2;
 	
+	/**
+	 * action can be logging, api or layoutTagPost
+	 * this three types determine the different possible actions which will be handled 
+	 * by this controller for the settings.settings site
+	 */
+	String action;
+	
 	private User user;
 	
 	private boolean hasOwnGroup;
@@ -300,5 +307,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	public void setNewPasswordRetype(String newPasswordRetype) {
 		this.newPasswordRetype = newPasswordRetype;
+	}
+	
+	public String getAction() {
+		return this.action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
 	}
 }
