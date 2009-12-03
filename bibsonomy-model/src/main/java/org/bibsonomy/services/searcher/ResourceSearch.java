@@ -23,6 +23,7 @@
 
 package org.bibsonomy.services.searcher;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ import org.bibsonomy.model.User;
 /**
  * Interface for resource search operations
  * 
- * @author dzo
+ * @author fei, dzo
  *
  * @param <R>
  */
@@ -70,11 +71,26 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param offset
 	 * @return
 	 */
-	ResultList<Post<R>> searchAuthor(String group, String search,
+	public ResultList<Post<R>> searchAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,
 			String firstYear, String lastYear, List<String> tagList, int limit,
 			int offset);
 
+	/**
+	 * <em>/search/ein+lustiger+satz+group%3AmyGroup</em><br/><br/>
+	 * 
+	 * @param groupId group to search
+	 * @param visibleGroupIDs groups the user has access to
+	 * @param search the search query
+	 * @param userName
+	 * @param limit number of posts to display
+	 * @param offset first post in the result list
+	 * @param systemTags NOT IMPLEMENTED 
+	 * @return
+	 */
+	public ResultList<Post<R>> searchGroup(final int groupId, final List<Integer> visibleGroupIDs, final String search, final String authUserName, final int limit, final int offset, Collection<? extends Tag> systemTags);
+
+	
 	/**
 	 * get tag cloud for given author
 	 * 
