@@ -4,7 +4,9 @@ import java.sql.SQLException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.util.ExceptionUtils;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
@@ -30,13 +32,15 @@ public class DBSessionImpl implements DBSession {
 	/** if one virtual transaction is aborted, no other virtual transaction will become committed until all virtual transactions are ended */
 	private boolean aborted;
 	private boolean closed;
-
+	private final DatabaseException databaseException;
+	
 	protected DBSessionImpl(final SqlMapSession sqlMap) {
 		this.sqlMap = sqlMap;
 		this.transactionDepth = 0;
 		this.uncommittedDepth = 0;
 		this.aborted = false;
 		this.closed = false;
+		this.databaseException=new DatabaseException();
 	}
 
 	/**
@@ -98,11 +102,17 @@ public class DBSessionImpl implements DBSession {
 			if (this.transactionDepth == 0) {
 				if (this.uncommittedDepth == 0) {
 					if (this.aborted == false) {
-						try {
-							this.sqlMap.commitTransaction();
-							log.info("committed");
-						} catch (final SQLException ex) {
-							ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't commit transaction");
+						if (!this.databaseException.hasErrorMessages()){
+							// everything went well during the whole session
+							try {
+								this.sqlMap.commitTransaction();
+								log.info("committed");
+							} catch (final SQLException ex) {
+								ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't commit transaction");
+							}
+						} else {
+							log.info("Couldn't commit transaction due to errors during the session");
+							throw databaseException;
 						}
 					}
 				}
@@ -277,5 +287,11 @@ public class DBSessionImpl implements DBSession {
 			throw new UnsupportedOperationException();
 		}
 		return rVal;
+	}
+	
+	@Override
+	public void addError(String key, ErrorMessage errorMessage) {
+		this.databaseException.addToErrorMessages(key, errorMessage);
+		
 	}
 }

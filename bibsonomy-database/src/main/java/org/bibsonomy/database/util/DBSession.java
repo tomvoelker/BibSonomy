@@ -2,6 +2,8 @@ package org.bibsonomy.database.util;
 
 import java.io.Closeable;
 
+import org.bibsonomy.common.errors.ErrorMessage;
+
 /**
  * This interface represents a session for the database. A session normally
  * corresponds to a database connection.
@@ -62,4 +64,11 @@ public interface DBSession extends Closeable {
 	 *            result object if supplied, null otherwise
 	 */
 	public Object transactionWrapper(final String query, final Object param, Object result, final StatementType statementType, final QueryFor queryFor, final boolean ignoreException);
+
+	/**
+	 * TODO: Add java-doc comment
+	 * @param key
+	 * @param error
+	 */
+	public void addError(String key, ErrorMessage errorMessage);
 }
