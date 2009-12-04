@@ -1,6 +1,6 @@
 /**
  *  
- *  BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
+ *  BibSonomy-Common - Common things (e.g., error Messages, enums, utils, etc.)
  *   
  *  Copyright (C) 2006 - 2009 Knowledge & Data Engineering Group, 
  *                            University of Kassel, Germany
@@ -30,51 +30,60 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.common.errors.ErrorMessage;
+
 /**
- * @author nosebrain
+ * @author dzo
  * @version $Id$
  */
 public class DatabaseException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	
-	private final Map<String, List<AbstractDatabaseException>> exceptions;
+	private final Map<String, List<ErrorMessage>> errorMessages;
 	
 	/**
 	 * initiate map
 	 */
 	public DatabaseException() {
-		this.exceptions = new HashMap<String, List<AbstractDatabaseException>>();
+		this.errorMessages = new HashMap<String, List<ErrorMessage>>();
 	}
 	
 	/**
 	 * @param hash the hash of the post
-	 * @return the exceptions for the post (represented by its hash)
+	 * @return the error Messages for the post (represented by its hash)
 	 */
-	public List<AbstractDatabaseException> getExceptions(final String hash) {
-		return this.exceptions.get(hash);
+	public List<ErrorMessage> getErrorMessages(final String hash) {
+		return this.errorMessages.get(hash);
 	}
 	
 	/**
-	 * adds an exception to the list of exceptions for the specified post (hash)
+	 * adds an error Message to the list of error Messages for the specified post (hash)
 	 * @param hash the hash of the post
-	 * @param e the exception to add
+	 * @param errorMessage the error Message to add
 	 */
-	public void addToExceptions(final String hash, final AbstractDatabaseException e) {
-		List<AbstractDatabaseException> list = this.exceptions.get(hash);
+	public void addToErrorMessages(final String hash, final ErrorMessage errorMessage) {
+		List<ErrorMessage> list = this.errorMessages.get(hash);
 		
 		if (!present(list)) {
-			list = new LinkedList<AbstractDatabaseException>();
-			this.exceptions.put(hash, list);
+			list = new LinkedList<ErrorMessage>();
+			this.errorMessages.put(hash, list);
 		}
 		
-		list.add(e);
+		list.add(errorMessage);
 	}
 	
 	/**
 	 * @param hash	the hash of the post
-	 * @return true if post has exceptions
+	 * @return true if post has error Messages
 	 */
-	public boolean hasExceptions(final String hash) {
-		return present(this.exceptions.get(hash));
+	public boolean hasErrorMessages(final String hash) {
+		return present(this.errorMessages.get(hash));
+	}
+	
+	/**
+	 * @return true if any post has error Messages
+	 */
+	public boolean hasErrorMessages() {
+		return (!this.errorMessages.isEmpty());
 	}
 }
