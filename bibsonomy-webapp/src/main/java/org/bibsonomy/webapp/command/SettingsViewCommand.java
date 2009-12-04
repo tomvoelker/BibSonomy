@@ -104,6 +104,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private String endHash = null;
 	
 	/**
+	 * delete the account yes or no
+	 */
+	private String delete = null;
+	
+	/**
 	 * Constructor.
 	 */
 	public SettingsViewCommand() {
@@ -305,5 +310,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	public void setAction(String action) {
 		this.action = action;
+	}
+
+	public String getDelete() {
+		return this.delete;
+	}
+
+	public void setDelete(String delete) {
+		this.delete = delete;
 	}
 }
