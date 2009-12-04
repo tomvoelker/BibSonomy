@@ -13,6 +13,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:edit="urn:jsptagdir:/WEB-INF/tags/actions/edit"
+	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 >
     
 	
@@ -62,6 +64,8 @@
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
   								<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
+  								<input type="hidden" name="selTab" value="0" />
+  								
                                 <post:publicationRequiredFields post="${post}"/>
                                 
                                 <input type="submit" class="fsFormSubmit" style="clear:both; float:left" name="submit" value="${post_button}"/>
@@ -90,7 +94,8 @@
     						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
     							
     							<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
-                  
+                  				<input type="hidden" name="selTab" value="1" />
+                  				
     							<div class="fsRow">
     						      <label class="fsLabel" for="selection"><fmt:message key="post_bibtex.pub_snippet.snippet" />*</label>
     						      <textarea class="fsInput" name="selection" rows="10" onkeyup="sz(this);" ><!-- don't delete me --></textarea>
@@ -135,10 +140,11 @@
 					<h2><fmt:message key="post_bibtex.upload.heading" /></h2>
 					<p><fmt:message key="post_bibtex.upload.description" /></p>
 
-					<form name="upload" method="post" enctype="multipart/form-data" action="/upload_batch">
+					<form name="upload" method="post" enctype="multipart/form-data" action="/import/publications">
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
 									<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
+									<input type="hidden" name="selTab" value="2" />
 									
 								  	<!-- +++BLOCK ONE+++ -->
 								  	<div class="fsRow">
@@ -255,6 +261,7 @@
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
 								
 									<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
+									<input type="hidden" name="selTab" value="3" />
 									
 									 <form name="upload" method="post" action="/editPublication">
                                              <div class="fsRow">
@@ -279,10 +286,42 @@
 				<!-- ================ -->
 			</c:choose>
 		
-            
+			<c:if test="${command.extendedView}">
+				<h2><fmt:message key=""/></h2>
+				<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
+						<edit:batchEditContent 	formAction="${command.formAction}" 
+			        							listView="${command.bibtex}" 
+			        							otherPostsUrlPrefix="bla" 
+			        							listViewStartParamName="bibtex.start">
+		        							
+							<jsp:attribute name="shortPostDescription">
+								<bib:shortDescription post="${post}"/>
+							</jsp:attribute>
+							
+							<jsp:attribute name="title">  
+								<bib:title post="${post}"/>
+							</jsp:attribute>
+								
+				   			<jsp:attribute name="desc">
+				   				<bib:desc post="${post}"/>
+				   			</jsp:attribute>
+				      		
+				      		<jsp:attribute name="bmicon"> 
+				      			<bib:bmicon post="${post}" loginUserName="${loginUser.name}" />
+				      		</jsp:attribute>
+				      		
+				      		<jsp:attribute name="actions">
+				      			<actions post="${post}" loginUserName="${loginUser.name}" disableResourceLinks="${false}"/>
+				      		</jsp:attribute>
+			        </edit:batchEditContent>
+		        </fieldset> 
+			</c:if>            
 			
 		</div>
 		</jsp:attribute>
+		
+		
+		
 		<jsp:attribute name="sidebar">
 			<h3 style="font-size: large;">
 				<fmt:message key="buttons.bookmarklet">
@@ -300,12 +339,14 @@
 				<fmt:message key="post.resource.hint1"/>
 			</p>
 		</jsp:attribute>
+    	
+    	
     
-    
-    
+		    
     
     
         <jsp:attribute name="beforeBodyClose">
+        
           <script type="text/javascript">
              //<mtl:cdata>
              <![CDATA[
@@ -324,4 +365,6 @@
        </jsp:attribute>
     
 	</layout:tabLayout>
+	
+	
 </jsp:root>

@@ -9,6 +9,7 @@
     xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+    xmlns:edit="urn:jsptagdir:/WEB-INF/tags/actions/edit"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
   
@@ -18,19 +19,21 @@
     <jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
     <jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
-  
+  	<jsp:directive.attribute name="formAction" type="java.lang.String" required="false"/>
+  	
     <jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post"/>
     <jsp:directive.attribute name="title" fragment="true" required="true"/>
     <jsp:directive.attribute name="desc" fragment="true" required="true"/>
     <jsp:directive.attribute name="actions" fragment="true" required="true"/>
     <jsp:directive.attribute name="bmicon" fragment="true" required="true"/>
+    
 
     <jsp:directive.variable name-given="post" scope="NESTED"/>
 
 
     <!-- page title -->
     <fmt:message key="post.meta.edit" var="pageTitle"/>
-    <fmt:message key="batchedit.button.update" var="buttonUpdate"/>
+    
     
     <!-- TODO: i18n -->
     <layout:layout requPath="${requPath}" 
@@ -46,175 +49,33 @@
 
 
       <jsp:attribute name="content">
-
+		<h2><fmt:message key="batchedit.info"/></h2>
         <div id="general_100">
         
-          
-          <h2><fmt:message key="batchedit.info"/></h2>
-
-          <c:if test="${not empty listView.list}">
-            
-            <form id="batchedit" action="/batchEdit_new" method="POST">
-              <table>
-
-                <tr>
-                  <td style="vertical-align: middle;"><input type="text" name="tags" size="40"/></td>
-                  <td style="background-color: #eee;"><fmt:message key="batchedit.allTags"/></td>
-                  <td style="background-color: #eee;"><input type="checkbox" name="all" id="deleteAllId" onclick="deleteAll()"/> <fmt:message key="batchedit.deleteAll"/></td>
-                </tr>
-
-                <tr>
-                  <td style="text-align:center;" colspan="2">
-                    <div class="kiste">
-                      <rc:nextprev disableListNavigation="" disableActions="true" listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>   
-                      ${mtl:ch('nbsp')}
-                    </div>
-                  </td>
-                  <td>
-                    <input type="submit" value="${buttonUpdate}"/>
-                  </td>
-                </tr>
-                
-                <tr>
-                  <th><fmt:message key="batchedit.yourTags"/></th>
-                  <th><fmt:message key="batchedit.yourPosts"/></th>
-                  <th><fmt:message key="batchedit.deletePostQ"/></th>      
-                </tr>                  
-                  
-                <c:forEach var="post" items="${listView.list}">
-                  <c:choose>
-                    <c:when test="${post.user.name eq command.context.loginUser.name}">
-                      <tr>
-                        <td>
-                
-                          <input type="text" name="newTags['${post.resource.intraHash}']" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
-                          <!-- to see if the tags have been changed, we also send the original tags -->
-                          <input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
-                        </td>
-                        <td class="chunkybib">
-                          <jsp:invoke fragment="shortPostDescription"/>
-                        </td>   
-                        <td>
-                          <input type="checkbox" name="delete['${post.resource.intraHash}']" onclick="checkDeleteAll(this)" /> <fmt:message key="batchedit.deletePost"/>
-                        </td>
-                      </tr>
-                    </c:when>
-                    <c:otherwise>
-                      <!-- remember, that we have found posts not owned by the user to show them at end of page -->
-                      <c:set var="otherPosts" value="true"/>
-                    </c:otherwise>
-                  </c:choose>
-                </c:forEach> 
-
-                <tr>
-                  <td style="text-align:center;" colspan="2">
-                    <div class="kiste">
-                      <rc:nextprev disableListNavigation="" disableActions="true" listView="${listView}" listViewStartParamName="${listViewStartParamName}"/>   
-                      ${mtl:ch('nbsp')}
-                    </div>
-                  </td>
-                  <td>
-                    <input type="submit" value="${buttonUpdate}"/>
-                    <input type="hidden" name="ckey" value="${ckey}"/>
-                    <!-- TODO: somehow a hack: removing the bedit(bib|url)/ by cutting at the first '/' -->
-                    <input type="hidden" name="referer" value="/${fn:escapeXml(fn:substringAfter(requPath, '/'))}"/>
-                  </td>
-                </tr>
-                   
-              </table>
-            </form>
-            
-
-            <c:if test="${not empty otherPosts}">
-
-
-              <h2 style="margin-top: 2em;"><fmt:message key="batchedit.disregardedPosts"/></h2>
-              <p><fmt:message key="batchedit.disregardedPosts.info"/></p>
-  
-              <fmt:message key="post.meta.own_post" var="alreadyOwn"/>
-              <fmt:message key="post.meta.copy_this_post" var="copyThisPost"/>
-      
-              <!-- iterate over a list of resources and create the list -->
-              <ul id="${listView.resourcetype}">
-                <c:forEach var="post" items="${listView.list}">
-            
-                  <c:if test="${post.user.name ne command.context.loginUser.name}">
-                    <!-- show one post -->
-                    <rc:post post="${post}" otherPostsUrlPrefix="${otherPostsUrlPrefix}" loginUserName="${command.context.loginUser.name}" copyThisPost="${copyThisPost}" alreadyOwn="${alreadyOwn}">
-      					<jsp:attribute name="title">  <jsp:invoke fragment="title"/>  </jsp:attribute>
-      					<jsp:attribute name="actions"><jsp:invoke fragment="actions"/></jsp:attribute>
-      					<jsp:attribute name="bmicon"> <jsp:invoke fragment="bmicon"/> </jsp:attribute>
-      					<jsp:attribute name="desc">   <jsp:invoke fragment="desc"/>   </jsp:attribute>
-                    </rc:post>
-                  </c:if>
-                
-                </c:forEach>
-              </ul>
-            
-            </c:if>
-            
-          </c:if>
-          
-
-        </div>
-
-        <!-- TODO: i18n -->
-        <script type="text/javascript">
-          <![CDATA[            
-            function deleteAll() {
-			  var deleteAllCheckBox = document.getElementById("deleteAllId");
-			  if (!deleteAllCheckBox) {
-				  // not found
-				  return;
-			  }
-			  
-			  var deleteAllChecked = deleteAllCheckBox.checked
-
-              if (deleteAllChecked) {
-                if (!confirm(getString("batchedit.deleteAll.confirm"))) {
-                  deleteAllCheckBox.checked = false;
-                  return;
-                }
-              }
-            
-              var inp = document.getElementById("batchedit").getElementsByTagName("input");
-              for (var i = 0; i<inp.length; i++) {
-                if (inp[i].type.toLowerCase() == "checkbox") {
-                  inp[i].checked = deleteAllChecked;
-                }
-              }
-            }
-
-			function checkDeleteAll(input) {
-				if (input) {
-					if (input.type.toLowerCase() == "checkbox") {
-						if (!input.checked) {
-							document.getElementById("deleteAllId").checked = false;
-						} else {
-							var oneNotChecked = false;
-							var inp = document.getElementById("batchedit").getElementsByTagName("input");
-							for (var i= 0; i<inp.length; i++) {
-								if (inp[i].type.toLowerCase() == "checkbox") {
-					                  if (!inp[i].checked && inp[i].id != "deleteAllId") {
-						                  oneNotChecked = true;
-						                  break;
-					                  }
-					            }
-							}
-
-							if (!oneNotChecked) {
-								// all posts are marked to delete
-								document.getElementById("deleteAllId").checked = true;
-							}
-						}
-					}
-				}
-			}
-            
-            maximizeById("general");
-          ]]>
-        </script>
-
+        <edit:batchEditContent 	formAction="${formAction}" 
+        						listView="${listView}" 
+        						otherPostsUrlPrefix="${otherPostsUrlPrefix}" 
+        						listViewStartParamName="${listViewStartParamName}"  >
+			<jsp:attribute name="shortPostDescription">
+				<jsp:invoke fragment="shortPostDescription"/>
+			</jsp:attribute>
+			<jsp:attribute name="title">  
+				<jsp:invoke fragment="title"/>
+			</jsp:attribute>
+				
+   			<jsp:attribute name="desc">
+   				<jsp:invoke fragment="desc"/>
+   			</jsp:attribute>
+      		
+      		<jsp:attribute name="bmicon"> 
+      			<jsp:invoke fragment="bmicon"/>
+      		</jsp:attribute>
+      		
+      		<jsp:attribute name="actions">
+      			<jsp:invoke fragment="actions"/>
+      		</jsp:attribute>
+        </edit:batchEditContent> 
+        </div> 
       </jsp:attribute>
     
     </layout:layout>
