@@ -3,7 +3,8 @@ package org.bibsonomy.webapp.controller.actions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.webapp.command.actions.DeleteUserCommand;
+import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -19,31 +20,45 @@ import org.springframework.validation.Errors;
  * @author daill
  * @version $Id$
  */
-public class DeleteUserController implements MinimalisticController<DeleteUserCommand>, ErrorAware, ValidationAwareController<DeleteUserCommand> {
+public class DeleteUserController implements MinimalisticController<SettingsViewCommand>, ErrorAware, ValidationAwareController<SettingsViewCommand> {
 
 	private static final Log log = LogFactory.getLog(DeleteUserController.class);
 	
 	private LogicInterface logic;
 	private Errors errors = null;
+	private static final String TAB_URL = "/settingsnew";
 
-	public DeleteUserCommand instantiateCommand() {
-		return new DeleteUserCommand();
+	public SettingsViewCommand instantiateCommand() {
+		final SettingsViewCommand command = new SettingsViewCommand();
+		command.setTabURL(TAB_URL);
+		return command;
 	}
 
-	public View workOn(DeleteUserCommand command) {
+	public View workOn(SettingsViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		
 		/*
-		 * user has to be logged in to delete homself
+		 * user has to be logged in to delete himself
 		 */
-		if (!context.isUserLoggedIn()){
+		if (!context.isUserLoggedIn()) {
 			errors.reject("error.general.login");
+			return Views.SETTINGSPAGE;
+		} else {
+			command.setUser(context.getLoginUser());
+		}
+		
+		/**
+		 * go back to the settings page and display errors from command field
+		 * validation
+		 */
+		if (errors.hasErrors()) {
+			return Views.SETTINGSPAGE;
 		}
 		
 		/*
 		 * check the ckey
 		 */
-		if (context.isValidCkey() && !errors.hasErrors()){
+		if (context.isValidCkey()){
 			log.debug("User is logged in, ckey is valid ... check the security answer");
 			
 			/*
@@ -74,7 +89,7 @@ public class DeleteUserController implements MinimalisticController<DeleteUserCo
 		
 
 		if (errors.hasErrors()){
-			return Views.ERROR;
+			return Views.SETTINGSPAGE;
 		}
 		
 		return new ExtendedRedirectView("/logout");
@@ -95,11 +110,11 @@ public class DeleteUserController implements MinimalisticController<DeleteUserCo
 		this.errors = errors;
 	}
 
-	public Validator<DeleteUserCommand> getValidator() {
+	public Validator<SettingsViewCommand> getValidator() {
 		return new DeleteUserValidator();
 	}
 
-	public boolean isValidationRequired(DeleteUserCommand command) {
+	public boolean isValidationRequired(SettingsViewCommand command) {
 		return true;
 	}	
 
