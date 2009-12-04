@@ -41,6 +41,7 @@
       pageTitle="${pageTitle}" 
       searchString=""
       selectedNaviTab="nav_my"
+      
     >
 
       <jsp:attribute name="heading">
@@ -55,7 +56,10 @@
         <edit:batchEditContent 	formAction="${formAction}" 
         						listView="${listView}" 
         						otherPostsUrlPrefix="${otherPostsUrlPrefix}" 
-        						listViewStartParamName="${listViewStartParamName}"  >
+        						listViewStartParamName="${listViewStartParamName}"
+        						checkboxAllLabelKey="batchedit.deleteAll"
+      							checkboxLabelKey="batchedit.deletePostQ"
+      							submitKey="batchedit.button.update"  >
 			<jsp:attribute name="shortPostDescription">
 				<jsp:invoke fragment="shortPostDescription"/>
 			</jsp:attribute>
