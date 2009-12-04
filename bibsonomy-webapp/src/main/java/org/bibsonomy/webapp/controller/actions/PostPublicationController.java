@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +40,7 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.EditPostValidator;
+import org.bibsonomy.webapp.validation.EditPublicationValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -156,13 +159,28 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				file = uploadedDocument.getFile();
 				reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
 			} catch (FileNotFoundException ex1) {
-				errors.reject("error.upload.failed", "an error occurred during accessing your file.");
+				errors.reject("error.upload.failed", "An error occurred during accessing your file.");
+				
+				/**
+				 * BACK TO THE IMPORT/PUBLICATIONS VIEW
+				 */
+				return ShowEnterPublicationView(command);
+				
 			} catch (Exception ex1) {
-				errors.reject("error.upload.failed", "an error occurred during accessing your file.");
+				errors.reject("error.upload.failed", "An error occurred during accessing your file.");
+				
+				/**
+				 * BACK TO THE IMPORT/PUBLICATIONS VIEW
+				 */
+				return ShowEnterPublicationView(command);
+				
 			}
 
 			if(!ValidationUtils.present(reader))
 			{
+				/**
+				 * BACK TO THE IMPORT/PUBLICATIONS VIEW
+				 */
 				return ShowEnterPublicationView(command);
 			}
 
@@ -185,7 +203,13 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 					EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
 					reader = (BufferedReader) converter.EndnoteToBibtex(reader);
 				} catch (Exception ex) {
-					errors.reject("error.upload.failed", "the submitted file does not contain valid endnotes.");
+					errors.reject("error.upload.failed", "The submitted file does not contain valid endnotes.");
+					
+					/**
+					 * BACK TO THE IMPORT/PUBLICATIONS VIEW
+					 */
+					return ShowEnterPublicationView(command);
+					
 				}
 			}
 
@@ -197,6 +221,12 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				snippet = convertFileToString(reader);
 			} catch (Exception ex) {
 				errors.reject("error.upload.failed", "an error occurred during accessing your file.");
+				
+				/**
+				 * BACK TO THE IMPORT/PUBLICATIONS VIEW
+				 */
+				return ShowEnterPublicationView(command);
+				
 			}
 
 			/*
@@ -209,12 +239,21 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			 * 3 opportunities that are ok: bibtex snippet or file and endnote file. 
 			 */
 			errors.reject("error.upload.failed", "there was no valid bibtex or endnote entered.");
+			
+			/**
+			 * BACK TO THE IMPORT/PUBLICATIONS VIEW
+			 */
 			return ShowEnterPublicationView(command);
+			
 		}
 
 		if (!ValidationUtils.present(snippet)) 
 		{
 			errors.reject("error.upload.failed", "there was no valid bibtex or endnote entered.");
+			
+			/**
+			 * BACK TO THE IMPORT/PUBLICATIONS VIEW
+			 */
 			return ShowEnterPublicationView(command);
 		}
 
@@ -225,33 +264,54 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		 * Parse the bibtex snippet	
 		 */
 		List<Post<BibTex>> bibtex = null;
-		ParseException[] parseErrors = null;
+		Set<Integer> parseErrorLines = null;
 		try {
 			PostBibTeXParser parser = new PostBibTeXParser();
 			parser.setDelimiter(command.getDelimiter());
 			parser.setWhitespace(command.getWhitespace());
 			parser.setTryParseAll(true);
 			bibtex = parser.parseBibTeXPosts(snippet);
-			//fetch parser errors here
-			parseErrors = parser.getCaughtExceptions();
+			
+			/**
+			 * fetch PARSER ERRORS here
+			 */
+			parseErrorLines = this.getErroneousLineNumbers(parser.getCaughtExceptions());
+			
 		} catch (ParseException ex) {
-			errors.reject("error.upload.failed", "an error occurred during parsing process of your file.");
+			errors.reject("error.upload.failed", "An error occurred during parsing process of your file.");
+			
+			/**
+			 * BACK TO THE IMPORT/PUBLICATIONS VIEW
+			 */
+			return ShowEnterPublicationView(command);
+			
 		} catch (IOException ex) {
-			errors.reject("error.upload.failed", "an error occurred during parsing process of your file.");
-			ex.printStackTrace();
+			errors.reject("error.upload.failed", "An error occurred during parsing process of your file.");
+			
+			/**
+			 * BACK TO THE IMPORT/PUBLICATIONS VIEW
+			 */
+			return ShowEnterPublicationView(command);
+			
 		}
-	
+		
 		
 		if(!ValidationUtils.present(bibtex))
 		{
 			errors.reject("error.upload.failed", "there was no bibtex or endnote entered.");
+			
+			/**
+			 * BACK TO THE IMPORT/PUBLICATIONS VIEW
+			 */
 			return ShowEnterPublicationView(command);
+			
 		}
 		
 		/*
 		 * Prepare the posts for the edit operations:
 		 * add additional information from the form to the post (description, groups)... present in both upload tabs
 		 */
+		EditPublicationValidator validator = new EditPublicationValidator();
 		User loginUser = command.getContext().getLoginUser();
 		for(Post<BibTex> bib : bibtex)
 		{
@@ -259,16 +319,32 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			bib.setUser(loginUser);
 			//set visibility of this post for the groups, the user specified 
 			initPostGroups(command, bib);
-			//the descriiption
+			//the description
 			bib.setDescription(command.getDescription());
 			//if not present, a valid date has to be set
 			if(!ValidationUtils.present(bib.getDate()))
 				setDate(bib, loginUser.getName());
-			
 		}
 		
-		
-		
+		/**
+		 * Check for INCOMPLETION ERRORS here
+		 */
+		validator.validate(command, errors);
+
+		/**
+		 * If there are errors (incomplete/parse), we dont store them
+		 */
+		if(errors.hasErrors())
+		{
+			/**
+			 * BACK TO THE IMPORT/PUBLICATIONS VIEW
+			 */
+			ListCommand<Post<BibTex>> postListCommand = new ListCommand<Post<BibTex>>(command);
+			postListCommand.setList(bibtex);
+			command.setBibtex(postListCommand);
+			
+			return ShowEnterPublicationView(command, true);
+		}
 		
 		/*
 		 * if number of bibtexes contained is one, it can be edited in details, else we can use the 
@@ -286,17 +362,16 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			
 			ListCommand<Post<BibTex>> postListCommand = new ListCommand<Post<BibTex>>(command);
 			postListCommand.setList(bibtex);
-			
 			command.setBibtex(postListCommand);
 			
 			/**********************
 			 * STORE THE BOOKMARKS
 			 **********************/
 			// stores all newly added bookmarks
-			final Map<String, String> newBookmarkEntries = new HashMap<String, String>();
+			final HashMap<String, String> newBookmarkEntries = new HashMap<String, String>();
 
 			// stores all the updated bookmarks
-			final Map<String, String> updatedBookmarkEntries = new HashMap<String, String>();
+			final HashMap<String, String> updatedBookmarkEntries = new HashMap<String, String>();
 			
 			// stores all the non imported bookmarks
 			final List<String> nonCreatedBookmarkEntries = new ArrayList<String>();
@@ -304,6 +379,14 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			if(!command.isEditBeforeImport())
 			{
 				savePublicationsForUser(postListCommand, command.isOverwrite(), loginUser, newBookmarkEntries, updatedBookmarkEntries, nonCreatedBookmarkEntries);
+				/**
+				 * Set the ignored posts in the command
+				 */
+				command.setIgnoredPosts(nonCreatedBookmarkEntries);
+				/**
+				 * Set the updated posts in the command
+				 */
+				command.setUpdatedPosts(updatedBookmarkEntries);
 				command.setFormAction(ACTION_SAVE_BEFORE_EDIT);
 			} else { 
 			/*
@@ -317,9 +400,17 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	}
 
 	
+	private View ShowEnterPublicationView(PostPublicationCommand command, boolean hasErrors)
+	{
+		if(hasErrors)
+			command.setExtendedView(true);
+		return Views.POST_PUBLICATION;
+	}
+	
+	
 	private View ShowEnterPublicationView(PostPublicationCommand command)
 	{
-		return Views.POST_PUBLICATION;
+		return ShowEnterPublicationView(command, false);
 	}
 	
 	private void savePublicationsForUser(ListCommand<Post<BibTex>> postListCommand, boolean isOverwrite, User user, Map<String, String> newBookmarkEntries, Map<String, String> updatedBookmarkEntries, List<String> nonCreatedBookmarkEntries)
@@ -350,8 +441,9 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				newBookmarkEntries.put(createdPostHash.get(0), title);
 			} catch (IllegalArgumentException e) {
 				// checks whether the update bookmarks checkbox is checked
+				
 				if (isOverwrite) {
-
+					
 					final List<String> createdPostHash = logic.updatePosts((List<Post<?>>) singletonList, PostUpdateOperation.UPDATE_ALL);
 					updatedBookmarkEntries.put(createdPostHash.get(0), title);
 				} else {
@@ -361,6 +453,21 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		}
 	}
 
+	
+	private Set<Integer> getErroneousLineNumbers(ParseException[] exceptions)
+	{
+		Set<Integer> result = new HashSet<Integer>();
+		final Pattern lineNumberPattern = Pattern.compile("([0-9]+).+");
+		for(ParseException exceptIter : exceptions)
+		{
+			Matcher patMat = lineNumberPattern.matcher(exceptIter.getMessage());
+			if(patMat.find())
+				result.add(Integer.parseInt((patMat.group(1).toLowerCase())));
+		}
+		return result; 
+	}
+	
+	
 	/**
 	 * FIXME: 
 	 * Such a method should be put into FileUtils (maybe it already exists there) 
