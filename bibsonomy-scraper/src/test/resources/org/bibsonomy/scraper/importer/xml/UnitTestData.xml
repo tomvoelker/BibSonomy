@@ -7,49 +7,49 @@
 		<URL>http://portal.acm.org/citation.cfm?id=1015428&amp;coll=Portal&amp;dl=ACM&amp;CFID=22531872&amp;CFTOKEN=18437036</URL>
 		<BibFile>ACMBasicScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_2">
-		<TestDescription>URL test for a single aifb publication.</TestDescription>
-		<URL>http://www.aifb.kit.edu/web/Inproceedings867</URL>
+		<TestDescription>URL test for a single aifb publication (article).</TestDescription>
+		<URL>http://www.aifb.kit.edu/web/Article1764</URL>
 		<BibFile>AIFBScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_3">
-		<TestDescription>URL test for list of aifb publikations from a user (standard language setting and showPublikationen path)</TestDescription>
-		<URL>http://www.aifb.uni-karlsruhe.de/Publikationen/showPublikationen?id_db=2096</URL>
+		<TestDescription>URL test for a single aifb publication (inproceeding).</TestDescription>
+		<URL>http://www.aifb.kit.edu/web/Inproceedings867</URL>
 		<BibFile>AIFBScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_4">
-		<TestDescription>URL test for list of aifb publikations from a user (english language setting and showPublikationen path)</TestDescription>
-		<URL>http://www.aifb.uni-karlsruhe.de/Publikationen/showPublikationen_english?id_db=2096</URL>
-		<BibFile>AIFBScraperUnitURLTest2.bib</BibFile>
-		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>false</Enabled>
-	</URLTest>
-	<URLTest id="url_5">
-		<TestDescription>URL test for list of publikations from a aifb Forschungsgruppe</TestDescription>
-		<URL>http://www.aifb.uni-karlsruhe.de/Forschungsgruppen/WBS/Publications/index_html?jahr=1991</URL>
+		<TestDescription>URL test for a single aifb publication (book).</TestDescription>
+		<URL>http://www.aifb.kit.edu/web/Book2015</URL>
 		<BibFile>AIFBScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
+	</URLTest>
+	<URLTest id="url_5">
+		<TestDescription>URL test for a single aifb publication (incollection).</TestDescription>
+		<URL>http://www.aifb.kit.edu/web/Incollection2044</URL>
+		<BibFile>AIFBScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_6">
-		<TestDescription>URL test for list of aifb publikations from a user (standard language setting and showPublikationen path)</TestDescription>
-		<URL>http://www.aifb.uni-karlsruhe.de/Personen/viewPerson?id_db=76</URL>
-		<BibFile>AIFBScraperUnitURLTest4.bib</BibFile>
+		<TestDescription>URL test for a single aifb publication (phdthesis).</TestDescription>
+		<URL>http://www.aifb.kit.edu/web/Phdthesis74</URL>
+		<BibFile>AIFBScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_7">
-		<TestDescription>URL test for list of aifb publikations from a user (english language setting and showPublikationen path)</TestDescription>
-		<URL>http://www.aifb.uni-karlsruhe.de/Personen/viewPersonenglish?id_db=76</URL>
-		<BibFile>AIFBScraperUnitURLTest4.bib</BibFile>
+		<TestDescription>URL test for a single aifb publication (techreport).</TestDescription>
+		<URL>http://www.aifb.kit.edu/web/Techreport2020</URL>
+		<BibFile>AIFBScraperUnitURLTest6.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_8">
 		<TestDescription>URL test for scraping a bibtex page from scitation.aip.org</TestDescription>
@@ -412,11 +412,11 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.editlib.EditLibScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_72">
-		<TestDescription>URL test for list of aifb publikations from a user (standard language setting and showPublikationen path)</TestDescription>
-		<URL>http://www.aifb.uni-karlsruhe.de/Publikationen/showPublikation_english?publ_id=907</URL>
-		<BibFile>AIFBScraperUnitURLTest5.bib</BibFile>
+		<TestDescription>URL test for a single aifb publication (unpublished).</TestDescription>
+		<URL>http://www.aifb.kit.edu/web/Unpublished3000</URL>
+		<BibFile>AIFBScraperUnitURLTest7.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_73">
 		<TestDescription>Cambridge Journals Url Test</TestDescription>
@@ -895,7 +895,7 @@
 		<URL>http://www.casesjournal.com/content/2/1/164</URL>
 		<BibFile>CasesJournalScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_155">
 		<TestDescription>acm test</TestDescription>
