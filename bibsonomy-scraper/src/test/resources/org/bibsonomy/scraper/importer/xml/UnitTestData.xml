@@ -895,7 +895,7 @@
 		<URL>http://www.casesjournal.com/content/2/1/164</URL>
 		<BibFile>CasesJournalScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.casesjournal.CasesJournalScraper</Scraper>
-		<Enabled>true</Enabled>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_155">
 		<TestDescription>acm test</TestDescription>
