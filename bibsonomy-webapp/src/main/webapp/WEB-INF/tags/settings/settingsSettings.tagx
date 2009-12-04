@@ -260,24 +260,26 @@
 		
 		<!-- delete account -->
 		<h2><fmt:message key="settings.deletemyaccount"/></h2>		
-		<form:form method="post" action="/actions/goodBye">
+		<form:form id="postForm" method="post" action="/actions/goodBye">
+		<div id="fsform">
+		<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
 		  <table>
-		     <tr>
-		       <td><fmt:message key="settings.really"/>?</td>
-		       <td><input type="text" name="delete" value="no" size="30"/></td>
-		       <td>
-		       <fmt:message key="settings.yestodeleteaccount">
-		       	<fmt:param><em>yes</em></fmt:param>
-		       </fmt:message>
-		       </td>
-		     </tr>
-		     <tr>
-		       <td><input type="submit" value="${deleteaccount}" />
-		           <input type="hidden" name="ckey" value="${ckey}"/>
-		       </td>
-		       <td></td>
-		       <td></td>
-		     </tr>
-		  </table>		
+		  	 <div class="fsRow">
+		     	<tr>
+		      	 	<td><fmt:message key="settings.really"/>?</td>
+		       		<td><input type="text" name="delete" value="no" size="30"/><div class="dissError" style="position:relative"><form:errors path="delete" /></div></td>
+		       		<td>
+		       			<fmt:message key="settings.yestodeleteaccount">
+		       			<fmt:param><em>yes</em></fmt:param>
+		       			</fmt:message>
+		       		</td>
+		    	</tr>
+		     </div>
+		  </table>			  
+		  <input type="hidden" name="ckey" value="${ckey}"/>
+		  <input type="hidden" name="selTab" value="1"/>
+		  <input type="submit" class="fsFormSubmit" style="clear:both; float:left" value="${deleteaccount}" />
+		</fieldset>
+		</div>	
 		</form:form>		
 </jsp:root>
