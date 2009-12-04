@@ -45,6 +45,7 @@
 								<value>file</value> 
 								<value>statusID</value>
 								<value>group</value>
+								<value>delete</value>
 								<!-- FIXME delete this if no errors occur 
 								value>tagboxStyle</value>
 								<value>tagSort</value>
