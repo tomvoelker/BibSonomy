@@ -8,7 +8,10 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.ErrorSource;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -69,13 +72,23 @@ public class ForGroupTag extends SystemTag {
 		// first check preconditions: user is member of given group
 		//--------------------------------------------------------------------
 		String groupName = getValue();
-		getPermissionDb().ensureMemberOfNonSpecialGroup(post.getUser().getName(), groupName, session);
-			
+		try {
+			getPermissionDb().ensureMemberOfNonSpecialGroup(post.getUser().getName(), groupName, session);
+		} catch (ValidationException ve) {
+			ErrorMessage errorMessage = new ErrorMessage(ErrorSource.SYSTEM_TAG, ve.getMessage());
+			session.addError(post.getResource().getIntraHash(), errorMessage);
+			// the user can not use this tag at all, therefore we omit trying anything else with this tag
+			return;
+		}
+		
 		
 		// get group and corresponding user
 		Group dbGroup = getLogicInterface().getGroupDetails(groupName);
 		if( dbGroup==null ) {
 			log.debug("Unknown group!");
+			ErrorMessage errorMessage = new ErrorMessage(ErrorSource.SYSTEM_TAG, "You can not use "+this.getName()+" because the group does not exist.");
+			session.addError(post.getResource().getIntraHash(), errorMessage);
+			// the user can not use this tag at all, therefore we omit trying anything else with this tag
 			return;
 		}
 		User dbUser = getLogicInterface().getUserDetails(groupName);

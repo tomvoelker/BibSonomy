@@ -16,6 +16,7 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.managers.AbstractDBLogicBase;
 import org.bibsonomy.database.params.BibTexParam;
@@ -158,7 +159,8 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		posts1.add(createTestPost(testUser1, tags1));
 		posts2.add(createTestPost(testUser2, tags2));
 		posts3.add(createTestPost(testUser1, tags2));
-		
+		//change posts3 to avoid douplicates 
+		posts3.get(0).getResource().setTitle("some other title");
 		// store posts
 		DBLogicUserInterfaceFactory logicFactory = new DBLogicUserInterfaceFactory(); 
 		logicFactory.setDbSessionFactory(getDbSessionFactory());
@@ -198,7 +200,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		try {
 			logic1.createPosts(posts3);
 			Assert.fail("User was not allowed to write post");
-		} catch (ValidationException ex){
+		} catch (DatabaseException ex){
 			// ignore
 		}
 		
@@ -206,7 +208,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		try {
 			logic1.createPosts(posts2);
 			Assert.fail("User was not allowed to write post");
-		} catch (ValidationException ex){
+		} catch (ValidationException ve){
 			// ignore
 		}
 	}

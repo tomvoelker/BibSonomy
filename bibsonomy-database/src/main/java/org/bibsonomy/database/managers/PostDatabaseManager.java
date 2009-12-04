@@ -17,10 +17,12 @@ import javax.naming.NamingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.ErrorSource;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
@@ -1017,8 +1019,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * check if user is trying to create a resource that already exists
 			 */
 			if (present(postInDB)) {
-				throw new IllegalArgumentException("Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
-						" already exists in your collection (intrahash: " + intraHash + ")");
+				//throw new IllegalArgumentException("Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
+				//		" already exists in your collection (intrahash: " + intraHash + ")");
+				ErrorMessage errorMessage = new ErrorMessage(ErrorSource.GENERAL, "Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
+				" already exists in your collection (intrahash: " + intraHash + ")");
+				session.addError(post.getResource().getIntraHash(), errorMessage);
+				// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
+				session.commitTransaction();
+				return false;
 			}
 			/*
 			 * ALWAYS get a new contentId

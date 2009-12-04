@@ -2,7 +2,8 @@ package org.bibsonomy.database.systemstags.executable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.enums.ErrorSource;
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
@@ -15,7 +16,7 @@ import org.bibsonomy.model.Resource;
  * This system tag creates a link to its post in the inbox of a specified user (the receiver)
  * The link to the post is its content_id
  * The link also receives all tags of the post including this one (deactivated and renamed to from:senderName)
- * The tag is deactivated (renamed to sent:receiverName)
+ * The tag is deactivated (renamed to sent:receiverName) instead of removed
  * @author sdo
  * @version $Id$
  */
@@ -47,7 +48,7 @@ public class ForFriendTag extends SystemTag {
 	}
 
 	@Override
-	public <T extends Resource> void performAfter(Post<T> post, final DBSession session) {
+	public <T extends Resource> void performAfter(final Post<T> post, final DBSession session) {
 		log.debug("performing after access");
 		String receiver = getValue().toLowerCase();
 		String sender = post.getUser().getName();
@@ -55,12 +56,20 @@ public class ForFriendTag extends SystemTag {
 		 * Check: Is the user (sender) in the list of friends of the receiver?
 		 */
 		if (!generalDb.isFriendOf(sender, receiver, session)){
-			throw new ValidationException("You can only send posts to users that have added you as a friend.");
+			//FIXME: Localize Strings
+			ErrorMessage errorMessage = new ErrorMessage(ErrorSource.SYSTEM_TAG, "You can not use "+this.getName() + "unless the receiver has added you as friend.");
+			session.addError(post.getResource().getIntraHash(), errorMessage);
+			// the is not allowed to use this tag, therefore we omit trying anything else with this tag
+			return;
 		}
 		if (sender.equals(receiver)) {
-			throw new ValidationException("You can not send posts to yourself.");
+			//FIXME: Localize Strings
+			ErrorMessage errorMessage = new ErrorMessage(ErrorSource.SYSTEM_TAG, "You can not use "+this.getName() + "because you can not send messages to yourself.");
+			session.addError(post.getResource().getIntraHash(), errorMessage);
+			// the is not allowed to use this tag, therefore we omit trying anything else with this tag
+			return;
 		}
-		//TODO: What if contentId is currently unknown? i.e. not stored in post => exception
+		//TODO: What if contentId is currently unknown (= not stored in post)? => Exception
 
 		/*
 		 * rename forFriendTag from send:userName to sent:userName
@@ -71,12 +80,10 @@ public class ForFriendTag extends SystemTag {
 		inboxDb.createInboxMessage(sender, receiver, post, session); // 3. store the inboxMessage with tag from:senderName 
 		this.getTag().setName("sent:" + receiver);	// 4. rename this tag for the sender (store receiverName)
 		this.tagDb.insertTags(post, session);		// 5. store the tags for the sender with the confirmation tag: sent:userName
-
-
 }
 
 	@Override
-	public <T extends Resource> void performBefore(Post<T> post, final DBSession session) {
+	public <T extends Resource> void performBefore(final Post<T> post, final DBSession session) {
 		log.debug("performing before acess");
 	}
 
