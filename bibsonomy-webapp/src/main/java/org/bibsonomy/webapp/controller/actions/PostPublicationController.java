@@ -404,6 +404,9 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	{
 		if(hasErrors)
 			command.setExtendedView(true);
+		/**
+		 * TODO: command.formAction setzen, auf den command, der die angekreuzten Publikationen speichert.
+		 */
 		return Views.POST_PUBLICATION;
 	}
 	
