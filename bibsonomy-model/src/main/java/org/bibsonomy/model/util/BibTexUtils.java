@@ -721,8 +721,16 @@ public class BibTexUtils {
 		Matcher m = p.matcher(bib);
 		
 		if (m.matches()) {
-			final int lastIndex = bib.lastIndexOf(",");
-			bibtex.replace(lastIndex, lastIndex + 1, "");
+			final int _lastIndex = bib.lastIndexOf(",");
+			bibtex.replace(_lastIndex, _lastIndex + 1, "");
+		}
+		
+		p = Pattern.compile(".*,\\s*}\\s*$", Pattern.MULTILINE | Pattern.DOTALL);
+		m = p.matcher(bibtex);
+		
+		if (m.matches()) {
+			final int _lastIndex = bib.lastIndexOf(",");
+			bibtex.replace(_lastIndex, _lastIndex + 1, "");	
 		}
 		
 		final int lastIndexOf = bibtex.lastIndexOf("}");
