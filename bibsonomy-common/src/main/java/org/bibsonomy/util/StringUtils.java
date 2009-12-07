@@ -31,6 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Some methods for handling strings.
@@ -240,7 +242,7 @@ public class StringUtils {
 	
 	/**
 	 * Translates a given key into the target locale and fills the String with the parameters given.
-	 * 
+	 * (TODO NOT TESTED YET!!!)
 	 * @param key -
 	 * 			the key for the localized String
 	 * @param parameters -
@@ -259,7 +261,16 @@ public class StringUtils {
 		
 		ResourceBundle res 	= ResourceBundle.getBundle(BUNDLE_NAME, targetLocale);
 		String translation	= res.getString(key);
-		//TODO add parameter
+		for(int i=0; i<parameters.size();i++)
+		{
+			if(parameters.get(i)==null)
+				throw new IllegalArgumentException("Illegal parameters used for variable substitution in localized strings.");
+			
+			String pattern = ".({"+i+"}).";
+			Pattern paramPatt = Pattern.compile(pattern); 
+			Matcher paramMatch = paramPatt.matcher(translation);
+			paramMatch.replaceFirst(parameters.get(i));
+		}
 		return translation;
 	}
     
