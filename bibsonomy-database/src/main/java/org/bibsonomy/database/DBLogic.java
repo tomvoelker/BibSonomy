@@ -819,37 +819,41 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<String> createPosts(final List<Post<?>> posts) {
+		//TODO: Which of these checks should result in a DatabaseException, which do we want to handle otherwise (=status quo)
 		this.ensureLoggedIn();
 		/*
 		 * check permissions
 		 */
 		for (final Post<?> post : posts) {
 			PostUtils.populatePostWithUser(post, this.loginUser);
-			
+
 			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 		}
 		/*
 		 * insert posts TODO: more efficient implementation (transactions,
 		 * deadlock handling, asynchronous, etc.)
 		 */
-		final List<String> hashes = new LinkedList<String>();
-		for (final Post<?> post : posts) {
-			hashes.add(this.createPost(post));
+
+		final DBSession session = openSession();
+		try {
+			final List<String> hashes = new LinkedList<String>();
+			for (final Post<?> post : posts) {
+				hashes.add(this.createPost(post, session));
+			}
+			return hashes;
+		} finally {
+			session.close();
 		}
-		
-		return hashes;
 	}
 	
 	/**
 	 * Adds a post in the database.
 	 */
-	private <T extends Resource> String createPost(final Post<T> post) {
-		final DBSession session = openSession();
-		try {
-			final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
-			post.getResource().recalculateHashes();
-			
-			this.validateGroups(post, session);
+	private <T extends Resource> String createPost(final Post<T> post, DBSession session) {
+		final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
+		post.getResource().recalculateHashes();
+		
+		this.validateGroups(post, session);
 			/*
 			 * change group IDs to spam group IDs
 			 */
@@ -860,9 +864,6 @@ public class DBLogic implements LogicInterface {
 			// if we don't get an exception here, we assume the resource has
 			// been successfully created
 			return post.getResource().getIntraHash();
-		} finally {
-			session.close();
-		}
 	}
 
 	/*
