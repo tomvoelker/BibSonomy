@@ -23,6 +23,8 @@
 
 package org.bibsonomy.common.errors;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 
 import org.bibsonomy.common.enums.ErrorSource;
@@ -49,7 +51,11 @@ public class ErrorMessage {
 		this.errorSource=errorSource;
 		this.errorMessage=errorMessage;
 		this.localizedMessageKey=localizedMessageKey;
-		this.parameters=parameters;
+		if (present(parameters)) {
+			this.parameters=parameters;
+		} else {
+			this.parameters= new ArrayList<String>();
+		}
 	}
 
 	/**
