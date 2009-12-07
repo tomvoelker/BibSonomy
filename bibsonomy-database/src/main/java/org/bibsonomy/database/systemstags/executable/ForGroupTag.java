@@ -77,7 +77,7 @@ public class ForGroupTag extends SystemTag {
 			// the user can not use this tag at all, therefore we omit trying anything else with this tag
 			return;			
 		} 
-		if (getPermissionDb().isMemberOfGroup(post.getUser().getName(), groupName,  session) ) {
+		if (!getPermissionDb().isMemberOfGroup(post.getUser().getName(), groupName,  session) ) {
 			this.setError(Reason.MEMBER, post, groupName, session);
 			// the user can not use this tag at all, therefore we omit trying anything else with this tag
 			return;			
@@ -184,17 +184,17 @@ public class ForGroupTag extends SystemTag {
 		String localizedMessageKey="";
 		switch(reason) {
 			case SPECIAL: {
-				error=""+groupName+" is a special group. You are not allowed to forward posts to special groups.";
+				error="for:"+groupName+": "+groupName+" is a special group. You are not allowed to forward posts to special groups.";
 				localizedMessageKey = "database.exception.systemTag.forGroup.specialGroup";
 				break;
 			}
 			case EXIST: {
-				error=""+groupName+"does not exist.";
+				error="for:"+groupName+": "+groupName+"does not exist.";
 				localizedMessageKey = "database.exception.systemTag.forGroup.noSuchGroup";
 				break;
 			}
 			case MEMBER: {
-				error="You are not a member of "+groupName+".";
+				error="for:"+groupName+": You are not a member of "+groupName+".";
 				localizedMessageKey = "database.exception.systemTag.forGroup.member";
 				break;
 			}
