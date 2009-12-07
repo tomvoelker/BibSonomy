@@ -210,6 +210,29 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	
 
 	/**
+	 * @param groupName
+	 * @return if a group is a special group
+	 */
+	public boolean isSpecialGroup (final String groupName) {
+		return GroupID.isSpecialGroup(groupName);
+	}
+	
+
+	/**
+	 * @param userName
+	 * @param groupName
+	 * @param session
+	 * @return if the given user is a member of the specified group
+	 */
+	public boolean isMemberOfGroup(final String userName, final String groupName, DBSession session) {
+		final Integer groupID = this.groupDb.getGroupIdByGroupNameAndUserName(groupName, userName, session);
+		if( groupID==GroupID.INVALID.getId() ) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * Ensures that the user is an admin.
 	 * 
 	 * @param loginUser

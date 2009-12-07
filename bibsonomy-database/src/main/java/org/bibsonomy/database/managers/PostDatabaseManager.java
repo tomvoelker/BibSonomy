@@ -23,7 +23,6 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
-import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
@@ -1019,10 +1018,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * check if user is trying to create a resource that already exists
 			 */
 			if (present(postInDB)) {
-				//throw new IllegalArgumentException("Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
-				//		" already exists in your collection (intrahash: " + intraHash + ")");
-				ErrorMessage errorMessage = new ErrorMessage(ErrorSource.GENERAL, "Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
-				" already exists in your collection (intrahash: " + intraHash + ")");
+				//throw new IllegalArgumentException("Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +" already exists in your collection (intrahash: " + intraHash + ")");
+				String error="Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
+				" already exists in your collection (intrahash: " + intraHash + ")";
+				String localizedMessageKey = "database.exception.duplicate";
+				ErrorMessage errorMessage = new ErrorMessage(ErrorSource.DUPLICATEPOST, error, localizedMessageKey, new ArrayList<String>());
 				session.addError(post.getResource().getIntraHash(), errorMessage);
 				// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 				session.commitTransaction();
@@ -1231,11 +1231,32 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 */
 	protected void insertPost(final Post<R> post, final DBSession session) {
-		if (!present(post.getResource())) throw new InvalidModelException("There is no resource for this post.");
-		if (!present(post.getGroups())) throw new InvalidModelException("There are no groups for this post.");
+		boolean errors=false;
+		if (!present(post.getResource())) {
+			//TODO: remove this comment
+			//throw new InvalidModelException("There is no resource for this post.");
+			String error = "There is no resource for this post.";
+			String localizedMessageKey = "database.exceptions.general.noResource";
+			ErrorMessage errorMessage = new ErrorMessage(ErrorSource.GENERAL, error, localizedMessageKey, null);
+			session.addError(post.getResource().getIntraHash(), errorMessage);
+			errors=true;
+		}
+		if (!present(post.getGroups())) {
+			// TODO: remove this comment
+			//throw new InvalidModelException("There are no groups for this post.");
+			String error = "There are no groups for this post.";
+			String localizedMessageKey = "database.exceptions.general.noGroups";
+			ErrorMessage errorMessage = new ErrorMessage(ErrorSource.GENERAL, error, localizedMessageKey, null);
+			session.addError(post.getResource().getIntraHash(), errorMessage);
+			errors=true;
+		}
 		/*if (post.getGroups().contains(GroupID.PUBLIC) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");
 		if (post.getGroups().contains(GroupID.PRIVATE) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");*/
-		
+		if (errors) {
+			// one or more errors occurred in this method 
+			// => we don't want to go deeper into the process with these kinds of errors
+			return;
+		}
 		final P param = this.getInsertParam(post, session);
 		
 		// insert
