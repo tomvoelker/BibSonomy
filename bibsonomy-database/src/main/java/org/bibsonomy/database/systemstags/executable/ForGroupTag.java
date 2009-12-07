@@ -1,5 +1,6 @@
 package org.bibsonomy.database.systemstags.executable;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -11,7 +12,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ErrorSource;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.errors.ErrorMessage;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -72,13 +72,15 @@ public class ForGroupTag extends SystemTag {
 		// first check preconditions: user is member of given group
 		//--------------------------------------------------------------------
 		String groupName = getValue();
-		try {
-			getPermissionDb().ensureMemberOfNonSpecialGroup(post.getUser().getName(), groupName, session);
-		} catch (ValidationException ve) {
-			ErrorMessage errorMessage = new ErrorMessage(ErrorSource.SYSTEM_TAG, ve.getMessage());
-			session.addError(post.getResource().getIntraHash(), errorMessage);
+		if (getPermissionDb().isSpecialGroup(post.getUser().getName()) ) {
+			this.setError(Reason.SPECIAL, post, groupName, session);
 			// the user can not use this tag at all, therefore we omit trying anything else with this tag
-			return;
+			return;			
+		} 
+		if (getPermissionDb().isMemberOfGroup(post.getUser().getName(), groupName,  session) ) {
+			this.setError(Reason.MEMBER, post, groupName, session);
+			// the user can not use this tag at all, therefore we omit trying anything else with this tag
+			return;			
 		}
 		
 		
@@ -86,8 +88,7 @@ public class ForGroupTag extends SystemTag {
 		Group dbGroup = getLogicInterface().getGroupDetails(groupName);
 		if( dbGroup==null ) {
 			log.debug("Unknown group!");
-			ErrorMessage errorMessage = new ErrorMessage(ErrorSource.SYSTEM_TAG, "You can not use "+this.getName()+" because the group does not exist.");
-			session.addError(post.getResource().getIntraHash(), errorMessage);
+			this.setError(Reason.EXIST, post, groupName, session);
 			// the user can not use this tag at all, therefore we omit trying anything else with this tag
 			return;
 		}
@@ -171,4 +172,48 @@ public class ForGroupTag extends SystemTag {
 		tags.add(new Tag(newName));
 	}
 
+	/**
+	 * creates an errorMessage and adds it to the database exception in the session
+	 * @param reason
+	 * @param post
+	 * @param groupName
+	 * @param session
+	 */
+	private void setError(Reason reason, Post<? extends Resource> post, String groupName, DBSession session){
+		String error="";
+		String localizedMessageKey="";
+		switch(reason) {
+			case SPECIAL: {
+				error=""+groupName+" is a special group. You are not allowed to forward posts to special groups.";
+				localizedMessageKey = "Database.Exception.SystemTag.forGroup.SpecialGroup";
+				break;
+			}
+			case EXIST: {
+				error=""+groupName+"does not exist.";
+				localizedMessageKey = "Database.Exception.SystemTag.forGroup.noSuchGroup";
+				break;
+			}
+			case MEMBER: {
+				error="You are not a member of "+groupName+".";
+				localizedMessageKey = "Database.Exception.SystemTag.forGroup.member";
+				break;
+			}
+		}
+		ArrayList<String> params = new ArrayList<String>();
+		params.add(groupName);
+		ErrorMessage errorMessage = new ErrorMessage(ErrorSource.SYSTEM_TAG, error, localizedMessageKey, params);
+		session.addError(post.getResource().getIntraHash(), errorMessage);
+	}
+
+	/**
+	 * small enum, to reduce code around the creation of errorMessages
+	 * @author sdo
+	 *
+	 */
+	private enum Reason {
+		SPECIAL,
+		EXIST,
+		MEMBER;		
+	}
 }
+
