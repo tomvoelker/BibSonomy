@@ -293,6 +293,24 @@ public enum Views implements View {
 	 */
 	// ATTACH_USER_OPENID_PROVIDER_FORM("actions/register/openid/attach_provider_form"),
 
+	
+	/**
+	 * User registration form for LDAP registering
+	 */
+	REGISTER_USER_LDAP("actions/register/ldap/user"),
+
+	/**
+	 * OpenID register form prefilled with information from 
+	 * the OpenID provider
+	 */
+	REGISTER_USER_LDAP_PROVIDER_FORM("actions/register/ldap/provider_form"),
+	
+	/**
+	 * After a user has successfully registered using OpenID, he will see this view.
+	 */
+	REGISTER_USER_LDAP_SUCCESS("actions/register/ldap/user_success"),
+
+	
 	/**
 	 * Log into the system. 
 	 */

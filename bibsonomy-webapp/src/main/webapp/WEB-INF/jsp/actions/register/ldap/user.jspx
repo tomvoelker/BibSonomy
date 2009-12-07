@@ -1,0 +1,78 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+  xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:form="http://www.springframework.org/tags/form"
+  xmlns:spring="http://www.springframework.org/tags"
+  xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+  
+  <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+
+  <layout:layout 
+      loginUser="${command.context.loginUser}" 
+      searchString="hurz" 
+      pageTitle="${command.pageTitle}" 
+      displayIntroduction="false" 
+      requPath="${requPath}">
+  
+        <jsp:attribute name="heading">
+          <fmt:message key="navi.register"/>
+        </jsp:attribute>
+      
+        <jsp:attribute name="content">
+
+          <div id="general">
+			
+			<!-- OpenID logo -->
+			<div style="font-size: 30px;color:red;font-weight:bold">LDAP</div>
+			
+			<p>			           
+            <form:form action="/registerLDAP" method="POST">
+
+				<!-- global error messages -->			
+	            <errors:global errors="${errors}"/>             
+		
+				<fmt:message key="navi.register" var="submit"/>
+	
+				<h2><fmt:message key="register.notice.ldap"/></h2> 
+				
+				<br/>
+				
+				<h3><fmt:message key="register.ldap.step1"/></h3>
+				
+				<br/>
+				
+	            <form:label path="registerUser.name" ><fmt:message key="navi.username"/>: </form:label>
+	            <form:input path="registerUser.name" cssClass="openid" size="30"/><c:out value=" "/><form:errors cssClass="errmsg" path="registerUser.name" />
+	            
+				<br />
+				<br />
+	            <form:label path="registerUser.password" ><fmt:message key="navi.password"/>: </form:label>
+	            <form:password path="registerUser.password" cssClass="openid" size="30"/><c:out value=" "/><form:errors cssClass="errmsg" path="registerUser.password" />
+	            
+				<br />
+				<br />
+				<input type="submit" value="${submit}" />
+				<c:out value=" "/>
+				<form:errors cssClass="errmsg" path="registerUser.loginmessage" />
+				
+				
+	            <!-- forward to second registration step -->
+	            <input type="hidden" name="step" value="2"/>
+            </form:form>
+            </p>
+            
+			<br/>     
+			
+          </div>
+      
+      </jsp:attribute>
+      
+  </layout:layout>
+  
+</jsp:root>

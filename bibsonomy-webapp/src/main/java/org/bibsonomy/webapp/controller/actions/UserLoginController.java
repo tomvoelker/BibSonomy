@@ -24,6 +24,8 @@ import org.bibsonomy.webapp.util.TeerGrube;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.util.auth.Ldap;
+import org.bibsonomy.webapp.util.auth.LdapUserinfo;
 import org.bibsonomy.webapp.util.auth.OpenID;
 import org.bibsonomy.webapp.validation.UserLoginValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
@@ -157,10 +159,42 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		 */
 		User user = null;
 
-		/*
-		 * authentication via username and password 
-		 */
-		if (username != null && hashedPassword != null) {
+		Boolean useLDAP = true;
+
+		if (useLDAP && username != null && hashedPassword != null  ) { 
+			/*
+			 * authentication via username and password via LDAP 
+			 */
+			// get user from database
+			user = adminLogic.getUserDetails(username);
+			Ldap ldap = new Ldap();
+			LdapUserinfo ldapUserinfo = new LdapUserinfo();
+			log.info("Trying to login user " + username + " via LDAP");
+	        ldapUserinfo = ldap.checkauth(username, password);
+			
+			if (null == ldapUserinfo)
+			{
+				/*
+				 * user credentials do not match --> show error message
+				 */
+				log.info("Login of user " + username + " failed.");
+				errors.reject("error.login.failed");
+				/*
+				 * count failures
+				 */
+				grube.add(username);
+				grube.add(inetAddress);
+			}
+			else
+			{
+				log.info("Login of user " + username + " accepted.");
+			}
+			
+		} else if (username != null && hashedPassword != null) {
+			/*
+			 * authentication via username and password 
+			 */
+		
 			/*
 			 * checking password of user
 			 */

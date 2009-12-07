@@ -7,7 +7,7 @@ import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.webapp.command.actions.UserOpenIDRegistrationCommand;
+import org.bibsonomy.webapp.command.actions.UserLDAPRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -18,30 +18,30 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.auth.OpenID;
-import org.bibsonomy.webapp.validation.UserOpenIDRegistrationValidator;
+import org.bibsonomy.webapp.util.auth.Ldap;
+import org.bibsonomy.webapp.util.auth.LdapUserinfo;
+import org.bibsonomy.webapp.validation.UserLDAPRegistrationValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-import org.openid4java.OpenIDException;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
 /**
- * This controller handles the registration of users via OpenID
+ * This controller handles the registration of users via Ldap
  * (see http://openid.net/)
  * 
- * @author Stefan Stützer
+ * @author Sven Stefani
  * @version $Id$
  */
-public class UserOpenIDRegistrationController implements MinimalisticController<UserOpenIDRegistrationCommand>, ErrorAware, ValidationAwareController<UserOpenIDRegistrationCommand>, RequestAware, CookieAware{
+public class UserLDAPRegistrationController implements MinimalisticController<UserLDAPRegistrationCommand>, ErrorAware, ValidationAwareController<UserLDAPRegistrationCommand>, RequestAware, CookieAware{
 
 	protected LogicInterface logic;
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
 	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
-	private OpenID openIDLogic;
+//	private Ldap ldapLogic;
 	
 	private String projectHome;
 	
@@ -50,12 +50,12 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 	 */
 	private String successRedirect = "";
 	
-	private static final Log log = LogFactory.getLog(UserOpenIDRegistrationController.class);
+	private static final Log log = LogFactory.getLog(UserLDAPRegistrationController.class);
 
-	public View workOn(UserOpenIDRegistrationCommand command) {
+	public View workOn(UserLDAPRegistrationCommand command) {
 		log.debug("workOn() called");
 
-		command.setPageTitle("OpenID registration");
+		command.setPageTitle("LDAP registration");
 		
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
@@ -70,13 +70,8 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 		}
 
 		if (errors.hasErrors()) {
-			/*
-			 * error in step 4 -> redirect to open id registration form
-			 */
-			if (command.getStep() == 4)
-				return Views.REGISTER_USER_OPENID_PROVIDER_FORM;
-			
-			return Views.REGISTER_USER_OPENID;
+			log.info("an error occoured: " + errors.toString());
+			return Views.REGISTER_USER_LDAP;
 		}
 		
 		/*
@@ -84,54 +79,45 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 		 */
 		if (command.getStep() == 1) {			
 			
-			log.debug("step 1: fill form");
+			log.debug("step 1: fill form (username/password)");
 			/*
-			 * show form to enter OpenID
+			 * show form to enter Ldap
 			 */			
-			return Views.REGISTER_USER_OPENID;
+			return Views.REGISTER_USER_LDAP;
 		} else if (command.getStep() == 2) {
-			
-			log.debug("step 2: redirect to provider ");
-			/*
-			 *  if OpenID is present -> redirect to OpenID provider
-			 */
-			try {
-				String redirect = openIDLogic.authOpenIdRequest(requestLogic, command.getRegisterUser().getOpenID(), projectHome, 
-						projectHome + "registerOpenID?step=3", true);
-				return new ExtendedRedirectView(redirect);
-			} catch (OpenIDException ex) {
-				errors.reject("error.invalid_openid");
-				return Views.ERROR;
-			}			
-		} else if (command.getStep() == 3) {
 		
-			log.debug("step 3: show form");
+			log.debug("step 2: show registration form");
 			
-			/*
-			 * get instance of openid logic from session
-			 */
-			openIDLogic = (OpenID) requestLogic.getSessionAttribute(OpenID.OPENID_LOGIC_SESSION_ATTRIBUTE);
+			// check credentials
+			Ldap ldap = new Ldap();
+			LdapUserinfo ldapUserinfo = new LdapUserinfo();
+			log.info("Trying to login user " + requestLogic.getParameter("registerUser.name") + " via LDAP");
+	        ldapUserinfo = ldap.checkauth(requestLogic.getParameter("registerUser.name"), requestLogic.getParameter("registerUser.password"));
 			
-			/*
-			 * show profile form prefilled with information from the openID provider
-			 */
-			User openIDUser = openIDLogic.verifyResponse(requestLogic, true);
-			
-			/*
-			 * user succesfully authenticated by OpenID provider 
-			 */
-			if (openIDUser != null) {
-				command.getRegisterUser().setName(openIDUser.getName());
-				command.getRegisterUser().setEmail(openIDUser.getEmail());
-				command.getRegisterUser().setRealname(openIDUser.getRealname());
-				command.getRegisterUser().setGender(openIDUser.getGender());
-				command.getRegisterUser().setPlace(openIDUser.getPlace());
-				command.getRegisterUser().setOpenID(openIDUser.getOpenID());
-			}			
-			return Views.REGISTER_USER_OPENID_PROVIDER_FORM;
+			if (null == ldapUserinfo)
+			{			
+				log.info("Login check for registering failed for user " + requestLogic.getParameter("registerUser.name") + " via LDAP");
+				// if login failed, return to step 1 - show REGISTER_USER_LDAP
+				
+				// set some error messages
+				errors.rejectValue("registerUser.loginmessage", "error.login.failed");
+				
+				
+				return Views.REGISTER_USER_LDAP;
+			}
+			else
+			{
+				// if login was successful, insert ldap data to command
+				log.info("Login check for registering succeeded for user " + requestLogic.getParameter("registerUser.name") + " via LDAP");
+				
+				System.out.println(ldapUserinfo.toString());
+				
+			}
+
+			return Views.REGISTER_USER_LDAP_PROVIDER_FORM;
 		} else if (command.getStep() == 4) {
 			
-			log.debug("step 4: complete OpenID registration");
+			log.debug("step 4: complete Ldap registration");
 			/*
 			 * complete registration process and save user to database
 			 */
@@ -174,15 +160,6 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 				errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
 			}
 			
-			/*
-			 * check if a user already registered this OpenID 
-			 */
-			if (registerUser.getOpenID() != null && logic.getOpenIDUser(registerUser.getOpenID()) != null) {
-				/*
-				 * OpenID already registered 
-				 */
-				errors.rejectValue("registerUser.openID", "error.field.duplicate.user.openid");
-			}
 			
 			/*
 			 * return to form until validation passes
@@ -225,8 +202,8 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 			/*
 			 * log user into system
 			 */
-			cookieLogic.addOpenIDCookie(registerUser.getName(), command.getRegisterUser().getOpenID(), registerUser.getPassword());
-			openIDLogic.extendOpenIDSession(requestLogic.getSession(),  command.getRegisterUser().getOpenID());
+//			cookieLogic.addLdapCookie(registerUser.getName(), command.getRegisterUser().getLdap(), registerUser.getPassword());
+//			ldapLogic.extendLdapSession(requestLogic.getSession(),  command.getRegisterUser().getLdap());
 			
 			/*
 			 * present the success view
@@ -237,13 +214,13 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 		return Views.REGISTER_USER_OPENID;
 	}
 
-	public UserOpenIDRegistrationCommand instantiateCommand() {
-		final UserOpenIDRegistrationCommand userOpenIDRegistrationCommand = new UserOpenIDRegistrationCommand();
+	public UserLDAPRegistrationCommand instantiateCommand() {
+		final UserLDAPRegistrationCommand userLdapRegistrationCommand = new UserLDAPRegistrationCommand();
 		/*
 		 * add user to command
 		 */
-		userOpenIDRegistrationCommand.setRegisterUser(new User());
-		return userOpenIDRegistrationCommand;		
+		userLdapRegistrationCommand.setRegisterUser(new User());
+		return userLdapRegistrationCommand;		
 	}
 	public Errors getErrors() {
 		return this.errors;
@@ -251,10 +228,10 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 	public void setErrors(Errors errors) {
 		this.errors = errors;
 	}
-	public Validator<UserOpenIDRegistrationCommand> getValidator() {
-		return new UserOpenIDRegistrationValidator();
+	public Validator<UserLDAPRegistrationCommand> getValidator() {
+		return new UserLDAPRegistrationValidator();
 	}
-	public boolean isValidationRequired(UserOpenIDRegistrationCommand command) {
+	public boolean isValidationRequired(UserLDAPRegistrationCommand command) {
 		return true;
 	}
 	public void setRequestLogic(RequestLogic requestLogic) {
@@ -284,11 +261,11 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 	}	
 
 	/**
-	 *  @param openIDLogic - an instance of the OpenID logic
-	 */
-	public void setOpenIDLogic(OpenID openIDLogic) {
-		this.openIDLogic = openIDLogic;
+	 *  @param ldapLogic - an instance of the Ldap logic
+	public void setLdapLogic(Ldap ldapLogic) {
+		this.ldapLogic = ldapLogic;
 	}	
+	 */
 	
 	/** 
 	 * The base URL of the project.
