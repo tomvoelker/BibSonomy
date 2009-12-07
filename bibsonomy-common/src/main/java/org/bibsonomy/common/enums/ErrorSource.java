@@ -23,6 +23,8 @@ public enum ErrorSource {
 	SYSTEM_TAG,
 /** the logged in user was not allowed to handle this post */
 	WRONG_USER,
+/** a post was doubled and can therefore not be stored **/
+	DUPLICATEPOST,
 /** something unspecified happened, try to use an other more specific category if possible**/	
 	GENERAL;
 }
