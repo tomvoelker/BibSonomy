@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.util;
 
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.bibsonomy.model.User;
@@ -28,6 +30,15 @@ public class RequestWrapperContext {
 
 	private HttpServletRequest request;
 
+	/** Returns the current language of the user. (locale)
+	 * @return the current language of the user.
+	 * 
+	 */
+	public Locale getLocale()
+	{
+		return request.getLocale();
+	}
+	
 	/** The request this wrapper provides access to.
 	 * 
 	 * @param request
