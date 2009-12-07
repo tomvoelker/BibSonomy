@@ -23,17 +23,22 @@
 
 package org.bibsonomy.util;
 
+
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 /**
  * Some methods for handling strings.
  */
 public class StringUtils {
 	
-
+	private static final String BUNDLE_NAME = "messages";
+	
 	/**
 	 * Calculates the MD5-Hash of a String s and returns it encoded as a hex
 	 * string of 32 characters length.
@@ -232,5 +237,30 @@ public class StringUtils {
 		return implodeStringCollection(Arrays.asList(pieces), delim);
 	}
 	
+	
+	/**
+	 * Translates a given key into the target locale and fills the String with the parameters given.
+	 * 
+	 * @param key -
+	 * 			the key for the localized String
+	 * @param parameters -
+	 * 			the message parameters
+	 * @param targetLocale -
+	 * 			the target language
+	 * @return the translation with substituted parameters
+	 */
+	public static String translateMessageKey(String key, List<String> parameters, Locale targetLocale)
+	{
+		if(!ValidationUtils.present(key))
+			throw new IllegalArgumentException("The function 'translateMessageKey' expects a NON-EMPTY key.");
+		
+		if(!ValidationUtils.present(targetLocale))
+			targetLocale= Locale.getDefault();
+		
+		ResourceBundle res 	= ResourceBundle.getBundle(BUNDLE_NAME, targetLocale);
+		String translation	= res.getString(key);
+		//TODO add parameter
+		return translation;
+	}
     
 }
