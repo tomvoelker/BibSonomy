@@ -185,17 +185,17 @@ public class ForGroupTag extends SystemTag {
 		switch(reason) {
 			case SPECIAL: {
 				error=""+groupName+" is a special group. You are not allowed to forward posts to special groups.";
-				localizedMessageKey = "Database.Exception.SystemTag.forGroup.SpecialGroup";
+				localizedMessageKey = "database.exception.systemTag.forGroup.specialGroup";
 				break;
 			}
 			case EXIST: {
 				error=""+groupName+"does not exist.";
-				localizedMessageKey = "Database.Exception.SystemTag.forGroup.noSuchGroup";
+				localizedMessageKey = "database.exception.systemTag.forGroup.noSuchGroup";
 				break;
 			}
 			case MEMBER: {
 				error="You are not a member of "+groupName+".";
-				localizedMessageKey = "Database.Exception.SystemTag.forGroup.member";
+				localizedMessageKey = "database.exception.systemTag.forGroup.member";
 				break;
 			}
 		}

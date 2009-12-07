@@ -1,5 +1,7 @@
 package org.bibsonomy.database.systemstags.executable;
 
+import java.util.ArrayList;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ErrorSource;
@@ -56,16 +58,12 @@ public class ForFriendTag extends SystemTag {
 		 * Check: Is the user (sender) in the list of friends of the receiver?
 		 */
 		if (!generalDb.isFriendOf(sender, receiver, session)){
-			//FIXME: Localize Strings
-			ErrorMessage errorMessage = new ErrorMessage(ErrorSource.SYSTEM_TAG, "You can not use "+this.getName() + "unless the receiver has added you as friend.");
-			session.addError(post.getResource().getIntraHash(), errorMessage);
+			this.setError(Reason.FRIEND, post, receiver, session);
 			// the is not allowed to use this tag, therefore we omit trying anything else with this tag
 			return;
 		}
 		if (sender.equals(receiver)) {
-			//FIXME: Localize Strings
-			ErrorMessage errorMessage = new ErrorMessage(ErrorSource.SYSTEM_TAG, "You can not use "+this.getName() + "because you can not send messages to yourself.");
-			session.addError(post.getResource().getIntraHash(), errorMessage);
+			this.setError(Reason.SELF, post, receiver, session);
 			// the is not allowed to use this tag, therefore we omit trying anything else with this tag
 			return;
 		}
@@ -87,16 +85,42 @@ public class ForFriendTag extends SystemTag {
 		log.debug("performing before acess");
 	}
 
-
-
-
-	
 	/**
-	 * Removes all tags with given old name and adds new tag with given new name.
-	 * 
-	 * @param tags
-	 * @param oldName
-	 * @param newName
+	 * creates an errorMessage and adds it to the database exception in the session
+	 * @param reason
+	 * @param post
+	 * @param groupName
+	 * @param session
 	 */
+	private void setError(Reason reason, Post<? extends Resource> post, String receiver, DBSession session){
+		String error="";
+		String localizedMessageKey="";
+		switch(reason) {
+			case FRIEND: {
+				error= "send:"+ receiver + ": "  + receiver + " does not exist or did not add you as a friend.";
+				localizedMessageKey="database.exception.systemTag.forFriend.notFriend";
+				break;
+			}
+			case SELF: {
+				error="send:" + receiver +": You can not send messages to yourself.";
+				localizedMessageKey = "database.exception.systemTag.forFriend.self";
+				break;
+			}
+		}
+		ArrayList<String> params = new ArrayList<String>();
+		params.add(receiver);
+		ErrorMessage errorMessage = new ErrorMessage(ErrorSource.SYSTEM_TAG, error, localizedMessageKey, params);
+		session.addError(post.getResource().getIntraHash(), errorMessage);
+	}
+
+	/**
+	 * small enum, to reduce code around the creation of errorMessages
+	 * @author sdo
+	 *
+	 */
+	private enum Reason {
+		FRIEND,
+		SELF;
+	}
 
 }
