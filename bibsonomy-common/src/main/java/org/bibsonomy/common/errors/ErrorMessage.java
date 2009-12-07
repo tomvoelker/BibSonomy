@@ -23,6 +23,8 @@
 
 package org.bibsonomy.common.errors;
 
+import java.util.ArrayList;
+
 import org.bibsonomy.common.enums.ErrorSource;
 
 //TODO: find a nice and suitable name for errorsPackage
@@ -34,14 +36,20 @@ public class ErrorMessage {
 
 	private final ErrorSource errorSource;
 	private String errorMessage;
+	private String localizedMessageKey;
+	private ArrayList<String> parameters;
 	
 	/**
-	 * @param errorSource 
-	 * @param errorMessage
+	 * @param errorSource identifies where the error occurred
+	 * @param errorMessage is like the exception message
+	 * @param localizedMessageKey 	is a key to the corresponding localized String in the message_properties files
+	 * @param parameters are some Strings for the localized message
 	 */
-	public ErrorMessage(ErrorSource errorSource, String errorMessage) {
+	public ErrorMessage(ErrorSource errorSource, String errorMessage, String localizedMessageKey, ArrayList<String>parameters) {
 		this.errorSource=errorSource;
 		this.errorMessage=errorMessage;
+		this.localizedMessageKey=localizedMessageKey;
+		this.parameters=parameters;
 	}
 
 	/**
@@ -66,6 +74,33 @@ public class ErrorMessage {
 		this.errorMessage = errorMessage;
 	}
 	
+	/**
+	 * @return the localizedMessageKey
+	 */
+	public String getLocalizedMessageKey() {
+		return this.localizedMessageKey;
+	}
+
+	/**
+	 * @param localizedMessageKey the localizedMessageKey to set
+	 */
+	public void setLocalizedMessageKey(String localizedMessageKey) {
+		this.localizedMessageKey = localizedMessageKey;
+	}
+
+	/**
+	 * @return the parameters
+	 */
+	public ArrayList<String> getParameters() {
+		return this.parameters;
+	}
+
+	/**
+	 * @param parameters the parameters to set
+	 */
+	public void setParameters(ArrayList<String> parameters) {
+		this.parameters = parameters;
+	}
 	
 	
 	@Override
