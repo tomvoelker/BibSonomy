@@ -59,7 +59,9 @@
         						listViewStartParamName="${listViewStartParamName}"
         						checkboxAllLabelKey="batchedit.deleteAll"
       							checkboxLabelKey="batchedit.deletePostQ"
-      							submitKey="batchedit.button.update"  >
+      							checkboxAllQuestion="batchedit.deleteAll.confirm"
+      							submitKey="batchedit.button.update" 
+      							 > 
 			<jsp:attribute name="shortPostDescription">
 				<jsp:invoke fragment="shortPostDescription"/>
 			</jsp:attribute>

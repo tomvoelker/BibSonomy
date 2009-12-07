@@ -16,27 +16,47 @@
     <jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
     <jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
-    <jsp:directive.attribute name="formAction" type="java.lang.String" required="false"/>
+    <jsp:directive.attribute name="formAction" type="java.lang.String" required="false" description="The action-url of the form on the batchedit-view."/>
     <jsp:directive.attribute name="submitKey" required="true" description="The key for the value of the submit button."/>
   	<jsp:directive.attribute name="checkboxLabelKey" required="true" description="The key for the label of the checkboxes associated with the posts."/>
   	<jsp:directive.attribute name="checkboxAllLabelKey" required="true" description="The key for the label of the 'check-all'-checkboxes associated with the posts."/>
+  	<jsp:directive.attribute name="checkboxAllQuestion" required="false" description="The key for the question text, which appears, when the 'check all' checkbox is hit."/>
   	
     <jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post"/>
     <jsp:directive.attribute name="title" fragment="true" required="true"/>
     <jsp:directive.attribute name="desc" fragment="true" required="true"/>
     <jsp:directive.attribute name="actions" fragment="true" required="true"/>
     <jsp:directive.attribute name="bmicon" fragment="true" required="true"/>
+
     
+    
+   	 <!--=======================-->
+   	 <!-- VARIABLEN DEKLARATION -->
+   	 <!--=======================-->
+   	 <!-- SUBMITBUTTON -->
+     <fmt:message key="${submitKey}" var="buttonUpdate"/>
+     <!-- CHECK ALL MESSAGEBOX QUESTION -->
+	 <c:if test="${empty checkboxAllQuestion}">
+	 	<c:set var="checkboxAllQuestion" value="batchedit.deleteAll.confirm" />
+	 </c:if>
+	 <fmt:message key="${checkboxAllQuestion}" var="checkboxAllQuestion"/>
+	 <!-- ACTION FOR THE FORM -->
+     <c:if test="${empty formAction}">
+       <c:set var="formAction" value="batchEdit_new"/>
+     </c:if>
+	 
+	 <!--=======================-->
+   	 <!-- VARIABLEN DEKLARATION -->
+   	 <!--=======================-->
+
+
     
     <jsp:directive.variable name-given="post" scope="NESTED"/>
     
-         <fmt:message key="${submitKey}" var="buttonUpdate"/>
-
+    
+		 
          <c:if test="${not empty listView.list}">
-           <!-- action reinreichen -->
-           <c:if test="${empty formAction}">
-             <c:set var="formAction" value="batchEdit_new"/>
-           </c:if>
+           
            <form id="batchedit" action="/${formAction}" method="POST">
              <table>
 
@@ -46,7 +66,7 @@
                  <td style="background-color: #eee; vertical-align: middle;">
                  	<p style="margin-bottom: 0pt; text-align:center"><fmt:message key="${checkboxAllLabelKey}"/></p>
 	                 <div style="margin-left:auto;margin-right:auto; width:10pt; clear: both; ">
-	                 	<input type="checkbox" name="all" id="deleteAllId" onclick="deleteAll()"/>
+	                 	<input type="checkbox" name="all" id="deleteAllId" onclick="deleteAll('${checkboxAllQuestion}')"/>
 	                 </div> 
                  </td>
                </tr>
@@ -151,7 +171,7 @@
        <!-- TODO: i18n -->
        <script type="text/javascript">
          <![CDATA[            
-           function deleteAll() {
+           function deleteAll(input) {
 		  var deleteAllCheckBox = document.getElementById("deleteAllId");
 		  if (!deleteAllCheckBox) {
 			  // not found
@@ -161,7 +181,7 @@
 		  var deleteAllChecked = deleteAllCheckBox.checked
 
              if (deleteAllChecked) {
-               if (!confirm(getString("batchedit.deleteAll.confirm"))) {
+               if (!confirm(input)) {
                  deleteAllCheckBox.checked = false;
                  return;
                }
