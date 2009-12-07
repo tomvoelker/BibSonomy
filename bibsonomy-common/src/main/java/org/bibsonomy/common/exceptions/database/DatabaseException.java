@@ -48,6 +48,14 @@ public class DatabaseException extends RuntimeException {
 		this.errorMessages = new HashMap<String, List<ErrorMessage>>();
 	}
 	
+	
+	/**
+	 * @return the errorMessages
+	 */
+	public Map<String, List<ErrorMessage>> getErrorMessages() {
+		return this.errorMessages;
+	}
+
 	/**
 	 * @param hash the hash of the post
 	 * @return the error Messages for the post (represented by its hash)
