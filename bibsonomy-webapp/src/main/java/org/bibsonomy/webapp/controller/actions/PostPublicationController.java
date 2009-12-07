@@ -8,10 +8,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -20,18 +21,21 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
+import org.bibsonomy.common.enums.ErrorSource;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
-import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.FileUploadFactory;
 import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
@@ -378,7 +382,9 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			
 			if(!command.isEditBeforeImport())
 			{
-				savePublicationsForUser(postListCommand, command.isOverwrite(), loginUser, newBookmarkEntries, updatedBookmarkEntries, nonCreatedBookmarkEntries);
+				savePublicationsForUser(postListCommand, command.isOverwrite(), 
+										loginUser, command.getContext().getLocale(), 
+										errors);
 				/**
 				 * Set the ignored posts in the command
 				 */
@@ -416,45 +422,51 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		return ShowEnterPublicationView(command, false);
 	}
 	
-	private void savePublicationsForUser(ListCommand<Post<BibTex>> postListCommand, boolean isOverwrite, User user, Map<String, String> newBookmarkEntries, Map<String, String> updatedBookmarkEntries, List<String> nonCreatedBookmarkEntries)
+	private void savePublicationsForUser(ListCommand<Post<BibTex>> postListCommand, boolean isOverwrite, User user, Locale locale, Errors errors)
 	{
-		for(Post<BibTex> post : postListCommand.getList())
-		{
-			final List<?> singletonList = Collections.singletonList(post);
-			final String title = post.getResource().getTitle();
-
-			/*
-			 * Overwrite the date with the current date, if not posted by the DBLP user.
-			 * If DBLP does not provide a date, we have to set the date, too.
-			 */
-			if (!UserUtils.isDBLPUser(user.getName()) || post.getDate() == null) {
-				/*
-				 * update date TODO: don't we want to keep the posting date unchanged
-				 * and only update the date? --> actually, this does currently not work,
-				 * since the DBLogic doesn't set the date and thus we get a NPE from the
-				 * database
-				 */
-				post.setDate(new Date());	
-			}
-
-			try {
-				// throws an exception if the bookmark already exists in the
-				// system
-				final List<String> createdPostHash = logic.createPosts((List<Post<?>>) singletonList);
-				newBookmarkEntries.put(createdPostHash.get(0), title);
-			} catch (IllegalArgumentException e) {
-				// checks whether the update bookmarks checkbox is checked
-				
-				if (isOverwrite) {
+		List<Post<?>> tmpList = new LinkedList<Post<?>>(postListCommand.getList());
+		List<String> hashList = new LinkedList<String>();
+		
+		try {
+			// throws an exception if the bookmark already exists in the
+			// system
+			final List<String> createdPostHash = logic.createPosts(tmpList);
+		} catch (DatabaseException e) {
+			Map<String, List<ErrorMessage>> hash2msgs = e.getErrorMessages(); 
+			Set<String> hashes = hash2msgs.keySet();
+			for(Post<?> aPost : tmpList)
+			{
+				String aHash = aPost.getResource().getIntraHash();
+				List<ErrorMessage> errorsOfPost = hash2msgs.get(aHash);
+				for(ErrorMessage anError : errorsOfPost)
+				{
+					/**
+					 * DUPLICATE ERRORS CAN BE HANDLED, 
+					 * if overwrite is set 
+					 */
+					if(anError.getErrorSource()==ErrorSource.DUPLICATEPOST && isOverwrite)
+					{
+						List<Post<?>> atomaryInsertPost = new LinkedList<Post<?>>();
+						atomaryInsertPost.add(aPost);
+						logic.updatePosts(atomaryInsertPost, PostUpdateOperation.UPDATE_ALL);
+					} else {
+						/**
+						 * ELSE WE SHOW THE ERRORS TO THE USER
+						 */
+						String msgKey = anError.getLocalizedMessageKey();
+						List<String> param =  anError.getParameters();
+						String errormsg = StringUtils.translateMessageKey(msgKey, param, locale); 
+						//TODO: concatenate all errors for the same object
+						//TODO: What about later errors? concatenation then or now? 
+						//one more object to move around... :(
+						errors.rejectValue(aHash, errormsg);
+					}
 					
-					final List<String> createdPostHash = logic.updatePosts((List<Post<?>>) singletonList, PostUpdateOperation.UPDATE_ALL);
-					updatedBookmarkEntries.put(createdPostHash.get(0), title);
-				} else {
-					nonCreatedBookmarkEntries.add(title);
 				}
 			}
 		}
 	}
+	
 
 	
 	private Set<Integer> getErroneousLineNumbers(ParseException[] exceptions)
