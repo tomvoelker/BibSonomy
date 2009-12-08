@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -35,6 +34,7 @@ import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.FileUploadFactory;
 import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
@@ -43,7 +43,7 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.EditPostValidator;
-import org.bibsonomy.webapp.validation.EditPublicationValidator;
+import org.bibsonomy.webapp.validation.PublicationValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -55,7 +55,8 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public class PostPublicationController extends EditPostController<BibTex,PostPublicationCommand> implements MinimalisticController<PostPublicationCommand>, ErrorAware {
-	private static final Integer MAXCOUNT_ERRORHANDLING = 1000; 
+	private static final Integer MAXCOUNT_ERRORHANDLING = 1000;
+	public static final String TEMPORARILY_IMPORTED_PUBLICATIONS = "TEMPORARILY_IMPORTED_PUBLICATIONS";
 	
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
@@ -112,6 +113,9 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	public View workOn(PostPublicationCommand command) {
 		log.debug("workOn started");
 		
+		//within this map we store all errors while creating the uploaded posts
+		//the errors will be concatenated at the end and rejected as an error for display.
+		Map<String, List<ErrorMessage>> userError = null;
 		
 		/*
 		 * default controller behaviour is to send the user to the first step of importing bookmarks (TASK_ENTER_PUBLICATIONS)
@@ -316,7 +320,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		 * Prepare the posts for the edit operations:
 		 * add additional information from the form to the post (description, groups)... present in both upload tabs
 		 */
-		EditPublicationValidator validator = new EditPublicationValidator();
+		PublicationValidator validator = new PublicationValidator();
 		User loginUser = command.getContext().getLoginUser();
 		for(Post<BibTex> bib : bibtex)
 		{
@@ -329,13 +333,13 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			//if not present, a valid date has to be set
 			if(!ValidationUtils.present(bib.getDate()))
 				setDate(bib, loginUser.getName());
+			/**
+			 * Check for INCOMPLETION ERRORS here
+			 */
+			validator.validate(bib, errors);
 		}
 		
-		/**
-		 * Check for INCOMPLETION ERRORS here
-		 */
-		validator.validate(command, errors);
-
+		
 		/**
 		 * If there are errors (incomplete/parse), we dont store them
 		 */
@@ -355,11 +359,13 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		 * if number of bibtexes contained is one, it can be edited in details, else we can use the 
 		 * multi-post-edit view
 		 */
-		if(bibtex.size()==1){
+		if(bibtex.size()==1)
+		{
 			command.setPost(bibtex.get(0));
 			//editPublicationController.setErrors(getErrors()); 
 			return super.workOn(command);
 		} else {
+			
 			/*
 			 * We have more than one bibtex, which means that this controller will forward to one calling the batcheditbib.jspx
 			 */
@@ -371,34 +377,33 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			/**********************
 			 * STORE THE BOOKMARKS
 			 **********************/
-			// stores all newly added bookmarks
-			final HashMap<String, String> newBookmarkEntries = new HashMap<String, String>();
-
-			// stores all the updated bookmarks
-			final HashMap<String, String> updatedBookmarkEntries = new HashMap<String, String>();
-			
-			// stores all the non imported bookmarks
-			final List<String> nonCreatedBookmarkEntries = new ArrayList<String>();
 			
 			if(!command.isEditBeforeImport())
 			{
-				savePublicationsForUser(postListCommand, command.isOverwrite(), loginUser);
 				/**
-				 * Set the ignored posts in the command
+				 * Concatenate all errors, that were found during savePublicationsForUser
 				 */
-				command.setIgnoredPosts(nonCreatedBookmarkEntries);
-				/**
-				 * Set the updated posts in the command
-				 */
-				command.setUpdatedPosts(updatedBookmarkEntries);
-				command.setFormAction(ACTION_SAVE_BEFORE_EDIT);
-			} else { 
-			/*
-			 * if the user wants to edit the imported entries before saving
-			 */
+				Map<String, List<ErrorMessage>> errorMsgs = savePublicationsForUser(postListCommand, command.isOverwrite(), loginUser);
+				for(String key : errorMsgs.keySet())
+				{
+					String completeMsgForPost = "";
+					for(ErrorMessage anErrorMsg : errorMsgs.get(key))
+						completeMsgForPost = 	completeMsgForPost + 
+												StringUtils.translateMessageKey(anErrorMsg.getLocalizedMessageKey(), anErrorMsg.getParameters(), command.getContext().getLocale()) + 
+												"\n";
+					
+					
+				}
 				
-				//nothing to do
+				command.setFormAction(ACTION_SAVE_BEFORE_EDIT);
+			} else {
+				setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, bibtex);
+				//TODO: read session attribute in next controller
 			}
+
+			
+			
+			
 			return Views.BATCHEDITBIB;
 		}
 	}
