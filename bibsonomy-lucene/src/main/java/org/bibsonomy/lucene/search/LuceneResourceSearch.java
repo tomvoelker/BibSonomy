@@ -434,10 +434,11 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		//--------------------------------------------------------------------
 		// private post query
 		//--------------------------------------------------------------------
-		privatePostQuery.add(new TermQuery(new Term(FLD_GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.MUST);
-		privatePostQuery.add(new TermQuery(new Term(FLD_USER, userName)), Occur.MUST);
-		accessModeQuery.add(privatePostQuery, Occur.SHOULD);
-
+		if( ValidationUtils.present(userName) ) {
+			privatePostQuery.add(new TermQuery(new Term(FLD_GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.MUST);
+			privatePostQuery.add(new TermQuery(new Term(FLD_USER, userName)), Occur.MUST);
+			accessModeQuery.add(privatePostQuery, Occur.SHOULD);
+		}
 		//--------------------------------------------------------------------
 		// post owned by user
 		//--------------------------------------------------------------------
@@ -567,20 +568,21 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		//--------------------------------------------------------------------
 		// private post query
 		//--------------------------------------------------------------------
-		BooleanQuery privatePostQuery= new BooleanQuery();
-		privatePostQuery.add(new TermQuery(new Term(FLD_GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.MUST);
-		
-		BooleanQuery privatePostAllowanceQuery= new BooleanQuery();
-		// the post's owner may read the private post 
-		privatePostAllowanceQuery.add(new TermQuery(new Term(FLD_USER, authUserName)), Occur.SHOULD);
-		// the post's owner's friend may read the post
-		for( String friend : userGroupFriends ) {
-			privatePostAllowanceQuery.add(new TermQuery(new Term(FLD_USER, friend)), Occur.SHOULD);
-		}
-		
-		privatePostQuery.add(privatePostAllowanceQuery, Occur.MUST);
-		accessModeQuery.add(privatePostQuery, Occur.SHOULD);
-		
+		if( ValidationUtils.present(authUserName) ) {
+			BooleanQuery privatePostQuery= new BooleanQuery();
+			privatePostQuery.add(new TermQuery(new Term(FLD_GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.MUST);
+
+			BooleanQuery privatePostAllowanceQuery= new BooleanQuery();
+			// the post's owner may read the private post 
+			privatePostAllowanceQuery.add(new TermQuery(new Term(FLD_USER, authUserName)), Occur.SHOULD);
+			// the post's owner's friend may read the post
+			for( String friend : userGroupFriends ) {
+				privatePostAllowanceQuery.add(new TermQuery(new Term(FLD_USER, friend)), Occur.SHOULD);
+			}
+
+			privatePostQuery.add(privatePostAllowanceQuery, Occur.MUST);
+			accessModeQuery.add(privatePostQuery, Occur.SHOULD);
+		}		
 		//--------------------------------------------------------------------
 		// build final query
 		//--------------------------------------------------------------------

@@ -38,6 +38,9 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 	
 	/** default analyzer */
 	private Analyzer defaultAnalyzer;
+	
+	/** full text search analyzer */
+	private Analyzer fullTextSearchAnalyzer;
 
 	/** we delegate to this analyzer */
 	private PerFieldAnalyzerWrapper analyzer;
@@ -50,6 +53,7 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 	}
 	
 	private SpringPerFieldAnalyzerWrapper() {
+		this.setFullTextSearchAnalyzer(null);
 		this.defaultAnalyzer = null;
 		this.fieldMap = null;
 	}
@@ -127,10 +131,26 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 			if( ValidationUtils.present(fieldAnalyzer) )
 				this.fieldMap.put(fieldName, fieldAnalyzer);
 		}
+		
+		// set full text search analyzer
+		if( this.fullTextSearchAnalyzer!=null )
+			fieldMap.put(LuceneBase.FLD_MERGEDFIELDS, this.fullTextSearchAnalyzer);
 	}
 
 	public Map<String,Map<String,Object>> getPropertyMap() {
 		return propertyMap;
+	}
+
+	public void setFullTextSearchAnalyzer(Analyzer fullTextSearchAnalyzer) {
+		this.fullTextSearchAnalyzer = fullTextSearchAnalyzer;
+		// update fieldmap
+		if( this.fieldMap!=null ) {
+			fieldMap.put(LuceneBase.FLD_MERGEDFIELDS, this.fullTextSearchAnalyzer);
+		}
+	}
+
+	public Analyzer getFullTextSearchAnalyzer() {
+		return fullTextSearchAnalyzer;
 	}
 	
 }

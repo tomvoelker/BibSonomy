@@ -46,11 +46,13 @@
 	<bean id="luceneSimpleKeywordAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SimpleKeywordAnalyzer"/>
 	
 	<bean id="luceneBookmarkFieldWrapperAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper" factory-method="getPreInitInstance">
+		<property name="fullTextSearchAnalyzer" ref="luceneDiacriticsAnalyzer"/>
 		<property name="defaultAnalyzer" ref="luceneStandardAnalyzer"/>
 		<property name="propertyMap" ref="bookmarkPropertyMap"/>
 	</bean>
 
 	<bean id="luceneBibTexFieldWrapperAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper" factory-method="getPreInitInstance">
+		<property name="fullTextSearchAnalyzer" ref="luceneDiacriticsAnalyzer"/>
 		<property name="defaultAnalyzer" ref="luceneStandardAnalyzer"/>
 		<property name="propertyMap" ref="bibTexPropertyMap"/>
 	</bean>
