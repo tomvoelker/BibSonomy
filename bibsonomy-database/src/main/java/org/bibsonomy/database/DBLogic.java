@@ -907,25 +907,25 @@ public class DBLogic implements LogicInterface {
 	 * Updates a post in the database.
 	 */
 	private <T extends Resource> String updatePost(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
-			final CrudableContent<T, GenericParam> manager = getFittingDatabaseManager(post);
-			final String oldIntraHash = post.getResource().getIntraHash();
-			post.getResource().recalculateHashes();
-			
-			this.validateGroups(post, session);
-			
-			/*
-			 * change group IDs to spam group IDs
-			 */
-			PostUtils.setGroupIds(post, this.loginUser);
+		final CrudableContent<T, GenericParam> manager = getFittingDatabaseManager(post);
+		final String oldIntraHash = post.getResource().getIntraHash();
+		post.getResource().recalculateHashes();
 
-			/*
-			 * update post
-			 */
-			manager.updatePost(post, oldIntraHash, operation, session);
+		this.validateGroups(post, session);
 
-			// if we don't get an exception here, we assume the resource has
-			// been successfully updated
-			return post.getResource().getIntraHash();
+		/*
+		 * change group IDs to spam group IDs
+		 */
+		PostUtils.setGroupIds(post, this.loginUser);
+
+		/*
+		 * update post
+		 */
+		manager.updatePost(post, oldIntraHash, operation, session);
+
+		// if we don't get an exception here, we assume the resource has
+		// been successfully updated
+		return post.getResource().getIntraHash();
 	}
 
 	/*

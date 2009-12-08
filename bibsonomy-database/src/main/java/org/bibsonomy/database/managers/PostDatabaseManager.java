@@ -23,7 +23,6 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
-import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.params.ResourcesParam;
@@ -1004,6 +1003,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public boolean createPost(final Post<R> post, final DBSession session) {
 		session.beginTransaction();
 		try {
+			//FIXME: change systemTagHandling: SystemTags should be created only once and exist during the whole posting process
 			this.systemTagPerformBefore(session, post, new HashSet<Tag>());
 			final String userName = post.getUser().getName();
 			/*
@@ -1022,7 +1022,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				String error="Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
 				" already exists in your collection (intrahash: " + intraHash + ")";
 				String localizedMessageKey = "database.exception.duplicate";
-				ErrorMessage errorMessage = new ErrorMessage(ErrorSource.DUPLICATEPOST, error, localizedMessageKey, new ArrayList<String>());
+				ErrorMessage errorMessage = new ErrorMessage(ErrorSource.DUPLICATEPOST, error, localizedMessageKey, null);
 				session.addError(post.getResource().getIntraHash(), errorMessage);
 				// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 				session.commitTransaction();
@@ -1038,6 +1038,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			this.insertPost(post, session);
 			// add the tags
 			this.tagDb.insertTags(post, session);
+			//FIXME: change systemTagHandling: SystemTags should be created only once and exist during the whole posting process
 			this.systemTagPerformAfter(session, post, new HashSet<Tag>());
 			session.commitTransaction();
 		} finally {
@@ -1089,17 +1090,28 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					/*
 					 * not found -> throw exception
 					 */
-					log.warn(this.resourceClassName + " with hash " + oldHash + " does not exist for user " + userName);
-					throw new ResourceNotFoundException(oldHash);
+					String error="Could not update " + this.resourceClassName + ": This " + this.resourceClassName +
+					" does not exists in your collection (intrahash: " + intraHash + ")";
+					String localizedMessageKey = "database.exception.update.noOriginal";
+					ErrorMessage errorMessage = new ErrorMessage(ErrorSource.UPDATE, error, localizedMessageKey, null);
+					session.addError(post.getResource().getIntraHash(), errorMessage);
+					// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
+					session.commitTransaction();
+					return false;
+					//FIXME:remove this comment
+					//log.warn(this.resourceClassName + " with hash " + oldHash + " does not exist for user " + userName);
+					//throw new ResourceNotFoundException(oldHash);
 				}
 			
 			} else {
+				// we do not add this to the databaseException since this an error not caused by a user
 			throw new IllegalArgumentException("Could not update post: no intrahash specified.");
 			}
 		
 			/*
 			 * perform system tags before action
 			 */
+			//FIXME: change systemTagHandling: SystemTags should be created only once and exist during the whole posting process
 			this.systemTagPerformBefore(session, post, oldPost.getTags());
 
 			/*
@@ -1121,7 +1133,17 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					 * way we would delete the post with the old hash and post the new one - resulting
 					 * in two posts with the same (new hash)
 					 */
-					throw new IllegalArgumentException("Could not update " + this.resourceClassName + ": This " + this.resourceClassName + " already exists in your collection (intrahash: " + intraHash + ")");
+					//FIXME:remove this comment
+					//throw new IllegalArgumentException("Could not update " + this.resourceClassName + ": This " + this.resourceClassName + " already exists in your collection (intrahash: " + intraHash + ")");
+					String error="Could not uptdate " + this.resourceClassName + ": This " + this.resourceClassName +
+					" already exists in your collection (intrahash: " + intraHash + ")";
+					String localizedMessageKey = "database.exception.duplicate";
+					ErrorMessage errorMessage = new ErrorMessage(ErrorSource.DUPLICATEPOST, error, localizedMessageKey, null);
+					session.addError(post.getResource().getIntraHash(), errorMessage);
+					// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
+					session.commitTransaction();
+					return false;
+
 				}
 			}
 		
@@ -1145,7 +1167,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			} else {
 				this.performUpdateAll(post, oldPost, session);
 			}		
-		
+			//FIXME: change systemTagHandling: SystemTags should be created only once and exist during the whole posting process		
 			this.systemTagPerformAfter(session, post, oldPost.getTags());
 			session.commitTransaction();
 		} finally {
