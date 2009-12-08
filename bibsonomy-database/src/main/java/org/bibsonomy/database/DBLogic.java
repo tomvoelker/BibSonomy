@@ -833,17 +833,20 @@ public class DBLogic implements LogicInterface {
 		 * insert posts TODO: more efficient implementation (transactions,
 		 * deadlock handling, asynchronous, etc.)
 		 */
-
+		final List<String> hashes = new LinkedList<String>();
+		/*
+		 * open session
+		 */
 		final DBSession session = openSession();
 		try {
-			final List<String> hashes = new LinkedList<String>();
 			for (final Post<?> post : posts) {
 				hashes.add(this.createPost(post, session));
 			}
-			return hashes;
 		} finally {
 			session.close();
 		}
+		return hashes;
+
 	}
 	
 	/**
@@ -875,34 +878,35 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
+		//TODO: Which of these checks should result in a DatabaseException, which do we want to handle otherwise (=status quo)
 		this.ensureLoggedIn();
 		/*
 		 * check permissions
 		 */
 		for (final Post<?> post : posts) {
 			PostUtils.populatePostWithUser(post, this.loginUser);
-			
+
 			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 		}
-		
 		final List<String> hashes = new LinkedList<String>();
-		for (final Post<?> post: posts) {
-			hashes.add(this.updatePost(post, operation));
+		/*
+		 * open session
+		 */
+		final DBSession session = openSession();
+		try {
+			for (final Post<?> post: posts) {
+				hashes.add(this.updatePost(post, operation, session));
+			}
+		} finally {
+			session.close();
 		}
-		
 		return hashes;
 	}
 	
 	/**
 	 * Updates a post in the database.
 	 */
-	private <T extends Resource> String updatePost(final Post<T> post, final PostUpdateOperation operation) {
-		/*
-		 * open session
-		 */
-		final DBSession session = openSession();
-		
-		try {
+	private <T extends Resource> String updatePost(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
 			final CrudableContent<T, GenericParam> manager = getFittingDatabaseManager(post);
 			final String oldIntraHash = post.getResource().getIntraHash();
 			post.getResource().recalculateHashes();
@@ -922,9 +926,6 @@ public class DBLogic implements LogicInterface {
 			// if we don't get an exception here, we assume the resource has
 			// been successfully updated
 			return post.getResource().getIntraHash();
-		} finally {
-			session.close();
-		}
 	}
 
 	/*
