@@ -83,7 +83,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		
 		// prepare input parameters
 		List<String> tags = new LinkedList<String>();
-		if( ValidationUtils.present(tags) ) {
+		if( ValidationUtils.present(tagList) ) {
 			for( String tag : tagList ) {
 				try {
 					tags.add(parseToken(FLD_TAS, tag));
@@ -92,7 +92,9 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 					tags.add(tag);
 				}
 			}
+			tagList = tags;
 		}
+		
 		QuerySortContainer qf = new QuerySortContainer();
 		
 		//--------------------------------------------------------------------
