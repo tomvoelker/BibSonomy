@@ -10,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -35,7 +35,6 @@ import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.FileUploadFactory;
 import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
-import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
@@ -56,6 +55,8 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public class PostPublicationController extends EditPostController<BibTex,PostPublicationCommand> implements MinimalisticController<PostPublicationCommand>, ErrorAware {
+	private static final Integer MAXCOUNT_ERRORHANDLING = 1000; 
+	
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
 
@@ -358,8 +359,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			command.setPost(bibtex.get(0));
 			//editPublicationController.setErrors(getErrors()); 
 			return super.workOn(command);
-		} else 
-		{
+		} else {
 			/*
 			 * We have more than one bibtex, which means that this controller will forward to one calling the batcheditbib.jspx
 			 */
@@ -382,9 +382,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			
 			if(!command.isEditBeforeImport())
 			{
-				savePublicationsForUser(postListCommand, command.isOverwrite(), 
-										loginUser, command.getContext().getLocale(), 
-										errors);
+				savePublicationsForUser(postListCommand, command.isOverwrite(), loginUser);
 				/**
 				 * Set the ignored posts in the command
 				 */
@@ -422,49 +420,139 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		return ShowEnterPublicationView(command, false);
 	}
 	
-	private void savePublicationsForUser(ListCommand<Post<BibTex>> postListCommand, boolean isOverwrite, User user, Locale locale, Errors errors)
+	private Map<String, List<ErrorMessage>> savePublicationsForUser(ListCommand<Post<BibTex>> postListCommand, boolean isOverwrite, User user)
 	{
 		List<Post<?>> tmpList = new LinkedList<Post<?>>(postListCommand.getList());
-		List<String> hashList = new LinkedList<String>();
+		List<String> createdPostHash = new LinkedList<String>();
+		Map<String, List<ErrorMessage>> errors = null;
 		
 		try {
-			// throws an exception if the bookmark already exists in the
-			// system
-			final List<String> createdPostHash = logic.createPosts(tmpList);
+			/**
+			 * Try to save all posts in one transaction.
+			 */
+			createdPostHash = logic.createPosts(tmpList);
 		} catch (DatabaseException e) {
-			Map<String, List<ErrorMessage>> hash2msgs = e.getErrorMessages(); 
-			Set<String> hashes = hash2msgs.keySet();
-			for(Post<?> aPost : tmpList)
+			/**
+			 * Something went wrong and an error occurred. The prior statement is "rollbacked"
+			 */
+			errors = e.getErrorMessages(); 
+			Set<String> hashes = errors.keySet();
+			/**
+			 * Check for all posts if they have only DUPLICATE ERRORS 
+			 */
+			boolean onlyDuplicateErrors = true;
+			for(List<ErrorMessage> msgList : errors.values())
 			{
-				String aHash = aPost.getResource().getIntraHash();
-				List<ErrorMessage> errorsOfPost = hash2msgs.get(aHash);
-				for(ErrorMessage anError : errorsOfPost)
+				for(ErrorMessage anErrorMsg : msgList)
 				{
-					/**
-					 * DUPLICATE ERRORS CAN BE HANDLED, 
-					 * if overwrite is set 
-					 */
-					if(anError.getErrorSource()==ErrorSource.DUPLICATEPOST && isOverwrite)
+					if(!ErrorSource.DUPLICATEPOST.equals(anErrorMsg.getErrorSource()))
+						onlyDuplicateErrors = false;
+						
+				}
+			}
+			/**
+			 * If we got ONLY duplicate errors, we save the non-duplicate ones and update the others,
+			 * if isOverwrite is true.
+			 */
+			if(onlyDuplicateErrors)
+			{
+				for(Post<?> aPost : tmpList)
+				{
+					//remove the duplicate errormessage
+					String aHash = aPost.getResource().getIntraHash();
+					//if the posts already existed, we update it
+					if(ValidationUtils.present(errors.get(aHash)) && isOverwrite)
 					{
-						List<Post<?>> atomaryInsertPost = new LinkedList<Post<?>>();
-						atomaryInsertPost.add(aPost);
-						logic.updatePosts(atomaryInsertPost, PostUpdateOperation.UPDATE_ALL);
-					} else {
-						/**
-						 * ELSE WE SHOW THE ERRORS TO THE USER
-						 */
-						String msgKey = anError.getLocalizedMessageKey();
-						List<String> param =  anError.getParameters();
-						String errormsg = StringUtils.translateMessageKey(msgKey, param, locale); 
-						//TODO: concatenate all errors for the same object
-						//TODO: What about later errors? concatenation then or now? 
-						//one more object to move around... :(
-						errors.rejectValue(aHash, errormsg);
+						errors.remove(aHash);
+						List<Post<?>> toUpdate = new LinkedList<Post<?>>();
+						toUpdate.add(aPost);
+						try {
+							logic.updatePosts(toUpdate, PostUpdateOperation.UPDATE_ALL);
+						} catch (DatabaseException ex) {
+							//add new errormessages
+							Map<String, List<ErrorMessage>> singlePostErrors = ex.getErrorMessages();
+							Iterator msgIter = singlePostErrors.keySet().iterator();
+							List<ErrorMessage> msgsToAdd = new LinkedList<ErrorMessage>();
+							while(msgIter.hasNext())
+								msgsToAdd.addAll(singlePostErrors.get(msgIter.next()));
+							errors.put(aHash, msgsToAdd);
+						}
+						//else we create it
+					} else if(!ValidationUtils.present(errors.get(aHash))){
+						List<Post<?>> toCreate = new LinkedList<Post<?>>();
+						toCreate.add(aPost);
+						try {
+							logic.createPosts(toCreate);
+						} catch (DatabaseException ex) {
+							//add new errormessages
+							Map<String, List<ErrorMessage>> singlePostErrors = ex.getErrorMessages();
+							Iterator msgIter = singlePostErrors.keySet().iterator();
+							List<ErrorMessage> msgsToAdd = new LinkedList<ErrorMessage>();
+							while(msgIter.hasNext())
+								msgsToAdd.addAll(singlePostErrors.get(msgIter.next()));
+							errors.put(aHash, msgsToAdd);
+						}
 					}
+				}
+			}
+			/**
+			 * If the user uploads more than MAXCOUNT treshold, we store all errorfree posts (create + update[if isOverwrite]) 
+			 */
+			if(tmpList.size()>MAXCOUNT_ERRORHANDLING)
+			{
+				for(Post<?> aPost : tmpList)
+				{
+					//remove the duplicate errormessage
+					String aHash = aPost.getResource().getIntraHash();
 					
+					//check if there are different errors than duplicate errors
+					boolean storePost = true;
+					boolean updatePost = false;
+					if(ValidationUtils.present(errors.get(aHash)))
+					{
+						for(ErrorMessage anErrorMsg : errors.get(aHash))
+						{
+							updatePost = ErrorSource.DUPLICATEPOST.equals(anErrorMsg.getErrorSource()) && isOverwrite;
+							storePost = storePost && updatePost; 
+						}
+					}
+					//if the posts already existed, we update it
+					if(storePost && updatePost)
+					{
+						errors.remove(aHash);
+						List<Post<?>> toUpdate = new LinkedList<Post<?>>();
+						toUpdate.add(aPost);
+						try {
+							logic.updatePosts(toUpdate, PostUpdateOperation.UPDATE_ALL);
+						} catch (DatabaseException ex) {
+							//add new errormessages
+							Map<String, List<ErrorMessage>> singlePostErrors = ex.getErrorMessages();
+							Iterator msgIter = singlePostErrors.keySet().iterator();
+							List<ErrorMessage> msgsToAdd = new LinkedList<ErrorMessage>();
+							while(msgIter.hasNext())
+								msgsToAdd.addAll(singlePostErrors.get(msgIter.next()));
+							errors.put(aHash, msgsToAdd);
+						} 
+						//else we create it
+					} else if(storePost){
+						List<Post<?>> toCreate = new LinkedList<Post<?>>();
+						toCreate.add(aPost);
+						try {
+							logic.createPosts(toCreate);
+						} catch (DatabaseException ex) {
+							//add new errormessages
+							Map<String, List<ErrorMessage>> singlePostErrors = ex.getErrorMessages();
+							Iterator msgIter = singlePostErrors.keySet().iterator();
+							List<ErrorMessage> msgsToAdd = new LinkedList<ErrorMessage>();
+							while(msgIter.hasNext())
+								msgsToAdd.addAll(singlePostErrors.get(msgIter.next()));
+							errors.put(aHash, msgsToAdd);
+						}
+					}
 				}
 			}
 		}
+		return errors;
 	}
 	
 
