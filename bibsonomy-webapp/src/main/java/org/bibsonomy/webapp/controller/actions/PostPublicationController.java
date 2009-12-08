@@ -392,7 +392,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 												StringUtils.translateMessageKey(anErrorMsg.getLocalizedMessageKey(), anErrorMsg.getParameters(), command.getContext().getLocale()) + 
 												"\n";
 					
-					
+					errors.rejectValue(key, "since we might have parameterized messages, we translate them within java and use the fallback", completeMsgForPost);
 				}
 				
 				command.setFormAction(ACTION_SAVE_BEFORE_EDIT);
