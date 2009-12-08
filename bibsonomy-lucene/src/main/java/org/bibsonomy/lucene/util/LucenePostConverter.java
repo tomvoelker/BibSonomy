@@ -47,11 +47,8 @@ public class LucenePostConverter extends LuceneBase {
 	 * static initialization
 	 */
 	static {
-		ApplicationContext context = new ClassPathXmlApplicationContext(
-		        new String[] {LUCENE_CONTEXT_XML});
-
-		// an ApplicationContext is also a BeanFactory (via inheritance)
-		beanFactory = context;
+		// global spring application context
+		beanFactory = LuceneSpringContextWrapper.getBeanFactory();
 		
 		// load property maps
 		bibTexPropertyMap   = (Map<String, Map<String,Object>>) beanFactory.getBean("bibTexPropertyMap");

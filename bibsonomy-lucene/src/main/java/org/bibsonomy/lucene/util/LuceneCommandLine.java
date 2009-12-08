@@ -15,11 +15,9 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryParser.MultiFieldQueryParser;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
@@ -28,10 +26,13 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
-import org.junit.Test;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
 
-public class LuceneCommandLine {
+public class LuceneCommandLine extends LuceneBase {
 	private static final Log log = LogFactory.getLog(LuceneCommandLine.class);
+
+	private static final int CFG_MAX_CNT = 25000;
 	
 	private Analyzer analyzer = SpringPerFieldAnalyzerWrapper.getInstance();
 	
@@ -42,12 +43,16 @@ public class LuceneCommandLine {
 	public static void main(String[] args) throws Exception {
 		
 		LuceneCommandLine lcml = new LuceneCommandLine();
+		lcml.init();
 		lcml.doQuerying();
 	}
 
+	private void init() {
+		super.initRuntimeConfiguration();
+	}
 
 	private void doQuerying() throws Exception {
-		String luceneIndexPath = "/home/fei/tmp/lucene/lucene_BibTex";
+		String luceneIndexPath = getIndexBasePath() + "lucene_BibTex";
 		Directory indexDirectory = FSDirectory.open(new File(luceneIndexPath));
 		IndexReader indexReader = IndexReader.open(indexDirectory, false);
 		IndexSearcher searcher = new IndexSearcher(indexReader);
@@ -61,9 +66,12 @@ public class LuceneCommandLine {
 			searchTerms = readStdIn();
 
 			if( !"!quit".equals(searchTerms) ) {
+				long queryTimeMs = System.currentTimeMillis();
 				Query searchQuery = parseSearchQuery(searchTerms);
-
+				queryTimeMs = System.currentTimeMillis() - queryTimeMs;
+				//------------------------------------------------------------
 				// query the index
+				//------------------------------------------------------------
 				Document doc     = null;
 				try {
 					TopDocs topDocs  = null;
@@ -77,7 +85,7 @@ public class LuceneCommandLine {
 						}
 					}
 				} catch (Exception e) {
-					log.error("Error reading index file " + luceneIndexPath);
+					log.error("Error reading index file " + luceneIndexPath + "("+e.getMessage()+")");
 				} finally {
 					try {
 						searcher.close();
@@ -85,6 +93,28 @@ public class LuceneCommandLine {
 						log.error("Error closing index "+luceneIndexPath+" for searching", e);
 					}
 				}
+				System.out.println("Query time: "+queryTimeMs);
+				//------------------------------------------------------------
+				// profile conversion
+				//------------------------------------------------------------
+				Post<BibTex> testPost = null;
+				long conversionTime = System.currentTimeMillis();
+				if( doc!=null ) {
+					for( int i=0; i<CFG_MAX_CNT; i++ ) {
+						testPost = LucenePostConverter.writeBibTexPost(doc);
+					}
+				}
+				conversionTime = System.currentTimeMillis() - conversionTime;
+				System.out.println("Document->Post ("+CFG_MAX_CNT+"): " + conversionTime);
+				
+				conversionTime = System.currentTimeMillis();
+				if( testPost!=null ) {
+					for( int i=0; i<CFG_MAX_CNT; i++ ) {
+						doc = LucenePostConverter.readPost(testPost);
+					}
+				}
+				conversionTime = System.currentTimeMillis() - conversionTime;
+				System.out.println("Post->Document ("+CFG_MAX_CNT+"): " + conversionTime);
 			}
 		}
 	}

@@ -81,6 +81,18 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 //		String orderBy = "relevance"; 
 		String orderBy = "date"; 
 		
+		// prepare input parameters
+		List<String> tags = new LinkedList<String>();
+		if( ValidationUtils.present(tags) ) {
+			for( String tag : tagList ) {
+				try {
+					tags.add(parseToken(FLD_TAS, tag));
+				} catch (IOException e) {
+					log.error("Error parsing input tag " + tag + " ("+e.getMessage()+")");
+					tags.add(tag);
+				}
+			}
+		}
 		QuerySortContainer qf = new QuerySortContainer();
 		
 		//--------------------------------------------------------------------
@@ -202,7 +214,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		} else {
 			qf.setQuery(mainQuery);
 		}
-		log.debug("Search query: " + qf.getQuery().toString());
+		log.debug("[Author] Search query: " + qf.getQuery().toString());
 		
 		// set up collector
 		TagCountCollector collector;

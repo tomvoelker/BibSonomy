@@ -461,7 +461,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		mainQuery.add(searchTermQuery, Occur.MUST);
 		mainQuery.add(accessModeQuery, Occur.MUST);
 		
-		log.debug("Search query: " + mainQuery.toString());
+		log.debug("[Full text] Search query: " + mainQuery.toString());
 
 		//--------------------------------------------------------------------
 		// set ordering
@@ -585,9 +585,10 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		// build final query
 		//--------------------------------------------------------------------
 		mainQuery.add(searchTermQuery, Occur.MUST);
+		mainQuery.add(groupMemberQuery, Occur.MUST);
 		mainQuery.add(accessModeQuery, Occur.MUST);
 		
-		log.debug("Search query: " + mainQuery.toString());
+		log.debug("[Group search] Search query: " + mainQuery.toString());
 
 		//--------------------------------------------------------------------
 		// set ordering
@@ -633,8 +634,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
             	analyzedString+=" "+termAtt.term();
 		    }
 
-            // escape lucene's special characters for preventing lucene injection hacks
-			return QueryParser.escape(analyzedString.trim());
+            return analyzedString.trim();
 		} else
 			return "";
 	}
