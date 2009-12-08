@@ -25,6 +25,8 @@ public enum ErrorSource {
 	WRONG_USER,
 /** a post was doubled and can therefore not be stored **/
 	DUPLICATEPOST,
+/** a post was to be updated but no origin was found **/
+	UPDATE,
 /** something unspecified happened, try to use an other more specific category if possible**/	
 	GENERAL;
 }
