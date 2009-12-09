@@ -28,6 +28,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public final static int MY_PROFILE_IDX = 0;
 	public final static int SETTINGS_IDX = 1;
 	public final static int IMPORTS_IDX = 2;
+	public final static int GROUP_IDX = 3;
 	
 	/**
 	 * action can be logging, api or layoutTagPost
@@ -116,6 +117,17 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		addTab(SETTINGS_IDX, "navi.settings");
 		addTab(IMPORTS_IDX, "navi.imports");
 		setSelTab(MY_PROFILE_IDX);
+	}
+	
+	/**
+	 * shows the group tab on the settings.settings site if the user is a group
+	 * @param show
+	 */
+	public void showGroupTab(boolean show) {
+		
+		if(show) {
+			addTab(GROUP_IDX, "navi.groups");
+		}
 	}
 
 	public String getGroup() {
