@@ -6,6 +6,7 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -53,6 +54,12 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		}
 		
 		User user = context.getLoginUser(); 
+		
+		//check whether the user is a group		
+		if(UserUtils.userIsGroup(user)) {
+			command.setHasOwnGroup(true);
+			command.showGroupTab(true);
+		}
 		
 		/*
 		 * check the ckey
