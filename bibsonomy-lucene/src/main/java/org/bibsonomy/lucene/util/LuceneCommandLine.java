@@ -26,13 +26,9 @@ import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
 
 public class LuceneCommandLine extends LuceneBase {
 	private static final Log log = LogFactory.getLog(LuceneCommandLine.class);
-
-	private static final int CFG_MAX_CNT = 25000;
 	
 	private Analyzer analyzer = SpringPerFieldAnalyzerWrapper.getInstance();
 	
@@ -94,27 +90,6 @@ public class LuceneCommandLine extends LuceneBase {
 					}
 				}
 				System.out.println("Query time: "+queryTimeMs);
-				//------------------------------------------------------------
-				// profile conversion
-				//------------------------------------------------------------
-				Post<BibTex> testPost = null;
-				long conversionTime = System.currentTimeMillis();
-				if( doc!=null ) {
-					for( int i=0; i<CFG_MAX_CNT; i++ ) {
-						testPost = LucenePostConverter.writeBibTexPost(doc);
-					}
-				}
-				conversionTime = System.currentTimeMillis() - conversionTime;
-				System.out.println("Document->Post ("+CFG_MAX_CNT+"): " + conversionTime);
-				
-				conversionTime = System.currentTimeMillis();
-				if( testPost!=null ) {
-					for( int i=0; i<CFG_MAX_CNT; i++ ) {
-						doc = LucenePostConverter.readPost(testPost);
-					}
-				}
-				conversionTime = System.currentTimeMillis() - conversionTime;
-				System.out.println("Post->Document ("+CFG_MAX_CNT+"): " + conversionTime);
 			}
 		}
 	}

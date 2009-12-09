@@ -60,7 +60,6 @@ public final class JNDITestDatabaseBinder extends LuceneBase {
 	public static final void bind() {
 		bindDatabaseContext("bibsonomy_lucene", LUCENEPROPERTYFILENAME);
 		bindLuceneConfig(CONTEXTNAME, LUCENEPROPERTYFILENAME);
-		// bindVariablesContext(CONTEXTNAME, LUCENEPROPERTYFILENAME);
 	}
 
 	private static void bindLuceneConfig(String contextName, String fileName) {
@@ -118,64 +117,6 @@ public final class JNDITestDatabaseBinder extends LuceneBase {
 			log.error(ex.getMessage());
 		}
 
-	}
-
-	/**
-	 * Reads all properties (key=value) from given properties file and stores
-	 * them in given context
-	 * 
-	 * @param contextName
-	 * @param fileName
-	 */
-	private static void bindVariablesContext(final String contextName, final String fileName) {
-		Context ctx;
-		
-		final Properties props = new Properties();		
-		try {
-			// read properties
-			props.load(JNDITestDatabaseBinder.class.getClassLoader().getResourceAsStream(fileName));		
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-		
-		try {
-			MockContextFactory.setAsInitial();
-			ctx = new InitialContext();
-			for( Object key : props.keySet() ) {
-				String propertyName = getPropertyName((String)key);
-				try {
-					// FIXME: this is a dirty hack, as lucene expects some booleans
-					String booleanCompare = props.getProperty((String)key).toLowerCase();
-					if( "true".compareTo(booleanCompare)==0 || "false".compareTo(booleanCompare)==0 ) {
-						ctx.bind(contextName+propertyName, new Boolean(booleanCompare));
-					} else {
-						ctx.bind(contextName+propertyName, props.getProperty((String)key));
-					}
-				}
-				catch (NamingException ex) {
-					log.error("Error binding environment variable:'" + contextName + "' via JNDI");
-					log.error(ex.getMessage());
-				}
-			}
-		} catch (NamingException e) {
-			log.error("Error setting up JNDI environment variables:" + e.getMessage() );
-		}
-
-	}
-
-	/**
-	 * factory for property instances
-	 */
-	public static Properties getLuceneProperties() {
-		final Properties props = new Properties();
-		try {
-			// read properties
-			props.load(JNDITestDatabaseBinder.class.getClassLoader()
-					.getResourceAsStream(LUCENEPROPERTYFILENAME));
-		} catch (IOException ex) {
-			throw new RuntimeException(ex);
-		}
-		return props;
 	}
 
 	/**

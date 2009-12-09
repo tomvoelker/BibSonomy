@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -19,7 +18,7 @@ import org.apache.lucene.store.LockObtainFailedException;
 import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.LuceneBase;
-import org.bibsonomy.lucene.util.LucenePostConverter;
+import org.bibsonomy.lucene.util.LuceneResourceConverter;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -51,6 +50,9 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 
 	/** default analyzer */
 	private Analyzer analyzer = null;
+	
+	/** converts post model objects to lucene documents */
+	private LuceneResourceConverter<R> resourceConverter;
 	
 	/**
 	 * constructor
@@ -173,7 +175,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 				fillPost(postEntry);
 				
 				// create index document from post model
-				Document post = LucenePostConverter.readPost(postEntry);
+				Document post = this.resourceConverter.readPost(postEntry);
 
 				// add (non-spam) document to index
 				// FIXME: is this check necessary?
@@ -262,5 +264,13 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 
 	public Analyzer getAnalyzer() {
 		return analyzer;
+	}
+
+	public void setResourceConverter(LuceneResourceConverter<R> resourceConverter) {
+		this.resourceConverter = resourceConverter;
+	}
+
+	public LuceneResourceConverter<R> getResourceConverter() {
+		return resourceConverter;
 	}
 }

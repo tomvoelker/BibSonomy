@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -31,6 +32,10 @@ import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateBibTexSearch;
 import org.bibsonomy.lucene.search.delegate.LuceneDelegateBookmarkSearch;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
+import org.bibsonomy.lucene.util.LuceneBibTexConverter;
+import org.bibsonomy.lucene.util.LuceneBookmarkConverter;
+import org.bibsonomy.lucene.util.LuceneResourceConverter;
+import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -486,6 +491,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 	 * @throws ClassNotFoundException 
 	 * @throws IOException 
 	 */
+	@SuppressWarnings("unchecked")
 	private void generateIndex() throws IOException, ClassNotFoundException, SQLException {
 		// FIXME: configure this via spring
 		LuceneGenerateResourceIndex<BibTex> bibTexIndexer = 
@@ -502,6 +508,23 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		bibTexIndexer.setAnalyzer(SpringPerFieldAnalyzerWrapper.getInstance());
 		bookmarkIndexer.setLogic(LuceneBookmarkLogic.getInstance());
 		bookmarkIndexer.setAnalyzer(SpringPerFieldAnalyzerWrapper.getInstance());
+		
+		
+		LuceneResourceConverter<BibTex> bibTexConverter;
+		LuceneResourceConverter<Bookmark> bookmarkConverter;
+		Map<String,Map<String,Object>> postPropertyMap;
+
+		postPropertyMap = (Map<String, Map<String, Object>>) LuceneSpringContextWrapper.getBeanFactory().getBean("bibTexPropertyMap");
+		bibTexConverter = new LuceneBibTexConverter();
+		bibTexConverter.setPostPropertyMap(postPropertyMap);
+		
+		postPropertyMap = (Map<String, Map<String, Object>>) LuceneSpringContextWrapper.getBeanFactory().getBean("bookmarkPropertyMap");
+		bookmarkConverter = new LuceneBookmarkConverter();
+		bookmarkConverter.setPostPropertyMap(postPropertyMap);
+		
+		bibTexIndexer.setResourceConverter(bibTexConverter);
+		bookmarkIndexer.setResourceConverter(bookmarkConverter);
+		
 		
 		bibTexIndexer.generateIndex();
 		bookmarkIndexer.generateIndex();

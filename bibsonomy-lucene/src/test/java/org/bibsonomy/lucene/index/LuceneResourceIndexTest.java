@@ -10,6 +10,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,7 +20,10 @@ import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
-import org.bibsonomy.lucene.util.LucenePostConverter;
+import org.bibsonomy.lucene.util.LuceneBibTexConverter;
+import org.bibsonomy.lucene.util.LuceneBookmarkConverter;
+import org.bibsonomy.lucene.util.LuceneResourceConverter;
+import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -37,10 +41,25 @@ import org.junit.Test;
 public class LuceneResourceIndexTest {
 	private static final Log log = LogFactory.getLog(LuceneUpdateManagerTest.class);
 
+	LuceneResourceConverter<BibTex> bibTexConverter;
+	LuceneResourceConverter<Bookmark> bookmarkConverter;
+	
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() {
 		// bind datasource access via JNDI
 		JNDITestDatabaseBinder.bind();
+		
+		// initialize
+		Map<String,Map<String,Object>> postPropertyMap;
+
+		postPropertyMap = (Map<String, Map<String, Object>>) LuceneSpringContextWrapper.getBeanFactory().getBean("bibTexPropertyMap");
+		bibTexConverter = new LuceneBibTexConverter();
+		bibTexConverter.setPostPropertyMap(postPropertyMap);
+		
+		postPropertyMap = (Map<String, Map<String, Object>>) LuceneSpringContextWrapper.getBeanFactory().getBean("bookmarkPropertyMap");
+		bookmarkConverter = new LuceneBookmarkConverter();
+		bookmarkConverter.setPostPropertyMap(postPropertyMap);
 	}
 	
 	@After
@@ -56,8 +75,8 @@ public class LuceneResourceIndexTest {
 		bmPost.setContentId(0);
 		bibPost.setContentId(0);
 		
-		Document bmDoc  = LucenePostConverter.readPost(bmPost);
-		Document bibDoc = LucenePostConverter.readPost(bibPost);
+		Document bmDoc  = this.bookmarkConverter.readPost(bmPost);
+		Document bibDoc = this.bibTexConverter.readPost(bibPost);
 		
 		LuceneResourceIndex<Bookmark> bmIndex = LuceneBookmarkIndex.getInstance();
 		LuceneResourceIndex<BibTex> bibIndex  = LuceneBibTexIndex.getInstance();
@@ -74,8 +93,8 @@ public class LuceneResourceIndexTest {
 			bmPost.setContentId(i);
 			bibPost.setContentId(i);
 
-			bmIndex.insertDocument(LucenePostConverter.readPost(bmPost));
-			bibIndex.insertDocument(LucenePostConverter.readPost(bibPost));
+			bmIndex.insertDocument(this.bookmarkConverter.readPost(bmPost));
+			bibIndex.insertDocument(this.bibTexConverter.readPost(bibPost));
 		}
 
 		assertEquals(50, bmIndex.getPostsToInsert().size());

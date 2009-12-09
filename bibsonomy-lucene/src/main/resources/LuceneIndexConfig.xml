@@ -61,7 +61,7 @@
 	<bean id="lucene24Compat" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean">
  		<property name="staticField" value="org.apache.lucene.util.Version.LUCENE_24"/>
 	</bean>
-
+	    
 	<!--+
 	    | import resource field configurations 
 	    +-->

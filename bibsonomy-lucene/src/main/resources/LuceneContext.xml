@@ -3,16 +3,30 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
+		
+	<!--+
+	    | lucene post converter
+	    +-->
+	<bean id="luceneBibTexConverter" class="org.bibsonomy.lucene.util.LuceneBibTexConverter">
+		<property name="postPropertyMap" ref="bibTexPropertyMap"/>
+	</bean>
+	
+	<bean id="luceneBookmarkConverter" class="org.bibsonomy.lucene.util.LuceneBookmarkConverter">
+		<property name="postPropertyMap" ref="bookmarkPropertyMap"/>
+	</bean>
+	    
 	<!--+
 	    | lucene index generator 
 	    +-->
 	<bean id="luceneBibTexIndexGenerator" class="org.bibsonomy.lucene.index.LuceneGenerateBibTexIndex" factory-method="getPreInitInstance">
 		<property name="logic" ref="luceneBibTexLogic"/>
 		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		<property name="resourceConverter" ref="luceneBibTexConverter"/>
 	</bean>
 	<bean id="luceneBookmarkIndexGenerator" class="org.bibsonomy.lucene.index.LuceneGenerateBookmarkIndex" factory-method="getPreInitInstance">
 		<property name="logic" ref="luceneBookmarkLogic"/>
 		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
+		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
 	</bean>
 	 
 	<!--+
@@ -37,10 +51,12 @@
 	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.search.LuceneSearchBibTex" factory-method="getInstance">
 		<property name="dbLogic" ref="luceneBibTexLogic"/>
 		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		<property name="resourceConverter" ref="luceneBibTexConverter"/>
 	</bean>
 	<bean id="luceneBookmarkSearch" class="org.bibsonomy.lucene.search.LuceneSearchBookmarks" factory-method="getInstance">
 		<property name="dbLogic" ref="luceneBookmarkLogic"/>
 		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
+		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
 	</bean>
 
 	
@@ -51,11 +67,13 @@
 		<property name="resourceIndex" ref="luceneBibTexIndex"/>
 		<property name="dbLogic" ref="luceneBibTexLogic"/>
 		<property name="searcher" ref="luceneBibTexSearch"/>
+		<property name="resourceConverter" ref="luceneBibTexConverter"/>
 	</bean>
 	<bean id="luceneBookmarkManager" class="org.bibsonomy.lucene.index.LuceneBookmarkManager" factory-method="getPreInitInstance">
 		<property name="resourceIndex" ref="luceneBookmarkIndex"/>
 		<property name="dbLogic" ref="luceneBookmarkLogic"/>
 		<property name="searcher" ref="luceneBookmarkSearch"/>
+		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
 	</bean>
 	
 	

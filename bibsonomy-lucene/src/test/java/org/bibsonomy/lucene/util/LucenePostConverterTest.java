@@ -11,6 +11,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,11 +33,27 @@ import org.junit.Test;
 public class LucenePostConverterTest extends LuceneBase {
 	private static final Log log = LogFactory.getLog(LucenePostConverterTest.class);
 	
+	LuceneResourceConverter<BibTex> bibTexConverter;
+	LuceneResourceConverter<Bookmark> bookmarkConverter;
+	
+	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() {
 		// bind datasource access via JNDI
 		JNDITestDatabaseBinder.bind();
 		LuceneBase.initRuntimeConfiguration();
+		
+		// initialize
+		Map<String,Map<String,Object>> postPropertyMap;
+
+		postPropertyMap = (Map<String, Map<String, Object>>) LuceneSpringContextWrapper.getBeanFactory().getBean("bibTexPropertyMap");
+		bibTexConverter = new LuceneBibTexConverter();
+		bibTexConverter.setPostPropertyMap(postPropertyMap);
+		
+		postPropertyMap = (Map<String, Map<String, Object>>) LuceneSpringContextWrapper.getBeanFactory().getBean("bookmarkPropertyMap");
+		bookmarkConverter = new LuceneBookmarkConverter();
+		bookmarkConverter.setPostPropertyMap(postPropertyMap);
+		
 	}
 	
 	@Test
@@ -45,9 +62,9 @@ public class LucenePostConverterTest extends LuceneBase {
 			"testTitle", "testTag", "testAuthor", "testUser", 
 			new Date(System.currentTimeMillis()), GroupID.PUBLIC);
 		
-		Document doc = LucenePostConverter.readPost(refPost);
+		Document doc = this.bookmarkConverter.readPost(refPost);
 		
-		Post<Bookmark> testPost = LucenePostConverter.writeBookmarkPost(doc); 
+		Post<Bookmark> testPost = this.bookmarkConverter.writePost(doc); 
 
 		//--------------------------------------------------------------------
 		// compare some elements
@@ -78,9 +95,9 @@ public class LucenePostConverterTest extends LuceneBase {
 			"testTitle", "testTag", "testAuthor", "testUser", 
 			new Date(System.currentTimeMillis()), GroupID.PUBLIC);
 		
-		Document doc = LucenePostConverter.readPost(refPost);
+		Document doc = this.bibTexConverter.readPost(refPost);
 		
-		Post<BibTex> testPost = LucenePostConverter.writeBibTexPost(doc); 
+		Post<BibTex> testPost = this.bibTexConverter.writePost(doc); 
 
 		//--------------------------------------------------------------------
 		// compare some elements
@@ -116,7 +133,7 @@ public class LucenePostConverterTest extends LuceneBase {
 				new Date(System.currentTimeMillis()), GroupID.PUBLIC);
 
 		
-		Document postDoc = LucenePostConverter.readPost(testPost);
+		Document postDoc = this.bibTexConverter.readPost(testPost);
 		
 		//--------------------------------------------------------------------
 		// compare some elements
@@ -127,7 +144,7 @@ public class LucenePostConverterTest extends LuceneBase {
 		for( Tag tag : testPost.getTags() ) {
 			String tagName = tag.getName();
 			
-			assertEquals(true, postDoc.get(FLD_TAGS).contains(tagName));
+			assertEquals(true, postDoc.get(FLD_TAS).contains(tagName));
 		}
 		// author
 		assertEquals(testPost.getResource().getAuthor(), postDoc.get(FLD_AUTHOR));

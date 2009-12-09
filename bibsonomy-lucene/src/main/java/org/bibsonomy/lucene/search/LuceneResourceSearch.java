@@ -39,6 +39,7 @@ import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
 import org.bibsonomy.lucene.util.LuceneBase;
+import org.bibsonomy.lucene.util.LuceneResourceConverter;
 import org.bibsonomy.lucene.util.Utils;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -50,7 +51,7 @@ import org.bibsonomy.util.ValidationUtils;
  * abstract parent class for lucene search
  * 
  * FIXME: this class now should be thread safe - only one issue might retain:
- *        what happens, if the update manager updated the index, but theire are
+ *        what happens, if the update manager updated the index, but their are
  *        still resource searchers active - do their index searcher work correctly???
  * 
  * @author fei
@@ -62,7 +63,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	
 	/**
 	 *  read/write lock, allowing multiple searcher or exclusive an index update
-	 *	FIXME: we should use an implementation, which prefers writers for obtaining the lock 
+	 *	TODO: we should use an implementation, which prefers writers for obtaining the lock 
 	 */
 	private ReadWriteLock lock = new ReentrantReadWriteLock(true);
 	/** write lock, used for blocking  index searcher */
@@ -90,6 +91,9 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	
 	/** default junction of search terms */
 	private Operator defaultSearchTermJunctor = null;
+	
+	/** post model converter */
+	private LuceneResourceConverter<R> resourceConverter;
 	
 	/**
 	 * constructor
@@ -289,7 +293,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 				// get document from index
 				Document       doc  = searcher.doc(topDocs.scoreDocs[i].doc);
 				// convert document to bibsonomy post model
-				Post<R> post = convertToPostModel(doc); 
+				Post<R> post = this.resourceConverter.writePost(doc); 
 				
 				// set post frequency
 				starttimeQuery = System.currentTimeMillis();
@@ -309,13 +313,6 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		}
 		return postList;
 	}	
-
-	/**
-	 * create bibsonomy post model from given lucene document
-	 * @param doc
-	 * @return
-	 */
-	protected abstract Post<R> convertToPostModel(Document doc);
 
 	/**
 	 * create empty collection of managed post objects
@@ -616,8 +613,6 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	/** 
 	 * analyzes given input parameter
 	 * 
-	 * FIXME: do we need to analyze the parameter???
-	 * 
 	 * @param group
 	 * @param strToken a reusable token for efficacy 
 	 * @return
@@ -702,6 +697,14 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 
 	public Operator getDefaultSearchTermJunctor() {
 		return defaultSearchTermJunctor;
+	}
+
+	public void setResourceConverter(LuceneResourceConverter<R> resourceConverter) {
+		this.resourceConverter = resourceConverter;
+	}
+
+	public LuceneResourceConverter<R> getResourceConverter() {
+		return resourceConverter;
 	}
 
 

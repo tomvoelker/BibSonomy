@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.document.Document;
 import org.bibsonomy.lucene.param.QuerySortContainer;
-import org.bibsonomy.lucene.util.LucenePostConverter;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
@@ -49,11 +47,6 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 	@Override
 	protected Class<Bookmark> getResourceType() {
 		return Bookmark.class;
-	}
-
-	@Override
-	protected Post<Bookmark> convertToPostModel(Document doc) {
-		return LucenePostConverter.writeBookmarkPost(doc);
 	}
 
 	@Override

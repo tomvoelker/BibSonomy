@@ -57,6 +57,7 @@ public class LuceneBase {
 	public static final String PROPERTYFILENAME    = "lucene.properties";
 	public static final String LUCENE_CONTEXT_XML  = "LuceneIndexConfig.xml";
 
+	// FIXME: configure these fieldnames via spring
 	public static final String FLD_MERGEDFIELDS  = "mergedfields";
 	public static final String FLD_INTRAHASH     = "intrahash";
 	public static final String FLD_GROUP         = "group";
@@ -66,7 +67,6 @@ public class LuceneBase {
 	public static final String FLD_YEAR          = "year";
 	public static final String FLD_TAS           = "tas";	
 	public static final String FLD_ADDRESS       = "address";
-	public static final String FLD_TAGS          = "tas";
 	public static final String FLD_TITLE         = "title";	
 	public static final String FLD_LAST_TAS_ID   = "last_tas_id";
 	public static final String FLD_LAST_LOG_DATE = "last_log_date";

@@ -13,7 +13,7 @@ import org.bibsonomy.lucene.database.LuceneDBInterface;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.util.LuceneBase;
-import org.bibsonomy.lucene.util.LucenePostConverter;
+import org.bibsonomy.lucene.util.LuceneResourceConverter;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
@@ -54,6 +54,9 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 
 	/** constant for querying for all posts which have been deleted since the last index update */
 	private static final long QUERY_TIME_OFFSET_MS = 30*1000;
+	
+	/** converts post model objects to lucene documents */
+	private LuceneResourceConverter<R> resourceConverter;
 
 	/**
 	 * constructor
@@ -144,7 +147,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 			//----------------------------------------------------------------
 			for( LucenePost<R> post : newPosts ) {
 				post.setLastLogDate(new Date(currentLogDate));
-				Document postDoc = LucenePostConverter.readPost(post);
+				Document postDoc = this.resourceConverter.readPost(post);
 				this.resourceIndex.insertDocument(postDoc);
 			}
 
@@ -326,11 +329,11 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	private void unflagEntryAsSpam(List<LucenePost<R>> userPosts) {
 		//  insert new records into index
 		if( (userPosts!=null) && (userPosts.size()>0) ) {
-			for (Post<?> post : userPosts ) {
+			for (Post<R> post : userPosts ) {
 				// cache possible pre existing duplicate for deletion 
 				resourceIndex.deleteDocumentForContentId(post.getContentId());
 				// cache document for writing 
-				resourceIndex.insertDocument(LucenePostConverter.readPost(post));
+				resourceIndex.insertDocument(this.resourceConverter.readPost(post));
 			}
 		}
 	}
@@ -360,5 +363,13 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 
 	public LuceneResourceSearch<R> getSearcher() {
 		return searcher;
+	}
+
+	public void setResourceConverter(LuceneResourceConverter<R> resourceConverter) {
+		this.resourceConverter = resourceConverter;
+	}
+
+	public LuceneResourceConverter<R> getResourceConverter() {
+		return resourceConverter;
 	}
 }

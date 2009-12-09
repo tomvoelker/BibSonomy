@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
@@ -20,11 +19,9 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeFilter;
-import org.apache.lucene.search.TopFieldCollector;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
-import org.bibsonomy.lucene.util.LucenePostConverter;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
@@ -235,11 +232,6 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 	@Override
 	protected Class<BibTex> getResourceType() {
 		return BibTex.class;
-	}
-
-	@Override
-	protected Post<BibTex> convertToPostModel(Document doc) {
-		return LucenePostConverter.writeBibTexPost(doc);
 	}
 
 	@Override
