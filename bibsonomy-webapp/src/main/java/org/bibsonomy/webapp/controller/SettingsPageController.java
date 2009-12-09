@@ -11,15 +11,13 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
-
-import beans.GroupSettingsBean;
-import beans.SettingsBean;
 
 /**
  * @author Steffen
@@ -47,10 +45,20 @@ public class SettingsPageController implements
 
 		command.setPageTitle("settings");
 		
+		User loginUser = command.getContext().getLoginUser();
+		command.setUser(loginUser);
+		
+		//check whether the user is a group		
+		if(UserUtils.userIsGroup(loginUser)) {
+			command.setHasOwnGroup(true);
+			command.showGroupTab(true);
+		}
+	
+		
 		if(!command.getContext().isUserLoggedIn()) {
 			return Views.LOGIN;
 		}
-		
+
 		switch (command.getSelTab()) {
 		case 0: {
 			// called by the my profile tab
@@ -65,6 +73,10 @@ public class SettingsPageController implements
 		case 2: {
 
 			checkInstalledJabrefLayout(command);
+			break;
+		}
+		case 3: {
+			//do nothing
 			break;
 		}
 		default: {
