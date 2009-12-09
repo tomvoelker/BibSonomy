@@ -168,4 +168,30 @@ public class UserUtils {
 		
 		return url;
 	}
+	
+	/**
+	 * check whether the user is a group
+	 * @param user
+	 * @return boolean 
+	 */
+	public static boolean userIsGroup(final User user) {
+		
+		String userName = user.getName();
+		List<Group> groups = user.getGroups();
+		userName = userName.toLowerCase();
+		boolean isGroup = false;
+		
+		//iterate over groups and check whether the user name equals a group name
+		if(groups != null) { 
+			for(int i = 0; i < groups.size(); i++) {
+				Group group = groups.get(i);
+				if(userName.equals(group.getName().toLowerCase())) {
+					isGroup = true;
+					break;
+				}
+			}
+		}
+		
+		return isGroup;
+	}
 }
