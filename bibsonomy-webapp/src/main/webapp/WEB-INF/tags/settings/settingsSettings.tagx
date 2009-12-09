@@ -23,9 +23,6 @@
 		<fmt:message var="english" key="settings.english"/>
 		<fmt:message var="german" key="settings.german"/>
 		<fmt:message var="setlayout" key="settings.setlayout"/>
-		<fmt:message var="cancel" key="settings.cancel"/>
-		<fmt:message var="adduser" key="settings.adduser"/>
-		<fmt:message var="change" key="settings.change"/>
 		<fmt:message var="generateapikey" key="settings.generateapikey"/>
 		<fmt:message var="updatesettings" key="settings.updatesettings" />
 		<fmt:message var="deleteaccount" key="settings.deleteaccount" />
@@ -33,12 +30,13 @@
 		<!-- display potential errors -->
 		<errors:global errors="${errors}"/>
 		
-		<!--<settings:settingsResult statusID="${command.statusID}"></settings:settingsResult>-->
-		
 		<!-- style settings -->		
 		<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
 		  <form:form id="styleSettingsForm" method="POST" action="/updateUserSettings">
+		  <div id="fsform">
+		  <fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
 		  <table>
+		  	<div class="fsRow">
 		    <tr>
 		      <td><fmt:message key="settings.tag.showAs"/> </td>
 		      <td>
@@ -48,6 +46,9 @@
 		        </form:select>
 		      </td>
 		    </tr>
+		    </div>
+		    
+		    <div class="fsRow">
 		    <tr>
 		        <td><fmt:message key="settings.tag.sortBy"/> </td>
 		        <td>
@@ -56,13 +57,19 @@
 		            <form:option label="${frequency}" value="1"/>    
 		          </form:select>
 		        </td>
-		      </tr>
+		    </tr>
+		    </div>
+		      
+		    <div class="fsRow">
 		      <tr>
 		        <td><fmt:message key="settings.tag.onlyMinFreq"/></td>
 		        <td>
 		          <form:input path="user.settings.tagboxMinfreq" size="3"/>
 		        </td>
 		      </tr>
+		    </div>
+		    
+		    <div class="fsRow">
 		      <tr>
 		        <td><fmt:message key="settings.tag.showTooltipsForTags"/></td>
 		        <td>
@@ -72,14 +79,18 @@
 		          </form:select>
 		        </td>
 		      </tr> 
+		    </div>
 		
+			<div class="fsRow">
 		      <tr>
 		        <td><fmt:message key="settings.tag.itemsPerPage"/></td>
 		        <td>
 		           <form:input path="user.settings.listItemcount" size="3"/>
 		        </td>
 		      </tr> 
-		            
+		    </div>
+		         
+		    <div class="fsRow">   
 		       <tr>
 		        <td><fmt:message key="settings.tag.defaultLanguage"/></td>
 		        <td>
@@ -88,110 +99,24 @@
 		            <form:option label="${german}" value="de"/>
 		          </form:select>
 		        </td>
-		      </tr> 
-		      
-		      <tr>
-		        <td>
-		          <input type="submit" name="tagbox_style" value="${setlayout}"/>
-		          <input type="hidden" name="ckey" value="${ckey}"/>
-		          <input type="hidden" name="action" value="layoutTagPost"/>
-		        </td>
-		    </tr>    	   
-		  </table>
+		      </tr>    	   
+		    </div>
+		  </table>		  
+		  <input type="hidden" name="ckey" value="${ckey}"/>
+		  <input type="hidden" name="action" value="layoutTagPost"/>
+		  <input type="hidden" name="selTab" value="1"/>
+		  <input type="submit" name="tagbox_style" value="${setlayout}"/>
+		  </fieldset>
+		  </div>
 		</form:form>
 		
 		<hr/>
 		
-		<!-- add a group -->
-		<h2><fmt:message key="settings.group"/></h2>		
-		<c:choose>
-		  <c:when test="${command.hasOwnGroup}">
-		
-		<!-- ####################### TODO: unify this red box handling, put it into style.css ####################### -->
-		<div id="groups"
-			style="${not empty param.user and not empty param.group and param.group eq user.name?'border: .2em solid red; padding: .2em;':''}">
-			<c:if test="${not empty param.user and not empty param.group and param.group eq user.name}">
-				<!-- TODO move to controller -->
-			  <!-- User clicked link in email and wants to add (or cancel) user -->	  
-			  <!-- cancel request only if right params existing -->
-			  <h3><fmt:message key="settings.cancelJoinRequest"><fmt:param><a href="/user/${mtl:encodeURI(param.user)}"><c:out value="${param.user}"/></a></fmt:param></fmt:message></h3>
-			  <form:form name="groupcanceladduser" method="post" action="/JoinGroupHandler">
-			    <input type="hidden" name="user" value="${param.user}" />
-			    <input type="hidden" name="cancel" value="true" />
-			    <label for="inputreason"><fmt:message key="settings.reason" /></label> 
-			    <input type="text" size="30" name="reason" id="inputreason"/>
-			    <input type="submit" value="${cancel} }"/>
-			  </form:form>
-			</c:if>
-			  <h3><fmt:message key="settings.addusertomygroup"/></h3>
-			  <form:form name="groupusers" method="post" action="/SettingsHandler">
-			    <label for="laddgu"><fmt:message key="settings.username"/></label> 
-			    <form:input path="requestedUser" />
-			    <input type="hidden" name="ckey" value="${ckey}"/>
-			    <input type="submit" value="${adduser}" />
-			  </form:form>
-		  </div>
-		 
-		  <h3><fmt:message key="settings.privacylevel"/></h3> 
-		  <form:form name="groupPrivLevel" method="post" action="/settingsnew">
-		    
-		    <table>
-		    	<tr>
-		    		<td><fmt:message key="settings.memberlistis"/></td>
-		    		<td>
-		    			<form:select path="privlevel">
-		      				<form:option value="0"><fmt:message key="settings.public"/></form:option>
-		      				<form:option value="1"><fmt:message key="settings.private"/></form:option>
-		      				<form:option value="2"><fmt:message key="settings.publicformembers"/></form:option>
-		    			</form:select>
-		    		</td>
-		    		<td> <input type="submit" value="${change}" /></td>		    		
-		    	</tr>
-		    </table>
-		    <input type="hidden" name="ckey" value="${ckey}"/>		   		   
-		  </form:form>
-		  
-		  <h3><fmt:message key="settings.shareddocuments"/></h3> 
-		  <form:form name="groupSharedDocuments" method="post" action="/settingsnew">
-		    <table>
-		    	<tr>
-		    		<td><fmt:message key="settings.shareddocumentsare"/></td>
-		    		<td>
-		    			<form:select path="sharedDocuments">
-		      				<form:option value="0"><fmt:message key="settings.disabled"/></form:option>
-		      				<form:option value="1"><fmt:message key="settings.enabled"/></form:option>
-		    			</form:select>
-		    		</td>
-		    		<td><input type="submit" value="${change}" /></td>
-		    	</tr>
-		    </table>
-		    <input type="hidden" name="ckey" value="${ckey}"/>	
-		  </form:form>		  
-		  
-		</c:when>
-		<c:otherwise>
-		  
-		<h3><fmt:message key="settings.addagroup"/></h3>
-		<p>
-		  <fmt:message key="settings.addgroupdescription"><fmt:param><jsp:directive.include file="/boxes/emailaddress.jsp" /></fmt:param></fmt:message>.
-		</p>
-		
-		</c:otherwise>
-		</c:choose>		
-		
-		<!-- user is logged in with wrong account -->
-		<!-- ####################### TODO: unify this red box handling, put it into style.css #######################-->
-		<c:if test="${not (empty param.user or empty param.group or param.group eq user.name)}">
-		  <div id="groups" style="border: .2em solid red; padding: .2em;">
-		  	<fmt:message key="settings.notloggedinwithgroupaccount"><fmt:param><a href="/login">login</a></fmt:param><fmt:param><c:out value="${param.group}"/></fmt:param></fmt:message>
-		  </div>
-		</c:if>
-		
-		<hr/>		
-		
 		<!-- API -->
 		<h2>API</h2>
-		<form:form name="apiKey" method="post" action="/updateUserSettings">
+		<form:form id="postForm" method="post" action="/updateUserSettings">
+		<div id="fsform">
+		<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
 		  <c:choose>
 			<c:when test="${command.context.loginUser.apiKey eq null}">			
               <p>
@@ -211,44 +136,51 @@
 					</fmt:message>
 				</p>		
 			</c:otherwise>
-		</c:choose>
-		<input type="submit" value="${generateapikey}"/> 
+		</c:choose>		 
+		<input type="hidden" name="selTab" value="1"/>
 		<input type="hidden" name="ckey" value="${ckey}"/>		
 		<input type="hidden" name="action" value="api"/>
+		<input type="submit" value="${generateapikey}"/>
+		</fieldset>
+		</div>
 		</form:form>
 		<hr/>
     
         <!-- log level -->
         <h2><fmt:message key="settings.logging" /></h2>
-        <form:form name="test" method="post" action="/updateUserSettings">
-        <table>
-          <tr>
-            <td><fmt:message key="settings.logclicks"/></td>
-            <td>
-		          <form:select path="user.settings.logLevel">
-		            <form:option value="0"><fmt:message key="settings.yes"/></form:option>
-		            <form:option value="1"><fmt:message key="settings.no"/></form:option>
-		          </form:select>
-            </td>
-          </tr> 
-           <tr>
-            <td><fmt:message key="settings.confirm"/></td>
-            <td>
-		          <form:select path="user.settings.confirmDelete">
-		            <form:option value="true"><fmt:message key="settings.yes"/></form:option>
-		            <form:option value="false"><fmt:message key="settings.no"/></form:option>
-		          </form:select>
-            </td>
-          </tr> 
-          <tr>
-            <td>
-            	<input type="hidden" name="ckey" value="${ckey}"/>
-              	<input type="hidden" name="selTab" value="1"/>
-              	<input type="hidden" name="action" value="logging"/>
-              	<input type="submit" value="${updatesettings}"/>               
-            </td>
-          </tr>
-        </table>
+        <form:form id="postForm" method="post" action="/updateUserSettings">
+        <div id="fsform">
+        <fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
+	        <table>
+	        	<div class="fsRow">
+	          		<tr>
+	            		<td><fmt:message key="settings.logclicks"/></td>
+	            		<td>
+			          		<form:select path="user.settings.logLevel">
+			            		<form:option value="0"><fmt:message key="settings.yes"/></form:option>
+			            		<form:option value="1"><fmt:message key="settings.no"/></form:option>
+			          		</form:select>
+	            		</td>
+	          		</tr> 
+	          	</div>
+	          	<div class="fsRow">
+	           		<tr>
+	            		<td><fmt:message key="settings.confirm"/></td>
+	            		<td>
+			          		<form:select path="user.settings.confirmDelete">
+			            		<form:option value="true"><fmt:message key="settings.yes"/></form:option>
+			            		<form:option value="false"><fmt:message key="settings.no"/></form:option>
+			          		</form:select>
+	            		</td>
+	          		</tr>
+	          	</div>
+	        </table>
+        	<input type="hidden" name="ckey" value="${ckey}"/>
+            <input type="hidden" name="selTab" value="1"/>
+            <input type="hidden" name="action" value="logging"/>
+            <input type="submit" value="${updatesettings}"/>          
+        </fieldset>
+        </div>
         </form:form>
         <hr/>    
         
