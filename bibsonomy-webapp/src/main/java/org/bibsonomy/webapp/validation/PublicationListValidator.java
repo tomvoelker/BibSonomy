@@ -1,17 +1,18 @@
 package org.bibsonomy.webapp.validation;
 
+import java.util.List;
+
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 
-
 /**
  * @author ema
  * @version $Id$
  */
-public class PublicationValidator implements Validator<Post<BibTex>> {
+public class PublicationListValidator implements Validator<Post<BibTex>> {
 
 	@Override
 	public boolean supports(Class clazz) {
@@ -24,15 +25,15 @@ public class PublicationValidator implements Validator<Post<BibTex>> {
 	 */
 	public void validate(Object target, Errors errors) 
 	{
-		Post<BibTex> post = (Post<BibTex>) target;
-		
-		errors.pushNestedPath("post");
-		//validate resource
-		ValidationUtils.invokeValidator(new BibTexValidator(), post.getResource(), errors);
-		/* HANDLED BY DATABASE EXCEPTION+ERRORMESSAGE
-		//validate tags
-		ValidationUtils.invokeValidator(new TagValidator(), post.getTags(), errors);*/
-		errors.popNestedPath();
+		List<Post<BibTex>> posts = (List<Post<BibTex>>) target;
+		for(int i=0; i<posts.size(); i++)
+		{
+			errors.pushNestedPath("list["+i+"]");
+			//validate resource
+			ValidationUtils.invokeValidator(new PublicationValidator(), posts.get(i).getResource(), errors);
+			errors.popNestedPath();
+		}
 	}
 }
+
 
