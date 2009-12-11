@@ -392,7 +392,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				{
 					for(ErrorMessage msg : errorMsgs.get(bibtex.get(i)))
 					{
-						errors.rejectValue("list["+i+"].post", 
+						errors.rejectValue("bibtex.list["+i+"]", 
 											"since we might have parameterized messages, we translate them within java and use the fallback",
 											StringUtils.translateMessageKey(msg.getLocalizedMessageKey(), msg.getParameters(), command.getContext().getLocale())
 											);
@@ -520,7 +520,6 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				}
 				
 			}
-
 		}
 		return errors;
 	}
