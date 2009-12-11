@@ -14,7 +14,7 @@
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
-
+		
 	<layout:layout searchString="" 
 		pageTitle="${command.pageTitle}" 
 		loginUser="${command.context.loginUser}"
@@ -27,41 +27,163 @@
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css"
 				href="${resdir}/css/admin.css" />
+				
+			<link rel="stylesheet" type="text/css"
+				href="${resdir}/css/spammer.css" />
+			
+			<!--  scripts for ajax autocompletion -->
+			<script type="text/javascript" src="${resdir}/javascript/jquery_autocomplete.js">&amp;nbsp;</script>
+	    	<script type="text/javascript" src="${resdir}/javascript/jquery_form_224.js">&amp;nbsp;</script> 
+			<script type="text/javascript" src="${resdir}/javascript/jquery_textarea_autoresize.js">&amp;nbsp;</script>	
+			
+			<!--  scripts for ajax requests -->
+			<script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
+			<script type="text/javascript"
+				src="${resdir}/javascript/ajax-dynamic-content.js">&amp;nbsp;</script>
+			<script type="text/javascript" src="${resdir}/javascript/ajax.js">&amp;nbsp;</script>
+			<script type="text/javascript"
+				src="${resdir}/javascript/ajax-tooltip.js">&amp;nbsp;</script>		
+			
 		</jsp:attribute>
 
 		<jsp:attribute name="content">
+		
+	
 		
 		<!-- Admin Navigation -->	
 		<menu:adminNavi />	
 		
 		<div id="general">
-	
-		<div id="admin">
-		<div>
-			<h2>General actions</h2>
-			<ul id="adminList">
-			<c:forEach var="entry" items="${command.actionTitles}">
-		 		<li><a href="/admin/${mtl:encodeURI(entry.key)}"><c:out value="${entry.value}"/></a></li>		
-			</c:forEach>
-			</ul>	
 		
+		
+		<!-- Link to general actions -->
+		<div class="userInfoBox">
+		<div class="admin">
+		<div>
+		<!--  Print out feedback or errors while performing requests -->
+		<c:if test="${not empty command.adminResponse}">
+				<div class="adminResponse">
+					<c:out  value="${command.adminResponse}"/>
+				</div>
+		</c:if>
+		</div>
+	
+		<div>
+			<h2><fmt:message key="admin.actions.general"/></h2>
+			<table>
+				<!--  <ul class="adminList">-->
+				
+				<c:forEach var="entry" items="${command.actionTitles}">
+		 			<tr><td width="180px"><a href="/admin/${mtl:encodeURI(entry.key)}"><c:out value="${entry.value}"/></a></td></tr>		
+				</c:forEach>
+			</table>
+			</div>	
+			<hr/>
+		
+			<!--  autocomplete user info box -->
+			<script type="text/javascript">
+			<![CDATA[
+  				$(document).ready(function(){
+				$("#aclUserInfo").autocomplete("admin_suggest.jsp?type=2", {
+					width: 260,
+					selectFirst: true
+				});
+  			});
+  			]]>
+			</script>
+		
+			<!-- Get information about a specific user -->
+			<div>
+			<h2><fmt:message key="admin.actions.user"/></h2>
+			
+			<table>	
+				<form:form name="userinfo" action="/admin">
+				<tr>
+				<td width="180px"><form:label path="aclUserInfo">User name</form:label></td> 
+  				<td width="220px"><form:input path="aclUserInfo" /></td>
+  				<td><input class="adminBtn" type="submit" /></td>
+  				</tr>
+				</form:form>	
+	
+				<c:if test="${not empty command.user}">
+				<tr>	
+				<table class="userInfoTable">
+				 <tr>
+				    	<th><fmt:message key="admin.userinfo.Spam"/></th>
+						<th><fmt:message key="admin.userinfo.Username"/></th>
+						<th><fmt:message key="admin.userinfo.Name"/></th>
+						<th><fmt:message key="admin.userinfo.IP"/></th>
+						<th><fmt:message key="admin.userinfo.EMail"/></th>
+						<th><fmt:message key="admin.userinfo.Regdate"/></th>  	
+				    	<th><fmt:message key="admin.userinfo.UpdatedBy"/></th>
+				    	<th><fmt:message key="admin.userinfo.UpdatedAt"/></th>
+				 </tr>
+				 
+				 <!-- Row number is set negative, so that row is not removed 
+				 when flagging and unflagging the specific user  
+				 -->
+				  <tags:userInfo spamUser="${command.user}" rowNumber='-1'
+						moveFromTabSpammer="false" moveFromTabNSpammer="false"
+						moveFromTabUncertain="false" selTab="userInformation" />
+			    </table><br/>
+			    </tr>
+			    </c:if>   
+			</table>
 		</div>
 		<hr/>
+		
+		<!--  autocomplete group box -->
+		<script type="text/javascript">
+		<![CDATA[
+  			$(document).ready(function(){
+			$("#requestedGroupName").autocomplete("admin_suggest.jsp?type=2", {
+				width: 260,
+				selectFirst: true
+			});
+  		});
+  		]]>
+		</script>
+		
+
+		 <!-- add a group to the system-->
 		<div>
-			<h2>User info</h2>
+			<h2><fmt:message key="admin.actions.group"/></h2>
+				
+			<table>
+			<form:form name="addgroup" action="/admin">
+			<tr>
+			<td width="180px"><form:label path="requestedGroupName">Group name</form:label></td> 
+  			<td width="220px"><form:input path="requestedGroupName" /></td>
+  			<td><input class="adminBtn" type="submit" /></td>
+			</tr>
+			<tr>
+      		<td>Privacy</td>
+      		<td>
+      		<form:select path="selPrivlevel" id="privlevel"
+							size="1" multiple="false">
+							<c:forEach var="entry"
+								items="${command.privlevel}">
+								 <form:option value="${entry.value}" label="${entry.key}" />
+							</c:forEach>
+			</form:select>
+      		</td>
+    		</tr>
+			
+			</form:form>
+			</table>
 		</div>
 		<hr/>
+		
+		<!-- Get scraper information  -->
 		<div>
-			<h2>Add a group</h2>
+			<h2><fmt:message key="admin.actions.scraper"/></h2>
 		</div>
-		<hr/>
-		<div>
-			<h2>Scraper info</h2>
-		</div>
+		
+	
 		
 		</div>																																							
         </div>   
-        
+        </div>
 	    </jsp:attribute>
 		
 	</layout:layout>

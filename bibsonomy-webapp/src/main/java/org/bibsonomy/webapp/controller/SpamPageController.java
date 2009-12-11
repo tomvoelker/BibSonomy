@@ -60,6 +60,7 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 		 * handle specific user
 		 */
 		if (command.getAclUserInfo() != null) {
+			log.debug("Get information for: " + command.getAclUserInfo());
 			if ("flag_spammer".equals(command.getAction())) {
 				if (!logic.getUserDetails(command.getAclUserInfo()).getSpammer()){
 					User user = new User(command.getAclUserInfo());

@@ -138,7 +138,7 @@ function markUncertainUser(name, rowId, disable) {
 	}
 	
 	/* remove spammer from db via AJAX*/
-	runAjax("userName=" + name, "mark_uncertainUser");
+	runAjax("userName=" + name, "mark_uncertainuser");
 }
 
 /** saves the settings on admin page */
@@ -164,7 +164,7 @@ function generateApiKey(name) {
 /* function interacts with server via ajax */
 function runAjax(parameter,action) {
 	var request = initRequest(); 
-	var url = "/ajax?" + parameter;	   
+	var url = "/admin/ajax?" + parameter;	   
    	if (request) {    	   		
    		request.open('GET',url + "&action=" + action,true);	
    		var handle = ajax_updateLog(request); 	   		

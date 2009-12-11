@@ -1,16 +1,8 @@
 
 
-.userInfoBox {
-	border: 1px solid #006699;
-	padding: 10px;
-	margin-top: 10px;
-	margin-bottom: 20px;
-}
 
-.userInfoBox input {
-	margin-left: 5px;
-	margin-right: 5px;
-}
+
+
 
 /* elements for admin pages */
 .logbox {

@@ -24,6 +24,8 @@
 		
 	<jsp:directive.attribute name="selTab"
 		type="java.lang.String" required="true" />
+		
+	<c:url var="adminUrl" value="/admin" context="${projectContext}"/>
 
 	<tr id="sl${rowNumber}"
 		class="${spamUser.prediction == 9 ? 'spamflag uncertainUser' : ((spamUser.spammer==true) ? 'spammer' : none)}">
@@ -31,7 +33,7 @@
 	
 	<c:choose>
 		<c:when test="${not empty nextUser}">
-			<c:set var="do_flag_action" value="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${nextUser}',document.getElementById('latest_posts_${status.index}'));" />
+			<c:set var="do_flag_action" value="javascript:ajax_showTooltip('${adminUrl}/ajax?action=latest_posts&amp;userName=${nextUser}',document.getElementById('latest_posts_${status.index}'));" />
 		</c:when>
 		<c:otherwise>
 			<c:set var="do_flag_action" value="javascript:ajax_hideTooltip()"/>
@@ -42,8 +44,7 @@
 		flag / unflag users as (non)spammers or mark as uncertain
 	-->
 	<td style="text-align: left" class="spamflag">
-
-	<a
+	<a	
 		href="javascript:unflagSpammer('${spamUser.name}','sl${rowNumber}', '${moveFromTabNSpammer}')"
 		title="unflag this user as spammer" onClick="${do_flag_action}">NO</a>
 
@@ -68,12 +69,12 @@
 		specific information, received via Ajax
 	-->
 	<a
-		onclick="javascript:ajax_showTooltip('ajax?action=latest_posts&amp;userName=${spamUser.name}',this);return false;"
+		onclick="javascript:ajax_showTooltip('${adminUrl}/ajax?action=latest_posts&amp;userName=${spamUser.name}',this);return false;"
 		style="cursor: pointer" title="show latest posts">
 	<img src="${resdir}/image/info.png" />
 	</a>
 	<a
-		onclick="javascript:ajax_showTooltip('ajax?action=prediction_history&amp;userName=${spamUser.name}',this);return false;"
+		onclick="javascript:ajax_showTooltip('${adminUrl}/ajax?action=prediction_history&amp;userName=${spamUser.name}',this);return false;"
 		style="cursor: pointer" title="show latest user predictions">
 	<img src="${resdir}/image/history.png" />
 	</a>

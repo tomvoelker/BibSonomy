@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -17,12 +18,14 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for admin page
  * 
  * @author Beate Krause
- * @version $Id$
+ * @version $Id: AdminPageController.java,v 1.20 2009-11-23 15:06:32 beatekr Exp
+ *          $
  */
-public class AdminPageController implements MinimalisticController<AdminCommand> {
+public class AdminPageController implements
+		MinimalisticController<AdminCommand> {
 
 	private static final Log log = LogFactory.getLog(AdminPageController.class);
-	
+
 	private LogicInterface logic;
 
 	private UserSettings userSettings;
@@ -30,23 +33,45 @@ public class AdminPageController implements MinimalisticController<AdminCommand>
 	public View workOn(AdminCommand command) {
 		log.debug(this.getClass().getSimpleName());
 
-		
 		final User loginUser = command.getContext().getLoginUser();
-		
-		// check if user is logged in and redirect user to login page 
+
+		// check if user is logged in and redirect user to login page
 		// if this is not the case
-		if(command.getContext().isUserLoggedIn() == false){
+		if (command.getContext().isUserLoggedIn() == false) {
 			log.info("Trying to access an admin page without being logged in");
 			return new ExtendedRedirectView("/login");
 		}
-		
+
 		// TODO is this how an admin role is supposed to be checked
 		if (!Role.ADMIN.equals(loginUser.getRole())) {
-			throw(new ValidationException("error.permission_denied"));
+			throw (new ValidationException("error.permission_denied"));
 		}
 
 		command.setPageTitle("admin");
+
+		/*
+		 * get information about a specific user
+		 */
+		if (command.getAclUserInfo() != null) {
+			log.debug("Get information for: " + command.getAclUserInfo());
+			command.setUser(logic.getUserDetails(command.getAclUserInfo()));
+		}
 		
+		/*
+		 * add a group to the system
+		 */
+		log.debug("Group name " + command.getRequestedGroupName());
+		if (command.getRequestedGroupName() != null){
+			// create the new group
+			Group newGroup = new Group(command.getRequestedGroupName());
+			newGroup.setPrivlevel(command.getSelPrivlevel());
+			// update group
+			logic.createGroup(newGroup);	
+			// inform user about success
+			command.setAdminResponse("Successfully created a group");
+		}
+		
+
 		return Views.ADMIN;
 
 	}
@@ -58,11 +83,11 @@ public class AdminPageController implements MinimalisticController<AdminCommand>
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
-	
+
 	public void setUserSettings(UserSettings userSettings) {
 		this.userSettings = userSettings;
 	}
-	
+
 	public LogicInterface getLogic() {
 		return this.logic;
 	}
@@ -70,6 +95,5 @@ public class AdminPageController implements MinimalisticController<AdminCommand>
 	public UserSettings getUserSettings() {
 		return this.userSettings;
 	}
-
 
 }

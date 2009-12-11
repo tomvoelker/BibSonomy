@@ -19,6 +19,14 @@
 				<entry key="/admin">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="adminPageController" />
+						<property name="allowedFields">
+							<list>
+								<value>aclUserInfo</value>
+								<value>requestedGroupName</value>
+								<value>selPrivlevel</value>
+								<value>action</value>
+							</list>
+						</property>
 					</bean>
 				</entry>
 				<entry key="/admin/spam">

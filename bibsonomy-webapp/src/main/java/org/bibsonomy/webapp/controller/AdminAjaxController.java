@@ -44,6 +44,8 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 
 		final String action = command.getAction();
 		
+		log.debug("Action: " + action);
+		
 		/*
 		 * validate fields before values are entered into database
 		 */
@@ -62,22 +64,29 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 		/*
 		 * 	
 		 */
-		log.debug(AdminActions.getAdminAction(action));
+	
 		switch (AdminActions.getAdminAction(action)) {
 		case FLAG_SPAMMER:
+			log.debug("flag spammer");
 			this.flagSpammer(command, true);
 			this.setResponse(command, command.getUserName() + " flagged as spammer");
 			break;
 		case UNFLAG_SPAMMER:
+			log.debug("unflag spammer");
 			this.flagSpammer(command, false);
 			this.setResponse(command, command.getUserName() + " flagged as nonspammer");
-		case MARK_UNCERTAIN_USER:
+			break;
+		case MARK_UNCERTAINUSER:
+			log.debug("here to mark uncertain user");
 			this.flagUnsureSpammer(command, false);
 			this.setResponse(command, command.getUserName() + " flagged as uncertain user");
+			break;
 		case LATEST_POSTS:
+			log.debug("Get latest posts");
 			this.setLatestPosts(command);
 			return Views.AJAX_POSTS;
 		case PREDICTION_HISTORY:
+			log.debug("Get prediction history");
 			this.setPredictionHistory(command);
 			return Views.AJAX_PREDICTIONS;
 		case UPDATE_SETTINGS:

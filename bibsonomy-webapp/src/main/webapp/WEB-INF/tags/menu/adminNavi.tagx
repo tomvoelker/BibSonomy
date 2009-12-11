@@ -12,7 +12,7 @@
 	
 	<c:url var="adminUrl" value="/admin" context="${projectContext}"/>	
 	
-	<a id="spammerKillerButton" title="killSpammer" href="javascript:location.href='${adminUrl}/spam?action=flag_spammer&amp;aclUserInfo='+encodeURIComponent(location.href.replace(/.*\//, ''))" onclick="return false;">SpammerKillerButton</a>
+	<a class="spammerKillerButton" title="killSpammer" href="javascript:location.href='${adminUrl}/spam?action=flag_spammer&amp;aclUserInfo='+encodeURIComponent(location.href.replace(/.*\//, ''))" onclick="return false;">SpammerKillerButton</a>
 	
 	</p>
 </jsp:root>

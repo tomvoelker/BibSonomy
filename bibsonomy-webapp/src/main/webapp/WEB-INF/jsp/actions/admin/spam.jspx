@@ -21,51 +21,48 @@
 	<layout:tabLayout pageTitle="${command.pageTitle}" command="${command}"
 		requPath="${requPath}">
 
-		<jsp:attribute name="heading">	
-			<a href="/admin"><fmt:message key="navi.admin"/></a> :: <a rel="path_menu"
-				href="/admin/spam"><fmt:message key="navi.spam" /></a>
-		</jsp:attribute>
+	
 
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css"
 				href="${resdir}/css/spammer.css" />
+			<link rel="stylesheet" type="text/css"
+				href="${resdir}/css/admin.css" />
 		</jsp:attribute>
-
-		<jsp:attribute name="topcontent">
 		
-			<script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
-			
-			<p style="font-weight: bold; color: #ff0000;">
-  				<c:forEach var="info" items="${command.infos}">Info: ${info}<br />
-			</c:forEach>
-			</p>
-			
-			<!-- User Information -->	
+			<jsp:attribute name="heading">	
+		 <h1 id="path"> 
+			<a href="/admin"><fmt:message key="navi.admin"/></a> :: <a rel="path_menu"
+				href="/admin/spam"><fmt:message key="navi.spam" /></a>
+		</h1>
+		</jsp:attribute>
+	
+		<jsp:attribute name="topcontent">
+			<!-- Get information about a specific user -->
 			<div class="userInfoBox">
-			<h2> User Info </h2>
-				<form:form name="userinfo" action="/admin">
-				<table style="clear: left;">
+			<h2><fmt:message key="admin.actions.user"/></h2>
+			
+			<table>	
+				<form:form name="userinfo" action="/admin/spam">
 				<tr>
-				<td><form:label path="aclUserInfo">User name</form:label></td> 
-  				<td><form:input path="aclUserInfo" /></td>
-  				<td><input type="submit" /></td>
-				</tr>
-				</table>
-				</form:form>
-				
-				<!-- Show information for a specific user -->
-				<c:if test="${not empty command.aclUserInfo}">
-					
-				<table id="spammers" class="spammertable">
+				<td width="180px"><form:label path="aclUserInfo">User name</form:label></td> 
+  				<td width="220px"><form:input path="aclUserInfo" /></td>
+  				<td><input class="adminBtn" type="submit" /></td>
+  				</tr>
+				</form:form>	
+	
+				<c:if test="${not empty command.user}">
+				<tr>	
+				<table class="userInfoTable">
 				 <tr>
-				    	<th>Spam?</th>
-						<th>Username</th>
-						<th>Name</th>
-						<th>IP</th>
-						<th>E-Mail</th>
-						<th>Regdate</th>  	
-				    	<th>Updated by</th>
-				    	<th>Updated at</th>
+				    	<th><fmt:message key="admin.userinfo.Spam"/></th>
+						<th><fmt:message key="admin.userinfo.Username"/></th>
+						<th><fmt:message key="admin.userinfo.Name"/></th>
+						<th><fmt:message key="admin.userinfo.IP"/></th>
+						<th><fmt:message key="admin.userinfo.EMail"/></th>
+						<th><fmt:message key="admin.userinfo.Regdate"/></th>  	
+				    	<th><fmt:message key="admin.userinfo.UpdatedBy"/></th>
+				    	<th><fmt:message key="admin.userinfo.UpdatedAt"/></th>
 				 </tr>
 				 
 				 <!-- Row number is set negative, so that row is not removed 
@@ -74,13 +71,17 @@
 				  <tags:userInfo spamUser="${command.user}" rowNumber='-1'
 						moveFromTabSpammer="false" moveFromTabNSpammer="false"
 						moveFromTabUncertain="false" selTab="userInformation" />
-			    </table>
-			    </c:if>
-			</div>
+			    </table><br/>
+			    </tr>
+			    </c:if>   
+			</table>
+		</div>
 		</jsp:attribute>
-
-		<jsp:attribute name="tabcontent">		
-			<!-- spammer js -->
+	
+		<jsp:attribute name="tabcontent">	
+		
+			
+			<!--include spammer scripts -->
 			<script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
 		<script type="text/javascript"
 				src="${resdir}/javascript/ajax-dynamic-content.js">&amp;nbsp;</script>
@@ -88,13 +89,15 @@
 		<script type="text/javascript"
 				src="${resdir}/javascript/ajax-tooltip.js">&amp;nbsp;</script>
 		<script type="text/javascript" src="${resdir}/javascript/marksame.js">;</script>
-				
+		
+	
+			<!--check which tab command to include -->	
 			<c:if test="${not empty command.content}">
 				
 				<c:choose>
 				
 				<!-- classifier results tabs -->
-				<c:when test="${command.selTab &lt; 10}">	
+				<c:when test="${command.selTab &lt; 9}">	
 				
 				<div>(show 
 				<a href="?limit=100&amp;selTab=${command.selTab}">100</a> -
@@ -112,7 +115,9 @@
 								<th>E-Mail</th>
 								<th>Regdate</th>  	
 				   		<c:choose>
-				   		<c:when test="${command.selTab &gt; 4}">
+				   		
+				   		<!--  extra parameters for classifier results -->
+				   		<c:when test="${command.selTab &gt; 3}">
 				    	<th>Algorithm</th>
 				    	<th>Mode</th>
 				    	<th>Confidence</th>
@@ -124,11 +129,11 @@
 				    	<th>Updated</th>
 				    </tr>
 				    				    
-				    <!-- user list -->
+				    <!-- create list of users -->
 					<c:forEach var="user" items="${command.content}" varStatus="status">
 					
 					<c:choose>
-						<c:when test="${command.selTab &lt; 5}">	
+						<c:when test="${command.selTab &lt; 4}">	
 					  <c:set var="selTabEvaluation" value="userInformation" />
 					  </c:when>
 					  	<c:otherwise>
@@ -139,14 +144,14 @@
 						<c:choose>
 						
 		<!-- TODO: ausgliedern -->
-		<c:when test="${command.selTab == 1}">
+		<c:when test="${command.selTab == 0}">
 			<c:set var="Unflag" value="false" />
 			<c:set var="Uncertain" value="false" />
 			<c:set var="Flag" value="false" />
 		</c:when>
 		<c:otherwise>
 			<c:choose>
-				<c:when test="${command.selTab == 2 or command.selTab == 4}">
+				<c:when test="${command.selTab == 1 or command.selTab == 3}">
 					<c:choose>
 						<c:when test="${user.spammer == true}">
 							<c:set var="Unflag" value="true" />
@@ -162,14 +167,14 @@
 				</c:when>
 				<c:otherwise>
 					<c:choose>
-						<c:when test="${command.selTab == 3}">
+						<c:when test="${command.selTab == 2}">
 							<c:set var="Unflag" value="true" />
 							<c:set var="Uncertain" value="false" />
 							<c:set var="Flag" value="true" />
 						</c:when>
 						<c:otherwise>
 							<c:choose>
-								<c:when test="${command.selTab == 9}">
+								<c:when test="${command.selTab == 8}">
 									<c:set var="Unflag" value="false" />
 									<c:set var="Uncertain" value="false" />
 									<c:set var="Flag" value="false" />
@@ -233,7 +238,7 @@
 					<td><c:out value="${mtl:predictionString(user.prediction)}" /></td>	
 					<td><c:out value="${fn:substring(user.confidence, 0,5)}" /></td>
 					<c:choose>
-						<c:when test="${user.prediction == 9}">
+						<c:when test="${user.prediction == 8}">
 							<td class="uncertainUser"></td>					
 						</c:when>
 						<c:otherwise>
@@ -259,8 +264,11 @@
 				ms_init("spammers", 4);
 			]]>
 			</script>
-					
+		
 		</jsp:attribute>
+		
+	
+	
 
 		<jsp:attribute name="sidebar">			
 			<span class="sidebar_h">logging</span>	
@@ -344,7 +352,7 @@
 			<br />
 			
 			<!-- sidebar with specific counts only on classifier (sure) tabs -->
-			<c:if test="${command.selTab == 5 or command.selTab == 8}">
+			<c:if test="${command.selTab == 4 or command.selTab == 7}">
 			
 			<span class="sidebar_h"><fmt:message key="statistic" /></span>
 			<table class="stattable">
@@ -427,7 +435,9 @@
 				}
 				preselect();
 			</script>	
-												
+			
+											
 		</jsp:attribute>
+			
 	</layout:tabLayout>
 </jsp:root>
