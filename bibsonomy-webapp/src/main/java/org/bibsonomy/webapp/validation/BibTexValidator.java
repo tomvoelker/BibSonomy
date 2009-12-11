@@ -26,7 +26,7 @@ public class BibTexValidator implements Validator {
 
 	@Override
 	public void validate(Object target, Errors errors) {
-		errors.pushNestedPath("resource");
+		//errors.pushNestedPath("resource");
 		
 		BibTex bibtex = (BibTex) target;
 		/*
@@ -109,7 +109,7 @@ public class BibTexValidator implements Validator {
 				return;
 			}
 		}
-		errors.popNestedPath();
+		//errors.popNestedPath();
 	}
 
 }

@@ -42,7 +42,7 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.EditPostValidator;
-import org.bibsonomy.webapp.validation.PublicationListValidator;
+import org.bibsonomy.webapp.validation.PostPublicationValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -327,7 +327,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		 * Prepare the posts for the edit operations:
 		 * add additional information from the form to the post (description, groups)... present in both upload tabs
 		 */
-		PublicationListValidator validator = new PublicationListValidator();
+		PostPublicationValidator validator = new PostPublicationValidator();
 		User loginUser = command.getContext().getLoginUser();
 		for(Post<BibTex> bib : bibtex)
 		{
@@ -345,10 +345,13 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			bib.getResource().recalculateHashes();
 		}
 		
+		ListCommand<Post<BibTex>> postListCommand = new ListCommand<Post<BibTex>>(command);
+		postListCommand.setList(bibtex);
+		command.setBibtex(postListCommand);
 		/**
 		 * Check for INCOMPLETION ERRORS here
 		 */
-		validator.validate(bibtex, errors);
+		validator.validate(command, errors);
 		
 		
 		/**
@@ -374,10 +377,6 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			/*
 			 * We have more than one bibtex, which means that this controller will forward to one calling the batcheditbib.jspx
 			 */
-			
-			ListCommand<Post<BibTex>> postListCommand = new ListCommand<Post<BibTex>>(command);
-			postListCommand.setList(bibtex);
-			command.setBibtex(postListCommand);
 			
 			/**********************
 			 * STORE THE BOOKMARKS
@@ -414,9 +413,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				/**
 				 * BACK TO THE IMPORT/PUBLICATIONS VIEW
 				 */
-				ListCommand<Post<BibTex>> newPostListCommand = new ListCommand<Post<BibTex>>(command);
-				postListCommand.setList(bibtex);
-				command.setBibtex(newPostListCommand);
+				
 				//TODO set a variable to determine, if #posts>treshold => list of imported and unimported
 				//publications. since the correct ones are already saved, the action of the form (batchedit)
 				//will be deleting the stored posts.

@@ -1,9 +1,8 @@
 package org.bibsonomy.webapp.validation;
 
-import java.util.List;
-
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -12,11 +11,11 @@ import org.springframework.validation.ValidationUtils;
  * @author ema
  * @version $Id$
  */
-public class PublicationListValidator implements Validator<Post<BibTex>> {
+public class PublicationListCommandValidator implements Validator<ListCommand<Post<BibTex>>> {
 
 	@Override
 	public boolean supports(Class clazz) {
-		return Post.class.equals(clazz);
+		return ListCommand.class.equals(clazz);
 	}
 
 	@Override
@@ -25,14 +24,16 @@ public class PublicationListValidator implements Validator<Post<BibTex>> {
 	 */
 	public void validate(Object target, Errors errors) 
 	{
-		List<Post<BibTex>> posts = (List<Post<BibTex>>) target;
-		for(int i=0; i<posts.size(); i++)
+		ListCommand<Post<BibTex>> listCommand = (ListCommand<Post<BibTex>>) target;
+		
+		//validate resource
+		for(int i=0; i<listCommand.getList().size(); i++)
 		{
 			errors.pushNestedPath("list["+i+"]");
-			//validate resource
-			ValidationUtils.invokeValidator(new PublicationValidator(), posts.get(i).getResource(), errors);
+			ValidationUtils.invokeValidator(new PublicationValidator(), listCommand.getList().get(i), errors);
 			errors.popNestedPath();
 		}
+		
 	}
 }
 

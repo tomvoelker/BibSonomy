@@ -4,11 +4,13 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:spring="http://www.springframework.org/tags"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
     xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
          
          
@@ -48,8 +50,9 @@
 	 <!--=======================-->
    	 <!-- VARIABLEN DEKLARATION -->
    	 <!--=======================-->
-
-
+			
+			
+			
     
     <jsp:directive.variable name-given="post" scope="NESTED"/>
     
@@ -88,32 +91,73 @@
                  <th><fmt:message key="batchedit.yourPosts"/></th>
                  <th><fmt:message key="${checkboxLabelKey}"/></th>      
                </tr>                  
-                 
-               <c:forEach var="post" items="${listView.list}">
-                 <c:choose>
-                   <c:when test="${post.user.name eq command.context.loginUser.name}">
-                     <tr>
-                       <td>
-               
-                         <input type="text" name="newTags['${post.resource.intraHash}']" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
-                         <!-- to see if the tags have been changed, we also send the original tags -->
-                         <input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
-                       </td>
-                       <td class="chunkybib">
-                         <jsp:invoke fragment="shortPostDescription"/>
-                       </td>   
-                       <td>
-                         <div style="margin-left:auto;margin-right:auto; width:10pt">
-                         	<input type="checkbox" name="delete['${post.resource.intraHash}']" onclick="checkDeleteAll(this)" /> <!--<fmt:message key="batchedit.deletePost"/>-->
-                         </div>
-                       </td>
-                     </tr>
-                   </c:when>
-                   <c:otherwise>
-                     <!-- remember, that we have found posts not owned by the user to show them at end of page -->
-                     <c:set var="otherPosts" value="true"/>
-                   </c:otherwise>
-                 </c:choose>
+
+               <c:forEach var="post" items="${listView.list}" varStatus="postCount">
+	               <spring:bind path="command.bibtex.list[${postCount.count - 1}].*">
+	               		<c:choose>
+	               			<c:when test="${status.error}">
+	   	               			<c:choose>
+				                   <c:when test="${post.user.name eq command.context.loginUser.name}">
+				                     <tr>
+				                       <td>
+											<buttons:help iconText="X" iconTextStyle="color:red">
+												<jsp:attribute name="helpText">
+													<ul>
+										               <c:forEach var="errorMessage" items="${status.errorMessages}">
+										                  <li>
+										                  	${errorMessage}
+														  </li>
+										               </c:forEach>
+										            </ul>
+												</jsp:attribute>
+											</buttons:help>				               
+				                       </td>
+				                       <td class="chunkybib">
+				                         <jsp:invoke fragment="shortPostDescription"/>
+				                       </td>   
+				                       <td>
+				                         <!-- NO CHECKBOX HERE, CAUSE THIS POST IS ERRONEOUS -->
+				                       </td>
+				                     </tr>
+				                   </c:when>
+				                   <c:otherwise>
+				                     <!-- remember, that we have found posts not owned by the user to show them at end of page -->
+				                     <c:set var="otherPosts" value="true"/>
+				                   </c:otherwise>
+				                 </c:choose>
+	               			</c:when>
+	               			
+	               			
+	               			<c:otherwise>
+	               			
+			                 <c:choose>
+			                   <c:when test="${post.user.name eq command.context.loginUser.name}">
+			                   
+			                     <tr>
+			                       <td>
+			               
+			                         <input type="text" name="newTags['${post.resource.intraHash}']" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
+			                         <!-- to see if the tags have been changed, we also send the original tags -->
+			                         <input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
+			                       </td>
+			                       <td class="chunkybib">
+			                         <jsp:invoke fragment="shortPostDescription"/>
+			                       </td>   
+			                       <td>
+			                         <div style="margin-left:auto;margin-right:auto; width:10pt">
+			                         	<input type="checkbox" name="delete['${post.resource.intraHash}']" onclick="checkDeleteAll(this)" /> <!--<fmt:message key="batchedit.deletePost"/>-->
+			                         </div>
+			                       </td>
+			                     </tr>
+			                   </c:when>
+			                   <c:otherwise>
+			                     <!-- remember, that we have found posts not owned by the user to show them at end of page -->
+			                     <c:set var="otherPosts" value="true"/>
+			                   </c:otherwise>
+			                 </c:choose>
+		                 </c:otherwise>
+	                 </c:choose>
+					</spring:bind>
                </c:forEach> 
 
                <tr>
