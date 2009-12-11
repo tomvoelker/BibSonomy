@@ -40,7 +40,6 @@ public class FieldLengthErrorMessage extends ErrorMessage {
 	 * inits the map
 	 */
 	public FieldLengthErrorMessage() {
-		super(null, null, null, null);
 		this.fields = new HashMap<String, Integer>();
 	}
 
