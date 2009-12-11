@@ -17,12 +17,15 @@ import javax.naming.NamingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.common.enums.ErrorSource;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
+import org.bibsonomy.common.errors.MissingFieldErrorMessage;
+import org.bibsonomy.common.errors.UpdatePostErrorMessage;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.params.ResourcesParam;
@@ -1019,10 +1022,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			if (present(postInDB)) {
 				//throw new IllegalArgumentException("Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +" already exists in your collection (intrahash: " + intraHash + ")");
-				String error="Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +
-				" already exists in your collection (intrahash: " + intraHash + ")";
-				String localizedMessageKey = "database.exception.duplicate";
-				ErrorMessage errorMessage = new ErrorMessage(ErrorSource.DUPLICATEPOST, error, localizedMessageKey, null);
+				ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
 				session.addError(post.getResource().getIntraHash(), errorMessage);
 				// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 				session.commitTransaction();
@@ -1090,10 +1090,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					/*
 					 * not found -> throw exception
 					 */
-					String error="Could not update " + this.resourceClassName + ": This " + this.resourceClassName +
-					" does not exists in your collection (intrahash: " + intraHash + ")";
-					String localizedMessageKey = "database.exception.update.noOriginal";
-					ErrorMessage errorMessage = new ErrorMessage(ErrorSource.UPDATE, error, localizedMessageKey, null);
+					ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
 					session.addError(post.getResource().getIntraHash(), errorMessage);
 					// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 					session.commitTransaction();
@@ -1135,10 +1132,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					 */
 					//FIXME:remove this comment
 					//throw new IllegalArgumentException("Could not update " + this.resourceClassName + ": This " + this.resourceClassName + " already exists in your collection (intrahash: " + intraHash + ")");
-					String error="Could not uptdate " + this.resourceClassName + ": This " + this.resourceClassName +
-					" already exists in your collection (intrahash: " + intraHash + ")";
-					String localizedMessageKey = "database.exception.duplicate";
-					ErrorMessage errorMessage = new ErrorMessage(ErrorSource.DUPLICATEPOST, error, localizedMessageKey, null);
+					ErrorMessage errorMessage = new IdenticalHashErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
 					session.addError(post.getResource().getIntraHash(), errorMessage);
 					// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 					session.commitTransaction();
@@ -1257,18 +1251,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		if (!present(post.getResource())) {
 			//TODO: remove this comment
 			//throw new InvalidModelException("There is no resource for this post.");
-			String error = "There is no resource for this post.";
-			String localizedMessageKey = "database.exceptions.general.noResource";
-			ErrorMessage errorMessage = new ErrorMessage(ErrorSource.GENERAL, error, localizedMessageKey, null);
+			ErrorMessage errorMessage = new MissingFieldErrorMessage("Resource");
 			session.addError(post.getResource().getIntraHash(), errorMessage);
 			errors=true;
 		}
 		if (!present(post.getGroups())) {
 			// TODO: remove this comment
 			//throw new InvalidModelException("There are no groups for this post.");
-			String error = "There are no groups for this post.";
-			String localizedMessageKey = "database.exceptions.general.noGroups";
-			ErrorMessage errorMessage = new ErrorMessage(ErrorSource.GENERAL, error, localizedMessageKey, null);
+			ErrorMessage errorMessage = new MissingFieldErrorMessage("Groups");
 			session.addError(post.getResource().getIntraHash(), errorMessage);
 			errors=true;
 		}

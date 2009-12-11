@@ -9,9 +9,9 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.ErrorSource;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -180,28 +180,28 @@ public class ForGroupTag extends SystemTag {
 	 * @param session
 	 */
 	private void setError(Reason reason, Post<? extends Resource> post, String groupName, DBSession session){
-		String error="";
+		String error=this.getName()+": ";
 		String localizedMessageKey="";
 		switch(reason) {
 			case SPECIAL: {
-				error="for:"+groupName+": "+groupName+" is a special group. You are not allowed to forward posts to special groups.";
+				error+=groupName+" is a special group. You are not allowed to forward posts to special groups.";
 				localizedMessageKey = "database.exception.systemTag.forGroup.specialGroup";
 				break;
 			}
 			case EXIST: {
-				error="for:"+groupName+": "+groupName+"does not exist.";
+				error+=groupName+"does not exist.";
 				localizedMessageKey = "database.exception.systemTag.forGroup.noSuchGroup";
 				break;
 			}
 			case MEMBER: {
-				error="for:"+groupName+": You are not a member of "+groupName+".";
+				error+="You are not a member of "+groupName+".";
 				localizedMessageKey = "database.exception.systemTag.forGroup.member";
 				break;
 			}
 		}
 		ArrayList<String> params = new ArrayList<String>();
 		params.add(groupName);
-		ErrorMessage errorMessage = new ErrorMessage(ErrorSource.SYSTEM_TAG, error, localizedMessageKey, params);
+		ErrorMessage errorMessage = new SystemTagErrorMessage(error, localizedMessageKey, params);
 		session.addError(post.getResource().getIntraHash(), errorMessage);
 	}
 

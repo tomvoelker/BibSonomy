@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.ErrorSource;
 import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
@@ -97,19 +97,19 @@ public class ForFriendTag extends SystemTag {
 		String localizedMessageKey="";
 		switch(reason) {
 			case FRIEND: {
-				error= "send:"+ receiver + ": "  + receiver + " does not exist or did not add you as a friend.";
+				error= this.getName()+ ": "  + receiver + " does not exist or did not add you as a friend.";
 				localizedMessageKey="database.exception.systemTag.forFriend.notFriend";
 				break;
 			}
 			case SELF: {
-				error="send:" + receiver +": You can not send messages to yourself.";
+				error= this.getName()+": You can not send messages to yourself.";
 				localizedMessageKey = "database.exception.systemTag.forFriend.self";
 				break;
 			}
 		}
 		ArrayList<String> params = new ArrayList<String>();
 		params.add(receiver);
-		ErrorMessage errorMessage = new ErrorMessage(ErrorSource.SYSTEM_TAG, error, localizedMessageKey, params);
+		ErrorMessage errorMessage = new SystemTagErrorMessage(error, localizedMessageKey, params);
 		session.addError(post.getResource().getIntraHash(), errorMessage);
 	}
 
