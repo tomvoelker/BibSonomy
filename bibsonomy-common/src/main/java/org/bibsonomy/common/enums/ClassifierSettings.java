@@ -48,7 +48,7 @@ public enum ClassifierSettings {
 	/** probability to seperate sure from unsure classifications */
 	PROBABILITY_LIMIT,
 
-	/** testing mode will not effect user table */
+	/** TODO remove, testing mode will not effect user table */
 	TESTING,
 	
 	/** last classification date to track changes in user profiles */

@@ -38,7 +38,7 @@ public enum AdminActions {
 
 	UNFLAG_SPAMMER("unflag_spammer"),
 	
-	MARK_UNCERTAIN_USER("mark_uncertainUser"),
+	MARK_UNCERTAINUSER("mark_uncertainuser"),
 	
 	UPDATE_SETTINGS("update_settings"),
 	
