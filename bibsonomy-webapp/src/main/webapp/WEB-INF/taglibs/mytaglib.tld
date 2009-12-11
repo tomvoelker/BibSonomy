@@ -78,18 +78,6 @@
        <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
-
-  <tag>
-    <name>xotherpersons</name>
-    <tagclass>tags.Xotherpersons</tagclass>
-    <bodycontent>empty</bodycontent>
-    <info>returns CSS for formating the "... and X other persons" link</info>
-    <attribute>
-       <name>value</name>
-       <required>true</required>
-       <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
   
   <tag>
     <name>xOtherPersonsStyle</name>

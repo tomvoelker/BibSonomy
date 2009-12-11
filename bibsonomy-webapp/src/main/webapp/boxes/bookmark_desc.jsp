@@ -13,7 +13,8 @@
         <%@include file="/boxes/resource_meta.jsp" %> 
 
         <c:if test="${!empty resource.hash && resource.ctr > 2}">
-          and <a <mtl:xotherpersons value="${resource.ctr}"/> href="/url/${resource.hash}">${resource.ctr-1} other people</a>
+              <c:set var="style"><mtl:xOtherPersonsStyle value="${resource.ctr}"/></c:set>
+          and <a style="${style}" href="/url/${resource.hash}">${resource.ctr-1} other people</a>
         </c:if>
         <c:if test="${!empty resource.hash && resource.ctr == 2}">
           and <a style="background-color:rgb(97%,97%,97%);" href="/url/${resource.hash}">1 other person</a>
