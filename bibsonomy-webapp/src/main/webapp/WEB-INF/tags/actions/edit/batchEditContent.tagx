@@ -100,12 +100,12 @@
 				                   <c:when test="${post.user.name eq command.context.loginUser.name}">
 				                     <tr>
 				                       <td>
-											<buttons:help iconText="X" iconTextStyle="color:red">
+											<buttons:help iconText="X" iconTextStyle="color:red; font-size:120%">
 												<jsp:attribute name="helpText">
 													<ul>
 										               <c:forEach var="errorMessage" items="${status.errorMessages}">
 										                  <li>
-										                  	${errorMessage}
+										                  	<b class="info_bold">${errorMessage}</b>
 														  </li>
 										               </c:forEach>
 										            </ul>

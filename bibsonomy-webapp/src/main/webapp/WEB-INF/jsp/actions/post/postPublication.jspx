@@ -23,7 +23,6 @@
  	
 	
 	
-	
 	 <layout:tabLayout 
 			command="${command}" 
 			pageTitle="post publication" 
@@ -34,8 +33,33 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
+		
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+			
+			<!-- ================================= -->
+			<!--  STYLES FOR ERROR LINES (PARSER)  -->
+			<!-- ================================= -->
+			<style type="text/css">
+			              ul.errorLineList > li {
+			                display: inline;
+			                font-size: 120%;
+			                color:red;
+			              }
+			              ul.errorLineList > dt {
+			                margin-top: 1em;
+			              }
+			              ul.errorLineList > li:after {
+			                content:" , ";
+			              }
+			              ul.errorLineList > dt:before {
+			                content:"\2022\00a0";
+			              }
+		    </style>
 	    </jsp:attribute>
+			
+			
+			
+			
 			
 		<jsp:attribute name="tabcontent">
 			<!-- ================================= -->
@@ -285,6 +309,17 @@
 				<!-- END CONTENT TAB 3-->
 				<!-- ================ -->
 			</c:choose>
+		
+			<c:if test="${not empty command.erroneousLineNumbers}">
+				<div style="margin-top:2em">
+					<img style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.erroneous_line_numbers"/></h3>
+				</div>
+				<ul class="errorLineList">
+					<c:forEach var="lineNumber" items="${command.erroneousLineNumbers}">
+						<li><b class="standart_text_normal">${lineNumber}</b></li>
+					</c:forEach>
+				</ul>
+			</c:if>
 		
 			<c:if test="${command.extendedView}">
 				<div style="margin-top:2em">
