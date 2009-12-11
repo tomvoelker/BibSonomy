@@ -104,7 +104,7 @@ public class DBLogic implements LogicInterface {
 	private final InboxDatabaseManager inboxDBManager;
 
 	private final User loginUser;
-	
+
 	/** references to resource searcher for maintenance (e.g. flagging of spam) */
 	List<ResourceSearch<? extends Resource>> resourceSearcher;
 
@@ -133,30 +133,30 @@ public class DBLogic implements LogicInterface {
 		this.permissionDBManager = PermissionDatabaseManager.getInstance();
 		this.statisticsDBManager = StatisticsDatabaseManager.getInstance();
 		this.tagRelationsDBManager = TagRelationDatabaseManager.getInstance();
-		
+
 		this.basketDBManager = BasketDatabaseManager.getInstance();
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;
-		
+
 		this.resourceSearcher = new LinkedList<ResourceSearch<? extends Resource>>();
-	
+
 	}
-	
+
 	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final ResourceSearch<BibTex> bibTexSearch, final ResourceSearch<Bookmark> bookmarkSearch) {
 		this(loginUser, dbSessionFactory);
-	
+
 		this.resourceSearcher.add(bookmarkSearch);
 		this.resourceSearcher.add(bibTexSearch);
 		this.bibtexDBManager.setResourceSearch(bibTexSearch);
 		this.bookmarkDBManager.setResourceSearch(bookmarkSearch);
 		this.tagDBManager.setAuthorSearch(bibTexSearch);
-		
+
 		// TODO: @see PostDatabaseManager
 		this.bibtexDBManager.setDbLogic(this);
 		this.bookmarkDBManager.setDbLogic(this);
 		this.bibtexDBManager.setDbSessionFactory(this.dbSessionFactory);
-		this.bookmarkDBManager.setDbSessionFactory(this.dbSessionFactory);		
+		this.bookmarkDBManager.setDbSessionFactory(this.dbSessionFactory);
 	}
 
 	/**
@@ -324,13 +324,13 @@ public class DBLogic implements LogicInterface {
 				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 				// check permissions for displaying links to documents
 				final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, filter, session);
-				
+
 				if (!allowedToAccessUsersOrGroupDocuments) {
 					param.setFilter(FilterEntity.JUST_POSTS);
 				} else if (!present(filter)) {
 					param.setFilter(FilterEntity.POSTS_WITH_DOCUMENTS);
 				}
-				
+
 				// this is save because of RTTI-check of resourceType argument
 				// which is of class T
 				result = ((List) this.bibtexDBManager.getPosts(param, session));
@@ -529,7 +529,7 @@ public class DBLogic implements LogicInterface {
 		if (!this.permissionDBManager.isAdminOrSelf(loginUser, userName)) {
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
-		
+
 		final DBSession session = openSession();
 		try {
 			userDBManager.deleteUser(userName, session);
@@ -743,8 +743,27 @@ public class DBLogic implements LogicInterface {
 	/**
 	 * Adds/updates a group in the database.
 	 */
-	private String storeGroup(@SuppressWarnings("unused") final Group group, @SuppressWarnings("unused") boolean update) {
+	private String storeGroup(final Group group, boolean update) {
 
+		/*
+		 * FIXME Implement change group behaviour
+		 */
+		if (!update) {
+			/*
+			 * check permissions
+			 */
+			this.ensureLoggedIn();
+			this.permissionDBManager.ensureAdminAccess(loginUser);
+
+			final DBSession session = this.openSession();
+			try {
+				this.groupDBManager.storeGroup(group, update, session);
+			} finally {
+				session.close();
+			}
+			return group.getName();
+			
+		}
 		throw new UnsupportedOperationException("not yet available");
 
 		// FIXME: unsure who may change a group -> better doing nothing
@@ -819,7 +838,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<String> createPosts(final List<Post<?>> posts) {
-		//TODO: Which of these checks should result in a DatabaseException, which do we want to handle otherwise (=status quo)
+		// TODO: Which of these checks should result in a DatabaseException,
+		// which do we want to handle otherwise (=status quo)
 		this.ensureLoggedIn();
 		/*
 		 * check permissions
@@ -848,25 +868,25 @@ public class DBLogic implements LogicInterface {
 		return hashes;
 
 	}
-	
+
 	/**
 	 * Adds a post in the database.
 	 */
 	private <T extends Resource> String createPost(final Post<T> post, DBSession session) {
 		final CrudableContent<T, GenericParam> manager = this.getFittingDatabaseManager(post);
 		post.getResource().recalculateHashes();
-		
+
 		this.validateGroups(post, session);
-			/*
-			 * change group IDs to spam group IDs
-			 */
-			PostUtils.setGroupIds(post, this.loginUser);
+		/*
+		 * change group IDs to spam group IDs
+		 */
+		PostUtils.setGroupIds(post, this.loginUser);
 
-			manager.createPost(post, session);
+		manager.createPost(post, session);
 
-			// if we don't get an exception here, we assume the resource has
-			// been successfully created
-			return post.getResource().getIntraHash();
+		// if we don't get an exception here, we assume the resource has
+		// been successfully created
+		return post.getResource().getIntraHash();
 	}
 
 	/*
@@ -878,7 +898,8 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
-		//TODO: Which of these checks should result in a DatabaseException, which do we want to handle otherwise (=status quo)
+		// TODO: Which of these checks should result in a DatabaseException,
+		// which do we want to handle otherwise (=status quo)
 		this.ensureLoggedIn();
 		/*
 		 * check permissions
@@ -894,7 +915,7 @@ public class DBLogic implements LogicInterface {
 		 */
 		final DBSession session = openSession();
 		try {
-			for (final Post<?> post: posts) {
+			for (final Post<?> post : posts) {
 				hashes.add(this.updatePost(post, operation, session));
 			}
 		} finally {
@@ -902,7 +923,7 @@ public class DBLogic implements LogicInterface {
 		}
 		return hashes;
 	}
-	
+
 	/**
 	 * Updates a post in the database.
 	 */
@@ -999,7 +1020,7 @@ public class DBLogic implements LogicInterface {
 			this.permissionDBManager.ensureAdminAccess(loginUser);
 		}
 
-		if(operation.equals(UserUpdateOperation.UPDATE_ALL)) {			
+		if (operation.equals(UserUpdateOperation.UPDATE_ALL)) {
 			/*
 			 * update only (!) spammer settings
 			 */
@@ -1008,7 +1029,7 @@ public class DBLogic implements LogicInterface {
 				 * only admins are allowed to change spammer settings
 				 */
 				log.debug("Start update this framework");
-	
+
 				this.permissionDBManager.ensureAdminAccess(loginUser);
 				/*
 				 * open session and update spammer settings
@@ -1017,9 +1038,10 @@ public class DBLogic implements LogicInterface {
 				String flagSpammerUserName = null;
 				try {
 					final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
+					log.debug("User prediction: " + user.getPrediction());
 					flagSpammerUserName = this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
 					// flag/unflag spammer in search index
-					for( ResourceSearch<? extends Resource> searcher : resourceSearcher ) {
+					for (ResourceSearch<? extends Resource> searcher : resourceSearcher) {
 						searcher.flagSpammer(user);
 					}
 				} finally {
@@ -1027,26 +1049,26 @@ public class DBLogic implements LogicInterface {
 				}
 				return flagSpammerUserName;
 			}
-	
+
 			return this.storeUser(user, true);
-		}else  {
+		} else {
 			String updatedUser = null;
-			
+
 			final DBSession session = openSession();
-			
-			try{			
-				if(operation.equals(UserUpdateOperation.UPDATE_PASSWORD)) {
-										
+
+			try {
+				if (operation.equals(UserUpdateOperation.UPDATE_PASSWORD)) {
+
 					updatedUser = this.userDBManager.updatePasswordForUser(user, session);
-		
-				}else if(operation.equals(UserUpdateOperation.UPDATE_SETTINGS)) {
-					
+
+				} else if (operation.equals(UserUpdateOperation.UPDATE_SETTINGS)) {
+
 					updatedUser = this.userDBManager.updateUserSettingsForUser(user, session);
-				}else if(operation.equals(UserUpdateOperation.UPDATE_API)) {
-					
+				} else if (operation.equals(UserUpdateOperation.UPDATE_API)) {
+
 					this.userDBManager.updateApiKeyForUser(user.getName(), session);
 				}
-			}finally {
+			} finally {
 				session.close();
 			}
 			return updatedUser;
@@ -1744,26 +1766,25 @@ public class DBLogic implements LogicInterface {
 		return result;
 	}
 
-	
-	
 	/******************
 	 * USER RELATIONS *
 	 *****************/
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.bibsonomy.model.logic.LogicInterface#insertUserRelationship()
 	 */
 	@Override
-	/**
+	/*
 	 * We create a UserRelation of the form (sourceUser, targetUser)\in relation
 	 * This Method only works for the FOLLOWER_OF and the OF_FRIEND relation
 	 * Other relation will result in an UnsupportedRelationException
 	 */
 	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
 		this.ensureLoggedIn();
-		//this.permissionDBManager.checkUserRelationship(sourceUser, targetUser, relation);
+		// this.permissionDBManager.checkUserRelationship(sourceUser,
+		// targetUser, relation);
 		this.permissionDBManager.isAdminOrSelf(loginUser, sourceUser);
 
 		final DBSession session = openSession();
@@ -1774,42 +1795,36 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	
-	
-	
-	/** 
-	 * We return all Users that are in (the) relation with the sourceUser
-	 * as targets.
-	 * @param sourceUser = leftHandSide of the relation
-	 * @param relation = the User relation
-	 * @return all rightHandsides, that is all Users u with
-	 * (sourceUser, u)\in relation
+	/**
+	 * We return all Users that are in (the) relation with the sourceUser as
+	 * targets.
+	 * 
+	 * @param sourceUser
+	 *            = leftHandSide of the relation
+	 * @param relation
+	 *            = the User relation
+	 * @return all rightHandsides, that is all Users u with (sourceUser, u)\in
+	 *         relation
 	 */
-	public List<User> getUserRelationship(String sourceUser, UserRelation relation){
+	public List<User> getUserRelationship(String sourceUser, UserRelation relation) {
 		this.ensureLoggedIn();
 		List<User> targetUsers;
-		// ask Robert about this method this.permissionDBManager.checkUserRelationship(sourceUser, targetUser, relation);
+		// ask Robert about this method
+		// this.permissionDBManager.checkUserRelationship(sourceUser,
+		// targetUser, relation);
 		this.permissionDBManager.isAdminOrSelf(loginUser, sourceUser);
 
 		final DBSession session = openSession();
 		try {
 			// get all users that are in relation with sourceUser
-			targetUsers=this.userDBManager.getUserRelation(sourceUser, relation, session);
+			targetUsers = this.userDBManager.getUserRelation(sourceUser, relation, session);
 		} finally {
 			// unsupported Relations will cause an UnsupportedRelationException
 			session.close();
 		}
 		return targetUsers;
 	}
-	
-	
-	
-	
-	
-	
-	
 
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -1818,13 +1833,15 @@ public class DBLogic implements LogicInterface {
 	/**
 	 * We delete a UserRelation of the form (sourceUser, targetUser)\in relation
 	 * This Method only works for the FOLLOWER_OF and the OF_FRIEND relation
-	 * Other relation will result in an UnsupportedRelationException
-	 * FIXME: use Strings (usernames) instead of users
+	 * Other relation will result in an UnsupportedRelationException FIXME: use
+	 * Strings (usernames) instead of users
 	 */
 	@Override
 	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
 		this.ensureLoggedIn();
-		// ask Robert about this method this.permissionDBManager.checkUserRelationship(sourceUser, targetUser, relation);
+		// ask Robert about this method
+		// this.permissionDBManager.checkUserRelationship(sourceUser,
+		// targetUser, relation);
 		this.permissionDBManager.isAdminOrSelf(loginUser, sourceUser);
 
 		final DBSession session = openSession();
@@ -1836,49 +1853,44 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	
-	
-	
-	
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.bibsonomy.model.logic.LogicInterface#createBasketItems()
 	 */
 	@Override
-	public int createBasketItems(List<Post<? extends Resource>> posts){
+	public int createBasketItems(List<Post<? extends Resource>> posts) {
 		this.ensureLoggedIn();
-		
+
 		final DBSession session = openSession();
-		
+
 		int basketSize = 0;
-		
+
 		try {
-			for (final Post<? extends Resource> post:posts){
-				if (post.getResource() instanceof Bookmark) throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the basket");				
+			for (final Post<? extends Resource> post : posts) {
+				if (post.getResource() instanceof Bookmark) throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the basket");
 				/*
-				 * get the complete post from the database 
+				 * get the complete post from the database
 				 */
 				final Post<BibTex> copy = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), post.getResource().getIntraHash(), post.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
-				
+
 				/*
-				 * post might be null, because 
-				 * a) it does not exist
-				 * b) user may not access it
+				 * post might be null, because a) it does not exist b) user may
+				 * not access it
 				 */
 				if (copy == null) {
 					/*
 					 * FIXME: proper exception message!
 					 */
-					throw new ValidationException("You are not authorized to perform the requested operation"); 
+					throw new ValidationException("You are not authorized to perform the requested operation");
 				}
-				
+
 				/*
 				 * insert the post from the user's basket
 				 */
 				this.basketDBManager.createItem(this.loginUser.getName(), copy.getContentId(), session);
 			}
-			
-			
+
 			// get actual basket size
 			return this.basketDBManager.getNumBasketEntries(this.loginUser.getName(), session);
 		} catch (Exception ex) {
@@ -1890,48 +1902,49 @@ public class DBLogic implements LogicInterface {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.bibsonomy.model.logic.LogicInterface#deleteBasketItems()
 	 */
 	@Override
 	public int deleteBasketItems(List<Post<? extends Resource>> posts, final boolean clearBasket) {
 		this.ensureLoggedIn();
-		
+
 		final DBSession session = openSession();
-		
+
 		try {
 			// decide which delete function will be called
-			if (clearBasket){
+			if (clearBasket) {
 				// clear all in basket
 				this.basketDBManager.deleteAllItems(this.loginUser.getName(), session);
 			} else {
 				// delete specific post
-				for (final Post<? extends Resource> post:posts){
+				for (final Post<? extends Resource> post : posts) {
 					if (post.getResource() instanceof Bookmark) throw new UnsupportedResourceTypeException("Bookmarks can't be stored in the basket");
 					/*
-					 * get the complete post from the database 
+					 * get the complete post from the database
 					 */
 					final Post<BibTex> copy = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), post.getResource().getIntraHash(), post.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
-					
+
 					/*
-					 * post might be null, because 
-					 * a) it does not exist
-					 * b) user may not access it
+					 * post might be null, because a) it does not exist b) user
+					 * may not access it
 					 */
 					if (copy == null) {
 						/*
 						 * FIXME: proper exception message!
 						 */
-						throw new ValidationException("You are not authorized to perform the requested operation"); 
+						throw new ValidationException("You are not authorized to perform the requested operation");
 					}
-					
+
 					/*
 					 * delete the post from the user's basket
 					 */
 					this.basketDBManager.deleteItem(this.loginUser.getName(), copy.getContentId(), session);
-				}	
+				}
 			}
-			
+
 			// get actual basketsize
 			return this.basketDBManager.getNumBasketEntries(this.loginUser.getName(), session);
 		} catch (Exception ex) {
@@ -1939,15 +1952,16 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
-		
+
 		return 0;
 	}
 
 	/**
 	 * Delete the users Message (given by the unique contentId) from his inbox
-	 * @param sender 
-	 * @param receiver 
-	 * @param resourceHash 
+	 * 
+	 * @param sender
+	 * @param receiver
+	 * @param resourceHash
 	 * @return size of Inbox
 	 */
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox) {
@@ -1963,11 +1977,11 @@ public class DBLogic implements LogicInterface {
 			if (clearInbox) {
 				this.inboxDBManager.deleteAllInboxMessages(loginUser.getName(), session);
 			} else {
-				for (final Post post: posts) {
+				for (final Post post : posts) {
 					final String sender = post.getUser().getName();
 					final String receiver = loginUser.getName();
 					final String resourceHash = post.getResource().getIntraHash();
-					if (!present(receiver) || !present(resourceHash)){
+					if (!present(receiver) || !present(resourceHash)) {
 						throw new ValidationException("You are not authorized to perform the requested operation");
 					}
 					this.inboxDBManager.deleteInboxMessage(sender, receiver, resourceHash, session);
