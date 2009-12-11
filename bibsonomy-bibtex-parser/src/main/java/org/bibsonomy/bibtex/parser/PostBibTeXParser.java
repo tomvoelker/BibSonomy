@@ -135,7 +135,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 			 */
 			final String keywords = miscFields.remove(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS);
 			try {
-				if(!ValidationUtils.present(whitespace) && !ValidationUtils.present(delimiter))
+				if(ValidationUtils.present(whitespace) && ValidationUtils.present(delimiter))
 					post.setTags(TagUtils.parse(TagStringUtils.cleanTags(keywords, true,  delimiter, whitespace)));
 				else
 					post.setTags(TagUtils.parse(keywords));
