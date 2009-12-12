@@ -953,4 +953,16 @@
 		<BibFile>WorldCatScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_164">
+		<TestDescription>Test for worldcat publication page</TestDescription>
+		<URL>http://papers.ssrn.com/sol3/papers.cfm?abstract_id=519044#</URL>
+		<BibFile>SSRNScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_165">
+		<TestDescription>Test for worldcat publication page</TestDescription>
+		<URL>http://papers.ssrn.com/sol3/papers.cfm?abstract_id=620245</URL>
+		<BibFile>SSRNScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper</Scraper>
+	</URLTest>		
 </test:Tests>
