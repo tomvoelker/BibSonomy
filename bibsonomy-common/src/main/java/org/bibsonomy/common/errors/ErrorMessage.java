@@ -27,6 +27,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 
+import org.bibsonomy.common.enums.ErrorSource;
+
 
 //TODO: find a nice and suitable name for errorsPackage
 /**
@@ -35,6 +37,8 @@ import java.util.ArrayList;
  */
 public class ErrorMessage {
 
+
+	private ErrorSource errorSource=ErrorSource.REMOVEME;
 	private String errorMessage;
 	private String localizedMessageKey;
 	private ArrayList<String> parameters=null;
@@ -68,6 +72,19 @@ public class ErrorMessage {
 	public String getErrorMessage() {
 		return this.errorMessage;
 	}
+	/**
+	 * @return the errorSource
+	 */
+	public ErrorSource getErrorSource() {
+		return this.errorSource;
+	}
+	/**
+	 * @param errorSource the errorSource to set
+	 */
+	public void setErrorSource(ErrorSource errorSource) {
+		this.errorSource = errorSource;
+	}
+
 
 
 	/**

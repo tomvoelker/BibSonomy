@@ -28,5 +28,7 @@ public enum ErrorSource {
 /** a post was to be updated but no origin was found **/
 	UPDATE,
 /** something unspecified happened, try to use an other more specific category if possible**/	
-	GENERAL;
+	GENERAL,
+/** temporary constant. This enum is going to be removed, this is only to satisfy the compiler**/
+	REMOVEME;
 }
