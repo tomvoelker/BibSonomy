@@ -40,6 +40,7 @@ public class SSRNScraperTest {
 	 * starts URL test with id url_164
 	 */
 	@Test
+	@Ignore
 	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_164"));
@@ -49,6 +50,7 @@ public class SSRNScraperTest {
 	 * starts URL test with id url_165
 	 */
 	@Test
+	@Ignore
 	public void url2TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_165"));
