@@ -104,6 +104,11 @@ public class User {
 	private String openID;
 
 	/**
+	 * LDAP uid for authentication
+	 */
+	private String ldapUid;
+
+	/**
 	 * IP Address
 	 */
 	private String IPAddress;
@@ -202,7 +207,6 @@ public class User {
 	 * The time at which the user requested a password reminder.
 	 */
 	private Date reminderPasswordRequestDate; 
-
 
 	/**
 	 * Constructor
@@ -550,6 +554,20 @@ public class User {
 	}
 
 	/**
+	 * @return ldapUid
+	 */
+	public String getLdapUid() {
+		return this.ldapUid;
+	}
+
+	/**
+	 * @param ldapUid
+	 */
+	public void setLdapUid(String ldapUid) {
+		this.ldapUid = ldapUid;
+	}
+
+	/**
 	 * @return basket
 	 */
 	public Basket getBasket() {
@@ -785,4 +803,5 @@ public class User {
 	public void setReminderPasswordRequestDate(Date reminderPasswordRequestDate) {
 		this.reminderPasswordRequestDate = reminderPasswordRequestDate;
 	}
+
 }
