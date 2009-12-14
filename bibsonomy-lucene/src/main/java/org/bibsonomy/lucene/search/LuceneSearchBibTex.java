@@ -42,7 +42,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 	 * constructor
 	 */
 	private LuceneSearchBibTex() {
-		reloadIndex();
+		reloadIndex(0);
 	}
 	
 	/**

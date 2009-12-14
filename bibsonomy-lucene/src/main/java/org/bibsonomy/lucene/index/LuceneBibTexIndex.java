@@ -10,18 +10,14 @@ import org.bibsonomy.model.Resource;
  *
  */
 public class LuceneBibTexIndex extends LuceneResourceIndex<BibTex> {
-	
-	/** singleton instance */
-	protected static LuceneResourceIndex<BibTex> instance;
-	
+
+	protected LuceneBibTexIndex(int indexId) {
+		super(indexId);
+	}
+
 	@Override
 	protected Class<? extends Resource> getResourceType() {
 		return BibTex.class;
-	}
-
-	public static LuceneResourceIndex<BibTex> getInstance() {
-		if (instance == null) instance = new LuceneBibTexIndex();
-		return instance;
 	}
 
 }

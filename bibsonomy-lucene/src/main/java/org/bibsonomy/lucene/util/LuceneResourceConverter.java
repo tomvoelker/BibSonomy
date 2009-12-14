@@ -77,11 +77,16 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 	public Document readPost(Post<R> post) {
 		Document retVal = new Document();
 		// FIXME: default values should be configured via spring
-		Index fldIndex = Field.Index.NOT_ANALYZED;
-		Store fldStore = Field.Store.YES;
+		Index fldDefaultIndex = Field.Index.NOT_ANALYZED;
+		Store fldDefaultStore = Field.Store.YES;
+		Index fldIndex = fldDefaultIndex;
+		Store fldStore = fldDefaultStore;
 
-		// FIXME: configure merged field via spring
+		// all fields are concatenated for full text search
 		String mergedField = "";
+		
+		// all private fields are concatenated for full text search
+		String privateField= "";
 		
 		//--------------------------------------------------------------------
 		// cycle though all properties and store the corresponding
@@ -107,9 +112,13 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 					// get lucene index configuration
 					if( postPropertyMap.get(propertyName).get(CFG_FLDINDEX)!=null) {
 						fldIndex = (Index) postPropertyMap.get(propertyName).get(CFG_FLDINDEX);
+					} else {
+						fldIndex = fldDefaultIndex;
 					}
 					if( postPropertyMap.get(propertyName).get(CFG_FLDSTORE)!=null) {
 						fldStore = (Store) postPropertyMap.get(propertyName).get(CFG_FLDSTORE);
+					} else {
+						fldStore = fldDefaultStore;
 					}
 				}
 			} catch (Exception e) {
@@ -129,6 +138,11 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 				    (Boolean)postPropertyMap.get(propertyName).get(CFG_FULLTEXT_FLAG) ) {
 					mergedField += CFG_LIST_DELIMITER + propertyValue;
 				}
+				// add term to private full text search field, if configured accordingly 
+				if( ValidationUtils.present(postPropertyMap.get(propertyName).get(CFG_PRIVATE_FLAG)) &&
+				    (Boolean)postPropertyMap.get(propertyName).get(CFG_PRIVATE_FLAG) ) {
+					privateField += CFG_LIST_DELIMITER + propertyValue;
+				}
 			} else {
 				// add empty field
 				retVal.add( new Field(luceneName, defaultValue, fldStore, fldIndex));
@@ -137,6 +151,9 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 		
 		// store merged field
 		retVal.add(new Field(FLD_MERGEDFIELDS, TexDecode.decode(mergedField), Field.Store.NO, Field.Index.ANALYZED));
+
+		// store private field
+		retVal.add(new Field(FLD_PRIVATEFIELDS, TexDecode.decode(privateField), Field.Store.YES, Field.Index.ANALYZED));
 		
 		// all done.
 		return retVal;

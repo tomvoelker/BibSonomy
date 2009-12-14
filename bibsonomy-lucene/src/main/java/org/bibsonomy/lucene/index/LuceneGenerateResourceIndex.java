@@ -1,7 +1,13 @@
 package org.bibsonomy.lucene.index;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
@@ -126,7 +132,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 	 */
 	public void createEmptyIndex() throws CorruptIndexException, LockObtainFailedException, IOException {
 		// create index, possibly overwriting existing index files
-		Directory indexDirectory = FSDirectory.open(new File(this.luceneResourceIndexPath));
+		Directory indexDirectory = FSDirectory.open(new File(this.luceneResourceIndexPath+CFG_INDEX_ID_DELIMITER+"0"));
 		indexWriter  = new IndexWriter(indexDirectory, getAnalyzer(), true, mfl); 
 	}
 
@@ -199,6 +205,10 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 
 		// all done
 		log.info("(" + i + " indexed entries, " + is + " not indexed spam entries)");
+		
+		// create redundant indeces
+		log.info("Creating "+getRedundantCnt()+" redundant indeces.");
+		this.copyRedundantIndeces();
 	}
 	
 
@@ -216,13 +226,68 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 		}
 		return !flaggedAsSpammer;
 	}
-	
-
-
 
 	//------------------------------------------------------------------------
 	// private helper
 	//------------------------------------------------------------------------
+	/**
+	 * copy created index to redundant indeces
+	 */
+	protected void copyRedundantIndeces() {
+		File inputFile = new File(this.luceneResourceIndexPath+CFG_INDEX_ID_DELIMITER+"0");
+		for(int i=1; i<getRedundantCnt(); i++ ) {
+			try {
+				File outputFile = new File(this.luceneResourceIndexPath+CFG_INDEX_ID_DELIMITER+i);
+				log.info("Copying index "+i);
+				copyDirectory(inputFile, outputFile);
+				log.info("Done.");
+			} catch( Exception e) {
+				log.error("Error copying index to index file "+i);
+			}
+		}
+	}
+	
+	/**
+	 * Copies all files under srcDir to dstDir.
+ 	 * If dstDir does not exist, it will be created.
+	 * @param srcDir
+	 * @param dstDir
+	 * @throws IOException
+	 */
+    public void copyDirectory(File srcDir, File dstDir) throws IOException {
+        if (srcDir.isDirectory()) {
+            if (!dstDir.exists()) {
+                dstDir.mkdir();
+            }
+    
+            String[] children = srcDir.list();
+            for (int i=0; i<children.length; i++) {
+                copyDirectory(new File(srcDir, children[i]),
+                                     new File(dstDir, children[i]));
+            }
+        } else {
+            copyFile(srcDir, dstDir);
+        }
+    }
+	
+	/** Fast & simple file copy. */
+	public static void copyFile(File source, File dest) throws IOException {
+	     FileChannel in = null, out = null;
+	     try {          
+	          in = new FileInputStream(source).getChannel();
+	          out = new FileOutputStream(dest).getChannel();
+	 
+	          long size = in.size();
+	          MappedByteBuffer buf = in.map(FileChannel.MapMode.READ_ONLY, 0, size);
+	 
+	          out.write(buf);
+	 
+	     } finally {
+	          if (in != null)          in.close();
+	          if (out != null)     out.close();
+	     }
+	}
+
 	/**
 	 * get managed resource type
 	 */

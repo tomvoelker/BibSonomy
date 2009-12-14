@@ -25,7 +25,7 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 	 * constructor
 	 */
 	private LuceneSearchBookmarks() {
-		reloadIndex();
+		reloadIndex(0);
 	}
 
 	/**

@@ -26,14 +26,16 @@ public class LuceneBase {
 	//------------------------------------------------------------------------
 	public static final String PARAM_RELEVANCE = "relevance";
 
-	public static final String CFG_LUCENENAME     = "luceneName";
-	public static final String CFG_ANALYZER       = "fieldAnalyzer";
-	public static final String CFG_TYPEHANDLER    = "typeHandler";
-	public static final String CFG_ITEMPROPERTY   = "itemProperty";
-	public static final String CFG_LIST_DELIMITER = " ";
-	public static final String CFG_FLDINDEX       = "luceneIndex";
-	public static final String CFG_FLDSTORE       = "luceneStore";
-	public static final String CFG_FULLTEXT_FLAG  = "fulltextSearch";
+	public static final String CFG_LUCENENAME         = "luceneName";
+	public static final String CFG_ANALYZER           = "fieldAnalyzer";
+	public static final String CFG_TYPEHANDLER        = "typeHandler";
+	public static final String CFG_ITEMPROPERTY       = "itemProperty";
+	public static final String CFG_LIST_DELIMITER     = " ";
+	public static final String CFG_FLDINDEX           = "luceneIndex";
+	public static final String CFG_FLDSTORE           = "luceneStore";
+	public static final String CFG_FULLTEXT_FLAG      = "fulltextSearch";
+	public static final String CFG_PRIVATE_FLAG       = "privateSearch";
+	public static final String CFG_INDEX_ID_DELIMITER = "-";
 	
 	/** delimiter to specify which field to search for */
 	public static final String CFG_LUCENE_FIELD_SPECIFIER = ":";
@@ -59,7 +61,9 @@ public class LuceneBase {
 
 	// FIXME: configure these fieldnames via spring
 	public static final String FLD_MERGEDFIELDS  = "mergedfields";
+	public static final String FLD_PRIVATEFIELDS = "privatefields";
 	public static final String FLD_INTRAHASH     = "intrahash";
+	public static final String FLD_INTERHASH     = "interhash";
 	public static final String FLD_GROUP         = "group";
 	public static final String FLD_AUTHOR        = "author";
 	public static final String FLD_USER          = "user_name";
@@ -93,6 +97,8 @@ public class LuceneBase {
 	private static String dbDriverName            = "com.mysql.jdbc.Driver";
 	private static IndexWriter.MaxFieldLength maximumFieldLength
 	                                              = new IndexWriter.MaxFieldLength(5000);
+	private static Integer redundantCnt           = 2;
+	
 	/**
 	 * get runtime configuration from context
 	 */
@@ -127,6 +133,17 @@ public class LuceneBase {
 					}
 					maximumFieldLength = new IndexWriter.MaxFieldLength(value);
 				}				
+			}
+			
+			// nr. of redundant indeces
+			if( ValidationUtils.present(config.getRedundantCnt()) ) {
+				Integer value;
+				try {
+					value = Integer.parseInt(config.getRedundantCnt());
+				} catch (NumberFormatException e) {
+					value = IndexWriter.DEFAULT_MAX_FIELD_LENGTH;
+				}
+				redundantCnt = value;
 			}
 			
 			setEnableUpdater(new Boolean(config.getEnableUpdater()));
@@ -175,5 +192,13 @@ public class LuceneBase {
 
 	public static Boolean getEnableUpdater() {
 		return enableUpdater;
+	}
+
+	public static void setRedundantCnt(Integer redundantCnt) {
+		LuceneBase.redundantCnt = redundantCnt;
+	}
+
+	public static Integer getRedundantCnt() {
+		return redundantCnt;
 	}
 }

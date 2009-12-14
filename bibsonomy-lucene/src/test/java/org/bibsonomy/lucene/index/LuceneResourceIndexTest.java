@@ -78,8 +78,8 @@ public class LuceneResourceIndexTest {
 		Document bmDoc  = this.bookmarkConverter.readPost(bmPost);
 		Document bibDoc = this.bibTexConverter.readPost(bibPost);
 		
-		LuceneResourceIndex<Bookmark> bmIndex = LuceneBookmarkIndex.getInstance();
-		LuceneResourceIndex<BibTex> bibIndex  = LuceneBibTexIndex.getInstance();
+		LuceneResourceIndex<Bookmark> bmIndex = new LuceneBookmarkIndex(0);
+		LuceneResourceIndex<BibTex> bibIndex  = new LuceneBibTexIndex(0);
 		
 		bmIndex.insertDocument(bmDoc);
 		bmIndex.insertDocument(bmDoc);

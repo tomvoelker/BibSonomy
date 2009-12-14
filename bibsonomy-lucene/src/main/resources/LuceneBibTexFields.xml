@@ -199,6 +199,16 @@
 						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
 					</map>
 				</entry>
+				<entry key="resource.privnote">
+					<map>
+						<entry key="luceneName" value="privnote" />
+						<entry key="luceneIndex" value-ref="fieldAnalyzed" />
+						<entry key="luceneStore" value-ref="fieldNotStored" />
+						<entry key="privateSearch">
+							<value type="java.lang.Boolean">true</value>
+						</entry>
+					</map>
+				</entry>
 				<entry key="resource.publisher">
 					<map>
 						<entry key="luceneName" value="publisher" />

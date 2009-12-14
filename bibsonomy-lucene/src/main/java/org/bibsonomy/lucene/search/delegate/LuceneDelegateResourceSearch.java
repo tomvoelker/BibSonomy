@@ -79,7 +79,7 @@ public class LuceneDelegateResourceSearch<R extends Resource> implements Resourc
 			final int groupId, final List<Integer> visibleGroupIDs, 
 			final String search, final String authUserName, 
 			final int limit, final int offset, 
-			Collection<? extends Tag> systemTags ) {
+			Collection<? extends Tag> systemTags) {
 		if(resourceSearcher!=null) 
 			return resourceSearcher.searchGroup(groupId, visibleGroupIDs, search, authUserName, limit, offset, systemTags);
 		else {

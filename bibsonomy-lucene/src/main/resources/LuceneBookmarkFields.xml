@@ -22,7 +22,13 @@
 				<entry key="resource.intraHash">
 					<map>
 						<entry key="luceneName" value="intrahash" />
-						<entry key="dbName" value="book_url_hash" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
+					</map>
+				</entry>
+				<entry key="resource.interHash">
+					<map>
+						<entry key="luceneName" value="interhash" />
+						<entry key="luceneIndex" value-ref="fieldNotAnalyzed" />
 					</map>
 				</entry>
 				<entry key="resource.url">

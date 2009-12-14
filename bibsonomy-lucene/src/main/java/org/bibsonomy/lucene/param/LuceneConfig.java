@@ -18,6 +18,8 @@ public class LuceneConfig {
 	private String maximumFieldLength;
 	/** db driver name - FIXME: only needed for offline index creation */
 	private String dbDriverName;
+	/** nr. of redundant indeces */
+	private String redundantCnt = "2";
 	
 	public void setIndexPath(String indexPath) {
 		this.indexPath = indexPath;
@@ -54,6 +56,12 @@ public class LuceneConfig {
 	}
 	public String getDbDriverName() {
 		return dbDriverName;
+	}
+	public void setRedundantCnt(String redundantCnt) {
+		this.redundantCnt = redundantCnt;
+	}
+	public String getRedundantCnt() {
+		return redundantCnt;
 	}
 
 	

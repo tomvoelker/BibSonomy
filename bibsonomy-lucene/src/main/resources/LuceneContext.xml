@@ -32,12 +32,28 @@
 	<!--+
 	    | lucene indexes 
 	    +-->
-	<bean id="luceneBibTexIndex" class="org.bibsonomy.lucene.index.LuceneBibTexIndex" factory-method="getInstance">
-		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
-	</bean>
-	<bean id="luceneBookmarkIndex" class="org.bibsonomy.lucene.index.LuceneBookmarkIndex" factory-method="getInstance">
-		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
-	</bean>
+	<util:list id="bibtexIndeces">
+		<bean id="luceneBibTexIndex0" class="org.bibsonomy.lucene.index.LuceneBibTexIndex">
+			<constructor-arg value="0"/>
+			<property name="indexId" value="0"/>
+			<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		</bean>
+		<bean id="luceneBibTexIndex1" class="org.bibsonomy.lucene.index.LuceneBibTexIndex">
+			<constructor-arg value="1"/>
+			<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
+		</bean>
+	</util:list>
+	
+	<util:list id="bookmarkIndeces">
+		<bean id="luceneBookmarkIndex0" class="org.bibsonomy.lucene.index.LuceneBookmarkIndex">
+			<constructor-arg value="0"/>
+			<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
+		</bean>
+		<bean id="luceneBookmarkIndex1" class="org.bibsonomy.lucene.index.LuceneBookmarkIndex">
+			<constructor-arg value="1"/>
+			<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
+		</bean>
+	</util:list>
 	
 	<!--+
 	    | lucene database access logics 
@@ -64,13 +80,13 @@
 	    | lucene index manager (e.g. spam) 
 	    +-->
 	<bean id="luceneBibTexManager" class="org.bibsonomy.lucene.index.LuceneBibTexManager" factory-method="getPreInitInstance">
-		<property name="resourceIndex" ref="luceneBibTexIndex"/>
+		<property name="resourceIndeces" ref="bibtexIndeces"/>
 		<property name="dbLogic" ref="luceneBibTexLogic"/>
 		<property name="searcher" ref="luceneBibTexSearch"/>
 		<property name="resourceConverter" ref="luceneBibTexConverter"/>
 	</bean>
 	<bean id="luceneBookmarkManager" class="org.bibsonomy.lucene.index.LuceneBookmarkManager" factory-method="getPreInitInstance">
-		<property name="resourceIndex" ref="luceneBookmarkIndex"/>
+		<property name="resourceIndeces" ref="bookmarkIndeces"/>
 		<property name="dbLogic" ref="luceneBookmarkLogic"/>
 		<property name="searcher" ref="luceneBookmarkSearch"/>
 		<property name="resourceConverter" ref="luceneBookmarkConverter"/>

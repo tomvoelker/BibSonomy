@@ -95,6 +95,9 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	/** post model converter */
 	private LuceneResourceConverter<R> resourceConverter;
 	
+	/** id for identifying redundant resource indeces */
+	private int indexId;
+	
 	/**
 	 * constructor
 	 */
@@ -298,7 +301,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 				// set post frequency
 				starttimeQuery = System.currentTimeMillis();
 				int postFreq = 1;
-				if( doc.get(FLD_INTRAHASH)!=null ) {
+				if( doc.get(FLD_INTERHASH)!=null ) {
 					postFreq = this.searcher.docFreq(new Term(FLD_INTRAHASH, doc.get(FLD_INTRAHASH)));
 				}
 				endtimeQuery = System.currentTimeMillis();
@@ -338,31 +341,49 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	}
 	
 	/** reload the index -- has to be called after each index change */
-	public void reloadIndex() {
-		w.lock();
-
+	public void reloadIndex(int indexId) {
+		this.setIndexId(indexId);
+		//--------------------------------------------------------------------
+		// open new index searcher
+		//--------------------------------------------------------------------
+		IndexSearcher newSearcher = null;
+		init();
 		try {
-			init();
-
-			// if there is already a searcher
-			try {
-				if (null != this.searcher) this.searcher.close();
-			} catch (IOException e) {
-				log.debug("Error closing searcher.", e);
-			}
-
-			try {
-				// load and hold index on physical hard disk
-				log.debug("Reloading index from disk.");
-				this.searcher = new IndexSearcher(FSDirectory.open(new File(luceneIndexPath)));
-				enableIndex();
-			} catch (Exception e) {
-				log.error("Error reloading index, disabling searcher", e);
+			// load and hold index on physical hard disk
+			log.debug("Opening index " + indexId);
+			String indexPath = luceneIndexPath+CFG_INDEX_ID_DELIMITER+indexId;
+			newSearcher = new IndexSearcher(FSDirectory.open(new File(indexPath)));
+		} catch (Exception e) {
+			log.error("Error reloading index, disabling searcher", e);
+		}
+ 
+		
+		//--------------------------------------------------------------------
+		// switch searcher
+		//--------------------------------------------------------------------
+		IndexSearcher oldSearcher = null;
+		w.lock();
+		try {
+			if( newSearcher==null ) {
 				disableIndex();
+			} else {
+				this.searcher = newSearcher;
+				enableIndex();
 			}
 		} finally {
 			w.unlock();
 		}
+		
+		//--------------------------------------------------------------------
+		// close old searcher
+		//--------------------------------------------------------------------
+		try {
+			if( oldSearcher!=null ) 
+				this.searcher.close();
+		} catch (IOException e) {
+			log.debug("Error closing searcher.", e);
+		}
+
 	}
 
 	public LuceneIndexStatistics getStatistics() {
@@ -396,8 +417,14 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	/**
 	 * construct lucene query filter for full text search 'search:all' and 'search:username':
 	 * 
-	 * (mergedfields:searchTerms) [AND user_name:requestedUsername]
-	 *    AND (group:allowedGroup_1 OR ... OR group:allowedGroup_n OR (group:private AND user:userName))  
+	 * (mergedfields:searchTerms OR (privatefields:searchTerms AND user:userName)) 
+	 *   [AND user_name:requestedUsername]
+	 *    AND ( 
+	 *          group:allowedGroup_1 OR ... OR group:allowedGroup_n 
+	 *          OR (group:private AND user:userName)
+	 *        )  
+	 *        
+	 * FIXME: merge buildFulltextQuery and buildGroupSearchQuery
 	 * 
 	 * @param group group name from which posts should be searched
 	 * @param searchTerms search query
@@ -413,12 +440,26 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		String orderBy = FLD_DATE; 
 		
 		BooleanQuery mainQuery       = new BooleanQuery();
+		BooleanQuery searchQuery     = new BooleanQuery();
 		BooleanQuery accessModeQuery = new BooleanQuery();
 		BooleanQuery privatePostQuery= new BooleanQuery();
+		
 		//--------------------------------------------------------------------
 		// search terms
 		//--------------------------------------------------------------------
-		Query searchTermQuery = parseSearchQuery(searchTerms);
+		Query searchTermQuery = parseSearchQuery(FLD_MERGEDFIELDS, searchTerms);
+		searchQuery.add(searchTermQuery, Occur.SHOULD);
+
+		//--------------------------------------------------------------------
+		// private search fields
+		//--------------------------------------------------------------------
+		if( ValidationUtils.present(userName) ) {
+			BooleanQuery privateSearchQuery = new BooleanQuery();
+			Query privateSearchTermQuery    = parseSearchQuery(FLD_PRIVATEFIELDS, searchTerms);
+			privateSearchQuery.add(privateSearchTermQuery, Occur.MUST);
+			privateSearchQuery.add(new TermQuery(new Term(FLD_USER, userName)), Occur.MUST);
+			searchQuery.add(privateSearchQuery, Occur.SHOULD);
+		}
 		
 		//--------------------------------------------------------------------
 		// allowed groups
@@ -432,10 +473,14 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		// private post query
 		//--------------------------------------------------------------------
 		if( ValidationUtils.present(userName) ) {
-			privatePostQuery.add(new TermQuery(new Term(FLD_GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.MUST);
+			BooleanQuery privatePostGroups = new BooleanQuery();
+			privatePostGroups.add(new TermQuery(new Term(FLD_GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.SHOULD);
+			privatePostGroups.add(new TermQuery(new Term(FLD_GROUP, GroupID.FRIENDS.name().toLowerCase())), Occur.SHOULD);
+			privatePostQuery.add(privatePostGroups, Occur.MUST);
 			privatePostQuery.add(new TermQuery(new Term(FLD_USER, userName)), Occur.MUST);
 			accessModeQuery.add(privatePostQuery, Occur.SHOULD);
 		}
+
 		//--------------------------------------------------------------------
 		// post owned by user
 		//--------------------------------------------------------------------
@@ -456,8 +501,9 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		//--------------------------------------------------------------------
 		// build final query
 		//--------------------------------------------------------------------
-		mainQuery.add(searchTermQuery, Occur.MUST);
-		mainQuery.add(accessModeQuery, Occur.MUST);
+		mainQuery.add(searchQuery, Occur.MUST);
+		if( !(ValidationUtils.present(userName) && userName.equals(requestedUserName)) )
+			mainQuery.add(accessModeQuery, Occur.MUST);
 		
 		log.debug("[Full text] Search query: " + mainQuery.toString());
 
@@ -510,13 +556,16 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	/**
 	 * construct lucene query filter for full text search 'search:group'
 	 * 
-	 * (mergedfields:searchTerms) 
+	 * (mergedfields:searchTerms OR (privatefields:searchTerm AND user_name:userName)) 
 	 *    AND (user_name:groupMember_1 OR ... OR user_name:groupMember_n)
 	 *    AND (
 	 *       group:allowedGroup_1 OR ... OR group:allowedGroup_n OR 
-	 *       (group:private AND (user_name:userName OR user_name:groupFriend_1 OR ... OR user_name:groupFriend_n))
+	 *       (group:private AND user_name:userName) OR
+	 *       (group:friends AND (user_name:groupFriend_1 OR ... OR user_name:groupFriend_n))
 	 *    )  
 	 * 
+	 * FIXME: merge buildFulltextQuery and buildGroupSearchQuery
+
 	 * @param groupName the group to search 
 	 * @param visibleGroups list of group names the user is member of 
 	 * @param userGroupFriends list of users which are group members and have the user as friend 
@@ -538,13 +587,26 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		//	String orderBy = "relevance"; 
 		String orderBy = FLD_DATE;
 
-		BooleanQuery mainQuery       = new BooleanQuery();
+		BooleanQuery mainQuery        = new BooleanQuery();
+		BooleanQuery searchQuery      = new BooleanQuery();
 		BooleanQuery groupMemberQuery = new BooleanQuery();
-		BooleanQuery accessModeQuery = new BooleanQuery();
+		BooleanQuery accessModeQuery  = new BooleanQuery();
 		//--------------------------------------------------------------------
 		// search terms
 		//--------------------------------------------------------------------
-		Query searchTermQuery = parseSearchQuery(search);
+		Query searchTermQuery = parseSearchQuery(FLD_MERGEDFIELDS, search);
+		searchQuery.add(searchTermQuery, Occur.SHOULD);
+		
+		//--------------------------------------------------------------------
+		// private search fields
+		//--------------------------------------------------------------------
+		if( ValidationUtils.present(authUserName) ) {
+			BooleanQuery privateSearchQuery = new BooleanQuery();
+			Query privateSearchTermQuery    = parseSearchQuery(FLD_PRIVATEFIELDS, search);
+			privateSearchQuery.add(privateSearchTermQuery, Occur.MUST);
+			privateSearchQuery.add(new TermQuery(new Term(FLD_USER, authUserName)), Occur.MUST);
+			searchQuery.add(privateSearchQuery, Occur.SHOULD);
+		}
 		
 		//--------------------------------------------------------------------
 		// restrict to group members
@@ -567,23 +629,31 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		//--------------------------------------------------------------------
 		if( ValidationUtils.present(authUserName) ) {
 			BooleanQuery privatePostQuery= new BooleanQuery();
-			privatePostQuery.add(new TermQuery(new Term(FLD_GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.MUST);
+			BooleanQuery privatePostGroups = new BooleanQuery();
+			privatePostGroups.add(new TermQuery(new Term(FLD_GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.SHOULD);
+			privatePostGroups.add(new TermQuery(new Term(FLD_GROUP, GroupID.FRIENDS.name().toLowerCase())), Occur.SHOULD);
+			privatePostQuery.add(privatePostGroups, Occur.MUST);
+			privatePostQuery.add(new TermQuery(new Term(FLD_USER, authUserName)), Occur.MUST);
+			accessModeQuery.add(privatePostQuery, Occur.SHOULD);
+		}
+		if( ValidationUtils.present(userGroupFriends) ) {
+			BooleanQuery friendPostQuery= new BooleanQuery();
+			friendPostQuery.add(new TermQuery(new Term(FLD_GROUP, GroupID.FRIENDS.name().toLowerCase())), Occur.MUST);
 
-			BooleanQuery privatePostAllowanceQuery= new BooleanQuery();
-			// the post's owner may read the private post 
-			privatePostAllowanceQuery.add(new TermQuery(new Term(FLD_USER, authUserName)), Occur.SHOULD);
+			BooleanQuery friendPostAllowanceQuery= new BooleanQuery();
 			// the post's owner's friend may read the post
 			for( String friend : userGroupFriends ) {
-				privatePostAllowanceQuery.add(new TermQuery(new Term(FLD_USER, friend)), Occur.SHOULD);
+				friendPostAllowanceQuery.add(new TermQuery(new Term(FLD_USER, friend)), Occur.SHOULD);
 			}
 
-			privatePostQuery.add(privatePostAllowanceQuery, Occur.MUST);
-			accessModeQuery.add(privatePostQuery, Occur.SHOULD);
+			friendPostQuery.add(friendPostAllowanceQuery, Occur.MUST);
+			accessModeQuery.add(friendPostQuery, Occur.SHOULD);
 		}		
+		
 		//--------------------------------------------------------------------
 		// build final query
 		//--------------------------------------------------------------------
-		mainQuery.add(searchTermQuery, Occur.MUST);
+		mainQuery.add(searchQuery, Occur.MUST);
 		mainQuery.add(groupMemberQuery, Occur.MUST);
 		mainQuery.add(accessModeQuery, Occur.MUST);
 		
@@ -639,12 +709,13 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	/**
 	 * build full text query for given query string
 	 * 
+	 * @param fieldName
 	 * @param searchTerms
 	 * @return
 	 */
-	private Query parseSearchQuery(String searchTerms) {
+	private Query parseSearchQuery(String fieldName, String searchTerms) {
 		// parse search terms for handling phrase search
-		QueryParser searchTermParser = new QueryParser(LUCENE_24, FLD_MERGEDFIELDS, getAnalyzer());
+		QueryParser searchTermParser = new QueryParser(LUCENE_24, fieldName, getAnalyzer());
 		// FIXME: configure default operator via spring
 		searchTermParser.setDefaultOperator(getDefaultSearchTermJunctor());
 		Query searchTermQuery = null;
@@ -653,7 +724,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			searchTerms = searchTerms.replace(CFG_LUCENE_FIELD_SPECIFIER, "\\"+CFG_LUCENE_FIELD_SPECIFIER);
 			searchTermQuery = searchTermParser.parse(searchTerms);
 		} catch (ParseException e) {
-			searchTermQuery = new TermQuery(new Term(FLD_MERGEDFIELDS, searchTerms) );
+			searchTermQuery = new TermQuery(new Term(fieldName, searchTerms) );
 		}
 		return searchTermQuery;
 	}	
@@ -705,6 +776,14 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 
 	public LuceneResourceConverter<R> getResourceConverter() {
 		return resourceConverter;
+	}
+
+	public void setIndexId(int indexId) {
+		this.indexId = indexId;
+	}
+
+	public int getIndexId() {
+		return indexId;
 	}
 
 

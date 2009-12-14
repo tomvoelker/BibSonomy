@@ -48,11 +48,16 @@ public class LuceneCommandLine extends LuceneBase {
 	}
 
 	private void doQuerying() throws Exception {
-		String luceneIndexPath = getIndexBasePath() + "lucene_BibTex";
-		Directory indexDirectory = FSDirectory.open(new File(luceneIndexPath));
-		IndexReader indexReader = IndexReader.open(indexDirectory, false);
-		IndexSearcher searcher = new IndexSearcher(indexReader);
-		
+		String bibTexIndexPath = getIndexBasePath() + "lucene_BibTex" + CFG_INDEX_ID_DELIMITER + "0";
+		Directory bibTexDirectory = FSDirectory.open(new File(bibTexIndexPath));
+		IndexReader bibTexReader = IndexReader.open(bibTexDirectory, false);
+		IndexSearcher bibTexSearcher = new IndexSearcher(bibTexReader);
+
+		String bookmarkIndexPath = getIndexBasePath() + "lucene_Bookmark" + CFG_INDEX_ID_DELIMITER + "0";
+		Directory bookmarkDirectory = FSDirectory.open(new File(bookmarkIndexPath));
+		IndexReader bookmarkReader = IndexReader.open(bookmarkDirectory, false);
+		IndexSearcher bookmarkSearcher = new IndexSearcher(bookmarkReader);
+
 		SortField sortField = new SortField("last_tas_id",SortField.INT,true);
 		Sort sort = new Sort(sortField);
 
@@ -60,40 +65,44 @@ public class LuceneCommandLine extends LuceneBase {
 		while( !"!quit".equals(searchTerms) ) {
 			System.out.print("Query: ");
 			searchTerms = readStdIn();
-
-			if( !"!quit".equals(searchTerms) ) {
-				long queryTimeMs = System.currentTimeMillis();
-				Query searchQuery = parseSearchQuery(searchTerms);
-				queryTimeMs = System.currentTimeMillis() - queryTimeMs;
-				//------------------------------------------------------------
-				// query the index
-				//------------------------------------------------------------
-				Document doc     = null;
-				try {
-					TopDocs topDocs  = null;
-					topDocs = searcher.search(searchQuery, null, 100, sort);
-					for( int i=0; i<topDocs.totalHits; i++ ) {
-						doc = searcher.doc(topDocs.scoreDocs[i].doc);
-						System.out.println("Document["+i+"]:");
-						List<Fieldable> fields = doc.getFields();
-						for(Fieldable field : fields ) {
-							System.out.println("  "+field.name()+":\t"+doc.getField(field.name()));
-						}
-					}
-				} catch (Exception e) {
-					log.error("Error reading index file " + luceneIndexPath + "("+e.getMessage()+")");
-				} finally {
-					try {
-						searcher.close();
-					} catch (IOException e) {
-						log.error("Error closing index "+luceneIndexPath+" for searching", e);
-					}
-				}
-				System.out.println("Query time: "+queryTimeMs);
-			}
+			
+			doSearching(bookmarkSearcher, sort, searchTerms);
+			doSearching(bibTexSearcher, sort, searchTerms);
 		}
 	}
 	
+	private void doSearching(IndexSearcher searcher, Sort sort, String searchTerms) {
+		if( !"!quit".equals(searchTerms) ) {
+			long queryTimeMs = System.currentTimeMillis();
+			Query searchQuery = parseSearchQuery(searchTerms);
+			queryTimeMs = System.currentTimeMillis() - queryTimeMs;
+			//------------------------------------------------------------
+			// query the index
+			//------------------------------------------------------------
+			Document doc     = null;
+			try {
+				TopDocs topDocs  = null;
+				topDocs = searcher.search(searchQuery, null, 100, sort);
+				for( int i=0; i<topDocs.totalHits; i++ ) {
+					doc = searcher.doc(topDocs.scoreDocs[i].doc);
+					System.out.println("Document["+i+"]:");
+					List<Fieldable> fields = doc.getFields();
+					for(Fieldable field : fields ) {
+						System.out.println("  "+field.name()+":\t"+doc.getField(field.name()));
+					}
+				}
+			} catch (Exception e) {
+				log.error("Error reading index file ("+e.getMessage()+")");
+			} finally {
+				try {
+					searcher.close();
+				} catch (IOException e) {
+					log.error("Error closing index for searching", e);
+				}
+			}
+			System.out.println("Query time: "+queryTimeMs);
+		}
+	}
 	
 	private String readStdIn() {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));

@@ -10,22 +10,14 @@ import org.bibsonomy.model.Resource;
  *
  */
 public class LuceneBookmarkIndex extends LuceneResourceIndex<Bookmark> {
-	/** singleton instance */
-	protected static LuceneResourceIndex<Bookmark> instance;
-	
+
+	protected LuceneBookmarkIndex(int indexId) {
+		super(indexId);
+	}
 
 	@Override
 	protected Class<? extends Resource> getResourceType() {
 		return Bookmark.class;
-	}
-
-	/**
-	 * singleton pattern
-	 * @return
-	 */
-	public static LuceneResourceIndex<Bookmark> getInstance() {
-		if (instance == null) instance = new LuceneBookmarkIndex();
-		return instance;
 	}
 
 }

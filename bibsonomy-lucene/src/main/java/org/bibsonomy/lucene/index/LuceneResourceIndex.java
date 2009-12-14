@@ -3,6 +3,7 @@ package org.bibsonomy.lucene.index;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,21 +85,34 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	/** flag indicating whether the index was cleanly initialized */
 	private boolean isReady = false;
 	
+	/** id for identifying redundant resource indeces */
+	private int indexId;
+	
+	/** keeps track of the newest log_date during last index update */
+	private Long lastLogDate;
+	
+	/** keeps track of the newest tas_id during last index update */
+	private Integer lastTasId;
+	
 	/**
 	 * constructor disabled
 	 */
-	protected LuceneResourceIndex(){
+	protected LuceneResourceIndex(int indexId){
+		// init data structures
+		this.contentIdsToDelete = new LinkedList<Integer>();
+		this.postsToInsert      = new TreeSet<Document>(new DocumentCacheComparator());
+		this.usersToFlag        = new TreeSet<String>();
+		this.optimizeIndex      = false;
+		
+		this.indexId            = indexId;
+		this.lastLogDate        = null;
+		this.lastTasId          = null;
+
 		try {
 			init();
 		} catch (Exception e) {
 			disableIndex();
 		}
-		
-		// init data structures
-		contentIdsToDelete = new LinkedList<Integer>();
-		postsToInsert      = new TreeSet<Document>(new DocumentCacheComparator());
-		usersToFlag        = new TreeSet<String>();
-		optimizeIndex      = false;
 	};
 	
 
@@ -110,7 +124,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 */
 	private void init() throws IOException {
 		LuceneBase.initRuntimeConfiguration();
-		this.luceneIndexPath = getIndexBasePath()+CFG_LUCENE_INDEX_PREFIX+getResourceName();
+		this.luceneIndexPath = getIndexBasePath()+CFG_LUCENE_INDEX_PREFIX+getResourceName()+CFG_INDEX_ID_DELIMITER+getIndexId();
 
 		indexDirectory = FSDirectory.open(new File(luceneIndexPath));
 		try {
@@ -141,9 +155,12 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 * @return
 	 */
 	public long getLastLogDate() {
+		// FIXME: this synchronisation is very inefficient 
 		synchronized(this) {
 			if( !isIndexEnabled() ) {
 				return Long.MAX_VALUE;
+			} else if( this.lastLogDate!=null ) {
+				// return this.lastLogDate;
 			}
 			
 			//----------------------------------------------------------------
@@ -175,6 +192,14 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	}
 	
 	/**
+	 * set newest log_date[ms] 
+	 */
+	public void setLastLogDate(long lastLogDate) {
+		this.lastLogDate = lastLogDate;
+	}
+	
+	
+	/**
 	 * get newest tas_id from index
 	 * @return
 	 */
@@ -182,6 +207,8 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 		synchronized(this) {
 			if( !isIndexEnabled() ) {
 				return Integer.MAX_VALUE;
+			} else if( this.lastTasId!=null ) {
+				//return this.lastTasId;
 			}
 			
 			//----------------------------------------------------------------
@@ -209,6 +236,13 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 			else
 				return Integer.MAX_VALUE;
 		}
+	}
+	
+	/** 
+	 * set newest tas_id
+	 */
+	public void setLastTasId(Integer lastTasId) {
+		this.lastTasId = lastTasId;
 	}
 	
 	/**
@@ -469,9 +503,10 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 		try {
 			TopDocs topDocs  = null;
 			topDocs = searcher.search(searchQuery, null, hitsPerPage, ordering);
-			doc = searcher.doc(topDocs.scoreDocs[0].doc);
+			if( topDocs.totalHits>0 )
+				doc = searcher.doc(topDocs.scoreDocs[0].doc);
 		} catch (Exception e) {
-			log.error("Error reading index file " + this.luceneIndexPath);
+			log.error("Error performing index search in file " + this.luceneIndexPath, e);
 		} finally {
 			try {
 				searcher.close();
@@ -661,5 +696,13 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 
 	public Analyzer getAnalyzer() {
 		return analyzer;
+	}
+
+	public void setIndexId(int indexId) {
+		this.indexId = indexId;
+	}
+
+	public int getIndexId() {
+		return this.indexId;
 	}
 }
