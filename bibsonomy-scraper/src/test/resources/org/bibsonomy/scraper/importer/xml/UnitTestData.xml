@@ -964,5 +964,19 @@
 		<URL>http://papers.ssrn.com/sol3/papers.cfm?abstract_id=620245</URL>
 		<BibFile>SSRNScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper</Scraper>
-	</URLTest>		
+	</URLTest>	
+	<URLTest id="url_166">
+		<TestDescription>Test for ISBN amazon scraper</TestDescription>
+		<URL></URL>
+		<BibFile>ISBNScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.id.kde.isbn.ISBNScraper</Scraper>
+		<Selection>9783404201600</Selection>
+	</URLTest>
+	<URLTest id="url_167">
+		<TestDescription>Test for ISBN worldcat scraper</TestDescription>
+		<URL></URL>
+		<BibFile>ISBNScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.id.kde.isbn.ISBNScraper</Scraper>
+		<Selection>9780387485300</Selection>
+	</URLTest>
 </test:Tests>

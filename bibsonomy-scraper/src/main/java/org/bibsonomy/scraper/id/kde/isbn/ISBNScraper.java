@@ -32,6 +32,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
 import org.bibsonomy.util.id.ISBNUtils;
 
@@ -59,14 +60,18 @@ public class ISBNScraper implements Scraper {
 
 			if (isbn != null) {
 				try {
-					final String bibtex = WorldCatScraper.getBibtexByISBN(isbn);
-
+					String bibtex = WorldCatScraper.getBibtexByISBN(isbn);
+					
+					if (bibtex == null) {
+						bibtex = AmazonScraper.getBibtexByISBN(isbn);
+					}
+					
 					if(bibtex != null) {
 						sc.setBibtexResult(bibtex);
 						sc.setScraper(this);
 						return true;
 					} else
-						throw new ScrapingFailureException("bibtex download from worldcat failed");
+						throw new ScrapingFailureException("bibtex download from worldcat / amazon failed");
 				} catch (final IOException ex) {
 					throw new InternalFailureException(ex);
 				}

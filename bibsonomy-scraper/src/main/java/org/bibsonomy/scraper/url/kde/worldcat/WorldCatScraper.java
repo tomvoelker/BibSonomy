@@ -125,12 +125,17 @@ public class WorldCatScraper extends AbstractUrlScraper {
 		else
 			exportUrl = publUrl.getProtocol() + "://" + publUrl.getHost() + publUrl.getPath() + "?page=endnote&client=worldcat.org-detailed_record";
 
-		final String endnote = WebUtils.getContentAsString(new URL(exportUrl));
+		final String ris = WebUtils.getContentAsString(new URL(exportUrl));
 
+		if (!ris.startsWith("TY")) {
+			return null;
+		}
+		
 		/*
 		 * convert RIS to BibTeX
 		 */
-		final String bibtex = converter.RisToBibtex(endnote);
+		final String bibtex = converter.RisToBibtex(ris);
+		
 		/*
 		 * add URL
 		 */

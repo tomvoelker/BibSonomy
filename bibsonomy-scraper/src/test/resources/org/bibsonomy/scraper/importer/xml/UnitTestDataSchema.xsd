@@ -24,6 +24,8 @@
     		<xsd:element name="Enabled" type="xsd:boolean" maxOccurs="1" minOccurs="0" />
     		<!-- optional description -->
     		<xsd:element name="Description" type="xsd:string" maxOccurs="1" minOccurs="0" />
+    		<!-- optional selected text -->
+    		<xsd:element name="Selection" type="xsd:string" maxOccurs="1" minOccurs="0" />
     	</xsd:sequence>
     	<xsd:attribute name="id" type="xsd:string"/>
 	</xsd:complexType>

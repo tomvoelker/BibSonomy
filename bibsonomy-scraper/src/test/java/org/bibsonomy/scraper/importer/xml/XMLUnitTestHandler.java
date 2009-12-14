@@ -53,10 +53,11 @@ public class XMLUnitTestHandler extends DefaultHandler {
 	private static final String ELEMENT_BIB_FILE = "BibFile";
 	private static final String ELEMENT_SCRAPER = "Scraper";
 	private static final String ELEMENT_ENABLED = "Enabled";
+	private static final Object ELEMENT_SELECTION = "Selection";
 	private static final String ATTRIBUTE_ID = "id";
 	
 	private static final String PATH_TO_BIBS = "org/bibsonomy/scraper/data/";
-	
+
 	private LinkedList<ScraperUnitTest> tests = null;
 	
 	private URLScraperUnitTest currentTest = null;
@@ -111,6 +112,10 @@ public class XMLUnitTestHandler extends DefaultHandler {
 			if (charBuffer.toString().equals("false")) {
 				currentTest.setEnabled(false);
 			}
+			charBuffer = null;
+		} else if (localName.equals(ELEMENT_SELECTION)) {
+			currentTest.setSelection(charBuffer.toString());
+			charBuffer = null;
 		} else if (localName.equals(ELEMENT_SCRAPER)) {
 			Scraper scraper;
 			try {
@@ -134,18 +139,20 @@ public class XMLUnitTestHandler extends DefaultHandler {
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 		super.startElement(uri, localName, qName, attributes);
 		
-		if(localName.equals(ELEMENT_URL_TEST)){
+		if (localName.equals(ELEMENT_URL_TEST)) {
 			currentTest = new URLScraperUnitTest();
 			currentTest.setId(attributes.getValue(ATTRIBUTE_ID));
-		}else if(localName.equals(ELEMENT_Test_DESCRIPTION)){
+		} else if (localName.equals(ELEMENT_Test_DESCRIPTION)) {
 			charBuffer = new StringBuffer();
-		}else if(localName.equals(ELEMENT_URL)){
+		} else if (localName.equals(ELEMENT_URL)) {
 			charBuffer = new StringBuffer();
-		}else if(localName.equals(ELEMENT_BIB_FILE)){
+		} else if (localName.equals(ELEMENT_BIB_FILE)) {
 			charBuffer = new StringBuffer();
-		}else if(localName.equals(ELEMENT_SCRAPER)){
+		} else if (localName.equals(ELEMENT_SCRAPER)) {
 			charBuffer = new StringBuffer();
-		}else if(localName.equals(ELEMENT_ENABLED)){
+		} else if (localName.equals(ELEMENT_ENABLED)) {
+			charBuffer = new StringBuffer();
+		} else if (localName.equals(ELEMENT_SELECTION)) {
 			charBuffer = new StringBuffer();
 		}
 	}

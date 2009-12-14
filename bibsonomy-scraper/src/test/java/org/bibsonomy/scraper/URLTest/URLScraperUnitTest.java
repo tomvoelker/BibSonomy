@@ -69,6 +69,7 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	private String scrapedReference = null;
 	private String id = null;
 	private String bibFile = null;
+	private String selection = null;
 	private boolean enabled = true;
 	private Exception exception = null;
 	
@@ -117,6 +118,10 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 		ScrapingContext testSC = new ScrapingContext(testURL);
 		// check if result is valid bibtex
 		boolean bibtexValid = false;
+		
+		if (selection != null) {
+			testSC.setSelectedText(selection);
+		}
 		
 		// scrape
 		try {
@@ -364,6 +369,21 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	 */
 	public void setScrapedReference(String scrapedReference) {
 		this.scrapedReference = scrapedReference;
+	}
+
+	/**
+	 * sets the selected text (e.g. an isbn)
+	 * @param selection
+	 */
+	public void setSelection(String selection) {
+		this.selection = selection;
+	}
+
+	/**
+	 * @return selection
+	 */
+	public String getSelection() {
+		return selection;
 	}
 	
 }

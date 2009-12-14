@@ -23,18 +23,40 @@
 
 package org.bibsonomy.scraper.id.kde.isbn;
 
+import static org.junit.Assert.assertTrue;
+
+import org.bibsonomy.scraper.UnitTestRunner;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Tests for ISBNScraper class (no url test)
+ * Tests for ISBNScraper class and #166 #167
  * @author tst
  * @version $Id$
  */
 public class ISBNScraperTest {
 
-
+	/**
+	 * starts URL test with id url_166
+	 */
+	@Test
+	@Ignore
+	public void url1TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_166"));
+	}
 	
+	/**
+	 * starts URL test with id url_167
+	 */
+	@Test
+	@Ignore
+	public void url2TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_167"));
+	}
+
 	/**
 	 * Tests {@link ISBNScraper#supportsScrapingContext(org.bibsonomy.scraper.ScrapingContext)}
 	 */
