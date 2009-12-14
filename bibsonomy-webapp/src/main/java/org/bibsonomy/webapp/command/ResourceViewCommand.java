@@ -25,6 +25,7 @@ public class ResourceViewCommand extends BaseCommand {
 	private String sortPage = "none";
 	private String sortPageOrder = "asc";
 	private String duplicates = "yes";
+	private String applicationName = "";
 	private boolean notags = false;
 	
 	/**
@@ -189,5 +190,13 @@ public class ResourceViewCommand extends BaseCommand {
 	
 	public Boolean isPersonalized() {
 		return personalized;
+	}
+
+	public void setApplicationName(String applicationName) {
+		this.applicationName = applicationName;
+	}
+
+	public String getApplicationName() {
+		return applicationName;
 	}
 }

@@ -27,7 +27,7 @@ public class LdapUserinfo {
 	private String userId = ""; 
 	private String sureName = ""; 
 	private String firstName = ""; 
-	private String eMail = ""; 
+	private String email = ""; 
 	private String location = "";
 	private String passwordPicaHash = "";
 
@@ -184,8 +184,8 @@ public class LdapUserinfo {
 	/**
 	 * @return eMail
 	 */
-	public String geteMail() {
-		return this.eMail;
+	public String getEmail() {
+		return this.email;
 	}
 
 	/**  
@@ -193,9 +193,9 @@ public class LdapUserinfo {
 	 * Converts Attribute to String
 	 * @param eMail 
 	 */
-	public void seteMail(String eMail) {
-		if (null==eMail) eMail="";
-		this.eMail = eMail;
+	public void setEmail(String email) {
+		if (null==email) email="";
+		this.email = email;
 	}
 
 	/**  
@@ -203,14 +203,14 @@ public class LdapUserinfo {
 	 * Converts Attribute to String
 	 * @param eMail 
 	 */
-	public void seteMail(Attribute eMail) {
-		String eMailS = "";
-		if (null!=eMail) try {
-			eMailS = eMail.get().toString();
+	public void setEmail(Attribute email) {
+		String emailS = "";
+		if (null!=email) try {
+			emailS = email.get().toString();
 		} catch (NamingException ex) {
 			log.error("NamingException in " + this.getClass().getName() + " (seteMail): " + ex.getMessage());
 		}
-		this.seteMail(eMailS);
+		this.setEmail(emailS);
 	} 
 	
 	/**

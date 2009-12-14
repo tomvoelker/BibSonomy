@@ -303,7 +303,7 @@ public enum Views implements View {
 	 * OpenID register form prefilled with information from 
 	 * the OpenID provider
 	 */
-	REGISTER_USER_LDAP_PROVIDER_FORM("actions/register/ldap/provider_form"),
+	REGISTER_USER_LDAP_FORM("actions/register/ldap/provider_form"),
 	
 	/**
 	 * After a user has successfully registered using OpenID, he will see this view.

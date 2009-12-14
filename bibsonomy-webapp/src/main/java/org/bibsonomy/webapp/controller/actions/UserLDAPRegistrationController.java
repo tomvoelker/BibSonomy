@@ -28,39 +28,41 @@ import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
 /**
- * This controller handles the registration of users via Ldap
- * (see http://openid.net/)
+ * This controller handles the registration of users via Ldap (see
+ * http://openid.net/)
  * 
  * @author Sven Stefani
- * @version $Id$
+ * @version $Id: UserLDAPRegistrationController.java,v 1.1 2009-12-07 10:08:38
+ *          sven Exp $
  */
-public class UserLDAPRegistrationController implements MinimalisticController<UserLDAPRegistrationCommand>, ErrorAware, ValidationAwareController<UserLDAPRegistrationCommand>, RequestAware, CookieAware{
+public class UserLDAPRegistrationController implements MinimalisticController<UserLDAPRegistrationCommand>, ErrorAware, ValidationAwareController<UserLDAPRegistrationCommand>, RequestAware, CookieAware {
 
 	protected LogicInterface logic;
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
 	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
-//	private Ldap ldapLogic;
-	
+	// private Ldap ldapLogic;
+
 	private String projectHome;
-	
+
 	/**
-	 * After successful registration, the user is redirected to this page. 
+	 * After successful registration, the user is redirected to this page.
 	 */
 	private String successRedirect = "";
-	
+
 	private static final Log log = LogFactory.getLog(UserLDAPRegistrationController.class);
 
 	public View workOn(UserLDAPRegistrationCommand command) {
 		log.debug("workOn() called");
 
 		command.setPageTitle("LDAP registration");
-		
+
 		final RequestWrapperContext context = command.getContext();
 		final User loginUser = context.getLoginUser();
-		
-		/* Check user role
+
+		/*
+		 * Check user role
 		 * 
 		 * If user is logged in and not an admin: show error message
 		 */
@@ -73,58 +75,61 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 			log.info("an error occoured: " + errors.toString());
 			return Views.REGISTER_USER_LDAP;
 		}
-		
+
 		/*
-		 * Registration steps 
+		 * Registration steps
 		 */
-		if (command.getStep() == 1) {			
-			
+		if (command.getStep() == 1) {
+
 			log.debug("step 1: fill form (username/password)");
 			/*
 			 * show form to enter Ldap
-			 */			
+			 */
 			return Views.REGISTER_USER_LDAP;
 		} else if (command.getStep() == 2) {
-		
+			Views returnView = Views.REGISTER_USER_LDAP;
 			log.debug("step 2: show registration form");
-			
+
 			// check credentials
 			Ldap ldap = new Ldap();
 			LdapUserinfo ldapUserinfo = new LdapUserinfo();
 			log.info("Trying to login user " + requestLogic.getParameter("registerUser.name") + " via LDAP");
-	        ldapUserinfo = ldap.checkauth(requestLogic.getParameter("registerUser.name"), requestLogic.getParameter("registerUser.password"));
-			
-			if (null == ldapUserinfo)
-			{			
+			ldapUserinfo = ldap.checkauth(requestLogic.getParameter("registerUser.name"), requestLogic.getParameter("registerUser.password"));
+
+			if (null == ldapUserinfo) {
 				log.info("Login check for registering failed for user " + requestLogic.getParameter("registerUser.name") + " via LDAP");
 				// if login failed, return to step 1 - show REGISTER_USER_LDAP
-				
+
 				// set some error messages
 				errors.rejectValue("registerUser.loginmessage", "error.login.failed");
-				
-				
-				return Views.REGISTER_USER_LDAP;
-			}
-			else
-			{
+				returnView = Views.REGISTER_USER_LDAP;
+			} else {
 				// if login was successful, insert ldap data to command
 				log.info("Login check for registering succeeded for user " + requestLogic.getParameter("registerUser.name") + " via LDAP");
-				
-				System.out.println(ldapUserinfo.toString());
-				
+				System.out.println("UserLDAPRegistration:: " + ldapUserinfo.toString());
+
+				command.getRegisterUser().setName(ldapUserinfo.getSureName().toLowerCase());
+				command.getRegisterUser().setEmail(ldapUserinfo.getEmail());
+				command.getRegisterUser().setRealname(ldapUserinfo.getFirstName() + " " + ldapUserinfo.getSureName());
+				// command.getRegisterUser().setGender(ldapUserinfo.);
+				command.getRegisterUser().setPlace(ldapUserinfo.getLocation());
+				command.getRegisterUser().setLdapUid(ldapUserinfo.getUserId());
+				returnView = Views.REGISTER_USER_LDAP_FORM;
 			}
 
-			return Views.REGISTER_USER_LDAP_PROVIDER_FORM;
+			return returnView;
 		} else if (command.getStep() == 4) {
-			
+
 			log.debug("step 4: complete Ldap registration");
 			/*
 			 * complete registration process and save user to database
 			 */
-						
-			/* Check cookies
+
+			/*
+			 * Check cookies
 			 * 
-			 * Check, if user has cookies enabled (there should be at least a "JSESSIONID" cookie)
+			 * Check, if user has cookies enabled (there should be at least a
+			 * "JSESSIONID" cookie)
 			 */
 			if (!cookieLogic.containsCookies()) {
 				errors.reject("error.cookies_required");
@@ -135,12 +140,10 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 			 */
 			final User registerUser = command.getRegisterUser();
 
-
 			/*
 			 * Get the hosts IP address.
 			 */
 			final String inetAddress = requestLogic.getInetAddress();
-
 
 			/*
 			 * If user is an admin, he must provide a valid ckey!
@@ -149,7 +152,7 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 			if (adminAccess && !context.isValidCkey()) {
 				errors.reject("error.field.valid.ckey");
 			}
-			
+
 			/*
 			 * check, if user name already exists
 			 */
@@ -159,8 +162,7 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 				 */
 				errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
 			}
-			
-			
+
 			/*
 			 * return to form until validation passes
 			 */
@@ -174,8 +176,8 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 			log.debug("validation passed with " + errors.getErrorCount() + " errors, proceeding to access database");
 
 			/*
-			 * if the user is not logged in, we need an instance of the logic interface
-			 * with admin access 
+			 * if the user is not logged in, we need an instance of the logic
+			 * interface with admin access
 			 */
 			if (!context.isUserLoggedIn()) {
 				this.logic = this.adminLogic;
@@ -187,30 +189,32 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 			registerUser.setIPAddress(inetAddress);
 
 			/*
-			 * generate random password 
+			 * generate random password
 			 * 
 			 * TODO: choose better random pw
 			 */
 			String password = StringUtils.getMD5Hash(registerUser.getName() + "OPENID_");
 			registerUser.setPassword(password);
-						
+
 			/*
 			 * create user in DB
 			 */
-			logic.createUser(registerUser);		
-			
+			logic.createUser(registerUser);
+
 			/*
 			 * log user into system
 			 */
-//			cookieLogic.addLdapCookie(registerUser.getName(), command.getRegisterUser().getLdap(), registerUser.getPassword());
-//			ldapLogic.extendLdapSession(requestLogic.getSession(),  command.getRegisterUser().getLdap());
-			
+			// cookieLogic.addLdapCookie(registerUser.getName(),
+			// command.getRegisterUser().getLdap(), registerUser.getPassword());
+			// ldapLogic.extendLdapSession(requestLogic.getSession(),
+			// command.getRegisterUser().getLdap());
+
 			/*
 			 * present the success view
 			 */
 			return new ExtendedRedirectView(successRedirect);
 		}
-		
+
 		return Views.REGISTER_USER_OPENID;
 	}
 
@@ -220,35 +224,44 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 		 * add user to command
 		 */
 		userLdapRegistrationCommand.setRegisterUser(new User());
-		return userLdapRegistrationCommand;		
+		return userLdapRegistrationCommand;
 	}
+
 	public Errors getErrors() {
 		return this.errors;
 	}
+
 	public void setErrors(Errors errors) {
 		this.errors = errors;
 	}
+
 	public Validator<UserLDAPRegistrationCommand> getValidator() {
 		return new UserLDAPRegistrationValidator();
 	}
+
 	public boolean isValidationRequired(UserLDAPRegistrationCommand command) {
 		return true;
 	}
+
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
+
 	public void setCookieLogic(CookieLogic cookieLogic) {
 		this.cookieLogic = cookieLogic;
 	}
+
 	/**
-	 * @param logic logic interface
+	 * @param logic
+	 *            logic interface
 	 */
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
 
 	/**
-	 * @param adminLogic - an instance of the logic interface with admin access.
+	 * @param adminLogic
+	 *            - an instance of the logic interface with admin access.
 	 */
 	@Required
 	public void setAdminLogic(LogicInterface adminLogic) {
@@ -258,16 +271,15 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 		 * Check, if logic has admin access.
 		 */
 		Assert.isTrue(Role.ADMIN.equals(this.adminLogic.getAuthenticatedUser().getRole()), "The provided logic interface must have admin access.");
-	}	
+	}
 
 	/**
-	 *  @param ldapLogic - an instance of the Ldap logic
-	public void setLdapLogic(Ldap ldapLogic) {
-		this.ldapLogic = ldapLogic;
-	}	
+	 * @param ldapLogic
+	 *            - an instance of the Ldap logic public void setLdapLogic(Ldap
+	 *            ldapLogic) { this.ldapLogic = ldapLogic; }
 	 */
-	
-	/** 
+
+	/**
 	 * The base URL of the project.
 	 * 
 	 * @param projectHome
@@ -276,11 +288,12 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 		this.projectHome = projectHome;
 	}
 
-	/** 
+	/**
 	 * After successful registration, the user is redirected to this page.
+	 * 
 	 * @param successRedirect
 	 */
 	public void setSuccessRedirect(String successRedirect) {
 		this.successRedirect = successRedirect;
-	}		
+	}
 }

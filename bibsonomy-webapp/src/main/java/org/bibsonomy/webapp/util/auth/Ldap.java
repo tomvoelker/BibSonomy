@@ -118,7 +118,7 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 			ldapMailField = (String) envContext.lookup("ldap/config/mail");
 			ldapLocationField = (String) envContext.lookup("ldap/config/location");
 		} catch (NamingException ex) {
-			log.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
+			log.error("Error when trying to read environment variables 'ldap/config/*' via JNDI.", ex);
 		}
 		
 		String query = "";
@@ -158,7 +158,7 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 	                	ldapUserinfo.setUserId(attribs.get(ldapUserIdField));
 	                	ldapUserinfo.setSureName(attribs.get(ldapSurenameField));
 	                	ldapUserinfo.setFirstName(attribs.get(ldapGivennameField));
-	                	ldapUserinfo.seteMail(attribs.get(ldapMailField));
+	                	ldapUserinfo.setEmail(attribs.get(ldapMailField));
 	                	ldapUserinfo.setLocation(attribs.get(ldapLocationField));
 	                	ldapUserinfo.setPasswordPicaHash(attribs.get(ldapUserPasswordField));
 /*
