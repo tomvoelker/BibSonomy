@@ -71,8 +71,9 @@
 		user_homepage = #homepage#,
 		openurl = #openURL#,
 		profession = #profession#,
-		interests = #interests#
-		hobbies = #hobbies#
+		interests = #interests#,
+		hobbies = #hobbies#,
+		place = #place#
 		WHERE user_name = #name#
 	</update>
 	
