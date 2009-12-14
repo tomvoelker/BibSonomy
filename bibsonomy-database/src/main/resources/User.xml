@@ -62,6 +62,20 @@
 		WHERE user_name = #userName#
 	</select>
 	
+	<update id="updateUserProfile" parameterClass="user">
+		UPDATE user 
+		SET birthday = #birthday#, 
+		user_realname = #realname#,
+		gender = #gender#,
+		user_email = #email#,
+		user_homepage = #homepage#,
+		openurl = #openURL#,
+		profession = #profession#,
+		interests = #interests#
+		hobbies = #hobbies#
+		WHERE user_name = #name#
+	</update>
+	
 	<update id="updateUserSettings" parameterClass="user">
 		UPDATE user 
 		SET log_level = #settings.logLevel#, 
@@ -70,7 +84,8 @@
 		tagbox_tooltip = #settings.tagboxTooltip#,
 		tagbox_minfreq = #settings.tagboxMinfreq#,
 		tagbox_sort = #settings.tagboxSort#,
-		tagbox_style = #settings.tagboxStyle#
+		tagbox_style = #settings.tagboxStyle#,
+		confirmDelete = #settings.confirmDelete#
 		WHERE user_name = #name#
 	</update>
 
