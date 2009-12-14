@@ -1006,8 +1006,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public boolean createPost(final Post<R> post, final DBSession session) {
 		session.beginTransaction();
 		try {
-			//FIXME: change systemTagHandling: SystemTags should be created only once and exist during the whole posting process
-			this.systemTagPerformBefore(session, post, new HashSet<Tag>());
+			List<SystemTag> systemTags = this.getSystemTags(post, new HashSet<Tag>());
+			this.systemTagPerformBefore(session, post, systemTags);
 			final String userName = post.getUser().getName();
 			/*
 			 * the current intra hash of the resource
@@ -1038,8 +1038,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			this.insertPost(post, session);
 			// add the tags
 			this.tagDb.insertTags(post, session);
-			//FIXME: change systemTagHandling: SystemTags should be created only once and exist during the whole posting process
-			this.systemTagPerformAfter(session, post, new HashSet<Tag>());
+			this.systemTagPerformAfter(session, post, systemTags);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -1108,8 +1107,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * perform system tags before action
 			 */
-			//FIXME: change systemTagHandling: SystemTags should be created only once and exist during the whole posting process
-			this.systemTagPerformBefore(session, post, oldPost.getTags());
+			List<SystemTag> systemTags=this.getSystemTags(oldPost, oldPost.getTags());
+			this.systemTagPerformBefore(session, post, systemTags);
 
 			/*
 			 * get posts with the intrahash of the given post to check for possible duplicates 
@@ -1161,8 +1160,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			} else {
 				this.performUpdateAll(post, oldPost, session);
 			}		
-			//FIXME: change systemTagHandling: SystemTags should be created only once and exist during the whole posting process		
-			this.systemTagPerformAfter(session, post, oldPost.getTags());
+			this.systemTagPerformAfter(session, post, systemTags);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -1380,39 +1378,51 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return true;
 	}
 	
+
 	/**
-	 * performs the before action of all system tags of the post
-	 * 
-	 * @param session
+	 * returns a list of all systemTags of a post
+	 * @param alreadyExecutedTags - the list of all tags, that have been executed and therefore shall not be used again
 	 * @param post
-	 * @param alreadyExecutedTags all system tags already executed (during last save or update)
+	 * @return a list 
 	 */
-	private void systemTagPerformBefore(final DBSession session, final Post<?> post, final Set<Tag> alreadyExecutedTags) {
-		SystemTag stt;
+	// FIXME: Find a better way for deactivating systemtags. s.a. 
+	// - a SystemTag knows weather it is active or not and can deactivate itself
+	// - a SystemTag is renamed (and thus inactive) after it has done its job
+	private List<SystemTag> getSystemTags(final Post<?> post, final Set<Tag> alreadyExecutedTags) {
+		List<SystemTag> systemTags = new ArrayList<SystemTag>();
 		for (final Tag tag : post.getTags()) {
-			stt = SystemTagFactory.createExecutableTag(this.dbLogic, this.dbSessionFactory, tag);
-			if (stt != null && !alreadyExecutedTags.contains(stt)) {
-				stt.performBefore(post, session);
+			SystemTag stt = SystemTagFactory.createExecutableTag(this.dbLogic, this.dbSessionFactory, tag);
+			if (present(stt)&& !alreadyExecutedTags.contains(stt)) {
+				systemTags.add(stt);
 			}
 		}
+		return systemTags;
 	}
 
 	/**
-	 * performs the after action of all system tags of the post
+	 * performs the before action of all system tags 
 	 * 
-	 * @param session
-	 * @param post
-	 * @param alreadyExecutedTags  all system tags already executed (during last save or update)
+	 * @param session 
+	 * @param post - the post to which all systemTags belong
+	 * @param systemTags - all the systemTags that are to perform 
 	 */
-	private void systemTagPerformAfter(final DBSession session, final Post<?> post, final Set<Tag> alreadyExecutedTags) {
-		SystemTag stt;
-		for (final Tag tag : post.getTags()) {
-			stt = SystemTagFactory.createExecutableTag(this.dbLogic, this.dbSessionFactory, tag);
-			if (stt != null && !alreadyExecutedTags.contains(stt)) {
-				stt.performAfter(post, session);
-			}
+	private void systemTagPerformBefore(final DBSession session, final Post<?> post, List<SystemTag> systemTags) {
+		for (final SystemTag systemTag : systemTags) {
+				systemTag.performBefore(post, session);
 		}
 	}
+	/**
+	 * performs the after action of all system tags
+	 * 
+	 * @param session
+	 * @param post - the post to which all the systemTags belong
+	 * @param systemTags - all the systemTags that are to perform 
+	 */
+	private void systemTagPerformAfter(final DBSession session, final Post<?> post, final List<SystemTag> systemTags) {
+		for (final SystemTag systemTag : systemTags) {
+			systemTag.performAfter(post, session);
+	}
+}
 
 	/**
 	 * called when a post was deleted successfully
