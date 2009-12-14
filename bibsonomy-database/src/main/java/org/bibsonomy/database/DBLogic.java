@@ -1067,6 +1067,9 @@ public class DBLogic implements LogicInterface {
 				} else if (operation.equals(UserUpdateOperation.UPDATE_API)) {
 
 					this.userDBManager.updateApiKeyForUser(user.getName(), session);
+				} else if(operation.equals(UserUpdateOperation.UPDATE_CORE)) {
+					
+					updatedUser = this.userDBManager.updateUserProfile(user, session);
 				}
 			} finally {
 				session.close();
