@@ -156,6 +156,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateUserSettings", user, session);
 		return user.getName();
 	}
+	
+	public String updateUserProfile(User user, final DBSession session) {
+		if (this.getUserDetails(user.getName(), session).getName() == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user profile for nonexistent user");
+		this.update("updateUserProfile", user, session);
+		return user.getName();
+	}
 
 	List<String> getUserNamesByGroupId(final Integer groupId, final DBSession session) {
 		return this.queryForList("getUserNamesByGroupId", groupId, String.class, session);
