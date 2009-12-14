@@ -24,98 +24,151 @@
         	<fmt:message key="settings.profileInfo"><fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param><fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param></fmt:message>
         </p>
 		
-		<form:form name="account" method="post">		
+		<form:form name="account" method="post" action="/updateUserProfile">		
 	
         <h2><fmt:message key="settings.generalInformation" /></h2>		
     
+    	<div id="fsform">
+    	<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
 		<table>
+		  <div class="fsRow">
 		  <tr>
-		    <td width="180px"><fmt:message key="settings.userName"/></td>
-		    <td><c:out value="${command.context.loginUser.name}"/></td>
-		  </tr><tr>
+		    <td width="180px"><fmt:message key="settings.username"/></td>
+		    <td><c:out value="${command.user.name}"/></td>
+		  </tr>
+		  </div>
+		  <div class="fsRow">
+		  <tr>
 		    <td><fmt:message key="settings.realname"/></td>
-		    <td><input type="text" size="30" name="realname" value="${command.context.loginUser.realname}"/></td>
-		  </tr><tr>
+		    <td><input type="text" size="30" name="user.realname" value="${command.user.realname}"/></td>
+		  </tr>
+		  </div>
+		  <div class="fsRow">
+		  <tr>
 		    <td><fmt:message key="settings.gender"/></td>
-		    <td><form:select path="context.loginUser.gender">
+		    <td><form:select path="user.gender">
 		    		<form:option label="${male}" value="m"/>
 		    		<form:option label="${female}" value="f"/>
 		    </form:select></td>
-		  </tr><tr>
+		  </tr>
+		  </div>
+		  <div class="fsRow">
+		  <tr>
 		    <td><fmt:message key="settings.birthday"/></td>
-		    <td><input type="text" size="10" name="birthday" value="${command.context.loginUser.birthday}"/>
-		    <!-- FIXME errormsg -->
-		    	<span class="errmsg">${settingsBean.errors.birthday}</span>format: YYYY-MM-DD</td>
-		  </tr><tr>
+		    <td><input type="text" size="10" name="user.birthday" value="${command.user.birthday}"/>
+		    format: YYYY-MM-DD</td>
+		  </tr>
+		  </div>
+		  <div class="fsRow">
+		  <tr>
 		    <td><fmt:message key="settings.place"/></td>
-		    <td><input type="text" size="30" name="place" value="${command.context.loginUser.place}"/></td>
-		  </tr><tr>
+		    <td><input type="text" size="30" name="user.place" value="${command.user.place}"/></td>
+		  </tr>
+		  </div>
+		  <div class="fsRow">
+		  <tr>
 		    <td><fmt:message key="settings.profileViewableFor"/></td>
 		    <td><form:select path="group">
 		    	<form:option label="${public}" value="public"/>
 		    	<form:option label="${private}" value="private"/>
-		    	<!--<form:option label="${friends}" value="2"/>-->
 		    </form:select>
 			</td>
 		  </tr>
+		  </div>
 		</table>
+		</fieldset>
+		</div>
 		<hr/>
 		
 		<h2><fmt:message key="settings.contact" /></h2>		
+		
+		<div id="fsform">
+    	<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
 		<table>
+		  <div class="fsRow">
 		  <tr>
 		    <td width="180px"><fmt:message key="settings.email"/></td>
-		    <td><input type="text" size="30" name="email" value="${command.context.loginUser.email}"/>
+		    <td><input type="text" size="30" name="user.email" value="${command.user.email}"/>
                 <fmt:message key="settings.mandatory"/>
                 <!-- FIXME errormsg -->
 		        <span class="errmsg">${settingsBean.errors.email}</span></td>
-		  </tr><tr>
+		  </tr>
+		  </div>
+		  <div class="fsRow">
+		  <tr>
 		    <td><fmt:message key="settings.homepage"/></td>
-		    <td><input type="text" size="30" name="homepage" value="${command.context.loginUser.homepage}"/>
+		    <td><input type="text" size="30" name="user.homepage" value="${command.user.homepage}"/>
 		    <!-- FIXME errormsg -->
 		        <span class="errmsg">${settingsBean.errors.homepage}</span></td>
-		  </tr><tr>
+		  </tr>
+		  </div>
+		  <div class="fsRow">
+		  <tr>
 		    <td>openURL</td>
-		    <td><input type="text" size="30" name="openurl" value="${settingsBean.errors.openurl}"/>
+		    <td><input type="text" size="30" name="user.openURL" value="${command.user.openURL}"/>
 		    	<fmt:message key="settings.openURLDescription"><fmt:param><a href="http://www.exlibrisgroup.com/sfx_openurl.htm">openURL</a></fmt:param></fmt:message>
 		        <!-- FIXME errormsg -->
 		        <span class="errmsg">${settingsBean.errors.openurl}</span></td>
 		  </tr>
+		  </div>
 		</table>
+		</fieldset>
+		</div>
+		
 		
 		<hr/>
-		<h2><fmt:message key="settings.aboutMe"/></h2>	
+		<h2><fmt:message key="settings.aboutMe"/></h2>
+		
+		<div id="fsform">
+    	<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
 		<table>
+		  <div class="fsRow">
 		  <tr>
-		    <td width="180px"><fmt:message key="settings.profession"/></td>
-		    <td><input type="text" size="30" name="profession" value="${command.context.loginUser.profession}"/></td>		        
-		  </tr><tr>
-		    <td><fmt:message key="settings.scientificInterests"/></td>
-		    <td><textarea cols="30" rows="4" name="interests"><c:out value="${command.context.loginUser.interests}"/></textarea></td>
-		  </tr><tr>
-		    <td><fmt:message key="settings.hobbies"/></td>
-		    <td><textarea cols="30" rows="4" name="hobbies"><c:out value="${command.context.loginUser.hobbies}"/></textarea></td>
+		    <td><fmt:message key="settings.profession"/></td>
+		    <td><input type="text" size="30" name="user.profession" value="${command.user.profession}"/></td>		        
 		  </tr>
+		  </div>
+		  <div class="fsRow">
+		  <tr>
+		    <td><fmt:message key="settings.scientificInterests"/></td>
+		    <td><textarea size="30" cols="30" rows="4" name="user.interests"><c:out value="${command.user.interests}"/></textarea></td>
+		  </tr>
+		  </div>
+		  <div class="fsRow">
+		  <tr>
+		    <td><fmt:message key="settings.hobbies"/></td>
+		    <td><textarea cols="30" rows="4" name="user.hobbies"><c:out value="${command.user.hobbies}"/></textarea></td>
+		  </tr>
+		  </div>
 		</table>
+		</fieldset>
+		</div>
 		
 		<hr/>
-		<h2><fmt:message key="settings.myFriends"/></h2>			  
-		<table>		
+		<h2><fmt:message key="settings.myFriends"/></h2>
+		
+		
+		<div id="fsform">
+    	<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">		  
+		<table>	
+		<div class="fsRow">	
 		<tr>
 			<td width="180px"><fmt:message key="settings.friendOf"/></td>
 			<td>
-				<c:if test="${empty command.userFriends}"><fmt:message key="settings.noFriends"/></c:if>
+				<c:if test="${empty command.user.friends}"><fmt:message key="settings.noFriends"/></c:if>
 				<ul>
-					<c:forEach var="myfr1" items="${command.userFriends}">			
+					<c:forEach var="myfr1" items="${command.user.friends}">			
 		 				<li><a href="/user/${mtl:encodeURI(myfr1.name)}"><c:out value="${myfr1.name}"/></a></li>		 		
 					</c:forEach>
 				</ul>
 			</td>
-		</tr>		
+		</tr>
+		</div>
+		<div class="fsRow">		
 		<tr>
 			<td><fmt:message key="settings.myFriendsAre"><fmt:param><a href="/friends"><fmt:message key="friends"/></a></fmt:param></fmt:message></td>
 			<td>
-				<c:if test="${empty command.friendsOfUser}">
+				<c:if test="${empty command.user.friends}">
 				<fmt:message key="settings.noFriends"/> (
 				<fmt:message key="settings.addFriendsNow">
 					<fmt:param>
@@ -126,19 +179,29 @@
 				</fmt:message>) 
 				</c:if>
 				<ul>
-					<c:forEach var="myfr2" items="${command.friendsOfUser}">			
+					<c:forEach var="myfr2" items="${command.user.friends}">			
 		 				<li><a href="/user/${mtl:encodeURI(myfr2.name)}"><c:out value="${myfr2.name}"/></a></li>		 		
 					</c:forEach>
 				</ul>
 			</td>
 		</tr>
-		<tr>
-			<td><br/>
-				<input type="hidden" name="action" value="update"/>
-		        <input type="hidden" name="ckey" value="${ckey}"/>
-		        <input type="submit" value="${saveChanges}"/>
-		    </td>		   
-		</tr>
-	</table>
+		</div>
+
+		</table>
+		</fieldset>
+		</div>
+		
+		<p>
+		</p>
+		
+		<input type="hidden" name="action" value="update"/>
+		<input type="hidden" name="ckey" value="${ckey}"/>
+	    <input type="hidden" name="selTab" value="0"/>
+		
+		<table>
+			<tr>
+				<td><input type="submit" value="${saveChanges}"/></td>
+			</tr>
+		</table>
 	</form:form>	
 </jsp:root>
