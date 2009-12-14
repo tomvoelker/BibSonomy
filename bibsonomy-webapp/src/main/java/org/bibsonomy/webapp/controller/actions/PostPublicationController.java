@@ -19,8 +19,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.bibtex.parser.PostBibTeXParser;
-import org.bibsonomy.common.enums.ErrorSource;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.BibTex;
@@ -477,7 +477,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 					ErrorMessage duplicateMessage = null;
 					for(ErrorMessage msg : errorMsges)
 					{
-						if(ErrorSource.DUPLICATEPOST.equals(msg.getErrorSource()))
+						if(msg instanceof DuplicatePostErrorMessage)
 						{
 							hasDuplicate = true;
 							if(isOverwrite)
