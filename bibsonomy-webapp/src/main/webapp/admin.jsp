@@ -48,25 +48,6 @@
   </p>
 
 
-<h2>Scraper</h2>
-
-  <%-- -----HIGHWIRE LIST UPDATE ------- --%>
-    <%-- get the date of lastupdate --%>
-    <sql:query var="listInfo" dataSource="${dataSource}">
-      SELECT lastupdate from highwirelist; 
-    </sql:query> 
-    Highwire Linklist:  
-    <form method="POST" action="/AdminHandler" style="display:inline;">
-      <input type="hidden" name="action" value="update highwire"/>
-      <input type="hidden" name="ckey" value="${ckey}"/>
-      <input type="submit" value="update" />
-    </form>
-    <br/>
-    <c:forEach var="rows" items="${listInfo.rows}">
-	  Last Update: <fmt:formatDate value="${rows.lastupdate}" pattern="dd.MM.yyyy HH:mm:ss" />
-    </c:forEach>
-
-
 <hr/>
 
 <%-- group management  --%>

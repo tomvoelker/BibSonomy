@@ -171,38 +171,4 @@ public class DBAdminManager extends DBManager {
 		}
 	}
 
-
-	public static void updateHighWireList(AdminBean bean) {
-		DBContext c = new DBContext();
-
-		try {
-			if (c.init()) {
-				// get the page content as string (method from ScrapingContext)
-				ScrapingContext sc = new ScrapingContext(new URL("http://highwire.stanford.edu/lists/allsites.dtl"));
-				StringBuffer _templist = new StringBuffer();
-
-				//extract all link per regex
-				Pattern p = Pattern.compile("(<A )CLASS=\"nolink\" TARGET=\"_top\" (HREF=\".*?\">)<FONT COLOR=\"#\\d+\" SIZE=\".*?\" FACE=\".*?\">(.+?</A>)");
-				Matcher m = p.matcher(sc.getPageContent());
-
-				//write every link into the buffer
-				while (m.find()) {
-					if (m.groupCount() == 3){
-						_templist.append("<li>" + m.group(1) + m.group(2) + m.group(3) + "</li>");	
-					}
-				}
-
-				c.stmt = c.conn.prepareStatement("UPDATE highwirelist SET list = ?, lastupdate=NOW() LIMIT 1");
-				c.stmt.setString(1, _templist.toString());
-				c.stmt.executeUpdate();
-			}
-		} catch (SQLException e) {			
-			bean.addError("Sorry, an error occured: " + e);
-		} catch (MalformedURLException e) {
-			bean.addError("Sorry, an error occured: " + e);
-		} catch (ScrapingException e) {
-			bean.addError("Sorry, an error occured: " + e);
-		}		
-	}
-
 }

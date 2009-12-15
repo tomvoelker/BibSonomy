@@ -1,5 +1,4 @@
 package servlets;
-import helpers.database.DBAdminManager;
 import helpers.database.DBDBLPManager;
 import helpers.database.DBStatisticsManager;
 
@@ -19,14 +18,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import beans.AdminBean;
 import beans.UserBean;
 import filters.ActionValidationFilter;
 import filters.SessionSettingsFilter;
 
 
 /**
- * This servlet is used to handle update requests for DBLP / highwire and to 
+ * This servlet is used to handle update requests for DBLP and to 
  * gather statistics for the admin_statistics.jsp page
  *
  */
@@ -127,14 +125,6 @@ public class AdminHandler extends HttpServlet {
 			int deletedDuplicatesCtr = DBDBLPManager.deleteDuplicates("dblp");
 			request.setAttribute("deletedDuplicatesCtr", deletedDuplicatesCtr);
 			getServletContext().getRequestDispatcher("/admin_dblp.jsp").forward(request, response);
-		} else if ("update highwire".equals(action)) {
-			/*
-			 * update the highwire scraper list
-			 */
-			final AdminBean adminBean = new AdminBean();
-			DBAdminManager.updateHighWireList(adminBean);
-			request.setAttribute("adminBean", adminBean);
-			getServletContext().getRequestDispatcher("/admin.jsp").forward(request, response);
-		}
+		} 
 	}	
 }

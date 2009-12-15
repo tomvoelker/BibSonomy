@@ -2,7 +2,7 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.Collection;
 
-import org.bibsonomy.scraper.KDEUrlCompositeScraper;
+import org.bibsonomy.scraper.KDEScraperFactory;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.webapp.command.ScraperInfoCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -16,9 +16,8 @@ public class ScraperInfoController extends MultiResourceListController implement
 
 	/*
 	 * TODO: inject the scraper list using Spring
-	 * TODO: find a way to include the missing scrapers (ISBNScraper, DOIScraper, etc.)
 	 */
-	private static final Collection<Scraper> scraperList = new KDEUrlCompositeScraper().getScraper();
+	private static final Collection<Scraper> scraperList = new KDEScraperFactory().getScraper().getScraper();
 	
 	
 	public View workOn(final ScraperInfoCommand command) {
