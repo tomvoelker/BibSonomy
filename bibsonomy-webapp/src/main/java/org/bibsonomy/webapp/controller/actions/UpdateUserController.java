@@ -89,7 +89,8 @@ public class UpdateUserController implements MinimalisticController<SettingsView
 
 			// update user informations here
 			updateUserProfile(command, user);
-			
+			// needed to display the user name on the profile tab of the settings site
+			command.getUser().setName(user.getName());
 
 		} else {
 			errors.reject("error.field.valid.ckey");
@@ -110,7 +111,11 @@ public class UpdateUserController implements MinimalisticController<SettingsView
 		user.setGender(command.getUser().getGender());
 		user.setBirthday(command.getUser().getBirthday());
 		
-		//profile ? 
+		/**
+		 * @TODO 
+		 * implement the viewable_for field to the database query 
+		 * store the information somewhere in the UserSettings object
+		 */
 		
 		user.setEmail(command.getUser().getEmail());
 		user.setHomepage(command.getUser().getHomepage());
@@ -124,6 +129,8 @@ public class UpdateUserController implements MinimalisticController<SettingsView
 		String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
 		
 		log.info("logging profile of user " + updatedUser + " has been changed successfully");
+		
+		
 	}
 
 	@Override
