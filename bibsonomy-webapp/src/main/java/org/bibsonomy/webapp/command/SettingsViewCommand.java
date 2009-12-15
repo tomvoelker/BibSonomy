@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.SettingPageMsg;
 import org.bibsonomy.model.User;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -37,17 +36,28 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	String action;
 	
+	/**
+	 * current user
+	 */
 	private User user;
 	
 	private boolean hasOwnGroup;
 	
-	private int statusID = SettingPageMsg.IDLE.getId();
-	
+	/**
+	 * users which added the current login user in their friend list 
+	 */
 	private List<User> friendsOfUser;
 	
+	/**
+	 * list with friends of the current login user
+	 */
 	private List<User> userFriends;
 	
+	/**
+	 * group {private or public}
+	 */
 	private String group;
+	
 	
 	private String importType;
 	
@@ -278,14 +288,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	public List<User> getUserFriends() {
 		return userFriends;
-	}
-
-	public int getStatusID() {
-		return this.statusID;
-	}
-
-	public void setStatusID(int statusID) {
-		this.statusID = statusID;
 	}
 
 	public User getUser() {
