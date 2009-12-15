@@ -128,5 +128,20 @@ public class SnippetScraper implements Scraper {
 				"}");
 		return context;
 	}
+	
+	/**
+	 * @return site name
+	 */
+	public String getSupportedSiteName(){
+		return null;
+	}
+	
+	
+	/**
+	 * @return site url
+	 */
+	public String getSupportedSiteURL(){
+		return null;
+	}
 
 }

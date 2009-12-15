@@ -48,6 +48,8 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  */
 public class CoinsScraper implements Scraper {
 
+	private static final String SITE_NAME = "CoinsScraper";
+	private static final String SITE_URL = "http://ocoins.info/";
 	private static final String INFO = "<a href=\"http://ocoins.info/\">COinS</a> Scraper: Scraper for Metadata in COinS format.";
 
 	private static final Pattern patternCoins = Pattern.compile("<span class=\"Z3988\" title=\"([^\\\"]*)\"");
@@ -470,6 +472,21 @@ public class CoinsScraper implements Scraper {
 		} catch (MalformedURLException ex) {
 		}
 		return context;
+	}
+	
+	/**
+	 * @return site name
+	 */
+	public String getSupportedSiteName(){
+		return SITE_NAME;
+	}
+	
+	
+	/**
+	 * @return site url
+	 */
+	public String getSupportedSiteURL(){
+		return SITE_URL;
 	}
 
 

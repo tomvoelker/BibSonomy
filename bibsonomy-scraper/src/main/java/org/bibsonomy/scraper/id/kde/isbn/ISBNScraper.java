@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -34,6 +35,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
+import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.util.id.ISBNUtils;
 
 /**
@@ -43,7 +45,7 @@ import org.bibsonomy.util.id.ISBNUtils;
  * @version $Id$
  */
 public class ISBNScraper implements Scraper {
-
+	
 	private static final String INFO = "ISBN support in scraped snippet";
 
 	public String getInfo() {
@@ -96,6 +98,21 @@ public class ISBNScraper implements Scraper {
 		final ScrapingContext context = new ScrapingContext(null);
 		context.setSelectedText("9783608935448");
 		return context;
+	}
+	
+	/**
+	 * @return site name
+	 */
+	public String getSupportedSiteName(){
+		return null;
+	}
+	
+	
+	/**
+	 * @return site url
+	 */
+	public String getSupportedSiteURL(){
+		return null;
 	}
 
 }

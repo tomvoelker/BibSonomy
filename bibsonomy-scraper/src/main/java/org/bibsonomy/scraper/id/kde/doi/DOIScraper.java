@@ -53,12 +53,12 @@ public class DOIScraper implements Scraper {
 	 */
 	private static final int MAX_SELECTION_LENGTH = 200;
 
-	public String getInfo() {
-		return "Scraper which follows redirects from " + AbstractUrlScraper.href(DOIUtils.DX_DOI_ORG_URL, DOIUtils.DX_DOI_ORG) + 
-		" and passes the resulting URLs to the following scrapers. Additionally checks, if the given selection" +
-		" text contains (almost only!) a DOI and basically does the same.";
-	}
-
+	private static final String SITE_NAME = "DOIScraper";
+	private static final String SITE_URL = "http://dx.doi.org";
+	private static final String INFO 	= "Scraper which follows redirects from " + AbstractUrlScraper.href(DOIUtils.DX_DOI_ORG_URL, DOIUtils.DX_DOI_ORG) + 
+											" and passes the resulting URLs to the following scrapers. Additionally checks, if the given selection" +
+											" text contains (almost only!) a DOI and basically does the same.";
+	
 	public Collection<Scraper> getScraper() {
 		return Collections.singletonList((Scraper) this);
 	}
@@ -132,6 +132,24 @@ public class DOIScraper implements Scraper {
 	public boolean supportsScrapingContext(ScrapingContext scrapingContext) {
 		return DOIUtils.isDOIURL(scrapingContext.getUrl()) || isSupportedSelection(scrapingContext.getSelectedText());
 	}
-
+	
+	public String getInfo() {
+		return INFO;
+	}
+	
+	/**
+	 * @return site name
+	 */
+	public String getSupportedSiteName(){
+		return SITE_NAME;
+	}
+	
+	
+	/**
+	 * @return site url
+	 */
+	public String getSupportedSiteURL(){
+		return null;
+	}
 
 }

@@ -42,8 +42,10 @@ import org.bibsonomy.util.WebUtils;
 
 public class HighwireScraper implements Scraper {
 	private static final Log log 	= LogFactory.getLog(HighwireScraper.class);
-	private static final String info 	= "Highwire Scraper: This scraper parses a publication page from one of these <a href=\"/scraperinfo_highwire\">journals hosted by Highwire Press</a>  " +
-	"and extracts the adequate BibTeX entry. Author: KDE";
+	private static final String SITE_NAME = "Highwire Scraper Collection";
+	private static final String SITE_URL = "http://highwire.stanford.edu/lists/allsites.dtl";
+	private static final String INFO 	= "This scraper parses a publication page from one of these <a href=\"http://highwire.stanford.edu/lists/allsites.dtl\">journals hosted by Highwire Press</a>  " +
+											"and extracts the adequate BibTeX entry.";
 
 	//Pattern p = Pattern.compile("/cgi/citmgr\\?(gca=\\w+;\\d+/\\d+/[\\w+]*\\d+[&]*)+");
 	private static final Pattern urlPattern = Pattern.compile("/cgi/citmgr\\?gca=[\\w+;/&=.-]+");
@@ -123,10 +125,6 @@ public class HighwireScraper implements Scraper {
 		return false;
 	}
 
-	public String getInfo() {
-		return info;
-	}
-
 	public Collection<Scraper> getScraper() {
 		return Collections.singletonList((Scraper) this);
 	}
@@ -155,6 +153,25 @@ public class HighwireScraper implements Scraper {
 		} catch (MalformedURLException ex) {
 		}
 		return context;
+	}
+	
+	public String getInfo() {
+		return INFO;
+	}
+	
+	/**
+	 * @return site name
+	 */
+	public String getSupportedSiteName(){
+		return SITE_NAME;
+	}
+	
+	
+	/**
+	 * @return site url
+	 */
+	public String getSupportedSiteURL(){
+		return SITE_URL;
 	}
 
 }

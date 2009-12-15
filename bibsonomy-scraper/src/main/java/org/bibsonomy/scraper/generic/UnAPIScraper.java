@@ -50,12 +50,10 @@ import org.w3c.dom.NodeList;
  */
 public class UnAPIScraper implements Scraper {
 
+	private static final String SITE_NAME = "UnAPIScraper";
+	private static final String SITE_URL = "http://unapi.info/";
+	private static final String INFO = "Scrapes pages providing BibTeX (format=bibtex) via <a href=\"http://unapi.info/\">UN-API</a>.";
 	private static final Log log = LogFactory.getLog(UnAPIScraper.class);
-
-
-	public String getInfo() {
-		return "Scrapes pages providing BibTeX (format=bibtex) via <a href=\"http://unapi.info/\">UN-API</a>.";
-	}
 
 	public Collection<Scraper> getScraper() {
 		return Collections.singleton((Scraper) this);
@@ -199,6 +197,25 @@ public class UnAPIScraper implements Scraper {
 			log.debug(ex);
 		}
 		return context;
+	}
+	
+	public String getInfo() {
+		return INFO;
+	}
+	
+	/**
+	 * @return site name
+	 */
+	public String getSupportedSiteName(){
+		return SITE_NAME;
+	}
+	
+	
+	/**
+	 * @return site url
+	 */
+	public String getSupportedSiteURL(){
+		return SITE_URL;
 	}
 
 

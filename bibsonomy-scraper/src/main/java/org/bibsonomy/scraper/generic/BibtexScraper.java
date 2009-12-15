@@ -39,6 +39,7 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexFile;
 import bibtex.parser.BibtexParser;
+import bsh.This;
 
 /**
  * Search in sourcecode from the given page for bibtex and scrape it.
@@ -46,7 +47,7 @@ import bibtex.parser.BibtexParser;
  * @version $Id$
  */
 public class BibtexScraper implements Scraper {
-	
+
 	private static final String INFO = "Scraper for BibTeX, independent from URL.";
 
 	public String getInfo() {
@@ -130,5 +131,20 @@ public class BibtexScraper implements Scraper {
 		} catch (final MalformedURLException ex) {
 			return new ScrapingContext(null);
 		}
+	}
+	
+	/**
+	 * @return site name
+	 */
+	public String getSupportedSiteName(){
+		return null;
+	}
+	
+	
+	/**
+	 * @return site url
+	 */
+	public String getSupportedSiteURL(){
+		return null;
 	}
 }
