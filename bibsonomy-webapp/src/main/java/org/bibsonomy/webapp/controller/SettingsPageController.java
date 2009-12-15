@@ -98,23 +98,9 @@ public class SettingsPageController implements
 	}
 
 	private void workOnMyProfileTab(SettingsViewCommand command) {
-//		<%-- ------------------------ change settings -------------------------- --%>
-//		<jsp:useBean id="settingsBean" class="beans.SettingsBean" scope="request">
-//		  <jsp:setProperty name="settingsBean" property="*"/>
-//		  <jsp:setProperty name="settingsBean" property="name" value="${user.name}"/>
-//		  <jsp:setProperty name="settingsBean" property="validCkey" value="${validckey}"/>
-//		</jsp:useBean>
-//		
-//		<% settingsBean.queryDB(); %> <%-- write data to database (if neccessary) --%>	
-		
-		User loginUser = command.getContext().getLoginUser();
-		command.setFriendsOfUser(logic.getFriendsOfUser(loginUser));
-		command.setUserFriends(logic.getUserFriends(loginUser));	
-		/*SettingsBean settingsBean = new SettingsBean();
-		// TODO which properties are set via property="*"?
-		settingsBean.setName(loginUser.getName());
-		settingsBean.setValidCkey(command.getContext().isValidCkey());
-		settingsBean.queryDB();*/
+		//retrieve friend list of the user
+		command.setUserFriends(logic.getUserFriends(command.getUser()));
+		command.setFriendsOfUser(logic.getFriendsOfUser(command.getUser()));
 	}
 
 	/**
@@ -150,35 +136,8 @@ public class SettingsPageController implements
 	}
 
 	private void workOnSettingsTab(SettingsViewCommand command) {
-		User loginUser = command.getContext().getLoginUser();
-		command.setUser(loginUser);
-		// FIXME check other tabs if they need those info(queries) too, then remove them from settings.jspx.
-//		Group group = logic.getGroupDetails(loginUser.getName());
-		//List<User> users = logic.getUsers(resourceType, grouping, groupingName, tags, hash, order, relation, search, start, end);
-		//logic.updateUser(user);
-		
-//		command.getUser().getSettings().setTagboxStyle(loginUser
-//				.getSettings().getTagboxStyle());
-//		command.getUser().getSettings().setTagboxSort(loginUser.getSettings()
-//				.getTagboxSort());
-//		command.getUser().getSettings().setTagboxTooltip(loginUser
-//				.getSettings().getTagboxTooltip());
-//		command.getUser().getSettings().setDefaultLanguage(loginUser
-//				.getSettings().getDefaultLanguage());
-//		command.getUser().getSettings().setTagboxMinfreq(loginUser
-//				.getSettings().getTagboxMinfreq());
-//		command.getUser().getSettings().setListItemcount(loginUser.getSettings()
-//				.getListItemcount());
-//		command.getUser().getSettings().setLogLevel(loginUser.getSettings().getLogLevel());
-//		command.setConfirmDelete(loginUser.getSettings().getConfirmDelete());
-//		command.setHasOwnGroup(group != null);
-		// FIXME necessary?
-		
-//		if(command.getHasOwnGroup()) {
-//			GroupSettingsBean b = new GroupSettingsBean();
-//			b.setUsername(loginUser.getName());
-//			b.queryDB();
-//		}
+
+		//no work to do
 	}
 
 	/**
