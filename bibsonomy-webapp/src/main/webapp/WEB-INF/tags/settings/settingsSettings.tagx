@@ -110,8 +110,6 @@
 		  </div>
 		</form:form>
 		
-		<hr/>
-		
 		<!-- API -->
 		<h2>API</h2>
 		<form:form id="postForm" method="post" action="/updateUserSettings">
@@ -144,7 +142,6 @@
 		</fieldset>
 		</div>
 		</form:form>
-		<hr/>
     
         <!-- log level -->
         <h2><fmt:message key="settings.logging" /></h2>
@@ -187,8 +184,6 @@
 		<!-- password change -->
 		
 		<settings:passwordChange command="${command}"/>
-		
-		<hr/>
 		
 		<!-- delete account -->
 		<h2><fmt:message key="settings.deletemyaccount"/></h2>		
