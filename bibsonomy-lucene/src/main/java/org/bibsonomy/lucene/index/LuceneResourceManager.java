@@ -270,6 +270,13 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 			index.reset();
 		}
 	}
+
+	/**
+	 * reopen index searcher - e.g. after the index has changed on the disc
+	 */
+	public void resetIndexSearcher() {
+		this.searcher.reloadIndex(this.idxSelect);
+	}
 	
 	//------------------------------------------------------------------------
 	// private helper methods

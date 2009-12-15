@@ -157,7 +157,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// search for all relevant fields
 		for( String term : bibtexSearchTerms ) {
-			log.info("Searching for " + term);
+			log.error("[PrivatePost] Searching for " + term);
 			ResultList<Post<BibTex>> resultList = bibtexSearcher.searchPosts(null, term, toInsert.getUser().getName(), toInsert.getUser().getName(), allowedGroups, 1000, 0);
 			
 			assertEquals(1, resultList.size());

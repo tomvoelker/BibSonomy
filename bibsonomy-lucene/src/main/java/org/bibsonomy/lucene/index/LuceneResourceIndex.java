@@ -160,7 +160,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 			if( !isIndexEnabled() ) {
 				return Long.MAX_VALUE;
 			} else if( this.lastLogDate!=null ) {
-				// return this.lastLogDate;
+				return this.lastLogDate;
 			}
 			
 			//----------------------------------------------------------------
@@ -208,7 +208,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 			if( !isIndexEnabled() ) {
 				return Integer.MAX_VALUE;
 			} else if( this.lastTasId!=null ) {
-				//return this.lastTasId;
+				return this.lastTasId;
 			}
 			
 			//----------------------------------------------------------------
@@ -414,7 +414,11 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	public void reset() {
 		synchronized(this) {
 			if( !isIndexEnabled() ) {
-				return;
+				try {
+					init();
+				} catch (Exception e) {
+					return;
+				}
 			}
 			switch(this.accessMode) {
 			case ReadOnly:
