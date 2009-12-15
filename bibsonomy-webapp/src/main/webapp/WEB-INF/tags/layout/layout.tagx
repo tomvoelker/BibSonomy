@@ -288,7 +288,7 @@
 					<lp:email address="${projectEmail}"/>
 					<script type="text/javascript">
 					<![CDATA[
-						init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${requestedUser}", "${loginUser.name}", "${ckey}", "${projectName}");
+						init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${projectName}");
 					]]>
 					</script>
 					<script type="text/javascript">
