@@ -101,7 +101,7 @@ public class ChangePasswordController implements MinimalisticController<Settings
 
 			// change password here
 			System.out.println("password can be changed here");
-			command.setStatusID(changePassword(context.getLoginUser(), command));
+			changePassword(context.getLoginUser(), command);
 
 		} else {
 			errors.reject("error.field.valid.ckey");
