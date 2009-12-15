@@ -160,9 +160,9 @@
 		<tr>
 			<td><fmt:message key="settings.friendOf"/></td>
 			<td>
-				<c:if test="${empty command.user.friends}"><fmt:message key="settings.noFriends"/></c:if>
+				<c:if test="${empty command.userFriends}"><fmt:message key="settings.noFriends"/></c:if>
 				<ul>
-					<c:forEach var="myfr1" items="${command.user.friends}">			
+					<c:forEach var="myfr1" items="${command.userFriends}">			
 		 				<li><a href="/user/${mtl:encodeURI(myfr1.name)}"><c:out value="${myfr1.name}"/></a></li>		 		
 					</c:forEach>
 				</ul>
@@ -173,7 +173,7 @@
 		<tr>
 			<td><fmt:message key="settings.myFriendsAre"><fmt:param><a href="/friends"><fmt:message key="friends"/></a></fmt:param></fmt:message></td>
 			<td>
-				<c:if test="${empty command.user.friends}">
+				<c:if test="${empty command.friendsOfUser}">
 				<fmt:message key="settings.noFriends"/> (
 				<fmt:message key="settings.addFriendsNow">
 					<fmt:param>
@@ -184,7 +184,7 @@
 				</fmt:message>) 
 				</c:if>
 				<ul>
-					<c:forEach var="myfr2" items="${command.user.friends}">			
+					<c:forEach var="myfr2" items="${command.friendsOfUser}">			
 		 				<li><a href="/user/${mtl:encodeURI(myfr2.name)}"><c:out value="${myfr2.name}"/></a></li>		 		
 					</c:forEach>
 				</ul>
