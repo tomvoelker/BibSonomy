@@ -67,6 +67,9 @@ public class UpdateUserController implements MinimalisticController<SettingsView
 		
 		User user = context.getLoginUser(); 
 		
+		// needed to display the user name on the profile tab of the settings site
+		command.getUser().setName(user.getName());
+		
 		//check whether the user is a group		
 		if(UserUtils.userIsGroup(user)) {
 			command.setHasOwnGroup(true);
@@ -89,8 +92,6 @@ public class UpdateUserController implements MinimalisticController<SettingsView
 
 			// update user informations here
 			updateUserProfile(command, user);
-			// needed to display the user name on the profile tab of the settings site
-			command.getUser().setName(user.getName());
 
 		} else {
 			errors.reject("error.field.valid.ckey");
