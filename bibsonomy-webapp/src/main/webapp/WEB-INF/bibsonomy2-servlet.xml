@@ -46,13 +46,6 @@
 								<value>statusID</value>
 								<value>group</value>
 								<value>delete</value>
-								<!-- FIXME delete this if no errors occur 
-								value>tagboxStyle</value>
-								<value>tagSort</value>
-								<value>tagboxTooltip</value>
-								<value>defaultLanguage</value>
-								<value>tagboxMinfreq</value>
-								<value>itemcount</value-->
 							</list>
 						</property>
 					</bean>
