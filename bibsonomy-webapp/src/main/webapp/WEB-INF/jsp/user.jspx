@@ -42,15 +42,15 @@
 						<div id="removeLink">
 							<fmt:message key="follow.info.text2"/>
 							<a style="cursor: pointer;" 
-							   onclick="javascript:removeFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
-							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${command.requestedUser}">
+							   onclick="javascript:removeFollower('${fn:escapeXml(command.requestedUser)}', '${command.context.ckey}');return false;"
+							   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(command.requestedUser)}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(command.requestedUser)}">
 							<fmt:message key="follow.link.text.remove"/></a>
 						</div>
 						<div id="followLink" style="visibility:hidden; display:none">
 							<fmt:message key="follow.info.text1"/>
 							<a style="cursor: pointer;" 
-							   onclick="javascript:addFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
-							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${command.requestedUser}">
+							   onclick="javascript:addFollower('${fn:escapeXml(command.requestedUser)}', '${command.context.ckey}');return false;"
+							   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(command.requestedUser)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(command.requestedUser)}">
 							   <fmt:message key="follow.link.text.follow"/></a>
 						</div>
 					</div>
@@ -60,15 +60,15 @@
 						<div id="removeLink" style="visibility:hidden; display:none">
 							<fmt:message key="follow.info.text2"/>
 							<a style="cursor: pointer;" 
-							   onclick="javascript:removeFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
-							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${command.requestedUser}">
+							   onclick="javascript:removeFollower('${fn:escapeXml(command.requestedUser)}', '${command.context.ckey}');return false;"
+							   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(command.requestedUser)}&amp;action=removeFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(command.requestedUser)}">
 							   <fmt:message key="follow.link.text.remove"/></a>							
 						</div>
 						<div id="followLink">
 							<fmt:message key="follow.info.text1"/>
 							<a style="cursor: pointer;" 
-							   onclick="javascript:addFollower('${command.requestedUser}', '${command.context.ckey}');return false;"
-							   href="/ajax/handleFollower?requestedUserName=${command.requestedUser}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${command.requestedUser}">
+							   onclick="javascript:addFollower('${fn:escapeXml(command.requestedUser)}', '${command.context.ckey}');return false;"
+							   href="/ajax/handleFollower?requestedUserName=${fn:escapeXml(command.requestedUser)}&amp;action=addFollower&amp;ckey=${ckey}&amp;forward=user/${fn:escapeXml(command.requestedUser)}">
 							   <fmt:message key="follow.link.text.follow"/></a>
 						</div>
 					</div>
