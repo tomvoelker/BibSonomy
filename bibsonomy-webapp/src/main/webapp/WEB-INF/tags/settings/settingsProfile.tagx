@@ -20,6 +20,9 @@
 		<fmt:message var="private" key="settings.private"/>
 		<fmt:message var="friends" key="settings.friends"/>
 		
+		<!-- display potential errors -->
+		<errors:global errors="${errors}"/>
+		
         <p>
         	<fmt:message key="settings.profileInfo"><fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param><fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param></fmt:message>
         </p>
@@ -33,14 +36,16 @@
 		<table>
 		  <div class="fsRow">
 		  <tr>
-		    <td width="180px"><fmt:message key="settings.username"/></td>
+		  	<!-- <td><form:label cssClass="fsLabel" path="user.name" ><fmt:message key="settings.username"/></form:label></td> -->
+		    <td><fmt:message key="settings.username"/></td>
 		    <td><c:out value="${command.user.name}"/></td>
 		  </tr>
 		  </div>
 		  <div class="fsRow">
 		  <tr>
 		    <td><fmt:message key="settings.realname"/></td>
-		    <td><input type="text" size="30" name="user.realname" value="${command.user.realname}"/></td>
+		    <td><form:input path="user.realname"/><div class="dissError" style="position:relative"><form:errors path="user.realname" /></div>
+		    </td>
 		  </tr>
 		  </div>
 		  <div class="fsRow">
@@ -49,20 +54,23 @@
 		    <td><form:select path="user.gender">
 		    		<form:option label="${male}" value="m"/>
 		    		<form:option label="${female}" value="f"/>
-		    </form:select></td>
+		    </form:select>
+		    <div class="dissError" style="position:relative"><form:errors path="user.gender" /></div>
+		    </td>
 		  </tr>
 		  </div>
 		  <div class="fsRow">
 		  <tr>
 		    <td><fmt:message key="settings.birthday"/></td>
-		    <td><input type="text" size="10" name="user.birthday" value="${command.user.birthday}"/>
+		    <td><form:input path="user.birthday"/>
+		    <div class="dissError" style="position:relative"><form:errors path="user.birthday" /></div>
 		    format: YYYY-MM-DD</td>
 		  </tr>
 		  </div>
 		  <div class="fsRow">
 		  <tr>
 		    <td><fmt:message key="settings.place"/></td>
-		    <td><input type="text" size="30" name="user.place" value="${command.user.place}"/></td>
+		    <td><form:input path="user.place"/></td>
 		  </tr>
 		  </div>
 		  <div class="fsRow">
@@ -72,13 +80,13 @@
 		    	<form:option label="${public}" value="public"/>
 		    	<form:option label="${private}" value="private"/>
 		    </form:select>
+		    <div class="dissError" style="position:relative"><form:errors path="group" /></div>
 			</td>
 		  </tr>
 		  </div>
 		</table>
 		</fieldset>
 		</div>
-		<hr/>
 		
 		<h2><fmt:message key="settings.contact" /></h2>		
 		
@@ -87,36 +95,34 @@
 		<table>
 		  <div class="fsRow">
 		  <tr>
-		    <td width="180px"><fmt:message key="settings.email"/></td>
-		    <td><input type="text" size="30" name="user.email" value="${command.user.email}"/>
+		    <td><fmt:message key="settings.email"/></td>
+		    <td><form:input path="user.email"/>
                 <fmt:message key="settings.mandatory"/>
-                <!-- FIXME errormsg -->
-		        <span class="errmsg">${settingsBean.errors.email}</span></td>
+                <div class="dissError" style="position:relative"><form:errors path="user.email" /></div>
+            </td>
 		  </tr>
 		  </div>
 		  <div class="fsRow">
 		  <tr>
 		    <td><fmt:message key="settings.homepage"/></td>
-		    <td><input type="text" size="30" name="user.homepage" value="${command.user.homepage}"/>
-		    <!-- FIXME errormsg -->
-		        <span class="errmsg">${settingsBean.errors.homepage}</span></td>
+		    <td><form:input path="user.homepage"/>
+		    	<div class="dissError" style="position:relative"><form:errors path="user.homepage" /></div>
+		    </td>
 		  </tr>
 		  </div>
 		  <div class="fsRow">
 		  <tr>
 		    <td>openURL</td>
-		    <td><input type="text" size="30" name="user.openURL" value="${command.user.openURL}"/>
+		    <td><form:input path="user.openURL"/>
 		    	<fmt:message key="settings.openURLDescription"><fmt:param><a href="http://www.exlibrisgroup.com/sfx_openurl.htm">openURL</a></fmt:param></fmt:message>
-		        <!-- FIXME errormsg -->
-		        <span class="errmsg">${settingsBean.errors.openurl}</span></td>
+		        <div class="dissError" style="position:relative"><form:errors path="user.openURL" /></div>
+		    </td>
 		  </tr>
 		  </div>
 		</table>
 		</fieldset>
 		</div>
 		
-		
-		<hr/>
 		<h2><fmt:message key="settings.aboutMe"/></h2>
 		
 		<div id="fsform">
@@ -125,26 +131,25 @@
 		  <div class="fsRow">
 		  <tr>
 		    <td><fmt:message key="settings.profession"/></td>
-		    <td><input type="text" size="30" name="user.profession" value="${command.user.profession}"/></td>		        
+		    <td><form:input path="user.profession"/></td>		        
 		  </tr>
 		  </div>
 		  <div class="fsRow">
 		  <tr>
 		    <td><fmt:message key="settings.scientificInterests"/></td>
-		    <td><textarea size="30" cols="30" rows="4" name="user.interests"><c:out value="${command.user.interests}"/></textarea></td>
+		    <td><form:textarea cols="30" rows="4" path="user.interests"/></td>
 		  </tr>
 		  </div>
 		  <div class="fsRow">
 		  <tr>
 		    <td><fmt:message key="settings.hobbies"/></td>
-		    <td><textarea cols="30" rows="4" name="user.hobbies"><c:out value="${command.user.hobbies}"/></textarea></td>
+		    <td><form:textarea cols="30" rows="4" path="user.hobbies" /></td>
 		  </tr>
 		  </div>
 		</table>
 		</fieldset>
 		</div>
 		
-		<hr/>
 		<h2><fmt:message key="settings.myFriends"/></h2>
 		
 		
@@ -153,7 +158,7 @@
 		<table>	
 		<div class="fsRow">	
 		<tr>
-			<td width="180px"><fmt:message key="settings.friendOf"/></td>
+			<td><fmt:message key="settings.friendOf"/></td>
 			<td>
 				<c:if test="${empty command.user.friends}"><fmt:message key="settings.noFriends"/></c:if>
 				<ul>
