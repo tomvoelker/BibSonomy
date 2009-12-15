@@ -36,9 +36,10 @@
 		<table>
 		  <div class="fsRow">
 		  <tr>
-		  	<!-- <td><form:label cssClass="fsLabel" path="user.name" ><fmt:message key="settings.username"/></form:label></td> -->
-		    <td><fmt:message key="settings.username"/></td>
-		    <td><c:out value="${command.user.name}"/></td>
+		  	<td><form:label cssClass="fsLabel" path="user.name" ><fmt:message key="settings.username"/></form:label></td>
+		  	<td><form:input cssClass="fsInput" path="user.name" tabindex="2" disabled="true"/></td>
+		    <!-- <td><fmt:message key="settings.username"/></td>
+		    <td><c:out value="${command.user.name}"/></td> -->
 		  </tr>
 		  </div>
 		  <div class="fsRow">
@@ -79,6 +80,7 @@
 		    <td><form:select path="group">
 		    	<form:option label="${public}" value="public"/>
 		    	<form:option label="${private}" value="private"/>
+		    	<form:option label="${friends}" value="friends"/>
 		    </form:select>
 		    <div class="dissError" style="position:relative"><form:errors path="group" /></div>
 			</td>
