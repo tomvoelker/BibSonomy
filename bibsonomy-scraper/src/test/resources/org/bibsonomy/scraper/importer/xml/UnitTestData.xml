@@ -689,7 +689,7 @@
 		<BibFile>OpenrepositoryScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper</Scraper>
 		<Enabled>false</Enabled>
-		<Description>No route to host</Description>
+		<AdditionalInfo>No route to host</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_120">
 		<TestDescription>Test for eric.exeter.ac.uk/exeter (openrepository)</TestDescription>
@@ -878,7 +878,7 @@
 		<BibFile>IsiScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.isi.IsiScraper</Scraper>
 		<Enabled>false</Enabled>
-		<Description>Important: To run the test, insert an url with fresh SID. Otherwise the test will fail</Description>
+		<AdditionalInfo>Important: To run the test, insert an url with fresh SID. Otherwise the test will fail</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_152">
 		<TestDescription>RSOC Scraper url test, alternate host</TestDescription>
@@ -980,5 +980,12 @@
 		<BibFile>ISBNScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.id.kde.isbn.ISBNScraper</Scraper>
 		<Selection>9780387485300</Selection>
+	</URLTest>
+	<URLTest id="url_168">
+		<TestDescription>Test for elsevier health publication page</TestDescription>
+		<URL>http://www.us.elsevierhealth.com/product.jsp?lid=2&amp;iid=0&amp;sid=0&amp;isbn=9780323055666</URL>
+		<BibFile>ElsevierhealthScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper</Scraper>
+		<AdditionalInfo>This is just an implicit ISBNScraper test. I can't find a title on Elsevier which isn't listed on Worldcat or Amazon</AdditionalInfo>
 	</URLTest>
 </test:Tests>

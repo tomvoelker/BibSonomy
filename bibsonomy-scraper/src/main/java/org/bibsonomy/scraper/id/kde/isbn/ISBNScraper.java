@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
@@ -35,11 +34,11 @@ import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.scraper.url.kde.amazon.AmazonScraper;
 import org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper;
-import org.bibsonomy.util.id.DOIUtils;
 import org.bibsonomy.util.id.ISBNUtils;
 
 /**
- * Scraper for ISBN support. Searchs for ISBN in snippet and uses WorldcatScraper for download.
+ * Scraper for ISBN support. Searchs for ISBN in snippet and uses WorldcatScraper
+ * or AmazonScraper for download.
  *  
  * @author tst
  * @version $Id$
