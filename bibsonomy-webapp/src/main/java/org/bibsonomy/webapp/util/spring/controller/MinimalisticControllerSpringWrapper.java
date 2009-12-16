@@ -232,7 +232,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		 * method (since we're using this MinimalisticController ... wrapper)
 		 *  
 		 */
-		binder.registerCustomEditor(Date.class, new CustomDateEditor(DATE_FORMAT,false));
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(DATE_FORMAT,true));
 
 		/*
 		 * setting the dis/allowed fields for the binder
