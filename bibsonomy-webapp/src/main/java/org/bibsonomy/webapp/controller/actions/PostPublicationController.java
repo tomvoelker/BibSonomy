@@ -42,6 +42,7 @@ import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.EditPostValidator;
+import org.bibsonomy.webapp.validation.EditPublicationValidator;
 import org.bibsonomy.webapp.validation.PostPublicationValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
@@ -370,7 +371,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		if(bibtex.size()==1)
 		{
 			command.setPost(bibtex.get(0));
-			//editPublicationController.setErrors(getErrors()); 
+			super.setErrors(getErrors()); 
 			return super.workOn(command);
 		} else {
 			
@@ -581,14 +582,13 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 
 	@Override
 	protected View getPostView() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return Views.EDIT_PUBLICATION;
 	}
 
 	@Override
 	protected EditPostValidator<BibTex> getValidator() {
-		// TODO Auto-generated method stub
-		return null;
+		return new EditPublicationValidator(); 
 	}
 
 	@Override
