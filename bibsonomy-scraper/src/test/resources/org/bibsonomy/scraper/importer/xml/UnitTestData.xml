@@ -688,6 +688,8 @@
 		<URL>http://arrts.gtcni.org.uk/gtcni/handle/2428/8327</URL>
 		<BibFile>OpenrepositoryScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper</Scraper>
+		<Enabled>false</Enabled>
+		<Description>No route to host</Description>
 	</URLTest>
 	<URLTest id="url_120">
 		<TestDescription>Test for eric.exeter.ac.uk/exeter (openrepository)</TestDescription>
@@ -954,13 +956,13 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.worldcat.WorldCatScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_164">
-		<TestDescription>Test for worldcat publication page</TestDescription>
+		<TestDescription>Test for SSRN publication page</TestDescription>
 		<URL>http://papers.ssrn.com/sol3/papers.cfm?abstract_id=519044#</URL>
 		<BibFile>SSRNScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_165">
-		<TestDescription>Test for worldcat publication page</TestDescription>
+		<TestDescription>Test for SSRN publication page</TestDescription>
 		<URL>http://papers.ssrn.com/sol3/papers.cfm?abstract_id=620245</URL>
 		<BibFile>SSRNScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper</Scraper>
@@ -970,7 +972,7 @@
 		<URL></URL>
 		<BibFile>ISBNScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.id.kde.isbn.ISBNScraper</Scraper>
-		<Selection>9783404201600</Selection>
+		<Selection>978-3404201600</Selection>
 	</URLTest>
 	<URLTest id="url_167">
 		<TestDescription>Test for ISBN worldcat scraper</TestDescription>
