@@ -31,6 +31,9 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.FieldLengthErrorMessage;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
@@ -63,7 +66,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests getBibTexByHash
 	 */
 	@Test
-	public void getBibTexByHash() {
+	public void getBibTexByHash() {		
 		final String hash0 = "9abf98937435f05aec3d58b214a2ac58";
 		final String hash1 = "d9eea4aa159d70ecfabafa0c91bbc9f0";
 		final String hash2 = "b77ddd8087ad8856d77c740c8dc2864a";
@@ -854,7 +857,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests storePost
 	 */
 	@Test
-	public void storePost() {
+	public void createPost() {
 		// make sure the BibTexExtra plugin is activated
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
@@ -1003,6 +1006,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * than 10 seconds
 	 */
 	@Ignore // we don't want to wait 10 seconds each time we run the tests, not possible for new local db
+	@Test
 	public void testQueryTimeout() {
 		this.resetParameters();
 		this.bibtexParam.setUserName("dblp");
@@ -1022,8 +1026,8 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getBibtexByConceptForGroup
 	 */
-	// FIXME: adapt to new test db
-	@Ignore
+	@Ignore // FIXME: adapt to new test db
+	@Test
 	public void getBibtexByConceptForGroup() {
 		final BibTexParam param = new BibTexParam();
 		
@@ -1069,4 +1073,58 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals("testuser2", posts.get(1).getUser().getName());
 	}
 	
+	@Test
+	public void maxFieldLengthErrorCreatePost() {
+		final String longField = "1234567890ß1234567890ß1234567890ß1234567890ß1234567890ß"; // > 46
+		/*
+		 * create post
+		 */
+		final Post<BibTex> testPost = this.generateBibTexDatabaseManagerTestPost();
+		final BibTex resource = testPost.getResource();
+		resource.setTitle("Max Field Length in DB");
+		resource.setAuthor("W: Walt");
+		resource.setYear(longField);
+		resource.setMonth(longField);
+		
+		try {
+			this.bibTexDb.createPost(testPost, this.dbSession);
+			fail("expected a DatabaseException");
+		} catch (DatabaseException ex) {
+			final List<ErrorMessage> messages = ex.getErrorMessages(resource.getIntraHash());
+			assertEquals(1, messages.size());
+			
+			assertEquals(FieldLengthErrorMessage.class, messages.get(0).getClass());
+		}
+	}
+	
+	@Test
+	public void maxFieldLengthErrorUpdatePost() {
+		final String longField = "1234567890ß1234567890ß1234567890ß1234567890ß1234567890ß";
+		/*
+		 * update post
+		 */
+		final String userName = "testuser1";
+		final String intraHash = "b77ddd8087ad8856d77c740c8dc2864a";
+		final LinkedList<Integer> groups = new LinkedList<Integer>();
+		groups.add(GroupID.PUBLIC.getId());
+		
+		final List<Post<BibTex>> updatePosts = this.bibTexDb.getPostsByHashForUser(userName, intraHash, userName, groups, HashID.INTRA_HASH, this.dbSession);
+		
+		assertEquals(1, updatePosts.size());
+		
+		final Post<BibTex> updatePost = updatePosts.get(0);
+		
+		final BibTex updateResource = updatePost.getResource();
+		updateResource.setMonth(longField);
+		
+		try {
+			this.bibTexDb.updatePost(updatePost, updateResource.getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession);
+			fail("expected a DatabaseException");
+		} catch (DatabaseException ex) {
+			final List<ErrorMessage> messages = ex.getErrorMessages(updateResource.getIntraHash());
+			assertEquals(1, messages.size());
+			
+			assertEquals(FieldLengthErrorMessage.class, messages.get(0).getClass());
+		}
+	}
 }

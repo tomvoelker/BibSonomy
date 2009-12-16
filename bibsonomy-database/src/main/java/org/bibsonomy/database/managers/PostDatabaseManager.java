@@ -2,6 +2,10 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.beans.BeanInfo;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +27,7 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
 import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
@@ -36,6 +41,7 @@ import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
+import org.bibsonomy.database.util.DatabaseSchemaInformation;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -551,16 +557,16 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			}
 			
 			return postList;
-		} else {
-			final P param = this.createParam(userName, null, limit, offset);
-			param.setGroupId(groupId);
-			param.setSearch(search);
-			param.setGroups(visibleGroupIDs);
-			param.addAllToSystemTags(systemTags);
-
-			DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
-			return this.postList("get" + this.resourceClassName + "SearchForGroup", param, session);
 		}
+		
+		final P param = this.createParam(userName, null, limit, offset);
+		param.setGroupId(groupId);
+		param.setSearch(search);
+		param.setGroups(visibleGroupIDs);
+		param.addAllToSystemTags(systemTags);
+
+		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
+		return this.postList("get" + this.resourceClassName + "SearchForGroup", param, session);
 	}
 
 	/**
@@ -1006,6 +1012,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public boolean createPost(final Post<R> post, final DBSession session) {
 		session.beginTransaction();
 		try {
+			this.checkPost(post, session);
+			
 			List<SystemTag> systemTags = this.getSystemTags(post, new HashSet<Tag>());
 			this.systemTagPerformBefore(session, post, systemTags);
 			final String userName = post.getUser().getName();
@@ -1148,14 +1156,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					case UPDATE_TAGS:
 						this.performUpdateOnlyTags(post, oldPost, session);
 						break;
-//				case UPDATE_DOCUMENTS: // TODO: implement update documents operation
-//					return this.updateDocumentsOfPost(post, oldPost, session);
-//					break;
-				default:
-					/*
-					 * as default update all parts of a post
-					 */
-					this.performUpdateAll(post, oldPost, session);
+//					case UPDATE_DOCUMENTS: // TODO: implement update documents operation
+//						return this.updateDocumentsOfPost(post, oldPost, session);
+//						break;
+					default:
+						/*
+						 * as default update all parts of a post
+						 */
+						this.performUpdateAll(post, oldPost, session);
 				}
 			} else {
 				this.performUpdateAll(post, oldPost, session);
@@ -1168,10 +1176,56 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return true;
 	}
 	
+	protected void checkPost(final Post<R> post, final DBSession session) {
+		final R resource = post.getResource();
+		final Class<? extends Resource> resourceClass = resource.getClass();
+		
+		try {
+			final BeanInfo bi = Introspector.getBeanInfo(resourceClass);
+			final FieldLengthErrorMessage fieldLengthError = new FieldLengthErrorMessage();
+			
+			/*
+			 * loop through all properties
+			 * if there are any performance issues, their cause might be here
+			 */
+			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {			
+				final Method getter = d.getReadMethod();
+				
+				if (present(getter)) {					
+					final Object value = getter.invoke(resource, (Object[])null);
+					
+					/*
+					 * check max length
+					 */
+					if (value instanceof String) {
+						final String stringValue = (String) value;
+						
+						final int length = stringValue.length();
+						final String propertyName = d.getName();
+						final int maxLength = DatabaseSchemaInformation.getMaxColumnLengthForProperty(resourceClass, propertyName);
+						
+						if ((maxLength > 0) && (length > maxLength)) {
+							fieldLengthError.addToFields(propertyName, maxLength);
+						}
+					}
+				}
+			}
+			
+			if (fieldLengthError.hasErrors()) {
+				session.addError(resource.getIntraHash(), fieldLengthError);
+			}
+			
+		} catch (final Exception ex) {
+			log.error("could not introspect object of class '" + resourceClass.getName() + "'", ex);
+		}				
+	}
+	
 	private void performUpdateAll(Post<R> post, Post<R> oldPost, DBSession session) {
 		final String userName = post.getUser().getName();
 		session.beginTransaction();
 		try {
+			
+			this.checkPost(post, session);
 			
 			/*
 			 * ALWAYS get a new contentId

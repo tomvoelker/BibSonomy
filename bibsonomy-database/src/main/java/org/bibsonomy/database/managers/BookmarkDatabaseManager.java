@@ -79,6 +79,11 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	public List<Post<Bookmark>> getPostsFromBasketForUser(String loginUser, int limit, int offset, DBSession session) {
 		throw new UnsupportedOperationException("not available for bookmarks");
 	}
+	
+	@Override
+	protected void checkPost(Post<Bookmark> post, DBSession session) {
+		// nop
+	}
 
 	/*
 	 * (non-Javadoc)

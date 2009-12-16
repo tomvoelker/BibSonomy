@@ -9,6 +9,7 @@ import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.util.ExceptionUtils;
 
+import com.ibatis.common.jdbc.exception.NestedSQLException;
 import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.ibatis.sqlmap.client.SqlMapSession;
 import com.mysql.jdbc.exceptions.MySQLTimeoutException;
@@ -177,13 +178,27 @@ public class DBSessionImpl implements DBSession {
 	public Object transactionWrapper(final String query, final Object param, final Object result, final StatementType statementType, final QueryFor queryFor, final boolean ignoreException) {
 		try {
 			// determine, whether a result object was supplied which should be populated by ibatis
-			// or a new result object should be returned
-			if( result==null )
+			if (result==null) {
 				return this.executeQuery(this.getSqlMapExecutor(), query, param, statementType, queryFor);
-			else
-				return this.executeQuery(this.getSqlMapExecutor(), query, param, result, statementType, queryFor);
+			}
+			
+			// ... or a new result object should be returned
+			return this.executeQuery(this.getSqlMapExecutor(), query, param, result, statementType, queryFor);
+			
+		} catch (final NestedSQLException ex) {
+			if (this.databaseException.hasErrorMessages()) {
+				if ("22001".equals(ex.getSQLState())) {
+					/*
+					 * 22001 (string too long for the column)
+					 * ignore exception because a FieldLengthErrorMessage was added to databaseException
+					 * and the "commit" method will throw the databaseException
+					 */
+					return null;
+				}
+			}
+			
+			this.logException(query, ignoreException, ex);
 		} catch (final Exception ex) {
-			String msg = "Couldn't execute query '" + query + "'";
 			/*
 			 * catch exception that happens because of
 			 * query interruption due to time limits
@@ -218,17 +233,30 @@ public class DBSessionImpl implements DBSession {
 			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 1105 == ((SQLException)ex.getCause()).getErrorCode()) {
 				log.info("Hit MySQL bug 36230. (with query: " + query + "). See <http://bugs.mysql.com/bug.php?id=36230> for more information.");
 				throw new QueryTimeoutException(ex, query);
-			}		
-			if (ignoreException == false) {
-				this.somethingWentWrong();
-				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, msg);
-			} else {
-				msg += " (ignored): " + ex.getMessage();
-				log.debug(msg);
-				throw new RuntimeException(msg);
 			}
+			
+			this.logException(query, ignoreException, ex);
 		}
+		
 		return null; // unreachable
+	}
+
+	/**
+	 * @param query
+	 * @param ignoreException
+	 * @param ex
+	 */
+	private void logException(final String query, final boolean ignoreException, final Exception ex) {
+		String msg = "Couldn't execute query '" + query + "'";
+				
+		if (ignoreException) {
+			msg += " (ignored): " + ex.getMessage();
+			log.debug(msg);
+			throw new RuntimeException(msg);
+		}
+		
+		this.somethingWentWrong();
+		ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, msg);
 	}
 
 	/**

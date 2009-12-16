@@ -85,13 +85,13 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		
 		if ("lucene".equals(searchMode)) {
 			return super.getPostsSearchForGroup(groupId, visibleGroups, search, requestedUserName, limit, offset, systemTags, session);
-		} else {
-			final BibTexParam param = this.createParam(null, requestedUserName, limit, offset);
-			param.setGroupId(groupId);
-			param.setSearch(search);
-
-			return this.postList("getBibTexSearch", param, session);
 		}
+		
+		final BibTexParam param = this.createParam(null, requestedUserName, limit, offset);
+		param.setGroupId(groupId);
+		param.setSearch(search);
+
+		return this.postList("getBibTexSearch", param, session);
 	}
 	
 	/**
@@ -116,6 +116,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			param.setRequestedUserName(param.getUserName());
 			return this.getPostsByTagNamesForUser(param, session);
 		}
+		
 		return this.postList("getBibTexViewableByTag", param, session);
 	}
 

@@ -53,7 +53,6 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	/**
 	 * create
 	 * 
-	 * @param user
 	 * @param post
 	 * @param session
 	 * @return true if entry was created
@@ -63,7 +62,6 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	/**
 	 * update
 	 * 
-	 * @param user
 	 * @param post
 	 * @param oldHash
 	 * @param operation

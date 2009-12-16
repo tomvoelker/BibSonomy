@@ -582,7 +582,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * tests storePost
 	 */
 	@Test
-	public void storePost() {
+	public void createPost() {
 		final Post<Bookmark> toInsert = generateBookmarkDatabaseManagerTestPost();
 		toInsert.getResource().recalculateHashes();
 

@@ -575,7 +575,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertEquals(expectedTags.size(), tags.size());
 		
 		for (final Tag tag : tags) {
-			assertTrue("Tag " + tag + "wasn't expected", expectedTags.contains(tag));
+			assertTrue("Tag " + tag + " wasn't expected", expectedTags.contains(tag));
 		}
 	}
 	
