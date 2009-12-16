@@ -193,6 +193,12 @@
 									<fieldset class="fsInner" style="clear: both; width:96%; background-color:#EEEEEE; border:1px solid #006699; position:relative; float:left">
 										<legend><fmt:message key="post_bibtex.upload.options" /></legend>
 									    
+									    <div class="fsRow"> 
+                                          <label class="fsLabel"><fmt:message key="import.save_all_possible" /></label>
+                                          <buttons:help  cssStyle="float:left" message="import.save_all_possible.help" />
+                                          <input type="checkbox" class="fsInput" name="saveAllPosssible" value="" />
+                                        </div>
+									    
                                         <div class="fsRow"> 
                                           <label class="fsLabel"><fmt:message key="import.edit_before_import" /></label>
                                           <buttons:help  cssStyle="float:left" message="import.edit_before_import.help" />
@@ -312,54 +318,57 @@
 		
 			<c:if test="${not empty command.erroneousLineNumbers}">
 				<div style="margin-top:2em">
-					<img style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.erroneous_line_numbers"/></h3>
+					<a onclick="toggleImage('toggleErroneousLineNumbersButton', '${resdir}/image/nice_box_arrow_right.png', '${resdir}/image/nice_box_arrow.png', 'erroneousLineNumbers')" ><img id="toggleErroneousLineNumbersButton" style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.erroneous_line_numbers"/></h3></a>
 				</div>
-				<ul class="errorLineList">
-					<c:forEach var="lineNumber" items="${command.erroneousLineNumbers}">
-						<li><b class="standart_text_normal">${lineNumber}</b></li>
-					</c:forEach>
-				</ul>
+				<div id="erroneousLineNumbers">
+					<ul class="errorLineList">
+						<c:forEach var="lineNumber" items="${command.erroneousLineNumbers}">
+							<li><b class="standart_text_normal">${lineNumber}</b></li>
+						</c:forEach>
+					</ul>
+				</div>
 			</c:if>
 		
 			<c:if test="${command.extendedView}">
 				<div style="margin-top:2em">
-					<img style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.parse_or_incomplete_bibtex"/></h3>
+					<a onclick="toggleImage('toggleParsedPostViewButton', '${resdir}/image/nice_box_arrow_right.png', '${resdir}/image/nice_box_arrow.png', 'parsedPostView')"><img id="toggleParsedPostViewButton" style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.parse_or_incomplete_bibtex"/></h3></a>
 				</div>
-				<p class="standart_text_normal" style="margin-top:1em; margin-bottom:1em"><fmt:message key="import.error.parse_or_incomplete_bibtex.description"/></p>
-				<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
-						<edit:batchEditContent 	formAction="${command.formAction}" 
-			        							listView="${command.bibtex}" 
-			        							otherPostsUrlPrefix="bla" 
-			        							listViewStartParamName="bibtex.start"
-			        							checkboxAllLabelKey="batchedit.saveAll"
-      											checkboxLabelKey="batchedit.saveAllQ"
-      											checkboxAllQuestion="batchedit.saveAll.confirm"
-      											submitKey="batchedit.button.save"  >
-		        							
-							<jsp:attribute name="shortPostDescription">
-								<bib:shortDescription post="${post}"/>
-							</jsp:attribute>
-							
-							<jsp:attribute name="title">  
-								<bib:title post="${post}"/>
-							</jsp:attribute>
-								
-				   			<jsp:attribute name="desc">
-				   				<bib:desc post="${post}"/>
-				   			</jsp:attribute>
-				      		
-				      		<jsp:attribute name="bmicon"> 
-				      			<bib:bmicon post="${post}" loginUserName="${loginUser.name}" />
-				      		</jsp:attribute>
-				      		
-				      		<jsp:attribute name="actions">
-				      			<actions post="${post}" loginUserName="${loginUser.name}" disableResourceLinks="${false}"/>
-				      		</jsp:attribute>
-			        </edit:batchEditContent>
-		        </fieldset> 
-			</c:if>            
-			
-		</div>
+				<div id="parsedPostView">
+						<p class="standart_text_normal" style="margin-top:1em; margin-bottom:1em"><fmt:message key="import.error.parse_or_incomplete_bibtex.description"/></p>
+						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
+								<edit:batchEditContent 	formAction="${command.formAction}" 
+					        							listView="${command.bibtex}" 
+					        							otherPostsUrlPrefix="bla" 
+					        							listViewStartParamName="bibtex.start"
+					        							checkboxAllLabelKey="batchedit.saveAll"
+		      											checkboxLabelKey="batchedit.saveAllQ"
+		      											checkboxAllQuestion="batchedit.saveAll.confirm"
+		      											submitKey="batchedit.button.save"  >
+				        							
+									<jsp:attribute name="shortPostDescription">
+										<bib:shortDescription post="${post}"/>
+									</jsp:attribute>
+									
+									<jsp:attribute name="title">  
+										<bib:title post="${post}"/>
+									</jsp:attribute>
+										
+						   			<jsp:attribute name="desc">
+						   				<bib:desc post="${post}"/>
+						   			</jsp:attribute>
+						      		
+						      		<jsp:attribute name="bmicon"> 
+						      			<bib:bmicon post="${post}" loginUserName="${loginUser.name}" />
+						      		</jsp:attribute>
+						      		
+						      		<jsp:attribute name="actions">
+						      			<actions post="${post}" loginUserName="${loginUser.name}" disableResourceLinks="${false}"/>
+						      		</jsp:attribute>
+					        </edit:batchEditContent>
+				        </fieldset>
+					</div> 
+				</c:if>            
+			</div>	
 		</jsp:attribute>
 		
 		
@@ -402,6 +411,21 @@
                 $(".dissError:empty").hide("1");
              ]]> 
              //</mtl:cdata>
+             
+			 function toggleImage(pictureId, pictureActive, pictureInactive, divId)
+			 {
+				 $(document.getElementById(divId)).slideToggle("slow"); 
+				 var  imageSource= $(document.getElementById(pictureId)).attr("src");
+				 if(imageSource==pictureActive) {
+					 $('#'+pictureId).attr('src',pictureInactive);
+				 } else {
+					 $('#'+pictureId).attr('src',pictureActive);
+				 }
+			 }
+			 
+			 			 
+			 
+             
           </script>
        
        </jsp:attribute>
