@@ -67,7 +67,7 @@
 		<include refid="getTagsByResourceType"/>
 		GROUP BY t.tag_name LIMIT #limit# OFFSET #offset#
 	</select>
-	
+				
 	<!--
 		ATTENTION: for the query 'getTagsByUser', the resultMap 'TagCommon.tagWithGlobalCount'
 	 	might be a bit misleading, als the 'global' count here is not the total number of posts
@@ -76,15 +76,19 @@
 	 	We should rename the attribute 'globalcount' to 'resourcecount' to make it better 
 	 	understandable- (see https://gforge.cs.uni-kassel.de/tracker/index.php?func=detail&aid=433&group_id=52&atid=278)
 	 	dbe, 2007/09/27
-	-->
+	-->		  
 	<select id="getTagsByUser" resultMap="TagCommon.tagWithGlobalAndUserCount" parameterClass="tagParam">
 		SELECT t1.tag_name, count(t1.tag_name) AS tag_ctr_user, t.tag_ctr_public AS tag_ctr_global   
 		FROM tas t1, tags t  
-		WHERE t1.user_name = #requestedUserName# 		 
+		WHERE t1.user_name = #requestedUserName# 	 
 		<include refid="getTagsByResourceType"/>
 		<include refid="restrictToGroups"/>
 		AND t1.tag_name = t.tag_name 
-		GROUP BY t1.tag_name LIMIT #limit# OFFSET #offset#
+		GROUP BY t1.tag_name 
+		<isEqual property="order" compareValue="FREQUENCY">
+			ORDER BY tag_ctr_user DESC
+		</isEqual>
+		LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getTagsByGroup" resultMap="TagCommon.tagWithGlobalCount" parameterClass="tagParam">
