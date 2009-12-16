@@ -174,7 +174,24 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/****************************
 	 * SPECIAL FOR FILE UPLOAD
 	 ****************************/
+	/**
+	 * option that, if true, affects the storing process of correctly parsed publications,
+	 * even if there were other errors detected within the file.
+	 */
+	private boolean writeAllCorrectOnes;
 	
+	public boolean getWriteAllCorrectOnes() {
+		return this.writeAllCorrectOnes;
+	}
+	
+	public boolean isWriteAllCorrectOnes() {
+		return this.writeAllCorrectOnes;
+	}
+
+	public void setWriteAllCorrectOnes(boolean writeAllCorrectOnes) {
+		this.writeAllCorrectOnes = writeAllCorrectOnes;
+	}
+
 	/**
 	 * the BibTeX/Endnote file
 	 */

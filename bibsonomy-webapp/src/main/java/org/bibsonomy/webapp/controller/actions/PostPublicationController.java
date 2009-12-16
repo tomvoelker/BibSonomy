@@ -388,7 +388,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				/**
 				 * Concatenate all errors, that were found during savePublicationsForUser
 				 */
-				Map<String, List<ErrorMessage>> errorMsgs = savePublicationsForUser(postListCommand, command.isOverwrite(), loginUser);
+				Map<String, List<ErrorMessage>> errorMsgs = savePublicationsForUser(postListCommand, command.isOverwrite(), command.isWriteAllCorrectOnes(), loginUser);
 				for(int i=0; i<bibtex.size(); i++)
 				{
 					for(ErrorMessage msg : errorMsgs.get(bibtex.get(i)))
@@ -444,7 +444,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		return ShowEnterPublicationView(command, false);
 	}
 	
-	private Map<String, List<ErrorMessage>> savePublicationsForUser(ListCommand<Post<BibTex>> postListCommand, boolean isOverwrite, User user)
+	private Map<String, List<ErrorMessage>> savePublicationsForUser(ListCommand<Post<BibTex>> postListCommand, boolean isOverwrite, boolean writeAllCorrectOnes, User user)
 	{
 		List<Post<?>> tmpList = new LinkedList<Post<?>>(postListCommand.getList());
 		List<String> createdPostHash = new LinkedList<String>();
@@ -508,7 +508,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			 * if isOverwrite is true. Same is true, if the number of publications is greater than the
 			 * treshold.
 			 */
-			if(!isErroneousList || tmpList.size()>MAXCOUNT_ERRORHANDLING)
+			if(!isErroneousList || tmpList.size()>MAXCOUNT_ERRORHANDLING || writeAllCorrectOnes)
 			{
 				
 				try {
