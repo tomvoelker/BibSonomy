@@ -35,7 +35,10 @@ public enum Order {
 	/** for ordering by popularity (desc) */
 	POPULAR,
 	/** for ordering by folkrank (desc) */
-	FOLKRANK;
+	FOLKRANK,
+	
+	/** for ordering tags by frequency (desc) */
+	FREQUENCY;
 
 	/**
 	 * Retrieve Order by name
