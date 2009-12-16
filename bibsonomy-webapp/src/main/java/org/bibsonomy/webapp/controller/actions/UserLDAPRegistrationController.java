@@ -101,7 +101,7 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 				// if login failed, return to step 1 - show REGISTER_USER_LDAP
 
 				// set some error messages
-				errors.rejectValue("registerUser.loginmessage", "error.login.failed");
+				errors.rejectValue("loginmessage", "error.login.failed");
 				returnView = Views.REGISTER_USER_LDAP;
 			} else {
 				// if login was successful, insert ldap data to command

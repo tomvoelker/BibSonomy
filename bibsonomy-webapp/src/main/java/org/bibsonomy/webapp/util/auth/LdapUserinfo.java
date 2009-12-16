@@ -29,20 +29,9 @@ public class LdapUserinfo {
 	private String firstName = ""; 
 	private String email = ""; 
 	private String location = "";
-	private String passwordPicaHash = "";
+	private String passwordHash = "";
 
 
-	/**
-	 * generates a pica-"hashed" value from string
-	 * this function will add prefix "{PICA}" to hash  
-	 * @param s string to hash for pica
-	 * @return Picahash
-	 */
-
-	public String generatePicaHash(String s) {
-		return generatePicaHash(s, "{PICA}");
-	}
-	
 	/**
 	 * generates a pica-"hashed" value from string
 	 * this function will add prefix "{PICA}" to hash
@@ -51,16 +40,17 @@ public class LdapUserinfo {
 	 * @return Base64 Picahash
 	 */
 	public String generatePicaHashBase64(String s) {
-		return new String(Base64.encodeBase64(generatePicaHash(s, "{PICA}").getBytes()));
+		return new String(Base64.encodeBase64(generatePicaHash(s).getBytes()));
 	}
 
 	/**
 	 * generates a pica-"hashed" value from string
-	 * hash-prefix can be set  
+	 * this function will add prefix "{PICA}" to hash
 	 * @param s string to hash for pica
 	 * @return pica hash
 	 */
-	public String generatePicaHash(String s, String prefix) {
+	public String generatePicaHash(String s) {
+		String prefix = "{PICA}";
 		byte[] b = s.getBytes();
 
 		Integer hash = 0;
@@ -72,16 +62,24 @@ public class LdapUserinfo {
 		return prefix + hash.toString();
 	}
 	
-	
-	public boolean checkPasswordPicaHash(String password) {
+
+	public boolean checkPasswordHash(String password) {
 		boolean authOk = false;
-		if ( this.getPasswordPicaHash().equals(generatePicaHash(password))) {
+		
+		//check hash method
+		String hashMethod = this.getPasswordHash().substring(this.getPasswordHash().indexOf("{")+1, this.getPasswordHash().indexOf("}"));
+		log.debug("hash method --> " + hashMethod);
+		
+		if ( hashMethod.equals("PICA") && this.getPasswordHash().equals(generatePicaHash(password))) {
+			authOk = true;
+		} else if ( hashMethod.equals("crypt") && this.getPasswordHashBase64().equals(generateMd5(password,0))) {
 			authOk = true;
 		} else {
 			authOk = false;
 		}
 		return authOk;
 	}
+	
 	
 	
 	/** 
@@ -263,7 +261,7 @@ public class LdapUserinfo {
 			// convert byte[] to String
 			String decodedString = new String(passwordB); 
 			
-	    	this.passwordPicaHash = decodedString;
+	    	this.passwordHash = decodedString;
 			
 			
 		} catch (NamingException ex) {
@@ -272,23 +270,33 @@ public class LdapUserinfo {
     	
     }
 
-    public String getPasswordPicaHash () {
-    	return this.passwordPicaHash;
+    public String getPasswordHash () {
+    	return this.passwordHash;
     }
 
-    public String getPasswordPicaHashBase64 () {
-    	return new String(Base64.encodeBase64(this.passwordPicaHash.getBytes()));
+    public String getPasswordHashBase64 () {
+    	return new String(Base64.encodeBase64(this.passwordHash.getBytes()));
     }
 
-    public String getPasswordPicaHashMd5 () {
+    public String getPasswordHashMd5Hex () {
+    	return generateMd5(this.passwordHash,1);
+    }
+
+    public String getPasswordHashMd5Base64 () {
+    	return generateMd5(this.passwordHash,0);
+    }
+    
+    public String generateMd5 (String s, int format) {
     	MessageDigest md5 = null;
+    	String returnValue = null;
+    	
 		try {
 			md5 = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException ex) {
 			log.error("NoSuchAlgorithmException in " + this.getClass().getName() + " (getPasswordPicaHashMd5): " + ex.getMessage());
 		}
         md5.reset();
-        md5.update(this.passwordPicaHash.getBytes());
+        md5.update(s.getBytes());
         byte[] result = md5.digest();
         
         StringBuffer hexString = new StringBuffer();
@@ -299,6 +307,11 @@ public class LdapUserinfo {
         	hexString.append(Integer.toHexString(0xFF & result[i]));
         }
        
-    	return new String(hexString.toString());
+        if (format == 0) {
+        	returnValue = new String(Base64.encodeBase64(this.passwordHash.getBytes()));
+        } else {
+        	returnValue = new String(hexString.toString());
+        }
+    	return returnValue;
     }
 }

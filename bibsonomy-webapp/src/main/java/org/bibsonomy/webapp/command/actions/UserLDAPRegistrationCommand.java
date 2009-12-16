@@ -20,6 +20,9 @@ public class UserLDAPRegistrationCommand extends BaseCommand implements Serializ
 	 * Holds the details of the user which wants to register (like name, email, password)
 	 */
 	private User registerUser;
+	
+	private String loginmessage;
+
 
 	/**
 	 * Registration step
@@ -40,6 +43,16 @@ public class UserLDAPRegistrationCommand extends BaseCommand implements Serializ
 	public void setRegisterUser(User registerUser) {
 		this.registerUser = registerUser;
 	}
+	
+	
+	public String getLoginmessage() {
+		return this.loginmessage;
+	}
+
+	public void setLoginmessage(String loginmessage) {
+		this.loginmessage = loginmessage;
+	}
+	
 	
 	/**
 	 * @return registration step

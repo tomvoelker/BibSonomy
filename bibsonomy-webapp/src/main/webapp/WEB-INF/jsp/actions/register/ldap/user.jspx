@@ -59,7 +59,7 @@
 				<br />
 				<input type="submit" value="${submit}" />
 				<c:out value=" "/>
-				<form:errors cssClass="errmsg" path="registerUser.loginmessage" />
+				<form:errors cssClass="errmsg" path="loginmessage" />
 				
 				
 	            <!-- forward to second registration step -->

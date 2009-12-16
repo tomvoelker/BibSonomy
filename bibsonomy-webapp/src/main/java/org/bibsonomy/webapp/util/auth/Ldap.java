@@ -103,18 +103,20 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 		if (null==ldapUserId || null==ldapCredentials) return null;
 		
 		// get some ldap parameter from environment ldap resource configuration
+		String ldapSearchDomain = "";
 		String ldapUserIdField = "";
-		String ldapSurenameField = "";
-		String ldapGivennameField = "";
+		String ldapSureNameField = "";
+		String ldapGivenNameField = "";
 		String ldapMailField = "";
 		String ldapLocationField = "";
 		String ldapUserPasswordField = "userPassword";
 		try {
 			Context initContext = new InitialContext();
 			Context envContext = (Context) initContext.lookup("java:/comp/env");
+			ldapSearchDomain = (String) envContext.lookup("ldap/config/searchDomain");
 			ldapUserIdField = (String) envContext.lookup("ldap/config/userId");
-			ldapSurenameField = (String) envContext.lookup("ldap/config/surename");
-			ldapGivennameField = (String) envContext.lookup("ldap/config/givenname");
+			ldapSureNameField = (String) envContext.lookup("ldap/config/sureName");
+			ldapGivenNameField = (String) envContext.lookup("ldap/config/givenName");
 			ldapMailField = (String) envContext.lookup("ldap/config/mail");
 			ldapLocationField = (String) envContext.lookup("ldap/config/location");
 		} catch (NamingException ex) {
@@ -149,32 +151,24 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 	            SearchControls ctrl = new SearchControls();
 	            ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
 	            NamingEnumeration<SearchResult> enumeration;
-	            enumeration = ctx.search("ou=pica-users,dc=ub,dc=uni-kassel,dc=de", query, ctrl);
+	            enumeration = ctx.search(ldapSearchDomain, query, ctrl);
 				if (enumeration.hasMore()) {
 		            while (enumeration.hasMore()) {
 		                SearchResult result = enumeration.next();
 		                Attributes attribs = result.getAttributes();
 		
 	                	ldapUserinfo.setUserId(attribs.get(ldapUserIdField));
-	                	ldapUserinfo.setSureName(attribs.get(ldapSurenameField));
-	                	ldapUserinfo.setFirstName(attribs.get(ldapGivennameField));
-	                	ldapUserinfo.setEmail(attribs.get(ldapMailField));
-	                	ldapUserinfo.setLocation(attribs.get(ldapLocationField));
+	                	if ((null != ldapSureNameField) && ldapSureNameField != "") ldapUserinfo.setSureName(attribs.get(ldapSureNameField));
+	                	if ((null != ldapGivenNameField) && ldapGivenNameField != "") ldapUserinfo.setFirstName(attribs.get(ldapGivenNameField));
+	                	if ((null != ldapMailField) && ldapMailField != "") ldapUserinfo.setEmail(attribs.get(ldapMailField));
+	                	if ((null != ldapLocationField) && ldapLocationField != "") ldapUserinfo.setLocation(attribs.get(ldapLocationField));
 	                	ldapUserinfo.setPasswordPicaHash(attribs.get(ldapUserPasswordField));
-/*
-	                	log.info("LDAP-Properties: ############> " + attribs.toString());
-	                	log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LDAP-Password: "+ldapUserinfo.getPasswordPicaHash());
-	                	log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LDAP-PasswordB64: "+ldapUserinfo.getPasswordPicaHashBase64());
-	                	log.info("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ LDAP-PasswordMD5: "+ldapUserinfo.getPasswordPicaHashMd5());
-	                	log.info("LDAP-Authentication successful for user " + ldapUserinfo.getUserId() + " (" + ldapUserinfo.getSureName() + ", " + ldapUserinfo.getFirstName() + ", " + ldapUserinfo.geteMail() + ", " + ldapUserinfo.getLocation() + ")");
-*/
 	                }
 		            
 					// check password
-					if (ldapUserinfo.checkPasswordPicaHash(ldapCredentials)) {
+					if (ldapUserinfo.checkPasswordHash(ldapCredentials)) {
 						// password is correct
 						log.info("Password is CORRECT");
-						
 					}
 					else {
 						// password is not correct
@@ -189,6 +183,8 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 					
 			} catch (NamingException ex) {
 				log.warn("NamingException in " + this.getClass().getName() + " (checkauth/2): " + ex.getMessage());
+				log.warn("Check LDAP server or configuration in context.xml");
+				ldapUserinfo = null;
 			}
 
 		}
