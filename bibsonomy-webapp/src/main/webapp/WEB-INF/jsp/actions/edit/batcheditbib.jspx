@@ -13,13 +13,22 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-
-    <edit:batcheditSkeleton listView="${command.bibtex}" listViewStartParamName="bibtex.start" otherPostsUrlPrefix="/bibtex"> 
-      <jsp:attribute name="shortPostDescription"><bib:shortDescription post="${post}"/></jsp:attribute>
-      <jsp:attribute name="title">  <bib:title post="${post}"/></jsp:attribute>
-      <jsp:attribute name="desc">   <bib:desc post="${post}"/></jsp:attribute>
-      <jsp:attribute name="bmicon"> <bib:bmicon post="${post}" loginUserName="${loginUser.name}"/></jsp:attribute>
-      <jsp:attribute name="actions"><bib:actions post="${post}" loginUserName="${loginUser.name}" disableResourceLinks="${false}"/></jsp:attribute>
-    </edit:batcheditSkeleton>
-
+	<c:choose>
+		<c:when test="${empty command.deleteCheckedPosts}">
+			<c:set var="deleteCheckedPosts" value="true" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="deleteCheckedPosts" value="${command.deleteCheckedPosts}" />
+		</c:otherwise>
+	</c:choose>
+	
+	
+	<edit:batcheditSkeleton listView="${command.bibtex}" listViewStartParamName="bibtex.start" otherPostsUrlPrefix="/bibtex" deleteCheckedPosts="${deleteCheckedPosts}"> 
+     <jsp:attribute name="shortPostDescription"><bib:shortDescription post="${post}"/></jsp:attribute>
+     <jsp:attribute name="title">  <bib:title post="${post}"/></jsp:attribute>
+     <jsp:attribute name="desc">   <bib:desc post="${post}"/></jsp:attribute>
+     <jsp:attribute name="bmicon"> <bib:bmicon post="${post}" loginUserName="${loginUser.name}"/></jsp:attribute>
+     <jsp:attribute name="actions"><bib:actions post="${post}" loginUserName="${loginUser.name}" disableResourceLinks="${false}"/></jsp:attribute>
+   </edit:batcheditSkeleton>
+    	
 </jsp:root>
