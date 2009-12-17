@@ -2,6 +2,10 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.util.Map;
 
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
 
 
@@ -10,6 +14,49 @@ import org.bibsonomy.webapp.command.UserResourceViewCommand;
  * @version $Id$
  */
 public class BatchEditCommand extends UserResourceViewCommand {
+	
+	/**
+	 * The flag (from postPublication) that determines, if already existing posts will get updated.
+	 */
+	private boolean isOverwrite;
+	
+	/**
+	 * This List contains all posts, that were to save, but an error occurred 
+	 * (needed for the error case)
+	 */
+	private ListCommand<Post<? extends Resource>> posts;
+
+
+	/**
+	 * @return the list of posts
+	 */
+	@Override
+	public ListCommand<Post<BibTex>> getBibtex() {
+		ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>(this.posts);
+		return bibtex;
+	}
+	
+	/**
+	 * @return the list of posts
+	 */
+	public ListCommand<Post<?>> getPosts() {
+		return this.posts;
+	}
+
+	/**
+	 * @param posts the list of posts
+	 */
+	public void setPosts(ListCommand<Post<?>> posts) {
+		this.posts = posts;
+	}
+	
+	/**
+	 * this flag determines, weather the dialogue called was configured to 
+	 * edit(delete) or edit(create) existing posts.
+	 */
+	private boolean deleteCheckedPosts;
+	
+
 	/**
 	 * these tags will be added to all resources
 	 */
@@ -35,6 +82,31 @@ public class BatchEditCommand extends UserResourceViewCommand {
 	 */
 	private String referer;
 
+	
+	/**
+	 * @return the flag that determines, weather the dialogue called was configured to 
+	 * edit(delete) or edit(create) existing posts.
+	 */
+	public boolean getDeleteCheckedPosts() {
+		return this.deleteCheckedPosts;
+	}
+
+	/**
+	 * @return the flag that determines, weather the dialogue called was configured to 
+	 * edit(delete) or edit(create) existing posts.
+	 */
+	public boolean isDeleteCheckedPosts() {
+		return this.deleteCheckedPosts;
+	}
+	
+	/**
+	 * @param deleteCheckedPosts the flag that determines, weather the dialogue called was configured to 
+	 * edit(delete) or edit(create) existing posts.
+	 */
+	public void setDeleteCheckedPosts(boolean deleteCheckedPosts) {
+		this.deleteCheckedPosts = deleteCheckedPosts;
+	}
+	
 	/**
 	 * @return the tags
 	 */
@@ -104,5 +176,18 @@ public class BatchEditCommand extends UserResourceViewCommand {
 	public void setReferer(String referer) {
 		this.referer = referer;
 	}
+	
+	public boolean getIsOverwrite() {
+		return this.isOverwrite;
+	}
+	
+	public boolean isOverwrite() {
+		return this.isOverwrite;
+	}
+
+	public void setOverwrite(boolean isOverwrite) {
+		this.isOverwrite = isOverwrite;
+	}
+
 
 }
