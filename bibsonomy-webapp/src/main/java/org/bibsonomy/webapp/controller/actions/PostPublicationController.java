@@ -360,8 +360,10 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		 * therefore we do have to store them temporarily in the session
 		 */
 		if(errors.hasErrors())
+		{
+			command.setDeleteCheckedPosts(false); //posts will have to get saved, since an error occurred
 			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, bibtex);
-		
+		}
 		
 		
 		/*
@@ -402,7 +404,9 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				}
 				command.setFormAction(ACTION_SAVE_BEFORE_EDIT);
 			} else {
+					command.setDeleteCheckedPosts(false); //posts will have to get saved, since an error occurred
 					setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, bibtex);
+					
 				//TODO: read session attribute in next controller
 			}
 
@@ -418,10 +422,12 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				//TODO set a variable to determine, if #posts>treshold => list of imported and unimported
 				//publications. since the correct ones are already saved, the action of the form (batchedit)
 				//will be deleting the stored posts.
-				
+				command.setDeleteCheckedPosts(false); //posts will have to get saved, since an error occurred
 				return ShowEnterPublicationView(command, true);
 			}
 			
+			if(command.getEditBeforeImport())
+				command.setDeleteCheckedPosts(false); //posts will have to get saved, because the user decided to
 			
 			return Views.BATCHEDITBIB;
 		}

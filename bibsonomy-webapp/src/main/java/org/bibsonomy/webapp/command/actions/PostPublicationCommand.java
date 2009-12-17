@@ -32,6 +32,36 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public final static String TASK_EDIT_PUBLICATIONS 	= "EDIT_PUBLICATIONS";
 	
 	/**
+	 * this flag determines, weather the dialogue called was configured to 
+	 * edit(delete) or edit(create) existing posts.
+	 */
+	private boolean deleteCheckedPosts;
+	
+	/**
+	 * @return the flag that determines, weather the dialogue called was configured to 
+	 * edit(delete) or edit(create) existing posts.
+	 */
+	public boolean getDeleteCheckedPosts() {
+		return this.deleteCheckedPosts;
+	}
+
+	/**
+	 * @return the flag that determines, weather the dialogue called was configured to 
+	 * edit(delete) or edit(create) existing posts.
+	 */
+	public boolean isDeleteCheckedPosts() {
+		return this.deleteCheckedPosts;
+	}
+	
+	/**
+	 * @param deleteCheckedPosts the flag that determines, weather the dialogue called was configured to 
+	 * edit(delete) or edit(create) existing posts.
+	 */
+	public void setDeleteCheckedPosts(boolean deleteCheckedPosts) {
+		this.deleteCheckedPosts = deleteCheckedPosts;
+	}
+	
+	/**
 	 * URL of the tabheader-anchor-links
 	 */
 	private String tabURL=null;
@@ -284,6 +314,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/***********************************************
 	 * FOR IMPORTS CONTAINING MULTIPLE PUBLICATIONS
 	 ***********************************************/
+	//TODO REMOVE
 	/**
 	 * The action that will be started, when hitting the submission button on the edit page
 	 */
