@@ -54,8 +54,8 @@
 	                </tr>
 	                
 	                <tr>
-	                  <td><form:label path="registerUser.ldapUid" ><fmt:message key="user.settings.ldapuserid"/>:</form:label></td>
-	                  <td><c:out value="${command.registerUser.ldapUid}"/><form:errors cssClass="errmsg" path="registerUser.ldapUid" /></td>
+	                  <td><form:label path="registerUser.userId" ><fmt:message key="user.settings.userid"/>:</form:label></td>
+	                  <td><c:out value="${command.registerUser.userId}"/><form:errors cssClass="errmsg" path="registerUser.userId" /></td>
 	                </tr>
 				</table>
 				

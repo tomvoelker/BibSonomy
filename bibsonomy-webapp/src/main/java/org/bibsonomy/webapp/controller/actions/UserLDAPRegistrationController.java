@@ -113,7 +113,7 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 				command.getRegisterUser().setRealname(ldapUserinfo.getFirstName() + " " + ldapUserinfo.getSureName());
 				// command.getRegisterUser().setGender(ldapUserinfo.);
 				command.getRegisterUser().setPlace(ldapUserinfo.getLocation());
-				command.getRegisterUser().setLdapUid(ldapUserinfo.getUserId());
+				command.getRegisterUser().setUserId(ldapUserinfo.getUserId());
 				returnView = Views.REGISTER_USER_LDAP_FORM;
 			}
 
