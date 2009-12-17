@@ -19,7 +19,7 @@ public class ListCommand<T> {
 	private int numNextPages = 2;
 	private int entriesPerPage = -1;
 	/** we store the parent command here in order to be able to access the default settings for entriesPerPage therein */
-	private ContextCommand parentCommand;
+	private final ContextCommand parentCommand;
 
 	private final PageCommand curPage = new PageCommand();
 	private List<PageCommand> previousPages;
@@ -34,6 +34,31 @@ public class ListCommand<T> {
 	 */
 	public ListCommand(ContextCommand parentCommand) {
 		this.parentCommand = parentCommand;
+	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param listCommand - the command which contains this list
+	 * 
+	 */
+	public ListCommand(ListCommand listCommand) {
+		if(listCommand!=null && listCommand.getList()!=null &&listCommand.getList().size()>0)
+		{	
+			try {
+				T testCastObject = (T) listCommand.getList().get(0);
+			} catch (Exception ex) {
+				throw new IllegalArgumentException("Copy Constructor of ListCommand didnt work, " +
+													"because the type parameters are not assignable.");
+			}
+		}
+		this.parentCommand = listCommand.parentCommand;
+		this.setEntriesPerPage(listCommand.getEntriesPerPage());
+		this.setList(listCommand.getList());
+		this.setStart(listCommand.getStart());
+		this.setTotalCount(listCommand.getTotalCount());
+		this.numNextPages=listCommand.numNextPages;
+		this.numPreviousPages=listCommand.numPreviousPages;
 	}
 	
 	/**
