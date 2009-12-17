@@ -20,6 +20,7 @@
     <jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
   	<jsp:directive.attribute name="formAction" type="java.lang.String" required="false"/>
+  	<jsp:directive.attribute name="deleteCheckedPosts" type="java.lang.Boolean" required="false"/>
   	
     <jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post"/>
     <jsp:directive.attribute name="title" fragment="true" required="true"/>
@@ -30,6 +31,20 @@
 
     <jsp:directive.variable name-given="post" scope="NESTED"/>
 
+	  <c:choose>
+	  	<c:when test="${deleteCheckedPosts}">
+	  		<c:set var="checkboxAllLabelKey" value="batchedit.deleteAll" />
+	  		<c:set var="checkboxLabelKey" value="batchedit.deletePostQ" />
+	  		<c:set var="checkboxAllQuestion" value="batchedit.deleteAll.confirm" />
+	  		<c:set var="submitKey" value="batchedit.button.update" />
+	  	</c:when>
+	  	<c:otherwise>
+	  		<c:set var="checkboxAllLabelKey" value="batchedit.saveAll" />
+	  		<c:set var="checkboxLabelKey" value="batchedit.saveAllQ" />
+	  		<c:set var="checkboxAllQuestion" value="batchedit.saveAll.confirm" />
+	  		<c:set var="submitKey" value="batchedit.button.save" />
+	  	</c:otherwise>
+	  </c:choose>
 
     <!-- page title -->
     <fmt:message key="post.meta.edit" var="pageTitle"/>
@@ -48,6 +63,7 @@
         <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<c:out value="${pageTitle}"/></a> 
       </jsp:attribute>
 
+	  
 
       <jsp:attribute name="content">
 		<h2><fmt:message key="batchedit.info"/></h2>
@@ -57,10 +73,10 @@
         						listView="${listView}" 
         						otherPostsUrlPrefix="${otherPostsUrlPrefix}" 
         						listViewStartParamName="${listViewStartParamName}"
-        						checkboxAllLabelKey="batchedit.deleteAll"
-      							checkboxLabelKey="batchedit.deletePostQ"
-      							checkboxAllQuestion="batchedit.deleteAll.confirm"
-      							submitKey="batchedit.button.update" 
+        						checkboxAllLabelKey="${checkboxAllLabelKey}"
+      							checkboxLabelKey="${checkboxLabelKey}"
+      							checkboxAllQuestion="${checkboxAllQuestion}"
+      							submitKey="${submitKey}" 
       							 > 
 			<jsp:attribute name="shortPostDescription">
 				<jsp:invoke fragment="shortPostDescription"/>

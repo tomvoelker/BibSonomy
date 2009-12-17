@@ -61,6 +61,9 @@
          <c:if test="${not empty listView.list}">
            
            <form id="batchedit" action="/${formAction}" method="POST">
+           <!-- POSSIBLE TODO: make command variable nested/tunnel through servlet-actions.xml for both commands -->
+           	 <input type="hidden" value="${command.deleteCheckedPosts}" />
+           	 <input type="hidden" value="${command.overwrite}" />
              <table>
 
                <tr>
