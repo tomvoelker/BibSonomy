@@ -24,6 +24,7 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
@@ -118,6 +119,23 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		}
 		
 		return this.postList("getBibTexViewableByTag", param, session);
+	}
+	
+	
+	/**
+	 * Prepares a query which returns all BibTex posts with the provided title.
+	 * 
+	 * @param title
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of bibtex posts
+	 */
+	public List<Post<BibTex>> getPostsByTitle(final String title, final int limit, final int offset, final DBSession session){
+		final BibTexParam param = this.createParam(limit, offset);
+		param.setTitle(title);
+		param.setGrouping(GroupingEntity.ALL);
+		return this.postList("getBibTexByTitle", param, session);
 	}
 
 	/**
