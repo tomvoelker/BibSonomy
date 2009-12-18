@@ -239,15 +239,16 @@
 	</select>
 
 	<select id="getBibTexByHash" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, b.`group`, NULL AS group_name
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, b.`group`, g.group_name
 		FROM (SELECT b2.*
 		      FROM bibtex b2
 		      WHERE simhash$simHash$ = #hash#
 		            AND `group` = #groupType#
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
-		LEFT OUTER JOIN tas t ON b.content_id = t.content_id, bibhash h
+		LEFT OUTER JOIN tas t ON b.content_id = t.content_id, bibhash h, groupids g
 		WHERE <include refid="bibtexSimHash"/>
+			AND b.group = g.group
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 

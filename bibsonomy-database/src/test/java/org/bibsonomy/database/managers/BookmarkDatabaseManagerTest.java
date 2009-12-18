@@ -188,8 +188,17 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getBookmarkByHash() {
-		final String requBookmark = "b7aa3a91885e432c6c95bec0145c3968";
-		final List<Post<Bookmark>> post = this.bookmarkDb.getPostsByHash(requBookmark, HashID.INTRA_HASH, GroupID.FRIENDS.getId(), 10, 0, this.dbSession);
+		String requBookmark = "b7aa3a91885e432c6c95bec0145c3968";
+		List<Post<Bookmark>> post = this.bookmarkDb.getPostsByHash(requBookmark, HashID.INTRA_HASH, GroupID.FRIENDS.getId(), 10, 0, this.dbSession);
+		assertEquals(1, post.size());
+		
+		// this should test which bookmark will be received (there are two in equal hashes in the test database one with public group one with friend group) 
+		requBookmark = "85ab919107e4cc79b345e996b3c0b097";
+		post = this.bookmarkDb.getPostsByHash(requBookmark, HashID.INTRA_HASH, GroupID.PUBLIC.getId(), 10, 0, this.dbSession);
+		assertEquals(1, post.size());
+		
+		requBookmark = "85ab919107e4cc79b345e996b3c0b097";
+		post = this.bookmarkDb.getPostsByHash(requBookmark, HashID.INTRA_HASH, GroupID.FRIENDS.getId(), 10, 0, this.dbSession);
 		assertEquals(1, post.size());
 	}
 

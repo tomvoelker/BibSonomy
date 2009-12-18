@@ -197,16 +197,17 @@
 
 
 	<select id="getBookmarkByHash" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT b.content_id, t.tag_name, title, description, b.user_name, b.date, 
-		       b.book_url_hash AS interHash, b.book_url_hash AS intraHash, u.book_url, u.book_url_ctr AS count, NULL AS group_name, t.group AS `group`
-		FROM (SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date, content_id
-		      FROM bookmark
+		SELECT g.*, b.content_id, t.tag_name, title, description, b.user_name, b.date, 
+		       b.book_url_hash AS interHash, b.book_url_hash AS intraHash, u.book_url, u.book_url_ctr AS count
+		FROM (SELECT book_url_hash, book_description AS title, book_extended AS description, user_name, date, content_id, t1.group
+		      FROM bookmark t1
 		      WHERE book_url_hash = #hash#
-		            AND bookmark.group = #groupId#
+		            <include refid="restrictToGroups"/>
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
-		LEFT OUTER JOIN tas t ON b.content_id = t.content_id, urls u
+		LEFT OUTER JOIN tas t ON b.content_id = t.content_id, urls u, groupids g
 		WHERE b.book_url_hash = u.book_url_hash
+			AND b.group = g.group
 		ORDER BY b.date DESC,b.content_id DESC
 	</select>
 

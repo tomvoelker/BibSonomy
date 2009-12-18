@@ -201,20 +201,26 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	}
 
 	/**
-	 * tests getPostsByHash
+	 * tests getPostsByHash on Bibtex entries
 	 */
 	@Test
 	@Ignore
-	public void getPostsByHash() {
-		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), TEST_REQUEST_HASH, null, null, 0, 5, null);
-		assertEquals(5, this.bibTexPostsList.size());
-		assertList(null, null, null, TEST_REQUEST_HASH, null, null);
-		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", null, TEST_REQUEST_HASH, null, null, 5, 6, null);
-		assertEquals(1, this.bibTexPostsList.size());
-		assertList(null, null, null, TEST_REQUEST_HASH, null, null);
-		this.bibTexPostsList = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), TEST_REQUEST_HASH, null, null, 574, 134, null);
-		assertEquals(0, this.bibTexPostsList.size());
+	public void getPostsByHashBibtex() {
+		List<Post<BibTex>> listBibtex = this.getDbLogic().getPosts(BibTex.class, GroupingEntity.ALL, "", new ArrayList<String>(), "d9eea4aa159d70ecfabafa0c91bbc9f0", null, null, 0, 5, null);
+		assertEquals(1, listBibtex.size());
+		assertEquals(1, listBibtex.get(0).getGroups().size());
+		for (Group g : listBibtex.get(0).getGroups()){
+			assertEquals("public", g.getName());
+		}
+		
+		List<Post<Bookmark>> listBookmark = this.getDbLogic().getPosts(Bookmark.class, GroupingEntity.ALL, "", new ArrayList<String>(), "85ab919107e4cc79b345e996b3c0b097", null, null, 0, 5, null);
+		assertEquals(1, listBookmark.size());
+		assertEquals(1, listBookmark.get(0).getGroups().size());
+		for (Group g : listBookmark.get(0).getGroups()){
+			assertEquals("public", g.getName());
+		}
 	}
+
 
 	/**
 	 * tests getPostsByHashForUser
