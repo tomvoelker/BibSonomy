@@ -78,9 +78,9 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final TagIndex t3 = new TagIndex("yahoo",3);	
 				
 		tagIndex.add(t1);			
-		assertEquals(3, this.bookmarkDb.getPostsByTagNamesCount(tagIndex, groupId, this.dbSession));
+		assertEquals(6, this.bookmarkDb.getPostsByTagNamesCount(tagIndex, groupId, this.dbSession));
 		tagIndex.add(t2);
-		assertEquals(1, this.bookmarkDb.getPostsByTagNamesCount(tagIndex, groupId, this.dbSession));
+		assertEquals(8, this.bookmarkDb.getPostsByTagNamesCount(tagIndex, groupId, this.dbSession));
 		tagIndex.add(t3);
 		assertEquals(0, this.bookmarkDb.getPostsByTagNamesCount(tagIndex, groupId, this.dbSession));
 	}
