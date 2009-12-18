@@ -24,6 +24,7 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByTags
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexPopular;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexSearch;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByTitle;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexSearchForGroup;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexViewable;
 import org.bibsonomy.database.params.BibTexParam;
@@ -60,6 +61,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexFromBasketForUser;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByFollowedUsers;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexFromInbox;
+	private final ChainElement<Post<BibTex>, BibTexParam> getBibtexByTitle;
 
 	/**
 	 * Constructs the chain
@@ -89,7 +91,9 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexFromBasketForUser = new GetBibtexFromBasketForUser();
 		this.getBibTexByFollowedUsers = new GetBibtexByFollowedUsers();
 		this.getBibTexFromInbox = new GetBibtexFromInbox();
+		this.getBibtexByTitle = new GetBibTexByTitle();
 
+		this.getBibtexByTitle.setNext(this.getBibTexForHomePage);
 		this.getBibTexForHomePage.setNext(this.getBibTexForPopular);
 		this.getBibTexForPopular.setNext(this.getBibTexForUser);
 		this.getBibTexForUser.setNext(this.getBibTexByTagNames);
@@ -117,6 +121,6 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 	}
 
 	public ChainElement<Post<BibTex>, BibTexParam> getFirstElement() {
-		return this.getBibTexForHomePage;
+		return this.getBibtexByTitle;
 	}
 }
