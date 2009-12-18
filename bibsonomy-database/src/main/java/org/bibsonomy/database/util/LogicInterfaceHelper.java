@@ -218,6 +218,12 @@ public class LogicInterfaceHelper {
 			param.setDays(Integer.parseInt(tagValue));
 			logger.debug("set days to " + tagValue + " after matching for days system tag");
 			return true;
+		} else if (tagName.equals("title")) {
+			// :title: set the title to tagValue
+			param.setTitle(tagValue);
+			param.setGrouping(GroupingEntity.ALL);
+			logger.debug("set title to " + tagValue + " after matching for title system tag");
+			return true;
 		} else if (tagName.equals("author")) {
 			// sys:author: set search entity accordingly
 			param.setSearchEntity(SearchEntity.AUTHOR);
