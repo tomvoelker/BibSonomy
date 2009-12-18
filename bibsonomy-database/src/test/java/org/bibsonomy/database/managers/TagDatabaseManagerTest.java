@@ -80,7 +80,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 
 	/**
-	 * tests getTagsByUser with additional order by Order.FREQUENCY
+	 * tests getTagsByUser with order by Order.FREQUENCY
 	 */
 	@Test
 	public void getTagsByUserOrderedByFrequency() {
@@ -89,9 +89,11 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.tagParam.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
 		this.tagParam.setOrder(Order.FREQUENCY);
 		final List<Tag> tags = this.tagDb.getTagsByUser(this.tagParam, this.dbSession);
-		assertEquals(tags.get(0).getUsercount(), 4); // "suchmaschine"
-		assertEquals(tags.get(1).getUsercount(), 2); // "google"
-		assertEquals(tags.get(2).getUsercount(), 1); // "testtag"
+		int count = tags.get(0).getUsercount();
+		for(Tag tag : tags) {
+				assertTrue(count + " is smalle than " + tag.getUsercount(), count >= tag.getUsercount());
+				count = tag.getUsercount();
+		}
 	}
 
 	@Test
