@@ -859,9 +859,11 @@ public class DBLogic implements LogicInterface {
 		 */
 		final DBSession session = openSession();
 		try {
+			session.beginTransaction();
 			for (final Post<?> post : posts) {
 				hashes.add(this.createPost(post, session));
 			}
+			session.endTransaction();
 		} finally {
 			session.close();
 		}
@@ -882,6 +884,7 @@ public class DBLogic implements LogicInterface {
 		 */
 		PostUtils.setGroupIds(post, this.loginUser);
 
+		
 		manager.createPost(post, session);
 
 		// if we don't get an exception here, we assume the resource has
