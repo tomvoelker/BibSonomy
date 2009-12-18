@@ -34,6 +34,16 @@
 						<property name="allowedFields" ref="bookmarkRequestParameters" />
 					</bean>
 				</entry>
+				<entry key="/ajax/getPublicationsByPartialTitle.json">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="ajaxGetPublicationsByPartialTitle" />
+						<property name="allowedFields" >
+							<list>
+								<value>title</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 				<entry key="/ajax/getPublicationRecommendedTags">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="ajaxGetPublicationRecommendedTagsController" />
@@ -133,6 +143,12 @@
 		<property name="tagRecommender"	ref="multiplexingTagRecommender" />
 		<!-- tag recommender used for spammer -->
 		<property name="spamTagRecommender" ref="jensRecommender"/>
+	</bean>
+	
+	<bean id="ajaxGetPublicationsByPartialTitle"
+		class="org.bibsonomy.webapp.controller.ajax.GetPublicationsByPartialTitleController"
+		scope="request">
+		<property name="logic" ref="logic" />
 	</bean>
 	
 	<bean id="ajaxGetPublicationRecommendedTagsController"

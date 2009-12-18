@@ -157,6 +157,104 @@ function sz(t) {
 	if (b>t.rows) t.rows=b;
 }
 
+
+//queries the titles and further details of publications by a partial title
+function getSuggestions(text) {
+	$("textarea[@id=post.resource.title]").blur(function() {
+	      window.setTimeout(function() {
+	    	  $("#suggestionBox").hide();
+	      },
+	      140);
+ });
+	
+ if(text.length < 2 || text.length%2 != 0) {
+	   $("#suggestionBox").hide();
+ } else {
+ 	var query = $.ajax({
+	        type: "GET",
+	        url: "/ajax/getPublicationsByPartialTitle.json?title="+text,
+	        dataType: "json",
+	        success: function(json){processResponse(json);},
+ 	});
+	}
+}
+/** Process the JSON Data and make visible to the user
+* 
+*/	
+function processResponse(data) {
+	// if there's no data cancel
+	if(data.items.length == 0) {
+		return;
+	}
+	
+	var p = $("<div style=\"background-color: #006699; color: #FFFFFF; padding:3px;\">Suggestions</p>");
+	$("#suggestionBox").html(p);
+	$.each(data.items, function(i, item) {
+		var element = $("<div>"+item.title+"</div>");
+		element.addClass("listEntry");
+		element.click(
+			// get title sepcific data
+			// an set the forms accordingly
+			function () {
+				post.resource.entrytype
+				$("select[@id=post.resource.entrytype]").selectOptions(item.entry_type);
+				$("textarea[@id=post.resource.editor]").val(item.editor);
+				$("input[@id=post.resource.year]").val(item.year);
+				$("textarea[@id=post.resource.title]").val(item.title);
+				$("textarea[@id=post.resource.author]").val(item.author);
+			}
+		).mouseover(
+			function () {
+				if(item.author.length >= 27) {
+					item.author = item.author.substr(0, 27)+" ...";
+				}
+				
+				if(item.editor.length >= 20) {
+					item.editor = item.editor.substr(0, 20)+" ...";
+				}
+				
+				item.editor = item.editor.replace(/ AND/g,',');
+				p.html("["+item.entry_type+"]"+item.author+"("+item.year+"), "+item.editor).css("background-color","#222222");
+			}
+		).mouseout(
+			function () {
+				p.html("Suggestions").css("background-color","#006699");
+			}
+		);
+		$("#suggestionBox").append(element);
+	});
+
+	$(".listEntry").css("padding", "3px").mouseover(function() {
+		$(this).css(
+				{
+					"background-color":"#006699",
+					"color":"#FFFFFF",
+					"cursor":"default"
+				}
+		);
+	}).mouseout(
+		function() {
+			$(this).css(
+					{
+						"background-color":"transparent", 
+						"color":"#000000"
+					}
+			);
+		}
+	);
+	var pos = $("textarea[@id=post.resource.title]").offset();
+	var width = $("textarea[@id=post.resource.title]").width();
+	var top = parseInt(pos.top+$("textarea[@id=post.resource.title]").height())+6;
+	$("#suggestionBox").css(
+			{
+				"left":(pos.left+1)+"px",
+				"top":top+"px",
+				"min-width":(width+2)+"px"
+			}
+	);
+	$("#suggestionBox").show();
+}
+
 // if window is small, maximizes "general" div to 95%
 function maximizeById(id) {
   if (window.innerWidth < 1200) {
