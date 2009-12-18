@@ -220,7 +220,11 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			// create lists for delete and update action
 			final List<Post<?>> postsToSave = new LinkedList<Post<?>>();
 			final List<Post<?>> postsToUpdate = new LinkedList<Post<?>>();
-			List<Post<?>> bibtex = (List<Post<?>>) this.requestLogic.getSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
+			LinkedList<Post<?>> bibtex = (LinkedList<Post<?>>) this.requestLogic.getSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
+			
+			ListCommand<Post<?>> listCommand = new ListCommand<Post<?>>(command);
+			listCommand.setList(bibtex);
+			command.setPosts(listCommand);
 			/*
 			 * Put these posts into a hashmap, so we dont have to loop through the list 
 			 *for every stored post!
@@ -275,9 +279,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					log.warn("can't parse tags of resource " + hash + " for user " + username, ex);
 				}
 			}
-			//TODO does not work yet. need to create ListCommand with a raw list of posts
-			ListCommand<Post<?>> aBibtexList = new ListCommand<Post<?>>(command);
-			command.setPosts(aBibtexList);
+			
 			/*
 			 * save posts
 			 */
@@ -295,7 +297,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 						{ 
 							if(message instanceof SystemTagErrorMessage)
 							{
-								errors.rejectValue("command.posts["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
+								errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
 													StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
 													message.getParameters(), 
 													command.getContext().getLocale()));
@@ -305,7 +307,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							if(message instanceof DuplicatePostErrorMessage)
 							{
 								if(!command.isOverwrite()) {
-									errors.rejectValue("command.posts["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
+									errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
 														StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
 														message.getParameters(), 
 														command.getContext().getLocale()));
@@ -324,7 +326,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								{ 
 									if(message instanceof SystemTagErrorMessage)
 									{
-										errors.rejectValue("command.posts["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
+										errors.rejectValue("command.posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
 															StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
 															message.getParameters(), 
 															command.getContext().getLocale()));

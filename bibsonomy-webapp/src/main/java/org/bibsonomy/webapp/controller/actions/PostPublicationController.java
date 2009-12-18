@@ -406,8 +406,6 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			} else {
 					command.setDeleteCheckedPosts(false); //posts will have to get saved, since an error occurred
 					setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, bibtex);
-					
-				//TODO: read session attribute in next controller
 			}
 
 			/**
