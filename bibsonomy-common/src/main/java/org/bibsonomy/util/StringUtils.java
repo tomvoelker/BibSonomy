@@ -253,18 +253,29 @@ public class StringUtils {
 	 */
 	public static String translateMessageKey(String key, List<String> parameters, Locale targetLocale)
 	{
+		ResourceBundle res 	= ResourceBundle.getBundle(BUNDLE_NAME, targetLocale);
+		/**
+		 * Errorhandling START
+		 */
 		if(!ValidationUtils.present(key))
 			throw new IllegalArgumentException("The function 'translateMessageKey' expects a NON-EMPTY key.");
 		
 		if(!ValidationUtils.present(targetLocale))
 			targetLocale= Locale.getDefault();
 		
-		ResourceBundle res 	= ResourceBundle.getBundle(BUNDLE_NAME, targetLocale);
+		if(!res.containsKey(key))
+			throw new IllegalArgumentException("The function 'translateMessageKey' was handed a non-existing key.");
+		/**
+		 * Errorhandling END
+		 */
+		
 		String translation	= res.getString(key);
+		if(!ValidationUtils.present(parameters))
+			return translation;
 		for(int i=0; i<parameters.size();i++)
 		{
 			if(parameters.get(i)==null)
-				throw new IllegalArgumentException("Illegal parameters used for variable substitution in localized strings.");
+				throw new IllegalArgumentException("Illegal parameters (NULL) used for variable substitution in localized strings.");
 			
 			String pattern = ".({"+i+"}).";
 			Pattern paramPatt = Pattern.compile(pattern); 
