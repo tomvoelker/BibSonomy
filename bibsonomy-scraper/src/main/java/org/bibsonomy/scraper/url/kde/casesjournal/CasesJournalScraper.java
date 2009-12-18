@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.casesjournal;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -75,10 +73,8 @@ public class CasesJournalScraper extends AbstractUrlScraper {
 		
 		try {
 			bibtex = WebUtils.getPostContentAsString(new URL(_url), CASES_JOURNAL_POST_STRING);
-		} catch (MalformedURLException ex) {
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			ex.printStackTrace();
+		} catch (Exception e) {
+			throw new ScrapingException(e);
 		}
 		
 		if(bibtex != null) {

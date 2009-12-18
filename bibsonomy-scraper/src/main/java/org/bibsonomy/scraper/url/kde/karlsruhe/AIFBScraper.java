@@ -23,8 +23,6 @@
 
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +33,7 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
 
@@ -102,8 +101,8 @@ public class AIFBScraper extends AbstractUrlScraper {
 				try {
 					URL url = getDownloadUrl(_m.group(1));
 					bibtex = WebUtils.getContentAsString(url);
-				} catch (IOException ex) {
-					ex.printStackTrace();
+				} catch (Exception e) {
+					throw new InternalFailureException(e);
 				}
 			}
 		}
@@ -116,13 +115,12 @@ public class AIFBScraper extends AbstractUrlScraper {
 		return false;
 	}
 	
-	private URL getDownloadUrl(final String url) {
+	private URL getDownloadUrl(final String url) throws InternalFailureException {
 		try {
 			return new URL(url.replaceAll(AMP, AMP_REPL));
-		} catch (MalformedURLException ex) {
-			ex.printStackTrace();
+		} catch (Exception e) {
+			throw new InternalFailureException(e);
 		}
-		return null;
 	}
 	
 	public String getInfo() {

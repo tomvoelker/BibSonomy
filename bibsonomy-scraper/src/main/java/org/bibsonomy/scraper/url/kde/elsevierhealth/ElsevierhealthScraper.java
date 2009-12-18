@@ -200,7 +200,6 @@ public class ElsevierhealthScraper extends AbstractUrlScraper {
 			
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new InternalFailureException(e);
 		}
 	}
