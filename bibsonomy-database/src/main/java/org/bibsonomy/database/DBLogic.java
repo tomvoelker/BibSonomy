@@ -860,10 +860,14 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = openSession();
 		try {
 			session.beginTransaction();
-			for (final Post<?> post : posts) {
-				hashes.add(this.createPost(post, session));
+			try{
+				for (final Post<?> post : posts) {
+					hashes.add(this.createPost(post, session));
+				}
+				session.commitTransaction();
+			} finally {
+				session.endTransaction();
 			}
-			session.endTransaction();
 		} finally {
 			session.close();
 		}
@@ -919,9 +923,13 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = openSession();
 		try {
 			session.beginTransaction();
-			for (final Post<?> post : posts) {
-				hashes.add(this.updatePost(post, operation, session));
-			session.endTransaction();
+			try{
+				for (final Post<?> post : posts) {
+					hashes.add(this.updatePost(post, operation, session));
+				}
+				session.commitTransaction();
+			} finally {
+				session.endTransaction();
 			}
 		} finally {
 			session.close();
