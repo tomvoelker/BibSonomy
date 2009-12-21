@@ -121,8 +121,8 @@ INSERT INTO `bookmark` (`content_id`, `book_url_hash`, `book_description`, `book
 (7, '16dfed76f9d846056a6a3c0d022c3493', 'finetune',                 'finetune.com',              4, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-21 13:14:33', 0),
 (8, 'e9ea2574c49c3778f166e8b4b6ed63dd', 'apple',                    'apple.com',                 4, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-21 13:20:57', 0),
 (9, '294a9e1d594297e7bb9da9e11229c5d7', 'fireball.com',             'fireball',                  1, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-29 10:36:06', 0),
-(10, '85ab919107e4cc79b345e996b3c0b097', 'kde', 					'KDE Page', 				 0, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-29 12:36:06', 0),
-(11, '85ab919107e4cc79b345e996b3c0b097', 'kde', 					'KDE Page', 				 2, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-29 15:36:06', 0);
+(10, '85ab919107e4cc79b345e996b3c0b097', 'kde', 					'KDE Page', 				 0, '1815-12-10 00:00:00', 'testuser4', 0, '2008-01-29 12:36:06', 0),
+(11, '85ab919107e4cc79b345e996b3c0b097', 'kde', 					'KDE Page', 				 2, '1815-12-10 00:00:00', 'testuser4', 0, '2008-01-29 15:36:06', 0);
 
 
 -- 
@@ -483,6 +483,7 @@ INSERT INTO `urls` (`book_url_hash`, `book_url`, `book_url_ctr`) VALUES
 ('7eda282d1d604c702597600a06f8a6b0', 'http://www.yahoo.de', 1),
 ('965a65fdc161e354f3828050390e2b06', 'http://www.web.de', 1),
 ('b7aa3a91885e432c6c95bec0145c3968', 'http://www.friendscout24.de', 1),
+('85ab919107e4cc79b345e996b3c0b097', 'http://www.ard.de', 2),
 ('e9ea2574c49c3778f166e8b4b6ed63dd', 'http://www.apple.com\r\n', 1);
 
 
