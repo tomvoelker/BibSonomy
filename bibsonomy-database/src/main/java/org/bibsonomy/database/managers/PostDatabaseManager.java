@@ -1115,7 +1115,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * perform system tags before action
 			 */
-			List<SystemTag> systemTags=this.getSystemTags(oldPost, oldPost.getTags());
+			List<SystemTag> systemTags=this.getSystemTags(post, oldPost.getTags());
 			this.systemTagPerformBefore(session, post, systemTags);
 
 			/*
