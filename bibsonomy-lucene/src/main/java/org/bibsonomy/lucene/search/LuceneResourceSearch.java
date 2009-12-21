@@ -380,7 +380,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		//--------------------------------------------------------------------
 		try {
 			if( oldSearcher!=null ) 
-				this.searcher.close();
+				oldSearcher.close();
 		} catch (IOException e) {
 			log.debug("Error closing searcher.", e);
 		}
