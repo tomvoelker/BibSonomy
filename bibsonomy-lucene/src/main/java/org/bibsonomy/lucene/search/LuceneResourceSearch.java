@@ -367,6 +367,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			if( newSearcher==null ) {
 				disableIndex();
 			} else {
+				oldSearcher = this.searcher;
 				this.searcher = newSearcher;
 				enableIndex();
 			}

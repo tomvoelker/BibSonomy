@@ -1,6 +1,9 @@
 package org.bibsonomy.lucene.util;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
@@ -68,7 +71,13 @@ public final class JNDITestDatabaseBinder extends LuceneBase {
 		final Properties props = new Properties();		
 		try {
 			// read properties
-			props.load(JNDITestDatabaseBinder.class.getClassLoader().getResourceAsStream(fileName));		
+			try {
+				props.load(new FileInputStream(new File(fileName)));
+				log.debug("Loading configuration from file system.");
+			} catch( IOException ex ) {
+				props.load(JNDITestDatabaseBinder.class.getClassLoader().getResourceAsStream(fileName));		
+				log.debug("Loading configuration from class path.");
+			}
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
