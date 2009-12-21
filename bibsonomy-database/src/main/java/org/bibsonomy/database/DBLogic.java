@@ -918,8 +918,10 @@ public class DBLogic implements LogicInterface {
 		 */
 		final DBSession session = openSession();
 		try {
+			session.beginTransaction();
 			for (final Post<?> post : posts) {
 				hashes.add(this.updatePost(post, operation, session));
+			session.endTransaction();
 			}
 		} finally {
 			session.close();
