@@ -90,7 +90,7 @@
   								<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
   								<input type="hidden" name="selTab" value="0" />
   								
-                                <post:publicationRequiredFields post="${post}"/>
+                                <post:publicationRequiredFields post="${post}" autocompletion="${true}"/>
                                 
                                 <input type="submit" class="fsFormSubmit" style="clear:both; float:left" name="submit" value="${post_button}"/>
                                                 
