@@ -157,9 +157,12 @@ function sz(t) {
 	if (b>t.rows) t.rows=b;
 }
 
-
 //queries the titles and further details of publications by a partial title
-function getSuggestions(text) {
+function getSuggestions(partialTitle, autocompletion) {
+	if(!autocompletion) {
+		return;
+	}
+	
 	$("textarea[@id=post.resource.title]").blur(function() {
 	      window.setTimeout(function() {
 	    	  $("#suggestionBox").hide();
@@ -167,16 +170,16 @@ function getSuggestions(text) {
 	      140);
  });
 	
- if(text.length < 2 || text.length%2 != 0) {
+ if(partialTitle.length < 2 || partialTitle.length%2 != 0) {
 	   $("#suggestionBox").hide();
  } else {
- 	var query = $.ajax({
-	        type: "GET",
-	        url: "/ajax/getPublicationsByPartialTitle.json?title="+text,
-	        dataType: "json",
-	        success: function(json){processResponse(json);},
- 	});
-	}
+	 	var query = $.ajax({
+		        type: "GET",
+		        url: "/ajax/getPublicationsByPartialTitle.json?title="+partialTitle,
+		        dataType: "json",
+		        success: function(json){processResponse(json);},
+	 	});
+ }
 }
 /** Process the JSON Data and make visible to the user
 * 
