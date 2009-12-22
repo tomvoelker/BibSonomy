@@ -120,7 +120,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 			Integer lastTasId = this.resourceIndex.getLastTasId();
 
 			// keeps track of the newest log_date during last index update
-			Long lastLogDate  = this.resourceIndex.getLastLogDate()-QUERY_TIME_OFFSET_MS;
+			Long lastLogDate  = this.resourceIndex.getLastLogDate();
 
 			//----------------------------------------------------------------
 			//  0) flag/unflag spammer  
@@ -135,7 +135,8 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 			//----------------------------------------------------------------
 			//  2) get posts to delete  
 			//----------------------------------------------------------------
-			List<Integer> contentIdsToDelete = this.dbLogic.getContentIdsToDelete(new Date(lastLogDate));
+			List<Integer> contentIdsToDelete = 
+				this.dbLogic.getContentIdsToDelete(new Date(lastLogDate-QUERY_TIME_OFFSET_MS));
 
 
 			//----------------------------------------------------------------
@@ -166,7 +167,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 			//----------------------------------------------------------------
 			//  7) update variables 
 			//----------------------------------------------------------------
-			this.resourceIndex.setLastLogDate(lastLogDate);
+			this.resourceIndex.setLastLogDate(currentLogDate);
 			this.resourceIndex.setLastTasId(lastTasId);
 		}
 		
