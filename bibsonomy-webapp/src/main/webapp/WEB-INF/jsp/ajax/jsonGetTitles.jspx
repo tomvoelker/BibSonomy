@@ -8,7 +8,16 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex">
-<jsp:directive.page contentType="application/json; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-${command.response}
+	xmlns:output="urn:jsptagdir:/WEB-INF/tags/export/bibtex"> 
+	
+<jsp:directive.page contentType="application/json; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />"items":
+	[<c:forEach var="post" varStatus="status" items="${command.posts.list}">{
+		"title":"${mtl:quoteJSON(post.resource.title)}",
+		"year":"${mtl:quoteJSON(post.resource.year)}",
+		"author":"${mtl:quoteJSON(post.resource.author)}",
+		"entry_type":"${mtl:quoteJSON(post.resource.entrytype)}",
+		"editor":"${mtl:quoteJSON(post.resource.editor)}"
+	}
+	</c:forEach>]
+}
 </jsp:root>
