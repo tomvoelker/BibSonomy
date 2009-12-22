@@ -34,7 +34,7 @@
 	<layout:editPostLayout command="${command}" requPath="${requPath}" resourceType="Publication" selectedNaviTab="nav_postPub">
 
 		<jsp:attribute name="generalInformation">
-           <post:publicationRequiredFields post="${post}"/>
+           <post:publicationRequiredFields post="${post}" autocompletion="$(false)"/>
 		</jsp:attribute>
 
 
