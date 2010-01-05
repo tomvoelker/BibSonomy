@@ -1765,7 +1765,8 @@ function sendEditTags(obj, type, ckey, link) {
 	$.ajax( {
 		type :"POST",
 		url :"/batchEdit_new?newTags['" + hash + "']=" + encodeURIComponent(tags.trim())
-				+ "&ckey=" + ckey,
+				+ "&ckey=" + ckey
+				+ "&deleteCheckedPosts=true",
 		dataType :"html",
 		global :"false"
 	});
