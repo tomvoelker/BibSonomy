@@ -104,9 +104,9 @@ public class User {
 	private String openID;
 
 	/**
-	 * LDAP uid for authentication
+	 * LDAP userId for authentication
 	 */
-	private String ldapUid;
+	private String userId;
 
 	/**
 	 * IP Address
@@ -554,17 +554,17 @@ public class User {
 	}
 
 	/**
-	 * @return ldapUid
+	 * @return userId
 	 */
-	public String getLdapUid() {
-		return this.ldapUid;
+	public String getUserId() {
+		return this.userId;
 	}
 
 	/**
-	 * @param ldapUid
+	 * @param userId
 	 */
-	public void setLdapUid(String ldapUid) {
-		this.ldapUid = ldapUid;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	/**
