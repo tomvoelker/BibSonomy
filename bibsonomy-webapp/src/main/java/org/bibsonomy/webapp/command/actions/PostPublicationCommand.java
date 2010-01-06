@@ -36,7 +36,168 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 */
 	private final String TAB_URL = "/import/publications"; 
 	
+	/****************************
+	 * FOR THE TAB FUNCTIONALITY
+	 ****************************/
 	
+	/**
+	 * TAB HEADER LOCALIZED
+	 */
+	private final static String[] tabTitles = {
+		"post_bibtex.manual.title", 
+		"post_bibtex.pub_snippet.title", 
+		"post_bibtex.bibtex_endnote.title", 
+		"post_bibtex.doi_isbn.title"
+	};
+	
+	
+	/**
+	 *  id of currently selected tab 
+	 */
+	protected Integer selTab = null;
+	
+	/**
+	 * @return The index of the currently selected tab.
+	 */
+	@Override
+	public Integer getSelTab() {
+		return selTab;
+	}
+	
+	/**
+	 * @param selectedTab 
+	 */
+	@Override
+	public void setSelTab(Integer selectedTab) {
+		this.selTab = selectedTab;
+	}
+	
+	/**
+	 * holds the tabcommands, containing tuples of the number of a tab and the message key
+	 * representing the clickable textheader of the corresponding tab. 
+	 */
+	private List<TabCommand> tabs;
+	
+	/**
+	 * @return the tabcommands (tabs)
+	 */
+	@Override
+	public List<TabCommand> getTabs() {
+		return tabs;
+	}
+
+	/**
+	 * *not used in general*
+	 * @param tabs the tabcommands (tabs) 
+	 */
+	@Override
+	public void setTabs(List<TabCommand> tabs) {
+		this.tabs = tabs;
+	}
+	
+	/**
+	 * @param id the index of the new tab to add
+	 * @param title the message key of the tab to add (clickable text header)
+	 */
+	private void addTab(Integer id, String title) {
+		tabs.add(new TabCommand(id, title));		
+	}
+
+	/**
+	 * @param titles the message keys of the tabs to add (clickable text header)
+	 */
+	private void addTabs(final String[] titles) {
+		for(int i=0; i<titles.length; i++) {
+			addTab(i, titles[i]);
+		}
+	}
+
+	/**
+	 * URL of the tabheader-anchor-links 
+	 * (needed, because postPublication calls this site first, but tabs-hrefs have to be...
+	 * ... import/publications)
+	 */
+	private String tabURL=null;
+	
+	/**
+	 * @return the url of the tabbed site
+	 */
+	public String getTabURL() {
+		return this.tabURL;
+	}
+
+	/**
+	 * @param tabURL the url of the tabbed site
+	 */
+	public void setTabURL(String tabURL) {
+		this.tabURL = tabURL;
+	}
+	
+	/**
+	 * Containing the task name, determining whats to do in the controller.
+	 */
+	private String taskName;
+	
+	/**
+	 * @returns taskName the task name, determining whats to do in the controller. 
+	 * The value is set to TASK_ENTER_PUBLICATIONS, if publications get entered or edited(tags).
+	 */
+	public String getTaskName() {
+		return this.taskName;
+	}
+
+	/**
+	 * @param taskName the task name, determining whats to do in the controller. 
+	 * The value is set to TASK_ENTER_PUBLICATIONS, if publications get entered or edited(tags).
+	 */
+	public void setTaskName(String taskName) {
+		this.taskName = taskName;
+	}
+
+	
+	
+	/**
+	 * Detetermines, if we call import/publications a second time due to errors, the user can fix
+	 */
+	private boolean extendedView = false;
+	
+	/**
+	 * @returns True, if we call import/publications a second time due to errors, the user can fix
+	 */
+	public boolean isExtendedView() {
+		return this.extendedView;
+	}
+
+	/**
+	 * @param extendedView True, if we call import/publications a second time due to errors, the user can fix
+	 */
+	public void setExtendedView(boolean extendedView) {
+		this.extendedView = extendedView;
+	}
+
+	/**
+	 * The errors during parsing
+	 */
+	private List<Integer> erroneousLineNumbers = null;
+	
+	public List<Integer> getErroneousLineNumbers() {
+		return this.erroneousLineNumbers;
+	}
+
+	public void setErroneousLineNumbers(List<Integer> erroneousLineNumbers) {
+		this.erroneousLineNumbers = erroneousLineNumbers;
+	}
+	
+	
+	
+	
+	
+	
+	/****************************
+	 * FOR ALL IMPORTS
+	 ****************************/
+	
+
 	/**
 	 * this flag determines, weather the dialogue called was configured to 
 	 * edit(delete) or edit(create) existing posts.
@@ -68,123 +229,38 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	}
 	
 	/**
-	 * URL of the tabheader-anchor-links
+	 * this flag determines, if erroneous posts should be ignored during import
+	 * resulting in storing all correct ones. if this is false, no posts will be stored
+	 * in case of an error.
 	 */
-	private String tabURL=null;
+	private boolean saveAllPossible;
 	
-	public String getTabURL() {
-		return this.tabURL;
-	}
-
-	public void setTabURL(String tabURL) {
-		this.tabURL = tabURL;
+	/**
+	 * @return the flag that determines, if erroneous posts should be ignored during import
+	 * resulting in storing all correct ones. if this is false, no posts will be stored
+	 * in case of an error.
+	 */
+	public boolean isSaveAllPossible() {
+		return this.saveAllPossible;
 	}
 	
 	/**
-	 * Containing the task name, determining whats to do in the controller.
+	 * @return the flag that determines, if erroneous posts should be ignored during import
+	 * resulting in storing all correct ones. if this is false, no posts will be stored
+	 * in case of an error.
 	 */
-	private String taskName;
-	
-	public String getTaskName() {
-		return this.taskName;
-	}
-
-	public void setTaskName(String taskName) {
-		this.taskName = taskName;
-	}
-
-	
-	
-	/**
-	 * Detetermines, if we call import/publications a second time due to errors, the user can fix
-	 */
-	private boolean extendedView = false;
-	
-	
-	public boolean isExtendedView() {
-		return this.extendedView;
-	}
-
-	public void setExtendedView(boolean extendedView) {
-		this.extendedView = extendedView;
+	public boolean getSaveAllPossible() {
+		return this.saveAllPossible;
 	}
 
 	/**
-	 * The errors during parsing
+	 * @param saveAllPossible the flag that determines, if erroneous posts should be ignored during import
+	 * resulting in storing all correct ones. if this is false, no posts will be stored
+	 * in case of an error.
 	 */
-	private List<Integer> erroneousLineNumbers = null;
-	
-	public List<Integer> getErroneousLineNumbers() {
-		return this.erroneousLineNumbers;
+	public void setSaveAllPossible(boolean saveAllPossible) {
+		this.saveAllPossible = saveAllPossible;
 	}
-
-	public void setErroneousLineNumbers(List<Integer> erroneousLineNumbers) {
-		this.erroneousLineNumbers = erroneousLineNumbers;
-	}
-	
-	
-	
-	/****************************
-	 * FOR THE TAB FUNCTIONALITY
-	 ****************************/
-	
-	/**
-	 * TAB HEADER LOCALIZED
-	 */
-	private final static String[] tabTitles = {
-		"post_bibtex.manual.title", 
-		"post_bibtex.pub_snippet.title", 
-		"post_bibtex.bibtex_endnote.title", 
-		"post_bibtex.doi_isbn.title"
-	};
-	
-	
-	/**
-	 *  id of current selected tab 
-	 */
-	protected Integer selTab = null;
-	
-	
-	private void addTab(Integer id, String title) {
-		tabs.add(new TabCommand(id, title));		
-	}
-
-	private void addTabs(final String[] titles) {
-		for(int i=0; i<titles.length; i++) {
-			addTab(i, titles[i]);
-		}
-	}
-
-	/**
-	 * dont know what this is for really...
-	 */
-	private List<TabCommand> tabs;
-	
-	@Override
-	public Integer getSelTab() {
-		return selTab;
-	}
-	
-	@Override
-	public void setSelTab(Integer selectedTab) {
-		this.selTab = selectedTab;
-	}
-
-	@Override
-	public List<TabCommand> getTabs() {
-		return tabs;
-	}
-
-	@Override
-	public void setTabs(List<TabCommand> tabs) {
-		this.tabs = tabs;
-	}
-	
-	
-	
-	/****************************
-	 * FOR ALL IMPORTS
-	 ****************************/
 	
 	/**
 	 * the description of the snippet/upload file
@@ -206,23 +282,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/****************************
 	 * SPECIAL FOR FILE UPLOAD
 	 ****************************/
-	/**
-	 * option that, if true, affects the storing process of correctly parsed publications,
-	 * even if there were other errors detected within the file.
-	 */
-	private boolean writeAllCorrectOnes;
-	
-	public boolean getWriteAllCorrectOnes() {
-		return this.writeAllCorrectOnes;
-	}
-	
-	public boolean isWriteAllCorrectOnes() {
-		return this.writeAllCorrectOnes;
-	}
-
-	public void setWriteAllCorrectOnes(boolean writeAllCorrectOnes) {
-		this.writeAllCorrectOnes = writeAllCorrectOnes;
-	}
 
 	/**
 	 * the BibTeX/Endnote file
@@ -238,6 +297,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		this.file = file;
 	}
 	
+	
 	/**
 	 * The whitespace substitute
 	 */
@@ -251,6 +311,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		this.whitespace = whitespace;
 	}
 
+	
 	/**
 	 * encoding of the file
 	 */
@@ -264,6 +325,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		this.encoding = encoding;
 	}
 
+	
 	/**
 	 * the delimiter
 	 */
@@ -277,6 +339,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		this.delimiter = delimiter;
 	}
 
+	
 	/**
 	 * Determines, if the bookmarks will be saved before being edited or afterwards
 	 */
@@ -294,6 +357,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		this.editBeforeImport = editBeforeImport;
 	}
 	
+	
 	/**
 	 * Determines, if the already existing publications will be overwritten by the new ones.
 	 */
@@ -303,11 +367,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		return this.overwrite;
 	}
 	
-	/*
-	public boolean isOverwrite() {
-		return this.overwrite;
-	}*/
-
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
 	}

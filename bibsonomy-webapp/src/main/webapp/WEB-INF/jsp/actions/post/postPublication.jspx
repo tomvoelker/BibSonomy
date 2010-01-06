@@ -196,13 +196,13 @@
 									    <div class="fsRow"> 
                                           <label class="fsLabel"><fmt:message key="import.save_all_possible" /></label>
                                           <buttons:help  cssStyle="float:left" message="import.save_all_possible.help" />
-                                          <input type="checkbox" class="fsInput" name="saveAllPosssible" value="" />
+                                          <input type="checkbox" class="fsInput" name="saveAllPosssible" value="true" />
                                         </div>
 									    
                                         <div class="fsRow"> 
                                           <label class="fsLabel"><fmt:message key="import.edit_before_import" /></label>
                                           <buttons:help  cssStyle="float:left" message="import.edit_before_import.help" />
-                                          <input type="checkbox" class="fsInput" name="editBeforeImport" value="" />
+                                          <input type="checkbox" class="fsInput" name="editBeforeImport" value="true" />
                                         </div>
                                         
                                         <div class="fsRow">

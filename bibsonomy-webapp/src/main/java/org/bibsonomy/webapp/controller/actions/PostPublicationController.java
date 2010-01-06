@@ -55,47 +55,53 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public class PostPublicationController extends EditPostController<BibTex,PostPublicationCommand> implements MinimalisticController<PostPublicationCommand>, ErrorAware {
+	/**
+	 * if the user tries to import more than MAXCOUNT_ERRORHANDLING posts AND an error exists
+	 * in one or more of the posts, the correct posts will be saved no matter what.
+	 */
 	private static final Integer MAXCOUNT_ERRORHANDLING = 1000;
+	/**
+	 * The session dictionary name for temporarily stored publications. 
+	 * Will be used when PostPublicationCommand.editBeforeImport is true. 
+	 */
 	public static final String TEMPORARILY_IMPORTED_PUBLICATIONS = "TEMPORARILY_IMPORTED_PUBLICATIONS";
 	
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
 
+	/**
+	 * File ending pattern for determining the type of imported file.
+	 */
 	private static final Pattern fileEnding = Pattern.compile("\\.([a-zA-Z]+)");
-	private static final Log log = LogFactory.getLog(UploadFileController.class);
-
-	//will be filled when i have created the commands.
+	
+	/**
+	 * will be filled when i have created the commands.
+	 */
 	public static  final String ACTION_SAVE_BEFORE_EDIT ="";
 
+	
+	/**
+	 * errors object...
+	 */
 	private Errors errors = null;
 
-	private EditPublicationController editPublicationController;
-
-	public EditPublicationController getEditPublicationController() {
-		return this.editPublicationController;
-	}
-
-	public void setEditPublicationController(EditPublicationController editPublicationController) {
-		this.editPublicationController = editPublicationController;
-	}
+	/**
+	 * the log...
+	 */
+	private static final Log log = LogFactory.getLog(UploadFileController.class);
 
 
+	
 	/**
 	 * the factory used to get an instance of a FileUploadHandler.
 	 */
 	private FileUploadFactory uploadFactory;
 
-	public FileUploadFactory getUploadFactory() {
-		return this.uploadFactory;
-	}
-
-	public void setUploadFactory(FileUploadFactory uploadFactory) {
-		this.uploadFactory = uploadFactory;
-	}
+	
 
 	@Override
 	public PostPublicationCommand instantiateCommand() {
-		/*
+		/**
 		 * initialize post & resource
 		 */
 		final PostPublicationCommand command = new PostPublicationCommand();
@@ -113,11 +119,14 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	public View workOn(PostPublicationCommand command) {
 		log.debug("workOn started");
 		
-		//within this map we store all errors while creating the uploaded posts
-		//the errors will be concatenated at the end and rejected as an error for display.
+		/**
+		 * within this map we store all errors while creating the uploaded posts.
+		 * the errors will be concatenated at the end and rejected as an error for display.
+		 */
+		
 		Map<String, List<ErrorMessage>> userError = null;
 		
-		/*
+		/**
 		 * default controller behaviour is to send the user to the first step of importing bookmarks (TASK_ENTER_PUBLICATIONS)
 		 */
 		if(!ValidationUtils.present(command.getTaskName()))
@@ -138,22 +147,20 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		 * the user to a view, where he can EDIT and CLEAN UP his imported publications. 
 		 ******************************************************************************************************/
 		
-		/*
+		/**
 		 * This variable will hold the information contained in the bibtex/endnote-file or selection field
 		 */
 		String snippet = null;
 
-		/*
+		/**
 		 * Tab 2 (Upload Snippet)
 		 */
 		if (ValidationUtils.present(command.getSelection())) {
 			snippet = command.getSelection();
 		} else if(ValidationUtils.present(command.getFile())) {
 
-			/*
+			/**
 			 * Tab 3 (Upload BibTex/Endnote)
-			 */
-			/*
 			 * get temporary file from the command with the factory
 			 */
 			CommonsMultipartFile uploadedFile = command.getFile();
@@ -193,7 +200,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				return ShowEnterPublicationView(command);
 			}
 
-			/*
+			/**
 			 * extract the file ending
 			 */
 			String fileSuffix = null;
@@ -203,7 +210,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			if(patMat.find())
 				fileSuffix = patMat.group(1).toLowerCase(); 
 
-			/*
+			/**
 			 * in case the uploaded file is endnote, we convert it to bibtex				
 			 */
 			if(HandleFileUpload.bibtexEndnoteExt[1].equals(fileSuffix))
@@ -222,7 +229,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				}
 			}
 
-			/*
+			/**
 			 * extract the file contents from the file
 			 */
 
@@ -238,12 +245,12 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				
 			}
 
-			/*
+			/**
 			 * clear temporary file
 			 */
 			file.delete();
 		} else {
-			/*
+			/**
 			 * This way of describing the error includes the bibtex snippet:
 			 * 3 opportunities that are ok: bibtex snippet or file and endnote file. 
 			 */
@@ -269,7 +276,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		
 		
 		
-		/*
+		/**
 		 * Parse the bibtex snippet	
 		 */
 		List<Post<BibTex>> bibtex = null;
@@ -324,7 +331,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			
 		}
 		
-		/*
+		/**
 		 * Prepare the posts for the edit operations:
 		 * add additional information from the form to the post (description, groups)... present in both upload tabs
 		 */
@@ -366,7 +373,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		}
 		
 		
-		/*
+		/**
 		 * if number of bibtexes contained is one, it can be edited in details, else we can use the 
 		 * multi-post-edit view
 		 */
@@ -377,7 +384,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			return super.workOn(command);
 		} else {
 			
-			/*
+			/**
 			 * We have more than one bibtex, which means that this controller will forward to one calling the batcheditbib.jspx
 			 */
 			
@@ -390,7 +397,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				/**
 				 * reject the errors depending on the posts corresponding index in the post list, that were found during savePublicationsForUser
 				 */
-				Map<String, List<ErrorMessage>> errorMsgs = savePublicationsForUser(postListCommand, command.getOverwrite(), command.isWriteAllCorrectOnes(), loginUser);
+				Map<String, List<ErrorMessage>> errorMsgs = savePublicationsForUser(postListCommand, command.getOverwrite(), command.getSaveAllPossible(), loginUser);
 				for(int i=0; i<bibtex.size(); i++)
 				{
 					if(!errorMsgs.containsKey(bibtex.get(i).getResource().getIntraHash())) break;
@@ -417,20 +424,29 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			{
 				/**
 				 * BACK TO THE IMPORT/PUBLICATIONS VIEW
+				 * Posts will get saved temporarily, since an error occurred (checked posts will be saved)
 				 */
 				
-				//TODO set a variable to determine, if #posts>treshold => list of imported and unimported
-				//publications. since the correct ones are already saved, the action of the form (batchedit)
-				//will be deleting the stored posts.
-				command.setDeleteCheckedPosts(false); //posts will have to get saved, since an error occurred
+				command.setDeleteCheckedPosts(false); 
 				return ShowEnterPublicationView(command, true);
 			}
 			
-			if(!command.getEditBeforeImport() && (!errors.hasErrors() || /*command.*/ true))
+			/**
+			 * If the user wants to store the posts permanently AND (his posts have no errors OR he ignores the errors OR the number of
+			 * bibtexes is greater than the treshold, we will forward him to the appropriate site, where he can delete posts (they were saved)
+			 */
+			if(!command.getEditBeforeImport() && (!errors.hasErrors() || command.getSaveAllPossible() || bibtex.size()>MAXCOUNT_ERRORHANDLING))
 				command.setDeleteCheckedPosts(true); //posts will have to get saved, because the user decided to
 			else
 				command.setDeleteCheckedPosts(false);
-			return Views.BATCHEDIT_TEMP_BIB;
+			
+			/**
+			 * if the user explicitly wants to store the posts AFTER editing we forward to the modified batcheditbib (batchedittempbib)
+			 */
+			if(command.getEditBeforeImport())
+				return Views.BATCHEDIT_TEMP_BIB;
+			
+			return Views.BATCHEDITBIB;
 		}
 	}
 
@@ -439,9 +455,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	{
 		if(hasErrors)
 			command.setExtendedView(true);
-		/**
-		 * TODO: command.formAction setzen, auf den command, der die angekreuzten Publikationen speichert.
-		 */
+		
 		return Views.POST_PUBLICATION;
 	}
 	
@@ -513,7 +527,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			/**
 			 * If we got ONLY duplicate "errors", we save the non-duplicate ones and update the others,
 			 * if isOverwrite is true. Same is true, if the number of publications is greater than the
-			 * treshold.
+			 * treshold. 
 			 */
 			if(!isErroneousList || tmpList.size()>MAXCOUNT_ERRORHANDLING || writeAllCorrectOnes)
 			{
@@ -620,6 +634,14 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	protected void workOnCommand(EditPostCommand<BibTex> command, User loginUser) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public FileUploadFactory getUploadFactory() {
+		return this.uploadFactory;
+	}
+
+	public void setUploadFactory(FileUploadFactory uploadFactory) {
+		this.uploadFactory = uploadFactory;
 	}
 
 }
