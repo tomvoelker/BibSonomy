@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,6 +47,7 @@ import org.bibsonomy.webapp.validation.EditPublicationValidator;
 import org.bibsonomy.webapp.validation.PostPublicationValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import bibtex.parser.ParseException;
@@ -97,7 +99,9 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	 */
 	private FileUploadFactory uploadFactory;
 
-	
+	private HashMap<Integer, Integer> validatorToAll;
+	private HashMap<Integer, Integer> storeToValidator;
+	private List<Post<?>> storageList;
 
 	@Override
 	public PostPublicationCommand instantiateCommand() {
@@ -118,6 +122,10 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	@Override
 	public View workOn(PostPublicationCommand command) {
 		log.debug("workOn started");
+		
+		validatorToAll = new HashMap<Integer, Integer>();
+		storeToValidator = new HashMap<Integer, Integer>();
+		storageList = new LinkedList<Post<?>>();
 		
 		/**
 		 * within this map we store all errors while creating the uploaded posts.
@@ -287,6 +295,8 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			parser.setWhitespace(command.getWhitespace());
 			parser.setTryParseAll(true);
 			bibtex = parser.parseBibTeXPosts(snippet);
+			for(Post<BibTex> aPostToCast : bibtex)
+				storageList.add(aPostToCast);
 			
 			/**
 			 * fetch PARSER ERRORS here
@@ -388,29 +398,54 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			 * We have more than one bibtex, which means that this controller will forward to one calling the batcheditbib.jspx
 			 */
 			
+			
+			if(command.getSaveAllPossible())
+			{
+				List<FieldError> errorList = errors.getFieldErrors("posts.*");
+				int removedElements = 0;
+				List removedIndexes = new LinkedList<Integer>();
+				for(FieldError anError : errorList)
+				{
+					String fieldName = anError.getField();
+					Pattern indexPattern = Pattern.compile("([0-9]+)");
+					Matcher indexMatcher = indexPattern.matcher(fieldName);
+					if(indexMatcher.find())
+					{
+						int errorIndex = new Integer(indexMatcher.group(1));
+						if(removedIndexes.contains(errorIndex)) continue;
+						storageList.remove(errorIndex-removedElements);
+						removedIndexes.add(errorIndex);
+						removedElements++;
+					}
+				}
+				/*
+				removedElements = 0; //reuse of variable for building the map
+				for(int postIndex = 0; postIndex< storageList.size(); postIndex++)
+				{
+					if(removedIndexes.contains(postIndex))
+					{
+						//count subsequent deleted elements to correctly compute the index of the the current element in the "bibtex"-list
+						int tmpCounter = postIndex+removedElements;
+						while(removedIndexes.contains(tmpCounter))
+						{
+							tmpCounter++;
+							removedElements++;
+						}
+						validatorToAll.put(postIndex, tmpCounter);
+					}
+				}*/
+			}
 			/**********************
 			 * STORE THE BOOKMARKS
 			 **********************/
-			
-			if(!command.isEditBeforeImport() && (!errors.hasErrors() || (errors.hasErrors() && bibtex.size()>MAXCOUNT_ERRORHANDLING)))
+			if(!command.isEditBeforeImport() && (!errors.hasErrors() ||command.getSaveAllPossible() || bibtex.size()>MAXCOUNT_ERRORHANDLING))
 			{
+				
 				/**
 				 * reject the errors depending on the posts corresponding index in the post list, that were found during savePublicationsForUser
 				 */
-				Map<String, List<ErrorMessage>> errorMsgs = savePublicationsForUser(postListCommand, command.getOverwrite(), command.getSaveAllPossible(), loginUser);
-				for(int i=0; i<bibtex.size(); i++)
-				{
-					if(!errorMsgs.containsKey(bibtex.get(i).getResource().getIntraHash())) break;
-					for(ErrorMessage msg : errorMsgs.get(bibtex.get(i).getResource().getIntraHash()))
-					{
-						if(msg instanceof DuplicatePostErrorMessage && command.getOverwrite()) continue;
-						errors.rejectValue("posts.list["+i+"].resource", 
-											"since we might have parameterized messages, we translate them within java and use the fallback",
-											StringUtils.translateMessageKey(msg.getLocalizedMessageKey(), msg.getParameters(), command.getContext().getLocale())
-											);
-						
-					}
-				}
+				Map<String, List<ErrorMessage>> errorMsgs = savePublicationsForUser(postListCommand, command, loginUser);
+				
 				command.setFormAction(ACTION_SAVE_BEFORE_EDIT);
 			} else {
 					command.setDeleteCheckedPosts(false); //posts will have to get saved, since an error occurred
@@ -465,9 +500,14 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		return ShowEnterPublicationView(command, false);
 	}
 	
-	private Map<String, List<ErrorMessage>> savePublicationsForUser(ListCommand<Post<BibTex>> postListCommand, boolean isOverwrite, boolean writeAllCorrectOnes, User user)
+	private Map<String, List<ErrorMessage>> savePublicationsForUser(ListCommand<Post<BibTex>> postListCommand, PostPublicationCommand command, User user)
 	{
+		boolean isOverwrite = command.getOverwrite();
+		boolean writeAllCorrectOnes = command.getSaveAllPossible();
 		List<Post<?>> tmpList = new LinkedList<Post<?>>(postListCommand.getList());
+		if(validatorToAll.size()>0)
+			tmpList = storageList;
+		
 		List<String> createdPostHash = new LinkedList<String>();
 		Map<String, List<ErrorMessage>> errors = null;
 		
@@ -477,6 +517,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			 */
 			createdPostHash = logic.createPosts(tmpList);
 		} catch (DatabaseException e) {
+			
 			/**
 			 * Something went wrong and an error occurred. The prior statement is "rolled backed"
 			 */
@@ -509,6 +550,12 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 						{
 							isErroneous = true;
 							isErroneousList = true;
+
+							this.errors.rejectValue("posts.list["+postListCommand.getList().indexOf(bib)+"].resource", 
+									"since we might have parameterized messages, we translate them within java and use the fallback",
+									StringUtils.translateMessageKey(msg.getLocalizedMessageKey(), msg.getParameters(), command.getContext().getLocale())
+									);
+
 						}
 					}
 					//if isOverwrite is true, duplicates are no errors
@@ -517,8 +564,6 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 					
 					if(!isErroneous && hasDuplicate)
 						forUpdate.add(bib);
-					else if(isErroneous)
-						forCorrection.add(bib);
 				} else {
 					forCreate.add(bib);
 				}
@@ -537,12 +582,13 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 					if(isOverwrite)
 						logic.updatePosts(forUpdate, PostUpdateOperation.UPDATE_ALL);
 				} catch (DatabaseException ex) {
-					//sollte gar nicht passieren, da forCreate-/forUpdate-Posts und keine Fehler 
-					//besitzen
+					//sollte gar nicht passieren, da forCreate-/forUpdate-Posts keine Fehler besitzen
 				}
 				
 			}
+			
 		}
+
 		return errors;
 	}
 	
