@@ -343,7 +343,9 @@
 					        							checkboxAllLabelKey="batchedit.saveAll"
 		      											checkboxLabelKey="batchedit.saveAllQ"
 		      											checkboxAllQuestion="batchedit.saveAll.confirm"
-		      											submitKey="batchedit.button.save"  >
+		      											submitKey="batchedit.button.save"  
+		      											overwrite="${command.overwrite}"
+		      											deleteCheckedPosts="${command.deleteCheckedPosts}">
 				        							
 									<jsp:attribute name="shortPostDescription">
 										<bib:shortDescription post="${post}"/>
