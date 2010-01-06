@@ -23,6 +23,8 @@
   	<jsp:directive.attribute name="checkboxLabelKey" required="true" description="The key for the label of the checkboxes associated with the posts."/>
   	<jsp:directive.attribute name="checkboxAllLabelKey" required="true" description="The key for the label of the 'check-all'-checkboxes associated with the posts."/>
   	<jsp:directive.attribute name="checkboxAllQuestion" required="false" description="The key for the question text, which appears, when the 'check all' checkbox is hit."/>
+  	<jsp:directive.attribute name="deleteCheckedPosts" type="java.lang.Boolean" required="false"/>
+  	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false"/>
   	
     <jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post"/>
     <jsp:directive.attribute name="title" fragment="true" required="true"/>
@@ -35,6 +37,14 @@
    	 <!--=======================-->
    	 <!-- VARIABLEN DEKLARATION -->
    	 <!--=======================-->
+   	 <!-- VIEW FOR SAVING OR DELETING POSTS -->
+   	 <c:if test="${empty deleteCheckedPosts}">
+	 	<c:set var="deleteCheckedPosts" value="true" />
+	 </c:if>
+	 <!-- OVERWRITE DUPLICATES -->
+   	 <c:if test="${empty deleteCheckedPosts}">
+	 	<c:set var="overwrite" value="false" />
+	 </c:if>
    	 <!-- SUBMITBUTTON -->
      <fmt:message key="${submitKey}" var="buttonUpdate"/>
      <!-- CHECK ALL MESSAGEBOX QUESTION -->
@@ -62,8 +72,8 @@
            
            <form id="batchedit" action="/${formAction}" method="POST">
            <!-- POSSIBLE TODO: make command variable nested/tunnel through servlet-actions.xml for both commands -->
-           	 <input type="hidden" value="${command.deleteCheckedPosts}" />
-           	 <input type="hidden" value="${command.overwrite}" />
+           	 <input type="hidden" value="${deleteCheckedPosts}" />
+           	 <input type="hidden" value="${overwrite}" />
              <table>
 
                <tr>
@@ -96,7 +106,7 @@
                </tr>                  
 
                <c:forEach var="post" items="${listView.list}" varStatus="postCount">
-	               <spring:bind path="command.bibtex.list[${postCount.count - 1}].*">
+	               <spring:bind path="command.posts.list[${postCount.count - 1}].*">
 	               		<c:choose>
 	               			<c:when test="${status.error}">
 	   	               			<c:choose>

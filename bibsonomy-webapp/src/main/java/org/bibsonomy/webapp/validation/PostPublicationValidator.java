@@ -23,7 +23,7 @@ public class PostPublicationValidator implements Validator<PostPublicationComman
 	public void validate(Object target, Errors errors) 
 	{
 		PostPublicationCommand command = (PostPublicationCommand) target;
-		errors.pushNestedPath("bibtex");
+		errors.pushNestedPath("posts");
 		//validate resource
 		ValidationUtils.invokeValidator(new PublicationListCommandValidator(), command.getBibtex(), errors);
 		errors.popNestedPath();

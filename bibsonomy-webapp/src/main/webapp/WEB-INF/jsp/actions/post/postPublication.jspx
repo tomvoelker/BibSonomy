@@ -61,14 +61,14 @@
 			
 			
 			
-		<jsp:attribute name="tabcontent">
-			<!-- ================================= -->
-			<!--  !!!TABMENU DEFINED IN COMMAND!!! -->
-			<!-- ================================= -->
+	  <jsp:attribute name="tabcontent">
+	  <!-- ================================= -->
+	  <!--  !!!TABMENU DEFINED IN COMMAND!!! -->
+	  <!-- ================================= -->
 
 
       
-       <fmt:message var="post_button" key="post_bibtex.button_label_post" />
+      <fmt:message var="post_button" key="post_bibtex.button_label_post" />
       
       <c:set var="post" value="${command.post}"/>
       
@@ -208,7 +208,7 @@
                                         <div class="fsRow">
                                           <label class="fsLabel"><fmt:message key="import.overwritten" /></label>
                                           <buttons:help  cssStyle="float:left" message="import.overwrite2"/>
-                                          <input type="checkbox" class="fsInput" name="overwrite" value="" />
+                                          <input type="checkbox" class="fsInput" name="overwrite" value="true" />
                                         </div>
                       
                                         <div class="fsRow">

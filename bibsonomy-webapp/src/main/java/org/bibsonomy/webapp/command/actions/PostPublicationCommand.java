@@ -32,6 +32,12 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public final static String TASK_EDIT_PUBLICATIONS 	= "EDIT_PUBLICATIONS";
 	
 	/**
+	 * The URL which the tab header links to.
+	 */
+	private final String TAB_URL = "/import/publications"; 
+	
+	
+	/**
 	 * this flag determines, weather the dialogue called was configured to 
 	 * edit(delete) or edit(create) existing posts.
 	 */
@@ -88,10 +94,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	}
 
 	
-	/**
-	 * The URL which the tab header links to.
-	 */
-	private final String TAB_URL = "/import/publications"; 
 	
 	/**
 	 * Detetermines, if we call import/publications a second time due to errors, the user can fix
@@ -301,9 +303,10 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		return this.overwrite;
 	}
 	
+	/*
 	public boolean isOverwrite() {
 		return this.overwrite;
-	}
+	}*/
 
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
@@ -342,30 +345,27 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		this.updatedPosts = updatedBookmarkEntries;
 	}
 
-	/**
-	 * The posts, that were ignored during import. (duplicates)
-	 */
-	private List<String> ignoredPosts;
 	
-	public List<String> getIgnoredPosts() {
-		return this.ignoredPosts;
-	}
-
-	public void setIgnoredPosts(List<String> ignoredPosts) {
-		this.ignoredPosts = ignoredPosts;
-	}
 
 	/**
 	 * For multiple posts
 	 */
-	private ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>(this);
+	private ListCommand<Post<BibTex>> posts = new ListCommand<Post<BibTex>>(this);
 
 	public ListCommand<Post<BibTex>> getBibtex() {
-		return this.bibtex;
+		return this.posts;
 	}
 
 	public void setBibtex(ListCommand<Post<BibTex>> bibtex) {
-		this.bibtex = bibtex;
+		this.posts = bibtex;
+	}
+	
+	public ListCommand<Post<BibTex>> getPosts() {
+		return this.posts;
+	}
+
+	public void setPosts(ListCommand<Post<BibTex>> bibtex) {
+		this.posts = bibtex;
 	}
 
 	

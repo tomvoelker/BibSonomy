@@ -350,7 +350,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		postListCommand.setList(bibtex);
 		command.setBibtex(postListCommand);
 		/**
-		 * Check for INCOMPLETION ERRORS here
+		 * Check for INCOMPLETION ERRORS here - rejectIfEmpty checks
 		 */
 		validator.validate(command, errors);
 		
@@ -388,14 +388,16 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			if(!command.isEditBeforeImport() && (!errors.hasErrors() || (errors.hasErrors() && bibtex.size()>MAXCOUNT_ERRORHANDLING)))
 			{
 				/**
-				 * Concatenate all errors, that were found during savePublicationsForUser
+				 * reject the errors depending on the posts corresponding index in the post list, that were found during savePublicationsForUser
 				 */
-				Map<String, List<ErrorMessage>> errorMsgs = savePublicationsForUser(postListCommand, command.isOverwrite(), command.isWriteAllCorrectOnes(), loginUser);
+				Map<String, List<ErrorMessage>> errorMsgs = savePublicationsForUser(postListCommand, command.getOverwrite(), command.isWriteAllCorrectOnes(), loginUser);
 				for(int i=0; i<bibtex.size(); i++)
 				{
-					for(ErrorMessage msg : errorMsgs.get(bibtex.get(i)))
+					if(!errorMsgs.containsKey(bibtex.get(i).getResource().getIntraHash())) break;
+					for(ErrorMessage msg : errorMsgs.get(bibtex.get(i).getResource().getIntraHash()))
 					{
-						errors.rejectValue("bibtex.list["+i+"]", 
+						if(msg instanceof DuplicatePostErrorMessage && command.getOverwrite()) continue;
+						errors.rejectValue("posts.list["+i+"].resource", 
 											"since we might have parameterized messages, we translate them within java and use the fallback",
 											StringUtils.translateMessageKey(msg.getLocalizedMessageKey(), msg.getParameters(), command.getContext().getLocale())
 											);
@@ -424,10 +426,11 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				return ShowEnterPublicationView(command, true);
 			}
 			
-			if(command.getEditBeforeImport())
-				command.setDeleteCheckedPosts(false); //posts will have to get saved, because the user decided to
-			
-			return Views.BATCHEDITBIB;
+			if(!command.getEditBeforeImport() && (!errors.hasErrors() || /*command.*/ true))
+				command.setDeleteCheckedPosts(true); //posts will have to get saved, because the user decided to
+			else
+				command.setDeleteCheckedPosts(false);
+			return Views.BATCHEDIT_TEMP_BIB;
 		}
 	}
 

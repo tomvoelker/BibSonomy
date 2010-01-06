@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,6 +20,7 @@ import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -66,6 +68,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	@Override
 	public View workOn(final BatchEditCommand command) {
 		final RequestWrapperContext context = command.getContext();
+		
+		boolean postIsPublication = true;
 		
 		// check if user is logged in
 		if (!context.isUserLoggedIn()) {
@@ -176,6 +180,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					
 					// update tags in post
 					final Post<? extends Resource> post = this.logic.getPostDetails(hash, username);
+					postIsPublication = this.determinePostRessource(post);
 					
 					if (!present(post)) {
 						log.warn("post with hash " + hash + " not found for user " + username + " while updating tags");
@@ -240,6 +245,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			for (final String hash : newTagsMap.keySet()) {
 				//get the appropriate post
 				final Post<? extends Resource> post = bibtexHashMap.get(hash);
+				postIsPublication = this.determinePostRessource(post);
 				
 				/*
 				 * short check if hash is correct
@@ -326,7 +332,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								{ 
 									if(message instanceof SystemTagErrorMessage)
 									{
-										errors.rejectValue("command.posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
+										errors.rejectValue("command.posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", "",
 															StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
 															message.getParameters(), 
 															command.getContext().getLocale()));
@@ -343,7 +349,13 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			
 			log.debug("finished batch edit for user " + username);
 	
-			
+			if(errors.hasErrors())
+			{
+				if(postIsPublication)
+					return Views.BATCHEDITBIB;
+				else
+					return Views.BATCHEDITURL;
+			}
 	
 			return Views.HOMEPAGE;
 		}
@@ -423,5 +435,16 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 */
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
+	}
+	
+	private boolean determinePostRessource(Post<?> post)
+	{
+		Type resourceType = post.getResource().getClass();
+		if(resourceType==null)
+			throw new IllegalArgumentException("Untyped Post<?> recognized during BatchEditController.determinePostRessource");
+		if(post.getResource().getClass().isAssignableFrom(BibTex.class))
+			return true;
+		else
+			return false;
 	}
 }
