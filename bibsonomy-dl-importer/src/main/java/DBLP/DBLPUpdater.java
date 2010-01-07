@@ -104,17 +104,17 @@ public class DBLPUpdater {
 			 * dbhandler.open(); dbhandler.countEntrytypes(presult.getEval());
 			 * dbhandler.countBookmarks(presult.getEval()); dbhandler.close();
 			 */
-
-			log.info("saving evaluation results");
-			dbhandler.open();
-			dbhandler.saveAuthorEditorFailure(presult.getInsert_incomplete_author_editor());
-			dbhandler.saveDuplicateFailure(presult.getInsert_duplicate());
-			dbhandler.saveIncompleteFailure(presult.getInsert_incomplete());
-			dbhandler.saveWarningFailure(presult.getInsert_warning());
-			dbhandler.saveBookmarkEmptyUrlFailure(presult.getInsert_bookmark_empty_url());
-			dbhandler.saveExceptions(presult.getException());
-			dbhandler.saveUploadError(presult.getUpload_error());
-			dbhandler.close();
+// rja, 2010-01-07: removed, because table size grew to 16GB
+//			log.info("saving evaluation results");
+//			dbhandler.open();
+//			dbhandler.saveAuthorEditorFailure(presult.getInsert_incomplete_author_editor());
+//			dbhandler.saveDuplicateFailure(presult.getInsert_duplicate());
+//			dbhandler.saveIncompleteFailure(presult.getInsert_incomplete());
+//			dbhandler.saveWarningFailure(presult.getInsert_warning());
+//			dbhandler.saveBookmarkEmptyUrlFailure(presult.getInsert_bookmark_empty_url());
+//			dbhandler.saveExceptions(presult.getException());
+//			dbhandler.saveUploadError(presult.getUpload_error());
+//			dbhandler.close();
 
 			// delete and insert DBLP home bookmark, because ist must stay in
 			// the first place

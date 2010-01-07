@@ -7,13 +7,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 import org.bibsonomy.common.enums.HashID;
 
 import DBLP.DBLPEvaluation;
 import DBLP.constants.DBLPConstantsResult;
-import DBLP.parser.DBLPEntry;
 
 
 /*
@@ -45,8 +43,6 @@ public class DBHandler{
 	private static final String SQL_GET_LAST_UPDATE = "SELECT lastupdate FROM DBLP ORDER BY lastupdate DESC LIMIT 1";
 	
 	private static final String SQL_SET_LAST_UPDATE = "INSERT INTO DBLP (`lastupdate`) VALUES (?)";
-	
-	private static final String SQL_INSERT_FAILURE = "INSERT INTO DBLPFailures(snippet, user_name, failure_type) VALUES (?, ?, ?)";
 	
 	private static final String SQL_SELECT_ENTRYTYPES = "SELECT entrytype, count(entrytype) AS count FROM bibtex WHERE user_name=? GROUP BY entrytype";
 	
@@ -255,119 +251,6 @@ public class DBHandler{
        	} else
        		throw new SQLException("Cannot connect to database server");
 		return null;
-	}
-	
-	
-	/*
-	 * this method stores all incomplete author/editor failures 
-	 */
-	public void saveAuthorEditorFailure(LinkedList<DBLPEntry> list)throws Exception{
-	   	if(conn!=null){
-	   		for(DBLPEntry entry: list){
-	       		stmtp = conn.prepareStatement(SQL_INSERT_FAILURE);
-	       		stmtp.setString(1, entry.generateSnippet());
-	       		stmtp.setString(2, conResult.getUser());
-	       		stmtp.setString(3, INCOMPLETE_AUTHOR_EDITOR_FAILURE);
-	       		stmtp.executeUpdate();
-	   		}
-       	}else
-       		throw new Exception("Cannot connect to database server");			
-	}
-
-	/*
-	 * this method stores all empty url failures 
-	 */
-	public void saveBookmarkEmptyUrlFailure(LinkedList<DBLPEntry> list)throws Exception{
-	   	if(conn!=null){
-	   		for(DBLPEntry entry: list){
-	       		stmtp = conn.prepareStatement(SQL_INSERT_FAILURE);
-	       		stmtp.setString(1, entry.generateSnippet());
-	       		stmtp.setString(2, conResult.getUser());
-	       		stmtp.setString(3, BOOKMARK_EMPTY_URL_FAILURE);
-	       		stmtp.executeUpdate();
-	   		}
-       	}else
-       		throw new Exception("Cannot connect to database server");			
-	}
-	
-	/*
-	 * this method stores all warning failures 
-	 */
-	public void saveWarningFailure(LinkedList<String> list)throws Exception{
-	   	if(conn!=null){
-	   		for(String entry: list){
-	       		stmtp = conn.prepareStatement(SQL_INSERT_FAILURE);
-	       		stmtp.setString(1, entry);
-	       		stmtp.setString(2, conResult.getUser());
-	       		stmtp.setString(3, WARNING_FAILURE);
-	       		stmtp.executeUpdate();
-	   		}
-       	}else
-       		throw new Exception("Cannot connect to database server");					
-	}
-
-	/*
-	 * this method stores all duplicate failures 
-	 */
-	public void saveDuplicateFailure(LinkedList<String> list)throws Exception{
-	   	if (conn != null) {
-	   		for (String entry: list) {
-	       		stmtp = conn.prepareStatement(SQL_INSERT_FAILURE);
-	       		stmtp.setString(1, entry);
-	       		stmtp.setString(2, conResult.getUser());
-	       		stmtp.setString(3, DUPLICATE_FAILURE);
-	       		stmtp.executeUpdate();
-	   		}
-       	} else
-       		throw new Exception("Cannot connect to database server");							
-	}
-
-	/*
-	 * this method stores all incomplete failures 
-	 */
-	public void saveIncompleteFailure(LinkedList<String> list)throws Exception{
-	   	if(conn!=null){
-	   		for(String entry: list){
-	       		stmtp = conn.prepareStatement(SQL_INSERT_FAILURE);
-	       		stmtp.setString(1, entry);
-	       		stmtp.setString(2, conResult.getUser());
-	       		stmtp.setString(3, INCOMPLETE_FAILURE);
-	       		stmtp.executeUpdate();
-	   		}
-       	}else
-       		throw new Exception("Cannot connect to database server");					
-	}
-
-	/*
-	 * this method stores all upload_errors 
-	 */
-	public void saveUploadError(LinkedList<String> list)throws Exception{
-	   	if(conn!=null){
-	   		for(String entry: list){
-	       		stmtp = conn.prepareStatement(SQL_INSERT_FAILURE);
-	       		stmtp.setString(1, entry);
-	       		stmtp.setString(2, conResult.getUser());
-	       		stmtp.setString(3, UPLOAD_ERROR);
-	       		stmtp.executeUpdate();
-	   		}
-	   	}else
-	   		throw new Exception("Cannot connect to database server");					
-	}
-
-	/*
-	 * this method stores all exceptions 
-	 */
-	public void saveExceptions(LinkedList<String> list)throws Exception{
-	   	if(conn!=null){
-	   		for(String entry: list){
-	       		stmtp = conn.prepareStatement(SQL_INSERT_FAILURE);
-	       		stmtp.setString(1, entry);
-	       		stmtp.setString(2, conResult.getUser());
-	       		stmtp.setString(3, EXCEPTION);
-	       		stmtp.executeUpdate();
-	   		}
-	   	}else
-	   		throw new Exception("Cannot connect to database server");					
 	}
 
 }
