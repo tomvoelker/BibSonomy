@@ -18,50 +18,12 @@ INSERT INTO `classifier_settings` (`key`, `value`) VALUES
 ('algorithm', 'weka.classifiers.lazy.IBk'),
 ('mode', 'D');
 
-
--- 
--- Data for table `ContentModifiedTags`
--- 
-
 -- 
 -- Data for table `DBLP`
 -- 
 
 INSERT INTO `DBLP` VALUES 
 ('1815-12-10 00:00:00');
-
-
--- 
--- Data for table `DBLPFailures`
--- 
-
-
--- 
--- Data for table `MostSimTagsByContent`
--- 
-
-
--- 
--- Data for table `TagContent`
--- 
-
-
-
--- 
--- Data for table `TagUser`
--- 
-
-
-
--- 
--- Data for table `TmpMostSimTagsByContent`
--- 
-
-
-
--- 
--- Data for table `answers`
--- 
 
 
 
