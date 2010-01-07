@@ -196,7 +196,7 @@
 									    <div class="fsRow"> 
                                           <label class="fsLabel"><fmt:message key="import.save_all_possible" /></label>
                                           <buttons:help  cssStyle="float:left" message="import.save_all_possible.help" />
-                                          <input type="checkbox" class="fsInput" name="saveAllPosssible" value="true" />
+                                          <input type="checkbox" class="fsInput" name="saveAllPossible" value="true" />
                                         </div>
 									    
                                         <div class="fsRow"> 
@@ -333,20 +333,17 @@
 				<div style="margin-top:2em">
 					<a onclick="toggleImage('toggleParsedPostViewButton', '${resdir}/image/nice_box_arrow_right.png', '${resdir}/image/nice_box_arrow.png', 'parsedPostView')"><img id="toggleParsedPostViewButton" style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.parse_or_incomplete_bibtex"/></h3></a>
 				</div>
+
 				<div id="parsedPostView">
 						<p class="standart_text_normal" style="margin-top:1em; margin-bottom:1em"><fmt:message key="import.error.parse_or_incomplete_bibtex.description"/></p>
 						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
-								<edit:batchEditContent 	formAction="${command.formAction}" 
+								<edit:batchEditContent	formAction="${command.formAction}" 
 					        							listView="${command.bibtex}" 
 					        							otherPostsUrlPrefix="bla" 
 					        							listViewStartParamName="bibtex.start"
-					        							checkboxAllLabelKey="batchedit.saveAll"
-		      											checkboxLabelKey="batchedit.saveAllQ"
-		      											checkboxAllQuestion="batchedit.saveAll.confirm"
-		      											submitKey="batchedit.button.save"  
 		      											overwrite="${command.overwrite}"
-		      											deleteCheckedPosts="${command.deleteCheckedPosts}">
-				        							
+		      											deleteCheckedPosts="${command.deleteCheckedPosts}" >
+				        					 		
 									<jsp:attribute name="shortPostDescription">
 										<bib:shortDescription post="${post}"/>
 									</jsp:attribute>

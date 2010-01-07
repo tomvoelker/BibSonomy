@@ -19,10 +19,6 @@
     <jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="formAction" type="java.lang.String" required="false" description="The action-url of the form on the batchedit-view."/>
-    <jsp:directive.attribute name="submitKey" required="true" description="The key for the value of the submit button."/>
-  	<jsp:directive.attribute name="checkboxLabelKey" required="true" description="The key for the label of the checkboxes associated with the posts."/>
-  	<jsp:directive.attribute name="checkboxAllLabelKey" required="true" description="The key for the label of the 'check-all'-checkboxes associated with the posts."/>
-  	<jsp:directive.attribute name="checkboxAllQuestion" required="false" description="The key for the question text, which appears, when the 'check all' checkbox is hit."/>
   	<jsp:directive.attribute name="deleteCheckedPosts" type="java.lang.Boolean" required="false"/>
   	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false"/>
   	
@@ -37,12 +33,28 @@
    	 <!--=======================-->
    	 <!-- VARIABLEN DEKLARATION -->
    	 <!--=======================-->
+	<c:choose>
+	  	<c:when test="${deleteCheckedPosts}">
+	  		<c:set var="checkboxAllLabelKey" value="batchedit.deleteAll" />
+	  		<c:set var="checkboxLabelKey" value="batchedit.deletePostQ" />
+	  		<c:set var="checkboxAllQuestion" value="batchedit.deleteAll.confirm" />
+	  		<c:set var="submitKey" value="batchedit.button.update" />
+	  	</c:when>
+	  	<c:otherwise>
+	  		<c:set var="checkboxAllLabelKey" value="batchedit.saveAll" />
+	  		<c:set var="checkboxLabelKey" value="batchedit.saveAllQ" />
+	  		<c:set var="checkboxAllQuestion" value="batchedit.saveAll.confirm" />
+	  		<c:set var="submitKey" value="batchedit.button.save" />
+	  	</c:otherwise>
+	  </c:choose>
+
+
    	 <!-- VIEW FOR SAVING OR DELETING POSTS -->
    	 <c:if test="${empty deleteCheckedPosts}">
 	 	<c:set var="deleteCheckedPosts" value="true" />
 	 </c:if>
 	 <!-- OVERWRITE DUPLICATES -->
-   	 <c:if test="${empty deleteCheckedPosts}">
+   	 <c:if test="${empty overwrite}">
 	 	<c:set var="overwrite" value="false" />
 	 </c:if>
    	 <!-- SUBMITBUTTON -->
@@ -56,6 +68,8 @@
      <c:if test="${empty formAction}">
        <c:set var="formAction" value="batchEdit_new"/>
      </c:if>
+	 
+	 
 	 
 	 <!--=======================-->
    	 <!-- VARIABLEN DEKLARATION -->
@@ -72,8 +86,10 @@
            
            <form id="batchedit" action="/${formAction}" method="POST">
            <!-- POSSIBLE TODO: make command variable nested/tunnel through servlet-actions.xml for both commands -->
-           	 <input type="hidden" value="${deleteCheckedPosts}" />
-           	 <input type="hidden" value="${overwrite}" />
+           	 <input type="checkbox" name="deleteCheckedPosts" value="${deleteCheckedPosts}" style="visibility:collapse" checked="${deleteCheckedPosts}" />
+	         <input type="checkbox" name="overwrite" value="${overwrite}" style="visibility:collapse" checked="${overwrite}" />
+	         
+           	 
              <table>
 
                <tr>
@@ -185,13 +201,13 @@
                    <input type="submit" value="${buttonUpdate}" style="float:right; width:100%"/>
                    <input type="hidden" name="ckey" value="${ckey}"/>
                    <!-- TODO: somehow a hack: removing the bedit(bib|url)/ by cutting at the first '/' -->
-                   <input type="hidden" name="referer" value="/${fn:escapeXml(fn:substringAfter(requPath, '/'))}"/>
+                   <input type="hidden" name="referer" value="/${fn:escapeXml(requPath)}"/>
                  </td>
                </tr>
                   
              </table>
            </form>
-           
+
 
            <c:if test="${not empty otherPosts}">
 

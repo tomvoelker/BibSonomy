@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -99,8 +98,8 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	 */
 	private FileUploadFactory uploadFactory;
 
-	private HashMap<Integer, Integer> validatorToAll;
-	private HashMap<Integer, Integer> storeToValidator;
+	private boolean bibtexHasValidationErrors;
+	
 	private List<Post<?>> storageList;
 
 	@Override
@@ -123,8 +122,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	public View workOn(PostPublicationCommand command) {
 		log.debug("workOn started");
 		
-		validatorToAll = new HashMap<Integer, Integer>();
-		storeToValidator = new HashMap<Integer, Integer>();
+		
 		storageList = new LinkedList<Post<?>>();
 		
 		/**
@@ -369,8 +367,9 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		/**
 		 * Check for INCOMPLETION ERRORS here - rejectIfEmpty checks
 		 */
+		int numOfNoValidationErrors = errors.getErrorCount();
 		validator.validate(command, errors);
-		
+		bibtexHasValidationErrors = numOfNoValidationErrors!=errors.getErrorCount();
 		
 		/**
 		 * if we have errors, we dont store the publications (with only one little exception)
@@ -448,24 +447,9 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				
 				command.setFormAction(ACTION_SAVE_BEFORE_EDIT);
 			} else {
-					command.setDeleteCheckedPosts(false); //posts will have to get saved, since an error occurred
 					setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, bibtex);
 			}
 
-			/**
-			 * If there are errors (incomplete/parse), we dont store them
-			 */
-			if(errors.hasErrors())
-			{
-				/**
-				 * BACK TO THE IMPORT/PUBLICATIONS VIEW
-				 * Posts will get saved temporarily, since an error occurred (checked posts will be saved)
-				 */
-				
-				command.setDeleteCheckedPosts(false); 
-				return ShowEnterPublicationView(command, true);
-			}
-			
 			/**
 			 * If the user wants to store the posts permanently AND (his posts have no errors OR he ignores the errors OR the number of
 			 * bibtexes is greater than the treshold, we will forward him to the appropriate site, where he can delete posts (they were saved)
@@ -474,6 +458,20 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 				command.setDeleteCheckedPosts(true); //posts will have to get saved, because the user decided to
 			else
 				command.setDeleteCheckedPosts(false);
+			
+			
+			/***************************
+			 * RETURN THE CORRECT VIEW *
+			 ***************************/
+			
+			if(errors.hasErrors())
+			{
+				/**
+				 * BACK TO THE IMPORT/PUBLICATIONS VIEW
+				 * Posts will get saved temporarily, since an error occurred (checked posts will be saved)
+				 */
+				return ShowEnterPublicationView(command, true);
+			}
 			
 			/**
 			 * if the user explicitly wants to store the posts AFTER editing we forward to the modified batcheditbib (batchedittempbib)
@@ -505,7 +503,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		boolean isOverwrite = command.getOverwrite();
 		boolean writeAllCorrectOnes = command.getSaveAllPossible();
 		List<Post<?>> tmpList = new LinkedList<Post<?>>(postListCommand.getList());
-		if(validatorToAll.size()>0)
+		if(bibtexHasValidationErrors)
 			tmpList = storageList;
 		
 		List<String> createdPostHash = new LinkedList<String>();
@@ -545,6 +543,11 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 							hasDuplicate = true;
 							if(isOverwrite)
 								duplicateMessage = msg;
+							else
+								this.errors.rejectValue("posts.list["+postListCommand.getList().indexOf(bib)+"].resource", 
+										"since we might have parameterized messages, we translate them within java and use the fallback",
+										StringUtils.translateMessageKey(msg.getLocalizedMessageKey(), msg.getParameters(), command.getContext().getLocale())
+										);
 						}
 						else
 						{

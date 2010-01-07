@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.antlr.runtime.RecognitionException;
 import org.apache.commons.logging.Log;
@@ -27,6 +29,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.BatchEditCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -218,7 +221,17 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			// set default referer to user's page if empty or null
 			if (referer == null || referer.trim().isEmpty()) {
 				referer = "/user/" + this.encodeStringToUTF8(username);
+			} else {
+				/**
+				 * if we come from bedit{bib, burl}/{group, user}/{groupname, username},
+				 * we remove this prefix to get back to the simple resource view in the group or user section
+				 */
+				Pattern prefixToRemove = Pattern.compile("(bedit[a-z,A-Z]+/)");
+				Matcher prefixMatcher = prefixToRemove.matcher(referer);
+				if(prefixMatcher.find())
+					referer = prefixMatcher.replaceFirst("");
 			}
+				
 	
 			return new ExtendedRedirectView(referer);
 		} else {
@@ -226,7 +239,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			final List<Post<?>> postsToSave = new LinkedList<Post<?>>();
 			final List<Post<?>> postsToUpdate = new LinkedList<Post<?>>();
 			LinkedList<Post<?>> bibtex = (LinkedList<Post<?>>) this.requestLogic.getSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
-			
+
 			ListCommand<Post<?>> listCommand = new ListCommand<Post<?>>(command);
 			listCommand.setList(bibtex);
 			command.setPosts(listCommand);
@@ -235,9 +248,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			 *for every stored post!
 			 */
 			HashMap<String, Post<?>> bibtexHashMap = new HashMap<String, Post<?>>(); 
-			for(Post<?> currentPost : bibtex)
+			if(ValidationUtils.present(bibtex))
 			{
-				bibtexHashMap.put(currentPost.getResource().getIntraHash(), currentPost);
+				for(Post<?> currentPost : bibtex)
+				{
+					bibtexHashMap.put(currentPost.getResource().getIntraHash(), currentPost);
+				}
 			}
 			/*
 			 * loop through all hashes
@@ -245,6 +261,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			for (final String hash : newTagsMap.keySet()) {
 				//get the appropriate post
 				final Post<? extends Resource> post = bibtexHashMap.get(hash);
+				if(post==null) continue;
 				postIsPublication = this.determinePostRessource(post);
 				
 				/*
@@ -357,7 +374,23 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					return Views.BATCHEDITURL;
 			}
 	
-			return Views.HOMEPAGE;
+			// get referer to redirect to it
+			String referer = command.getReferer();
+			
+			// set default referer to user's page if empty or null
+			if (referer == null || referer.trim().isEmpty()) {
+				referer = "/user/" + this.encodeStringToUTF8(username);
+			} else {
+				/**
+				 * if we come from bedit{bib, burl}/{group, user}/{groupname, username},
+				 * we remove this prefix to get back to the simple resource view in the group or user section
+				 */
+				Pattern prefixToRemove = Pattern.compile("(bedit[a-z,A-Z]+/)");
+				Matcher prefixMatcher = prefixToRemove.matcher(referer);
+				if(prefixMatcher.find())
+					referer = prefixMatcher.replaceFirst("");
+			}
+			return new ExtendedRedirectView(referer);
 		}
 	}
 	

@@ -16,13 +16,13 @@
 	
 	<!-- 
 		************************************************************************************************
-		This page will be called when for editing tags (and deleting, see deleteCheckedPosts)
+		This page will be called for editing tags (and deleting, see deleteCheckedPosts)
 		of successfully imported and permanently stored bibtexes.
 		************************************************************************************************
 	-->
 	<c:set var="deleteCheckedPosts" value="true" />
 	
-	
+	 
 	
 	<edit:batcheditSkeleton listView="${command.bibtex}" listViewStartParamName="bibtex.start" otherPostsUrlPrefix="/bibtex" deleteCheckedPosts="${deleteCheckedPosts}"> 
      <jsp:attribute name="shortPostDescription"><bib:shortDescription post="${post}"/></jsp:attribute>
