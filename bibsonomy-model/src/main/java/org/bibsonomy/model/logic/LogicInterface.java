@@ -462,13 +462,35 @@ public interface LogicInterface extends PostLogicInterface {
 	public List<User> getClassifierComparison(int interval);	
 	
 	/**
-	 * Returns a username cotrresponding to a given openid
+	 * Returns a username corresponding to a given openid
 	 * 
 	 * @param openID
 	 * @return username
 	 */
 	public String getOpenIDUser(final String openID);
 	
+	/**
+	 * Returns a username corresponding to a given ldapUserId
+	 * 
+	 * @param username
+	 * @return ldapUserId
+	 */
+	public String getLdapUserByUsername(final String username);
+	
+	/**
+	 * Returns a username corresponding to a given ldapUserId
+	 * 
+	 * @param ldapUser
+	 * @return username
+	 */
+	public String getUsernameByLdapUser(final String ldapUser);
+
+	
+	/**
+	 * @param loginName
+	 */
+	public void updateLastLdapRequest (final String loginName);
+
 	/**
 	 * Retrieve relations
 	 * 
