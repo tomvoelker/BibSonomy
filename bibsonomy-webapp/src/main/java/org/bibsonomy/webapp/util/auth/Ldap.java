@@ -90,7 +90,7 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 	
 	
 	/** check authorization of user
-	 * returns ldapuserinfo object with retireved userdata if user exists otherwise null 
+	 * returns ldapuserinfo object with retrieved userdata if user exists otherwise null 
 	 * @param ldapUserId
 	 * @param ldapCredentials
 	 * @return LdapUserinfo
@@ -100,9 +100,16 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 		LdapUserinfo ldapUserinfo = new	LdapUserinfo();	
 
 		// exit, if one parameter is null
-		if (null==ldapUserId || null==ldapCredentials) return null;
+		if (null==ldapUserId) {
+			log.info("LdapUserinfo.checkauth: ldapUserId is NULL!");
+			return null;
+		} else if (null==ldapCredentials) {
+			log.info("LdapUserinfo.checkauth: ldapCredentials is NULL!");
+			return null;
+		}
 		
 		// get some ldap parameter from environment ldap resource configuration
+		String currentConfig = "";
 		String ldapSearchDomain = "";
 		String ldapUserIdField = "";
 		String ldapSureNameField = "";
@@ -110,18 +117,31 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 		String ldapMailField = "";
 		String ldapLocationField = "";
 		String ldapUserPasswordField = "userPassword";
+		Context initContext = null;
+		Context envContext = null;
 		try {
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			ldapSearchDomain = (String) envContext.lookup("ldap/config/searchDomain");
-			ldapUserIdField = (String) envContext.lookup("ldap/config/userId");
-			ldapSureNameField = (String) envContext.lookup("ldap/config/sureName");
-			ldapGivenNameField = (String) envContext.lookup("ldap/config/givenName");
-			ldapMailField = (String) envContext.lookup("ldap/config/mail");
-			ldapLocationField = (String) envContext.lookup("ldap/config/location");
+			initContext = new InitialContext();
+			envContext = (Context) initContext.lookup("java:/comp/env");
 		} catch (NamingException ex) {
-			log.error("Error when trying to read environment variables 'ldap/config/*' via JNDI.", ex);
+			log.error("Error when trying create initContext lookup for java:/comp/env via JNDI.", ex);
 		}
+		try {
+			currentConfig =  (String) envContext.lookup("ldap/currentConfig");
+		} catch (NamingException ex) {
+			log.error("Error when trying to read environment variable ldap/currentConfig via JNDI.", ex);
+		}
+		try {
+			ldapSearchDomain = (String) envContext.lookup("ldap/"+currentConfig+"/config/searchDomain");
+			ldapUserIdField = (String) envContext.lookup("ldap/"+currentConfig+"/config/userId");
+			ldapSureNameField = (String) envContext.lookup("ldap/"+currentConfig+"/config/sureName");
+			ldapGivenNameField = (String) envContext.lookup("ldap/"+currentConfig+"/config/givenName");
+			ldapMailField = (String) envContext.lookup("ldap/"+currentConfig+"/config/mail");
+			ldapLocationField = (String) envContext.lookup("ldap/"+currentConfig+"/config/location");
+		} catch (NamingException ex) {
+			log.error("Error when trying to read environment variables 'ldap/"+currentConfig+"/config/*' via JNDI.", ex);
+		}
+
+		log.info("using ldap configuration: "+currentConfig);
 		
 		String query = "";
 //		query +=  "&(";
@@ -140,9 +160,9 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 		try {
 			newCtx = new InitialContext();
 			envCtx = (Context) newCtx.lookup("java:comp/env");
-			ctx = (DirContext) envCtx.lookup("ldap/DirContext");
+			ctx = (DirContext) envCtx.lookup("ldap/"+currentConfig+"/dir");
 		} catch (NamingException ex) {
-			log.error("Error when trying to create LDAP connection with configuration provided by JNDI.", ex);
+			log.error("Error when trying to create LDAP connection to 'ldap/"+currentConfig+"/dir' via JNDI.", ex);
 		}
 
 		// now we have got a InitialDirContext from LDAP Resource
@@ -162,7 +182,7 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 	                	if ((null != ldapGivenNameField) && ldapGivenNameField != "") ldapUserinfo.setFirstName(attribs.get(ldapGivenNameField));
 	                	if ((null != ldapMailField) && ldapMailField != "") ldapUserinfo.setEmail(attribs.get(ldapMailField));
 	                	if ((null != ldapLocationField) && ldapLocationField != "") ldapUserinfo.setLocation(attribs.get(ldapLocationField));
-	                	ldapUserinfo.setPasswordPicaHash(attribs.get(ldapUserPasswordField));
+	                	ldapUserinfo.setPasswordHash(attribs.get(ldapUserPasswordField));
 	                }
 		            
 					// check password

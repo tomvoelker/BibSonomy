@@ -6,7 +6,6 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.actions.UserLDAPRegistrationCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
@@ -81,14 +80,33 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 		 */
 		if (command.getStep() == 1) {
 
-			log.debug("step 1: fill form (username/password)");
+			log.debug("step 1: fill ldap form (username/password)");
 			/*
 			 * show form to enter Ldap
 			 */
 			return Views.REGISTER_USER_LDAP;
 		} else if (command.getStep() == 2) {
 			Views returnView = Views.REGISTER_USER_LDAP;
-			log.debug("step 2: show registration form");
+			log.debug("step 2: show ldap registration form");
+
+			
+			/*
+			 * check, if ldap user id already exists in ldap user table
+			 */
+			if (null != logic.getUsernameByLdapUser(requestLogic.getParameter("registerUser.name"))) {
+				/*
+				 * yes -> user must choose another name
+				 */
+				errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
+			}
+
+			if (errors.hasErrors()) {
+				/*
+				 * Generate HTML to show captcha.
+				 */
+				return Views.REGISTER_USER_LDAP;
+			}
+			
 
 			// check credentials
 			Ldap ldap = new Ldap();
@@ -108,19 +126,58 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 				log.info("Login check for registering succeeded for user " + requestLogic.getParameter("registerUser.name") + " via LDAP");
 				System.out.println("UserLDAPRegistration:: " + ldapUserinfo.toString());
 
-				command.getRegisterUser().setName(ldapUserinfo.getSureName().toLowerCase());
+				// check if username is already used and try another
+				String newName = ldapUserinfo.getSureName().toLowerCase();
+				int tryCount = 0;
+				log.info("try existence of username: "+newName);
+				while ((newName.equalsIgnoreCase(logic.getUserDetails(newName).getName())) && (tryCount<101)) {
+					try {
+						if (tryCount == 0) {
+							// try first character of forename concatenated with surename
+							// bugs bunny => bbunny
+							newName = ldapUserinfo.getFirstName().substring(0, 1).toLowerCase().concat(newName);
+						} else if (tryCount == 100) {
+							// now use first character of fore- and first two characters of surename concatenated with ldap user id 
+							// bugs bunny => bbu01234567
+							newName = newName.substring(0, 3).concat(ldapUserinfo.getUserId());
+						} else {
+							// try first character of forename concatenated with surename concatenated with current number
+							// bugs bunny => bbunnyX where X is between 1 and 9
+							if (tryCount==1) {
+								// add trycount to newName
+								newName = newName.concat(Integer.toString(tryCount));
+							} else { 
+								// replace last two characters of string with trycount
+								newName = newName.substring(0, newName.length()-Integer.toString(tryCount-1).length()).concat(Integer.toString(tryCount));
+							}
+						}
+						log.info("try existence of username: "+newName+" ("+tryCount+")");
+						tryCount++;
+					}
+					catch (IndexOutOfBoundsException ex) {
+						/*
+						 * if some substring values are out of range, catch exception and use surename
+						 */
+						newName = ldapUserinfo.getSureName().toLowerCase();
+						tryCount = 99;
+					}
+					
+				}
+
+				command.getRegisterUser().setName(newName);
 				command.getRegisterUser().setEmail(ldapUserinfo.getEmail());
 				command.getRegisterUser().setRealname(ldapUserinfo.getFirstName() + " " + ldapUserinfo.getSureName());
 				// command.getRegisterUser().setGender(ldapUserinfo.);
 				command.getRegisterUser().setPlace(ldapUserinfo.getLocation());
 				command.getRegisterUser().setUserId(ldapUserinfo.getUserId());
+				command.getRegisterUser().setPassword(ldapUserinfo.getPasswordHashMd5Hex());
 				returnView = Views.REGISTER_USER_LDAP_FORM;
 			}
 
 			return returnView;
-		} else if (command.getStep() == 4) {
+		} else if (command.getStep() == 3) {
 
-			log.debug("step 4: complete Ldap registration");
+			log.debug("step 3: complete ldap registration");
 			/*
 			 * complete registration process and save user to database
 			 */
@@ -156,7 +213,7 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 			/*
 			 * check, if user name already exists
 			 */
-			if (registerUser.getName() != null && logic.getUserDetails(registerUser.getName()).getName() != null) {
+			if (null != registerUser.getName() && null != logic.getUserDetails(registerUser.getName()).getName() ) {
 				/*
 				 * yes -> user must choose another name
 				 */
@@ -170,7 +227,7 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 				/*
 				 * Generate HTML to show captcha.
 				 */
-				return Views.REGISTER_USER_OPENID_PROVIDER_FORM;
+				return Views.REGISTER_USER_LDAP_FORM;
 			}
 
 			log.debug("validation passed with " + errors.getErrorCount() + " errors, proceeding to access database");
@@ -190,32 +247,33 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 
 			/*
 			 * generate random password
+			 * *depreciated*
 			 * 
 			 * TODO: choose better random pw
 			 */
-			String password = StringUtils.getMD5Hash(registerUser.getName() + "OPENID_");
-			registerUser.setPassword(password);
+//			String password = StringUtils.getMD5Hash(registerUser.getName() + "LDAP_");
+//			String password = StringUtils.getMD5Hash("we_do_not_need_this_password_while_using_ldap_server");
+//			String password = registerUser.getPassword();
+//			registerUser.setPassword(password);
 
 			/*
 			 * create user in DB
 			 */
 			logic.createUser(registerUser);
 
+			
 			/*
 			 * log user into system
 			 */
-			// cookieLogic.addLdapCookie(registerUser.getName(),
-			// command.getRegisterUser().getLdap(), registerUser.getPassword());
-			// ldapLogic.extendLdapSession(requestLogic.getSession(),
-			// command.getRegisterUser().getLdap());
-
+			cookieLogic.addUserCookie(registerUser.getName(), registerUser.getPassword());
+			
 			/*
 			 * present the success view
 			 */
 			return new ExtendedRedirectView(successRedirect);
 		}
 
-		return Views.REGISTER_USER_OPENID;
+		return Views.REGISTER_USER_LDAP;
 	}
 
 	public UserLDAPRegistrationCommand instantiateCommand() {

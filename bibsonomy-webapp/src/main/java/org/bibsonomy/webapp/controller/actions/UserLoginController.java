@@ -158,19 +158,21 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		 * The user 
 		 */
 		User user = null;
-
-		Boolean useLDAP = false;
+		
+		Boolean useLDAP = true;
 
 		if (useLDAP && username != null && hashedPassword != null  ) { 
 			/*
 			 * authentication via username and password via LDAP 
 			 */
 			// get user from database
-			user = adminLogic.getUserDetails(username);
+			String userId = adminLogic.getLdapUserByUsername(username);
+			
 			Ldap ldap = new Ldap();
 			LdapUserinfo ldapUserinfo = new LdapUserinfo();
-			log.info("Trying to login user " + username + " via LDAP");
-	        ldapUserinfo = ldap.checkauth(username, password);
+
+			log.info("Trying to login user " + username + " via LDAP (uid="+userId+")");
+	        ldapUserinfo = ldap.checkauth(userId, password);
 			
 			if (null == ldapUserinfo)
 			{
@@ -188,6 +190,19 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 			else
 			{
 				log.info("Login of user " + username + " accepted.");
+				user = adminLogic.getUserDetails(username);
+				
+				/*
+				 * add authentication cookie to response
+				 */
+				cookieLogic.addUserCookie(username, ldapUserinfo.getPasswordHashMd5Hex());
+
+				/*
+				 * update lastAccessTimestamp
+				 */
+				adminLogic.updateLastLdapRequest(username);
+
+				
 			}
 			
 		} else if (username != null && hashedPassword != null) {
@@ -247,7 +262,12 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 						return new ExtendedRedirectView("/change_password");
 					}
 				}
-			}			
+			}		
+			/*
+			 * add authentication cookie to response
+			 */
+			cookieLogic.addUserCookie(username, hashedPassword);
+
 		} else if (openID != null) {
 			/*
 			 * OpenID authentication
@@ -270,6 +290,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 				errors.reject("error.invalid_openid");
 				return Views.ERROR;
 			}						
+			
 		}
 
 
@@ -283,11 +304,6 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		/*
 		 * user successfully authenticated!
 		 */
-
-		/*
-		 * add authentication cookie to response
-		 */
-		cookieLogic.addUserCookie(username, hashedPassword);
 
 		/*
 		 * flag spammers with a cookie

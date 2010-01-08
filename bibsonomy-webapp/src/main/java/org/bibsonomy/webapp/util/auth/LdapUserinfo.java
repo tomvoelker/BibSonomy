@@ -68,10 +68,23 @@ public class LdapUserinfo {
 		
 		//check hash method
 		String hashMethod = this.getPasswordHash().substring(this.getPasswordHash().indexOf("{")+1, this.getPasswordHash().indexOf("}"));
-		log.debug("hash method --> " + hashMethod);
+		log.info("hash method ---> " + hashMethod);
+/*		
+		log.info("~~~~~~~~ password:"+password);
+		log.info("~~~~~~~~ generateMd5(this.getPasswordHash(),1):"+generateMd5(this.getPasswordHash(),1));
+		log.info("~~~~~~~~ this.getPasswordHash():"+this.getPasswordHash());
+		log.info("~~~~~~~~ generatePicaHash(password):"+generatePicaHash(password));
+		log.info("~~~~~~~~ this.getPasswordHashBase64():"+this.getPasswordHashBase64());
+		log.info("~~~~~~~~ generateMd5(password,0):"+generateMd5(password,0));
+*/
 		
+		// check plaintext password with ldap pica password hash 
 		if ( hashMethod.equals("PICA") && this.getPasswordHash().equals(generatePicaHash(password))) {
 			authOk = true;
+		// check md5 pica password hash (from cookie) with ldap pica password hash 	
+		} else if ( hashMethod.equals("PICA") && generateMd5(this.getPasswordHash(),1).equals(password)) {
+			authOk = true;
+		// check crypt/md5 password with ldap crypt password
 		} else if ( hashMethod.equals("crypt") && this.getPasswordHashBase64().equals(generateMd5(password,0))) {
 			authOk = true;
 		} else {
@@ -243,7 +256,7 @@ public class LdapUserinfo {
 		this.setLocation(locationS);
 	} 
 
-    public void setPasswordPicaHash (Attribute password) {
+    public void setPasswordHash (Attribute password) {
     	byte[] passwordB = null;
 
     	Object obj; 
@@ -286,6 +299,15 @@ public class LdapUserinfo {
     	return generateMd5(this.passwordHash,0);
     }
     
+    /**
+     * generates md5 string <br />
+     * if parameter format is 0 return base64 encoded md5 string<br />
+     * otherwise (return != 0) return hex encoded md5 string <br />
+     * 
+     * @param s
+     * @param format
+     * @return encoded md5 string
+     */
     public String generateMd5 (String s, int format) {
     	MessageDigest md5 = null;
     	String returnValue = null;

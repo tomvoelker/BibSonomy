@@ -93,7 +93,8 @@
 	                  <td colspan="3">
 	                    <input type="hidden" name="ckey" value="${command.context.ckey}"/>
 	                    <input type="hidden" name="step" value="3"/>
-	                    <input type="hidden" name="registerUser.openID" value="${command.registerUser.openID}"/>
+	                    <input type="hidden" name="registerUser.userId" value="${command.registerUser.userId}"/>
+	                    <input type="hidden" name="registerUser.password" value="${command.registerUser.password}"/>
 	                    
 	                    <fmt:message key="navi.register" var="submit"/>
 	                    <input type="submit" value="${submit}" />
