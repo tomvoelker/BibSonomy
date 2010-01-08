@@ -487,6 +487,11 @@ INSERT INTO `useruser_similarity` (`u1`, `u2`, `sim`, `measure_id`) VALUES
 -- 
 
 
+--
+-- Data for table `ldapUser`
+-- 
+
+
 
 -- 
 -- Data for table `weights`

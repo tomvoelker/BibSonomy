@@ -1,5 +1,7 @@
 package org.bibsonomy.database;
 
+import java.util.Date;
+
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
@@ -47,6 +49,55 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 		return new DBLogic(new User(), this.dbSessionFactory, bibTexSearch, bookmarkSearch);
 	}
 
+	/**
+	 * 
+	 * @param loginName
+	 * @return true if user is in table LdapUser, otherwise false 
+	 */
+	public boolean isLdapUser(final String loginName) {
+		final DBSession session = openSession();
+		try {
+			boolean result = true;
+			if (loginName != null) {
+				result = this.userDBManager.isLdapUser(loginName, session);
+			}
+			return result;
+		} finally {
+			session.close();
+		}
+			
+	}
+
+	/**
+	 * 
+	 * @param loginName
+	 * @return true if user is in table LdapUser, otherwise false 
+	 */
+	public Date lastLdapRequest(final String loginName) {
+		final DBSession session = openSession();
+		try {
+			Date result = null;
+			if (loginName != null) {
+				result = this.userDBManager.userLastLdapRequest(loginName, session);
+			}
+			return result;
+		} finally {
+			session.close();
+		}
+	}
+
+	public void updateLastLdapRequest (final String loginName) {
+		final DBSession session = openSession();
+		try {
+			if (loginName != null) {
+				this.userDBManager.updateLastLdapRequest(loginName, session);
+			}
+		} finally {
+			session.close();
+		}		
+	}
+	
+	
 	/**
 	 * Returns a user object containing the details of the user, if he is logged
 	 * in correctly. If not, the returned user object is empty and it's user

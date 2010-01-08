@@ -44,6 +44,11 @@
 		VALUES (#name#, #openID#)
 	</insert>	
 
+	<insert id="insertLdapUser" parameterClass="user">
+		INSERT INTO ldapUser 
+		VALUES (#name#, #userId#, CURRENT_TIMESTAMP)
+	</insert>	
+
 	<delete id="deleteUser" parameterClass="string">
 		DELETE FROM user WHERE user_name = #userName#
 	</delete>
@@ -52,9 +57,29 @@
 		DELETE FROM openIDUser WHERE user_name = #userName#
 	</delete>	
 	
+	<delete id="deleteLdapUser" parameterClass="string">
+		DELETE FROM ldapUser WHERE user_name = #userName#
+	</delete>	
+
 	<select id="getOpenIDUser" resultClass="string" parameterClass="string"> 
 		SELECT user_name FROM openIDUser WHERE openID = #openID#
 	</select>
+
+	<select id="getLdapUserIdByUsername" resultClass="string" parameterClass="string"> 
+		SELECT ldapUserId FROM ldapUser WHERE user_name = #userName#
+	</select>
+	
+	<select id="getUsernameByLdapUser" resultClass="string" parameterClass="string"> 
+		SELECT user_name FROM ldapUser WHERE ldapUserId = #ldapUser#
+	</select>	
+
+	<select id="getLastLdapRequestByUsername" resultClass="date" parameterClass="string"> 
+		SELECT lastAccess FROM ldapUser WHERE user_name = #userName#
+	</select>
+
+	<update id="updateLastLdapRequestDateForLdapUserIdByUsername" parameterClass="string"> 
+		UPDATE ldapUser SET lastAccess=CURRENT_TIMESTAMP WHERE user_name = #userName#
+	</update>
 
 	<select id="getUserSettings" resultMap="UserCommon.userSettings" parameterClass="userParam">
 		SELECT <include refid="userSettingsAttributes"/>

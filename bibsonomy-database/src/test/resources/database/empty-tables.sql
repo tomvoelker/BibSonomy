@@ -47,6 +47,7 @@ DELETE FROM `ids`;
 DELETE FROM `inboxMail`;
 DELETE FROM `inbox_tas`;
 DELETE FROM `inetAddressStates`;
+DELETE FROM `ldapUser`;
 DELETE FROM `log_bibtex`;
 DELETE FROM `log_bookmark`;
 DELETE FROM `log_collector`;

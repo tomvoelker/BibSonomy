@@ -1761,6 +1761,56 @@ public class DBLogic implements LogicInterface {
 	 * (non-Javadoc)
 	 * 
 	 * @see
+	 * org.bibsonomy.model.logic.LogicInterface#getLdapUserByUsername(java.lang.String)
+	 */
+	@Override
+	public String getLdapUserByUsername(String username) {
+		final DBSession session = openSession();
+		try {
+			final String ldapUserId = this.userDBManager.getLdapUserByUsername(username, session);
+			return ldapUserId;
+		} finally {
+			session.close();
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.bibsonomy.model.logic.LogicInterface#getLdapUserByUsername(java.lang.String)
+	 */
+	@Override
+	public String getUsernameByLdapUser(String ldapUser) {
+		final DBSession session = openSession();
+		try {
+			final String username = this.userDBManager.getUsernameByLdapUser(ldapUser, session);
+			return username;
+		} finally {
+			session.close();
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.bibsonomy.model.logic.LogicInterface#updateLastLdapRequest(void)
+	 */
+	public void updateLastLdapRequest (final String loginName) {
+		final DBSession session = openSession();
+		try {
+			if (loginName != null) {
+				this.userDBManager.updateLastLdapRequest(loginName, session);
+			}
+		} finally {
+			session.close();
+		}		
+	}	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
 	 * org.bibsonomy.model.logic.LogicInterface#getTagStatistics(java.lang.Class
 	 * , org.bibsonomy.common.enums.GroupingEntity, java.lang.String,
 	 * java.lang.String, java.util.List,

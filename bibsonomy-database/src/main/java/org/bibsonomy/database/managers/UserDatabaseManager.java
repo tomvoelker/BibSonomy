@@ -2,6 +2,7 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -28,6 +29,7 @@ import org.bibsonomy.util.ExceptionUtils;
  * @author Dominik Benz
  * @author Miranda Grahl
  * @author Christian Schenk
+ * @author Sven Stefani
  * @version $Id$
  */
 public class UserDatabaseManager extends AbstractDatabaseManager {
@@ -227,6 +229,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (present(user.getOpenID())) {
 			this.insertOpenIDUser(user, session);
 		}
+
+		/*
+		 * insert ldapUserId of user in separate table if present
+		 */
+		if (present(user.getUserId())) {
+			this.insertLdapUserId(user, session);
+		}
 	}
 	
 	/**
@@ -239,6 +248,15 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.insert("insertOpenIDUser", user, session);
 	}
 	
+	/**
+	 * Inserts a user to ldapUser table
+	 * 
+	 * @param user user authenticating via ldap
+	 * @param session
+	 */
+	private void insertLdapUserId(final User user, final DBSession session) {
+		this.insert("insertLdapUser", user, session);
+	}
 
 	/**
 	 * Change the user details
@@ -282,6 +300,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		existingUser.setPlace(!present(user.getPlace()) 		? existingUser.getPlace() 		: user.getPlace());
 		existingUser.setProfession(!present(user.getProfession()) ? existingUser.getProfession(): user.getProfession());
 		existingUser.setOpenID(!present(user.getOpenID())       ? existingUser.getOpenID()      : user.getOpenID());
+		existingUser.setUserId(!present(user.getUserId())       ? existingUser.getUserId()      : user.getUserId());
 
 		// we don't want to change the registration date on update!
 		//existingUser.setRegistrationDate(!present(user.getRegistrationDate()) ? existingUser.getRegistrationDate() : user.getRegistrationDate());
@@ -457,7 +476,34 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		// fallback: user is not logged in
 		return notLoggedInUser;
 	}
-			
+
+	/**
+	 * check if user is in table ldapUser.
+	 * 
+	 * @param userName
+	 * @param session
+	 * @return true if user is in table LdapUser, otherwise false 
+	 */
+	public boolean isLdapUser(final String userName, final DBSession session) {
+		return present(this.queryForObject("getLdapUserIdByUsername", userName, String.class, session));
+	}
+	
+	/**
+	 * check if user is in table ldapUser.
+	 * 
+	 * @param userName
+	 * @param session
+	 * @return true if user is in table LdapUser, otherwise false 
+	 */
+	public Date userLastLdapRequest(final String userName, final DBSession session) {
+		return this.queryForObject("getLastLdapRequestByUsername", userName, Date.class, session);
+	}
+		
+	public void updateLastLdapRequest(final String userName, final DBSession session) {
+		this.update("updateLastLdapRequestDateForLdapUserIdByUsername", userName, session);
+	}
+
+	
 	/**
 	 * Retrieve a list of related users by folkrank for a given list of tags
 	 * 
@@ -485,7 +531,25 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getOpenIDUser", openID, String.class, session);
 	}
 	
+	/**
+	 * Gets a ldapUserId by username 
+	 * @param username
+	 * @param session
+	 * @return ldapUserId
+	 */
+	public String getLdapUserByUsername(String username, DBSession session) {
+		return this.queryForObject("getLdapUserIdByUsername", username, String.class, session);
+	}
 	
+	/**
+	 * Gets a username by ldapUserId
+	 * @param ldapUser
+	 * @param session
+	 * @return username
+	 */
+	public String getUsernameByLdapUser(String ldapUser, DBSession session) {
+		return this.queryForObject("getUsernameByLdapUser", ldapUser, String.class, session);
+	}
 	
 	
 	//*****************
