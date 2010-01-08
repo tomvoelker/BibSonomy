@@ -11,6 +11,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.importer.bookmark.file.FirefoxImporter;
 import org.bibsonomy.importer.bookmark.service.DeliciousImporterFactory;
 import org.bibsonomy.model.Bookmark;
@@ -199,9 +202,10 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 
 		// stores all the non imported bookmarks
 		final List<String> nonCreatedBookmarkEntries = new ArrayList<String>();
-
+		
+		// store the posts one by one
 		for (final Post<Bookmark> post : posts) {
-
+			
 			if (post.getUser() == null) {
 				post.setUser(command.getContext().getLoginUser());
 			}
@@ -213,14 +217,25 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 				// system
 				final List<String> createdPostHash = logic.createPosts((List<Post<?>>) singletonList);
 				newBookmarkEntries.put(createdPostHash.get(0), title);
-			} catch (IllegalArgumentException e) {
-				// checks whether the update bookmarks checkbox is checked
-				if (command.isOverwrite()) {
-
-					final List<String> createdPostHash = logic.updatePosts((List<Post<?>>) singletonList, PostUpdateOperation.UPDATE_ALL);
-					updatedBookmarkEntries.put(createdPostHash.get(0), title);
-				} else {
-					nonCreatedBookmarkEntries.add(title);
+			} catch (DatabaseException de) {
+				// an error occured: handle duplicates throw all other 
+				for (String hash: de.getErrorMessages().keySet()) {
+					for (ErrorMessage errorMessage: de.getErrorMessages(hash)) {
+						if (errorMessage instanceof DuplicatePostErrorMessage) {
+							// duplicate post detected => handle this
+							// check whether the update bookmarks checkbox is checked
+							if (command.isOverwrite()) {
+								final List<String> createdPostHash = logic.updatePosts((List<Post<?>>) singletonList, PostUpdateOperation.UPDATE_ALL);
+								updatedBookmarkEntries.put(createdPostHash.get(0), title);
+							} else {
+								nonCreatedBookmarkEntries.add(title);
+							}							
+						} else {
+							// something else went wrong => don't handle this
+							throw de;
+						}
+					}
+					
 				}
 			}
 		}
