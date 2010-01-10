@@ -206,12 +206,16 @@
 		<URL>http://www3.interscience.wiley.com/journal/104530788/abstract?CRETRY=1&amp;SRETRY=0</URL>
 		<BibFile>WileyIntersienceScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
+		<Enabled>false</Enabled>
+		<AdditionalInfo>Sometimes scraping won't work. Dunno why</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_34">
 		<TestDescription>URL scraping test with a citation download page from intersience wiley</TestDescription>
 		<URL>http://www3.interscience.wiley.com/tools/citex?clienttype=1&amp;subtype=1&amp;mode=1&amp;version=1&amp;id=104530788&amp;redirect=/cgi-bin/abstract/104530788/ABSTRACT</URL>
 		<BibFile>WileyIntersienceScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
+		<Enabled>false</Enabled>
+		<AdditionalInfo>Sometimes scraping won't work. Dunno why</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_35">
 		<TestDescription>URL (with eutils host) scraping test with publication from pubmed</TestDescription>
@@ -418,7 +422,7 @@
 		<URL>http://www.aifb.kit.edu/web/Unpublished3000</URL>
 		<BibFile>AIFBScraperUnitURLTest7.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
-		<Enabled>true</Enabled>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_73">
 		<TestDescription>Cambridge Journals Url Test</TestDescription>
@@ -636,6 +640,8 @@
 		<URL>http://www3.interscience.wiley.com/journal/118514708/abstract</URL>
 		<BibFile>WileyIntersienceScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.wileyintersience.WileyIntersienceScraper</Scraper>
+		<Enabled>false</Enabled>
+		<AdditionalInfo>Sometimes scraping won't work. Dunno why</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_110">
 		<TestDescription>Cambridge Journals Url Test</TestDescription>
