@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.util.Map;
 
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -29,12 +28,11 @@ public class BatchEditCommand extends UserResourceViewCommand {
 
 	/**
 	 * @return the list of posts
-	 */
+	 *//*
 	@Override
 	public ListCommand<Post<BibTex>> getBibtex() {
-		ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>(this.posts);
 		return bibtex;
-	}
+	}*/
 	
 	/**
 	 * @return the list of posts
