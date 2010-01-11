@@ -23,6 +23,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -65,12 +66,16 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		command.setOldTags(new HashMap<String, String>());
 		command.setNewTags(new HashMap<String, String>());
 		command.setDelete(new HashMap<String, Boolean>());
+
+		command.getBibtex().setList(new LinkedList<Post<BibTex>>());
+		command.getBookmark().setList(new LinkedList<Post<Bookmark>>());
 		return command;
 	}
 	
 	@Override
 	public View workOn(final BatchEditCommand command) {
 		final RequestWrapperContext context = command.getContext();
+		
 		
 		boolean postIsPublication = true;
 		
@@ -243,6 +248,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			ListCommand<Post<?>> listCommand = new ListCommand<Post<?>>(command);
 			listCommand.setList(bibtex);
 			command.setPosts(listCommand);
+
+			
+
 			/*
 			 * Put these posts into a hashmap, so we dont have to loop through the list 
 			 *for every stored post!
@@ -261,9 +269,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			for (final String hash : newTagsMap.keySet()) {
 				//get the appropriate post
 				final Post<? extends Resource> post = bibtexHashMap.get(hash);
-				if(post==null) continue;
+				if(post==null) continue; //needed when page is called with no imported posts
 				postIsPublication = this.determinePostRessource(post);
-				
+				if(postIsPublication)
+					command.getBibtex().getList().add((Post<BibTex>) post);
+				else
+					command.getBookmark().getList().add((Post<Bookmark>) post);
 				/*
 				 * short check if hash is correct
 				 */
@@ -323,17 +334,23 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
 													StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
 													message.getParameters(), 
-													command.getContext().getLocale()));
+													command.getContext().getLocale()),
+													StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
+															message.getParameters(), 
+															command.getContext().getLocale()));
 								toUpdate = false;
 							}
 							
 							if(message instanceof DuplicatePostErrorMessage)
 							{
 								if(!command.isOverwrite()) {
-									errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
+									errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].resource", 
 														StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
 														message.getParameters(), 
-														command.getContext().getLocale()));
+														command.getContext().getLocale()),
+														StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
+																message.getParameters(), 
+																command.getContext().getLocale()));
 								} 
 							}
 						}
@@ -349,7 +366,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								{ 
 									if(message instanceof SystemTagErrorMessage)
 									{
-										errors.rejectValue("command.posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", "",
+										errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"]", 
+															StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
+																	message.getParameters(), 
+																	command.getContext().getLocale()),
 															StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
 															message.getParameters(), 
 															command.getContext().getLocale()));

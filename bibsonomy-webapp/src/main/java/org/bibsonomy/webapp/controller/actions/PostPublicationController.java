@@ -392,12 +392,6 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			super.setErrors(getErrors()); 
 			return super.workOn(command);
 		} else {
-			
-			/**
-			 * We have more than one bibtex, which means that this controller will forward to one calling the batcheditbib.jspx
-			 */
-			
-			
 			if(command.getSaveAllPossible())
 			{
 				List<FieldError> errorList = errors.getFieldErrors("posts.*");
@@ -417,34 +411,13 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 						removedElements++;
 					}
 				}
-				/*
-				removedElements = 0; //reuse of variable for building the map
-				for(int postIndex = 0; postIndex< storageList.size(); postIndex++)
-				{
-					if(removedIndexes.contains(postIndex))
-					{
-						//count subsequent deleted elements to correctly compute the index of the the current element in the "bibtex"-list
-						int tmpCounter = postIndex+removedElements;
-						while(removedIndexes.contains(tmpCounter))
-						{
-							tmpCounter++;
-							removedElements++;
-						}
-						validatorToAll.put(postIndex, tmpCounter);
-					}
-				}*/
 			}
 			/**********************
 			 * STORE THE BOOKMARKS
 			 **********************/
 			if(!command.isEditBeforeImport() && (!errors.hasErrors() ||command.getSaveAllPossible() || bibtex.size()>MAXCOUNT_ERRORHANDLING))
 			{
-				
-				/**
-				 * reject the errors depending on the posts corresponding index in the post list, that were found during savePublicationsForUser
-				 */
 				Map<String, List<ErrorMessage>> errorMsgs = savePublicationsForUser(postListCommand, command, loginUser);
-				
 				command.setFormAction(ACTION_SAVE_BEFORE_EDIT);
 			} else {
 					setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, bibtex);
