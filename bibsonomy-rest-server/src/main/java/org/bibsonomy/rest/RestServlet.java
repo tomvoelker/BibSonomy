@@ -17,9 +17,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -240,7 +242,17 @@ public final class RestServlet extends HttpServlet {
 			 */
 			response.setHeader("Location", UrlRenderer.getInstance().createHrefForResource(e.getUserName(), e.getNewIntraHash()));
 			sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
-		} catch (final Exception e) {
+		} catch (final DatabaseException e ) {
+			String returnMessage="";
+			for (String hash: e.getErrorMessages().keySet()) {
+				for (ErrorMessage em: e.getErrorMessages(hash)) {
+					log.error(em.toString());
+					returnMessage+=em.toString() + "\n ";
+				}
+			}
+			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, returnMessage);
+		}
+		catch (final Exception e) {
 			log.error(e,e);
 			// well, lets fetch each and every error...
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());

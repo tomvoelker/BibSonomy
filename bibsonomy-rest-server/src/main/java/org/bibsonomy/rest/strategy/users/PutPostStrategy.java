@@ -6,10 +6,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
+import org.bibsonomy.common.errors.MissingFieldErrorMessage;
+import org.bibsonomy.common.errors.UpdatePostErrorMessage;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -81,5 +87,32 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 		catch ( ResourceNotFoundException ex ) {
 			throw new NoSuchResourceException(ex.getMessage());
 		}		
+		catch ( DatabaseException de ) {
+			for (String hash: de.getErrorMessages().keySet()) {
+				for (ErrorMessage em: de.getErrorMessages(hash)) {
+					if (em instanceof DuplicatePostErrorMessage ) {
+						// duplicate post detected => handle this
+						// before this would have been an IllegalArgumentException
+						throw new BadRequestOrResponseException(em.toString());
+					}
+					if ( em instanceof UpdatePostErrorMessage ) {
+						// a non-existing post was tried to be updated
+						// this used to cause an ResourceNotFoundException
+						throw new NoSuchResourceException(em.toString());
+					}
+					if ( em instanceof IdenticalHashErrorMessage ) {
+						// the new post would have the same hash as an old one
+						// this used to cause an IllegalArgumentException
+						throw new BadRequestOrResponseException(em.toString());
+					}
+					if (em instanceof MissingFieldErrorMessage ) {
+						// some compulsory field of the post was missing
+						// this used to cause an InvalidModelException
+						throw new BadRequestOrResponseException(em.toString());
+					}
+				}
+			}
+			throw de;
+		}
 	}
 }
