@@ -5,7 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
+import org.bibsonomy.webapp.command.UserResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -15,11 +15,11 @@ import org.bibsonomy.webapp.view.Views;
  * @author sdo
  * @version $Id$
  */
-public class InboxPageController extends SingleResourceListController implements MinimalisticController<SimpleResourceViewCommand> {
+public class InboxPageController extends SingleResourceListController implements MinimalisticController<UserResourceViewCommand> {
 	private static final Log log = LogFactory.getLog(PopularPageController.class);
 
 	
-	public View workOn(final SimpleResourceViewCommand command) {
+	public View workOn(final UserResourceViewCommand command) {
 		/*
 		 * FIXME: implement filter=no parameter
 		 */
@@ -47,7 +47,7 @@ public class InboxPageController extends SingleResourceListController implements
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			command.setPageTitle("inbox");
-			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, 0, 50, null);
+			//setTags(command, Resource.class, GroupingEntity.USER, command.getRequestedUser(), null, null, null, null, 0, Integer.MAX_VALUE, null);
 			this.endTiming();
 			return Views.INBOX;		
 		}
@@ -57,8 +57,8 @@ public class InboxPageController extends SingleResourceListController implements
 		return Views.getViewByFormat(command.getFormat());	
 	}
 		
-	public SimpleResourceViewCommand instantiateCommand() {
-		return new SimpleResourceViewCommand();
+	public UserResourceViewCommand instantiateCommand() {
+		return new UserResourceViewCommand();
 	}
 
 }
