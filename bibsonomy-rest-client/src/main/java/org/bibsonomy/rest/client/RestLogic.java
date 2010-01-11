@@ -399,5 +399,24 @@ public class RestLogic implements LogicInterface {
 	// TODO Auto-generated method stub
 		return 0;
 	}
+
+	@Override
+	public String getLdapUserByUsername(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getUsernameByLdapUser(String ldapUser) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void updateLastLdapRequest(String loginName) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 }
