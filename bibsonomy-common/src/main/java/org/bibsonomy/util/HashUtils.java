@@ -31,6 +31,7 @@ import java.security.NoSuchAlgorithmException;
  * @version $Id$
  */
 public class HashUtils {
+	
 	/**
 	 * Calculates the MD5-Hash of a byte array and returns it encoded as a hex
 	 * string of 32 characters length.
@@ -40,16 +41,30 @@ public class HashUtils {
 	 * @return the MD5 hash of s as a 32 character string
 	 */
 	public static String getMD5Hash(final byte[] data) {
-		if (data == null) return null;
+		return HashUtils.getHash(data, "MD5");
+	}
+	
+	/**
+	 * Calculates the SHA-1-Hash of a byte array and returns it
+	 * 
+	 * @param data the byte array to be hashed
+	 * @return the SHA-1 hash
+	 */
+	public static String getSHA1Hash(final byte[] data) {
+		return HashUtils.getHash(data, "SHA-1");	
+	}
 
+	private static String getHash(final byte[] data, final String hashAlgorithm) {
+		if (data == null) return null;
+		
 		try {
-			final MessageDigest md = MessageDigest.getInstance("MD5");
+			final MessageDigest md = MessageDigest.getInstance(hashAlgorithm);
 			return toHexString(md.digest(data));
 		} catch (final NoSuchAlgorithmException e) {
 			return null;
-		}
+		}		
 	}
-
+	
 	/**
 	 * Converts a buffer of bytes into a string of hex values.
 	 * 
@@ -64,9 +79,10 @@ public class HashUtils {
 			if (hex.length() == 1) {
 				hex = "0" + hex;
 			}
+			
 			result.append(hex.substring(hex.length() - 2));
 		}
+		
 		return result.toString();
 	}
-	
 }

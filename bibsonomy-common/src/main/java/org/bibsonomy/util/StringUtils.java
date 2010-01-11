@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
  */
 public class StringUtils {
 	
+	private static final String DEFAULT_CHARSET = "UTF-8";
 	private static final String BUNDLE_NAME = "messages";
 	
 	/**
@@ -51,10 +52,25 @@ public class StringUtils {
 	 */
 	public static String getMD5Hash(final String string) {
 		if (string == null) return null;
-
-		final String charset = "UTF-8";
+		
 		try {
-			return HashUtils.getMD5Hash(string.getBytes(charset));
+			return HashUtils.getMD5Hash(string.getBytes(DEFAULT_CHARSET));
+		} catch (final UnsupportedEncodingException e) {
+			return null;
+		}
+	}
+	
+	/**
+	 * Calculates the SHA-1-Hash of a string.
+	 * 
+	 * @param string	the string to be hashed
+	 * @return the SHA-1 hash
+	 */
+	public static String getSHA1Hash(final String string) {
+		if (string == null) return null;
+		
+		try {
+			return HashUtils.getSHA1Hash(string.getBytes(DEFAULT_CHARSET));
 		} catch (final UnsupportedEncodingException e) {
 			return null;
 		}
@@ -254,7 +270,7 @@ public class StringUtils {
 	public static String translateMessageKey(String key, List<String> parameters, Locale targetLocale)
 	{
 		ResourceBundle res 	= ResourceBundle.getBundle(BUNDLE_NAME, targetLocale);
-		/**
+		/*
 		 * Errorhandling START
 		 */
 		if(!ValidationUtils.present(key))
@@ -265,7 +281,7 @@ public class StringUtils {
 		
 		if(!res.containsKey(key))
 			throw new IllegalArgumentException("The function 'translateMessageKey' was handed a non-existing key.");
-		/**
+		/*
 		 * Errorhandling END
 		 */
 		
