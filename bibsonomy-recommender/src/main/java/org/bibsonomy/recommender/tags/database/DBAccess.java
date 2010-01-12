@@ -26,6 +26,7 @@ import org.bibsonomy.recommender.tags.database.params.PostGuess;
 import org.bibsonomy.recommender.tags.database.params.PostParam;
 import org.bibsonomy.recommender.tags.database.params.PostRecParam;
 import org.bibsonomy.recommender.tags.database.params.QueryGuess;
+import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.database.params.RecQueryParam;
 import org.bibsonomy.recommender.tags.database.params.RecQuerySettingParam;
 import org.bibsonomy.recommender.tags.database.params.RecResponseParam;
@@ -554,6 +555,14 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	@SuppressWarnings("unchecked")
 	public List<RecQueryParam> getQueriesForRecommender(Long sid) throws SQLException {
 		return (List<RecQueryParam>)sqlMap.queryForList("getQueriesBySID", sid);
+	}
+	
+	/**
+	 * Get recommender-info for admin statuspage
+	 * @return recommender-info 
+	 */
+	public List<RecAdminOverview> getRecommenderAdminOverview() throws SQLException{
+		return (List<RecAdminOverview>)getSqlMapInstance().queryForList("recAdminOverview");
 	}
 	
 	

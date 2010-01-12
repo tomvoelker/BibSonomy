@@ -43,6 +43,18 @@
 		WHERE query_id = #id#
 	</select>	
 	
+	<!-- Get all important recommender-info for the admin statuspage  -->
+	<select id="recAdminOverview" resultMap="RecommendationLogCommon.recAdminOverview">
+		SELECT s.setting_id, s.rec_id, COALESCE(rec_latency, 0) AS rec_latency FROM recommender_settings s 
+		LEFT JOIN (
+		    (SELECT * FROM
+		        (SELECT setting_id, rec_latency FROM recommender_result
+                 ORDER BY setting_id, result_id DESC)
+             AS t
+             GROUP BY setting_id) AS q)
+        ON (q.setting_id = s.setting_id)
+	</select>	
+	
 	<!-- +
 		 | Get list of all recommenders used in given query
 		 + -->  

@@ -10,6 +10,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tags.database.params.Pair;
+import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.database.params.RecQueryParam;
 import org.bibsonomy.recommender.tags.database.params.RecSettingParam;
 import org.bibsonomy.recommender.tags.database.params.SelectorSettingParam;
@@ -270,7 +271,7 @@ public interface DBLogic {
 	 * @param userName user's name
 	 * @return user's id, null if user name doesn't exist
 	 */
-	public abstract Integer getUserIDByName(String userName);
+	public abstract Integer getUserIDByName(String userName);	
 
 	/**
 	 * Maps BibSonomy's user id to corresponding user name
@@ -371,6 +372,12 @@ public interface DBLogic {
 	 */
 	@SuppressWarnings("unchecked")
 	public abstract List<RecQueryParam> getQueriesForRecommender(Long sid) throws SQLException;
+	
+	/**
+	 * Get RecommenderInfo for the admin page
+	 * @return recommenderInfo
+	 */
+	public abstract List<RecAdminOverview> getRecommenderAdminOverview() throws SQLException;
 
 	/**
 	 * Tries to guess query_id from given content id.

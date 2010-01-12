@@ -1,0 +1,88 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/users"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="urn:http://www.springframework.org/tags"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8"
+		language="java" pageEncoding="UTF-8" session="true" />
+	
+	<layout:layout 
+	  	inboxSize="" 
+		basketSize="" 
+		searchString="" 
+		pageTitle="${command.pageTitle}" 
+		loginUserName="${command.context.loginUser.name}"
+		requPath="">
+		<jsp:attribute name="heading">
+		    <a href="/admin">admin</a> ::
+			<a rel="path_menu" href="/admin/recommender">recommender</a>
+		</jsp:attribute>	
+		<jsp:attribute name="content">
+
+
+<style type="text/css">
+.bluebox{	border: 1px solid #006699;
+	padding: 10px;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	width: 100%;
+	}
+.rectable {
+	font-size: 60%;
+	border-collapse: collapse;
+	empty-cells: show;
+	margin-top: 15px;
+	margin-left: 5px;
+	margin-right: 5px;
+	width: 95%;
+}
+
+.rectable th {
+	font-weight: bold;
+	background-color: #EEEEEE;
+	border: 1px solid #CCCCCC;
+	padding: 2px;
+	text-align: center;
+	font-size: 100%;
+}
+
+.rectable td {
+	border: 1px solid #CCCCCC;
+	padding: 3px;
+}
+.rectable tr { background-color: #ffeeee; }
+</style>
+
+
+<div id="fullscreen">
+   <div class="bluebox"><h2>Recommender info</h2></div>
+   <div class="bluebox">
+    
+    <table class="rectable">
+      <tr><th>SettingID</th><th>RecommenderID</th><th>Latency</th></tr>
+      <c:forEach var="recommender" items="${command.recOverview}">
+        <tr>
+          <td> ${recommender.settingID}</td>
+          <td> ${recommender.recID}</td>
+          <td> ${recommender.latency}</td>
+        </tr>
+      </c:forEach>
+    </table>
+   </div> 
+</div>    
+            
+		</jsp:attribute>				
+	</layout:layout>
+
+
+
+</jsp:root>

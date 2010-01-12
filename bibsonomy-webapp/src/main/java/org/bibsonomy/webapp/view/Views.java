@@ -241,6 +241,10 @@ public enum Views implements View {
 	 */
 	ADMIN_LUCENE("actions/admin/lucene"),
 	/**
+	 * recommender admin page
+	 */
+	ADMIN_RECOMMENDER("actions/admin/recommender"),
+	/**
 	 * Show the page for administrating groups
 	 */
 	ADMIN_GROUP("actions/admin/group"),

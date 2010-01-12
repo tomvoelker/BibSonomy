@@ -84,7 +84,18 @@
 							</list>
 						</property>
 					</bean>
-				</entry>				
+				</entry>		
+							
+				<entry key="/admin/recommender">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="adminRecommenderController" />
+					 	<property name="allowedFields">
+							<list>
+								<value>action</value>
+							</list>
+						</property>
+					</bean>
+				</entry>			
 			</map>
 		</property>
 	</bean>
@@ -110,6 +121,12 @@
 
 	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.AdminAjaxController" scope="request">
 		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>
+	
+	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.AdminRecommenderController" scope="request">
+		<property name="logic" ref="logic"/>
+	    <property name="multiplexingTagRecommender" ref="multiplexingTagRecommender"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 		

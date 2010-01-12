@@ -21,6 +21,12 @@
         <result property="recMeta"     column="rec_meta"   jdbcType="BLOB"/>
     </resultMap>
     
+    <resultMap id="recAdminOverview" class="org.bibsonomy.recommender.tags.database.params.RecAdminOverview">
+        <result property="settingID" column="setting_id"  javaType="integer" />
+        <result property="recID"     column="rec_id"      javaType="string"  />
+        <result property="latency"   column="rec_latency" javaType="integer" />
+    </resultMap>
+    
     <resultMap id="selectorSetting" class="selectorSetting">
         <result property="info"        column="selector_name"   javaType="string"/>
         <result property="meta"        column="selector_meta"   jdbcType="BLOB"/>
