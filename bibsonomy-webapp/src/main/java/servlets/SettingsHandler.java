@@ -44,6 +44,7 @@ public class SettingsHandler extends HttpServlet{
 	private DataSource dataSource;
 	private static final Log log = LogFactory.getLog(SettingsHandler.class);
 
+	@Override
 	public void init(ServletConfig config) throws ServletException{	
 		super.init(config); 
 		try{
@@ -55,6 +56,7 @@ public class SettingsHandler extends HttpServlet{
 		}
 	}
 
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 	throws ServletException, IOException 
 	{
@@ -62,6 +64,7 @@ public class SettingsHandler extends HttpServlet{
 	}
 
 
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Connection conn         = null;
 		ResultSet rst           = null;
@@ -188,6 +191,9 @@ public class SettingsHandler extends HttpServlet{
 						stmtP.setInt(2, groupid);
 						stmtP.executeUpdate();						
 						// log bookmark
+						/*
+						 * FIXME: this statement forgets to insert some columns which are defined to be NOT NULL and thus breaks this functionality!
+						 */
 						stmtP = conn.prepareStatement("INSERT INTO log_bookmark (content_id, `group`, user_name) SELECT content_id, `group`, user_name FROM bookmark WHERE user_name = ? AND `group` = ?");
 						stmtP.setString(1, friend);
 						stmtP.setInt(2, groupid);
