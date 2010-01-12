@@ -163,33 +163,33 @@ function getSuggestions(partialTitle, autocompletion) {
 		return;
 	}
 	
-	$("textarea[@id=post.resource.title]").blur(function() {
+	$("#post\\.resource\\.title").blur(function() {
 	      window.setTimeout(function() {
 	    	  $("#suggestionBox").hide();
 	      },
 	      140);
- });
+});
 	
- if(partialTitle.length < 2 || partialTitle.length%2 != 0) {
+if(partialTitle.length < 2 || partialTitle.length%2 != 0) {
 	   $("#suggestionBox").hide();
- } else {
+} else {
 	 	var query = $.ajax({
 		        type: "GET",
 		        url: "/ajax/getPublicationsByPartialTitle.json?title="+partialTitle,
 		        dataType: "json",
-		        success: function(json){processResponse(json);},
-	 	});
- }
+		        success: function(json){processResponse(json);}});
+}
 }
 /** Process the JSON Data and make visible to the user
 * 
 */	
 function processResponse(data) {
+
 	// if there's no data cancel
 	if(data.items.length == 0) {
 		return;
 	}
-	
+
 	var p = $("<div style=\"background-color: #006699; color: #FFFFFF; padding:3px;\">Suggestions</p>");
 	$("#suggestionBox").html(p);
 	$.each(data.items, function(i, item) {
@@ -199,12 +199,12 @@ function processResponse(data) {
 			// get title sepcific data
 			// an set the forms accordingly
 			function () {
-				post.resource.entrytype
-				$("select[@id=post.resource.entrytype]").selectOptions(item.entry_type);
-				$("textarea[@id=post.resource.editor]").val(item.editor);
-				$("input[@id=post.resource.year]").val(item.year);
-				$("textarea[@id=post.resource.title]").val(item.title);
-				$("textarea[@id=post.resource.author]").val(item.author);
+				//post.resource.entrytype
+				$("#post\\.resource\\.entrytype option[value='"+item.entry_type+"']");
+				$("#post\\.resource\\.editor").val(item.editor);
+				$("#post\\.resource\\.year").val(item.year);
+				$("#post\\.resource\\.title").val(item.title);
+				$("#post\\.resource\\.author").val(item.author);
 			}
 		).mouseover(
 			function () {
@@ -245,14 +245,18 @@ function processResponse(data) {
 			);
 		}
 	);
-	var pos = $("textarea[@id=post.resource.title]").offset();
-	var width = $("textarea[@id=post.resource.title]").width();
-	var top = parseInt(pos.top+$("textarea[@id=post.resource.title]").height())+6;
+	var pos = $("#post\\.resource\\.title").offset();
+	var width = $("#post\\.resource\\.title").width();
+	var top = parseInt(pos.top+$("#post\\.resource\\.title").height())+6;
 	$("#suggestionBox").css(
 			{
 				"left":(pos.left+1)+"px",
 				"top":top+"px",
-				"min-width":(width+2)+"px"
+				"min-width":(width+2)+"px",
+				"background-color":"#FFFFFF",
+				"z-index":"999",
+				"border":"1px solid #006699",
+				"border-left":"3px solid #006699"
 			}
 	);
 	$("#suggestionBox").show();
