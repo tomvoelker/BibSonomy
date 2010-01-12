@@ -27,7 +27,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,17 +37,29 @@ import org.junit.Test;
  * Testcase for the StringUtils class
  */
 public class StringUtilsTest {
-
-	private final String SPECIAL_CHARS = "üöä!\"§$%&/()=,.-+#'´`";
+	
+	private static final String TEST_VALUE1 = "test";
+	private static final String TEST_VALUE2 = "hurz";
+	private static final String SPECIAL_CHARS = "üöä!\"§$%&/()=,.-+#'´`";
 
 	/**
 	 * tests getMD5Hash
 	 */
 	@Test
 	public void getMD5Hash() {
-		assertEquals("098f6bcd4621d373cade4e832627b4f6", StringUtils.getMD5Hash("test"));
-		assertEquals("04a80d0dd1f311afd2f5b652504eb39d", StringUtils.getMD5Hash("hurz"));
-		assertEquals("c54b92795c745d5fc2c7e1dcf782a489", StringUtils.getMD5Hash(this.SPECIAL_CHARS));
+		assertEquals("098f6bcd4621d373cade4e832627b4f6", StringUtils.getMD5Hash(TEST_VALUE1));
+		assertEquals("04a80d0dd1f311afd2f5b652504eb39d", StringUtils.getMD5Hash(TEST_VALUE2));
+		assertEquals("c54b92795c745d5fc2c7e1dcf782a489", StringUtils.getMD5Hash(SPECIAL_CHARS));
+	}
+	
+	/**
+	 * tests {@link StringUtils#getSHA1Hash(String)}
+	 */
+	@Test
+	public void getSHA1Hash() {
+		assertEquals("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3", StringUtils.getSHA1Hash(TEST_VALUE1));
+		assertEquals("d01f0831ca4bbe64b486906dd8a484c7a32b1cd6", StringUtils.getSHA1Hash(TEST_VALUE2));
+		assertEquals("4e18e94bf8b7ccf8b91462e4b9baa6fd31a244fc", StringUtils.getSHA1Hash(SPECIAL_CHARS));
 	}
 
 	/**
@@ -72,7 +83,7 @@ public class StringUtilsTest {
 
 		final List<String> someStrings = new ArrayList<String>();
 		for (final int i : new int[] { 1, 2, 3 })
-			someStrings.add("test" + i);
+			someStrings.add(TEST_VALUE1 + i);
 		assertEquals("[test1,test2,test3]", StringUtils.getStringFromList(someStrings));
 	}
 
@@ -91,8 +102,8 @@ public class StringUtilsTest {
 	 */
 	@Test
 	public void removeNonNumbersOrLetters() {
-		assertEquals("test", StringUtils.removeNonNumbersOrLetters("!-test-!"));
-		assertEquals("test", StringUtils.removeNonNumbersOrLetters(" !-test-! "));
+		assertEquals(TEST_VALUE1, StringUtils.removeNonNumbersOrLetters("!-test-!"));
+		assertEquals(TEST_VALUE1, StringUtils.removeNonNumbersOrLetters(" !-test-! "));
 	}
 
 	/**
@@ -100,8 +111,8 @@ public class StringUtilsTest {
 	 */
 	@Test
 	public void removeNonNumbersOrLettersOrDotsOrSpace() {
-		assertEquals("test", StringUtils.removeNonNumbersOrLetters("...!-test-!..."));
-		assertEquals("test", StringUtils.removeNonNumbersOrLetters(". . .!-test-!. . ."));
+		assertEquals(TEST_VALUE1, StringUtils.removeNonNumbersOrLetters("...!-test-!..."));
+		assertEquals(TEST_VALUE1, StringUtils.removeNonNumbersOrLetters(". . .!-test-!. . ."));
 	}
 
 	/**
@@ -127,7 +138,7 @@ public class StringUtilsTest {
 	public void cropToLength() {
 		assertEquals("42", StringUtils.cropToLength("42", 2));
 		assertEquals("42", StringUtils.cropToLength("42", 42));
-		assertEquals("test", StringUtils.cropToLength("test test", 4));
+		assertEquals(TEST_VALUE1, StringUtils.cropToLength("test test", 4));
 	}
 
 	/**

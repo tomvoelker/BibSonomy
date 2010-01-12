@@ -61,8 +61,6 @@ public enum Privlevel {
 	 * @return the corresponding Privlevel-enum for the given int.
 	 */
 	public static Privlevel getPrivlevel(final int privlevel) {
-		if (privlevel > 2 || privlevel < 0) throw new RuntimeException("Privlevel is out of bounds (" + privlevel + ")");
-
 		switch (privlevel) {
 		case 0:
 			return PUBLIC;
@@ -71,12 +69,10 @@ public enum Privlevel {
 		case 2:
 			return MEMBERS;
 		default:
-			// should never happen
 			throw new RuntimeException("Privlevel is out of bounds (" + privlevel + ")");
 		}
 	}
 	
-
 	/** Returns the corresponding privlevel for the given String.
 	 * 
 	 * @param privlevel
@@ -92,7 +88,5 @@ public enum Privlevel {
 		}
 		return PUBLIC;
 	}
-	
-	
 	
 }
