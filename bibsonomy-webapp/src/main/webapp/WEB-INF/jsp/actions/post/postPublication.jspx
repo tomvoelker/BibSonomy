@@ -80,7 +80,7 @@
 				<!-- ================== -->
 				<c:when test="${command.selTab == 0}">
 					
-        
+        			<div id="suggestionBox" style="position:absolute; display:none;"><!--  --></div>        
 					<h2><fmt:message key="post_bibtex.manual.heading"/></h2>
 					<p class="standart_text_normal"><fmt:message key="post_bibtex.manual.description" /></p>
           			
