@@ -46,6 +46,7 @@ public class AdminCommand extends BaseCommand{
 		actionTitles = new HashMap<String, String>();
 		actionTitles.put("spam", "Flag / unflag spammers");
 		actionTitles.put("lucene", "Manage lucene");
+		actionTitles.put("recommender", "Manage recommenders");
 		
 		// set privacy options
 		privlevel = new HashMap<String, Privlevel>();
