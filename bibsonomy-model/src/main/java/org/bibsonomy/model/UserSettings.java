@@ -23,12 +23,20 @@
 
 package org.bibsonomy.model;
 
+import org.bibsonomy.common.enums.ProfilePrivlevel;
+
 /**
  * Holds settings for a user.
  * 
  * @version $Id$
  */
 public class UserSettings {
+	
+	/**
+	 * the profile privacy level
+	 */
+	private ProfilePrivlevel profilePrivlevel;
+	
 	/**
 	 * tagbox style; 0 = cloud, 1 = list
 	 */
@@ -58,6 +66,7 @@ public class UserSettings {
 	 * the default language for i18n
 	 */
 	private String defaultLanguage = "en";
+	
 	/**
 	 * How much data about the user behavior (clicking, etc.) is logged.
 	 * 
@@ -156,12 +165,18 @@ public class UserSettings {
 		this.defaultLanguage = defaultLanguage;
 	}
 
-	public int getLogLevel() {
-		return this.logLevel;
-	}
-
+	/**
+	 * @param logLevel the logLevel to set
+	 */
 	public void setLogLevel(int logLevel) {
 		this.logLevel = logLevel;
+	}
+	
+	/**
+	 * @return the logLevel
+	 */
+	public int getLogLevel() {
+		return this.logLevel;
 	}
 
 	/**
@@ -186,6 +201,20 @@ public class UserSettings {
 	 */
 	public boolean getConfirmDelete() {
 		return this.confirmDelete;
+	}
+
+	/**
+	 * @param profilePrivlevel the profilePrivlevel to set
+	 */
+	public void setProfilePrivlevel(final ProfilePrivlevel profilePrivlevel) {
+		this.profilePrivlevel = profilePrivlevel;
+	}
+
+	/**
+	 * @return the profilePrivlevel
+	 */
+	public ProfilePrivlevel getProfilePrivlevel() {
+		return profilePrivlevel;
 	}
 	
 }

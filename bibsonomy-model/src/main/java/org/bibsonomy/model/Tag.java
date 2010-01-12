@@ -35,7 +35,7 @@ import org.bibsonomy.model.util.TagUtils;
  * 
  * @version $Id$
  */
-public class Tag implements Comparable<Tag> , Cloneable {
+public class Tag implements Comparable<Tag>, Cloneable {
 	/**
 	 * TODO: U.U. waere es nur schoener, wenn man das von ausserhalb "konfigurieren" koennte.
 	 * Ist aber bei einem Tag eher kompliziert. Oder steht es im Parser drin? Wenn wir
@@ -143,13 +143,9 @@ public class Tag implements Comparable<Tag> , Cloneable {
 	public void addSubTag(Tag subTag) {
 		if (this.subTags == null) {
 			this.subTags = new LinkedList<Tag>();
-//			System.out.println("addSubTag -> new LinkedList<Tag>() " + this.getName() + " subTag: " + subTag.getName());
 		}
+		
 		this.subTags.add(subTag);
-//		this.subTags.add(new Tag("Peter1"));
-//		this.subTags.add(new Tag("Peter2"));
-//		System.out.println("Tag.addSubTag             : " + this.getName() + " subTag: " + subTag.getName());
-//		System.out.println("Tag.addSubTag getSubTags(): " + getSubTags());
 	}	
 	
 	/**
@@ -166,10 +162,9 @@ public class Tag implements Comparable<Tag> , Cloneable {
 	public void addSuperTag(Tag superTag) {
 		if (this.superTags == null) {
 			this.superTags = new LinkedList<Tag>();
-//			System.out.println("addSuperTag -> new LinkedList<Tag>() " + this.getName() + " superTag: " + superTag.getName());
 		}
+		
 		this.superTags.add(superTag);
-//		System.out.println("Tag.addSuperTag: " + this.getName() + " superTag: " + superTag.getName());
 	}	
 	
 	/**
@@ -300,9 +295,10 @@ public class Tag implements Comparable<Tag> , Cloneable {
 	 * 
 	 * @see java.lang.Object#clone()
 	 */
-	public Object clone() throws CloneNotSupportedException {
+	@Override
+	public Tag clone() throws CloneNotSupportedException {
 		Tag copy = new Tag();
-		copy = this;
+		copy = this; // FIXME: this assignment redefines the word "clone"!!!
 		return copy;
 	}
 	

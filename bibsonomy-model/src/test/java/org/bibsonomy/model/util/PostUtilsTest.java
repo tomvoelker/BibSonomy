@@ -23,14 +23,11 @@
 
 package org.bibsonomy.model.util;
 
-import static org.junit.Assert.fail;
-
 import java.util.HashSet;
 import java.util.Set;
 
 import junit.framework.Assert;
 
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;

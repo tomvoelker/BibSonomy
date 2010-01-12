@@ -100,7 +100,7 @@ public class UserUtils {
 	 * @return list of groupIDs extracted from the given user's list of groups
 	 */
 	public static List<Integer> getListOfGroupIDs(final User user) {
-		final ArrayList<Integer> groupIDs = new ArrayList<Integer>();
+		final List<Integer> groupIDs = new ArrayList<Integer>();
 		final List<Group> groups = getListOfGroups(user);
 		for (final Group group : groups) {
 			groupIDs.add(group.getGroupId());
@@ -115,7 +115,7 @@ public class UserUtils {
 	 * @return list of groups extracted from the given user's list of groups
 	 */
 	public static List<Group> getListOfGroups(final User user) {
-		final ArrayList<Group> groups = new ArrayList<Group>();
+		final List<Group> groups = new ArrayList<Group>();
 		/*
 		 * every user may see public posts
 		 */ 
@@ -175,6 +175,9 @@ public class UserUtils {
 	 * @return boolean 
 	 */
 	public static boolean userIsGroup(final User user) {
+		if (user == null) {
+			return false;
+		}
 		
 		String userName = user.getName();
 		List<Group> groups = user.getGroups();
