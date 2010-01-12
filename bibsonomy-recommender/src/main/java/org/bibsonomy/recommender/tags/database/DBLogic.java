@@ -372,12 +372,6 @@ public interface DBLogic {
 	 */
 	@SuppressWarnings("unchecked")
 	public abstract List<RecQueryParam> getQueriesForRecommender(Long sid) throws SQLException;
-	
-	/**
-	 * Get RecommenderInfo for the admin page
-	 * @return recommenderInfo
-	 */
-	public abstract List<RecAdminOverview> getRecommenderAdminOverview() throws SQLException;
 
 	/**
 	 * Tries to guess query_id from given content id.
