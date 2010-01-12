@@ -12,7 +12,8 @@ public class ExportPageCommand extends ResourceViewCommand{
 	
 	private Map<String, JabrefLayout> layoutMap;
 	private String lang;
-
+	private String layoutDownloadURL;
+	
 	/**
 	 * @return language code
 	 */
@@ -41,5 +42,12 @@ public class ExportPageCommand extends ResourceViewCommand{
 		this.layoutMap = layoutMap;
 	}
 
-	
+	public String getLayoutDownloadURL() {
+		return this.layoutDownloadURL;
+	}
+
+	public void setLayoutDownloadURL(String layoutDownloadURL) {
+		this.layoutDownloadURL = layoutDownloadURL;
+	}
+
 }

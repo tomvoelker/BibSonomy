@@ -477,7 +477,10 @@ public enum Views implements View {
 	 */
 	EXPORT("export"),
 
-	
+	/**
+	 * export layouts in a JSON object
+	 */
+	EXPORTLAYOUTS("exportLayouts"),
 	
 	
 	

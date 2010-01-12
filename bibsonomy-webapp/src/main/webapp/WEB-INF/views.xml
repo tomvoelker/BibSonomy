@@ -32,6 +32,8 @@
 	<bean id="csv" class="org.bibsonomy.webapp.view.CSVView"/>
 	
 	<bean id="downloadFile" class="org.bibsonomy.webapp.view.DocumentDownloadView"/>
+	
+	<bean id="exportLayouts" class="org.bibsonomy.webapp.view.ExportLayoutView"/>
 
 <!-- 
 

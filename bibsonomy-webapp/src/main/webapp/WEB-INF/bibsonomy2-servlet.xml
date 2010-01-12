@@ -216,6 +216,11 @@
 						<property name="controllerBeanName" value="scraperInfoController"/>
 					</bean>
 				</entry>
+				<entry key="/exportLayouts">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="exportLayoutController"/>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -370,6 +375,9 @@
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 		<property name="requestLogic" ref="requestLogic"/>
+		
+		<!-- not sure if this is the right place to assign this URL -->
+		<property name="layoutDownloadURL" value="http://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-layout/"/>
 	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
@@ -414,8 +422,10 @@
 		</property>
 	</bean>	 
 		
-	
-	
+	<bean id="exportLayoutController" class="org.bibsonomy.webapp.controller.ExportLayoutController" scope="request">
+		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
+		<property name="requestLogic" ref="requestLogic"/>
+	</bean>
 	
 	<!-- 
 		Implements the UnAPI specification http://unapi.info/
