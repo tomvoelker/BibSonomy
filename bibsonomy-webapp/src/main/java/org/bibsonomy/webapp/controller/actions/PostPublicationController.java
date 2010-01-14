@@ -22,6 +22,7 @@ import org.bibsonomy.bibtex.parser.PostBibTeXParser;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
@@ -417,7 +418,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			 **********************/
 			if(!command.isEditBeforeImport() && (!errors.hasErrors() ||command.getSaveAllPossible() || bibtex.size()>MAXCOUNT_ERRORHANDLING))
 			{
-				Map<String, List<ErrorMessage>> errorMsgs = savePublicationsForUser(postListCommand, command, loginUser);
+				savePublicationsForUser(postListCommand, command, loginUser);
 				command.setFormAction(ACTION_SAVE_BEFORE_EDIT);
 			} else {
 					setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, bibtex);
@@ -471,7 +472,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		return ShowEnterPublicationView(command, false);
 	}
 	
-	private Map<String, List<ErrorMessage>> savePublicationsForUser(ListCommand<Post<BibTex>> postListCommand, PostPublicationCommand command, User user)
+	private void savePublicationsForUser(ListCommand<Post<BibTex>> postListCommand, PostPublicationCommand command, User user)
 	{
 		boolean isOverwrite = command.getOverwrite();
 		boolean writeAllCorrectOnes = command.getSaveAllPossible();
@@ -527,7 +528,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 							isErroneous = true;
 							isErroneousList = true;
 
-							this.errors.rejectValue("posts.list["+postListCommand.getList().indexOf(bib)+"].resource", 
+							this.errors.rejectValue("posts.list["+postListCommand.getList().indexOf(bib)+"].tags", 
 									"since we might have parameterized messages, we translate them within java and use the fallback",
 									StringUtils.translateMessageKey(msg.getLocalizedMessageKey(), msg.getParameters(), command.getContext().getLocale())
 									);
@@ -558,14 +559,29 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 					if(isOverwrite)
 						logic.updatePosts(forUpdate, PostUpdateOperation.UPDATE_ALL);
 				} catch (DatabaseException ex) {
-					//sollte gar nicht passieren, da forCreate-/forUpdate-Posts keine Fehler besitzen
+					List<Post<?>> forUpdateAndCreate = new LinkedList<Post<?>>(forCreate);
+					forUpdateAndCreate.addAll(forUpdate);
+					for(Post<?> bib : forUpdateAndCreate)
+					{
+						List<ErrorMessage> errorMsges = errors.get(bib.getResource().getIntraHash());
+						if(ValidationUtils.present(errorMsges))
+						{
+							for(ErrorMessage msg : errorMsges)
+							{
+								if(msg instanceof SystemTagErrorMessage)
+								{
+									this.errors.rejectValue("posts.list["+postListCommand.getList().indexOf(bib)+"].tags", 
+											"since we might have parameterized messages, we translate them within java and use the fallback",
+											StringUtils.translateMessageKey(msg.getLocalizedMessageKey(), msg.getParameters(), command.getContext().getLocale())
+											);
+		
+								}
+							}
+						}
+					}
 				}
-				
 			}
-			
 		}
-
-		return errors;
 	}
 	
 

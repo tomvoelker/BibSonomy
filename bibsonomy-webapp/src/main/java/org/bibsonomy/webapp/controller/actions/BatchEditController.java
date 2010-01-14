@@ -324,9 +324,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				} catch (DatabaseException ex) {
 					Map<String, List<ErrorMessage>> errorMsgs = ex.getErrorMessages();
 					List<Post<?>> updatePosts = new LinkedList<Post<?>>();
+					boolean toUpdate = true;
 					for(String postHash : errorMsgs.keySet())
 					{
-						boolean toUpdate = true;
 						for(ErrorMessage message : errorMsgs.get(postHash))
 						{ 
 							if(message instanceof SystemTagErrorMessage)
@@ -339,7 +339,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 															message.getParameters(), 
 															command.getContext().getLocale()));
 								toUpdate = false;
-							}
+							} 
 							
 							if(message instanceof DuplicatePostErrorMessage)
 							{
@@ -351,22 +351,27 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 														StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
 																message.getParameters(), 
 																command.getContext().getLocale()));
-								} 
+									
+								} else {
+									postsToUpdate.add(bibtexHashMap.get(postHash));
+								}
 							}
 						}
-						if(toUpdate && command.isOverwrite())
-						{
-							updatePosts.add(bibtexHashMap.get(postHash));
-							try {
-								this.logic.updatePosts(postsToSave, PostUpdateOperation.UPDATE_ALL);
-							} catch (DatabaseException ex1) {
-								Map<String, List<ErrorMessage>> errorUpdateMsgs = ex.getErrorMessages();
-								//TODO: no DatabaseExceptions get thrown yet, but just in case...
-								for(ErrorMessage message : errorMsgs.get(postHash))
+					}
+					if(toUpdate && command.isOverwrite())
+					{
+						try {
+							this.logic.updatePosts(postsToUpdate, PostUpdateOperation.UPDATE_ALL);
+						} catch (DatabaseException ex1) {
+							Map<String, List<ErrorMessage>> errorUpdateMsgs = ex1.getErrorMessages();
+							//TODO: no DatabaseExceptions get thrown yet, but just in case...
+							for(String postHash : errorMsgs.keySet())
+							{
+								for(ErrorMessage message : errorUpdateMsgs.get(postHash))
 								{ 
 									if(message instanceof SystemTagErrorMessage)
 									{
-										errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"]", 
+										errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
 															StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
 																	message.getParameters(), 
 																	command.getContext().getLocale()),
@@ -380,7 +385,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							}
 						}
 					}
-					
 				}
 			}
 			
@@ -389,7 +393,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			if(errors.hasErrors())
 			{
 				if(postIsPublication)
-					return Views.BATCHEDITBIB;
+					return Views.BATCHEDIT_TEMP_BIB;
 				else
 					return Views.BATCHEDITURL;
 			}

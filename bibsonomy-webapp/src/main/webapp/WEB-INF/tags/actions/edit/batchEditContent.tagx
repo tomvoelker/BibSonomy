@@ -54,6 +54,7 @@
 	 	<c:set var="deleteCheckedPosts" value="true" />
 	 </c:if>
 	 <!-- OVERWRITE DUPLICATES -->
+	 ${empty overwrite} ${overwrite}
    	 <c:if test="${empty overwrite}">
 	 	<c:set var="overwrite" value="false" />
 	 </c:if>
@@ -122,9 +123,11 @@
                </tr>                  
 
                <c:forEach var="post" items="${listView.list}" varStatus="postCount">
-	               <spring:bind path="command.posts.list[${postCount.count - 1}].*">
+               		<spring:bind path="command.posts.list[${postCount.count - 1}].resource.*">
+           				<c:set var="postHasError" value="${status.error}" />
+               		</spring:bind>
 	               		<c:choose>
-	               			<c:when test="${status.error}">
+	               			<c:when test="${postHasError}">
 	   	               			<c:choose>
 				                   <c:when test="${post.user.name eq command.context.loginUser.name}">
 				                     <tr>
@@ -132,11 +135,13 @@
 											<buttons:help iconText="X" iconTextStyle="color:red; font-size:120%">
 												<jsp:attribute name="helpText">
 													<ul>
-										               <c:forEach var="errorMessage" items="${status.errorMessages}">
-										                  <li>
-										                  	<b class="info_bold">${errorMessage}</b>
-														  </li>
-										               </c:forEach>
+														<spring:bind path="command.posts.list[${postCount.count - 1}].resource.*">
+											               <c:forEach var="errorMessage" items="${status.errorMessages}">
+											                  <li>
+											                  	<b class="info_bold">${errorMessage}</b>
+															  </li>
+											               </c:forEach>
+										               </spring:bind>
 										            </ul>
 												</jsp:attribute>
 											</buttons:help>	
@@ -155,8 +160,9 @@
 				                     <c:set var="otherPosts" value="true"/>
 				                   </c:otherwise>
 				                 </c:choose>
+				                 
 	               			</c:when>
-	               			
+               				
 	               			
 	               			<c:otherwise>
 	               			
@@ -165,11 +171,31 @@
 			                   
 			                     <tr>
 			                       <td>
-			               
-			                         <input type="text" name="newTags['${post.resource.intraHash}']" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
+			                       <div >
+			               			 <spring:bind path="command.posts.list[${postCount.count - 1}].tags" >
+			               			 	<c:if test="${status.error}">
+				               			 	<buttons:help iconText="X" iconTextStyle="color:red; font-size:120%">
+													<jsp:attribute name="helpText">
+														<ul>
+											               <c:forEach var="errorMessage" items="${status.errorMessages}">
+											                  <li>
+											                  	<b class="info_bold">${errorMessage}</b>
+															  </li>
+											               </c:forEach>
+											            </ul>
+													</jsp:attribute>
+											</buttons:help>
+											<input type="text" name="newTags['${post.resource.intraHash}']" size="37" value="${fn:escapeXml(mtl:toTagString(post.tags))}" style="float:left" />	
+			               			 	</c:if>
+										<c:if test="${not status.error}">
+											<input type="text" name="newTags['${post.resource.intraHash}']" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}" style="float:left" />										
+										</c:if>			               			 
+			                         </spring:bind>
 			                         <!-- to see if the tags have been changed, we also send the original tags -->
 			                         <input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
+			                         </div>
 			                       </td>
+			                       
 			                       <td class="chunkybib">
 			                         <jsp:invoke fragment="shortPostDescription"/>
 			                       </td>   
@@ -187,7 +213,7 @@
 			                 </c:choose>
 		                 </c:otherwise>
 	                 </c:choose>
-					</spring:bind>
+			      
                </c:forEach> 
 
                <tr>
@@ -285,7 +311,6 @@
 				                  }
 				            }
 						}
-
 						if (!oneNotChecked) {
 							// all posts are marked to delete
 							document.getElementById("deleteAllId").checked = true;

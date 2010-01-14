@@ -61,7 +61,8 @@
         						listView="${listView}" 
         						otherPostsUrlPrefix="${otherPostsUrlPrefix}" 
         						listViewStartParamName="${listViewStartParamName}"
-        						deleteCheckedPosts="${deleteCheckedPosts}" >
+        						deleteCheckedPosts="${deleteCheckedPosts}"
+        						overwrite="${overwrite}" >
         						 
 			<jsp:attribute name="shortPostDescription">
 				<jsp:invoke fragment="shortPostDescription"/>

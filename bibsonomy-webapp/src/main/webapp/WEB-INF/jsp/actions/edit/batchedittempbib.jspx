@@ -23,10 +23,17 @@
 	-->
 	
 	<c:set var="deleteCheckedPosts" value="false" />
+	<c:choose>
+		<c:when test="${empty command.overwrite}">
+			<c:set var="overwrite" value="false" />
+		</c:when>
+		<c:otherwise>
+			<c:set var="overwrite" value="${command.overwrite}" />
+		</c:otherwise>
+	</c:choose>
 	
 	
-	
-	<edit:batcheditSkeleton listView="${command.bibtex}" listViewStartParamName="bibtex.start" otherPostsUrlPrefix="/bibtex" deleteCheckedPosts="${deleteCheckedPosts}"> 
+	<edit:batcheditSkeleton listView="${command.bibtex}" listViewStartParamName="bibtex.start" otherPostsUrlPrefix="/bibtex" deleteCheckedPosts="${deleteCheckedPosts}" overwrite="${overwrite}"> 
      <jsp:attribute name="shortPostDescription"><bib:shortDescription post="${post}"/></jsp:attribute>
      <jsp:attribute name="title">  <bib:title post="${post}"/></jsp:attribute>
      <jsp:attribute name="desc">   <bib:desc post="${post}"/></jsp:attribute>
