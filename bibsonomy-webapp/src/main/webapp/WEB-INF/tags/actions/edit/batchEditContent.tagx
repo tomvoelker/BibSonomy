@@ -54,7 +54,6 @@
 	 	<c:set var="deleteCheckedPosts" value="true" />
 	 </c:if>
 	 <!-- OVERWRITE DUPLICATES -->
-	 ${empty overwrite} ${overwrite}
    	 <c:if test="${empty overwrite}">
 	 	<c:set var="overwrite" value="false" />
 	 </c:if>
