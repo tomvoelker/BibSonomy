@@ -28,11 +28,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Some methods for handling strings.
@@ -256,49 +251,6 @@ public class StringUtils {
 	}
 	
 	
-	/**
-	 * Translates a given key into the target locale and fills the String with the parameters given.
-	 * (TODO NOT TESTED YET!!!)
-	 * @param key -
-	 * 			the key for the localized String
-	 * @param parameters -
-	 * 			the message parameters
-	 * @param targetLocale -
-	 * 			the target language
-	 * @return the translation with substituted parameters
-	 */
-	public static String translateMessageKey(String key, List<String> parameters, Locale targetLocale)
-	{
-		ResourceBundle res 	= ResourceBundle.getBundle(BUNDLE_NAME, targetLocale);
-		/*
-		 * Errorhandling START
-		 */
-		if(!ValidationUtils.present(key))
-			throw new IllegalArgumentException("The function 'translateMessageKey' expects a NON-EMPTY key.");
-		
-		if(!ValidationUtils.present(targetLocale))
-			targetLocale= Locale.getDefault();
-		
-		if(!res.containsKey(key))
-			throw new IllegalArgumentException("The function 'translateMessageKey' was handed a non-existing key.");
-		/*
-		 * Errorhandling END
-		 */
-		
-		String translation	= res.getString(key);
-		if(!ValidationUtils.present(parameters))
-			return translation;
-		for(int i=0; i<parameters.size();i++)
-		{
-			if(parameters.get(i)==null)
-				throw new IllegalArgumentException("Illegal parameters (NULL) used for variable substitution in localized strings.");
-			
-			String pattern = ".({"+i+"}).";
-			Pattern paramPatt = Pattern.compile(pattern); 
-			Matcher paramMatch = paramPatt.matcher(translation);
-			paramMatch.replaceFirst(parameters.get(i));
-		}
-		return translation;
-	}
+	
     
 }
