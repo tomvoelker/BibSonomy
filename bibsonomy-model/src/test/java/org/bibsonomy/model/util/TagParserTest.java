@@ -356,29 +356,29 @@ public class TagParserTest {
 		assertEquals(testSet, tags);	
 	}
 	
-	/**
-	 * test cloning of tag object
-	 */
-	@Test
-	public void cloneWorks() {
-		// check tagrelations
-		Tag tagBar = new Tag("bar");
-		Tag tagFoo = new Tag("foo");
-		tagFoo.addSuperTag(tagBar);
-		tagBar.addSubTag(tagFoo);
-		
-		Tag tagClone = null;
-		
-		//clone
-		try {
-			tagClone = tagBar.clone();
-		} catch (CloneNotSupportedException ex) {
-			ex.printStackTrace();
-		}
-		
-		assertEquals(tagBar, tagClone);
-		assertEquals(tagBar.getSubTags(), tagClone.getSubTags());
-	}
+//	/**
+//	 * test cloning of tag object
+//	 */
+//	@Test
+//	public void cloneWorks() {
+//		// check tagrelations
+//		Tag tagBar = new Tag("bar");
+//		Tag tagFoo = new Tag("foo");
+//		tagFoo.addSuperTag(tagBar);
+//		tagBar.addSubTag(tagFoo);
+//		
+//		Tag tagClone = null;
+//		
+//		//clone
+//		try {
+//			tagClone = tagBar.clone();
+//		} catch (CloneNotSupportedException ex) {
+//			ex.printStackTrace();
+//		}
+//		
+//		assertEquals(tagBar, tagClone);
+//		assertEquals(tagBar.getSubTags(), tagClone.getSubTags());
+//	}
 	
 	/**
 	 * test tagrelation

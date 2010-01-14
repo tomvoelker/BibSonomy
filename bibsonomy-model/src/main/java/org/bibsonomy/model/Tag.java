@@ -35,7 +35,7 @@ import org.bibsonomy.model.util.TagUtils;
  * 
  * @version $Id$
  */
-public class Tag implements Comparable<Tag>, Cloneable {
+public class Tag implements Comparable<Tag> {
 	/**
 	 * TODO: U.U. waere es nur schoener, wenn man das von ausserhalb "konfigurieren" koennte.
 	 * Ist aber bei einem Tag eher kompliziert. Oder steht es im Parser drin? Wenn wir
@@ -286,20 +286,6 @@ public class Tag implements Comparable<Tag>, Cloneable {
 	public int compareTo(Tag tag) {
 		// FIXME: what about upper vs. lower case?
 		return this.getName().compareTo(tag.getName());
-	}
-	
-	/** 
-	 * Returns a copy of this object<br>
-	 * The copy does NOT contain "for:" users or (any!) relations - 
-	 * only the tag set.
-	 * 
-	 * @see java.lang.Object#clone()
-	 */
-	@Override
-	public Tag clone() throws CloneNotSupportedException {
-		Tag copy = new Tag();
-		copy = this; // FIXME: this assignment redefines the word "clone"!!!
-		return copy;
 	}
 	
 }
