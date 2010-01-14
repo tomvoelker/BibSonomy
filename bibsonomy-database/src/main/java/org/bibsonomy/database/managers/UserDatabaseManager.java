@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.AuthRequiredException;
 import org.bibsonomy.common.exceptions.UnsupportedRelationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.user.UserChain;
@@ -459,8 +460,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session 
 	 * @return A User object containing the user if the login succeeded. If not, 
 	 * the object contains a <code>null</code> user name. 
+	 * @throws AuthRequiredException 
 	 */
-	public User validateUserUserAccess(final String username, final String password, final DBSession session) {
+	public User validateUserUserAccess(final String username, final String password, final DBSession session) throws AuthRequiredException {
 		// empty user object for not-logged in users
 		final User notLoggedInUser = new User();
 
@@ -471,8 +473,49 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final User foundUser = getUserDetails(username, session);
 
 		// user exists and password is correct
-		if ((foundUser.getName() != null) && (foundUser.getPassword().equals(password))) return foundUser;
-
+		if ((foundUser.getName() != null) && (foundUser.getPassword().equals(password))) {
+	
+			/* 
+			 * check, if user exists, if it is an ldap user and if it has to re-auth agains ldap server. if so, do it.
+			 */
+			if (null != foundUser) {
+				// if user database authentication was successful
+	
+				// check if user is listed in ldapUser table
+				if (this.isLdapUser(username, session))
+				{
+				
+					// get date of last authentication against ldap server
+	
+					Date userLastAccess = this.userLastLdapRequest(username, session);
+					int timeToReAuth =  18  *60*60; // seconds
+					Date dateNow = new Date();
+					// timeDiff is in seconds
+					long timeDiff = (dateNow.getTime() - userLastAccess.getTime())/1000;						
+					
+					log.info("last access of user "+username+" was on "+userLastAccess.toString()+ " ("+(timeDiff/3600)+" hours ago)");
+					log.info("last access of user "+username+" was on "+userLastAccess.toString()+ " ("+(timeDiff/60)+" minutes ago = "+timeDiff+" seconds)");
+	//DEBUG
+	//timeDiff=timeToReAuth;
+				
+					/*
+					 *  check lastAccess - re-auth required?
+					 *  if time of last access is too far away, re-authenticate against ldap server to check
+					 *  whether password is same or user exists anymore
+					 */
+					
+					if ( timeDiff > timeToReAuth ) {
+						// re-auth
+						log.info("last access time is up - ldap re-auth required -> throw reauthrequiredException");
+						
+						throw new AuthRequiredException("last access time is up - ldap re-auth required");
+						
+					}
+				}
+			}		
+			return foundUser;
+		}
+		
 		// fallback: user is not logged in
 		return notLoggedInUser;
 	}
