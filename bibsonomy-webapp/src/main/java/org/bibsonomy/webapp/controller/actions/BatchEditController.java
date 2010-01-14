@@ -29,7 +29,6 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.TagUtils;
-import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.BatchEditCommand;
@@ -40,6 +39,7 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 
 
@@ -57,6 +57,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private RequestLogic requestLogic;
 	private LogicInterface logic;
 	
+	private MessageSource messageSource;
+	
+	
+
 	private Errors errors;
 	
 	
@@ -283,7 +287,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				/*
 				 * delete post if checkbox is checked
 				 */
-				if (delete.containsKey(hash) && delete.get(hash)) {
+				if (!delete.containsKey(hash) && delete.get(hash) == null) {
 					postsToSave.add(post);
 				}
 				
@@ -331,26 +335,32 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 						{ 
 							if(message instanceof SystemTagErrorMessage)
 							{
+								Object[] params = null;
+								if(message.getParameters()!=null)
+									params = message.getParameters().toArray();
 								errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
-													StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
-													message.getParameters(), 
-													command.getContext().getLocale()),
-													StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
-															message.getParameters(), 
-															command.getContext().getLocale()));
+													messageSource.getMessage(message.getLocalizedMessageKey(), 
+																params, 
+																command.getContext().getLocale()),
+													messageSource.getMessage(message.getLocalizedMessageKey(), 
+																params, 
+																command.getContext().getLocale()));
 								toUpdate = false;
 							} 
 							
 							if(message instanceof DuplicatePostErrorMessage)
 							{
 								if(!command.isOverwrite()) {
+									Object[] params = null;
+									if(message.getParameters()!=null)
+										params = message.getParameters().toArray();
 									errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].resource", 
-														StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
-														message.getParameters(), 
-														command.getContext().getLocale()),
-														StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
-																message.getParameters(), 
-																command.getContext().getLocale()));
+											messageSource.getMessage(message.getLocalizedMessageKey(), 
+													params, 
+													command.getContext().getLocale()),
+											messageSource.getMessage(message.getLocalizedMessageKey(), 
+													params, 
+													command.getContext().getLocale()));
 									
 								} else {
 									postsToUpdate.add(bibtexHashMap.get(postHash));
@@ -371,13 +381,16 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								{ 
 									if(message instanceof SystemTagErrorMessage)
 									{
+										Object[] params = null;
+										if(message.getParameters()!=null)
+											params = message.getParameters().toArray();
 										errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
-															StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
-																	message.getParameters(), 
-																	command.getContext().getLocale()),
-															StringUtils.translateMessageKey(message.getLocalizedMessageKey(), 
-															message.getParameters(), 
-															command.getContext().getLocale()));
+												messageSource.getMessage(message.getLocalizedMessageKey(), 
+														params, 
+														command.getContext().getLocale()),
+												messageSource.getMessage(message.getLocalizedMessageKey(), 
+														params, 
+														command.getContext().getLocale()));
 						
 									}
 						
@@ -503,5 +516,13 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			return true;
 		else
 			return false;
+	}
+	
+	public MessageSource getMessageSource() {
+		return this.messageSource;
+	}
+
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
 	}
 }

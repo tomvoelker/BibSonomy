@@ -34,7 +34,6 @@ import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.FileUploadFactory;
 import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
-import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
@@ -46,6 +45,7 @@ import org.bibsonomy.webapp.validation.EditPostValidator;
 import org.bibsonomy.webapp.validation.EditPublicationValidator;
 import org.bibsonomy.webapp.validation.PostPublicationValidator;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
@@ -87,6 +87,8 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	 */
 	private Errors errors = null;
 
+	private MessageSource messageSource;
+	
 	/**
 	 * the log...
 	 */
@@ -518,20 +520,33 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 							if(isOverwrite)
 								duplicateMessage = msg;
 							else
+							{
+								Object[] params = null;
+								if(msg.getParameters()!=null)
+									params = msg.getParameters().toArray();
 								this.errors.rejectValue("posts.list["+postListCommand.getList().indexOf(bib)+"].resource", 
-										"since we might have parameterized messages, we translate them within java and use the fallback",
-										StringUtils.translateMessageKey(msg.getLocalizedMessageKey(), msg.getParameters(), command.getContext().getLocale())
-										);
+										messageSource.getMessage(msg.getLocalizedMessageKey(), 
+												params, 
+												command.getContext().getLocale()),
+										messageSource.getMessage(msg.getLocalizedMessageKey(), 
+												params, 
+												command.getContext().getLocale()));
+							}
 						}
 						else
 						{
 							isErroneous = true;
 							isErroneousList = true;
-
+							Object[] params = null;
+							if(msg.getParameters()!=null)
+								params = msg.getParameters().toArray();
 							this.errors.rejectValue("posts.list["+postListCommand.getList().indexOf(bib)+"].tags", 
-									"since we might have parameterized messages, we translate them within java and use the fallback",
-									StringUtils.translateMessageKey(msg.getLocalizedMessageKey(), msg.getParameters(), command.getContext().getLocale())
-									);
+									messageSource.getMessage(msg.getLocalizedMessageKey(), 
+											params, 
+											command.getContext().getLocale()),
+									messageSource.getMessage(msg.getLocalizedMessageKey(), 
+											params, 
+											command.getContext().getLocale()));
 
 						}
 					}
@@ -570,10 +585,16 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 							{
 								if(msg instanceof SystemTagErrorMessage)
 								{
+									Object[] params = null;
+									if(msg.getParameters()!=null)
+										params = msg.getParameters().toArray();
 									this.errors.rejectValue("posts.list["+postListCommand.getList().indexOf(bib)+"].tags", 
-											"since we might have parameterized messages, we translate them within java and use the fallback",
-											StringUtils.translateMessageKey(msg.getLocalizedMessageKey(), msg.getParameters(), command.getContext().getLocale())
-											);
+											messageSource.getMessage(msg.getLocalizedMessageKey(), 
+													params, 
+													command.getContext().getLocale()),
+											messageSource.getMessage(msg.getLocalizedMessageKey(), 
+													params, 
+													command.getContext().getLocale()));
 		
 								}
 							}
@@ -682,4 +703,11 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		this.uploadFactory = uploadFactory;
 	}
 
+	public MessageSource getMessageSource() {
+		return this.messageSource;
+	}
+
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
 }
