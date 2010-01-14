@@ -476,41 +476,39 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if ((foundUser.getName() != null) && (foundUser.getPassword().equals(password))) {
 	
 			/* 
-			 * check, if user exists, if it is an ldap user and if it has to re-auth agains ldap server. if so, do it.
+			 * check, if it is an ldap user and if it has to re-auth agains ldap server. if so, do it.
 			 */
-			if (null != foundUser) {
-				// if user database authentication was successful
-	
-				// check if user is listed in ldapUser table
-				if (this.isLdapUser(username, session))
-				{
+			// if user database authentication was successful
+			// check if user is listed in ldapUser table
+			if (this.isLdapUser(username, session))
+			{
+			
+				// get date of last authentication against ldap server
+
+				Date userLastAccess = this.userLastLdapRequest(username, session);
 				
-					// get date of last authentication against ldap server
-	
-					Date userLastAccess = this.userLastLdapRequest(username, session);
-					int timeToReAuth =  18  *60*60; // seconds
-					Date dateNow = new Date();
-					// timeDiff is in seconds
-					long timeDiff = (dateNow.getTime() - userLastAccess.getTime())/1000;						
-					
-					log.info("last access of user "+username+" was on "+userLastAccess.toString()+ " ("+(timeDiff/3600)+" hours ago)");
-					log.info("last access of user "+username+" was on "+userLastAccess.toString()+ " ("+(timeDiff/60)+" minutes ago = "+timeDiff+" seconds)");
-	//DEBUG
-	//timeDiff=timeToReAuth;
+				// TODO: get timeToReAuth from tomcat's environment, so a user can adjust is without editing code  
+				int timeToReAuth =  18  *60*60; // seconds
+				Date dateNow = new Date();
+				// timeDiff is in seconds
+				long timeDiff = (dateNow.getTime() - userLastAccess.getTime())/1000;						
 				
-					/*
-					 *  check lastAccess - re-auth required?
-					 *  if time of last access is too far away, re-authenticate against ldap server to check
-					 *  whether password is same or user exists anymore
-					 */
+				log.info("last access of user "+username+" was on "+userLastAccess.toString()+ " ("+(timeDiff/3600)+" hours ago = "+ " ("+(timeDiff/60)+" minutes ago = "+timeDiff+" seconds ago)");
+//DEBUG
+//timeDiff=timeToReAuth;
+			
+				/*
+				 *  check lastAccess - re-auth required?
+				 *  if time of last access is too far away, re-authenticate against ldap server to check
+				 *  whether password is same or user exists anymore
+				 */
+				
+				if ( timeDiff > timeToReAuth ) {
+					// re-auth
+					log.info("last access time is up - ldap re-auth required -> throw reauthrequiredException");
 					
-					if ( timeDiff > timeToReAuth ) {
-						// re-auth
-						log.info("last access time is up - ldap re-auth required -> throw reauthrequiredException");
-						
-						throw new AuthRequiredException("last access time is up - ldap re-auth required");
-						
-					}
+					throw new AuthRequiredException("last access time is up - ldap re-auth required");
+					
 				}
 			}		
 			return foundUser;
