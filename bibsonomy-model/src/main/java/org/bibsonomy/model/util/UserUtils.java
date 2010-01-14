@@ -39,7 +39,7 @@ import org.bibsonomy.util.HashUtils;
  */
 public class UserUtils {
 
-	
+
 	/** Checks, if the given user is the special DBLP user 
 	 * (which has some special rights).
 	 *  
@@ -49,8 +49,8 @@ public class UserUtils {
 	public static boolean isDBLPUser(final User user) {
 		return isDBLPUser(user.getName());
 	}
-	
-	
+
+
 	/** Checks, if the given user name is the special DBLP user 
 	 * (which has some special rights).
 	 *  
@@ -60,7 +60,7 @@ public class UserUtils {
 	public static boolean isDBLPUser(final String userName) {
 		return "dblp".equalsIgnoreCase(userName);
 	}
-	
+
 	/**
 	 * Generates an Api key with a MD5 message digest from a random number.
 	 * 
@@ -107,7 +107,7 @@ public class UserUtils {
 		}
 		return groupIDs;
 	}
-	
+
 	/**
 	 * Helper function to get a list of groups from the user's list of groups
 	 * 
@@ -126,7 +126,7 @@ public class UserUtils {
 		groups.addAll(user.getGroups());
 		return groups;
 	}	
-	
+
 	/**
 	 * Normalizes the OpenID of a user for matching
 	 * 
@@ -134,67 +134,66 @@ public class UserUtils {
 	 * @return normalized OpenID
 	 */
 	public static String normalizeURL(String url) {
-		
+
 		/*
 		 * do nothing if url is empty
 		 */
 		if (url == null || url == "") {
 			return url;
 		}
-		
+
 		/*
 		 * remove leading and trailing whitespaces
 		 */
 		url = url.trim();
-		
+
 		/*
 		 * append http suffix if not set
 		 */
 		if (!url.startsWith("http://") && !url.startsWith("https://")) {
 			url = "http://" + url;
 		}
-		
+
 		/*
 		 * append last backslash if not exist
 		 */
 		if (!url.endsWith("/")) {
 			url += "/";
 		}
-		
+
 		/*
 		 * convert to lower case
 		 */
 		url = url.toLowerCase();
-		
+
 		return url;
 	}
-	
+
 	/**
-	 * check whether the user is a group
+	 * Check whether the user is a group by comparing his name with the names
+	 * of all groups he belongs to. If a group exists with the user's name, the
+	 * user is a group.
+	 * 
 	 * @param user
 	 * @return boolean 
 	 */
 	public static boolean userIsGroup(final User user) {
-		if (user == null) {
-			return false;
-		}
-		
-		String userName = user.getName();
-		List<Group> groups = user.getGroups();
-		userName = userName.toLowerCase();
-		boolean isGroup = false;
-		
-		//iterate over groups and check whether the user name equals a group name
-		if(groups != null) { 
-			for(int i = 0; i < groups.size(); i++) {
-				Group group = groups.get(i);
-				if(userName.equals(group.getName().toLowerCase())) {
-					isGroup = true;
-					break;
+		if (user == null) return false;
+
+		final String userName = user.getName();
+		final List<Group> groups = user.getGroups();
+
+		/*
+		 * iterate over groups and check whether the user name equals a group name
+		 */
+		if (groups != null) {
+			for (final Group group: groups) {
+				if (userName.equalsIgnoreCase(group.getName())) {
+					return true;
 				}
 			}
 		}
-		
-		return isGroup;
+
+		return false;
 	}
 }
