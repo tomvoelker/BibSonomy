@@ -8,7 +8,6 @@ import java.net.URLEncoder;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Date;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
@@ -27,6 +26,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.exceptions.AuthRequiredException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
@@ -213,71 +213,51 @@ public class InitUserFilter implements Filter {
 					 * if so check if it is required to authenticate again against ldap-server
 					 * if not use standard login method
 					 */
-					
-					final LogicInterface logic = dbLogicFactory.getLogicAccess(userName, userPass);
-					
-					/* 
-					 * check if user is listed in ldapUser table
-					 */
-					if (dbLogicFactory.isLdapUser(userName))
-					{
-						Date userLastAccess = dbLogicFactory.lastLdapRequest(userName);
-						int timeToReAuth =  18  *60*60; // seconds
-						Date dateNow = new Date();
-						// timeDiff is in seconds
-						long timeDiff = (dateNow.getTime() - userLastAccess.getTime())/1000;						
-						
-						log.info("last access of user "+userName+" was on "+userLastAccess.toString()+ " ("+(timeDiff/3600)+" hours ago)");
-						log.info("last access of user "+userName+" was on "+userLastAccess.toString()+ " ("+(timeDiff/60)+" minutes ago = "+timeDiff+" seconds)");
-// DEBUG
-//timeDiff=timeToReAuth;
+
+					LogicInterface logic = null;
+					try {
+log.info("1 trying to getLogicAccess for" + userName);
+						logic = dbLogicFactory.getLogicAccess(userName, userPass);
+log.info("2 trying to getUserDetails for" + userName + " :: " + logic);
+						loginUser = logic.getUserDetails(userName);
+log.info("3 finished trying to getLogicAccess and getUserDetails for" + userName);
+					} catch (AuthRequiredException ex){
+log.info("1 AuthRequiredException");
 						/*
-						 *  check lastAccess - re-auth required?
-						 *  if time of last access is too far away, re-authenticate against ldap server to check
-						 *  whether password is same or user exists anymore
+						 * check credentials against ldap server
+						 * if login is not correct redirect to login page
+						 * if it is correct use standard login method 
 						 */
-						if ( timeDiff > timeToReAuth ) {
-							// re-auth
-							log.info("last access time is up - ldap re-auth");
-							
+						Ldap ldap = new Ldap();
+						LdapUserinfo ldapUserinfo = new LdapUserinfo();
+log.info("2 AuthRequiredException! username="+ userName);
+						String ldapUid = logic.getLdapUserByUsername(userName);
+log.info("3 AuthRequiredException! ldapuid="+ ldapUid);
+						log.info("Trying to re-auth user " + userName + " via LDAP (uid="+ldapUid+")");
+				        ldapUserinfo = ldap.checkauth(ldapUid, userPass);
+	//DEBUG
+	//ldapUserinfo = null;
+						if (null == ldapUserinfo)
+						{
 							/*
-							 * check credentials against ldap server
-							 * if login is not correct redirect to login page
-							 * if it is correct use standard login method 
+							 * user credentials do not match --> show error message
+							 * and go to login page
 							 */
-							Ldap ldap = new Ldap();
-							LdapUserinfo ldapUserinfo = new LdapUserinfo();
-
-							String ldapUid = logic.getLdapUserByUsername(userName);
-							
-							log.info("Trying to re-auth user " + userName + " via LDAP (uid="+ldapUid+")");
-					        ldapUserinfo = ldap.checkauth(ldapUid, userPass);
-// DEBUG
-//ldapUserinfo = null;
-							if (null == ldapUserinfo)
-							{
-								/*
-								 * user credentials do not match --> show error message
-								 * and go to login page
-								 */
-								log.info("ra-auth of user " + userName + " failed.");
-							} else {
-
-								log.info("ra-auth of user " + userName + " succeeded.");
-
-								// if ldap credentials are ok, update lastAccessTimestamp
-								dbLogicFactory.updateLastLdapRequest(userName);
-
-								loginUser = logic.getUserDetails(userName);
-
-							}
-						
-						} else {  // user is within timerange
+							log.info("ra-auth of user " + userName + " failed.");
+							loginUser = null;
+						} else {
+		
+							log.info("ra-auth of user " + userName + " succeeded.");
+		
+							// if ldap credentials are ok, update lastAccessTimestamp
+							dbLogicFactory.updateLastLdapRequest(userName);
 							loginUser = logic.getUserDetails(userName);
 						}
-					} else { // user is not in list of ldsap users
-						loginUser = logic.getUserDetails(userName);
-					}
+	
+						
+					}	
+//*****************************************************************					
+					
 				} else {
 					/*
 					 * something is wrong with the cookie: log!
