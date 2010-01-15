@@ -84,7 +84,8 @@
 					<h2><fmt:message key="post_bibtex.manual.heading"/></h2>
 					<p class="standart_text_normal"><fmt:message key="post_bibtex.manual.description" /></p>
           			
-                    <form:form id="postForm" action="/editPublication" method="post">	
+                    <form:form id="postForm" action="/editPublication" method="post">
+                    	<input type="hidden" name="ckey" value="${ckey}"/>	
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
   								<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
@@ -116,7 +117,7 @@
     				<form method="post" action="/import/publications">
     					<div id="fsform">
     						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
-    							
+    							<input type="hidden" name="ckey" value="${ckey}"/>
     							<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
                   				<input type="hidden" name="selTab" value="1" />
                   				
@@ -167,6 +168,7 @@
 					<form name="upload" method="post" enctype="multipart/form-data" action="/import/publications">
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
+									<input type="hidden" name="ckey" value="${ckey}"/>
 									<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
 									<input type="hidden" name="selTab" value="2" />
 									
@@ -292,6 +294,7 @@
 								
 									<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
 									<input type="hidden" name="selTab" value="3" />
+									<input type="hidden" name="ckey" value="${ckey}"/>
 									
 									 <form name="upload" method="post" action="/editPublication">
                                              <div class="fsRow">
