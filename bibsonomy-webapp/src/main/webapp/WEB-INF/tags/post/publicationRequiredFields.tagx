@@ -7,6 +7,8 @@
 	xmlns:form="http://www.springframework.org/tags/form"
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
   >
+  
+  <script type="text/javascript" src="/resources/javascript/publicationRequiredFields.js"></script>
 
     <!-- 
     
