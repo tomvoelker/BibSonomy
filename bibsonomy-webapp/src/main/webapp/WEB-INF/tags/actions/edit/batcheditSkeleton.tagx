@@ -54,9 +54,9 @@
 	  
 
       <jsp:attribute name="content">
-		<h2><fmt:message key="batchedit.info"/></h2>
+		
         <div id="general_100">
-        
+        <h2><fmt:message key="batchedit.info"/></h2>
         <edit:batchEditContent 	formAction="${formAction}" 
         						listView="${listView}" 
         						otherPostsUrlPrefix="${otherPostsUrlPrefix}" 
