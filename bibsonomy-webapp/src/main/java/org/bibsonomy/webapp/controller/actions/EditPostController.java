@@ -58,7 +58,7 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 	private Errors errors = null;
 	private TagRecommender tagRecommender;
 	private Captcha captcha;
-	private RequestLogic requestLogic;
+	protected RequestLogic requestLogic;
 
 
 	/**

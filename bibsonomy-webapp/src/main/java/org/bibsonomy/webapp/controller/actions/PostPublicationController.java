@@ -87,6 +87,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	 */
 	private Errors errors = null;
 
+
 	private MessageSource messageSource;
 	
 	/**
@@ -527,10 +528,10 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 								this.errors.rejectValue("bibtex.list["+postListCommand.getList().indexOf(bib)+"].resource", 
 										messageSource.getMessage(msg.getLocalizedMessageKey(), 
 												params, 
-												command.getContext().getLocale()),
+												requestLogic.getLocale()),
 										messageSource.getMessage(msg.getLocalizedMessageKey(), 
 												params, 
-												command.getContext().getLocale()));
+												requestLogic.getLocale()));
 							}
 						}
 						else
@@ -543,10 +544,10 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 							this.errors.rejectValue("bibtex.list["+postListCommand.getList().indexOf(bib)+"].tags", 
 									messageSource.getMessage(msg.getLocalizedMessageKey(), 
 											params, 
-											command.getContext().getLocale()),
+											requestLogic.getLocale()),
 									messageSource.getMessage(msg.getLocalizedMessageKey(), 
 											params, 
-											command.getContext().getLocale()));
+											requestLogic.getLocale()));
 
 						}
 					}
@@ -591,10 +592,10 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 									this.errors.rejectValue("bibtex.list["+postListCommand.getList().indexOf(bib)+"].tags", 
 											messageSource.getMessage(msg.getLocalizedMessageKey(), 
 													params, 
-													command.getContext().getLocale()),
+													requestLogic.getLocale()),
 											messageSource.getMessage(msg.getLocalizedMessageKey(), 
 													params, 
-													command.getContext().getLocale()));
+													requestLogic.getLocale()));
 		
 								}
 							}
@@ -710,4 +711,6 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
+	
+	
 }

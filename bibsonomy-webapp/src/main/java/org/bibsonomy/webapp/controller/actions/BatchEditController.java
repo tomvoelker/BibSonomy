@@ -349,10 +349,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								errors.rejectValue(resourceType+".list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
 													messageSource.getMessage(message.getLocalizedMessageKey(), 
 																params, 
-																command.getContext().getLocale()),
+																requestLogic.getLocale()),
 													messageSource.getMessage(message.getLocalizedMessageKey(), 
 																params, 
-																command.getContext().getLocale()));
+																requestLogic.getLocale()));
 								toUpdate = false;
 							} 
 							
@@ -365,10 +365,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 									errors.rejectValue(resourceType+".list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].resource", 
 											messageSource.getMessage(message.getLocalizedMessageKey(), 
 													params, 
-													command.getContext().getLocale()),
+													requestLogic.getLocale()),
 											messageSource.getMessage(message.getLocalizedMessageKey(), 
 													params, 
-													command.getContext().getLocale()));
+													requestLogic.getLocale()));
 									
 								} else {
 									postsToUpdate.add(bibtexHashMap.get(postHash));
@@ -395,10 +395,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 										errors.rejectValue(resourceType+".list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
 												messageSource.getMessage(message.getLocalizedMessageKey(), 
 														params, 
-														command.getContext().getLocale()),
+														requestLogic.getLocale()),
 												messageSource.getMessage(message.getLocalizedMessageKey(), 
 														params, 
-														command.getContext().getLocale()));
+														requestLogic.getLocale()));
 						
 									}
 						
@@ -416,7 +416,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				if(postIsPublication)
 					return Views.BATCHEDIT_TEMP_BIB;
 				else
-					return Views.BATCHEDITURL;
+					/**
+					 * when import/bookmarks will be moved, this has to change to BATCHEDIT_TEMP_URL
+					 */
+					return Views.BATCHEDITURL;  
 			}
 	
 			// get referer to redirect to it
