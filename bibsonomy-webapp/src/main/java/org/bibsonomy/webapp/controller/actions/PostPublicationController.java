@@ -524,7 +524,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 								Object[] params = null;
 								if(msg.getParameters()!=null)
 									params = msg.getParameters().toArray();
-								this.errors.rejectValue("posts.list["+postListCommand.getList().indexOf(bib)+"].resource", 
+								this.errors.rejectValue("bibtex.list["+postListCommand.getList().indexOf(bib)+"].resource", 
 										messageSource.getMessage(msg.getLocalizedMessageKey(), 
 												params, 
 												command.getContext().getLocale()),
@@ -540,7 +540,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 							Object[] params = null;
 							if(msg.getParameters()!=null)
 								params = msg.getParameters().toArray();
-							this.errors.rejectValue("posts.list["+postListCommand.getList().indexOf(bib)+"].tags", 
+							this.errors.rejectValue("bibtex.list["+postListCommand.getList().indexOf(bib)+"].tags", 
 									messageSource.getMessage(msg.getLocalizedMessageKey(), 
 											params, 
 											command.getContext().getLocale()),
@@ -588,7 +588,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 									Object[] params = null;
 									if(msg.getParameters()!=null)
 										params = msg.getParameters().toArray();
-									this.errors.rejectValue("posts.list["+postListCommand.getList().indexOf(bib)+"].tags", 
+									this.errors.rejectValue("bibtex.list["+postListCommand.getList().indexOf(bib)+"].tags", 
 											messageSource.getMessage(msg.getLocalizedMessageKey(), 
 													params, 
 													command.getContext().getLocale()),

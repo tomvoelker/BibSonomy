@@ -54,12 +54,17 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private static final int HASH_LENGTH = 32;
 	private static final Log log = LogFactory.getLog(BatchEditController.class);
 	
+	private static final String RESOURCE_TYPE_BOOKMARK = "bookmark";
+	private static final String RESOURCE_TYPE_PUBLICATION = "bibtex";
+
+	
 	private RequestLogic requestLogic;
 	private LogicInterface logic;
 	
 	private MessageSource messageSource;
 	
-	
+	private boolean postIsPublication;
+	private String resourceType;
 
 	private Errors errors;
 	
@@ -81,7 +86,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		final RequestWrapperContext context = command.getContext();
 		
 		
-		boolean postIsPublication = true;
+		postIsPublication = true;
 		
 		// check if user is logged in
 		if (!context.isUserLoggedIn()) {
@@ -275,10 +280,13 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				final Post<? extends Resource> post = bibtexHashMap.get(hash);
 				if(post==null) continue; //needed when page is called with no imported posts
 				postIsPublication = this.determinePostRessource(post);
-				if(postIsPublication)
+				if(postIsPublication){
 					command.getBibtex().getList().add((Post<BibTex>) post);
-				else
+					resourceType = RESOURCE_TYPE_PUBLICATION;
+				} else {
 					command.getBookmark().getList().add((Post<Bookmark>) post);
+					resourceType = RESOURCE_TYPE_BOOKMARK;
+				}
 				/*
 				 * short check if hash is correct
 				 */
@@ -338,7 +346,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								Object[] params = null;
 								if(message.getParameters()!=null)
 									params = message.getParameters().toArray();
-								errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
+								errors.rejectValue(resourceType+".list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
 													messageSource.getMessage(message.getLocalizedMessageKey(), 
 																params, 
 																command.getContext().getLocale()),
@@ -354,7 +362,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 									Object[] params = null;
 									if(message.getParameters()!=null)
 										params = message.getParameters().toArray();
-									errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].resource", 
+									errors.rejectValue(resourceType+".list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].resource", 
 											messageSource.getMessage(message.getLocalizedMessageKey(), 
 													params, 
 													command.getContext().getLocale()),
@@ -384,7 +392,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 										Object[] params = null;
 										if(message.getParameters()!=null)
 											params = message.getParameters().toArray();
-										errors.rejectValue("posts.list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
+										errors.rejectValue(resourceType+".list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
 												messageSource.getMessage(message.getLocalizedMessageKey(), 
 														params, 
 														command.getContext().getLocale()),

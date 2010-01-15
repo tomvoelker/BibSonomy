@@ -20,6 +20,13 @@ import org.bibsonomy.model.Resource;
  * @author Dominik Benz
  */
 public class SimpleResourceViewCommand extends ResourceViewCommand {
+	/**
+	 * coming from a postPublication/postBookmark dialogue,
+	 * this parameter determines, if already existing posts can be overwritten by ones with the same resource
+	 */
+	private boolean overwrite;
+	
+	
 	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<Post<Bookmark>>(this);
 	private ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>(this);
 	/**
@@ -61,5 +68,23 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	public void setBookmark(ListCommand<Post<Bookmark>> bookmark) {
 		this.bookmark = bookmark;
 	}
+	
+	
+	/**
+	 * @return coming from a postPublication/postBookmark dialogue,
+	 * overwrite determines, if already existing posts can be overwritten by ones with the same resource
+	 */
+	public boolean isOverwrite() {
+		return this.overwrite;
+	}
 
+	/**
+	 * @param overwrite coming from a postPublication/postBookmark dialogue,
+	 * this parameter determines, if already existing posts can be overwritten by ones with the same resource
+	 */
+	public void setOverwrite(boolean overwrite) {
+		this.overwrite = overwrite;
+	}
+	
+	
 }
