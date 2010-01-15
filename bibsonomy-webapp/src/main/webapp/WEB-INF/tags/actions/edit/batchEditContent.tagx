@@ -44,7 +44,7 @@
 	  		<c:set var="checkboxAllLabelKey" value="batchedit.saveAll" />
 	  		<c:set var="checkboxLabelKey" value="batchedit.saveAllQ" />
 	  		<c:set var="checkboxAllQuestion" value="batchedit.saveAll.confirm" />
-	  		<c:set var="submitKey" value="batchedit.button.save" />
+	  		<c:set var="submitKey" value="batchedit.button.update" />
 	  	</c:otherwise>
 	  </c:choose>
 
@@ -125,6 +125,12 @@
                		<spring:bind path="command.posts.list[${postCount.count - 1}].resource.*">
            				<c:set var="postHasError" value="${status.error}" />
                		</spring:bind>
+               		<c:if test="${not postHasError}">
+	               		<spring:bind path="command.posts.list[${postCount.count - 1}].resource">
+	           				<c:set var="postHasError" value="${status.error}" />
+	               		</spring:bind>
+               		</c:if>
+               		
 	               		<c:choose>
 	               			<c:when test="${postHasError}">
 	   	               			<c:choose>
@@ -135,6 +141,13 @@
 												<jsp:attribute name="helpText">
 													<ul>
 														<spring:bind path="command.posts.list[${postCount.count - 1}].resource.*">
+											               <c:forEach var="errorMessage" items="${status.errorMessages}">
+											                  <li>
+											                  	<b class="info_bold">${errorMessage}</b>
+															  </li>
+											               </c:forEach>
+										               </spring:bind>
+										               <spring:bind path="command.posts.list[${postCount.count - 1}].resource">
 											               <c:forEach var="errorMessage" items="${status.errorMessages}">
 											                  <li>
 											                  	<b class="info_bold">${errorMessage}</b>
@@ -200,7 +213,7 @@
 			                       </td>   
 			                       <td>
 			                         <div style="margin-left:auto;margin-right:auto; width:10pt">
-			                         	<input type="checkbox" name="delete['${post.resource.intraHash}']" onclick="checkDeleteAll(this)" /> <!--<fmt:message key="batchedit.deletePost"/>-->
+			                         	<input type="checkbox" name="delete['${post.resource.intraHash}']" onclick="checkDeleteAll(this)" value="false"  /> <!--<fmt:message key="batchedit.deletePost"/>-->
 			                         </div>
 			                       </td>
 			                     </tr>
