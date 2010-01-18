@@ -96,21 +96,24 @@
 
 	<select id="getBibTexByTagNamesForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid="allBibtexAttributesWithSimHashes"/>, t.tag_name, h.ctr AS count, g.group, g.group_name
-		FROM bibtex b, tas t, groupids g, bibhash h,
-			(SELECT t1.content_id
-			FROM <include refid="tagFromQuery"/>
-				WHERE <include refid="tagWhereQuery"/>
-					<include refid="restrictToGroups"/>
-					AND t1.content_type = #contentType#
-					AND t1.user_name = #requestedUserName#
-				ORDER BY t1.date DESC
-				LIMIT #limit# OFFSET #offset#) AS tt
-				WHERE tt.content_id=b.content_id
-				AND tt.content_id=t.content_id
-				AND <include refid="bibtexSimHash"/>
-				AND g.group = b.group
-				<include refid="sysTagsEntryType"/>
-				ORDER BY b.date DESC, b.content_id DESC;
+		FROM 
+			(	<!-- select all publication posts from the user with the given tags -->
+				SELECT t1.content_id
+				FROM <include refid="tagFromQuery"/>
+					WHERE <include refid="tagWhereQuery"/>
+						<include refid="restrictToGroups"/>
+						AND t1.content_type = #contentType#
+						AND t1.user_name = #requestedUserName#
+					ORDER BY t1.date DESC
+					LIMIT #limit# OFFSET #offset#
+			) AS tt
+			JOIN bibtex b USING (content_id) 
+			JOIN tas t USING (content_id)
+			JOIN groupids g  ON (b.group = g.group), 
+			bibhash h
+			WHERE <include refid="bibtexSimHash"/>
+			  <include refid="sysTagsEntryType"/>
+		ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 	
 	<select id="getBibTexByTagNamesForUserWithPDF" resultMap="BibTexCommon.bibtexPostWithDocuments" parameterClass="bibtexParam">

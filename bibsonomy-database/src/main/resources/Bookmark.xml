@@ -49,22 +49,24 @@
 	</select>
 
 	<select id="getBookmarkByTagNamesForUser" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
-		SELECT a.content_id, t.tag_name, a.book_url, a.book_url_hash AS interHash,a.book_url_hash AS intraHash,title, description,
-		       a.date, a.book_url_ctr AS count, t.user_name, g.group, g.group_name
-		FROM (SELECT b.content_id, u.book_url, b.book_url_hash, b.book_description AS title, b.book_extended AS description,
-		             b.date, u.book_url_ctr, b.group
-		      FROM bookmark b, urls u, <include refid="tagFromQuery"/>
-		      WHERE <include refid="tagWhereQuery"/>
-		            <include refid="restrictToGroups"/>
-		            AND t1.content_type = #contentType#
-		            AND t1.user_name = #requestedUserName#
-		            AND b.book_url_hash = u.book_url_hash
-		            AND t1.content_id = b.content_id
-		      ORDER BY t1.date DESC
-		      LIMIT #limit# OFFSET #offset#) AS a
-		LEFT OUTER JOIN tas AS t ON a.content_id = t.content_id, groupids AS g
-		WHERE a.group = g.group
-		ORDER BY a.date DESC, a.content_id DESC
+		SELECT <include refid="bookmarkAttributes"/>,
+		       u.book_url, u.book_url_ctr AS count, t.tag_name, g.group, g.group_name
+		FROM 
+			(   <!-- select all bookmark posts from the user with the given tags -->
+				SELECT t1.content_id
+				FROM  <include refid="tagFromQuery"/>
+		    	WHERE <include refid="tagWhereQuery"/>
+		    		<include refid="restrictToGroups"/>
+		        	AND t1.content_type = #contentType#
+		        	AND t1.user_name = #requestedUserName#
+		    	ORDER BY t1.date DESC
+			    LIMIT #limit# OFFSET #offset#
+			) AS a
+		    JOIN bookmark b USING (content_id)
+		  	JOIN tas t USING (content_id)
+		  	JOIN groupids g ON (b.group = g.group)
+		  	JOIN urls u ON (b.book_url_hash = u.book_url_hash)
+		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 	
 	<select id="getBookmarkByTagNamesForUserCount" resultClass="int" parameterClass="bookmarkParam">
