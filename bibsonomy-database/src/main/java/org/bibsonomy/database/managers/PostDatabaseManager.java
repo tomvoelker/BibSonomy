@@ -134,7 +134,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * subtags
 	 * 
 	 * @param requestedGroupName
-	 * @param groupId
 	 * @param tagIndex
 	 * @param limit
 	 * @param offset
@@ -142,7 +141,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return a list of posts
 	 */
-	public List<Post<R>> getPostsByConceptForGroup(final String requestedGroupName, int groupId, final List<TagIndex> tagIndex, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsByConceptForGroup(final String requestedGroupName, final List<TagIndex> tagIndex, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(limit, offset);
 		param.setRequestedGroupName(requestedGroupName);
 		param.setTagIndex(tagIndex);
@@ -323,7 +322,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setSimHash(simHash);
 		param.addAllToSystemTags(systemTags);
 		
-		param.setGroupType(GroupID.FRIENDS);
+		param.setGroupId(GroupID.FRIENDS);
 		return this.postList("get" + this.resourceClassName + "ByUserFriends", param, session);
 	}
 	
@@ -392,7 +391,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	public List<Post<R>> getPostsForHomepage(final FilterEntity filter, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
 		final P param = this.createParam(limit, offset);
-		param.setGroupType(GroupID.PUBLIC);
+		param.setGroupId(GroupID.PUBLIC);
 		param.setSimHash(HashID.INTER_HASH);
 		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);

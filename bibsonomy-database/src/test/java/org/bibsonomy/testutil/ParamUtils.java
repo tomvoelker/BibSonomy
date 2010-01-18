@@ -66,7 +66,6 @@ public final class ParamUtils {
 	 * The defaults for every parameter-object are set here.
 	 */
 	private static void setDefaults(final GenericParam param) {
-		param.setGroupType(GroupID.PUBLIC);
 		param.setLimit(10);
 		param.setOffset(0);
 		param.setGroupId(3);
