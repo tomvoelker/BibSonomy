@@ -33,7 +33,7 @@ public class GetBibtexOfFriendsByTags extends BibTexChainElement {
 		 * see the posts
 		 */
 		if (this.generalDb.isFriendOf(param.getUserName(), param.getRequestedUserName(), session)) {
-			return this.db.getPostsByTagNamesForUser(param.getRequestedUserName(), param.getTagIndex(), GroupID.FRIENDS.getId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getFilter(), param.getSystemTags().values(), session);
+			return this.db.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), GroupID.FRIENDS.getId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getFilter(), param.getSystemTags().values(), session);
 		}
 		return new ArrayList<Post<BibTex>>();
 	}

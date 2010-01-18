@@ -231,7 +231,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * built in a way, that not only public posts are retrieved, but also
 	 * friends or private or other groups, depending upon if userName us allowed
 	 * to see them.
-	 * 
+	 * @param loginUserName 
 	 * @param requestedUserName 
 	 * @param tagIndex 
 	 * @param groupId 
@@ -243,8 +243,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session 
 	 * @return list of resource posts
 	 */
-	public List<Post<R>> getPostsByTagNamesForUser(final String requestedUserName, final List<TagIndex> tagIndex, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset, final FilterEntity filter, final Collection<SystemTag> systemTags, final DBSession session) {
-		final P param = this.createParam(requestedUserName, requestedUserName, limit, offset);
+	public List<Post<R>> getPostsByTagNamesForUser(final String loginUserName, final String requestedUserName, final List<TagIndex> tagIndex, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset, final FilterEntity filter, final Collection<SystemTag> systemTags, final DBSession session) {
+		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
 		param.setTagIndex(tagIndex);
 		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
@@ -468,7 +468,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * the given hash) for a given user. Since user name is given, full group
 	 * checking is done, i.e. everbody who may see the resoucre will see it.
 	 * 
-	 * @param userName
+	 * @param loginUserName
 	 * @param requHash
 	 * @param requestedUserName
 	 * @param visibleGroupIDs
@@ -476,8 +476,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of resource posts
 	 */
-	public List<Post<R>> getPostsByHashForUser(final String userName, final String requHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final HashID hashType, final DBSession session) {
-		final P param = this.createParam(userName, requestedUserName);
+	public List<Post<R>> getPostsByHashForUser(final String loginUserName, final String requHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final HashID hashType, final DBSession session) {
+		final P param = this.createParam(loginUserName, requestedUserName);
 		param.addGroups(visibleGroupIDs);
 		param.setHash(requHash);
 		param.setSimHash(hashType);
@@ -523,14 +523,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param groupId
 	 * @param visibleGroupIDs 
 	 * @param search
-	 * @param userName
+	 * @param loginUserName
 	 * @param limit
 	 * @param offset
 	 * @param systemTags
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsSearchForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String search, final String userName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsSearchForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String search, final String loginUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
 	
 		String searchMode = "";
 		try {
@@ -547,7 +547,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			if (present(lucene)) {
 				// get search results from lucene
 				final long starttimeQuery = System.currentTimeMillis();
-				postList = lucene.searchGroup(groupId, visibleGroupIDs, search, userName, limit, offset, null);
+				postList = lucene.searchGroup(groupId, visibleGroupIDs, search, loginUserName, limit, offset, null);
 				final long endtimeQuery = System.currentTimeMillis();
 				log.debug("Lucene" + this.resourceClassName + " complete group search query time: " + (endtimeQuery-starttimeQuery) + "ms");
 			} else {
@@ -558,7 +558,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			return postList;
 		}
 		
-		final P param = this.createParam(userName, null, limit, offset);
+		final P param = this.createParam(loginUserName, null, limit, offset);
 		param.setGroupId(groupId);
 		param.setSearch(search);
 		param.setGroups(visibleGroupIDs);
@@ -575,14 +575,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param groupId
 	 * @param search
 	 * @param requestedUserName
-	 * @param UserName 
-	 * @param GroupNames 
+	 * @param loginUserName 
+	 * @param groupNames 
 	 * @param limit
 	 * @param offset
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsSearchLucene(final int groupId, final String search, final String requestedUserName, final String UserName, final Set<String> GroupNames,  final int limit, final int offset, final DBSession session) {
+	public List<Post<R>> getPostsSearchLucene(final int groupId, final String search, final String requestedUserName, final String loginUserName, final Set<String> groupNames,  final int limit, final int offset, final DBSession session) {
 		final List<Post<R>> postList;
 		final ResourceSearch<R> lucene = this.getResourceSearch();
 		if (present(lucene)) {
@@ -591,7 +591,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 			// get search results from lucene
 			final long starttimeQuery = System.currentTimeMillis();
-			postList = lucene.searchPosts(group, search, requestedUserName, UserName, GroupNames, limit, offset);
+			postList = lucene.searchPosts(group, search, requestedUserName, loginUserName, groupNames, limit, offset);
 			final long endtimeQuery = System.currentTimeMillis();
 			log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
 		} else {
@@ -654,7 +654,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * TODO: check method
 	 * 
 	 * Returns viewable BibTexs for a given tag.
-	 * 
+	 * @param loginUserName 
 	 * @param requestedUserName
 	 * @param tagIndex
 	 * @param groupId
@@ -665,12 +665,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsViewableByTag(final String requestedUserName, final List<TagIndex> tagIndex, final int groupId, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsViewableByTag(final String loginUserName, final String requestedUserName, final List<TagIndex> tagIndex, final int groupId, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
 		if (GroupID.isSpecialGroupId(groupId)) {
-			return this.getPostsByTagNamesForUser(requestedUserName, tagIndex, groupId, null, limit, offset, filter, systemTags, session);
+			return this.getPostsByTagNamesForUser(loginUserName, requestedUserName, tagIndex, groupId, null, limit, offset, filter, systemTags, session);
 		}
 		
-		final P param = this.createParam(null, requestedUserName, limit, offset);
+		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
 		param.setTagIndex(tagIndex);
 		param.setGroupId(groupId);
 		param.addAllToSystemTags(systemTags);
@@ -692,7 +692,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * 
 	 * @param groupId
 	 * @param visibleGroupIDs 
-	 * @param userName
+	 * @param loginUserName
 	 * @param simHash
 	 * @param filter
 	 * @param limit
@@ -701,8 +701,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String userName, final HashID simHash, final FilterEntity filter, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
-		final P param = this.createParam(userName, null, limit, offset);
+	public List<Post<R>> getPostsForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String loginUserName, final HashID simHash, final FilterEntity filter, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
+		final P param = this.createParam(loginUserName, null, limit, offset);
 		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
 		param.setSimHash(simHash);
@@ -726,14 +726,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * visibleGroupIDs && userName && (userName != requestedUserName) optional
 	 * 
 	 * @param requestedUserName 
-	 * @param userName 
+	 * @param loginUserName 
 	 * @param groupId
 	 * @param visibleGroupIDs 
 	 * @param session
 	 * @return the (approximated) number of posts for the given group, see method above
 	 */
-	public int getPostsForGroupCount(final String requestedUserName, final String userName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
-		final P param = this.createParam(userName, requestedUserName);
+	public int getPostsForGroupCount(final String requestedUserName, final String loginUserName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
+		final P param = this.createParam(loginUserName, requestedUserName);
 		param.setGroups(visibleGroupIDs);
 		param.setGroupId(groupId);
 		
@@ -792,7 +792,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * 
 	 * @param groupId
 	 * @param visibleGroupIDs 
-	 * @param userName
+	 * @param loginUserName
 	 * @param tagIndex
 	 * @param filter
 	 * @param limit
@@ -801,8 +801,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForGroupByTag(final int groupId, final List<Integer> visibleGroupIDs, final String userName,  List<TagIndex> tagIndex, FilterEntity filter, int limit, int offset, Collection<SystemTag> systemTags, final DBSession session) {
-		final P param = this.createParam(userName, null, limit, offset);
+	public List<Post<R>> getPostsForGroupByTag(final int groupId, final List<Integer> visibleGroupIDs, final String loginUserName,  List<TagIndex> tagIndex, FilterEntity filter, int limit, int offset, Collection<SystemTag> systemTags, final DBSession session) {
+		final P param = this.createParam(loginUserName, null, limit, offset);
 		param.setGroupId(groupId); 
 		param.setGroups(visibleGroupIDs);
 		param.setTagIndex(tagIndex);
@@ -833,7 +833,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * ATTENTION! in case of a given groupId it is NOT checked if the user
 	 * actually belongs to this group.
 	 * 
-	 * @param userName
+	 * @param loginUserName
 	 * @param requestedUserName
 	 * @param simHash
 	 * @param groupId
@@ -845,8 +845,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsForUser(final String userName, final String requestedUserName, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		final P param = this.createParam(userName, requestedUserName, limit, offset);
+	public List<Post<R>> getPostsForUser(final String loginUserName, final String requestedUserName, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final FilterEntity filter, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
 		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
 		param.setSimHash(simHash);
@@ -860,7 +860,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * Returns the number of posts for a given user.
 	 * 
 	 * @param requestedUserName 
-	 * @param userName 
+	 * @param loginUserName 
 	 * @param groupId 
 	 * @param visibleGroupIDs 
 	 * @param session
@@ -869,8 +869,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * groupId or
 	 * visibleGroupIDs && userName && (userName != requestedUserName)
 	 */
-	public int getPostsForUserCount(final String requestedUserName, final String userName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
-		final P param = this.createParam(userName, requestedUserName);
+	public int getPostsForUserCount(final String requestedUserName, final String loginUserName, final int groupId, final List<Integer> visibleGroupIDs, final DBSession session) {
+		final P param = this.createParam(loginUserName, requestedUserName);
 		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
 		
@@ -988,16 +988,16 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @see org.bibsonomy.database.managers.CrudableContent#getPostsDetails(java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public Post<R> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
-		final List<Post<R>> list = this.getPostsByHashForUser(authUser, resourceHash, userName, visibleGroupIDs, HashID.INTRA_HASH, session);
+	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
+		final List<Post<R>> list = this.getPostsByHashForUser(loginUserName, resourceHash, requestedUserName, visibleGroupIDs, HashID.INTRA_HASH, session);
 		
 		if (list.isEmpty()) {
-			log.debug(this.resourceClassName + "-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' not found");
+			log.debug(this.resourceClassName + "-posts from user '" + requestedUserName + "' with hash '" + resourceHash + "' for user '" + loginUserName + "' not found");
 			return null;
 		}
 		
 		if (list.size() > 1) {
-			log.warn("multiple " + this.resourceClassName + "-posts from user '" + userName + "' with hash '" + resourceHash + "' for user '" + authUser + "' found ->returning first");
+			log.warn("multiple " + this.resourceClassName + "-posts from user '" + requestedUserName + "' with hash '" + resourceHash + "' for user '" + loginUserName + "' found ->returning first");
 		}
 		
 		return list.get(0);
@@ -1053,12 +1053,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return true;
 	}
 	
-	private Post<R> getPostByHashForUser(final String userName, final String requHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final HashID hashType, final DBSession session) {
-		final List<Post<R>> posts = this.getPostsByHashForUser(userName, requHash, requestedUserName, visibleGroupIDs, hashType, session);
+	private Post<R> getPostByHashForUser(final String loginUserName, final String requHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final HashID hashType, final DBSession session) {
+		final List<Post<R>> posts = this.getPostsByHashForUser(loginUserName, requHash, requestedUserName, visibleGroupIDs, hashType, session);
 		
 		if (present(posts)) {
 			if (posts.size() > 1) {
-				log.warn("multiple " + this.resourceClassName + " with hash " + requHash + " found for user " + userName);
+				log.warn("multiple " + this.resourceClassName + " with hash " + requHash + " found for user " + loginUserName);
 			}
 			
 			return posts.get(0);
@@ -1069,6 +1069,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 	
 	/*
+	 * FIXME: This method calls other methods of this class which 
+	 * need a loginUserName - since this method does not have the
+	 * loginUserName, it uses the name from the post! This is 
+	 * probably insecure.
+	 *  
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.managers.CrudableContent#updatePost(org.bibsonomy.model.Post, java.lang.String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.util.DBSession)
 	 */
@@ -1510,10 +1515,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	protected abstract P getNewParam();
 	
-	protected P createParam(final String userName, final String requestedUserName) {
+	protected P createParam(final String loginUserName, final String requestedUserName) {
 		final P param = this.getNewParam();
 		
-		param.setUserName(userName);
+		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
 		
 		return param;
@@ -1528,9 +1533,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return param;
 	}
 	
-	protected P createParam(final String userName, final String requestedUserName, final int limit, final int offset) {
+	protected P createParam(final String loginUserName, final String requestedUserName, final int limit, final int offset) {
 		final P param = this.createParam(limit, offset);
-		param.setUserName(userName);
+		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
 		
 		return param;
