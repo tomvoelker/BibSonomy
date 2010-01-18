@@ -227,30 +227,30 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getBibTexByTagNamesForUser() {
 		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();
 		tagIndex.add(new TagIndex("testtag", 1));
-		List<Post<BibTex>> posts = this.bibTexDb.getPostsByTagNamesForUser("testuser1", tagIndex, GroupID.PUBLIC.getId(), new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
+		List<Post<BibTex>> posts = this.bibTexDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex, GroupID.PUBLIC.getId(), new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		//this.assertByTagNames(posts); // no param?!?
 
-		posts = this.bibTexDb.getPostsByTagNamesForUser("testuser1", tagIndex, GroupID.INVALID.getId(), new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
+		posts = this.bibTexDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex, GroupID.INVALID.getId(), new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		
 		final List<TagIndex> tagIndex2 = new ArrayList<TagIndex>();
 		tagIndex2.add(new TagIndex("privatebibtex", 1));
-		posts = this.bibTexDb.getPostsByTagNamesForUser("testuser2", tagIndex2, GroupID.PRIVATE.getId(), new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
+		posts = this.bibTexDb.getPostsByTagNamesForUser(null, "testuser2", tagIndex2, GroupID.PRIVATE.getId(), new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		
 		final List<TagIndex> tagIndex3 = new ArrayList<TagIndex>();
 		tagIndex3.add(new TagIndex("friendbibtex", 1));
-		posts = this.bibTexDb.getPostsByTagNamesForUser("testuser2", tagIndex3, GroupID.FRIENDS.getId(), new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
+		posts = this.bibTexDb.getPostsByTagNamesForUser(null, "testuser2", tagIndex3, GroupID.FRIENDS.getId(), new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 		
 		final List<TagIndex> tagIndex4 = new ArrayList<TagIndex>();
 		tagIndex4.add(new TagIndex("bibtexgroup", 1));
-		posts = this.bibTexDb.getPostsByTagNamesForUser("testuser1", tagIndex4, 3, new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
+		posts = this.bibTexDb.getPostsByTagNamesForUser(null, "testuser1", tagIndex4, 3, new LinkedList<Integer>(), 10, 0, null, null, this.dbSession);
 		assertNotNull(posts);
 		assertEquals(1, posts.size());
 	}
@@ -867,7 +867,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		this.bibTexDb.createPost(toInsert, this.dbSession);
 
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
 		param.setSimHash(HashID.INTRA_HASH);
 		final List<Post<BibTex>> posts = this.bibTexDb.getPosts(param, this.dbSession);
 		assertEquals(1, posts.size());
@@ -933,7 +933,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		group.setGroupId(1);
 		toInsert.getGroups().add(group);
 		
-		final BibTexParam postParam = LogicInterfaceHelper.buildParam(BibTexParam.class, toInsert.getUser().getName(), GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
+		final BibTexParam postParam = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, toInsert.getUser().getName(), Arrays.asList(new String[] { "tag1", "tag2" }), "", null, 0, 50, null, null, toInsert.getUser());
 		List<Post<BibTex>> post2 = this.bibTexDb.getPosts(postParam, this.dbSession);
 		posts = this.bibTexDb.getPostsByHashForUser(username, hash, requestedUserName, new ArrayList<Integer>(), HashID.INTRA_HASH, this.dbSession);
 		assertEquals(0, posts.size());

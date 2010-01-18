@@ -11,11 +11,13 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -108,7 +110,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 */
 	@Ignore
 	public void getAllConceptsForUser() {
-		final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, "hotho", null, null, null, null, null, 0, Integer.MAX_VALUE, null, null, null);
+		final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, GroupingEntity.USER, "hotho", null, null, null, 0, Integer.MAX_VALUE, null, null, new User());
 		final List<Tag> relations = this.tagRelDb.getAllConceptsForUser(param, this.dbSession);
 		// hotho has six concepts
 		assertEquals(6, relations.size());

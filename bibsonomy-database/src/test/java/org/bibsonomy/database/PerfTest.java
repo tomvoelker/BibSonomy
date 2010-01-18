@@ -127,7 +127,7 @@ public class PerfTest extends AbstractDatabaseManagerTest {
 			this.bookmarkDb.getPostsByTagNames(param.getGroupId(), param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), this.dbSession);
 			break;
 		case getBookmarkByTagNamesForUser:
-			this.bookmarkDb.getPostsByTagNamesForUser(param.getRequestedUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getFilter(), param.getSystemTags().values(), this.dbSession);
+			this.bookmarkDb.getPostsByTagNamesForUser(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), param.getGroupId(), param.getGroups(), param.getLimit(), param.getOffset(), param.getFilter(), param.getSystemTags().values(), this.dbSession);
 			break;
 		case getBookmarkByConceptForUser:
 			this.bookmarkDb.getPostsByConceptForUser(param.getUserName(), param.getRequestedUserName(), param.getGroups(), param.getTagIndex(), param.isCaseSensitiveTagNames(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), this.dbSession);

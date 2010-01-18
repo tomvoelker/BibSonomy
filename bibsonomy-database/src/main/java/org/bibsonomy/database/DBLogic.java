@@ -5,8 +5,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -321,7 +324,7 @@ public class DBLogic implements LogicInterface {
 			 * } else
 			 */
 			if (resourceType == BibTex.class) {
-				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
+				final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 				// check permissions for displaying links to documents
 				final boolean allowedToAccessUsersOrGroupDocuments = this.permissionDBManager.isAllowedToAccessUsersOrGroupDocuments(this.loginUser, grouping, groupingName, filter, session);
 
@@ -349,7 +352,7 @@ public class DBLogic implements LogicInterface {
 					loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 				}
 
-				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
+				final BookmarkParam param = LogicInterfaceHelper.buildParam(BookmarkParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 
 				// this is save because of RTTI-check of resourceType argument
 				// which is of class T
@@ -460,7 +463,7 @@ public class DBLogic implements LogicInterface {
 		final List<Tag> result;
 
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, null, this.loginUser);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, grouping, groupingName, tags, hash, order, start, end, search, null, this.loginUser);
 			param.setTagRelationType(relation);
 
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
@@ -480,7 +483,68 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
+		/*
+		 * XXX: workaround to make huge tag clouds smaller: 
+		 * prune tags to top 100 for not-logged in users 
+		 */
+		pruneSetSize(result, 1000, 100);
 		return result;
+	}
+
+	
+	/**
+	 * If result.size() > minSetSize and the user is not logged in, removes
+	 * all but the top maxSetSize tags (sorted by count).  
+	 * 
+	 * @param result
+	 * @param minSetSize
+	 * @param maxSetSize
+	 */
+	private void pruneSetSize(final List<Tag> result, int minSetSize, int maxSetSize) {
+		if (result != null && result.size() > minSetSize && this.loginUser.getName() == null) {
+			/*
+			 * sort result by count
+			 */
+			Collections.sort(result, 
+					new Comparator<Tag>() { 
+				@Override
+				public int compare(Tag o1, Tag o2) {
+					if (o1.getGlobalcount() == o2.getGlobalcount()) {
+						if (o1.getUsercount() == o2.getUsercount()) {
+							/*
+							 * same counts -> use name
+							 */
+							return o1.getName().compareTo(o2.getName());
+						}
+						/*
+						 * sort descending
+						 */
+						return o2.getUsercount() - o1.getUsercount();
+					} 
+					/*
+					 * sort descending
+					 */
+					return o2.getGlobalcount() - o1.getGlobalcount();
+				}
+			}
+			);
+			/*
+			 * remove all tags except first 100 
+			 */
+			final Iterator<Tag> iterator = result.iterator();
+			int ctr = 0;
+			while (iterator.hasNext()) {
+				ctr++;
+				iterator.next();
+				if (ctr > maxSetSize) {
+					iterator.remove();
+				}
+			}
+			/*
+			 * sort again alphabetically ...
+			 */
+			Collections.sort(result);
+		}
 	}
 
 	/*
@@ -493,7 +557,7 @@ public class DBLogic implements LogicInterface {
 	public Tag getTagDetails(final String tagName) {
 		final DBSession session = openSession();
 		try {
-			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, this.loginUser.getName(), null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, this.loginUser);
+			final TagParam param = LogicInterfaceHelper.buildParam(TagParam.class, null, this.loginUser.getName(), Arrays.asList(tagName), null, null, 0, 1, null, null, this.loginUser);
 			return this.tagDBManager.getTagDetails(param, session);
 		} finally {
 			session.close();
@@ -1445,7 +1509,7 @@ public class DBLogic implements LogicInterface {
 				loginUser.addGroup(new Group(GroupID.PUBLIC_SPAM));
 			}
 
-			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
+			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, hash, order, start, end, search, filter, this.loginUser);
 
 			if (resourceType == BibTex.class || resourceType == Bookmark.class || resourceType == Resource.class) {
 				param.setContentTypeByClass(resourceType);
@@ -1475,7 +1539,7 @@ public class DBLogic implements LogicInterface {
 	public List<Tag> getConcepts(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		final DBSession session = openSession();
 		try {
-			final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, null, start, end, null, null, this.loginUser);
+			final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, grouping, groupingName, tags, null, null, start, end, null, null, this.loginUser);
 			param.setConceptStatus(status);
 			return this.tagRelationsDBManager.getConcepts(param, session);
 		} finally {
@@ -1606,7 +1670,7 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public List<User> getUsers(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, final List<String> tags, String hash, final Order order, UserRelation relation, String search, final int start, final int end) {
 		// assemle param object
-		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, this.loginUser.getName(), grouping, groupingName, tags, hash, order, start, end, search, null, loginUser);
+		final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, grouping, groupingName, tags, hash, order, start, end, search, null, loginUser);
 		param.setUserRelation(relation);
 
 		final DBSession session = openSession();
@@ -1822,7 +1886,7 @@ public class DBLogic implements LogicInterface {
 
 		final DBSession session = openSession();
 		try {
-			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, this.loginUser.getName(), grouping, groupingName, tags, null, null, start, end, null, null, this.loginUser);
+			final StatisticsParam param = LogicInterfaceHelper.buildParam(StatisticsParam.class, grouping, groupingName, tags, null, null, start, end, null, null, this.loginUser);
 
 			result = this.statisticsDBManager.getTagStatistics(param, session);
 		} finally {
