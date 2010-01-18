@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -27,7 +28,7 @@ public class GetBookmarksByTagNames extends BookmarkChainElement {
 		if (param.getTagIndex().isEmpty()) {
 			posts = this.db.getPostsForHomepage(param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 		} else {
-			posts = this.db.getPostsByTagNames(param.getGroupId(), param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), session);
+			posts = this.db.getPostsByTagNames(GroupID.PUBLIC.getId(), param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), session);
 		}
 		return posts;
 	}

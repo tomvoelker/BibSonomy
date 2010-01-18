@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
@@ -24,7 +25,7 @@ public class GetBibtexByTagNames extends BibTexChainElement {
 	// Tag pages can only contain public posts. Take notice when adapt it for new method / db
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getPostsByTagNames(param.getGroupId(), param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), session);
+		return this.db.getPostsByTagNames(GroupID.PUBLIC.getId(), param.getTagIndex(), param.getOrder(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override

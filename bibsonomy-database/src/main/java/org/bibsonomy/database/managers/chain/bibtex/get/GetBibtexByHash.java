@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
@@ -22,7 +23,7 @@ public class GetBibtexByHash extends BibTexChainElement {
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getPostsByHash(param.getHash(), HashID.getSimHash(param.getSimHash()), param.getGroupId(), param.getLimit(), param.getOffset(), session);
+		return this.db.getPostsByHash(param.getHash(), HashID.getSimHash(param.getSimHash()), GroupID.PUBLIC.getId(), param.getLimit(), param.getOffset(), session);
 	}
 
 	@Override

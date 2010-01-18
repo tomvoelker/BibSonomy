@@ -38,10 +38,8 @@ public class GetBibtexViewable extends BibTexChainElement {
 			return new ArrayList<Post<BibTex>>(0);
 		}
 		
-		param.setGroupId(groupId);
-		
 		if (present(param.getTagIndex())) {
-			return this.db.getPostsViewableByTag(param.getGroupId(), param.getTagIndex(), HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), session);
+			return this.db.getPostsViewableByTag(groupId, param.getTagIndex(), HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), session);
 		}
 		
 		return this.db.getPostsViewable(param.getRequestedGroupName(), param.getUserName(), groupId, HashID.getSimHash(param.getSimHash()), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);

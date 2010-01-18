@@ -30,8 +30,7 @@ public class GetBibtexForGroupAndTag extends BibTexChainElement {
 			log.debug("groupId " + param.getRequestedGroupName() + " not found or special group");
 			return new ArrayList<Post<BibTex>>(0);
 		}
-		param.setGroupId(group.getGroupId());
-		return this.db.getPostsForGroupByTag(param.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.db.getPostsForGroupByTag(group.getGroupId(), param.getGroups(), param.getUserName(), param.getTagIndex(), param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 	@Override

@@ -10,6 +10,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
@@ -42,10 +43,10 @@ public class GetBookmarksSearch extends BookmarkChainElement {
 		}
 		
 		if ("lucene".equals(searchMode)) {
-			return this.db.getPostsSearchLucene(param.getGroupId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
+			return this.db.getPostsSearchLucene(GroupID.PUBLIC.getId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
 		}
 	
-		return this.db.getPostsSearch(param.getGroupType(), param.getRawSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
+		return this.db.getPostsSearch(GroupID.PUBLIC.getId(), param.getRawSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
 		// TODO: remove code???
 //		if (SearchEntity.LUCENE.equals(param.getSearchEntity())) {
 //			//param.getGroups();   // gruppen, die der eingeloggte user sehen darf

@@ -10,6 +10,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
@@ -43,11 +44,11 @@ public class GetBibtexSearch extends BibTexChainElement {
 		}
 		
 		if ("lucene".equals(searchMode)) {
-			return this.db.getPostsSearchLucene(param.getGroupId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
+			return this.db.getPostsSearchLucene(GroupID.PUBLIC.getId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
 		}
 
 		// default = database
-		return this.db.getPostsSearch(param.getGroupType(), param.getRawSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
+		return this.db.getPostsSearch(GroupID.PUBLIC.getId(), param.getRawSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
 		// TODO: remove ???
 //		if (SearchEntity.LUCENE.equals(param.getSearchEntity())) {
 //			return this.db.getBibTexSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);

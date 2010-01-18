@@ -28,9 +28,8 @@ public class GetBookmarksSearchForGroup extends BookmarkChainElement {
 			log.debug("groupId " + param.getRequestedGroupName() + " not found or special group");
 			return new ArrayList<Post<Bookmark>>(0);
 		}
-		param.setGroupId(groupId);
 		
-		return this.db.getPostsSearchForGroup(param.getGroupId(), param.getGroups(), param.getRawSearch(), param.getUserName(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.db.getPostsSearchForGroup(groupId, param.getGroups(), param.getRawSearch(), param.getUserName(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 	
 	@Override
