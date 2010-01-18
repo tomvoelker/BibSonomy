@@ -42,28 +42,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	private BookmarkDatabaseManager() {
 	}
 
-	/*
-	 * FIXME: username: check sql statements: bibtex needs username, bookmark not
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getPostsByTagNamesForUser(java.lang.String, java.util.List, int, java.util.List, int, int, org.bibsonomy.common.enums.FilterEntity, java.util.Collection, org.bibsonomy.database.util.DBSession)
-	 */
-	@Override
-	public List<Post<Bookmark>> getPostsByTagNamesForUser(String requestedUserName, List<TagIndex> tagIndex, int groupId, List<Integer> visibleGroupIDs, int limit, int offset, FilterEntity filter, Collection<SystemTag> systemTags, DBSession session) {
-		final BookmarkParam param = this.getNewParam();
-		param.setRequestedUserName(requestedUserName);
-		// XXX: username not set
-		param.setTagIndex(tagIndex);
-		param.setGroupId(groupId);
-		param.setGroups(visibleGroupIDs);
-		param.setFilter(filter);
-		param.setLimit(limit);
-		param.setOffset(offset);
-		param.addAllToSystemTags(systemTags);
-		
-		HashID.getSimHash(param.getSimHash()); 
-		return this.getPostsByTagNamesForUser(param, session);
-	}
-	
+
 	@Override
 	protected List<Post<Bookmark>> getPostsForHomepage(BookmarkParam param, DBSession session) {
 		final FilterEntity filter = param.getFilter();
