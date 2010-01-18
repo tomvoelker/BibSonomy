@@ -137,9 +137,7 @@ public class DatabaseUtils {
 		 * 
 		 */
 		DatabaseUtils.checkPrivateFriendsGroup(db, param, session);
-		// the group type needs to be set to friends because of the second union
-		// in the SQL statement
-		param.setGroupType(GroupID.FRIENDS);
+
 	}
 
 	/**
