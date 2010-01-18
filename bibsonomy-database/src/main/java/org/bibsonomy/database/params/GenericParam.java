@@ -151,12 +151,12 @@ public abstract class GenericParam {
 	 * people's content. This requested user is identified by this string.
 	 */
 	private String requestedUserName;
-	/** ID of a group; by default it's invalid */
+	/** 
+	 * The ID of a group which by default is invalid.
+	 */
 	private int groupId;
 	/** If we're searching for a group this is used for the name of the group */
 	private String requestedGroupName;
-	/** The type of a group is by default public */
-	private GroupID groupType;
 	/** The SQL-Limit which is by default 10 */
 	private int limit;
 	/** The SQL-Offset which is by default 0 */
@@ -198,8 +198,10 @@ public abstract class GenericParam {
 		this.numSimpleConceptsWithAncestors = 0;
 		this.numCorrelatedConcepts = 0;
 		this.caseSensitiveTagNames = false;
-		this.groupId = GroupID.INVALID.getId();
-		this.groupType = GroupID.PUBLIC;
+		/*
+		 * set groupId to -1
+		 */
+		setGroupId(GroupID.INVALID);
 		this.idsType = ConstantID.IDS_UNDEFINED_CONTENT_ID;
 		this.limit = 10;
 		this.offset = 0;
@@ -282,14 +284,6 @@ public abstract class GenericParam {
 		return this.tagIndex.size();
 	}
 
-	public int getGroupType() {
-		return groupType.getId();
-	}
-
-	public void setGroupType(GroupID groupType) {
-		this.groupType = groupType;
-	}
-
 	public String getSearch() {
 		return this.search;
 	}
@@ -367,7 +361,36 @@ public abstract class GenericParam {
 	public void setGroupId(int groupId) {
 		this.groupId = groupId;
 	}
+	
+	/**
+	 * This setter sets the group id using the GroupID enum.
+	 * 
+	 * @param groupID
+	 */
+	public void setGroupId(final GroupID groupID) {
+		this.groupId = groupID.getId();
+	}
 
+
+	/**
+	 * If you need the ID of the friends group in a statement, 
+	 * use this method.  
+	 * 
+	 * @return The ID of the friends group.
+	 */
+	public int getGroupTypeFriends() {
+		return GroupID.FRIENDS.getId();
+	}
+	/**
+	 * If you need the ID of the public group in a statement, 
+	 * use this method.  
+	 * 
+	 * @return The ID of the public group.
+	 */
+	public int getGroupTypePublic() {
+		return GroupID.PUBLIC.getId();
+	}	
+	
 	// TODO: what hash?, what for?, why in genericparam and not in
 	// resource-field?
 	public String getHash() {
