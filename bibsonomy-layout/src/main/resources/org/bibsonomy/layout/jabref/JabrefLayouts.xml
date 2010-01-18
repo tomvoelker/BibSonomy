@@ -379,4 +379,41 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="winfoyear">
+		<displayName>DIN 1505 MMS, with endnote entry, grouped by year</displayName>
+		<description xml:lang="en">
+			HTML output format according to the German Institute for
+			Standardization (DIN). Special version of the
+			Mensch-Maschine-Systemtechnik Institute, grouped by year, 
+			and with an endnote export.		
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format entsprechend dem Deutschen Institut für Normung. 
+			Specielle Version des Mensch-Maschine-Systemtechnik Instituts, gruppiert
+			nach Jahren und mit Endnote-Eintrag für jede Publikation.		
+		</description>
+		<directory>winfoyear</directory>
+		<baseFileName>winfoyear</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
+	<layout name="winfoyear_n" >
+		<displayName>DIN 1505 MMS, with endnote entry and display of note, grouped by year</displayName>
+		<description xml:lang="en">
+			HTML output format according to the German Institute for
+			Standardization (DIN). Special version of the
+			Mensch-Maschine-Systemtechnik Institute, grouped by year, 
+			with an endnote export and display of the note.		
+		</description>
+		<description xml:lang="de">
+			HTML Ausgabe Format entsprechend dem Deutschen Institut für Normung. 
+			Specielle Version des Mensch-Maschine-Systemtechnik Instituts, gruppiert
+			nach Jahren, mit Endnote-Eintrag für jede Publikation und Anzeige der
+			Notiz (note).		
+		</description>
+		<directory>winfoyear</directory>
+		<baseFileName>winfoyear</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
 </layouts>
