@@ -44,7 +44,6 @@ public class LogicInterfaceHelper {
 	 * 
 	 * @param <T> the type of param object to be build
 	 * @param type the type of param object to be build
-	 * @param authUser name of logged in user as specified for {@link PostLogicInterface#getPosts}
 	 * @param grouping as specified for {@link PostLogicInterface#getPosts}
 	 * @param groupingName as specified for {@link PostLogicInterface#getPosts} 
 	 * @param tags as specified for {@link PostLogicInterface#getPosts} 
@@ -54,10 +53,10 @@ public class LogicInterfaceHelper {
 	 * @param end as specified for {@link PostLogicInterface#getPosts}
 	 * @param search as specified for {@link PostLogicInterface#getPosts} 
 	 * @param filter as specified for {@link PostLogicInterface#getPosts}
-	 * @param loginUser TODO
+	 * @param loginUser logged in user as specified for {@link PostLogicInterface#getPosts}
 	 * @return the fresh param object 
 	 */
-	public static <T extends GenericParam> T buildParam(final Class<T> type, final String authUser, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final FilterEntity filter, final User loginUser) {
+	public static <T extends GenericParam> T buildParam(final Class<T> type, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final FilterEntity filter, final User loginUser) {
 		final T param = getParam(type);
 
 		// if hash length is 33 ,than use the first character as hash type
@@ -83,7 +82,7 @@ public class LogicInterfaceHelper {
 			param.setHash(hash);
 		}
 		
-		param.setUserName(authUser);
+		param.setUserName(loginUser.getName());
 		param.setGrouping(grouping);
 		
 		// default search searches over all possible fields
