@@ -42,7 +42,7 @@
 			 LIMIT #limit# OFFSET #offset#) b 
 		WHERE b.content_id = t1.content_id
 		AND b.simhash$simHash$ = h.hash
-		AND h.type= $simHash$		
+		AND h.type= #simHash#		
 		<include refid="restrictToGroups"/>
 		<include refid="sysTagsEntryType"/>
 		ORDER BY date DESC 			
@@ -193,7 +193,7 @@
 			 FROM bibtex b, friends f
 			 WHERE f.f_user_name = #userName#       <!-- to see, which users have currUser as friend -->
 			       AND b.user_name = f.user_name    <!-- take alle rows, which are owned by friend -->
-			       AND b.group = #groupType#
+			       AND b.group = #groupId#
 			 ORDER BY date DESC
 			 LIMIT #limit# OFFSET #offset# ) AS bb
 		LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas (get tags) -->
@@ -238,7 +238,7 @@
 		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, b.ctr as count, NULL AS `group`, NULL AS group_name
 		FROM (SELECT b.*, h.ctr
 		      FROM bibtex b FORCE INDEX (group_date_content_id_idx), bibhash h
-		      WHERE `group` = #groupType#
+		      WHERE `group` = #groupId#
 		            AND <include refid="bibtexSimHash"/>
 		            <include refid="sysTagsEntryType"/>
 		      ORDER BY date DESC
@@ -252,7 +252,7 @@
 		FROM (SELECT b2.*
 		      FROM bibtex b2
 		      WHERE simhash$simHash$ = #hash#
-		            AND `group` = #groupType#
+		            AND `group` = #groupId#
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b
 		LEFT OUTER JOIN tas t ON b.content_id = t.content_id, bibhash h, groupids g
@@ -333,7 +333,7 @@
 		       b.interHash, b.intraHash, NULL AS `group`, NULL AS group_name
 		FROM (SELECT <include refid ="bibtexAttributes2"/>, h.ctr
 		      FROM bibtex b2, bibhash h, search_bibtex s
-		      WHERE s.group = #groupType#
+		      WHERE s.group = #groupId#
 		            AND MATCH (s.content) AGAINST (#search# IN BOOLEAN MODE)
 		            AND <include refid="bibtexSimHash2"/>
 		            AND b2.content_id = s.content_id
@@ -369,7 +369,7 @@
 					AND f.f_user_name = #userName#               				<!-- currUser is friend of user -->
 					AND g.user_name = f.user_name								<!-- user is in group -->
 					AND t1.user_name = f.user_name								<!-- user owns this item -->
-					AND t1.group = $groupType$									<!-- item is only for friends -->
+					AND t1.group = #groupTypeFriends#      			         	<!-- item is only for friends -->
 					AND MATCH (t1.content) AGAINST (#search# IN BOOLEAN MODE)	<!-- fulltext search over search item in search table -->
 			) ORDER BY date DESC   
 			LIMIT #limit# OFFSET #offset#
@@ -401,7 +401,7 @@
 	<select id="getBibTexSearchCount" resultClass="int" parameterClass="bibtexParam" timeout="1">
 		SELECT count(*)
 		FROM search_bibtex s
-		WHERE s.group = #groupType#
+		WHERE s.group = #groupTypePublic#
 		      AND MATCH (s.content) AGAINST (#search# IN BOOLEAN MODE)
 		      <isNotNull property="requestedUserName" prepend="AND">
 		        s.user_name = #requestedUserName#
@@ -478,7 +478,7 @@
 		             AND g.user_name = f.user_name    <!-- user is in group -->
 		             AND b.user_name = f.user_name    <!-- user owns this publication -->
 		             AND g.group = #groupId#
-		             AND b.group = $groupType$        <!-- publication is only for friends -->
+		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
 		      )UNION(
 		       SELECT content_id, date                <!-- currUsers publications, ... -->
 		       FROM bibtex b, groups g
@@ -514,7 +514,7 @@
 		             AND g.user_name = f.user_name    <!-- user is in group -->
 		             AND b.user_name = f.user_name    <!-- user owns this publication -->
 		             AND g.group = #groupId#
-		             AND b.group = $groupType$        <!-- publication is only for friends -->
+		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
 		      )UNION(
 		       SELECT content_id, date                <!-- currUsers publications, ... -->
 		       FROM bibtex b, groups g
@@ -551,7 +551,7 @@
 		             AND g.user_name = f.user_name    <!-- user is in group -->
 		             AND b.user_name = f.user_name    <!-- user owns this publication -->
 		             AND g.group = #groupId#
-		             AND b.group = $groupType$        <!-- publication is only for friends -->
+		             AND b.group = #groupTypeFriends# <!-- publication is only for friends -->
 		      )UNION(
 		       SELECT content_id, date                <!-- currUsers publications, ... -->
 		       FROM bibtex b, groups g

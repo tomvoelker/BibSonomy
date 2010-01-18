@@ -104,7 +104,7 @@
 		FROM (SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash
 		      FROM (SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash
 		      		FROM bookmark b
-		      		WHERE b.group = #groupType#
+		      		WHERE b.group = #groupId#
 		      		ORDER BY date DESC
 		      		LIMIT 1000
 		     ) AS b
@@ -126,7 +126,7 @@
 		  FROM (
 		    SELECT b.content_id, b.book_description, b.book_extended, b.user_name, b.date, b.book_url_hash
 	      	  FROM bookmark b
-	      	  WHERE b.group = #groupType#
+	      	  WHERE b.group = #groupId#
   		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) as b
 		    LEFT JOIN tas AS t USING (content_id)
@@ -165,7 +165,7 @@
 	          FROM bookmark b, friends f
 	          WHERE f.f_user_name = #userName#        <!-- to see, which users have currUser as friend -->
 	                AND b.user_name = f.user_name     <!-- take alle rows, which are owned by friend -->
-	                AND b.group = #groupType#
+	                AND b.group = #groupId#
 	   	      ORDER BY date DESC
        	      LIMIT #limit# OFFSET #offset#) AS bb
 	   	LEFT OUTER JOIN tas AS t ON bb.content_id = t.content_id, groupids AS g  <!-- join with tas -->
@@ -304,7 +304,7 @@
 	<select id="getBookmarkSearchCount" resultClass="int" parameterClass="bookmarkParam" timeout="1">
 		SELECT count(*)
 		FROM search_bookmark s
-		WHERE s.group = #groupType#
+		WHERE s.group = #groupTypePublic#
 		      AND MATCH (s.content) AGAINST (#search# IN BOOLEAN MODE)
 		      <isNotNull property="requestedUserName" prepend="AND">
 		        s.user_name = #requestedUserName#
@@ -336,7 +336,7 @@
 					AND f.f_user_name = #userName#									<!-- currUser is friend of user -->
 					AND g.user_name = f.user_name									<!-- user is in group -->
 					AND t1.user_name = f.user_name									<!-- user owns this item -->
-					AND t1.group = $groupType$										<!-- item is only for friends -->
+					AND t1.group = #groupTypeFriends#	    						<!-- item is only for friends -->
 					AND MATCH (t1.content) AGAINST (#search# IN BOOLEAN MODE)		<!-- fulltext search over search item in search table -->
 	    	) ORDER BY date DESC 
 	    	LIMIT #limit# OFFSET #offset#
@@ -395,7 +395,7 @@
 		             AND g.user_name = f.user_name    <!-- user is in group -->
 		             AND b.user_name = f.user_name    <!-- user owns this bookmark -->
 		             AND g.group = #groupId#
-		             AND b.group = $groupType$        <!-- bookmark is only for friends -->
+		             AND b.group = #groupTypeFriends# <!-- bookmark is only for friends -->
 		      )UNION(
 		       SELECT content_id, date                <!-- currUsers bookmarks, ... -->
 		       FROM bookmark b, groups g

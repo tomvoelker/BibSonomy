@@ -152,7 +152,7 @@
 		        AND f.f_user_name = #userName#      <!-- currUser is friend of user -->
 		        AND g.user_name = f.user_name       <!-- user is in group -->
 		        AND t1.user_name = f.user_name      <!-- user owns this item -->              
-		        AND t1.group = $groupType$          <!-- item is only for friends -->
+		        AND t1.group = #groupTypeFriends#   <!-- item is only for friends -->
 		        AND t1.content_type = #contentType#
 		 )
 		ORDER BY date DESC
@@ -186,7 +186,7 @@
 		        AND f.f_user_name = #userName#      <!-- currUser is friend of user -->
 		        AND g.user_name = f.user_name       <!-- user is in group -->
 		        AND t1.user_name = f.user_name      <!-- user owns this item -->              
-		        AND t1.group = $groupType$          <!-- item is only for friends -->
+		        AND t1.group = #groupTypeFriends#   <!-- item is only for friends -->
 		        AND d.content_id = t1.content_id	<!-- join documents -->
 		        AND t1.content_type = #contentType#
 		 )
