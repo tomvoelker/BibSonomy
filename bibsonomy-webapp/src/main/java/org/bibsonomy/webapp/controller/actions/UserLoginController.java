@@ -159,7 +159,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		 */
 		User user = null;
 		
-		Boolean useLDAP = true;
+		Boolean useLDAP = false;
 
 		if (useLDAP && username != null && hashedPassword != null  ) { 
 			/*
