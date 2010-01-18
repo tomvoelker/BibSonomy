@@ -10,6 +10,7 @@ import javax.naming.NamingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
@@ -39,7 +40,7 @@ public class GetTagsByAuthor extends TagChainElement {
 		
 		if ("lucene".equals(searchMode)) {
 			// FIXME: which parameters do we actually need?
-			return this.db.getTagsByAuthorLucene(param.getRawSearch(), param.getGroupType(), param.getRequestedUserName(), param.getRequestedGroupName(), null, null, null, param.getSimHash(), null, session);
+			return this.db.getTagsByAuthorLucene(param.getRawSearch(), GroupID.PUBLIC.getId(), param.getRequestedUserName(), param.getRequestedGroupName(), null, null, null, param.getSimHash(), null, session);
 		}
 		
 		return this.db.getTagsByAuthor(param, session);

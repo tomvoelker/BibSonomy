@@ -33,12 +33,10 @@ public class GetResourcesForGroupCount extends StatisticChainElement {
 			log.debug("group " + param.getRequestedGroupName() + " not found or special group");
 			return new ArrayList<Integer>(Arrays.asList(0));			
 		}
-		param.setGroupId(group.getGroupId());
-		
 		if (param.getContentType() == ConstantID.BIBTEX_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfResourcesForGroup(BibTex.class, param.getRequestedUserName(), param.getUserName(), param.getGroupType(), param.getGroups(), session));
+			counts.add(this.db.getNumberOfResourcesForGroup(BibTex.class, param.getRequestedUserName(), param.getUserName(), group.getGroupId(), param.getGroups(), session));
 		} else if (param.getContentType() == ConstantID.BOOKMARK_CONTENT_TYPE.getId()) {
-			counts.add(this.db.getNumberOfResourcesForGroup(Bookmark.class, param.getRequestedUserName(), param.getUserName(), param.getGroupType(), param.getGroups(), session));
+			counts.add(this.db.getNumberOfResourcesForGroup(Bookmark.class, param.getRequestedUserName(), param.getUserName(), group.getGroupId(), param.getGroups(), session));
 		}
 		return counts;
 	}
