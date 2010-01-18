@@ -30,14 +30,14 @@ public interface CrudableContent<T extends Resource, P extends GenericParam> {
 	/**
 	 * Read
 	 * 
-	 * @param authUser
+	 * @param loginUserName
 	 * @param resourceHash
 	 * @param userName
 	 * @param visibleGroupIDs
 	 * @param session
 	 * @return list of posts
 	 */
-	public Post<T> getPostDetails(String authUser, String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session);
+	public Post<T> getPostDetails(String loginUserName, String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session);
 
 	/**
 	 * Delete
