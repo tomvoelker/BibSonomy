@@ -23,14 +23,14 @@
 
 package org.bibsonomy.scraper;
 
-import java.net.URL;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import junit.framework.TestResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.PropertyConfigurator;
 import org.bibsonomy.scraper.URLTest.URLScraperUnitTest;
 import org.bibsonomy.scraper.importer.IUnitTestImporter;
 import org.bibsonomy.scraper.importer.xml.XMLUnitTestImporter;
@@ -64,36 +64,51 @@ public class UnitTestRunner {
 	 * This Method reads and runs the unit tests.
 	 */
 	public void run(){
+
 		try {
-			if(importer == null)
+			if (importer == null)
 				throw new Exception("no UnitTestImporter available");
 
 			final List<ScraperUnitTest> unitTests = importer.getUnitTests();
 
-			int error = 0;
+			/*
+			 * run tests
+			 */
+			int errorCtr = 0;
+			int testCtr = 0;
 			for (final ScraperUnitTest test : unitTests){
 				if (test.isEnabled()) {
-					final TestResult result = test.run();
-					test.setTestResult(result);
-					if (test.isTestFailed())	error++;
+					testCtr++;
+					test.setTestResult(test.run());
+					if (test.isTestFailed()) errorCtr++;
 				}
 			}
 
-			log.info(LINE);
-			log.info("Tests run: " + unitTests.size() + ", Failures: " + error);
-			log.info("");
+			/*
+			 * print output
+			 */
+			if (errorCtr > 0) {
 
-			if (error > 0) {
-				log.warn("FAILED tests:");
+				/*
+				 * print overview
+				 */
+				log.info(LINE);
+				log.info("Tests run: " + unitTests.size() + ", Failures: " + errorCtr + ", Skipped: " + (unitTests.size() - testCtr));
+				log.info("");
+
+				log.warn("Failed tests:");
 				log.warn("");
-
 				for (final ScraperUnitTest test : unitTests) {
 					if (test.isTestFailed()) {
-						log.warn("\tTests run: " + test.getScraperClass().getName() + ":" + test.getScraperTestId() );
+						log.warn("  " + test.getScraperClass().getSimpleName() + ": " + test.getScraperTestId() );
 					}
 				}
 				log.warn("");
 				log.warn(LINE);
+				
+				/*
+				 * print details
+				 */
 				log.warn("Details:");
 				for (final ScraperUnitTest test : unitTests) {
 					if (test.isTestFailed()) {
@@ -101,8 +116,6 @@ public class UnitTestRunner {
 					}
 				}
 			}
-
-
 
 
 		} catch (final Exception e) {
@@ -116,24 +129,23 @@ public class UnitTestRunner {
 	 * @return result of the test
 	 */
 	public boolean runSingleTest(String testId){
-		URL log4j = new UnitTestRunner().getClass().getResource("log4j.properties");
-		PropertyConfigurator.configure(log4j);
+
 		try {
-			if(importer == null)
+			if (importer == null)
 				throw new Exception("no UnitTestImporter available");
 
-			List<ScraperUnitTest> unitTests = importer.getUnitTests();
+			final List<ScraperUnitTest> unitTests = importer.getUnitTests();
 
-			for(ScraperUnitTest test : unitTests){
-				if(test.getScraperTestId().equals(testId)){
+			for (final ScraperUnitTest test : unitTests){
+				if (test.getScraperTestId().equals(testId)){
 					TestResult result = test.run();
 					test.setTestResult(result);
 					if(result.errorCount() > 0 || result.failureCount() > 0) {
 						test.printTestFailure();
 						return false;
-					}
-					else
+					} else {
 						return true;
+					}
 				}
 			}
 
@@ -148,25 +160,25 @@ public class UnitTestRunner {
 	 * @param testId ID from URL test
 	 * @return scraped bibtex, null if scraping failed
 	 */
-	public URLScraperUnitTest getUrlUnitTest(String testId){
-		URL log4j = new UnitTestRunner().getClass().getResource("log4j.properties");
-		PropertyConfigurator.configure(log4j);
+	public URLScraperUnitTest getUrlUnitTest(String testId) {
 		try {
 			if(importer == null)
 				throw new Exception("no UnitTestImporter available");
 
-			List<ScraperUnitTest> unitTests = importer.getUnitTests();
+			final List<ScraperUnitTest> unitTests = importer.getUnitTests();
 
-			for(ScraperUnitTest test : unitTests){
-				if(test.getScraperTestId().equals(testId)){
-					TestResult result = test.run();
-					if(result.errorCount() > 0 || result.failureCount() > 0)
-						return (URLScraperUnitTest)test;
-					else
-						return (URLScraperUnitTest)test;
+			for (final ScraperUnitTest test : unitTests){
+				if (test.getScraperTestId().equals(testId)){
+					/*
+					 * run test
+					 */
+					test.run();
+					/*
+					 * return test
+					 */
+					return (URLScraperUnitTest)test;
 				}
 			}
-
 		} catch (Exception e) {
 			ParseFailureMessage.printParseFailureMessage(e, "main class");
 		}
@@ -176,8 +188,9 @@ public class UnitTestRunner {
 	/**
 	 * starts the whole party
 	 * @param args not needed
+	 * @throws IOException 
 	 */
-	public static void main(String[] args){
+	public static void main(String[] args) throws IOException{
 		new UnitTestRunner().run();
 	}
 

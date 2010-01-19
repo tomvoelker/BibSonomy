@@ -70,8 +70,8 @@ public class ReplaceBibtexFile {
 	public static void replaceBibtex(String id) throws IOException{
 		System.out.println("Test: " + id);
 		System.out.println("running test");
-		UnitTestRunner runner = new UnitTestRunner();
-		URLScraperUnitTest test = runner.getUrlUnitTest(id);
+		final UnitTestRunner runner = new UnitTestRunner();
+		final URLScraperUnitTest test = runner.getUrlUnitTest(id);
 		if(test != null){
 			System.out.println("test finished");
 			String bibFile = test.getBibFile();
