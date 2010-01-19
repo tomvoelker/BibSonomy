@@ -226,7 +226,7 @@
 						<property name="controllerBeanName" value="scraperInfoController"/>
 					</bean>
 				</entry>
-				<entry key="/exportLayouts">
+				<entry key="/layoutinfo">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="exportLayoutController"/>
 					</bean>
