@@ -616,10 +616,16 @@
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select> 
 
+	<!-- 
+		FORCE INDEX(user_name_date_content_id_idx) added on 2009-01-19 by rja, 
+		because DBLP queries timed out and it turned out that this index is 
+		always faster than user_name_group_date_content_id_idx, which MySQL 
+		otherwise used. 
+	 -->
 	<select id="getBibTexForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 		SELECT <include refid ="bibtexAttributes2"/>, t.tag_name, g.*, b2.count
 		FROM (SELECT t1.*, h.ctr AS count
-		      FROM bibtex t1, bibhash h
+		      FROM bibtex t1 FORCE INDEX(user_name_date_content_id_idx), bibhash h
 		      WHERE <include refid="bibtexSimHash3"/>
 		            AND t1.user_name = #requestedUserName#
 		            <include refid="restrictToGroups"/>
