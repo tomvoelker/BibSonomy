@@ -40,23 +40,27 @@ public class ExportLayoutView extends AbstractView{
 			 * Only handle a ExportPageCommand that contains JabrefLayouts
 			 */
 			final ExportPageCommand command = (ExportPageCommand) object;
-			response.setContentType("text/plain");
-			response.setCharacterEncoding("UTF-8");
 			
-			//the JSON-object contains a JSON-array with the layouts
-			JSONObject json = new JSONObject();
-			JSONArray jsonLayouts = new JSONArray();
+			/*
+			 * the JSON-object contains a JSON-array with the layouts
+			 */
+			final JSONArray jsonLayouts = new JSONArray();
 			
 			/*
 			 * put each layout into a JSON-object and add it to the JSON-array
 			 */
-			for(String layoutName: command.getLayoutMap().keySet()){	
-				JSONObject test = JSONObject.fromObject(command.getLayoutMap().get(layoutName));
-				jsonLayouts.put(test);
+			for (final String layoutName: command.getLayoutMap().keySet()){	
+				jsonLayouts.put(JSONObject.fromObject(command.getLayoutMap().get(layoutName)));
 			}
+
+			final JSONObject json = new JSONObject();
 			json.put("layouts", jsonLayouts);
 			
-			//write the output, it will show the JSON-object as a plaintext string
+			/*
+			 * write the output, it will show the JSON-object as a plaintext string
+			 */
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
 			response.getOutputStream().write(json.toString().getBytes("UTF-8"));
 		}
 	}
