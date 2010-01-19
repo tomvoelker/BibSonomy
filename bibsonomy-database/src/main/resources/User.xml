@@ -98,7 +98,8 @@
 		profession = #profession#,
 		interests = #interests#,
 		hobbies = #hobbies#,
-		place = #place#
+		place = #place#,
+		profilegroup = #settings.profilePrivlevel#
 		WHERE user_name = #name#
 	</update>
 	

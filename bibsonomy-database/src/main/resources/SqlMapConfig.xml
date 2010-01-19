@@ -17,12 +17,14 @@
 	<typeAlias alias="InetAddressStatus" type="org.bibsonomy.common.enums.InetAddressStatus" />
 	<typeAlias alias="Role" type="org.bibsonomy.common.enums.Role" />
 	<typeAlias alias="Privlevel" type="org.bibsonomy.common.enums.Privlevel" />
+	<typeAlias alias="ProfilePrivlevel" type="org.bibsonomy.common.enums.ProfilePrivlevel" />
 
 	<typeHandler javaType="url" callback="org.bibsonomy.database.typehandler.UrlTypeHandlerCallback" />
 	<typeHandler javaType="InetAddress" callback="org.bibsonomy.database.typehandler.InetAddressTypeHandlerCallback" />
     <typeHandler javaType="InetAddressStatus" callback="org.bibsonomy.database.typehandler.InetAddressStatusTypeHandlerCallback" />
     <typeHandler javaType="Role" callback="org.bibsonomy.database.typehandler.RoleTypeHandlerCallback" />
     <typeHandler javaType="Privlevel" callback="org.bibsonomy.database.typehandler.PrivlevelTypeHandlerCallback" />
+    <typeHandler javaType="ProfilePrivlevel" callback="org.bibsonomy.database.typehandler.ProfilePrivlevelTypeHandlerCallback" />
     
 	<transactionManager type="JDBC">
 		<dataSource type="JNDI">
@@ -58,6 +60,7 @@
 	<sqlMap resource="Author.xml"/>
 	<sqlMap resource="Lucene.xml"/>
 	<sqlMap resource="Inbox.xml"/>
+	<sqlMap resource="Permission.xml"/>
 
 	<!-- Plugins -->
 	<sqlMap resource="plugins/Logging.xml"/>

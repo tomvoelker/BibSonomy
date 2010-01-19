@@ -9,8 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
-import com.ibatis.sqlmap.client.extensions.ResultGetter;
-import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
 
 /**
  * An iBATIS type handler callback for {@link URL}s that are mapped to Strings
@@ -25,17 +23,9 @@ import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
  * @author Christian Schenk
  * @version $Id$
  */
-public class UrlTypeHandlerCallback implements TypeHandlerCallback {
+public class UrlTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
 	private static final Log log = LogFactory.getLog(UrlTypeHandlerCallback.class);
-
-	public Object getResult(final ResultGetter getter) throws SQLException {
-		final String value = getter.getString();
-		if (getter.wasNull()) {
-			return null;
-		}
-		return this.valueOf(value);
-	}
 
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
