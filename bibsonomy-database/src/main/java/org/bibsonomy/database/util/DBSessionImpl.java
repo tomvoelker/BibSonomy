@@ -34,7 +34,7 @@ public class DBSessionImpl implements DBSession {
 	private boolean aborted;
 	private boolean closed;
 	private final DatabaseException databaseException;
-	
+
 	protected DBSessionImpl(final SqlMapSession sqlMap) {
 		this.sqlMap = sqlMap;
 		this.transactionDepth = 0;
@@ -107,7 +107,7 @@ public class DBSessionImpl implements DBSession {
 							// everything went well during the whole session
 							try {
 								this.sqlMap.commitTransaction();
-								log.info("committed");
+								log.debug("committed");
 							} catch (final SQLException ex) {
 								ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't commit transaction");
 							}
@@ -181,10 +181,10 @@ public class DBSessionImpl implements DBSession {
 			if (result==null) {
 				return this.executeQuery(this.getSqlMapExecutor(), query, param, statementType, queryFor);
 			}
-			
+
 			// ... or a new result object should be returned
 			return this.executeQuery(this.getSqlMapExecutor(), query, param, result, statementType, queryFor);
-			
+
 		} catch (final NestedSQLException ex) {
 			if (this.databaseException.hasErrorMessages()) {
 				if ("22001".equals(ex.getSQLState())) {
@@ -196,50 +196,53 @@ public class DBSessionImpl implements DBSession {
 					return null;
 				}
 			}
-			/*
-			 * catch exception that happens because of
-			 * query interruption due to time limits
-			 * 
-			 * Error code 1317: "Query execution was interrupted"
-			 * Error code 1028: "Sort aborted"
-			 * (see http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html) 
-			 * 
-			 */
-			Throwable cause = ex.getCause();
-			if (cause != null && cause.getClass().equals(SQLException.class) && 1317 == ((SQLException)cause).getErrorCode()) {
-				log.info("Query timeout for query: " + query);
-				throw new QueryTimeoutException(ex, query);
+
+			final Throwable cause = ex.getCause();
+			if (cause != null && SQLException.class.equals(cause.getClass())) {
+				/*
+				 * catch exceptions that happens because of
+				 * query interruption due to time limits
+				 * 
+				 * Error code 1317: "Query execution was interrupted"
+				 * Error code 1028: "Sort aborted"
+				 * (see http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html) 
+				 * 
+				 */
+				switch (((SQLException)cause).getErrorCode()) {
+				case 1317:
+					log.info("Query timeout for query: " + query);
+					throw new QueryTimeoutException(ex, query);
+				case 1028:
+					log.info("Sort aborted for query: " + query);
+					throw new QueryTimeoutException(ex, query);
+				case 1105:
+					/*
+					 * Here we catch the wonderful "unknown error" (code 1105) exception of MySQL.
+					 * On 2008-04-21 we found that it occurs, when a statement is killed during its
+					 * "statistics" phase (mysql version 5.0.45). We filed a bug report 
+					 * <http://bugs.mysql.com/bug.php?id=36230> and as workaround added this if- 
+					 * block.
+					 * 
+					 * http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html
+					 */
+					log.info("Hit MySQL bug 36230. (with query: " + query + "). See <http://bugs.mysql.com/bug.php?id=36230> for more information.");
+					throw new QueryTimeoutException(ex, query);
+				default:
+					break;
+				}
 			}
-			if (cause != null && cause.getClass().equals(SQLException.class) && 1028 == ((SQLException)cause).getErrorCode()) {
-				log.info("Sort aborted for query: " + query);
-				throw new QueryTimeoutException(ex, query);
-			}
+			
 			if (cause != null && cause.getClass().equals(MySQLTimeoutException.class)) {
 				log.info("MySQL Query timeout for query " + query);
 				throw new QueryTimeoutException(ex, query);
 			}
-						
-			/*
-			 * Here we catch the wonderful "unknown error" (code 1105) exception of MySQL.
-			 * On 2008-04-21 we found that it occurs, when a statement is killed during its
-			 * "statistics" phase (mysql version 5.0.45). We filed a bug report 
-			 * <http://bugs.mysql.com/bug.php?id=36230> and as workaround added this if- 
-			 * block.
-			 * 
-			 * http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html
-			 */
-			if (cause != null && cause.getClass().equals(SQLException.class) && 1105 == ((SQLException)cause).getErrorCode()) {
-				log.info("Hit MySQL bug 36230. (with query: " + query + "). See <http://bugs.mysql.com/bug.php?id=36230> for more information.");
-				throw new QueryTimeoutException(ex, query);
-			}			
-			
+
 			this.logException(query, ignoreException, ex);
 		} catch (final Exception ex) {		
-			Throwable cause = ex.getCause();
 			log.error("Caught exception " + ex.getClass().getSimpleName());
 			this.logException(query, ignoreException, ex);
 		}
-		
+
 		return null; // unreachable
 	}
 
@@ -250,13 +253,13 @@ public class DBSessionImpl implements DBSession {
 	 */
 	private void logException(final String query, final boolean ignoreException, final Exception ex) {
 		String msg = "Couldn't execute query '" + query + "'";
-				
+
 		if (ignoreException) {
 			msg += " (ignored): " + ex.getMessage();
 			log.debug(msg);
 			throw new RuntimeException(msg);
 		}
-		
+
 		this.somethingWentWrong();
 		ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, msg);
 	}
@@ -291,7 +294,7 @@ public class DBSessionImpl implements DBSession {
 		}
 		return rVal;
 	}
-	
+
 	/**
 	 * Executes a query and fills given result object.
 	 * 
@@ -318,10 +321,10 @@ public class DBSessionImpl implements DBSession {
 		}
 		return rVal;
 	}
-	
+
 	@Override
 	public void addError(String key, ErrorMessage errorMessage) {
 		this.databaseException.addToErrorMessages(key, errorMessage);
-		
+
 	}
 }
