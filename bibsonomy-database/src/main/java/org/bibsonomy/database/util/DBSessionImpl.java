@@ -196,9 +196,6 @@ public class DBSessionImpl implements DBSession {
 					return null;
 				}
 			}
-			
-			this.logException(query, ignoreException, ex);
-		} catch (final Exception ex) {
 			/*
 			 * catch exception that happens because of
 			 * query interruption due to time limits
@@ -208,15 +205,16 @@ public class DBSessionImpl implements DBSession {
 			 * (see http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html) 
 			 * 
 			 */
-			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 1317 == ((SQLException)ex.getCause()).getErrorCode()) {
+			Throwable cause = ex.getCause();
+			if (cause != null && cause.getClass().equals(SQLException.class) && 1317 == ((SQLException)cause).getErrorCode()) {
 				log.info("Query timeout for query: " + query);
 				throw new QueryTimeoutException(ex, query);
 			}
-			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 1028 == ((SQLException)ex.getCause()).getErrorCode()) {
+			if (cause != null && cause.getClass().equals(SQLException.class) && 1028 == ((SQLException)cause).getErrorCode()) {
 				log.info("Sort aborted for query: " + query);
 				throw new QueryTimeoutException(ex, query);
 			}
-			if (ex.getCause() != null && ex.getCause().getClass().equals(MySQLTimeoutException.class)) {
+			if (cause != null && cause.getClass().equals(MySQLTimeoutException.class)) {
 				log.info("MySQL Query timeout for query " + query);
 				throw new QueryTimeoutException(ex, query);
 			}
@@ -230,11 +228,15 @@ public class DBSessionImpl implements DBSession {
 			 * 
 			 * http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html
 			 */
-			if (ex.getCause() != null && ex.getCause().getClass().equals(SQLException.class) && 1105 == ((SQLException)ex.getCause()).getErrorCode()) {
+			if (cause != null && cause.getClass().equals(SQLException.class) && 1105 == ((SQLException)cause).getErrorCode()) {
 				log.info("Hit MySQL bug 36230. (with query: " + query + "). See <http://bugs.mysql.com/bug.php?id=36230> for more information.");
 				throw new QueryTimeoutException(ex, query);
-			}
+			}			
 			
+			this.logException(query, ignoreException, ex);
+		} catch (final Exception ex) {		
+			Throwable cause = ex.getCause();
+			log.error("Caught exception " + ex.getClass().getSimpleName());
 			this.logException(query, ignoreException, ex);
 		}
 		
