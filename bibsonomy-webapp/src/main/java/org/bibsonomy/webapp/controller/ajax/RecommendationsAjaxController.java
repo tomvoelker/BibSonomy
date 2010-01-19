@@ -1,20 +1,16 @@
 package org.bibsonomy.webapp.controller.ajax;
 
 import java.io.StringWriter;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.database.DBLogic;
-import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
@@ -22,7 +18,6 @@ import org.bibsonomy.rest.renderer.Renderer;
 import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
-import org.bibsonomy.webapp.command.ajax.AjaxPublicationRecommenderCommand;
 import org.bibsonomy.webapp.command.ajax.AjaxRecommenderCommand;
 import org.bibsonomy.webapp.controller.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;

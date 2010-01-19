@@ -3,7 +3,6 @@ package org.bibsonomy.webapp.controller.actions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -72,8 +71,7 @@ public class DeleteUserController implements MinimalisticController<SettingsView
 				log.debug("answer is correct - deleting user: " + loginUserName);
 				try {
 					logic.deleteUser(loginUserName);
-				}
-				catch (UnsupportedOperationException ex) {
+				} catch (UnsupportedOperationException ex) {
 					// this happens when a user is a group
 					errors.reject("error.user_is_group_cannot_be_deleted");
 				}

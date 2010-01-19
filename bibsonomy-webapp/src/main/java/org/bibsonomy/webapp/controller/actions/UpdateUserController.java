@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -43,11 +44,9 @@ public class UpdateUserController implements MinimalisticController<SettingsView
 	 */
 	private LogicInterface adminLogic = null;
 
-	
 	@Override
 	public SettingsViewCommand instantiateCommand() {
 		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setGroup(GroupUtils.getPublicGroup().getName());
 		command.setTabURL(TAB_URL);
 		command.setUser(new User());
 		return command;
@@ -65,17 +64,17 @@ public class UpdateUserController implements MinimalisticController<SettingsView
 			return Views.SETTINGSPAGE;
 		}
 		
-		User user = context.getLoginUser(); 
+		final User user = context.getLoginUser(); 
 		
 		// needed to display the user name on the profile tab of the settings site
 		command.getUser().setName(user.getName());
 		
-		//check whether the user is a group		
-		if(UserUtils.userIsGroup(user)) {
+		// check whether the user is a group		
+		if (UserUtils.userIsGroup(user)) {
 			command.setHasOwnGroup(true);
 			command.showGroupTab(true);
 		}
-		System.out.println(command.getUser().getBirthday());
+		
 		/**
 		 * go back to the settings page and display errors from command field
 		 * validation
@@ -97,26 +96,18 @@ public class UpdateUserController implements MinimalisticController<SettingsView
 			errors.reject("error.field.valid.ckey");
 		}
 
-
 		return Views.SETTINGSPAGE;
 	}
-	
+
 	/**
 	 * updates the the profile settings of a user
 	 * @param command
 	 * @param user
 	 */
-	private void updateUserProfile(SettingsViewCommand command, User user) {
-		
+	private void updateUserProfile(final SettingsViewCommand command, final User user) {
 		user.setRealname(command.getUser().getRealname());
 		user.setGender(command.getUser().getGender());
 		user.setBirthday(command.getUser().getBirthday());
-		
-		/**
-		 * @TODO 
-		 * implement the viewable_for field to the database query 
-		 * store the information somewhere in the UserSettings object
-		 */
 		
 		user.setEmail(command.getUser().getEmail());
 		user.setHomepage(command.getUser().getHomepage());
@@ -126,44 +117,43 @@ public class UpdateUserController implements MinimalisticController<SettingsView
 		user.setHobbies(command.getUser().getHobbies());
 		user.setPlace(command.getUser().getPlace());
 		
+		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.getProfilePrivlevel(command.getGroup()));
 		
-		String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
-		
+		final String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
 		log.info("logging profile of user " + updatedUser + " has been changed successfully");
-		
-		
 	}
 
 	@Override
 	public Errors getErrors() {
-		
 		return this.errors;
 	}
 
 	@Override
 	public void setErrors(Errors errors) {
-		
 		this.errors = errors;		
 	}
 
 	@Override
 	public Validator<SettingsViewCommand> getValidator() {
-		
 		return new UserUpdateProfileValidator();
 	}
 
 	@Override
 	public boolean isValidationRequired(SettingsViewCommand command) {
-		
 		return true;
 	}
 
+	/**
+	 * @return the adminLogic
+	 */
 	public LogicInterface getAdminLogic() {
 		return this.adminLogic;
 	}
 
+	/**
+	 * @param adminLogic the adminLogic to set
+	 */
 	public void setAdminLogic(LogicInterface adminLogic) {
 		this.adminLogic = adminLogic;
 	}
-
 }

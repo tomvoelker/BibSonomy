@@ -361,8 +361,7 @@
 		<to type="redirect" last="true">/user/${escape:$1}</to>
 	</rule>
 
-
-	<!-- TODO: migrate -->
+	
 	<!-- redirect for FOAF Output of user profile on /foaf/user/USER page -->
 	<rule>
 		<name>redirect /foaf/user/USER</name>
@@ -373,10 +372,9 @@
 	<rule>
 		<name>/foaf/user/USER</name>
 		<from>^/+foaf/+user/+([^/]+?)$</from>
-		<set type="parameter" name="requUser">$1</set>
-		<to last="true">/UserFOAFOutput.jsp</to>
+		<set type="parameter" name="requestedUser">$1</set>
+		<to last="true">/foaf</to>
 	</rule>
-	
 	
 	<!-- ############## Curriculum vitae pages ############### -->
 	

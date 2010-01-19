@@ -1,13 +1,13 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -19,10 +19,7 @@ import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RankingUtil;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.util.RankingUtil.RankingMethod;
 import org.bibsonomy.webapp.view.Views;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 /**
  * @author Christian Kramer

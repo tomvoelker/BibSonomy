@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -33,17 +32,16 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 	@Override
 	public SettingsViewCommand instantiateCommand() {
 		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setGroup(GroupUtils.getPublicGroup().getName());
 		command.setTabURL(TAB_URL);
 		command.setUser(new User());
 		return command;
 	}
 
 	@Override
-	public View workOn(SettingsViewCommand command) {
+	public View workOn(final SettingsViewCommand command) {
 		// mit regenerate API key
 				
-		RequestWrapperContext context = command.getContext();
+		final RequestWrapperContext context = command.getContext();
 
 		/*
 		 * user has to be logged in to delete himself
@@ -53,7 +51,7 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 			return Views.SETTINGSPAGE;
 		}
 		
-		User user = context.getLoginUser(); 
+		final User user = context.getLoginUser(); 
 		
 		//check whether the user is a group		
 		if(UserUtils.userIsGroup(user)) {
@@ -68,7 +66,7 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 			log.debug("User is logged in, ckey is valid");
 			
 			//do set new settings here
-			String action = command.getAction();
+			final String action = command.getAction();
 			if(action.equals("logging")) {
 				// changes the log level
 				actionLogging(command, user);
@@ -99,25 +97,21 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		return Views.SETTINGSPAGE;
 	}
 	
-	private void actionLogging(SettingsViewCommand command, User user) {
-		
+	private void actionLogging(final SettingsViewCommand command, final User user) {
 		user.getSettings().setLogLevel(command.getUser().getSettings().getLogLevel());
 		user.getSettings().setConfirmDelete(command.getUser().getSettings().isConfirmDelete());
 
-		String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
-		
+		final String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
 		log.info("logging settings of user " + updatedUser + " has been changed successfully");
 	}
 	
-	private void actionAPI(SettingsViewCommand command, User user) {
-		
+	private void actionAPI(final SettingsViewCommand command, final User user) {
 		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_API);
 		
 		log.info("api key of " + user.getName() + " has been changed successfully");
 	}
 	
-	private void actionLayoutTagPost(SettingsViewCommand command, User user) {
-		
+	private void actionLayoutTagPost(final SettingsViewCommand command, final User user) {
 		user.getSettings().setDefaultLanguage(command.getUser().getSettings().getDefaultLanguage());
 		user.getSettings().setListItemcount(command.getUser().getSettings().getListItemcount());
 		user.getSettings().setTagboxTooltip(command.getUser().getSettings().getTagboxTooltip());
@@ -125,20 +119,17 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		user.getSettings().setTagboxSort(command.getUser().getSettings().getTagboxSort());
 		user.getSettings().setTagboxStyle(command.getUser().getSettings().getTagboxStyle());
 		
-		String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
-		
+		final String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
 		log.info("settings for the layout of tag boxes and post lists of user " + updatedUser + " has been changed successfully");
 	}
 
 	@Override
 	public Errors getErrors() {
-		
 		return this.errors;
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
-		
+	public void setErrors(final Errors errors) {
 		this.errors = errors;		
 	}
 
@@ -153,7 +144,7 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 	 * 
 	 * @param requestLogic
 	 */
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
@@ -169,7 +160,7 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 	 * 
 	 * @param adminLogic
 	 */
-	public void setAdminLogic(LogicInterface adminLogic) {
+	public void setAdminLogic(final LogicInterface adminLogic) {
 		this.adminLogic = adminLogic;
 	}
 }

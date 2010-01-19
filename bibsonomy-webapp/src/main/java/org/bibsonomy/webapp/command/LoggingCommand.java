@@ -1,9 +1,5 @@
 package org.bibsonomy.webapp.command;
 
-import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.User;
-
 /**
  * Command for ajax requests from admin page
  * 
@@ -42,7 +38,7 @@ public class LoggingCommand extends AjaxCommand {
 	/**
 	 * @param userName the userName to set
 	 */
-	public void setUserName(String userName) {
+	public void setUserName(final String userName) {
 		this.userName = userName;
 	}
 
@@ -56,7 +52,7 @@ public class LoggingCommand extends AjaxCommand {
 	/**
 	 * @param dompath the dompath to set
 	 */
-	public void setDompath(String dompath) {
+	public void setDompath(final String dompath) {
 		this.dompath = dompath;
 	}
 
@@ -70,7 +66,7 @@ public class LoggingCommand extends AjaxCommand {
 	/**
 	 * @param pageurl the pageurl to set
 	 */
-	public void setPageurl(String pageurl) {
+	public void setPageurl(final String pageurl) {
 		this.pageurl = pageurl;
 	}
 
@@ -84,7 +80,7 @@ public class LoggingCommand extends AjaxCommand {
 	/**
 	 * @param atitle the atitle to set
 	 */
-	public void setAtitle(String atitle) {
+	public void setAtitle(final String atitle) {
 		this.atitle = atitle;
 	}
 
@@ -98,7 +94,7 @@ public class LoggingCommand extends AjaxCommand {
 	/**
 	 * @param ahref the ahref to set
 	 */
-	public void setAhref(String ahref) {
+	public void setAhref(final String ahref) {
 		this.ahref = ahref;
 	}
 

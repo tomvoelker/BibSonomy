@@ -7,7 +7,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.ResourceType;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;

@@ -34,8 +34,9 @@ public class SettingsBean extends UserBean implements Serializable {
 	private String action    = ""; // what this bean shall do, at the moment only "update" (i.e. write values to DB)
 	private boolean validCkey = false;
 	private final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-	private Hashtable<String,String> errors;
+	private final Hashtable<String,String> errors;
 	
+	@Deprecated // @see FOAFController
 	public void queryDBFOAF() {
 		if (DBUserManager.isProfileViewable(currUser,name)) {
 			DBUserManager.getSettingsForUser(this);
@@ -119,10 +120,12 @@ public class SettingsBean extends UserBean implements Serializable {
 	}
 	
 		
+	@Override
 	public void setEmail(String email) {
 		super.setEmail(email);
 	}
 	
+	@Override
 	public void setHomepage(String homepage) {
 		super.setHomepage(homepage);
 	}
@@ -245,6 +248,7 @@ public class SettingsBean extends UserBean implements Serializable {
 	 * @param str the string to be encoded
 	 * @return SHA-1 sum
 	 */
+	@Deprecated // please use StringUtils#getSHA1Hash
 	private String getSHA1Hash(final String str) {
 		String s = "";
 		try {
@@ -252,7 +256,7 @@ public class SettingsBean extends UserBean implements Serializable {
 			byte [] buffer = md.digest(str.getBytes());
 			
 	    	for (int i = 0; i < buffer.length; i++) {
-	    		String hex = Integer.toHexString ((int) buffer[i]);
+	    		String hex = Integer.toHexString (buffer[i]);
 	    		if (hex.length() == 1) {
 	    			hex = "0" + hex;
 	    		}

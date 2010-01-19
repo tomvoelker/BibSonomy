@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.User;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -13,17 +11,13 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  * @author Steffen Kress
  * @version $Id$
  */
-//TODO
 public class SettingsViewCommand extends TabsCommand<Object> implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -1211293063812357398L;
 	
-	private static final Log log = LogFactory.getLog(SettingsViewCommand.class);
-	
 	/** Indexes of definded tabs */
-	
 	public final static int MY_PROFILE_IDX = 0;
 	public final static int SETTINGS_IDX = 1;
 	public final static int IMPORTS_IDX = 2;
@@ -54,10 +48,9 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private List<User> userFriends;
 	
 	/**
-	 * group {private or public}
+	 * group {friends, private or public}
 	 */
 	private String group;
-	
 	
 	private String importType;
 	
@@ -134,16 +127,21 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * @param show
 	 */
 	public void showGroupTab(boolean show) {
-		
-		if(show) {
-			addTab(GROUP_IDX, "navi.groups");
+		if (show) {
+			this.addTab(GROUP_IDX, "navi.groups");
 		}
 	}
-
+	
+	/**
+	 * @return the group
+	 */
 	public String getGroup() {
 		return this.group;
 	}
 
+	/**
+	 * @param group the group to set
+	 */
 	public void setGroup(String group) {
 		this.group = group;
 	}
@@ -263,8 +261,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public void setOldPassword(String oldPassword) {
 		this.oldPassword = oldPassword;
 	}
-
-
 	
 	public void setHasOwnGroup(boolean hasOwnGroup) {
 		this.hasOwnGroup = hasOwnGroup;

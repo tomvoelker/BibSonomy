@@ -16,7 +16,7 @@ import org.bibsonomy.model.Resource;
  * With this command we are able to receive multiple lists of posts for a resource. 
  * 
  */
-public class MultiResourceViewCommand extends ResourceViewCommand{
+public class MultiResourceViewCommand extends ResourceViewCommand {
 
 	/** a list of bibtex lists **/
 	private final List<ListCommand<Post<BibTex>>> listsBibTeX = new ArrayList<ListCommand<Post<BibTex>>>();
@@ -37,7 +37,7 @@ public class MultiResourceViewCommand extends ResourceViewCommand{
 	 * @return the list with entities of type resourceType
 	 */
 	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<ListCommand<Post<T>>> getListCommand(Class<T> resourceType) {
+	public <T extends Resource> List<ListCommand<Post<T>>> getListCommand(final Class<T> resourceType) {
 		if (resourceType == BibTex.class) {
 			return (List) getListsBibTeX();
 		} else if (resourceType == Bookmark.class) {
@@ -51,8 +51,7 @@ public class MultiResourceViewCommand extends ResourceViewCommand{
 	 * @param resourceType type of the entities in the list
 	 * @return the list with entities of type resourceType
 	 */
-	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<String> getListsDescription(Class<T> resourceType) {
+	public <T extends Resource> List<String> getListsDescription(final Class<T> resourceType) {
 		if (resourceType == BibTex.class) {
 			return getListsBibTeXDescription();
 		} else if (resourceType == Bookmark.class) {
@@ -66,7 +65,7 @@ public class MultiResourceViewCommand extends ResourceViewCommand{
 	}
 
 
-	public void setListsBibTeXDescription(List<String> listBibTeXDescription) {
+	public void setListsBibTeXDescription(final List<String> listBibTeXDescription) {
 		this.listsBibTeXDescription = listBibTeXDescription;
 	}
 
@@ -76,7 +75,7 @@ public class MultiResourceViewCommand extends ResourceViewCommand{
 	}
 
 
-	public void setListsBookmarkDescription(List<String> listBookmarkDescription) {
+	public void setListsBookmarkDescription(final List<String> listBookmarkDescription) {
 		this.listsBookmarkDescription = listBookmarkDescription;
 	}
 

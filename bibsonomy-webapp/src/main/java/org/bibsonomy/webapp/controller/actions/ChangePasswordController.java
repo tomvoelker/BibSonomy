@@ -6,7 +6,6 @@ import org.bibsonomy.common.enums.SettingPageMsg;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
@@ -57,15 +56,14 @@ public class ChangePasswordController implements MinimalisticController<Settings
 	@Override
 	public SettingsViewCommand instantiateCommand() {
 		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setGroup(GroupUtils.getPublicGroup().getName());
 		command.setTabURL(TAB_URL);
 		return command;
 	}
 
 	@Override
-	public View workOn(SettingsViewCommand command) {
+	public View workOn(final SettingsViewCommand command) {
 
-		RequestWrapperContext context = command.getContext();
+		final RequestWrapperContext context = command.getContext();
 	
 		/*
 		 * user has to be logged in to delete himself
@@ -77,7 +75,7 @@ public class ChangePasswordController implements MinimalisticController<Settings
 			command.setUser(context.getLoginUser());
 		}
 		
-		User user = context.getLoginUser(); 
+		final User user = context.getLoginUser(); 
 		
 		//check whether the user is a group		
 		if(UserUtils.userIsGroup(user)) {
@@ -111,20 +109,20 @@ public class ChangePasswordController implements MinimalisticController<Settings
 		return Views.SETTINGSPAGE;
 	}
 
-	private int changePassword(User user, SettingsViewCommand command) {
+	private int changePassword(final User user, final SettingsViewCommand command) {
 
-		String curPassword = user.getPassword();
+		final String curPassword = user.getPassword();
 		int msgID;
 		// create the md5 hash of the new password
 		final String hashedOldPassword = StringUtils.getMD5Hash(command.getOldPassword());
 
 		if (curPassword.equals(hashedOldPassword)) {
 
-			String newPasswordHash = StringUtils.getMD5Hash(command.getNewPassword());
+			final String newPasswordHash = StringUtils.getMD5Hash(command.getNewPassword());
 
 			user.setPassword(newPasswordHash);
 
-			String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_PASSWORD);
+			final String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_PASSWORD);
 
 			cookieLogic.addUserCookie(user.getName(), newPasswordHash);
 
@@ -149,7 +147,7 @@ public class ChangePasswordController implements MinimalisticController<Settings
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 
 		this.errors = errors;
 	}
@@ -159,7 +157,7 @@ public class ChangePasswordController implements MinimalisticController<Settings
 	 * 
 	 * @param adminLogic
 	 */
-	public void setAdminLogic(LogicInterface adminLogic) {
+	public void setAdminLogic(final LogicInterface adminLogic) {
 		this.adminLogic = adminLogic;
 	}
 
@@ -168,7 +166,7 @@ public class ChangePasswordController implements MinimalisticController<Settings
 	 * 
 	 * @param cookieLogic
 	 */
-	public void setCookieLogic(CookieLogic cookieLogic) {
+	public void setCookieLogic(final CookieLogic cookieLogic) {
 		this.cookieLogic = cookieLogic;
 	}
 
@@ -177,7 +175,7 @@ public class ChangePasswordController implements MinimalisticController<Settings
 	 * 
 	 * @param requestLogic
 	 */
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
@@ -188,7 +186,7 @@ public class ChangePasswordController implements MinimalisticController<Settings
 	}
 
 	@Override
-	public boolean isValidationRequired(SettingsViewCommand command) {
+	public boolean isValidationRequired(final SettingsViewCommand command) {
 
 		return true;
 	}

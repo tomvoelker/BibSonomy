@@ -1,8 +1,8 @@
 package org.bibsonomy.webapp.command.actions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -13,15 +13,11 @@ import org.bibsonomy.webapp.command.TabsCommandInterface;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 /**
+ * This command takes a the information for displaying the import publication views. 
+ * The publications will be entered as a file or string containing the information.
+ * 
  * @author ema
  * @version $Id$
- */
-
-
-/**
- * This command takes a the information for displaying the import publication views. 
- * The publications will be entered as a file or string containing the information. 
- *
  */
 public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object> {
 	
@@ -34,7 +30,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * The URL which the tab header links to.
 	 */
-	private final String TAB_URL = "/import/publications"; 
+	private final String TAB_URL = "/import/publications"; // TODODZ: why not static?
 	
 	/****************************
 	 * FOR THE TAB FUNCTIONALITY
@@ -68,7 +64,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * @param selectedTab 
 	 */
 	@Override
-	public void setSelTab(Integer selectedTab) {
+	public void setSelTab(final Integer selectedTab) {
 		this.selTab = selectedTab;
 	}
 	
@@ -91,7 +87,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * @param tabs the tabcommands (tabs) 
 	 */
 	@Override
-	public void setTabs(List<TabCommand> tabs) {
+	public void setTabs(final List<TabCommand> tabs) {
 		this.tabs = tabs;
 	}
 	
@@ -99,7 +95,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * @param id the index of the new tab to add
 	 * @param title the message key of the tab to add (clickable text header)
 	 */
-	private void addTab(Integer id, String title) {
+	private void addTab(final Integer id, final String title) {
 		tabs.add(new TabCommand(id, title));		
 	}
 
@@ -107,7 +103,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * @param titles the message keys of the tabs to add (clickable text header)
 	 */
 	private void addTabs(final String[] titles) {
-		for(int i=0; i<titles.length; i++) {
+		for(int i=0; i<titles.length; i++) { // use: for (String title : titles) ...
 			addTab(i, titles[i]);
 		}
 	}
@@ -117,7 +113,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * (needed, because postPublication calls this site first, but tabs-hrefs have to be...
 	 * ... import/publications)
 	 */
-	private String tabURL=null;
+	private String tabURL=null; // TODODZ: null initializing ?!
 	
 	/**
 	 * @return the url of the tabbed site
@@ -129,7 +125,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * @param tabURL the url of the tabbed site
 	 */
-	public void setTabURL(String tabURL) {
+	public void setTabURL(final String tabURL) {
 		this.tabURL = tabURL;
 	}
 	
@@ -150,7 +146,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * @param taskName the task name, determining whats to do in the controller. 
 	 * The value is set to TASK_ENTER_PUBLICATIONS, if publications get entered or edited(tags).
 	 */
-	public void setTaskName(String taskName) {
+	public void setTaskName(final String taskName) {
 		this.taskName = taskName;
 	}
 
@@ -159,7 +155,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * Detetermines, if we call import/publications a second time due to errors, the user can fix
 	 */
-	private boolean extendedView = false;
+	private boolean extendedView = false; // TODO: unnecessary
 	
 	/**
 	 * @returns True, if we call import/publications a second time due to errors, the user can fix
@@ -171,27 +167,22 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * @param extendedView True, if we call import/publications a second time due to errors, the user can fix
 	 */
-	public void setExtendedView(boolean extendedView) {
+	public void setExtendedView(final boolean extendedView) {
 		this.extendedView = extendedView;
 	}
 
 	/**
 	 * The errors during parsing
 	 */
-	private List<Integer> erroneousLineNumbers = null;
+	private List<Integer> erroneousLineNumbers = null; // TODO: unnecessary
 	
 	public List<Integer> getErroneousLineNumbers() {
 		return this.erroneousLineNumbers;
 	}
 
-	public void setErroneousLineNumbers(List<Integer> erroneousLineNumbers) {
+	public void setErroneousLineNumbers(final List<Integer> erroneousLineNumbers) {
 		this.erroneousLineNumbers = erroneousLineNumbers;
 	}
-	
-	
-	
-	
-	
 	
 	/****************************
 	 * FOR ALL IMPORTS
@@ -224,7 +215,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * @param deleteCheckedPosts the flag that determines, weather the dialogue called was configured to 
 	 * edit(delete) or edit(create) existing posts.
 	 */
-	public void setDeleteCheckedPosts(boolean deleteCheckedPosts) {
+	public void setDeleteCheckedPosts(final boolean deleteCheckedPosts) {
 		this.deleteCheckedPosts = deleteCheckedPosts;
 	}
 	
@@ -258,7 +249,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * resulting in storing all correct ones. if this is false, no posts will be stored
 	 * in case of an error.
 	 */
-	public void setSaveAllPossible(boolean saveAllPossible) {
+	public void setSaveAllPossible(final boolean saveAllPossible) {
 		this.saveAllPossible = saveAllPossible;
 	}
 	
@@ -273,7 +264,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	}
 	
 	@Override
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 	
@@ -293,7 +284,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		return this.file;
 	}
 
-	public void setFile(CommonsMultipartFile file) {
+	public void setFile(final CommonsMultipartFile file) {
 		this.file = file;
 	}
 	
@@ -307,7 +298,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		return this.whitespace;
 	}
 
-	public void setWhitespace(String whitespace) {
+	public void setWhitespace(final String whitespace) {
 		this.whitespace = whitespace;
 	}
 
@@ -321,7 +312,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		return this.encoding;
 	}
 
-	public void setEncoding(String encoding) {
+	public void setEncoding(final String encoding) {
 		this.encoding = encoding;
 	}
 
@@ -335,7 +326,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		return this.delimiter;
 	}
 
-	public void setDelimiter(String delimiter) {
+	public void setDelimiter(final String delimiter) {
 		this.delimiter = delimiter;
 	}
 
@@ -353,7 +344,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		return this.editBeforeImport;
 	}
 
-	public void setEditBeforeImport(boolean editBeforeImport) {
+	public void setEditBeforeImport(final boolean editBeforeImport) {
 		this.editBeforeImport = editBeforeImport;
 	}
 	
@@ -367,7 +358,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		return this.overwrite;
 	}
 	
-	public void setOverwrite(boolean overwrite) {
+	public void setOverwrite(final boolean overwrite) {
 		this.overwrite = overwrite;
 	}
 	
@@ -386,7 +377,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		return this.formAction;
 	}
 
-	public void setFormAction(String formAction) {
+	public void setFormAction(final String formAction) {
 		this.formAction = formAction;
 	}
 	
@@ -394,13 +385,13 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * The posts, that were updated during import.
 	 */
-	private HashMap<String,String> updatedPosts=null;
+	private Map<String,String> updatedPosts=null; // TODO: null and HashMap => Map
 	
-	public HashMap<String,String> getUpdatedPosts() {
+	public Map<String,String> getUpdatedPosts() {
 		return this.updatedPosts;
 	}
 
-	public void setUpdatedPosts(HashMap<String, String> updatedBookmarkEntries) {
+	public void setUpdatedPosts(final Map<String, String> updatedBookmarkEntries) {
 		this.updatedPosts = updatedBookmarkEntries;
 	}
 
@@ -415,7 +406,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		return this.posts;
 	}
 
-	public void setBibtex(ListCommand<Post<BibTex>> bibtex) {
+	public void setBibtex(final ListCommand<Post<BibTex>> bibtex) {
 		this.posts = bibtex;
 	}
 	
@@ -423,7 +414,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		return this.posts;
 	}
 
-	public void setPosts(ListCommand<Post<BibTex>> bibtex) {
+	public void setPosts(final ListCommand<Post<BibTex>> bibtex) {
 		this.posts = bibtex;
 	}
 
@@ -435,7 +426,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	}
 
 	@Override
-	public void setContent(List<Object> content) {
+	public void setContent(final List<Object> content) {
 		// TODO Auto-generated method stub
 	}
 

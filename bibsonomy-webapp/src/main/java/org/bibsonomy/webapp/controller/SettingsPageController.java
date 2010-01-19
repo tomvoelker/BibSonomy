@@ -1,16 +1,12 @@
 package org.bibsonomy.webapp.controller;
 
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.layout.jabref.LayoutPart;
 import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -24,11 +20,8 @@ import org.springframework.validation.Errors;
  * @version $Id: SettingsPageController.java,v 1.2 2009-05-20 12:03:21
  *          voigtmannc Exp $
  */
-public class SettingsPageController implements
-		MinimalisticController<SettingsViewCommand>, ErrorAware {
-
-	private static final Log log = LogFactory
-			.getLog(SearchPageController.class);
+public class SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
+	private static final Log log = LogFactory.getLog(SearchPageController.class);
 
 	/**
 	 * hold current errors
@@ -41,22 +34,20 @@ public class SettingsPageController implements
 	 * @param command
 	 * @return the view
 	 */
-	public View workOn(SettingsViewCommand command) {
+	public View workOn(final SettingsViewCommand command) {
+		if (!command.getContext().isUserLoggedIn()) {
+			return Views.LOGIN;
+		}
 
 		command.setPageTitle("settings");
 		
-		User loginUser = command.getContext().getLoginUser();
+		final User loginUser = command.getContext().getLoginUser();
 		command.setUser(loginUser);
 		
 		//check whether the user is a group		
-		if(UserUtils.userIsGroup(loginUser)) {
+		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
 			command.showGroupTab(true);
-		}
-	
-		
-		if(!command.getContext().isUserLoggedIn()) {
-			return Views.LOGIN;
 		}
 
 		switch (command.getSelTab()) {
@@ -97,10 +88,12 @@ public class SettingsPageController implements
 		return Views.SETTINGSPAGE;
 	}
 
-	private void workOnMyProfileTab(SettingsViewCommand command) {
-		//retrieve friend list of the user
+	private void workOnMyProfileTab(final SettingsViewCommand command) {
+		// retrieve friend list of the user
 		command.setUserFriends(logic.getUserFriends(command.getUser()));
 		command.setFriendsOfUser(logic.getFriendsOfUser(command.getUser()));
+		// retrieve profile privacy level setting
+		command.setGroup(command.getUser().getSettings().getProfilePrivlevel().name().toLowerCase());
 	}
 
 	/**
@@ -108,16 +101,16 @@ public class SettingsPageController implements
 	 * 
 	 * @param command
 	 */
-	private void checkInstalledJabrefLayout(SettingsViewCommand command) {
+	private void checkInstalledJabrefLayout(final SettingsViewCommand command) {
 
-		LayoutPart[] values = LayoutPart.values();
+		final LayoutPart[] values = LayoutPart.values();
 
-		for (LayoutPart layoutpart : values) {
+		for (final LayoutPart layoutpart : values) {
 
-			String fileHash = JabrefLayoutUtils.userLayoutHash(command
+			final String fileHash = JabrefLayoutUtils.userLayoutHash(command
 					.getContext().getLoginUser().getName(), layoutpart);
 
-			Document document = this.logic.getDocument(command.getContext()
+			final Document document = this.logic.getDocument(command.getContext()
 					.getLoginUser().getName(), fileHash);
 
 			if (document != null) {
@@ -135,9 +128,8 @@ public class SettingsPageController implements
 		}
 	}
 
-	private void workOnSettingsTab(SettingsViewCommand command) {
-
-		//no work to do
+	private void workOnSettingsTab(final SettingsViewCommand command) {
+		// no work to do
 	}
 
 	/**
@@ -145,23 +137,20 @@ public class SettingsPageController implements
 	 */
 	public SettingsViewCommand instantiateCommand() {
 		final SettingsViewCommand command = new SettingsViewCommand();
-		command.setGroup(GroupUtils.getPublicGroup().getName());
 		return command;
 	}
 
 	@Override
 	public Errors getErrors() {
-
 		return this.errors;
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
-
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
-	public void setLogic(LogicInterface logic) {
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 }

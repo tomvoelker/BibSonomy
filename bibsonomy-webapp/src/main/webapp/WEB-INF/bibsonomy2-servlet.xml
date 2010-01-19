@@ -54,6 +54,16 @@
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="userPageController"/>
 					</bean>
+				</entry>
+				<entry key="/foaf">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="fOAFController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedUser</value>
+							</list>
+						</property>
+					</bean>
 				</entry>	
 				<entry key="/cvpage">
 					<bean parent="controllerBase">
@@ -269,6 +279,10 @@
 				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</list>
 		</property>
+	</bean>
+	
+	<bean id="fOAFController" class="org.bibsonomy.webapp.controller.FOAFController" scope="request">
+		<property name="logic" ref="logic"/>
 	</bean>
 	
 	<bean id="cvPageController" class="org.bibsonomy.webapp.controller.CvPageController" scope="request">

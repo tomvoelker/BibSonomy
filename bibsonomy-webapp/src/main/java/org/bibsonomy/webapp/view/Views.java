@@ -11,11 +11,8 @@ import org.bibsonomy.webapp.util.View;
  * which views are capable to display bibtex / bookmark only
  * 
  * @author Jens Illig
- * @version $Id$
- */
-/**
  * @author rja
- *
+ * @version $Id$
  */
 public enum Views implements View {
 		
@@ -37,6 +34,11 @@ public enum Views implements View {
 	 * user page displaying the resources of a single user
 	 */
 	USERPAGE("user"),
+	
+	/**
+	 * TODODZ
+	 */
+	FOAF("foaf"),
 	
 	/**
 	 * the user specific curriculum vitae page
@@ -76,8 +78,8 @@ public enum Views implements View {
 	/**
 	 * inbox page
 	 */
-	
 	INBOX("inbox"),
+	
 	/**
 	 * authors overview page
 	 */
@@ -555,7 +557,7 @@ public enum Views implements View {
 	 * @param format the name of the format
 	 * @return true if the corresponding view displays only bibtex posts, false otherwise
 	 */
-	public static Boolean isBibtexOnlyFormat(String format) {
+	public static Boolean isBibtexOnlyFormat(final String format) {
 		if ("bibtex".equals(format) || 
 			"publrss".equals(format) ||
 			"publ".equals(format) ||			
@@ -576,7 +578,7 @@ public enum Views implements View {
 	 * @param format the name of the format
 	 * @return true if the corresponding view displays only bookmark posts, false otherwise
 	 */
-	public static Boolean isBookmarkOnlyFormat(String format) {
+	public static Boolean isBookmarkOnlyFormat(final String format) {
 		if ("xml".equals(format) || 
 			"rss".equals(format) ||
 			"batchediturl".equals(format) ||
@@ -593,7 +595,7 @@ public enum Views implements View {
 	 * @param format the name of the format
 	 * @return the corresponding view for a given format
 	 */
-	public static Views getViewByFormat(String format) {
+	public static Views getViewByFormat(final String format) {
 		if ("bibtex".equals(format))
 			return BIBTEX;
 		if ("json".equals(format)) 
