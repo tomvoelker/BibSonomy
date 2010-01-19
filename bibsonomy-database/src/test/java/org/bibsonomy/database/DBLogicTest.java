@@ -18,6 +18,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.ProfilePrivlevel;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.database.managers.AbstractDBLogicBase;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -221,7 +223,6 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		}
 	}
 
-
 	/**
 	 * tests getPostsByHashForUser
 	 */
@@ -382,6 +383,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	/**
 	 * tests concept store
 	 */
+    @Test
 	@Ignore
 	// XXX: writes to the db (adapt to new test db)
 	public void testConceptStore() {
@@ -431,8 +433,8 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	/**
 	 * A user wants to get his own document: should be possible.
 	 */
-	@Ignore
-	// FIXME NullPointerException
+	@Ignore // FIXME NullPointerException
+	@Test
 	public void getDocumentOwn() {
 		final String resourceHash = "4b020083ca0aca3d285569e5fbd0f5b7";
 		final String documentFileName = "p16-gifford.pdf";
@@ -457,8 +459,8 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	/**
 	 * A user wants to get another users document: should be possible, if a group allows this.
 	 */
-	@Ignore
-	// FIXME NullPointerException
+	@Ignore // FIXME NullPointerException
+	@Test
 	public void getDocumentNotOwnButSharedDocuments() {
 		final String resourceHash = "dcf8eef77a3dfbc75f5e5ace931308a1";
 		final String documentFileName = "interest.pdf";
@@ -473,6 +475,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 	 * tests getUsers by folkrank
 	 */
 	@Ignore
+	@Test
 	public void testGetUsersByFolkrank(){
 		List<String> tags = new ArrayList<String>();
 		tags.add("web");
@@ -501,6 +504,44 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertEquals(null, spammer.getPrediction());
 		assertEquals(null, spammer.getConfidence());
 		
+	}
+	
+	/**
+	 * tests the profile privacy settings
+	 */
+	@Test
+	public void userProfilePrivacy() {
+		final String username1 = "testuser3";
+		final String username2 = "testuser1";
+		final String username3 = "testuser2";
+		final LogicInterface logic  = this.getDbLogic(username1);
+		final LogicInterface logic2 = this.getDbLogic(username2);
+		final LogicInterface logic3 = this.getDbLogic(username3);
+		
+		final User user = logic.getUserDetails(username1);
+		assertNotNull(user.getRealname()); // see my own name
+		
+		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.PRIVATE);
+		logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
+		final User userafterUpdatePrivate = logic2.getUserDetails(username1);
+		assertNull(userafterUpdatePrivate.getRealname());
+		
+		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.PUBLIC);
+		logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
+		final User userAfterUpdatePublic = logic2.getUserDetails(username1);
+		assertNotNull(userAfterUpdatePublic.getRealname());
+		
+		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.FRIENDS);
+		logic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
+		final User user1AfterUpdateFriends = logic2.getUserDetails(username1);
+		assertNull(user1AfterUpdateFriends.getRealname()); // testuser3 has no friends
+		
+		final User user2 = logic3.getUserDetails(username3);
+		user2.getSettings().setProfilePrivlevel(ProfilePrivlevel.FRIENDS);
+		logic3.updateUser(user2, UserUpdateOperation.UPDATE_CORE);
+		
+		final User user2AfterUpdateFriends = logic2.getUserDetails(username3);
+		assertNotNull(user2AfterUpdateFriends.getRealname()); // testuser1 is friend of testuser2
 	}
 	
 	/**
@@ -576,6 +617,7 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		assertEquals(expectedBibtexAbstract, ((BibTex) updatedResource.getResource()).getAbstract());
 	}
 	
+	// TODO: refactor
 	private void checkTagsOfPost(final Post<?> post, final Set<Tag> expectedTags) {
 		final Set<Tag> tags = post.getTags();
 		assertEquals(expectedTags.size(), tags.size());

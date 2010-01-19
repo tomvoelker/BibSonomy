@@ -143,6 +143,12 @@ public class DBLogic implements LogicInterface {
 		this.dbSessionFactory = dbSessionFactory;
 
 		this.resourceSearcher = new LinkedList<ResourceSearch<? extends Resource>>();
+		
+		// FIXME: @see PostDatabaseManager
+		this.bibtexDBManager.setDbLogic(this);
+		this.bookmarkDBManager.setDbLogic(this);
+		this.bibtexDBManager.setDbSessionFactory(this.dbSessionFactory);
+		this.bookmarkDBManager.setDbSessionFactory(this.dbSessionFactory);
 
 	}
 
@@ -154,12 +160,6 @@ public class DBLogic implements LogicInterface {
 		this.bibtexDBManager.setResourceSearch(bibTexSearch);
 		this.bookmarkDBManager.setResourceSearch(bookmarkSearch);
 		this.tagDBManager.setAuthorSearch(bibTexSearch);
-
-		// TODO: @see PostDatabaseManager
-		this.bibtexDBManager.setDbLogic(this);
-		this.bookmarkDBManager.setDbLogic(this);
-		this.bibtexDBManager.setDbSessionFactory(this.dbSessionFactory);
-		this.bookmarkDBManager.setDbSessionFactory(this.dbSessionFactory);
 	}
 
 	/**
@@ -221,6 +221,7 @@ public class DBLogic implements LogicInterface {
 		if (!loginUser.getName().equals(loginUser.getName())) {
 			this.permissionDBManager.ensureAdminAccess(loginUser);
 		}
+		
 		final DBSession session = openSession();
 		try {
 			return this.userDBManager.getUserRelation(loginUser.getName(), UserRelation.OF_FRIEND, session);
@@ -238,42 +239,49 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public User getUserDetails(final String userName) {
-		final DBSession session = openSession();
+		final DBSession session = this.openSession();
 		try {
 			/*
 			 * We don't use userName but user.getName() in the remaining part of
 			 * this method, since the name gets normalized in getUserDetails().
 			 */
 			final User user = this.userDBManager.getUserDetails(userName, session);
+			
 			/*
-			 * add/remove some details
+			 * only admin and myself may see which group I'm a member of
 			 */
-			if (this.permissionDBManager.isAdminOrSelf(loginUser, user.getName())) {
-				/*
-				 * only admin any myself may see which group I'm a member of
-				 */
+			if (this.permissionDBManager.isAdminOrSelf(this.loginUser, user.getName())) {
 				user.setGroups(this.groupDBManager.getGroupsForUser(user.getName(), true, session));
 				// fill user's spam informations
 				this.adminDBManager.getClassifierUserDetails(user, session);
-			} else {
-				/*
-				 * only the user himself or the admin gets the full details
-				 */
-				user.setEmail(null);
-				user.setRealname(null);
-				user.setHomepage(null);
-				user.setPassword(null);
-				user.setReminderPassword(null);
-				user.setReminderPasswordRequestDate(null);
-				user.setApiKey(null);
-				// set neutral spam information
-				user.setToClassify(0);
-				user.setSpammer(false);
-				/*
-				 * FIXME: the settings and other things set in
-				 * userDBManager.getUserDetails() are not cleared!
-				 */
+				return user;
 			}
+			
+			/*
+			 * respect user privacy settings
+			 * clear all profile attributes if current login user isn't allowed to see the profile
+			 */
+			if (!this.permissionDBManager.isAllowedToAccessUsersProfile(user, this.loginUser, session)) {
+				return new User(userName);
+			}
+			
+			/*
+			 * clear the private stuff
+			 */
+			user.setEmail(null);
+			
+			user.setApiKey(null);
+			user.setPassword(null);
+			
+			user.setReminderPassword(null);
+			user.setReminderPasswordRequestDate(null);
+			
+			user.setSettings(null);
+			
+			/*
+			 * FIXME: other things set in userDBManager.getUserDetails() maybe not cleared!
+			 */
+			
 			return user;
 		} finally {
 			session.close();
@@ -952,7 +960,6 @@ public class DBLogic implements LogicInterface {
 		 */
 		PostUtils.setGroupIds(post, this.loginUser);
 
-		
 		manager.createPost(post, session);
 
 		// if we don't get an exception here, we assume the resource has
@@ -1128,31 +1135,32 @@ public class DBLogic implements LogicInterface {
 			}
 
 			return this.storeUser(user, true);
-		} else {
-			String updatedUser = null;
-
-			final DBSession session = openSession();
-
-			try {
-				if (operation.equals(UserUpdateOperation.UPDATE_PASSWORD)) {
-
-					updatedUser = this.userDBManager.updatePasswordForUser(user, session);
-
-				} else if (operation.equals(UserUpdateOperation.UPDATE_SETTINGS)) {
-
-					updatedUser = this.userDBManager.updateUserSettingsForUser(user, session);
-				} else if (operation.equals(UserUpdateOperation.UPDATE_API)) {
-
-					this.userDBManager.updateApiKeyForUser(user.getName(), session);
-				} else if(operation.equals(UserUpdateOperation.UPDATE_CORE)) {
-					
-					updatedUser = this.userDBManager.updateUserProfile(user, session);
-				}
-			} finally {
-				session.close();
-			}
-			return updatedUser;
 		}
+		
+		
+		String updatedUser = null;
+
+		final DBSession session = openSession();
+
+		try {
+			if (operation.equals(UserUpdateOperation.UPDATE_PASSWORD)) {
+
+				updatedUser = this.userDBManager.updatePasswordForUser(user, session);
+
+			} else if (operation.equals(UserUpdateOperation.UPDATE_SETTINGS)) {
+				
+				updatedUser = this.userDBManager.updateUserSettingsForUser(user, session);
+			} else if (operation.equals(UserUpdateOperation.UPDATE_API)) {
+
+				this.userDBManager.updateApiKeyForUser(user.getName(), session);
+			} else if(operation.equals(UserUpdateOperation.UPDATE_CORE)) {
+				
+				updatedUser = this.userDBManager.updateUserProfile(user, session);
+			}
+		} finally {
+			session.close();
+		}
+		return updatedUser;
 	}
 
 	/**
@@ -1203,7 +1211,6 @@ public class DBLogic implements LogicInterface {
 		 * TODO: return correct value
 		 */
 		return updatedUser;
-
 	}
 
 	/*
@@ -1896,21 +1903,14 @@ public class DBLogic implements LogicInterface {
 		return result;
 	}
 
-	/******************
-	 * USER RELATIONS *
-	 *****************/
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bibsonomy.model.logic.LogicInterface#insertUserRelationship()
-	 */
-	@Override
 	/*
 	 * We create a UserRelation of the form (sourceUser, targetUser)\in relation
 	 * This Method only works for the FOLLOWER_OF and the OF_FRIEND relation
 	 * Other relation will result in an UnsupportedRelationException
+	 * 
+	 * @see org.bibsonomy.model.logic.LogicInterface#insertUserRelationship()
 	 */
+	@Override
 	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
 		this.ensureLoggedIn();
 		// this.permissionDBManager.checkUserRelationship(sourceUser,
@@ -1925,16 +1925,9 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/**
-	 * We return all Users that are in (the) relation with the sourceUser as
-	 * targets.
-	 * 
-	 * @param sourceUser
-	 *            = leftHandSide of the relation
-	 * @param relation
-	 *            = the User relation
-	 * @return all rightHandsides, that is all Users u with (sourceUser, u)\in
-	 *         relation
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUserRelationship(java.lang.String, org.bibsonomy.common.enums.UserRelation)
 	 */
 	public List<User> getUserRelationship(String sourceUser, UserRelation relation) {
 		this.ensureLoggedIn();
@@ -1956,15 +1949,12 @@ public class DBLogic implements LogicInterface {
 	}
 
 	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bibsonomy.model.logic.LogicInterface#deleteUserRelationship()
-	 */
-	/**
 	 * We delete a UserRelation of the form (sourceUser, targetUser)\in relation
 	 * This Method only works for the FOLLOWER_OF and the OF_FRIEND relation
 	 * Other relation will result in an UnsupportedRelationException FIXME: use
 	 * Strings (usernames) instead of users
+	 * 
+	 * @see org.bibsonomy.model.logic.LogicInterface#deleteUserRelationship()
 	 */
 	@Override
 	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
@@ -2086,13 +2076,9 @@ public class DBLogic implements LogicInterface {
 		return 0;
 	}
 
-	/**
-	 * Delete the users Message (given by the unique contentId) from his inbox
-	 * 
-	 * @param sender
-	 * @param receiver
-	 * @param resourceHash
-	 * @return size of Inbox
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.logic.LogicInterface#deleteInboxMessages(java.util.List, boolean)
 	 */
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox) {
 		/*

@@ -34,29 +34,30 @@ import org.bibsonomy.util.ExceptionUtils;
  * @version $Id$
  */
 public class UserDatabaseManager extends AbstractDatabaseManager {
-
+	
 	private static final Log log = LogFactory.getLog(UserDatabaseManager.class);
+	
+	private static final UserChain chain = new UserChain();
+	
 	private final static UserDatabaseManager singleton = new UserDatabaseManager();
+	
+	/**
+	 * @return UserDatabaseManager
+	 */
+	public static UserDatabaseManager getInstance() {
+		return singleton;
+	}
 	
 	private final BasketDatabaseManager basketDBManager;
 	private final InboxDatabaseManager inboxDBManager;
 	private final DatabasePluginRegistry plugins;
 	private final AdminDatabaseManager adminDBManager;
-	
-	private static final UserChain chain = new UserChain();
 
 	private UserDatabaseManager() {
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
 		this.basketDBManager = BasketDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.adminDBManager = AdminDatabaseManager.getInstance();
-	}
-
-	/**
-	 * @return UserDatabaseManager
-	 */
-	public static UserDatabaseManager getInstance() {
-		return singleton;
 	}
 
 	/**
@@ -138,11 +139,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Updates only the password of a current user
-	 * 
-	 * @param username
+	 * @param user 
 	 * @param session
+	 * @return
 	 */
-	public String updatePasswordForUser(User user, final DBSession session) {
+	public String updatePasswordForUser(final User user, final DBSession session) {
 		if (this.getUserDetails(user.getName(), session).getName() == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update password for nonexistent user");
 		this.update("updatePasswordForUser", user, session);
 		return user.getName();
@@ -311,7 +312,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 
 		existingUser.setReminderPassword(!present(user.getReminderPassword()) ? existingUser.getReminderPassword() : user.getReminderPassword());
 		existingUser.setReminderPasswordRequestDate(!present(user.getReminderPasswordRequestDate()) ? existingUser.getReminderPasswordRequestDate() : user.getReminderPasswordRequestDate());
-
+		
 		/*
 		 * FIXME: user settings are completely missing!
 		 */
@@ -677,9 +678,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getRelation_"+relation.toString(), sourceUser, User.class, session);
 	}
 	
-
-	
-		/**
+	/**
 	 * Delete a relation between two users (if present)
 	 * @param sourceUser (left side of the relation)
 	 * @param targetUser (right side of the relation)

@@ -68,7 +68,7 @@ public interface DBSession extends Closeable {
 	/**
 	 * TODO: Add java-doc comment
 	 * @param key
-	 * @param error
+	 * @param errorMessage
 	 */
 	public void addError(String key, ErrorMessage errorMessage);
 }

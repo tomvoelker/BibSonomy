@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -29,21 +30,28 @@ import org.bibsonomy.model.util.UserUtils;
  * @version $Id$
  */
 public class PermissionDatabaseManager extends AbstractDatabaseManager {
-
-	private final static PermissionDatabaseManager singleton = new PermissionDatabaseManager();
-	private final GroupDatabaseManager groupDb;
-
+	
 	private static final Log log = LogFactory.getLog(PermissionDatabaseManager.class);
-
-	private PermissionDatabaseManager() {
-		this.groupDb = GroupDatabaseManager.getInstance();
-	}
-
+	
+	private static final int MAX_TAG_SIZE = 10;
+	private static final int END_MAX = 1000;
+	
+	private final static PermissionDatabaseManager singleton = new PermissionDatabaseManager();
+	
 	/**
 	 * @return PermissionDatabaseManager
 	 */
 	public static PermissionDatabaseManager getInstance() {
 		return singleton;
+	}
+	
+	
+	private final GroupDatabaseManager groupDb;
+	private final GeneralDatabaseManager generalDb;
+	
+	private PermissionDatabaseManager() {
+		this.groupDb = GroupDatabaseManager.getInstance();
+		this.generalDb = GeneralDatabaseManager.getInstance();
 	}
 
 	/**
@@ -55,8 +63,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param itemType
 	 */
 	public void checkStartEnd(final User loginUser, final Integer start, final Integer end, final String itemType) {
-		if (!Role.ADMIN.equals(loginUser.getRole()) && end > 1000) {
-			throw new ValidationException("You are not authorized to retrieve more than the last 1000 " + itemType + " items.");
+		if (!Role.ADMIN.equals(loginUser.getRole()) && end > END_MAX) {
+			throw new ValidationException("You are not authorized to retrieve more than the last " + END_MAX + " " + itemType + " items.");
 		}
 	}
 
@@ -142,8 +150,6 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		return false;
 	}
 
-
-
 	/**
 	 * This method checks whether the logged-in user is allowed to see documents of 
 	 * the requested user or a requested group. The user is allowed to access the documents,
@@ -191,6 +197,56 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			}
 		}
 		return isAllowed;
+	}
+	
+	/**
+	 * checks if the loginUser is allowed to access the profile of user
+	 * 
+	 * @param user
+	 * @param loginUser
+	 * @param session
+	 * @return true iff loginUser is allowed to access users profiles
+	 */
+	public boolean isAllowedToAccessUsersProfile(final User user, final User loginUser, final DBSession session) {
+		if (!present(user) || !present(loginUser)) {
+			return false;
+		}
+		
+		/*
+		 * check if user is self or admin
+		 */
+		if (this.isAdminOrSelf(loginUser, user.getName())) {
+			return true;
+		}
+		
+		/*
+		 * get privacy level of user from database and respect it
+		 */
+		ProfilePrivlevel privacyLevel = ProfilePrivlevel.PRIVATE; // private is default setting
+		
+		/*
+		 * if the settings weren't loaded yet, load the profile privacy setting now
+		 */
+		if (!present(user.getSettings()) || !present(user.getSettings().getProfilePrivlevel())) {
+			final ProfilePrivlevel result = this.queryForObject("getProfilePrivlevel", user, ProfilePrivlevel.class, session);
+			
+			if (present(result)) {
+				privacyLevel = result;
+			}
+		} else {
+			privacyLevel = user.getSettings().getProfilePrivlevel();
+		}
+		
+		switch (privacyLevel) {
+			case PUBLIC:
+				return true;
+			case PRIVATE:
+				return false;
+			case FRIENDS:
+				return this.generalDb.isFriendOf(loginUser.getName(), user.getName(), session);
+		}		
+		
+		return false;
 	}
 
 	/**
@@ -250,7 +306,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @return true if maximum size is exceeded, false otherwise
 	 */
 	public boolean exceedsMaxmimumSize(final List<String> tags) {
-		return tags != null && tags.size() >= 10;
+		return tags != null && tags.size() >= MAX_TAG_SIZE;
 	}
 
 	/**
@@ -264,7 +320,6 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * filter
 	 */
 	public boolean checkFilterPermissions(FilterEntity filter, User loginUser){
-
 		if (filter == null) return false;
 
 		switch (filter){
@@ -320,6 +375,8 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	
 	
 	/**
+	 * FIXME: Why do we need loginUser and relation?
+	 * 
 	 * Checks if a user relationship between the logged-in user 
 	 * and a requested user may be created.
 	 * 
@@ -329,9 +386,6 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @return true if everyhing is OK and the relationship may be created
 	 * 
 	 * 
-	 */
-	/*
-	 * FIXME: Why do we need loginUser and relation?
 	 */
 	public boolean checkUserRelationship(User loginUser, User requestedUser, UserRelation relation) {
 		if (!present(requestedUser)) {

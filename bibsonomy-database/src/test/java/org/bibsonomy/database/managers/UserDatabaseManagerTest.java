@@ -12,12 +12,15 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.testutil.ModelUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.BeforeClass;
@@ -148,6 +151,46 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		}
 	}
 
+	/**
+	 * tests the {@link UserUpdateOperation#UPDATE_CORE} operation
+	 */
+	@Test
+	public void updateUserProfile() {
+		final String username = "testuser1";
+		final ProfilePrivlevel level = ProfilePrivlevel.FRIENDS;
+		final String newRealname = "Test User 12";
+		
+		/*
+		 * get user details
+		 */
+		User testUser = this.userDb.getUserDetails(username, this.dbSession);
+		assertEquals("Test User 1", testUser.getRealname());
+		
+		/*
+		 * change profile
+		 */
+		testUser.setRealname(newRealname);
+		
+		final UserSettings testUserSettings = testUser.getSettings();
+		testUserSettings.setProfilePrivlevel(level);
+		testUserSettings.setTagboxTooltip(2); // to check if UpdateCore was executed
+		
+		/*
+		 * update profile
+		 */
+		this.userDb.updateUserProfile(testUser, this.dbSession);
+		
+		/*
+		 * save user
+		 */
+		User savedTestuser = this.userDb.getUserDetails(username, this.dbSession);
+		final UserSettings savedSettings = savedTestuser.getSettings();
+		assertEquals(level, savedSettings.getProfilePrivlevel());
+		assertEquals(newRealname, savedTestuser.getRealname());
+		
+		assertNotSame(2, savedSettings.getTagboxTooltip()); // check if more than the core was updated
+	}
+	
 	/**
 	 * tests updateApiKeyForUser
 	 */

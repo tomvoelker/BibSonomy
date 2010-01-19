@@ -11,10 +11,6 @@ import org.bibsonomy.database.params.StatisticsParam;
  * @version $Id$
  */
 public class TagUserChain implements FirstChainElement<Integer, StatisticsParam> {
-
-	public TagUserChain() {
-
-	}
 	
 	public ChainElement<Integer, StatisticsParam> getFirstElement() {
 		return null;
