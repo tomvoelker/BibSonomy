@@ -68,6 +68,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	private static final String PATTERN_KEYWORDS		   = "keywords = \"(.+)\"";
 	private static final String PATTERN_QUOTE_START		   = "\\s*=\\s*\"";
 	private static final String PATTERN_QUOTE_END		   = "\\\"\\s*,\\s*$|\\\"\\s*$";
+	private static final String PATTERN_DOI				   = "(doi\\s*=.*\\s*)";
 
 	private static final Pattern patternDownload	= Pattern.compile(PATTERN_DOWNLOAD_PAGE_LINK);
 	private static final Pattern patternAcct		= Pattern.compile(PATTERN_ACCT);
@@ -78,6 +79,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	private static final Pattern patternKeywords	= Pattern.compile(PATTERN_KEYWORDS);
 	private static final Pattern patternQuoteStart	= Pattern.compile(PATTERN_QUOTE_START, Pattern.MULTILINE);
 	private static final Pattern patternQuoteEnd	= Pattern.compile(PATTERN_QUOTE_END, Pattern.MULTILINE);
+	private static final Pattern patternDoi			= Pattern.compile(PATTERN_DOI, Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 	
 	private static final Pattern patternBrokenPages = Pattern.compile("(.*pages = \"[0-9]+) - ([0-9]+\".*)", Pattern.DOTALL); 
 	
@@ -214,9 +216,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 			 * fix DOI field
 			 */
 			String _doi = DOIUtils.extractDOI(bibtex);
-			
-			Pattern _p = Pattern.compile("(doi\\s*=.*\\s*)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
-			matcher    = _p.matcher(result);
+			matcher     = patternDoi.matcher(result);
 			
 			if (matcher.find()) {
 				result = result.replace(matcher.group(), "");
