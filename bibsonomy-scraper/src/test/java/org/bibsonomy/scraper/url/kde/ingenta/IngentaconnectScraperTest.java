@@ -30,7 +30,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Scraper URL tests #15 for IngentaconnectScraper
+ * Scraper URL tests #15 #169 for IngentaconnectScraper
  * @author tst
  *
  */
@@ -41,9 +41,19 @@ public class IngentaconnectScraperTest {
 	 */
 	@Test
 	@Ignore
-	public void urlTestRun(){
+	public void urlTestRun1(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_15"));
+	}
+	
+	/**
+	 * starts URL test with id url_169
+	 */
+	@Test
+	@Ignore
+	public void urlTestRun2(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_169"));
 	}
 	
 }
