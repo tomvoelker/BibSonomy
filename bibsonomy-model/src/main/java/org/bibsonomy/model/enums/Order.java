@@ -38,7 +38,13 @@ public enum Order {
 	FOLKRANK,
 	
 	/** for ordering tags by frequency (desc) */
-	FREQUENCY;
+	FREQUENCY,
+	
+	/**
+	 * Some items can be ordered alphabetically ...
+	 * (in particular groups)
+	 */
+	ALPH;
 
 	/**
 	 * Retrieve Order by name
