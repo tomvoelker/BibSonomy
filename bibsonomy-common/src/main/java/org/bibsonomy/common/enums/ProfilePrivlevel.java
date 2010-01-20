@@ -66,7 +66,7 @@ public enum ProfilePrivlevel {
 	public static ProfilePrivlevel getProfilePrivlevel(final String name) {		
 		try {
 			return valueOf(name.toUpperCase());
-		} catch (final IllegalArgumentException ex) {
+		} catch (final Exception ex) {
 			return PRIVATE;
 		}
 	}
