@@ -40,6 +40,7 @@ import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.id.DOIUtils;
 
 /** Scraper for ScienceDirect.
  * 
@@ -200,13 +201,26 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 			/*
 			 * replace \r
 			 */
-			final String result = bibtex.replace("\r","");
+			String result = bibtex.replace("\r","");
 			/*
 			 * fix "pages" field
 			 */
-			final Matcher matcher = patternBrokenPages.matcher(result);
+			Matcher matcher = patternBrokenPages.matcher(result);
 			if (matcher.matches()) {
-				return matcher.replaceFirst("$1--$2");
+				result = matcher.replaceFirst("$1--$2");
+			}
+			
+			/*
+			 * fix DOI field
+			 */
+			String _doi = DOIUtils.extractDOI(bibtex);
+			
+			Pattern _p = Pattern.compile("(doi\\s*=.*\\s*)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+			matcher    = _p.matcher(result);
+			
+			if (matcher.find()) {
+				result = result.replace(matcher.group(), "");
+				result = BibTexUtils.addFieldIfNotContained(result, "doi", _doi);
 			}
 			
 			return result;
