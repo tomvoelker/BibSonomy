@@ -91,9 +91,8 @@
 	<URLTest id="url_15">
 		<TestDescription>Scraping test for publications from ingentaconnect.com</TestDescription>
 		<URL>http://www.ingentaconnect.com/search/article?title=pagerank&amp;title_type=tka&amp;year_from=1998&amp;year_to=2007&amp;database=1&amp;pageSize=20&amp;index=2</URL>
-		<BibFile>IngentaconnectScraperUnitURLTest.bib</BibFile>
+		<BibFile>IngentaconnectScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_16">
 		<TestDescription>URL scraping test for the IOP scraper</TestDescription>
@@ -1002,5 +1001,11 @@
 		<BibFile>ElsevierhealthScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper</Scraper>
 		<AdditionalInfo>This is just an implicit ISBNScraper test. I can't find a title on Elsevier which isn't listed on Worldcat or Amazon</AdditionalInfo>
+	</URLTest>
+	<URLTest id="url_169">
+		<TestDescription>Scraping test for publications from ingentaconnect.com</TestDescription>
+		<URL>http://www.ingentaconnect.com/search/article?title=google&amp;title_type=tka&amp;year_from=1998&amp;year_to=2009&amp;database=1&amp;pageSize=20&amp;index=3</URL>
+		<BibFile>IngentaconnectScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
 	</URLTest>
 </test:Tests>
