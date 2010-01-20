@@ -37,9 +37,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	
 	private static final Log log = LogFactory.getLog(UserDatabaseManager.class);
 	
-	private static final UserChain chain = new UserChain();
+	private static final UserDatabaseManager singleton = new UserDatabaseManager();
 	
-	private final static UserDatabaseManager singleton = new UserDatabaseManager();
+	private static final UserChain chain = new UserChain();
 	
 	/**
 	 * @return UserDatabaseManager
