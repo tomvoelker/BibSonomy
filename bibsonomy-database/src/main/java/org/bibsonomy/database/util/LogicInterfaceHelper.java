@@ -40,6 +40,32 @@ public class LogicInterfaceHelper {
 	protected static final Log logger = LogFactory.getLog(ChainElement.class);
 
 	/**
+	 * 
+	 * Builds a parameter object for the given parameters from the LogicInterface.
+	 * 
+	 * @param <T>
+	 * @param type
+	 * @param order
+	 * @param start
+	 * @param end
+	 * @return - the filled parameter object
+	 */
+	public static <T extends GenericParam> T buildParam(final Class<T> type, final Order order, final int start, final int end) {
+		final T param = getParam(type);
+
+		param.setOrder(order);
+		param.setOffset(start);
+		if (end - start < 0) {
+			param.setLimit(0);
+		} else {
+			param.setLimit(end - start);
+		}
+		
+		return param;
+	}
+
+	
+	/**
 	 * Builds a param object for the given parameters from the LogicInterface.
 	 * 
 	 * @param <T> the type of param object to be build
@@ -57,7 +83,10 @@ public class LogicInterfaceHelper {
 	 * @return the fresh param object 
 	 */
 	public static <T extends GenericParam> T buildParam(final Class<T> type, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final FilterEntity filter, final User loginUser) {
-		final T param = getParam(type);
+		/*
+		 * delegate to simpler method
+		 */
+		final T param = buildParam(type, order, start, end);
 
 		// if hash length is 33 ,than use the first character as hash type
 		if (hash != null && hash.length() == 33) {
@@ -106,14 +135,6 @@ public class LogicInterfaceHelper {
 		param.addGroupsAndGroupnames(UserUtils.getListOfGroups(loginUser));
 		//  - private / friends groups are set later on 
 		//    (@see org.bibsonomy.database.util.DatabaseUtils.prepareGetPostForUser)
-
-		param.setOrder(order);
-		param.setOffset(start);
-		if (end - start < 0) {
-			param.setLimit(0);
-		} else {
-			param.setLimit(end - start);
-		}
 
 		if (tags != null) {
 			for (String tag : tags) {
