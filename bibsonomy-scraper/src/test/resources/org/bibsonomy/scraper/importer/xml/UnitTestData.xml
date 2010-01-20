@@ -112,12 +112,14 @@
 		<URL>http://www.librarything.de/work/details/10481522</URL>
 		<BibFile>LibrarythingScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_19">
 		<TestDescription>URL test for work-info pages from librarything (standard language)</TestDescription>
 		<URL>http://www.librarything.com/work/details/10481522</URL>
 		<BibFile>LibrarythingScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_20">
 		<TestDescription>Test for scraping publications with the ams scraper (normal publication page)</TestDescription>
@@ -181,6 +183,8 @@
 		<URL>http://www.slac.stanford.edu/spires/find/hep/www?r=DESY-THESIS-2007-018</URL>
 		<BibFile>SpiresScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.spires.SpiresScraper</Scraper>
+		<Enabled>false</Enabled>
+		<AdditionalInfo>Object not found</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_30">
 		<TestDescription>URL scraping test with publication from springerlink</TestDescription>
@@ -234,6 +238,7 @@
 		<URL>http://www.librarything.de/work/1926837/details</URL>
 		<BibFile>LibrarythingScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_38">
 		<TestDescription>URL test for bibsonomy.org/bibtex</TestDescription>
