@@ -23,6 +23,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.TagSet;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.util.ExceptionUtils;
 
@@ -60,7 +61,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of all groups
 	 */
 	public List<Group> getAllGroups(final int start, final int end, final DBSession session) {
-		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, null, start, end);
+		final GroupParam param = LogicInterfaceHelper.buildParam(GroupParam.class, Order.ALPH, start, end);
 		
 		return this.queryForList("getAllGroups", param, Group.class, session);
 	}
