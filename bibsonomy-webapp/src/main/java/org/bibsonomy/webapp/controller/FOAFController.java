@@ -10,11 +10,10 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.FOAFCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
-import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.validation.Errors;
 
 /**
  * controller for the FOAF-rdf output
@@ -23,9 +22,8 @@ import org.springframework.validation.Errors;
  * @author dzo
  * @version $Id$
  */
-public class FOAFController implements MinimalisticController<FOAFCommand>, ErrorAware {
+public class FOAFController implements MinimalisticController<FOAFCommand> {
 	private LogicInterface logic;
-	private Errors errors;
 	
 	@Override
 	public FOAFCommand instantiateCommand() {
@@ -33,12 +31,12 @@ public class FOAFController implements MinimalisticController<FOAFCommand>, Erro
 	}
 
 	@Override
-	public View workOn(final FOAFCommand command) {
-		final String requestedUser = command.getRequestedUser();
-		
+	public View workOn(final FOAFCommand command) {		
 		if (!command.getContext().isUserLoggedIn()) {
-			return Views.LOGIN;
+			return new ExtendedRedirectView("/login");
 		}
+		
+		final String requestedUser = command.getRequestedUser();
 		
 		if (!present(requestedUser)) {
 			throw new MalformedURLSchemeException("error.foaf_output_without_username");
@@ -79,30 +77,4 @@ public class FOAFController implements MinimalisticController<FOAFCommand>, Erro
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
-
-	/**
-	 * @return the logic
-	 */
-	public LogicInterface getLogic() {
-		return logic;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.webapp.util.ErrorAware#getErrors()
-	 */
-	@Override
-	public Errors getErrors() {
-		return this.errors;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.webapp.util.ErrorAware#setErrors(org.springframework.validation.Errors)
-	 */
-	@Override
-	public void setErrors(final Errors errors) {
-		this.errors = errors;
-	}
-
 }

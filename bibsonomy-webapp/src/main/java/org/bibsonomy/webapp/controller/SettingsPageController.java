@@ -12,13 +12,13 @@ import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
 /**
  * @author Steffen
- * @version $Id: SettingsPageController.java,v 1.2 2009-05-20 12:03:21
- *          voigtmannc Exp $
+ * @version $Id$
  */
 public class SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(SearchPageController.class);
@@ -36,7 +36,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 	 */
 	public View workOn(final SettingsViewCommand command) {
 		if (!command.getContext().isUserLoggedIn()) {
-			return Views.LOGIN;
+			return new ExtendedRedirectView("/login");
 		}
 
 		command.setPageTitle("settings");

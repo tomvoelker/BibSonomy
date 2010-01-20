@@ -36,7 +36,7 @@ public enum Views implements View {
 	USERPAGE("user"),
 	
 	/**
-	 * TODODZ
+	 * the user specific friend-of-a-friend (FOAF) project output
 	 */
 	FOAF("foaf"),
 	

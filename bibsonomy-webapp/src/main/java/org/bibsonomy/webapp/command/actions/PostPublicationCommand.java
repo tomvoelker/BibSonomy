@@ -30,7 +30,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * The URL which the tab header links to.
 	 */
-	private final String TAB_URL = "/import/publications"; // TODODZ: why not static?
+	private final String TAB_URL = "/import/publications"; // TODO: why not static?
 	
 	/****************************
 	 * FOR THE TAB FUNCTIONALITY
@@ -113,7 +113,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * (needed, because postPublication calls this site first, but tabs-hrefs have to be...
 	 * ... import/publications)
 	 */
-	private String tabURL=null; // TODODZ: null initializing ?!
+	private String tabURL;
 	
 	/**
 	 * @return the url of the tabbed site
@@ -155,7 +155,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * Detetermines, if we call import/publications a second time due to errors, the user can fix
 	 */
-	private boolean extendedView = false; // TODO: unnecessary
+	private boolean extendedView = false;
 	
 	/**
 	 * @returns True, if we call import/publications a second time due to errors, the user can fix
@@ -174,7 +174,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * The errors during parsing
 	 */
-	private List<Integer> erroneousLineNumbers = null; // TODO: unnecessary
+	private List<Integer> erroneousLineNumbers;
 	
 	public List<Integer> getErroneousLineNumbers() {
 		return this.erroneousLineNumbers;
@@ -385,7 +385,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * The posts, that were updated during import.
 	 */
-	private Map<String,String> updatedPosts=null; // TODO: null and HashMap => Map
+	private Map<String,String> updatedPosts;
 	
 	public Map<String,String> getUpdatedPosts() {
 		return this.updatedPosts;
@@ -429,9 +429,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setContent(final List<Object> content) {
 		// TODO Auto-generated method stub
 	}
-
 	
-
 	public PostPublicationCommand(){
 		tabs = new ArrayList<TabCommand>();
 		// Preparation for all tabs
@@ -447,6 +445,5 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		erroneousLineNumbers = new ArrayList<Integer>();
 			
 	}
-
 	
 }

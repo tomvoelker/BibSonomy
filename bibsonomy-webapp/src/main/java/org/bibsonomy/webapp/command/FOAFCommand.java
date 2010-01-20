@@ -1,13 +1,12 @@
 package org.bibsonomy.webapp.command;
 
 import org.bibsonomy.model.User;
-import org.bibsonomy.webapp.command.actions.UserLoginCommand;
 
 /** 
  * @author dzo
  * @version $Id$
  */
-public class FOAFCommand extends UserLoginCommand {
+public class FOAFCommand extends BaseCommand {
 	
 	private String requestedUser;
 	
