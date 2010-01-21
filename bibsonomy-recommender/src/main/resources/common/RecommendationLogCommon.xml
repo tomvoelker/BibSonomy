@@ -9,7 +9,6 @@
         <result property="first"  column="first" javaType="long"/>
         <result property="second" column="second" javaType="long"/>
     </resultMap>
-
 	
     <parameterMap id="recSetting" class="recSetting">
         <parameter property="recId"   javaType="string"/>
@@ -22,9 +21,9 @@
     </resultMap>
     
     <resultMap id="recAdminOverview" class="org.bibsonomy.recommender.tags.database.params.RecAdminOverview">
-        <result property="settingID" column="setting_id"  javaType="integer" />
+        <result property="settingID" column="setting_id"  javaType="long" />
         <result property="recID"     column="rec_id"      javaType="string"  />
-        <result property="latency"   column="rec_latency" javaType="integer" />
+        <result property="latency"   column="rec_latency" javaType="long" />
     </resultMap>
     
     <resultMap id="selectorSetting" class="selectorSetting">

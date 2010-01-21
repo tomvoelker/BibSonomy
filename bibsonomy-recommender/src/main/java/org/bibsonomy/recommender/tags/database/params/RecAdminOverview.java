@@ -7,21 +7,21 @@ package org.bibsonomy.recommender.tags.database.params;
  */
 public class RecAdminOverview {
 	
-	private int settingID, latency;
+	private Long settingID, latency;
 	private String recID;
 	
 	
-	public void setSettingID(int settingID){
+	public void setSettingID(Long settingID){
 	    this.settingID = settingID;
 	}
-	public int getSettingID(){
+	public Long getSettingID(){
 		return this.settingID;
 	}
 	
-	public void setLatency(int latency){
+	public void setLatency(Long latency){
 		this.latency = latency;
 	}
-	public int getLatency(){
+	public Long getLatency(){
 		return this.latency;
 	}
 	
