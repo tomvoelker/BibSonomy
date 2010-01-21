@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -10,9 +11,11 @@ import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.recommender.tags.TagRecommenderConnector;
 import org.bibsonomy.recommender.tags.database.DBAccess;
 import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
+import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.webapp.command.AdminRecommenderViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -34,6 +37,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	private LogicInterface logic;
 	private UserSettings userSettings;
 	private MultiplexingTagRecommender mp;
+	private final Long QUERIES_PER_LATENCY = (long)1000;
 
 	
 	
@@ -52,14 +56,37 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		command.setmultiplexingTagRecommender(mp);
 		
 		
-		List<RecAdminOverview> recOverview;
-		try{
-			recOverview = db.getRecommenderAdminOverview();
-			command.setRecOverview(recOverview);
+		List<TagRecommenderConnector> distRecommenders = mp.getDistRecommenders();
+		List<TagRecommender> localRecommenders = mp.getLocalRecommenders();
+		List<RecAdminOverview> recommenderList = new ArrayList<RecAdminOverview>();
+		
+		/* Get info for active local recommenders */
+		for(TagRecommender p: localRecommenders){
+			try{
+				RecAdminOverview current = db.getRecommenderAdminOverview(p.getClass().getCanonicalName());
+				current.setLatency(db.getAverageLatencyForRecommender(current.getSettingID(), QUERIES_PER_LATENCY));
+		        recommenderList.add(current);
+			}
+			catch(SQLException e){
+				log.debug(e.toString());
+			}
 		}
-		catch(SQLException e){
-			log.debug(e.toString());
+		
+		/* Get info for active distant recommenders */
+		for(TagRecommenderConnector p: distRecommenders){
+			try{
+				RecAdminOverview current = db.getRecommenderAdminOverview(p.getId());
+				current.setLatency(db.getAverageLatencyForRecommender(current.getSettingID(), QUERIES_PER_LATENCY));
+		        recommenderList.add(current);
+			}
+			catch(SQLException e){
+				log.debug(e.toString());
+			}
 		}
+		
+		/* Store info */
+		command.setRecOverview(recommenderList);
+		
 		
 		return Views.ADMIN_RECOMMENDER;
 	}

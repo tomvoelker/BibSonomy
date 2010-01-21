@@ -61,7 +61,7 @@
 
 
 <div id="fullscreen">
-   <div class="bluebox"><h2>Recommender info</h2></div>
+   <div class="bluebox"><h2>Status of active recommenders</h2></div>
    <div class="bluebox">
     
     <table class="rectable">
