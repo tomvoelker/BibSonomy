@@ -41,6 +41,7 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 	<typeAlias alias="postParam"       type="org.bibsonomy.recommender.tags.database.params.PostParam" />
 	<typeAlias alias="tasEntry"        type="org.bibsonomy.recommender.tags.database.params.TasEntry" />
     <typeAlias alias="postRecParam"    type="org.bibsonomy.recommender.tags.database.params.PostRecParam" />
+    <typeAlias alias="latencyParam"    type="org.bibsonomy.recommender.tags.database.params.LatencyParam" />
 
 	<typeAlias alias="pair"            type="org.bibsonomy.recommender.tags.database.params.Pair" />
 	<typeAlias alias="selectorMap"     type="org.bibsonomy.recommender.tags.database.params.SelectorQueryMapParam" />

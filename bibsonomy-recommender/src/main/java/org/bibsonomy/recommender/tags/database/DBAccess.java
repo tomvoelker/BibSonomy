@@ -27,6 +27,7 @@ import org.bibsonomy.recommender.tags.database.params.PostParam;
 import org.bibsonomy.recommender.tags.database.params.PostRecParam;
 import org.bibsonomy.recommender.tags.database.params.QueryGuess;
 import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
+import org.bibsonomy.recommender.tags.database.params.LatencyParam;
 import org.bibsonomy.recommender.tags.database.params.RecQueryParam;
 import org.bibsonomy.recommender.tags.database.params.RecQuerySettingParam;
 import org.bibsonomy.recommender.tags.database.params.RecResponseParam;
@@ -259,6 +260,8 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 			SortedSet<RecommendedTag> tags,
 			long latency ) throws SQLException {
 
+		if(tags==null) return 0;
+		
 		SqlMapClient sqlMap = getSqlMapInstance();
 	   	try {
     		sqlMap.startTransaction();
@@ -559,10 +562,24 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	
 	/**
 	 * Get recommender-info for admin statuspage
-	 * @return recommender-info 
+	 * @return recommender-info
+	 * @param id recommenderID
 	 */
-	public List<RecAdminOverview> getRecommenderAdminOverview() throws SQLException{
-		return (List<RecAdminOverview>)getSqlMapInstance().queryForList("recAdminOverview");
+	public RecAdminOverview getRecommenderAdminOverview(String id) throws SQLException{
+		return (RecAdminOverview)getSqlMapInstance().queryForObject("recAdminOverview", id);
+	}
+	
+	/** 
+	 * Get Average Latency For given recommender.
+	 * @return average latency
+	 * @param sid recommender's settingID
+	 * @param numberOfQueries number of (newest) queries which will be used to calculate the average latency
+	 */
+	public Long getAverageLatencyForRecommender(Long sid, Long numberOfQueries) throws SQLException{
+		if(numberOfQueries <= 0) return null;
+		
+		LatencyParam param = new LatencyParam(sid,numberOfQueries);
+		return (Long)getSqlMapInstance().queryForObject("getAverageLatencyForSettingID", param);
 	}
 	
 	
