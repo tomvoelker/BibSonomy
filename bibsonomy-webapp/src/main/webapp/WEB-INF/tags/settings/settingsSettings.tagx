@@ -32,81 +32,62 @@
 		
 		<!-- style settings -->		
 		<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
-		  <form:form id="styleSettingsForm" method="POST" action="/updateUserSettings">
+    
+    
+		<form:form id="styleSettingsForm" method="POST" action="/updateUserSettings">
+    
 		  <div id="fsform">
-		  <fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
-		  <table>
-		  	<div class="fsRow">
-		    <tr>
-		      <td><fmt:message key="settings.tag.showAs"/> </td>
-		      <td>
-		        <form:select path="user.settings.tagboxStyle" id="tagBoxStyleSelect">
+		    <fieldset class="fsInner">
+		  	  <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="user.settings.tagboxStyle"><fmt:message key="settings.tag.showAs"/></form:label>
+		        <form:select cssClass="fsInput fsSmall" path="user.settings.tagboxStyle">
 		          <form:option label="${cloud}" value="0" />
 		          <form:option label="${list}" value="1"/>
 		        </form:select>
-		      </td>
-		    </tr>
-		    </div>
+		      </div>
 		    
-		    <div class="fsRow">
-		    <tr>
-		        <td><fmt:message key="settings.tag.sortBy"/> </td>
-		        <td>
-		          <form:select path="user.settings.tagboxSort" id="tagSortSelect">
-		            <form:option label="${alphabet}" value="0"/>
-		            <form:option label="${frequency}" value="1"/>    
-		          </form:select>
-		        </td>
-		    </tr>
-		    </div>
+		      <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="user.settings.tagboxSort"><fmt:message key="settings.tag.sortBy"/></form:label>
+		        <form:select cssClass="fsInput fsSmall" path="user.settings.tagboxSort">
+		          <form:option label="${alphabet}" value="0"/>
+		          <form:option label="${frequency}" value="1"/>    
+		        </form:select>
+		      </div>
 		      
-		    <div class="fsRow">
-		      <tr>
-		        <td><fmt:message key="settings.tag.onlyMinFreq"/></td>
-		        <td>
-		          <form:input path="user.settings.tagboxMinfreq" size="3"/>
-		        </td>
-		      </tr>
-		    </div>
+		      <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="user.settings.tagboxMinfreq"><fmt:message key="settings.tag.onlyMinFreq"/></form:label>
+		        <form:input cssClass="fsInput fsSmall" path="user.settings.tagboxMinfreq"/>
+		      </div>
 		    
-		    <div class="fsRow">
-		      <tr>
-		        <td><fmt:message key="settings.tag.showTooltipsForTags"/></td>
-		        <td>
-		          <form:select path="user.settings.tagboxTooltip" id="tagboxTooltipSelect">
-		            <form:option label="${no}" value="0"/>
-		            <form:option label="${yes}" value="1"/>
-		          </form:select>
-		        </td>
-		      </tr> 
-		    </div>
+		      <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="user.settings.tagboxTooltip"><fmt:message key="settings.tag.showTooltipsForTags"/></form:label>
+		        <form:select cssClass="fsInput fsSmall" path="user.settings.tagboxTooltip">
+		          <form:option label="${no}" value="0"/>
+		          <form:option label="${yes}" value="1"/>
+		        </form:select>
+		      </div>
 		
-			<div class="fsRow">
-		      <tr>
-		        <td><fmt:message key="settings.tag.itemsPerPage"/></td>
-		        <td>
-		           <form:input path="user.settings.listItemcount" size="3"/>
-		        </td>
-		      </tr> 
-		    </div>
+			  <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="user.settings.listItemcount"><fmt:message key="settings.tag.itemsPerPage"/></form:label>
+		        <form:input cssClass="fsInput fsSmall" path="user.settings.listItemcount"/>
+		      </div>
 		         
-		    <div class="fsRow">   
-		       <tr>
-		        <td><fmt:message key="settings.tag.defaultLanguage"/></td>
-		        <td>
-		           <form:select path="user.settings.defaultLanguage" id="defaultLanguageSelect">
-		            <form:option label="${english}" value="en"/>
-		            <form:option label="${german}" value="de"/>
-		          </form:select>
-		        </td>
-		      </tr>    	   
-		    </div>
-		  </table>		  
-		  <input type="hidden" name="ckey" value="${ckey}"/>
-		  <input type="hidden" name="action" value="layoutTagPost"/>
-		  <input type="hidden" name="selTab" value="1"/>
-		  <input type="submit" name="tagbox_style" value="${setlayout}"/>
-		  </fieldset>
+		      <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="user.settings.defaultLanguage"><fmt:message key="settings.tag.defaultLanguage"/></form:label>
+		        <form:select cssClass="fsInput fsSmall" path="user.settings.defaultLanguage">
+		          <form:option label="${english}" value="en"/>
+		          <form:option label="${german}" value="de"/>
+		        </form:select>
+		      </div>
+            
+              <p>
+		        <input type="hidden" name="ckey" value="${ckey}"/>
+		        <input type="hidden" name="action" value="layoutTagPost"/>
+		        <input type="hidden" name="selTab" value="1"/>
+		        <input type="submit" name="tagbox_style" value="${setlayout}"/>
+              </p>
+              
+		    </fieldset>
 		  </div>
 		</form:form>
 		
@@ -179,7 +160,6 @@
         </fieldset>
         </div>
         </form:form>
-        <hr/>    
         
 		<!-- password change -->
 		
