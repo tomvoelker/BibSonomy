@@ -30,10 +30,9 @@ import org.bibsonomy.util.EnumUtils;
 /**
  * defines possible entities for which query constraints can be set
  * (someone called this "grouping")
+ * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
- */
-/**
  * @author dbenz
  *
  */
