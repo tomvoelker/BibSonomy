@@ -8,7 +8,9 @@
   xmlns:form="http://www.springframework.org/tags/form"
   xmlns:spring="http://www.springframework.org/tags"
   xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
-  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+  xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+  >
   
   <jsp:directive.attribute name="command"  type="org.bibsonomy.webapp.command.BaseCommand" required="true"/>
   
@@ -84,10 +86,9 @@
 		<div id="fsform">
     	  <fieldset class="fsInner">
 		    <div class="fsRow">
-		      <form:label cssClass="fsLabel" path="user.email"><fmt:message key="settings.email"/></form:label>
+		      <form:label cssClass="fsLabel" path="user.email"><fmt:message key="settings.email"/></form:label><buttons:help message="settings.mandatory"/>
 		      <form:input cssClass="fsInput" path="user.email"/>
-              <fmt:message key="settings.mandatory"/>
-                <div class="dissError"><form:errors path="user.email" /></div>
+              <div class="dissError"><form:errors path="user.email" /></div>
 		    </div>
 		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.homepage"><fmt:message key="settings.homepage"/></form:label>
@@ -95,7 +96,7 @@
 		      <div class="dissError"><form:errors path="user.homepage" /></div>
 		    </div>
 		    <div class="fsRow">
-		      <form:label cssClass="fsLabel" path="user.openURL">OpenURL</form:label>
+		      <form:label cssClass="fsLabel" path="user.openURL">OpenURL</form:label><buttons:help message="settings.openURLDescription"/>
 		      <form:input cssClass="fsInput" path="user.openURL"/>
 		      <fmt:message key="settings.openURLDescription"><fmt:param><a href="http://www.exlibrisgroup.com/sfx_openurl.htm">openURL</a></fmt:param></fmt:message>
 		      <div class="dissError"><form:errors path="user.openURL" /></div>
