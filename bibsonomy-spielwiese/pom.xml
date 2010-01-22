@@ -24,12 +24,14 @@
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-rest-client</artifactId>
-		</dependency>		
+		</dependency>
+		<!-- 		
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-post-filter</artifactId>
 			<version>2.0.4-SNAPSHOT</version>
 		</dependency>
+		 -->
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-bibtex-parser</artifactId>
