@@ -16,9 +16,6 @@
 		<fmt:message var="saveChanges" key="settings.saveChanges" />
 		<fmt:message var="male" key="settings.male"/>
 		<fmt:message var="female" key="settings.female"/>
-		<fmt:message var="public" key="settings.public"/>
-		<fmt:message var="private" key="settings.private"/>
-		<fmt:message var="friends" key="settings.friends"/>
 		
 		<!-- display potential errors -->
 		<errors:global errors="${errors}"/>
@@ -32,62 +29,45 @@
         <h2><fmt:message key="settings.generalInformation" /></h2>		
     
     	<div id="fsform">
-    	<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
-		<table>
-		  <div class="fsRow">
-		  <tr>
-		  	<td><form:label cssClass="fsLabel" path="user.name" ><fmt:message key="settings.username"/></form:label></td>
-		  	<td><form:input cssClass="fsInput" path="user.name" tabindex="2" disabled="true"/></td>
-		    <!-- <td><fmt:message key="settings.username"/></td>
-		    <td><c:out value="${command.user.name}"/></td> -->
-		  </tr>
-		  </div>
-		  <div class="fsRow">
-		  <tr>
-		    <td><fmt:message key="settings.realname"/></td>
-		    <td><form:input path="user.realname"/><div class="dissError" style="position:relative"><form:errors path="user.realname" /></div>
+ 
+       	  <fieldset class="fsInner">
+		    <div class="fsRow">
+		  	  <form:label cssClass="fsLabel" path="user.name" ><fmt:message key="settings.username"/></form:label>
+		  	  <form:input cssClass="fsInput" path="user.name" tabindex="2" disabled="true"/>
+  		    </div>
+            <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.realname"><fmt:message key="settings.realname"/></form:label>
+		      <form:input cssClass="fsInput" path="user.realname"/>
+              <div class="dissError"><form:errors path="user.realname" /></div>
+ 		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.gender"><fmt:message key="settings.gender"/></form:label>
+		      <form:select path="user.gender">
+		    	<form:option label="${male}" value="m"/>
+		    	<form:option label="${female}" value="f"/>
+		      </form:select>
+		      <div class="dissError"><form:errors path="user.gender" /></div>
 		    </td>
-		  </tr>
-		  </div>
-		  <div class="fsRow">
-		  <tr>
-		    <td><fmt:message key="settings.gender"/></td>
-		    <td><form:select path="user.gender">
-		    		<form:option label="${male}" value="m"/>
-		    		<form:option label="${female}" value="f"/>
-		    </form:select>
-		    <div class="dissError" style="position:relative"><form:errors path="user.gender" /></div>
-		    </td>
-		  </tr>
-		  </div>
-		  <div class="fsRow">
-		  <tr>
-		    <td><fmt:message key="settings.birthday"/></td>
-		    <td><form:input path="user.birthday"/>
-		    <div class="dissError" style="position:relative"><form:errors path="user.birthday" /></div>
-		    format: YYYY-MM-DD</td>
-		  </tr>
-		  </div>
-		  <div class="fsRow">
-		  <tr>
-		    <td><fmt:message key="settings.place"/></td>
-		    <td><form:input path="user.place"/></td>
-		  </tr>
-		  </div>
-		  <div class="fsRow">
-		  <tr>
-		    <td><fmt:message key="settings.profileViewableFor"/></td>
-		    <td><form:select path="group">
-		    	<form:option label="${public}" value="public"/>
-		    	<form:option label="${private}" value="private"/>
-		    	<form:option label="${friends}" value="friends"/>
-		    </form:select>
-		    <div class="dissError" style="position:relative"><form:errors path="group" /></div>
-			</td>
-		  </tr>
-		  </div>
-		</table>
-		</fieldset>
+ 		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="settings.birthday"/></form:label>
+		      <form:input cssClass="fsInput" path="user.birthday"/>
+		      <div class="dissError"><form:errors path="user.birthday" /></div>
+		      format: YYYY-MM-DD
+		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.place"><fmt:message key="settings.place"/></form:label>
+		      <form:input cssClass="fsInput" path="user.place"/>
+		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="group"><fmt:message key="settings.profileViewableFor"/></form:label>
+		      <form:select path="group">
+		    	<form:option label="public" value="public"/>
+		    	<form:option label="private" value="private"/>
+		    	<form:option label="friends" value="friends"/>
+		      </form:select>
+		      <div class="dissError"><form:errors path="group" /></div>
+		    </div>
+		  </fieldset>
 		</div>
 		
 		<h2><fmt:message key="settings.contact" /></h2>		
