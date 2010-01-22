@@ -25,11 +25,15 @@
         </p>
 		
 		<form:form name="account" method="post" action="/updateUserProfile">		
+
+
+
+
+
 	
         <h2><fmt:message key="settings.generalInformation" /></h2>		
     
     	<div id="fsform">
- 
        	  <fieldset class="fsInner">
 		    <div class="fsRow">
 		  	  <form:label cssClass="fsLabel" path="user.name" ><fmt:message key="settings.username"/></form:label>
@@ -69,41 +73,39 @@
 		    </div>
 		  </fieldset>
 		</div>
+
+
+
+
+
 		
 		<h2><fmt:message key="settings.contact" /></h2>		
 		
 		<div id="fsform">
-    	<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
-		<table>
-		  <div class="fsRow">
-		  <tr>
-		    <td><fmt:message key="settings.email"/></td>
-		    <td><form:input path="user.email"/>
-                <fmt:message key="settings.mandatory"/>
-                <div class="dissError" style="position:relative"><form:errors path="user.email" /></div>
-            </td>
-		  </tr>
-		  </div>
-		  <div class="fsRow">
-		  <tr>
-		    <td><fmt:message key="settings.homepage"/></td>
-		    <td><form:input path="user.homepage"/>
-		    	<div class="dissError" style="position:relative"><form:errors path="user.homepage" /></div>
-		    </td>
-		  </tr>
-		  </div>
-		  <div class="fsRow">
-		  <tr>
-		    <td>openURL</td>
-		    <td><form:input path="user.openURL"/>
-		    	<fmt:message key="settings.openURLDescription"><fmt:param><a href="http://www.exlibrisgroup.com/sfx_openurl.htm">openURL</a></fmt:param></fmt:message>
-		        <div class="dissError" style="position:relative"><form:errors path="user.openURL" /></div>
-		    </td>
-		  </tr>
-		  </div>
-		</table>
-		</fieldset>
+    	  <fieldset class="fsInner">
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.email"><fmt:message key="settings.email"/></form:label>
+		      <form:input cssClass="fsInput" path="user.email"/>
+              <fmt:message key="settings.mandatory"/>
+                <div class="dissError"><form:errors path="user.email" /></div>
+		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.homepage"><fmt:message key="settings.homepage"/></form:label>
+		      <form:input cssClass="fsInput" path="user.homepage"/>
+		      <div class="dissError"><form:errors path="user.homepage" /></div>
+		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.openURL">OpenURL</form:label>
+		      <form:input cssClass="fsInput" path="user.openURL"/>
+		      <fmt:message key="settings.openURLDescription"><fmt:param><a href="http://www.exlibrisgroup.com/sfx_openurl.htm">openURL</a></fmt:param></fmt:message>
+		      <div class="dissError"><form:errors path="user.openURL" /></div>
+		    </div>
+		  </fieldset>
 		</div>
+
+
+
+
 		
 		<h2><fmt:message key="settings.aboutMe"/></h2>
 		
@@ -131,6 +133,10 @@
 		</table>
 		</fieldset>
 		</div>
+
+
+
+
 		
 		<h2><fmt:message key="settings.myFriends"/></h2>
 		
