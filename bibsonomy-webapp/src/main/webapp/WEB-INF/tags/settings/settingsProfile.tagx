@@ -53,7 +53,7 @@
 		    	<form:option label="${female}" value="f"/>
 		      </form:select>
 		      <div class="dissError"><form:errors path="user.gender" /></div>
-		    </td>
+		    </div>
  		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="settings.birthday"/></form:label>
 		      <form:input cssClass="fsInput" path="user.birthday"/>
@@ -96,6 +96,7 @@
 		      <div class="dissError"><form:errors path="user.homepage" /></div>
 		    </div>
 		    <div class="fsRow">
+              <!-- TODO: fix help message -->
 		      <form:label cssClass="fsLabel" path="user.openURL">OpenURL</form:label><buttons:help message="settings.openURLDescription"/>
 		      <form:input cssClass="fsInput" path="user.openURL"/>
 		      <fmt:message key="settings.openURLDescription"><fmt:param><a href="http://www.exlibrisgroup.com/sfx_openurl.htm">openURL</a></fmt:param></fmt:message>
