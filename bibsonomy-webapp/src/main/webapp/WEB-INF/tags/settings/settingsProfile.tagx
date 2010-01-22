@@ -39,16 +39,16 @@
        	  <fieldset class="fsInner">
 		    <div class="fsRow">
 		  	  <form:label cssClass="fsLabel" path="user.name" ><fmt:message key="settings.username"/></form:label>
-		  	  <form:input cssClass="fsInput" path="user.name" tabindex="2" disabled="true"/>
+		  	  <form:input cssClass="fsInput fsSmall" path="user.name" tabindex="2" disabled="true"/>
   		    </div>
             <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.realname"><fmt:message key="settings.realname"/></form:label>
-		      <form:input cssClass="fsInput" path="user.realname"/>
+		      <form:input cssClass="fsInput fsSmall" path="user.realname"/>
               <div class="dissError"><form:errors path="user.realname" /></div>
  		    </div>
 		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.gender"><fmt:message key="settings.gender"/></form:label>
-		      <form:select path="user.gender">
+		      <form:select cssClass="fsInput fsSmall" path="user.gender">
 		    	<form:option label="${male}" value="m"/>
 		    	<form:option label="${female}" value="f"/>
 		      </form:select>
@@ -56,17 +56,17 @@
 		    </div>
  		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="settings.birthday"/></form:label>
-		      <form:input cssClass="fsInput" path="user.birthday"/>
+		      <form:input cssClass="fsInput fsSmall" path="user.birthday"/>
 		      <div class="dissError"><form:errors path="user.birthday" /></div>
 		      format: YYYY-MM-DD
 		    </div>
 		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.place"><fmt:message key="settings.place"/></form:label>
-		      <form:input cssClass="fsInput" path="user.place"/>
+		      <form:input cssClass="fsInput fsSmall" path="user.place"/>
 		    </div>
 		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="group"><fmt:message key="settings.profileViewableFor"/></form:label>
-		      <form:select path="group">
+		      <form:select cssClass="fsInput fsSmall" path="group">
 		    	<form:option label="public" value="public"/>
 		    	<form:option label="private" value="private"/>
 		    	<form:option label="friends" value="friends"/>
@@ -99,7 +99,6 @@
               <!-- TODO: fix help message -->
 		      <form:label cssClass="fsLabel" path="user.openURL">OpenURL</form:label><buttons:help message="settings.openURLDescription"/>
 		      <form:input cssClass="fsInput" path="user.openURL"/>
-		      <fmt:message key="settings.openURLDescription"><fmt:param><a href="http://www.exlibrisgroup.com/sfx_openurl.htm">openURL</a></fmt:param></fmt:message>
 		      <div class="dissError"><form:errors path="user.openURL" /></div>
 		    </div>
 		  </fieldset>
@@ -112,58 +111,46 @@
 		<h2><fmt:message key="settings.aboutMe"/></h2>
 		
 		<div id="fsform">
-    	<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
-		<table>
-		  <div class="fsRow">
-		  <tr>
-		    <td><fmt:message key="settings.profession"/></td>
-		    <td><form:input path="user.profession"/></td>		        
-		  </tr>
-		  </div>
-		  <div class="fsRow">
-		  <tr>
-		    <td><fmt:message key="settings.scientificInterests"/></td>
-		    <td><form:textarea cols="30" rows="4" path="user.interests"/></td>
-		  </tr>
-		  </div>
-		  <div class="fsRow">
-		  <tr>
-		    <td><fmt:message key="settings.hobbies"/></td>
-		    <td><form:textarea cols="30" rows="4" path="user.hobbies" /></td>
-		  </tr>
-		  </div>
-		</table>
-		</fieldset>
+    	  <fieldset class="fsInner">
+  	        <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.profession"><fmt:message key="settings.profession"/></form:label>
+		      <form:input cssClass="fsInput" path="user.profession"/>		        
+		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.interests"><fmt:message key="settings.scientificInterests"/></form:label>
+		      <form:textarea cssClass="fsInput" path="user.interests"/>
+		    </div>
+		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.hobbies"><fmt:message key="settings.hobbies"/></form:label>
+		      <form:textarea cssClass="fsInput" path="user.hobbies" />
+		    </div>
+  		  </fieldset>
 		</div>
 
 
-
-
+        <input type="submit" value="${saveChanges}"/>
+        <input type="hidden" name="action" value="update"/>
+        <input type="hidden" name="ckey" value="${ckey}"/>
+        <input type="hidden" name="selTab" value="0"/>
+      </form:form>  
 		
 		<h2><fmt:message key="settings.myFriends"/></h2>
 		
 		
 		<div id="fsform">
-    	<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">		  
-		<table>	
-		<div class="fsRow">	
-		<tr>
-			<td><fmt:message key="settings.friendOf"/></td>
-			<td>
-				<c:if test="${empty command.userFriends}"><fmt:message key="settings.noFriends"/></c:if>
-				<ul>
-					<c:forEach var="myfr1" items="${command.userFriends}">			
-		 				<li><a href="/user/${mtl:encodeURI(myfr1.name)}"><c:out value="${myfr1.name}"/></a></li>		 		
-					</c:forEach>
-				</ul>
-			</td>
-		</tr>
-		</div>
-		<div class="fsRow">		
-		<tr>
-			<td><fmt:message key="settings.myFriendsAre"><fmt:param><a href="/friends"><fmt:message key="friends"/></a></fmt:param></fmt:message></td>
-			<td>
-				<c:if test="${empty command.friendsOfUser}">
+    	  <fieldset class="fsInner">		  
+		    <div class="fsRow">	
+			  <span class="fsLabel"><fmt:message key="settings.friendOf"/></span>
+			  <c:if test="${empty command.userFriends}"><fmt:message key="settings.noFriends"/></c:if>
+			  <ul>
+				<c:forEach var="myfr1" items="${command.userFriends}">			
+		 			<li><a href="/user/${mtl:encodeURI(myfr1.name)}"><c:out value="${myfr1.name}"/></a></li>		 		
+				</c:forEach>
+			  </ul>
+		    </div>
+		    <div class="fsRow">		
+		 	  <span class="fsLabel"><fmt:message key="settings.myFriendsAre"><fmt:param><a href="/friends"><fmt:message key="friends"/></a></fmt:param></fmt:message></span>
+			  <c:if test="${empty command.friendsOfUser}">
 				<fmt:message key="settings.noFriends"/> (
 				<fmt:message key="settings.addFriendsNow">
 					<fmt:param>
@@ -172,31 +159,15 @@
 						</a>
 					</fmt:param>
 				</fmt:message>) 
-				</c:if>
+			  </c:if>
 				<ul>
 					<c:forEach var="myfr2" items="${command.friendsOfUser}">			
 		 				<li><a href="/user/${mtl:encodeURI(myfr2.name)}"><c:out value="${myfr2.name}"/></a></li>		 		
 					</c:forEach>
 				</ul>
-			</td>
-		</tr>
+ 		    </div>
+		  </fieldset>
 		</div>
+		
 
-		</table>
-		</fieldset>
-		</div>
-		
-		<p>
-		</p>
-		
-		<input type="hidden" name="action" value="update"/>
-		<input type="hidden" name="ckey" value="${ckey}"/>
-	    <input type="hidden" name="selTab" value="0"/>
-		
-		<table>
-			<tr>
-				<td><input type="submit" value="${saveChanges}"/></td>
-			</tr>
-		</table>
-	</form:form>	
 </jsp:root>
