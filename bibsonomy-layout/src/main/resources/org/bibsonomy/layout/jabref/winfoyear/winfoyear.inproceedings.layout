@@ -5,9 +5,9 @@
 \begin{booktitle}<i>\format[HTMLChars,FormatPagesForHTML]{\booktitle}</i>. \end{booktitle}\begin{edition}\format[HTMLChars]{\edition}.
 \begin{address}\format[HTMLChars]{\address}: \end{address}
 \begin{year}\format[HTMLChars]{\year} \end{year}
-\begin{volume}(\end{volume}\begin{volume}\format[HTMLChars]{\volume})\end{volume}
+\begin{volume}(\end{volume}\begin{volume}\format[HTMLChars]{\volume})\end{volume}<br/>
 \begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a>&nbsp;\end{url}
-\begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','abstract')">[Kurzfassung]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','bibtex')">[BibTeX]</a><a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','endnote')">[Endnote]</a>
+\begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','abstract')">[Kurzfassung]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','bibtex')">[BibTeX]</a>&nbsp;<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','endnote')">[Endnote]</a>
 \begin{abstract}<p><div id="abs_\bibsonomyIntrahash\bibsonomyUsername" style="display:none">\format[HTMLChars,FormatPagesForHTML]{\abstract}</div></p>\end{abstract}<p><div id="bib_\bibsonomyIntrahash\bibsonomyUsername" style="display:none;white-space:pre;max-width:100%;">
 @\format[ToLowerCase]{\bibtextype}{\bibtexkey,\begin{author}
   author = {\format[HTMLChars]{\author}}\end{author}\begin{title},
