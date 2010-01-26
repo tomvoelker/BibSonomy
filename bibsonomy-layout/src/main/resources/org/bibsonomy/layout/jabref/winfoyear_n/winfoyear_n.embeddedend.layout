@@ -41,6 +41,3 @@ function toggleInfo(articleid,info) {
 }
 -->
 </script>
-
-
-</body></html>
