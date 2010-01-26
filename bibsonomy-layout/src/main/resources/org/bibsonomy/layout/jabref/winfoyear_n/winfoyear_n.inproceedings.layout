@@ -1,15 +1,12 @@
 \begingroup{year}<h3>\year</h3>\endgroup{year}
 <div style="margin-bottom:1em">
-\begin{note}\format[HTMLChars]{\note}\end{note}
-\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}\end{author}
-\begin{year}\format[HTMLChars]{\year}\end{year}):
+\begin{note}\format[HTMLChars]{\note}:\end{note}
+\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}
 \begin{title}\format[HTMLChars,FormatPagesForHTML]{\title}. \end{title}
-\begin{editor}In: \format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\editor} (Hrsg.): \end{editor}
-\begin{booktitle}\format[HTMLChars,FormatPagesForHTML]{\booktitle}. \end{booktitle}\begin{edition}\format[HTMLChars]{\edition}. Aufl. \end{edition}\begin{address}\format[HTMLChars]{\address}: \end{address}
-\begin{publisher}\format[HTMLChars]{\publisher}, \end{publisher}
-\begin{volume} (\end{volume}\begin{series}\format[HTMLChars]{\series} \end{series}
-\begin{volume}\format[HTMLChars]{\volume})\end{volume}
-\begin{pages}, S. \format[FormatPagesForHTML]{\pages}\end{pages}<br/>
+\begin{booktitle}<i>\format[HTMLChars,FormatPagesForHTML]{\booktitle}</i>. \end{booktitle}\begin{edition}\format[HTMLChars]{\edition}.
+\begin{address}\format[HTMLChars]{\address}: \end{address}
+\begin{year}\format[HTMLChars]{\year} \end{year}
+\begin{volume}(\end{volume}\begin{volume}\format[HTMLChars]{\volume})\end{volume}
 \begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a>&nbsp;\end{url}
 \begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','abstract')">[Kurzfassung]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','bibtex')">[BibTeX]</a><a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\bibsonomyIntrahash\bibsonomyUsername','endnote')">[Endnote]</a>
 \begin{abstract}<p id="abs_\bibsonomyIntrahash\bibsonomyUsername" style="display:none">\format[HTMLChars,FormatPagesForHTML]{\abstract}</p>\end{abstract}<p id="bib_\bibsonomyIntrahash\bibsonomyUsername" style="display:none;white-space:pre;max-width:100%;">
