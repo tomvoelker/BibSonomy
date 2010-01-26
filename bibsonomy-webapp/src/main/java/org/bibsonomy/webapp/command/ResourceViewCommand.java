@@ -21,7 +21,7 @@ public class ResourceViewCommand extends BaseCommand {
 	private String tagstype; // for queries for specific kinds of tags
 	private String format = "html"; 
 	private String layout; // if format="layout", here the requested layout is stored
-	private boolean formatEmbeded; // 
+	private boolean formatEmbedded; // 
 	private String sortPage = "none";
 	private String sortPageOrder = "asc";
 	private String duplicates = "yes";
@@ -156,12 +156,12 @@ public class ResourceViewCommand extends BaseCommand {
 		this.layout = layout;
 	}
 
-	public boolean getFormatEmbeded() {
-		return this.formatEmbeded;
+	public boolean getformatEmbedded() {
+		return this.formatEmbedded;
 	}
 
-	public void setFormatEmbeded(boolean formatEmbeded) {
-		this.formatEmbeded = formatEmbeded;
+	public void setformatEmbedded(boolean formatEmbedded) {
+		this.formatEmbedded = formatEmbedded;
 	}
 
 	public void setTagstype(String tagstype) {

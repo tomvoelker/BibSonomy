@@ -53,7 +53,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 			 * get requested layout
 			 */
 			final String layout = command.getLayout();
-			final boolean formatEmbeded = command.getFormatEmbeded(); 
+			final boolean formatEmbedded = command.getformatEmbedded(); 
 			/*
 			 * get the requested path
 			 * we need it to generate the file names for inline content-disposition
@@ -78,7 +78,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 					/*
 					 * render publication posts
 					 */
-					renderResponse(layout, requPath, publicationPosts, loginUserName, response, formatEmbeded);
+					renderResponse(layout, requPath, publicationPosts, loginUserName, response, formatEmbedded);
 				} else {
 					/*
 					 * we could not find a suitable renderer - this should never happen!
@@ -125,7 +125,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 	 * @throws LayoutRenderingException
 	 * @throws IOException
 	 */
-	private <T extends Resource> void renderResponse(final String layoutName, final String requPath, final List<Post<T>> posts, final String loginUserName, final HttpServletResponse response, final boolean formatEmbeded) throws LayoutRenderingException, IOException {
+	private <T extends Resource> void renderResponse(final String layoutName, final String requPath, final List<Post<T>> posts, final String loginUserName, final HttpServletResponse response, final boolean formatEmbedded) throws LayoutRenderingException, IOException {
 
 		final LAYOUT layout = layoutRenderer.getLayout(layoutName, loginUserName);
 
@@ -134,7 +134,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 		 * First: do the real rendering, such that when an exception is thrown, we can forward to a JSP,
 		 * since response.getOutputStream() hasn't been called yet,
 		 */
-		final StringBuffer buf = layoutRenderer.renderLayout(layout, posts, formatEmbeded);
+		final StringBuffer buf = layoutRenderer.renderLayout(layout, posts, formatEmbedded);
 		/*
 		 * set the content type headers
 		 */				
