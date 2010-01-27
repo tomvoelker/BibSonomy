@@ -308,7 +308,7 @@ function setTagBoxFreq(){
 }
 
 function sendMinfreqRequ(minfreq, currUser) {
- 	var request = ajaxInit();
+	var request = ajaxInit();
  	if(request) {
  		if(minfreq == null)	minfreq = 1;
 
@@ -335,29 +335,31 @@ function sendStyleRequ(mode, style) {
 
 function handleMinfreqResponse(request) {
     return function(){
-    // window.alert(request.responseText);
-	if(request.readyState == 4) {
-		// dirty workaround for failed innerHTML-ajax functionality in ie6+7
-
-		if(window.navigator.userAgent.indexOf("MSIE ") > -1) {
-			window.location.reload();
-		} else {
-			replaceTags(request);
+	    //window.alert(request.responseText);
+		//alert(request.readyState);
+    	if(request.readyState == 4) {
+			// dirty workaround for failed innerHTML-ajax functionality in ie6+7
+	
+			if(window.navigator.userAgent.indexOf("MSIE ") > -1) {
+				window.location.reload();
+			} else {
+				replaceTags(request);
+			}
 		}
-	}	
 	}
 }
 
 function replaceTags (request) {
-	var pListStartTag = "<li";
+	
+	//ensure that we look in the correct list (the tagCloud / list)
+	var pListStartTag = "<li class=\"tag";
 	var pListEndTag = "</ul>";
 	
 	var text = request.responseText;
 	var start = text.indexOf(pListStartTag);
-	var end = text.indexOf(pListEndTag);
-	
+	var end = text.indexOf(pListEndTag,start);
+
 	tagbox.innerHTML = text.slice(start, end);
-	
 	var sListStartTag = "<span>";
 	var sListEndTag = "</span>";
 	start = text.indexOf(sListStartTag) + (sListEndTag.length - 1);
