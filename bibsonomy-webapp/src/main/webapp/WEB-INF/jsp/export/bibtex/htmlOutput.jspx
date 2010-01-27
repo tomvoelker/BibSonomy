@@ -27,28 +27,28 @@
     <c:forEach var="post" items="${command.bibtex.list}">
       <c:set var="bib" value="${post.resource}"/>
       <p class="entry">
-        <!-- author --><c:if test="${not empty bib.author}"><span class="entry_author"><mtl:bibclean value="${bib.author}"/>. </span></c:if>
-        <!-- title  --><span class="entry_title"><a href="${projectHome}bibtex/${hash.intra.id}${bib.intraHash}/${fn:escapeXml(post.user.name)}"><mtl:bibclean value="${bib.title}"/></a>. </span>
-        <!-- editor --><c:if test="${not empty bib.editor}"><span class="entry_editor">In <mtl:bibclean value="${bib.editor}"/>, editor(s), </span></c:if>
+        <!-- author --><c:if test="${not empty bib.author}"><span class="entry_author">${mtl:cleanBibtex(bib.author)}. </span></c:if>
+        <!-- title  --><span class="entry_title"><a href="${projectHome}bibtex/${hash.intra.id}${bib.intraHash}/${fn:escapeXml(post.user.name)}">${mtl:cleanBibtex(bib.title)}</a>. </span>
+        <!-- editor --><c:if test="${not empty bib.editor}"><span class="entry_editor">In ${mtl:cleanBibtex(bib.editor)}, editor(s), </span></c:if>
         <!-- journal, booktitle, series  -->
         <c:choose>
           <c:when test="${!empty bib.journal}">
-            <span class="entry_journal"><mtl:bibclean value="${bib.journal}"/>, </span>
+            <span class="entry_journal">${mtl:cleanBibtex(bib.journal)}, </span>
           </c:when>
           <c:when test="${!empty bib.booktitle}">
-            <span class="entry_booktitle"><mtl:bibclean value="${bib.booktitle}"/>, </span>
+            <span class="entry_booktitle">${mtl:cleanBibtex(bib.booktitle)}, </span>
           </c:when>        
           <c:when test="${!empty bib.series}">
-            <span class="entry_series"><mtl:bibclean value="${bib.series}"/>, </span>
+            <span class="entry_series">${mtl:cleanBibtex(bib.series)}, </span>
           </c:when>
         </c:choose>
         <!-- volume,number,pages -->
         <span class="entry_vonupa">
-         <c:if test="${!empty bib.volume}">(<mtl:bibclean value="${bib.volume}"/>)<c:if test="${!empty bib.pages and empty bib.number}">:</c:if></c:if><c:if test="${!empty bib.number}"><mtl:bibclean value="${bib.number}"/><c:if test="${!empty bib.pages}">:</c:if></c:if><c:if test="${!empty bib.pages}"><mtl:bibclean value="${bib.pages}"/>, </c:if>
+         <c:if test="${!empty bib.volume}">(${mtl:cleanBibtex(bib.volume)})<c:if test="${!empty bib.pages and empty bib.number}">:</c:if></c:if><c:if test="${!empty bib.number}">${mtl:cleanBibtex(bib.number)}<c:if test="${!empty bib.pages}">:</c:if></c:if><c:if test="${!empty bib.pages}">${mtl:cleanBibtex(bib.pages)}, </c:if>
         </span>
-        <!-- publisher --><c:if test="${not empty bib.publisher}"><span class="entry_publisher"><mtl:bibclean value="${bib.publisher}"/>, </span></c:if>
-        <!-- address   --><c:if test="${not empty bib.address}"><span class="entry_address"><mtl:bibclean value="${bib.address}"/>, </span></c:if>
-        <!-- year      --><c:if test="${not empty bib.year}"><span class="entry_year"><mtl:bibclean value="${bib.year}"/>. </span></c:if>
+        <!-- publisher --><c:if test="${not empty bib.publisher}"><span class="entry_publisher">${mtl:cleanBibtex(bib.publisher)}, </span></c:if>
+        <!-- address   --><c:if test="${not empty bib.address}"><span class="entry_address">${mtl:cleanBibtex(bib.address)}, </span></c:if>
+        <!-- year      --><c:if test="${not empty bib.year}"><span class="entry_year">${mtl:cleanBibtex(bib.year)}. </span></c:if>
 
         <!-- tags & url -->
         <output:tagsUrl post="${post}"/>      

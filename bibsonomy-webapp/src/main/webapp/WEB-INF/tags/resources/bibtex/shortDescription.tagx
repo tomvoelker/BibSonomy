@@ -10,7 +10,7 @@
 	
     <!-- shows a short description of a post - only title, author, year - the complete data in a hover-box -->
   
-    <mtl:bibclean value="${mtl:shortPublicationDescription(post)}"/>
+    ${mtl:cleanBibtex(mtl:shortPublicationDescription(post))}
     <c:out value=" "/>
     <span class="info">...
       <div>
