@@ -62,6 +62,31 @@ public class DOIUtilsTest {
 	"doi = {http://dx.doi.org/10.1162/089120102317341756},\n" + 
 	"}";
 	
+	private static final String bibtexWithCleanDoi = "@article{Pevzner02,\n" + 
+	"address = {Cambridge, MA, USA},\n" +
+	"author = {Lev Pevzner and Marti A. Hearst},\n" +
+	"interHash = {707f8d31137f6d39edd1d54664351d0d},\n" +
+	"intraHash = {330a11348556280054ec5fceeb23649c},\n" +
+	"journal = {Comput. Linguist.},\n" +
+	"number = {1},\n" +
+	"pages = {19--36},\n" +
+	"publisher = {MIT Press},\n" +
+	"title = {A critique and improvement of an evaluation metric for text segmentation},\n" +
+	"url = {http://portal.acm.org/citation.cfm?id=636737&dl=GUIDE&coll=GUIDE&CFID=27698866&CFTOKEN=51312152},\n" +
+	"volume = {28},\n" +
+	"year = {2002},\n" +
+	"issn = {0891-2017},\n" +
+	"doi = {10.1162/089120102317341756},\n" + 
+	"}";
+	
+	private static final String httpDoi = "http://dx.doi.org/10.1162/089120102317341756";
+	
+	private static final String urlWithDoi = "url={http://dx.doi.org/10.1007/11762256_31},";
+	
+	private static final String bibtexLineWithDoi = "doi={http://dx.doi.org/10.1007/11762256_31},";
+	private static final String cleanBibtexLineWithDoi = "doi={10.1007/11762256_31},";
+
+	
 	private static final String bibtexDoi = "10.1162/089120102317341756";
 
 	private static final String[] dois = new String[] 
@@ -201,6 +226,23 @@ public class DOIUtilsTest {
 		for(final String doi: dois) {
 			Assert.assertFalse(DOIUtils.isDOI(fuzzifyDOI(doi)));
 		}
+	}
+	
+	@Test
+	public void testCleanDOI() {
+		for (final String s : dois) {
+			if (s.contains("doi")) {
+				Assert.assertEquals(true, DOIUtils.cleanDOI(s).contains("doi"));
+			} else if (s.contains("DOI")) {
+				Assert.assertEquals(true, DOIUtils.cleanDOI(s).contains("DOI"));
+			}
+		}
+
+		Assert.assertEquals(bibtexWithCleanDoi, DOIUtils.cleanDOI(bibtexWithDoi));
+		
+		Assert.assertEquals(urlWithDoi, DOIUtils.cleanDOI(urlWithDoi));
+		
+		Assert.assertEquals(cleanBibtexLineWithDoi, DOIUtils.cleanDOI(bibtexLineWithDoi));
 	}
 
 

@@ -89,6 +89,12 @@ public class DOIUtils {
 	 */
 	private static final Pattern STRICT_DOI_PATTERN = Pattern.compile("^" + NON_NUMBERS_OR_LETTERS + DOI + DOI_END + NON_NUMBERS_OR_LETTERS + "$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern SLOPPY_DOI_PATTERN = Pattern.compile(".*?" + DOI + DOI_END + ".*", Pattern.CASE_INSENSITIVE);
+	
+	/**
+	 * Pattern to clean up a string containing a doi.
+	 */
+	private static final String CLEAN_DOI = "(doi\\s*=.*?)(doi:\\s*|http://.*?)?(10\\.\\d+\\/[^\\s\"'}]+)";
+	private static final Pattern CLEAN_DOI_PATTERN = Pattern.compile(CLEAN_DOI, Pattern.MULTILINE | Pattern.CASE_INSENSITIVE);
 
 	/** Checks, if the given URL is a DOI URL (i.e., points to dx.doi.org) 
 	 * 
@@ -175,6 +181,38 @@ public class DOIUtils {
 	 */
 	public static boolean isDOI(final String doi) {
 		return doi != null && DOI_PATTERN.matcher(doi).find();
+	}
+	
+	/**
+	 * Cleans up a doi entry. The string s can be a single Line or
+	 * a whole BibTeX string.
+	 * 
+	 * @param s
+	 * @return a modification of the String s. Changes occurences of
+	 * <i>doi = {http://dx.doi....</i> or <i>doi = {doi:...</i> to
+	 * <i>doi = {...}</i>.
+	 */
+	public static String cleanDOI(String s) {
+		final String doi = DOIUtils.extractDOI(s);
+		String replace = null;
+		
+		Matcher _m = CLEAN_DOI_PATTERN.matcher(s);
+		
+		while (_m.find()) {
+			if (_m.group(2) != null && _m.group(3) != null) {
+				replace = _m.group(2) + _m.group(3);
+				break;
+			}
+			
+			replace = _m.group(3);
+		}
+		
+		if (replace != null) {
+			s = s.replace(replace, doi);
+		}
+		
+		
+		return s;
 	}
  
 }
