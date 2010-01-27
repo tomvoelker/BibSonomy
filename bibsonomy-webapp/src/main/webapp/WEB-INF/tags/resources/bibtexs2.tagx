@@ -31,7 +31,7 @@
 			</c:if>
 			<c:set var="bibUrlTemplate">/bibtex/2${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></c:set>
 			<c:url var="bibUrl" value="${bibUrlTemplate}" context="${projectContext}"/>
-			<a href="${bibUrl}"><mtl:bibclean value="${post.resource.title}" /></a>
+			<a href="${bibUrl}">${mtl:cleanBibtex(post.resource.title)}"</a>
 		</jsp:attribute>
 		
 		<!-- Bibtex description -->
