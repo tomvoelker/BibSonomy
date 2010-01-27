@@ -19,7 +19,7 @@
 	<bib:year post="${post}" braces="true"/>
 	
 	<!-- title -->    
-   	<a href="${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><i><mtl:bibclean value="${post.resource.title}"/>.</i></a>
+   	<a href="${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}"><i>${mtl:cleanBibtex(post.resource.title)}.</i></a>
 
 	<!-- inbook / incollection data -->
   	<c:choose>

@@ -78,7 +78,7 @@
 	    <item rdf:about="${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}">
           
           <!-- title, description, link, creator, date, subject -->
-    	  <title><mtl:bibclean value="${post.resource.title}"/></title>
+    	  <title>${mtl:cleanBibtex(post.resource.title)}</title>
   		  <link>${projectHome}bibtex/${hash.intra.id}${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></link>
   		  <dc:creator><c:out value="${post.user.name}"/></dc:creator>
   		  <dc:date><mtl:formatDate value="${post.date}"/></dc:date>
