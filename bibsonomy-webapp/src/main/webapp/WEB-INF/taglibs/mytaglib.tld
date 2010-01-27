@@ -54,19 +54,7 @@
        <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
-  
-  <tag>
-    <name>bibclean</name>
-    <tagclass>tags.Bibclean</tagclass>
-    <bodycontent>empty</bodycontent>
-    <info>Removes {} and other symbols from the input String and encodes HTML Entities</info>
-    <attribute>
-       <name>value</name>
-       <required>true</required>
-       <rtexprvalue>true</rtexprvalue>
-    </attribute>
-  </tag>
-  
+    
   <tag>
     <name>bibcleancsv</name>
     <tagclass>tags.BibcleanCSV</tagclass>
@@ -325,6 +313,12 @@
   	<name>toggleUserSimilarity</name>
   	<function-class>tags.Functions</function-class>
   	<function-signature>String toggleUserSimilarity(java.lang.String)</function-signature>
+  </function>
+  
+  <function>
+  	<name>getErrorHint</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String getErrorHint(java.lang.String)</function-signature>
   </function>  
   
 </taglib>
