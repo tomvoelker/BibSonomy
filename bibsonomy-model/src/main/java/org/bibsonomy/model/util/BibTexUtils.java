@@ -49,6 +49,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
 import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.util.tex.TexDecode;
 
 /**
  * Some BibTex utility functions
@@ -567,19 +568,10 @@ public class BibTexUtils {
 		// replace markup
 		bibtex = bibtex.replaceAll("\\\\[a-z]+\\{([^\\}]+)\\}", "$1");  // \\markup{marked_up_text}		
 
-		// replace special character sequences for umlauts
-		// NOTE: this is just a small subset - could / should be extended to french, ...
-		bibtex = bibtex.replaceAll("\\{|\\}|\\\\", ""). // remove '\','{' and '\'
-		replaceAll("\\s+"," ").
-		replaceAll("\\\"o", "ö").
-		replaceAll("\\\"u", "ü").
-		replaceAll("\\\"a", "ä").
-		replaceAll("\\\"O", "Ö").
-		replaceAll("\\\"U", "Ü").
-		replaceAll("\\\"A", "Ä").
-		replaceAll("\\\"s", "ß").
-		trim();
+		// decode Latex macros into unicode characters
+		bibtex = TexDecode.decode(bibtex).trim();
 
+		// convert non-ASCII into HTML entities
 		final StringBuffer buffer = new StringBuffer(bibtex.length());
 		char c;		
 		for (int i = 0; i < bibtex.length(); i++) {
