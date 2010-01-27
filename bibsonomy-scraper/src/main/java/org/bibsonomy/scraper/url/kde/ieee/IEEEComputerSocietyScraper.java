@@ -39,6 +39,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.id.DOIUtils;
 
 /**
  * Scraper for csdl2.computer.org
@@ -107,6 +108,9 @@ public class IEEEComputerSocietyScraper extends AbstractUrlScraper {
 	
 					// append url
 					bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+					
+					// clean doi
+					bibtex = DOIUtils.cleanDOI(bibtex);
 					
 					// add downloaded bibtex to result 
 					sc.setBibtexResult(bibtex);

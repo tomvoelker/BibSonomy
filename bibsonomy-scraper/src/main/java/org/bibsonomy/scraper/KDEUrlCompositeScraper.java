@@ -49,6 +49,7 @@ import org.bibsonomy.scraper.url.kde.citeulike.CiteulikeScraper;
 import org.bibsonomy.scraper.url.kde.dblp.DBLPScraper;
 import org.bibsonomy.scraper.url.kde.dlib.DLibScraper;
 import org.bibsonomy.scraper.url.kde.editlib.EditLibScraper;
+import org.bibsonomy.scraper.url.kde.elsevierhealth.ElsevierhealthScraper;
 import org.bibsonomy.scraper.url.kde.eric.EricScraper;
 import org.bibsonomy.scraper.url.kde.googlescholar.GoogleScholarScraper;
 import org.bibsonomy.scraper.url.kde.ieee.IEEEComputerSocietyScraper;
@@ -179,6 +180,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new CellScraper());
 		addScraper(new IsiScraper());
 		addScraper(new CasesJournalScraper());
+		addScraper(new ElsevierhealthScraper());
 	}
 
 }

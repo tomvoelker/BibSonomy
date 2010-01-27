@@ -41,6 +41,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.XmlUtils;
+import org.bibsonomy.util.id.DOIUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -138,7 +139,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 			} else // log if abstract is not available
 				log.info("ACMBasicScraper: Abstract not available");
 
-			final String result = bibtexEntries.toString().trim();
+			final String result = DOIUtils.cleanDOI(bibtexEntries.toString().trim());
 
 			if (!"".equals(result)) {
 				sc.setBibtexResult(result);

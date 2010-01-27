@@ -38,6 +38,7 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
+import org.bibsonomy.util.id.DOIUtils;
 
 /** Scraper for ingentaconnect.
  * @author rja
@@ -128,10 +129,11 @@ public class IngentaconnectScraper extends AbstractUrlScraper{
 				//add author-line
 				authorBuffer.append("\"}");
 				buffer.append(authorBuffer);
+				bibtexResult = DOIUtils.cleanDOI(buffer.toString());
 			}
 			
-			if (bibtexResult != null && buffer.length() > 0) {
-				sc.setBibtexResult(buffer.toString());
+			if (bibtexResult != null) {
+				sc.setBibtexResult(bibtexResult);
 				return true;
 			} else {
 				throw new ScrapingFailureException("getting bibtex failed");

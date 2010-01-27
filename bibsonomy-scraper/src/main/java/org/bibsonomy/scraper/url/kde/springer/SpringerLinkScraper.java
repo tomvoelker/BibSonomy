@@ -42,6 +42,7 @@ import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.id.DOIUtils;
 
 
 
@@ -107,6 +108,11 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				String bibtexEntries = new RisToBibtexConverter().RisToBibtex(RisResult);
 				//System.out.println("DEBUG: " + bibtexEntries);
 
+				/*
+				 * cleanup doi
+				 */
+				bibtexEntries = DOIUtils.cleanDOI(bibtexEntries);
+				
 				/*
 				 * Job done
 				 */
