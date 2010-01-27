@@ -13,5 +13,5 @@
 	<!--  display title -->
 	<c:set var="bibUrlTemplate">/bibtex/${hash.intra.id}${post.resource.intraHash}/<mtl:encode value='${post.user.name}'/></c:set>
 	<c:url var="bibUrl" value="${bibUrlTemplate}" context="${projectContext}"/>
-	<a href="${bibUrl}"><mtl:bibclean value="${post.resource.title}"/></a><c:out value=" "/>
+	<a href="${bibUrl}">${mtl:cleanBibtex(post.resource.title)}</a><c:out value=" "/>
 </jsp:root>
