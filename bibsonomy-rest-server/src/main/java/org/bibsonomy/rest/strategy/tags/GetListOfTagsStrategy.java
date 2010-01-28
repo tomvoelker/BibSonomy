@@ -6,6 +6,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -48,6 +49,9 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 		if (regex != null) {
 			sb.append("&").append("filter=").append(regex);
 		}
+		if (this.getView().getOrder() == Order.FREQUENCY) {
+			sb.append("&").append("order=").append(this.getView().getOrder().toString().toLowerCase());
+		}
 		if (resourceType != Resource.class) {
 			sb.append("&resourcetype=").append(Resource.toString(resourceType).toLowerCase());
 		}
@@ -63,7 +67,7 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 
 	@Override
 	protected List<Tag> getList() {
-		return this.getLogic().getTags(resourceType, grouping, groupingValue, regex, null, hash, null, this.getView().getStartValue(), this.getView().getEndValue(), null, null);
+		return this.getLogic().getTags(resourceType, grouping, groupingValue, regex, null, hash, this.getView().getOrder(), this.getView().getStartValue(), this.getView().getEndValue(), null, null);
 	}
 
 	@Override
