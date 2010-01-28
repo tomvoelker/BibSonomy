@@ -1,5 +1,8 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.Map;
+
+import org.bibsonomy.layout.jabref.JabrefLayout;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -8,12 +11,16 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * @author mwa
+ * Controller for /layoutinfo
+ * 
+ * @author mwa,dbe
  * @version $Id$
  */
 public class ExportLayoutController implements MinimalisticController<ExportPageCommand> {
-
+	
+	/** layout renderer */
 	private JabrefLayoutRenderer layoutRenderer;
+	/** request logic */
 	private RequestLogic requestLogic;
 	
 	/** 
@@ -21,20 +28,31 @@ public class ExportLayoutController implements MinimalisticController<ExportPage
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
 	 */
-	public ExportPageCommand instantiateCommand() {
-		
+	public ExportPageCommand instantiateCommand() {		
 		return new ExportPageCommand();
 	}
 	
-	/** Main method which does the registration.
-	 * 
+	/** 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
-	public View workOn(ExportPageCommand command) {
-		
-		command.setLayoutMap(this.layoutRenderer.getJabrefLayouts());
-		command.setLang(this.requestLogic.getLocale().getLanguage());
-		
+	public View workOn(ExportPageCommand command) {		
+		/*
+		 * fetch Jabref layouts
+		 */
+		Map<String,JabrefLayout> layouts = this.layoutRenderer.getJabrefLayouts();
+		/*
+		 * remove non-public layouts 
+		 */		
+		for (String name : layouts.keySet()) {
+			if (!layouts.get(name).isPublicLayout()) {
+				layouts.remove(name);
+			}
+		}
+		/*
+		 * write into command + return
+		 */		
+		command.setLayoutMap(layouts);
+		command.setLang(this.requestLogic.getLocale().getLanguage());		
 		return Views.EXPORTLAYOUTS;
 	}
 	
