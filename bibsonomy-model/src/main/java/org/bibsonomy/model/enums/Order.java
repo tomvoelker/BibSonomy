@@ -35,11 +35,9 @@ public enum Order {
 	/** for ordering by popularity (desc) */
 	POPULAR,
 	/** for ordering by folkrank (desc) */
-	FOLKRANK,
-	
+	FOLKRANK,	
 	/** for ordering tags by frequency (desc) */
-	FREQUENCY,
-	
+	FREQUENCY,	
 	/**
 	 * Some items can be ordered alphabetically ...
 	 * (in particular groups)
@@ -59,7 +57,7 @@ public enum Order {
 		} catch (NullPointerException np) {
 			throw new IllegalArgumentException("No order specified!");
 		} catch (IllegalArgumentException ia) {
-			throw new IllegalArgumentException("Requested order not supported. Possible values are 'added', 'popular' or 'folkrank'");
+			throw new IllegalArgumentException("Requested order not supported. Possible values are 'added', 'popular', 'alph', 'frequency' or 'folkrank'");
 		}
 	}
 }
