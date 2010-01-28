@@ -23,6 +23,7 @@ public abstract class AbstractGetListStrategy<L extends List<?>> extends Strateg
 		this.view = new ViewModel();
 		this.view.setStartValue( context.getIntAttribute("start", 0) );
 		this.view.setEndValue( context.getIntAttribute("end", 20) );
+		this.view.setOrder( context.getStringAttribute("order", null) );
 		if (view.getStartValue() > view.getEndValue()) {
 			throw new BadRequestOrResponseException("start must be less than or equal end");
 		}
