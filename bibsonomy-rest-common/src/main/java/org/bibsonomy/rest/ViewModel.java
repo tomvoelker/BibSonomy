@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest;
 
+import org.bibsonomy.model.enums.Order;
+
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
@@ -43,6 +45,11 @@ public class ViewModel {
 	 * end value for the list of resources
 	 */
 	private int endValue;
+
+	/**
+	 * Order attribute for Tags
+	 */
+	private Order order;
 
 	/**
 	 * @return Returns the urlToNextResources.
@@ -87,5 +94,20 @@ public class ViewModel {
 	 */
 	public void setStartValue(int startValue) {
 		this.startValue = startValue;
+	}
+
+	/**
+	 * @param newOrderName
+	 *            The Name of the new Order to set
+	 */
+	public void setOrder(String newOrderName) {
+		if (newOrderName != null) this.order = Order.getOrderByName(newOrderName);
+	}
+
+	/**
+	 * @return Returns the order
+	 */
+	public Order getOrder() {
+		return this.order;
 	}
 }
