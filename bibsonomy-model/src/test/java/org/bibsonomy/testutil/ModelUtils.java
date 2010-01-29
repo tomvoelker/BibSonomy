@@ -23,8 +23,12 @@
 
 package org.bibsonomy.testutil;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -53,6 +57,12 @@ public final class ModelUtils extends CommonModelUtils {
 	private static final Log log = LogFactory.getLog(ModelUtils.class);
 
 	/**
+	 * To add meaningful dates to example posts.
+	 */
+	private final static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	
+
+	/**
 	 * Don't create instances of this class - use the static methods instead.
 	 */
 	private ModelUtils() {
@@ -75,6 +85,67 @@ public final class ModelUtils extends CommonModelUtils {
 		return bookmark;
 	}
 
+	
+	public static List<Post<Bookmark>> getBookmarks() {
+		final List<Post<Bookmark>> bookmarks = new LinkedList<Post<Bookmark>>();
+		bookmarks.add(generatePost(Bookmark.class));
+		bookmarks.add(getBookmark1());
+		bookmarks.add(getBookmark2());
+		return bookmarks;
+	}
+
+	private static Date parseDate(final String date) {
+		try {
+			return df.parse(date);
+		} catch (ParseException ex) {
+			return new Date();
+		}
+	}
+	private static Post<Bookmark> getBookmark1() {
+		final Bookmark bookmark = new Bookmark();
+		bookmark.setTitle("TWiki Javasxml");
+		bookmark.setUrl("http://wiki.java.net/bin/view/Javawsxml/Rome05TutorialFeedWriter?TWIKISID=db92d24843fca430dbdece95a2873b7c");
+		
+		bookmark.recalculateHashes();
+		
+		final Set<Tag> tags = new HashSet<Tag>();
+		tags.add(new Tag("rome"));
+		tags.add(new Tag("rss"));
+		tags.add(new Tag("atom"));
+		tags.add(new Tag("java"));
+		
+		final Post<Bookmark> post = new Post<Bookmark>();
+		post.setResource(bookmark);
+		post.setDate(parseDate("2008-12-12 12:37"));
+		post.setDescription("A cool tool for creating RSS and Atom feeds");
+		post.setUser(new User("rja"));
+
+		post.setTags(tags);
+		return post;
+	}
+
+	private static Post<Bookmark> getBookmark2() {
+		final Bookmark bookmark = new Bookmark();
+		bookmark.setTitle("TWiki Java.net");
+		bookmark.setUrl("http://wiki.java.net/");
+		
+		bookmark.recalculateHashes();
+		
+		final Set<Tag> tags = new HashSet<Tag>();
+		tags.add(new Tag("wiki"));
+		tags.add(new Tag("java"));
+		tags.add(new Tag("development"));
+		
+		final Post<Bookmark> post = new Post<Bookmark>();
+		post.setResource(bookmark);
+		post.setDate(parseDate("2008-12-31 16:57"));
+		post.setDescription("The Java.net Wiki");
+		post.setUser(new User("rja"));
+
+		post.setTags(tags);
+		return post;
+	}
+	
 	/**
 	 * Creates a BibTex with all properties set.
 	 * @return bibtex object filled with defaults
