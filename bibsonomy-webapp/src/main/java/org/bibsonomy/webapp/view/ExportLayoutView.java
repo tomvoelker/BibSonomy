@@ -49,8 +49,11 @@ public class ExportLayoutView extends AbstractView{
 			/*
 			 * put each layout into a JSON-object and add it to the JSON-array
 			 */
-			for (final String layoutName: command.getLayoutMap().keySet()){	
-				jsonLayouts.put(JSONObject.fromObject(command.getLayoutMap().get(layoutName)));
+			for(String layoutName: command.getLayoutMap().keySet()){	
+				//only support public layouts
+				if(command.getLayoutMap().get(layoutName).isPublicLayout()){
+					jsonLayouts.put(JSONObject.fromObject(command.getLayoutMap().get(layoutName)));
+				}
 			}
 
 			final JSONObject json = new JSONObject();
