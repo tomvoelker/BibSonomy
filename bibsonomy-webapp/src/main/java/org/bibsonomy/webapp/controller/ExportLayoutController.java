@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.bibsonomy.layout.jabref.JabrefLayout;
@@ -35,24 +36,11 @@ public class ExportLayoutController implements MinimalisticController<ExportPage
 	/** 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
-	public View workOn(ExportPageCommand command) {		
-		/*
-		 * fetch Jabref layouts
-		 */
-		Map<String,JabrefLayout> layouts = this.layoutRenderer.getJabrefLayouts();
-		/*
-		 * remove non-public layouts 
-		 */		
-		for (String name : layouts.keySet()) {
-			if (!layouts.get(name).isPublicLayout()) {
-				layouts.remove(name);
-			}
-		}
-		/*
-		 * write into command + return
-		 */		
-		command.setLayoutMap(layouts);
-		command.setLang(this.requestLogic.getLocale().getLanguage());		
+	public View workOn(ExportPageCommand command) {
+		
+		command.setLayoutMap(this.layoutRenderer.getJabrefLayouts());
+		command.setLang(this.requestLogic.getLocale().getLanguage());
+		
 		return Views.EXPORTLAYOUTS;
 	}
 	
