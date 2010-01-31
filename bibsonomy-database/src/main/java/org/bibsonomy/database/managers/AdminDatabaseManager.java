@@ -130,9 +130,9 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			 * map boolean to int
 			 */
 			if (user.isSpammer()) {
-				user.setPrediction(1);
+				user.setPrediction(SpamStatus.SPAMMER.getId());
 			} else {
-				user.setPrediction(0);
+				user.setPrediction(SpamStatus.NO_SPAMMER.getId());
 			}
 		}
 
@@ -144,21 +144,34 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		param.setUpdatedAt(new Date());
 		param.setGroupRange(Integer.MIN_VALUE);
 
-		// first update user table so that user is flagged as spammer
+		// update user and group table so that user is flagged as spammer
+		// and all groups are updated appropriately
+		// one session to prevent case of only updating spammer without updating the groups
 		session.beginTransaction();
 		/*
-		 * FIXME: What's the outcome when this method is called by deleteUser()?
+		 * What's the outcome when this method is called by deleteUser()?
+		 * When method deleteUser() calls flag spammer, the deleted user is treated as a spammer. 
+		 * Consequence: It is flagged as a spammer in the user table, and the groups are set to spammer groups.
 		 */
 		boolean predictionChange = checkPredictionChange(param, session);
 
 		try {
 
+			/*
+			 * on_delete (calling method deleteUser()) 
+			 * admins (from BibSonomy Admin Interface) 
+			 * consequence: users are flagged as spammers, groups updated
+			 */
 			if (!"classifier".equals(updatedBy)) {
-				/*
-				 * FIXME: is this the "deleteUser" case? (document!)
-				 */
+				// flag spammer
 				this.update("flagSpammer", param, session);
-				// this.updateGroupIds(param, session);
+				// update the groups
+				this.updateGroupIds(param, session);
+			/*
+			 * spam framework (classifier) flags user as spammer
+			 * an update only takes place when the user has not been updated before 
+			 * by the classifier with the same prediction and confidence
+			 */
 			} else if ("off".equals(testMode)) {
 				// gets user data to check if to_classify is still set to 1
 				List<User> userData = this.queryForList("getClassifierUserBeforeUpdate", param, User.class, session);
@@ -168,7 +181,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 					// only change user settings when prediction changes
 					if (predictionChange) {
 						this.update("flagSpammer", param, session);
-						// this.updateGroupIds(param, session);
+						this.updateGroupIds(param, session);
 					}
 				}
 			}
@@ -194,38 +207,6 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 
 		} finally {
 			// in case of failure, session should be locked in DbSessionImpl
-			session.endTransaction();
-		}
-
-		// update group ids in a second step
-		// start the transaction
-		session.beginTransaction();
-
-		try {
-
-			if (!"classifier".equals(updatedBy)) {
-				/*
-				 * FIXME: this is (only?) the deleteUser() case? Document!
-				 */
-				this.updateGroupIds(param, session);
-			} else if ("off".equals(testMode)) {
-				// only change user settings when prediction changes
-				if (predictionChange) {
-					this.updateGroupIds(param, session);
-				}
-			}
-			// set session counter to 0, so that transaction will be commited in 
-			// session wrapper
-			session.commitTransaction();
-		}
-
-		catch (final Exception ex) {
-			log.error(ex.getMessage(), ex);
-		}
-
-		finally {
-
-			// end transaction in any case
 			session.endTransaction();
 		}
 
