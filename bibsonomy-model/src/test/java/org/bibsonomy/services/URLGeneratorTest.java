@@ -23,7 +23,7 @@ public class URLGeneratorTest {
 		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
 		assertEquals("http://www.bibsonomy.org/bibtex/" + HashID.INTRA_HASH.getId() + post.getResource().getIntraHash() + "/" + post.getUser().getName(), ug.getPublicationUrl(post.getResource(), post.getUser()).toString());
 		final Post<Bookmark> bPost = ModelUtils.generatePost(Bookmark.class);
-		assertEquals(bPost.getResource().getUrl(), ug.getPostUrl(bPost).toString());
+		assertEquals("http://www.bibsonomy.org/url/" + bPost.getResource().getIntraHash() + "/" + bPost.getUser().getName(), ug.getPostUrl(bPost).toString());
 
 	}
 
