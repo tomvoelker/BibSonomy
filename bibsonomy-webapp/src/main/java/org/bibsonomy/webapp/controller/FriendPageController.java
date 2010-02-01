@@ -57,10 +57,10 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 			this.postProcessAndSortList(command, resourceType);
 		}
 		// set page title
-		command.setPageTitle("friend :: " + groupingName);
+		command.setPageTitle("friend :: " + groupingName);  // TODO: i18n
 
 		// html format - retrieve tags and return HTML view
-		if (format.equals("html")) {
+		if ("html".equals(format)) {
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, requTags, null, null, 0, 20000, null);
 
 			// log if a user has reached threshold

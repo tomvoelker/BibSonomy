@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -22,13 +24,13 @@ import org.bibsonomy.webapp.view.Views;
 public class UserRelationsController extends SingleResourceListControllerWithTags implements MinimalisticController<UserRelationCommand> {
 	private static final Log LOGGER = LogFactory.getLog(AuthorPageController.class);
 
-	public View workOn(UserRelationCommand command) {
+	public View workOn(final UserRelationCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		// no user given -> error
-		if (command.getRequestedUser() == null) {
+		if (!present(command.getRequestedUser())) {
 			/*
 			 * FIXME: wrong error message, should be /relations/ without user
 			 */
@@ -41,13 +43,13 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 		final String groupingName = command.getRequestedUser();
 
 		//query for the number of relations of a user
-		int numberOfRelations = this.logic.getTagStatistics(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, 0, Integer.MAX_VALUE);
+		final int numberOfRelations = this.logic.getTagStatistics(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, 0, Integer.MAX_VALUE);
 
-		int limit = command.getConcepts().getEntriesPerPage();
-		int offset = command.getConcepts().getStart();
+		final int limit = command.getConcepts().getEntriesPerPage();
+		final int offset = command.getConcepts().getStart();
 		
 		// retrieving concepts
-		List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, offset, limit + offset);
+		final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, offset, limit + offset);
 
 		command.getConcepts().setConceptList(concepts);
 
@@ -59,7 +61,7 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 		// TODO: internationalize
 		command.setPageTitle("relations :: " + groupingName);
 		
-		if (command.getFormat().equals("html")) {
+		if ("html".equals(command.getFormat())) {
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 20000, null);
 
 			// log if a user has reached threshold
@@ -81,7 +83,6 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 	}
 
 	public UserRelationCommand instantiateCommand() {
-		// TODO Auto-generated method stub
 		return new UserRelationCommand();
 	}
 }

@@ -17,9 +17,8 @@ public class ConceptsCommand extends ListCommand<Tag> {
 	 * constructor used by the UserRelationCommand
 	 * @param parentCommand
 	 */
-	public ConceptsCommand(ContextCommand parentCommand) {
+	public ConceptsCommand(final ContextCommand parentCommand) {
 		super(parentCommand);
-		// TODO Auto-generated constructor stub
 	}
 	
 	/**
@@ -38,17 +37,17 @@ public class ConceptsCommand extends ListCommand<Tag> {
 		return this.numConcepts;
 	}
 
-	public void setNumConcepts(int numConcepts) {
+	public void setNumConcepts(final int numConcepts) {
 		this.numConcepts = numConcepts;
 	}
 
 
 	public List<Tag> getConceptList() {
-		return getList();
+		return this.getList();
 	}
 
-	public void setConceptList(List<Tag> concepts) {
-		setList(concepts);
+	public void setConceptList(final List<Tag> concepts) {
+		this.setList(concepts);
 	}
 	
 }

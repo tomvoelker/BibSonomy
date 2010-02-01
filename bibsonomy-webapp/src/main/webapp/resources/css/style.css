@@ -731,6 +731,11 @@ td.upperconcept {
 	margin-left: 3em;
 }
 
+#sidebar a.selectedConcept {
+	color: rgb(51, 77, 85) !important;
+	font-weight: bold;
+}
+
 li.box_upperconcept a {
 	color: #2F3321 ! important;
 }
