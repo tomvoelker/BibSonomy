@@ -20,6 +20,10 @@
 		</property>
 	</bean>
 	
+	<bean id="urlGenerator" class="org.bibsonomy.services.URLGenerator">
+		<property name="projectHome"><value>${project.home}</value></property>
+	</bean>
+	
 	<!-- to resolve messages -->
 	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
 		<!-- matches messages.properties, messages_de.properties, ... -->
