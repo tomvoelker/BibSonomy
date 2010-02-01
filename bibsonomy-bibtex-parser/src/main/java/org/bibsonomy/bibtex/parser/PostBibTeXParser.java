@@ -25,9 +25,9 @@
 package org.bibsonomy.bibtex.parser;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
 import org.bibsonomy.model.BibTex;
@@ -61,7 +61,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		return this.delimiter;
 	}
 
-	public void setDelimiter(String delimiter) {
+	public void setDelimiter(final String delimiter) {
 		this.delimiter = delimiter;
 	}
 
@@ -74,7 +74,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		return this.whitespace;
 	}
 
-	public void setWhitespace(String whitespace) {
+	public void setWhitespace(final String whitespace) {
 		this.whitespace = whitespace;
 	}
 
@@ -121,7 +121,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 * get misc fields for next steps
 		 */
 		BibTexUtils.parseMiscField(bibtex);
-		final HashMap<String, String> miscFields = bibtex.getMiscFields();
+		final Map<String, String> miscFields = bibtex.getMiscFields();
 		/*
 		 * if a post does not have misc fields, we don't have to do anything
 		 */
@@ -139,7 +139,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 					post.setTags(TagUtils.parse(TagStringUtils.cleanTags(keywords, true,  delimiter, whitespace)));
 				else
 					post.setTags(TagUtils.parse(keywords));
-			} catch (RecognitionException ex) {
+			} catch (final RecognitionException ex) {
 				/*
 				 * silently ignore tag parsing errors ....
 				 */
