@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -62,11 +63,20 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 
 		for (final Post<RESOURCE> post: posts) {
 			final SyndEntry entry = new SyndEntryImpl();
-			entry.setTitle(post.getResource().getTitle());
-			entry.setLink(urlGenerator.getPostUrl(post).toString());
+			final RESOURCE resource = post.getResource();
+			entry.setTitle(resource.getTitle());
+			/*
+			 * For publications, we want to point to BibSonomy, for bookmarks to 
+			 * their "real" URL.
+			 */
+			if (resource instanceof Bookmark) {
+				entry.setLink(((Bookmark) resource).getUrl());
+			} else {
+				entry.setLink(urlGenerator.getPostUrl(post).toString());
+			}
 			entry.setPublishedDate(post.getDate());
 			entry.setAuthor(post.getUser().getName());
-			entry.setUri(urlGenerator.getInternalPostUrl(post).toString());
+			entry.setUri(urlGenerator.getPostUrl(post).toString());
 			/*
 			 * add the tags as categories
 			 */
