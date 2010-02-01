@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -124,6 +126,13 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			// set page title
 			// TODO: i18n
 			command.setPageTitle("user :: " + groupingName);
+			if (present(requTags)) {
+				// add the tags to the title
+				command.setPageTitle(command.getPageTitle()+" :: "+ requTags.get(0));
+				for (int i=1; i<requTags.size(); i++){
+					command.setPageTitle(command.getPageTitle() + "+" + requTags.get(i));
+				}
+			}
 			
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, Integer.MAX_VALUE, null);
 
