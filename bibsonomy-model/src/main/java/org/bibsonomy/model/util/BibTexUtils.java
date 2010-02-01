@@ -33,9 +33,9 @@ import java.lang.reflect.Method;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -263,7 +263,7 @@ public class BibTexUtils {
 	 * @param bib the bibtex object
 	 */
 	public static void serializeMiscFields(final BibTex bib) {
-		final HashMap<String,String> miscFields = bib.getMiscFields();
+		final Map<String,String> miscFields = bib.getMiscFields();
 		final StringBuffer miscFieldsSerialized = new StringBuffer();
 		// loop over misc fields, if any
 		if (ValidationUtils.present(miscFields)) {
@@ -283,7 +283,7 @@ public class BibTexUtils {
 	 * @param misc String value of misc field
 	 * @return the parsed misc fields as a hashmap
 	 */
-	public static HashMap<String, String> parseMiscField(final String misc) {
+	public static Map<String, String> parseMiscField(final String misc) {
 		final BibTex bib = new BibTex();
 		bib.setMisc(misc);
 		parseMiscField(bib);

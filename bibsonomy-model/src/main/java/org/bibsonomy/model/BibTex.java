@@ -25,6 +25,7 @@ package org.bibsonomy.model;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.extra.BibTexExtra;
@@ -86,7 +87,7 @@ public class BibTex extends Resource {
 	private int scraperId;
 	private String url;
 	private String privnote;
-	private HashMap<String, String> miscFields;
+	private Map<String, String> miscFields;
 	// this field holds the description part of an openURL to this bibtex object
 	private String openURL;
 	
@@ -614,7 +615,7 @@ public class BibTex extends Resource {
 	 * 
 	 * @return a HashMap containing the miscFields
 	 */
-	public HashMap<String, String> getMiscFields() {
+	public Map<String, String> getMiscFields() {
 		return this.miscFields;
 	}
 
