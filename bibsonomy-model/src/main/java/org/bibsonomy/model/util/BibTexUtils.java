@@ -41,13 +41,13 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.tex.TexDecode;
 
@@ -401,13 +401,12 @@ public class BibTexUtils {
 	 * 
 	 * @param post 
 	 * 			- a bibtex post
-	 * @param bibsonomyUrl 
-	 * 			- the bibsonomy URL to link to for the bibtex details page
+	 * @param urlGenerator - to generate a proper URL pointing to the post. 
 	 * 
 	 * @return A string representation of the posts in BibTeX format.
 	 */
-	public static String toBibtexString(final Post<BibTex> post, final String bibsonomyUrl) {
-		post.getResource().addMiscField(ADDITIONAL_MISC_FIELD_BIBURL, bibsonomyUrl + "bibtex/" + HashID.INTRA_HASH.getId() + post.getResource().getIntraHash() + "/" + post.getUser().getName());
+	public static String toBibtexString(final Post<BibTex> post, final URLGenerator urlGenerator) {
+		post.getResource().addMiscField(ADDITIONAL_MISC_FIELD_BIBURL, urlGenerator.getPublicationUrl(post.getResource(), post.getUser()).toString());
 		return toBibtexString(post);
 	}
 	
