@@ -142,7 +142,7 @@ public class RDFWriter {
 		 * misc fields (ISBN, DOI, etc.)
 		 * NOTE: this is not clean, as they might not be part of SWRC
 		 */
-		final HashMap<String, String> miscFields = bibtex.getMiscFields();
+		final Map<String, String> miscFields = bibtex.getMiscFields();
 		final Set<String> keySet = miscFields.keySet();
 		for (final String key: keySet) {
 			final String cleanedKey = cleanKey(key);
