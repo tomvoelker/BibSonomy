@@ -71,28 +71,26 @@
 	<bean id="luceneUpdateBibTexCronTriggerWithoutIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
  		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
- 		<property name="cronExpression" value="22 1/1 * * * ?" /> <!-- *:01,11,..,51:22 -->
+ 		<property name="cronExpression" value="22 1/5 * * * ?" /> <!-- *:01,11,..,51:22 -->
 		<property name="jobDetail" ref="luceneUpdateBibTexJobWithoutIndexOptimization" />
 	</bean>
 	<bean id="luceneUpdateBookmarkCronTriggerWithoutIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
  		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
- 		<property name="cronExpression" value="55 1/1 * * * ?" /> <!-- *:01,11,..,51:22 -->
+ 		<property name="cronExpression" value="55 1/5 * * * ?" /> <!-- *:01,11,..,51:22 -->
 		<property name="jobDetail" ref="luceneUpdateBookmarkJobWithoutIndexOptimization" />
 	</bean>
  
 	<bean id="luceneUpdateBibTexCronTriggerWithIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
  		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
- 		<!-- <property name="cronExpression" value="1 0 2 * * ?" />  --> 
- 		<property name="cronExpression" value="1 1/5 * * * ?" />  <!-- @02:00:01 -->
+		<property name="cronExpression" value="1 0 2 * * ?" /> 
 		<property name="jobDetail" ref="luceneUpdateBibTexJobWithIndexOptimization" />
 	</bean>
  	<bean id="luceneUpdateBookmarkCronTriggerWithIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
  		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
- 		<!-- <property name="cronExpression" value="1 0 2 * * ?" />  -->
- 		<property name="cronExpression" value="1 1/5 * * * ?" />  <!-- @02:00:01 -->
+		<property name="cronExpression" value="1 0 2 * * ?" />
 		<property name="jobDetail" ref="luceneUpdateBookmarkJobWithIndexOptimization" />
 	</bean>
 
