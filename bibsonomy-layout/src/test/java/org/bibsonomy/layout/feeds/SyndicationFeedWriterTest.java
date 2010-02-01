@@ -4,7 +4,7 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.bibsonomy.layout.rdf.SyndicationFeedWriter;
+import org.bibsonomy.layout.feeds.SyndicationFeedWriter;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.services.URLGenerator;

@@ -1,4 +1,4 @@
-package org.bibsonomy.layout.rdf;
+package org.bibsonomy.layout.feeds;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -32,6 +32,7 @@ import com.sun.syndication.io.SyndFeedOutput;
 public class SyndicationFeedWriter<RESOURCE extends Resource> {
 
 	private URLGenerator urlGenerator;
+
 	public URLGenerator getUrlGenerator() {
 		return urlGenerator;
 	}
@@ -39,8 +40,6 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
 	}
-
-
 
 
 	private String feedTitlePrefix;
