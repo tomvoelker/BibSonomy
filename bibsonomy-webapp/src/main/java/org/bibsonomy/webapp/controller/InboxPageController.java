@@ -8,7 +8,9 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.Errors;
 
 /**
  * Controller for the InboxPage (shows all posts in your inbox)
@@ -17,6 +19,7 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class InboxPageController extends SingleResourceListController implements MinimalisticController<UserResourceViewCommand> {
 	private static final Log log = LogFactory.getLog(PopularPageController.class);
+	private Errors errors;
 
 	
 	public View workOn(final UserResourceViewCommand command) {
@@ -24,10 +27,15 @@ public class InboxPageController extends SingleResourceListController implements
 		 * FIXME: implement filter=no parameter
 		 */
 		log.debug(this.getClass().getSimpleName());
+		// user has to be logged in
+		if (!command.getContext().isUserLoggedIn()){
+			log.info("Trying to access inbox without being logged in");
+			return new ExtendedRedirectView("/login");
+		}
 		this.startTiming(this.getClass(), command.getFormat());
 		
-		// determine which lists to initalize depending on the output format 
-		// and the requested resourcetype
+		// determine which lists to initialize depending on the output format 
+		// and the requested resource type
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
 		String loginUserName = command.getContext().getLoginUser().getName();
 		// retrieve and set the requested resource lists
