@@ -138,7 +138,13 @@
 	 	group by u.user_name order by t.date DESC
 	 </select>
 	 
-	 <update id="updateGroupIds" parameterClass="adminParam">
+	 <!-- 
+	 	| Statement updates group ids of user (either into spam groups or non-spam groups) 
+	 	| Timeout is set to 0, according to ibatis doc:
+	 	| "If you specify a default timeout and decide that you don't want a timeout for a 
+	 	| particular statement, set the timeout value to 0."
+	  -->
+	 <update id="updateGroupIds" parameterClass="adminParam" timeout="0">
 		UPDATE $groupIdTable$ SET `group` = 
 		<dynamic prepend="IF">
 			<isEqual property="spammer" compareValue="true">
