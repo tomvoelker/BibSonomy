@@ -10,20 +10,17 @@ import java.net.URLEncoder;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.exceptions.LayoutRenderingException;
-
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.UrlUtils;
-
-
 
 /**
  * Some taglib functions
@@ -48,7 +45,7 @@ public class Functions  {
 	static {
 		try {
 			chars.load(Functions.class.getClassLoader().getResourceAsStream("chars.properties"));
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new RuntimeException(e.getMessage());
 		}	    	    		
 	}
@@ -59,7 +56,7 @@ public class Functions  {
 	 * @param key
 	 * @return String 
 	 */
-	public static String ch (String key) {
+	public static String ch (final String key) {
 		if (chars.getProperty(key) != null) {
 			return chars.getProperty(key);
 		}
@@ -72,11 +69,11 @@ public class Functions  {
 	 * @param decomp one of NFC, NFD, NFKC, NFKD @see Normalizer.Form
 	 * @return normalized String
 	 */
-	public static String normalize( String str, String decomp ) {
+	public static String normalize( final String str, final String decomp ) {
 		Normalizer.Form form; 
 		try {
 			form = Normalizer.Form.valueOf(decomp);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			form = Normalizer.Form.NFD; 
 		}
 		return Normalizer.normalize(str+form.toString(), form);
@@ -89,7 +86,7 @@ public class Functions  {
 	 * @param s a String
 	 * @return trimmed String
 	 */	
-	public static String trimWhiteSpace (String s) {
+	public static String trimWhiteSpace (final String s) {
 		/*
 		 * remove empty lines
 		 */
@@ -101,13 +98,13 @@ public class Functions  {
 	 * @param file a file name
 	 * @return cleaned file name
 	 */
-	public static String makeCleanFileName (String file) {
+	public static String makeCleanFileName (final String file) {
 		if (file == null || file.trim().equals("")) {
 			return "export";
 		} 
 		try {
 			return URLDecoder.decode(file, "UTF-8").replaceAll("[^a-zA-Z0-9-_]", "_");
-		} catch (UnsupportedEncodingException e) {
+		} catch (final UnsupportedEncodingException e) {
 			return file.replaceAll("[^a-zA-Z0-9-_]", "_");
 		}
 	}
@@ -118,11 +115,11 @@ public class Functions  {
 	 * @param URI a URI string
 	 * @return the decoded URI string
 	 */
-	public static String decodeURI (String URI) {
+	public static String decodeURI (final String URI) {
 		if (URI != null) {
 			try {
 				return URLDecoder.decode(URI, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
+			} catch (final UnsupportedEncodingException e) {
 			}
 		}
 		return null;
@@ -134,11 +131,11 @@ public class Functions  {
 	 * @param URI a URI string
 	 * @return the encoded URI string
 	 */
-	public static String encodeURI (String URI) {
+	public static String encodeURI (final String URI) {
 		if (URI != null) {
 			try {
 				return URLEncoder.encode(URI, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
+			} catch (final UnsupportedEncodingException e) {
 			}
 		}
 		return null;
@@ -169,12 +166,12 @@ public class Functions  {
 	 * @param uriString a URI string
 	 * @return the path component of the given URI string
 	 */
-	public static String getPath (String uriString) {
+	public static String getPath (final String uriString) {
 		URI uri;
 		try {
 			uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
 			return uri.getPath();
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			throw new RuntimeException(ex.getMessage());
 		}		
 	}
@@ -191,7 +188,7 @@ public class Functions  {
 		try {
 			uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
 			return uri.getPath();
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			throw new RuntimeException(ex.getMessage());
 		}	
 	}
@@ -202,7 +199,7 @@ public class Functions  {
 	 * @param uriString a URI string
 	 * @return query part of the given URI string, within a leading "?"
 	 */
-	public static String getQuery (String uriString) {
+	public static String getQuery (final String uriString) {
 		URI uri;
 		try {
 			uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
@@ -210,7 +207,7 @@ public class Functions  {
 				return "?" + uri.getQuery();
 			}
 			return "";
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			throw new RuntimeException(ex.getMessage());
 		}		
 	}	
@@ -221,10 +218,10 @@ public class Functions  {
 	 * @param input - string that will be tested of numbers
 	 * @return true in case of parameter input is a number otherwise return false
 	 */
-	public static Boolean isNumeric(String input){	
+	public static Boolean isNumeric(final String input){	
 		try{
 			Integer.parseInt(input);
-		}catch(NumberFormatException nfe){
+		}catch(final NumberFormatException nfe){
 			return false;
 		}
 		return true;
@@ -236,11 +233,11 @@ public class Functions  {
 	 * @param misc miscfield of a bibtex entry
 	 * @return array of key value entrys
 	 */
-	public static ArrayList<String> miscFieldToArray(String misc){
-		ArrayList<String> formattedMiscFields = new ArrayList<String>();
-		HashMap<String, String> miscFields = BibTexUtils.parseMiscField(misc);
+	public static List<String> miscFieldToArray(final String misc){
+		final List<String> formattedMiscFields = new ArrayList<String>();
+		final Map<String, String> miscFields = BibTexUtils.parseMiscField(misc);
 		if (miscFields != null) {
-			for (String fieldName : miscFields.keySet()) {
+			for (final String fieldName : miscFields.keySet()) {
 				formattedMiscFields.add(fieldName + " = {" + miscFields.get(fieldName) + "}");
 			}
 		}
@@ -257,7 +254,7 @@ public class Functions  {
 	 * @param tagSizeMode 
 	 * @return font size for the tag cloud with the given parameters
 	 */
-	public static Integer computeTagFontsize(Integer tagFrequency, Integer tagMaxFrequency, String tagSizeMode) {
+	public static Integer computeTagFontsize(final Integer tagFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
 		// round(log(if(tag_anzahl>100, 100, tag_anzahl+6)/6))*60+40
 		if ("home".equals(tagSizeMode)) {
 			Double t = (tagFrequency > 100 ? 100.0 : tagFrequency.doubleValue() + 6);
@@ -277,7 +274,7 @@ public class Functions  {
 	 * @param url
 	 * @return the cleaned url
 	 */
-	public static String cleanUrl(String url) {
+	public static String cleanUrl(final String url) {
 		return UrlUtils.cleanUrl(url);
 	}
 
@@ -290,7 +287,7 @@ public class Functions  {
 	 * @param paramValue parameter value
 	 * @return an url string with the requested parameter set
 	 */
-	public static String setParam(String url, String paramName, String paramValue) {
+	public static String setParam(final String url, final String paramName, final String paramValue) {
 		return UrlUtils.setParam(url, paramName, paramValue); 
 	}
 
@@ -303,7 +300,7 @@ public class Functions  {
 	 * 		- a parameter to be removed
 	 * @return the given url string with the parameter removed
 	 */
-	public static String removeParam(String url, String paramName) {
+	public static String removeParam(final String url, final String paramName) {
 		return UrlUtils.removeParam(url, paramName);
 	}
 
@@ -313,7 +310,7 @@ public class Functions  {
 	 * @see org.bibsonomy.model.util.BibTexUtils
 	 * @param bibtex
 	 */
-	public static String cleanBibtex(String bibtex) {
+	public static String cleanBibtex(final String bibtex) {
 		return BibTexUtils.cleanBibTex(bibtex);
 	}
 
@@ -332,7 +329,7 @@ public class Functions  {
 	 * @return 
 	 */
 	public static Boolean isSpammer(final Integer id) {
-		SpamStatus status = SpamStatus.getStatus(id);
+		final SpamStatus status = SpamStatus.getStatus(id);
 		return SpamStatus.isSpammer(status);
 	}
 
@@ -459,7 +456,7 @@ public class Functions  {
 	public static String getHostName(final String urlString) {
 		try {
 			return new URL(urlString).getHost();
-		} catch (MalformedURLException ex) {
+		} catch (final MalformedURLException ex) {
 			return "unknownHost";
 		}
 	}
