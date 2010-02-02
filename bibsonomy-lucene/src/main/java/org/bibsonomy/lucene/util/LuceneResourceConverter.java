@@ -150,15 +150,15 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 		}
 		
 		// store merged field
-		retVal.add(new Field(FLD_MERGEDFIELDS, TexDecode.decode(mergedField), Field.Store.NO, Field.Index.ANALYZED));
+		retVal.add(new Field(FLD_MERGEDFIELDS, decodeTeX(mergedField), Field.Store.NO, Field.Index.ANALYZED));
 
 		// store private field
-		retVal.add(new Field(FLD_PRIVATEFIELDS, TexDecode.decode(privateField), Field.Store.YES, Field.Index.ANALYZED));
+		retVal.add(new Field(FLD_PRIVATEFIELDS, decodeTeX(privateField), Field.Store.YES, Field.Index.ANALYZED));
 		
 		// all done.
 		return retVal;
 	}
-	
+
 	/**
 	 * extracts property value from given object
 	 * 
@@ -184,6 +184,24 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 		}
 		return itemValue;
 	}
+	
+	/**
+	 * decode bibtex characters to corresponding utf8 characters
+	 * 
+	 * @param input
+	 * @return
+	 */
+	private String decodeTeX(String input) {
+		String mergedFieldUTF8 = null; 
+		try {
+			mergedFieldUTF8 = TexDecode.decode(input);
+		} catch (IllegalStateException e) {
+			mergedFieldUTF8 = input;
+			log.debug("Error decoding TeX-string '"+input+"'");
+		}
+		return mergedFieldUTF8;
+	}
+	
 	//------------------------------------------------------------------------
 	// abstract interface
 	//------------------------------------------------------------------------
