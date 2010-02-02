@@ -37,7 +37,7 @@ public class SyndicationFeedWriterTest {
 	@Test
 	public void testCreateFeedStringListOfPostOfRESOURCE() {
 		final SyndicationFeedWriter<Bookmark> sfw = getSyndicationFeedWriterBookmark();
-		final SyndFeed feed = sfw.createFeed("rss_2.0", bookmarks);
+		final SyndFeed feed = sfw.createFeed("rss_2.0", "BibSonomy's bookmarks for /tag/web", "/tag/web", "", bookmarks);
 		
 		  final SyndFeedOutput output = new SyndFeedOutput();
 		  try {

@@ -41,22 +41,19 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 		this.urlGenerator = urlGenerator;
 	}
 
-
-	private String feedTitlePrefix;
-	private String feedDescriptionPrefix;
-
+	
 	public void writeFeed(final SyndFeed feed, final Writer writer) throws IOException, FeedException {
 		  final SyndFeedOutput output = new SyndFeedOutput();
 		  output.output(feed, writer);
 	}
 
-	public void writeFeed (final String feedType, final List<Post<RESOURCE>> posts, final Writer writer) throws IOException, FeedException {
-		writeFeed(createFeed(feedType, posts), writer);
+	public void writeFeed (final String feedType, final String title, final String path, final String description, final List<Post<RESOURCE>> posts, final Writer writer) throws IOException, FeedException {
+		writeFeed(createFeed(feedType, title, path, description, posts), writer);
 	}
 
 	
-	public SyndFeed createFeed (final String feedType, final List<Post<RESOURCE>> posts) {
-		final SyndFeed feed = createFeed(feedType);
+	public SyndFeed createFeed (final String feedType, final String title, final String path, final String description, final List<Post<RESOURCE>> posts) {
+		final SyndFeed feed = createFeed(feedType, title, path, description);
 
 		final List<SyndEntry> entries = new LinkedList<SyndEntry>();
 
@@ -71,11 +68,11 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 			if (resource instanceof Bookmark) {
 				entry.setLink(((Bookmark) resource).getUrl());
 			} else {
-				entry.setLink(urlGenerator.getPostUrl(post).toString());
+				entry.setLink(urlGenerator.getPostUrl(post));
 			}
 			entry.setPublishedDate(post.getDate());
 			entry.setAuthor(post.getUser().getName());
-			entry.setUri(urlGenerator.getPostUrl(post).toString());
+			entry.setUri(urlGenerator.getPostUrl(post));
 			/*
 			 * add the tags as categories
 			 */
@@ -83,22 +80,22 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 			for (final Tag tag: post.getTags()) {
 				final SyndCategory category = new SyndCategoryImpl();
 				category.setName(tag.getName());
-				category.setTaxonomyUri(urlGenerator.getUserUrl(post.getUser()).toString() + "/");
+				category.setTaxonomyUri(urlGenerator.getUserUrl(post.getUser()) + "/");
 				categories.add(category);
 			}
 
 			entry.setCategories(categories);
 
-			final SyndContent description = new SyndContentImpl();
+			final SyndContent entryDescription = new SyndContentImpl();
 
-			description.setType("text/plain");
-			description.setValue(post.getDescription());
+			entryDescription.setType("text/plain");
+			entryDescription.setValue(post.getDescription());
 
-			description.setType("text/html");
-			description.setValue("<p>More Bug fixes, mor API changes, some new features and some Unit testing</p>"+
+			entryDescription.setType("text/html");
+			entryDescription.setValue("<p>More Bug fixes, mor API changes, some new features and some Unit testing</p>"+
 			"<p>For details check the <a href=\"http://wiki.java.net/bin/view/Javawsxml/RomeChangesLog#RomeV03\">Changes Log</a></p>");
 
-			entry.setDescription(description);
+			entry.setDescription(entryDescription);
 			entries.add(entry);
 
 		}
@@ -110,13 +107,13 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 
 
 
-	public SyndFeed createFeed(final String feedType) {
+	public SyndFeed createFeed(final String feedType, final String title, final String path, final String description) {
 		final SyndFeed feed = new SyndFeedImpl();
 		feed.setFeedType(feedType);
 
-		feed.setTitle("Sample Feed (created with ROME)");
-		feed.setLink("http://rome.dev.java.net");
-		feed.setDescription("This feed has been created using ROME (Java syndication utilities");
+		feed.setTitle(title);
+		feed.setLink(urlGenerator.getAbsoluteUrl(path));
+		feed.setDescription(description);
 		return feed;
 	}
 
