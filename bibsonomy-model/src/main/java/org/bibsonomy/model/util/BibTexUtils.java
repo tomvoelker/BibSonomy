@@ -96,6 +96,7 @@ public class BibTexUtils {
 	private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
 	private static final Pattern DOI_PATTERN = Pattern.compile("http://.+/(.+?/.+?$)");
 	private static final Pattern MISC_FIELD_PATTERN = Pattern.compile("([a-zA-Z0-9]+)\\s*=\\s*\\{(.*?)\\}", Pattern.DOTALL);
+	private static final Pattern LAST_COMMA_PATTERN = Pattern.compile(".+}\\s*,\\s*}\\s*$", Pattern.MULTILINE | Pattern.DOTALL);
 
 	private static final String[] ENTRYTYPES = {"article", "book", "booklet", "inbook", "incollection", "inproceedings",
 		"manual", "mastersthesis", "misc", "phdthesis", "proceedings", "techreport", "unpublished"};
@@ -706,10 +707,11 @@ public class BibTexUtils {
 		 */
 		if (bibtex == null || fieldValue == null || fieldValue.trim().equals("")) return;
 		
-		// remove last comma if there is one (before closing last curly bracket)
-		String bib = bibtex.toString();
-		Pattern p = Pattern.compile(".+}\\s*,\\s*}\\s*$", Pattern.MULTILINE | Pattern.DOTALL);
-		Matcher m = p.matcher(bib);
+		/*
+		 * remove last comma if there is one (before closing last curly bracket)
+		 */
+		final String bib = bibtex.toString();
+		final Matcher m = LAST_COMMA_PATTERN.matcher(bib);
 		
 		if (m.matches()) {
 			final int _lastIndex = bib.lastIndexOf(",");
