@@ -44,7 +44,7 @@ public class FollowerAjaxController extends AjaxController implements Minimalist
 			return new ExtendedRedirectView("/");
 		}
 		
-		log.error("********* AJAX controller; userName: " + command.getRequestedUserName() + ", action: " + command.getAction() + ", ckey: " + command.getContext().getCkey() + ", forward: " + command.getForward());
+		log.debug("AJAX controller; userName: " + command.getRequestedUserName() + ", action: " + command.getAction() + ", ckey: " + command.getContext().getCkey() + ", forward: " + command.getForward());
 		
 		//check if ckey is valid
 		if (!command.getContext().isValidCkey()) {
