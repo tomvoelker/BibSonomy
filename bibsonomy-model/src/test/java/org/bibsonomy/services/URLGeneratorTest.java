@@ -21,21 +21,21 @@ public class URLGeneratorTest {
 	@Test
 	public void testGetPostUrl() {
 		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
-		assertEquals("http://www.bibsonomy.org/bibtex/" + HashID.INTRA_HASH.getId() + post.getResource().getIntraHash() + "/" + post.getUser().getName(), ug.getPublicationUrl(post.getResource(), post.getUser()).toString());
+		assertEquals("http://www.bibsonomy.org/bibtex/" + HashID.INTRA_HASH.getId() + post.getResource().getIntraHash() + "/" + post.getUser().getName(), ug.getPublicationUrl(post.getResource(), post.getUser()));
 		final Post<Bookmark> bPost = ModelUtils.generatePost(Bookmark.class);
-		assertEquals("http://www.bibsonomy.org/url/" + bPost.getResource().getIntraHash() + "/" + bPost.getUser().getName(), ug.getPostUrl(bPost).toString());
+		assertEquals("http://www.bibsonomy.org/url/" + bPost.getResource().getIntraHash() + "/" + bPost.getUser().getName(), ug.getPostUrl(bPost));
 
 	}
 
 	@Test
 	public void testGetPublicationUrl() {
 		final Post<BibTex> post = ModelUtils.generatePost(BibTex.class);
-		assertEquals("http://www.bibsonomy.org/bibtex/" + HashID.INTRA_HASH.getId() + post.getResource().getIntraHash() + "/" + post.getUser().getName(), ug.getPublicationUrl(post.getResource(), post.getUser()).toString());
+		assertEquals("http://www.bibsonomy.org/bibtex/" + HashID.INTRA_HASH.getId() + post.getResource().getIntraHash() + "/" + post.getUser().getName(), ug.getPublicationUrl(post.getResource(), post.getUser()));
 	}
 
 	@Test
 	public void testGetUserUrl() {
-		assertEquals("http://www.bibsonomy.org/user/jaeschke", ug.getUserUrl(new User("jaeschke")).toString());
+		assertEquals("http://www.bibsonomy.org/user/jaeschke", ug.getUserUrl(new User("jaeschke")));
 	}
 
 }
