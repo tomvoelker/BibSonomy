@@ -291,6 +291,7 @@
 		<property name="listsToInitialise">
 			<list>
 				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
 			</list>
 		</property>
 	</bean>	

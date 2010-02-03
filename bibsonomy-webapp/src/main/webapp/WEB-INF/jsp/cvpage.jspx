@@ -21,6 +21,7 @@
 		language="java" pageEncoding="UTF-8" session="true" />
 	<layout:cvPageLayout requPath="${requPath}"
 		pageTitle="${command.pageTitle}" command="${command}">
+		
 		<!--+
     	 	| html header extension: page specific stylesheet
     	 	-->
@@ -30,24 +31,10 @@
     	 	<!-- display tags -->
 			<li>
 				<span class="sidebar_h">
-					 <fmt:message key="tags"/> 
+				<fmt:message key="tags"/> 
 				</span>
-				<tags:cloud requPath="/user/${command.requestedUser}" cmd="${command.tagcloud}" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
+				<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 			</li>
-			
-			<!-- display similar users -->
-			<li>
-				<span class="sidebar_h">
-					<fmt:message key="users.similar.for">
-						<fmt:param value="${fn:escapeXml(command.requestedUser)}"/>
-					</fmt:message>
-<!--					 requPath + query -->
-					<c:set var="requPathAndQuery" value="${requPath}${requQueryString}"/>
-					<c:out value=" "/><a href="${mtl:setParam(requPathAndQuery, 'userSimilarity', mtl:toggleUserSimilarity(command.userSimilarity)) }"><fmt:message key="more"/>...</a>
-				</span>
-				<users:related cmd="${command.relatedUserCommand}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
-			</li>			
-      			
 		</jsp:attribute>
 
 
@@ -58,120 +45,143 @@
     	 	| heading
     	 	-->
 		<jsp:attribute name="heading">
+		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.user"/></a> :: 
+		<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out value='${command.requestedUser}'/></a> ::
+		<form action="/user/${fn:escapeXml(command.requestedUser)}" method="get" class="smallform">
+		  <input type="text" size="20" name="tag" id="inpf"/>
+		</form>
+		<c:if test="${command.requestedUser ne command.context.loginUser.name}">
+			<c:out value=" "/>
+			<a href="/personalized/user/${fn:escapeXml(command.requestedUser)}">
+				<span class="personalize_text">
+					<fmt:message key="personalize"/>!
+				</span>
+			</a>			
+		</c:if>	
     	</jsp:attribute>
 		<jsp:attribute name="content">
 
- 	<h2>Personal data</h2>
-	<hr class="line" />
-	<table class="align">
-	<c:if test="${command.user.realname != null}">
-	<tr>
-		<td>Name</td>
-		<td><c:out value="${command.user.realname}" /></td>
-	</tr>
-	</c:if>
-	<c:if test="${command.user.place != null}">
-	<tr>
-		<td>Location</td>
-		<td><c:out value="${command.user.place}" /></td>
-	</tr>
-	</c:if>
-	<c:if test="${command.user.birthday != null}">
-	<tr>
-		<td>Birthday</td>
-		<td><c:out value="${command.user.birthday}" /></td>
-	</tr>
-	</c:if>
-		<c:if test="${command.user.profession != null}">
-	<tr>
-		<td>Profession</td>
-		<td><c:out value="${command.user.profession}" /></td>
-	</tr>
-	</c:if>
-	</table>
-	<br />
-<br />
-		<h2>About Me</h2>
-		<hr class="line"/>
-		<p class="box, align"><c:out value="${command.user.interests}" /></p>
 
-	<br />
-<br />
-	<h2>Hobby</h2>
-		<hr class="line"/>
-		<p class="box, align"><c:out value="${command.user.hobbies}" /></p>
+	<c:if test="${!empty command.user.realname or !empty command.user.place or 
+					!empty command.user.birthday or !empty command.user.profession}">
+	<div id="personalData">
+ 	 <h2>Personal data</h2>
+	  <hr class="line" />
+	  <table class="align">
+	  <td>
+	  <table class="personalData">
+	   <c:if test="${!empty command.user.realname}">
+	    <tr>
+			<td>Name</td>
+			<td class="secondTD"><c:out value="${command.user.realname}" /></td>
+	    </tr>
+	   </c:if>
+	   <c:if test="${!empty command.user.place}">
+		<tr>
+			<td>Location</td>
+			<td class="secondTD"><c:out value="${command.user.place}" /></td>
+		</tr>
+	   </c:if>
+	   <c:if test="${!empty command.user.birthday}">
+		<tr>
+			<td>Birthday</td>
+			<td class="secondTD"><c:out value="${command.user.birthday}" /></td>
+		</tr>
+	   </c:if>
+	   <c:if test="${!empty command.user.profession}">
+		<tr>
+			<td>Profession</td>
+			<td class="secondTD"><c:out value="${command.user.profession}" /></td>
+		</tr>
+	   </c:if>
+	  </table>
+	  </td>
+	  <td>
+	  <!--foto-->
+	  <img class="aboutMeIMG" src="${resdir}/image/no_picture.png" alt="Picture" />
+	  </td>
+	  </table>
+	 <br />
+	 <br />
+	</div>
+	</c:if>
 
-	<br />
-<br />
+	<c:if test="${command.user.interests != null}">
+	 	<h2>About Me</h2>
+	 	<hr class="line"/>
+	 	<p class="box, align"><c:out value="${command.user.interests}" /></p>
+	 	<br />
+	 	<br />
+	</c:if>
 
+	<c:if test="${command.user.hobbies != null}">
+	 	<h2>Hobby</h2>
+	 	<hr class="line"/>
+	 	<p class="box, align"><c:out value="${command.user.hobbies}" /></p>
+	 	<br />
+	 	<br />
+	</c:if>
+
+
+	<c:if test="${!empty command.bookmark.list}">
+	<h2>Own Bookmarks</h2>
+	<hr class="line"/>
+	<div class="box, align">
+	
+		<c:forEach var="post" items="${command.bookmark.list}">
+     
+    		<div style="margin:1.2em;">
+			<c:set var="bookmark" value="${post.resource}"/>
+     		<p class="entry">
+     			<span class="entry_title"><a href="${bookmark.url}">${bookmark.title} </a> </span><br />
+       			<c:out value="${post.description}" />
+       			<br />
+	 			<br />
+     		</p>
+			</div>
+   		</c:forEach>
+	</div>
+	</c:if>
+	
+	
+	<c:if test="${!empty command.bibtex.list}">
 	<h2>Publications</h2>
-		<hr class="line"/>
-<!--some usefull name-->
+	<hr class="line"/>
 	<div class="box, align">
 
-			<!-- selection of citation format -->
-		<div >
-			<span id="citation_formats"> 				
-				<form name="citation_format_form" action="" style="font-size:80%;">
-					<c:set var="allExportsTitle"><fmt:message key="bibtex.all_exports.title"/></c:set>
-					<fmt:message key="bibtex.citation_format"/><c:out value=" ("/>
-					<a href="/export/bibtex/2${bibtex.intraHash}/${post.user.name}" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports"/></a><c:out value="): "/>
-					
-					<form:select path="command.layout" onchange="citation_format_form.submit()" size="1">
-						<form:option value="plain"><fmt:message key="plain"/></form:option>
-						<form:option value="harvardhtml">Harvard</form:option>
-						<form:option value="din1505">DIN1505</form:option>
-						<form:option value="simplehtml">simple HTML</form:option>
-					</form:select>
-				    <c:out value=" "/>
-				    <input type="image"  src="/resources/image/nice_box_arrow_right.png"/>		    
-				</form>						
-			</span>
-		</div>
+	<!-- selection of citation format for the publications -->
+	<div >
+		<span id="citation_formats"> 				
+			<form name="citation_format_form" action="" style="font-size:80%;">
+				<c:set var="allExportsTitle"><fmt:message key="bibtex.all_exports.title"/></c:set>
+				<fmt:message key="bibtex.citation_format"/><c:out value=" ("/>
+				<a href="/export/bibtex/2${bibtex.intraHash}/${post.user.name}" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports"/></a><c:out value="): "/>
+				
+				<form:select path="command.layout" onchange="citation_format_form.submit()" size="1">
+					<form:option value="plain">plain</form:option>
+					<form:option value="harvardhtml">harvard</form:option>
+					<form:option value="din1505">DIN1505</form:option>
+					<form:option value="simplehtml">simpleHTML</form:option>
+				</form:select>
+			    <c:out value=" "/>
+			    <input type="image"  src="/resources/image/nice_box_arrow_right.png"/>		    
+			</form>						
+		</span>
+	</div>
 
-<!--HTML View !!-->
-		    <c:forEach var="post" items="${command.bibtex.list}">
-      
-      <div style="margin:1.2em;">
-		<c:choose>
-			<c:when test="${not empty command.layout and not (command.layout eq '') and not (command.layout eq 'plain')}">
-				${mtl:renderLayout(post, command.layout)}
-			</c:when>
-			<c:otherwise>
-				<c:set var="bib" value="${post.resource}"/>
-      <p class="entry">
-        <!-- author --><c:if test="${not empty bib.author}"><span class="entry_author"><mtl:bibclean value="${bib.author}"/>. </span></c:if>
-        <!-- title  --><span class="entry_title"><a href="${projectHome}bibtex/${hash.intra.id}${bib.intraHash}/${fn:escapeXml(post.user.name)}"><mtl:bibclean value="${bib.title}"/></a>. </span>
-        <!-- editor --><c:if test="${not empty bib.editor}"><span class="entry_editor">In <mtl:bibclean value="${bib.editor}"/>, editor(s), </span></c:if>
-        <!-- journal, booktitle, series  -->
-        <c:choose>
-          <c:when test="${!empty bib.journal}">
-            <span class="entry_journal"><mtl:bibclean value="${bib.journal}"/>, </span>
-          </c:when>
-          <c:when test="${!empty bib.booktitle}">
-            <span class="entry_booktitle"><mtl:bibclean value="${bib.booktitle}"/>, </span>
-          </c:when>        
-          <c:when test="${!empty bib.series}">
-            <span class="entry_series"><mtl:bibclean value="${bib.series}"/>, </span>
-          </c:when>
-        </c:choose>
-        <!-- volume,number,pages -->
-        <span class="entry_vonupa">
-         <c:if test="${!empty bib.volume}">(<mtl:bibclean value="${bib.volume}"/>)<c:if test="${!empty bib.pages and empty bib.number}">:</c:if></c:if><c:if test="${!empty bib.number}"><mtl:bibclean value="${bib.number}"/><c:if test="${!empty bib.pages}">:</c:if></c:if><c:if test="${!empty bib.pages}"><mtl:bibclean value="${bib.pages}"/>, </c:if>
-        </span>
-        <!-- publisher --><c:if test="${not empty bib.publisher}"><span class="entry_publisher"><mtl:bibclean value="${bib.publisher}"/>, </span></c:if>
-        <!-- address   --><c:if test="${not empty bib.address}"><span class="entry_address"><mtl:bibclean value="${bib.address}"/>, </span></c:if>
-        <!-- year      --><c:if test="${not empty bib.year}"><span class="entry_year"><mtl:bibclean value="${bib.year}"/>. </span></c:if>
+	<!--Render the publications !!-->
+	<c:choose>
+         <c:when test="${empty command.layout}">
+           <p>${mtl:renderLayouts(command.bibtex.list, "plain")}</p>
+         </c:when>
+         <c:otherwise>
+           <p>${mtl:renderLayouts(command.bibtex.list, command.layout)}</p>
+         </c:otherwise>
+    </c:choose>
+    
+	</div>
+	</c:if>
 
-        <!-- tags & url -->
-        <output:tagsUrl post="${post}"/> 
-      </p>
-			 </c:otherwise>		  
-		</c:choose> 	
-		</div>
-    </c:forEach>
-		</div>
-		
-		</jsp:attribute>
-	</layout:cvPageLayout>
+</jsp:attribute>
+</layout:cvPageLayout>
 </jsp:root>

@@ -3,8 +3,10 @@
  * @author Philipp Beau
  */
  
+.personalData {
+}
+ 
 hr.line {
-	width: 700px;
 	margin-left: 25px;
 	border-style: solid;
 	border-color: #EEEEEE;
@@ -20,10 +22,18 @@ td.button {
 	width:15px;
 }
 
-table td {
+.secondTD {
+	padding-bottom: 5px;
+	vertical-align: top;
+}
+
+.personalData td {
 	width: 300px;
 	padding-bottom: 5px;
 	vertical-align: top;
+}
+
+.aboutMeIMG {
 }
 
 table tr {

@@ -574,14 +574,27 @@ public class Functions  {
 	 * @param layoutName
 	 * @return The rendered output as string.
 	 */
-	public static String renderLayout(final Post<BibTex> post, final String layoutName) {
+	public static String renderLayout(final Post<BibTex> post, String layoutName) {
+		ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
+		posts.add(post);
+		
+		return renderLayouts(posts, layoutName);
+		
+	}
+	
+	/**
+	 * Helper method to access JabRef layouts via taglib function
+	 * 
+	 * @param posts
+	 * @param layoutName
+	 * @return The rendered output as string.
+	 */
+	public static String renderLayouts(final List<Post<BibTex>> posts, String layoutName) {
 		try {
 			final JabrefLayout layout = layoutRenderer.getLayout(layoutName, "");
 			if (! ".html".equals(layout.getExtension())) {
 				return "The requested layout is not valid; only HTML layouts are allowed. Requested extension is: " + layout.getExtension();
 			}
-			final ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
-			posts.add(post);
 			return layoutRenderer.renderLayout(layout, posts, true).toString();
 		} catch (final LayoutRenderingException ex) {
 			return ex.getMessage();			
