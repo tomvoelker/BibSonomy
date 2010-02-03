@@ -92,6 +92,9 @@
 					 	<property name="allowedFields">
 							<list>
 								<value>action</value>
+								<value>queriesPerLatency</value>
+								<value>activeRecs</value>
+								<value>disabledRecs</value>
 							</list>
 						</property>
 					</bean>

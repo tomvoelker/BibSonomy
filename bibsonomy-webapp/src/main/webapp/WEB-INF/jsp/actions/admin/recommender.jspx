@@ -24,6 +24,10 @@
 		    <a href="/admin">admin</a> ::
 			<a rel="path_menu" href="/admin/recommender">recommender</a>
 		</jsp:attribute>	
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css"
+				href="${resdir}/css/admin.css" />
+		</jsp:attribute>
 		<jsp:attribute name="content">
 
 
@@ -57,23 +61,111 @@
 	border: 1px solid #CCCCCC;
 	padding: 3px;
 }
+.adminlabel {
+   margin-right:15px;
+}
 </style>
 
 
+<script type="text/javascript">
+/* <![CDATA[ */
+		
+$(document).ready(function(){
+	deselectAll(document.recConfig.activeRecs);
+	deselectAll(document.recConfig.disabledRecs);
+});
+function pushSelectedOptions(from, to){
+  while(from.selectedIndex != -1){
+    selectedOption = from.options[from.selectedIndex];
+    newOption = new Option(selectedOption.text, selectedOption.value, false, false);
+
+    if(document.all) to.add(newOption, 0);  //for msie
+    else to.add(newOption, to.options[0]);
+
+    from.remove(from.selectedIndex);
+    from.focus();
+  }
+}
+
+function selectAll(selectField){
+    selectField.focus();
+    for(var i=0; i<selectField.length; i++)
+    selectField.options[i].selected = true;
+}
+
+function deselectAll(selectField){
+    selectField.focus();
+    for(var i=0; i<selectField.length; i++)
+        selectField.options[i].selected = false;
+}
+/* ]]> */
+</script>
+
+   <p class="adminNavi" style="margin-bottom: 20px">
+       <c:forEach var="adminAction" items="${command.actions}">
+       <a href="?action=${adminAction.key}">${adminAction.value}</a> 
+       </c:forEach>
+   </p>
 <div id="fullscreen">
-   <div class="bluebox"><h2>Status of active recommenders</h2></div>
    <div class="bluebox">
+   
+		<c:if test="${not empty command.adminResponse}">
+				<div class="adminResponse">
+					<c:out  value="${command.adminResponse}"/>
+				</div>
+		</c:if>
+		
+    <h2>${command.actionDescription}</h2>
+    <br />
     
+    <c:if test="${command.action == 'status'}">
+     <form:form name="latencyCalculation" action="/admin/recommender">
+		<form:label path="queriesPerLatency">Number of queries per latency </form:label>
+  		<form:input path="queriesPerLatency"> ${command.queriesPerLatency} </form:input>
+
+  	    <input class="adminBtn" type="submit" style="margin-left: 20px" />
+	</form:form>
+	
     <table class="rectable">
-      <tr><th>SettingID</th><th>RecommenderID</th><th>Latency</th></tr>
+      <tr><th>SettingID</th><th>RecommenderID</th><th>average Latency</th></tr>
       <c:forEach var="recommender" items="${command.recOverview}">
         <tr>
           <td> ${recommender.settingID}</td>
           <td> ${recommender.recID}</td>
-          <td> ${recommender.latency}</td>
+          <td> ${recommender.latency}ms</td>
         </tr>
       </c:forEach>
     </table>
+	</c:if>
+	
+	
+    <c:if test="${command.action == 'activate'}">
+	<form:form name="recConfig" action="/admin/recommender?action=updateRecommenderstatus" onsubmit="selectAll(activeRecs); selectAll(disabledRecs);">
+	  <div style="float:left">
+	    <form:label path="disabledRecs">Disabled</form:label><br />
+	    <select name="disabledRecs" style="width: 80px" size="10" multiple="multiple">
+	     <c:forEach var="option" items="${command.disabledRecs}">
+	       <option value="${option}">${option}</option>
+	     </c:forEach>
+  		</select>
+  	  </div>
+    <div style="float:left; margin: 5px; margin-top: 30px">
+    <input type="button" value="&gt;&gt;" style="display:block; margin-bottom:10px;" onclick="pushSelectedOptions(disabledRecs, activeRecs)" />
+    <input type="button" value="&lt;&lt;" onclick="pushSelectedOptions(activeRecs, disabledRecs)" />
+    </div>
+  		
+  		<form:label path="activeRecs">Active</form:label><br />
+  		<select name="activeRecs" style="width: 80px" size="10" multiple="multiple">
+	     <c:forEach var="option" items="${command.activeRecs}">
+	       <option value="${option}">${option}</option>
+	     </c:forEach>
+	    </select>
+  	    <input class="adminBtn" type="submit" style="margin-left: 10px" />
+	</form:form>
+	</c:if>
+	
+	
+    <br />
    </div> 
 </div>    
             
