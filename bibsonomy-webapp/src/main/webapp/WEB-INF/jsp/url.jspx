@@ -13,6 +13,11 @@
 
 	<layout:bookmarkLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 		<jsp:attribute name="heading">
+			<script type="text/javascript" src="/resources/javascript/jqSOAPClient.js"/>
+		  	<script type="text/javascript" src="/resources/javascript/x2j.js"/>
+		  	<script type="text/javascript" src="/resources/javascript/callPia.js"/>
+		  	
+			<tags:similarresources url="${fn:escapeXml(command.bookmark.list[0].resource.url)}" method="findSimilarUrls"/>
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}url</a> :: 
 			<form action="/url" method="get" class="smallform">
 		  		<input type="text" id="inpf" name="requUrl" size="25" value="${fn:escapeXml(command.bookmark.list[0].resource.url)}" />
