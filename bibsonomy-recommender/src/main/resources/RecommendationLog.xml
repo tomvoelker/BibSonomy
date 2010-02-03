@@ -49,6 +49,11 @@
 		WHERE rec_id = #id#
 	</select>	
 	
+	<select id="getSettingIdsByStatus" resultClass="integer" parameterClass="integer">
+	    SELECT setting_id FROM recommender_status
+	    WHERE status = #status#
+	</select>
+	
 	<select id="getAverageLatencyForSettingID" resultClass="long" parameterClass="latencyParam">
 		SELECT ROUND(AVG(t.rec_latency)) as rec_latency FROM
 			(SELECT rec_latency FROM recommender_querymap q
@@ -59,6 +64,15 @@
 			   limit #numberOfQueries#)
 			 as t
    </select>
+   <update id="deactivateRecommender" parameterClass="integer">
+       UPDATE recommender_status SET status=0 WHERE setting_id=#sid#
+   </update>
+   <update id="activateRecommender" parameterClass="integer">
+       UPDATE recommender_status SET status=1 WHERE setting_id=#sid#
+   </update>
+   <update id="removeRecommender" parameterClass="integer">
+       UPDATE recommender_status SET status=2 WHERE setting_id=#sid#
+   </update>
 	
 	
 	<!-- +

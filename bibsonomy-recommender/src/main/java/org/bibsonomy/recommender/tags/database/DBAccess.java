@@ -582,6 +582,26 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		return (Long)getSqlMapInstance().queryForObject("getAverageLatencyForSettingID", param);
 	}
 	
+	public List<Integer> getActiveRecommenderSettingIds() throws SQLException{
+		return (List<Integer>)getSqlMapInstance().queryForList("getSettingIdsByStatus", 1);
+	}
+	public List<Integer> getDisabledRecommenderSettingIds() throws SQLException{
+		return (List<Integer>)getSqlMapInstance().queryForList("getSettingIdsByStatus", 0);
+	}
+	
+	public void updateRecommenderstatus(List<Integer> activeRecs, List<Integer> disabledRecs ) throws SQLException{
+		SqlMapClient sqlMap = getSqlMapInstance();
+		
+		if(activeRecs != null)
+		  for(Integer p: activeRecs)
+		    sqlMap.update("activateRecommender", p);
+		
+		if(disabledRecs != null)
+		  for(Integer p: disabledRecs)
+		    sqlMap.update("deactivateRecommender", p);
+	}
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#guessQueryFromPost(java.lang.Integer)
