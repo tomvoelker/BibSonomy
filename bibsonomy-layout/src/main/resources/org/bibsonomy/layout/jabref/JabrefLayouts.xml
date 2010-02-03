@@ -48,6 +48,18 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>
+	<layout name="plain">
+		<displayName>plain </displayName>
+		<description xml:lang="en">
+			A simple layout for cvpage
+		</description>
+		<description xml:lang="de">
+			Ausgabe fuer die cvpage
+		</description>
+		<baseFileName>plain</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>
 	<layout name="tablerefs">
 		<displayName>HTML table</displayName>
 		<description xml:lang="en">
