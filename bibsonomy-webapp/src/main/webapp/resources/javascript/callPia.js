@@ -17,7 +17,7 @@ function PIARequest(method, url) {
 	this.callback = null;
 	this.container = null;
 	this.count = 10;
-	this.serviceURL = 'http://localhost/piaWebservice/';
+	this.serviceURL = 'http://www.biblicious.org/piaWebservice/';
 	this.url = url;
 	this.method = method;
 	this.makeRequest = function() {
