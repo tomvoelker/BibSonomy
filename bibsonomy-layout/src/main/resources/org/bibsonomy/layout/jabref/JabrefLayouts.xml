@@ -423,8 +423,8 @@
 			nach Jahren, mit Endnote-Eintrag für jede Publikation und Anzeige der
 			Notiz (note).		
 		</description>
-		<directory>winfoyear</directory>
-		<baseFileName>winfoyear</baseFileName>
+		<directory>winfoyear_n</directory>
+		<baseFileName>winfoyear_n</baseFileName>
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>	
