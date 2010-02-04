@@ -157,9 +157,13 @@ public class UserUtils {
 		/*
 		 * append last backslash if not exist
 		 */
-		if (!url.endsWith("/")) {
-			url += "/";
-		}
+		// FIXME: 2010/02/03, fei: Removed appending of a '/' as this prevents 
+		//                         http://openid-provider.appspot.com/<googleid> 
+		//                         from working (see issue 1030).
+		//                         Why should we append a '/' anyway? 
+		// if (!url.endsWith("/")) {
+		// 	url += "/";
+		// }
 
 		/*
 		 * convert to lower case
