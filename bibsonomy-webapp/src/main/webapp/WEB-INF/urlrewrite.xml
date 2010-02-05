@@ -787,17 +787,17 @@
 		<to type="permanent-redirect" last="true">/help/faq/$1</to>
 	</rule>
 
-	<!-- old postBookmark/Publication forms - used by the buttons! -->
+	<!-- old editBookmark/Publication forms - used by the buttons! -->
 	<rule>
 		<name>/ShowBookmarkEntry</name>
 		<from>^/ShowBookmarkEntry$</from>
-		<to last="true">/postBookmark</to>
+		<to last="true">/editBookmark</to>
 	</rule>
 	<rule>
 		<name>/BibtexHandler</name>
 		<condition type="method">GET</condition>
 		<from>^/BibtexHandler$</from>
-		<to last="true">/postPublication</to>
+		<to last="true">/editPublication</to>
 	</rule>
 	
 
