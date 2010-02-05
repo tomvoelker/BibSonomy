@@ -118,22 +118,7 @@
   		  </fmt:message>
  		</p>
 
-		<h3><a name="download"><fmt:message key="export.download.layouts"/></a></h3>
-		<p>
-			<fmt:message key="export.download">
-  				<fmt:param>${projectName}</fmt:param>
-  		 	</fmt:message>
-		</p>
-		<p><a href="${command.layoutDownloadURL}">DOWNLOAD</a></p>
-		<p>
-			<fmt:message key="export.download.help">
-  				<fmt:param>${projectName}</fmt:param>
-  		 	</fmt:message>
-  		 	<c:out value=" "/>
-  		 	<a href="${projectHome}help/tools/integration">
-  		 		<fmt:message key="export.download.helppages"/>
-  		 	</a>
-		</p>
+
 
       </div>
 
