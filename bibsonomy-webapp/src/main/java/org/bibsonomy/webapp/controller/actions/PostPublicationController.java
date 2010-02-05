@@ -339,6 +339,8 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		final User loginUser = command.getContext().getLoginUser();
 		for(final Post<BibTex> bib : bibtex)
 		{
+			//user has to be set (was not after first clean up with daniel)
+			bib.setUser(loginUser);
 			//set visibility of this post for the groups, the user specified 
 			initPostGroups(command, bib);
 			//the description
