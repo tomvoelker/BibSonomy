@@ -689,7 +689,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		return this.messageSource;
 	}
 
-	public void setMessageSource(final MessageSource messageSource) {
+	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 }
