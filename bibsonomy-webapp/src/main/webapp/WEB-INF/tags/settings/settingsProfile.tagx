@@ -127,11 +127,13 @@
   		  </fieldset>
 		</div>
 
-
-        <input type="submit" value="${saveChanges}"/>
-        <input type="hidden" name="action" value="update"/>
-        <input type="hidden" name="ckey" value="${ckey}"/>
-        <input type="hidden" name="selTab" value="0"/>
+        <p>
+          <input type="submit" class="fsFormSubmit" value="${saveChanges}"/>
+          <input type="hidden" name="action" value="update"/>
+          <input type="hidden" name="ckey" value="${ckey}"/>
+          <input type="hidden" name="selTab" value="0"/>
+        </p>
+        
       </form:form>  
 		
 		<h2><fmt:message key="settings.myFriends"/></h2>
