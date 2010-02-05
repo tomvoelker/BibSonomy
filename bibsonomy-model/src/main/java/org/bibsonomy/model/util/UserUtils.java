@@ -129,6 +129,9 @@ public class UserUtils {
 
 	/**
 	 * Normalizes the OpenID of a user for matching
+	 *
+	 * TODO: was hat diese Methode in dieser Klasse verloren? Die ist ziemlich
+	 * User-unspezifisch!
 	 * 
 	 * @param url the OpenID url
 	 * @return normalized OpenID
