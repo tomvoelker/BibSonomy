@@ -6,7 +6,9 @@
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:lp="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:spring="http://www.springframework.org/tags"
+  >
 	
 	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 
@@ -27,7 +29,16 @@
 	
 
 	<fmt:setBundle basename="messages" scope="request"/>
-
+  
+    <!-- 
+      set theme variables    
+     -->
+    <spring:theme code="stylesheet.main" var="stylesheet_main" text="${resdir}/css/style.css"/>
+    
+    
+    <!-- 
+      document starts here
+     -->
 	<jsp:output doctype-root-element="html"	doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
   
 	<jsp:element name="html">
@@ -39,7 +50,7 @@
 					<fmt:message key="meta.lang"/>
 				</c:set>
 				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
-				<link rel="stylesheet" type="text/css" href="${resdir}/css/style.css" />
+				<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />
 				<c:if test="${not empty personalized and personalized == true}">
 					<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
 				</c:if>
@@ -190,7 +201,8 @@
 								<a href="${editTagsUrl}"><fmt:message key="navi.editTags"/></a><c:out value=" "/>
 						</c:when>
 						<c:otherwise>
-							<span style="display: block; margin-top: 7px;">		
+							<span style="display: block; margin-top: 7px;">
+
 								<div id="userAndPw">
 									<c:set var="login">
 									<fmt:message key="navi.login"/>
