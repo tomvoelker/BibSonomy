@@ -36,8 +36,11 @@
 					"<a href='"+pNode[k].location[0].Text+"'>"
 					+ pNode[k].title[0].Text.substr(0, 19) + "</a><br/>";
 				}
+				console.log(similarResources);
 				similarResources += "</li>";
 				$("#sidebar").html($("#sidebar").html()+similarResources);
+			} else {
+				console.log("notourmethod");
 			}
 		}
 	]]>
