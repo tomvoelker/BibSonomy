@@ -37,6 +37,10 @@
 				</c:when>
 			</c:choose>
 		</jsp:attribute>
+
+    <jsp:attribute name="headerExt">
+      <link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+    </jsp:attribute>
 		
         <jsp:attribute name="heading">
 		  <h1 id="path"> 
