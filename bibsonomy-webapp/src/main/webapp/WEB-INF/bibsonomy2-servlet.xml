@@ -390,9 +390,6 @@
 	<bean id="exportPageController" class="org.bibsonomy.webapp.controller.ExportPageController" scope="request">
 		<property name="layoutRenderer" ref="jabrefLayoutRenderer"/>
 		<property name="requestLogic" ref="requestLogic"/>
-		
-		<!-- not sure if this is the right place to assign this URL -->
-		<property name="layoutDownloadURL" value="http://dev.bibsonomy.org/maven2/org/bibsonomy/bibsonomy-layout/"/>
 	</bean>
 
 	<bean id="conceptPageController" class="org.bibsonomy.webapp.controller.ConceptPageController" scope="request">
