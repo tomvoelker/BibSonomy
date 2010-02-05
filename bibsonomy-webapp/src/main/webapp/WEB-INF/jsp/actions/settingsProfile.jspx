@@ -9,6 +9,7 @@
   xmlns:spring="http://www.springframework.org/tags"
   xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
   xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+  
 	<!-- ############################################# profile tab ############################################# -->	
 		<fmt:message var="saveChanges" key="settings.saveChanges" />
 		<fmt:message var="male" key="settings.male"/>
@@ -20,11 +21,11 @@
         <p>
         	<fmt:message key="settings.profileInfo"><fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param><fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param></fmt:message>
         </p>
-		
-		<form:form name="account" method="post">		
 	
+        <form:form name="account" method="post">    
+  
         <h2><fmt:message key="settings.generalInformation" /></h2>		
-    
+  
 		<table>
 		  <tr>
 		    <td width="180px"><fmt:message key="settings.userName"/></td>
