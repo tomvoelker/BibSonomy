@@ -19,6 +19,10 @@
 			<value>/WEB-INF/project.properties</value>
 		</property>
 	</bean>
+
+	<bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource">
+    	<property name="basenamePrefix" value="theme_"/>
+	</bean>
 	
 	<bean id="urlGenerator" class="org.bibsonomy.services.URLGenerator">
 		<property name="projectHome"><value>${project.home}</value></property>
