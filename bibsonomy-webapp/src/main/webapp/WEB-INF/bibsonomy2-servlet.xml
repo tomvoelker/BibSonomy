@@ -7,6 +7,16 @@
 	                    http://www.springframework.org/schema/util 
 	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
+	<!-- 
+		extracts properties from the provided file and inserts them into bean 
+		properties using "${property.name}" notation  
+	-->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>/WEB-INF/project.properties</value>
+		</property>
+	</bean>
+	
 
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
 		<property name="allowedFields" ref="allowedFields"/>
@@ -579,11 +589,13 @@
 	</bean>
 	
 	
-	<!--  #################### locale stuff #################### -->
+	<!--  #################### locale and theme resolver #################### -->
 	
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver"/>
 	
-  
+    <bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver">
+      <property name="defaultThemeName"><value>${project.theme}</value></property>
+    </bean> 
 
 	<!--  #################### view resolver #################### -->
 	<!-- default: JSPs -->
