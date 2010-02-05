@@ -341,6 +341,7 @@
 						<p class="standart_text_normal" style="margin-top:1em; margin-bottom:1em"><fmt:message key="import.error.parse_or_incomplete_bibtex.description"/></p>
 						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
 								<edit:batchEditContent	formAction="${command.formAction}" 
+														resourceType="bibtex"
 					        							listView="${command.bibtex}" 
 					        							otherPostsUrlPrefix="bla" 
 					        							listViewStartParamName="bibtex.start"

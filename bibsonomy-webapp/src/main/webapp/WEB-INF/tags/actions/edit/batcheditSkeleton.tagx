@@ -22,6 +22,7 @@
   	<jsp:directive.attribute name="formAction" type="java.lang.String" required="false"/>
   	<jsp:directive.attribute name="deleteCheckedPosts" type="java.lang.Boolean" required="false"/>
   	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false"/>
+  	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="false"/>
   	
     <jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post"/>
     <jsp:directive.attribute name="title" fragment="true" required="true"/>
@@ -58,6 +59,7 @@
         <div id="general_100">
         <h2><fmt:message key="batchedit.info"/></h2>
         <edit:batchEditContent 	formAction="${formAction}" 
+        						resourceType="${resourceType}"
         						listView="${listView}" 
         						otherPostsUrlPrefix="${otherPostsUrlPrefix}" 
         						listViewStartParamName="${listViewStartParamName}"

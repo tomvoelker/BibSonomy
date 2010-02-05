@@ -21,6 +21,7 @@
     <jsp:directive.attribute name="formAction" type="java.lang.String" required="false" description="The action-url of the form on the batchedit-view."/>
   	<jsp:directive.attribute name="deleteCheckedPosts" type="java.lang.Boolean" required="false"/>
   	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false"/>
+  	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
   	
     <jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post"/>
     <jsp:directive.attribute name="title" fragment="true" required="true"/>
@@ -122,11 +123,11 @@
                </tr>                  
 
                <c:forEach var="post" items="${listView.list}" varStatus="postCount">
-               		<spring:bind path="command.posts.list[${postCount.count - 1}].resource.*">
+               		<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
            				<c:set var="postHasError" value="${status.error}" />
                		</spring:bind>
                		<c:if test="${not postHasError}">
-	               		<spring:bind path="command.posts.list[${postCount.count - 1}].resource">
+	               		<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource">
 	           				<c:set var="postHasError" value="${status.error}" />
 	               		</spring:bind>
                		</c:if>
@@ -140,14 +141,14 @@
 											<buttons:help iconText="X" iconTextStyle="color:red; font-size:120%">
 												<jsp:attribute name="helpText">
 													<ul>
-														<spring:bind path="command.posts.list[${postCount.count - 1}].resource.*">
+														<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
 											               <c:forEach var="errorMessage" items="${status.errorMessages}">
 											                  <li>
 											                  	<b class="info_bold">${errorMessage}</b>
 															  </li>
 											               </c:forEach>
 										               </spring:bind>
-										               <spring:bind path="command.posts.list[${postCount.count - 1}].resource">
+										               <spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource">
 											               <c:forEach var="errorMessage" items="${status.errorMessages}">
 											                  <li>
 											                  	<b class="info_bold">${errorMessage}</b>
@@ -184,7 +185,7 @@
 			                     <tr>
 			                       <td>
 			                       <div >
-			               			 <spring:bind path="command.posts.list[${postCount.count - 1}].tags" >
+			               			 <spring:bind path="command.${resourceType}.list[${postCount.count - 1}].tags" >
 			               			 	<c:if test="${status.error}">
 				               			 	<buttons:help iconText="X" iconTextStyle="color:red; font-size:120%">
 													<jsp:attribute name="helpText">
