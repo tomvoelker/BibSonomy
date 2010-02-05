@@ -11,10 +11,11 @@
 		extracts properties from the provided file and inserts them into bean 
 		properties using "${property.name}" notation  
 	-->
-	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean id="propertyConfigurer" class="org.bibsonomy.webapp.util.ContextParamConfigure">
 		<property name="location">
 			<value>/WEB-INF/project.properties</value>
 		</property>
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_CONTEXTPARAM"/>
 	</bean>
 	
 
