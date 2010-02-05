@@ -1,6 +1,5 @@
 package org.bibsonomy.database.managers;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.bibsonomy.common.enums.FilterEntity;
@@ -8,8 +7,6 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChain;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.params.beans.TagIndex;
-import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -105,7 +102,7 @@ public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, Bookm
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getInsertParam(org.bibsonomy.model.Post, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected BookmarkParam getInsertParam(final Post<Bookmark> post, final DBSession session) {
+	protected BookmarkParam getInsertParam(final Post<? extends Bookmark> post, final DBSession session) {
 		final BookmarkParam insert = this.getNewParam();
 		
 		insert.setResource(post.getResource());

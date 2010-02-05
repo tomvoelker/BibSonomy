@@ -1161,7 +1161,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 						this.performUpdateOnlyTags(post, oldPost, session);
 						break;
 //					case UPDATE_DOCUMENTS: // TODO: implement update documents operation
-//						return this.updateDocumentsOfPost(post, oldPost, session);
+//						this.performUpdateOnlyDocuments(post, oldPost, session);
 //						break;
 					default:
 						/*
@@ -1546,7 +1546,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return new param for insert a resource
 	 */
-	protected abstract P getInsertParam(final Post<R> post, final DBSession session);
+	protected abstract P getInsertParam(final Post<? extends R> post, final DBSession session);
 	
 	/**
 	 * @return the lucene search instance to use

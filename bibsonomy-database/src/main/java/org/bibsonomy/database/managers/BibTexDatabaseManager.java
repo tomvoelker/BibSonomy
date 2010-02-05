@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
@@ -24,7 +25,6 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
@@ -584,7 +584,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getInsertParam(org.bibsonomy.model.Post, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	protected BibTexParam getInsertParam(Post<BibTex> post, DBSession session) {
+	protected BibTexParam getInsertParam(Post<? extends BibTex> post, DBSession session) {
 		final BibTexParam insert = this.getNewParam();
 		insert.setResource(post.getResource());
 		insert.setRequestedContentId(post.getContentId());
