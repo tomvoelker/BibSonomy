@@ -111,14 +111,14 @@
 		<URL>http://www.librarything.de/work/details/10481522</URL>
 		<BibFile>LibrarythingScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_19">
 		<TestDescription>URL test for work-info pages from librarything (standard language)</TestDescription>
 		<URL>http://www.librarything.com/work/details/10481522</URL>
 		<BibFile>LibrarythingScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_20">
 		<TestDescription>Test for scraping publications with the ams scraper (normal publication page)</TestDescription>
@@ -155,8 +155,7 @@
 		<URL>http://prola.aps.org/export/PRA/v1/i1/p1_1?type=bibtex</URL>
 		<BibFile>ProlaScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
-		<Enabled>false</Enabled>
-		<AdditionalInfo>can't find the failure in this test. everything seems ok. must be an encoding error or something else</AdditionalInfo>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_26">
 		<TestDescription>URL scraping test with publication from pubmedcentral</TestDescription>
@@ -182,8 +181,7 @@
 		<URL>http://www.slac.stanford.edu/spires/find/hep/www?r=DESY-THESIS-2007-018</URL>
 		<BibFile>SpiresScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.spires.SpiresScraper</Scraper>
-		<Enabled>false</Enabled>
-		<AdditionalInfo>Object not found</AdditionalInfo>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_30">
 		<TestDescription>URL scraping test with publication from springerlink</TestDescription>
@@ -237,7 +235,7 @@
 		<URL>http://www.librarything.de/work/1926837/details</URL>
 		<BibFile>LibrarythingScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_38">
 		<TestDescription>URL test for bibsonomy.org/bibtex</TestDescription>
@@ -392,10 +390,10 @@
 	</URLTest>
 	<URLTest id="url_65">
 		<TestDescription>Opac Scraper and PicaToBibtex</TestDescription>
-		<URL>http://opac.bibliothek.uni-kassel.de/DB=23/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=191787183</URL>
+		<URL>http://opac.bibliothek.uni-kassel.de/DB=1/XML=1.0/CHARSET=UTF-8/PRS=PP/PPN?PPN=191787183</URL>
 		<BibFile>OpacScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.opac.OpacScraper</Scraper>
-		<Enabled>false</Enabled>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_68">
 		<TestDescription>BMJ Journals Url 1</TestDescription>
@@ -679,7 +677,7 @@
 	</URLTest>
 	<URLTest id="url_115">
 		<TestDescription>Scraper for bibtex extraction from sourcecode</TestDescription>
-		<URL>http://de.wikipedia.org/wiki/BibTeX</URL>
+		<URL>http://en.wikipedia.org/wiki/BibTeX</URL>
 		<BibFile>BibtexScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.generic.BibtexScraper</Scraper>
 	</URLTest>
@@ -700,8 +698,7 @@
 		<URL>http://arrts.gtcni.org.uk/gtcni/handle/2428/8327</URL>
 		<BibFile>OpenrepositoryScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.openrepository.OpenrepositoryScraper</Scraper>
-		<Enabled>false</Enabled>
-		<AdditionalInfo>No route to host</AdditionalInfo>
+		<Enabled>true</Enabled>
 	</URLTest>
 	<URLTest id="url_120">
 		<TestDescription>Test for eric.exeter.ac.uk/exeter (openrepository)</TestDescription>
@@ -978,8 +975,7 @@
 		<URL>http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1445111</URL>
 		<BibFile>SSRNScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper</Scraper>
-		<Enabled>false</Enabled>
-		<AdditionalInfo>can't find the failure in this test. everything seems ok. must be an encoding error or something else</AdditionalInfo>
+		<Enabled>true</Enabled>
 	</URLTest>	
 	<URLTest id="url_166">
 		<TestDescription>Test for ISBN amazon scraper</TestDescription>

@@ -41,13 +41,14 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
  */
 public class OpacScraper extends AbstractUrlScraper {
 	private static final String SITE_URL = "http://opac.bibliothek.uni-kassel.de/";
+	private static final String HOST_NAME = "opac.bibliothek.uni-kassel.de";
 	private static final String SITE_NAME = "Bibliothek Kassel";
 	private static final String info = "This scraper parses a publication page from " + href(SITE_URL , SITE_NAME);
 
 	/**
 	 * TODO: This Scraper match only on URL's with es specific query value in path and queries. The current patterns don't work.
 	 */
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(AbstractUrlScraper.EMPTY_PATTERN, Pattern.compile(".*?PRS=PP/PPN")));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(HOST_NAME + ".*"), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		//log.fatal("Opac");
