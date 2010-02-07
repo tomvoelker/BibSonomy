@@ -972,7 +972,7 @@
 	</URLTest>
 	<URLTest id="url_165">
 		<TestDescription>Test for SSRN publication page</TestDescription>
-		<URL>http://papers.ssrn.com/sol3/papers.cfm?abstract_id=1445111</URL>
+		<URL>http://papers.ssrn.com/sol3/papers.cfm?abstract_id=900005</URL>
 		<BibFile>SSRNScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ssrn.SSRNScraper</Scraper>
 		<Enabled>true</Enabled>
