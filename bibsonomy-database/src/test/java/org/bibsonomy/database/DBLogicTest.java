@@ -500,10 +500,19 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		// one can not read spam informations about other users
 		dbl     = this.getDbLogic(TEST_USER_NAME);
 		spammer = dbl.getUserDetails(TEST_SPAMMER_NAME);
-		assertEquals(null, spammer.getAlgorithm());
-		assertEquals(null, spammer.getPrediction());
-		assertEquals(null, spammer.getConfidence());
-		
+		assertNull(spammer.getAlgorithm());
+		assertNull(spammer.getPrediction());
+		assertNull(spammer.getConfidence());
+	}
+	
+	/**
+	 * tests {@link DBLogic#getUserDetails(String)}
+	 */
+	@Test
+	public void getUserDetailsForUserNotInDB() {
+		LogicInterface dbl  = this.getDbLogic(TEST_SPAMMER_NAME);
+		final User user = dbl.getUserDetails("thisuserdoesntexistindb");
+		assertNull(user.getName()); // user unknown => user's name must be null
 	}
 	
 	/**

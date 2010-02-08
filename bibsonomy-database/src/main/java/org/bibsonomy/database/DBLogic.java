@@ -261,7 +261,7 @@ public class DBLogic implements LogicInterface {
 			 * respect user privacy settings
 			 * clear all profile attributes if current login user isn't allowed to see the profile
 			 */
-			if (!this.permissionDBManager.isAllowedToAccessUsersProfile(user, this.loginUser, session)) {
+			if (!this.permissionDBManager.isAllowedToAccessUsersProfile(user, this.loginUser, session) && present(user.getName())) {
 				return new User(userName);
 			}
 			
@@ -380,11 +380,8 @@ public class DBLogic implements LogicInterface {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * org.bibsonomy.model.logic.PostLogicInterface#getPostDetails(java.lang
-	 * .String, java.lang.String)
+	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPostDetails(java.lang.String, java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) {
 		final DBSession session = openSession();
@@ -406,7 +403,7 @@ public class DBLogic implements LogicInterface {
 						 * neither public nor private ... ... get the groups
 						 * from the grouptas table
 						 */
-						post.setGroups(new HashSet(groupDBManager.getGroupsForContentId(post.getContentId(), session)));
+						post.setGroups(new HashSet<Group>(groupDBManager.getGroupsForContentId(post.getContentId(), session)));
 					}
 					return post;
 				}
@@ -593,14 +590,11 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public void deleteUser(final String userName) {
 		// TODO: take care of toLowerCase()!
-
 		this.ensureLoggedIn();
 		/*
 		 * only an admin or the user himself may delete the account
 		 */
-		if (!this.permissionDBManager.isAdminOrSelf(loginUser, userName)) {
-			throw new ValidationException("You are not authorized to perform the requested operation.");
-		}
+		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, userName);
 
 		final DBSession session = openSession();
 		try {
