@@ -3,7 +3,8 @@
  * @author Philipp Beau
  */
  
-.personalData {
+.bookmarkList {
+	list-style-type: disc;
 }
  
 hr.line {
@@ -34,6 +35,8 @@ td.button {
 }
 
 .aboutMeIMG {
+	position: absolute;
+	left: 550px;
 }
 
 table tr {
@@ -62,25 +65,13 @@ text-decoration:none;
 .entry_title {
 font-weight: bold;
 color:#478080;
-font-family:Arial,Helvetica,"sans serif";
-font-size:13px;
-line-height:14px;
-text-decoration:none;
 }
 .entry_author {
-font-family:Arial,Helvetica,"sans serif";
-font-size:13px;
-line-height:14px;
-text-decoration:none;
 }
 
 .entry_journal, .entry_booktitle {
 font-style: italic;
 color:#478080;
-font-family:Arial,Helvetica,"sans serif";
-font-size:13px;
-line-height:14px;
-text-decoration:none;
 }
 
 
