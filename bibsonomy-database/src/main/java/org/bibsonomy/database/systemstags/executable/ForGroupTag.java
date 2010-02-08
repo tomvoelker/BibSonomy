@@ -117,8 +117,21 @@ public class ForGroupTag extends SystemTag {
 			// FIXME: should other system tags be executed or removed???\
 			//        We have to consider possible side effects
 			SystemTagFactory.removeSystemTag(tagsCopy, getName());
+			/*
+			 *  the visibility of the postCopy is:
+			 *  original == public => copy = public
+			 *  original != public => copy = dbGroup
+			 *  => check if post.groups has only the public group
+			 */
 			Set<Group> groupsCopy = new HashSet<Group>();
-			groupsCopy.add(dbGroup);
+			Group publicGroup = new Group("public");
+			if (post.getGroups().size()==1 && post.getGroups().contains(publicGroup)) {
+				// public is the only group (if visibility was public, there should be only one group)
+				groupsCopy.add(publicGroup);
+			} else {
+				// visibility is different from public => post is only visible for dbGroup
+				groupsCopy.add(dbGroup);
+			}
 			// FIXME: how do we properly clone a post?
 			Post<T> postCopy = new Post();
 			postCopy.setContentId(post.getContentId());
