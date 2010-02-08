@@ -117,24 +117,23 @@
 	 	<br />
 	 	<br />
 	</c:if>
-
-
+	
 	<c:if test="${!empty command.bookmark.list}">
 	<h2>Own Bookmarks</h2>
 	<hr class="line"/>
 	<div class="box, align">
 	
-	<ul class="bookmarkList">
+	<ul id="liste" class="bookmarkList">
 		<c:forEach var="post" items="${command.bookmark.list}">
      
-    		<div style="margin:1.2em;">
+    		<div style="margin:1.2em;" class="entry">
 			<c:set var="bookmark" value="${post.resource}"/>
 			<li>
-     		<p class="entry">
-     			<span class="entry_title"><a href="${bookmark.url}">${bookmark.title} </a> </span><br />
-<!--       			<c:out value="${post.description}" />-->
-       			
-     		</p>
+     			<span class="entry_title"><a href="${bookmark.url}">${bookmark.title}</a></span><a class="hand">  [show details]</a>
+     			<br />
+     			<p class="details"> 
+       				<c:out value="${post.description}" />
+       			</p>
      		</li>
 			</div>
    		</c:forEach>
@@ -142,7 +141,26 @@
 	</div>
 	</c:if>
 	
-	
+<script type="text/javascript">
+var list = document.getElementById("liste");
+
+for(var i = 0;list.childNodes.length > i; i++) {
+  if(list.childNodes[i].childNodes[0].tagName.toLowerCase() == "li") {
+	  list.childNodes[i].childNodes[0].childNodes[1].onclick = function(details, pos) {
+      return function() {
+        if(details.style.display == "block") {
+             details.style.display = "none";
+             list.childNodes[pos].childNodes[0].childNodes[1].innerHTML = "  [show details]";
+        } else {
+             details.style.display = "block";
+             list.childNodes[pos].childNodes[0].childNodes[1].innerHTML = "  [hide details]";
+        }
+      }
+    }(list.childNodes[i].childNodes[0].childNodes[3], i);
+  }
+}
+</script>
+
 	<c:if test="${!empty command.bibtex.list}">
 	<h2>Publications</h2>
 	<hr class="line"/>
