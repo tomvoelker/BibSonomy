@@ -65,10 +65,11 @@ public class SystemTagFactory {
 			return null;
 		final String name = SystemTagsUtil.extractName(tag.getName());
 		if (present(name)) {
-			if( getExecutableSystemTagMap().get(name)!=null ) {
+			if (present(getExecutableSystemTagMap().get(name))) {
 				final SystemTag retVal = getExecutableSystemTagMap().get(name).newInstance();
 				retVal.setTag(tag);
 				retVal.setDbSessionFactory(sessionFactory);
+				retVal.setSystemTagFactory(this);
 			}
 		}
 		return null;
@@ -78,7 +79,7 @@ public class SystemTagFactory {
 	 * @param tag
 	 * @return true if tag is existent
 	 */
-	public boolean isSystemTag(String tag) {
+	public boolean isSystemTag(final String tag) {
 		final String name = SystemTagsUtil.extractName(tag);
 		return present(name) && getExecutableSystemTagMap().containsKey(name);
 	}
@@ -90,7 +91,7 @@ public class SystemTagFactory {
 	 * system:&lt;name&gt;:&lt;argument&gt; and &lt;name&gt;:&lt;argument&gt;
 	 * 
 	 * @param tags collection of tags to alter 
-	 * @param name name of system tag to remove. If name==null, every system tag will be removed
+	 * @param the name of the system tag to be removed. 
 	 * @return number of occurrences removed.
 	 */
 	public int removeSystemTag(final Set<Tag> tags, final String name) {
@@ -99,7 +100,7 @@ public class SystemTagFactory {
 		final Collection<Tag> toRemove = new HashSet<Tag>();
 		// traverse all tags
 		for (final Tag tag : tags ) {
-			if( isSystemTag(tag.getName()) && (present(name) || name.equals(SystemTagsUtil.extractName(tag.getName()))) ) {
+			if( isSystemTag(tag.getName()) && present(name) && name.equals(SystemTagsUtil.extractName(tag.getName())) ) {
 				toRemove.add(tag);
 				nr++;
 			}
@@ -110,7 +111,8 @@ public class SystemTagFactory {
 		// all done.
 		return nr;
 	}
-	
+
+
 	
 
 	/**

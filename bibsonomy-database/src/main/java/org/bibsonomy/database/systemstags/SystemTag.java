@@ -28,6 +28,23 @@ public abstract class SystemTag {
 	 */
 	private DBSessionFactory dbSessionFactory;
 	
+	private SystemTagFactory systemTagFactory;
+	
+	
+	/**
+	 * @return the systemTagFactory
+	 */
+	public SystemTagFactory getSystemTagFactory() {
+		return this.systemTagFactory;
+	}
+
+	/**
+	 * @param systemTagFactory the systemTagFactory to set
+	 */
+	public void setSystemTagFactory(SystemTagFactory systemTagFactory) {
+		this.systemTagFactory = systemTagFactory;
+	}
+
 	/**
 	 * default constructor for creating empty instances (e.g. for spring configuration)
 	 */
@@ -41,7 +58,7 @@ public abstract class SystemTag {
 	 * @param name
 	 *            of the system tag
 	 */
-	public SystemTag(String name) {
+	public SystemTag(final String name) {
 		this(name, null);
 	}
 
