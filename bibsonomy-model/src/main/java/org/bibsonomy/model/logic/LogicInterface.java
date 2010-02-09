@@ -469,27 +469,6 @@ public interface LogicInterface extends PostLogicInterface {
 	 */
 	public String getOpenIDUser(final String openID);
 	
-	/**
-	 * Returns a username corresponding to a given ldapUserId
-	 * 
-	 * @param username
-	 * @return ldapUserId
-	 */
-	public String getLdapUserByUsername(final String username);
-	
-	/**
-	 * Returns a username corresponding to a given ldapUserId
-	 * 
-	 * @param ldapUser
-	 * @return username
-	 */
-	public String getUsernameByLdapUser(final String ldapUser);
-
-	
-	/**
-	 * @param loginName
-	 */
-	public void updateLastLdapRequest (final String loginName);
 
 	/**
 	 * Retrieve relations
@@ -595,4 +574,12 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return the new size of the inbox
 	 */
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);	
+
+	
+	/**
+	 * Retrieves bibsonomy username for given ldap user id
+	 * @param LDAP User ID 
+	 * @return username
+	 */
+	public String getUsernameByLdapUserId(String userId);	
 }

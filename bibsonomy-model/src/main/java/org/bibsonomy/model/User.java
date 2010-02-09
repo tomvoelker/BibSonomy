@@ -106,7 +106,12 @@ public class User {
 	/**
 	 * LDAP userId for authentication
 	 */
-	private String userId;
+	private String ldapId;
+
+	/**
+	 * Date of last ldap password check or ldap update
+	 */
+	private Date lastLdapUpdate;
 
 	/**
 	 * IP Address
@@ -554,17 +559,31 @@ public class User {
 	}
 
 	/**
-	 * @return userId
+	 * @param ldapId
 	 */
-	public String getUserId() {
-		return this.userId;
+	public void setLdapId(String ldapId) {
+		this.ldapId = ldapId;
 	}
 
 	/**
-	 * @param userId
+	 * @return ldap user id
 	 */
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public String getLdapId() {
+		return ldapId;
+	}
+
+	/**
+	 * @param lastLdapUpdate
+	 */
+	public void setLastLdapUpdate(Date lastLdapUpdate) {
+		this.lastLdapUpdate = lastLdapUpdate;
+	}
+
+	/**
+	 * @return last ldap update date
+	 */
+	public Date getLastLdapUpdate() {
+		return lastLdapUpdate;
 	}
 
 	/**
@@ -803,5 +822,8 @@ public class User {
 	public void setReminderPasswordRequestDate(Date reminderPasswordRequestDate) {
 		this.reminderPasswordRequestDate = reminderPasswordRequestDate;
 	}
+
+
+
 
 }
