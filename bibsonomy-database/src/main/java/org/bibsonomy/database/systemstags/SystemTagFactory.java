@@ -102,7 +102,7 @@ public class SystemTagFactory {
 	 *            tag value
 	 * @return system tag object
 	 */
-	public SystemTagType createTag(String tag, String value) {
+	public SystemTagType createTag(final String tag, String value) {
 		if (value.startsWith(":")) {
 			value = value.substring(1);
 		}

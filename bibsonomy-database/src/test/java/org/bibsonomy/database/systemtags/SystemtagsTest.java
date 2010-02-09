@@ -16,12 +16,12 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.ValidationException;
-import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.managers.AbstractDBLogicBase;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -45,12 +45,15 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  */
 public class SystemtagsTest extends AbstractDBLogicBase {
 
+	private SystemTagFactory systemTagFactory;
+	
 	@Override
 	@Before
 	@Ignore
 	public void setUp() {
 		super.setUp();
-		SystemTagFactory.renewSystemTagMap("src/test/resources/systemtags/systemtags.xml");
+		systemTagFactory = new SystemTagFactory();
+		systemTagFactory.renewSystemTagMap("src/test/resources/systemtags/systemtags.xml");
 	}
 
 	@Test
@@ -115,14 +118,14 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		tags.add(testTag1);tags.add(testTag2);tags.add(testTag3);
 		
 		for (Tag tag : tags) {
-			Assert.assertEquals("for", SystemTagFactory.extractName(tag.getName()));
+			Assert.assertEquals("for", SystemTagsUtil.extractName(tag.getName()));
 			String result = "";
 			String expected = "kde";
-			result = SystemTagFactory.extractArgument(tag.getName());
+			result = SystemTagsUtil.extractArgument(tag.getName());
 			Assert.assertEquals(expected, result);
 		}
 		
-		SystemTagFactory.removeSystemTag(tags, "for");
+		systemTagFactory.removeSystemTag(tags, "for");
 		Assert.assertEquals(0, tags.size());
 	}
 	
