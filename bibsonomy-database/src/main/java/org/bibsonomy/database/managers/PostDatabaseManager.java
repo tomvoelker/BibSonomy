@@ -63,25 +63,25 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  */
 public abstract class PostDatabaseManager<R extends Resource, P extends ResourcesParam<R> & SingleResourceParam<R>> extends AbstractDatabaseManager implements CrudableContent<R, P> {
 	private static final Log log = LogFactory.getLog(PostDatabaseManager.class);
-	
+
 	/** database managers */
 	protected final GeneralDatabaseManager generalDb;
 	protected final TagDatabaseManager tagDb;
 	protected final DatabasePluginRegistry plugins;
 	protected final PermissionDatabaseManager permissionDb;
-	
+
 	/** simple class name of the resource managed by the class */
 	protected final String resourceClassName;
-		
+
 	/** instance of the lucene searcher */
 	private ResourceSearch<R> resourceSearch;
-	
+
 	/** factory for creating system tags */
 	private SystemTagFactory systemTagFactory;
 	// FIXME: remove logic and sessionfactory! (systemfactory needs dbSessionFactory and logic)
-//	private DBSessionFactory dbSessionFactory;
-//	private LogicInterface dbLogic; 
-	
+	//	private DBSessionFactory dbSessionFactory;
+	//	private LogicInterface dbLogic; 
+
 	/**
 	 * inits the database managers and resource class name
 	 */
@@ -90,15 +90,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.tagDb = TagDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.permissionDb = PermissionDatabaseManager.getInstance();
-		
+
 		this.resourceClassName = this.getResourceClassName();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected List<Post<R>> postList(final String query, final P param, final DBSession session) {
 		return this.queryForList(query, param, session);
 	}
-	
+
 	/**
 	 * @param param
 	 * @param session
@@ -107,7 +107,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public List<Post<R>> getPostsFromInbox(final P param, final DBSession session) {
 		return this.postList("get" + this.resourceClassName + "FromInbox", param, session);
 	}
-	
+
 	/**
 	 * <em>/concept/tag/TAGNAME</em>
 	 * 
@@ -122,10 +122,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(limit, offset);
 		param.setTagIndex(tagIndex);
 		param.addAllToSystemTags(systemTags);
-		
+
 		return this.postList("get" + this.resourceClassName + "ByConceptByTag", param, session);
 	}
-	
+
 	/**
 	 * <em>/concept/group/GruppenName/EinTag</em><br/><br/>
 	 * 
@@ -146,11 +146,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setRequestedGroupName(requestedGroupName);
 		param.setTagIndex(tagIndex);
 		param.addAllToSystemTags(systemTags);
-		
+
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.postList("get" + this.resourceClassName + "ByConceptForGroup", param, session);
 	}
-	
+
 	/**
 	 * <em>/concept/user/MaxMustermann/EinTag</em><br/><br/>
 	 * 
@@ -183,7 +183,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setTagIndex(tagIndex);
 		param.setCaseSensitiveTagNames(caseSensitive);
 		param.addAllToSystemTags(systemTags);
-		
+
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.postList("get" + this.resourceClassName + "ByConceptForUser", param, session);
 	}
@@ -208,16 +208,16 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(limit, offset);
 		param.setGroupId(groupId);
 		param.setTagIndex(tagIndex);
-		
+
 		if (present(order)) {
 			param.setOrder(order);
-			
+
 			if (Order.FOLKRANK.equals(param.getOrder())){
 				param.setGroupId(GroupID.PUBLIC.getId());
 				return this.postList("get" + this.resourceClassName + "ByTagNamesAndFolkrank", param, session);
 			}
 		}
-		
+
 		return this.postList("get" + this.resourceClassName + "ByTagNames", param, session);
 	}	
 
@@ -250,7 +250,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setGroups(visibleGroupIDs);
 		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);
-		
+
 		HashID.getSimHash(param.getSimHash()); 
 		return this.getPostsByTagNamesForUser(param, session);
 	}
@@ -272,10 +272,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.getNewParam();
 		param.setGroupId(groupId);
 		param.setTagIndex(tagIndex);
-		
+
 		return this.queryForObject("get" + this.resourceClassName + "ByTagNamesCount", param, Integer.class, session);
 	}
-	
+
 	/**
 	 * Retrieves the number of resource items tagged by the tags present in tagIndex by user requestedUserName
 	 * being visible to the logged in user
@@ -298,11 +298,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setRequestedUserName(requestedUserName);
 		param.setUserName(loginUserName);
 		param.setTagIndex(tagIndex);
-		
+
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ByTagNamesForUserCount", param, Integer.class, session);
 		return present(result) ? result : 0;
 	}
-	
+
 	/**
 	 * <em>/friends</em><br/><br/>
 	 * 
@@ -321,11 +321,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(user, null, limit, offset);
 		param.setSimHash(simHash);
 		param.addAllToSystemTags(systemTags);
-		
+
 		param.setGroupId(GroupID.FRIENDS);
 		return this.postList("get" + this.resourceClassName + "ByUserFriends", param, session);
 	}
-	
+
 	/**
 	 * This method prepares queries which retrieve all resources for the
 	 * <em>/popular</em> page of BibSonomy. The lists are retrieved from two
@@ -340,10 +340,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public List<Post<R>> getPostsPopular(final int limit, final int offset, final HashID hashId, final DBSession session) {
 		final P param = this.createParam(limit, offset);
 		param.setSimHash(hashId);
-		
+
 		return this.postList("get" + this.resourceClassName + "Popular", param, session);
 	}
-	
+
 	/**
 	 * TODO: improve docs
 	 * 
@@ -359,10 +359,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(limit, offset);
 		param.setDays(days);
 		param.setSimHash(hashId);
-		
+
 		return this.postList("get" + this.resourceClassName + "Popular", param, session);
 	}
-	
+
 	/** 
 	 * @param days
 	 * @param session
@@ -373,10 +373,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setDays(days);
 
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "PopularDays", param, Integer.class, session);
-		
+
 		return present(result) ? result : 0;
 	}
-	
+
 	/**
 	 * This method prepares queries which retrieve all resources for the home
 	 * page of BibSonomy. These are typically the X last posted entries. Only
@@ -395,7 +395,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setSimHash(HashID.INTER_HASH);
 		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);
-		
+
 		return this.getPostsForHomepage(param, session);
 	}
 
@@ -407,7 +407,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected List<Post<R>> getPostsForHomepage(final P param, final DBSession session) {
 		return this.postList("get" + this.resourceClassName + "ForHomepage", param, session);
 	}
-	
+
 	/**
 	 * Prepares a query which retrieves all posts which are represented by
 	 * the given hash.
@@ -425,10 +425,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setHash(requResource);
 		param.setSimHash(simHash);
 		param.setGroupId(groupId);
-		
+
 		return this.postList("get" + this.resourceClassName + "ByHash", param, session);
 	}
-	
+
 	/**
 	 * Retrieves the number of posts represented by the given hash.
 	 * 
@@ -441,11 +441,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.getNewParam();
 		param.setHash(requHash);
 		param.setSimHash(simHash);
-		
+
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ByHashCount", param, Integer.class, session);
 		return present(result) ? result : 0;
 	}
-	
+
 	/**
 	 * @param requHash 
 	 * @param simHash 
@@ -458,11 +458,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setUserName(userName);
 		param.setHash(requHash);
 		param.setSimHash(simHash);
-		
+
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ByHashAndUserCount", param, Integer.class, session);
 		return present(result) ? result : 0;
 	}
-	
+
 	/**
 	 * Prepares a query which retrieves the resources (which is represented by
 	 * the given hash) for a given user. Since user name is given, full group
@@ -481,11 +481,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.addGroups(visibleGroupIDs);
 		param.setHash(requHash);
 		param.setSimHash(hashType);
-		
+
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		return this.postList("get" + this.resourceClassName + "ByHashForUser", param, session);
 	}
-	
+
 	/**
 	 * <em>/search/ein+lustiger+satz</em><br/><br/>
 	 * 
@@ -510,7 +510,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(null, requestedUserName, limit, offset);
 		param.setGroupId(groupId);
 		param.setSearch(search);
-		
+
 		return this.postList("get" + this.resourceClassName + "Search", param, session);
 	}
 
@@ -531,7 +531,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return list of posts
 	 */
 	public List<Post<R>> getPostsSearchForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String search, final String loginUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
-	
+
 		String searchMode = "";
 		try {
 			Context initContext = new InitialContext();
@@ -540,7 +540,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		} catch (NamingException ex) {
 			log.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
 		}
-		
+
 		if ("lucene".equals(searchMode)) {
 			final List<Post<R>> postList;
 			final ResourceSearch<R> lucene = this.getResourceSearch();
@@ -554,10 +554,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				postList = new LinkedList<Post<R>>();
 				log.error("No resource searcher available.");
 			}
-			
+
 			return postList;
 		}
-		
+
 		final P param = this.createParam(loginUserName, null, limit, offset);
 		param.setGroupId(groupId);
 		param.setSearch(search);
@@ -598,10 +598,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			postList = new LinkedList<Post<R>>();
 			log.error("No resource searcher available.");
 		}
-		
+
 		return postList;
 	}
-	
+
 	/**
 	 * Returns the number of posts for a given search.
 	 * 
@@ -616,10 +616,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setRequestedUserName(requestedUserName);
 		param.setGroupId(groupId);
 		param.setSearch(search);
-		
+
 		return this.queryForObject("get" + this.resourceClassName + "SearchCount", param, Integer.class, session);
 	}
-	
+
 	/**  
 	 * <em>/viewable/EineGruppe</em><br/><br/>
 	 * 
@@ -640,16 +640,16 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			// show users own posts, which are private, public or for friends
 			return this.getPostsForUser(loginUserName, loginUserName, HashID.INTER_HASH, groupId, new LinkedList<Integer>(), null, limit, offset, null, session);
 		}
-		
+
 		final P param = this.createParam(loginUserName, null, limit, offset);
 		param.setRequestedGroupName(requestedGroupName);
 		param.setGroupId(groupId);
 		param.setSimHash(simHash);
 		param.addAllToSystemTags(systemTags);
-		
+
 		return this.postList("get" + this.resourceClassName + "Viewable", param, session);
 	}
-	
+
 	/**
 	 * TODO: check method
 	 * 
@@ -669,15 +669,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		if (GroupID.isSpecialGroupId(groupId)) {
 			return this.getPostsByTagNamesForUser(loginUserName, requestedUserName, tagIndex, groupId, null, limit, offset, filter, systemTags, session);
 		}
-		
+
 		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
 		param.setTagIndex(tagIndex);
 		param.setGroupId(groupId);
 		param.addAllToSystemTags(systemTags);
-		
+
 		return this.postList("get" + this.resourceClassName + "ViewableByTag", param, session);
 	}
-	
+
 	/** 
 	 * <em>/group/EineGruppe</em><br/><br/>
 	 * 
@@ -708,10 +708,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setSimHash(simHash);
 		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);
-		
+
 		return this.getPostsForGroup(param, session);
 	}
-	
+
 	protected List<Post<R>> getPostsForGroup(final P param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.postList("get" + this.resourceClassName + "ForGroup", param, session);
@@ -736,12 +736,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(loginUserName, requestedUserName);
 		param.setGroups(visibleGroupIDs);
 		param.setGroupId(groupId);
-		
+
 		DatabaseUtils.checkPrivateFriendsGroup(this.generalDb, param, session);
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ForGroupCount", param, Integer.class, session);
 		return present(result) ? result : 0;
 	}
-	
+
 	/**
 	 * TODO: improve docs
 	 * 
@@ -758,10 +758,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(loginUserName, requestedUserName, limit, offset);
 		param.setGroups(visibleGroupIDs);
 		param.addAllToSystemTags(systemTags);
-		
+
 		return this.postList("get" + this.resourceClassName + "ForMyGroupPosts", param, session);
 	}
-	
+
 	/**
 	 * TODO: improve docs
 	 * 
@@ -807,7 +807,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setGroups(visibleGroupIDs);
 		param.setTagIndex(tagIndex);
 		param.addAllToSystemTags(systemTags);
-		
+
 		return getPostsForGroupByTag(param, session);
 	}
 
@@ -820,7 +820,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
 		return this.postList("get" + this.resourceClassName + "ForUser", param, session);
 	}
-	
+
 	/** 
 	 * <em>/user/MaxMustermann</em><br/><br/>
 	 * 
@@ -852,7 +852,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setSimHash(simHash);
 		param.setFilter(filter);
 		param.addAllToSystemTags(systemTags);
-		
+
 		return this.getPostsForUser(param, session);
 	}
 
@@ -873,12 +873,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(loginUserName, requestedUserName);
 		param.setGroupId(groupId);
 		param.setGroups(visibleGroupIDs);
-		
+
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session); // set groups
 		final Integer result = this.queryForObject("get" + this.resourceClassName + "ForUserCount", param, Integer.class, session);
 		return present(result) ? result : 0;
 	}
-	
+
 	/**
 	 * Get posts of users which the logged-in users is following.
 	 * 
@@ -892,7 +892,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public List<Post<R>> getPostsByFollowedUsers(final String loginUserName, final List<Integer> visibleGroupIDs, final int limit, final int offset, final DBSession session) {
 		final P param = this.createParam(loginUserName, null, limit, offset);
 		param.setGroups(visibleGroupIDs);
-		
+
 		return this.postList("get" + this.resourceClassName + "ByFollowedUsers", param, session);
 	}
 
@@ -908,15 +908,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		if (!present(hash) || !present(requestedUserName)) {
 			throw new RuntimeException("Hash and user name must be set");
 		}
-		
+
 		final P param = this.getNewParam();
 		param.setHash(hash);
 		param.setRequestedUserName(requestedUserName);
 		param.setSimHash(HashID.INTRA_HASH);
-		
+
 		return this.queryForObject("getContentIdFor" + this.resourceClassName, param, Integer.class, session);
 	}
-	
+
 	/**
 	 * TODO: documentation
 	 * 
@@ -931,11 +931,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		final P param = this.createParam(loginUserName, requestedUserName);
 		param.setTagIndex(tagIndex);
 		param.setGroups(visibleGroupIDs);
-		
+
 		final Integer result = this.queryForObject("getGroup" + this.resourceClassName + "CountByTag", param, Integer.class, session);
 		return present(result) ? result : 0;
 	}
-	
+
 	/**
 	 * TODO: documentation
 	 * 
@@ -948,11 +948,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public int getGroupPostsCount(final String requestedUserName, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){
 		final P param = this.createParam(loginUserName, requestedUserName);
 		param.setGroups(visibleGroupIDs);
-		
+
 		Integer result = this.queryForObject("getGroup" + this.resourceClassName + "Count", param, Integer.class, session);
 		return present(result) ? result : 0;
 	}
-	
+
 	/**
 	 * This method prepares a query which retrieves all posts the user
 	 * has in his basket list. The result is shown on the page
@@ -969,11 +969,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public List<Post<R>> getPostsFromBasketForUser(final String loginUser, final int limit, final int offset, final DBSession session) {
 		final P param = this.createParam(loginUser, null, limit, offset);
 		param.setSimHash(HashID.INTER_HASH);
-		
+
 		return this.postList("get" + this.resourceClassName + "FromBasketForUser", param, session);
 	}
-	
-	
+
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.managers.CrudableContent#getPosts(org.bibsonomy.database.params.P, org.bibsonomy.database.util.DBSession)
@@ -982,7 +982,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public List<Post<R>> getPosts(P param, DBSession session) {
 		return this.getChain().getFirstElement().perform(param, session);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.managers.CrudableContent#getPostsDetails(java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.database.util.DBSession)
@@ -990,19 +990,19 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	@Override
 	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
 		final List<Post<R>> list = this.getPostsByHashForUser(loginUserName, resourceHash, requestedUserName, visibleGroupIDs, HashID.INTRA_HASH, session);
-		
+
 		if (list.isEmpty()) {
 			log.debug(this.resourceClassName + "-posts from user '" + requestedUserName + "' with hash '" + resourceHash + "' for user '" + loginUserName + "' not found");
 			return null;
 		}
-		
+
 		if (list.size() > 1) {
 			log.warn("multiple " + this.resourceClassName + "-posts from user '" + requestedUserName + "' with hash '" + resourceHash + "' for user '" + loginUserName + "' found ->returning first");
 		}
-		
+
 		return list.get(0);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see org.bibsonomy.database.managers.CrudableContent#createPost(org.bibsonomy.model.Post, org.bibsonomy.database.util.DBSession)
@@ -1012,7 +1012,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		session.beginTransaction();
 		try {
 			this.checkPost(post, session);
-			
+
 			List<SystemTag> systemTags = this.getSystemTags(post, new HashSet<Tag>());
 			this.systemTagPerformBefore(session, post, systemTags);
 			final String userName = post.getUser().getName();
@@ -1033,6 +1033,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				session.addError(post.getResource().getIntraHash(), errorMessage);
 				// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 				session.commitTransaction();
+				session.endTransaction();
 				return false;
 			}
 			/*
@@ -1052,22 +1053,22 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 		return true;
 	}
-	
+
 	private Post<R> getPostByHashForUser(final String loginUserName, final String requHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final HashID hashType, final DBSession session) {
 		final List<Post<R>> posts = this.getPostsByHashForUser(loginUserName, requHash, requestedUserName, visibleGroupIDs, hashType, session);
-		
+
 		if (present(posts)) {
 			if (posts.size() > 1) {
 				log.warn("multiple " + this.resourceClassName + " with hash " + requHash + " found for user " + loginUserName);
 			}
-			
+
 			return posts.get(0);
 		}
-		
+
 		// post not found
 		return null;
 	}
-	
+
 	/*
 	 * FIXME: This method calls other methods of this class which 
 	 * need a loginUserName - since this method does not have the
@@ -1105,17 +1106,18 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					session.addError(post.getResource().getIntraHash(), errorMessage);
 					// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 					session.commitTransaction();
+					session.endTransaction();
 					return false;
 					//FIXME:remove this comment
 					//log.warn(this.resourceClassName + " with hash " + oldHash + " does not exist for user " + userName);
 					//throw new ResourceNotFoundException(oldHash);
 				}
-			
+
 			} else {
 				// we do not add this to the databaseException since this an error not caused by a user
-			throw new IllegalArgumentException("Could not update post: no intrahash specified.");
+				throw new IllegalArgumentException("Could not update post: no intrahash specified.");
 			}
-		
+
 			/*
 			 * perform system tags before action
 			 */
@@ -1147,27 +1149,28 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					session.addError(post.getResource().getIntraHash(), errorMessage);
 					// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 					session.commitTransaction();
+					session.endTransaction();
 					return false;
 
 				}
 			}
-		
+
 			/*
 			 * now execute the postupdate operation
 			 */	
 			if (present(operation)) {
 				switch (operation) {
-					case UPDATE_TAGS:
-						this.performUpdateOnlyTags(post, oldPost, session);
-						break;
-//					case UPDATE_DOCUMENTS: // TODO: implement update documents operation
-//						this.performUpdateOnlyDocuments(post, oldPost, session);
-//						break;
-					default:
-						/*
-						 * as default update all parts of a post
-						 */
-						this.performUpdateAll(post, oldPost, session);
+				case UPDATE_TAGS:
+					this.performUpdateOnlyTags(post, oldPost, session);
+					break;
+					//					case UPDATE_DOCUMENTS: // TODO: implement update documents operation
+					//						this.performUpdateOnlyDocuments(post, oldPost, session);
+					//						break;
+				default:
+					/*
+					 * as default update all parts of a post
+					 */
+					this.performUpdateAll(post, oldPost, session);
 				}
 			} else {
 				this.performUpdateAll(post, oldPost, session);
@@ -1179,63 +1182,63 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 		return true;
 	}
-	
+
 	protected void checkPost(final Post<R> post, final DBSession session) {
 		final R resource = post.getResource();
 		final Class<? extends Resource> resourceClass = resource.getClass();
-		
+
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(resourceClass);
 			final FieldLengthErrorMessage fieldLengthError = new FieldLengthErrorMessage();
-			
+
 			/*
 			 * loop through all properties
 			 * if there are any performance issues, their cause might be here
 			 */
 			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {			
 				final Method getter = d.getReadMethod();
-				
+
 				if (present(getter)) {					
 					final Object value = getter.invoke(resource, (Object[])null);
-					
+
 					/*
 					 * check max length
 					 */
 					if (value instanceof String) {
 						final String stringValue = (String) value;
-						
+
 						final int length = stringValue.length();
 						final String propertyName = d.getName();
 						final int maxLength = DatabaseSchemaInformation.getMaxColumnLengthForProperty(resourceClass, propertyName);
-						
+
 						if ((maxLength > 0) && (length > maxLength)) {
 							fieldLengthError.addToFields(propertyName, maxLength);
 						}
 					}
 				}
 			}
-			
+
 			if (fieldLengthError.hasErrors()) {
 				session.addError(resource.getIntraHash(), fieldLengthError);
 			}
-			
+
 		} catch (final Exception ex) {
 			log.error("could not introspect object of class '" + resourceClass.getName() + "'", ex);
 		}				
 	}
-	
+
 	private void performUpdateAll(Post<R> post, Post<R> oldPost, DBSession session) {
 		final String userName = post.getUser().getName();
 		session.beginTransaction();
 		try {
-			
+
 			this.checkPost(post, session);
-			
+
 			/*
 			 * ALWAYS get a new contentId
 			 */
 			post.setContentId(this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, session));
-			
+
 			/*
 			 * inform the listeners
 			 */
@@ -1245,8 +1248,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			this.deletePost(userName, oldPost.getResource().getIntraHash(), true, session);
 
-			
-			
+
+
 			this.insertPost(post, session);
 
 			// add the tags
@@ -1263,7 +1266,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * 
 	 * @param post	the post to update
 	 * @param oldPost	the old post in database
- 	 * @param session
+	 * @param session
 	 */
 	private void performUpdateOnlyTags(final Post<R> post, final Post<R> oldPost, final DBSession session) {		
 		session.beginTransaction();
@@ -1272,21 +1275,21 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * delete old tags
 			 */
 			this.tagDb.deleteTags(oldPost, session);
-			
+
 			/*
 			 * save new tags
 			 */
 			post.getResource().recalculateHashes();
-			
+
 			// insert new tags
 			this.tagDb.insertTags(post, session);
-			
+
 			session.commitTransaction();			
 		} finally {
 			session.endTransaction();
 		}
 	}
-	
+
 	/**
 	 * called when a post was updated
 	 * 
@@ -1326,7 +1329,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			return;
 		}
 		final P param = this.getInsertParam(post, session);
-		
+
 		// insert
 		this.insertPost(param, session);
 	}
@@ -1344,7 +1347,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			this.insert("insert" + this.resourceClassName, param, session);
 			// Insert/Update SimHashes
 			this.insertOrUpdatePostHash(param, session, false);
-						
+
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -1391,7 +1394,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public boolean deletePost(String userName, String resourceHash, DBSession session) {
 		return this.deletePost(userName, resourceHash, false, session);
 	}
-	
+
 	/**
 	 * deletes a post from the database
 	 * 
@@ -1405,37 +1408,37 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		session.beginTransaction();
 		try {
 			final Post<R> post = this.getPostByHashForUser(userName, resourceHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
-			
+
 			if (!present(post)) {
 				log.debug("post with hash \"" + resourceHash + "\" not found");
 				return false;
 			}
-			
+
 			// Used for userName, hash and contentId
 			final P param = this.createParam(userName, userName);
 			param.setHash(resourceHash);
-			
+
 			param.setRequestedContentId(post.getContentId());
-			
+
 			if (!update) {
 				this.onPostDelete(post.getContentId(), session);
 			}
-			
+
 			this.tagDb.deleteTags(post, session);
-			
+
 			this.insertOrUpdatePostHash(param, session, true);
-			
+
 			this.delete("delete" + this.resourceClassName, param, session);
-			
+
 			session.commitTransaction();
-			
+
 		} finally {
 			session.endTransaction();
 		}
-		
+
 		return true;
 	}
-	
+
 
 	/**
 	 * returns a list of all systemTags of a post
@@ -1444,16 +1447,16 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return a list 
 	 */
 	// FIXME: Find a better way for deactivating systemtags. s.a. 
-	// - a SystemTag knows weather it is active or not and can deactivate itself
+	// - a SystemTag knows whether it is active or not and can deactivate itself
 	// - a SystemTag is renamed (and thus inactive) after it has done its job
 	private List<SystemTag> getSystemTags(final Post<?> post, final Set<Tag> alreadyExecutedTags) {
 		List<SystemTag> systemTags = new ArrayList<SystemTag>();
 		for (final Tag tag : post.getTags()) {
-			SystemTag stt = null;
-			if(present(this.systemTagFactory) ) 
-				this.systemTagFactory.createExecutableTag(null, null, tag);
-			if (present(stt)&& !alreadyExecutedTags.contains(stt)) {
-				systemTags.add(stt);
+			if(present(this.systemTagFactory) ) {
+				final SystemTag stt = this.systemTagFactory.createExecutableTag(tag);
+				if (present(stt) && !alreadyExecutedTags.contains(stt)) {
+					systemTags.add(stt);
+				}
 			}
 		}
 		return systemTags;
@@ -1468,7 +1471,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	private void systemTagPerformBefore(final DBSession session, final Post<?> post, List<SystemTag> systemTags) {
 		for (final SystemTag systemTag : systemTags) {
-				systemTag.performBefore(post, session);
+			systemTag.performBefore(post, session);
 		}
 	}
 	/**
@@ -1481,8 +1484,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	private void systemTagPerformAfter(final DBSession session, final Post<?> post, final List<SystemTag> systemTags) {
 		for (final SystemTag systemTag : systemTags) {
 			systemTag.performAfter(post, session);
+		}
 	}
-}
 
 	/**
 	 * called when a post was deleted successfully
@@ -1496,60 +1499,60 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return the chain
 	 */
 	protected abstract FirstChainElement<Post<R>, P> getChain();
-	
+
 	/**
 	 * @return the class of the first generic param (<R>, Resource)
 	 */
 	private Class<?> getResourceClass() {
-	   final ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
-	   return (Class<?>) parameterizedType.getActualTypeArguments()[0];
+		final ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
+		return (Class<?>) parameterizedType.getActualTypeArguments()[0];
 	}
-	
+
 	/**
 	 * @return the simple class name of the first generic param (<R>, Resource)
 	 */
 	private String getResourceClassName() {
 		return this.getResourceClass().getSimpleName();
 	}
-	
+
 	/** 
 	 * @return a new <P> param
 	 */
 	protected abstract P getNewParam();
-	
+
 	protected P createParam(final String loginUserName, final String requestedUserName) {
 		final P param = this.getNewParam();
-		
+
 		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
-		
+
 		return param;
 	}
-	
+
 	protected P createParam(final int limit, final int offset) {
 		final P param = this.getNewParam();
-		
+
 		param.setLimit(limit);
 		param.setOffset(offset);
-		
+
 		return param;
 	}
-	
+
 	protected P createParam(final String loginUserName, final String requestedUserName, final int limit, final int offset) {
 		final P param = this.createParam(limit, offset);
 		param.setUserName(loginUserName);
 		param.setRequestedUserName(requestedUserName);
-		
+
 		return param;
 	}
-	
+
 	/**
 	 * @param post
 	 * @param session
 	 * @return new param for insert a resource
 	 */
 	protected abstract P getInsertParam(final Post<? extends R> post, final DBSession session);
-	
+
 	/**
 	 * @return the lucene search instance to use
 	 */
