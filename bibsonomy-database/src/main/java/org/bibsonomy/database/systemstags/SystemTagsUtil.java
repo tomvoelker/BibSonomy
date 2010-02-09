@@ -2,8 +2,12 @@ package org.bibsonomy.database.systemstags;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.common.exceptions.UnsupportedSystemTagException;
+import org.bibsonomy.database.systemstags.xml.Attribute;
+import org.bibsonomy.database.systemstags.xml.SystemTagType;
 
 /**
  * Helper class to encapsulate methods to create / work with system tags
@@ -85,6 +89,45 @@ public class SystemTagsUtil {
 	public static boolean isSystemtag(String tag) {
 		if (tag == null) return false;
 		return tag.startsWith(SystemTags.GLOBAL_PREFIX + SystemTags.SYSTAG_DELIM);
+	}
+	
+	//------------------------------------------------------------------------
+	// helpers
+	//------------------------------------------------------------------------
+	/**
+	 * Extract system tag's argument.
+	 * @return tag's argument, if found.
+	 */
+	public static String extractArgument(String tagName) {
+		final Pattern sysPrefix = Pattern.compile("^\\s*(sys:|system:)?.*:(.*)");
+		Matcher action = sysPrefix.matcher(tagName);
+		if( action.lookingAt() )
+			return action.group(2);
+		return null;
+	}
+
+	/**
+	 * Extract system tag's name.
+	 * @return tag's name, if found, null otherwise.
+	 */
+	public static String extractName(String tagName) {
+		final Pattern sysPrefix = Pattern.compile("^\\s*(sys:|system:)?(.*):.*");
+		Matcher action = sysPrefix.matcher(tagName);
+		if( action.lookingAt() )
+			return action.group(2);
+		return null;
+	}	
+	
+
+
+
+	public static String getAttributeValue(final SystemTagType sTag, final String attributeName) {
+		for (final Attribute attribute : sTag.getAttribute()) {
+			if (attribute.getName().equals(attributeName)) {
+				return attribute.getValue();
+			}
+		}
+		return null;
 	}
 	
 	

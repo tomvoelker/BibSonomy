@@ -88,13 +88,13 @@ public abstract class SystemTag {
 	 *   Given tag is a system tag.
 	 * @param tag as given by user
 	 */
-	public void setTag(Tag tag) {
-		assert(SystemTagFactory.isSystemTag(tag.getName()));
+	public void setTag(final Tag tag) {
+//		assert(SystemTagFactory.isSystemTag(tag.getName()));
 		this.tag = tag;
 		
 		// extract argument
-		setValue(SystemTagFactory.extractArgument(tag.getName()));
-		setName(SystemTagFactory.extractName(tag.getName()));
+		setValue(SystemTagsUtil.extractArgument(tag.getName()));
+		setName(SystemTagsUtil.extractName(tag.getName()));
 	} 
 	
 

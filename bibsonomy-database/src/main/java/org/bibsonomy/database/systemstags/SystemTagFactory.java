@@ -1,5 +1,7 @@
 package org.bibsonomy.database.systemstags;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.HashMap;
@@ -7,20 +9,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.bibsonomy.database.systemstags.xml.Attribute;
 import org.bibsonomy.database.systemstags.xml.SystemTagType;
 import org.bibsonomy.database.systemstags.xml.SystemTagsCollection;
 import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -31,28 +29,32 @@ public class SystemTagFactory {
 	private static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.database.systemstags.xml";
 	// TODO path
 	private static final String BIBSONOMY_SYSTEMTAGS_XML = "../bibsonomy-webapp/src/main/webapp/WEB-INF/systemtags.xml";
-	private static Map<String, SystemTagType> systemTagMap;
-	private static Map<String, SystemTag> executableSystemTagMap;
+	private Map<String, SystemTagType> systemTagMap;
+	private Map<String, SystemTag> executableSystemTagMap;
 
 	/*
 	 * useable in the xml configuration --> see systemtags.xml
 	 */
 	public static final String GROUPING = "GROUPING";
 
+	private DBSessionFactory sessionFactory;
+	
 
 	/**
-	 * Initializer
+	 * Constructor
 	 */
-	static {
-		final ClassPathXmlApplicationContext springBeanFactory = 
-			new ClassPathXmlApplicationContext("systemtags-context.xml");
+	public SystemTagFactory() {
+		/*
+		 * FIXME: shouldn't we configure this from the outside?
+		 */
+		final ClassPathXmlApplicationContext springBeanFactory = new ClassPathXmlApplicationContext("systemtags-context.xml");
 		setExecutableSystemTagMap((HashMap<String,SystemTag>)springBeanFactory.getBean("executableSystemTagMap"));
 	}
 	
 	/**
 	 * @return map with executables system tags
 	 */
-	public static Map<String, SystemTag> getExecutableSystemTagMap() {
+	public Map<String, SystemTag> getExecutableSystemTagMap() {
 		if (executableSystemTagMap == null) {
 			executableSystemTagMap = new HashMap<String, SystemTag>();
 		}
@@ -62,15 +64,20 @@ public class SystemTagFactory {
 	/**
 	 * @return map with system tags
 	 */
-	public static Map<String, SystemTagType> getSystemTagMap() {
+	public Map<String, SystemTagType> getSystemTagMap() {
 		if (systemTagMap == null) {
 			renewSystemTagMap(BIBSONOMY_SYSTEMTAGS_XML);
 		}
 		return systemTagMap;
 	}
 
-	public static void setExecutableSystemTagMap(HashMap<String, SystemTag> executableSystemTagMap) {
-		SystemTagFactory.executableSystemTagMap = executableSystemTagMap;
+	/**
+	 * Sets the map with the executable system tags.
+	 * 
+	 * @param executableSystemTagMap
+	 */
+	public void setExecutableSystemTagMap(HashMap<String, SystemTag> executableSystemTagMap) {
+		executableSystemTagMap = executableSystemTagMap;
 	}
 
 	/**
@@ -79,7 +86,7 @@ public class SystemTagFactory {
 	 * 
 	 * @return map with system tags according to the systemtags file
 	 */
-	public static Map<String, SystemTagType> renewSystemTagMap(String systemtagsFile) {
+	public Map<String, SystemTagType> renewSystemTagMap(String systemtagsFile) {
 		systemTagMap = new HashMap<String, SystemTagType>();
 		importConfiguration(systemtagsFile);
 		return systemTagMap;
@@ -95,12 +102,12 @@ public class SystemTagFactory {
 	 *            tag value
 	 * @return system tag object
 	 */
-	public static SystemTagType createTag(String tag, String value) {
+	public SystemTagType createTag(String tag, String value) {
 		if (value.startsWith(":")) {
 			value = value.substring(1);
 		}
-		SystemTagType tagType = getSystemTagMap().get(tag);
-		if (tagType != null) {
+		final SystemTagType tagType = getSystemTagMap().get(tag);
+		if (present(tagType)) {
 			if (tagType.getFormat() == null || value.matches(tagType.getFormat())) {
 				return tagType;
 			}
@@ -113,104 +120,38 @@ public class SystemTagFactory {
 	 * Check whether given tag matches to a registered system tag and
 	 * initialize corresponding instance on success.
 	 * 
-	 * @param dbLogic Database interface on which tag should operate
-	 * @param sessionFactory session factory for creating new database sessions
 	 * @param tag
 	 * @return null, if given tag doesn't match to a known system tag.
 	 */
-	public static SystemTag createExecutableTag(LogicInterface dbLogic, DBSessionFactory sessionFactory, Tag tag) {
-		if (!SystemTagFactory.isSystemTag(tag.getName()))
+	public SystemTag createExecutableTag(final Tag tag) {
+		if (!isSystemTag(tag.getName()))
 			return null;
-		String name = SystemTagFactory.extractName(tag.getName());
-		SystemTag retVal = null;
-		if( name!=null ) {
+		final String name = SystemTagsUtil.extractName(tag.getName());
+		if (present(name)) {
 			if( getExecutableSystemTagMap().get(name)!=null ) {
-				retVal = getExecutableSystemTagMap().get(name).newInstance();
+				final SystemTag retVal = getExecutableSystemTagMap().get(name).newInstance();
 				retVal.setTag(tag);
-				retVal.setLogicInterface(dbLogic);
 				retVal.setDbSessionFactory(sessionFactory);
 			}
 		}
-		return retVal;
+		return null;
 	}
 
-	
 	/**
 	 * @param tag
 	 * @return true if tag is existent
 	 */
-	public static boolean isSystemTag(String tag) {
-		final String name = extractName(tag);
+	public boolean isSystemTag(String tag) {
+		final String name = SystemTagsUtil.extractName(tag);
 		
-		if( name!=null ) {
-			return  getExecutableSystemTagMap().containsKey(name) || getSystemTagMap().containsKey(name);
+		if (present(name)) {
+			return getExecutableSystemTagMap().containsKey(name) || getSystemTagMap().containsKey(name);
 		}
 		return false;
 	}
 
-	public static String getAttributeValue(SystemTagType sTag, String attributeName) {
-		for (Attribute attribute : sTag.getAttribute()) {
-			if (attribute.getName().equals(attributeName)) {
-				return attribute.getValue();
-			}
-		}
-		return null;
-	}
-	
-	//------------------------------------------------------------------------
-	// helpers
-	//------------------------------------------------------------------------
-	/**
-	 * Extract system tag's argument.
-	 * @return tag's argument, if found.
-	 */
-	public static String extractArgument(String tagName) {
-		final Pattern sysPrefix = Pattern.compile("^\\s*(sys:|system:)?.*:(.*)");
-		Matcher action = sysPrefix.matcher(tagName);
-		if( action.lookingAt() )
-			return action.group(2);
-		return null;
-	}
 
-	/**
-	 * Extract system tag's name.
-	 * @return tag's name, if found, null otherwise.
-	 */
-	public static String extractName(String tagName) {
-		final Pattern sysPrefix = Pattern.compile("^\\s*(sys:|system:)?(.*):.*");
-		Matcher action = sysPrefix.matcher(tagName);
-		if( action.lookingAt() )
-			return action.group(2);
-		return null;
-	}	
-	
-	/**
-	 * Removes all occurrences of system tags sys:&lt;name&gt;:&lt;argument&gt;,
-	 * system:&lt;name&gt;:&lt;argument&gt; and &lt;name&gt;:&lt;argument&gt;
-	 * 
-	 * @param tags collection of tags to alter 
-	 * @param name name of system tag to remove. If name==null, every system tag will be removed
-	 * @return number of occurrences removed.
-	 */
-	public static int removeSystemTag(Set<Tag> tags, String name) {
-		int nr = 0;
-		
-		Collection<Tag> toRemove = new HashSet<Tag>();
-		// traverse all tags
-		for( Tag tag : tags ) {
-			if( isSystemTag(tag.getName()) && (name!=null||name.equals(extractName(tag.getName()))) ) {
-				toRemove.add(tag);
-				nr++;
-			}
-		}
-		// remove collected occurrences
-		tags.removeAll(toRemove);
-		
-		// all done.
-		return nr;
-	}
-
-	private static void importConfiguration(String systemtagsFile) {
+	private void importConfiguration(String systemtagsFile) {
 		try {
 			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION, SystemTagFactory.class.getClassLoader());
 			
@@ -224,5 +165,47 @@ public class SystemTagFactory {
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Removes all occurrences of system tags sys:&lt;name&gt;:&lt;argument&gt;,
+	 * system:&lt;name&gt;:&lt;argument&gt; and &lt;name&gt;:&lt;argument&gt;
+	 * 
+	 * @param tags collection of tags to alter 
+	 * @param name name of system tag to remove. If name==null, every system tag will be removed
+	 * @return number of occurrences removed.
+	 */
+	public int removeSystemTag(final Set<Tag> tags, final String name) {
+		int nr = 0;
+		
+		final Collection<Tag> toRemove = new HashSet<Tag>();
+		// traverse all tags
+		for (final Tag tag : tags ) {
+			if( isSystemTag(tag.getName()) && (present(name) || name.equals(SystemTagsUtil.extractName(tag.getName()))) ) {
+				toRemove.add(tag);
+				nr++;
+			}
+		}
+		// remove collected occurrences
+		tags.removeAll(toRemove);
+		
+		// all done.
+		return nr;
+	}
+	
+	
+
+	/**
+	 * @return The session factory of this system tag factory.
+	 */
+	public DBSessionFactory getSessionFactory() {
+		return this.sessionFactory;
+	}
+
+	/** Sets the session factory for DB access.
+	 * @param sessionFactory
+	 */
+	public void setSessionFactory(DBSessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 	}
 }
