@@ -23,6 +23,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
+import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
@@ -383,26 +384,24 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			super.setErrors(getErrors()); 
 			return super.workOn(command);
 		} else {
-			if(command.getSaveAllPossible())
+			final List<FieldError> errorList = errors.getFieldErrors("bibtex.*");
+			int removedElements = 0;
+			final List<Integer> removedIndexes = new LinkedList<Integer>();
+			for(final FieldError anError : errorList)
 			{
-				final List<FieldError> errorList = errors.getFieldErrors("posts.*");
-				int removedElements = 0;
-				final List<Integer> removedIndexes = new LinkedList<Integer>();
-				for(final FieldError anError : errorList)
+				final String fieldName = anError.getField();
+				final Pattern indexPattern = Pattern.compile("([0-9]+)");
+				final Matcher indexMatcher = indexPattern.matcher(fieldName);
+				if(indexMatcher.find())
 				{
-					final String fieldName = anError.getField();
-					final Pattern indexPattern = Pattern.compile("([0-9]+)");
-					final Matcher indexMatcher = indexPattern.matcher(fieldName);
-					if(indexMatcher.find())
-					{
-						final int errorIndex = new Integer(indexMatcher.group(1));
-						if(removedIndexes.contains(errorIndex)) continue;
-						storageList.remove(errorIndex-removedElements);
-						removedIndexes.add(errorIndex);
-						removedElements++;
-					}
+					final int errorIndex = new Integer(indexMatcher.group(1));
+					if(removedIndexes.contains(errorIndex)) continue;
+					storageList.remove(errorIndex-removedElements);
+					removedIndexes.add(errorIndex);
+					removedElements++;
 				}
 			}
+		
 			/* *********************
 			 * STORE THE BOOKMARKS
 			 * *********************/
@@ -418,7 +417,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			 * If the user wants to store the posts permanently AND (his posts have no errors OR he ignores the errors OR the number of
 			 * bibtexes is greater than the treshold, we will forward him to the appropriate site, where he can delete posts (they were saved)
 			 */
-			if(!command.isEditBeforeImport() && (!errors.hasErrors() || command.isSaveAllPossible() || bibtex.size()>MAXCOUNT_ERRORHANDLING))
+			if(!command.isEditBeforeImport() && (!errors.hasErrors() || bibtex.size()>MAXCOUNT_ERRORHANDLING))
 				command.setDeleteCheckedPosts(true); //posts will have to get saved, because the user decided to
 			else
 				command.setDeleteCheckedPosts(false);
@@ -462,7 +461,6 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	private void savePublicationsForUser(final ListCommand<Post<BibTex>> postListCommand, final PostPublicationCommand command, final User user)
 	{
 		final boolean isOverwrite = command.getOverwrite();
-		final boolean writeAllCorrectOnes = command.isSaveAllPossible();
 		List<Post<?>> tmpList = new LinkedList<Post<?>>(postListCommand.getList());
 		if(bibtexHasValidationErrors)
 			tmpList = storageList;
@@ -518,7 +516,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 												requestLogic.getLocale()));
 							}
 						}
-						else
+						else if (msg instanceof SystemTagErrorMessage)
 						{
 							isErroneous = true;
 							isErroneousList = true;
@@ -534,6 +532,19 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 											requestLogic.getLocale()));
 
 						}
+						else if(msg instanceof UnspecifiedErrorMessage)
+						{
+							Object[] params = null;
+							if(msg.getParameters()!=null)
+								params = msg.getParameters().toArray();
+							this.errors.rejectValue("bibtex.list["+postListCommand.getList().indexOf(bib)+"].resource", 
+									messageSource.getMessage(msg.getLocalizedMessageKey(), 
+											params, 
+											requestLogic.getLocale()),
+									messageSource.getMessage(msg.getLocalizedMessageKey(), 
+											params, 
+											requestLogic.getLocale()));
+						}
 					}
 					//if isOverwrite is true, duplicates are no errors
 					if(ValidationUtils.present(duplicateMessage))
@@ -541,47 +552,39 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 					
 					if(!isErroneous && hasDuplicate)
 						forUpdate.add(bib);
-				} else {
-					forCreate.add(bib);
 				}
 			}
 			
+
 			/**
 			 * If we got ONLY duplicate "errors", we save the non-duplicate ones and update the others,
 			 * if isOverwrite is true. Same is true, if the number of publications is greater than the
 			 * treshold. 
 			 */
-			if(!isErroneousList || tmpList.size()>MAXCOUNT_ERRORHANDLING || writeAllCorrectOnes)
-			{
-				
-				try {
-					logic.createPosts(forCreate);
-					if(isOverwrite)
-						logic.updatePosts(forUpdate, PostUpdateOperation.UPDATE_ALL);
-				} catch (final DatabaseException ex) {
-					final List<Post<?>> forUpdateAndCreate = new LinkedList<Post<?>>(forCreate);
-					forUpdateAndCreate.addAll(forUpdate);
-					for(final Post<?> bib : forUpdateAndCreate)
+			try {
+				if(isOverwrite)
+					logic.updatePosts(forUpdate, PostUpdateOperation.UPDATE_ALL);
+			} catch (final DatabaseException ex) {
+				for(final Post<?> bib : forUpdate)
+				{
+					final List<ErrorMessage> errorMsges = errors.get(bib.getResource().getIntraHash());
+					if(ValidationUtils.present(errorMsges))
 					{
-						final List<ErrorMessage> errorMsges = errors.get(bib.getResource().getIntraHash());
-						if(ValidationUtils.present(errorMsges))
+						for(final ErrorMessage msg : errorMsges)
 						{
-							for(final ErrorMessage msg : errorMsges)
+							if(msg instanceof SystemTagErrorMessage)
 							{
-								if(msg instanceof SystemTagErrorMessage)
-								{
-									Object[] params = null;
-									if(msg.getParameters()!=null)
-										params = msg.getParameters().toArray();
-									this.errors.rejectValue("bibtex.list["+postListCommand.getList().indexOf(bib)+"].tags", 
-											messageSource.getMessage(msg.getLocalizedMessageKey(), 
-													params, 
-													requestLogic.getLocale()),
-											messageSource.getMessage(msg.getLocalizedMessageKey(), 
-													params, 
-													requestLogic.getLocale()));
-		
-								}
+								Object[] params = null;
+								if(msg.getParameters()!=null)
+									params = msg.getParameters().toArray();
+								this.errors.rejectValue("bibtex.list["+postListCommand.getList().indexOf(bib)+"].tags", 
+										messageSource.getMessage(msg.getLocalizedMessageKey(), 
+												params, 
+												requestLogic.getLocale()),
+										messageSource.getMessage(msg.getLocalizedMessageKey(), 
+												params, 
+												requestLogic.getLocale()));
+	
 							}
 						}
 					}
@@ -589,6 +592,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			}
 		}
 	}
+
 	
 
 	
