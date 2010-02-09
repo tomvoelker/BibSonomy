@@ -401,21 +401,9 @@ public class RestLogic implements LogicInterface {
 	}
 
 	@Override
-	public String getLdapUserByUsername(String username) {
+	public String getUsernameByLdapUserId(String userId) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public String getUsernameByLdapUser(String ldapUser) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void updateLastLdapRequest(String loginName) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	
