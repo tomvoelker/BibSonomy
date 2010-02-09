@@ -235,7 +235,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * insert ldapUserId of user in separate table if present
 		 */
-		if (present(user.getUserId())) {
+		if (present(user.getLdapId())) {
 			this.insertLdapUserId(user, session);
 		}
 	}
@@ -302,7 +302,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		existingUser.setPlace(!present(user.getPlace()) 		? existingUser.getPlace() 		: user.getPlace());
 		existingUser.setProfession(!present(user.getProfession()) ? existingUser.getProfession(): user.getProfession());
 		existingUser.setOpenID(!present(user.getOpenID())       ? existingUser.getOpenID()      : user.getOpenID());
-		existingUser.setUserId(!present(user.getUserId())       ? existingUser.getUserId()      : user.getUserId());
+		existingUser.setLdapId(!present(user.getLdapId())       ? existingUser.getLdapId()      : user.getLdapId());
 
 		// we don't want to change the registration date on update!
 		//existingUser.setRegistrationDate(!present(user.getRegistrationDate()) ? existingUser.getRegistrationDate() : user.getRegistrationDate());
@@ -474,46 +474,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final User foundUser = getUserDetails(username, session);
 
 		// user exists and password is correct
-		if ((foundUser.getName() != null) && (foundUser.getPassword().equals(password))) {
-	
-			/* 
-			 * check, if it is an ldap user and if it has to re-auth agains ldap server. if so, do it.
-			 */
-			// if user database authentication was successful
-			// check if user is listed in ldapUser table
-			if (this.isLdapUser(username, session))
-			{
-			
-				// get date of last authentication against ldap server
-
-				Date userLastAccess = this.userLastLdapRequest(username, session);
-				
-				// TODO: get timeToReAuth from tomcat's environment, so a user can adjust is without editing code  
-				int timeToReAuth =  18  *60*60; // seconds
-				Date dateNow = new Date();
-				// timeDiff is in seconds
-				long timeDiff = (dateNow.getTime() - userLastAccess.getTime())/1000;						
-				
-				log.info("last access of user "+username+" was on "+userLastAccess.toString()+ " ("+(timeDiff/3600)+" hours ago = "+ " ("+(timeDiff/60)+" minutes ago = "+timeDiff+" seconds ago)");
-//DEBUG
-//timeDiff=timeToReAuth;
-			
-				/*
-				 *  check lastAccess - re-auth required?
-				 *  if time of last access is too far away, re-authenticate against ldap server to check
-				 *  whether password is same or user exists anymore
-				 */
-				
-				if ( timeDiff > timeToReAuth ) {
-					// re-auth
-					log.info("last access time is up - ldap re-auth required -> throw reauthrequiredException");
-					
-					throw new AuthRequiredException("last access time is up - ldap re-auth required");
-					
-				}
-			}		
-			return foundUser;
-		}
+		if ((foundUser.getName() != null) && (foundUser.getPassword().equals(password))) return foundUser;
 		
 		// fallback: user is not logged in
 		return notLoggedInUser;
@@ -541,8 +502,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getLastLdapRequestByUsername", userName, Date.class, session);
 	}
 		
-	public void updateLastLdapRequest(final String userName, final DBSession session) {
-		this.update("updateLastLdapRequestDateForLdapUserIdByUsername", userName, session);
+	public String updateLastLdapRequest(final User user, final DBSession session) {
+		this.update("updateLastLdapRequestDateForLdapUserIdByUsername", user.getName(), session);
+		return user.getName();
 	}
 
 	

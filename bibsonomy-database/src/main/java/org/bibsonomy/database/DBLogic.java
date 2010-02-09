@@ -1136,24 +1136,33 @@ public class DBLogic implements LogicInterface {
 
 		final DBSession session = openSession();
 
-		try {
-			if (operation.equals(UserUpdateOperation.UPDATE_PASSWORD)) {
-
-				updatedUser = this.userDBManager.updatePasswordForUser(user, session);
-
-			} else if (operation.equals(UserUpdateOperation.UPDATE_SETTINGS)) {
+			try {
+				switch (operation) {
+					case UPDATE_PASSWORD:
+						updatedUser = this.userDBManager.updatePasswordForUser(user, session);
+						break;
+						
+					case UPDATE_SETTINGS:
+						updatedUser = this.userDBManager.updateUserSettingsForUser(user, session);
+						break;
+						
+					case UPDATE_API:
+						this.userDBManager.updateApiKeyForUser(user.getName(), session);
+						break;
+						
+					case UPDATE_CORE:
+						updatedUser = this.userDBManager.updateUserProfile(user, session);
+						break;
+						
+					case UPDATE_LDAP_TIMESTAMP:
+						updatedUser = this.userDBManager.updateLastLdapRequest(user, session);
+						break;
+				}
 				
-				updatedUser = this.userDBManager.updateUserSettingsForUser(user, session);
-			} else if (operation.equals(UserUpdateOperation.UPDATE_API)) {
-
-				this.userDBManager.updateApiKeyForUser(user.getName(), session);
-			} else if(operation.equals(UserUpdateOperation.UPDATE_CORE)) {
-				
-				updatedUser = this.userDBManager.updateUserProfile(user, session);
+			} finally {
+				session.close();
 			}
-		} finally {
-			session.close();
-		}
+		
 		return updatedUser;
 	}
 
@@ -1822,13 +1831,13 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Returns a username corresponding to a given ldapUserId
 	 * 
-	 * @see
-	 * org.bibsonomy.model.logic.LogicInterface#getLdapUserByUsername(java.lang.String)
+	 * @param username 
+	 * @return ldapUserId 
+	 * 
 	 */
-	@Override
 	public String getLdapUserByUsername(String username) {
 		final DBSession session = openSession();
 		try {
@@ -1839,13 +1848,13 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Returns a username corresponding to a given ldapUserId
 	 * 
-	 * @see
-	 * org.bibsonomy.model.logic.LogicInterface#getLdapUserByUsername(java.lang.String)
+	 * @param ldapUser 
+	 * @return username
+	 * 
 	 */
-	@Override
 	public String getUsernameByLdapUser(String ldapUser) {
 		final DBSession session = openSession();
 		try {
@@ -1856,17 +1865,16 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 	
-	/*
-	 * (non-Javadoc)
+	/**
+	 * updates date when ldap user was requested for authentication
 	 * 
-	 * @see
-	 * org.bibsonomy.model.logic.LogicInterface#updateLastLdapRequest(void)
+	 * @param loginName
 	 */
-	public void updateLastLdapRequest (final String loginName) {
+	public void updateLastLdapRequest (final User user) {
 		final DBSession session = openSession();
 		try {
-			if (loginName != null) {
-				this.userDBManager.updateLastLdapRequest(loginName, session);
+			if (null != user.getName()) {
+				this.userDBManager.updateLastLdapRequest(user, session);
 			}
 		} finally {
 			session.close();
@@ -2102,4 +2110,22 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.bibsonomy.model.logic.LogicInterface#getUsernameByLdapUserId()
+	 */
+	@Override	
+	public String getUsernameByLdapUserId(String userId) {
+		final DBSession session = openSession();
+		try {
+			final String username = this.userDBManager.getUsernameByLdapUser(userId, session);
+			return username;
+		} finally {
+			session.close();
+		}
+	}
+	
+	
 }

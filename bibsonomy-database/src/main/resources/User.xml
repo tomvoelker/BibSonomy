@@ -6,12 +6,14 @@
 	<select id="getAllUsers" resultMap="Common.user" parameterClass="userParam">
 		SELECT <include refid="commonUserAttributes"/> 
 		FROM user 
+		LEFT JOIN ldapUser USING (user_name) 
 		WHERE spammer = 0 LIMIT #limit# OFFSET #offset#
 	</select>
 
 	<select id="getUserDetails" resultMap="UserCommon.userWithSettings" parameterClass="string">
 		SELECT <include refid="allUserAttributes"/>
-		FROM user
+		FROM user 
+		LEFT JOIN ldapUser USING (user_name) 
 		WHERE user_name = #username#
 	</select>
 
@@ -46,7 +48,7 @@
 
 	<insert id="insertLdapUser" parameterClass="user">
 		INSERT INTO ldapUser 
-		VALUES (#name#, #userId#, CURRENT_TIMESTAMP)
+		VALUES (#name#, #ldapId#, CURRENT_TIMESTAMP)
 	</insert>	
 
 	<delete id="deleteUser" parameterClass="string">

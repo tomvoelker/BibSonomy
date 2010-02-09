@@ -31,7 +31,9 @@
 		<result property="updatedAt"	    column="updated_at"    javaType="date" />
 		<result property="toClassify"       column="to_classify"   javaType="integer" />
 		<result property="reminderPassword" column="tmp_password"  javaType="string" />
-		<result property="reminderPasswordRequestDate" column="tmp_request_date"  javaType="date" />			
+		<result property="reminderPasswordRequestDate" column="tmp_request_date"  javaType="date" />
+		<result property="ldapId" 			column="ldapUserId"		javaType="string" />
+		<result property="lastLdapUpdate" 	column="lastAccess"  	javaType="date" />			
 	</resultMap>
 	
 	<resultMap id="userWithPrediction" extends="user" class="user">
@@ -65,7 +67,8 @@
 	<sql id="commonUserAttributes">
 		user_name, user_email, user_homepage, user_realname, user_password, 
 		api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, 
-		reg_date, spammer, role, updated_by, updated_at, to_classify, tmp_password, tmp_request_date
+		reg_date, spammer, role, updated_by, updated_at, to_classify, tmp_password, tmp_request_date,
+		ldapUserId, lastAccess
 	</sql>
 
 	<sql id="userSettingsAttributes">

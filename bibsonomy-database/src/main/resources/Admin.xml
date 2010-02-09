@@ -19,6 +19,7 @@
 	<select id="getClassifierUserBeforeUpdate" resultMap="UserCommon.user" parameterClass="adminParam">
 		SELECT *
 		FROM user
+		LEFT JOIN ldapUser USING (user_name)
 		WHERE user_name=#userName# FOR UPDATE
 	</select>
 
