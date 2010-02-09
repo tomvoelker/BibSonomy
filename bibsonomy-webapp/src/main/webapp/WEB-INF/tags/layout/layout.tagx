@@ -7,8 +7,8 @@
 	xmlns:lp="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:spring="http://www.springframework.org/tags"
-  >
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags">
 	
 	<jsp:useBean id="hash" class="org.bibsonomy.util.wrapper.HashIDBean" scope="application"/>
 
@@ -34,7 +34,8 @@
       set theme variables    
      -->
     <spring:theme code="stylesheet.main" var="stylesheet_main" text="${resdir}/css/style.css"/>
-    
+	<spring:theme code="additionalCSS" var="additionalCSS" text=""/> 
+	<spring:theme code="headerLogo" var="headerLogo" text=""/>
     
     <!-- 
       document starts here
@@ -49,13 +50,17 @@
 				<c:set var="locale">
 					<fmt:message key="meta.lang"/>
 				</c:set>
+				
 				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
 				<link rel="stylesheet" type="text/css" href="${stylesheet_main}" />
 				<c:if test="${not empty personalized and personalized == true}">
 					<link rel="stylesheet" type="text/css" href="${resdir}/css/personalized.css" />
 				</c:if>
-				<link rel="stylesheet" type="text/css" href="${resdir}/css/style.css" />
-				<link rel="stylesheet" type="text/css" href="${resdir}/css/faq.css" />				
+				<link rel="stylesheet" type="text/css" href="${resdir}/css/faq.css" />
+				<c:if test="${not empty additionalCSS}">
+					<link rel="stylesheet" type="text/css" href="${additionalCSS}" />
+				</c:if>
+							
 				<link rel="icon" href="${resdir}/image/favicon.png" type="image/png" />
 				<!-- localized javascript messages -->
 				<script type="text/javascript" src="${resdir}/javascript/jquery_126_min.js">&amp;nbsp;</script>
@@ -140,6 +145,13 @@
 			
 			
 			<div id="main">
+
+				<c:if test="${not empty headerLogo}">
+					<div id="headerlogo">
+					<img id="headerlogoimage" src="${headerLogo}"/>
+					</div>
+				</c:if>
+			
 				<div id="main_header">
 				
 					<!-- Navigation -->
@@ -185,6 +197,7 @@
 					</script>
 					
 					<div id="mainHeaderRightBox">
+						<c:url var="loginUrl" value="/login" context="${projectContext}"/>
 						<c:choose>
 						<c:when test="${not empty loginUser.name}">
 								<c:url var="inboxUrl" value="/inbox" context="${projectContext}"/>
@@ -201,46 +214,93 @@
 								<a href="${editTagsUrl}"><fmt:message key="navi.editTags"/></a><c:out value=" "/>
 						</c:when>
 						<c:otherwise>
-							<span style="display: block; margin-top: 7px;">
+						
+	  						<c:set var="authOrderArray" value="${fn:split(authOrder,',')}"/>
 
-								<div id="userAndPw">
-									<c:set var="login">
-									<fmt:message key="navi.login"/>
-									</c:set>
-									<c:url var="loginUrl" value="/login" context="${projectContext}"/>
-									<form method="POST" action="${loginUrl}" style="display:inline">
-										<label for="un"><fmt:message key="navi.username"/>:&amp;nbsp;</label> <input type="text" size="10" name="username" id="un" />&amp;nbsp;
-										<label for="pw"><fmt:message key="navi.password"/>:&amp;nbsp;</label> <input type="password" size="10" name="password" id="pw" />
-										<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" />
-										<a href="javascript:switchLogin();"><img style="width: 16px; height:16px;" src="${resdir}/image/login_openid.png"/></a>
-									</form>
-								</div>
-	
-								<div id="openID" style="display:none">
-						            <form action="/login" method="POST">
-						              	<label path="openID" >OpenID:</label>
-						              	<input type="text" id="openID" class="openid" size="30" value="" name="openID"/>
-										<a href="javascript:switchLogin();"><img style="width: 16px; height:16px;" src="${resdir}/image/login_bib.png"/></a>
-						            </form>
-					            </div>
-							</span>
-	          
-							<!-- little script to switch between default login and OpenID login forms -->
+							<!-- 
+								nicht schoen, aber funktionert. Wie kann man einfach ein Array zuweisen?
+								
+								besser ist es auch, die pfade ueber die konfig reinzureichen
+								vielleicht gleich als string, um dann ein split durchzufuehren 
+							 -->
+							<c:set var="loginMethodSelectImages" value=""/>
+							<c:forEach items="${authOrderArray}" varStatus="loop">
+								<c:set value="${loop.index}" var="loopindex"/>
+
+								<c:if test="${authOrderArray[loop.index]=='db'}">
+									<c:set var="loginMethodSelectImages" value="${loginMethodSelectImages},${resdir}/image/login_bib.png"/>
+								</c:if>
+								<c:if test="${authOrderArray[loop.index]=='ldap'}">
+									<c:set var="loginMethodSelectImages" value="${loginMethodSelectImages},http://www.uni-kassel.de/bib/favicon.ico"/>
+								</c:if>
+								<c:if test="${authOrderArray[loop.index]=='openid'}">
+									<c:set var="loginMethodSelectImages" value="${loginMethodSelectImages},${resdir}/image/login_openid.png"/>
+								</c:if>
+							</c:forEach>
+							<c:set var="loginMethodSelectImagesArray" value="${fn:split(loginMethodSelectImages,',')}"/>
+
+
+							<div class="headlogin" id="headlogin">
+								<form:form action="#" method="POST" id="headloginMethod">
+									<c:if test="${authOrder != 'db,openid'}">
+										<form:select id="headloginMethodSelect" size="1" onchange="switchLogin('${authOrder}', this.options[this.selectedIndex].value,'headlogin')" path="loginMethod" >
+											<c:forEach items="${authOrderArray}" varStatus="loop">
+												<fmt:message var="label" key="login.method.${authOrderArray[loop.index]}"/>
+	           	      							<form:option value="${authOrderArray[loop.index]}" label="${label}"/>
+											</c:forEach>
+	                    				</form:select>
+		                    		</c:if>
+								</form:form>
+							</div>
+						
+							<div style="display: block; margin-top: 7px;">		
+								<c:forEach items="${authOrderArray}" varStatus="loop">
+									<c:if test="${authOrderArray[loop.index]=='db' }">
+										<div class="headlogin" id="headlogindb">
+											<c:set var="login">
+											<fmt:message key="navi.login"/>
+											</c:set>
+											<form:form method="POST" action="${loginUrl}">
+												<input type="text" size="15" name="username" id="un" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">&amp;nbsp;:&amp;nbsp;</span>
+												<input type="password" size="15" name="password" id="pw" autocomplete="off"/>
+												<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" />
+												<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
+									            <form:hidden id="headloginMethoddb" path="loginMethod" />
+											</form:form>
+										</div>
+									</c:if>
+									
+									<c:if test="${authOrderArray[loop.index]=='ldap' }">
+										<div class="headlogin" id="headloginldap">
+											<c:set var="login">
+											<fmt:message key="navi.login"/>
+											</c:set>
+											<form:form method="POST" action="${loginUrl}">
+												<input type="text" size="15" name="username" id="unldap" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">&amp;nbsp;:&amp;nbsp;</span>
+												<input type="password" size="15" name="password" id="pwldap" autocomplete="off"/>
+												<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" />
+												<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
+									            <form:hidden id="headloginMethodldap" path="loginMethod" />
+											</form:form>
+										</div>
+									</c:if>
+									
+									<c:if test="${authOrderArray[loop.index]=='openid' }">
+										<div class="headlogin" id="headloginopenid">
+								            <form:form action="${loginUrl}" method="POST">
+								              	<input type="text" id="openID" class="openid" size="32" value="" name="openID"/>
+												<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
+									            <form:hidden id="headloginMethodopenid" path="loginMethod" />
+								            </form:form>
+							            </div>
+									</c:if>
+								</c:forEach>
+							</div>
+		          
+							<!-- switch to default login method -->
 							<script type="text/javascript">
 							<![CDATA[
-							/** switch between default and openid login form */
-							function switchLogin() {
-								var defaultLoginDiv = document.getElementById("userAndPw");
-								var openIDLoginDiv = document.getElementById("openID");
-							
-								if (defaultLoginDiv.style.display == "none") {
-									defaultLoginDiv.style.display = "block";
-									openIDLoginDiv.style.display = "none";
-								} else {
-									defaultLoginDiv.style.display = "none";
-									openIDLoginDiv.style.display = "block";
-								}
-							}
+							switchLogin('${authOrder}','','headlogin')
 							]]>
 							</script>	
 						</c:otherwise>

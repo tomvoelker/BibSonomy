@@ -54,8 +54,8 @@
 	                </tr>
 	                
 	                <tr>
-	                  <td><form:label path="registerUser.userId" ><fmt:message key="user.settings.userid"/>:</form:label></td>
-	                  <td><c:out value="${command.registerUser.userId}"/><form:errors cssClass="errmsg" path="registerUser.userId" /></td>
+	                  <td><form:label path="registerUser.ldapId" ><fmt:message key="user.settings.ldapId"/>:</form:label></td>
+	                  <td><c:out value="${command.registerUser.ldapId}"/><form:errors cssClass="errmsg" path="registerUser.ldapId" /></td>
 	                </tr>
 				</table>
 				
@@ -93,7 +93,7 @@
 	                  <td colspan="3">
 	                    <input type="hidden" name="ckey" value="${command.context.ckey}"/>
 	                    <input type="hidden" name="step" value="3"/>
-	                    <input type="hidden" name="registerUser.userId" value="${command.registerUser.userId}"/>
+	                    <input type="hidden" name="registerUser.ldapId" value="${command.registerUser.ldapId}"/>
 	                    <input type="hidden" name="registerUser.password" value="${command.registerUser.password}"/>
 	                    
 	                    <fmt:message key="navi.register" var="submit"/>

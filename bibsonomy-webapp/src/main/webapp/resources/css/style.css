@@ -1037,6 +1037,10 @@ span.help > a, span.help > b {
 	height: 70px;
 }
 
+#headerlogo {
+	display: none;
+}
+
 #heading h1 {
 	color: #FFFFFF;
 }
@@ -1054,6 +1058,7 @@ span.help > a, span.help > b {
 	padding: 0;
 	margin: 0;
 	border-spacing: 0;
+	width: 400px;
 }
 
 #mainHeaderRightBox a {
@@ -1169,4 +1174,21 @@ padding-top:1px;
 
 .standart_text_normal{
   font-size: 85%;
+}
+
+.headlogin {
+}
+
+.headlogin input, .headlogin select {
+	font-size:140%;
+}
+
+.headlogin select {
+	margin-left: 4px;
+	margin-right: 4px;
+}
+
+#headlogin {
+	float:right;
+	margin-top: 7px;
 }

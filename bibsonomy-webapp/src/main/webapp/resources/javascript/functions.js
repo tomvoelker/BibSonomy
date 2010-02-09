@@ -175,6 +175,48 @@ function add_hints() {
     el.onmousedown = clear_input;
     el.onkeypress  = clear_input;
   }
+  // for username input field
+  el = document.getElementById("un");
+  if (el != null && el.name == "username" && (el.value == "" || el.value == getString("navi.username"))) {
+    el.value = getString("navi.username");
+    el.style.color = "#aaaaaa";
+    el.onmousedown = clear_input;
+    el.onkeypress  = clear_input;
+  }
+  // for password input field
+  el = document.getElementById("pw");
+  if (el != null && el.name == "password" && (el.value == "" || el.value == getString("navi.password"))) {
+	el.type = "text";
+    el.value = getString("navi.password");
+    el.style.color = "#aaaaaa";
+    el.onmousedown = clear_input_password;
+    el.onkeypress  = clear_input_password;
+  }
+  // for username ldap input field
+  el = document.getElementById("unldap");
+  if (el != null && el.name == "username" && (el.value == "" || el.value == getString("navi.username.ldap"))) {
+    el.value = getString("navi.username.ldap");
+    el.style.color = "#aaaaaa";
+    el.onmousedown = clear_input;
+    el.onkeypress  = clear_input;
+  }
+  // for password ldap input field
+  el = document.getElementById("pwldap");
+  if (el != null && el.name == "password" && (el.value == "" || el.value == getString("navi.password.ldap"))) {
+	el.type = "text";
+    el.value = getString("navi.password.ldap");
+    el.style.color = "#aaaaaa";
+    el.onmousedown = clear_input_password;
+    el.onkeypress  = clear_input_password;
+  }
+  // for openid input field
+  el = document.getElementById("openID");
+  if (el != null && el.name == "openID" && (el.value == "" || el.value == getString("navi.openid"))) {
+    el.value = getString("navi.openid");
+    el.style.color = "#aaaaaa";
+    el.onmousedown = clear_input;
+    el.onkeypress  = clear_input;
+  }
   // for tag input field
   el = document.getElementById("inpf");
   if (el != null && (el.name == "tag" || el.name == "tags") && (el.value == "" || el.value == getString("navi.tag.hint"))) {
@@ -220,6 +262,13 @@ function clear_node(node) {
   node.onmousedown = "";
   node.onkeypress  = "";
   node.focus();  
+}
+
+/* clear_node for events (if input field gets clicked) */
+function clear_input_password (event) {
+  clear_node(xget_event(event));
+  node = xget_event(event);
+  node.type="password";
 }
 
 /* clear_node for events (if input field gets clicked) */
@@ -2014,3 +2063,57 @@ String.prototype.trim = function () {
     return this.replace(/^\s+/g, '').replace(/\s+$/g, '');
 }
 
+/** switch between db, ldap, and openid login form */
+/* @param methodsList
+ * @param id (optional)
+ * @param prefix (optional)
+ */ 
+function switchLogin() {
+	var methodsList = "db,openid";
+	var id = null;
+	var prefix="login";
+	
+	switch (arguments.length) {
+		case 3:
+			if (arguments[2]!="") prefix = arguments[2];
+		case 2:
+			id = arguments[1];
+		case 1: 
+			if (arguments[0]!="") methodsList = arguments[0]; 
+	}
+	
+	// id E {standard, ldap, openid}
+	methods = methodsList.split(",");
+	if (!id) id = methods[0];
+	// if method changes from outside select-element
+	// hole alle options
+	var elSel = document.getElementById(prefix.concat("MethodSelect"));
+	
+	// if select element exists
+	if (elSel) {
+		// iterate over all options
+		for (i = 0; i<elSel.length; i++) {
+			// if value of option is equal to id select option, otherwise deselect it
+			if (elSel.options[i].value == id) {
+				elSel.options[i].selected = true;
+			}
+			else
+			{
+				elSel.options[i].selected = false;
+			}
+			 
+		}					
+	}
+	for (i = 0; i<methods.length; i++) {
+		elementId = prefix.concat(methods[i]);
+
+		if (id == methods[i]) {
+			document.getElementById(elementId).style.display = "block";
+			var elMethod = document.getElementById(prefix.concat("Method").concat(id)); // loginMethoddb, loginMethodldap,...
+			if (elMethod)  { elMethod.value = id; }
+		} else {
+			document.getElementById(elementId).style.display = "none";
+		}
+	}
+	
+}

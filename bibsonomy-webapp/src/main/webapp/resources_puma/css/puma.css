@@ -1,0 +1,55 @@
+#main {
+	border: 0px solid #DF430D;
+
+}
+
+#main_header {
+	background-color:#DF430D;
+	height:70px;
+	margin-left:50px;
+	padding-left:30px;
+}
+
+#headerlogo {
+	position:absolute;
+	margin-left:-6px;
+	margin-top:-12px;
+	display: block;
+}
+
+#headerlogoimage {
+	width: 86px;
+}
+
+#nice_tnav {
+	background-color:  #ecf9f6;
+}
+
+#nice_tnav ul {
+	padding-left:81px
+}
+
+a, a:link, a:visited {
+	color:#DF430D;
+}
+
+h2 {
+	color:#DF430D;
+}
+
+.listhButtons a:hover {
+background-color:#DF430D;
+border:1px solid #6F6F6F;
+color:#FFFFFF;
+}
+
+
+.sidebarroundcorner {
+background-color:#9ADFCF;
+float:right;
+padding:3px;
+width:23%;
+margin-top: 2ex;
+margin-right:2ex;
+}
+
