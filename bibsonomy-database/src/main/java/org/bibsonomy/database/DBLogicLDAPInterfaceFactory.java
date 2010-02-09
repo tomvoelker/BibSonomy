@@ -31,12 +31,12 @@ public class DBLogicLDAPInterfaceFactory extends DBLogicUserInterfaceFactory {
 			final User loggedInUser = getLoggedInUser(loginName, password);
 			
 			if (loggedInUser.getName() != null) {
-				return new DBLogic(loggedInUser, this.dbSessionFactory, bibTexSearch, bookmarkSearch);
+				return new DBLogic(loggedInUser, this.dbSessionFactory);
 			}
 			throw new ValidationException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
 		// guest access
-		return new DBLogic(new User(), this.dbSessionFactory, bibTexSearch, bookmarkSearch);
+		return new DBLogic(new User(), this.dbSessionFactory);
 	}
 	
 	/**

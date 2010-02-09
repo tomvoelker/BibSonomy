@@ -5,13 +5,10 @@ import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.services.searcher.ResourceSearch;
 
 /**
  * This class produces DBLogic instances with user authentication
@@ -26,9 +23,6 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 
 	protected DBSessionFactory dbSessionFactory;
 	
-	protected ResourceSearch<BibTex> bibTexSearch;
-	protected ResourceSearch<Bookmark> bookmarkSearch;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -39,12 +33,12 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 		if (loginName != null) {
 			final User loggedInUser = getLoggedInUser(loginName, password);
 			if (loggedInUser.getName() != null) {
-				return new DBLogic(loggedInUser, this.dbSessionFactory, bibTexSearch, bookmarkSearch);
+				return new DBLogic(loggedInUser, this.dbSessionFactory);
 			}
 			throw new ValidationException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
 		// guest access
-		return new DBLogic(new User(), this.dbSessionFactory, bibTexSearch, bookmarkSearch);
+		return new DBLogic(new User(), this.dbSessionFactory);
 	}
 
 	
@@ -100,21 +94,4 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 		return this.dbSessionFactory.getDatabaseSession();
 	}
 	
-	/**
-	 * Sets the lucene searcher to use for publications (see {@link ResourceSearch})
-	 * 
-	 * @param bibTexSearch the lucene searcher for publications
-	 */
-	public void setBibTexSearch(ResourceSearch<BibTex> bibTexSearch) {
-		this.bibTexSearch = bibTexSearch;
-	}
-	
-	/**
-	 * Sets the lucene searcher to use for bookmarks (see {@link ResourceSearch})
-	 * 
-	 * @param bookmarkSearch the lucene searcher for bookmarks
-	 */
-	public void setBookmarkSearch(ResourceSearch<Bookmark> bookmarkSearch) {
-		this.bookmarkSearch = bookmarkSearch;
-	}
 }

@@ -72,7 +72,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -108,9 +107,6 @@ public class DBLogic implements LogicInterface {
 
 	private final User loginUser;
 
-	/** references to resource searcher for maintenance (e.g. flagging of spam) */
-	List<ResourceSearch<? extends Resource>> resourceSearcher;
-
 	/**
 	 * Returns an implementation of the DBLogic.
 	 * 
@@ -141,25 +137,6 @@ public class DBLogic implements LogicInterface {
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
 
 		this.dbSessionFactory = dbSessionFactory;
-
-		this.resourceSearcher = new LinkedList<ResourceSearch<? extends Resource>>();
-		
-		// FIXME: @see PostDatabaseManager
-		this.bibtexDBManager.setDbLogic(this);
-		this.bookmarkDBManager.setDbLogic(this);
-		this.bibtexDBManager.setDbSessionFactory(this.dbSessionFactory);
-		this.bookmarkDBManager.setDbSessionFactory(this.dbSessionFactory);
-
-	}
-
-	protected DBLogic(final User loginUser, final DBSessionFactory dbSessionFactory, final ResourceSearch<BibTex> bibTexSearch, final ResourceSearch<Bookmark> bookmarkSearch) {
-		this(loginUser, dbSessionFactory);
-
-		this.resourceSearcher.add(bookmarkSearch);
-		this.resourceSearcher.add(bibTexSearch);
-		this.bibtexDBManager.setResourceSearch(bibTexSearch);
-		this.bookmarkDBManager.setResourceSearch(bookmarkSearch);
-		this.tagDBManager.setAuthorSearch(bibTexSearch);
 	}
 
 	/**
@@ -1118,10 +1095,6 @@ public class DBLogic implements LogicInterface {
 					final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
 					log.debug("User prediction: " + user.getPrediction());
 					flagSpammerUserName = this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
-					// flag/unflag spammer in search index
-					for (ResourceSearch<? extends Resource> searcher : resourceSearcher) {
-						searcher.flagSpammer(user);
-					}
 				} finally {
 					session.close();
 				}
@@ -1154,9 +1127,9 @@ public class DBLogic implements LogicInterface {
 						updatedUser = this.userDBManager.updateUserProfile(user, session);
 						break;
 						
-					case UPDATE_LDAP_TIMESTAMP:
-						updatedUser = this.userDBManager.updateLastLdapRequest(user, session);
-						break;
+//					case UPDATE_LDAP_TIMESTAMP:
+//						updatedUser = this.userDBManager.updateLastLdapRequest(user, session);
+//						break;
 				}
 				
 			} finally {
