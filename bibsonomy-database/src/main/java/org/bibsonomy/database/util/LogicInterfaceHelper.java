@@ -18,10 +18,8 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.systemstags.database.EntryTypeSystemTag;
 import org.bibsonomy.database.systemstags.database.YearSystemTag;
-import org.bibsonomy.database.systemstags.xml.SystemTagType;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.PostLogicInterface;
@@ -212,22 +210,26 @@ public class LogicInterfaceHelper {
 			tagName = tags[0];
 			tagValue = StringUtils.implodeStringArray(Arrays.copyOfRange(tags, 1, tags.length), ":").trim();
 		}
-
-		SystemTagType sTag = SystemTagFactory.createTag(tagName, tag.substring(tag.indexOf(tagName) + tagName.length()));
-		if (sTag != null && SystemTagFactory.getAttributeValue(sTag, SystemTagFactory.GROUPING) != null) {
-			GroupingEntity ge = GroupingEntity.getGroupingEntity(SystemTagFactory.getAttributeValue(sTag, SystemTagFactory.GROUPING));
-			if (ge != null) {
-				param.setGrouping(ge);
-				logger.debug("set grouping entity to " + ge);
-				if (GroupingEntity.USER.equals(ge)) {
-					param.setRequestedUserName(tagValue);
-				}
-				if (GroupingEntity.GROUP.equals(ge)) {
-					param.setRequestedGroupName(tagValue);
-				}
-			}
-			return true;
-		} else if (tagName.equals("bibtexkey")) {
+/*
+ * rja, 2010-02-09: turned off, since currently no system tags of this kind are
+ * contained in the SystemTagFactory
+ */
+//		SystemTagType sTag = SystemTagFactory.createTag(tagName, tag.substring(tag.indexOf(tagName) + tagName.length()));
+//		if (sTag != null && SystemTagsUtil.getAttributeValue(sTag, SystemTagFactory.GROUPING) != null) {
+//			GroupingEntity ge = GroupingEntity.getGroupingEntity(SystemTagsUtil.getAttributeValue(sTag, SystemTagFactory.GROUPING));
+//			if (ge != null) {
+//				param.setGrouping(ge);
+//				logger.debug("set grouping entity to " + ge);
+//				if (GroupingEntity.USER.equals(ge)) {
+//					param.setRequestedUserName(tagValue);
+//				}
+//				if (GroupingEntity.GROUP.equals(ge)) {
+//					param.setRequestedGroupName(tagValue);
+//				}
+//			}
+//			return true;
+//		} else 
+		if (tagName.equals("bibtexkey")) {
 			// :bibtexkey: add bibtex key to param object
 			param.setBibtexKey(tagValue);
 			logger.debug("set bibtex key to " + tagValue + " after matching for bibtexkey system tag");
