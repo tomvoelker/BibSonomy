@@ -40,14 +40,12 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.DatabaseSchemaInformation;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
@@ -78,9 +76,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/** instance of the lucene searcher */
 	private ResourceSearch<R> resourceSearch;
 	
+	/** factory for creating system tags */
+	private SystemTagFactory systemTagFactory;
 	// FIXME: remove logic and sessionfactory! (systemfactory needs dbSessionFactory and logic)
-	private DBSessionFactory dbSessionFactory;
-	private LogicInterface dbLogic; 
+//	private DBSessionFactory dbSessionFactory;
+//	private LogicInterface dbLogic; 
 	
 	/**
 	 * inits the database managers and resource class name
@@ -1449,7 +1449,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	private List<SystemTag> getSystemTags(final Post<?> post, final Set<Tag> alreadyExecutedTags) {
 		List<SystemTag> systemTags = new ArrayList<SystemTag>();
 		for (final Tag tag : post.getTags()) {
-			SystemTag stt = SystemTagFactory.createExecutableTag(this.dbLogic, this.dbSessionFactory, tag);
+			SystemTag stt = null;
+			if(present(this.systemTagFactory) ) 
+				this.systemTagFactory.createExecutableTag(null, null, tag);
 			if (present(stt)&& !alreadyExecutedTags.contains(stt)) {
 				systemTags.add(stt);
 			}
@@ -1562,17 +1564,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.resourceSearch = resourceSearch;
 	}
 
-	/**
-	 * @param dbSessionFactory the dbSessionFactory to set
-	 */
-	public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
-		this.dbSessionFactory = dbSessionFactory;
+
+	public void setSystemTagFactory(SystemTagFactory systemTagFactory) {
+		this.systemTagFactory = systemTagFactory;
 	}
 
-	/**
-	 * @param dbLogic the dbLogic to set
-	 */
-	public void setDbLogic(LogicInterface dbLogic) {
-		this.dbLogic = dbLogic;
+	public SystemTagFactory getSystemTagFactory() {
+		return systemTagFactory;
 	}
 }
