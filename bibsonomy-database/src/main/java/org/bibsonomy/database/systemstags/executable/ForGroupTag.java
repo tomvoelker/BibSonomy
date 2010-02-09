@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
@@ -23,6 +22,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.GroupUtils;
 
 /**
  * System tag 'sys:for:&lt;groupname&gt;'
@@ -71,40 +71,47 @@ public class ForGroupTag extends SystemTag {
 		//--------------------------------------------------------------------
 		// first check preconditions: user is member of given group
 		//--------------------------------------------------------------------
-		String groupName = getValue();
-		if (getPermissionDb().isSpecialGroup(post.getUser().getName()) ) {
+		final String groupName = getValue();
+		if (permissionDb.isSpecialGroup(groupName) ) {
 			this.setError(Reason.SPECIAL, post, groupName, session);
 			// the user can not use this tag at all, therefore we omit trying anything else with this tag
 			return;			
 		} 
-		if (!getPermissionDb().isMemberOfGroup(post.getUser().getName(), groupName,  session) ) {
+		if (!permissionDb.isMemberOfGroup(post.getUser().getName(), groupName,  session) ) {
 			this.setError(Reason.MEMBER, post, groupName, session);
 			// the user can not use this tag at all, therefore we omit trying anything else with this tag
 			return;			
 		}
 		
+		/*
+		 * Make a DBLogic for the group
+		 */
+		DBLogicNoAuthInterfaceFactory logicFactory = new DBLogicNoAuthInterfaceFactory();
+		logicFactory.setDbSessionFactory(getDbSessionFactory());
+		LogicInterface groupDBLogic = logicFactory.getLogicAccess(groupName, "");
 		
 		// get group and corresponding user
-		Group dbGroup = getLogicInterface().getGroupDetails(groupName);
-		if( dbGroup==null ) {
+		Group dbGroup = groupDBLogic.getGroupDetails(groupName);
+		if( dbGroup == null ) {
 			log.debug("Unknown group!");
 			this.setError(Reason.EXIST, post, groupName, session);
 			// the user can not use this tag at all, therefore we omit trying anything else with this tag
 			return;
 		}
-		User dbUser = getLogicInterface().getUserDetails(groupName);
 		
 		//--------------------------------------------------------------------
 		// check if post is already owned by group
 		//--------------------------------------------------------------------
-		final GroupingEntity groupingEntity = GroupingEntity.USER;
-		List<String> tags = new LinkedList<String>();
-		List<Post<T>> groupPosts = getLogicInterface().getPosts(
-				(Class<T>)post.getResource().getClass(), groupingEntity, groupName, tags, 
-				post.getResource().getIntraHash(), null, null, 0, Integer.MAX_VALUE, "");
-		log.debug("Got " + groupPosts.size() + " posts for group "+groupName);
+		//final GroupingEntity groupingEntity = GroupingEntity.USER;
+		//List<String> tags = new LinkedList<String>();
+		/*
+		 * FIXME: use getPostDetails() instead
+		 */
+		//getPosts((Class<T>)post.getResource().getClass(), groupingEntity, groupName, tags, post.getResource().getIntraHash(), null, null, 0, Integer.MAX_VALUE, "");
+		//log.debug("Got " + groupPosts.size() + " posts for group "+groupName);
 		// skip this post if it is already owned by given group
-		if( groupPosts.size()>0 ) {
+		//if( groupPosts.size()>0 ) {
+		if(groupDBLogic.getPostDetails(post.getResource().getIntraHash(), groupName)!=null) {
 			log.debug("Given post already owned by group. Skipping...");
 		} else {
 			//----------------------------------------------------------------
@@ -124,10 +131,10 @@ public class ForGroupTag extends SystemTag {
 			 *  => check if post.groups has only the public group
 			 */
 			Set<Group> groupsCopy = new HashSet<Group>();
-			Group publicGroup = new Group("public");
-			if (post.getGroups().size()==1 && post.getGroups().contains(publicGroup)) {
+			// TODO: Find a better way to check for "public" (e.g. via GroupUtils)
+			if (post.getGroups().size()==1 && post.getGroups().contains(GroupUtils.getPublicGroup())) {
 				// public is the only group (if visibility was public, there should be only one group)
-				groupsCopy.add(publicGroup);
+				groupsCopy.add(GroupUtils.getPublicGroup());
 			} else {
 				// visibility is different from public => post is only visible for dbGroup
 				groupsCopy.add(dbGroup);
@@ -139,7 +146,7 @@ public class ForGroupTag extends SystemTag {
 			postCopy.setDescription(post.getDescription());
 			postCopy.setGroups(groupsCopy);
 			postCopy.setResource(post.getResource());
-			postCopy.setUser(dbUser);
+			postCopy.setUser(new User(groupName));
 			postCopy.setTags(tagsCopy);
 			
 			log.debug("New post: "+postCopy.toString());
@@ -147,9 +154,6 @@ public class ForGroupTag extends SystemTag {
 			// Now store copied post - we have to create our own database session, 
 			// as new post has to be owned by given group.
 			// FIXME: this is ugly!
-			DBLogicNoAuthInterfaceFactory logicFactory = new DBLogicNoAuthInterfaceFactory();
-			logicFactory.setDbSessionFactory(getDbSessionFactory());
-			LogicInterface groupDBLogic = logicFactory.getLogicAccess(groupName, "");
 			List<Post<?>> posts = new LinkedList<Post<?>>();
 			posts.add(postCopy);
 			groupDBLogic.createPosts(posts);
@@ -161,13 +165,6 @@ public class ForGroupTag extends SystemTag {
 
 
 
-	//------------------------------------------------------------------------
-	// private helper
-	//------------------------------------------------------------------------
-	public PermissionDatabaseManager getPermissionDb() {
-		return permissionDb;
-	}
-	
 	/**
 	 * Removes all tags with given old name and adds new tag with given new name.
 	 * 
