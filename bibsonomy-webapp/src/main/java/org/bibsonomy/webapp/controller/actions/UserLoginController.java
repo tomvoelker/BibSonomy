@@ -4,14 +4,20 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.webapp.command.actions.UserLDAPRegistrationCommand;
 import org.bibsonomy.webapp.command.actions.UserLoginCommand;
 import org.bibsonomy.webapp.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.util.CookieAware;
@@ -54,6 +60,7 @@ import filters.InitUserFilter;
 public class UserLoginController implements MinimalisticController<UserLoginCommand>, ErrorAware, ValidationAwareController<UserLoginCommand>, RequestAware, CookieAware {
 	private static final Log log = LogFactory.getLog(UserLoginController.class);
 
+	
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
 	private RequestLogic requestLogic;
@@ -125,6 +132,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 
 		if (errors.hasErrors()) {
 			log.debug(errors.getAllErrors().get(0).toString());
+			//command.setLoginMethod("ldap");
 			return Views.LOGIN;
 		}
 
@@ -152,56 +160,124 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		 * Check, if the user (or IP) has to wait some time for another login try.
 		 */
 		handleWaiting(username, inetAddress);
-
+		
 
 		/*
 		 * The user 
 		 */
+		Context initContext = null;
+		Context envContext = null;
+		// use LDAP password even for bibsonomy username 
+		Boolean useLDAP = false;
+		
+		try {
+			initContext = new InitialContext();
+			envContext = (Context) initContext.lookup("java:/comp/env");
+		} catch (NamingException ex) {
+			log.error("Error when trying create initContext lookup for java:/comp/env via JNDI.", ex);
+		}
+		try {
+			useLDAP = (Boolean) envContext.lookup("useLdapPasswordforBibsonomyLogin");
+		} catch (NamingException ex) {
+			log.error("Error when trying to read environment variable 'useLdapPasswordforBibsonomyLogin' via JNDI.", ex);
+			useLDAP = false;
+		}
+
 		User user = null;
 		
-		Boolean useLDAP = false;
+		log.info("login method: " + command.getLoginMethod());
 
 		if (useLDAP && username != null && hashedPassword != null  ) { 
+			
 			/*
 			 * authentication via username and password via LDAP 
 			 */
-			// get user from database
-			String userId = adminLogic.getLdapUserByUsername(username);
 			
-			Ldap ldap = new Ldap();
-			LdapUserinfo ldapUserinfo = new LdapUserinfo();
-
-			log.info("Trying to login user " + username + " via LDAP (uid="+userId+")");
-	        ldapUserinfo = ldap.checkauth(userId, password);
+			// TODO: this is only for auth with bibsonomy's user name. ldap user id auth should be possible, too.
+			String userId = null;
+			String bibsonomyUsername = null;
+			if ("ldap".equals(command.getLoginMethod()))
+			{
+				log.info("get username by ldap id ("+ username +")");
+				bibsonomyUsername = adminLogic.getUsernameByLdapUserId(username);
+				log.info("bibsonomyusername is "+bibsonomyUsername);
+				
+				// semi-auto-register, if username does not exist
+				// check if user credentials are correct for ldap-login
+				// if so, go to ldap registration step 2 (fill out user details form)
+				userId = username;
+			} 
+			else
+			{
+				bibsonomyUsername = username;
+			}
+			
+			if (null != bibsonomyUsername) 
+			{
+				// get user's ldap-id from database
+				userId = adminLogic.getUserDetails(bibsonomyUsername).getLdapId();
+			}
+			LdapUserinfo ldapUserinfo = null;
+			
+			if (null != userId)
+			{
+				Ldap ldap = new Ldap();
+	
+				log.info("Trying to login user " + bibsonomyUsername + " via LDAP (uid="+userId+")");
+				log.info("password"+password);
+		        ldapUserinfo = ldap.checkauth(userId, password);
+			}
 			
 			if (null == ldapUserinfo)
 			{
 				/*
 				 * user credentials do not match --> show error message
 				 */
-				log.info("Login of user " + username + " failed.");
+				log.info("Login of user " + bibsonomyUsername + " failed.");
 				errors.reject("error.login.failed");
 				/*
 				 * count failures
 				 */
-				grube.add(username);
+				grube.add(bibsonomyUsername);
 				grube.add(inetAddress);
 			}
 			else
 			{
-				log.info("Login of user " + username + " accepted.");
-				user = adminLogic.getUserDetails(username);
+				// ldap credentials are correct
+				// if bibsonomyUsername is null, user does not exist in bibsonomy database
+				// register user first -> redirect to ldap registration step 2 (fill out user details form)
+				
+				log.info("Login of user " + bibsonomyUsername + " accepted.");
+				if (null == bibsonomyUsername) {
+					// redirect
+					log.info("Redirecting user to registration page");
+					UserLDAPRegistrationCommand ldapCommand = new UserLDAPRegistrationCommand(); 
+					
+					// store username and password in session
+					requestLogic.setSessionAttribute(InitUserFilter.REQ_ATTRIB_LOGIN_USER, userId);
+					requestLogic.setSessionAttribute(InitUserFilter.REQ_ATTRIB_LOGIN_USER_PASSWORD, password);
+					
+					
+					return new ExtendedRedirectView("/registerLDAP"
+														+ "?step=2"
+														+ "&registerUser.name=x"
+														+ "&registerUser.password=x"
+													);
+
+//					return Views.REGISTER_USER_LDAP_FORM;
+				}
+				
+				user = adminLogic.getUserDetails(bibsonomyUsername);
 				
 				/*
 				 * add authentication cookie to response
 				 */
-				cookieLogic.addUserCookie(username, ldapUserinfo.getPasswordHashMd5Hex());
+				cookieLogic.addUserCookie(bibsonomyUsername, ldapUserinfo.getPasswordHashMd5Hex());
 
 				/*
 				 * update lastAccessTimestamp
 				 */
-				adminLogic.updateLastLdapRequest(username);
-
+				adminLogic.updateUser(user, UserUpdateOperation.UPDATE_LDAP_TIMESTAMP);
 				
 			}
 			
@@ -298,6 +374,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		 * on error, send user back
 		 */
 		if (errors.hasErrors()) {
+			command.setLoginMethod(requestLogic.getParameter("loginMethod"));
 			return Views.LOGIN;
 		}
 

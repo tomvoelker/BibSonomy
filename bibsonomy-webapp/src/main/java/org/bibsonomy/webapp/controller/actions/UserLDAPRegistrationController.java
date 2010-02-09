@@ -26,9 +26,10 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
+import filters.InitUserFilter;
+
 /**
- * This controller handles the registration of users via Ldap (see
- * http://openid.net/)
+ * This controller handles the registration of users via Ldap 
  * 
  * @author Sven Stefani
  * @version $Id: UserLDAPRegistrationController.java,v 1.1 2009-12-07 10:08:38
@@ -70,6 +71,8 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 			throw new ValidationException("error.method_not_allowed");
 		}
 
+		log.info("errors"+errors.toString());
+		
 		if (errors.hasErrors()) {
 			log.info("an error occoured: " + errors.toString());
 			return Views.REGISTER_USER_LDAP;
@@ -89,21 +92,39 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 			Views returnView = Views.REGISTER_USER_LDAP;
 			log.debug("step 2: show ldap registration form");
 
+			String registerUserName = null;
+			String registerUserPassword = null;
 			
+			
+			// user registration over login process
+			if (null != requestLogic.getSessionAttribute(InitUserFilter.REQ_ATTRIB_LOGIN_USER)) {
+				log.info("got Userdata via session");
+				// retrieve username and password from session (set in UserLoginController)
+				registerUserName = (String) requestLogic.getSessionAttribute(InitUserFilter.REQ_ATTRIB_LOGIN_USER);
+				registerUserPassword = (String) requestLogic.getSessionAttribute(InitUserFilter.REQ_ATTRIB_LOGIN_USER_PASSWORD);
+			} else // user registration over registration process  
+			if (null != requestLogic.getParameter("registerUser.name")) {
+				log.info("got Userdata via http-request");
+				registerUserName = requestLogic.getParameter("registerUser.name");
+				registerUserName = requestLogic.getParameter("registerUser.password");
+			}
+				
 			/*
 			 * check, if ldap user id already exists in ldap user table
 			 */
-			if (null != logic.getUsernameByLdapUser(requestLogic.getParameter("registerUser.name"))) {
+			if (null != logic.getUsernameByLdapUserId(registerUserName)) {
 				/*
 				 * yes -> user must choose another name
 				 */
 				errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
-			}
+			} 
+			
 
 			if (errors.hasErrors()) {
 				/*
 				 * Generate HTML to show captcha.
 				 */
+				log.debug("step 2: hasErrors() -> redirecting to Views.REGISTER_USER_LDAP (step 1)");
 				return Views.REGISTER_USER_LDAP;
 			}
 			
@@ -111,11 +132,11 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 			// check credentials
 			Ldap ldap = new Ldap();
 			LdapUserinfo ldapUserinfo = new LdapUserinfo();
-			log.info("Trying to login user " + requestLogic.getParameter("registerUser.name") + " via LDAP");
-			ldapUserinfo = ldap.checkauth(requestLogic.getParameter("registerUser.name"), requestLogic.getParameter("registerUser.password"));
+			log.info("Trying to login user " + registerUserName + " via LDAP");
+			ldapUserinfo = ldap.checkauth(registerUserName, registerUserPassword);
 
 			if (null == ldapUserinfo) {
-				log.info("Login check for registering failed for user " + requestLogic.getParameter("registerUser.name") + " via LDAP");
+				log.info("Login check for registering failed for user " + registerUserName + " via LDAP");
 				// if login failed, return to step 1 - show REGISTER_USER_LDAP
 
 				// set some error messages
@@ -123,14 +144,14 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 				returnView = Views.REGISTER_USER_LDAP;
 			} else {
 				// if login was successful, insert ldap data to command
-				log.info("Login check for registering succeeded for user " + requestLogic.getParameter("registerUser.name") + " via LDAP");
+				log.info("Login check for registering succeeded for user " + registerUserName + " via LDAP");
 				System.out.println("UserLDAPRegistration:: " + ldapUserinfo.toString());
 
 				// check if username is already used and try another
 				String newName = ldapUserinfo.getSureName().toLowerCase();
 				int tryCount = 0;
 				log.info("try existence of username: "+newName);
-				while ((newName.equalsIgnoreCase(logic.getUserDetails(newName).getName())) && (tryCount<101)) {
+				while ((newName.equalsIgnoreCase(adminLogic.getUserDetails(newName).getName())) && (tryCount<101)) {
 					try {
 						if (tryCount == 0) {
 							// try first character of forename concatenated with surename
@@ -169,7 +190,7 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 				command.getRegisterUser().setRealname(ldapUserinfo.getFirstName() + " " + ldapUserinfo.getSureName());
 				// command.getRegisterUser().setGender(ldapUserinfo.);
 				command.getRegisterUser().setPlace(ldapUserinfo.getLocation());
-				command.getRegisterUser().setUserId(ldapUserinfo.getUserId());
+				command.getRegisterUser().setLdapId(ldapUserinfo.getUserId());
 				command.getRegisterUser().setPassword(ldapUserinfo.getPasswordHashMd5Hex());
 				returnView = Views.REGISTER_USER_LDAP_FORM;
 			}
@@ -230,7 +251,7 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 				return Views.REGISTER_USER_LDAP_FORM;
 			}
 
-			log.debug("validation passed with " + errors.getErrorCount() + " errors, proceeding to access database");
+			log.info("validation passed with " + errors.getErrorCount() + " errors, proceeding to access database");
 
 			/*
 			 * if the user is not logged in, we need an instance of the logic

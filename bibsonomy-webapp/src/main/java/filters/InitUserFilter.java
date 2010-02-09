@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Date;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
@@ -26,7 +27,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.exceptions.AuthRequiredException;
+import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
@@ -88,6 +89,7 @@ public class InitUserFilter implements Filter {
 	public static final String REQ_ATTRIB_USER = "user";
 	public static final String REQ_ATTRIB_LANGUAGE = SessionLocaleResolver.class.getName() + ".LOCALE";
 	public static final String REQ_ATTRIB_LOGIN_USER = "loginUser";
+	public static final String REQ_ATTRIB_LOGIN_USER_PASSWORD = "loginUserPassword";
 	/**
 	 * Enables X.509 authentication.
 	 */
@@ -215,47 +217,82 @@ public class InitUserFilter implements Filter {
 					 */
 
 					LogicInterface logic = null;
-					try {
-log.info("1 trying to getLogicAccess for" + userName);
-						logic = dbLogicFactory.getLogicAccess(userName, userPass);
-log.info("2 trying to getUserDetails for" + userName + " :: " + logic);
-						loginUser = logic.getUserDetails(userName);
-log.info("3 finished trying to getLogicAccess and getUserDetails for" + userName);
-					} catch (AuthRequiredException ex){
-log.info("1 AuthRequiredException");
+
+					logic = dbLogicFactory.getLogicAccess(userName, userPass);
+					loginUser = logic.getUserDetails(userName);
+
+						
+					/* 
+					 * check, if it is an ldap user and if it has to re-auth agains ldap server. if so, do it.
+					 */
+					// if user database authentication was successful
+					// check if user is listed in ldapUser table
+					if (null != loginUser.getLdapId())
+					{
+					
+						// get date of last authentication against ldap server
+						Date userLastAccess = loginUser.getLastLdapUpdate();
+						
+						// TODO: get timeToReAuth from tomcat's environment, so a user can adjust it without editing code  
+						int timeToReAuth =  18  *60*60; // seconds
+						Date dateNow = new Date();
+						// timeDiff is in seconds
+						long timeDiff = (dateNow.getTime() - userLastAccess.getTime())/1000;						
+						
+						log.info("last access of user "+userName+" was on "+userLastAccess.toString()+ " ("+(timeDiff/3600)+" hours ago = "+ " ("+(timeDiff/60)+" minutes ago = "+timeDiff+" seconds ago)");
+		//DEBUG
+		//timeDiff=timeToReAuth;
+					
 						/*
-						 * check credentials against ldap server
-						 * if login is not correct redirect to login page
-						 * if it is correct use standard login method 
+						 *  check lastAccess - re-auth required?
+						 *  if time of last access is too far away, re-authenticate against ldap server to check
+						 *  whether password is same or user exists anymore
 						 */
-						Ldap ldap = new Ldap();
-						LdapUserinfo ldapUserinfo = new LdapUserinfo();
-log.info("2 AuthRequiredException! username="+ userName);
-						String ldapUid = logic.getLdapUserByUsername(userName);
-log.info("3 AuthRequiredException! ldapuid="+ ldapUid);
-						log.info("Trying to re-auth user " + userName + " via LDAP (uid="+ldapUid+")");
-				        ldapUserinfo = ldap.checkauth(ldapUid, userPass);
-	//DEBUG
-	//ldapUserinfo = null;
-						if (null == ldapUserinfo)
-						{
+						
+						if ( timeDiff > timeToReAuth ) {
+							// re-auth
+							log.info("last access time is up - ldap re-auth required -> throw reauthrequiredException");
+							
 							/*
-							 * user credentials do not match --> show error message
-							 * and go to login page
+							 * check credentials against ldap server
+							 * if login is not correct redirect to login page
+							 * if it is correct use standard login method 
 							 */
-							log.info("ra-auth of user " + userName + " failed.");
-							loginUser = null;
-						} else {
+							Ldap ldap = new Ldap();
+							LdapUserinfo ldapUserinfo = new LdapUserinfo();
+							log.info("loginUser = " + loginUser.getName());
+							log.info("Trying to re-auth user " + userName + " via LDAP (uid="+loginUser.getLdapId()+")");
+					        ldapUserinfo = ldap.checkauth(loginUser.getLdapId(), userPass);
+		//DEBUG
+		//ldapUserinfo = null;
+							if (null == ldapUserinfo)
+							{
+								/*
+								 * user credentials do not match --> show error message
+								 * and go to login page
+								 */
+								log.info("ra-auth of user " + userName + " failed.");
+								loginUser = null;
+							} else {
+			
+								log.info("ra-auth of user " + userName + " succeeded.");
+			
+								loginUser = logic.getUserDetails(userName);
 		
-							log.info("ra-auth of user " + userName + " succeeded.");
-		
-							// if ldap credentials are ok, update lastAccessTimestamp
-							dbLogicFactory.updateLastLdapRequest(userName);
-							loginUser = logic.getUserDetails(userName);
+								// if ldap credentials are ok, update lastAccessTimestamp
+								//dbLogicFactory.updateLastLdapRequest(userName);
+								logic.updateUser(loginUser, UserUpdateOperation.UPDATE_LDAP_TIMESTAMP);
+							}
+							
 						}
+					}		
+						
+					
+						
+
 	
 						
-					}	
+					
 //*****************************************************************					
 					
 				} else {

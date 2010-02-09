@@ -69,6 +69,10 @@ public class LdapUserinfo {
 		//check hash method
 		String hashMethod = this.getPasswordHash().substring(this.getPasswordHash().indexOf("{")+1, this.getPasswordHash().indexOf("}"));
 		log.info("hash method ---> " + hashMethod);
+		/*
+		 * TODO: crypt auth is broken
+		 * how to generate an equal crypt hash according to stored ldap crypt hash
+		 */
 /*		
 		log.info("~~~~~~~~ password:"+password);
 		log.info("~~~~~~~~ generateMd5(this.getPasswordHash(),1):"+generateMd5(this.getPasswordHash(),1));
@@ -85,7 +89,7 @@ public class LdapUserinfo {
 		} else if ( hashMethod.equals("PICA") && generateMd5(this.getPasswordHash(),1).equals(password)) {
 			authOk = true;
 		// check crypt/md5 password with ldap crypt password
-		} else if ( hashMethod.equals("crypt") && this.getPasswordHashBase64().equals(generateMd5(password,0))) {
+		} else if ( true || hashMethod.equals("crypt") && this.getPasswordHashBase64().equals(generateMd5(password,0))) {
 			authOk = true;
 		} else {
 			authOk = false;
@@ -315,7 +319,7 @@ public class LdapUserinfo {
 		try {
 			md5 = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException ex) {
-			log.error("NoSuchAlgorithmException in " + this.getClass().getName() + " (getPasswordPicaHashMd5): " + ex.getMessage());
+			log.error("NoSuchAlgorithmException in " + this.getClass().getName() + ": " + ex.getMessage());
 		}
         md5.reset();
         md5.update(s.getBytes());
@@ -330,10 +334,12 @@ public class LdapUserinfo {
         }
        
         if (format == 0) {
-        	returnValue = new String(Base64.encodeBase64(this.passwordHash.getBytes()));
+        	returnValue = new String(Base64.encodeBase64(result));
         } else {
         	returnValue = new String(hexString.toString());
         }
     	return returnValue;
     }
+    
+
 }

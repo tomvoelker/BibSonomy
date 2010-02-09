@@ -41,6 +41,14 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	 */
 	private String notice;
 	
+	/**
+	 * Method for login
+	 * 1) Login with bibsonomy usernamae and password
+	 *    (if user is a ldap user, password is ldap password, otherwise bibsonomy password) 
+	 * 2) Login with LDAP UserID and password 
+	 */
+	private String loginMethod;
+
 	
 	public String getNotice() {
 		return this.notice;
@@ -75,5 +83,11 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	}
 	public void setOpenID(String openID) {
 		this.openID = openID;
+	}
+	public void setLoginMethod(String loginMethod) {
+		this.loginMethod = loginMethod;
+	}
+	public String getLoginMethod() {
+		return this.loginMethod;
 	}
 }

@@ -17,6 +17,11 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
  */
 public class BaseCommand implements ContextCommand {
 	
+	/*
+	 * needed for reading value for use in login switch
+	 */
+	private String loginMethod = "";
+
 	private RequestWrapperContext context;
 
 	private String pageTitle;
@@ -78,4 +83,20 @@ public class BaseCommand implements ContextCommand {
 	public void setContext(RequestWrapperContext context) {
 		this.context = context;
 	}
+
+	/**
+	 * @param loginMethod
+	 */
+	public void setLoginMethod(String loginMethod) {
+		this.loginMethod = loginMethod;
+	}
+
+	/**
+	 * @return loginMethod
+	 */
+	public String getLoginMethod() {
+		return loginMethod;
+	}
+	
+	
 }

@@ -100,11 +100,11 @@ public class Ldap implements ObjectFactory, InitialContextFactory, Serializable 
 		LdapUserinfo ldapUserinfo = new	LdapUserinfo();	
 
 		// exit, if one parameter is null
-		if (null==ldapUserId) {
-			log.info("LdapUserinfo.checkauth: ldapUserId is NULL!");
+		if (null==ldapUserId || ldapUserId.equals("")) {
+			log.info("LdapUserinfo.checkauth: ldapUserId is NULL or empty!");
 			return null;
-		} else if (null==ldapCredentials) {
-			log.info("LdapUserinfo.checkauth: ldapCredentials is NULL!");
+		} else if (null==ldapCredentials || ldapCredentials.equals("")) {
+			log.info("LdapUserinfo.checkauth: ldapCredentials is NULL or empty!");
 			return null;
 		}
 		
