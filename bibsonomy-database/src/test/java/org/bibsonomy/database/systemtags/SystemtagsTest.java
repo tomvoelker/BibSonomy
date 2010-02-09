@@ -53,7 +53,6 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 	public void setUp() {
 		super.setUp();
 		systemTagFactory = new SystemTagFactory();
-		systemTagFactory.renewSystemTagMap("src/test/resources/systemtags/systemtags.xml");
 	}
 
 	@Test
