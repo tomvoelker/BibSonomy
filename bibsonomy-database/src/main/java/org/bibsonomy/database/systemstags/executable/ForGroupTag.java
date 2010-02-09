@@ -14,7 +14,6 @@ import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTag;
-import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -119,11 +118,11 @@ public class ForGroupTag extends SystemTag {
 			//----------------------------------------------------------------
 			log.debug("Old post: "+post.toString());
 			// alter tags: replace for:group by from:user
-			Set<Tag> tagsCopy = new HashSet<Tag>(post.getTags());
+			final Set<Tag> tagsCopy = new HashSet<Tag>(post.getTags());
 			replaceTags(tagsCopy, getTag().getName(), "from:"+post.getUser().getName());
 			// FIXME: should other system tags be executed or removed???\
 			//        We have to consider possible side effects
-			SystemTagFactory.removeSystemTag(tagsCopy, getName());
+			getSystemTagFactory().removeSystemTag(tagsCopy, getName());
 			/*
 			 *  the visibility of the postCopy is:
 			 *  original == public => copy = public
