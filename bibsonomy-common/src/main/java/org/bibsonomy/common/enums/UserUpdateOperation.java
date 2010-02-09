@@ -51,7 +51,11 @@ public enum UserUpdateOperation {
 	/**
 	 * Update only the API key of a user
 	 */
-	UPDATE_API(4);
+	UPDATE_API(4),
+	/**
+	 * Update only timestamp of LDAP update of a user
+	 */
+	UPDATE_LDAP_TIMESTAMP(5);
 	
 	private int id;
 	
