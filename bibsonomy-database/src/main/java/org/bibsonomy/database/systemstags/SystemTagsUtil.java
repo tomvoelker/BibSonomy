@@ -1,13 +1,16 @@
 package org.bibsonomy.database.systemstags;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.common.exceptions.UnsupportedSystemTagException;
 import org.bibsonomy.database.systemstags.xml.Attribute;
 import org.bibsonomy.database.systemstags.xml.SystemTagType;
+import org.bibsonomy.model.Tag;
 
 /**
  * Helper class to encapsulate methods to create / work with system tags
@@ -16,7 +19,9 @@ import org.bibsonomy.database.systemstags.xml.SystemTagType;
  * @version $Id$
  */
 public class SystemTagsUtil {
-		
+	private final static Pattern sysPrefix = Pattern.compile("^(sys:|system:)?(.*):(.*)");
+
+
 	/**
 	 * build a system tag string for a given kind of system tag and a value
 	 * 
@@ -99,10 +104,9 @@ public class SystemTagsUtil {
 	 * @return tag's argument, if found.
 	 */
 	public static String extractArgument(String tagName) {
-		final Pattern sysPrefix = Pattern.compile("^\\s*(sys:|system:)?.*:(.*)");
-		Matcher action = sysPrefix.matcher(tagName);
+		final Matcher action = sysPrefix.matcher(tagName);
 		if( action.lookingAt() )
-			return action.group(2);
+			return action.group(3);
 		return null;
 	}
 
@@ -110,9 +114,8 @@ public class SystemTagsUtil {
 	 * Extract system tag's name.
 	 * @return tag's name, if found, null otherwise.
 	 */
-	public static String extractName(String tagName) {
-		final Pattern sysPrefix = Pattern.compile("^\\s*(sys:|system:)?(.*):.*");
-		Matcher action = sysPrefix.matcher(tagName);
+	public static String extractName(final String tagName) {
+		final Matcher action = sysPrefix.matcher(tagName);
 		if( action.lookingAt() )
 			return action.group(2);
 		return null;
@@ -129,6 +132,30 @@ public class SystemTagsUtil {
 		}
 		return null;
 	}
+	
+	
+	/**
+	 * For name = systemTag.getName(), removes all occurrences of system tags sys:&lt;name&gt;:&lt;argument&gt;,
+	 * system:&lt;name&gt;:&lt;argument&gt; and &lt;name&gt;:&lt;argument&gt;
+	 * 
+	 * @param tags collection of tags to alter 
+	 * @param the system tag to be removed. 
+	 * @return number of occurrences removed.
+	 */
+	public static int removeSystemTag(final Set<Tag> tags, final SystemTag systemTag) {
+		final Iterator<Tag> iterator = tags.iterator();
+		int nr = 0;
+		
+		while (iterator.hasNext()) {
+			final Tag tag = iterator.next();
+			if (systemTag.getName().equals(SystemTagsUtil.extractName(tag.getName()))) {
+				iterator.remove();
+				nr++;
+			}
+		}
+		return nr;
+	}
+	
 	
 	
 }
