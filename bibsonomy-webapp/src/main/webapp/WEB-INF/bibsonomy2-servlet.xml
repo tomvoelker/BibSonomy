@@ -557,8 +557,6 @@
 	<bean id="logic" class="org.bibsonomy.webapp.util.spring.factorybeans.LogicFactoryBean" scope="request">
 		<property name="user" ref="loginUser"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-		<property name="bibTexSearch" ref="luceneBibTexSearch"/>
-		<property name="bookmarkSearch" ref="luceneBookmarkSearch"/>
 	</bean>
 
 	<!-- 
@@ -569,9 +567,18 @@
 	    <!-- name the admin user will have when accessing the logic interface -->
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
-		<property name="bibTexSearch" ref="luceneBibTexSearch"/>
-		<property name="bookmarkSearch" ref="luceneBookmarkSearch"/>
 	</bean>	
+
+	<!-- configures given properties in all relevant database managers -->
+	<bean id="resourceSearchInitializer" class="org.bibsonomy.database.util.DatabaseManagerInitializer">
+		<property name="bibTexSearcher" ref="luceneBibTexSearch"/>
+		<property name="bookmarkSearcher" ref="luceneBookmarkSearch"/>
+		<property name="systemTagFactory" ref="systemTagFactory"/>
+	</bean>
+	
+	<!-- factory for creating system tags -->
+	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory">
+	</bean>
 
 	<!-- lucene bibtex searcher -->
 	<bean id="luceneBibTexSearch" class="org.bibsonomy.lucene.search.delegate.LuceneDelegateBibTexSearch" factory-method="getInstance"/>
