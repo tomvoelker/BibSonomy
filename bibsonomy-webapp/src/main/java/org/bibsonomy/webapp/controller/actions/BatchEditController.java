@@ -21,6 +21,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
+import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -356,7 +357,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								toUpdate = false;
 							} 
 							
-							if(message instanceof DuplicatePostErrorMessage)
+							else if(message instanceof DuplicatePostErrorMessage)
 							{
 								if(!command.isOverwrite()) {
 									Object[] params = null;
@@ -373,6 +374,19 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								} else {
 									postsToUpdate.add(bibtexHashMap.get(postHash));
 								}
+							}
+							else if(message instanceof UnspecifiedErrorMessage)
+							{
+								Object[] params = null;
+								if(message.getParameters()!=null)
+									params = message.getParameters().toArray();
+								errors.rejectValue(resourceType+".list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].resource", 
+										messageSource.getMessage(message.getLocalizedMessageKey(), 
+												params, 
+												requestLogic.getLocale()),
+										messageSource.getMessage(message.getLocalizedMessageKey(), 
+												params, 
+												requestLogic.getLocale()));
 							}
 						}
 					}
