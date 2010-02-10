@@ -405,7 +405,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			/* *********************
 			 * STORE THE BOOKMARKS
 			 * *********************/
-			if(!command.isEditBeforeImport() && (!errors.hasErrors() ||command.getSaveAllPossible() || bibtex.size()>MAXCOUNT_ERRORHANDLING))
+			if(!command.isEditBeforeImport())
 			{
 				savePublicationsForUser(postListCommand, command, loginUser);
 				command.setFormAction(ACTION_SAVE_BEFORE_EDIT);

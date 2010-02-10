@@ -219,39 +219,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		this.deleteCheckedPosts = deleteCheckedPosts;
 	}
 	
-	/**
-	 * this flag determines, if erroneous posts should be ignored during import
-	 * resulting in storing all correct ones. if this is false, no posts will be stored
-	 * in case of an error.
-	 */
-	private boolean saveAllPossible;
-	
-	/**
-	 * @return the flag that determines, if erroneous posts should be ignored during import
-	 * resulting in storing all correct ones. if this is false, no posts will be stored
-	 * in case of an error.
-	 */
-	public boolean isSaveAllPossible() {
-		return this.saveAllPossible;
-	}
-	
-	/**
-	 * @return the flag that determines, if erroneous posts should be ignored during import
-	 * resulting in storing all correct ones. if this is false, no posts will be stored
-	 * in case of an error.
-	 */
-	public boolean getSaveAllPossible() {
-		return this.saveAllPossible;
-	}
-
-	/**
-	 * @param saveAllPossible the flag that determines, if erroneous posts should be ignored during import
-	 * resulting in storing all correct ones. if this is false, no posts will be stored
-	 * in case of an error.
-	 */
-	public void setSaveAllPossible(final boolean saveAllPossible) {
-		this.saveAllPossible = saveAllPossible;
-	}
 	
 	/**
 	 * the description of the snippet/upload file
