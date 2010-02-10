@@ -29,6 +29,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -378,10 +379,11 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param concept - the concept to update
 	 * @param grouping - grouping entity
 	 * @param groupingName - the grouping name	
-	 * @return the name of the superconcept-tag 
+	 * @param operation
+	 * @return the name of the superconcept-tag  
 	 * @author sts
 	 */
-	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName);
+	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName, final ConceptUpdateOperation operation);
 
 	/**
 	 * Delete an existing concept
