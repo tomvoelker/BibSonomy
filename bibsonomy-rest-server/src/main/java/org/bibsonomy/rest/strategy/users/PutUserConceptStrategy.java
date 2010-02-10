@@ -2,6 +2,7 @@ package org.bibsonomy.rest.strategy.users;
 
 import java.io.Writer;
 
+import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
@@ -29,7 +30,7 @@ public class PutUserConceptStrategy extends AbstractUpdateStrategy {
 	@Override
 	protected String update() {
 		final Tag concept = this.getRenderer().parseTag(this.doc);
-		return this.getLogic().updateConcept(concept, GroupingEntity.USER, this.userName);		
+		return this.getLogic().updateConcept(concept, GroupingEntity.USER, this.userName, ConceptUpdateOperation.UPDATE);		
 	}
 
 	@Override

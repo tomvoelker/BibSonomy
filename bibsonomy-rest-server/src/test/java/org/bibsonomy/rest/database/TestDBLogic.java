@@ -15,6 +15,7 @@ import java.util.Map;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -766,7 +767,7 @@ public class TestDBLogic implements LogicInterface {
 
 	}
 
-	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName) {
+	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName, final ConceptUpdateOperation operation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -904,24 +905,8 @@ public class TestDBLogic implements LogicInterface {
 
 
 	@Override
-	public String getLdapUserByUsername(String username) {
+	public String getUsernameByLdapUserId(String userId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-	@Override
-	public String getUsernameByLdapUser(String ldapUser) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void updateLastLdapRequest(String loginName) {
-		// TODO Auto-generated method stub
-		
-	}
-
-
 }
