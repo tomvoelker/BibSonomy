@@ -578,6 +578,7 @@
 	
 	<!-- factory for creating system tags -->
 	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory">
+		<property name="sessionFactory" ref="dbSessionFactory"/>
 	</bean>
 
 	<!-- lucene bibtex searcher -->
