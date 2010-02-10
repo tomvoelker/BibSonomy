@@ -194,12 +194,13 @@
 									<!-- +++BLOCK TWO+++ -->
 									<fieldset class="fsInner" style="clear: both; width:96%; background-color:#EEEEEE; border:1px solid #006699; position:relative; float:left">
 										<legend><fmt:message key="post_bibtex.upload.options" /></legend>
-									    
+									    <!-- 
 									    <div class="fsRow"> 
                                           <label class="fsLabel"><fmt:message key="import.save_all_possible" /></label>
                                           <buttons:help  cssStyle="float:left" message="import.save_all_possible.help" />
                                           <input type="checkbox" class="fsInput" name="saveAllPossible" value="true" />
                                         </div>
+                                         -->
 									    
                                         <div class="fsRow"> 
                                           <label class="fsLabel"><fmt:message key="import.edit_before_import" /></label>
