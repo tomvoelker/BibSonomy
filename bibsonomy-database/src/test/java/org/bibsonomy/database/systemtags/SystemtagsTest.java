@@ -130,7 +130,6 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 	}
 	
 	@Test
-	@Ignore
 	public void testForGroupTag() {
 		// create users
 		User testUser1 = createTestUser("forgroupuser1");
@@ -221,7 +220,6 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 	 *  test funtionality of the ForFriend SystemTag
 	 */
 	@Test
-	@Ignore
 	public void testForFriendTag(){
 		/*
 		 * Send an Inbox Message
