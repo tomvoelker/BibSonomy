@@ -1367,12 +1367,12 @@ function unicodeCollation(ersterWert, zweiterWert){
     }
 
     // this shows or hides a relation by clicking the arrow in the tag cloud
-    function showOrHideConcept(evt, action, ckey){
+    function showOrHideConcept(evt, action){
     	// get concept name
 	    var link = xget_event(evt);
 		var concept = link.parentNode.getElementsByTagName("a")[2].firstChild.nodeValue;
 		// update relation list
-		updateRelations(evt, action, concept, ckey);
+		updateRelations(evt, action, concept);
 	}
 	
 	// removes a relation from the list of shown relations
@@ -1381,7 +1381,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 	    var link = xget_event(evt);
 	    var concept = link.parentNode.getElementsByTagName("a")[1].firstChild.nodeValue;
 	    // update relations list, hide concept
-	    updateRelations(evt, "hide", concept, ckey);
+	    updateRelations(evt, "hide", concept);
     } 
     
     // updates the relations in AJAX style
@@ -1395,7 +1395,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 			request.setRequestHeader("Content-Type", "text/xml");
 			request.setRequestHeader('If-Modified-Since', 'Sat, 1 Jan 2000 00:00:00 GMT');
 			// attach function which handles the request
-			var handler = ajax_updateRelations(request, ckey);
+			var handler = ajax_updateRelations(request);
 			request.onreadystatechange = handler;
 			request.send(null);
 
