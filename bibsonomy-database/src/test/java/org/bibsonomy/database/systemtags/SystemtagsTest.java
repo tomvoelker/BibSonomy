@@ -23,6 +23,8 @@ import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.util.DatabaseManagerInitializer;
+import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -50,10 +52,13 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 	
 	@Override
 	@Before
-	@Ignore
 	public void setUp() {
 		super.setUp();
 		systemTagFactory = new SystemTagFactory();
+		systemTagFactory.setSessionFactory(new IbatisDBSessionFactory());
+		DatabaseManagerInitializer dbManagerInitializer = new DatabaseManagerInitializer();
+		dbManagerInitializer.setSystemTagFactory(systemTagFactory);
+		
 	}
 
 	@Test
