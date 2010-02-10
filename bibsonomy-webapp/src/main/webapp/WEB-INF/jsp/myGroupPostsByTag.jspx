@@ -62,7 +62,7 @@
 						<fmt:message key="tagrelations"/>
 					</a>
 				</span>	
-				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}"/>
+				<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.requestedUser}" requestedUserName="${command.requestedUser}" forward="${requPath}"/>
 			</li>
 			
 			<!-- display tags -->

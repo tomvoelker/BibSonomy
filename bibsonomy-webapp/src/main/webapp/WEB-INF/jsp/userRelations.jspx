@@ -88,7 +88,7 @@
 			</div>
 			
 
-			<tags:concepts cmd="${command.concepts}"	usersOwnRelations="${false}" requestedUserName="${command.requestedUser}"/>
+			<tags:concepts cmd="${command.concepts}"	usersOwnRelations="${false}" requestedUserName="${command.requestedUser}" forward="${requPath}"/>
 			
 			<div class="kiste">		
 					<rc:nextprev listView="${command.concepts}"

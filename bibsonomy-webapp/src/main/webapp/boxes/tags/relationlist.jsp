@@ -21,7 +21,7 @@ SUPERTAG3 <-- subtag31 subtag32 subtag33
 	    <c:set var="lastupper" value="${relation.upper}" />
         <li class="box_upperconcept">
           <c:if test="${usersOwnRelations}">
-  	        <a onclick="hideConcept(event);" href="/RelationsHandler?hide=<mtl:encode value='${relation.upper}'/>&amp;ckey=${ckey}" title="hide relation">&darr; </a>
+  	        <a onclick="hideConcept(event, '${ckey}');" href="/ajax/pickUnpickConcept?action=hide&amp;tag=<mtl:encode value='${relation.upper}'/>&amp;ckey=${ckey}" title="hide relation">&darr; </a>
   	      </c:if>
 		  <a href="/concept/user/<mtl:encode value='${RelationBean.requUser}'/>/<mtl:encode value='${relation.upper}'/>" title="show all posts which have <c:out value='${relation.upper}'/> or one of its subtags attached"><c:out value="${relation.upper}"/></a>
 		  &larr;

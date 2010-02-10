@@ -1367,12 +1367,12 @@ function unicodeCollation(ersterWert, zweiterWert){
     }
 
     // this shows or hides a relation by clicking the arrow in the tag cloud
-    function showOrHideConcept(evt, action){
+    function showOrHideConcept(evt, action, ckey){
     	// get concept name
 	    var link = xget_event(evt);
 		var concept = link.parentNode.getElementsByTagName("a")[2].firstChild.nodeValue;
 		// update relation list
-		updateRelations(evt, action, concept);
+		updateRelations(evt, action, concept, ckey);
 	}
 	
 	// removes a relation from the list of shown relations
@@ -1381,7 +1381,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 	    var link = xget_event(evt);
 	    var concept = link.parentNode.getElementsByTagName("a")[1].firstChild.nodeValue;
 	    // update relations list, hide concept
-	    updateRelations(evt, "hide", concept);
+	    updateRelations(evt, "hide", concept, ckey);
     } 
     
     // updates the relations in AJAX style
@@ -1390,12 +1390,12 @@ function unicodeCollation(ersterWert, zweiterWert){
     	var request = ajaxInit();
     	if(request){
 	    	// build URL for AJAX request
-			var url = "/ajax/showOrHideConcept?" + action + "=" + encodeURIComponent(concept);
+			var url = "/ajax/pickUnpickConcept?action=" + action + "&tag=" + encodeURIComponent(concept) + "&ckey=" + ckey;
 			request.open('GET', url, true);
 			request.setRequestHeader("Content-Type", "text/xml");
 			request.setRequestHeader('If-Modified-Since', 'Sat, 1 Jan 2000 00:00:00 GMT');
 			// attach function which handles the request
-			var handler = ajax_updateRelations(request);
+			var handler = ajax_updateRelations(request, ckey);
 			request.onreadystatechange = handler;
 			request.send(null);
 
@@ -1460,7 +1460,7 @@ function unicodeCollation(ersterWert, zweiterWert){
 		         		    // add the symbol to hide the relation
 		         		    var linkupperx = document.createElement("a");
 		         		    var linkupperxhref = document.createAttribute("href");
-		         		    linkupperxhref.nodeValue = "/RelationsHandler?hide=" + upper;
+		         		    linkupperxhref.nodeValue = "/ajax/pickUnpickConcept?action=hide&tag=" + upper + "&ckey=" + ckey;
 		         		    linkupperx.setAttributeNode(linkupperxhref);
 		         		    // changed from 215 (&times;) to 8595 (&darr;)
 		         		    var linkupperxtext = document.createTextNode(String.fromCharCode(8595));

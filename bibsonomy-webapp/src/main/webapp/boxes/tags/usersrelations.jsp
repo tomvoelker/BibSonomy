@@ -9,8 +9,8 @@ This JSP shows the concepts of a user above the tag cloud
 <li><span class="sidebar_h"><a href="/relations/<mtl:encode value='${param.requUser}'/>" title="get an overview of the relations of this user">relations</a>
   <c:if test="${param.requUser eq user.name}">
     <%-- show buttons to hide/show all of the users (own!) relations --%>
-    <a onclick='updateRelations(event,"all", "show");' href="/RelationsHandler?all=show&amp;ckey=${ckey}" title="show all relations">&uarr;</a>
-    <a onclick='updateRelations(event,"all", "hide");' href="/RelationsHandler?all=hide&amp;ckey=${ckey}" title="hide all relations">&darr;</a>
+    <a onclick='updateRelations(event,"all", "show");' href="/ajax/pickUnpickConcept?action=all&amp;tag=show&amp;ckey=${ckey}" title="show all relations">&uarr;</a>
+    <a onclick='updateRelations(event,"all", "hide");' href="/ajax/pickUnpickConcept?action=all&amp;tag=hide&amp;ckey=${ckey}" title="hide all relations">&darr;</a>
       
    <%-- this are the users own relations, which has some implications, e.g.
         - show "hide" symbol left to each relation 

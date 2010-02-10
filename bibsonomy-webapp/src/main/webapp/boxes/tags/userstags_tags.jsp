@@ -18,11 +18,11 @@
     <c:set var="urlPrefix" value="/concept/user"/>
     <%-- check, whether concept is shown or not --%>
     <c:choose><c:when test="${tag.shown}">
-      <a onclick='showOrHideConcept(event,"hide");' href="/RelationsHandler?hide=<mtl:encode value='${tag.name}'/>&amp;ckey=${ckey}" title="hide relation">&darr;</a>
-      <a onclick='showOrHideConcept(event,"show");' href="/RelationsHandler?show=<mtl:encode value='${tag.name}'/>&amp;ckey=${ckey}" title="show relation" style="display:none" >&uarr;</a>
+      <a onclick='showOrHideConcept(event,"hide");' href="/ajax/pickUnpickConcept?action=hide&amp;tag=<mtl:encode value='${tag.name}'/>&amp;ckey=${ckey}" title="hide relation">&darr;</a>
+      <a onclick='showOrHideConcept(event,"show");' href="/ajax/pickUnpickConcept?action=show&amp;tag=<mtl:encode value='${tag.name}'/>&amp;ckey=${ckey}" title="show relation" style="display:none" >&uarr;</a>
     </c:when><c:otherwise>
-      <a onclick='showOrHideConcept(event,"hide");' href="/RelationsHandler?hide=<mtl:encode value='${tag.name}'/>&amp;ckey=${ckey}" title="hide relation" style="display:none">&darr;</a>
-      <a onclick='showOrHideConcept(event,"show");' href="/RelationsHandler?show=<mtl:encode value='${tag.name}'/>&amp;ckey=${ckey}" title="show relation">&uarr;</a>
+      <a onclick='showOrHideConcept(event,"hide");' href="/ajax/pickUnpickConcept?action=hide&amp;tag=<mtl:encode value='${tag.name}'/>&amp;ckey=${ckey}" title="hide relation" style="display:none">&darr;</a>
+      <a onclick='showOrHideConcept(event,"show");' href="/ajax/pickUnpickConcept?action=show&amp;tag=<mtl:encode value='${tag.name}'/>&amp;ckey=${ckey}" title="show relation">&uarr;</a>
     </c:otherwise></c:choose>
   </c:if>
     

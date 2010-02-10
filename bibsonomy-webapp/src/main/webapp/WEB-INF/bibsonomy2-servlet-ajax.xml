@@ -117,6 +117,19 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/ajax/pickUnpickConcept">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName"	value="conceptController" />
+						<property name="allowedFields" >
+							<list>
+								<value>tag</value>
+								<value>action</value>
+								<value>ckey</value>
+								<value>forward</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -172,6 +185,10 @@
 	<bean id="basketController" class="org.bibsonomy.webapp.controller.ajax.BasketController" scope="request">
 		<property name="logic" ref="logic" />
 		<property name="requestLogic" ref="requestLogic"/>
+	</bean>
+	
+	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request">
+		<property name="logic" ref="logic" />
 	</bean>
 
 </beans>
