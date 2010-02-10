@@ -25,9 +25,8 @@
 		resultMap="TagCommon.tagWithSubtags">
 		SELECT r.upper AS tag_name, GROUP_CONCAT(r.lower ORDER BY
 		r.lower SEPARATOR ' ') AS subtags
-		FROM tagtagrelations r, picked_concepts p
-		WHERE r.user_name=#userName# AND r.user_name=p.user_name AND
-		r.upper=p.upper
+		FROM tagtagrelations r
+		WHERE r.user_name=#userName# AND r.picked=true 
 		GROUP BY r.upper
 		ORDER BY r.upper
 	</select>
@@ -87,4 +86,24 @@
 		SELECT relationID FROM tagtagrelations where user_name =
 		#ownerUserName# and lower = #lowerTagName# and upper = #upperTagName#
 	</select>
+	
+	<update id="pickConcept" parameterClass="tagRelationParam">
+		UPDATE tagtagrelations SET picked = true
+		WHERE user_name = #ownerUserName# AND upper = #upperTagName#
+	</update>
+	
+	<update id="unpickConcept" parameterClass="tagRelationParam">
+		UPDATE tagtagrelations SET picked = false
+		WHERE user_name = #ownerUserName# AND upper = #upperTagName#
+	</update>
+	
+	<update id="pickAllConcepts" parameterClass="tagRelationParam">
+		UPDATE tagtagrelations SET picked = true
+		WHERE user_name = #ownerUserName#
+	</update>
+	
+	<update id="unpickAllConcepts" parameterClass="tagRelationParam">
+		UPDATE tagtagrelations SET picked = false
+		WHERE user_name = #ownerUserName#
+	</update>
 </sqlMap>

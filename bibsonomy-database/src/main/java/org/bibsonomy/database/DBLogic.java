@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.ConceptStatus;
+import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
@@ -1615,11 +1616,47 @@ public class DBLogic implements LogicInterface {
 	 * model.Tag, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
 	 */
 	@Override
-	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
+	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
 		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
-		return this.storeConcept(concept, grouping, groupingName, true);
+		
+		// standard operation is UPDATE
+		if (operation.equals(ConceptUpdateOperation.UPDATE)){
+			return this.storeConcept(concept, grouping, groupingName, true);
+		}
+		
+		// if the operation is not UPDATE we need to build a TagRelationParam
+		TagRelationParam param = new TagRelationParam();
+		// in the case of PICK_ALL or UNPICK_ALL concept is null
+		if (concept != null){
+			param.setUpperTagName(concept.getName());
+		}
+		param.setOwnerUserName(this.loginUser.getName());
+		
+		final DBSession session = openSession();
+		// no switch the operation and call the right method in the taglRelationsDBManager
+		try {
+			switch(operation){
+			case PICK:
+				this.tagRelationsDBManager.pickConcept(param, session);
+				break;
+			case UNPICK:
+				this.tagRelationsDBManager.unpickConcept(param, session);
+				break;
+			case UNPICK_ALL:
+				this.tagRelationsDBManager.unpickAllConcepts(param, session);
+				return null;
+			case PICK_ALL:
+				this.tagRelationsDBManager.pickAllConcepts(param, session);
+				return null;
+			}
+			
+			return concept.getName();
+		} finally {
+			session.close();
+		}
+	
 	}
 
 	/**

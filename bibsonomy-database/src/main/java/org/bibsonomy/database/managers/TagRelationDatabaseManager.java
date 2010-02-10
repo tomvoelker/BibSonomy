@@ -226,4 +226,44 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		if (relationID == null) return false;
 		return true;
 	}
+	
+	/**
+	 * Sets the concept with the given uppertag to picked
+	 * 
+	 * @param param
+	 * @param session
+	 */
+	public void pickConcept(final TagRelationParam param, final DBSession session){
+		this.update("pickConcept", param, session);
+	}
+	
+	/**
+	 * Sets the concept with the given uppertag to unpicked
+	 * 
+	 * @param param
+	 * @param session
+	 */
+	public void unpickConcept(final TagRelationParam param, final DBSession session){
+		this.update("unpickConcept", param, session);
+	}
+	
+	/**
+	 * Sets all concepts to unpicked
+	 * 
+	 * @param param
+	 * @param session
+	 */
+	public void unpickAllConcepts(final TagRelationParam param, final DBSession session){
+		this.update("unpickAllConcepts", param, session);
+	}
+	
+	/**
+	 * Sets all concepts to picked
+	 * 
+	 * @param param
+	 * @param session
+	 */
+	public void pickAllConcepts(final TagRelationParam param, final DBSession session){
+		this.update("pickAllConcepts", param, session);
+	}
 }
