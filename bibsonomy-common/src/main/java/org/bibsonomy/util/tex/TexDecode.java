@@ -36,7 +36,6 @@ public class TexDecode {
 
 	private static HashMap<String, String> texMap = new HashMap<String, String>();
 	private static Pattern texRegexpPattern;
-	private static Matcher texRegexpMatcher;
 	private static final String CURLS = "[()]*[{}]*[\\[\\]]*";
 
 	// macro with the highest count of curly brackets have to lead this array
@@ -128,7 +127,7 @@ public class TexDecode {
 	 */
 	public static String decode(String s) {
 		if (s != null) {			
-			 texRegexpMatcher = texRegexpPattern.matcher(s);
+			 Matcher texRegexpMatcher = texRegexpPattern.matcher(s);
 			 StringBuffer sb = new StringBuffer();
 			 while (texRegexpMatcher.find()) {
 				 texRegexpMatcher.appendReplacement(sb, texMap.get(texRegexpMatcher.group()));
