@@ -70,6 +70,7 @@ public class SystemTagFactory {
 				retVal.setTag(tag);
 				retVal.setDbSessionFactory(sessionFactory);
 				retVal.setSystemTagFactory(this);
+				return retVal;
 			}
 		}
 		return null;
