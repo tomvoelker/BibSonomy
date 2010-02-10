@@ -63,6 +63,7 @@ public class DatabaseManagerInitializer {
 	public void setSystemTagFactory(SystemTagFactory systemTagFactory) {
 		this.systemTagFactory = systemTagFactory;
 		this.bibTexManager.setSystemTagFactory(systemTagFactory);
+		this.bookmarkManager.setSystemTagFactory(systemTagFactory);
 	}
 
 	public SystemTagFactory getSystemTagFactory() {
