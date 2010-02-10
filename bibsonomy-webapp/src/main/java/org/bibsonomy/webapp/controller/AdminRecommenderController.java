@@ -19,7 +19,7 @@ import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.database.params.RecSettingParam;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.services.recommender.TagRecommender;
-import org.bibsonomy.webapp.command.AdminRecommenderViewCommand;
+import org.bibsonomy.webapp.command.admin.AdminRecommenderViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
@@ -41,8 +41,10 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	private LogicInterface logic;
 	private UserSettings userSettings;
 	private MultiplexingTagRecommender mp;
-
+    
 	
+	public void init(){
+	}
 	
 	public View workOn(AdminRecommenderViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
@@ -57,8 +59,6 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		
 		command.setPageTitle("admin recommender");
 		//command.setmultiplexingTagRecommender(mp);
-		
-		log.info("command-action: " + command.getAction() );
 		
 		/*
 		 * Recommender activation/deactivation page;
@@ -182,21 +182,23 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	public AdminRecommenderViewCommand instantiateCommand() {
 		return new AdminRecommenderViewCommand();
 	}
-	
+	/** @param logic */
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
+	/** @return logic */
 	public LogicInterface getLogic() {
 		return this.logic;
 	}
-
+    /** @param userSettings */
 	public void setUserSettings(UserSettings userSettings) {
 		this.userSettings = userSettings;
 	}
+	/** @return usersettings */
 	public UserSettings getUserSettings() {
 		return this.userSettings;
 	}
-	
+	/** @param mp */
 	public void setMultiplexingTagRecommender(MultiplexingTagRecommender mp){
 		this.mp = mp;
 	}
@@ -204,7 +206,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	
 	/** Find the position of a setting in the multiplexer's recommenderlist. 
 	 * @param list list of TagRecommenderConnectors
-	 * @setting RecSettingParam to search for
+	 * @param setting RecSettingParam to search for
 	 * @return index of the setting, -1 if it is not in the list  
 	 */
 	public static int findSettingIndex(List<TagRecommenderConnector> list, RecSettingParam setting){
