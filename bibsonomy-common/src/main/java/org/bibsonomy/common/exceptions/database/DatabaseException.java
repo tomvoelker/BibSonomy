@@ -65,6 +65,12 @@ public class DatabaseException extends RuntimeException {
 	}
 	
 	/**
+	 * remove all collected ErrorMessages
+	 */
+	public void clear() {
+		this.errorMessages.clear();
+	}
+	/**
 	 * adds an error Message to the list of error Messages for the specified post (hash)
 	 * @param hash the hash of the post
 	 * @param errorMessage the error Message to add
@@ -93,5 +99,17 @@ public class DatabaseException extends RuntimeException {
 	 */
 	public boolean hasErrorMessages() {
 		return (!this.errorMessages.isEmpty());
+	}
+	
+	/**
+	 * adds all errorMessages of another DatabaseException to this one
+	 * @param de
+	 */
+	public void addErrors(DatabaseException de) {
+		for (String hash: de.getErrorMessages().keySet()) {
+			for (ErrorMessage errorMessage: de.getErrorMessages(hash))  {
+				this.addToErrorMessages(hash, errorMessage);
+			}
+		}
 	}
 }
