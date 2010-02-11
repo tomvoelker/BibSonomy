@@ -20,6 +20,7 @@ import org.bibsonomy.model.Tag;
  */
 public class SystemTagsUtil {
 	private final static Pattern sysPrefix = Pattern.compile("^(sys:|system:)?(.*):(.*)");
+	
 
 
 	/**
@@ -91,9 +92,11 @@ public class SystemTagsUtil {
 	 * @param tag - tag string
 	 * @return true if the given string is a systemtag, false otherwise
 	 */
-	public static boolean isSystemtag(String tag) {
+	public static boolean isSystemTag(String tag) {
 		if (tag == null) return false;
-		return tag.startsWith(SystemTags.GLOBAL_PREFIX + SystemTags.SYSTAG_DELIM);
+		//return tag.startsWith(SystemTags.GLOBAL_PREFIX + SystemTags.SYSTAG_DELIM);
+		final Matcher action = sysPrefix.matcher(tag);
+		return action.lookingAt();
 	}
 	
 	//------------------------------------------------------------------------
@@ -156,6 +159,5 @@ public class SystemTagsUtil {
 		return nr;
 	}
 	
-	
-	
+	 
 }

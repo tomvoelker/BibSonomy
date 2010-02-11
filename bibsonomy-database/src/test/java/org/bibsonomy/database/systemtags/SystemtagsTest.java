@@ -61,6 +61,23 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		
 	}
 
+	/**
+	 * tests removeAllSystemTags()
+	 */
+	@Test
+	public void removeAllSystemTags() {
+		Set<Tag> tags = new HashSet<Tag>();
+		tags.add(new Tag("normalTag"));
+		tags.add(new Tag("for:someGroup"));
+		tags.add(new Tag("send:someUser"));
+		tags.add(new Tag("anotherNormalTag"));
+		tags.add(new Tag("sys:someSystemTagThing"));
+		tags.add(new Tag("system:someOtherSystemTagThing"));
+		tags.add(new Tag("yetOneMoreNormalTag"));
+		systemTagFactory.removeAllSystemTags(tags);
+		Assert.assertEquals(tags.size(), 3);
+	}
+
 	@Test
 	@Ignore
 	public void testAttribute() {

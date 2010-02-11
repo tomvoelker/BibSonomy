@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -114,7 +115,29 @@ public class SystemTagFactory {
 	}
 
 
-	
+	/**
+	 * removes all SystemTags from a given tag set
+	 * @param tags
+	 * @return number of tags, that were removed
+	 */
+	public int removeAllSystemTags(final Set<Tag> tags) {
+		final Iterator<Tag> iterator = tags.iterator();
+		int nr = 0;
+		
+		while (iterator.hasNext()) {
+			final Tag tag = iterator.next();
+			/*
+			 *  FIXME: We have two(!) isSystemTag methods, the first tests for executables, the other one for sys: or system:
+			 *  Implement one method to check for all systemTags
+			*/
+			if (isSystemTag(tag.getName()) || SystemTagsUtil.isSystemTag(tag.getName())) {
+				iterator.remove();
+				nr++;
+			}
+		}
+		return nr;
+	}
+
 
 	/**
 	 * @return The session factory of this system tag factory.
