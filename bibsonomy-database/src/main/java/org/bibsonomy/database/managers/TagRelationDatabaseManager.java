@@ -233,7 +233,11 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 * @param param
 	 * @param session
 	 */
-	public void pickConcept(final TagRelationParam param, final DBSession session){
+	public void pickConcept(final Tag concept, final String ownerUserName, final DBSession session){
+		TagRelationParam param = new TagRelationParam();
+		param.setUpperTagName(concept.getName());
+		param.setOwnerUserName(ownerUserName);
+		
 		this.update("pickConcept", param, session);
 	}
 	
@@ -243,7 +247,11 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 * @param param
 	 * @param session
 	 */
-	public void unpickConcept(final TagRelationParam param, final DBSession session){
+	public void unpickConcept(final Tag concept, final String ownerUserName, final DBSession session){
+		TagRelationParam param = new TagRelationParam();
+		param.setUpperTagName(concept.getName());
+		param.setOwnerUserName(ownerUserName);
+		
 		this.update("unpickConcept", param, session);
 	}
 	
@@ -253,8 +261,8 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 * @param param
 	 * @param session
 	 */
-	public void unpickAllConcepts(final TagRelationParam param, final DBSession session){
-		this.update("unpickAllConcepts", param, session);
+	public void unpickAllConcepts(final String ownerUserName, final DBSession session){
+		this.update("unpickAllConcepts", ownerUserName, session);
 	}
 	
 	/**
@@ -263,7 +271,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 * @param param
 	 * @param session
 	 */
-	public void pickAllConcepts(final TagRelationParam param, final DBSession session){
-		this.update("pickAllConcepts", param, session);
+	public void pickAllConcepts(final String ownerUserName, final DBSession session){
+		this.update("pickAllConcepts", ownerUserName, session);
 	}
 }

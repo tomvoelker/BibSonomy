@@ -97,12 +97,12 @@
 		WHERE user_name = #ownerUserName# AND upper = #upperTagName#
 	</update>
 	
-	<update id="pickAllConcepts" parameterClass="tagRelationParam">
+	<update id="pickAllConcepts" parameterClass="String">
 		UPDATE tagtagrelations SET picked = true
 		WHERE user_name = #ownerUserName#
 	</update>
 	
-	<update id="unpickAllConcepts" parameterClass="tagRelationParam">
+	<update id="unpickAllConcepts" parameterClass="String">
 		UPDATE tagtagrelations SET picked = false
 		WHERE user_name = #ownerUserName#
 	</update>

@@ -1634,34 +1634,23 @@ public class DBLogic implements LogicInterface {
 			throw new ValidationException("You are not authorized to perform the requested operation");
 		}
 		
-		// standard operation is UPDATE
-		if (operation.equals(ConceptUpdateOperation.UPDATE)){
-			return this.storeConcept(concept, grouping, groupingName, true);
-		}
-		
-		// if the operation is not UPDATE we need to build a TagRelationParam
-		TagRelationParam param = new TagRelationParam();
-		// in the case of PICK_ALL or UNPICK_ALL concept is null
-		if (concept != null){
-			param.setUpperTagName(concept.getName());
-		}
-		param.setOwnerUserName(this.loginUser.getName());
-		
 		final DBSession session = openSession();
 		// no switch the operation and call the right method in the taglRelationsDBManager
 		try {
 			switch(operation){
+			case UPDATE:		
+				return this.storeConcept(concept, grouping, groupingName, true);
 			case PICK:
-				this.tagRelationsDBManager.pickConcept(param, session);
+				this.tagRelationsDBManager.pickConcept(concept, groupingName, session);
 				break;
 			case UNPICK:
-				this.tagRelationsDBManager.unpickConcept(param, session);
+				this.tagRelationsDBManager.unpickConcept(concept, groupingName, session);
 				break;
 			case UNPICK_ALL:
-				this.tagRelationsDBManager.unpickAllConcepts(param, session);
+				this.tagRelationsDBManager.unpickAllConcepts(groupingName, session);
 				return null;
 			case PICK_ALL:
-				this.tagRelationsDBManager.pickAllConcepts(param, session);
+				this.tagRelationsDBManager.pickAllConcepts(groupingName, session);
 				return null;
 			}
 			
