@@ -122,7 +122,7 @@ public class ForGroupTag extends SystemTag {
 			replaceTags(tagsCopy, getTag().getName(), "from:"+post.getUser().getName());
 			// FIXME: should other system tags be executed or removed???\
 			//        We have to consider possible side effects
-			getSystemTagFactory().removeSystemTag(tagsCopy, getName());
+			getSystemTagFactory().removeAllSystemTags(tagsCopy);
 			/*
 			 *  the visibility of the postCopy is:
 			 *  original == public => copy = public
