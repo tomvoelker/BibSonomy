@@ -32,9 +32,11 @@ import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.AuthorDatabaseManager;
 import org.bibsonomy.database.managers.BasketDatabaseManager;
@@ -883,7 +885,6 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public List<String> createPosts(final List<Post<?>> posts) {
 		// TODO: Which of these checks should result in a DatabaseException,
-		// which do we want to handle otherwise (=status quo)
 		this.ensureLoggedIn();
 		/*
 		 * check permissions
@@ -899,25 +900,31 @@ public class DBLogic implements LogicInterface {
 		 */
 		final List<String> hashes = new LinkedList<String>();
 		/*
-		 * open session
+		 * open session to store all the posts
 		 */
 		final DBSession session = openSession();
-		try {
-			session.beginTransaction();
-			try{
-				for (final Post<?> post : posts) {
+		final DatabaseException collectedException = new DatabaseException();
+		try{
+			for (final Post<?> post : posts) {
+				try {
 					hashes.add(this.createPost(post, session));
+				} catch (DatabaseException dbex) {
+					collectedException.addErrors(dbex);
+				} catch (Exception ex){
+					// some exception other than those covered in the DatabaseException was thrown					
+					collectedException.addToErrorMessages(post.getResource().getIntraHash(), new UnspecifiedErrorMessage(ex));
 				}
-				session.commitTransaction();
-			} finally {
-				session.endTransaction();
 			}
 		} finally {
 			session.close();
 		}
+		if (collectedException.hasErrorMessages()) {
+			throw collectedException;
+		}
 		return hashes;
 
 	}
+	
 
 	/**
 	 * Adds a post in the database.
@@ -964,22 +971,28 @@ public class DBLogic implements LogicInterface {
 		 * open session
 		 */
 		final DBSession session = openSession();
+		final DatabaseException collectedException = new DatabaseException();
 		try {
-			session.beginTransaction();
-			try{
-				for (final Post<?> post : posts) {
+			for (final Post<?> post : posts) {
+				try {
 					hashes.add(this.updatePost(post, operation, session));
+				} catch (DatabaseException dbex) {
+					collectedException.addErrors(dbex);
+				} catch (Exception ex){
+					// some exception other than those covered in the DatabaseException was thrown					
+					collectedException.addToErrorMessages(post.getResource().getIntraHash(), new UnspecifiedErrorMessage(ex));
 				}
-				session.commitTransaction();
-			} finally {
-				session.endTransaction();
 			}
 		} finally {
 			session.close();
 		}
+		if (collectedException.hasErrorMessages()) {
+			throw collectedException;
+		}
 		return hashes;
 	}
 
+	
 	/**
 	 * Updates a post in the database.
 	 */

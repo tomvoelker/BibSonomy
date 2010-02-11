@@ -41,7 +41,7 @@ public class DBSessionImpl implements DBSession {
 		this.uncommittedDepth = 0;
 		this.aborted = false;
 		this.closed = false;
-		this.databaseException=new DatabaseException();
+		this.databaseException = new DatabaseException();
 	}
 
 	/**
@@ -66,6 +66,8 @@ public class DBSessionImpl implements DBSession {
 			} catch (final SQLException ex) {
 				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't start transaction");
 			}
+			// a new exception to collect errors for a new transaction
+			databaseException.clear();
 		}
 		++this.transactionDepth;
 		++this.uncommittedDepth;
