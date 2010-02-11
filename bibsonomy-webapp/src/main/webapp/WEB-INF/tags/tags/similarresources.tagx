@@ -15,34 +15,50 @@
 	<c:set var = "title" />
 	<fmt:message key = "resources.similar" var = "resources_title"/> 
 	<script type="text/javascript">
-	<![CDATA[
-		$(document).ready(
-			function processRsp() {
-				var request = new PIARequest("${method}", "${url}");
-				request.callback = 'processRsp';
-				//request.container = $('#container');
-				request.count = 10;
-				request.makeRequest();
-			}
-		);
-		
-		function processRsp(obj) {
-			var pNode = obj.Body[0].findSimilarUrlsResponse[0].publication;
-		
-			if(obj.method == 'findSimilarUrls') {
-				similarResources = "<li><span class='sidebar_h'>${resources_title}</span>";
-				for(var k = 0; pNode.length > k; k++) {
-					similarResources  +=  
-					"<a href='"+pNode[k].location[0].Text+"'>"
-					+ pNode[k].title[0].Text.substr(0, 19) + "</a><br/>";
-				}
-				console.log(similarResources);
-				similarResources += "</li>";
-				$("#sidebar").html($("#sidebar").html()+similarResources);
-			} else {
-				console.log("notourmethod");
-			}
-		}
-	]]>
-	</script>
+    <![CDATA[
+             $(document).ready(
+                     function () {
+						var request = new PIARequest("${method}", "${url}");
+							request.callback = 'processRsp';
+							request.count = 10;
+							request.makeRequest();
+              });
+			
+             function processRsp(obj) {
+                     var pNode = obj.Body[0].findSimilarUrlsResponse[0].publication;
+                     if(PIAObject.method == 'findSimilarUrls') {
+                    	 var elem = document.createElement("li");
+                         var span = document.createElement("span");
+                         var ul = document.createElement("ul");
+                         
+                         ul.className = 'taglist';
+                         
+                         
+                         span.className = 'sidebar_h';
+                         span.innerHTML = '${resources_title}';
+                         span.insertBefore(getToggler(), span.firstChild);
+                         elem.appendChild(span);
+                         elem.appendChild(ul);
+                       
+                         $(similarResources) = '';
+                         for(var k = 0; pNode.length > k; k++) {
+                             var el = $('<li></li>');
+                             el.mouseover(function() {
+                            	 el.children('a').text(pNode[k].title[0].Text);
+                             }).
+                             mouseout(function() {
+                            	 el.children('a').text(pNode[k].title[0].Text.substr(0, 19) + (pNode[k].title[0].Text.length > 19)?'... ':'');
+                             });
+                             el.html('<a href="'+pNode[k].title[0].Text.substr(0, 19) + (pNode[k].title[0].Text.length > 19)?'... ':''+'">'
+                          	+ pNode[k].title[0].Text.substr(0, 19) + (pNode[k].title[0].Text.length > 19)?'... ':''+'</a>');
+                        	 $(similarResources).append(el);  
+                         }
+                         $(ul).append($(similarresources));
+                         $("#sidebar").append(elem);                             
+                     }
+             }
+
+             
+     ]]>
+     </script>
 </jsp:root>
