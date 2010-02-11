@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -149,13 +150,21 @@ public class ForGroupTag extends SystemTag {
 			postCopy.setTags(tagsCopy);
 			
 			log.debug("New post: "+postCopy.toString());
-			
-			// Now store copied post - we have to create our own database session, 
-			// as new post has to be owned by given group.
-			// FIXME: this is ugly!
+
 			List<Post<?>> posts = new LinkedList<Post<?>>();
 			posts.add(postCopy);
-			groupDBLogic.createPosts(posts);
+			try {
+				groupDBLogic.createPosts(posts);
+			} catch (DatabaseException dbex) {
+				// add the DatabaseException of the copied post to the Exception of the original one
+				for (String hash: dbex.getErrorMessages().keySet()) {
+					for (ErrorMessage errorMessage: dbex.getErrorMessages(hash)) {
+						errorMessage.setErrorMessage("This error occured while executing the for: tag: "+errorMessage.getErrorMessage());
+						errorMessage.setLocalizedMessageKey("database.exception.systemTag.forGroup.copy");
+						session.addError(post.getResource().getIntraHash(), errorMessage);
+					}
+				}
+			}
 		}
 
 		// all done.
