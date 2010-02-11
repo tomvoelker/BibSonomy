@@ -1635,7 +1635,7 @@ public class DBLogic implements LogicInterface {
 		}
 		
 		final DBSession session = openSession();
-		// no switch the operation and call the right method in the taglRelationsDBManager
+		// now switch the operation and call the right method in the taglRelationsDBManager or DBLogic
 		try {
 			switch(operation){
 			case UPDATE:		
