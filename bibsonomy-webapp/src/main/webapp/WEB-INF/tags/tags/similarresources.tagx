@@ -33,32 +33,24 @@
                          
                          ul.className = 'taglist';
                          
-                         
                          span.className = 'sidebar_h';
                          span.innerHTML = '${resources_title}';
                          span.insertBefore(getToggler(), span.firstChild);
                          elem.appendChild(span);
                          elem.appendChild(ul);
-                       
-                         $(similarResources) = '';
+
                          for(var k = 0; pNode.length > k; k++) {
                              var el = $('<li></li>');
-                             el.mouseover(function() {
-                            	 el.children('a').text(pNode[k].title[0].Text);
-                             }).
-                             mouseout(function() {
-                            	 el.children('a').text(pNode[k].title[0].Text.substr(0, 19) + (pNode[k].title[0].Text.length > 19)?'... ':'');
-                             });
-                             el.html('<a href="'+pNode[k].title[0].Text.substr(0, 19) + (pNode[k].title[0].Text.length > 19)?'... ':''+'">'
-                          	+ pNode[k].title[0].Text.substr(0, 19) + (pNode[k].title[0].Text.length > 19)?'... ':''+'</a>');
-                        	 $(similarResources).append(el);  
+                             var title = pNode[k].title[0].Text;
+                             el.mouseover(function() {el.children('a').text(title);})
+                             .mouseout(function() {el.children('a').text(((title.length > 19)? title.substr(0, 19) + '... ':title));});
+                             el.html('<a href="'+pNode[k].location[0].Text+'">'
+                          	+ ((title.length > 19)? title.substr(0, 19) + '... ':title)+'</a>');
+                        	 $(ul).append(el);  
                          }
-                         $(ul).append($(similarresources));
                          $("#sidebar").append(elem);                             
                      }
-             }
-
-             
+             }             
      ]]>
      </script>
 </jsp:root>
