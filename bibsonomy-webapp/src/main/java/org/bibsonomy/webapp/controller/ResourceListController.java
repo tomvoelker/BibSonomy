@@ -98,7 +98,7 @@ public abstract class ResourceListController {
 			if (tagsType.equalsIgnoreCase(TagsType.DEFAULT.getName() ) && tags != null ) {
 				Iterator<String> it = tags.iterator();
 				while (it.hasNext()) {
-					if ( !SystemTagsUtil.isSystemtag( it.next() ) ) {
+					if ( !SystemTagsUtil.isSystemTag( it.next() ) ) {
 						it.remove();
 					}
 				}

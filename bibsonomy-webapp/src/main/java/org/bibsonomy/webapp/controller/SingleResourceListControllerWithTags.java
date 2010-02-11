@@ -70,7 +70,7 @@ public class SingleResourceListControllerWithTags extends SingleResourceListCont
 	protected int countNonSystemTags(List<String> tags) {
 		int numNonSysTags = 0;
 		for (String tag : tags) {
-			if (tag != null && !SystemTagsUtil.isSystemtag(tag)) {
+			if (tag != null && !SystemTagsUtil.isSystemTag(tag)) {
 				numNonSysTags++;
 			}			
 		}
