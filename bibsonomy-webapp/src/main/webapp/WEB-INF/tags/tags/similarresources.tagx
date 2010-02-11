@@ -27,7 +27,7 @@
              function processRsp(obj) {
                      var pNode = obj.Body[0].findSimilarUrlsResponse[0].publication;
                      if(PIAObject.method == 'findSimilarUrls') {
-                    	 var elem = document.createElement("li");
+                    	 var elem = document.createElement("li")
                          var span = document.createElement("span");
                          var ul = document.createElement("ul");
                          
@@ -40,17 +40,78 @@
                          elem.appendChild(ul);
 
                          for(var k = 0; pNode.length > k; k++) {
-                             el = $('<li></li>');
-                             title = pNode[k].title[0].Text;
-                             el.mouseover(function() {el.children('a').text(title);})
-                             .mouseout(function() {el.children('a').text(((title.length > 25)? title.substr(0, 25) + '... ':title));});
-                             el.html('<a href="'+pNode[k].location[0].Text+'">'
-                          	+ ((title.length > 25)? title.substr(0, 25) + '... ':title)+'</a>');
-                        	 $(ul).append(el);  
+							var li = document.createElement("LI");
+							var a = document.createElement("A");
+							a.title = pNode[k].title[0].Text;
+							a.href = pNode[k].location[0].Text;
+							a.innerHTML = (a.title.length > 25)? a.title.substr(0, 25) + '... ':a.title;
+							a.onmouseover = function() {this.innerHTML = this.title;};
+							a.onmouseout = function() {this.innerHTML = (this.title.length > 25)? this.title.substr(0, 25) + '... ':this.title;};
+							li.appendChild(a);
+							$(ul).append(li);
                          }
+
+
+
+
+
+
+
+                             
+                             /*el = $('<li></li>');
+                             link = $('<a href="'+pNode[k].location[0].Text+'">' 
+                             + ((el.title.length > 25)?el.title.substr(0, 25) 
+                             + '... ':el.title)+'</a>');
+                             
+                             el.title = pNode[k].title[0].Text;
+                             el.html('<a href="'+pNode[k].location[0].Text+'">' 
+                                     + ((el.title.length > 25)? 
+                                             el.title.substr(0, 25) 
+                                             + '... ':el.title)+'</a>');
+                             el.children('a:first').mouseover(function() {this.text(this.parent().title); alert(this.parent().title)})
+                             .mouseout(function() {this.children('a:first').text(
+                                     ((this.title.length > 25)? this.title.substr(0, 25) + '... ':this.title));});
+                        	 $(ul).append(el);  */
                          $("#sidebar").append(elem);                             
                      }
-             }             
+             }          
+
+/*
+
+     		function () {
+    			first = $("#sidebar").children('a:first');
+    			var sidebar = document.getElementById('sidebar');
+    			var el = sidebar.childNodes[0];
+    			var z = 0;
+    			do{
+    				if(el == null)
+    					break;
+    				if(el.nodeName.toUpperCase() == 'A') {
+    					el.title = title;
+    					el.onmouseover = function() {};
+    					z++;
+    				}
+    			}while((el = el.nextSibling)!=null);
+    		});
+    		function test(text) {
+    					alert(text);			
+    		}*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                
      ]]>
      </script>
 </jsp:root>
