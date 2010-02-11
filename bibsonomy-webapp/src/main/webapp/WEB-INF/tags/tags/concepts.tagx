@@ -7,8 +7,7 @@
 	<jsp:directive.attribute name="cmd"	type="org.bibsonomy.webapp.command.ConceptsCommand" required="true" />
 	<jsp:directive.attribute name="usersOwnRelations" type="java.lang.Boolean" required="true" />
 	<jsp:directive.attribute name="requestedUserName" type="java.lang.String" required="true" />
-	<jsp:directive.attribute name="requestedConcepts" type="java.util.List" required="false" />
-	<jsp:directive.attribute name="forward" type="java.lang.String" required="true" />		
+	<jsp:directive.attribute name="requestedConcepts" type="java.util.List" required="false" />	
 	
 	<fmt:bundle basename="messages"/>
 
@@ -22,13 +21,13 @@
 					<c:set var="hideAllRelationsTitle"><fmt:message key="tagrelations.hideAll.title" /></c:set>
 				    
 				    (<a onclick="updateRelations(event,'all', 'show');"
-							href="/ajax/pickUnpickConcept?action=all&amp;tag=show&amp;ckey=${ckey}&amp;forward=${forward}"
+							href="/ajax/pickUnpickConcept?action=all&amp;tag=show&amp;ckey=${ckey}&amp;forward=true"
 							title="${showAllRelationsTitle}">
 						<fmt:message key="tagrelations.showAll" />
 						</a>
 				    |
 				    <a onclick="updateRelations(event,'all', 'hide');"
-							href="/ajax/pickUnpickConcept?action=all&amp;tag=hide&amp;ckey=${ckey}&amp;forward=${forward}"
+							href="/ajax/pickUnpickConcept?action=all&amp;tag=hide&amp;ckey=${ckey}&amp;forward=true"
 							title="${hideAllRelationsTitle}">
 						<fmt:message key="tagrelations.hideAll" />
 						</a>)
@@ -46,7 +45,7 @@
 				<!-- display link to hide relation -->
 				<c:if test="${usersOwnRelations}">
 					<a onclick="hideConcept(event);"
-						href="/ajax/pickUnpickConcept?action=hide&amp;tag=${fn:escapeXml(concept.name)}&amp;ckey=${ckey}&amp;forward=${forward}"
+						href="/ajax/pickUnpickConcept?action=hide&amp;tag=${fn:escapeXml(concept.name)}&amp;ckey=${ckey}&amp;forward=true"
 						title="${hideRelationTitle}">
 						<fmt:message key="tagrelations.hide"/>
 					</a>

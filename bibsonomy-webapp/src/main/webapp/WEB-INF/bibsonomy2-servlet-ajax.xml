@@ -189,6 +189,7 @@
 	
 	<bean id="conceptController" class="org.bibsonomy.webapp.controller.ajax.ConceptController" scope="request">
 		<property name="logic" ref="logic" />
+		<property name="requestLogic" ref="requestLogic"/>
 	</bean>
 
 </beans>

@@ -4,6 +4,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -21,6 +23,7 @@ import org.bibsonomy.webapp.command.ajax.ConceptAjaxCommand;
 import org.bibsonomy.webapp.controller.AjaxController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -44,6 +47,7 @@ public class ConceptController extends AjaxController implements MinimalisticCon
 
 	private LogicInterface logic;	
 	private Errors errors;
+	private RequestLogic requestLogic;
 	
 	@Override
 	public View workOn(ConceptAjaxCommand command) {
@@ -75,9 +79,14 @@ public class ConceptController extends AjaxController implements MinimalisticCon
 			}
 		} 
 		
-		// if forward is available redirect to that destination (in case of javascript disabled)
+		// if forward is available redirect to referer (in case of javascript disabled)
 		if (present(command.getForward())) {
-			return new ExtendedRedirectView("/" + command.getForward());
+			try {
+				return new ExtendedRedirectView(new URL(requestLogic.getReferer()).getPath());
+			} catch (MalformedURLException ex) {
+				log.error("Could not get path for redirecting" + ex.getMessage());
+				return new ExtendedRedirectView("/");
+			}
 		}
 		
 		// create the response string
@@ -172,4 +181,14 @@ public class ConceptController extends AjaxController implements MinimalisticCon
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
+
+	/**
+	 * 
+	 * @param requestLogic
+	 */
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
+	}
+	
+	
 }
