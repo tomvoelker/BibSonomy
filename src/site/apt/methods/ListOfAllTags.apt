@@ -14,6 +14,7 @@ List of all tags
 ?end=[int], starting with 0, default 20
 ?filter=[regex], filters the tags with this regex
 ?(user|group|viewable)=[username/groupname], tags are owned by specific user or group
+?order=(frequency), orders the tags by frequency
 ---
 
 * Status codes
