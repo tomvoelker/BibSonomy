@@ -30,6 +30,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-bibtex-parser</artifactId>
+			<scope>test</scope>
+		</dependency>		
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
 		</dependency>
 		<dependency>
