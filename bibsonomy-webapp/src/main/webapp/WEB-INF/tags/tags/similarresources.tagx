@@ -49,12 +49,10 @@
 							a.onmouseout = function() {this.innerHTML = (this.title.length > 25)? this.title.substr(0, 25) + '... ':this.title;};
 							li.appendChild(a);
 							$(ul).append(li);
-                         
-                         	$("#sidebar").append(elem);                             
-                     	}
-             		}          
-             	}
-               
+                         }  
+                         $("#sidebar").append(elem);
+					}
+             }              
      ]]>
      </script>
 </jsp:root>
