@@ -9,7 +9,7 @@ package org.bibsonomy.common.errors;
  */
 public class UnspecifiedErrorMessage extends ErrorMessage{
 
-	Exception ex;
+	private final Exception ex;
 	/**
 	 * @param ex The exception that was caught.
 	 */
@@ -18,5 +18,12 @@ public class UnspecifiedErrorMessage extends ErrorMessage{
 		this.setLocalizedMessageKey("database.exception.unspecified");
 		this.setParameters(null);
 		this.ex=ex;
+	}
+	
+	/**
+	 * return the exception, that caused the error
+	 */
+	public Exception getException() {
+		return ex;
 	}
 }
