@@ -1,5 +1,7 @@
 package org.bibsonomy.rest.strategy.users;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.Writer;
 import java.util.Date;
 import java.util.LinkedList;
@@ -10,6 +12,7 @@ import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
 import org.bibsonomy.common.errors.MissingFieldErrorMessage;
+import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
@@ -79,14 +82,15 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 		try {
 			final List<Post<?>> posts = new LinkedList<Post<?>>();
 			posts.add(post);
-			return this.getLogic().updatePosts(posts, PostUpdateOperation.UPDATE_ALL).get(0);
+			return this.getLogic().updatePosts(posts, PostUpdateOperation.UPDATE_ALL).get(0); //throws DatabaseException
 		}
-		catch (InvalidModelException ex) {
+/*		these 2 catches shouldn't be reached due to the ExceptionHandling in DBLogic
+  		catch (InvalidModelException ex) {
 			throw new BadRequestOrResponseException(ex);
 		}
 		catch ( ResourceNotFoundException ex ) {
 			throw new NoSuchResourceException(ex.getMessage());
-		}		
+		}*/		
 		catch ( DatabaseException de ) {
 			for (String hash: de.getErrorMessages().keySet()) {
 				for (ErrorMessage em: de.getErrorMessages(hash)) {
@@ -110,8 +114,20 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 						// this used to cause an InvalidModelException
 						throw new BadRequestOrResponseException(em.toString());
 					}
+					if (em instanceof UnspecifiedErrorMessage) {
+						Exception ex = ((UnspecifiedErrorMessage)em).getException();
+						if (present(ex)) {
+							if (ex instanceof InvalidModelException) {
+								throw new BadRequestOrResponseException(ex.getMessage());
+							}
+							if (ex instanceof ResourceNotFoundException) {
+								throw new NoSuchResourceException(ex.getMessage());
+							}
+						}
+					}
 				}
 			}
+			// If none of the errors handled above occurred we throw the original Exception
 			throw de;
 		}
 	}
