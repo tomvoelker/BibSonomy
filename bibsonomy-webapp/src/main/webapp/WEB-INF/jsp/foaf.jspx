@@ -39,7 +39,7 @@
 		
 		<c:forEach var="friend" items="${command.user.friends}">
 			<foaf:knows>
-				<foaf:Person rdf:about="${projectHome}foaf/user/${mtl:encode(user.name)}">
+				<foaf:Person rdf:about="${projectHome}foaf/user/${mtl:encode(friend.name)}">
 					<foaf:nick><c:out value="${friend.name}"/></foaf:nick>
 				</foaf:Person>
 			</foaf:knows>
