@@ -10,7 +10,7 @@ import org.bibsonomy.database.util.DBSession;
  * @author Christian Schenk
  * @version $Id$
  */
-public class BibTexExtra extends AbstractDatabasePlugin {
+public class BibTexExtraPlugin extends AbstractDatabasePlugin {
 
 	@Override
 	public Runnable onBibTexDelete(final int contentId, final DBSession session) {

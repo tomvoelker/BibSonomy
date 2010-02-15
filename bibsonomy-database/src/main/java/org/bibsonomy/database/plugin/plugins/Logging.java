@@ -3,7 +3,9 @@ package org.bibsonomy.database.plugin.plugins;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
+import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.GroupParam;
+import org.bibsonomy.database.params.LoggingParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
@@ -43,6 +45,50 @@ public class Logging extends AbstractDatabasePlugin {
 				insert("logBibTex", param, session);
 				param.setNewContentId(newContentId);
 				insert("logBibTexUpdate", param, session);
+			}
+		};
+	}
+	
+	@Override
+	public Runnable onGoldStandardPublicationUpdate(final String newInterhash, final String interhash, final DBSession session) {
+		return new Runnable() {
+			
+			@Override
+			public void run() {
+				final LoggingParam<String> logParam = new LoggingParam<String>();
+				logParam.setNewId(newInterhash);
+				logParam.setOldId(interhash);
+				
+				insert("logGoldStandardPublication", logParam, session);
+				update("logGoldStandardPublicationUpdate", logParam, session);
+			}
+		};
+	}
+	
+	@Override
+	public Runnable onGoldStandardPublicationDelete(final String interhash, final DBSession session) {
+		return new Runnable() {
+			
+			@Override
+			public void run() {
+				final LoggingParam<String> logParam = new LoggingParam<String>();
+				logParam.setOldId(interhash);
+				insert("logGoldStandardPublication", logParam, session);
+			}
+		};
+	}
+	
+	@Override
+	public Runnable onGoldStandardPublicationReferenceDelete(final String userName, final String interHashPublication, final String interHashReference, final DBSession session) {
+		return new Runnable() {
+			@Override
+			public void run() {
+				final GoldStandardReferenceParam param = new GoldStandardReferenceParam();
+				param.setHash(interHashPublication);
+				param.setRefHash(interHashReference);
+				param.setUsername(userName);
+				
+				insert("logGoldStandardPublicationReferenceDelete", param, session);
 			}
 		};
 	}

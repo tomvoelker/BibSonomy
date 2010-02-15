@@ -48,6 +48,54 @@ public interface DatabasePlugin {
 	public Runnable onBibTexUpdate(int newContentId, int contentId, DBSession session);
 
 	/**
+	 * Called when a gold standard publication is created.
+	 * 
+	 * @param interhash
+	 * @param session
+	 * @return runnable
+	 */
+	public Runnable onGoldStandardPublicationCreate(String interhash, DBSession session);
+
+	/**
+	 * Called when a gold standard publication will be updated.
+	 * 
+	 * @param newInterhash
+	 * @param interhash
+	 * @param session
+	 * @return runnable
+	 */
+	public Runnable onGoldStandardPublicationUpdate(String newInterhash, String interhash, DBSession session);
+	
+	/**
+	 * Called when a reference of a gold standard publication will be created
+	 * @param userName
+	 * @param interHash_publication
+	 * @param interHash_reference
+	 * @return runnable
+	 */
+	public Runnable onGoldStandardPublicationReferenceCreate(String userName, String interHash_publication, String interHash_reference);
+	
+	/**
+	 * Called when a reference of a gold standard publication will be deleted
+	 * 
+	 * @param userName
+	 * @param interHash_publication
+	 * @param interHash_reference
+	 * @param session
+	 * @return runnable
+	 */
+	public Runnable onGoldStandardPublicationReferenceDelete(String userName, String interHash_publication, String interHash_reference, DBSession session);
+	
+	/**
+	 * Called when a gold standard publication is deleted.
+	 * 
+	 * @param interhash
+	 * @param session
+	 * @return runnable
+	 */
+	public Runnable onGoldStandardPublicationDelete(String interhash, DBSession session);
+	
+	/**
 	 * Called when a Bookmark is inserted.
 	 * 
 	 * @param contentId
@@ -74,7 +122,7 @@ public interface DatabasePlugin {
 	 * @return runnable
 	 */
 	public Runnable onBookmarkUpdate(int newContentId, int contentId, DBSession session);
-
+	
 	/**
 	 * Called when a TagRelation is deleted.
 	 * 

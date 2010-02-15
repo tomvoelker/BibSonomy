@@ -26,6 +26,10 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 
 	private boolean onBookmarkInsert;
 	private boolean onBookmarkUpdate;
+	
+	private boolean onGoldStandardPublicationCreate;
+	private boolean onGoldStandardPublicationUpdate;
+	private boolean onGoldStandardPublicationDelete;
 
 	private boolean onTagRelationDelete;
 
@@ -34,13 +38,7 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	 */
 	public DatabasePluginMock() {
 		// make sure that all fields are initialized with "false"
-		try {
-			for (final Field field : this.getClass().getDeclaredFields()) {
-				field.setBoolean(this, false);
-			}
-		} catch (final Exception ignored) {
-			// will not happen
-		}
+		this.reset();
 	}
 
 	/**
@@ -55,6 +53,24 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 		for (final Field field : plugin.getClass().getDeclaredFields()) {
 			assertFalse(field.getBoolean(plugin));
 		}
+	}
+	
+	/**
+	 * tests reset method
+	 */
+	@Test
+	public void testReset() {
+		final DatabasePluginMock plugin = new DatabasePluginMock();
+		plugin.onBookmarkInsert(0, null);
+		plugin.onBibTexUpdate(0, 1, null);
+		
+		assertTrue(plugin.isOnBookmarkInsert());
+		assertTrue(plugin.isOnBibTexUpdate());
+		
+		plugin.reset();
+		
+		assertFalse(plugin.isOnBookmarkInsert());
+		assertFalse(plugin.isOnBibTexUpdate());
 	}
 
 	@Override
@@ -88,11 +104,42 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 		this.onBookmarkUpdate = true;
 		return null;
 	}
+	
+	@Override
+	public Runnable onGoldStandardPublicationCreate(String interhash, DBSession session) {
+		this.onGoldStandardPublicationCreate = true;
+		return null;
+	}
+	
+	@Override
+	public Runnable onGoldStandardPublicationUpdate(String newInterhash, String interhash, DBSession session) {
+		this.onGoldStandardPublicationUpdate = true;
+		return null;
+	}
+	
+	@Override
+	public Runnable onGoldStandardPublicationDelete(String interhash, DBSession session) {
+		this.onGoldStandardPublicationDelete = true;
+		return null;
+	}
 
 	@Override
 	public Runnable onTagRelationDelete(final String upperTagName, final String lowerTagName, final String userName, final DBSession session) {
 		this.onTagRelationDelete = true;
 		return null;
+	}
+	
+	/**
+	 * sets all boolean fields to false
+	 */
+	public void reset() {
+		try {
+			for (final Field field : this.getClass().getDeclaredFields()) {
+				field.setBoolean(this, false);
+			}
+		} catch (final Exception ignored) {
+			// will not happen
+		}
 	}
 
 	/**
@@ -135,5 +182,26 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	 */
 	public boolean isOnTagRelationDelete() {
 		return this.onTagRelationDelete;
+	}
+	
+	/**
+	 * @return the onGoldStandardPublicationCreate
+	 */
+	public boolean isOnGoldStandardPublicationCreate() {
+		return this.onGoldStandardPublicationCreate;
+	}
+
+	/**
+	 * @return the onGoldStandardPublicationUpdate
+	 */
+	public boolean isOnGoldStandardPublicationUpdate() {
+		return this.onGoldStandardPublicationUpdate;
+	}
+
+	/**
+	 * @return the onGoldStandardPublicationDelete
+	 */
+	public boolean isOnGoldStandardPublicationDelete() {
+		return this.onGoldStandardPublicationDelete;
 	}
 }

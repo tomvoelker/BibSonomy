@@ -30,6 +30,31 @@ public class AbstractDatabasePlugin extends AbstractDatabaseManager implements D
 		return null;
 	}
 
+	@Override
+	public Runnable onGoldStandardPublicationCreate(String interhash, DBSession session) {
+		return null;
+	}
+
+	@Override
+	public Runnable onGoldStandardPublicationDelete(String interhash, DBSession session) {
+		return null;
+	}
+
+	@Override
+	public Runnable onGoldStandardPublicationUpdate(String newInterhash, String interhash, DBSession session) {
+		return null;
+	}
+	
+	@Override
+	public Runnable onGoldStandardPublicationReferenceCreate(String userName, String interHashPublication, String interHashReference) {
+		return null;
+	}
+
+	@Override
+	public Runnable onGoldStandardPublicationReferenceDelete(String userName, String interHashPublication, String interHashReference, DBSession session) {
+		return null;
+	}
+
 	public Runnable onBookmarkInsert(final int contentId, final DBSession session) {
 		return null;
 	}
