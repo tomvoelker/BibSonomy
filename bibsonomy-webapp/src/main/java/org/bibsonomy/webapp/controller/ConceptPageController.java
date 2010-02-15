@@ -50,8 +50,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 		String groupingName = null;
 		
 		// title
-		final StringBuilder pageTitle = new StringBuilder();
-		pageTitle.append("concept :: ");
+		final StringBuilder pageTitle = new StringBuilder("concept :: ");
 		
 		//if URI looks like concept/USER/USERNAME/TAGNAME, change GroupingEntity to USER
 		if(present(requUser)){
