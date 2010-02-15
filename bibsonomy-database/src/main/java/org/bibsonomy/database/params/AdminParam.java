@@ -22,6 +22,7 @@ public class AdminParam extends GenericParam {
 	private InetAddressStatus inetAddressStatus;
 
 	/** The name of the flagged user */
+	// FIXME Probably a duplicate
 	private String userName;
 
 	/** The spammer status of the user */
@@ -64,6 +65,7 @@ public class AdminParam extends GenericParam {
 	private int interval;
 	
 	/** Page limit for table entries */
+	// FIXME Probably a duplicate
 	private int limit;
 	
 	/** Integer range for creating groups */
@@ -88,10 +90,12 @@ public class AdminParam extends GenericParam {
 		this.inetAddressStatus = inetAddressStatus;
 	}
 
+	@Override
 	public String getUserName() {
 		return this.userName;
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
@@ -220,10 +224,12 @@ public class AdminParam extends GenericParam {
 		this.groupIdTable = groupIdTable;
 	}
 	
+	@Override
 	public int getLimit() {
 		return this.limit;
 	}
 
+	@Override
 	public void setLimit(int limit) {
 		this.limit = limit;
 	}
