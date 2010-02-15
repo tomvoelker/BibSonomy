@@ -9,6 +9,9 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.junit.Test;
 
+/**
+ * @version $Id$
+ */
 public class StrategyTest {
 
 	@Test

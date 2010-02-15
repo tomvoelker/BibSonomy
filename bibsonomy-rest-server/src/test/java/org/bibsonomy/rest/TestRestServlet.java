@@ -1,7 +1,6 @@
 package org.bibsonomy.rest;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -24,7 +23,7 @@ public class TestRestServlet {
 	private RestServlet servlet;
 	private NullRequest request;
 	private NullResponse response;
-
+	
 	@Before
 	public void setUp() {
 		this.servlet = new RestServlet();
@@ -34,6 +33,10 @@ public class TestRestServlet {
 		this.response = new NullResponse();
 	}
 
+	/**
+	 * tests {@link RestServlet#validateAuthorization(String)}
+	 * @throws Exception
+	 */
 	@Test
 	public void testValidateAuthorization() throws Exception {
 		try {
@@ -49,7 +52,7 @@ public class TestRestServlet {
 
 		assertEquals("error decoding string", "asdf", this.servlet.validateAuthorization("Basic YXNkZjphc2Rm").getAuthenticatedUser().getName());
 	}
-
+	
 	@Test
 	public void testUnauthorized() throws Exception {
 		this.servlet.doGet(this.request, this.response);
@@ -101,7 +104,7 @@ public class TestRestServlet {
 	}*/
 
 	private void compareWithFile(final String sw, final String filename) throws IOException {
-		final StringBuffer sb = new StringBuffer(200);
+		final StringBuilder sb = new StringBuilder(200);
 		final File file = new File("src/test/resources/" + filename);
 		final BufferedReader br = new BufferedReader(new FileReader(file));
 		String s;

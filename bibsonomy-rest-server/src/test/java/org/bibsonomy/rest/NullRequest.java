@@ -25,6 +25,9 @@ public class NullRequest implements HttpServletRequest {
 	private final Map<?, ?> parameterMap;
 	private String pathInfo;
 
+	/**
+	 * inits maps
+	 */
 	public NullRequest() {
 		this.headers = new HashMap<String, String>();
 		this.parameterMap = new HashMap<Object, Object>();
@@ -34,6 +37,10 @@ public class NullRequest implements HttpServletRequest {
 		return pathInfo;
 	}
 
+	/**
+	 * 
+	 * @param pathInfo the pathInfo to set
+	 */
 	public void setPathInfo(String pathInfo) {
 		this.pathInfo = pathInfo;
 	}
@@ -248,6 +255,9 @@ public class NullRequest implements HttpServletRequest {
 		return 0;
 	}
 
+	/**
+	 * @return the headers
+	 */
 	public Map<String, String> getHeaders() {
 		return headers;
 	}

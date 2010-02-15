@@ -1,11 +1,13 @@
 package org.bibsonomy.rest.strategy;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.rest.enums.HttpMethod;
@@ -17,9 +19,9 @@ import org.junit.Test;
  * @version $Id$
  */
 public class ContextTest extends AbstractContextTest {
-
-	private HashMap<String, String[]> parameterMap;
-	private final String NOT_SPLITTED_MSG = "tag parameters are not correctly splitted!";
+	private static final String NOT_SPLITTED_MSG = "tag parameters are not correctly splitted!";
+	private Map<String, String[]> parameterMap;
+	
 
 	@Override
 	@Before
@@ -34,9 +36,9 @@ public class ContextTest extends AbstractContextTest {
 		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users/egal/posts", this.parameterMap, null, null);
 
 		final List<String> tags = ctx.getTags("tags");
-		assertTrue(this.NOT_SPLITTED_MSG, tags.contains("foo"));
-		assertTrue(this.NOT_SPLITTED_MSG, tags.contains("bar"));
-		assertTrue(this.NOT_SPLITTED_MSG, tags.size() == 2);
+		assertTrue(NOT_SPLITTED_MSG, tags.contains("foo"));
+		assertTrue(NOT_SPLITTED_MSG, tags.contains("bar"));
+		assertEquals(NOT_SPLITTED_MSG, 2, tags.size());
 	}
 
 	@Test
@@ -45,14 +47,14 @@ public class ContextTest extends AbstractContextTest {
 		final Context ctx = new Context(this.is, this.db, HttpMethod.GET, "/users/egal/posts", this.parameterMap, null, null);
 
 		final List<String> tags = ctx.getTags("tags");
-		assertTrue(this.NOT_SPLITTED_MSG, tags.contains("foo"));
-		assertTrue(this.NOT_SPLITTED_MSG, tags.contains("bar"));
-		assertTrue(this.NOT_SPLITTED_MSG, tags.contains("->subtags"));
-		assertTrue(this.NOT_SPLITTED_MSG, tags.contains("-->transitiveSubtags"));
-		assertTrue(this.NOT_SPLITTED_MSG, tags.contains("supertags->"));
-		assertTrue(this.NOT_SPLITTED_MSG, tags.contains("transitiveSupertags-->"));
-		assertTrue(this.NOT_SPLITTED_MSG, tags.contains("<->correlated"));
-		assertTrue(this.NOT_SPLITTED_MSG, tags.size() == 7);
+		assertTrue(NOT_SPLITTED_MSG, tags.contains("foo"));
+		assertTrue(NOT_SPLITTED_MSG, tags.contains("bar"));
+		assertTrue(NOT_SPLITTED_MSG, tags.contains("->subtags"));
+		assertTrue(NOT_SPLITTED_MSG, tags.contains("-->transitiveSubtags"));
+		assertTrue(NOT_SPLITTED_MSG, tags.contains("supertags->"));
+		assertTrue(NOT_SPLITTED_MSG, tags.contains("transitiveSupertags-->"));
+		assertTrue(NOT_SPLITTED_MSG, tags.contains("<->correlated"));
+		assertEquals(NOT_SPLITTED_MSG, 7, tags.size());
 	}
 
 	@Test

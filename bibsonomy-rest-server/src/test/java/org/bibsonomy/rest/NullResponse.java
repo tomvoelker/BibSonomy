@@ -20,6 +20,9 @@ public class NullResponse implements HttpServletResponse {
 	private StringWriter content;
 	private int contentLength;
 
+	/**
+	 * @return content as String
+	 */
 	public String getContent() {
 		return this.content.toString();
 	}
@@ -48,6 +51,9 @@ public class NullResponse implements HttpServletResponse {
 		this.contentLength = contentLength;
 	}
 
+	/**
+	 * @return the contentLength
+	 */
 	public int getContentLength() {
 		return this.contentLength;
 	}

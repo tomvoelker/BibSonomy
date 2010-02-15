@@ -747,11 +747,6 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
-	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search, List<String> tags) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
 		// TODO Auto-generated method stub
 		return null;
@@ -760,11 +755,6 @@ public class TestDBLogic implements LogicInterface {
 	public String createConcept(Tag concept, GroupingEntity grouping, String groupingName) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public void deleteConcept(Tag concept, GroupingEntity grouping, String groupingName) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName, final ConceptUpdateOperation operation) {
