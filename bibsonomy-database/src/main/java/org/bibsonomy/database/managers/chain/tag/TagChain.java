@@ -15,8 +15,8 @@ import org.bibsonomy.database.managers.chain.tag.get.GetTagsByFriendOfUser;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByGroup;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsViewable;
-import org.bibsonomy.database.managers.chain.tag.get.getTagsByHash;
-import org.bibsonomy.database.managers.chain.tag.get.getTagsByHashForUser;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsByHash;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsByHashForUser;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.model.Tag;
 
@@ -57,8 +57,8 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 		this.getTagsByAuthor=new GetTagsByAuthor();
 		this.getRelatedTagsForGroup = new GetRelatedTagsForGroup();
 		this.getRelatedTags = new GetRelatedTags();
-		this.getTagsByHash = new getTagsByHash();
-		this.getTagsByHashForUser = new getTagsByHashForUser();
+		this.getTagsByHash = new GetTagsByHash();
+		this.getTagsByHashForUser = new GetTagsByHashForUser();
 		this.getSimilarTags = new GetSimilarTags();
 		this.getPopularTags = new GetPopularTags();
 		this.getTagsByFriendOfUser = new GetTagsByFriendOfUser();
