@@ -101,6 +101,13 @@ public class XMLRenderer implements Renderer {
 	private static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.rest.renderer.xml";
 	private static XMLRenderer renderer;
 	
+	public static Renderer getInstance() {
+		if (renderer == null) {
+			renderer = new XMLRenderer();
+		}
+		return renderer;
+	}
+	
 	private final DatatypeFactory datatypeFactory;
 	private final UrlRenderer urlRenderer;
 	private final Boolean validateXMLInput;
@@ -133,12 +140,58 @@ public class XMLRenderer implements Renderer {
 			schema = null;
 		}
 	}
+	
+	/**
+	 * Unmarshalls the xml document from the reader to the generated java
+	 * model.
+	 * 
+	 * @return A BibsonomyXML object that contains the unmarshalled content
+	 * @throws InternServerException
+	 *             if the content can't be unmarshalled
+	 */
+	private BibsonomyXML parse(Reader reader) throws InternServerException {
+		// first: check the reader 
+		this.checkReader(reader);
+		try {
+			// initialize JAXB context. We provide the classloader here because we experienced that under
+			// certain circumstances (e.g. when used within JabRef as a JPF-Plugin), the wrong classloader is
+			// used which has the following exception as consequence:
+			//
+			//   javax.xml.bind.JAXBException: "org.bibsonomy.rest.renderer.xml" doesnt contain ObjectFactory.class or jaxb.index
+			//
+			// (see also http://ws.apache.org/jaxme/apidocs/javax/xml/bind/JAXBContext.html)
+			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION, this.getClass().getClassLoader());
 
-	public static Renderer getInstance() {
-		if (renderer == null) {
-			renderer = new XMLRenderer();
+			// create an Unmarshaller
+			final Unmarshaller u = jc.createUnmarshaller();
+
+			// set schema to validate input documents
+			if (this.validateXMLInput) {
+				u.setSchema(schema);
+			}
+
+			/*
+			 * unmarshal a xml instance document into a tree of Java content
+			 * objects composed of classes from the restapi package.
+			 */
+			final JAXBElement<?> xmlDoc = (JAXBElement<?>) u.unmarshal(reader);
+			return (BibsonomyXML) xmlDoc.getValue();
+		} catch (final JAXBException e) {
+			if (e.getLinkedException() != null && e.getLinkedException().getClass() == SAXParseException.class) {
+				SAXParseException ex = (SAXParseException) e.getLinkedException();
+				throw new BadRequestOrResponseException(
+						"Error while parsing XML (Line " 
+						+ ex.getLineNumber() + ", Column "
+						+ ex.getColumnNumber() + ": "
+						+ ex.getMessage()
+				);				
+			}			
+			throw new InternServerException(e.toString());
 		}
-		return renderer;
+	}
+	
+	private void checkReader(Reader reader) throws BadRequestOrResponseException {
+		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
 	}
 
 	public void serializePosts(final Writer writer, final List<? extends Post<? extends Resource>> posts, final ViewModel viewModel) throws InternServerException {
@@ -548,8 +601,7 @@ public class XMLRenderer implements Renderer {
 	}	
 
 	public String parseError(final Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getError() != null) {
 			return xmlDoc.getError();
 		}
@@ -557,9 +609,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public User parseUser(final Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 
 		if (xmlDoc.getUser() != null) {
 			return ModelFactory.getInstance().createUser(xmlDoc.getUser());
@@ -569,21 +619,30 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public Post<? extends Resource> parsePost(final Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-
-		final BibsonomyXML xmlDoc = parse(reader);
-
+		final BibsonomyXML xmlDoc = this.parse(reader);
+		
 		if (xmlDoc.getPost() != null) {
 			return ModelFactory.getInstance().createPost(xmlDoc.getPost());
 		}
+		
+		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no post defined.");
+	}
+
+	@Override
+	public Post<? extends Resource> parseStandardPost(Reader reader) throws BadRequestOrResponseException {
+		final BibsonomyXML xmlDoc = this.parse(reader);
+		
+		if (xmlDoc.getPost() != null) {
+			return ModelFactory.getInstance().createStandardPost(xmlDoc.getPost());
+		}
+		
 		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no post defined.");
 	}
 
 	public Group parseGroup(final Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 
 		if (xmlDoc.getGroup() != null) {
 			return ModelFactory.getInstance().createGroup(xmlDoc.getGroup());
@@ -593,8 +652,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public List<Group> parseGroupList(final Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getGroups() != null) {
 			final List<Group> groups = new LinkedList<Group>();
 			for (final GroupType gt : xmlDoc.getGroups().getGroup()) {
@@ -608,8 +666,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public List<Post<? extends Resource>> parsePostList(final Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getPosts() != null) {
 			final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 			for (final PostType pt : xmlDoc.getPosts().getPost()) {
@@ -623,8 +680,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public List<Tag> parseTagList(final Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTags() != null) {
 			final List<Tag> tags = new LinkedList<Tag>();
 			for (final TagType tt : xmlDoc.getTags().getTag()) {
@@ -638,8 +694,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public List<User> parseUserList(final Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getUsers() != null) {
 			final List<User> users = new LinkedList<User>();
 			for (final UserType ut : xmlDoc.getUsers().getUser()) {
@@ -694,72 +749,9 @@ public class XMLRenderer implements Renderer {
 			throw new InternServerException(e.toString());
 		}
 	}
-
-	/**
-	 * Unmarshalls the xml document from the reader to the generated java
-	 * model.
-	 * 
-	 * @return A BibsonomyXML object that contains the unmarshalled content
-	 * @throws InternServerException
-	 *             if the content can't be unmarshalled
-	 */
-	private BibsonomyXML parse(Reader reader) throws InternServerException {
-		try {
-
-//			if (log.isDebugEnabled() == true) {
-//			char[] chars = new char[65536];
-//			String s;
-//			try {
-//			int read = reader.read(chars);
-//			s = new String(chars,0,read); 
-//			log.debug("request-body:\n[" + s + "]");
-//			reader = new StringReader(s);
-//			} catch (IOException ex) {
-//			log.error(ex,ex);
-//			}
-//			}
-
-			// initialize JAXB context. We provide the classloader here because we experienced that under
-			// certain circumstances (e.g. when used within JabRef as a JPF-Plugin), the wrong classloader is
-			// used which has the following exception as consequence:
-			//
-			//   javax.xml.bind.JAXBException: "org.bibsonomy.rest.renderer.xml" doesnt contain ObjectFactory.class or jaxb.index
-			//
-			// (see also http://ws.apache.org/jaxme/apidocs/javax/xml/bind/JAXBContext.html)
-			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION, this.getClass().getClassLoader());
-
-			// create an Unmarshaller
-			final Unmarshaller u = jc.createUnmarshaller();
-
-			// set schema to validate input documents
-			if (this.validateXMLInput) {
-				u.setSchema(schema);
-			}
-
-			/*
-			 * unmarshal a xml instance document into a tree of Java content
-			 * objects composed of classes from the restapi package.
-			 */
-			final JAXBElement<?> xmlDoc = (JAXBElement<?>) u.unmarshal(reader);
-			return (BibsonomyXML) xmlDoc.getValue();
-		} catch (final JAXBException e) {
-			if (e.getLinkedException() != null && e.getLinkedException().getClass() == SAXParseException.class) {
-				SAXParseException ex = (SAXParseException) e.getLinkedException();
-				throw new BadRequestOrResponseException(
-						"Error while parsing XML (Line " 
-						+ ex.getLineNumber() + ", Column "
-						+ ex.getColumnNumber() + ": "
-						+ ex.getMessage()
-				);				
-			}			
-			throw new InternServerException(e.toString());
-		}
-	}
-
-
+	
 	public Tag parseTag(Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTag() != null) {
 			return ModelFactory.getInstance().createTag(xmlDoc.getTag());
 		}
@@ -768,8 +760,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public String parseStat(Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);		
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getStat() != null) {
 			return xmlDoc.getStat().value();
 		}
@@ -778,8 +769,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public String parseGroupId(Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getGroupid() != null) {
 			return xmlDoc.getGroupid();
 		}
@@ -788,8 +778,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public String parseResourceHash(Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getResourcehash() != null) {
 			return xmlDoc.getResourcehash();
 		}
@@ -798,8 +787,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public String parseUserId(Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getUserid() != null) {
 			return xmlDoc.getUserid();
 		}
@@ -807,13 +795,8 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no user id defined.");
 	}
 
-	private void checkReader(Reader reader) throws BadRequestOrResponseException {
-		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
-	}
-
 	public RecommendedTag parseRecommendedTag(Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTag() != null) {
 			return ModelFactory.getInstance().createRecommendedTag(xmlDoc.getTag());
 		}
@@ -822,8 +805,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	public SortedSet<RecommendedTag> parseRecommendedTagList(Reader reader) throws BadRequestOrResponseException {
-		checkReader(reader);
-		final BibsonomyXML xmlDoc = parse(reader);
+		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTags() != null) {
 			final SortedSet<RecommendedTag> tags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
 			for (final TagType tt : xmlDoc.getTags().getTag()) {

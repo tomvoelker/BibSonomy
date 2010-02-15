@@ -43,7 +43,6 @@ import org.bibsonomy.rest.validation.ModelValidator;
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-@SuppressWarnings("serial")
 public class RestProperties {
 	private static final Log log = LogFactory.getLog(RestProperties.class);
 	private static RestProperties singleton = null;
@@ -70,6 +69,7 @@ public class RestProperties {
 		URL_POSTS("posts"),
 		URL_ADDED_POSTS("added"),
 		URL_POPULAR_POSTS("popular"),
+		URL_STANDARD_POSTS("standard"),
 		URL_DOCUMENTS("documents"),
 		URL_DATE_FORMAT("yyyy-MM-dd'T'HH:mm:ss.SSS"),
 		VALIDATE_XML_INPUT("false"),
@@ -196,6 +196,10 @@ public class RestProperties {
 
 	public String getPopularPostsUrl() {
 		return this.get(Property.URL_POPULAR_POSTS);
+	}
+	
+	public String getStandardPostsUrl() {
+		return this.get(Property.URL_STANDARD_POSTS);
 	}
 	
 	public String getSystemName() {

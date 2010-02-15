@@ -27,8 +27,10 @@ import static org.bibsonomy.model.util.ModelValidationUtils.checkBibTex;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkBookmark;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkGroup;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkPost;
+import static org.bibsonomy.model.util.ModelValidationUtils.checkStandardPost;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkTag;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -38,9 +40,11 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
@@ -176,24 +180,36 @@ public class ModelFactory {
 		if (xmlTag.getConfidence() != null ) tag.setConfidence(xmlTag.getConfidence().doubleValue());
 		if (xmlTag.getScore() != null ) tag.setScore(xmlTag.getScore().doubleValue());
 		return tag;
-	}		
+	}
+	
+	public Post<Resource> createStandardPost(final PostType xmlPost) {
+		checkStandardPost(xmlPost);
+		
+		final Post<Resource> post = this.createPostWithUserAndDate(xmlPost);
+		
+		final BibtexType xmlPublication = xmlPost.getBibtex();
+		if (present(xmlPublication)) {
+			final GoldStandardPublication publication = new GoldStandardPublication();
+			this.fillPublicationWithInformations(xmlPublication, publication);
+			
+			checkBibTeX(publication);
+			
+			post.setResource(publication);
+		} else {
+			// TODO: implement a gold standard for bookmarks
+			throw new InvalidModelException("resource is not supported");
+		}
+		
+		return post;
+	}
 
 	public Post<Resource> createPost(final PostType xmlPost) {
 		checkPost(xmlPost);
 
-		// post itself
-		final Post<Resource> post = new Post<Resource>();
-		post.setDescription(xmlPost.getDescription());
+		// create post, user and date
+		final Post<Resource> post = this.createPostWithUserAndDate(xmlPost);
 
-		// user
-		final User user = new User();
-		final UserType xmlUser = xmlPost.getUser();
-		checkUser(xmlUser);
-		user.setName(xmlUser.getName());
-		post.setUser(user);
-		post.setDate(createDate(xmlPost));
-
-		// tags
+		// create tags
 		for (final TagType xmlTag : xmlPost.getTag()) {
 			checkTag(xmlTag);
 
@@ -202,69 +218,36 @@ public class ModelFactory {
 			post.getTags().add(tag);
 		}
 
-		// resource
-		if (xmlPost.getBibtex() != null) {
-			final BibtexType xmlBibtex = xmlPost.getBibtex();
-			checkBibTex(xmlBibtex);
-
-			final BibTex bibtex = new BibTex();
-
-			bibtex.setAddress(xmlBibtex.getAddress());
-			bibtex.setAnnote(xmlBibtex.getAnnote());
-			bibtex.setAuthor(xmlBibtex.getAuthor());
-			bibtex.setAbstract(xmlBibtex.getBibtexAbstract());
-			bibtex.setBibtexKey(xmlBibtex.getBibtexKey());
-			bibtex.setKey(xmlBibtex.getBKey());
-			bibtex.setBooktitle(xmlBibtex.getBooktitle());
-			bibtex.setChapter(xmlBibtex.getChapter());
-			bibtex.setCrossref(xmlBibtex.getCrossref());
-			bibtex.setDay(xmlBibtex.getDay());
-			bibtex.setEdition(xmlBibtex.getEdition());
-			bibtex.setEditor(xmlBibtex.getEditor());
-			bibtex.setEntrytype(xmlBibtex.getEntrytype());
-			bibtex.setHowpublished(xmlBibtex.getHowpublished());
-			bibtex.setInstitution(xmlBibtex.getInstitution());
-			bibtex.setInterHash(xmlBibtex.getInterhash());
-			bibtex.setIntraHash(xmlBibtex.getIntrahash());
-			bibtex.setJournal(xmlBibtex.getJournal());
-			bibtex.setMisc(xmlBibtex.getMisc());
-			bibtex.setMonth(xmlBibtex.getMonth());
-			bibtex.setNote(xmlBibtex.getNote());
-			bibtex.setNumber(xmlBibtex.getNumber());
-			bibtex.setOrganization(xmlBibtex.getOrganization());
-			bibtex.setPages(xmlBibtex.getPages());
-			bibtex.setPublisher(xmlBibtex.getPublisher());
-			bibtex.setSchool(xmlBibtex.getSchool());
-			// if (xmlBibtex.getScraperId() != null) bibtex.setScraperId(xmlBibtex.getScraperId().intValue());
-			bibtex.setSeries(xmlBibtex.getSeries());
-			bibtex.setTitle(xmlBibtex.getTitle());
-			bibtex.setType(xmlBibtex.getType());
-			bibtex.setUrl(xmlBibtex.getUrl());
-			bibtex.setVolume(xmlBibtex.getVolume());
-			bibtex.setYear(xmlBibtex.getYear());
-			bibtex.setPrivnote(xmlBibtex.getPrivnote());
-
-
+		// create resource
+		final BibtexType xmlPublication = xmlPost.getBibtex();
+		if (xmlPublication != null) {
+			checkBibTex(xmlPublication);
+			
+			final BibTex publication = new BibTex();
+			this.fillPublicationWithInformations(xmlPublication, publication);
+			
 			/*
 			 * check, of the post contains documents
 			 */
-			if (xmlPost.getDocuments() != null) {
+			final DocumentsType xmlDocuments = xmlPost.getDocuments();
+			if (xmlDocuments != null) {
 				final List<Document> documents = new LinkedList<Document>();
-				for (final DocumentType xmlDocument : xmlPost.getDocuments().getDocument()) {
+				for (final DocumentType xmlDocument : xmlDocuments.getDocument()) {
 					final Document document = new Document();
 					document.setFileName(xmlDocument.getFilename());
 					document.setMd5hash(xmlDocument.getMd5Hash());
 					documents.add(document);
 				}
-				bibtex.setDocuments(documents);
+				publication.setDocuments(documents);
 			}
 
-			checkBibTeX(bibtex);
+			checkBibTeX(publication);
 
-			post.setResource(bibtex);
+			post.setResource(publication);
 		}
-		if (xmlPost.getBookmark() != null) {
-			final BookmarkType xmlBookmark = xmlPost.getBookmark();
+		
+		final BookmarkType xmlBookmark = xmlPost.getBookmark();
+		if (xmlBookmark != null) {
 			checkBookmark(xmlBookmark);
 
 			final Bookmark bookmark = new Bookmark();
@@ -274,6 +257,7 @@ public class ModelFactory {
 
 			post.setResource(bookmark);
 		}
+		
 		if (xmlPost.getGroup() != null) {
 			post.setGroups(new HashSet<Group>());
 			for (final GroupType xmlGroup : xmlPost.getGroup()) {
@@ -286,6 +270,75 @@ public class ModelFactory {
 		}
 
 		return post;
+	}
+
+	/**
+	 * @param xmlPost
+	 * @return
+	 */
+	private Post<Resource> createPostWithUserAndDate(final PostType xmlPost) {
+		final Post<Resource> post = new Post<Resource>();
+		post.setDescription(xmlPost.getDescription());
+
+		// user
+		final User user = this.createUser(xmlPost);
+		post.setUser(user);
+		post.setDate(createDate(xmlPost));
+		return post;
+	}
+
+	/**
+	 * @param xmlPost
+	 * @param post
+	 */
+	private User createUser(final PostType xmlPost) {
+		final User user = new User();
+		final UserType xmlUser = xmlPost.getUser();
+		checkUser(xmlUser);
+		user.setName(xmlUser.getName());
+		
+		return user;
+	}
+
+	/**
+	 * @param xmlBibtex
+	 * @param bibtex
+	 */
+	private void fillPublicationWithInformations(final BibtexType xmlBibtex, final BibTex bibtex) {
+		bibtex.setAddress(xmlBibtex.getAddress());
+		bibtex.setAnnote(xmlBibtex.getAnnote());
+		bibtex.setAuthor(xmlBibtex.getAuthor());
+		bibtex.setAbstract(xmlBibtex.getBibtexAbstract());
+		bibtex.setBibtexKey(xmlBibtex.getBibtexKey());
+		bibtex.setKey(xmlBibtex.getBKey());
+		bibtex.setBooktitle(xmlBibtex.getBooktitle());
+		bibtex.setChapter(xmlBibtex.getChapter());
+		bibtex.setCrossref(xmlBibtex.getCrossref());
+		bibtex.setDay(xmlBibtex.getDay());
+		bibtex.setEdition(xmlBibtex.getEdition());
+		bibtex.setEditor(xmlBibtex.getEditor());
+		bibtex.setEntrytype(xmlBibtex.getEntrytype());
+		bibtex.setHowpublished(xmlBibtex.getHowpublished());
+		bibtex.setInstitution(xmlBibtex.getInstitution());
+		bibtex.setInterHash(xmlBibtex.getInterhash());
+		bibtex.setIntraHash(xmlBibtex.getIntrahash());
+		bibtex.setJournal(xmlBibtex.getJournal());
+		bibtex.setMisc(xmlBibtex.getMisc());
+		bibtex.setMonth(xmlBibtex.getMonth());
+		bibtex.setNote(xmlBibtex.getNote());
+		bibtex.setNumber(xmlBibtex.getNumber());
+		bibtex.setOrganization(xmlBibtex.getOrganization());
+		bibtex.setPages(xmlBibtex.getPages());
+		bibtex.setPublisher(xmlBibtex.getPublisher());
+		bibtex.setSchool(xmlBibtex.getSchool());
+		// if (xmlBibtex.getScraperId() != null) bibtex.setScraperId(xmlBibtex.getScraperId().intValue());
+		bibtex.setSeries(xmlBibtex.getSeries());
+		bibtex.setTitle(xmlBibtex.getTitle());
+		bibtex.setType(xmlBibtex.getType());
+		bibtex.setUrl(xmlBibtex.getUrl());
+		bibtex.setVolume(xmlBibtex.getVolume());
+		bibtex.setYear(xmlBibtex.getYear());
+		bibtex.setPrivnote(xmlBibtex.getPrivnote());
 	}
 
 	/** Checks the bibtex. Here a model validator can be plugged in which does the checking.

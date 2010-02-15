@@ -330,6 +330,17 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public Post<? extends Resource> parsePost(Reader reader) throws BadRequestOrResponseException;
+	
+	/**
+	 * Reads one standard {@link Post} from a {@link Reader}.
+	 * 
+	 * @param reader
+	 *            the {@link Reader} to use.
+	 * @return one {@link Post} object.
+	 * @throws BadRequestOrResponseException
+	 *             if the document within the reader is errorenous.
+	 */
+	public Post<? extends Resource> parseStandardPost(Reader reader) throws BadRequestOrResponseException;
 
 	/**
 	 * Reads a List of {@link Group}s from a {@link Reader}.
