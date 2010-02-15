@@ -189,6 +189,7 @@ public class ModelFactory {
 		
 		final BibtexType xmlPublication = xmlPost.getBibtex();
 		if (present(xmlPublication)) {
+			checkBibTex(xmlPublication);
 			final GoldStandardPublication publication = new GoldStandardPublication();
 			this.fillPublicationWithInformations(xmlPublication, publication);
 			
