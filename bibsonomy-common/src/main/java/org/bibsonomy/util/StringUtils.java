@@ -31,11 +31,12 @@ import java.util.Iterator;
 
 /**
  * Some methods for handling strings.
+ * @author 
+ * @version $Id$
  */
 public class StringUtils {
 	
 	private static final String DEFAULT_CHARSET = "UTF-8";
-	private static final String BUNDLE_NAME = "messages";
 	
 	/**
 	 * Calculates the MD5-Hash of a String s and returns it encoded as a hex
@@ -214,7 +215,6 @@ public class StringUtils {
 		return s1.compareToIgnoreCase(s2);
 	}
 	
-	
 	/**
 	 * Implode a collection of objects into a single String, delimited by a given delimiter.
 	 * 
@@ -249,8 +249,4 @@ public class StringUtils {
 	public static String implodeStringArray(String[] pieces, String delim) {
 		return implodeStringCollection(Arrays.asList(pieces), delim);
 	}
-	
-	
-	
-    
 }

@@ -35,6 +35,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
@@ -143,8 +144,8 @@ public class CommonModelUtils {
 	 * @param values
 	 * @return HashSet
 	 */
-	public static HashSet<String> buildLowerCaseHashSet(final String... values) {
-		final HashSet<String> rVal = new HashSet<String>();
+	public static Set<String> buildLowerCaseHashSet(final String... values) {
+		final Set<String> rVal = new HashSet<String>();
 		for (final String value : values) {
 			rVal.add(value.toLowerCase());
 		}
@@ -157,7 +158,7 @@ public class CommonModelUtils {
 	 * @param values
 	 * @return HashSet
 	 */
-	public static HashSet<String> buildLowerCaseHashSet(final Collection<String> values) {
+	public static Set<String> buildLowerCaseHashSet(final Collection<String> values) {
 		return buildLowerCaseHashSet(values.toArray(new String[values.size()]));
 	}
 

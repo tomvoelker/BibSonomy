@@ -26,6 +26,7 @@ package org.bibsonomy.common.errors;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 //TODO: find a nice and suitable name for errorsPackage
@@ -38,7 +39,7 @@ public class ErrorMessage {
 
 	private String errorMessage;
 	private String localizedMessageKey;
-	private ArrayList<String> parameters=null;
+	private List<String> parameters = null;
 	
 
 	/**
@@ -47,21 +48,21 @@ public class ErrorMessage {
 	public ErrorMessage() {
 		
 	}
+	
 	/**
 	 * @param errorMessage is like the exception message
 	 * @param localizedMessageKey 	is a key to the corresponding localized String in the message_properties files
 	 * @param parameters are some Strings for the localized message
 	 */
-	public ErrorMessage(String errorMessage, String localizedMessageKey, ArrayList<String>parameters) {
-		this.errorMessage=errorMessage;
-		this.localizedMessageKey=localizedMessageKey;
+	public ErrorMessage(String errorMessage, String localizedMessageKey, List<String>parameters) {
+		this.errorMessage = errorMessage;
+		this.localizedMessageKey = localizedMessageKey;
 		if (present(parameters)) {
-			this.parameters=parameters;
+			this.parameters = parameters;
 		} else {
-			this.parameters= new ArrayList<String>();
+			this.parameters = new ArrayList<String>();
 		}
 	}
-
 
 	/**
 	 * @return the errorMessage
@@ -94,14 +95,14 @@ public class ErrorMessage {
 	/**
 	 * @return the parameters
 	 */
-	public ArrayList<String> getParameters() {
+	public List<String> getParameters() {
 		return this.parameters;
 	}
 
 	/**
 	 * @param parameters the parameters to set
 	 */
-	public void setParameters(ArrayList<String> parameters) {
+	public void setParameters(List<String> parameters) {
 		this.parameters = parameters;
 	}
 	

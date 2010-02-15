@@ -23,14 +23,11 @@
 
 package org.bibsonomy.common.exceptions;
 
-import org.bibsonomy.common.enums.ConceptStatus;
-
 /**
  * Exception thrown if an unsupported system tag is requested
  * 
  * @author Dominik Benz
- * @version $Id: UnsupportedConceptStatusException.java,v 1.1 2008-02-14
- *          16:21:19 ss05sstuetzer Exp $
+ * @version $Id$
  */
 public class UnsupportedSystemTagException extends RuntimeException {
 
@@ -40,11 +37,10 @@ public class UnsupportedSystemTagException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Exception for unsupported types of ConceptStatus
+	 * Exception for unsupported types of system tags
 	 * 
-	 * @see ConceptStatus
-	 * @param status
-	 *            the requested status
+	 * @param systemTag
+	 *            the requested system tag
 	 */
 	public UnsupportedSystemTagException(final String systemTag) {
 		super("System tag " + systemTag + " is not supported");

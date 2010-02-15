@@ -1,11 +1,11 @@
 package org.bibsonomy.common.errors;
 
-
 /**
- * @author sdo
- * @version $Id$
  * Use this message if something went wrong and doesn't fit one of the other ErrorMessages.
  * Add the Exception, that occurred.
+ * 
+ * @author sdo
+ * @version $Id$
  */
 public class UnspecifiedErrorMessage extends ErrorMessage{
 
@@ -21,7 +21,7 @@ public class UnspecifiedErrorMessage extends ErrorMessage{
 	}
 	
 	/**
-	 * return the exception, that caused the error
+	 * @return the exception, that caused the error
 	 */
 	public Exception getException() {
 		return ex;
