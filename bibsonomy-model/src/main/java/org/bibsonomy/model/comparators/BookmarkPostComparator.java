@@ -23,18 +23,15 @@
 
 package org.bibsonomy.model.comparators;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
-import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.util.BibTexUtils;
+
 
 /**
  * Comparator used to sort bibtex posts

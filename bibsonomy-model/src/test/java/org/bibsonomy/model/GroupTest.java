@@ -23,7 +23,10 @@
 
 package org.bibsonomy.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.Privlevel;
@@ -31,6 +34,8 @@ import org.junit.Test;
 
 /**
  * Testcase for the Group class
+ * 
+ * @version $Id$
  */
 public class GroupTest {
 
@@ -50,6 +55,7 @@ public class GroupTest {
 	/**
 	 * per default, a group which has given no ID, should have an invalid ID 
 	 */
+	@Test
 	public void testDefaultGroupIsInvalid() {
 		final Group group = new Group();
 		assertEquals(GroupID.INVALID.getId(), group.getGroupId());
@@ -58,6 +64,7 @@ public class GroupTest {
 	/**
 	 * even if the group has a name, but no explicit id set, the id should be invalid  
 	 */
+	@Test
 	public void testGroupIsInvalidOnGivenNameOnly() {
 		final Group group = new Group("foo");
 		assertEquals(GroupID.INVALID.getId(), group.getGroupId());

@@ -41,7 +41,7 @@ public class DocumentTest {
 	 */
 	@Test
 	public void userName() {
-		assertEquals(null, new Document().getUserName());
+		assertNull(new Document().getUserName());
 
 		final Document doc = new Document();
 		doc.setUserName("TeStUsEr");

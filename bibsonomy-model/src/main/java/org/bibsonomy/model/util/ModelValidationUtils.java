@@ -143,6 +143,8 @@ public class ModelValidationUtils {
 			throw new InvalidModelException(XML_IS_INVALID_MSG + "groupname is missing in element 'group'");
 		}
 	}
+	
+	
 
 	/**
 	 * @param xmlPost the object to run sanity checks on
@@ -151,6 +153,14 @@ public class ModelValidationUtils {
 	public static void checkPost(final PostType xmlPost) throws InvalidModelException {
 		if (xmlPost.getTag() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "list of tags is missing");
 		if (xmlPost.getTag().size() == 0) throw new InvalidModelException(XML_IS_INVALID_MSG + "no tags specified");
+		
+		checkStandardPost(xmlPost);
+	}
+
+	/**
+	 * @param xmlPost
+	 */
+	public static void checkStandardPost(final PostType xmlPost) throws InvalidModelException {
 		if (xmlPost.getUser() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "user is missing");
 
 		final BibtexType xmlBibtex = xmlPost.getBibtex();

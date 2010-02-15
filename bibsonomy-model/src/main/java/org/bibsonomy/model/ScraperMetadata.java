@@ -38,34 +38,65 @@ public class ScraperMetadata implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -314704072107016413L;
+	
 	private URL url;
 	private String metaData;
 	private String scraperClass;
 	private int id;
 	
+	/**
+	 * @return the url
+	 */
 	public URL getUrl() {
 		return this.url;
 	}
+	
+	/**
+	 * @param url the url to set
+	 */
 	public void setUrl(URL url) {
 		this.url = url;
 	}
+	
+	/**
+	 * @return the metaData
+	 */
 	public String getMetaData() {
 		return this.metaData;
 	}
+	
+	/**
+	 * @param metaData the metaData to set
+	 */
 	public void setMetaData(String metaData) {
 		this.metaData = metaData;
 	}
+	
+	/**
+	 * @return the scraperClass
+	 */
 	public String getScraperClass() {
 		return this.scraperClass;
 	}
+	
+	/**
+	 * @param scraperClass the scraperClass to set
+	 */
 	public void setScraperClass(String scraperClass) {
 		this.scraperClass = scraperClass;
 	}
+	
+	/**
+	 * @return the id
+	 */
 	public int getId() {
 		return this.id;
 	}
+	
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
-
 }

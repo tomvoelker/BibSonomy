@@ -38,6 +38,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -151,14 +152,28 @@ public final class ModelUtils extends CommonModelUtils {
 	 * @return bibtex object filled with defaults
 	 */
 	public static BibTex getBibTex() {
-		final BibTex bibtex = new BibTex();
-		setBeanPropertiesOn(bibtex);
-		setResourceDefaults(bibtex);		
-		bibtex.setEntrytype("inproceedings");
-		bibtex.setAuthor("Hans Testauthor and Liese Testauthorin");
-		bibtex.setEditor("Peter Silie");
-		bibtex.recalculateHashes();
-		return bibtex;
+		final BibTex publication = new BibTex();
+		fillBibTex(publication);
+		return publication;
+	}
+	
+	private static void fillBibTex(final BibTex publication) {
+		setBeanPropertiesOn(publication);
+		setResourceDefaults(publication);		
+		publication.setEntrytype("inproceedings");
+		publication.setAuthor("Hans Testauthor and Liese Testauthorin");
+		publication.setEditor("Peter Silie");
+		publication.recalculateHashes();
+	}
+	
+	/**
+	 * creates a {@link GoldStandardPublication} with all properties set
+	 * @return a {@link GoldStandardPublication} object filled with defaults
+	 */
+	public static GoldStandardPublication getGoldStandardPublication() {
+		final GoldStandardPublication goldPublication = new GoldStandardPublication();
+		fillBibTex(goldPublication);
+		return goldPublication;
 	}
 
 	/**
