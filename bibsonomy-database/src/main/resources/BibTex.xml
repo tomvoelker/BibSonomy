@@ -24,7 +24,7 @@
 		SELECT <include refid ="commonBibtexAttributes"/>, <include refid="bibtexSimHashes"/>, h.ctr AS count, -1 AS scraperId, t.tag_name, b.`group`, NULL AS group_name
 		FROM (SELECT b2.*
 		      FROM bibtex b2
-		      WHERE title LIKE '$title$') AS b
+		      WHERE title LIKE #title#) AS b
 		INNER JOIN tas t ON b.content_id = t.content_id, bibhash h 
 		LIMIT #limit# OFFSET #offset#
 	</select>
