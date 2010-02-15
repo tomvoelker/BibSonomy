@@ -61,16 +61,4 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	public boolean removeAllFromReferences(final Set<BibTex> publications) {
 		return this.references == null ? false : this.references.removeAll(publications);
 	}
-	
-	// TODO: discuss this override TODODZ
-	@Override
-	public String getIntraHash() {
-		return this.getInterHash();
-	}
-	
-	// TODO: discuss this override TODODZ
-	@Override
-	public void setIntraHash(String intraHash) {
-		this.setInterHash(intraHash);
-	}
 }
