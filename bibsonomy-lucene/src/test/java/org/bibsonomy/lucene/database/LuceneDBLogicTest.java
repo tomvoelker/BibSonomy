@@ -115,7 +115,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void retrieveRecordsFromDatabase() {
 		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
+		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
 		List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
 		//--------------------------------------------------------------------
 		// TEST 1: insert special posts into test database and search for it
@@ -148,7 +148,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getContentIdsToDelete() {
 		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
+		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
 		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.Logging());
 		List<Post<? extends Resource>> refPosts = new LinkedList<Post<? extends Resource>>();
 		
@@ -180,7 +180,7 @@ public class LuceneDBLogicTest extends AbstractDatabaseManagerTest {
 	@Ignore // ignored test, as it inherently fails on slow machines
 	public void getNewestRecordDateFromTas() {
 		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
+		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
 
 		//--------------------------------------------------------------------
 		// TEST 1: insert special post into test database and search for it
