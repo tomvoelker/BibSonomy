@@ -833,7 +833,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String loginUserName = "testuser1";
 
 		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
-		final org.bibsonomy.database.plugin.plugins.BibTexExtra plugin = new org.bibsonomy.database.plugin.plugins.BibTexExtra();
+	    final org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin plugin = new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin();
 		DatabasePluginRegistry.getInstance().clearPlugins();
 		DatabasePluginRegistry.getInstance().add(plugin);
 
