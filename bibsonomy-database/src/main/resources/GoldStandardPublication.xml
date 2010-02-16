@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GoldStandardPublication">
+
+	<select id="getGoldStandardPublicationByHash" resultMap="GoldStandardPublicationCommon.goldStandardPublicationPost" parameterClass="String">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, 1 AS count FROM gold_standard_publications b
+		WHERE b.simhash1 = #hash# ORDER BY b.date DESC
+	</select>
+	
+	<select id="getGoldStandardPublicationRefercences" resultMap="BibTexCommon.bibtex" parameterClass="String">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count FROM gold_standard_publications b, gold_standard_publication_references r
+		WHERE r.publication = #hash# AND b.simhash1 = r.reference
+	</select>
+	
+	<insert id="insertGoldStandardPublication" parameterClass="bibtexParam">
+		INSERT INTO gold_standard_publications (<include refid ="allGoldStandardPublicationRows"/>)
+		VALUES <include refid ="allGoldStandardPublicationValues"/>
+	</insert>
+	
+	<delete id="deleteGoldStandardPublication">
+		DELETE FROM gold_standard_publications WHERE simhash1 = #hash#
+	</delete>
+	
+	<insert id="insertGoldStandardPublicationReference">
+		INSERT INTO gold_standard_publication_references (publication, reference, user_name) VALUES (#hash#, #refHash#, #username#)
+	</insert>
+	
+	<!-- be careful hash or refHash must be not null!!! or you delete everything -->
+	<delete id="deleteGoldStandardPublicationReference">
+		DELETE FROM gold_standard_publication_references WHERE 1
+		<dynamic prepend="AND">
+			<isNotNull property="hash">
+				 publication = #hash#
+			</isNotNull>
+		</dynamic>
+		<dynamic prepend="AND">
+			<isNotNull property="hash">
+				 reference = #refHash#
+			</isNotNull>
+		</dynamic>
+	</delete>
+	
+</sqlMap>

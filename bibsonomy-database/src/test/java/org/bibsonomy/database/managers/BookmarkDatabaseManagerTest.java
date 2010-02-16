@@ -4,13 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -21,20 +14,17 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
-import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.beans.TagIndex;
-import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.testutil.DatabasePluginMock;
+import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
-import org.bibsonomy.util.ExceptionUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -513,7 +503,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		post.setDescription("Some description");
 		post.setDate(new Date());
 		final User user = new User();
-		setBeanPropertiesOn(user);
+		CommonModelUtils.setBeanPropertiesOn(user);
 		user.setName("testuser1");
 		user.setRole(Role.NOBODY);
 		post.setUser(user);
@@ -522,7 +512,6 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setCount(0);
-		//bookmark.setIntraHash("e44a7a8fac3a70901329214fcc1525aa");
 		bookmark.setTitle("test");
 		bookmark.setUrl("http://www.testurl.orgg");
 		bookmark.recalculateHashes();
@@ -530,55 +519,6 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		
 		post.setResource(resource);
 		return post;
-	}
-	
-	/**
-	 * Calls every setter on an object and fills it wiht dummy values.
-	 */
-	private void setBeanPropertiesOn(final Object obj) {
-		try {
-			final BeanInfo bi = Introspector.getBeanInfo(obj.getClass());
-			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
-				try {
-					final Method setter = d.getWriteMethod();
-					final Method getter = d.getReadMethod();
-					if ((setter != null) && (getter != null)) {
-						setter.invoke(obj, new Object[] { getDummyValue(d.getPropertyType(), d.getName()) });
-					}
-				} catch (final Exception ex) {
-					ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not invoke setter '" + d.getName() + "'");
-				}
-			}
-		} catch (final IntrospectionException ex) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not introspect object of class '" + obj.getClass().getName() + "'");
-		}
-	}
-	
-	/**
-	 * Returns dummy values for some primitive types and classes
-	 */
-	private static Object getDummyValue(final Class<?> type, final String name) {
-		if (String.class == type) {
-			return "test-" + name;
-		}
-		if ((int.class == type) || (Integer.class == type)) {
-			return Math.abs(name.hashCode());
-		}
-		if ((boolean.class == type) || (Boolean.class == type)) {
-			return (name.hashCode() % 2 == 0);
-		}
-		if (URL.class == type) {
-			try {
-				return new URL("http://www.bibsonomy.org/test/" + name);
-			} catch (final MalformedURLException ex) {
-				throw new RuntimeException(ex);
-			}
-		}
-		if (Privlevel.class == type) {
-			return Privlevel.MEMBERS;
-		}
-		log.debug("no dummy value for type '" + type.getName() + "'");
-		return null;
 	}
 	
 	/**
@@ -610,17 +550,14 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		// Duplicate post and check whether plugins are called
 		this.resetParameters();
-		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
-		final DatabasePluginMock plugin = new DatabasePluginMock();
-		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(plugin);
-		assertFalse(plugin.isOnBibTexUpdate());
+		assertFalse(this.pluginMock.isOnBibTexUpdate());
+		this.pluginMock.reset();
 		
 		final String hash = "37f7645843eece1b46ae5202b6b489d8";
 		param.setHash(hash);
 		final Post<Bookmark> someBookmarkPost = this.bookmarkDb.getPostsByHash(hash, HashID.INTRA_HASH, GroupID.PUBLIC.getId(), 10, 0, this.dbSession).get(0);
 		this.bookmarkDb.updatePost(someBookmarkPost, hash, null, this.dbSession);
-		assertTrue(plugin.isOnBookmarkUpdate());
+		assertTrue(this.pluginMock.isOnBookmarkUpdate());
 	}
 
 	/**
@@ -661,9 +598,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getPosts
 	 */
-	@Ignore
+	@Ignore //FIXME: RuntimeException: Can't handle request
 	@Test
-	//FIXME: RuntimeException: Can't handle request
 	public void getPosts() {
 		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();
 		tagIndex.add(new TagIndex("suchmaschine", 1));

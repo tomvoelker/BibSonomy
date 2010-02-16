@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="GoldStandardPublicationReferneces">
+	<update id="updateGoldStandardPublicationReference">
+		UPDATE gold_standard_publication_references SET publication = #newId# WHERE publication = #oldId#
+	</update>
+	
+	<update id="updateReferenceGoldStandardPublication">
+		UPDATE gold_standard_publication_references SET reference = #newId# WHERE reference = #oldId#
+	</update>
+	
+	<delete id="deleteGoldStandardPublicationReferences">
+		DELETE FROM gold_standard_publication_references WHERE publication = #hash#
+	</delete>
+	
+	<delete id="deleteReferencesGoldStandardPublication">
+		DELETE FROM gold_standard_publication_references WHERE reference = #refHash#
+	</delete>
+</sqlMap>

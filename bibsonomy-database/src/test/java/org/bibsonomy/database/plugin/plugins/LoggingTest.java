@@ -10,13 +10,13 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.beans.TagIndex;
-import org.bibsonomy.database.plugin.AbstractDatabasePluginTest;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -33,7 +33,7 @@ import org.junit.Test;
  */
 @Ignore
 // FIXME adapt to new test db
-public class LoggingTest extends AbstractDatabasePluginTest {
+public class LoggingTest extends AbstractDatabaseManagerTest {
 
 	private Integer anyContentId;
 
@@ -42,8 +42,8 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 	 */
 	@Test
 	public void addLoggingPlugin() {
-		this.plugins.clearPlugins();
-		this.plugins.add(new Logging());
+		this.pluginRegistry.clearPlugins();
+		this.pluginRegistry.add(new Logging());
 	}
 
 	/**
@@ -52,7 +52,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 	@Test
 	public void onBibTexDelete() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.plugins.onBibTexDelete(anyContentId, dbSession);
+		this.pluginRegistry.onBibTexDelete(anyContentId, dbSession);
 	}
 
 	/**
@@ -61,7 +61,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 	@Test
 	public void onBibTexUpdate() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.plugins.onBibTexUpdate(anyContentId, anyContentId - 1, dbSession);
+		this.pluginRegistry.onBibTexUpdate(anyContentId, anyContentId - 1, dbSession);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 	@Test
 	public void onBookmarkDelete() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.plugins.onBookmarkDelete(anyContentId, dbSession);
+		this.pluginRegistry.onBookmarkDelete(anyContentId, dbSession);
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 	@Test
 	public void onBookmarkUpdate() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.plugins.onBookmarkUpdate(anyContentId, anyContentId - 1, dbSession);
+		this.pluginRegistry.onBookmarkUpdate(anyContentId, anyContentId - 1, dbSession);
 	}
 
 	/**
@@ -88,7 +88,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 	@Test
 	public void onTagRelationDelete() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.plugins.onTagRelationDelete("upperTagName", "lowerTagName", "userName", dbSession);
+		this.pluginRegistry.onTagRelationDelete("upperTagName", "lowerTagName", "userName", dbSession);
 	}
 
 	/**
@@ -97,7 +97,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 	@Test
 	public void onTagDelete() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.plugins.onTagDelete(anyContentId, dbSession);
+		this.pluginRegistry.onTagDelete(anyContentId, dbSession);
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class LoggingTest extends AbstractDatabasePluginTest {
 	@Test
 	public void removeUserFromGroup() {
 		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.plugins.onRemoveUserFromGroup("username", 1, dbSession);
+		this.pluginRegistry.onRemoveUserFromGroup("username", 1, dbSession);
 	}
 
 	/**

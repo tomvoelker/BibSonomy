@@ -14,11 +14,9 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.beans.TagIndex;
-import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.bibsonomy.testutil.DatabasePluginMock;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -62,6 +60,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 * tests insertRelations (existing relations)
 	 */
 	@Ignore
+	@Test
 	public void testInsertExistingRelations() {
 		final Integer newId1 = this.generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
 		this.tagRelDb.insertRelations(tag, "test-user", this.dbSession);
@@ -74,15 +73,11 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 * tests deleteRelation
 	 */
 	@Ignore
+	@Test
 	public void testDeleteRelation() {
-		// FIXME: this boilerplate code could be removed with a DI-framework
-		// (i.e. next three lines)
-		final DatabasePluginMock plugin = new DatabasePluginMock();
-		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(plugin);
-		assertFalse(plugin.isOnTagRelationDelete());
+		assertFalse(this.pluginMock.isOnTagRelationDelete());
 		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();
-		final ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		tagIndex.add(new TagIndex("researcher", 1));
 		
 		final int countBefore = bibTexDb.getPostsByConceptForUser("jaeschke", "jaeschke", visibleGroupIDs, tagIndex, false, 100, 0, null, this.dbSession).size();
@@ -92,13 +87,14 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		log.debug("after: " + countAfter);
 		assertTrue(countBefore > countAfter);
 
-		assertTrue(plugin.isOnTagRelationDelete());
+		assertTrue(this.pluginMock.isOnTagRelationDelete());
 	}
 
 	/**
 	 * get picked concepts for User
 	 */
 	@Ignore
+	@Test
 	public void getPickedConceptsForUser() {
 		final List<Tag> relations = this.tagRelDb.getPickedConceptsForUser("hotho", this.dbSession);
 		// hotho has six concepts
@@ -109,6 +105,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 * retrieve all concepts for a user
 	 */
 	@Ignore
+	@Test
 	public void getAllConceptsForUser() {
 		final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, GroupingEntity.USER, "hotho", null, null, null, 0, Integer.MAX_VALUE, null, null, new User());
 		final List<Tag> relations = this.tagRelDb.getAllConceptsForUser(param, this.dbSession);
@@ -120,6 +117,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 * Retrive all global concepts
 	 */
 	@Ignore
+	@Test
 	public void testGetAllConcepts() {
 		final List<Tag> concepts = this.tagRelDb.getAllConcepts(this.dbSession);
 		assertEquals(50, concepts.size());
@@ -129,6 +127,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 * Retrives a global cocept by name
 	 */
 	@Ignore
+	@Test
 	public void testGetGlobalConceptByName() {
 		final Tag concept = this.tagRelDb.getGlobalConceptByName("programming", this.dbSession);
 		assertEquals(9, concept.getSubTags().size());

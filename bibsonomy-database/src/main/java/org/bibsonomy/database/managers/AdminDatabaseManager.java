@@ -277,12 +277,12 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 *            something that classfied the user
 	 * @param status
 	 *            the state to which the user was classified
-	 * @param interval
+	 * @param limit
 	 * @param session
 	 *            the db session
 	 * @return list of users
 	 */
-	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit, DBSession session) {
+	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit, final DBSession session) {
 		final AdminParam param = new AdminParam();
 		param.setInterval(1000);
 		param.setLimit(limit);
@@ -384,6 +384,8 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param user
 	 *            the user object
+	 * @param session 
+	 * @return TODO
 	 */
 	public User getClassifierUserDetails(final User user, final DBSession session) {
 		return this.queryForObject("getClassifierUserDetails", user.getName(), user, session);

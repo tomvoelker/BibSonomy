@@ -34,10 +34,8 @@ import org.junit.Test;
  * @author Christian Kramer
  * @author Christian Schenk
  * @author Clemens Baier
- * @version $Id: TagDatabaseManagerTest.java,v 1.40 2009-11-11 10:25:59
- *          nosebrain Exp $
+ * @version $Id$
  */
-
 public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	/** logger */
@@ -69,7 +67,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Ignore
 	public void getAllTags() {
 		final List<Tag> tags = this.tagDb.getAllTags(this.tagParam, this.dbSession);
-		// assertEquals(10, tags.size());
+		assertEquals(10, tags.size());
 	}
 
 	@Test
@@ -237,7 +235,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getTagsByBibtexHash() {
 		String loginUserName = "hotho";
 		String hash = "palim palim";
-		ArrayList<Integer> visibleGroups = new ArrayList<Integer>();
+		List<Integer> visibleGroups = new ArrayList<Integer>();
 		visibleGroups.add(0);
 		List<Tag> tags = this.tagDb.getTagsByBibtexHash(loginUserName, hash, HashID.INTER_HASH, visibleGroups, 0, 20, this.dbSession);
 	}
@@ -253,7 +251,7 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String loginUserName = "hotho";
 		final String requestedUserName = "hotho";
 		final String hash = "palim palim";
-		ArrayList<Integer> visibleGroups = new ArrayList<Integer>();
+		List<Integer> visibleGroups = new ArrayList<Integer>();
 		visibleGroups.add(0);
 		List<Tag> tags = this.tagDb.getTagsByBibtexHashForUser(loginUserName, requestedUserName, hash, HashID.INTER_HASH, visibleGroups, 0, 20, this.dbSession);
 	}
@@ -302,10 +300,10 @@ public class TagDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	@Ignore
 	public void getRelatedTagsForUser() {
-		TagParam param = new TagParam();
+		final TagParam param = new TagParam();
 		param.addTagName("clustering");
 		param.addTagName("text");
-		ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		visibleGroupIDs.add(0);
 		List<Tag> tags = this.tagDb.getRelatedTagsForUser(null, "hotho", param.getTagIndex(), visibleGroupIDs, 0, 10, this.dbSession);
 	}

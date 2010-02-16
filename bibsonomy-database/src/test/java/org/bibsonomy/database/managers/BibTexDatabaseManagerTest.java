@@ -7,13 +7,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,14 +22,12 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.common.enums.Privlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.beans.TagIndex;
-import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
@@ -44,9 +35,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
-import org.bibsonomy.testutil.DatabasePluginMock;
+import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
-import org.bibsonomy.util.ExceptionUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -88,10 +78,9 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 	@Test
 	public void getBibTexByHashCount() {
-		Integer count = -1;
+		int count = -1;
 		String hash0 = "9abf98937435f05aec3d58b214a2ac58";
 		count = this.bibTexDb.getPostsByHashCount(hash0, HashID.SIM_HASH0, this.dbSession);
-		assertNotNull(count);
 		assertEquals(1, count);
 	}
 
@@ -107,7 +96,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		String intraHash = "";
 		final List<Integer> visibleGroupIDs = new ArrayList<Integer>(0);
 		posts = this.bibTexDb.getPostsByHashForUser(loginUserName, intraHash, requestedUserName, visibleGroupIDs, HashID.INTRA_HASH, this.dbSession);
-		assertNotNull(posts);
 		assertEquals(0, posts.size());
 		
 		// check inter & simhash0 for a intrahash
@@ -739,21 +727,21 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		post.setDescription("trallalla");
 		post.setDate(new Date());
 		final User user = new User();
-		setBeanPropertiesOn(user);
+		CommonModelUtils.setBeanPropertiesOn(user);
 		user.setName("testuser1");
 		user.setRole(Role.NOBODY);
 		post.setUser(user);
 		final BibTex resource;
 
 		
-		final BibTex bibtex = new BibTex();
-		this.setBeanPropertiesOn(bibtex);
-		bibtex.setCount(0);		
-		bibtex.setEntrytype("inproceedings");
-		bibtex.setAuthor("Hans Testauthor and Liese Testauthorin");
-		bibtex.setEditor("Peter Silie");
-		bibtex.setTitle("bibtex insertpost test");
-		resource = bibtex;
+		final BibTex publication = new BibTex();
+		CommonModelUtils.setBeanPropertiesOn(publication);
+		publication.setCount(0);		
+		publication.setEntrytype("inproceedings");
+		publication.setAuthor("Hans Testauthor and Liese Testauthorin");
+		publication.setEditor("Peter Silie");
+		publication.setTitle("bibtex insertpost test");
+		resource = publication;
 		
 		String title, year, journal, booktitle, volume, number = null;
 		title = "test friend title";
@@ -762,65 +750,16 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		booktitle = "test booktitle";
 		volume = "test volume";
 		number = "test number";
-		bibtex.setTitle(title);
-		bibtex.setYear(year);
-		bibtex.setJournal(journal);
-		bibtex.setBooktitle(booktitle);
-		bibtex.setVolume(volume);
-		bibtex.setNumber(number);
-		bibtex.setType("2");
-		bibtex.recalculateHashes();
+		publication.setTitle(title);
+		publication.setYear(year);
+		publication.setJournal(journal);
+		publication.setBooktitle(booktitle);
+		publication.setVolume(volume);
+		publication.setNumber(number);
+		publication.setType("2");
+		publication.recalculateHashes();
 		post.setResource(resource);
 		return post;
-	}
-	
-	/**
-	 * Calls every setter on an object and fills it wiht dummy values.
-	 */
-	private void setBeanPropertiesOn(final Object obj) {
-		try {
-			final BeanInfo bi = Introspector.getBeanInfo(obj.getClass());
-			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
-				try {
-					final Method setter = d.getWriteMethod();
-					final Method getter = d.getReadMethod();
-					if ((setter != null) && (getter != null)) {
-						setter.invoke(obj, new Object[] { getDummyValue(d.getPropertyType(), d.getName()) });
-					}
-				} catch (final Exception ex) {
-					ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not invoke setter '" + d.getName() + "'");
-				}
-			}
-		} catch (final IntrospectionException ex) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "could not introspect object of class '" + obj.getClass().getName() + "'");
-		}
-	}
-	
-	/**
-	 * Returns dummy values for some primitive types and classes
-	 */
-	private static Object getDummyValue(final Class<?> type, final String name) {
-		if (String.class == type) {
-			return "test-" + name;
-		}
-		if ((int.class == type) || (Integer.class == type)) {
-			return Math.abs(name.hashCode());
-		}
-		if ((boolean.class == type) || (Boolean.class == type)) {
-			return (name.hashCode() % 2 == 0);
-		}
-		if (URL.class == type) {
-			try {
-				return new URL("http://www.bibsonomy.org/test/" + name);
-			} catch (final MalformedURLException ex) {
-				throw new RuntimeException(ex);
-			}
-		}
-		if (Privlevel.class == type) {
-			return Privlevel.MEMBERS;
-		}
-		log.debug("no dummy value for type '" + type.getName() + "'");
-		return null;
 	}
 	
 	/**
@@ -831,11 +770,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void storePostBibTexUpdatePlugin() {
 		final String hash = "b77ddd8087ad8856d77c740c8dc2864a";		
 		final String loginUserName = "testuser1";
-
-		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
-	    final org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin plugin = new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin();
-		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(plugin);
 
 		List<BibTexExtra> extras = this.bibTexExtraDb.getURL(hash, loginUserName, this.dbSession);
 		assertEquals(1, extras.size());
@@ -858,9 +792,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void createPost() {
-		// make sure the BibTexExtra plugin is activated
-		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
 		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
 		toInsert.getResource().recalculateHashes();
 		final String bibtexHashForUpdate = "14143c6508fe645ca312d0aa5d0e791b"; // INTRA-hash of toInsert
@@ -877,13 +808,12 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 
 		// post a duplicate and check whether plugins are called
 		this.resetParameters();
-		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
-		final DatabasePluginMock plugin = new DatabasePluginMock();
-		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(plugin);
-		assertFalse(plugin.isOnBibTexUpdate());
+		
+		assertFalse(this.pluginMock.isOnBibTexUpdate());
+		this.pluginMock.reset();
+		
 		this.postDuplicate(bibtexHashForUpdate);
-		assertTrue(plugin.isOnBibTexUpdate());
+		assertTrue(this.pluginMock.isOnBibTexUpdate());
 		
 		this.bibTexDb.deletePost(toInsert.getUser().getName(), toInsert.getResource().getIntraHash(), this.dbSession);
 		
@@ -894,11 +824,8 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void deleteBibTex() {
-		// FIXME: this boilerplate code could be removed with a DI-framework (i.e. next three lines)
-		final DatabasePluginMock plugin = new DatabasePluginMock();
-		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(plugin);
-		assertFalse(plugin.isOnBibTexDelete());
+		assertFalse(this.pluginMock.isOnBibTexDelete());
+		this.pluginMock.reset();
 
 		// first: insert post such that we can delete it later
 		
@@ -923,7 +850,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		else {
 			fail("Post could not be deleted");
 		}
-		assertTrue(plugin.isOnBibTexDelete());
+		assertTrue(this.pluginMock.isOnBibTexDelete());
 		
 		// delete private post
 		toInsert.getGroups().clear();
@@ -1016,7 +943,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		this.bibtexParam.setGroupId(GroupID.PUBLIC.getId());
 		//this.bibTexDb.getBibTexByAuthorAndTag(this.bibtexParam, this.dbSession);
 		try {
-			final List <Post<BibTex>> posts = this.bibTexDb.getPostsForUser(this.bibtexParam, this.dbSession);
+			this.bibTexDb.getPostsForUser(this.bibtexParam, this.dbSession);
 			fail();
 		} catch (Exception e) {
 			// timeout
@@ -1120,7 +1047,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		try {
 			this.bibTexDb.updatePost(updatePost, updateResource.getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession);
 			fail("expected a DatabaseException");
-		} catch (DatabaseException ex) {
+		} catch (final DatabaseException ex) {
 			final List<ErrorMessage> messages = ex.getErrorMessages(updateResource.getIntraHash());
 			assertEquals(1, messages.size());
 			

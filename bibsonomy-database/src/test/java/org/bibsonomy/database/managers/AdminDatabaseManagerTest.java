@@ -129,7 +129,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		user.setMode("D");
 		user.setAlgorithm("testlogging");
 		//flag spammer (flagging does not change: user is no spammer)
-		final String result = this.adminDb.flagSpammer(user, "fei", "off", this.dbSession);
+		this.adminDb.flagSpammer(user, "fei", "off", this.dbSession);
 		
 		// remove spam informations
 		user.setSpammer(null);

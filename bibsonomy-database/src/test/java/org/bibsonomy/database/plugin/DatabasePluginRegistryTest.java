@@ -4,44 +4,45 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.bibsonomy.testutil.DatabasePluginMock;
+import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.junit.Test;
 
 /**
  * @author Christian Schenk
  * @version $Id$
  */
-public class DatabasePluginRegistryTest extends AbstractDatabasePluginTest {
+public class DatabasePluginRegistryTest extends AbstractDatabaseManagerTest {
 
 	/**
 	 * tests that the plugins are called
 	 */
 	@Test
 	public void testThatPluginsAreCalled() {
-		final DatabasePluginMock plugin = new DatabasePluginMock();
-		this.plugins.clearPlugins();
-		this.plugins.add(plugin);
+		this.pluginRegistry.clearPlugins();
+		this.pluginRegistry.add(this.pluginMock);
+		
+		assertFalse(this.pluginMock.isOnBibTexDelete());
+		assertFalse(this.pluginMock.isOnBibTexInsert());
+		assertFalse(this.pluginMock.isOnBibTexUpdate());
+		assertFalse(this.pluginMock.isOnBookmarkInsert());
+		assertFalse(this.pluginMock.isOnBookmarkUpdate());
+		assertFalse(this.pluginMock.isOnTagRelationDelete());
+		
+		this.pluginMock.reset();
 
-		assertFalse(plugin.isOnBibTexDelete());
-		assertFalse(plugin.isOnBibTexInsert());
-		assertFalse(plugin.isOnBibTexUpdate());
-		assertFalse(plugin.isOnBookmarkInsert());
-		assertFalse(plugin.isOnBookmarkUpdate());
-		assertFalse(plugin.isOnTagRelationDelete());
+		this.pluginRegistry.onBibTexDelete(1, null);
+		this.pluginRegistry.onBibTexInsert(1, null);
+		this.pluginRegistry.onBibTexUpdate(1, 2, null);
+		this.pluginRegistry.onBookmarkInsert(1, null);
+		this.pluginRegistry.onBookmarkUpdate(1, 2, null);
+		this.pluginRegistry.onTagRelationDelete(null, null, null, null);
 
-		this.plugins.onBibTexDelete(1, null);
-		this.plugins.onBibTexInsert(1, null);
-		this.plugins.onBibTexUpdate(1, 2, null);
-		this.plugins.onBookmarkInsert(1, null);
-		this.plugins.onBookmarkUpdate(1, 2, null);
-		this.plugins.onTagRelationDelete(null, null, null, null);
-
-		assertTrue(plugin.isOnBibTexDelete());
-		assertTrue(plugin.isOnBibTexInsert());
-		assertTrue(plugin.isOnBibTexUpdate());
-		assertTrue(plugin.isOnBookmarkInsert());
-		assertTrue(plugin.isOnBookmarkUpdate());
-		assertTrue(plugin.isOnTagRelationDelete());
+		assertTrue(this.pluginMock.isOnBibTexDelete());
+		assertTrue(this.pluginMock.isOnBibTexInsert());
+		assertTrue(this.pluginMock.isOnBibTexUpdate());
+		assertTrue(this.pluginMock.isOnBookmarkInsert());
+		assertTrue(this.pluginMock.isOnBookmarkUpdate());
+		assertTrue(this.pluginMock.isOnTagRelationDelete());
 	}
 
 	/**
@@ -49,12 +50,11 @@ public class DatabasePluginRegistryTest extends AbstractDatabasePluginTest {
 	 */
 	@Test
 	public void onlyOnePluginInstancePerTypeAllowed() {
-		final DatabasePluginMock plugin = new DatabasePluginMock();
-		this.plugins.clearPlugins();
-		this.plugins.add(plugin);
+		this.pluginRegistry.clearPlugins();
+		this.pluginRegistry.add(this.pluginMock);
 
 		try {
-			this.plugins.add(plugin);
+			this.pluginRegistry.add(this.pluginMock);
 			fail("Should throw exception");
 		} catch (final RuntimeException ex) {
 		}

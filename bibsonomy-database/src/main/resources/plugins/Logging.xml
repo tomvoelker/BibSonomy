@@ -19,6 +19,20 @@
 	<update id="logBibTexUpdate" parameterClass="bibtexParam">
 		UPDATE log_bibtex SET new_content_id = #newContentId# WHERE content_id = #requestedContentId#
 	</update>
+	
+	<insert id="logGoldStandardPublication">
+		INSERT INTO log_gold_standard_publications (<include refid ="allGoldStandardPublicationRows"/>)
+		SELECT <include refid ="allGoldStandardPublicationRows"/>
+		FROM gold_standard_publications WHERE simhash1 = #oldId#
+	</insert>
+
+	<update id="logGoldStandardPublicationUpdate">
+		UPDATE log_gold_standard_publications SET new_simhash1 = #newId# WHERE simhash1 = #oldId# ORDER BY log_date DESC LIMIT 1
+	</update>
+	
+	<insert id="logGoldStandardPublicationReferenceDelete">
+		INSERT INTO log_gold_standard_publication_references (publication, reference, user_name) VALUES (#hash#, #refHash#, #username#)
+	</insert>
 
 	<insert id="logBookmark" parameterClass="bookmarkParam">
 		INSERT INTO log_bookmark (content_id, book_url_hash, book_description, book_extended, `group`, date, user_name)

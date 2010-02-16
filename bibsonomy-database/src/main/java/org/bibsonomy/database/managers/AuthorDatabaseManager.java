@@ -13,11 +13,8 @@ import org.bibsonomy.model.Author;
  * @version $Id$
  */
 public class AuthorDatabaseManager extends AbstractDatabaseManager {
-	
 	private static final Log LOG = LogFactory.getLog(AuthorDatabaseManager.class);
 	private final static AuthorDatabaseManager singleton = new AuthorDatabaseManager();
-
-	private AuthorDatabaseManager() {	}
 
 	/**
 	 * @return AuthorDatabaseManager
@@ -26,6 +23,14 @@ public class AuthorDatabaseManager extends AbstractDatabaseManager {
 		return singleton;
 	}
 	
+	private AuthorDatabaseManager() {	}
+	
+	/**
+	 * TODO: improve documentation
+	 * @param session
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
 	public List<Author> getAuthors(final DBSession session) {
 		return queryForList("getAuthors", null, session);
 	}

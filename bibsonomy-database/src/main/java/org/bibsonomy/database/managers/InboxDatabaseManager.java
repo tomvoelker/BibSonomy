@@ -9,21 +9,16 @@ import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+
 /**
  * Manages Inbox functionalities
- * s.a. counting, creating and deleting messages from a users inbox 
- *  
+ * s.a. counting, creating and deleting messages from a users inbox
+ * 
+ * @author sdo
+ * @version $Id$
  */
-
 public class InboxDatabaseManager extends AbstractDatabaseManager {
-	private final static InboxDatabaseManager singleton = new InboxDatabaseManager();
-	private final  GeneralDatabaseManager generalDb; 
-	
-	
-	
-	protected InboxDatabaseManager(){
-		this.generalDb = GeneralDatabaseManager.getInstance();
-	}
+	private final static InboxDatabaseManager singleton = new InboxDatabaseManager(); 
 	
 	/**
 	 * @return a singleton instance of this InboxDatabaseManager
@@ -31,7 +26,14 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	public static InboxDatabaseManager getInstance() {
 		return singleton;
 	}
-
+	
+	
+	private final  GeneralDatabaseManager generalDb;
+	
+	private InboxDatabaseManager(){
+		this.generalDb = GeneralDatabaseManager.getInstance();
+	}
+	
 	/**
 	 * Retrieve the number of messages currently present in the inbox of the
 	 * given user.
@@ -45,7 +47,6 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	public int getNumInboxMessages(String receiver, final DBSession session) {
 		return queryForObject("getNumInboxMessages", receiver, Integer.class, session);
 	}
-	
 	
 	/**
 	 * creates one inbox Message
@@ -99,18 +100,9 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 		this.delete("deleteInboxMessageTags", messageId, session);
 	}
 	
-	
-	
-	
 	private int getMessageId(InboxParam param, DBSession session) {
 		return this.queryForObject("getInboxMessageId", param, Integer.class, session);
 	}
-	/**
-	 * drops all inbox items of users inbox
-	 * 
-	 * @param receiver
-	 * @param session
-	 */
 	
 	private List<Integer> getInboxMessageIds(final String receiver, final DBSession session) {
 		return this.queryForList("getInboxMessageIds", receiver, Integer.class, session);

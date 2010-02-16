@@ -3,7 +3,6 @@ package org.bibsonomy.database.params;
 import static org.junit.Assert.assertEquals;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.junit.Test;
 

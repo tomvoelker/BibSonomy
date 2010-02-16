@@ -241,8 +241,8 @@ public class DBLogic implements LogicInterface {
 			 * respect user privacy settings
 			 * clear all profile attributes if current login user isn't allowed to see the profile
 			 */
-			if (!this.permissionDBManager.isAllowedToAccessUsersProfile(user, this.loginUser, session) && present(user.getName())) {
-				return new User(userName);
+			if (!this.permissionDBManager.isAllowedToAccessUsersProfile(user, this.loginUser, session)) {
+				return new User(user.getName());
 			}
 			
 			/*
@@ -910,7 +910,7 @@ public class DBLogic implements LogicInterface {
 					hashes.add(this.createPost(post, session));
 				} catch (DatabaseException dbex) {
 					collectedException.addErrors(dbex);
-				} catch (Exception ex){
+				} catch (Exception ex) {
 					// some exception other than those covered in the DatabaseException was thrown					
 					collectedException.addToErrorMessages(post.getResource().getIntraHash(), new UnspecifiedErrorMessage(ex));
 				}

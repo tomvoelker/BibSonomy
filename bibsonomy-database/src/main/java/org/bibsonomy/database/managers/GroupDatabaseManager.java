@@ -219,7 +219,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return a new list of groups with special groups removed
 	 */
 	public List<Group> removeSpecialGroups(final List<Group> groups) {
-		final ArrayList<Group> newGroups = new ArrayList<Group>();
+		final List<Group> newGroups = new ArrayList<Group>();
 		for (final Group group : groups) {
 			if (!GroupID.isSpecialGroupId(group.getGroupId()))
 				newGroups.add(group);
@@ -413,7 +413,8 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		if(tagset == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "TagSet ('" + setName + "') doesn't exist for group ('" + groupname + "')");
 		}
-		TagSetParam param = new TagSetParam();
+		
+		final TagSetParam param = new TagSetParam();
 		param.setSetName(setName);
 		param.setGroupId(group.getGroupId());
 		this.delete("deleteTagSet", param, session);
@@ -427,13 +428,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void updateTagSet(final TagSet tagset, final String groupname, final DBSession session){
-		
 		//delete the old TagSet
 		this.deleteTagSet(tagset.getSetName(), groupname, session);
 		
 		//insert the new TagSet
 		this.insertTagSet(tagset, groupname, session);
-		
 	}
 	
 	/**

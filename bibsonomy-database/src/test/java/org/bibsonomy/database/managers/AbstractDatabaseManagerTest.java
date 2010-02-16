@@ -1,5 +1,7 @@
 package org.bibsonomy.database.managers;
 
+import static org.junit.Assert.fail;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.params.BibTexParam;
@@ -10,9 +12,12 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.database.plugin.DatabasePlugin;
+import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
+import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.JNDITestDatabaseBinder;
 import org.bibsonomy.testutil.ParamUtils;
 import org.bibsonomy.testutil.TestDatabaseLoader;
@@ -55,9 +60,13 @@ public abstract class AbstractDatabaseManagerTest {
 	protected TagRelationParam tagRelationParam;
 	protected GroupParam groupParam;
 	protected StatisticsParam statisticsParam;
-
+	
+	protected DatabasePluginRegistry pluginRegistry;
+	protected DatabasePluginMock pluginMock;
+	
 	private DBSessionFactory dbSessionFactory;
 	protected DBSession dbSession;
+	
 
 	/**
 	 * Initializes the test database.
@@ -95,8 +104,20 @@ public abstract class AbstractDatabaseManagerTest {
 
 			this.dbSessionFactory = new IbatisDBSessionFactory();
 			this.dbSession = this.dbSessionFactory.getDatabaseSession();
+			
+			// load plugins
+			this.pluginRegistry = DatabasePluginRegistry.getInstance();
+			this.pluginMock = new DatabasePluginMock();
+			this.pluginRegistry.clearPlugins();
+			
+			this.pluginRegistry.add(pluginMock);
+			for (final DatabasePlugin plugin : DatabasePluginRegistry.getDefaultPlugins()) {
+				this.pluginRegistry.add(plugin);
+			}
+			
 		} catch (final Throwable ex) {
 			log.fatal("exception in testcase setUp", ex);
+			fail("setup failed. cause: " + ex.getMessage());
 		}
 	}
 
