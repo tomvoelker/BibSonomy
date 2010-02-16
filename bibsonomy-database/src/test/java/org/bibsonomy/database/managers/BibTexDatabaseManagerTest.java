@@ -860,7 +860,7 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void createPost() {
 		// make sure the BibTexExtra plugin is activated
 		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
+		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
 		final Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost();
 		toInsert.getResource().recalculateHashes();
 		final String bibtexHashForUpdate = "14143c6508fe645ca312d0aa5d0e791b"; // INTRA-hash of toInsert
