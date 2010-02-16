@@ -9,5 +9,14 @@ import org.bibsonomy.rest.enums.HttpMethod;
  * @version $Id$
  */
 public interface ContextHandler {
+	
+	/**
+	 * TODO: improve documentation
+	 * 
+	 * @param context
+	 * @param urlTokens
+	 * @param httpMethod
+	 * @return TODO
+	 */
 	public Strategy createStrategy(Context context, StringTokenizer urlTokens, HttpMethod httpMethod);
 }
