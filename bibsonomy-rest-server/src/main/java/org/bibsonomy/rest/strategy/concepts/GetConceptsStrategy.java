@@ -1,7 +1,6 @@
 package org.bibsonomy.rest.strategy.concepts;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConceptStatus;
@@ -27,6 +26,9 @@ public class GetConceptsStrategy extends Strategy {
 	private final List<String> tags;
 	private EscapingPrintWriter writer;
 	
+	/**
+	 * @param context
+	 */
 	public GetConceptsStrategy(Context context) {
 		super(context);
 		this.resourceType = Resource.getResource(context.getStringAttribute("resourcetype", "all"));				

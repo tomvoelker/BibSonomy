@@ -11,7 +11,11 @@ import org.bibsonomy.rest.strategy.Context;
 public class DeleteUserStrategy extends AbstractDeleteStrategy {
 
 	private final String userName;
-
+	
+	/**
+	 * @param context
+	 * @param userName
+	 */
 	public DeleteUserStrategy(final Context context, final String userName) {
 		super(context);
 		this.userName = userName;

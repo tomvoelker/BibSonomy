@@ -3,8 +3,6 @@ package org.bibsonomy.rest.strategy.groups;
 import java.io.Writer;
 import java.util.List;
 
-import javax.mail.Quota.Resource;
-
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.RestProperties;

@@ -19,6 +19,10 @@ public class PutUserStrategy extends AbstractUpdateStrategy {
 	private final Reader doc;
 	private final String userName;
 
+	/**
+	 * @param context
+	 * @param userName
+	 */
 	public PutUserStrategy(final Context context, final String userName) {
 		super(context);
 		this.userName = userName;

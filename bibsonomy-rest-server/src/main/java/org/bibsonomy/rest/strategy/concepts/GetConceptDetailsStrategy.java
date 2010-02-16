@@ -1,7 +1,6 @@
 package org.bibsonomy.rest.strategy.concepts;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
 import java.io.Writer;
 
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -24,6 +23,10 @@ public class GetConceptDetailsStrategy extends Strategy {
 	private final String conceptName;
 	private Writer writer;
 	
+	/**
+	 * @param context
+	 * @param conceptName
+	 */
 	public GetConceptDetailsStrategy(final Context context, final String conceptName) {
 		super(context);
 		this.conceptName = conceptName;

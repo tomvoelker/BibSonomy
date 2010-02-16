@@ -10,7 +10,11 @@ import org.bibsonomy.rest.strategy.Context;
  */
 public class DeleteGroupStrategy extends AbstractDeleteStrategy {
 	private final String groupName;
-
+	
+	/**
+	 * @param context
+	 * @param groupName
+	 */
 	public DeleteGroupStrategy(final Context context, final String groupName) {
 		super(context);
 		this.groupName = groupName;

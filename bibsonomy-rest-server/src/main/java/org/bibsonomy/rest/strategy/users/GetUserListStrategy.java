@@ -16,7 +16,10 @@ import org.bibsonomy.rest.strategy.Context;
  * @version $Id$
  */
 public class GetUserListStrategy extends AbstractGetListStrategy<List<User>> {
-
+	
+	/**
+	 * @param context
+	 */
 	public GetUserListStrategy(final Context context) {
 		super(context);
 	}

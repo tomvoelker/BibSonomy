@@ -20,6 +20,7 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
@@ -31,7 +32,7 @@ import org.bibsonomy.rest.strategy.Context;
  */
 public class PutPostStrategy extends AbstractUpdateStrategy {
 	private final String userName;
-	private final String resourceHash;
+	protected final String resourceHash;
 
 	/**
 	 * Create new PutPostStrategy
@@ -66,15 +67,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 
 	@Override
 	protected String update() throws InternServerException, BadRequestOrResponseException {
-		final Post<?> post = this.getRenderer().parsePost(this.doc);
-		/*
-		 * set postingdate to current time
-		 */
-		post.setDate(new Date(System.currentTimeMillis()));				
-		/*
-		 * set the (old) intrahash of the resource as specified in the URL
-		 */
-		post.getResource().setIntraHash(this.resourceHash);
+		final Post<?> post = this.getPost();
 		/*
 		 * XXX: neither the client nor the REST API will calculate the new
 		 * hash - this will be done by the logic behind the LogicInterface!
@@ -130,5 +123,21 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 			// If none of the errors handled above occurred we throw the original Exception
 			throw de;
 		}
+	}
+
+	/**
+	 * @return the post to update
+	 */
+	protected Post<? extends Resource> getPost() {
+		final Post<? extends Resource> post = this.getRenderer().parsePost(this.doc);
+		/*
+		 * set postingdate to current time
+		 */
+		post.setDate(new Date(System.currentTimeMillis()));				
+		/*
+		 * set the (old) intrahash of the resource as specified in the URL
+		 */
+		post.getResource().setIntraHash(this.resourceHash);
+		return post;
 	}
 }

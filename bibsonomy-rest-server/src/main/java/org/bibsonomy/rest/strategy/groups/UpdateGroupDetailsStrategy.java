@@ -10,12 +10,15 @@ import org.bibsonomy.rest.strategy.Context;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id: UpdateGroupDetailsStrategy.java,v 1.5 2007/04/15 11:05:07 mbork
- *          Exp $
+ * @version $Id$
  */
 public class UpdateGroupDetailsStrategy extends AbstractUpdateStrategy {
 	private final String groupName;
 
+	/**
+	 * @param context
+	 * @param groupName
+	 */
 	public UpdateGroupDetailsStrategy(final Context context, final String groupName) {
 		super(context);
 		this.groupName = groupName;

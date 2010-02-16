@@ -1,7 +1,6 @@
 package org.bibsonomy.rest.strategy.users;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.List;
 
@@ -12,9 +11,9 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
-import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 
 /**
  * Handle a user concepts request
@@ -31,6 +30,10 @@ public class GetUserConceptsStrategy extends Strategy {
 	
 	private Writer writer;
 	
+	/**
+	 * @param context
+	 * @param userName
+	 */
 	public GetUserConceptsStrategy(final Context context, final String userName) {
 		super(context);
 		this.userName = userName;

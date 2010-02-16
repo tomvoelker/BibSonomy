@@ -22,6 +22,9 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	protected final List<String> tags;
 	protected final String search;
 	
+	/**
+	 * @param context
+	 */
 	public AbstractListOfPostsStrategy(final Context context) {
 		super(context);
 		this.tagString = context.getStringAttribute("tags", null);

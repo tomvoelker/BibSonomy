@@ -1,13 +1,11 @@
 package org.bibsonomy.rest.strategy.groups;
 
-import java.io.Reader;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
-import org.bibsonomy.rest.strategy.Strategy;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -15,6 +13,9 @@ import org.bibsonomy.rest.strategy.Strategy;
  */
 public class AddGroupStrategy extends AbstractCreateStrategy {
 	
+	/**
+	 * @param context
+	 */
 	public AddGroupStrategy(final Context context) {
 		super(context);
 	}

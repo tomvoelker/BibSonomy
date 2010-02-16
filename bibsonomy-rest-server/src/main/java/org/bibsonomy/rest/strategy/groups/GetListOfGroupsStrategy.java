@@ -13,7 +13,10 @@ import org.bibsonomy.rest.strategy.Context;
  * @version $Id$
  */
 public class GetListOfGroupsStrategy extends AbstractGetListStrategy<List<Group>> {
-
+	
+	/**
+	 * @param context
+	 */
 	public GetListOfGroupsStrategy(final Context context) {
 		super(context);
 	}

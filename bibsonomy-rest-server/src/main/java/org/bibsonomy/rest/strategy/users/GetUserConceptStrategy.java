@@ -1,18 +1,16 @@
 package org.bibsonomy.rest.strategy.users;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
+import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
-import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 
 /**
  * Handle user concept request
@@ -38,7 +36,7 @@ public class GetUserConceptStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
 		writer = new EscapingPrintWriter(outStream);
 		Tag concept = this.getLogic().getConceptDetails(this.conceptName, GroupingEntity.USER, userName);
 		if (concept == null) {

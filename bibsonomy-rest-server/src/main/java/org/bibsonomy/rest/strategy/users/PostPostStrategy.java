@@ -19,6 +19,7 @@ import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
@@ -31,6 +32,10 @@ import org.bibsonomy.rest.strategy.Context;
 public class PostPostStrategy extends AbstractCreateStrategy {
 	private final String userName;
 
+	/**
+	 * @param context
+	 * @param userName
+	 */
 	public PostPostStrategy(final Context context, final String userName) {
 		super(context);
 		this.userName = userName;
@@ -48,7 +53,7 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 
 	@Override
 	protected String create() throws InternServerException, BadRequestOrResponseException {
-		final Post<?> post = this.getRenderer().parsePost(this.doc);
+		final Post<?> post = this.parsePost();
 		/*
 		 * set postingdate to current time (i.e., users cannot create posts with their
 		 * own (eventually faked) date
@@ -59,7 +64,7 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 			posts.add(post);
 			return this.getLogic().createPosts(posts).get(0); //throws DatabaseException
 		}
-/* these 3 catches shouldn't be reached due to the ExceptionHandling in DBLogic
+		/* these 3 catches shouldn't be reached due to the ExceptionHandling in DBLogic
   		catch ( InvalidModelException ex ) {
 			throw new BadRequestOrResponseException(ex.getMessage());
 		}
@@ -111,6 +116,17 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 		}
 	}
 
+	/**
+	 * @return the post to create
+	 */
+	protected Post<? extends Resource> parsePost() {
+		return this.getRenderer().parsePost(this.doc);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.rest.strategy.AbstractCreateStrategy#render(java.io.Writer, java.lang.String)
+	 */
 	@Override
 	protected void render(Writer writer, String resourceHash) {
 		this.getRenderer().serializeResourceHash(writer, resourceHash);		

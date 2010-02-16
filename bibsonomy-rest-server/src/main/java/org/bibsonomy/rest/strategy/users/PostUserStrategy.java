@@ -14,6 +14,9 @@ import org.bibsonomy.rest.strategy.Context;
  */
 public class PostUserStrategy extends AbstractCreateStrategy {
 	
+	/**
+	 * @param context
+	 */
 	public PostUserStrategy(final Context context) {
 		super(context);
 	}

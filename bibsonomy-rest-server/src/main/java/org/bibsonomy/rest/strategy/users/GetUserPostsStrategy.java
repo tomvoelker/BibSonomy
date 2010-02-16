@@ -21,7 +21,11 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 	private final String tagString;
 	private final String search;
 	private final Class<? extends Resource> resourceType;
-
+	
+	/**
+	 * @param context
+	 * @param userName
+	 */
 	public GetUserPostsStrategy(final Context context, final String userName) {
 		super(context);
 		this.userName = userName;

@@ -15,6 +15,11 @@ public class DeletePostStrategy extends AbstractDeleteStrategy {
 	private final String userName;
 	private final String resourceHash;
 
+	/**
+	 * @param context
+	 * @param userName
+	 * @param resourceHash
+	 */
 	public DeletePostStrategy(final Context context, final String userName, final String resourceHash) {
 		super(context);
 		this.userName = userName;

@@ -14,18 +14,24 @@ public class DeleteUserConceptStrategy extends AbstractDeleteStrategy {
 	private final String userName;
 	private final String lowerTag;
 	
+	/**
+	 * sets fields
+	 * @param context
+	 * @param conceptName
+	 * @param userName
+	 */
 	public DeleteUserConceptStrategy(Context context, String conceptName, String userName) {
 		super(context);
 		this.conceptName = conceptName;
 		this.userName = userName;
 		
-		lowerTag = context.getStringAttribute("subtag", null);		
+		this.lowerTag = context.getStringAttribute("subtag", null);		
 	}
 
 	@Override
 	protected boolean delete() {
 		// delete whole concept
-		if (lowerTag == null) {
+		if (this.lowerTag == null) {
 			this.getLogic().deleteConcept(this.conceptName, GroupingEntity.USER, this.userName);		
 		} else {
 			// delete relation only

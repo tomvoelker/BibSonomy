@@ -3,11 +3,11 @@ package org.bibsonomy.rest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.errors.ErrorMessage;
@@ -36,8 +37,6 @@ import org.bibsonomy.rest.renderer.RendererFactory;
 import org.bibsonomy.rest.renderer.UrlRenderer;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.util.file.MultiPartRequestParser;
-
-import org.apache.commons.codec.binary.Base64;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
@@ -61,7 +60,7 @@ public final class RestServlet extends HttpServlet {
 	private LogicInterfaceFactory logicFactory;
 	
 	// store some infos about the specific request or the webservice (i.e. rootPath)
-	private final HashMap<String, String> additionalInfos = new HashMap<String, String>();
+	private final Map<String, String> additionalInfos = new HashMap<String, String>();
 
 	@Override
 	public void init() throws ServletException {

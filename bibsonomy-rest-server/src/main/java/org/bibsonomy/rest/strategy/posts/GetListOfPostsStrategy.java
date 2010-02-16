@@ -14,6 +14,9 @@ import org.bibsonomy.rest.strategy.Context;
 public class GetListOfPostsStrategy extends AbstractListOfPostsStrategy {
 	private final String nextLinkPrefix;
 
+	/**
+	 * @param context
+	 */
 	public GetListOfPostsStrategy(final Context context) {
 		super(context);
 		this.nextLinkPrefix = RestProperties.getInstance().getApiUrl() + RestProperties.getInstance().getPostsUrl();

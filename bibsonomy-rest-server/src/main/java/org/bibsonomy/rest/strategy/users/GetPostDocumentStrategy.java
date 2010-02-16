@@ -4,8 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Writer;
-import java.util.HashMap;
+import java.util.Map;
 
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Document;
@@ -26,7 +25,7 @@ public class GetPostDocumentStrategy extends Strategy{
 	private final String userName;
 	private final String resourceHash;
 	private final String fileName;
-	private final HashMap<String, String> additionalInfos;
+	private final Map<String, String> additionalInfos;
 
 	/**
 	 * @param context
