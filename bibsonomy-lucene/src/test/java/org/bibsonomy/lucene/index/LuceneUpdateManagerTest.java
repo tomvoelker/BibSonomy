@@ -131,7 +131,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// store test post in database
 		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
+		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
 		Post<BibTex> toInsert = this.generateBibTexDatabaseManagerTestPost(GroupID.PRIVATE);
 		
 		this.bibTexDb.createPost(toInsert, this.dbSession);
@@ -184,7 +184,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// store test post in database
 		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
+		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
 		Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		
 		this.bibTexDb.createPost(bibtexPost, this.dbSession);
@@ -413,7 +413,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		//--------------------------------------------------------------------
 		// store test post in database
 		DatabasePluginRegistry.getInstance().clearPlugins();
-		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtra());
+		DatabasePluginRegistry.getInstance().add(new org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin());
 		Post<BibTex> bibtexPost = this.generateBibTexDatabaseManagerTestPost(GroupID.PUBLIC);
 		String bibTitle = "luceneTitle1";
 		bibtexPost.getResource().setTitle(bibTitle);
