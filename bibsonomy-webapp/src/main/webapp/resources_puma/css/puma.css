@@ -53,3 +53,10 @@ margin-top: 2ex;
 margin-right:2ex;
 }
 
+#path_menu a {
+	color: #DF430D;
+}
+
+#path_menu a:hover {
+	color: #000000;
+}
