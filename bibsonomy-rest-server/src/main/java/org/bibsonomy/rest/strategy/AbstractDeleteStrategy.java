@@ -1,7 +1,6 @@
 package org.bibsonomy.rest.strategy;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -14,6 +13,9 @@ import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 public abstract class AbstractDeleteStrategy extends Strategy {
 	protected Writer writer;
 	
+	/**
+	 * @param context
+	 */
 	public AbstractDeleteStrategy(final Context context) {
 		super(context);
 	}

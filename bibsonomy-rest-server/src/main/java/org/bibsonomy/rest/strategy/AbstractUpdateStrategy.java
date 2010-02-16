@@ -1,12 +1,10 @@
 package org.bibsonomy.rest.strategy;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
-
 import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
 
 /**
@@ -17,6 +15,9 @@ public abstract class AbstractUpdateStrategy extends Strategy {
 	protected final Reader doc;
 	protected Writer writer;
 	
+	/**
+	 * @param context
+	 */
 	public AbstractUpdateStrategy(final Context context) {
 		super(context);
 		this.doc = context.getDocument();

@@ -73,13 +73,13 @@ public final class Context {
 	/**
 	 * the list with all items out of the http request
 	 */
-	private List<FileItem> items = null;
+	private final List<FileItem> items;
 	
 	/**
 	 * this should hold all additional infos of the webservice or request
 	 * i.e. the rootpath which have been declared in the web.xml
 	 */
-	private HashMap<String, String> additionalInfos;
+	private final Map<String, String> additionalInfos;
 
 	/**
 	 * @param doc 
@@ -96,7 +96,7 @@ public final class Context {
 	 * @throws ValidationException
 	 *             if '/' is requested
 	 */
-	public Context(final InputStream doc, final LogicInterface logic, final HttpMethod httpMethod, final String url, final Map<?, ?> parameterMap, final List<FileItem> items, final HashMap<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
+	public Context(final InputStream doc, final LogicInterface logic, final HttpMethod httpMethod, final String url, final Map<?, ?> parameterMap, final List<FileItem> items, final Map<String, String> additionalInfos) throws ValidationException, NoSuchResourceException {
 		this.doc = doc;
 		this.logic = logic;
 		// FIXME this.httpMethod = httpMethod;
@@ -139,7 +139,7 @@ public final class Context {
 	}
 
 	/**
-	 * @param stream
+	 * @param outStream
 	 * @throws InternServerException
 	 */
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
@@ -216,13 +216,11 @@ public final class Context {
 		return Context.getStringAttribute(this.parameterMap, parameterName, defaultValue);
 	}
 
-	/**
-	 * Returns a {@link String} parameter of the request's parametermap, if any.
-	 * 
+	/** 
 	 * @param parameterMap
 	 * @param parameterName
 	 * @param defaultValue
-	 * @return
+	 * @return a {@link String} parameter of the request's parametermap, if any.
 	 */
 	public static String getStringAttribute(final Map<?, ?> parameterMap, final String parameterName, final String defaultValue) {
 		if (parameterMap.containsKey(parameterName)) {
@@ -268,8 +266,7 @@ public final class Context {
 	}
 
 	/**
-	 * 
-	 * @return 
+	 * @return TODO: improve documentation
 	 */
 	public Reader getDocument()  {
 		try {
@@ -287,7 +284,7 @@ public final class Context {
 	 * 
 	 * @return additionalInfos
 	 */
-	public HashMap<String, String> getAdditionalInfos() {
+	public Map<String, String> getAdditionalInfos() {
 		return this.additionalInfos;
 	}
 	
