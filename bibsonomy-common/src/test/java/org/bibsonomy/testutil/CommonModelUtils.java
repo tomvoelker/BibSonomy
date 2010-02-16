@@ -64,8 +64,9 @@ public class CommonModelUtils {
 
 	/**
 	 * Calls every setter on an object and fills it wiht dummy values.
+	 * @param obj 
 	 */
-	protected static void setBeanPropertiesOn(final Object obj) {
+	public static void setBeanPropertiesOn(final Object obj) {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(obj.getClass());
 			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {
