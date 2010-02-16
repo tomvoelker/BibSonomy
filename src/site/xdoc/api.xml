@@ -306,7 +306,7 @@
 							<td>GET</td>
 							<td>
 								/tags ?filter=[regex] ?(user|group|viewable)=[username/groupname]
-								?order=(frequency)
+								?order=(frequency|alph)
 							</td>
 							<td>
 								<img src="images/icon_success_sml.gif" />
