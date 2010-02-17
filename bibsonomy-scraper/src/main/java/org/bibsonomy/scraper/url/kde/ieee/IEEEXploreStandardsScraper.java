@@ -78,7 +78,7 @@ public class IEEEXploreStandardsScraper extends AbstractUrlScraper {
 			
 			Matcher matcher = pattern.matcher(sc.getUrl().toString());
 			if(matcher.find()){
-				String downUrl = "http://ieeexplore.ieee.org/xpls/citationAct?dlSelect=cite_abs&fileFormate=BibTex&arnumber=<arnumber>" + matcher.group(1) + "</arnumber>";
+				String downUrl = "http://ieeexplore.ieee.org/xpl/downloadCitations?citations-format=citation-abstract&download-format=download-bibtex&fromPageName=abstract&recordIds=" + matcher.group(1);
 				String bibtex = null;
 				try {
 					bibtex = WebUtils.getContentAsString(new URL(downUrl));

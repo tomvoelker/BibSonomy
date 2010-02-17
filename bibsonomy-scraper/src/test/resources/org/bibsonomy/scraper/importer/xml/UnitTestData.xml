@@ -226,7 +226,7 @@
 	</URLTest>
 	<URLTest id="url_36">
 		<TestDescription>URL scraping test with books from ieeexplore</TestDescription>
-		<URL>http://ieeexplore.ieee.org/books/bkabstractplus.jsp?bkn=0780353692&amp;pos=0</URL>
+		<URL>http://ieeexplore.ieee.org/xpl/bkabstractplus.jsp?bkn=5263132</URL>
 		<BibFile>IEEEXploreBookScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreBookScraper</Scraper>
 	</URLTest>
@@ -933,7 +933,7 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreBookScraper</Scraper>
 	</URLTest>
 	<URLTest id="url_159">
-		<TestDescription>URL scraping test with books from ieeexplore</TestDescription>
+		<TestDescription>URL scraping test for sciencedirect scraper</TestDescription>
 		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6VRG-4P2J0DY-2&amp;_user=4861060&amp;_rdoc=1&amp;_fmt=&amp;_orig=search&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=79ade29e7ed69e54fd25657532c9f419</URL>
 		<BibFile>ScienceDirectScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>

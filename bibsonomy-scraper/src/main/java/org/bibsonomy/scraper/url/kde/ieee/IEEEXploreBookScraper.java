@@ -59,7 +59,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 	href(SITE_URL, SITE_NAME);
 
 	private static final String IEEE_HOST        = "ieeexplore.ieee.org";
-	private static final String IEEE_BOOK_PATH   = "books";
+	private static final String IEEE_BOOK_PATH   = "xpl";
 	private static final String IEEE_SEARCH_PATH = "search";
 	private static final String IEEE_BOOK	     = "@book";
 
@@ -70,8 +70,7 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 	private static final String CONST_VOLUME   = "Volume: ";
 	private static final String CONST_DATE	   = "Publication Date: ";
 	
-	private static final String EXPORT_BKN_URL   = "http://ieeexplore.ieee.org/books/bkCiteAction";
-	private static final String EXPORT_ARNUM_URL = "http://ieeexplore.ieee.org/xpls/citationAct";
+	private static final String EXPORT_ARNUM_URL = "http://ieeexplore.ieee.org/xpl/downloadCitations";
 
 	private static final Pattern URL_PATTERN_BKN      = Pattern.compile("bkn=([^&]*)");
 	private static final Pattern URL_PATTERN_ARNUMBER = Pattern.compile("arnumber=([^&]*)");
@@ -87,26 +86,26 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 		sc.setScraper(this);
 		
 		String bibtex = null;
+		String postContent = null;
 		
 		Matcher matcher = URL_PATTERN_BKN.matcher(sc.getUrl().toString());
+		
+		
 		if(matcher.find()){
-			String postContent = "dlSelect=cite_abs&fileFormate=BibTex&arnumber=<arnumber>" + matcher.group(1) + "</arnumber>";
-			try {
-				bibtex = WebUtils.getPostContentAsString(new URL(EXPORT_BKN_URL), postContent);
-			} catch (IOException ex) {
-				throw new InternalFailureException(ex);
-			}
+			postContent = "citations-format=citation-abstract&download-format=download-bibtex&fromPageName=bookAbstract&recordIds=" + matcher.group(1);
 		}
 		
-		if (bibtex == null || bibtex.equals("")) {
-			matcher = URL_PATTERN_ARNUMBER.matcher(sc.getUrl().toString());
-			if(matcher.find()){
-				String postContent = "Submit=Download&arnumber=<arnumber>" + matcher.group(1) + "</arnumber>&dlSelect=cite_abs&fileFormate=BibTex";
-				try {
-					bibtex = WebUtils.getPostContentAsString(new URL(EXPORT_ARNUM_URL), postContent);
-				} catch (IOException ex) {
-					throw new InternalFailureException(ex);
-				}
+		matcher = URL_PATTERN_ARNUMBER.matcher(sc.getUrl().toString());
+		
+		if(matcher.find()){
+			postContent = "citations-format=citation-abstract&download-format=download-bibtex&fromPageName=abstract&recordIds=" + matcher.group(1);
+		}
+		
+		if (postContent != null) {
+			try {
+				bibtex = WebUtils.getPostContentAsString(new URL(EXPORT_ARNUM_URL), postContent);
+			} catch (IOException ex) {
+				throw new InternalFailureException(ex);
 			}
 		}
 		
@@ -156,7 +155,6 @@ public class IEEEXploreBookScraper extends AbstractUrlScraper {
 
 			String bibtexkey	= null;
 			String _tempabs		= null;
-			String _format		= null;
 			String ident1		= null;
 			String ident2		= null;
 
