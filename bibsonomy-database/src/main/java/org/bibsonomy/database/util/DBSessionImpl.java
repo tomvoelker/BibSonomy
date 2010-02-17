@@ -106,16 +106,13 @@ public class DBSessionImpl implements DBSession {
 				if (this.uncommittedDepth == 0) {
 					if (this.aborted == false) {
 						if (!this.databaseException.hasErrorMessages()){
-							// everything went well during the whole session
+							// everything went well during the whole transaction => commit
 							try {
 								this.sqlMap.commitTransaction();
 								log.debug("committed");
 							} catch (final SQLException ex) {
 								ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't commit transaction");
 							}
-						} else {
-							log.info("Couldn't commit transaction due to errors during the session");
-							throw databaseException;
 						}
 					}
 				}
@@ -126,6 +123,11 @@ public class DBSessionImpl implements DBSession {
 					log.debug("ended");
 				} catch (final SQLException ex) {
 					ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't end transaction");
+				}
+				if (this.databaseException.hasErrorMessages()) {
+					// errors occurred, sql connection was closed => throw databaseException
+					log.info("Couldn't commit transaction due to errors during the session");
+					throw this.databaseException;
 				}
 			}
 		} else {

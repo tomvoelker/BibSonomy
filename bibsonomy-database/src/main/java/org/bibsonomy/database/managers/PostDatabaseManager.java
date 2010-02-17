@@ -1033,7 +1033,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				session.addError(post.getResource().getIntraHash(), errorMessage);
 				// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 				session.commitTransaction();
-				session.endTransaction();
 				return false;
 			}
 			/*
@@ -1106,7 +1105,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					session.addError(post.getResource().getIntraHash(), errorMessage);
 					// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 					session.commitTransaction();
-					session.endTransaction();
 					return false;
 					//FIXME:remove this comment
 					//log.warn(this.resourceClassName + " with hash " + oldHash + " does not exist for user " + userName);
@@ -1149,7 +1147,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					session.addError(post.getResource().getIntraHash(), errorMessage);
 					// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 					session.commitTransaction();
-					session.endTransaction();
 					return false;
 
 				}
