@@ -38,11 +38,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(GroupDatabaseManager.class);
 
 	private final static GroupDatabaseManager singleton = new GroupDatabaseManager();
-	private final UserDatabaseManager userDb;
+	private UserDatabaseManager userDb;
 	private final DatabasePluginRegistry plugins;
 
 	private GroupDatabaseManager() {
-		this.userDb = UserDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 
@@ -130,7 +129,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		Group group;
 		if ("friends".equals(groupname)) {
 			group = GroupUtils.getFriendsGroup();
-			group.setUsers(this.userDb.getUserRelation(authUser, UserRelation.OF_FRIEND, session));
+			group.setUsers(this.getUserDb().getUserRelation(authUser, UserRelation.OF_FRIEND, session));
 			return group;
 		}
 		if ("public".equals(groupname)) {
@@ -345,7 +344,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		}
 
 		// check if a user exists with that name
-		if (this.userDb.getUserDetails(group.getName(), session).getName() == null) {
+		if (this.getUserDb().getUserDetails(group.getName(), session).getName() == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name - can't create a group with this name");
 		}
 		// check if a group exists with that name
@@ -468,7 +467,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void addUserToGroup(final String groupname, final String username, final DBSession session) {
 		// check if a user exists with that name
-		if (this.userDb.getUserDetails(username, session).getName() == null) {
+		if (this.getUserDb().getUserDetails(username, session).getName() == null) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "There's no user with this name ('" + username + "')");
 		}
 		// make sure that the group exists
@@ -507,5 +506,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		
 		this.plugins.onRemoveUserFromGroup(username, group.getGroupId(), session);
 		this.delete("removeUserFromGroup", group, session);
+	}
+
+	public void setUserDb(UserDatabaseManager userDbManager) {
+		userDb = userDbManager;
+	}
+	
+	public UserDatabaseManager getUserDb() {
+		return userDb;
 	}
 }

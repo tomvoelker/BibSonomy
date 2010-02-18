@@ -20,7 +20,7 @@ public class GetUsersByGroup extends UserChainElement {
 
 	@Override
 	protected List<User> handle(final UserParam param, final DBSession session) {
-		return this.groupDB.getGroupMembers(param.getUserName(), param.getRequestedGroupName(), session).getUsers();
+		return this.groupDb.getGroupMembers(param.getUserName(), param.getRequestedGroupName(), session).getUsers();
 	}
 
 	@Override
