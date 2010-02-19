@@ -78,7 +78,7 @@
                    </div>
   
                    <div class="fsRow">
-                     <form:label cssClass="fsLabel" path="post.resource.month" ><fmt:message key="post.resource.month"/></form:label><buttons:help message="post.resource.month.help}"/>
+                     <form:label cssClass="fsLabel" path="post.resource.month" ><fmt:message key="post.resource.month"/></form:label><buttons:help message="post.resource.month.help"/>
                      <form:input cssClass="fsInput fsSmall" path="post.resource.month" tabindex="2"/>
                      <div class="dissError"><form:errors path="post.resource.month" /></div>
                    </div>
