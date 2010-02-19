@@ -6,11 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -193,7 +191,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 				// FIXME: we simply cut off the list 
 				//      - we probably want get the n most popular tags
 				retVal = retVal.subList(0, Math.min(limit, retVal.size()));
-			};
+			}
 			
 			if( retVal==null )
 				retVal = new LinkedList<Tag>();
@@ -302,7 +300,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 				starttimeQuery = System.currentTimeMillis();
 				int postFreq = 1;
 				if( doc.get(FLD_INTERHASH)!=null ) {
-					postFreq = this.searcher.docFreq(new Term(FLD_INTRAHASH, doc.get(FLD_INTRAHASH)));
+					postFreq = this.searcher.docFreq(new Term(FLD_INTERHASH, doc.get(FLD_INTERHASH)));
 				}
 				endtimeQuery = System.currentTimeMillis();
 				log.debug("PostFreq query time: " + (endtimeQuery - starttimeQuery) + "ms");
