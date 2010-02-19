@@ -4,7 +4,6 @@ import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
-import org.bibsonomy.database.managers.TagRelationDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.model.BibTex;
@@ -38,20 +37,18 @@ public class DatabaseManagerInitializer {
 	private final BookmarkDatabaseManager bookmarkManager;
 
 	/** the tag database manager */
-	private final TagDatabaseManager tagManager = TagDatabaseManager.getInstance();
+	private final TagDatabaseManager tagManager;
 
 	
 	public DatabaseManagerInitializer() {
 		// FIXME: we have to initialize the db managers in a given order 
 		//        to prevent circular dependencies!!!
+		//        Better use spring for configuring the database module
 		UserDatabaseManager userDbManager = UserDatabaseManager.getInstance();
 		GroupDatabaseManager groupDbManager = GroupDatabaseManager.getInstance();
 		groupDbManager.setUserDb(userDbManager);
 		
-		Object test = null;
-		test = UserDatabaseManager.getInstance();
-		test = TagRelationDatabaseManager.getInstance();
-		test = TagDatabaseManager.getInstance();
+		this.tagManager      = TagDatabaseManager.getInstance();
 		this.bibTexManager   = BibTexDatabaseManager.getInstance();
 		this.bookmarkManager = BookmarkDatabaseManager.getInstance();
 	}
