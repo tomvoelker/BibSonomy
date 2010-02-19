@@ -23,26 +23,19 @@
 
 package org.bibsonomy.scraper.url.kde.aip;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.TagStringUtils;
@@ -75,8 +68,8 @@ public class AipScitationScraper extends AbstractUrlScraper {
 	/*
 	 * supported mime types
 	 */
-	private static final String AIP_CONTENT_TYPE_PLAIN = "text/plain";
-	private static final String AIP_CONTENT_TYPE_HTML = "text/html";
+	private static final String AIP_CONTENT_TYPE_HTML = "<!DOCTYPE html";
+	private static final Pattern AIP_CONTENT_TYPE_HTML_PATTERN = Pattern.compile(AIP_CONTENT_TYPE_HTML);
 
 	private static final Pattern inputPattern = Pattern.compile("<input(.*)>");
 	private static final Pattern valuePattern = Pattern.compile("value=\"([^\"]*)\"");
@@ -116,78 +109,63 @@ public class AipScitationScraper extends AbstractUrlScraper {
 		 */			
 		if(sc.getSelectedText() != null && sc.getUrl().getPath().startsWith(URL_AIP_CITATION_BIBTEX_PAGE_PATH) && sc.getUrl().toString().contains(HTML_INPUT_NAME_FN_AND_VALUE)){
 			sc.setBibtexResult(cleanKeywords(sc.getSelectedText()));
+			
 			return true;
 
 			/*
 			 * no snippet, check content from url
 			 */
-		}else{
-
-
-			HttpURLConnection urlConn = null;
+		} else{
 			try {
-
-				// get cookie data for auth
-				urlConn = (HttpURLConnection) sc.getUrl().openConnection();
-				String cookie = getCookie(urlConn);
-
 				// get page content
-				urlConn = (HttpURLConnection) sc.getUrl().openConnection();
-				String aipContent = getAipContent(urlConn, cookie);
-
+				String aipContent = WebUtils.getContentAsString(sc.getUrl().toString());
 				String selectcheck = null;
-				Pattern selectCheckPattern = Pattern.compile("var cvipsstr = \\\"([^\\\"]*)\\\";");
+				Pattern selectCheckPattern = Pattern.compile("name=\"SelectCheck\"\\s+value=\"(\\w+)");
 				Matcher selectCheckMatcher = selectCheckPattern.matcher(aipContent);
-				if(selectCheckMatcher.find())
-					selectcheck = selectCheckMatcher.group(1);
 				
-				/*
-				 * if bibtex content, then use this content as snippet
-				 */
-				if(urlConn.getContentType().startsWith(AIP_CONTENT_TYPE_PLAIN)){
-
-					sc.setBibtexResult(cleanKeywords(aipContent));
-					return true;
-
+				
+				if(selectCheckMatcher.find()) {
+					selectcheck = selectCheckMatcher.group(1);
+				}
+				
+				final Matcher m = AIP_CONTENT_TYPE_HTML_PATTERN.matcher(aipContent);
+				
+				if (m.find()) {
 					/*
 					 * if html content, build new link to bibtex content
 					 */
-				}else if(urlConn.getContentType().startsWith(AIP_CONTENT_TYPE_HTML)){
-					String aipContent2 = WebUtils.getContentAsString(new URL(SITE_URL + "journals/help_system/getabs/actions/download_citation_form.jsp"), cookie);
+					String aipContent2 = WebUtils.getContentAsString(SITE_URL + "journals/help_system/getabs/actions/download_citation_form.jsp");
+					StringBuffer downloadURL = getBibTeXDownloadURL(aipContent2, URL_AIP_CITATION_BIBTEX_PAGE, selectcheck);
 					
-					StringBuffer bibtexLink = getBibtexFromAIP(aipContent2, URL_AIP_CITATION_BIBTEX_PAGE, selectcheck);
-
 					// may be a spie link
-					if(bibtexLink == null){
+					if(downloadURL == null){
 						//extract doi
 						int indexOfDOILink = aipContent.indexOf(LINK_BEVOR_DOI) + LINK_BEVOR_DOI.length();
+
 						String startDOI = aipContent.substring(indexOfDOILink);
 						String doi = startDOI.substring(0, startDOI.indexOf("\n"));
-
-						URL doiURL = new URL(URL_DOI + doi);
-						HttpURLConnection doiConn = (HttpURLConnection) doiURL.openConnection();
-						URL spieURL = new URL(getSpieLink(doiConn));
-						URL spieURL2 = new URL(getSpieLink((HttpURLConnection) spieURL.openConnection()));
-
-						// build cookie
-						cookie = getCookie((HttpURLConnection) spieURL2.openConnection());
-
-						// get SPIE Page which is referenced by DOI
-						String spieContent = getAipContent((HttpURLConnection) spieURL2.openConnection(), cookie);
-						bibtexLink = getBibtexFromAIP(spieContent, URL_SPIE_AIP_CITATION_BIBTEX_PAGE, selectcheck);
+						String spieContent = WebUtils.getContentAsString(URL_DOI + doi);
+						
+						downloadURL = getBibTeXDownloadURL(spieContent, URL_SPIE_AIP_CITATION_BIBTEX_PAGE, selectcheck);
 					}
 
 					/*
 					 * download and scrape bibtex
 					 */
-					if(bibtexLink != null){
-						urlConn = (HttpURLConnection) new URL(bibtexLink.toString()).openConnection();
-						String bibtexResult = getAipContent(urlConn, cookie);
+					if (downloadURL != null){
+						String bibtexResult = WebUtils.getContentAsString(downloadURL.toString());
 						sc.setBibtexResult(cleanKeywords(bibtexResult));
 						return true;
-					}else
+					} else
 						throw new ScrapingFailureException("getting bibtex failed");
 
+				}else {
+					/*
+					 * if bibtex content, then use this content as snippet
+					 */
+					
+					sc.setBibtexResult(cleanKeywords(aipContent));
+					return true;
 				}
 			} catch (ConnectException cex) {
 				throw new InternalFailureException(cex);
@@ -195,7 +173,6 @@ public class AipScitationScraper extends AbstractUrlScraper {
 				throw new InternalFailureException(ioe);
 			}
 		}
-		throw new PageNotSupportedException("AipScitationScraper: Not supported aip page. no bibtex link in html.");
 	}
 
 	/**
@@ -224,77 +201,7 @@ public class AipScitationScraper extends AbstractUrlScraper {
 		return result;
 	}
 
-	/** FIXME: refactor
-	 * Gets the cookie which is needed to extract the content of aip pages.
-	 * (changed code from ScrapingContext.getContentAsString) 
-	 * @param urlConn Connection to api page (from url.openConnection())
-	 * @return The value of the cookie.
-	 * @throws IOException
-	 */
-	private String getCookie(HttpURLConnection urlConn) throws IOException{
-		String cookie = null;
-
-		urlConn.setAllowUserInteraction(true);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-		urlConn.setFollowRedirects(true);
-		urlConn.setInstanceFollowRedirects(false);
-
-		urlConn.setRequestProperty(
-				"User-Agent",
-		"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-		urlConn.connect();
-
-		// extract cookie from header
-		Map map = urlConn.getHeaderFields();
-		cookie = urlConn.getHeaderField("Set-Cookie");
-		if(cookie != null && cookie.indexOf(";") >= 0)
-			cookie = cookie.substring(0, cookie.indexOf(";"));
-
-		urlConn.disconnect();		
-		return cookie;
-	}
-
-	/** FIXME: refactor
-	 * Extract the content of a scitation.aip.org page.
-	 * (changed code from ScrapingContext.getContentAsString)
-	 * @param urlConn Connection to api page (from url.openConnection())
-	 * @param cookie Cookie for auth.
-	 * @return Content of aip page.
-	 * @throws IOException
-	 */
-	private String getAipContent(HttpURLConnection urlConn, String cookie) throws IOException{
-
-		urlConn.setAllowUserInteraction(true);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-		urlConn.setFollowRedirects(true);
-		urlConn.setInstanceFollowRedirects(false);
-		urlConn.setRequestProperty("Cookie", cookie);
-
-		urlConn.setRequestProperty(
-				"User-Agent",
-		"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-		urlConn.connect();
-
-		// build content
-		StringWriter out = new StringWriter();
-		InputStream in = new BufferedInputStream(urlConn.getInputStream());
-		int b;
-		while ((b = in.read()) >= 0) {
-			out.write(b);
-		}
-
-		urlConn.disconnect();
-		in.close();
-		out.flush();
-		out.close();
-
-		return out.toString();
-	}
-
+	
 	/**
 	 * The keywords field in bibtex references from scitation.aip.org are using ";" as delimiter. But it must be space seperated.
 	 * @param bibtex Extracted bibtex content.
@@ -326,11 +233,11 @@ public class AipScitationScraper extends AbstractUrlScraper {
 			// join the parts back to a complete bibtex reference
 			result = firstPart + "keywords = {" + keywords + "}" + secondPart;
 		}
-
+		
 		return result;
 	}
 
-	private StringBuffer getBibtexFromAIP(String aipContent, String aipPath, String selectcheckScript) throws UnsupportedEncodingException{
+	private StringBuffer getBibTeXDownloadURL(String aipContent, String aipPath, String selectcheckScript) throws UnsupportedEncodingException{
 		// sarch input fields
 		final Matcher inputMatcher = inputPattern.matcher(aipContent);
 
@@ -388,25 +295,6 @@ public class AipScitationScraper extends AbstractUrlScraper {
 		}
 
 		return bibtexLink;
-	}
-
-	private String getSpieLink(HttpURLConnection urlConn) throws IOException{
-		urlConn.setAllowUserInteraction(true);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-		urlConn.setFollowRedirects(true);
-		urlConn.setInstanceFollowRedirects(false);
-
-		urlConn.setRequestProperty(
-				"User-Agent",
-		"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-		urlConn.connect();
-
-		String spieLink = urlConn.getHeaderField("Location");
-		urlConn.disconnect();
-
-		return spieLink;
 	}
 
 	public String getInfo() {
