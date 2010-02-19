@@ -23,6 +23,7 @@
 
 package org.bibsonomy.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,8 +34,15 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -52,11 +60,19 @@ public class WebUtils {
 	/**
 	 * The user agent used for all requests with {@link HttpURLConnection}.
 	 */
-	private static final String USER_AGENT = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";
+	private static final String USER_AGENT_PROPERTY_VALUE = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";
 
 	private static final Log log = LogFactory.getLog(WebUtils.class);
 
-	private static final String CHARSET = "charset=";
+	private static final String CHARSET			= "charset=";
+	private static final String DEFAULT_CHARSET	= "UTF-8";
+	private static final String LOCATION		= "Location";
+	private static final String EQUAL_SIGN		= "=";
+	private static final String AMP_SIGN		= "&";
+	private static final String NEWLINE			= "\n";
+	private static final String SEMICOLON		= ";";
+	private static final String USER_AGENT_PROPERTY_NAME = "User-Agent";
+	private static final String COOKIE_PROPERTY_NAME	 = "Cookie";
 
 	/**
 	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
@@ -68,6 +84,8 @@ public class WebUtils {
 	 * @return The content of the result page.
 	 * 
 	 * @throws IOException
+	 * 
+	 * @Deprecated
 	 */
 	public static String getPostContentAsString(final URL url, final String postContent, final String charset, final String cookie) throws IOException {
 		final HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
@@ -83,10 +101,10 @@ public class WebUtils {
 		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
 		 * pages require it to download content.
 		 */
-		urlConn.setRequestProperty("User-Agent", USER_AGENT);
+		urlConn.setRequestProperty(USER_AGENT_PROPERTY_NAME, USER_AGENT_PROPERTY_VALUE);
 
 		if (cookie != null) {
-			urlConn.setRequestProperty("Cookie", cookie);
+			urlConn.setRequestProperty(COOKIE_PROPERTY_NAME, cookie);
 		}
 
 		
@@ -124,6 +142,8 @@ public class WebUtils {
 	 * @return The content of the result page.
 	 * 
 	 * @throws IOException
+	 * 
+	 * @Deprecated
 	 */
 	public static String getPostContentAsString(final URL url, final String postContent, final String charset) throws IOException {
 		return getPostContentAsString(url, postContent, charset, null);
@@ -138,6 +158,8 @@ public class WebUtils {
 	 * @return The content of the result page.
 	 * 
 	 * @throws IOException
+	 * 
+	 * @Deprecated
 	 */
 	public static String getPostContentAsString(final String cookie, final URL url, final String postContent) throws IOException {
 		return getPostContentAsString(url, postContent, null, cookie);
@@ -151,6 +173,8 @@ public class WebUtils {
 	 * @return The content of the result page.
 	 * 
 	 * @throws IOException
+	 * 
+	 * @Deprecated
 	 */
 	public static String getPostContentAsString(final URL url, final String postContent) throws IOException {
 		return getPostContentAsString(url, postContent, null, null);
@@ -163,6 +187,8 @@ public class WebUtils {
 	 * @param cookie a cookie which should be included in the header of the request send to the server
 	 * @return String which holds the page content.
 	 * @throws IOException 
+	 * 
+	 * @Deprecated
 	 */
 	public static String getContentAsString(final URL inputURL, final String cookie) throws IOException {
 		try {
@@ -171,13 +197,14 @@ public class WebUtils {
 			urlConn.setDoInput(true);
 			urlConn.setDoOutput(false);
 			urlConn.setUseCaches(false);
+
 			/*
 			 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
 			 * pages require it to download content.
 			 */
-			urlConn.setRequestProperty("User-Agent", USER_AGENT);
+			urlConn.setRequestProperty(USER_AGENT_PROPERTY_NAME, USER_AGENT_PROPERTY_VALUE);
 			if (cookie != null) {
-				urlConn.setRequestProperty("Cookie", cookie);
+				urlConn.setRequestProperty(COOKIE_PROPERTY_NAME, cookie);
 			}
 			urlConn.connect();
 
@@ -211,11 +238,102 @@ public class WebUtils {
 	 * @param inputURL the URL of the content.
 	 * @return String which holds the page content.
 	 * @throws IOException
+	 * 
+	 * @Deprecated
 	 */
 	public static String getContentAsString(final URL inputURL) throws IOException {
 		return getContentAsString(inputURL, null);
 	}
 	
+	
+	/**
+	 * Reads from a URL and writes the content into a string.
+	 * 
+	 * @param url
+	 * @param cookie
+	 * @param postData 
+	 * @return String which holds the page content.
+	 * @throws IOException
+	 */
+	public static String getContentAsString(final String url, final String cookie, final String postData) throws IOException {
+		HttpClient client = new HttpClient();
+		HttpMethod method;
+		ArrayList<NameValuePair> data;
+		StringBuilder content = new StringBuilder();
+		
+		if (postData != null) {
+			data = new ArrayList<NameValuePair>();
+			
+			String[] _params = postData.split(AMP_SIGN);
+			for (String s : _params) {
+				final String[] _p = s.split(EQUAL_SIGN);
+				
+				if (_p.length != 2) {
+					continue;
+				} 
+				
+				data.add(new NameValuePair(_p[0], _p[1]));
+			}
+			
+			method = new PostMethod(url);
+			NameValuePair[] _data = new NameValuePair[data.size()];
+			((PostMethod)method).setRequestBody(data.toArray(_data));
+		} else {
+			method = new GetMethod(url);
+			method.setFollowRedirects(true);
+		}
+		
+		if (cookie != null) {
+			method.setRequestHeader(COOKIE_PROPERTY_NAME, cookie);
+		}
+		
+		int status = client.executeMethod(method);
+		
+		if (status != HttpStatus.SC_OK) {
+			throw new IOException(url + " returns: " + status);
+		}
+		
+		InputStream is = method.getResponseBodyAsStream();
+		BufferedReader in = new BufferedReader(new InputStreamReader(is));
+		String _s = null;
+		
+		while ((_s = in.readLine()) != null) {
+			content.append(_s + NEWLINE);
+		}
+		
+		method.releaseConnection();
+		
+		if (content.length() > 0) {
+			return content.toString();
+		}
+		
+		return null;
+
+	}
+	
+	/**
+	 * Reads from a URL and writes the content into a string.
+	 * 
+	 * @param url
+	 * @return String which holds the page content.
+	 * @throws IOException
+	 */
+	public static String getContentAsString(final String url) throws IOException {
+		return getContentAsString(url, null, null);
+	}
+	
+	/**
+	 * Reads from a URL and writes the content into a string.
+	 * 
+	 * @param url
+	 * @param cookie 
+	 * @return String which holds the page content.
+	 * @throws IOException
+	 */
+	public static String getContentAsString(final String url, final String cookie) throws IOException {
+		return getContentAsString(url, cookie, null);
+	}
+
 
 	/**
 	 * Sends a request to the given URL and checks, if it contains a redirect.
@@ -248,14 +366,14 @@ public class WebUtils {
 				 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
 				 * pages require it to download content.
 				 */
-				urlConn.setRequestProperty("User-Agent", USER_AGENT);
+				urlConn.setRequestProperty(USER_AGENT_PROPERTY_NAME , USER_AGENT_PROPERTY_VALUE);
 
 				urlConn.connect();
 
 				// get URL to redirected resource
 				previousUrl = internalUrl;
 				try {
-					internalUrl = new URL(urlConn.getHeaderField("Location"));
+					internalUrl = new URL(urlConn.getHeaderField(LOCATION));
 				} catch (final MalformedURLException e) {
 					internalUrl = null;
 				}
@@ -270,8 +388,7 @@ public class WebUtils {
 			return null;
 		}
 	}
-
-
+	
 	/**
 	 * Returns the cookies returned by the server on accessing the URL. 
 	 * The format of the returned cookies is as
@@ -289,13 +406,13 @@ public class WebUtils {
 		urlConn.setDoOutput(false);
 		urlConn.setUseCaches(false);
 
-		urlConn.setRequestProperty("User-Agent", USER_AGENT);
+		urlConn.setRequestProperty(USER_AGENT_PROPERTY_NAME, USER_AGENT_PROPERTY_VALUE);
 
 		urlConn.connect();
 
 		final List<String> cookies = urlConn.getHeaderFields().get("Set-Cookie");
 		urlConn.disconnect();
-
+		
 		return buildCookieString(cookies);
 	}
 	
@@ -355,7 +472,7 @@ public class WebUtils {
 				String charSet = contentType.substring(charsetPosition + CHARSET.length());
 
 				// get only charset
-				final int charsetEnding = charSet.indexOf(";");
+				final int charsetEnding = charSet.indexOf(SEMICOLON);
 				if (charsetEnding > -1) {
 					/*
 					 * cut this:
@@ -370,7 +487,7 @@ public class WebUtils {
 		/*
 		 * default charset
 		 */
-		return "UTF-8";
+		return DEFAULT_CHARSET;
 	}
 
 
