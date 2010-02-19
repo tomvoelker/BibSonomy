@@ -264,6 +264,7 @@ var LocalizedStrings = {
    "feeds.swrc" : "SWRC-Ausgabe f\u00FCr",
    "filter" : "Filter",
    "filter.justPdf" : "nur mit PDF",
+   "filter.label" : "Filter: ",
    "filter.none" : "aus",
    "first" : "&lt;&lt;",
    "follow" : "folgen",

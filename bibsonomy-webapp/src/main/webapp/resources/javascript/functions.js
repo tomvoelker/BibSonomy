@@ -65,7 +65,7 @@ function add_filter() {
   f.title="filter sidebar";
   f.style.padding='5px';
   f.style.display = "inline";
-  f.appendChild(document.createTextNode("filter: "));
+  f.appendChild(document.createTextNode(getString("filter.label")));
   
   tags_filter = document.createElement("input");
   tags_filter.autocomplete="off";
