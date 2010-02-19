@@ -37,7 +37,7 @@
 	        <fmt:message key="tagrelations.all.text.partOne"/>
 		    <c:if test="${command.context.userLoggedIn}">
 				<fmt:message key="tagrelations.all.text.partTwo">
-			    	<fmt:param><a href="/relations/${fn:escapeXml(command.context.loginUser.name)}">myRelations</a></fmt:param>
+			    	<fmt:param><a href="/relations/${fn:escapeXml(command.context.loginUser.name)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations"/></a></fmt:param>
 			      	<fmt:param><a href="/edit_tags"><fmt:message key="navi.editTags"/></a></fmt:param>
 			    </fmt:message>
 		    </c:if>
