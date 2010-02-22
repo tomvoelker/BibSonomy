@@ -1,3 +1,9 @@
+body {
+	background-color: #FBF7F4;
+	min-width: 990px;
+	max-width: 1400px;
+}
+
 #main {
 	border: 0px solid #DF430D;
 
@@ -59,4 +65,8 @@ margin-right:2ex;
 
 #path_menu a:hover {
 	color: #000000;
+}
+
+#general {
+	width:100%;
 }

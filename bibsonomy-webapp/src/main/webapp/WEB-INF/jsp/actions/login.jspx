@@ -40,6 +40,11 @@
 
 		   <!-- show global error messages -->
            <errors:global errors="${errors}"/>             
+
+			<c:if test="${authOrder == '' or empty authOrder}">
+ 		    	<c:set var="authOrder" value="db,openid"/>
+ 		    </c:if>
+
  		   <c:set var="authOrderArray" value="${fn:split(authOrder,',')}"/>
 
 			<c:if test="${authOrder != 'db,openid'}">

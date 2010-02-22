@@ -218,6 +218,10 @@
 								<a href="${editTagsUrl}"><fmt:message key="navi.editTags"/></a><c:out value=" "/>
 						</c:when>
 						<c:otherwise>
+
+							<c:if test="${authOrder == '' or empty authOrder}">
+				 		    	<c:set var="authOrder" value="db,openid"/>
+				 		    </c:if>
 						
 	  						<c:set var="authOrderArray" value="${fn:split(authOrder,',')}"/>
 
@@ -370,34 +374,44 @@
 				
 				<!-- sidebar -->
 				<c:if test="${sidebar != null}">
-					<div id="sidebarroundcorner" >
-					<ul id="sidebar">
-						<jsp:invoke fragment="sidebar"/>
-					</ul>
+					<div class="sidebarBoxOuter" id="sidebox" style="background-color: #9adfcf; float: right; width: 23%; margin-top: 5px;">
+						<div class="sidebarBoxInner" style="background-color: #FBF7F4;">
+							<ul id="sidebar">
+								<jsp:invoke fragment="sidebar"/>
+							</ul>
+						</div>
 					</div>
 				</c:if>
 
 				<c:if test="${helpbox != null}">
-					<div id="helpbox" >
-					<jsp:invoke fragment="helpbox"/>
+					<div class="sidebarBoxOuter" id="helpbox" style="background-color: #9adfcf; float: right; width: 23%; margin-top: 5px;">
+						<div class="sidebarBoxInner" style="background-color: #FBF7F4;">
+							<jsp:invoke fragment="helpbox"/>
+						</div>
 					</div>
 				</c:if>
 
 				<c:if test="${infobox1 != null}">
-					<div id="infobox1" >
-					<jsp:invoke fragment="infobox1"/>
+					<div class="sidebarBoxOuter" id="infobox1" style="background-color: #9adfcf; float: right; width: 23%; margin-top: 5px;">
+						<div class="sidebarBoxInner" style="background-color: #FBF7F4;">
+							<jsp:invoke fragment="infobox1"/>
+						</div>
 					</div>
 				</c:if>
 
 				<c:if test="${infobox2 != null}">
-					<div id="infobox2" >
-					<jsp:invoke fragment="infobox2"/>
+					<div class="sidebarBoxOuter" id="infobox2" style="background-color: #9adfcf; float: right; width: 23%; margin-top: 5px;">
+						<div class="sidebarBoxInner" style="background-color: #FBF7F4;">
+							<jsp:invoke fragment="infobox2"/>
+						</div>
 					</div>
 				</c:if>
 
 				<c:if test="${infobox3 != null}">
-					<div id="infobox3" >
-					<jsp:invoke fragment="infobox3"/>
+					<div class="sidebarBoxOuter" id="infobox3" style="background-color: #9adfcf; float: right; width: 23%; margin-top: 5px;">
+						<div class="sidebarBoxInner" style="background-color: #FBF7F4;">
+							<jsp:invoke fragment="infobox3"/>
+						</div>
 					</div>
 				</c:if>
 
@@ -424,11 +438,24 @@
 						init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${projectName}");
 					]]>
 					</script>
-					<script type="text/javascript">
-					<![CDATA[
-					    $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
-					]]>
-					</script>
+					
+					<c:choose> 					
+						<c:when test="${projectName == 'PUMA'}">
+							<script type="text/javascript">
+							<![CDATA[
+							    $(".sidebarBoxInner").corner("round bottom 15px").corner("round tl 15px");
+							    ]]>
+							</script>
+						</c:when>
+						<c:otherwise>
+							<script type="text/javascript">
+							<![CDATA[
+								$(".sidebarBoxInner").corner("round bottom 12px").corner("round tl 12px").parent().css('padding', '3px').corner("round bottom 15px").corner("round tl 15px");
+							    ]]>
+							</script>
+						</c:otherwise>
+					</c:choose>
+					
 				</div>
 				</div>
         

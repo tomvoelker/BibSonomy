@@ -70,12 +70,6 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 	private String projectHome;
 
 	/**
-	 * available methods for authenticatiion/login
-	 * comma seperated values, e.g. db,ldap,openid
-	 */
-	private String authOrder;
-
-	/**
 	 * The max number of minutes, a password reminder is valid.
 	 */
 	private int maxMinutesPasswordReminderValid = 60;
@@ -621,13 +615,6 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 	 */
 	public void setProjectHome(String projectHome) {
 		this.projectHome = projectHome;
-	}
-
-	public void setAuthOrder(String authOrder) {
-		this.authOrder = authOrder;
-	}
-	public String getAuthOrder() {
-		return authOrder;
 	}
 
 }
