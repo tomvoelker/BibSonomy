@@ -44,12 +44,12 @@
 			</tr>
 			<tr>
 				<td>
-					<input type="radio" name="tag_op" value="and"/>and
-					<input type="radio" name="tag_op" value="or" checked="true" />or 
+					<input type="radio" name="tag_op" value="and"/><fmt:message key="logic.and"/>
+					<input type="radio" name="tag_op" value="or" checked="true" /><fmt:message key="logic.or"/> 
 				</td>
 				<td>
-					<input type="radio" name="author_op" value="and"/>and
-					<input type="radio" name="author_op" value="or" checked="true" />or 		
+					<input type="radio" name="author_op" value="and"/><fmt:message key="logic.and"/>
+					<input type="radio" name="author_op" value="or" checked="true" /><fmt:message key="logic.or"/> 		
 				</td>
 			</tr>
 		</table>
@@ -103,8 +103,8 @@
 	var loginusername   = "<c:out value='${command.context.loginUser.name}'/>";
 	var ckey        	= "<c:out value='${command.context.ckey}'/>";
 	var resultlang 		= "<fmt:message key='mysearch.option.result.lang'/>"; 
-	
-		
+	var optionsAuthors  = "<fmt:message key='options.authors'/>";
+	var optionsTags     = "<fmt:message key='options.tags'/>";	
 
 	
 	/**
@@ -169,10 +169,11 @@
 			}							
 		}	
 		
-		// fill list with authors	
+		// fill list with authors
+
 		authorsIdx = authorsIdx.sort(comparator);	
 		authorList.length = 0;		
-		authorList.options[0] = new Option("- all authors -",-1);
+		authorList.options[0] = new Option(optionsAuthors,-1);
 		
 		for (var i=0; i<authorsIdx.length; i++) {
 			authorList.options[i+1] = new Option(authors[authorsIdx[i]],authorsIdx[i]);		
@@ -291,8 +292,8 @@
 		var authorlist 	= document.searchform.authors;
 		var resultlist 	= document.searchform.results;
 		
-		taglist.options[0] 		= new Option("- all tags -",-1);
-		authorlist.options[0] 	= new Option("- all authors -",-1);		
+		taglist.options[0] 		= new Option(optionsTags, -1);//new Option("- all tags -",-1);
+		authorlist.options[0] 	= new Option(optionsAuthors, -1);//new Option("- all authors -",-1);		
 		
 		// taglist
 		for (var i=0; i<tags.length; i++) {
