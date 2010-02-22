@@ -14,7 +14,7 @@
 				<c:url var="url_edit" value="/editBookmark" context="${projectContext}">
                         <c:param name="intraHashToUpdate" value="${post.resource.intraHash}" />
 				</c:url>
-				<c:set var="edit"><fmt:message key="bookmark.actions.edit.title"/></c:set>
+				<c:set var="editTitle"><fmt:message key="bookmark.actions.edit.title"/></c:set>
 	
 				<!-- DELETE link -->
 				<c:url var="url_delete" value="/deletePost" context="${projectContext}">
