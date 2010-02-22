@@ -499,7 +499,7 @@ var LocalizedStrings = {
    "post.meta.taggedOn" : "am",
    "post.meta.taggedTo" : "als",
    "post.meta.unflag_as_spam" : "kein Spam",
-   "post.meta.unflag_as_spam.title" : "Diesen Eintrag als keinen Spam markieren",
+   "post.meta.unflag_as_spam.title" : "Diesen Eintrag als kein Spam markieren",
    "post.meta.unpick" : "vergessen",
    "post.meta.unpick.title" : "alle Publikationen dieser Seite aus der Ablage entfernen",
    "post.resource.about" : "\u00DCber dieses Feld",
