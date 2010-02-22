@@ -74,6 +74,9 @@ margin-right:2ex;
 .sidebarBoxInner {
 	padding: 5px;
 	background-color: #FBF7F4;
+	float: none;
+	width: 100%;
+	padding: 0px;
 }
 
 .sidebarBoxOuter {
