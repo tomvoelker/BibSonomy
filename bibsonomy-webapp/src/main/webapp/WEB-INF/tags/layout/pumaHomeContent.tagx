@@ -59,12 +59,9 @@
 			<div id="bookmarkbibtexoptions">
 				<!-- expandBookmarkList(), showBothLists(), expandBibTexList() in functions.js -->
 				<ul>
-					<c:set var="expandBookmarks"><fmt:message key="list.expand.bookmarks"/></c:set>
-					<c:set var="expandPublications"><fmt:message key="list.expand.publications"/></c:set>
-					<c:set var="showBoth"><fmt:message key="list.expand.both"/></c:set>
-					<li id="optionExpandBookmark"><a href="javascript:expandBookmarkList();" title="${expandBookmarks}">&gt;</a></li>
-					<li id="optionShowBoth" style="display: none;"><a href="javascript:showBothLists();" title="${showBoth}">|</a></li>
-					<li id="optionExpandBibtex"><a href="javascript:expandBibTexList();" title="${expandPublications}">&lt;</a></li>
+					<li id="optionExpandBookmark"><a href="javascript:expandBookmarkList();" title="Expand Bookmarks">&gt;</a></li>
+					<li id="optionShowBoth" style="display: none;"><a href="javascript:showBothLists();" title="Show Bookmarks and Publications">|</a></li>
+					<li id="optionExpandBibtex"><a href="javascript:expandBibTexList();" title="Expand Publications">&lt;</a></li>
 				</ul>
 			</div>
 			<c:if test="${not empty contentHeading}">

@@ -70,3 +70,23 @@ margin-right:2ex;
 #general {
 	width:100%;
 }
+
+.sidebarBoxInner {
+	padding: 5px;
+	background-color: #FBF7F4;
+}
+
+.sidebarBoxOuter {
+	background-color: #9adfcf; 
+	float: right; 
+	width: 23%; 
+	margin-top: 10px;
+}
+
+ul#sidebar, ul#tagbox {
+	margin:0;	
+}
+
+#helpbox {
+	background-color: #DF430D; 
+}

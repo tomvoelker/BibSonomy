@@ -24,10 +24,10 @@
     <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" />
 	<jsp:directive.attribute name="sidebar" fragment="true" />
-	<jsp:directive.attribute name="helpbox" fragment="true" />
-	<jsp:directive.attribute name="infobox1" fragment="true" />
-	<jsp:directive.attribute name="infobox2" fragment="true" />
-	<jsp:directive.attribute name="infobox3" fragment="true" />
+	<jsp:directive.attribute name="helpbox" fragment="true" required="false"/>
+	<jsp:directive.attribute name="infobox1" fragment="true" required="false"/>
+	<jsp:directive.attribute name="infobox2" fragment="true" required="false"/>
+	<jsp:directive.attribute name="infobox3" fragment="true" required="false"/>
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	
@@ -321,7 +321,15 @@
 						</c:choose>
 						
 					</div>
+<!-- TODO: remove choose -->
+<c:choose> 					
+<c:when test="${projectName == 'PUMA'}">
+					<div id="welcomeTop"><fmt:message key="puma.system.desc"/></div>
+</c:when>
+<c:otherwise>
 					<div id="welcomeTop"><fmt:message key="system.desc"/></div>
+</c:otherwise>
+</c:choose>					
 				</div>
 				
 				<!-- Navigation -->
@@ -332,9 +340,19 @@
 					<c:if test="${not command.context.userLoggedIn and displayIntroduction and (empty errors or errors.errorCount == 0)}">
 						<div id="general">
 							<p class="smalltext">
+<!-- TODO: remove choose -->
+<c:choose> 					
+<c:when test="${projectName == 'PUMA'}">
+								<fmt:message key="puma.system.about">
+									<fmt:param value="${projectName}"/>
+								</fmt:message>
+</c:when>
+<c:otherwise>
 								<fmt:message key="system.about">
 									<fmt:param value="${projectName}"/>
 								</fmt:message>
+</c:otherwise>
+</c:choose>					
 							</p>
 
 							<c:if test="${projectName == 'PUMA'}">
@@ -362,9 +380,19 @@
 							</c:if>
 							
 							<p class="smalltext">
+<!-- TODO: remove choose -->
+<c:choose> 					
+<c:when test="${projectName == 'PUMA'}">
+								<fmt:message key="puma.system.introduction">
+									<fmt:param value="${projectName}"/>
+								</fmt:message>									
+</c:when>
+<c:otherwise>
 								<fmt:message key="system.introduction">
 									<fmt:param value="${projectName}"/>
 								</fmt:message>									
+</c:otherwise>
+</c:choose>					
 							</p>
 
 						</div>
@@ -373,9 +401,18 @@
 				</div>
 				
 				<!-- sidebar -->
+
+				<c:if test="${helpbox != null}">
+					<div class="sidebarBoxOuter" id="helpbox">
+						<div class="sidebarBoxInner">
+							<jsp:invoke fragment="helpbox"/>
+						</div>
+					</div>
+				</c:if>
+
 				<c:if test="${sidebar != null}">
-					<div class="sidebarBoxOuter" id="sidebox" style="background-color: #9adfcf; float: right; width: 23%; margin-top: 5px;">
-						<div class="sidebarBoxInner" style="background-color: #FBF7F4;">
+					<div class="sidebarBoxOuter" id="sidebox">
+						<div class="sidebarBoxInner">
 							<ul id="sidebar">
 								<jsp:invoke fragment="sidebar"/>
 							</ul>
@@ -383,33 +420,25 @@
 					</div>
 				</c:if>
 
-				<c:if test="${helpbox != null}">
-					<div class="sidebarBoxOuter" id="helpbox" style="background-color: #9adfcf; float: right; width: 23%; margin-top: 5px;">
-						<div class="sidebarBoxInner" style="background-color: #FBF7F4;">
-							<jsp:invoke fragment="helpbox"/>
-						</div>
-					</div>
-				</c:if>
-
 				<c:if test="${infobox1 != null}">
-					<div class="sidebarBoxOuter" id="infobox1" style="background-color: #9adfcf; float: right; width: 23%; margin-top: 5px;">
-						<div class="sidebarBoxInner" style="background-color: #FBF7F4;">
+					<div class="sidebarBoxOuter" id="infobox1">
+						<div class="sidebarBoxInner">
 							<jsp:invoke fragment="infobox1"/>
 						</div>
 					</div>
 				</c:if>
 
 				<c:if test="${infobox2 != null}">
-					<div class="sidebarBoxOuter" id="infobox2" style="background-color: #9adfcf; float: right; width: 23%; margin-top: 5px;">
-						<div class="sidebarBoxInner" style="background-color: #FBF7F4;">
+					<div class="sidebarBoxOuter" id="infobox2">
+						<div class="sidebarBoxInner">
 							<jsp:invoke fragment="infobox2"/>
 						</div>
 					</div>
 				</c:if>
 
 				<c:if test="${infobox3 != null}">
-					<div class="sidebarBoxOuter" id="infobox3" style="background-color: #9adfcf; float: right; width: 23%; margin-top: 5px;">
-						<div class="sidebarBoxInner" style="background-color: #FBF7F4;">
+					<div class="sidebarBoxOuter" id="infobox3">
+						<div class="sidebarBoxInner">
 							<jsp:invoke fragment="infobox3"/>
 						</div>
 					</div>
@@ -443,16 +472,16 @@
 						<c:when test="${projectName == 'PUMA'}">
 							<script type="text/javascript">
 							<![CDATA[
-							    $(".sidebarBoxInner").corner("round bottom 15px").corner("round tl 15px");
-							    ]]>
-							</script>
+										$(".sidebarBoxInner").corner("round bottom 12px").corner("round tl 12px").parent().css('padding', '3px').corner("round bottom 15px").corner("round tl 15px");
+									    ]]>
+									</script>
 						</c:when>
 						<c:otherwise>
 							<script type="text/javascript">
 							<![CDATA[
-								$(".sidebarBoxInner").corner("round bottom 12px").corner("round tl 12px").parent().css('padding', '3px').corner("round bottom 15px").corner("round tl 15px");
-							    ]]>
-							</script>
+									    $(".sidebarBoxInner").corner("round bottom 15px").corner("round tl 15px");
+									    ]]>
+									</script>
 						</c:otherwise>
 					</c:choose>
 					
