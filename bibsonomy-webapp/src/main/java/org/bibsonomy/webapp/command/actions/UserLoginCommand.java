@@ -42,12 +42,6 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	private String notice;
 	
 	/**
-	 * available methods for authenticatiion/login
-	 * comma seperated values, e.g. db,ldap,openid
-	 */
-	private String authOrder;
-
-	/**
 	 * Method for login
 	 * 1) Login with bibsonomy usernamae and password
 	 *    (if user is a ldap user, password is ldap password, otherwise bibsonomy password) 
@@ -97,11 +91,5 @@ public class UserLoginCommand extends BaseCommand implements Serializable {
 	@Override
 	public String getLoginMethod() {
 		return this.loginMethod;
-	}
-	public void setAuthOrder(String authOrder) {
-		this.authOrder = authOrder;
-	}
-	public String getAuthOrder() {
-		return authOrder;
 	}
 }
