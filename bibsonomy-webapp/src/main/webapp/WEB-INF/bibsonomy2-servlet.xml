@@ -40,7 +40,7 @@
 			<map>
 				<entry key="/homepage">
 					<bean parent="controllerBase">
-						<property name="controllerBeanName" value="homepageController"/>
+						<property name="controllerBeanName"><value>${project.bean.homepageController}</value></property>
 					</bean>
 				</entry>
 				<entry key="/settingsnew">
@@ -520,6 +520,19 @@
 	<bean id="scraperInfoController" class="org.bibsonomy.webapp.controller.ScraperInfoController" scope="request">
 		<property name="logic" ref="logic"/>
 	</bean>
+	
+    <!--  #################### PUMA Controller #################### -->
+	<bean id="pumaHomepageController" class="de.unikassel.puma.webapp.controller.HomepageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+		<property name="listsToInitialise">
+			<list>
+				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
+				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
+			</list>
+		</property>
+	</bean>
+	
 	<!--  #################### factory beans #################### -->
 
 	<bean id="dbSessionFactory" class="org.bibsonomy.database.util.IbatisDBSessionFactory"/>
