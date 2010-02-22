@@ -363,12 +363,6 @@ div.bibentry {
 	margin-right: 1em;
 }
 
-#sidebarroundcorner {
-	float: right;
-	width: 23%;
-	padding: 3px;
-	background-color: #D8EBAE;
-}
 
 #bookbox,#bibbox,.bookbox {
 	margin: 1%; 
@@ -1192,3 +1186,24 @@ padding-top:1px;
 	float:right;
 	margin-top: 7px;
 }
+
+/*  depreciated */
+#sidebarroundcorner {
+	float: right;
+	width: 23%;
+	padding: 3px;
+	background-color: #D8EBAE;
+}
+
+.sidebarBoxOuter {
+	margin: 0;
+	padding: 0;
+}
+
+.sidebarBoxInner {
+	float: right;
+	width: 23%;
+	padding: 3px;
+	background-color: #D8EBAE;
+}
+
