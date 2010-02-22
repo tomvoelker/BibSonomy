@@ -11,7 +11,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" displayIntroduction="${true}" selectedNaviTab="nav_home">
+	<layout:pumaHomeContent pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" displayIntroduction="${true}" selectedNaviTab="nav_home">
 		<jsp:attribute name="heading">
 			<c:url var="specialSearchUrl" value="/redirect" context="${projectContext}"/>
 			<form id="specialsearch" method="get" action="${specialSearchUrl}">
@@ -44,6 +44,6 @@
 				<tags:purposes requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
 			</li>
 		</jsp:attribute>
-	</layout:resourceLayout>
+	</layout:pumaHomeContent>
 
 </jsp:root>
