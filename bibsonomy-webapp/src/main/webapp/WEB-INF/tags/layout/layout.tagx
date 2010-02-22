@@ -24,6 +24,10 @@
     <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" />
 	<jsp:directive.attribute name="sidebar" fragment="true" />
+	<jsp:directive.attribute name="helpbox" fragment="true" />
+	<jsp:directive.attribute name="infobox1" fragment="true" />
+	<jsp:directive.attribute name="infobox2" fragment="true" />
+	<jsp:directive.attribute name="infobox3" fragment="true" />
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	
@@ -264,7 +268,9 @@
 												<input type="text" size="15" name="username" id="un" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">&amp;nbsp;:&amp;nbsp;</span>
 												<input type="password" size="15" name="password" id="pw" autocomplete="off"/>
 												<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" />
+												<c:if test="${authOrder == 'db,openid'}"> 
 												<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
+												</c:if>
 									            <form:hidden id="headloginMethoddb" path="loginMethod" />
 											</form:form>
 										</div>
@@ -273,13 +279,15 @@
 									<c:if test="${authOrderArray[loop.index]=='ldap' }">
 										<div class="headlogin" id="headloginldap">
 											<c:set var="login">
-											<fmt:message key="navi.login"/>
+											<fmt:message key="navi.login"/>s
 											</c:set>
 											<form:form method="POST" action="${loginUrl}">
-												<input type="text" size="15" name="username" id="unldap" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">&amp;nbsp;:&amp;nbsp;</span>
+												<input type="text" size="15" name="username" id="unldap" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">:&amp;nbsp;</span>
 												<input type="password" size="15" name="password" id="pwldap" autocomplete="off"/>
 												<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" />
+												<c:if test="${authOrder == 'db,openid'}"> 
 												<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
+												</c:if>
 									            <form:hidden id="headloginMethodldap" path="loginMethod" />
 											</form:form>
 										</div>
@@ -289,7 +297,9 @@
 										<div class="headlogin" id="headloginopenid">
 								            <form:form action="${loginUrl}" method="POST">
 								              	<input type="text" id="openID" class="openid" size="32" value="" name="openID"/>
+												<c:if test="${authOrder == 'db,openid'}"> 
 												<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
+												</c:if>
 									            <form:hidden id="headloginMethodopenid" path="loginMethod" />
 								            </form:form>
 							            </div>
@@ -322,11 +332,37 @@
 									<fmt:param value="${projectName}"/>
 								</fmt:message>
 							</p>
+
+							<c:if test="${projectName == 'PUMA'}">
+							
+						        <div style="width: 100%; min-height: 175px; margin-top: 10px; margin-bottom: 10px;">
+									<div style="float: right;">
+										<img alt="Sammeln" title="Sammeln" src="http://dev.puma.uni-kassel.de/design/PUMA_v1-Dateien/action1.png" style="padding-left:5px; padding-right:5px;"  />
+										<img alt="Verwalten" title="Verwalten" src="http://dev.puma.uni-kassel.de/design/PUMA_v1-Dateien/action2.png" style="padding-left:5px; padding-right:5px;"  />
+										<img alt="Teilen" title="Teilen" src="http://dev.puma.uni-kassel.de/design/PUMA_v1-Dateien/action3.png" style="padding-left:5px; padding-right:5px;"  />
+									</div>
+									<div  class="smalltext">
+									<b>Die wichtigsten Vorteile im Überblick:</b>
+									<ul id="advantages">
+										<li style="list-style-type: circle; list-style-position: outside; margin-left: 1.3em;">einfaches Einbinden ihrer <strong>Publikationsliste</strong> in ihre <strong>Homepage</strong></li>
+										<li style="list-style-type: circle; list-style-position: outside; margin-left: 1.3em;">Weiterleitung der Publikation an <a href="https://kobra.bibliothek.uni-kassel.de/">KOBRA</a>, dadurch entfällt eine erneute Erfassung</li>
+										<li style="list-style-type: circle; list-style-position: outside; margin-left: 1.3em;">Weiterleitung der Publikation an das <strong>Forschunginformationssystem</strong> (FIS) der Universität</li>
+										<li style="list-style-type: circle; list-style-position: outside; margin-left: 1.3em;">Umfangreiche, <strong>intuitive Unterstützung</strong> bei der Erfassung von Publikation</li>
+										<li style="list-style-type: circle; list-style-position: outside; margin-left: 1.3em;"><strong>Literaturlisten</strong> für Ihre eigenen Publikationen mit einfacher Datenüernahme</li>
+										<li style="list-style-type: circle; list-style-position: outside; margin-left: 1.3em;">Einfache Erfassung, Verwaltung und Abruf von <strong>Web-Lesezeichen</strong></li>
+									</ul>
+									</div>
+									<br />
+						        </div>
+
+							</c:if>
+							
 							<p class="smalltext">
 								<fmt:message key="system.introduction">
 									<fmt:param value="${projectName}"/>
 								</fmt:message>									
 							</p>
+
 						</div>
 					</c:if>
 					<jsp:invoke fragment="content"/>
@@ -340,6 +376,31 @@
 					</ul>
 					</div>
 				</c:if>
+
+				<c:if test="${helpbox != null}">
+					<div id="helpbox" >
+					<jsp:invoke fragment="helpbox"/>
+					</div>
+				</c:if>
+
+				<c:if test="${infobox1 != null}">
+					<div id="infobox1" >
+					<jsp:invoke fragment="infobox1"/>
+					</div>
+				</c:if>
+
+				<c:if test="${infobox2 != null}">
+					<div id="infobox2" >
+					<jsp:invoke fragment="infobox2"/>
+					</div>
+				</c:if>
+
+				<c:if test="${infobox3 != null}">
+					<div id="infobox3" >
+					<jsp:invoke fragment="infobox3"/>
+					</div>
+				</c:if>
+
 				<c:if test="${fullscreen}">
 					<script type="text/javascript">
 					<![CDATA[
