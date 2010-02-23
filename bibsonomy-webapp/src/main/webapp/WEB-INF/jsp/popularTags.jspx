@@ -24,7 +24,8 @@
 		<jsp:attribute name="content">			
 			<div style="text-align:justify;" class="tags_first">
  			  <c:forEach var="tag" items="${command.tags}">
-		       <a class="${mtl:getTagSize(tag.globalcount, command.maxTagCount)}" style="font-size:${mtl:tagFontSize(tag)}%; padding-left:0.3em; padding-right:0.3em;" title="${tag.globalcount} posts" href="/tag/${fn:escapeXml(tag.name)}"><c:out value="${tag.name}"/></a><c:out value=" "/>
+ 			  <c:set var="posts"><fmt:message key="posts"/></c:set>
+		       <a class="${mtl:getTagSize(tag.globalcount, command.maxTagCount)}" style="font-size:${mtl:tagFontSize(tag)}%; padding-left:0.3em; padding-right:0.3em;" title="${tag.globalcount} ${posts}" href="/tag/${fn:escapeXml(tag.name)}"><c:out value="${tag.name}"/></a><c:out value=" "/>
 			  </c:forEach>
 			</div>			
 		</jsp:attribute>

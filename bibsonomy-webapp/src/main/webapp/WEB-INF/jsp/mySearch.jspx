@@ -105,6 +105,7 @@
 	var resultlang 		= "<fmt:message key='mysearch.option.result.lang'/>"; 
 	var optionsAuthors  = "<fmt:message key='options.authors'/>";
 	var optionsTags     = "<fmt:message key='options.tags'/>";	
+	var pickMessage	    = "<fmt:message key='post.meta.pick'/>";
 
 	
 	/**
@@ -374,7 +375,7 @@
 		var pick = document.createElement("a");
 		pick.onclick = pickUnpickPublication;
 		pick.href = "/ajax/pickUnpickPost?action=pick&hash=" + bibtexhash + "&user=" + encodeURIComponent(loginusername) + "&ckey=" + ckey;
-		pick.innerHTML = "pick";
+		pick.innerHTML = pickMessage;
 		
 		if (url != "") {
 			var urllink = document.createElement("a");
