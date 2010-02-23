@@ -93,3 +93,35 @@ ul#sidebar, ul#tagbox {
 #helpbox {
 	background-color: #DF430D; 
 }
+
+.btnHomepage {
+ 	padding-left:5px;
+	padding-right:5px;
+}
+
+#wrap_btn {
+	 float: right;
+	 width: 510px
+}
+
+#wrap_advantages {
+	width: 100%; 
+	min-height: 175px; 
+	margin-top: 10px; 
+	margin-bottom: 10px;
+}
+
+#advantages li {
+	list-style-type: circle; 
+	list-style-position: outside; 
+	margin-left: 1.3em;	
+}
+
+#desc_advantages {
+	padding: 2ex 3em;
+	text-align: center;
+	font-size: 14px;
+	font-weight: bold;
+	color: #DF430D;
+	height: 5ex;
+}

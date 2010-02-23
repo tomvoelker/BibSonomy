@@ -38,9 +38,20 @@
       set theme variables    
      -->
     <spring:theme code="stylesheet.main" var="stylesheet_main" text="${resdir}/css/style.css"/>
-	<spring:theme code="additionalCSS" var="additionalCSS" text=""/> 
-	<spring:theme code="headerLogo" var="headerLogo" text=""/>
-    
+	<spring:theme code="stylesheet.additional" var="additionalCSS" text=""/> 
+	<spring:theme code="image.head.logo" var="headerLogo" text=""/>
+	<spring:theme code="javascript.additional" var="additionalJS" text=""/>
+
+
+
+	<spring:theme code="de.image.button.collect" var="btn_collect" text=""/>
+	<spring:theme code="de.image.button.collect.hover" var="btn_collect_hover" text=""/>
+	<spring:theme code="de.image.button.organize" var="btn_organize" text=""/>
+	<spring:theme code="de.image.button.organize.hover" var="btn_organize_hover" text=""/>
+	<spring:theme code="de.image.button.share" var="btn_share" text=""/>
+	<spring:theme code="de.image.button.share.hover" var="btn_share_hover" text=""/>
+
+
     <!-- 
       document starts here
      -->
@@ -91,6 +102,11 @@
 				<c:if test="${loginUser.role eq 'ADMIN'}">
 				  <script type="text/javascript" src="${resdir}/javascript/spammer.js">&amp;nbsp;</script>
 				</c:if>
+
+				<c:if test="${not empty additionalJS}">
+					<script type="text/javascript" src="${additionalJS}">&amp;nbsp;</script>
+				</c:if>
+
 
 				<meta name="email" content="${projectEmail}"/>
 				<lp:meta fieldName="author"/>
@@ -356,22 +372,37 @@
 							</p>
 
 							<c:if test="${projectName == 'PUMA'}">
+
+								<c:set var="desc_collect">
+									<fmt:message key="puma.button.collect.description"/>
+								</c:set>
+								<c:set var="desc_organize">
+									<fmt:message key="puma.button.organize.description"/>
+								</c:set>
+								<c:set var="desc_share">
+									<fmt:message key="puma.button.share.description"/>
+								</c:set>
 							
-						        <div style="width: 100%; min-height: 175px; margin-top: 10px; margin-bottom: 10px;">
-									<div style="float: right;">
-										<img alt="Sammeln" title="Sammeln" src="http://dev.puma.uni-kassel.de/design/PUMA_v1-Dateien/action1.png" style="padding-left:5px; padding-right:5px;"  />
-										<img alt="Verwalten" title="Verwalten" src="http://dev.puma.uni-kassel.de/design/PUMA_v1-Dateien/action2.png" style="padding-left:5px; padding-right:5px;"  />
-										<img alt="Teilen" title="Teilen" src="http://dev.puma.uni-kassel.de/design/PUMA_v1-Dateien/action3.png" style="padding-left:5px; padding-right:5px;"  />
+						        <div id="wrap_advantages">
+									<div id="wrap_btn" onMouseOut="replaceElementsTextnode('desc_advantages','')">
+										<img id="btnCollect" alt="Sammeln" class="btnHomepage" onMouseover="this.src='${btn_collect_hover}'; replaceElementsTextnode('desc_advantages','${desc_collect}');" onMouseout="this.src='${btn_collect}'"  src="${btn_collect}" />
+										<img id="btnOrganize" alt="Verwalten" class="btnHomepage" onMouseover="this.src='${btn_organize_hover}';replaceElementsTextnode('desc_advantages','${desc_organize}');" onMouseout="this.src='${btn_organize}'" src="${btn_organize}" />
+										<img id="btnShare" alt="Teilen" class="btnHomepage" onMouseover="this.src='${btn_share_hover}'; replaceElementsTextnode('desc_advantages','${desc_share}')" onMouseout="this.src='${btn_share}'" src="${btn_share}" />
+
+										<div id="desc_advantages">
+										&amp;nbsp;
+										</div>
+
 									</div>
 									<div  class="smalltext">
 									<b>Die wichtigsten Vorteile im Überblick:</b>
 									<ul id="advantages">
-										<li style="list-style-type: circle; list-style-position: outside; margin-left: 1.3em;">einfaches Einbinden ihrer <strong>Publikationsliste</strong> in ihre <strong>Homepage</strong></li>
-										<li style="list-style-type: circle; list-style-position: outside; margin-left: 1.3em;">Weiterleitung der Publikation an <a href="https://kobra.bibliothek.uni-kassel.de/">KOBRA</a>, dadurch entfällt eine erneute Erfassung</li>
-										<li style="list-style-type: circle; list-style-position: outside; margin-left: 1.3em;">Weiterleitung der Publikation an das <strong>Forschunginformationssystem</strong> (FIS) der Universität</li>
-										<li style="list-style-type: circle; list-style-position: outside; margin-left: 1.3em;">Umfangreiche, <strong>intuitive Unterstützung</strong> bei der Erfassung von Publikation</li>
-										<li style="list-style-type: circle; list-style-position: outside; margin-left: 1.3em;"><strong>Literaturlisten</strong> für Ihre eigenen Publikationen mit einfacher Datenüernahme</li>
-										<li style="list-style-type: circle; list-style-position: outside; margin-left: 1.3em;">Einfache Erfassung, Verwaltung und Abruf von <strong>Web-Lesezeichen</strong></li>
+										<li>einfaches Einbinden ihrer <strong>Publikationsliste</strong> in ihre <strong>Homepage</strong></li>
+										<li>Weiterleitung der Publikation an <a href="https://kobra.bibliothek.uni-kassel.de/">KOBRA</a>, dadurch entfällt eine erneute Erfassung</li>
+										<li>Weiterleitung der Publikation an das <strong>Forschunginformationssystem</strong> (FIS) der Universität</li>
+										<li>Umfangreiche, <strong>intuitive Unterstützung</strong> bei der Erfassung von Publikation</li>
+										<li><strong>Literaturlisten</strong> für Ihre eigenen Publikationen mit einfacher Datenüernahme</li>
+										<li>Einfache Erfassung, Verwaltung und Abruf von <strong>Web-Lesezeichen</strong></li>
 									</ul>
 									</div>
 									<br />
