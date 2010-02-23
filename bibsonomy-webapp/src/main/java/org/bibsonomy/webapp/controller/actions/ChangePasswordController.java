@@ -31,7 +31,7 @@ public class ChangePasswordController implements MinimalisticController<Settings
 
 	private static final Log log = LogFactory.getLog(SearchPageController.class);
 
-	private static final String TAB_URL = "/settingsnew";
+	private static final String TAB_URL = "/settings";
 
 	/**
 	 * hold current errors

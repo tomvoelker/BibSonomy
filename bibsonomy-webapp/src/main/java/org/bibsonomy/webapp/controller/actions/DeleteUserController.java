@@ -25,7 +25,7 @@ public class DeleteUserController implements MinimalisticController<SettingsView
 	
 	private LogicInterface logic;
 	private Errors errors = null;
-	private static final String TAB_URL = "/settingsnew";
+	private static final String TAB_URL = "/settings";
 
 	public SettingsViewCommand instantiateCommand() {
 		final SettingsViewCommand command = new SettingsViewCommand();

@@ -23,7 +23,7 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 	
 	private static final Log log = LogFactory.getLog(DeletePostController.class);
 
-	private static final String TAB_URL = "/settingsnew";
+	private static final String TAB_URL = "/settings";
 
 	private LogicInterface adminLogic;
 	private Errors errors;

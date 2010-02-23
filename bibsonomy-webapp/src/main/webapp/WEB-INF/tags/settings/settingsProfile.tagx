@@ -86,18 +86,21 @@
 		<div id="fsform">
     	  <fieldset class="fsInner">
 		    <div class="fsRow">
-		      <form:label cssClass="fsLabel" path="user.email"><fmt:message key="settings.email"/></form:label><buttons:help message="settings.mandatory"/>
+		      <form:label cssClass="fsLabel" path="user.email"><fmt:message key="settings.email"/></form:label>
+		      <buttons:help message="settings.mandatory"/>
 		      <form:input cssClass="fsInput" path="user.email"/>
               <div class="dissError"><form:errors path="user.email" /></div>
 		    </div>
 		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.homepage"><fmt:message key="settings.homepage"/></form:label>
+		      <buttons:help message="settings.homepage"/>
 		      <form:input cssClass="fsInput" path="user.homepage"/>
 		      <div class="dissError"><form:errors path="user.homepage" /></div>
 		    </div>
 		    <div class="fsRow">
               <!-- TODO: fix help message -->
-		      <form:label cssClass="fsLabel" path="user.openURL">OpenURL</form:label><buttons:help message="settings.openURLDescription"/>
+		      <form:label cssClass="fsLabel" path="user.openURL">OpenURL</form:label>
+		      <buttons:help message="settings.openURLDescription"/>
 		      <form:input cssClass="fsInput" path="user.openURL"/>
 		      <div class="dissError"><form:errors path="user.openURL" /></div>
 		    </div>

@@ -43,7 +43,7 @@
 						<property name="controllerBeanName"><value>${project.bean.homepageController}</value></property>
 					</bean>
 				</entry>
-				<entry key="/settingsnew">
+				<entry key="/settings">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="settingsPageController"/>
 						<property name="allowedFields">

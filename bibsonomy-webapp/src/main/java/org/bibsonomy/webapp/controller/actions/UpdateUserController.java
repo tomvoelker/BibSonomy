@@ -6,7 +6,6 @@ import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SearchPageController;
@@ -32,7 +31,7 @@ public class UpdateUserController implements MinimalisticController<SettingsView
 	/**
 	 * maps the settings url
 	 */
-	private static final String TAB_URL = "/settingsnew";
+	private static final String TAB_URL = "/settings";
 
 	/**
 	 * hold current errors
