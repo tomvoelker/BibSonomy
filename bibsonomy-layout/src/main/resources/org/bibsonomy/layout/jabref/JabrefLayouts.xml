@@ -11,7 +11,7 @@
 			table.
 		</description>
 		<description xml:lang="de">
-			Ausgabe einer einfach formatierten Seite, welche Sie in ihre 
+			Ausgabe einer einfach formatierten Seite, die Sie in Ihre 
 			Homepage einfügen können.
 		</description>
 		<baseFileName>html</baseFileName>
@@ -54,7 +54,7 @@
 			A simple layout for cvpage
 		</description>
 		<description xml:lang="de">
-			Ausgabe fuer die cvpage
+			Ausgabe f\u00FCr die cvpage
 		</description>
 		<baseFileName>plain</baseFileName>
 		<mimeType>text/html</mimeType>
@@ -68,7 +68,7 @@
 		</description>
 		<description xml:lang="de">
 			Erzeugt eine strukturierte HTML-Ausgabe, bei der jeder Eintrag in einer Reihe
-			innerhalb einer Tabelle dargestellt wird und bietet weiterhin Suchfunktionen mittels JavaScript.
+			innerhalb einer Tabelle dargestellt wird. Die Ausgabe bietet weiterhin Suchfunktionen mittels JavaScript.
 		</description>
 		<directory>tablerefs</directory>
 		<baseFileName>tablerefs</baseFileName>
@@ -101,7 +101,7 @@
 			the table by each column.
 		</description>
 		<description xml:lang="de">
-			Ähnlich wie TableRefsAbsBib, aber bietet zusätzlich die Möglichkeit
+			Ähnlich wie TableRefsAbsBib, bietet aber zusätzlich die Möglichkeit,
 			die Tabelle nach jeder Spalte zu sortieren.
 		</description>
 		<directory>tablerefsabsbibsort</directory>
@@ -159,7 +159,7 @@
 			style guidelines.
 		</description>
 		<description xml:lang="de">
-			Export der Publikationsliste in das Rich Text Format, welches von 
+			Export der Publikationsliste in das Rich Text Format, das von 
 			Textverarbeitungsprogrammen wie OpenOffice oder Microsoft verwendet wird. 
 			Die Ausgabe wird entsprechend den Harvard-Bibliographie-Richtlinien formatiert. 
 		</description>
@@ -175,7 +175,7 @@
 			bibliography management tool.
 		</description>
 		<description xml:lang="de">
-			Es wird eine Ausgabe in EndNote Format erzeugt, welche von EndNote verwendet wird.
+			Es wird eine Ausgabe in EndNote Format erzeugt, das von EndNote verwendet wird.
 			EndNote ist ein weiteres Bibliographie-Werkzeug.
 		</description>
 		<directory>endnote</directory>
@@ -190,7 +190,7 @@
 			bibliography management tool.
 		</description>
 		<description xml:lang="de">
-			Es wird eine Ausgabe in RIS erzeugt, welche von EndNote verwendet wird.
+			Es wird eine Ausgabe im Format RIS erzeugt, das von EndNote verwendet wird.
 			EndNote ist ein weiteres Bibliographie-Werkzeug.
 		</description>
 		<directory>ris_endnote</directory>
@@ -205,7 +205,7 @@
 			bibliography management tool.
 		</description>
 		<description xml:lang="de">
-			Es wird eine Ausgabe in RIS erzeugt, welche vom ReferenceManager verwendet wird.
+			Es wird eine Ausgabe im Format RIS erzeugt, das vom ReferenceManager verwendet wird.
 			ReferenceManager ist ein weiteres Bibliographie-Werkzeug.
 		</description>
 		<directory>ris_refman</directory>
@@ -223,7 +223,7 @@
 		<description xml:lang="de">
 			CSV-Dateien ("Komma-separierte Werte") unterteilen alle Felder eines
 			Eintrages mit einem Komma. Damit ist es beispielsweise möglich, Publikationen in
-			Tabellenkalkulationsprogrammen zu importieren.
+			Tabellenkalkulationsprogramme zu importieren.
 		</description>
 		<directory>openoffice</directory>
 		<baseFileName>openoffice-csv</baseFileName>
@@ -248,7 +248,7 @@
 			Engineering, University of Bochum.
 		</description>
 		<description xml:lang="de">
-			Benutzerdefiniertes Ausgabeformat, welches von der Abteilung
+			Benutzerdefiniertes Ausgabeformat, das von der Abteilung
 			"Research Group Software Engineering" der Universität Bochum 
 			angeboten wird.
 		</description>
@@ -263,7 +263,7 @@
 			of Universal Computer Science.
 		</description>
 		<description xml:lang="de">
-			Erzeugt eine formatierte Ausgabe entsprechen den "Journal
+			Erzeugt eine formatierte Ausgabe entsprechend der "Journal
 			of Universal Computer Science"-Richtlinien.
 		</description>
 		<baseFileName>jucs</baseFileName>
@@ -278,7 +278,7 @@
 			Bochum.
 		</description>
 		<description xml:lang="de">
-			Benutzerdefiniertes Ausgabeformat, welches von der Abteilung
+			Benutzerdefiniertes Ausgabeformat, das von der Abteilung
 			Informations und Technologie Management (IMTM), Universität Bochum
 			angeboten wird.
 		</description>
@@ -293,7 +293,7 @@
 			Standardization (DIN).
 		</description>
 		<description xml:lang="de">
-			HTML Ausgabe Format entsprechend dem Deutschen Institut für Normung.
+			HTML Ausgabeformat gemäß dem Deutschen Institut für Normung.
 		</description>
 		<baseFileName>din1505</baseFileName>
 		<mimeType>text/html</mimeType>
@@ -306,7 +306,7 @@
 			Standardization (DIN), grouped by year.
 		</description>
 		<description xml:lang="de">
-			HTML Ausgabe Format entsprechend dem Deutschen Institut für Normung, gruppiert
+			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung, gruppiert
 			nach Jahren.
 		</description>
 		<baseFileName>din1505year</baseFileName>
@@ -321,8 +321,8 @@
 			Mensch-Maschine-Systemtechnik Institute.
 		</description>
 		<description xml:lang="de">
-			HTML Ausgabe Format entsprechend dem Deutschen Institut für Normung. 
-			Specielle Version des Mensch-Maschine-Systemtechnik Instituts.
+			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
+			Spezielle Version des Mensch-Maschine-Systemtechnik Instituts.
 		</description>
 		<directory>mms</directory>
 		<baseFileName>mms</baseFileName>
@@ -337,8 +337,8 @@
 			Mensch-Maschine-Systemtechnik Institute, grouped by year.
 		</description>
 		<description xml:lang="de">
-			HTML Ausgabe Format entsprechend dem Deutschen Institut für Normung. 
-			Specielle Version des Mensch-Maschine-Systemtechnik Instituts, gruppiert
+			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
+			Spezielle Version des Mensch-Maschine-Systemtechnik Instituts, gruppiert
 			nach Jahren.
 		</description>
 		<directory>mmsyear</directory>
@@ -354,7 +354,7 @@
 		</description>
 		<description xml:lang="de">
 			Erzeugt eine strukturierte HTML-Ausgabe, bei der jede Publikation als Eintrag 
-			in einer Liste dargestellt wird und bietet weiterhin Suchfunktionen mittels JavaScript.
+			in einer Liste dargestellt wird und bietet außerdem Suchfunktionen mittels JavaScript.
 		</description>
 		<directory>listrefs</directory>
 		<baseFileName>listrefs</baseFileName>
@@ -368,7 +368,7 @@
 			style guidelines.
 		</description>
 		<description xml:lang="de">
-			HTML-Ausgabe Format entsprechend den "Harvard bibliography
+			HTML-Ausgabe Format gemäß den "Harvard bibliography
 			style" Richtlinien.
 		</description>
 		<directory>harvardhtml</directory>
@@ -383,7 +383,7 @@
 			style guidelines and grouped by year
 		</description>
 		<description xml:lang="de">
-			HTML-Ausgabe Format entsprechend den "Harvard bibliography
+			HTML-Ausgabe Format gemäß den "Harvard bibliography
 			style" Richtlinien, gruppiert nach Jahren
 		</description>
 		<directory>harvardhtmlyear</directory>
@@ -400,7 +400,7 @@
 			and with an endnote export.		
 		</description>
 		<description xml:lang="de">
-			HTML Ausgabe Format entsprechend dem Deutschen Institut für Normung. 
+			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
 			Spezielle Version des Mensch-Maschine-Systemtechnik Instituts, gruppiert
 			nach Jahren und mit Endnote-Eintrag für jede Publikation.		
 		</description>
@@ -418,7 +418,7 @@
 			with an endnote export and display of the note.		
 		</description>
 		<description xml:lang="de">
-			HTML Ausgabe Format entsprechend dem Deutschen Institut für Normung. 
+			HTML Ausgabe Format gemäß dem Deutschen Institut für Normung. 
 			Spezielle Version des Mensch-Maschine-Systemtechnik Instituts, gruppiert
 			nach Jahren, mit Endnote-Eintrag für jede Publikation und Anzeige der
 			Notiz (note).		
