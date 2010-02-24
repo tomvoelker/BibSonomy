@@ -432,7 +432,7 @@
 				</div>
 				
 				<!-- sidebar -->
-
+				<div id="wrapsidebar">
 				<c:if test="${helpbox != null}">
 					<div class="sidebarBoxOuter" id="helpbox">
 						<div class="sidebarBoxInner">
@@ -474,6 +474,8 @@
 						</div>
 					</div>
 				</c:if>
+				
+				</div> <!-- /div id="wrapsidebar"  -->
 
 				<c:if test="${fullscreen}">
 					<script type="text/javascript">

@@ -74,15 +74,12 @@ margin-right:2ex;
 .sidebarBoxInner {
 	padding: 5px;
 	background-color: #FBF7F4;
-	float: none;
 	width: 100%;
 	padding: 0px;
 }
 
 .sidebarBoxOuter {
 	background-color: #9adfcf; 
-	float: right; 
-	width: 23%; 
 	margin-top: 10px;
 }
 

@@ -1201,9 +1201,14 @@ padding-top:1px;
 }
 
 .sidebarBoxInner {
-	float: right;
-	width: 23%;
 	padding: 3px;
 	background-color: #D8EBAE;
 }
 
+#wrapsidebar {
+	float: right;
+	width:23%;
+	margin: 0;
+	padding:0;
+	margin-bottom: 1ex;
+}

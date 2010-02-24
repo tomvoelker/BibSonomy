@@ -185,6 +185,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 
 		User user = null;
 		
+		log.info("useLDAP: " + useLDAP + "  - you can switch this by editing jndi properties in context.xml: java:/comp/env/useLdapPasswordforBibsonomyLogin");
 		log.info("login method: " + command.getLoginMethod());
 
 		if (useLDAP && username != null && hashedPassword != null  ) { 
@@ -224,7 +225,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 				Ldap ldap = new Ldap();
 	
 				log.info("Trying to login user " + bibsonomyUsername + " via LDAP (uid="+userId+")");
-				log.info("password"+password);
+				//log.info("password: "+password);
 		        ldapUserinfo = ldap.checkauth(userId, password);
 			}
 			
