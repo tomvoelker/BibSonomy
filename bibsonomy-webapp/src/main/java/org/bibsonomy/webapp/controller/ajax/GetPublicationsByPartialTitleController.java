@@ -38,7 +38,8 @@ public class GetPublicationsByPartialTitleController<R extends Resource> impleme
 			Set<String> allowedGroups = new TreeSet<String>();
 			allowedGroups.add(GroupID.PUBLIC.name());
 			//List<Post<BibTex>> getPostsByTitleLucene(final String search, final int groupId, final String requestedUserName, final String userName, final Set<String> requestedGroupName, final int limit, final int offset, final DBSession session);
-			List<Post<BibTex>> titles = this.db.getPostsByTitleLucene(command.getTitle()+"%", 0, null, command.getUserName(), allowedGroups, 10, 0, dbSession);
+			// FIXME: this of course has to go via the logic interface
+			List<Post<BibTex>> titles = this.db.getPostsByTitleLucene(command.getTitle(), 0, null, command.getUserName(), allowedGroups, 10, 0, dbSession);
 			dbSession.close();
 		}
 		
