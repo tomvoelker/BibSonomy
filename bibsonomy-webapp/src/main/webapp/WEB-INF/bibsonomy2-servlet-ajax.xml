@@ -40,6 +40,8 @@
 						<property name="allowedFields" >
 							<list>
 								<value>title</value>
+								<value>userName</value>
+								<value>requestedUserName</value>
 							</list>
 						</property>
 					</bean>
