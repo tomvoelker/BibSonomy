@@ -55,7 +55,7 @@ public interface ResourceSearch<R extends Resource> {
 	 */
 	public ResultList<Post<R>> searchPosts(String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset);
 
-	
+
 	/**
 	 * TODO: document me
 	 * 
@@ -109,6 +109,23 @@ public interface ResourceSearch<R extends Resource> {
 			String requestedUserName, String requestedGroupName, String year,
 			String firstYear, String lastYear, List<String> tagList, int limit);
 			
+
+	/**
+	 * get lists of post matched by title
+	 * 
+	 * TODO: clean up interface, like PostDatabaseManager
+	 * 
+	 * @param group
+	 * @param searchTerms
+	 * @param requestedUserName
+	 * @param UserName
+	 * @param GroupNames
+	 * @param limit
+	 * @param offset
+	 * @return
+	 */
+	public ResultList<Post<R>> getPostsByTitle(String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset);
+
 	/**
 	 * flags/unflags user as spammer, depending on user.getPrediction()
 	 * 
