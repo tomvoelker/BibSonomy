@@ -12,3 +12,16 @@ function replaceElementsTextnode(elname, t) {
 	}
 	
 }
+
+
+$(document).ready(function(){
+  
+	$("#nice_tnav").prepend('<div id="navitogglehelp" class="togglehelp">?</div>');
+	
+	$(".togglehelp").click(function () {
+    $("#helpbox").toggle("slow");
+  });    
+
+})
+
+

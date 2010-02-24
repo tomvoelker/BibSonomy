@@ -89,6 +89,7 @@ ul#sidebar, ul#tagbox {
 
 #helpbox {
 	background-color: #DF430D; 
+	display: none;
 }
 
 .btnHomepage {
@@ -121,4 +122,18 @@ ul#sidebar, ul#tagbox {
 	font-weight: bold;
 	color: #DF430D;
 	height: 5ex;
+}
+
+.hidebox {
+	height: 13px;
+}
+
+.togglehelp {
+	float: right;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+#navitogglehelp {
+	padding-right:5px;
 }
