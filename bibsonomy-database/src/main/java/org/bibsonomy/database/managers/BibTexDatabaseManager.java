@@ -4,6 +4,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -136,6 +137,39 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		param.setTitle(title);
 		param.setGrouping(GroupingEntity.ALL);
 		return this.postList("getBibTexByTitle", param, session);
+	}
+	
+	/**
+	 * TODO: document me
+	 * 
+	 * @param search
+	 * @param groupId
+	 * @param requestedUserName
+	 * @param requestedGroupName 
+	 * @param limit
+	 * @param offset
+	 * @param session
+	 * @return list of bibtex entries
+	 */
+	public List<Post<BibTex>> getPostsByTitleLucene(final String search, final int groupId, final String requestedUserName, final String userName, final Set<String> requestedGroupName, final int limit, final int offset, final DBSession session){
+		final ResultList<Post<BibTex>> postBibtexList;
+		final ResourceSearch<BibTex> resourceSearch = this.getResourceSearch();
+		if (present(resourceSearch)) {
+			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+			String group = groupDb.getGroupNameByGroupId(groupId, session);
+			
+			final long starttimeQuery = System.currentTimeMillis();
+			//String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset
+			postBibtexList = resourceSearch.getPostsByTitle(group, search, requestedUserName, userName, requestedGroupName, limit, offset);
+
+			final long endtimeQuery = System.currentTimeMillis();
+			log.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+		} else {
+			postBibtexList = new ResultList<Post<BibTex>>();
+			log.error("No resource searcher available.");
+		}
+			
+		return postBibtexList;
 	}
 
 	/**
