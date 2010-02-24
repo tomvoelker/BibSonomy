@@ -6,9 +6,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -191,7 +193,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 				// FIXME: we simply cut off the list 
 				//      - we probably want get the n most popular tags
 				retVal = retVal.subList(0, Math.min(limit, retVal.size()));
-			}
+			};
 			
 			if( retVal==null )
 				retVal = new LinkedList<Tag>();
@@ -199,6 +201,39 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			r.unlock();
 		}
 		
+		// all done.
+		return retVal;
+	}
+	
+	/**
+	 * <em>/search/ein+lustiger+satz+group%3AmyGroup</em><br/><br/>
+	 * 
+	 * @param group in what group's to search for (String)
+	 * @param searchTerms the search query
+	 * @param requestedUserName
+	 * @param UserName
+	 * @param GroupNames groups to include
+	 * @param limit number of posts to display
+	 * @param offset first post in the result list
+	 * @return
+	 */
+	public ResultList<Post<R>> getTagsByTitle(String group,
+			String searchTerms, String requestedUserName, String UserName,
+			Set<String> GroupNames, int limit, int offset) {
+		ResultList<Post<R>> retVal = null;
+
+		r.lock();
+		try {
+			if( isEnabled() ) {
+				retVal = searchLucene(
+						buildTitleQuery(group, searchTerms, requestedUserName, UserName, GroupNames), 
+						limit, offset);
+			} else
+				retVal = createEmptyResultList();
+		} finally {
+			r.unlock();
+		}
+
 		// all done.
 		return retVal;
 	}
@@ -528,6 +563,109 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		return qf;
 	}
 
+	/**
+	 * construct lucene query filter for searching posts matching a given title 
+	 * 
+	 * (title:searchTerms) 
+	 *   [AND user_name:requestedUsername]
+	 *    AND ( 
+	 *          group:allowedGroup_1 OR ... OR group:allowedGroup_n 
+	 *          OR (group:private AND user:userName)
+	 *        )  
+	 *        
+	 * FIXME: merge buildFulltextQuery and buildGroupSearchQuery
+	 * 
+	 * @param group group name from which posts should be searched
+	 * @param searchTerms search query
+	 * @param requestedUserName user name from whom posts should be searched
+	 * @param userName login user name
+	 * @param allowedGroups groups which the login user is member of
+	 * 
+	 * @return
+	 */
+	protected QuerySortContainer buildTitleQuery(String group, String searchTerms, String requestedUserName, String userName, Set<String> allowedGroups) {
+		// FIXME: configure this
+		//	String orderBy = "relevance"; 
+		String orderBy = FLD_DATE; 
+		
+		BooleanQuery mainQuery       = new BooleanQuery();
+		BooleanQuery searchQuery     = new BooleanQuery();
+		BooleanQuery accessModeQuery = new BooleanQuery();
+		BooleanQuery privatePostQuery= new BooleanQuery();
+		
+		//--------------------------------------------------------------------
+		// search terms
+		//--------------------------------------------------------------------
+		Query searchTermQuery = parseSearchQuery(FLD_TITLE, searchTerms);
+		searchQuery.add(searchTermQuery, Occur.SHOULD);
+
+		//--------------------------------------------------------------------
+		// allowed groups
+		//--------------------------------------------------------------------
+		for ( String groupName : allowedGroups) {
+			Query groupQuery = new TermQuery(new Term(FLD_GROUP, groupName));
+			accessModeQuery.add(groupQuery, Occur.SHOULD);
+		}
+		
+		//--------------------------------------------------------------------
+		// private post query
+		//--------------------------------------------------------------------
+		if( ValidationUtils.present(userName) ) {
+			BooleanQuery privatePostGroups = new BooleanQuery();
+			privatePostGroups.add(new TermQuery(new Term(FLD_GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.SHOULD);
+			privatePostGroups.add(new TermQuery(new Term(FLD_GROUP, GroupID.FRIENDS.name().toLowerCase())), Occur.SHOULD);
+			privatePostQuery.add(privatePostGroups, Occur.MUST);
+			privatePostQuery.add(new TermQuery(new Term(FLD_USER, userName)), Occur.MUST);
+			accessModeQuery.add(privatePostQuery, Occur.SHOULD);
+		}
+
+		//--------------------------------------------------------------------
+		// post owned by user
+		//--------------------------------------------------------------------
+		if ( ValidationUtils.present(requestedUserName) ) {
+			mainQuery.add(
+					new TermQuery(new Term(FLD_USER, requestedUserName)),
+					Occur.MUST
+					);
+		}
+		
+		//--------------------------------------------------------------------
+		// post owned by group
+		//--------------------------------------------------------------------
+		if ( ValidationUtils.present(group) ) {
+			mainQuery.add( new TermQuery(new Term(FLD_GROUP, group)), Occur.MUST );
+		}
+		
+		//--------------------------------------------------------------------
+		// build final query
+		//--------------------------------------------------------------------
+		mainQuery.add(searchQuery, Occur.MUST);
+		if( !(ValidationUtils.present(userName) && userName.equals(requestedUserName)) )
+			mainQuery.add(accessModeQuery, Occur.MUST);
+		
+		log.debug("[Full text] Search query: " + mainQuery.toString());
+
+		//--------------------------------------------------------------------
+		// set ordering
+		//--------------------------------------------------------------------
+		Sort sort = null;
+		if (PARAM_RELEVANCE.equals(orderBy)) {
+			sort = new Sort(new SortField[]{SortField.FIELD_SCORE,new SortField(FLD_DATE, SortField.LONG,true)
+  			});
+		} else { 
+			// orderBy=="date"
+			// FIXME: why does the default operator depend on the ordering
+			// myParser.setDefaultOperator(QueryParser.Operator.AND);
+			sort = new Sort(new SortField(FLD_DATE,SortField.LONG,true));
+		}
+		
+		// all done
+		QuerySortContainer qf = new QuerySortContainer();
+		qf.setQuery(mainQuery);
+		qf.setSort(sort);
+		
+		return qf;
+	}
 
 	
 	/**
