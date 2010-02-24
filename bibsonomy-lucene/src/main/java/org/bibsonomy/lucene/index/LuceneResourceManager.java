@@ -173,7 +173,6 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 		
 		// all done.
 		alreadyRunning = 0;
-		return;
 	}
 	
 	/**

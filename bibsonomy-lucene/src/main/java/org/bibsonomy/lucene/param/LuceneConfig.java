@@ -28,7 +28,7 @@ public class LuceneConfig {
 		return indexPath;
 	}              
 	public void setEnableUpdater(String enableUpdater) {
-		this.enableUpdater = new Boolean(enableUpdater);
+		this.enableUpdater = Boolean.valueOf(enableUpdater);
 	}
 	public String getEnableUpdater() {
 		return enableUpdater.toString();
@@ -40,7 +40,7 @@ public class LuceneConfig {
 		return searchMode;
 	}              
 	public void setLoadIndexIntoRam(String loadIndexIntoRam) {
-		this.loadIndexIntoRam = new Boolean(loadIndexIntoRam);
+		this.loadIndexIntoRam = Boolean.valueOf(loadIndexIntoRam);
 	}
 	public String getLoadIndexIntoRam() {
 		return loadIndexIntoRam.toString();

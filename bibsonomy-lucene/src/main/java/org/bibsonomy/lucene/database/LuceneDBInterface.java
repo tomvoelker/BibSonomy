@@ -10,8 +10,6 @@ import org.bibsonomy.lucene.database.params.GroupParam;
 import org.bibsonomy.lucene.database.params.GroupTasParam;
 import org.bibsonomy.lucene.database.params.TasParam;
 import org.bibsonomy.lucene.param.LucenePost;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -162,7 +160,6 @@ public interface LuceneDBInterface<R extends Resource> {
 	/**
 	 * get list of group ids with corresponding group names
 	 * @return
-	 * @throws SQLException
 	 */
 	public List<GroupParam> getGroupIDs();
 	
@@ -173,7 +170,6 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @param skip The number of results to ignore
 	 * @param max The maximum number of results to return
 	 * @return A List of result objects
-	 * @throws SQLException
 	 */
 	public List<TasParam> getTasEntries(Integer skip, Integer max);
 	
@@ -183,7 +179,6 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @param skip
 	 * @param max
 	 * @return pair of content_id with corresponding space separated list of assigned tags
-	 * @throws SQLException 
 	 */
 	public List<TasParam> getGroupedTasEntries(int skip, int max);
 
@@ -193,7 +188,6 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @param skip The number of results to ignore
 	 * @param max The maximum number of results to return
 	 * @return A List of result objects
-	 * @throws SQLException
 	 */
 	public List<GroupTasParam> getGroupTasEntries(Integer skip, Integer max);
 

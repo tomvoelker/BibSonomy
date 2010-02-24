@@ -1,31 +1,19 @@
 package org.bibsonomy.lucene.database;
 
-import java.io.Reader;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.lucene.database.params.BibTexParam;
-import org.bibsonomy.lucene.database.params.BookmarkParam;
-import org.bibsonomy.lucene.database.params.ListParam;
 import org.bibsonomy.lucene.database.params.ResourcesParam;
 import org.bibsonomy.lucene.database.results.Pair;
 import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-
-import com.ibatis.common.resources.Resources;
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
 /**
  * class for accessing the bibsonomy database 

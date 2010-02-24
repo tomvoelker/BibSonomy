@@ -78,8 +78,10 @@ public class LuceneGenerateBookmarkIndex extends LuceneGenerateResourceIndex<Boo
 	//------------------------------------------------------------------------
 	@Override
 	protected void setUp() {
-		log.debug("Fetching url map");
-		this.urlMap = this.dbLogic.getUrlMap();
+		/*
+			log.debug("Fetching url map");
+			this.urlMap = this.dbLogic.getUrlMap();
+		*/
 	}
 	
 	@Override
@@ -89,7 +91,9 @@ public class LuceneGenerateBookmarkIndex extends LuceneGenerateResourceIndex<Boo
 
 	@Override
 	protected void fillPost(LucenePost<Bookmark> postEntry) {
-		String bmUrl = urlMap.get(postEntry.getResource().getInterHash());
-		postEntry.getResource().setUrl(bmUrl);
+		/*
+			String bmUrl = urlMap.get(postEntry.getResource().getInterHash());
+			postEntry.getResource().setUrl(bmUrl);
+		*/
 	}
 }

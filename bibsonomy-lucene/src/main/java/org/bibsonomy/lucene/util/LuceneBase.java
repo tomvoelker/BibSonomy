@@ -146,8 +146,8 @@ public class LuceneBase {
 				redundantCnt = value;
 			}
 			
-			setEnableUpdater(new Boolean(config.getEnableUpdater()));
-			loadIndexIntoRam = new Boolean(config.getLoadIndexIntoRam());
+			setEnableUpdater(Boolean.valueOf(config.getEnableUpdater()));
+			loadIndexIntoRam = Boolean.valueOf(config.getLoadIndexIntoRam());
 		} catch (Exception e) {
 			log.error("Error requesting JNDI environment variables ' ("+e.getMessage()+")");
 		}

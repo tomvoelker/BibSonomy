@@ -41,7 +41,7 @@ public class LuceneDelegateBibTexSearch extends LuceneDelegateResourceSearch<Bib
 	public static LuceneDelegateResourceSearch<BibTex> getInstance() {
 		if( instance==null ) {
 			instance = (LuceneDelegateResourceSearch<BibTex>)beanFactory.getBean("luceneDelegateBibTexSearch");
-		};
+		}
 		
 		return instance;
 	}
@@ -54,7 +54,7 @@ public class LuceneDelegateBibTexSearch extends LuceneDelegateResourceSearch<Bib
 	public static LuceneDelegateResourceSearch<BibTex> getPreInitInstance() {
 		if( instance==null ) {
 			instance = new LuceneDelegateBibTexSearch();
-		};
+		}
 		
 		return instance;
 	}}

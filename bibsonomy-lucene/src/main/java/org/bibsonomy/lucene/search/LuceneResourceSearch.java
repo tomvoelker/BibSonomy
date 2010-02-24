@@ -6,11 +6,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -31,6 +29,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.store.FSDirectory;
 import org.bibsonomy.common.enums.GroupID;
@@ -108,29 +107,28 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	//------------------------------------------------------------------------
 	// search interface
 	//------------------------------------------------------------------------
+
 	/**
 	 * TODO: document me
+	 *  
+	 * @param group
+	 * @param searchTerms
+	 * @param requestedUserName
+	 * @param UserName
+	 * @param GroupNames
+	 * @param limit
+	 * @param offset
+	 * @return
 	 */
 	public ResultList<Post<R>> searchPosts(String group,
 			String searchTerms, String requestedUserName, String UserName,
 			Set<String> GroupNames, int limit, int offset) {
-		ResultList<Post<R>> retVal = null;
-
-		r.lock();
-		try {
-			if( isEnabled() ) {
-				retVal = searchLucene(
-						buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames), 
-						limit, offset);
-			} else
-				retVal = createEmptyResultList();
-		} finally {
-			r.unlock();
-		}
-
-		// all done.
-		return retVal;
+		// build query
+		QuerySortContainer fullTextQuery = buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames);
+		// perform search query
+		return doSearch(fullTextQuery, limit, offset);
 	}
+
 	
 	/**
 	 * TODO: document me
@@ -151,24 +149,89 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			String requestedUserName, String requestedGroupName, String year,
 			String firstYear, String lastYear, List<String> tagList, int limit,
 			int offset) {
-		ResultList<Post<R>> retVal = null;
-		
-		r.lock();
-		try {
-			if( isEnabled() ) {
-				retVal = searchLucene(
-						buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, CFG_TAG_CLOUD_LIMIT), 
-						limit, offset);
-			} else 
-				retVal = createEmptyResultList();
-		} finally {
-			r.unlock();
-		}
-		
-		// all done.
-		return retVal;
+		// build query
+		QuerySortContainer authorQuery = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, CFG_TAG_CLOUD_LIMIT);
+		// perform search query
+		return this.doSearch(authorQuery, limit, offset);
 	}
 	
+	/**
+	 * <em>/search/ein+lustiger+satz+group%3AmyGroup</em><br/><br/>
+	 * 
+	 * @param groupId group to search
+	 * @param visibleGroupIDs groups the user has access to
+	 * @param search the search query
+	 * @param userName
+	 * @param limit number of posts to display
+	 * @param offset first post in the result list
+	 * @param systemTags NOT IMPLEMENTED 
+	 * @return
+	 */
+	public ResultList<Post<R>> searchGroup(
+			final int groupId, final List<Integer> visibleGroupIDs, 
+			final String search, final String authUserName, 
+			final int limit, final int offset, 
+			Collection<? extends Tag> systemTags) {
+		//--------------------------------------------------------------------
+		// query bibsonomy's database for missing data
+		//--------------------------------------------------------------------
+		String groupName = this.dbLogic.getGroupNameByGroupId(groupId);
+		
+		// FIXME: didn't the chain's param object already contained the group name?
+		//        if so, we should consider passing them to this function
+		List<String> visibleGroupNames = new LinkedList<String>();
+		for( Integer gid : visibleGroupIDs) {
+			visibleGroupNames.add(this.dbLogic.getGroupNameByGroupId(gid));
+		}
+		
+		// get given groups members
+		List<String> groupMembers = this.dbLogic.getGroupMembersByGroupId(groupId);
+		
+		// get all members of the given group, which have the user as a friend
+		List<String> userGroupFriends = this.dbLogic.getGroupFriendsByGroupIdForUser(groupId, authUserName);
+		
+		//--------------------------------------------------------------------
+		// perform search query
+		//--------------------------------------------------------------------
+		QuerySortContainer groupSearchQuery = buildGroupSearchQuery(groupName, visibleGroupNames, userGroupFriends, groupMembers, search, authUserName, limit, offset, systemTags);
+		return this.doSearch(groupSearchQuery, limit, offset);
+	}
+
+	/**
+	 * get list of posts whose title contains a word with a given prefix
+	 * 
+	 * @param group in what group's to search for (String)
+	 * @param searchTerms the search query
+	 * @param requestedUserName
+	 * @param UserName
+	 * @param GroupNames groups to include
+	 * @param limit number of posts to display
+	 * @param offset first post in the result list
+	 * @return
+	 */
+	public ResultList<Post<R>> getPostsByTitle(String group,
+			String searchTerms, String requestedUserName, String UserName,
+			Set<String> GroupNames, int limit, int offset) {
+		// build search query
+		QuerySortContainer titleQuery = buildTitleQuery(group, searchTerms, requestedUserName, UserName, GroupNames);
+		// perform search 
+		return this.doSearch(titleQuery, limit, offset);
+	}	
+	
+	/**
+	 * get tag cloud for given author
+	 * 
+	 * @param group
+	 * @param search
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param tagList
+	 * @param limit
+	 * @return
+	 */
 	public List<Tag> getTagsByAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,
 			String firstYear, String lastYear, List<String> tagList, int limit) {
@@ -205,95 +268,112 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		return retVal;
 	}
 	
-	/**
-	 * <em>/search/ein+lustiger+satz+group%3AmyGroup</em><br/><br/>
-	 * 
-	 * @param group in what group's to search for (String)
-	 * @param searchTerms the search query
-	 * @param requestedUserName
-	 * @param UserName
-	 * @param GroupNames groups to include
-	 * @param limit number of posts to display
-	 * @param offset first post in the result list
-	 * @return
-	 */
-	public ResultList<Post<R>> getTagsByTitle(String group,
-			String searchTerms, String requestedUserName, String UserName,
-			Set<String> GroupNames, int limit, int offset) {
-		ResultList<Post<R>> retVal = null;
 
-		r.lock();
-		try {
-			if( isEnabled() ) {
-				retVal = searchLucene(
-						buildTitleQuery(group, searchTerms, requestedUserName, UserName, GroupNames), 
-						limit, offset);
-			} else
-				retVal = createEmptyResultList();
-		} finally {
-			r.unlock();
-		}
-
-		// all done.
-		return retVal;
-	}
 	
-	/**
-	 * <em>/search/ein+lustiger+satz+group%3AmyGroup</em><br/><br/>
-	 * 
-	 * @param groupId group to search
-	 * @param visibleGroupIDs groups the user has access to
-	 * @param search the search query
-	 * @param userName
-	 * @param limit number of posts to display
-	 * @param offset first post in the result list
-	 * @param systemTags NOT IMPLEMENTED 
-	 * @return
-	 */
-	public ResultList<Post<R>> searchGroup(
-			final int groupId, final List<Integer> visibleGroupIDs, 
-			final String search, final String authUserName, 
-			final int limit, final int offset, 
-			Collection<? extends Tag> systemTags) {
-		ResultList<Post<R>> retVal = null;
-
-		//--------------------------------------------------------------------
-		// query bibsonomy's database for missing data
-		//--------------------------------------------------------------------
-		String groupName = this.dbLogic.getGroupNameByGroupId(groupId);
-		
-		// FIXME: didn't the chain's param object already contained the group name?
-		//        if so, we should consider passing them to this function
-		List<String> visibleGroupNames = new LinkedList<String>();
-		for( Integer gid : visibleGroupIDs) {
-			visibleGroupNames.add(this.dbLogic.getGroupNameByGroupId(gid));
-		}
-		
-		// get given groups members
-		List<String> groupMembers = this.dbLogic.getGroupMembersByGroupId(groupId);
-		
-		// get all members of the given group, which have the user as a friend
-		List<String> userGroupFriends = this.dbLogic.getGroupFriendsByGroupIdForUser(groupId, authUserName);
-		
-		r.lock();
-		try {
-			if( isEnabled() ) {
-				return searchLucene(
-						buildGroupSearchQuery(groupName, visibleGroupNames, userGroupFriends, groupMembers, search, authUserName, limit, offset, systemTags),
-						limit, offset);
-			} else
-				retVal = createEmptyResultList();
-		} finally {
-			r.unlock();
-		}
-
-		// all done.
-		return retVal;
-	}
-
 	//------------------------------------------------------------------------
 	// abstract interface
 	//------------------------------------------------------------------------
+
+	/**
+	 * create empty collection of managed post objects
+	 * @return
+	 */
+	protected abstract ResultList<Post<R>> createEmptyResultList();
+
+	/**
+	 * get managed resource type
+	 */
+	protected abstract Class<? extends Resource> getResourceType();
+	
+
+	//------------------------------------------------------------------------
+	// management interface
+	//------------------------------------------------------------------------
+	/**
+	 * initialize internal data structures
+	 */
+	private void init() {
+		LuceneBase.initRuntimeConfiguration();
+		this.luceneIndexPath = getIndexBasePath()+CFG_LUCENE_INDEX_PREFIX+getResourceName();
+	}
+	
+	/** reload the index -- has to be called after each index change */
+	public void reloadIndex(int indexId) {
+		this.setIndexId(indexId);
+		//--------------------------------------------------------------------
+		// open new index searcher
+		//--------------------------------------------------------------------
+		IndexSearcher newSearcher = null;
+		init();
+		try {
+			// load and hold index on physical hard disk
+			log.debug("Opening index " + indexId);
+			String indexPath = luceneIndexPath+CFG_INDEX_ID_DELIMITER+indexId;
+			newSearcher = new IndexSearcher(FSDirectory.open(new File(indexPath)));
+		} catch (Exception e) {
+			log.error("Error reloading index, disabling searcher ("+e.getMessage()+") - this should be the case while building a new index");
+		}
+ 		
+		//--------------------------------------------------------------------
+		// switch searcher
+		//--------------------------------------------------------------------
+		IndexSearcher oldSearcher = null;
+		w.lock();
+		try {
+			if( newSearcher==null ) {
+				disableIndex();
+			} else {
+				oldSearcher = this.searcher;
+				this.searcher = newSearcher;
+				enableIndex();
+			}
+		} finally {
+			w.unlock();
+		}
+		
+		//--------------------------------------------------------------------
+		// close old searcher
+		//--------------------------------------------------------------------
+		try {
+			if( oldSearcher!=null ) 
+				oldSearcher.close();
+		} catch (IOException e) {
+			log.debug("Error closing searcher.", e);
+		}
+
+	}
+
+	public LuceneIndexStatistics getStatistics() {
+		return Utils.getStatistics(luceneIndexPath);
+	}	
+	
+	//------------------------------------------------------------------------
+	// private helper
+	//------------------------------------------------------------------------
+	/**
+	 * perform given query, respecting read/write locks
+	 * 
+	 * @param limit
+	 * @param offset
+	 * @param query
+	 * @return
+	 */
+	private ResultList<Post<R>> doSearch(QuerySortContainer query, int limit, int offset) {
+		ResultList<Post<R>> retVal = null;
+		r.lock();
+		try {
+			if( isEnabled() ) {
+				retVal = searchLucene(query, limit, offset);
+			} else
+				retVal = createEmptyResultList();
+		} finally {
+			r.unlock();
+		}
+
+		// all done.
+		return retVal;
+	}
+
 	/**
 	 * query index for documents and create result list of post models 
 	 */
@@ -350,83 +430,6 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		return postList;
 	}	
 
-	/**
-	 * create empty collection of managed post objects
-	 * @return
-	 */
-	protected abstract ResultList<Post<R>> createEmptyResultList();
-
-	/**
-	 * get managed resource type
-	 */
-	protected abstract Class<? extends Resource> getResourceType();
-	
-
-	//------------------------------------------------------------------------
-	// management interface
-	//------------------------------------------------------------------------
-	/**
-	 * initialize internal data structures
-	 */
-	private void init() {
-		LuceneBase.initRuntimeConfiguration();
-		this.luceneIndexPath = getIndexBasePath()+CFG_LUCENE_INDEX_PREFIX+getResourceName();
-	}
-	
-	/** reload the index -- has to be called after each index change */
-	public void reloadIndex(int indexId) {
-		this.setIndexId(indexId);
-		//--------------------------------------------------------------------
-		// open new index searcher
-		//--------------------------------------------------------------------
-		IndexSearcher newSearcher = null;
-		init();
-		try {
-			// load and hold index on physical hard disk
-			log.debug("Opening index " + indexId);
-			String indexPath = luceneIndexPath+CFG_INDEX_ID_DELIMITER+indexId;
-			newSearcher = new IndexSearcher(FSDirectory.open(new File(indexPath)));
-		} catch (Exception e) {
-			log.error("Error reloading index, disabling searcher", e);
-		}
- 
-		
-		//--------------------------------------------------------------------
-		// switch searcher
-		//--------------------------------------------------------------------
-		IndexSearcher oldSearcher = null;
-		w.lock();
-		try {
-			if( newSearcher==null ) {
-				disableIndex();
-			} else {
-				oldSearcher = this.searcher;
-				this.searcher = newSearcher;
-				enableIndex();
-			}
-		} finally {
-			w.unlock();
-		}
-		
-		//--------------------------------------------------------------------
-		// close old searcher
-		//--------------------------------------------------------------------
-		try {
-			if( oldSearcher!=null ) 
-				oldSearcher.close();
-		} catch (IOException e) {
-			log.debug("Error closing searcher.", e);
-		}
-
-	}
-
-	public LuceneIndexStatistics getStatistics() {
-		return Utils.getStatistics(luceneIndexPath);
-	}	
-	
-	//------------------------------------------------------------------------
-	// private helper
-	//------------------------------------------------------------------------
 	/**
 	 * check whether index is ready for searching
 	 */
@@ -596,7 +599,8 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		//--------------------------------------------------------------------
 		// search terms
 		//--------------------------------------------------------------------
-		Query searchTermQuery = parseSearchQuery(FLD_TITLE, searchTerms);
+		// Query searchTermQuery = parseSearchQuery(FLD_TITLE, searchTerms);
+		Query searchTermQuery = new WildcardQuery(new Term(FLD_TITLE, searchTerms));
 		searchQuery.add(searchTermQuery, Occur.SHOULD);
 
 		//--------------------------------------------------------------------

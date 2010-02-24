@@ -47,7 +47,7 @@ public class LuceneBookmarkManager extends LuceneResourceManager<Bookmark> {
 		if( instance==null ) {
 			instance = (LuceneBookmarkManager)beanFactory.getBean("luceneBookmarkManager");
 			instance.recovery();
-		};
+		}
 		
 		return instance;
 	}
@@ -60,7 +60,7 @@ public class LuceneBookmarkManager extends LuceneResourceManager<Bookmark> {
 	public static LuceneBookmarkManager getPreInitInstance() {
 		if( instance==null ) {
 			instance = new LuceneBookmarkManager();
-		};
+		}
 		
 		return instance;
 	}

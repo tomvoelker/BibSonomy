@@ -41,7 +41,7 @@ public class LuceneDelegateBookmarkSearch extends LuceneDelegateResourceSearch<B
 	public static LuceneDelegateResourceSearch<Bookmark> getInstance() {
 		if( instance==null ) {
 			instance = (LuceneDelegateResourceSearch<Bookmark>)beanFactory.getBean("luceneDelegateBookmarkSearch");
-		};
+		}
 		
 		return instance;
 	}
@@ -54,7 +54,7 @@ public class LuceneDelegateBookmarkSearch extends LuceneDelegateResourceSearch<B
 	public static LuceneDelegateResourceSearch<Bookmark> getPreInitInstance() {
 		if( instance==null ) {
 			instance = new LuceneDelegateBookmarkSearch();
-		};
+		}
 		
 		return instance;
 	}

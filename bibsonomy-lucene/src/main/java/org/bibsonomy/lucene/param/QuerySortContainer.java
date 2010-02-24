@@ -2,8 +2,6 @@ package org.bibsonomy.lucene.param;
 
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
-import org.apache.lucene.search.TopDocsCollector;
-import org.apache.lucene.search.TopFieldCollector;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
 
 /**

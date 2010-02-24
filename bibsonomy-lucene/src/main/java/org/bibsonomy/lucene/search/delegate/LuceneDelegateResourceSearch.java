@@ -88,6 +88,15 @@ public class LuceneDelegateResourceSearch<R extends Resource> implements Resourc
 		}
 	}
 
+	
+	@Override
+	public ResultList<Post<R>> getPostsByTitle(String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset) {
+		if(resourceSearcher!=null)
+			return resourceSearcher.getPostsByTitle(group, searchTerms, requestedUserName, UserName, GroupNames, limit, offset);
+		else
+			return new ResultList<Post<R>>();
+	}
+
 	@Override
 	public List<Tag> getTagsByAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,
@@ -97,6 +106,7 @@ public class LuceneDelegateResourceSearch<R extends Resource> implements Resourc
 		else
 			return new LinkedList<Tag>();
 	}	
+		
 	//------------------------------------------------------------------------
 	// getter/setter
 	//------------------------------------------------------------------------

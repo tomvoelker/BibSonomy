@@ -222,7 +222,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		} catch (IOException e) {
 			log.error("Error building tag cloud collector");
 			collector = null;
-		};
+		}
 		qf.setTagCountCollector(collector);
 
 		// all done.

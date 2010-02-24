@@ -3,8 +3,6 @@ package org.bibsonomy.lucene.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -60,7 +58,7 @@ public final class JNDITestDatabaseBinder extends LuceneBase {
 	 * Main method: read configuration file 'database.properties', create SQL
 	 * Data Source and register it via JNDI
 	 */
-	public static final void bind() {
+	public static void bind() {
 		bindDatabaseContext("bibsonomy_lucene", LUCENEPROPERTYFILENAME);
 		bindLuceneConfig(CONTEXTNAME, LUCENEPROPERTYFILENAME);
 	}
@@ -68,16 +66,9 @@ public final class JNDITestDatabaseBinder extends LuceneBase {
 	private static void bindLuceneConfig(String contextName, String fileName) {
 		Context ctx;
 		
-		final Properties props = new Properties();		
+		final Properties props;		
 		try {
-			// read properties
-			try {
-				props.load(new FileInputStream(new File(fileName)));
-				log.debug("Loading configuration from file system.");
-			} catch( IOException ex ) {
-				props.load(JNDITestDatabaseBinder.class.getClassLoader().getResourceAsStream(fileName));		
-				log.debug("Loading configuration from class path.");
-			}
+			props = openPropertyFile(fileName);
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -109,6 +100,8 @@ public final class JNDITestDatabaseBinder extends LuceneBase {
 			log.error("Error binding environment variable:'" + contextName + "' via JNDI ('"+ex.getMessage()+"')");
 		}
 	}
+
+
 
 	private static void bindDatabaseContext(final String contextName,
 			final String fileName) {
@@ -143,11 +136,10 @@ public final class JNDITestDatabaseBinder extends LuceneBase {
 	 */
 	private static DataSource getBasicDataSource(final String configFile) {
 
-		final Properties props = new Properties();
+		final Properties props;
 		try {
 			// read database properties
-			props.load(JNDITestDatabaseBinder.class.getClassLoader()
-					.getResourceAsStream(configFile));
+			props = openPropertyFile(configFile);
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -158,6 +150,19 @@ public final class JNDITestDatabaseBinder extends LuceneBase {
 		dataSource.setPassword(props.getProperty(PROPERTY_DB_PASSWORD));
 
 		return dataSource;
+	}	
+	
+	private static Properties openPropertyFile(String fileName) throws IOException {
+		final Properties props = new Properties();
+		// read properties
+		try {
+			props.load(new FileInputStream(new File(fileName)));
+			log.debug("Loading configuration from file system.");
+		} catch( IOException ex ) {
+			props.load(JNDITestDatabaseBinder.class.getClassLoader().getResourceAsStream(fileName));		
+			log.debug("Loading configuration from class path.");
+		}
+		return props;
 	}	
 	
 	/**

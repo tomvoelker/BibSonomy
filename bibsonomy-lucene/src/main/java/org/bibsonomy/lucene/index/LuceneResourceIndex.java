@@ -3,14 +3,10 @@ package org.bibsonomy.lucene.index;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import javax.naming.NamingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -120,7 +116,6 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	/**
 	 * initialize internal data structures
 	 * @throws IOException 
-	 * @throws NamingException 
 	 */
 	private void init() throws IOException {
 		LuceneBase.initRuntimeConfiguration();
@@ -141,7 +136,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 		try {
 			openIndexReader();
 		} catch( IOException e) {
-			log.error("Error opening IndexReader ("+e.getMessage()+")", e);
+			log.error("Error opening IndexReader ("+e.getMessage()+") - This is ok while creating a new index.");
 			throw e;
 		}
 		

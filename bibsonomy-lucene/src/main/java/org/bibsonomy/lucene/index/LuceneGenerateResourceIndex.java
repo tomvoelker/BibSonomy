@@ -3,8 +3,6 @@ package org.bibsonomy.lucene.index;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -132,6 +130,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 	 */
 	public void createEmptyIndex() throws CorruptIndexException, LockObtainFailedException, IOException {
 		// create index, possibly overwriting existing index files
+		log.info("Creating empty lucene index...");
 		Directory indexDirectory = FSDirectory.open(new File(this.luceneResourceIndexPath+CFG_INDEX_ID_DELIMITER+"0"));
 		indexWriter  = new IndexWriter(indexDirectory, getAnalyzer(), true, mfl); 
 	}
@@ -144,6 +143,8 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> extends Lu
 	 * @throws IOException
 	 */
 	public void createIndexFromDatabase() throws CorruptIndexException, IOException {
+		log.info("Filling index with database post entries.");
+
 		// set up resource specific data structures
 		setUp();
 		

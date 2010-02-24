@@ -78,7 +78,7 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 	public static SpringPerFieldAnalyzerWrapper getPreInitInstance() {
 		if( instance==null ) {
 			instance = new SpringPerFieldAnalyzerWrapper();
-		};
+		}
 		return instance;
 	}
 	

@@ -1,8 +1,5 @@
 package org.bibsonomy.lucene.util;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.index.IndexReader;
 import org.bibsonomy.lucene.param.LuceneIndexStatistics;
 
 /**
@@ -20,13 +17,13 @@ public class Utils {
 	 */
 	@Deprecated
 	public static LuceneIndexStatistics getStatistics(String lucenePath) {
+		LuceneIndexStatistics indexStatistics = new LuceneIndexStatistics();
+		/*
 		final Log LOGGER = LogFactory.getLog(Utils.class);
 		
 		// open Lucene index for reading
 		IndexReader reader=null;
-		LuceneIndexStatistics indexStatistics = new LuceneIndexStatistics();
 
-		/*
 		try {
 			reader = IndexReader.open(lucenePath);
 			indexStatistics.setNewestRecordDate(Utils.getNewestRecordDateFromIndex(reader));

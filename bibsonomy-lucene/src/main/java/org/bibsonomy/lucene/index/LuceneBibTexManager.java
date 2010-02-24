@@ -47,7 +47,7 @@ public class LuceneBibTexManager extends LuceneResourceManager<BibTex> {
 		if( instance==null ) {
 			instance = (LuceneBibTexManager)beanFactory.getBean("luceneBibTexManager");
 			instance.recovery();
-		};
+		}
 		
 		return instance;
 	}
@@ -60,7 +60,7 @@ public class LuceneBibTexManager extends LuceneResourceManager<BibTex> {
 	public static LuceneBibTexManager getPreInitInstance() {
 		if( instance==null ) {
 			instance = new LuceneBibTexManager();
-		};
+		}
 		
 		return instance;
 	}
