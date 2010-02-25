@@ -16,7 +16,7 @@ if(partialTitle.length < 2 || partialTitle.length%2 != 0) {
 } else {
 	 	var query = $.ajax({
 		        type: "GET",
-		        url: "/ajax/getPublicationsByPartialTitle.json?title="+partialTitle,
+		        url: "/json/tag/sys:title:"+partialTitle+"*",
 		        dataType: "json",
 		        success: function(json){processResponse(json);}});
 }
@@ -34,17 +34,17 @@ function processResponse(data) {
 	var p = $("<div style=\"background-color: #006699; color: #FFFFFF; padding:3px;\">Suggestions</p>");
 	$("#suggestionBox").html(p);
 	$.each(data.items, function(i, item) {
-		var element = $("<div>"+item.title+"</div>");
+		var element = $("<div>"+item.label+"</div>");
 		element.addClass("listEntry");
 		element.click(
 			// get title sepcific data
 			// an set the forms accordingly
 			function () {
 				//post.resource.entrytype
-				$("#post\\.resource\\.entrytype option[value='"+item.entry_type+"']");
-				$("#post\\.resource\\.editor").val(item.editor);
+				$("#post\\.resource\\.entrytype option[value='"+item["pub-type"]+"']");
+				$("#post\\.resource\\.editor").val(concatEditors(item.editor));
 				$("#post\\.resource\\.year").val(item.year);
-				$("#post\\.resource\\.title").val(item.title);
+				$("#post\\.resource\\.title").val(item.label);
 				$("#post\\.resource\\.author").val(item.author);
 			}
 		).mouseover(
@@ -57,8 +57,8 @@ function processResponse(data) {
 					item.editor = item.editor.substr(0, 20)+" ...";
 				}
 				
-				item.editor = item.editor.replace(/ AND/g,',');
-				p.html("["+item.entry_type+"]"+item.author+"("+item.year+"), "+item.editor).css("background-color","#222222");
+				var editors = concatEditors(item.editor);//item.editor.replace(/ AND/g,',');
+				p.html("["+item["pub-type"]+"]"+item.author+"("+item.year+"), "+editors).css("background-color","#222222");
 			}
 		).mouseout(
 			function () {
@@ -101,4 +101,20 @@ function processResponse(data) {
 			}
 	);
 	$("#suggestionBox").show();
+}
+
+/**
+ * create one-string representation of a list of editors
+ * 
+ * @param editors
+ * @return one string, containing concatenation of all editors, separated by '\n'
+ */
+function concatEditors(editors) {
+	var retVal = "";
+	var editor;
+	for( editor in editors ) {
+		retVal += editors[editor] + "\n";
+	}
+	
+	return retVal;
 }
