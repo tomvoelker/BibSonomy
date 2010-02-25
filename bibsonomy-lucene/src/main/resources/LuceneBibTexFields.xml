@@ -236,7 +236,7 @@
 				<entry key="resource.title">
 					<map>
 						<entry key="luceneName" value="title" />
-						<entry key="luceneIndex" value-ref="fieldNotIndexed" />
+						<entry key="luceneIndex" value-ref="fieldAnalyzed" />
 						<entry key="fulltextSearch">
 							<value type="java.lang.Boolean">true</value>
 						</entry>

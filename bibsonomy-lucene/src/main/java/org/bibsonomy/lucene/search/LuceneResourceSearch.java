@@ -599,8 +599,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		//--------------------------------------------------------------------
 		// search terms
 		//--------------------------------------------------------------------
-		// Query searchTermQuery = parseSearchQuery(FLD_TITLE, searchTerms);
-		Query searchTermQuery = new WildcardQuery(new Term(FLD_TITLE, searchTerms));
+		Query searchTermQuery = parseSearchQuery(FLD_TITLE, searchTerms);
 		searchQuery.add(searchTermQuery, Occur.SHOULD);
 
 		//--------------------------------------------------------------------
