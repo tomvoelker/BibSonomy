@@ -21,7 +21,19 @@ public class GetBibTexByTitle extends BibTexChainElement {
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		return this.db.getPostsByTitle(param.getTitle(), param.getLimit(), param.getOffset(), session);
+		/*
+		{"items":
+			[{
+				"title":"test post schnolke",
+				"year":"2009",
+				"author":"jaschke",
+				"entry_type":"article",
+				"editor":"wir ihr sie sollte"
+			}]
+		}	 
+		 */
+		List<Post<BibTex>> posts = this.db.getPostsByTitleLucene(param.getTitle(), 0, null, param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
+		return posts;
 	}
 
 	@Override

@@ -16,6 +16,7 @@ import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Dominik Benz
@@ -58,7 +59,8 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public int getPostStatistics(final StatisticsParam param, final DBSession session) {
 		// FIXME: this is ugly, but using chain elements forces us to use lists as return types
-		final Integer count = postchain.getFirstElement().perform(param, session).get(0);
+		final List<Integer> counts = postchain.getFirstElement().perform(param, session);  
+		final Integer count = (ValidationUtils.present(counts))?counts.get(0):0;
 		// to not get NPEs later
 		return count == null ? 0 : count;
 	}

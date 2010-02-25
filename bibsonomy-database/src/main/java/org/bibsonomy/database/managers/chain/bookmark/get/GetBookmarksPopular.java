@@ -33,6 +33,7 @@ public class GetBookmarksPopular extends BookmarkChainElement {
 				param.getDays() >= 0 &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.POPULAR) &&
-				!present(param.getSearch()));
+				!present(param.getSearch()) &&
+				!present(param.getTitle()));
 	}
 }

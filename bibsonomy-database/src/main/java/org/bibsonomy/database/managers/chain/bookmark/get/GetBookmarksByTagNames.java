@@ -42,6 +42,7 @@ public class GetBookmarksByTagNames extends BookmarkChainElement {
 				param.getNumTransitiveConcepts() == 0 &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED, Order.FOLKRANK) &&
-				!present(param.getSearch()));
+				!present(param.getSearch()) &&
+				!present(param.getTitle()));
 	}
 }
