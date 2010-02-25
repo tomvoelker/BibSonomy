@@ -40,6 +40,8 @@
 				<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
 			</li>
 		</jsp:attribute>
+		
+		<!-- 
 		<jsp:attribute name="helpbox">
 			<div id="helpboxcontent" class="smalltext">
 			<div id="togglehelp" class="togglehelp">x</div>
@@ -51,6 +53,7 @@
 		<jsp:attribute name="infobox1">
 			<div class="smalltext">Weit hinten, hinter den Wortbergen, fern der Länder Vokalien und Konsonantien leben die Blindtexte. Abgeschieden wohnen Sie in Buchstabhausen an der Küste des Semantik, eines großen Sprachozeans. Ein kleines Bächlein namens Duden fließt durch ihren Ort und versorgt sie mit den nötigen Regelialien. Es ist ein paradiesmatisches Land, in dem einem gebratene Satzteile in den Mund fliegen.</div>
 		</jsp:attribute>
+		 -->
 	</layout:pumaHomeContent>
 
 </jsp:root>

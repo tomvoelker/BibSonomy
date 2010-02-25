@@ -24,10 +24,6 @@
     <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" />
 	<jsp:directive.attribute name="sidebar" fragment="true" />
-	<jsp:directive.attribute name="helpbox" fragment="true" required="false"/>
-	<jsp:directive.attribute name="infobox1" fragment="true" required="false"/>
-	<jsp:directive.attribute name="infobox2" fragment="true" required="false"/>
-	<jsp:directive.attribute name="infobox3" fragment="true" required="false"/>
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	
@@ -41,16 +37,6 @@
 	<spring:theme code="stylesheet.additional" var="additionalCSS" text=""/> 
 	<spring:theme code="image.head.logo" var="headerLogo" text=""/>
 	<spring:theme code="javascript.additional" var="additionalJS" text=""/>
-
-
-
-	<spring:theme code="de.image.button.collect" var="btn_collect" text=""/>
-	<spring:theme code="de.image.button.collect.hover" var="btn_collect_hover" text=""/>
-	<spring:theme code="de.image.button.organize" var="btn_organize" text=""/>
-	<spring:theme code="de.image.button.organize.hover" var="btn_organize_hover" text=""/>
-	<spring:theme code="de.image.button.share" var="btn_share" text=""/>
-	<spring:theme code="de.image.button.share.hover" var="btn_share_hover" text=""/>
-
 
     <!-- 
       document starts here
@@ -289,7 +275,7 @@
 												<input type="password" size="15" name="password" id="pw" autocomplete="off"/>
 												<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" />
 												<c:if test="${authOrder == 'db,openid'}"> 
-												<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
+													<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
 												</c:if>
 									            <form:hidden id="headloginMethoddb" path="loginMethod" />
 											</form:form>
@@ -299,14 +285,14 @@
 									<c:if test="${authOrderArray[loop.index]=='ldap' }">
 										<div class="headlogin" id="headloginldap">
 											<c:set var="login">
-											<fmt:message key="navi.login"/>s
+											<fmt:message key="navi.login"/>
 											</c:set>
 											<form:form method="POST" action="${loginUrl}">
 												<input type="text" size="15" name="username" id="unldap" />&amp;nbsp;<span style="font-weight: bold; font-size:150%">:&amp;nbsp;</span>
 												<input type="password" size="15" name="password" id="pwldap" autocomplete="off"/>
 												<input type="image" src="${projectContext}resources/image/grey.png" alt="${login}" />
 												<c:if test="${authOrder == 'db,openid'}"> 
-												<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
+													<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
 												</c:if>
 									            <form:hidden id="headloginMethodldap" path="loginMethod" />
 											</form:form>
@@ -318,7 +304,7 @@
 								            <form:form action="${loginUrl}" method="POST">
 								              	<input type="text" id="openID" class="openid" size="32" value="" name="openID"/>
 												<c:if test="${authOrder == 'db,openid'}"> 
-												<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
+													<a href="javascript:switchLogin('${authOrder}','${authOrderArray[(loop.index+1)%fn:length(authOrderArray)]}','headlogin');"><img style="width: 16px; height:16px;" src="${loginMethodSelectImagesArray[(loop.index+1)%fn:length(authOrderArray)]}"/></a>
 												</c:if>
 									            <form:hidden id="headloginMethodopenid" path="loginMethod" />
 								            </form:form>
@@ -337,15 +323,7 @@
 						</c:choose>
 						
 					</div>
-<!-- TODO: remove choose -->
-<c:choose> 					
-<c:when test="${projectName == 'PUMA'}">
-					<div id="welcomeTop"><fmt:message key="puma.system.desc"/></div>
-</c:when>
-<c:otherwise>
 					<div id="welcomeTop"><fmt:message key="system.desc"/></div>
-</c:otherwise>
-</c:choose>					
 				</div>
 				
 				<!-- Navigation -->
@@ -356,127 +334,28 @@
 					<c:if test="${not command.context.userLoggedIn and displayIntroduction and (empty errors or errors.errorCount == 0)}">
 						<div id="general">
 							<p class="smalltext">
-<!-- TODO: remove choose -->
-<c:choose> 					
-<c:when test="${projectName == 'PUMA'}">
-								<fmt:message key="puma.system.about">
-									<fmt:param value="${projectName}"/>
-								</fmt:message>
-</c:when>
-<c:otherwise>
 								<fmt:message key="system.about">
 									<fmt:param value="${projectName}"/>
 								</fmt:message>
-</c:otherwise>
-</c:choose>					
 							</p>
-
-							<c:if test="${projectName == 'PUMA'}">
-
-								<c:set var="desc_collect">
-									<fmt:message key="puma.button.collect.description"/>
-								</c:set>
-								<c:set var="desc_organize">
-									<fmt:message key="puma.button.organize.description"/>
-								</c:set>
-								<c:set var="desc_share">
-									<fmt:message key="puma.button.share.description"/>
-								</c:set>
-							
-						        <div id="wrap_advantages">
-									<div id="wrap_btn" onMouseOut="replaceElementsTextnode('desc_advantages','')">
-										<img id="btnCollect" alt="Sammeln" class="btnHomepage" onMouseover="this.src='${btn_collect_hover}'; replaceElementsTextnode('desc_advantages','${desc_collect}');" onMouseout="this.src='${btn_collect}'"  src="${btn_collect}" />
-										<img id="btnOrganize" alt="Verwalten" class="btnHomepage" onMouseover="this.src='${btn_organize_hover}';replaceElementsTextnode('desc_advantages','${desc_organize}');" onMouseout="this.src='${btn_organize}'" src="${btn_organize}" />
-										<img id="btnShare" alt="Teilen" class="btnHomepage" onMouseover="this.src='${btn_share_hover}'; replaceElementsTextnode('desc_advantages','${desc_share}')" onMouseout="this.src='${btn_share}'" src="${btn_share}" />
-
-										<div id="desc_advantages">
-										&amp;nbsp;
-										</div>
-
-									</div>
-									<div  class="smalltext">
-									<b>Die wichtigsten Vorteile im Überblick:</b>
-									<ul id="advantages">
-										<li>einfaches Einbinden ihrer <strong>Publikationsliste</strong> in ihre <strong>Homepage</strong></li>
-										<li>Weiterleitung der Publikation an <a href="https://kobra.bibliothek.uni-kassel.de/">KOBRA</a>, dadurch entfällt eine erneute Erfassung</li>
-										<li>Weiterleitung der Publikation an das <strong>Forschunginformationssystem</strong> (FIS) der Universität</li>
-										<li>Umfangreiche, <strong>intuitive Unterstützung</strong> bei der Erfassung von Publikation</li>
-										<li><strong>Literaturlisten</strong> für Ihre eigenen Publikationen mit einfacher Datenüernahme</li>
-										<li>Einfache Erfassung, Verwaltung und Abruf von <strong>Web-Lesezeichen</strong></li>
-									</ul>
-									</div>
-									<br />
-						        </div>
-
-							</c:if>
-							
 							<p class="smalltext">
-<!-- TODO: remove choose -->
-<c:choose> 					
-<c:when test="${projectName == 'PUMA'}">
-								<fmt:message key="puma.system.introduction">
-									<fmt:param value="${projectName}"/>
-								</fmt:message>									
-</c:when>
-<c:otherwise>
 								<fmt:message key="system.introduction">
 									<fmt:param value="${projectName}"/>
 								</fmt:message>									
-</c:otherwise>
-</c:choose>					
 							</p>
-
 						</div>
 					</c:if>
 					<jsp:invoke fragment="content"/>
 				</div>
 				
 				<!-- sidebar -->
-				<div id="wrapsidebar">
-				<c:if test="${helpbox != null}">
-					<div class="sidebarBoxOuter" id="helpbox">
-						<div class="sidebarBoxInner">
-							<jsp:invoke fragment="helpbox"/>
-						</div>
-					</div>
-				</c:if>
-
 				<c:if test="${sidebar != null}">
-					<div class="sidebarBoxOuter" id="sidebox">
-						<div class="sidebarBoxInner">
-							<ul id="sidebar">
-								<jsp:invoke fragment="sidebar"/>
-							</ul>
-						</div>
+					<div id="sidebarroundcorner" >
+					<ul id="sidebar">
+						<jsp:invoke fragment="sidebar"/>
+					</ul>
 					</div>
 				</c:if>
-
-				<c:if test="${infobox1 != null}">
-					<div class="sidebarBoxOuter" id="infobox1">
-						<div class="sidebarBoxInner">
-							<jsp:invoke fragment="infobox1"/>
-						</div>
-					</div>
-				</c:if>
-
-				<c:if test="${infobox2 != null}">
-					<div class="sidebarBoxOuter" id="infobox2">
-						<div class="sidebarBoxInner">
-							<jsp:invoke fragment="infobox2"/>
-						</div>
-					</div>
-				</c:if>
-
-				<c:if test="${infobox3 != null}">
-					<div class="sidebarBoxOuter" id="infobox3">
-						<div class="sidebarBoxInner">
-							<jsp:invoke fragment="infobox3"/>
-						</div>
-					</div>
-				</c:if>
-				
-				</div> <!-- /div id="wrapsidebar"  -->
-
 				<c:if test="${fullscreen}">
 					<script type="text/javascript">
 					<![CDATA[
@@ -500,24 +379,11 @@
 						init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${projectName}");
 					]]>
 					</script>
-					
-					<c:choose> 					
-						<c:when test="${projectName == 'PUMA'}">
-							<script type="text/javascript">
-							<![CDATA[
-										$(".sidebarBoxInner").corner("round bottom 12px").corner("round tl 12px").parent().css('padding', '3px').corner("round bottom 15px").corner("round tl 15px");
-									    ]]>
-									</script>
-						</c:when>
-						<c:otherwise>
-							<script type="text/javascript">
-							<![CDATA[
-									    $(".sidebarBoxInner").corner("round bottom 15px").corner("round tl 15px");
-									    ]]>
-									</script>
-						</c:otherwise>
-					</c:choose>
-					
+					<script type="text/javascript">
+					<![CDATA[
+					    $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
+					]]>
+					</script>
 				</div>
 				</div>
         

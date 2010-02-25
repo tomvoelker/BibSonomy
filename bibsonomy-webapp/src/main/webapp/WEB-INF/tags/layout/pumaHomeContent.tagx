@@ -15,10 +15,6 @@
 	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
-	<jsp:directive.attribute name="helpbox" fragment="true" required="false"/>
-	<jsp:directive.attribute name="infobox1" fragment="true" required="false"/>
-	<jsp:directive.attribute name="infobox2" fragment="true" required="false"/>
-	<jsp:directive.attribute name="infobox3" fragment="true" required="false"/>
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
 	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false"/>	
@@ -41,7 +37,7 @@
 	</c:if>	
 		
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" helpbox="${helpbox}" infobox1="${infobox1}" infobox2="${infobox2}" infobox3="${infobox3}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}">
+	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}">
 		<jsp:attribute name="headerExt">
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
