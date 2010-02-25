@@ -1187,7 +1187,6 @@ padding-top:1px;
 	margin-top: 7px;
 }
 
-/*  depreciated */
 #sidebarroundcorner {
 	float: right;
 	width: 23%;
@@ -1195,20 +1194,3 @@ padding-top:1px;
 	background-color: #D8EBAE;
 }
 
-.sidebarBoxOuter {
-	margin: 0;
-	padding: 0;
-}
-
-.sidebarBoxInner {
-	padding: 3px;
-	background-color: #D8EBAE;
-}
-
-#wrapsidebar {
-	float: right;
-	width:23%;
-	margin: 0;
-	padding:0;
-	margin-bottom: 1ex;
-}
