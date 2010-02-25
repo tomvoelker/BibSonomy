@@ -189,7 +189,8 @@
 	</div>
 	</jsp:attribute>
 		
-	<jsp:attribute name="sidebar">			
+	<jsp:attribute name="sidebar">	
+	<ul id="sidebar">			
 	<li>
 		<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.title"/></c:set>
 		<span class="sidebar_h">
@@ -218,6 +219,7 @@
   		add_toggle_relations();
   		setOps();
  	</script>
+ 	</ul>
 	</jsp:attribute>
 </layout:paneLayout>
 </jsp:root>

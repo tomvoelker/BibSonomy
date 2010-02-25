@@ -32,6 +32,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
+		<ul id="sidebar">
 			<script type="text/javascript" src="${resdir}/javascript/follower.js">&amp;nbsp;</script>
 			
 				<!-- we need to switch if the user already follows this user or not -->
@@ -111,7 +112,7 @@
                 <user:details user="${command.user}"/>
               </li>
             </c:if>
-			
+		</ul>	
 		</jsp:attribute>
 		
 	</layout:resourceLayout>

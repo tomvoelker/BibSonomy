@@ -26,7 +26,7 @@
     	 	| html header extension: page specific stylesheet
     	 	-->
     	 <jsp:attribute name="sidebar">
-
+		 <ul id="sidebar">
     	 	
     	 	<!-- display tags -->
 			<li>
@@ -35,6 +35,7 @@
 				</span>
 				<tags:cloud requPath="${requPath}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user" tagSizeMode="user" showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 			</li>
+		</ul>
 		</jsp:attribute>
 
 

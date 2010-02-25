@@ -45,6 +45,7 @@
          </jsp:attribute>
 		
 	<jsp:attribute name="sidebar">
+	<ul id="sidebar">
 			<li>
             	<span class="sidebar_h">
               		<c:url var="message_remove" value="/removeMessage" context="${projectContext}">
@@ -71,7 +72,8 @@
 			    		</c:otherwise>
 			    	</c:choose>
             	</span>
-          	</li>		
+          	</li>	
+         </ul>	
 		</jsp:attribute>
 	</layout:resourceLayout>
 </jsp:root>

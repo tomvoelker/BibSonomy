@@ -11,7 +11,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:pumaHomeContent pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" displayIntroduction="${true}" selectedNaviTab="nav_home">
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" displayIntroduction="${true}" selectedNaviTab="nav_home">
 		<jsp:attribute name="heading">
 			<c:url var="specialSearchUrl" value="/redirect" context="${projectContext}"/>
 			<form id="specialsearch" method="get" action="${specialSearchUrl}">
@@ -35,11 +35,53 @@
 			</form>
 		</jsp:attribute>
 		<jsp:attribute name="sidebar">
-			<li>
-				<span class="sidebar_h"><fmt:message key="busytags"/></span>
-				<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
-			</li>
+		
+			<!-- help box -->
+			<div class="sidebarBoxOuter" id="helpbox">
+				<div class="sidebarBoxInner">
+					<div id="helpboxcontent" class="smalltext">
+						<div id="togglehelp" class="togglehelp">x</div>
+						<b>Hier werden Sie geholfen!</b>
+						<br/>
+						Eine wunderbare Heiterkeit hat meine ganze Seele eingenommen, gleich den süßen Frühlingsmorgen, die ich mit ganzem Herzen genieße. Ich bin allein und freue mich meines Lebens in dieser Gegend, die für solche Seelen geschaffen ist wie die meine. Ich bin so glücklich, mein Bester, so ganz in dem Gefühle von ruhigem Dasein versunken, daß meine Kunst darunter leidet.
+						</div>
+		
+				</div>
+			</div>
+
+			<!-- /help box -->
+			
+			<!-- general box -->
+			<div class="sidebarBoxOuter" id="sidebox">
+				<div class="sidebarBoxInner">
+					<ul id="sidebar">
+						<li>
+							<span class="sidebar_h"><fmt:message key="busytags"/></span>
+							<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
+						</li>
+					</ul>
+				</div>
+			</div>		
+			<!-- /general sidebar -->	
+		
+			<!-- info box 1 -->
+			<div class="sidebarBoxOuter" id="infobox1">
+				<div class="sidebarBoxInner">
+					<div class="smalltext">Weit hinten, hinter den Wortbergen, fern der Länder Vokalien und Konsonantien leben die Blindtexte. Abgeschieden wohnen Sie in Buchstabhausen an der Küste des Semantik, eines großen Sprachozeans. Ein kleines Bächlein namens Duden fließt durch ihren Ort und versorgt sie mit den nötigen Regelialien. Es ist ein paradiesmatisches Land, in dem einem gebratene Satzteile in den Mund fliegen.</div>
+
+				</div>
+			</div>		
+			
+			
+			<script type="text/javascript">
+				<![CDATA[
+					$(".sidebarBoxInner").corner("round bottom 12px").corner("round tl 12px").parent().css('padding', '3px').corner("round bottom 15px").corner("round tl 15px");
+				]]>
+			</script>
+			
 		</jsp:attribute>
+		<!-- /info box 1 -->
+		
 		
 		<!-- 
 		<jsp:attribute name="helpbox">
@@ -54,6 +96,6 @@
 			<div class="smalltext">Weit hinten, hinter den Wortbergen, fern der Länder Vokalien und Konsonantien leben die Blindtexte. Abgeschieden wohnen Sie in Buchstabhausen an der Küste des Semantik, eines großen Sprachozeans. Ein kleines Bächlein namens Duden fließt durch ihren Ort und versorgt sie mit den nötigen Regelialien. Es ist ein paradiesmatisches Land, in dem einem gebratene Satzteile in den Mund fliegen.</div>
 		</jsp:attribute>
 		 -->
-	</layout:pumaHomeContent>
+	</layout:resourceLayout>
 
 </jsp:root>

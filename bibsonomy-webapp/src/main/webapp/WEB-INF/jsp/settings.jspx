@@ -54,6 +54,7 @@
         </jsp:attribute>
 		
         <jsp:attribute name="sidebar">
+        <ul id="sidebar">
         	<c:if test="${hasOwnGroup}">
 				<li>
 				<span class="sidebar_h">mygroup</span>
@@ -96,7 +97,7 @@
 			 tagboxMinfreqStyle="none"
 			 showTooltips="${command.context.loginUser.settings.tagboxTooltip}"/>
 	      </li> -->  
-        
+        </ul>
         </jsp:attribute>	
          <jsp:attribute name="beforeBodyClose">
           <script type="text/javascript">

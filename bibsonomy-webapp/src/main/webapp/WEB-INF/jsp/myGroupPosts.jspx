@@ -24,7 +24,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			
+		<ul id="sidebar">	
 			<!-- display user's tag relations -->			
 			<li>
 				<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.title"/></c:set>
@@ -48,7 +48,7 @@
                 <user:details user="${command.user}"/>
               </li>
             </c:if>
-			
+		</ul>	
 		</jsp:attribute>
 		
 	</layout:resourceLayout>

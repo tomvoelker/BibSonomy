@@ -49,7 +49,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		
+		<ul id="sidebar">
 			<div class="smalltext">
 		
 			<!-- links to user's  or global concept / tag pages -->
@@ -101,6 +101,7 @@
 					<users:related cmd="${command.relatedUserCommand}" userSimilarity="folkrank" displayFollowLink="${false}"/>
 				</li>			
 			</c:if>
+		</ul>
 		</jsp:attribute>
 		
 	</layout:resourceLayout>

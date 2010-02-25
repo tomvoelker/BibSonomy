@@ -81,6 +81,7 @@ margin-right:2ex;
 .sidebarBoxOuter {
 	background-color: #9adfcf; 
 	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 ul#sidebar, ul#tagbox {
@@ -136,4 +137,11 @@ ul#sidebar, ul#tagbox {
 
 #navitogglehelp {
 	padding-right:5px;
+}
+
+#sidebarroundcorner {
+	float: right;
+	width: 23%;
+	padding: 0px;
+	background-color: #FBF7F4;
 }

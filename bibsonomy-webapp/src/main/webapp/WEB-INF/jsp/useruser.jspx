@@ -27,7 +27,8 @@
 		</jsp:attribute>
 		
 		<!--  create sidebar -->
-		<jsp:attribute name="sidebar">		
+		<jsp:attribute name="sidebar">	
+		<ul id="sidebar">	
 		
 				<!-- we need to switch if the user already follows this user or not 
 				<c:if test="${command.context.loginUser.name != command.requestedUser}">
@@ -95,7 +96,7 @@
 				</span>
 				<users:related cmd="${command.relatedUserCommand}" personalized="${true}" userSimilarity="${command.userSimilarity}"/>
 			</li>			
-      			
+      	</ul>		
 		</jsp:attribute>
 		
 		<!--  heading for the content pane of the given page -->

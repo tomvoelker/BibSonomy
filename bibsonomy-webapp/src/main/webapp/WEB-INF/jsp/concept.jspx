@@ -35,7 +35,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		
+		<ul id="sidebar">
 			<!--  links to tag / concept pages -->
 			<div class="smalltext">
 			
@@ -116,7 +116,7 @@
 					<tags:cloud requPath="${requPathTagCloud}" cmd="${command.tagcloud}" tagboxMinfreqStyle="user"/>
 				</li>
 			</c:if>
-			
+		</ul>	
 		</jsp:attribute>
 		
 	</layout:resourceLayout>

@@ -23,7 +23,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		
+		<ul id="sidebar">
 		<!-- edit tags -->					
 		<c:if test="${command.bibtex.list[0].user.name eq command.context.loginUser.name}"><br/>
 			<li>
@@ -59,7 +59,7 @@
 				<users:related cmd="${command.relatedUserCommand}" userSimilarity="bibtexdetails"/>
 			</li>			
 		</c:if>			
-		
+		</ul>
 		</jsp:attribute>
 				
 		<jsp:attribute name="content">

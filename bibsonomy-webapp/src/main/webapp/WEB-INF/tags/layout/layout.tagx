@@ -351,9 +351,7 @@
 				<!-- sidebar -->
 				<c:if test="${sidebar != null}">
 					<div id="sidebarroundcorner" >
-					<ul id="sidebar">
 						<jsp:invoke fragment="sidebar"/>
-					</ul>
 					</div>
 				</c:if>
 				<c:if test="${fullscreen}">

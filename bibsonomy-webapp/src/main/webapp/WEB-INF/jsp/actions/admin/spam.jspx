@@ -270,7 +270,8 @@
 	
 	
 
-		<jsp:attribute name="sidebar">			
+		<jsp:attribute name="sidebar">
+		<ul id="sidebar">			
 			<span class="sidebar_h">logging</span>	
 			<parts:logbox initialValue="no log messages" />
 			<br />
@@ -436,7 +437,7 @@
 				preselect();
 			</script>	
 			
-											
+		</ul>									
 		</jsp:attribute>
 			
 	</layout:tabLayout>
