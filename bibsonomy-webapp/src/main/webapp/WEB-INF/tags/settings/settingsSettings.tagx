@@ -79,13 +79,15 @@
 		          <form:option label="${german}" value="de"/>
 		        </form:select>
 		      </div>
-            
-              <p>
+		      
+              <div class="fsRow">
+		        <form:label cssClass="fsLabel" path=""></form:label>
 		        <input type="hidden" name="ckey" value="${ckey}"/>
 		        <input type="hidden" name="action" value="layoutTagPost"/>
 		        <input type="hidden" name="selTab" value="1"/>
 		        <input type="submit" name="tagbox_style" value="${setlayout}"/>
-              </p>
+		      </div>
+		      
               
 		    </fieldset>
 		  </div>
@@ -182,10 +184,12 @@
 		       		</td>
 		    	</tr>
 		     </div>
-		  </table>			  
-		  <input type="hidden" name="ckey" value="${ckey}"/>
-		  <input type="hidden" name="selTab" value="1"/>
-		  <input type="submit" class="fsFormSubmit" style="clear:both; float:left" value="${deleteaccount}" />
+		  </table>		
+		  <div class="fsRow">	  
+		  	<input type="hidden" name="ckey" value="${ckey}"/>
+		  	<input type="hidden" name="selTab" value="1"/>
+		  	<input type="submit" class="fsFormSubmit" style="clear:both; float:left" value="${deleteaccount}" />
+		  </div>
 		</fieldset>
 		</div>	
 		</form:form>		

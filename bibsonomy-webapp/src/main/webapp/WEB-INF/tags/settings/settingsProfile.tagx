@@ -19,9 +19,6 @@
 		<fmt:message var="male" key="settings.male"/>
 		<fmt:message var="female" key="settings.female"/>
 		
-		<!-- display potential errors -->
-		<errors:global errors="${errors}"/>
-		
         <p>
         	<fmt:message key="settings.profileInfo"><fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param><fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param></fmt:message>
         </p>
@@ -29,6 +26,9 @@
 		<form:form name="account" method="post" action="/updateUserProfile">		
 
 
+		<!-- display potential errors -->
+		<errors:global errors="${errors}"/>
+		
 
 
 
@@ -57,8 +57,10 @@
  		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="settings.birthday"/></form:label>
 		      <form:input cssClass="fsInput fsSmall" path="user.birthday"/>
-		      <div class="dissError"><form:errors path="user.birthday" /></div>
-		      format: YYYY-MM-DD
+		      <div class="dissError"><form:errors path="user.birthday" /></div>		      
+		      <form:label cssClass="fsHelp" path="user.birthday">format: YYYY-MM-DD</form:label>
+		      
+		      
 		    </div>
 		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.place"><fmt:message key="settings.place"/></form:label>
