@@ -149,11 +149,9 @@
 		    <div class="fsRow">	
 			  <span class="fsLabel"><fmt:message key="settings.friendOf"/></span>
 			  <c:if test="${empty command.userFriends}"><fmt:message key="settings.noFriends"/></c:if>
-			  <ul>
 				<c:forEach var="myfr1" items="${command.userFriends}">			
-		 			<li><a href="/user/${mtl:encodeURI(myfr1.name)}"><c:out value="${myfr1.name}"/></a></li>		 		
+		 			<a href="/user/${mtl:encodeURI(myfr1.name)}"><c:out value="${myfr1.name} "/></a> 	 		
 				</c:forEach>
-			  </ul>
 		    </div>
 		    <div class="fsRow">		
 		 	  <span class="fsLabel"><fmt:message key="settings.myFriendsAre"><fmt:param><a href="/friends"><fmt:message key="friends"/></a></fmt:param></fmt:message></span>
@@ -167,11 +165,9 @@
 					</fmt:param>
 				</fmt:message>) 
 			  </c:if>
-				<ul>
 					<c:forEach var="myfr2" items="${command.friendsOfUser}">			
-		 				<li><a href="/user/${mtl:encodeURI(myfr2.name)}"><c:out value="${myfr2.name}"/></a></li>		 		
+		 				<a href="/user/${mtl:encodeURI(myfr2.name)}"><c:out value="${myfr2.name} "/></a>		 		
 					</c:forEach>
-				</ul>
  		    </div>
 		  </fieldset>
 		</div>
