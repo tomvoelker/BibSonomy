@@ -35,7 +35,7 @@ function getSuggestions(partialTitle, autocompletion) {
  * @return
  */
 function processResponse(data) {
-
+	var k = 1;
 	// if there's no data cancel
 	if(data.items.length == 0) {
 		return;
@@ -43,8 +43,13 @@ function processResponse(data) {
 
 	var p = $("<div style=\"background-color: #006699; color: #FFFFFF; padding:3px;\">Suggestions</p>");
 	$("#suggestionBox").html(p);
+	
 	$.each(data.items, function(i, item) {
-		var element = $("<div>"+item.label+"</div>");
+		
+		var element = $('<div style="background-color:'+
+		(((k++)%2 == 0)?'#FFFFFF':'#AAAAAA')+ // change the background color every step
+		'>'+item.label+'</div>');
+		
 		element.addClass("listEntry");
 		element.click(
 				// get title sepcific data
@@ -59,6 +64,12 @@ function processResponse(data) {
 				}
 		).mouseover(
 				function () {
+					var editors = "";
+					
+					if(item.editor != 'undefined' && item.editor.length > 0) {
+						editors = concatEditors(item.editor);
+					}
+					
 					if(item.author.length >= 27) {
 						item.author = item.author.substr(0, 27)+" ...";
 					}
@@ -67,7 +78,7 @@ function processResponse(data) {
 						item.editor = item.editor.substr(0, 20)+" ...";
 					}
 
-					var editors = concatEditors(item.editor);//item.editor.replace(/ AND/g,',');
+					//item.editor.replace(/ AND/g,',');
 					p.html("["+item["pub-type"]+"]"+item.author+"("+item.year+"), "+editors).css("background-color","#222222");
 				}
 		).mouseout(
@@ -122,7 +133,7 @@ function processResponse(data) {
 function concatEditors(editors) {
 	var retVal = "";
 	var editor;
-	for( editor in editors ) {
+	for(editor in editors) {
 		retVal += editors[editor] + "\n";
 	}
 
