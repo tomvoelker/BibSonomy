@@ -67,6 +67,9 @@ public class UpdateUserController implements MinimalisticController<SettingsView
 		
 		// needed to display the user name on the profile tab of the settings site
 		command.getUser().setName(user.getName());
+
+		command.setUserFriends(adminLogic.getUserFriends(command.getUser()));
+		command.setFriendsOfUser(adminLogic.getFriendsOfUser(command.getUser()));
 		
 		// check whether the user is a group		
 		if (UserUtils.userIsGroup(user)) {
