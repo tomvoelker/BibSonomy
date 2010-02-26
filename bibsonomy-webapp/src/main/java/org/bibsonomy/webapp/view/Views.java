@@ -208,10 +208,7 @@ public enum Views implements View {
 	 * used by editBookmark to get the details for a given Url
 	 */
 	AJAX_GET_TITLE_FOR_URL("ajax/jsonURLDetails"),
-	/**
-	 * get titles using ajax in JSON format
-	 */
-	AJAX_GET_PUBLICATION_TITLES("ajax/jsonGetTitles"),
+
 	/**
 	 * get bibtex keys for a given user
 	 */

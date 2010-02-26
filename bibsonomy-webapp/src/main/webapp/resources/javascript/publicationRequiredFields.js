@@ -1,29 +1,39 @@
-//queries the titles and further details of publications by a partial title
+/**
+ * queries the titles and further details of publications by a partial title
+ *
+ * @param partialTitle prefix of a title word
+ * @param autocompletion boolean flag - true if autocompletion is on
+ * @return
+ */
 function getSuggestions(partialTitle, autocompletion) {
 	if(!autocompletion) {
 		return;
 	}
-	
+
 	$("#post\\.resource\\.title").blur(function() {
-	      window.setTimeout(function() {
-	    	  $("#suggestionBox").hide();
-	      },
-	      140);
-});
-	
-if(partialTitle.length < 2 || partialTitle.length%2 != 0) {
-	   $("#suggestionBox").hide();
-} else {
-	 	var query = $.ajax({
-		        type: "GET",
-		        url: "/json/tag/sys:title:"+partialTitle+"*",
-		        dataType: "json",
-		        success: function(json){processResponse(json);}});
+		window.setTimeout(function() {
+			$("#suggestionBox").hide();
+		},
+		140);
+	});
+
+	if(partialTitle.length < 2 || partialTitle.length%2 != 0) {
+		$("#suggestionBox").hide();
+	} else {
+		var query = $.ajax({
+			type: "GET",
+			url: "/json/tag/sys:title:"+partialTitle+"*",
+			dataType: "json",
+			success: function(json){processResponse(json);}});
+	}
 }
-}
-/** Process the JSON Data and make visible to the user
-* 
-*/	
+
+/**
+ * Process the JSON Data and make visible to the user
+ * 
+ * @param data
+ * @return
+ */
 function processResponse(data) {
 
 	// if there's no data cancel
@@ -37,33 +47,33 @@ function processResponse(data) {
 		var element = $("<div>"+item.label+"</div>");
 		element.addClass("listEntry");
 		element.click(
-			// get title sepcific data
-			// an set the forms accordingly
-			function () {
-				//post.resource.entrytype
-				$("#post\\.resource\\.entrytype option[value='"+item["pub-type"]+"']");
-				$("#post\\.resource\\.editor").val(concatEditors(item.editor));
-				$("#post\\.resource\\.year").val(item.year);
-				$("#post\\.resource\\.title").val(item.label);
-				$("#post\\.resource\\.author").val(item.author);
-			}
+				// get title sepcific data
+				// an set the forms accordingly
+				function () {
+					//post.resource.entrytype
+					$("#post\\.resource\\.entrytype option[value='"+item["pub-type"]+"']");
+					$("#post\\.resource\\.editor").val(concatEditors(item.editor));
+					$("#post\\.resource\\.year").val(item.year);
+					$("#post\\.resource\\.title").val(item.label);
+					$("#post\\.resource\\.author").val(item.author);
+				}
 		).mouseover(
-			function () {
-				if(item.author.length >= 27) {
-					item.author = item.author.substr(0, 27)+" ...";
+				function () {
+					if(item.author.length >= 27) {
+						item.author = item.author.substr(0, 27)+" ...";
+					}
+
+					if(item.editor.length >= 20) {
+						item.editor = item.editor.substr(0, 20)+" ...";
+					}
+
+					var editors = concatEditors(item.editor);//item.editor.replace(/ AND/g,',');
+					p.html("["+item["pub-type"]+"]"+item.author+"("+item.year+"), "+editors).css("background-color","#222222");
 				}
-				
-				if(item.editor.length >= 20) {
-					item.editor = item.editor.substr(0, 20)+" ...";
-				}
-				
-				var editors = concatEditors(item.editor);//item.editor.replace(/ AND/g,',');
-				p.html("["+item["pub-type"]+"]"+item.author+"("+item.year+"), "+editors).css("background-color","#222222");
-			}
 		).mouseout(
-			function () {
-				p.html("Suggestions").css("background-color","#006699");
-			}
+				function () {
+					p.html("Suggestions").css("background-color","#006699");
+				}
 		);
 		$("#suggestionBox").append(element);
 	});
@@ -77,14 +87,14 @@ function processResponse(data) {
 				}
 		);
 	}).mouseout(
-		function() {
-			$(this).css(
-					{
-						"background-color":"transparent", 
-						"color":"#000000"
-					}
-			);
-		}
+			function() {
+				$(this).css(
+						{
+							"background-color":"transparent", 
+							"color":"#000000"
+						}
+				);
+			}
 	);
 	var pos = $("#post\\.resource\\.title").offset();
 	var width = $("#post\\.resource\\.title").width();
@@ -106,7 +116,7 @@ function processResponse(data) {
 /**
  * create one-string representation of a list of editors
  * 
- * @param editors
+ * @param editors array of editors
  * @return one string, containing concatenation of all editors, separated by '\n'
  */
 function concatEditors(editors) {
@@ -115,6 +125,6 @@ function concatEditors(editors) {
 	for( editor in editors ) {
 		retVal += editors[editor] + "\n";
 	}
-	
+
 	return retVal;
 }
