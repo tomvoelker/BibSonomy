@@ -12,7 +12,6 @@
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="false"/>	
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
@@ -28,7 +27,7 @@
 	</c:if>	
 		
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.context.loginUser.name}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
+	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.context.loginUser.name}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}">
 		<jsp:attribute name="headerExt">
 			<jsp:invoke fragment="headerExt"/>		
 		</jsp:attribute>

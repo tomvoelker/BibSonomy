@@ -11,7 +11,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" displayIntroduction="${true}" selectedNaviTab="nav_home">
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" selectedNaviTab="nav_home">
 		<jsp:attribute name="heading">
 			<c:url var="specialSearchUrl" value="/redirect" context="${projectContext}"/>
 			<form id="specialsearch" method="get" action="${specialSearchUrl}">
@@ -34,6 +34,25 @@
 				<input type="text" id="inpf" name="search" size="25" />
 			</form>
 		</jsp:attribute>
+		
+		<jsp:attribute name="contentHeading">
+							<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
+						<div id="general">
+							<p class="smalltext">
+								<fmt:message key="system.about">
+									<fmt:param value="${projectName}"/>
+								</fmt:message>
+							</p>
+							<p class="smalltext">
+								<fmt:message key="system.introduction">
+									<fmt:param value="${projectName}"/>
+								</fmt:message>									
+							</p>
+						</div>
+					</c:if>
+		
+		</jsp:attribute>
+		
 		<jsp:attribute name="sidebar">
 				<ul id="sidebar">
 					<li>

@@ -18,7 +18,6 @@
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
 	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>	
-	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
     <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
@@ -28,8 +27,6 @@
 	<jsp:directive.attribute name="personalized" type="java.lang.Boolean" required="false"/>
 	
 
-	<fmt:setBundle basename="messages" scope="request"/>
-  
     <!-- 
       set theme variables    
      -->
@@ -331,20 +328,6 @@
 				
 				<!-- main content pane -->
 				<div id="outer">
-					<c:if test="${not command.context.userLoggedIn and displayIntroduction and (empty errors or errors.errorCount == 0)}">
-						<div id="general">
-							<p class="smalltext">
-								<fmt:message key="system.about">
-									<fmt:param value="${projectName}"/>
-								</fmt:message>
-							</p>
-							<p class="smalltext">
-								<fmt:message key="system.introduction">
-									<fmt:param value="${projectName}"/>
-								</fmt:message>									
-							</p>
-						</div>
-					</c:if>
 					<jsp:invoke fragment="content"/>
 				</div>
 				

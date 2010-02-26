@@ -13,37 +13,15 @@
 	-->
 
 
+
 	<!-- extracts properties from the provided file and inserts them into this file -->
+<!-- 
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location">
 			<value>/WEB-INF/project.properties</value>
 		</property>
 	</bean>
-
-	<bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource">
-    	<property name="basenamePrefix" value="theme_"/>
-	</bean>
-	
-	<bean id="urlGenerator" class="org.bibsonomy.services.URLGenerator">
-		<property name="projectHome"><value>${project.home}</value></property>
-	</bean>
-	
-	<!-- to resolve messages -->
-	<bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
-		<!-- matches messages.properties, messages_de.properties, ... -->
-		<property name="basenames" value="messages"/>
-	</bean>	
-	
-	<!-- handles sending of mails  -->
-	<bean id="mailUtils" class="org.bibsonomy.util.MailUtils" scope="singleton">
-		<property name="projectHome"><value>${project.home}</value></property>
-		<property name="projectName"><value>${project.name}</value></property>
-		<property name="projectBlog"><value>${project.blog}</value></property>
-		<property name="projectEmail"><value>${project.email}</value></property>
-		<property name="projectRegistrationFromAddress"><value>${project.registrationFromAddress}</value></property>
-		<property name="mailHost"><value>${mail.smtp.host}</value></property>
-		<property name="messageSource" ref="messageSource"/>
-	</bean>
+-->
 	
 	<!--+
 	    | lucene index updater

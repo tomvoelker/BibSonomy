@@ -7,11 +7,12 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:spring="http://www.springframework.org/tags">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" displayIntroduction="${true}" selectedNaviTab="nav_home">
+	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" selectedNaviTab="nav_home">
 		<jsp:attribute name="heading">
 			<c:url var="specialSearchUrl" value="/redirect" context="${projectContext}"/>
 			<form id="specialsearch" method="get" action="${specialSearchUrl}">
@@ -34,8 +35,74 @@
 				<input type="text" id="inpf" name="search" size="25" />
 			</form>
 		</jsp:attribute>
-		<jsp:attribute name="sidebar">
 		
+		<jsp:attribute name="contentHeading">
+
+			<c:if test="${not command.context.userLoggedIn}">
+
+				<spring:theme code="de.image.button.collect" var="btn_collect" text=""/>
+				<spring:theme code="de.image.button.collect.hover" var="btn_collect_hover" text=""/>
+				<spring:theme code="de.image.button.organize" var="btn_organize" text=""/>
+				<spring:theme code="de.image.button.organize.hover" var="btn_organize_hover" text=""/>
+				<spring:theme code="de.image.button.share" var="btn_share" text=""/>
+				<spring:theme code="de.image.button.share.hover" var="btn_share_hover" text=""/>
+				
+				<div id="pumageneral">
+					<p class="smalltext">
+
+						<fmt:message key="system.about">
+							<fmt:param value="${projectName}"/>
+						</fmt:message>
+					</p>
+
+						<c:set var="desc_collect">
+							<fmt:message key="button.collect.description"/>
+						</c:set>
+						<c:set var="desc_organize">
+							<fmt:message key="button.organize.description"/>
+						</c:set>
+						<c:set var="desc_share">
+							<fmt:message key="button.share.description"/>
+						</c:set>
+					
+				        <div id="wrap_advantages">
+							<div id="wrap_btn" onMouseOut="replaceElementsTextnode('desc_advantages','')">
+								<img id="btnCollect" alt="Sammeln" class="btnHomepage" onMouseover="this.src='${btn_collect_hover}'; replaceElementsTextnode('desc_advantages','${desc_collect}');" onMouseout="this.src='${btn_collect}'"  src="${btn_collect}" />
+								<img id="btnOrganize" alt="Verwalten" class="btnHomepage" onMouseover="this.src='${btn_organize_hover}';replaceElementsTextnode('desc_advantages','${desc_organize}');" onMouseout="this.src='${btn_organize}'" src="${btn_organize}" />
+								<img id="btnShare" alt="Teilen" class="btnHomepage" onMouseover="this.src='${btn_share_hover}'; replaceElementsTextnode('desc_advantages','${desc_share}')" onMouseout="this.src='${btn_share}'" src="${btn_share}" />
+
+								<div id="desc_advantages">
+								&amp;nbsp;
+								</div>
+
+							</div>
+							<div  class="smalltext">
+							<b>Die wichtigsten Vorteile im Überblick:</b>
+							<ul id="advantages">
+								<li>einfaches Einbinden ihrer <strong>Publikationsliste</strong> in ihre <strong>Homepage</strong></li>
+								<li>Weiterleitung der Publikation an <a href="https://kobra.bibliothek.uni-kassel.de/">KOBRA</a>, dadurch entfällt eine erneute Erfassung</li>
+								<li>Weiterleitung der Publikation an das <strong>Forschunginformationssystem</strong> (FIS) der Universität</li>
+								<li>Umfangreiche, <strong>intuitive Unterstützung</strong> bei der Erfassung von Publikation</li>
+								<li><strong>Literaturlisten</strong> für Ihre eigenen Publikationen mit einfacher Datenübernahme</li>
+								<li>Einfache Erfassung, Verwaltung und Abruf von <strong>Web-Lesezeichen</strong></li>
+							</ul>
+							</div>
+							<br />
+				        </div>
+					
+					<p class="smalltext">
+						<fmt:message key="system.introduction">
+							<fmt:param value="${projectName}"/>
+						</fmt:message>									
+					</p>
+
+				</div>
+			</c:if>
+
+
+		</jsp:attribute>
+
+		<jsp:attribute name="sidebar">
 			<!-- help box -->
 			<div class="sidebarBoxOuter" id="helpbox">
 				<div class="sidebarBoxInner">
@@ -82,20 +149,7 @@
 		</jsp:attribute>
 		<!-- /info box 1 -->
 		
-		
-		<!-- 
-		<jsp:attribute name="helpbox">
-			<div id="helpboxcontent" class="smalltext">
-			<div id="togglehelp" class="togglehelp">x</div>
-			<b>Hier werden Sie geholfen!</b>
-			<br/>
-			Eine wunderbare Heiterkeit hat meine ganze Seele eingenommen, gleich den süßen Frühlingsmorgen, die ich mit ganzem Herzen genieße. Ich bin allein und freue mich meines Lebens in dieser Gegend, die für solche Seelen geschaffen ist wie die meine. Ich bin so glücklich, mein Bester, so ganz in dem Gefühle von ruhigem Dasein versunken, daß meine Kunst darunter leidet.
-			</div>
-		</jsp:attribute>
-		<jsp:attribute name="infobox1">
-			<div class="smalltext">Weit hinten, hinter den Wortbergen, fern der Länder Vokalien und Konsonantien leben die Blindtexte. Abgeschieden wohnen Sie in Buchstabhausen an der Küste des Semantik, eines großen Sprachozeans. Ein kleines Bächlein namens Duden fließt durch ihren Ort und versorgt sie mit den nötigen Regelialien. Es ist ein paradiesmatisches Land, in dem einem gebratene Satzteile in den Mund fliegen.</div>
-		</jsp:attribute>
-		 -->
+
 	</layout:resourceLayout>
 
 </jsp:root>

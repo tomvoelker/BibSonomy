@@ -11,7 +11,7 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-	<layout:bibtexLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${false}" disableActions="${true}" displayIntroduction="${true}">
+	<layout:bibtexLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${false}" disableActions="${true}">
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}s/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.bibtexkey"/></a> ::
 			<c:if test="${not empty command.requestedUser}"><a href="/user/${fn:escapeXml(command.requestedUser)}">${fn:escapeXml(command.requestedUser)}</a> :: </c:if> 

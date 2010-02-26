@@ -12,7 +12,6 @@
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>
@@ -37,7 +36,7 @@
 	</c:if>	
 		
 	<c:set var="requPath"><c:out value="${requPath}" escapeXml="true" /></c:set>
-	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}">
+	<layout:layout loginUser="${command.context.loginUser}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" requestedUser="${command.requestedUser}" sidebar="${sidebar}" requPath="${requPath}" selectedNaviTab="${selectedNaviTab}" personalized="${command.personalized}">
 		<jsp:attribute name="headerExt">
 			<c:set var="bookRssUrl" value="/rss/${requPath}"/>
 			<link rel="alternate" type="application/rss+xml" title="${bookmarkRssFeed} /${requPath}" href="${bookRssUrl}" />
@@ -52,6 +51,11 @@
             <jsp:invoke fragment="headerExt"/>
 		</jsp:attribute>
 		<jsp:attribute name="content">
+			<c:if test="${not empty contentHeading}">
+				<div style="padding:1em;">
+					<jsp:invoke fragment="contentHeading"/>
+				</div>
+			</c:if>
 			<div id="bookmarkbibtexoptions">
 				<!-- expandBookmarkList(), showBothLists(), expandBibTexList() in functions.js -->
 				<ul>
@@ -63,11 +67,6 @@
 					<li id="optionExpandBibtex"><a href="javascript:expandBibTexList();" title="${expandPublications}">&lt;</a></li>
 				</ul>
 			</div>
-			<c:if test="${not empty contentHeading}">
-				<div style="padding:1em;">
-					<jsp:invoke fragment="contentHeading"/>
-				</div>
-			</c:if>
 			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 		</jsp:attribute>

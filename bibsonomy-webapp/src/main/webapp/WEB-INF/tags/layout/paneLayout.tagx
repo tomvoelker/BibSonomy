@@ -13,7 +13,6 @@
 	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>
 	<jsp:directive.attribute name="disableActions" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="disableListNavigation" type="java.lang.Boolean" required="false"/>
-	<jsp:directive.attribute name="displayIntroduction" type="java.lang.Boolean" required="false"/>
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" />
     <jsp:directive.attribute name="beforeBodyClose" fragment="true"/>
@@ -22,5 +21,5 @@
 	<jsp:directive.attribute name="fullscreen" type="java.lang.Boolean" required="false"/>	
 	<jsp:directive.attribute name="selectedNaviTab" type="java.lang.String" required="false"/>	
 
-	<layout:layout loginUser="${command.context.loginUser}" beforeBodyClose="${beforeBodyClose}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" headerExt="${headerExt}" requestedUser="${requestedUser}" sidebar="${sidebar}" displayIntroduction="${displayIntroduction}" requPath="${requPath}" content="${content}" fullscreen="${fullscreen}" selectedNaviTab="${selectedNaviTab}"/>
+	<layout:layout loginUser="${command.context.loginUser}" beforeBodyClose="${beforeBodyClose}" searchString="hurz" pageTitle="${pageTitle}" heading="${heading}" headerExt="${headerExt}" requestedUser="${requestedUser}" sidebar="${sidebar}" requPath="${requPath}" content="${content}" fullscreen="${fullscreen}" selectedNaviTab="${selectedNaviTab}"/>
 </jsp:root>
