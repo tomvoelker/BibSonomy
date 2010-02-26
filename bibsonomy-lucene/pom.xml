@@ -1,46 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>org.bibsonomy</groupId>
-  <artifactId>bibsonomy-lucene</artifactId>
-  <packaging>jar</packaging>
-  <version>2.0.4-SNAPSHOT</version>
-  <name>BibSonomy-Lucene</name>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.bibsonomy</groupId>
+	<artifactId>bibsonomy-lucene</artifactId>
+	<packaging>jar</packaging>
+	<version>2.0.4-SNAPSHOT</version>
+	<name>BibSonomy-Lucene</name>
 
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
+				<!--
+					NOTE: We don't need a groupId specification because the group is
+					org.apache.maven.plugins ...which is assumed by default.
+				-->
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2-beta-5</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>org.bibsonomy.lucene.index.GenerateLuceneIndex</mainClass>
+						</manifest>
+					</archive>
 				</configuration>
 			</plugin>
-	<plugin>
-          <!-- NOTE: We don't need a groupId specification because the group is
-               org.apache.maven.plugins ...which is assumed by default.
-            -->
-          <artifactId>maven-assembly-plugin</artifactId>
-          <configuration>
-            <descriptorRefs>
-              <descriptorRef>jar-with-dependencies</descriptorRef>
-            </descriptorRefs>
-            <archive>
-              <manifest>
-		<mainClass>org.bibsonomy.lucene.index.GenerateLuceneIndex</mainClass>
-              </manifest>
-            </archive>
-
-          </configuration>
-	</plugin>
 		</plugins>
 		<extensions>
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-ssh-external</artifactId>
-				<version>1.0-beta-2</version>
+				<version>1.0-beta-3</version>
 			</extension>
 		</extensions>
 
@@ -50,83 +43,74 @@
 		<artifactId>bibsonomy</artifactId>
 		<version>2.0.4-SNAPSHOT</version>
 	</parent>
-	
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-    </dependency>
-	<dependency>
-		<groupId>commons-lang</groupId>
-		<artifactId>commons-lang</artifactId>
-		<version>2.4</version>
-	</dependency>
-	<dependency>
-		<groupId>org.apache.ibatis</groupId>
-		<artifactId>ibatis-sqlmap</artifactId>
-		<version>SNAPSHOT</version>
-		<classifier>r737724</classifier>
-	</dependency> 		
-	<dependency>
-		<groupId>javax.servlet</groupId>
-		<artifactId>servlet-api</artifactId>
-		<version>2.5</version>
-	</dependency>
-	   
-	<dependency>
-		<groupId>javax.servlet</groupId>
-		<artifactId>servlet-api</artifactId>
-		<version>2.5</version>
-	</dependency>
 
-      <dependency>
-          <groupId>org.apache.lucene</groupId>
-          <artifactId>lucene-core</artifactId> 
-          <version>3.0.0</version>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.lucene</groupId>
-          <artifactId>lucene-misc</artifactId> 
-          <version>3.0.0</version>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.lucene</groupId>
-          <artifactId>lucene-analyzers</artifactId> 
-          <version>3.0.0</version>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.lucene</groupId>
-          <artifactId>lucene-highlighter</artifactId> 
-          <version>3.0.0</version>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.lucene</groupId>
-          <artifactId>lucene-queries</artifactId> 
-          <version>3.0.0</version>
-      </dependency>
-      <dependency>
-          <groupId>org.apache.lucene</groupId>
-          <artifactId>lucene-snowball</artifactId> 
-          <version>3.0.0</version>
-      </dependency> 
-      <dependency>
-          <groupId>org.apache.tomcat</groupId>
-          <artifactId>dbcp</artifactId> 
-          <version>6.0.18</version>
-      </dependency> 
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.ibatis</groupId>
+			<artifactId>ibatis-sqlmap</artifactId>
+			<version>SNAPSHOT</version>
+			<classifier>r737724</classifier>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-core</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-misc</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-analyzers</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-highlighter</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-queries</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-snowball</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>dbcp</artifactId>
+			<version>6.0.18</version>
+		</dependency>
 		<dependency>
 			<groupId>org.mockejb</groupId>
 			<artifactId>mockejb</artifactId>
 			<version>0.6-beta2</version>
 		</dependency>
-<!--
-		<dependency>
-			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-batch</artifactId>
-			<scope>test</scope>
-			<version>2.0.4-SNAPSHOT</version>
-		</dependency>
--->
+		<!--
+			<dependency> <groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-batch</artifactId> <scope>test</scope>
+			<version>2.0.4-SNAPSHOT</version> </dependency>
+		-->
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database</artifactId>
@@ -150,7 +134,7 @@
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
-      
+
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
@@ -165,7 +149,7 @@
 			<artifactId>commons-logging</artifactId>
 		</dependency>
 		<dependency>
-		        <groupId>commons-beanutils</groupId>
+			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.8.1</version>
 		</dependency>
@@ -173,28 +157,28 @@
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-common</artifactId>
 		</dependency>
-  		<dependency>
-  			<groupId>org.bibsonomy</groupId>
-  			<artifactId>bibsonomy-model</artifactId>
-  		</dependency>
-  		<dependency>
-  			<groupId>org.springframework</groupId>
-  			<artifactId>spring</artifactId>
-  			<version>2.5.6.SEC01</version>
-  		</dependency>
-  		<dependency>
-  			<groupId>opensymphony</groupId>
-  			<artifactId>quartz</artifactId>
-  			<version>1.6.3</version>
-  		</dependency>
-  		<dependency>
-  			<groupId>opensymphony</groupId>
-  			<artifactId>quartz-all</artifactId>
-  			<version>1.6.3</version>
-  		</dependency>
-    
-  </dependencies>
-  
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-model</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>2.5.6.SEC01</version>
+		</dependency>
+		<dependency>
+			<groupId>opensymphony</groupId>
+			<artifactId>quartz</artifactId>
+			<version>1.6.3</version>
+		</dependency>
+		<dependency>
+			<groupId>opensymphony</groupId>
+			<artifactId>quartz-all</artifactId>
+			<version>1.6.3</version>
+		</dependency>
+
+	</dependencies>
+
 	<distributionManagement>
 		<!-- deploy site documentation via scp to gromit -->
 		<site>
@@ -203,8 +187,8 @@
 			<url>
 				scpexe://bibsonomy@gromit:/home/bibsonomy/bibsonomy-doc-www/${project.artifactId}
 			</url>
-		</site>		
-	</distributionManagement>  
+		</site>
+	</distributionManagement>
 
 
 </project>  
