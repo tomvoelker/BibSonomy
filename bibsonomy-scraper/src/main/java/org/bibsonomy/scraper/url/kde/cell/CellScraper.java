@@ -89,7 +89,7 @@ public class CellScraper extends AbstractUrlScraper {
 				try {
 					String ris = null;
 					
-					ris = WebUtils.getContentAsString(new URL(downloadUrl));
+					ris = WebUtils.getContentAsString(downloadUrl);
 					if(ris != null){
 						String bibtex = null;
 						

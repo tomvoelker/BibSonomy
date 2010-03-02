@@ -67,7 +67,7 @@ public class GoogleScholarScraper extends AbstractUrlScraper {
 				cookie = cookie.substring(0, index) + ":CF=4" + cookie.substring(index);
 				
 				// download bibtex
-				String bibtex = WebUtils.getContentAsString(sc.getUrl(), cookie);
+				String bibtex = WebUtils.getContentAsString(sc.getUrl().toString(), cookie);
 				
 				if(bibtex != null){
 					// append url

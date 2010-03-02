@@ -74,7 +74,7 @@ public class AclScraper extends AbstractUrlScraper {
 
 		String bibtex = null;
 		try {
-			bibtex = WebUtils.getContentAsString(new URL(downloadUrl));
+			bibtex = WebUtils.getContentAsString(downloadUrl);
 		} catch (MalformedURLException ex) {
 			throw new InternalFailureException(ex);
 		} catch (IOException e) {

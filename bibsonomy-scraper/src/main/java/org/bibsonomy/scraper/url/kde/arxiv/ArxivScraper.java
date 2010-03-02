@@ -70,7 +70,7 @@ public class ArxivScraper extends AbstractUrlScraper {
 					String exportURL = "http://export.arxiv.org/oai2?verb=GetRecord&identifier=oai:arXiv.org:" + id + "&metadataPrefix=oai_dc";
 					
 					// download oai_dc reference
-					String reference = WebUtils.getContentAsString(new URL(exportURL));
+					String reference = WebUtils.getContentAsString(exportURL);
 					
 					String bibtex = OAIConverter.convert(reference);
 					

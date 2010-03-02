@@ -111,14 +111,14 @@
 		<URL>http://www.librarything.de/work/details/10481522</URL>
 		<BibFile>LibrarythingScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
-		<Enabled>true</Enabled>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_19">
 		<TestDescription>URL test for work-info pages from librarything (standard language)</TestDescription>
 		<URL>http://www.librarything.com/work/details/10481522</URL>
 		<BibFile>LibrarythingScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
-		<Enabled>true</Enabled>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_20">
 		<TestDescription>Test for scraping publications with the ams scraper (normal publication page)</TestDescription>
@@ -235,7 +235,7 @@
 		<URL>http://www.librarything.de/work/1926837/details</URL>
 		<BibFile>LibrarythingScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
-		<Enabled>true</Enabled>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_38">
 		<TestDescription>URL test for bibsonomy.org/bibtex</TestDescription>
@@ -273,6 +273,7 @@
 		<URL>http://www.plosbiology.org/article/info:doi/10.1371/journal.pbio.0060010</URL>
 		<BibFile>PlosScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_44">
 		<TestDescription>scraping test for jornal page from plos.org</TestDescription>
@@ -856,6 +857,7 @@
 		<URL>http://www.agu.org/pubs/crossref/2008/2008JD010287.shtml</URL>
 		<BibFile>AGUScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.agu.AGUScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_147">
 		<TestDescription>eprint url test</TestDescription>

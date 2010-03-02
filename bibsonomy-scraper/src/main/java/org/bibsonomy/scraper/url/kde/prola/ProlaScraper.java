@@ -159,7 +159,7 @@ public class ProlaScraper extends AbstractUrlScraper {
 
 				// download article as bibtex
 				String downloadedBibtex = null;
-				downloadedBibtex = WebUtils.getContentAsString(new URL(downloadLink));
+				downloadedBibtex = WebUtils.getContentAsString(downloadLink);
 
 				if(downloadedBibtex != null){
 

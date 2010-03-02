@@ -71,7 +71,7 @@ public class AmsScraper extends AbstractUrlScraper {
 				final String downloadUrl = "http://ams.allenpress.com/perlserv/?request=download-citation&t=endnote&f=1520-0485_38_1669&doi=" + doi + "&site=amsonline";
 				
 				try {
-					final String endnote = WebUtils.getContentAsString(new URL(downloadUrl));
+					final String endnote = WebUtils.getContentAsString(downloadUrl);
 					
 					if(endnote != null){
 						
@@ -86,8 +86,6 @@ public class AmsScraper extends AbstractUrlScraper {
 					}else
 						throw new ScrapingFailureException("failure during download");
 					
-				} catch (MalformedURLException ex) {
-					throw new InternalFailureException(ex);
 				} catch (IOException e) {
 					throw new InternalFailureException(e);
 				}

@@ -74,7 +74,7 @@ public class BibSonomyScraper extends AbstractUrlScraper {
 			if(sc.getUrl().getPath().startsWith(BIBSONOMY_BIBTEX_PATH)){
 				String url = sc.getUrl().toString();
 				url = url.replace(BIBSONOMY_BIBTEX_PATH, BIBSONOMY_BIB_PATH);
-				bibResult = WebUtils.getContentAsString(new URL(url));
+				bibResult = WebUtils.getContentAsString(url);
 
 				// if /bib/bibtex page then download directly
 			}else if(sc.getUrl().getPath().startsWith(BIBSONOMY_BIB_PATH)){

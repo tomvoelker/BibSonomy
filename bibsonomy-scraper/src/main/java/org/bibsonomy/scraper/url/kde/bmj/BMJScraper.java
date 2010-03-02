@@ -73,7 +73,7 @@ public class BMJScraper extends AbstractUrlScraper {
 		}
 
 		try {
-			final String bibResult = WebUtils.getContentAsString(new URL(BMJ_HOST_NAME + BMJ_BIBTEX_DOWNLOAD_PATH + id)).trim().replaceFirst(" ", "");
+			final String bibResult = WebUtils.getContentAsString(BMJ_HOST_NAME + BMJ_BIBTEX_DOWNLOAD_PATH + id).trim().replaceFirst(" ", "");
 			if (bibResult != null) {
 				sc.setBibtexResult(bibResult);
 				return true;
