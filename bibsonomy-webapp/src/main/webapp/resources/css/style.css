@@ -116,7 +116,7 @@
 }
 
 #bookmarkbibtexoptions ul {
-	margin: 0px;
+	margin: 1ex 0;
 	padding: 0px;
 	padding-right: 20px;
 	text-align: right;
