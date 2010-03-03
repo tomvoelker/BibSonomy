@@ -43,37 +43,38 @@
 				<fmt:param>${command.context.loginUser.name}</fmt:param>
 			</fmt:message>		
          </jsp:attribute>
-		
-	<jsp:attribute name="sidebar">
-	<ul id="sidebar">
-			<li>
-            	<span class="sidebar_h">
-              		<c:url var="message_remove" value="/removeMessage" context="${projectContext}">
-						<c:param name="hash" value="" />
-						<c:param name="user" value="" />
-						<c:param name="ckey" value="${ckey}" />
-						<c:param name="clear" value="true" />
-					</c:url>
-					<c:set var="removeTitle"><fmt:message key="inbox.actions.removeAllMessages.title"/></c:set>
+
+		<jsp:attribute name="sidebar">
+			<ul id="sidebar">
+				<li>
+            		<span class="sidebar_h">
+              			<c:url var="message_remove" value="/removeMessage" context="${projectContext}">
+							<c:param name="hash" value=""/>
+							<c:param name="user" value=""/>
+							<c:param name="ckey" value="${ckey}"/>
+							<c:param name="clear" value="true"/>
+						</c:url>
+						<fmt:message var="removeTitle" key="inbox.actions.removeAllMessages.title"/>
 				
-			    	<c:choose>
-			    		<!-- SHOW A CONFIRM WINDOW -->
-			    		<c:when test="${command.context.loginUser.settings.confirmDelete}">
-			    			<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
-			    				onclick="return confirm(getString('post.meta.delete.confirm'));">
-			    				<fmt:message key="inbox.actions.removeAllMessages"/>
-			    			</a>
-			    		</c:when>
-			    		<!-- JUST REMOVE -->
-			    		<c:otherwise>
-			    			<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}">		       
-			       				<fmt:message key="inbox.actions.removeAllMessages"/>
-			    			</a>
-			    		</c:otherwise>
-			    	</c:choose>
-            	</span>
-          	</li>	
-         </ul>	
+			    		<c:choose>
+			    			<!-- SHOW A CONFIRM WINDOW -->
+			    			<c:when test="${command.context.loginUser.settings.confirmDelete}">
+			    				<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
+			    				onclick="javascript: return confirm(getString('post.meta.delete.confirm'));">
+			    					<fmt:message key="inbox.actions.removeAllMessages"/>
+			    				</a>
+			    			</c:when>
+			    			<!-- JUST REMOVE -->
+			    			<c:otherwise>
+			    				<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}">		       
+			       					<fmt:message key="inbox.actions.removeAllMessages"/>
+			    				</a>
+			    			</c:otherwise>
+			    		</c:choose>
+            		</span>
+          		</li>	
+         	</ul>	
 		</jsp:attribute>
+		
 	</layout:resourceLayout>
 </jsp:root>
