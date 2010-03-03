@@ -48,7 +48,7 @@
 				<spring:theme code="de.image.button.share.hover" var="btn_share_hover" text=""/>
 				
 				<div id="pumageneral">
-					<p class="smalltext">
+					<p>
 
 						<fmt:message key="system.about">
 							<fmt:param value="${projectName}"/>
@@ -76,7 +76,7 @@
 								</div>
 
 							</div>
-							<div  class="smalltext">
+							<div>
 							<b>Die wichtigsten Vorteile im Überblick:</b>
 							<ul id="advantages">
 								<li>einfaches Einbinden ihrer <strong>Publikationsliste</strong> in ihre <strong>Homepage</strong></li>
@@ -90,7 +90,7 @@
 							<br />
 				        </div>
 					
-					<p class="smalltext">
+					<p>
 						<fmt:message key="system.introduction">
 							<fmt:param value="${projectName}"/>
 						</fmt:message>									
@@ -106,7 +106,7 @@
 			<!-- help box -->
 			<div class="sidebarBoxOuter" id="helpbox">
 				<div class="sidebarBoxInner">
-					<div id="helpboxcontent" class="smalltext">
+					<div id="helpboxcontent" class="boxcontent">
 						<div id="togglehelp" class="togglehelp">x</div>
 						<b>Hier werden Sie geholfen!</b>
 						<br/>
@@ -134,8 +134,9 @@
 			<!-- info box 1 -->
 			<div class="sidebarBoxOuter" id="infobox1">
 				<div class="sidebarBoxInner">
-					<div class="smalltext">Weit hinten, hinter den Wortbergen, fern der Länder Vokalien und Konsonantien leben die Blindtexte. Abgeschieden wohnen Sie in Buchstabhausen an der Küste des Semantik, eines großen Sprachozeans. Ein kleines Bächlein namens Duden fließt durch ihren Ort und versorgt sie mit den nötigen Regelialien. Es ist ein paradiesmatisches Land, in dem einem gebratene Satzteile in den Mund fliegen.</div>
-
+					<div class="boxcontent">
+						Weit hinten, hinter den Wortbergen, fern der Länder Vokalien und Konsonantien leben die Blindtexte. Abgeschieden wohnen Sie in Buchstabhausen an der Küste des Semantik, eines großen Sprachozeans. Ein kleines Bächlein namens Duden fließt durch ihren Ort und versorgt sie mit den nötigen Regelialien. Es ist ein paradiesmatisches Land, in dem einem gebratene Satzteile in den Mund fliegen.
+					</div>
 				</div>
 			</div>		
 			
