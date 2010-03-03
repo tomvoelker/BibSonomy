@@ -40,6 +40,7 @@ import java.util.List;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -73,6 +74,13 @@ public class WebUtils {
 	private static final String SEMICOLON		= ";";
 	private static final String USER_AGENT_PROPERTY_NAME = "User-Agent";
 	private static final String COOKIE_PROPERTY_NAME	 = "Cookie";
+
+	/*
+	 * according to http://hc.apache.org/httpclient-3.x/threading.html
+	 * HttpClient is thread safe and we can use one instance for several requests.
+	 */
+  	private static final MultiThreadedHttpConnectionManager connectionManager =	new MultiThreadedHttpConnectionManager();
+  	private static final HttpClient client = new HttpClient(connectionManager);
 
 	/**
 	 * Do a POST request to the given URL with the given content. Assume the charset of the result to be charset.
@@ -256,16 +264,15 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getContentAsString(final String url, final String cookie, final String postData) throws IOException {
-		HttpClient client = new HttpClient();
-		HttpMethod method;
-		ArrayList<NameValuePair> data;
-		StringBuilder content = new StringBuilder();
+		final HttpMethod method;
 		
-		if (postData != null) {
-			data = new ArrayList<NameValuePair>();
+		if (ValidationUtils.present(postData)) {
+			/*
+			 * do a POST
+			 */
+			final ArrayList<NameValuePair> data = new ArrayList<NameValuePair>();
 			
-			String[] _params = postData.split(AMP_SIGN);
-			for (String s : _params) {
+			for (final String s : postData.split(AMP_SIGN)) {
 				final String[] _p = s.split(EQUAL_SIGN);
 				
 				if (_p.length != 2) {
@@ -276,27 +283,37 @@ public class WebUtils {
 			}
 			
 			method = new PostMethod(url);
-			NameValuePair[] _data = new NameValuePair[data.size()];
-			((PostMethod)method).setRequestBody(data.toArray(_data));
+			((PostMethod)method).setRequestBody(data.toArray(new NameValuePair[data.size()]));
 		} else {
+			/*
+			 * do a GET
+			 */
 			method = new GetMethod(url);
 			method.setFollowRedirects(true);
 		}
 		
+		/*
+		 * set cookie
+		 */
 		if (cookie != null) {
 			method.setRequestHeader(COOKIE_PROPERTY_NAME, cookie);
 		}
 		
+		/*
+		 * do request
+		 */
 		int status = client.executeMethod(method);
 		
 		if (status != HttpStatus.SC_OK) {
 			throw new IOException(url + " returns: " + status);
 		}
-		
-		InputStream is = method.getResponseBodyAsStream();
-		BufferedReader in = new BufferedReader(new InputStreamReader(is));
+
+		/*
+		 * collect response
+		 */
+		final BufferedReader in = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
+		final StringBuilder content = new StringBuilder();
 		String _s = null;
-		
 		while ((_s = in.readLine()) != null) {
 			content.append(_s + NEWLINE);
 		}
