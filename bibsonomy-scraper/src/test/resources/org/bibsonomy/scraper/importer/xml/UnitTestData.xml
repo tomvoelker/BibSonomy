@@ -625,12 +625,14 @@
 		<URL>http://arjournals.annualreviews.org/doi/abs/10.1146/annurev.bioeng.6.040803.140250</URL>
 		<BibFile>AnnualreviewsScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_107">
 		<TestDescription>URL test for AnnualreviewsScraper</TestDescription>
 		<URL>http://arjournals.annualreviews.org/action/showCitFormats?doi=10.1146/annurev.bioeng.6.040803.140250</URL>
 		<BibFile>AnnualreviewsScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper</Scraper>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_108">
 		<TestDescription>URL test for AclScraper</TestDescription>
