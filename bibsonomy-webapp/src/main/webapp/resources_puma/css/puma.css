@@ -168,7 +168,10 @@ p {
 /*	font-size: 80%; */
 }
 
-
 #pumageneral {
 		font-size: 80%;
+}
+
+#bookmarkbibtexoptions {
+	clear: both;
 }
