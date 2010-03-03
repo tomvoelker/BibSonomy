@@ -15,27 +15,9 @@
 	<script type="text/javascript" src="/resources/javascript/functions.js"><!--  --></script>
 
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" selectedNaviTab="nav_home">
+
 		<jsp:attribute name="heading">
-			<c:url var="specialSearchUrl" value="/redirect" context="${projectContext}"/>
-			<form id="specialsearch" method="get" action="${specialSearchUrl}">
-				<select name="scope" size="1" id="scope">
-					<option value="tag"><fmt:message key="navi.tag"/></option>
-					<option value="user"><fmt:message key="navi.user"/></option>
-					<option value="group"><fmt:message key="navi.group"/></option>
-					<option value="author"><fmt:message key="navi.author"/></option>
-					<option value="concept/tag"><fmt:message key="navi.concept"/></option>
-					<option value="bibtexkey"><fmt:message key="navi.bibtexkey"/></option>
-					<option value="search" selected="selected"><fmt:message key="navi.search"/>:<fmt:message key="navi.all"/></option>
-					<c:if test="${command.context.userLoggedIn}">
-						<option value="user:${fn:escapeXml(command.context.loginUser.name)}"><fmt:message key="navi.search"/>:${fn:escapeXml(command.context.loginUser.name)}</option>
-						<c:forEach var="grp" items="${command.context.loginUser.groups}">
-							<option value="group:${fn:escapeXml(grp.name)}"><fmt:message key="navi.search"/>:<c:out value='${grp.name}'/></option>
-						</c:forEach>
-					</c:if>
-				</select>
-				::
-				<input type="text" id="inpf" name="search" size="25" />
-			</form>
+		  <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.inbox"/></a> :: 
 		</jsp:attribute>
 		
 		<jsp:attribute name="contentHeading">
