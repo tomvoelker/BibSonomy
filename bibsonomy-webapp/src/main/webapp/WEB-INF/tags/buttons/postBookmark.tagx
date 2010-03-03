@@ -12,6 +12,8 @@
     <fmt:message key="image.button.postBookmark" var="buttonImage"/>
   
     <script type="text/javascript">
+      var title = ${postBookmark};
+      var image = ${buttonImage};
   	  //<mtl:cdata>
 	  <![CDATA[
       var myurl = "javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+";
@@ -24,7 +26,7 @@
       }
       var left  = String.fromCharCode(60);
       var right = String.fromCharCode(62);
-      document.write(left + 'a title="${postBookmark}" href="' + myurl + '" onclick="return false" class="bookmarklet2"' + right + left + 'img src="${buttonImage}" alt="${postBookmark}" title="${postBookmark}"/' + right  + left + '/a' + right);
+      document.write(left + 'a title= "' + title + '" href="' + myurl + '" onclick="return false" class="bookmarklet2"' + right + left + 'img src="' + image + '" alt="' + title + '" title="' + title + '"/' + right  + left + '/a' + right);
       ]]>
       //</mtl:cdata>
    </script>
