@@ -30,7 +30,7 @@
             </a>
           </c:when>
           <c:otherwise>
-              <b class="standart_text_normal" style="${iconTextStyle}">${iconText}</b>
+              <b class="smalltext" style="${iconTextStyle}">${iconText}</b>
               <!-- img style="width:15px; padding-bottom:5px" src="${resdir}/image/info_blue.png" alt="?"/-->
           </c:otherwise>
         </c:choose>

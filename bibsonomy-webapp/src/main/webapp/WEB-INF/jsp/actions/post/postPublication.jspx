@@ -82,7 +82,7 @@
 					
         			<div id="suggestionBox" style="position:absolute; display:none;"><!--  --></div>        
 					<h2><fmt:message key="post_bibtex.manual.heading"/></h2>
-					<p class="standart_text_normal"><fmt:message key="post_bibtex.manual.description" /></p>
+					<p class="smalltext"><fmt:message key="post_bibtex.manual.description" /></p>
           			
                     <form:form id="postForm" action="/editPublication" method="post">
                     	<input type="hidden" name="ckey" value="${ckey}"/>	
@@ -111,7 +111,7 @@
 		
     		
     				<h2><fmt:message key="post_bibtex.pub_snippet.heading" /></h2>
-    				<p class="standart_text_normal"><fmt:message key="post_bibtex.pub_snippet.description" /></p>
+    				<p class="smalltext"><fmt:message key="post_bibtex.pub_snippet.description" /></p>
             
             
     				<form method="post" action="/import/publications">
@@ -163,7 +163,7 @@
 					
 					
 					<h2><fmt:message key="post_bibtex.upload.heading" /></h2>
-					<p class="standart_text_normal"><fmt:message key="post_bibtex.upload.description" /></p>
+					<p class="smalltext"><fmt:message key="post_bibtex.upload.description" /></p>
 
 					<form name="upload" method="post" enctype="multipart/form-data" action="/import/publications">
 						<div id="fsform">
@@ -288,7 +288,7 @@
 				<c:when test="${command.selTab == 3}">
 					
 					<h2><fmt:message key="post_bibtex.doi_isbn.title" /></h2>
-					<p class="standart_text_normal"><fmt:message key="post_bibtex.doi_isbn.description" /></p>
+					<p class="smalltext"><fmt:message key="post_bibtex.doi_isbn.description" /></p>
 
 						<div id="fsform">
 							<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
@@ -324,13 +324,11 @@
 				<div style="margin-top:2em">
 					<a onclick="toggleImage('toggleErroneousLineNumbersButton', '${resdir}/image/nice_box_arrow_right.png', '${resdir}/image/nice_box_arrow.png', 'erroneousLineNumbers')" ><img id="toggleErroneousLineNumbersButton" style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.erroneous_line_numbers"/></h3></a>
 				</div>
-				<div id="erroneousLineNumbers">
-					<ul class="errorLineList">
-						<c:forEach var="lineNumber" items="${command.erroneousLineNumbers}">
-							<li><b class="standart_text_normal">${lineNumber}</b></li>
-						</c:forEach>
-					</ul>
-				</div>
+				<ul class="errorLineList" id="erroneousLineNumbers">
+					<c:forEach var="lineNumber" items="${command.erroneousLineNumbers}">
+						<li class="smalltext">${lineNumber}</li>
+					</c:forEach>
+				</ul>
 			</c:if>
 		
 			<c:if test="${command.extendedView}">
@@ -339,7 +337,7 @@
 				</div>
 
 				<div id="parsedPostView">
-						<p class="standart_text_normal" style="margin-top:1em; margin-bottom:1em"><fmt:message key="import.error.parse_or_incomplete_bibtex.description"/></p>
+						<p class="smalltext" style="margin-top:1em; margin-bottom:1em"><fmt:message key="import.error.parse_or_incomplete_bibtex.description"/></p>
 						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
 								<edit:batchEditContent	formAction="${command.formAction}" 
 														resourceType="bibtex"
@@ -376,25 +374,27 @@
 		</jsp:attribute>
 		
 		
-		
+		<!-- 
+			the sidebar shows the "postPublication" buttons
+		 -->
 		<jsp:attribute name="sidebar">
-		<ul id="sidebar">
-			<h3 style="font-size: large;">
-				<fmt:message key="buttons.bookmarklet">
-					<fmt:param value="${projectName}"></fmt:param>
-				</fmt:message>
-			</h3>
-			<p>
-				<fmt:message key="post.resource.hint"/>
-			</p>
-			<ul>
-				<li><buttons:postPublication/></li>
-				<li><buttons:postPublicationPopUp/></li>
+			<ul id="sidebar">
+				<h3>
+					<fmt:message key="buttons.bookmarklet">
+						<fmt:param value="${projectName}"></fmt:param>
+					</fmt:message>
+				</h3>
+				<p>
+					<fmt:message key="post.resource.hint"/>
+				</p>
+				<ul>
+					<li><buttons:postPublication/></li>
+					<li><buttons:postPublicationPopUp/></li>
+				</ul>
+				<p>
+					<fmt:message key="post.resource.hint1"/>
+				</p>
 			</ul>
-			<p>
-				<fmt:message key="post.resource.hint1"/>
-			</p>
-		</ul>
 		</jsp:attribute>
     	
     	

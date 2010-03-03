@@ -95,9 +95,9 @@
 
                <tr>
                  <td style="vertical-align: middle;"><input type="text" name="tags" size="40"/></td>
-                 <td style="background-color: #eee; vertical-align: middle; text-align:center"><p class="standart_text_normal"><fmt:message key="batchedit.allTags"/></p></td>
+                 <td style="background-color: #eee; vertical-align: middle; text-align:center" class="smalltext"><fmt:message key="batchedit.allTags"/></td>
                  <td style="background-color: #eee; vertical-align: middle;">
-                 	<p class="standart_text_normal" style="margin-bottom: 0pt; text-align:center"><b><fmt:message key="${checkboxAllLabelKey}"/></b></p>
+                 	<p class="smalltext" style="margin-bottom: 0pt; text-align:center"><b><fmt:message key="${checkboxAllLabelKey}"/></b></p>
 	                 <div style="margin-left:auto;margin-right:auto; width:10pt; clear: both; ">
 	                 	<input type="checkbox" name="all" id="deleteAllId" onclick="deleteAll('${checkboxAllQuestion}')"/>
 	                 </div> 
@@ -158,7 +158,7 @@
 										            </ul>
 												</jsp:attribute>
 											</buttons:help>	
-											<b class="standart_text_normal"><fmt:message key="error" /></b>			               
+											<b class="smalltext"><fmt:message key="error" /></b>			               
 				                       </td>
 				                       <td class="chunkybib">
 				                         <jsp:invoke fragment="shortPostDescription"/>
