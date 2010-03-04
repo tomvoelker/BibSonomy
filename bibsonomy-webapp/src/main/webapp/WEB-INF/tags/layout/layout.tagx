@@ -72,11 +72,9 @@
 				<c:if test="${loginUser.settings.logLevel != 1}">
 				  <script type="text/javascript" src="${resdir}/javascript/logging.js">&amp;nbsp;</script>
 	              <script type="text/javascript">
-	              //<mtl:cdata>
 	              <![CDATA[
 						log_setUsername("${loginUser.name}");
 				  ]]>
-				  //</mtl:cdata>
 				  </script>				  
 				</c:if>
 				
@@ -238,11 +236,9 @@
 				</c:if>
 				<c:if test="${fullscreen}">
 					<script type="text/javascript">
-		              //<mtl:cdata>
 		              <![CDATA[
 						document.getElementById('outer').style.width = "100%";
 					  ]]>
-					  //</mtl:cdata>
 					</script>
 				</c:if>
 				
@@ -257,18 +253,14 @@
 					<c:out value=" "/>
 					<parts:email address="${projectEmail}"/>
 					<script type="text/javascript">
-		              //<mtl:cdata>
 		              <![CDATA[
 						init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${projectName}");
 					  ]]>
-					  //</mtl:cdata>
 					</script>
 					<script type="text/javascript">
-		              //<mtl:cdata>
 		              <![CDATA[
 					    $("#sidebarroundcorner").corner("round bottom 15px").corner("round tl 15px");
 					  ]]>
-					  //</mtl:cdata>
 					</script>
 				</div>
 				</div>
