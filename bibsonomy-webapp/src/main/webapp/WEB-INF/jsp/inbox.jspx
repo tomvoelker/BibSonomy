@@ -21,9 +21,11 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="contentHeading">
-			<fmt:message key="inboxPage.about">
-				<fmt:param>${command.context.loginUser.name}</fmt:param>
-			</fmt:message>		
+			<div id="general">
+				<fmt:message key="inboxPage.about">
+					<fmt:param>${command.context.loginUser.name}</fmt:param>
+				</fmt:message>
+			</div>		
          </jsp:attribute>
 
 		<jsp:attribute name="sidebar">
