@@ -7,6 +7,9 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 	<jsp:directive.attribute name="authOrder" type="java.lang.String" required="true" />
+	<jsp:directive.attribute name="login" type="java.lang.String" required="false"/>
+	<jsp:directive.attribute name="loginUrl" type="java.lang.String" required="true"/>
+	<jsp:directive.attribute name="projectContext" type="java.lang.String" required="true"/>	
 		
 	<c:if test="${authOrder == '' or empty authOrder}">
 	   	<c:set var="authOrder" value="db,openid"/>

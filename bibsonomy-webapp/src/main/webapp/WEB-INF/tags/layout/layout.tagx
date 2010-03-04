@@ -212,7 +212,7 @@
 								<a href="${editTagsUrl}"><fmt:message key="navi.editTags"/></a><c:out value=" "/>
 						</c:when>
 						<c:otherwise>
-							<parts:login authOrder="${authOrder}"/>
+							<parts:login authOrder="${authOrder}" loginUrl="${loginUrl}" login="${login}" projectContext="${projectContext}"/>
 						</c:otherwise>
 						</c:choose>
 						
