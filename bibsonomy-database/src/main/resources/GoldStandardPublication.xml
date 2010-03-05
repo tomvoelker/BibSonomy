@@ -28,17 +28,7 @@
 	
 	<!-- be careful hash or refHash must be not null!!! or you delete everything -->
 	<delete id="deleteGoldStandardPublicationReference">
-		DELETE FROM gold_standard_publication_references WHERE 1
-		<dynamic prepend="AND">
-			<isNotNull property="hash">
-				 publication = #hash#
-			</isNotNull>
-		</dynamic>
-		<dynamic prepend="AND">
-			<isNotNull property="hash">
-				 reference = #refHash#
-			</isNotNull>
-		</dynamic>
+		DELETE FROM gold_standard_publication_references WHERE publication = #hash# AND reference = #refHash#
 	</delete>
 	
 </sqlMap>

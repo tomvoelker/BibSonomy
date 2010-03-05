@@ -6,8 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import org.bibsonomy.common.exceptions.database.DatabaseException;
@@ -49,6 +49,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	public void testCreatePost() {
 		final String interhash = createGoldStandardPublication();
 		
+		// clear database
 		this.deletePost(interhash);
 	}
 
@@ -145,27 +146,23 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	}	
 	
 	/**
-	 * tests {@link GoldStandardDatabaseManager#addReferencesToPost(Post, Set, org.bibsonomy.database.util.DBSession)} and
+	 * tests {@link GoldStandardDatabaseManager#addReferencesToPost(String, String, Set, org.bibsonomy.database.util.DBSession)} and
 	 * {@link GoldStandardDatabaseManager#removeReferencesFromPost(String, String, Set, org.bibsonomy.database.util.DBSession)}
 	 */
 	@Test
 	public void testAddRemoveReferences() {
-		final String interhash = this.createGoldStandardPublication();
-		
-		final Set<GoldStandardPublication> referencesToAdd = new HashSet<GoldStandardPublication>();
-		referencesToAdd.add(this.goldPubManager.getPostDetails("", interhash, "", null, this.dbSession).getResource());
-		assertTrue(this.goldPubManager.addReferencesToPost("", INTERHASH_GOLD_1, referencesToAdd, this.dbSession));
+		final String interHash = this.createGoldStandardPublication();
+		this.goldPubManager.addReferencesToPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), this.dbSession);
 		
 		final Post<GoldStandardPublication> post = this.goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
 		assertEquals(1 + 1, post.getResource().getReferences().size());
 		
-		assertTrue(this.goldPubManager.removeReferencesFromPost("", INTERHASH_GOLD_1, referencesToAdd, this.dbSession));
+		this.goldPubManager.removeReferencesFromPost("", INTERHASH_GOLD_1, Collections.singleton(interHash), this.dbSession);
 		
 		final Post<GoldStandardPublication> postAfterRemove = this.goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
 		assertEquals(1, postAfterRemove.getResource().getReferences().size());
 		
-		this.deletePost(interhash);
-		
+		this.deletePost(interHash);
 	}
 	
 	/**

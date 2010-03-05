@@ -152,7 +152,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 					/*
 					 * not found -> throw exception
 					 * 
-					 * TODODZ: text in UpdatePostErrorMessage => intrahash
 					 */
 					final ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, hash);
 					session.addError(hash, errorMessage);
@@ -236,72 +235,61 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 	
 	/**
-	 * TODO: discuss method signature TODODZ
-	 * adds references to a post
-	 * 
-	 * @param username 
-	 * @param interHash  the hash of the post
-	 * @param references the references to add
-	 * @param session
-	 * @return <code>true</code> iff all references were added to the database
-	 */
-	public boolean addReferencesToPost(String username, final String interHash, final Set<R> references, final DBSession session) {
-		final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
-		if (!present(post)) {
-			log.debug("gold standard post with interhash '" + interHash + "'  not found");
-			return false;
-		}
-		
-		post.getUser().setName(username);
-		return this.addReferencesToPost(post, references, session);
-	}
-	
-	protected boolean addReferencesToPost(final Post<R> post, final Set<R> references, final DBSession session) {
-		if (present(references)) {
-			final GoldStandardReferenceParam param = this.createParam(post);
-			
-			for (final R resource : references) {
-				param.setRefHash(resource.getInterHash());
-				this.insert("insert" + this.resourceClassName + "Reference", param, session);
-			}
-		}
-		
-		return true;
-	}
-	 
-	/**
-	 * TODO: discuss method signature TODODZ
-	 * removes references from the specified post
+	 * adds references to a standard post
 	 * 
 	 * @param userName
-	 * @param interHash  the hash of the post
-	 * @param references the references to remove
+	 * @param interHash
+	 * @param references
 	 * @param session
-	 * @return <code>true</code> iff every reference was removed successfully
 	 */
-	public boolean removeReferencesFromPost(String userName, final String interHash, final Set<R> references, final DBSession session) {
+	public void addReferencesToPost(final String userName, final String interHash, final Set<String> references, final DBSession session) {
 		final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
 		if (!present(post)) {
 			log.debug("gold standard post with interhash '" + interHash + "'  not found");
-			return false;
+			return;
 		}
 		
-		post.getUser().setName(userName);
-		return this.removeReferencesFromPost(post, references, session);
-	}
-	
-	protected boolean removeReferencesFromPost(final Post<R> post, final Set<R> references, final DBSession session) {
+		final GoldStandardReferenceParam param = this.createParam(post);
 		if (present(references)) {
-			final GoldStandardReferenceParam param = this.createParam(post);
-			
-			for (final R reference : references) {
-				param.setRefHash(reference.getInterHash());
-				this.onGoldStandardReferenceDelete(param.getUsername(), param.getHash(), param.getRefHash(), session);
-				this.insert("delete" + this.resourceClassName + "Reference", param, session);
+			for (final String referenceHash : references) {
+				final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
+				if (present(refPost)) {
+					param.setRefHash(referenceHash);
+					this.insert("insert" + this.resourceClassName + "Reference", param, session);
+				} else {
+					log.info("Can't add reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");
+				}
 			}
 		}
+	}
+	
+	/**
+	 * removes references from a standard post
+	 * 
+	 * @param userName
+	 * @param interHash
+	 * @param references
+	 * @param session
+	 */
+	public void removeReferencesFromPost(final String userName, final String interHash, final Set<String> references, final DBSession session) {
+		final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
+		if (!present(post)) {
+			log.debug("gold standard post with interhash '" + interHash + "'  not found");
+			return;
+		}
 		
-		return true;
+		final GoldStandardReferenceParam param = this.createParam(post);
+		if (present(references)) {
+			for (final String referenceHash : references) {
+				final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
+				if (present(refPost)) {
+					param.setRefHash(referenceHash);
+					this.delete("delete" + this.resourceClassName + "Reference", param, session);
+				} else {
+					log.info("Can't remove reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");
+				}
+			}
+		}
 	}
 	
 	protected abstract void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef, final DBSession session);
