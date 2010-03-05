@@ -197,20 +197,27 @@
 					<div id="mainHeaderRightBox">
 						<c:url var="loginUrl" value="/login" context="${projectContext}"/>
 						<c:choose>
-						<c:when test="${not empty loginUser.name}">
+							<c:when test="${not empty loginUser.name}">
 								<c:url var="inboxUrl" value="/inbox" context="${projectContext}"/>
-								<span id="inboxctr">${loginUser.inbox.numPosts}</span>&amp;nbsp;
-								<fmt:message key="navi.inInbox"/>&amp;nbsp;
-								<a href="${inboxUrl}"><fmt:message key="navi.inbox"/></a>
+								<a href="${inboxUrl}">
+									<span id="inboxctr">${loginUser.inbox.numPosts}</span><c:out value=" "/>
+									<fmt:message key="navi.inInbox"/><c:out value=" "/>
+									<fmt:message key="navi.inbox"/>
+								</a>
 								<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 								<c:url var="basketUrl" value="/basket" context="${projectContext}"/>
-								<span id="pickctr">${loginUser.basket.numPosts}</span>&amp;nbsp;
-								<fmt:message key="navi.pickedIn"/>&amp;nbsp;
-								<a href="${basketUrl}"><fmt:message key="navi.basket"/></a>
+								<a href="${basketUrl}">
+									<span id="pickctr">${loginUser.basket.numPosts}</span><c:out value=" "/>
+									<fmt:message key="navi.pickedIn"/><c:out value=" "/>
+									<fmt:message key="navi.basket"/>
+								</a>
 								<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 								<c:url var="editTagsUrl" value="/edit_tags" context="${projectContext}"/>
-								<a href="${editTagsUrl}"><fmt:message key="navi.editTags"/></a><c:out value=" "/>
-						</c:when>
+								<a href="${editTagsUrl}">
+									<fmt:message key="navi.editTags"/>
+								</a>
+								<c:out value=" "/>
+							</c:when>
 						<c:otherwise>
 							<parts:login authOrder="${authOrder}" loginUrl="${loginUrl}" login="${login}" projectContext="${projectContext}"/>
 						</c:otherwise>
