@@ -33,7 +33,7 @@ body {
 }
 
 a, a:link, a:visited {
-	color:#000000;
+	color:#DF430D;
 }
 
 h2 {
@@ -176,6 +176,11 @@ p {
 	clear: both;
 }
 
+.bookbox a {
+	color: #000000;
+}
+
 .bmtitle a {
 	color: #DF430D;	
 }
+
