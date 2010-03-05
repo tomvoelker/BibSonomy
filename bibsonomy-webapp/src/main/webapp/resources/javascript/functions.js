@@ -1802,8 +1802,13 @@ function editTags(obj, ckey) {
 	// creates the link to detail-editing
 	var details = document.createElement("a");
 	details.setAttribute('href', link);
-	details.appendChild(document.createTextNode(" details "));
-
+	if(type == "bibtex") {
+		details.appendChild(document.createTextNode(getString("bibtex.actions.details")));
+		details.title=getString("bibtex.actions.details.title");
+	} else {
+		details.appendChild(document.createTextNode(getString("bookmark.actions.details")));
+		details.title=getString("bookmark.actions.details.title");
+	}
 	// append all the created elements
 	form.appendChild(input);
 	form.appendChild(hidden);
