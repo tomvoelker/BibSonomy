@@ -33,7 +33,7 @@ body {
 }
 
 a, a:link, a:visited {
-	color:#DF430D;
+	color:#000000;
 }
 
 h2 {
@@ -174,4 +174,8 @@ p {
 
 #bookmarkbibtexoptions {
 	clear: both;
+}
+
+.bmtitle a {
+	color: #DF430D;	
 }
