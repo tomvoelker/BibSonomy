@@ -243,24 +243,31 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 * @param session
 	 */
 	public void addReferencesToPost(final String userName, final String interHash, final Set<String> references, final DBSession session) {
-		final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
-		if (!present(post)) {
-			log.debug("gold standard post with interhash '" + interHash + "'  not found");
-			return;
-		}
-		
-		final GoldStandardReferenceParam param = this.createParam(post);
-		if (present(references)) {
-			for (final String referenceHash : references) {
-				final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
-				if (present(refPost)) {
-					param.setRefHash(referenceHash);
-					this.insert("insert" + this.resourceClassName + "Reference", param, session);
-				} else {
-					log.info("Can't add reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");
+		session.beginTransaction();
+		try {
+			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
+			if (!present(post)) {
+				log.debug("gold standard post with interhash '" + interHash + "'  not found");
+				return;
+			}
+			
+			final GoldStandardReferenceParam param = this.createParam(post);
+			if (present(references)) {
+				for (final String referenceHash : references) {
+					final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
+					if (present(refPost)) {
+						param.setRefHash(referenceHash);
+						this.insert("insert" + this.resourceClassName + "Reference", param, session);
+					} else {
+						log.info("Can't add reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");
+					}
 				}
 			}
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
 		}
+		
 	}
 	
 	/**
@@ -272,23 +279,30 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	 * @param session
 	 */
 	public void removeReferencesFromPost(final String userName, final String interHash, final Set<String> references, final DBSession session) {
-		final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
-		if (!present(post)) {
-			log.debug("gold standard post with interhash '" + interHash + "'  not found");
-			return;
-		}
-		
-		final GoldStandardReferenceParam param = this.createParam(post);
-		if (present(references)) {
-			for (final String referenceHash : references) {
-				final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
-				if (present(refPost)) {
-					param.setRefHash(referenceHash);
-					this.delete("delete" + this.resourceClassName + "Reference", param, session);
-				} else {
-					log.info("Can't remove reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");
+		session.beginTransaction();
+		try {
+			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
+			if (!present(post)) {
+				log.debug("gold standard post with interhash '" + interHash + "'  not found");
+				return;
+			}
+			
+			final GoldStandardReferenceParam param = this.createParam(post);
+			if (present(references)) {
+				for (final String referenceHash : references) {
+					final Post<R> refPost = this.getGoldStandardPostByHash(referenceHash, session);
+					if (present(refPost)) {
+						param.setRefHash(referenceHash);
+						this.delete("delete" + this.resourceClassName + "Reference", param, session);
+					} else {
+						log.info("Can't remove reference. Gold standard " + this.resourceClassName +  " reference with resourceHash " + referenceHash + " not found.");
+					}
 				}
 			}
+			
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
 		}
 	}
 	
