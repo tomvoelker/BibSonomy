@@ -33,7 +33,8 @@
 			</div>	
 	            <!-- select box for "other" groups TODO: allow multiple groups-->
 	            <form:select multiple="false" path="groups" size="5" id="post.groups.other2" tabindex="2">
-	              <form:option label="friends" value="friends"/>
+	              <fmt:message key="post.resource.friends" var="friendLabel"/>
+	              <form:option label="${friendLabel}" value="friends"/>
 	              <form:options items="${groups}" itemValue="name" itemLabel="name"/>
 	            </form:select>
 	            
