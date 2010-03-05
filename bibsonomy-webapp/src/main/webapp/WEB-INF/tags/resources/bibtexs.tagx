@@ -26,7 +26,7 @@
 			<c:url var="rssPath"    value="/publrss/${requPath}${requQueryString}" context="${projectContext}"/><a href="${rssPath}">RSS</a>${mtl:ch('nbsp')}
 			<c:url var="bibPath"    value="/bib/${requPath}${requQueryString}"     context="${projectContext}"/><a href="${bibPath}">BibTeX</a>${mtl:ch('nbsp')}
 			<c:url var="burstPath"  value="/burst/${requPath}${requQueryString}"   context="${projectContext}"/><a href="${burstPath}">RDF</a>${mtl:ch('nbsp')}
-			<c:url var="exportPath" value="/export/${requPath}${requQueryString}"  context="${projectContext}"/><a href="${exportPath}"><fmt:message key="bibtex.more"></fmt:message></a>
+			<c:url var="exportPath" value="/export/${requPath}${requQueryString}"  context="${projectContext}"/><a href="${exportPath}"><fmt:message key="bibtex.more"/></a>
 		</jsp:attribute>
 		<jsp:attribute name="title">
 			<bib:title post="${post}"/>
