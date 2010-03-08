@@ -39,8 +39,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 		final List<String> requTags = command.getRequestedTagsList();
 
 		for (int i = 0; i < requTags.size(); i++){
-			final String conceptTag = "->" + requTags.get(i);
-			requTags.set(i, conceptTag);
+			requTags.set(i, "->" + requTags.get(i));
 		}
 		
 		final String requUser = command.getRequestedUser();
