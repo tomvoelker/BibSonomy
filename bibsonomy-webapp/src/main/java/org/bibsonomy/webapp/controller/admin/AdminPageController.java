@@ -18,8 +18,7 @@ import org.bibsonomy.webapp.view.Views;
  * Controller for admin page
  * 
  * @author Beate Krause
- * @version $Id: AdminPageController.java,v 1.20 2009-11-23 15:06:32 beatekr Exp
- *          $
+ * @version $Id$
  */
 public class AdminPageController implements	MinimalisticController<AdminCommand> {
 
