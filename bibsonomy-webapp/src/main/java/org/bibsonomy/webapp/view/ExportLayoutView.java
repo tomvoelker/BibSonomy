@@ -10,6 +10,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.layout.jabref.JabrefLayout;
 import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
@@ -29,7 +30,7 @@ public class ExportLayoutView extends AbstractView{
 	@Override
 	protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		
-		log.info("ExportLayoutView - renderMergedOutputModel called");
+		log.debug("ExportLayoutView - renderMergedOutputModel called");
 		/*
 		 * get the command data
 		 */
@@ -49,10 +50,14 @@ public class ExportLayoutView extends AbstractView{
 			/*
 			 * put each layout into a JSON-object and add it to the JSON-array
 			 */
-			for(String layoutName: command.getLayoutMap().keySet()){	
-				//only support public layouts
-				if(command.getLayoutMap().get(layoutName).isPublicLayout()){
-					jsonLayouts.put(JSONObject.fromObject(command.getLayoutMap().get(layoutName)));
+			final Map<String, JabrefLayout> layoutMap = command.getLayoutMap();
+			for (final String layoutName: layoutMap.keySet()){	
+				/*
+				 * we return only public layouts
+				 */
+				final JabrefLayout layout = layoutMap.get(layoutName);
+				if (layout.isPublicLayout()){
+					jsonLayouts.put(JSONObject.fromObject(layout));
 				}
 			}
 
