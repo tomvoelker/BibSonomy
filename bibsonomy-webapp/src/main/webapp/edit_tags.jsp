@@ -81,8 +81,8 @@
   <h2>insert relations</h2>
   <form action="/RelationsHandler?do=insert" method="post">
      relations to insert: 
-     <input id="insert_lo" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="lower" size="30" value="" tabindex="6" title="enter the subtag(s) here"/> &rarr;
-     <input id="insert_up" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="upper" size="15" value="" tabindex="7" title="enter the supertag(s) here"/>
+     <input id="insert_up" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="upper" size="15" value="" tabindex="7" title="enter the supertag(s) here"/> &larr;
+     <input id="insert_lo" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="lower" size="30" value="" tabindex="6" title="enter the subtag(s) here"/>
      <input type="submit" value="Insert relation" tabindex="8"/> 
      <input type="reset" value="Reset" tabindex="9"/>
      <input type="hidden" name="ckey" value="${ckey}"/>
@@ -92,8 +92,8 @@
   <h2>delete relations</h2>
   <form action="/RelationsHandler?do=delete" method="post">
     relations to delete:
-    <input id="delete_lo" name="lower" size="30" value="" tabindex="10" title="enter the subtag(s) here"/> &rarr; 
-    <input id="delete_up" name="upper" size="15" value="" tabindex="11" title="enter the supertag(s) here"/>
+    <input id="delete_up" name="upper" size="15" value="" tabindex="11" title="enter the supertag(s) here"/>&larr;
+    <input id="delete_lo" name="lower" size="30" value="" tabindex="10" title="enter the subtag(s) here"/>
     <input type="submit" value="Delete Relation" tabindex="12"/> 
     <input type="reset" value="Reset" tabindex="13"/>
     <input type="hidden" name="ckey" value="${ckey}"/>
