@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.controller;
+package org.bibsonomy.webapp.controller.admin;
 
 import java.net.URI;
 import java.sql.SQLException;

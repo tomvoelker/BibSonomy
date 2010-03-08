@@ -107,27 +107,27 @@
 
 	<!--  #################### controller #################### -->
 	
-	<bean id="adminPageController" class="org.bibsonomy.webapp.controller.AdminPageController" scope="request">
+	<bean id="adminPageController" class="org.bibsonomy.webapp.controller.admin.AdminPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
-	<bean id="spamPageController" class="org.bibsonomy.webapp.controller.SpamPageController" scope="request">
+	<bean id="spamPageController" class="org.bibsonomy.webapp.controller.admin.SpamPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
-	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.AdminLuceneController" scope="request">
+	<bean id="adminLuceneController" class="org.bibsonomy.webapp.controller.admin.AdminLuceneController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 
-	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.AdminAjaxController" scope="request">
+	<bean id="adminAjaxController" class="org.bibsonomy.webapp.controller.admin.AdminAjaxController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
-	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.AdminRecommenderController" scope="request">
+	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" scope="request">
 		<property name="logic" ref="logic"/>
 	    <property name="multiplexingTagRecommender" ref="multiplexingTagRecommender"/>
 		<property name="userSettings" ref="userSettings"/>

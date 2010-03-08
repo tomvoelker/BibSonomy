@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.controller;
+package org.bibsonomy.webapp.controller.admin;
 
 import java.util.List;
 
@@ -9,12 +9,14 @@ import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.admin.AdminStatisticsCommand;
 import org.bibsonomy.webapp.command.admin.AdminViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
@@ -37,11 +39,15 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 	public View workOn(AdminViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 
-		final User loginUser = command.getContext().getLoginUser();
-		if (loginUser.getRole().equals(Role.DEFAULT)) {
-			/** TODO: redirect to login page as soon as it is available */
+		final RequestWrapperContext context = command.getContext();
+		final User loginUser = context.getLoginUser();
+		
+		/* Check user role
+		 * If user is not logged in or not an admin: show error message */
+		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
+			throw new ValidationException("error.method_not_allowed");
 		}
-
+		
 		command.setPageTitle("admin");
 		this.setUsers(command);
 		

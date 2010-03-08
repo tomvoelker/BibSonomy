@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.controller;
+package org.bibsonomy.webapp.controller.admin;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,8 +10,8 @@ import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.admin.AdminCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
@@ -21,8 +21,7 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id: AdminPageController.java,v 1.20 2009-11-23 15:06:32 beatekr Exp
  *          $
  */
-public class AdminPageController implements
-		MinimalisticController<AdminCommand> {
+public class AdminPageController implements	MinimalisticController<AdminCommand> {
 
 	private static final Log log = LogFactory.getLog(AdminPageController.class);
 
@@ -33,20 +32,15 @@ public class AdminPageController implements
 	public View workOn(AdminCommand command) {
 		log.debug(this.getClass().getSimpleName());
 
-		final User loginUser = command.getContext().getLoginUser();
+		final RequestWrapperContext context = command.getContext();
+		final User loginUser = context.getLoginUser();
 
-		// check if user is logged in and redirect user to login page
-		// if this is not the case
-		if (command.getContext().isUserLoggedIn() == false) {
-			log.info("Trying to access an admin page without being logged in");
-			return new ExtendedRedirectView("/login");
+		/* Check user role
+		 * If user is not logged in or not an admin: show error message */
+		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
+			throw new ValidationException("error.method_not_allowed");
 		}
-
-		// TODO is this how an admin role is supposed to be checked
-		if (!Role.ADMIN.equals(loginUser.getRole())) {
-			throw (new ValidationException("error.permission_denied"));
-		}
-
+		
 		command.setPageTitle("admin");
 
 		/*

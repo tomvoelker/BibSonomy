@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.controller;
+package org.bibsonomy.webapp.controller.admin;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -55,11 +55,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		final User loginUser = context.getLoginUser();
 
 		/* Check user role
-		 * 
-		 * If user is not logged in or not an admin: show error message
-		 */
+		 * If user is not logged in or not an admin: show error message */
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
-			log.warn("User " + loginUser.getName() + " tried to access lucene admin page without having role " + Role.ADMIN);
 			throw new ValidationException("error.method_not_allowed");
 		}
 		

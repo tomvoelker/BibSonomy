@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.controller;
+package org.bibsonomy.webapp.controller.admin;
 
 import java.util.List;
 
@@ -8,8 +8,10 @@ import org.bibsonomy.common.enums.AdminActions;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.EvaluatorUser;
@@ -17,8 +19,10 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.ajax.AdminAjaxCommand;
+import org.bibsonomy.webapp.controller.AjaxController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
 import org.bibsonomy.webapp.util.View;
@@ -42,6 +46,14 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 
 	public View workOn(AdminAjaxCommand command) {
 
+		final RequestWrapperContext context = command.getContext();
+
+		/* Check user role
+		 * If user is not logged in or not an admin: show error message */
+		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(context.getLoginUser().getRole())) {
+			throw new ValidationException("error.method_not_allowed");
+		}
+		
 		final String action = command.getAction();
 		
 		log.debug("Action: " + action);
