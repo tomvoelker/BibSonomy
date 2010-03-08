@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import bibtex.parser.ParseException;
 
-public class ModelConverterUtilsTest {
+public class ModelConverterTest {
 
 	private final String bibtexSource = "@book{Loudon2003,\r\n"
 			+ "  title = {C++. Kurz und gut.},\r\n"
