@@ -39,7 +39,7 @@ public class HomepageController extends SingleResourceListController implements 
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
 			// disable manual setting of start value for home page
 			command.getListCommand(resourceType).setStart(0);
-			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, null, null, 20);
+			setList(command, resourceType, GroupingEntity.ALL, null, null, null, null, null, null, 5);
 			postProcessAndSortList(command, resourceType);
 		}
 												
