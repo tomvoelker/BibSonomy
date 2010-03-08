@@ -27,7 +27,6 @@ public class PasswordChangeOnRemindValidator implements Validator<PasswordChange
 		// if one of the password fields is empty or contains only whitespaces fail
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "newPassword", "error.field.required");
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "passwordCheck", "error.field.required");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "userName", "error.field.required");
 
 		// if there is no field error on newPassword or passwordCheck but they don't equal fail
 		if(!errors.hasFieldErrors("newPassword") && !errors.hasFieldErrors("passwordCheck") && !command.getNewPassword().equals(command.getPasswordCheck())){
