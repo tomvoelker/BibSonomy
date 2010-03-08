@@ -21,10 +21,6 @@ public class AdminParam extends GenericParam {
 	/** Status of the corresponding inetAddress */
 	private InetAddressStatus inetAddressStatus;
 
-	/** The name of the flagged user */
-	// FIXME Probably a duplicate
-	private String userName;
-
 	/** The spammer status of the user */
 	private Boolean spammer;
 
@@ -64,10 +60,6 @@ public class AdminParam extends GenericParam {
 	/** Interval in hours for retrieve latest classifications */
 	private int interval;
 	
-	/** Page limit for table entries */
-	// FIXME Probably a duplicate
-	private int limit;
-	
 	/** Integer range for creating groups */
 	private int groupRange; 
 	
@@ -88,16 +80,6 @@ public class AdminParam extends GenericParam {
 
 	public void setInetAddressStatus(InetAddressStatus inetAddressStatus) {
 		this.inetAddressStatus = inetAddressStatus;
-	}
-
-	@Override
-	public String getUserName() {
-		return this.userName;
-	}
-
-	@Override
-	public void setUserName(String userName) {
-		this.userName = userName;
 	}
 
 	public Boolean getSpammer() {
@@ -223,14 +205,5 @@ public class AdminParam extends GenericParam {
 	public void setGroupIdTable(String groupIdTable) {
 		this.groupIdTable = groupIdTable;
 	}
-	
-	@Override
-	public int getLimit() {
-		return this.limit;
-	}
 
-	@Override
-	public void setLimit(int limit) {
-		this.limit = limit;
-	}
 }
