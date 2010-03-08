@@ -3,16 +3,18 @@
  */
 package org.bibsonomy.webapp.command;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.model.Post;
-
 /**
  * bean for listviews across multiple browsable pages 
  * 
  * @param <T> type of the entities in the list  
  * @author Jens Illig
+ * @version $Id$
  */
 public class ListCommand<T> {
 	private int numPreviousPages = 2;
@@ -42,9 +44,8 @@ public class ListCommand<T> {
 	 * @param listCommand - the command which contains this list
 	 * 
 	 */
-	public ListCommand(ListCommand listCommand) {
-		if(listCommand!=null && listCommand.getList()!=null &&listCommand.getList().size()>0)
-		{	
+	public ListCommand(final ListCommand listCommand) {
+		if (present(listCommand) && present(listCommand.getList())) {	
 			try {
 				T testCastObject = (T) listCommand.getList().get(0);
 			} catch (Exception ex) {
