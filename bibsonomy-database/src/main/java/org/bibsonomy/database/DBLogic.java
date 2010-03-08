@@ -1085,11 +1085,9 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * only admins can change settings of /other/ users
 		 */
-		if (!loginUser.getName().equals(user.getName())) {
-			this.permissionDBManager.ensureAdminAccess(loginUser);
-		}
+		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, user.getName());
 
-		if (operation.equals(UserUpdateOperation.UPDATE_ALL)) {
+		if (UserUpdateOperation.UPDATE_ALL.equals(operation)) {
 			/*
 			 * update only (!) spammer settings
 			 */
@@ -1103,43 +1101,35 @@ public class DBLogic implements LogicInterface {
 				/*
 				 * open session and update spammer settings
 				 */
-				DBSession session = this.openSession();
-				String flagSpammerUserName = null;
+				final DBSession session = this.openSession();
 				try {
 					final String mode = this.adminDBManager.getClassifierSettings(ClassifierSettings.TESTING, session);
 					log.debug("User prediction: " + user.getPrediction());
-					flagSpammerUserName = this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
+					return this.adminDBManager.flagSpammer(user, this.getAuthenticatedUser().getName(), mode, session);
 				} finally {
 					session.close();
 				}
-				return flagSpammerUserName;
 			}
-
 			return this.storeUser(user, true);
 		}
 		
 		
-		String updatedUser = null;
-
 		final DBSession session = openSession();
 
 			try {
 				switch (operation) {
 					case UPDATE_PASSWORD:
-						updatedUser = this.userDBManager.updatePasswordForUser(user, session);
-						break;
+						return this.userDBManager.updatePasswordForUser(user, session);
 						
 					case UPDATE_SETTINGS:
-						updatedUser = this.userDBManager.updateUserSettingsForUser(user, session);
-						break;
+						return this.userDBManager.updateUserSettingsForUser(user, session);
 						
 					case UPDATE_API:
 						this.userDBManager.updateApiKeyForUser(user.getName(), session);
 						break;
 						
 					case UPDATE_CORE:
-						updatedUser = this.userDBManager.updateUserProfile(user, session);
-						break;
+						return this.userDBManager.updateUserProfile(user, session);
 						
 //					case UPDATE_LDAP_TIMESTAMP:
 //						updatedUser = this.userDBManager.updateLastLdapRequest(user, session);
@@ -1150,7 +1140,7 @@ public class DBLogic implements LogicInterface {
 				session.close();
 			}
 		
-		return updatedUser;
+		return null;
 	}
 
 	/**
@@ -1630,9 +1620,10 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
-		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
-			throw new ValidationException("You are not authorized to perform the requested operation");
-		}
+		if (!GroupingEntity.USER.equals(grouping))
+			throw new UnsupportedOperationException("Currently only user's can have concepts.");
+		
+		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, groupingName);
 		
 		final DBSession session = openSession();
 		// now switch the operation and call the right method in the taglRelationsDBManager or DBLogic
@@ -1842,40 +1833,6 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-
-	/**
-	 * Returns a username corresponding to a given ldapUserId
-	 * 
-	 * @param username 
-	 * @return ldapUserId 
-	 * 
-	 */
-	public String getLdapUserByUsername(String username) {
-		final DBSession session = openSession();
-		try {
-			final String ldapUserId = this.userDBManager.getLdapUserByUsername(username, session);
-			return ldapUserId;
-		} finally {
-			session.close();
-		}
-	}
-
-	/**
-	 * Returns a username corresponding to a given ldapUserId
-	 * 
-	 * @param ldapUser 
-	 * @return username
-	 * 
-	 */
-	public String getUsernameByLdapUser(String ldapUser) {
-		final DBSession session = openSession();
-		try {
-			final String username = this.userDBManager.getUsernameByLdapUser(ldapUser, session);
-			return username;
-		} finally {
-			session.close();
-		}
-	}
 	
 	/**
 	 * updates date when ldap user was requested for authentication
@@ -1929,7 +1886,7 @@ public class DBLogic implements LogicInterface {
 		this.ensureLoggedIn();
 		// this.permissionDBManager.checkUserRelationship(sourceUser,
 		// targetUser, relation);
-		this.permissionDBManager.isAdminOrSelf(loginUser, sourceUser);
+		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, sourceUser);
 
 		final DBSession session = openSession();
 		try {
@@ -1949,7 +1906,7 @@ public class DBLogic implements LogicInterface {
 		// ask Robert about this method
 		// this.permissionDBManager.checkUserRelationship(sourceUser,
 		// targetUser, relation);
-		this.permissionDBManager.isAdminOrSelf(loginUser, sourceUser);
+		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, sourceUser);
 
 		final DBSession session = openSession();
 		try {
@@ -1976,7 +1933,7 @@ public class DBLogic implements LogicInterface {
 		// ask Robert about this method
 		// this.permissionDBManager.checkUserRelationship(sourceUser,
 		// targetUser, relation);
-		this.permissionDBManager.isAdminOrSelf(loginUser, sourceUser);
+		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, sourceUser);
 
 		final DBSession session = openSession();
 		try {
@@ -2124,16 +2081,15 @@ public class DBLogic implements LogicInterface {
 	}
 	
 	/*
-	 * (non-Javadoc)
+	 * FIXME: implement this method as chain element of getUsers()
 	 * 
 	 * @see org.bibsonomy.model.logic.LogicInterface#getUsernameByLdapUserId()
 	 */
 	@Override	
-	public String getUsernameByLdapUserId(String userId) {
+	public String getUsernameByLdapUserId(final String userId) {
 		final DBSession session = openSession();
 		try {
-			final String username = this.userDBManager.getUsernameByLdapUser(userId, session);
-			return username;
+			return this.userDBManager.getUsernameByLdapUser(userId, session);
 		} finally {
 			session.close();
 		}

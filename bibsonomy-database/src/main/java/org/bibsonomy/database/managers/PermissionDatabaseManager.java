@@ -5,8 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -30,8 +28,6 @@ import org.bibsonomy.model.util.UserUtils;
  * @version $Id$
  */
 public class PermissionDatabaseManager extends AbstractDatabaseManager {
-	
-	private static final Log log = LogFactory.getLog(PermissionDatabaseManager.class);
 	
 	private static final int MAX_TAG_SIZE = 10;
 	private static final int END_MAX = 1000;
@@ -63,7 +59,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param itemType
 	 */
 	public void checkStartEnd(final User loginUser, final Integer start, final Integer end, final String itemType) {
-		if (!Role.ADMIN.equals(loginUser.getRole()) && end > END_MAX) {
+		if (!isAdmin(loginUser) && end > END_MAX) {
 			throw new ValidationException("You are not authorized to retrieve more than the last " + END_MAX + " " + itemType + " items.");
 		}
 	}
@@ -294,7 +290,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUser
 	 */
 	public void ensureAdminAccess(final User loginUser) {
-		if (present(loginUser.getName()) == false || Role.ADMIN.equals(loginUser.getRole()) == false) {
+		if (present(loginUser.getName()) == false || isAdmin(loginUser) == false) {
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
 	}
@@ -325,7 +321,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		switch (filter){
 		case ADMIN_SPAM_POSTS:
 			// Admin_SPAM_POSTS
-			if (Role.ADMIN.equals(loginUser.getRole())){
+			if (isAdmin(loginUser)){
 				return true;
 			} 
 		}
@@ -344,8 +340,18 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		return (
 				(loginUser.getName() != null && loginUser.getName().equals(userName)) // loginUser = userName  
 				||
-				Role.ADMIN.equals(loginUser.getRole())                                // loginUser is admin
+				isAdmin(loginUser)                                // loginUser is admin
 		);
+	}
+
+	/**
+	 * Checks if the given user is an admin.
+	 * 
+	 * @param loginUser
+	 * @return
+	 */
+	public boolean isAdmin(final User loginUser) {
+		return Role.ADMIN.equals(loginUser.getRole());
 	}
 	
 	/**
