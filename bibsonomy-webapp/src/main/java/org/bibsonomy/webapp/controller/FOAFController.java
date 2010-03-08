@@ -19,6 +19,9 @@ import org.bibsonomy.webapp.view.Views;
  * controller for the FOAF-rdf output
  * For more information please visit the <a href="http://www.foaf-project.org/">FOAF project page</a>
  * 
+ * XXX: instead of returning hand-crafted RDF via JSPs, we should 
+ * probably use an RDF writer from the Jena project.
+ * 
  * @author dzo
  * @version $Id$
  */
