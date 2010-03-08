@@ -20,19 +20,15 @@
 		<jsp:attribute name="tabcontent">
 			<c:choose>
 				<c:when test="${command.selTab == 0}">
-					<!--<jsp:directive.include file="actions/settingsProfile.jspx"/>-->
 					<settings:settingsProfile command="${command}"/>
 				</c:when>
 				<c:when test="${command.selTab == 1}">
-					<!--<jsp:directive.include file="actions/settingsSettings.jspx"/>-->
 					<settings:settingsSettings command="${command}"/>
 				</c:when>
 				<c:when test="${command.selTab == 2}">
-					<!--<jsp:directive.include file="actions/settingsImport.jspx"/>-->
 					<settings:settingsImport command="${command}"/>
 				</c:when>
 				<c:when test="${command.selTab == 3 and command.hasOwnGroup}">
-					<!--<jsp:directive.include file="actions/settingsProfile.jspx"/>-->
 					<settings:settingsGroup command="${command}"/>
 				</c:when>
 			</c:choose>
