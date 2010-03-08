@@ -38,7 +38,7 @@ public class ModelConverterUtilsTest {
 		final PostBibTeXParser pbp = new PostBibTeXParser();
 		final Post<BibTex> post = pbp.parseBibTeXPost(bibtexSource);
 
-		final BibtexEntry entry = ModelConverterUtils.decode(post);
+		final BibtexEntry entry = JabRefModelConverter.convertPost(post);
 		final BibtexEntry expected = BibtexParser
 				.singleFromString(bibtexSource);
 
@@ -57,8 +57,8 @@ public class ModelConverterUtilsTest {
 
 		final BibtexEntry entry = BibtexParser.singleFromString(bibtexSource);
 
-		final Post<BibTex> post = (Post<BibTex>) ModelConverterUtils
-				.encode(entry);
+		final Post<BibTex> post = (Post<BibTex>) JabRefModelConverter
+				.convertEntry(entry);
 
 		// Parse a Post of the bibtex string
 		final PostBibTeXParser pbp = new PostBibTeXParser();
