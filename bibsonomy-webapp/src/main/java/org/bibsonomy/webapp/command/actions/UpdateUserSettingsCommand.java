@@ -12,7 +12,7 @@ public class UpdateUserSettingsCommand extends SettingsCommand{
 	 * this three types determine the different possible actions which will be handled 
 	 * by this controller for the settings.settings site
 	 */
-	String action;
+	private String action;
 
 	public String getAction() {
 		return this.action;
