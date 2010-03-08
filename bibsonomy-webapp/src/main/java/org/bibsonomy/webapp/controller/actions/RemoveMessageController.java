@@ -28,18 +28,18 @@ import org.springframework.validation.Errors;
  */
 public class RemoveMessageController implements MinimalisticController<RemoveMessageCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(DeletePostController.class);
-	
+
 	private RequestLogic requestLogic;
 	private LogicInterface logic;
 	private Errors errors;
 
-	
+
 	public RemoveMessageCommand instantiateCommand() {
 		return new RemoveMessageCommand();
 	}
-	
+
 	public View workOn(RemoveMessageCommand command){
-		RequestWrapperContext context = command.getContext();
+		final RequestWrapperContext context = command.getContext();
 		/*
 		 * user has to be logged in to delete
 		 */
@@ -49,18 +49,7 @@ public class RemoveMessageController implements MinimalisticController<RemoveMes
 		/*
 		 * check the ckey
 		 */
-		if (context.isValidCkey() && !errors.hasErrors()){
-			log.debug("User is logged in, ckey is valid");
-			if (command.isClear()) {
-				//delete all messages
-				List<Post<?extends Resource>> posts= null;
-				logic.deleteInboxMessages(posts, true);
-			} else {
-				// delete the message
-				final List<Post<? extends Resource>> posts = createObjects(command);
-				logic.deleteInboxMessages(posts, false);
-			}
-		} else {
+		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
 		}
 		/*
@@ -69,10 +58,22 @@ public class RemoveMessageController implements MinimalisticController<RemoveMes
 		if (errors.hasErrors()){
 			return Views.ERROR;
 		}
-		// go back where you've come from
+
+		if (command.isClear()) {
+			/*
+			 * delete all messages
+			 */
+			logic.deleteInboxMessages(null, true);
+		} else {
+			logic.deleteInboxMessages(createObjects(command), false);
+		}
+
+		/*
+		 * go back where you've come from
+		 */
 		return new ExtendedRedirectView(requestLogic.getReferer());
 	}
-	
+
 	@Override
 	public Errors getErrors() {
 		return errors;
@@ -89,7 +90,7 @@ public class RemoveMessageController implements MinimalisticController<RemoveMes
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
-	
+
 
 	/**
 	 * @param requestLogic
@@ -97,11 +98,11 @@ public class RemoveMessageController implements MinimalisticController<RemoveMes
 	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}	
-	
-	private List<Post<? extends Resource>> createObjects(RemoveMessageCommand command){
+
+	private List<Post<? extends Resource>> createObjects(final RemoveMessageCommand command){
 		// create new list and necessary variables
 		final List<Post<? extends Resource>> posts = new ArrayList<Post<? extends Resource>>();
-		
+
 		// get the has string
 		final String hash = command.getHash();
 		/*
