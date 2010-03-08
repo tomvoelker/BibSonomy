@@ -242,6 +242,9 @@ public class DBLogic implements LogicInterface {
 			 * clear all profile attributes if current login user isn't allowed to see the profile
 			 */
 			if (!this.permissionDBManager.isAllowedToAccessUsersProfile(user, this.loginUser, session)) {
+				/*
+				 * TODO: this practically clears /all/ user information
+				 */
 				return new User(user.getName());
 			}
 			
