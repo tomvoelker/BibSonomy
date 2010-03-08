@@ -4,16 +4,15 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
+import org.apache.xml.serialize.OutputFormat;
+import org.apache.xml.serialize.XMLSerializer;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
@@ -24,6 +23,7 @@ import org.bibsonomy.webapp.controller.AjaxController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -31,9 +31,6 @@ import org.springframework.validation.Errors;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
-import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
 /**
  * This controller is used to pick and unpick one or all concepts of the logged in user.
@@ -53,44 +50,53 @@ public class ConceptController extends AjaxController implements MinimalisticCon
 	public View workOn(ConceptAjaxCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		
-		if (!command.getContext().getUserLoggedIn()){
+		final RequestWrapperContext context = command.getContext();
+		
+		if (!context.getUserLoggedIn()){
 			log.debug("someone tried to access this ajax controller manually and isn't logged in");
 			return new ExtendedRedirectView("/");
 		}
 		
 		//check if ckey is valid
-		if (!command.getContext().isValidCkey()) {
+		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
 		}
 		
-		// decide which action will done
-		if("show".equals(command.getAction())){
-			logic.updateConcept(new Tag(command.getTag()), GroupingEntity.USER, command.getContext().getLoginUser().getName(), ConceptUpdateOperation.PICK);
-		} 
-		if ("hide".equals(command.getAction())){
-			logic.updateConcept(new Tag(command.getTag()), GroupingEntity.USER, command.getContext().getLoginUser().getName(), ConceptUpdateOperation.UNPICK);
-		} 
-		if ("all".equals(command.getAction())){
-			if ("show".equals(command.getTag())){
-				logic.updateConcept(null, GroupingEntity.USER, command.getContext().getLoginUser().getName(), ConceptUpdateOperation.PICK_ALL);
-			} else if ("hide".equals(command.getTag())){
-				logic.updateConcept(null, GroupingEntity.USER, command.getContext().getLoginUser().getName(), ConceptUpdateOperation.UNPICK_ALL);
+		final String loginUserName = context.getLoginUser().getName();
+
+		
+		/*
+		 * decide which action will be done
+		 */
+		final String action = command.getAction();
+		final String tag = command.getTag();
+		if ("show".equals(action)){
+			logic.updateConcept(new Tag(tag), GroupingEntity.USER, loginUserName, ConceptUpdateOperation.PICK);
+		} else if ("hide".equals(action)){
+			logic.updateConcept(new Tag(tag), GroupingEntity.USER, loginUserName, ConceptUpdateOperation.UNPICK);
+		} else if ("all".equals(action)){
+			if ("show".equals(tag)){
+				logic.updateConcept(null, GroupingEntity.USER, loginUserName, ConceptUpdateOperation.PICK_ALL);
+			} else if ("hide".equals(tag)){
+				logic.updateConcept(null, GroupingEntity.USER, loginUserName, ConceptUpdateOperation.UNPICK_ALL);
 			}
 		} 
 		
 		// if forward is available redirect to referer (in case of javascript disabled)
 		if (present(command.getForward())) {
-			try {
-				return new ExtendedRedirectView(new URL(requestLogic.getReferer()).getPath());
-			} catch (MalformedURLException ex) {
-				log.error("Could not get path for redirecting" + ex.getMessage());
-				return new ExtendedRedirectView("/");
-			}
+			return new ExtendedRedirectView(requestLogic.getReferer());
 		}
 		
-		// create the response string
-		command.setResponseString(prepareResponseString(command.getContext().getLoginUser().getName()));
+		/*
+		 * get the picked concepts from the DB
+		 */
+		final List<Tag> pickedConcepts = this.logic.getConcepts(null, GroupingEntity.USER, loginUserName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
+
+		/*
+		 * create the response string XML
+		 */
+		command.setResponseString(prepareResponseString(loginUserName, pickedConcepts));
 		
 		return Views.AJAX_RESPONSE;
 	}
@@ -102,57 +108,47 @@ public class ConceptController extends AjaxController implements MinimalisticCon
 	 * @param groupingname
 	 * @return String
 	 */
-	private String prepareResponseString(String groupingname){
-		StringWriter response = new StringWriter();  
-		final List<Tag> pickedConcepts = this.logic.getConcepts(null, GroupingEntity.USER, groupingname, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
+	protected String prepareResponseString(final String loginUserName, final List<Tag> pickedConcepts){
+		final StringWriter response = new StringWriter();  
 
 		try {
-			// create new doc
-			DocumentBuilderFactory dbf = DocumentBuilderFactoryImpl.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			Document doc = db.newDocument();
+			final Document doc = DocumentBuilderFactoryImpl.newInstance().newDocumentBuilder().newDocument();
 			
 			// append root node
-			Element relations = doc.createElement("relations");
-			relations.setAttribute("user", groupingname);
+			final Element relations = doc.createElement("relations");
+			relations.setAttribute("user", loginUserName);
 			doc.appendChild(relations);
 			
-			Element relation;
-			Element upper;
-			Element lowers;
-			Element lower;
 			
 			// append all other informations
-			for(Tag tag : pickedConcepts){
-				relation = doc.createElement("relation");
+			for (final Tag tag : pickedConcepts){
+				final Element relation = doc.createElement("relation");
 				relations.appendChild(relation);
-				upper = doc.createElement("upper");
+				
+				final Element upper = doc.createElement("upper");
 				upper.setTextContent(tag.getName());
 				relation.appendChild(upper);
-				lowers = doc.createElement("lowers");
+				
+				final Element lowers = doc.createElement("lowers");
 				lowers.setAttribute("id", tag.getName());
 				relation.appendChild(lowers);
 
-				for(Tag subTag : tag.getSubTags()){
-					lower = doc.createElement("lower");
+				for (final Tag subTag : tag.getSubTags()){
+					final Element lower = doc.createElement("lower");
 					lower.setTextContent(subTag.getName());
 					lowers.appendChild(lower);	
 				}
-
 			}
 			
-			// serialize xml
-			OutputFormat format = new OutputFormat (doc);
-			XMLSerializer serial = new XMLSerializer (response, format);
-			serial.serialize(doc);
+			new XMLSerializer (response, new OutputFormat (doc)).serialize(doc);
 		
 			// return it as string
             return response.toString();
 			
 		} catch (ParserConfigurationException ex) {
-			log.error("Could not parse XML " + ex.getMessage());
+			log.error("Could not parse XML ", ex);
 		} catch (IOException ex) {
-			log.error("Could not serialize XML " + ex.getMessage());
+			log.error("Could not serialize XML ", ex);
 		}
 		
 		return null;
