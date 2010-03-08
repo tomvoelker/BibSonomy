@@ -242,14 +242,14 @@ public final class RestServlet extends HttpServlet {
 			response.setHeader("Location", UrlRenderer.getInstance().createHrefForResource(e.getUserName(), e.getNewIntraHash()));
 			sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
 		} catch (final DatabaseException e ) {
-			String returnMessage="";
-			for (String hash: e.getErrorMessages().keySet()) {
-				for (ErrorMessage em: e.getErrorMessages(hash)) {
+			final StringBuffer returnMessage = new StringBuffer("");
+			for (final String hash: e.getErrorMessages().keySet()) {
+				for (final ErrorMessage em: e.getErrorMessages(hash)) {
 					log.error(em.toString());
-					returnMessage+=em.toString() + "\n ";
+					returnMessage.append(em.toString() + "\n ");
 				}
 			}
-			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, returnMessage);
+			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, returnMessage.toString());
 		}
 		catch (final Exception e) {
 			log.error(e,e);
