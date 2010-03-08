@@ -133,7 +133,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void updateApiKeyForUser(final String username, final DBSession session) {
 		final User user = new User(username);
-		if (this.getUserDetails(user.getName(), session).getName() == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update API key for nonexistent user");
+		if (!present(this.getUserDetails(user.getName(), session).getName())) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update API key for nonexistent user");
 		user.setApiKey(UserUtils.generateApiKey());
 		this.update("updateApiKeyForUser", user, session);
 	}
@@ -145,7 +145,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return
 	 */
 	public String updatePasswordForUser(final User user, final DBSession session) {
-		if (this.getUserDetails(user.getName(), session).getName() == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update password for nonexistent user");
+		if (!present(this.getUserDetails(user.getName(), session).getName())) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update password for nonexistent user");
 		this.update("updatePasswordForUser", user, session);
 		return user.getName();
 	}
@@ -157,18 +157,18 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return
 	 */
 	public String updateUserSettingsForUser(User user, final DBSession session) {
-		if (this.getUserDetails(user.getName(), session).getName() == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user settings for nonexistent user");
+		if (!present(this.getUserDetails(user.getName(), session).getName())) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user settings for nonexistent user");
 		this.update("updateUserSettings", user, session);
 		return user.getName();
 	}
 	
 	public String updateUserProfile(User user, final DBSession session) {
-		if (this.getUserDetails(user.getName(), session).getName() == null) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user profile for nonexistent user");
+		if (!present(this.getUserDetails(user.getName(), session).getName())) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user profile for nonexistent user");
 		this.update("updateUserProfile", user, session);
 		return user.getName();
 	}
 
-	List<String> getUserNamesByGroupId(final Integer groupId, final DBSession session) {
+	public List<String> getUserNamesByGroupId(final Integer groupId, final DBSession session) {
 		return this.queryForList("getUserNamesByGroupId", groupId, String.class, session);
 	}
 
@@ -189,7 +189,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * Insert attributes for new user account including new Api key.
 	 */
 	private void insertUser(final User user, final DBSession session) {
-		if (present(user) == false) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User object isn't present");
+		if (!present(user)) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User object isn't present");
 		user.setApiKey(UserUtils.generateApiKey());
 		
 		/*
