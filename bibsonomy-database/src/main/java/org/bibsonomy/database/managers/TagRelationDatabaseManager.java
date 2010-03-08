@@ -40,6 +40,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	private TagRelationDatabaseManager() {
+		super();
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}

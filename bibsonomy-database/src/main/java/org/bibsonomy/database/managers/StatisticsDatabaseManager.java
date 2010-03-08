@@ -42,6 +42,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	private final Map<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourcesParam<? extends Resource>>> postDatabaseManager;
 
 	private StatisticsDatabaseManager() {
+		super();
 		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 		

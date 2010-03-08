@@ -20,6 +20,7 @@ public class BasketDatabaseManager extends AbstractDatabaseManager {
 	private final DatabasePluginRegistry plugins;
 
 	private BasketDatabaseManager() {
+		super();
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 

@@ -6,10 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
@@ -64,7 +60,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	private final BibTexExtraDatabaseManager extraDb;
 	private final DocumentDatabaseManager docDb;
 	
-	private BibTexDatabaseManager() {		
+	private BibTexDatabaseManager() {
+		super();
 		this.docDb = DocumentDatabaseManager.getInstance();
 		this.extraDb = BibTexExtraDatabaseManager.getInstance();
 	}
@@ -76,19 +73,15 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 */
 	@Override
 	public List<Post<BibTex>> getPostsSearchForGroup(final int groupId, List<Integer> visibleGroups, final String search, final String requestedUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
-		String searchMode = "";
-		try {
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			searchMode = (String) envContext.lookup("searchMode");
-		} catch (NamingException ex) {
-			log.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
-		}
-		
-		if ("lucene".equals(searchMode)) {
+		/*
+		 * do lucene search
+		 */
+		if (doLuceneSearch) {
 			return super.getPostsSearchForGroup(groupId, visibleGroups, search, requestedUserName, limit, offset, systemTags, session);
 		}
-		
+		/*
+		 * do database search
+		 */
 		final BibTexParam param = this.createParam(null, requestedUserName, limit, offset);
 		param.setGroupId(groupId);
 		param.setSearch(search);
@@ -366,6 +359,9 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * TODO: improve doc
 	 * FIXME: check method
 	 * TODO: move time logging into Lucene!? @see {@link PostDatabaseManager#getPostsSearchLucene(int, String, String, String, java.util.Set, int, int, DBSession)}
+	 * 
+	 * FIXME: align method signature with {@link #getPostsByAuthor(String, int, String, String, int, int, Collection, DBSession)}
+	 * FIXME: remove tagIndex param
 	 * 
 	 * @param search
 	 * @param groupId

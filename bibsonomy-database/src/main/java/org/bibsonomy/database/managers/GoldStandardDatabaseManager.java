@@ -40,8 +40,8 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	protected final DatabasePluginRegistry plugins;
 	
 	protected GoldStandardDatabaseManager() {
+		super();
 		this.resourceClassName = this.getResourceClassName();
-		
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 	

@@ -24,6 +24,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	public static final int DEFAULT_CONTENT_ID = 0;
 
 	private DocumentDatabaseManager() {
+		super();
 	}
 
 	/**

@@ -4,10 +4,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
@@ -33,16 +29,7 @@ public class GetBookmarksSearch extends BookmarkChainElement {
 		// uncomment following for a quick hack to access secondary datasource
 		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
 
-		String searchMode = "";
-		try {
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			searchMode = (String) envContext.lookup("searchMode");
-		} catch (NamingException ex) {
-			LOGGER.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
-		}
-		
-		if ("lucene".equals(searchMode)) {
+		if (this.db.isDoLuceneSearch()) {
 			return this.db.getPostsSearchLucene(GroupID.PUBLIC.getId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
 		}
 	

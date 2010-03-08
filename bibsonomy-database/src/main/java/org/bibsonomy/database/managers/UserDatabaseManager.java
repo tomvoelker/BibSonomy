@@ -54,6 +54,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private final AdminDatabaseManager adminDBManager;
 
 	private UserDatabaseManager() {
+		super();
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
 		this.basketDBManager = BasketDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();

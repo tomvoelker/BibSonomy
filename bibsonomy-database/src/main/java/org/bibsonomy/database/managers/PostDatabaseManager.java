@@ -14,10 +14,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
@@ -78,14 +74,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	/** factory for creating system tags */
 	private SystemTagFactory systemTagFactory;
-	// FIXME: remove logic and sessionfactory! (systemfactory needs dbSessionFactory and logic)
-	//	private DBSessionFactory dbSessionFactory;
-	//	private LogicInterface dbLogic; 
+
 
 	/**
 	 * inits the database managers and resource class name
 	 */
 	protected PostDatabaseManager() {
+		super();
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
@@ -532,16 +527,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	public List<Post<R>> getPostsSearchForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String search, final String loginUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
 
-		String searchMode = "";
-		try {
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			searchMode = (String) envContext.lookup("searchMode");
-		} catch (NamingException ex) {
-			log.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
-		}
-
-		if ("lucene".equals(searchMode)) {
+		if (doLuceneSearch) {
 			final List<Post<R>> postList;
 			final ResourceSearch<R> lucene = this.getResourceSearch();
 			if (present(lucene)) {

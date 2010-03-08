@@ -26,6 +26,7 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 	private final boolean PUBLIC_DOCUMENTS = false;
 
 	private BibTexExtraDatabaseManager() {
+		super();
 	}
 
 	/**

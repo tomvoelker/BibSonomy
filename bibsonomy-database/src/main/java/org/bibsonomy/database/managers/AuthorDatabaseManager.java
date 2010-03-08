@@ -23,7 +23,9 @@ public class AuthorDatabaseManager extends AbstractDatabaseManager {
 		return singleton;
 	}
 	
-	private AuthorDatabaseManager() {	}
+	private AuthorDatabaseManager() {	
+		super();
+	}
 	
 	/**
 	 * TODO: improve documentation

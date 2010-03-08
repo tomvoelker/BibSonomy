@@ -6,10 +6,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
@@ -37,16 +33,7 @@ public class GetBibTexByAuthorAndTag extends BibTexChainElement {
 		// uncomment following for a quick hack to access secondary datasource
 		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);		
 
-		String searchMode = "";
-		try {
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			searchMode = (String) envContext.lookup("searchMode");
-		} catch (NamingException ex) {
-			LOGGER.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
-		}		
-		
-		if ("lucene".equals(searchMode)) {
+		if (this.db.isDoLuceneSearch()) {
 			LOGGER.debug("Using Lucene in GetBibtexByAuthor");
 
 			List<String> tagList = null;

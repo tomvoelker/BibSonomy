@@ -5,10 +5,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
@@ -28,27 +24,20 @@ import org.bibsonomy.model.enums.Order;
  */
 public class GetBibTexByAuthor extends BibTexChainElement {
 
-	private static final Log LOGGER = LogFactory.getLog(GetBibTexByAuthor.class);
+	private static final Log log = LogFactory.getLog(GetBibTexByAuthor.class);
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		// uncomment following for a quick hack to access secondary datasource
 		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
 
-		String searchMode = "";
-		try {
-			Context initContext = new InitialContext();
-			Context envContext = (Context) initContext.lookup("java:/comp/env");
-			searchMode = (String) envContext.lookup("searchMode");
-		} catch (NamingException ex) {
-			LOGGER.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
-		}
-		
-		if ("lucene".equals(searchMode)) {
-			LOGGER.debug("Using Lucene in GetBibtexByAuthor");
-			List<String> tagIndex = null;
+		if (this.db.isDoLuceneSearch()) {
+			/*
+			 * FIXME: why is the parameter "tagIndex" = null? 
+			 */
+			log.debug("Using Lucene in GetBibtexByAuthor");
 			return this.db.getPostsByAuthorLucene(param.getRawSearch(), GroupID.PUBLIC.getId(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getYear(), 
-					param.getFirstYear(), param.getLastYear(), param.getLimit(), param.getOffset(), param.getSimHash(), tagIndex, session);
+					param.getFirstYear(), param.getLastYear(), param.getLimit(), param.getOffset(), param.getSimHash(), null, session);
 		}
 		
 		return this.db.getPostsByAuthor(param.getRawSearch(), GroupID.PUBLIC.getId(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);

@@ -31,6 +31,7 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	private final  GeneralDatabaseManager generalDb;
 	
 	private InboxDatabaseManager(){
+		super();
 		this.generalDb = GeneralDatabaseManager.getInstance();
 	}
 	

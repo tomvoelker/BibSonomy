@@ -42,6 +42,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	private final DatabasePluginRegistry plugins;
 
 	private GroupDatabaseManager() {
+		super();
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 

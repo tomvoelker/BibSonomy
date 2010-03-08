@@ -41,6 +41,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	private final List<String> tableNames = Arrays.asList(new String[] { "tas", "grouptas", "bibtex", "bookmark", "search_bibtex", "search_bookmark" });
 
 	private AdminDatabaseManager() {
+		super();
 	}
 
 	/**

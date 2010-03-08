@@ -65,6 +65,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * Constructor
 	 */
 	private TagDatabaseManager() {
+		super();
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagRelDb = TagRelationDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();

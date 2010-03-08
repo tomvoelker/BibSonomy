@@ -46,6 +46,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	private final GeneralDatabaseManager generalDb;
 	
 	private PermissionDatabaseManager() {
+		super();
 		this.groupDb = GroupDatabaseManager.getInstance();
 		this.generalDb = GeneralDatabaseManager.getInstance();
 	}

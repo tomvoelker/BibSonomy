@@ -24,6 +24,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	private static final GeneralDatabaseManager singleton = new GeneralDatabaseManager();
 
 	private GeneralDatabaseManager() {
+		super();
 	}
 
 	/**

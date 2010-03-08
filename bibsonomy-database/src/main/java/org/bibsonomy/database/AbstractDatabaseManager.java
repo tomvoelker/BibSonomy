@@ -2,6 +2,12 @@ package org.bibsonomy.database;
 
 import java.util.List;
 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.QueryFor;
 import org.bibsonomy.database.util.StatementType;
@@ -19,7 +25,29 @@ import org.bibsonomy.database.util.StatementType;
  * @version $Id$
  */
 public class AbstractDatabaseManager {
+	private static final Log log = LogFactory.getLog(AbstractDatabaseManager.class);
+	
+	/**
+	 * if Lucene should be used for full text search or the database 
+	 */
+	protected boolean doLuceneSearch = false;
 
+	public boolean isDoLuceneSearch() {
+		return this.doLuceneSearch;
+	}
+	
+	public AbstractDatabaseManager() {
+		/*
+		 * configure search mode
+		 * FIXME: don't do this using JNDI ...
+		 */
+		try {
+			doLuceneSearch = "lucene".equals(((Context) new InitialContext().lookup("java:/comp/env")).lookup("searchMode"));
+		} catch (NamingException ex) {
+			log.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
+		}
+	}
+	
 	/**
 	 * Can be used to start a query that retrieves a list of objectf of a certain type.
 	 */
