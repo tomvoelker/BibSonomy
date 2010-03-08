@@ -25,6 +25,9 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 		return SettingsViewCommand.class.equals(clazz);
 	}
 
+	private static final String[] ALLOWED_GENDERS = { "f", "m" };
+
+
 	@Override
 	public void validate(final Object target, final Errors errors) {
 		Assert.notNull(target);
@@ -36,20 +39,12 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 		final User user = command.getUser();
 		Assert.notNull(user);
 
-		// check entered real name
-		this.checkUserRealName(command.getUser().getRealname(), errors);
-
-		// check gender
-		this.checkUserGender(command.getUser().getGender(), errors);
-
-		// check group
+		this.checkUserRealName(user.getRealname(), errors);
+		this.checkUserGender(user.getGender(), errors);
 		this.checkUserViewableGroup(command.getGroup(), errors);
-		// check email
-		this.checkUserEmailAdress(command.getUser().getEmail(), errors);
-		// check homepage
-		this.checkUserHomepage(command.getUser().getHomepage(), errors);
-		// check openURL
-		this.checkUserOpenURL(command.getUser().getOpenURL(), errors);
+		this.checkUserEmailAdress(user.getEmail(), errors);
+		this.checkUserHomepage(user.getHomepage(), errors);
+		this.checkUserOpenURL(user.getOpenURL(), errors);
 
 		// do not have to be checked
 		// check profession
@@ -61,24 +56,16 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 	}
 
 	private void checkUserGender(String gender, final Errors errors) {
-		boolean match = false;
-
 		if (present(gender)) {
 			gender = gender.trim();
 			
-			final String[] a_genders = { "f", "m" };
-
-			for (final String a_gender: a_genders) {
+			for (final String a_gender: ALLOWED_GENDERS) {
 				if (a_gender.equals(gender)) {
-					match = true;
-					break;
+					return;
 				}
 			}
 		}
-
-		if (!match) {
-			errors.rejectValue("user.gender", "error.profile.gender");
-		}
+		errors.rejectValue("user.gender", "error.profile.gender");
 	}
 
 	private void checkUserOpenURL(String str_URL, final Errors errors) {
@@ -87,7 +74,6 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 			try {
 				new URL(str_URL);
 			} catch (final MalformedURLException ex) {
-
 				errors.rejectValue("user.openURL", "error.profile.openurl");
 			}
 		}
