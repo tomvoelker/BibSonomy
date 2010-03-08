@@ -57,6 +57,7 @@
       {  
          "type" : "Bookmark",
          "id"   : "${projectHome}url/${post.resource.intraHash}/${mtl:quoteJSON(post.user.name)}",
+         "intraHash" : "${post.resource.intraHash}",
          "label" : "${mtl:quoteJSON(post.resource.title)}",
          "user" : "${mtl:quoteJSON(post.user.name)}",
          "description" : "${mtl:quoteJSON(post.description)}",
