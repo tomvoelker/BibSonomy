@@ -57,7 +57,7 @@ public class PasswordChangeOnRemindValidatorTest {
 		
 		final Errors errors = new BindException(command, "command");
 		command.setNewPassword("foo");
-		
+		command.setUserName("robert");
 		command.setPasswordCheck("foo");
 		
 		
