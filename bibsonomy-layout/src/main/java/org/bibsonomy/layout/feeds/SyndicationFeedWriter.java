@@ -23,6 +23,8 @@ import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
 
 /**
+ * Creates Atom and RSS feeds.
+ * 
  * 
  * @author:  rja
  * @version: $Id$
@@ -33,11 +35,19 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 
 	private URLGenerator urlGenerator;
 
+	private String feedType;
+	
 	public URLGenerator getUrlGenerator() {
 		return urlGenerator;
 	}
 
-	public void setUrlGenerator(URLGenerator urlGenerator) {
+	/**
+	 * The URLGenerator is used to create all project-internal URLs in feeds, 
+	 * e.g., URLs to the feed itself and so on.
+	 * 
+	 * @param urlGenerator
+	 */
+	public void setUrlGenerator(final URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
 	}
 
@@ -47,13 +57,22 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 		  output.output(feed, writer);
 	}
 
-	public void writeFeed (final String feedType, final String title, final String path, final String description, final List<Post<RESOURCE>> posts, final Writer writer) throws IOException, FeedException {
-		writeFeed(createFeed(feedType, title, path, description, posts), writer);
+	public void writeFeed (final String title, final String path, final String description, final List<Post<RESOURCE>> posts, final Writer writer) throws IOException, FeedException {
+		writeFeed(createFeed(title, path, description, posts), writer);
 	}
 
 	
-	public SyndFeed createFeed (final String feedType, final String title, final String path, final String description, final List<Post<RESOURCE>> posts) {
-		final SyndFeed feed = createFeed(feedType, title, path, description);
+	/**
+	 * Creates a new feed for the given list of posts.
+	 * 
+	 * @param title
+	 * @param path
+	 * @param description
+	 * @param posts
+	 * @return
+	 */
+	public SyndFeed createFeed (final String title, final String path, final String description, final List<Post<RESOURCE>> posts) {
+		final SyndFeed feed = createFeed(title, path, description);
 
 		final List<SyndEntry> entries = new LinkedList<SyndEntry>();
 
@@ -107,7 +126,7 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 
 
 
-	public SyndFeed createFeed(final String feedType, final String title, final String path, final String description) {
+	public SyndFeed createFeed(final String title, final String path, final String description) {
 		final SyndFeed feed = new SyndFeedImpl();
 		feed.setFeedType(feedType);
 
@@ -115,6 +134,26 @@ public class SyndicationFeedWriter<RESOURCE extends Resource> {
 		feed.setLink(urlGenerator.getAbsoluteUrl(path));
 		feed.setDescription(description);
 		return feed;
+	}
+
+	public String getFeedType() {
+		return feedType;
+	}
+
+	/**
+	 * Configure the type of feed this instance shall create. Supported values 
+	 * are
+	 * <dl>
+	 *   <dt></dt>
+	 *   <dd></dd>
+	 *   <dt></dt>
+	 *   <dd></dd>
+	 * </dl>
+	 * 
+	 * @param feedType
+	 */
+	public void setFeedType(final String feedType) {
+		this.feedType = feedType;
 	}
 
 }
