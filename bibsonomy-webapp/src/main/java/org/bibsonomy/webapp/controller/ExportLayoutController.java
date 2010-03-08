@@ -1,9 +1,5 @@
 package org.bibsonomy.webapp.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bibsonomy.layout.jabref.JabrefLayout;
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
 import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -12,7 +8,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * Controller for /layoutinfo
+ * Creates a JSON list about the available JabRef layouts on the /layoutinfo page.
  * 
  * @author mwa,dbe
  * @version $Id$
