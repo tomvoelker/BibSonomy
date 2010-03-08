@@ -205,7 +205,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @return true iff loginUser is allowed to access users profiles
 	 */
 	public boolean isAllowedToAccessUsersProfile(final User user, final User loginUser, final DBSession session) {
-		if (!present(user) || !present(loginUser)) {
+		if (!present(user)) {
 			return false;
 		}
 		
