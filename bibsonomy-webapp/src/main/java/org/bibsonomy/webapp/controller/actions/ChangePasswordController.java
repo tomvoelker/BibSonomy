@@ -2,14 +2,12 @@ package org.bibsonomy.webapp.controller.actions;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.SettingPageMsg;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
-import org.bibsonomy.webapp.controller.SearchPageController;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -29,7 +27,7 @@ import org.springframework.validation.Errors;
  */
 public class ChangePasswordController implements MinimalisticController<SettingsViewCommand>, ErrorAware, ValidationAwareController<SettingsViewCommand> {
 
-	private static final Log log = LogFactory.getLog(SearchPageController.class);
+	private static final Log log = LogFactory.getLog(ChangePasswordController.class);
 
 	private static final String TAB_URL = "/settings";
 
@@ -71,14 +69,15 @@ public class ChangePasswordController implements MinimalisticController<Settings
 		if (!context.isUserLoggedIn()) {
 			errors.reject("error.general.login");
 			return Views.SETTINGSPAGE;
-		} else {
-			command.setUser(context.getLoginUser());
 		}
 		
-		final User user = context.getLoginUser(); 
+		final User loginUser = context.getLoginUser();
+		command.setUser(loginUser);
 		
-		//check whether the user is a group		
-		if(UserUtils.userIsGroup(user)) {
+		/*
+		 * check whether the user is a group		
+		 */
+		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);
 			command.showGroupTab(true);
 		}
@@ -96,48 +95,46 @@ public class ChangePasswordController implements MinimalisticController<Settings
 		 */
 		if (context.isValidCkey()) {
 			log.debug("User is logged in, ckey is valid");
-
-			// change password here
-			System.out.println("password can be changed here");
-			changePassword(context.getLoginUser(), command);
-
+			/*
+			 * change password
+			 */
+			changePassword(loginUser, command);
 		} else {
 			errors.reject("error.field.valid.ckey");
 		}
 
-
 		return Views.SETTINGSPAGE;
 	}
 
-	private int changePassword(final User user, final SettingsViewCommand command) {
+	private void changePassword(final User loginUser, final SettingsViewCommand command) {
 
-		final String curPassword = user.getPassword();
-		int msgID;
-		// create the md5 hash of the new password
-		final String hashedOldPassword = StringUtils.getMD5Hash(command.getOldPassword());
-
-		if (curPassword.equals(hashedOldPassword)) {
-
+		/*
+		 * first, check given current password
+		 */
+		if (loginUser.getPassword().equals(StringUtils.getMD5Hash(command.getOldPassword()))) {
+			/*
+			 * compute hash for new password
+			 */
 			final String newPasswordHash = StringUtils.getMD5Hash(command.getNewPassword());
+			loginUser.setPassword(newPasswordHash);
 
-			user.setPassword(newPasswordHash);
-
-			final String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_PASSWORD);
-
-			cookieLogic.addUserCookie(user.getName(), newPasswordHash);
+			/*
+			 * update password of user
+			 */
+			final String updatedUser = adminLogic.updateUser(loginUser, UserUpdateOperation.UPDATE_PASSWORD);
+			
+			/*
+			 * set a new cookie
+			 */
+			cookieLogic.addUserCookie(loginUser.getName(), newPasswordHash);
 
 			requestLogic.invalidateSession();
 
-			log.info("password of " + updatedUser + " has been changed successfully");
-			
-			msgID = SettingPageMsg.PASSWORD_CHANGED_SUCCESS.getId();
+			log.debug("password of " + updatedUser + " has been changed successfully");
 			
 		} else {// old password is wrong
-			msgID = SettingPageMsg.IDLE.getId();
 			errors.reject("error.settings.password.incorect");			
 		}
-		
-		return msgID;
 	}
 
 	@Override
