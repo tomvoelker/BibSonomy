@@ -30,59 +30,59 @@ import org.springframework.validation.Errors;
  */
 public class PasswordChangeOnRemindController implements MinimalisticController<PasswordChangeOnRemindCommand>, ErrorAware, ValidationAwareController<PasswordChangeOnRemindCommand>, RequestAware, CookieAware{
 	private static final Log log = LogFactory.getLog(PasswordChangeOnRemindController.class);
-	
+
 	private LogicInterface adminLogic;
 	private CookieLogic cookieLogic;
 	private RequestLogic requestLogic;
 
 	private Errors errors;
-	
+
 	public View workOn(PasswordChangeOnRemindCommand command) {
 		log.debug("starting work");
-		command.setPageTitle("Password change");
-		
+		command.setPageTitle("password change");
+
 		// set the username and the tmp password
 		command.setUserName((String)requestLogic.getSessionAttribute("tmpUser"));
 
-		if (command.getUserName() != null){
-			log.debug("neither username nor the tmppassword is null");
-			
-			// if there are any errors show thems
-			if (errors.hasErrors()) {
-				return Views.PASSWORD_CHANGE_ON_REMIND;
-			}
-
-			// get the existing user
-			User user = new User();
-			user.setName(command.getUserName());
-			
-			// create the md5 hash of the new password
-			final String hashedPassword = StringUtils.getMD5Hash(command.getNewPassword());
-			
-			// add the new password to the user object
-			user.setPassword(hashedPassword);
-			
-			log.debug("writing the new password to the database");
-			// update user in database
-			adminLogic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
-			
-			log.debug("setting up new cookie");
-			// create a new cookie with the right login details
-			cookieLogic.addUserCookie(command.getUserName(), hashedPassword);
-			
-			// destroy session
-			requestLogic.invalidateSession();
-			
-			log.debug("redirect to root");
-			// redirect to home
-			return new ExtendedRedirectView("/");
+		/*
+		 * if there are any errors show them
+		 */
+		if (errors.hasErrors()) {
+			return Views.PASSWORD_CHANGE_ON_REMIND;
 		}
-		
-		log.debug("either username or tmppassword is null - throwing error");
-		errors.reject("error.method_not_allowed");
-		return Views.ERROR;
+
+		/*
+		 * the name of the user we want to update
+		 */
+		final String userName = command.getUserName();
+
+		// create the md5 hash of the new password
+		final String hashedPassword = StringUtils.getMD5Hash(command.getNewPassword());
+
+		/*
+		 * build the user we want to update
+		 */
+		final User user = new User();
+		user.setName(userName);
+		user.setPassword(hashedPassword);
+
+		log.debug("writing the new password to the database");
+		// update user in database
+		adminLogic.updateUser(user, UserUpdateOperation.UPDATE_PASSWORD);
+
+		log.debug("setting up new cookie");
+		// create a new cookie with the right login details
+		cookieLogic.addUserCookie(userName, hashedPassword);
+
+		// destroy session
+		requestLogic.invalidateSession();
+
+		log.debug("redirect to root");
+		// redirect to home
+		return new ExtendedRedirectView("/");
+
 	}
-	
+
 	public Errors getErrors() {
 		return this.errors;
 	}
@@ -110,7 +110,7 @@ public class PasswordChangeOnRemindController implements MinimalisticController<
 	public boolean isValidationRequired(PasswordChangeOnRemindCommand command) {
 		return true;
 	}
-	
+
 	/**
 	 * @param adminLogic
 	 */
