@@ -6,6 +6,7 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.PasswordChangeOnRemindCommand;
 import org.bibsonomy.webapp.util.CookieAware;
 import org.bibsonomy.webapp.util.CookieLogic;
@@ -41,9 +42,28 @@ public class PasswordChangeOnRemindController implements MinimalisticController<
 		log.debug("starting work");
 		command.setPageTitle("password change");
 
-		// set the username and the tmp password
-		command.setUserName((String)requestLogic.getSessionAttribute("tmpUser"));
+		
+		/*
+		 * the name of the user we want to update
+		 */
+		final String userName = (String)requestLogic.getSessionAttribute("tmpUser");
 
+		/*
+		 * check, if user name is available
+		 */
+		if (!ValidationUtils.present(userName)) {
+			/*
+			 * this should never happen - except user has manipulated the form
+			 */
+			errors.reject("error.method_not_allowed");
+			return Views.ERROR;
+		}
+
+		/*
+		 * set user name into command to show it in form field
+		 */
+		command.setUserName(userName);
+		
 		/*
 		 * if there are any errors show them
 		 */
@@ -51,10 +71,6 @@ public class PasswordChangeOnRemindController implements MinimalisticController<
 			return Views.PASSWORD_CHANGE_ON_REMIND;
 		}
 
-		/*
-		 * the name of the user we want to update
-		 */
-		final String userName = command.getUserName();
 
 		// create the md5 hash of the new password
 		final String hashedPassword = StringUtils.getMD5Hash(command.getNewPassword());
@@ -80,7 +96,6 @@ public class PasswordChangeOnRemindController implements MinimalisticController<
 		log.debug("redirect to root");
 		// redirect to home
 		return new ExtendedRedirectView("/");
-
 	}
 
 	public Errors getErrors() {
