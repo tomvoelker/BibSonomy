@@ -42,9 +42,10 @@ public class DeleteUserController implements MinimalisticController<SettingsView
 		if (!context.isUserLoggedIn()) {
 			errors.reject("error.general.login");
 			return Views.SETTINGSPAGE;
-		} else {
-			command.setUser(context.getLoginUser());
-		}
+		} 
+		
+		command.setUser(context.getLoginUser());
+		
 		
 		/**
 		 * go back to the settings page and display errors from command field
@@ -63,7 +64,7 @@ public class DeleteUserController implements MinimalisticController<SettingsView
 			/*
 			 * check the security input
 			 */
-			if ("yes".equalsIgnoreCase((command.getDelete()))){
+			if ("yes".equalsIgnoreCase(command.getDelete())) {
 				/*
 				 * all fine  ->  delete the user
 				 */
