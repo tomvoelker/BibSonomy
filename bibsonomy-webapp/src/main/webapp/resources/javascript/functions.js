@@ -25,7 +25,8 @@ function init (tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser, lcurrUser, 
     init_tagbox(tagbox_style, tagbox_sort, tagbox_minfreq, lrequUser);
   }
   
-  if (!location.pathname.startsWith("/postPublication")){
+  //FIXME: use some other condition, that does not depend on a location's name
+  if (!location.pathname.startsWith("/postPublication") && !location.pathname.startsWith("/postBookmark")){
 	  if (sidebar) {  
 	    add_filter();
 	    init_sidebar();

@@ -24,7 +24,8 @@
 		<div id="general">
 			  <c:if test="${not empty user.name}">
 			    <p>
-			    	<fmt:message key="post.resource.hint" />
+					<h2><fmt:message key="post_bookmark.heading"/></h2>
+					<p class="smalltext"><fmt:message key="post_bookmark.description" /></p>
 			    </p>
 			  </c:if>
 			  
@@ -35,8 +36,31 @@
 			    <input type="submit" name="submit" value="${post_bookmark}" />
 			  </form>
 		</div>
-		
 	</jsp:attribute>
+
+		<!-- 
+			the sidebar shows the "postPublication" buttons
+		 -->
+		<jsp:attribute name="sidebar">
+			<ul id="sidebar">
+				<h3>
+					<fmt:message key="buttons.bookmarklet">
+						<fmt:param value="${projectName}"></fmt:param>
+					</fmt:message>
+				</h3>
+				<p>
+					<fmt:message key="post.resource.hint"/>
+				</p>
+				<ul>
+					<li><buttons:postBookmark/></li>
+					<li><buttons:postBookmarkPopUp/></li>
+				</ul>
+				<p>
+					<fmt:message key="post.resource.hint1"/>
+				</p>
+			</ul>
+		</jsp:attribute>
+
 
 </layout:paneLayout>
 

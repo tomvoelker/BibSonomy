@@ -12,8 +12,8 @@
     <fmt:message key="image.button.postBookmark" var="buttonImage"/>
   
     <script type="text/javascript">
-      var title = ${postBookmark};
-      var image = ${buttonImage};
+      var title = "${postBookmark}";
+      var image = "${buttonImage}";
   	  //<mtl:cdata>
 	  <![CDATA[
       var myurl = "javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+";
