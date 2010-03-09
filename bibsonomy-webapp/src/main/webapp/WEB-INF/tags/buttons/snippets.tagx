@@ -10,6 +10,9 @@
     
     
     <fmt:message var="selectCode" key="buttons.select_code"/>
+   
+    <spring:theme code="image.snippet.bookmarkit" var="imageBookmarkIt" text="resources/image/bookmarkIt.png"/>
+	<c:set var="imageBookmarkIt" value="${projectHome}${imageBookmarkIt}" />
     
 	<form name="select_all">
 		<table width="100%" border="0" cellspacing="0" cellpadding="5">
@@ -75,7 +78,7 @@
 <script type="text/javascript">
    var url=encodeURIComponent(document.location.href);
    var title=encodeURIComponent(document.title);
-   document.write("<a href='${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\'Bookmark this page to ${projectName}.\''><img src='${projectHome}resources/image/bookmarkIt.png'></a>");	
+   document.write("<a href='${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\'Bookmark this page to ${projectName}.\''><img src='${imageBookmarkIt}'></a>");	
 </script>
 ]]>
 					
@@ -88,7 +91,7 @@
 							<![CDATA[
 								var url=encodeURIComponent(document.location.href);
 								var title=encodeURIComponent(document.title);
-								document.write("<a href='${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\'Bookmark this page to ${projectName}.\''><img src='${projectHome}resources/image/bookmarkIt.png'></a>");
+								document.write("<a href='${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\'Bookmark this page to ${projectName}.\''><img src='${imageBookmarkIt}'></a>");
 							]]>
 						</script>
 					</div>
