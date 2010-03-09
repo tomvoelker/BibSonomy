@@ -18,8 +18,8 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<layout:cvPageLayout requPath="${requPath}"	pageTitle="${command.pageTitle}" command="${command}">
-		
+	<layout:layout requPath="${requPath}" loginUser="${command.context.loginUser}" pageTitle="${command.pageTitle}" searchString="">
+			
 		<!--+
     	 	| html header extension: page specific stylesheet
     	 	-->
@@ -59,13 +59,12 @@
     	</jsp:attribute>
 		
 		<jsp:attribute name="content">
+		
 			<c:if test="${!empty command.user.realname or !empty command.user.place or !empty command.user.birthday or !empty command.user.profession}">
 				<div id="personalData">
-				 	 <h2><fmt:message key="cv.personal_data"/></h2>
-	  				<hr class="line" />
-	  				<!--foto-->
-	  				<img class="aboutMeIMG" src="${resdir}/image/no_picture2.png" alt="Picture" />
-					<table class="align personalData">
+	      		 	<h2><fmt:message key="cv.personal_data"/></h2>
+
+					<table class="align personalData" style="float:left;">
 	   					<c:if test="${!empty command.user.realname}">
 	    					<tr>
 								<td><fmt:message key="cv.name"/></td>
@@ -90,39 +89,33 @@
 								<td class="secondTD"><c:out value="${command.user.profession}" /></td>
 							</tr>
 					   </c:if>
-				  </table>
-				 <br />
-				 <br />
+  				    </table>
+	  				<!--foto-->
+	  				<img style="clear:both;" src="${resdir}/image/no_picture2.png"/>
+
 				</div>
 			</c:if>
+			
 			<c:if test="${command.user.interests != null}">
 	 			<h2><fmt:message key="cv.scientificInterests"/></h2>
-	 			<hr class="line"/>
-	 			<p class="box, align"><c:out value="${command.user.interests}" /></p>
-	 			<br />
-	 			<br />
+	 			<p class="align"><c:out value="${command.user.interests}" /></p>
 			</c:if>
 			<c:if test="${command.user.hobbies != null}">
 	 			<h2><fmt:message key="cv.hobbies"/></h2>
-		 		<hr class="line"/>
-		 		<p class="box, align"><c:out value="${command.user.hobbies}" /></p>
-		 		<br />
-		 		<br />
+		 		<p class="align"><c:out value="${command.user.hobbies}" /></p>
 			</c:if>
 			<c:if test="${!empty command.bookmark.list}">
 				<h2><fmt:message key="cv.own_bookmarks"/></h2>
-				<hr class="line"/>
-				<div class="box, align">
+				<div class="align">
 					<ul id="liste" class="bookmarkList">
 						<c:forEach var="post" items="${command.bookmark.list}">
 	    		    		<div style="margin:1.2em;" class="entry">
-								<c:set var="bookmark" value="${post.resource}"/>
 								<li>
  	    							<span class="entry_title">
-	     								<a href="${bookmark.url}">${bookmark.title}</a>
+ 	    								<c:set var="bookUrl"><c:out value="${mtl:cleanUrl(post.resource.url)}" escapeXml="true"/></c:set>
+										<a href="${bookUrl}" rel="nofollow"><c:out value='${post.resource.title}'/></a>
 	     							</span>
 	     							<a class="hand"><c:out value=" "/><fmt:message key="cv.options.show_details"/></a>
-	     							<br />
 				    				<p class="details"> 
 	 		      						<c:out value="${post.description}" />
 	       							</p>
@@ -130,8 +123,6 @@
 							</div>
  	  					</c:forEach>
  	  				</ul>
- 	  				<br/>
- 	  				<br/>
 				</div>
 			</c:if>
 
@@ -157,7 +148,6 @@
 
 			<c:if test="${!empty command.bibtex.list}">
 				<h2><fmt:message key="cv.publications"/></h2>
-				<hr class="line"/>
 				<div class="box align">
 
 					<!-- selection of citation format for the publications -->
@@ -200,6 +190,6 @@
 		</jsp:attribute>
 
 
-	</layout:cvPageLayout>
+	</layout:layout>
 	
 </jsp:root>

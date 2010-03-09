@@ -62,7 +62,7 @@
 		 
 		 			<fieldset class="fsInner">
 		 				<h2><fmt:message key="edittags.main.Header"/></h2>
-		  				<p><fmt:message key="edittags.main.textOne" /></p>
+		  				<p style="float:left;"><fmt:message key="edittags.main.textOne" /></p>
 	  					<!-- 
 							an example	
 		        	 	-->
