@@ -20,8 +20,7 @@ import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.validation.EditPostValidator;
-import org.bibsonomy.webapp.validation.EditPublicationValidator;
+import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
@@ -253,8 +252,8 @@ public class EditPublicationController extends EditPostController<BibTex, EditPu
 	}
 
 	@Override
-	protected EditPostValidator<BibTex> getValidator() {
-		return new EditPublicationValidator();
+	protected PostValidator<BibTex> getValidator() {
+		return new PostValidator<BibTex>();
 	}
 
 	@Override

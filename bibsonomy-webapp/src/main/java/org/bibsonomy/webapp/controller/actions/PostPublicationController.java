@@ -42,9 +42,8 @@ import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
-import org.bibsonomy.webapp.validation.EditPostValidator;
-import org.bibsonomy.webapp.validation.EditPublicationValidator;
-import org.bibsonomy.webapp.validation.PostPublicationValidator;
+import org.bibsonomy.webapp.validation.PostPublicationCommandValidator;
+import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
@@ -336,7 +335,6 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		 * Prepare the posts for the edit operations:
 		 * add additional information from the form to the post (description, groups)... present in both upload tabs
 		 */
-		final PostPublicationValidator validator = new PostPublicationValidator();
 		final User loginUser = command.getContext().getLoginUser();
 		for(final Post<BibTex> bib : bibtex)
 		{
@@ -361,6 +359,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		 * Check for INCOMPLETION ERRORS here - rejectIfEmpty checks
 		 */
 		final int numOfNoValidationErrors = errors.getErrorCount();
+		final PostPublicationCommandValidator validator = new PostPublicationCommandValidator();
 		validator.validate(command, errors);
 		bibtexHasValidationErrors = numOfNoValidationErrors!=errors.getErrorCount();
 		
@@ -655,8 +654,8 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	}
 
 	@Override
-	protected EditPostValidator<BibTex> getValidator() {
-		return new EditPublicationValidator(); 
+	protected PostValidator<BibTex> getValidator() {
+		return new PostValidator<BibTex>(); 
 	}
 
 	@Override

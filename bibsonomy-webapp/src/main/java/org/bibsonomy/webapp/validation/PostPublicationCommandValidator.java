@@ -9,23 +9,23 @@ import org.springframework.validation.ValidationUtils;
  * @author ema
  * @version $Id$
  */
-public class PostPublicationValidator implements Validator<PostPublicationCommand> {
+public class PostPublicationCommandValidator implements Validator<PostPublicationCommand> {
 
-	@Override
+	@SuppressWarnings("unchecked")
 	public boolean supports(Class clazz) {
 		return PostPublicationCommand.class.equals(clazz);
 	}
 
-	@Override
 	/** This method names the errors of its target items "<resource.getInterHash()>".resource.<XYZ>
 	 * 
 	 */
-	public void validate(Object target, Errors errors) 
-	{
-		PostPublicationCommand command = (PostPublicationCommand) target;
+	public void validate(final Object target, final Errors errors) {
+		final PostPublicationCommand command = (PostPublicationCommand) target;
 		errors.pushNestedPath("bibtex");
-		//validate resource
-		ValidationUtils.invokeValidator(new PublicationListCommandValidator(), command.getBibtex(), errors);
+		/*
+		 * validate all publications in the list
+		 */
+		ValidationUtils.invokeValidator(new ListCommandValidator(), command.getBibtex(), errors);
 		errors.popNestedPath();
 	}
 }

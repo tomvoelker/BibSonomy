@@ -41,7 +41,7 @@ import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.captcha.Captcha;
-import org.bibsonomy.webapp.validation.EditPostValidator;
+import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
@@ -897,7 +897,7 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 		return s.toString();
 	}
 
-	protected abstract EditPostValidator<RESOURCE> getValidator();
+	protected abstract PostValidator<RESOURCE> getValidator();
 
 	public Errors getErrors() {
 		return errors;

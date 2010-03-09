@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -18,8 +20,8 @@ import org.springframework.validation.ValidationUtils;
  * @version $Id$
  * @param <RESOURCE> 
  */
-public abstract class EditPostValidator<RESOURCE extends Resource> implements Validator<EditPostCommand<RESOURCE>> {
-	private static final Log log = LogFactory.getLog(EditPostValidator.class);
+public class PostValidator<RESOURCE extends Resource> implements Validator<EditPostCommand<RESOURCE>> {
+	private static final Log log = LogFactory.getLog(PostValidator.class);
 	
 	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz) {
@@ -31,7 +33,7 @@ public abstract class EditPostValidator<RESOURCE extends Resource> implements Va
 	 * 
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
 	 */
-	public void validate(Object obj, Errors errors) {
+	public void validate(final Object obj, final Errors errors) {
 		/*
 		 * To ensure that the received command is not null, we throw an
 		 * exception, if this assertion fails.
@@ -49,7 +51,7 @@ public abstract class EditPostValidator<RESOURCE extends Resource> implements Va
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tags", "error.field.valid.tags");
 		
 		final Post<RESOURCE> post = command.getPost();
-		this.validateResource(errors, post);
+		this.validateResource(errors, post.getResource());
 
 		/*
 		 * if no valid (after parsing) tags given, issue an error
@@ -74,7 +76,21 @@ public abstract class EditPostValidator<RESOURCE extends Resource> implements Va
 		
 	}
 	
-	protected abstract void validateResource(final Errors errors, final Post<RESOURCE> resource);
+	private void validateResource(final Errors errors, final RESOURCE resource) {
+
+		/*
+		 * validate the resource
+		 */
+		errors.pushNestedPath("post");
+		errors.pushNestedPath("resource");
+		if (resource instanceof Bookmark) {
+			ValidationUtils.invokeValidator(new BookmarkValidator(), resource, errors);
+		} else if (resource instanceof BibTex) {
+			ValidationUtils.invokeValidator(new PublicationValidator(), resource, errors);
+		}
+		errors.popNestedPath(); // resource
+		errors.popNestedPath(); // post
+	}
 
 	/** Validates the groups from the command. Only some combinations are allowed, e.g., 
 	 * either private, public, or other - and with certain other groups only.
