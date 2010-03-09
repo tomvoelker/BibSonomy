@@ -19,7 +19,7 @@
 		<c:set var="iconText" value="?" />
 	</c:if>
   
-	<span class="help" style="${cssStyle}">
+	<div class="help" style="${cssStyle}">
 		<!-- show help symbol, if given with underlying link to help page -->
         <c:choose>
           <c:when test="${not empty helpUrl}">
@@ -36,7 +36,7 @@
 			</c:if> 
 			<jsp:invoke fragment="helpText"><!-- DON'T REMOVE ME --></jsp:invoke>
 		</div>
-	</span> 
+	</div> 
 
 	
 	

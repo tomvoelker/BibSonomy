@@ -62,61 +62,59 @@
 		 
 		 			<fieldset class="fsInner">
 		 				<h2><fmt:message key="edittags.main.Header"/></h2>
-		  				<p>
-			    			<fmt:message key="edittags.main.textOne" />
-							<!-- 
-								an example	
-			        	 	-->
-			        	 	<buttons:help iconText="example">
-			        	 		<jsp:attribute name="helpText">
-				        			<!-- 
-				        				TODO: auch hieraus bitte nur eine Message, in die einfach die Beispiel-Tags eingefügt werden.
-				        			 -->
-				        			<fmt:message key="edittags.example.partOne" />
-				        			<a href="/tag/folksonomy">folksonomy</a> <fmt:message key="edittags.example.partand" />
-				        			<a href="/tag/project">project</a>
-				        			<fmt:message key="edittags.example.partThree" />
-				        			<a href="/tag/social">social</a>,
-				        			<a href="/tag/system">system</a> 
-				        			<fmt:message key="edittags.example.partand" />
-				        			<a href="/tag/bookmarking">bookmarking</a>. 
-				        			<fmt:message key="edittags.example.partFour" />     
-				        			<a href="/tag/folksonomy">folksonomy</a>
-									<em><fmt:message key="edittags.example.partand" /></em> 
-									<a href="/tag/project">project</a>       	
-					
-						    		<hr />
-				        			
-									<div class="bmtitel">
-										<b><a href="${root}">${projectName}</a></b>
-									</div>
-				     				<span class="bmmeta">
-				        				<fmt:message key="edittags.example.to" />
+		  				<p><fmt:message key="edittags.main.textOne" /></p>
+	  					<!-- 
+							an example	
+		        	 	-->
+		        	 	<buttons:help iconText="example">
+		        	 		<jsp:attribute name="helpText">
+			        			<!-- 
+			        				TODO: auch hieraus bitte nur eine Message, in die einfach die Beispiel-Tags eingefügt werden.
+			        			 -->
+			        			<fmt:message key="edittags.example.partOne" />
+			        			<a href="/tag/folksonomy">folksonomy</a> <fmt:message key="edittags.example.partand" />
+			        			<a href="/tag/project">project</a>
+			        			<fmt:message key="edittags.example.partThree" />
+			        			<a href="/tag/social">social</a>,
+			        			<a href="/tag/system">system</a> 
+			        			<fmt:message key="edittags.example.partand" />
+			        			<a href="/tag/bookmarking">bookmarking</a>. 
+			        			<fmt:message key="edittags.example.partFour" />     
+			        			<a href="/tag/folksonomy">folksonomy</a>
+								<em><fmt:message key="edittags.example.partand" /></em> 
+								<a href="/tag/project">project</a>       	
+				
+					    		<hr />
+			        			
+								<div class="bmtitel">
+									<b><a href="${root}">${projectName}</a></b>
+								</div>
+			     				<span class="bmmeta">
+			        				<fmt:message key="edittags.example.to" />
+						
+									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a>
+									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/folksonomy">folksonomy</a>
+									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/project">project</a>
+									<fmt:message key="edittags.example.by" /> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a>
+			       					<fmt:message key="edittags.example.on" /> <c:out value='${command.date}' />
+								</span>
+						
+								<div class="bmtitel">
+									<b><a href="${root}">${projectName}</a></b>
+								</div>
+			     
+								<span class="bmmeta">
+			        				<fmt:message key="edittags.example.to" />
 							
-										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a>
-										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/folksonomy">folksonomy</a>
-										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/project">project</a>
-										<fmt:message key="edittags.example.by" /> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a>
-				       					<fmt:message key="edittags.example.on" /> <c:out value='${command.date}' />
-									</span>
-							
-									<div class="bmtitel">
-										<b><a href="${root}">${projectName}</a></b>
-									</div>
-				     
-									<span class="bmmeta">
-				        				<fmt:message key="edittags.example.to" />
-								
-										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a>
-										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bookmarking">bookmarking</a>
-										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/social">social</a>
-										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/system">system</a>
-										<fmt:message key="edittags.example.by" /> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a>
-				       					<fmt:message key="edittags.example.on" /> <c:out value='${command.date}' />
-									</span>
-								</jsp:attribute>
-							</buttons:help>			
-		  				</p>
+									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a>
+									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bookmarking">bookmarking</a>
+									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/social">social</a>
+									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/system">system</a>
+									<fmt:message key="edittags.example.by" /> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a>
+			       					<fmt:message key="edittags.example.on" /> <c:out value='${command.date}' />
+								</span>
+							</jsp:attribute>
+						</buttons:help>			
 		
 		            	<div class="fsRow">
 		        			<!-- 
