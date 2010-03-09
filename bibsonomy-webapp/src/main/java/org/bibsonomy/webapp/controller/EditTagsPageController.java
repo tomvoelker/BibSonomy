@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.controller;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
@@ -15,48 +14,48 @@ import org.bibsonomy.webapp.view.Views;
 
 
 /**
- * Controller for edit tags
+ * Controller for the edit_tags page (only the view!)
  * 
  * @author Henrik Bartholmai
+ * @version $Id$
+ * 
  */
 
 public class EditTagsPageController extends SingleResourceListControllerWithTags implements MinimalisticController<EditTagsPageViewCommand> {
-	private static final Logger LOGGER = Logger.getLogger(AuthorPageController.class);
 
 	public View workOn(EditTagsPageViewCommand command) {
-		LOGGER.debug(this.getClass().getSimpleName());
-
-		this.startTiming(this.getClass(), command.getFormat());
-		
-		// no user given -> error
-		if (command.getContext().isUserLoggedIn() == false) {
-			LOGGER.error("Invalid query /user without username");
+		/*
+		 * no user given -> error
+		 */
+		if (!command.getContext().isUserLoggedIn()) {
 			throw new MalformedURLSchemeException("error.user_page_without_username");
 		}
 
-		// set grouping entity, grouping name, tags
+		/*
+		 * set grouping entity, grouping name, tags
+		 */
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
 		final String groupingName = command.getContext().getLoginUser().getName();
 
 		command.setPageTitle("edit tags :: " + groupingName);
 		command.setUserName(groupingName);
+
+		/*
+		 * set the tags of the user to get his tag cloud
+		 */
+		this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 20000, null);
+
+		/*
+		 * get all concepts of the user 
+		 */
+		final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.ALL, 0, Integer.MAX_VALUE);
+		command.getConcepts().setConceptList(concepts);
+		command.getConcepts().setNumConcepts(concepts.size());
+
 		
-		if (command.getFormat().equals("html")) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 20000, null);
-
-			final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
-			command.getConcepts().setConceptList(concepts);
-			command.getConcepts().setNumConcepts(concepts.size());
-			
-			// log if a user has reached threshold
-			if (command.getTagcloud().getTags().size() > 19999) {
-				LOGGER.error("User " + groupingName + " has reached threshold of 20000 tags on user page");
-			}
-
-		}
-
-		this.endTiming();
-		// export - return the appropriate view
+		/*
+		 * return the appropriate view
+		 */
 		return Views.EDIT_TAGS;
 	}
 

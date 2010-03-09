@@ -1,23 +1,26 @@
 package org.bibsonomy.webapp.command;
 
-import org.bibsonomy.model.User;
-
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+
+import org.bibsonomy.model.User;
 
 
 /**
  * @author hba
- *
+ * @version $Id$
  */
 public class EditTagsPageViewCommand extends ResourceViewCommand {
 
 	private User user;
 	private String userName = "test";
-	private Date date = new Date();
-	private SimpleDateFormat dateformat = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+	private final Date date = new Date();
+	private static final SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	/** the group whode resources are requested */
+	/**
+	 * the group whose resources are requested 
+	 * FIXME: a group? This is a ConceptsCommand!
+	 */
 	private ConceptsCommand concepts = null;
 
 
@@ -57,7 +60,7 @@ public class EditTagsPageViewCommand extends ResourceViewCommand {
 	}
 	
 	/**
-	 * @return
+	 * @return The name of the user.
 	 */
 	public String getUserName(){
 		return this.userName;
