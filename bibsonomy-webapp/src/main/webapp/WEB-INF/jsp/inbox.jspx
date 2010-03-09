@@ -17,11 +17,11 @@
 	<layout:resourceLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" disableListNavigation="${true}" disableActions="${true}" selectedNaviTab="nav_home">
 
 		<jsp:attribute name="heading">
-		  <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.inbox"/></a>
+		    <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.inbox"/></a>
 		</jsp:attribute>
 		
 		<jsp:attribute name="contentHeading">
-			<div id="general">
+			<div>
 				<fmt:message key="inboxPage.about">
 					<fmt:param>${command.context.loginUser.name}</fmt:param>
 				</fmt:message>

@@ -113,13 +113,11 @@
 	list-style-image: none;
 	list-style-position: outside;
 	list-style-type: none;
-}
-
-#bookmarkbibtexoptions ul {
 	margin: 1ex 0;
 	padding: 0px;
 	padding-right: 20px;
 	text-align: right;
+	float: right;
 }
 
 #bookmarkbibtexoptions li {
@@ -894,7 +892,7 @@ span.info:hover > div, div.help:hover > div {
 	position: absolute;
 	top: 2em;
 	left: 2em;
-	width: 50em;
+	width: 30em;
 	border: 1px solid #ccc;
 	background-color: #eee;
 	color: #000;

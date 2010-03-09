@@ -18,20 +18,20 @@
 		  <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.basket"/></a>
 		</jsp:attribute>
 		
-        <jsp:attribute name="info">
+        <jsp:attribute name="contentHeading">
           <!-- short info, what the basket is -->
           <fmt:message key="basket.info"/>                 
         </jsp:attribute>
     
 		<jsp:attribute name="sidebar">
-		<ul id="sidebar">			
-          <li>
-            <span class="sidebar_h">
-              <fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
-              <a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}" title="${fn:escapeXml(removeAllVerbose)}"><fmt:message key="basket.removeAll"/></a>
-            </span>
-          </li>
-		</ul>
+			<ul id="sidebar">			
+	          <li>
+	            <span class="sidebar_h">
+	              <fmt:message key="basket.removeAllVerbose" var="removeAllVerbose"/>
+	              <a href="/ajax/pickUnpickPost?action=clearAll&amp;ckey=${mtl:encodeURI(command.context.ckey)}" title="${fn:escapeXml(removeAllVerbose)}"><fmt:message key="basket.removeAll"/></a>
+	            </span>
+	          </li>
+			</ul>
  		</jsp:attribute>
     
 	</layout:bibtexLayout>

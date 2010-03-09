@@ -23,27 +23,27 @@
 			</form>	
 		</jsp:attribute>
 		<jsp:attribute name="sidebar">
-		<ul id="sidebar">
-			<li>
-				<span class="sidebar_h"><fmt:message key="tags"/></span>
-				<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="home"/>
-			</li>
-			
-			<!-- enablle autocompletion for bibtexkeys -->
-			<c:if test="${not empty command.requestedUser}"> 
-				<script type="text/javascript">
-				<![CDATA[
-				         $(document).ready(function(){
-				     		$("#inpf").autocomplete("/generalAjax?action=getBibtexKeysForUser&requestedUser=${command.requestedUser}", {
-				     			width: 260,
-				     			selectFirst: true
-				     		});
-				       });					
-					
-				]]>
-				</script>
-			</c:if>
-		</ul>	
+			<ul id="sidebar">
+				<li>
+					<span class="sidebar_h"><fmt:message key="tags"/></span>
+					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagSizeMode="home"/>
+				</li>
+				
+				<!-- enablle autocompletion for bibtexkeys -->
+				<c:if test="${not empty command.requestedUser}"> 
+					<script type="text/javascript">
+					<![CDATA[
+					         $(document).ready(function(){
+					     		$("#inpf").autocomplete("/generalAjax?action=getBibtexKeysForUser&requestedUser=${command.requestedUser}", {
+					     			width: 260,
+					     			selectFirst: true
+					     		});
+					       });					
+						
+					]]>
+					</script>
+				</c:if>
+			</ul>	
 		</jsp:attribute>
 		
 		<!-- add jquery javascript resources to enable autocompletion --> 

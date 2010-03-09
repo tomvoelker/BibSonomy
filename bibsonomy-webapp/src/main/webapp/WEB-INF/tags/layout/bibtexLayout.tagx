@@ -17,7 +17,7 @@
   
 	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
 	<jsp:directive.attribute name="sidebar" fragment="true" required="true"/>	
-	<jsp:directive.attribute name="info" fragment="true" required="false"/>
+	<jsp:directive.attribute name="contentHeading" fragment="true" required="false"/>
 	<jsp:directive.attribute name="headerExt" fragment="true" required="false" />		
 	
 	<!-- 
@@ -47,17 +47,11 @@
 			</c:if>
 		</jsp:attribute>
 		<jsp:attribute name="content">
-
-  		    <!-- info text -->
-			<c:if test="${not empty info}">	
-			  <div id="general">
-			   
-			     <div class="infobox">
-	  				<p><jsp:invoke fragment="info"/></p>			
-				 </div>			
-              </div>
-			</c:if>		
-
+			<div id="general_100">
+				<c:if test="${not empty contentHeading}">
+					<jsp:invoke fragment="contentHeading" />
+				</c:if>
+			</div>
 
 			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 
