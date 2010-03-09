@@ -44,7 +44,13 @@ public class AbstractDatabaseManager {
 		try {
 			doLuceneSearch = "lucene".equals(((Context) new InitialContext().lookup("java:/comp/env")).lookup("searchMode"));
 		} catch (NamingException ex) {
-			log.error("Error when trying to read environment variable 'searchmode' via JNDI.", ex);
+			// try to read searchMode from system properties (used by unit tests)
+			if (System.getProperty("searchMode") != null) {
+				doLuceneSearch = "lucene".equals(System.getProperty("searchMode"));
+			}
+			else {
+				log.error("Error when trying to read environment variable 'searchmode' via JNDI / System.", ex);
+			}
 		}
 	}
 	
