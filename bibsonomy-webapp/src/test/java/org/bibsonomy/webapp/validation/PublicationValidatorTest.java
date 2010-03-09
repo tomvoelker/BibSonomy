@@ -22,7 +22,6 @@ import org.springframework.validation.Validator;
 public class PublicationValidatorTest {
 
 	final PostValidator<BibTex> postValidator = new PostValidator<BibTex>();
-	final PublicationValidator publicationValidator = new PublicationValidator();
 	final EditPublicationController controller = new EditPublicationController();
 	
 	
