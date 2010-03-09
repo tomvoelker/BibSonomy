@@ -54,7 +54,7 @@ public class SpamPageController implements MinimalisticController<AdminViewComma
 		/*
 		 * only compute counts for specific tabs
 		 */
-		if (command.getSelTab() == 5 || command.getSelTab() == 8){
+		if (command.getSelTab() == 4 || command.getSelTab() == 7){
 			this.setStatistics(command);
 		}
 
