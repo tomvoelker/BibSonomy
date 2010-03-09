@@ -76,6 +76,15 @@ public class ISBNUtils {
 	 * @return snippet without " " and "-"
 	 */
 	public static String cleanISBN(final String snippet){
-		return snippet.replace(" ", "").replace("-", "");
+		return snippet.replaceAll("\\s", "").replace("-", "");
+	}
+	
+	/**
+	 * replaces seperations through "-"
+	 * @param snippet
+	 * @return snippet with "-" seperated
+	 */
+	public static String cleanISSN(final String snippet){
+		return snippet.replaceAll(" ", "-");
 	}
 }
