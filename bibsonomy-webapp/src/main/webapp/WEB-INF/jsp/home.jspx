@@ -38,18 +38,16 @@
 		<!-- show info text if user not logged in -->
 		<jsp:attribute name="contentHeading">
 			<c:if test="${not command.context.userLoggedIn and (empty errors or errors.errorCount == 0)}">
-				<div id="general">
-					<p class="smalltext">
-						<fmt:message key="system.about">
-							<fmt:param value="${projectName}"/>
-						</fmt:message>
-					</p>
-					<p class="smalltext">
-						<fmt:message key="system.introduction">
-							<fmt:param value="${projectName}"/>
-						</fmt:message>									
-					</p>
-				</div>
+				<p class="smalltext">
+					<fmt:message key="system.about">
+						<fmt:param value="${projectName}"/>
+					</fmt:message>
+				</p>
+				<p class="smalltext">
+					<fmt:message key="system.introduction">
+						<fmt:param value="${projectName}"/>
+					</fmt:message>									
+				</p>
 			</c:if>
 		</jsp:attribute>
 		
