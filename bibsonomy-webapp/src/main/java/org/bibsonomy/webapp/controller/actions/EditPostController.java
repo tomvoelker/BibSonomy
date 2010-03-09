@@ -376,15 +376,16 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 		final List<Post<?>> posts = new LinkedList<Post<?>>();
 		posts.add(post);
 		setDate(post, loginUserName);
+		
 		List<String> updatePosts = null;
 		try {
 			/*
 			 * update post in DB
 			 */
 			updatePosts = logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
-		} catch (DatabaseException de) {
-			List<ErrorMessage> errorMessages= de.getErrorMessages(post.getResource().getIntraHash());
-			for (ErrorMessage em: errorMessages) {
+		} catch (final DatabaseException ex) {
+			final List<ErrorMessage> errorMessages = ex.getErrorMessages(post.getResource().getIntraHash());
+			for (final ErrorMessage em: errorMessages) {
 				if (em instanceof SystemTagErrorMessage) {
 					errors.rejectValue("tags", em.getErrorMessage(), em.getParameters().toArray(), " ");
 				} else {
@@ -398,7 +399,7 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 			}
 			return getEditPostView(command, loginUser);
 		}
-		if (updatePosts == null || updatePosts.isEmpty()) {//So wie das ist, so könnte man auch mit den anderen Fehlern umgehen
+		if (!ValidationUtils.present(updatePosts)) {//So wie das ist, so könnte man auch mit den anderen Fehlern umgehen
 			/*
 			 * show error page
 			 */
