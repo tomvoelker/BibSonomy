@@ -35,13 +35,6 @@
 		<result property="ldapId" 			column="ldapUserId"		javaType="string" />
 		<result property="lastLdapUpdate" 	column="lastAccess"  	javaType="date" />			
 	</resultMap>
-	
-	<resultMap id="userWithPrediction" extends="user" class="user">
-		<result property="prediction" 	column="prediction" javaType="integer"/>
-		<result property="mode" 		column="mode"       javaType="string"/>
-		<result property="algorithm" 	column="algorithm"	javaType="string"/>
-		<result property="confidence"   column="confidence" javaType="double" />
-	</resultMap>
 
 	<resultMap id="userWithSettings"  class="user" extends="user"> 
 		<result property="settings"   resultMap="UserCommon.userSettings"/>

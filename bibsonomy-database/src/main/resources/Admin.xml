@@ -32,7 +32,7 @@
 		UPDATE evaluation SET $evaluator$ = #prediction# WHERE user_name = #userName#
 	</update>
 
-	<select id="getAdminClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
+	<select id="getAdminClassifiedUsers" resultMap="AdminCommon.userProperties" parameterClass="adminParam">
 		SELECT *
 		FROM user u JOIN prediction p ON (u.user_name = p.user_name)
 		WHERE ((u.updated_by != 'classifier' AND u.updated_by != 'on_delete') OR ISNULL(u.updated_by)) AND prediction = #prediction# AND algorithm='admin'
@@ -51,8 +51,8 @@
 	    </isGreaterThan>
 	</select>
 	
-	<select id="getClassifiedUsers" resultMap="UserCommon.userWithPrediction" parameterClass="adminParam">
-		SELECT *  
+	<select id="getClassifiedUsers" resultMap="AdminCommon.userPredictionWithUserProperties" parameterClass="adminParam">
+		SELECT *
 		FROM user u JOIN prediction p ON (u.user_name = p.user_name AND u.updated_at = p.updated_at)
 		WHERE updated_by = 'classifier' AND prediction = #prediction# 
 		ORDER BY u.updated_at DESC
@@ -69,7 +69,7 @@
 		LIMIT #limit#
 	</select>
 	
-	<select id="getAllUsersWithSpam" resultMap="UserCommon.user" parameterClass="adminParam">
+	<select id="getAllUsersWithSpam" resultMap="AdminCommon.userProperties" parameterClass="adminParam">
 		SELECT * 
 		FROM user u 
 		ORDER BY u.reg_date DESC
@@ -100,34 +100,21 @@
 		INSERT INTO classifier_whitelist (white_regex) VALUES (#value#); 
 	</insert>
 
-	<select id="getClassifierHistory" resultMap="AdminCommon.userPrediction" parameterClass="string">
+	<select id="getClassifierHistory" resultMap="AdminCommon.userPredictionWithUserProperties" parameterClass="string">
 		SELECT user_name, updated_at, <include refid="commonPredictionAttributes"/>  FROM log_prediction 
 		WHERE user_name  = #userName# AND algorithm != 'admin' 
 		ORDER BY updated_at DESC LIMIT 25
 	</select>
 	 
-	<select id="getClassifierUserDetails" resultMap="AdminCommon.userPredictionDetails" parameterClass="string">
+	<select id="getClassifierUserDetails" resultMap="AdminCommon.userPrediction" parameterClass="string">
 		SELECT <include refid="commonPredictionAttributes"/>
 		FROM prediction
 		WHERE user_name = #userName#
 		ORDER BY timestamp DESC
 		LIMIT 1
 	</select>
-	 
-	 <!--  
-	 <select id="getClassifierComparison" resultMap="AdminCommon.userPredictionAndSpammer" parameterClass="adminParam">
-	 	SELECT a.user_name,u.spammer, u.updated_by, u.updated_at, a.prediction, a.algorithm, a.mode
-	 	FROM user u
-	 	JOIN prediction a ON (u.user_name = a.user_name)
-	 	WHERE a.evaluator=1 
-	 	<isGreaterThan property="interval" compareValue="0" prepend="AND">	
-			u.reg_date > NOW() - INTERVAL #interval# HOUR
-		</isGreaterThan>
-	 	order by u.reg_date DESC
-	 </select>
-	--> 
 	
-	 <select id="getClassifierComparison" resultMap="AdminCommon.userPredictionAndSpammer" parameterClass="adminParam">
+	 <select id="getClassifierComparison" resultMap="AdminCommon.userPredictionWithUserProperties" parameterClass="adminParam">
 	 	SELECT a.user_name, u.spammer, u.updated_by, u.updated_at, a.prediction, a.algorithm, a.confidence, a.mode
 	 	FROM user u
 	 	JOIN prediction a ON (u.user_name = a.user_name)
