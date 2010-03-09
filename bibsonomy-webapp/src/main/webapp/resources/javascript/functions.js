@@ -707,10 +707,6 @@ function xget_event (event) {
 		}
 	}
 
-	/*
-	 * Wechselt das InputField, insofern atm kein Tag in der Vorschlagsliste steht
-	 */
-
 	function switchField(source,target) {
 		if(activeTag != "") {
 			document.getElementById(source).focus();
@@ -722,12 +718,6 @@ function xget_event (event) {
 	
 	function deleteCache() {
 		clearSuggestion();
-
-		/*
-		 *	weiss nicht, warum ich das statement drin hatte.... war aber bestimmt nich ohne grund :(
-		 */
- 
-		// activeTag = "";
 	}
 
 	/**

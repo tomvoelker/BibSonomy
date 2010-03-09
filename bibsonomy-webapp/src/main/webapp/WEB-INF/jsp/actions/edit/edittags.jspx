@@ -8,205 +8,250 @@
 	xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
 
 	<layout:paneLayout pageTitle="${command.pageTitle}"
-		command="${command}" requestedUser="${command.requestedUser}"
+		command="${command}" requestedUser=""
 		requPath="${requPath}">
 
-	<jsp:attribute name="heading">
-		<a rel="path_menu" href="#"><img src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.editTags"/></a> 
-	</jsp:attribute>
+		
+
+		<jsp:attribute name="heading">
+			<a rel="path_menu" href="#"><img src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.editTags"/></a> 
+		</jsp:attribute>
 	
 
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+	    </jsp:attribute>
 
-	<jsp:attribute name="content">
-		<div style="margin-top: 20px; margin-left: 10px; margin-bottom: 10px;">
-		<script type='text/javascript' src='jquery_autocomplete.js'></script> 	
-		<script type="text/javascript">
-		$(document).ready(function(){
-			$("#inpf").autocomplete("admin_suggest.jsp?type=2", {
-				width: 260,
-				selectFirst: true
-			});
-		});
-		</script>
+		<jsp:attribute name="content">
+			<div id="general_100">
 		
-		<c:if test="${!empty updatedResourcesCount || !empty updatedRelationsCount}">
-  			<h2><fmt:message key="edittags.update.partOne" /></h2>
- 			<c:if test="${!empty updatedResourcesCount}">
-   				<p><fmt:message key="edittags.update.updated" /> ${updatedResourcesCount} <fmt:message key="edittags.update.resources" /></p>
-    			<c:remove var="updatedResourcesCount"/>
- 			</c:if>
- 			<c:if test="${!empty updatedRelationsCount}">
-    			<p><fmt:message key="edittags.update.updated" /> ${updatedRelationsCount} <fmt:message key="edittags.update.relations" /></p>
-    			<c:remove var="updatedRelationsCount"/>
-  			</c:if>
-		</c:if>			
- 
- 		<h2><fmt:message key="edittags.main.Header" /></h2>
-  		<p>
-    		<fmt:message key="edittags.main.textOne" />
-  		</p>
-  		<form action="/TagEditHandler?do=replace" method="post">
-    	<table>      
-      	<tr>
-        	<td><fmt:message key="edittags.main.replace" />:</td>
-        	<td><input name="delTags" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="on"  size="30" value="" tabindex="1" title="these tags will be removed from every posts which contains ALL of these tags" id="inpf" class="ac_spam"/></td>
-        	<td rowspan="2" style="padding-left:1em; border: 1px solid black; font-size:smaller;">
-        		<fmt:message key="edittags.example.partOne" />&#160;
-        		<a href="${projectHome}tag/folksonomy" onFocus="switchField('inpDel','inpfNew')">folksonomy</a>&#160;<fmt:message key="edittags.example.partand" />&#160;
-        		<a href="${projectHome}tag/project" onFocus="switchField('insert_up','insert_lo')">project</a>&#160;
-        		<fmt:message key="edittags.example.partThree" />&#160;
-        		<a href="${projectHome}tag/social">social</a>,
-        		<a href="${projectHome}tag/system">system</a>&#160;<fmt:message key="edittags.example.partand" />&#160;
-        		<a href="${projectHome}tag/bookmarking">bookmarking</a>. <fmt:message key="edittags.example.partFour" />&#160;     
-        		<a href="${projectHome}tag/folksonomy">folksonomy</a>&#160;<em><fmt:message key="edittags.example.partand" /></em>&#160;<a href="${projectHome}tag/project">project</a>       	
-
-        	<hr />
-        			
-			<div class="bmtitel">
-				<b><a href="${root}">${projectName}</a></b>
-			</div>
-     		<span class="bmmeta">
-        
-			<fmt:message key="edittags.example.to" />&#160;
 			
-			<a href="/user/${command.userName}/bibtex">bibtex</a>&#160;
-			<a href="/user/${command.userName}/folksonomy">folksonomy</a>&#160;
-			<a href="/user/${command.userName}/project">project</a>&#160;
-			<fmt:message key="edittags.example.by" />&#160;<a href="/user/${command.userName}"><c:out value='${command.userName}' /></a>&#160;
-       		<fmt:message key="edittags.example.on" />&#160;<c:out value='${command.date}' />
-			</span>
+				<!-- 
+					message for "reset" buttons
+			 	-->
+				<fmt:message var="reset" key="edittags.button.reset"/>
 			
-			<div class="bmtitel">
-				<b><a href="${root}">${projectName}</a></b>
-			</div>
-     
-			<span class="bmmeta">
-        
-			<fmt:message key="edittags.example.to" />&#160;
 			
-			<a href="/user/${command.userName}/bibtex">bibtex</a>&#160;
-			<a href="/user/${command.userName}/bookmarking">bookmarking</a>&#160;
-			<a href="/user/${command.userName}/social">social</a>&#160;
-			<a href="/user/${command.userName}/system">system</a>&#160;
-			<fmt:message key="edittags.example.by" />&#160;<a href="/user/${command.userName}"><c:out value='${command.userName}' /></a>&#160;
-       		<fmt:message key="edittags.example.on" />&#160;<c:out value='${command.date}' />
-			</span>
-			
-
-
-        	</td>
-        </tr>
-      	<tr>
-        	<td><fmt:message key="edittags.main.newtags" />:</td>
-        	<td><input name="addTags" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" size="30" value="" tabindex="2" title="these tags will be added to every post which contains ALL of the above tags" id="inpfNew"/></td>
-		</tr>
-		<tr>
-        	<td><fmt:message key="edittags.main.updaterelations" />: </td>
-        	<td colspan="2">
-        		<input type="checkbox" name="updaterelations" value="yes" tabindex="3"/>
-        		<fmt:message key="edittags.main.NoteOne" />: <em><fmt:message key="edittags.main.NoteTwo" /></em>
-        	</td>
-        </tr>
-      	<tr>
-        	<td style="width: 150px">
-
-        	</td>
-        <td></td>
-		</tr>
-	</table>
-	<input type="hidden" name="ckey" value="${ckey}"/>
-    <fmt:message var="reset" key="edittags.button.reset"/>
-    <fmt:message var="send" key="edittags.button.send"/>
-    &#160;<input type="submit" value="${send}" tabindex="4"/>&#160;<input type="reset" value="${reset}" tabindex="5"/>
-	</form>
-  
-	<hr />
-
-	<!-- tag relations -->
-
-	<h2><fmt:message key="edittags.main.insertRelationsOne" /></h2>
-	<form action="/RelationsHandler?do=insert" method="post">
-		<table>
-			<tr>
-				<td></td>
-				<td><span style="font-size:10px">supertag</span></td>
-				<td><span style="font-size:10px">subtag</span></td>
-			</tr>
-			<tr>
-    			<td><fmt:message key="edittags.main.insertRelationsTwo" />:&#160;</td>
-    			<td><input onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="upper" size="15" value="" tabindex="7" title="enter the supertag(s) here" id="insert_up"/>&#8592;</td>
-   				<td><input onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="lower" size="30" value="" tabindex="6" title="enter the subtag(s) here" id="insert_lo"/>&#160;
-    				<fmt:message var="insertRelation" key="edittags.button.insertRelations"/>
-					<input type="submit" value="${insertRelation}" tabindex="8"/>&#160;
-    				<fmt:message var="reset" key="edittags.button.reset"/>
-					<input type="reset" value="${reset}" tabindex="9"/>
-					<input type="hidden" name="ckey" value="${ckey}"/></td>
-			</tr>
-		</table>
-	</form>
-  
-      
-	<h2><fmt:message key="edittags.main.deleteRelationsOne" /></h2>
-	<form action="/RelationsHandler?do=delete" method="post">
-		<table>
-			<tr>
-				<td></td>
-				<td><span style="font-size:10px">supertag</span></td>
-				<td><span style="font-size:10px">subtag</span></td>
-			</tr>
-			<tr>
-				<td><fmt:message key="edittags.main.deleteRelationsTwo" />:&#160;</td>				
-				<td><input onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="upper" size="15" value="" tabindex="11" title="enter the supertag(s) here" id="delete_up"/>&#8592;</td>
-				<td><input onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="lower" size="30" value="" tabindex="10" title="enter the subtag(s) here" id="delete_lo"/>&#160;
-					<fmt:message var="deleteRelation" key="edittags.button.deleteRelations"/>
-    				<input type="submit" value="${deleteRelation}" tabindex="12"/>&#160;
-        			<fmt:message var="reset" key="edittags.button.reset"/>
-    				<input type="reset" value="${reset}" tabindex="13"/>
-    				<input type="hidden" name="ckey" value="${ckey}"/></td>
-    		</tr>
-    	</table>
-	</form>
-	<hr /> 
-	</div>
-	</jsp:attribute>
+				
+				<!-- 
+					some resources/relations have been updated
+				 -->
+				<c:if test="${not empty updatedResourcesCount or not empty updatedRelationsCount}">
+		  			<h2><fmt:message key="edittags.update.partOne" /></h2>
+		 			<c:if test="${not empty updatedResourcesCount}">
+		   				<p><fmt:message key="edittags.update.updated" /> ${updatedResourcesCount} <fmt:message key="edittags.update.resources" /></p>
+		 			</c:if>
+		 			<c:if test="${not empty updatedRelationsCount}">
+		    			<p><fmt:message key="edittags.update.updated" /> ${updatedRelationsCount} <fmt:message key="edittags.update.relations" /></p>
+		  			</c:if>
+				</c:if>			
+		 
+		 
+		 
+		 
+		 
 		
-	<jsp:attribute name="sidebar">	
-	<ul id="sidebar">			
-	<li>
-		<c:set var="tagRelationsTitle"><fmt:message key="tagrelations.title"/></c:set>
-		<span class="sidebar_h">
-		<a href="/relations/${fn:escapeXml(command.requestedUser)}" title="${tagRelationsTitle}">
-		<fmt:message key="tagrelations"/>
-		</a>
-		</span>	
-		<tags:concepts cmd="${command.concepts}" usersOwnRelations="${command.context.loginUser.name eq command.context.loginUser.name}" requestedUserName="${command.requestedUser}"/>
-	</li>
-	<li>
-		<span class="sidebar_h"><fmt:message key="tags" /></span>
-		<tags:cloud requPath="user/${command.requestedUser}" cmd="${command.tagcloud}"
-				tagboxMinfreqStyle="user"
-				showTooltips="${command.context.loginUser.settings.tagboxTooltip}" />
-	</li>
-	<c:if test="${not empty command.user}">
-		<li>
-			<span class="sidebar_h">user details</span>
-			<user:details user="${command.user}" />
-		</li>
-	</c:if>
-            
-	<script type="text/javascript">
-		add_toggle();
-  		disableHandler();
-  		add_toggle_relations();
-  		setOps();
- 	</script>
- 	</ul>
-	</jsp:attribute>
-</layout:paneLayout>
+		  		<form action="/TagEditHandler?do=replace" method="post">
+		 
+		 			<fieldset class="fsInner">
+		 				<h2><fmt:message key="edittags.main.Header"/></h2>
+		  				<p>
+			    			<fmt:message key="edittags.main.textOne" />
+							<!-- 
+								an example	
+			        	 	-->
+			        	 	<buttons:help iconText="example">
+			        	 		<jsp:attribute name="helpText">
+				        			<!-- 
+				        				TODO: auch hieraus bitte nur eine Message, in die einfach die Beispiel-Tags eingefügt werden.
+				        			 -->
+				        			<fmt:message key="edittags.example.partOne" />
+				        			<a href="/tag/folksonomy">folksonomy</a> <fmt:message key="edittags.example.partand" />
+				        			<a href="/tag/project">project</a>
+				        			<fmt:message key="edittags.example.partThree" />
+				        			<a href="/tag/social">social</a>,
+				        			<a href="/tag/system">system</a> 
+				        			<fmt:message key="edittags.example.partand" />
+				        			<a href="/tag/bookmarking">bookmarking</a>. 
+				        			<fmt:message key="edittags.example.partFour" />     
+				        			<a href="/tag/folksonomy">folksonomy</a>
+									<em><fmt:message key="edittags.example.partand" /></em> 
+									<a href="/tag/project">project</a>       	
+					
+						    		<hr />
+				        			
+									<div class="bmtitel">
+										<b><a href="${root}">${projectName}</a></b>
+									</div>
+				     				<span class="bmmeta">
+				        				<fmt:message key="edittags.example.to" />
+							
+										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a>
+										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/folksonomy">folksonomy</a>
+										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/project">project</a>
+										<fmt:message key="edittags.example.by" /> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a>
+				       					<fmt:message key="edittags.example.on" /> <c:out value='${command.date}' />
+									</span>
+							
+									<div class="bmtitel">
+										<b><a href="${root}">${projectName}</a></b>
+									</div>
+				     
+									<span class="bmmeta">
+				        				<fmt:message key="edittags.example.to" />
+								
+										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a>
+										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bookmarking">bookmarking</a>
+										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/social">social</a>
+										<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/system">system</a>
+										<fmt:message key="edittags.example.by" /> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a>
+				       					<fmt:message key="edittags.example.on" /> <c:out value='${command.date}' />
+									</span>
+								</jsp:attribute>
+							</buttons:help>			
+		  				</p>
+		
+		            	<div class="fsRow">
+		        			<!-- 
+	    	    				TODO: help message should be something like "these tags will be removed from every posts which contains ALL of these tags"
+	        			 	-->
+		            		<span class="fsLabel"><fmt:message key="edittags.main.replace" />:</span><buttons:help message="edittags.help.delTags" />
+	        				<input id="inpf" name="delTags" class="fsInput" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" tabindex="1" />
+						</div>
+						
+						<div class="fsRow">
+			        		<!-- 
+	        					TODO: help message should be something like "these tags will be added to every post which contains ALL of the above tags"
+			        		 -->
+	        				<span class="fsLabel"><fmt:message key="edittags.main.newtags" />:</span><buttons:help message="edittags.help.addTags" />
+	        				<input id="inpfNew" name="addTags" class="fsInput" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" tabindex="2" />
+	        			</div>
+	
+						<div class="fsRow">
+							<!-- 
+								TODO: help message missing
+							 -->
+		        			<span class="fsLabel"><fmt:message key="edittags.main.updaterelations" />: </span><buttons:help message="edittags.help.updateRelations" />
+		        			<input type="checkbox" name="updaterelations" value="yes" tabindex="3"/>
+		        			<fmt:message key="edittags.main.NoteOne" />: <em><fmt:message key="edittags.main.NoteTwo" /></em>
+		        		</div>
+
+						<div class="fsRow">
+							<input type="hidden" name="ckey" value="${ckey}"/>
+			    			<fmt:message var="send" key="edittags.button.send"/>
+			    			<input type="submit" value="${send}" tabindex="4"/><c:out value=" "/>
+			    			<input type="reset" value="${reset}" tabindex="5"/>
+			    		</div>
+		
+						
+		
+		        	</fieldset>
+		
+				</form>
+
+
+
+
+
+
+				<!-- 
+					edit tag relations 
+				-->
+				<form action="/RelationsHandler?do=insert" method="post">
+		  
+		 			<fieldset class="fsInner">
+						<h2><fmt:message key="edittags.main.insertRelationsOne" /></h2>
+
+						<div class="fsRow">
+		        			<!-- 
+		        				TODO: message should be something like "enter the supertag(s) here"
+		    	    		 -->
+			    			<span class="fsLabel"><fmt:message key="edittags.main.insertRelationsTwo" />:</span>
+			    			<buttons:help message="edittags.help.enterSuperTag" />
+		    				<input class="fsInput fsSmall" id="insert_up" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="upper" tabindex="7"/>&#8592;
+		        			<!-- 
+		        				TODO: message should be something like "enter the subtag(s) here"
+		    	    		 -->
+							<buttons:help message="edittags.help.enterSubTag"/>
+		   					<input class="fsInput fsSmall" id="insert_lo" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="lower" tabindex="6" />
+
+						</div>
+
+			    			<fmt:message var="insertRelation" key="edittags.button.insertRelations"/>
+							<input type="submit" value="${insertRelation}" tabindex="8"/><c:out value=" "/>
+							<input type="reset" value="${reset}" tabindex="9"/>
+							<input type="hidden" name="ckey" value="${ckey}"/>
+
+
+					</fieldset>
+				</form>
+			  
+			    
+			    <form action="/RelationsHandler?do=delete" method="post">
+			    	<fieldset class="fsInner">  
+						<h2><fmt:message key="edittags.main.deleteRelationsOne" /></h2>
+						
+						<div class="fsRow">
+							<span class="fsLabel"><fmt:message key="edittags.main.deleteRelationsTwo" />:</span>
+		        			<!-- 
+		        				TODO: message should be something like "enter the supertag(s) here"
+		    	    		 -->
+							<buttons:help message="edittags.help.enterSuperTag" />
+							<input id="delete_up" class="fsInput fsSmall" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="upper" tabindex="11"/>&#8592;
+		        			<!-- 
+		        				TODO: message should be something like "enter the subtag(s) here"
+		    	    		 -->
+							<buttons:help message="edittags.help.enterSubTag"/>
+							<input id="delete_lo" class="fsInput fsSmall" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="lower" tabindex="10" />
+							
+			    		</div>
+
+							<fmt:message var="deleteRelation" key="edittags.button.deleteRelations"/>
+			    			<input type="submit" value="${deleteRelation}" tabindex="12"/><c:out value=" "/>
+			    			<input type="reset" value="${reset}" tabindex="13"/>
+			    			<input type="hidden" name="ckey" value="${ckey}"/>
+
+			    	</fieldset>
+				</form>
+				
+			</div>
+		</jsp:attribute>
+			
+		<jsp:attribute name="sidebar">	
+			<ul id="sidebar">			
+				<li>
+					<fmt:message key="tagrelations.title" var="tagRelationsTitle"/>
+					<span class="sidebar_h">
+						<a href="/relations/${fn:escapeXml(command.context.loginUser.name)}" title="${tagRelationsTitle}">
+							<fmt:message key="tagrelations"/>
+						</a>
+					</span>	
+					<tags:concepts cmd="${command.concepts}" usersOwnRelations="${true}" requestedUserName="${command.context.loginUser.name}"/>
+				</li>
+				<li>
+					<span class="sidebar_h"><fmt:message key="tags" /></span>
+					<tags:cloud requPath="user/${command.context.loginUser.name}" cmd="${command.tagcloud}"
+							tagboxMinfreqStyle="user"
+							showTooltips="${command.context.loginUser.settings.tagboxTooltip}" />
+				</li>
+	 		</ul>
+
+			<script type="text/javascript">
+			
+				add_toggle();
+	  			disableHandler();
+	  			add_toggle_relations();
+	  			setOps();
+	 		</script>
+
+		</jsp:attribute>
+	</layout:paneLayout>
+
 </jsp:root>

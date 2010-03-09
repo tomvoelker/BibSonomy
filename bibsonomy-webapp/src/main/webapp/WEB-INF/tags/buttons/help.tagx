@@ -13,28 +13,29 @@
     <jsp:directive.attribute name="cssStyle" type="java.lang.String" required="false" description="style attribute for the span surrounding the help text"/>
 
     <jsp:directive.attribute name="helpText" fragment="true" required="false" description="A JSP fragment which is inserted after the message."/>
-	
+
+	<!-- "?" is the default symbol for help texts -->	
 	<c:if test="${empty iconText}">
 		<c:set var="iconText" value="?" />
 	</c:if>
-	<c:if test="${empty iconTextStyle}">
-		<c:set var="iconTextStyle" value="span.help" />
-	</c:if>
   
 	<span class="help" style="${cssStyle}">
+		<!-- show help symbol, if given with underlying link to help page -->
         <c:choose>
           <c:when test="${not empty helpUrl}">
             <!-- the given path is relative to projectHome/help -->
-            <a href="${projectHome}help${helpUrl}">?
-  		      <!-- img style="width:15px; padding-bottom:5px" src="${resdir}/image/info_blue.png" alt="?"/-->
-            </a>
+            <a href="${projectHome}help${helpUrl}"><c:out value="${iconText}"/></a>
           </c:when>
           <c:otherwise>
-              <b class="smalltext" style="${iconTextStyle}">${iconText}</b>
-              <!-- img style="width:15px; padding-bottom:5px" src="${resdir}/image/info_blue.png" alt="?"/-->
+              <b class="smalltext" style="${iconTextStyle}"><c:out value="${iconText}"/></b>
           </c:otherwise>
         </c:choose>
-		<div><c:if test="${not empty message}"><fmt:message key="${message}"/></c:if> <jsp:invoke fragment="helpText"><!-- --></jsp:invoke></div>
+		<div>
+			<c:if test="${not empty message}">
+				<fmt:message key="${message}"/>
+			</c:if> 
+			<jsp:invoke fragment="helpText"><!-- DON'T REMOVE ME --></jsp:invoke>
+		</div>
 	</span> 
 
 	
