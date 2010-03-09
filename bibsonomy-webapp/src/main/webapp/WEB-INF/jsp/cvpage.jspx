@@ -166,7 +166,10 @@
 							<form name="citation_format_form" action="" style="font-size:80%;">
 								<c:set var="allExportsTitle"><fmt:message key="bibtex.all_exports.title"/></c:set>
 								<fmt:message key="bibtex.citation_format"/><c:out value=" ("/>
-								<a href="/export/bibtex/2${bibtex.intraHash}/${post.user.name}" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports"/></a><c:out value="): "/>
+								<!-- 
+									TODO: we should probably make the usage of the "myown" tag configurable
+								 -->
+								<a href="/export/user/${fn:escapeXml(command.user.name)}/myown" title="${allExportsTitle}"><fmt:message key="bibtex.all_exports"/></a><c:out value="): "/>
 								<form:select path="command.layout" onchange="citation_format_form.submit()" size="1">
 									<form:option value="plain"><fmt:message key="cv.options.plain"/></form:option>
 									<form:option value="harvardhtml"><fmt:message key="cv.options.harvard"/></form:option>

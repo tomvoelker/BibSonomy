@@ -8,7 +8,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.ValidationUtils;
-import org.bibsonomy.webapp.command.CvPageCommand;
+import org.bibsonomy.webapp.command.UserResourceViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -17,7 +17,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author Philipp Beau
  * @version $Id$
  */
-public class CvPageController extends ResourceListController implements MinimalisticController<CvPageCommand> {
+public class CvPageController extends ResourceListController implements MinimalisticController<UserResourceViewCommand> {
 	private static final String TAG_MYOWN = "myown";
 	private static final Log log = LogFactory.getLog(CvPageController.class);
 
@@ -25,7 +25,7 @@ public class CvPageController extends ResourceListController implements Minimali
 	/**
 	 * implementation of {@link MinimalisticController} interface
 	 */
-	public View workOn(CvPageCommand command) {
+	public View workOn(UserResourceViewCommand command) {
 		command.setPageTitle("Curriculum vitae");
 
 
@@ -57,8 +57,8 @@ public class CvPageController extends ResourceListController implements Minimali
 	/**
 	 * implementation of {@link MinimalisticController} interface
 	 */
-	public CvPageCommand instantiateCommand() {
-		return new CvPageCommand();
+	public UserResourceViewCommand instantiateCommand() {
+		return new UserResourceViewCommand();
 	}	
 }
 
