@@ -38,7 +38,6 @@ public class EditTagsPageController extends SingleResourceListControllerWithTags
 		final String groupingName = command.getContext().getLoginUser().getName();
 
 		command.setPageTitle("edit tags :: " + groupingName);
-		command.setUserName(groupingName);
 
 		/*
 		 * set the tags of the user to get his tag cloud
