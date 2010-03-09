@@ -25,7 +25,7 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 	
 	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz) {
-		return EditPostCommand.class.equals(clazz);
+		return EditPostCommand.class.isAssignableFrom(clazz);
 	}
 
 	/**
