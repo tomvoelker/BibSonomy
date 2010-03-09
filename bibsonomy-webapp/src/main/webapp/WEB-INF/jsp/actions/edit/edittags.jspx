@@ -166,7 +166,7 @@
 						<div class="fsRow">
 			    			<span class="fsLabel"><fmt:message key="edittags.main.insertRelationsTwo" />:</span>
 			    			<buttons:help message="edittags.help.enterSuperTag" />
-		    				<input class="fsInput fsSmall" id="insert_up" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="upper" tabindex="7"/>&#8592;
+		    				<input class="fsInput fsSmall" id="insert_up" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="upper" tabindex="7"/><span style="float:left;">&#8592;</span>
 							<buttons:help message="edittags.help.enterSubTag"/>
 		   					<input class="fsInput fsSmall" id="insert_lo" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="lower" tabindex="6" />
 
@@ -189,7 +189,7 @@
 						<div class="fsRow">
 							<span class="fsLabel"><fmt:message key="edittags.main.deleteRelationsTwo" />:</span>
 							<buttons:help message="edittags.help.enterSuperTag" />
-							<input id="delete_up" class="fsInput fsSmall" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="upper" tabindex="11"/>&#8592;
+							<input id="delete_up" class="fsInput fsSmall" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="upper" tabindex="11"/><span style="float:left;">&#8592;</span>
 							<buttons:help message="edittags.help.enterSubTag"/>
 							<input id="delete_lo" class="fsInput fsSmall" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="lower" tabindex="10" />
 			    		</div>
