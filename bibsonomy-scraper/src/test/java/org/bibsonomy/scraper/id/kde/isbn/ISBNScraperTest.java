@@ -56,6 +56,26 @@ public class ISBNScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_167"));
 	}
+	
+	/**
+	 * starts URL test with id url_167
+	 */
+	@Test
+	@Ignore
+	public void url3TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_170"));
+	}
+	
+	/**
+	 * starts URL test with id url_167
+	 */
+	@Test
+	@Ignore
+	public void url4TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_171"));
+	}
 
 	/**
 	 * Tests {@link ISBNScraper#supportsScrapingContext(org.bibsonomy.scraper.ScrapingContext)}

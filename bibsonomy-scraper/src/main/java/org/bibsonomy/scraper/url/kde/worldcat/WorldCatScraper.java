@@ -92,6 +92,17 @@ public class WorldCatScraper extends AbstractUrlScraper {
 	public static String getBibtexByISBN(final String isbn) throws IOException, ScrapingException{
 		return getBibtex(new URL(WORLDCAT_URL + ISBNUtils.cleanISBN(isbn)), true);
 	}
+	
+	/**
+	 * search publication on worldcat.org with a give issn and returns it as bibtex
+	 * @param issn
+	 * @return publication as bibtex
+	 * @throws IOException
+	 * @throws ScrapingException
+	 */
+	public static String getBibtexByISSN(final String issn) throws IOException, ScrapingException{
+		return getBibtex(new URL(WORLDCAT_URL + issn), true);
+	}
 
 
 	/**

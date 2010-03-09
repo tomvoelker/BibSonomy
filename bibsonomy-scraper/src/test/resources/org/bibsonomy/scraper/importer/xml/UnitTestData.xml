@@ -1008,4 +1008,18 @@
 		<BibFile>IngentaconnectScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_170">
+		<TestDescription>Test for ISSN worldcat scraper</TestDescription>
+		<URL></URL>
+		<BibFile>ISSNScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.id.kde.isbn.ISBNScraper</Scraper>
+		<Selection>0025-5858</Selection>
+	</URLTest>
+	<URLTest id="url_171">
+		<TestDescription>Test for ISSN worldcat scraper</TestDescription>
+		<URL></URL>
+		<BibFile>ISSNScraperUnitURLTest2.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.id.kde.isbn.ISBNScraper</Scraper>
+		<Selection>9783921568705</Selection>
+	</URLTest>
 </test:Tests>
