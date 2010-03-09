@@ -10,12 +10,6 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common">
 	
-	<jsp:directive.page language="java"/>
-	<jsp:directive.page import="java.lang.*,java.util.*"/>
-	<jsp:directive.page import="servlets.listeners.*"/>
-	<jsp:directive.page import="helpers.*"/>
-	<jsp:directive.page import="resources.*"/>
-	
 	<jsp:directive.page contentType="text/html; charset=UTF-8"
 		language="java" pageEncoding="UTF-8" session="true" />
 
@@ -24,20 +18,13 @@
 		requPath="${requPath}">
 
 	<jsp:attribute name="heading">
-		<a rel="path_menu" href="#"><img alt=""
-				src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}edit tags</a> 
-		<a href="/user/${fn:escapeXml(command.requestedUser)}"><c:out
-				value='${command.requestedUser}' /></a>
-		<!--  <form action="/user/${fn:escapeXml(command.requestedUser)}"
-				method="get" class="smallform">
-				<input type="text" size="20" name="tag" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" id="inpf"/>
-		</form>	-->
+		<a rel="path_menu" href="#"><img src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.editTags"/></a> 
 	</jsp:attribute>
 	
 
 
 	<jsp:attribute name="content">
-	<div style="margin-top: 20px; margin-left: 10px; margin-bottom: 10px;">
+		<div style="margin-top: 20px; margin-left: 10px; margin-bottom: 10px;">
 		<script type='text/javascript' src='jquery_autocomplete.js'></script> 	
 		<script type="text/javascript">
 		$(document).ready(function(){
