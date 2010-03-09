@@ -298,9 +298,15 @@
 									<input type="hidden" name="ckey" value="${ckey}"/>
 									
 									 <form name="upload" method="post" action="/editPublication">
+
                                              <div class="fsRow">
 										    	<label class="fsLabel"><fmt:message key="post_bibtex.doi_isbn.isbn" /></label>
 										    	<input type="text" class="fsInput" name="selection"/>
+                                             </div>
+                                             
+											<div class="fsRow">
+										    	<label class="fsLabel"><fmt:message key="post_bibtex.doi_isbn.issn" /></label>
+										    	<input type="text" name="selection" class="fsInput" />
                                              </div>
 
                                              <div class="fsRow">
@@ -308,7 +314,8 @@
 										    	<input type="text" name="selection" class="fsInput" />
                                              </div>
                                              
-										     <input type="submit" style="clear:both; float:left" class="fsFormSubmit" name="submit" value="${post_button}" />
+                                             <input type="submit" style="clear:both;" class="fsFormSubmit" name="submit" value="${post_button}" />
+										     
 									  </form>
 								  
 							</fieldset>
