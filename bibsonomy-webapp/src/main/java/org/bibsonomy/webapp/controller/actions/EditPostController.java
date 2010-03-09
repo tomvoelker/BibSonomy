@@ -18,7 +18,10 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -373,11 +376,29 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 		final List<Post<?>> posts = new LinkedList<Post<?>>();
 		posts.add(post);
 		setDate(post, loginUserName);
-		/*
-		 * update post in DB
-		 */
-		final List<String> updatePosts = logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
-		if (updatePosts == null || updatePosts.isEmpty()) {
+		List<String> updatePosts = null;
+		try {
+			/*
+			 * update post in DB
+			 */
+			updatePosts = logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
+		} catch (DatabaseException de) {
+			List<ErrorMessage> errorMessages= de.getErrorMessages(post.getResource().getIntraHash());
+			for (ErrorMessage em: errorMessages) {
+				if (em instanceof SystemTagErrorMessage) {
+					errors.rejectValue("tags", em.getErrorMessage(), em.getParameters().toArray(), " ");
+				} else {
+					/*
+					 * show error page
+					 */
+					errors.reject("error.post.update", "Could not update post.");
+					log.warn("could not update post");
+					return Views.ERROR;
+				}		
+			}
+			return getEditPostView(command, loginUser);
+		}
+		if (updatePosts == null || updatePosts.isEmpty()) {//So wie das ist, so könnte man auch mit den anderen Fehlern umgehen
 			/*
 			 * show error page
 			 */
@@ -617,10 +638,26 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 		/*
 		 * new post -> create
 		 */
-		log.debug("finally: creating a new post in the DB");
-		final String createPosts = logic.createPosts(posts).get(0);
-		log.debug("created post: " + createPosts);
-
+		try {
+			log.debug("finally: creating a new post in the DB");
+			final String createPosts = logic.createPosts(posts).get(0);
+			log.debug("created post: " + createPosts);
+		} catch (DatabaseException de) {
+			List<ErrorMessage> errorMessages= de.getErrorMessages(post.getResource().getIntraHash());
+			for (ErrorMessage em: errorMessages) {
+				if (em instanceof SystemTagErrorMessage) {
+					errors.rejectValue("tags", em.getErrorMessage(), em.getParameters().toArray(), " ");
+				} else {
+					/*
+					 * show error page
+					 */
+					errors.reject("error.post.update", "Could not update post.");
+					log.warn("could not update post");
+					return Views.ERROR;
+				}		
+			}
+			return getEditPostView(command, loginUser);
+		}
 		/*
 		 * update recommender table such that recommendations are linked to the final post
 		 */
