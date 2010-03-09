@@ -37,6 +37,7 @@
 					message for "reset" buttons
 			 	-->
 				<fmt:message var="reset" key="edittags.button.reset"/>
+				<fmt:message var="example" key="edittags.example"/>
 			
 			
 				
@@ -57,64 +58,59 @@
 		 
 		 
 		 
-		
 		  		<form action="/TagEditHandler?do=replace" method="post">
 		 
 		 			<fieldset class="fsInner">
 		 				<h2><fmt:message key="edittags.main.Header"/></h2>
 		  				<p style="float:left;"><fmt:message key="edittags.main.textOne" /></p>
-	  					<!-- 
-							an example	
-		        	 	-->
-		        	 	<buttons:help iconText="example">
-		        	 		<jsp:attribute name="helpText">
-			        			<!-- 
-			        				TODO: auch hieraus bitte nur eine Message, in die einfach die Beispiel-Tags eingefügt werden.
-			        			 -->
-			        			<fmt:message key="edittags.example.partOne" />
-			        			<a href="/tag/folksonomy">folksonomy</a> <fmt:message key="edittags.example.partand" />
-			        			<a href="/tag/project">project</a>
-			        			<fmt:message key="edittags.example.partThree" />
-			        			<a href="/tag/social">social</a>,
-			        			<a href="/tag/system">system</a> 
-			        			<fmt:message key="edittags.example.partand" />
-			        			<a href="/tag/bookmarking">bookmarking</a>. 
-			        			<fmt:message key="edittags.example.partFour" />     
-			        			<a href="/tag/folksonomy">folksonomy</a>
-								<em><fmt:message key="edittags.example.partand" /></em> 
-								<a href="/tag/project">project</a>       	
-				
-					    		<hr />
-			        			
-								<div class="bmtitel">
-									<b><a href="${root}">${projectName}</a></b>
-								</div>
-			     				<span class="bmmeta">
-			        				<fmt:message key="edittags.example.to" />
-						
-									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a>
-									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/folksonomy">folksonomy</a>
-									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/project">project</a>
-									<fmt:message key="edittags.example.by" /> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a>
-			       					<fmt:message key="edittags.example.on" /> <c:out value='${command.date}' />
-								</span>
-						
-								<div class="bmtitel">
-									<b><a href="${root}">${projectName}</a></b>
-								</div>
-			     
-								<span class="bmmeta">
-			        				<fmt:message key="edittags.example.to" />
+							<!-- 
+								an example	
+			        	 	-->
+			        	 	<buttons:help iconText="example">
+			        	 		<jsp:attribute name="helpText">
+				        			<fmt:message key="edittags.example.partOne">
+				        			 	<fmt:param><a href="/tag/folksonomy"> folksonomy </a></fmt:param>
+				        				<fmt:param><a href="/tag/project"> project </a></fmt:param>
+				        				<fmt:param><a href="/tag/social"> social </a></fmt:param>
+				        				<fmt:param><a href="/tag/system"> system </a></fmt:param> 
+				        				<fmt:param><a href="/tag/bookmarking"> bookmarking </a></fmt:param> 
+				        			</fmt:message>
+
+						    		<hr />
+				        			
+									<div class="bmtitel">
+										<b><a href="${root}">${projectName}</a></b>
+									</div>
+				     				<span class="bmmeta">
+				        				<fmt:message key="edittags.example.partTwo">
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex"> bibtex </a></fmt:param>
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/folksonomy"> folksonomy </a></fmt:param>
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/project"> project </a></fmt:param>
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a></fmt:param>
+				       						<fmt:param><c:out value='${command.date}' /></fmt:param>
+				       					</fmt:message>
+									</span>
 							
-									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a>
-									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bookmarking">bookmarking</a>
-									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/social">social</a>
-									<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/system">system</a>
-									<fmt:message key="edittags.example.by" /> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a>
-			       					<fmt:message key="edittags.example.on" /> <c:out value='${command.date}' />
-								</span>
-							</jsp:attribute>
-						</buttons:help>			
+									<div class="bmtitel">
+										<b><a href="${root}">${projectName}</a></b>
+									</div>
+				     
+									<span class="bmmeta">
+				        				<fmt:message key="edittags.example.partTwo">
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bibtex">bibtex</a></fmt:param>
+											<fmt:param> 
+												<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/bookmarking">bookmarking</a>
+												<c:out value=" "/>
+												<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/social">social</a>
+											</fmt:param>
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}/system">system</a></fmt:param>
+											<fmt:param> <a href="/user/${fn:escapeXml(command.context.loginUser.name)}"><c:out value='${command.context.loginUser.name}' /></a></fmt:param>
+				       						<fmt:param><c:out value='${command.date}' /></fmt:param>
+				       					</fmt:message>
+									</span>
+									
+								</jsp:attribute>
+							</buttons:help>			
 		
 		            	<div class="fsRow">
 		        			<!-- 
@@ -138,7 +134,7 @@
 							 -->
 		        			<span class="fsLabel"><fmt:message key="edittags.main.updaterelations" />: </span><buttons:help message="edittags.help.updateRelations" />
 		        			<input type="checkbox" name="updaterelations" value="yes" tabindex="3"/>
-		        			<fmt:message key="edittags.main.NoteOne" />: <em><fmt:message key="edittags.main.NoteTwo" /></em>
+		        			<fmt:message key="edittags.main.note" />
 		        		</div>
 
 						<div class="fsRow">
@@ -168,15 +164,9 @@
 						<h2><fmt:message key="edittags.main.insertRelationsOne" /></h2>
 
 						<div class="fsRow">
-		        			<!-- 
-		        				TODO: message should be something like "enter the supertag(s) here"
-		    	    		 -->
 			    			<span class="fsLabel"><fmt:message key="edittags.main.insertRelationsTwo" />:</span>
 			    			<buttons:help message="edittags.help.enterSuperTag" />
 		    				<input class="fsInput fsSmall" id="insert_up" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="upper" tabindex="7"/>&#8592;
-		        			<!-- 
-		        				TODO: message should be something like "enter the subtag(s) here"
-		    	    		 -->
 							<buttons:help message="edittags.help.enterSubTag"/>
 		   					<input class="fsInput fsSmall" id="insert_lo" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="lower" tabindex="6" />
 
@@ -198,19 +188,11 @@
 						
 						<div class="fsRow">
 							<span class="fsLabel"><fmt:message key="edittags.main.deleteRelationsTwo" />:</span>
-		        			<!-- 
-		        				TODO: message should be something like "enter the supertag(s) here"
-		    	    		 -->
 							<buttons:help message="edittags.help.enterSuperTag" />
 							<input id="delete_up" class="fsInput fsSmall" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="upper" tabindex="11"/>&#8592;
-		        			<!-- 
-		        				TODO: message should be something like "enter the subtag(s) here"
-		    	    		 -->
 							<buttons:help message="edittags.help.enterSubTag"/>
 							<input id="delete_lo" class="fsInput fsSmall" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="lower" tabindex="10" />
-							
 			    		</div>
-
 							<fmt:message var="deleteRelation" key="edittags.button.deleteRelations"/>
 			    			<input type="submit" value="${deleteRelation}" tabindex="12"/><c:out value=" "/>
 			    			<input type="reset" value="${reset}" tabindex="13"/>
