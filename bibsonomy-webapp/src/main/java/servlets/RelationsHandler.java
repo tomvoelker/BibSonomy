@@ -1,7 +1,6 @@
 package servlets;
 
 import helpers.database.DBRelationManager;
-import helpers.database.DBRelationShowManager;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -41,6 +40,7 @@ public class RelationsHandler extends HttpServlet {
 	private static final long serialVersionUID = 3256439226819228214L;
 	private DataSource dataSource;
 
+	@Override
 	public void init(ServletConfig config) throws ServletException{	
 		super.init(config); 
 		try {
@@ -52,6 +52,7 @@ public class RelationsHandler extends HttpServlet {
 		}
 	}
 
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) 
 	throws ServletException, IOException {
 		/*
@@ -64,6 +65,7 @@ public class RelationsHandler extends HttpServlet {
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		/*
@@ -114,33 +116,7 @@ public class RelationsHandler extends HttpServlet {
 				relationManager.prepareStatements(conn);
 				relationManager.insertRelations(relationManager.buildRelations(request.getParameter("lower"), request.getParameter("upper")), currUser);
 				nextUrl = "/edit_tags";			
-			} else {
-				if (request.getParameter("show") != null) {
-					/*
-					 * show a relation
-					 */
-					DBRelationShowManager.showConcept(request.getParameter("show"), currUser);
-				} else if (request.getParameter("hide") != null) {
-					/*
-					 * hide a relation
-					 */
-					DBRelationShowManager.hideConcept(request.getParameter("hide"), currUser);
-				} else if ("show".equals(request.getParameter("all"))) {
-					/*
-					 * show all relations
-					 */
-					DBRelationShowManager.showAll(currUser);
-				} else if ("hide".equals(request.getParameter("all"))) {
-					/*
-					 * hide all relations
-					 */
-					DBRelationShowManager.hideAll(currUser);
-				}
-
-				nextUrl = request.getHeader("referer");
-				if (nextUrl == null)
-					nextUrl = "/user/" + URLEncoder.encode(currUser, "UTF-8");
-			} 
+			}
 		} catch(SQLException e) {
 			log.fatal("could not update database ", e);
 		} finally {
