@@ -82,6 +82,10 @@ public abstract class AbstractDatabaseManagerTest {
 	@Before
 	public void setUp() {
 		try {
+			
+			// set searchmode to lucene
+			System.setProperty("searchMode", "lucene");
+			
 			this.generalDb = GeneralDatabaseManager.getInstance();
 			this.bookmarkDb = BookmarkDatabaseManager.getInstance();
 			this.bibTexDb = BibTexDatabaseManager.getInstance();
@@ -114,7 +118,7 @@ public abstract class AbstractDatabaseManagerTest {
 			for (final DatabasePlugin plugin : DatabasePluginRegistry.getDefaultPlugins()) {
 				this.pluginRegistry.add(plugin);
 			}
-			
+						
 		} catch (final Throwable ex) {
 			log.fatal("exception in testcase setUp", ex);
 			fail("setup failed. cause: " + ex.getMessage());
