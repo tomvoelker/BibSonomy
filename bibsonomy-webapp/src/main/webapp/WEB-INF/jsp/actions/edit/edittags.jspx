@@ -134,7 +134,7 @@
 							 -->
 		        			<span class="fsLabel"><fmt:message key="edittags.main.updaterelations" />: </span><buttons:help message="edittags.help.updateRelations" />
 		        			<input type="checkbox" name="updaterelations" value="yes" tabindex="3"/>
-		        			<fmt:message key="edittags.main.note" />
+		        			<div style="display:inline;"><fmt:message key="edittags.main.note" /></div>
 		        		</div>
 
 						<div class="fsRow">
