@@ -49,6 +49,8 @@
 					</fmt:message>									
 				</p>
 			</c:if>
+			<!-- needed for layout reasons -->
+			&amp;nbsp;
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
