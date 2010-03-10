@@ -113,7 +113,7 @@
 					<div id="helpboxcontent" class="boxcontent">
 						<div id="togglehelp" class="togglehelp closeX">x</div>
 						<div class="bc-head">Quicklinks</div>
-						<c:if test="${not command.context.userLoggedIn}">
+						<c:if test="${command.context.userLoggedIn}">
 							<a href="/cv/user/${fn:escapeXml(command.context.loginUser.name)}">mein Curriculum Vitae anzeigen</a>
 						</c:if>
 						<c:if test="${not command.context.userLoggedIn}">
