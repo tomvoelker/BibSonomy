@@ -104,13 +104,27 @@
 
 		<jsp:attribute name="sidebar">
 			<!-- help box -->
+			<c:set var="helpLangUrl">
+				<fmt:message key="navi.helpUrl"/>
+			</c:set>			
+			<c:url var="helpUrl" value="${helpLangUrl}" context="${projectContext}"/>
 			<div class="sidebarBoxOuter" id="helpbox">
 				<div class="sidebarBoxInner">
 					<div id="helpboxcontent" class="boxcontent">
-						<div id="togglehelp" class="togglehelp">x</div>
-						<b>Hier werden Sie geholfen!</b>
+						<div id="togglehelp" class="togglehelp closeX">x</div>
+						<div class="bc-head">Quicklinks</div>
+						<c:if test="${not command.context.userLoggedIn}">
+							<a href="/cv/user/${fn:escapeXml(command.context.loginUser.name)}">mein Curriculum Vitae anzeigen</a>
+						</c:if>
+						<c:if test="${not command.context.userLoggedIn}">
+							<a href="/login">Loggen Sie sich jetzt mit Ihren Bibliotheksausweis ein.</a>
+						</c:if>	
 						<br/>
-						Eine wunderbare Heiterkeit hat meine ganze Seele eingenommen, gleich den süßen Frühlingsmorgen, die ich mit ganzem Herzen genieße. Ich bin allein und freue mich meines Lebens in dieser Gegend, die für solche Seelen geschaffen ist wie die meine. Ich bin so glücklich, mein Bester, so ganz in dem Gefühle von ruhigem Dasein versunken, daß meine Kunst darunter leidet.
+						<div class="bc-head">Hilfe</div>
+						Weitere Informationen erhalten sie auf den <a href="http://www.ub.uni-kassel.de/puma.html">Projektseiten</a>, in der <a href="${helpUrl}">Hilfe</a>
+						und den beiden Blogs <a href="http://puma-projekt.blogspot.com/">Puma-Projekt</a> und <a href="http://bibsonomy.blogspot.com/">Bibsonomy</a>.
+						<br />
+						<div class="bc-highlight">Diese PUMA-Version ist noch in einem frühen Entwicklungsstadium. Daher funktionieren einige Funktionen noch nicht (korrekt).</div>
 						</div>
 		
 				</div>
@@ -132,6 +146,7 @@
 			<!-- /general sidebar -->	
 		
 			<!-- info box 1 -->
+			<!-- 
 			<div class="sidebarBoxOuter" id="infobox1">
 				<div class="sidebarBoxInner">
 					<div class="boxcontent">
@@ -139,14 +154,23 @@
 					</div>
 				</div>
 			</div>		
-			
+			 -->
 			
 			<script type="text/javascript">
 				<![CDATA[
 					$(".sidebarBoxInner").corner("round bottom 12px").corner("round tl 12px").parent().css('padding', '3px').corner("round bottom 15px").corner("round tl 15px");
 				]]>
 			</script>
+			<c:if test="${not command.context.userLoggedIn}">
+				<script type="text/javascript">
+					<![CDATA[
+						$("#helpbox").show()
+					]]>
+				</script>
+			</c:if>
 			
+
+
 		</jsp:attribute>
 		<!-- /info box 1 -->
 		
