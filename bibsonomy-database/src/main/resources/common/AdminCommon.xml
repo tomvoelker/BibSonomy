@@ -14,6 +14,14 @@
 		<result property="realname"   		column="user_realname" javaType="string" />
 	</resultMap>
 	
+	<resultMap id="userHistory" class="user" extends="Common.user">
+		<result property="updatedAt"	column="updated_at"    javaType="date" />	
+		<result property="prediction"   column="prediction" javaType="integer" />
+		<result property="algorithm"   	column="algorithm"  javaType="string" />
+		<result property="mode"         column="mode"       javaType="string" />
+		<result property="confidence"   column="confidence" javaType="double" />	
+	</resultMap>
+	
 	<resultMap id="userPrediction" class="user">
 		<result property="prediction"   column="prediction" javaType="integer" />
 		<result property="algorithm"   	column="algorithm"  javaType="string" />
