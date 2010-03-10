@@ -384,22 +384,9 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 			 */
 			updatePosts = logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 		} catch (final DatabaseException ex) {
-			final List<ErrorMessage> errorMessages = ex.getErrorMessages(post.getResource().getIntraHash());
-			for (final ErrorMessage em: errorMessages) {
-				if (em instanceof SystemTagErrorMessage) {
-					errors.rejectValue("tags", em.getErrorMessage(), em.getParameters().toArray(), " ");
-				} else {
-					/*
-					 * show error page
-					 */
-					errors.reject("error.post.update", "Could not update post.");
-					log.warn("could not update post");
-					return Views.ERROR;
-				}		
-			}
-			return getEditPostView(command, loginUser);
+			return handleDatabaseException(command, loginUser, post, ex);
 		}
-		if (!ValidationUtils.present(updatePosts)) {//So wie das ist, so könnte man auch mit den anderen Fehlern umgehen
+		if (!ValidationUtils.present(updatePosts)) {
 			/*
 			 * show error page
 			 */
@@ -416,6 +403,30 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 		 * leave if and reach final redirect
 		 */
 		return finalRedirect(loginUserName, command.getReferer());
+	}
+
+	/**
+	 * @param command
+	 * @param loginUser
+	 * @param post
+	 * @param ex
+	 * @return
+	 */
+	private View handleDatabaseException(final EditPostCommand<RESOURCE> command, final User loginUser, final Post<RESOURCE> post, final DatabaseException ex) {
+		final List<ErrorMessage> errorMessages = ex.getErrorMessages(post.getResource().getIntraHash());
+		for (final ErrorMessage em: errorMessages) {
+			if (em instanceof SystemTagErrorMessage) {
+				errors.rejectValue("tags", em.getErrorMessage(), em.getParameters().toArray(), " ");
+			} else {
+				/*
+				 * show error page
+				 */
+				errors.reject("error.post.update", "Could not update post.");
+				log.warn("could not update post");
+				return Views.ERROR;
+			}		
+		}
+		return getEditPostView(command, loginUser);
 	}
 
 	/**
@@ -644,20 +655,7 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 			final String createPosts = logic.createPosts(posts).get(0);
 			log.debug("created post: " + createPosts);
 		} catch (DatabaseException de) {
-			List<ErrorMessage> errorMessages= de.getErrorMessages(post.getResource().getIntraHash());
-			for (ErrorMessage em: errorMessages) {
-				if (em instanceof SystemTagErrorMessage) {
-					errors.rejectValue("tags", em.getErrorMessage(), em.getParameters().toArray(), " ");
-				} else {
-					/*
-					 * show error page
-					 */
-					errors.reject("error.post.update", "Could not update post.");
-					log.warn("could not update post");
-					return Views.ERROR;
-				}		
-			}
-			return getEditPostView(command, loginUser);
+			return handleDatabaseException(command, loginUser, post, de);
 		}
 		/*
 		 * update recommender table such that recommendations are linked to the final post
