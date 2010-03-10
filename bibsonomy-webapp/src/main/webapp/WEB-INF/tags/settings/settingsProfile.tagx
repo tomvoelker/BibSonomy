@@ -59,8 +59,6 @@
 		      <form:input cssClass="fsInput fsSmall" path="user.birthday"/>
 		      <div class="dissError"><form:errors path="user.birthday" /></div>		      
 		      <form:label cssClass="fsHelp" path="user.birthday">format: YYYY-MM-DD</form:label>
-		      
-		      
 		    </div>
 		    <div class="fsRow">
 		      <form:label cssClass="fsLabel" path="user.place"><fmt:message key="user.place"/></form:label>

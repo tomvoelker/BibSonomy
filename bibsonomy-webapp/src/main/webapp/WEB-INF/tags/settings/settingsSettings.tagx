@@ -82,7 +82,6 @@
 		      </div>
 		      
               <div class="fsRow">
-		        <form:label cssClass="fsLabel" path=""></form:label>
 		        <input type="hidden" name="ckey" value="${ckey}"/>
 		        <input type="hidden" name="action" value="layoutTagPost"/>
 		        <input type="hidden" name="selTab" value="1"/>
@@ -98,7 +97,7 @@
 		<h2>API</h2>
 		<form:form id="postForm" method="post" action="/updateUserSettings">
 		<div id="fsform">
-		<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
+        <fieldset class="fsInner">
 		  <c:choose>
 			<c:when test="${command.context.loginUser.apiKey eq null}">			
               <p>
@@ -106,8 +105,10 @@
 			  </p>	
 			</c:when>
 			<c:otherwise>
-				<p>
+              <div class="fsRow">
 					<fmt:message key="settings.yourapikey"/> <tt style="font-size: 14px;">${command.context.loginUser.apiKey}</tt><br/><br/>
+				</div>
+              <div class="fsRow">
 					<fmt:message key="settings.questionsregardingapi">
 						<fmt:param>
 							<a href="/help/doc/api.html"><fmt:message key="settings.apidoc"/></a>
@@ -119,7 +120,7 @@
 							<parts:email address="api-support@bibsonomy.org"/>
 						</fmt:param>
 					</fmt:message>
-				</p>		
+					</div>
 			</c:otherwise>
 		</c:choose>		 
 		<input type="hidden" name="selTab" value="1"/>
@@ -134,35 +135,30 @@
         <h2><fmt:message key="settings.logging" /></h2>
         <form:form id="postForm" method="post" action="/updateUserSettings">
         <div id="fsform">
-        <fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
-	        <table>
-	        	<div class="fsRow">
-	          		<tr>
-	            		<td><fmt:message key="settings.logclicks"/></td>
-	            		<td>
-			          		<form:select path="user.settings.logLevel">
-			            		<form:option value="0"><fmt:message key="settings.yes"/></form:option>
-			            		<form:option value="1"><fmt:message key="settings.no"/></form:option>
-			          		</form:select>
-	            		</td>
-	          		</tr> 
-	          	</div>
-	          	<div class="fsRow">
-	           		<tr>
-	            		<td><fmt:message key="settings.confirm"/></td>
-	            		<td>
-			          		<form:select path="user.settings.confirmDelete">
+        <fieldset class="fsInner">
+
+	         <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="user.settings.logLevel"><fmt:message key="settings.logclicks"/></form:label>
+		        <form:select cssClass="fsInput fsSmall" path="user.settings.logLevel">
+            		<form:option value="0"><fmt:message key="settings.yes"/></form:option>
+            		<form:option value="1"><fmt:message key="settings.no"/></form:option>
+		        </form:select>
+		      </div>
+		    
+
+	         <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="user.settings.confirmDelete"><fmt:message key="settings.confirm"/></form:label>
+		        <form:select cssClass="fsInput fsSmall" path="user.settings.confirmDelete">
 			            		<form:option value="true"><fmt:message key="settings.yes"/></form:option>
 			            		<form:option value="false"><fmt:message key="settings.no"/></form:option>
-			          		</form:select>
-	            		</td>
-	          		</tr>
-	          	</div>
-	        </table>
+		        </form:select>
+		      </div>
+	         <div class="fsRow">
         	<input type="hidden" name="ckey" value="${ckey}"/>
             <input type="hidden" name="selTab" value="1"/>
             <input type="hidden" name="action" value="logging"/>
-            <input type="submit" value="${updatesettings}"/>          
+            <input type="submit" value="${updatesettings}"/>   
+            </div>       
         </fieldset>
         </div>
         </form:form>
@@ -175,20 +171,13 @@
 		<h2><fmt:message key="settings.deletemyaccount"/></h2>		
 		<form:form id="postForm" method="post" action="/actions/goodBye">
 		<div id="fsform">
-		<fieldset class="fsOuter" style="background-color:#EEEEEE; padding: 5px; border:1px solid #006699; position:relative;">
-		  <table>
-		  	 <div class="fsRow">
-		     	<tr>
-		      	 	<td><fmt:message key="settings.really"/>?</td>
-		       		<td><input type="text" name="delete" value="no" size="30"/><div class="dissError" style="position:relative"><form:errors path="delete" /></div></td>
-		       		<td>
-		       			<fmt:message key="settings.yestodeleteaccount">
-		       			<fmt:param><em>yes</em></fmt:param>
-		       			</fmt:message>
-		       		</td>
-		    	</tr>
-		     </div>
-		  </table>		
+        <fieldset class="fsInner">
+ 		    <div class="fsRow">
+		      <form:label cssClass="fsLabel" path="user.birthday"><fmt:message key="settings.really"/>?</form:label>
+		      <input cssClass="fsInput fsSmall" type="text" name="delete" value="no" size="30"/>
+		      <div class="dissError"><form:errors path="delete" /></div>		      
+		     <fmt:message key="settings.yestodeleteaccount"><fmt:param><em>yes</em></fmt:param></fmt:message>
+		    </div>
 		  <div class="fsRow">	  
 		  	<input type="hidden" name="ckey" value="${ckey}"/>
 		  	<input type="hidden" name="selTab" value="1"/>
