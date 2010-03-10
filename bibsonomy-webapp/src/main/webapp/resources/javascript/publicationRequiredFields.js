@@ -1,3 +1,4 @@
+
 /**
  * queries the titles and further details of publications by a partial title
  *
@@ -10,106 +11,84 @@ function getSuggestions(partialTitle, autocompletion) {
 		return;
 	}
 
-	$("#post\\.resource\\.title").blur(function() {
+	$("#title").blur(function() {
 		window.setTimeout(function() {
 			$("#suggestionBox").hide();
 		},
 		140);
 	});
 
-	if(partialTitle.length < 2 || partialTitle.length%2 != 0) {
+	if(partialTitle.length%2 == 0 && partialTitle.length < 2) {
 		$("#suggestionBox").hide();
 	} else {
 		var query = $.ajax({
 			type: "GET",
 			url: "/json/tag/sys:title:"+partialTitle+"*",
 			dataType: "json",
-			success: function(json){processResponse(json);}});
+			success: function(json){
+			processResponse(json);
+      }});
 	}
 }
 
 /**
- * Process the JSON Data and make visible to the user
+ * Process the JSON Data and make it visible to the user
  * 
- * @param data
+ * @param data contains the posts returned for the specific title entered
  * @return
  */
 function processResponse(data) {
-	var k = 1;
-	// if there's no data cancel
+	var m = 1;
+	var s = 0;
+	// if there's no data abort
 	if(data.items.length == 0) {
 		return;
 	}
 
-	var p = $("<div style=\"background-color: #006699; color: #FFFFFF; padding:3px;\">Suggestions</p>");
+	var p = $('<div style="background-color: #006699; color: #FFFFFF; padding:3px;">Suggestions</p>');
 	$("#suggestionBox").html(p);
 	
 	$.each(data.items, function(i, item) {
-		
-		var element = $('<div style="background-color:'+
-		(((k++)%2 == 0)?'#FFFFFF':'#AAAAAA')+ // change the background color every step
-		'>'+item.label+'</div>');
-		
-		element.addClass("listEntry");
+
+		var editors = "";
+		var author = "";
+		var year = "";
+		if(item.editor != 'undefined') {
+			editors = concatArray(item.editor, 20);
+		}
+					
+		if(item.author != 'undefined') {
+			author = concatArray(item.author, 27);
+		}
+
+		if(item.year != 'undefined') {
+			year = '('+item.year+')';
+		}
+    var intraHash = item.intraHash;
+    var k = m;
+		var element = 
+    $('<div style="color:#006699;background-color:'
+  		+(((m++)%2 == 0)?'#FFFFFF':'#EEEEEE') // change the background color every step
+  		+'">'+formatLabel(item.label)
+      +'<br><span style="font-size:10px;">'
+      +author
+      +year
+      +'</span></div>');
+
 		element.click(
-				// get title sepcific data
-				// an set the forms accordingly
+				// get title specific data
+				// and set the forms accordingly
 				function () {
-					//post.resource.entrytype
-					$("#post\\.resource\\.entrytype option[value='"+item["pub-type"]+"']");
-					$("#post\\.resource\\.editor").val(concatEditors(item.editor));
-					$("#post\\.resource\\.year").val(item.year);
-					$("#post\\.resource\\.title").val(item.label);
-					$("#post\\.resource\\.author").val(item.author);
-				}
-		).mouseover(
-				function () {
-					var editors = "";
-					
-					if(item.editor != 'undefined' && item.editor.length > 0) {
-						editors = concatEditors(item.editor);
-					}
-					
-					if(item.author.length >= 27) {
-						item.author = item.author.substr(0, 27)+" ...";
-					}
-
-					if(item.editor.length >= 20) {
-						item.editor = item.editor.substr(0, 20)+" ...";
-					}
-
-					//item.editor.replace(/ AND/g,',');
-					p.html("["+item["pub-type"]+"]"+item.author+"("+item.year+"), "+editors).css("background-color","#222222");
-				}
-		).mouseout(
-				function () {
-					p.html("Suggestions").css("background-color","#006699");
+          window.open('/intrahash='+intraHash);
+          $("#suggestionBox").hide();
 				}
 		);
-		$("#suggestionBox").append(element);
-	});
-
-	$(".listEntry").css("padding", "3px").mouseover(function() {
-		$(this).css(
-				{
-					"background-color":"#006699",
-					"color":"#FFFFFF",
-					"cursor":"default"
-				}
-		);
-	}).mouseout(
-			function() {
-				$(this).css(
-						{
-							"background-color":"transparent", 
-							"color":"#000000"
-						}
-				);
-			}
-	);
-	var pos = $("#post\\.resource\\.title").offset();
-	var width = $("#post\\.resource\\.title").width();
-	var top = parseInt(pos.top+$("#post\\.resource\\.title").height())+6;
+ 
+	 $("#suggestionBox").append(element);
+	})
+	var pos = $("#title").offset();
+	var width = $("#title").width();
+	var top = parseInt(pos+$("#title").height())+6;
 	$("#suggestionBox").css(
 			{
 				"left":(pos.left+1)+"px",
@@ -125,17 +104,35 @@ function processResponse(data) {
 }
 
 /**
- * create one-string representation of a list of editors
+ * create one-string representation of a list of strings
  * 
- * @param editors array of editors
- * @return one string, containing concatenation of all editors, separated by '\n'
+ * @param data array of strings
+ * @param max_len return the representing string cut down to the size of max_len
+ * @param delim  
+ * @return one string, containing concatenation of all strings, separated by '\n'
  */
-function concatEditors(editors) {
+ 
+function concatArray(data, max_len, delim) {
 	var retVal = "";
-	var editor;
-	for(editor in editors) {
-		retVal += editors[editor] + "\n";
+	var entry;
+	for(entry in data) {
+		retVal += data[entry] + "\n";
 	}
-
-	return retVal;
+	return ((max_len != null) && (retVal.length > max_len))?retVal.substr(0, max_len)+"...":retVal;
 }
+
+/**
+ * format the matching part of a string bold
+ * 
+ * @param label what to match our partial string to
+ * @return a formatted string
+ */
+function formatLabel (label) {
+		var pos = label.toUpperCase().indexOf($("#title").val().toUpperCase());
+    return label.substr(0, pos)
+    +'<b>'
+    +label.substr(pos, $("#title").val().length)
+    +'</b>'
+    +label.substr(pos + $("#title").val().length);
+}
+
