@@ -1,7 +1,5 @@
 <div style="margin:1.2em;">
 
-<p class="entry">
-
 \begin{author}
 	<span class="entry_author">
 		\author.
@@ -10,7 +8,7 @@
 
 \begin{title}
 	<span class="entry_title">
-		<a href="../../bibtex/\bibsonomyIntrahash/\bibsonomyUsername"/>
+		<a href="../../bibtex/2\intraHash/\bibsonomyUsername"/>
 			\title
 		</a>.
 	</span>
@@ -72,5 +70,4 @@
 	</span>
 \end{year}
 
-</p>
 </div>
