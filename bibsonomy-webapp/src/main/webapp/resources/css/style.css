@@ -109,30 +109,6 @@
 	border-bottom-width: 0;
 }
 
-#bookmarkbibtexoptions {
-	list-style-image: none;
-	list-style-position: outside;
-	list-style-type: none;
-	margin: 1ex 0;
-	padding: 0px;
-	padding-right: 20px;
-	text-align: right;
-	float: right;
-}
-
-#bookmarkbibtexoptions li {
-	text-align: center;
-	display: inline;
-	height: 15px;
-	width: 15px;
-}
-
-#bookmarkbibtexoptions a:hover {
-	text-decoration: underline;
-	background-color: #006699;
-	color: #ffffff;
-}
-
 /* Drop Down Menu */
 #nice_tnav .nicedropmenudiv {
 	min-width: 200px;
@@ -1057,6 +1033,30 @@ div.help > a, div.help > b {
 #mainHeaderRightBox a {
 	color: #FFFFFF;
 }
+
+
+#bookmarkbibtexoptions {
+	list-style-image: none;
+	list-style-position: outside;
+	list-style-type: none;
+	margin: 0;
+	padding-right: 20px;
+	text-align: right;
+	float: right;
+}
+
+#bookmarkbibtexoptions li {
+	text-align: center;
+	display: inline;
+	width: 2em;
+}
+
+#bookmarkbibtexoptions a:hover {
+	text-decoration: underline;
+	background-color: #006699;
+	color: #ffffff;
+}
+
 
 .info_bold {
  	font-size: 75%;
