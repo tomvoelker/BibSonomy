@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.validation;
 
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.util.UrlUtils;
-import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
@@ -15,7 +14,7 @@ public class BookmarkValidator implements Validator<Bookmark> {
 	
 	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz) {
-		return EditBookmarkCommand.class.equals(clazz);
+		return Bookmark.class.equals(clazz);
 	}
 
 	public void validate(final Object obj, final Errors errors) {
