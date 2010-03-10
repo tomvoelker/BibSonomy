@@ -21,12 +21,6 @@
        |   - Einblendung des existierenden Eintrages (bzw. des geposteten - der
        |     existierende wird editiert, der gepostete ist in "diffPost") 
        |   - JavaScript zur Ausblendung optionaler Felder (siehe edit_bibtex.jsp)
-       |   - Hervorhebung (blauer Hintergrund) notwendiger Formularfelder
-       |   - ggf. Berechnung des BibTeX-Keys
-       |   - Feld "bibtexKey" rechts neben entrytype 
-       |   - I18N
-       |   - es wird noch nicht der Eintragstyp angezeigt, den der existierende
-       |     Post hat
        -->
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />

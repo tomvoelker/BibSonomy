@@ -1,0 +1,60 @@
+<jsp:root version="2.0" 
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+    <!-- 
+    	the form for snippet posting on /postPublication
+     -->
+     
+	<h2><fmt:message key="post_bibtex.pub_snippet.heading" /></h2>
+	<p class="smalltext"><fmt:message key="post_bibtex.pub_snippet.description" /></p>
+     
+	<form method="post" action="/import/publications">
+		<div id="fsform">
+			<fieldset class="fsOuter">
+				<!-- 
+					TODO: do we really need the next two parameters?
+				 -->
+				<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
+           		<input type="hidden" name="selTab" value="1" />
+				<input type="hidden" name="ckey" value="${ckey}"/>
+           				
+				<div class="fsRow">
+			    	<label class="fsLabel" for="selection"><fmt:message key="post_bibtex.pub_snippet.snippet" />*</label>
+			    	<textarea class="fsInput" name="selection" rows="10" onkeyup="sz(this);" ><!-- don't delete me --></textarea>
+				</div>
+		  
+		  		<div class="fsRow">
+			    	<label class="fsLabel" for="description"><fmt:message key="post.resource.description" />*</label>
+					<input type="text" class="fsInput" name="description" /> 
+  				</div>
+             
+  				<div class="fsLabel"><!--  --></div>
+    			<post:simpleGroupBox groups="${command.context.loginUser.groups}"/>
+             
+	    		<div class="fsRow">
+			    	<label class="fsLabel"><fmt:message key="import.edit_before_import" /></label>
+			    	<buttons:help message="import.edit_before_import.help" />
+			    	<input type="checkbox" class="fsInput" name="editBeforeImport" value="" />
+				</div>
+			    
+			    <div class="fsRow">
+			    	<label class="fsLabel"><fmt:message key="import.overwritten" /></label>
+					<buttons:help message="import.overwrite2"/>
+			      	<input type="checkbox" class="fsInput" name="overwrite" value="" />
+				</div>
+	    		
+	    		<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+	    		<input type="submit" style="clear:both; float:left" class="fsFormSubmit" name="submit" value="${post_button}" />
+				
+			</fieldset>
+		</div>
+	</form>
+
+</jsp:root>
