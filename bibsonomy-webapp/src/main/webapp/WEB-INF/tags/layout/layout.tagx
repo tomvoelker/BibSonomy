@@ -130,7 +130,7 @@
 				<c:url var="helpUrl" value="${helpLangUrl}" context="${projectContext}"/>
 				<a href="${helpUrl}"><fmt:message key="navi.help"/></a>
 				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>				
-				<a href="http://bibsonomy.blogspot.com/"><fmt:message key="navi.blog"/></a>
+				<a href="${projectBlog}"><fmt:message key="navi.blog"/></a>
 				<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
 				<c:url var="aboutUrl" value="${helpLangUrl}/contact" context="${projectContext}"/>
 				<a href="${aboutUrl}"><fmt:message key="navi.about"/></a>	
