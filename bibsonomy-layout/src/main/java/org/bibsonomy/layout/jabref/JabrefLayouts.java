@@ -167,6 +167,7 @@ public class JabrefLayouts {
 			try {
 				return layoutHelper.getLayoutFromText(GLOBALS_FORMATTER_PACKAGE);
 			} catch (Exception e) {
+				log.error("Error while trying to load layout " + fileLocation + " : " + e.getMessage());
 				throw new IOException(e);
 			}
 		} 
