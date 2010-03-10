@@ -80,13 +80,40 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * inits the database managers and resource class name
 	 */
 	protected PostDatabaseManager() {
-		super();
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagDb = TagDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.permissionDb = PermissionDatabaseManager.getInstance();
 
 		this.resourceClassName = this.getResourceClassName();
+	}
+	
+	/**
+	 * @return the lucene search instance to use
+	 */
+	protected ResourceSearch<R> getResourceSearch() {
+		return resourceSearch;
+	}
+
+	/**
+	 * @param resourceSearch
+	 */
+	public void setResourceSearch(ResourceSearch<R> resourceSearch) {
+		this.resourceSearch = resourceSearch;
+	}
+
+	/**
+	 * @return the systemTagFactory
+	 */
+	protected SystemTagFactory getSystemTagFactory() {
+		return this.systemTagFactory;
+	}
+
+	/**
+	 * @param systemTagFactory the systemTagFactory to set
+	 */
+	public void setSystemTagFactory(SystemTagFactory systemTagFactory) {
+		this.systemTagFactory = systemTagFactory;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -208,7 +235,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			param.setOrder(order);
 
 			if (Order.FOLKRANK.equals(param.getOrder())){
-				param.setGroupId(GroupID.PUBLIC.getId());
+				param.setGroupId(GroupID.PUBLIC);
 				return this.postList("get" + this.resourceClassName + "ByTagNamesAndFolkrank", param, session);
 			}
 		}
@@ -268,7 +295,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		param.setGroupId(groupId);
 		param.setTagIndex(tagIndex);
 
-		return this.queryForObject("get" + this.resourceClassName + "ByTagNamesCount", param, Integer.class, session);
+		final Integer result = this.queryForObject("get" + this.resourceClassName + "ByTagNamesCount", param, Integer.class, session);
+		return present(result) ? result : 0;
 	}
 
 	/**
@@ -526,22 +554,19 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return list of posts
 	 */
 	public List<Post<R>> getPostsSearchForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String search, final String loginUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
-
-		if (doLuceneSearch) {
-			final List<Post<R>> postList;
+		if (this.isDoLuceneSearch()) {
 			final ResourceSearch<R> lucene = this.getResourceSearch();
 			if (present(lucene)) {
 				// get search results from lucene
 				final long starttimeQuery = System.currentTimeMillis();
-				postList = lucene.searchGroup(groupId, visibleGroupIDs, search, loginUserName, limit, offset, null);
+				final List<Post<R>> postList = lucene.searchGroup(groupId, visibleGroupIDs, search, loginUserName, limit, offset, null);
 				final long endtimeQuery = System.currentTimeMillis();
 				log.debug("Lucene" + this.resourceClassName + " complete group search query time: " + (endtimeQuery-starttimeQuery) + "ms");
-			} else {
-				postList = new LinkedList<Post<R>>();
-				log.error("No resource searcher available.");
+				return postList;
 			}
-
-			return postList;
+			
+			log.error("No resource searcher available.");
+			return new LinkedList<Post<R>>();
 		}
 
 		final P param = this.createParam(loginUserName, null, limit, offset);
@@ -569,7 +594,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return list of posts
 	 */
 	public List<Post<R>> getPostsSearchLucene(final int groupId, final String search, final String requestedUserName, final String loginUserName, final Set<String> groupNames,  final int limit, final int offset, final DBSession session) {
-		final List<Post<R>> postList;
 		final ResourceSearch<R> lucene = this.getResourceSearch();
 		if (present(lucene)) {
 			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
@@ -577,15 +601,15 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 			// get search results from lucene
 			final long starttimeQuery = System.currentTimeMillis();
-			postList = lucene.searchPosts(group, search, requestedUserName, loginUserName, groupNames, limit, offset);
+			final List<Post<R>> postList = lucene.searchPosts(group, search, requestedUserName, loginUserName, groupNames, limit, offset);
 			final long endtimeQuery = System.currentTimeMillis();
 			log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
-		} else {
-			postList = new LinkedList<Post<R>>();
-			log.error("No resource searcher available.");
+			
+			return postList;
 		}
-
-		return postList;
+		
+		log.error("No resource searcher available.");
+		return new LinkedList<Post<R>>();
 	}
 
 	/**
@@ -890,7 +914,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return contentId for a given post
 	 */
-	public Integer getContentIdForPost(final String hash, final String requestedUserName, final DBSession session) {
+	protected Integer getContentIdForPost(final String hash, final String requestedUserName, final DBSession session) {
 		if (!present(hash) || !present(requestedUserName)) {
 			throw new RuntimeException("Hash and user name must be set");
 		}
@@ -1000,7 +1024,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			this.checkPost(post, session);
 
 			List<SystemTag> systemTags = this.getSystemTags(post, new HashSet<Tag>());
-			this.systemTagPerformBefore(session, post, systemTags);
+			this.systemTagPerformBefore(post, systemTags, session);
 			final String userName = post.getUser().getName();
 			/*
 			 * the current intra hash of the resource
@@ -1031,7 +1055,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			this.insertPost(post, session);
 			// add the tags
 			this.tagDb.insertTags(post, session);
-			this.systemTagPerformAfter(session, post, systemTags);
+			this.systemTagPerformAfter(post, systemTags, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -1105,8 +1129,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * perform system tags before action
 			 */
-			List<SystemTag> systemTags=this.getSystemTags(post, oldPost.getTags());
-			this.systemTagPerformBefore(session, post, systemTags);
+			List<SystemTag> systemTags = this.getSystemTags(post, oldPost.getTags());
+			this.systemTagPerformBefore(post, systemTags, session);
 
 			/*
 			 * get posts with the intrahash of the given post to check for possible duplicates 
@@ -1146,9 +1170,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				case UPDATE_TAGS:
 					this.performUpdateOnlyTags(post, oldPost, session);
 					break;
-					//					case UPDATE_DOCUMENTS: // TODO: implement update documents operation
-					//						this.performUpdateOnlyDocuments(post, oldPost, session);
-					//						break;
+//				case UPDATE_DOCUMENTS: // TODO: implement update documents operation
+//					this.performUpdateOnlyDocuments(post, oldPost, session);
+//					break;
 				default:
 					/*
 					 * as default update all parts of a post
@@ -1158,7 +1182,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			} else {
 				this.performUpdateAll(post, oldPost, session);
 			}		
-			this.systemTagPerformAfter(session, post, systemTags);
+			this.systemTagPerformAfter(post, systemTags, session);
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -1211,7 +1235,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	private void performUpdateAll(Post<R> post, Post<R> oldPost, DBSession session) {
-		final String userName = post.getUser().getName();
 		session.beginTransaction();
 		try {
 
@@ -1226,16 +1249,20 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * inform the listeners
 			 */
 			this.onPostUpdate(oldPost.getContentId(), post.getContentId(), session);
+			
 			/*
 			 * delete old post
 			 */
-			this.deletePost(userName, oldPost.getResource().getIntraHash(), true, session);
+			this.deletePost(oldPost, true, session);
 
-
-
+			/*
+			 * insert new post
+			 */
 			this.insertPost(post, session);
 
-			// add the tags
+			/* 
+			 * add the tags
+			 */
 			this.tagDb.insertTags(post, session);
 
 			session.commitTransaction();
@@ -1375,7 +1402,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	@Override
 	public boolean deletePost(String userName, String resourceHash, DBSession session) {
-		return this.deletePost(userName, resourceHash, false, session);
+		final Post<R> post = this.getPostByHashForUser(userName, resourceHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
+		
+		if (!present(post)) {
+			log.debug("post with hash \"" + resourceHash + "\" not found");
+			return false;
+		}
+		
+		return this.deletePost(post, false, session);
 	}
 
 	/**
@@ -1387,21 +1421,19 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return true iff the post was deleted successfully
 	 */
-	protected boolean deletePost(String userName, String resourceHash, boolean update, DBSession session) {
+	protected boolean deletePost(final Post<? extends R> post, boolean update, DBSession session) {
 		session.beginTransaction();
 		try {
-			final Post<R> post = this.getPostByHashForUser(userName, resourceHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
-
-			if (!present(post)) {
-				log.debug("post with hash \"" + resourceHash + "\" not found");
-				return false;
-			}
+			final String userName = post.getUser().getName();
+			
+			final R resource = post.getResource();
+			final String resourceHash = resource.getIntraHash();
 
 			// Used for userName, hash and contentId
 			final P param = this.createParam(userName, userName);
 			param.setHash(resourceHash);
-
 			param.setRequestedContentId(post.getContentId());
+			param.setResource(resource);
 
 			if (!update) {
 				this.onPostDelete(post.getContentId(), session);
@@ -1447,24 +1479,22 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	/**
 	 * performs the before action of all system tags 
-	 * 
-	 * @param session 
 	 * @param post - the post to which all systemTags belong
 	 * @param systemTags - all the systemTags that are to perform 
+	 * @param session 
 	 */
-	private void systemTagPerformBefore(final DBSession session, final Post<?> post, List<SystemTag> systemTags) {
+	private void systemTagPerformBefore(final Post<?> post, List<SystemTag> systemTags, final DBSession session) {
 		for (final SystemTag systemTag : systemTags) {
 			systemTag.performBefore(post, session);
 		}
 	}
 	/**
 	 * performs the after action of all system tags
-	 * 
-	 * @param session
 	 * @param post - the post to which all the systemTags belong
 	 * @param systemTags - all the systemTags that are to perform 
+	 * @param session
 	 */
-	private void systemTagPerformAfter(final DBSession session, final Post<?> post, final List<SystemTag> systemTags) {
+	private void systemTagPerformAfter(final Post<?> post, final List<SystemTag> systemTags, final DBSession session) {
 		for (final SystemTag systemTag : systemTags) {
 			systemTag.performAfter(post, session);
 		}
@@ -1535,27 +1565,4 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return new param for insert a resource
 	 */
 	protected abstract P getInsertParam(final Post<? extends R> post, final DBSession session);
-
-	/**
-	 * @return the lucene search instance to use
-	 */
-	protected ResourceSearch<R> getResourceSearch() {
-		return resourceSearch;
-	}
-
-	/**
-	 * @param resourceSearch
-	 */
-	public void setResourceSearch(ResourceSearch<R> resourceSearch) {
-		this.resourceSearch = resourceSearch;
-	}
-
-
-	public void setSystemTagFactory(SystemTagFactory systemTagFactory) {
-		this.systemTagFactory = systemTagFactory;
-	}
-
-	public SystemTagFactory getSystemTagFactory() {
-		return systemTagFactory;
-	}
 }

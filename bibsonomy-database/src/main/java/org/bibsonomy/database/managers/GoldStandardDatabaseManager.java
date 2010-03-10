@@ -40,7 +40,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	protected final DatabasePluginRegistry plugins;
 	
 	protected GoldStandardDatabaseManager() {
-		super();
 		this.resourceClassName = this.getResourceClassName();
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
@@ -102,9 +101,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				log.debug("gold stanard post with hash \"" + resourceHash + "\" already exists in DB");
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, resourceHash);
 				session.addError(resourceHash, errorMessage);
-				
 				session.commitTransaction();
-				
 				return false;
 			}
 			
@@ -161,7 +158,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 					return false;
 				}
 			} else {
-				throw new IllegalArgumentException("Could not update post: no interhash specified.");
+				throw new IllegalArgumentException("Could not update standard post: no interhash specified.");
 			}
 			
 			/*
