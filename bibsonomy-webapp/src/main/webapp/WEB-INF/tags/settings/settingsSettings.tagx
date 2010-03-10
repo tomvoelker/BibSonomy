@@ -5,6 +5,7 @@
   xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
   xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
   xmlns:form="http://www.springframework.org/tags/form"
   xmlns:spring="http://www.springframework.org/tags"
   xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
@@ -112,7 +113,10 @@
 							<a href="/help/doc/api.html"><fmt:message key="settings.apidoc"/></a>
 						</fmt:param>
 						<fmt:param>
-							<jsp:directive.include file="/boxes/emailaddress_api_support.jsp" />
+							<!--
+								TODO: make this configurable 
+							 -->
+							<parts:email address="api-support@bibsonomy.org"/>
 						</fmt:param>
 					</fmt:message>
 				</p>		
