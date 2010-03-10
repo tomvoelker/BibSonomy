@@ -100,7 +100,7 @@
 		INSERT INTO classifier_whitelist (white_regex) VALUES (#value#); 
 	</insert>
 
-	<select id="getClassifierHistory" resultMap="AdminCommon.userPredictionWithUserProperties" parameterClass="string">
+	<select id="getClassifierHistory" resultMap="AdminCommon.userHistory" parameterClass="string">
 		SELECT user_name, updated_at, <include refid="commonPredictionAttributes"/>  FROM log_prediction 
 		WHERE user_name  = #userName# AND algorithm != 'admin' 
 		ORDER BY updated_at DESC LIMIT 25
