@@ -384,7 +384,7 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 			 */
 			updatePosts = logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 		} catch (final DatabaseException ex) {
-			return handleDatabaseException(command, loginUser, post, ex);
+			return handleDatabaseException(command, loginUser, post, ex, "update");
 		}
 		if (!ValidationUtils.present(updatePosts)) {
 			/*
@@ -412,17 +412,17 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 	 * @param ex
 	 * @return
 	 */
-	private View handleDatabaseException(final EditPostCommand<RESOURCE> command, final User loginUser, final Post<RESOURCE> post, final DatabaseException ex) {
+	private View handleDatabaseException(final EditPostCommand<RESOURCE> command, final User loginUser, final Post<RESOURCE> post, final DatabaseException ex, String process) {
 		final List<ErrorMessage> errorMessages = ex.getErrorMessages(post.getResource().getIntraHash());
 		for (final ErrorMessage em: errorMessages) {
 			if (em instanceof SystemTagErrorMessage) {
-				errors.rejectValue("tags", em.getErrorMessage(), em.getParameters().toArray(), " ");
+				errors.rejectValue("tags", em.getLocalizedMessageKey(), em.getParameters().toArray(), em.getErrorMessage());
 			} else {
 				/*
 				 * show error page
 				 */
-				errors.reject("error.post.update", "Could not update post.");
-				log.warn("could not update post");
+				errors.reject("error.post.update", "Could not "+process+" this post.");
+				log.warn("could not "+process+" post");
 				return Views.ERROR;
 			}		
 		}
@@ -655,7 +655,7 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 			final String createPosts = logic.createPosts(posts).get(0);
 			log.debug("created post: " + createPosts);
 		} catch (DatabaseException de) {
-			return handleDatabaseException(command, loginUser, post, de);
+			return handleDatabaseException(command, loginUser, post, de, "create");
 		}
 		/*
 		 * update recommender table such that recommendations are linked to the final post
