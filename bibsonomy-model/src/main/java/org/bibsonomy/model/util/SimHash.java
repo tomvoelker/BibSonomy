@@ -30,6 +30,7 @@ import java.util.StringTokenizer;
 import java.util.TreeSet;
 
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
@@ -59,7 +60,7 @@ public class SimHash {
 			return SimHash.getSimHash(bibTex, simHash);
 		}
 		
-		return null;
+		throw new UnsupportedResourceTypeException();
 	}
 	
 	/**
