@@ -17,7 +17,6 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.tag.TagChain;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.beans.TagIndex;
-import org.bibsonomy.database.params.beans.TagTagBatchParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
@@ -101,43 +100,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForList("getTagByCount", param, Tag.class, session);
 	}
 
-	/**
-	 * Return all tags for a given contentId
-	 */
-	/*private List<Tag> getTasByContendId(final TagParam param, final DBSession session) {
-		// FIXME this query doesn't exist
-		// return this.queryForList("getTasByTagName", param, Tag.class, session);
-		return null;
-	}*/
-
-	// FIXME: unused
-	/*private void updateTagTagInc(final TagParam param, final DBSession session) {
-		// TODO not tested
-		this.update("updateTagTagInc", param, session);
-	}*/
-
-	// FIXME: unused
-	/*private void updateTagTagDec(Tag tagFirst, Tag tagSecond, TagParam param, final DBSession session) {
-		param.setTag(tagFirst);
-		param.setTag(tagSecond);
-		this.update("updateTagTagDec", param, session);
-	}*/
-
 	private void updateTagDec(final String tagname, final DBSession session) {
 		this.update("updateTagDec", tagname, session);
-	}
-
-	private void insertTagTagBatch(final int contentId, final Iterable<Tag> tags, TagTagBatchParam.Job job, final DBSession session) {
-		final TagTagBatchParam batchParam = new TagTagBatchParam();
-		batchParam.setContentId(contentId);
-		batchParam.setTagList(TagDatabaseManager.tagsToString(tags));
-		batchParam.setJob(job);
-		this.insertTagTagBatch(batchParam, session);
-	}
-
-	private void insertTagTagBatch(final TagTagBatchParam param, final DBSession session) {
-		// TODO not tested
-		this.insert("insertTagTagBatch", param, session);
 	}
 
 	/**
@@ -203,10 +167,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void deleteTags(final Post<?> post, final DBSession session) {
-		// get tags for this contentId
-		// FIXME param.getResource().setTags(getTasByContendId(param));
-		final boolean batchIt = true;
-		// param.getResource().getTags();
 
 		// add these tags to list and decrease counter in tag table
 		for (final Tag tag : post.getTags()) {
@@ -214,34 +174,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			updateTagDec(tag.getName(), session);
 		}
 
-		if (batchIt == true) {
-			/*
-			 * Too much tags: batch the job
-			 * 
-			 * A note regarding tag batch processing: the batch table has four
-			 * columns: content_id, tags, toinc and isactive - the batch
-			 * processor first sets the "isactive" column of a row to TRUE (1)
-			 * and then inserts all tags into the tagtag table, afterwards it
-			 * deletes the row from the batch table
-			 * 
-			 * IMPORTANT: getting rows and then setting them to active has to be
-			 * done in a transaction, otherwise they could get removed in
-			 * between
-			 */
-			insertTagTagBatch(post.getContentId(), post.getTags(), TagTagBatchParam.Job.DECREMENT, session);
-		} else {
-			throw new UnsupportedOperationException();
-			// compute all tag-tag combinations with o(n_2)
-			/* TODO: implement updateTagTagDec and do this:
-			for (final Tag tag1 : tagSet) {
-				for (final Tag tag2 : tagSet) {
-					if (!tag1.equals(tag2)) {
-						updateTagTagDec(tag1, tag2, param, session);
-					}
-				}
-			}*/
-		}
-
+		
 		// TODO: log all tas related to this post -> this.insertLogTas(...)
 		this.plugins.onTagDelete(post.getContentId(), session);
 		// delete all tas related to this bookmark
@@ -284,6 +217,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 
 	/** Updates the posts by replacing all tags as described in {@link LogicInterface#updateTags(User, List, List)}.
 	 * 
+	 * TODO: This method hasn't been tested, yet - it has been written
+	 * from scratch to migrate the functionality of the /edittags-page.
 	 * 
 	 * @param user
 	 * @param tagsToReplace
@@ -401,19 +336,9 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	private void insertTags(final TagParam param, final DBSession session) {
 		// generate a list of tags
 		final Collection<Tag> allTags = param.getTags();
-		// TODO: use this and implement nonbatch-tagtag-inserts:
-		// (allTags.size() > MAX_TAGS_TO_INSERT);
-		final boolean batchIt = true;
 
 		session.beginTransaction();
 		try {
-			if (batchIt == true) {
-				// if there're too many tags, do it in a batch job
-				// FIXME: someone misused newContentId for the tasId.
-				// requestedContentId is the real new contentId here
-				this.insertTagTagBatch(param.getNewContentId(), param.getTags(), TagTagBatchParam.Job.DECREMENT, session);
-			}
-
 			this.insertTas(param, session);
 
 			/* 
@@ -434,37 +359,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 
 			for (final Tag tag : allTags) {
 				this.insertTag(tag, session);
-				if (batchIt == false) {
-					throw new UnsupportedOperationException();
-					/* TODO: implement nonbatch-tagtag-inserts
-					for (final Tag tag2 : allTags) {
-						if (!tag1.equals(tag2)) {
-							insertTagTag(tag1, tag2);
-						}
-					}*/
-				}
 			}
 
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
 		}
-	}
-
-	/**
-	 * Builds a string from a list of tags. The tags are separated by space in
-	 * the string.
-	 * 
-	 * @param tags
-	 *            some tags
-	 * @return the string of white space separated tags
-	 */
-	private static String tagsToString(final Iterable<Tag> tags) {
-		final StringBuffer s = new StringBuffer();
-		for (final Tag tag : tags) {
-			s.append(tag.getName()).append(" ");
-		}
-		return s.toString().trim();
 	}
 
 	/**
@@ -478,17 +378,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// TODO not tested
 		this.insert("insertTag", tag, session);
 	}
-
-	/** Insert Tag-Tag Combination */
-	/* FIXME: SQL looks weird
-	public void insertTagTag(Tag tag1, Tag tag2, final DBSession session) {
-		// check if the two first elements of tag taglist contains tag-entries
-		if (tag1 == null || tag2 == null) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Two tags needed");
-		} else {
-			this.insert("insertTagTag", new Tag[] { tag1, tag2 }, session);
-		}
-	}*/
 
 	/**
 	 * @param param
@@ -613,7 +502,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		 *    return DBLP.getDBLPTag();
 		 * }
 		 */
-		if ("dblp".equals(param.getRequestedUserName().toLowerCase())) {
+		if ("dblp".equalsIgnoreCase(param.getRequestedUserName())) {
 			final ArrayList<Tag> tags = new ArrayList<Tag>();
 			final Tag dblp = new Tag();
 			dblp.setName("dblp");
@@ -804,18 +693,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 		return tags;
 	}
-
-	/**
-	 * Helper function to print a list of tags to stdout
-	 * 
-	 * @param tags
-	 */
-	/*private void printTags(List<Tag> tags) {
-		if (tags != null)
-		for (final Tag tag : tags) {
-			System.out.println(tag.getName());
-		}
-	}*/
 
 	/**
 	 * Retrieve related tags.

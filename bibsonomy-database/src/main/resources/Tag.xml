@@ -140,19 +140,13 @@
 		VALUES (#name#, 1) 
 		ON DUPLICATE KEY UPDATE tag_ctr = tag_ctr + 1
 	</insert>
-
-	<!-- FIXME: this looks weird
+	<!-- FIXME: this statement is broken! (the same tag is added twice) 
 	<insert id="insertTagTag" parameterClass="tag">
-		INSERT INTO tags (tag_name, tag_name, tag_ctr)
-		VALUES (#name#, #name#, 1)
-		ON DUPLICATE KEY UPDATE tag_ctr = tag_ctr+1
+		INSERT INTO tagtag (t1, t2, ctr)
+			VALUES (#name#, #name#, 1)
+			ON DUPLICATE KEY UPDATE ctr = ctr + 1
 	</insert>
-	-->
-
-	<insert id="insertTagTagBatch" parameterClass="tagTagBatchParam">
-		INSERT INTO tagtag_batch (content_id, tags, toinc) 
-		VALUES (#contentId#, #tagList#, #jobInteger#)
-	</insert>
+ 	-->
 
 	<update id="updateTagDec" parameterClass="string">
 		UPDATE tags 
