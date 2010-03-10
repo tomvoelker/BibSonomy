@@ -19,8 +19,8 @@
 		</jsp:attribute>
 		
         <jsp:attribute name="contentHeading">
-          <!-- short info, what the basket is -->
-          <fmt:message key="basket.info"/>                 
+        	<!-- short info, what the basket is -->
+            <fmt:message key="basket.info"/>                 
         </jsp:attribute>
     
 		<jsp:attribute name="sidebar">
