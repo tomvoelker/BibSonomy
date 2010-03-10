@@ -31,7 +31,7 @@
 		
 		<foaf:gender><c:out value="${gender}"/></foaf:gender>
 		
-		<foaf:birthday><fmt:formatDate value="${command.user.birthday}" pattern="MM-dd"/></foaf:birthday>
+		<foaf:birthday><fmt:formatDate value="${command.user.birthday}" pattern="yyyy-MM-dd"/></foaf:birthday>
 			
 		<foaf:mbox_sha1sum><c:out value="${command.user.email}"/></foaf:mbox_sha1sum> <!-- controller calculates sha1sum of email and stores it in the email field -->
 		<foaf:homepage rdf:resource="${command.user.homepage}" />
@@ -40,7 +40,7 @@
 		
 		<c:forEach var="friend" items="${command.user.friends}">
 			<foaf:knows>
-				<foaf:Person rdf:about="${projectHome}foaf/user/${mtl:encode(friend.name)}">
+				<foaf:Person rdf:about="${projectHome}foaf/user/${mtl:encodeURI(friend.name)}">
 					<foaf:nick><c:out value="${friend.name}"/></foaf:nick>
 				</foaf:Person>
 			</foaf:knows>
