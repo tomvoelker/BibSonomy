@@ -96,11 +96,8 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 
 	private void checkUserRealName(final String realname, final Errors errors) {
 		if (present(realname)) { // real name do not have to be set
-			if ("public".equals(realname) || "private".equals(realname) || "friends".equals(realname) || "null".equals(realname) || realname.length() > 30 || 
-//					realname.matches("(?s).*\\s.*") || 
-//					realname.matches("[a-zA-Z]*") || 
-					realname.indexOf('-') != -1 || realname.indexOf('+') != -1 || realname.indexOf('/') != -1 || realname.indexOf('\\') != -1 || realname.indexOf(':') != -1 || realname.indexOf('&') != -1 || realname.indexOf('?') != -1 || realname.indexOf('"') != -1 || realname.indexOf('\'') != -1 || realname.indexOf('>') != -1 || realname.indexOf('<') != -1 || realname.indexOf('%') != -1) {
-				errors.rejectValue("user.realname", "error.field.valid.user.name");
+			if (realname.length() > 255) { 
+				errors.rejectValue("user.realname", "error.field.valid.user.realname.length");
 			}
 		}
 	}
