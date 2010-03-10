@@ -101,12 +101,8 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		postModifiers     = new LinkedList<PostModifier>();
 		tagModifiers      = new LinkedList<RecommendedTagModifier>();
 	}
-	/**
-	 * destructor
-	 */
-	protected void finalize() {
-		disconnectRecommenders();
-	}
+	
+	
 	
 	/**
 	 * post-instance init method: this method has to be called when all 
@@ -233,7 +229,6 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * @param recommendedTags 
 	 * @param post The post for which tag recommendations are requested.
 	 * @param postID ID for mapping posts to recommender queries
-	 * @return Set of recommended Tags.
 	 */
 	public void addRecommendedTags(
 			Collection<RecommendedTag> recommendedTags, 
@@ -349,7 +344,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 
 	/** Simply adds recommendations to the given collection of recommended tags. 
 	 * 
-	 * @see org.bibsonomy.recommender.tags.TagRecommender#addRecommendedTags(java.util.SortedSet, org.bibsonomy.model.Post)
+	 * @see org.bibsonomy.services.recommender.TagRecommender#addRecommendedTags(java.util.Collection, org.bibsonomy.model.Post)
 	 */	
 	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post) {
 		addRecommendedTags(recommendedTags, post, UNKNOWN_POSTID);
@@ -449,15 +444,18 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			init();
 		connectRecommenders();
 	}
+	
 	public List<TagRecommenderConnector> getDistRecommenders() {
 		return distRecommenders;
 	}
 
 	public void setLocalRecommenders(List<TagRecommender> localRecommenders) {
 		this.localRecommenders = localRecommenders;
-		if( initialized )
+		if (initialized) {
 			init();
+		}	
 	}
+	
 	public List<TagRecommender> getLocalRecommenders() {
 		return localRecommenders;
 	}
@@ -465,6 +463,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	public void setQueryTimeout(int queryTimeout) {
 		this.queryTimeout = queryTimeout;
 	}
+	
 	public int getQueryTimeout() {
 		return queryTimeout;
 	}
@@ -478,6 +477,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	public RecommendationSelector getResultSelector() {
 		return resultSelector;
 	}
+	
 	/**
 	 * Get id which indicates that a recommender was not associated with a post.
 	 * @return UNKNOWN_POSTID
@@ -485,24 +485,30 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	public static int getUnknownPID() {
 		return UNKNOWN_POSTID;
 	}
+	
 	public void setNumberOfTagsToRecommend(int numberOfTagsToRecommend) {
 		this.numberOfTagsToRecommend = numberOfTagsToRecommend;
 	}
+	
 	public int getNumberOfTagsToRecommend() {
 		return numberOfTagsToRecommend;
 	}
+	
 	//------------------------------------------------------------------------
 	// Implementation of dispatching recommendation queries
 	//------------------------------------------------------------------------
 	public static synchronized void incQueryCounter() {
 		MultiplexingTagRecommender.queryThreadCounter++;
 	}
+	
 	public static synchronized void decQueryCounter() {
 		MultiplexingTagRecommender.queryThreadCounter--;
 	}
+	
 	public static synchronized void incFeedbackCounter() {
 		MultiplexingTagRecommender.feedbackThreadCounter++;
 	}
+	
 	public static synchronized void decFeedbackCounter() {
 		MultiplexingTagRecommender.feedbackThreadCounter--;
 	}
@@ -518,7 +524,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		/** unique id identifying recommender */
 		private Long sid;
 		/** recommender specific meta information */
-		private byte[] recMeta; 
+//		private byte[] recMeta; TODO: remove field
 		private TagRecommender recommender;
 		private boolean abort = false;
 		Post<? extends Resource> post;
@@ -559,6 +565,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		/**
 		 * Dispatch and collect query.
 		 */
+		@Override
 		public void run() {
 			// for query-time logging
 			long time = System.currentTimeMillis();
@@ -587,6 +594,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			} else {
 				log.info("("+qid+")Recommender " + recommender.getInfo() + " timed out (" + time + ")");
 			}
+			
 			MultiplexingTagRecommender.decQueryCounter();
 		}
 		/**
@@ -610,12 +618,8 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		 * Constructor for creating a query dispatcher.
 		 * @param recommender Recommender whos query should be dispatched
 		 * @param post user's post to query the recommender for
-		 * @param qid unique id identifying set of queries
-		 * @param sid 
-		 * @param recommendedTags previously recommended tags
 		 */
-		public FeedbackDispatcher(TagRecommender recommender,
-				Post<? extends Resource> post) {
+		public FeedbackDispatcher(TagRecommender recommender, Post<? extends Resource> post) {
 			this.recommender = recommender;
 			this.post = post;
 			MultiplexingTagRecommender.incFeedbackCounter();
@@ -720,9 +724,11 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			dispatcher.start();
 		};
 	}
+	
 	public void setPostModifiers(List<PostModifier> postModifiers) {
 		this.postModifiers = postModifiers;
 	}
+	
 	public List<PostModifier> getPostModifiers() {
 		return postModifiers;
 	}
@@ -764,10 +770,20 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			log.fatal("Could not store result selection strategy", ex);
 		}
 	}
+	
 	public void setTagModifiers(List<RecommendedTagModifier> tagModifiers) {
 		this.tagModifiers = tagModifiers;
 	}
+	
 	public List<RecommendedTagModifier> getTagModifiers() {
 		return tagModifiers;
+	}
+	
+	/**
+	 * destructor
+	 */
+	@Override
+	protected void finalize() {
+		disconnectRecommenders();
 	}
 }
