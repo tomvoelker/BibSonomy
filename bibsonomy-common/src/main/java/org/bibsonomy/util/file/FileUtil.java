@@ -23,6 +23,9 @@
 
 package org.bibsonomy.util.file;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.bibsonomy.util.StringUtils;
 
 
@@ -31,6 +34,10 @@ import org.bibsonomy.util.StringUtils;
  * @version $Id$
  */
 public class FileUtil {
+	/**
+	 * The pattern extracts the extension of a file.
+	 */
+	private static final Pattern fileExtensionPattern = Pattern.compile("(.+)\\.(.+)");
 	
 	/**
 	 * Constructs the file path of a document
@@ -65,6 +72,21 @@ public class FileUtil {
 		} else {
 			return "application/octet-stream";
 		}
+	}
+	
+	/**
+	 * Extracts the extension of a file (without ".").
+	 * 
+	 * If no extension is found, "" is returned;
+	 * 
+	 * @param filename
+	 * @return The extension of the given file.
+	 */
+	public static String getFileExtension(final String filename) {
+		final Matcher m = fileExtensionPattern.matcher(filename);
+		if (m.find())
+			return m.group(2).toLowerCase();
+		return "";
 	}
 
 }

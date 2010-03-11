@@ -24,6 +24,8 @@
 package org.bibsonomy.util;
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -108,6 +110,24 @@ public class StringUtils {
 		}
 		s.replace(s.length() - 1, s.length(), "]");
 		return s.toString();
+	}
+	
+	/**
+	 * Reads the contents of the reader into a string.
+	 * 
+	 * @param in
+	 * @return The string containing the contents of the reader.
+	 * @throws IOException 
+	 */
+	public static String getStringFromReader(final BufferedReader in) throws IOException {
+		final StringBuffer buffer = new StringBuffer();
+
+		String line = null;
+		while ((line = in.readLine()) != null) {
+			buffer.append(line + "\n");
+		}
+
+		return buffer.toString();
 	}
 
 	/**
