@@ -22,9 +22,9 @@
 	<div class="help" style="${cssStyle}">
 		<!-- show help symbol, if given with underlying link to help page -->
         <c:choose>
-          <c:when test="${not empty helpUrl}">
+          <c:when test="${not empty helpPath}">
             <!-- the given path is relative to projectHome/help -->
-            <a href="${projectHome}help${helpUrl}"><c:out value="${iconText}"/></a>
+            <a class="smalltext" style="${iconTextStyle}" href="${projectHome}help${helpPath}"><c:out value="${iconText}"/></a>
           </c:when>
           <c:otherwise>
               <b class="smalltext" style="${iconTextStyle}"><c:out value="${iconText}"/></b>
