@@ -14,15 +14,16 @@
     <script type="text/javascript">
     var title = "${postBookmarkPopup}";
     var image = "${buttonImage}";
+    var projectHome ="${projectHome}";
 	//<mtl:cdata>
 	<![CDATA[
-         var myurl = "";
+         var myurl = "javascript: var post=window.open('"+projectHome+"ShowBookmarkEntry?c=b&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+";
          if (window.getSelection) {
-           myurl  = "javascript: var post=window.open('${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(window.getSelection()), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
+           myurl  += "encodeURIComponent(window.getSelection()), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
          } else if (document.getSelection) {
-           myurl  = "javascript: var post=window.open('${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.getSelection()), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
+           myurl  += "encodeURIComponent(document.getSelection()), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
          } else if (document.selection) {
-           myurl  = "javascript: var post=window.open('${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.selection.createRange().text), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
+           myurl  += "encodeURIComponent(document.selection.createRange().text), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
          }
          var left  = String.fromCharCode(60);
          var right = String.fromCharCode(62);

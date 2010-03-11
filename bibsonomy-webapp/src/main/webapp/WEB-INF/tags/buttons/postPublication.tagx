@@ -14,9 +14,10 @@
     <script type="text/javascript">
         var title = '${postPublication}';
         var image = '${buttonImage}';
-  		//<mtl:cdata>
+        var projectHome ="${projectHome}";
+      		//<mtl:cdata>
 		<![CDATA[
-	      var myurl = "javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+";
+	      var myurl = "javascript:location.href='"+projectHome+"BibtexHandler?requTask=upload&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+";
 	      if (window.getSelection) {
 	        myurl  += "encodeURIComponent(window.getSelection())";
 	      } else if (document.getSelection) {

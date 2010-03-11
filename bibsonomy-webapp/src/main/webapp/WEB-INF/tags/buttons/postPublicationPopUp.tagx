@@ -15,15 +15,16 @@
     <script type="text/javascript">
     	var title = '${postPublicationPopup}';
    	 	var image = '${buttonImage}';
- 		//<mtl:cdata>
+        var projectHome ="${projectHome}";
+        //<mtl:cdata>
 		<![CDATA[
-			var myurl = "";
+			var myurl = "javascript: var post=window.open('"+projectHome+"BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+";
 			if (window.getSelection) {
-			  myurl  = "javascript: var post=window.open('${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(window.getSelection()), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
+			  myurl  += "encodeURIComponent(window.getSelection()), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
 			} else if (document.getSelection) {
-			  myurl  = "javascript: var post=window.open('${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.getSelection()), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
+			  myurl  += "encodeURIComponent(document.getSelection()), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
 			} else if (document.selection) {
-			  myurl  = "javascript: var post=window.open('${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.selection.createRange().text), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
+			  myurl  += "encodeURIComponent(document.selection.createRange().text), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
 			}
 		    var left  = String.fromCharCode(60);
 		    var right = String.fromCharCode(62);
