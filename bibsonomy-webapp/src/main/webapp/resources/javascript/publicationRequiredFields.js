@@ -11,7 +11,7 @@ function getSuggestions(partialTitle, autocompletion) {
 		return;
 	}
 
-	$("#title").blur(function() {
+	$("#post\\.resource\\.title").blur(function() {
 		window.setTimeout(function() {
 			$("#suggestionBox").hide();
 		},
@@ -79,16 +79,16 @@ function processResponse(data) {
 				// get title specific data
 				// and set the forms accordingly
 				function () {
-          window.open('/intrahash='+intraHash);
+          window.open('postPublication?intrahash='+intraHash);
           $("#suggestionBox").hide();
 				}
 		);
  
 	 $("#suggestionBox").append(element);
 	})
-	var pos = $("#title").offset();
-	var width = $("#title").width();
-	var top = parseInt(pos+$("#title").height())+6;
+	var pos = $("#post\\.resource\\.title").offset();
+	var width = $("#post\\.resource\\.title").width();
+	var top = parseInt(pos+$("#post\\.resource\\.title").height())+6;
 	$("#suggestionBox").css(
 			{
 				"left":(pos.left+1)+"px",
@@ -128,11 +128,11 @@ function concatArray(data, max_len, delim) {
  * @return a formatted string
  */
 function formatLabel (label) {
-		var pos = label.toUpperCase().indexOf($("#title").val().toUpperCase());
+		var pos = label.toUpperCase().indexOf($("#post\\.resource\\.title").val().toUpperCase());
     return label.substr(0, pos)
     +'<b>'
-    +label.substr(pos, $("#title").val().length)
+    +label.substr(pos, $("#post\\.resource\\.title").val().length)
     +'</b>'
-    +label.substr(pos + $("#title").val().length);
+    +label.substr(pos + $("#post\\.resource\\.title").val().length);
 }
 
