@@ -18,10 +18,6 @@
 	<form method="post" action="/import/publications">
 		<div id="fsform">
 			<fieldset class="fsOuter">
-				<!-- 
-					TODO: do we really need the next two parameters?
-				 -->
-				<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
            		<input type="hidden" name="selTab" value="1" />
 				<input type="hidden" name="ckey" value="${ckey}"/>
            				

@@ -24,10 +24,6 @@
 	<p class="smalltext"><fmt:message key="post_bibtex.manual.description" /></p>
       			
 	<form:form id="postForm" action="/editPublication" method="post">
-    	<!-- 
-			TODO: do we really need the next two parameters?
-		 -->
-		<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
 		<input type="hidden" name="selTab" value="0" />
        	<input type="hidden" name="ckey" value="${ckey}"/>	
 

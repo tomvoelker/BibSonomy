@@ -18,10 +18,6 @@
 	<form name="upload" method="post" action="/editPublication">
 		<div id="fsform">
 			<fieldset class="fsOuter">
-				<!-- 
-					TODO: do we really need the next two parameters?
-				 -->
-				<input type="hidden" name="taskName" value="EDIT_PUBLICATIONS" />
 				<input type="hidden" name="selTab" value="3" />
 				<input type="hidden" name="ckey" value="${ckey}"/>
 						
