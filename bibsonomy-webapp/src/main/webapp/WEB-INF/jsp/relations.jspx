@@ -50,16 +50,14 @@
 		<c:forEach var="upperTag" items="${command.tagRelations}">
 			<tr>
 			<td class="upperconcept">
-				<c:set var="tagName"><mtl:encode value='${upperTag.name}'/></c:set>
-				<a style="font-size: ${(upperTag.usercount * 10) + 80}%" title="${upperTag.usercount} users"  href="/concept/tag/${fn:escapeXml(tagName)}"><c:out value="${tagName}"/></a>
+				<a style="font-size: ${(upperTag.usercount * 10) + 80}%" title="${upperTag.usercount} users"  href="/concept/tag/${mtl:encodeURI(upperTag.name)}"><c:out value="${upperTag.name}"/></a>
 			</td>
 			<td>&#8592;</td>
 			<td>
 				<ul class="box_lowerconcept_elements">
 				<c:forEach var="relation" items="${upperTag.subTags}">
-					<c:set var="link"><mtl:encode value='${relation.name}'/></c:set>
 			        <li class="box_lowerconcept"> 
-			    		<a href="/tag/${fn:escapeXml(link)}"><c:out value="${relation.name}"/></a>
+			    		<a href="/tag/${mtl:encodeURI(relation.name)}"><c:out value="${relation.name}"/></a>
 			    		<c:out value="&#32;"/>
 			        </li>
 		        </c:forEach>
