@@ -98,9 +98,8 @@
 		      <div class="dissError"><form:errors path="user.homepage" /></div>
 		    </div>
 		    <div class="fsRow">
-              <!-- TODO: fix help message -->
-		      <form:label cssClass="fsLabel" path="user.openURL">OpenURL</form:label>
-		      <buttons:help message="settings.openURLDescription"/>
+ 		      <form:label cssClass="fsLabel" path="user.openURL">OpenURL</form:label>
+		      <buttons:help message="settings.openURLDescription" helpPath="/tools/toolbox/#open_url_support"/>
 		      <form:input cssClass="fsInput" path="user.openURL"/>
 		      <div class="dissError"><form:errors path="user.openURL" /></div>
 		    </div>
