@@ -96,7 +96,7 @@ public class BibtexHandler extends HttpServlet {
 
 	private static final Scraper scraper = new KDEScraperFactory().getScraper();
 
-	private SpringWrapper springWrapper = SpringWrapper.getInstance();
+	private final SpringWrapper springWrapper = SpringWrapper.getInstance();
 
 
 	private static final HashSet<String> standardFieldNames = new HashSet<String>();
@@ -146,6 +146,7 @@ public class BibtexHandler extends HttpServlet {
 	 * The dataSource lookup code is added to the init() method to avoid the
 	 * costly JNDI operations for every HTTP request.
 	 */
+	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		try {
@@ -156,6 +157,7 @@ public class BibtexHandler extends HttpServlet {
 		}
 	}
 
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)	throws ServletException, IOException {
 		/*
 		 * forward all GET-requests to doPost to handle them
@@ -163,6 +165,7 @@ public class BibtexHandler extends HttpServlet {
 		doPost(request, response);
 	}
 
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		UserBean user = SessionSettingsFilter.getUser(request);
@@ -331,7 +334,7 @@ public class BibtexHandler extends HttpServlet {
 					 * else nothing will be done
 					 */
 					if ("endnote".equals(fileExtension)){
-						bibReader = new EndnoteToBibtexConverter().EndnoteToBibtex(new BufferedReader(new InputStreamReader(upFile.getInputStream(), encoding)));
+						bibReader = new EndnoteToBibtexConverter().endnoteToBibtexReader(new BufferedReader(new InputStreamReader(upFile.getInputStream(), encoding)));
 					} else {
 						bibReader = new BufferedReader(new InputStreamReader(upFile.getInputStream(), encoding));
 					}

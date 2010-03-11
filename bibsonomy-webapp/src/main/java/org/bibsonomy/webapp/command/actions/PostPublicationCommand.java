@@ -21,16 +21,10 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  */
 public class PostPublicationCommand extends EditPublicationCommand implements TabsCommandInterface<Object> {
 	
-	/********************************************
-	 * FROM WHERE WAS I CALLED - WHAT TASK TO DO
-	 ********************************************/
-	public final static String TASK_ENTER_PUBLICATIONS = "ENTER_PUBLICATIONS";
-	public final static String TASK_EDIT_PUBLICATIONS 	= "EDIT_PUBLICATIONS";
-	
 	/**
 	 * The URL which the tab header links to.
 	 */
-	private final String TAB_URL = "/import/publications"; // TODO: why not static?
+	private static final String TAB_URL = "/postPublication"; 
 	
 	/****************************
 	 * FOR THE TAB FUNCTIONALITY
@@ -55,7 +49,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * @return The index of the currently selected tab.
 	 */
-	@Override
 	public Integer getSelTab() {
 		return selTab;
 	}
@@ -63,7 +56,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	/**
 	 * @param selectedTab 
 	 */
-	@Override
 	public void setSelTab(final Integer selectedTab) {
 		this.selTab = selectedTab;
 	}
@@ -128,28 +120,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setTabURL(final String tabURL) {
 		this.tabURL = tabURL;
 	}
-	
-	/**
-	 * Containing the task name, determining whats to do in the controller.
-	 */
-	private String taskName;
-	
-	/**
-	 * @returns taskName the task name, determining whats to do in the controller. 
-	 * The value is set to TASK_ENTER_PUBLICATIONS, if publications get entered or edited(tags).
-	 */
-	public String getTaskName() {
-		return this.taskName;
-	}
-
-	/**
-	 * @param taskName the task name, determining whats to do in the controller. 
-	 * The value is set to TASK_ENTER_PUBLICATIONS, if publications get entered or edited(tags).
-	 */
-	public void setTaskName(final String taskName) {
-		this.taskName = taskName;
-	}
-
 	
 	
 	/**
