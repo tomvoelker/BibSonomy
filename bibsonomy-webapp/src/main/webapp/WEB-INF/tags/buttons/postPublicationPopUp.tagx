@@ -8,12 +8,14 @@
 	xmlns:menuparts="urn:jsptagdir:/WEB-INF/tags/menu/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-    <fmt:message key="navi.postPublication" var="postPublication"/>
-    <fmt:message key="image.button.postPublication" var="buttonImage"/>
+    <fmt:message key="navi.postPublicationPopup" var="postPublicationPopup"/>
+    <fmt:message key="image.button.postPublicationPopup" var="buttonImage"/>
 
 
     <script type="text/javascript">
-  		//<mtl:cdata>
+    	var title = '${postPublicationPopup}';
+   	 	var image = '${buttonImage}';
+ 		//<mtl:cdata>
 		<![CDATA[
 			var myurl = "";
 			if (window.getSelection) {
@@ -23,16 +25,19 @@
 			} else if (document.selection) {
 			  myurl  = "javascript: var post=window.open('${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.selection.createRange().text), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
 			}
-			document.write("<a title=\"postPublication\"href=\""+myurl+"\" onclick=\"return false\" class=\"bookmarklet2\"><img src=\"/resources/image/button_postPublication_popup.png\" alt=\"postPublication\"/></a>");
+		    var left  = String.fromCharCode(60);
+		    var right = String.fromCharCode(62);
+		    document.write(left + 'a title="' + title + '" href="' + myurl + '" onclick="return false" class="bookmarklet2"' + right + left + 'img src="' + image + '" alt="' + title + '" title="' + title + '"/' + right  + left + '/a' + right);
 		]]>
 		//</mtl:cdata>
 	</script>
+
 	<noscript>
-			<!-- Firefox & Opera document.getSelection() -->
-			(you need JavaScript enabled: Firefox/Opera: <a title="postPublication" href="javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="/resources/image/button_postPublication.png" alt="postPublication"/></a>,
-			<!-- Internet Explorer document.selection.createRange().text -->    
-			InternetExplorer: <a title="postPublication" href="javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="/resources/image/button_postPublication.png" alt="postPublication"/></a>)
+		(<fmt:message key="buttons.javascript"/>
+		<!-- Firefox & Opera document.getSelection() -->
+		Firefox/Opera: <a title="${postPublicationPopup}" href="javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublicationPopup}" title="${postPublicationPopup}"/></a>,
+		<!-- Internet Explorer document.selection.createRange().text -->    
+		InternetExplorer: <a title="${postPublicationPopup}" href="javascript:location.href='${projectHome}BibtexHandler?requTask=upload&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;selection='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postPublicationPopup}" title="${postPublicationPopup}"/></a>)
     </noscript>
-  
 
 </jsp:root>

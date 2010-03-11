@@ -8,10 +8,12 @@
 	xmlns:menuparts="urn:jsptagdir:/WEB-INF/tags/menu/parts"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
-    <fmt:message key="navi.postBookmark" var="postBookmark"/>
-    <fmt:message key="image.button.postBookmark" var="buttonImage"/>
+    <fmt:message key="navi.postBookmarkPopup" var="postBookmarkPopup"/>
+    <fmt:message key="image.button.postBookmarkPopup" var="buttonImage"/>
   	
     <script type="text/javascript">
+    var title = "${postBookmarkPopup}";
+    var image = "${buttonImage}";
 	//<mtl:cdata>
 	<![CDATA[
          var myurl = "";
@@ -22,18 +24,21 @@
          } else if (document.selection) {
            myurl  = "javascript: var post=window.open('${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.selection.createRange().text), 'BibSonomy', 'width=1000,height=600,scrollbars=1,resizable=1'); void(window.setTimeout('post.focus()',250));";
          }
-         document.write("<a title=\"postBookmark\"href=\""+myurl+"\" onclick=\"return false\" class=\"bookmarklet2\"><img src=\"/resources/image/button_postBookmark_popup.png\" alt=\"postBookmark\"/></a>");
-	]]>
+         var left  = String.fromCharCode(60);
+         var right = String.fromCharCode(62);
+         document.write(left + 'a title= "' + title + '" href="' + myurl + '" onclick="return false" class="bookmarklet2"' + right + left + 'img src="' + image + '" alt="' + title + '" title="' + title + '"/' + right  + left + '/a' + right);
+ 	]]>
 	//</mtl:cdata>
    </script>
    
    <noscript>
 	   <!-- Firefox & Opera document.getSelection() -->
-	    (you need JavaScript enabled: Firefox/Opera: 
-	    <a title="postBookmark" href="javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;user=${fn:escapeXml(username)}&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="/resources/image/button_postBookmark.png" alt="postBookmark"/></a>
+		(<fmt:message key="buttons.javascript"/>
+	    Firefox/Opera: 
+	    <a title="${postBookmarkPopup}" href="javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;user=${fn:escapeXml(username)}&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.getSelection())" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postBookmarkPopup}" title="${postBookmarkPopup}"/></a>
 	    <!-- Internet Explorer document.selection.createRange().text -->    
 	    InternetExplorer: 
-	    <a title="postBookmark" href="javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;user=${fn:escapeXml(username)}&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="/resources/image/button_postBookmark.png" alt="postBookmark"/></a>
+	    <a title="${postBookmarkPopup}" href="javascript:location.href='${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;user=${fn:escapeXml(username)}&amp;url='+encodeURIComponent(location.href)+'&amp;description='+encodeURIComponent(document.title)+'&amp;extended='+encodeURIComponent(document.selection.createRange().text)" onclick="return false" class="bookmarklet2"><img src="${buttonImage}" alt="${postBookmarkPopup}" title="${postBookmarkPopup}"/></a>
    </noscript>
 
 </jsp:root>
