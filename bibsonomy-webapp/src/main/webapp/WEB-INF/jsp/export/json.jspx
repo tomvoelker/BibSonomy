@@ -78,6 +78,7 @@
       {  
          "type" : "Publication",
          "id"   : "${projectHome}bibtex/2${post.resource.intraHash}/${mtl:quoteJSON(post.user.name)}",
+         "intraHash" : "${post.resource.intraHash}",
          "label" : "${mtl:quoteJSONcleanBibTeX(post.resource.title)}",
          "user" : "${mtl:quoteJSON(post.user.name)}",
          "description" : "${mtl:quoteJSON(post.description)}",
