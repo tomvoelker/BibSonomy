@@ -43,6 +43,7 @@
 	<resultMap id="userSettings" class="userSettings">
 		<result property="listItemcount"   column="list_itemcount" javaType="integer" />	
 		<result property="tagboxMinfreq"   column="tagbox_minfreq" javaType="integer" />
+		<result property="tagboxMaxCount"  column="tagbox_max_count" javaType="integer" />
 		<result property="tagboxSort"      column="tagbox_sort"    javaType="integer" />
 		<result property="tagboxStyle"     column="tagbox_style"   javaType="integer" />
 		<result property="tagboxTooltip"   column="tagbox_tooltip" javaType="integer" />	
@@ -65,7 +66,7 @@
 	</sql>
 
 	<sql id="userSettingsAttributes">
-		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, lang, log_level, confirmDelete, profilegroup
+		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, lang, log_level, confirmDelete, profilegroup, tagbox_max_count
 	</sql>	
 
 </sqlMap>

@@ -86,12 +86,12 @@
 	<insert id="logUser" parameterClass="String">
 		INSERT INTO log_user (	user_name,  user_email, user_password, user_homepage, user_realname, spammer,
 								openurl, reg_date, ip_address, tmp_password, tmp_request_date, tagbox_style, 
-								tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, spammer_suggest,
+								tagbox_sort, tagbox_minfreq, tagbox_max_count, tagbox_tooltip, list_itemcount, spammer_suggest,
 								birthday, gender, profession, interests, hobbies, place,  profilegroup, api_key, 
 								updated_by, updated_at, lang, role, timestamp, to_classify)
 		(SELECT user_name, user_email, user_password, user_homepage, user_realname, spammer,
 				openurl, reg_date, ip_address, tmp_password, tmp_request_date, tagbox_style,
-				tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, spammer_suggest,
+				tagbox_sort, tagbox_minfreq, tagbox_max_count, tagbox_tooltip, list_itemcount, spammer_suggest,
 				birthday, gender, profession, interests, hobbies, place, profilegroup, api_key, 
 				updated_by, updated_at, lang, role, UNIX_TIMESTAMP(NOW()), to_classify
 		 FROM user WHERE user_name = #userName#) 
