@@ -17,10 +17,10 @@
 	<!-- 
 		************************************************************************************************
 		This page will be called for editing tags (and deleting, see deleteCheckedPosts)
-		of successfully imported and permanently stored bibtexes.
+		of successfully imported publications.
 		************************************************************************************************
 	-->
-	<c:set var="deleteCheckedPosts" value="true" />
+	<c:set var="deleteCheckedPosts" value="${not command.editBeforeImport}" />
 	
 	<c:choose>
 		<c:when test="${empty command.overwrite}">
