@@ -1,10 +1,7 @@
 package org.bibsonomy.database.systemstags.executable;
 
-import java.util.ArrayList;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
@@ -107,10 +104,7 @@ public class ForFriendTag extends SystemTag {
 				break;
 			}
 		}
-		ArrayList<String> params = new ArrayList<String>();
-		params.add(receiver);
-		ErrorMessage errorMessage = new SystemTagErrorMessage(error, localizedMessageKey, params);
-		session.addError(post.getResource().getIntraHash(), errorMessage);
+		session.addError(post.getResource().getIntraHash(), new SystemTagErrorMessage(error, localizedMessageKey, new String[]{receiver}));
 	}
 
 	/**

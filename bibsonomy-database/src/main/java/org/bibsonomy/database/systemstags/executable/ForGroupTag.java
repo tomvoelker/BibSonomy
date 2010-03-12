@@ -1,6 +1,5 @@
 package org.bibsonomy.database.systemstags.executable;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -159,8 +158,8 @@ public class ForGroupTag extends SystemTag {
 				// add the DatabaseException of the copied post to the Exception of the original one
 				for (String hash: dbex.getErrorMessages().keySet()) {
 					for (ErrorMessage errorMessage: dbex.getErrorMessages(hash)) {
-						errorMessage.setErrorMessage("This error occured while executing the for: tag: "+errorMessage.getErrorMessage());
-						errorMessage.setLocalizedMessageKey("database.exception.systemTag.forGroup.copy");
+						errorMessage.setDefaultMessage("This error occured while executing the for: tag: "+errorMessage.getDefaultMessage());
+						errorMessage.setErrorCode("database.exception.systemTag.forGroup.copy");
 						session.addError(post.getResource().getIntraHash(), errorMessage);
 					}
 				}
@@ -217,10 +216,7 @@ public class ForGroupTag extends SystemTag {
 				break;
 			}
 		}
-		ArrayList<String> params = new ArrayList<String>();
-		params.add(groupName);
-		ErrorMessage errorMessage = new SystemTagErrorMessage(error, localizedMessageKey, params);
-		session.addError(post.getResource().getIntraHash(), errorMessage);
+		session.addError(post.getResource().getIntraHash(), new SystemTagErrorMessage(error, localizedMessageKey, new String[] {groupName}));
 	}
 
 	/**
