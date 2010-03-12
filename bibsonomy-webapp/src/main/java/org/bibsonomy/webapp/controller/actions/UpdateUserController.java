@@ -8,7 +8,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
-import org.bibsonomy.webapp.controller.SearchPageController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
@@ -26,7 +25,7 @@ import org.springframework.validation.Errors;
 public class UpdateUserController implements MinimalisticController<SettingsViewCommand>, ErrorAware, ValidationAwareController<SettingsViewCommand> {
 
 
-	private static final Log log = LogFactory.getLog(SearchPageController.class);
+	private static final Log log = LogFactory.getLog(UpdateUserController.class);
 
 	/**
 	 * maps the settings url

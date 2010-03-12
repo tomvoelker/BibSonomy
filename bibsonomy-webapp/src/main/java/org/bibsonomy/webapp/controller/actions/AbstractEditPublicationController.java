@@ -254,16 +254,6 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		return new PostValidator<BibTex>();
 	}
 
-//	@Override
-	/*
-	 * COMMAND extends EditPostCommand<BibTex>
-	 * 
-	 * EditPublicationCommand extends EditPostCommand<BibTex>
-	 */
-//	protected COMMAND instantiateEditPostCommand() {
-//		return new EditPublicationCommand();
-//	}
-
 	@Override
 	protected void setDuplicateErrorMessage(Post<BibTex> post, Errors errors) {
 		errors.reject("error.duplicate.post");

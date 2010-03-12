@@ -30,7 +30,6 @@ import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.rest.utils.FileUploadInterface;
@@ -47,10 +46,8 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostPublicationCommandValidator;
-import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.validation.Errors;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import bibtex.parser.ParseException;
@@ -225,10 +222,18 @@ public class PostPublicationController extends AbstractEditPublicationController
 		}
 
 		/*
+		 * The errors we have collected until now should be fixed before we proceed.
+		 * 
+		 * (We did not add errors for individual broken BibTeX lines, yet!)
+		 */
+		if (errors.hasErrors()) {
+			return Views.POST_PUBLICATION;
+		}
+
+		/*
 		 * turn parse exceptions into error messages ...
 		 */
 		handleParseExceptions(parser.getCaughtExceptions());
-
 
 		if (!errors.hasErrors() && !present(posts)) {
 			/*
@@ -237,14 +242,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * FIXME: customized error message.
 			 */
 			errors.reject("error.upload.failed", "There was no BibTeX or EndNote entered.");
-		}
-
-		/*
-		 * before we continue, errors must be fixed
-		 */
-		if (errors.hasErrors()) {
 			return Views.POST_PUBLICATION;
 		}
+
 
 
 		/*
@@ -321,7 +321,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 		/*
 		 * We try to store only posts that have no validation errors.
-		 * FIXME: we need to store the mapping!
 		 */
 		final HashMap<Post<BibTex>, Integer> postsToStore = getPostsWithNoValidationErrors(posts);
 		log.debug("will try to store " + postsToStore.size() + " of " + posts.size() + " posts in database");
@@ -591,6 +590,10 @@ public class PostPublicationController extends AbstractEditPublicationController
 					 * get intra hash and original position of post
 					 */
 					final String intraHash = post.getResource().getIntraHash();
+					/*
+					 * The i-th position in the list at hand is not the
+					 * same as the i-th position in the original list! ->use mapping
+					 */
 					final int i = postsToStore.get(post);
 					log.debug("checking post no. " + i + " with intra hash " + intraHash);
 					final List<ErrorMessage> postErrorMessages = allErrorMessages.get(intraHash);
@@ -602,10 +605,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 							 */
 							if (msg instanceof SystemTagErrorMessage) {
 								log.debug("found system tag error");
-								/*
-								 * FIXME: the i-th position in the list at hand is not the
-								 * same as the i-th position in the original list!
-								 */
 								errors.rejectValue("bibtex.list[" + i + "].tags", msg.getErrorCode(), msg.getParameters(), msg.getDefaultMessage());
 							}
 						}
@@ -617,34 +616,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 	}
 
 	@Override
-	protected View getPostView() {
-		return Views.EDIT_PUBLICATION;
-	}
-
-	@Override
-	protected PostValidator<BibTex> getValidator() {
-		return new PostValidator<BibTex>(); 
-	}
-
-	@Override
 	protected PostPublicationCommand instantiateEditPostCommand() {
-		return null;
-	}
-
-	@Override
-	protected BibTex instantiateResource() {
-		return new BibTex();
-	}
-
-	@Override
-	protected void setDuplicateErrorMessage(final Post<BibTex> post, final Errors errors) {
-		errors.reject("error.duplicate.post");
-	}
-
-	@Override
-	protected void workOnCommand(final PostPublicationCommand command, final User loginUser) {
-		// TODO Auto-generated method stub
-
+		return new PostPublicationCommand();
 	}
 
 	public FileUploadFactory getUploadFactory() {
