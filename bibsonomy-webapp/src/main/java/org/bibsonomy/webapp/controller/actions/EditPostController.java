@@ -54,11 +54,12 @@ import org.springframework.validation.Errors;
  * @author fba
  * @version $Id$
  * @param <RESOURCE> 
+ * @param <COMMAND> 
  */
-public abstract class EditPostController<RESOURCE extends Resource,C extends EditPostCommand<RESOURCE>> extends SingleResourceListController implements MinimalisticController<C>, ErrorAware {
+public abstract class EditPostController<RESOURCE extends Resource,COMMAND extends EditPostCommand<RESOURCE>> extends SingleResourceListController implements MinimalisticController<COMMAND>, ErrorAware {
 
 	private static final Log log = LogFactory.getLog(EditPostController.class);
-	private Errors errors = null;
+	protected Errors errors = null;
 	private TagRecommender tagRecommender;
 	private Captcha captcha;
 	protected RequestLogic requestLogic;
@@ -80,8 +81,8 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
 	 */
-	public C instantiateCommand() {
-		final C command = instantiateEditPostCommand();
+	public COMMAND instantiateCommand() {
+		final COMMAND command = instantiateEditPostCommand();
 		/*
 		 * initialize lists
 		 */
@@ -108,7 +109,7 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 	 * Instantiated the correct command for this controller.
 	 * @return
 	 */
-	protected abstract C instantiateEditPostCommand();
+	protected abstract COMMAND instantiateEditPostCommand();
 
 	/**
 	 * Instantiates a resource which the controller puts into the commands post.
@@ -123,7 +124,7 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
-	public View workOn(final C command) {
+	public View workOn(final COMMAND command) {
 		final Locale locale = requestLogic.getLocale();
 		final RequestWrapperContext context = command.getContext();
 		/*
@@ -215,7 +216,7 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 
 	}
 	
-	protected abstract void workOnCommand(final EditPostCommand<RESOURCE> command, final User loginUser);
+	protected abstract void workOnCommand(final COMMAND command, final User loginUser);
 
 	/**
 	 * TODO extract method; used by many controllers
@@ -307,7 +308,6 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 	 * @param intraHashToUpdate
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	private View handleUpdatePost(final EditPostCommand<RESOURCE> command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post, final String intraHashToUpdate) {
 		final String loginUserName = loginUser.getName();
 		/*
@@ -416,7 +416,7 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 		final List<ErrorMessage> errorMessages = ex.getErrorMessages(post.getResource().getIntraHash());
 		for (final ErrorMessage em: errorMessages) {
 			if (em instanceof SystemTagErrorMessage) {
-				errors.rejectValue("tags", em.getLocalizedMessageKey(), em.getParameters().toArray(), em.getErrorMessage());
+				errors.rejectValue("tags", em.getErrorCode(), em.getParameters(), em.getDefaultMessage());
 			} else {
 				/*
 				 * show error page
@@ -783,7 +783,6 @@ public abstract class EditPostController<RESOURCE extends Resource,C extends Edi
 	 * @param command
 	 * @return  if user already owns resource
 	 */
-	@SuppressWarnings("unchecked")
 	protected boolean setDiffPost(final EditPostCommand<RESOURCE> command) {
 		final RequestWrapperContext context = command.getContext();
 		final Post<RESOURCE> post = command.getPost();

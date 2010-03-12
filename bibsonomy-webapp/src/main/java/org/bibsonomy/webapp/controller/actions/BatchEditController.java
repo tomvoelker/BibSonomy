@@ -21,7 +21,6 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
-import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -335,86 +334,43 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				this.logic.createPosts(postsToSave);
 			} catch (DatabaseException ex) {
 				Map<String, List<ErrorMessage>> errorMsgs = ex.getErrorMessages();
-				List<Post<?>> updatePosts = new LinkedList<Post<?>>();
 				boolean toUpdate = true;
-				for(String postHash : errorMsgs.keySet())
-				{
-					for(ErrorMessage message : errorMsgs.get(postHash))
-					{ 
-						if(message instanceof SystemTagErrorMessage)
-						{
-							Object[] params = null;
-							if(message.getParameters()!=null)
-								params = message.getParameters().toArray();
-							errors.rejectValue(resourceType+".list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
-									messageSource.getMessage(message.getLocalizedMessageKey(), 
-											params, 
-											requestLogic.getLocale()),
-											messageSource.getMessage(message.getLocalizedMessageKey(), 
-													params, 
-													requestLogic.getLocale()));
+				for (final String postHash: errorMsgs.keySet()) {
+					for (final ErrorMessage errorMessage : errorMsgs.get(postHash))	{ 
+
+						final String errorCode = errorMessage.getErrorCode();
+						final String[] parameters = errorMessage.getParameters();
+						final String defaultMessage = errorMessage.getDefaultMessage();
+						final int post = postsToSave.indexOf(bibtexHashMap.get(postHash));
+
+						if (errorMessage instanceof SystemTagErrorMessage) {
+							errors.rejectValue(resourceType+".list[" + post + "].tags", errorCode, parameters, defaultMessage);
 							toUpdate = false;
-						} 
-
-						else if(message instanceof DuplicatePostErrorMessage)
-						{
-							if(!command.isOverwrite()) {
-								Object[] params = null;
-								if(message.getParameters()!=null)
-									params = message.getParameters().toArray();
-								errors.rejectValue(resourceType+".list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].resource", 
-										messageSource.getMessage(message.getLocalizedMessageKey(), 
-												params, 
-												requestLogic.getLocale()),
-												messageSource.getMessage(message.getLocalizedMessageKey(), 
-														params, 
-														requestLogic.getLocale()));
-
+						} else if (errorMessage instanceof DuplicatePostErrorMessage)	{
+							if (!command.isOverwrite()) {
+								errors.rejectValue(resourceType+".list[" + post + "].resource", errorCode, parameters, defaultMessage);
 							} else {
 								postsToUpdate.add(bibtexHashMap.get(postHash));
 							}
+						} else {
+							errors.rejectValue(resourceType+".list[" + post + "].resource", errorCode, parameters, defaultMessage);
 						}
-						else if(message instanceof UnspecifiedErrorMessage)
-						{
-							Object[] params = null;
-							if(message.getParameters()!=null)
-								params = message.getParameters().toArray();
-							errors.rejectValue(resourceType+".list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].resource", 
-									messageSource.getMessage(message.getLocalizedMessageKey(), 
-											params, 
-											requestLogic.getLocale()),
-											messageSource.getMessage(message.getLocalizedMessageKey(), 
-													params, 
-													requestLogic.getLocale()));
-						}
+						/*
+						 * FIXME: what to do with other error messages?
+						 */
 					}
 				}
-				if(toUpdate && command.isOverwrite())
-				{
+				if (toUpdate && command.isOverwrite()) {
 					try {
 						this.logic.updatePosts(postsToUpdate, PostUpdateOperation.UPDATE_ALL);
 					} catch (DatabaseException ex1) {
 						Map<String, List<ErrorMessage>> errorUpdateMsgs = ex1.getErrorMessages();
 						//TODO: no DatabaseExceptions get thrown yet, but just in case...
-						for(String postHash : errorMsgs.keySet())
-						{
-							for(ErrorMessage message : errorUpdateMsgs.get(postHash))
-							{ 
-								if(message instanceof SystemTagErrorMessage)
-								{
-									Object[] params = null;
-									if(message.getParameters()!=null)
-										params = message.getParameters().toArray();
-									errors.rejectValue(resourceType+".list["+postsToSave.indexOf(bibtexHashMap.get(postHash))+"].tags", 
-											messageSource.getMessage(message.getLocalizedMessageKey(), 
-													params, 
-													requestLogic.getLocale()),
-													messageSource.getMessage(message.getLocalizedMessageKey(), 
-															params, 
-															requestLogic.getLocale()));
-
+						for (final String postHash : errorMsgs.keySet()) {
+							for (final ErrorMessage errorMessage: errorUpdateMsgs.get(postHash)) { 
+								if (errorMessage instanceof SystemTagErrorMessage) {
+									errors.rejectValue(resourceType+".list[" + postsToSave.indexOf(bibtexHashMap.get(postHash)) + "].tags", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 								}
-
 							}
 						}
 					}
@@ -426,13 +382,19 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		if(errors.hasErrors())
 		{
-			if(postIsPublication)
-				return Views.BATCHEDIT_TEMP_BIB;
-			else
-				/**
-				 * when import/bookmarks will be moved, this has to change to BATCHEDIT_TEMP_URL
+			if (postIsPublication) {
+				/*
+				 * FIXME: changed from Views.BATCHEDIT_TEMP_BIB to Views.BATCHEDITBIB 
+				 * without setting the corresponding boolean command.editBeforeImport
+				 * that would trigger the behaviour of Views.BATCHEDIT_TEMP_BIB.
+				 * (problem: that attribute is not available in the command at hand)    
 				 */
-				return Views.BATCHEDITURL;  
+				return Views.BATCHEDITBIB;
+			} 
+			/*
+			 * when import/bookmarks will be moved, this has to change to BATCHEDIT_TEMP_URL
+			 */
+			return Views.BATCHEDITURL;  
 		}
 
 		// get referer to redirect to it

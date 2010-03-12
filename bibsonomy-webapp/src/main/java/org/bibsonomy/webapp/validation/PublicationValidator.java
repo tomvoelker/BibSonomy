@@ -47,13 +47,6 @@ public class PublicationValidator implements Validator<BibTex> {
 //			}
 
 			/*
-			 * title (ignored, if there are already errors - title is already 
-			 * checked in super class)
-			 */
-			if (!present(bibtex.getTitle()) && !errors.hasFieldErrors("post.resource.title")) {
-				errors.rejectValue("title", "error.field.valid.title");
-			}
-			/*
 			 * entrytype
 			 */
 			if (!present(bibtex.getEntrytype()) || containsWhiteSpace(bibtex.getEntrytype())) {

@@ -41,22 +41,21 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 		Assert.notNull(obj);
 		
 		final EditPostCommand<RESOURCE> command = (EditPostCommand<RESOURCE>) obj;
-
 		/*
 		 * Let's check, that the given command is not null.
 		 */
 		Assert.notNull(command);
 
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "post.resource.title", "error.field.valid.title");
-		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tags", "error.field.valid.tags");
-		
-		final Post<RESOURCE> post = command.getPost();
-		this.validateResource(errors, post.getResource());
+		validatePost(errors, command.getPost(), command.getAbstractGrouping(), command.getGroups());
 
+		/*
+		 * validate tags
+		 */
+		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "tags", "error.field.valid.tags");
 		/*
 		 * if no valid (after parsing) tags given, issue an error
 		 */
-		final Set<Tag> tags = post.getTags();
+		final Set<Tag> tags = command.getPost().getTags();
 		if (tags != null && tags.isEmpty() && !errors.hasFieldErrors("tags")) {
 			errors.rejectValue("tags", "error.field.valid.tags");
 		}
@@ -70,26 +69,52 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 			errors.rejectValue("tags", "error.field.valid.tags.comma");
 		}
 		
-		validateGroups(errors, command.getAbstractGrouping(), command.getGroups());
-		
 		log.debug("errors in " + EditPostCommand.class.getName() + ": " + errors);
-		
+	}
+
+	/**
+	 * Validates the post, in particular the resource it contains and 
+	 * the setting of the group selection box.
+	 * 
+	 * @param errors
+	 * @param post
+	 * @param abstractGrouping
+	 * @param groups
+	 */
+	public void validatePost(final Errors errors, final Post<RESOURCE> post, final String abstractGrouping, final List<String> groups) {
+		errors.pushNestedPath("post");
+		validateResource(errors, post.getResource());
+		errors.popNestedPath(); // post
+
+		validateGroups(errors, abstractGrouping, groups);
 	}
 	
-	private void validateResource(final Errors errors, final RESOURCE resource) {
-
+	/**
+	 * Validates the given resource.
+	 * 
+	 * @param errors
+	 * @param resource
+	 */
+	public void validateResource(final Errors errors, final RESOURCE resource) {
 		/*
 		 * validate the resource
 		 */
-		errors.pushNestedPath("post");
 		errors.pushNestedPath("resource");
+		/*
+		 * every resource has a title ...
+		 */
+		if (!org.bibsonomy.util.ValidationUtils.present(resource.getTitle())) {
+			errors.rejectValue("title", "error.field.valid.title");
+		}
+		/*
+		 * resource-specific checks
+		 */
 		if (resource instanceof Bookmark) {
 			ValidationUtils.invokeValidator(new BookmarkValidator(), resource, errors);
 		} else if (resource instanceof BibTex) {
 			ValidationUtils.invokeValidator(new PublicationValidator(), resource, errors);
 		}
 		errors.popNestedPath(); // resource
-		errors.popNestedPath(); // post
 	}
 
 	/** Validates the groups from the command. Only some combinations are allowed, e.g., 
@@ -99,7 +124,7 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 	 * @param abstractGrouping
 	 * @param groups
 	 */
-	private void validateGroups(final Errors errors, final String abstractGrouping, final List<String> groups) {
+	public void validateGroups(final Errors errors, final String abstractGrouping, final List<String> groups) {
 		log.debug("got abstractGrouping " + abstractGrouping);
 		log.debug("got groups " + groups);
 		if ("public".equals(abstractGrouping) || "private".equals(abstractGrouping)) {

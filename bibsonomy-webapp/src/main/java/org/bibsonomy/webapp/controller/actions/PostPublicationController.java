@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,11 +9,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,14 +26,13 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
-import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.FileUploadFactory;
 import org.bibsonomy.rest.utils.impl.HandleFileUpload;
@@ -38,7 +41,6 @@ import org.bibsonomy.scraper.exceptions.ConversionException;
 import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
-import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -48,23 +50,17 @@ import org.bibsonomy.webapp.validation.PostPublicationCommandValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import bibtex.parser.ParseException;
 
 /**
- * TODO: comment vs java doc
- * TODO: unused vars
- * TODO: bookmarks => publications
- * TODO: bibtex => publication
  * 
  * @author ema
  * @version $Id$
  */
-public class PostPublicationController extends EditPostController<BibTex,PostPublicationCommand> implements MinimalisticController<PostPublicationCommand>, ErrorAware {
+public class PostPublicationController extends AbstractEditPublicationController<PostPublicationCommand> implements MinimalisticController<PostPublicationCommand>, ErrorAware {
 	/**
 	 * the log...
 	 */
@@ -81,30 +77,14 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 	 */
 	public static final String TEMPORARILY_IMPORTED_PUBLICATIONS = "TEMPORARILY_IMPORTED_PUBLICATIONS";
 
-	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
-
 	/**
-	 * will be filled when i have created the commands.
-	 * 
-	 * TODO: when? The variable is still empty! 
+	 * Extracts the line number from the parser error messages.
 	 */
-	public static final String ACTION_SAVE_BEFORE_EDIT = "";
-
-
-	/**
-	 * errors object...
-	 */
-	private Errors errors;
-
-	private MessageSource messageSource;
-
+	private static final Pattern lineNumberPattern = Pattern.compile("([0-9]+)");
 	/**
 	 * the factory used to get an instance of a FileUploadHandler.
 	 */
 	private FileUploadFactory uploadFactory;
-
-	private boolean bibtexHasValidationErrors;
-	
 	/**
 	 * TODO: we could inject this object using Spring.
 	 */
@@ -120,7 +100,7 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		command.setGroups(new ArrayList<String>());
 
 		command.setPost(new Post<BibTex>());
-		command.setAbstractGrouping(PUBLIC_GROUP.getName());
+		command.setAbstractGrouping(GroupUtils.getPublicGroup().getName());
 		command.getPost().setResource(new BibTex());
 
 		return command;
@@ -142,13 +122,13 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 			 * send the user back to the page he was initially coming from,
 			 * the outer for the login page to send the user back to this 
 			 * controller.
+			 * 
+			 * FIXME: does this work?
 			 */
 			return new ExtendedRedirectView("/login" + 
 					"?notice=" + LOGIN_NOTICE + publication.getClass().getSimpleName().toLowerCase() + 
 					"&referer=" + safeURIEncode(requestLogic.getCompleteRequestURL() + "&referer=" + safeURIEncode(requestLogic.getReferer()))); 
 		}
-
-		final User loginUser = context.getLoginUser();
 
 		/* 
 		 * If the user entered the post data manually, the EditPublicationController
@@ -158,12 +138,8 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		 * check if an entrytype is given, because that field can't be empty. 
 		 */
 		if (ValidationUtils.present(publication.getEntrytype())) {
-			/* 
-			 * get possibly existing post from database
-			 */
-			publication.recalculateHashes();
-			command.setPost((Post<BibTex>) logic.getPostDetails(publication.getIntraHash(), loginUser.getName()));
-			super.workOn(command);
+			log.debug("user has manually entered post data -> forwarding to edit post controller");
+			return super.workOn(command);
 		}
 
 		/*
@@ -171,430 +147,477 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 		 */
 		String snippet = null;
 
+		/*
+		 * FIXME: how/when are ISBN/DOI, etc. handled?
+		 */
 		final String selection = command.getSelection();
 		if (ValidationUtils.present(selection)) {
 			/*
 			 * The user has entered text into the selection - we use that 
 			 */
+			log.debug("user has filled selection");
 			snippet = selection;
 		} else if(ValidationUtils.present(command.getFile())) {
 			/*
-			 * The user uploads a BibTeX or Endnote file
+			 * The user uploads a BibTeX or EndNote file
 			 */
-
-			/*
-			 * get temp file
-			 */
-			final CommonsMultipartFile uploadedFile = command.getFile();
-			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), HandleFileUpload.bibtexEndnoteExt);
-
-			try {
-				final Document uploadedDocument = uploadFileHandler.writeUploadedFile();
-				final File file = uploadedDocument.getFile();
-				final String fileName = uploadedDocument.getFileName();
-
-				final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
-
-				if (StringUtils.matchExtension(fileName, HandleFileUpload.bibtexEndnoteExt[1])) {
-					/*
-					 * In case the uploaded file is in EndNote format, we convert it to BibTeX.				
-					 */
-					snippet = e2bConverter.endnoteToBibtexString(reader);
-				} else {
-					/*
-					 * or just use it as it is ...
-					 */
-					
-				}
-
-				/*
-				 * clear temporary file
-				 */
-				file.delete();
-			} catch (final ConversionException e) {
-				errors.reject("error.conversion.failed", "An error occurred during converting your EndNote file to BibTeX.");
-				/*
-				 * BACK TO THE IMPORT/PUBLICATIONS VIEW
-				 */
-				return ShowEnterPublicationView(command);	
-			} catch (final Exception ex1) {
-				errors.reject("error.upload.failed", "An error occurred during accessing your file.");
-				/*
-				 * BACK TO THE IMPORT/PUBLICATIONS VIEW
-				 */
-				return ShowEnterPublicationView(command);	
-			}
-
-
-
+			log.debug("user uploads a file");
+			snippet = handleFileUpload(command);
 		} else {
-			/**
-			 * This way of describing the error includes the bibtex snippet:
-			 * 3 opportunities that are ok: bibtex snippet or file and endnote file. 
+			/*
+			 * nothing given -> user probably opened page for the first time
 			 */
-			errors.reject("error.upload.failed", "there was no valid bibtex or endnote entered.");
-
-			/**
-			 * BACK TO THE IMPORT/PUBLICATIONS VIEW
-			 */
-			return ShowEnterPublicationView(command);			
-
+			return Views.POST_PUBLICATION;
 		}
-
-		if (!ValidationUtils.present(snippet)) 
-		{
-			errors.reject("error.upload.failed", "there was no valid bibtex or endnote entered.");
-
-			/**
-			 * BACK TO THE IMPORT/PUBLICATIONS VIEW
-			 */
-			return ShowEnterPublicationView(command);
-		}
-		final List<Post<?>> storageList = new LinkedList<Post<?>>();
-
-		/**
-		 * Parse the bibtex snippet	
-		 */
-		List<Post<BibTex>> bibtex = null;
-		Set<Integer> parseErrorLines = null;
-		try {
-			final PostBibTeXParser parser = new PostBibTeXParser();
-			parser.setDelimiter(command.getDelimiter());
-			parser.setWhitespace(command.getWhitespace());
-			parser.setTryParseAll(true);
-			bibtex = parser.parseBibTeXPosts(snippet);
-			for(final Post<BibTex> aPostToCast : bibtex)
-				storageList.add(aPostToCast);
-
-			/**
-			 * fetch PARSER ERRORS here
-			 */
-			parseErrorLines = this.getErroneousLineNumbers(parser.getCaughtExceptions());
-			/**
-			 * reject erroneous line numbers as global errors
-			 */
-			for(final Integer lineNumber : parseErrorLines)
-			{
-				errors.reject("erroneous_line_numbers", lineNumber.toString());
-			}
-		} catch (final ParseException ex) {
-			errors.reject("error.upload.failed", "An error occurred during parsing process of your file.");
-
-			/**
-			 * BACK TO THE IMPORT/PUBLICATIONS VIEW
-			 */
-			return ShowEnterPublicationView(command);
-		} catch (final IOException ex) {
-			errors.reject("error.upload.failed", "An error occurred during parsing process of your file.");
-
-			/**
-			 * BACK TO THE IMPORT/PUBLICATIONS VIEW
-			 */
-			return ShowEnterPublicationView(command);
-
-		}
-
-		if(ValidationUtils.present(parseErrorLines))
-			command.setErroneousLineNumbers(new LinkedList<Integer>(parseErrorLines));
-
-		if(!ValidationUtils.present(bibtex))
-		{
-			errors.reject("error.upload.failed", "there was no bibtex or endnote entered.");
-
-			/**
-			 * BACK TO THE IMPORT/PUBLICATIONS VIEW
-			 */
-			return ShowEnterPublicationView(command);
-		}
-
-		/**
-		 * Prepare the posts for the edit operations:
-		 * add additional information from the form to the post (description, groups)... present in both upload tabs
-		 */
-		for(final Post<BibTex> bib : bibtex)
-		{
-			//user has to be set (was not after first clean up with daniel)
-			bib.setUser(loginUser);
-			//set visibility of this post for the groups, the user specified 
-			initPostGroups(command, bib);
-			//the description
-			bib.setDescription(command.getDescription());
-			//if not present, a valid date has to be set
-			if(!ValidationUtils.present(bib.getDate()))
-				setDate(bib, loginUser.getName());
-
-			//hases have to be set, in order to call the validator
-			bib.getResource().recalculateHashes();
-		}
-
-		final ListCommand<Post<BibTex>> postListCommand = new ListCommand<Post<BibTex>>(command);
-		postListCommand.setList(bibtex);
-		command.setBibtex(postListCommand);
-		/**
-		 * Check for INCOMPLETION ERRORS here - rejectIfEmpty checks
-		 */
-		final int numOfNoValidationErrors = errors.getErrorCount();
-		final PostPublicationCommandValidator validator = new PostPublicationCommandValidator();
-		validator.validate(command, errors);
-		bibtexHasValidationErrors = numOfNoValidationErrors!=errors.getErrorCount();
 
 		/*
-		 * if we have errors, we dont store the publications (with only one little exception)
+		 * neither a file nor a selection given -> user gets error message
+		 */
+		if (!ValidationUtils.present(snippet)) {
+			/*
+			 * FIXME: customize error message
+			 */
+			errors.reject("error.upload.failed", "There was no valid BibTeX or EndNote.");
+		}
+
+		if (errors.hasErrors()) {
+			log.debug("errors found, returning to view");
+			if (log.isDebugEnabled()) log.debug(errors);
+			return Views.POST_PUBLICATION;
+		}
+
+
+		/*
+		 * Extract posts from the snippet ...
+		 */
+
+
+
+		/*
+		 * configure the parser
+		 */
+		final PostBibTeXParser parser = new PostBibTeXParser();
+		parser.setDelimiter(command.getDelimiter());
+		parser.setWhitespace(command.getWhitespace());
+		parser.setTryParseAll(true);
+
+		/*
+		 * FIXME: why aren't commas, etc. removed?
+		 */
+
+		List<Post<BibTex>> posts = null;
+
+		try {
+			/*
+			 * Parse the BibTeX snippet	
+			 */
+			posts = parser.parseBibTeXPosts(snippet);
+		} catch (final ParseException ex) {
+			/*
+			 * FIXME: customized error message.
+			 */
+			errors.reject("error.upload.failed", "An error occurred during parsing your file.");
+		} catch (final IOException ex) {
+			/*
+			 * FIXME: customized error message. (sure?)
+			 */
+			errors.reject("error.upload.failed", "An error occurred during parsing your file.");
+		}
+
+		/*
+		 * turn parse exceptions into error messages ...
+		 */
+		handleParseExceptions(parser.getCaughtExceptions());
+
+
+		if (!errors.hasErrors() && !present(posts)) {
+			/*
+			 * no errors ... but also no posts ... Ooops!
+			 * 
+			 * FIXME: customized error message.
+			 */
+			errors.reject("error.upload.failed", "There was no BibTeX or EndNote entered.");
+		}
+
+		/*
+		 * before we continue, errors must be fixed
+		 */
+		if (errors.hasErrors()) {
+			return Views.POST_PUBLICATION;
+		}
+
+
+		/*
+		 * If exactly one post has been extracted, the edit post controller can handle
+		 * the remaining work.
+		 */
+		if (posts.size() == 1) {
+			command.setPost(posts.get(0));
+			return super.workOn(command);
+		}
+
+
+		/*
+		 * Complete the posts with missing information:
+		 * 
+		 * add additional information from the form to the 
+		 * post (description, groups)... present in both upload tabs
+		 */
+		for (final Post<BibTex> post: posts) {
+			post.setUser(context.getLoginUser());
+			post.setDescription(command.getDescription());
+			if (!present(post.getTags()))
+				post.setTags(Collections.singleton(TagUtils.getImportedTag()));
+			/*
+			 * set visibility of this post for the groups, the user specified 
+			 */
+			initPostGroups(command, post);
+			/*
+			 * if not present, a valid date has to be set
+			 * (we check for presence of a date, because DBLP is
+			 * allowed to specify a date)
+			 */
+			if(!ValidationUtils.present(post.getDate()))
+				setDate(post, context.getLoginUser().getName());
+			/*
+			 * hashes have to be set, in order to call the validator
+			 */
+			post.getResource().recalculateHashes();
+		}
+
+		/*
+		 * add list of posts to command for showing them to the user 
+		 * (such that he can edit them)
+		 */
+		final ListCommand<Post<BibTex>> postListCommand = new ListCommand<Post<BibTex>>(command);
+		postListCommand.setList(posts);
+		/*
+		 * FIXME: rename the "bibtex" attribute of the command (hint: we try
+		 * to avoid the name "bibtex" wherever possible)
+		 * (hint: errors.pushNestedPath("bibtex"); in the PostPublicationCommandValidator 
+		 * then has to be adapted, too. As does the code in the JSPs, of course.) 
+		 */
+		command.setBibtex(postListCommand);
+
+		/*
+		 * validate the posts
+		 */
+		org.springframework.validation.ValidationUtils.invokeValidator(new PostPublicationCommandValidator(), command, errors);
+
+		/*
+		 * if we have errors, we don't store the publications (with only one little exception FIXME: which?)
 		 * therefore we do have to store them temporarily in the session
 		 */
-		if (errors.hasErrors())
-		{
+		if (errors.hasErrors())	{
+			/*
+			 * FIXME what does the next line do (and why?)
+			 * 
+			 * This triggers the correct setting of the "delete/save" checkboxes on
+			 * the batch edit page.
+			 */
 			command.setDeleteCheckedPosts(false); //posts will have to get saved, since an error occurred
-			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, bibtex);
+			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, posts);
 		}
 
 		/*
-		 * if number of bibtexes contained is one, it can be edited in details, else we can use the 
-		 * multi-post-edit view
+		 * We try to store only posts that have no validation errors.
+		 * FIXME: we need to store the mapping!
 		 */
-		if (bibtex.size() == 1)
-		{
-			command.setPost(bibtex.get(0));
-			super.setErrors(getErrors()); 
-			return super.workOn(command);
-		} 
-		final List<FieldError> errorList = errors.getFieldErrors("bibtex.*");
-		int removedElements = 0;
-		final List<Integer> removedIndexes = new LinkedList<Integer>();
-		for(final FieldError anError : errorList)
-		{
-			final String fieldName = anError.getField();
-			final Pattern indexPattern = Pattern.compile("([0-9]+)");
-			final Matcher indexMatcher = indexPattern.matcher(fieldName);
-			if(indexMatcher.find())
-			{
-				final int errorIndex = new Integer(indexMatcher.group(1));
-				if(removedIndexes.contains(errorIndex)) continue;
-				storageList.remove(errorIndex-removedElements);
-				removedIndexes.add(errorIndex);
-				removedElements++;
-			}
-		}
+		final HashMap<Post<BibTex>, Integer> postsToStore = getPostsWithNoValidationErrors(posts);
+		log.debug("will try to store " + postsToStore.size() + " of " + posts.size() + " posts in database");
 
-		/* *********************
-		 * STORE THE BOOKMARKS
-		 * *********************/
-		if(!command.isEditBeforeImport())
-		{
-			savePublicationsForUser(postListCommand, command, loginUser);
-			command.setFormAction(ACTION_SAVE_BEFORE_EDIT);
+		/*
+		 * finally store the posts
+		 */
+		if (command.isEditBeforeImport()) {
+			/*
+			 * user wants to edit the posts before storing them 
+			 * -> put them into the session
+			 */
+			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, posts);
 		} else {
-			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, bibtex);
+			/*
+			 * the publications are saved in the database
+			 */
+			savePosts(postsToStore, command.getOverwrite());
 		}
 
 		/*
-		 * If the user wants to store the posts permanently AND (his posts have no errors OR he ignores the errors OR the number of
-		 * bibtexes is greater than the treshold, we will forward him to the appropriate site, where he can delete posts (they were saved)
+		 * If the user wants to store the posts permanently AND (his posts have
+		 * no errors OR he ignores the errors OR the number of bibtexes is
+		 * greater than the treshold, we will forward him to the appropriate
+		 * site, where he can delete posts (they were saved)
 		 */
-		if(!command.isEditBeforeImport() && (!errors.hasErrors() || bibtex.size()>MAXCOUNT_ERRORHANDLING))
+		if (!command.isEditBeforeImport() && (!errors.hasErrors() || posts.size() > MAXCOUNT_ERRORHANDLING))
 			command.setDeleteCheckedPosts(true); //posts will have to get saved, because the user decided to
 		else
 			command.setDeleteCheckedPosts(false);
 
 
-		/* *************************
-		 * RETURN THE CORRECT VIEW *
-		 * *************************/
-		if(errors.hasErrors())
-		{
-			/**
+		if (errors.hasErrors()) {
+			/*
 			 * BACK TO THE IMPORT/PUBLICATIONS VIEW
 			 * Posts will get saved temporarily, since an error occurred (checked posts will be saved)
 			 */
-			return showEnterPublicationView(command, true);
+			return Views.POST_PUBLICATION;
 		}
 
-		/**
-		 * if the user explicitly wants to store the posts AFTER editing we forward to the modified batcheditbib (batchedittempbib)
+		/*
+		 * Everything OK - finally the user has the chance to edit his posts.
 		 */
-		if(command.isEditBeforeImport())
-			return Views.BATCHEDIT_TEMP_BIB;
-
 		return Views.BATCHEDITBIB;
-
 	}
 
+	/**
+	 * Checks each post for validation errors and returns only those posts, 
+	 * that don't have any errors. The posts are returned in a hashmap, where
+	 * each post points to its position in the original list such that we can
+	 * later add errors (from the database) at the correct position.  
+	 *  
+	 * @param posts
+	 * @return
+	 */
+	private HashMap<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts) {
+		final HashMap<Post<BibTex>, Integer> storageList = new LinkedHashMap<Post<BibTex>, Integer>(); 
 
-	private View showEnterPublicationView(final PostPublicationCommand command, final boolean hasErrors) {
-		command.setExtendedView(hasErrors);
-		return Views.POST_PUBLICATION;
+		/*
+		 * iterate over all posts
+		 */
+		for (int i = 0; i < posts.size(); i++) {
+			/*
+			 * check, if this post has field errors
+			 */
+			if (!present(errors.getFieldErrors("bibtex.list[" + i + "]*"))) {
+				log.debug("post no. " + i + " has no field errors");
+				/*
+				 * post has no field errors --> try to store it in database
+				 * 
+				 * We also remember the original position of the post to 
+				 * add error messages later.
+				 */
+				storageList.put(posts.get(i), i);
+			}
+		}
+		return storageList;
 	}
 
-
-	private View ShowEnterPublicationView(final PostPublicationCommand command) {
-		return showEnterPublicationView(command, false);
+	/**
+	 * Extracts the parse exceptions and adds the line numbers with errors
+	 * to the errors object. 
+	 * 
+	 * @param parseExceptions
+	 */
+	private void handleParseExceptions(final ParseException[] parseExceptions) {
+		final StringBuffer buf = new StringBuffer("");
+		for (final ParseException parseException: parseExceptions) {
+			final Matcher m = lineNumberPattern.matcher(parseException.getMessage());
+			if (m.find()) {
+				/*
+				 * we have found a line number -> add it
+				 */
+				buf.append(m.group(1) + ", ");
+			}
+		}
+		if (buf.length() > 0) {
+			/*
+			 * remove last ", "
+			 */
+			buf.delete(buf.length() - ", ".length(), buf.length());
+			/*
+			 * add error message
+			 */
+			errors.reject("import.error.erroneous_line_numbers", new Object[]{buf}, "Your submitted publications contain errors at lines {0}.");
+		}
 	}
 
-	private void savePublicationsForUser(final ListCommand<Post<BibTex>> postListCommand, final PostPublicationCommand command, final User user)
-	{
-		final boolean isOverwrite = command.getOverwrite();
-		List<Post<?>> tmpList = new LinkedList<Post<?>>(postListCommand.getList());
-		if(bibtexHasValidationErrors)
-			tmpList = null; // TODO: was: storageList;
-
-		List<String> createdPostHash = new LinkedList<String>();
-		Map<String, List<ErrorMessage>> errors = null;
-
+	/**
+	 * Handles an uploaded file and returns its contents - if necessary 
+	 * after converting EndNote to BibTeX;
+	 * 
+	 * @param command
+	 * @return
+	 */
+	private String handleFileUpload(final PostPublicationCommand command) {
+		/*
+		 * get temp file
+		 */
+		final CommonsMultipartFile uploadedFile = command.getFile();
+		final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), HandleFileUpload.bibtexEndnoteExt);
+		/*
+		 * FIXME: the upload file handler throws an exception, 
+		 * if the file type does not match - this exception also comes, when
+		 * no file is given at all. We should check for empty file names and
+		 * give a specific error message then.
+		 */
+		File file = null;
 		try {
-			/**
-			 * Try to save all posts in one transaction.
-			 */
-			createdPostHash = logic.createPosts(tmpList);
-		} catch (final DatabaseException e) {
+			final Document uploadedDocument = uploadFileHandler.writeUploadedFile();
+			file = uploadedDocument.getFile();
 
-			/**
-			 * Something went wrong and an error occurred. The prior statement is "rolled backed"
+			final String fileName = uploadedDocument.getFileName();
+
+			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
+
+			if (StringUtils.matchExtension(fileName, HandleFileUpload.bibtexEndnoteExt[1])) {
+				/*
+				 * In case the uploaded file is in EndNote format, we convert it to BibTeX.				
+				 */
+				log.debug("the file is in EndNote format");
+				return e2bConverter.endnoteToBibtexString(reader);
+			} 
+			/*
+			 * or just use it as it is ...
 			 */
-			errors = e.getErrorMessages(); 
-			final Set<String> hashes = errors.keySet();
-			/**
-			 * Check for all posts if they have only DUPLICATE ERRORS 
+			log.debug("the file is in BibTeX format");
+			return StringUtils.getStringFromReader(reader);
+		} catch (final ConversionException e) {
+			errors.reject("error.conversion.failed", "An error occurred during converting your EndNote file to BibTeX.");
+		} catch (final Exception ex1) {
+			errors.reject("error.upload.failed", "An error occurred during accessing your file.");
+		} finally {
+			/*
+			 * clear temporary file
+			 * FIXME: is this method always called?
 			 */
-			boolean isErroneousList = false;
-			final List<Post<?>> forUpdate = new LinkedList<Post<?>>();
-			final List<Post<?>> forCreate = new LinkedList<Post<?>>();
-			//final List<Post<?>> forCorrection = new LinkedList<Post<?>>();
-			for(final Post<?> bib : tmpList)
-			{
-				final List<ErrorMessage> errorMsges = errors.get(bib.getResource().getIntraHash());
-				if(ValidationUtils.present(errorMsges))
-				{
+			log.debug("deleting uploaded temp file");
+			if (file != null) file.delete();
+		}
+		return null;
+	}
+
+
+	/**
+	 * Tries to save the posts in the database.
+	 * 
+	 * If posts already exist in the database and <code>overwrite</code> is <code>true</code>,
+	 * those posts are overwritten (otherwise they produce an error). 
+	 * Posts that have errors will be rejected in any case.
+	 * 
+	 * @param postsToStore
+	 * @param overwrite - posts which already exist are overwritten, if <code>true</code>
+	 */
+	private void savePosts(final HashMap<Post<BibTex>, Integer> postsToStore, final boolean overwrite) {
+		try {
+			/*
+			 * Try to save all posts in one transaction. 
+			 * (Hint: it's not a transaction in the database sense, but basically we try to 
+			 * save all posts and collect errors for posts we can't save.)
+			 * 
+			 */
+			logic.createPosts(new LinkedList<Post<?>>(postsToStore.keySet()));
+		} catch (final DatabaseException e) {
+			/*
+			 * get error messages 
+			 */
+			final Map<String, List<ErrorMessage>> errorMessages = e.getErrorMessages(); 
+			log.debug("caught database exception, found " +  errorMessages.size() + " errors");
+			/*
+			 * these posts will be updated
+			 */
+			final LinkedList<Post<?>> postsForUpdate = new LinkedList<Post<?>>();
+			/*
+			 * check for all posts what kind of errors they have 
+			 */
+			final Iterator<Entry<Post<BibTex>, Integer>> it = postsToStore.entrySet().iterator();
+			while (it.hasNext()) {
+				/*
+				 * get post and its position in the original list of posts 
+				 */
+				final Entry<Post<BibTex>, Integer> entry = it.next();
+				final Post<BibTex> post = entry.getKey();
+				final Integer i = entry.getValue();
+				log.debug("found errors in post no. " + i);
+				/*
+				 * get all error messages for this post
+				 */
+				final List<ErrorMessage> postErrorMessages = errorMessages.get(post.getResource().getIntraHash());
+				if (present(postErrorMessages))	{
 					boolean isErroneous = false;
 					boolean hasDuplicate = false;
-					ErrorMessage duplicateMessage = null;
-					for(final ErrorMessage msg : errorMsges)
-					{
-						if(msg instanceof DuplicatePostErrorMessage)
-						{
+					/*
+					 * go over all error messages 
+					 */
+					final Iterator<ErrorMessage> iterator = postErrorMessages.iterator();
+					while (iterator.hasNext()) {
+						final ErrorMessage errorMessage = iterator.next();
+						log.debug("found error " + errorMessage);
+						final String errorCode = errorMessage.getErrorCode();
+						final String[] parameters = errorMessage.getParameters();
+						final String defaultMessage = errorMessage.getDefaultMessage();
+						if (errorMessage instanceof DuplicatePostErrorMessage) {
 							hasDuplicate = true;
-							if(isOverwrite)
-								duplicateMessage = msg;
-							else
-							{
-								Object[] params = null;
-								if(msg.getParameters()!=null)
-									params = msg.getParameters().toArray();
-								this.errors.rejectValue("bibtex.list["+postListCommand.getList().indexOf(bib)+"].resource", 
-										messageSource.getMessage(msg.getLocalizedMessageKey(), 
-												params, 
-												requestLogic.getLocale()),
-												messageSource.getMessage(msg.getLocalizedMessageKey(), 
-														params, 
-														requestLogic.getLocale()));
+							if (overwrite) {
+								/*
+								 * if we shall overwrite posts, duplicates are no errors
+								 */
+								iterator.remove();
+							} else {
+								errors.rejectValue("bibtex.list[" + i + "].resource", errorCode, parameters, defaultMessage);
 							}
-						}
-						else if (msg instanceof SystemTagErrorMessage)
-						{
+						} else if (errorMessage instanceof SystemTagErrorMessage) {
 							isErroneous = true;
-							isErroneousList = true;
-							Object[] params = null;
-							if(msg.getParameters()!=null)
-								params = msg.getParameters().toArray();
-							this.errors.rejectValue("bibtex.list["+postListCommand.getList().indexOf(bib)+"].tags", 
-									messageSource.getMessage(msg.getLocalizedMessageKey(), 
-											params, 
-											requestLogic.getLocale()),
-											messageSource.getMessage(msg.getLocalizedMessageKey(), 
-													params, 
-													requestLogic.getLocale()));
-
-						}
-						else if(msg instanceof UnspecifiedErrorMessage)
-						{
-							Object[] params = null;
-							if(msg.getParameters()!=null)
-								params = msg.getParameters().toArray();
-							this.errors.rejectValue("bibtex.list["+postListCommand.getList().indexOf(bib)+"].resource", 
-									messageSource.getMessage(msg.getLocalizedMessageKey(), 
-											params, 
-											requestLogic.getLocale()),
-											messageSource.getMessage(msg.getLocalizedMessageKey(), 
-													params, 
-													requestLogic.getLocale()));
+							errors.rejectValue("bibtex.list[" + i + "].tags", errorCode, parameters, defaultMessage);
+						} else {
+							errors.rejectValue("bibtex.list[" + i + "].resource", errorCode, parameters, defaultMessage);
 						}
 					}
-					//if isOverwrite is true, duplicates are no errors
-					if(ValidationUtils.present(duplicateMessage))
-						errorMsges.remove(duplicateMessage);
-
-					if(!isErroneous && hasDuplicate)
-						forUpdate.add(bib);
+					/*
+					 * If the post has no errors, but is a duplicate, we add it to
+					 * the list of posts which should be updated. 
+					 */
+					if (!isErroneous && hasDuplicate)
+						postsForUpdate.add(post);
 				}
 			}
 
-
-			/**
-			 * If we got ONLY duplicate "errors", we save the non-duplicate ones and update the others,
-			 * if isOverwrite is true. Same is true, if the number of publications is greater than the
-			 * treshold. 
+			/*
+			 * If we got ONLY duplicate "errors", we save the non-duplicate ones
+			 * and update the others, if isOverwrite is true. Same is true, if
+			 * the number of publications is greater than the threshold.
 			 */
 			try {
-				if(isOverwrite)
-					logic.updatePosts(forUpdate, PostUpdateOperation.UPDATE_ALL);
+				if (overwrite) {
+					log.debug("trying to update " + postsForUpdate.size() + " posts");
+					logic.updatePosts(postsForUpdate, PostUpdateOperation.UPDATE_ALL);
+				}
 			} catch (final DatabaseException ex) {
-				for(final Post<?> bib : forUpdate)
-				{
-					final List<ErrorMessage> errorMsges = errors.get(bib.getResource().getIntraHash());
-					if(ValidationUtils.present(errorMsges))
-					{
-						for(final ErrorMessage msg : errorMsges)
-						{
-							if(msg instanceof SystemTagErrorMessage)
-							{
-								Object[] params = null;
-								if(msg.getParameters()!=null)
-									params = msg.getParameters().toArray();
-								this.errors.rejectValue("bibtex.list["+postListCommand.getList().indexOf(bib)+"].tags", 
-										messageSource.getMessage(msg.getLocalizedMessageKey(), 
-												params, 
-												requestLogic.getLocale()),
-												messageSource.getMessage(msg.getLocalizedMessageKey(), 
-														params, 
-														requestLogic.getLocale()));
-
+				final Map<String, List<ErrorMessage>> allErrorMessages = ex.getErrorMessages();
+				log.debug("caught database exception, found " + allErrorMessages.size() + " errors");
+				/*
+				 * checking each post for errors
+				 */
+				for (final Post<?> post : postsForUpdate) {
+					/*
+					 * get intra hash and original position of post
+					 */
+					final String intraHash = post.getResource().getIntraHash();
+					final int i = postsToStore.get(post);
+					log.debug("checking post no. " + i + " with intra hash " + intraHash);
+					final List<ErrorMessage> postErrorMessages = allErrorMessages.get(intraHash);
+					if (present(postErrorMessages)) {
+						log.debug("found " + postErrorMessages.size() + "error(s) on post no. " + i);
+						for (final ErrorMessage msg : postErrorMessages) {
+							/*
+							 * handle system tag error messages
+							 */
+							if (msg instanceof SystemTagErrorMessage) {
+								log.debug("found system tag error");
+								/*
+								 * FIXME: the i-th position in the list at hand is not the
+								 * same as the i-th position in the original list!
+								 */
+								errors.rejectValue("bibtex.list[" + i + "].tags", msg.getErrorCode(), msg.getParameters(), msg.getDefaultMessage());
 							}
 						}
 					}
 				}
+				log.debug("all field errors: " + errors.getFieldError("bibtex.*"));
 			}
 		}
-	}
-
-
-
-
-	private Set<Integer> getErroneousLineNumbers(final ParseException[] exceptions)
-	{
-		final Set<Integer> result = new HashSet<Integer>();
-		final Pattern lineNumberPattern = Pattern.compile("([0-9]+).+");
-		for(final ParseException exceptIter : exceptions)
-		{
-			final Matcher patMat = lineNumberPattern.matcher(exceptIter.getMessage());
-			if(patMat.find())
-				result.add(Integer.parseInt((patMat.group(1).toLowerCase())));
-		}
-		return result; 
-	}
-
-
-	@Override
-	public Errors getErrors() {
-		return errors;
-	}
-
-	@Override
-	public void setErrors(final Errors errors) {
-		this.errors = errors;
 	}
 
 	@Override
 	protected View getPostView() {
-
 		return Views.EDIT_PUBLICATION;
 	}
 
@@ -605,24 +628,21 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 
 	@Override
 	protected PostPublicationCommand instantiateEditPostCommand() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	protected BibTex instantiateResource() {
-		// TODO Auto-generated method stub
-		return null;
+		return new BibTex();
 	}
 
 	@Override
 	protected void setDuplicateErrorMessage(final Post<BibTex> post, final Errors errors) {
-		// TODO Auto-generated method stub
-
+		errors.reject("error.duplicate.post");
 	}
 
 	@Override
-	protected void workOnCommand(final EditPostCommand<BibTex> command, final User loginUser) {
+	protected void workOnCommand(final PostPublicationCommand command, final User loginUser) {
 		// TODO Auto-generated method stub
 
 	}
@@ -633,13 +653,5 @@ public class PostPublicationController extends EditPostController<BibTex,PostPub
 
 	public void setUploadFactory(final FileUploadFactory uploadFactory) {
 		this.uploadFactory = uploadFactory;
-	}
-
-	public MessageSource getMessageSource() {
-		return this.messageSource;
-	}
-
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
 	}
 }
