@@ -63,7 +63,8 @@
 				</div>
 			  
 			  <div class="fsRow">
-		        <form:label cssClass="fsLabel" path="user.settings.tagboxMaxCount">Hier tagbox</form:label>
+		        <form:label cssClass="fsLabel" path="user.settings.tagboxMaxCount"><fmt:message key="settings.tag.maxTagCount"/></form:label>
+		        <buttons:help message="settings.tag.maxTagCount.help"/>
 		        <form:input cssClass="fsInput fsSmall" path="user.settings.tagboxMaxCount"/>
 		      </div>
 		    

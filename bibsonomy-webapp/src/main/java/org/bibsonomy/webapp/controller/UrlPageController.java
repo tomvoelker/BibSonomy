@@ -65,7 +65,7 @@ public class UrlPageController extends SingleResourceListController implements M
 		
 		// handle the case when only tags are requested
 		command.setResourcetype(ResourceType.BOOKMARK.getLabel());
-		this.handleTagsOnly(command, groupingEntity, groupingName, null, null, requHash, null, 0, 1000, null);
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, null, requHash, 1000, null);
 		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
@@ -99,7 +99,7 @@ public class UrlPageController extends SingleResourceListController implements M
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			// FIXME: here we assume, bookmarks are handled, further above we use listsToInitialize ...
-			setTags(command, Bookmark.class, groupingEntity, groupingName, null, null, requHash, null, 0, 1000, null);
+			setTags(command, Bookmark.class, groupingEntity, groupingName, null, null, requHash, 1000, null);
 
 			return Views.URLPAGE;	
 		}

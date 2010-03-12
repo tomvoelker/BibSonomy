@@ -44,7 +44,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 		final List<String> requTags = command.getRequestedTagsList();
 
 		// handle the case when tags only are requested
-		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, null, 0, Integer.MAX_VALUE, null);		
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, Integer.MAX_VALUE, null);		
 		
 		// determine which lists to initalize depending on the output format
 		// and the requested resourcetype
@@ -61,7 +61,7 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(format)) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, requTags, null, null, 0, 20000, null);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, requTags, null, 20000, null);
 
 			// log if a user has reached threshold
 			if (command.getTagcloud().getTags().size() > 19999) {

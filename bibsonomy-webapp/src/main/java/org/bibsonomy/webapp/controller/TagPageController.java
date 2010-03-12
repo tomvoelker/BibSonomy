@@ -44,7 +44,7 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		
 		// handle case when only tags are requested
 		// FIXME we can only retrieve 1000 tags here
-		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, requTags, null, null, 0, 1000, null);
+		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, requTags, null, 1000, null);
 		
 		// requested order
 		Order order = Order.ADDED;

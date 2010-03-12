@@ -42,7 +42,7 @@ public class CvPageController extends ResourceListController implements Minimali
 
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
 
-		this.setTags(command, Resource.class, groupingEntity, requUser, null, command.getRequestedTagsList(), null, null, 0, Integer.MAX_VALUE, null);
+		this.setTags(command, Resource.class, groupingEntity, requUser, null, command.getRequestedTagsList(), null, command.getContext().getLoginUser().getSettings().getTagboxMaxCount(), null);
 
 		/*
 		 * retrieve and set the requested bibtex(s) / bookmark(s) with the "myown" tag

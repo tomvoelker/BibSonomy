@@ -6,8 +6,8 @@ package org.bibsonomy.webapp.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bibsonomy.common.enums.TagCloudStyle;
 import org.bibsonomy.common.enums.TagCloudSort;
+import org.bibsonomy.common.enums.TagCloudStyle;
 import org.bibsonomy.model.Tag;
 
 /**
@@ -22,6 +22,7 @@ public class TagCloudCommand extends BaseCommand {
 	private TagCloudStyle style = TagCloudStyle.CLOUD;
 	private TagCloudSort sort = TagCloudSort.ALPHA;
 	private int maxTagCount;
+	
 	public int getMaxUserTagCount() {
 		return this.maxUserTagCount;
 	}

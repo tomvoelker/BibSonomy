@@ -59,11 +59,18 @@ public abstract class ResourceListController {
 	 * @param start start parameter
 	 * @param end end parameter
 	 */
-	protected <T extends Resource, V extends ResourceViewCommand> void setTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search) {
+	protected <T extends Resource, V extends ResourceViewCommand> void setTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, int max, String search) {
 		final TagCloudCommand tagCloudCommand = cmd.getTagcloud();
+		final UserSettings userSettings = cmd.getContext().getLoginUser().getSettings();
 		// retrieve tags
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
-		tagCloudCommand.setTags( this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, hash, order, start, end, search, null));
+		Order order = null;
+		if(userSettings.getTagboxMaxCount() != -1) {
+			order = Order.FREQUENCY;
+			if(userSettings.getTagboxMaxCount() < max)
+				max = userSettings.getTagboxMaxCount();
+		}
+		tagCloudCommand.setTags( this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, hash, order, 0, max, search, null));
 		// retrieve tag cloud settings
 		tagCloudCommand.setStyle(TagCloudStyle.getStyle(userSettings.getTagboxStyle()));
 		tagCloudCommand.setSort(TagCloudSort.getSort(userSettings.getTagboxSort()));
@@ -90,7 +97,7 @@ public abstract class ResourceListController {
 	 * @param end
 	 * @param search
 	 */
-	protected <V extends ResourceViewCommand> void handleTagsOnly(V cmd, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search) {
+	protected <V extends ResourceViewCommand> void handleTagsOnly(V cmd, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, int max, String search) {
 		final String tagsType = cmd.getTagstype();
 		if (tagsType != null) {
 			
@@ -114,7 +121,7 @@ public abstract class ResourceListController {
 			}
 					
 			// fetch tags, store them in bean
-			this.setTags(cmd, resourcetype, groupingEntity, groupingName, regex, tags, hash, order, start, end, search);
+			this.setTags(cmd, resourcetype, groupingEntity, groupingName, regex, tags, hash, max, search);
 			
 			// when tags only are requested, we don't need bibtexs and bookmarks
 			this.listsToInitialise.remove(BibTex.class);

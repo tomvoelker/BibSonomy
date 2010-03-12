@@ -49,7 +49,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		final boolean isRelevantFor = checkRelevantFor(requTags);
 		
 		// handle case when only tags are requested
-		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags , null, null, 0, Integer.MAX_VALUE, null);
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags , null, Integer.MAX_VALUE, null);
 
 		// special group given - return empty page
 		if (GroupID.isSpecialGroup(groupingName)) return Views.GROUPPAGE;
@@ -98,7 +98,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			command.setPageTitle("group :: " + groupingName);	
 
 			// always retrieve all tags of this group
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, Integer.MAX_VALUE, null);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
 			this.setGroupDetails(command, groupingName);
 
 			if (requTags.size() > 0) {

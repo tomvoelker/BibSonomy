@@ -55,7 +55,7 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		 * FIXME: hardcoded end value
 		 */
 		command.setResourcetype("bibtex");
-		this.handleTagsOnly(command, groupingEntity, requUser, null, null, hash, null, 0, 1000, null);
+		this.handleTagsOnly(command, groupingEntity, requUser, null, null, hash, 1000, null);
 
 		/*
 		 * retrieve and set the requested bibtex(s)
@@ -136,14 +136,14 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 				 * will be highlighted later
 				 * FIXME: hardcoded end value
 				 */
-				this.setTags(command, BibTex.class, GroupingEntity.ALL, null, null, null, hash, null, 0, 1000, null);
+				this.setTags(command, BibTex.class, GroupingEntity.ALL, null, null, null, hash, 1000, null);
 				return Views.BIBTEXDETAILS;
 			}
 			/*
 			 * get only those tags, related to the resource
 			 * FIXME: hardcoded end value
 			 */
-			this.setTags(command, BibTex.class, groupingEntity, requUser, null, null, hash, null, 0, 1000, null);			
+			this.setTags(command, BibTex.class, groupingEntity, requUser, null, null, hash, 1000, null);			
 			return Views.BIBTEXPAGE;
 
 		}

@@ -95,7 +95,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
 			if(groupingEntity != GroupingEntity.ALL) {
-				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
+				this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 1000, null);
 			}
 			
 			this.endTiming();

@@ -10,8 +10,8 @@ import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.AuthorResourceCommand;
 import org.bibsonomy.webapp.command.ListCommand;
@@ -66,7 +66,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		requTags.add(SystemTagsUtil.buildSystemTagString(SystemTags.AUTHOR, authorQuery));
 		
 		// handle case when only tags are requested
-		this.handleTagsOnly(command, groupingEntity, null, null, requTags, null, null, 0, 1000, null);
+		this.handleTagsOnly(command, groupingEntity, null, null, requTags, null, 1000, null);
 				
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
@@ -90,7 +90,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, BibTex.class, groupingEntity, null, null, requTags, null, null, 0, 1000, null);
+			this.setTags(command, BibTex.class, groupingEntity, null, null, requTags, null, 1000, null);
 			this.endTiming();
 			if(hasTags){
 				this.setRelatedTags(command, BibTex.class, groupingEntity, authorQuery, null, requTags, Order.ADDED, 0, 20, null);

@@ -46,7 +46,7 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 		final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity()); 
 
 		// handle case when only tags are requested
-		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, null, 0, Integer.MAX_VALUE, null);
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, Integer.MAX_VALUE, null);
 		
 		// if we're in the personalized view, we have to retrieve all posts first & then 
 		// re-rank them 

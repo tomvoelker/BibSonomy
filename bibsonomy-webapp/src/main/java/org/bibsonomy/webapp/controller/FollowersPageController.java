@@ -54,7 +54,7 @@ public class FollowersPageController extends SingleResourceListController implem
 		
 		
 		// handle case when only tags are requested
-		this.handleTagsOnly(command, groupingEntity, groupingName, null, null, null, null, 0, Integer.MAX_VALUE, null);
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
 		
 		// personalization settings
 		final int entriesPerPage = Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;

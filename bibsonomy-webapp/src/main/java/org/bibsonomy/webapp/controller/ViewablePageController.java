@@ -43,7 +43,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		
 		// handle the case when only tags are requested
 		// TODO: max 1000 tags
-		this.handleTagsOnly(command, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);		
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, null, null, 1000, null);		
 		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
@@ -57,7 +57,7 @@ public class ViewablePageController extends SingleResourceListControllerWithTags
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 1000, null);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 1000, null);
 			this.setGroupDetails(command, groupingName);
 			
 			if (requTags.size() > 0) {

@@ -62,7 +62,7 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 		command.setPageTitle("relations :: " + groupingName);
 		
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, 20000, null);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, 20000, null);
 
 			// log if a user has reached threshold
 			if (command.getTagcloud().getTags().size() > 19999) {

@@ -68,7 +68,7 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 		// html format - fetch tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			// tags
-			setTags(command, BibTex.class, groupingEntity, groupingName, null, command.getRequestedTagsList(), null, null, 0, 1000, null);
+			setTags(command, BibTex.class, groupingEntity, groupingName, null, command.getRequestedTagsList(), null, 1000, null);
 			if (command.getTagcloud().getTags().size() > 999) {
 				log.error("Found bibtex entries by bibtex keys with more than 1000 tags assigned!!");
 			}

@@ -56,7 +56,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		}
 		
 		// handle case when only tags are requested
-		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, null, 0, Integer.MAX_VALUE, null);
+		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags, null, Integer.MAX_VALUE, null);
 				
 		FilterEntity filter = null;
 
@@ -134,7 +134,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 				}
 			}
 			
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, null, 0, Integer.MAX_VALUE, null);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
 
 			// retrieve concepts
 			final List<Tag> concepts = this.logic.getConcepts(null, groupingEntity, groupingName, null, null, ConceptStatus.PICKED, 0, Integer.MAX_VALUE);
