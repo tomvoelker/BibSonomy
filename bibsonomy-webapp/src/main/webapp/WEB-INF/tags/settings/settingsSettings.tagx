@@ -61,6 +61,11 @@
 					<buttons:help message="settings.tag.onlyMinFreq.help"/>
 			        <form:input cssClass="fsInput fsSmall" path="user.settings.tagboxMinfreq"/>
 				</div>
+			  
+			  <div class="fsRow">
+		        <form:label cssClass="fsLabel" path="user.settings.tagboxMaxCount">Hier tagbox</form:label>
+		        <form:input cssClass="fsInput fsSmall" path="user.settings.tagboxMaxCount"/>
+		      </div>
 		    
 			    <div class="fsRow">
 				    <form:label cssClass="fsLabel" path="user.settings.tagboxTooltip"><fmt:message key="settings.tag.showTooltipsForTags"/></form:label>
