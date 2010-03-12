@@ -24,6 +24,8 @@
 
 package org.bibsonomy.bibtex.parser;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,7 +37,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.TagStringUtils;
-import org.bibsonomy.util.ValidationUtils;
 
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexString;
@@ -53,30 +54,14 @@ import bibtex.parser.ParseException;
  */
 public class PostBibTeXParser extends SimpleBibTeXParser {
 
-	/*
+	/**
 	 * Specifies the delimiter for keywords and tags
 	 */
 	private String delimiter;
-	public String getDelimiter() {
-		return this.delimiter;
-	}
-
-	public void setDelimiter(final String delimiter) {
-		this.delimiter = delimiter;
-	}
-
-	/*
+	/**
 	 * Specifies the whitespace substitute for keywords and tags
 	 */
 	private String whitespace;
-
-	public String getWhitespace() {
-		return this.whitespace;
-	}
-
-	public void setWhitespace(final String whitespace) {
-		this.whitespace = whitespace;
-	}
 
 	/**
 	 * Parses the given BibTeX entry and puts fields which are not part of the
@@ -125,7 +110,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		/*
 		 * if a post does not have misc fields, we don't have to do anything
 		 */
-		if (ValidationUtils.present(miscFields)) {
+		if (present(miscFields)) {
 			/*
 			 * put description from misc fields into post
 			 */
@@ -135,10 +120,11 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 			 */
 			final String keywords = miscFields.remove(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS);
 			try {
-				if(ValidationUtils.present(whitespace) && ValidationUtils.present(delimiter))
+				if (present(whitespace) && present(delimiter)) {
 					post.setTags(TagUtils.parse(TagStringUtils.cleanTags(keywords, true,  delimiter, whitespace)));
-				else
+				} else {
 					post.setTags(TagUtils.parse(keywords));
+				}
 			} catch (final RecognitionException ex) {
 				/*
 				 * silently ignore tag parsing errors ....
@@ -263,6 +249,20 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 * BibTexUtils.toBibtexString(post) puts into the string. 
 		 */
 		return parseBibTeXPost(BibTexUtils.toBibtexString(post));
+	}
+
+	
+	public String getDelimiter() {
+		return this.delimiter;
+	}
+	public void setDelimiter(final String delimiter) {
+		this.delimiter = delimiter;
+	}
+	public String getWhitespace() {
+		return this.whitespace;
+	}
+	public void setWhitespace(final String whitespace) {
+		this.whitespace = whitespace;
 	}
 
 }
