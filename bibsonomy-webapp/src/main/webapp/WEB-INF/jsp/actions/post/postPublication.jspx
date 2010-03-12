@@ -23,7 +23,7 @@
 	
 	<fmt:message key="post_bibtex.heading" var="msgPostPublication"/>
 	
-	<layout:tabLayout command="${command}"	pageTitle="${msgPostPublication}" requPath="${requPath}">
+	<layout:tabLayout command="${command}"	pageTitle="${msgPostPublication}" requPath="${requPath}" selectedNaviTab="nav_postPub">
 			 
 		<jsp:attribute name="heading">
 			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<c:out value="${msgPostPublication}"/></a>
@@ -59,7 +59,7 @@
 	  <jsp:attribute name="tabcontent">
 
 
-      
+		<errors:global errors="${errors}"/>      
       
       
       <c:set var="post" value="${command.post}"/>
@@ -102,26 +102,15 @@
 			
 			 -->
 
-
-			<c:if test="${not empty command.erroneousLineNumbers}">
-				<div style="margin-top:2em">
-					<a onclick="toggleImage('toggleErroneousLineNumbersButton', '${resdir}/image/nice_box_arrow_right.png', '${resdir}/image/nice_box_arrow.png', 'erroneousLineNumbers')" ><img id="toggleErroneousLineNumbersButton" style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.erroneous_line_numbers"/></h3></a>
-				</div>
-				<ul class="errorLineList" id="erroneousLineNumbers">
-					<c:forEach var="lineNumber" items="${command.erroneousLineNumbers}">
-						<li class="smalltext">${lineNumber}</li>
-					</c:forEach>
-				</ul>
-			</c:if>
 		
-			<c:if test="${command.extendedView}">
+			<c:if test="${not empty command.bibtex}">
 				<div style="margin-top:2em">
 					<a onclick="toggleImage('toggleParsedPostViewButton', '${resdir}/image/nice_box_arrow_right.png', '${resdir}/image/nice_box_arrow.png', 'parsedPostView')"><img id="toggleParsedPostViewButton" style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.parse_or_incomplete_bibtex"/></h3></a>
 				</div>
 
 				<div id="parsedPostView">
 						<p class="smalltext" style="margin-top:1em; margin-bottom:1em"><fmt:message key="import.error.parse_or_incomplete_bibtex.description"/></p>
-						<fieldset class="fsOuter" style="background-color:#EEEEEE; border:1px solid #006699; position:relative; padding: 5px">
+						<fieldset class="fsOuter">
 								<edit:batchEditContent	formAction="${command.formAction}" 
 														resourceType="bibtex"
 					        							listView="${command.bibtex}" 
