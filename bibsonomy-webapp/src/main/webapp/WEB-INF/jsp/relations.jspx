@@ -50,7 +50,11 @@
 		<c:forEach var="upperTag" items="${command.tagRelations}">
 			<tr>
 			<td class="upperconcept">
-				<a style="font-size: ${(upperTag.usercount * 10) + 80}%" title="${upperTag.usercount} users"  href="/concept/tag/${mtl:encodeURI(upperTag.name)}"><c:out value="${upperTag.name}"/></a>
+					<fmt:message var="upperTagTitle" key="relations.userCount">
+						<fmt:param>${fn:escapeXml(upperTag.usercount)}</fmt:param>
+						<fmt:param>${upperTag.name}</fmt:param>
+					</fmt:message>
+				<a style="font-size: ${(upperTag.usercount * 10) + 80}%" title="${upperTagTitle}"  href="/concept/tag/${mtl:encodeURI(upperTag.name)}"><c:out value="${upperTag.name}"/></a>
 			</td>
 			<td>&#8592;</td>
 			<td>
