@@ -83,9 +83,7 @@ public class ISBNScraper implements Scraper {
 					throw new InternalFailureException(ex);
 				}
 
-			} 
-			
-			if (ValidationUtils.present(issn)){
+			} else if (ValidationUtils.present(issn)){
 				try {
 					String bibtex = WorldCatScraper.getBibtexByISSN(issn+ADV_PARAM);
 					
