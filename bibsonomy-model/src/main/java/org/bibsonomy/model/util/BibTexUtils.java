@@ -23,6 +23,8 @@
 
 package org.bibsonomy.model.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -48,7 +50,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
 import org.bibsonomy.services.URLGenerator;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.tex.TexDecode;
 
 /**
@@ -267,7 +268,7 @@ public class BibTexUtils {
 		final Map<String,String> miscFields = bib.getMiscFields();
 		final StringBuffer miscFieldsSerialized = new StringBuffer();
 		// loop over misc fields, if any
-		if (ValidationUtils.present(miscFields)) {
+		if (present(miscFields)) {
 			for (String key : miscFields.keySet()) {
 				miscFieldsSerialized.append("  " + key + " = {" + miscFields.get(key) + "},\n");
 			}
@@ -322,7 +323,7 @@ public class BibTexUtils {
 					 * Strings containing whitespace give empty fields ... we ignore them 
 					 */
 					final String value = ((String) o);
-					if (ValidationUtils.present(value)) {
+					if (present(value)) {
 						buffer.append("  " + d.getName() + " = {" + value + "},\n");
 					}
 				}
@@ -330,7 +331,7 @@ public class BibTexUtils {
 			/*
 			 * add misc fields
 			 */
-			if (ValidationUtils.present(bib.getMisc()) || ValidationUtils.present(bib.getMiscFields())) {
+			if (present(bib.getMisc()) || present(bib.getMiscFields())) {
 				// parse & re-serialize the misc field
 				parseMiscField(bib);
 				serializeMiscFields(bib);
@@ -342,7 +343,7 @@ public class BibTexUtils {
 			 * add month
 			 */
 			final String month = bib.getMonth();
-			if (ValidationUtils.present(month)) {
+			if (present(month)) {
 				// we don't add {}, this is done by getMonth(), if necessary
 				buffer.append("  month = " + getMonth(month) + ",\n");
 			}
@@ -350,7 +351,7 @@ public class BibTexUtils {
 			 * add abstract
 			 */
 			final String bibAbstract = bib.getAbstract();
-			if (ValidationUtils.present(bibAbstract)) {
+			if (present(bibAbstract)) {
 				buffer.append("  abstract = {" + bibAbstract + "},\n");
 			}
 			/*
@@ -737,7 +738,7 @@ public class BibTexUtils {
 	}
 	
 	private static String prepareNameRepresentationForView(final String string) {
-		return ValidationUtils.present(string) ? string.replaceAll(PersonNameUtils.PERSON_NAME_DELIMITER, "\n") : "";
+		return present(string) ? string.replaceAll(PersonNameUtils.PERSON_NAME_DELIMITER, "\n") : "";
 	}
 	
 	/**
@@ -755,6 +756,6 @@ public class BibTexUtils {
 	}
 	
 	private static String prepareNameRepresentationForDatabase(final String string) {
-		return ValidationUtils.present(string) ? string.replaceAll("\n", PersonNameUtils.PERSON_NAME_DELIMITER) : "";
+		return present(string) ? string.replaceAll("\n", PersonNameUtils.PERSON_NAME_DELIMITER) : "";
 	}
 }
