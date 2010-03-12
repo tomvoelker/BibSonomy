@@ -53,6 +53,11 @@ public class UserSettings {
 	private int tagboxMinfreq = 0;
 
 	/**
+	 * top x posts shown in the tag box
+	 */
+	private int tagboxMaxCount = 0;
+	
+	/**
 	 * tooltip; 0 = don't show, 1 = show TODO: what does this mean?
 	 */
 	private int tagboxTooltip = 0;
@@ -121,6 +126,20 @@ public class UserSettings {
 	 */
 	public void setTagboxMinfreq(int tagboxMinfreq) {
 		this.tagboxMinfreq = tagboxMinfreq;
+	}
+
+	/**
+	 * @param tagboxMaxCount
+	 */
+	public void setTagboxMaxCount(int tagboxMaxCount) {
+		this.tagboxMaxCount = tagboxMaxCount;
+	}
+	
+	/**
+	 * @return tagboxMaxCount
+	 */
+	public int getTagboxMaxCount() {
+		return tagboxMaxCount;
 	}
 
 	/**
