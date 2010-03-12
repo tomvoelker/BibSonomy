@@ -95,7 +95,7 @@
                                 <!--
                                    | groups 
                                    -->
-                                <post:groupBox post="${command.post}" groups="${loginUser.groups}"/>
+                                <post:groupBox groups="${loginUser.groups}"/>
 								<c:if test="${not empty loginUser.groups}">
 									<post:relevantForBox groups="${loginUser.groups}"/>
 								</c:if>	
