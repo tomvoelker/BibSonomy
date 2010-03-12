@@ -17,8 +17,10 @@ public class BatchEditCommand extends UserResourceViewCommand {
 	/**
 	 * The flag (from postPublication) that determines, if already existing posts will get updated.
 	 */
-	private boolean isOverwrite;
+	private boolean isOverwrite = false;
 	
+	private boolean editBeforeImport = false;
+
 	/**
 	 * This List contains all posts, that were to save, but an error occurred 
 	 * (needed for the error case)
@@ -179,12 +181,22 @@ public class BatchEditCommand extends UserResourceViewCommand {
 		return this.isOverwrite;
 	}
 	
+	@Override
 	public boolean isOverwrite() {
 		return this.isOverwrite;
 	}
 
+	@Override
 	public void setOverwrite(boolean isOverwrite) {
 		this.isOverwrite = isOverwrite;
+	}
+	
+	public boolean isEditBeforeImport() {
+		return this.editBeforeImport;
+	}
+
+	public void setEditBeforeImport(boolean editBeforeImport) {
+		this.editBeforeImport = editBeforeImport;
 	}
 
 

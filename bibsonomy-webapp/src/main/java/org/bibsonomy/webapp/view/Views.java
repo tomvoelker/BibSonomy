@@ -369,11 +369,7 @@ public enum Views implements View {
 	 * to edit the tags of publications
 	 */
 	BATCHEDITBIB("actions/edit/batcheditbib"),
-	
-	/**
-	 * to edit the tags of temporarily stored publications
-	 */
-	BATCHEDIT_TEMP_BIB("actions/edit/batchedittempbib"),
+
 	/**
 	 * to edit the tags of bookmarks 
 	 */

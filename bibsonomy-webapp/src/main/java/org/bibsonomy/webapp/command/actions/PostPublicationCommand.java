@@ -121,39 +121,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		this.tabURL = tabURL;
 	}
 	
-	
-	/**
-	 * Detetermines, if we call import/publications a second time due to errors, the user can fix
-	 */
-	private boolean extendedView = false;
-	
-	/**
-	 * @returns True, if we call import/publications a second time due to errors, the user can fix
-	 */
-	public boolean isExtendedView() {
-		return this.extendedView;
-	}
 
-	/**
-	 * @param extendedView True, if we call import/publications a second time due to errors, the user can fix
-	 */
-	public void setExtendedView(final boolean extendedView) {
-		this.extendedView = extendedView;
-	}
-
-	/**
-	 * The errors during parsing
-	 */
-	private List<Integer> erroneousLineNumbers;
-	
-	public List<Integer> getErroneousLineNumbers() {
-		return this.erroneousLineNumbers;
-	}
-
-	public void setErroneousLineNumbers(final List<Integer> erroneousLineNumbers) {
-		this.erroneousLineNumbers = erroneousLineNumbers;
-	}
-	
 	/****************************
 	 * FOR ALL IMPORTS
 	 ****************************/
@@ -375,12 +343,15 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 
 		//=== change default tab to the manual tab
 		
-		if(!ValidationUtils.present(selTab))
+		if (!ValidationUtils.present(selTab))
 			selTab = 0;
 		
 		this.setTabURL(TAB_URL);
-		erroneousLineNumbers = new ArrayList<Integer>();
-			
+		
+		/*
+		 * defaults:
+		 */
+		this.whitespace = "_";
 	}
 	
 }
