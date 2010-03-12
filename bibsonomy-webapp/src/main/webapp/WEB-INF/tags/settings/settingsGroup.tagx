@@ -37,7 +37,7 @@
 			</c:if>
 			  <h3><fmt:message key="settings.addusertomygroup"/></h3>
 			  <form:form name="groupusers" method="post" action="/SettingsHandler">
-			    <label for="laddgu"><fmt:message key="settings.username"/></label> 
+			    <label for="laddgu"><fmt:message key="user.name"/></label> 
 			    <form:input path="requestedUser" />
 			    <input type="hidden" name="ckey" value="${ckey}"/>
 			    <input type="submit" value="${adduser}" />
