@@ -29,7 +29,8 @@ public class HomepageController extends SingleResourceListController implements 
 
 		
 		// handle the case when only tags are requested
-		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, null, 0, 50, null);
+		//this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, null, 0, 50, null);
+		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, 50, null);
 		
 		// determine which lists to initialize depending on the output format 
 		// and the requested resource type
@@ -47,7 +48,8 @@ public class HomepageController extends SingleResourceListController implements 
 		if (command.getFormat().equals("html")) {
 			command.setPageTitle("home");
 			command.setApplicationName("puma");
-			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, 0, 50, null);
+			//setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, null, 0, 50, null);
+			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, 50, null);
 			this.endTiming();
 			return Views.PUMAHOMEPAGE;		
 		}
