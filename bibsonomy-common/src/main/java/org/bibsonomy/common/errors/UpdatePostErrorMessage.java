@@ -16,9 +16,9 @@ public class UpdatePostErrorMessage extends ErrorMessage{
 	 */
 	public UpdatePostErrorMessage(String resourceClassName, String intraHash) {
 		super();
-		this.setErrorMessage("Could not update " + resourceClassName + ": This " + resourceClassName +
+		this.setDefaultMessage("Could not update " + resourceClassName + ": This " + resourceClassName +
 				" does not exists in your collection (intrahash: " + intraHash + ")");
-		this.setLocalizedMessageKey("database.exception.update.noOriginal");
+		this.setErrorCode("database.exception.update.noOriginal");
 	}
 
 }

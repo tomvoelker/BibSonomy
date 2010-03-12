@@ -1,6 +1,5 @@
 package org.bibsonomy.common.errors;
 
-import java.util.ArrayList;
 
 /**
  * @author sdo
@@ -14,9 +13,9 @@ public class SystemTagErrorMessage extends ErrorMessage{
 	 * @param localizedMessageKey
 	 * @param parameters
 	 */
-	public SystemTagErrorMessage(String errorMessage, String localizedMessageKey, ArrayList<String>parameters) {
-		this.setErrorMessage(errorMessage);
-		this.setLocalizedMessageKey(localizedMessageKey);
+	public SystemTagErrorMessage(String errorMessage, String localizedMessageKey, String[] parameters) {
+		this.setDefaultMessage(errorMessage);
+		this.setErrorCode(localizedMessageKey);
 		this.setParameters(parameters);
 	}
 }

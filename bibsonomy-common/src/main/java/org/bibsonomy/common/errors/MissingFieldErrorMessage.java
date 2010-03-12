@@ -12,7 +12,7 @@ public class MissingFieldErrorMessage extends ErrorMessage{
 	 * @param missing 
 	 */
 	public MissingFieldErrorMessage(String missing) {
-		this.setErrorMessage("Missing "+missing+ " for this post.");
-		this.setLocalizedMessageKey("database.exceptions.missing."+missing.toLowerCase());
+		this.setDefaultMessage("Missing "+missing+ " for this post.");
+		this.setErrorCode("database.exceptions.missing."+missing.toLowerCase());
 	}
 }

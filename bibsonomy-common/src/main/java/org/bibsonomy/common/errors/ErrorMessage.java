@@ -25,9 +25,6 @@ package org.bibsonomy.common.errors;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 //TODO: find a nice and suitable name for errorsPackage
 /**
@@ -37,9 +34,9 @@ import java.util.List;
 public class ErrorMessage {
 
 
-	private String errorMessage;
-	private String localizedMessageKey;
-	private List<String> parameters = null;
+	private String defaultMessage;
+	private String errorCode;
+	private String[] parameters = null;
 	
 
 	/**
@@ -50,66 +47,66 @@ public class ErrorMessage {
 	}
 	
 	/**
-	 * @param errorMessage is like the exception message
-	 * @param localizedMessageKey 	is a key to the corresponding localized String in the message_properties files
+	 * @param defaultMessage is like the exception message
+	 * @param errorCode 	is a key to the corresponding localized String in the message_properties files
 	 * @param parameters are some Strings for the localized message
 	 */
-	public ErrorMessage(String errorMessage, String localizedMessageKey, List<String>parameters) {
-		this.errorMessage = errorMessage;
-		this.localizedMessageKey = localizedMessageKey;
+	public ErrorMessage(String defaultMessage, String errorCode, String[] parameters) {
+		this.defaultMessage = defaultMessage;
+		this.errorCode = errorCode;
 		if (present(parameters)) {
 			this.parameters = parameters;
 		} else {
-			this.parameters = new ArrayList<String>();
+			this.parameters = new String[]{};
 		}
 	}
 
 	/**
-	 * @return the errorMessage
+	 * @return the defaultMessage
 	 */
-	public String getErrorMessage() {
-		return this.errorMessage;
+	public String getDefaultMessage() {
+		return this.defaultMessage;
 	}
 
 	/**
-	 * @param errorMessage the errorMessage to set
+	 * @param defaultMessage the errorMessage to set
 	 */
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
+	public void setDefaultMessage(String defaultMessage) {
+		this.defaultMessage = defaultMessage;
 	}
 	
 	/**
 	 * @return the localizedMessageKey
 	 */
-	public String getLocalizedMessageKey() {
-		return this.localizedMessageKey;
+	public String getErrorCode() {
+		return this.errorCode;
 	}
 
 	/**
-	 * @param localizedMessageKey the localizedMessageKey to set
+	 * @param errorCode the localizedMessageKey to set
 	 */
-	public void setLocalizedMessageKey(String localizedMessageKey) {
-		this.localizedMessageKey = localizedMessageKey;
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
 	}
 
 	/**
 	 * @return the parameters
 	 */
-	public List<String> getParameters() {
+	public String[] getParameters() {
 		return this.parameters;
 	}
 
 	/**
 	 * @param parameters the parameters to set
 	 */
-	public void setParameters(List<String> parameters) {
+	public void setParameters(String[] parameters) {
 		this.parameters = parameters;
 	}
 	
 	
 	@Override
 	public String toString() {
-		return errorMessage;
+		return defaultMessage;
 	}
 
 }
