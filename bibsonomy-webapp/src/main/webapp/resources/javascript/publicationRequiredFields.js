@@ -1,3 +1,4 @@
+var form_name = '#post\\.resource\\.title';
 
 /**
  * queries the titles and further details of publications by a partial title
@@ -11,24 +12,24 @@ function getSuggestions(partialTitle, autocompletion) {
 		return;
 	}
 
-	$("#post\\.resource\\.title").blur(function() {
+	$(form_name).blur(function() {
 		window.setTimeout(function() {
 			$("#suggestionBox").hide();
 		},
 		140);
 	});
 
-	if(partialTitle.length%2 == 0 && partialTitle.length < 2) {
-		$("#suggestionBox").hide();
-	} else {
+	if(partialTitle.length > 1) {
 		var query = $.ajax({
 			type: "GET",
 			url: "/json/tag/sys:title:"+partialTitle+"*",
 			dataType: "json",
 			success: function(json){
 			processResponse(json);
-      }});
+		}});
+		return;
 	}
+	$("#suggestionBox").hide();	
 }
 
 /**
@@ -44,8 +45,10 @@ function processResponse(data) {
 	if(data.items.length == 0) {
 		return;
 	}
-
-	var p = $('<div style="background-color: #006699; color: #FFFFFF; padding:3px;">Suggestions</p>');
+	//style="background-color: #006699; color: #FFFFFF; padding:3px;"
+	var p = $('<div class="suggBox" style="background-color: #006699; color: #FFFFFF; padding:3px;">'
+			+getString('post.resource.suggested')
+			+'</div>');
 	$("#suggestionBox").html(p);
 	
 	$.each(data.items, function(i, item) {
@@ -79,16 +82,16 @@ function processResponse(data) {
 				// get title specific data
 				// and set the forms accordingly
 				function () {
-          window.open('postPublication?intrahash='+intraHash);
-          $("#suggestionBox").hide();
+		          window.location.href = '/editPublication?hash='+intraHash;
+		          $("#suggestionBox").hide();
 				}
 		);
  
 	 $("#suggestionBox").append(element);
 	})
-	var pos = $("#post\\.resource\\.title").offset();
-	var width = $("#post\\.resource\\.title").width();
-	var top = parseInt(pos+$("#post\\.resource\\.title").height())+6;
+	var pos = $(form_name).offset();
+	var width = $(form_name).width();
+	var top = parseInt(pos+$(form_name).height())+6;
 	$("#suggestionBox").css(
 			{
 				"left":(pos.left+1)+"px",
@@ -128,11 +131,12 @@ function concatArray(data, max_len, delim) {
  * @return a formatted string
  */
 function formatLabel (label) {
-		var pos = label.toUpperCase().indexOf($("#post\\.resource\\.title").val().toUpperCase());
+	var pos = label.toUpperCase().indexOf($(form_name).val().toUpperCase());
+	
     return label.substr(0, pos)
     +'<b>'
-    +label.substr(pos, $("#post\\.resource\\.title").val().length)
+    +label.substr(pos, $(form_name).val().length)
     +'</b>'
-    +label.substr(pos + $("#post\\.resource\\.title").val().length);
+    +label.substr(pos + $(form_name).val().length);
 }
 
