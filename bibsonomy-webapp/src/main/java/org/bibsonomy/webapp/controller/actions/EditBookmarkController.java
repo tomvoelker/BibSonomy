@@ -4,7 +4,6 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.actions.EditBookmarkCommand;
-import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.Views;
@@ -47,7 +46,7 @@ public class EditBookmarkController extends EditPostController<Bookmark, EditBoo
 	}
 
 	@Override
-	protected void workOnCommand(EditPostCommand<Bookmark> command, User loginUser) {
+	protected void workOnCommand(final EditBookmarkCommand command, User loginUser) {
 		// noop
 	}
 
