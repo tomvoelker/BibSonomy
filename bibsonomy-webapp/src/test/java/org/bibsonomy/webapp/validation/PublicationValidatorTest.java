@@ -47,13 +47,12 @@ public class PublicationValidatorTest {
 		bib.setYear("1999");
 		post.addTag("tag");
 		/*
-		 * errors only on tags/title (we check before binding ... and can't 
+		 * errors only on tags (we check before binding ... and can't 
 		 * bind them here) 
 		 */
 		errors = validate(command);
 		Assert.assertEquals(0, errors.getGlobalErrorCount());
-		Assert.assertEquals(2, errors.getErrorCount());
-		Assert.assertEquals(1, errors.getFieldErrorCount("post.resource.title"));
+		Assert.assertEquals(1, errors.getErrorCount());
 		Assert.assertEquals(1, errors.getFieldErrorCount("tags"));
 		/*
 		 * broken misc field: errors!
@@ -61,7 +60,7 @@ public class PublicationValidatorTest {
 		bib.setMisc("foo = {bar");
 		errors = validate(command);
 		Assert.assertEquals(0, errors.getGlobalErrorCount());
-		Assert.assertEquals(3, errors.getErrorCount());
+		Assert.assertEquals(2, errors.getErrorCount());
 		Assert.assertEquals(1, errors.getFieldErrorCount("post.resource.misc"));
 	}
 
