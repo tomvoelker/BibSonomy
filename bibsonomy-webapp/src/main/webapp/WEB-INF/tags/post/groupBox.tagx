@@ -15,14 +15,11 @@
      -->
 
 	<jsp:directive.attribute name="groups" type="java.util.List" required="true"/>
-    <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
 	<div id="groupBoxleft">
 		<fieldset id="fsgroupBoxleft">
 			<legend>
-				<form:label path="groups">
-					<fmt:message key="post.resource.viewablefor"/>*
-				</form:label>
+				<form:label path="groups"><fmt:message key="post.resource.viewablefor"/>*</form:label>
 			</legend>
 	
 			<div style="float: left; margin-right: 1ex;">

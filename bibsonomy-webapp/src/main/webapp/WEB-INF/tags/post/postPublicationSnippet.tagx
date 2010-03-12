@@ -14,43 +14,41 @@
      
 	<h2><fmt:message key="post_bibtex.pub_snippet.heading" /></h2>
 	<p class="smalltext"><fmt:message key="post_bibtex.pub_snippet.description" /></p>
-     
-	<form method="post" action="/import/publications">
+    
+    
+    <form:form method="post" action="/import/publications">
 		<div id="fsform">
 			<fieldset class="fsOuter">
            		<input type="hidden" name="selTab" value="1" />
 				<input type="hidden" name="ckey" value="${ckey}"/>
            				
 				<div class="fsRow">
-			    	<label class="fsLabel" for="selection"><fmt:message key="post_bibtex.pub_snippet.snippet" />*</label>
-			    	<textarea class="fsInput" name="selection" rows="10" onkeyup="sz(this);" ><!-- don't delete me --></textarea>
+			    	<form:label path="selection" cssClass="fsLabel"><fmt:message key="post_bibtex.pub_snippet.snippet" />*</form:label>
+			    	<form:textarea path="selection" cssClass="fsInput" rows="10"/>
 				</div>
-		  
-		  		<div class="fsRow">
-			    	<label class="fsLabel" for="description"><fmt:message key="post.resource.description" />*</label>
-					<input type="text" class="fsInput" name="description" /> 
+				
+				<div class="fsRow">
+			    	<form:label cssClass="fsLabel" path="description"><fmt:message key="post.resource.description" />*</form:label>
+					<form:input cssClass="fsInput" path="description"/> 
   				</div>
              
   				<div class="fsLabel"><!--  --></div>
-    			<post:simpleGroupBox groups="${command.context.loginUser.groups}"/>
-             
-	    		<div class="fsRow">
-			    	<label class="fsLabel"><fmt:message key="import.edit_before_import" /></label>
-			    	<buttons:help message="import.edit_before_import.help" />
-			    	<input type="checkbox" class="fsInput" name="editBeforeImport" value="" />
-				</div>
-			    
-			    <div class="fsRow">
-			    	<label class="fsLabel"><fmt:message key="import.overwritten" /></label>
-					<buttons:help message="import.overwrite2"/>
-			      	<input type="checkbox" class="fsInput" name="overwrite" value="" />
-				</div>
-	    		
-	    		<fmt:message var="post_button" key="post_bibtex.button_label_post" />
-	    		<input type="submit" style="clear:both; float:left" class="fsFormSubmit" name="submit" value="${post_button}" />
-				
+    			<post:groupBox groups="${command.context.loginUser.groups}"/>
+
+				<div class="fsRow">
+					<fmt:message var="post_button" key="post_bibtex.button_label_post" />
+					<input type="submit" class="fsFormSubmit" name="submit" value="${post_button}" />
+				</div>	    		
+
+				<!-- 
+					options (overwrite, charset, tag separator, etc.)
+				 -->
+				<fieldset class="fsInner">
+					<legend><fmt:message key="post_bibtex.upload.options" /></legend>
+					<post:postPublicationOptions/>
+				</fieldset>	    		
 			</fieldset>
-		</div>
-	</form>
+		</div>    
+    </form:form>
 
 </jsp:root>
