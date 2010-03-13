@@ -11,7 +11,7 @@
     
     <fmt:message var="selectCode" key="buttons.select_code"/>
    
-    <spring:theme code="image.snippet.bookmarkit" var="imageBookmarkIt" text="resources/image/bookmarkIt.png"/>
+    <spring:theme code="image.snippet.bookmarkit" var="imageBookmarkIt" />
 	<c:set var="imageBookmarkIt" value="${projectHome}${imageBookmarkIt}" />
     
 	<form name="select_all">
