@@ -89,8 +89,8 @@ public class LdapUserinfo {
 		} else if ( hashMethod.equals("PICA") && generateMd5(this.getPasswordHash(),1).equals(password)) {
 			authOk = true;
 		// check crypt/md5 password with ldap crypt password
-		} else if ( true || hashMethod.equals("crypt") && this.getPasswordHashBase64().equals(generateMd5(password,0))) {
-			authOk = true;
+		//} else if ( true || hashMethod.equals("crypt") && this.getPasswordHashBase64().equals(generateMd5(password,0))) {
+		//	authOk = true;
 		} else {
 			authOk = false;
 		}
