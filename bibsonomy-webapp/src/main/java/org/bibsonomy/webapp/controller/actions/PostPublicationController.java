@@ -354,19 +354,11 @@ public class PostPublicationController extends AbstractEditPublicationController
 		else
 			command.setDeleteCheckedPosts(false);
 
-
-		if (errors.hasErrors()) {
-			/*
-			 * BACK TO THE IMPORT/PUBLICATIONS VIEW
-			 * Posts will get saved temporarily, since an error occurred (checked posts will be saved)
-			 */
-			return Views.POST_PUBLICATION;
-		}
-
 		/*
-		 * Everything OK - finally the user has the chance to edit his posts.
+		 * If there are errors now or not - we return to the post
+		 * publication view to let the user edit his posts. 
 		 */
-		return Views.BATCHEDITBIB;
+		return Views.POST_PUBLICATION;
 	}
 
 	/**
