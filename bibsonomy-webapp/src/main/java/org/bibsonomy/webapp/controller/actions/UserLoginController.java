@@ -229,7 +229,8 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		        ldapUserinfo = ldap.checkauth(userId, password);
 			}
 			
-			if (null == ldapUserinfo)
+			// if user has an ldap user id and password is wrong
+			if ((null != userId) && (null == ldapUserinfo))
 			{
 				/*
 				 * user credentials do not match --> show error message
@@ -241,6 +242,11 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 				 */
 				grube.add(bibsonomyUsername);
 				grube.add(inetAddress);
+			}
+			else if ((null == userId) && (null == ldapUserinfo)) {
+				// user does has no ldap id in puma and can not authenticate at ldap
+				// set useLDAP to false to make it possible to authenticate against bibonomy user table and treat user as normal internal user 
+				useLDAP = false;
 			}
 			else
 			{
@@ -282,7 +288,10 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 				
 			}
 			
-		} else if (username != null && hashedPassword != null) {
+		}
+
+		
+		if (!useLDAP && username != null && hashedPassword != null) {
 			/*
 			 * authentication via username and password 
 			 */
