@@ -84,8 +84,12 @@ public class UserSettings {
 	 * Shall the web interface ask the user before it really deletes something?
 	 */
 	private boolean confirmDelete;
-
-
+	
+	/**
+	 * User wants maxCount (true) or maxFreq (false)
+	 */
+	private boolean isMaxCount;
+	
 	/**
 	 * @return tagboxStyle
 	 */
@@ -140,6 +144,20 @@ public class UserSettings {
 	 */
 	public int getTagboxMaxCount() {
 		return tagboxMaxCount;
+	}
+
+	/**
+	 * @return isMaxCount
+	 */
+	public boolean getIsMaxCount() {
+		return isMaxCount;
+	}
+
+	/**
+	 * @param isMaxCount
+	 */
+	public void setIsMaxCount(boolean isMaxCount) {
+		this.isMaxCount = isMaxCount;
 	}
 
 	/**
