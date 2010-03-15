@@ -58,10 +58,6 @@
 			
 	  <jsp:attribute name="tabcontent">
 
-
-		<errors:global errors="${errors}"/>      
-      
-      
       <c:set var="post" value="${command.post}"/>
       
 		<div style="float left;width:97%;margin-left:10px; padding-bottom: 13px;">
@@ -102,6 +98,11 @@
 			
 			 -->
 
+
+
+			<errors:global errors="${errors}"/>      
+      
+      
 		
 			<c:if test="${not empty command.bibtex}">
 				<div style="margin-top:2em">
