@@ -115,8 +115,13 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		user.getSettings().setDefaultLanguage(command.getUser().getSettings().getDefaultLanguage());
 		user.getSettings().setListItemcount(command.getUser().getSettings().getListItemcount());
 		user.getSettings().setTagboxTooltip(command.getUser().getSettings().getTagboxTooltip());
-		user.getSettings().setTagboxMinfreq(command.getUser().getSettings().getTagboxMinfreq());
-		user.getSettings().setTagboxMaxCount(command.getUser().getSettings().getTagboxMaxCount());
+		if(command.getUser().getSettings().getIsMaxCount()) {
+			user.getSettings().setIsMaxCount(true);
+			user.getSettings().setTagboxMaxCount(command.getChangeTo());
+		} else {
+			user.getSettings().setIsMaxCount(false);
+			user.getSettings().setTagboxMinfreq(command.getChangeTo());
+		}
 		user.getSettings().setTagboxSort(command.getUser().getSettings().getTagboxSort());
 		user.getSettings().setTagboxStyle(command.getUser().getSettings().getTagboxStyle());
 		

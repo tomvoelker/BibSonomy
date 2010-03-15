@@ -65,17 +65,18 @@ public abstract class ResourceListController {
 		// retrieve tags
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
 		Order order = null;
-		if(userSettings.getTagboxMaxCount() != -1) {
+		if(userSettings.getIsMaxCount()) {
 			order = Order.FREQUENCY;
-			if(userSettings.getTagboxMaxCount() < max)
-				max = userSettings.getTagboxMaxCount();
+			max = Math.min(max, userSettings.getTagboxMaxCount());
+		} else {
+			// overwrite minFreq only if not explicitly set by URL param
+			if (tagCloudCommand.getMinFreq() == 0) {tagCloudCommand.setMinFreq(userSettings.getTagboxMinfreq());}
 		}
+		
 		tagCloudCommand.setTags( this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, hash, order, 0, max, search, null));
 		// retrieve tag cloud settings
 		tagCloudCommand.setStyle(TagCloudStyle.getStyle(userSettings.getTagboxStyle()));
 		tagCloudCommand.setSort(TagCloudSort.getSort(userSettings.getTagboxSort()));
-		// overwrite minFreq only if not explicitly set by URL param
-		if (tagCloudCommand.getMinFreq() == 0) {tagCloudCommand.setMinFreq(userSettings.getTagboxMinfreq());}
 		tagCloudCommand.setMaxFreq(TagUtils.getMaxUserCount(tagCloudCommand.getTags()));
 	}
 	

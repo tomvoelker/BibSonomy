@@ -55,18 +55,6 @@
 			        	<form:option label="${frequency}" value="1"/>    
 			        </form:select>
 			    </div>
-		      
-			    <div class="fsRow">
-			    	<form:label cssClass="fsLabel" path="user.settings.tagboxMinfreq"><fmt:message key="settings.tag.onlyMinFreq"/></form:label>
-					<buttons:help message="settings.tag.onlyMinFreq.help"/>
-			        <form:input cssClass="fsInput fsSmall" path="user.settings.tagboxMinfreq"/>
-				</div>
-			  
-			  <div class="fsRow">
-		        <form:label cssClass="fsLabel" path="user.settings.tagboxMaxCount"><fmt:message key="settings.tag.maxTagCount"/></form:label>
-		        <buttons:help message="settings.tag.maxTagCount.help"/>
-		        <form:input cssClass="fsInput fsSmall" path="user.settings.tagboxMaxCount"/>
-		      </div>
 		    
 			    <div class="fsRow">
 				    <form:label cssClass="fsLabel" path="user.settings.tagboxTooltip"><fmt:message key="settings.tag.showTooltipsForTags"/></form:label>
@@ -77,6 +65,16 @@
 			        </form:select>
 			      </div>
 		
+				  <div class="fsRow">
+			        <form:label cssClass="fsLabel" path="user.settings.isMaxCount"><fmt:message key="settings.tag.maxCount"/></form:label>
+			        <buttons:help message="settings.tag.maxCount.help"/>
+			        <form:select cssClass="fsInput fsSmall" path="user.settings.isMaxCount">
+			          <form:option label="maxCount" value="true"/>
+			          <form:option label="minFreq" value="false"/>
+			        </form:select> 
+			        <form:input cssClass="fsInput fsLittle" path="changeTo"/>
+			      </div>
+			      
 				  <div class="fsRow">
 			        <form:label cssClass="fsLabel" path="user.settings.listItemcount"><fmt:message key="settings.tag.itemsPerPage"/></form:label>
 			        <buttons:help message="settings.tag.itemsPerPage.help"/>

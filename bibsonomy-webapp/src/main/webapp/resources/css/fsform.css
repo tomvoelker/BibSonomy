@@ -65,6 +65,12 @@
   max-width: 15em;
 }
 
+.fsLittle {
+  max-width: 2cm;
+  height: 19px;
+  margin-left: 2px; 	
+}
+
 #tagField {
   float: left;
   width: 73%; /* 2% space for reload button */   

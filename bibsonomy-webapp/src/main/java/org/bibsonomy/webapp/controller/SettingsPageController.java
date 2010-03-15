@@ -44,6 +44,10 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		final User loginUser = command.getContext().getLoginUser();
 		command.setUser(loginUser);
 		
+		//used to set the user specific value of maxCount/minFreq 
+		command.setChangeTo((loginUser.getSettings().getIsMaxCount() ? 
+				loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
+		
 		//check whether the user is a group		
 		if (UserUtils.userIsGroup(loginUser)) {
 			command.setHasOwnGroup(true);

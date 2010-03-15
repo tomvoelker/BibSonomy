@@ -38,6 +38,11 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private boolean hasOwnGroup;
 	
 	/**
+	 * number of the new maxCount/minFreq
+	 */
+	private int changeTo;
+	
+	/**
 	 * users which added the current login user in their friend list 
 	 */
 	private List<User> friendsOfUser;
@@ -328,5 +333,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	public void setDelete(String delete) {
 		this.delete = delete;
+	}
+
+	public int getChangeTo() {
+		return this.changeTo;
+	}
+
+	public void setChangeTo(int changeTo) {
+		this.changeTo = changeTo;
 	}
 }
