@@ -120,7 +120,11 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 			 */
 			final String keywords = miscFields.remove(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS);
 			try {
-				if (present(whitespace) && present(delimiter)) {
+				/*
+				 * we check whitespace only against NULL to allow empty strings (to produce
+				 * CamelCase tags)
+				 */
+				if (present(delimiter) && whitespace != null) {
 					post.setTags(TagUtils.parse(TagStringUtils.cleanTags(keywords, true,  delimiter, whitespace)));
 				} else {
 					post.setTags(TagUtils.parse(keywords));
