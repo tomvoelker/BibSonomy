@@ -58,6 +58,8 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public class PostPublicationController extends AbstractEditPublicationController<PostPublicationCommand> implements MinimalisticController<PostPublicationCommand>, ErrorAware {
+	private static final String ERROR_MESSAGE_LINE_NUMBER_SEPARATOR = ", ";
+
 	/**
 	 * the log...
 	 */
@@ -408,24 +410,20 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 */
 	private void handleParseExceptions(final ParseException[] parseExceptions) {
 		final StringBuffer buf = new StringBuffer("");
+		boolean lineFound = false;
 		for (final ParseException parseException: parseExceptions) {
 			final Matcher m = lineNumberPattern.matcher(parseException.getMessage());
 			if (m.find()) {
 				/*
+				 * if we have already found a broken line, append ", "
+				 */
+				if (lineFound) buf.append(", ");
+				/*
 				 * we have found a line number -> add it
 				 */
-				buf.append(m.group(1) + ", ");
+				buf.append(m.group(1));
+				lineFound = true;
 			}
-		}
-		if (buf.length() > 0) {
-			/*
-			 * remove last ", "
-			 */
-			buf.delete(buf.length() - ", ".length(), buf.length());
-			/*
-			 * add error message
-			 */
-			errors.reject("import.error.erroneous_line_numbers", new Object[]{buf}, "Your submitted publications contain errors at lines {0}.");
 		}
 	}
 
