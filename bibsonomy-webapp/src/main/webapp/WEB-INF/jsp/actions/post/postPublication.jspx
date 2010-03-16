@@ -99,12 +99,18 @@
 			 -->
 
 
+			<!-- 
+			
+				TODO: we should show line parsing errors in a custom form and not using the global error output.
+				(Nevertheless, we very probably need the global error tag for other errors.) 
+			
+			 -->
 
 			<errors:global errors="${errors}"/>      
       
       
 		
-			<c:if test="${not empty command.bibtex}">
+			<c:if test="${not empty command.bibtex and not empty command.bibtex.list}">
 				<div style="margin-top:2em">
 					<a onclick="toggleImage('toggleParsedPostViewButton', '${resdir}/image/nice_box_arrow_right.png', '${resdir}/image/nice_box_arrow.png', 'parsedPostView')"><img id="toggleParsedPostViewButton" style="float:left; height:10pt; padding:5pt" src="${resdir}/image/nice_box_arrow.png" alt=""/><h3><fmt:message key="import.error.parse_or_incomplete_bibtex"/></h3></a>
 				</div>
