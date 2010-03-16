@@ -118,4 +118,9 @@
 		WHERE `group` = #groupId#
 	</select>
 
+	<insert id="updateGroupSettings" parameterClass="group">
+		UPDATE groupids 
+		SET privlevel=#privlevel#, sharedDocuments=#sharedDocuments#
+		WHERE `group` = #groupId#
+	</insert>
 </sqlMap>

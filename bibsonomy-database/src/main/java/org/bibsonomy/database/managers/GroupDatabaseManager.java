@@ -26,6 +26,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.util.ExceptionUtils;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Used to retrieve groups from the database.
@@ -502,6 +503,30 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		
 		this.plugins.onRemoveUserFromGroup(username, group.getGroupId(), session);
 		this.delete("removeUserFromGroup", group, session);
+	}
+	
+	/**
+	 * Updates a group's privacy level and documents settings. 
+	 * The group is identified and the settings are specified by the attributes 
+	 * of parameter "updatedGroup".
+	 */
+	private void updateGroupSettings (final Privlevel priv, final boolean sharedDoc, final String groupname, final DBSession session) {
+		/*
+		 * get the group by its name
+		 */
+		Group groupToUpdate = this.getGroupByName(groupname, session);
+		if(!ValidationUtils.present(groupToUpdate))
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: there is no group with given name "+groupname+".");
+		/*
+		 * update its values
+		 */
+		groupToUpdate.setPrivlevel(priv);
+		groupToUpdate.setSharedDocuments(sharedDoc);
+		/*
+		 * store the bean
+		 */
+		this.update("updateGroupSettings", groupToUpdate, session);
+		return;
 	}
 
 	public void setUserDb(UserDatabaseManager userDbManager) {
