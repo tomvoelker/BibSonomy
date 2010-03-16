@@ -105,7 +105,7 @@ public class IOPScraper extends AbstractUrlScraper {
 		
 		String bibtex = "";
 		try {
-			bibtex = WebUtils.getPostContentAsString(new URL("http://iopscience.iop.org/export"), postArgs);
+			bibtex = WebUtils.getPostContentAsString(new URL("http://iopscience.iop.org/export"), postArgs, "utf8");
 		} catch (MalformedURLException ex) {
 			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
 		} catch (IOException ex) {
