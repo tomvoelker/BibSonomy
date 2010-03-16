@@ -23,6 +23,7 @@
 
 package org.bibsonomy.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,7 +41,7 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
  * 
  * @version $Id$
  */
-public abstract class Resource {
+public abstract class Resource implements Serializable{
 
 	/**
 	 * How many posts with this resource exist.

@@ -23,6 +23,7 @@
 
 package org.bibsonomy.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ import org.bibsonomy.model.util.SimHash;
  * @author Christian Schenk
  * @version $Id$
  */
-public class BibTex extends Resource {
+public class BibTex extends Resource  implements Serializable {
 
 	/**
 	 * Use this key to reference a citation, e.g. \cite{hotho2006information}.

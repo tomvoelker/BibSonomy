@@ -23,6 +23,7 @@
 
 package org.bibsonomy.model;
 
+import java.io.Serializable;
 import java.net.URL;
 
 import org.bibsonomy.util.StringUtils;
@@ -32,7 +33,7 @@ import org.bibsonomy.util.StringUtils;
  * 
  * @version $Id$
  */
-public class Bookmark extends Resource {
+public class Bookmark extends Resource  implements Serializable {
 
 	/**
 	 * An {@link URL} pointing to some website.
