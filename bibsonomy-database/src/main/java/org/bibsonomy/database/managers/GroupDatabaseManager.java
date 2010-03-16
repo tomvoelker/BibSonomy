@@ -515,6 +515,10 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 		Group groupToUpdate = this.getGroupByName(groupname, session);
 		if(!ValidationUtils.present(groupToUpdate))
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: there is no group with given name "+groupname+".");
+		if(!ValidationUtils.present(priv))
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: The privacy level parameter was not set. (required field)");
+		if(!ValidationUtils.present(sharedDoc))
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: The shared documents flag was not set. (required field)");
 		/*
 		 * update its values
 		 */
