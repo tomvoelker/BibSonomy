@@ -507,8 +507,6 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Updates a group's privacy level and documents settings. 
-	 * The group is identified and the settings are specified by the attributes 
-	 * of parameter "updatedGroup".
 	 */
 	private void updateGroupSettings (final Privlevel priv, final boolean sharedDoc, final String groupname, final DBSession session) {
 		/*
