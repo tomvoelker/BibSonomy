@@ -38,10 +38,12 @@ import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseSchemaInformation;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.services.searcher.ResourceSearch;
 
@@ -65,6 +67,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected final TagDatabaseManager tagDb;
 	protected final DatabasePluginRegistry plugins;
 	protected final PermissionDatabaseManager permissionDb;
+	protected final GroupDatabaseManager groupDb;
+
 
 	/** simple class name of the resource managed by the class */
 	protected final String resourceClassName;
@@ -84,10 +88,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.tagDb = TagDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.permissionDb = PermissionDatabaseManager.getInstance();
-
+		this.groupDb = GroupDatabaseManager.getInstance();
 		this.resourceClassName = this.getResourceClassName();
 	}
-	
+
 	/**
 	 * @return the lucene search instance to use
 	 */
@@ -509,6 +513,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return this.postList("get" + this.resourceClassName + "ByHashForUser", param, session);
 	}
 
+
+
 	/**
 	 * <em>/search/ein+lustiger+satz</em><br/><br/>
 	 * 
@@ -564,7 +570,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				log.debug("Lucene" + this.resourceClassName + " complete group search query time: " + (endtimeQuery-starttimeQuery) + "ms");
 				return postList;
 			}
-			
+
 			log.error("No resource searcher available.");
 			return new LinkedList<Post<R>>();
 		}
@@ -604,10 +610,10 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			final List<Post<R>> postList = lucene.searchPosts(group, search, requestedUserName, loginUserName, groupNames, limit, offset);
 			final long endtimeQuery = System.currentTimeMillis();
 			log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
-			
+
 			return postList;
 		}
-		
+
 		log.error("No resource searcher available.");
 		return new LinkedList<Post<R>>();
 	}
@@ -1009,8 +1015,20 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		if (list.size() > 1) {
 			log.warn("multiple " + this.resourceClassName + "-posts from user '" + requestedUserName + "' with hash '" + resourceHash + "' for user '" + loginUserName + "' found ->returning first");
 		}
-
-		return list.get(0);
+		final Post<R> post = list.get(0);
+		/*
+		 * If one of the post's groups is neither public nor private
+		 * (i.e., it is friends or a "regular" group) we must get
+		 * the (remaining) groups from the grouptas table.
+		 */
+		if (!GroupUtils.isExclusiveGroup(post.getGroups().iterator().next())) {
+			/*
+			 * neither public nor private ... ... get the groups
+			 * from the grouptas table
+			 */
+			post.setGroups(new HashSet<Group>(this.groupDb.getGroupsForContentId(post.getContentId(), session)));
+		}
+		return post;
 	}
 
 	/*
@@ -1033,7 +1051,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * get posts with the intrahash of the given post to check for possible duplicates 
 			 */
-			final Post<R> postInDB = this.getPostByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
+			final Post<R> postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
 			/*
 			 * check if user is trying to create a resource that already exists
 			 */
@@ -1063,20 +1081,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return true;
 	}
 
-	private Post<R> getPostByHashForUser(final String loginUserName, final String requHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final HashID hashType, final DBSession session) {
-		final List<Post<R>> posts = this.getPostsByHashForUser(loginUserName, requHash, requestedUserName, visibleGroupIDs, hashType, session);
-
-		if (present(posts)) {
-			if (posts.size() > 1) {
-				log.warn("multiple " + this.resourceClassName + " with hash " + requHash + " found for user " + loginUserName);
-			}
-
-			return posts.get(0);
-		}
-
-		// post not found
-		return null;
-	}
 
 	/*
 	 * FIXME: This method calls other methods of this class which 
@@ -1103,7 +1107,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			final Post<R> oldPost;
 			if (present(oldHash)) {
 				// if yes, check if a post exists with the old intrahash
-				oldPost = this.getPostByHashForUser(userName, oldHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
+				oldPost = this.getPostDetails(userName, oldHash, userName, new ArrayList<Integer>(), session);
 				/*
 				 * check if post to update is in db
 				 */
@@ -1111,7 +1115,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					/*
 					 * not found -> throw exception
 					 */
-					ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
+					final ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
 					session.addError(post.getResource().getIntraHash(), errorMessage);
 					// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 					session.commitTransaction();
@@ -1129,18 +1133,18 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * perform system tags before action
 			 */
-			List<SystemTag> systemTags = this.getSystemTags(post, oldPost.getTags());
+			final List<SystemTag> systemTags = this.getSystemTags(post, oldPost.getTags());
 			this.systemTagPerformBefore(post, systemTags, session);
 
 			/*
 			 * get posts with the intrahash of the given post to check for possible duplicates 
 			 */
-			final List<Post<R>> newPostsInDB = this.getPostsByHashForUser(userName, intraHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
+			final Post<R> newPostInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
 
 			/*
 			 * check if user is trying to create a resource that already exists
 			 */
-			if (present(newPostsInDB)) {
+			if (present(newPostInDB)) {
 				/*
 				 * new resource exists ... 
 				 */
@@ -1170,9 +1174,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				case UPDATE_TAGS:
 					this.performUpdateOnlyTags(post, oldPost, session);
 					break;
-//				case UPDATE_DOCUMENTS: // TODO: implement update documents operation
-//					this.performUpdateOnlyDocuments(post, oldPost, session);
-//					break;
+					//				case UPDATE_DOCUMENTS: // TODO: implement update documents operation
+					//					this.performUpdateOnlyDocuments(post, oldPost, session);
+					//					break;
 				default:
 					/*
 					 * as default update all parts of a post
@@ -1249,7 +1253,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * inform the listeners
 			 */
 			this.onPostUpdate(oldPost.getContentId(), post.getContentId(), session);
-			
+
 			/*
 			 * delete old post
 			 */
@@ -1285,13 +1289,18 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * delete old tags
 			 */
 			this.tagDb.deleteTags(oldPost, session);
-
 			/*
-			 * save new tags
+			 * fill the new posts with data from the old post that
+			 * should not change (e.g., date, user name, groups)
 			 */
-			post.getResource().recalculateHashes();
-
-			// insert new tags
+			post.setUser(oldPost.getUser());
+			post.setGroups(oldPost.getGroups());
+			post.setContentId(oldPost.getContentId());
+			post.setDate(oldPost.getDate());
+			post.setResource(oldPost.getResource());
+			/*
+			 * insert new tags
+			 */
 			this.tagDb.insertTags(post, session);
 
 			session.commitTransaction();			
@@ -1402,13 +1411,13 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	@Override
 	public boolean deletePost(String userName, String resourceHash, DBSession session) {
-		final Post<R> post = this.getPostByHashForUser(userName, resourceHash, userName, new ArrayList<Integer>(), HashID.INTRA_HASH, session);
-		
+		final Post<R> post = this.getPostDetails(userName, resourceHash, userName, new ArrayList<Integer>(), session);
+
 		if (!present(post)) {
 			log.debug("post with hash \"" + resourceHash + "\" not found");
 			return false;
 		}
-		
+
 		return this.deletePost(post, false, session);
 	}
 
@@ -1425,7 +1434,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		session.beginTransaction();
 		try {
 			final String userName = post.getUser().getName();
-			
+
 			final R resource = post.getResource();
 			final String resourceHash = resource.getIntraHash();
 

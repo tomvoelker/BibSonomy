@@ -6,12 +6,16 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.beans.TagIndex;
@@ -21,6 +25,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.testutil.CommonModelUtils;
 import org.bibsonomy.testutil.ModelUtils;
 import org.junit.Ignore;
@@ -630,4 +635,135 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals("testuser2", posts.get(2).getUser().getName());
 		assertEquals("7eda282d1d604c702597600a06f8a6b0", posts.get(2).getResource().getIntraHash());
 	}
+	
+	/**
+	 * We want to update a post's tags only.
+	 * 
+	 * We use the bookmark post from testuser1 with content_id 1.
+	 * 
+	 * Old tags: testtag
+	 * New tags: google yahoo
+	 * 
+	 * Groups: 3,4,5
+	 */
+	@Test
+	public void testUpdatePostTagsOnly() {
+		/*
+		 * the id of the post we're testing
+		 */
+		final String userName = "testuser1";
+		final String intraHash = "6f372faea7ff92eedf52f597090a6291";
+		/*
+		 * get original post for later comparison
+		 */
+		final Post<Bookmark> oldPost = this.bookmarkDb.getPostDetails(userName, intraHash, userName, Collections.singletonList(0), this.dbSession);
+		/*
+		 * OK, normally this should be tested elsewhere, but here
+		 * we check, if the post contains all information it should,
+		 * in particular all of its three groups
+		 */
+		assertEquals(3, oldPost.getGroups().size());
+		assertEquals(1, oldPost.getTags().size());
+		assertTrue(oldPost.getTags().contains(new Tag("testtag")));
+		/*
+		 * We set only the tags, the user name, and the resource's hash.
+		 * That should be sufficient to identify the original post and
+		 * update its tags.   
+		 */
+		final Post<Bookmark> post = new Post<Bookmark>();
+		post.setUser(new User(userName));
+		final Bookmark bookmark = new Bookmark();
+		bookmark.setIntraHash(intraHash);
+		post.setResource(bookmark);
+		final Set<Tag> tags = new HashSet<Tag>();
+		tags.add(new Tag("google"));
+		tags.add(new Tag("yahoo"));
+		post.setTags(tags);
+		this.bookmarkDb.updatePost(post, intraHash, PostUpdateOperation.UPDATE_TAGS, this.dbSession);
+		
+		final Post<Bookmark> newPost = this.bookmarkDb.getPostDetails(userName, intraHash, userName, Collections.singletonList(0), this.dbSession);
+		final Set<Tag> dbTags = newPost.getTags();
+		assertEquals(2, dbTags.size());
+		assertTrue(dbTags.contains(new Tag("google")));
+		assertTrue(dbTags.contains(new Tag("yahoo")));
+		/*
+		 * a tag-only update should never change the content id!
+		 */
+		assertEquals(oldPost.getContentId(), newPost.getContentId());
+		/*
+		 * nor the date
+		 */
+		assertEquals(oldPost.getDate(), newPost.getDate());
+		/*
+		 * nor the groups
+		 */
+		assertEquals(oldPost.getGroups(), newPost.getGroups());
+	}
+	
+	
+	/**
+	 * We want to completely update a post
+	 * 
+	 * We use the bookmark post from testuser1 with content_id 1.
+	 * 
+	 * 
+	 */
+	@Test
+	public void testUpdatePost() {
+		/*
+		 * the id of the post we're testing
+		 */
+		final String userName = "testuser1";
+		final String oldIntraHash = "6f372faea7ff92eedf52f597090a6291";
+		/*
+		 * get original post for later comparison
+		 */
+		final Post<Bookmark> oldPost = this.bookmarkDb.getPostDetails(userName, oldIntraHash, userName, Collections.singletonList(0), this.dbSession);
+	
+		/*
+		 * We set only the tags, the user name, and the resource's hash.
+		 * That should be sufficient to identify the original post and
+		 * update its tags.   
+		 */
+		final Post<Bookmark> post = new Post<Bookmark>();
+		post.setUser(new User(userName));
+		post.setGroups(Collections.singleton(GroupUtils.getPublicGroup()));
+		post.setDate(new Date());
+		final Bookmark bookmark = new Bookmark();
+		bookmark.setTitle("New Title");
+		bookmark.setUrl("http://www.example.com/");
+		bookmark.recalculateHashes();
+		final String newIntraHash = bookmark.getIntraHash();
+		post.setResource(bookmark);
+		final Set<Tag> tags = new HashSet<Tag>();
+		tags.add(new Tag("google"));
+		tags.add(new Tag("yahoo"));
+		post.setTags(tags);
+		this.bookmarkDb.updatePost(post, oldIntraHash, PostUpdateOperation.UPDATE_ALL, this.dbSession);
+		
+		final Post<Bookmark> newPost = this.bookmarkDb.getPostDetails(userName, newIntraHash, userName, Collections.singletonList(0), this.dbSession);
+		final Set<Tag> dbTags = newPost.getTags();
+		assertEquals(2, dbTags.size());
+		assertTrue(dbTags.contains(new Tag("google")));
+		assertTrue(dbTags.contains(new Tag("yahoo")));
+		/*
+		 * a complete update MUST change the content id!
+		 */
+		assertFalse(oldPost.getContentId().equals(newPost.getContentId()));
+		/*
+		 * and the date!
+		 */
+		assertFalse(oldPost.getDate().equals(newPost.getDate()));
+		/*
+		 * the hashes and so on also should have changed
+		 */
+		final Bookmark newBookmark = newPost.getResource();
+		assertFalse(oldPost.getResource().getIntraHash().equals(newBookmark.getIntraHash()));
+		/*
+		 * the new URL and title ...
+		 */
+		assertEquals("New Title", newBookmark.getTitle());
+		assertEquals("http://www.example.com/", newBookmark.getUrl());
+	}
+	
 }

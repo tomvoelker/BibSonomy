@@ -371,25 +371,13 @@ public class DBLogic implements LogicInterface {
 		try {
 			for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : this.allDatabaseManagers.values()) {
 				final Post<? extends Resource> post = manager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-				if (post != null) {
-					/*
-					 * add group information
-					 */
-					/*
-					 * If one of the post's groups is neither public nor private
-					 * (i.e., it is friends or a "regular" group) we must get
-					 * the (remaining) groups from the grouptas table.
-					 */
-					final Group group = post.getGroups().iterator().next();
-					if (!GroupUtils.isExclusiveGroup(group)) {
-						/*
-						 * neither public nor private ... ... get the groups
-						 * from the grouptas table
-						 */
-						post.setGroups(new HashSet<Group>(groupDBManager.getGroupsForContentId(post.getContentId(), session)));
-					}
-					return post;
-				}
+				/*
+				 * if a manager found a post, return it
+				 */
+				if (present(post)) return post;
+				/*
+				 * check next manager
+				 */
 			}
 		} finally {
 			session.close();
