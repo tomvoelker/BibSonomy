@@ -55,7 +55,7 @@ public class UserSettings {
 	/**
 	 * top x posts shown in the tag box
 	 */
-	private int tagboxMaxCount = 0;
+	private int tagboxMaxCount = 50;
 	
 	/**
 	 * tooltip; 0 = don't show, 1 = show TODO: what does this mean?
@@ -88,7 +88,7 @@ public class UserSettings {
 	/**
 	 * User wants maxCount (true) or maxFreq (false)
 	 */
-	private boolean isMaxCount;
+	private boolean isMaxCount = true;
 	
 	/**
 	 * @return tagboxStyle
