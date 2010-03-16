@@ -48,6 +48,7 @@ INSERT INTO `bibhash` (`hash`, `ctr`, `type`) VALUES
 ('b77ddd8087ad8856d77c740c8dc2864a', 1, 2);
 
 
+
 -- 
 -- Data for table `bibtex`
 -- 
@@ -73,7 +74,7 @@ INSERT INTO `bibtexurls` (`content_id`, `url`, `text`, `group`, `date`) VALUES
 -- 
 
 INSERT INTO `bookmark` (`content_id`, `book_url_hash`, `book_description`, `book_extended`, `group`, `date`, `user_name`, `to_bib`, `change_date`, `rating`) VALUES
-(1, '6f372faea7ff92eedf52f597090a6291', 'test bookmark descripton', 'test bookmark extended',    0, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-18 10:17:10', 0),
+(1, '6f372faea7ff92eedf52f597090a6291', 'test bookmark descripton', 'test bookmark extended',    3, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-18 10:17:10', 0),
 (2, '108eca7b644e2c5e09853619bc416ed0', 'Google',                   'bekannteste Suchmaschine',  0, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-18 10:34:17', 0),
 (3, '7eda282d1d604c702597600a06f8a6b0', 'Yahoo',                    'Yahoo Suchmaschine',        0, '1815-12-10 00:00:00', 'testuser2', 0, '2008-01-18 10:16:55', 0),
 (4, 'b7aa3a91885e432c6c95bec0145c3968', 'FriendScout24',            'Seite f√ºr einen "friend"', 2, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-18 10:16:46', 0),
@@ -159,14 +160,6 @@ INSERT INTO `groups` VALUES
 ('testuser2', 3, 3, '2007-01-01 01:01:01', 7),
 ('testuser1', 4, 3, '2007-01-01 01:01:01', 7),
 ('testuser1', 5, 3, '2007-01-01 01:01:01', 7);
-
-
--- 
--- Data for table `highwirelist`
--- 
-
-INSERT INTO `highwirelist` VALUES 
-('foo', '2007-12-20 20:36:50');
 
 
 -- 
@@ -381,9 +374,9 @@ INSERT INTO `tags` (`tag_id`, `tag_name`, `tag_stem`, `tag_ctr`, `tag_ctr_public
 -- 
 
 INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_type`, `user_name`, `date`, `group`, `change_date`) VALUES
-(1, 'testtag',        'testtag',        1, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:07'),
+(1, 'testtag',        'testtag',        1, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:07'),
 (2, 'google',         'google',         2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
-(3, 'suchmaschine',   'suchmaschine',  2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
+(3, 'suchmaschine',   'suchmaschine',   2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
 (4, 'yahoo',          'yahoo',          3, 1, 'testuser2',   '1815-12-10 00:00:00', 0, '2008-01-18 10:21:12'),
 (5, 'suchmaschine',   'suchmaschine',   3, 1, 'testuser2',   '1815-12-10 00:00:00', 0, '2008-01-18 10:21:47'),
 (6, 'friends',        'friends',        4, 1, 'testuser1',   '1815-12-10 00:00:00', 2, '2008-01-18 10:24:31'),
