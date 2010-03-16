@@ -647,7 +647,6 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * Groups: 3,4,5
 	 */
 	@Test
-	@Ignore
 	public void testUpdatePostTagsOnly() {
 		/*
 		 * the id of the post we're testing
