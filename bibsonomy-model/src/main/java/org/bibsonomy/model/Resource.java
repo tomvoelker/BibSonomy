@@ -44,6 +44,11 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 public abstract class Resource implements Serializable{
 
 	/**
+	 * For persistence (Serializable) 
+	 */
+	private static final long serialVersionUID = -9153320764851332223L;
+
+	/**
 	 * How many posts with this resource exist.
 	 */
 	private int count;

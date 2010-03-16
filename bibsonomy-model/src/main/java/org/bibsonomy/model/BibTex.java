@@ -44,6 +44,11 @@ import org.bibsonomy.model.util.SimHash;
 public class BibTex extends Resource  implements Serializable {
 
 	/**
+	 * For persistence (Serializable) 
+	 */
+	private static final long serialVersionUID = -8528225443908615779L;
+
+	/**
 	 * Use this key to reference a citation, e.g. \cite{hotho2006information}.
 	 * TODO: rename to something like citationKey ?
 	 */
