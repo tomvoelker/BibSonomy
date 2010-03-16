@@ -777,41 +777,6 @@ public class DBLogic implements LogicInterface {
 		return ((CrudableContent) man);
 	}
 
-	/**
-	 * Adds/updates a group in the database.
-	 */
-	private String storeGroup(final Group group, boolean update) {
-
-		/*
-		 * FIXME Implement change group behaviour
-		 */
-		if (!update) {
-			/*
-			 * check permissions
-			 */
-			this.ensureLoggedIn();
-			this.permissionDBManager.ensureAdminAccess(loginUser);
-
-			final DBSession session = this.openSession();
-			try {
-				this.groupDBManager.storeGroup(group, update, session);
-			} finally {
-				session.close();
-			}
-			return group.getName();
-			
-		}
-		throw new UnsupportedOperationException("not yet available");
-
-		// FIXME: unsure who may change a group -> better doing nothing
-		// final DBSession session = this.openSession();
-		// try {
-		// this.groupDBManager.storeGroup(group, update, session);
-		// } finally {
-		// session.close();
-		// }
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -851,7 +816,18 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public String createGroup(final Group group) {
 		this.ensureLoggedIn();
-		return this.storeGroup(group, false);
+		/*
+		 * check permissions
+		 */
+		this.permissionDBManager.ensureAdminAccess(loginUser);
+
+		final DBSession session = this.openSession();
+		try {
+			this.groupDBManager.createGroup(group, session);
+		} finally {
+			session.close();
+		}
+		return group.getName();
 	}
 
 	/*
@@ -864,7 +840,15 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
 		this.ensureLoggedIn();
-		return this.storeGroup(group, true);
+		switch (operation) {
+		case UPDATE_SETTINGS:
+			
+			break;
+
+		default:
+			break;
+		}
+		throw new UnsupportedOperationException("not yet available");
 	}
 
 	/*

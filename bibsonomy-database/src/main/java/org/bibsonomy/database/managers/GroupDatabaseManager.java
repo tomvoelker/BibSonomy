@@ -333,16 +333,11 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Stores a group in the database.
 	 * 
-	 * FIXME: update isn't implemented.
-	 * 
 	 * @param group 
 	 * @param update 
 	 * @param session 
 	 */
-	public void storeGroup(final Group group, final boolean update, final DBSession session) {
-		if (update) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Not implemented yet");
-		}
+	public void createGroup(final Group group, final DBSession session) {
 
 		// check if a user exists with that name
 		if (this.getUserDb().getUserDetails(group.getName(), session).getName() == null) {

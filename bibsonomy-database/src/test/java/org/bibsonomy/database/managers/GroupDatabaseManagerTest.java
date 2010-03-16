@@ -167,7 +167,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void storeGroup() {
 		final Group newGroup = new Group();
 		newGroup.setName("testuser1");
-		this.groupDb.storeGroup(newGroup, false, this.dbSession);
+		this.groupDb.createGroup(newGroup, this.dbSession);
 		final Group newGroupTest = this.groupDb.getGroupByName("testuser1", this.dbSession);
 		assertEquals("testuser1", newGroupTest.getName());
 		assertEquals(1, newGroupTest.getUsers().size());
@@ -182,7 +182,7 @@ public class GroupDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				try {
 					final Group group = new Group();
 					group.setName(groupname);
-					this.groupDb.storeGroup(group, update, this.dbSession);
+					this.groupDb.createGroup(group, this.dbSession);
 					fail("Should throw an exception");
 				} catch (final RuntimeException ignored) {
 				}

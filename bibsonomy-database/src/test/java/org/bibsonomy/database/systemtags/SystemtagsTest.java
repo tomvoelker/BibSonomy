@@ -351,7 +351,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		}
 		group = new Group();
 		group.setName(name);
-		this.groupDb.storeGroup(group, false, this.dbSession);
+		this.groupDb.createGroup(group, this.dbSession);
 
 		return group;
 	}
