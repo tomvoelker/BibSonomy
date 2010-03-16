@@ -37,7 +37,7 @@
 <script type="text/javascript">    	
    var url=encodeURIComponent(document.location.href);
    var title=encodeURIComponent(document.title);
-   document.write("<a href='${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\'Bookmark this page to ${projectName}.\''>Bookmark to ${projectName}!</a>");
+   document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${projectName}.\">Bookmark to ${projectName}!</a>");
 </script>
 ]]>
 					</textarea>
@@ -47,9 +47,9 @@
 					<div align="center">
 						<script type="text/javascript">
 							<![CDATA[
-								var url=encodeURIComponent(document.location.href);
-								var title=encodeURIComponent(document.title);
-								document.write("<a href='${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\'Bookmark this page to ${projectName}.\''>Bookmark to ${projectName}!</a>");
+							         var url=encodeURIComponent(document.location.href);
+							         var title=encodeURIComponent(document.title);
+							         document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${projectName}.\">Bookmark to ${projectName}!</a>");
 							]]>
 						</script>
 					</div>
@@ -78,7 +78,7 @@
 <script type="text/javascript">
    var url=encodeURIComponent(document.location.href);
    var title=encodeURIComponent(document.title);
-   document.write("<a href='${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\'Bookmark this page to ${projectName}.\''><img src='${imageBookmarkIt}'></a>");	
+   document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${projectName}.\"><img src=\"${imageBookmarkIt}\"></a>");	
 </script>
 ]]>
 					
@@ -89,9 +89,9 @@
 					<div align="center">
 						<script type="text/javascript">
 							<![CDATA[
-								var url=encodeURIComponent(document.location.href);
-								var title=encodeURIComponent(document.title);
-								document.write("<a href='${projectHome}ShowBookmarkEntry?c=b&jump=yes&url="+url+ "&description="+title +"\" title=\'Bookmark this page to ${projectName}.\''><img src='${imageBookmarkIt}'></a>");
+							         var url=encodeURIComponent(document.location.href);
+							         var title=encodeURIComponent(document.title);
+							         document.write("<a href=\"${projectHome}ShowBookmarkEntry?c=b&amp;jump=yes&amp;url="+url+ "&amp;description="+title +"\" title=\"Bookmark this page to ${projectName}.\"><img src=\"${imageBookmarkIt}\"></a>");
 							]]>
 						</script>
 					</div>
