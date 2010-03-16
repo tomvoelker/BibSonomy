@@ -58,8 +58,6 @@ import bibtex.parser.ParseException;
  * @version $Id$
  */
 public class PostPublicationController extends AbstractEditPublicationController<PostPublicationCommand> implements MinimalisticController<PostPublicationCommand>, ErrorAware {
-	private static final String ERROR_MESSAGE_LINE_NUMBER_SEPARATOR = ", ";
-
 	/**
 	 * the log...
 	 */
@@ -147,12 +145,16 @@ public class PostPublicationController extends AbstractEditPublicationController
 		String snippet = null;
 
 		/*
-		 * FIXME: how/when are ISBN/DOI, etc. handled?
+		 * This handles the cases
+		 * 1) the user just started the postPublication process
+		 * 2) the user entered a snippet (might be empty)
+		 * 3) the user selected a file to upload posts (might be empty)
+		 * DOI/ISBN or manual input a handled in EditPostController
 		 */
 		final String selection = command.getSelection();
 		if (ValidationUtils.present(selection)) {
 			/*
-			 * The user has entered text into the selection - we use that 
+			 * The user has entered text into the snippet selection - we use that 
 			 */
 			log.debug("user has filled selection");
 			snippet = selection;
@@ -161,23 +163,23 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * The user uploads a BibTeX or EndNote file
 			 */
 			log.debug("user uploads a file");
+			// get the (never empty) content or add corresponding errors 
 			snippet = handleFileUpload(command);
 		} else {
 			/*
-			 * nothing given -> user probably opened page for the first time
+			 * nothing given -> 
+			 * user just opened the postPublication Dialogue OR
+			 * user send empty snippet or "nonexisting" file
+			 * FIXME: that second case should result in some error and hint for the user
 			 */
 			return Views.POST_PUBLICATION;
 		}
 
 		/*
-		 * neither a file nor a selection given -> user gets error message
+		 * Either a file or a snippet was given,
+		 * it's content is now stored in snippet
+		 * -> check if valid
 		 */
-		if (!ValidationUtils.present(snippet)) {
-			/*
-			 * FIXME: customize error message
-			 */
-			errors.reject("error.upload.failed", "There was no valid BibTeX or EndNote.");
-		}
 
 		if (errors.hasErrors()) {
 			log.debug("errors found, returning to view");
@@ -187,7 +189,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 
 		/*
-		 * Extract posts from the snippet ...
+		 * Extract posts from snippet ...
 		 */
 
 
@@ -212,21 +214,15 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 */
 			posts = parser.parseBibTeXPosts(snippet);
 		} catch (final ParseException ex) {
-			/*
-			 * FIXME: customized error message.
-			 */
-			errors.reject("error.upload.failed", "An error occurred during parsing your file.");
+			errors.reject("error.upload.failed.parse", ex.getMessage());
 		} catch (final IOException ex) {
-			/*
-			 * FIXME: customized error message. (sure?)
-			 */
-			errors.reject("error.upload.failed", "An error occurred during parsing your file.");
+			errors.reject("error.upload.failed.parse", ex.getMessage());
 		}
 
 		/*
 		 * The errors we have collected until now should be fixed before we proceed.
 		 * 
-		 * (We did not add errors for individual broken BibTeX lines, yet!)
+		 * (We did not collect errors due to individual broken BibTeX lines, yet!)
 		 */
 		if (errors.hasErrors()) {
 			return Views.POST_PUBLICATION;
@@ -240,10 +236,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 		if (!errors.hasErrors() && !present(posts)) {
 			/*
 			 * no errors ... but also no posts ... Ooops!
-			 * 
-			 * FIXME: customized error message.
+			 * the parser was not able to produce posts but did not add errors nor throw exceptions
 			 */
-			errors.reject("error.upload.failed", "There was no BibTeX or EndNote entered.");
+			errors.reject("error.upload.failed.parse", "Upload failed because of parser errors.");
 			return Views.POST_PUBLICATION;
 		}
 
@@ -447,22 +442,30 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
 
+			String fileContent = null;
 			if (StringUtils.matchExtension(fileName, HandleFileUpload.bibtexEndnoteExt[1])) {
 				/*
 				 * In case the uploaded file is in EndNote format, we convert it to BibTeX.				
 				 */
 				log.debug("the file is in EndNote format");
-				return e2bConverter.endnoteToBibtexString(reader);
-			} 
-			/*
-			 * or just use it as it is ...
-			 */
-			log.debug("the file is in BibTeX format");
-			return StringUtils.getStringFromReader(reader);
+				fileContent = e2bConverter.endnoteToBibtexString(reader);
+			} else {
+				/*
+				 * or just use it as it is ...
+				 */
+				log.debug("the file is in BibTeX format");
+				fileContent = StringUtils.getStringFromReader(reader);
+			}
+			if (present(fileContent)) {
+				return fileContent;
+			}
+			errors.reject("error.upload.failed.emptyFile", "The specified file is empty.");
+			return null;
+			
 		} catch (final ConversionException e) {
-			errors.reject("error.conversion.failed", "An error occurred during converting your EndNote file to BibTeX.");
+			errors.reject("error.upload.failed.conversion", "An error occurred during converting your EndNote file to BibTeX.");
 		} catch (final Exception ex1) {
-			errors.reject("error.upload.failed", "An error occurred during accessing your file.");
+			errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
 		} finally {
 			/*
 			 * clear temporary file
