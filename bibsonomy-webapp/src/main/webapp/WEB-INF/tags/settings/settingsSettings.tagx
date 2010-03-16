@@ -107,7 +107,7 @@
 			        		</ol>
 			        	</jsp:attribute>
 			        </buttons:help>
-			        <form:input cssClass="fsInput fsLittle" path="changeTo"/>
+			        <form:input cssClass="fsInput fsSmall" path="changeTo"/>
 			      </div>
 			      
 				  <div class="fsRow">
