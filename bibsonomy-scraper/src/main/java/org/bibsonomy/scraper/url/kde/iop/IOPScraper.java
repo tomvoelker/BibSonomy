@@ -24,6 +24,7 @@
 package org.bibsonomy.scraper.url.kde.iop;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.List;
@@ -66,8 +67,10 @@ public class IOPScraper extends AbstractUrlScraper {
 	private static final Pattern linkPattern = Pattern.compile("<a\\b[^<]*</a>");
 	private static final Pattern linkValuePattern = Pattern.compile(">(.*)<");
 	private static final Pattern hrefPattern = Pattern.compile("href=\"[^\"]*\"");
-
-
+	private static final Pattern formPublicationIdPattern = Pattern.compile("<input.*type=\"hidden\".*name=\"articleId\".*value=\"(.*)\".*/>");
+	
+	
+	
 	/*
 	 * value of citation download link
 	 */
@@ -91,62 +94,28 @@ public class IOPScraper extends AbstractUrlScraper {
 		// the link to the citation
 		String citationLink = null;
 
-		// extract all links from downloaded page
-		final Matcher linkMatcher = linkPattern.matcher(articlePageContent);
-
-		while(linkMatcher.find()){
-			String linkMatch = linkMatcher.group();
-
-			// extract the value between the a tags
-			final Matcher linkValueMatcher = linkValuePattern.matcher(linkMatch);
-
-			if(linkValueMatcher.find()){
-				String linkValue = linkValueMatcher.group();
-
-				// cut of the opening and closing brackets
-				linkValue = linkValue.substring(1, linkValue.length()-1);
-
-				// check if the link is the download citation link
-				if(linkValue.equals(DOWNLOAD_LINK_VALUE)){
-
-					// extracted link is the citation download link, search href attribute 
-					final Matcher hrefMatcher = hrefPattern.matcher(linkMatch);
-
-					if(hrefMatcher.find()){
-						String href = hrefMatcher.group();
-
-						// cut of the leading href="/ and the ending "
-						href = href.substring(6, href.length() - 1);
-
-						// build url to citation of this article
-						citationLink = IOP_EJ_URL_BASE + href;
-						break;
-					}
-				}
-			}
-		}
-
+		final Matcher publicationIdMatcher = formPublicationIdPattern.matcher(articlePageContent);
+		String pubId = "";
+		while(publicationIdMatcher.find())
+			pubId = publicationIdMatcher.group(1);
+		
+		String postArgs = "articleId="+pubId +
+						  "&exportType=abs" +
+						  "&exportFormat=iopexport_bib";
+		
+		String bibtex = "";
 		try {
-			// check if citation link is found
-			if(citationLink != null){
-				// add bibtex params to citation url
-				citationLink = citationLink + "?format=bibtex&submit=1";
-
-				// download citation as bibtex
-				final String citationBibtex = WebUtils.getContentAsString(new URL(citationLink));
-
-				if(citationBibtex != null){
-					// add downloaded bibtex to result 
-					sc.setBibtexResult(citationBibtex);
-					return true;						
-				}else
-					throw new ScrapingFailureException("getting bibtex failed");
-
-			}else
-				throw new PageNotSupportedException("IOPScraper: This iop side has no citation download link.");
-		} catch (IOException e) {
-			throw new InternalFailureException(e);
+			bibtex = WebUtils.getPostContentAsString(new URL("http://iopscience.iop.org/export"), postArgs);
+		} catch (MalformedURLException ex) {
+			throw new ScrapingFailureException("URL to scrape does not exist. It maybe malformed.");
+		} catch (IOException ex) {
+			throw new ScrapingFailureException("An unexpected IO error has occurred. Maybe IOP is down.");
 		}
+		if(bibtex != null){
+			sc.setBibtexResult(bibtex.trim());
+			return true;
+		}
+		return false;
 	}
 
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
