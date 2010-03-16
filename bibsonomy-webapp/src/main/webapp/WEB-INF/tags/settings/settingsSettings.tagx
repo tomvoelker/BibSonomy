@@ -57,21 +57,56 @@
 			    </div>
 		    
 			    <div class="fsRow">
-				    <form:label cssClass="fsLabel" path="user.settings.tagboxTooltip"><fmt:message key="settings.tag.showTooltipsForTags"/></form:label>
+					<form:label cssClass="fsLabel" path="user.settings.tagboxTooltip"><fmt:message key="settings.tag.showTooltipsForTags"/></form:label>
 				    <buttons:help message="settings.tag.showTooltipsForTags.help"/>
 				    <form:select cssClass="fsInput fsSmall" path="user.settings.tagboxTooltip">
-				      <form:option label="${no}" value="0"/>
-			          <form:option label="${yes}" value="1"/>
+				    	<form:option label="${no}" value="0"/>
+			          	<form:option label="${yes}" value="1"/>
 			        </form:select>
-			      </div>
+			    </div>
 		
+				<fmt:message var="maxCount" key="settings.tag.options.maxCount"/>
+				<fmt:message var="minFreq" key="settings.tag.options.minFreq"/>
+
 				  <div class="fsRow">
-			        <form:label cssClass="fsLabel" path="user.settings.isMaxCount"><fmt:message key="settings.tag.maxCount"/></form:label>
-			        <buttons:help message="settings.tag.maxCount.help"/>
+			      	<form:label cssClass="fsLabel" path="user.settings.isMaxCount"><fmt:message key="settings.tag.maxCountminFreq"/></form:label>
+			        <buttons:help message="settings.tag.maxCountminFreq.help">
+			        	<jsp:attribute name="helpText">
+			        		<ol>
+			        			<li> <fmt:message key="settings.tag.maxCountminFreq.help.maxCount">
+			        					<fmt:param>${maxCount}</fmt:param>
+			        				</fmt:message>
+			        			</li>
+			        			<li> <fmt:message key="settings.tag.maxCountminFreq.help.minFreq">
+			        					<fmt:param>${minFreq}</fmt:param>
+			        				</fmt:message>
+			        			</li>
+			        		</ol>
+			        		<fmt:message key="settings.tag.maxCountminFreq.help.X"/>
+			        	</jsp:attribute>
+			        </buttons:help>
 			        <form:select cssClass="fsInput fsSmall" path="user.settings.isMaxCount">
-			          <form:option label="maxCount" value="true"/>
-			          <form:option label="minFreq" value="false"/>
+			        	<form:option label="${maxCount}" value="true"/>
+			        	<form:option label="${minFreq}" value="false"/>
 			        </form:select> 
+			      </div>
+
+				  <div class="fsRow">
+			        <form:label cssClass="fsLabel" path="changeTo"><fmt:message key="settings.tag.threshold"/></form:label>
+			        <buttons:help message="settings.tag.threshold.help">
+			        	<jsp:attribute name="helpText">
+			        		<ol>
+			        			<li> <fmt:message key="settings.tag.threshold.help.maxCount">
+			        					<fmt:param>${maxCount}</fmt:param>
+			        				</fmt:message>
+			        			</li>
+			        			<li> <fmt:message key="settings.tag.threshold.help.minFreq">
+			        					<fmt:param>${minFreq}</fmt:param>
+			        				</fmt:message>
+			        			</li>
+			        		</ol>
+			        	</jsp:attribute>
+			        </buttons:help>
 			        <form:input cssClass="fsInput fsLittle" path="changeTo"/>
 			      </div>
 			      
