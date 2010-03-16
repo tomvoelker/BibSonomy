@@ -199,11 +199,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public void insertTags(final Post<?> post, final DBSession session) {
 		final TagParam tagParam = new TagParam();
 		tagParam.setTags(post.getTags());
+		/*
+		 * FIXME: The content id is not always new, in particular on updates. 
+		 * Thus the naming of this attribute is a bit unfortunate.
+		 */
 		tagParam.setNewContentId(post.getContentId());
 		tagParam.setContentTypeByClass(post.getResource().getClass());
 		tagParam.setUserName(post.getUser().getName());
 		tagParam.setDate(post.getDate());
-		tagParam.setDescription(post.getDescription());
 		final List<Integer> groups = new ArrayList<Integer>();
 		/*
 		 * copy the groups' ids into the param
