@@ -23,6 +23,7 @@
 
 package org.bibsonomy.model;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,7 +36,12 @@ import org.bibsonomy.common.enums.Privlevel;
  * 
  * @version $Id$
  */
-public class Group {
+public class Group implements Serializable{
+
+	/**
+	 * For persistency (Serializable)
+	 */
+	private static final long serialVersionUID = -4364391580208670647L;
 
 	/**
 	 * The internal id of this group.

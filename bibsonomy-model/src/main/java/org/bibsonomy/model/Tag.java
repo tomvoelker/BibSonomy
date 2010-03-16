@@ -23,6 +23,7 @@
 
 package org.bibsonomy.model;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,7 +36,12 @@ import org.bibsonomy.model.util.TagUtils;
  * 
  * @version $Id$
  */
-public class Tag implements Comparable<Tag> {
+public class Tag implements Comparable<Tag>, Serializable {
+	/**
+	 * For persistency (Serializable)
+	 */
+	private static final long serialVersionUID = 1634496749338156864L;
+
 	/**
 	 * TODO: U.U. waere es nur schoener, wenn man das von ausserhalb "konfigurieren" koennte.
 	 * Ist aber bei einem Tag eher kompliziert. Oder steht es im Parser drin? Wenn wir

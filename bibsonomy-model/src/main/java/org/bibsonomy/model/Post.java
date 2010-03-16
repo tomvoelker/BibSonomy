@@ -23,6 +23,7 @@
 
 package org.bibsonomy.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -35,7 +36,12 @@ import java.util.Set;
  * @param <T>
  *            resource type
  */
-public class Post<T extends Resource> {
+public class Post<T extends Resource> implements Serializable{
+
+	/**
+	 * For persistency (Serializable)
+	 */
+	private static final long serialVersionUID = -4890029197498534435L;
 
 	/**
 	 * This is the {@link Resource} that this post is encapsulating.

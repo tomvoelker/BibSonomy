@@ -23,6 +23,7 @@
 
 package org.bibsonomy.model;
 
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Date;
 import java.util.LinkedList;
@@ -36,7 +37,12 @@ import org.bibsonomy.model.util.UserUtils;
  * 
  * @version $Id$
  */
-public class User {
+public class User implements Serializable{
+
+	/**
+	 * For persistency (Serializable)
+	 */
+	private static final long serialVersionUID = -4494680395320981307L;
 
 	/**
 	 * The (nick-)name of this user. Is <code>null</code> if the user is not logged in (unknown). 
