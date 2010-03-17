@@ -54,20 +54,18 @@ import org.bibsonomy.model.User;
  * @version $Id$
  */
 public final class ModelUtils extends CommonModelUtils {
-
 	private static final Log log = LogFactory.getLog(ModelUtils.class);
-
-	/**
-	 * To add meaningful dates to example posts.
-	 */
-	private final static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	
-
 	/**
 	 * Don't create instances of this class - use the static methods instead.
 	 */
 	private ModelUtils() {
 	}
+
+	/**
+	 * To add meaningful dates to example posts.
+	 */
+	private final static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
 	private static void setResourceDefaults(final Resource resource) {
 		resource.setCount(0);
@@ -102,6 +100,35 @@ public final class ModelUtils extends CommonModelUtils {
 			return new Date();
 		}
 	}
+	
+	/**
+	 * builds a tag set from a list of strings
+	 * 
+	 * @param tagsString
+	 * @return a tag set
+	 */
+	public static Set<Tag> getTagSet(final String... tagsString) {
+		final Set<Tag> tags = new HashSet<Tag>();
+		
+		if (tagsString != null) {
+			for (String tagString : tagsString) {
+				tags.add(new Tag(tagString));
+			}
+		}
+		
+		return tags;
+	}
+	
+	/**
+	 * adds tags to a tag set
+	 * 
+	 * @param tags			the set the tags to add to
+	 * @param tagsString	the tags to add
+	 */
+	public static void addToTagSet(final Set<Tag> tags, final String... tagsString) {
+		tags.addAll(ModelUtils.getTagSet(tagsString));
+	}
+	
 	private static Post<Bookmark> getBookmark1() {
 		final Bookmark bookmark = new Bookmark();
 		bookmark.setTitle("TWiki Javasxml");
@@ -109,11 +136,7 @@ public final class ModelUtils extends CommonModelUtils {
 		
 		bookmark.recalculateHashes();
 		
-		final Set<Tag> tags = new HashSet<Tag>();
-		tags.add(new Tag("rome"));
-		tags.add(new Tag("rss"));
-		tags.add(new Tag("atom"));
-		tags.add(new Tag("java"));
+		final Set<Tag> tags = ModelUtils.getTagSet("rome", "rss", "atom", "java");
 		
 		final Post<Bookmark> post = new Post<Bookmark>();
 		post.setResource(bookmark);
@@ -132,10 +155,7 @@ public final class ModelUtils extends CommonModelUtils {
 		
 		bookmark.recalculateHashes();
 		
-		final Set<Tag> tags = new HashSet<Tag>();
-		tags.add(new Tag("wiki"));
-		tags.add(new Tag("java"));
-		tags.add(new Tag("development"));
+		final Set<Tag> tags = ModelUtils.getTagSet("wiki", "java", "development");
 		
 		final Post<Bookmark> post = new Post<Bookmark>();
 		post.setResource(bookmark);
@@ -153,11 +173,11 @@ public final class ModelUtils extends CommonModelUtils {
 	 */
 	public static BibTex getBibTex() {
 		final BibTex publication = new BibTex();
-		fillBibTex(publication);
+		fillPublication(publication);
 		return publication;
 	}
 	
-	private static void fillBibTex(final BibTex publication) {
+	private static void fillPublication(final BibTex publication) {
 		setBeanPropertiesOn(publication);
 		setResourceDefaults(publication);		
 		publication.setEntrytype("inproceedings");
@@ -172,7 +192,7 @@ public final class ModelUtils extends CommonModelUtils {
 	 */
 	public static GoldStandardPublication getGoldStandardPublication() {
 		final GoldStandardPublication goldPublication = new GoldStandardPublication();
-		fillBibTex(goldPublication);
+		fillPublication(goldPublication);
 		return goldPublication;
 	}
 
@@ -215,19 +235,14 @@ public final class ModelUtils extends CommonModelUtils {
 	@SuppressWarnings("unchecked")
 	public static <T extends Resource> Post<T> generatePost(final Class<T> resourceType) {
 		final Post<T> post = new Post<T>();
-
+		final Set<Tag> tags = ModelUtils.getTagSet(ModelUtils.class.getName(), "hurz");
+		post.setTags(tags);
+		
 		final Group group = new Group();
 		//group.setGroupId(GroupID.PUBLIC.getId()); // the group ID of posts from the "outside" is usually unknown
 		group.setDescription(null);
 		group.setName("public");
 		post.getGroups().add(group);
-
-		Tag tag = new Tag();
-		tag.setName(ModelUtils.class.getName());
-		post.getTags().add(tag);
-		tag = new Tag();
-		tag.setName("hurz");
-		post.getTags().add(tag);
 
 		post.setContentId(null);
 		post.setDescription("trallalla");
@@ -256,7 +271,7 @@ public final class ModelUtils extends CommonModelUtils {
 	public static boolean hasTags(final Post<?> post, final Set<String> requiredTags) {
 		int required = requiredTags.size();
 		for (final Tag presentTag : post.getTags()) {
-			if (requiredTags.contains(presentTag.getName().toLowerCase()) == true) {
+			if (requiredTags.contains(presentTag.getName().toLowerCase())) {
 				--required;
 				log.debug("found " + presentTag.getName());
 			}

@@ -70,7 +70,7 @@ public class SerializationTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void serializePublication() throws Exception {
+	public void serializeTestValues() throws Exception {
 		for (final Object object : testValues) {
 			try {
 				writeObject(object);

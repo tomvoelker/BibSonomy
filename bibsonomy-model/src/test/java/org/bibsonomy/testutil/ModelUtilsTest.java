@@ -23,12 +23,16 @@
 
 package org.bibsonomy.testutil;
 
-import java.util.regex.Pattern;
-
 import static junit.framework.Assert.fail;
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Tag;
 import org.junit.Test;
 
 /**
@@ -60,5 +64,19 @@ public class ModelUtilsTest {
 		ModelUtils.assertPropertyEquality(postA, postB, 1, null);
 		ModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, null, "tags");
 		ModelUtils.assertPropertyEquality(postA, postB, Integer.MAX_VALUE, Pattern.compile("t[ga]{2}s"));
+	}
+	
+	/**
+	 * tests {@link ModelUtils#getTagSet(String...)}
+	 */
+	@Test
+	public void getTagSet() {
+		final Set<Tag> expected = new HashSet<Tag>();
+		expected.add(new Tag("test"));
+		expected.add(new Tag("test2"));
+		expected.add(new Tag("test3"));
+		
+		assertEquals(expected, ModelUtils.getTagSet("test", "test2", "test3"));
+		
 	}
 }
