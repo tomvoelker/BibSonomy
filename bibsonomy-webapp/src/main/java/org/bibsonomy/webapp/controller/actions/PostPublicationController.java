@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -509,13 +508,11 @@ public class PostPublicationController extends AbstractEditPublicationController
 			final LinkedList<Post<?>> postsForUpdate = new LinkedList<Post<?>>();
 			/*
 			 * check for all posts what kind of errors they have 
-			 */
-			final Iterator<Entry<Post<BibTex>, Integer>> it = postsToStore.entrySet().iterator();
-			while (it.hasNext()) {
+			 */			
+			for (final Entry<Post<BibTex>, Integer> entry : postsToStore.entrySet()) {
 				/*
 				 * get post and its position in the original list of posts 
 				 */
-				final Entry<Post<BibTex>, Integer> entry = it.next();
 				final Post<BibTex> post = entry.getKey();
 				final Integer i = entry.getValue();
 				log.debug("found errors in post no. " + i);
