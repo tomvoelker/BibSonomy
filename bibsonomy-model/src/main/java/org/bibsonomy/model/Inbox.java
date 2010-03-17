@@ -23,6 +23,9 @@
 
 package org.bibsonomy.model;
 
+import java.io.Serializable;
+
+
 
 
 /**
@@ -31,7 +34,7 @@ package org.bibsonomy.model;
  * @author sdo
  * @version $Id$
  */
-public class Inbox  {
+public class Inbox implements Serializable {
 	private static final long serialVersionUID = 1875652508506761506L;
 	
 	private int numPosts;
