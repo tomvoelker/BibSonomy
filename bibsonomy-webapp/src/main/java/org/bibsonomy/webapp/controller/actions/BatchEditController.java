@@ -3,14 +3,14 @@ package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,7 +30,6 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.ValidationUtils;
-import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.BatchEditCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -39,35 +38,37 @@ import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
-import org.springframework.context.MessageSource;
 import org.springframework.validation.Errors;
 
 
 /**
- * Controller to batch edit (update tags and delete) resources 
+ * Controller to batch edit (update tags and delete) resources.
+ * 
+ * The controller handles two cases:
+ * <ol>
+ * <li>the given posts should be updated (and eventually some posts deleted - if the user flagged them)</li>
+ * <li>the given posts should be stored (and eventually some posts ignored - if the user flagged them)</li>
+ * </ol>
  * 
  * @author dzo
  * @version $Id$
  */
-public class BatchEditController implements MinimalisticController<BatchEditCommand>, ErrorAware{
+public class BatchEditController implements MinimalisticController<BatchEditCommand>, ErrorAware {
 
 	private static final int HASH_LENGTH = 32;
 	private static final Log log = LogFactory.getLog(BatchEditController.class);
 
-	private static final String RESOURCE_TYPE_BOOKMARK = "bookmark";
-	private static final String RESOURCE_TYPE_PUBLICATION = "bibtex";
-
+	/**
+	 * To redirect the user to the page she initially viewed before pressing
+	 * the (batch)"edit" button, we need to strip the "bedit*" part of the URL
+	 * using this pattern.  
+	 */
+	private static final Pattern BATCH_EDIT_URL_PATTERN = Pattern.compile("(bedit[a-z,A-Z]+/)");
 
 	private RequestLogic requestLogic;
 	private LogicInterface logic;
 
-	private MessageSource messageSource;
-
-	private boolean postIsPublication;
-	private String resourceType;
-
 	private Errors errors;
-
 
 	@Override
 	public BatchEditCommand instantiateCommand() {
@@ -85,304 +86,248 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	public View workOn(final BatchEditCommand command) {
 		final RequestWrapperContext context = command.getContext();
 
-
-		postIsPublication = true;
-
-		// check if user is logged in
+		/*
+		 * check if user is logged in
+		 */
 		if (!context.isUserLoggedIn()) {
 			errors.reject("error.general.login");
 			return Views.LOGIN;
 		}
 
-		// check if ckey is valid
+		/*
+		 * check if ckey is valid
+		 */
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
 		}
 
-
-		// get username
-		final String username = context.getLoginUser().getName();
-
-		/* 
-		 * no errors begin with batch edit
-		 */
-		log.debug("batch edit for user " + username + " started");
-
-
 		/*
-		 * get the maps from command
+		 * get user name
+		 */
+		final String loginUserName = context.getLoginUser().getName();
+
+		log.debug("batch edit for user " + loginUserName + " started");
+
+
+
+
+		/* *******************************************************
+		 * FIRST: determine some flags which control the operation
+		 * *******************************************************/
+		/*
+		 * the type of resource we're dealing with 
+		 */
+		final String resourceType = command.getResourcetype();
+		final boolean postsArePublications = BibTex.class.getSimpleName().equalsIgnoreCase(resourceType);
+		/*
+		 * FIXME: rename/check setting of that flag in the command
+		 */
+		final boolean flagMeansDelete = command.getDeleteCheckedPosts();  
+		/*
+		 * When the user can flag posts to be deleted, this means those
+		 * posts already exist. Thus, all other posts must be updated.
+		 * 
+		 * The other setting is, where the posts don't exist in the database
+		 * (only in the session) and where they must be stored.
+		 */
+		final boolean updatePosts = flagMeansDelete;
+
+
+
+		/* *******************************************************
+		 * SECOND: get the data we're working on
+		 * *******************************************************/
+		/*
+		 * posts that are flagged are either deleted or ignored 
+		 */
+		final Map<String, Boolean> postFlags = command.getDelete();
+		/*
+		 * put the posts from the session into a hash map (for faster access)
+		 */
+		final HashMap<String, Post<?>> postMap = getPostMap(updatePosts);
+		/*
+		 * the tags that should be added to all posts
+		 */
+		final Set<Tag> addTags = getAddTags(command.getTags());
+		/*
+		 * for each post we have its old tags and its new tags
 		 */
 		final Map<String, String> newTagsMap = command.getNewTags();
 		final Map<String, String> oldTagsMap = command.getOldTags();
 
+
+
+
+		/* *******************************************************
+		 * THIRD: initialize temporary variables (lists)
+		 * *******************************************************/
 		/*
-		 * The following map contains the hashes of the posts, which are displayed
-		 * in the list of batcheditcontent.tagx.
-		 * It's meaning differs, depending on the flag isDeleteCheckedPosts(),
-		 * which might get set by the previous calling controller. 
-		 * Default is, that this page displays already stored posts, so the user can 
-		 * edit(delete) them. 
-		 * If the flag is set to false(non default), the posts displayed are only stored
-		 * temporarily (at the very moment) in the the session, and the user can store 
-		 * the posts by checking the checkboxes respectively.
-		 * So the map with the name delete, contains posts which are to save, if the 
-		 * priorly discussed flag is set to false.   
+		 * create lists for the different types of actions 
 		 */
-
-		final Map<String, Boolean> delete = command.getDelete();
-
+		final List<String> postsToDelete = new LinkedList<String>();   // delete
+		final List<Post<?>> postsToUpdate = new LinkedList<Post<?>>(); // update/store
 		/*
-		 * get addTag string from command and parse it to a 
-		 * set of tags (which will be added to all posts)
+		 * All posts will get the same date.
 		 */
-		String addTagString = command.getTags();
-
-		if (!present(addTagString)) {
-			addTagString = "";
-		}
-
-		final Set<Tag> addTags = new TreeSet<Tag>();
-
-		try {
-			addTags.addAll(TagUtils.parse(addTagString));
-		} catch (final RecognitionException ex) {
-			log.warn("can't parse add tags for user " + username, ex);
-		}
-
-		/** determine, if we are going to store temporarily saved files **/
-		boolean isDeleteAction = command.isDeleteCheckedPosts();
-		if(isDeleteAction)
-		{
-			// create lists for delete and update action
-			final List<String> postsToDelete = new LinkedList<String>();
-			final List<Post<?>> postsToUpdate = new LinkedList<Post<?>>();
-
-			/*
-			 * loop through all hashes
-			 */
-			for (final String hash : newTagsMap.keySet()) {
-				/*
-				 * short check if hash is correct
-				 */
-				if (hash.length() != HASH_LENGTH) continue;
-
-				/*
-				 * delete post if checkbox is checked
-				 */
-				if (delete.containsKey(hash) && delete.get(hash)) {
-					postsToDelete.add(hash);
-					continue; // update tags not required
-				}
-
-				/*
-				 * update tags
-				 */
-				// get new and old tags
-				final String oldTagsString = oldTagsMap.get(hash);
-				final String newTagsString = newTagsMap.get(hash);
-
-				try {
-					// parse strings to sets of tags
-					final Set<Tag> oldTags = TagUtils.parse(oldTagsString);
-					final Set<Tag> newTags = TagUtils.parse(newTagsString);
-
-					// add addTags to newTags
-					newTags.addAll(addTags);
-
-					if (oldTags.equals(newTags)) {
-						// tags haven't changed, nothing to do
-						continue;
-					}
-
-					// update tags in post
-					final Post<? extends Resource> post = this.logic.getPostDetails(hash, username);
-					postIsPublication = this.determinePostRessource(post);
-
-					if (!present(post)) {
-						log.warn("post with hash " + hash + " not found for user " + username + " while updating tags");
-					} else {
-						post.setTags(newTags);
-						postsToUpdate.add(post);
-					}
-
-				} catch (final RecognitionException ex) {
-					log.warn("can't parse tags of resource " + hash + " for user " + username, ex);
-				}
-			}
-
-			/*
-			 * delete posts
-			 */
-			if (present(postsToDelete)) {
-				log.debug("deleting "  + postsToDelete.size() + " posts for user " + username);
-				this.logic.deletePosts(username, postsToDelete);
-			}
-
-			/*
-			 * update tags of posts
-			 */
-			if (present(postsToUpdate)) {
-				log.debug("updating " + postsToUpdate.size() + " posts for user " + username);
-				this.logic.updatePosts(postsToUpdate, PostUpdateOperation.UPDATE_TAGS); // only update tags
-			}
-
-			log.debug("finished batch edit for user " + username);
-
-			// get referer to redirect to it
-			String referer = command.getReferer();
-
-			// set default referer to user's page if empty or null
-			if (referer == null || referer.trim().isEmpty()) {
-				referer = "/user/" + this.encodeStringToUTF8(username);
-			} else {
-				/**
-				 * if we come from bedit{bib, burl}/{group, user}/{groupname, username},
-				 * we remove this prefix to get back to the simple resource view in the group or user section
-				 */
-				Pattern prefixToRemove = Pattern.compile("(bedit[a-z,A-Z]+/)");
-				Matcher prefixMatcher = prefixToRemove.matcher(referer);
-				if(prefixMatcher.find())
-					referer = prefixMatcher.replaceFirst("");
-			}
-
-
-			return new ExtendedRedirectView(referer);
-		} 
-		// create lists for delete and update action
-		final List<Post<?>> postsToSave = new LinkedList<Post<?>>();
-		final List<Post<?>> postsToUpdate = new LinkedList<Post<?>>();
-		LinkedList<Post<?>> bibtex = (LinkedList<Post<?>>) this.requestLogic.getSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
-
-		ListCommand<Post<?>> listCommand = new ListCommand<Post<?>>(command);
-		listCommand.setList(bibtex);
-		command.setPosts(listCommand);
+		final Date now = new Date();
 
 
 
+
+		/* *******************************************************
+		 * FOURTH: prepare the posts
+		 * *******************************************************/
 		/*
-		 * Put these posts into a hashmap, so we dont have to loop through the list 
-		 *for every stored post!
+		 * loop through all hashes and check for each post, what to do
 		 */
-		HashMap<String, Post<?>> bibtexHashMap = new HashMap<String, Post<?>>(); 
-		if(ValidationUtils.present(bibtex))
-		{
-			for(Post<?> currentPost : bibtex)
-			{
-				bibtexHashMap.put(currentPost.getResource().getIntraHash(), currentPost);
-			}
-		}
-		/*
-		 * loop through all hashes
-		 */
-		for (final String hash : newTagsMap.keySet()) {
-			//get the appropriate post
-			final Post<? extends Resource> post = bibtexHashMap.get(hash);
-			if(post==null) continue; //needed when page is called with no imported posts
-			postIsPublication = this.determinePostRessource(post);
-			if(postIsPublication){
-				command.getBibtex().getList().add((Post<BibTex>) post);
-				resourceType = RESOURCE_TYPE_PUBLICATION;
-			} else {
-				command.getBookmark().getList().add((Post<Bookmark>) post);
-				resourceType = RESOURCE_TYPE_BOOKMARK;
-			}
+		for (final String intraHash : newTagsMap.keySet()) {
 			/*
 			 * short check if hash is correct
 			 */
-			if (hash.length() != HASH_LENGTH) continue;
-
+			if (intraHash.length() != HASH_LENGTH) continue;
 			/*
-			 * delete post if checkbox is checked
+			 * has this post been flagged by the user? 
 			 */
-			if (!delete.containsKey(hash) && delete.get(hash) == null) {
-				postsToSave.add(post);
+			if (postFlags.containsKey(intraHash) && postFlags.get(intraHash)) {
+				/*
+				 * The post has been flagged by the user.
+				 * Depending on the meaning of this flag, we add the 
+				 * post to the list of posts to be deleted or just
+				 * ignore it.
+				 */
+				if (flagMeansDelete) {
+					/*
+					 * flagged posts should be deleted, i.e., add them
+					 * to the list of posts to be deleted and work on 
+					 * the next post.
+					 */
+					postsToDelete.add(intraHash);
+				}
+				/*
+				 * flagMeansDelete = true:  delete the post
+				 * flagMeansDelete = false: ignore the post (neither save nor update it)
+				 */
+				continue;
 			}
-
 			/*
-			 * update tags
+			 * We must store/update the post, thus we parse and check its tags
 			 */
-			// get new and old tags
-			final String oldTagsString = oldTagsMap.get(hash);
-			final String newTagsString = newTagsMap.get(hash);
-
 			try {
-				// parse strings to sets of tags
-				final Set<Tag> oldTags = TagUtils.parse(oldTagsString);
-				final Set<Tag> newTags = TagUtils.parse(newTagsString);
-
-				// add addTags to newTags
+				final Set<Tag> oldTags = TagUtils.parse(oldTagsMap.get(intraHash));
+				final Set<Tag> newTags = TagUtils.parse(newTagsMap.get(intraHash));
+				/*
+				 * we add all global tags to the set of new tags 
+				 */
 				newTags.addAll(addTags);
-
-				// update tags in post
-				if (!present(post)) {
-					log.warn("post with hash " + hash + " not found for user " + username + " while updating tags");
+				/*
+				 * if we want to update the posts, we only need to update posts
+				 * where the tags have changed
+				 */
+				if (updatePosts && oldTags.equals(newTags)) {
+					/*
+					 * tags haven't changed, nothing to do
+					 */
 					continue;
-				} 
-				post.setTags(newTags);
+				}
+				/*
+				 * For the create/update methods we need a post -> 
+				 * create/get one.
+				 */
+				final Post<?> post;
+				if (updatePosts) {
+					/*
+					 * we need only a "mock" posts containing the hash,
+					 * username and the tags, since only the post's tags 
+					 * are updated 
+					 */
+					post = new Post<Resource>();
+					/*
+					 * FIXME: create the appropriate resource (Bookmark or BibTex)
+					 */
+					post.getResource().setIntraHash(intraHash);
+				} else {
+					/*
+					 * we get the complete post from the session, and store
+					 * it in the database
+					 */
+					post = postMap.get(intraHash);
+					// we should only add posts to that list that have errors (don't show ALL posts again)					
+					//					/*
+					//					 * needed when page is called with no imported posts
+					//					 * FIXME: really?
+					//					 */
+					//					if (!present(post)) continue;
+					//					/*
+					//					 * FIXME: why do we need that?
+					//					 */
+					//					if (postsArePublications) {
+					//						command.getBibtex().getList().add((Post<BibTex>) post);
+					//					} else {
+					//						command.getBookmark().getList().add((Post<Bookmark>)post);
+					//					}
+				}
+				/*
+				 * Finally, add the post to the list of posts that should 
+				 * be stored or updated.
+				 */
+				if (!present(post)) {
+					log.warn("post with hash " + intraHash + " not found for user " + loginUserName + " while updating tags");
+				} else {
+					/*
+					 * set the date and the tags for this post 
+					 * (everything else should already be set or not be changed)
+					 */
+					post.setDate(now);
+					post.setTags(newTags);
+					postsToUpdate.add(post);
+				}
+
 			} catch (final RecognitionException ex) {
-				log.warn("can't parse tags of resource " + hash + " for user " + username, ex);
+				log.debug("can't parse tags of resource " + intraHash + " for user " + loginUserName, ex);
 			}
 		}
 
+
+
+
+		/* *******************************************************
+		 * FIFTH: update the database
+		 * *******************************************************/
 		/*
-		 * save posts
+		 * delete posts
 		 */
-		if (present(postsToSave)) {
-			log.debug("saving "  + postsToSave.size() + " posts for user " + username);
-			try {
-				this.logic.createPosts(postsToSave);
-			} catch (DatabaseException ex) {
-				Map<String, List<ErrorMessage>> errorMsgs = ex.getErrorMessages();
-				boolean toUpdate = true;
-				for (final String postHash: errorMsgs.keySet()) {
-					for (final ErrorMessage errorMessage : errorMsgs.get(postHash))	{ 
-
-						final String errorCode = errorMessage.getErrorCode();
-						final String[] parameters = errorMessage.getParameters();
-						final String defaultMessage = errorMessage.getDefaultMessage();
-						final int post = postsToSave.indexOf(bibtexHashMap.get(postHash));
-
-						if (errorMessage instanceof SystemTagErrorMessage) {
-							errors.rejectValue(resourceType+".list[" + post + "].tags", errorCode, parameters, defaultMessage);
-							toUpdate = false;
-						} else if (errorMessage instanceof DuplicatePostErrorMessage)	{
-							if (!command.isOverwrite()) {
-								errors.rejectValue(resourceType+".list[" + post + "].resource", errorCode, parameters, defaultMessage);
-							} else {
-								postsToUpdate.add(bibtexHashMap.get(postHash));
-							}
-						} else {
-							errors.rejectValue(resourceType+".list[" + post + "].resource", errorCode, parameters, defaultMessage);
-						}
-						/*
-						 * FIXME: what to do with other error messages?
-						 */
-					}
-				}
-				if (toUpdate && command.isOverwrite()) {
-					try {
-						this.logic.updatePosts(postsToUpdate, PostUpdateOperation.UPDATE_ALL);
-					} catch (DatabaseException ex1) {
-						Map<String, List<ErrorMessage>> errorUpdateMsgs = ex1.getErrorMessages();
-						//TODO: no DatabaseExceptions get thrown yet, but just in case...
-						for (final String postHash : errorMsgs.keySet()) {
-							for (final ErrorMessage errorMessage: errorUpdateMsgs.get(postHash)) { 
-								if (errorMessage instanceof SystemTagErrorMessage) {
-									errors.rejectValue(resourceType+".list[" + postsToSave.indexOf(bibtexHashMap.get(postHash)) + "].tags", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
-								}
-							}
-						}
-					}
-				}
-			}
+		if (present(postsToDelete)) {
+			log.debug("deleting "  + postsToDelete.size() + " posts for user " + loginUserName);
+			this.logic.deletePosts(loginUserName, postsToDelete);
+		}
+		/*
+		 * update/store posts
+		 */
+		if (updatePosts) {
+			/*
+			 * FIXME: error handling missing (system tags errors!)
+			 */
+			log.debug("updating " + postsToUpdate.size() + " posts for user " + loginUserName);
+			this.logic.updatePosts(postsToUpdate, PostUpdateOperation.UPDATE_TAGS); 
+		} else {
+			log.debug("storing "  + postsToUpdate.size() + " posts for user " + loginUserName);
+			storePosts(postsToUpdate, command.isOverwrite(), resourceType, postMap);
 		}
 
-		log.debug("finished batch edit for user " + username);
+		log.debug("finished batch edit for user " + loginUserName);
 
-		if(errors.hasErrors())
-		{
-			if (postIsPublication) {
+
+
+
+		/* *******************************************************
+		 * SIXTH: return to view
+		 * *******************************************************/
+		/*
+		 * return to batch edit view on errors
+		 */
+		if (errors.hasErrors()) {
+			if (postsArePublications) {
 				/*
 				 * FIXME: changed from Views.BATCHEDIT_TEMP_BIB to Views.BATCHEDITBIB 
 				 * without setting the corresponding boolean command.editBeforeImport
@@ -391,29 +336,207 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				 */
 				return Views.BATCHEDITBIB;
 			} 
-			/*
-			 * when import/bookmarks will be moved, this has to change to BATCHEDIT_TEMP_URL
-			 */
 			return Views.BATCHEDITURL;  
 		}
+		/*
+		 * return to the page the user was initially coming from
+		 * 
+		 * FIXME: where is command.referer filled?
+		 */
+		return getFinalRedirect(command.getReferer(), loginUserName);
+	}
 
-		// get referer to redirect to it
-		String referer = command.getReferer();
-
-		// set default referer to user's page if empty or null
-		if (referer == null || referer.trim().isEmpty()) {
-			referer = "/user/" + this.encodeStringToUTF8(username);
-		} else {
-			/**
-			 * if we come from bedit{bib, burl}/{group, user}/{groupname, username},
-			 * we remove this prefix to get back to the simple resource view in the group or user section
+	/**
+	 * Tries to store the posts in the database, updates them if 
+	 * necessary (duplicate) and allowed to to so (overwrite = true).
+	 *
+	 * FIXME: the error handling here is almost identical to that
+	 * in {@link PostPublicationController#savePosts}
+	 * 
+	 * @param posts
+	 * @param overwrite
+	 * @param resourceType
+	 * @param postMap
+	 */
+	private void storePosts(final List<Post<?>> posts, final boolean overwrite, final String resourceType, final HashMap<String, Post<?>> postMap) {
+		final List<Post<?>> postsWithErrors = new LinkedList<Post<?>>();
+		final List<Post<?>> postsForUpdate  = new LinkedList<Post<?>>();
+		try {
+			/*
+			 * let's try to store the posts ...
 			 */
-			Pattern prefixToRemove = Pattern.compile("(bedit[a-z,A-Z]+/)");
-			Matcher prefixMatcher = prefixToRemove.matcher(referer);
-			if(prefixMatcher.find())
-				referer = prefixMatcher.replaceFirst("");
+			this.logic.createPosts(posts);
+		} catch (final DatabaseException ex) {
+			/*
+			 * we expect, that something might happen ...
+			 */
+			final Map<String, List<ErrorMessage>> errorMessages = ex.getErrorMessages();
+			/*
+			 * check all error messages ...
+			 */
+			for (final String postHash: errorMessages.keySet()) {
+				final Post<?> post = postMap.get(postHash);
+				log.debug("checking errors for post " + postHash);
+				/*
+				 * get all error messages for this post
+				 */
+				final List<ErrorMessage> postErrorMessages = errorMessages.get(postHash);
+				if (present(postErrorMessages)) {
+					boolean hasErrors = false;
+					boolean hasDuplicate = false;
+					/*
+					 * Error messages are connected with the erroneous posts
+					 * via the post's position in the error list.
+					 */
+					final int postId = postsWithErrors.size() - 1;
+					/*
+					 * go over all error messages 
+					 */
+					for (final ErrorMessage errorMessage : postErrorMessages) { 
+						log.debug("found error " + errorMessage);
+						final String errorItem;
+						if (errorMessage instanceof DuplicatePostErrorMessage) {
+							hasDuplicate = true;
+							if (overwrite) {
+								/*
+								 * if we shall overwrite posts, duplicates are no errors
+								 */
+								continue;
+							} 
+							errorItem = "resource";
+						} else if (errorMessage instanceof SystemTagErrorMessage) {
+							errorItem = "tags";
+						} else {
+							errorItem = "resource";
+						}
+						/*
+						 * add error to list
+						 * FIXME: postId is wrong!
+						 */
+						hasErrors = true;
+						errors.rejectValue(resourceType+".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+					}
+					if (hasErrors) {
+						/*
+						 * show the user the erroneous post
+						 */
+						postsWithErrors.add(post);
+					} else if (hasDuplicate) {
+						/*
+						 * If the post has no errors, but is a duplicate, we add it to
+						 * the list of posts which should be updated. 
+						 */
+						postsForUpdate.add(post);
+					}
+				}
+
+			}
+			if (overwrite) {
+				try {
+					this.logic.updatePosts(postsForUpdate, PostUpdateOperation.UPDATE_ALL);
+				} catch (final DatabaseException ex1) {
+					final Map<String, List<ErrorMessage>> allErrorMessages = ex1.getErrorMessages();
+					/*
+					 * iterating over all error messages ....
+					 */
+					for (final String postHash : errorMessages.keySet()) {
+						/*
+						 * Error messages are connected with the erroneous posts
+						 * via the post's position in the error list.
+						 */
+						final int postId = postsWithErrors.size() - 1;
+						boolean hasErrors = false;
+						for (final ErrorMessage errorMessage: allErrorMessages.get(postHash)) { 
+							if (errorMessage instanceof SystemTagErrorMessage) {
+								/*
+								 * add post to list of erroneous posts
+								 */
+								errors.rejectValue(resourceType+".list[" + postId + "].tags", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+								hasErrors = true;
+							}
+							
+						}
+						/*
+						 * we add the post here and not in the above if-statement, because
+						 * it could have several system tag error messages
+						 * and then would be added several times to the list.
+						 */
+						if (hasErrors) {
+							postsWithErrors.add(postMap.get(postHash));
+						}
+					}
+				}
+			}
 		}
-		return new ExtendedRedirectView(referer);
+	}
+
+	/**
+	 * If updatePosts is false, we have to store the posts from 
+	 * the session in the database. Therefore, this method gets 
+	 * those posts from the session and puts them into a hashmap
+	 * for faster access. 
+	 * 
+	 * @param updatePosts
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private HashMap<String, Post<?>> getPostMap(final boolean updatePosts) {
+		final HashMap<String, Post<?>> postMap = new HashMap<String, Post<?>>();
+		final List<Post<?>> postsFromSession = (List<Post<?>>) this.requestLogic.getSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
+		if (!updatePosts && ValidationUtils.present(postsFromSession)) {
+			/*
+			 * Put the posts into a hashmap, so we don't have to loop 
+			 * through the list for every stored post.
+			 */
+			for (final Post<?> post : postsFromSession) {
+				postMap.put(post.getResource().getIntraHash(), post);
+			}
+		}
+		return postMap;
+	} 
+
+
+	/**
+	 * Parses the tags that should be added to each post. 
+	 * 
+	 * @param addTagString
+	 * @return
+	 */
+	private Set<Tag> getAddTags(final String addTagString) {
+		try {
+			/*
+			 * ensure, that we don't try to parse a null string
+			 */
+			return TagUtils.parse(present(addTagString) ? addTagString : "");
+		} catch (final RecognitionException ex) {
+			log.warn("can't parse tags that should be added to all posts", ex);
+		}
+		return Collections.emptySet();
+	}
+
+	/**
+	 * If the referer points to /bedit{bib,url}/abc, we redirect to /abc, otherwise
+	 * to /user/loginUserName
+	 * 
+	 * @param referer
+	 * @param loginUserName
+	 * @return
+	 */
+	private View getFinalRedirect(final String referer, final String loginUserName) {
+		String redirectUrl = referer;
+		/*
+		 * if we come from bedit{bib, burl}/{group, user}/{groupname, username},
+		 * we remove this prefix to get back to the simple resource view in the group or user section
+		 */
+		final Matcher prefixMatcher = BATCH_EDIT_URL_PATTERN.matcher(referer);
+		if (prefixMatcher.find())
+			redirectUrl = prefixMatcher.replaceFirst("");
+		/*
+		 * if no URL is given, we redirect to the user's page
+		 */
+		if (!present(redirectUrl)) 
+			redirectUrl = encodeStringToUTF8("/user" + loginUserName);
+		return new ExtendedRedirectView(redirectUrl);
 	}
 
 
@@ -425,16 +548,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @param toEncode
 	 * @return the encoded utf-8 string
 	 */
-	private String encodeStringToUTF8(String toEncode) {
-		String encoded = null;
-
+	private static String encodeStringToUTF8(String toEncode) {
 		try {
-			encoded = URLEncoder.encode(toEncode, "UTF-8");
+			return URLEncoder.encode(toEncode, "UTF-8");
 		} catch (UnsupportedEncodingException ex) {
 			return toEncode;
 		}
-
-		return encoded;
 	}
 
 
@@ -458,26 +577,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	}
 
 	/**
-	 * Sets a string attribute in the session.
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	protected void setSessionAttribute(final String key, final Object value) {
-		requestLogic.setSessionAttribute(key, value);
-	}
-
-	/**
-	 * Gets a string attribute from the session.
-	 * 
-	 * @param key
-	 * @return
-	 */
-	protected Object getSessionAttribute(final String key) {
-		return requestLogic.getSessionAttribute(key);
-	}
-
-	/**
 	 * @return the request logic
 	 */
 	public RequestLogic getRequestLogic() {
@@ -492,22 +591,4 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		this.requestLogic = requestLogic;
 	}
 
-	private boolean determinePostRessource(Post<?> post)
-	{
-		Type resourceType = post.getResource().getClass();
-		if(resourceType==null)
-			throw new IllegalArgumentException("Untyped Post<?> recognized during BatchEditController.determinePostRessource");
-		if(post.getResource().getClass().isAssignableFrom(BibTex.class))
-			return true;
-		else
-			return false;
-	}
-
-	public MessageSource getMessageSource() {
-		return this.messageSource;
-	}
-
-	public void setMessageSource(MessageSource messageSource) {
-		this.messageSource = messageSource;
-	}
 }

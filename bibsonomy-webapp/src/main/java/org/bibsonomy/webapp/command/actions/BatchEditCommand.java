@@ -2,9 +2,6 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.util.Map;
 
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.Resource;
-import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
 
 
@@ -13,70 +10,40 @@ import org.bibsonomy.webapp.command.UserResourceViewCommand;
  * @version $Id$
  */
 public class BatchEditCommand extends UserResourceViewCommand {
-	
+
 	/**
 	 * The flag (from postPublication) that determines, if already existing posts will get updated.
 	 */
-	private boolean isOverwrite = false;
-	
+	private boolean overwrite = false;
+	/**
+	 * should publications be edited before they're stored? 
+	 */
 	private boolean editBeforeImport = false;
-
-	/**
-	 * This List contains all posts, that were to save, but an error occurred 
-	 * (needed for the error case)
-	 */
-	private ListCommand<Post<? extends Resource>> posts;
-
-
-	/**
-	 * @return the list of posts
-	 *//*
-	@Override
-	public ListCommand<Post<BibTex>> getBibtex() {
-		return bibtex;
-	}*/
-	
-	/**
-	 * @return the list of posts
-	 */
-	public ListCommand<Post<?>> getPosts() {
-		return this.posts;
-	}
-
-	/**
-	 * @param posts the list of posts
-	 */
-	public void setPosts(ListCommand<Post<?>> posts) {
-		this.posts = posts;
-	}
-	
 	/**
 	 * this flag determines, weather the dialogue called was configured to 
 	 * edit(delete) or edit(create) existing posts.
 	 */
-	private boolean deleteCheckedPosts;
-	
-
+	private boolean deleteCheckedPosts;	
+	/**
+	 * The type of resource edited on the batchedit page (bookmark or bibtex) 
+	 */
+	private String resourcetype;
 	/**
 	 * these tags will be added to all resources
 	 */
 	private String tags;
-	
 	/** 
 	 * old tags of the resources; resource hashes as keys of the map and old tags as values
 	 */
 	private Map<String, String> oldTags;
-	
 	/** 
 	 * newTags of the resources; resource hashes as keys of the map [hash = new tags], ...
 	 */
 	private Map<String, String> newTags;
-	
 	/**
 	 * hashes of the resources which will be deleted (hash as key and "on" as value (checkbox))
 	 */
 	private Map<String, Boolean> delete;
-	
 	/**
 	 * 
 	 */
@@ -177,18 +144,16 @@ public class BatchEditCommand extends UserResourceViewCommand {
 		this.referer = referer;
 	}
 	
-	public boolean getIsOverwrite() {
-		return this.isOverwrite;
+	public boolean getOverwrite() {
+		return this.overwrite;
 	}
 	
-	@Override
 	public boolean isOverwrite() {
-		return this.isOverwrite;
+		return this.overwrite;
 	}
 
-	@Override
-	public void setOverwrite(boolean isOverwrite) {
-		this.isOverwrite = isOverwrite;
+	public void setOverwrite(boolean overwrite) {
+		this.overwrite = overwrite;
 	}
 	
 	public boolean isEditBeforeImport() {
@@ -199,5 +164,13 @@ public class BatchEditCommand extends UserResourceViewCommand {
 		this.editBeforeImport = editBeforeImport;
 	}
 
+	@Override
+	public String getResourcetype() {
+		return this.resourcetype;
+	}
 
+	@Override
+	public void setResourcetype(String resourcetype) {
+		this.resourcetype = resourcetype;
+	}
 }

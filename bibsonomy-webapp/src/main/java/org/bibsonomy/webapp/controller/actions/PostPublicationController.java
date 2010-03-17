@@ -334,7 +334,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * the publications are saved in the database
 			 */
-			savePosts(postsToStore, command.getOverwrite());
+			storePosts(postsToStore, command.getOverwrite());
 		}
 
 		/*
@@ -484,10 +484,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * those posts are overwritten (otherwise they produce an error). 
 	 * Posts that have errors will be rejected in any case.
 	 * 
+	 * FIXME: the error handling here is almost identical to that
+	 * in {@link BatchEditController#storePosts}
+	 * 
 	 * @param postsToStore
 	 * @param overwrite - posts which already exist are overwritten, if <code>true</code>
 	 */
-	private void savePosts(final HashMap<Post<BibTex>, Integer> postsToStore, final boolean overwrite) {
+	private void storePosts(final HashMap<Post<BibTex>, Integer> postsToStore, final boolean overwrite) {
 		try {
 			/*
 			 * Try to save all posts in one transaction. 

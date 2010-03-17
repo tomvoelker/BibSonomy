@@ -267,25 +267,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		this.overwrite = overwrite;
 	}
 	
-	
-	
-	/***********************************************
-	 * FOR IMPORTS CONTAINING MULTIPLE PUBLICATIONS
-	 ***********************************************/
-	//TODO REMOVE
-	/**
-	 * The action that will be started, when hitting the submission button on the edit page
-	 */
-	private String formAction;
-	
-	public String getFormAction() {
-		return this.formAction;
-	}
-
-	public void setFormAction(final String formAction) {
-		this.formAction = formAction;
-	}
-	
 
 	/**
 	 * The posts, that were updated during import.
