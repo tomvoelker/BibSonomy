@@ -1703,7 +1703,7 @@ function sendEditTags(obj, type, ckey, link) {
 	
 	$.ajax( {
 		type :"POST",
-		url :"/batchEdit_new?newTags['" + hash + "']=" + encodeURIComponent(tags.trim())
+		url :"/batchEdit?newTags['" + hash + "']=" + encodeURIComponent(tags.trim())
 				+ "&ckey=" + ckey
 				+ "&deleteCheckedPosts=true",
 		dataType :"html",
