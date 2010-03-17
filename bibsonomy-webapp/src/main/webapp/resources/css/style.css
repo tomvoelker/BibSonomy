@@ -1177,6 +1177,11 @@ padding-top:1px;
 	margin-right: 4px;
 }
 
+.highlightBox {
+	border: .2em solid red; 
+	padding: .2em;
+}
+
 #headlogin {
 	float:right;
 	margin-top: 7px;
