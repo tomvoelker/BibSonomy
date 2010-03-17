@@ -153,14 +153,13 @@
 		    <div class="fsRow">		
 		 	  <span class="fsLabel"><fmt:message key="settings.myFriendsAre"><fmt:param><a href="/friends"><fmt:message key="friends"/></a></fmt:param></fmt:message></span>
 			  <c:if test="${empty command.friendsOfUser}">
-				<fmt:message key="settings.noFriends"/> (
 				<fmt:message key="settings.addFriendsNow">
 					<fmt:param>
 						<a href="/friends">
 							<fmt:message key="settings.add"/>
 						</a>
 					</fmt:param>
-				</fmt:message>) 
+				</fmt:message>
 			  </c:if>
 					<c:forEach var="myfr2" items="${command.friendsOfUser}">			
 		 				<a href="/user/${mtl:encodeURI(myfr2.name)}"><c:out value="${myfr2.name} "/></a>		 		
