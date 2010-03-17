@@ -524,7 +524,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 				 */
 				final List<ErrorMessage> postErrorMessages = errorMessages.get(post.getResource().getIntraHash());
 				if (present(postErrorMessages))	{
-					boolean isErroneous = false;
+					boolean hasErrors = false;
 					boolean hasDuplicate = false;
 					/*
 					 * go over all error messages 
@@ -533,31 +533,32 @@ public class PostPublicationController extends AbstractEditPublicationController
 					while (iterator.hasNext()) {
 						final ErrorMessage errorMessage = iterator.next();
 						log.debug("found error " + errorMessage);
-						final String errorCode = errorMessage.getErrorCode();
-						final String[] parameters = errorMessage.getParameters();
-						final String defaultMessage = errorMessage.getDefaultMessage();
+						final String errorItem;
 						if (errorMessage instanceof DuplicatePostErrorMessage) {
 							hasDuplicate = true;
 							if (overwrite) {
 								/*
 								 * if we shall overwrite posts, duplicates are no errors
 								 */
-								iterator.remove();
-							} else {
-								errors.rejectValue("bibtex.list[" + i + "].resource", errorCode, parameters, defaultMessage);
-							}
+								continue;
+							} 
+							errorItem = "resource";
 						} else if (errorMessage instanceof SystemTagErrorMessage) {
-							isErroneous = true;
-							errors.rejectValue("bibtex.list[" + i + "].tags", errorCode, parameters, defaultMessage);
+							errorItem = "tags";
 						} else {
-							errors.rejectValue("bibtex.list[" + i + "].resource", errorCode, parameters, defaultMessage);
+							errorItem = "resource";
 						}
+						/*
+						 * add error to error list
+						 */
+						hasErrors = true;
+						errors.rejectValue("bibtex.list[" + i + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 					}
 					/*
 					 * If the post has no errors, but is a duplicate, we add it to
 					 * the list of posts which should be updated. 
 					 */
-					if (!isErroneous && hasDuplicate)
+					if (!hasErrors && hasDuplicate)
 						postsForUpdate.add(post);
 				}
 			}
