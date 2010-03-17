@@ -18,6 +18,8 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class PopularPageController extends MultiResourceListController implements MinimalisticController<MultiResourceViewCommand>{
+	private static final int MAX_TAGS = 50;
+
 	private static final Log log = LogFactory.getLog(PopularPageController.class);
 	
 	protected Integer entriesPerPage;
@@ -52,7 +54,7 @@ public class PopularPageController extends MultiResourceListController implement
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
-		do{
+		do {
 			for (final Class<? extends Resource> resourceType : listsToInitialise) {
 				//overwrite with systemtag
 				tags.set(0, SystemTagsUtil.buildSystemTagString(SystemTags.DAYS, begin));
@@ -70,13 +72,18 @@ public class PopularPageController extends MultiResourceListController implement
 			}
 			begin++;
 		//show max 10 entries
-		}while(days > 0 && begin < 10);
+		} while(days > 0 && begin < 10);
 
 		// only html format, exports are not possible atm 
-		this.setTags(command, Resource.class, groupingEntity, null, null, null, null, 50, null);
+		this.setTags(command, Resource.class, groupingEntity, null, null, null, null, MAX_TAGS, null);
 		this.endTiming();
 		return Views.POPULAR;			
 		
+	}
+	
+	@Override
+	protected int getFixedTagMax(int tagMax) {
+		return MAX_TAGS;
 	}
 	
 	public MultiResourceViewCommand instantiateCommand() {

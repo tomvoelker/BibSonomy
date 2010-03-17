@@ -18,6 +18,11 @@ import org.bibsonomy.webapp.view.Views;
 public class HomepageController extends SingleResourceListController implements MinimalisticController<SimpleResourceViewCommand> {
 	private static final Log log = LogFactory.getLog(HomepageController.class);
 
+	/*
+	 * on the homepage, only 50 tags are shown in the tag cloud
+	 */
+	private static final int MAX_TAGS = 50;
+
 	public View workOn(final SimpleResourceViewCommand command) {
 		/*
 		 * FIXME: implement filter=no parameter
@@ -26,7 +31,7 @@ public class HomepageController extends SingleResourceListController implements 
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		// handle the case when only tags are requested
-		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, 50, null);
+		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
 		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
@@ -43,7 +48,7 @@ public class HomepageController extends SingleResourceListController implements 
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			command.setPageTitle("home");
-			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, 50, null);
+			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
 			this.endTiming();
 			return Views.HOMEPAGE;		
 		}
@@ -53,6 +58,15 @@ public class HomepageController extends SingleResourceListController implements 
 		return Views.getViewByFormat(command.getFormat());	
 	}
 
+	/**
+	 * Enforce maximal 50 tags on 
+	 * @see org.bibsonomy.webapp.controller.ResourceListController#getFixedTagMax(int)
+	 */
+	@Override
+	protected int getFixedTagMax(int tagMax) {
+		return MAX_TAGS;
+	}
+	
 	public SimpleResourceViewCommand instantiateCommand() {
 		return new SimpleResourceViewCommand();
 	}

@@ -39,15 +39,15 @@ import org.bibsonomy.webapp.view.Views;
  */
 public abstract class ResourceListController {
 	private static final Log log = LogFactory.getLog(ResourceListController.class);
-	
+
 	protected LogicInterface logic;
 	protected UserSettings userSettings;
 	protected Collection<Class<? extends Resource>> listsToInitialise;
 	private Long startTime;
-			
+
 	/**
-     * Retrieve a set of tags from the database logic and add them to the command object
-     * 
+	 * Retrieve a set of tags from the database logic and add them to the command object
+	 * 
 	 * @param <T> extends Resource, the resource type
 	 * @param <V> extends ResourceViewCommand, the command
 	 * @param cmd the command
@@ -59,28 +59,62 @@ public abstract class ResourceListController {
 	 * @param start start parameter
 	 * @param end end parameter
 	 */
-	protected <T extends Resource, V extends ResourceViewCommand> void setTags(V cmd, Class<T> resourceType, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, int max, String search) {
+	protected <T extends Resource, V extends ResourceViewCommand> void setTags(final V cmd, final Class<T> resourceType, final GroupingEntity groupingEntity, final String groupingName, final String regex, final List<String> tags, final String hash, final int max, final String search) {
 		final TagCloudCommand tagCloudCommand = cmd.getTagcloud();
 		final UserSettings userSettings = cmd.getContext().getLoginUser().getSettings();
 		// retrieve tags
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
-		Order order = null;
-		if(userSettings.getIsMaxCount()) {
-			order = Order.FREQUENCY;
-			max = Math.min(max, userSettings.getTagboxMaxCount());
+		Order tagOrder = null;
+		int tagMax = max;
+		if (userSettings.getIsMaxCount()) {
+			tagOrder = Order.FREQUENCY;
+			tagMax = Math.min(max, userSettings.getTagboxMaxCount());
 		} else {
 			// overwrite minFreq only if not explicitly set by URL param
-			if (tagCloudCommand.getMinFreq() == 0) {tagCloudCommand.setMinFreq(userSettings.getTagboxMinfreq());}
+			if (tagCloudCommand.getMinFreq() == 0) {
+				tagCloudCommand.setMinFreq(userSettings.getTagboxMinfreq());
+			}
 		}
+		/*
+		 * allow controllers to overwrite max and order
+		 * FIXME: In the hurry I found no nice way to do this. :-( 
+		 */
+		tagMax = getFixedTagMax(tagMax);
+		tagOrder = getFixedTagOrder(tagOrder);
 		
-		tagCloudCommand.setTags( this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, hash, order, 0, max, search, null));
+
+		tagCloudCommand.setTags( this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, hash, tagOrder, 0, tagMax, search, null));
 		// retrieve tag cloud settings
 		tagCloudCommand.setStyle(TagCloudStyle.getStyle(userSettings.getTagboxStyle()));
 		tagCloudCommand.setSort(TagCloudSort.getSort(userSettings.getTagboxSort()));
 		tagCloudCommand.setMaxFreq(TagUtils.getMaxUserCount(tagCloudCommand.getTags()));
 	}
+
+	/**
+	 * If a sub-classing controller wants to enforce a fixed order of
+	 * the tag cloud, it should overwrite this method and return the
+	 * fixed order.
+	 * 
+	 * @param tagOrder
+	 * @return
+	 */
+	protected Order getFixedTagOrder(final Order tagOrder) {
+		return tagOrder;
+	}
 	
+	/**
+	 * If a sub-classing controller wants to enforce a fixed number
+	 * of tags in the tag cloud, it should overwrite this method and
+	 * return the number of tags.
+	 * 
+	 * @param tagMax
+	 * @return
+	 */
+	protected int getFixedTagMax(final int tagMax) {
+		return tagMax;
+	}
 	
+
 	/**
 	 * Initialize tag list, depending on chosen resourcetype
 	 * 
@@ -101,7 +135,7 @@ public abstract class ResourceListController {
 	protected <V extends ResourceViewCommand> void handleTagsOnly(V cmd, GroupingEntity groupingEntity, String groupingName, String regex, List<String> tags, String hash, int max, String search) {
 		final String tagsType = cmd.getTagstype();
 		if (tagsType != null) {
-			
+
 			// if tags are requested (not related tags), remove non-systemtags from tags list
 			if (tagsType.equalsIgnoreCase(TagsType.DEFAULT.getName() ) && tags != null ) {
 				Iterator<String> it = tags.iterator();
@@ -111,7 +145,7 @@ public abstract class ResourceListController {
 					}
 				}
 			}
-			
+
 			// check if limitation to a single resourcetype is requested			
 			Class<? extends Resource> resourcetype = Resource.class;
 			if (this.isBibtexOnlyRequested(cmd)) {
@@ -120,17 +154,17 @@ public abstract class ResourceListController {
 			else if (this.isBookmarkOnlyRequested(cmd)) {
 				resourcetype = Bookmark.class;
 			}
-					
+
 			// fetch tags, store them in bean
 			this.setTags(cmd, resourcetype, groupingEntity, groupingName, regex, tags, hash, max, search);
-			
+
 			// when tags only are requested, we don't need bibtexs and bookmarks
 			this.listsToInitialise.remove(BibTex.class);
 			this.listsToInitialise.remove(Bookmark.class);			
 		}
 	}
-	
-	
+
+
 	/**
 	 * do some post processing with the retrieved resources
 	 * 
@@ -153,12 +187,12 @@ public abstract class ResourceListController {
 			BibTexUtils.sortBibTexList(bibtexList, SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
 		}
 	}
-	
-	
-		
+
+
+
 	/**
-     * retrieve a list of posts from the database logic and add them to the command object
-     * 
+	 * retrieve a list of posts from the database logic and add them to the command object
+	 * 
 	 * @param <T> extends Resource
 	 * @param <V> extends ResourceViewComand
 	 * @param cmd the command object
@@ -176,10 +210,10 @@ public abstract class ResourceListController {
 		// list settings
 		listCommand.setEntriesPerPage(itemsPerPage);
 	}
-	
+
 	/**
-     * retrieve the number of posts from the database logic and add it to the command object
-     * 
+	 * retrieve the number of posts from the database logic and add it to the command object
+	 * 
 	 * @param <T> extends Resource
 	 * @param <V> extends ResourceViewComand
 	 * @param cmd the command object
@@ -211,14 +245,14 @@ public abstract class ResourceListController {
 	public void setListsToInitialise(final Collection<Class<? extends Resource>> listsToInitialise) {
 		this.listsToInitialise = listsToInitialise;
 	}
-	
+
 	/**
 	 * @param logic logic interface
 	 */
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
-	
+
 	/**
 	 * Choose which lists of resources to load for the current view. By default,
 	 * bibtex and bookmark resources are loaded.  
@@ -249,17 +283,17 @@ public abstract class ResourceListController {
 			this.listsToInitialise.remove(BibTex.class);
 		}
 	}	
-	
+
 	protected void startTiming(Class<? extends ResourceListController> controller, String format) {
 		log.info("Handling Controller: " + controller.getSimpleName() + ", format: " + format);
 		this.startTime = System.currentTimeMillis();
 	}
-	
+
 	protected void endTiming() {
 		Long elapsed = System.currentTimeMillis() - this.startTime;
 		log.info("Processing time: " + elapsed + " ms");
 	}
-	
+
 	/**
 	 * Check if only Bibtexs are requested
 	 * 
@@ -269,12 +303,12 @@ public abstract class ResourceListController {
 	 */
 	private  <V extends ResourceViewCommand> Boolean isBibtexOnlyRequested(V cmd) {
 		if (ResourceType.BIBTEX.getLabel().equalsIgnoreCase(cmd.getResourcetype()) || 
-			(this.listsToInitialise != null && this.listsToInitialise.size() == 1 && this.listsToInitialise.contains(BibTex.class)) ) {
+				(this.listsToInitialise != null && this.listsToInitialise.size() == 1 && this.listsToInitialise.contains(BibTex.class)) ) {
 			return true;
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Check if only Bookmarks are requested
 	 * 
@@ -284,13 +318,13 @@ public abstract class ResourceListController {
 	 */
 	private  <V extends ResourceViewCommand> Boolean isBookmarkOnlyRequested(V cmd) {
 		if (ResourceType.BOOKMARK.getLabel().equalsIgnoreCase(cmd.getResourcetype()) || 
-			(this.listsToInitialise != null && this.listsToInitialise.size() == 1 && this.listsToInitialise.contains(Bookmark.class)) ) {
+				(this.listsToInitialise != null && this.listsToInitialise.size() == 1 && this.listsToInitialise.contains(Bookmark.class)) ) {
 			return true;
 		}
 		return false;
 	}	
-	
-	
+
+
 	/**
 	 * Restrict result lists by range from startIndex to endIndex.
 	 * 
@@ -302,11 +336,11 @@ public abstract class ResourceListController {
 	 * @param endIndex - end index
 	 */
 	protected <V extends SimpleResourceViewCommand> void restrictResourceList(V cmd, Class<? extends Resource> resourceType, final int startIndex, final int endIndex) {			
-			if (BibTex.class.equals(resourceType)) {
-				cmd.getBibtex().setList(cmd.getBibtex().getList().subList(startIndex, endIndex));
-			}
-			if (Bookmark.class.equals(resourceType)) {
-				cmd.getBookmark().setList(cmd.getBookmark().getList().subList(startIndex, endIndex));
-			}				
+		if (BibTex.class.equals(resourceType)) {
+			cmd.getBibtex().setList(cmd.getBibtex().getList().subList(startIndex, endIndex));
+		}
+		if (Bookmark.class.equals(resourceType)) {
+			cmd.getBookmark().setList(cmd.getBookmark().getList().subList(startIndex, endIndex));
+		}				
 	}
 }
