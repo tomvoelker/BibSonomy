@@ -47,6 +47,7 @@ public class JoinGroupHandler extends HttpServlet {
 	private static String projectName = null;
 	private static final int MAX_REASON_LENGTH = 200;
 
+	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config); 
 		try {
@@ -58,11 +59,13 @@ public class JoinGroupHandler extends HttpServlet {
 		}
 	}	
 
+	@Override
 	public void doGet (HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setAttribute("error", "Sorry, unidentified request!");
 		getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
 	}
 
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		/* Get the session attribute of current user  */
@@ -211,7 +214,7 @@ public class JoinGroupHandler extends HttpServlet {
 							String message = "\nHello " + requGroup + "\n" +
 							"\n" +currUser+" has send a request to join your group." + "\n" +
 							"\nReason: " + reason + "\n" + 
-							"\nVisit " + projectHome + "settings.jsp?group="+URLEncoder.encode(requGroup, "UTF-8").toLowerCase()+"&user="+URLEncoder.encode(currUser, "UTF-8").toLowerCase()+"&seltab=2"+
+							"\nVisit " + projectHome + "settings?group="+URLEncoder.encode(requGroup, "UTF-8").toLowerCase()+"&user="+URLEncoder.encode(currUser, "UTF-8").toLowerCase()+"&selTab=3"+
 							"\n"+
 							"\nHave a look on the help page and the FAQ:" +
 							"\n" + projectHome + "help" +
@@ -246,7 +249,7 @@ public class JoinGroupHandler extends HttpServlet {
 			response.sendRedirect("/errors/databaseError.jsp");
 		} catch (MessagingException e) {
 			log.fatal("Could not send join-/cancel-request mail: " + e);
-			request.setAttribute("error", "Could not handle your request. Please try again later");
+			request.setAttribute("error", "Could not handle your request. Please try again later.");
 			getServletConfig().getServletContext().getRequestDispatcher("/errors/error.jsp").forward(request, response);
 		}
 
