@@ -26,11 +26,14 @@ package org.bibsonomy.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
+import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.junit.Test;
 
 /**
@@ -155,4 +158,67 @@ public class StringUtilsTest {
 		assertEquals(1, StringUtils.secureCompareTo("a", ""));
 		assertEquals(-1, StringUtils.secureCompareTo("", "a"));
 	}
+	
+	
+	/**
+	 * tests parseKeyValuePairs
+	 */
+	@Test
+	public void parseKeyValuePairs() {
+		// empty input
+		String input = "";
+		HashMap<String, String> result = StringUtils.parseBracketedKeyValuePairs(input, '=', ',', '{', '}');
+		assertEquals(0,result.keySet().size());
+		assertEquals(0,result.values().size());
+		// normal mode
+		input = "key1 = {value1}, key2 = {value2}, key3 = {value3}";
+		result = StringUtils.parseBracketedKeyValuePairs(input, '=', ',', '{', '}');
+		assertEquals(3,result.keySet().size());
+		assertEquals(3,result.values().size());
+		assertEquals("value1", result.get("key1"));
+		assertEquals("value2", result.get("key2"));
+		assertEquals("value3", result.get("key3"));
+		// without spaces
+		input = "key1={value1},key2={value2},key3={value3}";
+		result = StringUtils.parseBracketedKeyValuePairs(input, '=', ',', '{', '}');
+		assertEquals(3,result.keySet().size());
+		assertEquals(3,result.values().size());
+		assertEquals("value1", result.get("key1"));
+		assertEquals("value2", result.get("key2"));
+		assertEquals("value3", result.get("key3"));
+		// with leading / trailing spaces
+		input = "     key1={value1},key2={value2},key3={value3}   ";
+		result = StringUtils.parseBracketedKeyValuePairs(input, '=', ',', '{', '}');
+		assertEquals(3,result.keySet().size());
+		assertEquals(3,result.values().size());
+		assertEquals("value1", result.get("key1"));
+		assertEquals("value2", result.get("key2"));
+		assertEquals("value3", result.get("key3"));
+		// with additional brackets
+		input = "     key1={val{}{}{}ue1},key2={v{a{l}u}e2},key3={v{{al}u}e3}   ";
+		result = StringUtils.parseBracketedKeyValuePairs(input, '=', ',', '{', '}');
+		assertEquals(3,result.keySet().size());
+		assertEquals(3,result.values().size());
+		assertEquals("val{}{}{}ue1", result.get("key1"));
+		assertEquals("v{a{l}u}e2", result.get("key2"));
+		assertEquals("v{{al}u}e3", result.get("key3"));
+		// with 'strange' keys and values
+		input = "     key 1={val==ue1}, k e-y 2 ={v=a&{}lue2}, k___e   y3=={=value3=}   ";
+		result = StringUtils.parseBracketedKeyValuePairs(input, '=', ',', '{', '}');
+		assertEquals(3,result.keySet().size());
+		assertEquals(3,result.values().size());
+		assertEquals("val==ue1", result.get("key 1"));
+		assertEquals("v=a&{}lue2", result.get("k e-y 2"));
+		assertEquals("=value3=", result.get("k___e   y3"));
+		// unmatched brackets
+		input = "     key 1={val==ue1}}, k e-y 2 ={v=a&{}lue2}, k___e   y3=={=value3=}   ";	
+		boolean fail = true;
+		try {
+			result = StringUtils.parseBracketedKeyValuePairs(input, '=', ',', '{', '}');
+		} catch (InvalidModelException e) {
+			fail = false;
+		}
+		if (fail) {fail("InvalidModelException should have been thrown!");}
+	}
+	
 }

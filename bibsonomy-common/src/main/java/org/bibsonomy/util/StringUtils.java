@@ -29,7 +29,12 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.InvalidModelException;
 
 /**
  * Some methods for handling strings.
@@ -37,6 +42,8 @@ import java.util.Iterator;
  * @version $Id$
  */
 public class StringUtils {
+	
+	private static final Log LOGGER = LogFactory.getLog(StringUtils.class);
 	
 	private static final String DEFAULT_CHARSET = "UTF-8";
 	
@@ -269,4 +276,85 @@ public class StringUtils {
 	public static String implodeStringArray(String[] pieces, String delim) {
 		return implodeStringCollection(Arrays.asList(pieces), delim);
 	}
+	
+	
+	
+	/**
+	 * Helper method to parse a string containing bracketed key-value-pairs in the format
+	 * 
+	 *   key2 = {val1}, key2 = {val2}, ...
+	 *   
+	 * The assigmnet operator (=), the brackets ({}) as well as the key/value pair delimiter (,)
+	 * can be configured. Whitespace outside brackets and around keys is ignored.
+	 * 
+	 * @param input - the string to be parsed
+	 * @param assignmentOperator - the character which assigns a value to a key (e.g. '=')
+	 * @param pairDelimiter - the character which delimits two key/value pairs (e.g. ',')
+	 * @param bracketOpen - the opening bracket (e.g., '{')
+	 * @param bracketClose - the closing bracket (e.g., '}')
+	 * @return a HashMap<String,String> containing the parsed key/value pairs.
+	 * @throws InvalidModelException - in case of unmatched brackets
+	 */
+	public static HashMap<String, String> parseBracketedKeyValuePairs(String input, char assignmentOperator, char pairDelimiter, char bracketOpen, char bracketClose) 
+	throws InvalidModelException {
+		// check input, init hashmap
+		HashMap<String, String> keyValPairs = new HashMap<String, String>();
+		if (input == null   || input.isEmpty()) {
+			return keyValPairs;			
+		} 
+		
+		// String buffers to hold keys / values
+		StringBuffer currentKey = new StringBuffer();
+		StringBuffer currentVal = new StringBuffer();
+		
+		// start with parsing keys
+		ParseMode mode = ParseMode.KEY;
+		
+		// difference between opening and closing brackets
+		int bracketDiff = 0;
+		
+		// loop through chars
+		for (char c : input.toCharArray()) {		
+			if (mode.equals(ParseMode.VALUE) && c == bracketOpen) {
+				bracketDiff++;
+				if (bracketDiff == 1) {continue;}
+			}
+			if (mode.equals(ParseMode.VALUE) && c == bracketClose) {
+				bracketDiff--;
+				if (bracketDiff == 0) {continue;}
+			}
+			// switch parsing mode to VALUE when assignment operator is met
+			if ( (c == assignmentOperator) )  {
+				mode = ParseMode.VALUE;
+			}
+			// done with a key-value pair; write values, reset string buffers 
+			// and reset parsing mode to KEY
+			if ( (c == pairDelimiter) && (bracketDiff == 0) ) {
+				keyValPairs.put(currentKey.toString().trim(), currentVal.toString().trim());
+				LOGGER.debug("done with " + currentKey.toString() + " -> " + currentVal.toString());
+				currentKey.delete(0, currentKey.length());
+				currentVal.delete(0, currentVal.length());				
+				mode = ParseMode.KEY;
+				continue;
+			}
+			
+			// append to current key
+			if (mode.equals(ParseMode.KEY)) { currentKey.append(c); }
+			
+			// append to current value within matching brackets
+			if (mode.equals(ParseMode.VALUE) && bracketDiff > 0) { currentVal.append(c); }						
+		}
+		// add last key-value pair
+		keyValPairs.put(currentKey.toString().trim(), currentVal.toString().trim());
+		
+		if (bracketDiff != 0) {
+			throw new InvalidModelException("Error: Unmatched brackets while parsing key/value pairs from string " + input);
+		}
+			
+		return keyValPairs;
+	}
+	
+	private enum ParseMode {KEY,VALUE}
+	
 }
+
