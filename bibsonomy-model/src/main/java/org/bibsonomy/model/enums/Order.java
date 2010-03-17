@@ -26,6 +26,9 @@ package org.bibsonomy.model.enums;
 /**
  * Defines some ordering criteria for lists of entities
  * 
+ * FIXME: the orderings "FREQUENCY" AND "POPULAR" probably mean the
+ * same. Check their usage and if possible, remove one of them.
+ * 
  * @author Jens Illig
  * @version $Id$
  */
