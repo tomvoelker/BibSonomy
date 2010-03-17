@@ -23,7 +23,6 @@
 
 package org.bibsonomy.model;
 
-import java.io.Serializable;
 import java.net.URL;
 
 import org.bibsonomy.util.StringUtils;
@@ -33,12 +32,9 @@ import org.bibsonomy.util.StringUtils;
  * 
  * @version $Id$
  */
-public class Bookmark extends Resource  implements Serializable {
-
-	/**
-	 * For persistence (Serializable) 
-	 */
+public class Bookmark extends Resource {
 	private static final long serialVersionUID = 8540672660698453421L;
+	
 	/**
 	 * An {@link URL} pointing to some website.
 	 * FIXME: Use URL instead of String

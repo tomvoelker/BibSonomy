@@ -261,6 +261,52 @@ public class Group implements Serializable{
 		}
 		return equals((Group) obj);
 	}
+	
+	/**
+	 * @return The tag sets associated with this group. See {@link #setTagSets(List)}.
+	 */
+	public List<TagSet> getTagSets() {
+		return this.tagSets;
+	}
+
+	/** Sets the tag sets for this group.
+	 * Tag sets allow group admins to specify pre-defined tags which
+	 * the users can/should use when marking a post as "relevant for" this group. 
+	 * 
+	 * @param tagSets
+	 */
+	public void setTagSets(List<TagSet> tagSets) {
+		this.tagSets = tagSets;
+	}
+
+	/** Get the real (long) name of this group.
+	 * 
+	 * @return The real (long) name of this group.
+	 */
+	public String getRealname() {
+		return this.realname;
+	}
+
+	/** Set the real (long) name of this group.
+	 * @param realname
+	 */
+	public void setRealname(String realname) {
+		this.realname = realname;
+	}
+
+	/**
+	 * @return The homepage of this group
+	 */
+	public URL getHomepage() {
+		return this.homepage;
+	}
+
+	/** Set the homepage of this group.
+	 * @param homepage
+	 */
+	public void setHomepage(URL homepage) {
+		this.homepage = homepage;
+	}
 
 	/**
 	 * Compares two groups. Two groups are equal, if their groupId is equal.
@@ -327,51 +373,4 @@ public class Group implements Serializable{
 		if (this.name != null) return this.name.toLowerCase().hashCode();
 		return groupId;
 	}
-
-	/**
-	 * @return The tag sets associated with this group. See {@link #setTagSets(List)}.
-	 */
-	public List<TagSet> getTagSets() {
-		return this.tagSets;
-	}
-
-	/** Sets the tag sets for this group.
-	 * Tag sets allow group admins to specify pre-defined tags which
-	 * the users can/should use when marking a post as "relevant for" this group. 
-	 * 
-	 * @param tagSets
-	 */
-	public void setTagSets(List<TagSet> tagSets) {
-		this.tagSets = tagSets;
-	}
-
-	/** Get the real (long) name of this group.
-	 * 
-	 * @return The real (long) name of this group.
-	 */
-	public String getRealname() {
-		return this.realname;
-	}
-
-	/** Set the real (long) name of this group.
-	 * @param realname
-	 */
-	public void setRealname(String realname) {
-		this.realname = realname;
-	}
-
-	/**
-	 * @return The homepage of this group
-	 */
-	public URL getHomepage() {
-		return this.homepage;
-	}
-
-	/** Set the homepage of this group.
-	 * @param homepage
-	 */
-	public void setHomepage(URL homepage) {
-		this.homepage = homepage;
-	}
-
 }

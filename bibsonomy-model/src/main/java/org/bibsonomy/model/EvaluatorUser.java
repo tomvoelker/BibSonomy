@@ -30,7 +30,8 @@ import org.bibsonomy.common.enums.Role;
  * 
  * @version $Id$
  */
-public class EvaluatorUser extends User{
+public class EvaluatorUser extends User {
+	private static final long serialVersionUID = 222500173040042092L;
 
 	/**
 	 * The (nick-)name of this user. Is <code>null</code> if the user is not logged in (unknown). 
@@ -39,6 +40,13 @@ public class EvaluatorUser extends User{
 	
 	private String evalDate;
 
+	/**
+	 * Constructor
+	 */
+	public EvaluatorUser() {
+		this(null);
+	}
+	
 	/**
 	 * Constructor
 	 * 
@@ -52,24 +60,29 @@ public class EvaluatorUser extends User{
 	}
 
 	/**
-	 * Constructor
+	 * @return the evaluator
 	 */
-	public EvaluatorUser() {
-		this(null);
-	}
-	
 	public String getEvaluator() {
 		return this.evaluator;
 	}
 
+	/**
+	 * @param evaluator the evaluator to set
+	 */
 	public void setEvaluator(String evaluator) {
 		this.evaluator = evaluator;
 	}
-	
+
+	/**
+	 * @return the evalDate
+	 */
 	public String getEvalDate() {
 		return this.evalDate;
 	}
 
+	/**
+	 * @param evalDate the evalDate to set
+	 */
 	public void setEvalDate(String evalDate) {
 		this.evalDate = evalDate;
 	}

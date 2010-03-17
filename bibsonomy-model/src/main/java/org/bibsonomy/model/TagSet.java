@@ -41,28 +41,50 @@ public class TagSet {
 	*/
 	private String setName;
 	
-	public TagSet() {
-		
+	/**
+	 * default constructor
+	 */
+	public TagSet() {	
 	}
 	
+	/**
+	 * sets setName and tags
+	 * @param setName
+	 * @param tags
+	 */
 	public TagSet(String setName, List<Tag> tags){
 		this.setName = setName;
 		this.tags = tags;
 	}
 	
+	/**
+	 * @return the tags
+	 */
 	public List<Tag> getTags() {
 		return this.tags;
 	}
+
+	/**
+	 * @param tags the tags to set
+	 */
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
 	}
+
+	/**
+	 * @return the setName
+	 */
 	public String getSetName() {
 		return this.setName;
 	}
+
+	/**
+	 * @param setName the setName to set
+	 */
 	public void setSetName(String setName) {
 		this.setName = setName;
 	}
-	
+
 	@Override
 	public String toString() {
 		return setName + ": " + tags;

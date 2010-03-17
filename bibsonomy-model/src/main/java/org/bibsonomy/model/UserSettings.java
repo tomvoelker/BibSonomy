@@ -23,6 +23,8 @@
 
 package org.bibsonomy.model;
 
+import java.io.Serializable;
+
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 
 /**
@@ -30,8 +32,9 @@ import org.bibsonomy.common.enums.ProfilePrivlevel;
  * 
  * @version $Id$
  */
-public class UserSettings {
-	
+public class UserSettings implements Serializable {
+	private static final long serialVersionUID = 501200873739971813L;
+
 	/**
 	 * the profile privacy level
 	 */

@@ -126,70 +126,52 @@ public class GroupTest {
 	/**
 	 * When the name is the same, but the IDs differ, there should be an exception raised.
 	 */
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void testNotEqualsOnIdAndName1() {
 		final Group first = new Group("foo");
 		final Group second = new Group("foo");
 		first.setGroupId(3);
 		second.setGroupId(4);
-		try {
-			first.equals(second);
-			fail();
-		} catch (RuntimeException e) {
-
-		}
-
+		
+		first.equals(second); // must throw RuntimeException
 	}
 
 
 	/**
 	 * When the ID is the same, but the names differ, there should be an exception raised
 	 */
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void testNotEqualsOnIdAndName2() {
 		final Group first = new Group("bar");
 		final Group second = new Group("foo");
 		first.setGroupId(3);
 		second.setGroupId(3);
-		try {
-			first.equals(second);
-			fail();
-		} catch (RuntimeException e) {
-
-		}
-
+		
+		first.equals(second); // should throw RuntimeException
 	}
 
 
 	/**
 	 * One group has the ID given, the other the name. They're incomparable!
 	 */
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void testEqualsFail1() {
 		final Group first = new Group("bar");
 		final Group second = new Group(1);
-		try {
-			first.equals(second);
-			fail();
-		} catch (RuntimeException e) {
-
-		}
+		
+		first.equals(second); // should throw RuntimeException
 	}
 
 	/**
 	 * Neither name nor id given on both groups. Fail!
 	 * Because: invalid groups are not comparable!
 	 */
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void testEqualsFail2() {
 		final Group first = new Group();
 		final Group second = new Group();
-		try {
-			first.equals(second);
-			fail();
-		} catch (RuntimeException e) {
-
-		}
+		
+		first.equals(second); // should throw RuntimeException
 	}
 
 	/**
@@ -280,7 +262,6 @@ public class GroupTest {
 		second.setGroupId(GroupID.PRIVATE_SPAM.getId());
 		
 		assertEquals(first, second);
-		
 	}
 
 
@@ -338,19 +319,13 @@ public class GroupTest {
 	/**
 	 * one group has both ID and name, the other only id -- fail
 	 */
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void testEqualsFails1() {
 		final Group first = new Group(1);
 		final Group second = new Group(1);
 		second.setName("foo");
 
-		try {
-			first.equals(second);
-			fail();
-		} catch (RuntimeException e) {
-
-		}
-
+		first.equals(second); // should throw RuntimeException
 	}
 
 }

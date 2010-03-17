@@ -24,22 +24,30 @@
 package org.bibsonomy.model;
 
 
+
 /**
  * The Inbox, that stores posts sent by friends
  * 
- *  
  * @author sdo
+ * @version $Id$
  */
-public class Inbox {
-
+public class Inbox  {
+	private static final long serialVersionUID = 1875652508506761506L;
+	
 	private int numPosts;
 
-
+	/**
+	 * @return the numPosts
+	 */
 	public int getNumPosts() {
 		return this.numPosts;
 	}
-	
+
+	/**
+	 * @param numPosts the numPosts to set
+	 */
 	public void setNumPosts(int numPosts) {
-		this.numPosts=numPosts;
+		this.numPosts = numPosts;
 	}
+	
 }

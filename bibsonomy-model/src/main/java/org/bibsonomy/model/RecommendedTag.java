@@ -25,22 +25,30 @@ package org.bibsonomy.model;
 
 import org.bibsonomy.common.exceptions.InvalidModelException;
 
-
-
 /** Adds scores and confidence to {@link Tag}.
  * 
  * @author rja
  * @version $Id$
  */
 public class RecommendedTag extends Tag implements Comparable<Tag> {
-
+	private static final long serialVersionUID = -1872430526599241544L;
+	
 	private double score;
 	private double confidence;
 	
-	// 2008/12/10,fei: added standard constructor for bean-compatibility
+	/**
+	 * for bean-compatibility
+	 */
 	public RecommendedTag() {
 	}
 	
+	/**
+	 * sets name, score and confidence; validates tag name
+	 * 
+	 * @param name
+	 * @param score
+	 * @param confidence
+	 */
 	public RecommendedTag(final String name, final double score, final double confidence) {
 		super(name);
 		ensureValidTagName(name); // check validity of given name
@@ -59,22 +67,32 @@ public class RecommendedTag extends Tag implements Comparable<Tag> {
 		ensureValidTagName(name); // check validity of given name
 	}
 	
+	/**
+	 * @return the score
+	 */
 	public double getScore() {
 		return this.score;
 	}
+
+	/**
+	 * @param score the score to set
+	 */
 	public void setScore(double score) {
 		this.score = score;
 	}
+
+	/**
+	 * @return the confidence
+	 */
 	public double getConfidence() {
 		return this.confidence;
 	}
+
+	/**
+	 * @param confidence the confidence to set
+	 */
 	public void setConfidence(double confidence) {
 		this.confidence = confidence;
-	}
-	
-	@Override
-	public String toString() {
-		return super.toString() + " (score=" + score + ", confidence=" + confidence + ")";
 	}
 	
 	/**
@@ -111,8 +129,9 @@ public class RecommendedTag extends Tag implements Comparable<Tag> {
 		/*
 		 * if tag is null or not a RecommendedTag, return false
 		 */
-	    if (!(tag instanceof RecommendedTag))
-            return false;
+	    if (!(tag instanceof RecommendedTag)) {
+	    	return false;
+	    }    
 	    
 	    /*
 	     * cast
@@ -138,5 +157,9 @@ public class RecommendedTag extends Tag implements Comparable<Tag> {
 	public int hashCode() {
 		return this.getName().toLowerCase().hashCode();
 	}
-
+	
+	@Override
+	public String toString() {
+		return super.toString() + " (score=" + score + ", confidence=" + confidence + ")";
+	}
 }

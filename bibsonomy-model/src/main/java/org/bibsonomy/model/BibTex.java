@@ -23,7 +23,6 @@
 
 package org.bibsonomy.model;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,8 +40,7 @@ import org.bibsonomy.model.util.SimHash;
  * @author Christian Schenk
  * @version $Id$
  */
-public class BibTex extends Resource  implements Serializable {
-
+public class BibTex extends Resource {
 	/**
 	 * For persistence (Serializable) 
 	 */
@@ -637,19 +635,6 @@ public class BibTex extends Resource  implements Serializable {
 	 */
 	public void setDocuments(List<Document> documents) {
 		this.documents = documents;
-	}		
-	
-	@Override
-	public String toString() {
-		return super.toString() + " by <" + author + ">";	
-	}
-
-	public List<BibTexExtra> getExtraUrls() {
-		return this.extraUrls;
-	}
-
-	public void setExtraUrls(List<BibTexExtra> extraUrls) {
-		this.extraUrls = extraUrls;
 	}
 
 	/**
@@ -682,5 +667,23 @@ public class BibTex extends Resource  implements Serializable {
 	public void setScraperId(int scraperId) {
 		this.scraperId = scraperId;
 	}
+	
+	/**
+	 * @param extraUrls the extraUrls to set
+	 */
+	public void setExtraUrls(List<BibTexExtra> extraUrls) {
+		this.extraUrls = extraUrls;
+	}
 
+	/**
+	 * @return the extraUrls
+	 */
+	public List<BibTexExtra> getExtraUrls() {
+		return extraUrls;
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + " by <" + author + ">";	
+	}
 }

@@ -23,6 +23,7 @@
 
 package org.bibsonomy.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -33,7 +34,8 @@ import java.util.List;
  * @author Dominik Benz
  * @version $Id$
  */
-public class Basket {
+public class Basket implements Serializable {
+	private static final long serialVersionUID = -3051707370037449963L;
 
 	private List<Post<BibTex>> posts;
 

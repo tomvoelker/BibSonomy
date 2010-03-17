@@ -123,18 +123,30 @@ public class Document {
 		this.fileHash = fileHash;
 	}
 
+	/**
+	 * @return the date
+	 */
 	public Date getDate() {
 		return this.date;
 	}
 
+	/**
+	 * @param date the date to set
+	 */
 	public void setDate(Date date) {
 		this.date = date;
 	}
 
+	/**
+	 * @return the file
+	 */
 	public File getFile() {
 		return this.file;
 	}
 
+	/**
+	 * @param file the file to set
+	 */
 	public void setFile(File file) {
 		this.file = file;
 	}

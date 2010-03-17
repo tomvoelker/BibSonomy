@@ -11,6 +11,7 @@ import java.util.Set;
  * @version $Id$
  */
 public class GoldStandardPublication extends BibTex implements GoldStandard<BibTex> {
+	private static final long serialVersionUID = 128893745902925210L;
 	
 	private Set<BibTex> references;
 	

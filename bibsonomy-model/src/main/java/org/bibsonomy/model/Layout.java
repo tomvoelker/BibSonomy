@@ -67,7 +67,6 @@ public abstract class Layout {
 	protected String extension;
 
 	public Layout(final String name) {
-		super();
 		this.name = name;
 		this.description = new HashMap<String, String>();
 	}
@@ -107,13 +106,6 @@ public abstract class Layout {
 	public String getName() {
 		return name;
 	}
-	
-	public String toString() {
-		return name + "(" + 
-		displayName + ", '" + 
-		mimeType + ", " + 
-		extension + ")";
-	}
 
 	/**
 	 * Public layouts are announced on the layout overview pages (/export/). 
@@ -136,5 +128,9 @@ public abstract class Layout {
 	public void setPublicLayout(boolean publicLayout) {
 		this.publicLayout = publicLayout;
 	}
-
+	
+	@Override
+	public String toString() {
+		return name + "(" + displayName + ", '" + mimeType + ", " + extension + ")";
+	}
 }

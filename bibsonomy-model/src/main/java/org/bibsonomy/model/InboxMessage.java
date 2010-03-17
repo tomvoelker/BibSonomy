@@ -34,6 +34,9 @@ public class InboxMessage {
 	private String sender;
 	private String receiver;
 	
+	/**
+	 * default constructor
+	 */
 	public InboxMessage(){
 	}
 	

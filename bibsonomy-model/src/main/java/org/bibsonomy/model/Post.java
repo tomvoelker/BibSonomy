@@ -36,7 +36,7 @@ import java.util.Set;
  * @param <T>
  *            resource type
  */
-public class Post<T extends Resource> implements Serializable{
+public class Post<T extends Resource> implements Serializable {
 
 	/**
 	 * For persistency (Serializable)
@@ -99,7 +99,7 @@ public class Post<T extends Resource> implements Serializable{
 	 * identifier if post is in the inbox
 	 * use only to create the inbox page of a user
 	 */
-	private boolean isInboxPost=false;
+	private boolean isInboxPost = false;
 
 	/**
 	 * @return contentId
@@ -233,11 +233,6 @@ public class Post<T extends Resource> implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	@Override
-	public String toString() {
-		return "\n" + (user == null ? "" : user.getName()) + "\n\ttagged\n\t\t" + resource + "\n\twith\n" + tags;
-	}
 
 	/**
 	 * Set a ranking value
@@ -291,5 +286,10 @@ public class Post<T extends Resource> implements Serializable{
 	 */
 	public void setPicked(boolean isPicked) {
 		this.isPicked = isPicked;
+	}
+	
+	@Override
+	public String toString() {
+		return "\n" + (user == null ? "" : user.getName()) + "\n\ttagged\n\t\t" + resource + "\n\twith\n" + tags;
 	}
 }

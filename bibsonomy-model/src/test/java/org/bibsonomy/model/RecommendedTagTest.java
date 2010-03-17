@@ -23,7 +23,9 @@
 
 package org.bibsonomy.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.junit.Test;
@@ -106,7 +108,9 @@ public class RecommendedTagTest {
 
 	}
 
-
+	/**
+	 * tests hash code function
+	 */
 	@Test
 	public void testHashcode() {
 		assertEquals(new RecommendedTag("foo", 0, 0).hashCode(), new RecommendedTag("FOO", 2, 1).hashCode());
