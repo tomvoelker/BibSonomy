@@ -18,10 +18,9 @@
     <jsp:directive.attribute name="listView" type="org.bibsonomy.webapp.command.ListCommand" required="true"/>
     <jsp:directive.attribute name="listViewStartParamName" type="java.lang.String" required="true"/>
     <jsp:directive.attribute name="otherPostsUrlPrefix" type="java.lang.String" required="true"/>
-    <jsp:directive.attribute name="formAction" type="java.lang.String" required="false" description="The action-url of the form on the batchedit-view."/>
   	<jsp:directive.attribute name="deleteCheckedPosts" type="java.lang.Boolean" required="false"/>
   	<jsp:directive.attribute name="overwrite" type="java.lang.Boolean" required="false"/>
-  	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true"/>
+  	<jsp:directive.attribute name="resourceType" type="java.lang.String" required="true" description="The type of resource that are edited (bookmark or bibtex)."/>
   	
     <jsp:directive.attribute name="shortPostDescription" fragment="true" required="true" description="A one line description of a post"/>
     <jsp:directive.attribute name="title" fragment="true" required="true"/>
@@ -65,11 +64,6 @@
 	 	<c:set var="checkboxAllQuestion" value="batchedit.deleteAll.confirm" />
 	 </c:if>
 	 <fmt:message key="${checkboxAllQuestion}" var="checkboxAllQuestion"/>
-	 <!-- ACTION FOR THE FORM -->
-     <c:if test="${empty formAction}">
-       <c:set var="formAction" value="batchEdit_new"/>
-     </c:if>
-	 
 	 
 	 
 	 <!--=======================-->
@@ -85,10 +79,13 @@
 		 
          <c:if test="${not empty listView.list}">
            
-           <form id="batchedit" action="/${formAction}" method="POST">
-           <!-- POSSIBLE TODO: make command variable nested/tunnel through servlet-actions.xml for both commands -->
-           	 <input type="checkbox" name="deleteCheckedPosts" value="${deleteCheckedPosts}" style="visibility:collapse" checked="${deleteCheckedPosts}" />
-	         <input type="checkbox" name="overwrite" value="${overwrite}" style="visibility:collapse" checked="${overwrite}" />
+           <form id="batchedit" action="/batchEdit" method="POST">
+           
+             <!-- POSSIBLE TODO: make command variable nested/tunnel through servlet-actions.xml for both commands -->
+           	 
+           	 <input type="hidden" name="deleteCheckedPosts" value="${deleteCheckedPosts}"/>
+	         <input type="hidden" name="overwrite" value="${overwrite}" />
+	         <input type="hidden" name="resourcetype" value="${resourcetype}" />
 	         
            	 
              <table>

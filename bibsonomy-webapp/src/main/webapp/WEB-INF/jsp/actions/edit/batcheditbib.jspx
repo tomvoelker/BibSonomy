@@ -20,6 +20,9 @@
 		of successfully imported publications.
 		************************************************************************************************
 	-->
+	<!-- 
+		FIXME: was soll das denn?
+	 -->
 	<c:set var="deleteCheckedPosts" value="${not command.editBeforeImport}" />
 	
 	<c:choose>
@@ -34,11 +37,11 @@
 	 
 	
 	<edit:batcheditSkeleton listView="${command.bibtex}" resourceType="bibtex" listViewStartParamName="bibtex.start" otherPostsUrlPrefix="/bibtex" deleteCheckedPosts="${deleteCheckedPosts}" overwrite="${overwrite}"> 
-     <jsp:attribute name="shortPostDescription"><bib:shortDescription post="${post}"/></jsp:attribute>
-     <jsp:attribute name="title">  <bib:title post="${post}"/></jsp:attribute>
-     <jsp:attribute name="desc">   <bib:desc post="${post}"/></jsp:attribute>
-     <jsp:attribute name="bmicon"> <bib:bmicon post="${post}" loginUserName="${loginUser.name}"/></jsp:attribute>
-     <jsp:attribute name="actions"><bib:actions post="${post}" loginUserName="${loginUser.name}" disableResourceLinks="${false}"/></jsp:attribute>
+    	<jsp:attribute name="shortPostDescription"><bib:shortDescription post="${post}"/></jsp:attribute>
+     	<jsp:attribute name="title">  <bib:title post="${post}"/></jsp:attribute>
+     	<jsp:attribute name="desc">   <bib:desc post="${post}"/></jsp:attribute>
+     	<jsp:attribute name="bmicon"> <bib:bmicon post="${post}" loginUserName="${loginUser.name}"/></jsp:attribute>
+     	<jsp:attribute name="actions"><bib:actions post="${post}" loginUserName="${loginUser.name}" disableResourceLinks="${false}"/></jsp:attribute>
    </edit:batcheditSkeleton>
     	
 </jsp:root>
