@@ -291,11 +291,10 @@ public class Functions  {
 			Double t = (tagFrequency > 100 ? 100.0 : tagFrequency.doubleValue() + 6);
 			t /= 5;
 			t = Math.log(t) * 100 + 30;
-			if (t.intValue() < 100) 
-				return 100;
-			return t.intValue();
+			
+			return (t.intValue()<100) ? 100 : t.intValue();
 		}		
-		return 100 + (tagFrequency / tagMaxFrequency * 200);
+		return new Double(100 + (tagFrequency.doubleValue() / tagMaxFrequency * 200)).intValue();
 	}
 
 	/**
