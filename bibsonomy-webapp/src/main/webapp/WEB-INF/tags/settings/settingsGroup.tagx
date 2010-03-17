@@ -31,7 +31,8 @@
 							<div class="fsRow">
 		    					<label for="laddgu" class="fsLabel"><fmt:message key="user.name"/></label>
 		    					<buttons:help message="settings.group.addUser.help"/>
-		    					<form:input cssClass="fsInput fsSmall" path="requestedUser"/>
+		    					<c:set var="userEmpty" value="${empty param.user}"/>
+		    					<input type="text" ssClass="fsInput fsSmall" path="requestedUser" value="${userEmpty?'':param.user}"/>
 							</div>
 						
 							<div class="fsRow">
