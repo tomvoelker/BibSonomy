@@ -507,23 +507,13 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Updates a group's privacy level and documents settings. 
+	 * TODO: tests
 	 */
-	private void updateGroupSettings (final Privlevel priv, final boolean sharedDoc, final String groupname, final DBSession session) {
-		/*
-		 * get the group by its name
-		 */
-		Group groupToUpdate = this.getGroupByName(groupname, session);
+	private void updateGroupSettings (Group groupToUpdate, final DBSession session) {
+		
 		if(!ValidationUtils.present(groupToUpdate))
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: there is no group with given name "+groupname+".");
-		if(!ValidationUtils.present(priv))
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: The privacy level parameter was not set. (required field)");
-		if(!ValidationUtils.present(sharedDoc))
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: The shared documents flag was not set. (required field)");
-		/*
-		 * update its values
-		 */
-		groupToUpdate.setPrivlevel(priv);
-		groupToUpdate.setSharedDocuments(sharedDoc);
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: The parameter groupToUpdate was null. (required argument)");
+
 		/*
 		 * store the bean
 		 */
