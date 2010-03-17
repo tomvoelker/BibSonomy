@@ -44,6 +44,7 @@
    <script type="text/javascript">
      //<mtl:cdata>
      <![CDATA[
+       updateWS(document.getElementById("delimiter"));
        function updateWS(select) {
     	   document.getElementById("whitespace").disabled = select.options[select.options.selectedIndex].value == " ";
        }
