@@ -529,9 +529,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 					/*
 					 * go over all error messages 
 					 */
-					final Iterator<ErrorMessage> iterator = postErrorMessages.iterator();
-					while (iterator.hasNext()) {
-						final ErrorMessage errorMessage = iterator.next();
+					for (final ErrorMessage errorMessage : postErrorMessages) {
 						log.debug("found error " + errorMessage);
 						final String errorItem;
 						if (errorMessage instanceof DuplicatePostErrorMessage) {
