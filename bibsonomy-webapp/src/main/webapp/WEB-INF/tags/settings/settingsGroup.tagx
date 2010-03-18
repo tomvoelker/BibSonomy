@@ -81,7 +81,7 @@
 	
 			<!-- GROUP SETTINGS -->
 			<h2><fmt:message key="settings.group.settings"/></h2>
-			<form:form id="groupSettings" method="post" action="/settingsnew">
+			<form:form id="groupSettings" method="post" action="/updateGroupSettings">
 				<div id="fsform">
 					<fieldset class="fsInner">
 
