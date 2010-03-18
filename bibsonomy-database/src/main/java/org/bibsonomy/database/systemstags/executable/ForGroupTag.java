@@ -139,8 +139,7 @@ public class ForGroupTag extends SystemTag {
 				groupsCopy.add(dbGroup);
 			}
 			// FIXME: how do we properly clone a post?
-			Post<T> postCopy = new Post();
-			postCopy.setContentId(post.getContentId());
+			final Post<T> postCopy = new Post();
 			postCopy.setDate(post.getDate());
 			postCopy.setDescription(post.getDescription());
 			postCopy.setGroups(groupsCopy);
@@ -150,7 +149,7 @@ public class ForGroupTag extends SystemTag {
 			
 			log.debug("New post: "+postCopy.toString());
 
-			List<Post<?>> posts = new LinkedList<Post<?>>();
+			final List<Post<?>> posts = new LinkedList<Post<?>>();
 			posts.add(postCopy);
 			try {
 				groupDBLogic.createPosts(posts);
