@@ -70,4 +70,14 @@ public class ResourceUtilsTest {
 		assertEquals("BOOKMARK", ResourceUtils.toString(Bookmark.class));
 		assertEquals("ALL", ResourceUtils.toString(Resource.class));
 	}
+	
+	/**
+	 * Checks, if the getInstance() method works as expected
+	 * @throws Exception
+	 */
+	@Test
+	public void testGetInstance() throws Exception {
+		assertEquals(BibTex.class, ResourceUtils.getInstance("bibtex").getClass());
+		assertEquals(Bookmark.class, ResourceUtils.getInstance("bookmark").getClass());
+	}
 }

@@ -43,6 +43,19 @@ public class ResourceUtils {
 		}
 		return rVal;
 	}
+	
+	/**
+	 * Returns an instance of a {@link Resource} with the given type.
+	 * 
+	 * @param resourceType
+	 * @return An instance of a resource with the given type.
+	 * 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 */
+	public static Resource getInstance(final String resourceType) throws InstantiationException, IllegalAccessException {
+		return ((Class<? extends Resource>) getResource(resourceType)).newInstance();
+	}
 
 	/**
 	 * @param clazz
