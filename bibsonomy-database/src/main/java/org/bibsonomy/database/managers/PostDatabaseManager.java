@@ -1097,10 +1097,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		session.beginTransaction();
 		try {
 			/*
-			 * the current intra hash of the resource
-			 */
-			final String intraHash = post.getResource().getIntraHash();
-			/*
 			 * the resource with the "old" intrahash, that was sent
 			 * within the update resource request
 			 */
@@ -1137,6 +1133,21 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			this.systemTagPerformBefore(post, systemTags, session);
 
 			/*
+			 * Only when we update the complete post, we must recalculate the hash, because the
+			 * hash might have changed and otherwise we could not check if a post with the new
+			 * hash already exists. 
+			 */
+			if (PostUpdateOperation.UPDATE_ALL.equals(operation)) {
+				post.getResource().recalculateHashes();
+			}
+
+			/*
+			 * the current intra hash of the resource
+			 */
+			final String intraHash = post.getResource().getIntraHash();
+
+
+			/*
 			 * get posts with the intrahash of the given post to check for possible duplicates 
 			 */
 			final Post<R> newPostInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
@@ -1157,7 +1168,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					 */
 					//FIXME:remove this comment
 					//throw new IllegalArgumentException("Could not update " + this.resourceClassName + ": This " + this.resourceClassName + " already exists in your collection (intrahash: " + intraHash + ")");
-					ErrorMessage errorMessage = new IdenticalHashErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
+					final ErrorMessage errorMessage = new IdenticalHashErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
 					session.addError(post.getResource().getIntraHash(), errorMessage);
 					// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 					session.commitTransaction();

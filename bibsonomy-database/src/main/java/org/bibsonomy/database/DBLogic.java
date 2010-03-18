@@ -999,7 +999,6 @@ public class DBLogic implements LogicInterface {
 	private <T extends Resource> String updatePost(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
 		final CrudableContent<T, GenericParam> manager = getFittingDatabaseManager(post);
 		final String oldIntraHash = post.getResource().getIntraHash();
-		post.getResource().recalculateHashes();
 
 		this.validateGroups(post, session);
 
