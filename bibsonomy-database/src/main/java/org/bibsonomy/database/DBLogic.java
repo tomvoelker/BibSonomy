@@ -1229,7 +1229,7 @@ public class DBLogic implements LogicInterface {
 				 * document shall be attached to a post
 				 */
 				final Post<BibTex> post = bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-				if (post != null) {
+				if (present(post)) {
 					/*
 					 * post really exists!
 					 */
