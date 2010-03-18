@@ -953,12 +953,18 @@ public class DBLogic implements LogicInterface {
 		return post.getResource().getIntraHash();
 	}
 
-	/*
-	 * (non-Javadoc)
+	/** 
+	 * The given posts are updated. If the operation is {@link PostUpdateOperation#UPDATE_TAGS}, 
+	 * the posts must only contain the 
+	 * <ul>
+	 * <li>date, </li>
+	 * <li>tags,</li>
+	 * <li>intraHash,</li>
+	 * <li>and optionally a username.
+	 * </ul>
 	 * 
 	 * @see
-	 * org.bibsonomy.model.logic.PostLogicInterface#updatePosts(java.util.List,
-	 * org.bibsonomy.common.enums.PostUpdateOperation)
+	 * org.bibsonomy.model.logic.PostLogicInterface#updatePosts(java.util.List, org.bibsonomy.common.enums.PostUpdateOperation)
 	 */
 	@Override
 	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
