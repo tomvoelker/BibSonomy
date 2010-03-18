@@ -21,36 +21,39 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-package org.bibsonomy.model;
+package org.bibsonomy.model.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Resource;
 import org.junit.Test;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
-public class ResourceTest {
+public class ResourceUtilsTest {
 
 	/**
 	 * tests getResource
 	 */
 	@Test
 	public void getResource() {
-		assertEquals(Resource.class, Resource.getResource("all"));
-		assertEquals(BibTex.class, Resource.getResource("bibtex"));
-		assertEquals(Bookmark.class, Resource.getResource("bookmark"));
+		assertEquals(Resource.class, ResourceUtils.getResource("all"));
+		assertEquals(BibTex.class, ResourceUtils.getResource("bibtex"));
+		assertEquals(Bookmark.class, ResourceUtils.getResource("bookmark"));
 
-		assertEquals(Resource.class, Resource.getResource(" All"));
-		assertEquals(BibTex.class, Resource.getResource("BIBTEX"));
-		assertEquals(Bookmark.class, Resource.getResource("BookMark "));
+		assertEquals(Resource.class, ResourceUtils.getResource(" All"));
+		assertEquals(BibTex.class, ResourceUtils.getResource("BIBTEX"));
+		assertEquals(Bookmark.class, ResourceUtils.getResource("BookMark "));
 
 		for (final String resourceType : new String[] { "", " ", null, "foo bar" }) {
 			try {
-				Resource.getResource(resourceType);
+				ResourceUtils.getResource(resourceType);
 				fail("Expected UnsupportedResourceTypeException");
 			} catch (final UnsupportedResourceTypeException ignored) {
 			}
@@ -63,8 +66,8 @@ public class ResourceTest {
 	 */
 	@Test
 	public void testToString() {
-		assertEquals("BIBTEX", Resource.toString(BibTex.class));
-		assertEquals("BOOKMARK", Resource.toString(Bookmark.class));
-		assertEquals("ALL", Resource.toString(Resource.class));
+		assertEquals("BIBTEX", ResourceUtils.toString(BibTex.class));
+		assertEquals("BOOKMARK", ResourceUtils.toString(Bookmark.class));
+		assertEquals("ALL", ResourceUtils.toString(Resource.class));
 	}
 }

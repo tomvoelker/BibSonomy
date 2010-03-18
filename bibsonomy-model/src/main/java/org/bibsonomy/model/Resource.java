@@ -24,12 +24,8 @@
 package org.bibsonomy.model;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-
-import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 
 /**
  * Everything, which can be tagged, is derived from this class.
@@ -47,46 +43,6 @@ public abstract class Resource implements Serializable {
 	 */
 	private static final long serialVersionUID = -9153320764851332223L;
 	
-	// TODO: move static fields and methods in a utils class
-	private static final Map<String, Class<? extends Resource>> byStringMap = new HashMap<String, Class<? extends Resource>>();
-	private static final Map<Class<? extends Resource>, String> toStringMap = new HashMap<Class<? extends Resource>, String>();
-	static {
-		byStringMap.put("BOOKMARK", Bookmark.class);
-		byStringMap.put("BIBTEX", BibTex.class);
-		byStringMap.put("ALL", Resource.class);
-		for (final Map.Entry<String, Class<? extends Resource>> entry : byStringMap.entrySet()) {
-			toStringMap.put(entry.getValue(), entry.getKey());
-		}
-	}
-
-	/**
-	 * @param resourceType
-	 * @return resource
-	 */
-	public static Class<? extends Resource> getResource(final String resourceType) {
-		if (resourceType == null) throw new UnsupportedResourceTypeException("ResourceType is null");
-		Class<? extends Resource> rVal = byStringMap.get(resourceType);
-		if (rVal == null) {
-			rVal = byStringMap.get(resourceType.trim().toUpperCase());
-			if (rVal == null) {
-				throw new UnsupportedResourceTypeException();
-			}
-		}
-		return rVal;
-	}
-
-	/**
-	 * @param clazz
-	 * @return string
-	 */
-	public static String toString(final Class<? extends Resource> clazz) {
-		final String rVal = toStringMap.get(clazz);
-		if (rVal == null) {
-			throw new UnsupportedResourceTypeException();
-		}
-		return rVal;
-	}
-
 	/**
 	 * How many posts with this resource exist.
 	 */
