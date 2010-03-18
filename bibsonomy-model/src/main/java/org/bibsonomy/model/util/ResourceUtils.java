@@ -54,7 +54,7 @@ public class ResourceUtils {
 	 * @throws InstantiationException 
 	 */
 	public static Resource getInstance(final String resourceType) throws InstantiationException, IllegalAccessException {
-		return ((Class<? extends Resource>) getResource(resourceType)).newInstance();
+		return getResource(resourceType).newInstance();
 	}
 
 	/**
