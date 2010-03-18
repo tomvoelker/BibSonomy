@@ -126,7 +126,7 @@
 			<!-- user is logged in with wrong account -->
 			<div id="groups" class="highlightBox">
 				<fmt:message key="settings.group.login">
-					<fmt:param><c:out value="${param.group}"/></fmt:param>
+					<fmt:param>${fn:escapeXml(param.group)}</fmt:param>
 				</fmt:message>
 			</div>
 
