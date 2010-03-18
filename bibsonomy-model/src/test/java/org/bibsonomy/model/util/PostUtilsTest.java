@@ -23,11 +23,14 @@
 
 package org.bibsonomy.model.util;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -90,4 +93,9 @@ public class PostUtilsTest {
 		Assert.assertEquals(7, group3.getGroupId());
 	}
 
+	@Test
+	public void testGetInstance() throws Exception {
+		assertEquals(Bookmark.class, PostUtils.getInstance("bookmark").getResource().getClass());
+		assertEquals(BibTex.class, PostUtils.getInstance("bibtex").getResource().getClass());
+	}
 }

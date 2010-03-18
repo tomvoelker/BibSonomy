@@ -89,4 +89,19 @@ public class PostUtils {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param resourceType The type of resource that should be returned.
+	 * 
+	 * @return A new post containing an instance of a resource with the given type.
+	 * 
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 */
+	public static Post<?> getInstance(final String resourceType) throws InstantiationException, IllegalAccessException {
+		final Post<Resource> post = new Post<Resource>();
+		post.setResource(ResourceUtils.getInstance(resourceType));
+		return post;
+	}
+	
 }
