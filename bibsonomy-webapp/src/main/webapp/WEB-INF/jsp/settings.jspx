@@ -28,7 +28,7 @@
 				<c:when test="${command.selTab == 2}">
 					<settings:settingsImport command="${command}"/>
 				</c:when>
-				<c:when test="${command.selTab == 3 and command.hasOwnGroup}">
+				<c:when test="${command.selTab == 3 and (command.hasOwnGroup or not(empty param.user or empty param.group or param.group eq user.name))}">
 					<settings:settingsGroup command="${command}"/>
 				</c:when>
 			</c:choose>
