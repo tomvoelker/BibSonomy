@@ -92,7 +92,12 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		if (context.isValidCkey() && !errors.hasErrors())
 		{
 			log.debug("User is logged in, ckey is valid");
-		}	
+		}
+		else
+		{
+			errors.reject("error.field.valid.ckey");
+			return Views.ERROR;
+		}
 		
 		//the group properties to update
 		Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
