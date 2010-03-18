@@ -509,7 +509,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * Updates a group's privacy level and documents settings. 
 	 * TODO: tests
 	 */
-	private void updateGroupSettings (Group groupToUpdate, final DBSession session) {
+	public void updateGroupSettings (Group groupToUpdate, final DBSession session) {
 		
 		if(!ValidationUtils.present(groupToUpdate))
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: The parameter groupToUpdate was null. (required argument)");

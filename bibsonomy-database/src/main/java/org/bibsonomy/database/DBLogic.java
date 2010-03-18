@@ -32,6 +32,7 @@ import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.errors.GroupValidationErrorMessage;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -840,15 +841,46 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
 		this.ensureLoggedIn();
-		switch (operation) {
-		case UPDATE_SETTINGS:
-			
-			break;
-
-		default:
-			break;
+		
+		final DBSession session = this.openSession();
+		
+		boolean properAttributes =  ValidationUtils.present(group.getName()) &&
+									ValidationUtils.present(group.getGroupId()) &&
+									ValidationUtils.present(group.getPrivlevel()) &&
+									ValidationUtils.present(group.isSharedDocuments());
+		
+		if(!properAttributes)
+		{
+			final DatabaseException collectedException = new DatabaseException();
+			collectedException.addToErrorMessages(String.valueOf(group.hashCode()), new GroupValidationErrorMessage());
+			throw collectedException;
 		}
-		throw new UnsupportedOperationException("not yet available");
+		 
+		try 
+		{
+			switch(operation)
+			{
+				case UPDATE_ALL:
+					this.groupDBManager.updateGroupSettings(group, session);
+					//handle users
+					break;
+					
+				case UPDATE_SETTINGS:
+					this.groupDBManager.updateGroupSettings(group, session);
+					break;
+					
+				case ADD_NEW_USER:
+					//handle users
+					break;
+			}
+			
+		} 
+		finally 
+		{
+			session.close();
+		}
+		
+		return group.getName();
 	}
 
 	/*
