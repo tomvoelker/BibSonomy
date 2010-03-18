@@ -159,6 +159,7 @@
 
        <jsp:attribute name="beforeBodyClose">
           <script type="text/javascript">
+             var userName = "${mtl:encodeURI(command.context.loginUser.name)}";
              //<mtl:cdata>
              <![CDATA[
                 // vanishing error boxes
@@ -176,11 +177,11 @@
                 // get user's tags for suggestions
                 $.ajax({
                     type: "GET",
-                    url: "/json/tags/user/${command.context.loginUser.name}",
+                    url: "/json/tags/user/" + userName,
                     data: "",
                     success: function(data){
-                                populateSuggestionsFromJSON(data);
-                               }
+                       populateSuggestionsFromJSON(data);
+                    }
                 });
           
              ]]> 
