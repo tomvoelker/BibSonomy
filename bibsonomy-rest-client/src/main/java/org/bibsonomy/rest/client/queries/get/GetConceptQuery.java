@@ -29,6 +29,7 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -79,7 +80,7 @@ public class GetConceptQuery extends AbstractQuery<List<Tag>> {
 		}
 
 		if (this.resourceType != null) {
-			url += "&resourcetype=" + Resource.toString(this.resourceType).toLowerCase();
+			url += "&resourcetype=" + ResourceUtils.toString(this.resourceType).toLowerCase();
 		}
 		
 		if (this.regex != null) {

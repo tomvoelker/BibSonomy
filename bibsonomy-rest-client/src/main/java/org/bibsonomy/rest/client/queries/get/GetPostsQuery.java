@@ -32,6 +32,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -161,7 +162,7 @@ public final class GetPostsQuery extends AbstractQuery<List<Post<? extends Resou
 		String url = URL_POSTS + "?start=" + this.start + "&end=" + this.end;
 
 		if (this.resourceType != Resource.class) {
-			url += "&resourcetype=" + Resource.toString(this.resourceType).toLowerCase();
+			url += "&resourcetype=" + ResourceUtils.toString(this.resourceType).toLowerCase();
 		}
 
 		switch (this.grouping) {

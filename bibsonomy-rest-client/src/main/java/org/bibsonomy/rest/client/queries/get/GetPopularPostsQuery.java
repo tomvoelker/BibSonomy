@@ -23,12 +23,12 @@
 
 package org.bibsonomy.rest.client.queries.get;
 
-import java.io.Reader;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -116,7 +116,7 @@ public final class GetPopularPostsQuery extends AbstractQuery<List<Post<? extend
 		String url = URL_POSTS + "/" + URL_POSTS_POPULAR + "?start=" + this.start + "&end=" + this.end;
 
 		if (this.resourceType != Resource.class) {
-			url += "&resourcetype=" + Resource.toString(this.resourceType).toLowerCase();
+			url += "&resourcetype=" + ResourceUtils.toString(this.resourceType).toLowerCase();
 		}
 
 		switch (this.grouping) {
