@@ -96,6 +96,18 @@
     </attribute>
   </tag>
   
+  <tag>
+    <name>debug</name>
+    <tagclass>tags.Debug</tagclass>
+    <bodycontent>empty</bodycontent>
+    <info>Writes a debug message using the logger</info>
+    <attribute>
+       <name>message</name>
+       <required>true</required>
+       <rtexprvalue>true</rtexprvalue>
+    </attribute>
+  </tag>
+    
   <function>
     <name>normalize</name>
     <function-class>tags.Functions</function-class>
@@ -119,7 +131,8 @@
     <function-class>tags.Functions</function-class>
     <function-signature>String encodeURI (java.lang.String)</function-signature>
   </function> 
-  
+
+   
   <function>
     <name>makeCredential</name>
     <function-class>tags.Functions</function-class>
