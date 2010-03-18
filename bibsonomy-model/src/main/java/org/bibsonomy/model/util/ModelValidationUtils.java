@@ -203,10 +203,10 @@ public class ModelValidationUtils {
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
 	public static void checkBibTex(final BibtexType xmlPublication) throws InvalidModelException {
-		if (present(xmlPublication.getTitle())) throw new InvalidModelException(XML_IS_INVALID_MSG + "title is missing in element 'bibtex'");
-		if (present(xmlPublication.getYear())) throw new InvalidModelException(XML_IS_INVALID_MSG + "year is missing in element 'bibtex'");
-		if (present(xmlPublication.getBibtexKey())) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex key is missing in element 'bibtex'");
-		if (present(xmlPublication.getEntrytype())) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex entry type is missing in element 'bibtex'");
+		if (!present(xmlPublication.getTitle())) throw new InvalidModelException(XML_IS_INVALID_MSG + "title is missing in element 'bibtex'");
+		if (!present(xmlPublication.getYear())) throw new InvalidModelException(XML_IS_INVALID_MSG + "year is missing in element 'bibtex'");
+		if (!present(xmlPublication.getBibtexKey())) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex key is missing in element 'bibtex'");
+		if (!present(xmlPublication.getEntrytype())) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex entry type is missing in element 'bibtex'");
 		if (!present(xmlPublication.getAuthor()) && !present(xmlPublication)) throw new InvalidModelException(XML_IS_INVALID_MSG + "editor(s) and author(s) are missing (one of the two is required) in element 'bibtex'");
 		// do not test hash value - it depends on the request if its available,
 		// so we check it later
