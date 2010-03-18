@@ -169,12 +169,6 @@
   </function>  
 
   <function>
-    <name>miscFieldToArray</name>
-    <function-class>tags.Functions</function-class>
-    <function-signature>ArrayList miscFieldToArray (java.lang.String)</function-signature>
-  </function> 
-  
-  <function>
     <name>cleanUrl</name>
     <function-class>tags.Functions</function-class>
     <function-signature>String cleanUrl (java.lang.String)</function-signature>
