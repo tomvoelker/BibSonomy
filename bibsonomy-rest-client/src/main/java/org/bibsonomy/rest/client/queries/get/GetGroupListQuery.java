@@ -23,7 +23,6 @@
 
 package org.bibsonomy.rest.client.queries.get;
 
-import java.io.Reader;
 import java.util.List;
 
 import org.bibsonomy.model.Group;

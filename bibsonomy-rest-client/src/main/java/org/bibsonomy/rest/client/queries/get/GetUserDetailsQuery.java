@@ -23,8 +23,6 @@
 
 package org.bibsonomy.rest.client.queries.get;
 
-import java.io.Reader;
-
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;

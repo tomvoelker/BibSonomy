@@ -25,7 +25,6 @@ package org.bibsonomy.rest.client.queries.post;
 
 import java.io.StringWriter;
 
-import org.bibsonomy.common.enums.Status;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.rest.client.AbstractQuery;
 import org.bibsonomy.rest.client.exception.ErrorPerformingRequestException;

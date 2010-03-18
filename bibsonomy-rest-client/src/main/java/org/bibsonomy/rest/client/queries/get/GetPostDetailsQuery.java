@@ -23,8 +23,6 @@
 
 package org.bibsonomy.rest.client.queries.get;
 
-import java.io.Reader;
-
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.client.AbstractQuery;
