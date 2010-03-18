@@ -10,11 +10,35 @@
     <jsp:directive.attribute name="recommendedTags" type="java.util.Set" required="true"/>
     <jsp:directive.attribute name="containsComma" type="java.lang.Boolean" required="true"/>
 	
+	<script type="text/javascript">
+	   
+	      $(document).ready(function() {
+	   
+	    	  add_toggle();
+	    	  
+	    	  /* just to be sure, that the keylistener is really disabled.
+	    	  	 if the onblur event fails, 'cause a user break, this line
+	    	  	 makes sure, that all keys do what they shall do.	*/
+	    	  	  
+	    	  disableHandler(); 
+
+		      /* this function needs to get called to fill an array called list with all words,
+		      that could be suggested to the user*/
+		      
+	    	  setOps(); 
+	   
+	      });
+
+	  
+	</script>
+	
+	
+	
 	<fieldset class="fsInner">
 		<legend><span class="fsLegend"><fmt:message key="post.resource.tags"/>*</span></legend>
 
         <span class="fsLabel" style="font-weight:normal;"> (<fmt:message key="post.resource.spaceseparated"/>)</span>
-        <form:input cssClass="tagInput reqinput" id="inpf" autocomplete="off" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
+        <form:input cssClass="tagInput reqinput" id="inpf" autocomplete="on" path="tags" onclick="setActiveInputField(this.id); enableHandler();" onfocus="setActiveInputField(this.id); enableHandler()" onblur="disableHandler()" tabindex="1" />
         
         <!-- name="tags"  -->
 		<div class="dissError"><form:errors path="tags" /></div>
