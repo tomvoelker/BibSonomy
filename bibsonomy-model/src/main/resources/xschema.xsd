@@ -54,11 +54,13 @@
 				<xsd:element name="error" type="xsd:string"/>
 				<!-- hashes to return when creating / updating resources -->
 				<xsd:element name="resourcehash" type="hashType"/>
-				<!-- user-/group-ids to return wehn creating / updating users / groups -->
+				<!-- user-/group-ids to return when creating / updating users / groups -->
 				<xsd:element name="userid" type="xsd:string"/>
 				<xsd:element name="groupid" type="xsd:string"/>
 				<!-- uri to return (i.e. on uploading documents) -->
 				<xsd:element name="uri" type="xsd:anyURI"/>
+				<!-- gold standard references -->
+				<xsd:element name="references" type="ReferencesType" />
 			</xsd:choice>
 		</xsd:sequence>
 		<!-- status flag: contains "ok" when request was successful, "fail" otherwise -->
@@ -188,6 +190,7 @@
 			<xsd:choice>
 				<xsd:element name="bookmark" maxOccurs="1" type="BookmarkType"/>
 				<xsd:element name="bibtex" maxOccurs="1" type="BibtexType"/>
+				<xsd:element name="goldStandardPublication" maxOccurs="1" type="GoldStandardPublicationType"/>
 			</xsd:choice>
 		</xsd:sequence>
 		<xsd:attribute name="description" type="xsd:string"/>
@@ -268,6 +271,30 @@
 		<xsd:attribute name="interhash" type="xsd:string"/>
 		<!-- link to all posts of this bibtex -->
 		<xsd:attribute name="href" type="xsd:anyURI"/>
+	</xsd:complexType>
+	
+	
+	<!--
+		this type encapsulated a list of references for a gold standard
+	-->
+	<xsd:complexType name="ReferencesType">
+		<xsd:sequence>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" name="reference" type="ReferenceType"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ReferenceType">
+		<xsd:attribute name="interhash" type="xsd:string"/>
+	</xsd:complexType>
+	
+	<xsd:complexType name="GoldStandardPublicationType">
+		<xsd:complexContent>
+   			<xsd:extension base="BibtexType">
+   				<xsd:sequence>
+					<xsd:element maxOccurs="1" minOccurs="1" name="references" type="ReferencesType"/>
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
 	</xsd:complexType>
 	
 	<!--

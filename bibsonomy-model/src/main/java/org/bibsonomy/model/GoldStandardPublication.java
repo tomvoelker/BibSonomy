@@ -4,6 +4,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.model.util.SimHash;
+
 /**
  * A publication with references to other publications
  * 
@@ -61,5 +64,12 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	@Override
 	public boolean removeAllFromReferences(final Set<BibTex> publications) {
 		return this.references == null ? false : this.references.removeAll(publications);
+	}
+	
+	@Override
+	public void recalculateHashes() {
+		final String simHash = SimHash.getSimHash(this, HashID.INTER_HASH);
+		this.setIntraHash(simHash);
+		this.setInterHash(simHash);
 	}
 }
