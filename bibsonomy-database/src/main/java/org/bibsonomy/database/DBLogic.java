@@ -32,7 +32,6 @@ import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.common.errors.GroupValidationErrorMessage;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -202,7 +201,7 @@ public class DBLogic implements LogicInterface {
 		if (!loginUser.getName().equals(loginUser.getName())) {
 			this.permissionDBManager.ensureAdminAccess(loginUser);
 		}
-		
+
 		final DBSession session = openSession();
 		try {
 			return this.userDBManager.getUserRelation(loginUser.getName(), UserRelation.OF_FRIEND, session);
@@ -227,7 +226,7 @@ public class DBLogic implements LogicInterface {
 			 * this method, since the name gets normalized in getUserDetails().
 			 */
 			final User user = this.userDBManager.getUserDetails(userName, session);
-			
+
 			/*
 			 * only admin and myself may see which group I'm a member of
 			 */
@@ -237,7 +236,7 @@ public class DBLogic implements LogicInterface {
 				this.adminDBManager.getClassifierUserDetails(user, session);
 				return user;
 			}
-			
+
 			/*
 			 * respect user privacy settings
 			 * clear all profile attributes if current login user isn't allowed to see the profile
@@ -248,24 +247,24 @@ public class DBLogic implements LogicInterface {
 				 */
 				return new User(user.getName());
 			}
-			
+
 			/*
 			 * clear the private stuff
 			 */
 			user.setEmail(null);
-			
+
 			user.setApiKey(null);
 			user.setPassword(null);
-			
+
 			user.setReminderPassword(null);
 			user.setReminderPasswordRequestDate(null);
-			
+
 			user.setSettings(null);
-			
+
 			/*
 			 * FIXME: other things set in userDBManager.getUserDetails() maybe not cleared!
 			 */
-			
+
 			return user;
 		} finally {
 			session.close();
@@ -468,7 +467,7 @@ public class DBLogic implements LogicInterface {
 		return result;
 	}
 
-	
+
 	/**
 	 * If result.size() > minSetSize and the user is not logged in, removes
 	 * all but the top maxSetSize tags (sorted by count).  
@@ -841,45 +840,33 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
 		this.ensureLoggedIn();
-		
-		final DBSession session = this.openSession();
-		
-		boolean properAttributes =  ValidationUtils.present(group.getName()) &&
-									ValidationUtils.present(group.getGroupId()) &&
-									ValidationUtils.present(group.getPrivlevel()) &&
-									ValidationUtils.present(group.isSharedDocuments());
-		
-		if(!properAttributes)
-		{
-			final DatabaseException collectedException = new DatabaseException();
-			collectedException.addToErrorMessages(String.valueOf(group.hashCode()), new GroupValidationErrorMessage());
-			throw collectedException;
+
+		if (!(present(group.getName()) && present(group.getGroupId()) && present(group.getPrivlevel()) && present(group.isSharedDocuments()))) {
+			throw new ValidationException("The given group is not valid.");
 		}
-		 
-		try 
-		{
-			switch(operation)
-			{
-				case UPDATE_ALL:
-					this.groupDBManager.updateGroupSettings(group, session);
-					//handle users
-					break;
-					
-				case UPDATE_SETTINGS:
-					this.groupDBManager.updateGroupSettings(group, session);
-					break;
-					
-				case ADD_NEW_USER:
-					//handle users
-					break;
+
+		final DBSession session = this.openSession();
+
+		try	{
+			switch(operation) {
+			case UPDATE_ALL:
+				//					this.groupDBManager.updateGroupSettings(group, session);
+				//handle users
+				throw new UnsupportedOperationException("The method " + GroupUpdateOperation.UPDATE_ALL + " is not yet implemented.");
+
+			case UPDATE_SETTINGS:
+				this.groupDBManager.updateGroupSettings(group, session);
+				break;
+			case ADD_NEW_USER:
+				throw new UnsupportedOperationException("The method " + GroupUpdateOperation.ADD_NEW_USER + " is not yet implemented.");
+			default:
+				throw new UnsupportedOperationException("The given method is not yet implemented.");
 			}
-			
 		} 
-		finally 
-		{
+		finally	{
 			session.close();
 		}
-		
+
 		return group.getName();
 	}
 
@@ -931,7 +918,7 @@ public class DBLogic implements LogicInterface {
 		return hashes;
 
 	}
-	
+
 
 	/**
 	 * Adds a post in the database.
@@ -1005,7 +992,7 @@ public class DBLogic implements LogicInterface {
 		return hashes;
 	}
 
-	
+
 	/**
 	 * Updates a post in the database.
 	 */
@@ -1125,34 +1112,34 @@ public class DBLogic implements LogicInterface {
 			}
 			return this.storeUser(user, true);
 		}
-		
-		
+
+
 		final DBSession session = openSession();
 
-			try {
-				switch (operation) {
-					case UPDATE_PASSWORD:
-						return this.userDBManager.updatePasswordForUser(user, session);
-						
-					case UPDATE_SETTINGS:
-						return this.userDBManager.updateUserSettingsForUser(user, session);
-						
-					case UPDATE_API:
-						this.userDBManager.updateApiKeyForUser(user.getName(), session);
-						break;
-						
-					case UPDATE_CORE:
-						return this.userDBManager.updateUserProfile(user, session);
-						
-//					case UPDATE_LDAP_TIMESTAMP:
-//						updatedUser = this.userDBManager.updateLastLdapRequest(user, session);
-//						break;
-				}
-				
-			} finally {
-				session.close();
+		try {
+			switch (operation) {
+			case UPDATE_PASSWORD:
+				return this.userDBManager.updatePasswordForUser(user, session);
+
+			case UPDATE_SETTINGS:
+				return this.userDBManager.updateUserSettingsForUser(user, session);
+
+			case UPDATE_API:
+				this.userDBManager.updateApiKeyForUser(user.getName(), session);
+				break;
+
+			case UPDATE_CORE:
+				return this.userDBManager.updateUserProfile(user, session);
+
+				//					case UPDATE_LDAP_TIMESTAMP:
+					//						updatedUser = this.userDBManager.updateLastLdapRequest(user, session);
+				//						break;
 			}
-		
+
+		} finally {
+			session.close();
+		}
+
 		return null;
 	}
 
@@ -1635,9 +1622,9 @@ public class DBLogic implements LogicInterface {
 	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
 		if (!GroupingEntity.USER.equals(grouping))
 			throw new UnsupportedOperationException("Currently only user's can have concepts.");
-		
+
 		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, groupingName);
-		
+
 		final DBSession session = openSession();
 		// now switch the operation and call the right method in the taglRelationsDBManager or DBLogic
 		try {
@@ -1657,12 +1644,12 @@ public class DBLogic implements LogicInterface {
 				this.tagRelationsDBManager.pickAllConcepts(groupingName, session);
 				return null;
 			}
-			
+
 			return concept.getName();
 		} finally {
 			session.close();
 		}
-	
+
 	}
 
 	/**
@@ -1846,7 +1833,7 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	
+
 	/**
 	 * updates date when ldap user was requested for authentication
 	 * 
@@ -2092,7 +2079,7 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	
+
 	/*
 	 * FIXME: implement this method as chain element of getUsers()
 	 * 
@@ -2107,6 +2094,6 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-	
-	
+
+
 }
