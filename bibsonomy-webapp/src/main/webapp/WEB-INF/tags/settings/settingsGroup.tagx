@@ -32,7 +32,7 @@
 		    					<label for="laddgu" class="fsLabel"><fmt:message key="user.name"/></label>
 		    					<buttons:help message="settings.group.addUser.help"/>
 		    					<c:set var="userEmpty" value="${empty param.user}"/>
-		    					<input type="text" ssClass="fsInput fsSmall" path="requestedUser" value="${userEmpty?'':param.user}"/>
+		    					<input type="text" ssClass="fsInput fsSmall" path="requestedUser" value="${userEmpty?'':fn:escapeXml(param.user)}"/>
 							</div>
 						
 							<div class="fsRow">
@@ -51,7 +51,7 @@
 					<!-- cancel request only if right params existing -->
 				  	<h2>
 				  		<fmt:message key="settings.group.deny">
-		  					<fmt:param><a href="/user/${mtl:encodeURI(param.user)}"><c:out value="${param.user}"/></a></fmt:param>
+		  					<fmt:param><a href="/user/${mtl:encodeURI(param.user)}"><c:out value="${fn:escapeXml(param.user)}"/></a></fmt:param>
 		  				</fmt:message>
 		  			</h2>
 		  			<form:form id="groupAddDenyUser" method="post" action="/JoinGroupHandler">
@@ -59,7 +59,7 @@
 							<fieldset class="fsInner">
 
 								<div class="fsRow">
-		    						<input type="hidden" name="user" value="${param.user}" />
+		    						<input type="hidden" name="user" value="${fn:escapeXml(param.user)}" />
 		    						<input type="hidden" name="cancel" value="true" />
 		    						<label for="inputreason" class="fsLabel"><fmt:message key="settings.group.denyReason"/></label>
 		    						<buttons:help message="settings.group.denyReason.help"/>
