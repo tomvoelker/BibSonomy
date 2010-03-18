@@ -5,9 +5,11 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.layout.jabref.LayoutPart;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -71,7 +73,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			break;
 		}
 		case 3: {
-			//do nothing
+			workOnGroupTab(command);
 			break;
 		}
 		default: {
@@ -134,6 +136,23 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 
 	private void workOnSettingsTab(final SettingsViewCommand command) {
 		// no work to do
+	}
+	
+	private void workOnGroupTab(SettingsViewCommand command)
+	{
+		//the group to update
+		Group group = logic.getGroupDetails(command.getContext().getLoginUser().getName());
+		if(ValidationUtils.present(group))
+		{
+			command.setPrivlevel(group.getPrivlevel().ordinal());
+			int sharedDocsAsInt =  0;
+			if(group.isSharedDocuments())
+			{
+				sharedDocsAsInt = 1;
+			}
+			
+			command.setSharedDocuments(sharedDocsAsInt);
+		}
 	}
 
 	/**
