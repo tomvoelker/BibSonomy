@@ -82,14 +82,16 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		//if he is not, he will be forwarded to the first settings tab
 		else
 		{
+			command.showGroupTab(false);
 			command.setSelTab(command.MY_PROFILE_IDX);
+			errors.reject("settings.group.error.groupDoesNotExist");
 			return Views.SETTINGSPAGE;
 		}
 			
 		/*
 		 * check the ckey
 		 */
-		if (context.isValidCkey() && !errors.hasErrors())
+		if (context.isValidCkey())
 		{
 			log.debug("User is logged in, ckey is valid");
 		}
@@ -108,7 +110,10 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		
 		if(!ValidationUtils.present(groupToModify))
 		{
+			command.showGroupTab(false);
+			command.setSelTab(command.MY_PROFILE_IDX);
 			errors.reject("settings.group.error.groupDoesNotExist");
+			return Views.SETTINGSPAGE;
 		}
 		
 		//update the bean
