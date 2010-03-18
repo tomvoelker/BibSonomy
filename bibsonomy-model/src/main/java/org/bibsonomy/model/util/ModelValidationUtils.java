@@ -23,6 +23,8 @@
 
 package org.bibsonomy.model.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -31,6 +33,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
+import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.PostType;
 import org.bibsonomy.rest.renderer.xml.TagType;
@@ -91,11 +94,11 @@ public class ModelValidationUtils {
 	}
 
 	/**
-	 * @param bibtex the object to run sanity checks on
+	 * @param publication the object to run sanity checks on
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
-	public static void checkBibtex(final BibTex bibtex) {
-		if (bibtex.getTitle() == null || bibtex.getTitle().length() == 0) {
+	public static void checkBibtex(final BibTex publication) {
+		if (publication.getTitle() == null || publication.getTitle().length() == 0) {
 			throw new InvalidModelException("found a bibtex without title assigned.");
 		}
 	}
@@ -143,8 +146,6 @@ public class ModelValidationUtils {
 			throw new InvalidModelException(XML_IS_INVALID_MSG + "groupname is missing in element 'group'");
 		}
 	}
-	
-	
 
 	/**
 	 * @param xmlPost the object to run sanity checks on
@@ -154,24 +155,33 @@ public class ModelValidationUtils {
 		if (xmlPost.getTag() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "list of tags is missing");
 		if (xmlPost.getTag().size() == 0) throw new InvalidModelException(XML_IS_INVALID_MSG + "no tags specified");
 		
-		checkStandardPost(xmlPost);
-	}
-
-	/**
-	 * @param xmlPost
-	 */
-	public static void checkStandardPost(final PostType xmlPost) throws InvalidModelException {
 		if (xmlPost.getUser() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "user is missing");
 
-		final BibtexType xmlBibtex = xmlPost.getBibtex();
+		final BibtexType xmlPublication = xmlPost.getBibtex();
 		final BookmarkType xmlBookmark = xmlPost.getBookmark();
-		if (xmlBibtex == null && xmlBookmark == null) {
+		
+		if (xmlPublication == null && xmlBookmark == null) {
 			throw new InvalidModelException(XML_IS_INVALID_MSG + "resource is missing inside element 'post'");
-		} else if (xmlBibtex != null && xmlBookmark != null) {
+		} else if (xmlPublication != null && xmlBookmark != null) {
 			throw new InvalidModelException(XML_IS_INVALID_MSG + "only one resource type is allowed inside element 'post'");
 		} else {
 			// just fine (bibtex xor bookmark):
 			// ( xmlBibtex == null && xmlBookmark != null ) || ( xmlBibtex != null || xmlBookmark == null )
+		}
+	}
+
+	/**
+	 * @param xmlPost the xml to run sanity checks on
+	 * @throws InvalidModelException if there is a lack of sanity
+	 */
+	public static void checkStandardPost(final PostType xmlPost) throws InvalidModelException {
+		// user
+		if (xmlPost.getUser() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "user is missing");
+		
+		// resource
+		final GoldStandardPublicationType xmlGoldStandardPublication = xmlPost.getGoldStandardPublication();
+		if (xmlGoldStandardPublication == null) {
+			throw new InvalidModelException(XML_IS_INVALID_MSG + "resource is missing inside element 'post'");
 		}
 	}
 
@@ -189,16 +199,15 @@ public class ModelValidationUtils {
 	}
 
 	/**
-	 * @param xmlBibtex the object to run sanity checks on
+	 * @param xmlPublication the object to run sanity checks on
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
-	public static void checkBibTex(final BibtexType xmlBibtex) throws InvalidModelException {
-		if (xmlBibtex.getTitle() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "title is missing in element 'bibtex'");
-		if (xmlBibtex.getYear() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "year is missing in element 'bibtex'");
-		if (xmlBibtex.getBibtexKey() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex key is missing in element 'bibtex'");
-		if (xmlBibtex.getEntrytype() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex entry type is missing in element 'bibtex'");
-		// if (xmlBibtex.getAuthor() == null && xmlBibtex.getEditor() == null) 
-			// throw new InvalidModelException(XML_IS_INVALID_MSG + "editor(s) and author(s) are missing (one of the two is required) in element 'bibtex'");
+	public static void checkBibTex(final BibtexType xmlPublication) throws InvalidModelException {
+		if (present(xmlPublication.getTitle())) throw new InvalidModelException(XML_IS_INVALID_MSG + "title is missing in element 'bibtex'");
+		if (present(xmlPublication.getYear())) throw new InvalidModelException(XML_IS_INVALID_MSG + "year is missing in element 'bibtex'");
+		if (present(xmlPublication.getBibtexKey())) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex key is missing in element 'bibtex'");
+		if (present(xmlPublication.getEntrytype())) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex entry type is missing in element 'bibtex'");
+		if (!present(xmlPublication.getAuthor()) && !present(xmlPublication)) throw new InvalidModelException(XML_IS_INVALID_MSG + "editor(s) and author(s) are missing (one of the two is required) in element 'bibtex'");
 		// do not test hash value - it depends on the request if its available,
 		// so we check it later
 		// if( xmlBibtex.getIntrahash() == null ) throw new InvalidXMLException(
