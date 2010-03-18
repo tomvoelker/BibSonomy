@@ -9,6 +9,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
@@ -37,7 +38,7 @@ public class GetUserConceptsStrategy extends Strategy {
 	public GetUserConceptsStrategy(final Context context, final String userName) {
 		super(context);
 		this.userName = userName;
-		this.resourceType = Resource.getResource(context.getStringAttribute("resourcetype", "all"));				
+		this.resourceType = ResourceUtils.getResource(context.getStringAttribute("resourcetype", "all"));				
 		this.status = ConceptStatus.getConceptStatus(context.getStringAttribute("status", "all"));
 		this.regex = context.getStringAttribute("filter", null);
 		this.tags = context.getTags("tags");

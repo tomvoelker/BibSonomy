@@ -6,6 +6,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -32,7 +33,7 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 		this.tags = context.getTags("tags");
 		this.tagString = context.getStringAttribute("tags", null);
 		this.search = context.getStringAttribute("search", null);
-		this.resourceType = Resource.getResource(context.getStringAttribute("resourcetype", "all"));
+		this.resourceType = ResourceUtils.getResource(context.getStringAttribute("resourcetype", "all"));
 	}
 
 	@Override
@@ -41,7 +42,7 @@ public class GetUserPostsStrategy extends AbstractGetListStrategy<List<? extends
 			sb.append("&tags=").append(this.tagString);
 		}
 		if (this.resourceType != Resource.class) {
-			sb.append("&resourcetype=").append(Resource.toString(this.resourceType).toLowerCase());
+			sb.append("&resourcetype=").append(ResourceUtils.toString(this.resourceType).toLowerCase());
 		}
 	}
 

@@ -7,6 +7,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
@@ -29,7 +30,7 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 	public GetListOfTagsStrategy(final Context context) {
 		super(context);
 		this.grouping = chooseGroupingEntity();
-		this.resourceType = Resource.getResource(context.getStringAttribute("resourcetype", "all"));
+		this.resourceType = ResourceUtils.getResource(context.getStringAttribute("resourcetype", "all"));
 		this.hash = context.getStringAttribute("resource", null);
 		
 		if (this.grouping != GroupingEntity.ALL) {
@@ -53,7 +54,7 @@ public class GetListOfTagsStrategy extends AbstractGetListStrategy<List<Tag>> {
 			sb.append("&").append("order=").append(this.getView().getOrder().toString().toLowerCase());
 		}
 		if (resourceType != Resource.class) {
-			sb.append("&resourcetype=").append(Resource.toString(resourceType).toLowerCase());
+			sb.append("&resourcetype=").append(ResourceUtils.toString(resourceType).toLowerCase());
 		}
 		if (hash != null) {
 			sb.append("&resource=").append(hash);

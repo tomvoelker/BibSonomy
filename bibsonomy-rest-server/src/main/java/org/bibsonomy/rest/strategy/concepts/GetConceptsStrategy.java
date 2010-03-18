@@ -8,6 +8,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.ViewModel;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.renderer.xml.tools.EscapingPrintWriter;
@@ -31,7 +32,7 @@ public class GetConceptsStrategy extends Strategy {
 	 */
 	public GetConceptsStrategy(Context context) {
 		super(context);
-		this.resourceType = Resource.getResource(context.getStringAttribute("resourcetype", "all"));				
+		this.resourceType = ResourceUtils.getResource(context.getStringAttribute("resourcetype", "all"));				
 		this.regex = context.getStringAttribute("filter", null);
 		this.tags = context.getTags("tags");
 	}

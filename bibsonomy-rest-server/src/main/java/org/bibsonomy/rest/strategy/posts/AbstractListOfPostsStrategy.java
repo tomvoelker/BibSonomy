@@ -6,6 +6,7 @@ import java.util.List;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.util.ResourceUtils;
 import org.bibsonomy.rest.strategy.AbstractGetListStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
@@ -28,7 +29,7 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	public AbstractListOfPostsStrategy(final Context context) {
 		super(context);
 		this.tagString = context.getStringAttribute("tags", null);
-		this.resourceType = Resource.getResource(context.getStringAttribute("resourcetype", "all"));
+		this.resourceType = ResourceUtils.getResource(context.getStringAttribute("resourcetype", "all"));
 		this.hash = context.getStringAttribute("resource", null);
 		this.search = context.getStringAttribute("search", null);
 		this.grouping = chooseGroupingEntity();
@@ -60,7 +61,7 @@ public abstract class AbstractListOfPostsStrategy extends AbstractGetListStrateg
 	@Override
 	protected void appendLinkPostFix(StringBuilder sb) {
 		if (this.resourceType != Resource.class) {
-			sb.append("&resourcetype=").append(Resource.toString(this.resourceType).toLowerCase());
+			sb.append("&resourcetype=").append(ResourceUtils.toString(this.resourceType).toLowerCase());
 		}
 		if (this.tagString != null) {
 			sb.append("&tags=").append(this.tagString);
