@@ -24,10 +24,10 @@
 package org.bibsonomy.model.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.model.Group;
@@ -51,19 +51,15 @@ public class GroupUtilsTest {
 			assertTrue(present(group.getGroupId()));
 			assertTrue(present(group.getPrivlevel()));
 		}
-
-		// no caching please (due to possible side effects)
-		/*
-		 * FIXME: rja: why? I don't understand the problem,
-		 * having a singleton public (or private) group. 
-		 * Please explain! I removed the test, 2008-12-11
-		 */
+		
 		final Group g1 = GroupUtils.getPublicGroup();
 		final Group g2 = GroupUtils.getPublicGroup();
-//		assertNotSame(g1, g2);
 		assertSame(g1, g2);
 	}
 	
+	/**
+	 * tests {@link GroupUtils#isExclusiveGroup(Group)}
+	 */
 	@Test
 	public void testIsExclusiveGroupGroup() {
 		assertTrue(GroupUtils.isExclusiveGroup(GroupUtils.getPrivateGroup()));
@@ -74,6 +70,9 @@ public class GroupUtilsTest {
 		assertFalse(GroupUtils.isExclusiveGroup(GroupUtils.getFriendsSpamGroup()));
 	}
 	
+	/**
+	 * tests {@link GroupUtils#isExclusiveGroup(int)}
+	 */
 	@Test
 	public void testIsExclusiveGroupGroupId() {
 		assertTrue(GroupUtils.isExclusiveGroup(GroupID.PRIVATE.getId()));

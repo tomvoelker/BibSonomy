@@ -28,8 +28,6 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.Assert;
-
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -60,37 +58,37 @@ public class PostUtilsTest {
 		 * set to non-spammer
 		 */
 		PostUtils.setGroupIds(post, false);
-		Assert.assertEquals(0, group1.getGroupId());
+		assertEquals(0, group1.getGroupId());
 		// FIXME: bug in UserUtils.getGroupId	
-//		Assert.assertEquals(GroupID.INVALID.getId(), group2.getGroupId());
-		Assert.assertEquals(7, group3.getGroupId());
+//		assertEquals(GroupID.INVALID.getId(), group2.getGroupId());
+		assertEquals(7, group3.getGroupId());
 		
 		/*
 		 * set to spammer
 		 */
 		PostUtils.setGroupIds(post, true);
-		Assert.assertEquals(-2147483648, group1.getGroupId());
+		assertEquals(-2147483648, group1.getGroupId());
 		// FIXME: bug in UserUtils.getGroupId
-//		Assert.assertEquals(0, group2.getGroupId());
-		Assert.assertEquals(-2147483641, group3.getGroupId());		
+//		assertEquals(0, group2.getGroupId());
+		assertEquals(-2147483641, group3.getGroupId());		
 
 		/*
 		 * set to spammer
 		 */
 		PostUtils.setGroupIds(post, true);
-		Assert.assertEquals(-2147483648, group1.getGroupId());
+		assertEquals(-2147483648, group1.getGroupId());
 		// FIXME: bug in UserUtils.getGroupId
-//		Assert.assertEquals(0, group2.getGroupId());
-		Assert.assertEquals(-2147483641, group3.getGroupId());		
+//		assertEquals(0, group2.getGroupId());
+		assertEquals(-2147483641, group3.getGroupId());		
 
 		/*
 		 * set to non-spammer
 		 */
 		PostUtils.setGroupIds(post, false);
-		Assert.assertEquals(0, group1.getGroupId());
+		assertEquals(0, group1.getGroupId());
 		// FIXME: bug in UserUtils.getGroupId	
-//		Assert.assertEquals(GroupID.INVALID.getId(), group2.getGroupId());
-		Assert.assertEquals(7, group3.getGroupId());
+//		assertEquals(GroupID.INVALID.getId(), group2.getGroupId());
+		assertEquals(7, group3.getGroupId());
 	}
 
 	@Test

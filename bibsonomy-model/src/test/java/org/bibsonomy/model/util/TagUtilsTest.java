@@ -23,12 +23,14 @@
 
 package org.bibsonomy.model.util;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 import java.util.LinkedList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.bibsonomy.model.Tag;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -37,35 +39,40 @@ import org.junit.Test;
  */
 public class TagUtilsTest {
 
+	/**
+	 * TODO: implement me
+	 */
 	@Test
+	@Ignore
 	public void testGetMaxUserCount() {
-//		fail("Not yet implemented");
+		fail("TODO");
 	}
 
+	/**
+	 * TODO: implement me
+	 */
 	@Test
+	@Ignore
 	public void testGetMaxGlobalcountCount() {
-//		fail("Not yet implemented");
+		fail("TODO");
 	}
 
+	/**
+	 * tests {@link TagUtils#toTagString(java.util.Collection, String)}
+	 */
 	@Test
 	public void testToTagString() {
-		
 		final List<Tag> tags = new LinkedList<Tag>();
-		
-		Assert.assertEquals("", TagUtils.toTagString(tags, " "));
+		assertEquals("", TagUtils.toTagString(tags, " "));
 
 		tags.add(new Tag("foo"));
-		
-		Assert.assertEquals("foo", TagUtils.toTagString(tags, " "));
+		assertEquals("foo", TagUtils.toTagString(tags, " "));
 
 		tags.add(new Tag("bar"));
-		
-		Assert.assertEquals("foo bar", TagUtils.toTagString(tags, " "));
+		assertEquals("foo bar", TagUtils.toTagString(tags, " "));
 
 		tags.add(new Tag("blubb"));
-		
-		Assert.assertEquals("foo bar blubb", TagUtils.toTagString(tags, " "));
-
+		assertEquals("foo bar blubb", TagUtils.toTagString(tags, " "));
 	}
 
 }

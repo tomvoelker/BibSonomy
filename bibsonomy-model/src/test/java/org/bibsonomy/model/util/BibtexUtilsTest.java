@@ -112,8 +112,7 @@ public class BibtexUtilsTest {
 			"  volume = {3},\n" +
 			"  year = {2525},\n" + 
 			"  abstract = {This is a nice abstract.}\n}";
-
-//		System.out.print(BibTexUtils.toBibtexString(bib));		
+		
 		assertEquals(expectedBibtex, BibTexUtils.toBibtexString(bib));
 
 		// add some misc fields
@@ -130,8 +129,7 @@ public class BibtexUtilsTest {
 			"  year = {2525},\n" + 
 			"  extraKey = {extraVal},\n" + 
 			"  extraKey2 = {extraVal2}\n}";
-
-//		System.out.println(BibTexUtils.toBibtexString(bib));
+		
 		assertEquals(expectedBibtex2, BibTexUtils.toBibtexString(bib));		
 	}
 
@@ -146,7 +144,6 @@ public class BibtexUtilsTest {
 	@Test
 	public void testToBibtexString() throws Exception {
 		final BibTex bib = new BibTex();
-
 		bib.setYear("2004");
 		bib.setTitle("La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer");
 		bib.setPrivnote("");
@@ -166,8 +163,7 @@ public class BibtexUtilsTest {
 		bib.setBibtexKey("Selmes2004");
 		bib.setAbstract("Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.");
 		bib.setAuthor("Jacques Selmès and Christian Derouesné");
-
-
+		
 		final String expected = 
 			"@book{Selmes2004,\n" + 
 			"  author = {Jacques Selmès and Christian Derouesné},\n" +
@@ -194,7 +190,6 @@ public class BibtexUtilsTest {
 			"}";
 
 		assertEquals(expected, BibTexUtils.toBibtexString(bib));
-
 	}
 
 
@@ -249,8 +244,8 @@ public class BibtexUtilsTest {
 	/**
 	 * tests sortBibTexList
 	 */
-	@Ignore
-	// FIXME: implement me...
+	@Ignore// FIXME: implement me...
+	@Test
 	public void sortBibTexList() {
 		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
 		final Post<BibTex> post1 = new Post<BibTex>();
@@ -315,7 +310,7 @@ public class BibtexUtilsTest {
 		BibTexUtils.serializeMiscFields(bib);
 		bib.getMiscFields().clear();
 		BibTexUtils.parseMiscField(bib);
-//		System.out.println(bib.getMisc());
+		
 		assertEquals(2, bib.getMiscFields().values().size());
 		assertEquals("value1", bib.getMiscField("key1"));
 		assertEquals("value2", bib.getMiscField("key2"));
@@ -365,6 +360,4 @@ public class BibtexUtilsTest {
 		 */
 		assertEquals(cleanedMisc, bib.getMisc());
 	}
-
-
 }

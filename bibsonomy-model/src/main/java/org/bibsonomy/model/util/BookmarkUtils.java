@@ -41,9 +41,9 @@ import org.bibsonomy.model.comparators.BookmarkPostComparator;
 public class BookmarkUtils {
 
 	/**
-	 * Sort a list of bibtex posts (and eventually remove duplicates).
+	 * Sort a list of publication posts (and eventually remove duplicates).
 	 * 
-	 * @param bibtexList
+	 * @param bookmarkList
 	 * @param sortKeys
 	 * @param sortOrders
 	 */

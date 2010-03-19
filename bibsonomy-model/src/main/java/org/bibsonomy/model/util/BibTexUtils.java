@@ -642,7 +642,7 @@ public class BibTexUtils {
 	 * @param bibtexList
 	 */
 	public static void removeDuplicates(final List<Post<BibTex>> bibtexList) {
-		final TreeSet<Post<BibTex>> temp = new TreeSet<Post<BibTex>>(new BibTexPostInterhashComparator());
+		final Set<Post<BibTex>> temp = new TreeSet<Post<BibTex>>(new BibTexPostInterhashComparator());
 		temp.addAll(bibtexList);
 		// FIXME: a bit cumbersome at this point - but we need to work on the bibtexList
 		bibtexList.clear();

@@ -51,7 +51,7 @@ public interface FileBookmarkImporter {
 	public void initialize(File file, User user, String groupName) throws IOException;
 	
 	/**
-	 * Returns the bookmarks extracted from the given file (see {@link #setFile(File)}). 
+	 * Returns the bookmarks extracted from the given file (see {@link #initialize(File, User, String)}). 
 	 * 
 	 * @return A list of bookmark posts, extracted from the given file.
 	 */

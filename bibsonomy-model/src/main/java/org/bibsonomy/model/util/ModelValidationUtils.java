@@ -33,7 +33,6 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
-import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.PostType;
 import org.bibsonomy.rest.renderer.xml.TagType;
@@ -41,6 +40,17 @@ import org.bibsonomy.rest.renderer.xml.UserType;
 
 /**
  * Sanity checks for the model.
+ * 
+ * 
+ * XXX: InvalidModelException was: 
+ * 
+ * public InvalidXMLException(final String message) {
+ *   super("The body part of the received XML document is not valid: " + message);
+ * }
+ * 
+ * Probably we want to have something similar again. Maybe we want a generic
+ * ValidationException and an InvalidModelException and InvalidXMLException
+ * inheriting from that.
  * 
  * @author Manuel Bork
  * @author Christian Schenk
@@ -55,7 +65,7 @@ public class ModelValidationUtils {
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
 	public static void checkTag(final Tag tag) throws InvalidModelException {
-		if (tag.getName() == null || tag.getName().length() == 0) {
+		if (!present(tag.getName())) {
 			throw new InvalidModelException("found a tag without tagname assigned.");
 		}
 	}
@@ -65,7 +75,7 @@ public class ModelValidationUtils {
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
 	public static void checkUser(final User user) throws InvalidModelException {
-		if (user.getName() == null || user.getName().length() == 0) {
+		if (!present(user.getName())) {
 			throw new InvalidModelException("found an user without username assigned.");
 		}
 	}
@@ -75,7 +85,7 @@ public class ModelValidationUtils {
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
 	public static void checkGroup(final Group group) throws InvalidModelException {
-		if (group.getName() == null || group.getName().length() == 0) {
+		if (!present(group.getName())) {
 			throw new InvalidModelException("found a group without groupname assigned.");
 		}
 	}
@@ -85,10 +95,10 @@ public class ModelValidationUtils {
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
 	public static void checkBookmark(final Bookmark bookmark) throws InvalidModelException {
-		if (bookmark.getUrl() == null || bookmark.getUrl().length() == 0) {
+		if (!present(bookmark.getUrl())) {
 			throw new InvalidModelException("found a bookmark without url assigned.");
 		}
-		if (bookmark.getInterHash() == null || bookmark.getInterHash().length() == 0 || bookmark.getIntraHash() == null || bookmark.getIntraHash().length() == 0) {
+		if (!present(bookmark.getInterHash()) || !present(bookmark.getIntraHash())) {
 			throw new InvalidModelException("found a bookmark without hash assigned.");
 		}
 	}
@@ -97,32 +107,23 @@ public class ModelValidationUtils {
 	 * @param publication the object to run sanity checks on
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
-	public static void checkBibtex(final BibTex publication) {
-		if (publication.getTitle() == null || publication.getTitle().length() == 0) {
+	public static void checkPublication(final BibTex publication) {
+		if (!present(publication.getTitle())) {
 			throw new InvalidModelException("found a bibtex without title assigned.");
 		}
 	}
-
-	/*
-	 * XXX: InvalidModelException was an:
-	 * 
-	 * public InvalidXMLException(final String message) {
-	 *   super("The body part of the received XML document is not valid: " + message);
-	 * }
-	 * 
-	 * Probably we want to have something similar again. Maybe we want a generic
-	 * ValidationException and an InvalidModelException and InvalidXMLException
-	 * inheriting from that.
-	 */
+	
 	/**
 	 * @param xmlTag the object to run sanity checks on
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
 	public static void checkTag(final TagType xmlTag) throws InvalidModelException {
-		if (xmlTag.getName() == null || xmlTag.getName().length() == 0) {
+		final String tagName = xmlTag.getName();
+		if (!present(tagName)) {
 			throw new InvalidModelException(XML_IS_INVALID_MSG + "tag name is missing in element 'tag'");
 		}
-		if (xmlTag.getName() != null && xmlTag.getName().contains(" ")) {
+		
+		if (tagName.contains(" ")) {
 			throw new InvalidModelException(XML_IS_INVALID_MSG + "tag name contains space character. To assign several tags to a post, please use one tag element for each tag.");
 		}
 	}
@@ -132,7 +133,7 @@ public class ModelValidationUtils {
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
 	public static void checkUser(final UserType xmlUser) throws InvalidModelException {
-		if (xmlUser.getName() == null || xmlUser.getName().length() == 0) {
+		if (!present(xmlUser.getName())) {
 			throw new InvalidModelException(XML_IS_INVALID_MSG + "username is missing in element 'user'");
 		}
 	}
@@ -142,7 +143,7 @@ public class ModelValidationUtils {
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
 	public static void checkGroup(final GroupType xmlGroup) throws InvalidModelException {
-		if (xmlGroup.getName() == null || xmlGroup.getName().length() == 0) {
+		if (!present(xmlGroup.getName())) {
 			throw new InvalidModelException(XML_IS_INVALID_MSG + "groupname is missing in element 'group'");
 		}
 	}
@@ -179,8 +180,7 @@ public class ModelValidationUtils {
 		if (xmlPost.getUser() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "user is missing");
 		
 		// resource
-		final GoldStandardPublicationType xmlGoldStandardPublication = xmlPost.getGoldStandardPublication();
-		if (xmlGoldStandardPublication == null) {
+		if (xmlPost.getGoldStandardPublication() == null) {
 			throw new InvalidModelException(XML_IS_INVALID_MSG + "resource is missing inside element 'post'");
 		}
 	}
@@ -190,27 +190,19 @@ public class ModelValidationUtils {
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
 	public static void checkBookmark(final BookmarkType xmlBookmark) throws InvalidModelException {
-		if (xmlBookmark.getUrl() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "url is missing in element 'bookmark'");
-		if (xmlBookmark.getTitle() == null) throw new InvalidModelException(XML_IS_INVALID_MSG + "title is missing in element 'bookmark'");
-		// do not test hash value - it depends on the request if its available,
-		// so we check it later
-		// if( xmlBookmark.getIntrahash() == null ) throw new
-		// InvalidXMLException( "hash is missing" );
+		if (!present(xmlBookmark.getUrl())) throw new InvalidModelException(XML_IS_INVALID_MSG + "url is missing in element 'bookmark'");
+		if (!present(xmlBookmark.getTitle())) throw new InvalidModelException(XML_IS_INVALID_MSG + "title is missing in element 'bookmark'");
 	}
 
 	/**
 	 * @param xmlPublication the object to run sanity checks on
 	 * @throws InvalidModelException if there is a lack of sanity
 	 */
-	public static void checkBibTex(final BibtexType xmlPublication) throws InvalidModelException {
+	public static void checkPublication(final BibtexType xmlPublication) throws InvalidModelException {
 		if (!present(xmlPublication.getTitle())) throw new InvalidModelException(XML_IS_INVALID_MSG + "title is missing in element 'bibtex'");
 		if (!present(xmlPublication.getYear())) throw new InvalidModelException(XML_IS_INVALID_MSG + "year is missing in element 'bibtex'");
 		if (!present(xmlPublication.getBibtexKey())) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex key is missing in element 'bibtex'");
 		if (!present(xmlPublication.getEntrytype())) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex entry type is missing in element 'bibtex'");
 		if (!present(xmlPublication.getAuthor()) && !present(xmlPublication)) throw new InvalidModelException(XML_IS_INVALID_MSG + "editor(s) and author(s) are missing (one of the two is required) in element 'bibtex'");
-		// do not test hash value - it depends on the request if its available,
-		// so we check it later
-		// if( xmlBibtex.getIntrahash() == null ) throw new InvalidXMLException(
-		// "hash is missing" );
 	}
 }
