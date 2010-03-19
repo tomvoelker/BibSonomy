@@ -93,8 +93,11 @@
 							<list>
 								<value>action</value>
 								<value>queriesPerLatency</value>
+								<value>newrecurl</value>
+								<value>deletesid</value>
 								<value>activeRecs</value>
 								<value>disabledRecs</value>
+								<value>tab</value>
 							</list>
 						</property>
 					</bean>
@@ -127,10 +130,8 @@
 		<property name="userSettings" ref="userSettings"/>
 	</bean>
 	
-	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" scope="request">
-		<property name="logic" ref="logic"/>
-	    <property name="multiplexingTagRecommender" ref="multiplexingTagRecommender"/>
-		<property name="userSettings" ref="userSettings"/>
+	<bean id="adminRecommenderController" class="org.bibsonomy.webapp.controller.admin.AdminRecommenderController" init-method="init" scope="singleton">
+	    <property name="multiplexingTagRecommender" ref="multiplexingTagRecommender" />
 	</bean>
 		
 </beans>
