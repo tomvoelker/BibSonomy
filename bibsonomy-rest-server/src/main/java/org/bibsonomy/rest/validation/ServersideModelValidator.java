@@ -31,10 +31,10 @@ public class ServersideModelValidator implements ModelValidator {
 	}
 
 
-	public void checkBibTeX(final BibTex bibtex) {
+	public void checkPublication(final BibTex publication) {
 		// parse Bibtex so see whether the entry is valid
-		final BibtexParserUtils bibutil = new BibtexParserUtils( BibTexUtils.toBibtexString(bibtex) );						
-		bibtex.setAuthor( bibutil.getFormattedAuthorString() );
-		bibtex.setEditor( bibutil.getFormattedEditorString() );
+		final BibtexParserUtils bibutil = new BibtexParserUtils( BibTexUtils.toBibtexString(publication) );						
+		publication.setAuthor( bibutil.getFormattedAuthorString() );
+		publication.setEditor( bibutil.getFormattedEditorString() );
 	}
 }
