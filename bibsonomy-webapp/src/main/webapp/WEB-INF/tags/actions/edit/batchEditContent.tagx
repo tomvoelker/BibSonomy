@@ -82,11 +82,9 @@
            <form id="batchedit" action="/batchEdit" method="POST">
            
              <!-- POSSIBLE TODO: make command variable nested/tunnel through servlet-actions.xml for both commands -->
-           	 
            	 <input type="hidden" name="deleteCheckedPosts" value="${deleteCheckedPosts}"/>
 	         <input type="hidden" name="overwrite" value="${overwrite}" />
-	         <input type="hidden" name="resourcetype" value="${resourcetype}" />
-	         
+	         <input type="hidden" name="resourcetype" value="${resourceType}" />
            	 
              <table>
 
@@ -211,7 +209,7 @@
 			                       </td>   
 			                       <td>
 			                         <div style="margin-left:auto;margin-right:auto; width:10pt">
-			                         	<input type="checkbox" name="delete['${post.resource.intraHash}']" onclick="checkDeleteAll(this)" value="false"  /> <!--<fmt:message key="batchedit.deletePost"/>-->
+			                         	<input type="checkbox" name="delete['${post.resource.intraHash}']" onclick="checkDeleteAll(this)" value="true"  /> <!--<fmt:message key="batchedit.deletePost"/>-->
 			                         </div>
 			                       </td>
 			                     </tr>
@@ -237,7 +235,7 @@
                    <input type="submit" value="${buttonUpdate}" style="float:right; width:100%"/>
                    <input type="hidden" name="ckey" value="${ckey}"/>
                    <!-- TODO: somehow a hack: removing the bedit(bib|url)/ by cutting at the first '/' -->
-                   <input type="hidden" name="referer" value="/${fn:escapeXml(requPath)}"/>
+                   <input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
                  </td>
                </tr>
                   
