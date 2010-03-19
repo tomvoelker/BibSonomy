@@ -33,9 +33,9 @@ import org.bibsonomy.util.XmlUtils;
 /**
  * PrintWriter which preprocesses all content to be printed/written 
  * by replacing control characters (e.g., in order to yield valid
- * XML). It uses hereby the method {@link StringUtils#escapeControlCharacters}}.
+ * XML). It uses hereby the method {@link XmlUtils#removeXmlControlCharacter(char[], Boolean)}.
  * 
- * @see org.bibsonomy.util.StringUtils
+ * @see org.bibsonomy.util.XmlUtils
  * @see java.io.PrintWriter
  * @author Dominik Benz
  * @version $Id$
@@ -43,7 +43,7 @@ import org.bibsonomy.util.XmlUtils;
 public class EscapingPrintWriter extends Writer {
 		
 	/** PrintWriter */
-	private PrintWriter pw;
+	private final PrintWriter pw;
 	
 	/**
 	 * Create a new instance of an EscapingPrintWriter which is 
@@ -51,7 +51,7 @@ public class EscapingPrintWriter extends Writer {
 	 * 
 	 * @param out an OutputStream
 	 */
-	public EscapingPrintWriter(OutputStream out) {
+	public EscapingPrintWriter(final OutputStream out) {
 		this.pw = new PrintWriter(out);
 	}
 	
@@ -77,7 +77,7 @@ public class EscapingPrintWriter extends Writer {
 	 * @see java.io.Writer#write(char[], int, int)
 	 */
 	@Override
-	public void write(char[] cbuf, int off, int len) throws IOException {
+	public void write(final char[] cbuf, final int off, final int len) throws IOException {
 		this.pw.write(XmlUtils.removeXmlControlCharacters(cbuf, true), off, len);
 	}
 }

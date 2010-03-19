@@ -23,6 +23,7 @@
 
 package org.bibsonomy.rest.renderer.xml;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -39,7 +40,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -47,13 +48,15 @@ import org.junit.Test;
  * @version $Id$
  */
 public class ModelFactoryTest {
+	
+	private static final String XML_IS_INVALID_MSG = "The body part of the received XML document is not valid: ";
 
-	private ModelFactory modelFactory;
-	private final String XML_IS_INVALID_MSG = "The body part of the received XML document is not valid: ";
+	private static ModelFactory modelFactory;
+	
 
-	@Before
-	public void setUp() {
-		this.modelFactory = ModelFactory.getInstance();
+	@BeforeClass
+	public static void setUp() {
+		modelFactory = ModelFactory.getInstance();
 	}
 
 	@Test
@@ -61,16 +64,16 @@ public class ModelFactoryTest {
 		// check invalid user
 		final UserType xmlUser = new UserType();
 		try {
-			this.modelFactory.createUser(xmlUser);
+			modelFactory.createUser(xmlUser);
 			fail("exception should have been thrown.");
 		} catch (final InvalidModelException e) {
-			if (!(this.XML_IS_INVALID_MSG + "username is missing in element 'user'").equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
+			assertEquals("wrong exception thrown", XML_IS_INVALID_MSG + "username is missing in element 'user'", e.getMessage());
 		}
 
 		// check valid user
 		xmlUser.setName("test");
-		final User user = this.modelFactory.createUser(xmlUser);
-		assertTrue("model not correctly initialized", "test".equals(user.getName()));
+		final User user = modelFactory.createUser(xmlUser);
+		assertEquals("model not correctly initialized", "test", user.getName());
 	}
 
 	@Test
@@ -78,20 +81,21 @@ public class ModelFactoryTest {
 		// check invalid group
 		final GroupType xmlGroup = new GroupType();
 		try {
-			this.modelFactory.createGroup(xmlGroup);
+			modelFactory.createGroup(xmlGroup);
 			fail("exception should have been thrown.");
 		} catch (final InvalidModelException e) {
-			if (!(this.XML_IS_INVALID_MSG + "groupname is missing in element 'group'").equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
+			assertEquals("wrong exception thrown", XML_IS_INVALID_MSG + "groupname is missing in element 'group'", e.getMessage());
 		}
 
 		// check valid group
 		xmlGroup.setName("test");
 		xmlGroup.setRealname("TestGroup");
 		xmlGroup.setHomepage("http://www.example.com/");
-		final Group group = this.modelFactory.createGroup(xmlGroup);
-		assertTrue("model not correctly initialized", "test".equals(group.getName()));
-		assertTrue("model not correctly initialized", "http://www.example.com/".equals(group.getHomepage().toString()));
-		assertTrue("model not correctly initialized", "TestGroup".equals(group.getRealname()));
+		final Group group = modelFactory.createGroup(xmlGroup);
+		
+		assertEquals("model not correctly initialized", "test", group.getName());
+		assertEquals("model not correctly initialized", "http://www.example.com/", group.getHomepage().toString());
+		assertEquals("model not correctly initialized", "TestGroup", group.getRealname());
 	}
 
 	@Test
@@ -99,59 +103,59 @@ public class ModelFactoryTest {
 		// check invalid tag
 		final TagType xmlTag = new TagType();
 		try {
-			this.modelFactory.createTag(xmlTag);
-		} catch (InvalidModelException e) {
-			if (!(this.XML_IS_INVALID_MSG + "tag name is missing in element 'tag'").equals(e.getMessage())) fail("wrong exception thrown: " + e.getMessage());
+			modelFactory.createTag(xmlTag);
+		} catch (final InvalidModelException e) {
+			assertEquals("wrong exception thrown", XML_IS_INVALID_MSG + "tag name is missing in element 'tag'", e.getMessage());
 		}
 
 		// check valid tag
 		xmlTag.setName("foo");
-		Tag tag = this.modelFactory.createTag(xmlTag);
+		Tag tag = modelFactory.createTag(xmlTag);
 		assertTrue("tag not correctly initailized", "foo".equals(tag.getName()));
 		xmlTag.setGlobalcount(BigInteger.ONE);
 		xmlTag.setUsercount(BigInteger.TEN);
-		tag = this.modelFactory.createTag(xmlTag);
-		assertTrue("tag not correctly initailized", tag.getGlobalcount() == 1);
-		assertTrue("tag not correctly initailized", tag.getUsercount() == 10);
+		tag = modelFactory.createTag(xmlTag);
+		assertEquals("tag not correctly initailized", 1, tag.getGlobalcount());
+		assertEquals("tag not correctly initailized", 10, tag.getUsercount());
 	}
 
 	@Test
 	public void testCreatePost() throws DatatypeConfigurationException {
 		// check invalid posts
 		final PostType xmlPost = new PostType();
-		DatatypeFactory dataFact = DatatypeFactory.newInstance();		
+		final DatatypeFactory dataFact = DatatypeFactory.newInstance();		
 		xmlPost.setPostingdate(dataFact.newXMLGregorianCalendar("2008-12-04T10:42:06.000+01:00"));		
-		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "no tags specified");
+		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "no tags specified");
 		final TagType xmlTag = new TagType();
 		xmlPost.getTag().add(xmlTag);
-		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "user is missing");
+		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "user is missing");
 		final UserType xmlUser = new UserType();
 		xmlUser.setName("tuser");
 		xmlPost.setUser(xmlUser);
-		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "resource is missing inside element 'post'");
+		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "resource is missing inside element 'post'");
 		final BookmarkType xmlBookmark = new BookmarkType();
 		xmlPost.setBookmark(xmlBookmark);
-		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "tag name is missing in element 'tag'");
+		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "tag name is missing in element 'tag'");
 		xmlTag.setName("testtag");
-		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "url is missing in element 'bookmark'");
+		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "url is missing in element 'bookmark'");
 		xmlBookmark.setUrl("http://www.google.de");
 		xmlBookmark.setTitle("Google search engine");
 		xmlPost.setBookmark(xmlBookmark);
 		xmlPost.setBibtex(new BibtexType());
-		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "only one resource type is allowed inside element 'post'");
+		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "only one resource type is allowed inside element 'post'");
 		xmlPost.setBibtex(null);
 
 		// check valid post with bookmark
 		Post<? extends Resource> post = modelFactory.createPost(xmlPost);
-		assertTrue("model not correctly initialized", "tuser".equals(post.getUser().getName()));
+		assertEquals("model not correctly initialized", "tuser", post.getUser().getName());
 		assertTrue("model not correctly initialized", post.getResource() instanceof Bookmark);
-		assertTrue("model not correctly initialized", "http://www.google.de".equals(((Bookmark) post.getResource()).getUrl()));
-		assertTrue("model not correctly initialized", "testtag".equals(post.getTags().iterator().next().getName()));
+		assertEquals("model not correctly initialized", "http://www.google.de", ((Bookmark) post.getResource()).getUrl());
+		assertEquals("model not correctly initialized", "testtag", post.getTags().iterator().next().getName());
 
 		xmlPost.setBookmark(null);
 		final BibtexType xmlBibtex = new BibtexType();
 		xmlPost.setBibtex(xmlBibtex);
-		checkInvalidPost(xmlPost, this.XML_IS_INVALID_MSG + "title is missing in element 'bibtex'");
+		checkInvalidPost(xmlPost, XML_IS_INVALID_MSG + "title is missing in element 'bibtex'");
 		xmlBibtex.setTitle("foo bar");
 		xmlBibtex.setYear("2005");
 		xmlBibtex.setBibtexKey("myBibtexKey");
@@ -159,22 +163,19 @@ public class ModelFactoryTest {
 		xmlBibtex.setAuthor("Hans Dampf");
 
 		// check valid post with bibtex
-		post = this.modelFactory.createPost(xmlPost);
-		assertTrue("model not correctly initialized", "tuser".equals(post.getUser().getName()));
+		post = modelFactory.createPost(xmlPost);
+		assertEquals("model not correctly initialized", "tuser", post.getUser().getName());
 		assertTrue("model not correctly initialized", post.getResource() instanceof BibTex);
-		assertTrue("model not correctly initialized", "foo bar".equals(((BibTex) post.getResource()).getTitle()));
-		assertTrue("model not correctly initialized", "testtag".equals(post.getTags().iterator().next().getName()));
+		assertEquals("model not correctly initialized", "foo bar", ((BibTex) post.getResource()).getTitle());
+		assertEquals("model not correctly initialized", "testtag", post.getTags().iterator().next().getName());
 	}
 
 	private void checkInvalidPost(final PostType xmlPost, final String exceptionMessage) {
 		try {
-			this.modelFactory.createPost(xmlPost);
+			modelFactory.createPost(xmlPost);
 			fail("exception should have been thrown.");
 		} catch (final InvalidModelException e) {
-			if (!e.getMessage().equals(exceptionMessage)) {
-				System.out.println(e.getMessage());
-				fail("wrong exception thrown: " + e.getMessage());
-			}
+			assertEquals("wrong exception thrown", exceptionMessage, e.getMessage());
 		}
 	}
 }

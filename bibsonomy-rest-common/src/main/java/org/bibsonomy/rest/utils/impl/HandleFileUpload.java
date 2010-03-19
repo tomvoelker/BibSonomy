@@ -46,19 +46,10 @@ import org.bibsonomy.util.file.FileUtil;
  * Handles the file upload
  * 
  * @author Christian Kramer
- * @version $Id: HandleFileUpload.java,v 1.5 2009-06-23 14:11:37 voigtmannc Exp
- *          $
+ * @version $Id$
  */
 public class HandleFileUpload implements FileUploadInterface {
-	
 	private static final Log log = LogFactory.getLog(HandleFileUpload.class);
-
-	private Document document = new Document();
-	private FileItem upFile;
-
-	private final String docPath;
-	private final boolean isTempPath;
-	
 	
 	/**
 	 * firefox extion
@@ -84,9 +75,16 @@ public class HandleFileUpload implements FileUploadInterface {
 	 * Used to compute the file hash.
 	 */
 	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
 	static {
 		df.setTimeZone(TimeZone.getDefault());
 	}
+
+	private final Document document = new Document();
+	private FileItem upFile;
+
+	private final String docPath;
+	private final boolean isTempPath;
 
 	/**
 	 * default constructor
@@ -146,7 +144,7 @@ public class HandleFileUpload implements FileUploadInterface {
 
 		try {
 			this.upFile.write(document.getFile());
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			log.error("Could not write uploaded file.", ex);
 			throw ex;
 		}

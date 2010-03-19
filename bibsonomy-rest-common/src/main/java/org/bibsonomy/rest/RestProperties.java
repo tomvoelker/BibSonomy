@@ -51,14 +51,10 @@ public class RestProperties {
 	private final Properties properties;
 	private final Context jndiCtx;
 	
-	/*
-	 * FIXME: first: BibSonomy NOT Bibsonomy!
-	 * second: is seems not to be correct, that this is hard-coded in this class!
-	 */
 	public static enum Property {
 		CONFIGFILE("RestConfig.cfg"),
-		API_URL("http://www.bibsonomy.org/api/"),
-		SYSTEM_NAME("BibSonomy"),
+		API_URL("http://www.bibsonomy.org/api/"),   // FIXME: should be configurable
+		SYSTEM_NAME("BibSonomy"),					// FIXME: should be configurable
 		CONTENT_TYPE("text/xml"),
 		PDF_TYPE("application/pdf"),
 		API_USER_AGENT("BibSonomyWebServiceClient"),
@@ -70,6 +66,7 @@ public class RestProperties {
 		URL_ADDED_POSTS("added"),
 		URL_POPULAR_POSTS("popular"),
 		URL_STANDARD_POSTS("standard"),
+		URL_REFERENCES("references"),
 		URL_DOCUMENTS("documents"),
 		URL_DATE_FORMAT("yyyy-MM-dd'T'HH:mm:ss.SSS"),
 		VALIDATE_XML_INPUT("false"),
@@ -92,7 +89,7 @@ public class RestProperties {
 		}
 		try {
 			return (String) ctx.lookup(name);
-		} catch (NamingException ex) {
+		} catch (final NamingException ex) {
 			if (log.isDebugEnabled() == true) {
 				log.debug("cannot retrieve java:/comp/env/" + name);
 			}
@@ -122,7 +119,7 @@ public class RestProperties {
 			Context ctx;
 			try {
 				ctx = ((Context) new InitialContext().lookup("java:/comp/env"));
-			} catch (Throwable ex) {
+			} catch (final Throwable ex) {
 				log.warn("unable to initialize jndi context");
 				log.debug(ex.getMessage(), ex);
 				ctx = null;
@@ -202,6 +199,10 @@ public class RestProperties {
 		return this.get(Property.URL_STANDARD_POSTS);
 	}
 	
+	public String getReferencesUrl() {
+		return this.get(Property.URL_REFERENCES);
+	}
+	
 	public String getSystemName() {
 		return this.get(Property.SYSTEM_NAME);
 	}
@@ -214,7 +215,7 @@ public class RestProperties {
 		return this.validator;
 	}
 
-	public void setValidator(ModelValidator validator) {
+	public void setValidator(final ModelValidator validator) {
 		this.validator = validator;
 	}
 }

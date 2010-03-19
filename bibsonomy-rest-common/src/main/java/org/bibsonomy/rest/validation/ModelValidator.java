@@ -33,8 +33,8 @@ import org.bibsonomy.model.BibTex;
 public interface ModelValidator {
 
 	/** Check the bibtex for correctness.
-	 * @param bibtex
+	 * @param publication
 	 */
-	public void checkBibTeX(final BibTex bibtex);
+	public void checkPublication(final BibTex publication);
 	
 }

@@ -23,13 +23,14 @@
 
 package org.bibsonomy.rest.renderer.impl;
 
-import static org.bibsonomy.model.util.ModelValidationUtils.checkBibtex;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkBookmark;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkGroup;
+import static org.bibsonomy.model.util.ModelValidationUtils.checkPublication;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkTag;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkUser;
 import static org.bibsonomy.rest.RestProperties.Property.VALIDATE_XML_INPUT;
 import static org.bibsonomy.rest.RestProperties.Property.VALIDATE_XML_OUTPUT;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.Reader;
 import java.io.Writer;
@@ -37,8 +38,10 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -60,6 +63,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
@@ -77,12 +81,15 @@ import org.bibsonomy.rest.renderer.xml.BibtexType;
 import org.bibsonomy.rest.renderer.xml.BookmarkType;
 import org.bibsonomy.rest.renderer.xml.DocumentType;
 import org.bibsonomy.rest.renderer.xml.DocumentsType;
+import org.bibsonomy.rest.renderer.xml.GoldStandardPublicationType;
 import org.bibsonomy.rest.renderer.xml.GroupType;
 import org.bibsonomy.rest.renderer.xml.GroupsType;
 import org.bibsonomy.rest.renderer.xml.ModelFactory;
 import org.bibsonomy.rest.renderer.xml.ObjectFactory;
 import org.bibsonomy.rest.renderer.xml.PostType;
 import org.bibsonomy.rest.renderer.xml.PostsType;
+import org.bibsonomy.rest.renderer.xml.ReferenceType;
+import org.bibsonomy.rest.renderer.xml.ReferencesType;
 import org.bibsonomy.rest.renderer.xml.StatType;
 import org.bibsonomy.rest.renderer.xml.TagType;
 import org.bibsonomy.rest.renderer.xml.TagsType;
@@ -120,7 +127,7 @@ public class XMLRenderer implements Renderer {
 
 		try {
 			this.datatypeFactory = DatatypeFactory.newInstance();
-		} catch (DatatypeConfigurationException ex) {
+		} catch (final DatatypeConfigurationException ex) {
 			throw new RuntimeException("Could not instantiate data type factory.", ex);
 		}
 
@@ -132,7 +139,7 @@ public class XMLRenderer implements Renderer {
 		if (this.validateXMLInput || this.validateXMLOutput) {
 			try {
 				schema = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI).newSchema(this.getClass().getClassLoader().getResource("xschema.xsd"));
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				log.error("Failed to load XML schema", e);
 				schema = null;
 			}
@@ -149,7 +156,7 @@ public class XMLRenderer implements Renderer {
 	 * @throws InternServerException
 	 *             if the content can't be unmarshalled
 	 */
-	private BibsonomyXML parse(Reader reader) throws InternServerException {
+	private BibsonomyXML parse(final Reader reader) throws InternServerException {
 		// first: check the reader 
 		this.checkReader(reader);
 		try {
@@ -178,7 +185,7 @@ public class XMLRenderer implements Renderer {
 			return (BibsonomyXML) xmlDoc.getValue();
 		} catch (final JAXBException e) {
 			if (e.getLinkedException() != null && e.getLinkedException().getClass() == SAXParseException.class) {
-				SAXParseException ex = (SAXParseException) e.getLinkedException();
+				final SAXParseException ex = (SAXParseException) e.getLinkedException();
 				throw new BadRequestOrResponseException(
 						"Error while parsing XML (Line " 
 						+ ex.getLineNumber() + ", Column "
@@ -190,8 +197,51 @@ public class XMLRenderer implements Renderer {
 		}
 	}
 	
-	private void checkReader(Reader reader) throws BadRequestOrResponseException {
+	private void checkReader(final Reader reader) throws BadRequestOrResponseException {
 		if (reader == null) throw new BadRequestOrResponseException("The body part of the received document is missing");
+	}
+	
+	/**
+	 * Initializes java xml bindings, builds the xml document and then marshalls
+	 * it to the writer.
+	 * 
+	 * @throws InternServerException
+	 *             if the document can't be marshalled
+	 */
+	private void serialize(final Writer writer, final BibsonomyXML xmlDoc) throws InternServerException {
+		try {
+			// initialize context for java xml bindings (see comment inside method parse of this class
+			// why we provide a classloader here)
+			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION, this.getClass().getClassLoader());
+
+			// buildup xml document
+			final JAXBElement<BibsonomyXML> webserviceElement = new ObjectFactory().createBibsonomy(xmlDoc);
+
+			// create a marshaller
+			final Marshaller marshaller = jc.createMarshaller();
+			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+			if (this.validateXMLOutput) {
+				// validate the XML produced by the marshaller
+				marshaller.setSchema(schema);
+			}
+
+			// marshal to the writer
+			marshaller.marshal(webserviceElement, writer);
+			// TODO log
+			// log.debug("");
+		} catch (final JAXBException e) {
+			if (e.getLinkedException().getClass() == SAXParseException.class) {
+				final SAXParseException ex = (SAXParseException) e.getLinkedException();
+				throw new BadRequestOrResponseException(
+						"Error while parsing XML (Line " 
+						+ ex.getLineNumber() + ", Column "
+						+ ex.getColumnNumber() + ": "
+						+ ex.getMessage()
+				);				
+			}						
+			throw new InternServerException(e.toString());
+		}
 	}
 
 	public void serializePosts(final Writer writer, final List<? extends Post<? extends Resource>> posts, final ViewModel viewModel) throws InternServerException {
@@ -248,26 +298,6 @@ public class XMLRenderer implements Renderer {
 			}
 		}
 
-		// check if the resource is an instance of bibtex
-		if(post.getResource() instanceof BibTex){
-			final BibTex bibtex = (BibTex) post.getResource();
-			// if the resource is a bibtex object and has documents ...
-			if(bibtex.getDocuments() != null){
-
-				checkBibtex(bibtex);
-				// put them into the xml output
-				final DocumentsType xmlDocuments = new DocumentsType();
-				for (final Document document : bibtex.getDocuments()){
-					final DocumentType xmlDocument = new DocumentType();
-					xmlDocument.setFilename(document.getFileName());
-					xmlDocument.setMd5Hash(document.getMd5hash());
-					xmlDocument.setHref(urlRenderer.createHrefForResourceDocument(post.getUser().getName(), bibtex.getIntraHash(), document.getFileName()));
-					xmlDocuments.getDocument().add(xmlDocument);
-				}
-				xmlPost.setDocuments(xmlDocuments);
-			}
-		}
-
 		// add groups
 		for (final Group group : post.getGroups()) {
 			checkGroup(group);
@@ -278,8 +308,39 @@ public class XMLRenderer implements Renderer {
 		}
 
 		xmlPost.setDescription(post.getDescription());
+		
+		// check if the resource is a publication
+		final Resource resource = post.getResource();
+		if (resource instanceof BibTex && !(resource instanceof GoldStandardPublication)) {
+			final BibTex publication = (BibTex) post.getResource();
+			checkPublication(publication);
+			final BibtexType xmlBibtex = new BibtexType();
 
-		if (post.getResource() instanceof Bookmark) {
+			xmlBibtex.setHref(urlRenderer.createHrefForResource(post.getUser().getName(), publication.getIntraHash()));
+
+			fillPublicationXML(publication, xmlBibtex);
+
+			xmlPost.setBibtex(xmlBibtex);
+			
+			// if the publication has documents …
+			final List<Document> documents = publication.getDocuments();
+			if (documents != null) {
+
+				checkPublication(publication);
+				// … put them into the xml output
+				final DocumentsType xmlDocuments = new DocumentsType();
+				for (final Document document : documents){
+					final DocumentType xmlDocument = new DocumentType();
+					xmlDocument.setFilename(document.getFileName());
+					xmlDocument.setMd5Hash(document.getMd5hash());
+					xmlDocument.setHref(urlRenderer.createHrefForResourceDocument(post.getUser().getName(), publication.getIntraHash(), document.getFileName()));
+					xmlDocuments.getDocument().add(xmlDocument);
+				}
+				xmlPost.setDocuments(xmlDocuments);
+			}
+		}
+		// if resource is a bookmark create a xml representation
+		if (resource instanceof Bookmark) {
 			final Bookmark bookmark = (Bookmark) post.getResource();
 			checkBookmark(bookmark);
 			final BookmarkType xmlBookmark = new BookmarkType();
@@ -290,52 +351,73 @@ public class XMLRenderer implements Renderer {
 			xmlBookmark.setUrl(bookmark.getUrl());
 			xmlPost.setBookmark(xmlBookmark);
 		}
-		if (post.getResource() instanceof BibTex) {
-			final BibTex bibtex = (BibTex) post.getResource();
-			checkBibtex(bibtex);
-			final BibtexType xmlBibtex = new BibtexType();
+		
+		if (resource instanceof GoldStandardPublication) {
+			/*
+			 * first clear tags; gold standard publications have (currently) no tags
+			 */
+			xmlPost.getTag().clear();
+			
+			final GoldStandardPublication publication = (GoldStandardPublication) post.getResource();
+			
+			final GoldStandardPublicationType xmlPublication = new GoldStandardPublicationType();
+			this.fillPublicationXML(publication, xmlPublication);
+			
+			/*
+			 * add references
+			 */
+			final ReferencesType xmlReferences = new ReferencesType();
+			xmlPublication.setReferences(xmlReferences);
 
-			xmlBibtex.setHref(urlRenderer.createHrefForResource(post.getUser().getName(), bibtex.getIntraHash()));
-
-			xmlBibtex.setAddress(bibtex.getAddress());
-			xmlBibtex.setAnnote(bibtex.getAnnote());
-			xmlBibtex.setAuthor(bibtex.getAuthor());
-			xmlBibtex.setBibtexAbstract(bibtex.getAbstract());
-			xmlBibtex.setBibtexKey(bibtex.getBibtexKey());
-			xmlBibtex.setBKey(bibtex.getKey());
-			xmlBibtex.setBooktitle(bibtex.getBooktitle());
-			xmlBibtex.setChapter(bibtex.getChapter());
-			xmlBibtex.setCrossref(bibtex.getCrossref());
-			xmlBibtex.setDay(bibtex.getDay());
-			xmlBibtex.setEdition(bibtex.getEdition());
-			xmlBibtex.setEditor(bibtex.getEditor());
-			xmlBibtex.setEntrytype(bibtex.getEntrytype());
-			xmlBibtex.setHowpublished(bibtex.getHowpublished());
-			xmlBibtex.setInstitution(bibtex.getInstitution());
-			xmlBibtex.setInterhash(bibtex.getInterHash());
-			xmlBibtex.setIntrahash(bibtex.getIntraHash());
-			xmlBibtex.setJournal(bibtex.getJournal());
-			xmlBibtex.setMisc(bibtex.getMisc());
-			xmlBibtex.setMonth(bibtex.getMonth());
-			xmlBibtex.setNote(bibtex.getNote());
-			xmlBibtex.setNumber(bibtex.getNumber());
-			xmlBibtex.setOrganization(bibtex.getOrganization());
-			xmlBibtex.setPages(bibtex.getPages());
-			xmlBibtex.setPublisher(bibtex.getPublisher());
-			xmlBibtex.setSchool(bibtex.getSchool());
-			// xmlBibtex.setScraperId(BigInteger.valueOf(bibtex.getScraperId()));
-			xmlBibtex.setSeries(bibtex.getSeries());
-			xmlBibtex.setTitle(bibtex.getTitle());
-			xmlBibtex.setType(bibtex.getType());
-			xmlBibtex.setUrl(bibtex.getUrl());
-			xmlBibtex.setVolume(bibtex.getVolume());
-			xmlBibtex.setYear(bibtex.getYear());
-			xmlBibtex.setPrivnote(bibtex.getPrivnote());
-
-
-			xmlPost.setBibtex(xmlBibtex);
+			final List<ReferenceType> referenceList = xmlReferences.getReference();
+			
+			for (final BibTex reference : publication.getReferences()) {
+				final ReferenceType xmlReference = new ReferenceType();
+				xmlReference.setInterhash(reference.getInterHash());
+				
+				referenceList.add(xmlReference);
+			}
+			
+			xmlPost.setGoldStandardPublication(xmlPublication);
 		}
+		
 		return xmlPost;
+	}
+
+	private void fillPublicationXML(final BibTex publication, final BibtexType xmlPublication) {
+		xmlPublication.setAddress(publication.getAddress());
+		xmlPublication.setAnnote(publication.getAnnote());
+		xmlPublication.setAuthor(publication.getAuthor());
+		xmlPublication.setBibtexAbstract(publication.getAbstract());
+		xmlPublication.setBibtexKey(publication.getBibtexKey());
+		xmlPublication.setBKey(publication.getKey());
+		xmlPublication.setBooktitle(publication.getBooktitle());
+		xmlPublication.setChapter(publication.getChapter());
+		xmlPublication.setCrossref(publication.getCrossref());
+		xmlPublication.setDay(publication.getDay());
+		xmlPublication.setEdition(publication.getEdition());
+		xmlPublication.setEditor(publication.getEditor());
+		xmlPublication.setEntrytype(publication.getEntrytype());
+		xmlPublication.setHowpublished(publication.getHowpublished());
+		xmlPublication.setInstitution(publication.getInstitution());
+		xmlPublication.setInterhash(publication.getInterHash());
+		xmlPublication.setIntrahash(publication.getIntraHash());
+		xmlPublication.setJournal(publication.getJournal());
+		xmlPublication.setMisc(publication.getMisc());
+		xmlPublication.setMonth(publication.getMonth());
+		xmlPublication.setNote(publication.getNote());
+		xmlPublication.setNumber(publication.getNumber());
+		xmlPublication.setOrganization(publication.getOrganization());
+		xmlPublication.setPages(publication.getPages());
+		xmlPublication.setPublisher(publication.getPublisher());
+		xmlPublication.setSchool(publication.getSchool());
+		xmlPublication.setSeries(publication.getSeries());
+		xmlPublication.setTitle(publication.getTitle());
+		xmlPublication.setType(publication.getType());
+		xmlPublication.setUrl(publication.getUrl());
+		xmlPublication.setVolume(publication.getVolume());
+		xmlPublication.setYear(publication.getYear());
+		xmlPublication.setPrivnote(publication.getPrivnote());
 	}
 
 	private XMLGregorianCalendar createXmlCalendar(final Date date) {
@@ -350,6 +432,7 @@ public class XMLRenderer implements Renderer {
 		// 2009/01/07, fei: as stated above - there are situations where posts don't have tags
 		//                  for example, when serializing a post for submission to a remote 
 		//                  recommender -> commenting out
+		// 2010/03/19, dzo: gold standard posts have also no tags
 		// if( post.getTags() == null || post.getTags().size() == 0 ) throw new InternServerException( "error no tags assigned!" );
 		if (post.getResource() == null) throw new InternServerException("error no ressource assigned!");
 	}
@@ -572,28 +655,28 @@ public class XMLRenderer implements Renderer {
 		serialize(writer, xmlDoc);
 	}
 
-	public void serializeGroupId(Writer writer, String groupId) {
+	public void serializeGroupId(final Writer writer, final String groupId) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setGroupid(groupId);
 		serialize(writer, xmlDoc);		
 	}
 
-	public void serializeResourceHash(Writer writer, String hash) {
+	public void serializeResourceHash(final Writer writer, final String hash) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setResourcehash(hash);
 		serialize(writer, xmlDoc);		
 	}
 
-	public void serializeUserId(Writer writer, String userId) {
+	public void serializeUserId(final Writer writer, final String userId) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setUserid(userId);
 		serialize(writer, xmlDoc);		
 	}
 
-	public void serializeURI(Writer writer, String uri) {
+	public void serializeURI(final Writer writer, final String uri) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
 		xmlDoc.setUri(uri);
@@ -630,7 +713,7 @@ public class XMLRenderer implements Renderer {
 	}
 
 	@Override
-	public Post<? extends Resource> parseStandardPost(Reader reader) throws BadRequestOrResponseException {
+	public Post<? extends Resource> parseStandardPost(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		
 		if (xmlDoc.getPost() != null) {
@@ -707,50 +790,29 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of users defined.");
 	}
 
-	/**
-	 * Initializes java xml bindings, builds the xml document and then marshalls
-	 * it to the writer.
-	 * 
-	 * @throws InternServerException
-	 *             if the document can't be marshalled
-	 */
-	private void serialize(final Writer writer, final BibsonomyXML xmlDoc) throws InternServerException {
-		try {
-			// initialize context for java xml bindings (see comment inside method parse of this class
-			// why we provide a classloader here)
-			final JAXBContext jc = JAXBContext.newInstance(JAXB_PACKAGE_DECLARATION, this.getClass().getClassLoader());
-
-			// buildup xml document
-			final JAXBElement<BibsonomyXML> webserviceElement = new ObjectFactory().createBibsonomy(xmlDoc);
-
-			// create a marshaller
-			final Marshaller marshaller = jc.createMarshaller();
-			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-
-			if (this.validateXMLOutput) {
-				// validate the XML produced by the marshaller
-				marshaller.setSchema(schema);
+	@Override
+	public Set<String> parseReferences(final Reader reader) {
+		final BibsonomyXML xmlDoc = this.parse(reader);
+		final ReferencesType referencesType = xmlDoc.getReferences();
+		
+		if (present(referencesType)) {
+			final Set<String> references = new HashSet<String>();
+			final List<ReferenceType> referenceList = referencesType.getReference();
+			
+			if (present(referenceList)) {
+				for (final ReferenceType referenceType : referenceList) {
+					references.add(referenceType.getInterhash());
+				}
 			}
-
-			// marshal to the writer
-			marshaller.marshal(webserviceElement, writer);
-			// TODO log
-			// marshaller.marshal( webserviceElement, System.out );
-		} catch (final JAXBException e) {
-			if (e.getLinkedException().getClass() == SAXParseException.class) {
-				SAXParseException ex = (SAXParseException) e.getLinkedException();
-				throw new BadRequestOrResponseException(
-						"Error while parsing XML (Line " 
-						+ ex.getLineNumber() + ", Column "
-						+ ex.getColumnNumber() + ": "
-						+ ex.getMessage()
-				);				
-			}						
-			throw new InternServerException(e.toString());
-		}
+			
+			return references;
+		}		
+		
+		if (xmlDoc.getError() != null) throw new BadRequestOrResponseException(xmlDoc.getError());
+		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of references defined.");
 	}
 	
-	public Tag parseTag(Reader reader) throws BadRequestOrResponseException {
+	public Tag parseTag(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTag() != null) {
 			return ModelFactory.getInstance().createTag(xmlDoc.getTag());
@@ -759,7 +821,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no tag defined.");
 	}
 
-	public String parseStat(Reader reader) throws BadRequestOrResponseException {
+	public String parseStat(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getStat() != null) {
 			return xmlDoc.getStat().value();
@@ -768,7 +830,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no status defined.");
 	}
 
-	public String parseGroupId(Reader reader) throws BadRequestOrResponseException {
+	public String parseGroupId(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getGroupid() != null) {
 			return xmlDoc.getGroupid();
@@ -777,7 +839,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no group id.");
 	}
 
-	public String parseResourceHash(Reader reader) throws BadRequestOrResponseException {
+	public String parseResourceHash(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getResourcehash() != null) {
 			return xmlDoc.getResourcehash();
@@ -786,7 +848,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no resource hash defined.");
 	}
 
-	public String parseUserId(Reader reader) throws BadRequestOrResponseException {
+	public String parseUserId(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getUserid() != null) {
 			return xmlDoc.getUserid();
@@ -795,7 +857,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no user id defined.");
 	}
 
-	public RecommendedTag parseRecommendedTag(Reader reader) throws BadRequestOrResponseException {
+	public RecommendedTag parseRecommendedTag(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTag() != null) {
 			return ModelFactory.getInstance().createRecommendedTag(xmlDoc.getTag());
@@ -804,7 +866,7 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no tag defined.");
 	}
 
-	public SortedSet<RecommendedTag> parseRecommendedTagList(Reader reader) throws BadRequestOrResponseException {
+	public SortedSet<RecommendedTag> parseRecommendedTagList(final Reader reader) throws BadRequestOrResponseException {
 		final BibsonomyXML xmlDoc = this.parse(reader);
 		if (xmlDoc.getTags() != null) {
 			final SortedSet<RecommendedTag> tags = new TreeSet<RecommendedTag>(new RecommendedTagComparator());
@@ -818,14 +880,14 @@ public class XMLRenderer implements Renderer {
 		throw new BadRequestOrResponseException("The body part of the received document is erroneous - no list of tags defined.");
 	}
 
-	public void serializeRecommendedTag(Writer writer, RecommendedTag tag) {
+	public void serializeRecommendedTag(final Writer writer, final RecommendedTag tag) {
 		final BibsonomyXML xmlDoc = new BibsonomyXML();
 		xmlDoc.setStat(StatType.OK);
-		xmlDoc.setTag(createXmlRecommendedTag(tag));
+		xmlDoc.setTag(this.createXmlRecommendedTag(tag));
 		serialize(writer, xmlDoc);		
 	}
-
-	public void serializeRecommendedTags(Writer writer, Collection<RecommendedTag> tags) {		
+	
+	public void serializeRecommendedTags(final Writer writer, final Collection<RecommendedTag> tags) {		
 		final TagsType xmlTags = new TagsType();
 		xmlTags.setStart(BigInteger.valueOf(0));
 		xmlTags.setEnd(BigInteger.valueOf(tags.size()));

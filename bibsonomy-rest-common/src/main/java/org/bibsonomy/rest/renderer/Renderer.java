@@ -27,6 +27,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 
 import org.bibsonomy.common.exceptions.InternServerException;
@@ -407,4 +408,10 @@ public interface Renderer {
 	 *             if the document within the reader is errorenous.
 	 */
 	public RecommendedTag parseRecommendedTag(Reader reader) throws BadRequestOrResponseException;
+	
+	/**
+	 * @param reader the reader to use
+	 * @return  a list of references (their interhashes) from the reader
+	 */
+	public Set<String> parseReferences(Reader reader);
 }

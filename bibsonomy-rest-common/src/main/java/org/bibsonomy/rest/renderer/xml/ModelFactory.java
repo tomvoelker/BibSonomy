@@ -23,7 +23,6 @@
 
 package org.bibsonomy.rest.renderer.xml;
 
-import static org.bibsonomy.model.util.ModelValidationUtils.checkBibTex;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkBookmark;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkGroup;
 import static org.bibsonomy.model.util.ModelValidationUtils.checkPost;
@@ -51,6 +50,7 @@ import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.ModelValidationUtils;
 import org.bibsonomy.rest.validation.ModelValidator;
 
 /**
@@ -187,13 +187,13 @@ public class ModelFactory {
 		
 		final Post<Resource> post = this.createPostWithUserAndDate(xmlPost);
 		
-		final BibtexType xmlPublication = xmlPost.getBibtex();
+		final GoldStandardPublicationType xmlPublication = xmlPost.getGoldStandardPublication();
 		if (present(xmlPublication)) {
-			checkBibTex(xmlPublication);
+			ModelValidationUtils.checkPublication(xmlPublication);
 			final GoldStandardPublication publication = new GoldStandardPublication();
 			this.fillPublicationWithInformations(xmlPublication, publication);
 			
-			checkBibTeX(publication);
+			checkPublication(publication);
 			
 			post.setResource(publication);
 		} else {
@@ -222,7 +222,7 @@ public class ModelFactory {
 		// create resource
 		final BibtexType xmlPublication = xmlPost.getBibtex();
 		if (xmlPublication != null) {
-			checkBibTex(xmlPublication);
+			ModelValidationUtils.checkPublication(xmlPublication);
 			
 			final BibTex publication = new BibTex();
 			this.fillPublicationWithInformations(xmlPublication, publication);
@@ -242,7 +242,7 @@ public class ModelFactory {
 				publication.setDocuments(documents);
 			}
 
-			checkBibTeX(publication);
+			checkPublication(publication);
 
 			post.setResource(publication);
 		}
@@ -302,53 +302,52 @@ public class ModelFactory {
 	}
 
 	/**
-	 * @param xmlBibtex
-	 * @param bibtex
+	 * @param xmlPublication
+	 * @param publication
 	 */
-	private void fillPublicationWithInformations(final BibtexType xmlBibtex, final BibTex bibtex) {
-		bibtex.setAddress(xmlBibtex.getAddress());
-		bibtex.setAnnote(xmlBibtex.getAnnote());
-		bibtex.setAuthor(xmlBibtex.getAuthor());
-		bibtex.setAbstract(xmlBibtex.getBibtexAbstract());
-		bibtex.setBibtexKey(xmlBibtex.getBibtexKey());
-		bibtex.setKey(xmlBibtex.getBKey());
-		bibtex.setBooktitle(xmlBibtex.getBooktitle());
-		bibtex.setChapter(xmlBibtex.getChapter());
-		bibtex.setCrossref(xmlBibtex.getCrossref());
-		bibtex.setDay(xmlBibtex.getDay());
-		bibtex.setEdition(xmlBibtex.getEdition());
-		bibtex.setEditor(xmlBibtex.getEditor());
-		bibtex.setEntrytype(xmlBibtex.getEntrytype());
-		bibtex.setHowpublished(xmlBibtex.getHowpublished());
-		bibtex.setInstitution(xmlBibtex.getInstitution());
-		bibtex.setInterHash(xmlBibtex.getInterhash());
-		bibtex.setIntraHash(xmlBibtex.getIntrahash());
-		bibtex.setJournal(xmlBibtex.getJournal());
-		bibtex.setMisc(xmlBibtex.getMisc());
-		bibtex.setMonth(xmlBibtex.getMonth());
-		bibtex.setNote(xmlBibtex.getNote());
-		bibtex.setNumber(xmlBibtex.getNumber());
-		bibtex.setOrganization(xmlBibtex.getOrganization());
-		bibtex.setPages(xmlBibtex.getPages());
-		bibtex.setPublisher(xmlBibtex.getPublisher());
-		bibtex.setSchool(xmlBibtex.getSchool());
-		// if (xmlBibtex.getScraperId() != null) bibtex.setScraperId(xmlBibtex.getScraperId().intValue());
-		bibtex.setSeries(xmlBibtex.getSeries());
-		bibtex.setTitle(xmlBibtex.getTitle());
-		bibtex.setType(xmlBibtex.getType());
-		bibtex.setUrl(xmlBibtex.getUrl());
-		bibtex.setVolume(xmlBibtex.getVolume());
-		bibtex.setYear(xmlBibtex.getYear());
-		bibtex.setPrivnote(xmlBibtex.getPrivnote());
+	private void fillPublicationWithInformations(final BibtexType xmlPublication, final BibTex publication) {
+		publication.setAddress(xmlPublication.getAddress());
+		publication.setAnnote(xmlPublication.getAnnote());
+		publication.setAuthor(xmlPublication.getAuthor());
+		publication.setAbstract(xmlPublication.getBibtexAbstract());
+		publication.setBibtexKey(xmlPublication.getBibtexKey());
+		publication.setKey(xmlPublication.getBKey());
+		publication.setBooktitle(xmlPublication.getBooktitle());
+		publication.setChapter(xmlPublication.getChapter());
+		publication.setCrossref(xmlPublication.getCrossref());
+		publication.setDay(xmlPublication.getDay());
+		publication.setEdition(xmlPublication.getEdition());
+		publication.setEditor(xmlPublication.getEditor());
+		publication.setEntrytype(xmlPublication.getEntrytype());
+		publication.setHowpublished(xmlPublication.getHowpublished());
+		publication.setInstitution(xmlPublication.getInstitution());
+		publication.setInterHash(xmlPublication.getInterhash());
+		publication.setIntraHash(xmlPublication.getIntrahash());
+		publication.setJournal(xmlPublication.getJournal());
+		publication.setMisc(xmlPublication.getMisc());
+		publication.setMonth(xmlPublication.getMonth());
+		publication.setNote(xmlPublication.getNote());
+		publication.setNumber(xmlPublication.getNumber());
+		publication.setOrganization(xmlPublication.getOrganization());
+		publication.setPages(xmlPublication.getPages());
+		publication.setPublisher(xmlPublication.getPublisher());
+		publication.setSchool(xmlPublication.getSchool());
+		publication.setSeries(xmlPublication.getSeries());
+		publication.setTitle(xmlPublication.getTitle());
+		publication.setType(xmlPublication.getType());
+		publication.setUrl(xmlPublication.getUrl());
+		publication.setVolume(xmlPublication.getVolume());
+		publication.setYear(xmlPublication.getYear());
+		publication.setPrivnote(xmlPublication.getPrivnote());
 	}
 
 	/** Checks the bibtex. Here a model validator can be plugged in which does the checking.
 	 * 
-	 * @param bibtex
+	 * @param publication
 	 */
-	protected void checkBibTeX(final BibTex bibtex) {
+	protected void checkPublication(final BibTex publication) {
 		if (modelValidator != null) {
-			modelValidator.checkBibTeX(bibtex);
+			modelValidator.checkPublication(publication);
 		}
 	}
 
@@ -367,12 +366,12 @@ public class ModelFactory {
 	 * @param post - an XML post
 	 * @return a date for this post
 	 */
-	private Date createDate(PostType post) {
+	private Date createDate(final PostType post) {
 		/*
 		 * If there is no date, use the current date. 
 		 */
 		if (post.getPostingdate() == null) {
-			return new Date(System.currentTimeMillis());
+			return new Date();
 		}
 		/*
 		 * this is save because the postingdate is overwritten in the corresponding
@@ -385,7 +384,7 @@ public class ModelFactory {
 		return this.modelValidator;
 	}
 
-	public void setModelValidator(ModelValidator modelValidator) {
+	public void setModelValidator(final ModelValidator modelValidator) {
 		this.modelValidator = modelValidator;
 	}
 }

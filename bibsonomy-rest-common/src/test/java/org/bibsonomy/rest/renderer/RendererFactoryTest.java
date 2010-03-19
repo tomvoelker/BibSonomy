@@ -24,7 +24,6 @@
 package org.bibsonomy.rest.renderer;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.rest.enums.RenderingFormat;
@@ -40,11 +39,10 @@ public class RendererFactoryTest {
 	@Test
 	public void testGetRenderer() {
 		assertTrue(RendererFactory.getRenderer(RenderingFormat.XML) instanceof XMLRenderer);
-
-		try {
-			RendererFactory.getRenderer(null);
-			fail("Should throw exception");
-		} catch (final InternServerException ex) {
-		}
+	}
+	
+	@Test(expected = InternServerException.class)
+	public void wrongUsageGetRenderer() {
+		RendererFactory.getRenderer(null);
 	}
 }
