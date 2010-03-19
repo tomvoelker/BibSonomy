@@ -2,19 +2,15 @@ package org.bibsonomy.webapp.command.actions;
 
 import java.util.Map;
 
-import org.bibsonomy.webapp.command.UserResourceViewCommand;
+import org.bibsonomy.webapp.command.TagResourceViewCommand;
 
 
 /**
  * @author dzo
  * @version $Id$
  */
-public class BatchEditCommand extends UserResourceViewCommand {
+public class BatchEditCommand extends TagResourceViewCommand {
 
-	/**
-	 * The flag (from postPublication) that determines, if already existing posts will get updated.
-	 */
-	private boolean overwrite = false;
 	/**
 	 * should publications be edited before they're stored? 
 	 */
@@ -44,11 +40,6 @@ public class BatchEditCommand extends UserResourceViewCommand {
 	 * hashes of the resources which will be deleted (hash as key and "on" as value (checkbox))
 	 */
 	private Map<String, Boolean> delete;
-	/**
-	 * 
-	 */
-	private String referer;
-
 	
 	/**
 	 * @return the flag that determines, weather the dialogue called was configured to 
@@ -130,32 +121,6 @@ public class BatchEditCommand extends UserResourceViewCommand {
 		this.delete = delete;
 	}
 
-	/**
-	 * @return the referer
-	 */
-	public String getReferer() {
-		return this.referer;
-	}
-
-	/**
-	 * @param referer the referer to set
-	 */
-	public void setReferer(String referer) {
-		this.referer = referer;
-	}
-	
-	public boolean getOverwrite() {
-		return this.overwrite;
-	}
-	
-	public boolean isOverwrite() {
-		return this.overwrite;
-	}
-
-	public void setOverwrite(boolean overwrite) {
-		this.overwrite = overwrite;
-	}
-	
 	public boolean isEditBeforeImport() {
 		return this.editBeforeImport;
 	}

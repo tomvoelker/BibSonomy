@@ -37,6 +37,17 @@ public class ListCommand<T> {
 	public ListCommand(ContextCommand parentCommand) {
 		this.parentCommand = parentCommand;
 	}
+
+	/**
+	 * Constructor
+	 * 
+	 * @param parentCommand - the command which contains this list
+	 * @param list - the list this command contains 
+	 */
+	public ListCommand(final ContextCommand parentCommand, final List<T> list) {
+		this.parentCommand = parentCommand;
+		this.list = list;
+	}
 	
 	/**
 	 * Constructor

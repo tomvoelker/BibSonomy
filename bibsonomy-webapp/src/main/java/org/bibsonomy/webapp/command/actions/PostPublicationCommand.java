@@ -255,20 +255,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	
 	
 	/**
-	 * Determines, if the already existing publications will be overwritten by the new ones.
-	 */
-	private boolean overwrite;
-
-	public boolean getOverwrite() {
-		return this.overwrite;
-	}
-	
-	public void setOverwrite(final boolean overwrite) {
-		this.overwrite = overwrite;
-	}
-	
-
-	/**
 	 * The posts, that were updated during import.
 	 */
 	private Map<String,String> updatedPosts;
@@ -288,18 +274,30 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 */
 	private ListCommand<Post<BibTex>> posts = new ListCommand<Post<BibTex>>(this);
 
+	/**
+	 * @return The list of publication posts.
+	 */
 	public ListCommand<Post<BibTex>> getBibtex() {
 		return this.posts;
 	}
 
+	/**
+	 * @param bibtex
+	 */
 	public void setBibtex(final ListCommand<Post<BibTex>> bibtex) {
 		this.posts = bibtex;
 	}
 	
+	/**
+	 * @return The list of publication posts.
+	 */
 	public ListCommand<Post<BibTex>> getPosts() {
 		return this.posts;
 	}
 
+	/**
+	 * @param bibtex
+	 */
 	public void setPosts(final ListCommand<Post<BibTex>> bibtex) {
 		this.posts = bibtex;
 	}
