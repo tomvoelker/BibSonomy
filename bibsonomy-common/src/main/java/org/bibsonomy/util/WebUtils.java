@@ -270,7 +270,7 @@ public class WebUtils {
 			/*
 			 * do a POST
 			 */
-			final ArrayList<NameValuePair> data = new ArrayList<NameValuePair>();
+			final List<NameValuePair> data = new ArrayList<NameValuePair>();
 			
 			for (final String s : postData.split(AMP_SIGN)) {
 				final String[] _p = s.split(EQUAL_SIGN);

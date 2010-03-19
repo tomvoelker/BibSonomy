@@ -49,6 +49,11 @@ public class XmlUtils {
 	/** replacement character for illegal characters */
 	private static final char ILLEGAL_CHAR_SUBSTITUTE = '\uFFFD'; 	
 	
+	/*
+	 * TODO: As soon as we know that JTidy is thread safe, we can use a static instance of it
+	 */
+//	private static final Tidy tidy = new Tidy();
+	
 	/** 
 	 * define disallowed characters in XML 1.0
 	 * see http://www.w3.org/International/questions/qa-controls.en.php for details 
@@ -63,6 +68,10 @@ public class XmlUtils {
         for (int i = 0; i < escapeString.length(); i++) {
             illegalChars.add(escapeString.charAt(i));
         }
+        
+        // TODO: check if JTidy is thread safe
+//      tidy.setQuiet(true);
+//		tidy.setShowWarnings(false);// turns off warning lines
     }
     
     /**
@@ -154,15 +163,6 @@ public class XmlUtils {
     public static char removeXmlControlCharacters(char c) {
     	return XmlUtils.removeXmlControlCharacter(c, false);
     }
-    
-	/*
-	 * As soon as we know that JTidy is thread safe, we can use a static instance of it
-	 */
-//	private static final Tidy tidy = new Tidy();
-//	static {
-//		tidy.setQuiet(true);
-//		tidy.setShowWarnings(false);// turns off warning lines
-//	}
 
 	/** Parses a page and returns the DOM
 	 * 
@@ -207,9 +207,7 @@ public class XmlUtils {
 		final String encodingName = WebUtils.extractCharset(((HttpURLConnection)inputURL.openConnection()).getContentType());
 		tidy.setInputEncoding(encodingName);
 		return tidy.parseDOM(inputURL.openConnection().getInputStream(), null);
-}
-	
-	
+	}
 
 	/**
 	 * Parse html file from given input stream into DOM tree.
@@ -225,15 +223,16 @@ public class XmlUtils {
 	 * Parse html file from given input stream into DOM tree.
 	 * 
 	 * @param inputStream 
+	 * @param xmlTags 
 	 * @return parsed DOM tree
 	 */
 	public static Document getDOM(final InputStream inputStream, final boolean xmlTags) {
-			final Tidy tidy = getTidy(xmlTags);
+		final Tidy tidy = getTidy(xmlTags);
 			
-			// we don't know the encoding now ... so we assume utf8
-			tidy.setInputEncoding("UTF-8");
+		// we don't know the encoding now ... so we assume utf8
+		tidy.setInputEncoding("UTF-8");
 
-			return tidy.parseDOM(inputStream, null);
+		return tidy.parseDOM(inputStream, null);
 	}
 	
 	
@@ -261,7 +260,7 @@ public class XmlUtils {
 	 * @return All text below the given node.
 	 */
 	public static String getText(final Node node) {
-		final StringBuffer text = new StringBuffer();
+		final StringBuilder text = new StringBuilder();
 
 		final String value = node.getNodeValue();
 
@@ -278,7 +277,4 @@ public class XmlUtils {
 
 		return text.toString();
 	}
-	
-
-	
 }
