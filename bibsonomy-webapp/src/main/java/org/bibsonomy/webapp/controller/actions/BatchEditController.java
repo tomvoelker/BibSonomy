@@ -28,8 +28,10 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.BatchEditCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -87,6 +89,14 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		final RequestWrapperContext context = command.getContext();
 
 		/*
+		 * We store the referer in the command, to send the user back to the 
+		 * page he's coming from at the end of the posting process. 
+		 */
+		if (!ValidationUtils.present(command.getReferer())) {
+			command.setReferer(requestLogic.getReferer());
+		}
+
+		/*
 		 * check if user is logged in
 		 */
 		if (!context.isUserLoggedIn()) {
@@ -133,7 +143,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		final boolean updatePosts = flagMeansDelete;
 
-
+		log.debug("resourceType: " + resourceType + ", delete: " + flagMeansDelete + ", update: " + updatePosts);
 
 		/* *******************************************************
 		 * SECOND: get the data we're working on
@@ -145,7 +155,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * put the posts from the session into a hash map (for faster access)
 		 */
-		final HashMap<String, Post<?>> postMap = getPostMap(updatePosts);
+		final HashMap<String, Post<? extends Resource>> postMap = getPostMap(updatePosts);
 		/*
 		 * the tags that should be added to all posts
 		 */
@@ -157,6 +167,11 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		final Map<String, String> oldTagsMap = command.getOldTags();
 
 
+		log.debug("#postFlags: " + postFlags.size() + 
+				", #postMap: " + postMap.size() + 
+				", #addTags: " + addTags.size() + 
+				", #newTags: " + newTagsMap.size() + 
+				", #oldTags: " + oldTagsMap.size());
 
 
 		/* *******************************************************
@@ -182,6 +197,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * loop through all hashes and check for each post, what to do
 		 */
 		for (final String intraHash : newTagsMap.keySet()) {
+			log.debug("working on post " + intraHash);
 			/*
 			 * short check if hash is correct
 			 */
@@ -190,6 +206,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			 * has this post been flagged by the user? 
 			 */
 			if (postFlags.containsKey(intraHash) && postFlags.get(intraHash)) {
+				log.debug("post has been flagged");
 				/*
 				 * The post has been flagged by the user.
 				 * Depending on the meaning of this flag, we add the 
@@ -237,14 +254,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				final Post<?> post;
 				if (updatePosts) {
 					/*
-					 * we need only a "mock" posts containing the hash,
-					 * username and the tags, since only the post's tags 
-					 * are updated 
+					 * we need only a "mock" posts containing the hash, the date
+					 * and the tags, since only the post's tags are updated 
 					 */
-					post = new Post<Resource>();
-					/*
-					 * FIXME: create the appropriate resource (Bookmark or BibTex)
-					 */
+					post = PostUtils.getInstance(resourceType);
 					post.getResource().setIntraHash(intraHash);
 				} else {
 					/*
@@ -252,20 +265,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					 * it in the database
 					 */
 					post = postMap.get(intraHash);
-					// we should only add posts to that list that have errors (don't show ALL posts again)					
-					//					/*
-					//					 * needed when page is called with no imported posts
-					//					 * FIXME: really?
-					//					 */
-					//					if (!present(post)) continue;
-					//					/*
-					//					 * FIXME: why do we need that?
-					//					 */
-					//					if (postsArePublications) {
-					//						command.getBibtex().getList().add((Post<BibTex>) post);
-					//					} else {
-					//						command.getBookmark().getList().add((Post<Bookmark>)post);
-					//					}
 				}
 				/*
 				 * Finally, add the post to the list of posts that should 
@@ -285,6 +284,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 			} catch (final RecognitionException ex) {
 				log.debug("can't parse tags of resource " + intraHash + " for user " + loginUserName, ex);
+			} catch (InstantiationException ex) {
+				log.debug("can't instantiate post with hash " + intraHash + " for user " + loginUserName, ex);
+			} catch (IllegalAccessException ex) {
+				log.debug("can't instantiate post with hash " + intraHash + " for user " + loginUserName, ex);
 			}
 		}
 
@@ -301,18 +304,26 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			log.debug("deleting "  + postsToDelete.size() + " posts for user " + loginUserName);
 			this.logic.deletePosts(loginUserName, postsToDelete);
 		}
+
+		/*
+		 * after update/store contains all posts with errors, to show them the user for correction
+		 */
+		final List<Post<? extends Resource>> postsWithErrors = new LinkedList<Post<? extends Resource>>();
+		/*
+		 * We need to add the list command already here, otherwise we get an 
+		 * org.springframework.beans.InvalidPropertyException
+		 */
+		addPostListToCommand(command, postsArePublications, postsWithErrors);
+
 		/*
 		 * update/store posts
 		 */
 		if (updatePosts) {
-			/*
-			 * FIXME: error handling missing (system tags errors!)
-			 */
 			log.debug("updating " + postsToUpdate.size() + " posts for user " + loginUserName);
-			this.logic.updatePosts(postsToUpdate, PostUpdateOperation.UPDATE_TAGS); 
+			updatePosts(postsToUpdate, resourceType, postMap, postsWithErrors, PostUpdateOperation.UPDATE_TAGS, loginUserName);
 		} else {
 			log.debug("storing "  + postsToUpdate.size() + " posts for user " + loginUserName);
-			storePosts(postsToUpdate, command.isOverwrite(), resourceType, postMap);
+			storePosts(postsToUpdate, resourceType, postMap, postsWithErrors, command.isOverwrite(), loginUserName);
 		}
 
 		log.debug("finished batch edit for user " + loginUserName);
@@ -328,22 +339,32 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		if (errors.hasErrors()) {
 			if (postsArePublications) {
-				/*
-				 * FIXME: changed from Views.BATCHEDIT_TEMP_BIB to Views.BATCHEDITBIB 
-				 * without setting the corresponding boolean command.editBeforeImport
-				 * that would trigger the behaviour of Views.BATCHEDIT_TEMP_BIB.
-				 * (problem: that attribute is not available in the command at hand)    
-				 */
 				return Views.BATCHEDITBIB;
 			} 
 			return Views.BATCHEDITURL;  
 		}
 		/*
 		 * return to the page the user was initially coming from
-		 * 
-		 * FIXME: where is command.referer filled?
 		 */
 		return getFinalRedirect(command.getReferer(), loginUserName);
+	}
+
+	/**
+	 * Adds the list that will contain the erroneous posts to the command.
+	 * We need to do this before rejecting the errors, because otherwise we 
+	 * get a {@link org.springframework.beans.InvalidPropertyException}.  
+	 *   
+	 * @param command
+	 * @param postsArePublications
+	 * @param postsWithErrors
+	 */
+	@SuppressWarnings("unchecked")
+	private void addPostListToCommand(final BatchEditCommand command, final boolean postsArePublications, final List<Post<? extends Resource>> postsWithErrors) {
+		if (postsArePublications) {
+			command.setBibtex(new ListCommand<Post<BibTex>>(command, (List) postsWithErrors));
+		} else {
+			command.setBookmark(new ListCommand<Post<Bookmark>>(command, (List) postsWithErrors));
+		}
 	}
 
 	/**
@@ -353,13 +374,13 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * FIXME: the error handling here is almost identical to that
 	 * in {@link PostPublicationController#savePosts}
 	 * 
-	 * @param posts
+	 * @param posts - the posts that should be stored
+	 * @param resourceType - the type of resource the posts contain
+	 * @param postMap - to access posts using their hash
 	 * @param overwrite
-	 * @param resourceType
-	 * @param postMap
+	 * @param loginUserName TODO
 	 */
-	private void storePosts(final List<Post<?>> posts, final boolean overwrite, final String resourceType, final HashMap<String, Post<?>> postMap) {
-		final List<Post<?>> postsWithErrors = new LinkedList<Post<?>>();
+	private void storePosts(final List<Post<? extends Resource>> posts, final String resourceType, final HashMap<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final boolean overwrite, String loginUserName) {
 		final List<Post<?>> postsForUpdate  = new LinkedList<Post<?>>();
 		try {
 			/*
@@ -388,7 +409,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 					 * Error messages are connected with the erroneous posts
 					 * via the post's position in the error list.
 					 */
-					final int postId = postsWithErrors.size() - 1;
+					final int postId = postsWithErrors.size();
 					/*
 					 * go over all error messages 
 					 */
@@ -410,18 +431,14 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							errorItem = "resource";
 						}
 						/*
-						 * add error to list
-						 * FIXME: postId is wrong!
+						 * add post to list of erroneous posts
+						 * (only if it has no errors already, to not add it twice) 
 						 */
+						if (!hasErrors) postsWithErrors.add(post);
 						hasErrors = true;
 						errors.rejectValue(resourceType+".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 					}
-					if (hasErrors) {
-						/*
-						 * show the user the erroneous post
-						 */
-						postsWithErrors.add(post);
-					} else if (hasDuplicate) {
+					if (!hasErrors && hasDuplicate) {
 						/*
 						 * If the post has no errors, but is a duplicate, we add it to
 						 * the list of posts which should be updated. 
@@ -432,39 +449,77 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 			}
 			if (overwrite) {
-				try {
-					this.logic.updatePosts(postsForUpdate, PostUpdateOperation.UPDATE_ALL);
-				} catch (final DatabaseException ex1) {
-					final Map<String, List<ErrorMessage>> allErrorMessages = ex1.getErrorMessages();
-					/*
-					 * iterating over all error messages ....
-					 */
-					for (final String postHash : errorMessages.keySet()) {
+				/*
+				 * try to update the posts 
+				 */
+				updatePosts(postsForUpdate, resourceType, postMap, postsWithErrors, PostUpdateOperation.UPDATE_ALL, loginUserName);
+			}
+		}
+	}
+
+	/**
+	 * Tries to update the posts in the database.
+	 * 
+	 * @param posts - the posts that should be updated
+	 * @param resourceType - the type of resource the posts contain 
+	 * @param postMap - to access posts using their hash
+	 * @param postsWithErrors - the list of posts that already had errors. All erroneous posts are added to that list
+	 * @param operation - the type of operation that should be performed with the posts in the database. 
+	 * @param loginUserName - to complete the post from the database, we need the user's name 
+	 */
+	private void updatePosts(final List<Post<? extends Resource>> posts, final String resourceType, final HashMap<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final PostUpdateOperation operation, final String loginUserName) {
+		try {
+			this.logic.updatePosts(posts, operation);
+		} catch (final DatabaseException ex) {
+			final Map<String, List<ErrorMessage>> allErrorMessages = ex.getErrorMessages();
+			/*
+			 * iterating over all error messages ....
+			 */
+			for (final String postHash : allErrorMessages.keySet()) {
+				/*
+				 * Error messages are connected with the erroneous posts
+				 * via the post's position in the error list.
+				 */
+				final int postId = postsWithErrors.size();
+				boolean hasErrors = false;
+				for (final ErrorMessage errorMessage: allErrorMessages.get(postHash)) { 
+					if (errorMessage instanceof SystemTagErrorMessage) {
 						/*
-						 * Error messages are connected with the erroneous posts
-						 * via the post's position in the error list.
+						 * add post to list of erroneous posts to show them the user
 						 */
-						final int postId = postsWithErrors.size() - 1;
-						boolean hasErrors = false;
-						for (final ErrorMessage errorMessage: allErrorMessages.get(postHash)) { 
-							if (errorMessage instanceof SystemTagErrorMessage) {
+						if (!hasErrors) {
+							/*
+							 * we check for errors, to not add the post twice (if it 
+							 * has several errors)
+							 * 
+							 * NOTE: we need the complete post (not only hash or so) to
+							 * show it on the batch edit page.
+							 */
+							final Post<?> post;
+							if (PostUpdateOperation.UPDATE_ALL.equals(operation)) {
 								/*
-								 * add post to list of erroneous posts
+								 * XXX: we use the type of operation as indicator where to get the posts from
+								 * 
+								 * Here, the complete post shall be updated, hence, we get it from
+								 * the session (user is editing tags after importing posts).
 								 */
-								errors.rejectValue(resourceType+".list[" + postId + "].tags", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
-								hasErrors = true;
+								post = postMap.get(postHash);
+							} else {
+								/*
+								 * only the tags shall be updated -> we got only the hash from
+								 * the page and must get the post from the database
+								 */
+								post = logic.getPostDetails(postHash, loginUserName);
 							}
-							
+							/*
+							 * finally add the post
+							 */
+							postsWithErrors.add(post);
 						}
-						/*
-						 * we add the post here and not in the above if-statement, because
-						 * it could have several system tag error messages
-						 * and then would be added several times to the list.
-						 */
-						if (hasErrors) {
-							postsWithErrors.add(postMap.get(postHash));
-						}
+						hasErrors = true;
+						errors.rejectValue(resourceType + ".list[" + postId + "].tags", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 					}
+
 				}
 			}
 		}
@@ -480,15 +535,15 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private HashMap<String, Post<?>> getPostMap(final boolean updatePosts) {
-		final HashMap<String, Post<?>> postMap = new HashMap<String, Post<?>>();
-		final List<Post<?>> postsFromSession = (List<Post<?>>) this.requestLogic.getSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
+	private HashMap<String, Post<? extends Resource>> getPostMap(final boolean updatePosts) {
+		final HashMap<String, Post<? extends Resource>> postMap = new HashMap<String, Post<? extends Resource>>();
+		final List<Post<? extends Resource>> postsFromSession = (List<Post<? extends Resource>>) this.requestLogic.getSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
 		if (!updatePosts && ValidationUtils.present(postsFromSession)) {
 			/*
 			 * Put the posts into a hashmap, so we don't have to loop 
 			 * through the list for every stored post.
 			 */
-			for (final Post<?> post : postsFromSession) {
+			for (final Post<? extends Resource> post : postsFromSession) {
 				postMap.put(post.getResource().getIntraHash(), post);
 			}
 		}
