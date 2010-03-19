@@ -1,0 +1,72 @@
+.bluebox{	border: 1px solid #006699;
+	padding: 10px;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	width: 100%;
+	}
+.rectable {
+	font-size: 60%;
+	border-collapse: collapse;
+	empty-cells: show;
+	margin-top: 15px;
+	margin-left: 5px;
+	margin-right: 5px;
+	width: 95%;
+}
+
+.rectable th {
+	font-weight: bold;
+	background-color: #EEEEEE;
+	border: 1px solid #CCCCCC;
+	padding: 2px;
+	text-align: center;
+	font-size: 100%;
+}
+
+.rectable td {
+	border: 1px solid #CCCCCC;
+	padding: 3px;
+}
+
+.adminlabel {
+   margin-right:15px;
+}
+
+.navilink {
+   margin-right: 7px;
+   letter-spacing: 0px;
+}
+
+p { margin-bottom: 20px
+}
+
+#buttondiv {
+    float:left;
+    margin: 10px;
+    margin-top: 30px;
+}
+
+#pushrightbutton{
+    display:block;
+    margin-bottom:10px;
+}
+
+#buttondiv input{
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+form[name="recConfig"] select{
+	width: 80px;
+}
+
+* input {
+  margin-left: 10px;
+}
+form[name="recommenderRemove"] select{
+    margin-right: 10px;
+}
+
+.floatleft{
+	float:left;
+}
