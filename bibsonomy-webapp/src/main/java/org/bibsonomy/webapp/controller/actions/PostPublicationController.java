@@ -244,10 +244,10 @@ public class PostPublicationController extends AbstractEditPublicationController
 
 
 		/*
-		 * If exactly one post has been extracted, the edit post controller can handle
-		 * the remaining work.
+		 * If exactly one post has been extracted, and there were no parse exceptions, 
+		 * the edit post controller can handle the remaining work.
 		 */
-		if (posts.size() == 1) {
+		if (posts.size() == 1 && !errors.hasErrors()) {
 			command.setPost(posts.get(0));
 			return super.workOn(command);
 		}
