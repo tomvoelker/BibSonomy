@@ -27,6 +27,7 @@
 				<value>requUrl</value>
 				<value>requUrlHash</value>
 				<value>tagcloud.minFreq</value>
+				<value>tagcloud.maxCount</value>
 				<!-- TODO: missing:  Tab(s)Command, TagCloudCommand -->
 				<!-- 
 					to not be dependent on bookmark or bibtex resource types, 

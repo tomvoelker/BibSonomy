@@ -19,6 +19,7 @@ public class TagCloudCommand extends BaseCommand {
 	private List<Tag> tags = new ArrayList<Tag>();
 	private int minFreq = 0; // threshold which tags to display
 	private int maxFreq = 100; // maximum occurrence frequency of all tags
+	private int maxCount = 0; //used for set the value via URL
 	private TagCloudStyle style = TagCloudStyle.CLOUD;
 	private TagCloudSort sort = TagCloudSort.ALPHA;
 	private int maxTagCount;
@@ -145,6 +146,20 @@ public class TagCloudCommand extends BaseCommand {
 	 */
 	public void setSort(TagCloudSort sort) {
 		this.sort = sort;
+	}
+
+	/**
+	 * @param maxCount the maxCount to set
+	 */
+	public void setMaxCount(int maxCount) {
+		this.maxCount = maxCount;
+	}
+
+	/**
+	 * @return the tagboxMaxCount
+	 */
+	public int getMaxCount() {
+		return maxCount;
 	}
 		
 }
