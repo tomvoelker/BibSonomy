@@ -141,7 +141,7 @@
 									list.childNodes[pos].childNodes[0].childNodes[1].innerHTML = " "+getString("cv.options.hide_details");
 								}
 							}
-						}(list.childNodes[i].childNodes[0].childNodes[3], i);
+						}(list.childNodes[i].childNodes[0].childNodes[2], i);
 					}
 				}
 			</script>
