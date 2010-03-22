@@ -72,7 +72,7 @@ public class CasesJournalScraper extends AbstractUrlScraper {
 		scrapingContext.setScraper(this);
 		
 		try {
-			bibtex = WebUtils.getContentAsString(_url, null, CASES_JOURNAL_POST_STRING);
+			bibtex = WebUtils.getContentAsString(_url, null, CASES_JOURNAL_POST_STRING, null);
 		} catch (Exception e) {
 			throw new ScrapingException(e);
 		}

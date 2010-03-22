@@ -23,25 +23,21 @@
 
 package org.bibsonomy.scraper.url.kde.wileyintersience;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
-import java.io.StringWriter;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.util.WebUtils;
 
 
 /**
@@ -76,16 +72,6 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 	
 	private static final String CITATION_FORM_FILE = "file=1";
 	
-	/*
-	 * pattern for link and its href
-	 */
-	private static final String PATTERN_LINK = "<a(.*)</a>";
-	
-	private static final String PATTERN_HREF = "href=\"[^\"]*\"";
-	
-	// name of citation download link
-	private static final String CITATION_DOWNLOAD_LINK = "download citation";
-
 	// pattern for getting id from url between jorunal and abstract
 	private static final String PATTERN_GET_ID_JOURNAL_ABSTRACT = "journal/(\\d*)/abstract";
 	
@@ -114,7 +100,6 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 					citationId = sc.getUrl().getQuery();
 					int indexId = citationId.indexOf("id=");
 					citationId = citationId.substring(indexId+3);
-					int indexAnd = citationId.indexOf("&");
 					citationId = citationId.substring(0, indexId);
 				}
 				
@@ -126,24 +111,20 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 						citationId = idMatcher.group(1);
 				}
 				
-				// get session cookie
-				HttpURLConnection urlConn = null;
-				urlConn = (HttpURLConnection) new URL(WILEY_INTERSIENCE_CITATION + citationId).openConnection();
-				String cookie = getCookie(urlConn);
-				
+				// save page to get the right cookie
+				String pageToVisit = WILEY_INTERSIENCE_CITATION + citationId;
 				
 				// build url to publication data
 				String urlCitationEndNote = WILEY_INTERSIENCE_CITEX + CITATION_FORM_MODE + "&" + CITATION_FORM_FORMAT + "&" + CITATION_FORM_TYPE + "&" + CITATION_FORM_FILE; 
 
-				// get publication data
-				urlConn = (HttpURLConnection) new URL(urlCitationEndNote).openConnection();
-				String endNote = getContentWithCookie(urlConn, cookie);
+				// visit cookie page and get publication data
+				String endnote = WebUtils.getContentAsString(urlCitationEndNote, null, null, pageToVisit);
 				
 				/*
 				 * parse publication data
 				 * every line start with a descripor for the bibiliogaphic meaning
 				 */ 
-				BufferedReader reader = new BufferedReader(new StringReader(endNote));
+				BufferedReader reader = new BufferedReader(new StringReader(endnote));
 				String line = reader.readLine();
 				
 				String author = null;
@@ -231,7 +212,7 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 
 				String bibResult = bibtex.toString();
 				bibResult = bibResult.substring(0, bibResult.length()-1) + "\n}";
-
+				
 				// build bibtex and store it in context
 				sc.setBibtexResult(bibResult);
 				return true;
@@ -242,76 +223,6 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 			}
 	}
 	
-	/**
-	 * Gets the cookie which is needed to extract the content of special pages.
-	 * (changed code from ScrapingContext.getContentAsString) 
-	 * @param urlConn Connection to page (from url.openConnection())
-	 * @return The value of the cookie.
-	 * @throws IOException
-	 */
-	private String getCookie(HttpURLConnection urlConn) throws IOException{
-		String cookie = null;
-		
-		urlConn.setAllowUserInteraction(true);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-		urlConn.setFollowRedirects(true);
-		urlConn.setInstanceFollowRedirects(true);
-		
-		urlConn.setRequestProperty(
-				"User-Agent",
-				"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-		urlConn.connect();
-		
-		// extract cookie from header
-		cookie = urlConn.getHeaderField("Set-Cookie"); 
-		if(cookie != null && cookie.indexOf(";") >= 0)
-			cookie = cookie.substring(0, cookie.indexOf(";"));
-		
-		urlConn.disconnect();		
-		return cookie;
-	}
-	
-	/**
-	 * Extract the content of a of a HttpURLConnection with a cookie.
-	 * (changed code from ScrapingContext.getContentAsString)
-	 * @param urlConn Connection to page (from url.openConnection())
-	 * @param cookie Cookie for auth.
-	 * @return Content of page.
-	 * @throws IOException
-	 */
-	private String getContentWithCookie(HttpURLConnection urlConn, String cookie) throws IOException{
-
-		urlConn.setAllowUserInteraction(true);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-		urlConn.setFollowRedirects(true);
-		urlConn.setInstanceFollowRedirects(false);
-		urlConn.setRequestProperty("Cookie", cookie);
-
-		urlConn.setRequestProperty(
-				"User-Agent",
-				"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)");
-		urlConn.connect();
-							  
-		// build content
-		StringWriter out = new StringWriter();
-		InputStream in = new BufferedInputStream(urlConn.getInputStream());
-		int b;
-		while ((b = in.read()) >= 0) {
-			out.write(b);
-		}
-		
-		urlConn.disconnect();
-		in.close();
-		out.flush();
-		out.close();
-		
-		return out.toString();
-	}
-
 	public String getInfo() {
 		return INFO;
 	}
