@@ -7,6 +7,7 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
     xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
+    xmlns:spring="http://www.springframework.org/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:edit="urn:jsptagdir:/WEB-INF/tags/actions/edit"
     xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
@@ -20,19 +21,16 @@
 		of successfully imported publications.
 		************************************************************************************************
 	-->
-	<!-- 
-		FIXME: was soll das denn?
-	 -->
+
 	<c:set var="deleteCheckedPosts" value="${true}" />
-	
-	<c:choose>
-		<c:when test="${empty command.overwrite}">
-			<c:set var="overwrite" value="false" />
-		</c:when>
-		<c:otherwise>
-			<c:set var="overwrite" value="${command.overwrite}" />
-		</c:otherwise>
-	</c:choose>
+	<mtl:exists path="command.deleteCheckedPosts">
+		<c:set var="deleteCheckedPosts" value="${command.deleteCheckedPosts}" />
+	</mtl:exists>
+
+	<c:set var="overwrite" value="false" />
+	<mtl:exists path="command.overwrite">
+		<c:set var="overwrite" value="${command.overwrite}" />
+	</mtl:exists>
 	
 	<edit:batcheditSkeleton listView="${command.bibtex}" resourceType="bibtex" listViewStartParamName="bibtex.start" otherPostsUrlPrefix="/bibtex" deleteCheckedPosts="${deleteCheckedPosts}" overwrite="${overwrite}"> 
     	<jsp:attribute name="shortPostDescription"><bib:shortDescription post="${post}"/></jsp:attribute>

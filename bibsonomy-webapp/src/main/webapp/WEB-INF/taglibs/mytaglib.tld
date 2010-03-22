@@ -107,6 +107,19 @@
        <rtexprvalue>true</rtexprvalue>
     </attribute>
   </tag>
+
+  
+  <tag>
+  	<name>exists</name>
+  	<info>Checks, if the given (command) property exists. Only when it exists, the body of the tag is executed.</info>
+  	<tagclass>tags.Exists</tagclass>
+  	<bodycontent>JSP</bodycontent>
+  	<attribute>
+  		<name>path</name>
+  		<required>true</required>
+  		<rtexprvalue>true</rtexprvalue>
+  	</attribute>
+  </tag>
     
   <function>
     <name>normalize</name>
