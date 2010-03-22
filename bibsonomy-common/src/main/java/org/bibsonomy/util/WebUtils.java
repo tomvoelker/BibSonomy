@@ -260,11 +260,24 @@ public class WebUtils {
 	 * @param url
 	 * @param cookie
 	 * @param postData 
+	 * @param visitBefore
+	 * 
 	 * @return String which holds the page content.
+	 * 
 	 * @throws IOException
 	 */
-	public static String getContentAsString(final String url, final String cookie, final String postData) throws IOException {
-		final HttpMethod method;
+	public static String getContentAsString(final String url, final String cookie, 
+			final String postData, final String visitBefore) throws IOException {
+		
+		HttpMethod method;
+		
+		if (visitBefore != null) {
+			/*
+			 * visit url to get cookies if needed
+			 */
+			method = new GetMethod(visitBefore);
+			client.executeMethod(method);
+		}
 		
 		if (ValidationUtils.present(postData)) {
 			/*
@@ -336,7 +349,7 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getContentAsString(final String url) throws IOException {
-		return getContentAsString(url, null, null);
+		return getContentAsString(url, null, null, null);
 	}
 	
 	/**
@@ -348,7 +361,7 @@ public class WebUtils {
 	 * @throws IOException
 	 */
 	public static String getContentAsString(final String url, final String cookie) throws IOException {
-		return getContentAsString(url, cookie, null);
+		return getContentAsString(url, cookie, null, null);
 	}
 
 
