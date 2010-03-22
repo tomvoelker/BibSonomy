@@ -2,14 +2,29 @@ package org.bibsonomy.database.managers.chain.tag;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
-import org.bibsonomy.database.managers.chain.tag.get.*;
+import org.bibsonomy.database.managers.chain.tag.get.GetAllTags;
+import org.bibsonomy.database.managers.chain.tag.get.GetPopularTags;
+import org.bibsonomy.database.managers.chain.tag.get.GetRelatedTagsByAuthorAndTags;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsByAuthor;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsByBibtexkey;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsByExpression;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsByGroup;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsViewable;
 import org.bibsonomy.database.params.TagParam;
+import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
 import org.junit.Test;
 
@@ -89,6 +104,30 @@ public class TagChainTest extends AbstractChainTest {
 		param.setSearchEntity(SearchEntity.AUTHOR);
 		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
 		assertEquals(GetTagsByAuthor.class, this.chainStatus.getChainElement().getClass());
+	}
+
+	/**
+	 * get tags by author
+	 */
+	@Test
+	public void GetTagsByAuthorAndTag() {
+		final TagParam param = new TagParam();
+		
+		final Set<Tag> tags = new HashSet<Tag>();
+		final List<TagIndex> tagIndex = new LinkedList<TagIndex>();
+		for (int i = 0; i < 5; i++) {
+			tags.add(new Tag("a" + i));
+			tagIndex.add(new TagIndex("a" + i, i + 1));
+		}
+		param.setTags(tags);
+		param.setTagIndex(tagIndex);
+		
+		param.setGrouping(GroupingEntity.VIEWABLE);
+		param.setSearch("Stumme");
+		param.setContentTypeByClass(BibTex.class);
+		param.setSearchEntity(SearchEntity.AUTHOR);
+		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
+		assertEquals(GetRelatedTagsByAuthorAndTags.class, this.chainStatus.getChainElement().getClass());
 	}
 
 	/**
