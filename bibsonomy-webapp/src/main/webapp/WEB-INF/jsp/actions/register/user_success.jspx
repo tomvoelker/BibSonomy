@@ -40,11 +40,11 @@
               <li><fmt:message key="register.nextSteps.step1"/>
                 
                 <!-- ###################### buttons ####################### -->
-                <p>
-                  <buttons:myBibSonomy username="${command.context.loginUser.name}"/>  
-                  <buttons:postBookmark/>
-                  <buttons:postPublication/>
-                </p>
+                <ul>
+                  <li><buttons:myBibSonomy username="${command.context.loginUser.name}"/></li>  
+                  <li><buttons:postBookmark/></li>
+                  <li><buttons:postPublication/></li>
+                </ul>
                 <p style="font-size: 80%;">
                   <fmt:message key="register.internetExplorer"/> <a href="/help"><fmt:message key="register.internetExplorer.here"/></a>.
                 </p>
