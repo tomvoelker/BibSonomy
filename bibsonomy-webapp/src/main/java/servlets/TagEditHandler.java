@@ -33,6 +33,14 @@ import beans.UserBean;
 import filters.ActionValidationFilter;
 import filters.SessionSettingsFilter;
 
+/**
+ * 
+ * Handles the /edit_tags page.
+ * 
+ * @author rja
+ * @version $Id$
+ *
+ */
 public class TagEditHandler extends HttpServlet { 
 	
 	/* HTTP parameter "do" -- constants */
@@ -45,6 +53,7 @@ public class TagEditHandler extends HttpServlet {
 	
 	/* The dataSource lookup code is added to the init() method
 	 * to avoid the costly JNDI operations for every HTTP request. */
+	@Override
 	public void init(ServletConfig config) throws ServletException {	
 		super.init(config); 
 		try {
@@ -58,6 +67,7 @@ public class TagEditHandler extends HttpServlet {
 	}
 	
 	
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		/*
 		 * forward all GET-requests to doPost to handle them
@@ -65,6 +75,7 @@ public class TagEditHandler extends HttpServlet {
 		doPost(request,response);
 	}
 	
+	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		
