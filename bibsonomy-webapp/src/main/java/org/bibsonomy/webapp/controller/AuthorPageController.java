@@ -54,7 +54,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		final boolean hasTags = (this.countNonSystemTags(requTags) > 0); 			
 		
 		// check for further system tags
-		List<String> sysTags = SystemTagsUtil.extractSystemTagsFromString(authorQuery, " ");
+		final List<String> sysTags = SystemTagsUtil.extractSystemTagsFromString(authorQuery, " ");
 		if (sysTags.size() > 0) {
 			// remove them from the query
 			authorQuery = removeSystemtagsFromQuery(authorQuery, sysTags);
@@ -80,9 +80,9 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 			final List<?> list = listCommand.getList();
 
 			if (list instanceof ResultList) {
-				ResultList<Post<?>> resultList = (ResultList<Post<?>>) list;
+				final ResultList<Post<?>> resultList = (ResultList<Post<?>>) list;
 				listCommand.setTotalCount(resultList.getTotalCount()); 
-				log.debug("AuthorPageController: resultList.getTotalCount()="+resultList.getTotalCount());
+				log.debug("AuthorPageController: resultList.getTotalCount()=" + resultList.getTotalCount());
 			}			
 			
 			this.postProcessAndSortList(command, resourceType);
@@ -90,7 +90,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, BibTex.class, groupingEntity, null, null, requTags, null, 1000, null);
+			this.setTags(command, BibTex.class, groupingEntity, null, null, null, null, 1000, null);
 			this.endTiming();
 			if(hasTags){
 				this.setRelatedTags(command, BibTex.class, groupingEntity, authorQuery, null, requTags, Order.ADDED, 0, 20, null);
