@@ -22,7 +22,7 @@ function getSuggestions(partialTitle, autocompletion) {
 	if(partialTitle.length > 1) {
 		var query = $.ajax({
 			type: "GET",
-			url: "/json/tag/sys:title:"+partialTitle+"*",
+			url: "/json/tag/sys:title:"+partialTitle+"*?items=5",
 			dataType: "json",
 			success: function(json){
 			processResponse(json);
@@ -68,8 +68,9 @@ function processResponse(data) {
 			year = '('+item.year+')';
 		}
     var intraHash = item.intraHash;
+    var tags = concatArray(item.tags, null, '+');
     var k = m;
-		var element = 
+	var element = 
     $('<div style="color:#006699;background-color:'
   		+(((m++)%2 == 0)?'#FFFFFF':'#EEEEEE') // change the background color every step
   		+'">'+formatLabel(item.label)
@@ -82,7 +83,7 @@ function processResponse(data) {
 				// get title specific data
 				// and set the forms accordingly
 				function () {
-		          window.location.href = '/editPublication?hash='+intraHash;
+		          window.location.href = '/editPublication?hash='+intraHash+'?user='+data.user+'&copytag='+tags;
 		          $("#suggestionBox").hide();
 				}
 		);
@@ -91,12 +92,16 @@ function processResponse(data) {
 	})
 	var pos = $(form_name).offset();
 	var width = $(form_name).width();
-	var top = parseInt(pos+$(form_name).height())+6;
+	var top = parseInt(pos.top+$(form_name).height());
+		
+	if($("#suggestionBox").width() < (width+2)){
+		$("#suggestionBox").width(width+2);
+	}
+	
 	$("#suggestionBox").css(
 			{
 				"left":(pos.left+1)+"px",
 				"top":top+"px",
-				"min-width":(width+2)+"px",
 				"background-color":"#FFFFFF",
 				"z-index":"999",
 				"border":"1px solid #006699",
@@ -118,8 +123,11 @@ function processResponse(data) {
 function concatArray(data, max_len, delim) {
 	var retVal = "";
 	var entry;
+	if(delim == null) {
+		delim = "\n";
+	}
 	for(entry in data) {
-		retVal += data[entry] + "\n";
+		retVal += data[entry] + delim;
 	}
 	return ((max_len != null) && (retVal.length > max_len))?retVal.substr(0, max_len)+"...":retVal;
 }
