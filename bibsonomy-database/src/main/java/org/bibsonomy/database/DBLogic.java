@@ -159,11 +159,10 @@ public class DBLogic implements LogicInterface {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.bibsonomy.model.logic.LogicInterface#getUserFriends(org.bibsonomy
-	 * .model.User) FIXME: use String instead of User
+	 * org.bibsonomy.model.logic.LogicInterface#getUserFriends(org.bibsonomy.model.User) FIXME: use String instead of User
 	 */
 	@Override
-	public List<User> getUserFriends(final User loginUser) {
+	public List<User> getUserFriends(final User user) {
 		/*
 		 * only logged in users can get a friend list
 		 */
@@ -171,12 +170,10 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * only admins can access the friend list of another user
 		 */
-		if (!loginUser.getName().equals(loginUser.getName())) {
-			this.permissionDBManager.ensureAdminAccess(loginUser);
-		}
+		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, user.getName());
 		final DBSession session = openSession();
 		try {
-			return this.userDBManager.getUserRelation(loginUser.getName(), UserRelation.FRIEND_OF, session);
+			return this.userDBManager.getUserRelation(user.getName(), UserRelation.FRIEND_OF, session);
 		} finally {
 			session.close();
 		}
@@ -186,11 +183,10 @@ public class DBLogic implements LogicInterface {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * org.bibsonomy.model.logic.LogicInterface#getFriendsOfUser(org.bibsonomy
-	 * .model.User) FIXME: use String instead of User
+	 * org.bibsonomy.model.logic.LogicInterface#getFriendsOfUser(org.bibsonomy.model.User) FIXME: use String instead of User
 	 */
 	@Override
-	public List<User> getFriendsOfUser(final User loginUser) {
+	public List<User> getFriendsOfUser(final User user) {
 		/*
 		 * only logged in users can get a friend list
 		 */
@@ -198,13 +194,11 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * only admins can access the friend list of another user
 		 */
-		if (!loginUser.getName().equals(loginUser.getName())) {
-			this.permissionDBManager.ensureAdminAccess(loginUser);
-		}
+		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, user.getName());
 
 		final DBSession session = openSession();
 		try {
-			return this.userDBManager.getUserRelation(loginUser.getName(), UserRelation.OF_FRIEND, session);
+			return this.userDBManager.getUserRelation(user.getName(), UserRelation.OF_FRIEND, session);
 		} finally {
 			session.close();
 		}
