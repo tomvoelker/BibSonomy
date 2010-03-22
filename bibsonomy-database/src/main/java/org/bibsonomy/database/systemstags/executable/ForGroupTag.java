@@ -1,6 +1,8 @@
 package org.bibsonomy.database.systemstags.executable;
 
-import java.util.Collection;
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,20 +39,16 @@ import org.bibsonomy.model.util.GroupUtils;
  * @version $Id$
  */
 public class ForGroupTag extends SystemTag {
+	
 	private static final Log log = LogFactory.getLog(ForGroupTag.class);
-	//------------------------------------------------------------------------
-	/**
-	 * This database manager is needed to ensure that a user is allowed to write
-	 * posts to given group.
-	 */
-	private final PermissionDatabaseManager permissionDb;
+	private final PermissionDatabaseManager permissionDb; // needed to check permission to post for the given group
 
 	/**
 	 * Constructor
 	 */
 	public ForGroupTag() {
 		log.debug("initializing");
-		// initialize database manager
+		// get database manager singleton
 		this.permissionDb = PermissionDatabaseManager.getInstance();
 	}
 
@@ -60,188 +58,159 @@ public class ForGroupTag extends SystemTag {
 	}
 
 	@Override
-	public <T extends Resource> void performAfterCreate(Post<T> post, final DBSession session) {
+	public <T extends Resource> void performBeforeCreate(final Post<T> post, final DBSession session) {
+		log.debug("performing after access");
+		// we assume, that the post itself is valid and therefore perform therefore we do the same as in a regular update
+		this.performBeforeUpdate(post, PostUpdateOperation.UPDATE_ALL, session);
+	}
+	
+	@Override
+	public <T extends Resource> void performAfterCreate(final Post<T> post, final DBSession session) {
+		// nothing is performed after post is created
 		log.debug("performing after access");
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	@Override
-	public <T extends Resource> void performBeforeCreate(Post<T> post, final DBSession session) {
-		log.debug("performing before acess");
-		//--------------------------------------------------------------------
-		// first check preconditions: user is member of given group
-		//--------------------------------------------------------------------
-		final String groupName = getValue();
-		if (permissionDb.isSpecialGroup(groupName) ) {
-			this.setError(Reason.SPECIAL, post, groupName, session);
-			// the user can not use this tag at all, therefore we omit trying anything else with this tag
-			return;			
-		} 
-		if (!permissionDb.isMemberOfGroup(post.getUser().getName(), groupName,  session) ) {
-			this.setError(Reason.MEMBER, post, groupName, session);
-			// the user can not use this tag at all, therefore we omit trying anything else with this tag
-			return;			
-		}
+	public <T extends Resource> void performAfterUpdate(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
+		// nothing is performed after post was updated
+		log.debug("performing after access");
+	}
+
+	@Override
+	public <T extends Resource> void performBeforeUpdate(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
+		log.debug("performing after access");
+		final String groupName = getValue(); // the group's name
+		final String userName = post.getUser().getName();
+		final String intraHash = post.getResource().getIntraHash();
 		
+		if (!this.hasPermissions(intraHash, session, groupName, userName)) {
+			// user is not allowed to use this tag, errorMessages were added
+			return;
+		}
 		/*
 		 * Make a DBLogic for the group
 		 */
 		DBLogicNoAuthInterfaceFactory logicFactory = new DBLogicNoAuthInterfaceFactory();
 		logicFactory.setDbSessionFactory(getDbSessionFactory());
 		LogicInterface groupDBLogic = logicFactory.getLogicAccess(groupName, "");
-		
-		// get group and corresponding user
-		Group dbGroup = groupDBLogic.getGroupDetails(groupName);
-		if( dbGroup == null ) {
+		/*
+		 *  check if the group exists and whether it owns the post already
+		 */
+		if (!present(groupDBLogic.getGroupDetails(groupName))) {
 			log.debug("Unknown group!");
-			this.setError(Reason.EXIST, post, groupName, session);
-			// the user can not use this tag at all, therefore we omit trying anything else with this tag
+			String defaultMessage = this.getName()+": " + groupName + "does not exist.";
+			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forGroup.noSuchGroup", new String[] {groupName}));
+			return; // this tag can not be used => abort
+		}
+		if (present( groupDBLogic.getPostDetails(intraHash, groupName) )) {
+			log.debug("Given post already owned by group. Skipping...");
 			return;
 		}
-		
-		//--------------------------------------------------------------------
-		// check if post is already owned by group
-		//--------------------------------------------------------------------
-		//final GroupingEntity groupingEntity = GroupingEntity.USER;
-		//List<String> tags = new LinkedList<String>();
 		/*
-		 * FIXME: use getPostDetails() instead
+		 *  Permissions are granted and the group doesn't own the post yet
+		 *  => copy/create post and store it for the group
 		 */
-		//getPosts((Class<T>)post.getResource().getClass(), groupingEntity, groupName, tags, post.getResource().getIntraHash(), null, null, 0, Integer.MAX_VALUE, "");
-		//log.debug("Got " + groupPosts.size() + " posts for group "+groupName);
-		// skip this post if it is already owned by given group
-		//if( groupPosts.size()>0 ) {
-		if(groupDBLogic.getPostDetails(post.getResource().getIntraHash(), groupName)!=null) {
-			log.debug("Given post already owned by group. Skipping...");
-		} else {
-			//----------------------------------------------------------------
-			// post is not owned by group -> create a copy
-			//----------------------------------------------------------------
-			log.debug("Old post: "+post.toString());
-			// alter tags: replace for:group by from:user
-			final Set<Tag> tagsCopy = new HashSet<Tag>(post.getTags());
-			replaceTags(tagsCopy, getTag().getName(), "from:"+post.getUser().getName());
-			// FIXME: should other system tags be executed or removed???\
-			//        We have to consider possible side effects
-			getSystemTagFactory().removeAllSystemTags(tagsCopy);
+		log.debug("Old post: "+post.toString());
+		Post<? extends Resource> groupPost;
+		if (operation == PostUpdateOperation.UPDATE_TAGS) {
 			/*
-			 *  the visibility of the postCopy is:
-			 *  original == public => copy = public
-			 *  original != public => copy = dbGroup
-			 *  => check if post.groups has only the public group
+			 *  We assume, that the post is not valid and contains only it's intraHash
+			 *  therefore we retrive it from the DB first
 			 */
-			Set<Group> groupsCopy = new HashSet<Group>();
-			// TODO: Find a better way to check for "public" (e.g. via GroupUtils)
-			if (post.getGroups().size()==1 && post.getGroups().contains(GroupUtils.getPublicGroup())) {
-				// public is the only group (if visibility was public, there should be only one group)
-				groupsCopy.add(GroupUtils.getPublicGroup());
-			} else {
-				// visibility is different from public => post is only visible for dbGroup
-				groupsCopy.add(dbGroup);
-			}
-			// FIXME: how do we properly clone a post?
-			final Post<T> postCopy = new Post();
-			postCopy.setDate(post.getDate());
-			postCopy.setDescription(post.getDescription());
-			postCopy.setGroups(groupsCopy);
-			postCopy.setResource(post.getResource());
-			postCopy.setUser(new User(groupName));
-			postCopy.setTags(tagsCopy);
-			
-			log.debug("New post: "+postCopy.toString());
-
-			final List<Post<?>> posts = new LinkedList<Post<?>>();
-			posts.add(postCopy);
-			try {
-				groupDBLogic.createPosts(posts);
-			} catch (DatabaseException dbex) {
-				// add the DatabaseException of the copied post to the Exception of the original one
-				for (String hash: dbex.getErrorMessages().keySet()) {
-					for (ErrorMessage errorMessage: dbex.getErrorMessages(hash)) {
-						errorMessage.setDefaultMessage("This error occured while executing the for: tag: "+errorMessage.getDefaultMessage());
-						errorMessage.setErrorCode("database.exception.systemTag.forGroup.copy");
-						session.addError(post.getResource().getIntraHash(), errorMessage);
-					}
+			LogicInterface userDBLogic = logicFactory.getLogicAccess(userName, "");
+			groupPost = userDBLogic.getPostDetails(intraHash, userName);
+		} else {
+			/*
+			 *  We assume, that the post ist valid and most of it can be copied
+			 */
+			//FIXME: How do we properly clone a post?
+			// This construction is very strange, but the newPost instance is needed to call the setResource method (Generics)
+			Post<T> newPost = new Post<T>();
+			newPost.setResource(post.getResource());
+			groupPost=newPost;
+			groupPost.setDescription(post.getDescription());
+		}
+		this.addPostDetails(post, groupPost, userName, groupName);
+		log.debug("New post: "+groupPost.toString());
+		/*
+		 * groupPost is complete and can be stored for the group
+		 */
+		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
+		posts.add(groupPost);
+		try {
+			groupDBLogic.createPosts(posts);
+		} catch (DatabaseException dbex) {
+			// add the DatabaseException of the copied post to the Exception of the original one
+			for (String hash: dbex.getErrorMessages().keySet()) {
+				for (ErrorMessage errorMessage: dbex.getErrorMessages(hash)) {
+					errorMessage.setDefaultMessage("This error occured while executing the for: tag: "+errorMessage.getDefaultMessage());
+					errorMessage.setErrorCode("database.exception.systemTag.forGroup.copy");
+					session.addError(post.getResource().getIntraHash(), errorMessage);
 				}
 			}
 		}
-
-		// all done.
-		return;
 	}
 
 
-
 	/**
-	 * Removes all tags with given old name and adds new tag with given new name.
-	 * 
-	 * @param tags
-	 * @param oldName
-	 * @param newName
-	 */
-	private void replaceTags(Set<Tag> tags, String oldName, String newName) {
-		Collection<Tag> toRemove = new HashSet<Tag>();
-		for( Tag tag : tags ) {
-			if( tag.getName()==oldName )
-				toRemove.add(tag);
-		}
-		tags.removeAll(toRemove);
-		tags.add(new Tag(newName));
-	}
-
-	/**
-	 * creates an errorMessage and adds it to the database exception in the session
-	 * @param reason
-	 * @param post
-	 * @param groupName
+	 * Checks the preconditions to this tags usage, adds errorMessages
+	 * @param intraHash
 	 * @param session
+	 * @param groupName
+	 * @param userName
+	 * @return true iff user is allowed to use the tag
 	 */
-	private void setError(Reason reason, Post<? extends Resource> post, String groupName, DBSession session){
-		String error=this.getName()+": ";
-		String localizedMessageKey="";
-		switch(reason) {
-			case SPECIAL: {
-				error+=groupName+" is a special group. You are not allowed to forward posts to special groups.";
-				localizedMessageKey = "database.exception.systemTag.forGroup.specialGroup";
-				break;
-			}
-			case EXIST: {
-				error+=groupName+"does not exist.";
-				localizedMessageKey = "database.exception.systemTag.forGroup.noSuchGroup";
-				break;
-			}
-			case MEMBER: {
-				error+="You are not a member of "+groupName+".";
-				localizedMessageKey = "database.exception.systemTag.forGroup.member";
-				break;
-			}
+	private boolean hasPermissions(final String intraHash, final DBSession session, final String groupName, final String userName) {
+		if (permissionDb.isSpecialGroup(groupName) ) {
+			final String defaultMessage = this.getName() + ": "+ groupName + ": is a special group. You are not allowed to forward posts to special groups.";
+			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forGroup.specialGroup", new String[] {groupName}));
+			return false;			
+		} 
+		if (!permissionDb.isMemberOfGroup(userName, groupName,  session) ) {
+			final String defaultMessage =this.getName() + ": You are not a member of " + groupName + ".";
+				session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forGroup.member", new String[] {groupName}));
+			return false;			
 		}
-		session.addError(post.getResource().getIntraHash(), new SystemTagErrorMessage(error, localizedMessageKey, new String[] {groupName}));
+		return true;
 	}
+
 
 	/**
-	 * small enum, to reduce code around the creation of errorMessages
-	 * @author sdo
-	 *
+	 * Adds important details to the groupPost
+	 * @param <T>
+	 * @param userPost the post that was tagged with for:...
+	 * @param groupPost the post we want to give to the group
+	 * @param userName 
+	 * @param groupName
 	 */
-	private enum Reason {
-		SPECIAL,
-		EXIST,
-		MEMBER;		
+	private <T extends Resource> void addPostDetails(Post<T> userPost, Post<?> groupPost, String userName, String groupName) {
+		groupPost.setDate(new Date());
+		groupPost.setUser(new User(groupName));
+		/* 
+		 * Copy Tags: 
+		 * remove all systemTags to avoid any side effects and contradictions 
+		 */
+		final Set<Tag> groupTags = new HashSet<Tag>(userPost.getTags());
+		getSystemTagFactory().removeAllSystemTags(groupTags);
+		groupTags.add(new Tag("from:"+userName));
+		groupPost.setTags(groupTags);
+		/*
+		 *  2. Groups: the visibility of the postCopy is:
+		 *  original == public => copy = public
+		 *  original != public => copy = dbGroup
+		 *  => check if post.groups has only the public group
+		 */
+		// TODO: Find a better way to check for "public" (e.g. via GroupUtils)
+		if (userPost.getGroups().size()==1 && userPost.getGroups().contains(GroupUtils.getPublicGroup())) {
+			// public is the only group (if visibility was public, there should be only one group)
+			groupPost.setGroups(new HashSet<Group>());
+			groupPost.getGroups().add(GroupUtils.getPublicGroup());
+		} else {
+			// visibility is different from public => post is only visible for dbGroup
+			groupPost.addGroup(groupName);
+		}
 	}
 
-	@Override
-	public <T extends Resource> void performAfterUpdate(Post<T> post,
-			PostUpdateOperation operation, DBSession session) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public <T extends Resource> void performBeforeUpdate(Post<T> post,
-			PostUpdateOperation operation, DBSession session) {
-		// TODO Auto-generated method stub
-		
-	}
 }
 
