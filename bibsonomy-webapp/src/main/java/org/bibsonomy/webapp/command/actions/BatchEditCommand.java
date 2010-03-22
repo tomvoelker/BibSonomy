@@ -16,10 +16,15 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	 */
 	private boolean editBeforeImport = false;
 	/**
-	 * this flag determines, weather the dialogue called was configured to 
+	 * this flag determines, whether the dialogue called was configured to 
 	 * edit(delete) or edit(create) existing posts.
 	 */
 	private boolean deleteCheckedPosts;	
+	/**
+	 * when batchedit is used after importing posts, this flag
+	 * stores if the user wants to overwrite existing posts 
+	 */
+	private boolean overwrite;
 	/**
 	 * The type of resource edited on the batchedit page (bookmark or bibtex) 
 	 */
@@ -138,4 +143,16 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	public void setResourcetype(String resourcetype) {
 		this.resourcetype = resourcetype;
 	}
+	public boolean getOverwrite() {
+		return this.overwrite;
+	}
+	
+	public boolean isOverwrite() {
+		return this.overwrite;
+	}
+
+	public void setOverwrite(boolean overwrite) {
+		this.overwrite = overwrite;
+	}
+
 }

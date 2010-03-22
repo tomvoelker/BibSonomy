@@ -39,8 +39,10 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		"post_bibtex.bibtex_endnote.title", 
 		"post_bibtex.doi_isbn.title"
 	};
-	
-	
+	/**
+	 * stores if the user wants to overwrite existing posts 
+	 */
+	private boolean overwrite;
 	/**
 	 *  id of currently selected tab 
 	 */
@@ -331,6 +333,18 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		 * defaults:
 		 */
 		this.whitespace = "_";
+	}
+	
+	public boolean getOverwrite() {
+		return this.overwrite;
+	}
+	
+	public boolean isOverwrite() {
+		return this.overwrite;
+	}
+
+	public void setOverwrite(boolean overwrite) {
+		this.overwrite = overwrite;
 	}
 	
 }

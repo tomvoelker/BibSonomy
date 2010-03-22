@@ -27,15 +27,7 @@ public class ResourceViewCommand extends BaseCommand {
 	private String duplicates = "yes";
 	private String applicationName = "";
 	private boolean notags = false;
-	/**
-	 * Many sub-classing commands are used for the batchedit page, that
-	 * checks this property. Really used is the property only for batch
-	 * edits after posting a batch of publications.
-	 * 
-	 * The flag determines, if imported posts should overwrite existing
-	 * posts.
-	 */
-	private boolean overwrite;
+
 	/**
 	 * For some pages we need to store the referer to send the user back
 	 * to that page.
@@ -213,18 +205,6 @@ public class ResourceViewCommand extends BaseCommand {
 	public String getApplicationName() {
 		return applicationName;
 	}
-	public boolean getOverwrite() {
-		return this.overwrite;
-	}
-	
-	public boolean isOverwrite() {
-		return this.overwrite;
-	}
-
-	public void setOverwrite(boolean overwrite) {
-		this.overwrite = overwrite;
-	}
-
 	public String getReferer() {
 		return this.referer;
 	}
