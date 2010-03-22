@@ -27,8 +27,8 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
@@ -96,7 +96,7 @@ public interface PostLogicInterface {
 	 * @param posts  the posts to add
 	 * @return String the resource hashes of the created posts
 	 */
-	public List<String> createPosts(List<Post<?>> posts);
+	public List<String> createPosts(List<Post<? extends Resource>> posts);
 
 	/**
 	 * Updates the posts in the database.
@@ -105,7 +105,7 @@ public interface PostLogicInterface {
 	 * @param operation  which parts of the posts should be updated
 	 * @return resourceHashes the (new) hashes of the updated resources
 	 */
-	public List<String> updatePosts(List<Post<?>> posts, PostUpdateOperation operation);
+	public List<String> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation);
 	
 	/**  
 	 * retrieves the counts of a filterable list of posts.
