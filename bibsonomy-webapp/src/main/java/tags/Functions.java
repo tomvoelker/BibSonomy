@@ -262,6 +262,9 @@ public class Functions  {
 	 * 
 	 * this is used as attribute font-size=X%, hence values between 100 and 300 are returned
 	 * 
+	 * FIXME: how much sense does it make to give a /frequency/ (which is 
+	 * assumed to be between 0 and 100) as Integer?
+	 * 
 	 * @param tagFrequency
 	 * @param tagMaxFrequency
 	 * @param tagSizeMode 
@@ -270,12 +273,26 @@ public class Functions  {
 	public static Integer computeTagFontsize(final Integer tagFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
 		// round(log(if(tag_anzahl>100, 100, tag_anzahl+6)/6))*60+40
 		if ("home".equals(tagSizeMode)) {
+			/*
+			 * here, 0 < tagFrequency < 100 is assumed
+			 */
 			Double t = (tagFrequency > 100 ? 100.0 : tagFrequency.doubleValue() + 6);
 			t /= 5;
 			t = Math.log(t) * 100 + 30;
 			
 			return (t.intValue()<100) ? 100 : t.intValue();
-		}		
+		}
+		if ("popular".equals(tagSizeMode)) {
+			/*
+			 * we expect 0 < tagFrequency < tagMaxFrequency 
+			 * and normalize f to 0 < f 100 as percentage of tagMaxFrequency
+			 */
+			final Double f = new Double(tagFrequency) / tagMaxFrequency * 100;
+			Double t = f > 100 ? 100 : f;
+			t /= 5;
+			t = Math.log(t) * 100 + 30;
+			return (t.intValue()<100) ? 100 : t.intValue();
+		}
 		return new Double(100 + (tagFrequency.doubleValue() / tagMaxFrequency * 200)).intValue();
 	}
 

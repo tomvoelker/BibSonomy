@@ -26,7 +26,7 @@
  			  <fmt:message var="posts" key="posts"/>
  			  <c:forEach var="tag" items="${command.tags}">
 		         <a class="${mtl:getTagSize(tag.globalcount, command.maxTagCount)}" 
-		            style="font-size:${mtl:computeTagFontsize(tag.globalcount, command.maxTagCount, 'home')}%; padding-left:0.3em; padding-right:0.3em;" 
+		            style="font-size:${mtl:computeTagFontsize(tag.globalcount, command.maxTagCount, 'popular')}%; padding-left:0.3em; padding-right:0.3em;" 
 		            title="${tag.globalcount} ${posts}" 
 		            href="/tag/${fn:escapeXml(tag.name)}"><c:out value="${tag.name}"/></a><c:out value=" "/>
 			  </c:forEach>

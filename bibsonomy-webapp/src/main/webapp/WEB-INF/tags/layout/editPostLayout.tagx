@@ -177,7 +177,7 @@
                 // get user's tags for suggestions
                 $.ajax({
                     type: "GET",
-                    url: "/json/tags/user/" + encodeURIComponent(userName) + "?tagCloud.maxCount=100000,
+                    url: "/json/tags/user/" + encodeURIComponent(userName) + "?tagcloud.maxCount=100000",
                     data: "",
                     success: function(data){
                        populateSuggestionsFromJSON(data);

@@ -664,8 +664,8 @@ li.bm {
 }
 
 .tags_first {
-	font-size: 170%;
-	line-height: 1.5em;
+	font-size: 100%;
+	line-height: 2em;
 }
 
 .tags_second {
