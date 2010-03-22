@@ -37,7 +37,6 @@ import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ConversionException;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -47,6 +46,7 @@ import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostPublicationCommandValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
+import org.springframework.validation.ValidationUtils;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import bibtex.parser.ParseException;
@@ -133,7 +133,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * To find out, if the data was entered manually, a good heuristic is to 
 		 * check if an entrytype is given, because that field can't be empty. 
 		 */
-		if (ValidationUtils.present(publication.getEntrytype())) {
+		if (present(publication.getEntrytype())) {
 			log.debug("user has manually entered post data -> forwarding to edit post controller");
 			return super.workOn(command);
 		}
@@ -151,13 +151,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * DOI/ISBN or manual input a handled in EditPostController
 		 */
 		final String selection = command.getSelection();
-		if (ValidationUtils.present(selection)) {
+		if (present(selection)) {
 			/*
 			 * The user has entered text into the snippet selection - we use that 
 			 */
 			log.debug("user has filled selection");
 			snippet = selection;
-		} else if(ValidationUtils.present(command.getFile())) {
+		} else if(present(command.getFile())) {
 			/*
 			 * The user uploads a BibTeX or EndNote file
 			 */
@@ -273,7 +273,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 * (we check for presence of a date, because DBLP is
 			 * allowed to specify a date)
 			 */
-			if(!ValidationUtils.present(post.getDate()))
+			if(!present(post.getDate()))
 				setDate(post, context.getLoginUser().getName());
 			/*
 			 * hashes have to be set, in order to call the validator
@@ -298,7 +298,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		/*
 		 * validate the posts
 		 */
-		org.springframework.validation.ValidationUtils.invokeValidator(new PostPublicationCommandValidator(), command, errors);
+		ValidationUtils.invokeValidator(new PostPublicationCommandValidator(), command, errors);
 
 		/*
 		 * if we have errors, we don't store the publications (with only one little exception FIXME: which?)
