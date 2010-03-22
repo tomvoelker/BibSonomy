@@ -2,6 +2,7 @@ package org.bibsonomy.database.systemstags.executable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
@@ -47,7 +48,7 @@ public class ForFriendTag extends SystemTag {
 	}
 
 	@Override
-	public <T extends Resource> void performAfter(final Post<T> post, final DBSession session) {
+	public <T extends Resource> void performAfterCreate(final Post<T> post, final DBSession session) {
 		log.debug("performing after access");
 		String receiver = getValue().toLowerCase();
 		String sender = post.getUser().getName();
@@ -78,7 +79,7 @@ public class ForFriendTag extends SystemTag {
 }
 
 	@Override
-	public <T extends Resource> void performBefore(final Post<T> post, final DBSession session) {
+	public <T extends Resource> void performBeforeCreate(final Post<T> post, final DBSession session) {
 		log.debug("performing before acess");
 	}
 
@@ -115,6 +116,20 @@ public class ForFriendTag extends SystemTag {
 	private enum Reason {
 		FRIEND,
 		SELF;
+	}
+
+	@Override
+	public <T extends Resource> void performAfterUpdate(Post<T> post,
+			PostUpdateOperation operation, DBSession session) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public <T extends Resource> void performBeforeUpdate(Post<T> post,
+			PostUpdateOperation operation, DBSession session) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -1040,9 +1040,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		session.beginTransaction();
 		try {
 			this.checkPost(post, session);
-
+			
+			/*
+			 * systemtags perform before create
+			 */
 			List<SystemTag> systemTags = this.getSystemTags(post, new HashSet<Tag>());
-			this.systemTagPerformBefore(post, systemTags, session);
+			for (final SystemTag systemTag: systemTags) {
+				systemTag.performBeforeCreate(post, session);
+			}
 			final String userName = post.getUser().getName();
 			/*
 			 * the current intra hash of the resource
@@ -1057,7 +1062,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			if (present(postInDB)) {
 				//throw new IllegalArgumentException("Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +" already exists in your collection (intrahash: " + intraHash + ")");
-				ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
+				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
 				session.addError(post.getResource().getIntraHash(), errorMessage);
 				// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 				session.commitTransaction();
@@ -1073,7 +1078,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			this.insertPost(post, session);
 			// add the tags
 			this.tagDb.insertTags(post, session);
-			this.systemTagPerformAfter(post, systemTags, session);
+			/*
+			 * systemTags perform after create
+			 */
+			for (final SystemTag systemTag: systemTags) {
+				systemTag.performAfterCreate(post, session);
+			}
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -1127,10 +1137,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			}
 
 			/*
-			 * perform system tags before action
+			 * perform system tags before update
 			 */
 			final List<SystemTag> systemTags = this.getSystemTags(post, oldPost.getTags());
-			this.systemTagPerformBefore(post, systemTags, session);
+			for (final SystemTag systemTag : systemTags) {
+				systemTag.performBeforeUpdate(post, operation, session);
+			}
 
 			/*
 			 * Only when we update the complete post, we must recalculate the hash, because the
@@ -1197,7 +1209,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			} else {
 				this.performUpdateAll(post, oldPost, session);
 			}		
-			this.systemTagPerformAfter(post, systemTags, session);
+			/*
+			 * systemTags perform after Update
+			 */
+			for (final SystemTag systemTag: systemTags) {
+				systemTag.performAfterUpdate(post, operation, session);
+			}
 			session.commitTransaction();
 		} finally {
 			session.endTransaction();
@@ -1495,29 +1512,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			}
 		}
 		return systemTags;
-	}
-
-	/**
-	 * performs the before action of all system tags 
-	 * @param post - the post to which all systemTags belong
-	 * @param systemTags - all the systemTags that are to perform 
-	 * @param session 
-	 */
-	private void systemTagPerformBefore(final Post<?> post, List<SystemTag> systemTags, final DBSession session) {
-		for (final SystemTag systemTag : systemTags) {
-			systemTag.performBefore(post, session);
-		}
-	}
-	/**
-	 * performs the after action of all system tags
-	 * @param post - the post to which all the systemTags belong
-	 * @param systemTags - all the systemTags that are to perform 
-	 * @param session
-	 */
-	private void systemTagPerformAfter(final Post<?> post, final List<SystemTag> systemTags, final DBSession session) {
-		for (final SystemTag systemTag : systemTags) {
-			systemTag.performAfter(post, session);
-		}
 	}
 
 	/**

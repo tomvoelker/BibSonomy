@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
@@ -59,13 +60,13 @@ public class ForGroupTag extends SystemTag {
 	}
 
 	@Override
-	public <T extends Resource> void performAfter(Post<T> post, final DBSession session) {
+	public <T extends Resource> void performAfterCreate(Post<T> post, final DBSession session) {
 		log.debug("performing after access");
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T extends Resource> void performBefore(Post<T> post, final DBSession session) {
+	public <T extends Resource> void performBeforeCreate(Post<T> post, final DBSession session) {
 		log.debug("performing before acess");
 		//--------------------------------------------------------------------
 		// first check preconditions: user is member of given group
@@ -227,6 +228,20 @@ public class ForGroupTag extends SystemTag {
 		SPECIAL,
 		EXIST,
 		MEMBER;		
+	}
+
+	@Override
+	public <T extends Resource> void performAfterUpdate(Post<T> post,
+			PostUpdateOperation operation, DBSession session) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public <T extends Resource> void performBeforeUpdate(Post<T> post,
+			PostUpdateOperation operation, DBSession session) {
+		// TODO Auto-generated method stub
+		
 	}
 }
 

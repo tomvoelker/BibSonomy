@@ -1,5 +1,6 @@
 package org.bibsonomy.database.systemstags;
 
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.model.Post;
@@ -75,22 +76,42 @@ public abstract class SystemTag {
 	}
 
 	/**
-	 * action to perform before the update/delete action
+	 * action to perform before the creation of a post
 	 * 
 	 * @param <T> Resource Type
-	 * @param post post for which action should be performed
+	 * @param post a VALID post for which action should be performed
 	 * @param session action's database session 
 	 */
-	public abstract <T extends Resource> void performBefore(Post<T> post, final DBSession session);
+	public abstract <T extends Resource> void performBeforeCreate(Post<T> post, final DBSession session);
 
 	/**
-	 * action to perform after the update/delete action
+	 * action to perform before the update action
+	 * 
+	 * @param <T> Resource Type
+	 * @param post post for which action should be performed
+	 * @param operation the UpdateOperation during which the method is called
+	 * @param session action's database session 
+	 */
+	public abstract <T extends Resource> void performBeforeUpdate(Post<T> post, final PostUpdateOperation operation, final DBSession session);
+
+	/**
+	 * action to perform after the creation of a post
 	 * 
 	 * @param <T> Resource Type
 	 * @param post post for which action should be performed
 	 * @param session action's database session 
 	 */
-	public abstract <T extends Resource> void performAfter(Post<T> post, final DBSession session);
+	public abstract <T extends Resource> void performAfterCreate(Post<T> post, final DBSession session);
+	
+	/**
+	 * action to perform after the update action
+	 * 
+	 * @param <T> Resource Type
+	 * @param post post for which action should be performed
+	 * @param operation the UpdateOperation during which the method is called
+	 * @param session action's database session 
+	 */
+	public abstract <T extends Resource> void performAfterUpdate(Post<T> post, final PostUpdateOperation operation, final DBSession session);
 
 	/**
 	 * Factory for creating new instances.
