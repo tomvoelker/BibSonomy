@@ -40,13 +40,27 @@
 
 			<c:if test="${not command.context.userLoggedIn}">
 
-				<spring:theme code="de.image.button.collect" var="btn_collect" text=""/>
-				<spring:theme code="de.image.button.collect.hover" var="btn_collect_hover" text=""/>
-				<spring:theme code="de.image.button.organize" var="btn_organize" text=""/>
-				<spring:theme code="de.image.button.organize.hover" var="btn_organize_hover" text=""/>
-				<spring:theme code="de.image.button.share" var="btn_share" text=""/>
-				<spring:theme code="de.image.button.share.hover" var="btn_share_hover" text=""/>
+				<c:set var="btn_collect">
+					<fmt:message key="image.button.collect"/>
+				</c:set>
+				<c:set var="btn_collect_hover">
+					<fmt:message key="image.button.collect.hover"/>
+				</c:set>
+				<c:set var="btn_organize">
+					<fmt:message key="image.button.organize"/>
+				</c:set>
+				<c:set var="btn_organize_hover">
+					<fmt:message key="image.button.organize.hover"/>
+				</c:set>
+				<c:set var="btn_share">
+					<fmt:message key="image.button.share"/>
+				</c:set>
+				<c:set var="btn_share_hover">
+					<fmt:message key="image.button.share.hover"/>
+				</c:set>
 				
+				<spring:theme code="image.button.video" var="btn_video" text=""/>
+
 				<div id="pumageneral">
 					<p>
 
@@ -64,30 +78,22 @@
 						<c:set var="desc_share">
 							<fmt:message key="button.share.description"/>
 						</c:set>
+						<c:set var="desc_buttons">
+							<fmt:message key="button.description"/>
+						</c:set>
 					
 				        <div id="wrap_advantages">
-							<div id="wrap_btn" onMouseOut="replaceElementsTextnode('desc_advantages','')">
-								<img id="btnCollect" alt="Sammeln" class="btnHomepage" onMouseover="this.src='${btn_collect_hover}'; replaceElementsTextnode('desc_advantages','${desc_collect}');" onMouseout="this.src='${btn_collect}'"  src="${btn_collect}" />
-								<img id="btnOrganize" alt="Verwalten" class="btnHomepage" onMouseover="this.src='${btn_organize_hover}';replaceElementsTextnode('desc_advantages','${desc_organize}');" onMouseout="this.src='${btn_organize}'" src="${btn_organize}" />
-								<img id="btnShare" alt="Teilen" class="btnHomepage" onMouseover="this.src='${btn_share_hover}'; replaceElementsTextnode('desc_advantages','${desc_share}')" onMouseout="this.src='${btn_share}'" src="${btn_share}" />
+							<div id="wrap_btn">
+								<img id="btnCollect" alt="Sammeln" class="btnHomepage" onMouseover="this.src='${btn_collect_hover}'; replaceElementsTextnode('desc_advantages','${desc_collect}');" onMouseout="this.src='${btn_collect}'; replaceElementsTextnode('desc_advantages','${desc_buttons}', '#aaa');"  src="${btn_collect}" />
+								<img id="btnOrganize" alt="Verwalten" class="btnHomepage" onMouseover="this.src='${btn_organize_hover}';replaceElementsTextnode('desc_advantages','${desc_organize}');" onMouseout="this.src='${btn_organize}'; replaceElementsTextnode('desc_advantages','${desc_buttons}', '#aaa');" src="${btn_organize}" />
+								<img id="btnShare" alt="Teilen" class="btnHomepage" onMouseover="this.src='${btn_share_hover}'; replaceElementsTextnode('desc_advantages','${desc_share}')" onMouseout="this.src='${btn_share}'; replaceElementsTextnode('desc_advantages','${desc_buttons}', '#aaa');" src="${btn_share}" />
 
-								<div id="desc_advantages">
-								&amp;nbsp;
+								<div id="desc_advantages" style="color:#aaa;">
+									<!-- need a text node here in dom, &nbsp; added! -->
+									&amp;nbsp;${desc_buttons}&amp;nbsp;
 								</div>
 
 							</div>
-							<div>
-							<b>Die wichtigsten Vorteile im Überblick:</b>
-							<ul id="advantages">
-								<li>einfaches Einbinden ihrer <strong>Publikationsliste</strong> in ihre <strong>Homepage</strong></li>
-								<li>Weiterleitung der Publikation an <a href="https://kobra.bibliothek.uni-kassel.de/">KOBRA</a>, dadurch entfällt eine erneute Erfassung</li>
-								<li>Weiterleitung der Publikation an das <strong>Forschunginformationssystem</strong> (FIS) der Universität</li>
-								<li>Umfangreiche, <strong>intuitive Unterstützung</strong> bei der Erfassung von Publikationen</li>
-								<li><strong>Literaturlisten</strong> für Ihre eigenen Publikationen mit einfacher Datenübernahme</li>
-								<li>Einfache Erfassung, Verwaltung und Abruf von <strong>Web-Lesezeichen</strong></li>
-							</ul>
-							</div>
-							<br />
 				        </div>
 					
 					<p>
@@ -108,41 +114,16 @@
 				<fmt:message key="navi.helpUrl"/>
 			</c:set>			
 			<c:url var="helpUrl" value="${helpLangUrl}" context="${projectContext}"/>
-			<div class="sidebarBoxOuter" id="helpbox">
-				<div class="sidebarBoxInner">
-					<div id="helpboxcontent" class="boxcontent">
-						<div id="togglehelp" class="togglehelp closeX">x</div>
-						<div class="bc-head">Quicklinks</div>
-						<c:if test="${command.context.userLoggedIn}">
-							<a href="/cv/user/${fn:escapeXml(command.context.loginUser.name)}">mein Curriculum Vitae anzeigen</a>
-						</c:if>
-						<c:if test="${not command.context.userLoggedIn}">
-							<a href="/login">Loggen Sie sich jetzt mit Ihren Bibliotheksausweis ein.</a>
-						</c:if>	
-						<br/>
-						<div class="bc-head">Hilfe</div>
-						Weitere Informationen erhalten sie auf den <a href="http://www.ub.uni-kassel.de/puma.html">Projektseiten</a>, in der <a href="${helpUrl}">Hilfe</a>
-						und den beiden Blogs <a href="http://puma-projekt.blogspot.com/">Puma-Projekt</a> und <a href="http://bibsonomy.blogspot.com/">Bibsonomy</a>.
-						<br />
-						<div class="bc-highlight">Diese PUMA-Version ist noch in einem frühen Entwicklungsstadium. Daher funktionieren einige Funktionen noch nicht (korrekt).</div>
-						</div>
-		
-				</div>
-			</div>
 
 			<!-- /help box -->
 			
 			<!-- general box -->
-			<div class="sidebarBoxOuter" id="sidebox">
-				<div class="sidebarBoxInner">
 					<ul id="sidebar">
 						<li>
 							<span class="sidebar_h"><fmt:message key="busytags"/></span>
 							<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" tagSizeMode="home"/>
 						</li>
 					</ul>
-				</div>
-			</div>		
 			<!-- /general sidebar -->	
 		
 			<!-- info box 1 -->
@@ -156,19 +137,17 @@
 			</div>		
 			 -->
 			
-			<script type="text/javascript">
-				<![CDATA[
-					$(".sidebarBoxInner").corner("round bottom 12px").corner("round tl 12px").parent().css('padding', '3px').corner("round bottom 15px").corner("round tl 15px");
-				]]>
-			</script>
+			<!-- 
 			<c:if test="${not command.context.userLoggedIn}">
+			 -->
 				<script type="text/javascript">
 					<![CDATA[
 						$("#helpbox").show()
 					]]>
 				</script>
+			<!-- 
 			</c:if>
-			
+			 -->
 
 
 		</jsp:attribute>

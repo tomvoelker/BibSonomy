@@ -82,7 +82,8 @@ margin-right:2ex;
 }
 
 ul#sidebar {
-	margin:0.5ex 0 0 0;	
+	margin:0.5ex 0 0 0;
+	padding: .5ex;	
 }
 
 ul#tagbox {
@@ -99,28 +100,24 @@ ul#tagbox {
 }
 
 #wrap_btn {
-	 float: right;
-	 width: 510px
+	 float: none;
+	 width: 510px;
+	 margin: auto;
 }
 
 #wrap_advantages {
 	width: 100%; 
 	min-height: 175px; 
-	margin-top: 10px; 
+	margin-top: 3ex; 
 	margin-bottom: 10px;
-}
-
-#advantages li {
-	list-style-type: circle; 
-	list-style-position: outside; 
-	margin-left: 1.3em;	
+	text-align: center;
 }
 
 #desc_advantages {
 	padding: 2ex 3em;
 	text-align: center;
 	/*font-size: 80%;*/
-	font-weight: bold;
+	font-weight: normal;
 	color: #DF430D;
 	height: 5ex;
 }
@@ -158,7 +155,7 @@ p {
 }
 
 .boxcontent {
-	padding: 0.5ex;
+	padding: 0.8ex;
 	font-size: 80%;
 }
 
@@ -169,8 +166,11 @@ p {
 }
 
 #pumageneral {
-		font-size: 80%;
+		font-size: 100%;
 		margin-bottom: 4ex;
+		margin-top: 3ex;
+		text-align: center;
+		font-weight: normal;
 }
 
 #bookmarkbibtexoptions {
