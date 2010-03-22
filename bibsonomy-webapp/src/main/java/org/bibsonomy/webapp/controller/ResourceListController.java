@@ -75,13 +75,6 @@ public abstract class ResourceListController {
 				// overwrite minFreq because it is not explicitly set by URL param
 				tagCloudCommand.setMinFreq(userSettings.getTagboxMinfreq());
 			}
-
-			/*
-			 * allow controllers to overwrite max and order
-			 * FIXME: In the hurry I found no nice way to do this. :-( 
-			 */
-			tagMax = getFixedTagMax(tagMax);
-			tagOrder = getFixedTagOrder(tagOrder);
 			
 		} else { //parameter set via URL
 			if(tagCloudCommand.getMinFreq() == 0) {
@@ -89,6 +82,13 @@ public abstract class ResourceListController {
 				tagMax = tagCloudCommand.getMaxCount();
 			}
 		}
+		
+		/*
+		 * allow controllers to overwrite max and order
+		 * FIXME: In the hurry I found no nice way to do this. :-( 
+		 */
+		tagMax = getFixedTagMax(tagMax);
+		tagOrder = getFixedTagOrder(tagOrder);
 		
 
 		tagCloudCommand.setTags( this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, hash, tagOrder, 0, tagMax, search, null));
