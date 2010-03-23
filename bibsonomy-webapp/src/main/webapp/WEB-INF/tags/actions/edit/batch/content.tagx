@@ -139,12 +139,12 @@
 													<ul>
 														<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
 											               <c:forEach var="errorMessage" items="${status.errorMessages}">
-											                  <li class="info_bold"${errorMessage}</li>
+											                  <li class="info_bold">${errorMessage}</li>
 											               </c:forEach>
 										               </spring:bind>
 										               <spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource">
 											               <c:forEach var="errorMessage" items="${status.errorMessages}">
-											                  <li class="info_bold"${errorMessage}</li>
+											                  <li class="info_bold">${errorMessage}</li>
 											               </c:forEach>
 										               </spring:bind>
 										            </ul>
