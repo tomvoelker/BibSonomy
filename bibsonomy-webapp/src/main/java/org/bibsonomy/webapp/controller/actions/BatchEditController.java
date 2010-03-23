@@ -240,6 +240,15 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				/*
 				 * if we want to update the posts, we only need to update posts
 				 * where the tags have changed
+				 * 
+				 * FIXME: this check is not sufficient in the following case:
+				 * 
+				 *  When the user adds on /batchedit a tag to a post he may not use
+				 *  (e.g., "send:rjaa") and on the next try (where he sees the
+				 *  corresponding error message) does not change the tags of that 
+				 *  post, this post is ignored (left as is). 
+				 *  
+				 *  Thus, we must find a way to trigger an update in those cases, too.
 				 */
 				if (updatePosts && oldTags.equals(newTags)) {
 					/*
@@ -479,9 +488,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		} catch (final DatabaseException ex) {
 			final Map<String, List<ErrorMessage>> allErrorMessages = ex.getErrorMessages();
 			/*
-			 * iterating over all error messages ....
+			 * iterating over all posts ....
 			 */
-			for (final String postHash : allErrorMessages.keySet()) {
+			for (final Post<?> updatedPost : posts) {
+				final String postHash = updatedPost.getResource().getIntraHash();
 				/*
 				 * Error messages are connected with the erroneous posts
 				 * via the post's position in the error list.
@@ -516,6 +526,11 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 								 * the page and must get the post from the database
 								 */
 								post = logic.getPostDetails(postHash, loginUserName);
+								/*
+								 * we must add the tags from the post we tried to update - 
+								 * since those tags probably caused the error 
+								 */
+								post.setTags(updatedPost.getTags());
 							}
 							/*
 							 * finally add the post
