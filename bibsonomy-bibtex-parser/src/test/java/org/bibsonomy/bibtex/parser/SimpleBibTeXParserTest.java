@@ -199,7 +199,7 @@ public class SimpleBibTeXParserTest {
 		bib.setAbstract("This is a nice abstract.");
 		bib.setPrivnote("This is private!");
 
-		bib.setMisc("doi = {my doi}, isbn = {999-12345-123-x}, vgwort = {12}");
+		bib.setMisc("  isbn = {999-12345-123-x},\n  vgwort = {12},\n  doi = {my doi}");
 		return bib;
 	}
 

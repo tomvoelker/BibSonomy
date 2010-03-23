@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
+import org.bibsonomy.common.enums.SerializeBibtexMode;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.util.BibTexUtils;
@@ -105,7 +106,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		/*
 		 * get misc fields for next steps
 		 */
-		BibTexUtils.parseMiscField(bibtex);
+		bibtex.parseMiscField();
 		final Map<String, String> miscFields = bibtex.getMiscFields();
 		/*
 		 * if a post does not have misc fields, we don't have to do anything
@@ -114,11 +115,11 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 			/*
 			 * put description from misc fields into post
 			 */
-			post.setDescription(miscFields.remove(BibTexUtils.ADDITIONAL_MISC_FIELD_DESCRIPTION));
+			post.setDescription(bibtex.removeMiscField(BibTexUtils.ADDITIONAL_MISC_FIELD_DESCRIPTION));
 			/*
 			 * parse tags
 			 */
-			final String keywords = miscFields.remove(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS);
+			final String keywords = bibtex.removeMiscField(BibTexUtils.ADDITIONAL_MISC_FIELD_KEYWORDS);
 			try {
 				/*
 				 * we check whitespace only against NULL to allow empty strings (to produce
@@ -138,16 +139,16 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 			 * remove other misc fields which should not be stored as misc field 
 			 * (but rather as regular field/column)
 			 */
-			miscFields.remove("intrahash");
-			miscFields.remove("interhash");
+			bibtex.removeMiscField("intrahash");
+			bibtex.removeMiscField("interhash");
 			for (final String additionalMiscField: BibTexUtils.ADDITIONAL_MISC_FIELDS) {
-				miscFields.remove(additionalMiscField);	
+				bibtex.removeMiscField(additionalMiscField);	
 			}
 		}
 		/*
 		 * re-write misc field to fix above changes
 		 */
-		BibTexUtils.serializeMiscFields(bibtex);
+		bibtex.serializeMiscFields();
 		return post;
 	}
 
@@ -252,7 +253,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 * parseBibTeXPost must ensure to add all fields which 
 		 * BibTexUtils.toBibtexString(post) puts into the string. 
 		 */
-		return parseBibTeXPost(BibTexUtils.toBibtexString(post));
+		return parseBibTeXPost(BibTexUtils.toBibtexString(post, SerializeBibtexMode.PLAIN_MISCFIELDS));
 	}
 
 	
