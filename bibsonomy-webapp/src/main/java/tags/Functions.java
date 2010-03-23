@@ -25,6 +25,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.util.id.DOIUtils;
 
 import resources.Resource;
 
@@ -636,6 +637,21 @@ public class Functions  {
 		return UserRelation.getUserRelationById(nextId).name().toLowerCase();
 	}
 	
+	/**
+	 * Simply extracts a DOI out of a string
+	 * 
+	 * @param doiString
+	 * @return DOI string
+	 */
+	public static String extractDOI(final String doiString){
+		String extractedDOI;
+		
+		// extract the DOI
+		extractedDOI = DOIUtils.extractDOI(doiString);
+		
+		// return it
+		return extractedDOI;	
+	}
 	
 	
 }

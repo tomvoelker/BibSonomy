@@ -342,6 +342,12 @@
   </function>
   
   <function>
+  	<name>extractDOI</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String extractDOI(java.lang.String)</function-signature>
+  </function>
+  
+  <function>
   	<name>getErrorHint</name>
   	<function-class>tags.Functions</function-class>
   	<function-signature>String getErrorHint(java.lang.String)</function-signature>

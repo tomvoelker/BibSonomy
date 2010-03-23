@@ -140,6 +140,15 @@
 			<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 		</c:if>
 		
+		<!-- DOI -->
+		<c:if test="${not empty post.resource.miscFields['doi']}">
+			<c:set var="urlTitle"><fmt:message key="post_bibtex.doi_isbn.doi"/></c:set>
+	    	<a href="http://dx.doi.org/${fn:escapeXml(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}">
+				<fmt:message key="post_bibtex.doi_isbn.doi"/>
+			</a>
+			<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+		</c:if>
+		
 		<!-- BIBTEX -->
 	    <c:set var="bibtexTitle"><fmt:message key="bibtex.actions.bibtex.title"/></c:set>
 	    <a href="/bib/bibtex/${hash.intra.id}${post.resource.intraHash}/${fn:escapeXml(post.user.name)}" title="${bibtexTitle}">
