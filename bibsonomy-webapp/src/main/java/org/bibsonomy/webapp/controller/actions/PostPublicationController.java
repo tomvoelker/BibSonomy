@@ -148,7 +148,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * 1) the user just started the postPublication process
 		 * 2) the user entered a snippet (might be empty)
 		 * 3) the user selected a file to upload posts (might be empty)
-		 * DOI/ISBN or manual input a handled in EditPostController
+		 * DOI/ISBN or manual input are handled in EditPostController
 		 */
 		final String selection = command.getSelection();
 		if (present(selection)) {
@@ -410,6 +410,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 				buf.append(m.group(1));
 				lineFound = true;
 			}
+		}
+		if (lineFound) {
+			errors.reject("import.error.erroneous_line_numbers", new Object[]{buf}, "Your submitted publications contain errors at lines {0}.");
 		}
 	}
 
