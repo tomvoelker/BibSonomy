@@ -39,13 +39,11 @@ import net.sf.jabref.imports.BibtexParser;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.LayoutRenderingException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.springframework.beans.factory.annotation.Required;
 
@@ -64,7 +62,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	/**
 	 * saves all loaded layouts (html, bibtexml, tablerefs, hash(user.username), ...)
 	 */
-	private JabrefLayouts layouts = new JabrefLayouts();
+	private final JabrefLayouts layouts = new JabrefLayouts();
 
 
 	/** Returns the requested layout.
@@ -155,6 +153,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		}
 	}
 
+	@Override
 	public Object clone()throws CloneNotSupportedException {
 		throw new CloneNotSupportedException(); 
 	}
@@ -315,6 +314,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 				// set some fields so we can easily access them later in the export filters
 				bib.addMiscField("bibsonomyUsername", post.getUser().getName());   // bibsonomy username
 				bib.addMiscField("comment", post.getDescription());                // used at least by openoffice-csv
+				bib.addMiscField("description", post.getDescription()); 		   // requested by a user
 				bibtexStrings.append("\n" + BibTexUtils.toBibtexString(bibPost));
 			}
 		}
@@ -334,6 +334,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return layouts.toString();
 	}
