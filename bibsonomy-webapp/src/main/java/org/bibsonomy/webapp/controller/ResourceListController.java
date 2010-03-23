@@ -66,8 +66,13 @@ public abstract class ResourceListController {
 		log.debug("getTags " + " " + groupingEntity + " " + groupingName);
 		Order tagOrder = null;
 		int tagMax = max;
-		if(tagCloudCommand.getMinFreq() == 0 && tagCloudCommand.getMaxCount() == 0) { //no parameter set via URL
-		
+		/*
+		 * check parameters from URL
+		 */
+		if (tagCloudCommand.getMinFreq() == 0 && tagCloudCommand.getMaxCount() == 0) { //no parameter set via URL
+			/*
+			 * check user's settings
+			 */
 			if (userSettings.getIsMaxCount()) {
 				tagOrder = Order.FREQUENCY;
 				tagMax = Math.min(max, userSettings.getTagboxMaxCount());
@@ -75,7 +80,6 @@ public abstract class ResourceListController {
 				// overwrite minFreq because it is not explicitly set by URL param
 				tagCloudCommand.setMinFreq(userSettings.getTagboxMinfreq());
 			}
-			
 		} else { //parameter set via URL
 			if(tagCloudCommand.getMinFreq() == 0) {
 				tagOrder = Order.FREQUENCY;
