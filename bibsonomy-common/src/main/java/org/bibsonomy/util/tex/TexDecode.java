@@ -101,7 +101,7 @@ public class TexDecode {
 	 */
 	static {
 		if(TEX.length == UNICODE.length) {
-			StringBuffer texRegexp = new StringBuffer();
+			final StringBuffer texRegexp = new StringBuffer();
 			texRegexp.append("(");
 			for(int i = 0; i < TEX.length; ++i) {
 				// build tex -> unicode map
@@ -127,8 +127,8 @@ public class TexDecode {
 	 */
 	public static String decode(String s) {
 		if (s != null) {			
-			 Matcher texRegexpMatcher = texRegexpPattern.matcher(s);
-			 StringBuffer sb = new StringBuffer();
+			 final Matcher texRegexpMatcher = texRegexpPattern.matcher(s);
+			 final StringBuffer sb = new StringBuffer();
 			 while (texRegexpMatcher.find()) {
 				 texRegexpMatcher.appendReplacement(sb, texMap.get(texRegexpMatcher.group()));
 			 }
