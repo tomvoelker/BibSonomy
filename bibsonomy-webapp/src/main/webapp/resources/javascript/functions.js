@@ -1705,7 +1705,8 @@ function sendEditTags(obj, type, ckey, link) {
 		type :"POST",
 		url :"/batchEdit?newTags['" + hash + "']=" + encodeURIComponent(tags.trim())
 				+ "&ckey=" + ckey
-				+ "&deleteCheckedPosts=true",
+				+ "&deleteCheckedPosts=true"
+				+ "resourcetype=" + type,
 		dataType :"html",
 		global :"false"
 	});
