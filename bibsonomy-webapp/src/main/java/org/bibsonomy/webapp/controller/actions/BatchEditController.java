@@ -240,15 +240,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				/*
 				 * if we want to update the posts, we only need to update posts
 				 * where the tags have changed
-				 * 
-				 * FIXME: this check is not sufficient in the following case:
-				 * 
-				 *  When the user adds on /batchedit a tag to a post he may not use
-				 *  (e.g., "send:rjaa") and on the next try (where he sees the
-				 *  corresponding error message) does not change the tags of that 
-				 *  post, this post is ignored (left as is). 
-				 *  
-				 *  Thus, we must find a way to trigger an update in those cases, too.
 				 */
 				if (updatePosts && oldTags.equals(newTags)) {
 					/*
