@@ -142,9 +142,9 @@
 		
 		<!-- DOI -->
 		<c:if test="${not empty post.resource.miscFields['doi']}">
-			<c:set var="urlTitle"><fmt:message key="post_bibtex.doi_isbn.doi"/></c:set>
-	    	<a href="http://dx.doi.org/${fn:escapeXml(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}">
-				<fmt:message key="post_bibtex.doi_isbn.doi"/>
+			<fmt:message key="post_bibtex.doi_isbn.doi" var="urlTitle"/>
+	    	<a href="http://dx.doi.org/${mtl:encodeURI(mtl:extractDOI(post.resource.miscFields['doi']))}" title="${urlTitle}">
+				<c:out value="${urlTitle}"/>
 			</a>
 			<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 		</c:if>

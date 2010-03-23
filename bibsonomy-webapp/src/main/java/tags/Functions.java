@@ -644,13 +644,7 @@ public class Functions  {
 	 * @return DOI string
 	 */
 	public static String extractDOI(final String doiString){
-		String extractedDOI;
-		
-		// extract the DOI
-		extractedDOI = DOIUtils.extractDOI(doiString);
-		
-		// return it
-		return extractedDOI;	
+		return DOIUtils.extractDOI(doiString);
 	}
 	
 	

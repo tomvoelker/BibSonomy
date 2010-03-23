@@ -172,34 +172,40 @@
 	               			<c:otherwise>
 	               			
 			                 <c:choose>
-			                   <c:when test="${post.user.name eq command.context.loginUser.name}">
+			                 	<!--  a post owned by the logged in user - show a tag edit form -->
+			                   	<c:when test="${post.user.name eq command.context.loginUser.name}">
 			                   
-			                     <tr>
-			                       <td>
-			                       <div >
-			               			 <spring:bind path="command.${resourceType}.list[${postCount.count - 1}].tags" >
-			               			 	<c:if test="${status.error}">
-			               			 		<batch:tagErrors errors="${status}"/>
-											<input type="text" name="newTags['${post.resource.intraHash}']" size="37" value="${fn:escapeXml(mtl:toTagString(post.tags))}" style="float:left" />	
-			               			 	</c:if>
-										<c:if test="${not status.error}">
-											<input type="text" name="newTags['${post.resource.intraHash}']" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}" style="float:left" />										
-										</c:if>			               			 
-			                         </spring:bind>
-			                         <!-- to see if the tags have been changed, we also send the original tags -->
-			                         <input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
-			                         </div>
-			                       </td>
+									<tr>
+										<!-- the input field for the tags -->
+			                       		<td>
+			               			 		<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].tags" >
+			               			 			<c:choose>
+			               			 				<c:when test="${status.error}">
+			               			 					<!--  the post has some errors on the tags - show the tags -->
+			               			 					<batch:tagErrors errors="${status}"/>
+														<input type="text" name="newTags['${post.resource.intraHash}']" size="37" value="${fn:escapeXml(mtl:toTagString(post.tags))}" style="float:left" />
+														<!--  we don't send the old tags, since we must try to update this post in any case  -->	
+			               			 				</c:when>
+			               			 				<c:otherwise>
+			               			 					<!--  the post has no errors on the tags - show the tags -->
+														<input type="text" name="newTags['${post.resource.intraHash}']" size="40" value="${fn:escapeXml(mtl:toTagString(post.tags))}" style="float:left" />										
+   			                                			<!-- to check if the tags have been changed, we also send the original tags -->
+			                                			<input type="hidden" name="oldTags['${post.resource.intraHash}']" value="${fn:escapeXml(mtl:toTagString(post.tags))}"/>
+			                                		</c:otherwise>
+												</c:choose>             			 
+			                         		</spring:bind>
+			                       		</td>
 			                       
-			                       <td class="chunkybib">
-			                         <jsp:invoke fragment="shortPostDescription"/>
-			                       </td>   
-			                       <td>
-			                         <div style="margin-left:auto;margin-right:auto; width:10pt">
-			                         	<input type="checkbox" name="delete['${post.resource.intraHash}']" onclick="checkDeleteAll(this)" value="true"  /> <!--<fmt:message key="batchedit.deletePost"/>-->
-			                         </div>
-			                       </td>
-			                     </tr>
+			                       		<!--  a short description of the post -->
+			                       		<td class="chunkybib">
+			                         		<jsp:invoke fragment="shortPostDescription"/>
+			                       		</td>
+			                       		
+			                       		<!-- a checkbox to delete/ignore the post -->
+			                       		<td style="text-align: center;">
+			                         		<input type="checkbox" name="delete['${post.resource.intraHash}']" onclick="checkDeleteAll(this)" value="true"  />
+			                       		</td>
+			                    	</tr>
 			                   </c:when>
 			                   <c:otherwise>
 			                     <!-- remember, that we have found posts not owned by the user to show them at end of page -->
@@ -221,7 +227,6 @@
                  <td>
                    <input type="submit" value="${buttonUpdate}" style="float:right; width:100%"/>
                    <input type="hidden" name="ckey" value="${ckey}"/>
-                   <!-- TODO: somehow a hack: removing the bedit(bib|url)/ by cutting at the first '/' -->
                    <input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
                  </td>
                </tr>
