@@ -1141,7 +1141,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 */
 			final List<SystemTag> systemTags = this.getSystemTags(post, oldPost.getTags());
 			for (final SystemTag systemTag : systemTags) {
-				systemTag.performBeforeUpdate(post, operation, session);
+				systemTag.performBeforeUpdate(post, oldPost, operation, session);
 			}
 
 			/*
@@ -1213,7 +1213,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * systemTags perform after Update
 			 */
 			for (final SystemTag systemTag: systemTags) {
-				systemTag.performAfterUpdate(post, operation, session);
+				systemTag.performAfterUpdate(post, oldPost, operation, session);
 			}
 			session.commitTransaction();
 		} finally {

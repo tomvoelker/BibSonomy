@@ -88,11 +88,12 @@ public abstract class SystemTag {
 	 * action to perform before the update action
 	 * 
 	 * @param <T> Resource Type
-	 * @param post post for which action should be performed: If operation is not UPDATE_TAGS the post MUST be VALID
+	 * @param oldPost post for which action should be performed: If operation is not UPDATE_TAGS the post MUST be VALID
 	 * @param operation the UpdateOperation during which the method is called
 	 * @param session action's database session 
+	 * @param newPost TODO
 	 */
-	public abstract <T extends Resource> void performBeforeUpdate(Post<T> post, final PostUpdateOperation operation, final DBSession session);
+	public abstract <T extends Resource> void performBeforeUpdate(Post<T> newPost, final Post<T> oldPost, final PostUpdateOperation operation, final DBSession session);
 
 	/**
 	 * action to perform after the creation of a post
@@ -111,7 +112,7 @@ public abstract class SystemTag {
 	 * @param operation the UpdateOperation during which the method is called
 	 * @param session action's database session 
 	 */
-	public abstract <T extends Resource> void performAfterUpdate(Post<T> post, final PostUpdateOperation operation, final DBSession session);
+	public abstract <T extends Resource> void performAfterUpdate(Post<T> newPost, final Post<T> oldPost, final PostUpdateOperation operation, final DBSession session);
 
 	/**
 	 * Factory for creating new instances.

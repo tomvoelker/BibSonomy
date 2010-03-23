@@ -13,18 +13,14 @@ import org.bibsonomy.model.Resource;
 public abstract class DatabaseSystemTag extends SystemTag {
 	
 	@Override
-	public <T extends Resource> void performAfterUpdate(Post<T> post, PostUpdateOperation operation, DBSession session) {}
+	public <T extends Resource> void performAfterUpdate(Post<T> newPost, final Post<T> oldPost, final PostUpdateOperation operation, final DBSession session) {}
 
 	@Override
-	public <T extends Resource> void performBeforeUpdate(Post<T> post, PostUpdateOperation operation, DBSession session) {}
+	public <T extends Resource> void performBeforeUpdate(Post<T> oldPost, Post<T> newPost, final PostUpdateOperation operation, final DBSession session) {}
 
 	@Override
-	public <T extends Resource> void performAfterCreate(Post<T> post, DBSession session) {
-				
-	}
+	public <T extends Resource> void performAfterCreate(Post<T> post, DBSession session) {}
 	
 	@Override
-	public <T extends Resource> void performBeforeCreate(Post<T> post, DBSession session) {
-				
-	}
+	public <T extends Resource> void performBeforeCreate(Post<T> post, DBSession session) {}
 }
