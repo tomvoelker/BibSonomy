@@ -9,7 +9,7 @@
     xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
-    xmlns:edit="urn:jsptagdir:/WEB-INF/tags/actions/edit"
+    xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
   
@@ -57,12 +57,12 @@
 		
         <div id="general_100">
         <h2><fmt:message key="batchedit.info"/></h2>
-        <edit:batchEditContent 	resourceType="${resourceType}"
-        						listView="${listView}" 
-        						otherPostsUrlPrefix="${otherPostsUrlPrefix}" 
-        						listViewStartParamName="${listViewStartParamName}"
-        						deleteCheckedPosts="${deleteCheckedPosts}"
-        						overwrite="${overwrite}" >
+        <batch:content 	resourceType="${resourceType}"
+        				listView="${listView}" 
+        				otherPostsUrlPrefix="${otherPostsUrlPrefix}" 
+        				listViewStartParamName="${listViewStartParamName}"
+        				deleteCheckedPosts="${deleteCheckedPosts}"
+        				overwrite="${overwrite}" >
         						 
 			<jsp:attribute name="shortPostDescription">
 				<jsp:invoke fragment="shortPostDescription"/>
@@ -82,7 +82,7 @@
       		<jsp:attribute name="actions">
       			<jsp:invoke fragment="actions"/>
       		</jsp:attribute>
-        </edit:batchEditContent> 
+        </batch:content> 
         </div> 
       </jsp:attribute>
     

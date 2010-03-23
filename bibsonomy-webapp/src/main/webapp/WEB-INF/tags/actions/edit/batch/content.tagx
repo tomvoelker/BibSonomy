@@ -10,6 +10,7 @@
     xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
+    xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
          
@@ -138,16 +139,12 @@
 													<ul>
 														<spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource.*">
 											               <c:forEach var="errorMessage" items="${status.errorMessages}">
-											                  <li>
-											                  	<b class="info_bold">${errorMessage}</b>
-															  </li>
+											                  <li class="info_bold"${errorMessage}</li>
 											               </c:forEach>
 										               </spring:bind>
 										               <spring:bind path="command.${resourceType}.list[${postCount.count - 1}].resource">
 											               <c:forEach var="errorMessage" items="${status.errorMessages}">
-											                  <li>
-											                  	<b class="info_bold">${errorMessage}</b>
-															  </li>
+											                  <li class="info_bold"${errorMessage}</li>
 											               </c:forEach>
 										               </spring:bind>
 										            </ul>
@@ -182,17 +179,7 @@
 			                       <div >
 			               			 <spring:bind path="command.${resourceType}.list[${postCount.count - 1}].tags" >
 			               			 	<c:if test="${status.error}">
-				               			 	<buttons:help iconText="X" iconTextStyle="color:red; font-size:120%">
-													<jsp:attribute name="helpText">
-														<ul>
-											               <c:forEach var="errorMessage" items="${status.errorMessages}">
-											                  <li>
-											                  	<b class="info_bold">${errorMessage}</b>
-															  </li>
-											               </c:forEach>
-											            </ul>
-													</jsp:attribute>
-											</buttons:help>
+			               			 		<batch:tagErrors errors="status"/>
 											<input type="text" name="newTags['${post.resource.intraHash}']" size="37" value="${fn:escapeXml(mtl:toTagString(post.tags))}" style="float:left" />	
 			               			 	</c:if>
 										<c:if test="${not status.error}">

@@ -9,7 +9,7 @@
     xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
     xmlns:spring="http://www.springframework.org/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:edit="urn:jsptagdir:/WEB-INF/tags/actions/edit"
+    xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
     xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
@@ -32,12 +32,12 @@
 		<c:set var="overwrite" value="${command.overwrite}" />
 	</mtl:exists>
 	
-	<edit:batcheditSkeleton listView="${command.bibtex}" resourceType="bibtex" listViewStartParamName="bibtex.start" otherPostsUrlPrefix="/bibtex" deleteCheckedPosts="${deleteCheckedPosts}" overwrite="${overwrite}"> 
+	<batch:skeleton listView="${command.bibtex}" resourceType="bibtex" listViewStartParamName="bibtex.start" otherPostsUrlPrefix="/bibtex" deleteCheckedPosts="${deleteCheckedPosts}" overwrite="${overwrite}"> 
     	<jsp:attribute name="shortPostDescription"><bib:shortDescription post="${post}"/></jsp:attribute>
      	<jsp:attribute name="title">  <bib:title post="${post}"/></jsp:attribute>
      	<jsp:attribute name="desc">   <bib:desc post="${post}"/></jsp:attribute>
      	<jsp:attribute name="bmicon"> <bib:bmicon post="${post}" loginUserName="${loginUser.name}"/></jsp:attribute>
      	<jsp:attribute name="actions"><bib:actions post="${post}" loginUserName="${loginUser.name}" disableResourceLinks="${false}"/></jsp:attribute>
-   </edit:batcheditSkeleton>
+   </batch:skeleton>
     	
 </jsp:root>

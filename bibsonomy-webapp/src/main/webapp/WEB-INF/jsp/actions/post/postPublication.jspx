@@ -13,7 +13,7 @@
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
 	xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
-	xmlns:edit="urn:jsptagdir:/WEB-INF/tags/actions/edit"
+	xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
 	xmlns:bib="urn:jsptagdir:/WEB-INF/tags/resources/bibtex"
 >
     
@@ -118,12 +118,12 @@
 				<div id="parsedPostView">
 						<p class="smalltext" style="margin-top:1em; margin-bottom:1em"><fmt:message key="import.error.parse_or_incomplete_bibtex.description"/></p>
 						<fieldset class="fsOuter">
-								<edit:batchEditContent	resourceType="bibtex"
-					        							listView="${command.bibtex}" 
-					        							otherPostsUrlPrefix="bla" 
-					        							listViewStartParamName="bibtex.start"
-		      											overwrite="${command.overwrite}"
-		      											deleteCheckedPosts="${command.deleteCheckedPosts}" >
+								<batch:content	resourceType="bibtex"
+					        					listView="${command.bibtex}" 
+					        					otherPostsUrlPrefix="bla" 
+					        					listViewStartParamName="bibtex.start"
+		      									overwrite="${command.overwrite}"
+		      									deleteCheckedPosts="${command.deleteCheckedPosts}" >
 				        					 		
 									<jsp:attribute name="shortPostDescription">
 										<bib:shortDescription post="${post}"/>
@@ -144,7 +144,7 @@
 						      		<jsp:attribute name="actions">
 						      			<actions post="${post}" loginUserName="${loginUser.name}" disableResourceLinks="${false}"/>
 						      		</jsp:attribute>
-					        </edit:batchEditContent>
+					        </batch:content>
 				        </fieldset>
 					</div> 
 				</c:if>            

@@ -335,6 +335,12 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * SIXTH: return to view
 		 * *******************************************************/
 		/*
+		 * handle AJAX requests
+		 */
+		if ("ajax".equals(command.getFormat())) {
+			return Views.AJAX_EDITTAGS;
+		}
+		/*
 		 * return to batch edit view on errors
 		 */
 		if (errors.hasErrors()) {

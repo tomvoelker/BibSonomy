@@ -227,6 +227,10 @@ public enum Views implements View {
 	 * a tag cloud (to reload it using AJAX)
 	 */
 	AJAX_TAGCLOUD("ajax/tagcloud"),
+	/**
+	 * response for quick AJAX tag editing
+	 */
+	AJAX_EDITTAGS("ajax/edittags"),	
 
 	/* *****************************************************
 	 * ADMIN views

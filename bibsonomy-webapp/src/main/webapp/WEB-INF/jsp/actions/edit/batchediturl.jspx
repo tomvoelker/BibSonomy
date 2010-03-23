@@ -8,7 +8,7 @@
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
     xmlns:bm="urn:jsptagdir:/WEB-INF/tags/resources/bookmark"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:edit="urn:jsptagdir:/WEB-INF/tags/actions/edit"
+    xmlns:batch="urn:jsptagdir:/WEB-INF/tags/actions/edit/batch"
     xmlns:rc="urn:jsptagdir:/WEB-INF/tags/resources/common"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
@@ -24,12 +24,12 @@
 		<c:set var="overwrite" value="${command.overwrite}" />
 	</mtl:exists>
 
-    <edit:batcheditSkeleton listView="${command.bookmark}" resourceType="bookmark" listViewStartParamName="bookmark.start" otherPostsUrlPrefix="/bookmark" deleteCheckedPosts="${deleteCheckedPosts}" overwrite="${overwrite}">
+    <batch:skeleton listView="${command.bookmark}" resourceType="bookmark" listViewStartParamName="bookmark.start" otherPostsUrlPrefix="/bookmark" deleteCheckedPosts="${deleteCheckedPosts}" overwrite="${overwrite}">
       <jsp:attribute name="shortPostDescription"><bm:shortDescription post="${post}"/></jsp:attribute>
       <jsp:attribute name="title">  <bm:title post="${post}"/></jsp:attribute>
       <jsp:attribute name="desc">   <bm:desc post="${post}"/></jsp:attribute>
       <jsp:attribute name="bmicon"> <bm:bmicon post="${post}" loginUserName="${loginUser.name}"/></jsp:attribute>
       <jsp:attribute name="actions"><bm:actions post="${post}" loginUserName="${loginUser.name}"/></jsp:attribute>
-    </edit:batcheditSkeleton>
+    </batch:skeleton>
 
 </jsp:root>
