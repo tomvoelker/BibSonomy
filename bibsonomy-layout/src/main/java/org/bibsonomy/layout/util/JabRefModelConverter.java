@@ -131,7 +131,7 @@ public class JabRefModelConverter {
 					|| ValidationUtils.present(bibtex.getMiscFields())) {
 
 				// parse the misc fields and loop over them
-				BibTexUtils.parseMiscField(bibtex);
+				bibtex.parseMiscField();
 
 				if (bibtex.getMiscFields() != null)
 					for (final String key : bibtex.getMiscFields().keySet()) {
@@ -242,7 +242,7 @@ public class JabRefModelConverter {
 						&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(field))
 					bibtex.addMiscField(field, entry.getField(field));
 
-			BibTexUtils.serializeMiscFields(bibtex);
+			bibtex.serializeMiscFields();
 
 			// set the key
 			bibtex.setBibtexKey(entry.getCiteKey());

@@ -205,6 +205,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		 * Preferences.
 		 */
 		final List<BibtexEntry> sorted = FileActions.getSortedEntries(database, null, false);
+		
 
 
 		/* 
@@ -295,28 +296,28 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		final StringBuffer bibtexStrings = new StringBuffer();
 		for (final Post<T> post : bibtexList) {
 			final T resource = post.getResource();
+			
 			if (resource instanceof BibTex) {
-				final BibTex bibtex = (BibTex) resource;
 				
-				// reset misc fields - they will be re-created while toBibtexString
-				BibTexUtils.parseMiscField(bibtex);
-				bibtex.setMisc("");
+				final Post<BibTex> bibPost = (Post<BibTex>) post;
+				final BibTex bib = bibPost.getResource();
+				 
 				
-				// remove id field, as it has a special meaning inside jabref
-				if (bibtex.getMiscField("id") != null) {
-					bibtex.getMiscFields().remove("id");
+				// parse misc field
+				bib.parseMiscField();
+				
+				// rename id field to 'misc_id', as it has a special meaning inside jabref
+				if (bib.getMiscField("id") != null) {
+					bib.addMiscField("misc_id", bib.getMiscField("id"));
+					bib.removeMiscField("id");
 				}
 				
 				// set some fields so we can easily access them later in the export filters
-				bibtex.addMiscField("bibsonomyUsername", post.getUser().getName());
-				
-				bibtex.addMiscField("keywords", TagUtils.toTagString(post.getTags(), " ")); // used by some styles
-				bibtex.addMiscField("description", post.getDescription()); // requested by a user
-				bibtex.addMiscField("comment", post.getDescription()); // used at least by openoffice-csv 
-				
-				bibtexStrings.append("\n" + BibTexUtils.toBibtexString(bibtex)); 
+				bib.addMiscField("bibsonomyUsername", post.getUser().getName());   // bibsonomy username
+				bib.addMiscField("comment", post.getDescription());                // used at least by openoffice-csv
+				bibtexStrings.append("\n" + BibTexUtils.toBibtexString(bibPost));
 			}
-		}				
+		}
 		/*
 		 * parse them!
 		 */
