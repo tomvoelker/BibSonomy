@@ -14,7 +14,17 @@
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-    <edit:batcheditSkeleton listView="${command.bookmark}" resourceType="bookmark" listViewStartParamName="bookmark.start" otherPostsUrlPrefix="/bookmark">
+	<c:set var="deleteCheckedPosts" value="${true}" />
+	<mtl:exists path="command.deleteCheckedPosts">
+		<c:set var="deleteCheckedPosts" value="${command.deleteCheckedPosts}" />
+	</mtl:exists>
+
+	<c:set var="overwrite" value="false" />
+	<mtl:exists path="command.overwrite">
+		<c:set var="overwrite" value="${command.overwrite}" />
+	</mtl:exists>
+
+    <edit:batcheditSkeleton listView="${command.bookmark}" resourceType="bookmark" listViewStartParamName="bookmark.start" otherPostsUrlPrefix="/bookmark" deleteCheckedPosts="${deleteCheckedPosts}" overwrite="${overwrite}">
       <jsp:attribute name="shortPostDescription"><bm:shortDescription post="${post}"/></jsp:attribute>
       <jsp:attribute name="title">  <bm:title post="${post}"/></jsp:attribute>
       <jsp:attribute name="desc">   <bm:desc post="${post}"/></jsp:attribute>
