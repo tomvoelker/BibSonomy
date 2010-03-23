@@ -29,7 +29,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.antlr.runtime.RecognitionException;
 import org.bibsonomy.common.enums.SerializeBibtexMode;
@@ -107,11 +106,10 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 * get misc fields for next steps
 		 */
 		bibtex.parseMiscField();
-		final Map<String, String> miscFields = bibtex.getMiscFields();
 		/*
 		 * if a post does not have misc fields, we don't have to do anything
 		 */
-		if (present(miscFields)) {
+		if (present(bibtex.getMiscFields())) {
 			/*
 			 * put description from misc fields into post
 			 */
