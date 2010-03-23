@@ -105,10 +105,6 @@
 		
 		<c:set var="userName">${command.context.loginUser.name}</c:set>
 		
-		<jsp:useBean id="layoutBean" class="beans.LayoutBean" scope="request">
-		  <jsp:setProperty name="layoutBean" property="username" value="${user.name}"/>
-		</jsp:useBean>
-		
 		<a name="layout"></a>
 		<c:set var="actionJabRef" />
 		
@@ -169,7 +165,7 @@
 					
 			 		<div class="fsRow">
 			 			<fmt:message var="jabRefButton" key="settings.jabRef.button"/>
-						<input type="submit" value="${jabRefButton}" /><div class="errmsg"><c:out value="${layoutBean.error}"/></div>
+						<input type="submit" value="${jabRefButton}" />
 		  				<input name="action" type="hidden" value="${actionJabRef}"/> 
 		 				<input name="importType" type="hidden" value="jabref"/>
 					</div>
