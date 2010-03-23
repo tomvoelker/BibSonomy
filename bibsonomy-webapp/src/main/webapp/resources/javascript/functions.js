@@ -1740,6 +1740,7 @@ function sendEditTags(obj, type, ckey, link) {
 			edit.setAttribute("onclick", "editTags(this, '" + ckey + "'); return false;");
 			edit.setAttribute("tags", tags.trim());
 			edit.setAttribute("href", link);
+			edit.setAttribute("name", hash);
 			edit.appendChild(document.createTextNode(nodeText));
 			
 			parent.insertBefore(edit, parent.childNodes[targetChild]);
@@ -1808,6 +1809,7 @@ function editTags(obj, ckey) {
 	// creates the link to detail-editing
 	var details = document.createElement("a");
 	details.setAttribute('href', link);
+	
 	if(type == "bibtex") {
 		details.appendChild(document.createTextNode(getString("bibtex.actions.details")));
 		details.title=getString("bibtex.actions.details.title");
