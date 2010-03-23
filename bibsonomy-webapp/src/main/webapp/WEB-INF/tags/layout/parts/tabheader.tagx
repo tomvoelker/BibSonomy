@@ -22,15 +22,18 @@
 
 		<ul id="tab">
 			<c:forEach var="tab" items="${tabView.tabs}">
-				<c:choose>
-					<!-- this tab is selected/active -->
-					<c:when test="${tabView.selTab eq tab.id}">
-						<li id="selected"><a href="${tabURL}?selTab=${tab.id}"><fmt:message key="${tab.title}"/></a></li>			
-					</c:when>
-					<c:otherwise>
-						<li><a href="${tabURL}?selTab=${tab.id}"><fmt:message key="${tab.title}"/></a></li>							
-					</c:otherwise>
-				</c:choose>				
+				<fmt:message key="${tab.title}" var="tabTitle"/>
+				<c:if test="${not empty tabTitle}">
+					<c:choose>
+						<!-- this tab is selected/active -->
+						<c:when test="${tabView.selTab eq tab.id}">
+							<li id="selected"><a href="${tabURL}?selTab=${tab.id}"><c:out value="${tabTitle}"/></a></li>			
+						</c:when>
+						<c:otherwise>
+							<li><a href="${tabURL}?selTab=${tab.id}"></a><c:out value="${tabTitle}"/></li>							
+						</c:otherwise>
+					</c:choose>
+				</c:if>		
 			</c:forEach>
 		</ul>	
 	</c:if>
