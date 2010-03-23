@@ -319,8 +319,6 @@ public class BibTexUtils {
 				
 				// include plain misc fields if desired
 				if ( mode.equals(SerializeBibtexMode.PLAIN_MISCFIELDS)  && present(bib.getMisc())) {
-					System.out.println("APPENDING MISC " + bib.getMisc());
-					System.out.println();
 					buffer.append("  " + bib.getMisc() + ",\n");
 				}
 			}
