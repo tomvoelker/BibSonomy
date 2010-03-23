@@ -135,7 +135,10 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 			}
 			/*
 			 * remove other misc fields which should not be stored as misc field 
-			 * (but rather as regular field/column)
+			 * (but rather as regular field/column).
+			 * 
+			 * Please note: keys for misc fields are automatically turned into lowercase
+			 * by our bibtex parser!
 			 */
 			bibtex.removeMiscField("intrahash");
 			bibtex.removeMiscField("interhash");
