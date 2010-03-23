@@ -75,7 +75,7 @@ public class Importer {
 			/*
 			 * parse misc field, to access paper ID and track
 			 */
-			BibTexUtils.parseMiscField(post.getResource());
+			post.getResource().parseMiscField();
 			final String paperId = post.getResource().getMiscField("paperId");
 			final String sessionId = post.getResource().getMiscField("session");
 
