@@ -52,6 +52,15 @@
 		</jsp:attribute>
 		<jsp:attribute name="content">
 			<div id="general_100">
+				<!-- expandBookmarkList(), showBothLists(), expandBibTexList() in functions.js -->
+				<ul id="bookmarkbibtexoptions">
+					<fmt:message var="expandBookmarks" key="list.expand.bookmarks"/>
+					<fmt:message var="expandPublications" key="list.expand.publications"/>
+					<fmt:message var="showBoth" key="list.expand.both"/>
+					<li id="optionExpandBookmark"><a href="javascript:expandBookmarkList();" title="${expandBookmarks}">&gt;</a></li>
+					<li id="optionShowBoth" style="display: none;"><a href="javascript:showBothLists();" title="${showBoth}">|</a></li>
+					<li id="optionExpandBibtex"><a href="javascript:expandBibTexList();" title="${expandPublications}">&lt;</a></li>
+				</ul>
 				<!-- 
 					Some pages show a short introductory text at the top - this text 
 					should be put into the contentHeading attribute. If the text is not
@@ -66,16 +75,6 @@
 					</c:otherwise>
 				</c:choose>
 				
-				<!-- expandBookmarkList(), showBothLists(), expandBibTexList() in functions.js -->
-				<ul id="bookmarkbibtexoptions">
-					<fmt:message var="expandBookmarks" key="list.expand.bookmarks"/>
-					<fmt:message var="expandPublications" key="list.expand.publications"/>
-					<fmt:message var="showBoth" key="list.expand.both"/>
-					<li id="optionExpandBookmark"><a href="javascript:expandBookmarkList();" title="${expandBookmarks}">&gt;</a></li>
-					<li id="optionShowBoth" style="display: none;"><a href="javascript:showBothLists();" title="${showBoth}">|</a></li>
-					<li id="optionExpandBibtex"><a href="javascript:expandBibTexList();" title="${expandPublications}">&lt;</a></li>
-				</ul>
-
 			</div>
 			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
