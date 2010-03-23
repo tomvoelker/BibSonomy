@@ -36,6 +36,7 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +44,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.enums.SerializeBibtexMode;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -50,10 +52,11 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.comparators.BibTexPostComparator;
 import org.bibsonomy.model.comparators.BibTexPostInterhashComparator;
 import org.bibsonomy.services.URLGenerator;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.tex.TexDecode;
 
 /**
- * Some BibTex utility functions
+ * Some BibTex utility functions.
  * 
  * @author Dominik Benz
  * @version $Id$
@@ -96,13 +99,14 @@ public class BibTexUtils {
 	 */
 	private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
 	private static final Pattern DOI_PATTERN = Pattern.compile("http://.+/(.+?/.+?$)");
-	private static final Pattern MISC_FIELD_PATTERN = Pattern.compile("([a-zA-Z0-9]+)\\s*=\\s*\\{(.*?)\\}", Pattern.DOTALL);
 	private static final Pattern LAST_COMMA_PATTERN = Pattern.compile(".+}?\\s*,\\s*}\\s*$", Pattern.MULTILINE | Pattern.DOTALL);
 
 	private static final String[] ENTRYTYPES = {"article", "book", "booklet", "inbook", "incollection", "inproceedings",
 		"manual", "mastersthesis", "misc", "phdthesis", "proceedings", "techreport", "unpublished"};
 
-
+	/*
+	 * fields to be excluded when creating bibtex strings.
+	 */
 	private static final Set<String> EXCLUDE_FIELDS = new HashSet<String>(Arrays.asList(new String[] { 
 			"abstract",        // added separately
 			"bibtexAbstract",  // added separately
@@ -127,12 +131,26 @@ public class BibTexUtils {
 	}));
 
 
+	/** default opening bracket */
+	public static final char DEFAULT_OPENING_BRACKET = '{';
+	/** default closing bracket */
+	public static final char DEFAULT_CLOSING_BRACKET = '}';
+	/** value separator used to separate key/value pairs; i.e. key=val SEP key2=val2*/
+	public static final char KEYVALUE_SEPARATOR = ',';
+	/** assignment operator to assign keys to values; i.e. key OP val, ...*/
+	public static final char ASSIGNMENT_OPERATOR = '=';
+	/** indentation used for key/value pairs when converted to a bibtex string */
+	public static final String KEYVALUE_INDENT = "  ";		
+	
+	
 	/**
 	 * @return The available types for bibtex entries.
 	 */
 	public static String[] getEntryTypes() {
 		return ENTRYTYPES;
 	}
+	
+
 
 	/**
 	 * Builds a string from a given bibtex object which can be used to build an OpenURL
@@ -170,7 +188,7 @@ public class BibTexUtils {
 		}
 
 		// parse misc fields
-		parseMiscField(bib);
+		bib.parseMiscField();
 		// extract DOI
 		String doi = bib.getMiscField("doi");
 		if (doi != null) {
@@ -234,75 +252,33 @@ public class BibTexUtils {
 		}
 	}
 
-	/**
-	 * This is a helper method to parse the misc-field of a bibtex object
-	 * and store the   
-	 * 
-	 *   key = {value}
-	 *   
-	 * pairs in its miscFields map.
-	 * 
-	 * @param bib the bibtex object
-	 */
-	public static void parseMiscField(final BibTex bib) {
-		if (bib.getMisc() != null) {
-			final Matcher m = MISC_FIELD_PATTERN.matcher(bib.getMisc());
-			while (m.find()) {
-				bib.addMiscField(m.group(1), m.group(2));
-			}
-		}
-	}
 
 	/**
-	 * This is a helper method to convert the key = value pairs contained in the 
-	 * miscFields map of a bibtex object into a serialized representation in the 
-	 * misc-Field. It appends 
+	 * return a bibtex string representation of the given bibtex object. by default, 
+	 * the contained misc fields are parsed before the bibtex string is generated.
 	 * 
-	 *  key1 = {value1}, key2 = {value2}, ...
-	 *  
-	 * for all defined miscFields to the misc field of the given entry.
-	 * 
-	 * @param bib the bibtex object
+	 * @param bib - the bibtex object
+	 * @return - a string representation of the given bibtex object
 	 */
-	public static void serializeMiscFields(final BibTex bib) {
-		final Map<String,String> miscFields = bib.getMiscFields();
-		final StringBuffer miscFieldsSerialized = new StringBuffer();
-		// loop over misc fields, if any
-		if (present(miscFields)) {
-			for (String key : miscFields.keySet()) {
-				miscFieldsSerialized.append("  " + key + " = {" + miscFields.get(key) + "},\n");
-			}
-			// remove last comma
-			miscFieldsSerialized.delete(miscFieldsSerialized.lastIndexOf(","), miscFieldsSerialized.length());
-		}
-		// write serialized misc fields into misc field
-		bib.setMisc(miscFieldsSerialized.toString());
+	public static String toBibtexString(final BibTex bib) {
+		return toBibtexString(bib, SerializeBibtexMode.PARSED_MISCFIELDS);
 	}
-
-	/**
-	 * helper method to parse misc field of a bibtex entry
-	 * 
-	 * @param misc String value of misc field
-	 * @return the parsed misc fields as a hashmap
-	 */
-	public static Map<String, String> parseMiscField(final String misc) {
-		final BibTex bib = new BibTex();
-		bib.setMisc(misc);
-		parseMiscField(bib);
-		return bib.getMiscFields();
-	}
-
+	
+	
 	/**
 	 * return a bibtex string representation of the given bibtex object
 	 * 
-	 * @param bib
+	 * @param bib - a bibtex object
+	 * @param mode - the serializing mode (parse misc fields or include misc fields as they are)
 	 * @return String bibtexString
 	 * 
+	 * TODO use BibTex.DEFAULT_OPENBRACKET etc.
+	 * 
 	 */
-	public static String toBibtexString(final BibTex bib) {
+	public static String toBibtexString(final BibTex bib, SerializeBibtexMode mode) {
 		try {
 			final BeanInfo bi = Introspector.getBeanInfo(bib.getClass());
-
+			
 			/*
 			 * start with entrytype and key
 			 */
@@ -332,11 +308,20 @@ public class BibTexUtils {
 			 * add misc fields
 			 */
 			if (present(bib.getMisc()) || present(bib.getMiscFields())) {
-				// parse & re-serialize the misc field
-				parseMiscField(bib);
-				serializeMiscFields(bib);
-				if (! "".equals(bib.getMisc())) {
-					buffer.append(bib.getMisc() + ",\n");
+				
+				// process miscFields map
+				if ( present(bib.getMiscFields()) ) {
+					if ( mode.equals(SerializeBibtexMode.PARSED_MISCFIELDS) && !bib.isMiscFieldParsed()) {
+						bib.parseMiscField();
+					}
+					buffer.append(serializeMiscFields(bib.getMiscFields(), true));
+				}
+				
+				// include plain misc fields if desired
+				if ( mode.equals(SerializeBibtexMode.PLAIN_MISCFIELDS)  && present(bib.getMisc())) {
+					System.out.println("APPENDING MISC " + bib.getMisc());
+					System.out.println();
+					buffer.append("  " + bib.getMisc() + ",\n");
 				}
 			}
 			/*
@@ -359,7 +344,7 @@ public class BibTexUtils {
 			 */
 			buffer.delete(buffer.lastIndexOf(","), buffer.length());
 			buffer.append("\n}");	
-
+			
 			return buffer.toString();
 
 		} catch (IntrospectionException ex) {
@@ -412,6 +397,18 @@ public class BibTexUtils {
 		return toBibtexString(post);
 	}
 	
+	
+	/**
+	 * Return a bibtex representation of the given post. Defaults to 
+	 * serialize mode PARSED_MISCFIELDS.
+	 * 
+	 * @param post - a post
+	 * @return - a bibtex string representation of this post.
+	 */
+	public static String toBibtexString(final Post<BibTex> post) {
+		return toBibtexString(post, SerializeBibtexMode.PARSED_MISCFIELDS);
+	}
+	
 	/**
 	 * Creates a BibTeX string containing more than only the fields in the 
 	 * BibTeX object:
@@ -422,29 +419,21 @@ public class BibTexUtils {
 	 * </ul>
 	 * 
 	 * @param post - a BibTeX post.
+	 * @param mode - the serialize mode
 	 * 
 	 * @return A string representation of the post in BibTeX format.
 	 */
-	public static String toBibtexString(final Post<BibTex> post) {
+	public static String toBibtexString(final Post<BibTex> post, SerializeBibtexMode mode) {
+		final BibTex bib = post.getResource();	
 		/*
-		 * if you add fields here, you have to add them also 
+		 * add additional fields.
+		 *  
+		 * ATTENTION: if you add fields here, you have to add them also 
 		 * in SimpleBibTeXParser.updateWithParsedBibTeX!
 		 */
-		final BibTex bib = post.getResource();	
 		bib.addMiscField(ADDITIONAL_MISC_FIELD_KEYWORDS, TagUtils.toTagString(post.getTags(), " "));
-		bib.addMiscField(ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());
-		final String bibtexString = BibTexUtils.toBibtexString(bib);
-		/*
-		 * restore post's misc field by removing the additional fields
-		 */
-		for (final String additionalField: ADDITIONAL_MISC_FIELDS) {
-			bib.getMiscFields().remove(additionalField);	
-		}
-		/*
-		 * restore misc field
-		 */
-		BibTexUtils.serializeMiscFields(bib);
-		return bibtexString;
+		bib.addMiscField(ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());	
+		return toBibtexString(bib, mode);
 	}
 
 	/**
@@ -758,4 +747,47 @@ public class BibTexUtils {
 	private static String prepareNameRepresentationForDatabase(final String string) {
 		return present(string) ? string.replaceAll("\n", PersonNameUtils.PERSON_NAME_DELIMITER) : "";
 	}
+	
+	
+	/**
+	 * Converts the key = value pairs contained in the 
+	 * miscFields map of a bibtex object into a serialized representation in the 
+	 * misc-Field. It appends 
+	 * 
+	 *  key1 = {value1}, key2 = {value2}, ...
+	 *  
+	 * for all defined miscFields to the return string.
+	 * 
+	 * @param miscFields - a hashmap containing key/value pairs
+	 * @param appendTrailingSeparator - whether to append a trailing separator at the end of the string
+	 * @return - a string representation of the given object.
+	 */
+	public static String serializeMiscFields(Map<String,String> miscFields, boolean appendTrailingSeparator) {
+		final StringBuffer miscFieldsSerialized = new StringBuffer();
+		// loop over misc fields, if any
+		if (present(miscFields)) {
+			String currKey;
+			Iterator<String> it = miscFields.keySet().iterator();
+			while (it.hasNext()) {				
+				currKey = it.next();
+				miscFieldsSerialized.append(KEYVALUE_INDENT + currKey + " " + ASSIGNMENT_OPERATOR + " " + DEFAULT_OPENING_BRACKET + miscFields.get(currKey) + DEFAULT_CLOSING_BRACKET);
+				if (it.hasNext() || appendTrailingSeparator) {	miscFieldsSerialized.append(KEYVALUE_SEPARATOR + "\n");	}
+			}
+			
+		}
+		// write serialized misc fields into misc field
+		return miscFieldsSerialized.toString();				
+	}
+	
+	
+	/**
+	 * Parse a given misc field string into a hashmap containing key/value pairs.
+	 * 
+	 * @param miscFieldString - the misc field string
+	 * @return a hashmap containg the parsed key/value pairs.
+	 */
+	public static Map<String,String> parseMiscFieldString(String miscFieldString) {
+		return StringUtils.parseBracketedKeyValuePairs(miscFieldString, ASSIGNMENT_OPERATOR, KEYVALUE_SEPARATOR, DEFAULT_OPENING_BRACKET, DEFAULT_CLOSING_BRACKET);		
+	}
+	
 }

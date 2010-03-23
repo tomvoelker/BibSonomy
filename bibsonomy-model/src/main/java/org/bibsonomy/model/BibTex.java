@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.extra.BibTexExtra;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 import org.bibsonomy.model.util.SimHash;
 
@@ -98,6 +99,13 @@ public class BibTex extends Resource {
 	private List<BibTexExtra> extraUrls;
 	
 	private ScraperMetadata scraperMetadata;
+	
+	/**
+	 *  param to check when the 'misc' field has been parsed. When it is true,
+	 *  one can be sure that all key/value pairs contained in the 'misc'-field 
+	 *  are also present in the miscFields-map.
+	 */ 
+	private boolean miscFieldParsed = true;
 	
 	/**
 	 * A document attached to this bibtex resource.
@@ -390,6 +398,7 @@ public class BibTex extends Resource {
 	 */
 	public void setMisc(String misc) {
 		this.misc = misc;
+		this.miscFieldParsed = false;
 	}
 
 	/**
@@ -615,12 +624,18 @@ public class BibTex extends Resource {
 	}
 
 	/**
-	 * Getter for MiscFields
+	 * Getter for MiscFields. This returns the hashmap
+	 * containing the key/value pairs of the internal hashmap.
 	 * 
-	 * @return a HashMap containing the miscFields
+	 * FIXME: an unmodifiable hashmap would be good here - but breaks the depthEqualityTester elsewhere (dbe)
+	 * 
+	 * @return an HashMap containing the miscFields
 	 */
 	public Map<String, String> getMiscFields() {
-		return this.miscFields;
+		if (this.miscFields != null) {
+			return this.miscFields;
+		}
+		return null;
 	}
 
 	/** 
@@ -681,9 +696,87 @@ public class BibTex extends Resource {
 	public List<BibTexExtra> getExtraUrls() {
 		return extraUrls;
 	}
+	
 
 	@Override
 	public String toString() {
 		return super.toString() + " by <" + author + ">";	
 	}
+	
+	
+	/**
+	 * Setter for all misc fields.
+	 * 
+	 * @param miscFields
+	 */
+	public void setMiscFields(Map<String,String> miscFields) {
+		this.miscFields = miscFields;
+		this.miscFieldParsed = false;
+	}
+	
+	/**
+	 * Parses the 'misc'-field and stores the obtained key/valued pairs
+	 * in the internal miscFields-Hashmap.
+	 */
+	public void parseMiscField() {
+		this.miscFields = BibTexUtils.parseMiscFieldString(this.getMisc());
+		this.miscFieldParsed = true;
+	}
+	
+	/**
+	 * Serializes the internal miscFields-Hashmap into the a string 
+	 * representation and stores it in the 'misc'-field.
+	 */
+	public void serializeMiscFields() {
+		this.misc = BibTexUtils.serializeMiscFields(this.miscFields, false);
+		this.miscFieldParsed = true;
+	}
+	
+	/**
+	 * Synchronizes the misc and miscFields attributes of this object in
+	 * the following way:
+	 * 
+	 * 1/ the content of the 'misc' field is parsed and stored as key/valued pairs in the 'miscFields' attribute
+	 *    (possibly overwriting existing values)
+	 * 2/ the 'miscFields'-attribute is serialized and the result is stored in the 'misc' attribute      
+	 */
+	public void syncMiscFields() {
+		this.parseMiscField();
+		this.serializeMiscFields();
+		this.miscFieldParsed = true;
+	}
+	
+	/**
+	 * Check whether the 'misc'-field of this bibtex entry has been parsed. When
+	 * this is true, one can be sure that all key/value pairs present in the 
+	 * 'misc' field are also present in the internal miscFields hashmap.
+	 * 
+	 * @return true if the 'misc' field is parsed, false otherwise. 
+	 */
+	public boolean isMiscFieldParsed() {
+		return this.miscFieldParsed;
+	}
+	
+	/**
+	 * Remove a misc field from the parsed array.
+	 * 
+	 * @param key - the requested key
+	 * @return - the previous value for key
+	 */
+	public String removeMiscField(String key) {
+		if (this.miscFields != null && this.miscFields.containsKey(key)) {
+			this.miscFieldParsed = false;
+			return this.miscFields.remove(key);			
+		}
+		return null;
+	}
+	
+	/**
+	 * clear parsed misc fields 
+	 */
+	public void clearMiscFields() {
+		if (this.miscFields != null) {
+			this.miscFields.clear();
+		}
+	}	
 }

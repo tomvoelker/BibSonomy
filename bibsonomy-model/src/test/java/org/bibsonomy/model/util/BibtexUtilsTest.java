@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.common.enums.SerializeBibtexMode;
 import org.bibsonomy.common.enums.SortKey;
 import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.model.BibTex;
@@ -171,25 +172,18 @@ public class BibtexUtilsTest {
 			"  editor = {John Libbey Eurotext},\n" +
 			"  note = {Tome I},\n" +
 			"  title = {La maladie d'Alzheimer au jour le jour : guide pratique pour les familles et tous ceux qui accompagnent au quotidien une personne touchée par la maladie d'Alzheimer},\n" +
-			"  year = {2004},\n" +
-			"  q6 = {It needs.\n" +
-			"To trials.\n" +
-			"Health rises.},\n" +
-			"  q3a = {Reminder 2004). \n" +
-			"Preventive 2007). \n" +
-			"For not.},\n" +
-			"  q7 = {Payment costs.},\n" +
-			"  q3b = {Establishment followed.},\n" +
-			"  q1e = {This \n" + 
-			"Cost-effectiveness paper.},\n" +
-			"  q9 = {Payment costs.},\n" +
-			"  q1a = {Participation health. \n" +
-			"Maintenance age. \n" +
-			"Studies programs.},\n" +
+			"  year = {2004},\n" +			
+			"  q6 = {It needs.\n" + 
+			"To trials.\n" + 
+			"Health rises.}, q7 = {Payment costs.}, q3b = {Establishment followed.}, q1e = {This \n" + 
+			"Cost-effectiveness paper.}, q9 = {Payment costs.}, q1a = {Participation health. \n" + 
+			"Maintenance age. \n" + 
+			"Studies programs.}, q3a = {Reminder 2004). \n" + 
+			"Preventive 2007). \n" + 
+			"For not.},\n" + 						
 			"  abstract = {Le diagnostic de la maladie d'Alzheimer bouleverse la vie du patient mais aussi celle de ses proches, qui seront de plus en plus sollicités en qualité d'aidant. Ce guide permet de comprendre la maladie, son évolution et ses manifestations. Il aborde de façon concrète la gestion de la vie quotidienne, les problèmes de communication avec le malade et les moyens de l'améliorer, ainsi que les difficultés rencontrées par la personne aidante. Enfin, la question des structures d'accueil ou d'aides et les aspects légaux et financiers sont également abordés. Des contacts d'associations ou d'organismes et des sites Internet complètent le guide.}\n" +
 			"}";
-
-		assertEquals(expected, BibTexUtils.toBibtexString(bib));
+		assertEquals(expected, BibTexUtils.toBibtexString(bib, SerializeBibtexMode.PLAIN_MISCFIELDS));
 	}
 
 
@@ -294,22 +288,22 @@ public class BibtexUtilsTest {
 	@Test
 	public void serializeMiscFields() {
 		final BibTex bib = new BibTex();
-		BibTexUtils.serializeMiscFields(bib);
+		bib.serializeMiscFields();
 		assertEquals("", bib.getMisc());
 		// add misc field, check if it is correctly serialized
 		bib.addMiscField("key1", "value1");
-		BibTexUtils.serializeMiscFields(bib);
+		bib.serializeMiscFields();
 		assertEquals("  key1 = {value1}", bib.getMisc());
 		// reset, modify misc fields, re-check
 		bib.addMiscField("key1", "anotherValue1");
-		BibTexUtils.serializeMiscFields(bib);
+		bib.serializeMiscFields();
 		assertEquals("  key1 = {anotherValue1}", bib.getMisc());
 		//try the other way round (parse the serialized stuff)
 		bib.addMiscField("key1", "value1");
 		bib.addMiscField("key2", "value2");
-		BibTexUtils.serializeMiscFields(bib);
-		bib.getMiscFields().clear();
-		BibTexUtils.parseMiscField(bib);
+		bib.serializeMiscFields();
+		bib.clearMiscFields();
+		bib.parseMiscField();		
 		
 		assertEquals(2, bib.getMiscFields().values().size());
 		assertEquals("value1", bib.getMiscField("key1"));
@@ -338,6 +332,11 @@ public class BibtexUtilsTest {
 			"  vgwort = {12},\n" +
 			"  doi = {my doi}";
 		bib.setMisc(originalMisc);
+		
+		/*
+		 * parse and re-write the misc string
+		 */
+		bib.syncMiscFields();
 
 		final Post<BibTex> post = new Post<BibTex>();
 		post.setResource(bib);
@@ -357,7 +356,7 @@ public class BibtexUtilsTest {
 		 * The fields are parsed and then serialized. Inbetween, some fields
 		 * have been added (keywords, description). We must ensure, that they're
 		 * removed again such that we have the original misc fields!
-		 */
+		 */		
 		assertEquals(cleanedMisc, bib.getMisc());
 	}
 }
