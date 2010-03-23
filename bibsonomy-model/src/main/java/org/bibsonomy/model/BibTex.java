@@ -632,10 +632,7 @@ public class BibTex extends Resource {
 	 * @return an HashMap containing the miscFields
 	 */
 	public Map<String, String> getMiscFields() {
-		if (this.miscFields != null) {
-			return this.miscFields;
-		}
-		return null;
+		return this.miscFields;
 	}
 
 	/** 
