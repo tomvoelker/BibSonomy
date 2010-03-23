@@ -30,7 +30,7 @@
 							<li id="selected"><a href="${tabURL}?selTab=${tab.id}"><c:out value="${tabTitle}"/></a></li>			
 						</c:when>
 						<c:otherwise>
-							<li><a href="${tabURL}?selTab=${tab.id}"></a><c:out value="${tabTitle}"/></li>							
+							<li><a href="${tabURL}?selTab=${tab.id}"><c:out value="${tabTitle}"/></a></li>							
 						</c:otherwise>
 					</c:choose>
 				</c:if>		
