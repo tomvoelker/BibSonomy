@@ -100,6 +100,7 @@ public class BibTexUtils {
 	private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
 	private static final Pattern DOI_PATTERN = Pattern.compile("http://.+/(.+?/.+?$)");
 	private static final Pattern LAST_COMMA_PATTERN = Pattern.compile(".+}?\\s*,\\s*}\\s*$", Pattern.MULTILINE | Pattern.DOTALL);
+	private static final Pattern NUMERIC_PATTERN = Pattern.compile("^\\d+$");
 
 	private static final String[] ENTRYTYPES = {"article", "book", "booklet", "inbook", "incollection", "inproceedings",
 		"manual", "mastersthesis", "misc", "phdthesis", "proceedings", "techreport", "unpublished"};
@@ -298,9 +299,12 @@ public class BibTexUtils {
 					/*
 					 * Strings containing whitespace give empty fields ... we ignore them 
 					 */
-					final String value = ((String) o);
+					String value = ((String) o);
 					if (present(value)) {
-						buffer.append("  " + d.getName() + " = {" + value + "},\n");
+						if (! NUMERIC_PATTERN.matcher(value).matches()) {
+							value = DEFAULT_OPENING_BRACKET + value + DEFAULT_CLOSING_BRACKET;
+						}
+						buffer.append("  " + d.getName().toLowerCase() + " = " + value + ",\n");
 					}
 				}
 			}
@@ -429,7 +433,9 @@ public class BibTexUtils {
 		 * in SimpleBibTeXParser.updateWithParsedBibTeX!
 		 */
 		bib.addMiscField(ADDITIONAL_MISC_FIELD_KEYWORDS, TagUtils.toTagString(post.getTags(), " "));
-		bib.addMiscField(ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());	
+		if (present(post.getDescription())) {
+			bib.addMiscField(ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());
+		}
 		return toBibtexString(bib, mode);
 	}
 
@@ -767,7 +773,7 @@ public class BibTexUtils {
 			Iterator<String> it = miscFields.keySet().iterator();
 			while (it.hasNext()) {				
 				currKey = it.next();
-				miscFieldsSerialized.append(KEYVALUE_INDENT + currKey + " " + ASSIGNMENT_OPERATOR + " " + DEFAULT_OPENING_BRACKET + miscFields.get(currKey) + DEFAULT_CLOSING_BRACKET);
+				miscFieldsSerialized.append(KEYVALUE_INDENT + currKey.toLowerCase() + " " + ASSIGNMENT_OPERATOR + " " + DEFAULT_OPENING_BRACKET + miscFields.get(currKey) + DEFAULT_CLOSING_BRACKET);
 				if (it.hasNext() || appendTrailingSeparator) {	miscFieldsSerialized.append(KEYVALUE_SEPARATOR + "\n");	}
 			}
 			
