@@ -127,7 +127,7 @@
 		+-->
 	<bean id="distRecommender1" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
 		<property name="address">
-			<value>http://gromit:8080/recommender-servlet/TagRecommenderServlet</value>
+			<value>http://gromit.cs.uni-kassel.de:8080/recommender-servlet/TagRecommenderServlet</value>
 		</property>
 	</bean>
     
