@@ -1709,44 +1709,57 @@ function sendEditTags(obj, type, ckey, link) {
 				+ "&resourcetype=" + type
 				+ "&format=ajax",
 		dataType :"html",
-		global :"false"
+		global :"false",
+		success : function(data) {
+			var parent = obj.parentNode;
+			var nodeText = "edit ";
+			
+			$(obj).parent().children(".help").remove();
+			
+			if (data.trim().length > 0) {
+				if (type == "bibtex") {
+					$(obj).parent().children(':first').css({'float':'left'});
+				}
+				
+				$(obj).before(data);
+				return false;
+			}
+			
+			if (type == "bibtex") {
+				$(obj).parent().children(':first').css({'float':''});
+				targetChild = 2;
+				parent.removeChild(parent.childNodes[targetChild]);
+				parent.removeChild(parent.childNodes[targetChild]);
+				nodeText = " edit ";
+			} else {
+				parent.removeChild(parent.firstChild);
+				parent.removeChild(parent.firstChild);
+			}
+			
+			var edit = document.createElement("a");
+			edit.setAttribute("onclick", "editTags(this, '" + ckey + "'); return false;");
+			edit.setAttribute("tags", tags.trim());
+			edit.setAttribute("href", link);
+			edit.appendChild(document.createTextNode(nodeText));
+			
+			parent.insertBefore(edit, parent.childNodes[targetChild]);
+			parent = parent.parentNode.previousSibling.childNodes[1];
+	
+			while (parent.hasChildNodes()) {
+				parent.removeChild(parent.firstChild);
+			}
+	
+			var tagList = tags.split(" ");
+	
+			for (i in tagList) {
+				var tag = document.createElement("a");
+				tags = encodeURIComponent(tagList[i]);
+				tag.setAttribute("href", "/user/" + currUser + "/" + tags);
+				tag.appendChild(document.createTextNode(tagList[i] + " "));
+				parent.appendChild(tag);
+			}
+		}
 	});
-
-	var parent = obj.parentNode;
-	var nodeText = "edit ";
-
-	if (type == "bibtex") {
-		targetChild = 2;
-		parent.removeChild(parent.childNodes[targetChild]);
-		parent.removeChild(parent.childNodes[targetChild]);
-		nodeText = " edit ";
-	} else {
-		parent.removeChild(parent.firstChild);
-		parent.removeChild(parent.firstChild);
-	}
-	
-	var edit = document.createElement("a");
-	edit.setAttribute("onclick", "editTags(this, '" + ckey + "'); return false;");
-	edit.setAttribute("tags", tags.trim());
-	edit.setAttribute("href", link);
-	edit.appendChild(document.createTextNode(nodeText));
-	
-	parent.insertBefore(edit, parent.childNodes[targetChild]);
-	parent = parent.parentNode.previousSibling.childNodes[1];
-
-	while (parent.hasChildNodes()) {
-		parent.removeChild(parent.firstChild);
-	}
-
-	var tagList = tags.split(" ");
-
-	for (i in tagList) {
-		var tag = document.createElement("a");
-		tags = encodeURIComponent(tagList[i]);
-		tag.setAttribute("href", "/user/" + currUser + "/" + tags);
-		tag.appendChild(document.createTextNode(tagList[i] + " "));
-		parent.appendChild(tag);
-	}
 
 	return false;
 }
