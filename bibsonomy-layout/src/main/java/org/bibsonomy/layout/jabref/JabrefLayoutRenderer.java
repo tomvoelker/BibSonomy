@@ -314,7 +314,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 				// set some fields so we can easily access them later in the export filters
 				bib.addMiscField("bibsonomyUsername", post.getUser().getName());   // bibsonomy username
 				bib.addMiscField("comment", post.getDescription());                // used at least by openoffice-csv
-				bib.addMiscField("description", post.getDescription()); 		   // requested by a user
+				// description field is added automatically
 				bibtexStrings.append("\n" + BibTexUtils.toBibtexString(bibPost));
 			}
 		}
