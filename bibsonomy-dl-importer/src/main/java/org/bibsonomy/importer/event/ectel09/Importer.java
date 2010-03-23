@@ -89,7 +89,7 @@ public class Importer {
 			/*
 			 * parse misc field, to access paper ID and track
 			 */
-			BibTexUtils.parseMiscField(bibtex);
+			bibtex.parseMiscField();
 			bibtex.addMiscField("paperId", post.getContentId().toString());
 			
 			/*
