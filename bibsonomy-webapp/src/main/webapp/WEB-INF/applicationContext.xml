@@ -76,7 +76,7 @@
  	<bean id="luceneUpdateBookmarkCronTriggerWithIndexOptimization" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<!-- value is like "sec  min  hour  day  month  dow year(optional)	" -->
  		<!--  http://www.opensymphony.com/quartz/api/    http://www.opensymphony.com/quartz/api/org/quartz/CronExpression.html  -->
-		<property name="cronExpression" value="1 0 2 * * ?" />
+		<property name="cronExpression" value="1 10 2 * * ?" />
 		<property name="jobDetail" ref="luceneUpdateBookmarkJobWithIndexOptimization" />
 	</bean>
 
