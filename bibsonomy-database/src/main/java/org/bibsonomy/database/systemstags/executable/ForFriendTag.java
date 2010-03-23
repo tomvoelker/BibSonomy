@@ -62,7 +62,7 @@ public class ForFriendTag extends SystemTag {
 	@Override
 	public <T extends Resource> void performAfterUpdate(Post<T> newPost, final Post<T> oldPost, PostUpdateOperation operation, DBSession session) {
 		// do exactly the same as in a Create => ignore operation
-		//this.performAfterCreate(post, session);
+		this.performAfterCreate(newPost, session);
 	}
 
 
@@ -80,7 +80,6 @@ public class ForFriendTag extends SystemTag {
 			// sender is not allowed to use this tag, errorMessages were added
 			return;
 		}
-		//TODO: What if contentId is currently unknown (= not stored in post)? => Exception
 		/*
 		 * Rename forFriendTag from send:userName to sent:userName
 		 * We deactivate the systemTag to avoid sending the Message again and again each time the sender updates his post
