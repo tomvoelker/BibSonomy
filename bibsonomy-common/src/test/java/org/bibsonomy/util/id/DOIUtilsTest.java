@@ -243,6 +243,16 @@ public class DOIUtilsTest {
 		Assert.assertEquals(urlWithDoi, DOIUtils.cleanDOI(urlWithDoi));
 		
 		Assert.assertEquals(cleanBibtexLineWithDoi, DOIUtils.cleanDOI(bibtexLineWithDoi));
+
+	}
+	
+	@Test
+	public void testExtract2() throws Exception {
+		Assert.assertEquals("10.1109/ISSTA.2002.1048560", DOIUtils.extractDOI("doi = {doi:10.1109/ISSTA.2002.1048560}"));
+		Assert.assertEquals("10.1007/11762256_31", DOIUtils.extractDOI("doi={http://dx.doi.org/10.1007/11762256_31}"));
+		Assert.assertEquals("10.1007/11762256_31", DOIUtils.extractDOI("http://dx.doi.org/10.1007/11762256_31"));
+		Assert.assertEquals("10.1109/ISSTA.2002.1048560", DOIUtils.extractDOI("doi:10.1109/ISSTA.2002.1048560"));
+		Assert.assertEquals("10.1109/ISSTA.2002.1048560", DOIUtils.extractDOI("10.1109/ISSTA.2002.1048560"));		
 	}
 
 
