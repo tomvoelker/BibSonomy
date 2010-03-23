@@ -60,8 +60,8 @@ public class ForGroupTag extends SystemTag {
 	@Override
 	public <T extends Resource> void performBeforeCreate(final Post<T> post, final DBSession session) {
 		log.debug("performing after access");
-		// we assume, that the post itself is valid and therefore perform therefore we do the same as in a regular update
-		this.performBeforeUpdate(post, PostUpdateOperation.UPDATE_ALL, session);
+		// we assume, that the post itself is valid
+		this.perform(post, post.getTags(), session);
 	}
 	
 	@Override
@@ -70,19 +70,39 @@ public class ForGroupTag extends SystemTag {
 		log.debug("performing after access");
 	}
 
-	
 	@Override
-	public <T extends Resource> void performAfterUpdate(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
+	public <T extends Resource> void performBeforeUpdate(Post<T> newPost, final Post<T> oldPost, final PostUpdateOperation operation, final DBSession session) {
+		if (operation == PostUpdateOperation.UPDATE_TAGS) {
+			/*
+			 *  in this case, newPost is not a valid post but contains the new tags, while oldPost is a valid post containing the old tags
+			 */
+			this.perform(oldPost, newPost.getTags(), session);
+		} else {
+			/*
+			 *  in this case, newPost is a valid post containing the new tags
+			 */
+			this.perform(newPost, newPost.getTags(), session);
+		}
+	}
+
+	@Override
+	public <T extends Resource> void performAfterUpdate(Post<T> oldPost, final Post<T> newPost, final PostUpdateOperation operation, final DBSession session) {
 		// nothing is performed after post was updated
 		log.debug("performing after access");
 	}
 
-	@Override
-	public <T extends Resource> void performBeforeUpdate(final Post<T> post, final PostUpdateOperation operation, final DBSession session) {
+	/**
+	 * Make post for the group and store it in the database
+	 * @param <T>
+	 * @param userPost the post to store (we ignore its tags)
+	 * @param userTags the tags for the post
+	 * @param session
+	 */
+	private <T extends Resource> void perform(Post<T> userPost, Set<Tag> userTags, final DBSession session) {
 		log.debug("performing after access");
 		final String groupName = getValue(); // the group's name
-		final String userName = post.getUser().getName();
-		final String intraHash = post.getResource().getIntraHash();
+		final String userName = userPost.getUser().getName();
+		final String intraHash = userPost.getResource().getIntraHash();
 		
 		if (!this.hasPermissions(intraHash, session, groupName, userName)) {
 			// user is not allowed to use this tag, errorMessages were added
@@ -95,7 +115,7 @@ public class ForGroupTag extends SystemTag {
 		logicFactory.setDbSessionFactory(getDbSessionFactory());
 		LogicInterface groupDBLogic = logicFactory.getLogicAccess(groupName, "");
 		/*
-		 *  check if the group exists and whether it owns the post already
+		 *  Check if the group exists and whether it owns the post already
 		 */
 		if (!present(groupDBLogic.getGroupDetails(groupName))) {
 			log.debug("Unknown group!");
@@ -109,29 +129,38 @@ public class ForGroupTag extends SystemTag {
 		}
 		/*
 		 *  Permissions are granted and the group doesn't own the post yet
-		 *  => copy/create post and store it for the group
+		 *  => Copy the post and store it for the group
 		 */
-		log.debug("Old post: "+post.toString());
-		Post<? extends Resource> groupPost;
-		if (operation == PostUpdateOperation.UPDATE_TAGS) {
-			/*
-			 *  We assume, that the post is not valid and contains only it's intraHash
-			 *  therefore we retrive it from the DB first
-			 */
-			LogicInterface userDBLogic = logicFactory.getLogicAccess(userName, "");
-			groupPost = userDBLogic.getPostDetails(intraHash, userName);
+		log.debug("Old post: "+userPost.toString());
+		//FIXME: How do we properly clone a post?
+		Post<T> groupPost = new Post<T>();
+		groupPost.setResource(userPost.getResource());
+		groupPost.setDescription(userPost.getDescription());
+		groupPost.setDate(new Date());
+		groupPost.setUser(new User(groupName));
+		/* 
+		 * Copy Tags: 
+		 * remove all systemTags to avoid any side effects and contradictions 
+		 */
+		final Set<Tag> groupTags = new HashSet<Tag>(userTags);
+		getSystemTagFactory().removeAllSystemTags(groupTags);
+		groupTags.add(new Tag("from:"+userName));
+		groupPost.setTags(groupTags);
+		/*
+		 *  Copy Groups: the visibility of the postCopy is:
+		 *  original == public => copy = public
+		 *  original != public => copy = dbGroup
+		 *  => check if post.groups has only the public group
+		 */
+		// TODO: Find a better way to check for "public" (e.g. via GroupUtils)
+		if (userPost.getGroups().size()==1 && userPost.getGroups().contains(GroupUtils.getPublicGroup())) {
+			// public is the only group (if visibility was public, there should be only one group)
+			groupPost.setGroups(new HashSet<Group>());
+			groupPost.getGroups().add(GroupUtils.getPublicGroup());
 		} else {
-			/*
-			 *  We assume, that the post ist valid and most of it can be copied
-			 */
-			//FIXME: How do we properly clone a post?
-			// This construction is very strange, but the newPost instance is needed to call the setResource method (Generics)
-			Post<T> newPost = new Post<T>();
-			newPost.setResource(post.getResource());
-			groupPost=newPost;
-			groupPost.setDescription(post.getDescription());
+			// visibility is different from public => post is only visible for dbGroup
+			groupPost.addGroup(groupName);
 		}
-		this.addPostDetails(post, groupPost, userName, groupName);
 		log.debug("New post: "+groupPost.toString());
 		/*
 		 * groupPost is complete and can be stored for the group
@@ -141,12 +170,14 @@ public class ForGroupTag extends SystemTag {
 		try {
 			groupDBLogic.createPosts(posts);
 		} catch (DatabaseException dbex) {
-			// add the DatabaseException of the copied post to the Exception of the original one
+			/*
+			 *  Add the DatabaseException of the copied post to the Exception of the original one
+			 */
 			for (String hash: dbex.getErrorMessages().keySet()) {
 				for (ErrorMessage errorMessage: dbex.getErrorMessages(hash)) {
 					errorMessage.setDefaultMessage("This error occured while executing the for: tag: "+errorMessage.getDefaultMessage());
 					errorMessage.setErrorCode("database.exception.systemTag.forGroup.copy");
-					session.addError(post.getResource().getIntraHash(), errorMessage);
+					session.addError(intraHash, errorMessage);
 				}
 			}
 		}
@@ -173,43 +204,6 @@ public class ForGroupTag extends SystemTag {
 			return false;			
 		}
 		return true;
-	}
-
-
-	/**
-	 * Adds important details to the groupPost
-	 * @param <T>
-	 * @param userPost the post that was tagged with for:...
-	 * @param groupPost the post we want to give to the group
-	 * @param userName 
-	 * @param groupName
-	 */
-	private <T extends Resource> void addPostDetails(Post<T> userPost, Post<?> groupPost, String userName, String groupName) {
-		groupPost.setDate(new Date());
-		groupPost.setUser(new User(groupName));
-		/* 
-		 * Copy Tags: 
-		 * remove all systemTags to avoid any side effects and contradictions 
-		 */
-		final Set<Tag> groupTags = new HashSet<Tag>(userPost.getTags());
-		getSystemTagFactory().removeAllSystemTags(groupTags);
-		groupTags.add(new Tag("from:"+userName));
-		groupPost.setTags(groupTags);
-		/*
-		 *  2. Groups: the visibility of the postCopy is:
-		 *  original == public => copy = public
-		 *  original != public => copy = dbGroup
-		 *  => check if post.groups has only the public group
-		 */
-		// TODO: Find a better way to check for "public" (e.g. via GroupUtils)
-		if (userPost.getGroups().size()==1 && userPost.getGroups().contains(GroupUtils.getPublicGroup())) {
-			// public is the only group (if visibility was public, there should be only one group)
-			groupPost.setGroups(new HashSet<Group>());
-			groupPost.getGroups().add(GroupUtils.getPublicGroup());
-		} else {
-			// visibility is different from public => post is only visible for dbGroup
-			groupPost.addGroup(groupName);
-		}
 	}
 
 }

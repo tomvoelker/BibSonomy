@@ -46,29 +46,43 @@ public class ForFriendTag extends SystemTag {
 	public SystemTag newInstance() {
 		return new ForFriendTag();
 	}
+	
+	@Override
+	public <T extends Resource> void performBeforeCreate(final Post<T> post, final DBSession session) {
+		log.debug("performing before acess");
+		// nothing is performed
+	}
+
+	@Override
+	public <T extends Resource> void performBeforeUpdate(Post<T> newPost, final Post<T> oldPost, PostUpdateOperation operation, DBSession session) {
+		log.debug("performing before acess");
+		// nothing is performed
+	}
+
+	@Override
+	public <T extends Resource> void performAfterUpdate(Post<T> newPost, final Post<T> oldPost, PostUpdateOperation operation, DBSession session) {
+		// do exactly the same as in a Create => ignore operation
+		//this.performAfterCreate(post, session);
+	}
+
+
 
 	@Override
 	public <T extends Resource> void performAfterCreate(final Post<T> post, final DBSession session) {
 		log.debug("performing after access");
 		String receiver = getValue().toLowerCase();
 		String sender = post.getUser().getName();
+		String intraHash = post.getResource().getIntraHash();
 		/*
-		 * Check: Is the user (sender) in the list of friends of the receiver?
+		 * Check permissions
 		 */
-		if (!generalDb.isFriendOf(sender, receiver, session)){
-			this.setError(Reason.FRIEND, post, receiver, session);
-			// the is not allowed to use this tag, therefore we omit trying anything else with this tag
-			return;
-		}
-		if (sender.equals(receiver)) {
-			this.setError(Reason.SELF, post, receiver, session);
-			// the is not allowed to use this tag, therefore we omit trying anything else with this tag
+		if (!this.hasPermissions(sender, receiver, intraHash, session)) {
+			// sender is not allowed to use this tag, errorMessages were added
 			return;
 		}
 		//TODO: What if contentId is currently unknown (= not stored in post)? => Exception
-
 		/*
-		 * rename forFriendTag from send:userName to sent:userName
+		 * Rename forFriendTag from send:userName to sent:userName
 		 * We deactivate the systemTag to avoid sending the Message again and again each time the sender updates his post
 		 */
 		this.tagDb.deleteTags(post, session);		// 1. delete all tags from the database (will be replaced by new ones)
@@ -78,58 +92,27 @@ public class ForFriendTag extends SystemTag {
 		this.tagDb.insertTags(post, session);		// 5. store the tags for the sender with the confirmation tag: sent:userName
 }
 
-	@Override
-	public <T extends Resource> void performBeforeCreate(final Post<T> post, final DBSession session) {
-		log.debug("performing before acess");
-	}
 
 	/**
-	 * creates an errorMessage and adds it to the database exception in the session
-	 * @param reason
-	 * @param post
-	 * @param groupName
+	 * Checks the preconditions to this tags usage, adds errorMessages
+	 * @param intraHash
 	 * @param session
+	 * @param sender
+	 * @param receiver
+	 * @return true iff sender is allowed to use the tag
 	 */
-	private void setError(Reason reason, Post<? extends Resource> post, String receiver, DBSession session){
-		String error="";
-		String localizedMessageKey="";
-		switch(reason) {
-			case FRIEND: {
-				error= this.getName()+ ": "  + receiver + " does not exist or did not add you as a friend.";
-				localizedMessageKey="database.exception.systemTag.forFriend.notFriend";
-				break;
-			}
-			case SELF: {
-				error= this.getName()+": You can not send messages to yourself.";
-				localizedMessageKey = "database.exception.systemTag.forFriend.self";
-				break;
-			}
+	private boolean hasPermissions(final String sender, final String receiver, final String intraHash, final DBSession session) {
+		if (!generalDb.isFriendOf(sender, receiver, session)) {
+			final String defaultMessage = this.getName()+ ": "  + receiver + " does not exist or did not add you as a friend.";
+			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.notFriend", new String[]{receiver}));
+			return false;
 		}
-		session.addError(post.getResource().getIntraHash(), new SystemTagErrorMessage(error, localizedMessageKey, new String[]{receiver}));
-	}
-
-	/**
-	 * small enum, to reduce code around the creation of errorMessages
-	 * @author sdo
-	 *
-	 */
-	private enum Reason {
-		FRIEND,
-		SELF;
-	}
-
-	@Override
-	public <T extends Resource> void performAfterUpdate(Post<T> post,
-			PostUpdateOperation operation, DBSession session) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public <T extends Resource> void performBeforeUpdate(Post<T> post,
-			PostUpdateOperation operation, DBSession session) {
-		// TODO Auto-generated method stub
-		
+		if (sender.equals(receiver)) {
+			final String defaultMessage = this.getName()+": You can not send messages to yourself.";
+			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.self", new String[]{receiver}));
+			return false;
+		}
+		return true;
 	}
 
 }
