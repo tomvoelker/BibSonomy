@@ -58,6 +58,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		tagIndex.add(new TagIndex("google", 2));
 		posts = this.bookmarkDb.getPostsByTagNames(PUBLIC_GROUP_ID, tagIndex, null, 10, 0, this.dbSession);
 		assertEquals(1, posts.size());
+		
 	}
 
 	/**
@@ -636,6 +637,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals("7eda282d1d604c702597600a06f8a6b0", posts.get(2).getResource().getIntraHash());
 	}
 	
+		
+	
 	/**
 	 * We want to update a post's tags only.
 	 * 
@@ -670,6 +673,8 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		 * That should be sufficient to identify the original post and
 		 * update its tags.   
 		 */
+		
+		
 		final Post<Bookmark> post = new Post<Bookmark>();
 		post.setUser(new User(userName));
 		final Bookmark bookmark = new Bookmark();
@@ -701,6 +706,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	}
 	
 	
+	
 	/**
 	 * We want to completely update a post
 	 * 
@@ -714,7 +720,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		 * the id of the post we're testing
 		 */
 		final String userName = "testuser1";
-		final String oldIntraHash = "6f372faea7ff92eedf52f597090a6291";
+		final String oldIntraHash = "10ab297107e4bb79b345e406b3c2a087";
 		/*
 		 * get original post for later comparison
 		 */
@@ -736,16 +742,16 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final String newIntraHash = bookmark.getIntraHash();
 		post.setResource(bookmark);
 		final Set<Tag> tags = new HashSet<Tag>();
-		tags.add(new Tag("google"));
-		tags.add(new Tag("yahoo"));
+		tags.add(new Tag("apache"));
+		tags.add(new Tag("adobe"));
 		post.setTags(tags);
 		this.bookmarkDb.updatePost(post, oldIntraHash, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 		
 		final Post<Bookmark> newPost = this.bookmarkDb.getPostDetails(userName, newIntraHash, userName, Collections.singletonList(0), this.dbSession);
 		final Set<Tag> dbTags = newPost.getTags();
 		assertEquals(2, dbTags.size());
-		assertTrue(dbTags.contains(new Tag("google")));
-		assertTrue(dbTags.contains(new Tag("yahoo")));
+		assertTrue(dbTags.contains(new Tag("apache")));
+		assertTrue(dbTags.contains(new Tag("adobe")));
 		/*
 		 * a complete update MUST change the content id!
 		 */
@@ -766,4 +772,4 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals("http://www.example.com/", newBookmark.getUrl());
 	}
 	
-}
+}	
