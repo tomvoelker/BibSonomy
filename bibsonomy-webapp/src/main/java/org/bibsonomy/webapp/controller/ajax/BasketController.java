@@ -44,7 +44,7 @@ public class BasketController extends AjaxController implements MinimalisticCont
 			/*
 			 * TODO: send to login page with meaningful help message
 			 */
-			return new ExtendedRedirectView("/");
+			return new ExtendedRedirectView("/login");
 		}
 		
 		// check if ckey is valid
@@ -53,11 +53,9 @@ public class BasketController extends AjaxController implements MinimalisticCont
 			return Views.ERROR;
 		}
 		
-		// var to save basketsize
-		int basketSize = 0;
 		
 		// if clear all is set, clear all
-		if ("clearAll".equals(command.getAction())){
+		if ("clearAll".equals(command.getAction())) {
 			logic.deleteBasketItems(null, true);
 		
 			return new ExtendedRedirectView(requestLogic.getReferer());
@@ -66,15 +64,22 @@ public class BasketController extends AjaxController implements MinimalisticCont
 		// create list of posts by hash data and given username
 		final List<Post<? extends Resource>> posts = createObjects(command);
 
-		// decide which method will be called
+		
+		/*
+		 * new basket size
+		 */
+		int basketSize = 0;
+		/*
+		 * decide which method will be called
+		 */
 		if (command.getAction().startsWith("pick")){
 			basketSize = logic.createBasketItems(posts);
-		}
-		if (command.getAction().startsWith("unpick")){
+		} else if (command.getAction().startsWith("unpick")){
 			basketSize = logic.deleteBasketItems(posts, false);
 		}
-		
-		// set new basektsize
+		/*
+		 * set new basket size
+		 */
 		command.setResponseString(Integer.toString(basketSize));
 		
 		return Views.AJAX;
@@ -99,39 +104,34 @@ public class BasketController extends AjaxController implements MinimalisticCont
 			 * add several posts - "pick all"
 			 */
 			for (final String s:hash.split(" ")){
-				final Post<BibTex> post = new Post<BibTex>();
-				final User user = new User();
-				final BibTex bib = new BibTex();
-				
-				// split string i.e. 1717560e1867fcb75197fe8689e1cc0d/daill
+				/*
+				 * split string i.e. 1717560e1867fcb75197fe8689e1cc0d/daill
+				 */
 				final String[] hashAndOwner = s.split("/");
-
-				user.setName(hashAndOwner[1]);
-				
-				bib.setIntraHash(hashAndOwner[0].substring(1, hashAndOwner[0].length()));
-				post.setResource(bib);
-				post.setUser(user);
-				
-				posts.add(post);
+				posts.add(createPost(hashAndOwner[0].substring(1, hashAndOwner[0].length()), hashAndOwner[1]));
 			}
 		} else {
-			/*
-			 * add one post - "pick one"
-			 */
-			final Post<BibTex> post = new Post<BibTex>();
-			final User user = new User();
-			final BibTex bib = new BibTex();
-			
-			bib.setIntraHash(hash);
-			post.setResource(bib);
-			
-			user.setName(command.getUser());
-			post.setUser(user);
-			
-			posts.add(post);
+			posts.add(createPost(hash, command.getUser()));
 		}
 				
 		return posts;
+	}
+
+	/**
+	 * Creates a new (empty) post with the given username and intrahash.
+	 * 
+	 * @param intraHash
+	 * @param userName
+	 * @return
+	 */
+	private Post<BibTex> createPost(final String intraHash, final String userName) {
+		final Post<BibTex> post = new Post<BibTex>();
+		final BibTex bib = new BibTex();
+		
+		bib.setIntraHash(intraHash);
+		post.setResource(bib);
+		post.setUser(new User(userName));
+		return post;
 	}
 
 	public Errors getErrors() {
