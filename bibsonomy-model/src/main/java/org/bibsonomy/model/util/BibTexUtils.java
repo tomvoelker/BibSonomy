@@ -305,22 +305,21 @@ public class BibTexUtils {
 				}
 			}
 			/*
-			 * add misc fields
+			 * process miscFields map, if present
 			 */
-			if (present(bib.getMisc()) || present(bib.getMiscFields())) {
-				
-				// process miscFields map
-				if ( present(bib.getMiscFields()) ) {
-					if ( mode.equals(SerializeBibtexMode.PARSED_MISCFIELDS) && !bib.isMiscFieldParsed()) {
-						bib.parseMiscField();
-					}
-					buffer.append(serializeMiscFields(bib.getMiscFields(), true));
+			if ( present(bib.getMiscFields()) ) {
+				if ( mode.equals(SerializeBibtexMode.PARSED_MISCFIELDS) && !bib.isMiscFieldParsed()) {
+					// parse misc field, if not yet done
+					bib.parseMiscField();
 				}
-				
-				// include plain misc fields if desired
-				if ( mode.equals(SerializeBibtexMode.PLAIN_MISCFIELDS)  && present(bib.getMisc())) {
-					buffer.append("  " + bib.getMisc() + ",\n");
-				}
+				buffer.append(serializeMiscFields(bib.getMiscFields(), true));
+			}
+			
+			/*
+			 * include plain misc fields if desired
+			 */
+			if ( mode.equals(SerializeBibtexMode.PLAIN_MISCFIELDS)  && present(bib.getMisc())) {
+				buffer.append("  " + bib.getMisc() + ",\n");
 			}
 			/*
 			 * add month
