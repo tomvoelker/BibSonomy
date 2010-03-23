@@ -97,7 +97,7 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 * @param titles the message keys of the tabs to add (clickable text header)
 	 */
 	private void addTabs(final String[] titles) {
-		for(int i=0; i<titles.length; i++) { // use: for (String title : titles) ...
+		for (int i = 0; i < titles.length; i++) {
 			addTab(i, titles[i]);
 		}
 	}

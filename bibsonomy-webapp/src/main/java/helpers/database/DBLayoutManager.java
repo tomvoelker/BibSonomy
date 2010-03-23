@@ -16,10 +16,15 @@ import beans.LayoutBean;
  * @author rja
  *
  */
+@Deprecated
 public class DBLayoutManager extends DBManager {
 
 	private static final Logger log = Logger.getLogger(DBLayoutManager.class);
-	
+
+	/**
+	 * @param bean
+	 */
+	@Deprecated
 	public static void getLayoutSettingsForUser (LayoutBean bean) {
 		DBContext c = new DBContext();
 		try {

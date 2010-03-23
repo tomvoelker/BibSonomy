@@ -8,6 +8,17 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.Role;
 
+import filters.ActionValidationFilter;
+import filters.InitUserFilter;
+import filters.SessionSettingsFilter;
+
+/**
+ * Still used in {@link ActionValidationFilter}, {@link InitUserFilter}, 
+ * {@link SessionSettingsFilter}, and several Servlets!
+ * @author rja
+ *
+ */
+@Deprecated
 public class UserBean implements Serializable {
 
 	private static final long serialVersionUID = -7295358376819936465L;
@@ -31,11 +42,12 @@ public class UserBean implements Serializable {
 	private int logLevel = 0;
 	private boolean confirmDelete = true;
 
-	private Set<String> groups = new HashSet<String>(); // groups the user is in
+	private final Set<String> groups = new HashSet<String>(); // groups the user is in
 	private List<String> friends = new LinkedList<String>(); // the friends of the user	
 
 	private final int MAX_ITEMCOUNT = 1000; // maximal number of items shown (inclusive)
 	
+	@Override
 	public String toString () {
 		return name + "(" + realname + " <" + email + ">): " +
 				"style="     + tagboxStyle   + ", " +

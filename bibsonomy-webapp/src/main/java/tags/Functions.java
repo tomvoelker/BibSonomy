@@ -287,7 +287,7 @@ public class Functions  {
 			 * we expect 0 < tagFrequency < tagMaxFrequency 
 			 * and normalize f to 0 < f 100 as percentage of tagMaxFrequency
 			 */
-			final Double f = new Double(tagFrequency) / tagMaxFrequency * 100;
+			final Double f = tagFrequency.doubleValue() / tagMaxFrequency * 100;
 			Double t = f > 100 ? 100 : f;
 			t /= 5;
 			t = Math.log(t) * 100 + 30;

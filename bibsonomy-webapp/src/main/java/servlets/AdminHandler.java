@@ -1,5 +1,4 @@
 package servlets;
-import helpers.database.DBDBLPManager;
 import helpers.database.DBStatisticsManager;
 
 import java.io.IOException;
@@ -19,7 +18,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import beans.UserBean;
-import filters.ActionValidationFilter;
 import filters.SessionSettingsFilter;
 
 
@@ -103,28 +101,4 @@ public class AdminHandler extends HttpServlet {
 		}
 	}
 
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		/*
-		 * check user name (only admins are allowed)
-		 */
-		UserBean user = SessionSettingsFilter.getUser(request);
-		String userName = user.getName();
-		
-		if (!(ActionValidationFilter.isValidCkey(request) && allowedUsers.contains(userName))) {
-			response.sendRedirect("/login");
-			return;
-		}
-
-		final String action = request.getParameter("action");
-		
-		if ("delete dblp duplicates".equals(action)) {
-			/*
-			 * delete duplicate from DBLP
-			 */
-			int deletedDuplicatesCtr = DBDBLPManager.deleteDuplicates("dblp");
-			request.setAttribute("deletedDuplicatesCtr", deletedDuplicatesCtr);
-			getServletContext().getRequestDispatcher("/admin_dblp.jsp").forward(request, response);
-		} 
-	}	
 }
