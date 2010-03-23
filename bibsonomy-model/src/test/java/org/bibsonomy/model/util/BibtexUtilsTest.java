@@ -128,8 +128,8 @@ public class BibtexUtilsTest {
 			"  title = {The most wonderfult title on earth},\n" +
 			"  volume = 3,\n" +
 			"  year = 2525,\n" + 
-			"  extraKey = {extraVal},\n" + 
-			"  extraKey2 = {extraVal2}\n}";
+			"  extrakey = {extraVal},\n" + 
+			"  extrakey2 = {extraVal2}\n}";
 		
 		assertEquals(expectedBibtex2, BibTexUtils.toBibtexString(bib));		
 	}
