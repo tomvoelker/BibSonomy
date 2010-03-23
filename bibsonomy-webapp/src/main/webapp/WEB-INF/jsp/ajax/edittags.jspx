@@ -17,14 +17,14 @@
 	<c:forEach var="post" items="${command.bibtex.list}" varStatus="postCount">
 		<spring:bind path="command.bibtex.list[${postCount.count - 1}].tags" >
 			<c:if test="${status.error}">
-				<batch:tagErrors errors="status"/>
+				<batch:tagErrors errors="${status}"/>
 			</c:if>
 		</spring:bind>
 	</c:forEach>
 	<c:forEach var="post" items="${command.bookmark.list}" varStatus="postCount">
 		<spring:bind path="command.bookmark.list[${postCount.count - 1}].tags" >
 			<c:if test="${status.error}">
-				<batch:tagErrors errors="status"/>
+				<batch:tagErrors errors="${status}"/>
 			</c:if>
 		</spring:bind>
 	</c:forEach>  

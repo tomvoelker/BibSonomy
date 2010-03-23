@@ -179,7 +179,7 @@
 			                       <div >
 			               			 <spring:bind path="command.${resourceType}.list[${postCount.count - 1}].tags" >
 			               			 	<c:if test="${status.error}">
-			               			 		<batch:tagErrors errors="status"/>
+			               			 		<batch:tagErrors errors="${status}"/>
 											<input type="text" name="newTags['${post.resource.intraHash}']" size="37" value="${fn:escapeXml(mtl:toTagString(post.tags))}" style="float:left" />	
 			               			 	</c:if>
 										<c:if test="${not status.error}">
