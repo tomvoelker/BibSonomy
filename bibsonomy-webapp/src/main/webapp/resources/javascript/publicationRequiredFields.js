@@ -83,7 +83,7 @@ function processResponse(data) {
 				// get title specific data
 				// and set the forms accordingly
 				function () {
-		          window.location.href = '/editPublication?hash='+intraHash+'?user='+data.user+'&copytag='+tags;
+		          window.location.href = '/editPublication?hash='+intraHash+'?user='+item.user+'&copytag='+tags;
 		          $("#suggestionBox").hide();
 				}
 		);
