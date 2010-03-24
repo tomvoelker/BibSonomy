@@ -7,6 +7,7 @@ var form_name = '#post\\.resource\\.title';
  * @param autocompletion boolean flag - true if autocompletion is on
  * @return
  */
+
 function getSuggestions(partialTitle, autocompletion) {
 	if(!autocompletion) {
 		return;
@@ -22,7 +23,7 @@ function getSuggestions(partialTitle, autocompletion) {
 	if(partialTitle.length > 1) {
 		var query = $.ajax({
 			type: "GET",
-			url: "/json/tag/sys:title:"+partialTitle+"*?items=5",
+			url: "/json/tag/sys:title:"+partialTitle+"*?items=10",
 			dataType: "json",
 			success: function(json){
 			processResponse(json);
@@ -67,23 +68,24 @@ function processResponse(data) {
 		if(item.year != 'undefined') {
 			year = '('+item.year+')';
 		}
-    var intraHash = item.intraHash;
-    var tags = concatArray(item.tags, null, '+');
-    var k = m;
-	var element = 
-    $('<div style="color:#006699;background-color:'
-  		+(((m++)%2 == 0)?'#FFFFFF':'#EEEEEE') // change the background color every step
-  		+'">'+formatLabel(item.label)
-      +'<br><span style="font-size:10px;">'
-      +author
-      +year
-      +'</span></div>');
-
+	    var intraHash = item.intraHash;
+	    var tags = concatArray(item.tags, null, '+');
+	    var k = m;
+		var element = 
+	    $('<div class="suggestion_entry" style="cursor:pointer; color:#006699;background-color:'
+	  		+(((m++)%2 == 0)?'#FFFFFF':'#EEEEEE') // change the background color every step
+	  		+'">'+formatLabel(item.label)
+	      +'<br><span style="font-size:10px;">'
+	      +author
+	      +year
+	      +'</span></div>');
+	
+		element.attr('url', '/editPublication?hash='+intraHash+'&user='+data.user+'&copytag='+tags);
 		element.click(
 				// get title specific data
 				// and set the forms accordingly
 				function () {
-		          window.location.href = '/editPublication?hash='+intraHash+'?user='+item.user+'&copytag='+tags;
+		          window.location.href = '/editPublication?hash='+intraHash+'&user='+data.user+'&copytag='+tags;
 		          $("#suggestionBox").hide();
 				}
 		);
@@ -117,7 +119,7 @@ function processResponse(data) {
  * @param data array of strings
  * @param max_len return the representing string cut down to the size of max_len
  * @param delim  
- * @return one string, containing concatenation of all strings, separated by '\n'
+ * @return one string, containing concatenation of all strings, separated by either '\n' or the supplied delimeter
  */
  
 function concatArray(data, max_len, delim) {
@@ -130,6 +132,34 @@ function concatArray(data, max_len, delim) {
 		retVal += data[entry] + delim;
 	}
 	return ((max_len != null) && (retVal.length > max_len))?retVal.substr(0, max_len)+"...":retVal;
+}
+
+/**
+ * go one entry up/down in the list
+ * 
+ * @param keyup event
+ * @return 
+ */
+ 
+function getArrowKey(e) {
+	if(e.keyCode == 38){
+			if(!$('.suggestion_entry_selected').is('div')) {
+				$('div').last('.suggestion_entry').attr('class','suggestion_entry_selected');
+			} else {
+				var selected = $('.suggestion_entry_selected').attr('class','suggestion_entry');
+				selected.prev('.suggestion_entry').attr('class','suggestion_entry_selected');
+			} 
+	} else if(e.keyCode == 40){
+			if(!$('.suggestion_entry_selected').is('div')) {
+				$('div').first('.suggestion_entry').attr('class','suggestion_entry_selected');
+			} else {
+				var selected = $('.suggestion_entry_selected').attr('class','suggestion_entry');
+				selected.next('.suggestion_entry').attr('class','suggestion_entry_selected');
+			}
+	} else if(e.keyCode == 13 && $('.suggestion_entry_selected').is('div')){
+				window.location.href = $('.suggestion_entry_selected').attr('url');
+		          $("#suggestionBox").hide();
+	}
 }
 
 /**
