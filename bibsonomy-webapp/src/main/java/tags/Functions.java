@@ -23,6 +23,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.id.DOIUtils;
@@ -57,7 +58,10 @@ public class Functions  {
 	private static JabrefLayoutRenderer layoutRenderer;
 
 	// contains special characters, symbols, etc...
-	private static Properties chars = new Properties(); 
+	private static Properties chars = new Properties();
+	
+	// used to generate URLs
+	private static URLGenerator urlGenerator;
 
 	// load special characters
 	static {
@@ -542,8 +546,11 @@ public class Functions  {
 	 * @return
 	 * 		- a bibtex string of this post
 	 */
-	public static String toBibtexString(final Post<BibTex> post) {
-		return BibTexUtils.toBibtexString(post.getResource());
+	public static String toBibtexString(final Post<BibTex> post, String projectHome) {
+		if (urlGenerator == null) {
+			urlGenerator = new URLGenerator(projectHome);
+		}
+		return BibTexUtils.toBibtexString(post, urlGenerator);
 	}
 	
 	/**
