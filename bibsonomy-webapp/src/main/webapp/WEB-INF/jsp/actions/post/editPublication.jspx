@@ -236,7 +236,7 @@
                   <c:if test="${not empty command.scrapingContext.selectedText}">
                     <div class="fsRow">
                       <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.selectedText"/></span>
-                      <span class="fsInput" style="max-width: 800px; overflow: scroll;"><c:out value="${command.scrapingContext.selectedText}"/></span>
+                      <span class="fsInput" style="max-width: 90%; overflow: scroll;"><c:out value="${command.scrapingContext.selectedText}"/></span>
                     </div>
                   </c:if>
 
@@ -247,7 +247,7 @@
 
                   <div class="fsRow">
                     <span class="fsLabel"><fmt:message key="post.resource.fields.scraper.result"/></span>
-                    <pre class="fsInput" style="max-width: 800px; overflow: scroll;"><c:out value="${command.scrapingContext.bibtexResult}"/></pre>
+                    <span class="fsInput" style="max-width: 90%; overflow: scroll;"><c:out value="${command.scrapingContext.bibtexResult}"/></span>
                   </div>
              </fieldset>
           
