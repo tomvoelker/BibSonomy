@@ -550,7 +550,7 @@ public class Functions  {
 		if (urlGenerator == null) {
 			urlGenerator = new URLGenerator(projectHome);
 		}
-		return BibTexUtils.toBibtexString(post, urlGenerator);
+		return BibTexUtils.toBibtexString(post, urlGenerator) + "\n\n";
 	}
 	
 	/**
