@@ -853,6 +853,7 @@ div.help {
 	margin-right:5px; 
 	font-size: 90%;
 	display: inline;
+	cursor: help;
 }
 
 span.info:hover, div.help:hover {
