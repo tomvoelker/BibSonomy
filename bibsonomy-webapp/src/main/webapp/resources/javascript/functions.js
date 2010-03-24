@@ -1857,7 +1857,6 @@ function editBibtexTags(obj) {
 		success : function(data) {
 			$('#batcheditform').children(".help").remove();
 			if (data.trim().length > 0) {
-				data = data.replace("style=\"\"", "stlye='padding-top:0.8em'");
 				$('#batcheditform').children(':first').before(data);
 				return false;
 			}
