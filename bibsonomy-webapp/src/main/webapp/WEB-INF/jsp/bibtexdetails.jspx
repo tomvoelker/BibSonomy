@@ -23,42 +23,44 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-		<ul id="sidebar">
-		<!-- edit tags -->					
-		<c:if test="${command.bibtex.list[0].user.name eq command.context.loginUser.name}"><br/>
-			<li>
-				<span class="sidebar_h"><fmt:message key="navi.editTags"/></span>
-				<form action="/batchEdit" method="post" style="padding:0.8em;">
-					<input type="text" name="newTags['${fn:escapeXml(command.bibtex.list[0].resource.intraHash)}']" style="width:100%" value="${mtl:toTagString(command.bibtex.list[0].tags)}"/>
-					<input type="hidden" name="oldTags['${fn:escapeXml(command.bibtex.list[0].resource.intraHash)}']" value="${mtl:toTagString(command.bibtex.list[0].tags)}"/>
-					<c:set var="updateTags"><fmt:message key="bibtex.actions.tags.update"/></c:set>
-					<input type="submit" value="${updateTags}"/>
-					<input type="hidden" name="referer" value="/bibtex/2${command.bibtex.list[0].resource.intraHash}/${command.bibtex.list[0].user.name}"/>
-					<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-				</form>
-			</li>
-		</c:if>
+			<ul id="sidebar">
+				<!-- edit tags -->					
+				<c:if test="${command.bibtex.list[0].user.name eq command.context.loginUser.name}"><br/>
+					<li>
+						<span class="sidebar_h"><fmt:message key="navi.editTags"/></span>
+						<form action="/batchEdit" method="post" style="padding:0.8em;">
+							<input type="text" name="newTags['${fn:escapeXml(command.bibtex.list[0].resource.intraHash)}']" style="width:100%" value="${mtl:toTagString(command.bibtex.list[0].tags)}"/>
+							<input type="hidden" name="oldTags['${fn:escapeXml(command.bibtex.list[0].resource.intraHash)}']" value="${mtl:toTagString(command.bibtex.list[0].tags)}"/>
+							<fmt:message key="bibtex.actions.tags.update" var="updateTags"/>
+							<input type="submit" value="${updateTags}"/>
+							<input type="hidden" name="referer" value="/bibtex/2${command.bibtex.list[0].resource.intraHash}/${mtl:encodeURI(command.bibtex.list[0].user.name)}"/>
+							<input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
+							<input type="hidden" name="resourcetype" value="bibtex"/>
+							<input type="hidden" name="deleteCheckedPosts" value="true"/>
+						</form>
+					</li>
+				</c:if>
 					
 
-		<!-- display tags -->
-		<li>			
-			<span class="sidebar_h"><fmt:message key="tags"/>
-				<span style="font-size:80%;font-weight:lighter;">
-					(<a href="/user/${fn:escapeXml(command.bibtex.list[0].user.name)}">${fn:escapeXml(command.bibtex.list[0].user.name)}</a>
-					<fmt:message key="tags.highlighted.by_user"/>)
-				</span>
-			</span>
-			<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" highlightTags="${mtl:toTagString(command.bibtex.list[0].tags)}"/>
-		</li>
+				<!-- display tags -->
+				<li>			
+					<span class="sidebar_h"><fmt:message key="tags"/>
+						<span style="font-size:80%;font-weight:lighter;">
+							(<a href="/user/${fn:escapeXml(command.bibtex.list[0].user.name)}">${fn:escapeXml(command.bibtex.list[0].user.name)}</a>
+							<fmt:message key="tags.highlighted.by_user"/>)
+						</span>
+					</span>
+					<tags:cloud requPath="tag" cmd="${command.tagcloud}" tagboxMinfreqStyle="none" highlightTags="${mtl:toTagString(command.bibtex.list[0].tags)}"/>
+				</li>
 		
-		<!-- related users -->
-		<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
-			<li>
-				<span class="sidebar_h"><fmt:message key="users"/></span>
-				<users:related cmd="${command.relatedUserCommand}" userSimilarity="bibtexdetails"/>
-			</li>			
-		</c:if>			
-		</ul>
+				<!-- related users -->
+				<c:if test="${not empty command.relatedUserCommand.relatedUsers}">
+					<li>
+						<span class="sidebar_h"><fmt:message key="users"/></span>
+						<users:related cmd="${command.relatedUserCommand}" userSimilarity="bibtexdetails"/>
+					</li>			
+				</c:if>			
+			</ul>
 		</jsp:attribute>
 				
 		<jsp:attribute name="content">

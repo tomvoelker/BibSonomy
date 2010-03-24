@@ -1712,7 +1712,7 @@ function sendEditTags(obj, type, ckey, link) {
 		global :"false",
 		success : function(data) {
 			var parent = obj.parentNode;
-			var nodeText = "edit ";
+			var nodeText = getString("post.meta.edit");
 			
 			$(obj).parent().children(".help").remove();
 			
@@ -1730,7 +1730,6 @@ function sendEditTags(obj, type, ckey, link) {
 				targetChild = 2;
 				parent.removeChild(parent.childNodes[targetChild]);
 				parent.removeChild(parent.childNodes[targetChild]);
-				nodeText = " edit ";
 			} else {
 				parent.removeChild(parent.firstChild);
 				parent.removeChild(parent.firstChild);
@@ -1754,8 +1753,7 @@ function sendEditTags(obj, type, ckey, link) {
 	
 			for (i in tagList) {
 				var tag = document.createElement("a");
-				tags = encodeURIComponent(tagList[i]);
-				tag.setAttribute("href", "/user/" + currUser + "/" + tags);
+				tag.setAttribute("href", "/user/" + encodeURIComponent(currUser) + "/" + encodeURIComponent(tagList[i]));
 				tag.appendChild(document.createTextNode(tagList[i] + " "));
 				parent.appendChild(tag);
 			}
