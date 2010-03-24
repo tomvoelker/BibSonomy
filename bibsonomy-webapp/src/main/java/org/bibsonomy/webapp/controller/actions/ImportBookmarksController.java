@@ -13,6 +13,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.importer.bookmark.file.FirefoxImporter;
 import org.bibsonomy.importer.bookmark.service.DeliciousImporterFactory;
@@ -146,11 +147,12 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 				 */
 				document.getFile().delete();
 			}
-
+		/*
+		 * FIXME: too general error keys!
+		 */
+		} catch (UnsupportedFileTypeException ex) {
+			errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occurred: {0}");
 		} catch (Exception ex) {
-			/*
-			 * FIXME: too general error key!
-			 */
 			errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occurred: {0}");
 			log.error("Delicious/Firefox-Import failed.", ex);
 		}
