@@ -232,10 +232,10 @@ public class WebUtils {
 			out.close();
 			return out.toString();
 		} catch (final ConnectException cex) {
-			log.fatal("Could not get content for URL " + inputURL.toString() + " : " + cex.getMessage());
+			log.debug("Could not get content for URL " + inputURL.toString() + " : " + cex.getMessage());
 			throw new IOException(cex);
 		} catch (final IOException ioe) {
-			log.fatal("Could not get content for URL " + inputURL.toString() + " : " + ioe.getMessage());
+			log.debug("Could not get content for URL " + inputURL.toString() + " : " + ioe.getMessage());
 			throw ioe;
 		}
 	}
