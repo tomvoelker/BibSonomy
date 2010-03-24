@@ -1,4 +1,4 @@
-@CHARSET "UTF-8";
+@@CHARSET "UTF-8";
 /*
  * style file for the editBookmark form (possibly also for the postBibTeX)
  */
@@ -89,4 +89,13 @@
 
 .fsWaitingText {
 	font-style: italic;
+}
+
+.suggestion_entry_selected
+{
+	border: 1px solid #000000;
+}
+.suggestion_entry
+{
+	border: none;
 }
