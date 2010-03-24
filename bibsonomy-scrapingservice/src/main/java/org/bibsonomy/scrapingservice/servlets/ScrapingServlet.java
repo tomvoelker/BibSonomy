@@ -154,19 +154,19 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 				}
 
 			} catch (final MalformedURLException e) {
-				log.info("URL is malformed.", e);
+				log.info("URL is malformed: " + e.getMessage() );
 				bean.setErrorMessage("URL is malformed.");
 			} catch (final InternalFailureException e) {
 				// internal failure 
-				log.fatal("Internal error occurred.", e);
+				log.fatal("Internal error occurred: " + e.getMessage());
 				bean.setErrorMessage("Internal error occurred: " + e.getMessage());
 			} catch (final UsageFailureException e) {
 				// a user has used a scraper in a wrong way
-				log.info("Usage error.", e);
+				log.info("Usage error: " + e.getMessage());
 				bean.setErrorMessage(e.getMessage());
 			} catch (final PageNotSupportedException e) {
 				// a scraper can't scrape a page but the host is supported
-				log.error("Given page is not supported.", e);
+				log.error("Given page is not supported: " + e.getMessage());
 				bean.setErrorMessage("Given page is not supported.");
 			} catch (final ScrapingFailureException e) {
 				// getting bibtex failed (conversion failed)
@@ -174,13 +174,13 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 				bean.setErrorMessage("Failure during scraping occurred: " + e.getMessage());
 			}  catch (final ScrapingException e) {
 				// something else
-				log.error("General Error.", e);
+				log.error("General Error: " + e.getMessage());
 				bean.setErrorMessage(e.getMessage());
 			} catch (URISyntaxException e) {
-				log.info("URL is URI.", e);
+				log.info("URL is not a URI: " + e.getMessage());
 				bean.setErrorMessage("URL is no URI.");
 			} catch (ParseException e) {
-				log.info("Could not parse BibTeX.", e);
+				log.info("Could not parse BibTeX: " + e.getMessage());
 				bean.setErrorMessage("Could not parse BibTeX.");
 			}
 			/*
