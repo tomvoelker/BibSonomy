@@ -49,48 +49,7 @@
 				<entry key="/ajax/getPublicationRecommendedTags">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="ajaxGetPublicationRecommendedTagsController" />
-						<property name="allowedFields">
-							<list>
-								<value>postID</value>
-								
-								<!-- to support old edit_bibtex.jsp (with short paths) ... -->
-								<value>crossref</value>
-								<value>type</value>
-								<value>title</value>
-								<value>url</value>
-								<value>description</value>
-								<value>author</value>
-								<value>editor</value>
-								<value>journal</value>
-								<value>volume</value>
-								<value>chapter</value>
-								<value>edition</value>
-								<value>year</value>
-								<value>misc</value>
-								<value>month</value>
-								<value>day</value>
-								<value>booktitle</value>
-								<value>howpublished</value>
-								<value>institution</value>
-								<value>organization</value>
-								<value>publisher</value>
-								<value>address</value>
-								<value>school</value>
-								<value>series</value>
-								<value>bibtexKey</value>
-								<value>group</value>
-								<value>user</value>
-								<value>annote</value>
-								<value>key</value>
-								<value>note</value>
-								<value>number</value>
-								<value>pages</value>
-								<value>bibtexAbstract</value>
-								<value>entrytype</value>
-								<value>privnote</value>
-								<value>relevantFor</value>
-							</list>
-						</property>
+						<property name="allowedFields" ref="publicationRequestParameters" />
 					</bean>
 				</entry>
 				<entry key="/ajax/handleFollower">
