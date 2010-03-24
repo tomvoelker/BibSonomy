@@ -177,7 +177,9 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 			response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 			response.setHeader("Retry-After", Long.toString(e.getRetryAfter()));
 			errors.reject(e.getMessage(), new Object[]{e.getRetryAfter()}, "Service unavailable");
-			log.warn("Could not complete controller (Service unavailable): " + e.getMessage());
+			// this exception is only thrown in org.bibsonomy.webapp.controller.actions.UserLoginController;
+			// if desired, add some logging there. Otherwise, our error logs get cluttered.(dbe)
+			// log.warn("Could not complete controller (Service unavailable): " + e.getMessage());
 			view = Views.ERROR;
 		}
 		catch (LuceneException le) {
