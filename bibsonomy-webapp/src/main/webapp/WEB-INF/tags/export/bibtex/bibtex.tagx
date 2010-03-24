@@ -6,49 +6,9 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
-	
-	<c:set var="entries" value="title,address,annote,author,booktitle,chapter,crossref,edition,editor,howpublished,institution,journal,month,note,number,organization,pages,publisher,school,series,type,volume,year,day,url"/>
-	<c:set var="bibtex" value="${post.resource}"/>
-	<pre>
-		<jsp:text>@${bibtex.entrytype}{${bibtex.bibtexKey},<br/></jsp:text>
-		<c:forEach var="entry" items="${fn:split(entries,',')}">
-			<c:if test="${not empty bibtex[entry]}">
-				<c:choose>
-					<c:when test="${mtl:isNumeric(bibtex[entry])}">
-						<jsp:text>	${entry} = ${bibtex[entry]},<br/></jsp:text>
-					</c:when>
-					<c:otherwise>
-						<jsp:text>	${entry} = {${bibtex[entry]}},<br/></jsp:text>
-					</c:otherwise>
-				</c:choose>
-			</c:if>
-		</c:forEach>
-		
-		<!-- special fields: misc, key, description, abstract, keywords, biburl -->
-		
-		<c:if test="${not empty bibtex['misc']}">
-		<!--+
-		    | 2008/12/23, fei: due to bug 682, misc field can't be split using
-		    |                  regular expressions. using the bibtex parser seems to
-		    |                  be too expensive - so we just print out misc field's 
-		    |                  content. 
-			<c:forEach var="miscField" items="${mtl:miscFieldToArray(bibtex['misc'])}">
-				<jsp:text>	${miscField},<br/></jsp:text>
-			</c:forEach>
-		    -->
-		    <c:out value="${bibtex['misc']}"/><jsp:text>,<br/></jsp:text>
-		</c:if>
-		<c:if test="${not empty bibtex.key}">
-			<jsp:text>	key = {${bibtex.key}},<br/></jsp:text>	
-		</c:if>	
-		<c:if test="${not empty post.description}">
-			<jsp:text>	description = {${post.description}},<br/></jsp:text>
-		</c:if>
-		<c:if test="${not empty bibtex.abstract}">
-			<jsp:text>	abstract = {${bibtex.abstract}},<br/></jsp:text>
-		</c:if>
-		<jsp:text>	biburl = {${projectHome}bibtex/${hash.intra.id}${bibtex['intraHash']}/${post.user['name']}},<br/></jsp:text>
-		<jsp:text>	keywords = {${mtl:toTagString(post.tags)}}<br/></jsp:text>
-		<jsp:text>}</jsp:text>
-	</pre>
+	<jsp:directive.attribute name="escapeXml" type="java.lang.Boolean" required="true"/>	
+<c:choose>
+<c:when test="${escapeXml == true}">${fn:escapeXml(mtl:toBibtexString(post, projectHome))}</c:when>
+<c:otherwise>${mtl:toBibtexString(post, projectHome)}</c:otherwise>
+</c:choose>
 </jsp:root>
