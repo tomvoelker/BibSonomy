@@ -302,7 +302,7 @@
   <function>
   	<name>toBibtexString</name>
   	<function-class>tags.Functions</function-class>
-  	<function-signature>String toBibtexString(org.bibsonomy.model.Post)</function-signature>
+  	<function-signature>String toBibtexString(org.bibsonomy.model.Post, java.lang.String)</function-signature>
   </function>  
   
   <function>
