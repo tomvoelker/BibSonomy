@@ -24,7 +24,8 @@
 
 package org.bibsonomy.bibtex.parser;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 
@@ -53,6 +54,17 @@ public class SimpleBibTeXParserTest {
 	"title = {Foo Barness},\n" +
 	"author = {M. Mustermann}}";
 
+	private static final String entry3 = "@phdthesis{david2007domain,\n" + 
+		"address={Saarbrücken},\n" + 
+		"author={Sánchez, David and Universitat Polit{226}ecnica de Catalunya},\n" + 
+		"isbn={9783836470698 3836470691},\n" + 
+		"pages={--},\n" + 
+		"publisher={VDM Verlag Dr. Müller}, refid={426144281},\n" + 
+		"title={Domain ontology learning from the web an unsupervised, automatic and domain independent approach},\n" + 
+		"year={2007},\n" + 
+		"url = {http://www.worldcat.org/title/domain-ontology-learning-from-the-web-an-unsupervised-automatic-and-domain-independent-approach/oclc/426144281&referer=brief_results}\n" + 
+		"}";
+	
 	@Test
 	public void testParseBibTeX1() {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
@@ -118,6 +130,24 @@ public class SimpleBibTeXParserTest {
 			fail(ex.getMessage());		
 		}
 
+	}
+	
+	@Test
+	public void testParseBibTe32() {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+		try {
+			final BibTex bibtex = parser.parseBibTeX(entry3);
+			
+			assertEquals("Domain ontology learning from the web an unsupervised, automatic and domain independent approach", bibtex.getTitle());
+			assertEquals("phdthesis", bibtex.getEntrytype());
+			assertEquals("david2007domain", bibtex.getBibtexKey());
+			assertEquals("David Sánchez and Universitat Polit{226}ecnica de Catalunya", bibtex.getAuthor());
+
+		} catch (ParseException ex) {
+			fail(ex.getMessage());
+		} catch (IOException ex) {
+			fail(ex.getMessage());		
+		}
 	}
 
 	/**
