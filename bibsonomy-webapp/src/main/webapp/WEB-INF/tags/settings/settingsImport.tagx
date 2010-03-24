@@ -53,7 +53,7 @@
 			   		
 					<div class="fsRow">	
 		   				<input type="submit" value="${valueButton}" />
-						<input name="importType" type="hidden" value="firefox"/>
+						<input id="importType" name="importType" type="hidden" value="firefox"/>
 					</div>
 					
 				</fieldset>
@@ -69,21 +69,33 @@
     		<div id="fsform">
 				<fieldset class="fsInner">
 	  				<div class="fsRow">
- 						<label for="username" class="fsLabel"><fmt:message key="navi.username"/></label>
+ 						<label for="userName" class="fsLabel"><fmt:message key="navi.username"/></label>
  	    			    <buttons:help message="settings.username.help.delicious"/>
- 						<input id="username" name="username" class="fsInput fsSmall" type="text"/>
+ 						<input id="userName" name="userName" class="fsInput fsSmall" type="text"/>
 					</div>  		
 
 	  				<div class="fsRow">
-						<label for="password" class="fsLabel"><fmt:message key="navi.password"/></label>
+						<label for="passWord" class="fsLabel"><fmt:message key="navi.password"/></label>
 	    			    <buttons:help message="settings.password.help.delicious"/>
-	    				<input type="password" name="password" class="fsInput fsSmall"/>
+	    				<input id="passWord" type="password" name="passWord" class="fsInput fsSmall"/>
 					</div>
 		
 	  				<div class="fsRow">
 	   					<label class="fsLabel" for="overwrite"><fmt:message key="settings.overwrite"/></label>
 	    			    <buttons:help message="settings.overwrite.help.delicious"/>
 	    				<input type="checkbox" name="overwrite" value="yes" />
+	    	    	</div>
+	    	    	
+	    	    	<div class="fsRow">
+						<label class="fsLabel" for="importData"><fmt:message key="import.kind"/></label>
+						<buttons:help message="TODO"/>
+						<div style="font-size:80%">
+	                        <form:radiobutton path="importData" value="posts"/>
+	                        <fmt:message key="bookmarks"/>
+	  
+	                        <form:radiobutton path="importData" value="bundles"/>
+	                        <fmt:message key="import.bundles"/>
+                        </div>
 	    	    	</div>
 	    	    	
 	  				<div class="fsRow">
@@ -94,7 +106,7 @@
 	    	     		<!-- <input type="hidden" name="ckey" value="${ckey}"/>-->
 	      				<!-- <input type="hidden" name="import" value="delicious"/> -->
 	      				<input type="submit" value="${valueButton}"/>
-	    			 	<input name="importType" type="hidden" value="delicious"/>
+	    			 	<input id="importType" name="importType" type="hidden" value="delicious"/>
 	  				</div>
 	  			</fieldset>
 	  		</div>

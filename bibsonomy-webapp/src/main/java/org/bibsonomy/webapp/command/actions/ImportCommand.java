@@ -65,7 +65,7 @@ public class ImportCommand extends BaseCommand{
 	/**
 	 * @param type
 	 */
-	public void setType(String type) {
+	public void setImportType(String type) {
 		this.type = type;
 	}
 	/**
