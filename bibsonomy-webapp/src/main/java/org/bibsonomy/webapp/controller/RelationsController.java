@@ -41,6 +41,23 @@ public class RelationsController extends SingleResourceListControllerWithTags im
 			 * request the concepts
 			 */
 			List<Tag> tags = logic.getConcepts(Resource.class, GroupingEntity.ALL, null, null, null, ConceptStatus.ALL, 0, 50);
+			
+			// the following concepts are unwanted on the relations page 
+			String[] tagsToRemove = new String[]{"bookmarks_toolbar",
+										"bookmarks_toolbar_folder",
+										"forex",
+										"from_internet_explorer",
+										"how",
+										"lesezeichen-symbolleiste",
+										"personal_toolbar_folder",
+										"the",
+										"what"
+										};
+			
+			for (String string : tagsToRemove) {
+				tags.remove(new Tag(string));
+			}
+			
 			command.setTagRelations(tags);
 		}
 		
@@ -48,6 +65,7 @@ public class RelationsController extends SingleResourceListControllerWithTags im
 		return Views.RELATIONS;
 	}
 	
+	@Override
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
