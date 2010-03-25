@@ -50,13 +50,5 @@ public class TagTest {
 		assertNotNull(new Tag().getSuperTags());
 	}
 
-	/**
-	 * tests setSubtagsString
-	 */
-	@Test
-	public void setSubtagsString() {
-		final Tag t1 = new Tag("t1");
-		t1.setSubtagsString("t2 t3 t4");
-		assertEquals(3, t1.getSubTags().size());
-	}
+
 }

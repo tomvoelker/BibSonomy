@@ -265,16 +265,6 @@ public class Tag implements Comparable<Tag>, Serializable {
 		return this.id + " '" + this.name + "' '" + this.stem + "' " + this.globalcount;
 	}
 
-	/**
-	 * Adds a list of subtags from a space-separated string.
-	 * 
-	 * @param subtags
-	 */
-	public void setSubtagsString(final String subtags) {
-		for (final String subtag : subtags.split(" ")) {
-			this.getSubTags().add(new Tag(subtag));
-		}
-	}
 	
 	@Override
 	public boolean equals(Object tag) {
