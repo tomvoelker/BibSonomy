@@ -45,7 +45,7 @@
 					<c:param name="user" value="${post.user.name}" />
 					<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
 				</c:url>
-				<c:set var="copyTitle"><fmt:message key="bibtex.actions.copy.title"/></c:set>				
+				<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>				
          		<a href="${fn:escapeXml(copy_url)}" title="${copyTitle}">
 					<fmt:message key="bibtex.actions.copy"/>
 				</a>
@@ -55,13 +55,13 @@
 				<!-- same user - EDIT, DELETE, ... -->
 				<c:choose>
 					<c:when test="${noedittags}">
-						<c:set var="editTitle"><fmt:message key="bibtex.actions.edit.title"/></c:set>
+						<fmt:message key="bibtex.actions.edit.title" var="editTitle"/>
              			<a href="/editPublication?intraHashToUpdate=${post.resource.intraHash}" title="${editTitle}">
 							<fmt:message key="bibtex.actions.edit"/>
 						</a>
 					</c:when>
 					<c:otherwise>						
-						<c:set var="editTagsTitle"><fmt:message key="bibtex.actions.edit.title"/></c:set>
+						<fmt:message key="bibtex.actions.edit.title" var="editTagsTitle"/>
              			<a onclick="editTags(this,'${ckey}');return false;"
 							tags="${fn:escapeXml(mtl:toTagString(post.tags))}"
 							href="/editPublication?intraHashToUpdate=${post.resource.intraHash}"
@@ -74,7 +74,7 @@
 				<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
 				
 				<!-- DELETE -->					         
-				<c:set var="deleteTitle"><fmt:message key="bibtex.actions.delete.title"/></c:set>
+				<fmt:message key="bibtex.actions.delete.title" var="deleteTitle"/>
                 
                 <c:url var="deleteUrl" value="/deletePost" context="${projectContext}">
                    <c:param name="resourceHash" value="${post.resource.intraHash}" />

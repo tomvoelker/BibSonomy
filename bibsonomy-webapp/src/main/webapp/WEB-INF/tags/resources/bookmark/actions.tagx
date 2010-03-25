@@ -51,10 +51,13 @@
 	
 			<c:if test="${loginUserName ne post.user.name}">
 				<!-- COPY link -->
-				<fmt:message var="copyTitle" key="bookmark.actions.copy.title"/>
-				<a
-					href="/editBookmark?url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}"
-					title="${copyTitle}">
+				<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>			
+				<c:url var="copy_url" value="${projectHome}editBookmark" context="${projectContext}">
+					<c:param name="hash" value="${post.resource.intraHash}" />
+					<c:param name="user" value="${post.user.name}" />
+					<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
+				</c:url>
+         		<a href="${fn:escapeXml(copy_url)}" title="${copyTitle}">
 					<fmt:message key="bookmark.actions.copy"/>
 				</a>
 			</c:if>
@@ -93,14 +96,4 @@
 	  <!-- flag / unflag as spam  -->		
       <fmt:message var="flagAsSpam" key="post.meta.flag_as_spam.title"/>
    	  <a id="spam_bm_${fn:escapeXml(post.user.name)}_${post.resource.hash}" href="javascript:;" title="${flagAsSpam}"><fmt:message key="post.meta.flag_as_spam"/></a>
-   	  
-      <!-- display spammerKiller-Link for Admins 
-      <c:if test="${command.context.loginUser.role eq 'ADMIN'}">
-      	  <c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
-    	  <a href="javascript:addSpammerInline('${post.user.name}')"><fmt:message key="post.meta.kill_spammer"/></a>	
-      </c:if>	   	     	  	  
-      -->
-
-	<!--  <%@include file="/boxes/resource_rating.jsp" %> -->
-
 </jsp:root>
