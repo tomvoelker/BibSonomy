@@ -73,12 +73,27 @@ public class BasketDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
-	 * updates basket items
-	 * @param param 
-	 * @param session 
+	 * Deletes all items with the given content_id from the basket.
+	 * 
+	 * @param contentId
+	 * @param session
 	 */
-	public void updateItem(final BasketParam param, final DBSession session){
-		this.update("updateBasketItem", param, session);
+	public void deleteItems(final int contentId, final DBSession session){
+		final BasketParam param = new BasketParam();			
+		param.setContentId(contentId);
+		this.plugins.onDeleteBasketItem(param, session);
+		this.delete("deleteBasketItems", param, session);
+	}
+	/**
+	 * updates basket items
+	 * @param session 
+	 * @param param 
+	 */
+	public void updateItems(final int newContentId, final int contentId, final DBSession session){
+		final BasketParam param = new BasketParam();
+		param.setContentId(contentId);
+		param.setNewContentId(newContentId);
+		this.update("updateBasketItems", param, session);
 	}
 	
 	/**

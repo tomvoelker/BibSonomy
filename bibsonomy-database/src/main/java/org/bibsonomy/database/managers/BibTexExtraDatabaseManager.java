@@ -255,13 +255,4 @@ public class BibTexExtraDatabaseManager extends AbstractDatabaseManager {
 		return param;
 	}
 
-	/**
-	 * Deletes the collector.
-	 * 
-	 * @param contentId
-	 * @param session
-	 */
-	public void deleteCollector(final int contentId, final DBSession session) {
-		this.delete("deleteBibTexCollector", contentId, session);
-	}
 }

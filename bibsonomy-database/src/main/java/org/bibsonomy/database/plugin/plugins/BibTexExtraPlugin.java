@@ -1,5 +1,6 @@
 package org.bibsonomy.database.plugin.plugins;
 
+import org.bibsonomy.database.managers.BasketDatabaseManager;
 import org.bibsonomy.database.managers.BibTexExtraDatabaseManager;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.database.util.DBSession;
@@ -7,21 +8,22 @@ import org.bibsonomy.database.util.DBSession;
 /**
  * This plugin takes care of additional features for BibTex posts.
  * 
+ * XXX: we can't have a static/singleton {@link BasketDatabaseManager} instance,
+ * because we have a circular dependency (the manager contains the plugins ...)
+ * 
  * @author Christian Schenk
  * @version $Id$
  */
 public class BibTexExtraPlugin extends AbstractDatabasePlugin {
 
+	
 	@Override
 	public Runnable onBibTexDelete(final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
-				// FIXME: singletonitis at its finest...
 				final BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
 				// Delete link to related document
 				bibtexExtraDb.deleteDocument(contentId, session);
-				// Delete id in collector table
-				bibtexExtraDb.deleteCollector(contentId, session);
 				// Delete id in extended fields table
 				bibtexExtraDb.deleteExtendedFieldsData(contentId, session);
 				// Delete id in bibtexturl table
@@ -34,7 +36,6 @@ public class BibTexExtraPlugin extends AbstractDatabasePlugin {
 	public Runnable onBibTexUpdate(final int newContentId, final int contentId, final DBSession session) {
 		return new Runnable() {
 			public void run() {
-				// FIXME: singletonitis at its finest...
 				final BibTexExtraDatabaseManager bibtexExtraDb = BibTexExtraDatabaseManager.getInstance();
 				bibtexExtraDb.updateURL(contentId, newContentId, session);
 				bibtexExtraDb.updateDocument(contentId, newContentId, session);

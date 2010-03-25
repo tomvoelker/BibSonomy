@@ -483,7 +483,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		// get post from database
 		final Post<BibTex> post = super.getPostDetails(authUser, resourceHash, userName, visibleGroupIDs, session);
 		
-		if (post != null) {
+		if (present(post)) {
 			if (this.permissionDb.isAllowedToAccessPostsDocuments(userName, post, session)) {
 				post.getResource().setDocuments(this.docDb.getDocumentsForPost(userName, resourceHash, session));
 			}
