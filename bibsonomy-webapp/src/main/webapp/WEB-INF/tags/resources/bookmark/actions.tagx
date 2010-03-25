@@ -52,12 +52,7 @@
 			<c:if test="${loginUserName ne post.user.name}">
 				<!-- COPY link -->
 				<fmt:message key="bookmark.actions.copy.title" var="copyTitle"/>			
-				<c:url var="copy_url" value="${projectHome}editBookmark" context="${projectContext}">
-					<c:param name="hash" value="${post.resource.intraHash}" />
-					<c:param name="user" value="${post.user.name}" />
-					<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-				</c:url>
-         		<a href="${fn:escapeXml(copy_url)}" title="${copyTitle}">
+				<a href="/editBookmark?hash=${post.resource.intraHash}&amp;user=${mtl:encodeURI(post.user.name)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}">				
 					<fmt:message key="bookmark.actions.copy"/>
 				</a>
 			</c:if>

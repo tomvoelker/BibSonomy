@@ -40,13 +40,8 @@
 		<c:choose>
 			<c:when test="${loginUserName ne post.user.name}">
 				<!-- different users - COPY -->
-				<c:url var="copy_url" value="${projectHome}editPublication" context="${projectContext}">
-					<c:param name="hash" value="${post.resource.intraHash}" />
-					<c:param name="user" value="${post.user.name}" />
-					<c:param name="copytag" value="${mtl:toTagString(post.tags)}" />
-				</c:url>
-				<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>				
-         		<a href="${fn:escapeXml(copy_url)}" title="${copyTitle}">
+				<fmt:message key="bibtex.actions.copy.title" var="copyTitle"/>
+         		<a href="/editPublication?hash=${post.resource.intraHash}&amp;user=${mtl:encodeURI(post.user.name)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}">
 					<fmt:message key="bibtex.actions.copy"/>
 				</a>
 

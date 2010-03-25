@@ -4,14 +4,14 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
-	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
-	<jsp:directive.attribute name="loginUserName" type="java.lang.String" required="true" />
+	<!-- 
+		the copy link with an underlying star
+	 -->
 
-    <a href="/editBookmark?url=${mtl:encodeURI(post.resource.url)}&amp;description=${mtl:encodeURI(post.resource.title)}&amp;extended=${mtl:encodeURI(post.description)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}">  
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true" />
+
+    <a href="/editBookmark?hash=${post.resource.intraHash}&amp;user=${mtl:encodeURI(post.user.name)}&amp;copytag=${mtl:encodeURI(mtl:toTagString(post.tags))}" title="${fn:escapeXml(copyTitle)}">  
        &amp;nbsp;
-       <c:if test="${post.ranking > 0}">
-		<span class="ranking">${fn:substring(post.ranking,0,4)}</span>
-		</c:if>  
 	</a>
 	
 </jsp:root>
