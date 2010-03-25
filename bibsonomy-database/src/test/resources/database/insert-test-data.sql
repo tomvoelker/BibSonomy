@@ -369,6 +369,26 @@ INSERT INTO `tags` (`tag_id`, `tag_name`, `tag_stem`, `tag_ctr`, `tag_ctr_public
 -- 
 -- Data for table `tagtagrelations`
 -- 
+INSERT INTO `tagtagrelations` (`relationID`, `date_of_create`, `date_of_last_mod`, `user_name`, `lower`, `upper`, `picked`) VALUES
+(4,  '1815-12-10 00:00:00', '2007-12-12 00:00:00', 'testuser1',   'google',   'suchmaschine', 1),
+(5,  '1815-12-10 00:00:00', '2007-12-12 00:00:05', 'testuser2',   'yahoo',    'suchmaschine', 1),
+(6,  '1815-12-10 00:00:00', '2008-01-29 10:39:17', 'testuser1',   'fireball', 'suchmaschine', 1),
+(7,  '1815-12-10 00:00:00', '2008-12-12 00:00:00', 'testuser1',   'debian',   'linux',        1),
+(8,  '1815-12-10 00:00:00', '2008-12-12 00:00:00', 'testuser1',   'ubuntu',   'linux',        1),
+(9,  '1815-12-10 00:00:00', '2008-12-12 00:00:00', 'testuser3',   'Java',     'Programming',  1),
+(10, '1815-12-10 00:00:00', '2008-12-12 00:00:00', 'testuser3',   'C++',      'Programming',  1),
+(11, '1815-12-10 00:00:00', '2009-02-12 00:12:23', 'testuser3',   'Google',   'Suchmaschine', 1),
+(12, '1815-12-10 00:00:00', '2009-02-12 00:12:25', 'testuser1',   'java',     'programming',  1),
+(13, '1815-12-10 00:00:00', '2009-02-12 00:12:26', 'testuser1',   'c',        'programming',  1),
+(14, '1815-12-10 00:00:00', '2009-02-12 00:12:28', 'testuser3',   'UBUNTU',   'LINUX',        0),
+(15, '1815-12-10 00:00:00', '2009-02-12 00:12:31', 'testuser1',   'openSUSE', 'Linux',        1),
+(16, '1815-12-10 00:00:00', '2009-02-12 00:12:38', 'testuser2',   'C',        'programming',  1),
+(17, '1815-12-10 00:00:00', '2009-10-12 20:00:05', 'testuser1',   '.net',     'programming',  1),
+(18, '1815-12-10 00:00:00', '2009-11-22 07:10:59', 'testuser2',   'java',     'programming',  1),
+(19, '2009-12-12 20:00:05', '2009-12-12 20:00:05', 'testspammer', 'bla',      'blubb',        1),
+(20, '2009-12-12 20:00:15', '2009-12-12 20:00:15', 'testspammer', 'c',        'programming',  1),
+(21, '2009-12-12 20:00:18', '2009-12-12 20:00:18', 'testspammer2', 'perl',    'programming',  1);
+
 
 
 
