@@ -1829,41 +1829,6 @@ function editTags(obj, ckey) {
 		parent.insertBefore(form, parent.firstChild);
 	}
 }
-
-/*
- * ajax request to update tags in bibtex detail view
- */
-function editBibtexTags(obj) {
-	var tags = $('#sidebar input:text').get(1).value;
-	var hash = $('#sidebar input:text').get(1).name;
-	var oldTags = $('#sidebar input:hidden').get(0).value;
-	var referer = $('#sidebar input:hidden').get(1).value;
-	var ckey    = $('#sidebar input:hidden').get(2).value;
-	
-	hash = hash.split("[")[1];
-	hash = hash.split("]")[0];
-	
-	$.ajax( {
-		type :"POST",
-		url :"/batchEdit?newTags[" + hash + "]=" + encodeURIComponent(tags.trim())
-				+ "&oldTags[" + hash + "]=" + encodeURIComponent(oldTags.trim())
-				+ "&ckey=" + ckey
-				+ "&referer=" + referer
-				+ "&resourcetype=bibtex"
-				+ "&deleteCheckedPosts=true"
-				+ "&format=ajax",
-		dataType :"html",
-		global :"false",
-		success : function(data) {
-			$('#batcheditform').children(".help").remove();
-			if (data.trim().length > 0) {
-				$('#batcheditform').children(':first').before(data);
-				return false;
-			}
-		}
-	});
-	
-}
  
 function setTut(tutName) {
 	
