@@ -37,17 +37,17 @@ public class InboxPageController extends SingleResourceListController implements
 		final String loginUserName = command.getContext().getLoginUser().getName();
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
-			// disable manual setting of start value for homepage
-			command.getListCommand(resourceType).setStart(0);
-			setList(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, 20);
+			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
+			setList(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, entriesPerPage);
 			postProcessAndSortList(command, resourceType);
-
 			/*
 			 * mark all posts to be inbox posts (such that the "remove" link appears 
 			 */
 			for (final Post<? extends Resource> post: command.getListCommand(resourceType).getList()){
 				post.setInboxPost(true);
 			}
+			// the number of items in this user's inbox has already been fetched
+			this.setTotalCount(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, entriesPerPage, null);
 		}
 		this.endTiming();
 
