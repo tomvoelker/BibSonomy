@@ -184,9 +184,9 @@ INSERT INTO `ids` VALUES
 --
 
 INSERT INTO `inboxMail` VALUES
-(1, 1, 'hash1', 'testuser1', 'testuser2', '2009-10-08 14:23:00'),
-(2, 5, 'hash2', 'testuser3', 'testuser2', '2009-10-08 14:23:32'),
-(3, 10, 'hash3', 'testuser3', 'testuser2', '2009-10-08 14:23:32');
+(1, 1, 'hash1', 'testuser1', 'testuser2', '2009-10-08 14:23:00', 1),
+(2, 5, 'hash2', 'testuser3', 'testuser2', '2009-10-08 14:23:32', 1),
+(3, 10, 'hash3', 'testuser3', 'testuser2', '2009-10-08 14:23:32', 1);
 
 --
 -- Data for table `inboxMail`
