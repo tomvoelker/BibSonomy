@@ -10,6 +10,7 @@ import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForG
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashAndUserCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserCount;
+import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForUserInboxCount;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesPopularDaysCount;
 import org.bibsonomy.database.params.StatisticsParam;
 
@@ -31,6 +32,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 	private final GetResourcesPopularDaysCount getResourcesPopularDays;
 	private final GetResourcesForHashCount getResourcesForHashCount;
 	private final GetResourcesForHashAndUserCount getResourcesForHashAndUserCount;
+	private final GetResourcesForUserInboxCount getResourcesForUserInboxCount;
 	private final DefaultCatchAllCount defaultCatchAllCount;
 	
 	/**
@@ -47,6 +49,7 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 		getResourcesPopularDays = new GetResourcesPopularDaysCount();
 		getResourcesForHashCount = new GetResourcesForHashCount();
 		getResourcesForHashAndUserCount = new GetResourcesForHashAndUserCount();
+		getResourcesForUserInboxCount = new GetResourcesForUserInboxCount();
 		defaultCatchAllCount = new DefaultCatchAllCount();
 		
 		getResourcesForGroupCount.setNext(getResourcesForUserCount);
@@ -59,7 +62,10 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 		//getResourcesForUserAndGroupCount.setNext(getResourcesForUserAndGroupByTagCount);
 		//getResourcesForUserAndGroupByTagCount.setNext(getResourcesPopularDays);
 		getResourcesForHashCount.setNext(getResourcesForHashAndUserCount);
-		getResourcesForHashAndUserCount.setNext(defaultCatchAllCount);
+		getResourcesForHashAndUserCount.setNext(getResourcesForUserInboxCount);
+		getResourcesForUserInboxCount.setNext(defaultCatchAllCount);
+		
+
 		
 	}
 	

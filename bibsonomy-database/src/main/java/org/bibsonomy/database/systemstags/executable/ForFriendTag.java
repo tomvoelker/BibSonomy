@@ -4,6 +4,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
+import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
+import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
@@ -80,16 +82,28 @@ public class ForFriendTag extends SystemTag {
 			// sender is not allowed to use this tag, errorMessages were added
 			return;
 		}
+		log.debug("permissions granted");
 		/*
 		 * Rename forFriendTag from send:userName to sent:userName
 		 * We deactivate the systemTag to avoid sending the Message again and again each time the sender updates his post
 		 */
 		this.tagDb.deleteTags(post, session);		// 1. delete all tags from the database (will be replaced by new ones)
 		this.getTag().setName("from:" + sender);	// 2. rename this tag for the receiver (store senderName)
-		inboxDb.createInboxMessage(sender, receiver, post, session); // 3. store the inboxMessage with tag from:senderName 
-		this.getTag().setName("sent:" + receiver);	// 4. rename this tag for the sender (store receiverName)
+		try {
+			inboxDb.createInboxMessage(sender, receiver, post, session); // 3. store the inboxMessage with tag from:senderName 
+			log.debug("message was created");
+			this.getTag().setName("sent:" + receiver);	// 4. rename this tag for the sender (store receiverName)
+		} catch(UnsupportedResourceTypeException urte) {
+			session.addError(intraHash, new UnspecifiedErrorMessage(urte));
+		}
 		this.tagDb.insertTags(post, session);		// 5. store the tags for the sender with the confirmation tag: sent:userName
-}
+		/*
+		 * We restore the post to the way it was before
+		 * WE NEED THIS e.g. in BatchEditTags, since there the same tag is added to a list of posts
+		 * If we left this tag as sent:user than it would be executed only for the first post of that list
+		 */ 
+		this.getTag().setName("send:" + receiver);
+	}
 
 
 	/**

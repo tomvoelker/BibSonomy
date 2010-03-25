@@ -3,9 +3,13 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.InboxParam;
+import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
@@ -48,6 +52,27 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	public int getNumInboxMessages(String receiver, final DBSession session) {
 		return queryForObject("getNumInboxMessages", receiver, Integer.class, session);
 	}
+
+	/**
+	 * Retrieve the number of messages of the given resourceType currently present in the inbox of the
+	 * given user.
+	 * 
+	 * @param param contains resourceType and requestedUserName
+	 *            the username of the owner of the inbox
+	 * @param session
+	 *            the database session
+	 * @return the number of messages currently stored in the inbox
+	 */
+	public int getNumInboxMessages(final StatisticsParam param, final DBSession session) {
+		return queryForObject("getNumInboxMessagesByType", param, Integer.class, session);
+	}
+
+	
+	
+	private int getInboxMessages(final InboxParam param, final DBSession session) {
+		return queryForObject("getNumInboxMessagesByHashAndSenderAndReceiver", param, Integer.class, session);
+	}
+	
 	
 	/**
 	 * creates one inbox Message
@@ -58,15 +83,27 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void createInboxMessage(final String sender, final String receiver, final Post<? extends Resource> post, final DBSession session){
 		final InboxParam param = new InboxParam();
+		final String intraHash = post.getResource().getIntraHash();
 		// get a new Message Id
+		this.getInboxMessages(param, session);
 		param.setMessageId(this.generalDb.getNewContentId(ConstantID.IDS_INBOX_MESSAGE_ID, session));
 		/*
 		 * store the Message (without tags)
 		 */
 		param.setSender(sender);
 		param.setContentId(post.getContentId());
-		param.setIntraHash(post.getResource().getIntraHash());
+		param.setIntraHash(intraHash);
 		param.setReceiver(receiver);
+		if (this.getInboxMessages(param, session) != 0) {
+			this.deleteInboxMessage(sender, receiver, intraHash, session);
+		}
+		if(post.getResource().getClass().isAssignableFrom(BibTex.class)) {
+			param.setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
+		} else if (post.getResource().getClass().isAssignableFrom(Bookmark.class)) {
+			param.setContentType(ConstantID.BOOKMARK_CONTENT_TYPE);
+		} else {
+			throw new UnsupportedResourceTypeException("Inbox messages can only be created for class types Bookmark or BibTex. The given resource was neiter.");
+		}
 		this.insert("createInboxMessage", param, session);
 		/*
 		 * store the Tags (as Strings)
