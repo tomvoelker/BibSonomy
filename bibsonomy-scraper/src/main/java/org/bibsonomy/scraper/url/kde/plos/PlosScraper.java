@@ -26,6 +26,7 @@ package org.bibsonomy.scraper.url.kde.plos;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,34 +51,21 @@ public class PlosScraper extends AbstractUrlScraper {
 	private static final String SITE_URL = "http://www.plos.org/journals/index.php";
 	private static final String INFO = "Scraper for journals from " + href(SITE_URL, SITE_NAME)+".";
 
-	/**
+	/*
 	 * ending of plos journal URLs
 	 */
-	private static final String PLOS_HOST_ENDING = "plosbiology.org";
-
-	/**
-	 * title value from link to a citation page
-	 */
-	private static final String PATTERN_CITATION_PAGE_LINK = "<a href=\\\"([^\\\"]*)\\\">Citation</a>";
-
-	/**
-	 * name of a citation download link
-	 */
-	private static final String PATTERN_CITATION_BIBTEX_LINK = "<a href=\\\"([^\\\"]*)\\\" title=\\\"BibTex Citation\\\">BibTex</a>";
-
+	private static final String PLOS_BIOLOGY_HOST_ENDING = "plosbiology.org";
+	private static final String PLOS_MEDICINE_HOST_ENDING = "plosmedicine.org";
+	
+	private static final String HTTP = "http://";
+	
 	/*
-	 * regex
+	 * download url prefix
 	 */
-
-	/**
-	 * pattern for links
-	 */
-	private static final String PATTERN_LINK = "<a\\b[^<]*</a>";
-
-	/**
-	 * pattern for href field
-	 */
-	private static final String PATTERN_HREF = "href=\\\"([^\\\"])*\\\"";
+	private static final String PLOS_DOWNLOAD_URL_PREFIX = "/article/getBibTexCitation.action?articleURI=";
+	
+	private static final String PLOS_INFO_PATTERN_STRING = "(info:doi/.*/\\w+.\\w+.\\d+)";
+	private static final Pattern PLOS_INFO_PATTERN = Pattern.compile(PLOS_INFO_PATTERN_STRING);
 
 	/**
 	 * get INFO
@@ -86,58 +74,43 @@ public class PlosScraper extends AbstractUrlScraper {
 		return INFO;
 	}
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PLOS_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
-
+	private static final List<Tuple<Pattern, Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	static {
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PLOS_BIOLOGY_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PLOS_MEDICINE_HOST_ENDING), AbstractUrlScraper.EMPTY_PATTERN));
+	}
 	
 	/**
 	 * Scrapes journals from plos.org 
 	 */
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
+
 		try {
-			// citation as endnote
-			String citation = null;
-
-			// may be journal page or citation page
-			String journalPage = sc.getPageContent();
-			String citationPage = null;
-
-			// search link to citation in journal page
-			Pattern linkPagePattern = Pattern.compile(PATTERN_CITATION_PAGE_LINK);
-			Matcher linkPageMatcher = linkPagePattern.matcher(journalPage);
-			if(linkPageMatcher.find()){
-				String citationPageLinkHref = linkPageMatcher.group(1);
-				citationPageLinkHref = "http://" + sc.getUrl().getHost() + citationPageLinkHref;
-				
-				// citation page found
-				citationPage = WebUtils.getContentAsString(new URL(citationPageLinkHref));
+			final Matcher _m = PLOS_INFO_PATTERN.matcher(sc.getUrl().toString());
+			String info = null;
+			String url  = null;
+			
+			if (_m.find()) {
+				info = _m.group(1);
 			}
-
-			// no citation found, may be current page is already the citation page
-			if(citationPage == null)
-				citationPage = journalPage;
-
-			// search link to citation (in endnote)
-			Pattern bibtexLinkPattern = Pattern.compile(PATTERN_CITATION_BIBTEX_LINK);
-			Matcher bibtexLinkMatcher = bibtexLinkPattern.matcher(citationPage);
-			while(bibtexLinkMatcher.find()){
-				String citationLinkHref = bibtexLinkMatcher.group(1);
-				citationLinkHref = "http://" + sc.getUrl().getHost() +  citationLinkHref;
-				citation = WebUtils.getContentAsString(new URL(citationLinkHref));
+			
+			if (info != null && sc.getUrl().toString().contains(PLOS_BIOLOGY_HOST_ENDING)) {
+				url = HTTP + PLOS_BIOLOGY_HOST_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
+			} else if (info != null && sc.getUrl().toString().contains(PLOS_MEDICINE_HOST_ENDING)) {
+				url = HTTP + PLOS_MEDICINE_HOST_ENDING + PLOS_DOWNLOAD_URL_PREFIX + info;
 			}
-
-			/*
-			 * http://www.plosbiology.org/article/getBibTexCitation.action?articleURI=info%3Adoi%2F10.1371%2Fjournal.pbio.0060010
-			 * http://biology.plosjournals.org/perlserv//article/getBibTexCitation.action;jsessionid=5EE0CE24FCEEE9262A6A82B96BD2310E?articleURI=info%3Adoi%2F10.1371%2Fjournal.pbio.0060010
-			 */
-			// build bibtex
-			if(citation != null){
+			
+			String bibtexResult = WebUtils.getContentAsString(url);
+			
+			if(bibtexResult != null){
 				
-				sc.setBibtexResult(citation);
+				sc.setBibtexResult(bibtexResult);
 				return true;
 
-			}else
+			} else {
 				throw new ScrapingFailureException("endnote is not available");
+			}
 
 		} catch (IOException ex) {
 			throw new InternalFailureException(ex);
