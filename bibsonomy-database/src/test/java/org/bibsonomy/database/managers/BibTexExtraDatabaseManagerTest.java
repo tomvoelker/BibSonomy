@@ -140,8 +140,4 @@ public class BibTexExtraDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		this.bibTexExtraDb.updateExtendedFieldsData(783786, 12345678, this.dbSession);
 	}
 
-	@Test
-	public void deleteCollector() {
-		this.bibTexExtraDb.deleteCollector(2648885, this.dbSession);
-	}
 }
