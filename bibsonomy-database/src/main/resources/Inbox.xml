@@ -9,11 +9,42 @@
 		FROM inboxMail 
 		WHERE receiver_user=#receiver#
 	</select>
+
+	<select id="getNumInboxBookmarkMessages" resultClass="Integer" parameterClass="String">
+		SELECT COUNT(b.message_id) AS count
+		FROM (
+			SELECT i.message_id
+				FROM inboxMail i
+				INNER JOIN bookmark b USING(content_id)
+				WHERE receiver_user=#requestedUserName#
+			UNION	
+			SELECT i.message_id
+				FROM inboxMail i
+				INNER JOIN log_bookmark b USING(content_id)
+				WHERE receiver_user=#requestedUserName# 
+			) AS b
+	</select>
+
+	<select id="getNumInboxMessagesByHashAndSenderAndReceiver" resultClass="Integer" parameterClass="inboxParam">
+		SELECT COUNT(message_id) AS count
+		FROM inboxMail
+		WHERE receiver_user=#receiver#
+			AND sender_user=#sender#
+			AND intraHash=#intraHash#
+	</select>
 	
+	<select id="getNumInboxMessagesByType" resultClass="Integer" parameterClass="statisticsParam">
+		SELECT COUNT(message_id) AS count
+			FROM inboxMail i
+			WHERE receiver_user=#requestedUserName#
+			AND content_type=#contentType#
+	</select>
+	
+
 	<!-- insert a new Message into the inbox -->
 	<insert id="createInboxMessage" parameterClass="inboxParam">
-		INSERT IGNORE INTO inboxMail (sender_user, receiver_user, content_id, date, message_id, intraHash) 
-		VALUES (#sender#, #receiver#, #contentId#, NOW(), #messageId#, #intraHash#)
+		INSERT IGNORE INTO inboxMail (sender_user, receiver_user, content_id, date, message_id, intraHash, content_type) 
+		VALUES (#sender#, #receiver#, #contentId#, NOW(), #messageId#, #intraHash#, #contentType#)
 	</insert>
 	
 	<!-- insert one tag to a Message from the inbox -->

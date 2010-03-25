@@ -261,28 +261,33 @@
 	<select id="getBookmarkFromInbox" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT bb.content_id, bb.interhash, bb.intrahash, bb.description, bb.date, bb.user_name, t.tag_name,
 				bb.inbox_date, u.book_url, bb.title, u.book_url_ctr AS count, NULL AS `group`, NULL AS group_name
-		FROM ((SELECT i.message_id, i.date AS inbox_date, b.content_id, b.book_url_hash AS interhash, b.date, b.user_name,
-						b.book_extended AS description, b.book_description AS title, b.book_url_hash, 
-						b.book_url_hash AS intrahash 
-				FROM (SELECT * 
-						FROM inboxMail 
-						WHERE receiver_user=#requestedUserName#) AS i
-				INNER JOIN bookmark b ON i.content_id=b.content_id)
-				UNION	
-				(SELECT i.message_id, i.date AS inbox_date, b.content_id, b.book_url_hash AS interhash, b.date, b.user_name,
-						b.book_extended AS description, b.book_description AS title, b.book_url_hash,
-						b.book_url_hash AS intrahash
-				FROM (SELECT * 
-						FROM inboxMail
-						WHERE receiver_user=#requestedUserName#) AS i
-				INNER JOIN log_bookmark b ON i.content_id=b.content_id)) AS bb
-		LEFT OUTER JOIN urls u ON bb.book_url_hash= u.book_url_hash
-		LEFT OUTER JOIN inbox_tas t ON bb.message_id = t.message_id
+		FROM (
+			SELECT *
+				FROM
+				(
+					SELECT i.message_id, i.date AS inbox_date, b.content_id, b.book_url_hash AS interhash, b.date,
+						   b.user_name, b.book_extended AS description, b.book_description AS title, 
+						   b.book_url_hash, b.book_url_hash AS intrahash
+						FROM inboxMail i
+						INNER JOIN bookmark b USING(content_id)
+						WHERE receiver_user=#requestedUserName#
+						AND i.content_type=#contentType#
+					UNION	
+					SELECT i.message_id, i.date AS inbox_date, b.content_id, b.book_url_hash AS interhash, b.date,
+						   b.user_name, b.book_extended AS description, b.book_description AS title,
+						   b.book_url_hash, b.book_url_hash AS intrahash
+						FROM inboxMail i
+						INNER JOIN log_bookmark b USING(content_id)
+						WHERE receiver_user=#requestedUserName#
+						AND i.content_type=#contentType#
+				) AS b
+				ORDER BY b.inbox_date DESC, b.content_id
+				LIMIT #limit# OFFSET #offset#
+			) AS bb
+		LEFT OUTER JOIN urls u USING(book_url_hash)
+		LEFT OUTER JOIN inbox_tas t USING(message_id)
 		ORDER BY bb.inbox_date DESC, bb.content_id
-		LIMIT #limit# OFFSET #offset#
 	</select>
-	
-
 
 
 	<select id="getBookmarkSearchLucene" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam" >
