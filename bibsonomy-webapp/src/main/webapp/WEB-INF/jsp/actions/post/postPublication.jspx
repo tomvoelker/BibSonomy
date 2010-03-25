@@ -138,7 +138,7 @@
 						   			</jsp:attribute>
 						      		
 						      		<jsp:attribute name="bmicon"> 
-						      			<bib:bmicon post="${post}" loginUserName="${loginUser.name}" />
+						      			<bib:bmicon post="${post}"/>
 						      		</jsp:attribute>
 						      		
 						      		<jsp:attribute name="actions">

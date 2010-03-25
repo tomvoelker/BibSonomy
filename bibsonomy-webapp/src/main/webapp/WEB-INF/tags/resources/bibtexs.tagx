@@ -33,7 +33,7 @@
 		</jsp:attribute>
 		
 		<jsp:attribute name="bmicon">
-			<bib:bmicon post="${post}" loginUserName="${loginUserName}"/>
+			<bib:bmicon post="${post}"/>
 		</jsp:attribute>
 		
 		<!-- Bibtex description -->
