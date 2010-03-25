@@ -76,8 +76,5 @@
 		DELETE FROM extended_fields_data WHERE content_id = #requestedContentId#
 	</delete>
 
-	<delete id="deleteBibTexCollector">
-		DELETE FROM collector WHERE content_id = #requestedContentId#
-	</delete>
 
 </sqlMap>

@@ -294,17 +294,23 @@
 	<select id="getLoggedHashesByHashForUser" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam">
 	  SELECT 0 AS count, '' AS tag_name, b.*, g.* FROM 
 	    (
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, b.group
-		  FROM log_bibtex t1 
-		    JOIN log_bibtex b ON (t1.new_content_id = b.content_id AND t1.user_name = b.user_name) 
-		  WHERE t1.simhash$simHash$ = #hash#
-		    AND t1.user_name = #requestedUserName#
-	    UNION 
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, b.group
-		  FROM log_bibtex t1 
-		    JOIN bibtex b ON (t1.new_content_id = b.content_id AND t1.user_name = b.user_name) 
-		  WHERE t1.simhash$simHash$ = #hash#
-		    AND t1.user_name = #requestedUserName#
+	    	SELECT * FROM (
+				SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, b.group
+		  			FROM log_bibtex t1 
+		    		  JOIN log_bibtex b ON (t1.new_content_id = b.content_id AND t1.user_name = b.user_name) 
+		  			WHERE t1.simhash$simHash$ = #hash#
+		    		  AND t1.user_name = #requestedUserName#
+		  			ORDER BY t1.log_date DESC LIMIT 1
+		  		) AS aa
+	    	UNION 
+	    	SELECT * FROM ( 
+				SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, b.group
+			  		FROM log_bibtex t1 
+			    	  JOIN bibtex b ON (t1.new_content_id = b.content_id AND t1.user_name = b.user_name) 
+			  		WHERE t1.simhash$simHash$ = #hash#
+			    	  AND t1.user_name = #requestedUserName#
+			    	ORDER BY t1.log_date DESC LIMIT 1
+				) AS bb
 		) AS b
 		LEFT OUTER JOIN groupids g ON (b.group = g.group) 
 	</select>
