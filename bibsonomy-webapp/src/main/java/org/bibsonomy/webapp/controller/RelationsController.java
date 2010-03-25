@@ -22,6 +22,22 @@ public class RelationsController extends SingleResourceListControllerWithTags im
 	private static final Log LOGGER = LogFactory.getLog(RelationsController.class);
 	private LogicInterface logic;
 
+	/*
+	 * the following concepts are unwanted on the relations page
+	 * XXX: inject them using Spring?
+	 */ 
+	private static final String[] tagsToRemove = new String[]{
+		"bookmarks_toolbar",
+		"bookmarks_toolbar_folder",
+		"forex",
+		"from_internet_explorer",
+		"how",
+		"lesezeichen-symbolleiste",
+		"personal_toolbar_folder",
+		"the",
+		"what"
+	};
+	
 	@Override
 	public RelationsCommand instantiateCommand() {	
 		return new RelationsCommand();
@@ -31,40 +47,25 @@ public class RelationsController extends SingleResourceListControllerWithTags im
 	public View workOn(RelationsCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
-		
-		/**
-		 * return
-		 */
+
 		// html format - retrieve tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			/*
 			 * request the concepts
 			 */
-			List<Tag> tags = logic.getConcepts(Resource.class, GroupingEntity.ALL, null, null, null, ConceptStatus.ALL, 0, 50);
-			
-			// the following concepts are unwanted on the relations page 
-			String[] tagsToRemove = new String[]{"bookmarks_toolbar",
-										"bookmarks_toolbar_folder",
-										"forex",
-										"from_internet_explorer",
-										"how",
-										"lesezeichen-symbolleiste",
-										"personal_toolbar_folder",
-										"the",
-										"what"
-										};
-			
-			for (String string : tagsToRemove) {
+			final List<Tag> tags = logic.getConcepts(Resource.class, GroupingEntity.ALL, null, null, null, ConceptStatus.ALL, 0, 50);
+
+			for (final String string : tagsToRemove) {
 				tags.remove(new Tag(string));
 			}
-			
+
 			command.setTagRelations(tags);
 		}
-		
+
 		this.endTiming();
 		return Views.RELATIONS;
 	}
-	
+
 	@Override
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
