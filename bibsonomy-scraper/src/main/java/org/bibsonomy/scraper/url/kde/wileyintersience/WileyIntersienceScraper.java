@@ -37,6 +37,7 @@ import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 
@@ -100,7 +101,7 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 					citationId = sc.getUrl().getQuery();
 					int indexId = citationId.indexOf("id=");
 					citationId = citationId.substring(indexId+3);
-					citationId = citationId.substring(0, indexId);
+					citationId = citationId.substring(0, citationId.length());
 				}
 				
 				// alternate url pattern for abstract page
@@ -120,6 +121,12 @@ public class WileyIntersienceScraper extends AbstractUrlScraper {
 				// visit cookie page and get publication data
 				String endnote = WebUtils.getContentAsString(urlCitationEndNote, null, null, pageToVisit);
 				
+				//check wether WILEY did not return the proper information as expected
+				//this happens randomly
+				if(!this.containsMandatoryEndnoteInformation(endnote))
+				{
+					throw new ScrapingFailureException("The website did not return the expected information. Please try again later.");
+				}
 				/*
 				 * parse publication data
 				 * every line start with a descripor for the bibiliogaphic meaning
@@ -240,4 +247,10 @@ return patterns;
 		return SITE_URL;
 	}
 	
+	private boolean containsMandatoryEndnoteInformation(String endnote)
+	{
+		return 	endnote.contains("AU:") &&
+				endnote.contains("TI:") &&
+				endnote.contains("YR:");
+	}
 }
