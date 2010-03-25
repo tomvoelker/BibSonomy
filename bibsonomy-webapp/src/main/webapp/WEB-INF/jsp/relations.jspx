@@ -42,11 +42,15 @@
 		    </c:if>
 	    </div>
 	    
-	    
       <div id="general">
       	<!-- table for all concepts -->
      	<table>
-     	<!-- iterate over given concepts -->
+		<!-- iterate over given concepts to calculate the highest usercount (needed to compute fontsize)-->
+     	  	<c:set var="maxUpperCount" value="0" />
+     	  	<c:forEach var="upperTag" items="${command.tagRelations}">
+     	  		<c:if test="${upperTag.usercount>=maxUpperCount}"> <c:set var="maxUpperCount" value="${upperTag.usercount}" /></c:if>
+     	  	</c:forEach>
+     		<!-- iterate over given concepts -->
 		<c:forEach var="upperTag" items="${command.tagRelations}">
 			<tr>
 			<td class="upperconcept">
@@ -54,25 +58,34 @@
 						<fmt:param>${fn:escapeXml(upperTag.usercount)}</fmt:param>
 						<fmt:param>${upperTag.name}</fmt:param>
 					</fmt:message>
-				<a style="font-size: ${(upperTag.usercount * 10) + 80}%" title="${upperTagTitle}"  href="/concept/tag/${mtl:encodeURI(upperTag.name)}"><c:out value="${upperTag.name}"/></a>
+				<a style="font-size: ${mtl:computeTagFontsize(upperTag.usercount, maxUpperCount, '')*1.1}%"
+				 title="${upperTagTitle}"  
+				href="/concept/tag/${mtl:encodeURI(upperTag.name)}"><c:out value="${upperTag.name}"/></a>
 			</td>
 			<td>&#8592;</td>
 			<td>
-				<ul class="box_lowerconcept_elements">
-				<c:forEach var="relation" items="${upperTag.subTags}">
-			        <li class="box_lowerconcept"> 
-			    		<a href="/tag/${mtl:encodeURI(relation.name)}"><c:out value="${relation.name}"/></a>
-			    		<c:out value="&#32;"/>
-			        </li>
-		        </c:forEach>
+				<ul class="tagcloud">
+					<c:forEach var="relation" items="${upperTag.subTags}" >  
+						<c:set var="link"><mtl:encode value='${relation.name}'/></c:set>
+			            <li class="box_lowerconcept"> 
+			  	        	<!-- determine subTag title depending on its frequency -->
+			    	      	<fmt:message var="subTagUsers" key="users" /> <!-- plural -->		
+						  	<c:if test="${relation.usercount == 1}">
+								<fmt:message var="subTagUsers" key="user" /> <!-- singular -->
+						  	</c:if>
+				          	<!-- We hand over maxUpperCount to the local variable tagMaxFrequency to ensure that 
+				          	subTags in every tagCloud have the same size if their usercount is the same.  -->
+				          	<a style="font-size:${mtl:computeTagFontsize(relation.usercount, maxUpperCount, '')*1.1}%" title="${relation.usercount} ${subTagUsers}" href="/tag/${mtl:encodeURI(relation.name)}"><c:out value="${relation.name}"/></a>	  	
+				    	  	<c:out value="&#32;"/>
+						</li>
+		        	</c:forEach>
 		        </ul>
 			</td>
 			</tr>
 		</c:forEach>
 		</table>
-      </div>
-    </jsp:attribute>
-    
-    
+	  </div>
+	</jsp:attribute>
+       
   </layout:layout>
 </jsp:root>
