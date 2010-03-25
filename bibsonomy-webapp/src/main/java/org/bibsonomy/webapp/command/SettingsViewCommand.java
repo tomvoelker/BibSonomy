@@ -116,6 +116,8 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * delete the account yes or no
 	 */
 	private String delete = null;
+
+	private String importData;
 	
 	/**
 	 * Constructor.
@@ -341,5 +343,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	public void setChangeTo(int changeTo) {
 		this.changeTo = changeTo;
+	}
+	
+	public void setImportData(String importData) {
+		this.importData = importData;
+	}
+
+	public String getImportData() {
+		return importData;
 	}
 }
