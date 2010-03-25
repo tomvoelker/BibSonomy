@@ -32,7 +32,7 @@
 		    					<label for="laddgu" class="fsLabel"><fmt:message key="user.name"/></label>
 		    					<buttons:help message="settings.group.addUser.help"/>
 		    					<c:set var="userEmpty" value="${empty param.user}"/>
-		    					<input type="text" ssClass="fsInput fsSmall" path="requestedUser" value="${userEmpty?'':fn:escapeXml(param.user)}"/>
+		    					<input type="text" ssClass="fsInput fsSmall" path="add_group_user" value="${userEmpty?'':fn:escapeXml(param.user)}"/>
 							</div>
 						
 							<div class="fsRow">
@@ -45,6 +45,28 @@
 					</div>
 				</form:form>
 
+				<h2><fmt:message key="settings.group.delUser"/></h2>
+				<form:form name="groupusers" method="post" action="/SettingsHandler">
+					<div id="fsform">
+						<fieldset class="fsInner">
+
+							<div class="fsRow">
+		    					<label for="laddgu" class="fsLabel"><fmt:message key="user.name"/></label>
+		    					<buttons:help message="settings.group.delUser.help"/>
+		    					<c:set var="userEmpty" value="${empty param.user}"/>
+		    					<input type="text" ssClass="fsInput fsSmall" path="del_group_user" value="${userEmpty?'':fn:escapeXml(param.user)}"/>
+							</div>
+						
+							<div class="fsRow">
+		    					<input type="hidden" name="ckey" value="${ckey}"/>
+  								<fmt:message var="deluser" key="settings.group.delUser.button"/>
+		   						<input type="submit" value="${deluser}" />
+		   					</div>
+		
+						</fieldset>
+					</div>
+				</form:form>
+				
 				<c:if test="${showDeny}">
 					<!-- TODO move to controller -->
 					<!-- User clicked link in email and wants to add (or cancel) user -->	  
