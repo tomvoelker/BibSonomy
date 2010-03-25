@@ -12,19 +12,25 @@
 	    <result property="usercount" column="tag_ctr_user" javaType="int" />
 	    <result property="globalcount" column="tag_ctr_global" javaType="int" />
 	</resultMap>	
-	
-	<resultMap id="tagWithSubtags" class="tag" extends="Common.tag">
-	    <result property="subtagsString" column="subtags" javaType="String" />
-	</resultMap>	
+
+	<resultMap id="subTag" class="tag">
+		<result property="name" column="subTag" javaType="string" />
+		<result property="usercount" column="subTagCount" javaType="int" />
+	</resultMap>
 
 	<!-- tag name with its usercount, i.e. the number of users that have used it -->
 	<resultMap id="tagWithUserCount" class="tag" extends="Common.tag">
 	    <result property="usercount" column="user_count" javaType="int" />
 	</resultMap>
 	
+	<!--  tag name with its subtags -->
+	<resultMap id="tagWithSubtags" class="tag" extends="Common.tag">
+	    <result property="subTags" resultMap="TagCommon.subTag" />
+	</resultMap>
+		
 	<resultMap id="tagWithSubtagsAndUserCount" class="tag" extends="tagWithUserCount">
-	    <result property="subtagsString" column="subtags" javaType="String" />
-	</resultMap>	
+	    <result property="subTags" resultMap="TagCommon.subTag" />
+	</resultMap>
 	
 	<!-- tag with its id, name and global count -->
 	<resultMap id="tagWithDetails" class="tag" extends="Common.tag">
