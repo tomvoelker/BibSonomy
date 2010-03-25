@@ -23,6 +23,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.beans.TagIndex;
@@ -1037,5 +1038,39 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			
 			assertEquals(FieldLengthErrorMessage.class, messages.get(0).getClass());
 		}
+	}
+	
+	@Test
+	public void testLoggedPostsRedirect() {
+		/*
+		 * Post history:
+		 * content_id 	intrahash
+		 * 17			b71d5283dc7f4f59f306810e73e9bc9a
+		 * 18			e2fb0763068b21639c3e36101f64aefe
+		 * 19			b71d5283dc7f4f59f306810e73e9bc9a
+		 * 20			891518b4900cd1832d77a0c8ae20dd14
+		 */
+		try {
+			this.bibTexDb.getPostDetails("testuser1", "b71d5283dc7f4f59f306810e73e9bc9a", "testuser3", Collections.singletonList(PUBLIC_GROUP_ID), this.dbSession);
+			fail("expected ResourceMovedException");
+		} catch (final ResourceMovedException e) {
+			/*
+			 * The requested hash appears twice.
+			 * We want to ensure, that we get the post with content_id 20, i.e., 
+			 * the one after the latest post with the requested hash.  
+			 */
+			assertEquals("891518b4900cd1832d77a0c8ae20dd14", e.getNewIntraHash());
+		}
+		
+		try {
+			this.bibTexDb.getPostDetails("testuser1", "e2fb0763068b21639c3e36101f64aefe", "testuser3", Collections.singletonList(PUBLIC_GROUP_ID), this.dbSession);
+			fail("expected ResourceMovedException");
+		} catch (final ResourceMovedException e) {
+			/*
+			 * We get just the next hash.
+			 */
+			assertEquals("b71d5283dc7f4f59f306810e73e9bc9a", e.getNewIntraHash());
+		}
+		
 	}
 }

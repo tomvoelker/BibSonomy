@@ -312,7 +312,8 @@
 			    	ORDER BY t1.log_date DESC LIMIT 1
 				) AS bb
 		) AS b
-		LEFT OUTER JOIN groupids g ON (b.group = g.group) 
+		LEFT OUTER JOIN groupids g ON (b.group = g.group)
+		ORDER BY b.date DESC LIMIT 1
 	</select>
 
 
