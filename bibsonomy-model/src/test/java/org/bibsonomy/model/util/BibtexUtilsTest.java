@@ -220,7 +220,9 @@ public class BibtexUtilsTest {
 	public void cleanBibTex() {
 		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M{\\\"u}ller"));
 		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M\\\"{u}ller"));
+		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M\\\"uller"));
 		assertEquals("M&#252;ller", BibTexUtils.cleanBibTex("M\"uller"));
+		assertEquals("Sant&#233;", BibTexUtils.cleanBibTex("Sant{\\'e}"));
 		assertEquals("http://bla.fasel", BibTexUtils.cleanBibTex("\\url{http://bla.fasel}"));
 	}
 

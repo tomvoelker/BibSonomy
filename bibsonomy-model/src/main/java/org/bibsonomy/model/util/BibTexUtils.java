@@ -557,7 +557,10 @@ public class BibTexUtils {
 	 * @return the cleaned bibtex string
 	 */
 	public static String cleanBibTex(String bibtex) {
-
+		
+		if (!present(bibtex)) return "";			
+		
+		
 		// replace markup
 		bibtex = bibtex.replaceAll("\\\\[a-z]+\\{([^\\}]+)\\}", "$1");  // \\markup{marked_up_text}		
 
