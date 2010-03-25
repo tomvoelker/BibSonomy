@@ -21,64 +21,92 @@
 		user_name=#ownerUserName#
 	</delete>
 
+	<!-- the resultMap needs the column subTagCount whose value is always 1, since a 
+		user cannot	have the same relation twice -->
 	<select id="getPickedConceptsForUser" parameterClass="String"
 		resultMap="TagCommon.tagWithSubtags">
-		SELECT r.upper AS tag_name, GROUP_CONCAT(r.lower ORDER BY
-		r.lower SEPARATOR ' ') AS subtags
-		FROM tagtagrelations r
-		WHERE r.user_name=#userName# AND r.picked=true 
-		GROUP BY r.upper
-		ORDER BY r.upper
+		SELECT upper AS tag_name, 
+			lower AS subTag, 
+			'1' AS subTagCount
+		FROM tagtagrelations
+		WHERE user_name=#userName#
+			AND picked=true 
+		GROUP BY upper,
+			lower
+		ORDER BY LCASE(upper),
+			LCASE(lower);
 	</select>
 
+	<!-- the resultMap needs the column subTagCount whose value is always 1, since a 
+		user cannot	have the same relation twice -->
 	<select id="getAllConceptsForUser" parameterClass="tagRelationParam"
 		resultMap="TagCommon.tagWithSubtags">
-		SELECT upper AS tag_name, GROUP_CONCAT(lower ORDER BY lower
-		SEPARATOR ' ') AS subtags
-		FROM tagtagrelations
-		WHERE user_name=#requestedUserName#
-		GROUP BY upper
-		ORDER BY upper
-		LIMIT #limit#
-		OFFSET #offset#
+		SELECT tagCount.upper AS tag_name, 
+			r.lower AS subTag, 
+			'1' AS subTagCount
+		FROM tagtagrelations r, 
+		(SELECT upper AS upper 
+			FROM tagtagrelations r
+			WHERE user_name=#requestedUserName#
+			GROUP BY upper
+			ORDER BY LCASE(upper) 
+				LIMIT #limit#
+				OFFSET #offset#
+		) AS tagCount
+		WHERE user_name=#requestedUserName# 
+			AND LCASE(tagCount.upper)=LCASE(r.upper)
+		GROUP BY LCASE(r.upper), LCASE(r.lower)
+		ORDER BY tagCount.upper COLLATE utf8_unicode_ci,
+			LCASE(r.lower) COLLATE utf8_unicode_ci
 	</select>
 
+	<!-- the resultMap needs the column subTagCount whose value is always 1, since a 
+		user cannot	have the same relation twice -->
 	<select id="getConceptForUser" parameterClass="tagRelationParam"
 		resultMap="TagCommon.tagWithSubtags">
-		SELECT upper AS tag_name, GROUP_CONCAT(lower ORDER BY lower
-		SEPARATOR ' ') AS subtags
+		SELECT upper AS tag_name, 
+			lower AS subTag,
+			'1' as subTagCount
 		FROM tagtagrelations
 		WHERE LCASE(upper)=LCASE(#upperTagName#)
-		AND user_name=#ownerUserName#
-		GROUP BY LCASE(upper)
-		ORDER BY upper
+			AND user_name=#ownerUserName#
+		GROUP BY LCASE(lower)
+		ORDER BY LCASE(lower)
 	</select>
 
+	
 	<select id="getAllConcepts" resultMap="TagCommon.tagWithSubtagsAndUserCount">
-		SELECT r.upper AS
-			tag_name, GROUP_CONCAT(DISTINCT r.lower ORDER BY r.lower SEPARATOR ' ') AS subtags, 
-			tagCount.usercount AS user_count
-		FROM tagtagrelations r, (SELECT upper, COUNT(DISTINCT user_name) AS usercount, 
-			COUNT(upper COLLATE utf8_unicode_ci) AS count
-			FROM tagtagrelations r GROUP BY upper COLLATE utf8_unicode_ci ORDER BY
-			usercount DESC,count DESC LIMIT 50) AS tagCount
-		WHERE tagCount.upper=r.upper
-		GROUP BY tagCount.upper
+		SELECT tagCount.upper AS tag_name, 
+			LCASE(r.lower) AS subTag, 
+			tagCount.usercount AS user_count, 
+			COUNT(r.lower) AS subTagCount
+		FROM tagtagrelations r JOIN user u USING(user_name), 
+			(SELECT LCASE(upper) AS upper, COUNT(DISTINCT user_name) AS usercount, 
+			COUNT(LCASE(upper) COLLATE utf8_unicode_ci) AS count
+			FROM tagtagrelations r JOIN user u USING (user_name)
+			WHERE u.spammer = 0
+			GROUP BY LCASE(upper) COLLATE utf8_unicode_ci 
+			ORDER BY usercount DESC, count DESC LIMIT 50
+		) AS tagCount
+		WHERE tagCount.upper=LCASE(r.upper)
+			AND u.spammer = 0
+		GROUP BY tagCount.upper, 
+			LCASE(r.lower)
 		ORDER BY tagCount.upper COLLATE utf8_unicode_ci,
-		r.lower COLLATE utf8_unicode_ci 
+			LCASE(r.lower) COLLATE utf8_unicode_ci
 	</select>
 
 	<select id="getGlobalConceptByName" parameterClass="String"
 		resultMap="TagCommon.tagWithSubtags">
-		SELECT r.upper AS tag_name, GROUP_CONCAT(DISTINCT r.lower
-		ORDER BY r.lower SEPARATOR ' ') AS subtags
-		FROM tagtagrelations r
-		WHERE
-		LCASE(r.upper) = LCASE(#conceptName#)
-		GROUP BY LCASE(r.upper)
-		ORDER BY
-		r.upper
-		COLLATE utf8_unicode_ci, r.lower COLLATE utf8_unicode_ci
+		SELECT LCASE(upper) AS tag_name, 
+			lower AS subTag,
+			COUNT(DISTINCT user_name) AS subTagCount
+		FROM tagtagrelations JOIN user u USING(user_name)
+		WHERE LCASE(upper) = LCASE(#conceptName#)
+			AND u.spammer = 0
+		GROUP BY LCASE(upper), LCASE(lower)
+		ORDER BY LCASE(upper) COLLATE utf8_unicode_ci, 
+			LCASE(lower) COLLATE utf8_unicode_ci;
 	</select>
 
 	<select id="getRelationID" parameterClass="tagRelationParam"
