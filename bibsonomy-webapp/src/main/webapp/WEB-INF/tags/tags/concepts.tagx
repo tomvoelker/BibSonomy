@@ -39,7 +39,14 @@
 	<ul id="relations">
 		<!-- load localized strings -->
 		<c:set var="hideRelationTitle"><fmt:message key="tagrelations.hide.title" /></c:set>	
-		<!-- loop over concepts -->
+
+		<!-- set path part - either tag or user/USER -->
+		<c:set var="tagPath" value="tag"/>
+		<c:if test="${not empty command.requestedUser}">
+			<c:set var="tagPath" value="user/${fn:escapeXml(requestedUserName)}"/>
+		</c:if>
+		
+		<!-- loop over concepts -->		
 		<c:forEach var="concept" items="${cmd.conceptList}">
 			<li class="box_upperconcept">			
 				<!-- display link to hide relation -->
@@ -64,39 +71,25 @@
 				</c:if>
 				
 				<!--<c:out value="${requTag}" />-->
-				<a href="/concept/user/${fn:escapeXml(requestedUserName)}/${fn:escapeXml(concept.name)}" title="${showPostsForConceptTitle}" class="${selectedConceptClass}">${fn:escapeXml(concept.name)}</a>
+				<a href="/concept/${tagPath}/${fn:escapeXml(concept.name)}" 
+				   title="${showPostsForConceptTitle}" 
+				   class="${selectedConceptClass}">${fn:escapeXml(concept.name)}</a>
 				<c:out value=" "/>${mtl:ch('tagrelations.superConceptOf')}<c:out value=" "/>
 				<c:out value=" "/>
 				
 				<!-- display subtags -->
 				<ul id="${concept.name}" class="box_lowerconcept_elements">
+					<!-- iterate over subtags to get highest usercount -->
+					<c:set var="maxCount" value="0" />
+     	  			<c:forEach var="subtag" items="${concept.subTags}">
+     	  				<c:if test="${subtag.usercount>=maxCount}"> <c:set var="maxCount" value="${subtag.usercount}" /></c:if>
+     	  			</c:forEach>
+     	  			<!-- display subtags -->
 					<c:forEach var="subtag" items="${concept.subTags}">
 						<li class="box_lowerconcept">
-							<!--
-							    TODO:
-								for the time being, we do not retrive the usage count
-								for subtags, hence we do not display this count in the title
-								attribute of the link. If the DB query has been changed to 
-								retrieve the counts, uncommment the following and add
-								  title="${subtag.usercount} ${posts}"
-								as attribute to the href below.
-								  dbe, 20070124
-							-->
-							<!--  
-							<c:choose>
-								<c:when test="${subtag.usercount == 1}">
-									<c:set var="posts">
-										<fmt:message key="post" />
-									</c:set>				
-								</c:when>
-								<c:otherwise>
-									<c:set var="posts">
-										<fmt:message key="posts" />
-									</c:set>	
-								</c:otherwise>
-							</c:choose>
-							 -->																		 
-	    	    			<a href="/user/${fn:escapeXml(requestedUserName)}/${fn:escapeXml(subtag.name)}" title="">${fn:escapeXml(subtag.name)}</a>
+	    	    			<a style="font-size:${mtl:computeTagFontsize(subtag.usercount, maxCount, 'home')}%" 
+	    	    			   href="/${tagPath}/${fn:escapeXml(subtag.name)}" 
+	    	    			   title="${subtag.usercount}"><c:out value="${subtag.name}"/></a>
 	          			</li>
 	          			<c:out value=" "/>
 					</c:forEach>
