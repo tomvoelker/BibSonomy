@@ -234,7 +234,11 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				final Set<Tag> oldTags = TagUtils.parse(oldTagsMap.get(intraHash));
 				final Set<Tag> newTags = TagUtils.parse(newTagsMap.get(intraHash));
 				/*
-				 * we add all global tags to the set of new tags 
+				 * we add all global tags to the set of new tags
+				 * 
+				 * FIXME: we must clone the added tags - otherwise, each post 
+				 * gets the SAME INSTANCE of each tag, which can have bad side
+				 * effects (in particular for system tags).
 				 */
 				newTags.addAll(addTags);
 				/*
