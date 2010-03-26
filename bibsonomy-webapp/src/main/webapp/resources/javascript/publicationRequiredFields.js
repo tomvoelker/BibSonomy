@@ -80,12 +80,12 @@ function processResponse(data) {
 	      +year
 	      +'</span></div>');
 	
-		element.attr('url', '/editPublication?hash='+intraHash+'&user='+i.user+'&copytag='+tags);
+		element.attr('url', '/editPublication?hash='+intraHash+'&user='+item.user+'&copytag='+tags);
 		element.click(
 				// get title specific data
 				// and set the forms accordingly
 				function () {
-		          window.location.href = '/editPublication?hash='+intraHash+'&user='+data.user+'&copytag='+tags;
+		          window.location.href = '/editPublication?hash='+intraHash+'&user='+item.user+'&copytag='+tags;
 		          $("#suggestionBox").hide();
 				}
 		);
