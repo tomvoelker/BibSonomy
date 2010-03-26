@@ -42,7 +42,7 @@
 			the sidebar shows the "postPublication" buttons
 		 -->
 		<jsp:attribute name="sidebar">
-			<ul id="sidebar">
+			<div class="boxcontent">
 				<h3>
 					<fmt:message key="buttons.bookmarklet">
 						<fmt:param value="${projectName}"></fmt:param>
@@ -58,7 +58,7 @@
 				<p>
 					<fmt:message key="post.resource.hint1"/>
 				</p>
-			</ul>
+			</div>
 		</jsp:attribute>
 
 
