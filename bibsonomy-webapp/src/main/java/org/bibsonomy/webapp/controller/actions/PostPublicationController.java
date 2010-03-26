@@ -469,6 +469,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 		} catch (final ConversionException e) {
 			errors.reject("error.upload.failed.conversion", "An error occurred during converting your EndNote file to BibTeX.");
 		} catch (final UnsupportedFileTypeException e) {
+			/*
+			 * FIXME: the key is missing! We need to get the supported file types from the exception
+			 */
 			errors.reject("error.upload.failed.filetype", e.getMessage());
 		} catch (final Exception ex1) {
 			errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
