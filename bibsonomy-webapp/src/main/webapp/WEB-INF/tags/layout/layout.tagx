@@ -238,7 +238,11 @@
 				<!-- sidebar -->
 				<c:if test="${sidebar != null}">
 					<div id="sidebarroundcorner" >
-						<jsp:invoke fragment="sidebar"/>
+						<div class="sidebarBoxOuter" id="sidebox">
+							<div class="sidebarBoxInner">
+								<jsp:invoke fragment="sidebar"/>
+							</div>
+						</div>
 					</div>
 				</c:if>
 				<c:if test="${fullscreen}">
@@ -273,7 +277,7 @@
 				</div>
         
                 <jsp:invoke fragment="beforeBodyClose"/>
-        
+
 			</body>
 		</jsp:body>
 	</jsp:element>
