@@ -101,6 +101,8 @@ public class ForFriendTag extends SystemTag {
 		 * We restore the post to the way it was before
 		 * WE NEED THIS e.g. in BatchEditTags, since there the same tag is added to a list of posts
 		 * If we left this tag as sent:user than it would be executed only for the first post of that list
+		 * FIXME: this should be fixed in the controller - it must ensure
+		 * that each post gets another instance of such a tag!
 		 */ 
 		this.getTag().setName("send:" + receiver);
 	}
