@@ -154,7 +154,7 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 			errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occurred: {0}");
 		} catch (Exception ex) {
 			errors.reject("error.furtherInformations", new Object[]{ex.getMessage()}, "The following error occurred: {0}");
-			log.error("Delicious/Firefox-Import failed.", ex);
+			log.warn("Delicious/Firefox-Import failed: " + ex.getMessage());
 		}
 
 		/** how many posts were found? **/
