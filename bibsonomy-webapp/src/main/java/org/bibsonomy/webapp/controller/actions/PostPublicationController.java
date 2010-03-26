@@ -25,6 +25,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
+import org.bibsonomy.common.exceptions.UnsupportedFileTypeException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Document;
@@ -427,16 +428,17 @@ public class PostPublicationController extends AbstractEditPublicationController
 		/*
 		 * get temp file
 		 */
-		final CommonsMultipartFile uploadedFile = command.getFile();
-		final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), HandleFileUpload.bibtexEndnoteExt);
-		/*
-		 * FIXME: the upload file handler throws an exception, 
-		 * if the file type does not match - this exception also comes, when
-		 * no file is given at all. We should check for empty file names and
-		 * give a specific error message then.
-		 */
 		File file = null;
 		try {
+
+			final CommonsMultipartFile uploadedFile = command.getFile();
+			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), HandleFileUpload.bibtexEndnoteExt);
+			/*
+			 * FIXME: the upload file handler throws an exception, 
+			 * if the file type does not match - this exception also comes, when
+			 * no file is given at all. We should check for empty file names and
+			 * give a specific error message then.
+			 */
 			final Document uploadedDocument = uploadFileHandler.writeUploadedFile();
 			file = uploadedDocument.getFile();
 
@@ -466,6 +468,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 			
 		} catch (final ConversionException e) {
 			errors.reject("error.upload.failed.conversion", "An error occurred during converting your EndNote file to BibTeX.");
+		} catch (final UnsupportedFileTypeException e) {
+			errors.reject("error.upload.failed.filetype", e.getMessage());
 		} catch (final Exception ex1) {
 			errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
 		} finally {
