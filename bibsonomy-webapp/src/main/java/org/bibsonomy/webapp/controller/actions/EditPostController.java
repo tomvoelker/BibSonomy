@@ -389,6 +389,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		if (!ValidationUtils.present(updatePosts)) {
 			/*
 			 * show error page
+			 * FIXME: when/why can this happen? We get some error messages
+			 * here in the logs, but can't explain them.
 			 */
 			errors.reject("error.post.update", "Could not update post.");
 			log.warn("could not update post");
