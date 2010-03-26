@@ -48,7 +48,7 @@ public class OpacScraper extends AbstractUrlScraper {
 	/**
 	 * TODO: This Scraper match only on URL's with es specific query value in path and queries. The current patterns don't work.
 	 */
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(HOST_NAME + ".*"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(HOST_NAME + ".*"), Pattern.compile(".*/PPN.*")));
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		//log.fatal("Opac");
