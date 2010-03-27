@@ -157,13 +157,13 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 
 		final User loginUser = context.getLoginUser();
 
-		
+
 		/*
 		 * After having handled the general issues (login, referer, etc.),
 		 * sub classes can now execute their workOn code 
 		 */
 		workOnCommand(command, loginUser);
-		
+
 		/*
 		 * If the user is a spammer, we check the captcha
 		 */
@@ -172,10 +172,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			 * check the captcha (if it is wrong, an error is added)
 			 */
 			checkCaptcha(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), requestLogic.getHostInetAddress());
-			/*
-			 * Generate HTML to show captcha.
-			 */
-			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
 		}
 
 
@@ -221,7 +217,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		return handleCreatePost(command, context, loginUser, post);
 
 	}
-	
+
 	protected abstract void workOnCommand(final COMMAND command, final User loginUser);
 
 	/**
@@ -388,7 +384,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		final List<Post<?>> posts = new LinkedList<Post<?>>();
 		posts.add(post);
 		setDate(post, loginUserName);
-		
+
 		List<String> updatePosts = null;
 		try {
 			/*
@@ -709,8 +705,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		command.setTags(getSimpleTagString(dbPost.getTags()));
 
 	}
-	
-	
+
+
 	/**
 	 * Checks the captcha. If the response from the user does not match the captcha,
 	 * an error is added. 
@@ -723,28 +719,39 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * an exception. This could be caused by a non-rechable captcha-server. 
 	 */
 	private void checkCaptcha(final String challenge, final String response, final String hostInetAddress) throws InternServerException {
-		if (org.bibsonomy.util.ValidationUtils.present(challenge) && org.bibsonomy.util.ValidationUtils.present(response)) {
-			/*
-			 * check captcha response
-			 */
-			try {
-				final CaptchaResponse res = captcha.checkAnswer(challenge, response, hostInetAddress);
+		if (ValidationUtils.present(response)) {
+			if (ValidationUtils.present(challenge)) {
+				/*
+				 * check captcha response
+				 */
+				try {
+					final CaptchaResponse res = captcha.checkAnswer(challenge, response, hostInetAddress);
 
-				if (!res.isValid()) {
-					/*
-					 * invalid response from user
-					 */
-					errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
-				} else if (res.getErrorMessage() != null) {
-					/*
-					 * valid response, but still an error
-					 */
-					log.warn("Could not validate captcha response: " + res.getErrorMessage());
+					if (!res.isValid()) {
+						/*
+						 * invalid response from user
+						 */
+						errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
+					} else if (res.getErrorMessage() != null) {
+						/*
+						 * valid response, but still an error
+						 */
+						log.warn("Could not validate captcha response: " + res.getErrorMessage());
+					}
+				} catch (final Exception e) {
+					log.fatal("Could not validate captcha response.", e);
+					throw new InternServerException("error.captcha");
 				}
-			} catch (final Exception e) {
-				log.fatal("Could not validate captcha response.", e);
-				throw new InternServerException("error.captcha");
+			} else {
+				/*
+				 * FIXME: what to do if no challenge is given?
+				 */
 			}
+		} else {
+			/*
+			 * no response given
+			 */
+			errors.rejectValue("recaptcha_response_field", "error.field.required");
 		}
 	}
 
@@ -1039,7 +1046,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	protected void setSessionAttribute(final String key, final Object value) {
 		requestLogic.setSessionAttribute(key, value);
 	}
-	
+
 	/**
 	 * Gets a string attribute from the session.
 	 * 
