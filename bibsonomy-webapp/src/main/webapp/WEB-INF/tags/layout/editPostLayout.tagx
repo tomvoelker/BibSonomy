@@ -121,6 +121,19 @@
                                     <jsp:invoke fragment="detailedInformation"/>
                                 </c:if>
   
+            
+          
+                                <!--
+                                   | a Captcha for our spammers ... 
+                                   -->         
+								<c:if test="${not empty command.captchaHTML}">
+						        	<fieldset class="fsInner">
+										<span class="fsLabel"><fmt:message key="captcha"/></span>
+						              	<span class="fsInput">${command.captchaHTML}<form:errors cssClass="errmsg" path="recaptcha_response_field" /></span>
+						            </fieldset>
+						        </c:if>
+          
+  
 				    </fieldset>
 			     </div>
 			  </form:form>

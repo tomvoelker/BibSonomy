@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -20,6 +19,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
+import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.systemstags.SystemTags;
@@ -44,6 +44,7 @@ import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.util.captcha.Captcha;
+import org.bibsonomy.webapp.util.captcha.CaptchaResponse;
 import org.bibsonomy.webapp.validation.PostValidator;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -125,7 +126,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
 	public View workOn(final COMMAND command) {
-		final Locale locale = requestLogic.getLocale();
 		final RequestWrapperContext context = command.getContext();
 		/*
 		 * TODO: i18n
@@ -165,11 +165,17 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		workOnCommand(command, loginUser);
 		
 		/*
-		 * If user is spammer block him silently by entering captcha again and again
+		 * If the user is a spammer, we check the captcha
 		 */
 		if (loginUser.isSpammer()){
-			command.setCaptchaHTML(captcha.createCaptchaHtml(locale));
-			errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
+			/*
+			 * check the captcha (if it is wrong, an error is added)
+			 */
+			checkCaptcha(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), requestLogic.getHostInetAddress());
+			/*
+			 * Generate HTML to show captcha.
+			 */
+			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
 		}
 
 
@@ -272,6 +278,12 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * prepare post from internal format into user's form format
 		 */
 		this.preparePostForView(command.getPost());
+		if (loginUser.isSpammer()) {
+			/*
+			 * Generate HTML to show captcha.
+			 */
+			command.setCaptchaHTML(captcha.createCaptchaHtml(requestLogic.getLocale()));
+		}
 		/*
 		 * return the view
 		 */
@@ -696,6 +708,44 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 */
 		command.setTags(getSimpleTagString(dbPost.getTags()));
 
+	}
+	
+	
+	/**
+	 * Checks the captcha. If the response from the user does not match the captcha,
+	 * an error is added. 
+	 * 
+	 * FIXME: copied from {@link UserRegistrationController}
+	 * 
+	 * @param command - the command associated with this request.
+	 * @param hostInetAddress - the address of the client
+	 * @throws InternServerException - if checking the captcha was not possible due to 
+	 * an exception. This could be caused by a non-rechable captcha-server. 
+	 */
+	private void checkCaptcha(final String challenge, final String response, final String hostInetAddress) throws InternServerException {
+		if (org.bibsonomy.util.ValidationUtils.present(challenge) && org.bibsonomy.util.ValidationUtils.present(response)) {
+			/*
+			 * check captcha response
+			 */
+			try {
+				final CaptchaResponse res = captcha.checkAnswer(challenge, response, hostInetAddress);
+
+				if (!res.isValid()) {
+					/*
+					 * invalid response from user
+					 */
+					errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
+				} else if (res.getErrorMessage() != null) {
+					/*
+					 * valid response, but still an error
+					 */
+					log.warn("Could not validate captcha response: " + res.getErrorMessage());
+				}
+			} catch (final Exception e) {
+				log.fatal("Could not validate captcha response.", e);
+				throw new InternServerException("error.captcha");
+			}
+		}
 	}
 
 	/** Initializes the relevant for groups in the command from the (system) tags of the 

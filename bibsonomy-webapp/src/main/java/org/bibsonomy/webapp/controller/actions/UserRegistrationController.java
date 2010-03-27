@@ -266,6 +266,8 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	 * Checks the captcha. If the response from the user does not match the captcha,
 	 * an error is added. 
 	 * 
+	 * FIXME: duplictaed in {@link EditPostController} 
+	 * 
 	 * @param command - the command associated with this request.
 	 * @param hostInetAddress - the address of the client
 	 * @throws InternServerException - if checking the captcha was not possible due to 
