@@ -44,6 +44,7 @@ function processResponse(data) {
 	var s = 0;
 	// if there's no data abort
 	if(data.items.length == 0) {
+		$("#suggestionBox").hide();
 		return;
 	}
 	//style="background-color: #006699; color: #FFFFFF; padding:3px;"
