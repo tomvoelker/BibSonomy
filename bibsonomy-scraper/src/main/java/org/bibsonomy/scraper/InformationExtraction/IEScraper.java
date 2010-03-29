@@ -247,7 +247,7 @@ public class IEScraper implements Scraper {
 		String result = null;
 		if( toConvert==null ) return null;
 		try {
-			byte[] utf8 = toConvert.getBytes("ISO-8859-1"); // Convert from UTF-8 to Unicode 
+			byte[] utf8 = toConvert.getBytes("ISO-8859-1"); 
 			result = new String(utf8, "UTF-8");
 		} catch (UnsupportedEncodingException ex) {
 			/*nothing clever, i could do here*/
