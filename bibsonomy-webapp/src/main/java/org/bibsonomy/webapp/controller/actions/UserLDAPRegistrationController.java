@@ -75,7 +75,12 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 		
 		if (errors.hasErrors()) {
 			log.info("an error occoured: " + errors.toString());
-			return Views.REGISTER_USER_LDAP;
+			
+			if (command.getStep() == 3) {
+				return Views.REGISTER_USER_LDAP_FORM;
+			} else {
+				return Views.REGISTER_USER_LDAP;
+			}
 		}
 
 		/*
