@@ -31,25 +31,6 @@
 			
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
-			<!-- ================================= -->
-			<!--  STYLES FOR ERROR LINES (PARSER)  -->
-			<!-- ================================= -->
-			<style type="text/css">
-			              ul.errorLineList > li {
-			                display: inline;
-			                font-size: 120%;
-			                color:red;
-			              }
-			              ul.errorLineList > dt {
-			                margin-top: 1em;
-			              }
-			              ul.errorLineList > li:after {
-			                content:" , ";
-			              }
-			              ul.errorLineList > dt:before {
-			                content:"\2022\00a0";
-			              }
-		    </style>
 	    </jsp:attribute>
 			
 			
