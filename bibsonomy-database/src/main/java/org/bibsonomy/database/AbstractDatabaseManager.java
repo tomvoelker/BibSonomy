@@ -52,6 +52,7 @@ public class AbstractDatabaseManager {
 				log.error("Error when trying to read environment variable 'searchmode' via JNDI / System.", ex);
 			}
 		}
+		log.info("full text search is done by lucene : " + doLuceneSearch);
 	}
 	
 	/**
