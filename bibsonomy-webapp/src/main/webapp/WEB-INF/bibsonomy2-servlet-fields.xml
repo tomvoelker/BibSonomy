@@ -26,8 +26,7 @@
 				<value>requSim</value>
 				<value>requUrl</value>
 				<value>requUrlHash</value>
-				<value>tagcloud.minFreq</value>
-				<value>tagcloud.maxCount</value>
+				<value>tagcloud.*</value>
 				<!-- TODO: missing:  Tab(s)Command, TagCloudCommand -->
 				<!-- 
 					to not be dependent on bookmark or bibtex resource types, 
@@ -51,7 +50,6 @@
 				<value>layout</value>
 				<value>formatEmbedded</value> <!-- boolean! -->
 				<value>order</value><!-- folkrank, date, etc. -->
-				<value>searchmode</value>
 				<value>personalized</value>
 				<value>userSimilarity</value>
 				<value>notags</value><!-- boolean (to remove tags from /publ/ page) -->
