@@ -138,6 +138,7 @@ public class MathSciNetScraper extends AbstractUrlScraper {
 					if(preMatcher.find()){
 						String bibtex = preMatcher.group();
 						bibtex = bibtex.substring(5, bibtex.length()-6);
+						bibtex = this.switchJournals(bibtex);	
 						
 						sc.setBibtexResult(bibtex);
 						return true;
@@ -152,6 +153,19 @@ public class MathSciNetScraper extends AbstractUrlScraper {
 			// can't find url for bibtex
 			}else
 				throw new PageNotSupportedException("MathSciNetScraper: This MathSciNet page is not supported. Can't extract link to bibtex.");
+	}
+	
+	/*
+	 * method to switch journals (JOURNAL to SJOURNAL then FJOURNAL to JOURNAL)
+	 */
+	private String switchJournals(String bibtex){
+		
+		// in case of existing JOURNAL and FJOURNAL switch them else ... do nothing
+		if (bibtex.contains("JOURNAL =") && bibtex.contains("FJOURNAL =")){
+			bibtex = bibtex.replaceFirst("JOURNAL\\s=", "SJOURNAL =");
+			bibtex = bibtex.replaceFirst("FJOURNAL\\s=", "JOURNAL =");
+		}
+		return bibtex;
 	}
 	
 	public String getInfo() {
