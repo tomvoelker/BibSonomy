@@ -49,8 +49,12 @@ public class DeletePostController implements MinimalisticController<DeletePostCo
 			log.debug("User is logged in, ckey is valid");
 			
 			// delete the post
-			logic.deletePosts(context.getLoginUser().getName(), Collections.singletonList(command.getResourceHash()));
-			
+			final String resourceHash = command.getResourceHash();
+			try {
+				logic.deletePosts(context.getLoginUser().getName(), Collections.singletonList(resourceHash));
+			} catch (IllegalStateException e) {
+				errors.reject("error.post.notfound", new Object[]{resourceHash}, " The resource with ID [" + resourceHash + "] does not exist and could hence not be deleted.");
+			}
 		} else {
 			errors.reject("error.field.valid.ckey");
 		}
