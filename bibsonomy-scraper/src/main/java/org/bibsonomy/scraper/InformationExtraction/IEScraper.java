@@ -27,6 +27,8 @@ package org.bibsonomy.scraper.InformationExtraction;
 import java.beans.XMLEncoder;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -57,7 +59,8 @@ public class IEScraper implements Scraper {
 	 * Extract a valid Bibtex entry from a given publication snippet by using information extraction.
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
-		String selectedText = sc.getSelectedText();
+		String selectedText = convertISO2UTF8(sc.getSelectedText());
+		
 		/*
 		 * don't scrape, if there is nothing selected
 		 */
@@ -237,6 +240,20 @@ public class IEScraper implements Scraper {
 	 */
 	public String getSupportedSiteURL(){
 		return null;
+	}
+	
+	private String convertISO2UTF8(String toConvert)
+	{
+		String result = null;
+		if( toConvert==null ) return null;
+		try {
+			byte[] utf8 = toConvert.getBytes("ISO-8859-1"); // Convert from UTF-8 to Unicode 
+			result = new String(utf8, "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			/*nothing clever, i could do here*/
+		} 
+		
+		return result;
 	}
 
 }
