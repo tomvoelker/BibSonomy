@@ -39,7 +39,8 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 			throw new MalformedURLSchemeException("error.bibtexkey_no_key");
 		}
 		
-		// add bibtexkey as systemtag
+		// add bibtexkey as the only systemtag (sys:user:USERNAME is handeled below)
+		command.getRequestedTagsList().clear();
 		command.getRequestedTagsList().add(SystemTagsUtil.buildSystemTagString(SystemTags.BIBTEXKEY, command.getRequestedKey()));		
 		
 		// default grouping entity / grouping name
