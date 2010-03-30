@@ -37,22 +37,9 @@
 							<c:param name="clear" value="true"/>
 						</c:url>
 						<fmt:message var="removeTitle" key="inbox.actions.removeAllMessages.title"/>
-				
-			    		<c:choose>
-			    			<!-- SHOW A CONFIRM WINDOW -->
-			    			<c:when test="${command.context.loginUser.settings.confirmDelete}">
-			    				<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}" 
-			    				onclick="javascript: return confirm(getString('post.meta.delete.confirm'));">
-			    					<fmt:message key="inbox.actions.removeAllMessages"/>
-			    				</a>
-			    			</c:when>
-			    			<!-- JUST REMOVE -->
-			    			<c:otherwise>
-			    				<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}">		       
-			       					<fmt:message key="inbox.actions.removeAllMessages"/>
-			    				</a>
-			    			</c:otherwise>
-			    		</c:choose>
+	    				<a href="${fn:escapeXml(message_remove)}" title="${removeTitle}">		       
+	       					<fmt:message key="inbox.actions.removeAllMessages"/>
+	    				</a>
             		</span>
           		</li>	
          	</ul>	
