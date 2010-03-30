@@ -13,8 +13,11 @@ import java.util.Set;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
@@ -181,9 +184,9 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		List<Post<?>> posts1 = new LinkedList<Post<?>>();
 		List<Post<?>> posts2 = new LinkedList<Post<?>>();
 		List<Post<?>> posts3 = new LinkedList<Post<?>>();
-		posts1.add(createTestPost(testUser1, tags1));
-		posts2.add(createTestPost(testUser2, tags2));
-		posts3.add(createTestPost(testUser1, tags2));
+		posts1.add(createTestBookmarkPost(testUser1, tags1));
+		posts2.add(createTestBookmarkPost(testUser2, tags2));
+		posts3.add(createTestBookmarkPost(testUser1, tags2));
 		//change posts3 to avoid douplicates 
 		posts3.get(0).getResource().setTitle("some other title");
 		// store posts
@@ -239,46 +242,219 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 	}
 	
 	/**
-	 *  test funtionality of the ForFriend SystemTag
+	 *  test functionality of the ForFriend SystemTag (and the inbox)
 	 */
 	@Test
 	public void testForFriendTag(){
 		/*
-		 * Send an Inbox Message
+		 * Create 2 users
 		 */
-		// create users
 		User testUser1 = createTestUser("senderUser");
 		User testUser2 = createTestUser("receiverUser");
-		testUser2.addFriend(testUser1);
+		// make a logic for each user
 		DBLogicUserInterfaceFactory logicFactory = new DBLogicUserInterfaceFactory();
 		logicFactory.setDbSessionFactory(getDbSessionFactory());
-		LogicInterface logic = logicFactory.getLogicAccess(testUser2.getName(), "password");
-		//UserParam param = new UserParam();
-		//param.setU
-		//this.userDb.createFriendOfUser(param, dbSession);
-		logic.createUserRelationship(testUser2.getName(), testUser1.getName(), UserRelation.OF_FRIEND);
+		LogicInterface user1Logic = logicFactory.getLogicAccess(testUser1.getName(), "password");
+		LogicInterface user2Logic = logicFactory.getLogicAccess(testUser2.getName(), "password");
+		// user 2 adds user 1 as a friend => user 1 can now send posts to user 2
+		// however user 2 can not send posts to user 1
+		testUser2.addFriend(testUser1);
+		user2Logic.createUserRelationship(testUser2.getName(), testUser1.getName(), UserRelation.OF_FRIEND);
 		
-		// create post
+		/*
+		 *  User 2 tries to send a post to user1: We assume failure
+		 */
+		Tag tag = new Tag("send:"+testUser1.getName());
 		Set<Tag> tags = new HashSet<Tag>();
-		Tag tag = new Tag();
-		tag.setName("send:receiverUser");
-		tags.add(tag); 
-		
+		tags.add(tag);
+		Post<?> post = createTestBookmarkPost(testUser2, tags);
 		List<Post<?>> posts = new LinkedList<Post<?>>();
-		posts.add(createTestPost(testUser1, tags));
+		posts.add(post);
+		try {
+			user2Logic.createPosts(posts);
+			Assert.fail("User2 was not allowed to send a post to user1");
+		} catch (DatabaseException de) {
+			// one errorMessage should be present, caused by the unallowed Tag
+			Assert.assertEquals(1, de.getErrorMessages(post.getResource().getIntraHash()).size());
+			ErrorMessage em = de.getErrorMessages(post.getResource().getIntraHash()).get(0);
+			Assert.assertTrue(SystemTagErrorMessage.class.isAssignableFrom(em.getClass()));
+		}
+
+		/*
+		 * User2 tries to send a post to himself: We assume failure
+		 */
+		tag.setName("send:"+testUser2.getName());
+		try {
+			user2Logic.createPosts(posts);
+			Assert.fail("User2 was not allowed to send a post to himself");
+		} catch (DatabaseException de) {
+			// one errorMessage should be present, caused by the unallowed Tag
+			Assert.assertEquals(1, de.getErrorMessages(post.getResource().getIntraHash()).size());
+			ErrorMessage em = de.getErrorMessages(post.getResource().getIntraHash()).get(0);
+			Assert.assertTrue(SystemTagErrorMessage.class.isAssignableFrom(em.getClass()));
+		}
+
+		/*
+		 * User1 tries to send a post to user2: Since he is user2s friend we assume success
+		 */
+		tags = new HashSet<Tag>();
+		tags.add(new Tag("foo"));
+		tags.add(new Tag("send:"+testUser2.getName()));
+		Post<Bookmark> bookmark= this.createTestBookmarkPost(testUser1, tags);
+		posts = new LinkedList<Post<?>>();
+		posts.add(bookmark);
+		tags = new HashSet<Tag>();
+		tags.add(new Tag("bar"));
+		tags.add(new Tag("send:"+testUser2.getName()));
+		Post<BibTex> publication = this.createTestPublicationPost(testUser1, tags);
+		posts.add(publication);
+		user1Logic.createPosts(posts);
+		// user 2 should now have 2 posts in his inbox, 1 bookmark and 1 bibtex
+		Assert.assertEquals(2, this.inboxDb.getNumInboxMessages(testUser2.getName(), dbSession));
+		Assert.assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		Assert.assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		// get posts from inbox and count
+		Assert.assertEquals(1, user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null).size());
+		Assert.assertEquals(1, user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null).size());
+
+		/*
+		 * User1 now changes (and finally deletes) his posts, We expect NO changes in the inbox
+		 */
 		
-		// store posts
-		logic = logicFactory.getLogicAccess(testUser1.getName(), "password");
-		logic.createPosts(posts);
-		Assert.assertEquals(1, this.inboxDb.getNumInboxMessages("receiverUser", dbSession));
+		
+		/*
+		 * User1 now changes his bookmark post without changing the hash
+		 */
+		bookmark.getResource().setTitle("a new title");
+		posts = new LinkedList<Post<?>>();
+		posts.add(bookmark);
+		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
+		// change only a tag
+		bookmark.addTag("fooBookmark");
+		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_TAGS);
+		// there should now still be only one bookmarkPost in the inbox
+		Assert.assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		// the bookmarkPost from the inbox should look exactly like the original post
+		List<Post<Bookmark>> inboxBookmarks = user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
+		Assert.assertEquals(inboxBookmarks.get(0).getResource().getTitle(), "test");
+		// the bookmarkPost from the inbox should still have only 2 tags (foo and from:senderUser)
+		Assert.assertEquals(2, inboxBookmarks.get(0).getTags().size());
+
+		/*
+		 * User1 now changes his bookmark post changing the hash
+		 */
+		bookmark.getResource().setUrl("http://testurl2.orgg");
+		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
+		// there should now still be only one bookmarkPost in the inbox
+		Assert.assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		// the bookmarkPost from the inbox should look exactly like the original post
+		inboxBookmarks = user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
+		Assert.assertEquals(inboxBookmarks.get(0).getResource().getTitle(), "test");
+		Assert.assertEquals(2, inboxBookmarks.get(0).getTags().size());
+		Assert.assertEquals(inboxBookmarks.get(0).getResource().getUrl(), "http://www.testurl.orgg");
+
+		/*
+		 * User1 now deletes his bookmarPost
+		 */
+		List<String> intraHashes =new ArrayList<String>();
+		intraHashes.add(bookmark.getResource().getHash());
+		user1Logic.deletePosts(testUser1.getName(), intraHashes);
+		// there should now still be only one bookmarkPost in the inbox
+		Assert.assertEquals(1, user2Logic.getPostStatistics(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		// the bookmarkPost from the inbox should look exactly like the original post
+		inboxBookmarks = user2Logic.getPosts(Bookmark.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
+		Assert.assertEquals(inboxBookmarks.get(0).getResource().getTitle(), "test");
+		Assert.assertEquals(2, inboxBookmarks.get(0).getTags().size());
+		Assert.assertEquals(inboxBookmarks.get(0).getResource().getUrl(), "http://www.testurl.orgg");
+		
+		
+		/*
+		 * User1 now changes his publication post without changing the hash
+		 */
+		publication.getResource().setChapter("chapter1");
+		posts = new LinkedList<Post<?>>();
+		posts.add(publication);
+		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
+		// change only a tag
+		publication.addTag("barBibTex");
+		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_TAGS);
+		Assert.assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		// the inboxPost should still have no chapter, just as the original testPost
+		List<Post<BibTex>> inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
+		Assert.assertEquals(inboxPublications.get(0).getResource().getChapter(), null);
+		// the bookmarkPost from the inbox should still have only 2 tags (bar and from:senderUser)
+		Assert.assertEquals(2, inboxPublications.get(0).getTags().size());
+		
+		/*
+		 * User1 now changes his publication post changing the hash
+		 */
+		publication.getResource().setAuthor("Famous Author");
+		user1Logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
+		// there should now still be only one publicationPost in the inbox
+		Assert.assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		// the inboxPost should still have the same author as the original post
+		inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
+		Assert.assertEquals(2, inboxPublications.get(0).getTags().size());
+		Assert.assertEquals(inboxPublications.get(0).getResource().getAuthor(), "Lonely Writer");
+		Assert.assertEquals(inboxPublications.get(0).getResource().getChapter(), null);
+		
+		/*
+		 * User1 now deletes his publicationPost
+		 */
+		intraHashes =new ArrayList<String>();
+		intraHashes.add(publication.getResource().getIntraHash());
+		user1Logic.deletePosts(testUser1.getName(), intraHashes);
+		// there should now still be only one publicationPost in the inbox
+		Assert.assertEquals(1, user2Logic.getPostStatistics(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 0, null, null));
+		// the inboxPost should still have the same author as the original post
+		inboxPublications = user2Logic.getPosts(BibTex.class, GroupingEntity.INBOX, testUser2.getName(), null, null, null, null, 0, 10, null);
+		Assert.assertEquals(2, inboxPublications.get(0).getTags().size());
+		Assert.assertEquals(inboxPublications.get(0).getResource().getAuthor(), "Lonely Writer");
+		Assert.assertEquals(inboxPublications.get(0).getResource().getChapter(), null);
+		
+		/*
+		 * User2 now clears his Inbox
+		 */
+		user2Logic.deleteInboxMessages(null, true);
 	}
 	
-	//------------------------------------------------------------------------
-	// helpers
-	//------------------------------------------------------------------------
-	private Post <Bookmark> createTestPost(User user, Set<Tag> tags) {
+
+	/*
+	 * HELPERS
+	 */
+	
+	/*
+	 * create a testBookmark for a given user and with given TAgs
+	 */
+	private Post<Bookmark> createTestBookmarkPost(final User user, final Set<Tag> tags) {
+		final Bookmark bookmark = new Bookmark();
+		bookmark.setCount(0);
+		bookmark.setTitle("test");
+		bookmark.setUrl("http://www.testurl.orgg");
+		bookmark.recalculateHashes();
+		return createTestPost(bookmark, user, tags);
+	}
+
+	
+	/*
+	 * create a testPublication for a given user and with given Tags
+	 */
+	private Post<BibTex> createTestPublicationPost(final User user, final Set<Tag> tags) {
+		final BibTex bibTex = new BibTex();
+		bibTex.setCount(0);
+		bibTex.setAbstract("The abstract of a testPost");
+		bibTex.setAuthor("Lonely Writer");
+		bibTex.setBibtexKey("test");
+		bibTex.setEntrytype("article");
+		bibTex.setEditor("Edith Editor");
+		bibTex.setTitle("test");
+		return createTestPost(bibTex, user, tags);
+		
+	}
+	
+	private <T extends Resource> Post<T> createTestPost(final T resource, final User user, final Set<Tag> tags) {
 		// generate post
-		final Post<Bookmark> post = new Post<Bookmark>();
+		final Post<T> post = new Post<T>();
 		final Group group = new Group();
 
 		group.setDescription(null);
@@ -292,15 +468,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		post.setDescription("Some description");
 		post.setDate(new Date());
 		post.setUser(user);
-		final Bookmark resource;
 
-		final Bookmark bookmark = new Bookmark();
-		bookmark.setCount(0);
-		bookmark.setTitle("test");
-		bookmark.setUrl("http://www.testurl.orgg");
-		bookmark.recalculateHashes();
-		resource = bookmark;
-		
 		post.setResource(resource);
 
 		return post;
@@ -316,11 +484,17 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		// lookup
 		User user = this.userDb.getUserDetails(name, this.dbSession);
 		if( user.getName()!=null ) {
-			final List<Post<Bookmark>> posts = 
+			final List<Post<Bookmark>> bookmarks = 
 				this.bookmarkDb.getPostsForUser(null, name, HashID.INTRA_HASH, GroupID.INVALID.getId(), new ArrayList<Integer>(), null, Integer.MAX_VALUE, 0, null, this.dbSession);
-			for( Post<Bookmark> post : posts ) {
-				this.bookmarkDb.deletePost(name, post.getResource().getHash(), this.dbSession);
+			for( Post<Bookmark> post : bookmarks ) {
+				this.bookmarkDb.deletePost(name, post.getResource().getIntraHash(), this.dbSession);
 			}
+			final List<Post<BibTex>> publications = 
+				this.bibTexDb.getPostsForUser(null, name, HashID.INTRA_HASH, GroupID.INVALID.getId(), new ArrayList<Integer>(), null, Integer.MAX_VALUE, 0, null, this.dbSession);
+			for( Post<BibTex> post : publications) {
+				this.bibTexDb.deletePost(name, post.getResource().getIntraHash(), this.dbSession);
+			}
+			
 		} else {
 			user = new User(name);
 			user.setRealname("New Testuser");
