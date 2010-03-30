@@ -100,7 +100,7 @@
 		| ajax controller
 		+-->
 
-	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.GeneralAjaxController" scope="request">
+	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.ajax.GeneralAjaxController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
 	</bean>	
