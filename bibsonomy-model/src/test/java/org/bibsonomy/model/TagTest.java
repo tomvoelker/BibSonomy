@@ -59,26 +59,30 @@ public class TagTest {
 	 */
 	@Test
 	public void testCopyConstructor() throws Exception {
-		final Tag conference = new Tag("conference");
 		final Tag iccs = new Tag("iccs");
+		final Tag conference = new Tag("conference");
 		conference.addSubTag(iccs);
 		conference.setGlobalcount(10);
+		final Tag event = new Tag("event");
+		conference.addSuperTag(event);
 		
 		final Tag conferenceCopy = new Tag(conference);
 		
 		final Tag iccsCopy = conferenceCopy.getSubTags().get(0);
+		final Tag eventCopy = conferenceCopy.getSuperTags().get(0);
 		/*
 		 * assert equal content
 		 */
 		assertEquals("iccs", iccsCopy.getName());
+		assertEquals("event", eventCopy.getName());
 		assertEquals(conference.getGlobalcount(), conferenceCopy.getGlobalcount());
-		
+
 		/*
 		 * assert different instances
 		 */
 		assertNotSame(iccs, iccsCopy);
+		assertNotSame(event, eventCopy);
 		assertNotSame(conference, conferenceCopy);
-		
 	}
 
 }
