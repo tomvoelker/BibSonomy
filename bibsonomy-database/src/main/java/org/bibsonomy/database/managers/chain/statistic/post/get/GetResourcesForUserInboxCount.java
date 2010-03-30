@@ -26,7 +26,7 @@ public class GetResourcesForUserInboxCount extends StatisticChainElement {
 		log.debug("getResourcesForUserInbox");
 		inboxDb = InboxDatabaseManager.getInstance();
 		List<Integer> counts = new ArrayList<Integer>();
-		counts.add(this.inboxDb.getNumInboxMessages(param, session));
+		counts.add(this.inboxDb.getNumInboxMessages(param.getRequestedUserName(), param.getContentTypeConstant(), session));
 		return counts;
 	}
 

@@ -504,6 +504,9 @@ public abstract class GenericParam {
 		return this.contentType.getId();
 	}
 
+	public ConstantID getContentTypeConstant() {
+		return this.contentType;
+	}
 	public void setContentType(ConstantID contentType) {
 		this.contentType = contentType;
 	}

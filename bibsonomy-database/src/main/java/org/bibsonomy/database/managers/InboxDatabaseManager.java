@@ -6,7 +6,6 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.InboxParam;
-import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -63,7 +62,10 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	 *            the database session
 	 * @return the number of messages currently stored in the inbox
 	 */
-	public int getNumInboxMessages(final StatisticsParam param, final DBSession session) {
+	public int getNumInboxMessages(final String receiver, final ConstantID contentType, final DBSession session) {
+		InboxParam param = new InboxParam();
+		param.setContentType(contentType);
+		param.setReceiver(receiver);
 		return queryForObject("getNumInboxMessagesByType", param, Integer.class, session);
 	}
 
