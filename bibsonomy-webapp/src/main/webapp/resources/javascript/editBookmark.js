@@ -8,11 +8,11 @@ function checkUrlForTitle(  ){
 	    	if ( req.status == 200 ) {
 			    var result = eval( "(" + req.responseText + ")" );
 				if ( (result.pageTitle != "")&&(document.getElementById("post.resource.title").value=="") ) {
-					var pageTitle = "<a href=\"javascript:setSuggestionFromUrlTitle('"+ result.pageTitle +"')\" tabindex=\"2\">" + result.pageTitle + "</a> ";
+					var pageTitle = "<a href=\"javascript:setSuggestionFromUrl('title', '"+ result.pageTitle +"')\" tabindex=\"2\">" + result.pageTitle + "</a> ";
 					document.getElementById( "suggestion.title" ).innerHTML = pageTitle;
 				}
 				if (result.pageDescription != "") {
-					var pageDescription = "<a href=\"javascript:setSuggestionFromUrlDescription('"+ result.pageDescription +"')\" tabindex=\"2\">" + result.pageDescription + "</a> ";
+					var pageDescription = "<a href=\"javascript:setSuggestionFromUrl('description', '"+ result.pageDescription +"')\" tabindex=\"2\">" + result.pageDescription + "</a> ";
 					document.getElementById( "suggestion.description" ).innerHTML = pageDescription;
 				}
         	}
@@ -22,14 +22,9 @@ function checkUrlForTitle(  ){
 	req.send(null);
 }
 
-function setSuggestionFromUrlDescription(tagname){
-	document.getElementById('post.description').value=tagname;
-	document.getElementById('suggestion.description').innerHTML = "";
-}
-
-function setSuggestionFromUrlTitle(tagname){
-	document.getElementById('post.resource.title').value=tagname;
-	document.getElementById( "suggestion.title" ).innerHTML ="";
+function setSuggestionFromUrl(element, tagname){
+	document.getElementById('post.' + element).value = tagname;
+	document.getElementById('suggestion.' + element).innerHTML = "";
 }
 
 // setup jQuery to update recommender with form data
