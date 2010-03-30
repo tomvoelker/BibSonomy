@@ -19,10 +19,10 @@
 			AND intraHash=#intraHash#
 	</select>
 	
-	<select id="getNumInboxMessagesByType" resultClass="Integer" parameterClass="statisticsParam">
+	<select id="getNumInboxMessagesByType" resultClass="Integer" parameterClass="inboxParam">
 		SELECT COUNT(message_id) AS count
 			FROM inboxMail i
-			WHERE receiver_user=#requestedUserName#
+			WHERE receiver_user=#receiver#
 			AND content_type=#contentType#
 	</select>
 	
