@@ -81,7 +81,7 @@
 			<!-- related tags -->
 			<c:if test="${not empty command.relatedTagCommand.relatedTags}">
 				<li>
-					<span class="sidebar_h"><a href="/help/faq/300_user_interface/#faq.300_user_interface.10"><fmt:message key="relatedtags"/></a></span>
+					<span class="sidebar_h"><a href="/help/faq/300_user_interface/#faq.300_user_interface.9"><fmt:message key="relatedtags"/></a></span>
 					<tags:related requPath="${requPath}" cmd="${command.relatedTagCommand}" order="${command.order}"/>
 				</li>
 			</c:if>
@@ -89,7 +89,7 @@
 			<!-- related tags -->
 			<c:if test="${not empty command.similarTags.relatedTags}">
 				<li>
-					<span class="sidebar_h"><a href="/help/faq/300_user_interface/#faq.300_user_interface.10"><fmt:message key="similartags"/></a></span>
+					<span class="sidebar_h"><a href="/help/faq/300_user_interface/#faq.300_user_interface.9"><fmt:message key="similartags"/></a></span>
 					<tags:similar requPath="${requPath}" cmd="${command.similarTags}"/>
 				</li>
 			</c:if>			
