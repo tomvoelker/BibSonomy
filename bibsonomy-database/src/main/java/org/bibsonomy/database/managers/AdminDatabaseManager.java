@@ -38,7 +38,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * TODO: Make database names constants.
 	 */
-	private final List<String> tableNames = Arrays.asList(new String[] { "tas", "grouptas", "bibtex", "bookmark", "search_bibtex", "search_bookmark" });
+	private final List<String> tableNames = Arrays.asList(new String[] { "tas", "grouptas", "bibtex", "bookmark" });
 
 	private AdminDatabaseManager() {
 		super();
