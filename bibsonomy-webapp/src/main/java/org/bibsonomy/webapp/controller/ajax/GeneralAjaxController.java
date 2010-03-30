@@ -1,14 +1,15 @@
-package org.bibsonomy.webapp.controller;
+package org.bibsonomy.webapp.controller.ajax;
+
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URL;
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.webapp.command.GeneralAjaxCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -19,8 +20,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 
 /** Returns information about the given URL.
  * 
@@ -29,9 +28,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
  */
 public class GeneralAjaxController extends AjaxController implements MinimalisticController<GeneralAjaxCommand> {
 
-	private static final Log log = LogFactory.getLog(GeneralAjaxController.class);
-
-	//nur ausführen, wenn isJump() == false
 	public View workOn(GeneralAjaxCommand command) {
 
 		final String action = command.getAction();
@@ -80,12 +76,12 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 	 */
 	private void getDetailsForUrl(final GeneralAjaxCommand command) {
 
-		if ((command.getPageURL() == null) || (command.getPageURL().length() == 0)) return;
+		final String pageURL = command.getPageURL();
+		
+		if (!ValidationUtils.present(pageURL)) return;
 
 		try {
-
-			final Document document = XmlUtils.getDOM(new URL(command.getPageURL()));
-			
+			final Document document = XmlUtils.getDOM(new URL(pageURL));
 
 			final NodeList title = document.getElementsByTagName("title");
 			command.setPageTitle(title.item(0).getChildNodes().item(0).getNodeValue());
@@ -94,7 +90,7 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 			for (int i = 0; i < metaList.getLength(); i++) {
 				final Element metaElement = (Element) metaList.item(i);
 
-				Attr nameAttr = metaElement.getAttributeNode("name");
+				final Attr nameAttr = metaElement.getAttributeNode("name");
 				if (nameAttr == null) continue; 
 
 				if (nameAttr.getNodeValue().equalsIgnoreCase("description")) {
@@ -102,7 +98,6 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 				}
 				if (nameAttr.getNodeValue().equalsIgnoreCase("keywords")) {
 					command.setPageKeywords(metaElement.getAttribute("content"));
-					log.info("KEYWORDS:" + metaElement.getAttribute("content"));
 				}
 			}
 

@@ -70,7 +70,6 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 				 * complete post details for a single post of a given user 
 				 * (only for /bibtex/HASH/USER)
 				 */
-
 				final ArrayList<Post<BibTex>> bibtex = new ArrayList<Post<BibTex>>();
 				for (final Post<BibTex> b : command.getBibtex().getList()){
 					bibtex.add((Post<BibTex>) this.logic.getPostDetails(b.getResource().getIntraHash(), b.getUser().getName()));

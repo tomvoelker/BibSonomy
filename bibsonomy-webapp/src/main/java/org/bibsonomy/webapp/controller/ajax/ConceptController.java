@@ -19,7 +19,6 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.ajax.ConceptAjaxCommand;
-import org.bibsonomy.webapp.controller.AjaxController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;

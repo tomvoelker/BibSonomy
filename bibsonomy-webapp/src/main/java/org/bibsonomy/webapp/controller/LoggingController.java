@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
 import org.bibsonomy.webapp.command.LoggingCommand;
+import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;

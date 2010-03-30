@@ -19,7 +19,6 @@ import org.bibsonomy.rest.renderer.impl.XMLRenderer;
 import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.command.ajax.AjaxRecommenderCommand;
-import org.bibsonomy.webapp.controller.AjaxController;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
