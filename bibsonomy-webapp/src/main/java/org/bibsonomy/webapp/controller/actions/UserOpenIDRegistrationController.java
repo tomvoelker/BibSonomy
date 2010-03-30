@@ -212,9 +212,13 @@ public class UserOpenIDRegistrationController implements MinimalisticController<
 			/*
 			 * generate random password 
 			 * 
-			 * TODO: choose better random pw
+			 * FIXME: choose better random pw
+			 * This is a severe security hole! We need to update ALL passwords 
+			 * of open ID users in the database when this is fixed. Otherwise,
+			 * users won't be able to log in.
+			 * 
 			 */
-			String password = StringUtils.getMD5Hash(registerUser.getName() + "OPENID_");
+			final String password = StringUtils.getMD5Hash(registerUser.getName() + "OPENID_");
 			registerUser.setPassword(password);
 						
 			/*
