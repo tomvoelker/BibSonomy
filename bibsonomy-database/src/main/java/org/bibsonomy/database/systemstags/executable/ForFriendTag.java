@@ -97,14 +97,6 @@ public class ForFriendTag extends SystemTag {
 			session.addError(intraHash, new UnspecifiedErrorMessage(urte));
 		}
 		this.tagDb.insertTags(post, session);		// 5. store the tags for the sender with the confirmation tag: sent:userName
-		/*
-		 * We restore the post to the way it was before
-		 * WE NEED THIS e.g. in BatchEditTags, since there the same tag is added to a list of posts
-		 * If we left this tag as sent:user than it would be executed only for the first post of that list
-		 * FIXME: this should be fixed in the controller - it must ensure
-		 * that each post gets another instance of such a tag!
-		 */ 
-		this.getTag().setName("send:" + receiver);
 	}
 
 
