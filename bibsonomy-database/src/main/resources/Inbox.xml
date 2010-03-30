@@ -10,20 +10,6 @@
 		WHERE receiver_user=#receiver#
 	</select>
 
-	<select id="getNumInboxBookmarkMessages" resultClass="Integer" parameterClass="String">
-		SELECT COUNT(b.message_id) AS count
-		FROM (
-			SELECT i.message_id
-				FROM inboxMail i
-				INNER JOIN bookmark b USING(content_id)
-				WHERE receiver_user=#requestedUserName#
-			UNION	
-			SELECT i.message_id
-				FROM inboxMail i
-				INNER JOIN log_bookmark b USING(content_id)
-				WHERE receiver_user=#requestedUserName# 
-			) AS b
-	</select>
 
 	<select id="getNumInboxMessagesByHashAndSenderAndReceiver" resultClass="Integer" parameterClass="inboxParam">
 		SELECT COUNT(message_id) AS count
