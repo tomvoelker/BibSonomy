@@ -59,6 +59,10 @@ public class IEScraper implements Scraper {
 	 * Extract a valid Bibtex entry from a given publication snippet by using information extraction.
 	 */
 	public boolean scrape(ScrapingContext sc) throws ScrapingException {
+		//FIXME: ScrapingContext.getSelectedText returns the selected text within the browser in ISO and not UTF-8 format
+		//we need to convert this, because the mallet function removes erroneous signs, that get created
+		//when formatting a UTF-8 String in ISO format.
+		//A proper fix would be to make the getSelectedText function return UTF-8 only.
 		String selectedText = convertISO2UTF8(sc.getSelectedText());
 		
 		/*
@@ -242,6 +246,11 @@ public class IEScraper implements Scraper {
 		return null;
 	}
 	
+	/** 
+	 * Converts a string from ISO-8859-1 to UTF-8 format.
+	 * @param toConvert A String in ISO format.
+	 * @return the argument in UTF-8 format
+	 */
 	private String convertISO2UTF8(String toConvert)
 	{
 		String result = null;
