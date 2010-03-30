@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -235,12 +236,8 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				final Set<Tag> newTags = TagUtils.parse(newTagsMap.get(intraHash));
 				/*
 				 * we add all global tags to the set of new tags
-				 * 
-				 * FIXME: we must clone the added tags - otherwise, each post 
-				 * gets the SAME INSTANCE of each tag, which can have bad side
-				 * effects (in particular for system tags).
 				 */
-				newTags.addAll(addTags);
+				newTags.addAll(getTagsCopy(addTags));
 				/*
 				 * if we want to update the posts, we only need to update posts
 				 * where the tags have changed
@@ -359,6 +356,20 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		return getFinalRedirect(command.getReferer(), loginUserName);
 	}
 
+	/**
+	 * Returns a copy of the given tags (i.e., new instances!)
+	 * 
+	 * @param tags
+	 * @return
+	 */
+	private static Set<Tag> getTagsCopy(final Set<Tag> tags) {
+		final Set<Tag> tagsCopy = new TreeSet<Tag>();
+		for (final Tag tag: tags) {
+			tagsCopy.add(new Tag(tag));
+		}
+		return tagsCopy;
+	}
+	
 	/**
 	 * Adds the list that will contain the erroneous posts to the command.
 	 * We need to do this before rejecting the errors, because otherwise we 
