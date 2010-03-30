@@ -25,6 +25,7 @@ package org.bibsonomy.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
@@ -50,5 +51,34 @@ public class TagTest {
 		assertNotNull(new Tag().getSuperTags());
 	}
 
+	/**
+	 * Checks that the copy constructor indeed returns a deep copy
+	 * of the tag.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testCopyConstructor() throws Exception {
+		final Tag conference = new Tag("conference");
+		final Tag iccs = new Tag("iccs");
+		conference.addSubTag(iccs);
+		conference.setGlobalcount(10);
+		
+		final Tag conferenceCopy = new Tag(conference);
+		
+		final Tag iccsCopy = conferenceCopy.getSubTags().get(0);
+		/*
+		 * assert equal content
+		 */
+		assertEquals("iccs", iccsCopy.getName());
+		assertEquals(conference.getGlobalcount(), conferenceCopy.getGlobalcount());
+		
+		/*
+		 * assert different instances
+		 */
+		assertNotSame(iccs, iccsCopy);
+		assertNotSame(conference, conferenceCopy);
+		
+	}
 
 }

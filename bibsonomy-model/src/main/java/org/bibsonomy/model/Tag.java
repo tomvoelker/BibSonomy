@@ -103,7 +103,7 @@ public class Tag implements Comparable<Tag>, Serializable {
 	 * Zero argument constructor.
 	 */
 	public Tag() {
-		this(null);
+		this.setName(null);
 	}
 
 	/**
@@ -115,6 +115,36 @@ public class Tag implements Comparable<Tag>, Serializable {
 		this.setName(name);
 	}
 
+	/**
+	 * Copy-constructor which copies the given tag (including it's sub-/supertags).
+	 * <br/>The list of posts is NOT copied!
+	 * 
+	 * @param tag
+	 */
+	public Tag(final Tag tag) {
+		this.setName(tag.getName());
+		this.setGlobalcount(tag.getGlobalcount());
+		this.setUsercount(tag.getUsercount());
+		this.setStem(tag.getStem());
+		this.setId(tag.getId());
+		/*
+		 * copy sub tags
+		 */
+		final List<Tag> thisSubTags = this.getSubTags();
+		for (final Tag t: tag.getSubTags()) {
+			thisSubTags.add(new Tag(t));
+		}
+		/*
+		 * copy super tags
+		 */
+		final List<Tag> thisSuperTags = this.getSuperTags();
+		for (final Tag t: tag.getSuperTags()) {
+			thisSuperTags.add(new Tag(t));
+		}
+		
+	}
+	
+	
 	/**
 	 * @return posts
 	 */
