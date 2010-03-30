@@ -14,10 +14,10 @@
 
 <c:if test="${not empty command.pageURL}">
 {  
-	"pageTitle"       : "<c:out value='${command.pageTitle}'/>", 
-	"pageURL"         : "<c:out value='${command.pageURL}'/>",
-	"pageDescription" : "<c:out value='${command.pageDescription}'/>",
-	"pageKeywords"    : "<c:out value='${command.pageKeywords}'/>"
+	"pageTitle"       : "${mtl:quoteJSON(command.pageTitle)}", 
+	"pageURL"         : "${mtl:quoteJSON(command.pageURL)}",
+	"pageDescription" : "${mtl:quoteJSON(command.pageDescription)}",
+	"pageKeywords"    : "${mtl:quoteJSON(command.pageKeywords)}"
 }
 
 </c:if>
