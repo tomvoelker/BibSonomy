@@ -344,6 +344,34 @@
 	</select>
 	
 	
+	<select id="getBibTexFromInboxByHash" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam" >
+		SELECT <include refid ="allBibtexAttributes"/>, t.tag_name, b.interHash, b.intraHash,
+				b.inbox_date, h.ctr AS count, NULL AS `group`, NULL AS group_name
+		FROM (
+			SELECT *
+				FROM (
+					SELECT i.message_id, i.date AS inbox_date, <include refid ="bibtexAttributes2"/>, b2.simhash$simHash$
+						FROM inboxMail i
+						INNER JOIN bibtex b2 USING(content_id)
+						WHERE receiver_user=#requestedUserName#
+							AND i.content_type=#contentType#
+							AND i.intraHash=#hash#
+					UNION	
+					SELECT i.message_id, i.date AS inbox_date, <include refid ="bibtexAttributes2"/>, b2.simhash$simHash$
+						FROM inboxMail i
+						INNER JOIN log_bibtex b2 USING(content_id)
+						WHERE receiver_user=#requestedUserName#
+							AND i.content_type=#contentType#
+							AND i.intraHash=#hash#
+				) AS b2
+				ORDER BY b2.inbox_date DESC, b2.content_id
+			) AS b		
+		LEFT OUTER JOIN bibhash h ON <include refid="bibtexSimHash"/>
+		LEFT OUTER JOIN inbox_tas t USING(message_id)
+		ORDER BY b.inbox_date DESC, b.content_id
+	</select>
+	
+	
 	<select id="getBibTexSearch" resultMap="BibTexCommon.bibtexPost" parameterClass="bibtexParam" >
 		SELECT <include refid ="allBibtexAttributes"/>, t.tag_name, b.ctr AS count,
 		       b.interHash, b.intraHash, NULL AS `group`, NULL AS group_name

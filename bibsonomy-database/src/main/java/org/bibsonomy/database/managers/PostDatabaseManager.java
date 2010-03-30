@@ -130,10 +130,25 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return a lists of Posts of type R with the inbox content
 	 */
-	public List<Post<R>> getPostsFromInbox(final P param, final DBSession session) {
+	public List<Post<R>> getPostsFromInbox(final String receiver, final int limit, final int offset, final DBSession session) {
+		final P param = this.createParam(limit, offset);
+		param.setRequestedUserName(receiver);
 		return this.postList("get" + this.resourceClassName + "FromInbox", param, session);
 	}
 
+	/**
+	 * @param param
+	 * @param session
+	 * @return a lists of Posts of type R with the inbox content
+	 */
+	public List<Post<R>> getPostsFromInboxByHash(final String receiver, final String intraHash, final DBSession session) {
+		final P param = this.getNewParam();
+		param.setRequestedUserName(receiver);
+		param.setHash(intraHash);
+		return this.postList("get" + this.resourceClassName + "FromInboxByHash", param, session);
+	}
+
+	
 	/**
 	 * <em>/concept/tag/TAGNAME</em>
 	 * 
