@@ -51,6 +51,26 @@ public class SimHashTest {
 		assertEquals("", SimHash.getSimHash(bibTex, HashID.getSimHash(3)));
 	}
 	
+	
+	/**
+	 * Ensure that an empty year and a NULL year don't change the hashes. 
+	 */
+	@Test
+	public void getSimHash2() {
+		final BibTex bibTex = new BibTex();
+		bibTex.setYear(null);
+		assertEquals("a127fd1f86e4ab650f2216f09992afa4", SimHash.getSimHash(bibTex, HashID.getSimHash(0)));
+		assertEquals("23b58def11b45727d3351702515f86af", SimHash.getSimHash(bibTex, HashID.getSimHash(1)));
+		assertEquals("7bb0edd98f22430a03b67f853e83c2ca", SimHash.getSimHash(bibTex, HashID.getSimHash(2)));
+		assertEquals("", SimHash.getSimHash(bibTex, HashID.getSimHash(3)));
+		bibTex.setYear("");
+		assertEquals("a127fd1f86e4ab650f2216f09992afa4", SimHash.getSimHash(bibTex, HashID.getSimHash(0)));
+		assertEquals("23b58def11b45727d3351702515f86af", SimHash.getSimHash(bibTex, HashID.getSimHash(1)));
+		assertEquals("7bb0edd98f22430a03b67f853e83c2ca", SimHash.getSimHash(bibTex, HashID.getSimHash(2)));
+		assertEquals("", SimHash.getSimHash(bibTex, HashID.getSimHash(3)));
+	}
+	
+	
 	/**
 	 * some tests to check author normalization
 	 * 
