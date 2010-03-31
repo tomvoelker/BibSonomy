@@ -327,12 +327,14 @@ public class SimpleBibTeXParser {
 
 		/*
 		 * special handling for month - it can be a macro!
+		 * FIXME: a month (or any other field!) can even be a 
+		 * BibtexConcatenatedValue - we don't care about this!  
 		 */
 		final BibtexAbstractValue month = entry.getFieldValue("month");
 		if (month instanceof BibtexMacroReference) {
 			bibtex.setMonth(((BibtexMacroReference) month).getKey());
-		} else {
-			field = (BibtexString) month;        if (field != null) bibtex.setMonth(field.getContent());        
+		} else if (month instanceof BibtexString) {
+			field = (BibtexString) month; if (field != null) bibtex.setMonth(field.getContent());        
 		}
 
 		/*
