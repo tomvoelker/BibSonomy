@@ -42,7 +42,7 @@ public class Functions  {
 	/*
 	 * Mapping of BibTeX entry types to SWRC entry types
 	 */
-	private static String[] bibtexEntryTypes = {"article","book","booklet","inbook","incollection","inproceedings","manual","masterthesis","misc","phdthesis","proceedings","techreport",     "unpublished"}; 
+	private static String[] bibtexEntryTypes = {"article","book","booklet","inbook","incollection","inproceedings","manual","mastersthesis","misc","phdthesis","proceedings","techreport",     "unpublished"}; 
 	private static String[] swrcEntryTypes   = {"Article","Book","Booklet","InBook","InCollection","InProceedings","Manual","MasterThesis","Misc","PhDThesis","Proceedings","TechnicalReport","Unpublished"}; 
 	private static String[] risEntryTypes    = {"Journal Article","Book", "Book", "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis", "Generic", "Thesis", "Conference Proceedings", "Report", "Unpublished Work"};
 	

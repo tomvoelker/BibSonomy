@@ -16,7 +16,7 @@ public class EntryType extends TagSupport {
 	private String value;
 	
 	/** Definition of adapted types**/
-	private String [ ] givenEntryNames  = {"article","book","booklet","inbook","incollection","inproceedings","manual","masterthesis","misc","phdthesis","proceedings","techreport",     "unpublished"}; 
+	private String [ ] givenEntryNames  = {"article","book","booklet","inbook","incollection","inproceedings","manual","mastersthesis","misc","phdthesis","proceedings","techreport",     "unpublished"}; 
 	private String [ ] mappedEntryNames = {"Article","Book","Booklet","InBook","InCollection","InProceedings","Manual","MasterThesis","Misc","PhDThesis","Proceedings","TechnicalReport","Unpublished"}; 
 	public void setValue(String value) {
 		this.value = value;
