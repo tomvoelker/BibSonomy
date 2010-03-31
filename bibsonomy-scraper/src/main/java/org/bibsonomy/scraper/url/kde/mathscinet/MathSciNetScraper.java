@@ -162,7 +162,7 @@ public class MathSciNetScraper extends AbstractUrlScraper {
 		
 		// in case of existing JOURNAL and FJOURNAL switch them else ... do nothing
 		if (bibtex.contains("JOURNAL =") && bibtex.contains("FJOURNAL =")){
-			bibtex = bibtex.replaceFirst("JOURNAL\\s=", "SJOURNAL =");
+			bibtex = bibtex.replaceFirst("[^F]JOURNAL\\s=", "SJOURNAL =");
 			bibtex = bibtex.replaceFirst("FJOURNAL\\s=", "JOURNAL =");
 		}
 		return bibtex;
