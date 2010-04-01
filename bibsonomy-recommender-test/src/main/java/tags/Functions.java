@@ -8,10 +8,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.text.Normalizer;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.bibsonomy.common.enums.SpamStatus;
@@ -225,23 +222,6 @@ public class Functions  {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * parses a String of misc field entries
-	 * 
-	 * @param misc miscfield of a bibtex entry
-	 * @return array of key value entrys
-	 */
-	public static List<String> miscFieldToArray(final String misc){
-		final List<String> formattedMiscFields = new ArrayList<String>();
-		final Map<String, String> miscFields = BibTexUtils.parseMiscField(misc);
-		if (miscFields != null) {
-			for (final String fieldName : miscFields.keySet()) {
-				formattedMiscFields.add(fieldName + " = {" + miscFields.get(fieldName) + "}");
-			}
-		}
-		return formattedMiscFields;
 	}
 
 	/**

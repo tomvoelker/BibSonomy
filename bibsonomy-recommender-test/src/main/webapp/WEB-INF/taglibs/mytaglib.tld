@@ -190,12 +190,6 @@
     <name>computeTagFontsize</name>
     <function-class>tags.Functions</function-class>
     <function-signature>java.lang.Integer computeTagFontsize (java.lang.Integer, java.lang.Integer, java.lang.String)</function-signature>
-  </function>  
-
-  <function>
-    <name>miscFieldToArray</name>
-    <function-class>tags.Functions</function-class>
-    <function-signature>ArrayList miscFieldToArray (java.lang.String)</function-signature>
   </function> 
   
   <function>
