@@ -30,7 +30,7 @@ public class AbstractDatabaseManager {
 	/**
 	 * if Lucene should be used for full text search or the database 
 	 */
-	private boolean doLuceneSearch = false;
+	protected boolean doLuceneSearch = false;
 	
 	/**
 	 * configure search mode (database or lucene)
