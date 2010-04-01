@@ -114,7 +114,7 @@ public class TagUtils {
 			throw new RuntimeException("Using NULL as delimiter is not allowed when building tag string.");
 		}
 		// concat tag names
-		final StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 		for (final Tag tag : tags) {
 			sb.append(tag.getName());
 			sb.append(delim);

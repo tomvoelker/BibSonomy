@@ -2,7 +2,7 @@
  *  
  *  BibSonomy-Model - Java- and JAXB-Model.
  *   
- *  Copyright (C) 2006 - 2008 Knowledge & Data Engineering Group, 
+ *  Copyright (C) 2006 - 2009 Knowledge & Data Engineering Group, 
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
  *  
@@ -68,13 +68,12 @@ import org.bibsonomy.model.enums.Order;
  * @author Christian Kramer
  * @version $Id$
  */
-public interface LogicInterface extends PostLogicInterface {
+public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogicInterface {
 
 	/**
 	 * @return the name of the authenticated user
 	 */
 	public User getAuthenticatedUser();
-	
 	
 	/**
 	 * Generic method to retrieve lists of users
@@ -153,7 +152,6 @@ public interface LogicInterface extends PostLogicInterface {
 	 */
 	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search, TagSimilarity relation);
 
-	
 	/**  
 	 * retrieves a filterable list of authors.
 	 * 
@@ -180,9 +178,6 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return a filtered list of authors. may be empty but not null
 	 */
 	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search);
-
-	
-	
 	
 	/**
 	 * Returns details about a tag. Those details are:
@@ -406,7 +401,6 @@ public interface LogicInterface extends PostLogicInterface {
 	 */
 	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName);
 
-
 	/**
 	 * Returns all users that are classified to the specified state by
 	 * the given classifier 
@@ -424,11 +418,10 @@ public interface LogicInterface extends PostLogicInterface {
 	 * 
 	 * @param classifier the classifier
 	 * @param status the status classifed
-	 * @param time interval
+	 * @param interval 
 	 * @return count of users
 	 */
 	public int getClassifiedUserCount(Classifier classifier, SpamStatus status, int interval);
-	
 	
 	/**
 	 * Returns the value of the specified classifier setting
@@ -458,7 +451,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * Retrieves a comparison of classification results
 	 * of admins and the automatic classifier
 	 * 
-	 * @param time interval
+	 * @param interval 
 	 * @return Userlist with spammer flag of admin and prediction of classifier 
 	 */
 	public List<User> getClassifierComparison(int interval);	
@@ -470,7 +463,6 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @return username
 	 */
 	public String getOpenIDUser(final String openID);
-	
 
 	/**
 	 * Retrieve relations
@@ -499,7 +491,7 @@ public interface LogicInterface extends PostLogicInterface {
 	 * @param status
 	 * @param start
 	 * @param end
-	 * @return
+	 * @return the number of relations from a user
 	 */
 	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end);
 
@@ -515,8 +507,6 @@ public interface LogicInterface extends PostLogicInterface {
 	 */
 	public List<User> getFriendsOfUser(User loginUser);
 	
-	
-	
 	/** 
 	 * We return all Users that are in (the) relation with the sourceUser
 	 * as targets.
@@ -526,7 +516,6 @@ public interface LogicInterface extends PostLogicInterface {
 	 * (sourceUser, u)\in relation
 	 */
 	public List<User> getUserRelationship(String sourceUser, UserRelation relation);
-	
 	
 	/**
 	 * We delete a UserRelation of the form (sourceUser, targetUser)\in relation
@@ -570,17 +559,15 @@ public interface LogicInterface extends PostLogicInterface {
 	
 	/**
 	 * Delete Messages from the inbox by resourceHash sender and receiver
-	 * @param sender 
-	 * @param receiver 
-	 * @param resourceHash 
+	 * @param posts 
+	 * @param clearInbox 
 	 * @return the new size of the inbox
 	 */
 	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox);	
-
 	
 	/**
 	 * Retrieves bibsonomy username for given ldap user id
-	 * @param LDAP User ID 
+	 * @param userId User ID 
 	 * @return username
 	 */
 	public String getUsernameByLdapUserId(String userId);	
