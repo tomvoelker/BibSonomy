@@ -30,12 +30,11 @@ public class AbstractDatabaseManager {
 	/**
 	 * if Lucene should be used for full text search or the database 
 	 */
-	protected boolean doLuceneSearch = false;
-
-	public boolean isDoLuceneSearch() {
-		return this.doLuceneSearch;
-	}
+	private boolean doLuceneSearch = false;
 	
+	/**
+	 * configure search mode (database or lucene)
+	 */
 	public AbstractDatabaseManager() {
 		/*
 		 * configure search mode
@@ -45,14 +44,22 @@ public class AbstractDatabaseManager {
 			doLuceneSearch = "lucene".equals(((Context) new InitialContext().lookup("java:/comp/env")).lookup("searchMode"));
 		} catch (NamingException ex) {
 			// try to read searchMode from system properties (used by unit tests)
-			if (System.getProperty("searchMode") != null) {
-				doLuceneSearch = "lucene".equals(System.getProperty("searchMode"));
-			}
-			else {
+			final String searchMode = System.getProperty("searchMode");
+			if (searchMode != null) {
+				doLuceneSearch = "lucene".equals(searchMode);
+			} else {
 				log.error("Error when trying to read environment variable 'searchmode' via JNDI / System.", ex);
 			}
 		}
+		
 		log.info("full text search is done by lucene : " + doLuceneSearch);
+	}
+	
+	/**
+	 * @return <code>true</code> iff search via lucene
+	 */
+	public boolean isDoLuceneSearch() {
+		return this.doLuceneSearch;
 	}
 	
 	/**
