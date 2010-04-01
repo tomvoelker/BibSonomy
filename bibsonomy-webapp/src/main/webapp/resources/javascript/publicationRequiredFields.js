@@ -2,9 +2,11 @@ var form_name = '#post\\.resource\\.title';
 
 /**
  * queries the titles and further details of publications by a partial title
- *
- * @param partialTitle prefix of a title word
- * @param autocompletion boolean flag - true if autocompletion is on
+ * 
+ * @param partialTitle
+ *            prefix of a title word
+ * @param autocompletion
+ *            boolean flag - true if autocompletion is on
  * @return
  */
 
@@ -36,7 +38,8 @@ function getSuggestions(partialTitle, autocompletion) {
 /**
  * Process the JSON Data and make it visible to the user
  * 
- * @param data contains the posts returned for the specific title entered
+ * @param data
+ *            contains the posts returned for the specific title entered
  * @return
  */
 function processResponse(data) {
@@ -47,12 +50,12 @@ function processResponse(data) {
 		$("#suggestionBox").hide();
 		return;
 	}
-	//style="background-color: #006699; color: #FFFFFF; padding:3px;"
+	// style="background-color: #006699; color: #FFFFFF; padding:3px;"
 	var p = $('<div class="suggBox" style="background-color: #006699; color: #FFFFFF; padding:3px;">'
 			+getString('post.resource.suggested')
 			+'</div>');
 	$("#suggestionBox").html(p);
-	
+
 	$.each(data.items, function(i, item) {
 
 		var editors = "";
@@ -61,7 +64,7 @@ function processResponse(data) {
 		if(item.editor != 'undefined') {
 			editors = concatArray(item.editor, 20);
 		}
-					
+
 		if(item.author != 'undefined') {
 			author = concatArray(item.author, 27);
 		}
@@ -69,38 +72,39 @@ function processResponse(data) {
 		if(item.year != 'undefined') {
 			year = '('+item.year+')';
 		}
-	    var intraHash = item.intraHash;
-	    var tags = concatArray(item.tags, null, '+');
-	    var k = m;
+		var intraHash = item.intraHash;
+		var tags = concatArray(item.tags, null, '+');
+		var k = m;
 		var element = 
-	    $('<div class="suggestion_entry" style="cursor:pointer; color:#006699;background-color:'
-	  		+(((m++)%2 == 0)?'#FFFFFF':'#EEEEEE') // change the background color every step
-	  		+'">'+formatLabel(item.label)
-	      +'<br><span style="font-size:10px;">'
-	      +author
-	      +year
-	      +'</span></div>');
-	
+			$('<div class="suggestion_entry" style="cursor:pointer; color:#006699;background-color:'
+					+(((m++)%2 == 0)?'#FFFFFF':'#EEEEEE') // change the background
+					// color every step
+					+'">'+formatLabel(item.label)
+					+'<br><span style="font-size:10px;">'
+					+author
+					+year
+					+'</span></div>');
+
 		element.attr('url', '/editPublication?hash='+intraHash+'&user='+item.user+'&copytag='+tags);
 		element.click(
 				// get title specific data
 				// and set the forms accordingly
 				function () {
-		          window.location.href = '/editPublication?hash='+intraHash+'&user='+item.user+'&copytag='+tags;
-		          $("#suggestionBox").hide();
+					window.location.href = '/editPublication?hash='+intraHash+'&user='+item.user+'&copytag='+tags;
+					$("#suggestionBox").hide();
 				}
 		);
- 
-	 $("#suggestionBox").append(element);
+
+		$("#suggestionBox").append(element);
 	})
 	var pos = $(form_name).offset();
 	var width = $(form_name).width();
 	var top = parseInt(pos.top+$(form_name).height());
-		
+
 	if($("#suggestionBox").width() < (width+2)){
 		$("#suggestionBox").width(width+2);
 	}
-	
+
 	$("#suggestionBox").css(
 			{
 				"left":(pos.left+1)+"px",
@@ -117,12 +121,15 @@ function processResponse(data) {
 /**
  * create one-string representation of a list of strings
  * 
- * @param data array of strings
- * @param max_len return the representing string cut down to the size of max_len
- * @param delim  
- * @return one string, containing concatenation of all strings, separated by either '\n' or the supplied delimeter
+ * @param data
+ *            array of strings
+ * @param max_len
+ *            return the representing string cut down to the size of max_len
+ * @param delim
+ * @return one string, containing concatenation of all strings, separated by
+ *         either '\n' or the supplied delimeter
  */
- 
+
 function concatArray(data, max_len, delim) {
 	var retVal = "";
 	var entry;
@@ -138,44 +145,137 @@ function concatArray(data, max_len, delim) {
 /**
  * go one entry up/down in the list
  * 
- * @param keyup event
- * @return 
+ * @param keyup
+ *            event
+ * @return
  */
- 
+
 function getArrowKey(e) {
+	var parent = 
+		document.getElementById('suggestion_parent');
+
 	if(e.keyCode == 38){
-			if(!$('.suggestion_entry_selected').is('div')) {
-				$('div').last('.suggestion_entry').attr('class','suggestion_entry_selected');
-			} else {
-				var selected = $('.suggestion_entry_selected').attr('class','suggestion_entry');
-				selected.prev('.suggestion_entry').attr('class','suggestion_entry_selected');
-			} 
-	} else if(e.keyCode == 40){
-			if(!$('.suggestion_entry_selected').is('div')) {
-				$('div').first('.suggestion_entry').attr('class','suggestion_entry_selected');
-			} else {
-				var selected = $('.suggestion_entry_selected').attr('class','suggestion_entry');
-				selected.next('.suggestion_entry').attr('class','suggestion_entry_selected');
+		var el = null;
+		var selected_field = null;
+
+		if((selected_field = DOMTraverseFlatByClass(parent.childNodes[0], 'suggestion_entry_selected')) == null) {
+			getLastChildByClass(parent, 'suggestion_entry').className = 'suggestion_entry_selected'; 
+
+		} else {
+			selected_field.className = 'suggestion_entry';
+			if((el = getPreviousByClass(selected_field.previousSibling, 'suggestion_entry')) != null) {
+				el.className = 'suggestion_entry_selected';
 			}
+		}
+		return true;
+	} else if(e.keyCode == 40){
+		if((selected_field = DOMTraverseFlatByClass(parent.childNodes[0], 'suggestion_entry_selected')) == null) {
+			if((el = getFirstChildByClass(parent, 'suggestion_entry')) != null)
+				el.className = 'suggestion_entry_selected';
+		} else {
+			selected_field.className = 'suggestion_entry';
+			if((el = getNextByClass(selected_field.nextSibling, 'suggestion_entry')) != null) {
+				el.className = 'suggestion_entry_selected';
+			}
+		}
+		return true;
 	} else if(e.keyCode == 13 && $('.suggestion_entry_selected').is('div')){
-				window.location.href = $('.suggestion_entry_selected').attr('url');
-		          $("#suggestionBox").hide();
+		window.location.href = $('.suggestion_entry_selected').attr('url');
+		$("#suggestionBox").hide();
+		return true;
 	}
+	return false;
+}
+
+
+function DOMTraverseFlatByClass(el, className) {
+	var valid_ed = null;
+
+	while(el != null) {
+		if(el.tagName == 'DIV' && el.className == className) {
+			return el;
+		}
+		/*
+		 * if((valid_el = DOMTraverseByClass(el.childNodes[0], class)) !=
+		 * null) { return valid_el; }
+		 */
+		el = el.nextSibling;
+	}
+	return null;
+}
+
+function getLastChildByClass(parent, className) {
+	var match_el = parent.lastChild;
+	while(match_el != null) {
+		if(match_el.tagName == 'DIV'){
+			document.getElementById('traverse_log').innerHTML += "fgrkgr";
+			if(match_el.className == className) {
+				return match_el;
+			}
+
+		}
+		match_el = match_el.previousSibling;
+	}
+	return null;
+}
+
+
+
+function getNextByClass(match_el, className) {
+	while(match_el != null) {
+		if(match_el.tagName == 'DIV'){
+			if(match_el.className == className) {
+				return match_el;
+			}
+
+		}
+		match_el = match_el.nextSibling;
+	}
+	return null;
+}	
+
+function getPreviousByClass(match_el, className) {
+	while(match_el != null) {
+		if(match_el.tagName == 'DIV'){
+			if(match_el.className == className) {
+				return match_el;
+			}
+
+		}
+		match_el = match_el.previousSibling;
+	}
+	return null;
+}	
+
+function getFirstChildByClass(el, className) {
+	var match_el = el.firstChild;
+	while(match_el != null) {
+		if(match_el.tagName == 'DIV'){
+			if(match_el.className == className) {
+				return match_el;
+			}
+
+		}
+		match_el = match_el.nextSibling;
+	}
+	return null;
+}	
 }
 
 /**
  * format the matching part of a string bold
  * 
- * @param label what to match our partial string to
+ * @param label
+ *            what to match our partial string to
  * @return a formatted string
  */
 function formatLabel (label) {
 	var pos = label.toUpperCase().indexOf($(form_name).val().toUpperCase());
-	
-    return label.substr(0, pos)
-    +'<b>'
-    +label.substr(pos, $(form_name).val().length)
-    +'</b>'
-    +label.substr(pos + $(form_name).val().length);
+
+	return label.substr(0, pos)
+	+'<b>'
+	+label.substr(pos, $(form_name).val().length)
+	+'</b>'
+	+label.substr(pos + $(form_name).val().length);
 }
 
