@@ -9,7 +9,7 @@ function checkUrlForTitle(  ){
 			    var result = eval( "(" + req.responseText + ")" );
 				if ( (result.pageTitle != "")&&(document.getElementById("post.resource.title").value=="") ) {
 					var pageTitle = "<a href=\"javascript:setSuggestionFromUrl('title', '"+ result.pageTitle +"')\" tabindex=\"2\">" + result.pageTitle + "</a> ";
-					document.getElementById( "suggestion.title" ).innerHTML = pageTitle;
+					document.getElementById( "suggestion.title" ).appendChild(document.createTextNode(pageTitle));
 				}
 				if (result.pageDescription != "") {
 					var pageDescription = "<a href=\"javascript:setSuggestionFromUrl('description', '"+ result.pageDescription +"')\" tabindex=\"2\">" + result.pageDescription + "</a> ";
