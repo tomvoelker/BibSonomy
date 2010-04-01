@@ -3,21 +3,21 @@ package org.bibsonomy.database.systemstags.database;
 import org.bibsonomy.database.systemstags.SystemTag;
 
 /**
- * @author nosebrain
+ * @author dzo
  * @version $Id$
  */
 public class YearSystemTag extends DatabaseSystemTag {
 	
 	/**
 	 * these variables will be used with systemtags.
-	 * firstYear defines the first year if someone requests bibtex posts
+	 * firstYear defines the first year if someone requests publications
 	 * form 2005 till 2007.
 	 * therefore 2007 will be stored in lastYear.
 	 * 
-	 * if someone requests bibtex posts from only 2007, the year will be
+	 * if someone requests publications from only 2007, the year will be
 	 * stored in year.
 	 * 
-	 * this ist necessary to differ between the 4 type of systags year:
+	 * this is necessary to differ between the 4 type of systags year:
 	 * 1. 2007
 	 * 2. 2005-2007
 	 * 3. -2007

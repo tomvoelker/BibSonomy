@@ -3,9 +3,7 @@ package org.bibsonomy.database.systemstags.database;
 import org.bibsonomy.database.systemstags.SystemTag;
 
 /**
- * TODO: refactor
- * 
- * @author nosebrain
+ * @author dzo
  * @version $Id$
  */
 public class EntryTypeSystemTag extends DatabaseSystemTag {

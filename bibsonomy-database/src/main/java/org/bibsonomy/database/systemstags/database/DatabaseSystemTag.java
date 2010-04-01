@@ -7,7 +7,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
 /**
- * @author nosebrain
+ * @author dzo
  * @version $Id$
  */
 public abstract class DatabaseSystemTag extends SystemTag {
