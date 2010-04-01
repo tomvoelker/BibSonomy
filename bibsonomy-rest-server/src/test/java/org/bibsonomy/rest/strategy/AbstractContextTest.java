@@ -16,7 +16,7 @@ public abstract class AbstractContextTest {
 	protected LogicInterface db;
 	protected InputStream is;
 
-	/*
+	/**
 	 * If you override this method, remember to make a call to this method
 	 * (super.setUp()) to make sure that this code is executed too.
 	 */

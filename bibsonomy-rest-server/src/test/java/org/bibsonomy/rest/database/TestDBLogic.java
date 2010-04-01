@@ -11,6 +11,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.ClassifierSettings;
@@ -72,7 +73,7 @@ public class TestDBLogic implements LogicInterface {
 	 * a factory for this implementation
 	 */
 	public static final LogicInterfaceFactory factory = new LogicInterfaceFactory() {
-		public LogicInterface getLogicAccess(String loginName, String apiKey) {
+		public LogicInterface getLogicAccess(final String loginName, final String apiKey) {
 			return new TestDBLogic(loginName);
 		}
 	};
@@ -98,11 +99,11 @@ public class TestDBLogic implements LogicInterface {
 	}
 
 
-	public User getUserDetails(String userName) {
+	public User getUserDetails(final String userName) {
 		return this.dbUsers.get(userName);
 	}
 
-	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) {
+	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) {
 		final User user = this.dbUsers.get(userName);
 		if (user != null) {
 			for (final Post<? extends Resource> p : user.getPosts()) {
@@ -114,20 +115,20 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
-	public List<Group> getGroups(int start, int end) {
+	public List<Group> getGroups(final int start, final int end) {
 		final List<Group> groups = new LinkedList<Group>();
 		groups.addAll(this.dbGroups.values());
 		return groups;
 	}
 
-	public Group getGroupDetails(String groupName) {
+	public Group getGroupDetails(final String groupName) {
 		return this.dbGroups.get(groupName);
 	}
 
 	/**
 	 * note: the regex is currently not considered
 	 */
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags_, String hash, Order order, int start, int end, String search, TagSimilarity relation) {
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags_, final String hash, final Order order, final int start, final int end, final String search, final TagSimilarity relation) {
 		final List<Tag> tags = new LinkedList<Tag>();
 
 		switch (grouping) {
@@ -135,14 +136,14 @@ public class TestDBLogic implements LogicInterface {
 			// simply use groups
 		case GROUP:
 			if (this.dbGroups.get(groupingName) != null) {
-				for (Post<? extends Resource> post : this.dbGroups.get(groupingName).getPosts()) {
+				for (final Post<? extends Resource> post : this.dbGroups.get(groupingName).getPosts()) {
 					tags.addAll(post.getTags());
 				}
 			}
 			break;
 		case USER:
 			if (this.dbUsers.get(groupingName) != null) {
-				for (Post<? extends Resource> post : this.dbUsers.get(groupingName).getPosts()) {
+				for (final Post<? extends Resource> post : this.dbUsers.get(groupingName).getPosts()) {
 					tags.addAll(post.getTags());
 				}
 			}
@@ -155,12 +156,12 @@ public class TestDBLogic implements LogicInterface {
 		return tags;
 	}
 
-	public Tag getTagDetails(String tagName) {
+	public Tag getTagDetails(final String tagName) {
 		return this.dbTags.get(tagName);
 	}
 
 	/** note: popular and added are not considered */
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		final List<Post<? extends Resource>> posts = new LinkedList<Post<? extends Resource>>();
 		// do grouping stuff
 		switch (grouping) {
@@ -239,7 +240,7 @@ public class TestDBLogic implements LogicInterface {
 		userManu.setEmail("manuel.bork@uni-kassel.de");
 		try {
 			userManu.setHomepage(new URL("http://www.manuelbork.de"));
-		} catch (MalformedURLException e) {
+		} catch (final MalformedURLException e) {
 		}
 		userManu.setName("mbork");
 		userManu.setRealname("Manuel Bork");
@@ -252,7 +253,7 @@ public class TestDBLogic implements LogicInterface {
 		userAndreas.setEmail("andreas.hotho@uni-kassel.de");
 		try {
 			userAndreas.setHomepage(new URL("http://www.bibsonomy.org"));
-		} catch (MalformedURLException e) {
+		} catch (final MalformedURLException e) {
 		}
 		userAndreas.setName("hotho");
 		userAndreas.setRealname("Andreas Hotho");
@@ -265,7 +266,7 @@ public class TestDBLogic implements LogicInterface {
 		userButonic.setEmail("joern.dreyer@uni-kassel.de");
 		try {
 			userButonic.setHomepage(new URL("http://www.butonic.org"));
-		} catch (MalformedURLException e) {
+		} catch (final MalformedURLException e) {
 		}
 		userButonic.setName("butonic");
 		userButonic.setRealname("Joern Dreyer");
@@ -577,7 +578,7 @@ public class TestDBLogic implements LogicInterface {
 
 		// bibtex resource & post
 
-		BibTex bibtexDemo = new BibTex();
+		final BibTex bibtexDemo = new BibTex();
 		bibtexDemo.setAuthor("Albert Einstein, Leonardo da Vinci");
 		bibtexDemo.setEditor("Luke Skywalker, Yoda");
 		bibtexDemo.setIntraHash("abcdef0123abcdef0123abcdef012345");
@@ -587,7 +588,7 @@ public class TestDBLogic implements LogicInterface {
 		bibtexDemo.setYear("2006");
 		this.dbResources.put(bibtexDemo.getIntraHash(), bibtexDemo);
 
-		BibTex bibtexDemo1 = new BibTex();
+		final BibTex bibtexDemo1 = new BibTex();
 		bibtexDemo1.setAuthor("R. Fielding and J. Gettys and J. Mogul and H. Frystyk and L. Masinter and P. Leach and T. Berners-Lee");
 		bibtexDemo1.setEditor("");
 		bibtexDemo1.setIntraHash("aaaaaaaabbbbbbbbccccccccaaaaaaaa");
@@ -597,7 +598,7 @@ public class TestDBLogic implements LogicInterface {
 		bibtexDemo1.setYear("1999");
 		this.dbResources.put(bibtexDemo1.getIntraHash(), bibtexDemo1);
 
-		BibTex bibtexDemo2 = new BibTex();
+		final BibTex bibtexDemo2 = new BibTex();
 		bibtexDemo2.setAuthor("Roy T. Fielding");
 		bibtexDemo2.setEditor("");
 		bibtexDemo2.setIntraHash("abcdabcdabcdabcdaaaaaaaaaaaaaaaa");
@@ -607,7 +608,7 @@ public class TestDBLogic implements LogicInterface {
 		bibtexDemo2.setYear("2000");
 		this.dbResources.put(bibtexDemo2.getIntraHash(), bibtexDemo2);
 
-		BibTex bibtexDemo3 = new BibTex();
+		final BibTex bibtexDemo3 = new BibTex();
 		bibtexDemo3.setAuthor("Tim Berners-Lee and Mark Fischetti");
 		bibtexDemo3.setEditor("");
 		bibtexDemo3.setIntraHash("ddddddddccccccccbbbbbbbbaaaaaaaa");
@@ -668,26 +669,26 @@ public class TestDBLogic implements LogicInterface {
 		wwwTag.getPosts().add(post_16);
 	}
 
-	public void addUserToGroup(String groupName, String userName) {
+	public void addUserToGroup(final String groupName, final String userName) {
 	}
 
-	public void deleteGroup(String groupName) {
+	public void deleteGroup(final String groupName) {
 	}
 
-	public void deletePosts(String userName, List<String> resourceHashes) {
+	public void deletePosts(final String userName, final List<String> resourceHashes) {
 	}
 
-	public void deleteUser(String userName) {
+	public void deleteUser(final String userName) {
 	}
 
-	public void deleteUserFromGroup(String groupName, String userName) {
+	public void deleteUserFromGroup(final String groupName, final String userName) {
 	}
 
-	public String createGroup(Group group) {
+	public String createGroup(final Group group) {
 		return null;
 	}
 
-	public String createUser(User user) {
+	public String createUser(final User user) {
 		this.dbUsers.put(user.getName(), user);
 		return null;
 	}
@@ -696,25 +697,25 @@ public class TestDBLogic implements LogicInterface {
 		return loginUser;
 	}
 
-	public String updateGroup(Group group, final GroupUpdateOperation operation) {
+	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String updateUser(User user, final UserUpdateOperation operation) {
+	public String updateUser(final User user, final UserUpdateOperation operation) {
 		this.dbUsers.put(user.getName(), user);
 		return null;
 	}
 
-	public List<String> createPosts(List<Post<?>> posts) {
+	public List<String> createPosts(final List<Post<?>> posts) {
 		return null;
 	}
 
-	public List<String> updatePosts(List<Post<?>> posts, PostUpdateOperation operation) {
+	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
 		return null;
 	}
 
-	public String createDocument(Document doc, String resourceHash) {
+	public String createDocument(final Document doc, final String resourceHash) {
 		return null;
 	}
 
@@ -727,57 +728,57 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 
-	public void deleteDocument(Document document, String resourceHash) {
+	public void deleteDocument(final Document document, final String resourceHash) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void createInetAddressStatus(InetAddress address, InetAddressStatus status) {
+	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void deleteInetAdressStatus(InetAddress address) {
+	public void deleteInetAdressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public InetAddressStatus getInetAddressStatus(InetAddress address) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
+	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String createConcept(Tag concept, GroupingEntity grouping, String groupingName) {
+	public List<Tag> getConcepts(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName, final ConceptUpdateOperation operation) {
+	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void deleteConcept(String concept, GroupingEntity grouping, String groupingName) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName) {
+	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<User> getUsers(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end) {
+	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
 		final List<User> users = new LinkedList<User>();
 		if (GroupingEntity.ALL.equals(grouping)) {
 			users.addAll(this.dbUsers.values());
@@ -792,42 +793,42 @@ public class TestDBLogic implements LogicInterface {
 
 	}
 
-	public String getClassifierSettings(ClassifierSettings key) {
+	public String getClassifierSettings(final ClassifierSettings key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void updateClassifierSettings(ClassifierSettings key, String value) {
+	public void updateClassifierSettings(final ClassifierSettings key, final String value) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public int getClassifiedUserCount(Classifier classifier, SpamStatus status, int interval) {
+	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int limit) {
+	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<User> getClassifierHistory(String userName) {
+	public List<User> getClassifierHistory(final String userName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<User> getClassifierComparison(int interval) {
+	public List<User> getClassifierComparison(final int interval) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public int getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint) {
+	public int getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public String getOpenIDUser(String openID) {
+	public String getOpenIDUser(final String openID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -836,67 +837,77 @@ public class TestDBLogic implements LogicInterface {
 		return 0;
 	}
 
-	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public List<User> getFriendsOfUser(User loginUser) {
+	public List<User> getFriendsOfUser(final User loginUser) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<User> getUserFriends(User loginUser) {
+	public List<User> getUserFriends(final User loginUser) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search) {
+	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	
 	@Override
-	public List<User> getUserRelationship(String sourceUser, UserRelation relation) {
+	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation) {
 		// TODO Auto-generated method stub
 		return new ArrayList<User>();
 	}
 
 	@Override
-	public void deleteUserRelationship(String sourceUser, String targetUser, UserRelation relation) {
+	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
 		// TODO Auto-generated method stub
 	}
 
 
 	@Override
-	public void createUserRelationship(String sourceUser, String targetUser, UserRelation relation) {
+	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
 		// TODO Auto-generated method stub
 	}
 
 
 	@Override
-	public int createBasketItems(List<Post<? extends Resource>> posts) {
+	public int createBasketItems(final List<Post<? extends Resource>> posts) {
 		// TODO Auto-generated method stub
+		return 0;
+	}
+
+
+	@Override
+	public int deleteBasketItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox) {
 		return 0;
 	}
 
 
 	@Override
-	public int deleteBasketItems(List<Post<? extends Resource>> posts, boolean clearAll) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int deleteInboxMessages(List<Post<? extends Resource>> posts, final boolean clearInbox) {
-		return 0;
-	}
-
-
-	@Override
-	public String getUsernameByLdapUserId(String userId) {
+	public String getUsernameByLdapUserId(final String userId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void createReferences(final String postHash, final Set<String> references) {
+		// TODO Auto-generated method stub	
+	}
+
+	@Override
+	public void deleteReferences(final String postHash, final Set<String> references) {
+		// TODO Auto-generated method stub
 	}
 }

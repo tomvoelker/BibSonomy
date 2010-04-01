@@ -12,6 +12,7 @@ import org.bibsonomy.rest.database.TestDBLogic;
 import org.bibsonomy.rest.exceptions.AuthenticationException;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -42,12 +43,12 @@ public class TestRestServlet {
 		try {
 			this.servlet.validateAuthorization("YXNkZjphc2Rm");
 			fail("exception should have been thrown");
-		} catch (AuthenticationException e) {
+		} catch (final AuthenticationException e) {
 		}
 
 		try {
 			this.servlet.validateAuthorization("Basic ASDFASDF");
-		} catch (BadRequestOrResponseException e) {
+		} catch (final BadRequestOrResponseException e) {
 		}
 
 		assertEquals("error decoding string", "asdf", this.servlet.validateAuthorization("Basic YXNkZjphc2Rm").getAuthenticatedUser().getName());
@@ -82,27 +83,28 @@ public class TestRestServlet {
 		assertEquals(this.response.getContentLength(), this.response.getContent().length());
 	}
 
-	// FIXME: do we want this to work?
-	// @Test
-	/* public void testUTF8() throws Exception {
-		final NullRequest request = new NullRequest();
-		request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
-		request.getHeaders().put("User-Agent", RestProperties.getInstance().getApiUserAgent());
-		final NullResponse response = new NullResponse();
-
-		final RestServlet servlet = new RestServlet();
-		servlet.setLogicInterface(new TestDatabase());
-		final LogicInterface logic = servlet.getLogic();
-		final User user = new User();
-		user.setName("üöäßéèê");
-		logic.storeUser(user, false);
-		request.setPathInfo("/users");
-
-		servlet.doGet(request, response);
-		compareWithFile(response.getContent(), "UTF8TestResult.txt");
-		assertEquals(813, response.getContentLength()); // 813 vs 799
-	}*/
-
+	@Test
+	@Ignore // FIXME: do we want this to work?
+	public void testUTF8() throws Exception {
+//		final NullRequest request = new NullRequest();
+//		request.getHeaders().put("Authorization", "Basic YXNkZjphc2Rm");
+//		request.getHeaders().put("User-Agent", RestProperties.getInstance().getApiUserAgent());
+//		final NullResponse response = new NullResponse();
+//
+//		final RestServlet servlet = new RestServlet();
+//		servlet.setLogicInterface(new TestDBLogic());
+//		final LogicInterface logic = servlet.getLogic();
+//		final User user = new User();
+//		user.setName("üöäßéèê");
+//		logic.storeUser(user, false);
+//		request.setPathInfo("/users");
+//
+//		servlet.doGet(request, response);
+//		compareWithFile(response.getContent(), "UTF8TestResult.txt");
+//		assertEquals(813, response.getContentLength()); // 813 vs 799
+	}
+	
+	// TODO: duplicate code @see 
 	private void compareWithFile(final String sw, final String filename) throws IOException {
 		final StringBuilder sb = new StringBuilder(200);
 		final File file = new File("src/test/resources/" + filename);
