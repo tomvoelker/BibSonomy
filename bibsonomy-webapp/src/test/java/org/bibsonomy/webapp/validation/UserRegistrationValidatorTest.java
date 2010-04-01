@@ -1,11 +1,13 @@
 package org.bibsonomy.webapp.validation;
 
-import java.util.HashMap;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import junit.framework.Assert;
+import java.util.HashMap;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -17,6 +19,16 @@ import org.springframework.validation.MapBindingResult;
  * @version $Id$
  */
 public class UserRegistrationValidatorTest {
+	
+	private static UserRegistrationValidator validator;
+	
+	/**
+	 * sets up the validator
+	 */
+	@BeforeClass
+	public static void setupValidator() {
+		validator = new UserRegistrationValidator();
+	}	
 
 	/**
 	 * Tests, if the UserRegistrationValidators supports() function works as expected.
@@ -25,44 +37,35 @@ public class UserRegistrationValidatorTest {
 	 */
 	@Test
 	public void testSupports() {
-		final UserRegistrationValidator validator = new UserRegistrationValidator();
+		assertFalse(validator.supports(String.class));
 		
-		Assert.assertFalse(validator.supports(String.class));
+		assertFalse(validator.supports(null));
 		
-		Assert.assertFalse(validator.supports(null));
-		
-		Assert.assertTrue(validator.supports(UserRegistrationCommand.class));
+		assertTrue(validator.supports(UserRegistrationCommand.class));
 	}
 	
-	@Test
+	/**
+	 * tests, if null can be validated
+	 */
+	@SuppressWarnings("unchecked")
+	@Test(expected = IllegalArgumentException.class)
 	public void testValidateNullArgument() {
-		final UserRegistrationValidator validator = new UserRegistrationValidator();
 		final Errors errors = new MapBindingResult(new HashMap(), "user");
 		
-		try {
-			validator.validate(null, errors);
-			Assert.fail("Should raise an IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-			
-		}
+		validator.validate(null, errors);
 	}
 	
 	/**
 	 * registerUser = null should not pass validation
 	 */
-	@Test
+	@SuppressWarnings("unchecked")
+	@Test(expected = IllegalArgumentException.class)
 	public void testValidateNullUser() {
-		final UserRegistrationValidator validator = new UserRegistrationValidator();
 		final Errors errors = new MapBindingResult(new HashMap(), "user");
 		
 		final UserRegistrationCommand command = new UserRegistrationCommand();
 		
-		try {
-			validator.validate(command, errors);
-			Assert.fail("Should raise an IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
-			
-		}
+		validator.validate(command, errors);
 	}
 	
 	/**
@@ -70,7 +73,6 @@ public class UserRegistrationValidatorTest {
 	 */
 	@Test
 	public void testValidate() {
-		final UserRegistrationValidator validator = new UserRegistrationValidator();
 		final UserRegistrationCommand command = new UserRegistrationCommand();
 		
 		final Errors errors = new BindException(command, "command");
@@ -78,7 +80,7 @@ public class UserRegistrationValidatorTest {
 		command.setRegisterUser(new User());
 		
 		
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 		
 		/*
 		 * should not fail
@@ -88,7 +90,7 @@ public class UserRegistrationValidatorTest {
 		/*
 		 * should contain some entries
 		 */
-		Assert.assertTrue(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 		
 	}
 	
@@ -97,7 +99,6 @@ public class UserRegistrationValidatorTest {
 	 */
 	@Test
 	public void testValidateFailOnGivenCaptchaHTML() {
-		final UserRegistrationValidator validator = new UserRegistrationValidator();
 		final UserRegistrationCommand command = new UserRegistrationCommand();
 		
 		final Errors errors = new BindException(command, "command");
@@ -108,7 +109,7 @@ public class UserRegistrationValidatorTest {
 		command.setRecaptcha_response_field("response");
 		
 		
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 		
 		/*
 		 * should not fail
@@ -118,7 +119,7 @@ public class UserRegistrationValidatorTest {
 		/*
 		 * no errors
 		 */
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 		
 		/*
 		 * set HTML
@@ -133,7 +134,7 @@ public class UserRegistrationValidatorTest {
 		/*
 		 * should contain some entries
 		 */
-		Assert.assertTrue(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 		
 	}
 	
@@ -143,7 +144,6 @@ public class UserRegistrationValidatorTest {
 	 */
 	@Test
 	public void testValidateFailOnNonMatchingPasswords() {
-		final UserRegistrationValidator validator = new UserRegistrationValidator();
 		final UserRegistrationCommand command = new UserRegistrationCommand();
 		
 		final Errors errors = new BindException(command, "command");
@@ -154,7 +154,7 @@ public class UserRegistrationValidatorTest {
 		command.setRecaptcha_response_field("response");
 		
 		
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 		
 		/*
 		 * should not fail
@@ -164,7 +164,7 @@ public class UserRegistrationValidatorTest {
 		/*
 		 * no errors
 		 */
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 		
 		/*
 		 * set different password
@@ -179,8 +179,7 @@ public class UserRegistrationValidatorTest {
 		/*
 		 * should contain some entries
 		 */
-		Assert.assertTrue(errors.hasErrors());
-		
+		assertTrue(errors.hasErrors());
 	}
 	
 	private User getValidUser() {

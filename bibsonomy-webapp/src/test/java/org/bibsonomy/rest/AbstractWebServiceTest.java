@@ -20,8 +20,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Document;
 import org.dom4j.io.DOMReader;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -54,21 +52,11 @@ public abstract class AbstractWebServiceTest {
 		credentials = new UsernamePasswordCredentials(user, pass);
 	}
 
-	@AfterClass
-	public static void classTearDown() {
-		apiUrl = null;
-	}
-
 	@Before
 	public void setUp() {
 		// configure the HTTP client
 		this.client = new HttpClient();
 		this.client.getState().setCredentials(authScope, credentials);
-	}
-
-	@After
-	public void tearDown() {
-		this.client = null;
 	}
 
 	/**
@@ -94,9 +82,9 @@ public abstract class AbstractWebServiceTest {
 	private Document getResponseBodyAsDocument(final GetMethod get) {
 		try {
 			log.debug(get.getResponseBodyAsString());
-			DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			org.w3c.dom.Document domDoc = builder.parse(get.getResponseBodyAsStream());
+			final DocumentBuilderFactory factory  = DocumentBuilderFactory.newInstance();
+			final DocumentBuilder builder = factory.newDocumentBuilder();
+			final org.w3c.dom.Document domDoc = builder.parse(get.getResponseBodyAsStream());
 			return new DOMReader().read(domDoc);
 		} catch (final Exception ex) {
 			try {
@@ -106,7 +94,7 @@ public abstract class AbstractWebServiceTest {
 				} finally {
 					os.close();
 				}
-			} catch (Exception ex2) {
+			} catch (final Exception ex2) {
 				log.fatal(ex2.getMessage(),ex2);
 			}
 			log.fatal(ex.getMessage(),ex);

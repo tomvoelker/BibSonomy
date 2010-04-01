@@ -20,7 +20,7 @@ import org.junit.Test;
 public class WebServiceTest extends AbstractWebServiceTest {
 
 	@Test
-	@Ignore // FXME: test which depend on www.biblicous.org are suboptimal...
+	@Ignore // FIXME: test which depend on www.biblicous.org are suboptimal...
 	public void aGetRequestWithoutAuthentication() throws HttpException, IOException {
 		this.doc = this.getDocumentForWebServiceAction("posts?resourcetype=bibtex", HttpServletResponse.SC_UNAUTHORIZED, false);
 	}
@@ -29,7 +29,7 @@ public class WebServiceTest extends AbstractWebServiceTest {
 	@Test
 	public void requestWithoutAction() throws IOException {
 		this.doc = this.getDocumentForWebServiceAction("", HttpServletResponse.SC_FORBIDDEN, true);
-		assertEquals(1, doc.selectObject("count(//error)"));
+		assertEquals(1, this.doc.selectObject("count(//error)"));
 	}
 
 	@Ignore
@@ -45,10 +45,9 @@ public class WebServiceTest extends AbstractWebServiceTest {
 			assertEquals(20, numPosts.intValue());
 		}
 	}
-
-	// FIXME: db inconsistency
+	
 	@Test
-	@Ignore
+	@Ignore // FIXME: db inconsistency
 	public void get100Posts() {
 		this.doc = this.getDocumentForWebServiceAction("posts?resourcetype=bibtex&start=5&end=30", HttpServletResponse.SC_OK, true);
 		// Check posts count

@@ -1,7 +1,6 @@
-/*
- * Created on 13.07.2007
- */
 package org.bibsonomy.rest.remotecall;
+
+import static org.junit.Assert.assertEquals;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -9,9 +8,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
-
-import junit.framework.Assert;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -80,15 +78,19 @@ import org.mortbay.resource.Resource;
  * @author Christian Kramer
  *
  */
-//@Ignore // was inserted due to the strange umlaut behaviour on shaun - fix ASAP!!
 public class LogicInterfaceProxyTest implements LogicInterface {
+	private static final int PORT = 41252;
+
 	private static final Log log = LogFactory.getLog(LogicInterfaceProxyTest.class);
+	
 	private static final String LOGIN_USER_NAME = LogicInterfaceProxyTest.class.getSimpleName();
 	private static final String API_KEY = "A P I äöü K e y";
 	//private static final String API_KEY = "yetAnother Strange API KEY";
 	private static Server server;
 	private static String apiUrl;
 	private static LogicInterfaceFactory clientLogicFactory;
+	
+	
 	private LogicInterface clientLogic;
 	private LogicInterface serverLogic;
 	
@@ -99,28 +101,46 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public static void initServer() {
 		try {
 			server = new Server();
-			AbstractConnector connector = new SocketConnector();
+			final AbstractConnector connector = new SocketConnector();
 			connector.setHost("127.0.0.1");
-			final int port = 41252;
-			connector.setPort(port);
-			apiUrl = "http://localhost:" + port + "/api";
+			connector.setPort(PORT);
+			
+			apiUrl = "http://localhost:" + PORT + "/api";
 			server.addConnector(connector);
-			Context servletContext = new Context();
+			final Context servletContext = new Context();
 			servletContext.setContextPath("/api");
 			final Resource resource = Resource.newResource("API_URL");
 			resource.setAssociate(apiUrl);
 			servletContext.setBaseResource(resource);
-			ServletHolder restServlet = servletContext.addServlet(RestServlet.class, "/*");
+			final ServletHolder restServlet = servletContext.addServlet(RestServlet.class, "/*");
 			restServlet.setInitParameter(RestServlet.PARAM_LOGICFACTORY_CLASS, MockLogicFactory.class.getName() );			
 			server.addHandler(servletContext);
 			server.start();
 			connector.start();
 			
 			clientLogicFactory = new RestLogicFactory(apiUrl);
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			log.fatal(ex.getMessage(),ex);
 			throw new RuntimeException(ex);
 		}
+	}
+	
+	/**
+	 * stops the servlet container after all tests have been run
+	 */
+	@AfterClass
+	public static void shutdown() {
+		try {
+			server.stop();
+		} catch (final Exception ex) {
+			log.fatal(ex.getMessage(), ex);
+			throw new RuntimeException(ex);
+		}
+	}
+	
+	private static void assertLogin() {
+		assertEquals(LOGIN_USER_NAME, MockLogicFactory.getRequestedLoginName());
+		assertEquals(API_KEY, MockLogicFactory.getRequestedApiKey());
 	}
 	
 	/**
@@ -142,11 +162,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.reset(this.serverLogic);
 	}
 	
-	private void assertLogin() {
-		Assert.assertEquals(LOGIN_USER_NAME, MockLogicFactory.getRequestedLoginName());
-		Assert.assertEquals(API_KEY, MockLogicFactory.getRequestedApiKey());
-		System.out.println(API_KEY + " +++ " + MockLogicFactory.getRequestedApiKey());
-	}
+	
 	
 	/** IArgumentMatcher Implementation that wraps an object and compares it with another */
 	private static class PropertyEqualityArgumentMatcher<T> implements IArgumentMatcher {
@@ -158,14 +174,14 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 			this.excludeProperties = excludeProperties;
 		}
 		
-		public void appendTo(StringBuffer arg0) {
+		public void appendTo(final StringBuffer arg0) {
 			arg0.append("hurz");
 		}
 
-		public boolean matches(Object b) {
+		public boolean matches(final Object b) {
 			try {
 				ModelUtils.assertPropertyEquality(a, b, 5, null, excludeProperties);
-			} catch (Throwable t) {
+			} catch (final Throwable t) {
 				log.error(t,t);
 				return false;
 			}
@@ -192,6 +208,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void addUserToGroupTest() {
 		this.addUserToGroup("groupName", "userName");
 	}
+	
 	public void addUserToGroup(final String groupName, final String userName) {
 		// lowercasing the username is necessary here, as this is done
 		// by default when calling user.setName(userName)
@@ -209,7 +226,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void createGroupTest() {
 		createGroup(ModelUtils.getGroup());
 	}
-	public String createGroup(Group group) {
+	
+	public String createGroup(final Group group) {
 
 		/*
 		 * FIXME: remove this line. It is here only, because privlevel is not included 
@@ -219,14 +237,14 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		
 		EasyMock.expect(serverLogic.createGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"))).andReturn(group.getName() + "-new");
 		EasyMock.replay(serverLogic);
-		Assert.assertEquals(group.getName() + "-new", clientLogic.createGroup(group));
+		assertEquals(group.getName() + "-new", clientLogic.createGroup(group));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
 	}
 	
 	/**
-	 * runs the test defined by {@link #createPost(Post)} with a populated Bookmark Post as the argument
+	 * runs the test defined by {@link #createPosts(List)} with a populated Bookmark Post as the argument
 	 */
 	@Test
 	public void createPostTestBookmark() {
@@ -235,7 +253,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		createPosts(posts);
 	}
 	/**
-	 * runs the test defined by {@link #createPost(Post)} with a populated BibTex Post as the argument
+	 * runs the test defined by {@link #createPosts(List)} with a populated BibTex Post as the argument
 	 */
 	@Test
 	public void createPostTestBibtex() {
@@ -243,7 +261,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		posts.add(ModelUtils.generatePost(BibTex.class));
 		createPosts(posts);
 	}
-	public List<String> createPosts(List<Post<?>> posts) {
+	
+	public List<String> createPosts(final List<Post<?>> posts) {
 		final Post<?> post = posts.get(0);
 		post.getUser().setName(LOGIN_USER_NAME);
 				
@@ -251,7 +270,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 
 		EasyMock.expect(serverLogic.createPosts(PropertyEqualityArgumentMatcher.eq(posts, "[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.realname", "[0].resource.scraperId", "[0].resource.openURL", "[0].user.IPAddress", "[0].user.basket", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.toClassify", "[0].user.updatedBy", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId"))).andReturn(singletonList);
 		EasyMock.replay(serverLogic);
-		Assert.assertEquals(singletonList, clientLogic.createPosts(posts));
+		assertEquals(singletonList, clientLogic.createPosts(posts));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
@@ -264,16 +283,15 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void createUserTest() {
 		createUser(ModelUtils.getUser());
 	}
-	public String createUser(User user) {
+	public String createUser(final User user) {
 
 		final User eqUser = PropertyEqualityArgumentMatcher.eq(user, "apiKey", "IPAddress", "basket",  "inbox", "gender", "interests", "hobbies", "profession", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "openID", "ldapId");
 		
 		final String userName = serverLogic.createUser(eqUser);
-		System.out.println("username is " + userName);
 		
 		EasyMock.expect(userName).andReturn(user.getName() + "-new");
 		EasyMock.replay(serverLogic);
-		Assert.assertEquals(user.getName() + "-new", clientLogic.createUser(user));
+		assertEquals(user.getName() + "-new", clientLogic.createUser(user));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
@@ -286,7 +304,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void deleteGroupTest() {
 		deleteGroup("hurzelGroupName");
 	}
-	public void deleteGroup(String groupName) {
+	
+	public void deleteGroup(final String groupName) {
 		serverLogic.deleteGroup(groupName);
 		EasyMock.replay(serverLogic);
 		clientLogic.deleteGroup(groupName);
@@ -295,13 +314,14 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	/**
-	 * runs the test defined by {@link #deletePost(String, String)} with certain arguments
+	 * runs the test defined by {@link #deletePosts(String, List)} with certain arguments
 	 */
 	@Test
 	public void deletePostTest() {
 		deletePosts("hurzelUserName", Collections.singletonList(ModelUtils.getBookmark().getIntraHash()));
 	}
-	public void deletePosts(String userName, List<String> resourceHashes) {
+	
+	public void deletePosts(final String userName, final List<String> resourceHashes) {
 		serverLogic.deletePosts(userName, resourceHashes);
 		EasyMock.replay(serverLogic);
 		clientLogic.deletePosts(userName, resourceHashes);
@@ -316,7 +336,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void deleteUserTest() {
 		deleteUser("hurzelUserName");
 	}
-	public void deleteUser(String userName) {
+	
+	public void deleteUser(final String userName) {
 		serverLogic.deleteUser(userName);
 		EasyMock.replay(serverLogic);
 		clientLogic.deleteUser(userName);
@@ -336,7 +357,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void getGroupDetailsTest() {
 		getGroupDetails("hurzelGroupName");
 	}
-	public Group getGroupDetails(String groupName) {
+	
+	public Group getGroupDetails(final String groupName) {
 		final Group returnedGroupExpectation = ModelUtils.getGroup();
 		
 		/*
@@ -356,7 +378,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		EasyMock.expect(serverLogic.getGroupDetails(groupName)).andReturn(returnedGroupExpectation);
 		EasyMock.replay(serverLogic);
 		final Group returnedGroup = clientLogic.getGroupDetails(groupName);
-		System.out.println(returnedGroup.getUser().getIPAddress());
+		log.debug(returnedGroup.getUser().getIPAddress());
 		ModelUtils.assertPropertyEquality(returnedGroupExpectation, returnedGroup, 5, Pattern.compile(".*users.*\\.(apiKey|homepage|realname|email|password|date|openURL|gender|place|interests|hobbies|IPAddress|basket|profession|place|spammer|settings|toClassify|updatedBy)|.*\\.date|.*\\.scraperId|.*\\.openURL|.*groupId|user.*"));
 		EasyMock.verify(serverLogic);
 		assertLogin();
@@ -370,7 +392,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void getGroupsTest() {
 		getGroups(64, 129);
 	}
-	public List<Group> getGroups(int start, int end) {
+	
+	public List<Group> getGroups(final int start, final int end) {
 		final List<Group> expectedList = new ArrayList<Group>();
 		expectedList.add(ModelUtils.getGroup());
 		expectedList.get(0).setName("Group1");
@@ -405,7 +428,9 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void getPostDetailsTest() {
 		getPostDetails(ModelUtils.getBibTex().getIntraHash(), "testUser");
 	}
-	public Post<? extends org.bibsonomy.model.Resource> getPostDetails(String resourceHash, String userName) {
+	
+	@SuppressWarnings("unchecked")
+	public Post<? extends org.bibsonomy.model.Resource> getPostDetails(final String resourceHash, final String userName) {
 		final Post<BibTex> expectedBibtexPost = ModelUtils.generatePost(BibTex.class);
 		final Post<Bookmark> expectedBookmarkPost = ModelUtils.generatePost(Bookmark.class);
 		
@@ -424,27 +449,32 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} with arguments as used for the getBookmarkByTagName query
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, FilterEntity, int, int, String)} with arguments as used for the getBookmarkByTagName query
 	 */
 	@Test
 	public void getPostsTestBookmarkByTag() {
 		getPosts(Bookmark.class, GroupingEntity.ALL, null, Arrays.asList("bla", "blub"), null, null /* must be null because order is inferred and not transmitted */, null,  7, 1264, null);
 	}
+	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} with arguments as used for the getBibtexForGroupAndTag query
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, FilterEntity, int, int, String)} with arguments as used for the getBibtexForGroupAndTag query
 	 */
 	@Test
 	public void getPostsTestBibtexByGroupAndTag() {
 		getPosts(BibTex.class, GroupingEntity.GROUP, "testGroup", Arrays.asList("blub", "bla"), null, null, null, 0, 1, null);
 	}
+	
 	/**
-	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, int, int, String)} with arguments as used for the getBibtexByHashForUser query 
+	 * runs the test defined by {@link #getPosts(Class, GroupingEntity, String, List, String, Order, FilterEntity, int, int, String)} with arguments as used for the getBibtexByHashForUser query 
 	 */
 	@Test
 	public void getPostsTestBibtexByUserAndHash() {
 		getPosts(BibTex.class, GroupingEntity.USER, "testUser", new ArrayList<String>(0), ModelUtils.getBibTex().getIntraHash(), null, null, 0, 5, null);
 	}
-	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search) {
+	
+	
+	@SuppressWarnings("unchecked")
+	public <T extends org.bibsonomy.model.Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		final List<Post<T>> expectedPosts = new ArrayList<Post<T>>();
 		expectedPosts.add(ModelUtils.generatePost(resourceType));
 		expectedPosts.get(0).setDescription("erstes");
@@ -464,7 +494,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		assertLogin();
 		return returnedPosts;
 	}
-
+	
 
 	/**
 	 * runs the test defined by {@link #getTagDetails(String)} with a certain argument
@@ -473,7 +503,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void getTagDetailsTest() {
 		getTagDetails("testzeug");
 	}	
-	public Tag getTagDetails(String tagName) {
+	
+	public Tag getTagDetails(final String tagName) {
 		final Tag expected = ModelUtils.getTag();		
 		EasyMock.expect(serverLogic.getTagDetails(tagName)).andReturn(expected);
 		EasyMock.replay(serverLogic);
@@ -487,13 +518,14 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 
 	
 	/**
-	 * runs the test defined by {@link #getTags(Class, GroupingEntity, String, String, int, int)} with certain arguments
+	 * runs the test defined by {@link #getTags(Class, GroupingEntity, String, String, List, String, Order, int, int, String, TagSimilarity)} with certain arguments
 	 */
 	@Test
 	public void getTagsTest() {
 		getTags(org.bibsonomy.model.Resource.class, GroupingEntity.GROUP, "testGroup", "regex", null, null, null, 4, 22, null, null);
 	}
-	public List<Tag> getTags(Class<? extends org.bibsonomy.model.Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search, TagSimilarity relation) {
+	
+	public List<Tag> getTags(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final TagSimilarity relation) {
 		final List<Tag> expected = ModelUtils.buildTagList(3, "testPrefix", 1);		
 		EasyMock.expect(serverLogic.getTags(resourceType, grouping, groupingName, regex, tags, null, order, start, end, null, null)).andReturn(expected);
 		EasyMock.replay(serverLogic);
@@ -512,7 +544,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	public void getUserDetailsTest() {
 		getUserDetails("usrName");
 	}
-	public User getUserDetails(String userName) {
+	
+	public User getUserDetails(final String userName) {
 		final User expected = ModelUtils.getUser();		
 		EasyMock.expect(serverLogic.getUserDetails(userName)).andReturn(expected);
 		EasyMock.replay(serverLogic);
@@ -524,16 +557,15 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		assertLogin();
 		return returned;
 	}
-	
 
 	/**
-	 * runs the test defined by {@link #removeUserFromGroup(String, String)} with certain arguments
+	 * runs the test defined by {@link #deleteUserFromGroup(String, String)} with certain arguments
 	 */
 	@Test
 	public void deleteUserFromGroupTest() {
 		deleteUserFromGroup("grooouuup!", "userTest");
 	}
-	public void deleteUserFromGroup(String groupName, String userName) {
+	public void deleteUserFromGroup(final String groupName, final String userName) {
 		serverLogic.deleteUserFromGroup(groupName, userName);
 		EasyMock.replay(serverLogic);
 		clientLogic.deleteUserFromGroup(groupName, userName);
@@ -542,14 +574,14 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	/**
-	 * runs the test defined by {@link #updateGroup(Group)} with certain group argument
+	 * runs the test defined by {@link #updateGroup(Group, GroupUpdateOperation)} with certain group argument
 	 */	
 	@Test
 	public void updateGroupTest() {
 		updateGroup(ModelUtils.getGroup(), GroupUpdateOperation.UPDATE_ALL);
 	}
-	public String updateGroup(Group group, final GroupUpdateOperation operation) {
-		
+	
+	public String updateGroup(final Group group, final GroupUpdateOperation operation) {
 		/*
 		 * FIXME: remove this line. It is here only, because privlevel is not included 
 		 * in the XML and hence not transported to the serverLogic.
@@ -558,7 +590,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		
 		EasyMock.expect(serverLogic.updateGroup(PropertyEqualityArgumentMatcher.eq(group, "groupId"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(group.getName() + "-new");
 		EasyMock.replay(serverLogic);
-		Assert.assertEquals(group.getName() + "-new", clientLogic.updateGroup(group, operation));
+		assertEquals(group.getName() + "-new", clientLogic.updateGroup(group, operation));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
@@ -574,6 +606,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 
 		updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 	}
+	
 	/**
 	 * runs the test defined by {@link #updatePosts(List, PostUpdateOperation)} with a fully populated Bookmark Post as argument
 	 */
@@ -585,7 +618,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 	}
 	
-	public List<String> updatePosts(List<Post<?>> posts, PostUpdateOperation operation) {
+	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
 		final Post<?> post = posts.get(0);
 		post.getUser().setName(LOGIN_USER_NAME);
 		
@@ -593,7 +626,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		
 		EasyMock.expect(serverLogic.updatePosts(PropertyEqualityArgumentMatcher.eq(posts, "[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.realname", "[0].resource.scraperId", "[0].resource.openURL", "[0].user.IPAddress", "[0].user.basket", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.updatedBy", "[0].user.toClassify", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(singletonList);
 		EasyMock.replay(serverLogic);
-		Assert.assertEquals(singletonList, clientLogic.updatePosts(posts, operation));
+		assertEquals(singletonList, clientLogic.updatePosts(posts, operation));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
@@ -601,95 +634,84 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 
 	/**
-	 * runs the test defined by {@link #updateUser(User)} with a certain argument
+	 * runs the test defined by {@link #updateUser(User, UserUpdateOperation)} with a certain argument
 	 */
 	@Test
 	public void updateUserTest() {
 		createUser(ModelUtils.getUser());
 	}
-	public String updateUser(User user, final UserUpdateOperation operation) {
+	public String updateUser(final User user, final UserUpdateOperation operation) {
 		EasyMock.expect(serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, "apiKey"))).andReturn("rVal");
 		EasyMock.replay(serverLogic);
-		Assert.assertEquals("rVal", clientLogic.createUser(user));
+		assertEquals("rVal", clientLogic.createUser(user));
 		EasyMock.verify(serverLogic);
 		assertLogin();
 		return null;
 	}
 	
-	/**
-	 * stops the servlet container after all tests have been run
-	 */
-	@AfterClass
-	public static void shutdown() {
-		try {
-			server.stop();
-		} catch (Exception ex) {
-			log.fatal(ex.getMessage(), ex);
-			throw new RuntimeException(ex);
-		}
-	}
+	
 
-	public String createDocument(Document doc, String resourceHash) {
+	public String createDocument(final Document doc, final String resourceHash) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	public Document getDocument(String userName, String fileHash) {
+	public Document getDocument(final String userName, final String fileHash) {
 		
 		return null;
 	}
 
-	public Document getDocument(String userName, String resourceHash, String fileName) {
+	public Document getDocument(final String userName, final String resourceHash, final String fileName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void deleteDocument(Document document, String fileName) {
+	public void deleteDocument(final Document document, final String fileName) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void createInetAddressStatus(InetAddress address, InetAddressStatus status) {
+	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void deleteInetAdressStatus(InetAddress address) {
+	public void deleteInetAdressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public InetAddressStatus getInetAddressStatus(InetAddress address) {
+	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	public List<Tag> getConcepts(Class<? extends org.bibsonomy.model.Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
+	public List<Tag> getConcepts(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String createConcept(Tag concept, GroupingEntity grouping, String groupingName) {
+	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void deleteConcept(String concept, GroupingEntity grouping, String groupingName) {
+	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName) {
+	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName) {
+	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName, final ConceptUpdateOperation operation) {
+	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -713,8 +735,8 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		getUsers(null, GroupingEntity.GROUP, "grpX", null, null, null, null, null, 1, 56);				
 	}	
 	
-	public List<User> getUsers(Class<? extends org.bibsonomy.model.Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end) {
-		List<User> expected = new ArrayList<User>(2);
+	public List<User> getUsers(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
+		final List<User> expected = new ArrayList<User>(2);
 		expected.add(ModelUtils.getUser());
 		expected.get(0).setName("Nr1");
 		expected.add(ModelUtils.getUser());
@@ -727,126 +749,122 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		assertLogin();			
 		return returned;
 	}
-	
-	public int getStatistics(Class<? extends org.bibsonomy.model.Resource> arg0, GroupingEntity arg1, String arg2, StatisticsConstraint arg3, String arg4, List<String> arg5) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
-	public String getClassifierSettings(ClassifierSettings key) {
+	public String getClassifierSettings(final ClassifierSettings key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void updateClassifierSettings(ClassifierSettings key, String value) {
+	public void updateClassifierSettings(final ClassifierSettings key, final String value) {
 		// TODO Auto-generated method stub		
 	}
 
-	public int getClassifiedUserCount(Classifier classifier, SpamStatus status, int interval) {
+	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int interval) {
+	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int interval) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<User> getClassifierHistory(String userName) {
+	public List<User> getClassifierHistory(final String userName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<User> getClassifierComparison(int interval) {
+	public List<User> getClassifierComparison(final int interval) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public int getPostStatistics(Class<? extends org.bibsonomy.model.Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint) {
+	public int getPostStatistics(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public String getOpenIDUser(String openID) {
+	public String getOpenIDUser(final String openID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	/** Does nothing, because it's not implemented in the API.
-	 * @param user
-	 * @param tagsToReplace
-	 * @param replacementTags
-	 * @return
-	 */
 	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-
-
-	public int getTagStatistics(Class<? extends org.bibsonomy.model.Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
+	
+	public int getTagStatistics(final Class<? extends org.bibsonomy.model.Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public List<User> getFriendsOfUser(User loginUser) {
+	public List<User> getFriendsOfUser(final User loginUser) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<User> getUserFriends(User loginUser) {
+	public List<User> getUserFriends(final User loginUser) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search) {
+	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public void createUserRelationship(String sourceUser, String targetUser, UserRelation relation) {
+	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public List<User> getUserRelationship(String sourceUser, UserRelation relation) {
+	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation) {
 		//TODO Auto-generated method stub
 		return new ArrayList<User>();
 	}
 
 	
 	@Override
-	public void deleteUserRelationship(String sourceUser, String targetUser, UserRelation relation) {
+	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
 		// TODO Auto-generated method stub
 		
 	}
 
-
 	@Override
-	public int createBasketItems(List<Post<? extends org.bibsonomy.model.Resource>> posts) {
+	public int createBasketItems(final List<Post<? extends org.bibsonomy.model.Resource>> posts) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-
 	@Override
-	public int deleteBasketItems(List<Post<? extends org.bibsonomy.model.Resource>> posts, boolean clearBasket) {
+	public int deleteBasketItems(final List<Post<? extends org.bibsonomy.model.Resource>> posts, final boolean clearBasket) {
 		return 0;
 	}
 	
 	@Override
-	public int deleteInboxMessages(List<Post<? extends org.bibsonomy.model.Resource>> posts, final boolean clearInbox) {
+	public int deleteInboxMessages(final List<Post<? extends org.bibsonomy.model.Resource>> posts, final boolean clearInbox) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public String getUsernameByLdapUserId(String userId) {
+	public String getUsernameByLdapUserId(final String userId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void createReferences(final String postHash, final Set<String> references) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void deleteReferences(final String postHash, final Set<String> references) {
+		// TODO Auto-generated method stub
 	}
 
 }

@@ -1,12 +1,12 @@
 package org.bibsonomy.webapp.validation;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.HashMap;
 
-import junit.framework.Assert;
-
-import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.actions.PasswordReminderCommand;
-import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
 import org.junit.Test;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -27,11 +27,11 @@ public class PasswordReminderValidatorTest {
 	public void testSupports(){
 		final PasswordReminderValidator validator = new PasswordReminderValidator();
 		
-		Assert.assertFalse(validator.supports(String.class));
+		assertFalse(validator.supports(String.class));
 		
-		Assert.assertFalse(validator.supports(null));
+		assertFalse(validator.supports(null));
 		
-		Assert.assertTrue(validator.supports(PasswordReminderCommand.class));
+		assertTrue(validator.supports(PasswordReminderCommand.class));
 	}
 	
 	
@@ -46,8 +46,8 @@ public class PasswordReminderValidatorTest {
 		
 		try {
 			validator.validate(null, errors);
-			Assert.fail("Should raise an IllegalArgumentException");
-		} catch (IllegalArgumentException e) {
+			fail("Should raise an IllegalArgumentException");
+		} catch (final IllegalArgumentException e) {
 			
 		}
 	}
@@ -63,7 +63,7 @@ public class PasswordReminderValidatorTest {
 		final Errors errors = new BindException(command, "command");
 		
 		
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 		
 		/*
 		 * should not fail
@@ -73,7 +73,7 @@ public class PasswordReminderValidatorTest {
 		/*
 		 * should contain some entries
 		 */
-		Assert.assertTrue(errors.hasErrors());	
+		assertTrue(errors.hasErrors());	
 	}
 	
 	/**
@@ -92,7 +92,7 @@ public class PasswordReminderValidatorTest {
 		command.setRecaptcha_response_field("response");
 		
 		
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 		
 		/*
 		 * should not fail
@@ -102,7 +102,7 @@ public class PasswordReminderValidatorTest {
 		/*
 		 * no errors
 		 */
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 		
 		/*
 		 * set HTML
@@ -117,7 +117,7 @@ public class PasswordReminderValidatorTest {
 		/*
 		 * should contain some entries
 		 */
-		Assert.assertTrue(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 	}
 
 }
