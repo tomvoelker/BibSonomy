@@ -1,9 +1,9 @@
 package org.bibsonomy.webapp.controller.ajax;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.LinkedList;
 import java.util.List;
-
-import junit.framework.Assert;
 
 import org.bibsonomy.model.Tag;
 import org.junit.Test;
@@ -13,7 +13,10 @@ import org.junit.Test;
  * @version $Id$
  */
 public class ConceptControllerTest {
-
+	
+	/**
+	 * tests {@link ConceptController#prepareResponseString(String, List)}
+	 */
 	@Test
 	public void testPrepareResponseString() {
 		final ConceptController control = new ConceptController();
@@ -37,8 +40,11 @@ public class ConceptControllerTest {
 
 		final String response = control.prepareResponseString("jaeschke", pickedConcepts);
 
-		Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-				"<relations user=\"jaeschke\"><relation><upper>conference</upper><lowers id=\"conference\"><lower>iccs</lower><lower>ecmlpkdd</lower><lower>www</lower><lower>icm</lower></lowers></relation><relation><upper>location</upper><lowers id=\"location\"><lower>kassel</lower><lower>berlin</lower><lower>bremen</lower><lower>erfurt</lower></lowers></relation></relations>", response);
+		assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+				"<relations user=\"jaeschke\"><relation><upper>conference</upper><lowers id=\"conference\">" +
+				"<lower>iccs</lower><lower>ecmlpkdd</lower><lower>www</lower><lower>icm</lower></lowers></relation>" +
+				"<relation><upper>location</upper><lowers id=\"location\"><lower>kassel</lower><lower>berlin</lower>" +
+				"<lower>bremen</lower><lower>erfurt</lower></lowers></relation></relations>", response);
 
 	}
 
