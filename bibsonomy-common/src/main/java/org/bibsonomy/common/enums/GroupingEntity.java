@@ -32,9 +32,8 @@ import org.bibsonomy.util.EnumUtils;
  * (someone called this "grouping")
  * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id$
  * @author dbenz
- *
+ * @version $Id$
  */
 public enum GroupingEntity {
 	/**
@@ -91,6 +90,7 @@ public enum GroupingEntity {
 	 * inbox of the given user
 	 */
 	INBOX;
+	
 	/**
 	 * @param groupingEntity name of the GroupingEntity Instance to retrieve
 	 * @return the corresponding GroupingEntity-enum for the given string argument.

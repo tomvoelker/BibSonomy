@@ -24,13 +24,10 @@
 package org.bibsonomy.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-
-import junit.framework.Assert;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -63,7 +60,6 @@ public class XmlUtilsTest {
 	    "\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001A\u001B\u001C" +
 	    "\u001D\u001E\u001F\uFFFE\uFFFF";		
 		String cleaned = XmlUtils.removeXmlControlCharacters(s);
-		System.out.println(cleaned);
 		assertEquals("", cleaned);    	
     	
     	// text with control char
@@ -76,7 +72,6 @@ public class XmlUtilsTest {
 		s = "\u0002";
 		cleaned = XmlUtils.removeXmlControlCharacters(s, true);
 		assertEquals("\uFFFD", cleaned);
-		
 	}
 
 	/**
@@ -91,18 +86,12 @@ public class XmlUtilsTest {
 
 	
 	@Test
-	public void testGetDom() {
-		try {
-			Assert.assertNotNull(XmlUtils.getDOM(new URL("http://www.bibsonomy.org/")));
-		} catch (MalformedURLException ex) {
-			fail(ex.getMessage());
-		} catch (IOException ex) {
-			fail(ex.getMessage());
-		}
+	public void testGetDom() throws Exception {
+		assertNotNull(XmlUtils.getDOM(new URL("http://www.bibsonomy.org/")));
 	}
 	
 
-	public static class XMLParsingThreadimplements implements Runnable {
+	private static class XMLParsingThreadimplements implements Runnable {
 		private final String name;
 
 		public XMLParsingThreadimplements(final String name) {
@@ -121,8 +110,6 @@ public class XmlUtilsTest {
 					Thread.sleep(10);
 				}
 			} catch (final Exception e) {
-				System.err.println(e);
-				e.printStackTrace();
 				fail(e.getMessage());
 			}
 		}

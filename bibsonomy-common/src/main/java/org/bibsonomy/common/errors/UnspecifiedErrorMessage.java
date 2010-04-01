@@ -7,9 +7,9 @@ package org.bibsonomy.common.errors;
  * @author sdo
  * @version $Id$
  */
-public class UnspecifiedErrorMessage extends ErrorMessage{
-
+public class UnspecifiedErrorMessage extends ErrorMessage {
 	private final Exception ex;
+	
 	/**
 	 * @param ex The exception that was caught.
 	 */
@@ -17,7 +17,7 @@ public class UnspecifiedErrorMessage extends ErrorMessage{
 		this.setDefaultMessage(ex.getMessage());
 		this.setErrorCode("database.exception.unspecified");
 		this.setParameters(null);
-		this.ex=ex;
+		this.ex = ex;
 	}
 	
 	/**

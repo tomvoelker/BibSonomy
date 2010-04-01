@@ -30,9 +30,11 @@ import java.util.regex.Pattern;
 
 /**
  * Static methods for dealing with string representations of tags
+ * 
+ * @author 
+ * @version $Id$
  */
 public class TagStringUtils {
-	
 	
 	/**
 	 * Tags which are ignored for recommendation. Note that those tags 
@@ -46,9 +48,6 @@ public class TagStringUtils {
 		ignoreTags.add(cleanTag("nn"));
 		ignoreTags.add(cleanTag("system:unfiled"));
 	}
-	
-	
-	
 	
 	/**
 	 * Allows in a string of tags to change the delimiter to space. Additionally, tags consisting of

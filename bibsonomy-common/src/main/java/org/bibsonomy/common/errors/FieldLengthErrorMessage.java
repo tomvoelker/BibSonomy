@@ -69,7 +69,7 @@ public class FieldLengthErrorMessage extends ErrorMessage {
 	}
 	
 	/**
-	 * @return true if one or more field(s) is/are to long otherwise false
+	 * @return <code>true</code> iff one or more field(s) is/are to long
 	 */
 	public boolean hasErrors() {
 		return !this.fields.keySet().isEmpty();

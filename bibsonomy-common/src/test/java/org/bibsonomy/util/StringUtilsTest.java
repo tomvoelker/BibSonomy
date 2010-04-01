@@ -30,8 +30,8 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.junit.Test;
@@ -167,7 +167,7 @@ public class StringUtilsTest {
 	public void parseKeyValuePairs() {
 		// empty input
 		String input = "";
-		HashMap<String, String> result = StringUtils.parseBracketedKeyValuePairs(input, '=', ',', '{', '}');
+		Map<String, String> result = StringUtils.parseBracketedKeyValuePairs(input, '=', ',', '{', '}');
 		assertEquals(0,result.keySet().size());
 		assertEquals(0,result.values().size());
 		// normal mode

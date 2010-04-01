@@ -35,6 +35,10 @@ import java.net.URLEncoder;
 public class UrlUtils {
 
 	private static final int MAX_LEN_URL   = 6000;
+	
+	/**
+	 * TODO: improve documentation
+	 */
 	public static final String BROKEN_URL = "/brokenurl#";	
 
 	/**
@@ -53,6 +57,7 @@ public class UrlUtils {
 		if (url == null) {
 			return null;
 		}
+		
 		// remove linebreaks, etc.
 		url = url.replaceAll("\\n|\\r", "");
 		// this should be the most common case: a valid URL
@@ -69,15 +74,16 @@ public class UrlUtils {
 		} else if (url.trim().equals("")){
 			// handle an empty URL
 			return "";
-		} else {
-			// URL is neither empty nor valid: mark it as broken
-			return StringUtils.cropToLength(BROKEN_URL + url, MAX_LEN_URL);
-		}
+		} 
+		
+		// URL is neither empty nor valid: mark it as broken
+		return StringUtils.cropToLength(BROKEN_URL + url, MAX_LEN_URL);
 	}
 	
 	/**
 	 * Check whether given url is valid.
 	 * @param url The url to test
+	 * @return <true> iff the given url is valid
 	 */
 	public static boolean isValid(String url) {
 		/*

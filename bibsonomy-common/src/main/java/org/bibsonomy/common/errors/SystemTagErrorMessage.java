@@ -2,9 +2,10 @@ package org.bibsonomy.common.errors;
 
 
 /**
+ * Use this message if something went wrong with a SystemTag
+ * 
  * @author sdo
  * @version $Id$
- * Use this message if something went wrong with a SystemTag
  */
 public class SystemTagErrorMessage extends ErrorMessage{
 

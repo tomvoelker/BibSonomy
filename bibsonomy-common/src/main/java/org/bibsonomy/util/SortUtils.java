@@ -26,8 +26,8 @@ package org.bibsonomy.util;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bibsonomy.common.enums.SortOrder;
 import org.bibsonomy.common.enums.SortKey;
+import org.bibsonomy.common.enums.SortOrder;
 
 /**
  * Convenience methods for sorting lists
@@ -47,8 +47,8 @@ public class SortUtils {
 	 * @param sortKeys
 	 * @return a list of sort keys
 	 */
-	public static List<SortKey> parseSortKeys(String sortKeys) {
-		ArrayList<SortKey> parsedSortKeys = new ArrayList<SortKey>();
+	public static List<SortKey> parseSortKeys(final String sortKeys) {
+		final List<SortKey> parsedSortKeys = new ArrayList<SortKey>();
 		if (sortKeys == null) {
 			return parsedSortKeys;
 		}
@@ -64,8 +64,8 @@ public class SortUtils {
 	 * @param sortOrders
 	 * @return a list of sort orders
 	 */
-	public static List<SortOrder> parseSortOrders(String sortOrders) {
-		ArrayList<SortOrder> parsedSortOrders = new ArrayList<SortOrder>();
+	public static List<SortOrder> parseSortOrders(final String sortOrders) {
+		final List<SortOrder> parsedSortOrders = new ArrayList<SortOrder>();
 		if (sortOrders == null) {
 			return parsedSortOrders;
 		}

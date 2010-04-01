@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -110,7 +111,7 @@ public class StringUtils {
 		if (collection.isEmpty()) {
 			return "[]";
 		}
-		final StringBuffer s = new StringBuffer("[");
+		final StringBuilder s = new StringBuilder("[");
 		final Iterator<String> it = collection.iterator();
 		while (it.hasNext()) {
 			s.append(it.next() + ",");
@@ -127,7 +128,7 @@ public class StringUtils {
 	 * @throws IOException 
 	 */
 	public static String getStringFromReader(final BufferedReader in) throws IOException {
-		final StringBuffer buffer = new StringBuffer();
+		final StringBuilder buffer = new StringBuilder();
 
 		String line = null;
 		while ((line = in.readLine()) != null) {
@@ -253,7 +254,7 @@ public class StringUtils {
 	public static String implodeStringCollection(final Collection<? extends Object> stringList, final String delim) {
 		if (stringList == null || delim == null) return "";
 		int i = 0;
-		final StringBuffer sb = new StringBuffer();
+		final StringBuilder sb = new StringBuilder();
 		for (final Object elem : stringList) {
 			if (i != 0) {
 				sb.append(delim);
@@ -277,8 +278,6 @@ public class StringUtils {
 		return implodeStringCollection(Arrays.asList(pieces), delim);
 	}
 	
-	
-	
 	/**
 	 * Helper method to parse a string containing bracketed key-value-pairs in the format
 	 * 
@@ -295,17 +294,17 @@ public class StringUtils {
 	 * @return a HashMap<String,String> containing the parsed key/value pairs.
 	 * @throws InvalidModelException - in case of unmatched brackets
 	 */
-	public static HashMap<String, String> parseBracketedKeyValuePairs(String input, char assignmentOperator, char pairDelimiter, char bracketOpen, char bracketClose) 
+	public static Map<String, String> parseBracketedKeyValuePairs(String input, char assignmentOperator, char pairDelimiter, char bracketOpen, char bracketClose) 
 	throws InvalidModelException {
 		// check input, init hashmap
-		HashMap<String, String> keyValPairs = new HashMap<String, String>();
+		Map<String, String> keyValPairs = new HashMap<String, String>();
 		if (input == null   || input.isEmpty()) {
 			return keyValPairs;			
 		} 
 		
 		// String buffers to hold keys / values
-		StringBuffer currentKey = new StringBuffer();
-		StringBuffer currentVal = new StringBuffer();
+		StringBuilder currentKey = new StringBuilder();
+		StringBuilder currentVal = new StringBuilder();
 		
 		// start with parsing keys
 		ParseMode mode = ParseMode.KEY;
@@ -324,7 +323,7 @@ public class StringUtils {
 				if (bracketDiff == 0) {continue;}
 			}
 			// switch parsing mode to VALUE when assignment operator is met
-			if ( (c == assignmentOperator) )  {
+			if (c == assignmentOperator)  {
 				mode = ParseMode.VALUE;
 			}
 			// done with a key-value pair; write values, reset string buffers 

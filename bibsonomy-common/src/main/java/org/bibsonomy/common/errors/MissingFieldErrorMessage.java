@@ -1,10 +1,11 @@
 package org.bibsonomy.common.errors;
 
 /**
- * @author sdo
- * @version $Id$
  * Use this Message when a post is incomplete (vital fields are missing)
  * Localized Message for Missing: Groups and Resource
+ * 
+ * @author sdo
+ * @version $Id$
  */
 public class MissingFieldErrorMessage extends ErrorMessage{
 

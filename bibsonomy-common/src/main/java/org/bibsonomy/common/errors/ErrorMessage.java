@@ -25,18 +25,15 @@ package org.bibsonomy.common.errors;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-
-//TODO: find a nice and suitable name for errorsPackage
 /**
  * @author sdo
  * @version $Id$
  */
 public class ErrorMessage {
 
-
 	private String defaultMessage;
 	private String errorCode;
-	private String[] parameters = null;
+	private String[] parameters;
 	
 
 	/**

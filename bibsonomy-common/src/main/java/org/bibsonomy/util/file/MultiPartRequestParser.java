@@ -42,7 +42,7 @@ import org.apache.commons.fileupload.servlet.ServletFileUpload;
 public class MultiPartRequestParser {
 
 	// initialize the max size ~50MB
-	final int MAX_REQUEST_SIZE = 1024 * 1024 * 51;
+	private final int MAX_REQUEST_SIZE = 1024 * 1024 * 51;
 	private List<FileItem> items;
 
 	/**
@@ -69,7 +69,9 @@ public class MultiPartRequestParser {
 			upload.setSizeMax(MAX_REQUEST_SIZE);
 
 			// parse the items
-			this.items = upload.parseRequest(request);
+			@SuppressWarnings("unchecked") // ServletFileUpload.parseRequest specified to return a list of FileItems
+			final List<FileItem> parseRequest = upload.parseRequest(request);
+			this.items = parseRequest;
 		}
 	}
 
