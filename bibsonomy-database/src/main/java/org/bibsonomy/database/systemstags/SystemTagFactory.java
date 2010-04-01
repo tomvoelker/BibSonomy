@@ -26,6 +26,7 @@ public class SystemTagFactory {
 	/**
 	 * Constructor
 	 */
+	@SuppressWarnings("unchecked")
 	public SystemTagFactory() {
 		/*
 		 * FIXME: shouldn't we configure this from the outside?
@@ -93,7 +94,7 @@ public class SystemTagFactory {
 	 * system:&lt;name&gt;:&lt;argument&gt; and &lt;name&gt;:&lt;argument&gt;
 	 * 
 	 * @param tags collection of tags to alter 
-	 * @param the name of the system tag to be removed. 
+	 * @param name the name of the system tag to be removed. 
 	 * @return number of occurrences removed.
 	 */
 	public int removeSystemTag(final Set<Tag> tags, final String name) {

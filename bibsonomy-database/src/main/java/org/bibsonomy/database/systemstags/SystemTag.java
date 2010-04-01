@@ -108,7 +108,8 @@ public abstract class SystemTag {
 	 * action to perform after the update action
 	 * 
 	 * @param <T> Resource Type
-	 * @param post post for which action should be performed: If operation is not UPDATE_TAGS the post MUST be VALID
+	 * @param newPost 
+	 * @param oldPost 
 	 * @param operation the UpdateOperation during which the method is called
 	 * @param session action's database session 
 	 */
@@ -128,52 +129,73 @@ public abstract class SystemTag {
 	 * @param tag as given by user
 	 */
 	public void setTag(final Tag tag) {
-//		assert(SystemTagFactory.isSystemTag(tag.getName()));
 		this.tag = tag;
 		
 		// extract argument
 		setValue(SystemTagsUtil.extractArgument(tag.getName()));
 		setName(SystemTagsUtil.extractName(tag.getName()));
-	} 
-	
-
-	
-	//------------------------------------------------------------------------
-	// getter/setter
-	//------------------------------------------------------------------------
-	public Tag getTag() {
-		return this.tag;
 	}
-	
+
+	/**
+	 * @return the name
+	 */
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
+	/**
+	 * @param name the name to set
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * @return the value
+	 */
 	public String getValue() {
-		return value;
+		return this.value;
 	}
 
+	/**
+	 * @param value the value to set
+	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
 
+	/**
+	 * @return the logicInterface
+	 */
+	public LogicInterface getLogicInterface() {
+		return this.logicInterface;
+	}
+
+	/**
+	 * @param logicInterface the logicInterface to set
+	 */
 	public void setLogicInterface(LogicInterface logicInterface) {
 		this.logicInterface = logicInterface;
 	}
 
-	public LogicInterface getLogicInterface() {
-		return logicInterface;
+	/**
+	 * @return the dbSessionFactory
+	 */
+	public DBSessionFactory getDbSessionFactory() {
+		return this.dbSessionFactory;
 	}
 
+	/**
+	 * @param dbSessionFactory the dbSessionFactory to set
+	 */
 	public void setDbSessionFactory(DBSessionFactory dbSessionFactory) {
 		this.dbSessionFactory = dbSessionFactory;
 	}
 
-	public DBSessionFactory getDbSessionFactory() {
-		return dbSessionFactory;
-	}
+	/**
+	 * @return the tag
+	 */
+	public Tag getTag() {
+		return this.tag;
+	} 
 }

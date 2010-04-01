@@ -20,8 +20,6 @@ import org.bibsonomy.model.Tag;
  */
 public class SystemTagsUtil {
 	private final static Pattern sysPrefix = Pattern.compile("^(sys:|system:)?(.*):(.*)");
-	
-
 
 	/**
 	 * build a system tag string for a given kind of system tag and a value
@@ -40,7 +38,10 @@ public class SystemTagsUtil {
 	/**
 	 * Wrapper method for {SystemTagsUtil.buildSystemTagString(SystemTags sysTagPrefix, String sysTagValue)}
 	 * 
-	 * @see SystemTagsUtil.buildSystemTagString
+	 * @param sysTagPrefix 
+	 * @param sysTagValue 
+	 * 
+	 * @return @see {SystemTagsUtil.buildSystemTagString(SystemTags sysTagPrefix, String sysTagValue)}
 	 */
 	public static String buildSystemTagString(SystemTags sysTagPrefix, Integer sysTagValue) {
 		return buildSystemTagString(sysTagPrefix, String.valueOf(sysTagValue));
@@ -48,17 +49,17 @@ public class SystemTagsUtil {
 	
 	/**
 	 * Parses a given string for system tags; first, the input strins is tokenized by
-	 * the given delimiter (delimi), then for each token it checked whether the token
+	 * the given delimiter (delim), then for each token it checked whether the token
 	 * is a system tag
 	 * 
 	 * @param search -
 	 * 			a string to be searched for system tags
 	 * @param delim - 
 	 * 			the delimiter by which the string is to be tokenized
-	 * @return
+	 * @return TODO: improve doc
 	 */
 	public static List<String> extractSystemTagsFromString(String search, String delim) {
-		ArrayList<String> sysTags = new ArrayList<String>();
+		List<String> sysTags = new ArrayList<String>();
 		if (search == null) return sysTags;
 		
 		String[] sysTagParts;
@@ -75,13 +76,12 @@ public class SystemTagsUtil {
 						SystemTags.getSystemTag(sysTagParts[1].trim());
 						// if yes -> add to list (exception is thrown otherwise)
 						sysTags.add(s);
-					}
-					catch (UnsupportedSystemTagException ex) {
+					} catch (UnsupportedSystemTagException ex) {
 						// do nothing - there is no system tag like this in this case
 					}
-				} // end if				
-			} // end if
-		} // end for
+				} 		
+			}
+		}
 		
 		return sysTags;
 	}
@@ -99,11 +99,9 @@ public class SystemTagsUtil {
 		return action.lookingAt();
 	}
 	
-	//------------------------------------------------------------------------
-	// helpers
-	//------------------------------------------------------------------------
 	/**
 	 * Extract system tag's argument.
+	 * @param tagName the system tag string
 	 * @return tag's argument, if found.
 	 */
 	public static String extractArgument(String tagName) {
@@ -115,6 +113,7 @@ public class SystemTagsUtil {
 
 	/**
 	 * Extract system tag's name.
+	 * @param tagName the system tag string
 	 * @return tag's name, if found, null otherwise.
 	 */
 	public static String extractName(final String tagName) {
@@ -123,10 +122,13 @@ public class SystemTagsUtil {
 			return action.group(2);
 		return null;
 	}	
-	
 
-
-
+	/**
+	 * TODO: improve doc
+	 * @param sTag
+	 * @param attributeName
+	 * @return TODO
+	 */
 	public static String getAttributeValue(final SystemTagType sTag, final String attributeName) {
 		for (final Attribute attribute : sTag.getAttribute()) {
 			if (attribute.getName().equals(attributeName)) {
@@ -142,7 +144,7 @@ public class SystemTagsUtil {
 	 * system:&lt;name&gt;:&lt;argument&gt; and &lt;name&gt;:&lt;argument&gt;
 	 * 
 	 * @param tags collection of tags to alter 
-	 * @param the system tag to be removed. 
+	 * @param systemTag the system tag to be removed. 
 	 * @return number of occurrences removed.
 	 */
 	public static int removeSystemTag(final Set<Tag> tags, final SystemTag systemTag) {
@@ -158,6 +160,4 @@ public class SystemTagsUtil {
 		}
 		return nr;
 	}
-	
-	 
 }
