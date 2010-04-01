@@ -27,6 +27,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -90,16 +91,16 @@ public class RestLogic implements LogicInterface {
 		this.authUser = new User(username);
 	}
 
-	private <T> T execute(AbstractQuery<T> query) {
+	private <T> T execute(final AbstractQuery<T> query) {
 		try {
 			bibsonomy.executeQuery(query);
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "unable to execute " + query.toString());
 		}
 		return query.getResult();
 	}
 
-	public void addUserToGroup(String groupName, String userName) {
+	public void addUserToGroup(final String groupName, final String userName) {
 		// TODO: only the username is used, but a whole user object is
 		// transmitted, so a dummy with only username is used here.
 		// -> This could lead to future problems
@@ -108,11 +109,11 @@ public class RestLogic implements LogicInterface {
 		execute(new AddUserToGroupQuery(groupName, dummyUserObject));
 	}
 
-	public void deleteGroup(String groupName) {
+	public void deleteGroup(final String groupName) {
 		execute(new DeleteGroupQuery(groupName));
 	}
 
-	public void deletePosts(String userName, List<String> resourceHashes) {
+	public void deletePosts(final String userName, final List<String> resourceHashes) {
 		/* 
 		 * FIXME: this iteration should be done on the server, i.e., DeletePostQuery should 
 		 * support several posts ... although it's probably not so simple.
@@ -122,7 +123,7 @@ public class RestLogic implements LogicInterface {
 		}
 	}
 
-	public void deleteUser(String userName) {
+	public void deleteUser(final String userName) {
 		execute(new DeleteUserQuery(userName));
 	}
 
@@ -130,20 +131,20 @@ public class RestLogic implements LogicInterface {
 		return this.authUser;
 	}
 
-	public Group getGroupDetails(String groupName) {
+	public Group getGroupDetails(final String groupName) {
 		return execute(new GetGroupDetailsQuery(groupName));
 	}
 
-	public List<Group> getGroups(int start, int end) {
+	public List<Group> getGroups(final int start, final int end) {
 		return execute(new GetGroupListQuery(start, end));
 	}
 
-	public Post<? extends Resource> getPostDetails(String resourceHash, String userName) {
+	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) {
 		return execute(new GetPostDetailsQuery(userName, resourceHash));
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Resource> List<Post<T>> getPosts(Class<T> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search) {
+	public <T extends Resource> List<Post<T>> getPosts(final Class<T> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		// TODO: clientside chain of responsibility
 		final GetPostsQuery query = new GetPostsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
@@ -153,42 +154,42 @@ public class RestLogic implements LogicInterface {
 		return (List) execute(query);
 	}
 
-	public Tag getTagDetails(String tagName) {
+	public Tag getTagDetails(final String tagName) {
 		return execute(new GetTagDetailsQuery(tagName));
 	}
 
-	public List<Tag> getTags(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, String hash, Order order, int start, int end, String search, TagSimilarity relation) {
-		GetTagsQuery query = new GetTagsQuery(start, end);
+	public List<Tag> getTags(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final String hash, final Order order, final int start, final int end, final String search, final TagSimilarity relation) {
+		final GetTagsQuery query = new GetTagsQuery(start, end);
 		query.setGrouping(grouping, groupingName);
 		query.setFilter(regex);
 		return execute(query);
 	}
 
-	public User getUserDetails(String userName) {
+	public User getUserDetails(final String userName) {
 		return execute(new GetUserDetailsQuery(userName));
 	}
 
-	public void deleteUserFromGroup(String groupName, String userName) {
+	public void deleteUserFromGroup(final String groupName, final String userName) {
 		execute(new RemoveUserFromGroupQuery(userName, groupName));
 	}
 
-	public String createGroup(Group group) {
+	public String createGroup(final Group group) {
 		return execute(new CreateGroupQuery(group));
 	}
 
-	public List<String> createPosts(List<Post<?>> posts) {
+	public List<String> createPosts(final List<Post<?>> posts) {
 		/* 
 		 * FIXME: this iteration should be done on the server, i.e., CreatePostQuery should 
 		 * support several posts ... although it's probably not so simple.
 		 */ 
 		final List<String> resourceHashes = new LinkedList<String>();
-		for (Post<?> post: posts) {
+		for (final Post<?> post: posts) {
 			resourceHashes.add(execute(new CreatePostQuery(this.authUser.getName(), post)));
 		}
 		return resourceHashes;
 	}
 
-	public String createUser(User user) {
+	public String createUser(final User user) {
 		return execute(new CreateUserQuery(user));
 	}
 
@@ -197,25 +198,25 @@ public class RestLogic implements LogicInterface {
 		return execute(new ChangeGroupQuery(group.getName(), group));
 	}
 
-	public List<String> updatePosts(List<Post<?>> posts, PostUpdateOperation operation) {
+	public List<String> updatePosts(final List<Post<?>> posts, final PostUpdateOperation operation) {
 		/* 
 		 * FIXME: this iteration should be done on the server, i.e., CreatePostQuery should 
 		 * support several posts ... although it's probably not so simple.
 		 */ 
 		final List<String> resourceHashes = new LinkedList<String>();
-		for (Post<?> post: posts) {
+		for (final Post<?> post: posts) {
 			// hashes are recalculated by the server
 			resourceHashes.add(execute(new ChangePostQuery(this.authUser.getName(), post.getResource().getIntraHash(), post)));
 		}
 		return resourceHashes;
 	}
 
-	public String updateUser(User user, final UserUpdateOperation operation) {
+	public String updateUser(final User user, final UserUpdateOperation operation) {
 		// accounts cannot be renamed
 		return execute(new ChangeUserQuery(user.getName(), user));
 	}
 
-	public String createDocument(Document doc, String resourceHash) {
+	public String createDocument(final Document doc, final String resourceHash) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -230,67 +231,57 @@ public class RestLogic implements LogicInterface {
 		return null;
 	}
 
-	public void deleteDocument(Document document, String resourceHash) {
+	public void deleteDocument(final Document document, final String resourceHash) {
 		// TODO Auto-generated method stub
 
 	}	
 
-	public void createInetAddressStatus(InetAddress address, InetAddressStatus status) {
+	public void createInetAddressStatus(final InetAddress address, final InetAddressStatus status) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void deleteInetAdressStatus(InetAddress address) {
+	public void deleteInetAdressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public InetAddressStatus getInetAddressStatus(InetAddress address) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public int getStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, StatisticsConstraint constraint, String search, List<String> tags) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public List<Tag> getConcepts(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
+	public InetAddressStatus getInetAddressStatus(final InetAddress address) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public String createConcept(Tag concept, GroupingEntity grouping, String groupingName) {
+	public List<Tag> getConcepts(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void deleteConcept(Tag concept, GroupingEntity grouping, String groupingName) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public String updateConcept(Tag concept, GroupingEntity grouping, String groupingName, final ConceptUpdateOperation operation) {
+	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void deleteConcept(String concept, GroupingEntity grouping, String groupingName) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void deleteRelation(String upper, String lower, GroupingEntity grouping, String groupingName) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public Tag getConceptDetails(String conceptName, GroupingEntity grouping, String groupingName) {
+	public String updateConcept(final Tag concept, final GroupingEntity grouping, final String groupingName, final ConceptUpdateOperation operation) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<User> getUsers(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, UserRelation relation, String search, int start, int end) {
+	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<User> getUsers(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final UserRelation relation, final String search, final int start, final int end) {
 		// here we just simulate two possible answers of the user chain
 		if (GroupingEntity.ALL.equals(grouping)) {
 			return execute(new GetUserListQuery(start, end));
@@ -302,41 +293,41 @@ public class RestLogic implements LogicInterface {
 		return null;
 	}	
 
-	public String getClassifierSettings(ClassifierSettings key) {
+	public String getClassifierSettings(final ClassifierSettings key) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void updateClassifierSettings(ClassifierSettings key, String value) {
+	public void updateClassifierSettings(final ClassifierSettings key, final String value) {
 		// TODO Auto-generated method stub
 	}
 
-	public int getClassifiedUserCount(Classifier classifier, SpamStatus status, int interval) {
+	public int getClassifiedUserCount(final Classifier classifier, final SpamStatus status, final int interval) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public List<User> getClassifiedUsers(Classifier classifier, SpamStatus status, int limit) {
+	public List<User> getClassifiedUsers(final Classifier classifier, final SpamStatus status, final int limit) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<User> getClassifierHistory(String userName) {
+	public List<User> getClassifierHistory(final String userName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<User> getClassifierComparison(int interval) {
+	public List<User> getClassifierComparison(final int interval) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public int getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint) {
+	public int getPostStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search, final StatisticsConstraint constraint) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	public String getOpenIDUser(String openID) {
+	public String getOpenIDUser(final String openID) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -345,66 +336,78 @@ public class RestLogic implements LogicInterface {
 		return 0;
 	}
 
-	public int getTagStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, String regex, List<String> tags, ConceptStatus status, int start, int end) {
+	public int getTagStatistics(final Class<? extends Resource> resourceType, final GroupingEntity grouping, final String groupingName, final String regex, final List<String> tags, final ConceptStatus status, final int start, final int end) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 
-	public List<User> getFriendsOfUser(User loginUser) {
+	public List<User> getFriendsOfUser(final User loginUser) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<User> getUserFriends(User loginUser) {
+	public List<User> getUserFriends(final User loginUser) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public List<Author> getAuthors(GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search) {
+	public List<Author> getAuthors(final GroupingEntity grouping, final String groupingName, final List<String> tags, final String hash, final Order order, final FilterEntity filter, final int start, final int end, final String search) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void deleteUserRelationship(String sourceUser, String targetUser, UserRelation relation) {
+	public void deleteUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void createUserRelationship(String sourceUser, String targetUser, UserRelation relation) {
+	public void createUserRelationship(final String sourceUser, final String targetUser, final UserRelation relation) {
 		// TODO Auto-generated method stub
 		
 	}
 	
 	@Override
-	public List<User> getUserRelationship(String sourceUser, UserRelation relation) {
+	public List<User> getUserRelationship(final String sourceUser, final UserRelation relation) {
 		// TODO Auto_generated method stub
 		return new ArrayList<User>();
 	}
 
 	@Override
-	public int createBasketItems(List<Post<? extends Resource>> posts) {
+	public int createBasketItems(final List<Post<? extends Resource>> posts) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int deleteBasketItems(List<Post<? extends Resource>> posts, boolean clearAll) {
+	public int deleteBasketItems(final List<Post<? extends Resource>> posts, final boolean clearAll) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 	
-	public int deleteInboxMessages(List<Post<? extends Resource>> posts, final boolean clearInbox) {
+	public int deleteInboxMessages(final List<Post<? extends Resource>> posts, final boolean clearInbox) {
 	// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public String getUsernameByLdapUserId(String userId) {
+	public String getUsernameByLdapUserId(final String userId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void createReferences(final String postHash, final Set<String> references) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteReferences(final String postHash, final Set<String> references) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
