@@ -22,6 +22,7 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  */
 public class PrivlevelTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
+	@Override
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
 			setter.setInt(Privlevel.MEMBERS.getPrivlevel());
@@ -31,6 +32,7 @@ public class PrivlevelTypeHandlerCallback extends AbstractTypeHandlerCallback {
 		}
 	}
 
+	@Override
 	public Object valueOf(final String str) {
 		try {
 			return Privlevel.getPrivlevel(Integer.parseInt(str));

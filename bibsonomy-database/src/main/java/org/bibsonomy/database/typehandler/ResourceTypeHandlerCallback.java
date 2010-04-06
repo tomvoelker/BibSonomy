@@ -25,6 +25,7 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  */
 public class ResourceTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
+	@Override
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
 			throw new IllegalArgumentException("given resource is null");		
@@ -38,6 +39,7 @@ public class ResourceTypeHandlerCallback extends AbstractTypeHandlerCallback {
 		}
 	}
 
+	@Override
 	public Object valueOf(final String str) {
 		try {
 			final int value = Integer.parseInt(str);

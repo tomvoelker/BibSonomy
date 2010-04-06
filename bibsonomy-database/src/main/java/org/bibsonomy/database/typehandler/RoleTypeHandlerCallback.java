@@ -22,6 +22,7 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  */
 public class RoleTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
+	@Override
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
 			setter.setInt(Role.DEFAULT.getRole());
@@ -31,6 +32,7 @@ public class RoleTypeHandlerCallback extends AbstractTypeHandlerCallback {
 		}
 	}
 
+	@Override
 	public Object valueOf(final String str) {
 		try {
 			return Role.getRole(str);

@@ -23,6 +23,7 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  */
 public class InetAddressStatusTypeHandlerCallback extends AbstractTypeHandlerCallback {
 
+	@Override
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
 			setter.setInt(InetAddressStatus.UNKNOWN.getInetAddressStatus());
@@ -32,6 +33,7 @@ public class InetAddressStatusTypeHandlerCallback extends AbstractTypeHandlerCal
 		}
 	}
 
+	@Override
 	public Object valueOf(final String str) {
 		try {
 			return InetAddressStatus.getInetAddressStatus(str);

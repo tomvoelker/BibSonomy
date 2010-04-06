@@ -20,6 +20,7 @@ public abstract class AbstractTypeHandlerCallback implements TypeHandlerCallback
 	 * (non-Javadoc)
 	 * @see com.ibatis.sqlmap.client.extensions.TypeHandlerCallback#getResult(com.ibatis.sqlmap.client.extensions.ResultGetter)
 	 */
+	@Override
 	public Object getResult(final ResultGetter getter) throws SQLException {
 		final String value = getter.getString();
 		

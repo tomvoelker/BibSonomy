@@ -27,6 +27,7 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 public class InetAddressTypeHandlerCallback extends AbstractTypeHandlerCallback {
 	private static final Log log = LogFactory.getLog(InetAddressTypeHandlerCallback.class);
 
+	@Override
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
 			setter.setNull(Types.CHAR);
@@ -36,6 +37,7 @@ public class InetAddressTypeHandlerCallback extends AbstractTypeHandlerCallback 
 		}
 	}
 
+	@Override
 	public Object valueOf(final String str) {
 		try {
 			return InetAddress.getByName(str);

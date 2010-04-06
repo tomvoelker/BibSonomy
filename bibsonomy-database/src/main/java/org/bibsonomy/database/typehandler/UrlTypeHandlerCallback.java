@@ -24,9 +24,9 @@ import com.ibatis.sqlmap.client.extensions.ParameterSetter;
  * @version $Id$
  */
 public class UrlTypeHandlerCallback extends AbstractTypeHandlerCallback {
-
 	private static final Log log = LogFactory.getLog(UrlTypeHandlerCallback.class);
 
+	@Override
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
 			setter.setNull(Types.VARCHAR);
@@ -37,6 +37,7 @@ public class UrlTypeHandlerCallback extends AbstractTypeHandlerCallback {
 		}
 	}
 
+	@Override
 	public Object valueOf(final String str) {
 		try {
 			return new URL(str);
