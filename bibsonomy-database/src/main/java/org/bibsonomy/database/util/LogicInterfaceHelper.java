@@ -198,6 +198,7 @@ public class LogicInterfaceHelper {
 		return param;
 	}
 
+	@SuppressWarnings("deprecation") // TODO: lucene can't handle system tags
 	private static boolean handleSystemTag(String tag, GenericParam param) {
 		logger.debug("working on possible system tag " + tag);
 		String tagName;
@@ -277,6 +278,8 @@ public class LogicInterfaceHelper {
 				return true;
 			}
 			
+			final BibTexParam bibTexParam = (BibTexParam) param;
+			
 			// TODO: factory!!
 			final YearSystemTag yearTag = new YearSystemTag();
 			yearTag.setName("Year");
@@ -285,7 +288,7 @@ public class LogicInterfaceHelper {
 			// 1st case: year explicitly given
             if (tagValue.matches("[12]{1}[0-9]{3}")) {
             	yearTag.setYear(tagValue);
-            	((BibTexParam) param).setYear(tagValue);
+            	bibTexParam.setYear(tagValue); // TODO: lucene can't handle system tags
             	logger.debug("Set year to " + tagValue + " after matching year system tag");
             	return true;
             } 
@@ -294,22 +297,22 @@ public class LogicInterfaceHelper {
                 String[] years = tagValue.split("-");
                 yearTag.setFirstYear(years[0]);
                 yearTag.setLastYear(years[1]);
-                ((BibTexParam) param).setFirstYear(tagValue);
-                ((BibTexParam) param).setLastYear(tagValue);
+                bibTexParam.setFirstYear(tagValue); // TODO: lucene can't handle system tags
+                bibTexParam.setLastYear(tagValue); // TODO: lucene can't handle system tags
             	logger.debug("Set firstyear/lastyear to " + years[0] + "/" + years[1] + "after matching year system tag");
             	return true;
             }
             // 3rd case: upper bound (e.g -2005) means all years before 2005 
             else if(tagValue.matches("-[12]{1}[0-9]{3}")) {
             	yearTag.setLastYear(tagValue.substring(1,tagValue.length()));
-            	((BibTexParam) param).setLastYear(tagValue.substring(1,tagValue.length()));
+            	bibTexParam.setLastYear(tagValue.substring(1,tagValue.length())); // TODO: lucene can't handle system tags
             	logger.debug("Set lastyear to " + tagValue + "after matching year system tag");
             	return true;
             }
             // 4th case: lower bound (e.g 1998-) means all years since 1998 
             else if(tagValue.matches("[12]{1}[0-9]{3}-")) {
             	yearTag.setFirstYear(tagValue.substring(0,tagValue.length()-1));
-            	((BibTexParam) param).setFirstYear(tagValue.substring(0,tagValue.length()-1));
+            	bibTexParam.setFirstYear(tagValue.substring(0,tagValue.length()-1)); // TODO: lucene can't handle system tags
             	logger.debug("Set firstyear to " + tagValue + "after matching year system tag");
             	return true;            	
             }			
