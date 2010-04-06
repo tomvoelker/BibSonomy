@@ -13,6 +13,7 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
@@ -25,11 +26,12 @@ import org.bibsonomy.model.Resource;
 /**
  * Used to create, read, update and delete gold standard posts from the database
  * 
- * @author dzo
- * @version $Id$
  * @param <RR> the resource class of the reference class of <R>
  * @param <R> the resource class that is managed by this class
  * @param <P> 
+ * 
+ * @author dzo
+ * @version $Id$
  */
 public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends Resource & GoldStandard<RR>, P extends GenericParam> extends AbstractDatabaseManager implements CrudableContent<R, P> {
 	private static final Log log = LogFactory.getLog(GoldStandardDatabaseManager.class);
@@ -129,10 +131,14 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	public boolean updatePost(final Post<R> post, final String oldHash, final PostUpdateOperation operation, final DBSession session) {
 		session.beginTransaction();
 		try {
+			
 			/*
 			 * the current interhash of the resource
 			 */
-			final String resourceHash = post.getResource().getInterHash();
+			final R resource = post.getResource();
+			resource.recalculateHashes();
+			
+			final String resourceHash = resource.getInterHash();
 			/*
 			 * the resource with the "old" interhash, that was sent
 			 * within the update resource request
@@ -145,7 +151,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				 * check if post to update is in db
 				 */
 				if (!present(oldPost)) {
-					final String hash = post.getResource().getInterHash();
+					final String hash = resource.getInterHash();
 					/*
 					 * not found -> throw exception
 					 * 
@@ -245,7 +251,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			final Post<R> post = this.getGoldStandardPostByHash(interHash, session);
 			if (!present(post)) {
 				log.debug("gold standard post with interhash '" + interHash + "'  not found");
-				return;
+				throw new ResourceNotFoundException(interHash);
 			}
 			
 			final GoldStandardReferenceParam param = this.createParam(post);
