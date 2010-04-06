@@ -230,9 +230,9 @@ public class JabRefModelConverter {
 
 			// set all known properties of the BibTex
 			for (final PropertyDescriptor pd : descriptors)
-				if (ValidationUtils.present(entry.getField((pd.getName())))
-						&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(pd.getName())) {
-					pd.getWriteMethod().invoke(bibtex, entry.getField(pd.getName()));
+				if (ValidationUtils.present(entry.getField((pd.getName().toLowerCase())))
+						&& !JabRefModelConverter.EXCLUDE_FIELDS.contains(pd.getName().toLowerCase())) {
+					pd.getWriteMethod().invoke(bibtex, entry.getField(pd.getName().toLowerCase()));
 					knownFields.add(pd.getName());
 				}
 
