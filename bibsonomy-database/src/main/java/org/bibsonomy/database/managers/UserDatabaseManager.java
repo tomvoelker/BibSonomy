@@ -411,6 +411,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		for (final Group group: groups){
 			groupDBManager.removeUserFromGroup(group.getName(), userName, session);
 		}
+		/*
+		 * FIXME: we must remove the user's open ID from the corresponding table, 
+		 * otherwise a new registration with that ID is not possible.
+		 */
+		
+		
 		
 		/*
 		 * flag user as spammer & all his posts as spam
