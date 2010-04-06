@@ -17,11 +17,10 @@ public abstract class AbstractContextTest {
 	protected InputStream is;
 
 	/**
-	 * If you override this method, remember to make a call to this method
-	 * (super.setUp()) to make sure that this code is executed too.
+	 * sets up the logic
 	 */
 	@Before
-	public void setUp() {
+	public final void setUp() {
 		this.db = TestDBLogic.factory.getLogicAccess(this.getClass().getSimpleName(), "apiKey");
 		this.is = new ByteArrayInputStream("".getBytes());
 	}
