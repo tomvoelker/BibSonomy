@@ -83,7 +83,7 @@ public final class RestServlet extends HttpServlet {
 			try {
 				final Class<?> logicFactoryClass = this.getClass().getClassLoader().loadClass(logicFactoryClassName);
 				logicFactoryObj = logicFactoryClass.newInstance();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				throw new ServletException("problem while instantiating " + logicFactoryClassName, e);
 			}			
 			if (logicFactoryObj instanceof LogicInterfaceFactory) {
@@ -93,9 +93,8 @@ public final class RestServlet extends HttpServlet {
 			}
 			log.info("using logicFactoryClass '" + logicFactoryClassName + "'");
 		} else {
-			final String errorMsg = "no 'logicFactoryClass' initParameter -> using default";
-			log.info(errorMsg);
-			DBLogicApiInterfaceFactory logicFactory = new DBLogicApiInterfaceFactory();
+			log.info("no 'logicFactoryClass' initParameter -> using default");
+			final DBLogicApiInterfaceFactory logicFactory = new DBLogicApiInterfaceFactory();
 			logicFactory.setDbSessionFactory(new IbatisDBSessionFactory());
 			this.logicFactory = logicFactory;
 		}
@@ -106,7 +105,7 @@ public final class RestServlet extends HttpServlet {
 	 * 
 	 * FIXME: could be removed if we would use a DI-Framework
 	 */
-	void setLogicInterface(LogicInterfaceFactory logicInterfaceFactory) {
+	void setLogicInterface(final LogicInterfaceFactory logicInterfaceFactory) {
 		this.logicFactory = logicInterfaceFactory;
 	}
 
@@ -167,16 +166,15 @@ public final class RestServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	private void handle(final HttpServletRequest request, final HttpServletResponse response, final HttpMethod method) throws IOException {
-
 		log.debug("Incoming Request: " + method.name() + " " + request.getRequestURL() + " from IP " + request.getHeader("x-forwarded-for"));
-		Long start = System.currentTimeMillis();
+		final long start = System.currentTimeMillis();
 
 		try {
 			// validate the requesting user's authorization
 			final LogicInterface logic = validateAuthorization(request.getHeader("Authorization"));
 			
 			// parse the request object to retrieve a list with all items of the http request
-			MultiPartRequestParser parser = new MultiPartRequestParser(request);
+			final MultiPartRequestParser parser = new MultiPartRequestParser(request);
 			
 			// create Context
 			final Context context = new Context(request.getInputStream(), logic, method, request.getPathInfo(), request.getParameterMap(), parser.getList(), additionalInfos);
@@ -208,7 +206,7 @@ public final class RestServlet extends HttpServlet {
 			
 			// some more logging
 			log.debug("Size of output sent:" + cachingStream.size());
-			Long elapsed = System.currentTimeMillis() - start;
+			final long elapsed = System.currentTimeMillis() - start;
 			log.debug("Processing time: " + elapsed + " ms");
 			
 
@@ -241,8 +239,8 @@ public final class RestServlet extends HttpServlet {
 			 */
 			response.setHeader("Location", UrlRenderer.getInstance().createHrefForResource(e.getUserName(), e.getNewIntraHash()));
 			sendError(request, response, HttpServletResponse.SC_MOVED_PERMANENTLY, e.getMessage());
-		} catch (final DatabaseException e ) {
-			final StringBuffer returnMessage = new StringBuffer("");
+		} catch (final DatabaseException e) {
+			final StringBuilder returnMessage = new StringBuilder("");
 			for (final String hash: e.getErrorMessages().keySet()) {
 				for (final ErrorMessage em: e.getErrorMessages(hash)) {
 					log.error(em.toString());
@@ -250,8 +248,8 @@ public final class RestServlet extends HttpServlet {
 				}
 			}
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, returnMessage.toString());
-		}
-		catch (final Exception e) {
+			
+		} catch (final Exception e) {
 			log.error(e,e);
 			// well, lets fetch each and every error...
 			sendError(request, response, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
@@ -278,7 +276,7 @@ public final class RestServlet extends HttpServlet {
 		try { 
 			renderingFormat = RenderingFormat.getRenderingFormat(renderingFormatName);
 		}
-		catch (Exception ex) {
+		catch (final Exception ex) {
 			renderingFormat = RenderingFormat.XML;
 		}
 		final Renderer renderer = RendererFactory.getRenderer(renderingFormat);
@@ -298,7 +296,7 @@ public final class RestServlet extends HttpServlet {
 	 *            Authentication-value of the header's request
 	 * @throws IOException
 	 */
-	LogicInterface validateAuthorization(final String authentication) throws AuthenticationException {
+	protected LogicInterface validateAuthorization(final String authentication) throws AuthenticationException {
 		if (authentication == null || !authentication.startsWith(HTTP_AUTH_BASIC_IDENTIFIER)) {
 			throw new AuthenticationException("Please authenticate yourself.");
 		}
@@ -321,7 +319,7 @@ public final class RestServlet extends HttpServlet {
 		log.debug("Username/API-key: " + username + " / " + apiKey);
 		try {
 			return logicFactory.getLogicAccess(username, apiKey);
-		} catch (ValidationException ve) {
+		} catch (final ValidationException ve) {
 			throw new AuthenticationException("Authentication failure: " + ve.getMessage());
 		}
 	}

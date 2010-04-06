@@ -45,6 +45,7 @@ public class GetPostDocumentStrategy extends Strategy{
 	
 	@Override
 	public void validate() throws ValidationException {
+		// TODO: this check is also done by dblogic
 		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new ValidationException("You are not authorized to perform the requested operation");
 	}
 	
@@ -56,7 +57,7 @@ public class GetPostDocumentStrategy extends Strategy{
 		
 		try {
 			// get the bufferedstream of the file
-			FileDownloadInterface download = new HandleFileDownload(additionalInfos.get("docPath"), doc.getFileHash());
+			final FileDownloadInterface download = new HandleFileDownload(additionalInfos.get("docPath"), doc.getFileHash());
 			buf = download.getBuf();
 			
 			// write the bytes of the file to the writer
@@ -66,9 +67,9 @@ public class GetPostDocumentStrategy extends Strategy{
 			}
 			
 			buf.close();
-		} catch (FileNotFoundException ex) {
+		} catch (final FileNotFoundException ex) {
 			throw new BadRequestOrResponseException("The requested file doesn't exists");
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new BadRequestOrResponseException("Can't write the file");
 		}
 	}

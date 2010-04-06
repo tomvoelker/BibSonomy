@@ -45,14 +45,14 @@ public class GetUserConceptsStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
 		writer = new EscapingPrintWriter(outStream);
-		List<Tag> concepts = this.getLogic().getConcepts(resourceType, GroupingEntity.USER, userName, regex, tags, status, 0, Integer.MAX_VALUE);
+		final List<Tag> concepts = this.getLogic().getConcepts(resourceType, GroupingEntity.USER, userName, regex, tags, status, 0, Integer.MAX_VALUE);
 		this.getRenderer().serializeTags(writer, concepts, new ViewModel());			
 	}
 	
 	@Override
 	protected String getContentType() {
 		return "tags";
-	}	
+	}
 }

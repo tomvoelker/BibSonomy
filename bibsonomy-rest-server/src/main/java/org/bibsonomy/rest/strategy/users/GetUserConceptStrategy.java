@@ -29,7 +29,7 @@ public class GetUserConceptStrategy extends Strategy {
 	 * @param conceptName - the name of the supertag to retrieve the subtags for
 	 * @param userName - the owner of the concept
 	 */
-	public GetUserConceptStrategy(Context context, String conceptName, String userName) {
+	public GetUserConceptStrategy(final Context context, final String conceptName, final String userName) {
 		super(context);
 		this.conceptName = conceptName;
 		this.userName = userName;
@@ -38,7 +38,7 @@ public class GetUserConceptStrategy extends Strategy {
 	@Override
 	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
 		writer = new EscapingPrintWriter(outStream);
-		Tag concept = this.getLogic().getConceptDetails(this.conceptName, GroupingEntity.USER, userName);
+		final Tag concept = this.getLogic().getConceptDetails(this.conceptName, GroupingEntity.USER, userName);
 		if (concept == null) {
 			throw new NoSuchResourceException("The requested concept '" + conceptName + "' does not exist for user '" + userName + "'.");
 		}		

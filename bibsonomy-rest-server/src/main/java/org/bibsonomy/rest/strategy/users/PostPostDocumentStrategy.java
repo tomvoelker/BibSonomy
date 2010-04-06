@@ -17,8 +17,8 @@ import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 /**
  * Handle the request to post a document
  * 
- * @version $Id$
  * @author Christian Kramer
+ * @version $Id$
  */
 public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 	private final String userName;
@@ -27,7 +27,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 	private final String projectHome;
 	private String uri;
 	
-	private FileUploadFactory fileUploadFactory;
+	private final FileUploadFactory fileUploadFactory;
 	
 	/**
 	 * @param context
@@ -47,12 +47,12 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 	
 	@Override
 	public void validate() throws ValidationException {
+		// TODO: this check is also done by the dblogic
 		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new ValidationException("You are not authorized to perform the requested operation");
 	}
 
 	@Override
 	protected String create() {
-		
 		final FileUploadInterface up = fileUploadFactory.getFileUploadHandler(this.items, HandleFileUpload.fileUploadExt);
 		
 		try {
@@ -69,14 +69,13 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 			
 			return uri;
 			
-		} catch (Exception ex) {
-			// TODO Auto-generated catch block
+		} catch (final Exception ex) {
 			throw new BadRequestOrResponseException(ex.getMessage());
 		}
 	}
 
 	@Override
-	protected void render(Writer writer, String uri) {
+	protected void render(final Writer writer, final String uri) {
 		this.getRenderer().serializeURI(writer, uri);
 	}
 

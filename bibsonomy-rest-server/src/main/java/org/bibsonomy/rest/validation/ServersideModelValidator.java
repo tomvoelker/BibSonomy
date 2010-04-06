@@ -4,8 +4,6 @@ import org.bibsonomy.bibtex.util.BibtexParserUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.BibTexUtils;
 
-import org.bibsonomy.rest.validation.ModelValidator;
-
 /**
  * Validates the given model.
  * 
@@ -16,8 +14,7 @@ public class ServersideModelValidator implements ModelValidator {
 
 	private static ServersideModelValidator modelValidator;
 
-	private ServersideModelValidator() {
-	}
+	private ServersideModelValidator() {}
 
 	/** Get an instance of this model validator
 	 * 
@@ -30,10 +27,14 @@ public class ServersideModelValidator implements ModelValidator {
 		return ServersideModelValidator.modelValidator;
 	}
 
-
+	
 	public void checkPublication(final BibTex publication) {
 		// parse Bibtex so see whether the entry is valid
-		final BibtexParserUtils bibutil = new BibtexParserUtils( BibTexUtils.toBibtexString(publication) );						
+		final BibtexParserUtils bibutil = new BibtexParserUtils( BibTexUtils.toBibtexString(publication) );	
+		
+		/*
+		 * FIXME: validator is modifying the publication
+		 */
 		publication.setAuthor( bibutil.getFormattedAuthorString() );
 		publication.setEditor( bibutil.getFormattedEditorString() );
 	}

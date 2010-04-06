@@ -52,6 +52,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 
 	@Override
 	public void validate() throws ValidationException {
+		// TODO: this check is also done by dblogic
 		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new ValidationException("You are not authorized to perform the requested operation++");
 	}
 
@@ -61,7 +62,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 	}
 
 	@Override
-	protected void render(Writer writer, String newResourceHash) {
+	protected void render(final Writer writer, final String newResourceHash) {
 		this.getRenderer().serializeResourceHash(writer, newResourceHash);		
 	}
 
@@ -84,31 +85,31 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 		catch ( ResourceNotFoundException ex ) {
 			throw new NoSuchResourceException(ex.getMessage());
 		}*/		
-		catch ( DatabaseException de ) {
-			for (String hash: de.getErrorMessages().keySet()) {
-				for (ErrorMessage em: de.getErrorMessages(hash)) {
-					if (em instanceof DuplicatePostErrorMessage ) {
+		catch (final DatabaseException de) {
+			for (final String hash: de.getErrorMessages().keySet()) {
+				for (final ErrorMessage em: de.getErrorMessages(hash)) {
+					if (em instanceof DuplicatePostErrorMessage) {
 						// duplicate post detected => handle this
 						// before this would have been an IllegalArgumentException
 						throw new BadRequestOrResponseException(em.toString());
 					}
-					if ( em instanceof UpdatePostErrorMessage ) {
+					if (em instanceof UpdatePostErrorMessage) {
 						// a non-existing post was tried to be updated
 						// this used to cause an ResourceNotFoundException
 						throw new NoSuchResourceException(em.toString());
 					}
-					if ( em instanceof IdenticalHashErrorMessage ) {
+					if (em instanceof IdenticalHashErrorMessage) {
 						// the new post would have the same hash as an old one
 						// this used to cause an IllegalArgumentException
 						throw new BadRequestOrResponseException(em.toString());
 					}
-					if (em instanceof MissingFieldErrorMessage ) {
+					if (em instanceof MissingFieldErrorMessage) {
 						// some compulsory field of the post was missing
 						// this used to cause an InvalidModelException
 						throw new BadRequestOrResponseException(em.toString());
 					}
 					if (em instanceof UnspecifiedErrorMessage) {
-						Exception ex = ((UnspecifiedErrorMessage)em).getException();
+						final Exception ex = ((UnspecifiedErrorMessage)em).getException();
 						if (present(ex)) {
 							if (ex instanceof InvalidModelException) {
 								throw new BadRequestOrResponseException(ex.getMessage());
@@ -133,7 +134,7 @@ public class PutPostStrategy extends AbstractUpdateStrategy {
 		/*
 		 * set postingdate to current time
 		 */
-		post.setDate(new Date(System.currentTimeMillis()));				
+		post.setDate(new Date());				
 		/*
 		 * set the (old) intrahash of the resource as specified in the URL
 		 */

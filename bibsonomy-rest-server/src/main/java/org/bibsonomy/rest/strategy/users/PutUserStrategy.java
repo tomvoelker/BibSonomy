@@ -31,6 +31,7 @@ public class PutUserStrategy extends AbstractUpdateStrategy {
 
 	@Override
 	public void validate() throws ValidationException {
+		// TODO: this check is also done by the DBLogic by calling updateUser @see PutUserStrategy#update()
 		// ensure username equals auth-username (or user is admin)
 		final User authenticatedUser = this.getLogic().getAuthenticatedUser();
 		if (!(this.userName.equals(authenticatedUser.getName()) || Role.ADMIN.equals(authenticatedUser.getRole())))  
@@ -44,7 +45,7 @@ public class PutUserStrategy extends AbstractUpdateStrategy {
 	}
 
 	@Override
-	protected void render(Writer writer, String userID) {
+	protected void render(final Writer writer, final String userID) {
 		this.getRenderer().serializeUserId(writer, userID);
 	}
 
