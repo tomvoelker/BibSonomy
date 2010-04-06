@@ -260,7 +260,6 @@ function getFirstChildByClass(el, className) {
 	}
 	return null;
 }	
-}
 
 /**
  * format the matching part of a string bold
