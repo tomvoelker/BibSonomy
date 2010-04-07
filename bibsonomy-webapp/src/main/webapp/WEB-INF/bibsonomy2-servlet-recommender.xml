@@ -30,7 +30,6 @@
 	    +-->
 	<bean id="multiplexingTagRecommender" class="org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender" init-method="init" scope="singleton">
 	    <property name="queryTimeout" value="1000"/>
-		<property name="distRecommenders" ref="distRecommenderList"/>
 		<property name="localRecommenders" ref="localRecommenderList"/>
 		<property name="postModifiers" ref="postModifierList"/>
 		<property name="tagModifiers" ref="tagFilterList"/>

@@ -57,7 +57,14 @@ p { margin-bottom: 20px
 }
 
 form[name="recConfig"] select{
-	width: 80px;
+	width: 300px;
+}
+select[name="deletesid"]{
+    width: 500px;
+}
+
+select{
+    font-size: 10px;
 }
 
 * input {
