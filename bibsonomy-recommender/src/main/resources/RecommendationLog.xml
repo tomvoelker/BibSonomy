@@ -49,7 +49,7 @@
 		WHERE rec_id = #id#
 	</select>	
 	
-	<select id="getSettingIdsByStatus" resultClass="integer" parameterClass="integer">
+	<select id="getSettingIdsByStatus" resultClass="long" parameterClass="integer">
 	    SELECT setting_id FROM recommender_status
 	    WHERE status = #status#
 	</select>
@@ -64,15 +64,19 @@
 			   limit #numberOfQueries#)
 			 as t
    </select>
-   <update id="deactivateRecommender" parameterClass="integer">
+   <update id="deactivateRecommender" parameterClass="long">
        UPDATE recommender_status SET status=0 WHERE setting_id=#sid#
    </update>
-   <update id="activateRecommender" parameterClass="integer">
+   <update id="activateRecommender" parameterClass="long">
        UPDATE recommender_status SET status=1 WHERE setting_id=#sid#
    </update>
-   <update id="removeRecommender" parameterClass="integer">
+   <update id="removeRecommender" parameterClass="long">
        UPDATE recommender_status SET status=2 WHERE setting_id=#sid#
    </update>
+   <insert id="createStatusForNewRecommender" parameterClass="long">
+       INSERT INTO recommender_status (setting_id, url, status)
+            values (#settingId#, (SELECT rec_id FROM recommender_settings WHERE setting_id = #settingId#), 1) 
+   </insert>
 	
 	
 	<!-- +

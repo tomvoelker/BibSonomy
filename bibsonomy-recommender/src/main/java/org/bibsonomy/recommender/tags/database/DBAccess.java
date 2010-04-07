@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -582,23 +584,34 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		return (Long)getSqlMapInstance().queryForObject("getAverageLatencyForSettingID", param);
 	}
 	
-	public List<Integer> getActiveRecommenderSettingIds() throws SQLException{
-		return (List<Integer>)getSqlMapInstance().queryForList("getSettingIdsByStatus", 1);
+	public List<Long> getActiveRecommenderSettingIds() throws SQLException{
+		return (List<Long>)getSqlMapInstance().queryForList("getSettingIdsByStatus", 1);
 	}
-	public List<Integer> getDisabledRecommenderSettingIds() throws SQLException{
-		return (List<Integer>)getSqlMapInstance().queryForList("getSettingIdsByStatus", 0);
+	public List<Long> getDisabledRecommenderSettingIds() throws SQLException{
+		return (List<Long>)getSqlMapInstance().queryForList("getSettingIdsByStatus", 0);
+	}
+	public Map<Long, String> getRecommenderIdsForSettingIds(List<Long> sids) throws SQLException{
+		Map<Long, String> resultmap = new TreeMap<Long,String>();
+		for(Long sid: sids)
+			resultmap.put(sid, this.getRecommender(sid).getRecId());
+		return resultmap;
 	}
 	
-	public void updateRecommenderstatus(List<Integer> activeRecs, List<Integer> disabledRecs ) throws SQLException{
+	public void updateRecommenderstatus(List<Long> activeRecs, List<Long> disabledRecs ) throws SQLException{
 		SqlMapClient sqlMap = getSqlMapInstance();
 		
 		if(activeRecs != null)
-		  for(Integer p: activeRecs)
+		  for(Long p: activeRecs)
 		    sqlMap.update("activateRecommender", p);
 		
 		if(disabledRecs != null)
-		  for(Integer p: disabledRecs)
+		  for(Long p: disabledRecs)
 		    sqlMap.update("deactivateRecommender", p);
+	}
+	
+	public void removeRecommender(long sid) throws SQLException{
+		SqlMapClient sqlMap = getSqlMapInstance();
+		sqlMap.update("removeRecommender", sid);
 	}
 	
 	
@@ -739,10 +752,12 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		settingId = (Long) sqlMap.queryForObject(lookupFunction, setting);
 		if( settingId==null ) {
 			log.debug("Given setting not found -> adding new");
-			settingId = (Long) sqlMap.insert("addRecommenderSetting", setting);    			
-			log.debug("Setting added @" + settingId);
+			settingId = (Long) sqlMap.insert("addRecommenderSetting", setting);
+			sqlMap.insert("createStatusForNewRecommender", settingId);    			
+			log.debug("Setting and status added @" + settingId);
 		} else {
-			log.debug("Given setting found in DB at " + settingId);
+			log.debug("Given setting found in DB at " + settingId +" -> setting status to 'active'");
+			sqlMap.update("activateRecommender", settingId);
 		}
 
 		return settingId;
