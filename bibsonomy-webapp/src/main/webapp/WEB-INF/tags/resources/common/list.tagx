@@ -25,11 +25,16 @@
 	
 	<div class="bookbox" id="${listID}">
 	
+		<div class="bboxheader">
+			<c:if test="${!empty listView.list}">
+					<div class="listhButtons">
+						<jsp:invoke fragment="formatButtons"/>
+					</div>
+			</c:if>
+	
+			<h2 class="listh"><fmt:message key="${titleKey}" /></h2>
 		
-		<h2 class="listh"><fmt:message key="${titleKey}" /></h2>
-
-		<c:if test="${!empty listView.list}">
-			
+			<c:if test="${!empty listView.list}">
 				<div class="listh">
 					<c:choose>
 						<c:when test="${listView.totalCount != 0}">
@@ -40,13 +45,13 @@
 							${mtl:ch('nbsp')}
 						</c:otherwise>
 					</c:choose>
-					<span class="listhButtons">
-						<jsp:invoke fragment="formatButtons"/>
-					</span>
 				</div>
-			
-				
+			</c:if>
 
+		</div>
+		
+		<c:if test="${!empty listView.list}">
+			
 				<div class="kiste">		
 					<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
 					<rc:actions resourceType="${listView.resourcetype}"/>				
