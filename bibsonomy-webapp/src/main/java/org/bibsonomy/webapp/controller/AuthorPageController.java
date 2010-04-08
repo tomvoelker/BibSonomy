@@ -41,7 +41,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		}
 						
 		// set grouping entity = ALL
-		final GroupingEntity groupingEntity = GroupingEntity.ALL;
+		final GroupingEntity groupingEntity = GroupingEntity.VIEWABLE;
 		
 		/*
 		 * FIXME: the query supports only ONE tag!
@@ -90,7 +90,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, BibTex.class, groupingEntity, null, null, null, null, 1000, null);
+			this.setTags(command, BibTex.class, groupingEntity, null, null, requTags, null, 1000, null);
 			this.endTiming();
 			if(hasTags){
 				this.setRelatedTags(command, BibTex.class, groupingEntity, authorQuery, null, requTags, Order.ADDED, 0, 20, null);
