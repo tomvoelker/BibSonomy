@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
@@ -34,7 +35,8 @@ public class GetTagsByAuthor extends TagChainElement {
 
 	@Override
 	protected boolean canHandle(final TagParam param) {
-		return (SearchEntity.AUTHOR.equals(param.getSearchEntity()) &&
+		return (param.getGrouping() == GroupingEntity.VIEWABLE &&
+				SearchEntity.AUTHOR.equals(param.getSearchEntity()) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getBibtexKey()) &&
 				present(param.getSearch()));
