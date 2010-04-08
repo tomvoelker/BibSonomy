@@ -24,18 +24,14 @@
 package org.bibsonomy.scraper.url.kde.ams;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
-import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -52,6 +48,10 @@ public class AmsScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "American Meteorological Society";
 	private static final String SITE_URL = "http://ams.allenpress.com/";
 	private static final String INFO = "For references from the "+href(SITE_URL, SITE_NAME)+".";
+	
+	//private static final String FORMAT_ENDNOTE = "&format=endnote";
+	private static final String FORMAT_BIBTEX = "&format=bibtex";
+
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*ams.allenpress.com"), AbstractUrlScraper.EMPTY_PATTERN));
 	
@@ -68,15 +68,25 @@ public class AmsScraper extends AbstractUrlScraper {
 			if (matcher.find()) {
 				final String doi = matcher.group(1).replace("%2F", "/");
 				
-				final String downloadUrl = "http://ams.allenpress.com/perlserv/?request=download-citation&t=endnote&f=1520-0485_38_1669&doi=" + doi + "&site=amsonline";
+				//final String downloadUrl = "http://ams.allenpress.com/perlserv/?request=download-citation&t=endnote&f=1520-0485_38_1669&doi=" + doi + "&site=amsonline";
+				final String downloadUrl = "http://journals.ametsoc.org/action/downloadCitation?doi=" + doi + "&include=cit";
+				
 				
 				try {
-					final String endnote = WebUtils.getContentAsString(downloadUrl);
+					final String bibtexContent = WebUtils.getContentAsString(downloadUrl + FORMAT_BIBTEX);
 					
-					if(endnote != null){
+					if(bibtexContent != null){
+						sc.setBibtexResult(bibtexContent);
+						return true;
+					}else
+						throw new ScrapingFailureException("failure during download");
+					
+					/*final String endnoteContent = WebUtils.getContentAsString(downloadUrl + FORMAT_ENDNOTE);
+					
+					if(endnoteContent != null){
 						
 						final EndnoteToBibtexConverter converter = new EndnoteToBibtexConverter();
-						final String bibtex = converter.processEntry(endnote);
+						final String bibtex = converter.processEntry(endnoteContent);
 						
 						if(bibtex != null){
 							sc.setBibtexResult(bibtex);
@@ -84,7 +94,7 @@ public class AmsScraper extends AbstractUrlScraper {
 						}else
 							throw new ScrapingFailureException("failure during converting to bibtex");
 					}else
-						throw new ScrapingFailureException("failure during download");
+						throw new ScrapingFailureException("failure during download");*/
 					
 				} catch (IOException e) {
 					throw new InternalFailureException(e);
