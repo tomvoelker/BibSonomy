@@ -9,7 +9,7 @@ import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.statistic.post.PostStatisticChain;
 import org.bibsonomy.database.managers.chain.statistic.tag.TagStatisticChain;
-import org.bibsonomy.database.params.ResourcesParam;
+import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.util.DBSession;
@@ -39,15 +39,14 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	
 	private final BibTexDatabaseManager bibtexDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
-	private final Map<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourcesParam<? extends Resource>>> postDatabaseManager;
+	private final Map<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>> postDatabaseManager;
 
 	private StatisticsDatabaseManager() {
-		super();
 		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 		
 		// TODO: refactor @see DBLogic
-		this.postDatabaseManager = new HashMap<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourcesParam<? extends Resource>>>();
+		this.postDatabaseManager = new HashMap<Class<? extends Resource>, PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>>>();
 		this.postDatabaseManager.put(Bookmark.class, this.bookmarkDBManager);
 		this.postDatabaseManager.put(BibTex.class, this.bibtexDBManager);
 	}
@@ -61,7 +60,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	public int getPostStatistics(final StatisticsParam param, final DBSession session) {
 		// FIXME: this is ugly, but using chain elements forces us to use lists as return types
 		final List<Integer> counts = postchain.getFirstElement().perform(param, session);  
-		final Integer count = (ValidationUtils.present(counts))?counts.get(0):0;
+		final Integer count = (ValidationUtils.present(counts)) ? counts.get(0) : 0;
 		// to not get NPEs later
 		return count == null ? 0 : count;
 	}
@@ -230,7 +229,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 		return this.getDatabaseManagerForResourceType(resourceType).getPostPopularDays(days, session);
 	}
 	
-	private PostDatabaseManager<? extends Resource, ? extends ResourcesParam<? extends Resource>> getDatabaseManagerForResourceType(final Class<? extends Resource> resourceType) {
+	private PostDatabaseManager<? extends Resource, ? extends ResourceParam<? extends Resource>> getDatabaseManagerForResourceType(final Class<? extends Resource> resourceType) {
 		if (this.postDatabaseManager.containsKey(resourceType)) {
 			return this.postDatabaseManager.get(resourceType);
 		}

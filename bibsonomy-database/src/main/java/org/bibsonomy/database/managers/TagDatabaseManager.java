@@ -41,40 +41,48 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  * @version $Id$
  */
 public class TagDatabaseManager extends AbstractDatabaseManager {
-
 	private static final Log log = LogFactory.getLog(TagDatabaseManager.class);
+	
+	// FIXME: we arbitrarily choose a tag cloud limit of 1000
+	private static final int TAG_CLOUD_LIMIT = 1000;
+	private static final int MAX_TAG_SIZE = 5;
 
 	private final static TagDatabaseManager singleton = new TagDatabaseManager();
+	private static final TagChain chain = new TagChain();
+	
+	/** database managers */
 	private final GeneralDatabaseManager generalDb;
 	private final TagRelationDatabaseManager tagRelDb;
 	private final DatabasePluginRegistry plugins;
-	private static final TagChain chain = new TagChain();
 	
 	/** interface to a resource searcher for building an author's tag cloud */
 	private ResourceSearch<BibTex> authorSearch;
-
-	/**
-	 * Only a maximum of 10 tags can be set by the user. It serves to restrict
-	 * the system behaviour in case of e.g. 200 Tags. Only a maximum of 10X10
-	 * Tag-Combinations can be computed
-	 */
-	// private static final int MAX_TAGS_TO_INSERT = 10;
-
-	/**
-	 * Constructor
-	 */
-	private TagDatabaseManager() {
-		super();
-		this.generalDb = GeneralDatabaseManager.getInstance();
-		this.tagRelDb = TagRelationDatabaseManager.getInstance();
-		this.plugins = DatabasePluginRegistry.getInstance();
-	}
 
 	/**
 	 * @return a singleton instance of the TagDatabaseManager
 	 */
 	public static TagDatabaseManager getInstance() {
 		return singleton;
+	}
+	
+	private TagDatabaseManager() {
+		this.generalDb = GeneralDatabaseManager.getInstance();
+		this.tagRelDb = TagRelationDatabaseManager.getInstance();
+		this.plugins = DatabasePluginRegistry.getInstance();
+	}
+	
+	/**
+	 * @return the authorSearch
+	 */
+	public ResourceSearch<BibTex> getAuthorSearch() {
+		return this.authorSearch;
+	}
+
+	/**
+	 * @param authorSearch the authorSearch to set
+	 */
+	public void setAuthorSearch(ResourceSearch<BibTex> authorSearch) {
+		this.authorSearch = authorSearch;
 	}
 
 	/** 
@@ -117,7 +125,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			 * only insert an entry for the first group in the tas table.
 			 * otherwise param.getGroups has length = 1.
 			 */
-			if(param.getGroups().get(0) != null){
+			if (param.getGroups().get(0) != null) {
 				final Integer groupId = param.getGroups().get(0); 
 				param.setGroupId(groupId);
 				param.setTasId(generalDb.getNewContentId(ConstantID.IDS_TAS_ID, session));
@@ -128,11 +136,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
+	 * FIXME: delete method?!
+	 * 
 	 * OLD METHOD INSERTAS
 	 * @param param
 	 * @param session
 	 **/
-	/*public void insertTas(final TagParam param, final DBSession session) {
+	@SuppressWarnings("unused")
+	private void insertTasOld(final TagParam param, final DBSession session) {
 		for (final Tag tag : param.getTags()) {
 			param.setTag(tag);
 			for (final Integer groupId : param.getGroups()) {
@@ -141,7 +152,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				this.insert("insertTas", param, session);
 			}
 		}
-	}*/
+	}
 
 
 	/**
@@ -171,7 +182,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// add these tags to list and decrease counter in tag table
 		for (final Tag tag : post.getTags()) {
 			// decrease counter in tag table
-			updateTagDec(tag.getName(), session);
+			this.updateTagDec(tag.getName(), session);
 		}
 
 		
@@ -229,6 +240,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session 
 	 * @return The number of posts which got updated.
 	 */
+	@SuppressWarnings("unchecked") // TODODZ: why?
 	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final DBSession session) {
 		/*
 		 * we might need the empty tag for posts where no tags remain ...
@@ -243,7 +255,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			param.addTagName(tag.getName());
 		}
 		param.setUserName(user.getName());
-		final List<Post> posts = this.queryForList("getTASByTagNames", param, Post.class, session);
+		final List<Post<? extends Resource>> posts = this.queryForList("getTASByTagNames", param, session);
 		log.debug("################################################################################");
 		log.debug(posts);
 		log.debug("################################################################################");
@@ -257,7 +269,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			/*
 			 * iterate over all posts and exchange their tags
 			 */
-			for (final Post post: posts) {
+			for (final Post<? extends Resource> post: posts) {
 				log.debug("handling post with content id " + post.getContentId() + " and groups " + post.getGroups());
 
 				final Set<Tag> tags = post.getTags();
@@ -323,7 +335,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			paramNew.addTagName(tag.getName());
 		}
 		paramNew.setUserName(user.getName());
-		final List<Post> postsNew = this.queryForList("getTASByTagNames", paramNew, Post.class, session);
+		final List<Post<? extends Resource>> postsNew = this.queryForList("getTASByTagNames", paramNew, session);
 		log.debug("################################################################################");
 		log.debug(postsNew);
 		log.debug("################################################################################");
@@ -506,7 +518,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		 * }
 		 */
 		if ("dblp".equalsIgnoreCase(param.getRequestedUserName())) {
-			final ArrayList<Tag> tags = new ArrayList<Tag>();
+			final List<Tag> tags = new ArrayList<Tag>();
 			final Tag dblp = new Tag();
 			dblp.setName("dblp");
 			dblp.setGlobalcount(1000000);
@@ -538,7 +550,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Get all tags of a an author, which assigned to the authors
+	 * Get all tags of an author, which assigned to the authors
 	 * 
 	 * @param search
 	 * @param groupId
@@ -547,12 +559,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
-	 * @param limit
-	 * @param offset
 	 * @param simHash
 	 * @param tagIndex
 	 * @param session
-	 * @return
+	 * @return a list of tags of an author, which assigned to the authors
 	 */
 	public List<Tag> getTagsByAuthorLucene(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int simHash, final List<String> tagIndex, final DBSession session) {
 		final List<Tag> retVal;
@@ -562,8 +572,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			String group = groupDb.getGroupNameByGroupId(groupId, session);
 			
 			final long starttimeQuery = System.currentTimeMillis();
-			// FIXME: we arbitrarily choose a tag cloud limit of 1000
-			retVal = authorSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, 1000);
+			retVal = authorSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, TAG_CLOUD_LIMIT);
 			final long endtimeQuery = System.currentTimeMillis();
 			log.debug("Lucene author tag cloud query time: " + (endtimeQuery-starttimeQuery) + " ms");
 		} else {
@@ -633,6 +642,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param requestedUserName
 	 * @param tagIndex
 	 * @param visibleGroupIDs
+	 * @param limit 
+	 * @param offset 
 	 * @param session
 	 * @return list of tags
 	 */
@@ -756,6 +767,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUserName
 	 * @param requestedUserName
 	 * @param hash
+	 * @param visibleGroupIDs 
 	 * @param limit
 	 * @param offset
 	 * @param session
@@ -804,6 +816,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param requestedUserName
 	 * @param hash
 	 * @param hashId
+	 * @param visibleGroupIDs 
 	 * @param limit
 	 * @param offset
 	 * @param session
@@ -829,10 +842,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param index
 	 * @return true if maximum number is exeeded, false otherwise
 	 */
-	private Boolean exceedsMaxSize(final List<TagIndex> index) {
-		// FIXME: why don't we use a "private static final" variable here
-		// instead of the "10"?
-		return index != null && index.size() > 5;
+	private boolean exceedsMaxSize(final List<TagIndex> index) {
+		return index != null && index.size() > MAX_TAG_SIZE;
 	}
 
 	/**
@@ -859,7 +870,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * @param param
 	 * @param session
-	 * @return
+	 * @return all pupular tags
 	 */
 	public List<Tag> getTagsPopular(final TagParam param, final DBSession session){
 		return this.queryForList("getTagsPopular", param, Tag.class, session);
@@ -894,6 +905,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * 			- the groups the logged-in user is allowed to see
 	 * @param requestedUserName
 	 * 			- retrieve only tags of this user  
+	 * @param loginUserName 
 	 * @param session
 	 * 			- the DB session
 	 * @param limit 
@@ -919,14 +931,5 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Tag> getRelatedTagsByAuthorAndTag(final TagParam param, final DBSession session){
 		return this.queryForList("getRelatedTagsByAuthorAndTag", param, Tag.class, session);
-	}
-
-	public void setAuthorSearch(ResourceSearch<BibTex> authorSearch) {
-		this.authorSearch = authorSearch;
-	}
-
-	public ResourceSearch<BibTex> getAuthorSearch() {
-		return authorSearch;
-	}
-	
+	}	
 }

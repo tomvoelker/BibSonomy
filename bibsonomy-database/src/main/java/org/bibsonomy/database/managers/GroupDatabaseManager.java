@@ -35,24 +35,39 @@ import org.bibsonomy.util.ValidationUtils;
  * @version $Id$
  */
 public class GroupDatabaseManager extends AbstractDatabaseManager {
-
 	private static final Log log = LogFactory.getLog(GroupDatabaseManager.class);
 
 	private final static GroupDatabaseManager singleton = new GroupDatabaseManager();
-	private UserDatabaseManager userDb;
-	private final DatabasePluginRegistry plugins;
-
-	private GroupDatabaseManager() {
-		super();
-		this.plugins = DatabasePluginRegistry.getInstance();
-	}
-
+	
 	/**
 	 * @return GroupDatabaseManager
 	 */
 	public static GroupDatabaseManager getInstance() {
 		return singleton;
 	}
+	
+	private UserDatabaseManager userDb;
+	private final DatabasePluginRegistry plugins;
+
+	private GroupDatabaseManager() {
+		this.plugins = DatabasePluginRegistry.getInstance();
+	}
+
+	/**
+	 * @return the userDb
+	 */
+	public UserDatabaseManager getUserDb() {
+		return this.userDb;
+	}
+	
+
+	/**
+	 * @param userDb the userDb to set
+	 */
+	public void setUserDb(UserDatabaseManager userDb) {
+		this.userDb = userDb;
+	}
+
 
 	/**
 	 * Returns a list of all groups
@@ -75,16 +90,18 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	 * @return Returns a {@link Group} object if the group exists otherwise null.
 	 */
 	public Group getGroupByName(final String groupname, final DBSession session) {
-		if (present(groupname) == false) {
+		if (!present(groupname)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Groupname isn't present");
 		}
 
 		if ("public".equals(groupname)) {
 			return GroupUtils.getPublicGroup();
 		}
+		
 		if ("private".equals(groupname)) {
 			return GroupUtils.getPrivateGroup();
 		}
+		
 		if ("friends".equals(groupname)) {
 			return GroupUtils.getFriendsGroup();
 		}
@@ -332,10 +349,9 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Stores a group in the database.
+	 * Creates a group in the database.
 	 * 
 	 * @param group 
-	 * @param update 
 	 * @param session 
 	 */
 	public void createGroup(final Group group, final DBSession session) {
@@ -417,12 +433,15 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	}
 	
 	/**
+	 * TODO: method unused
+	 * 
 	 * Update an existing TagSet
 	 * 
 	 * @param tagset
 	 * @param groupname
 	 * @param session
 	 */
+	@SuppressWarnings("unused")
 	private void updateTagSet(final TagSet tagset, final String groupname, final DBSession session){
 		//delete the old TagSet
 		this.deleteTagSet(tagset.getSetName(), groupname, session);
@@ -508,24 +527,19 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Updates a group's privacy level and documents settings. 
 	 * TODO: tests
+	 * 
+	 * @param groupToUpdate 
+	 * @param session
 	 */
 	public void updateGroupSettings (Group groupToUpdate, final DBSession session) {
-		
-		if(!ValidationUtils.present(groupToUpdate))
+		if(!ValidationUtils.present(groupToUpdate)) {
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "During updateGroupSettings: The parameter groupToUpdate was null. (required argument)");
+		}
 
 		/*
 		 * store the bean
 		 */
 		this.update("updateGroupSettings", groupToUpdate, session);
-		return;
 	}
 
-	public void setUserDb(UserDatabaseManager userDbManager) {
-		userDb = userDbManager;
-	}
-	
-	public UserDatabaseManager getUserDb() {
-		return userDb;
-	}
 }

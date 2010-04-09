@@ -25,8 +25,6 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(TagRelationDatabaseManager.class);
 
 	private final static TagRelationDatabaseManager singleton = new TagRelationDatabaseManager();
-	private final GeneralDatabaseManager generalDb;
-	private final DatabasePluginRegistry plugins;
 	private static final ConceptChain chain = new ConceptChain();
 
 	/**
@@ -38,9 +36,11 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 		/** Sub tag */
 		SUB
 	}
+	
+	private final GeneralDatabaseManager generalDb;
+	private final DatabasePluginRegistry plugins;
 
 	private TagRelationDatabaseManager() {
-		super();
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
@@ -231,7 +231,8 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Sets the concept with the given uppertag to picked
 	 * 
-	 * @param param
+	 * @param concept 
+	 * @param ownerUserName 
 	 * @param session
 	 */
 	public void pickConcept(final Tag concept, final String ownerUserName, final DBSession session){
@@ -244,8 +245,8 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	
 	/**
 	 * Sets the concept with the given uppertag to unpicked
-	 * 
-	 * @param param
+	 * @param concept 
+	 * @param ownerUserName 
 	 * @param session
 	 */
 	public void unpickConcept(final Tag concept, final String ownerUserName, final DBSession session){
@@ -259,7 +260,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Sets all concepts to unpicked
 	 * 
-	 * @param param
+	 * @param ownerUserName
 	 * @param session
 	 */
 	public void unpickAllConcepts(final String ownerUserName, final DBSession session){
@@ -269,7 +270,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Sets all concepts to picked
 	 * 
-	 * @param param
+	 * @param ownerUserName
 	 * @param session
 	 */
 	public void pickAllConcepts(final String ownerUserName, final DBSession session){

@@ -15,24 +15,21 @@ import org.bibsonomy.model.Document;
  *          voigtmannc Exp $
  */
 public class DocumentDatabaseManager extends AbstractDatabaseManager {
-
-	private final static DocumentDatabaseManager singleton = new DocumentDatabaseManager();
-
 	/**
 	 * Documents not attached to posts get this value as content_id.
 	 */
 	public static final int DEFAULT_CONTENT_ID = 0;
-
-	private DocumentDatabaseManager() {
-		super();
-	}
-
+	
+	private static final DocumentDatabaseManager singleton = new DocumentDatabaseManager();
+	
 	/**
 	 * @return DocumentDatabaseManager
 	 */
 	public static DocumentDatabaseManager getInstance() {
 		return singleton;
 	}
+
+	private DocumentDatabaseManager() {}
 
 	/**
 	 * Checks, if the post has already a document with that name attached.
@@ -49,7 +46,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 *         <code>false</code> otherwise
 	 */
 	public boolean checkForExistingDocuments(final String userName, final String resourceHash, final String fileName, final DBSession session) {
-		if (present(resourceHash) == false) {
+		if (!present(resourceHash)) {
 			return false;
 		}
 
@@ -81,6 +78,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		docParam.setFileName(fileName);
 		docParam.setContentId(contentId);
 		docParam.setMd5hash(md5hash);
+		
 		this.insert("insertDoc", docParam, session);
 	}
 
@@ -99,6 +97,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		docParam.setFileName(fileName);
 		docParam.setContentId(contentId);
 		docParam.setMd5hash(md5hash);
+		
 		this.update("updateDoc", docParam, session);
 	}
 
@@ -110,7 +109,6 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	 * @return document
 	 */
 	private Document getDocumentForLayout(final DocumentParam docParam, final DBSession session) {
-
 		return this.queryForObject("getDocumentForLayout", docParam, Document.class, session);
 	}
 
@@ -132,9 +130,7 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 		docParam.setContentId(0);
 
 		// get the requested document
-		final Document doc = getDocumentForLayout(docParam, session);
-
-		return doc;
+		return this.getDocumentForLayout(docParam, session);
 	}
 
 	/**
@@ -166,11 +162,12 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 
 		// get the requested document
 		final List<Document> doc = getDocumentsForPost(docParam, session);
+		
 		if (doc == null) {
 			throw new IllegalStateException("No documents for this BibTeX entry");
 		}
+		
 		return doc;
-
 	}
 
 	/**
@@ -198,7 +195,6 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	private void deleteDocumentLayout(final DocumentParam docParam, final DBSession session) {
-
 		this.delete("deleteDocWithNoPost", docParam, session);
 	}
 
@@ -221,7 +217,6 @@ public class DocumentDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	private void deleteDocumentForPost(final DocumentParam docParam, final DBSession session) {
-
 		this.delete("deleteDoc", docParam, session);
 	}
 

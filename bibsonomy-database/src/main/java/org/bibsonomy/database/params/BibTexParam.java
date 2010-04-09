@@ -9,21 +9,11 @@ import org.bibsonomy.model.BibTex;
  * @author Christian Schenk
  * @version $Id$
  */
-public class BibTexParam extends ResourcesParam<BibTex> implements SingleResourceParam<BibTex> {
-
-	/** A single resource */
-	private BibTex resource;
+public class BibTexParam extends ResourceParam<BibTex> {
 	
 	private String firstYear;
 	private String lastYear;
 	private String year;
-	
-	public BibTexParam() {
-		this.firstYear = null;
-		this.lastYear = null;
-		this.year = null;
-		this.setBibtexKey(null);
-	}
 
 	@Override
 	public int getContentType() {
@@ -36,17 +26,11 @@ public class BibTexParam extends ResourcesParam<BibTex> implements SingleResourc
 	 */
 	@Override
 	public BibTex getResource() {
-		if (this.resource == null) this.resource = new BibTex();
+		if (this.resource == null) {
+			this.resource = new BibTex(); // TODO: why not returning null??! only for the bibtexExtraManager?!
+		}
+		
 		return this.resource;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.params.SingleResourceParam#setResource(org.bibsonomy.model.Resource)
-	 */
-	@Override
-	public void setResource(BibTex resource) {
-		this.resource = resource;
 	}
 
 	@Deprecated

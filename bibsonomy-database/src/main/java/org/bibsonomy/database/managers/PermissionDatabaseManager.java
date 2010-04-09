@@ -18,6 +18,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.UserUtils;
 
 
@@ -28,7 +29,6 @@ import org.bibsonomy.model.util.UserUtils;
  * @version $Id$
  */
 public class PermissionDatabaseManager extends AbstractDatabaseManager {
-	
 	private static final int MAX_TAG_SIZE = 10;
 	private static final int END_MAX = 1000;
 	
@@ -46,7 +46,6 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	private final GeneralDatabaseManager generalDb;
 	
 	private PermissionDatabaseManager() {
-		super();
 		this.groupDb = GroupDatabaseManager.getInstance();
 		this.generalDb = GeneralDatabaseManager.getInstance();
 	}
@@ -130,10 +129,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 		final List<Group> commonGroups = this.groupDb.getCommonGroups(userName, postUserName, session);
 
 		// Construct the public group.
-		// TODO: this should better be done in a GroupFactory!
-		// ----> what about GroupUtils?
-		final Group publicGroup = new Group();
-		publicGroup.setGroupId(GroupID.PUBLIC.getId());
+		final Group publicGroup = GroupUtils.getPublicGroup();
 
 		// Find a common group of both users, which allows to share documents.
 		for (final Group group : commonGroups) {
@@ -291,7 +287,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * @param loginUser
 	 */
 	public void ensureAdminAccess(final User loginUser) {
-		if (present(loginUser.getName()) == false || isAdmin(loginUser) == false) {
+		if (!present(loginUser.getName()) || !isAdmin(loginUser)) {
 			throw new ValidationException("You are not authorized to perform the requested operation.");
 		}
 	}
@@ -349,7 +345,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 * Checks if the given user is an admin.
 	 * 
 	 * @param loginUser
-	 * @return
+	 * @return <code>true</code> iff user is admin
 	 */
 	public boolean isAdmin(final User loginUser) {
 		return Role.ADMIN.equals(loginUser.getRole());

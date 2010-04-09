@@ -2,8 +2,6 @@ package org.bibsonomy.database.managers;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Author;
@@ -13,7 +11,6 @@ import org.bibsonomy.model.Author;
  * @version $Id$
  */
 public class AuthorDatabaseManager extends AbstractDatabaseManager {
-	private static final Log LOG = LogFactory.getLog(AuthorDatabaseManager.class);
 	private final static AuthorDatabaseManager singleton = new AuthorDatabaseManager();
 
 	/**
@@ -23,14 +20,14 @@ public class AuthorDatabaseManager extends AbstractDatabaseManager {
 		return singleton;
 	}
 	
-	private AuthorDatabaseManager() {	
-		super();
+	private AuthorDatabaseManager() {
 	}
 	
 	/**
 	 * TODO: improve documentation
+	 * 
 	 * @param session
-	 * @return
+	 * @return list of authors
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Author> getAuthors(final DBSession session) {

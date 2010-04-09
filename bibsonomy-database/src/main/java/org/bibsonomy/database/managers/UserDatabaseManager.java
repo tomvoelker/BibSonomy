@@ -34,7 +34,6 @@ import org.bibsonomy.util.ExceptionUtils;
  * @version $Id$
  */
 public class UserDatabaseManager extends AbstractDatabaseManager {
-	
 	private static final Log log = LogFactory.getLog(UserDatabaseManager.class);
 	
 	private static final UserDatabaseManager singleton = new UserDatabaseManager();
@@ -54,7 +53,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private final AdminDatabaseManager adminDBManager;
 
 	private UserDatabaseManager() {
-		super();
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
 		this.basketDBManager = BasketDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
@@ -106,8 +104,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		}
 		return user;
 	}
-
-	// FIXME: implement me
+	
 	private UserSettings getUserSettings(final String username, final DBSession session) {
 		final UserParam param = new UserParam();
 		param.setUserName(username);
@@ -142,7 +139,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * Updates only the password of a current user
 	 * @param user 
 	 * @param session
-	 * @return
+	 * @return the user's name
 	 */
 	public String updatePasswordForUser(final User user, final DBSession session) {
 		if (!present(this.getUserDetails(user.getName(), session).getName())) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update password for nonexistent user");
@@ -154,7 +151,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * Updates the UserSettings object of a user
 	 * @param user
 	 * @param session
-	 * @return
+	 * @return the user's name
 	 */
 	public String updateUserSettingsForUser(User user, final DBSession session) {
 		if (!present(this.getUserDetails(user.getName(), session).getName())) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user settings for nonexistent user");
@@ -162,12 +159,26 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return user.getName();
 	}
 	
+	/**
+	 * Updates the users profile (gender, hobbies, …)
+	 * @param user
+	 * @param session
+	 * @return the user's name
+	 */
 	public String updateUserProfile(User user, final DBSession session) {
 		if (!present(this.getUserDetails(user.getName(), session).getName())) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user profile for nonexistent user");
 		this.update("updateUserProfile", user, session);
 		return user.getName();
 	}
 
+	/**
+	 * TODO: improve documentation
+	 * TODO: only used in tests
+	 * 
+	 * @param groupId
+	 * @param session
+	 * @return TODO
+	 */
 	public List<String> getUserNamesByGroupId(final Integer groupId, final DBSession session) {
 		return this.queryForList("getUserNamesByGroupId", groupId, String.class, session);
 	}
@@ -278,11 +289,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	private void updateUser(final User user, final DBSession session) {
+		// TODO: this check is also done in the dblogic
 		final User existingUser = this.getUserDetails(user.getName(), session);
-
-		if (present(existingUser.getName()) == false)
+		if (!present(existingUser.getName())) { 
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User '" + user.getName() + "' does not exist");
-
+		}
 			
 		// FIXME if this should copy all properties from the one bean to the
 		// other we might want to come up with a more generic version of this
@@ -317,7 +328,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * FIXME: user settings are completely missing!
 		 */
-
 		this.plugins.onUserUpdate(existingUser.getName(), session);
 
 		// TODO: update existing dataset instead of delete and re-insert
@@ -442,10 +452,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final User notLoggedInUser = new User();
 
 		// either username or password not given -> user is not logged in
-		if (present(apiKey) == false || present(username) == false) return notLoggedInUser;
+		if (!present(apiKey) || !present(username)) return notLoggedInUser;
 
 		// get user from database
-		final User foundUser = getUserDetails(username, session);
+		final User foundUser = this.getUserDetails(username, session);
 
 		// user exists and api key is correct and user is no spammer
 		if (foundUser.getName() != null && !foundUser.isSpammer() && foundUser.getApiKey() != null && foundUser.getApiKey().equals(apiKey)) return foundUser;
@@ -475,7 +485,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		final User notLoggedInUser = new User();
 
 		// either username or password not given -> user is not logged in
-		if (present(password) == false || present(username) == false) return notLoggedInUser;
+		if (!present(password) || !present(username)) return notLoggedInUser;
 
 		// get user from database
 		final User foundUser = getUserDetails(username, session);
@@ -509,6 +519,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getLastLdapRequestByUsername", userName, Date.class, session);
 	}
 		
+	/**
+	 * TODO: improve documentation
+	 * 
+	 * @param user
+	 * @param session
+	 * @return TODO: documentation
+	 */
 	public String updateLastLdapRequest(final User user, final DBSession session) {
 		this.update("updateLastLdapRequestDateForLdapUserIdByUsername", user.getName(), session);
 		return user.getName();
@@ -562,11 +579,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("getUsernameByLdapUser", ldapUser, String.class, session);
 	}
 	
-	
-	//*****************
-	// USER RELATIONS *
-	//*****************
-	
 	/**
 	 * Create a relation between two users
 	 * @param sourceUser (left side of the relation)
@@ -601,11 +613,12 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				 * is allowed to create the relation.
 				 */
 				throw new UnsupportedRelationException();
-		}		
+		}
+		
 		final UserParam param = new UserParam();
 		param.setUserName(sourceUser);
 		param.setRequestedUserName(targetUser);
-		this.insert("insertRelation_"+relation.toString(), param, session);
+		this.insert("insertRelation_" + relation.toString(), param, session);
 	}
 	
 	/**
@@ -642,9 +655,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			 * Other relations are not supported at this time 
 			 */
 			throw new UnsupportedRelationException();
-		}		
+		}
+		
 		//list of all targetUsers for sourceUser in (the) relation
-		return this.queryForList("getRelation_"+relation.toString(), sourceUser, User.class, session);
+		return this.queryForList("getRelation_" + relation.toString(), sourceUser, User.class, session);
 	}
 	
 	/**
@@ -686,7 +700,8 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 				 * is allowed to create the relation.
 				 */
 				throw new UnsupportedRelationException();
-		}		
+		}
+		
 		this.delete("deleteRelation_"+relation.toString(), param, session);
 	}
 	

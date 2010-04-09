@@ -189,6 +189,9 @@ public abstract class GenericParam {
 	
 	private final Map<String, SystemTag> systemTags;
 
+	/**
+	 * sets default values
+	 */
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
 		this.numSimpleTags = 0;
@@ -218,14 +221,20 @@ public abstract class GenericParam {
 		this.systemTags = new HashMap<String, SystemTag>();
 	}
 	
+	/**
+	 * @return the caseSensitiveTagNames
+	 */
 	public boolean isCaseSensitiveTagNames() {
 		return this.caseSensitiveTagNames;
 	}
 
-	public void setCaseSensitiveTagNames(boolean caseSensitive) {
-		this.caseSensitiveTagNames = caseSensitive;
+	/**
+	 * @param caseSensitiveTagNames the caseSensitiveTagNames to set
+	 */
+	public void setCaseSensitiveTagNames(boolean caseSensitiveTagNames) {
+		this.caseSensitiveTagNames = caseSensitiveTagNames;
 	}
-	
+
 	private void addToTagIndex(final String tagName) {
 		this.tagIndex.add(new TagIndex(tagName, this.tagIndex.size() + 1));
 	}
@@ -258,16 +267,22 @@ public abstract class GenericParam {
 	public void addCorrelatedConceptName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numCorrelatedConcepts++;
-	}	
-
+	}
+	
+	/**
+	 * @return the tagIndex
+	 */
 	public List<TagIndex> getTagIndex() {
-		//return Collections.unmodifiableList(this.tagIndex);
-		return tagIndex=this.tagIndex;
+		return this.tagIndex;
 	}
 
+	/**
+	 * @param tagIndex the tagIndex to set
+	 */
 	public void setTagIndex(List<TagIndex> tagIndex) {
 		this.tagIndex = tagIndex;
 	}
+
 	/**
 	 * This is used to determine the max. amount of join-indices for the
 	 * iteration of the join-index; e.g. if we're searching for tag names. If we
@@ -277,13 +292,17 @@ public abstract class GenericParam {
 	 * or setter. A call to tagIndex.size() is not possible. An attempt fails
 	 * with "There is no READABLE property named 'size' in class
 	 * 'java.util.ArrayList'".
+	 * @return TODO
 	 */
 	public int getMaxTagIndex() {
 		// TODO: if this methods name was intuitive, size-1 should be returned
 		// because tagIndex[size] is out of bounds
 		return this.tagIndex.size();
 	}
-
+	
+	/**
+	 * @return the search
+	 */
 	public String getSearch() {
 		return this.search;
 	}
@@ -299,36 +318,60 @@ public abstract class GenericParam {
 		}
 	}
 
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public int getLimit() {
-		return this.limit;
-	}
-
-	public void setLimit(int limit) {
-		this.limit = limit;
-	}
-
-	public int getOffset() {
-		return this.offset;
-	}
-
-	public void setOffset(int offset) {
-		this.offset = offset;
-	}
-
+	/**
+	 * @return the date
+	 */
 	public Date getDate() {
 		return this.date;
 	}
 
+	/**
+	 * @param date the date to set
+	 */
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return this.userName;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	/**
+	 * @return the limit
+	 */
+	public int getLimit() {
+		return this.limit;
+	}
+
+	/**
+	 * @param limit the limit to set
+	 */
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
+
+	/**
+	 * @return the offset
+	 */
+	public int getOffset() {
+		return this.offset;
+	}
+
+	/**
+	 * @param offset the offset to set
+	 */
+	public void setOffset(int offset) {
+		this.offset = offset;
 	}
 
 	/**
@@ -352,16 +395,22 @@ public abstract class GenericParam {
 	 */
 	public void setGroups(Collection<Integer> groups) {
 		this.groups = new HashSet<Integer>(groups);
-	}	
-
+	}
+	
+	/**
+	 * @return the groupId
+	 */
 	public int getGroupId() {
 		return this.groupId;
 	}
 
+	/**
+	 * @param groupId the groupId to set
+	 */
 	public void setGroupId(int groupId) {
 		this.groupId = groupId;
 	}
-	
+
 	/**
 	 * This setter sets the group id using the GroupID enum.
 	 * 
@@ -370,7 +419,6 @@ public abstract class GenericParam {
 	public void setGroupId(final GroupID groupID) {
 		this.groupId = groupID.getId();
 	}
-
 
 	/**
 	 * If you need the ID of the friends group in a statement, 
@@ -393,76 +441,125 @@ public abstract class GenericParam {
 	
 	// TODO: what hash?, what for?, why in genericparam and not in
 	// resource-field?
+	/**
+	 * @return the hash
+	 */
 	public String getHash() {
 		return this.hash;
 	}
 
+	/**
+	 * @param hash the hash to set
+	 */
 	public void setHash(String hash) {
 		this.hash = hash;
 	}
-	
+
+	/**
+	 * @return the simHash
+	 */
 	public int getSimHash() {
 		return this.simHash.getId();
 	}
 
+	/**
+	 * @param simHash the simHash to set
+	 */
 	public void setSimHash(HashID simHash) {
 		this.simHash = simHash;
 	}
-
-
-	// TODO: why in genericparam and not in resource-field?
-	public String getRequestedUserName() {
-		return this.requestedUserName;
-	}
-
-	public void setRequestedUserName(String requestedUserName) {
-		this.requestedUserName = requestedUserName;
-	}
-
-	public String getRequestedGroupName() {
-		return this.requestedGroupName;
-	}
-
-	public void setRequestedGroupName(String requestedGroupName) {
-		this.requestedGroupName = requestedGroupName;
-	}
-
+	
+	/**
+	 * @return the requestedContentId
+	 */
 	public int getRequestedContentId() {
 		return this.requestedContentId;
 	}
 
+	/**
+	 * @param requestedContentId the requestedContentId to set
+	 */
 	public void setRequestedContentId(int requestedContentId) {
 		this.requestedContentId = requestedContentId;
+	}
+
+	// TODO: why in genericparam and not in resource-field?
+	/**
+	 * @return the requestedUserName
+	 */
+	public String getRequestedUserName() {
+		return this.requestedUserName;
+	}
+
+	/**
+	 * @param requestedUserName the requestedUserName to set
+	 */
+	public void setRequestedUserName(String requestedUserName) {
+		this.requestedUserName = requestedUserName;
+	}
+
+	/**
+	 * @return the requestedGroupName
+	 */
+	public String getRequestedGroupName() {
+		return this.requestedGroupName;
+	}
+
+	/**
+	 * @param requestedGroupName the requestedGroupName to set
+	 */
+	public void setRequestedGroupName(String requestedGroupName) {
+		this.requestedGroupName = requestedGroupName;
 	}
 
 	public int getIdsType() {
 		return this.idsType.getId();
 	}
-
+	
 	public void setIdsType(ConstantID idsType) {
 		this.idsType = idsType;
 	}
 
-	public int getNewContentId() {
-		return this.newContentId;
-	}
-
-	public void setNewContentId(int newContentId) {
-		this.newContentId = newContentId;
-	}
-
+	/**
+	 * @return the tags
+	 */
 	public Set<Tag> getTags() {
 		return this.tags;
 	}
 
+	/**
+	 * @param tags the tags to set
+	 */
 	public void setTags(Set<Tag> tags) {
 		this.tags = tags;
 	}
 
+	/**
+	 * @return the newContentId
+	 */
+	public int getNewContentId() {
+		return this.newContentId;
+	}
+
+	/**
+	 * @param newContentId the newContentId to set
+	 */
+	public void setNewContentId(int newContentId) {
+		this.newContentId = newContentId;
+	}
+
+	/**
+	 * @return the tag
+	 */
 	public Tag getTag() {
 		return this.tag;
 	}
 
+	/**
+	 * sets also the tagName field to the name of the tag
+	 * 
+	 * @param tag the tag to set
+	 */
 	public void setTag(Tag tag) {
 		this.tag = tag;
 		this.tagName = tag.getName();
@@ -484,18 +581,30 @@ public abstract class GenericParam {
 		this.description = description;
 	}
 
+	/**
+	 * @return the extension
+	 */
 	public String getExtension() {
 		return this.extension;
 	}
 
+	/**
+	 * @param extension the extension to set
+	 */
 	public void setExtension(String extension) {
 		this.extension = extension;
 	}
 
+	/**
+	 * @return the url
+	 */
 	public String getUrl() {
 		return this.url;
 	}
 
+	/**
+	 * @param url the url to set
+	 */
 	public void setUrl(String url) {
 		this.url = url;
 	}
@@ -507,10 +616,14 @@ public abstract class GenericParam {
 	public ConstantID getContentTypeConstant() {
 		return this.contentType;
 	}
+	
+	/**
+	 * @param contentType the contentType to set
+	 */
 	public void setContentType(ConstantID contentType) {
 		this.contentType = contentType;
 	}
-	
+
 	public void setContentTypeByClass(Class<? extends Resource> nativeContentType) {
 		if (BibTex.class.isAssignableFrom(nativeContentType)) {
 			setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
@@ -538,35 +651,59 @@ public abstract class GenericParam {
 	public String getTagNameLower() {
 		return this.getTagName().toLowerCase();
 	}
-
+	
+	/**
+	 * @return the title
+	 */
 	public String getTitle() {
 		return this.title;
 	}
 
+	/**
+	 * @param title the title to set
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
-	public GroupingEntity getGrouping() {
-		return this.grouping;
-	}
 
-	public void setGrouping(GroupingEntity grouping) {
-		this.grouping = grouping;
-	}
-
+	/**
+	 * @return the order
+	 */
 	public Order getOrder() {
 		return this.order;
 	}
 
+	/**
+	 * @param order the order to set
+	 */
 	public void setOrder(Order order) {
 		this.order = order;
-	}	
+	}
 
+	/**
+	 * @return the grouping
+	 */
+	public GroupingEntity getGrouping() {
+		return this.grouping;
+	}
+
+	/**
+	 * @param grouping the grouping to set
+	 */
+	public void setGrouping(GroupingEntity grouping) {
+		this.grouping = grouping;
+	}
+
+	/**
+	 * @return the filter
+	 */
 	public FilterEntity getFilter() {
 		return this.filter;
 	}
 
+	/**
+	 * @param filter the filter to set
+	 */
 	public void setFilter(FilterEntity filter) {
 		this.filter = filter;
 	}
@@ -577,6 +714,10 @@ public abstract class GenericParam {
 
 	public Integer getNumSimpleTags() {
 		return this.numSimpleTags;
+	}
+	
+	public void setNumSimpleTags(int numSimpleTags) {
+		this.numSimpleTags = numSimpleTags;
 	}
 
 	public Integer getNumTransitiveConcepts() {
@@ -602,43 +743,65 @@ public abstract class GenericParam {
 	public void setNumSimpleConcepts(int numSimpleConcepts) {
 		this.numSimpleConcepts = numSimpleConcepts;
 	}
-
-	public void setNumSimpleTags(int numSimpleTags) {
-		this.numSimpleTags = numSimpleTags;
-	}
 	
+	/**
+	 * adds a group to the group list
+	 * @param groupId the id of the group to add
+	 */
 	public void addGroup(Integer groupId) {
 		this.groups.add(groupId);
 	}
 	
+	/**
+	 * adds all groups to the group list 
+	 * @param groups the id's of the groups to add
+	 */
 	public void addGroups(Collection<Integer> groups) {
 		this.groups.addAll(groups);
 	}
-
-	public int getDays() {
-		return this.days;
+	
+	/**
+	 * @return the searchEntity
+	 */
+	public SearchEntity getSearchEntity() {
+		return this.searchEntity;
 	}
 
-	public void setDays(int days) {
-		this.days = days;
-	}
-
+	/**
+	 * @param searchEntity the searchEntity to set
+	 */
 	public void setSearchEntity(SearchEntity searchEntity) {
 		this.searchEntity = searchEntity;
 	}
 
-	public SearchEntity getSearchEntity() {
-		return searchEntity;
+	/**
+	 * @return the days
+	 */
+	public int getDays() {
+		return this.days;
 	}
 
+	/**
+	 * @param days the days to set
+	 */
+	public void setDays(int days) {
+		this.days = days;
+	}
+
+	/**
+	 * @return the bibtexKey
+	 */
+	public String getBibtexKey() {
+		return this.bibtexKey;
+	}
+
+	/**
+	 * @param bibtexKey the bibtexKey to set
+	 */
 	public void setBibtexKey(String bibtexKey) {
 		this.bibtexKey = bibtexKey;
 	}
 
-	public String getBibtexKey() {
-		return bibtexKey;
-	}
-	
 	/**
 	 * add group ids and groupnames of groups this user may see
 	 * 
@@ -647,9 +810,9 @@ public abstract class GenericParam {
 	public void addGroupsAndGroupnames(Collection<Group> groups) {
 		// add groupids + groupnames
 		String groupName = "";
-		for (Group g : groups) {
+		for (final Group g : groups) {
 			this.groups.add(g.getGroupId());
-			groupName = (g.getName()==null)?"group_"+g.getGroupId():g.getName().toLowerCase();
+			groupName = g.getName()==null ? "group_" + g.getGroupId() : g.getName().toLowerCase();
 			// TODO warum kann der Gruppenname (im Test) null sein? 
 			this.groupNames.add(groupName);
 			// this.groupNames.add(g.getName().toLowerCase());
@@ -668,16 +831,6 @@ public abstract class GenericParam {
 	 */
 	public void setGroupNames(Set<String> groupNames) {
 		this.groupNames = groupNames;
-	}
-	
-	/**
-	 * Introspect the current param object and return a string representation of the form attribute = value
-	 * for all attributes of this object.
-	 * 
-	 * @return - a string representation of the given object by introspection.
-	 */
-	public String toStringByReflection() {
-		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}
 
 	/**
@@ -709,5 +862,15 @@ public abstract class GenericParam {
 	 */
 	public Map<String, SystemTag> getSystemTags() {
 		return Collections.unmodifiableMap(this.systemTags);
+	}
+	
+	/**
+	 * Introspect the current param object and return a string representation of the form attribute = value
+	 * for all attributes of this object.
+	 * 
+	 * @return - a string representation of the given object by introspection.
+	 */
+	public String toStringByReflection() {
+		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}
 }

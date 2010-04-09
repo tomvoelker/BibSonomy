@@ -1,9 +1,10 @@
 package org.bibsonomy.database.params;
 
 /**
+ * @param <T> the class of the id
+ * 
  * @author dzo
- * @version $Id$
- * @param <T> 
+ * @version $Id$ 
  */
 public class LoggingParam<T> {
 	private T oldId;

@@ -26,14 +26,24 @@ import org.junit.Ignore;
  */
 @Ignore
 public class TestDatabaseLoader {
-
 	private final static Log log = LogFactory.getLog(TestDatabaseLoader.class);
+	
 	/** Holds the database schema (script is at /src/main/resources) */
-	private final String schemaFilename = "bibsonomy-db-schema.sql";
+	private static final String SCHEMA_FILENAME = "bibsonomy-db-schema.sql";
 	/** Holds the test data (script is found at /src/test/resources) */
-	private final String dataFilename   = "database/insert-test-data.sql";
+	private static final String DATA_FILENAME   = "database/insert-test-data.sql";
 	/** Holds the commands to empty all tables (script is found at /src/test/resources) */
-	private final String deleteFilename   = "database/empty-tables.sql";	
+	private static final String DELETE_FILENAME   = "database/empty-tables.sql";
+	
+	private static final TestDatabaseLoader INSTANCE = new TestDatabaseLoader();
+
+	/**
+	 * @return the @{link:TestDatabaseLoader} instance
+	 */
+	public static TestDatabaseLoader getInstance() {
+		return INSTANCE;
+	}
+	
 	/** Stores the create table statements  */
 	private final List<String> createStatements;
 	/** Stores the insert statements  */
@@ -44,11 +54,16 @@ public class TestDatabaseLoader {
 	/**
 	 * Loads the SQL statements from the script.
 	 */
-	public TestDatabaseLoader() {
+	private TestDatabaseLoader() {
 		// parse all sql scripts
-		this.createStatements = this.parseInputStream(DBLogic.class.getClassLoader().getResourceAsStream(this.schemaFilename));
-		this.insertStatements = this.parseInputStream(TestDatabaseLoader.class.getClassLoader().getResourceAsStream(this.dataFilename));
-		this.deleteStatements = this.parseInputStream(TestDatabaseLoader.class.getClassLoader().getResourceAsStream(this.deleteFilename));
+		log.debug("parsing create statements");
+		this.createStatements = this.parseInputStream(DBLogic.class.getClassLoader().getResourceAsStream(SCHEMA_FILENAME));
+		
+		log.debug("parsing insert statements");
+		this.insertStatements = this.parseInputStream(TestDatabaseLoader.class.getClassLoader().getResourceAsStream(DATA_FILENAME));
+		
+		log.debug("parsing delete statements");
+		this.deleteStatements = this.parseInputStream(TestDatabaseLoader.class.getClassLoader().getResourceAsStream(DELETE_FILENAME));
 	}
 	
 	
@@ -59,8 +74,7 @@ public class TestDatabaseLoader {
 	 * @return
 	 */
 	private List<String> parseInputStream(InputStream scriptStream) {
-		
-		List<String> statements = new ArrayList<String>();
+		final List<String> statements = new ArrayList<String>();
 		if (scriptStream == null) throw new RuntimeException("Can't get SQL script.");
 				
 		/*
@@ -85,7 +99,7 @@ public class TestDatabaseLoader {
 
 			spanningLineBuf.append(" " + currentLine);
 			final String wholeLine = spanningLineBuf.toString().trim();
-			if (wholeLine.endsWith(";") == false) continue;
+			if (!wholeLine.endsWith(";")) continue;
 			log.debug("Read: " + wholeLine);
 			statements.add(wholeLine);
 			spanningLineBuf.delete(0, spanningLineBuf.length());
@@ -112,11 +126,10 @@ public class TestDatabaseLoader {
 			/*
 			 * execute statements from script
 			 */
-			List<String> statements = new ArrayList<String>();
+			final List<String> statements = new ArrayList<String>();
 			if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {
 				statements.addAll(this.createStatements);
-			}
-			else {
+			} else {
 				statements.addAll(this.deleteStatements);
 			}
 			statements.addAll(this.insertStatements);

@@ -29,8 +29,7 @@ import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
-import org.bibsonomy.database.params.ResourcesParam;
-import org.bibsonomy.database.params.SingleResourceParam;
+import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -59,7 +58,7 @@ import org.bibsonomy.services.searcher.ResourceSearch;
  * @param <R> the resource
  * @param <P> the param
  */
-public abstract class PostDatabaseManager<R extends Resource, P extends ResourcesParam<R> & SingleResourceParam<R>> extends AbstractDatabaseManager implements CrudableContent<R, P> {
+public abstract class PostDatabaseManager<R extends Resource, P extends ResourceParam<R>> extends AbstractDatabaseManager implements CrudableContent<R, P> {
 	private static final Log log = LogFactory.getLog(PostDatabaseManager.class);
 
 	/** database managers */
@@ -126,9 +125,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	/**
-	 * @param param
+	 * @param receiver 
+	 * @param limit 
+	 * @param offset 
 	 * @param session
-	 * @return a lists of Posts of type R with the inbox content
+	 * 
+	 * @return a lists of posts of type R with the inbox content
 	 */
 	public List<Post<R>> getPostsFromInbox(final String receiver, final int limit, final int offset, final DBSession session) {
 		final P param = this.createParam(limit, offset);
@@ -137,7 +139,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 	/**
-	 * @param param
+	 * @param receiver 
+	 * @param intraHash 
 	 * @param session
 	 * @return a lists of Posts of type R with the inbox content
 	 */
@@ -577,17 +580,17 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	public List<Post<R>> getPostsSearchForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String search, final String loginUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
 		if (this.isDoLuceneSearch()) {
 			final ResourceSearch<R> lucene = this.getResourceSearch();
-			if (present(lucene)) {
-				// get search results from lucene
-				final long starttimeQuery = System.currentTimeMillis();
-				final List<Post<R>> postList = lucene.searchGroup(groupId, visibleGroupIDs, search, loginUserName, limit, offset, null);
-				final long endtimeQuery = System.currentTimeMillis();
-				log.debug("Lucene" + this.resourceClassName + " complete group search query time: " + (endtimeQuery-starttimeQuery) + "ms");
-				return postList;
+			if (!present(lucene)) {
+				log.error("No resource searcher available.");
+				return new LinkedList<Post<R>>();
 			}
-
-			log.error("No resource searcher available.");
-			return new LinkedList<Post<R>>();
+			
+			// get search results from lucene
+			final long starttimeQuery = System.currentTimeMillis();
+			final List<Post<R>> postList = lucene.searchGroup(groupId, visibleGroupIDs, search, loginUserName, limit, offset, null);
+			final long endtimeQuery = System.currentTimeMillis();
+			log.debug("Lucene" + this.resourceClassName + " complete group search query time: " + (endtimeQuery-starttimeQuery) + "ms");
+			return postList;
 		}
 
 		final P param = this.createParam(loginUserName, null, limit, offset);
@@ -616,21 +619,21 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	public List<Post<R>> getPostsSearchLucene(final int groupId, final String search, final String requestedUserName, final String loginUserName, final Set<String> groupNames,  final int limit, final int offset, final DBSession session) {
 		final ResourceSearch<R> lucene = this.getResourceSearch();
-		if (present(lucene)) {
-			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-			final String group = groupDb.getGroupNameByGroupId(groupId, session);
-
-			// get search results from lucene
-			final long starttimeQuery = System.currentTimeMillis();
-			final List<Post<R>> postList = lucene.searchPosts(group, search, requestedUserName, loginUserName, groupNames, limit, offset);
-			final long endtimeQuery = System.currentTimeMillis();
-			log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
-
-			return postList;
+		if (!present(lucene)) {
+			log.error("No resource searcher available.");
+			return new LinkedList<Post<R>>();
 		}
 
-		log.error("No resource searcher available.");
-		return new LinkedList<Post<R>>();
+		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+		final String group = groupDb.getGroupNameByGroupId(groupId, session);
+
+		// get search results from lucene
+		final long starttimeQuery = System.currentTimeMillis();
+		final List<Post<R>> postList = lucene.searchPosts(group, search, requestedUserName, loginUserName, groupNames, limit, offset);
+		final long endtimeQuery = System.currentTimeMillis();
+		log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
+
+		return postList;
 	}
 
 	/**
@@ -1553,7 +1556,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/**
 	 * @return the simple class name of the first generic param (<R>, Resource)
 	 */
-	private String getResourceClassName() {
+	protected String getResourceClassName() {
 		return this.getResourceClass().getSimpleName();
 	}
 

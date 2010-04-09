@@ -17,18 +17,17 @@ import org.bibsonomy.database.util.DBSession;
 public class BasketDatabaseManager extends AbstractDatabaseManager {
 	private final static BasketDatabaseManager singleton = new BasketDatabaseManager();
 	
-	private final DatabasePluginRegistry plugins;
-
-	private BasketDatabaseManager() {
-		super();
-		this.plugins = DatabasePluginRegistry.getInstance();
-	}
-
 	/**
 	 * @return a singleon instance of this BasketDatabaseManager
 	 */
 	public static BasketDatabaseManager getInstance() {
 		return singleton;
+	}
+	
+	private final DatabasePluginRegistry plugins;
+
+	private BasketDatabaseManager() {
+		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 
 	/**
@@ -84,10 +83,12 @@ public class BasketDatabaseManager extends AbstractDatabaseManager {
 		this.plugins.onDeleteBasketItem(param, session);
 		this.delete("deleteBasketItems", param, session);
 	}
+	
 	/**
 	 * updates basket items
+	 * @param newContentId 
+	 * @param contentId 
 	 * @param session 
-	 * @param param 
 	 */
 	public void updateItems(final int newContentId, final int contentId, final DBSession session){
 		final BasketParam param = new BasketParam();

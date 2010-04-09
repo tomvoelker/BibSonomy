@@ -22,9 +22,7 @@ import org.bibsonomy.model.Post;
  * @version $Id$
  */
 public class BookmarkDatabaseManager extends PostDatabaseManager<Bookmark, BookmarkParam> {
-//	private static final Log log = LogFactory.getLog(BookmarkDatabaseManager.class);
-
-	private final static BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
+	private static final BookmarkDatabaseManager singleton = new BookmarkDatabaseManager();
 	
 	private static final BookmarkChain chain = new BookmarkChain();
 	private static final HashID[] hashRange = { HashID.SIM_HASH0 };

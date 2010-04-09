@@ -28,27 +28,26 @@ import org.bibsonomy.model.User;
  *          Exp $
  */
 public class AdminDatabaseManager extends AbstractDatabaseManager {
-
+	private static final Log log = LogFactory.getLog(AdminDatabaseManager.class);
+	
 	private final static AdminDatabaseManager singleton = new AdminDatabaseManager();
-	protected static final Log log = LogFactory.getLog(AdminDatabaseManager.class);
-
+	
 	/**
 	 * Holds the names of the tables where group ids must be updated, when a
 	 * user is flagged as spammer or deleted.
 	 * 
 	 * TODO: Make database names constants.
 	 */
-	private final List<String> tableNames = Arrays.asList(new String[] { "tas", "grouptas", "bibtex", "bookmark" });
-
-	private AdminDatabaseManager() {
-		super();
-	}
+	private final List<String> tableNames = Arrays.asList("tas", "grouptas", "bibtex", "bookmark", "search_bibtex", "search_bookmark");
 
 	/**
 	 * @return a singleton instance of this AdminDatabaseManager
 	 */
 	public static AdminDatabaseManager getInstance() {
 		return singleton;
+	}
+	
+	private AdminDatabaseManager() {
 	}
 
 	/**
@@ -60,8 +59,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public InetAddressStatus getInetAddressStatus(final InetAddress address, final DBSession session) {
 		InetAddressStatus status = (InetAddressStatus) this.queryForObject("getInetAddressStatus", address, session);
-		if (status == null) return InetAddressStatus.UNKNOWN;
-		return status;
+		return status == null ? InetAddressStatus.UNKNOWN : status;
 	}
 
 	/**
@@ -334,7 +332,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 		// handle separately
 		if (ClassifierSettings.WHITELIST_EXP.equals(key)){
 			this.insert("insertClassifierWhitelist", param, session);
-		}else{
+		} else {
 			// rest is in classifier settings table
 			this.update("updateClassifierSettings", param, session);
 		}

@@ -23,15 +23,15 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 
 	private static final GeneralDatabaseManager singleton = new GeneralDatabaseManager();
 
-	private GeneralDatabaseManager() {
-		super();
-	}
-
 	/**
 	 * @return the singleton instance
 	 */
 	public static GeneralDatabaseManager getInstance() {
 		return singleton;
+	}
+	
+	private GeneralDatabaseManager() {
+		
 	}
 
 	/**
@@ -58,11 +58,15 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		/*
 		 * user names missing -> no friends
 		 */
-		if (present(userA) == false || present(userB) == false) return false;
+		if (!present(userA) || !present(userB)) {
+			return false;
+		}
 		/*
 		 * everybody is his/her own friend
 		 */
-		if (userA.equals(userB)) return true;
+		if (userA.equals(userB)) {
+			return true;
+		}
 		/*
 		 * we're looking at userB's friend list, hence, we create userB ...
 		 */
@@ -86,7 +90,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	 * @return true if the user is a spammer, false otherwise
 	 */
 	public Boolean isSpammer(final String userName, final DBSession session) {
-		if (present(userName) == false) return false;
+		if (!present(userName)) return false;
 		return this.queryForObject("isSpammer", userName, Boolean.class, session);
 	}
 
@@ -108,9 +112,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		this.insert("updateIds", idsType.getId(), session);
 	}
 
-	/**
-	 * TODO: document me...
-	 * 
+	/** 
 	 * @param idsType
 	 * @param session
 	 * @return current contentID
@@ -120,8 +122,6 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * TODO: document me...
-	 * 
 	 * @param param
 	 * @param session
 	 * @return count new contentID from BibTeX
@@ -130,9 +130,7 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 		return this.queryForObject("countNewContentIdFromBibTex", param, Integer.class, session);
 	}
 
-	/**
-	 * TODO: document me...
-	 * 
+	/** 
 	 * @param param
 	 * @param session
 	 * @return count requested contentID from BibTeX
@@ -142,8 +140,6 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * TODO: document me...
-	 * 
 	 * @param param
 	 * @param session
 	 * @return count new contentID from Bookmark
@@ -153,8 +149,6 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * TODO: document me...
-	 * 
 	 * @param param
 	 * @param session
 	 * @return count requested contentID from Bookmark
@@ -164,8 +158,6 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * TODO: document me...
-	 * 
 	 * @param param
 	 * @param session
 	 * @return count tasIDs
@@ -175,8 +167,6 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * TODO: document me...
-	 * 
 	 * @param param
 	 * @param session
 	 * @return count logged tasIDs
@@ -186,8 +176,6 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * TODO: document me...
-	 * 
 	 * @param param
 	 * @param session
 	 * @return count tag relation
@@ -197,8 +185,6 @@ public class GeneralDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * TODO: document me...
-	 * 
 	 * @param param
 	 * @param session
 	 * @return count group

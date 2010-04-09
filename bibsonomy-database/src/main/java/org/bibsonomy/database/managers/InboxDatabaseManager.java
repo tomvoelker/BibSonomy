@@ -34,7 +34,6 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	private final  GeneralDatabaseManager generalDb;
 	
 	private InboxDatabaseManager(){
-		super();
 		this.generalDb = GeneralDatabaseManager.getInstance();
 	}
 	
@@ -55,26 +54,22 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	/**
 	 * Retrieve the number of messages of the given resourceType currently present in the inbox of the
 	 * given user.
-	 * 
-	 * @param param contains resourceType and requestedUserName
-	 *            the username of the owner of the inbox
+	 * @param receiver  the requested user name of the the owner of the inbox 
+	 * @param contentType  the contentType of the resource
 	 * @param session
 	 *            the database session
 	 * @return the number of messages currently stored in the inbox
 	 */
 	public int getNumInboxMessages(final String receiver, final ConstantID contentType, final DBSession session) {
-		InboxParam param = new InboxParam();
+		final InboxParam param = new InboxParam();
 		param.setContentType(contentType);
 		param.setReceiver(receiver);
 		return queryForObject("getNumInboxMessagesByType", param, Integer.class, session);
-	}
-
-	
+	}	
 	
 	private int getInboxMessages(final InboxParam param, final DBSession session) {
 		return queryForObject("getNumInboxMessagesByHashAndSenderAndReceiver", param, Integer.class, session);
 	}
-	
 	
 	/**
 	 * creates one inbox Message
@@ -154,8 +149,8 @@ public class InboxDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void deleteAllInboxMessages(final String receiver, final DBSession session){
 		// get all messageIds, that are to be deleted and erase their tags first
-		List<Integer> messageIds= getInboxMessageIds(receiver, session);
-		for (Integer messageId: messageIds) {
+		List<Integer> messageIds = getInboxMessageIds(receiver, session);
+		for (Integer messageId : messageIds) {
 			this.delete("deleteInboxMessageTags", messageId, session);
 		}
 		this.delete("deleteAllInboxMessages", receiver, session);

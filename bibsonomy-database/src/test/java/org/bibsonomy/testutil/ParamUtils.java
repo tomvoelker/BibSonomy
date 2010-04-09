@@ -148,13 +148,6 @@ public final class ParamUtils {
 	}
 
 	/**
-	 * @return random user name
-	 */
-	public static String getRandomUserName() {
-		return "user" + new Long(System.nanoTime()).hashCode();
-	}
-
-	/**
 	 * Retrieve a TagParam
 	 * @return TagParam
 	 */

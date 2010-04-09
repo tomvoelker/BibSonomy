@@ -18,21 +18,13 @@ import com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource;
  * without a running application server, which usually provides the JNDI tree.
  * 
  * @author Dominik Benz
+ * @author bkr
  * @version $Id$
  */
-/**
- * @author bkr
- *
- */
-public final class JNDITestDatabaseBinder {
-
+public final class JNDITestDatabaseBinder {	
 	private static final Log log = LogFactory.getLog(JNDITestDatabaseBinder.class);
-
-	/**
-	 * Don't create instances of this class - use the static methods instead.
-	 */
-	private JNDITestDatabaseBinder() {
-	}
+	
+	private static final String DATABASE_PROPERTIES_FILENAME = "database.properties";
 
 	/**
 	 * Main method: read configuration file 'database.properties', create SQL Data Source and
@@ -47,8 +39,7 @@ public final class JNDITestDatabaseBinder {
 			ctx = new InitialContext();
 			ctx.bind("java:comp/env/jdbc/bibsonomy", ds);
 			ctx.bind("java:comp/env/jdbc/bibsonomy_slave", ds);
-		}
-		catch (NamingException ex) {
+		} catch (NamingException ex) {
 			log.error("Error when trying to bind test database connection via JNDI");
 			log.error(ex.getMessage());
 		}
@@ -65,10 +56,11 @@ public final class JNDITestDatabaseBinder {
 		final Properties props = new Properties();		
 		try {
 			// read database properties
-			props.load(JNDITestDatabaseBinder.class.getClassLoader().getResourceAsStream("database.properties"));		
+			props.load(JNDITestDatabaseBinder.class.getClassLoader().getResourceAsStream(DATABASE_PROPERTIES_FILENAME));		
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
+		
 		final MysqlConnectionPoolDataSource dataSource = new MysqlConnectionPoolDataSource();
 
 		String url = composeDatabaseURL(props);
@@ -86,7 +78,6 @@ public final class JNDITestDatabaseBinder {
 	 * @return string	composed url (database included in url)
 	 */
 	private static String composeDatabaseURL(Properties props){
-		
 		String url = props.getProperty("url");
 		StringBuffer newUrl = new StringBuffer(url.substring(0, url.lastIndexOf("/")+1));
 		newUrl.append(props.getProperty("database"));

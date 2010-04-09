@@ -17,7 +17,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.params.ResourcesParam;
+import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.util.DBSession;
@@ -61,7 +61,6 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	private final DocumentDatabaseManager docDb;
 	
 	private BibTexDatabaseManager() {
-		super();
 		this.docDb = DocumentDatabaseManager.getInstance();
 		this.extraDb = BibTexExtraDatabaseManager.getInstance();
 	}
@@ -76,7 +75,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		/*
 		 * do lucene search
 		 */
-		if (doLuceneSearch) {
+		if (this.isDoLuceneSearch()) {
 			return super.getPostsSearchForGroup(groupId, visibleGroups, search, requestedUserName, limit, offset, systemTags, session);
 		}
 		/*
@@ -138,14 +137,14 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param search
 	 * @param groupId
 	 * @param requestedUserName
+	 * @param userName 
 	 * @param requestedGroupName 
 	 * @param limit
 	 * @param offset
 	 * @param session
-	 * @return list of bibtex entries
+	 * @return list of publication entries
 	 */
-	public List<Post<BibTex>> getPostsByTitleLucene(final String search, final int groupId, final String requestedUserName, final String userName, final Set<String> requestedGroupName, final int limit, final int offset, final DBSession session){
-		final ResultList<Post<BibTex>> postBibtexList;
+	public List<Post<BibTex>> getPostsByTitleLucene(final String search, final int groupId, final String requestedUserName, final String userName, final Set<String> requestedGroupName, final int limit, final int offset, final DBSession session) {
 		final ResourceSearch<BibTex> resourceSearch = this.getResourceSearch();
 		if (present(resourceSearch)) {
 			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
@@ -153,16 +152,15 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			
 			final long starttimeQuery = System.currentTimeMillis();
 			//String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset
-			postBibtexList = resourceSearch.getPostsByTitle(group, search, requestedUserName, userName, requestedGroupName, limit, offset);
+			final List<Post<BibTex>> posts = resourceSearch.getPostsByTitle(group, search, requestedUserName, userName, requestedGroupName, limit, offset);
 
 			final long endtimeQuery = System.currentTimeMillis();
 			log.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
-		} else {
-			postBibtexList = new ResultList<Post<BibTex>>();
-			log.error("No resource searcher available.");
+			return posts;
 		}
-			
-		return postBibtexList;
+		
+		log.error("No resource searcher available.");	
+		return new ResultList<Post<BibTex>>();
 	}
 
 	/**
@@ -207,7 +205,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
-	 * adds document retrieval to {@link PostDatabaseManager#getPostsForUser(ResourcesParam, DBSession)}
+	 * adds document retrieval to {@link PostDatabaseManager#getPostsForUser(ResourceParam, DBSession)}
 	 */
 	@Override
 	protected List<Post<BibTex>> getPostsForUser(final BibTexParam param, final DBSession session) {		
@@ -238,7 +236,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
-	 * adds document retrieval to {@link PostDatabaseManager#getPostsForGroup(ResourcesParam, DBSession)}
+	 * adds document retrieval to {@link PostDatabaseManager#getPostsForGroup(ResourceParam, DBSession)}
 	 */
 	@Override
 	protected List<Post<BibTex>> getPostsByTagNamesForUser(final BibTexParam param, final DBSession session) {
@@ -266,7 +264,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
-	 * adds document retrieval to {@link PostDatabaseManager#getPostsForGroupByTag(ResourcesParam, DBSession)}
+	 * adds document retrieval to {@link PostDatabaseManager#getPostsForGroupByTag(ResourceParam, DBSession)}
 	 */
 	@Override
 	protected List<Post<BibTex>> getPostsForGroupByTag(final BibTexParam param, final DBSession session) {
@@ -292,7 +290,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	}
 	
 	/**
-	 * adds document retrieval to {@link PostDatabaseManager#getPostsForGroup(ResourcesParam, DBSession)}
+	 * adds document retrieval to {@link PostDatabaseManager#getPostsForGroup(ResourceParam, DBSession)}
 	 */
 	@Override
 	protected List<Post<BibTex>> getPostsForGroup(final BibTexParam param, final DBSession session) {
