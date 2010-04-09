@@ -36,7 +36,7 @@ public class TabsCommand<T> extends ResourceViewCommand implements TabsCommandIn
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.command.TabsCommandInterface#setContent(java.util.List)
 	 */
-	public void setContent(List<T> content) {
+	public void setContent(final List<T> content) {
 		this.content = content;
 	}
 
@@ -50,7 +50,7 @@ public class TabsCommand<T> extends ResourceViewCommand implements TabsCommandIn
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.command.TabsCommandInterface#setSelTab(java.lang.Integer)
 	 */
-	public void setSelTab(Integer selectedTab) {
+	public void setSelTab(final Integer selectedTab) {
 		this.selTab = selectedTab;
 	}
 
@@ -64,7 +64,7 @@ public class TabsCommand<T> extends ResourceViewCommand implements TabsCommandIn
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.webapp.command.TabsCommandInterface#setTabs(java.util.List)
 	 */
-	public void setTabs(List<TabCommand> tabs) {
+	public void setTabs(final List<TabCommand> tabs) {
 		this.tabs = tabs;
 	}
 
@@ -85,11 +85,17 @@ public class TabsCommand<T> extends ResourceViewCommand implements TabsCommandIn
 		}
 	}
 
+	/**
+	 * @return the tabURL
+	 */
 	public String getTabURL() {
 		return this.tabURL;
 	}
 
-	public void setTabURL(String tabURL) {
+	/**
+	 * @param tabURL the tabURL to set
+	 */
+	public void setTabURL(final String tabURL) {
 		this.tabURL = tabURL;
 	}
 

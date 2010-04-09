@@ -1,6 +1,3 @@
-/*
- * Created on 14.10.2007
- */
 package org.bibsonomy.webapp.command;
 
 /**
@@ -24,7 +21,7 @@ public class PageCommand {
 	 * @param start index of the first entity in the sublist on this page
 	 *        (starting with 0)
 	 */
-	public PageCommand(Integer number, int start) {
+	public PageCommand(final Integer number, final int start) {
 		this.number = number;
 		this.start = start;
 	}
@@ -36,11 +33,12 @@ public class PageCommand {
 	public Integer getNumber() {
 		return this.number;
 	}
+	
 	/**
 	 * @param number index of this page (normally displayed in the view and
 	 *        therefore starting with 1). May be null if unknown
 	 */
-	public void setNumber(Integer number) {
+	public void setNumber(final Integer number) {
 		this.number = number;
 	}
 	
@@ -51,13 +49,12 @@ public class PageCommand {
 	public int getStart() {
 		return this.start;
 	}
+	
 	/**
 	 * @param start index of the first entity in the sublist on this page
 	 *              (starting with 0)
 	 */
-	public void setStart(int start) {
+	public void setStart(final int start) {
 		this.start = start;
 	}
-	
-	
 }

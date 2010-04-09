@@ -14,16 +14,21 @@ public class PostCommand extends ResourceViewCommand {
 	}
 
 	@Override
-	public void setTagcloud(TagCloudCommand tagcloud) {
+	public void setTagcloud(final TagCloudCommand tagcloud) {
 		this.tagcloud = tagcloud;
 	}
 
+	/**
+	 * @return the concepts
+	 */
 	public ConceptsCommand getConcepts() {
 		return this.concepts;
 	}
 
-	public void setConcepts(ConceptsCommand concepts) {
+	/**
+	 * @param concepts the concepts to set
+	 */
+	public void setConcepts(final ConceptsCommand concepts) {
 		this.concepts = concepts;
 	}
-
 }
