@@ -253,9 +253,6 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 					}
 				}
 				// all done.
-				// FIXME: we simply cut off the list 
-				//      - we probably want get the n most popular tags
-				retVal = retVal.subList(0, Math.min(limit, retVal.size()));
 			};
 			
 			if( retVal==null )
