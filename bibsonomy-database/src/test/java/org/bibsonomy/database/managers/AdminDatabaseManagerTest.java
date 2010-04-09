@@ -9,6 +9,7 @@ import org.bibsonomy.common.enums.ClassifierMode;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.model.User;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -17,6 +18,16 @@ import org.junit.Test;
  * @version $Id$
  */
 public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
+	
+	private static AdminDatabaseManager adminDb;
+	
+	/**
+	 * sets up required managers
+	 */
+	@BeforeClass
+	public static void setupManager() {
+		adminDb = AdminDatabaseManager.getInstance();
+	}
 
 	/**
 	 * tests getInetAddressStatus
@@ -25,7 +36,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void getInetAddressStatus() {
 		try {
 			final InetAddress address = InetAddress.getByName("192.168.0.1");
-			assertEquals(InetAddressStatus.UNKNOWN, this.adminDb.getInetAddressStatus(address, this.dbSession));
+			assertEquals(InetAddressStatus.UNKNOWN, adminDb.getInetAddressStatus(address, this.dbSession));
 		} catch (UnknownHostException ignore) {
 			// ignore, we don't need host name resolution
 		}
@@ -40,9 +51,9 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			final InetAddress address = InetAddress.getByName("192.168.1.1");
 			final InetAddressStatus status = InetAddressStatus.WRITEBLOCKED;
 			// write
-			this.adminDb.addInetAddressStatus(address, status, this.dbSession);
+			adminDb.addInetAddressStatus(address, status, this.dbSession);
 			// read
-			final InetAddressStatus writtenStatus = this.adminDb.getInetAddressStatus(address, this.dbSession);
+			final InetAddressStatus writtenStatus = adminDb.getInetAddressStatus(address, this.dbSession);
 			// check
 			assertEquals(status, writtenStatus);
 		} catch (UnknownHostException ignore) {
@@ -58,11 +69,11 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		try {
 			final InetAddress address = InetAddress.getByName("192.168.1.1");
 			// read
-			InetAddressStatus status = this.adminDb.getInetAddressStatus(address, this.dbSession);
+			InetAddressStatus status = adminDb.getInetAddressStatus(address, this.dbSession);
 			// delete
-			this.adminDb.deleteInetAdressStatus(address, this.dbSession);
+			adminDb.deleteInetAdressStatus(address, this.dbSession);
 			// read
-			status = this.adminDb.getInetAddressStatus(address, this.dbSession);
+			status = adminDb.getInetAddressStatus(address, this.dbSession);
 			// check
 			assertEquals(InetAddressStatus.UNKNOWN, status);
 		} catch (UnknownHostException ex) {
@@ -76,7 +87,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getClassifierSettings() {
 		final ClassifierSettings settingsKey = ClassifierSettings.ALGORITHM;
-		final String value = this.adminDb.getClassifierSettings(settingsKey, this.dbSession);
+		final String value = adminDb.getClassifierSettings(settingsKey, this.dbSession);
 		assertEquals("weka.classifiers.lazy.IBk", value);
 	}
 
@@ -88,9 +99,9 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		final ClassifierSettings settingsKey = ClassifierSettings.MODE;
 		final String value = ClassifierMode.NIGHT.getAbbreviation();
 
-		this.adminDb.updateClassifierSettings(settingsKey, value, this.dbSession);
+		adminDb.updateClassifierSettings(settingsKey, value, this.dbSession);
 
-		final String result = this.adminDb.getClassifierSettings(settingsKey, this.dbSession);
+		final String result = adminDb.getClassifierSettings(settingsKey, this.dbSession);
 		assertEquals(value, result);
 	}
 
@@ -108,7 +119,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		user.setMode("D");
 		user.setAlgorithm("testlogging");
 		//flag spammer (flagging does not change: user is no spammer)
-		final String result = this.adminDb.flagSpammer(user, "classifier", "off", this.dbSession);
+		final String result = adminDb.flagSpammer(user, "classifier", "off", this.dbSession);
 		assertEquals(user.getName(), result);
 	}
 	
@@ -129,7 +140,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		user.setMode("D");
 		user.setAlgorithm("testlogging");
 		//flag spammer (flagging does not change: user is no spammer)
-		this.adminDb.flagSpammer(user, "fei", "off", this.dbSession);
+		adminDb.flagSpammer(user, "fei", "off", this.dbSession);
 		
 		// remove spam informations
 		user.setSpammer(null);
@@ -139,7 +150,7 @@ public class AdminDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		user.setMode(null);
 		
 		// populate user with spam informations
-		User userRead = this.adminDb.getClassifierUserDetails(user, this.dbSession);
+		User userRead = adminDb.getClassifierUserDetails(user, this.dbSession);
 		
 		// assure, that spam data is read but no other informations lost
 		assertEquals(user, userRead);

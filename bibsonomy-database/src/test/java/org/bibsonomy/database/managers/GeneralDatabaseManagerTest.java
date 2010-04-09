@@ -8,7 +8,9 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.testutil.ParamUtils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -20,7 +22,17 @@ import org.junit.Test;
  * @version $Id$
  */
 public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
-
+	
+	private static GeneralDatabaseManager generalDb;
+	
+	/**
+	 * sets up the used managers
+	 */
+	@BeforeClass
+	public static void setupDatabaseManager() {
+		generalDb = GeneralDatabaseManager.getInstance();
+	}
+	
 	/**
 	 * tests isFriendOf
 	 */
@@ -28,18 +40,18 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void isFriendOf() {
 		// a user is always his own friend
 		for (final int i : new int[] { 1, 2, 3 }) {
-			assertTrue(this.generalDb.isFriendOf("testuser" + i, "testuser" + i, this.dbSession));
+			assertTrue(generalDb.isFriendOf("testuser" + i, "testuser" + i, this.dbSession));
 		}
 
 		// combinations: testuser1 has as friends testuser2 and 3, 
 		//               testuser2 has as friend testuser1
 		//               testuser3 has no friends at all
-		assertTrue(this.generalDb.isFriendOf("testuser2", "testuser1", this.dbSession));
-		assertTrue(this.generalDb.isFriendOf("testuser3", "testuser1", this.dbSession));
-		assertTrue(this.generalDb.isFriendOf("testuser1", "testuser2", this.dbSession));
-		assertFalse(this.generalDb.isFriendOf("testuser3", "testuser2", this.dbSession));
-		assertFalse(this.generalDb.isFriendOf("testuser1", "testuser3", this.dbSession));
-		assertFalse(this.generalDb.isFriendOf("testuser2", "testuser3", this.dbSession));
+		assertTrue(generalDb.isFriendOf("testuser2", "testuser1", this.dbSession));
+		assertTrue(generalDb.isFriendOf("testuser3", "testuser1", this.dbSession));
+		assertTrue(generalDb.isFriendOf("testuser1", "testuser2", this.dbSession));
+		assertFalse(generalDb.isFriendOf("testuser3", "testuser2", this.dbSession));
+		assertFalse(generalDb.isFriendOf("testuser1", "testuser3", this.dbSession));
+		assertFalse(generalDb.isFriendOf("testuser2", "testuser3", this.dbSession));
 
 		// with no users set or a not existing one, no exception should be
 		// thrown and the result should just be "false"
@@ -47,7 +59,7 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		for (final String userName : combinations) {
 			for (final String friendUserName : combinations) {
 				if (present(userName) && present(friendUserName) && userName.equals(friendUserName)) continue;
-				assertFalse(this.generalDb.isFriendOf(userName, friendUserName, this.dbSession));
+				assertFalse(generalDb.isFriendOf(userName, friendUserName, this.dbSession));
 			}
 		}
 	}
@@ -59,16 +71,17 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void isSpammer() {
 		// these users aren't spammers
 		for (final int i : new int[] { 1, 2, 3 }) {
-			assertFalse(this.generalDb.isSpammer("testuser" + i, this.dbSession));
+			assertFalse(generalDb.isSpammer("testuser" + i, this.dbSession));
 		}
 
 		// this is a spammer
-		assertTrue(this.generalDb.isSpammer("testspammer", this.dbSession));
+		assertTrue(generalDb.isSpammer("testspammer", this.dbSession));
 
 		// Default behaviour
 		for (final String userName : new String[] { "", " ", null }) {
-			this.generalParam.setRequestedUserName(userName);
-			assertEquals(false, this.generalDb.isSpammer(userName, this.dbSession));
+			final GenericParam generalParam = ParamUtils.getDefaultGeneralParam();
+			generalParam.setRequestedUserName(userName);
+			assertEquals(false, generalDb.isSpammer(userName, this.dbSession));
 		}
 	}
 
@@ -77,13 +90,13 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void getNewContentId() {
-		final int id = this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		assertTrue(id < this.generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession));
+		final int id = generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		assertTrue(id < generalDb.getNewContentId(ConstantID.IDS_CONTENT_ID, this.dbSession));
 
-		assertNull(this.generalDb.getNewContentId(ConstantID.IDS_UNDEFINED_CONTENT_ID, this.dbSession));
+		assertNull(generalDb.getNewContentId(ConstantID.IDS_UNDEFINED_CONTENT_ID, this.dbSession));
 
 		try {
-			this.generalDb.getNewContentId(null, this.dbSession);
+			generalDb.getNewContentId(null, this.dbSession);
 			fail("Exception should be thrown");
 		} catch (Exception ignore) {
 		}
@@ -94,11 +107,9 @@ public class GeneralDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void updateIds() {
-		Integer curId = null;
-		Integer newId = null;
-		curId = this.generalDb.getNewContentId(ConstantID.IDS_TAS_ID, this.dbSession);
-		this.generalDb.updateIds(ConstantID.IDS_TAS_ID, this.dbSession);
-		newId = this.generalDb.getNewContentId(ConstantID.IDS_TAS_ID, this.dbSession);
-		assertTrue(newId == curId + 2);
+		final int curId = generalDb.getNewContentId(ConstantID.IDS_TAS_ID, this.dbSession);
+		generalDb.updateIds(ConstantID.IDS_TAS_ID, this.dbSession);
+		final int newId = generalDb.getNewContentId(ConstantID.IDS_TAS_ID, this.dbSession);
+		assertEquals(curId + 2, newId);
 	}
 }

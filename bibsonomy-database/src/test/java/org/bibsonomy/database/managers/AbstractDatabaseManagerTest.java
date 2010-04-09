@@ -1,27 +1,18 @@
 package org.bibsonomy.database.managers;
 
-import static org.junit.Assert.fail;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.params.GroupParam;
-import org.bibsonomy.database.params.StatisticsParam;
-import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.params.TagRelationParam;
-import org.bibsonomy.database.params.UserParam;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.plugin.DatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
+import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DBSessionFactory;
+import org.bibsonomy.database.util.DatabaseManagerInitializer;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.testutil.DatabasePluginMock;
 import org.bibsonomy.testutil.JNDITestDatabaseBinder;
-import org.bibsonomy.testutil.ParamUtils;
 import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -34,94 +25,69 @@ import org.junit.BeforeClass;
  * @author Christian Schenk
  * @version $Id$
  */
-public abstract class AbstractDatabaseManagerTest {
-
-	private static final Log log = LogFactory.getLog(AbstractDatabaseManagerTest.class);
-
-	protected GeneralDatabaseManager generalDb;
-	protected BookmarkDatabaseManager bookmarkDb;
-	protected BibTexDatabaseManager bibTexDb;
-	protected BibTexExtraDatabaseManager bibTexExtraDb;
-	protected UserDatabaseManager userDb;
-	protected TagDatabaseManager tagDb;
-	protected TagRelationDatabaseManager tagRelDb;
-	protected GroupDatabaseManager groupDb;
-	protected AdminDatabaseManager adminDb;
-	protected PermissionDatabaseManager permissionDb;
-	protected StatisticsDatabaseManager statisticsDb;
-	protected BasketDatabaseManager basketDb;
-	protected InboxDatabaseManager inboxDb;
-
-	protected GenericParam generalParam;
-	protected BookmarkParam bookmarkParam;
-	protected BibTexParam bibtexParam;
-	protected UserParam userParam;
-	protected TagParam tagParam;
-	protected TagRelationParam tagRelationParam;
-	protected GroupParam groupParam;
-	protected StatisticsParam statisticsParam;
+public abstract class AbstractDatabaseManagerTest {	
+	// TODO: move to a TestUtilClass
+	protected static final int PUBLIC_GROUP_ID = GroupID.PUBLIC.getId();
+	protected static final int PRIVATE_GROUP_ID = GroupID.PRIVATE.getId();
+	protected static final int FRIENDS_GROUP_ID = GroupID.FRIENDS.getId();
+	protected static final int INVALID_GROUP_ID = GroupID.INVALID.getId();
+	protected static final int TESTGROUP1_ID = 3;
+	protected static final int TESTGROUP2_ID = 4;
 	
-	protected DatabasePluginRegistry pluginRegistry;
+	private static DBSessionFactory dbSessionFactory;
+	protected static DatabasePluginRegistry pluginRegistry;
+	protected static DatabaseManagerInitializer dbManagerInitializer;
+	
 	protected DatabasePluginMock pluginMock;
-	
-	private DBSessionFactory dbSessionFactory;
 	protected DBSession dbSession;
 	
-
 	/**
 	 * Initializes the test database.
 	 */
 	@BeforeClass
 	public static void initDatabase() {
-		new TestDatabaseLoader().load();
+		// bind datasource access via JNDI
+		JNDITestDatabaseBinder.bind();
+		
+		TestDatabaseLoader.getInstance().load();
+		
+		// set searchmode to lucene
+		System.setProperty("searchMode", "lucene");
+		
+		dbSessionFactory = new IbatisDBSessionFactory();
+		
+		pluginRegistry = DatabasePluginRegistry.getInstance();
+		
+		// init managers
+		final SystemTagFactory systemTagFactory = new SystemTagFactory();
+		systemTagFactory.setSessionFactory(dbSessionFactory);
+		
+		dbManagerInitializer = new DatabaseManagerInitializer();
+		dbManagerInitializer.setSystemTagFactory(systemTagFactory);
+	}
+	
+	/**
+	 * unbinds jndi
+	 */
+	@AfterClass
+	public static void unbind() {
+		JNDITestDatabaseBinder.unbind();
 	}
 
 	/**
-	 * Setup
+	 * create new database session and reset the pluginRegistry
 	 */
 	@Before
-	public void setUp() {
-		try {
-			
-			// set searchmode to lucene
-			System.setProperty("searchMode", "lucene");
-			
-			this.generalDb = GeneralDatabaseManager.getInstance();
-			this.bookmarkDb = BookmarkDatabaseManager.getInstance();
-			this.bibTexDb = BibTexDatabaseManager.getInstance();
-			this.bibTexExtraDb = BibTexExtraDatabaseManager.getInstance();
-			this.userDb = UserDatabaseManager.getInstance();
-			this.tagDb = TagDatabaseManager.getInstance();
-			this.tagRelDb = TagRelationDatabaseManager.getInstance();
-			this.groupDb = GroupDatabaseManager.getInstance();
-			this.adminDb = AdminDatabaseManager.getInstance();
-			this.permissionDb = PermissionDatabaseManager.getInstance();
-			this.statisticsDb = StatisticsDatabaseManager.getInstance();
-			this.basketDb = BasketDatabaseManager.getInstance();
-			this.inboxDb = InboxDatabaseManager.getInstance();
-
-			// initialize parameter objects
-			this.resetParameters();
-
-			// bind datasource access via JNDI
-			JNDITestDatabaseBinder.bind();
-
-			this.dbSessionFactory = new IbatisDBSessionFactory();
-			this.dbSession = this.dbSessionFactory.getDatabaseSession();
-			
-			// load plugins
-			this.pluginRegistry = DatabasePluginRegistry.getInstance();
-			this.pluginMock = new DatabasePluginMock();
-			this.pluginRegistry.clearPlugins();
-			
-			this.pluginRegistry.add(pluginMock);
-			for (final DatabasePlugin plugin : DatabasePluginRegistry.getDefaultPlugins()) {
-				this.pluginRegistry.add(plugin);
-			}
-						
-		} catch (final Throwable ex) {
-			log.fatal("exception in testcase setUp", ex);
-			fail("setup failed. cause: " + ex.getMessage());
+	public final void setUp() {		
+		this.dbSession = dbSessionFactory.getDatabaseSession();
+		
+		// load plugins (some tests are removing plugins from the plugin registry
+		this.pluginMock = new DatabasePluginMock();
+		pluginRegistry.clearPlugins();
+		
+		pluginRegistry.add(pluginMock);
+		for (final DatabasePlugin plugin : DatabasePluginRegistry.getDefaultPlugins()) {
+			pluginRegistry.add(plugin);
 		}
 	}
 
@@ -129,56 +95,14 @@ public abstract class AbstractDatabaseManagerTest {
 	 * Tear down
 	 */
 	@After
-	public void tearDown() {
-		this.generalDb = null;
-		this.bookmarkDb = null;
-		this.bibTexDb = null;
-		this.bibTexExtraDb = null;
-		this.tagDb = null;
-		this.userDb = null;
-		this.groupDb = null;
-		this.adminDb = null;
-		this.permissionDb = null;
-
-		this.generalParam = null;
-		this.bookmarkParam = null;
-		this.bibtexParam = null;
-		this.userParam = null;
-		this.tagParam = null;
-		this.groupParam = null;
-		this.statisticsParam = null;
-
-		JNDITestDatabaseBinder.unbind();
-		// FIXME: hack ("DBSessionImpl not closed")		
-		if( this.dbSession!=null )
+	public void tearDown() {		
+		// close session	
+		if (this.dbSession != null) {
 			this.dbSession.close();
-	}
-
-	/**
-	 * Resets the parameter objects, which can be useful inside one method of a
-	 * testcase. On some occasions we need to do this, e.g. when more than one
-	 * query is involved and the results from one query are stored in the
-	 * parameter object so they can be used in the next query: in this case the
-	 * parameter object is altered which can lead to side effects in the
-	 * following queries.<br/>
-	 * 
-	 * Hint: This is done before running a testcase method, so you don't have to
-	 * do this manually.
-	 * 
-	 * @see #setUp()
-	 */
-	protected void resetParameters() {
-		this.generalParam = ParamUtils.getDefaultGeneralParam();
-		this.bookmarkParam = ParamUtils.getDefaultBookmarkParam();
-		this.bibtexParam = ParamUtils.getDefaultBibTexParam();
-		this.userParam = ParamUtils.getDefaultUserParam();
-		this.tagParam = ParamUtils.getDefaultTagParam();
-		this.tagRelationParam = ParamUtils.getDefaultTagRelationParam();
-		this.groupParam = ParamUtils.getDefaultGroupParam();
-		this.statisticsParam = ParamUtils.getDefaultStatisticsParam();
+		}
 	}
 
 	protected DBSessionFactory getDbSessionFactory() {
-		return this.dbSessionFactory;
+		return dbSessionFactory;
 	}
 }

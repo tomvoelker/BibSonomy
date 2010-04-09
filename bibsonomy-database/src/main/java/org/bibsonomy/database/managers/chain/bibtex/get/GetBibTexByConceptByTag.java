@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
+import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByConceptByTag;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
@@ -14,6 +15,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * TODO: clone @see {@link GetBookmarksByConceptByTag} refactor it using generics
+ * 
  * Returns a list of BibTex's that are related to the given concept name.
  * 
  * @author Michael Wagner

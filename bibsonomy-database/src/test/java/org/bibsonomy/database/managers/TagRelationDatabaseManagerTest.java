@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.TagRelationParam;
@@ -18,6 +16,7 @@ import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -26,35 +25,46 @@ import org.junit.Test;
  * @version $Id$
  */
 public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest {
-
-	private static final Log log = LogFactory.getLog(TagRelationDatabaseManagerTest.class);
+	private static GeneralDatabaseManager generalDb;
+	private static BibTexDatabaseManager bibTexDb;
+	private static TagRelationDatabaseManager tagRelDb;
+	
+	/**
+	 * inits manager
+	 */
+	@BeforeClass
+	public static void setupManagers() {
+		generalDb = GeneralDatabaseManager.getInstance();
+		bibTexDb = BibTexDatabaseManager.getInstance();
+		tagRelDb = TagRelationDatabaseManager.getInstance();
+	}
+	
 	private Tag tag;
 	private Tag subTag;
 	private Tag superTag;
-
-	@Override
+	
+	/**
+	 * tests up the tags
+	 */
 	@Before
-	public void setUp() {
-		super.setUp();
+	public void setUpTags() {
 		this.tag = new Tag(this.getClass().getSimpleName());
 		this.subTag = new Tag(this.getClass().getSimpleName() + "-sub");
 		this.superTag = new Tag(this.getClass().getSimpleName() + "-super");
-		this.tag.setSubTags(Arrays.asList(new Tag[] { this.subTag }));
-		this.subTag.setSuperTags(Arrays.asList(new Tag[] { this.tag }));
-		this.tag.setSuperTags(Arrays.asList(new Tag[] { this.superTag }));
-		this.superTag.setSubTags(Arrays.asList(new Tag[] { this.tag }));
+		this.tag.setSubTags(Arrays.asList(this.subTag));
+		this.subTag.setSuperTags(Arrays.asList(this.tag));
+		this.tag.setSuperTags(Arrays.asList(this.superTag));
+		this.superTag.setSubTags(Arrays.asList(this.tag));
 	}
-
-	
 	
 	/**
 	 * tests insertRelations (new relations)
 	 */
 	@Test
 	public void testInsertNewRelations() {
-		final Integer newId1 = this.generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
-		this.tagRelDb.insertRelations(tag, "test-user", this.dbSession);
-		final Integer newId2 = this.generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
+		final Integer newId1 = generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
+		tagRelDb.insertRelations(tag, "test-user", this.dbSession);
+		final Integer newId2 = generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
 		assertEquals(newId1 + 3, newId2);
 	}
 
@@ -64,10 +74,10 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	@Ignore
 	@Test
 	public void testInsertExistingRelations() {
-		final Integer newId1 = this.generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
-		this.tagRelDb.insertRelations(tag, "test-user", this.dbSession);
-		this.tagRelDb.insertRelations(tag, "test-user", this.dbSession);
-		final Integer newId2 = this.generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
+		final Integer newId1 = generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
+		tagRelDb.insertRelations(tag, "test-user", this.dbSession);
+		tagRelDb.insertRelations(tag, "test-user", this.dbSession);
+		final Integer newId2 = generalDb.getNewContentId(ConstantID.IDS_TAGREL_ID, this.dbSession);
 		assertEquals(newId1 + 3, newId2);
 	}
 
@@ -83,10 +93,8 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		tagIndex.add(new TagIndex("researcher", 1));
 		
 		final int countBefore = bibTexDb.getPostsByConceptForUser("jaeschke", "jaeschke", visibleGroupIDs, tagIndex, false, 100, 0, null, this.dbSession).size();
-		this.tagRelDb.deleteRelation("researcher", "shannon", "jaeschke", this.dbSession);
+		tagRelDb.deleteRelation("researcher", "shannon", "jaeschke", this.dbSession);
 		final int countAfter = bibTexDb.getPostsByConceptForUser("jaeschke", "jaeschke", visibleGroupIDs, tagIndex, false, 100, 0, null, this.dbSession).size();
-		log.debug("before: " + countBefore);
-		log.debug("after: " + countAfter);
 		assertTrue(countBefore > countAfter);
 
 		assertTrue(this.pluginMock.isOnTagRelationDelete());
@@ -97,7 +105,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 */
 	@Test
 	public void getPickedConceptsForUser() {
-		final List<Tag> relations = this.tagRelDb.getPickedConceptsForUser("testuser3", this.dbSession);
+		final List<Tag> relations = tagRelDb.getPickedConceptsForUser("testuser3", this.dbSession);
 		// testuser3 has three concepts but only two are picked
 		assertEquals(2, relations.size());
 	}
@@ -108,7 +116,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	@Test
 	public void getAllConceptsForUser() {
 		final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, GroupingEntity.USER, "testuser1", null, null, null, 0, Integer.MAX_VALUE, null, null, new User());
-		final List<Tag> relations = this.tagRelDb.getAllConceptsForUser(param, this.dbSession);
+		final List<Tag> relations = tagRelDb.getAllConceptsForUser(param, this.dbSession);
 		// testuser1 has three concepts
 		assertEquals(3, relations.size());
 	}
@@ -118,7 +126,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 */
 	@Test
 	public void testGetAllConcepts() {
-		final List<Tag> concepts = this.tagRelDb.getAllConcepts(this.dbSession);
+		final List<Tag> concepts = tagRelDb.getAllConcepts(this.dbSession);
 		// there are 3 concepts from users listed in table 'user': 
 		// "linux", "programming", and "suchmaschine"
 		assertEquals(3, concepts.size());
@@ -131,7 +139,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	 */
 	@Test
 	public void testGetGlobalConceptByName() {
-		final Tag concept = this.tagRelDb.getGlobalConceptByName("programming", this.dbSession);
+		final Tag concept = tagRelDb.getGlobalConceptByName("programming", this.dbSession);
 		assertEquals(4, concept.getSubTags().size());
 	}
 }

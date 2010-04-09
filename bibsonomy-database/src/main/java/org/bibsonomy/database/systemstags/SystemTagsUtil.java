@@ -94,7 +94,7 @@ public class SystemTagsUtil {
 	 */
 	public static boolean isSystemTag(String tag) {
 		if (tag == null) return false;
-		//return tag.startsWith(SystemTags.GLOBAL_PREFIX + SystemTags.SYSTAG_DELIM);
+		
 		final Matcher action = sysPrefix.matcher(tag);
 		return action.lookingAt();
 	}

@@ -25,9 +25,9 @@ import org.bibsonomy.model.enums.Order;
  * @version $Id$
  */
 public class GetBibTexByAuthorAndTag extends BibTexChainElement {
-
 	private static final Log LOGGER = LogFactory.getLog(GetBibTexByAuthorAndTag.class);
 
+	@SuppressWarnings("deprecation") // TODO: lucene can't handle system tags
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		// uncomment following for a quick hack to access secondary datasource
@@ -35,20 +35,20 @@ public class GetBibTexByAuthorAndTag extends BibTexChainElement {
 
 		if (this.db.isDoLuceneSearch()) {
 			LOGGER.debug("Using Lucene in GetBibtexByAuthor");
-
+			
+			// TODO: maybe a clone of GetRelatedTagsByAuthorAndTags#extractTagNames
 			List<String> tagList = null;
-			if ((null != param.getTagIndex()) && (!param.getTagIndex().isEmpty()))
-			{
+			if ((null != param.getTagIndex()) && (!param.getTagIndex().isEmpty())) {
 				tagList = new ArrayList<String>();
 				for ( TagIndex tagIndex : param.getTagIndex()){
 					tagList.add(tagIndex.getTagName());
 				}
 			}
-
+			
+			// TODO: lucene can't handle system tags
 			return this.db.getPostsByAuthorLucene(param.getRawSearch(), GroupID.PUBLIC.getId(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getYear(), 
 					param.getFirstYear(), param.getLastYear(), param.getLimit(), param.getOffset(), param.getSimHash(), tagList, session);
-		}		
-		
+		}
 		
 		return this.db.getPostsByAuthorAndTag(param.getRawSearch(), GroupID.PUBLIC.getId(), param.getRequestedUserName(), param.getRequestedGroupName(), param.getTagIndex(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
