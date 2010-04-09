@@ -37,9 +37,9 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 		// tagstring has not yet been tokenized 
 		if (this.requestedTagsList == null) {
 			this.requestedTagsList = new ArrayList<String>();			
-			StringTokenizer st = new StringTokenizer(requestedTags);
+			final StringTokenizer st = new StringTokenizer(requestedTags);
 			while (st.hasMoreTokens()) {			
-				String tagname = st.nextToken();			
+				final String tagname = st.nextToken();			
 				this.requestedTagsList.add(tagname);			
 			}			
 		}		
@@ -57,7 +57,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	 * sets the requested tags
 	 * @param requestedTags 
 	 */
-	public void setRequestedTags(String requestedTags) {
+	public void setRequestedTags(final String requestedTags) {
 		relatedTagCommand.setRequestedTags(requestedTags);
 		this.requestedTags = requestedTags;
 	}
@@ -79,14 +79,14 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	/**
 	 * @param relatedUserCommand
 	 */
-	public void setRelatedUserCommand(RelatedUserCommand relatedUserCommand) {
+	public void setRelatedUserCommand(final RelatedUserCommand relatedUserCommand) {
 		this.relatedUserCommand = relatedUserCommand;
 	}
 
 	/**
 	 * @param relatedTagCommand command with related tags
 	 */
-	public void setRelatedTagCommand(RelatedTagCommand relatedTagCommand) {
+	public void setRelatedTagCommand(final RelatedTagCommand relatedTagCommand) {
 		this.relatedTagCommand = relatedTagCommand;
 	}
 
@@ -98,17 +98,23 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	}
 
 	/**
-	 * @param requestedOrder
+	 * @param order
 	 */
 	public void setOrder(final String order) {
 		this.order = order;
 	}
 
+	/**
+	 * @return the similarTags
+	 */
 	public RelatedTagCommand getSimilarTags() {
 		return this.similarTags;
 	}
 
-	public void setSimilarTags(RelatedTagCommand similarTags) {
+	/**
+	 * @param similarTags the similarTags to set
+	 */
+	public void setSimilarTags(final RelatedTagCommand similarTags) {
 		this.similarTags = similarTags;
 	}
 	
