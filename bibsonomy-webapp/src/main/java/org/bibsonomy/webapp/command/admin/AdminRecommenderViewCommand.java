@@ -21,7 +21,6 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	private List<RecAdminOverview> recOverview; 
 	private String action;
 	private String adminResponse;
-	//private final Map<String,String> actions;
 	private Long queriesPerLatency;
 	private List<Long> activeRecs;
 	private List<Long> disabledRecs;
@@ -34,20 +33,11 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	private long deletesid;
 	private String newrecurl;
 	
-	private Long currentid=2l;
-	
 	
 	public AdminRecommenderViewCommand(){
 		this.queriesPerLatency = (long)1000;
 		this.action = null;
 		
-		/*
-		this.actions = new TreeMap<String, String>();
-		this.actions.put("status","Active Recommenders");
-		this.actions.put("activate","Activate/deactivate");
-		this.actions.put("add", "Add/Remove");
-		this.setAction("status");
-		*/
 		this.tabdescriptor = new TreeMap<Integer, String>();
 		tabdescriptor.put(Tab.STATUS.ordinal(), "Active Recommenders");
 		tabdescriptor.put(Tab.ACTIVATE.ordinal(), "Activate/deactivate");
@@ -69,7 +59,6 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 		if (disabledRecommenders == null) return null;
 		return disabledRecommenders.entrySet();
 	}
-
 	
 	public void setTab(Integer t){
 		if(t>=0 && t<Tab.values().length)
@@ -97,12 +86,6 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	public List<RecAdminOverview> getRecOverview(){
 		return this.recOverview;
 	}
-	
-	/*
-	public Set<Entry<String, String>> getActions(){
-		return actions.entrySet();
-	}
-	*/
 	
 	public void setMultiplexingTagRecommender(MultiplexingTagRecommender mp){
 		this.mp = mp;
@@ -147,19 +130,6 @@ public class AdminRecommenderViewCommand extends BaseCommand {
 	public List<Long> getDisabledRecs(){
 		return this.disabledRecs;
 	}
-	
-	public void setCurrentId(Long id){
-		this.currentid = id;
-	}
-	public String getRecId(){
-		return this.activeRecommenders.get(currentid);
-	}
-	
-	/*
-	public String getActionDescription(){
-		return this.actions.get(this.action);
-	}
-	*/
 	
 	public void setDeletesid(long sid){
 		this.deletesid = sid;
