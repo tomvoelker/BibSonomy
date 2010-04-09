@@ -108,10 +108,10 @@
 				        <c:set var="description" value=""/>
 				        <c:choose>
 				        	<c:when test="${(empty entry.realname) and (not empty entry.homepage)}">
-				        		<c:set var="description" value="${fn:escapeXml(entry.homepage)}"/>
+				        		<c:set var="description" value="${entry.homepage}"/>
 				        	</c:when>
 				        	<c:when test="${not empty entry.realname}">
-				        		<c:set var="description" value="${fn:escapeXml(entry.realname)}"/>
+				        		<c:set var="description" value="${entry.realname}"/>
 				        	</c:when>
 				        </c:choose>
 				    	<c:choose>
