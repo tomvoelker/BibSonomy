@@ -44,6 +44,7 @@ import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.CrudableContent;
 import org.bibsonomy.database.managers.DocumentDatabaseManager;
+import org.bibsonomy.database.managers.GoldStandardPublicationDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
@@ -65,6 +66,7 @@ import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -95,7 +97,8 @@ public class DBLogic implements LogicInterface {
 	private final DocumentDatabaseManager docDBManager;
 	private final PermissionDatabaseManager permissionDBManager;
 	private final BookmarkDatabaseManager bookmarkDBManager;
-	private final BibTexDatabaseManager bibtexDBManager;
+	private final BibTexDatabaseManager publicationDBManager;
+	private final GoldStandardPublicationDatabaseManager goldStandardPublicationDBManager;
 	private final UserDatabaseManager userDBManager;
 	private final GroupDatabaseManager groupDBManager;
 	private final TagDatabaseManager tagDBManager;
@@ -119,10 +122,15 @@ public class DBLogic implements LogicInterface {
 		this.loginUser = loginUser;
 
 		this.allDatabaseManagers = new HashMap<Class<? extends Resource>, CrudableContent<? extends Resource, ? extends GenericParam>>();
-		this.bibtexDBManager = BibTexDatabaseManager.getInstance();
-		this.allDatabaseManagers.put(BibTex.class, this.bibtexDBManager);
+		// publication db manager
+		this.publicationDBManager = BibTexDatabaseManager.getInstance();
+		this.allDatabaseManagers.put(BibTex.class, this.publicationDBManager);
+		// bookmark db manager
 		this.bookmarkDBManager = BookmarkDatabaseManager.getInstance();
 		this.allDatabaseManagers.put(Bookmark.class, this.bookmarkDBManager);
+		// gold standard publication db manager
+		this.goldStandardPublicationDBManager = GoldStandardPublicationDatabaseManager.getInstance();
+		this.allDatabaseManagers.put(GoldStandardPublication.class, this.goldStandardPublicationDBManager);
 
 		this.authorDBManager = AuthorDatabaseManager.getInstance();
 		this.docDBManager = DocumentDatabaseManager.getInstance();
@@ -172,7 +180,7 @@ public class DBLogic implements LogicInterface {
 		/*
 		 * only admins can access the friend list of another user
 		 */		
-		this.permissionDBManager.isAdminOrSelf(this.loginUser, userName);
+		this.permissionDBManager.ensureIsAdminOrSelf(this.loginUser, userName);
 		
 		final DBSession session = this.openSession();
 		try {
@@ -328,7 +336,7 @@ public class DBLogic implements LogicInterface {
 
 				// this is save because of RTTI-check of resourceType argument
 				// which is of class T
-				result = ((List) this.bibtexDBManager.getPosts(param, session));
+				result = ((List) this.publicationDBManager.getPosts(param, session));
 			} else if (resourceType == Bookmark.class) {
 
 				// check filters
@@ -874,6 +882,7 @@ public class DBLogic implements LogicInterface {
 
 			this.permissionDBManager.ensureWriteAccess(post, this.loginUser);
 		}
+		
 		/*
 		 * insert posts TODO: more efficient implementation (transactions,
 		 * deadlock handling, asynchronous, etc.)
@@ -884,7 +893,7 @@ public class DBLogic implements LogicInterface {
 		 */
 		final DBSession session = openSession();
 		final DatabaseException collectedException = new DatabaseException();
-		try{
+		try {
 			for (final Post<?> post : posts) {
 				try {
 					hashes.add(this.createPost(post, session));
@@ -898,11 +907,12 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
+		
 		if (collectedException.hasErrorMessages()) {
 			throw collectedException;
 		}
+		
 		return hashes;
-
 	}
 
 
@@ -972,9 +982,11 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
+		
 		if (collectedException.hasErrorMessages()) {
 			throw collectedException;
 		}
+		
 		return hashes;
 	}
 
@@ -1097,11 +1109,6 @@ public class DBLogic implements LogicInterface {
 			
 			return this.storeUser(user, true);
 		}
-
-		/*
-		 * TODO: instead of checking in each method if the user to update exists
-		 * add a check here or above
-		 */
 
 		final DBSession session = openSession();
 
@@ -1238,7 +1245,7 @@ public class DBLogic implements LogicInterface {
 				/*
 				 * document shall be attached to a post
 				 */
-				final Post<BibTex> post = bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				final Post<BibTex> post = publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 				if (present(post)) {
 					/*
 					 * post really exists!
@@ -1270,6 +1277,7 @@ public class DBLogic implements LogicInterface {
 		} finally {
 			session.close();
 		}
+		
 		log.info("created new file " + document.getFileName() + " for user " + userName);
 		return document.getFileHash();
 	}
@@ -1317,7 +1325,7 @@ public class DBLogic implements LogicInterface {
 				 * we just forward this task to getPostDetails from the
 				 * BibTeXDatabaseManager and extract the documents.
 				 */
-				final Post<BibTex> post = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				final Post<BibTex> post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 				if (post != null && post.getResource().getDocuments() != null) {
 					/*
 					 * post found and post contains documents (bibtexdbmanager
@@ -1369,7 +1377,7 @@ public class DBLogic implements LogicInterface {
 				 * the document belongs to a post --> check if the user owns the
 				 * post
 				 */
-				final Post<BibTex> post = bibtexDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				final Post<BibTex> post = publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 				if (post != null) {
 					/*
 					 * the given resource hash belongs to a post of the user ->
@@ -1528,9 +1536,9 @@ public class DBLogic implements LogicInterface {
 				return this.tagRelationsDBManager.getConceptForUser(conceptName, groupingName, session);
 			} else if (grouping.equals(GroupingEntity.ALL)) {
 				return this.tagRelationsDBManager.getGlobalConceptByName(conceptName, session);
-			} else {
-				throw new RuntimeException("Can't handle request");
 			}
+			
+			throw new RuntimeException("Can't handle request");
 		} finally {
 			session.close();
 		}
@@ -1929,7 +1937,7 @@ public class DBLogic implements LogicInterface {
 				/*
 				 * get the complete post from the database
 				 */
-				final Post<BibTex> copy = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), post.getResource().getIntraHash(), post.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
+				final Post<BibTex> copy = this.publicationDBManager.getPostDetails(this.loginUser.getName(), post.getResource().getIntraHash(), post.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
 
 				/*
 				 * post might be null, because a) it does not exist b) user may
@@ -1982,7 +1990,7 @@ public class DBLogic implements LogicInterface {
 					/*
 					 * get the complete post from the database
 					 */
-					final Post<BibTex> copy = this.bibtexDBManager.getPostDetails(this.loginUser.getName(), post.getResource().getIntraHash(), post.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
+					final Post<BibTex> copy = this.publicationDBManager.getPostDetails(this.loginUser.getName(), post.getResource().getIntraHash(), post.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
 
 					/*
 					 * post might be null, because a) it does not exist b) user
@@ -2068,8 +2076,15 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void createReferences(String postHash, Set<String> references) {
-		// TODO
-		throw new UnsupportedOperationException("not yet available");		
+		this.ensureLoggedIn(); // only logged in users can create references
+		// TODO: add more restrictions ??
+		
+		final DBSession session = this.openSession();
+		try {
+			this.goldStandardPublicationDBManager.addReferencesToPost(this.loginUser.getName(), postHash, references, session);
+		} finally {
+			session.close();
+		}	
 	}
 
 	/*
@@ -2078,7 +2093,14 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void deleteReferences(String postHash, Set<String> references) {
-		// TODO
-		throw new UnsupportedOperationException("not yet available");		
+		this.ensureLoggedIn(); // only logged in users can delete references
+		// TODO: add more restrictions ??
+		
+		final DBSession session = this.openSession();
+		try {
+			this.goldStandardPublicationDBManager.removeReferencesFromPost(this.loginUser.getName(), postHash, references, session);
+		} finally {
+			session.close();
+		}	
 	}
 }
