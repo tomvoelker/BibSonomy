@@ -27,8 +27,6 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 	private final GetResourcesByTagNamesAndUserCount getResourcesByTagNamesAndUserCount;
 	private final GetResourcesByTagNamesCount getResourcesByTagNamesCount;
 	private final GetResourcesDuplicateCount getResourcesDuplicateCount;
-	//private final GetResourcesForUserAndGroupCount getResourcesForUserAndGroupCount;
-	//private final GetResourcesForUserAndGroupByTagCount getResourcesForUserAndGroupByTagCount;
 	private final GetResourcesPopularDaysCount getResourcesPopularDays;
 	private final GetResourcesForHashCount getResourcesForHashCount;
 	private final GetResourcesForHashAndUserCount getResourcesForHashAndUserCount;
@@ -44,8 +42,6 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 		getResourcesByTagNamesAndUserCount = new GetResourcesByTagNamesAndUserCount();
 		getResourcesByTagNamesCount = new GetResourcesByTagNamesCount();
 		getResourcesDuplicateCount 	= new GetResourcesDuplicateCount();
-		//getResourcesForUserAndGroupCount = new GetResourcesForUserAndGroupCount();
-		//getResourcesForUserAndGroupByTagCount = new GetResourcesForUserAndGroupByTagCount();
 		getResourcesPopularDays = new GetResourcesPopularDaysCount();
 		getResourcesForHashCount = new GetResourcesForHashCount();
 		getResourcesForHashAndUserCount = new GetResourcesForHashAndUserCount();
@@ -56,17 +52,11 @@ public class PostStatisticChain implements FirstChainElement<Integer, Statistics
 		getResourcesForUserCount.setNext(getResourcesByTagNamesAndUserCount);
 		getResourcesByTagNamesAndUserCount.setNext(getResourcesByTagNamesCount);
 		getResourcesByTagNamesCount.setNext(getResourcesDuplicateCount);
-		//getResourcesDuplicateCount.setNext(getResourcesForUserAndGroupCount);
 		getResourcesDuplicateCount.setNext(getResourcesPopularDays);
 		getResourcesPopularDays.setNext(getResourcesForHashCount);
-		//getResourcesForUserAndGroupCount.setNext(getResourcesForUserAndGroupByTagCount);
-		//getResourcesForUserAndGroupByTagCount.setNext(getResourcesPopularDays);
 		getResourcesForHashCount.setNext(getResourcesForHashAndUserCount);
 		getResourcesForHashAndUserCount.setNext(getResourcesForUserInboxCount);
 		getResourcesForUserInboxCount.setNext(defaultCatchAllCount);
-		
-
-		
 	}
 	
 	public ChainElement<Integer, StatisticsParam> getFirstElement() {
