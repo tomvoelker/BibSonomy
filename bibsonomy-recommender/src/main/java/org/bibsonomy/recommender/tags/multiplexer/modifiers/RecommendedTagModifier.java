@@ -15,7 +15,7 @@ public interface RecommendedTagModifier {
 	/**
 	 * Tag modifiers arbitrarily change a recommended tag's content.
 	 * 
-	 * @param collection of recommended tags to filter
+	 * @param tags collection of recommended tags to filter
 	 */
 	public void alterTags(Collection<RecommendedTag> tags);
 
