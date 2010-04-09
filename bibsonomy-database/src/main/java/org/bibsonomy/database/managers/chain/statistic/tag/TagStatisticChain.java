@@ -13,16 +13,13 @@ import org.bibsonomy.database.params.StatisticsParam;
  */
 public class TagStatisticChain implements FirstChainElement<Integer, StatisticsParam> {
 
-	
 	private final GetRelationCountByUser getRelationCountByUser;
 	
 	/**
 	 * 
 	 */
 	public TagStatisticChain() {
-		
 		getRelationCountByUser = new GetRelationCountByUser();
-
 	}
 	
 	public ChainElement<Integer, StatisticsParam> getFirstElement() {

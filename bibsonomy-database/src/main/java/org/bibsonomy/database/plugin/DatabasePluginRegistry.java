@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.plugin.plugins.Basket;
+import org.bibsonomy.database.plugin.plugins.BasketPlugin;
 import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
 import org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlugin;
 import org.bibsonomy.database.plugin.plugins.Logging;
@@ -29,7 +29,7 @@ public class DatabasePluginRegistry implements DatabasePlugin {
 		
 		DEFAULT_PLUGINS.add(new Logging());
 		DEFAULT_PLUGINS.add(new BibTexExtraPlugin());
-		DEFAULT_PLUGINS.add(new Basket());
+		DEFAULT_PLUGINS.add(new BasketPlugin());
 		DEFAULT_PLUGINS.add(new GoldStandardPublicationReferencePlugin());
 	}
 	

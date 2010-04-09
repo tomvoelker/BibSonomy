@@ -13,7 +13,7 @@ import org.bibsonomy.database.util.DBSession;
  * @author daill
  * @version $Id$
  */
-public class Basket extends AbstractDatabasePlugin {
+public class BasketPlugin extends AbstractDatabasePlugin {
 	
 	@Override
 	public Runnable onBibTexDelete(final int contentId, final DBSession session) {

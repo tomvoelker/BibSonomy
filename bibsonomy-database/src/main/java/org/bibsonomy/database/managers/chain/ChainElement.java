@@ -23,8 +23,9 @@ import org.bibsonomy.database.util.IbatisDBSessionFactory;
  * @version $Id$
  */
 public abstract class ChainElement<L, P extends GenericParam> implements ChainPerform<P, List<L>, L> {
-
 	protected static final Log log = LogFactory.getLog(ChainElement.class);
+	
+	
 	protected final GeneralDatabaseManager generalDb;
 	protected final GroupDatabaseManager groupDb;
 	/** The next element of the chain */

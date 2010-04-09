@@ -39,7 +39,9 @@ public class DatabaseManagerInitializer {
 	/** the tag database manager */
 	private final TagDatabaseManager tagManager;
 
-	
+	/**
+	 * inits the user and group db manager
+	 */
 	public DatabaseManagerInitializer() {
 		// FIXME: we have to initialize the db managers in a given order 
 		//        to prevent circular dependencies!!!
@@ -53,37 +55,57 @@ public class DatabaseManagerInitializer {
 		this.bookmarkManager = BookmarkDatabaseManager.getInstance();
 	}
 	
-	//------------------------------------------------------------------------
-	// getter/setter
-	//------------------------------------------------------------------------
+	/**
+	 * also sets the publication searcher in the publication and tag manager
+	 * 
+	 * @param bibTexSearcher the bibTexSearcher to set
+	 */
 	public void setBibTexSearcher(ResourceSearch<BibTex> bibTexSearcher) {
 		this.bibTexSearcher = bibTexSearcher;
 		this.bibTexManager.setResourceSearch(this.bibTexSearcher);
 		this.tagManager.setAuthorSearch(bibTexSearcher);
 	}
 
+	/**
+	 * @return the bibTexSearcher
+	 */
 	public ResourceSearch<BibTex> getBibTexSearcher() {
 		return bibTexSearcher;
 	}
 
+	/**
+	 * also sets the bookmark searcher in the bookmark manager
+	 * 
+	 * @param bookmarkSearcher the bookmarkSearcher to set
+	 */
 	public void setBookmarkSearcher(ResourceSearch<Bookmark> bookmarkSearcher) {
 		this.bookmarkSearcher = bookmarkSearcher;
 		this.bookmarkManager.setResourceSearch(bookmarkSearcher);
 	}
 
+	/**
+	 * @return the bookmarkSearcher
+	 */
 	public ResourceSearch<Bookmark> getBookmarkSearcher() {
 		return bookmarkSearcher;
 	}
 
+	/**
+	 * also sets the system tag factory in the resource managers
+	 * 
+	 * @param systemTagFactory the systemTagFactory to set
+	 */
 	public void setSystemTagFactory(SystemTagFactory systemTagFactory) {
 		this.systemTagFactory = systemTagFactory;
 		this.bibTexManager.setSystemTagFactory(systemTagFactory);
 		this.bookmarkManager.setSystemTagFactory(systemTagFactory);
 	}
 
+	/**
+	 * @return the systemTagFactory
+	 */
 	public SystemTagFactory getSystemTagFactory() {
 		return systemTagFactory;
 	}
-	
 	
 }

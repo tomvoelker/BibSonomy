@@ -14,6 +14,7 @@ import org.bibsonomy.database.managers.chain.user.get.GetUserFollowers;
 import org.bibsonomy.database.managers.chain.user.get.GetUserFriends;
 import org.bibsonomy.database.managers.chain.user.get.GetUsersByGroup;
 import org.bibsonomy.database.params.UserParam;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -23,7 +24,18 @@ import org.junit.Test;
  * @version $Id$
  */
 public class UserChainTest extends AbstractChainTest {
-
+	
+	protected static UserChain userChain;
+	
+	/**
+	 * sets up the chain
+	 */
+	@BeforeClass
+	public static void setupChain() {
+		userChain = new UserChain();
+	}
+	
+	
 	/**
 	 * get all users
 	 */
@@ -32,8 +44,8 @@ public class UserChainTest extends AbstractChainTest {
 		UserParam param = new UserParam();
 		param.setGrouping(GroupingEntity.ALL);
 		param.setTagIndex(null);
-		this.userChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetAllUsers.class, this.chainStatus.getChainElement().getClass());
+		userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetAllUsers.class, chainStatus.getChainElement().getClass());
 	}
 	
 	/**
@@ -44,8 +56,8 @@ public class UserChainTest extends AbstractChainTest {
 		UserParam param = new UserParam();
 		param.setGrouping(GroupingEntity.GROUP);
 		param.setRequestedGroupName("a_funny_groupname");
-		this.userChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetUsersByGroup.class, this.chainStatus.getChainElement().getClass());		
+		userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetUsersByGroup.class, chainStatus.getChainElement().getClass());		
 	}
 	
 	/**
@@ -57,8 +69,8 @@ public class UserChainTest extends AbstractChainTest {
 		param.setGrouping(GroupingEntity.USER);
 		param.setRequestedUserName("a_funny_username");
 		param.setUserRelation(UserRelation.FOLKRANK);
-		this.userChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetRelatedUsersByUser.class, this.chainStatus.getChainElement().getClass());		
+		userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetRelatedUsersByUser.class, chainStatus.getChainElement().getClass());		
 	}	
 
 	/**
@@ -70,8 +82,8 @@ public class UserChainTest extends AbstractChainTest {
 		param.setGrouping(GroupingEntity.ALL);
 		param.addTagName("a_funny_tag");
 		param.setUserRelation(UserRelation.FOLKRANK);
-		this.userChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetRelatedUsersByTags.class, this.chainStatus.getChainElement().getClass());		
+		userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetRelatedUsersByTags.class, chainStatus.getChainElement().getClass());		
 	}	
 	
 	/**
@@ -83,8 +95,8 @@ public class UserChainTest extends AbstractChainTest {
 		param.setGrouping(GroupingEntity.FRIEND);
 		param.setUserName("a_funny_username");
 		param.setUserRelation(UserRelation.FRIEND_OF);
-		this.userChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetFriendsOfUser.class, this.chainStatus.getChainElement().getClass());		
+		userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetFriendsOfUser.class, chainStatus.getChainElement().getClass());		
 	}		
 	
 	/**
@@ -96,8 +108,8 @@ public class UserChainTest extends AbstractChainTest {
 		param.setGrouping(GroupingEntity.FRIEND);
 		param.setUserName("a_funny_username");
 		param.setUserRelation(UserRelation.OF_FRIEND);		
-		this.userChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetUserFriends.class, this.chainStatus.getChainElement().getClass());		
+		userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetUserFriends.class, chainStatus.getChainElement().getClass());		
 	}
 	
 	/**
@@ -109,8 +121,8 @@ public class UserChainTest extends AbstractChainTest {
 		param.setGrouping(GroupingEntity.FOLLOWER);
 		param.setUserName("test");
 		param.setUserRelation(UserRelation.OF_FOLLOWER);
-		this.userChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetUserFollowers.class, this.chainStatus.getChainElement().getClass());
+		userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetUserFollowers.class, chainStatus.getChainElement().getClass());
 	}
 	
 	/**
@@ -122,8 +134,8 @@ public class UserChainTest extends AbstractChainTest {
 		param.setGrouping(GroupingEntity.FOLLOWER);
 		param.setUserName("test");
 		param.setUserRelation(UserRelation.FOLLOWER_OF);
-		this.userChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetFollowersOfUser.class, this.chainStatus.getChainElement().getClass());
+		userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetFollowersOfUser.class, chainStatus.getChainElement().getClass());
 	}
 	
 }

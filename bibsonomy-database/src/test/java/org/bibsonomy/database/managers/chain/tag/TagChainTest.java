@@ -26,6 +26,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.enums.Order;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -36,7 +37,16 @@ import org.junit.Test;
  * @version $Id$
  */
 public class TagChainTest extends AbstractChainTest {
-
+	protected static TagChain tagChain;
+	
+	/**
+	 * sets up the chain
+	 */
+	@BeforeClass
+	public static void setUpChain() {
+		tagChain = new TagChain();
+	}
+	
 	/**
 	 * get all tags, i.e. most often used tags out of the last 10000
 	 */
@@ -47,8 +57,8 @@ public class TagChainTest extends AbstractChainTest {
 		param.setTagIndex(null);
 		param.setHash(null);
 		param.setContentTypeByClass(Resource.class);
-		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetAllTags.class, this.chainStatus.getChainElement().getClass());
+		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetAllTags.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -63,8 +73,8 @@ public class TagChainTest extends AbstractChainTest {
 		param.setHash(null);
 		param.setRegex(null);
 		param.setSearch(null);
-		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetPopularTags.class, this.chainStatus.getChainElement().getClass());
+		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetPopularTags.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -102,8 +112,8 @@ public class TagChainTest extends AbstractChainTest {
 		param.setSearch("Stumme");
 		param.setContentTypeByClass(BibTex.class);
 		param.setSearchEntity(SearchEntity.AUTHOR);
-		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetTagsByAuthor.class, this.chainStatus.getChainElement().getClass());
+		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetTagsByAuthor.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -126,8 +136,8 @@ public class TagChainTest extends AbstractChainTest {
 		param.setSearch("Stumme");
 		param.setContentTypeByClass(BibTex.class);
 		param.setSearchEntity(SearchEntity.AUTHOR);
-		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetRelatedTagsByAuthorAndTags.class, this.chainStatus.getChainElement().getClass());
+		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetRelatedTagsByAuthorAndTags.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -140,8 +150,8 @@ public class TagChainTest extends AbstractChainTest {
 		param.setGrouping(GroupingEntity.ALL);
 		param.setRequestedUserName(null);
 		param.addGroup(GroupID.PUBLIC.getId());
-		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetTagsByBibtexkey.class, this.chainStatus.getChainElement().getClass());
+		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetTagsByBibtexkey.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -154,8 +164,8 @@ public class TagChainTest extends AbstractChainTest {
 		param.setGrouping(GroupingEntity.USER);
 		param.setRequestedUserName("hotho");
 		param.setContentTypeByClass(Resource.class);
-		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetTagsByExpression.class, this.chainStatus.getChainElement().getClass());
+		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetTagsByExpression.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -177,8 +187,8 @@ public class TagChainTest extends AbstractChainTest {
 		param.getTagIndex().clear();
 		param.setRequestedGroupName("requestedGroup");
 		param.addGroup(GroupID.PUBLIC.getId());		
-		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetTagsByGroup.class, this.chainStatus.getChainElement().getClass());
+		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetTagsByGroup.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -209,8 +219,8 @@ public class TagChainTest extends AbstractChainTest {
 		param.setRegex(null);
 		param.setTagIndex(null);
 		param.setContentTypeByClass(Resource.class);
-		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetTagsByUser.class, this.chainStatus.getChainElement().getClass());
+		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetTagsByUser.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -225,8 +235,8 @@ public class TagChainTest extends AbstractChainTest {
 		param.setRegex(null);
 		param.setRequestedGroupName("kde");
 		param.setTagIndex(null);
-		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetTagsViewable.class, this.chainStatus.getChainElement().getClass());
+		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+		assertEquals(GetTagsViewable.class, chainStatus.getChainElement().getClass());
 	}
 
 }

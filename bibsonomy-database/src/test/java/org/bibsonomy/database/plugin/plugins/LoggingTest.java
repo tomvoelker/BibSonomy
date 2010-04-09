@@ -7,10 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
+import org.bibsonomy.database.managers.BibTexDatabaseManager;
+import org.bibsonomy.database.managers.BookmarkDatabaseManager;
+import org.bibsonomy.database.managers.GeneralDatabaseManager;
+import org.bibsonomy.database.managers.GroupDatabaseManager;
+import org.bibsonomy.database.managers.TagRelationDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GroupParam;
@@ -20,6 +24,8 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.testutil.ParamUtils;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -31,19 +37,34 @@ import org.junit.Test;
  * @author Anton Wilhelm
  * @version $Id$
  */
-@Ignore
-// FIXME adapt to new test db
+@Ignore // FIXME adapt to new test db
 public class LoggingTest extends AbstractDatabaseManagerTest {
-
-	private Integer anyContentId;
+	
+	private static GeneralDatabaseManager generalDb;
+	private static BookmarkDatabaseManager bookmarkDb;
+	private static BibTexDatabaseManager publicationDb;
+	private static GroupDatabaseManager groupDb;
+	private static TagRelationDatabaseManager tagRelDb;
+	
+	/**
+	 * sets up the used managers
+	 */
+	@BeforeClass
+	public static void setupDatabaseManager() {
+		generalDb = GeneralDatabaseManager.getInstance();
+		bookmarkDb = BookmarkDatabaseManager.getInstance();
+		groupDb = GroupDatabaseManager.getInstance();
+		publicationDb = BibTexDatabaseManager.getInstance();
+		tagRelDb = TagRelationDatabaseManager.getInstance();
+	}
 
 	/**
 	 * tests whether we can add this plugin to the registry
 	 */
 	@Test
 	public void addLoggingPlugin() {
-		this.pluginRegistry.clearPlugins();
-		this.pluginRegistry.add(new Logging());
+		pluginRegistry.clearPlugins();
+		pluginRegistry.add(new Logging());
 	}
 
 	/**
@@ -51,8 +72,8 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void onBibTexDelete() {
-		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.pluginRegistry.onBibTexDelete(anyContentId, dbSession);
+		final int anyContentId = generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		pluginRegistry.onBibTexDelete(anyContentId, dbSession);
 	}
 
 	/**
@@ -60,8 +81,8 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void onBibTexUpdate() {
-		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.pluginRegistry.onBibTexUpdate(anyContentId, anyContentId - 1, dbSession);
+		final int anyContentId = generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		pluginRegistry.onBibTexUpdate(anyContentId, anyContentId - 1, dbSession);
 	}
 
 	/**
@@ -69,8 +90,8 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void onBookmarkDelete() {
-		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.pluginRegistry.onBookmarkDelete(anyContentId, dbSession);
+		final int anyContentId = generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		pluginRegistry.onBookmarkDelete(anyContentId, dbSession);
 	}
 
 	/**
@@ -78,8 +99,8 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void onBookmarkUpdate() {
-		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.pluginRegistry.onBookmarkUpdate(anyContentId, anyContentId - 1, dbSession);
+		final int anyContentId = generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		pluginRegistry.onBookmarkUpdate(anyContentId, anyContentId - 1, dbSession);
 	}
 
 	/**
@@ -87,8 +108,8 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void onTagRelationDelete() {
-		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.pluginRegistry.onTagRelationDelete("upperTagName", "lowerTagName", "userName", dbSession);
+		generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		pluginRegistry.onTagRelationDelete("upperTagName", "lowerTagName", "userName", dbSession);
 	}
 
 	/**
@@ -96,8 +117,8 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void onTagDelete() {
-		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.pluginRegistry.onTagDelete(anyContentId, dbSession);
+		final int anyContentId = generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		pluginRegistry.onTagDelete(anyContentId, dbSession);
 	}
 
 	/**
@@ -105,8 +126,8 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void removeUserFromGroup() {
-		anyContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
-		this.pluginRegistry.onRemoveUserFromGroup("username", 1, dbSession);
+		generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		pluginRegistry.onRemoveUserFromGroup("username", 1, dbSession);
 	}
 
 	/**
@@ -140,23 +161,22 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void onBibTexUpdateSQL() {
-		// this is an INTER-hash
-		final String HASH = "00078c9690694eb9a56ca7866b5101c6";
-		final BibTexParam param = this.bibtexParam;
+		final String HASH = "00078c9690694eb9a56ca7866b5101c6"; // this is an INTER-hash
+		final BibTexParam param = ParamUtils.getDefaultBibTexParam();
 		param.setHash(HASH);
 		param.setSimHash(HashID.INTER_HASH);
-		final Post<BibTex> someBibTexPost = this.bibTexDb.getPostsByHash(HASH, HashID.INTER_HASH, GroupID.PUBLIC.getId(), 50, 0, this.dbSession).get(0);
+		final Post<BibTex> someBibTexPost = publicationDb.getPostsByHash(HASH, HashID.INTER_HASH, PUBLIC_GROUP_ID, 50, 0, this.dbSession).get(0);
 
-		Integer currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		Integer currentContentId = generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		// +1 for the future contentId
 		param.setNewContentId(currentContentId + 1);
-		Integer result = this.generalDb.countNewContentIdFromBibTex(param, this.dbSession);
+		Integer result = generalDb.countNewContentIdFromBibTex(param, this.dbSession);
 		assertEquals(0, result);
-		this.bibTexDb.updatePost(someBibTexPost, someBibTexPost.getResource().getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession);
+		publicationDb.updatePost(someBibTexPost, someBibTexPost.getResource().getIntraHash(), PostUpdateOperation.UPDATE_ALL, this.dbSession);
 
-		currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		currentContentId = generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		param.setNewContentId(currentContentId);
-		result = this.generalDb.countNewContentIdFromBibTex(param, this.dbSession);
+		result = generalDb.countNewContentIdFromBibTex(param, this.dbSession);
 		assertEquals(1, result);
 	}
 
@@ -165,22 +185,21 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void onBibTexDeleteSQL() {
-		// final String HASH = "00078c9690694eb9a56ca7866b5101c6"; INTERHASH
 		final String HASH = "a0bda74e39a8f4c286a81fc66e77f69d"; // INTRAHASH
 		// ContentId of the BibTex with the Hash above
-		final int CONTENTID = 711342;
-		final BibTexParam param = this.bibtexParam;
-		param.setRequestedContentId(CONTENTID);
+		final int contentId = 711342;
+		final BibTexParam param = ParamUtils.getDefaultBibTexParam();
+		param.setRequestedContentId(contentId);
 		param.setHash(HASH);
 		param.setSimHash(HashID.INTRA_HASH);
-		final Post<BibTex> someBibTexPost = this.bibTexDb.getPostsByHash(HASH, HashID.INTER_HASH, GroupID.PUBLIC.getId(), 50, 0, this.dbSession).get(0);
+		final Post<BibTex> someBibTexPost = publicationDb.getPostsByHash(HASH, HashID.INTER_HASH, PUBLIC_GROUP_ID, 50, 0, this.dbSession).get(0);
 
-		Integer result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
+		int result = generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
 		assertEquals(0, result);
 
-		this.bibTexDb.deletePost(someBibTexPost.getUser().getName(), HASH, this.dbSession);
+		publicationDb.deletePost(someBibTexPost.getUser().getName(), HASH, this.dbSession);
 
-		result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
+		result = generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
 		assertEquals(1, result);
 	}
 
@@ -190,20 +209,20 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void onBookmarkUpdateSQL() {
 		final String HASH = "0008bae834cc2af4a63fead1fd04b3e1";
-		final BookmarkParam param = this.bookmarkParam;
+		final BookmarkParam param = ParamUtils.getDefaultBookmarkParam();
 		param.setHash(HASH);
-		final Post<Bookmark> someBookmarkPost = this.bookmarkDb.getPostsByHash(HASH, HashID.INTRA_HASH, GroupID.PUBLIC.getId(), 10, 0, this.dbSession).get(0);
+		final Post<Bookmark> someBookmarkPost = bookmarkDb.getPostsByHash(HASH, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession).get(0);
 
-		Integer currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		Integer currentContentId = generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		param.setNewContentId(currentContentId + 1); // +1, next content_id
-		Integer result = this.generalDb.countNewContentIdFromBookmark(param, this.dbSession);
+		Integer result = generalDb.countNewContentIdFromBookmark(param, this.dbSession);
 		assertEquals(0, result);
 
-		this.bookmarkDb.updatePost(someBookmarkPost, HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession);
+		bookmarkDb.updatePost(someBookmarkPost, HASH, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 
-		currentContentId = this.generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
+		currentContentId = generalDb.getCurrentContentId(ConstantID.IDS_CONTENT_ID, this.dbSession);
 		param.setNewContentId(currentContentId);
-		result = this.generalDb.countNewContentIdFromBookmark(param, this.dbSession);
+		result = generalDb.countNewContentIdFromBookmark(param, this.dbSession);
 		assertEquals(1, result);
 	}
 
@@ -214,18 +233,18 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	public void onBookmarkDeleteSQL() {
 		final String HASH = "00319006d9b0105704533e49661ffab6";
 		// ContentId of the Bookmark with the Hash above
-		final int CONTENTID = 716849;
-		final Post<Bookmark> someBookmarkPost = this.bookmarkDb.getPostsByHash(HASH, HashID.INTRA_HASH, GroupID.PUBLIC.getId(), 10, 0, this.dbSession).get(0);
+		final int contentId = 716849;
+		final Post<Bookmark> someBookmarkPost = bookmarkDb.getPostsByHash(HASH, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 10, 0, this.dbSession).get(0);
 
-		final BookmarkParam param = this.bookmarkParam;
-		param.setRequestedContentId(CONTENTID);
+		final BookmarkParam param = ParamUtils.getDefaultBookmarkParam();
+		param.setRequestedContentId(contentId);
 		param.setHash(HASH);
-		Integer result = this.generalDb.countRequestedContentIdFromBookmark(param, this.dbSession);
+		Integer result = generalDb.countRequestedContentIdFromBookmark(param, this.dbSession);
 		assertEquals(0, result);
 
-		this.bookmarkDb.deletePost(someBookmarkPost.getUser().getName(), HASH, this.dbSession);
+		bookmarkDb.deletePost(someBookmarkPost.getUser().getName(), HASH, this.dbSession);
 
-		result = this.generalDb.countRequestedContentIdFromBookmark(param, this.dbSession);
+		result = generalDb.countRequestedContentIdFromBookmark(param, this.dbSession);
 		assertEquals(1, result);
 	}
 
@@ -244,26 +263,25 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 		// final String HASH = "00078c9690694eb9a56ca7866b5101c6"; INTERHASH
 		final String HASH = "a0bda74e39a8f4c286a81fc66e77f69d"; // INTRAHASH
 		// ContentId of the BibTex with the Hash above
-		final int CONTENTID = 711342;
-		final BibTexParam param = this.bibtexParam;
-		param.setRequestedContentId(CONTENTID);
+		final int contentId = 711342;
+		final BibTexParam param = ParamUtils.getDefaultBibTexParam();
+		param.setRequestedContentId(contentId);
 		param.setHash(HASH);
 		param.setSimHash(HashID.INTRA_HASH);
-		final TagParam tagparam = this.tagParam;
-		tagparam.setRequestedContentId(CONTENTID);
-		final Post<BibTex> someBibTexPost = this.bibTexDb.getPostsByHash(HASH, HashID.INTRA_HASH, GroupID.PUBLIC.getId(), 50, 0, this.dbSession).get(0);
+		final TagParam tagparam = ParamUtils.getDefaultTagParam();
+		tagparam.setRequestedContentId(contentId);
+		final Post<BibTex> someBibTexPost = publicationDb.getPostsByHash(HASH, HashID.INTRA_HASH, PUBLIC_GROUP_ID, 50, 0, this.dbSession).get(0);
 
-		Integer res_original = this.generalDb.countTasIds(tagparam, this.dbSession);
-		Integer result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
+		Integer res_original = generalDb.countTasIds(tagparam, this.dbSession);
+		Integer result = generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
 		assertEquals(0, result);
 
-		this.bibTexDb.deletePost(someBibTexPost.getUser().getName(), HASH, this.dbSession);
+		publicationDb.deletePost(someBibTexPost.getUser().getName(), HASH, this.dbSession);
 
-		result = this.generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
+		result = generalDb.countRequestedContentIdFromBibTex(param, this.dbSession);
 		assertEquals(1, result);
-		Integer res_logging = this.generalDb.countLoggedTasIds(tagparam, this.dbSession);
+		Integer res_logging = generalDb.countLoggedTasIds(tagparam, this.dbSession);
 		assertEquals(res_original, res_logging);
-
 	}
 
 	/**
@@ -276,19 +294,19 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void onTagRelationDeleteSQL() {
 		final List<TagIndex> tagIndex = new ArrayList<TagIndex>();
-		final String USER = "jaeschke", LOWER = "shannon", UPPER = "researcher";
-		final ArrayList<Integer> visibleGroupIDs = new ArrayList<Integer>();
+		final String user = "jaeschke", lower = "shannon", upper = "researcher";
+		final List<Integer> visibleGroupIDs = new ArrayList<Integer>();
 		tagIndex.add(new TagIndex("researcher", 1));
-		final int countBefore = bibTexDb.getPostsByConceptForUser(USER, USER, visibleGroupIDs, tagIndex, false, 100, 0, null, this.dbSession).size();
+		final int countBefore = publicationDb.getPostsByConceptForUser(user, user, visibleGroupIDs, tagIndex, false, 100, 0, null, this.dbSession).size();
 		final TagRelationParam trp = new TagRelationParam();
-		trp.setOwnerUserName(USER);
-		trp.setLowerTagName(LOWER);
-		trp.setUpperTagName(UPPER);
-		Integer result = this.generalDb.countTagRelation(trp, this.dbSession);
+		trp.setOwnerUserName(user);
+		trp.setLowerTagName(lower);
+		trp.setUpperTagName(upper);
+		Integer result = generalDb.countTagRelation(trp, this.dbSession);
 		assertEquals(0, result);
-		this.tagRelDb.deleteRelation(UPPER, LOWER, USER, this.dbSession);
-		final int countAfter = bibTexDb.getPostsByConceptForUser(USER, USER, visibleGroupIDs, tagIndex, false, 100, 0, null, this.dbSession).size();
-		result = this.generalDb.countTagRelation(trp, this.dbSession);
+		tagRelDb.deleteRelation(upper, lower, user, this.dbSession);
+		final int countAfter = publicationDb.getPostsByConceptForUser(user, user, visibleGroupIDs, tagIndex, false, 100, 0, null, this.dbSession).size();
+		result = generalDb.countTagRelation(trp, this.dbSession);
 		assertTrue(countBefore > countAfter);
 		assertEquals(1, result);
 	}
@@ -298,16 +316,15 @@ public class LoggingTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void onRemoveUserFromGroupSQL() {
-		final String USER = "jaeschke", GROUPNAME = "kde";
-		final int GROUPID = 3;
+		final String user = "jaeschke", groupname = "kde";
 		final GroupParam param = new GroupParam();
-		param.setUserName(USER);
-		param.setGroupId(GROUPID);
+		param.setUserName(user);
+		param.setGroupId(TESTGROUP1_ID);
 
-		Integer result = this.generalDb.countGroup(param, this.dbSession);
+		Integer result = generalDb.countGroup(param, this.dbSession);
 		assertEquals(0, result);
-		this.groupDb.removeUserFromGroup(GROUPNAME, USER, this.dbSession);
-		result = this.generalDb.countGroup(param, this.dbSession);
+		groupDb.removeUserFromGroup(groupname, user, this.dbSession);
+		result = generalDb.countGroup(param, this.dbSession);
 		assertEquals(1, result);
 	}
 }

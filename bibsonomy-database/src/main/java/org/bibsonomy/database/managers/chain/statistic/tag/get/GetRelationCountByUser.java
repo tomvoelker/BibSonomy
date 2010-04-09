@@ -10,14 +10,13 @@ import org.bibsonomy.database.util.DBSession;
 /**
  * Returns the number of relations for the current user.
  * 
- * @author Christian
+ * @author Christian Voigtmann
  * @version $Id$
  */
 public class GetRelationCountByUser extends StatisticChainElement{
 
 	@Override
 	protected boolean canHandle(StatisticsParam param) {
-		
 		return true;
 	}
 

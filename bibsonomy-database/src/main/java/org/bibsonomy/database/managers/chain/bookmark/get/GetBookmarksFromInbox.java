@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromInbox;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DBSession;
@@ -12,8 +13,10 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 
 /**
+ * TODO: a clone @see {@link GetBibtexFromInbox}; refactor it using generics
  * 
  * Returns the posts in the users inbox
+ * 
  * @author sdo
  * @version $Id$
  */

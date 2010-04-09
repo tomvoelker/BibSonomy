@@ -8,31 +8,38 @@ import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.database.managers.chain.statistic.post.get.GetResourcesForHashCount;
+import org.bibsonomy.database.params.StatisticsParam;
+import org.bibsonomy.testutil.ParamUtils;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Tests related to the bookmark chain.
+ * Tests related to the post statistic chain.
  * 
  * @author Miranda Grahl
  * @version $Id$
  */
 public class PostStatisticChainTest extends AbstractChainTest {
-
+	protected static PostStatisticChain postStatisticsChain;
+	
 	/**
-	 * tests getBookmarkByConceptForUser
+	 * sets up the chain
 	 */
-//	@Test
-//	public void getBookmarkByConceptForUser() {
-//		this.bookmarkParam.setGrouping(GroupingEntity.USER);
-//		this.bookmarkParam.setHash(null);
-//		this.bookmarkParam.setOrder(null);
-//		this.bookmarkParam.setRequestedUserName("hotho");
-//		this.bookmarkParam.setNumSimpleConcepts(3);
-//		this.bookmarkParam.setNumSimpleTags(0);
-//		this.bookmarkParam.setNumTransitiveConcepts(0);
-//		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-//		assertEquals(GetBookmarksByConceptForUser.class, this.chainStatus.getChainElement().getClass());
-//	}
+	@BeforeClass
+	public static void setUpChain() {
+		postStatisticsChain = new PostStatisticChain();
+	}
+
+	private StatisticsParam statisticsParam;
+	
+	/**
+	 * creates a statistic param
+	 */
+	@Before
+	public void createParam() {
+		this.statisticsParam = ParamUtils.getDefaultStatisticsParam();
+	}
 
 	/**
 	 * tests getBibtexByHash
@@ -47,9 +54,9 @@ public class PostStatisticChainTest extends AbstractChainTest {
 		this.statisticsParam.setOrder(null);
 		this.statisticsParam.setSearch(null);
 		
-		final List<Integer> counts = this.postStatisticsChain.getFirstElement().perform(this.statisticsParam, this.dbSession, this.chainStatus);
+		final List<Integer> counts = postStatisticsChain.getFirstElement().perform(this.statisticsParam, this.dbSession, chainStatus);
 		assertEquals(2, counts.get(0));
-		assertEquals(GetResourcesForHashCount.class, this.chainStatus.getChainElement().getClass());
+		assertEquals(GetResourcesForHashCount.class, chainStatus.getChainElement().getClass());
 	}
 
 }

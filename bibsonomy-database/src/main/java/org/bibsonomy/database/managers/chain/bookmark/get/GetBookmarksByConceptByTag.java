@@ -6,6 +6,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByConceptByTag;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DBSession;
@@ -14,6 +15,8 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
 
 /**
+ * TODO: clone @see {@link GetBibTexByConceptByTag} refactor it using generics
+ * 
  * @author Michael Wagner
  * @version $Id$
  */

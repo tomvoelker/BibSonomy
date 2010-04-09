@@ -4,8 +4,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
@@ -22,8 +20,6 @@ import org.bibsonomy.model.Post;
  */
 public class GetBookmarksSearch extends BookmarkChainElement {
 	
-	private static final Log LOGGER = LogFactory.getLog(GetBookmarksSearch.class);
-
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, DBSession session) {
 		// uncomment following for a quick hack to access secondary datasource
@@ -34,14 +30,6 @@ public class GetBookmarksSearch extends BookmarkChainElement {
 		}
 	
 		return this.db.getPostsSearch(GroupID.PUBLIC.getId(), param.getRawSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
-		// TODO: remove code???
-//		if (SearchEntity.LUCENE.equals(param.getSearchEntity())) {
-//			//param.getGroups();   // gruppen, die der eingeloggte user sehen darf
-//			//param.getUserName(); // eingeloggter user
-//			//param.getGroupNames(); // gruppennamen der gruppen, die der eingeloggte user sehen darf
-//			return this.db.getBookmarkSearchLucene(param.getGroupId(), param.getSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
-//		}
-//		return this.db.getBookmarkSearch(param.getGroupType(), param.getSearch(), param.getRequestedUserName(), param.getLimit(), param.getOffset(), session);
 	}
 	
 	@Override

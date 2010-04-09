@@ -24,9 +24,13 @@ import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksOfFriendsB
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksPopular;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksSearch;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksViewable;
+import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.testutil.ParamUtils;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -38,6 +42,26 @@ import org.junit.Test;
  */
 public class BookmarkChainTest extends AbstractChainTest {
 
+	protected static BookmarkChain bookmarkChain;
+	
+	/**
+	 * sets the chain
+	 */
+	@BeforeClass
+	public static void setupChain() {
+		bookmarkChain = new BookmarkChain();
+	}
+	
+	private BookmarkParam bookmarkParam;
+	
+	/**
+	 * creates a new bookmark param
+	 */
+	@Before
+	public void createParam() {
+		this.bookmarkParam = ParamUtils.getDefaultBookmarkParam();
+	}
+	
 	/**
 	 * tests getBookmarkByConceptForUser
 	 */
@@ -50,8 +74,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setNumSimpleConcepts(3);
 		this.bookmarkParam.setNumSimpleTags(0);
 		this.bookmarkParam.setNumTransitiveConcepts(0);
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksByConceptForUser.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksByConceptForUser.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -65,8 +89,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setTagIndex(null);
 		this.bookmarkParam.setRequestedUserName(null);
 		this.bookmarkParam.setRequestedGroupName(null);
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksByFriends.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksByFriends.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -78,8 +102,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setOrder(null);
 		this.bookmarkParam.setTagIndex(null);
 		this.bookmarkParam.setRequestedUserName(null);
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksByHash.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksByHash.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -90,8 +114,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setGrouping(GroupingEntity.USER);
 		this.bookmarkParam.setOrder(null);
 		this.bookmarkParam.setTagIndex(null);
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksByHashForUser.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksByHashForUser.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -102,8 +126,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setGrouping(GroupingEntity.ALL);
 		this.bookmarkParam.setHash(null);
 		this.bookmarkParam.setOrder(null);
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksByTagNames.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksByTagNames.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -116,8 +140,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setRequestedUserName("grahl");
 		this.bookmarkParam.setHash(null);
 		this.bookmarkParam.setOrder(null);
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksByTagNamesAndUser.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksByTagNamesAndUser.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -129,8 +153,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setHash(null);
 		this.bookmarkParam.setOrder(null);
 		this.bookmarkParam.setTagIndex(null);
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksForGroup.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksForGroup.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -141,8 +165,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setGrouping(GroupingEntity.GROUP);
 		this.bookmarkParam.setHash(null);
 		this.bookmarkParam.setOrder(null);
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksForGroupAndTag.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksForGroupAndTag.class, chainStatus.getChainElement().getClass());
 
 	}
 
@@ -155,8 +179,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setHash(null);
 		this.bookmarkParam.setOrder(null);
 		this.bookmarkParam.setTagIndex(null);
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksForHomePage.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksForHomePage.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -169,8 +193,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setOrder(null);
 		this.bookmarkParam.setTagIndex(null);
 		this.bookmarkParam.setGroupId(GroupID.INVALID.getId());
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksForUser.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksForUser.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -181,8 +205,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setGrouping(GroupingEntity.FRIEND);
 		this.bookmarkParam.setHash(null);
 		this.bookmarkParam.setOrder(null);
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksOfFriendsByTags.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksOfFriendsByTags.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -194,9 +218,9 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setHash(null);
 		this.bookmarkParam.setOrder(null);
 		this.bookmarkParam.setTagIndex(null);
-		final List<Post<Bookmark>> bookmarks = this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
+		final List<Post<Bookmark>> bookmarks = bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
 		System.out.println(bookmarks);
-		assertEquals(GetBookmarksOfFriendsByUser.class, this.chainStatus.getChainElement().getClass());
+		assertEquals(GetBookmarksOfFriendsByUser.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -209,8 +233,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setOrder(Order.POPULAR);
 		this.bookmarkParam.setTagIndex(null);
 		this.bookmarkParam.setDays(0);
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksPopular.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksPopular.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -222,8 +246,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setHash(null);
 		this.bookmarkParam.setOrder(null);
 		this.bookmarkParam.setTagIndex(null);
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksViewable.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksViewable.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -234,8 +258,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setGrouping(GroupingEntity.ALL);
 		this.bookmarkParam.setRequestedUserName(null);
 		this.bookmarkParam.setSearch("\"www.ubuntuusers.de\"");
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksSearch.class, this.chainStatus.getChainElement().getClass());
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksSearch.class, chainStatus.getChainElement().getClass());
 	}
 	
 	/**
@@ -245,8 +269,8 @@ public class BookmarkChainTest extends AbstractChainTest {
 		this.bookmarkParam.setGrouping(GroupingEntity.FOLLOWER);
 		this.bookmarkParam.addGroups(new ArrayList<Integer>(0));
 		this.bookmarkParam.setUserName("testuser2");
-		this.bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, this.chainStatus);
-		assertEquals(GetBookmarksByFollowedUsers.class, this.chainStatus.getChainElement().getClass());		
+		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
+		assertEquals(GetBookmarksByFollowedUsers.class, chainStatus.getChainElement().getClass());		
 	}
 	
 	

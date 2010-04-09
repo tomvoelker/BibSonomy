@@ -5,6 +5,8 @@ import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
 
 /**
+ * FIXME: unused
+ * 
  * Chain of Responsibility for counts regarding user
  * 
  * @author Stefan Stützer

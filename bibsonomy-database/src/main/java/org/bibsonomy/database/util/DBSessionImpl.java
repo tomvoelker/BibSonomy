@@ -272,16 +272,13 @@ public class DBSessionImpl implements DBSession {
 	 * Executes a query.
 	 */
 	private Object executeQuery(final SqlMapExecutor sqlMap, final String query, final Object param, final StatementType statementType, final QueryFor queryFor) throws SQLException {
-		Object rVal = null;
 		switch (statementType) {
 		case SELECT:
 			switch (queryFor) {
 			case OBJECT:
-				rVal = sqlMap.queryForObject(query, param);
-				break;
+				return sqlMap.queryForObject(query, param);
 			case LIST:
-				rVal = sqlMap.queryForList(query, param);
-				break;
+				return sqlMap.queryForList(query, param);
 			}
 			break;
 		case INSERT:
@@ -296,7 +293,8 @@ public class DBSessionImpl implements DBSession {
 		default:
 			throw new UnsupportedOperationException();
 		}
-		return rVal;
+		
+		return null;
 	}
 
 	/**
@@ -311,19 +309,18 @@ public class DBSessionImpl implements DBSession {
 	 * @throws SQLException
 	 */
 	private Object executeQuery(final SqlMapExecutor sqlMap, final String query, final Object param, final Object result, final StatementType statementType, final QueryFor queryFor) throws SQLException {
-		Object rVal = null;
 		switch (statementType) {
 		case SELECT:
 			switch (queryFor) {
 			case OBJECT:
-				rVal = sqlMap.queryForObject(query, param, result);
-				break;
+				return sqlMap.queryForObject(query, param, result);
 			}
 			break;
 		default:
 			throw new UnsupportedOperationException();
 		}
-		return rVal;
+		
+		return null;
 	}
 
 	@Override

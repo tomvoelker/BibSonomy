@@ -48,7 +48,6 @@ INSERT INTO `bibhash` (`hash`, `ctr`, `type`) VALUES
 ('b77ddd8087ad8856d77c740c8dc2864a', 1, 2);
 
 
-
 -- 
 -- Data for table `bibtex`
 -- 
@@ -68,6 +67,21 @@ INSERT INTO `bibtex` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `
 
 INSERT INTO `bibtexurls` (`content_id`, `url`, `text`, `group`, `date`) VALUES
 (10, 'http://www.testurl.org', 'test text', 0, '2008-07-09 11:03:24');
+
+
+-- 
+-- Data for table `gold_standard_publications`
+-- 
+
+INSERT INTO `gold_standard_publications` (`content_id`, `journal`, `volume`, `chapter`, `edition`, `month`, `day`, `booktitle`, `howPublished`, `institution`, `organization`, `publisher`, `address`, `school`, `series`, `bibtexKey`, `group`, `date`, `user_name`, `url`, `type`, `description`, `annote`, `note`, `pages`, `bKey`, `number`, `crossref`, `misc`, `bibtexAbstract`, `simhash0`, `simhash1`, `simhash2`, `simhash3`, `entrytype`, `title`, `author`, `editor`, `year`, `privnote`, `scraperid`, `change_date`, `rating`) VALUES
+(0, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 0, '1815-12-10 00:00:00', 'testuser1',   'http://www.testurl.org',        '2', 'test description', 'test annote', 'test note', 'test pages', 'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '9abf98937435f05aec3d58b214a2ac58', 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'b77ddd8087ad8856d77c740c8dc2864a', '', 'test entrytype', 'test title',         'test author',  'test editor', 'test year', 'test privnote', -1, '2008-03-20 16:24:55', 0),
+(0, 'test journal',            'test volume', 'test chapter', 'test edition', 'test month', 'test day', 'test booktitle',            'test howPublished', 'test institution', 'test organization', 'test publisher', 'test address', 'test school', 'test series', 'test bibtexKey', 1, '1815-12-10 00:00:00', 'testuser2',   'http://private.bibtex.url.com', '2', 'test description', 'test annote', 'test note', 'test page',  'test bKey', 'test number', 'test crossref', 'test misc', 'test bibtexAbstract', '8711751127efb070ee910a5d145a168b', 'ac6aa3ccb181e61801cefbc1401d409a', '1b298f199d487bc527a62326573892b8', '', 'test entrytype', 'test private title', 'test author',  'test editor', 'test year', 'test privnote', -1, '2008-05-19 14:34:29', 0);
+
+-- 
+-- Data for table `gold_standard_publication_references`
+-- 
+INSERT INTO `gold_standard_publication_references` (`publication`, `reference`, `user_name`, `date`) VALUES
+('d9eea4aa159d70ecfabafa0c91bbc9f0', 'ac6aa3ccb181e61801cefbc1401d409a', 'testuser1', '2008-03-20 16:24:55');
 
 
 -- 

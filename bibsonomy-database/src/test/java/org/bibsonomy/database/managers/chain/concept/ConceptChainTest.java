@@ -8,6 +8,10 @@ import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.database.managers.chain.concept.get.GetAllConcepts;
 import org.bibsonomy.database.managers.chain.concept.get.GetAllConceptsForUser;
 import org.bibsonomy.database.managers.chain.concept.get.GetPickedConceptsForUser;
+import org.bibsonomy.database.params.TagRelationParam;
+import org.bibsonomy.testutil.ParamUtils;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -15,6 +19,26 @@ import org.junit.Test;
  * @version $Id$
  */
 public class ConceptChainTest extends AbstractChainTest {
+	protected static ConceptChain conceptChain;
+	
+	/**
+	 * sets up the chain
+	 */
+	@BeforeClass
+	public static void setUpChain() {
+		conceptChain = new ConceptChain();
+	}
+	
+	
+	private TagRelationParam tagRelationParam;
+	
+	/**
+	 * 	creates a new tag relation param
+	 */
+	@Before
+	public void createParam() {
+		this.tagRelationParam = ParamUtils.getDefaultTagRelationParam();
+	}
 
 	/**
 	 * tests getAllConcepts
@@ -23,8 +47,8 @@ public class ConceptChainTest extends AbstractChainTest {
 	public void getAllConcepts() {
 		this.tagRelationParam.setGrouping(GroupingEntity.ALL);
 		this.tagRelationParam.setConceptStatus(ConceptStatus.ALL);
-		this.conceptChain.getFirstElement().perform(this.tagRelationParam, this.dbSession, this.chainStatus);
-		assertEquals(GetAllConcepts.class, this.chainStatus.getChainElement().getClass());
+		conceptChain.getFirstElement().perform(this.tagRelationParam, this.dbSession, chainStatus);
+		assertEquals(GetAllConcepts.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -35,8 +59,8 @@ public class ConceptChainTest extends AbstractChainTest {
 		this.tagRelationParam.setGrouping(GroupingEntity.USER);
 		this.tagRelationParam.setConceptStatus(ConceptStatus.ALL);
 		this.tagRelationParam.setRequestedUserName("testuser1");
-		this.conceptChain.getFirstElement().perform(this.tagRelationParam, this.dbSession, this.chainStatus);
-		assertEquals(GetAllConceptsForUser.class, this.chainStatus.getChainElement().getClass());
+		conceptChain.getFirstElement().perform(this.tagRelationParam, this.dbSession, chainStatus);
+		assertEquals(GetAllConceptsForUser.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -47,7 +71,7 @@ public class ConceptChainTest extends AbstractChainTest {
 		this.tagRelationParam.setGrouping(GroupingEntity.USER);
 		this.tagRelationParam.setConceptStatus(ConceptStatus.PICKED);
 		this.tagRelationParam.setRequestedUserName("testuser1");
-		this.conceptChain.getFirstElement().perform(this.tagRelationParam, this.dbSession, this.chainStatus);
-		assertEquals(GetPickedConceptsForUser.class, this.chainStatus.getChainElement().getClass());
+		conceptChain.getFirstElement().perform(this.tagRelationParam, this.dbSession, chainStatus);
+		assertEquals(GetPickedConceptsForUser.class, chainStatus.getChainElement().getClass());
 	}
 }

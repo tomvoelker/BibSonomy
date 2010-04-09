@@ -18,8 +18,8 @@ public class DatabasePluginRegistryTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void testThatPluginsAreCalled() {
-		this.pluginRegistry.clearPlugins();
-		this.pluginRegistry.add(this.pluginMock);
+		pluginRegistry.clearPlugins();
+		pluginRegistry.add(this.pluginMock);
 		
 		assertFalse(this.pluginMock.isOnBibTexDelete());
 		assertFalse(this.pluginMock.isOnBibTexInsert());
@@ -30,12 +30,12 @@ public class DatabasePluginRegistryTest extends AbstractDatabaseManagerTest {
 		
 		this.pluginMock.reset();
 
-		this.pluginRegistry.onBibTexDelete(1, null);
-		this.pluginRegistry.onBibTexInsert(1, null);
-		this.pluginRegistry.onBibTexUpdate(1, 2, null);
-		this.pluginRegistry.onBookmarkInsert(1, null);
-		this.pluginRegistry.onBookmarkUpdate(1, 2, null);
-		this.pluginRegistry.onTagRelationDelete(null, null, null, null);
+		pluginRegistry.onBibTexDelete(1, null);
+		pluginRegistry.onBibTexInsert(1, null);
+		pluginRegistry.onBibTexUpdate(1, 2, null);
+		pluginRegistry.onBookmarkInsert(1, null);
+		pluginRegistry.onBookmarkUpdate(1, 2, null);
+		pluginRegistry.onTagRelationDelete(null, null, null, null);
 
 		assertTrue(this.pluginMock.isOnBibTexDelete());
 		assertTrue(this.pluginMock.isOnBibTexInsert());
@@ -50,11 +50,11 @@ public class DatabasePluginRegistryTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void onlyOnePluginInstancePerTypeAllowed() {
-		this.pluginRegistry.clearPlugins();
-		this.pluginRegistry.add(this.pluginMock);
+		pluginRegistry.clearPlugins();
+		pluginRegistry.add(this.pluginMock);
 
 		try {
-			this.pluginRegistry.add(this.pluginMock);
+			pluginRegistry.add(this.pluginMock);
 			fail("Should throw exception");
 		} catch (final RuntimeException ex) {
 		}
