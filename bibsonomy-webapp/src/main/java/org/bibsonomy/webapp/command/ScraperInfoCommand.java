@@ -10,13 +10,19 @@ import org.bibsonomy.scraper.Scraper;
  * @version $Id$
  */
 public class ScraperInfoCommand extends ResourceViewCommand {
-	Collection<Scraper> scraperList;
+	private Collection<Scraper> scraperList;
 
+	/**
+	 * @return the scraperList
+	 */
 	public Collection<Scraper> getScraperList() {
 		return this.scraperList;
 	}
 
-	public void setScraperList(Collection<Scraper> scraperList) {
+	/**
+	 * @param scraperList the scraperList to set
+	 */
+	public void setScraperList(final Collection<Scraper> scraperList) {
 		this.scraperList = scraperList;
 	}
 
