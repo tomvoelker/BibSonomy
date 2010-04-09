@@ -23,6 +23,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.UrlUtils;
@@ -185,14 +186,7 @@ public class Functions  {
 	 * @return a space-separated string of tags
 	 */
 	public static String toTagString (final Collection<Tag> tags) {		
-		final StringBuffer sb = new StringBuffer();
-		if (tags != null) {
-			for (final Tag tag : tags) {
-				sb.append(tag.getName());
-				sb.append(" ");
-			}
-		}
-		return sb.toString().trim();
+		return TagUtils.toTagString(tags, " ");
 	}
 
 	/**
@@ -343,6 +337,7 @@ public class Functions  {
 	 * 
 	 * @see org.bibsonomy.model.util.BibTexUtils
 	 * @param bibtex
+	 * @return TODO
 	 */
 	public static String cleanBibtex(final String bibtex) {
 		return BibTexUtils.cleanBibTex(bibtex);
@@ -360,7 +355,7 @@ public class Functions  {
 	/**
 	 * Retrieves if given status is a spammer status
 	 * @param id
-	 * @return 
+	 * @return <code>true</code> iff given status is a spammer status
 	 */
 	public static Boolean isSpammer(final Integer id) {
 		final SpamStatus status = SpamStatus.getStatus(id);
@@ -411,7 +406,7 @@ public class Functions  {
 	 * very inefficient ... use a static map instead
 	 *  
 	 * @param bibtexEntryType
-	 * @return
+	 * @return TODO
 	 */
 	public static String getSWRCEntryType(final String bibtexEntryType) {
 		for (int i = 0; i < bibtexEntryTypes.length; i++) {
@@ -482,8 +477,9 @@ public class Functions  {
 
 	/**
 	 * Calculates the percentage of font size for clouds of author names
+	 * @param author 
+	 * @param maxCount 
 	 * 
-	 * @param Author
 	 * @return value between 0 and 100 %
 	 */
 	public static double authorFontSize(final Author author, final Integer maxCount) {		
@@ -509,7 +505,7 @@ public class Functions  {
 	 * @return A short description of the post.
 	 */
 	public static String shortPublicationDescription(final Post<BibTex> post) {
-		final StringBuffer buf = new StringBuffer();
+		final StringBuilder buf = new StringBuilder();
 		final BibTex resource = post.getResource();
 		if (resource != null) {
 			final String title = resource.getTitle();
@@ -543,10 +539,11 @@ public class Functions  {
 	 * 
 	 * @param post
 	 * 		- a bibtex post
+	 * @param projectHome 
 	 * @return
 	 * 		- a bibtex string of this post
 	 */
-	public static String toBibtexString(final Post<BibTex> post, String projectHome) {
+	public static String toBibtexString(final Post<BibTex> post, final String projectHome) {
 		if (urlGenerator == null) {
 			urlGenerator = new URLGenerator(projectHome);
 		}
@@ -580,8 +577,8 @@ public class Functions  {
 	 * @param layoutName
 	 * @return The rendered output as string.
 	 */
-	public static String renderLayout(final Post<BibTex> post, String layoutName) {
-		ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
+	public static String renderLayout(final Post<BibTex> post, final String layoutName) {
+		final ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
 		posts.add(post);
 		
 		return renderLayouts(posts, layoutName);
@@ -595,7 +592,7 @@ public class Functions  {
 	 * @param layoutName
 	 * @return The rendered output as string.
 	 */
-	public static String renderLayouts(final List<Post<BibTex>> posts, String layoutName) {
+	public static String renderLayouts(final List<Post<BibTex>> posts, final String layoutName) {
 		try {
 			final JabrefLayout layout = layoutRenderer.getLayout(layoutName, "");
 			if (! ".html".equals(layout.getExtension())) {
