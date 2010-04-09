@@ -17,8 +17,8 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.services.renderer.LayoutRenderer;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
 import org.springframework.validation.BindingResult;
@@ -36,7 +36,7 @@ import au.com.bytecode.opencsv.CSVWriter;
  */
 public class CSVView extends AbstractView {
 	private static final Log log = LogFactory.getLog(CSVView.class);
-
+	
 	@Override
 	protected void renderMergedOutputModel(final Map model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		/*
@@ -61,8 +61,8 @@ public class CSVView extends AbstractView {
 			 * FIXME: The path is written into the request by the UrlRewriteFilter 
 			 * ... probably this is not a good idea
 			 */
-			final String requPath = (String) request.getAttribute("requPath");
-			//response.setHeader("Content-Disposition", "attachement; filename=" + Functions.makeCleanFileName(requPath) + extension);
+//			final String requPath = (String) request.getAttribute("requPath");
+//			response.setHeader("Content-Disposition", "attachement; filename=" + Functions.makeCleanFileName(requPath) + extension);
 
 			try {
 				/*
@@ -143,7 +143,6 @@ public class CSVView extends AbstractView {
 				final List<Post<Bookmark>> bookmarkList = command.getBookmark().getList();
 				if (bookmarkList != null) {
 					for (final Post<Bookmark> post : bookmarkList) {
-						final Bookmark resource = post.getResource();
 						csvWriter.writeNext(getArray(post, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null));
 					}
 				}
@@ -177,15 +176,14 @@ public class CSVView extends AbstractView {
 		}
 	}
 
-
-	private String[] getArray(final Post<? extends Resource> post, final String author, final String editor, String bibtexKey, String annote, String booktitle, String crossref, String address, String entrytype, String chapter, String edition, String day, String howpublished, String institution, String journal, String month, String key, String number, String organization, String note, String pages, String publisher, String school, String series, String type, String volume, String year, String privnote, String misc, String bibtexAbstract) {
+	private String[] getArray(final Post<? extends Resource> post, final String author, final String editor, final String bibtexKey, final String annote, final String booktitle, final String crossref, final String address, final String entrytype, final String chapter, final String edition, final String day, final String howpublished, final String institution, final String journal, final String month, final String key, final String number, final String organization, final String note, final String pages, final String publisher, final String school, final String series, final String type, final String volume, final String year, final String privnote, final String misc, final String bibtexAbstract) {
 		final Resource resource = post.getResource();
 		return new String[] {
 				// common fields of post
 				post.getResource().getIntraHash(),
 				post.getUser().getName(),
 				post.getDate().toString(),
-				tagsToString(post.getTags()),
+				TagUtils.toTagString(post.getTags(), " "),
 				groupsToString(post.getGroups()),
 				post.getDescription(),
 				
@@ -233,7 +231,7 @@ public class CSVView extends AbstractView {
 	 * @return
 	 */
 	private String groupsToString (final Set<Group> groups) {
-		final StringBuffer buf = new StringBuffer();
+		final StringBuilder buf = new StringBuilder();
 		if (groups.isEmpty()) {
 			buf.append(GroupUtils.getPublicGroup().getName());
 		} else {
@@ -244,29 +242,17 @@ public class CSVView extends AbstractView {
 		return buf.toString().trim();
 	}
 
-	/**
-	 * Creates the tag string for CSV output
-	 * @param tags
-	 * @return
-	 */
-	private String tagsToString (final Set<Tag> tags) {
-		final StringBuffer buf = new StringBuffer();
-		for (final Tag tag: tags) {
-			buf.append(tag.getName() + " ");
-		}
-		return buf.toString().trim();
-	}
-
-
 	/** Gets the BindingResult (containing errors) from the model.
 	 * @param model
 	 * @return
 	 */
 	private BindingResult getBindingResult(final Map model){
-		for (Object key : model.keySet() ){
-			if(((String)key).startsWith(BindingResult.MODEL_KEY_PREFIX))
+		for (final Object key : model.keySet() ){
+			if (((String)key).startsWith(BindingResult.MODEL_KEY_PREFIX)) {
 				return (BindingResult) model.get(key);
+			}
 		}
+		
 		return null;
 	}
 
