@@ -39,12 +39,14 @@ public class TagSetParam {
 	public void setTagName(String tagName) {
 		this.tagName = tagName;
 	}
+	
 	/**
 	 * @return The id of the group this tag set belongs to.
 	 */
 	public int getGroupId() {
 		return this.groupId;
 	}
+	
 	/**
 	 * @param groupId
 	 */

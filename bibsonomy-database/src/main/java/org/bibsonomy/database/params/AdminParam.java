@@ -13,13 +13,16 @@ import org.bibsonomy.common.enums.InetAddressStatus;
  * @author Stefan Stützer
  * @version $Id$
  */
-public class AdminParam extends GenericParam {
+public class AdminParam {
 
 	/** An inetAddress whose status should be get/set/deleted. */
 	private InetAddress inetAddress = null;
 
 	/** Status of the corresponding inetAddress */
 	private InetAddressStatus inetAddressStatus;
+
+	/** The name of the flagged user */
+	private String userName;
 
 	/** The spammer status of the user */
 	private Boolean spammer;
@@ -60,150 +63,278 @@ public class AdminParam extends GenericParam {
 	/** Interval in hours for retrieve latest classifications */
 	private int interval;
 	
+	/** Page limit for table entries */
+	private int limit;
+	
 	/** Integer range for creating groups */
 	private int groupRange; 
 	
 	/** String for describing the table in which to update a group Id **/
 	private String groupIdTable;
 
+	/**
+	 * @return the inetAddress
+	 */
 	public InetAddress getInetAddress() {
 		return this.inetAddress;
 	}
 
+	/**
+	 * @param inetAddress the inetAddress to set
+	 */
 	public void setInetAddress(InetAddress inetAddress) {
 		this.inetAddress = inetAddress;
 	}
 
+	/**
+	 * @return the inetAddressStatus
+	 */
 	public InetAddressStatus getInetAddressStatus() {
 		return this.inetAddressStatus;
 	}
 
+	/**
+	 * @param inetAddressStatus the inetAddressStatus to set
+	 */
 	public void setInetAddressStatus(InetAddressStatus inetAddressStatus) {
 		this.inetAddressStatus = inetAddressStatus;
 	}
 
-	public Boolean getSpammer() {
-		return this.spammer;
-	}
-
+	/**
+	 * @return the spammer status
+	 */
 	public boolean isSpammer() {
 		return this.spammer == null ? false : this.spammer;
 	}
-	
+
+	/**
+	 * @param spammer the spammer status to set
+	 */
 	public void setSpammer(Boolean spammer) {
 		this.spammer = spammer;
 	}
 
-	public String getUpdatedBy() {
-		return this.updatedBy;
-	}
-
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
-	}
-
+	/**
+	 * @return the toClassify
+	 */
 	public Integer getToClassify() {
 		return this.toClassify;
 	}
 
+	/**
+	 * @param toClassify the toClassify to set
+	 */
 	public void setToClassify(Integer toClassify) {
 		this.toClassify = toClassify;
 	}
 
-	public int getOldGroupId() {
-		return this.oldGroupId;
-	}
-
-	public void setOldGroupId(int oldGroupId) {
-		this.oldGroupId = oldGroupId;
-	}
-
-	public int getNewGroupId() {
-		return this.newGroupId;
-	}
-
-	public void setNewGroupId(int newGroupId) {
-		this.newGroupId = newGroupId;
-	}
-
-	public Date getUpdatedAt() {
-		return this.updatedAt;
-	}
-
-	public void setUpdatedAt(Date updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
+	/**
+	 * @return the prediction
+	 */
 	public Integer getPrediction() {
 		return this.prediction;
 	}
 
+	/**
+	 * @param prediction the prediction to set
+	 */
 	public void setPrediction(Integer prediction) {
 		this.prediction = prediction;
 	}
-	
+
+	/**
+	 * @return the confidence
+	 */
 	public Double getConfidence() {
 		return this.confidence;
 	}
 
+	/**
+	 * @param confidence the confidence to set
+	 */
 	public void setConfidence(Double confidence) {
 		this.confidence = confidence;
 	}
 
+	/**
+	 * @return the algorithm
+	 */
 	public String getAlgorithm() {
 		return this.algorithm;
 	}
 
+	/**
+	 * @param algorithm the algorithm to set
+	 */
 	public void setAlgorithm(String algorithm) {
 		this.algorithm = algorithm;
 	}
 
+	/**
+	 * @return the mode
+	 */
 	public String getMode() {
 		return this.mode;
 	}
 
+	/**
+	 * @param mode the mode to set
+	 */
 	public void setMode(String mode) {
 		this.mode = mode;
 	}
 
+	/**
+	 * @return the oldGroupId
+	 */
+	public int getOldGroupId() {
+		return this.oldGroupId;
+	}
+
+	/**
+	 * @param oldGroupId the oldGroupId to set
+	 */
+	public void setOldGroupId(int oldGroupId) {
+		this.oldGroupId = oldGroupId;
+	}
+
+	/**
+	 * @return the newGroupId
+	 */
+	public int getNewGroupId() {
+		return this.newGroupId;
+	}
+
+	/**
+	 * @param newGroupId the newGroupId to set
+	 */
+	public void setNewGroupId(int newGroupId) {
+		this.newGroupId = newGroupId;
+	}
+
+	/**
+	 * @return the updatedAt
+	 */
+	public Date getUpdatedAt() {
+		return this.updatedAt;
+	}
+
+	/**
+	 * @param updatedAt the updatedAt to set
+	 */
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	/**
+	 * @return the updatedBy
+	 */
+	public String getUpdatedBy() {
+		return this.updatedBy;
+	}
+
+	/**
+	 * @param updatedBy the updatedBy to set
+	 */
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+
+	/**
+	 * @return the key
+	 */
 	public String getKey() {
 		return this.key;
 	}
 
+	/**
+	 * @param key the key to set
+	 */
 	public void setKey(String key) {
 		this.key = key;
 	}
 
+	/**
+	 * @return the value
+	 */
 	public String getValue() {
 		return this.value;
 	}
 
+	/**
+	 * @param value the value to set
+	 */
 	public void setValue(String value) {
 		this.value = value;
 	}
 
+	/**
+	 * @return the interval
+	 */
 	public int getInterval() {
 		return this.interval;
 	}
 
+	/**
+	 * @param interval the interval to set
+	 */
 	public void setInterval(int interval) {
 		this.interval = interval;
 	}
 
+	/**
+	 * @return the groupRange
+	 */
+	public int getGroupRange() {
+		return this.groupRange;
+	}
+
+	/**
+	 * @param groupRange the groupRange to set
+	 */
 	public void setGroupRange(int groupRange) {
 		this.groupRange = groupRange;
 	}
 
-	public int getGroupRange() {
-		return groupRange;
-	}
-	
+	/**
+	 * @return the groupIdTable
+	 */
 	public String getGroupIdTable() {
 		return this.groupIdTable;
 	}
 
+	/**
+	 * @param groupIdTable the groupIdTable to set
+	 */
 	public void setGroupIdTable(String groupIdTable) {
 		this.groupIdTable = groupIdTable;
 	}
+	
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return this.userName;
+	}
 
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	/**
+	 * @return the limit
+	 */
+	public int getLimit() {
+		return this.limit;
+	}
+
+	/**
+	 * @param limit the limit to set
+	 */
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
 }

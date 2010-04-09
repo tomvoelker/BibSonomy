@@ -54,100 +54,172 @@ public class TagParam extends GenericParam {
 	 */
 	private String regex;
 
-	public String getRegex() {
-		return this.regex;
-	}
-
-	public void setRegex(String regex) {
-		this.regex = regex;
-	}
-
-	public int getCount() {
-		return this.count;
-	}
-
-	public void setCount(int count) {
-		this.count = count;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public List<Post<? extends Resource>> getPosts() {
-		return this.posts;
-	}
-
-	public void setPosts(List<Post<? extends Resource>> posts) {
-		this.posts = posts;
-	}
-
-	public String getStem() {
-		return this.stem;
-	}
-
-	public void setStem(String stem) {
-		this.stem = stem;
-	}
-
-	public int getUsercount() {
-		return this.usercount;
-	}
-
-	public void setUsercount(int usercount) {
-		this.usercount = usercount;
-	}
-
+	/**
+	 * @return the id
+	 */
 	public int getId() {
 		return this.id;
 	}
 
+	/**
+	 * @param id the id to set
+	 */
 	public void setId(int id) {
 		this.id = id;
 	}
 
+	/**
+	 * @return the tasId
+	 */
 	public Integer getTasId() {
 		return this.tasId;
 	}
 
+	/**
+	 * @param tasId the tasId to set
+	 */
 	public void setTasId(Integer tasId) {
 		this.tasId = tasId;
 	}
 
-	public boolean isRetrieveSubSuperTagsTransitive() {
-		return this.retrieveSubSuperTagsTransitive;
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return this.name;
 	}
 
-	public void setRetrieveSubSuperTagsTransitive(boolean retrieveSubSuperTagsTransitive) {
-		this.retrieveSubSuperTagsTransitive = retrieveSubSuperTagsTransitive;
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public boolean isRetrieveSubTags() {
-		return this.retrieveSubTags;
+	/**
+	 * @return the stem
+	 */
+	public String getStem() {
+		return this.stem;
 	}
 
-	public void setRetrieveSubTags(boolean retrieveSubTags) {
-		this.retrieveSubTags = retrieveSubTags;
+	/**
+	 * @param stem the stem to set
+	 */
+	public void setStem(String stem) {
+		this.stem = stem;
 	}
 
-	public boolean isRetrieveSuperTags() {
-		return this.retrieveSuperTags;
+	/**
+	 * @return the count
+	 */
+	public int getCount() {
+		return this.count;
 	}
 
-	public void setRetrieveSuperTags(boolean retrieveSuperTags) {
-		this.retrieveSuperTags = retrieveSuperTags;
+	/**
+	 * @param count the count to set
+	 */
+	public void setCount(int count) {
+		this.count = count;
 	}
 
+	/**
+	 * @return the usercount
+	 */
+	public int getUsercount() {
+		return this.usercount;
+	}
+
+	/**
+	 * @param usercount the usercount to set
+	 */
+	public void setUsercount(int usercount) {
+		this.usercount = usercount;
+	}
+
+	/**
+	 * @return the tagRelationType
+	 */
 	public TagSimilarity getTagRelationType() {
 		return this.tagRelationType;
 	}
 
+	/**
+	 * @param tagRelationType the tagRelationType to set
+	 */
 	public void setTagRelationType(TagSimilarity tagRelationType) {
 		this.tagRelationType = tagRelationType;
+	}
+
+	/**
+	 * @return the retrieveSubTags
+	 */
+	public boolean isRetrieveSubTags() {
+		return this.retrieveSubTags;
+	}
+
+	/**
+	 * @param retrieveSubTags the retrieveSubTags to set
+	 */
+	public void setRetrieveSubTags(boolean retrieveSubTags) {
+		this.retrieveSubTags = retrieveSubTags;
+	}
+
+	/**
+	 * @return the retrieveSuperTags
+	 */
+	public boolean isRetrieveSuperTags() {
+		return this.retrieveSuperTags;
+	}
+
+	/**
+	 * @param retrieveSuperTags the retrieveSuperTags to set
+	 */
+	public void setRetrieveSuperTags(boolean retrieveSuperTags) {
+		this.retrieveSuperTags = retrieveSuperTags;
+	}
+
+	/**
+	 * @return the retrieveSubSuperTagsTransitive
+	 */
+	public boolean isRetrieveSubSuperTagsTransitive() {
+		return this.retrieveSubSuperTagsTransitive;
+	}
+
+	/**
+	 * @param retrieveSubSuperTagsTransitive the retrieveSubSuperTagsTransitive to set
+	 */
+	public void setRetrieveSubSuperTagsTransitive(boolean retrieveSubSuperTagsTransitive) {
+		this.retrieveSubSuperTagsTransitive = retrieveSubSuperTagsTransitive;
+	}
+
+	/**
+	 * @return the posts
+	 */
+	public List<Post<? extends Resource>> getPosts() {
+		return this.posts;
+	}
+
+	/**
+	 * @param posts the posts to set
+	 */
+	public void setPosts(List<Post<? extends Resource>> posts) {
+		this.posts = posts;
+	}
+
+	/**
+	 * @return the regex
+	 */
+	public String getRegex() {
+		return this.regex;
+	}
+
+	/**
+	 * @param regex the regex to set
+	 */
+	public void setRegex(String regex) {
+		this.regex = regex;
 	}
 
 }

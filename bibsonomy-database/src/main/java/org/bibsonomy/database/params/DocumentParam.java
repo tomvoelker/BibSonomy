@@ -32,6 +32,13 @@ public class DocumentParam extends GenericParam {
 	 * the md5hash of the document
 	 */
 	private String md5hash;
+	
+	/**
+	 * Constructor
+	 */
+	public DocumentParam() {
+		this.requestedSimHash = HashID.INTRA_HASH;
+	}
 
 	/**
 	 * returns the md5hash which has been builded over the content
@@ -55,13 +62,6 @@ public class DocumentParam extends GenericParam {
 	 * defines the needed simhash which should be unique for each bibtex entry
 	 */
 	private HashID requestedSimHash;
-
-	/**
-	 * Constructor
-	 */
-	public DocumentParam() {
-		this.requestedSimHash = HashID.INTRA_HASH;
-	}
 
 	/**
 	 * @return fileHash
