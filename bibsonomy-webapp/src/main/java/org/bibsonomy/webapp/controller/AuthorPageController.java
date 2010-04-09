@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -41,7 +42,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		}
 						
 		// set grouping entity = ALL
-		final GroupingEntity groupingEntity = GroupingEntity.VIEWABLE;
+		final GroupingEntity groupingEntity = GroupingEntity.ALL;
 		
 		/*
 		 * FIXME: the query supports only ONE tag!
@@ -63,7 +64,9 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		}
 				
 		// add the requested author as a system tag
-		requTags.add(SystemTagsUtil.buildSystemTagString(SystemTags.AUTHOR, authorQuery));
+		List<String> sysAuthor = new LinkedList<String>();
+		sysAuthor.add(SystemTagsUtil.buildSystemTagString(SystemTags.AUTHOR, authorQuery));
+		requTags.addAll(sysAuthor);
 		
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, null, null, requTags, null, 1000, null);
@@ -90,10 +93,10 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, BibTex.class, groupingEntity, null, null, requTags, null, 1000, null);
+			this.setTags(command, BibTex.class, groupingEntity, null, null, sysAuthor, null, 1000, null);
 			this.endTiming();
 			if(hasTags){
-				this.setRelatedTags(command, BibTex.class, groupingEntity, authorQuery, null, requTags, Order.ADDED, 0, 20, null);
+				this.setRelatedTags(command, BibTex.class, groupingEntity, null, null, requTags, Order.ADDED, 0, 20, null);
 				return Views.AUTHORTAGPAGE;
 			}
 			return Views.AUTHORPAGE;			
