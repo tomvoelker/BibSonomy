@@ -35,11 +35,6 @@ public class LuceneDelegateResourceSearch<R extends Resource> implements Resourc
 	// ResourceSearch interface implementation
 	//------------------------------------------------------------------------
 	@Override
-	public void flagSpammer(User user) {
-		log.error("Deprecated spam interface.");
-	}
-
-	@Override
 	public ResultList<Post<R>> searchAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,
 			String firstYear, String lastYear, List<String> tagList, int limit,
@@ -106,7 +101,23 @@ public class LuceneDelegateResourceSearch<R extends Resource> implements Resourc
 		else
 			return new LinkedList<Tag>();
 	}	
-		
+
+	@Override
+	public List<Tag> getTagsBySearchString(String group, String searchTerms,
+			String requestedUserName, String UserName, Set<String> GroupNames,
+			int limit, int offset) {
+		if(resourceSearcher!=null) 
+			return resourceSearcher.getTagsBySearchString(
+					group, 
+					searchTerms, 
+					requestedUserName, UserName, GroupNames, 
+					limit, offset);
+		else {
+			log.error("Trying to search for posts, but no searcher available");
+			return new ResultList<Tag>();
+		}
+	}
+	
 	//------------------------------------------------------------------------
 	// getter/setter
 	//------------------------------------------------------------------------

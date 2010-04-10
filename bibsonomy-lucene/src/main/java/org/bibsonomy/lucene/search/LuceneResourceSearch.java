@@ -44,20 +44,17 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
  * abstract parent class for lucene search
  * 
- * FIXME: this class now should be thread safe - only one issue might retain:
- *        what happens, if the update manager updated the index, but their are
- *        still resource searchers active - do their index searcher work correctly???
- * 
  * @author fei
  *
  * @param <R> resource type
  */
-public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBase {
+public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBase implements ResourceSearch<R> {
 	private static final Logger log = Logger.getLogger(LuceneResourceSearch.class);
 	
 	/**
@@ -124,7 +121,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			String searchTerms, String requestedUserName, String UserName,
 			Set<String> GroupNames, int limit, int offset) {
 		// build query
-		QuerySortContainer fullTextQuery = buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames);
+		QuerySortContainer fullTextQuery = buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames, 0);
 		// perform search query
 		return doSearch(fullTextQuery, limit, offset);
 	}
@@ -266,6 +263,51 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	}
 	
 
+	/**
+	 * get all tags assigned to resources relevant to given search terms
+	 * 
+	 * @param group
+	 * @param searchTerms
+	 * @param requestedUserName
+	 * @param UserName
+	 * @param GroupNames
+	 * @param limit
+	 * @param offset
+	 * @return
+	 */
+	public List<Tag> getTagsBySearchString(String group, String searchTerms,
+			String requestedUserName, String UserName, Set<String> GroupNames,
+			int limit, int offset) {
+		List<Tag> retVal = null;
+		
+		r.lock();
+		try {
+			if( isEnabled() ) {
+				// build query
+				QuerySortContainer qf = buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames, 0);
+
+				// gather tags used by the author's posts
+				TagCountCollector tagCollector = qf.getTagCountCollector();
+				if( tagCollector!=null ) {
+					try {
+						searcher.search(qf.getQuery(), null, tagCollector);
+						retVal = tagCollector.getTags(searcher);
+					} catch (IOException e) {
+						log.error("Error building full text tag cloud for " + searchTerms);
+					}
+				}
+				// all done.
+			};
+			
+			if( retVal==null )
+				retVal = new LinkedList<Tag>();
+		} finally {
+			r.unlock();
+		}
+		
+		// all done.
+		return retVal;
+	}
 	
 	//------------------------------------------------------------------------
 	// abstract interface
@@ -468,7 +510,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 * 
 	 * @return
 	 */
-	protected QuerySortContainer buildFulltextQuery(String group, String searchTerms, String requestedUserName, String userName, Set<String> allowedGroups) {
+	protected QuerySortContainer buildFulltextQuery(String group, String searchTerms, String requestedUserName, String userName, Set<String> allowedGroups, int tagCntLimit) {
 		// FIXME: configure this
 		//	String orderBy = "relevance"; 
 		String orderBy = FLD_DATE; 
@@ -559,6 +601,16 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		QuerySortContainer qf = new QuerySortContainer();
 		qf.setQuery(mainQuery);
 		qf.setSort(sort);
+		
+		// set up collector
+		TagCountCollector collector;
+		try {
+			collector = new TagCountCollector(null, tagCntLimit, qf.getSort());
+		} catch (IOException e) {
+			log.error("Error building tag cloud collector");
+			collector = null;
+		}
+		qf.setTagCountCollector(collector);
 		
 		return qf;
 	}
