@@ -31,10 +31,12 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.User;
 
 /**
  * Interface for resource search operations
+ * 
+ * TODO: This interface got a bit messy, as more and more queries were
+ *       added. We should redesign and clean the interface.
  * 
  * @author fei, dzo
  *
@@ -111,6 +113,22 @@ public interface ResourceSearch<R extends Resource> {
 			
 
 	/**
+	 * get tag cloud for given search string
+	 * 
+	 * TODO: implement getTagsByAuthor as a special case
+	 * 
+	 * @param group
+	 * @param searchTerms
+	 * @param requestedUserName
+	 * @param UserName
+	 * @param GroupNames
+	 * @param limit
+	 * @param offset
+	 * @return
+	 */
+	public List<Tag> getTagsBySearchString(String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset);
+
+	/**
 	 * get lists of post matched by title
 	 * 
 	 * TODO: clean up interface, like PostDatabaseManager
@@ -126,11 +144,5 @@ public interface ResourceSearch<R extends Resource> {
 	 */
 	public ResultList<Post<R>> getPostsByTitle(String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset);
 
-	/**
-	 * flags/unflags user as spammer, depending on user.getPrediction()
-	 * 
-	 * @param user
-	 */
-	@Deprecated
-	public void flagSpammer(User user);
+
 }
