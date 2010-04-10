@@ -55,8 +55,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	private final TagRelationDatabaseManager tagRelDb;
 	private final DatabasePluginRegistry plugins;
 	
-	/** interface to a resource searcher for building an author's tag cloud */
-	private ResourceSearch<BibTex> authorSearch;
+	/** interface to a resource searcher for building an tag cloud */
+	private ResourceSearch<BibTex> resourceSearch;
 
 	/**
 	 * @return a singleton instance of the TagDatabaseManager
@@ -71,20 +71,14 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 	
-	/**
-	 * @return the authorSearch
-	 */
-	public ResourceSearch<BibTex> getAuthorSearch() {
-		return this.authorSearch;
+	public void setResourceSearch(ResourceSearch<BibTex> resourceSearch) {
+		this.resourceSearch = resourceSearch;
 	}
 
-	/**
-	 * @param authorSearch the authorSearch to set
-	 */
-	public void setAuthorSearch(ResourceSearch<BibTex> authorSearch) {
-		this.authorSearch = authorSearch;
-	}
-
+	public ResourceSearch<BibTex> getResourceSearch() {
+		return resourceSearch;
+	}	
+	
 	/** 
 	 * Return tag for given tagId
 	 *  
@@ -567,12 +561,43 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getTagsByAuthorLucene(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int simHash, final List<String> tagIndex, final DBSession session) {
 		final List<Tag> retVal;
 		
-		if (present(authorSearch)) {
+		if (present(resourceSearch)) {
 			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 			String group = groupDb.getGroupNameByGroupId(groupId, session);
 			
 			final long starttimeQuery = System.currentTimeMillis();
-			retVal = authorSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, TAG_CLOUD_LIMIT);
+			// FIXME: we arbitrarily choose a tag cloud limit of 1000
+			retVal = resourceSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, 1000);
+			final long endtimeQuery = System.currentTimeMillis();
+			log.debug("Lucene author tag cloud query time: " + (endtimeQuery-starttimeQuery) + " ms");
+		} else {
+			retVal = new LinkedList<Tag>();
+			log.error("No author searcher available.");
+		}
+			
+		return retVal;
+	}
+	
+	/**
+	 * Get all tags assigned to relevant documents of a given search result
+	 * 
+	 * TODO: Of course it would be more sufficient to gather these tags 
+	 *       while searching for resources
+	 * 
+	 * @param param 
+	 * @param session
+	 * @return list of tags
+	 */
+	public List<Tag> getTagsBySearchString(final TagParam param, final DBSession session) {
+		final List<Tag> retVal;
+		
+		if (present(resourceSearch)) {
+			final long starttimeQuery = System.currentTimeMillis();
+			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+			String group = groupDb.getGroupNameByGroupId(param.getGroupId(), session);
+			// FIXME: we arbitrarily choose a tag cloud limit of 1000
+			retVal = resourceSearch.getTagsBySearchString(group, param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), 0, Integer.MAX_VALUE);
+					//param.getRawSearch(), param.getRequestedUserName(), param.getRequestedGroupName(), Integer.MAX_VALUE );
 			final long endtimeQuery = System.currentTimeMillis();
 			log.debug("Lucene author tag cloud query time: " + (endtimeQuery-starttimeQuery) + " ms");
 		} else {
@@ -931,5 +956,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Tag> getRelatedTagsByAuthorAndTag(final TagParam param, final DBSession session){
 		return this.queryForList("getRelatedTagsByAuthorAndTag", param, Tag.class, session);
-	}	
+	}
+	
 }
