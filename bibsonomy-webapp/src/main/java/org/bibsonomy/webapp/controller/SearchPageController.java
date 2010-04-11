@@ -100,7 +100,9 @@ public class SearchPageController extends SingleResourceListController implement
 			}			
 			
 			this.postProcessAndSortList(command, resourceType);
-			
+
+			// fill the tag cloud with all tag assignments of the relevant documents
+			this.setTags(command, resourceType, groupingEntity, null, null, null, null, Integer.MAX_VALUE, search);
 		}
 		
 		// html format - retrieve tags and return HTML view
