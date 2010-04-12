@@ -27,7 +27,7 @@ public class GetBibtexSearch extends BibTexChainElement {
 		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
 
 		if (this.db.isDoLuceneSearch()) {
-			return this.db.getPostsSearchLucene(GroupID.PUBLIC.getId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
+			return this.db.getPostsSearchLucene(GroupID.INVALID.getId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
 		}
 
 		// default = database

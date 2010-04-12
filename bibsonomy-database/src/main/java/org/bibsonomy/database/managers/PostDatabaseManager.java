@@ -45,6 +45,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.services.searcher.ResourceSearch;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Used to create, read, update and delete posts from the database.
@@ -624,9 +625,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			return new LinkedList<Post<R>>();
 		}
 
-		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-		final String group = groupDb.getGroupNameByGroupId(groupId, session);
-
+		String group = null;
+		if( ValidationUtils.presentValidGroupId(groupId) ) {
+			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+			group = groupDb.getGroupNameByGroupId(groupId, session);
+		}
+		
 		// get search results from lucene
 		final long starttimeQuery = System.currentTimeMillis();
 		final List<Post<R>> postList = lucene.searchPosts(group, search, requestedUserName, loginUserName, groupNames, limit, offset);

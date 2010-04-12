@@ -41,6 +41,7 @@ public class GetTagsByUser extends TagChainElement {
 				present(param.getRequestedUserName()) &&
 				!present(param.getRegex()) &&
 				!present(param.getBibtexKey()) &&
-				!present(param.getHash()));
+				!present(param.getHash()) &&
+				!present(param.getSearch()));
 	}
 }

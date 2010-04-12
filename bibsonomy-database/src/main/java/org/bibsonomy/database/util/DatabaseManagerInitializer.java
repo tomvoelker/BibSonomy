@@ -63,7 +63,7 @@ public class DatabaseManagerInitializer {
 	public void setBibTexSearcher(ResourceSearch<BibTex> bibTexSearcher) {
 		this.bibTexSearcher = bibTexSearcher;
 		this.bibTexManager.setResourceSearch(this.bibTexSearcher);
-		this.tagManager.setResourceSearch(bibTexSearcher);
+		this.tagManager.setPublicationSearch(bibTexSearcher);
 	}
 
 	/**
@@ -81,6 +81,7 @@ public class DatabaseManagerInitializer {
 	public void setBookmarkSearcher(ResourceSearch<Bookmark> bookmarkSearcher) {
 		this.bookmarkSearcher = bookmarkSearcher;
 		this.bookmarkManager.setResourceSearch(bookmarkSearcher);
+		this.tagManager.setBookmarkSearch(bookmarkSearcher);
 	}
 
 	/**

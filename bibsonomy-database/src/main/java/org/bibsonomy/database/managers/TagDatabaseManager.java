@@ -21,6 +21,7 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -56,7 +57,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	private final DatabasePluginRegistry plugins;
 	
 	/** interface to a resource searcher for building an tag cloud */
-	private ResourceSearch<BibTex> resourceSearch;
+	private ResourceSearch<BibTex> publicationSearch;
+	private ResourceSearch<Bookmark> bookmarkSearch;
 
 	/**
 	 * @return a singleton instance of the TagDatabaseManager
@@ -71,12 +73,20 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.plugins = DatabasePluginRegistry.getInstance();
 	}
 	
-	public void setResourceSearch(ResourceSearch<BibTex> resourceSearch) {
-		this.resourceSearch = resourceSearch;
+	public void setPublicationSearch(ResourceSearch<BibTex> resourceSearch) {
+		this.publicationSearch = resourceSearch;
 	}
 
-	public ResourceSearch<BibTex> getResourceSearch() {
-		return resourceSearch;
+	public ResourceSearch<BibTex> getPublicationSearch() {
+		return publicationSearch;
+	}
+	
+	public void setBookmarkSearch(ResourceSearch<Bookmark> resourceSearch) {
+		this.bookmarkSearch = resourceSearch;
+	}
+
+	public ResourceSearch<Bookmark> getBookmarkSearch() {
+		return bookmarkSearch;
 	}	
 	
 	/** 
@@ -561,13 +571,13 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	public List<Tag> getTagsByAuthorLucene(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int simHash, final List<String> tagIndex, final DBSession session) {
 		final List<Tag> retVal;
 		
-		if (present(resourceSearch)) {
+		if (present(publicationSearch)) {
 			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 			String group = groupDb.getGroupNameByGroupId(groupId, session);
 			
 			final long starttimeQuery = System.currentTimeMillis();
 			// FIXME: we arbitrarily choose a tag cloud limit of 1000
-			retVal = resourceSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, 1000);
+			retVal = publicationSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, 1000);
 			final long endtimeQuery = System.currentTimeMillis();
 			log.debug("Lucene author tag cloud query time: " + (endtimeQuery-starttimeQuery) + " ms");
 		} else {
@@ -589,22 +599,18 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of tags
 	 */
 	public List<Tag> getTagsBySearchString(final TagParam param, final DBSession session) {
-		final List<Tag> retVal;
-		
-		if (present(resourceSearch)) {
-			final long starttimeQuery = System.currentTimeMillis();
-			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-			String group = groupDb.getGroupNameByGroupId(param.getGroupId(), session);
-			// FIXME: we arbitrarily choose a tag cloud limit of 1000
-			retVal = resourceSearch.getTagsBySearchString(group, param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), 0, Integer.MAX_VALUE);
-					//param.getRawSearch(), param.getRequestedUserName(), param.getRequestedGroupName(), Integer.MAX_VALUE );
-			final long endtimeQuery = System.currentTimeMillis();
-			log.debug("Lucene author tag cloud query time: " + (endtimeQuery-starttimeQuery) + " ms");
-		} else {
-			retVal = new LinkedList<Tag>();
-			log.error("No author searcher available.");
-		}
-			
+		List<Tag> retVal = new LinkedList<Tag>();
+
+		// FIXME: is there a better (=generic) way to handle different resource types in the 
+		//        TagDatabaseManager?
+		if (present(bookmarkSearch)) {
+			retVal = bookmarkSearch.getTagsBySearchString(null, param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), 0, Integer.MAX_VALUE);
+		};
+		if (present(publicationSearch)) {
+			retVal.addAll(publicationSearch.getTagsBySearchString(null, param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), 0, Integer.MAX_VALUE));
+		};
+
+		// all done
 		return retVal;
 	}
 	

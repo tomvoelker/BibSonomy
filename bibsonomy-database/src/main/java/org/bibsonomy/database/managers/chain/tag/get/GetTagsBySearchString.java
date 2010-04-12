@@ -29,7 +29,9 @@ public class GetTagsBySearchString extends TagChainElement {
 	@Override
 	protected boolean canHandle(final TagParam param) {
 		return ( present(param.getGrouping())                      &&
-				 param.getGrouping() == GroupingEntity.ALL         &&
+				 (GroupingEntity.ALL.equals(param.getGrouping()) 
+				  || GroupingEntity.USER.equals(param.getGrouping())         
+				  || GroupingEntity.GROUP.equals(param.getGrouping()))  &&
 			     nullOrEqual(param.getSearchEntity(), SearchEntity.ALL) &&
 				 present(param.getSearch())                        &&
 				!present(param.getRegex())                         &&
