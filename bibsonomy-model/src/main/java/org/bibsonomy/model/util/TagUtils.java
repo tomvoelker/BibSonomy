@@ -176,12 +176,16 @@ public class TagUtils {
 		}
 		// add tags from second list, adding corresponding counts on collisions
 		for( Tag t : src2 ) {
-			Tag oldTag = tagCollector.get(t.getName());
+			Tag oldTag = tagCollector.remove(t.getName());
 			if( ValidationUtils.present(oldTag) ) {
 				t.setGlobalcount(t.getGlobalcount() + oldTag.getGlobalcount());
 				t.setUsercount(t.getUsercount() + oldTag.getUsercount());
 			}
 			mergedList.add(t);
+		}
+		// add all tags from src1\src2
+		for( Map.Entry<String, Tag> entry : tagCollector.entrySet() ) {
+			mergedList.add(entry.getValue());
 		}
 		
 		// all done
