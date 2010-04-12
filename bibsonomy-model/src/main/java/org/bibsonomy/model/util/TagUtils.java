@@ -24,7 +24,10 @@
 package org.bibsonomy.model.util;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -34,6 +37,7 @@ import org.antlr.runtime.RecognitionException;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * @author Dominik Benz
@@ -151,4 +155,36 @@ public class TagUtils {
 		}
 		return tags;
 	}	
+	
+	/**
+	 * Merges two given lists of tags into one, adding tag counts where necessary
+	 * 
+	 * FIXME: sub-tags, etc. are ignored!!!
+	 * 
+	 * @param src1 a list of tags to merge
+	 * @param src2 an other list of tags to merge
+	 * 
+	 * @return merged list
+	 */
+	public static List<Tag> mergeTagLists(final List<Tag> src1, final List<Tag> src2 ) {
+		List<Tag> mergedList = new LinkedList<Tag>();
+		
+		// collect tags from first tag list
+		Map<String,Tag> tagCollector = new HashMap<String, Tag>();
+		for( Tag t : src1 ) {
+			tagCollector.put(t.getName(), t);
+		}
+		// add tags from second list, adding corresponding counts on collisions
+		for( Tag t : src2 ) {
+			Tag oldTag = tagCollector.get(t.getName());
+			if( ValidationUtils.present(oldTag) ) {
+				t.setGlobalcount(t.getGlobalcount() + oldTag.getGlobalcount());
+				t.setUsercount(t.getUsercount() + oldTag.getUsercount());
+			}
+			mergedList.add(t);
+		}
+		
+		// all done
+		return mergedList;
+	}
 }
