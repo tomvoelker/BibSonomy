@@ -232,34 +232,10 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	public List<Tag> getTagsByAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,
 			String firstYear, String lastYear, List<String> tagList, int limit) {
-		List<Tag> retVal = null;
-		
-		r.lock();
-		try {
-			if( isEnabled() ) {
-				QuerySortContainer qf = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, CFG_TAG_CLOUD_LIMIT);
-
-				// gather tags used by the author's posts
-				TagCountCollector tagCollector = qf.getTagCountCollector();
-				if( tagCollector!=null ) {
-					try {
-						searcher.search(qf.getQuery(), null, tagCollector);
-						retVal = tagCollector.getTags(searcher);
-					} catch (IOException e) {
-						log.error("Error building author tag cloud for " + search);
-					}
-				}
-				// all done.
-			};
-			
-			if( retVal==null )
-				retVal = new LinkedList<Tag>();
-		} finally {
-			r.unlock();
-		}
-		
-		// all done.
-		return retVal;
+		// build query
+		QuerySortContainer qf = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, CFG_TAG_CLOUD_LIMIT);
+		// query index
+		return doTagCollection(qf);
 	}
 	
 
@@ -278,35 +254,10 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	public List<Tag> getTagsBySearchString(String group, String searchTerms,
 			String requestedUserName, String UserName, Set<String> GroupNames,
 			int limit, int offset) {
-		List<Tag> retVal = null;
-		
-		r.lock();
-		try {
-			if( isEnabled() ) {
-				// build query
-				QuerySortContainer qf = buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames, 0);
-
-				// gather tags used by the author's posts
-				TagCountCollector tagCollector = qf.getTagCountCollector();
-				if( tagCollector!=null ) {
-					try {
-						searcher.search(qf.getQuery(), null, tagCollector);
-						retVal = tagCollector.getTags(searcher);
-					} catch (IOException e) {
-						log.error("Error building full text tag cloud for " + searchTerms);
-					}
-				}
-				// all done.
-			};
-			
-			if( retVal==null )
-				retVal = new LinkedList<Tag>();
-		} finally {
-			r.unlock();
-		}
-		
-		// all done.
-		return retVal;
+		// build query
+		QuerySortContainer qf = buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames, 0);
+		// collect tags
+		return doTagCollection(qf);
 	}
 	
 	//------------------------------------------------------------------------
@@ -469,6 +420,39 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		return postList;
 	}	
 
+	
+	/**
+	 * collect all tags assigned to relevant documents
+	 *  
+	 */
+	private List<Tag> doTagCollection(QuerySortContainer qf) {
+		List<Tag> retVal = null;
+		
+		r.lock();
+		try {
+			if( isEnabled() ) {
+				// gather tags used by the author's posts
+				TagCountCollector tagCollector = qf.getTagCountCollector();
+				if( tagCollector!=null ) {
+					try {
+						searcher.search(qf.getQuery(), null, tagCollector);
+						retVal = tagCollector.getTags(searcher);
+					} catch (IOException e) {
+						log.error("Error building full text tag cloud for query " + qf.getQuery().toString());
+					}
+				}
+			};
+			
+			if( retVal==null )
+				retVal = new LinkedList<Tag>();
+		} finally {
+			r.unlock();
+		}
+		
+		// all done.
+		return retVal;
+	}
+	
 	/**
 	 * check whether index is ready for searching
 	 */

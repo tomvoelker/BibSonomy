@@ -25,8 +25,8 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.lucene.database.LuceneBibTexLogic;
 import org.bibsonomy.lucene.database.LuceneBookmarkLogic;
 import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
-import org.bibsonomy.lucene.search.delegate.LuceneDelegateBibTexSearch;
-import org.bibsonomy.lucene.search.delegate.LuceneDelegateBookmarkSearch;
+import org.bibsonomy.lucene.search.LuceneSearchBibTex;
+import org.bibsonomy.lucene.search.LuceneSearchBookmarks;
 import org.bibsonomy.lucene.util.JNDITestDatabaseBinder;
 import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.lucene.util.LuceneBibTexConverter;
@@ -143,7 +143,7 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		}
 
 		// prepare searcher
-		final ResourceSearch<BibTex> bibtexSearcher = LuceneDelegateBibTexSearch.getInstance();
+		final ResourceSearch<BibTex> bibtexSearcher = LuceneSearchBibTex.getInstance();
 
 		// search for all relevant fields
 		for( final String term : bibtexSearchTerms ) {
@@ -196,8 +196,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		}
 
 		// prepare searcher
-		final ResourceSearch<BibTex> bibtexSearcher = LuceneDelegateBibTexSearch.getInstance();
-		final ResourceSearch<Bookmark> bookmarkSearcher = LuceneDelegateBookmarkSearch.getInstance();
+		final ResourceSearch<BibTex> bibtexSearcher = LuceneSearchBibTex.getInstance();
+		final ResourceSearch<Bookmark> bookmarkSearcher = LuceneSearchBookmarks.getInstance();
 
 		// search for all relevant fields
 		for( final String term : bibtexSearchTerms ) {
@@ -285,8 +285,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		final String userName = "testuser1";
 		final User user = new User(userName);
 		// prepare searcher
-		final ResourceSearch<BibTex> bibtexSearcher = LuceneDelegateBibTexSearch.getInstance();
-		final ResourceSearch<Bookmark> bookmarkSearcher = LuceneDelegateBookmarkSearch.getInstance();
+		final ResourceSearch<BibTex> bibtexSearcher = LuceneSearchBibTex.getInstance();
+		final ResourceSearch<Bookmark> bookmarkSearcher = LuceneSearchBookmarks.getInstance();
 		
 		// flag user as spammer
 		user.setPrediction(1);
@@ -435,8 +435,8 @@ public class LuceneUpdateManagerTest extends AbstractDatabaseManagerTest {
 		}
 
 		// prepare searcher
-		final ResourceSearch<BibTex> bibtexSearcher = LuceneDelegateBibTexSearch.getInstance();
-		final ResourceSearch<Bookmark> bookmarkSearcher = LuceneDelegateBookmarkSearch.getInstance();
+		final ResourceSearch<BibTex> bibtexSearcher = LuceneSearchBibTex.getInstance();
+		final ResourceSearch<Bookmark> bookmarkSearcher = LuceneSearchBookmarks.getInstance();
 
 		// search for bibtex
 		ResultList<Post<BibTex>> bibResultList = bibtexSearcher.searchPosts(null, bibTitle, null, bibtexPost.getUser().getName(), allowedGroups, 1, 0);

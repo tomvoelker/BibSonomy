@@ -93,19 +93,6 @@
 	</bean>
 	
 	
-	<!--+
-	    | lucene's resource search interface implementation
-	    | (delegating requests to index searcher and mangager)   
-	    +-->
-	<bean id="luceneDelegateBookmarkSearch" class="org.bibsonomy.lucene.search.delegate.LuceneDelegateBookmarkSearch" factory-method="getPreInitInstance">
-		<property name="resourceManager" ref="luceneBookmarkManager"/>
-		<property name="resourceSearcher" ref="luceneBookmarkSearch"/>
-	</bean>
-	<bean id="luceneDelegateBibTexSearch" class="org.bibsonomy.lucene.search.delegate.LuceneDelegateBibTexSearch" factory-method="getPreInitInstance">
-		<property name="resourceManager" ref="luceneBibTexManager"/>
-		<property name="resourceSearcher" ref="luceneBibTexSearch"/>
-	</bean>
-	
 	<!--  #################### imports #################### -->
 	
 	<import resource="LuceneIndexConfig.xml"/>
