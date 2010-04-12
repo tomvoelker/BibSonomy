@@ -152,14 +152,14 @@ function concatArray(data, max_len, delim) {
 
 function getArrowKey(e) {
 	var parent = 
-		document.getElementById('suggestion_parent');
+		document.getElementById('suggestionBox');
 
 	if(e.keyCode == 38){
 		var el = null;
 		var selected_field = null;
 
 		if((selected_field = DOMTraverseFlatByClass(parent.childNodes[0], 'suggestion_entry_selected')) == null) {
-			getLastChildByClass(parent, 'suggestion_entry').className = 'suggestion_entry_selected'; 
+			getPreviousByClass(parent.lastChild, 'suggestion_entry').className = 'suggestion_entry_selected'; 
 
 		} else {
 			selected_field.className = 'suggestion_entry';
@@ -170,7 +170,7 @@ function getArrowKey(e) {
 		return true;
 	} else if(e.keyCode == 40){
 		if((selected_field = DOMTraverseFlatByClass(parent.childNodes[0], 'suggestion_entry_selected')) == null) {
-			if((el = getFirstChildByClass(parent, 'suggestion_entry')) != null)
+			if((el = getNextByClass(parent.firstChild, 'suggestion_entry')) != null)
 				el.className = 'suggestion_entry_selected';
 		} else {
 			selected_field.className = 'suggestion_entry';
@@ -195,31 +195,10 @@ function DOMTraverseFlatByClass(el, className) {
 		if(el.tagName == 'DIV' && el.className == className) {
 			return el;
 		}
-		/*
-		 * if((valid_el = DOMTraverseByClass(el.childNodes[0], class)) !=
-		 * null) { return valid_el; }
-		 */
 		el = el.nextSibling;
 	}
 	return null;
 }
-
-function getLastChildByClass(parent, className) {
-	var match_el = parent.lastChild;
-	while(match_el != null) {
-		if(match_el.tagName == 'DIV'){
-			document.getElementById('traverse_log').innerHTML += "fgrkgr";
-			if(match_el.className == className) {
-				return match_el;
-			}
-
-		}
-		match_el = match_el.previousSibling;
-	}
-	return null;
-}
-
-
 
 function getNextByClass(match_el, className) {
 	while(match_el != null) {
@@ -245,21 +224,6 @@ function getPreviousByClass(match_el, className) {
 		match_el = match_el.previousSibling;
 	}
 	return null;
-}	
-
-function getFirstChildByClass(el, className) {
-	var match_el = el.firstChild;
-	while(match_el != null) {
-		if(match_el.tagName == 'DIV'){
-			if(match_el.className == className) {
-				return match_el;
-			}
-
-		}
-		match_el = match_el.nextSibling;
-	}
-	return null;
-}	
 
 /**
  * format the matching part of a string bold
