@@ -48,10 +48,6 @@ public class SearchPageController extends SingleResourceListController implement
 		/* DEBUG */
 		log.debug("SearchPageController: command.getSearchmode()="+command.getSearchmode());
 		
-		if ("lucene".equals(command.getSearchmode())) {
-			command.getRequestedTagsList().add(SystemTags.SEARCH.getPrefix() + ":lucene");
-		} 
-
 		/* DEBUG */
 		log.debug("SearchPageController: command.getRequestedTagsList().toString()=" + command.getRequestedTagsList().toString());
 		
@@ -100,14 +96,13 @@ public class SearchPageController extends SingleResourceListController implement
 			}			
 			
 			this.postProcessAndSortList(command, resourceType);
-
-			// fill the tag cloud with all tag assignments of the relevant documents
-			this.setTags(command, resourceType, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, search);
 		}
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
 			command.setPageTitle("search");
+			// fill the tag cloud with all tag assignments of the relevant documents
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, search);
 			this.endTiming();
 			return Views.SEARCHPAGE;			
 		}
