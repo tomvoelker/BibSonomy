@@ -26,7 +26,6 @@
 			
              function processRsp(obj) {
                      var pNode = obj.Body[0].findSimilarUrlsResponse[0].publication;
-                     alert("piacall" + pNode.size);
                      if(PIAObject.method == 'findSimilarUrls') {
                     	 var elem = document.createElement("li")
                          var span = document.createElement("span");
