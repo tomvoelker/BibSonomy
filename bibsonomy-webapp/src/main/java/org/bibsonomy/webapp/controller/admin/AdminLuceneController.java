@@ -11,9 +11,9 @@ import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.exceptions.ValidationException;
-import org.bibsonomy.lucene.search.delegate.LuceneDelegateBibTexSearch;
-import org.bibsonomy.lucene.search.delegate.LuceneDelegateBookmarkSearch;
-import org.bibsonomy.lucene.search.delegate.LuceneDelegateResourceSearch;
+import org.bibsonomy.lucene.search.LuceneResourceSearch;
+import org.bibsonomy.lucene.search.LuceneSearchBibTex;
+import org.bibsonomy.lucene.search.LuceneSearchBookmarks;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.User;
@@ -97,8 +97,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		}
 		
 		
-		LuceneDelegateResourceSearch<Bookmark> bookmarksIndex    = LuceneDelegateBookmarkSearch.getInstance();
-		LuceneDelegateResourceSearch<BibTex>   publicationsIndex = LuceneDelegateBibTexSearch.getInstance();
+		LuceneResourceSearch<Bookmark> bookmarksIndex    = LuceneSearchBookmarks.getInstance();
+		LuceneResourceSearch<BibTex>   publicationsIndex = LuceneSearchBibTex.getInstance();
 
 		// Infos über die einzelnen Indexe
 		// Anzahl Einträge, letztes Update, ...
