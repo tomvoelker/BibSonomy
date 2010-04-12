@@ -58,7 +58,7 @@
 							//a.onmouseover = function() {this.innerHTML = this.title;};
 							//a.onmouseout = function() {this.innerHTML = (this.title.length > 25)? this.title.substr(0, 25) + '... ':this.title;};
 							
-							
+							a.appendChild(b);
 							outerdiv.appendChild(a);
 							outerdiv.appendChild(innerdiv);
 							
