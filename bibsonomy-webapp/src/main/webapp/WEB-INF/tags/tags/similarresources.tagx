@@ -26,6 +26,7 @@
 			
              function processRsp(obj) {
                      var pNode = obj.Body[0].findSimilarUrlsResponse[0].publication;
+                     alert("piacall" + pNode.size);
                      if(PIAObject.method == 'findSimilarUrls') {
                     	 var elem = document.createElement("li")
                          var span = document.createElement("span");
@@ -42,12 +43,28 @@
                          for(var k = 0; pNode.length > k; k++) {
 							var li = document.createElement("LI");
 							var a = document.createElement("A");
+							var b = document.createElement("B");
+							var outerdiv = document.createElement("DIV");
+							var innerdiv = document.createElement("DIV");
 							a.title = pNode[k].title[0].Text;
 							a.href = pNode[k].location[0].Text;
-							a.innerHTML = (a.title.length > 25)? a.title.substr(0, 25) + '... ':a.title;
-							a.onmouseover = function() {this.innerHTML = this.title;};
-							a.onmouseout = function() {this.innerHTML = (this.title.length > 25)? this.title.substr(0, 25) + '... ':this.title;};
-							li.appendChild(a);
+							a.innerHTML = "blub";
+							b.className = "smalltext";
+							b.innerHTML = (a.title.length > 25)? a.title.substr(0, 25) + '... ':a.title;
+
+							outerdiv.className = "help";
+							innerdiv.style.left = "-120px";
+							innerdiv.innerHTML = a.title;
+							
+							
+							//a.onmouseover = function() {this.innerHTML = this.title;};
+							//a.onmouseout = function() {this.innerHTML = (this.title.length > 25)? this.title.substr(0, 25) + '... ':this.title;};
+							
+							
+							outerdiv.appendChild(a);
+							outerdiv.appendChild(innerdiv);
+							
+							li.appendChild(outerdiv);
 							$(ul).append(li);
                          }  
                          $("#sidebar").append(elem);
