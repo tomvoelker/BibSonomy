@@ -26,38 +26,34 @@
 	<div class="bookbox" id="${listID}">
 	
 		<div class="bboxheader">
+			<!-- Buttons -->
 			<c:if test="${!empty listView.list}">
 					<div class="listhButtons">
 						<jsp:invoke fragment="formatButtons"/>
 					</div>
 			</c:if>
 	
+			<!-- Headline -->
 			<h2 class="listh"><fmt:message key="${titleKey}" /></h2>
 		
+			<!-- Display total number of entries in list -->
 			<c:if test="${!empty listView.list}">
-				<div class="listh">
-					<c:choose>
-						<c:when test="${listView.totalCount != 0}">
-							<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
-							${mtl:ch('nbsp')}<span id="ttlctr" title="${totalTitle}">(${listView.totalCount})</span>
-						</c:when>
-						<c:otherwise>
-							${mtl:ch('nbsp')}
-						</c:otherwise>
-					</c:choose>
-				</div>
+				<c:if test="${listView.totalCount != 0}">
+					<div class="listh">
+						<c:set var="totalTitle"><fmt:message key="list.total" />: <c:out value=" ${listView.totalCount} "/> <fmt:message key="${titleKey}" /></c:set>
+						${mtl:ch('nbsp')}<span id="ttlctr" title="${totalTitle}">(${listView.totalCount})</span>
+					</div>
+				</c:if>
 			</c:if>
-
 		</div>
 		
 		<c:if test="${!empty listView.list}">
-			
+				<!-- show available actions -->
 				<div class="kiste">		
 					<rc:nextprev listView="${listView}" listViewStartParamName="${listViewStartParamName}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}"/>
 					<rc:actions resourceType="${listView.resourcetype}"/>				
 					${mtl:ch('nbsp')}
 				</div>
-				
 	   
                 <c:set var="alreadyOwn"><fmt:message key="post.meta.own_post"/></c:set>
                 <c:set var="copyThisPost"><fmt:message key="post.meta.copy_this_post"/></c:set>

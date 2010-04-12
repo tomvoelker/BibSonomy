@@ -448,10 +448,12 @@ li.uploadinfo {
 
 .nextprev {
 	float: left;
+	padding-top: 2px;
 }
 
 .actions {
 	float: right;
+	padding-top: 2px;
 }
 
 .kiste {
@@ -460,20 +462,22 @@ li.uploadinfo {
 	clear: left;
 }
 
-.listh span {
-	margin-right: .5em;
+.bboxheader {
+	margin-bottom: 1ex;	
+	min-height: 2ex;
 }
 
 .listh {
-	margin: 0 0 .5em 0;
+	margin: 0;
 	padding: 0;
 }
 
 .listhButtons {
 	float: right;
-	margin-right: 0 ! important;
-	/* margin-top: -1.2em; */
-	padding: 0;
+	margin-right: 0 !important;
+	padding: 2px 0 0;
+	font-size: 80%;
+
 }
 
 .listhButtons a {
