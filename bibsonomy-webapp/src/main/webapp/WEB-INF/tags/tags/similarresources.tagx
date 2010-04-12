@@ -47,7 +47,6 @@
 							var innerdiv = document.createElement("DIV");
 							a.title = pNode[k].title[0].Text;
 							a.href = pNode[k].location[0].Text;
-							a.innerHTML = "blub";
 							b.className = "smalltext";
 							b.innerHTML = (a.title.length > 25)? a.title.substr(0, 25) + '... ':a.title;
 
