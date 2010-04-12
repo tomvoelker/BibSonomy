@@ -224,6 +224,7 @@ function getPreviousByClass(match_el, className) {
 		match_el = match_el.previousSibling;
 	}
 	return null;
+}
 
 /**
  * format the matching part of a string bold
