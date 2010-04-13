@@ -75,6 +75,7 @@
                     settings.animate && textarea.css('display') === 'block' ?
                         toChange.stop().animate({height:scrollTop}, settings.animateDuration, settings.animateCallback)
                         : toChange.height(scrollTop);
+                    textarea.focus();
                 };
             
             // Bind namespaced handlers to appropriate events:
