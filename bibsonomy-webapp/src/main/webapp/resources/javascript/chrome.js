@@ -152,10 +152,12 @@ clearhidemenu:function(){
 },
 
 addEvent:function(target, functionref, tasktype){
-	if (target.addEventListener)
-		target.addEventListener(tasktype, functionref, false);
-	else if (target.attachEvent)
-		target.attachEvent('on'+tasktype, function(){return functionref.call(target, window.event)});
+	if(target != null) {
+		if (target.addEventListener)
+			target.addEventListener(tasktype, functionref, false);
+		else if (target.attachEvent)
+			target.attachEvent('on'+tasktype, function(){return functionref.call(target, window.event)});
+	}
 },
 
 startchrome:function(){
