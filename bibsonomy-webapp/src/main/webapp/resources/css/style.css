@@ -1199,3 +1199,7 @@ padding-top:1px;
 	background-color: #D8EBAE;
 }
 
+#sidebarroundcorner a:hover{
+	color: #D80000!important;
+}
+
