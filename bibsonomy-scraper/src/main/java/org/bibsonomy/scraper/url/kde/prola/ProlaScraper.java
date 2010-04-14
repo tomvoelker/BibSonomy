@@ -89,7 +89,7 @@ public class ProlaScraper extends AbstractUrlScraper {
 		String prolaPageContent = sc.getPageContent();
 
 		// check if snippet is selected
-		if(sc.getSelectedText() != null && sc.getSelectedText() != ""){
+		if(sc.getSelectedText() != null && !"".equals(sc.getSelectedText())){
 			String bibtex = sc.getSelectedText();
 
 			//remove comments bevor reference
