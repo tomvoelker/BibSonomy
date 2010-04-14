@@ -39,8 +39,10 @@ import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
 import org.bibsonomy.util.WebUtils;
 
 /**
- * @author daill
+ * 
+ * @author Christian Kramer
  * @version $Id$
+ * 
  */
 public class PubMedScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "PubMed";
@@ -50,13 +52,13 @@ public class PubMedScraper extends AbstractUrlScraper {
 
 	private static final String HOST = "ncbi.nlm.nih.gov";
 	private static final String PUBMED_EUTIL_HOST = "eutils.ncbi.nlm.nih.gov";
+	private static final String UK_PUBMED_CENTRAL_HOST = "ukpmc.ac.uk";
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = new LinkedList<Tuple<Pattern, Pattern>>();
 	static {
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST),
-				AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*"
-				+ PUBMED_EUTIL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + PUBMED_EUTIL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + UK_PUBMED_CENTRAL_HOST), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 
 	protected boolean scrapeInternal(ScrapingContext sc)
@@ -64,16 +66,15 @@ public class PubMedScraper extends AbstractUrlScraper {
 		String bibtexresult = null;
 		sc.setScraper(this);
 
-		Pattern pa = Pattern.compile("meta.+content=\"(\\d+)\"");
+		Pattern pa = Pattern.compile("meta name=\"citation_pmid\" content=\"(\\d+)\"");
 		Matcher ma = pa.matcher(sc.getPageContent());
-		
+	
 		// save the original URL
 		String _origUrl = sc.getUrl().toString();
 
 		try {
-			if (_origUrl.matches("(?ms)^.+db=PubMed.+$")) {
-
-				// try to get the PMID out of the paramters
+			if (_origUrl.matches("(?im)^.+db=PubMed.+$")) {
+				// try to get the PMID out of the parameters
 				pa = Pattern.compile("\\d+");
 				ma = pa.matcher(sc.getUrl().getQuery());
 
@@ -86,9 +87,8 @@ public class PubMedScraper extends AbstractUrlScraper {
 
 				// try to scrape with new URL-Pattern
 				// avoid crashes
-			} else if (sc.getPageContent().matches("(?ms)^.+db=PubMed.+$")) {
-
-				// try to get the PMID out of the paramters
+			} else if (sc.getPageContent().matches("(?ims)^.+PMID: (\\d*) .+$")) {
+				// try to get the PMID out of the parameters
 				pa = Pattern.compile("(?ms)^.+PMID: (\\d*) .+$");
 				ma = pa.matcher(sc.getPageContent());
 
@@ -102,6 +102,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 				String newUrl = "http://www.hubmed.org/export/bibtex.cgi?uids=" + ma.group(1);
 				bibtexresult = WebUtils.getContentAsString(new URL(newUrl));
 			}
+			
 
 			// replace the humbed url through the original URL
 			pa = Pattern.compile("url = \".*\"");
@@ -119,7 +120,8 @@ public class PubMedScraper extends AbstractUrlScraper {
 			} else
 				throw new ScrapingFailureException("getting bibtex failed");
 
-		} catch (IOException e) {
+		} catch (Exception e) {
+			e.printStackTrace();
 			throw new InternalFailureException(e);
 		}
 	}
