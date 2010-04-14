@@ -203,7 +203,7 @@ public class TagUtils {
 	private static List<Tag> mergeFrequencyFilteredTagLists(final List<Tag> src1, final List<Tag> src2, Order tagOrder, int limit ) {
 		List<Tag> mergedList = new LinkedList<Tag>();
 		
-		log.debug("Merging tag lists and filter by minFreq");
+		log.debug("Merging tag lists ("+src1.size()+"/"+src2.size()+")and filter by minFreq");
 
 		// collect tags from first tag list
 		Map<String,Tag> tagCollector = new HashMap<String, Tag>();
@@ -251,7 +251,7 @@ public class TagUtils {
 	private static List<Tag> mergePopularityFilteredTagLists(final List<Tag> src1, final List<Tag> src2, Order tagOrder, int limit ) {
 		List<Tag> mergedList = new LinkedList<Tag>();
 		
-		log.debug("Merging tag lists and filter by popularity");
+		log.debug("Merging tag lists ("+src1.size()+"/"+src2.size()+")and filter by popularity");
 		
 		// collect tags from first tag list
 		Map<String,Tag> tagCollector = new HashMap<String, Tag>();
