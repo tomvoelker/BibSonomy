@@ -120,8 +120,7 @@ public class PubMedScraper extends AbstractUrlScraper {
 			} else
 				throw new ScrapingFailureException("getting bibtex failed");
 
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
 			throw new InternalFailureException(e);
 		}
 	}
