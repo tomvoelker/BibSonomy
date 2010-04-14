@@ -27,6 +27,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
@@ -576,8 +577,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 			String group = groupDb.getGroupNameByGroupId(groupId, session);
 			
 			final long starttimeQuery = System.currentTimeMillis();
-			// FIXME: we arbitrarily choose a tag cloud limit of 1000
-			retVal = publicationSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, 1000);
+			// FIXME: we arbitrarily choose a tag cloud limit of 100
+			List<Tag> bookmarkTags = new LinkedList<Tag>();
+			List<Tag> publicationTags = publicationSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex);
+			retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, 100);
 			final long endtimeQuery = System.currentTimeMillis();
 			log.debug("Lucene author tag cloud query time: " + (endtimeQuery-starttimeQuery) + " ms");
 		} else {
@@ -599,19 +602,30 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of tags
 	 */
 	public List<Tag> getTagsBySearchString(final TagParam param, final DBSession session) {
-		List<Tag> retVal = new LinkedList<Tag>();
-
+		List<Tag> bookmarkList    = new LinkedList<Tag>();
+		List<Tag> publicationList = new LinkedList<Tag>();
+		
 		// FIXME: is there a better (=generic) way to handle different resource types in the 
 		//        TagDatabaseManager?
 		if (present(bookmarkSearch)) {
-			retVal = bookmarkSearch.getTagsBySearchString(null, param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), 0, Integer.MAX_VALUE);
+			bookmarkList    = bookmarkSearch.getTagsBySearchString(null, param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames());
 		};
 		if (present(publicationSearch)) {
-			retVal.addAll(publicationSearch.getTagsBySearchString(null, param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), 0, Integer.MAX_VALUE));
+			publicationList = publicationSearch.getTagsBySearchString(null, param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames());
 		};
 
 		// all done
-		return retVal;
+		// TagParam's semantic is special: 
+		//       order == FREQENCY -> top popular tags, limit value set in param object
+		//       order == null     -> tags filtered by min. frequency, limit value not set
+		Order tagOrder;
+		if( Order.FREQUENCY.equals(param.getOrder()) )
+			tagOrder = Order.POPULAR;
+		else {
+			tagOrder = Order.FREQUENCY;
+			param.setLimit(0);
+		}
+		return TagUtils.mergeTagLists(bookmarkList, publicationList, tagOrder, tagOrder, param.getLimit());
 	}
 	
 	/**
