@@ -35,6 +35,8 @@ import java.util.TreeSet;
 import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.comparators.TagCountComparator;
 import org.bibsonomy.model.enums.Order;
@@ -47,7 +49,8 @@ import org.bibsonomy.util.ValidationUtils;
  * @version $Id$
  */
 public class TagUtils {
-
+	private static final Log log = LogFactory.getLog(TagUtils.class); 
+	
 	private static final Tag emptyTag = new Tag("system:unfiled");
 	
 	private static final Tag importedTag = new Tag("imported");
@@ -200,6 +203,8 @@ public class TagUtils {
 	private static List<Tag> mergeFrequencyFilteredTagLists(final List<Tag> src1, final List<Tag> src2, Order tagOrder, int limit ) {
 		List<Tag> mergedList = new LinkedList<Tag>();
 		
+		log.debug("Merging tag lists and filter by minFreq");
+
 		// collect tags from first tag list
 		Map<String,Tag> tagCollector = new HashMap<String, Tag>();
 		for( Tag t : src1 ) {
@@ -224,6 +229,7 @@ public class TagUtils {
 			} 
 		}
 		
+		log.debug("Done merging lists.");
 		// all done
 		return mergedList;
 	}
@@ -245,6 +251,8 @@ public class TagUtils {
 	private static List<Tag> mergePopularityFilteredTagLists(final List<Tag> src1, final List<Tag> src2, Order tagOrder, int limit ) {
 		List<Tag> mergedList = new LinkedList<Tag>();
 		
+		log.debug("Merging tag lists and filter by popularity");
+		
 		// collect tags from first tag list
 		Map<String,Tag> tagCollector = new HashMap<String, Tag>();
 		for( Tag t : src1 ) {
@@ -264,9 +272,12 @@ public class TagUtils {
 		for( Map.Entry<String, Tag> entry : tagCollector.entrySet() ) {
 			mergedList.add(entry.getValue());
 		}
+
 		
 		// sort tags according to tag counts
+		log.debug("Sorting tags...");
 		Collections.sort(mergedList, new TagCountComparator());
+		log.debug("Done sorting tags.");
 		
 		// all done
 		return mergedList.subList(0, Math.min(mergedList.size(), limit));
