@@ -34,7 +34,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		 *  create some dummy data for testing 
 		 *  FIXME: replace this by fetching the data from the logic instead!
 		 */		
-		final int[] dummyYears = {2009,2008,2007,2006,2007};
+		final int[] dummyYears = {2009,2008,2007,2006,2005};
 		final String[] dummyTypes = Bibtex.entrytypes;
 		final int dummyValue = 23;
 		
