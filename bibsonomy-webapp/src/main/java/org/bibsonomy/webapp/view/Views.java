@@ -190,6 +190,14 @@ public enum Views implements View {
 	/** scraper info list **/
 	SCRAPER_INFO("scraperInfo"),
 
+
+	/**
+	 * reporting
+	 */
+	REPORTING("reporting"),
+	
+	
+	
 	/* *****************************************************
 	 * AJAX views
 	 * *****************************************************/
@@ -382,6 +390,7 @@ public enum Views implements View {
 	 * edit tags
 	 */
 	EDIT_TAGS("actions/edit/edittags"),
+
 	
 	
 	
