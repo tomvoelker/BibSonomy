@@ -201,10 +201,12 @@ public class BibTexUtils {
 		}
 
 		try {
-			// append year (always given!)
-			openurl.append("date=" + bib.getYear().trim());
+			// append year (due to inconsistent database not always given!)
+			if (present(bib.getYear())) {
+				openurl.append("date=" + bib.getYear().trim());
+			}
 			// append doi
-			if (doi != null) {
+			if (present(doi)) {
 				appendOpenURL(openurl,"id", "doi:" + doi.trim());
 			}
 			// append isbn + issn
