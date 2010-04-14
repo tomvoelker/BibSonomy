@@ -47,7 +47,9 @@ import org.bibsonomy.util.WebUtils;
  * It supports following urls:
  * - http://scitation.aip.org/vsearch/servlet/VerityServlet?
  * - http://scitation.aip.org/getabs/servlet/GetCitation?
+ * - http://jcp.aip.orgs
  * @author tst
+ * @version $Id$
  *
  */
 public class AipScitationScraper extends AbstractUrlScraper {
@@ -91,9 +93,9 @@ public class AipScitationScraper extends AbstractUrlScraper {
 	private static final String HTML_INPUT_NAME_SELECTCHECK = "SelectCheck";
 
 	/*
-	 * link bevor doi 
+	 * link before doi 
 	 */
-	private static final String LINK_BEVOR_DOI = "<a href=\"http://scitation.aip.org/jhtml/doi.jsp\">doi:</a>";
+	private static final String LINK_BEFORE_DOI = "<a href=\"http://scitation.aip.org/jhtml/doi.jsp\">doi:</a>";
 
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(hostPattern, pathPattern));
 	
@@ -120,13 +122,22 @@ public class AipScitationScraper extends AbstractUrlScraper {
 				// get page content
 				String aipContent = WebUtils.getContentAsString(sc.getUrl().toString());
 				String selectcheck = null;
+				
+				// this often selects the ident string of related documents, not the requested
 				Pattern selectCheckPattern = Pattern.compile("name=\"SelectCheck\"\\s+value=\"(\\w+)");
 				Matcher selectCheckMatcher = selectCheckPattern.matcher(aipContent);
 				
+				// need an alternate pattern to get the correct ident string
+				Pattern alternateSelectCheckPattern = Pattern.compile("[(]'Download',\\W{0,}'(\\w+)'[)]");
+				Matcher alternateSelectCheckMather = alternateSelectCheckPattern.matcher(aipContent);
 				
-				if(selectCheckMatcher.find()) {
+				
+				if(alternateSelectCheckMather.find()) {
+					selectcheck = alternateSelectCheckMather.group(1);
+				} else if(selectCheckMatcher.find()) {
 					selectcheck = selectCheckMatcher.group(1);
 				}
+
 				
 				final Matcher m = AIP_CONTENT_TYPE_HTML_PATTERN.matcher(aipContent);
 				
@@ -140,7 +151,7 @@ public class AipScitationScraper extends AbstractUrlScraper {
 					// may be a spie link
 					if(downloadURL == null){
 						//extract doi
-						int indexOfDOILink = aipContent.indexOf(LINK_BEVOR_DOI) + LINK_BEVOR_DOI.length();
+						int indexOfDOILink = aipContent.indexOf(LINK_BEFORE_DOI) + LINK_BEFORE_DOI.length();
 
 						String startDOI = aipContent.substring(indexOfDOILink);
 						String doi = startDOI.substring(0, startDOI.indexOf("\n"));

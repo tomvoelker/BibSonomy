@@ -40,7 +40,7 @@ public class AipScitationScraperTest {
 	 * starts URL test with id url_8
 	 */
 	@Test
-	@Ignore
+	
 	public void url1TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_8"));
@@ -50,10 +50,20 @@ public class AipScitationScraperTest {
 	 * starts URL test with id url_9
 	 */
 	@Test
-	@Ignore
+	
 	public void url2TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_9"));
+	}
+	
+	/**
+	 * starts URL test with id url_174
+	 */
+	@Test
+	
+	public void url3TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_174"));
 	}
 
 }

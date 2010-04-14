@@ -1030,4 +1030,10 @@
 		<BibFile>PlosScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.plos.PlosScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_174">
+		<TestDescription>URL test for scraping a bibtex page from scitation.aip.org</TestDescription>
+		<URL>http://jcp.aip.org/jcpsa6/v125/i12/p124105_s1?isAuthorized=no</URL>
+		<BibFile>AipScitationScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
+	</URLTest>
 </test:Tests>
