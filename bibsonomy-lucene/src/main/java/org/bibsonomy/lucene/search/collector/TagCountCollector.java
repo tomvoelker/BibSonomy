@@ -18,9 +18,7 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.Sort;
-import org.bibsonomy.lucene.util.TagCountComparator;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
