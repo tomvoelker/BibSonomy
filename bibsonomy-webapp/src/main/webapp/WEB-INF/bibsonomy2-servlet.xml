@@ -107,6 +107,11 @@
 						<property name="controllerBeanName" value="groupPageController"/>
 					</bean>
 				</entry>	
+				<entry key="/reporting">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="groupReportingPageController"/>
+					</bean>
+				</entry>	
 				<entry key="/viewable">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="viewablePageController"/>
@@ -350,6 +355,11 @@
 			</list>
 		</property>
 	</bean>
+	
+	<bean id="groupReportingPageController" class="org.bibsonomy.webapp.controller.GroupReportingPageController" scope="request">
+		<property name="logic" ref="logic"/>
+		<property name="userSettings" ref="userSettings"/>
+	</bean>	
 	
 	<bean id="groupsPageController" class="org.bibsonomy.webapp.controller.GroupsPageController" scope="request">
 		<property name="logic" ref="logic"/>
