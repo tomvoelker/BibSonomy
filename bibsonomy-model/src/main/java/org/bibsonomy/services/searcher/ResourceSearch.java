@@ -109,7 +109,7 @@ public interface ResourceSearch<R extends Resource> {
 	 */
 	public List<Tag> getTagsByAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,
-			String firstYear, String lastYear, List<String> tagList, int limit);
+			String firstYear, String lastYear, List<String> tagList);
 			
 
 	/**
@@ -122,11 +122,12 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param requestedUserName
 	 * @param UserName
 	 * @param GroupNames
+	 * @param tagOrder
+	 * @param limitType
 	 * @param limit
-	 * @param offset
 	 * @return
 	 */
-	public List<Tag> getTagsBySearchString(String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset);
+	public List<Tag> getTagsBySearchString(String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames);
 
 	/**
 	 * get lists of post matched by title

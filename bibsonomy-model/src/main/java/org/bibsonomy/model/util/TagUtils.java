@@ -24,6 +24,7 @@
 package org.bibsonomy.model.util;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,6 +36,8 @@ import org.antlr.runtime.ANTLRStringStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.comparators.TagCountComparator;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.tagparser.TagString3Lexer;
 import org.bibsonomy.model.util.tagparser.TagString3Parser;
 import org.bibsonomy.util.ValidationUtils;
@@ -157,16 +160,89 @@ public class TagUtils {
 	}	
 	
 	/**
-	 * Merges two given lists of tags into one, adding tag counts where necessary
+	 * Merges two given lists of tags into one, adding tag counts where necessary, 
+	 * limiting resulting list according to given parameters
 	 * 
 	 * FIXME: sub-tags, etc. are ignored!!!
+	 * FIXME: tags are not sorted 
 	 * 
 	 * @param src1 a list of tags to merge
 	 * @param src2 an other list of tags to merge
+	 * @param tagOrder NOT IMPLEMENTED
+	 * @param limitType POPULAR or FREQUENCY  
+	 * @param limit number of popular tags to return or minimum frequency
 	 * 
-	 * @return merged list
+	 * @return either the top n tags of the merged list (if limitType==POPULAR)
+	 *         or all tags with globalTagCount>=limit (if limitType==FREQUENCY)
 	 */
-	public static List<Tag> mergeTagLists(final List<Tag> src1, final List<Tag> src2 ) {
+	public static List<Tag> mergeTagLists(final List<Tag> src1, final List<Tag> src2, Order tagOrder, Order limitType, int limit) {
+		if( Order.POPULAR.equals(limitType))
+			return mergePopularityFilteredTagLists(src1, src2, tagOrder, limit);
+		else {
+			return mergeFrequencyFilteredTagLists(src1, src2, tagOrder, limit);
+		}
+	}
+	
+	/**
+	 * Merges two given lists of tags into one, adding tag counts where necessary 
+	 * and returns only those tags with globalcount >= given limit
+	 * 
+	 * FIXME: sub-tags, etc. are ignored!!!
+	 * FIXME: tags are not sorted 
+	 * 
+	 * @param src1 a list of tags to merge
+	 * @param src2 an other list of tags to merge
+	 * @param tagOrder NOT IMPLEMENTED
+	 * @param limit minimum frequency
+	 * 
+	 * @return all tags with globalTagCount>=limit
+	 */
+	private static List<Tag> mergeFrequencyFilteredTagLists(final List<Tag> src1, final List<Tag> src2, Order tagOrder, int limit ) {
+		List<Tag> mergedList = new LinkedList<Tag>();
+		
+		// collect tags from first tag list
+		Map<String,Tag> tagCollector = new HashMap<String, Tag>();
+		for( Tag t : src1 ) {
+			tagCollector.put(t.getName(), t);
+		}
+		// add tags from second list, adding corresponding counts on collisions
+		for( Tag t : src2 ) {
+			Tag oldTag = tagCollector.remove(t.getName());
+			if( ValidationUtils.present(oldTag) ) {
+				t.setGlobalcount(t.getGlobalcount() + oldTag.getGlobalcount());
+				t.setUsercount(t.getUsercount() + oldTag.getUsercount());
+			}
+			if( t.getGlobalcount()>=limit ) {
+				mergedList.add(t);
+			} 
+		}
+		
+		// add all tags from src1\src2
+		for( Map.Entry<String, Tag> entry : tagCollector.entrySet() ) {
+			if( entry.getValue().getGlobalcount()>=limit ) {
+				mergedList.add(entry.getValue());
+			} 
+		}
+		
+		// all done
+		return mergedList;
+	}
+
+	/**
+	 * Merges two given lists of tags into one, adding tag counts where necessary,
+	 * returning only the top n popular tags 
+	 * 
+	 * FIXME: sub-tags, etc. are ignored!!!
+	 * FIXME: tags are not sorted 
+	 * 
+	 * @param src1 a list of tags to merge
+	 * @param src2 an other list of tags to merge
+	 * @param tagOrder NOT IMPLEMENTED
+	 * @param limit number of popular tags to return
+	 * 
+	 * @return the top n tags of the merged list 
+	 */
+	private static List<Tag> mergePopularityFilteredTagLists(final List<Tag> src1, final List<Tag> src2, Order tagOrder, int limit ) {
 		List<Tag> mergedList = new LinkedList<Tag>();
 		
 		// collect tags from first tag list
@@ -183,12 +259,17 @@ public class TagUtils {
 			}
 			mergedList.add(t);
 		}
+		
 		// add all tags from src1\src2
 		for( Map.Entry<String, Tag> entry : tagCollector.entrySet() ) {
 			mergedList.add(entry.getValue());
 		}
 		
+		// sort tags according to tag counts
+		Collections.sort(mergedList, new TagCountComparator());
+		
 		// all done
-		return mergedList;
+		return mergedList.subList(0, Math.min(mergedList.size(), limit));
 	}
+
 }
