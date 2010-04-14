@@ -25,6 +25,7 @@ import org.bibsonomy.lucene.search.collector.TagCountCollector;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -72,8 +73,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 			String searchTerms, 
 			String requestedUserName, String requestedGroupName, 
 			String year, String firstYear, String lastYear, 
-			List<String> tagList,
-			int tagCntLimit ) {
+			List<String> tagList) {
 		// FIXME: configure this
 //		String orderBy = "relevance"; 
 		String orderBy = "date"; 
@@ -218,7 +218,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		// set up collector
 		TagCountCollector collector;
 		try {
-			collector = new TagCountCollector(null, tagCntLimit, qf.getSort());
+			collector = new TagCountCollector(null, CFG_TAG_CLOUD_LIMIT, qf.getSort());
 		} catch (IOException e) {
 			log.error("Error building tag cloud collector");
 			collector = null;

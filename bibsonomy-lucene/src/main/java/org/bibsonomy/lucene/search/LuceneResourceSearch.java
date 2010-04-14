@@ -44,6 +44,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -121,7 +122,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			String searchTerms, String requestedUserName, String UserName,
 			Set<String> GroupNames, int limit, int offset) {
 		// build query
-		QuerySortContainer fullTextQuery = buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames, 0);
+		QuerySortContainer fullTextQuery = buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames);
 		// perform search query
 		return doSearch(fullTextQuery, limit, offset);
 	}
@@ -147,7 +148,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			String firstYear, String lastYear, List<String> tagList, int limit,
 			int offset) {
 		// build query
-		QuerySortContainer authorQuery = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, CFG_TAG_CLOUD_LIMIT);
+		QuerySortContainer authorQuery = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList);
 		// perform search query
 		return this.doSearch(authorQuery, limit, offset);
 	}
@@ -231,9 +232,9 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 */
 	public List<Tag> getTagsByAuthor(String group, String search,
 			String requestedUserName, String requestedGroupName, String year,
-			String firstYear, String lastYear, List<String> tagList, int limit) {
+			String firstYear, String lastYear, List<String> tagList) {
 		// build query
-		QuerySortContainer qf = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList, CFG_TAG_CLOUD_LIMIT);
+		QuerySortContainer qf = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList);
 		// query index
 		return doTagCollection(qf);
 	}
@@ -252,10 +253,12 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 * @return
 	 */
 	public List<Tag> getTagsBySearchString(String group, String searchTerms,
-			String requestedUserName, String UserName, Set<String> GroupNames,
-			int limit, int offset) {
+			String requestedUserName, String UserName, Set<String> GroupNames) {
 		// build query
-		QuerySortContainer qf = buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames, 0);
+		// FIXME: the tagparam's semantic is a bit special:
+		//        tagOrder == FREQENCY means that top x popular tags should be returned
+		//        tagOrder == null means, that tags are filtered by minFreq
+		QuerySortContainer qf = buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames);
 		// collect tags
 		return doTagCollection(qf);
 	}
@@ -494,7 +497,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 * 
 	 * @return
 	 */
-	protected QuerySortContainer buildFulltextQuery(String group, String searchTerms, String requestedUserName, String userName, Set<String> allowedGroups, int tagCntLimit) {
+	protected QuerySortContainer buildFulltextQuery(String group, String searchTerms, String requestedUserName, String userName, Set<String> allowedGroups) {
 		// FIXME: configure this
 		//	String orderBy = "relevance"; 
 		String orderBy = FLD_DATE; 
@@ -589,7 +592,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		// set up collector
 		TagCountCollector collector;
 		try {
-			collector = new TagCountCollector(null, tagCntLimit, qf.getSort());
+			collector = new TagCountCollector(null, CFG_TAG_CLOUD_LIMIT, qf.getSort());
 		} catch (IOException e) {
 			log.error("Error building tag cloud collector");
 			collector = null;
@@ -724,7 +727,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			String searchTerms, 
 			String requestedUserName, String requestedGroupName, 
 			String year, String firstYear, String lastYear, 
-			List<String> tagList, int tagCntLimit);
+			List<String> tagList);
 	
 	/**
 	 * construct lucene query filter for full text search 'search:group'

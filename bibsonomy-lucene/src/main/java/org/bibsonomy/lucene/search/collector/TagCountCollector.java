@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,7 +18,9 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.Sort;
+import org.bibsonomy.lucene.util.TagCountComparator;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -67,10 +70,11 @@ public class TagCountCollector extends Collector {
 	@Override
 	public void setScorer(Scorer scorer) throws IOException {
 	}
-
+	
 	/**
 	 * fetches tags and their corresponding counts from collected documents 
 	 * 
+	 * @param searcher index searcher for accessing documents
 	 * @return
 	 */
 	public List<Tag> getTags(Searcher searcher) {
@@ -98,14 +102,16 @@ public class TagCountCollector extends Collector {
 
 		}
 		
-		for(String tag : tagCounter.keySet() ) {
+		// extract all tags
+		for( Map.Entry<String,Integer> entry : tagCounter.entrySet() ) {
 			Tag transientTag = new Tag();
-			transientTag.setName(tag);
-			transientTag.setUsercount(tagCounter.get(tag));
+			transientTag.setName(entry.getKey());
+			transientTag.setUsercount(entry.getValue());
 			// FIXME: we set user==global count
-			transientTag.setGlobalcount(tagCounter.get(tag));
+			transientTag.setGlobalcount(entry.getValue());
 			retVal.add(transientTag);
 		}
+		
 		// all done.
 		return retVal;
 	}
