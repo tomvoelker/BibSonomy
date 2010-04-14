@@ -32,7 +32,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Scraper URL tests #24 #25 for ProlaScraper
  * @author tst
- *
+ * @version: $Id$
  */
 public class ProlaScraperTest {
 	
@@ -55,5 +55,16 @@ public class ProlaScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_25"));
 	}
+	
+	/**
+	 * starts URL test with id url_175
+	 */
+	@Test
+	@Ignore
+	public void url3TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_175"));
+	}
+
 
 }

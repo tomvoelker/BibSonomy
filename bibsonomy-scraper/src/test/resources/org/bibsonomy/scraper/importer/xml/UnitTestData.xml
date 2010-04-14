@@ -1036,4 +1036,10 @@
 		<BibFile>AipScitationScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_175">
+		<TestDescription>URL scraping test with a publication page from prola</TestDescription>
+		<URL>http://prb.aps.org/abstract/PRB/v47/i1/p558_1</URL>
+		<BibFile>ProlaScraperUnitURLTest3.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
+	</URLTest>
 </test:Tests>

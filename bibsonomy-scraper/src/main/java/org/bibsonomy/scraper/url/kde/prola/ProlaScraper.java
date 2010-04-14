@@ -43,6 +43,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for prola.aps.org. It scrapes selected bibtex snippets and selected articles.
  * @author tst
+ * @version: $Id$
  */
 public class ProlaScraper extends AbstractUrlScraper {
 
@@ -54,7 +55,7 @@ public class ProlaScraper extends AbstractUrlScraper {
 	/*
 	 * needed URLs and components
 	 */
-	private static final String PROLA_APS_HOST = "prola.aps.org";
+	private static final String PROLA_APS_HOST = ".aps.org";
 	private static final String PROLA_APS_BIBTEX_PARAM = "type=bibtex";
 
 	/*
@@ -80,7 +81,7 @@ public class ProlaScraper extends AbstractUrlScraper {
 	}
 
 	/**
-	 * Extract atricles from prola.aps.org. It works with the article page, the bibtex page and a selected bibtex snippet.
+	 * Extract atricles from *.aps.org. It works with the article page, the bibtex page and a selected bibtex snippet.
 	 */
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
@@ -88,7 +89,7 @@ public class ProlaScraper extends AbstractUrlScraper {
 		String prolaPageContent = sc.getPageContent();
 
 		// check if snippet is selected
-		if(sc.getSelectedText() != null){
+		if(sc.getSelectedText() != null && sc.getSelectedText() != ""){
 			String bibtex = sc.getSelectedText();
 
 			//remove comments bevor reference
@@ -206,7 +207,6 @@ public class ProlaScraper extends AbstractUrlScraper {
 	}
 
 	public String getSupportedSiteName() {
-		// TODO Auto-generated method stub
 		return SITE_NAME;
 	}
 
