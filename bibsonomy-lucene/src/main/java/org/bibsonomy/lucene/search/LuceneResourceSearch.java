@@ -29,7 +29,6 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
-import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.store.FSDirectory;
 import org.bibsonomy.common.enums.GroupID;
@@ -44,7 +43,6 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -438,7 +436,9 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 				TagCountCollector tagCollector = qf.getTagCountCollector();
 				if( tagCollector!=null ) {
 					try {
+						log.debug("Starting tag collection");
 						searcher.search(qf.getQuery(), null, tagCollector);
+						log.debug("Done collecting tags");
 						retVal = tagCollector.getTags(searcher);
 					} catch (IOException e) {
 						log.error("Error building full text tag cloud for query " + qf.getQuery().toString());
