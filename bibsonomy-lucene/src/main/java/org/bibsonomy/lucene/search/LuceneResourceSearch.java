@@ -427,6 +427,9 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 *  
 	 */
 	private List<Tag> doTagCollection(QuerySortContainer qf) {
+		if( !getEnableTagClouds() ) {
+			return new LinkedList<Tag>();
+		}
 		List<Tag> retVal = null;
 		
 		r.lock();
@@ -440,6 +443,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 						searcher.search(qf.getQuery(), null, tagCollector);
 						log.debug("Done collecting tags");
 						retVal = tagCollector.getTags(searcher);
+						log.debug("Done calculating tag statistics");
 					} catch (IOException e) {
 						log.error("Error building full text tag cloud for query " + qf.getQuery().toString());
 					}

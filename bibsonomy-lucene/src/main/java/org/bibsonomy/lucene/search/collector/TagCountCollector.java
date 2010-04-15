@@ -78,6 +78,7 @@ public class TagCountCollector extends Collector {
 	public List<Tag> getTags(Searcher searcher) {
 		Map<String,Integer> tagCounter = new HashMap<String,Integer>();
 		
+		log.debug("Start extracting tags from index...");
 		List<Tag> retVal = new LinkedList<Tag>();
 		for( Integer docId : docToReaderMap.keySet() ) {
 			try {
@@ -99,6 +100,7 @@ public class TagCountCollector extends Collector {
 			}
 
 		}
+		log.debug("Done extracting tags from index...");
 		
 		// extract all tags
 		for( Map.Entry<String,Integer> entry : tagCounter.entrySet() ) {
@@ -109,7 +111,8 @@ public class TagCountCollector extends Collector {
 			transientTag.setGlobalcount(entry.getValue());
 			retVal.add(transientTag);
 		}
-		
+		log.debug("Done converting tag list");
+
 		// all done.
 		return retVal;
 	}

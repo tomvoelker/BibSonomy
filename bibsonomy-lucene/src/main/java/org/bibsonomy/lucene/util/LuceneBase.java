@@ -98,6 +98,7 @@ public class LuceneBase {
 	private static IndexWriter.MaxFieldLength maximumFieldLength
 	                                              = new IndexWriter.MaxFieldLength(5000);
 	private static Integer redundantCnt           = 2;
+	private static Boolean enableTagClouds        = false;
 	
 	/**
 	 * get runtime configuration from context
@@ -145,6 +146,9 @@ public class LuceneBase {
 				}
 				redundantCnt = value;
 			}
+			
+			// enable/disable tag cloud on search pages
+			setEnableTagClouds(Boolean.valueOf(config.getEnableTagClouds()));
 			
 			setEnableUpdater(Boolean.valueOf(config.getEnableUpdater()));
 			loadIndexIntoRam = Boolean.valueOf(config.getLoadIndexIntoRam());
@@ -200,5 +204,13 @@ public class LuceneBase {
 
 	public static Integer getRedundantCnt() {
 		return redundantCnt;
+	}
+
+	public static void setEnableTagClouds(Boolean enableTagClouds) {
+		LuceneBase.enableTagClouds = enableTagClouds;
+	}
+
+	public static Boolean getEnableTagClouds() {
+		return enableTagClouds;
 	}
 }

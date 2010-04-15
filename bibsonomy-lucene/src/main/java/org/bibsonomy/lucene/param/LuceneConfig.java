@@ -20,6 +20,8 @@ public class LuceneConfig {
 	private String dbDriverName;
 	/** nr. of redundant indeces */
 	private String redundantCnt = "2";
+	/** enable/disable tag clouds on search pages */
+	private Boolean enableTagClouds = false;
 	
 	public void setIndexPath(String indexPath) {
 		this.indexPath = indexPath;
@@ -32,6 +34,12 @@ public class LuceneConfig {
 	}
 	public String getEnableUpdater() {
 		return enableUpdater.toString();
+	}
+	public void setEnableTagClouds(String enableTagClouds) {
+		this.enableTagClouds = Boolean.valueOf(enableTagClouds);
+	}
+	public String getEnableTagClouds() {
+		return enableTagClouds.toString();
 	}
 	public void setSearchMode(String searchMode) {
 		this.searchMode = searchMode;
@@ -63,6 +71,5 @@ public class LuceneConfig {
 	public String getRedundantCnt() {
 		return redundantCnt;
 	}
-
 	
 }
