@@ -184,7 +184,7 @@ public class PicaParser{
 							if (_tempCont.matches("^.*Diss.*$")){
 								return "@phdthesis{";
 							} else if (_tempCont.matches("^.*Master.*$")){
-								return "@masterthesis{";
+								return "@mastersthesis{";
 							} else {
 								return "@techreport{";
 							}
