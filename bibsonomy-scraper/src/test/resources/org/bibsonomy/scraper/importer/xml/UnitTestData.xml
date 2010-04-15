@@ -1048,4 +1048,10 @@
 		<BibFile>PubMedScraperUnitURLTest4.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.pubmed.PubMedScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_177">
+		<TestDescription>PROLA test formerly failed</TestDescription>
+		<URL>http://prola.aps.org/abstract/PR/v149/i2/p674_1</URL>
+		<BibFile>ProlaScraperUnitURLTest4.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.prola.ProlaScraper</Scraper>
+	</URLTest>	
 </test:Tests>

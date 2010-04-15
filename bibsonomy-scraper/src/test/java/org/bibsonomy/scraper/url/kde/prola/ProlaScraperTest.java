@@ -23,11 +23,11 @@
 
 package org.bibsonomy.scraper.url.kde.prola;
 
+import static org.junit.Assert.assertTrue;
+
 import org.bibsonomy.scraper.UnitTestRunner;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
 
 /**
  * Scraper URL tests #24 #25 for ProlaScraper
@@ -64,6 +64,16 @@ public class ProlaScraperTest {
 	public void url3TestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_175"));
+	}
+	
+	/**
+	 * starts URL test with id url_177
+	 */
+	@Test
+	@Ignore
+	public void url4TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_177"));
 	}
 
 

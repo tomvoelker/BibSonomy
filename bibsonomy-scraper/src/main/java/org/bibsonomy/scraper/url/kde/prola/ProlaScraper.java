@@ -23,8 +23,9 @@
 
 package org.bibsonomy.scraper.url.kde.prola;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -43,7 +44,6 @@ import org.bibsonomy.util.WebUtils;
 /**
  * Scraper for prola.aps.org. It scrapes selected bibtex snippets and selected articles.
  * @author tst
- * @version: $Id$
  */
 public class ProlaScraper extends AbstractUrlScraper {
 
@@ -61,13 +61,11 @@ public class ProlaScraper extends AbstractUrlScraper {
 	/*
 	 * needed regular expressions to extract download link
 	 */
-	private static final String PATTERN_LINK = "<a\\b[^<]*</a>";
+	private static final Pattern linkPattern = Pattern.compile("<a\\b[^<]*</a>");
+	private static final Pattern linkValuePattern = Pattern.compile(">(.*)<");
+	private static final Pattern hrefPattern = Pattern.compile("href=\"([^\"]*)\"");
+	private static final Pattern bibPattern = Pattern.compile("@\\b[^\\{@]*\\{.*", Pattern.DOTALL);
 
-	private static final String PATTERN_HREF = "href=\"[^\"]*\"";
-
-	private static final String PATTERN_LINK_VALUE = ">(.*)<";
-
-	private static final String PATTERN_BIBTEX_ENTRY = "@\\b[^\\{@]*\\{.*";
 
 	/*
 	 * value of download link
@@ -81,26 +79,17 @@ public class ProlaScraper extends AbstractUrlScraper {
 	}
 
 	/**
-	 * Extract atricles from *.aps.org. It works with the article page, the bibtex page and a selected bibtex snippet.
+	 * Extract atricles from *.aps.org. It works with the article page, the bibtex page
 	 */
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
-		String prolaPageContent = sc.getPageContent();
+		final String prolaPageContent = sc.getPageContent();
 
-		// check if snippet is selected
-		if(sc.getSelectedText() != null && !"".equals(sc.getSelectedText())){
-			String bibtex = sc.getSelectedText();
-
-			//remove comments bevor reference
-			bibtex = cleanBibtexEntry(bibtex);
-
-			// add downloaded bibtex to result 
-			sc.setBibtexResult(bibtex);
-			return true;						
-		}
-
-		// check if selected page is a bibtex page
+		/*
+		 * check if selected page is a bibtex page
+		 */
 		if(sc.getUrl().getQuery() != null && sc.getUrl().getQuery().contains(PROLA_APS_BIBTEX_PARAM)){
 			//remove comments bevor reference
 			final StringBuffer bibtex = new StringBuffer(cleanBibtexEntry(sc.getPageContent()));
@@ -117,37 +106,29 @@ public class ProlaScraper extends AbstractUrlScraper {
 		String downloadLink = null;
 
 		// extract all links from downloaded page
-		Pattern linkPattern = Pattern.compile(PATTERN_LINK);
-		Matcher linkMatcher = linkPattern.matcher(prolaPageContent);
+		final Matcher linkMatcher = linkPattern.matcher(prolaPageContent);
 
-		while(linkMatcher.find()){
+		while (linkMatcher.find()) {
 			String linkMatch = linkMatcher.group();
 
 			// extract the value between the a tags
-			Pattern linkValuePattern = Pattern.compile(PATTERN_LINK_VALUE);
-			Matcher linkValueMatcher = linkValuePattern.matcher(linkMatch);
 
-			if(linkValueMatcher.find()){
-				String linkValue = linkValueMatcher.group();
+			final Matcher linkValueMatcher = linkValuePattern.matcher(linkMatch);
 
-				// cut of the opening and closing brackets
-				linkValue = linkValue.substring(1, linkValue.length()-1);
-
-				// check if the link is the download bibtex link
-				if(linkValue.equals(DOWNLOAD_LINK_VALUE)){
+			if (linkValueMatcher.find()) {
+				/*
+				 * check if the link is the download bibtex link
+				 */
+				if (DOWNLOAD_LINK_VALUE.equals(linkValueMatcher.group(1))) {
 
 					// extracted link is the bibtex download link, search href attribute 
-					Pattern hrefPattern = Pattern.compile(PATTERN_HREF);
-					Matcher hrefMatcher = hrefPattern.matcher(linkMatch);
+					final Matcher hrefMatcher = hrefPattern.matcher(linkMatch);
 
-					if(hrefMatcher.find()){
-						String href = hrefMatcher.group();
-
-						// cut of the leading herf=" and the ending "
-						href = href.substring(6, href.length()-1);
-
-						// build url to bibtex of this article
-						downloadLink = PROLA_APS_URL_BASE + href;
+					if (hrefMatcher.find()) {
+						/*
+						 * build url to bibtex of this article
+						 */
+						downloadLink = PROLA_APS_URL_BASE + hrefMatcher.group(1);
 						break;
 					}
 				}
@@ -156,13 +137,12 @@ public class ProlaScraper extends AbstractUrlScraper {
 
 		try {
 			// check if download link is found
-			if(downloadLink != null){
+			if (present(downloadLink)) {
 
 				// download article as bibtex
-				String downloadedBibtex = null;
-				downloadedBibtex = WebUtils.getContentAsString(downloadLink);
+				final String downloadedBibtex = WebUtils.getContentAsString(downloadLink);
 
-				if(downloadedBibtex != null){
+				if (present(downloadedBibtex)) {
 
 					//remove comments bevor reference
 					final StringBuffer bibtex = new StringBuffer(cleanBibtexEntry(downloadedBibtex));
@@ -174,9 +154,9 @@ public class ProlaScraper extends AbstractUrlScraper {
 					sc.setBibtexResult(bibtex.toString().trim());
 					
 					return true;						
-				}else
+				} else
 					throw new ScrapingException("ProlaScraper: can't get bibtex from this article");
-			}else
+			} else
 				throw new PageNotSupportedException("ProlaScraper: This prola side has no bibtex download link.");
 		} catch (IOException e) {
 			throw new InternalFailureException(e);
@@ -189,19 +169,17 @@ public class ProlaScraper extends AbstractUrlScraper {
 	 * @return cleaned bibtex String
 	 */
 	private String cleanBibtexEntry(String bibtexSnippet){
-		String bibtex = null;
-
 		// search begin of bibtex entry
-		Pattern bibPattern = Pattern.compile(PATTERN_BIBTEX_ENTRY, Pattern.DOTALL);
-		Matcher bibMatcher = bibPattern.matcher(bibtexSnippet);
+		final Matcher bibMatcher = bibPattern.matcher(bibtexSnippet);
 
-		if(bibMatcher.find())
+		if (bibMatcher.find())
 			// cut of everything bevor bibtex entry
-			bibtex = bibMatcher.group();
+			return bibMatcher.group();
 
-		return bibtex;
+		return null;
 	}
 
+	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}

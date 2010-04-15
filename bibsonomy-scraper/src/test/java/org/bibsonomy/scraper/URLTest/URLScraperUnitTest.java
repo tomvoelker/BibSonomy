@@ -128,7 +128,7 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 			scraper.scrape(testSC);
 			
 			/*
-			 * finale check if bibtex is valid, if not so
+			 * final check if bibtex is valid, if not so
 			 */
 			if(testSC.getBibtexResult() != null){
 				BibtexParser parser = new BibtexParser(true);
@@ -158,7 +158,7 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 		
 		//System.out.println("current test = " + id + " finished");
 		// test if expected bib is equal to scraped bib (which must be valid bibtex) 
-		assertTrue(expectedRefrence.equals(testSC.getBibtexResult()) && bibtexValid);
+		assertTrue(expectedRefrence.trim().equals(testSC.getBibtexResult().trim()) && bibtexValid);
 	}
 
 	/**
@@ -206,6 +206,7 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	 * is available.
 	 * Inherited from ScraperUnitTest
 	 */
+	@Override
 	public void printTestFailure()throws Exception{
 		//printTestFailure(System.out, result);
 		printTestFailureLogger();
@@ -345,6 +346,7 @@ public class URLScraperUnitTest extends ScraperUnitTest {
 	 * returns true if the test is enabled
 	 * @return
 	 */
+	@Override
 	public boolean isEnabled() {
 		return this.enabled;
 	}
