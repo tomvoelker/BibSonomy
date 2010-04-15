@@ -23,7 +23,7 @@ public class GetRelatedTagsByAuthorAndTags extends TagChainElement{
 
 		if (this.db.isDoLuceneSearch()) {
 			// FIXME: which parameters do we actually need?
-			return this.db.getTagsByAuthorLucene(param.getRawSearch(), GroupID.PUBLIC.getId(), param.getRequestedUserName(), param.getRequestedGroupName(), null, null, null, param.getSimHash(), extractTagNames(param.getTagIndex()), session);
+			return this.db.getTagsByAuthorLucene(param.getRawSearch(), GroupID.PUBLIC.getId(), param.getRequestedUserName(), param.getRequestedGroupName(), null, null, null, param.getSimHash(), extractTagNames(param.getTagIndex()), param.getLimit(), session);
 		}
 		
 		return this.db.getRelatedTagsByAuthorAndTag(param, session);

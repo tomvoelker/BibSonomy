@@ -27,7 +27,7 @@ public class GetTagsByAuthor extends TagChainElement {
 		
 		if (this.db.isDoLuceneSearch()) {
 			// FIXME: which parameters do we actually need?
-			return this.db.getTagsByAuthorLucene(param.getRawSearch(), GroupID.PUBLIC.getId(), param.getRequestedUserName(), param.getRequestedGroupName(), null, null, null, param.getSimHash(), null, session);
+			return this.db.getTagsByAuthorLucene(param.getRawSearch(), GroupID.PUBLIC.getId(), param.getRequestedUserName(), param.getRequestedGroupName(), null, null, null, param.getSimHash(), null, param.getLimit(), session);
 		}
 		
 		return this.db.getTagsByAuthor(param, session);

@@ -576,22 +576,21 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return a list of tags of an author, which assigned to the authors
 	 */
-	public List<Tag> getTagsByAuthorLucene(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int simHash, final List<String> tagIndex, final DBSession session) {		
+	public List<Tag> getTagsByAuthorLucene(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int simHash, final List<String> tagIndex, final int limit, final DBSession session) {
 		if (!present(publicationSearch)) {
 			log.error("No author searcher available.");
 			return new LinkedList<Tag>();
 		}
-		
+
 		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 		String group = groupDb.getGroupNameByGroupId(groupId, session);
-		
+
 		final long starttimeQuery = System.currentTimeMillis();
 		// FIXME: we arbitrarily choose a tag cloud limit of 100
 		final List<Tag> bookmarkTags = new LinkedList<Tag>();
 		final List<Tag> publicationTags = publicationSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex);
-		final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, 100);
-		
-		log.debug("Lucene author tag cloud query time: " + (System.currentTimeMillis() - starttimeQuery) + " ms");
+		final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
+		log.debug("Lucene author tag cloud query time: " + (System.currentTimeMillis()-starttimeQuery) + " ms");
 			
 		return retVal;
 	}
