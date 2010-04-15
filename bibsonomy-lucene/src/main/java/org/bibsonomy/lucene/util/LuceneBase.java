@@ -99,6 +99,7 @@ public class LuceneBase {
 	                                              = new IndexWriter.MaxFieldLength(5000);
 	private static Integer redundantCnt           = 2;
 	private static Boolean enableTagClouds        = false;
+	private static Integer tagCloudLimit          = 1000;
 	
 	/**
 	 * get runtime configuration from context
@@ -149,6 +150,9 @@ public class LuceneBase {
 			
 			// enable/disable tag cloud on search pages
 			setEnableTagClouds(Boolean.valueOf(config.getEnableTagClouds()));
+			
+			// limit number of posts to consider for building the tag cloud
+			setTagCloudLimit(Integer.valueOf(config.getTagCloudLimit()));
 			
 			setEnableUpdater(Boolean.valueOf(config.getEnableUpdater()));
 			loadIndexIntoRam = Boolean.valueOf(config.getLoadIndexIntoRam());
@@ -212,5 +216,13 @@ public class LuceneBase {
 
 	public static Boolean getEnableTagClouds() {
 		return enableTagClouds;
+	}
+
+	public static void setTagCloudLimit(Integer tagCloudLimit) {
+		LuceneBase.tagCloudLimit = tagCloudLimit;
+	}
+
+	public static Integer getTagCloudLimit() {
+		return tagCloudLimit;
 	}
 }

@@ -22,6 +22,8 @@ public class LuceneConfig {
 	private String redundantCnt = "2";
 	/** enable/disable tag clouds on search pages */
 	private Boolean enableTagClouds = false;
+	/** number of posts to consider for building the tag cloud */
+	private String tagCloudLimit = "1000";
 	
 	public void setIndexPath(String indexPath) {
 		this.indexPath = indexPath;
@@ -70,6 +72,12 @@ public class LuceneConfig {
 	}
 	public String getRedundantCnt() {
 		return redundantCnt;
+	}
+	public void setTagCloudLimit(String tagCloudLimit) {
+		this.tagCloudLimit = tagCloudLimit;
+	}
+	public String getTagCloudLimit() {
+		return tagCloudLimit;
 	}
 	
 }

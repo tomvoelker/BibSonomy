@@ -6,8 +6,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -233,8 +235,10 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			String firstYear, String lastYear, List<String> tagList) {
 		// build query
 		QuerySortContainer qf = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList);
+		// limit number of posts to consider for building the tag cloud
+		qf.setLimit(getTagCloudLimit());
 		// query index
-		return doTagCollection(qf);
+		return doTagSearch(qf);
 	}
 	
 
@@ -253,12 +257,11 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	public List<Tag> getTagsBySearchString(String group, String searchTerms,
 			String requestedUserName, String UserName, Set<String> GroupNames) {
 		// build query
-		// FIXME: the tagparam's semantic is a bit special:
-		//        tagOrder == FREQENCY means that top x popular tags should be returned
-		//        tagOrder == null means, that tags are filtered by minFreq
 		QuerySortContainer qf = buildFulltextQuery(group, searchTerms, requestedUserName, UserName, GroupNames);
+		// limit number of posts to consider for building the tag cloud
+		qf.setLimit(getTagCloudLimit());
 		// collect tags
-		return doTagCollection(qf);
+		return doTagSearch(qf);
 	}
 	
 	//------------------------------------------------------------------------
@@ -421,10 +424,69 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		return postList;
 	}	
 
+
+	/**
+	 * get tag assignments of top n relevant documents
+	 * 
+	 * @param qf
+	 * @return
+	 */
+	private List<Tag> doTagSearch(QuerySortContainer qf) {
+		List<Tag> retVal = new LinkedList<Tag>();
+		if( !isEnabled() && !getEnableTagClouds() ) {
+			return retVal;
+		}
+		Map<Tag,Integer> tagCounter = new HashMap<Tag,Integer>();
+		
+		r.lock();
+		try {
+			// gather tags used by the author's posts
+			log.debug("Starting tag collection");
+			final TopDocs topDocs = searcher.search(qf.getQuery(), null, qf.getLimit(), qf.getSort());
+			log.debug("Done collecting tags");
+			//----------------------------------------------------------------
+			// extract tags from top n documents
+			//----------------------------------------------------------------
+			int hitsLimit = ((qf.getLimit() < topDocs.totalHits) ? (qf.getLimit()) : topDocs.totalHits);
+			for (int i = 0; i < hitsLimit; i++) {
+				// get document from index
+				Document       doc  = searcher.doc(topDocs.scoreDocs[i].doc);
+				// convert document to bibsonomy post model
+				Post<R> post = this.resourceConverter.writePost(doc); 
+
+				// set tag count
+				if( ValidationUtils.present(post.getTags()) ) {
+					for(Tag tag : post.getTags()) {
+						Integer oldCnt = tagCounter.get(tag);
+						if( !ValidationUtils.present(oldCnt) )
+							oldCnt=1;
+						else
+							oldCnt+=1;
+						tagCounter.put(tag, oldCnt);
+					}
+				}						
+			}
+		} catch (IOException e) {
+			log.error("Error building full text tag cloud for query " + qf.getQuery().toString());
+		} finally {
+			r.unlock();
+		}
+		// extract all tags
+		for( Map.Entry<Tag,Integer> entry : tagCounter.entrySet() ) {
+			Tag tag = entry.getKey();
+			tag.setUsercount(entry.getValue());
+			// FIXME: we set user==global count
+			tag.setGlobalcount(entry.getValue());
+			retVal.add(tag);
+		}
+		log.debug("Done calculating tag statistics");
+		
+		// all done.
+		return retVal;	
+	}
 	
 	/**
 	 * collect all tags assigned to relevant documents
-	 *  
 	 */
 	private List<Tag> doTagCollection(QuerySortContainer qf) {
 		if( !getEnableTagClouds() ) {
