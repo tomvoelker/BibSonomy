@@ -405,16 +405,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// TODO not tested
 		this.insert("insertTag", tag, session);
 	}
-
-	/**
-	 * @param param
-	 * @param session
-	 * @return tag occurrences
-	 */
-	public int getTagOccurrences(final TagParam param, final DBSession session) {
-		return this.queryForObject("getTagOccurrences", param, Integer.class, session);
-	}
-
+	
 	/**
 	 * @param param
 	 * @param session
@@ -573,6 +564,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param lastYear
 	 * @param simHash
 	 * @param tagIndex
+	 * @param limit 
 	 * @param session
 	 * @return a list of tags of an author, which assigned to the authors
 	 */
