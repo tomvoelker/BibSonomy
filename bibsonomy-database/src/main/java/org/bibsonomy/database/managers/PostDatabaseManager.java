@@ -589,8 +589,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			// get search results from lucene
 			final long starttimeQuery = System.currentTimeMillis();
 			final List<Post<R>> postList = lucene.searchGroup(groupId, visibleGroupIDs, search, loginUserName, limit, offset, null);
-			final long endtimeQuery = System.currentTimeMillis();
-			log.debug("Lucene" + this.resourceClassName + " complete group search query time: " + (endtimeQuery-starttimeQuery) + "ms");
+			log.debug("Lucene" + this.resourceClassName + " complete group search query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 			return postList;
 		}
 
@@ -626,7 +625,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 
 		String group = null;
-		if( ValidationUtils.presentValidGroupId(groupId) ) {
+		if (ValidationUtils.presentValidGroupId(groupId)) {
 			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 			group = groupDb.getGroupNameByGroupId(groupId, session);
 		}
@@ -1375,21 +1374,22 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 */
 	protected void insertPost(final Post<R> post, final DBSession session) {
-		boolean errors=false;
+		boolean errors = false;
 		if (!present(post.getResource())) {
 			//TODO: remove this comment
 			//throw new InvalidModelException("There is no resource for this post.");
 			ErrorMessage errorMessage = new MissingFieldErrorMessage("Resource");
 			session.addError(post.getResource().getIntraHash(), errorMessage);
-			errors=true;
+			errors = true;
 		}
 		if (!present(post.getGroups())) {
 			// TODO: remove this comment
 			//throw new InvalidModelException("There are no groups for this post.");
 			ErrorMessage errorMessage = new MissingFieldErrorMessage("Groups");
 			session.addError(post.getResource().getIntraHash(), errorMessage);
-			errors=true;
+			errors = true;
 		}
+		// FIXME: remove comment ?!?
 		/*if (post.getGroups().contains(GroupID.PUBLIC) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");
 		if (post.getGroups().contains(GroupID.PRIVATE) && post.getGroups().size() > 1) throw new InvalidModelException("Invalid constilation of groups for this post.");*/
 		if (errors) {
@@ -1397,8 +1397,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			// => we don't want to go deeper into the process with these kinds of errors
 			return;
 		}
+		
 		final P param = this.getInsertParam(post, session);
-
 		// insert
 		this.insertPost(param, session);
 	}

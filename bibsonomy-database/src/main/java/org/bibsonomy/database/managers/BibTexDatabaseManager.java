@@ -146,21 +146,18 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 */
 	public List<Post<BibTex>> getPostsByTitleLucene(final String search, final int groupId, final String requestedUserName, final String userName, final Set<String> requestedGroupName, final int limit, final int offset, final DBSession session) {
 		final ResourceSearch<BibTex> resourceSearch = this.getResourceSearch();
-		if (present(resourceSearch)) {
-			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-			String group = groupDb.getGroupNameByGroupId(groupId, session);
-			
-			final long starttimeQuery = System.currentTimeMillis();
-			//String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset
-			final List<Post<BibTex>> posts = resourceSearch.getPostsByTitle(group, search, requestedUserName, userName, requestedGroupName, limit, offset);
-
-			final long endtimeQuery = System.currentTimeMillis();
-			log.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
-			return posts;
+		if (!present(resourceSearch)) {
+			log.error("No resource searcher available.");	
+			return new ResultList<Post<BibTex>>();
 		}
 		
-		log.error("No resource searcher available.");	
-		return new ResultList<Post<BibTex>>();
+		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+		String group = groupDb.getGroupNameByGroupId(groupId, session);
+		
+		final long starttimeQuery = System.currentTimeMillis();
+		final List<Post<BibTex>> posts = resourceSearch.getPostsByTitle(group, search, requestedUserName, userName, requestedGroupName, limit, offset);
+		log.debug("LuceneBibTex complete query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
+		return posts;
 	}
 
 	/**
@@ -196,7 +193,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param session
 	 * @return number of duplicates
 	 */
-	public Integer getPostsDuplicateCount(final String requestedUserName, final DBSession session) {
+	public int getPostsDuplicateCount(final String requestedUserName, final DBSession session) {
 		final BibTexParam param = this.getNewParam();
 		param.setRequestedUserName(requestedUserName);
 		
@@ -375,23 +372,19 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @param session
 	 * @return list of bibtex entries
 	 */
-	public List<Post<BibTex>> getPostsByAuthorLucene(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int limit, final int offset, final int simHash, final List<String> tagIndex, final DBSession session){
-		final ResultList<Post<BibTex>> postBibtexList;
-		final ResourceSearch<BibTex> resourceSearch = this.getResourceSearch();
-		if (present(resourceSearch)) {
-			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-			String group = groupDb.getGroupNameByGroupId(groupId, session);
-			
-			final long starttimeQuery = System.currentTimeMillis();
-
-			postBibtexList = resourceSearch.searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, limit, offset);
-
-			final long endtimeQuery = System.currentTimeMillis();
-			log.debug("LuceneBibTex complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
-		} else {
-			postBibtexList = new ResultList<Post<BibTex>>();
+	public List<Post<BibTex>> getPostsByAuthorLucene(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int limit, final int offset, final int simHash, final List<String> tagIndex, final DBSession session) {
+		if (!present(this.getResourceSearch())) {
 			log.error("No resource searcher available.");
+			return new ResultList<Post<BibTex>>();
 		}
+		
+		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+		String group = groupDb.getGroupNameByGroupId(groupId, session);
+		
+		final long starttimeQuery = System.currentTimeMillis();
+
+		final List<Post<BibTex>> postBibtexList = this.getResourceSearch().searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, limit, offset);
+		log.debug("LuceneBibTex complete query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 			
 		return postBibtexList;
 	}

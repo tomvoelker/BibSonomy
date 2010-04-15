@@ -45,8 +45,6 @@ import org.bibsonomy.services.searcher.ResourceSearch;
 public class TagDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(TagDatabaseManager.class);
 	
-	// FIXME: we arbitrarily choose a tag cloud limit of 1000
-	private static final int TAG_CLOUD_LIMIT = 1000;
 	private static final int MAX_TAG_SIZE = 5;
 
 	private final static TagDatabaseManager singleton = new TagDatabaseManager();
@@ -72,24 +70,36 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.tagRelDb = TagRelationDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
-	}
-	
-	public void setPublicationSearch(ResourceSearch<BibTex> resourceSearch) {
-		this.publicationSearch = resourceSearch;
-	}
-
-	public ResourceSearch<BibTex> getPublicationSearch() {
-		return publicationSearch;
-	}
-	
-	public void setBookmarkSearch(ResourceSearch<Bookmark> resourceSearch) {
-		this.bookmarkSearch = resourceSearch;
-	}
-
-	public ResourceSearch<Bookmark> getBookmarkSearch() {
-		return bookmarkSearch;
 	}	
 	
+	/**
+	 * @return the publicationSearch
+	 */
+	public ResourceSearch<BibTex> getPublicationSearch() {
+		return this.publicationSearch;
+	}
+
+	/**
+	 * @param publicationSearch the publicationSearch to set
+	 */
+	public void setPublicationSearch(ResourceSearch<BibTex> publicationSearch) {
+		this.publicationSearch = publicationSearch;
+	}
+
+	/**
+	 * @return the bookmarkSearch
+	 */
+	public ResourceSearch<Bookmark> getBookmarkSearch() {
+		return this.bookmarkSearch;
+	}
+
+	/**
+	 * @param bookmarkSearch the bookmarkSearch to set
+	 */
+	public void setBookmarkSearch(ResourceSearch<Bookmark> bookmarkSearch) {
+		this.bookmarkSearch = bookmarkSearch;
+	}
+
 	/** 
 	 * Return tag for given tagId
 	 *  
@@ -117,8 +127,8 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateTagDec", tagname, session);
 	}
 
-	/**
-	NEW INSERTTAS (MULTIPLE GROUPS FOR A POST)
+	/** 
+	 * NEW INSERTTAS (MULTIPLE GROUPS FOR A POST)
 	 * @param param
 	 * @param session
 	 */
@@ -159,7 +169,6 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		}
 	}
 
-
 	/**
 	 * For each group a post is visible, store an entry in the grouptas table.
 	 * @param param
@@ -183,17 +192,15 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void deleteTags(final Post<?> post, final DBSession session) {
-
 		// add these tags to list and decrease counter in tag table
 		for (final Tag tag : post.getTags()) {
 			// decrease counter in tag table
 			this.updateTagDec(tag.getName(), session);
 		}
-
 		
 		// TODO: log all tas related to this post -> this.insertLogTas(...)
 		this.plugins.onTagDelete(post.getContentId(), session);
-		// delete all tas related to this bookmark
+		// delete all tas related to this post
 		this.deleteTas(post.getContentId(), session);
 		this.deleteGroupTas(post.getContentId(), session);
 	}
@@ -245,7 +252,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session 
 	 * @return The number of posts which got updated.
 	 */
-	@SuppressWarnings("unchecked") // TODODZ: why?
+	@SuppressWarnings("unchecked")
 	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final DBSession session) {
 		/*
 		 * we might need the empty tag for posts where no tags remain ...
@@ -546,10 +553,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public List<Tag> getTagsByAuthor(final TagParam param, final DBSession session) {
 		DatabaseUtils.prepareGetPostForUser(this.generalDb, param, session);
+		
 		final long starttimeQuery = System.currentTimeMillis();
 		List<Tag> retVal = this.queryForList("getTagsByAuthor", param, Tag.class, session);
-		final long endtimeQuery = System.currentTimeMillis();
-		log.debug("DB author tag cloud query time: " + (endtimeQuery-starttimeQuery) + " ms");
+		log.debug("DB author tag cloud query time: " + (System.currentTimeMillis() - starttimeQuery) + " ms");
 		
 		return retVal;
 	}
@@ -569,24 +576,22 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return a list of tags of an author, which assigned to the authors
 	 */
-	public List<Tag> getTagsByAuthorLucene(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int simHash, final List<String> tagIndex, final DBSession session) {
-		final List<Tag> retVal;
-		
-		if (present(publicationSearch)) {
-			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-			String group = groupDb.getGroupNameByGroupId(groupId, session);
-			
-			final long starttimeQuery = System.currentTimeMillis();
-			// FIXME: we arbitrarily choose a tag cloud limit of 100
-			List<Tag> bookmarkTags = new LinkedList<Tag>();
-			List<Tag> publicationTags = publicationSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex);
-			retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, 100);
-			final long endtimeQuery = System.currentTimeMillis();
-			log.debug("Lucene author tag cloud query time: " + (endtimeQuery-starttimeQuery) + " ms");
-		} else {
-			retVal = new LinkedList<Tag>();
+	public List<Tag> getTagsByAuthorLucene(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int simHash, final List<String> tagIndex, final DBSession session) {		
+		if (!present(publicationSearch)) {
 			log.error("No author searcher available.");
+			return new LinkedList<Tag>();
 		}
+		
+		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+		String group = groupDb.getGroupNameByGroupId(groupId, session);
+		
+		final long starttimeQuery = System.currentTimeMillis();
+		// FIXME: we arbitrarily choose a tag cloud limit of 100
+		final List<Tag> bookmarkTags = new LinkedList<Tag>();
+		final List<Tag> publicationTags = publicationSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex);
+		final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, 100);
+		
+		log.debug("Lucene author tag cloud query time: " + (System.currentTimeMillis() - starttimeQuery) + " ms");
 			
 		return retVal;
 	}
@@ -608,23 +613,24 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		// FIXME: is there a better (=generic) way to handle different resource types in the 
 		//        TagDatabaseManager?
 		if (present(bookmarkSearch)) {
-			bookmarkList    = bookmarkSearch.getTagsBySearchString(null, param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames());
-		};
+			bookmarkList = bookmarkSearch.getTagsBySearchString(null, param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames());
+		}
 		if (present(publicationSearch)) {
 			publicationList = publicationSearch.getTagsBySearchString(null, param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames());
-		};
+		}
 
 		// all done
 		// TagParam's semantic is special: 
 		//       order == FREQENCY -> top popular tags, limit value set in param object
 		//       order == null     -> tags filtered by min. frequency, limit value not set
 		Order tagOrder;
-		if( Order.FREQUENCY.equals(param.getOrder()) )
+		if (Order.FREQUENCY.equals(param.getOrder())) {
 			tagOrder = Order.POPULAR;
-		else {
+		} else {
 			tagOrder = Order.FREQUENCY;
 			param.setLimit(0);
 		}
+		
 		return TagUtils.mergeTagLists(bookmarkList, publicationList, tagOrder, tagOrder, param.getLimit());
 	}
 	
@@ -958,7 +964,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of tags, used to annotate the bibtex(s) with the given bibtex key (eventually by the requested user)
 	 */
 	public List<Tag> getTagsByBibtexkey(final String bibtexKey, final List<Integer> visibleGroupIDs, final String requestedUserName, final String loginUserName, final int limit, final int offset, DBSession session) {
-		TagParam param = new TagParam();
+		final TagParam param = new TagParam();
 		param.setBibtexKey(bibtexKey);
 		param.setGroups(visibleGroupIDs);
 		param.setUserName(loginUserName);		
