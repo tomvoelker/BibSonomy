@@ -1,20 +1,57 @@
-.bluebox{	border: 1px solid #006699;
+.bluebox{
+	border: 1px solid #006699;
 	padding: 10px;
 	margin-top: 10px;
 	margin-bottom: 20px;
-	width: 100%;
-	}
-.rectable {
+	width: 804px;
+}
+
+.bluebox h2{
+    margin-left: 10px;
+}
+.adminNavi{
+   width: 824px;
+}
+
+#rectable {
 	font-size: 60%;
 	border-collapse: collapse;
 	empty-cells: show;
-	margin-top: 15px;
-	margin-left: 5px;
+	margin-top: 10px;
+	margin-bottom: 20px;
+	margin-left: 10px;
 	margin-right: 5px;
 	width: 95%;
 }
 
-.rectable th {
+#queriesPerLatency{
+    margin-left: 10px;
+	margin-right: 10px;
+}
+.bluebox label{
+    margin-left: 0;
+}
+label[for="queriesPerLatency"]{
+   margin-left: 10px;	
+}
+#selectedTab{
+    background-color: #ddd;
+}
+
+.adminNavi{
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    padding-left: 0;
+    padding-right: 0;
+}
+.adminNavi a {
+   padding-right: 10px;
+   padding-left: 10px;
+   letter-spacing: 0px;
+   border-right: 1px solid #BBBBBB;
+}
+
+#rectable th {
 	font-weight: bold;
 	background-color: #EEEEEE;
 	border: 1px solid #CCCCCC;
@@ -23,27 +60,38 @@
 	font-size: 100%;
 }
 
-.rectable td {
+#rectable td {
 	border: 1px solid #CCCCCC;
 	padding: 3px;
 }
 
-.adminlabel {
-   margin-right:15px;
+
+.adminNavi{ margin-bottom: 20px
 }
 
-.navilink {
-   margin-right: 7px;
-   letter-spacing: 0px;
+.compound, .activationCompound{
+    position: relative;
+    width: 780px;
+    overflow: visible;
+    margin-left: 10px;
 }
 
-p { margin-bottom: 20px
+.compound input[type="submit"], #recActivationBtn{
+	clear: left;
+	display: block;
+    position: absolute;
+    right: 0px;
+    margin-top: 5px;
+}
+
+input[name="newrecurl"]{
+    width: 100%;
 }
 
 #buttondiv {
     float:left;
     margin: 10px;
-    margin-top: 30px;
+    margin-top: 112px;
 }
 
 #pushrightbutton{
@@ -57,21 +105,31 @@ p { margin-bottom: 20px
 }
 
 form[name="recConfig"] select{
-	width: 300px;
+	width: 363px;
 }
+
 select[name="deletesid"]{
-    width: 500px;
+    width: 100%;
 }
 
-select{
-    font-size: 10px;
+hr{
+  border-style: none;
+  border-top: 1px solid #CCCCCC;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
-* input {
-  margin-left: 10px;
+.bluebox input[type="text"], .bluebox select{
+  border: 1px solid #AAAAAA;
+  margin-left: 0;
+  margin-right: 0;
+  padding: 0;
 }
-form[name="recommenderRemove"] select{
-    margin-right: 10px;
+
+.bluebox select{	
+  font-size: 10px;
+  font-family: monospace;
+  font-weight: normal;
 }
 
 .floatleft{

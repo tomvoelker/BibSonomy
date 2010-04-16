@@ -21,8 +21,8 @@
 		loginUser="${command.context.loginUser}"
 		requPath="">
 		<jsp:attribute name="heading">
-		    <a href="/admin">admin</a> ::
-			<a rel="path_menu" href="/admin/recommender">recommender</a>
+		    <a href="/admin"><fmt:message key="navi.admin"/></a> ::
+			<a rel="path_menu" href="/admin/recommender">Recommender</a>
 		</jsp:attribute>	
 		<jsp:attribute name="headerExt">
 			<link rel="stylesheet" type="text/css"
@@ -39,7 +39,14 @@
 <!-- Navi for tabselection -->
 <p class="adminNavi">
   <c:forEach var="tab" items="${command.tabs}">
-    <a class="navilink" href="?tab=${tab.key}">${tab.value}</a>
+    <c:choose>
+      <c:when test="${command.tab == tab.key}">
+        <a id="selectedTab" href="?tab=${tab.key}">${tab.value}</a>
+      </c:when>
+      <c:otherwise>
+        <a href="?tab=${tab.key}">${tab.value}</a>
+      </c:otherwise>
+    </c:choose>
   </c:forEach>
 </p>
    
@@ -57,13 +64,7 @@
     
     <!-- Tab: Status  -->
     <c:if test="${command.tab == 0}">
-        <form:form name="latencyCalculation" action="/admin/recommender">
-		    <form:label path="queriesPerLatency"><fmt:message key="admin.recommender.latencyvalues"/></form:label>
-  		    <form:input path="queriesPerLatency">${command.queriesPerLatency}</form:input>
-  	        <input class="adminBtn" type="submit" />
-	    </form:form>
-	
-	    <table class="rectable">
+	    <table id="rectable">
 	      <tr><th>SettingID</th><th>RecommenderID</th><th>average Latency</th></tr>
 	      <c:forEach var="recommender" items="${command.recOverview}">
 	        <tr>
@@ -73,70 +74,74 @@
 	        </tr>
 	      </c:forEach>
 	    </table>
+	    
+	    <br />
+        <form:form name="latencyCalculation" action="/admin/recommender">
+		    <form:label path="queriesPerLatency"><fmt:message key="admin.recommender.latencyvalues"/></form:label>
+  		    <form:input path="queriesPerLatency">${command.queriesPerLatency}</form:input>
+  	        <input class="adminBtn" type="submit" />
+	    </form:form>
 	</c:if>
 	
 	
 	<!-- Tab: Add/Remove -->
     <c:if test="${command.tab == 2}">
+        <div class="compound">
         <form:form name="recommenderAdd" action="/admin/recommender?action=addrecommender">
             <form:label path="newrecurl"><fmt:message key="admin.recommender.add"/></form:label>
-            <form:input path="newrecurl" />
+            <br />
+            <form:input path="newrecurl"  />
   	        <input class="adminBtn" type="submit" />
-        </form:form><br />
+        </form:form>
+  	    <br />
+        </div>
+	    <hr />
+        <div class="compound">
         <form:form name="recommenderRemove" action="/admin/recommender?action=removerecommender">
             <form:label path="deletesid"><fmt:message key="admin.recommender.remove"/></form:label><br />
+            
 		  	<select name="deletesid" size="15">
 				<c:forEach var="rec" items="${command.activeRecommenders}">
 				  <option value="${rec.key}">${rec.key} - ${rec.value}</option>
 				</c:forEach>
 		  	</select>
-		  	<!--  <form:select path="deletesid" items="${command.activeRecs}"></form:select> -->
+		  	
+		  	<!-- <form:select path="deletesid" items="${command.activeRecommenders}" itemValue="key" itemLabel="value"></form:select> -->
   	        <input class="adminBtn" type="submit" />
         </form:form>
+  	    <br />
+        </div>
     </c:if>
-	
 	
 	<!-- Tab: Activate/Deactivate -->
     <c:if test="${command.tab == 1}">
+        <div class="activationCompound">
 		<form:form name="recConfig" action="/admin/recommender?action=updateRecommenderstatus" onsubmit="selectAll(activeRecs); selectAll(disabledRecs);">
 		    <div class="floatleft">
 			    <form:label path="disabledRecs"><fmt:message key="admin.recommender.disabled"/></form:label><br />
-			    <!-- 
-			    <select name="disabledRecs" size="10" multiple="multiple">
-			      <c:forEach var="option" items="${command.disabledRecs}">
-			        <option value="${option}">${option}</option>
-			      </c:forEach>
-		  		</select>  -->
 		  		
-		  		<select name="disabledRecs" size="15" multiple="multiple">
+		  		<select name="disabledRecs" size="20" multiple="multiple">
 					<c:forEach var="rec" items="${command.disabledRecommenders}">
 					  <option value="${rec.key}">${rec.key} - ${rec.value}</option>
 					</c:forEach>
 		  		</select>
-		  		
 	  	    </div>
 	  	    
 		    <div id="buttondiv">
-		        <input type="button" value="&gt;&gt;" onclick="pushSelectedOptions(disabledRecs, activeRecs)" id="pushrightbutton" />
-		        <input type="button" value="&lt;&lt;" onclick="pushSelectedOptions(activeRecs, disabledRecs)" />
+		        <input type="button" class="adminBtn" value="&gt;&gt;" onclick="pushSelectedOptions(disabledRecs, activeRecs)" id="pushrightbutton" />
+		        <input type="button" class="adminBtn" value="&lt;&lt;" onclick="pushSelectedOptions(activeRecs, disabledRecs)" />
 		    </div>
 		    
 	  		<form:label path="activeRecs"><fmt:message key="admin.recommender.active"/></form:label><br />
-	  		
-		  		<select name="activeRecs" size="15" multiple="multiple">
+		  		<select name="activeRecs" size="20" multiple="multiple">
 					<c:forEach var="rec" items="${command.activeRecommenders}">
 					  <option value="${rec.key}">${rec.key} - ${rec.value}</option>
 					</c:forEach>
 		  		</select>
-	  		<!-- 
-	  		<select name="activeRecs" size="10" multiple="multiple">
-		     <c:forEach var="option" items="${command.activeRecs}">
-		       <option value="${option}">${option}</option>
-		     </c:forEach>
-		    </select>
-		    -->
-	  	    <input class="adminBtn" type="submit" />
+	  	    <input class="adminBtn" type="submit" id="recActivationBtn" />
+	  	    <br /><br />
 		</form:form>
+		</div>
 	</c:if>
 	
 	
