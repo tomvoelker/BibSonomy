@@ -1,6 +1,8 @@
 package org.bibsonomy.webapp.controller.admin;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -86,9 +88,17 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		    // TODO: set recommender to be inactive when added?
 		else if(command.getAction().equals("addrecommender")){
 			try{
+				String newUrl = command.getNewrecurl();
+				if(newUrl.indexOf(' ') != -1)
+					throw new MalformedURLException();
+				URL recUrl = new URL(command.getNewrecurl());
 			    Long sid = db.insertRecommenderSetting(command.getNewrecurl(), "Webservice", command.getNewrecurl().getBytes());
+			    
 				addRecommenderToMultiplexer(sid);
 				command.setAdminResponse("Successfully added and activated new recommender with setting_id "+sid+"!");
+			}
+			catch(MalformedURLException e){
+				command.setAdminResponse("Could not add new recommender. Please check if '"+ command.getNewrecurl() +"' is a valid url.");
 			}
 			catch(Exception e){
 				log.error("Error testing 'set recommender'", e);
@@ -119,24 +129,26 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		*/
 		else if(command.getAction().equals("updateRecommenderstatus")){
 
-			// Update database 
 			try{
+				// Update database 
 			    db.updateRecommenderstatus(command.getActiveRecs(), command.getDisabledRecs());
+
+				
+				// Update multiplexer
+				if(command.getActiveRecs() != null)
+					addRecommendersToMultiplexer(command.getActiveRecs());
+				if(command.getDisabledRecs() != null)
+					removeRecommendersFromMultiplexer(command.getDisabledRecs());
+				
+				command.setTab(Tab.ACTIVATE);
+				command.setAdminResponse("Successfully Updated Recommenderstatus!");
+				//return new ExtendedRedirectView("/admin/recommender?action=activate");
+				
 			} catch(SQLException e){
 				log.debug(e);
-				command.setAdminResponse("Could not store data!");
+				command.setAdminResponse("Error updating recommenderstatus: Could not store data!");
 			}
 
-			
-			// Update multiplexer
-			if(command.getActiveRecs() != null)
-				addRecommendersToMultiplexer(command.getActiveRecs());
-			if(command.getDisabledRecs() != null)
-				removeRecommendersFromMultiplexer(command.getDisabledRecs());
-			
-			command.setTab(Tab.ACTIVATE);
-			command.setAdminResponse("Successfully Updated Recommenderstatus!");
-			//return new ExtendedRedirectView("/admin/recommender?action=activate");
 		}
 		
 		command.setAction(null);
