@@ -1203,3 +1203,20 @@ padding-top:1px;
 	color: #D80000!important;
 }
 
+table.report {
+	margin: 1ex 0;
+	border-collapse: collapse;
+}
+
+table.report td.header {
+	background-color: #eeeeee;
+	color: white;
+	padding: 0.5ex;
+	border: 1px solid #000000;
+	font-weight: bold;
+}
+
+table.report td {
+	padding: 0.5ex;
+	border: 1px solid #000000;
+}

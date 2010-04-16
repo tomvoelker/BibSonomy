@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+
+	<jsp:directive.page contentType="text/html; charset=UTF-8"
+		language="java" pageEncoding="UTF-8" session="true" />
+
+	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" fullscreen="true" selectedNaviTab="nav_reporting">
+		<jsp:attribute name="heading">
+			<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.reporting"/></a> :: 
+			<form action="/reporting/" method="get" class="smallform">
+				<input type="text" size="20" name="reporting" id="inpf" value=""/>
+			</form>
+		</jsp:attribute>
+			
+		<jsp:attribute name="content">
+		
+			<h2>Summary of group abc</h2>
+
+			<c:if test="${not empty command.publicationCounts}">
+
+				<table class="report">
+				<tr>			
+				<th>&amp;nbsp;</th>
+				<c:forEach var="columnHeader" items="${command.publicationCounts.columnHeaders}">
+					<td class="header"><c:out value="${columnHeader}"/></td>
+				</c:forEach>
+				</tr>
+				<c:forEach var="rowHeader" items="${command.publicationCounts.rowHeaders}">
+					<tr>			
+						<td class="header"><c:out value="${rowHeader}"/></td>
+						<c:forEach var="columnHeader" items="${command.publicationCounts.columnHeaders}">
+							<td class="value"><c:out value="${command.publicationCounts.values[rowHeader][columnHeader]}"/></td>
+						</c:forEach>
+					</tr>
+				</c:forEach>
+				</table>
+			</c:if>			
+
+			<c:if test="${empty command}">
+				<fmt:message var="posts" key="posts"/>
+				<div style="text-align:justify;" class="tags_first">
+				<c:forEach var="author" items="${command.authorList}">
+					<a	class="${mtl:getTagSize(author.ctr, command.maxCount)}" 
+						style="font-size:${mtl:authorFontSize(author, command.maxCount)}%; padding-left:0.3em; padding-right:0.3em;"
+						title="${fn:escapeXml(author.firstName)}${' '}${fn:escapeXml(author.lastName)}: ${author.ctr}${' '}${posts}" 
+						href="/author/${fn:escapeXml(author.firstName)}${'+'}${fn:escapeXml(author.lastName)}">
+					<c:out value="${author.lastName}"/>
+					</a>
+					<c:out value=" "/>
+				</c:forEach>
+				</div>
+			</c:if>
+		</jsp:attribute>
+
+	</layout:paneLayout>
+
+</jsp:root>

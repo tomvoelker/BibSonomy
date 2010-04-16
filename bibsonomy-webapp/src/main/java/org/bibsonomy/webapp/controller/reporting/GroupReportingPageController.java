@@ -8,6 +8,7 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.reporting.GroupReportingCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.Views;
 
 import resources.Bibtex;
 
@@ -36,7 +37,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		 */		
 		final int[] dummyYears = {2009,2008,2007,2006,2005};
 		final String[] dummyTypes = Bibtex.entrytypes;
-		final int dummyValue = 23;
+		int dummyValue = 23;
 		
 		// initialize column + row headings
 		for (String type : dummyTypes) { command.getPublicationCounts().getColumnHeaders().add(type); }
@@ -48,14 +49,13 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 			row = new HashMap<String,Integer>();			
 			// write row values
 			for (String type : dummyTypes) {
-				row.put(type, dummyValue);
+				row.put(type, dummyValue++);
 			}			
 			// store row in command
 			command.getPublicationCounts().getValues().put(year, row);
 		}
 						
-		// TODO @Sven: return appropriate view
-		return null;
+		return Views.REPORTING;
 	}
 	
 	

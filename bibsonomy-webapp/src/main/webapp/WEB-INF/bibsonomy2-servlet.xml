@@ -356,9 +356,8 @@
 		</property>
 	</bean>
 	
-	<bean id="groupReportingPageController" class="org.bibsonomy.webapp.controller.GroupReportingPageController" scope="request">
+	<bean id="groupReportingPageController" class="org.bibsonomy.webapp.controller.reporting.GroupReportingPageController" scope="request">
 		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
 	</bean>	
 	
 	<bean id="groupsPageController" class="org.bibsonomy.webapp.controller.GroupsPageController" scope="request">

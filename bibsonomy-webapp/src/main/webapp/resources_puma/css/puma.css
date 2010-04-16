@@ -200,3 +200,21 @@ p {
 .closeX {
 	font-size: 120%	
 }
+
+table.report {
+	margin: 1ex 0;
+	border-collapse: collapse;
+}
+
+table.report td.header {
+	background-color: #DF430D;
+	color: white;
+	padding: 0.5ex;
+	border: 1px solid #000000;
+	font-weight: bold;
+}
+
+table.report td {
+	padding: 0.5ex;
+	border: 1px solid #000000;
+}
