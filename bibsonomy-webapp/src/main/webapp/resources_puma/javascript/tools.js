@@ -40,6 +40,7 @@ function pumainit(){
 	
 	$(".sidebarBoxInner").corner("round 8px").parent().css('padding', '3px').corner("round 8px");
 	
+	$("#helpbox").toggle("slow");
 
 	// help side box toggle
 	$("#nice_tnav").prepend('<div id="navitogglehelp" class="togglehelp">?</div>');

@@ -137,19 +137,6 @@
 			</div>		
 			 -->
 			
-			<!-- 
-			<c:if test="${not command.context.userLoggedIn}">
-			 -->
-				<script type="text/javascript">
-					<![CDATA[
-						$("#helpbox").show()
-					]]>
-				</script>
-			<!-- 
-			</c:if>
-			 -->
-
-
 		</jsp:attribute>
 		<!-- /info box 1 -->
 		
