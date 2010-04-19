@@ -65,7 +65,7 @@
 							<tr>			
 								<td class="header"><fmt:message key="reporting.publication.type.${rowHeader}"/></td>
 								<c:forEach var="columnHeader" items="${command.publicationCounts.rowHeaders}">
-									<td class="value"><c:out value="${command.publicationCounts.values[rowHeader][columnHeader]}"/></td>
+									<td class="value"><c:out value="${command.publicationCounts.values[columnHeader][rowHeader]}"/></td>
 								</c:forEach>
 							</tr>
 						</c:forEach>
