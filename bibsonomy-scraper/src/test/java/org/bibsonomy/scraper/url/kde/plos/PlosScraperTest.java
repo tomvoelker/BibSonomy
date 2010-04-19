@@ -61,5 +61,25 @@ public class PlosScraperTest {
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_44"));
 	}
+	
+	/**
+	 * starts URL test with id url_172
+	 */
+	@Test
+	@Ignore
+	public void urlTest3Run(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_172"));
+	}
+	
+	/**
+	 * starts URL test with id url_173
+	 */
+	@Test
+	@Ignore
+	public void urlTest4Run(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_173"));
+	}
 
 }
