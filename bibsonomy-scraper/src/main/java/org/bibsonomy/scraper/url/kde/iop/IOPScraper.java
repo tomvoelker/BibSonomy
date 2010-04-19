@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,6 +45,7 @@ import org.bibsonomy.util.WebUtils;
 /**
  * SCraper for http://www.iop.org
  * @author tst
+ * @version $Id$
  */
 public class IOPScraper extends AbstractUrlScraper {
 
@@ -59,6 +61,7 @@ public class IOPScraper extends AbstractUrlScraper {
 	private static final String INFO = "Scraper for electronic journals from " + href(SITE_URL, SITE_NAME);
 
 	private static final String IOP_HOST           = "iop.org";
+	private static final String NEW_IOP_HOST       = "iopscience.iop.org";
 	
 
 	/*
@@ -76,7 +79,13 @@ public class IOPScraper extends AbstractUrlScraper {
 	 */
 	private static final String DOWNLOAD_LINK_VALUE = "Download citation";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + IOP_HOST), Pattern.compile(IOP_URL_PATH_START + ".*")));
+	private static final List<Tuple<Pattern, Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+	static{
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + IOP_HOST), Pattern.compile(IOP_URL_PATH_START + ".*")));
+		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + NEW_IOP_HOST), AbstractUrlScraper.EMPTY_PATTERN));
+	}
+		
+		
 	
 	public String getInfo(){
 		return INFO;

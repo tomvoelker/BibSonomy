@@ -32,6 +32,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Scraper URL tests #16 for IOPScraper
  * @author tst
+ * @version $Id$
  *
  */
 public class IOPScraperTest {
@@ -44,6 +45,16 @@ public class IOPScraperTest {
 	public void urlTestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_16"));
+	}
+	
+	/**
+	 * starts URL test with id url_178
+	 */
+	@Test
+	@Ignore
+	public void url2TestRun(){
+		UnitTestRunner runner = new UnitTestRunner();
+		assertTrue(runner.runSingleTest("url_178"));
 	}
 	
 }
