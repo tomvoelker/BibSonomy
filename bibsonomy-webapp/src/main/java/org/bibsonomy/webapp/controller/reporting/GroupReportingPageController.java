@@ -55,6 +55,9 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 			command.getPublicationCounts().getValues().put(year, row);
 		}
 						
+		
+		// TODO: add totals: sum up values for each years 
+		
 		return Views.REPORTING;
 	}
 	

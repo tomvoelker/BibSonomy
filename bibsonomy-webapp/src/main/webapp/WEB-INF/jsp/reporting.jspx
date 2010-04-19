@@ -22,43 +22,61 @@
 		</jsp:attribute>
 			
 		<jsp:attribute name="content">
-		
-			<h2>Summary of group abc</h2>
-
-			<c:if test="${not empty command.publicationCounts}">
-
-				<table class="report">
-				<tr>			
-				<th>&amp;nbsp;</th>
-				<c:forEach var="columnHeader" items="${command.publicationCounts.columnHeaders}">
-					<td class="header"><c:out value="${columnHeader}"/></td>
-				</c:forEach>
-				</tr>
-				<c:forEach var="rowHeader" items="${command.publicationCounts.rowHeaders}">
-					<tr>			
-						<td class="header"><c:out value="${rowHeader}"/></td>
-						<c:forEach var="columnHeader" items="${command.publicationCounts.columnHeaders}">
-							<td class="value"><c:out value="${command.publicationCounts.values[rowHeader][columnHeader]}"/></td>
-						</c:forEach>
-					</tr>
-				</c:forEach>
-				</table>
-			</c:if>			
-
-			<c:if test="${empty command}">
-				<fmt:message var="posts" key="posts"/>
-				<div style="text-align:justify;" class="tags_first">
-				<c:forEach var="author" items="${command.authorList}">
-					<a	class="${mtl:getTagSize(author.ctr, command.maxCount)}" 
-						style="font-size:${mtl:authorFontSize(author, command.maxCount)}%; padding-left:0.3em; padding-right:0.3em;"
-						title="${fn:escapeXml(author.firstName)}${' '}${fn:escapeXml(author.lastName)}: ${author.ctr}${' '}${posts}" 
-						href="/author/${fn:escapeXml(author.firstName)}${'+'}${fn:escapeXml(author.lastName)}">
-					<c:out value="${author.lastName}"/>
-					</a>
-					<c:out value=" "/>
-				</c:forEach>
-				</div>
+			
+			<c:if test="${empty command.requestedGroup}">
+				<div id="error" class="errmsg"><fmt:message key="reporting.group.error.nogroupgiven"/></div>
 			</c:if>
+			<c:if test="${not empty command.requestedGroup}">
+
+				<h2><fmt:message key="reporting.group.headline"/>&amp;nbsp;<c:out value="${command.requestedGroup}"/> </h2>
+	
+				<fmt:message key="reporting.group.intro"/>
+	
+				<c:if test="${not empty command.publicationCounts}">
+
+					<c:if test="${empty command.transposeMatrix or command.transposeMatrix==0}">
+						<table class="report">
+						<tr>			
+						<th>&amp;nbsp;</th>
+						<c:forEach var="columnHeader" items="${command.publicationCounts.columnHeaders}">
+							<td class="header"><fmt:message key="reporting.publication.type.${columnHeader}"/></td>
+						</c:forEach>
+						</tr>
+						<c:forEach var="rowHeader" items="${command.publicationCounts.rowHeaders}">
+							<tr>			
+								<td class="header"><c:out value="${rowHeader}"/></td>
+								<c:forEach var="columnHeader" items="${command.publicationCounts.columnHeaders}">
+									<td class="value"><c:out value="${command.publicationCounts.values[rowHeader][columnHeader]}"/></td>
+								</c:forEach>
+							</tr>
+						</c:forEach>
+						</table>
+					</c:if>
+
+					<c:if test="${command.transposeMatrix==1}">
+						<table class="report">
+						<tr>			
+						<th>&amp;nbsp;</th>
+						<c:forEach var="columnHeader" items="${command.publicationCounts.rowHeaders}">
+							<td class="header"><c:out value="${columnHeader}"/></td>
+						</c:forEach>
+						</tr>
+						<c:forEach var="rowHeader" items="${command.publicationCounts.columnHeaders}">
+							<tr>			
+								<td class="header"><fmt:message key="reporting.publication.type.${rowHeader}"/></td>
+								<c:forEach var="columnHeader" items="${command.publicationCounts.rowHeaders}">
+									<td class="value"><c:out value="${command.publicationCounts.values[rowHeader][columnHeader]}"/></td>
+								</c:forEach>
+							</tr>
+						</c:forEach>
+						</table>
+					</c:if>
+
+				</c:if>
+			</c:if>
+			
+						
+
 		</jsp:attribute>
 
 	</layout:paneLayout>

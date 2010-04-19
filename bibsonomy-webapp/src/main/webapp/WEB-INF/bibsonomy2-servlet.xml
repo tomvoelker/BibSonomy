@@ -110,6 +110,12 @@
 				<entry key="/reporting">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName" value="groupReportingPageController"/>
+						<property name="allowedFields">
+							<list>
+								<value>requestedGroup</value>
+								<value>transposeMatrix</value>
+							</list>
+						</property>
 					</bean>
 				</entry>	
 				<entry key="/viewable">

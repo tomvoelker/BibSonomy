@@ -18,6 +18,9 @@ public class GroupReportingCommand extends BaseCommand {
 	/** the name of the requested group */
 	private String requestedGroup = "";
 
+	/** how to show reporting matrix. empty or normal shows years in rows and transpose shows years in columns */
+	private String transposeMatrix = "";
+
 	public String getRequestedGroup() {
 		return this.requestedGroup;
 	}
@@ -29,5 +32,15 @@ public class GroupReportingCommand extends BaseCommand {
 	public ReportingTableCommand<Integer, String, Integer> getPublicationCounts() {
 		return this.publicationCounts;
 	}
+
+	public void setTransposeMatrix(String transposeMatrix) {
+		this.transposeMatrix = transposeMatrix;
+	}
+
+	public String getTransposeMatrix() {
+		return transposeMatrix;
+	}
+
+	
 	
 }
