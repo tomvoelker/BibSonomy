@@ -1114,22 +1114,21 @@ public class DBLogic implements LogicInterface {
 
 		try {
 			switch (operation) {
-			case UPDATE_PASSWORD:
-				return this.userDBManager.updatePasswordForUser(user, session);
-
-			case UPDATE_SETTINGS:
-				return this.userDBManager.updateUserSettingsForUser(user, session);
-
-			case UPDATE_API:
-				this.userDBManager.updateApiKeyForUser(user.getName(), session);
-				break;
-
-			case UPDATE_CORE:
-				return this.userDBManager.updateUserProfile(user, session);
-
-				// case UPDATE_LDAP_TIMESTAMP:
-				//		updatedUser = this.userDBManager.updateLastLdapRequest(user, session);
-				//		reak;
+				case UPDATE_PASSWORD:
+					return this.userDBManager.updatePasswordForUser(user, session);
+	
+				case UPDATE_SETTINGS:
+					return this.userDBManager.updateUserSettingsForUser(user, session);
+	
+				case UPDATE_API:
+					this.userDBManager.updateApiKeyForUser(user.getName(), session);
+					break;
+	
+				case UPDATE_CORE:
+					return this.userDBManager.updateUserProfile(user, session);
+	
+				case UPDATE_LDAP_TIMESTAMP:
+					return this.userDBManager.updateLastLdapRequest(user, session);
 			}
 
 		} finally {
