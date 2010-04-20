@@ -15,7 +15,7 @@
 	
 	<select id="getGoldStandardPublicationRefercencedBy" resultMap="BibTexCommon.bibtex" parameterClass="String">
 		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count FROM gold_standard_publications b, gold_standard_publication_references r
-		WHERE r.reference = #hash# AND b.simhash1 = r.reference
+		WHERE r.reference = #hash# AND b.simhash1 = r.publication
 	</select>
 	
 	<insert id="insertGoldStandardPublication" parameterClass="bibtexParam">
