@@ -24,7 +24,6 @@
 package org.bibsonomy.model;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * A basket that holds some posts for a user.
@@ -36,8 +35,6 @@ import java.util.List;
  */
 public class Basket implements Serializable {
 	private static final long serialVersionUID = -3051707370037449963L;
-
-	private List<Post<BibTex>> posts;
 
 	private int numPosts;
 

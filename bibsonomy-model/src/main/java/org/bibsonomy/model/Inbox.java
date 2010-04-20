@@ -25,9 +25,6 @@ package org.bibsonomy.model;
 
 import java.io.Serializable;
 
-
-
-
 /**
  * The Inbox, that stores posts sent by friends
  * 

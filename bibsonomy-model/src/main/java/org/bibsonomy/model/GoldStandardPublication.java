@@ -17,10 +17,17 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	private static final long serialVersionUID = 128893745902925210L;
 	
 	private Set<BibTex> references;
+	private Set<BibTex> referencedBy;
 	
 	private void lacyLoadReferences() {
 		if (this.references == null) {
 			this.references = new HashSet<BibTex>();
+		}
+	}
+	
+	private void lacyLoadReferencedBy() {
+		if (this.referencedBy == null) {
+			this.referencedBy = new HashSet<BibTex>();
 		}
 	}
 	
@@ -46,11 +53,13 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 * @see org.bibsonomy.model.GoldStandard#addAllToReferences(java.util.Set)
 	 */
 	@Override
-	public void addAllToReferences(final Set<BibTex> publications) {
+	public boolean addAllToReferences(final Set<BibTex> publications) {
 		this.lacyLoadReferences();
 		if (publications != null) {
-			this.references.addAll(publications);
+			return this.references.addAll(publications);
 		}
+		
+		return false;
 	}
 	
 	/* (non-Javadoc)
@@ -61,9 +70,65 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 		return this.references == null ? false : this.references.remove(publication);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#removeAllFromReferences(java.util.Set)
+	 */
 	@Override
 	public boolean removeAllFromReferences(final Set<BibTex> publications) {
 		return this.references == null ? false : this.references.removeAll(publications);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#addAllToReferencedBy(java.util.Set)
+	 */
+	@Override
+	public boolean addAllToReferencedBy(Set<BibTex> resources) {
+		this.lacyLoadReferences();
+		if (resources != null) {
+			return this.referencedBy.addAll(resources);
+		}
+		
+		return false;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#addToReferencedBy(org.bibsonomy.model.Resource)
+	 */
+	@Override
+	public boolean addToReferencedBy(BibTex resource) {
+		this.lacyLoadReferences();
+		return this.referencedBy.add(resource);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#getReferencedBy()
+	 */
+	@Override
+	public Set<BibTex> getReferencedBy() {
+		this.lacyLoadReferencedBy();
+		return Collections.unmodifiableSet(this.referencedBy);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#removeAllFromReferencedBy(java.util.Set)
+	 */
+	@Override
+	public boolean removeAllFromReferencedBy(Set<BibTex> resources) {
+		return this.referencedBy == null ? false : this.referencedBy.removeAll(resources);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.model.GoldStandard#removeFromReferencedBy(org.bibsonomy.model.Resource)
+	 */
+	@Override
+	public boolean removeFromReferencedBy(BibTex resource) {
+		return this.referencedBy == null ? false : this.referencedBy.remove(resource);
 	}
 	
 	@Override

@@ -52,7 +52,6 @@ public class TagUtils {
 	private static final Log log = LogFactory.getLog(TagUtils.class); 
 	
 	private static final Tag emptyTag = new Tag("system:unfiled");
-	
 	private static final Tag importedTag = new Tag("imported");
 	
 	/**
@@ -86,7 +85,6 @@ public class TagUtils {
 		}
 		return maxGlobalCount;
 	}
-	
 	
 	/**
 	 * If a post has no tag attached, the empty tag should be added in the TAS table. 
@@ -136,7 +134,6 @@ public class TagUtils {
 		return sb.delete(sb.length() - delim.length(), sb.length()).toString();
 	}
 	
-	
 	/**
 	 * Parses the incoming tag string and returns a set of tags
 	 * 
@@ -179,11 +176,11 @@ public class TagUtils {
 	 *         or all tags with globalTagCount>=limit (if limitType==FREQUENCY)
 	 */
 	public static List<Tag> mergeTagLists(final List<Tag> src1, final List<Tag> src2, Order tagOrder, Order limitType, int limit) {
-		if( Order.POPULAR.equals(limitType))
+		if( Order.POPULAR.equals(limitType)) {
 			return mergePopularityFilteredTagLists(src1, src2, tagOrder, limit);
-		else {
-			return mergeFrequencyFilteredTagLists(src1, src2, tagOrder, limit);
 		}
+		
+		return mergeFrequencyFilteredTagLists(src1, src2, tagOrder, limit);
 	}
 	
 	/**

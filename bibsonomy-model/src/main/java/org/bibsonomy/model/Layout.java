@@ -30,9 +30,7 @@ import java.util.Map;
 /**
  * 
  * @author:  rja
- * @version: $Id$
- * $Author$
- * 
+ * @version: $Id$ 
  */
 public abstract class Layout {
 
@@ -44,7 +42,6 @@ public abstract class Layout {
 	 * 
 	 */
 	protected boolean publicLayout = true;
-	
 	/**
 	 * The name of the layout (used as identifier in the URL).
 	 */
@@ -66,45 +63,78 @@ public abstract class Layout {
 	 */
 	protected String extension;
 
+	/** 
+	 * @param name the name of the layout
+	 */
 	public Layout(final String name) {
 		this.name = name;
 		this.description = new HashMap<String, String>();
 	}
-
+	
+	/**
+	 * @return the displayName
+	 */
 	public String getDisplayName() {
-		return displayName;
+		return this.displayName;
 	}
 
+	/**
+	 * @param displayName the displayName to set
+	 */
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
-	
+
+	/**
+	 * @return the description
+	 */
 	public Map<String, String> getDescription(){
 		return this.description;
 	}
 
+	/**
+	 * TODO: improve documentation
+	 * 
+	 * @param lang
+	 * @param description
+	 */
 	public void setDescription(String lang, String description) {
 		this.description.put(lang, description);
 	}
 
+	/**
+	 * @return the mimeType
+	 */
 	public String getMimeType() {
-		return mimeType;
+		return this.mimeType;
 	}
 
+	/**
+	 * @param mimeType the mimeType to set
+	 */
 	public void setMimeType(String mimeType) {
 		this.mimeType = mimeType;
 	}
 
+	/**
+	 * @return the extension
+	 */
 	public String getExtension() {
-		return extension;
+		return this.extension;
 	}
 
+	/**
+	 * @param extension the extension to set
+	 */
 	public void setExtension(String extension) {
 		this.extension = extension;
 	}
 
+	/**
+	 * @return the name
+	 */
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	/**
@@ -112,7 +142,7 @@ public abstract class Layout {
 	 * NOTE: Making a layout not public does <strong>not</strong> mean that
 	 * it can't be publicly used! Everybody who knows the URL prefix for the
 	 * layout can access it!
-	 * @return
+	 * @return <true> iff the layout is public
 	 */
 	public boolean isPublicLayout() {
 		return publicLayout;

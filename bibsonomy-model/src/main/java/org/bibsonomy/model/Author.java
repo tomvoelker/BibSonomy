@@ -34,82 +34,72 @@ public class Author {
 	private String middle = null;
 	private String lastName = null;
 	private int ctr = 0;
-	
+
 	/**
-	 * 
-	 * @return
+	 * @return the authorId
 	 */
 	public String getAuthorId() {
 		return this.authorId;
 	}
 
 	/**
-	 * 
-	 * @param authorId
+	 * @param authorId the authorId to set
 	 */
 	public void setAuthorId(String authorId) {
 		this.authorId = authorId;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the firstName
 	 */
 	public String getFirstName() {
 		return this.firstName;
 	}
 
 	/**
-	 * 
-	 * @param firstName
+	 * @param firstName the first name to set
 	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return middle name
 	 */
 	public String getMiddle() {
 		return this.middle;
 	}
 
 	/**
-	 * 
-	 * @param middle
+	 * @param middle the middle name to set
 	 */
 	public void setMiddle(String middle) {
 		this.middle = middle;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the lastName
 	 */
 	public String getLastName() {
 		return this.lastName;
 	}
 
 	/**
-	 * 
-	 * @param lastName
+	 * @param lastName the last name to set
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
 
 	/**
-	 * 
-	 * @return
+	 * @return the ctr
 	 */
 	public int getCtr() {
 		return this.ctr;
 	}
 
 	/**
-	 * 
-	 * @param ctr
+	 * @param ctr the ctr to set
 	 */
 	public void setCtr(int ctr) {
 		this.ctr = ctr;
