@@ -85,7 +85,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 */
 	@Override
 	public boolean addAllToReferencedBy(Set<BibTex> resources) {
-		this.lacyLoadReferences();
+		this.lacyLoadReferencedBy();
 		if (resources != null) {
 			return this.referencedBy.addAll(resources);
 		}
@@ -99,7 +99,7 @@ public class GoldStandardPublication extends BibTex implements GoldStandard<BibT
 	 */
 	@Override
 	public boolean addToReferencedBy(BibTex resource) {
-		this.lacyLoadReferences();
+		this.lacyLoadReferencedBy();
 		return this.referencedBy.add(resource);
 	}
 
