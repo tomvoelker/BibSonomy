@@ -13,6 +13,11 @@
 		WHERE r.publication = #hash# AND b.simhash1 = r.reference
 	</select>
 	
+	<select id="getGoldStandardPublicationRefercencedBy" resultMap="BibTexCommon.bibtex" parameterClass="String">
+		SELECT <include refid ="allGoldStandardPublicationAttributesWithSimHashes"/>, scraperid, 1 AS count FROM gold_standard_publications b, gold_standard_publication_references r
+		WHERE r.reference = #hash# AND b.simhash1 = r.reference
+	</select>
+	
 	<insert id="insertGoldStandardPublication" parameterClass="bibtexParam">
 		INSERT INTO gold_standard_publications (<include refid ="allGoldStandardPublicationRows"/>)
 		VALUES <include refid ="allGoldStandardPublicationValues"/>

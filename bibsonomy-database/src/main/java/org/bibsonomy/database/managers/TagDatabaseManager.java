@@ -174,7 +174,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param param
 	 * @param session
 	 */
-	public void insertGroupTas(final TagParam param, final DBSession session) {
+	private void insertGroupTas(final TagParam param, final DBSession session) {
 		for (final Tag tag : param.getTags()) {
 			param.setTag(tag);
 			for (final Integer groupId : param.getGroups()) {
@@ -451,7 +451,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 * @return tag
 	 */
-	public Tag getTagByName(final TagParam param, final DBSession session) {
+	private Tag getTagByName(final TagParam param, final DBSession session) {
 		return this.queryForObject("getTagByName", param, Tag.class, session);
 	}
 
@@ -469,9 +469,9 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return the tag's details, null else
 	 */
 	public Tag getTagDetails(final TagParam param, final DBSession session) {
-		final Tag tag;
 		param.setCaseSensitiveTagNames(true);
-		tag = this.getTagByName(param, session);
+		
+		final Tag tag = this.getTagByName(param, session);
 
 		// retrieve all sub-/supertags
 		param.setLimit(10000);

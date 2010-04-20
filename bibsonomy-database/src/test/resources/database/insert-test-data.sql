@@ -81,7 +81,8 @@ INSERT INTO `gold_standard_publications` (`content_id`, `journal`, `volume`, `ch
 -- Data for table `gold_standard_publication_references`
 -- 
 INSERT INTO `gold_standard_publication_references` (`publication`, `reference`, `user_name`, `date`) VALUES
-('d9eea4aa159d70ecfabafa0c91bbc9f0', 'ac6aa3ccb181e61801cefbc1401d409a', 'testuser1', '2008-03-20 16:24:55');
+('d9eea4aa159d70ecfabafa0c91bbc9f0', 'ac6aa3ccb181e61801cefbc1401d409a', 'testuser1', '2008-03-20 16:24:55'),
+('ac6aa3ccb181e61801cefbc1401d409a', 'd9eea4aa159d70ecfabafa0c91bbc9f0', 'testuser1', '2008-03-20 16:24:55');
 
 
 -- 

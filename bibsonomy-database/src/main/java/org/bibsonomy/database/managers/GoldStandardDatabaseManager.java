@@ -57,7 +57,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	/**
 	 * @return the simple class name of the first generic param (<R>, Resource)
 	 */
-	private String getResourceClassName() {
+	protected String getResourceClassName() {
 		return this.getResourceClass().getSimpleName();
 	}
 	
@@ -67,7 +67,8 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		// get the references for this post
 		if (present(post)) {
 			final R goldStandard = post.getResource();
-			goldStandard.addAllToReferences(this.getReferencesForPost(goldStandard.getInterHash(), session));
+			goldStandard.addAllToReferences(this.getReferencesForPost(resourceHash, session));
+			goldStandard.addAllToReferencedBy(this.getRefencedByForPost(resourceHash, session));
 		} else {
 			log.debug("gold standard post with interhash '" + resourceHash + "' not found.");
 		}
@@ -76,14 +77,18 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	}
 	
 	@SuppressWarnings("unchecked")
+	protected Set<RR> getRefencedByForPost(String resourceHash, DBSession session) {
+		return new HashSet<RR>(this.queryForList("get" + this.resourceClassName + "RefercencedBy", resourceHash, session));
+	}
+
+	@SuppressWarnings("unchecked")
 	protected Post<R> getGoldStandardPostByHash(final String resourceHash, final DBSession session) {
 		return (Post<R>) this.queryForObject("get" + this.resourceClassName + "ByHash", resourceHash, session);
 	}
 	
 	@SuppressWarnings("unchecked")
 	protected Set<RR> getReferencesForPost(final String interHash, final DBSession session) {
-		final List<RR> references = this.queryForList("get" + this.resourceClassName + "Refercences", interHash, session);
-		return new HashSet<RR>(references);
+		return new HashSet<RR>(this.queryForList("get" + this.resourceClassName + "Refercences", interHash, session));
 	}
 	
 	@Override
@@ -117,8 +122,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		
 		return true;
 	}
-	
-	protected abstract void onGoldStandardCreate(String resourceHash, DBSession session);
 
 	protected void insertPost(final Post<R> post, final DBSession session) {
 		final P insertParam = this.getInsertParam(post);
@@ -193,8 +196,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		return true;
 	}
 	
-	protected abstract void onGoldStandardUpdate(final String oldHash, final String newResourceHash, final DBSession session);
-	
 	@Override
 	public boolean deletePost(String userName, String resourceHash, DBSession session) {
 		return this.deletePost(resourceHash, false, session);
@@ -222,12 +223,6 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 		
 		return true;
 	}
-
-	/**
-	 * @param resourceHash
-	 * @param session
-	 */
-	protected abstract void onGoldStandardDelete(final String resourceHash, DBSession session);
 	
 	protected GoldStandardReferenceParam createParam(final Post<R> post) {
 		final GoldStandardReferenceParam param = new GoldStandardReferenceParam();
@@ -308,6 +303,12 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			session.endTransaction();
 		}
 	}
+	
+	protected abstract void onGoldStandardCreate(final String resourceHash, final DBSession session);
+
+	protected abstract void onGoldStandardUpdate(final String oldHash, final String newResourceHash, final DBSession session);
+	
+	protected abstract void onGoldStandardDelete(final String resourceHash, final DBSession session);
 	
 	protected abstract void onGoldStandardReferenceDelete(final String userName, final String interHash, final String interHashRef, final DBSession session);
 }

@@ -119,6 +119,7 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 		final Post<GoldStandardPublication> post = goldPubManager.getPostDetails("", INTERHASH_GOLD_1, "", null, this.dbSession);
 		final Set<BibTex> references = post.getResource().getReferences();
 		assertEquals(1, references.size());
+		assertEquals(1, post.getResource().getReferencedBy().size());
 		final BibTex ref1 = references.iterator().next();
 		assertEquals(INTERHASH_GOLD_2, ref1.getInterHash());
 	}
