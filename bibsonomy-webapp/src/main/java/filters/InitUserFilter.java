@@ -280,8 +280,11 @@ public class InitUserFilter implements Filter {
 								loginUser = logic.getUserDetails(userName);
 		
 								// if ldap credentials are ok, update lastAccessTimestamp
-								//dbLogicFactory.updateLastLdapRequest(userName);
-								logic.updateUser(loginUser, UserUpdateOperation.UPDATE_LDAP_TIMESTAMP);
+								if (null != logic.updateUser(loginUser, UserUpdateOperation.UPDATE_LDAP_TIMESTAMP)) {
+									log.info("update LDAP-Timestamp of user " + userName + " successful");
+								} else {
+									log.error("error on updating LDAP-Timestamp of user " + userName + "!");
+								}
 							}
 							
 						}
