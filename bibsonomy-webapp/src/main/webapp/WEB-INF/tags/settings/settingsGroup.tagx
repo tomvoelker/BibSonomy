@@ -32,7 +32,7 @@
 		    					<label for="laddgu" class="fsLabel"><fmt:message key="user.name"/></label>
 		    					<buttons:help message="settings.group.addUser.help"/>
 		    					<c:set var="userEmpty" value="${empty param.user}"/>
-		    					<input type="text" ssClass="fsInput fsSmall" path="add_group_user" value="${userEmpty?'':fn:escapeXml(param.user)}"/>
+		    					<input type="text" class="fsInput fsSmall" name="add_group_user" value="${userEmpty?'':fn:escapeXml(param.user)}"/>
 							</div>
 						
 							<div class="fsRow">
@@ -46,26 +46,20 @@
 				</form:form>
 
 				<h2><fmt:message key="settings.group.delUser"/></h2>
-				<form:form name="groupusers" method="post" action="/SettingsHandler">
-					<div id="fsform">
-						<fieldset class="fsInner">
-
-							<div class="fsRow">
-		    					<label for="laddgu" class="fsLabel"><fmt:message key="user.name"/></label>
-		    					<buttons:help message="settings.group.delUser.help"/>
-		    					<c:set var="userEmpty" value="${empty param.user}"/>
-		    					<input type="text" ssClass="fsInput fsSmall" path="del_group_user" value="${userEmpty?'':fn:escapeXml(param.user)}"/>
-							</div>
+				<div id="fsform">
+					<fieldset class="fsInner">
+						<!-- FIXME: I18N (title attribute) -->
+						<fmt:message var="deluser" key="settings.group.delUser.button"/>
 						
-							<div class="fsRow">
-		    					<input type="hidden" name="ckey" value="${ckey}"/>
-  								<fmt:message var="deluser" key="settings.group.delUser.button"/>
-		   						<input type="submit" value="${deluser}" />
-		   					</div>
-		
-						</fieldset>
-					</div>
-				</form:form>
+						<!-- show group member list -->
+						<c:forEach items="${command.group.users}" var="member">
+							
+							<a href="/user/${mtl:encodeURI(member.name)}"><c:out value="${member.name}"/></a> 
+							<span class="smalltext">(<a href="/SettingsHandler?del_group_user=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="remove this user from the group">${deluser}</a>)</span>
+							<c:out value=" "/>
+						</c:forEach>
+					</fieldset>
+				</div>
 				
 				<c:if test="${showDeny}">
 					<!-- TODO move to controller -->

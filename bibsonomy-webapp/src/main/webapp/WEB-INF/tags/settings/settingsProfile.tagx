@@ -65,13 +65,13 @@
 		      <form:input cssClass="fsInput fsSmall" path="user.place"/>
 		    </div>
 		    <div class="fsRow">
-		      <form:label cssClass="fsLabel" path="group"><fmt:message key="settings.profileViewableFor"/></form:label>
-		      <form:select cssClass="fsInput fsSmall" path="group">
+		      <form:label cssClass="fsLabel" path="profilePrivlevel"><fmt:message key="settings.profileViewableFor"/></form:label>
+		      <form:select cssClass="fsInput fsSmall" path="profilePrivlevel">
 		    	<form:option label="public" value="public"/>
 		    	<form:option label="private" value="private"/>
 		    	<form:option label="friends" value="friends"/>
 		      </form:select>
-		      <div class="dissError"><form:errors path="group" /></div>
+		      <div class="dissError"><form:errors path="profilePrivlevel" /></div>
 		    </div>
 		  </fieldset>
 		</div>
