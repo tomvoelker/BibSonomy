@@ -1,5 +1,4 @@
 package org.bibsonomy.webapp.controller.actions;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -391,9 +390,12 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			 * update post in DB
 			 */
 			updatePosts = logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
+		} catch (final ResourceMovedException ex) {
+			updatePosts.add(ex.getNewIntraHash());
 		} catch (final DatabaseException ex) {
 			return handleDatabaseException(command, loginUser, post, ex, "update");
 		}
+		
 		if (!ValidationUtils.present(updatePosts)) {
 			/*
 			 * show error page
