@@ -33,31 +33,49 @@ public class BibTexParam extends ResourceParam<BibTex> {
 		return this.resource;
 	}
 
+	/**
+	 * @return the firstYear
+	 */
 	@Deprecated
 	public String getFirstYear() {
 		return this.firstYear;
 	}
 
+	/**
+	 * @param firstYear the firstYear to set
+	 */
 	@Deprecated
 	public void setFirstYear(String firstYear) {
 		this.firstYear = firstYear;
 	}
 
+	/**
+	 * @return the lastYear
+	 */
 	@Deprecated
 	public String getLastYear() {
 		return this.lastYear;
 	}
 
+	/**
+	 * @param lastYear the lastYear to set
+	 */
 	@Deprecated
 	public void setLastYear(String lastYear) {
 		this.lastYear = lastYear;
 	}
 
+	/**
+	 * @return the year
+	 */
 	@Deprecated
 	public String getYear() {
 		return this.year;
 	}
 
+	/**
+	 * @param year the year to set
+	 */
 	@Deprecated
 	public void setYear(String year) {
 		this.year = year;
