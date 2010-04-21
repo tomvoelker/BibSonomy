@@ -28,6 +28,7 @@ import static org.junit.Assert.assertEquals;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Ignore;
@@ -38,14 +39,11 @@ import org.junit.Test;
  * @version $Id$
  */
 public class WebUtilsTest {
-
-	
 	
 	@Test
 	public void testExtractCharset1() {
 		assertEquals("UTF-8", WebUtils.extractCharset("text/html; charset=utf-8; qs=1"));
 	}
-	
 
 	@Test
 	public void testExtractCharset2() {
@@ -80,19 +78,19 @@ public class WebUtilsTest {
 	
 	@Test
 	public void testBuildCookieString() {
-		final List<String> cookies = Arrays.asList(new String[]{});
+		final List<String> cookies = new LinkedList<String>();
 		assertEquals("", WebUtils.buildCookieString(cookies));
 	}
 
 	@Test
 	public void testBuildCookieString1() {
-		final List<String> cookies = Arrays.asList(new String[]{"Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811; Path=/"});
+		final List<String> cookies = Arrays.asList("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811; Path=/");
 		assertEquals("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811; Path=/", WebUtils.buildCookieString(cookies));
 	}
 
 	@Test
 	public void testBuildCookieString3() {
-		final List<String> cookies = Arrays.asList(new String[]{"Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811", "Path=/"});
+		final List<String> cookies = Arrays.asList("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811", "Path=/");
 		assertEquals("Set-Cookie: JSESSIONID=39246A4F2932FD42D73F2058B00C4811;Path=/", WebUtils.buildCookieString(cookies));
 	}
 	
