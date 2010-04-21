@@ -41,7 +41,7 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 
 		this.checkUserRealName(user.getRealname(), errors);
 		this.checkUserGender(user.getGender(), errors);
-		this.checkUserViewableGroup(command.getGroup(), errors);
+		this.checkProfilePrivlevel(command.getProfilePrivlevel(), errors);
 		this.checkUserEmailAdress(user.getEmail(), errors);
 		this.checkUserHomepage(user.getHomepage(), errors);
 		this.checkUserOpenURL(user.getOpenURL(), errors);
@@ -79,7 +79,7 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 		}
 	}
 
-	private void checkUserViewableGroup(final String level, final Errors errors) {
+	private void checkProfilePrivlevel(final String level, final Errors errors) {
 		if (!ProfilePrivlevel.isProfilePrivlevel(level)) {
 			errors.rejectValue("user.settings.profilePrivlevel", "error.field.valid.groups"); // TODO: create error message ??!
 		}

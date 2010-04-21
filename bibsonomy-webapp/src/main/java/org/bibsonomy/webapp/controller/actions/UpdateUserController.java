@@ -121,7 +121,7 @@ public class UpdateUserController implements MinimalisticController<SettingsView
 		/*
 		 * FIXME: use command.user.privlevel instead of string "group"!
 		 */
-		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.getProfilePrivlevel(command.getGroup()));
+		user.getSettings().setProfilePrivlevel(ProfilePrivlevel.getProfilePrivlevel(command.getProfilePrivlevel()));
 		
 		final String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_CORE);
 		log.info("logging profile of user " + updatedUser + " has been changed successfully");

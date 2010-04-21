@@ -2,6 +2,7 @@ package org.bibsonomy.webapp.controller;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.layout.jabref.LayoutPart;
 import org.bibsonomy.model.Document;
@@ -23,7 +24,7 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
-	private static final Log log = LogFactory.getLog(SearchPageController.class);
+	private static final Log log = LogFactory.getLog(SettingsPageController.class);
 
 	/**
 	 * hold current errors
@@ -99,7 +100,7 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		command.setUserFriends(logic.getUserFriends(command.getUser()));
 		command.setFriendsOfUser(logic.getFriendsOfUser(command.getUser()));
 		// retrieve profile privacy level setting
-		command.setGroup(command.getUser().getSettings().getProfilePrivlevel().name().toLowerCase());
+		command.setProfilePrivlevel(command.getUser().getSettings().getProfilePrivlevel().name().toLowerCase());
 	}
 
 	/**
@@ -138,19 +139,25 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		// no work to do
 	}
 	
-	private void workOnGroupTab(SettingsViewCommand command)
-	{
+	private void workOnGroupTab(final SettingsViewCommand command) {
+		final String groupName = command.getContext().getLoginUser().getName();
 		//the group to update
-		Group group = logic.getGroupDetails(command.getContext().getLoginUser().getName());
-		if(ValidationUtils.present(group))
-		{
+		final Group group = logic.getGroupDetails(groupName);
+		if (ValidationUtils.present(group)) {
+			command.setGroup(group);
+			/*
+			 * get group users
+			 */
+			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000));
+			/*
+			 * FIXME: use the group in the command instead of 
+			 * this hand-written conversion
+			 */
 			command.setPrivlevel(group.getPrivlevel().ordinal());
 			int sharedDocsAsInt =  0;
-			if(group.isSharedDocuments())
-			{
+			if (group.isSharedDocuments()) {
 				sharedDocsAsInt = 1;
 			}
-			
 			command.setSharedDocuments(sharedDocsAsInt);
 		}
 	}

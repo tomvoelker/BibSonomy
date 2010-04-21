@@ -151,13 +151,18 @@ public class SettingsHandler extends HttpServlet{
 				/*
 				 * add a user to users group
 				 */
-				addUserToGroup(request.getParameter("add_group_user"), currUser, stmtP, rst, conn);
+				final String addGroupUser = request.getParameter("add_group_user");
+				if (addGroupUser != null) {
+					addUserToGroup(addGroupUser, currUser, stmtP, rst, conn);
+					redirectPage = "/settings?selTab=3";
+				}
 
 				/*
 				 * del a user from users group
 				 */
 				friend = request.getParameter("del_group_user");
 				if (friend != null) {
+					redirectPage = "/settings?selTab=3";
 					// check, if user is owner of group and get groupid 
 					stmtP = conn.prepareStatement("SELECT i.group FROM groups g, groupids i WHERE g.user_name = ? AND i.group_name = ? AND g.group = i.group");
 					stmtP.setString(1, currUser);
@@ -231,7 +236,7 @@ public class SettingsHandler extends HttpServlet{
 		}
 	}
 	
-	public static boolean addUserToGroup (String user, String group, PreparedStatement stm, ResultSet rst, Connection conn) throws SQLException {
+	private static boolean addUserToGroup (String user, String group, PreparedStatement stm, ResultSet rst, Connection conn) throws SQLException {
 		// friend: user to be added
 		if (user != null) {
 			user = user.toLowerCase();

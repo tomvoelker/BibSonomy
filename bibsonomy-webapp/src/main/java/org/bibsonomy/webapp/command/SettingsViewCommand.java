@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
@@ -53,9 +54,9 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private List<User> userFriends;
 	
 	/**
-	 * group {friends, private or public}
+	 * the privacy level of this user's profile {friends, private or public}
 	 */
-	private String group;
+	private String profilePrivlevel;
 	
 	private String importType;
 	
@@ -63,9 +64,12 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	
 	private CommonsMultipartFile file;
 	
+	/*
+	 * settings for groups
+	 */
 	private int privlevel;
-	
 	private int sharedDocuments;
+	private Group group;
 	
 	/**
 	 * current password of user
@@ -140,17 +144,17 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	}
 	
 	/**
-	 * @return the group
+	 * @return the privacy level of this user's profile
 	 */
-	public String getGroup() {
-		return this.group;
+	public String getProfilePrivlevel() {
+		return this.profilePrivlevel;
 	}
 
 	/**
-	 * @param group the group to set
+	 * @param profilePrivlevel - the privacy level of this user's profile
 	 */
-	public void setGroup(String group) {
-		this.group = group;
+	public void setProfilePrivlevel(final String profilePrivlevel) {
+		this.profilePrivlevel = profilePrivlevel;
 	}
 
 	public String getImportType() {
@@ -351,5 +355,13 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 
 	public String getImportData() {
 		return importData;
+	}
+
+	public Group getGroup() {
+		return this.group;
+	}
+
+	public void setGroup(Group group) {
+		this.group = group;
 	}
 }

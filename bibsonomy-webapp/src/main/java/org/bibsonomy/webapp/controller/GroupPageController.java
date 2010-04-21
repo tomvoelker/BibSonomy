@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -135,8 +137,8 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 	 */
 	private <V extends GroupResourceViewCommand> void setGroupDetails(V cmd, String groupName) {
 		final Group group = this.logic.getGroupDetails(groupName);
-		if (group != null) {
-			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 100));
+		if (present(group)) {
+			group.setUsers(this.logic.getUsers(null, GroupingEntity.GROUP, groupName, null, null, null, null, null, 0, 1000));
 		}
 		cmd.setGroup(group);
 	}
