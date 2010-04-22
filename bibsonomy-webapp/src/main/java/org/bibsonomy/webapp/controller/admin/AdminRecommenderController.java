@@ -130,19 +130,18 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		else if(command.getAction().equals("updateRecommenderstatus")){
 
 			try{
-				// Update database 
-			    db.updateRecommenderstatus(command.getActiveRecs(), command.getDisabledRecs());
-
-				
 				// Update multiplexer
 				if(command.getActiveRecs() != null)
 					addRecommendersToMultiplexer(command.getActiveRecs());
 				if(command.getDisabledRecs() != null)
 					removeRecommendersFromMultiplexer(command.getDisabledRecs());
 				
+				// Update database 
+			    db.updateRecommenderstatus(command.getActiveRecs(), command.getDisabledRecs());
+
+				//return new ExtendedRedirectView("/admin/recommender?action=activate");
 				command.setTab(Tab.ACTIVATE);
 				command.setAdminResponse("Successfully Updated Recommenderstatus!");
-				//return new ExtendedRedirectView("/admin/recommender?action=activate");
 				
 			} catch(SQLException e){
 				log.debug(e);
@@ -194,7 +193,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		 * store in command.activeRecs/command.disabledRecs
 		 */
 		else if((int)command.getTab() == Tab.ACTIVATE.ordinal()){
-			if(command.getActiveRecommenders() == null && command.getDisabledRecommenders() == null){
+			//if(command.getActiveRecommenders() == null && command.getDisabledRecommenders() == null){
 			    try{
 			      Map<Long, String> activeRecs   = db.getRecommenderIdsForSettingIds(db.getActiveRecommenderSettingIds());
 			      Map<Long, String> disabledRecs = db.getRecommenderIdsForSettingIds(db.getDisabledRecommenderSettingIds());
@@ -210,7 +209,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 			    catch(SQLException e){
 				    log.debug(e);
 			    }
-			}
+			//}
 		}
 		/*
 		 * Remove or add distant recommenders.
