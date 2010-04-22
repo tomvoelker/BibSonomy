@@ -27,6 +27,7 @@ import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
 import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.params.ResourceParam;
@@ -1134,7 +1135,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			final Post<R> oldPost;
 			if (present(oldHash)) {
 				// if yes, check if a post exists with the old intrahash
-				oldPost = this.getPostDetails(userName, oldHash, userName, new ArrayList<Integer>(), session);
+				try {
+					oldPost = this.getPostDetails(userName, oldHash, userName, new ArrayList<Integer>(), session);
+				} catch(ResourceMovedException ex) {
+					
+				}
 				/*
 				 * check if post to update is in db
 				 */
