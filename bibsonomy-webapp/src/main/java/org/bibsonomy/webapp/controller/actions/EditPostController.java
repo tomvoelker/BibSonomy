@@ -390,8 +390,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			 * update post in DB
 			 */
 			updatePosts = logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
-		} catch (final ResourceMovedException ex) {
-			updatePosts.add(ex.getNewIntraHash());
 		} catch (final DatabaseException ex) {
 			return handleDatabaseException(command, loginUser, post, ex, "update");
 		}
@@ -434,7 +432,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 				 * show error page
 				 */
 				errors.reject("error.post.update", "Could not "+process+" this post.");
-				log.warn("could not "+process+" post");
+				log.warn("could not "+process+" post because "+em.getDefaultMessage());
 				return Views.ERROR;
 			}		
 		}
