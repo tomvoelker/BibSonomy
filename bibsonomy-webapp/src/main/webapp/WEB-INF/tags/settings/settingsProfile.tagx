@@ -20,7 +20,10 @@
 		<fmt:message var="female" key="settings.female"/>
 		
         <p>
-        	<fmt:message key="settings.profileInfo"><fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param><fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param></fmt:message>
+        	<fmt:message key="settings.profileInfo">
+        		<fmt:param><a href="/foaf/user/${mtl:encodeURI(user.name)}">/foaf/user/<c:out value="${user.name}"/></a></fmt:param>
+        		<fmt:param><fmt:message key="settings.profileViewableFor"/></fmt:param>
+        	</fmt:message>
         </p>
 		
 		<form:form name="account" method="post" action="/updateUserProfile">		

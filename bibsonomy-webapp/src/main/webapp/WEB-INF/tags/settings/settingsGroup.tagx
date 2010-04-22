@@ -50,12 +50,13 @@
 					<fieldset class="fsInner">
 						<!-- FIXME: I18N (title attribute) -->
 						<fmt:message var="deluser" key="settings.group.delUser.button"/>
+						<fmt:message var="deluserTitle" key="settings.group.delUser.button.title"/>
 						
 						<!-- show group member list -->
 						<c:forEach items="${command.group.users}" var="member">
 							
 							<a href="/user/${mtl:encodeURI(member.name)}"><c:out value="${member.name}"/></a> 
-							<span class="smalltext">(<a href="/SettingsHandler?del_group_user=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="remove this user from the group">${deluser}</a>)</span>
+							<span class="smalltext">(<a href="/SettingsHandler?del_group_user=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
 							<c:out value=" "/>
 						</c:forEach>
 					</fieldset>
