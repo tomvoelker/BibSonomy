@@ -41,6 +41,35 @@ body {
 	padding:1px 10px;
 }
 
+#nice_tnav li a:hover {
+	background-color:#DF430D;
+	border-color:#6F6F6F #6F6F6F #000000;
+	border-style:solid;
+	border-width:0 1px;
+	color:#FFFFFF;
+	padding:1px 10px;
+}
+
+#nice_tnav li .selected {
+	background-color:#DF430D;
+	border-color:#6F6F6F #6F6F6F #000000;
+	border-style:solid;
+	border-width:0 1px;
+	color:#FFFFFF;
+	padding:1px 10px;
+}
+
+#nice_tnav .nicedropmenudiv a:hover {
+	color: white;
+	margin: 0;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-decoration: none;
+	background-color: #DF430D;
+}
+
 a, a:link, a:visited {
 	color:#DF430D;
 }
