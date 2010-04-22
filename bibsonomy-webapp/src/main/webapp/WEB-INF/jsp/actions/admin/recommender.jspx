@@ -107,10 +107,24 @@
 		  	</select>
 		  	
 		  	<!-- <form:select path="deletesid" items="${command.activeRecommenders}" itemValue="key" itemLabel="value"></form:select> -->
-  	        <input class="adminBtn" type="submit" />
+  	        <input class="adminBtn" id="recRemoveBtn" type="submit" value="Entfernen" />
+	  	    <input type="button" class="adminBtn" id="recEditBtn" value="Bearbeiten" onclick="openEditForm()" />
         </form:form>
   	    <br />
         </div>
+        <div id="recommenderEditDiv">
+            <div class="compound">
+ 		    <br />
+ 		    <form:form name="recommenderEdit" action="/admin/recommender?action=editRecommender">
+ 		    <form:label path="deletesid"><fmt:message key="admin.recommender.edit"/></form:label><br />
+ 		    <input type="hidden" id="editId" name="deletesid"  />
+ 		    <input type="text" id="editedRecurl" name="newrecurl" />
+ 		    <input type="submit" class="adminBtn" />
+ 		    </form:form>
+ 		    </div>
+ 		    <br />
+        </div>
+
     </c:if>
 	
 	<!-- Tab: Activate/Deactivate -->

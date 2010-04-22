@@ -1,6 +1,7 @@
 package org.bibsonomy.recommender.tags.database;
 
 import java.io.Reader;
+import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -612,6 +613,17 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	public void removeRecommender(long sid) throws SQLException{
 		SqlMapClient sqlMap = getSqlMapInstance();
 		sqlMap.update("removeRecommender", sid);
+	}
+	
+	public void updateRecommenderUrl(long sid, URL url) throws SQLException{
+		RecSettingParam param = new RecSettingParam();
+		param.setRecId(url.toString());
+		param.setSetting_id(sid);
+		param.setRecMeta(url.toString().getBytes());
+		
+		SqlMapClient sqlMap = getSqlMapInstance();
+		sqlMap.update("updateRecommenderStatusUrl", param);
+		sqlMap.update("updateRecommenderSettingUrl", param);
 	}
 	
 	

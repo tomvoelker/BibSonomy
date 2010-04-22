@@ -73,6 +73,12 @@
    <update id="removeRecommender" parameterClass="long">
        UPDATE recommender_status SET status=2 WHERE setting_id=#sid#
    </update>
+   <update id="updateRecommenderStatusUrl" parameterClass="recSetting">
+       UPDATE recommender_status SET url=#recId# WHERE setting_id=#setting_id#
+   </update>
+   <update id="updateRecommenderSettingUrl">
+       UPDATE recommender_settings SET rec_id=#recId#, rec_meta=#recMeta# WHERE setting_id=#setting_id#
+   </update>
    <insert id="createStatusForNewRecommender" parameterClass="long">
        INSERT INTO recommender_status (setting_id, url, status)
             values (#settingId#, (SELECT rec_id FROM recommender_settings WHERE setting_id = #settingId#), 1) 

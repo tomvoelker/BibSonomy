@@ -149,6 +149,34 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 			}
 
 		}
+
+		/*
+		 * Change the url of a recommender
+		*/
+		else if(command.getAction().equals("editRecommender")){
+			try{
+				//TODO: better URL-check
+				String newUrl = command.getNewrecurl();
+				if(newUrl.indexOf(' ') != -1)
+					throw new MalformedURLException();
+				URL recUrl = new URL(command.getNewrecurl());
+
+				long sid = command.getDeletesid();
+				removeRecommenderFromMultiplexer(sid);
+				db.updateRecommenderUrl(command.getDeletesid(), recUrl);
+				addRecommenderToMultiplexer(sid);
+				
+				command.setAdminResponse("Successfully Updated Recommenderurl!");
+			}
+			catch (MalformedURLException ex) {
+				command.setAdminResponse("Could not edit recommender. Please check if '"+ command.getNewrecurl() +"' is a valid url.");
+			}
+			catch(SQLException e){
+		        e.printStackTrace();
+			}
+			command.setNewrecurl(null);
+			command.setTab(Tab.ADD);
+		}
 		
 		command.setAction(null);
 		

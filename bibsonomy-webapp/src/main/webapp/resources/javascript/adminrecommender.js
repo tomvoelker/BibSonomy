@@ -28,3 +28,18 @@ function deselectAll(selectField){
     for(var i=0; i<selectField.length; i++)
         selectField.options[i].selected = false;
 }
+
+function openEditForm(){
+	recommenderSelect = document.recommenderRemove.deletesid;
+    selectedRecommender = recommenderSelect.options[recommenderSelect.selectedIndex];
+    
+    hiddenSettingId = document.getElementById("editId");
+    hiddenSettingId.value = selectedRecommender.value;
+  
+    recurl = document.getElementById("editedRecurl");
+    recurl.value = selectedRecommender.text.substr(selectedRecommender.text.indexOf('-') + 2);
+    
+	div = document.getElementById("recommenderEditDiv");
+	div.style.display = "block";
+	
+}
