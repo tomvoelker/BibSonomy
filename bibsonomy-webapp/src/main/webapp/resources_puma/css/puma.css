@@ -32,6 +32,15 @@ body {
 	padding-left:81px
 }
 
+#nice_tnav .checked {
+	background-color:#DF430D;
+	border-color:#6F6F6F #6F6F6F #000000;
+	border-style:solid;
+	border-width:0 1px;
+	color:#FFFFFF;
+	padding:1px 10px;
+}
+
 a, a:link, a:visited {
 	color:#DF430D;
 }
