@@ -40,6 +40,12 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 	@Override
 	public View workOn(GroupReportingCommand command) {
 		
+		// allow only logged-in users FIXME: check errormsg
+		if (command.getContext().getLoginUser().getName() == null) {
+			log.error("Not logged in on reporting page!");
+			throw new MalformedURLSchemeException("Not logged in!");
+		}
+		
 		// if no group given -> error FIXME: check errormsg
 		if (command.getRequestedGroup() == null) {
 			log.error("Invalid query /group without roup name");
