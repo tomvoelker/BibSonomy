@@ -5,11 +5,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -457,13 +454,7 @@ public class DBLogic implements LogicInterface {
 				// need to switch from class to string to ensure legibility of
 				// Tags.xml
 				param.setContentTypeByClass(resourceType);
-				final List<Tag> result = this.tagDBManager.getTags(param, session);
-				/*
-				 * XXX: workaround to make huge tag clouds smaller: 
-				 * prune tags to top 100 for not-logged in users 
-				 */
-				this.pruneSetSize(result, 1000, 100);
-				return result;
+				return this.tagDBManager.getTags(param, session);
 			}
 			
 			throw new UnsupportedResourceTypeException("The requested resourcetype (" + resourceType.getClass().getName() + ") is not supported.");
@@ -475,61 +466,6 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-
-	/**
-	 * If result.size() > minSetSize and the user is not logged in, removes
-	 * all but the top maxSetSize tags (sorted by count).  
-	 * 
-	 * @param result
-	 * @param minSetSize
-	 * @param maxSetSize
-	 */
-	private void pruneSetSize(final List<Tag> result, int minSetSize, int maxSetSize) {
-		if (result != null && result.size() > minSetSize && this.loginUser.getName() == null) {
-			/*
-			 * sort result by count
-			 */
-			Collections.sort(result, 
-					new Comparator<Tag>() { 
-				@Override
-				public int compare(Tag o1, Tag o2) {
-					if (o1.getGlobalcount() == o2.getGlobalcount()) {
-						if (o1.getUsercount() == o2.getUsercount()) {
-							/*
-							 * same counts -> use name
-							 */
-							return o1.getName().compareTo(o2.getName());
-						}
-						/*
-						 * sort descending
-						 */
-						return o2.getUsercount() - o1.getUsercount();
-					} 
-					/*
-					 * sort descending
-					 */
-					return o2.getGlobalcount() - o1.getGlobalcount();
-				}
-			}
-			);
-			/*
-			 * remove all tags except first .. 
-			 */
-			final Iterator<Tag> iterator = result.iterator();
-			int ctr = 0;
-			while (iterator.hasNext()) {
-				ctr++;
-				iterator.next();
-				if (ctr > maxSetSize) {
-					iterator.remove();
-				}
-			}
-			/*
-			 * sort again alphabetically ...
-			 */
-			Collections.sort(result);
-		}
-	}
 
 	/*
 	 * (non-Javadoc)
