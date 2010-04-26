@@ -173,6 +173,16 @@ public class URLGenerator {
 	public String getUserUrl(final User user) {
 		return getUrl(projectHome + "user/" + encode(user.getName()));
 	}
+	
+	/**
+	 * Constructs the URL for the user's page.
+	 * 
+	 * @param userName
+	 * @return The URL for the user's page.
+	 */
+	public String getUserUrl(final String userName) {
+		return getUrl(projectHome + "user/" + encode(userName));
+	}
 
 	/**
 	 * If {@link #checkUrls} is <code>true</code>, each given string is converted
