@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.command;
 
-import edu.umass.cs.mallet.base.fst.SimpleTagger;
-
 /**
  * 
  * Bean for providing the bibtexkey
