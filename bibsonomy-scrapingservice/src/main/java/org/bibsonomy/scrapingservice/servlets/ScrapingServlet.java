@@ -60,7 +60,7 @@ import bibtex.parser.ParseException;
 
 /**
  * Servlet implementation class for Servlet: ScrapingServlet
- *
+ * @version $Id$
  */
 public class ScrapingServlet extends javax.servlet.http.HttpServlet implements javax.servlet.Servlet {
 
@@ -83,6 +83,7 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 		super();
 	}   	
 
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		final String urlString = request.getParameter("url");
 		final String selection = request.getParameter("selection");

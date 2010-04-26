@@ -38,6 +38,10 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 
+/**
+ * @author rja
+ * @version $Id$
+ */
 public class RDFWriter {
 
 	/*
