@@ -1,5 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
-import java.io.UnsupportedEncodingException;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,6 +21,7 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.model.Group;
@@ -33,8 +35,8 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
+import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.recommender.TagRecommender;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -63,6 +65,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	private TagRecommender tagRecommender;
 	private Captcha captcha;
 	protected RequestLogic requestLogic;
+	private URLGenerator urlGenerator;
 
 
 	/**
@@ -134,7 +137,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * We store the referer in the command, to send the user back to the 
 		 * page he's coming from at the end of the posting process. 
 		 */
-		if (!ValidationUtils.present(command.getReferer())) {
+		if (!present(command.getReferer())) {
 			command.setReferer(requestLogic.getReferer());
 		}
 
@@ -177,13 +180,31 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * handle copying of a post using intra hash + user name
 		 */
-		if (ValidationUtils.present(command.getHash()) && ValidationUtils.present(command.getUser())) {
+		final String hash = command.getHash();
+		final String user = command.getUser();
+		if (present(hash) && present(user)) {
 			/*
 			 * hash + user given: user wants to copy a post
 			 * FIXME: really ensure, that the tag field is not filled
 			 *        (otherwise the post is automatically saved ...)
 			 */
-			command.setPost(getPostDetails(command.getHash(), command.getUser()));
+			final Post<RESOURCE> post;
+			if (urlGenerator.matchesPage(requestLogic.getReferer(), URLGenerator.Page.INBOX)) {
+				/*
+				 * The user tries to copy a post from his inbox.
+				 * 
+				 * We need a special method to get this post, since it could happen
+				 * that the user who owns the post already has deleted it (and thus
+				 * we must check the log table to get the post). 
+				 */
+				post = getInboxPost(loginUser.getName(), hash, user);
+			} else {
+				/*
+				 * regular copy
+				 */
+				post = getPostDetails(hash, user);
+			}
+			command.setPost(post);
 		} else {
 			/*
 			 * The post in the command is coming from the form: bring it into 
@@ -207,7 +228,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * decide, what to do
 		 */
 		final String intraHashToUpdate = command.getIntraHashToUpdate();
-		if (ValidationUtils.present(intraHashToUpdate)) {
+		if (present(intraHashToUpdate)) {
 			log.debug("intra hash to update found -> handling update of existing post");
 			return handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
 		}
@@ -217,6 +238,41 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 
 	}
 
+	/**
+	 * Checks loginUser's inbox for the post with the given hash+user 
+	 * combination and returns the corresponding post.
+	 * If no such post could be found, a {@link ResourceNotFoundException} exception is thrown.
+	 * 
+	 * @param loginUserName - the name of the user whose inbox should be checked
+	 * @param hash - the hash of the post we want to find
+	 * @param user - the name of the user who owns the post (!= inbox user!)
+	 * @return The post from the inbox.
+	 * @throws ResourceNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private Post<RESOURCE> getInboxPost(final String loginUserName, final String hash, final String user) throws ResourceNotFoundException {
+		/*
+		 * We can only give the name of the inbox's user and the hash to the database 
+		 * (there are no parameters available to further restrict the search to the
+		 * user name of the post's owner).
+		 * Thus, if the loginUser has several posts with the same hash in his inbox,
+		 * we get them all and must compare each post against the given user name.
+		 */
+		final List<?> dbPosts = logic.getPosts((Class<? extends Resource>) instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, 0, Integer.MAX_VALUE, null);
+		if (present(dbPosts)) {
+			for (final Object dbPost: dbPosts) {
+				final Post<RESOURCE> castedDbPost = (Post<RESOURCE>) dbPost;
+				/*
+				 * check, if the post is owned by the user whose post we want to copy.
+				 */
+				if (user.equals(castedDbPost.getUser().getName())) {
+					return castedDbPost;
+				}
+			}
+		}
+		throw new ResourceNotFoundException(hash);
+	}
+	
 	protected abstract void workOnCommand(final COMMAND command, final User loginUser);
 
 	/**
@@ -394,7 +450,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			return handleDatabaseException(command, loginUser, post, ex, "update");
 		}
 		
-		if (!ValidationUtils.present(updatePosts)) {
+		if (!present(updatePosts)) {
 			/*
 			 * show error page
 			 * FIXME: when/why can this happen? We get some error messages
@@ -587,15 +643,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * If there is no referer URL given, redirect to the user's home page. 
 		 */
-		if (!ValidationUtils.present(referer)) {
-			try {
-				log.debug("redirecting to user page");
-				return new ExtendedRedirectView("/user/" + URLEncoder.encode(userName, "UTF-8"));
-			} catch (UnsupportedEncodingException ex) {
-				log.error("Could not encode redirect URL.", ex);
-				errors.reject("error.post.redirect", new Object[]{ex.getMessage()}, "Error encoding URL for redirect: " + ex.getMessage());
-				return Views.ERROR;
-			}
+		if (!present(referer)) {
+			return new ExtendedRedirectView(urlGenerator.getUserUrl(userName));
 		}
 		/*
 		 * redirect to referer URL
@@ -603,6 +652,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		return new ExtendedRedirectView(referer);
 	}
 
+	
 	private View handleCreatePost(final EditPostCommand<RESOURCE> command, final RequestWrapperContext context, final User loginUser, final Post<RESOURCE> post) {
 		final String loginUserName = loginUser.getName();
 
@@ -719,8 +769,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * an exception. This could be caused by a non-rechable captcha-server. 
 	 */
 	private void checkCaptcha(final String challenge, final String response, final String hostInetAddress) throws InternServerException {
-		if (ValidationUtils.present(response)) {
-			if (ValidationUtils.present(challenge)) {
+		if (present(response)) {
+			if (present(challenge)) {
 				/*
 				 * check captcha response
 				 */
@@ -1057,5 +1107,20 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		return requestLogic.getSessionAttribute(key);
 	}
 
+	/**
+	 * @return The URLGenerator to be used to generate (redirect) URLs.
+	 */
+	public URLGenerator getUrlGenerator() {
+		return this.urlGenerator;
+	}
+
+	/**
+	 * Set the URLGenerator to be used to generate (redirect) URLs.
+	 * @param urlGenerator
+	 */
+	@Required
+	public void setUrlGenerator(URLGenerator urlGenerator) {
+		this.urlGenerator = urlGenerator;
+	}
 
 }
