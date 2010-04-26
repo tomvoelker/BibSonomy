@@ -21,6 +21,8 @@ public class GroupReportingCommand extends BaseCommand {
 	/** transposes displayed matrix if is set to 1 */
 	private String transposeMatrix = "";
 
+	private String requestedTags;
+	
 	public String getRequestedGroup() {
 		return this.requestedGroup;
 	}
@@ -39,6 +41,14 @@ public class GroupReportingCommand extends BaseCommand {
 
 	public String getTransposeMatrix() {
 		return transposeMatrix;
+	}
+
+	public String getRequestedTags() {
+		return this.requestedTags;
+	}
+
+	public void setRequestedTags(String requestedTags) {
+		this.requestedTags = requestedTags;
 	}
 
 	
