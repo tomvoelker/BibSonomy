@@ -92,7 +92,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 			try {
 				int curYear = Integer.valueOf(bib.getYear());
 				if ( curYear != lastYear) {
-					if (lastYear != -1) {
+					if (lastYear != Integer.MIN_VALUE) {
 						// write last row into command, if there is one
 						command.getPublicationCounts().getValues().put(lastYear, row);
 						command.getPublicationCounts().getRowHeaders().add(lastYear);
@@ -104,7 +104,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 					}
 				}
 				// increment counter of type TYPE in current year
-				this.increment(row, bib.getType());
+				this.increment(row, bib.getEntrytype());
 				lastYear = curYear;
 				
 			} catch (NumberFormatException ex) {
