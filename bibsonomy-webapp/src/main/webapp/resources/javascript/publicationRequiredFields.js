@@ -1,4 +1,5 @@
 var form_name = '#post\\.resource\\.title';
+var suggestionBox = $("#suggestionBox");
 
 /**
  * queries the titles and further details of publications by a partial title
@@ -17,7 +18,7 @@ function getSuggestions(partialTitle, autocompletion) {
 
 	$(form_name).blur(function() {
 		window.setTimeout(function() {
-			$("#suggestionBox").hide();
+			suggestionBox.hide();
 		},
 		140);
 	});
@@ -32,7 +33,7 @@ function getSuggestions(partialTitle, autocompletion) {
 		}});
 		return;
 	}
-	$("#suggestionBox").hide();	
+	suggestionBox.hide();	
 }
 
 /**
@@ -45,16 +46,17 @@ function getSuggestions(partialTitle, autocompletion) {
 function processResponse(data) {
 	var m = 1;
 	var s = 0;
+	suggestionBox.html("");
 	// if there's no data abort
 	if(data.items.length == 0) {
-		$("#suggestionBox").hide();
+		suggestionBox.hide();
 		return;
 	}
 	// style="background-color: #006699; color: #FFFFFF; padding:3px;"
 	var p = $('<div class="suggBox" style="background-color: #006699; color: #FFFFFF; padding:3px;">'
 			+getString('post.resource.suggested')
 			+'</div>');
-	$("#suggestionBox").html(p);
+	suggestionBox.html(p);
 
 	$.each(data.items, function(i, item) {
 
@@ -91,21 +93,21 @@ function processResponse(data) {
 				// and set the forms accordingly
 				function () {
 					window.location.href = '/editPublication?hash='+intraHash+'&user='+item.user+'&copytag='+tags;
-					$("#suggestionBox").hide();
+					suggestionBox.hide();
 				}
 		);
 
-		$("#suggestionBox").append(element);
+		suggestionBox.append(element);
 	})
 	var pos = $(form_name).offset();
 	var width = $(form_name).width();
 	var top = parseInt(pos.top+$(form_name).height());
 
-	if($("#suggestionBox").width() < (width+2)){
-		$("#suggestionBox").width(width+2);
+	if(suggestionBox.width() < (width+2)){
+		suggestionBox.width(width+2);
 	}
 
-	$("#suggestionBox").css(
+	suggestionBox.css(
 			{
 				"left":(pos.left+1)+"px",
 				"top":top+"px",
@@ -115,7 +117,7 @@ function processResponse(data) {
 				"border-left":"3px solid #006699"
 			}
 	);
-	$("#suggestionBox").show();
+	suggestionBox.show();
 }
 
 /**
@@ -181,7 +183,7 @@ function getArrowKey(e) {
 		return true;
 	} else if(e.keyCode == 13 && $('.suggestion_entry_selected').is('div')){
 		window.location.href = $('.suggestion_entry_selected').attr('url');
-		$("#suggestionBox").hide();
+		suggestionBox.hide();
 		return true;
 	}
 	return false;
