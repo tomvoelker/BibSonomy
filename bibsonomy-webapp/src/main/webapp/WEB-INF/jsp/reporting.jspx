@@ -28,8 +28,12 @@
 			</c:if>
 			<c:if test="${not empty command.requestedGroup}">
 
-				<h2><fmt:message key="reporting.group.headline"/>&amp;nbsp;<c:out value="${command.requestedGroup}"/> </h2>
-	
+				<h2>
+					<fmt:message key="reporting.group.headline"/>&amp;nbsp;<c:out value="${command.requestedGroup}"/><br />
+					<span style="color: black; font-size: 80%;"><fmt:message key="tags"/>:&amp;nbsp;<c:out value="${command.requestedTags}"/></span>
+				</h2> 
+				
+				
 				<fmt:message key="reporting.group.intro"/>
 	
 				<c:if test="${not empty command.publicationCounts and not empty command.publicationCounts.rowHeaders}">
