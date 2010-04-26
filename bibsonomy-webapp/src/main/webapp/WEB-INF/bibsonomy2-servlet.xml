@@ -114,6 +114,7 @@
 							<list>
 								<value>requestedGroup</value>
 								<value>transposeMatrix</value>
+								<value>requestedTags</value>
 							</list>
 						</property>
 					</bean>
