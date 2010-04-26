@@ -32,7 +32,7 @@
 	
 				<fmt:message key="reporting.group.intro"/>
 	
-				<c:if test="${not empty command.publicationCounts}">
+				<c:if test="${not empty command.publicationCounts and not empty command.publicationCounts.rowHeaders}">
 
 					<c:if test="${empty command.transposeMatrix or command.transposeMatrix==0}">
 						<table class="report">
@@ -73,6 +73,13 @@
 					</c:if>
 
 				</c:if>
+				
+				<c:if test="${empty command.publicationCounts or empty command.publicationCounts.rowHeaders}">
+				<p>
+				<fmt:message key="reporting.group.nodata"/>
+				</p>
+				</c:if>
+				
 			</c:if>
 			
 						

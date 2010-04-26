@@ -110,9 +110,12 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 			}
 			
 		}
+		
 		// add the last year
-		command.getPublicationCounts().getValues().put(lastYear, row);
-		command.getPublicationCounts().getRowHeaders().add(lastYear);		
+		if (lastYear != Integer.MIN_VALUE) {
+			command.getPublicationCounts().getValues().put(lastYear, row);
+			command.getPublicationCounts().getRowHeaders().add(lastYear);
+		}
 		
 		/*
 		 *  create some dummy data for testing 
