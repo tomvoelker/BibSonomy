@@ -2,13 +2,13 @@ package org.bibsonomy.webapp.util;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.webapp.controller.UserPageController;
 
 /**
  * Util class to compute ranking
@@ -17,18 +17,27 @@ import org.bibsonomy.webapp.controller.UserPageController;
  * @version $Id$
  */
 public class RankingUtil {
-	
+	private static final Log LOGGER = LogFactory.getLog(RankingUtil.class);
 	
 	/**
 	 * the (rough) maximal global count of a tag (used to compute tf/idf-weighting)
 	 */
 	private static int MAX_TAG_GLOBALCOUNT = 200000;
 	
-	private static final Log LOGGER = LogFactory.getLog(UserPageController.class);
-	
-	
+	/**
+	 * TODO: improve doc
+	 * 
+	 * @author dbenz
+	 */
 	public enum RankingMethod {
+		/**
+		 * TODO: improve doc
+		 */
 		TAG_OVERLAP,
+		
+		/**
+		 * TODO: improve doc
+		 */
 		TFIDF;
 	}
 	
@@ -39,11 +48,13 @@ public class RankingUtil {
 	 * @param sourceUserTags
 	 * @param targetUserTags
 	 * @param posts
+	 * @param rtype 
+	 * @param normalize 
 	 */
-	public static <T extends Resource> void computeRanking(List<Tag> sourceUserTags, List<Tag> targetUserTags, List<Post<T>> posts, RankingMethod rtype, Boolean normalize) {
+	public static <T extends Resource> void computeRanking(List<Tag> sourceUserTags, List<Tag> targetUserTags, List<Post<T>> posts, RankingMethod rtype, boolean normalize) {
 		// first, build map of target user's tags
-		HashMap<String, Integer> tagGlobalCounts = new HashMap<String,Integer>();
-		HashMap<String, Integer> tagUserCounts = new HashMap<String,Integer>();
+		Map<String, Integer> tagGlobalCounts = new HashMap<String,Integer>();
+		Map<String, Integer> tagUserCounts = new HashMap<String,Integer>();
 		int maxUserFreq = 0;
 		for (Tag t : sourceUserTags) {
 			if (t.getGlobalcount() > 0) {
@@ -83,11 +94,17 @@ public class RankingUtil {
 		}						
 	}
 	
-	
+	/**
+	 * TODO: impove doc
+	 * 
+	 * @param <T>
+	 * @param sourceUserTags
+	 * @param targetUserTags
+	 */
 	public static <T extends Resource> void computeRanking(List<Tag> sourceUserTags, List<Tag> targetUserTags) {
 		// first, build map of target user's tags
-		HashMap<String, Integer> tagGlobalCounts = new HashMap<String,Integer>();
-		HashMap<String, Integer> tagUserCounts = new HashMap<String,Integer>();
+		Map<String, Integer> tagGlobalCounts = new HashMap<String,Integer>();
+		Map<String, Integer> tagUserCounts = new HashMap<String,Integer>();
 		int maxUserFreq = 0;
 		for (Tag t : sourceUserTags) {
 			if (t.getGlobalcount() > 0) {
