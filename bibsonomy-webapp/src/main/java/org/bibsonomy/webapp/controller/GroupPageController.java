@@ -38,7 +38,6 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 
 		// if no group given -> error
 		if (command.getRequestedGroup() == null) {
-			log.error("Invalid query /group without roup name");
 			throw new MalformedURLSchemeException("error.group_page_without_groupname");
 		}				
 

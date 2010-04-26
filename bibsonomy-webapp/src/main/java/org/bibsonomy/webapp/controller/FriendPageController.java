@@ -34,7 +34,6 @@ public class FriendPageController extends SingleResourceListControllerWithTags i
 
 		// no user given -> error
 		if (command.getRequestedUser() == null) {
-			log.error("Invalid query /friend without friendname");
 			throw new MalformedURLSchemeException("error.friend_page_without_friendname");
 		}
 

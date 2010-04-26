@@ -36,7 +36,6 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		
 		// if no tags given return
 		if (command.getRequestedTags() == null || command.getRequestedTags().length() == 0) {
-			log.error("Invalid query /tag without tag");
 			throw new MalformedURLSchemeException("error.tag_page_without_tag");
 		}
 		

@@ -37,7 +37,6 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 
 		// if no author given throw error 		
 		if (!ValidationUtils.present(authorQuery)) {
-			log.error("Invalid query /author without author name");
 			throw new MalformedURLSchemeException("error.author_page_without_authorname");
 		}
 						

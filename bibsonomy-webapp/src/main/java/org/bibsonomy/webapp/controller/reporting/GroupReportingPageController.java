@@ -48,13 +48,11 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		
 		// if no group given -> error FIXME: check errormsg
 		if (command.getRequestedGroup() == null) {
-			log.error("Invalid query /group without roup name");
 			throw new MalformedURLSchemeException("error.group_page_without_groupname");
 		}
 		
 		// if no tags given return FIXME: check errormsg
 		if (command.getRequestedTags() == null || command.getRequestedTags().length() == 0) {
-			log.error("Invalid query /tag without tag");
 			throw new MalformedURLSchemeException("error.tag_page_without_tag");
 		}		
 		

@@ -35,7 +35,6 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
 		
 		if (!present(command.getRequestedKey())) {
-			log.error("Invalid query /bibtexkey without key");
 			throw new MalformedURLSchemeException("error.bibtexkey_no_key");
 		}
 		

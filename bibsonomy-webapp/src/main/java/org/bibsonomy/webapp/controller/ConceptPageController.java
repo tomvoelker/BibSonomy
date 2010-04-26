@@ -32,7 +32,6 @@ public class ConceptPageController extends SingleResourceListController implemen
 		
 		// if no concept given -> error
 		if(!present(command.getRequestedTags())) {
-			log.error("Invalid query /concept without concept name");
 			throw new MalformedURLSchemeException("error.concept_page_without_conceptname");
 		}
 		

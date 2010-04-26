@@ -34,7 +34,6 @@ public class UserRelationsController extends SingleResourceListControllerWithTag
 			/*
 			 * FIXME: wrong error message, should be /relations/ without user
 			 */
-			LOGGER.error("Invalid query /user without username");
 			throw new MalformedURLSchemeException("error.user_page_without_username");
 		}
 

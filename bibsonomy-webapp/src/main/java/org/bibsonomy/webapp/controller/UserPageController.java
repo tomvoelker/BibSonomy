@@ -39,7 +39,6 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 
 		// no user given -> error
 		if (command.getRequestedUser() == null) {
-			LOGGER.warn("Invalid query /user without username");
 			throw new MalformedURLSchemeException("error.user_page_without_username");
 		}
 		
@@ -51,7 +50,6 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		
 		// wrong user similarity requested -> error
 		if (userRelation == null) {
-			LOGGER.error("Invalid user similarity requested: " + command.getUserSimilarity());
 			throw new MalformedURLSchemeException("error.user_page_with_wrong_user_similarity");			
 		}
 		

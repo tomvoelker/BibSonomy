@@ -59,7 +59,6 @@ public class UrlPageController extends SingleResourceListController implements M
 		// no URL hash given -> error
 		final String requHash = command.getRequUrlHash();
 		if (!ValidationUtils.present(command.getRequUrl()) && !ValidationUtils.present(requHash)) {
-			log.error("Invalid query /url without URL hash");
 			throw new MalformedURLSchemeException("error.url_no_hash");
 		}		
 		

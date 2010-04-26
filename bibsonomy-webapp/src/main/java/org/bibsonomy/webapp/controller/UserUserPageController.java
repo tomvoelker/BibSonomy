@@ -35,7 +35,6 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 
 		// no user given -> error
 		if (command.getRequestedUser() == null) {
-			LOGGER.error("Invalid query /user without username");
 			throw new MalformedURLSchemeException("error.user_page_without_username");
 		}
 
