@@ -112,6 +112,49 @@ public class GoldStandardPublicationDatabaseManagerTest extends AbstractDatabase
 	}
 	
 	/**
+	 * tests {@link GoldStandardPublicationDatabaseManager#updatePost(Post, String, org.bibsonomy.common.enums.PostUpdateOperation, org.bibsonomy.database.util.DBSession)}
+	 * without changing the inter-/intraHash
+	 */
+	@Test
+	public void testUpdatePostWithoutChangingHash() {
+		assertFalse(this.pluginMock.isOnGoldStandardPublicationUpdate());
+		assertFalse(this.pluginMock.isOnGoldStandardPublicationCreate());
+		
+		// create post
+		final Post<GoldStandardPublication> post = this.generateGoldPublication();
+		goldPubManager.createPost(post, this.dbSession);
+		
+		// test listeners
+		assertTrue(this.pluginMock.isOnGoldStandardPublicationCreate());
+		assertFalse(this.pluginMock.isOnGoldStandardPublicationUpdate());
+		this.pluginMock.reset();
+		
+		// fetch post
+		final GoldStandardPublication goldStandard = post.getResource();
+		String interhash = goldStandard.getInterHash();
+		assertNotNull(goldPubManager.getPostDetails("", interhash, "", null, this.dbSession).getResource());
+		
+		// change a value and update the gold standard
+		final String newSchool = "schooool";
+		goldStandard.setSchool(newSchool);
+		goldStandard.recalculateHashes();
+		
+		goldPubManager.updatePost(post, interhash, null, this.dbSession);
+		
+		// test listeners
+		assertFalse(this.pluginMock.isOnGoldStandardPublicationCreate());
+		assertTrue(this.pluginMock.isOnGoldStandardPublicationUpdate());
+		
+		interhash = goldStandard.getInterHash();
+		
+		// delete gold standard
+		final Post<GoldStandardPublication> postDetails = goldPubManager.getPostDetails("testuser1", interhash, "", null, this.dbSession);
+		assertEquals(newSchool, postDetails.getResource().getSchool());
+		
+		this.deletePost(interhash);
+	}
+	
+	/**
 	 * tests getPostDetails including references
 	 */
 	@Test

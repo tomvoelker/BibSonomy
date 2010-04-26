@@ -63,6 +63,10 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 	
 	@Override
 	public Post<R> getPostDetails(String loginUserName, String resourceHash, String userName, List<Integer> visibleGroupIDs, DBSession session) {
+		if (present(userName)) {
+			return null; // TODO: think about this return
+		}
+		
 		final Post<R> post = this.getGoldStandardPostByHash(resourceHash, session);
 		// get the references for this post
 		if (present(post)) {
@@ -175,7 +179,7 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 			 */
 			final Post<R> newPostInDB = this.getGoldStandardPostByHash(resourceHash, session);
 			
-			if (present(newPostInDB)) {
+			if (present(newPostInDB) && !(oldHash.equals(resourceHash))) {
 				log.debug("gold stanard post with hash \"" + resourceHash + "\" already exists in DB");
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, resourceHash);
 				session.addError(resourceHash, errorMessage);
