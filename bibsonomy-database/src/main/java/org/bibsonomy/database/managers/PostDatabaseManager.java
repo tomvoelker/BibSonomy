@@ -1132,13 +1132,19 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * the resource with the "old" intrahash, that was sent
 			 * within the update resource request
 			 */
-			final Post<R> oldPost;
+			Post<R> oldPost = null;
 			if (present(oldHash)) {
 				// if yes, check if a post exists with the old intrahash
 				try {
 					oldPost = this.getPostDetails(userName, oldHash, userName, new ArrayList<Integer>(), session);
 				} catch(ResourceMovedException ex) {
-					
+					/*
+					 * getPostDetails() throws a ResourceMovedException for hashes for which
+					 * no actual post exists, but an old post has existed with that hash.
+					 * 
+					 * Since we are not interested in former posts with that hash we ignore
+					 * this exception silently. 
+					 */
 				}
 				/*
 				 * check if post to update is in db
