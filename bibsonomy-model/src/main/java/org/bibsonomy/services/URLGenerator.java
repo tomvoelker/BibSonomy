@@ -22,6 +22,38 @@ import org.bibsonomy.util.ValidationUtils;
  */
 public class URLGenerator {
 
+	/**
+	 * Provides page names.
+	 * 
+	 * XXX: experimental!
+	 *
+	 * @author rja
+	 *
+	 */
+	public enum Page {
+		/**
+		 * all posts users' have sent me using the "send:" system tag
+		 */
+		INBOX("inbox"),
+		/**
+		 * all posts I have picked  
+		 */
+		BASKET("basket");
+		
+		private final String p; 
+		
+		private Page(final String p) {
+			this.p = p;
+		}
+		
+		/**
+		 * @return The string representation of this page
+		 */
+		public String getPath() {
+			return p;
+		}
+	}
+	
 	private static final String USER_PREFIX = "user";
 	private static final String PUBLICATION_PREFIX = "bibtex";
 	private static final String BOOKMARK_PREFIX = "url";
@@ -59,7 +91,7 @@ public class URLGenerator {
 	/**
 	 * Creates an absolute URL for the given path.
 	 * 
-	 * @param path - the path part of the URL (TODO: with our without leading "/"?)
+	 * @param path - the path part of the URL (TODO: with or without leading "/"?)
 	 * @return The absolute URL.
 	 */
 	public String getAbsoluteUrl(final String path) {
@@ -198,5 +230,18 @@ public class URLGenerator {
 	 */
 	public void setCheckUrls(boolean checkUrls) {
 		this.checkUrls = checkUrls;
+	}
+	
+	/**
+	 * Checks if the given URL points to the given page. Useful for checking the referrer header. 
+	 * 
+	 * @param url
+	 * @param page
+	 * @return <code>true</code> if the given URL points to the given page.
+	 */
+	public boolean matchesPage(final String url, final Page page) {
+		final String pageName = page.getPath();
+		final String absoluteUrl = getAbsoluteUrl(pageName);
+		return url.contains(absoluteUrl);
 	}
 }

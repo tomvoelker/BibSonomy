@@ -1,6 +1,8 @@
 package org.bibsonomy.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.model.BibTex;
@@ -36,6 +38,17 @@ public class URLGeneratorTest {
 	@Test
 	public void testGetUserUrl() {
 		assertEquals("http://www.bibsonomy.org/user/jaeschke", ug.getUserUrl(new User("jaeschke")));
+	}
+	
+	@Test
+	public void testMatch() throws Exception {
+		assertTrue(ug.matchesPage("http://www.bibsonomy.org/inbox", URLGenerator.Page.INBOX));
+		assertTrue(ug.matchesPage("http://www.bibsonomy.org/basket", URLGenerator.Page.BASKET));
+		assertTrue(ug.matchesPage("http://www.bibsonomy.org/basket?start=0", URLGenerator.Page.BASKET));
+		
+		assertFalse(ug.matchesPage("http://www.bibsonomy.org/basket", URLGenerator.Page.INBOX));
+		assertFalse(ug.matchesPage("http://www.bibsonomy.org/foo/basket", URLGenerator.Page.BASKET));
+		assertFalse(ug.matchesPage("/basket", URLGenerator.Page.BASKET));
 	}
 
 }
