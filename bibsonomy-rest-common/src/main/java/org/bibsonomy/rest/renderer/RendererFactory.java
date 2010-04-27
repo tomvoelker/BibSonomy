@@ -38,6 +38,8 @@ public class RendererFactory {
 
 	/**
 	 * Returns the renderer for the given format; it defaults to the XML renderer.
+	 * @param renderingFormat 
+	 * @return the renderer
 	 */
 	public static Renderer getRenderer(final RenderingFormat renderingFormat) {
 		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");

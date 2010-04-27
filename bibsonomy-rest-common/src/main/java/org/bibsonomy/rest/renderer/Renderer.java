@@ -61,6 +61,7 @@ public interface Renderer {
 	 *            a {@link List} of {@link Post} objects.
 	 * @param viewModel
 	 *            the {@link ViewModel} encapsulates additional information,
+	 * @throws InternServerException 
 	 */
 	public void serializePosts(Writer writer, List<? extends Post<? extends Resource>> posts, ViewModel viewModel) throws InternServerException;
 
@@ -71,7 +72,7 @@ public interface Renderer {
 	 *            a {@link Writer} to use.
 	 * @param post
 	 *            one {@link Post} object.
-	 * @param viewModel
+	 * @param model
 	 *            the {@link ViewModel} encapsulates additional information,
 	 */
 	public void serializePost(Writer writer, Post<? extends Resource> post, ViewModel model);
@@ -200,8 +201,8 @@ public interface Renderer {
 	 * 
 	 * @param writer
 	 *            the {@link Writer} to use.
-	 * @param errorMessage
-	 *            the error message to send.
+	 * @param hash
+	 *            the hash to send.
 	 */
 	public void serializeResourceHash(Writer writer, String hash);
 	
@@ -210,8 +211,8 @@ public interface Renderer {
 	 * 
 	 * @param writer
 	 *            the {@link Writer} to use.
-	 * @param errorMessage
-	 *            the error message to send.
+	 * @param userId
+	 *            the userId to send.
 	 */
 	public void serializeUserId(Writer writer, String userId);
 	
@@ -228,8 +229,8 @@ public interface Renderer {
 	 * 
 	 * @param writer
 	 *            the {@link Writer} to use.
-	 * @param errorMessage
-	 *            the error message to send.
+	 * @param groupId
+	 *            the groupId to send.
 	 */
 	public void serializeGroupId(Writer writer, String groupId);	
 
