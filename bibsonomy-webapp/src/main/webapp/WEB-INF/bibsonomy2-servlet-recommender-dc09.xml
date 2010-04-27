@@ -53,7 +53,7 @@
 	 	+-->
 	<bean id="distRecommender4" class="org.bibsonomy.recommender.tags.WebserviceTagRecommender">
 		<property name="address">
-			<value>http://atto.cs.dal.ca:8080/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
+			<value>http://141.51.167.113:8080/bibsonomy-recommender-servlet-2.0.3/TagRecommenderServlet</value>
 		</property>
 	</bean>	 
 
