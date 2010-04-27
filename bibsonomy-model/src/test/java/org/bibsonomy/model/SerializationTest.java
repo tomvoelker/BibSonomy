@@ -1,8 +1,8 @@
-/**  
- * 
+/**
+ *  
  *  BibSonomy-Model - Java- and JAXB-Model.
  *   
- *  Copyright (C) 2006 - 2009 Knowledge & Data Engineering Group, 
+ *  Copyright (C) 2006 - 2010 Knowledge & Data Engineering Group, 
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
  *  
