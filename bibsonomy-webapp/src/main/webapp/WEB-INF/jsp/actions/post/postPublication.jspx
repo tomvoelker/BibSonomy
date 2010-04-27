@@ -174,23 +174,19 @@
                   $(this).parent("fieldset").find('.dissError').not(':hidden').fadeOut('slow');
                 });
                 $(".dissError:empty").hide("1");
-             ]]> 
+
+                function toggleImage(pictureId, pictureActive, pictureInactive, divId) {
+					$(document.getElementById(divId)).slideToggle("slow"); 
+					var  imageSource= $(document.getElementById(pictureId)).attr("src");
+					if(imageSource==pictureActive) {
+						$('#'+pictureId).attr('src',pictureInactive);
+					} else {
+						$('#'+pictureId).attr('src',pictureActive);
+					}
+				}
+
+                ]]> 
              //</mtl:cdata>
-             
-			 function toggleImage(pictureId, pictureActive, pictureInactive, divId)
-			 {
-				 $(document.getElementById(divId)).slideToggle("slow"); 
-				 var  imageSource= $(document.getElementById(pictureId)).attr("src");
-				 if(imageSource==pictureActive) {
-					 $('#'+pictureId).attr('src',pictureInactive);
-				 } else {
-					 $('#'+pictureId).attr('src',pictureActive);
-				 }
-			 }
-			 
-			 			 
-			 
-             
           </script>
        
        </jsp:attribute>

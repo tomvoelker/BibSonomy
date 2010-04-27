@@ -56,23 +56,26 @@
             <div class="dissError"><form:errors path="post.resource.editor" /></div>
           </div>
           
-        <div class="fsRow">
+		  <div class="fsRow">
             <form:label cssClass="fsLabel" path="post.resource.year" ><fmt:message key="post.resource.year"/>* </form:label><buttons:help message="post.resource.year.help"/>
             <form:input cssClass="fsInput fsSmall reqinput" path="post.resource.year" tabindex="2"/>
             <div class="dissError"><form:errors path="post.resource.year" /></div>    
           </div>
-	     <script type="text/javascript">
-	     $(document).ready(
-	    	     function(){
-				     if(${autocompletion}) {
-				         $('#post\\.resource\\.title').keyup(
-				                 function (e) {
-				                     getKey(e);
-				                 }
-				         );
-			    		$(body).append($('<div id="title_window" style="position:absolute;display:none;"></div>'));
+
+		<c:if test="${autocompletion}">
+			<script type="text/javascript">
+            	//<mtl:cdata>
+            	<![CDATA[
+					$(document).ready(
+	    	     		function(){
+							$('#post\\.resource\\.title').keyup(function (e) {getKey(e);}
+						);
+						$(body).append($('<div id="title_window" style="position:absolute;display:none;"></div>'));
 				     };
 	    	     });
-     	</script>
-
+	     		]]> 
+            	//</mtl:cdata>
+     		</script>
+		</c:if>
+	    
 </jsp:root>
