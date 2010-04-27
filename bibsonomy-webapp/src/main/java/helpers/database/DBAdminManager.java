@@ -2,18 +2,12 @@ package helpers.database;
 
 import helpers.constants;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.scraper.ScrapingContext;
-import org.bibsonomy.scraper.exceptions.ScrapingException;
 
 import beans.AdminBean;
 
@@ -25,8 +19,6 @@ import beans.AdminBean;
  * @version $Id$
  */
 public class DBAdminManager extends DBManager {
-	
-	private static final String[] spammerUpdateTables = {"bookmark", "bibtex", "tas", "search_bibtex", "search_bookmark"};
 	
 	/*
 	 * gets settings for this user and saves them in bean
