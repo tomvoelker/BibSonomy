@@ -194,7 +194,7 @@ public class URLGenerator {
 	 * @return The URL for the user's page.
 	 */
 	public String getUserUrl(final User user) {
-		return getUrl(projectHome + "user/" + encode(user.getName()));
+		return getUrl(projectHome + USER_PREFIX + "/" + encode(user.getName()));
 	}
 	
 	/**
@@ -204,7 +204,7 @@ public class URLGenerator {
 	 * @return The URL for the user's page.
 	 */
 	public String getUserUrl(final String userName) {
-		return getUrl(projectHome + "user/" + encode(userName));
+		return getUrl(projectHome + USER_PREFIX + "/" + encode(userName));
 	}
 
 	/**
@@ -226,6 +226,7 @@ public class URLGenerator {
 		}
 		return url;
 	}
+	
 	private static String encode(final String s) {
 		try {
 			return URLEncoder.encode(s, "UTF-8");
@@ -234,6 +235,9 @@ public class URLGenerator {
 		}
 	}
 
+	/**
+	 * @return the projectHome
+	 */
 	public String getProjectHome() {
 		return this.projectHome;
 	}
@@ -250,6 +254,10 @@ public class URLGenerator {
 		this.projectHome = projectHome;
 	}
 
+	/**
+	 * @see URLGenerator#setCheckUrls(boolean)
+	 * @return checkUrls
+	 */
 	public boolean isCheckUrls() {
 		return this.checkUrls;
 	}
@@ -275,6 +283,6 @@ public class URLGenerator {
 	public boolean matchesPage(final String url, final Page page) {
 		final String pageName = page.getPath();
 		final String absoluteUrl = getAbsoluteUrl(pageName);
-		return url.contains(absoluteUrl);
+		return url != null && url.contains(absoluteUrl);
 	}
 }
