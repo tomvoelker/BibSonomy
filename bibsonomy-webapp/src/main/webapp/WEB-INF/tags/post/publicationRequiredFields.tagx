@@ -68,11 +68,10 @@
             	<![CDATA[
 					$(document).ready(
 	    	     		function(){
-							$('#post\\.resource\\.title').keyup(function (e) {getKey(e);}
-						);
-						$(body).append($('<div id="title_window" style="position:absolute;display:none;"></div>'));
-				     };
-	    	     });
+							$('#post\\.resource\\.title').keyup(function (e) {getKey(e);});
+							$('body').append($('<div id="title_window" style="position:absolute;display:none;"></div>'));
+				     	}
+	    	     	);
 	     		]]> 
             	//</mtl:cdata>
      		</script>
