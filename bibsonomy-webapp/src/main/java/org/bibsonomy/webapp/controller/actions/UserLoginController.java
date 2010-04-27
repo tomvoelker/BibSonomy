@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
@@ -16,7 +18,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.UserLDAPRegistrationCommand;
 import org.bibsonomy.webapp.command.actions.UserLoginCommand;
 import org.bibsonomy.webapp.exceptions.ServiceUnavailableException;
@@ -104,6 +105,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		/*
 		 * catch response from OpenID provider
 		 */
+		final String referer = command.getReferer();
 		if (requestLogic.getParameter("openid.identity") != null) {
 			String openID = requestLogic.getParameter("openid.identity");
 
@@ -111,7 +113,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 			 * if login successful then redirect to referer
 			 */
 			if(this.handleOpenIDLogin(openID)) {
-				return new ExtendedRedirectView(command.getReferer());
+				return new ExtendedRedirectView(referer);
 			} 
 
 			/*
@@ -291,7 +293,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		}
 
 		
-		if (!useLDAP && username != null && hashedPassword != null) {
+		if (!useLDAP && !present(username) && !present(hashedPassword)) {
 			/*
 			 * authentication via username and password 
 			 */
@@ -354,29 +356,11 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 			 */
 			cookieLogic.addUserCookie(username, hashedPassword);
 
-		} else if (openID != null) {
+		} else if (present(openID)) {
 			/*
 			 * OpenID authentication
 			 */
-			String returnToUrl = null;
-			try {
-				String referer = URLEncoder.encode(command.getReferer(), "UTF-8");
-				returnToUrl = projectHome + "login?referer=" + referer;
-			} catch (UnsupportedEncodingException ex) {
-				log.warn("Could not encode URL for login page.", ex);
-			}
-
-			/*
-			 * redirect to OpenID provider
-			 */
-			try {
-				return new ExtendedRedirectView(openIDLogic.authOpenIdRequest(requestLogic, openID, 
-						projectHome, returnToUrl, false));
-			} catch (OpenIDException ex) {
-				errors.reject("error.invalid_openid");
-				return Views.ERROR;
-			}						
-			
+			return handleOpenID(referer, openID);						
 		}
 
 
@@ -393,7 +377,8 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		 */
 
 		/*
-		 * flag spammers with a cookie
+		 * flag spammers with a cookie 
+		 * FIXME: here we sometimes get an NPE (why?)
 		 */
 		cookieLogic.addSpammerCookie(user.isSpammer());
 
@@ -406,7 +391,34 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		/*
 		 * Redirect to the page the user is coming from. 
 		 */
-		return new ExtendedRedirectView(command.getReferer());
+		return new ExtendedRedirectView(referer);
+	}
+
+
+	/**
+	 * Handles OpenID authentication
+	 * 
+	 * @param referer
+	 * @param openID
+	 * @return
+	 */
+	private View handleOpenID(final String referer, final String openID) {
+		String returnToUrl = null;
+		try {
+			returnToUrl = projectHome + "login?referer=" + URLEncoder.encode(referer, "UTF-8");
+		} catch (UnsupportedEncodingException ex) {
+			log.warn("Could not encode URL for login page.", ex);
+		}
+
+		/*
+		 * redirect to OpenID provider
+		 */
+		try {
+			return new ExtendedRedirectView(openIDLogic.authOpenIdRequest(requestLogic, openID, projectHome, returnToUrl, false));
+		} catch (OpenIDException ex) {
+			errors.reject("error.invalid_openid");
+			return Views.ERROR;
+		}
 	}
 
 
@@ -418,7 +430,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 	 * @param command
 	 */
 	private void setReferer(UserLoginCommand command) {
-		if (!ValidationUtils.present(command.getReferer())) {
+		if (!present(command.getReferer())) {
 			/*
 			 * no referer set in command
 			 */
@@ -426,7 +438,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 			/*
 			 * check referer from header
 			 */
-			if (ValidationUtils.present(referer)) {
+			if (present(referer)) {
 				/*
 				 * there is a referer -> set it in command
 				 */
