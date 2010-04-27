@@ -16,10 +16,10 @@
 
 	<c:choose>
 		<!-- check if user is logged in with wrong account -->
-		<c:when test="${empty param.user or empty param.group or param.group eq user.name}">
+		<c:when test="${empty param.user or empty param.requGroup or param.requGroup eq user.name}">
 
   			<!-- GRANT OR DENY JOIN REQUESTS, ADD USERS -->
-			<c:set var="showDeny" value="${not empty param.user and not empty param.group and param.group eq user.name}"/>
+			<c:set var="showDeny" value="${not empty param.user and not empty param.requGroup and param.requGroup eq user.name}"/>
 
 			<div id="groups" class="${showDeny?'highlightBox':''}">
 	
@@ -144,7 +144,7 @@
 			<!-- user is logged in with wrong account -->
 			<div id="groups" class="highlightBox">
 				<fmt:message key="settings.group.login">
-					<fmt:param>${fn:escapeXml(param.group)}</fmt:param>
+					<fmt:param>${fn:escapeXml(param.requGroup)}</fmt:param>
 				</fmt:message>
 			</div>
 
