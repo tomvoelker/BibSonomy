@@ -23,12 +23,9 @@
 
 package org.bibsonomy.scraper.generic;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -73,8 +70,6 @@ public class UnAPIScraperTest {
 			} catch (ScrapingException ex) {
 				fail(ex.getMessage());
 			} catch (MalformedURLException ex) {
-				fail(ex.getMessage());
-			} catch (IOException ex) {
 				fail(ex.getMessage());
 			}
 		}
