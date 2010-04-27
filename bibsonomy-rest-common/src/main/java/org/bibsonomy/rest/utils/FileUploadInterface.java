@@ -43,9 +43,11 @@ public interface FileUploadInterface {
 
 	/**
 	 * Stores the created file on the hard drive and returns a document object
-	 * The parameter string is needed for the creation for the hashedName of the document object 
-	 * @param hashedName, loginUser
-	 * @return
+	 * The parameter string is needed for the creation for the hashedName of the document object
+	 * 
+	 * @param hashedName 
+	 * @param loginUser 
+	 * @return the document object representation
 	 * @throws Exception
 	 */
 	public Document writeUploadedFile(String hashedName, User loginUser) throws Exception;
