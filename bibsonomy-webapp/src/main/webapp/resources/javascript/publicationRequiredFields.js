@@ -23,7 +23,7 @@ function getSuggestions(partialTitle) {
 	if(partialTitle.length > 1) {
 		var query = $.ajax({
 			type: "GET",
-			url: "http://www.bibsonomy.org/json/tag/sys:title:"+partialTitle+"*?items=10",
+			url: "/json/tag/sys:title:"+partialTitle+"*?items=10",
 			dataType: "jsonp",
 			success: function(json){
 			processResponse(json);
