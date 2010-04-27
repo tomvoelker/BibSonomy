@@ -253,12 +253,6 @@ public class LogicInterfaceHelper {
 			param.setSearch(tagValue);
 			logger.debug("set search to " + tagValue + " after matching for author system tag");
 			return true;
-		} else if (tagName.equals("search")) {
-			if (tagValue.equals("lucene")) {
-				param.setSearchEntity(SearchEntity.LUCENE);
-				logger.debug("set search entity to 'lucene' after matching for search system tag");
-				return true;
-			}
 		} else if (tagName.equals("user")) {
 			// this is just a workaround until the SystemTagFactory stuff above is working
 			param.setGrouping(GroupingEntity.USER);
