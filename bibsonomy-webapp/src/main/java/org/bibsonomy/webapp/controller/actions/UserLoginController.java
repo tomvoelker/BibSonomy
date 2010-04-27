@@ -18,7 +18,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.webapp.command.actions.UserLDAPRegistrationCommand;
 import org.bibsonomy.webapp.command.actions.UserLoginCommand;
 import org.bibsonomy.webapp.exceptions.ServiceUnavailableException;
 import org.bibsonomy.webapp.util.CookieAware;
@@ -92,6 +91,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
+	@Override
 	public View workOn(UserLoginCommand command) {
 		log.debug("workOn() called");
 
@@ -100,7 +100,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		/*
 		 * remember referer to send user back to the page she's coming from
 		 */
-		setReferer(command);
+		this.setReferer(command);
 
 		/*
 		 * catch response from OpenID provider
@@ -170,7 +170,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		Context initContext = null;
 		Context envContext = null;
 		// use LDAP password even for bibsonomy username 
-		Boolean useLDAP = false;
+		boolean useLDAP = false;
 		
 		try {
 			initContext = new InitialContext();
@@ -189,8 +189,8 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		
 		log.info("useLDAP: " + useLDAP + "  - you can switch this by editing jndi properties in context.xml: java:/comp/env/useLdapPasswordforBibsonomyLogin");
 		log.info("login method: " + command.getLoginMethod());
-
-		if (useLDAP && username != null && hashedPassword != null  ) { 
+		
+		if (useLDAP && username != null && hashedPassword != null) { 
 			
 			/*
 			 * authentication via username and password via LDAP 
@@ -224,7 +224,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 			
 			if (null != userId)
 			{
-				Ldap ldap = new Ldap();
+				final Ldap ldap = new Ldap();
 	
 				log.info("Trying to login user " + bibsonomyUsername + " via LDAP (uid="+userId+")");
 				//log.info("password: "+password);
@@ -260,20 +260,14 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 				if (null == bibsonomyUsername) {
 					// redirect
 					log.info("Redirecting user to registration page");
-					UserLDAPRegistrationCommand ldapCommand = new UserLDAPRegistrationCommand(); 
 					
 					// store username and password in session
 					requestLogic.setSessionAttribute(InitUserFilter.REQ_ATTRIB_LOGIN_USER, userId);
 					requestLogic.setSessionAttribute(InitUserFilter.REQ_ATTRIB_LOGIN_USER_PASSWORD, password);
-					
-					
-					return new ExtendedRedirectView("/registerLDAP"
-														+ "?step=2"
+						
+					return new ExtendedRedirectView("/registerLDAP?step=2"
 														+ "&registerUser.name=x"
-														+ "&registerUser.password=x"
-													);
-
-//					return Views.REGISTER_USER_LDAP_FORM;
+														+ "&registerUser.password=x");
 				}
 				
 				user = adminLogic.getUserDetails(bibsonomyUsername);
@@ -287,15 +281,13 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 				 * update lastAccessTimestamp
 				 */
 				adminLogic.updateUser(user, UserUpdateOperation.UPDATE_LDAP_TIMESTAMP);
-				
 			}
 			
 		}
-
 		
-		if (!useLDAP && !present(username) && !present(hashedPassword)) {
+		if (!useLDAP && present(username) && present(hashedPassword)) {
 			/*
-			 * authentication via username and password 
+			 * authentication user with username and password via database
 			 */
 		
 			/*
@@ -311,12 +303,12 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 					 * password does neither match real or reminder password --> show error message
 					 */
 					log.info("Login of user " + username + " failed.");
-					errors.reject("error.login.failed");
+					this.errors.reject("error.login.failed");
 					/*
 					 * count failures
 					 */
-					grube.add(username);
-					grube.add(inetAddress);
+					this.grube.add(username);
+					this.grube.add(inetAddress);
 				} else {
 					/*
 					 * passwords do match -> check if reminder still valid or already expired.
@@ -354,13 +346,13 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 			/*
 			 * add authentication cookie to response
 			 */
-			cookieLogic.addUserCookie(username, hashedPassword);
+			this.cookieLogic.addUserCookie(username, hashedPassword);
 
 		} else if (present(openID)) {
 			/*
 			 * OpenID authentication
 			 */
-			return handleOpenID(referer, openID);						
+			return this.handleOpenID(referer, openID);						
 		}
 
 
@@ -378,16 +370,19 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 
 		/*
 		 * flag spammers with a cookie 
-		 * FIXME: here we sometimes get an NPE (why?)
+		 * FIXME: here we sometimes get an NPE (why? cause: neither the ldap nor
+		 * the openid nor the db were used to authenticate the user
+		 * (username and hashedPassword are empty))
 		 */
-		cookieLogic.addSpammerCookie(user.isSpammer());
+		this.cookieLogic.addSpammerCookie(user.isSpammer());
 
 		/*
 		 * To prevent Session-Fixation attacks (see http://www.jsptutorial.org/content/session) 
 		 * we invalidate the old session.
 		 */
-		requestLogic.invalidateSession();
+		this.requestLogic.invalidateSession();
 
+		// TODO: don't redirect to the login page after the login was successful
 		/*
 		 * Redirect to the page the user is coming from. 
 		 */
