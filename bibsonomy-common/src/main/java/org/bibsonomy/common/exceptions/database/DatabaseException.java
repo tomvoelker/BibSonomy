@@ -1,6 +1,6 @@
 /**
  *  
- *  BibSonomy-Common - Common things (e.g., error Messages, enums, utils, etc.)
+ *  BibSonomy-Common - Common things (e.g., exceptions, enums, utils, etc.)
  *   
  *  Copyright (C) 2006 - 2009 Knowledge & Data Engineering Group, 
  *                            University of Kassel, Germany
