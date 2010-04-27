@@ -1,10 +1,13 @@
 package org.bibsonomy.webapp.controller;
 
+import java.util.Arrays;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
+import org.bibsonomy.webapp.command.HomepageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -15,7 +18,7 @@ import org.bibsonomy.webapp.view.Views;
  * @author Dominik Benz
  * @version $Id$
  */
-public class HomepageController extends SingleResourceListController implements MinimalisticController<SimpleResourceViewCommand> {
+public class HomepageController extends SingleResourceListController implements MinimalisticController<HomepageCommand> {
 	private static final Log log = LogFactory.getLog(HomepageController.class);
 
 	/*
@@ -23,10 +26,7 @@ public class HomepageController extends SingleResourceListController implements 
 	 */
 	private static final int MAX_TAGS = 50;
 
-	public View workOn(final SimpleResourceViewCommand command) {
-		/*
-		 * FIXME: implement filter=no parameter
-		 */
+	public View workOn(final HomepageCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
@@ -49,6 +49,11 @@ public class HomepageController extends SingleResourceListController implements 
 		if (command.getFormat().equals("html")) {
 			command.setPageTitle("home");
 			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
+			
+			/*
+			 * add news posts (= latest blog posts) FIXME: make configurable
+			 */
+			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, "kde", Arrays.asList(new String[]{"bibsonomyblog"}), null, null, null, 0, 3, null));
 			this.endTiming();
 			return Views.HOMEPAGE;		
 		}
@@ -67,7 +72,7 @@ public class HomepageController extends SingleResourceListController implements 
 		return MAX_TAGS;
 	}
 	
-	public SimpleResourceViewCommand instantiateCommand() {
-		return new SimpleResourceViewCommand();
+	public HomepageCommand instantiateCommand() {
+		return new HomepageCommand();
 	}
 }

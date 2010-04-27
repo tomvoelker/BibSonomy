@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
@@ -45,12 +44,6 @@ public class SearchPageController extends SingleResourceListController implement
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
 
-		/* DEBUG */
-		log.debug("SearchPageController: command.getSearchmode()="+command.getSearchmode());
-		
-		/* DEBUG */
-		log.debug("SearchPageController: command.getRequestedTagsList().toString()=" + command.getRequestedTagsList().toString());
-		
 		/*
 		 * search only in a user's, group's, etc. posts ...
 		 */

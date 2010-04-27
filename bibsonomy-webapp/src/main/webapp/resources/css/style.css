@@ -1203,6 +1203,11 @@ padding-top:1px;
 	color: #D80000!important;
 }
 
+ul.news {
+	list-style: outside disc !important;
+	margin-left: 1.5em !important;
+}
+
 table.report {
 	margin: 1ex 0;
 	border-collapse: collapse;
