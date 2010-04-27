@@ -17,9 +17,10 @@
     
      -->
 
+
     <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
     <jsp:directive.attribute name="autocompletion" type="java.lang.Boolean" required="true"/>
-	
+
          <div class="fsRow">
             <form:label cssClass="fsLabel" path="post.resource.entrytype" ><fmt:message key="post.resource.entrytype"/>* </form:label><buttons:help message="post.resource.entrytype.help"/>
             <form:select multiple="false" path="post.resource.entrytype" cssClass="reqinput" tabindex="2" size="1" id="post.resource.entrytype" items="${mtl:getBibTeXEntryTypes()}" onchange="changeView();"/>
@@ -39,7 +40,7 @@
 
           <div class="fsRow">
 		  <form:label cssClass="fsLabel" path="post.resource.title" ><fmt:message key="post.resource.title"/>* </form:label><buttons:help message="post.resource.title.help"/>
-            <form:textarea cssClass="fsInput reqinput" path="post.resource.title" tabindex="2" rows="2" onkeyup="getSuggestions(this.value, ${autocompletion}); getArrowKey(event); sz(this);" />
+            <form:textarea cssClass="fsInput reqinput" path="post.resource.title" tabindex="2" rows="2" onkeyup="sz(this);" />
 		  <div class="dissError"><form:errors path="post.resource.title" /></div>
           </div>
 
@@ -60,6 +61,18 @@
             <form:input cssClass="fsInput fsSmall reqinput" path="post.resource.year" tabindex="2"/>
             <div class="dissError"><form:errors path="post.resource.year" /></div>    
           </div>
-
+	     <script type="text/javascript">
+	     $(document).ready(
+	    	     function(){
+				     if(${autocompletion}) {
+				         $('#post\\.resource\\.title').keyup(
+				                 function (e) {
+				                     getKey(e);
+				                 }
+				         );
+			    		$(body).append($('<div id="title_window" style="position:absolute;display:none;"></div>'));
+				     };
+	    	     });
+     	</script>
 
 </jsp:root>

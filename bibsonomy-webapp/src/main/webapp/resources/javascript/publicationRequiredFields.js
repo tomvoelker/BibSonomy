@@ -11,11 +11,8 @@ var suggestionBox = $("#suggestionBox");
  * @return
  */
 
-function getSuggestions(partialTitle, autocompletion) {
-	if(!autocompletion) {
-		return;
-	}
-
+function getSuggestions(partialTitle) {
+	var partialTitle_copy = partialTitle;
 	$(form_name).blur(function() {
 		window.setTimeout(function() {
 			suggestionBox.hide();
@@ -26,14 +23,15 @@ function getSuggestions(partialTitle, autocompletion) {
 	if(partialTitle.length > 1) {
 		var query = $.ajax({
 			type: "GET",
-			url: "/json/tag/sys:title:"+partialTitle+"*?items=10",
-			dataType: "json",
+			url: "http://www.bibsonomy.org/json/tag/sys:title:"+partialTitle+"*?items=10",
+			dataType: "jsonp",
 			success: function(json){
 			processResponse(json);
 		}});
-		return;
+		return true;
 	}
-	suggestionBox.hide();	
+	suggestionBox.hide();
+	return true;
 }
 
 /**
@@ -46,7 +44,8 @@ function getSuggestions(partialTitle, autocompletion) {
 function processResponse(data) {
 	var m = 1;
 	var s = 0;
-	suggestionBox.html("");
+	var title = getString('post.resource.suggested');
+	
 	// if there's no data abort
 	if(data.items.length == 0) {
 		suggestionBox.hide();
@@ -54,15 +53,15 @@ function processResponse(data) {
 	}
 	// style="background-color: #006699; color: #FFFFFF; padding:3px;"
 	var p = $('<div class="suggBox" style="background-color: #006699; color: #FFFFFF; padding:3px;">'
-			+getString('post.resource.suggested')
+			+title
 			+'</div>');
 	suggestionBox.html(p);
-
+	
 	$.each(data.items, function(i, item) {
-
 		var editors = "";
 		var author = "";
 		var year = "";
+		var formatted_text = formatLabel(item.label);
 		if(item.editor != 'undefined') {
 			editors = concatArray(item.editor, 20);
 		}
@@ -79,9 +78,9 @@ function processResponse(data) {
 		var k = m;
 		var element = 
 			$('<div class="suggestion_entry" style="cursor:pointer; color:#006699;background-color:'
-					+(((m++)%2 == 0)?'#FFFFFF':'#EEEEEE') // change the background
-					// color every step
-					+'">'+formatLabel(item.label)
+					+(((m++)%2 == 0)?'#FFFFFF':'#EEEEEE') // change the background-color every step
+					//+'">'+((formatted_text.length > 50)?formatted_text.substr(0, 50)+" ... ":formatted_text)
+					+'">'+formatted_text
 					+'<br><span style="font-size:10px;">'
 					+author
 					+year
@@ -96,6 +95,18 @@ function processResponse(data) {
 					suggestionBox.hide();
 				}
 		);
+		/*
+		element.mouseover(
+				function () {
+					$(form_name).val(formatted_text);
+				}
+		)
+		
+		element.mouseout(
+				function () {
+					$(form_name).val(partialTitle_copy);
+				}
+		)*/
 
 		suggestionBox.append(element);
 	})
@@ -152,7 +163,7 @@ function concatArray(data, max_len, delim) {
  * @return
  */
 
-function getArrowKey(e) {
+function getKey(e) {
 	var parent = 
 		document.getElementById('suggestionBox');
 
@@ -169,7 +180,7 @@ function getArrowKey(e) {
 				el.className = 'suggestion_entry_selected';
 			}
 		}
-		return true;
+		return false;
 	} else if(e.keyCode == 40){
 		if((selected_field = DOMTraverseFlatByClass(parent.childNodes[0], 'suggestion_entry_selected')) == null) {
 			if((el = getNextByClass(parent.firstChild, 'suggestion_entry')) != null)
@@ -180,13 +191,17 @@ function getArrowKey(e) {
 				el.className = 'suggestion_entry_selected';
 			}
 		}
-		return true;
+		return false;
 	} else if(e.keyCode == 13 && $('.suggestion_entry_selected').is('div')){
 		window.location.href = $('.suggestion_entry_selected').attr('url');
 		suggestionBox.hide();
-		return true;
+		return false;
+	} else if(e.keyCode == 13 
+			|| e.keyCode == 37 
+			|| e.keyCode == 39) {
+		return false;
 	}
-	return false;
+	return getSuggestions($(form_name).val());
 }
 
 
