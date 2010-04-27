@@ -54,10 +54,11 @@
 						
 						<!-- show group member list -->
 						<c:forEach items="${command.group.users}" var="member">
-							
-							<a href="/user/${mtl:encodeURI(member.name)}"><c:out value="${member.name}"/></a> 
-							<span class="smalltext">(<a href="/SettingsHandler?del_group_user=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
-							<c:out value=" "/>
+							<c:if test="${member.name ne command.context.loginUser.name}">
+								<a href="/user/${mtl:encodeURI(member.name)}"><c:out value="${member.name}"/></a> 
+								<span class="smalltext">(<a href="/SettingsHandler?del_group_user=${mtl:encodeURI(member.name)}&amp;ckey=${ckey}" title="${deluserTitle}">${deluser}</a>)</span>
+								<c:out value=" "/>
+							</c:if>
 						</c:forEach>
 					</fieldset>
 				</div>

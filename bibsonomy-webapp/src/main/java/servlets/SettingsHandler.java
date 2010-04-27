@@ -161,7 +161,7 @@ public class SettingsHandler extends HttpServlet{
 				 * del a user from users group
 				 */
 				friend = request.getParameter("del_group_user");
-				if (friend != null) {
+				if (friend != null && !friend.equalsIgnoreCase(currUser)) {
 					redirectPage = "/settings?selTab=3";
 					// check, if user is owner of group and get groupid 
 					stmtP = conn.prepareStatement("SELECT i.group FROM groups g, groupids i WHERE g.user_name = ? AND i.group_name = ? AND g.group = i.group");
