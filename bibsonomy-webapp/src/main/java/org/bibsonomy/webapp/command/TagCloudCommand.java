@@ -19,18 +19,11 @@ public class TagCloudCommand extends BaseCommand {
 	private List<Tag> tags = new ArrayList<Tag>();
 	private int minFreq = 0; // threshold which tags to display
 	private int maxFreq = 100; // maximum occurrence frequency of all tags
-	private int maxCount = 0; //used for set the value via URL
+	private int maxCount = 0; // used for set the value via URL
 	private TagCloudStyle style = TagCloudStyle.CLOUD;
 	private TagCloudSort sort = TagCloudSort.ALPHA;
 	private int maxTagCount;
-	
-	public int getMaxUserTagCount() {
-		return this.maxUserTagCount;
-	}
-
-
-	private int maxUserTagCount;
-	
+	private int maxUserTagCount;	
 	
 	/**
 	 * default bean constructor
@@ -41,12 +34,18 @@ public class TagCloudCommand extends BaseCommand {
 	/**
 	 * @param tags a list of tags
 	 */
-	public TagCloudCommand(List<Tag> tags) {
+	public TagCloudCommand(final List<Tag> tags) {
 		this.tags = tags;
 		
 		calculateMaxTagCount();
-	}	
-
+	}
+	
+	/**
+	 * @return the maxUserTagCount
+	 */
+	public int getMaxUserTagCount() {
+		return this.maxUserTagCount;
+	}
 
 	/**
 	 * find the max Tag Count
@@ -54,7 +53,7 @@ public class TagCloudCommand extends BaseCommand {
 	private void calculateMaxTagCount() {
 		maxTagCount = Integer.MIN_VALUE;
 		maxUserTagCount = Integer.MIN_VALUE;
-		for (Tag tag : tags) {
+		for (final Tag tag : tags) {
 			if (tag.getGlobalcount() > maxTagCount) {
 				maxTagCount = tag.getGlobalcount();
 			}
@@ -64,6 +63,9 @@ public class TagCloudCommand extends BaseCommand {
 		}
 	}
 
+	/**
+	 * @return the maxTagCount
+	 */
 	public int getMaxTagCount() {
 		return this.maxTagCount;
 	}
@@ -75,15 +77,13 @@ public class TagCloudCommand extends BaseCommand {
 		return this.tags;
 	}
 
-
 	/**
 	 * @param tags a list of tags
 	 */
-	public void setTags(List<Tag> tags) {
+	public void setTags(final List<Tag> tags) {
 		this.tags = tags;
 		calculateMaxTagCount();
 	}
-
 
 	/**
 	 * @return minimum occurrence frequency
@@ -92,14 +92,12 @@ public class TagCloudCommand extends BaseCommand {
 		return this.minFreq;
 	}
 
-
 	/**
 	 * @param minFreq minimum occurrence frequency
 	 */
-	public void setMinFreq(int minFreq) {
+	public void setMinFreq(final int minFreq) {
 		this.minFreq = minFreq;
 	}
-
 
 	/**
 	 * @return maximum occurrence frequency
@@ -108,14 +106,12 @@ public class TagCloudCommand extends BaseCommand {
 		return this.maxFreq;
 	}
 
-
 	/**
 	 * @param maxFreq the maximum occurrence frequency
 	 */
-	public void setMaxFreq(int maxFreq) {
+	public void setMaxFreq(final int maxFreq) {
 		this.maxFreq = maxFreq;
 	}
-
 
 	/**
 	 * @return the display mode
@@ -124,14 +120,12 @@ public class TagCloudCommand extends BaseCommand {
 		return this.style;
 	}
 
-
 	/**
 	 * @param mode the display mode
 	 */
-	public void setStyle(TagCloudStyle mode) {
+	public void setStyle(final TagCloudStyle mode) {
 		this.style = mode;
 	}
-
 
 	/**
 	 * @return the sorting mode
@@ -140,18 +134,17 @@ public class TagCloudCommand extends BaseCommand {
 		return this.sort;
 	}
 
-
 	/**
 	 * @param sort the sorting mode
 	 */
-	public void setSort(TagCloudSort sort) {
+	public void setSort(final TagCloudSort sort) {
 		this.sort = sort;
 	}
 
 	/**
 	 * @param maxCount the maxCount to set
 	 */
-	public void setMaxCount(int maxCount) {
+	public void setMaxCount(final int maxCount) {
 		this.maxCount = maxCount;
 	}
 
