@@ -136,7 +136,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param param
 	 * @param session
 	 */
-	public void insertTas(final TagParam param, final DBSession session) {
+	private void insertTas(final TagParam param, final DBSession session) {
 		final Integer firstGroup = param.getGroups().get(0);
 		/*
 		 * If no group is given, something went wrong ... so we throw an
