@@ -40,8 +40,10 @@ public class AdminCommand extends BaseCommand{
 	/** specific user information */
 	private String adminResponse;
 
+	/**
+	 * inits titles
+	 */
 	public AdminCommand(){
-	
 		// set actions 
 		actionTitles = new HashMap<String, String>();
 		actionTitles.put("spam", "Flag / unflag spammers");
@@ -53,64 +55,103 @@ public class AdminCommand extends BaseCommand{
 		privlevel.put("Member list hidden", Privlevel.HIDDEN);
 		privlevel.put("Member list public", Privlevel.PUBLIC);
 		privlevel.put("Members can list members", Privlevel.MEMBERS);
-		
 	}
 
+	/**
+	 * @return the actionTitles
+	 */
 	public Map<String, String> getActionTitles() {
-		return actionTitles;
+		return this.actionTitles;
 	}
-	
+
+	/**
+	 * @return the action
+	 */
 	public String getAction() {
 		return this.action;
 	}
 
+	/**
+	 * @param action the action to set
+	 */
 	public void setAction(String action) {
 		this.action = action;
 	}
-
+	
+	/**
+	 * @return the aclUserInfo
+	 */
 	public String getAclUserInfo() {
 		return this.aclUserInfo;
 	}
 
+	/**
+	 * @param aclUserInfo the aclUserInfo to set
+	 */
 	public void setAclUserInfo(String aclUserInfo) {
 		this.aclUserInfo = aclUserInfo;
 	}
 	
+	/**
+	 * @return the user
+	 */
 	public User getUser() {
 		return this.user;
 	}
 
+	/**
+	 * @param user the user to set
+	 */
 	public void setUser(User user) {
 		this.user = user;
 	}
 	
+	/**
+	 * @return the requestedGroupName
+	 */
 	public String getRequestedGroupName() {
 		return this.requestedGroupName;
 	}
 
+	/**
+	 * @param requestedGroupName the requestedGroupName to set
+	 */
 	public void setRequestedGroupName(String requestedGroupName) {
 		this.requestedGroupName = requestedGroupName;
 	}
-	
-	
+
+	/**
+	 * @return the privlevel
+	 */
 	public Map<String, Privlevel> getPrivlevel() {
 		return this.privlevel;
 	}
 	
+	/**
+	 * @return the selPrivlevel
+	 */
 	public Privlevel getSelPrivlevel() {
 		return this.selPrivlevel;
 	}
 
+	/**
+	 * @param selPrivlevel the selPrivlevel to set
+	 */
 	public void setSelPrivlevel(Privlevel selPrivlevel) {
 		this.selPrivlevel = selPrivlevel;
 	}
-	
+
+	/**
+	 * @return the adminResponse
+	 */
 	public String getAdminResponse() {
 		return this.adminResponse;
 	}
 
+	/**
+	 * @param adminResponse the adminResponse to set
+	 */
 	public void setAdminResponse(String adminResponse) {
 		this.adminResponse = adminResponse;
 	}
-
 }
