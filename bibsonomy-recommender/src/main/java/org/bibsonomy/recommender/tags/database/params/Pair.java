@@ -1,5 +1,13 @@
 package org.bibsonomy.recommender.tags.database.params;
 
+/**
+ * 
+ * @author fei
+ * @version $Id$
+ *
+ * @param <T>
+ * @param <U>
+ */
 public class Pair <T extends Comparable<T>, U extends Comparable<U>> implements Comparable<Pair<T,U>>
 {
 	private T first;
@@ -55,7 +63,7 @@ public class Pair <T extends Comparable<T>, U extends Comparable<U>> implements 
 		{
 			return false;
 		}
-		Pair<T, U> other = (Pair<T, U>) getClass().cast( oth );
+		Pair<?, ?> other = getClass().cast( oth );
 		return (getFirst() == null? other.getFirst() == null : getFirst().equals( other.getFirst() ))
 		&& (second == null? other.second == null : second.equals( other.second ));
 	}
@@ -68,8 +76,8 @@ public class Pair <T extends Comparable<T>, U extends Comparable<U>> implements 
 		int right= getSecond().compareTo(o.getSecond());
 		if( left!=0 )
 			return left;
-		else
-			return right;
+		
+		return right;
 	}
 
 } 
