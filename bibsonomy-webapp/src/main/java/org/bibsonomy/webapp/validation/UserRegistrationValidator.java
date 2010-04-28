@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.validation;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.command.actions.UserRegistrationCommand;
@@ -15,6 +17,7 @@ import org.springframework.validation.ValidationUtils;
 public class UserRegistrationValidator implements Validator<UserRegistrationCommand> {
 
 	@SuppressWarnings("unchecked")
+	@Override
 	public boolean supports(final Class clazz) {
 		return UserRegistrationCommand.class.equals(clazz);
 	}
@@ -24,6 +27,7 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 	 * 
 	 * @see org.springframework.validation.Validator#validate(java.lang.Object, org.springframework.validation.Errors)
 	 */
+	@Override
 	public void validate(final Object userObj, final Errors errors) {
 		/*
 		 * To ensure that the received command is not null, we throw an
@@ -39,7 +43,7 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 		 * reCaptcha JavaScript. Incoming requests should never have this attribute
 		 * set.
 		 */
-		if (org.bibsonomy.util.ValidationUtils.present(command.getCaptchaHTML())) {
+		if (present(command.getCaptchaHTML())) {
 			errors.reject("error.invalid_parameter");
 		}
 
@@ -53,18 +57,12 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 		 * TODO: Check, that ONLY values are set, which the user can enter in a form,
 		 * i.e. that no spammer status or other settings are set!
 		 */
-		if (org.bibsonomy.util.ValidationUtils.present(user.getAlgorithm()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getApiKey()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getIPAddress()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getMode()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getPrediction()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getRegistrationDate()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getSpammer()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getToClassify()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getUpdatedBy()) ||
-				org.bibsonomy.util.ValidationUtils.present(user.getUpdatedAt()) ||
-				!user.getRole().equals(Role.NOBODY)	
-		) {
+		if (present(user.getAlgorithm()) || present(user.getApiKey()) ||
+				present(user.getIPAddress()) || present(user.getMode()) ||
+				present(user.getPrediction()) || present(user.getRegistrationDate()) ||
+				present(user.getSpammer()) || present(user.getToClassify()) ||
+				present(user.getUpdatedBy()) || present(user.getUpdatedAt()) ||
+				!Role.NOBODY.equals(user.getRole())) {
 			errors.reject("error.invalid_parameter");
 		}
 
@@ -94,8 +92,6 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 		 * check, that challenge response is given
 		 */
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "recaptcha_response_field", "error.field.required");
-
-
 	}
 
 }
