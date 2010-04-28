@@ -22,10 +22,12 @@ import bibtex.parser.ParseException;
 public class PublicationValidator implements Validator<BibTex> {
 	
 	@SuppressWarnings("unchecked")
+	@Override
 	public boolean supports(final Class clazz) {
-		return BibTex.class.equals(clazz);
+		return BibTex.class.isAssignableFrom(clazz);
 	}
 
+	@Override
 	public void validate(final Object obj, final Errors errors) {
 		Assert.notNull(obj);
 		
@@ -124,12 +126,9 @@ public class PublicationValidator implements Validator<BibTex> {
 				errors.reject("error.parse.bibtex.failed", new Object[]{bibTexAsString, ex.getMessage()}, "Error parsing your post:\n\n{0}\n\nMessage was: {1}");
 			}
 		}
-		
 	}
-	
 	
 	private static boolean containsWhiteSpace(final String s) {
 		return s.matches("\\s");
 	}
-
 }
