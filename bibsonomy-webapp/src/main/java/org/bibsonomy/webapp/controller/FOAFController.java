@@ -16,7 +16,8 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * controller for the FOAF-rdf output
+ * controller for the FOAF-rdf output:
+ * 		- /foaf/user/USER
  * For more information please visit the <a href="http://www.foaf-project.org/">FOAF project page</a>
  * 
  * XXX: instead of returning hand-crafted RDF via JSPs, we should 
