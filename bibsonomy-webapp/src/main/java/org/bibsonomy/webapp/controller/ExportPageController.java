@@ -1,7 +1,6 @@
 package org.bibsonomy.webapp.controller;
 
 import org.bibsonomy.layout.jabref.JabrefLayoutRenderer;
-import org.bibsonomy.layout.jabref.JabrefLayouts;
 import org.bibsonomy.webapp.command.ExportPageCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -22,8 +21,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
 	 */
-	public ExportPageCommand instantiateCommand() {
-		
+	public ExportPageCommand instantiateCommand() {		
 		return new ExportPageCommand();
 	}
 
@@ -31,8 +29,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
 	 */
-	public View workOn(ExportPageCommand command) {
-		
+	public View workOn(final ExportPageCommand command) {
 		command.setLayoutMap(this.layoutRenderer.getJabrefLayouts());
 		command.setLang(this.requestLogic.getLocale().getLanguage());
 		
@@ -42,7 +39,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	/**
 	 * @param layoutRenderer
 	 */
-	public void setLayoutRenderer(JabrefLayoutRenderer layoutRenderer) {
+	public void setLayoutRenderer(final JabrefLayoutRenderer layoutRenderer) {
 		this.layoutRenderer = layoutRenderer;
 	}
 
@@ -50,7 +47,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 	 * 
 	 * @param requestLogic
 	 */
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
