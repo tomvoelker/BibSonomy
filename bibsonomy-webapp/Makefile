@@ -47,6 +47,8 @@ EMAILWEBMASTER=webmaster@bibsonomy.org
 EMAILRJA=jaeschke@cs.uni-kassel.de
 # the one which really gets the mail; pick one of the above
 RECIPIENT=${EMAILWEBMASTER}
+# comma separated: further recipients
+CCRECIPIENTS=stefani@cs.uni-kassel.de
 
 # today's date (used to timestamp WAR file)
 TODAY=`date +"%Y-%m-%dT%H:%M:%S"`
@@ -83,7 +85,7 @@ mvn_deploy: clean
 	${MAVEN} -Dmaven.test.skip war:inplace tomcat:undeploy tomcat:deploy | ${TEE} -a ${TMPLOG}
 
 mail:
-	${MAIL} -s "[BibSonomy-Deploy] make ${MAKECMDGOALS}" ${RECIPIENT} < ${TMPLOG}
+	${MAIL} -s "[BibSonomy-Deploy] make ${MAKECMDGOALS}" ${RECIPIENT} -c ${CCRECIPIENTS} < ${TMPLOG}
 
 archive:
 	for i in $(wildcard ${WARPATTERN}); do \
@@ -95,7 +97,7 @@ archive:
 # Ask the user who he is and why he's deploying.
 #
 document:
-	@rm ${TMPLOG}
+	-rm ${TMPLOG}
 	@read -p "Who are you? " WHO; \
 	read -p "Why are you deploying to ${MAKECMDGOALS}? " WHY ;\
 	echo "\n### who: $$WHO\n### why: $$WHY\n\n" >> ${TMPLOG}
