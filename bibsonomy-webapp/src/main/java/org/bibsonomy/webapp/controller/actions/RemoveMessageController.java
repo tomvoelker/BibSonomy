@@ -3,8 +3,6 @@ package org.bibsonomy.webapp.controller.actions;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -27,17 +25,16 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class RemoveMessageController implements MinimalisticController<RemoveMessageCommand>, ErrorAware {
-	private static final Log log = LogFactory.getLog(DeletePostController.class);
-
 	private RequestLogic requestLogic;
 	private LogicInterface logic;
 	private Errors errors;
 
-
+	@Override
 	public RemoveMessageCommand instantiateCommand() {
 		return new RemoveMessageCommand();
 	}
-
+	
+	@Override
 	public View workOn(RemoveMessageCommand command){
 		final RequestWrapperContext context = command.getContext();
 		/*
@@ -84,13 +81,13 @@ public class RemoveMessageController implements MinimalisticController<RemoveMes
 		this.errors=errors;
 
 	}
+	
 	/**
 	 * @param logic
 	 */
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
-
 
 	/**
 	 * @param requestLogic
