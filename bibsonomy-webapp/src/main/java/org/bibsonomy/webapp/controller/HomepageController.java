@@ -53,7 +53,7 @@ public class HomepageController extends SingleResourceListController implements 
 			/*
 			 * add news posts (= latest blog posts) FIXME: make configurable
 			 */
-			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, "kde", Arrays.asList(new String[]{"bibsonomynews"}), null, null, null, 0, 3, null));
+			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, "kde", Arrays.asList(new String[]{"bibsonomynews"}), null, null, null, 0, 2, null));
 			this.endTiming();
 			return Views.HOMEPAGE;		
 		}
