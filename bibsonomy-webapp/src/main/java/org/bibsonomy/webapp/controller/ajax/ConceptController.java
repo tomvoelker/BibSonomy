@@ -17,7 +17,6 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.ConceptUpdateOperation;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.ajax.ConceptAjaxCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -40,8 +39,7 @@ import org.w3c.dom.Element;
  */
 public class ConceptController extends AjaxController implements MinimalisticController<ConceptAjaxCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(ConceptController.class);
-
-	private LogicInterface logic;	
+	
 	private Errors errors;
 	private RequestLogic requestLogic;
 	
@@ -166,15 +164,6 @@ public class ConceptController extends AjaxController implements MinimalisticCon
 	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
-	}
-	
-	/**
-	 * 
-	 * @param logic
-	 */
-	@Override
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
 	}
 
 	/**
