@@ -5,7 +5,6 @@ import java.util.List;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.User;
-import org.bibsonomy.webapp.command.AjaxCommand;
 
 /**
  * Command for ajax requests from admin page
@@ -41,64 +40,130 @@ public class AdminAjaxCommand extends AjaxCommand {
 	
 	/** evaluator name */
 	private String evaluator;
-	
-	public String getUserName() {
-		return this.userName;
-	}
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	public String getKey() {
-		return this.key;
-	}
-	public void setKey(String key) {
-		this.key = key;
-	}
-	public String getValue() {
-		return this.value;
-	}
-	public void setValue(String value) {
-		this.value = value;
-	}
+
+	/**
+	 * @return the bookmarks
+	 */
 	public List<Post<Bookmark>> getBookmarks() {
 		return this.bookmarks;
 	}
-	public void setBookmarks(List<Post<Bookmark>> bookmarks) {
+
+	/**
+	 * @param bookmarks the bookmarks to set
+	 */
+	public void setBookmarks(final List<Post<Bookmark>> bookmarks) {
 		this.bookmarks = bookmarks;
 	}
+
+	/**
+	 * @return the predictionHistory
+	 */
 	public List<User> getPredictionHistory() {
 		return this.predictionHistory;
 	}
-	public void setPredictionHistory(List<User> predictionHistory) {
+
+	/**
+	 * @param predictionHistory the predictionHistory to set
+	 */
+	public void setPredictionHistory(final List<User> predictionHistory) {
 		this.predictionHistory = predictionHistory;
-	}	
+	}
+
+	/**
+	 * @return the userName
+	 */
+	public String getUserName() {
+		return this.userName;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(final String userName) {
+		this.userName = userName;
+	}
+
+	/**
+	 * @return the key
+	 */
+	public String getKey() {
+		return this.key;
+	}
+
+	/**
+	 * @param key the key to set
+	 */
+	public void setKey(final String key) {
+		this.key = key;
+	}
+
+	/**
+	 * @return the value
+	 */
+	public String getValue() {
+		return this.value;
+	}
+
+	/**
+	 * @param value the value to set
+	 */
+	public void setValue(final String value) {
+		this.value = value;
+	}
+
+	/**
+	 * @return the showSpamPosts
+	 */
 	public String getShowSpamPosts() {
 		return this.showSpamPosts;
 	}
-	public void setShowSpamPosts(String showSpamPosts) {
+
+	/**
+	 * @param showSpamPosts the showSpamPosts to set
+	 */
+	public void setShowSpamPosts(final String showSpamPosts) {
 		this.showSpamPosts = showSpamPosts;
 	}
-	
+
+	/**
+	 * @return the bookmarkCount
+	 */
 	public int getBookmarkCount() {
-		return bookmarkCount;
+		return this.bookmarkCount;
 	}
-	
-	public void setBookmarkCount(int bookmarkCount) {
+
+	/**
+	 * @param bookmarkCount the bookmarkCount to set
+	 */
+	public void setBookmarkCount(final int bookmarkCount) {
 		this.bookmarkCount = bookmarkCount;
 	}
-	
+
+	/**
+	 * @return the bibtexCount
+	 */
 	public int getBibtexCount() {
-		return bibtexCount;
+		return this.bibtexCount;
 	}
-	
-	public void setBibtexCount(int bibtexCount) {
+
+	/**
+	 * @param bibtexCount the bibtexCount to set
+	 */
+	public void setBibtexCount(final int bibtexCount) {
 		this.bibtexCount = bibtexCount;
 	}
-	
+
+	/**
+	 * @return the evaluator
+	 */
 	public String getEvaluator() {
 		return this.evaluator;
 	}
-	public void setEvaluator(String evaluator) {
+
+	/**
+	 * @param evaluator the evaluator to set
+	 */
+	public void setEvaluator(final String evaluator) {
 		this.evaluator = evaluator;
 	}
 }

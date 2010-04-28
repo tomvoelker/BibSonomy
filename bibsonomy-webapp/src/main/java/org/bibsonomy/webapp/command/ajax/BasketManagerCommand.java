@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.command.ajax;
 
-import org.bibsonomy.webapp.command.AjaxCommand;
 
 /**
  * @author Christian Kramer
