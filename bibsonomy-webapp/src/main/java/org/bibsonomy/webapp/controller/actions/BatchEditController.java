@@ -499,12 +499,20 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			for (final Post<?> updatedPost : posts) {
 				final String postHash = updatedPost.getResource().getIntraHash();
 				/*
+				 * get errors for this post
+				 */
+				final List<ErrorMessage> postErrorMessages = allErrorMessages.get(postHash);
+				/*
+				 * if there are no errors, continue
+				 */
+				if (!present(postErrorMessages)) continue;
+				/*
 				 * Error messages are connected with the erroneous posts
 				 * via the post's position in the error list.
 				 */
 				final int postId = postsWithErrors.size();
 				boolean hasErrors = false;
-				for (final ErrorMessage errorMessage: allErrorMessages.get(postHash)) { 
+				for (final ErrorMessage errorMessage: postErrorMessages) { 
 					if (errorMessage instanceof SystemTagErrorMessage) {
 						/*
 						 * add post to list of erroneous posts to show them the user
