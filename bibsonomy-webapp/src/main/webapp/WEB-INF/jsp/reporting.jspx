@@ -22,7 +22,7 @@
 		</jsp:attribute>
 			
 		<jsp:attribute name="content">
-			
+		  <div id="general_100">
 			<c:if test="${empty command.requestedGroup}">
 				<div id="error" class="errmsg"><fmt:message key="reporting.group.error.nogroupgiven"/></div>
 			</c:if>
@@ -86,7 +86,7 @@
 				
 			</c:if>
 			
-						
+		  </div>		
 
 		</jsp:attribute>
 
