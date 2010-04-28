@@ -1,9 +1,13 @@
 package org.bibsonomy.webapp.controller.ajax;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +15,7 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
@@ -31,6 +36,9 @@ import org.bibsonomy.webapp.view.Views;
  *       As in the post*controller, the post-command has to be filled -
  *       at least with grouping information, as private posts shouldn't
  *       be sent to remotely installed recommender
+ *       
+ * @param <R>
+ *  
  * @author fei
  * @version $Id$
  */
@@ -39,6 +47,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 
 	/** this identifies spammer, which are flagged by an admin */
 	private static final String USERSPAMALGORITHM = "admin";
+	
 	
 	/** default recommender for serving spammers */
 	private TagRecommender spamTagRecommender;
@@ -52,7 +61,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	/**
 	 * Provides tag recommendations to the user.
 	 */
-	private MultiplexingTagRecommender tagRecommender = null;
+	private MultiplexingTagRecommender tagRecommender;
 	
 	/**
 	 * Copy the groups from the command into the post (make proper groups from
@@ -104,61 +113,87 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		 */
 		if (!context.isUserLoggedIn()) {
 			command.setResponseString("");
-		} else {		
-			final User loginUser = context.getLoginUser();
-			
-			//------------------------------------------------------------------------
-			// THIS IS AN ISSUE WE STILL HAVE TO DISCUSS:
-			// During the ECML/PKDD recommender challenge, many recommender systems
-			// couldn't deal with the high load, so we filter out those users, which
-			// are flagged as spammer either by an admin, or by the framework for sure 
-			// TODO: we could probably also filter out those users, which are 
-			//       flagged as 'spammer unsure' 
-			//------------------------------------------------------------------------
-			User dbUser = adminLogic.getUserDetails(loginUser.getName());
+			return Views.AJAX_RESPONSE;
+		}
+		
+		final User loginUser = context.getLoginUser();
+		
+		//------------------------------------------------------------------------
+		// THIS IS AN ISSUE WE STILL HAVE TO DISCUSS:
+		// During the ECML/PKDD recommender challenge, many recommender systems
+		// couldn't deal with the high load, so we filter out those users, which
+		// are flagged as spammer either by an admin, or by the framework for sure 
+		// TODO: we could probably also filter out those users, which are 
+		//       flagged as 'spammer unsure' 
+		//------------------------------------------------------------------------
+		final User dbUser = adminLogic.getUserDetails(loginUser.getName());
 
+		/*
+		 * set the user of the post to the loginUser (the recommender might need
+		 * the user name)
+		 */
+		command.getPost().setUser(loginUser);
+
+		/*
+		 * initialize groups
+		 */
+		this.initPostGroups(command, command.getPost());
+
+		// set postID for recommender
+		command.getPost().setContentId(command.getPostID());
+
+		if ((dbUser.isSpammer()) && ((dbUser.getPrediction() == null && dbUser.getAlgorithm() == null) ||
+					(dbUser.getPrediction().equals(1) || dbUser.getAlgorithm().equals(USERSPAMALGORITHM)))  ) {
+			// the user is a spammer
+			log.debug("Filtering out recommendation request from spammer");
+			if (this.getSpamTagRecommender() != null)	{
+				SortedSet<RecommendedTag> result = this.getSpamTagRecommender().getRecommendedTags(command.getPost());
+				this.processRecommendedTags(command, result);
+			} else {
+				command.setResponseString("");
+			}
+		} else {				
+			// the user doesn't seem to be a spammer
 			/*
-			 * set the user of the post to the loginUser (the recommender might need
-			 * the user name)
+			 * get the recommended tags for the post from the command
 			 */
-			command.getPost().setUser(loginUser);
-
-			/*
-			 * initialize groups
-			 */
-			initPostGroups(command, command.getPost());
-
-			// set postID for recommender
-			command.getPost().setContentId(command.getPostID());
-
-			if( (dbUser.isSpammer()==true)&&
-					(   (dbUser.getPrediction()==null && dbUser.getAlgorithm()==null) ||
-						(dbUser.getPrediction().equals(1) || dbUser.getAlgorithm().equals(USERSPAMALGORITHM)))  ) {
-				// the user is a spammer
-				log.debug("Filtering out recommendation request from spammer");
-				if ( getSpamTagRecommender()!=null )	{
-					SortedSet<RecommendedTag> result = 
-						getSpamTagRecommender().getRecommendedTags(command.getPost());
-					processRecommendedTags(command, result);
-				} else {
-					command.setResponseString("");
-				}
-			} else {				
-				// the user doesn't seem to be a spammer
-				/*
-				 * get the recommended tags for the post from the command
-				 */
-				if ( getTagRecommender()!=null )	{
-					SortedSet<RecommendedTag> result = 
-						getTagRecommender().getRecommendedTags(command.getPost(), command.getPostID());
-					processRecommendedTags(command, result);
-				} else {
-					command.setResponseString("");
-				}
+			if (this.getTagRecommender() != null)	{
+				SortedSet<RecommendedTag> result = this.getTagRecommender().getRecommendedTags(command.getPost(), command.getPostID());
+				this.processRecommendedTags(command, result);
+			} else {
+				command.setResponseString("");
 			}
 		}
+		
 		return Views.AJAX_RESPONSE;
 	}
+	
+	@Override
+	public AjaxRecommenderCommand<R> instantiateCommand() {
+		final AjaxRecommenderCommand<R> command = this.createNewCommand();
+		/*
+		 * initialize lists
+		 * FIXME: is it really neccessary to initialize ALL those lists? Which are really needed?
+		 */
+		command.setGroups(new ArrayList<String>());
+		command.setRelevantGroups(new ArrayList<String>());
+		command.setRelevantTagSets(new HashMap<String, Map<String, List<String>>>());
+		command.setRecommendedTags(new TreeSet<RecommendedTag>());
+		command.setCopytags(new ArrayList<Tag>());
+		/*
+		 * initialize post & resource
+		 */
+		command.setPost(new Post<R>());
+		command.getPost().setResource(this.initResource());
+		command.setAbstractGrouping("public");
+		
+		return command;
+	}
+
+	protected abstract R initResource();
+
+	protected abstract AjaxRecommenderCommand<R> createNewCommand();
+	
 	//------------------------------------------------------------------------
 	// private helper functions
 	//------------------------------------------------------------------------
@@ -169,32 +204,47 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 		renderer.serializeRecommendedTags(sw, command.getRecommendedTags());
 		command.setResponseString(sw.toString());
 	}
-	
-	//------------------------------------------------------------------------
-	// Getter/Setter
-	//------------------------------------------------------------------------
+
+	/**
+	 * @return the tagRecommender
+	 */
+	public MultiplexingTagRecommender getTagRecommender() {
+		return this.tagRecommender;
+	}
+
+	/**
+	 * @param tagRecommender the tagRecommender to set
+	 */
 	public void setTagRecommender(MultiplexingTagRecommender tagRecommender) {
 		this.tagRecommender = tagRecommender;
 	}
 
-	public MultiplexingTagRecommender getTagRecommender() {
-		return tagRecommender;
-	}
-
-	public void setAdminLogic(LogicInterface adminDbLogic) {
-		this.adminLogic = adminDbLogic;
-	}
-
+	/**
+	 * @return the adminLogic
+	 */
 	public LogicInterface getAdminLogic() {
-		return adminLogic;
+		return this.adminLogic;
 	}
 
+	/**
+	 * @param adminLogic the adminLogic to set
+	 */
+	public void setAdminLogic(LogicInterface adminLogic) {
+		this.adminLogic = adminLogic;
+	}
+
+	/**
+	 * @return the spamTagRecommender
+	 */
+	public TagRecommender getSpamTagRecommender() {
+		return this.spamTagRecommender;
+	}
+
+	/**
+	 * @param spamTagRecommender the spamTagRecommender to set
+	 */
 	public void setSpamTagRecommender(TagRecommender spamTagRecommender) {
 		this.spamTagRecommender = spamTagRecommender;
-	}
-
-	public TagRecommender getSpamTagRecommender() {
-		return spamTagRecommender;
 	}
 
 }
