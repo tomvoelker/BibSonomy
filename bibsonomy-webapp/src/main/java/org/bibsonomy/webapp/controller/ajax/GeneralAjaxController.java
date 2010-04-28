@@ -4,14 +4,14 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.XmlUtils;
-import org.bibsonomy.webapp.command.GeneralAjaxCommand;
+import org.bibsonomy.webapp.command.ajax.GeneralAjaxCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
@@ -21,22 +21,22 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 
-/** Returns information about the given URL.
+/**
+ * Returns information about the given URL.
  * 
  * @author fba
  * @version $Id$
  */
 public class GeneralAjaxController extends AjaxController implements MinimalisticController<GeneralAjaxCommand> {
 
+	@Override
 	public View workOn(GeneralAjaxCommand command) {
-
 		final String action = command.getAction();
 
 		if ("getTitleForUrl".equals(action)) {
 			this.getDetailsForUrl(command);
 			return Views.AJAX_GET_TITLE_FOR_URL;
-		}
-		else if ("getBibtexKeysForUser".equals(action)) {
+		} else if ("getBibtexKeysForUser".equals(action)) {
 			this.getBibtexKeysForUser(command);
 			return Views.AJAX_GET_BIBTEXKEYS_FOR_USER;
 		}		
@@ -64,7 +64,7 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 		/*
 		 * fetch posts
 		 */		
-		final ArrayList<String> tags = new ArrayList<String>();
+		final List<String> tags = new ArrayList<String>();
 		tags.add(SystemTagsUtil.buildSystemTagString(SystemTags.BIBTEXKEY, requestedBibTexKey));
 		command.setBibtexPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, requestedUserName, tags, null, null, null, 0, 20, null));
 	}
@@ -78,7 +78,7 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 
 		final String pageURL = command.getPageURL();
 		
-		if (!ValidationUtils.present(pageURL)) return;
+		if (!present(pageURL)) return;
 
 		try {
 			final Document document = XmlUtils.getDOM(new URL(pageURL));
@@ -106,8 +106,7 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 		}
 	}
 
-
-
+	@Override
 	public GeneralAjaxCommand instantiateCommand() {
 		return new GeneralAjaxCommand();
 	}

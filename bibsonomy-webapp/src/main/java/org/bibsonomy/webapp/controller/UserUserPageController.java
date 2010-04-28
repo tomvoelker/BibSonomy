@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -29,18 +31,21 @@ import org.bibsonomy.webapp.view.Views;
 public class UserUserPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
 	private static final Log LOGGER = LogFactory.getLog(UserUserPageController.class);
 
+	@Override
 	public View workOn(final UserResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
-		this.startTiming(this.getClass(), command.getFormat());
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);
 
+		final String groupingName = command.getRequestedUser();
+		
 		// no user given -> error
-		if (command.getRequestedUser() == null) {
+		if (!present(groupingName)) {
 			throw new MalformedURLSchemeException("error.user_page_without_username");
 		}
-
+		
 		// set grouping entity, grouping name, tags, user similarity
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
-		final String groupingName = command.getRequestedUser();
 		final List<String> requTags = command.getRequestedTagsList();		
 		final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity()); 
 
@@ -55,13 +60,13 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 				
 		// determine which lists to initalize depending on the output format
 		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
+		this.chooseListsToInitialize(format, command.getResourcetype());
 
 		// fetch all tags of logged-in user
-		List<Tag> loginUserTags = this.logic.getTags(Resource.class, groupingEntity, command.getContext().getLoginUser().getName(), null, null, null, null, 0, Integer.MAX_VALUE, null, null);
+		final List<Tag> loginUserTags = this.logic.getTags(Resource.class, groupingEntity, command.getContext().getLoginUser().getName(), null, null, null, null, 0, Integer.MAX_VALUE, null, null);
 		
 		// fetch all tags of requested user
-		List<Tag> targetUserTags = this.logic.getTags(Resource.class, groupingEntity, groupingName, null, null, null, null, 0, Integer.MAX_VALUE, null, null);		
+		final List<Tag> targetUserTags = this.logic.getTags(Resource.class, groupingEntity, groupingName, null, null, null, null, 0, Integer.MAX_VALUE, null, null);		
 		
 		// retrieve and set the requested resource lists, along with total
 		// counts
@@ -89,11 +94,9 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 
 
 		// html format - retrieve tags and return HTML view
-		if (command.getFormat().equals("html")) {
-
+		if ("html".equals(format)) {
 			// set page title
-			// TODO: i18n
-			command.setPageTitle("user :: " + groupingName + " (personalized)");
+			command.setPageTitle("user :: " + groupingName + " (personalized)"); // TODO: i18n
 			
 			// re-compute tag weights
 			RankingUtil.computeRanking(loginUserTags, targetUserTags);
@@ -111,11 +114,13 @@ public class UserUserPageController extends SingleResourceListControllerWithTags
 			// return personalized view
 			return Views.USERUSERPAGE;
 		}
+		
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());
+		return Views.getViewByFormat(format);
 	}
 
+	@Override
 	public UserResourceViewCommand instantiateCommand() {
 		return new UserResourceViewCommand();
 	}

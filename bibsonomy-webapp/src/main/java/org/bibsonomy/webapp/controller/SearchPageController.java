@@ -1,5 +1,8 @@
 package org.bibsonomy.webapp.controller;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -22,24 +25,24 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class SearchPageController extends SingleResourceListController implements MinimalisticController<SearchViewCommand>{
+	private static final Log log = LogFactory.getLog(SearchPageController.class);
+	
 	/**
 	 * We can restrict search to a group's or a user's posts ... here we list all
 	 * supported grouping entities.
 	 */
-	private static final GroupingEntity[] SUPPORTED_GROUPING_ENTITIES = new GroupingEntity[]{GroupingEntity.USER, GroupingEntity.GROUP};
-	
-	
-	private static final Log log = LogFactory.getLog(SearchPageController.class);
+	private static final List<GroupingEntity> SUPPORTED_GROUPING_ENTITIES = Arrays.asList(GroupingEntity.USER, GroupingEntity.GROUP);
 
-	public View workOn(SearchViewCommand command) {
-		
+	@Override
+	public View workOn(final SearchViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 		
 		// no search given -> error 
-		if (command.getRequestedSearch().length() == 0){
+		if (!present(command.getRequestedSearch())){
 			throw new MalformedURLSchemeException("error.search_page_without_search");	
 		}
+		
 		String search = command.getRequestedSearch();
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
@@ -64,6 +67,7 @@ public class SearchPageController extends SingleResourceListController implement
 				if (search.replaceFirst(groupingEntString + ":[^\\s]*", "").matches(".*" + groupingEntString + ":.*")){
 					throw new MalformedURLSchemeException("error.search_more_than_one_" + groupingEntString);
 				}
+				
 				// replace all occurences of "group:*"
 				search = search.replaceAll(groupingEntString + ":[^\\s]*", "").trim();
 				
@@ -82,10 +86,11 @@ public class SearchPageController extends SingleResourceListController implement
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final List<?> list = listCommand.getList();
 
-			if (list instanceof ResultList) {
-				ResultList<Post<?>> resultList = (ResultList<Post<?>>) list;
+			if (list instanceof ResultList<?>) {
+				@SuppressWarnings("unchecked")
+				final ResultList<Post<?>> resultList = (ResultList<Post<?>>) list;
 				listCommand.setTotalCount(resultList.getTotalCount()); 
-				log.debug("SearchPageController: resultList.getTotalCount()="+resultList.getTotalCount());
+				log.debug("SearchPageController: resultList.getTotalCount()=" + resultList.getTotalCount());
 			}			
 			
 			this.postProcessAndSortList(command, resourceType);
@@ -106,6 +111,7 @@ public class SearchPageController extends SingleResourceListController implement
 		return Views.getViewByFormat(command.getFormat());		
 	}
 
+	@Override
 	public SearchViewCommand instantiateCommand() {
 		return new SearchViewCommand();
 	}
