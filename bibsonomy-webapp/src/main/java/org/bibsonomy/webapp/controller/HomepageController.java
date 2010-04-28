@@ -26,16 +26,18 @@ public class HomepageController extends SingleResourceListController implements 
 	 */
 	private static final int MAX_TAGS = 50;
 
+	@Override
 	public View workOn(final HomepageCommand command) {
 		log.debug(this.getClass().getSimpleName());
-		this.startTiming(this.getClass(), command.getFormat());
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);
 		
 		// handle the case when only tags are requested
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
 		
 		// determine which lists to initalize depending on the output format 
 		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
+		this.chooseListsToInitialize(format, command.getResourcetype());		
 		
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
@@ -46,21 +48,21 @@ public class HomepageController extends SingleResourceListController implements 
 		}
 												
 		// html format - retrieve tags and return HTML view
-		if (command.getFormat().equals("html")) {
+		if ("html".equals(format)) {
 			command.setPageTitle("home");
 			setTags(command, Resource.class, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
 			
 			/*
 			 * add news posts (= latest blog posts) FIXME: make configurable
 			 */
-			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, "kde", Arrays.asList(new String[]{"bibsonomynews"}), null, null, null, 0, 3, null));
+			command.setNews(this.logic.getPosts(Bookmark.class, GroupingEntity.GROUP, "kde", Arrays.asList("bibsonomynews"), null, null, null, 0, 3, null));
 			this.endTiming();
-			return Views.HOMEPAGE;		
+			return Views.HOMEPAGE;
 		}
 		
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());	
+		return Views.getViewByFormat(format);	
 	}
 
 	/**
@@ -72,6 +74,7 @@ public class HomepageController extends SingleResourceListController implements 
 		return MAX_TAGS;
 	}
 	
+	@Override
 	public HomepageCommand instantiateCommand() {
 		return new HomepageCommand();
 	}
