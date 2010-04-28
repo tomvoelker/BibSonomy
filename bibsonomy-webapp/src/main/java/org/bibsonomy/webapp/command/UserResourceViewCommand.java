@@ -1,8 +1,7 @@
 package org.bibsonomy.webapp.command;
 
-import org.bibsonomy.model.User;
-
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.model.User;
 
 /**
  * Bean for User-Sites
@@ -29,51 +28,57 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	private String userSimilarity = UserRelation.FOLKRANK.name();
 	
 	/**
-	 * @return
+	 * @return the concepts
 	 */
 	public ConceptsCommand getConcepts() {
 		return this.concepts;
 	}
 
 	/**
-	 * @param concepts
+	 * @param concepts the concepts to set
 	 */
 	public void setConcepts(ConceptsCommand concepts) {
 		this.concepts = concepts;
 	}
 
+	/**
+	 * @return the user
+	 */
 	public User getUser() {
 		return this.user;
 	}
 
 	/**
-	 * @param user
+	 * @param user the user to set
 	 */
 	public void setUser(User user) {
 		this.user = user;
 	}	
 
 	/**
-	 * @return
+	 * @return the bookmarkCount
 	 */
 	public int getBookmarkCount() {
 		return this.bookmarkCount;
 	}
 
 	/**
-	 * @param bookmarkCount
+	 * @param bookmarkCount the bookmarkCount to set
 	 */
 	public void setBookmarkCount(final int bookmarkCount) {
 		this.bookmarkCount = bookmarkCount;
 	}
 
 	/**
-	 * @return
+	 * @return the bibtexCount
 	 */
 	public int getBibtexCount() {
 		return this.bibtexCount;
 	}
 
+	/**
+	 * @param bibtexCount the bibtexCount to set
+	 */
 	public void setBibtexCount(final int bibtexCount) {
 		this.bibtexCount = bibtexCount;
 	}
@@ -108,7 +113,6 @@ public class UserResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public void setFollowerOfUser(boolean isFollowerOfUser) {
 		this.isFollowerOfUser = isFollowerOfUser;
-	}	
-	
+	}
 
 }
