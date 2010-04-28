@@ -19,7 +19,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.webapp.command.AdminLuceneViewCommand;
+import org.bibsonomy.webapp.command.admin.AdminLuceneViewCommand;
 import org.bibsonomy.webapp.command.admin.AdminStatisticsCommand;
 import org.bibsonomy.webapp.command.admin.AdminViewCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -35,18 +35,14 @@ import org.bibsonomy.webapp.view.Views;
  *          $
  */
 public class AdminLuceneController implements MinimalisticController<AdminLuceneViewCommand> {
-
 	private static final Log log = LogFactory.getLog(AdminLuceneController.class);
-
-	private LogicInterface logic;
-
-	private UserSettings userSettings;
 	
 	private static final String NOTSET = "not set";
 
-	public AdminLuceneController() {
-		// TODO Auto-generated constructor stub
-	}
+	private LogicInterface logic;
+	
+	@SuppressWarnings("unused") // FIXME: currently unused
+	private UserSettings userSettings;
 
 	public View workOn(AdminLuceneViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
@@ -60,15 +56,11 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 			throw new ValidationException("error.method_not_allowed");
 		}
 		
-		
 		command.setPageTitle("admin lucene");
 		
-		Context initContext = null;
-		Context envContext = null;
-
 		try {
-			initContext = new InitialContext();
-			envContext = (Context) initContext.lookup("java:/comp/env");
+			Context initContext = new InitialContext();
+			Context envContext = (Context) initContext.lookup("java:/comp/env");
 			command.setEnvContextString("java:/comp/env");
 			
 			try {
@@ -104,8 +96,8 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		// Anzahl Einträge, letztes Update, ...
 		// in extra methode: Parameter=Index
 
-		command.bookmarksIndex.setInstance(bookmarksIndex.toString());
-		command.publicationsIndex.setInstance(publicationsIndex.toString());
+		command.getBookmarksIndex().setInstance(bookmarksIndex.toString());
+		command.getPublicationsIndex().setInstance(publicationsIndex.toString());
 		
 //		command.bookmarksIndex.setIndexStatistics(bookmarksIndex.getStatistics());
 //		command.publicationsIndex.setIndexStatistics(publicationsIndex.getStatistics());
@@ -116,19 +108,26 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 	}
 
 	public AdminLuceneViewCommand instantiateCommand() {
-		log.info("Strange things are happening..."); 
 		return new AdminLuceneViewCommand();
 	}
 
+	/**
+	 * @param logic the logic to set
+	 */
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
 
+	/**
+	 * @param userSettings the userSettings to set
+	 */
 	public void setUserSettings(UserSettings userSettings) {
 		this.userSettings = userSettings;
 	}
 
-	public void setStatistics(AdminViewCommand cmd) {
+	
+	@SuppressWarnings("unused")  // FIXME: currently unused
+	private void setStatistics(AdminViewCommand cmd) {
 		AdminStatisticsCommand command = cmd.getStatisticsCommand();
 
 		for (int interval : cmd.getInterval()) {

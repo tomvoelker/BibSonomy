@@ -1,7 +1,7 @@
-package org.bibsonomy.webapp.command;
+package org.bibsonomy.webapp.command.admin;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.webapp.command.BaseCommand;
+
 
 /**
  * Command bean for admin page 
@@ -9,14 +9,7 @@ import org.apache.commons.logging.LogFactory;
  * @author Sven Stefani
  * @version $Id$
  */
-public class AdminLuceneViewCommand extends BaseCommand {
-	
-	private static final Log log = LogFactory.getLog(AdminLuceneViewCommand.class);
-	
-	
-	/** Command containing current admin settings */
-//	private AdminSettingsCommand settingsCommand = new AdminSettingsCommand();
-	
+public class AdminLuceneViewCommand extends BaseCommand {	
 	/** the time interval (in hours) for retrieving spammers */
 	//TODO: variable time intervals
 //	private Integer[] interval = new Integer[] {12, 24, 168};
@@ -31,8 +24,8 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	private String luceneDataSourceUrl;
 	private String luceneDataSourceUsername;
 
-	public LuceneIndexSettingsCommand bookmarksIndex = new LuceneIndexSettingsCommand();
-	public LuceneIndexSettingsCommand publicationsIndex = new LuceneIndexSettingsCommand();
+	private LuceneIndexSettingsCommand bookmarksIndex = new LuceneIndexSettingsCommand();
+	private LuceneIndexSettingsCommand publicationsIndex = new LuceneIndexSettingsCommand();
 
 	/**
 	 * @return the luceneBookmarkPath
@@ -91,7 +84,7 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	}
 
 	/**
-	 * @param luceneDataSourceURL the luceneDataSourceURL to set
+	 * @param luceneDataSourceUrl the luceneDataSourceURL to set
 	 */
 	public void setLuceneDataSourceUrl(String luceneDataSourceUrl) {
 		this.luceneDataSourceUrl = luceneDataSourceUrl;
@@ -104,9 +97,6 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	public String getLuceneDataSourceUrlShort() {
 		return this.luceneDataSourceUrl.substring(0, 135);
 	}
-
-	
-
 	
 	/**
 	 * @return the luceneDataSourceUsername
@@ -156,9 +146,5 @@ public class AdminLuceneViewCommand extends BaseCommand {
 	public void setPublicationsIndex(LuceneIndexSettingsCommand publicationsIndex) {
 		this.publicationsIndex = publicationsIndex;
 	}
-
-
-	
-	
 
 }

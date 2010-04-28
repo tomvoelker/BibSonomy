@@ -1,4 +1,4 @@
-package org.bibsonomy.webapp.command;
+package org.bibsonomy.webapp.command.admin;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -9,8 +9,7 @@ import org.bibsonomy.lucene.param.LuceneIndexStatistics;
  * Bean for classifier settings
  * 
  * @author Sven Stefani
- * @version $Id: LuceneIndexSettingsCommand.java,v 1.2 2008-04-07 13:25:48
- *          ss05sstuetzer Exp $
+ * @version $Id$
  */
 public class LuceneIndexSettingsCommand {
 
@@ -23,19 +22,6 @@ public class LuceneIndexSettingsCommand {
 	private long currentVersion;
 	private String currentVersionString;
 	private boolean isCurrent;
-
-	/**
-	 * Constructor
-	 */
-	public LuceneIndexSettingsCommand() {
-		
-		/**
-		 * initialize options
-		 */
-		
-	}
-
-	
 	
 	/**
 	 * @param indexStatistics
@@ -47,9 +33,6 @@ public class LuceneIndexSettingsCommand {
 		setLastModified(indexStatistics.getLastModified());
 		setCurrentVersion(indexStatistics.getCurrentVersion());
 	}
-	
-	
-	
 	
 	/**
 	 * @return the instance
@@ -65,7 +48,6 @@ public class LuceneIndexSettingsCommand {
 		this.instance = instance;
 	}
 
-
 	/**
 	 * @return the newestDate
 	 */
@@ -80,16 +62,12 @@ public class LuceneIndexSettingsCommand {
 		this.newestDate = newestDate;
 	}
 
-
-
 	/**
 	 * @return the numDocs
 	 */
 	public int getNumDocs() {
 		return this.numDocs;
 	}
-
-
 
 	/**
 	 * @param numDocs the numDocs to set
@@ -98,16 +76,12 @@ public class LuceneIndexSettingsCommand {
 		this.numDocs = numDocs;
 	}
 
-
-
 	/**
 	 * @return the numDeletedDocs
 	 */
 	public int getNumDeletedDocs() {
 		return this.numDeletedDocs;
 	}
-
-
 
 	/**
 	 * @param numDeletedDocs the numDeletedDocs to set
@@ -116,16 +90,12 @@ public class LuceneIndexSettingsCommand {
 		this.numDeletedDocs = numDeletedDocs;
 	}
 
-
-
 	/**
 	 * @return the lastModified
 	 */
 	public long getLastModified() {
 		return this.lastModified;
 	}
-
-
 
 	/**
 	 * @param lastModified the lastModified to set
@@ -136,16 +106,12 @@ public class LuceneIndexSettingsCommand {
 		setLastModifiedString(df.format(lastModified));
 	}
 
-
-
 	/**
 	 * @return the currentVersion
 	 */
 	public long getCurrentVersion() {
 		return this.currentVersion;
 	}
-
-
 
 	/**
 	 * @param currentVersion the currentVersion to set
@@ -156,8 +122,6 @@ public class LuceneIndexSettingsCommand {
 		setCurrentVersionString(df.format(lastModified));
 	}
 
-
-
 	/**
 	 * @return the isCurrent
 	 */
@@ -165,25 +129,19 @@ public class LuceneIndexSettingsCommand {
 		return this.isCurrent;
 	}
 
-
-
 	/**
 	 * @param isCurrent the isCurrent to set
 	 */
 	public void setCurrent(boolean isCurrent) {
 		this.isCurrent = isCurrent;
 	}
-
-
-
+	
 	/**
 	 * @return the lastModifiedString
 	 */
 	public String getLastModifiedString() {
 		return this.lastModifiedString;
 	}
-
-
 
 	/**
 	 * @param lastModifiedString the lastModifiedString to set
@@ -192,8 +150,6 @@ public class LuceneIndexSettingsCommand {
 		this.lastModifiedString = lastModifiedString;
 	}
 
-
-
 	/**
 	 * @return the currentVersionString
 	 */
@@ -201,16 +157,10 @@ public class LuceneIndexSettingsCommand {
 		return this.currentVersionString;
 	}
 
-
-
 	/**
 	 * @param currentVersionString the currentVersionString to set
 	 */
 	private void setCurrentVersionString(String currentVersionString) {
 		this.currentVersionString = currentVersionString;
 	}
-
-	
-
-
 }
