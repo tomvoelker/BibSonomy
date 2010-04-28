@@ -1,18 +1,15 @@
-/*
- * Created on 14.10.2007
- */
 package org.bibsonomy.webapp.command;
-
-import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.model.Post;
+
 /**
  * bean for listviews across multiple browsable pages 
  * 
- * @param <T> type of the entities in the list  
+ * @param <T> type of the entities in the list 
+ *  
  * @author Jens Illig
  * @version $Id$
  */
@@ -34,7 +31,7 @@ public class ListCommand<T> {
 	 * 
 	 * @param parentCommand - the command which contains this list
 	 */
-	public ListCommand(ContextCommand parentCommand) {
+	public ListCommand(final ContextCommand parentCommand) {
 		this.parentCommand = parentCommand;
 	}
 
@@ -47,30 +44,6 @@ public class ListCommand<T> {
 	public ListCommand(final ContextCommand parentCommand, final List<T> list) {
 		this.parentCommand = parentCommand;
 		this.list = list;
-	}
-	
-	/**
-	 * Constructor
-	 * 
-	 * @param listCommand - the command which contains this list
-	 * 
-	 */
-	public ListCommand(final ListCommand listCommand) {
-		if (present(listCommand) && present(listCommand.getList())) {	
-			try {
-				T testCastObject = (T) listCommand.getList().get(0);
-			} catch (Exception ex) {
-				throw new IllegalArgumentException("Copy Constructor of ListCommand didnt work, " +
-													"because the type parameters are not assignable.");
-			}
-		}
-		this.parentCommand = listCommand.parentCommand;
-		this.setEntriesPerPage(listCommand.getEntriesPerPage());
-		this.setList(listCommand.getList());
-		this.setStart(listCommand.getStart());
-		this.setTotalCount(listCommand.getTotalCount());
-		this.numNextPages=listCommand.numNextPages;
-		this.numPreviousPages=listCommand.numPreviousPages;
 	}
 	
 	/**
@@ -150,6 +123,7 @@ public class ListCommand<T> {
 		}
 		return this.previousPages;
 	}
+	
 	/**
 	 * @return list of available pages following the current page. An upper
 	 *         limit on the next pages can be specified by
@@ -230,8 +204,9 @@ public class ListCommand<T> {
 		}
 		return this.curPage;
 	}
+	
 	/**
-	 * @return
+	 * @return entries per page
 	 */
 	public int getEntriesPerPage() {
 		if (this.entriesPerPage == -1) {
@@ -242,26 +217,25 @@ public class ListCommand<T> {
 	}
 	
 	/**
-	 * @return
+	 * @return the resource type of the posts in the list
 	 */
 	public String getResourcetype() {
 		try {
 			if (list.get(0) != null) {
 				T item = list.get(0);
-				if (item instanceof Post) {
-					Post postItem = (Post) item;
+				if (item instanceof Post<?>) {
+					Post<?> postItem = (Post<?>) item;
 					return postItem.getResource().getClass().getSimpleName().toLowerCase();
 				}
 			}
-		}
-		catch (Exception ex) {
-			return null;
+		} catch (Exception ex) {
+			// ignore it
 		}
 		return null;
 	}
 	
 	/**
-	 * @return
+	 * @return number of current items
 	 */
 	public int getNumCurrentItems() {
 		if (this.list != null) {
