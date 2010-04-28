@@ -17,6 +17,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.EnumUtils;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
@@ -31,25 +32,30 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class UserPageController extends SingleResourceListControllerWithTags implements MinimalisticController<UserResourceViewCommand> {
+	private static final int THRESHOLD = 20000; // TODO: move constant to a more general class (other controller also need this value)
 	private static final Log LOGGER = LogFactory.getLog(UserPageController.class);
 
+	@Override
 	public View workOn(final UserResourceViewCommand command) {
 		LOGGER.debug(this.getClass().getSimpleName());
-		this.startTiming(this.getClass(), command.getFormat());
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);
 
+		final String groupingName = command.getRequestedUser();
+		
 		// no user given -> error
-		if (command.getRequestedUser() == null) {
+		if (!present(groupingName)) {
 			throw new MalformedURLSchemeException("error.user_page_without_username");
 		}
 		
 		// set grouping entity, grouping name, tags, userSimilarity
 		final GroupingEntity groupingEntity = GroupingEntity.USER;
-		final String groupingName = command.getRequestedUser();
+		
 		final List<String> requTags = command.getRequestedTagsList();
 		final UserRelation userRelation = EnumUtils.searchEnumByName(UserRelation.values(), command.getUserSimilarity());
 		
 		// wrong user similarity requested -> error
-		if (userRelation == null) {
+		if (!present(userRelation)) {
 			throw new MalformedURLSchemeException("error.user_page_with_wrong_user_similarity");			
 		}
 		
@@ -70,8 +76,8 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 		
 		// if user is logged in fetch if the logged in user follows the requested
 		if (command.getContext().getUserLoggedIn()){
-			List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
-			for (User u : followersOfUser){
+			final List<User> followersOfUser = this.logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0);
+			for (final User u : followersOfUser){
 				if (u.getName().equals(command.getRequestedUser())){
 					command.setFollowerOfUser(true);
 					break;
@@ -81,7 +87,7 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 
 		// determine which lists to initalize depending on the output format
 		// and the requested resourcetype
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
+		this.chooseListsToInitialize(format, command.getResourcetype());
 
 		if (filter == FilterEntity.JUST_PDF || filter == FilterEntity.DUPLICATES) {
 			this.listsToInitialise.remove(Bookmark.class);
@@ -119,17 +125,12 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 
 
 		// html format - retrieve tags and return HTML view
-		if (command.getFormat().equals("html")) {
-
+		if ("html".equals(format)) {
 			// set page title
-			// TODO: i18n
-			command.setPageTitle("user :: " + groupingName);
+			command.setPageTitle("user :: " + groupingName); // TODO: i18n
 			if (present(requTags)) {
 				// add the tags to the title
-				command.setPageTitle(command.getPageTitle()+" :: "+ requTags.get(0));
-				for (int i=1; i<requTags.size(); i++){
-					command.setPageTitle(command.getPageTitle() + "+" + requTags.get(i));
-				}
+				command.setPageTitle(command.getPageTitle() + " :: " + StringUtils.implodeStringCollection(requTags, "+"));
 			}
 			
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
@@ -140,8 +141,8 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			command.getConcepts().setNumConcepts(concepts.size());
 
 			// log if a user has reached threshold
-			if (command.getTagcloud().getTags().size() >= 20000) {
-				LOGGER.debug("User " + groupingName + " has reached threshold of 20000 tags on user page");
+			if (command.getTagcloud().getTags().size() >= THRESHOLD) {
+				LOGGER.debug("User " + groupingName + " has reached threshold of " + THRESHOLD + " tags on user page");
 			}
 			
 			// retrieve similar users, by the given user similarity measure
@@ -177,11 +178,13 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 			
 			return Views.USERPAGE;
 		}
+		
 		this.endTiming();
 		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());
+		return Views.getViewByFormat(format);
 	}
 
+	@Override
 	public UserResourceViewCommand instantiateCommand() {
 		return new UserResourceViewCommand();
 	}
