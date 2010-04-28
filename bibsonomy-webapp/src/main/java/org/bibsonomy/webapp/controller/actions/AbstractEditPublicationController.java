@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -16,7 +18,6 @@ import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.PostValidator;
@@ -52,8 +53,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	protected View getPostView() {
 		return Views.EDIT_PUBLICATION; // TODO: this could be configured using Spring!
 	}
-
-
+	
 	/**
 	 * If the command has set a url or selection, the scrapers are called to fill
 	 * the command's post with the scraped data. 
@@ -69,12 +69,11 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		final String url = command.getUrl();
 		final String selection = command.getSelection();
 
-		if (ValidationUtils.present(url) || ValidationUtils.present(selection)) {
+		if (present(url) || present(selection)) {
 			handleScraper(command, loginUser, command, url, selection);
-		} // if (ValidationUtils.present(url) || ValidationUtils.present(selection))
+		}
 	}
-
-
+	
 	private void handleScraper(final COMMAND command, final User loginUser, final COMMAND publicationCommand, final String url, String selection) {
 		/*
 		 * We have a URL set which means we shall scrape!
@@ -84,6 +83,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		if (selection == null) {
 			selection = "";
 		}
+		
 		/*
 		 * --> scrape the website and parse bibtex
 		 */
@@ -96,7 +96,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 			final ScrapingContext scrapingContext = new ScrapingContext(url == null ? null : new URL(url), selection);
 			final boolean isSuccess = scraper.scrape(scrapingContext);
 			final String scrapedBibtex = scrapingContext.getBibtexResult();
-			if (isSuccess && ValidationUtils.present(scrapedBibtex)) {
+			if (isSuccess && present(scrapedBibtex)) {
 				/*
 				 * When the parser is thread-safe (it currently is not!), we can 
 				 * use the same instance for each invocation.
@@ -109,7 +109,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 					/*
 					 * check if a bibtex was scraped
 					 */
-					if (ValidationUtils.present(parsedBibTex)) {						
+					if (present(parsedBibTex)) {						
 						/*
 						 * initialize things needed for page 
 						 * (groups, etc.)
@@ -135,35 +135,31 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 						 * store scraper metadata in session (to later store it 
 						 * together with the post)
 						 */
-						if (ValidationUtils.present(scrapingContext.getMetaResult())) {
+						if (present(scrapingContext.getMetaResult())) {
 							final ScraperMetadata scraperMetadata = new ScraperMetadata();
 							scraperMetadata.setScraperClass(scrapingContext.getScraper().getClass().getName());
 							scraperMetadata.setMetaData(scrapingContext.getMetaResult());
 							scraperMetadata.setUrl(scrapingContext.getUrl());
 							setSessionAttribute(SESSION_ATTRIBUTE_SCRAPER_METADATA, scraperMetadata);
 						}						
-						/*
-						 * return to view 
-						 */
-//						return this.getEditPostView(command, loginUser);
-					} else {// if (ValidationUtils.present(parsedBibTex))
+					} else { // if (ValidationUtils.present(parsedBibTex))
 						/*
 						 * the parser did not return any result ...
 						 */
 						this.getErrors().reject("error.scrape.nothing", new Object[]{scrapedBibtex, url}, "The BibTeX\n\n{0}\n\nwe scraped from {1} could not be parsed.");
 					}
-				} catch (IOException ex) {
+				} catch (final IOException ex) {
 					/*
 					 * exception while parsing bibtex
 					 */ 
 					this.getErrors().reject("error.parse.bibtex.failed", new Object[]{scrapedBibtex, ex.getMessage()}, "Error parsing BibTeX:\n\n{0}\n\nMessage was: {1}");
-				} catch (ParseException ex) {
+				} catch (final ParseException ex) {
 					/*
 					 * exception while parsing bibtex; inform user and show him the scraped bibtex
 					 */
 					this.getErrors().reject("error.parse.bibtex.failed", new Object[]{scrapedBibtex, ex.getMessage()}, "Error parsing BibTeX:\n\n{0}\n\nMessage was: {1}");
 				}
-			} // if (isSuccess && ValidationUtils.present(scrapedBibtex))
+			} // if (isSuccess && present(scrapedBibtex))
 			else {
 				/*
 				 * We could not scrape the given URL, i.e., the URL is either not
@@ -174,26 +170,21 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 				 */
 				this.getErrors().reject("error.scrape.nothing", new Object[]{url}, "The URL {0} is not supported by one of our scrapers.");
 			}
-		} catch (ScrapingException ex) {
+		} catch (final ScrapingException ex) {
 			/*
 			 * scraping failed no bibtex scraped
 			 */
 			this.getErrors().reject("error.scrape.failed", new Object[]{url, ex.getMessage()}, "Could not scrape the URL {0}.\nMessage was: {1}");
-		} catch (MalformedURLException ex) {
+		} catch (final MalformedURLException ex) {
 			/*
 			 * wrong url format
 			 */
 			this.getErrors().reject("error.scrape.failed", new Object[]{url, ex.getMessage()}, "Could not scrape the URL {0}.\nMessage was: {1}");
 		}
-		/*
-		 * A URL or selection to scrape was given ... but we did not 
-		 * return to the post form ... so something went wrong
-		 */
-//		return Views.ERROR;
 	}
 
 	@Override
-	protected void preparePostForView(Post<BibTex> post) {
+	protected void preparePostForView(final Post<BibTex> post) {
 		/*
 		 * replace all " and "s by a new line in author and
 		 * editor field of the bibtex to separate multiple authors and editors
@@ -216,12 +207,12 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		 */
 		try {
 			new PostBibTeXParser().updateWithParsedBibTeX(post);
-		} catch (ParseException ex) {
+		} catch (final ParseException ex) {
 			/*
 			 * we silently ignore parsing errors - they have been handled by the
 			 * validator
 			 */
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			/*
 			 * we silently ignore parsing errors - they have been handled by the
 			 * validator
@@ -231,7 +222,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		 * store scraper metadata
 		 */
 		final Object scraperMetadata = getSessionAttribute(SESSION_ATTRIBUTE_SCRAPER_METADATA);
-		if (ValidationUtils.present(scraperMetadata)) {
+		if (present(scraperMetadata)) {
 			post.getResource().setScraperMetadata((ScraperMetadata) scraperMetadata);
 		}
 	}
@@ -243,7 +234,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		 */
 		BibTexUtils.prepareEditorAndAuthorFieldForDatabase(post.getResource());
 	}
-
+	
 	@Override
 	protected BibTex instantiateResource() {
 		return new BibTex();
@@ -255,15 +246,20 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 	}
 
 	@Override
-	protected void setDuplicateErrorMessage(Post<BibTex> post, Errors errors) {
+	protected void setDuplicateErrorMessage(final Post<BibTex> post, final Errors errors) {
 		errors.reject("error.duplicate.post");
 	}
 
-
+	/**
+	 * @return the scraper
+	 */
 	public Scraper getScraper() {
 		return this.scraper;
 	}
 
+	/**
+	 * @param scraper the scraper to set
+	 */
 	public void setScraper(Scraper scraper) {
 		this.scraper = scraper;
 	}
