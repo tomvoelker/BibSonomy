@@ -9,6 +9,7 @@ package org.bibsonomy.webapp.command;
 public class ConceptResourceViewCommand extends TagResourceViewCommand {
 	
 	/** the user whose resources are requested */
+	// TODO: duplicate field @see ResourceViewCommand
 	private String requestedUser = "";
 	
 	/** the group which resources are requested */
@@ -20,6 +21,7 @@ public class ConceptResourceViewCommand extends TagResourceViewCommand {
 	/**
 	 * @return requestedUser the name of the user whose resources are requested
 	 */
+	@Override
 	public String getRequestedUser() {
 		return this.requestedUser;
 	}
@@ -27,6 +29,7 @@ public class ConceptResourceViewCommand extends TagResourceViewCommand {
 	/**
 	 * @param requestedUser the name of the user whose resources are requested
 	 */
+	@Override
 	public void setRequestedUser(String requestedUser) {
 		this.requestedUser = requestedUser;
 	}
@@ -46,7 +49,7 @@ public class ConceptResourceViewCommand extends TagResourceViewCommand {
 	}
 
 	/**
-	 * @return
+	 * @return the concepts
 	 */
 	public ConceptsCommand getConcepts() {
 		return this.concepts;

@@ -11,7 +11,10 @@ import org.bibsonomy.model.Tag;
  * @version $Id$
  */
 public class ConceptsCommand extends ListCommand<Tag> {
-		
+	/**
+	 * a list of concepts
+	 */
+	private int numConcepts = 0;
 
 	/**
 	 * constructor used by the UserRelationCommand
@@ -29,23 +32,29 @@ public class ConceptsCommand extends ListCommand<Tag> {
 	}
 
 	/**
-	 * a list of concepts
+	 * @return the numConcepts
 	 */
-	private int numConcepts = 0;
-	
 	public int getNumConcepts() {
 		return this.numConcepts;
 	}
 
-	public void setNumConcepts(final int numConcepts) {
+	/**
+	 * @param numConcepts the numConcepts to set
+	 */
+	public void setNumConcepts(int numConcepts) {
 		this.numConcepts = numConcepts;
 	}
 
-
+	/**
+	 * @return the list of concepts
+	 */
 	public List<Tag> getConceptList() {
 		return this.getList();
 	}
 
+	/**
+	 * @param concepts the list of concepts to set
+	 */
 	public void setConceptList(final List<Tag> concepts) {
 		this.setList(concepts);
 	}
