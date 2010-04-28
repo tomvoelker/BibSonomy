@@ -9,16 +9,12 @@ import org.bibsonomy.model.User;
  * @author daill
  * @version $Id$
  */
-public class RelatedUserCommand extends BaseCommand{
+public class RelatedUserCommand extends BaseCommand {
 	
-	// list of user to show
+	/**
+	 *  list of user to show
+	 */
 	private List<User> relatedUsers = new ArrayList<User>();
-	
-	public RelatedUserCommand() {}
-	
-	public RelatedUserCommand (List<User> relatedUsers){
-		this.relatedUsers = relatedUsers;
-	}
 
 	/**
 	 * @return list of user
@@ -28,7 +24,7 @@ public class RelatedUserCommand extends BaseCommand{
 	}
 
 	/**
-	 * @param relatedUser
+	 * @param relatedUsers the relatedUsers to set
 	 */
 	public void setRelatedUsers(final List<User> relatedUsers) {
 		this.relatedUsers = relatedUsers;
