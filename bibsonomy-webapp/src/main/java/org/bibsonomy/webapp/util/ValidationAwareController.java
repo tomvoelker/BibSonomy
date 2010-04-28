@@ -20,5 +20,8 @@ public interface ValidationAwareController<T> extends MinimalisticController<T> 
 	 */
 	public boolean isValidationRequired(T command);
 	
+	/**
+	 * @return the validator to use for validation
+	 */
 	public Validator<T> getValidator();
 }

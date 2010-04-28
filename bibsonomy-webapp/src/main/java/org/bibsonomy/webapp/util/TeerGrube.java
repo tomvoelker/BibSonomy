@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  */
 public class TeerGrube {
-
 	private static final Log log = LogFactory.getLog(TeerGrube.class);
 	
 	/**
@@ -94,12 +93,13 @@ public class TeerGrube {
 				if (remainingWaitSeconds > 0) return remainingWaitSeconds;
 			}
 		}
+		
 		return 0;
 	}
 		
-	/** This class represents an entity in the waiting queue. It is typically either an IP or a user.
+	/** 
+	 * This class represents an entity in the waiting queue. It is typically either an IP or a user.
 	 * @author rja
-	 *
 	 */
 	private static class WaitingEntity {
 		private String id;
@@ -152,6 +152,11 @@ public class TeerGrube {
 		 */
 		public boolean equals (WaitingEntity other) {
 			return this.id.equals(other.id);
+		}
+		
+		@Override
+		public int hashCode() {
+			return super.hashCode(); // TODO: override method correctly
 		}
 	}
 
