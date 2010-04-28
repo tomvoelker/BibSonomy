@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.controller.ajax;
 
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.webapp.command.AjaxCommand;
 
 /**
  * Controller for ajax requests
@@ -15,15 +14,17 @@ public abstract class AjaxController {
 	protected LogicInterface logic;	
 	protected UserSettings userSettings;
 	
-	public void setResponse(AjaxCommand cmd, String response) {
-		cmd.setResponseString(response);
-	}
-
-	public void setLogic(LogicInterface logic) {
+	/**
+	 * @param logic the logic to set
+	 */
+	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
 
-	public void setUserSettings(UserSettings userSettings) {
+	/**
+	 * @param userSettings the userSettings to set
+	 */
+	public void setUserSettings(final UserSettings userSettings) {
 		this.userSettings = userSettings;
 	}	
 }
