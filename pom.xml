@@ -443,11 +443,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
-				<artifactId>bibsonomy-recommender</artifactId>
-				<version>${project.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-scraper</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -490,7 +485,12 @@
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
 				<version>1.1.1</version>
-				<scope>provided</scope>
+				<optional>true</optional>
+			</dependency>
+			<dependency>
+				<groupId>commons-logging</groupId>
+				<artifactId>commons-logging-api</artifactId>
+				<version>1.0.3</version>
 			</dependency>
 			<dependency>
 				<groupId>mysql</groupId>
