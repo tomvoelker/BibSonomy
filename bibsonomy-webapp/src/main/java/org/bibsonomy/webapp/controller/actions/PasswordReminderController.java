@@ -1,8 +1,5 @@
 package org.bibsonomy.webapp.controller.actions;
 
-
-
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -44,23 +41,24 @@ import resources.Resource;
  */
 public class PasswordReminderController implements MinimalisticController<PasswordReminderCommand>, ErrorAware, ValidationAwareController<PasswordReminderCommand>, RequestAware {
 	private static final Log log = LogFactory.getLog(PasswordReminderController.class);
-
-	private int maxMinutesPasswordReminderValid = 60; 
-
+	
 	private static final String success = "/login";
 
-	protected LogicInterface adminLogic;
+	private int maxMinutesPasswordReminderValid = 60; 
+	private LogicInterface adminLogic;
 	private Errors errors = null;
 	private RequestLogic requestLogic;
 	private Captcha captcha;
 	private MailUtils mailUtils;
 	private MessageSource messageSource;
-
+	
+	@Override
 	public PasswordReminderCommand instantiateCommand() {
 		return new PasswordReminderCommand();
 	}
-
-	public View workOn(PasswordReminderCommand command) {
+	
+	@Override
+	public View workOn(final PasswordReminderCommand command) {
 		// get locale
 		final Locale locale = requestLogic.getLocale();
 
@@ -154,10 +152,6 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 			return Views.PASSWORD_REMINDER;
 		}
 
-
-
-
-
 		/*
 		 * at this point the given information like email and username are correct, and now we
 		 * need to create a new pass and put it into the DB and send it per mail.
@@ -183,7 +177,7 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 		return errors;
 	}
 
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
 
@@ -191,13 +185,13 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 		return new PasswordReminderValidator();
 	}
 
-	public boolean isValidationRequired(PasswordReminderCommand command) {
+	public boolean isValidationRequired(final PasswordReminderCommand command) {
 		return true;
 	}
 
 
 	@Required
-	public void setRequestLogic(RequestLogic requestLogic) {
+	public void setRequestLogic(final RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
@@ -206,7 +200,7 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 	 * @param captcha 
 	 */
 	@Required
-	public void setCaptcha(Captcha captcha) {
+	public void setCaptcha(final Captcha captcha) {
 		this.captcha = captcha;
 	}
 
@@ -215,7 +209,7 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 	 * @param adminLogic - an instance of the logic interface with admin access.
 	 */
 	@Required
-	public void setAdminLogic(LogicInterface adminLogic) {
+	public void setAdminLogic(final LogicInterface adminLogic) {
 		Assert.notNull(adminLogic, "The provided logic interface must not be null.");
 		this.adminLogic = adminLogic;
 		/*
@@ -267,8 +261,8 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 	 * @return String
 	 */
 	private String getRandomString() {
-		Random rand = new Random();
-		byte[] bytes = new byte[8];
+		final Random rand = new Random();
+		final byte[] bytes = new byte[8];
 		rand.nextBytes(bytes);
 		return Resource.toHexString(bytes);
 	}
@@ -276,14 +270,14 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 	/** A message source to format mail messages.
 	 * @param messageSource
 	 */
-	public void setMessageSource(MessageSource messageSource) {
+	public void setMessageSource(final MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
 
 	/**
 	 * @param mailUtils
 	 */
-	public void setMailUtils(MailUtils mailUtils) {
+	public void setMailUtils(final MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
 	}
 
@@ -291,7 +285,7 @@ public class PasswordReminderController implements MinimalisticController<Passwo
 	 * 
 	 * @param maxMinutesPasswordReminderValid
 	 */
-	public void setMaxMinutesPasswordReminderValid(int maxMinutesPasswordReminderValid) {
+	public void setMaxMinutesPasswordReminderValid(final int maxMinutesPasswordReminderValid) {
 		this.maxMinutesPasswordReminderValid = maxMinutesPasswordReminderValid;
 	}
 }
