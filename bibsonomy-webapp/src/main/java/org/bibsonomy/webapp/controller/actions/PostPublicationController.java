@@ -158,13 +158,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 */
 			log.debug("user has filled selection");
 			snippet = selection;
-		} else if(present(command.getFile())) {
+		} else if (present(command.getFile())) {
 			/*
 			 * The user uploads a BibTeX or EndNote file
 			 */
 			log.debug("user uploads a file");
 			// get the (never empty) content or add corresponding errors 
-			snippet = handleFileUpload(command);
+			snippet = this.handleFileUpload(command);
 		} else {
 			/*
 			 * nothing given -> 
@@ -214,9 +214,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 */
 			posts = parser.parseBibTeXPosts(snippet);
 		} catch (final ParseException ex) {
-			errors.reject("error.upload.failed.parse", ex.getMessage());
+			this.errors.reject("error.upload.failed.parse", ex.getMessage());
 		} catch (final IOException ex) {
-			errors.reject("error.upload.failed.parse", ex.getMessage());
+			this.errors.reject("error.upload.failed.parse", ex.getMessage());
 		}
 
 		/*
@@ -224,25 +224,23 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * 
 		 * (We did not collect errors due to individual broken BibTeX lines, yet!)
 		 */
-		if (errors.hasErrors()) {
+		if (this.errors.hasErrors()) {
 			return Views.POST_PUBLICATION;
 		}
 
 		/*
 		 * turn parse exceptions into error messages ...
 		 */
-		handleParseExceptions(parser.getCaughtExceptions());
+		this.handleParseExceptions(parser.getCaughtExceptions());
 
-		if (!errors.hasErrors() && !present(posts)) {
+		if (!this.errors.hasErrors() && !present(posts)) {
 			/*
 			 * no errors ... but also no posts ... Ooops!
 			 * the parser was not able to produce posts but did not add errors nor throw exceptions
 			 */
-			errors.reject("error.upload.failed.parse", "Upload failed because of parser errors.");
+			this.errors.reject("error.upload.failed.parse", "Upload failed because of parser errors.");
 			return Views.POST_PUBLICATION;
 		}
-
-
 
 		/*
 		 * If exactly one post has been extracted, and there were no parse exceptions, 
@@ -252,7 +250,6 @@ public class PostPublicationController extends AbstractEditPublicationController
 			command.setPost(posts.get(0));
 			return super.workOn(command);
 		}
-
 
 		/*
 		 * Complete the posts with missing information:
@@ -268,14 +265,14 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * set visibility of this post for the groups, the user specified 
 			 */
-			initPostGroups(command, post);
+			this.initPostGroups(command, post);
 			/*
 			 * if not present, a valid date has to be set
 			 * (we check for presence of a date, because DBLP is
 			 * allowed to specify a date)
 			 */
 			if(!present(post.getDate()))
-				setDate(post, context.getLoginUser().getName());
+				this.setDate(post, context.getLoginUser().getName());
 			/*
 			 * hashes have to be set, in order to call the validator
 			 */
@@ -305,7 +302,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * if we have errors, we don't store the publications (with only one little exception FIXME: which?)
 		 * therefore we do have to store them temporarily in the session
 		 */
-		if (errors.hasErrors())	{
+		if (this.errors.hasErrors())	{
 			/*
 			 * FIXME what does the next line do (and why?)
 			 * 
@@ -319,7 +316,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		/*
 		 * We try to store only posts that have no validation errors.
 		 */
-		final HashMap<Post<BibTex>, Integer> postsToStore = getPostsWithNoValidationErrors(posts);
+		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts);
 		log.debug("will try to store " + postsToStore.size() + " of " + posts.size() + " posts in database");
 
 		/*
@@ -365,7 +362,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * @param posts
 	 * @return
 	 */
-	private HashMap<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts) {
+	private Map<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts) {
 		final HashMap<Post<BibTex>, Integer> storageList = new LinkedHashMap<Post<BibTex>, Integer>(); 
 
 		/*
@@ -463,18 +460,18 @@ public class PostPublicationController extends AbstractEditPublicationController
 			if (present(fileContent)) {
 				return fileContent;
 			}
-			errors.reject("error.upload.failed.emptyFile", "The specified file is empty.");
+			this.errors.reject("error.upload.failed.emptyFile", "The specified file is empty.");
 			return null;
 			
 		} catch (final ConversionException e) {
-			errors.reject("error.upload.failed.conversion", "An error occurred during converting your EndNote file to BibTeX.");
+			this.errors.reject("error.upload.failed.conversion", "An error occurred during converting your EndNote file to BibTeX.");
 		} catch (final UnsupportedFileTypeException e) {
 			/*
 			 * FIXME: the key is missing! We need to get the supported file types from the exception
 			 */
-			errors.reject("error.upload.failed.filetype", e.getMessage());
+			this.errors.reject("error.upload.failed.filetype", e.getMessage());
 		} catch (final Exception ex1) {
-			errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
+			this.errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
 		} finally {
 			/*
 			 * clear temporary file
@@ -500,7 +497,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * @param postsToStore
 	 * @param overwrite - posts which already exist are overwritten, if <code>true</code>
 	 */
-	private void storePosts(final HashMap<Post<BibTex>, Integer> postsToStore, final boolean overwrite) {
+	private void storePosts(final Map<Post<BibTex>, Integer> postsToStore, final boolean overwrite) {
 		try {
 			/*
 			 * Try to save all posts in one transaction. 
@@ -622,11 +619,18 @@ public class PostPublicationController extends AbstractEditPublicationController
 		return new PostPublicationCommand();
 	}
 
+	/**
+	 * @return the uploadFactory
+	 */
 	public FileUploadFactory getUploadFactory() {
 		return this.uploadFactory;
 	}
 
-	public void setUploadFactory(final FileUploadFactory uploadFactory) {
+	/**
+	 * @param uploadFactory the uploadFactory to set
+	 */
+	public void setUploadFactory(FileUploadFactory uploadFactory) {
 		this.uploadFactory = uploadFactory;
 	}
+	
 }
