@@ -239,31 +239,55 @@ public abstract class GenericParam {
 		this.tagIndex.add(new TagIndex(tagName, this.tagIndex.size() + 1));
 	}
 
+	/**
+	 * adds a tag
+	 * @param tagName the name of the tag to add
+	 */
 	public void addTagName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numSimpleTags++;
 	}
 	
+	/**
+	 * TODO: improve docu
+	 * @param tagName the name of the tag to add
+	 */
 	public void addSimpleConceptName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numSimpleConcepts++;
 	}
 	
+	/**
+	 * TODO: improve docu
+	 * @param tagName the name of the tag to add
+	 */
 	public void addTransitiveConceptName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numTransitiveConcepts++;
 	}
 	
+	/**
+	 * TODO: improve docu
+	 * @param tagName
+	 */
 	public void addSimpleConceptWithParentName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numSimpleConceptsWithParent++;
 	}
 	
+	/**
+	 * TODO: improve docu
+	 * @param tagName
+	 */
 	public void addSimpleConceptwithAncestorsName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numSimpleConceptsWithAncestors++;
 	}
 	
+	/**
+	 * TODO: improve docu
+	 * @param tagName
+	 */
 	public void addCorrelatedConceptName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numCorrelatedConcepts++;
@@ -307,10 +331,18 @@ public abstract class GenericParam {
 		return this.search;
 	}
 
+	/**
+	 * @return the rawSearch
+	 */
 	public String getRawSearch() {
 		return this.rawSearch;
 	}
 
+	/**
+	 * sets the rawsearch to search and prepares the search param for the database query
+	 * 
+	 * @param search the search to set
+	 */
 	public void setSearch(String search) {
 		if (search != null) {
 			this.rawSearch = search;
@@ -429,6 +461,7 @@ public abstract class GenericParam {
 	public int getGroupTypeFriends() {
 		return GroupID.FRIENDS.getId();
 	}
+	
 	/**
 	 * If you need the ID of the public group in a statement, 
 	 * use this method.  
@@ -512,10 +545,16 @@ public abstract class GenericParam {
 		this.requestedGroupName = requestedGroupName;
 	}
 
+	/**
+	 * @return the id of the idsType
+	 */
 	public int getIdsType() {
 		return this.idsType.getId();
 	}
 	
+	/**
+	 * @param idsType the idsType to set
+	 */
 	public void setIdsType(ConstantID idsType) {
 		this.idsType = idsType;
 	}
@@ -565,18 +604,30 @@ public abstract class GenericParam {
 		this.tagName = tag.getName();
 	}
 
+	/**
+	 * @return the friendOf
+	 */
 	public boolean getFriendOf() {
 		return this.friendOf;
 	}
 
+	/**
+	 * @param friendOf the friendOf to set
+	 */
 	public void setFriendOf(boolean friendOf) {
 		this.friendOf = friendOf;
 	}
 
+	/**
+	 * @return the description
+	 */
 	public String getDescription() {
 		return this.description;
 	}
 
+	/**
+	 * @param description the description to set
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -609,10 +660,20 @@ public abstract class GenericParam {
 		this.url = url;
 	}
 
+	/**
+	 * TODO: change method name to contentTypeId
+	 * 
+	 * @return the id of the content type
+	 */
 	public int getContentType() {
 		return this.contentType.getId();
 	}
 
+	/**
+	 * TODO: change method name to getContentType
+	 * 
+	 * @return the content type
+	 */
 	public ConstantID getContentTypeConstant() {
 		return this.contentType;
 	}
@@ -624,6 +685,11 @@ public abstract class GenericParam {
 		this.contentType = contentType;
 	}
 
+	/**
+	 * sets the content type by the nativeContentType param
+	 * 
+	 * @param nativeContentType
+	 */
 	public void setContentTypeByClass(Class<? extends Resource> nativeContentType) {
 		if (BibTex.class.isAssignableFrom(nativeContentType)) {
 			setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
@@ -636,6 +702,9 @@ public abstract class GenericParam {
 		}
 	}
 
+	/**
+	 * @return if the tag is not null the name of the tag else the tagName
+	 */
 	public String getTagName() {
 		if (tag != null) {
 			return tag.getName();
@@ -643,11 +712,20 @@ public abstract class GenericParam {
 		return this.tagName;
 	}
 
+	/**
+	 * sets the tag name to the param and sets the tag to null
+	 * 
+	 * @param tagName the tagName to set
+	 */
 	public void setTagName(String tagName) {
 		this.tag = null;
 		this.tagName = tagName;
 	}
 
+	/**
+	 * FIXME: only used by test method
+	 * @return {@link #getTagName()} lower case
+	 */
 	public String getTagNameLower() {
 		return this.getTagName().toLowerCase();
 	}
@@ -708,38 +786,65 @@ public abstract class GenericParam {
 		this.filter = filter;
 	}
 
+	/**
+	 * @return the numSimpleConcepts
+	 */
 	public Integer getNumSimpleConcepts() {
 		return this.numSimpleConcepts;
 	}
 
+	/**
+	 * @return the numSimpleTags
+	 */
 	public Integer getNumSimpleTags() {
 		return this.numSimpleTags;
 	}
 	
+	/**
+	 * @param numSimpleTags the numSimpleTags to set
+	 */
 	public void setNumSimpleTags(int numSimpleTags) {
 		this.numSimpleTags = numSimpleTags;
 	}
 
+	/**
+	 * @return numTransitiveConcepts
+	 */
 	public Integer getNumTransitiveConcepts() {
 		return this.numTransitiveConcepts;
 	}
 
+	/**
+	 * @return numSimpleConceptsWithParent
+	 */
 	public int getNumSimpleConceptsWithParent() {
 		return this.numSimpleConceptsWithParent;
 	}
 
+	/**
+	 * @return the numCorrelatedConcepts
+	 */
 	public int getNumCorrelatedConcepts() {
 		return this.numCorrelatedConcepts;
 	}
 
+	/**
+	 * @return the numSimpleConceptsWithAncestors
+	 */
 	public int getNumSimpleConceptsWithAncestors() {
 		return this.numSimpleConceptsWithAncestors;
 	}
-
+	
+	/**
+	 * @param numTransitiveConcepts the numTransitiveConcepts to set
+	 */
 	public void setNumTransitiveConcepts(int numTransitiveConcepts) {
 		this.numTransitiveConcepts = numTransitiveConcepts;
 	}
 
+	/**
+	 * @param numSimpleConcepts the numSimpleConcepts to set
+	 */
 	public void setNumSimpleConcepts(int numSimpleConcepts) {
 		this.numSimpleConcepts = numSimpleConcepts;
 	}
