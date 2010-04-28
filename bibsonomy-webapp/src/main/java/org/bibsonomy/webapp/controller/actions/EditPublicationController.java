@@ -1,8 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 
 import org.bibsonomy.webapp.command.actions.EditPublicationCommand;
-import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 
 /**
  * 
@@ -19,7 +17,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
  * @author rja
  * @version $Id$
  */
-public class EditPublicationController extends AbstractEditPublicationController<EditPublicationCommand> implements MinimalisticController<EditPublicationCommand>, ErrorAware {
+public class EditPublicationController extends AbstractEditPublicationController<EditPublicationCommand> {
 
 	@Override
 	protected EditPublicationCommand instantiateEditPostCommand() {
