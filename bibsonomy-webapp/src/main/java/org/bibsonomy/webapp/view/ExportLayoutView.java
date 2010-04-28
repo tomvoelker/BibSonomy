@@ -27,6 +27,7 @@ public class ExportLayoutView extends AbstractView{
 
 	private static final Log log = LogFactory.getLog(LayoutView.class);
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		

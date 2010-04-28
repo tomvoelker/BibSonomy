@@ -13,17 +13,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.webapp.command.actions.DownloadFileCommand;
-import org.pdfbox.util.operator.SetHorizontalTextScaling;
 import org.springframework.web.servlet.mvc.BaseCommandController;
 import org.springframework.web.servlet.view.AbstractView;
 
 /**
  * View class for the download of a document attached to a bibtex entry
+ * 
  * @author cvo
  * @version $Id$
  */
 public class DocumentDownloadView extends AbstractView{
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void renderMergedOutputModel(Map model, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		

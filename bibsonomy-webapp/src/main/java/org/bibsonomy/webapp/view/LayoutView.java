@@ -36,6 +36,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 
 	private LayoutRenderer<LAYOUT> layoutRenderer;
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void renderMergedOutputModel(final Map model, final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		/*
@@ -160,7 +161,8 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
      * @param model
      * @return
      */
-    private BindingResult getBindingResult(final Map model){
+    @SuppressWarnings("unchecked")
+	private BindingResult getBindingResult(final Map model){
         for (Object key : model.keySet() ){
             if(((String)key).startsWith(BindingResult.MODEL_KEY_PREFIX))
                 return (BindingResult) model.get(key);
