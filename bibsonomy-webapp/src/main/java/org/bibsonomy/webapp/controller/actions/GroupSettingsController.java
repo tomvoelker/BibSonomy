@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupUpdateOperation;
@@ -8,7 +10,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.controller.SearchPageController;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -24,48 +25,37 @@ import org.springframework.validation.Errors;
  * @author ema
  * @version $Id$
  */
-public class GroupSettingsController implements MinimalisticController<SettingsViewCommand>, ErrorAware{
-
-	private static final String TAB_URL = "/settings";
+public class GroupSettingsController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(SearchPageController.class);
+	
+	private static final String TAB_URL = "/settings";
 
 	/**
 	 * hold current errors
 	 */
 	private Errors errors;
-
 	private RequestLogic requestLogic;
-	public RequestLogic getRequestLogic() {
-		return this.requestLogic;
-	}
-
-	public void setRequestLogic(RequestLogic requestLogic) {
-		this.requestLogic = requestLogic;
-	}
-
 	private LogicInterface logic;
 	
 
 	@Override
 	public SettingsViewCommand instantiateCommand() {
-		SettingsViewCommand command = new SettingsViewCommand();
+		final SettingsViewCommand command = new SettingsViewCommand();
 		command.setTabURL(TAB_URL);
 		return command;
 	}
 
 	@Override
-	public View workOn(SettingsViewCommand command) {
+	public View workOn(final SettingsViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
-
-		//user specific logic
-		if (!command.getContext().isUserLoggedIn()) 
-		{
+		
+		if (!context.isUserLoggedIn()) {
 			return new ExtendedRedirectView("/login");
 		}
 
-		command.setPageTitle("settings");
+		command.setPageTitle("settings"); // TODO: i18n
 		
-		final User loginUser = command.getContext().getLoginUser();
+		final User loginUser = context.getLoginUser();
 		command.setUser(loginUser);
 		
 		//used to set the user specific value of maxCount/minFreq 
@@ -73,17 +63,14 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 				loginUser.getSettings().getTagboxMaxCount() : loginUser.getSettings().getTagboxMinfreq()));
 		
 		
-		//check whether the user is a group		
-		if (UserUtils.userIsGroup(loginUser)) 
-		{
+		// check whether the user is a group		
+		if (UserUtils.userIsGroup(loginUser))  {
 			command.setHasOwnGroup(true);
 			command.showGroupTab(true);
-		} 
-		//if he is not, he will be forwarded to the first settings tab
-		else
-		{
+		} else {
+			// if he is not, he will be forwarded to the first settings tab
 			command.showGroupTab(false);
-			command.setSelTab(command.MY_PROFILE_IDX);
+			command.setSelTab(SettingsViewCommand.MY_PROFILE_IDX);
 			errors.reject("settings.group.error.groupDoesNotExist");
 			return Views.SETTINGSPAGE;
 		}
@@ -91,27 +78,23 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		/*
 		 * check the ckey
 		 */
-		if (context.isValidCkey())
-		{
+		if (context.isValidCkey()) {
 			log.debug("User is logged in, ckey is valid");
-		}
-		else
-		{
+		} else {
 			errors.reject("error.field.valid.ckey");
 			return Views.ERROR;
 		}
 		
 		//the group properties to update
-		Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
-		boolean sharedDocs = command.getSharedDocuments()==1;
+		final Privlevel priv = Privlevel.getPrivlevel(command.getPrivlevel());
+		final boolean sharedDocs = command.getSharedDocuments() == 1;
 		
 		//the group to update
-		Group groupToModify = logic.getGroupDetails(loginUser.getName());
+		final Group groupToModify = logic.getGroupDetails(loginUser.getName());
 		
-		if(!ValidationUtils.present(groupToModify))
-		{
+		if (!present(groupToModify)) {
 			command.showGroupTab(false);
-			command.setSelTab(command.MY_PROFILE_IDX);
+			command.setSelTab(SettingsViewCommand.MY_PROFILE_IDX);
 			errors.reject("settings.group.error.groupDoesNotExist");
 			return Views.SETTINGSPAGE;
 		}
@@ -122,9 +105,8 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 		
 		try {
 			logic.updateGroup(groupToModify, GroupUpdateOperation.UPDATE_SETTINGS);
-		} catch (Exception ex) {
-			// TODO Auto-generated catch block
-			ex.printStackTrace();
+		} catch (final Exception ex) {
+			// TODO: what exceptions can be thrown?!
 		}
 		
 		return Views.SETTINGSPAGE;
@@ -136,15 +118,27 @@ public class GroupSettingsController implements MinimalisticController<SettingsV
 	}
 
 	@Override
-	public void setErrors(Errors errors) {
+	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
-	
 
-	public LogicInterface getLogic() {
-		return this.logic;
+	/**
+	 * @return the requestLogic
+	 */
+	public RequestLogic getRequestLogic() {
+		return this.requestLogic;
 	}
 
+	/**
+	 * @param requestLogic the requestLogic to set
+	 */
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
+	}
+
+	/**
+	 * @param logic the logic to set
+	 */
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
