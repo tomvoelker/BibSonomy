@@ -43,15 +43,15 @@ import org.springframework.web.servlet.mvc.BaseCommandController;
  * @param <T> type of the command object used in the MinimalisticController
  * 
  * @author Jens Illig
- * 
  * @version $Id$
  */
 public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends BaseCommandController {
+	private static final Log log = LogFactory.getLog(MinimalisticControllerSpringWrapper.class);
+	
 	private static final String CONTROLLER_ATTR_NAME = "minctrlatrr";
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
 	private String controllerBeanName;
-	private static final Log log = LogFactory.getLog(MinimalisticControllerSpringWrapper.class);
 	
 	private String[] allowedFields;
 	private String[] disallowedFields;	
@@ -91,12 +91,14 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		this.controllerBeanName = controllerBeanName;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
-	protected boolean suppressValidation(HttpServletRequest request, Object command) {
+	protected boolean suppressValidation(final HttpServletRequest request, final Object command) {
 		final MinimalisticController<T> controller = (MinimalisticController<T>) request.getAttribute(CONTROLLER_ATTR_NAME);
-		if (controller instanceof ValidationAwareController) {
+		if (controller instanceof ValidationAwareController<?>) {
 			return !((ValidationAwareController<T>) controller).isValidationRequired((T)command);
 		}
+		
 		return false;
 	}
 
@@ -105,8 +107,9 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 	 * 
 	 * @see org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	protected ModelAndView handleRequestInternal(final HttpServletRequest request, final HttpServletResponse response) throws Exception {
 		((RequestLogic) getApplicationContext().getBean("requestLogic")).setRequest(request); // hack but thats springs fault
 		((ResponseLogic) getApplicationContext().getBean("responseLogic")).setResponse(response); // hack but thats springs fault
 		final MinimalisticController<T> controller = (MinimalisticController<T>) getApplicationContext().getBean(controllerBeanName);
@@ -123,7 +126,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		 * DEBUG: log request attributes
 		 */
 		if (log.isDebugEnabled()) {
-			Enumeration e = request.getAttributeNames();
+			final Enumeration<?> e = request.getAttributeNames();
 			while (e.hasMoreElements()) {
 				log.debug(e.nextElement().toString());			
 			}
@@ -142,57 +145,46 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		/*
 		 * set validator for this instance
 		 */
-		if (controller instanceof ValidationAwareController) {
-			setValidator(((ValidationAwareController<T>) controller).getValidator());
+		if (controller instanceof ValidationAwareController<?>) {
+			this.setValidator(((ValidationAwareController<T>) controller).getValidator());
 		}
 		
 		/*
 		 * bind request attributes to command
 		 */
-		ServletRequestDataBinder binder = bindAndValidate(request, command);
-		BindException errors = new BindException(binder.getBindingResult());
+		final ServletRequestDataBinder binder = bindAndValidate(request, command);
+		final BindException errors = new BindException(binder.getBindingResult());
 		if (controller instanceof ErrorAware) {
 			((ErrorAware)controller).setErrors(errors);
 		}
-
 		
-		View view;
+		View view = Views.ERROR;
 		
 		try {
 			view = controller.workOn(command);
-		}
-		catch (MalformedURLSchemeException malformed) {
+		} catch (final MalformedURLSchemeException malformed) {
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			errors.reject(malformed.getMessage());
 			log.warn("Could not complete controller (invalid URL scheme) : " + malformed.getMessage());
-			view = Views.ERROR;
-		}
-		catch (ValidationException nv) {
+		} catch (final ValidationException nv) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			errors.reject(nv.getMessage());
 			log.warn("Could not complete controller (ValidationException), occured in: " + nv.getStackTrace()[0] + ", msg is: " + nv.getMessage());
-			view = Views.ERROR;
-		} 		
-		catch (ServiceUnavailableException e) {
+		} catch (final ServiceUnavailableException e) {
 			response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 			response.setHeader("Retry-After", Long.toString(e.getRetryAfter()));
 			errors.reject(e.getMessage(), new Object[]{e.getRetryAfter()}, "Service unavailable");
-			// this exception is only thrown in org.bibsonomy.webapp.controller.actions.UserLoginController;
+			// TODO: this exception is only thrown in org.bibsonomy.webapp.controller.actions.UserLoginController;
 			// if desired, add some logging there. Otherwise, our error logs get cluttered.(dbe)
 			// log.warn("Could not complete controller (Service unavailable): " + e.getMessage());
-			view = Views.ERROR;
-		}
-		catch (LuceneException le) {
+		} catch (final LuceneException le) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject(le.getMessage(), new Object[]{le}, "Internal Server Error (LuceneException)");
 			log.error("Could not complete controller (LuceneException).", le);
-			view = Views.ERROR;
-		}
-		catch (Exception ex) {
+		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
 			log.error("Could not complete controller (general exception) for request " + request.getPathInfo() + request.getQueryString(), ex);
-			view = Views.ERROR;
 		}
 		
 		log.debug("Exception catching block passed, putting comand+errors into model.");
@@ -218,11 +210,12 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		if (org.springframework.web.servlet.View.class.isAssignableFrom(view.getClass())) {
 			return new ModelAndView((org.springframework.web.servlet.View) view, model);
 		}
+		
 		return new ModelAndView(view.getName(), model);			
 	}
 
 	@Override
-	protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
+	protected void initBinder(final HttpServletRequest request, final ServletRequestDataBinder binder) throws Exception {
 		super.initBinder(request, binder);
 
 		/*
