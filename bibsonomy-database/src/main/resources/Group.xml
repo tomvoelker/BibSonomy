@@ -48,9 +48,8 @@
 
 	<select id="getGroupsForContentId" resultMap="GroupCommon.group_basic" parameterClass="int">
 		SELECT DISTINCT i.group, i.group_name, i.privlevel, i.sharedDocuments 
-		FROM groupids i, grouptas T 
-		WHERE T.content_id = #contentId# 
-		      AND T.group = i.group 
+		  FROM groupids i JOIN grouptas t USING (`group`) 
+		  WHERE t.content_id = #contentId# 
 	</select>	
 
 	<select id="getNewGroupId" resultClass="int">
