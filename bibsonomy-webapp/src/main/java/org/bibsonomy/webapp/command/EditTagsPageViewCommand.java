@@ -17,8 +17,7 @@ public class EditTagsPageViewCommand extends ResourceViewCommand {
 	 * the group whose resources are requested 
 	 * FIXME: a group? This is a ConceptsCommand!
 	 */
-	private ConceptsCommand concepts = null;
-
+	private ConceptsCommand concepts;
 
 	/**
 	 * 
@@ -37,10 +36,14 @@ public class EditTagsPageViewCommand extends ResourceViewCommand {
 	/**
 	 * @param concepts
 	 */
-	public void setConcepts(ConceptsCommand concepts) {
+	public void setConcepts(final ConceptsCommand concepts) {
 		this.concepts = concepts;
 	}
 	
+	/**
+	 * called by the view
+	 * @return date as string (formated by the dateformator)
+	 */
 	public String getDate(){
 		return dateformat.format(date);
 	}
