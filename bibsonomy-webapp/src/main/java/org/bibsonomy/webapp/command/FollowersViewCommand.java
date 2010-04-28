@@ -56,22 +56,31 @@ public class FollowersViewCommand extends TagResourceViewCommand {
 		this.userIsFollowing = userIsFollowing;
 	}
 
-
-	public void setUserSimilarity(String userSimilarity) {
-		this.userSimilarity = userSimilarity;
+	/**
+	 * @return the ranking
+	 */
+	public RankingCommand getRanking() {
+		return this.ranking;
 	}
 
-	public String getUserSimilarity() {
-		return userSimilarity;
-	}
-
+	/**
+	 * @param ranking the ranking to set
+	 */
 	public void setRanking(RankingCommand ranking) {
 		this.ranking = ranking;
 	}
 
-	public RankingCommand getRanking() {
-		return ranking;
-	}	
+	/**
+	 * @return the userSimilarity
+	 */
+	public String getUserSimilarity() {
+		return this.userSimilarity;
+	}
 
-	
+	/**
+	 * @param userSimilarity the userSimilarity to set
+	 */
+	public void setUserSimilarity(String userSimilarity) {
+		this.userSimilarity = userSimilarity;
+	}
 }
