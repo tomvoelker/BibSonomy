@@ -45,7 +45,6 @@ public class RequestLogic {
 	 * Default constructor.
 	 */
 	public RequestLogic() {
-		super();
 	}
 
 	/**
@@ -53,7 +52,6 @@ public class RequestLogic {
 	 * @param request
 	 */
 	public RequestLogic(HttpServletRequest request) {
-		super();
 		this.request = request;
 	}
 
@@ -167,6 +165,7 @@ public class RequestLogic {
 	/**
 	 * @return Parameter map
 	 */
+	@SuppressWarnings("unchecked")
 	public Map getParameterMap() {
 		return request.getParameterMap();
 	}
@@ -177,8 +176,6 @@ public class RequestLogic {
 	public StringBuffer getRequestURL() {
 		return request.getRequestURL();
 	}
-
-
 
 	/**
 	 * @return query string
@@ -240,10 +237,10 @@ public class RequestLogic {
 	 * @return querystring
 	 */
 	public String getParametersAsQueryString() {
-		StringBuffer buf = new StringBuffer("?");
+		final StringBuilder buf = new StringBuilder("?");
 		try {
-			Enumeration paramNames = request.getParameterNames();
-			while ( paramNames.hasMoreElements() ) {
+			Enumeration<?> paramNames = request.getParameterNames();
+			while (paramNames.hasMoreElements()) {
 				String param = (String) paramNames.nextElement();
 				buf.append(param + "=" );
 				String paramValues[] = request.getParameterValues(param);

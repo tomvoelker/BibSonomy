@@ -6,7 +6,6 @@ package org.bibsonomy.webapp.util;
  * @version $Id$
  */
 public interface ResponseAware {
-
 	
 	/** The responseLogic to access the response.
 	 * 

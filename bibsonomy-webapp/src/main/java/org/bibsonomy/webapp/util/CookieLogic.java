@@ -1,7 +1,6 @@
 package org.bibsonomy.webapp.util;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Random;
@@ -19,6 +18,12 @@ import org.bibsonomy.util.StringUtils;
  */
 public class CookieLogic implements RequestAware, ResponseAware {
 	private static final Log log = LogFactory.getLog(CookieLogic.class);
+	
+	/**
+	 * Used to generate random cookies.
+	 */
+	private static Random generator = new Random();
+	
 	
 	private RequestLogic requestLogic;
 	private ResponseLogic responseLogic;
@@ -47,13 +52,21 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 * The path on the server the cookie is valid for. Default: root path. 
 	 */
 	private String cookiePath = "/";
-
 	
 	/**
-	 * Used to generate random cookies.
+	 * Default Constructor 
 	 */
-	private static Random generator = new Random();
+	public CookieLogic() {
+	}
 	
+	/** Constructor to set request and response logic.
+	 * @param requestLogic
+	 * @param responseLogic
+	 */
+	public CookieLogic(RequestLogic requestLogic, ResponseLogic responseLogic) {
+		this.requestLogic = requestLogic;
+		this.responseLogic = responseLogic;
+	}
 	
 	/** Checks, if a request contains a spammer cookie. 
 	 * A spammer cookie always contains a "3", other cookies not.
@@ -158,19 +171,6 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		}
 	}
 	
-	/** Decodes a string with {@link URLDecoder#decode(String, String)} with UTF-8.
-	 * @param s
-	 * @return
-	 */
-	private static String decode(final String s) {
-		try {
-			return URLDecoder.decode(s, "UTF-8");
-		} catch (UnsupportedEncodingException ex) {
-			return s;
-		}
-	}
-	
-	
 	/**
 	 * Deletes the OpenID cookie
 	 */
@@ -189,7 +189,6 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		cookie.setMaxAge(0);
 		responseLogic.addCookie(cookie);
 	}
-
 	
 	/** Checks, if the request contains any cookies.
 	 * 
@@ -199,7 +198,6 @@ public class CookieLogic implements RequestAware, ResponseAware {
 		final Cookie[] cookies = requestLogic.getCookies();
 		return cookies != null && cookies.length > 0;
 	}
-	
 		
 	/** The logic to access the HTTP request. Neccessary for getting cookies.
 	 * 
@@ -242,22 +240,5 @@ public class CookieLogic implements RequestAware, ResponseAware {
 	 */
 	public void setCookiePath(String cookiePath) {
 		this.cookiePath = cookiePath;
-	}
-
-	/**
-	 * Default Constructor 
-	 */
-	public CookieLogic() {
-		super();
-	}
-	
-	/** Constructor to set request and response logic.
-	 * @param requestLogic
-	 * @param responseLogic
-	 */
-	public CookieLogic(RequestLogic requestLogic, ResponseLogic responseLogic) {
-		super();
-		this.requestLogic = requestLogic;
-		this.responseLogic = responseLogic;
 	}
 }
