@@ -13,11 +13,8 @@
 	
   <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-    <layout:layout 
-      	loginUser="${command.context.loginUser}" 
-     	searchString="hurz" 
-     	pageTitle="${command.pageTitle}" 
-      	requPath="${requPath}">
+    <layout:layout loginUser="${command.context.loginUser}" searchString="hurz" 
+ 		pageTitle="${command.pageTitle}" requPath="${requPath}" selectedNaviTab="nav_relations">
       	
     <jsp:attribute name="heading">
 		<a rel="path_menu" href="#"><img alt=""
