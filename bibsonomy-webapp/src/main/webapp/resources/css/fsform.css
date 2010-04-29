@@ -90,12 +90,3 @@
 .fsWaitingText {
 	font-style: italic;
 }
-
-.suggestion_entry_selected
-{
-	border: 1px solid #000000;
-}
-.suggestion_entry
-{
-	border: none;
-}
