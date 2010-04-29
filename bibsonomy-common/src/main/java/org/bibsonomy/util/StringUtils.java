@@ -92,9 +92,12 @@ public class StringUtils {
 	 * @return true if String matches with extension
 	 */
 	public static boolean matchExtension(final String string, final String... extensions) {
-		for (final String extension : extensions) {
-			if (string.length() >= extension.length() && string.substring(string.length() - extension.length(), string.length()).equalsIgnoreCase(extension)) return true;
+		if (string != null) {
+			for (final String extension : extensions) {
+				if (string.length() >= extension.length() && string.substring(string.length() - extension.length(), string.length()).equalsIgnoreCase(extension)) return true;
+			}
 		}
+		
 		return false;
 	}
 
