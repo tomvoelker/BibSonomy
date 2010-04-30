@@ -73,9 +73,11 @@
 							<tr>			
 								<td class="header"><fmt:message key="reporting.publication.type.${rowHeader}"/></td>
 								<c:forEach var="columnHeader" items="${command.publicationCounts.rowHeaders}">
+										<td class="value">
 										<c:if test="${not empty command.publicationCounts.values[columnHeader][rowHeader] and not (command.publicationCounts.values[columnHeader][rowHeader] == 0)}">
 											<c:out value="${command.publicationCounts.values[columnHeader][rowHeader]}"/>
 										</c:if>
+										</td>
 								</c:forEach>
 							</tr>
 						</c:forEach>
