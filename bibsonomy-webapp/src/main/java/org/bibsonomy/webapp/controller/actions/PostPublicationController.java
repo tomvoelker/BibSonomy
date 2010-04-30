@@ -158,13 +158,13 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 */
 			log.debug("user has filled selection");
 			snippet = selection;
-		} else if (present(command.getFile())) {
+		} else if(present(command.getFile())) {
 			/*
 			 * The user uploads a BibTeX or EndNote file
 			 */
 			log.debug("user uploads a file");
 			// get the (never empty) content or add corresponding errors 
-			snippet = this.handleFileUpload(command);
+			snippet = handleFileUpload(command);
 		} else {
 			/*
 			 * nothing given -> 
@@ -214,9 +214,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 */
 			posts = parser.parseBibTeXPosts(snippet);
 		} catch (final ParseException ex) {
-			this.errors.reject("error.upload.failed.parse", ex.getMessage());
+			errors.reject("error.upload.failed.parse", ex.getMessage());
 		} catch (final IOException ex) {
-			this.errors.reject("error.upload.failed.parse", ex.getMessage());
+			errors.reject("error.upload.failed.parse", ex.getMessage());
 		}
 
 		/*
@@ -224,23 +224,25 @@ public class PostPublicationController extends AbstractEditPublicationController
 		 * 
 		 * (We did not collect errors due to individual broken BibTeX lines, yet!)
 		 */
-		if (this.errors.hasErrors()) {
+		if (errors.hasErrors()) {
 			return Views.POST_PUBLICATION;
 		}
 
 		/*
 		 * turn parse exceptions into error messages ...
 		 */
-		this.handleParseExceptions(parser.getCaughtExceptions());
+		handleParseExceptions(parser.getCaughtExceptions());
 
-		if (!this.errors.hasErrors() && !present(posts)) {
+		if (!errors.hasErrors() && !present(posts)) {
 			/*
 			 * no errors ... but also no posts ... Ooops!
 			 * the parser was not able to produce posts but did not add errors nor throw exceptions
 			 */
-			this.errors.reject("error.upload.failed.parse", "Upload failed because of parser errors.");
+			errors.reject("error.upload.failed.parse", "Upload failed because of parser errors.");
 			return Views.POST_PUBLICATION;
 		}
+
+
 
 		/*
 		 * If exactly one post has been extracted, and there were no parse exceptions, 
@@ -250,6 +252,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			command.setPost(posts.get(0));
 			return super.workOn(command);
 		}
+
 
 		/*
 		 * Complete the posts with missing information:
@@ -265,14 +268,14 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * set visibility of this post for the groups, the user specified 
 			 */
-			this.initPostGroups(command, post);
+			initPostGroups(command, post);
 			/*
 			 * if not present, a valid date has to be set
 			 * (we check for presence of a date, because DBLP is
 			 * allowed to specify a date)
 			 */
 			if(!present(post.getDate()))
-				this.setDate(post, context.getLoginUser().getName());
+				setDate(post, context.getLoginUser().getName());
 			/*
 			 * hashes have to be set, in order to call the validator
 			 */
@@ -299,24 +302,9 @@ public class PostPublicationController extends AbstractEditPublicationController
 		ValidationUtils.invokeValidator(new PostPublicationCommandValidator(), command, errors);
 
 		/*
-		 * if we have errors, we don't store the publications (with only one little exception FIXME: which?)
-		 * therefore we do have to store them temporarily in the session
-		 */
-		if (this.errors.hasErrors())	{
-			/*
-			 * FIXME what does the next line do (and why?)
-			 * 
-			 * This triggers the correct setting of the "delete/save" checkboxes on
-			 * the batch edit page.
-			 */
-			command.setDeleteCheckedPosts(false); //posts will have to get saved, since an error occurred
-			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, posts);
-		}
-
-		/*
 		 * We try to store only posts that have no validation errors.
 		 */
-		final Map<Post<BibTex>, Integer> postsToStore = this.getPostsWithNoValidationErrors(posts);
+		final HashMap<Post<BibTex>, Integer> postsToStore = getPostsWithNoValidationErrors(posts);
 		log.debug("will try to store " + postsToStore.size() + " of " + posts.size() + " posts in database");
 
 		/*
@@ -335,6 +323,22 @@ public class PostPublicationController extends AbstractEditPublicationController
 			storePosts(postsToStore, command.getOverwrite());
 		}
 
+		/*
+		 * If there were any errors, some posts were not stored in the database. We
+		 * need to get them from the session later on, thus we store them there.
+		 */
+		if (errors.hasErrors())	{
+			/*
+			 * Trigger the correct setting of the "delete/save" check boxes on
+			 * the batch edit page.
+			 */
+			command.setDeleteCheckedPosts(false);
+			/*
+			 * save posts in session
+			 */
+			setSessionAttribute(TEMPORARILY_IMPORTED_PUBLICATIONS, posts);
+		}
+		
 		/*
 		 * If the user wants to store the posts permanently AND (his posts have
 		 * no errors OR he ignores the errors OR the number of bibtexes is
@@ -362,7 +366,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * @param posts
 	 * @return
 	 */
-	private Map<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts) {
+	private HashMap<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts) {
 		final HashMap<Post<BibTex>, Integer> storageList = new LinkedHashMap<Post<BibTex>, Integer>(); 
 
 		/*
@@ -460,18 +464,18 @@ public class PostPublicationController extends AbstractEditPublicationController
 			if (present(fileContent)) {
 				return fileContent;
 			}
-			this.errors.reject("error.upload.failed.emptyFile", "The specified file is empty.");
+			errors.reject("error.upload.failed.emptyFile", "The specified file is empty.");
 			return null;
 			
 		} catch (final ConversionException e) {
-			this.errors.reject("error.upload.failed.conversion", "An error occurred during converting your EndNote file to BibTeX.");
+			errors.reject("error.upload.failed.conversion", "An error occurred during converting your EndNote file to BibTeX.");
 		} catch (final UnsupportedFileTypeException e) {
 			/*
 			 * FIXME: the key is missing! We need to get the supported file types from the exception
 			 */
-			this.errors.reject("error.upload.failed.filetype", e.getMessage());
+			errors.reject("error.upload.failed.filetype", e.getMessage());
 		} catch (final Exception ex1) {
-			this.errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
+			errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
 		} finally {
 			/*
 			 * clear temporary file
@@ -497,7 +501,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * @param postsToStore
 	 * @param overwrite - posts which already exist are overwritten, if <code>true</code>
 	 */
-	private void storePosts(final Map<Post<BibTex>, Integer> postsToStore, final boolean overwrite) {
+	private void storePosts(final HashMap<Post<BibTex>, Integer> postsToStore, final boolean overwrite) {
 		try {
 			/*
 			 * Try to save all posts in one transaction. 
@@ -619,18 +623,11 @@ public class PostPublicationController extends AbstractEditPublicationController
 		return new PostPublicationCommand();
 	}
 
-	/**
-	 * @return the uploadFactory
-	 */
 	public FileUploadFactory getUploadFactory() {
 		return this.uploadFactory;
 	}
 
-	/**
-	 * @param uploadFactory the uploadFactory to set
-	 */
-	public void setUploadFactory(FileUploadFactory uploadFactory) {
+	public void setUploadFactory(final FileUploadFactory uploadFactory) {
 		this.uploadFactory = uploadFactory;
 	}
-	
 }

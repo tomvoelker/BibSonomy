@@ -40,17 +40,21 @@
 
 					<c:if test="${empty command.transposeMatrix or command.transposeMatrix==0}">
 						<table class="report">
-						<tr>			
-						<th>&amp;nbsp;</th>
-						<c:forEach var="columnHeader" items="${command.publicationCounts.columnHeaders}">
-							<td class="header"><fmt:message key="reporting.publication.type.${columnHeader}"/></td>
-						</c:forEach>
-						</tr>
+							<tr>
+								<th>&amp;nbsp;</th>
+								<c:forEach var="columnHeader" items="${command.publicationCounts.columnHeaders}">
+									<td class="header"><fmt:message key="reporting.publication.type.${columnHeader}"/></td>
+								</c:forEach>
+							</tr>
 						<c:forEach var="rowHeader" items="${command.publicationCounts.rowHeaders}">
 							<tr>			
 								<td class="header"><c:out value="${rowHeader}"/></td>
 								<c:forEach var="columnHeader" items="${command.publicationCounts.columnHeaders}">
-									<td class="value"><c:out value="${command.publicationCounts.values[rowHeader][columnHeader]}"/></td>
+									<td class="value">
+										<c:if test="${not empty command.publicationCounts.values[rowHeader][columnHeader] and not (command.publicationCounts.values[rowHeader][columnHeader] == 0)}">
+											<c:out value="${command.publicationCounts.values[rowHeader][columnHeader]}"/>
+										</c:if>
+									</td>
 								</c:forEach>
 							</tr>
 						</c:forEach>
@@ -59,17 +63,19 @@
 
 					<c:if test="${command.transposeMatrix==1}">
 						<table class="report">
-						<tr>			
-						<th>&amp;nbsp;</th>
-						<c:forEach var="columnHeader" items="${command.publicationCounts.rowHeaders}">
-							<td class="header"><c:out value="${columnHeader}"/></td>
-						</c:forEach>
-						</tr>
+							<tr>			
+							<th>&amp;nbsp;</th>
+							<c:forEach var="columnHeader" items="${command.publicationCounts.rowHeaders}">
+								<td class="header"><c:out value="${columnHeader}"/></td>
+							</c:forEach>
+							</tr>
 						<c:forEach var="rowHeader" items="${command.publicationCounts.columnHeaders}">
 							<tr>			
 								<td class="header"><fmt:message key="reporting.publication.type.${rowHeader}"/></td>
 								<c:forEach var="columnHeader" items="${command.publicationCounts.rowHeaders}">
-									<td class="value"><c:out value="${command.publicationCounts.values[columnHeader][rowHeader]}"/></td>
+										<c:if test="${not empty command.publicationCounts.values[columnHeader][rowHeader] and not (command.publicationCounts.values[columnHeader][rowHeader] == 0)}">
+											<c:out value="${command.publicationCounts.values[columnHeader][rowHeader]}"/>
+										</c:if>
 								</c:forEach>
 							</tr>
 						</c:forEach>
