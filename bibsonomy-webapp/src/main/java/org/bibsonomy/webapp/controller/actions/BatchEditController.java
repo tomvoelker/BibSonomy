@@ -369,7 +369,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		}
 		return tagsCopy;
 	}
-	
+
 	/**
 	 * Adds the list that will contain the erroneous posts to the command.
 	 * We need to do this before rejecting the errors, because otherwise we 
@@ -513,48 +513,52 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 				final int postId = postsWithErrors.size();
 				boolean hasErrors = false;
 				for (final ErrorMessage errorMessage: postErrorMessages) { 
+					log.debug("found error " + errorMessage);
+					final String errorItem;
 					if (errorMessage instanceof SystemTagErrorMessage) {
-						/*
-						 * add post to list of erroneous posts to show them the user
-						 */
-						if (!hasErrors) {
-							/*
-							 * we check for errors, to not add the post twice (if it 
-							 * has several errors)
-							 * 
-							 * NOTE: we need the complete post (not only hash or so) to
-							 * show it on the batch edit page.
-							 */
-							final Post<?> post;
-							if (PostUpdateOperation.UPDATE_ALL.equals(operation)) {
-								/*
-								 * XXX: we use the type of operation as indicator where to get the posts from
-								 * 
-								 * Here, the complete post shall be updated, hence, we get it from
-								 * the session (user is editing tags after importing posts).
-								 */
-								post = postMap.get(postHash);
-							} else {
-								/*
-								 * only the tags shall be updated -> we got only the hash from
-								 * the page and must get the post from the database
-								 */
-								post = logic.getPostDetails(postHash, loginUserName);
-								/*
-								 * we must add the tags from the post we tried to update - 
-								 * since those tags probably caused the error 
-								 */
-								post.setTags(updatedPost.getTags());
-							}
-							/*
-							 * finally add the post
-							 */
-							postsWithErrors.add(post);
-						}
-						hasErrors = true;
-						errors.rejectValue(resourceType + ".list[" + postId + "].tags", errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
+						errorItem = "tags";
+					} else {
+						errorItem = "resource";
 					}
-
+					/*
+					 * add post to list of erroneous posts to show them the user
+					 */
+					if (!hasErrors) {
+						/*
+						 * we check for errors, to not add the post twice (if it 
+						 * has several errors)
+						 * 
+						 * NOTE: we need the complete post (not only hash or so) to
+						 * show it on the batch edit page.
+						 */
+						final Post<?> post;
+						if (PostUpdateOperation.UPDATE_ALL.equals(operation)) {
+							/*
+							 * XXX: we use the type of operation as indicator where to get the posts from
+							 * 
+							 * Here, the complete post shall be updated, hence, we get it from
+							 * the session (user is editing tags after importing posts).
+							 */
+							post = postMap.get(postHash);
+						} else {
+							/*
+							 * only the tags shall be updated -> we got only the hash from
+							 * the page and must get the post from the database
+							 */
+							post = logic.getPostDetails(postHash, loginUserName);
+							/*
+							 * we must add the tags from the post we tried to update - 
+							 * since those tags probably caused the error 
+							 */
+							post.setTags(updatedPost.getTags());
+						}
+						/*
+						 * finally add the post
+						 */
+						postsWithErrors.add(post);
+					}
+					hasErrors = true;
+					errors.rejectValue(resourceType + ".list[" + postId + "]." + errorItem, errorMessage.getErrorCode(), errorMessage.getParameters(), errorMessage.getDefaultMessage());
 				}
 			}
 		}
