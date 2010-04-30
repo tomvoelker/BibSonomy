@@ -112,7 +112,6 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		 * If user is logged in and not an admin: show error message
 		 */
 		if (context.isUserLoggedIn() && !Role.ADMIN.equals(loginUser.getRole())) {
-			log.warn("User " + loginUser.getName() + " tried to access user registration without having role " + Role.ADMIN);
 			throw new ValidationException("error.method_not_allowed");
 		}
 
