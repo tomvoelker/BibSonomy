@@ -261,3 +261,7 @@ table.report td {
 #error {
 	border: none;
 }
+
+.groupsButtons a:hover {
+	background-color: #DF430D !important;
+}
