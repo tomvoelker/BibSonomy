@@ -1230,3 +1230,8 @@ table.report td.value {
 	padding-right: 0.5em;
 	text-align: right;
 }
+
+.reportingTableHeaderDescription {
+	font-size: 80%;
+	color: #888888;
+}

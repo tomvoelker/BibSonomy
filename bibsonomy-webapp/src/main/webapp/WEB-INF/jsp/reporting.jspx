@@ -33,7 +33,12 @@
 					<span style="color: black; font-size: 80%;"><fmt:message key="tags"/>:&amp;nbsp;<c:out value="${command.requestedTags}"/></span>
 				</h2> 
 				
+	
+				<c:set var="transposeMatrix">
+					<a href="?requestedGroup=${command.requestedGroup}&amp;transposeMatrix=${1-command.transposeMatrix}&amp;requestedTags=${command.requestedTags}" class="reportingTableHeaderDescription">(&amp;nbsp;)<sup>T</sup></a>
+				</c:set>
 				
+
 				<fmt:message key="reporting.group.intro"/>
 	
 				<c:if test="${not empty command.publicationCounts and not empty command.publicationCounts.rowHeaders}">
@@ -41,7 +46,7 @@
 					<c:if test="${empty command.transposeMatrix or command.transposeMatrix==0}">
 						<table class="report">
 							<tr>
-								<th>&amp;nbsp;</th>
+								<th>${transposeMatrix}</th>
 								<c:forEach var="columnHeader" items="${command.publicationCounts.columnHeaders}">
 									<td class="header"><fmt:message key="reporting.publication.type.${columnHeader}"/></td>
 								</c:forEach>
@@ -64,7 +69,7 @@
 					<c:if test="${command.transposeMatrix==1}">
 						<table class="report">
 							<tr>			
-							<th>&amp;nbsp;</th>
+							<th>${transposeMatrix}</th>
 							<c:forEach var="columnHeader" items="${command.publicationCounts.rowHeaders}">
 								<td class="header"><c:out value="${columnHeader}"/></td>
 							</c:forEach>

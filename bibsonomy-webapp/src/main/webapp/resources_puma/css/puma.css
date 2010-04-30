@@ -265,3 +265,8 @@ table.report td {
 .groupsButtons a:hover {
 	background-color: #DF430D !important;
 }
+
+
+a.reportingTableHeaderDescription {
+	color: #888888;
+}
