@@ -110,7 +110,11 @@
 		  WHERE t1.user_name = #userName# AND g.user_name = t1.user_name
 		        AND g.group = #groupId#
 		        <include refid="getTagsByResourceType"/>)) AS tagsalias
-		GROUP BY tag_name LIMIT #limit# OFFSET #offset#
+		GROUP BY tag_name 
+		<isEqual property="order" compareValue="FREQUENCY">
+			ORDER BY tag_ctr DESC
+		</isEqual>
+		LIMIT #limit# OFFSET #offset#
 	</select>
 
 
