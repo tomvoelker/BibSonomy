@@ -30,7 +30,7 @@ public class ExportLayoutController implements MinimalisticController<ExportPage
 	}
 	
 	/** 
-	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
+	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.BaseCommand)
 	 */
 	public View workOn(ExportPageCommand command) {
 		
