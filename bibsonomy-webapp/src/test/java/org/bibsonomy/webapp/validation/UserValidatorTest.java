@@ -149,6 +149,34 @@ public class UserValidatorTest {
 	}
 	
 	/**
+	 * disallowed character in user name
+	 */
+	@Test
+	public void testValidateFails5() {
+		final UserValidator validator = new UserValidator();
+		final User user = new User();
+		final Errors errors = new BindException(user, "registerUser");
+		
+		/*
+		 * populate user
+		 */
+		
+		user.setName("Sören");
+		user.setEmail("john@example.com");
+		user.setPassword("password");
+		
+
+		Assert.assertFalse(errors.hasErrors());
+
+		/*
+		 * should produce no errors
+		 */
+		validator.validate(user, errors);
+		
+		Assert.assertTrue(errors.hasErrors());
+	}
+	
+	/**
 	 * No user name given
 	 */
 	@Test
@@ -173,6 +201,4 @@ public class UserValidatorTest {
 		
 		Assert.assertTrue(errors.hasErrors());
 	}
-
-
 }

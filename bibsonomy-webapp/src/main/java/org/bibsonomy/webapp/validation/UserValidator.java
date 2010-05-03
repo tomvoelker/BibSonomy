@@ -1,6 +1,7 @@
 package org.bibsonomy.webapp.validation;
 
 import java.net.URL;
+import java.util.regex.Pattern;
 
 import org.bibsonomy.model.User;
 import org.bibsonomy.webapp.util.Validator;
@@ -13,6 +14,14 @@ import org.springframework.validation.ValidationUtils;
  * @version $Id$
  */
 public class UserValidator implements Validator<User> {
+
+	private static final int USERNAME_MAX_LENGTH = 15;
+	/**
+	 * We allow only a..z A..Z 0..9 - . _ 
+	 * (this covers more than 99% of all usernames before introducing this
+	 * restriction)
+	 */
+	private static final Pattern USERNAME_DISALLOWED_CHARACTERS_PATTERN = Pattern.compile("[^a-zA-Z0-9\\.\\-_]");
 
 	/** 
 	 * Validates {@link User} and also subclasses of {@link User}. 
@@ -108,30 +117,15 @@ public class UserValidator implements Validator<User> {
 	 * @param errors
 	 */
 	private void validateName (final String name, final Errors errors) {
-		/* username must not contain %, otherwise cookie auth does not work, 
-		 * because %20 separates username from password in cookie auth */
 		if (name == null ||
 				"".equals(name) ||
 				"public".equals(name) ||
 				"private".equals(name) ||
 				"friends".equals(name) ||
 				"null".equals(name) ||
-				name.length()      > 30 ||
-				name.matches("(?s).*\\s.*") ||
-				// FIXME: replace the blacklist below with a white list like
-				// name.matches(".*[^\\w\\.äöüÄÖU]") ||				
-				name.indexOf('-') != -1 ||
-				name.indexOf('+') != -1 ||
-				name.indexOf('/') != -1 ||
-				name.indexOf('\\') != -1 ||
-				name.indexOf(':') != -1 ||
-				name.indexOf('&') != -1 ||
-				name.indexOf('?') != -1 ||
-				name.indexOf('"') != -1 ||
-				name.indexOf('\'') != -1 ||
-				name.indexOf('>') != -1 ||
-				name.indexOf('<') != -1 ||
-				name.indexOf('%') != -1) {
+				name.length() > USERNAME_MAX_LENGTH ||
+				USERNAME_DISALLOWED_CHARACTERS_PATTERN.matcher(name).find())
+		{
 			errors.rejectValue("name","error.field.valid.user.name");
 		}
 	}
