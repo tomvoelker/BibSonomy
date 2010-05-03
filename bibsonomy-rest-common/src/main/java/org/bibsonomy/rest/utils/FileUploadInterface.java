@@ -33,6 +33,26 @@ import org.bibsonomy.model.User;
 public interface FileUploadInterface {
 
 	/**
+	 * firefox extion
+	 */
+	public static final String[] firefoxImportExt = { "html" };
+	
+	/**
+	 * pdf, ps, djv, djvu, txt extensions
+	 */
+	public static final String[] fileUploadExt = { "pdf", "ps", "djv", "djvu", "txt" };
+	
+	/**
+	 * layout defintion extension
+	 */
+	public static final String[] fileLayoutExt = { "layout" };
+	
+	/**
+	 * bibtex, endnote extension
+	 */
+	public static final String[] bibtexEndnoteExt = {"bib", "endnote"};
+	
+	/**
 	 * Writes the uploaded file to the disk and returns the file together
 	 * with meta information in the document
 	 *

@@ -23,6 +23,8 @@
 
 package org.bibsonomy.rest.utils.impl;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,7 +41,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.util.HashUtils;
 import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.util.file.FileUtil;
 
 /**
@@ -51,26 +52,6 @@ import org.bibsonomy.util.file.FileUtil;
 public class HandleFileUpload implements FileUploadInterface {
 	private static final Log log = LogFactory.getLog(HandleFileUpload.class);
 	
-	/**
-	 * firefox extion
-	 */
-	public static final String[] firefoxImportExt = { "html" };
-
-	/**
-	 * pdf, ps, djv, djvu, txt extensions
-	 */
-	public static final String[] fileUploadExt = { "pdf", "ps", "djv", "djvu", "txt" };
-
-	/**
-	 * layout defintion extension
-	 */
-	public static final String[] fileLayoutExt = { "layout" };
-	
-	/**
-	 * bibtex, endnote extension
-	 */
-	public static final String[] bibtexEndnoteExt = {"bib", "endnote"};
-
 	/**
 	 * Used to compute the file hash.
 	 */
@@ -90,7 +71,6 @@ public class HandleFileUpload implements FileUploadInterface {
 	 * default constructor
 	 */
 	protected HandleFileUpload(final List<FileItem> items, final String[] allowedExt, final String docPath, final boolean isTempPath) {
-
 		this.docPath = docPath;
 		this.isTempPath = isTempPath;
 		
@@ -107,13 +87,12 @@ public class HandleFileUpload implements FileUploadInterface {
 		}
 
 		final String filename = this.upFile.getName();
-		if (ValidationUtils.present(filename)) {
+		if (present(filename)) {
 			this.document.setFileName(FilenameUtils.getName(filename));
 		}
-
-		// "pdf", "ps", "djv", "djvu", "txt"
+		
 		// check file extensions which we accept
-		if (!ValidationUtils.present(document.getFileName()) || !StringUtils.matchExtension(document.getFileName(), allowedExt)) {
+		if (!present(document.getFileName()) || !StringUtils.matchExtension(document.getFileName(), allowedExt)) {
 			throw new UnsupportedFileTypeException(allowedExt);
 		}
 
@@ -132,7 +111,6 @@ public class HandleFileUpload implements FileUploadInterface {
 	 */
 	@Override
 	public Document writeUploadedFile() throws Exception {
-
 		final String documentPath;
 		if (isTempPath) {
 			documentPath = docPath + "/" + document.getFileHash();
@@ -156,7 +134,7 @@ public class HandleFileUpload implements FileUploadInterface {
 	public Document writeUploadedFile(final String fileHash, final User loginUser) throws Exception {
 		document.setFileHash(fileHash);
 		document.setUserName(loginUser.getName());
-		return writeUploadedFile();
+		return this.writeUploadedFile();
 	}
 
 }

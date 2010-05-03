@@ -25,7 +25,7 @@ package org.bibsonomy.rest.exceptions;
 
 import static org.junit.Assert.*;
 
-import org.bibsonomy.rest.utils.impl.HandleFileUpload;
+import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.junit.Test;
 
 /**
@@ -38,13 +38,13 @@ public class UnsupportedFileTypeExceptionTest {
 	public void testUnsupportedFileTypeException() {
 		
 		try {
-			throw new UnsupportedFileTypeException(HandleFileUpload.fileUploadExt);
+			throw new UnsupportedFileTypeException(FileUploadInterface.fileUploadExt);
 		} catch (UnsupportedFileTypeException e) {
 			assertEquals("Please check your file. Only PDF, PS, DJV, DJVU, or TXT files are accepted.", e.getMessage());
 		}
 		
 		try {
-			throw new UnsupportedFileTypeException(HandleFileUpload.firefoxImportExt);
+			throw new UnsupportedFileTypeException(FileUploadInterface.firefoxImportExt);
 		} catch (UnsupportedFileTypeException e) {
 			assertEquals("Please check your file. Only HTML files are accepted.", e.getMessage());
 		}

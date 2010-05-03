@@ -38,10 +38,20 @@ public class FileUploadFactory {
 
     private boolean tempPath = false;
 	
+    /**
+     * TODO: improve documentation
+     * 
+     * @param items
+     * @param allowedExt
+     * @return TODO
+     */
 	public FileUploadInterface getFileUploadHandler(final List<FileItem> items, String[] allowedExt) {
 		return new HandleFileUpload(items, allowedExt, this.docpath, this.tempPath);
 	}
 	
+	/**
+	 * @return the docpath
+	 */
 	public String getDocpath() {
 		return this.docpath;
 	}
@@ -55,6 +65,9 @@ public class FileUploadFactory {
 		this.docpath = docpath;
 	}
 	
+	/**
+	 * @return the tempPath
+	 */
 	public boolean getTempPath() {
 		return this.tempPath;
 	}
