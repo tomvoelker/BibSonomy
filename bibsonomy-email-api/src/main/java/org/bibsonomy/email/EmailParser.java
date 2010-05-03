@@ -4,11 +4,18 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.antlr.runtime.RecognitionException;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.net.QuotedPrintableCodec;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.util.TagUtils;
 
 /**
@@ -44,11 +51,16 @@ import org.bibsonomy.model.util.TagUtils;
  * 
  */
 public class EmailParser {
+	private static final Log log = LogFactory.getLog(EmailParser.class);
+	
 	private static final String HEADER_TO = "To:";
 	private static final String HEADER_FROM = "From:";
 	private static final String HEADER_SUBJECT = "Subject:";
 	private static final String BODY_HTTP = "http";
+	
+	private static final Pattern QUOTED_PRINTABLE_PATTERN = Pattern.compile("=\\?(.*?)\\?Q\\?(.*?)\\?=");
 
+	
 	private ToFieldParser toFieldParser;
 	
 	/**
@@ -85,7 +97,14 @@ public class EmailParser {
 				 * 
 				 */
 				try {
-					email.setTags(TagUtils.parse(line.substring(HEADER_SUBJECT.length()).trim()));
+					/*
+					 * decode quoted printable
+					 */
+					final String subject = decodeSubject(line.substring(HEADER_SUBJECT.length()).trim());
+					/*
+					 * parse tags
+					 */
+					email.setTags(TagUtils.parse(subject));
 				} catch (RecognitionException e) {
 					email.setTags(Collections.singleton(TagUtils.getEmptyTag()));
 				}
@@ -101,6 +120,27 @@ public class EmailParser {
 		return email;
 	}
 
+	/**
+	 * 
+	 * Decodes "=?ISO-8859-15?Q?sch=F6n?=" to "schön"
+	 * 
+	 * @param s
+	 * @return
+	 */
+	protected String decodeSubject(final String s) {
+		final Matcher matcher = QUOTED_PRINTABLE_PATTERN.matcher(s);
+		if (matcher.find()) {
+			try {
+				return matcher.replaceAll(new String(QuotedPrintableCodec.decodeQuotedPrintable(matcher.group(2).replace("_", " ").getBytes()), matcher.group(1)));
+			} catch (UnsupportedEncodingException e) {
+				log.warn("Could not decode subject", e);
+			} catch (DecoderException e) {
+				log.warn("Could not decode subject", e);
+			}
+		}
+		return s;
+	}
+	
 	/**
 	 * Parses the body of an email.
 	 * Everything after the first line that does not start with 
