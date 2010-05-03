@@ -24,8 +24,10 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.util.EnumUtils;
+import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 
@@ -46,7 +48,6 @@ public class Functions  {
 	private static String[] bibtexEntryTypes = {"article","book","booklet","inbook","incollection","inproceedings","manual","mastersthesis","misc","phdthesis","proceedings","techreport",     "unpublished"}; 
 	private static String[] swrcEntryTypes   = {"Article","Book","Booklet","InBook","InCollection","InProceedings","Manual","MasterThesis","Misc","PhDThesis","Proceedings","TechnicalReport","Unpublished"}; 
 	private static String[] risEntryTypes    = {"Journal Article","Book", "Book", "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis", "Generic", "Thesis", "Conference Proceedings", "Report", "Unpublished Work"};
-	
 	
 	/**
 	 * Fields over which are iterated in the JSP to output BibTeX.
@@ -185,7 +186,7 @@ public class Functions  {
 	 * @param tags a list of tags
 	 * @return a space-separated string of tags
 	 */
-	public static String toTagString (final Collection<Tag> tags) {		
+	public static String toTagString(final Collection<Tag> tags) {		
 		return TagUtils.toTagString(tags, " ");
 	}
 
@@ -195,10 +196,9 @@ public class Functions  {
 	 * @param uriString a URI string
 	 * @return the path component of the given URI string
 	 */
-	public static String getPath (final String uriString) {
-		URI uri;
+	public static String getPath(final String uriString) {
 		try {
-			uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
+			final URI uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
 			return uri.getPath();
 		} catch (final Exception ex) {
 			throw new RuntimeException(ex.getMessage());
@@ -211,11 +211,10 @@ public class Functions  {
 	 * @param uriString the url
 	 * @return last segment of the url string until last slash
 	 */
-	public static String getLowerPath (String uriString) {
-		URI uri; 
+	public static String getLowerPath(String uriString) {
 		uriString = uriString.substring(0, uriString.lastIndexOf("/"));
 		try {
-			uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
+			final URI uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
 			return uri.getPath();
 		} catch (final Exception ex) {
 			throw new RuntimeException(ex.getMessage());
@@ -228,17 +227,16 @@ public class Functions  {
 	 * @param uriString a URI string
 	 * @return query part of the given URI string, within a leading "?"
 	 */
-	public static String getQuery (final String uriString) {
-		URI uri;
+	public static String getQuery(final String uriString) {
 		try {
-			uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
+			final URI uri = new URI(UrlUtils.encodeURLExceptReservedChars(uriString));
 			if (uri.getQuery() != null && ! uri.getQuery().equals("")) { 
 				return "?" + uri.getQuery();
 			}
 			return "";
 		} catch (final Exception ex) {
 			throw new RuntimeException(ex.getMessage());
-		}		
+		}
 	}	
 
 	/**
@@ -255,6 +253,14 @@ public class Functions  {
 		}
 		return true;
 	}
+	
+	/**
+	 * @param url the url to check
+	 * @return <code>true</code> iff the url is a link to a pdf or ps file
+	 */
+	public static boolean isLinkToDocument(final String url) {
+		return StringUtils.matchExtension(url, FileUploadInterface.fileUploadExt);
+	}
 
 	/**
 	 * Computes font size for given tag frequency and maximum tag frequency inside tag cloud
@@ -270,7 +276,6 @@ public class Functions  {
 	 * @return font size for the tag cloud with the given parameters
 	 */
 	public static Integer computeTagFontsize(final Integer tagFrequency, final Integer tagMaxFrequency, final String tagSizeMode) {
-		// round(log(if(tag_anzahl>100, 100, tag_anzahl+6)/6))*60+40
 		if ("home".equals(tagSizeMode)) {
 			/*
 			 * here, 0 < tagFrequency < 100 is assumed
@@ -305,7 +310,6 @@ public class Functions  {
 	public static String cleanUrl(final String url) {
 		return UrlUtils.cleanUrl(url);
 	}
-
 
 	/**
 	 * wrapper for for org.bibsonomy.util.UrlUtils.setParam
@@ -362,8 +366,8 @@ public class Functions  {
 		return SpamStatus.isSpammer(status);
 	}
 
-
-	/** Quotes a String such that it is usable for JSON.
+	/**
+	 * Quotes a String such that it is usable for JSON.
 	 * 
 	 * @param value
 	 * @return The quoted String.
@@ -391,14 +395,12 @@ public class Functions  {
 		return quoteJSON(BibcleanCSV.cleanBibtex(value));
 	}
 
-
 	/**
 	 * @return The list of available bibtex entry types
 	 */
 	public static String[] getBibTeXEntryTypes() {
 		return bibtexEntryTypes;
 	}
-
 	
 	/** Maps BibTeX entry types to SWRC entry types.
 	 * 
@@ -499,7 +501,8 @@ public class Functions  {
 		}
 	}
 	
-	/** Returns a short (max. 160 characters) description of the post.
+	/**
+	 * Returns a short (max. 160 characters) description of the post.
 	 * 
 	 * @param post
 	 * @return A short description of the post.
@@ -518,21 +521,20 @@ public class Functions  {
 			if (year != null) buf.append(", " + shorten(year, 4));
 		}
 		
-		
 		return buf.toString();
 	}
 	
-	/** If the string is longer than <code>length</code>: shortens the given string to 
+	/**
+	 * If the string is longer than <code>length</code>: shortens the given string to 
 	 * <code>length - 3</code> and appends <code>...</code>. Else: returns the string.
 	 * @param s - the string
 	 * @param length - maximal length of teh string
 	 * @return The shortened string
 	 */
 	public static String shorten(final String s, final Integer length) {
-		if (s.length() > length) return s.substring(0, length - 3) + "...";
+		if (s != null && s.length() > length) return s.substring(0, length - 3) + "...";
 		return s;
 	}
-	
 	
 	/**
 	 * Access the built-in utility function for bibtex export
@@ -578,11 +580,10 @@ public class Functions  {
 	 * @return The rendered output as string.
 	 */
 	public static String renderLayout(final Post<BibTex> post, final String layoutName) {
-		final ArrayList<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
+		final List<Post<BibTex>> posts = new ArrayList<Post<BibTex>>();
 		posts.add(post);
 		
 		return renderLayouts(posts, layoutName);
-		
 	}
 	
 	/**
@@ -608,14 +609,13 @@ public class Functions  {
 		}
 	}
 	
-	
 	/** Checks if the given set contains the given object.
 	 * 
 	 * @param set
 	 * @param object
 	 * @return <code>true</code>, if object is contained in set.
 	 */
-	public static Boolean contains(final Collection set, final Object object) {
+	public static Boolean contains(final Collection<?> set, final Object object) {
 		return set.contains(object);
 	}
 	
@@ -650,6 +650,5 @@ public class Functions  {
 	public static String extractDOI(final String doiString){
 		return DOIUtils.extractDOI(doiString);
 	}
-	
 	
 }

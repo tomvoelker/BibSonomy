@@ -280,6 +280,12 @@
   	<function-signature>String getHostName(java.lang.String)</function-signature>
   </function>
   
+  <function>
+    <name>isLinkToDocument</name>
+    <function-class>tags.Functions</function-class>
+    <function-signature>Boolean isLinkToDocument(java.lang.String)</function-signature>
+  </function> 
+  
     
   <function>
   	<name>authorFontSize</name>
