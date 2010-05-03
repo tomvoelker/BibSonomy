@@ -68,6 +68,14 @@ public class EmailParserTest {
 		}
 	}
 
+	@Test
+	public void testDecodeSubject() throws Exception {
+		final EmailParser ep = new EmailParser();
+		assertEquals("brügge belgien fotos urlaub", ep.decodeSubject("=?ISO-8859-1?Q?br=FCgge?= belgien fotos urlaub"));
+		assertEquals("schön", ep.decodeSubject("=?ISO-8859-15?Q?sch=F6n?="));
+		assertEquals("schön schöner am_schönsten", ep.decodeSubject("=?ISO-8859-15?Q?sch=F6n_sch=F6ner_am=5Fsch=F6nsten?="));
+		assertEquals("schön schöner am schönsten", ep.decodeSubject("=?ISO-8859-15?Q?sch=F6n_sch=F6ner_am_sch=F6nsten?="));
+	}
 	private static BufferedReader getTestEmail(final String filename) {
 		return new BufferedReader(new InputStreamReader(EmailParser.class.getResourceAsStream(filename)));
 	}
