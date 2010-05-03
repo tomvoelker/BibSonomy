@@ -1,0 +1,51 @@
+From - Fri Apr 30 15:19:21 2010
+X-Account-Key: account3
+X-UIDL: 9d27b0f8a0e374075bf12096c150e03c
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <jaeschke@cs.uni-kassel.de>
+X-Flags: 0000
+Delivered-To: GMX delivery to robert-j@gmx.de
+Received: (qmail invoked by alias); 30 Apr 2010 13:14:09 -0000
+Received: from gundel.cs.uni-kassel.de (EHLO gundel.cs.uni-kassel.de) [141.51.167.101]
+  by mx0.gmx.net (mx035) with SMTP; 30 Apr 2010 15:14:09 +0200
+Received: from localhost (localhost [127.0.0.1])
+	by gundel.cs.uni-kassel.de (Postfix) with ESMTP id 3A15BFDCF7
+	for <robert-j@gmx.de>; Fri, 30 Apr 2010 15:12:21 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at gundel.cs.uni-kassel.de
+Received: from gundel.cs.uni-kassel.de ([127.0.0.1])
+	by localhost (gundel.cs.uni-kassel.de [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 4NYdz3o-3dek for <robert-j@gmx.de>;
+	Fri, 30 Apr 2010 15:12:19 +0200 (CEST)
+Received: from [141.51.123.77] (goofy.cs.uni-kassel.de [141.51.123.77])
+	by gundel.cs.uni-kassel.de (Postfix) with ESMTPSA id B97AAFDCF6
+	for <robert-j@gmx.de>; Fri, 30 Apr 2010 15:12:19 +0200 (CEST)
+Message-ID: <4BDAD79E.8090402@cs.uni-kassel.de>
+Date: Fri, 30 Apr 2010 15:14:06 +0200
+From: =?ISO-8859-15?Q?John_D=E4e?= <johndoe@cs.uni-kassel.de>
+User-Agent: Mozilla-Thunderbird 2.0.0.22 (X11/20090707)
+MIME-Version: 1.0
+To: =?ISO-8859-15?Q?John_D=E4e?= BibSonomy Posting <johndoe-99cafad8ce2afb5879c6c85c14cc5259+private@api.bibsonomy.org>
+Subject: social dagsocial todo
+X-Enigmail-Version: 0.95.0
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 8bit
+X-GMX-Antivirus: 0 (no virus found)
+X-GMX-Antispam: 0 (Mail was not recognized as spam);
+ Detail=5D7Q89H36p4WX0t+AtsdWzrXATe7U7iyEYsVEub6UEScnitTuLsF1dwROLenO8vOmwvdy
+ pgJ/SUsFNrCZZib4xGIRhKVI5/3XJCDlTO3AUhsOBsdGA7aE8f9QyJnx4GXo3kvaK52rz5wLFjTv
+ haXng==V1;
+X-GMX-UID: lOLocz5rPjlsSD87PjU2Ay8zMTE2NYlM
+
+
+http://twitris.knoesis.org/
+http://kenai.com/projects/community-equity
+
+- --
+John Doe                                      Tel: +49-(0)111-804-1111
+Universität Kassel                    E-Mail: johndoe@cs.uni-kassel.de
+Wilhelmshöher Allee 73            WWW: http://www.kde.cs.uni-kassel.de
+34121 Kassel                                           PGP: 0xB2BAB5E4
+<>>>>>>>>>>>>>>>>>>>  http://www.bibsonomy.org  <<<<<<<<<<<<<<<<<<<<<>
+
