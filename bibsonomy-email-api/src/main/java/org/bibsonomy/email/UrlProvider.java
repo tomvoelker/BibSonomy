@@ -31,7 +31,7 @@ public class UrlProvider {
 
 	private static final Log log = LogFactory.getLog(UrlProvider.class);
 
-	private HttpClient httpClient;
+	private final HttpClient httpClient;
 	
 	private static final Pattern TITLE_COMPLETE = Pattern.compile("<title>(.+?)</title>", Pattern.CASE_INSENSITIVE);
 	private static final Pattern TITLE_START = Pattern.compile("<title>(.*)$", Pattern.CASE_INSENSITIVE);
@@ -64,7 +64,7 @@ public class UrlProvider {
 			final int status = httpClient.executeMethod(get);
 			if (status == 200) {
 				/*
-				 * FIXME: is this really the resolved URL?
+				 * this is the resolved URL (i.e., after redirects)
 				 */
 				bookmark.setUrl(get.getURI().toString());
 				final String title = getTitle(get);

@@ -1,6 +1,6 @@
 package org.bibsonomy.email;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,15 +38,18 @@ public class UrlProviderTest {
 
 	final String[] urls = new String[] {
 			"http://www.bibsonomy.org/",
-			"http://www.kde.cs.uni-kassel.de/"
+			"http://www.kde.cs.uni-kassel.de/",
+			"http://is.gd/bRqBF"
 	};
 	final String[] onlineUrlTitle = new String[] {
 			"BibSonomy :: home",
-			"Fachgebiet Wissensverarbeitung"
+			"Fachgebiet Wissensverarbeitung",
+			"Twitter Papers at the WWW 2010 Conference - marcua's blog"
 	};
 	final String[] offlineUrlTitle = new String[] {
 			"www.bibsonomy.org",
-			"www.kde.cs.uni-kassel.de"
+			"www.kde.cs.uni-kassel.de",
+			"is.gd"
 	};
 	
 	
