@@ -75,6 +75,7 @@ public class EmailParserTest {
 		assertEquals("schön", ep.decodeSubject("=?ISO-8859-15?Q?sch=F6n?="));
 		assertEquals("schön schöner am_schönsten", ep.decodeSubject("=?ISO-8859-15?Q?sch=F6n_sch=F6ner_am=5Fsch=F6nsten?="));
 		assertEquals("schön schöner am schönsten", ep.decodeSubject("=?ISO-8859-15?Q?sch=F6n_sch=F6ner_am_sch=F6nsten?="));
+		assertEquals("foo bar blubb", ep.decodeSubject("foo bar blubb"));
 	}
 	private static BufferedReader getTestEmail(final String filename) {
 		return new BufferedReader(new InputStreamReader(EmailParser.class.getResourceAsStream(filename)));
