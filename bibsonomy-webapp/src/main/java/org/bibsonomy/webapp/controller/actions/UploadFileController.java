@@ -8,10 +8,8 @@ import org.bibsonomy.model.Document;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.FileUploadFactory;
-import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.webapp.command.actions.UploadFileCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -24,7 +22,7 @@ import org.springframework.validation.Errors;
  * @author daill
  * @version $Id$
  */
-public class UploadFileController implements MinimalisticController<UploadFileCommand>, ErrorAware, ValidationAwareController<UploadFileCommand> {
+public class UploadFileController implements ValidationAwareController<UploadFileCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(UploadFileController.class);
 
 	private Errors errors = null;
@@ -36,7 +34,7 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
      */
     private FileUploadFactory uploadFactory;
 
-
+    @Override
 	public View workOn(UploadFileCommand command) {
 		log.debug("workOn started");
 		final RequestWrapperContext context = command.getContext();
@@ -50,7 +48,6 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 
 		/*
 		 * check credentials to fight CSRF attacks 
-		 * 
 		 */
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
@@ -69,7 +66,7 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 
 			try {
 				
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.fileUploadExt);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), FileUploadInterface.fileUploadExt);
 
 				final Document document = uploadFileHandler.writeUploadedFile();
 				document.setUserName(context.getLoginUser().getName());
@@ -116,6 +113,7 @@ public class UploadFileController implements MinimalisticController<UploadFileCo
 	/**
 	 * Instantiate the command
 	 */
+	@Override
 	public UploadFileCommand instantiateCommand() {
 		return new UploadFileCommand();
 	}

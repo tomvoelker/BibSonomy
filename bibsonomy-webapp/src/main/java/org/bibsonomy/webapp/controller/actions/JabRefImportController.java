@@ -13,7 +13,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.FileUploadFactory;
-import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.util.file.FileUtil;
 import org.bibsonomy.webapp.command.actions.JabRefImportCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -30,8 +29,11 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  * @version $Id$
  */
 public class JabRefImportController implements MinimalisticController<JabRefImportCommand>, ErrorAware {
-
 	private static final Log log = LogFactory.getLog(ImportBookmarksController.class);
+	
+	private static final String DELETE = "delete";
+
+	private static final String CREATE = "create";
 
 	/**
 	 * hold current errors
@@ -54,10 +56,6 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 	 * custom user layouts.
 	 */
 	private final JabrefLayoutRenderer jabrefLayoutRenderer = JabrefLayoutRenderer.getInstance();
-
-	private static final String DELETE = "delete";
-
-	private static final String CREATE = "create";
 
 	@Override
 	public View workOn(JabRefImportCommand command) {
@@ -158,7 +156,7 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 			try {
 				final String hashedName = JabrefLayoutUtils.userLayoutHash(loginUser.getName(), layoutPart);				
 				
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(fileItem.getFileItem()), HandleFileUpload.fileLayoutExt);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(fileItem.getFileItem()), FileUploadInterface.fileLayoutExt);
 				/*
 				 * write file to disk
 				 */
@@ -176,10 +174,7 @@ public class JabRefImportController implements MinimalisticController<JabRefImpo
 
 	@Override
 	public JabRefImportCommand instantiateCommand() {
-
-		final JabRefImportCommand command = new JabRefImportCommand();
-
-		return command;
+		return new JabRefImportCommand();
 	}
 
 	@Override

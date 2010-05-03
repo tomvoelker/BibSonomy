@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +33,6 @@ import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.FileUploadFactory;
-import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ConversionException;
 import org.bibsonomy.util.StringUtils;
@@ -304,7 +302,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		/*
 		 * We try to store only posts that have no validation errors.
 		 */
-		final HashMap<Post<BibTex>, Integer> postsToStore = getPostsWithNoValidationErrors(posts);
+		final Map<Post<BibTex>, Integer> postsToStore = getPostsWithNoValidationErrors(posts);
 		log.debug("will try to store " + postsToStore.size() + " of " + posts.size() + " posts in database");
 
 		/*
@@ -366,8 +364,8 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * @param posts
 	 * @return
 	 */
-	private HashMap<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts) {
-		final HashMap<Post<BibTex>, Integer> storageList = new LinkedHashMap<Post<BibTex>, Integer>(); 
+	private Map<Post<BibTex>, Integer> getPostsWithNoValidationErrors(final List<Post<BibTex>> posts) {
+		final Map<Post<BibTex>, Integer> storageList = new LinkedHashMap<Post<BibTex>, Integer>(); 
 
 		/*
 		 * iterate over all posts
@@ -433,7 +431,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 		try {
 
 			final CommonsMultipartFile uploadedFile = command.getFile();
-			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), HandleFileUpload.bibtexEndnoteExt);
+			final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(uploadedFile.getFileItem()), FileUploadInterface.bibtexEndnoteExt);
 			/*
 			 * FIXME: the upload file handler throws an exception, 
 			 * if the file type does not match - this exception also comes, when
@@ -448,7 +446,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			final BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), command.getEncoding()));
 
 			String fileContent = null;
-			if (StringUtils.matchExtension(fileName, HandleFileUpload.bibtexEndnoteExt[1])) {
+			if (StringUtils.matchExtension(fileName, FileUploadInterface.bibtexEndnoteExt[1])) {
 				/*
 				 * In case the uploaded file is in EndNote format, we convert it to BibTeX.				
 				 */
@@ -501,7 +499,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 	 * @param postsToStore
 	 * @param overwrite - posts which already exist are overwritten, if <code>true</code>
 	 */
-	private void storePosts(final HashMap<Post<BibTex>, Integer> postsToStore, final boolean overwrite) {
+	private void storePosts(final Map<Post<BibTex>, Integer> postsToStore, final boolean overwrite) {
 		try {
 			/*
 			 * Try to save all posts in one transaction. 
@@ -623,11 +621,17 @@ public class PostPublicationController extends AbstractEditPublicationController
 		return new PostPublicationCommand();
 	}
 
+	/**
+	 * @return the uploadFactory
+	 */
 	public FileUploadFactory getUploadFactory() {
 		return this.uploadFactory;
 	}
 
-	public void setUploadFactory(final FileUploadFactory uploadFactory) {
+	/**
+	 * @param uploadFactory the uploadFactory to set
+	 */
+	public void setUploadFactory(FileUploadFactory uploadFactory) {
 		this.uploadFactory = uploadFactory;
 	}
 }

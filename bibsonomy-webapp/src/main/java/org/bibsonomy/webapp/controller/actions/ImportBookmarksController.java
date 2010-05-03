@@ -25,7 +25,6 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.FileUploadFactory;
-import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 import org.bibsonomy.services.importer.FileBookmarkImporter;
 import org.bibsonomy.services.importer.RelationImporter;
 import org.bibsonomy.services.importer.RemoteServiceBookmarkImporter;
@@ -48,8 +47,8 @@ import org.springframework.validation.Errors;
  *          $
  */
 public class ImportBookmarksController implements MinimalisticController<ImportCommand>, ErrorAware, ValidationAwareController<ImportCommand> {
-
 	private static final Log log = LogFactory.getLog(ImportBookmarksController.class);
+	
 
 	/**
 	 * logic interface for the database connectivity
@@ -97,14 +96,9 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 			return Views.IMPORT;
 		}
 
-
-
-
 		if (errors.hasErrors()) {
 			return Views.IMPORT;
 		}
-
-
 
 		List<Post<Bookmark>> posts = new LinkedList<Post<Bookmark>>();
 		List<Tag> relations = new LinkedList<Tag>();
@@ -134,7 +128,7 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 				/*
 				 * import posts/relations from Firefox
 				 */
-				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), HandleFileUpload.firefoxImportExt);
+				final FileUploadInterface uploadFileHandler = this.uploadFactory.getFileUploadHandler(Collections.singletonList(command.getFile().getFileItem()), FileUploadInterface.firefoxImportExt);
 				final Document document = uploadFileHandler.writeUploadedFile();
 				/*
 				 * FileBookmarkImporter interface
@@ -314,7 +308,6 @@ public class ImportBookmarksController implements MinimalisticController<ImportC
 
 	@Override
 	public boolean isValidationRequired(ImportCommand command) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
