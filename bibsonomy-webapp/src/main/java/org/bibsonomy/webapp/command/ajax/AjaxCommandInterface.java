@@ -9,7 +9,14 @@ package org.bibsonomy.webapp.command.ajax;
  * @version $Id$
  */
 public interface AjaxCommandInterface {
+	
+	/**
+	 * @return the response
+	 */
 	public String getResponseString();
 	
+	/**
+	 * @param response the response to set
+	 */
 	public void setResponseString(String response);
 }
