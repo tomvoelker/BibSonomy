@@ -16,19 +16,53 @@ public class ResourceFactory {
 	 * @param clazz
 	 * @return a new instance of the clazz
 	 */
+	@SuppressWarnings("unchecked")
 	public Resource createResource(final Class<? extends Resource> clazz) {
 		if (Bookmark.class.equals(clazz)) {
-			return new Bookmark();
+			return this.createBookmark();
+		}
+		
+		if (clazz != null && BibTex.class.isAssignableFrom(clazz)) {
+			return this.createPublication((Class<? extends BibTex>) clazz);
+		}
+		
+		throw new UnsupportedResourceTypeException("resource " + clazz + "not supported");
+	}
+	
+	/**
+	 * @return creates a new bookmark
+	 */
+	public Bookmark createBookmark() {
+		return new Bookmark();
+	}
+	
+	/**
+	 * @return creates a new publication
+	 */
+	public BibTex createPublication() {
+		return new BibTex();
+	}
+	
+	/**
+	 * @param clazz
+	 * @return a new Publication instance of the clazz
+	 */
+	public BibTex createPublication(final Class<? extends BibTex> clazz) {
+		if (BibTex.class.equals(clazz)) {
+			return this.createPublication();
 		}
 		
 		if (GoldStandardPublication.class.equals(clazz)) {
-			return new GoldStandardPublication();
+			return this.createGoldStandardPublication();
 		}
 		
-		if (BibTex.class.equals(clazz)) {
-			return new BibTex();
-		}
-		
-		throw new UnsupportedResourceTypeException(clazz != null ? clazz.getSimpleName() + "isn't supported by this factory" : "clazz was null");
+		throw new UnsupportedResourceTypeException("resource " + clazz + "not supported");
+	}
+	
+	/**
+	 * @return creates a new goldstandard publication
+	 */
+	public GoldStandardPublication createGoldStandardPublication() {
+		return new GoldStandardPublication();
 	}
 }

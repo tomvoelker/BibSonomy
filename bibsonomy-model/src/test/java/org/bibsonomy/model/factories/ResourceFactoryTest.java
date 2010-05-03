@@ -11,7 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * @author nosebrain
+ * @author dzo
  * @version $Id$
  */
 public class ResourceFactoryTest {
@@ -59,5 +59,13 @@ public class ResourceFactoryTest {
 	@Test(expected = UnsupportedResourceTypeException.class)
 	public void createResource() {
 		factory.createResource(Resource.class);
+	}
+	
+	/**
+	 * null test
+	 */
+	@Test(expected = UnsupportedResourceTypeException.class)
+	public void createNull() {
+		factory.createResource(null);
 	}
 }
