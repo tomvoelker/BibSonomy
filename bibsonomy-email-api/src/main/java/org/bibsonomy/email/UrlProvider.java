@@ -16,6 +16,7 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.util.WebUtils;
 
 /**
  * Resolves URLs (e.g., gets long version of shortened URLs) 
@@ -32,15 +33,15 @@ public class UrlProvider {
 	private static final Log log = LogFactory.getLog(UrlProvider.class);
 
 	private final HttpClient httpClient;
-	
+
 	private static final Pattern TITLE_COMPLETE = Pattern.compile("<title>(.+?)</title>", Pattern.CASE_INSENSITIVE);
 	private static final Pattern TITLE_START = Pattern.compile("<title>(.*)$", Pattern.CASE_INSENSITIVE);
 	private static final Pattern TITLE_END = Pattern.compile("^(.*)</title>", Pattern.CASE_INSENSITIVE);
-	
+
 	public UrlProvider() {
 		httpClient = new HttpClient();
 	}
-	
+
 	/**
 	 * Fills url and title of bookmark.
 	 * 
@@ -78,21 +79,21 @@ public class UrlProvider {
 		bookmark.recalculateHashes();
 		return bookmark;
 	}
-	
+
 	private String getTitle(final HttpMethod method) {
 		try {
-		final Header contentType = method.getResponseHeader("Content-Type");
-		if (present(contentType)) {
-			final String value = contentType.getValue();
-			if (present(value) && value.startsWith("text/html")) { // FIXME: which types else to support?
-				final Header contentEncoding = method.getResponseHeader("Content-Encoding");
-				if (present(contentEncoding)) {
-					return extractTitle(new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(), contentEncoding.getValue())));
-				} else {
-					return extractTitle(new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream())));	
+			final Header contentType = method.getResponseHeader("Content-Type");
+			if (present(contentType)) {
+				final String value = contentType.getValue();
+				if (present(value) && value.startsWith("text/html")) { // FIXME: which types else to support?
+					final String charset = WebUtils.extractCharset(value);
+					if (present(charset)) {
+						return extractTitle(new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(), charset)));
+					} else {
+						return extractTitle(new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream())));	
+					}
 				}
 			}
-		}
 		} catch (Exception e) {
 			// ignore all errors
 			log.warn("Could not get title for url", e);
@@ -104,7 +105,7 @@ public class UrlProvider {
 		String line;
 		final StringBuilder title = new StringBuilder();
 		while ((line = reader.readLine()) != null) {
-//			System.out.println(line);
+			//			System.out.println(line);
 			final Matcher completeMatcher = TITLE_COMPLETE.matcher(line);
 			if (completeMatcher.find()) {
 				return completeMatcher.group(1);
@@ -125,12 +126,12 @@ public class UrlProvider {
 			if (title.length() > 0) {
 				title.append(" " + line.trim());
 			}
-			
+
 		}
 		reader.close();
 		return title.toString();
 	}
-	
+
 	/**
 	 * If no title could be found (e.g., for non-HTML pages),
 	 * we use a part of the URL as title.
@@ -155,7 +156,7 @@ public class UrlProvider {
 			return url2;
 		}
 		return url;
-		
+
 	}
-	
+
 }
