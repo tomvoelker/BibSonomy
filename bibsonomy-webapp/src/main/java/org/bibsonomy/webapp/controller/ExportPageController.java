@@ -27,7 +27,7 @@ public class ExportPageController implements MinimalisticController<ExportPageCo
 
 	/** Main method which does the registration.
 	 * 
-	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
+	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.BaseCommand)
 	 */
 	public View workOn(final ExportPageCommand command) {
 		command.setLayoutMap(this.layoutRenderer.getJabrefLayouts());
