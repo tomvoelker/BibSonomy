@@ -39,17 +39,20 @@ public class UrlProviderTest {
 	final String[] urls = new String[] {
 			"http://www.bibsonomy.org/",
 			"http://www.kde.cs.uni-kassel.de/",
-			"http://is.gd/bRqBF"
+			"http://is.gd/bRqBF",
+			"http://fotos.oern.de/v/brugge/"
 	};
 	final String[] onlineUrlTitle = new String[] {
 			"BibSonomy :: home",
 			"Fachgebiet Wissensverarbeitung",
-			"Twitter Papers at the WWW 2010 Conference - marcua's blog"
+			"Twitter Papers at the WWW 2010 Conference - marcua's blog",
+			"Brügge"
 	};
 	final String[] offlineUrlTitle = new String[] {
 			"www.bibsonomy.org",
 			"www.kde.cs.uni-kassel.de",
-			"is.gd"
+			"is.gd",
+			"fotos.oern.de"
 	};
 	
 	
