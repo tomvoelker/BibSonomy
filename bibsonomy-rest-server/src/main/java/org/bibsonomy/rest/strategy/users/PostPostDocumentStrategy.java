@@ -11,7 +11,6 @@ import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.utils.FileUploadInterface;
 import org.bibsonomy.rest.utils.impl.FileUploadFactory;
-import org.bibsonomy.rest.utils.impl.HandleFileUpload;
 
 
 /**
@@ -53,7 +52,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 
 	@Override
 	protected String create() {
-		final FileUploadInterface up = fileUploadFactory.getFileUploadHandler(this.items, HandleFileUpload.fileUploadExt);
+		final FileUploadInterface up = fileUploadFactory.getFileUploadHandler(this.items, FileUploadInterface.fileUploadExt);
 		
 		try {
 

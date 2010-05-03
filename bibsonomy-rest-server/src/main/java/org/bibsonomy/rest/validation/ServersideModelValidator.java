@@ -14,8 +14,6 @@ public class ServersideModelValidator implements ModelValidator {
 
 	private static ServersideModelValidator modelValidator;
 
-	private ServersideModelValidator() {}
-
 	/** Get an instance of this model validator
 	 * 
 	 * @return An instance of the model validator.
@@ -26,7 +24,8 @@ public class ServersideModelValidator implements ModelValidator {
 		}
 		return ServersideModelValidator.modelValidator;
 	}
-
+	
+	private ServersideModelValidator() {}
 	
 	public void checkPublication(final BibTex publication) {
 		// parse Bibtex so see whether the entry is valid
