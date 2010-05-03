@@ -1,9 +1,11 @@
 package org.bibsonomy.email;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.rest.client.RestLogic;
+import org.bibsonomy.rest.client.RestLogicFactory;
 
 /**
  * Creates an instance of the {@link LogicInterface} - either with
@@ -33,8 +35,9 @@ import org.bibsonomy.rest.client.RestLogic;
 public class LogicFactory {
 
 	private final ToField toField;
-	
-	public LogicFactory(final ToField toField, final String from) {
+	private final RestLogicFactory logicFactory;
+
+	public LogicFactory(final String apiUrl, final ToField toField, final String from) {
 		/*
 		 * TODO: check from field
 		 * 
@@ -43,12 +46,20 @@ public class LogicFactory {
 		 * LogicInterface using those IDs. To use the REST-API
 		 */
 		this.toField = toField;
+		if (present(apiUrl)) {
+			this.logicFactory = new RestLogicFactory(apiUrl);
+		} else {
+			this.logicFactory = new RestLogicFactory();
+		}
 	}
-	
+	public LogicFactory(final ToField toField, final String from) {
+		this(null, toField, from);
+	}
+
 	public String getLoginUserName() {
 		return toField.getUsername();
 	}
-	
+
 	public LogicInterface getDBLogic() {
 		final DBLogicApiInterfaceFactory factory = new DBLogicApiInterfaceFactory();
 		factory.setDbSessionFactory(new IbatisDBSessionFactory());
@@ -57,6 +68,6 @@ public class LogicFactory {
 	}
 
 	public LogicInterface getRestLogic() {
-		return new RestLogic(toField.getUsername(), toField.getApikey());
+		return logicFactory.getLogicAccess(toField.getUsername(), toField.getApikey());
 	}
 }
