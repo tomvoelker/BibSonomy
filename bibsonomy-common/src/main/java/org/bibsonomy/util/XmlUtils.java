@@ -49,11 +49,6 @@ public class XmlUtils {
 	/** replacement character for illegal characters */
 	private static final char ILLEGAL_CHAR_SUBSTITUTE = '\uFFFD'; 	
 	
-	/*
-	 * TODO: As soon as we know that JTidy is thread safe, we can use a static instance of it
-	 */
-//	private static final Tidy tidy = new Tidy();
-	
 	/** 
 	 * define disallowed characters in XML 1.0
 	 * see http://www.w3.org/International/questions/qa-controls.en.php for details 
@@ -68,10 +63,6 @@ public class XmlUtils {
         for (int i = 0; i < escapeString.length(); i++) {
             illegalChars.add(escapeString.charAt(i));
         }
-        
-        // TODO: check if JTidy is thread safe
-//      tidy.setQuiet(true);
-//		tidy.setShowWarnings(false);// turns off warning lines
     }
     
     /**
@@ -236,7 +227,8 @@ public class XmlUtils {
 	}
 	
 	
-	/** Returns a version of tidy where {@link Tidy#setXmlTags(boolean)} is set 
+	/**
+	 * Returns a version of tidy where {@link Tidy#setXmlTags(boolean)} is set 
 	 * to xmlTags. 
 	 * <br/>
 	 * Note that <code>xmlTags = true</code> is in particular neccessary for the 
@@ -246,7 +238,7 @@ public class XmlUtils {
 	 * @return
 	 */
 	private static Tidy getTidy(final boolean xmlTags) {
-		final Tidy tidy = new Tidy();
+		final Tidy tidy = new Tidy(); // tidy is not thread safe so we create a new instance each time
 		tidy.setQuiet(true);
 		tidy.setShowWarnings(false);// turns off warning lines
 		tidy.setShowErrors(0); // turn off error printing
