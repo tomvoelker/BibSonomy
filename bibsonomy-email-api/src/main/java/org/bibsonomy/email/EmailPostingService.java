@@ -1,6 +1,7 @@
 package org.bibsonomy.email;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,23 +45,28 @@ public class EmailPostingService {
 
 	
 	public static void main(String[] args) {
-		log.info("configuring email posting service");
-		final EmailPostingService service = new EmailPostingService();
-
-		service.setPostBuilder(new PostBuilder());
-		service.getPostBuilder().setUrlProvider(new UrlProvider());
-		
-		service.setEmailParser(new EmailParser());
-		service.getEmailParser().setToFieldParser(new ToFieldParser());
-	
-		configurService(args, service);
-
+		/*
+		 * we don't want to throw any exception to always
+		 * exit with no errors (exit(0)) - otherwise the
+		 * sender gets back an email.
+		 */
 		try {
+			log.info("configuring email posting service");
+			final EmailPostingService service = new EmailPostingService();
+
+			service.setPostBuilder(new PostBuilder());
+			service.getPostBuilder().setUrlProvider(new UrlProvider());
+			
+			service.setEmailParser(new EmailParser());
+			service.getEmailParser().setToFieldParser(new ToFieldParser());
+		
+			configurService(args, service);
+
 			/*
 			 * read email from STDIN
 			 */
 			service.postEmail(System.in);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.error("Could not store posts.", e);
 		}
 	}
