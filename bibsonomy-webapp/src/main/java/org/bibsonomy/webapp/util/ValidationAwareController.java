@@ -1,7 +1,6 @@
-/*
- * Created on 07.10.2007
- */
 package org.bibsonomy.webapp.util;
+
+import org.bibsonomy.webapp.command.BaseCommand;
 
 
 /**
@@ -12,7 +11,8 @@ package org.bibsonomy.webapp.util;
  * @version $Id$
  * @author Jens Illig
  */
-public interface ValidationAwareController<T> extends MinimalisticController<T> {
+public interface ValidationAwareController<T extends BaseCommand> extends MinimalisticController<T> {
+	
 	/**
 	 * @param command a command object initialized by the framework based on
 	 *                the parameters of some request-event like a http-request
