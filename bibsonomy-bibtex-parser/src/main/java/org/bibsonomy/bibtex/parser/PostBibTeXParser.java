@@ -79,11 +79,11 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		/*
 		 * call parseBibTeX
 		 */
-		final BibTex parsedBibTeX = parseBibTeX(bibtex);
+		final BibTex parsedBibTeX = this.parseBibTeX(bibtex);
 		/*
 		 * create post and put resource into post
 		 */
-		return fillPost(parsedBibTeX);
+		return this.fillPost(parsedBibTeX);
 	}
 
 	/**
@@ -165,7 +165,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		/*
 		 * parse entries
 		 */
-		final List<BibTex> parsedBibTeXs = parseBibTeXs(bibtex);
+		final List<BibTex> parsedBibTeXs = this.parseBibTeXs(bibtex);
 		/*
 		 * contains resulting posts
 		 */
@@ -173,8 +173,8 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		/*
 		 * create the posts
 		 */
-		for (final BibTex bibTex2: parsedBibTeXs) {
-			result.add(fillPost(bibTex2));
+		for (final BibTex publication : parsedBibTeXs) {
+			result.add(this.fillPost(publication));
 		}
 
 		return result;
@@ -224,7 +224,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		/*
 		 * parse the bibtex in the post
 		 */
-		final Post<BibTex> copyPost = getParsedCopy(post);
+		final Post<BibTex> copyPost = this.getParsedCopy(post);
 		/*
 		 * exchange the bibtex in the post by the parsed version
 		 */
@@ -245,7 +245,7 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	 * string are not copied into the new post!
 	 * 
 	 * @param post
-	 * @return
+	 * @return TODO: improve documentation
 	 * @throws IOException 
 	 * @throws ParseException 
 	 */
@@ -254,21 +254,34 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 * parseBibTeXPost must ensure to add all fields which 
 		 * BibTexUtils.toBibtexString(post) puts into the string. 
 		 */
-		return parseBibTeXPost(BibTexUtils.toBibtexString(post, SerializeBibtexMode.PLAIN_MISCFIELDS));
+		return this.parseBibTeXPost(BibTexUtils.toBibtexString(post, SerializeBibtexMode.PLAIN_MISCFIELDS));
 	}
 
-	
+	/**
+	 * @return the delimiter
+	 */
 	public String getDelimiter() {
 		return this.delimiter;
 	}
-	public void setDelimiter(final String delimiter) {
+
+	/**
+	 * @param delimiter the delimiter to set
+	 */
+	public void setDelimiter(String delimiter) {
 		this.delimiter = delimiter;
 	}
+
+	/**
+	 * @return the whitespace
+	 */
 	public String getWhitespace() {
 		return this.whitespace;
 	}
-	public void setWhitespace(final String whitespace) {
+
+	/**
+	 * @param whitespace the whitespace to set
+	 */
+	public void setWhitespace(String whitespace) {
 		this.whitespace = whitespace;
 	}
-
 }

@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.bibsonomy.bibtex.util.StandardBibTeXFields;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.util.PersonNameUtils;
 
 import bibtex.dom.BibtexAbstractValue;
 import bibtex.dom.BibtexEntry;
@@ -50,13 +51,8 @@ import bibtex.parser.BibtexParser;
 import bibtex.parser.ParseException;
 
 
-
 /**
  * Provides parsing of BibTeX entries represented by {@link String}s into {@link BibTex} objects.
- * 
- * FIXME: before using this in BibSonomy, it must be properly tested! Currently,
- * it puts too many fields into 'misc'.
- * 
  * 
  * @author rja
  * @version $Id$
@@ -64,35 +60,47 @@ import bibtex.parser.ParseException;
 public class SimpleBibTeXParser {
 
 	/**
-	 * To concatenate persons (authors + editors)
-	 */
-	private static final String AND = " and ";
-
-	/**
 	 * Determines, if the parser will stop after the first parsing error 
 	 * or if it tries to parse all and store all warnings. 
 	 */
-	private boolean tryParseAll = false;
-	
-	public void setTryParseAll(boolean tryParseAll) {
-		this.tryParseAll = tryParseAll;
-	}
+	private boolean tryParseAll;
 
+	/**
+	 * If tryParseAll is true, it holds all exceptions caught during the last parse process.
+	 */
+	private ParseException[] caughtExceptions;
+	
+	/**
+	 * inits the warnings list
+	 */
+	public SimpleBibTeXParser() {
+		this.warnings = new LinkedList<String>();
+	}
+	
+	/**
+	 * @return the tryParseAll
+	 */
 	public boolean isTryParseAll() {
 		return this.tryParseAll;
 	}
 
 	/**
-	 * If tryParseAll is true, it holds all exceptions caught during the last parse process.
+	 * @param tryParseAll the tryParseAll to set
 	 */
-	private ParseException[] caughtExceptions = null;
-	
-	
-	
+	public void setTryParseAll(boolean tryParseAll) {
+		this.tryParseAll = tryParseAll;
+	}
+
+	/**
+	 * @return the caughtExceptions
+	 */
 	public ParseException[] getCaughtExceptions() {
 		return this.caughtExceptions;
 	}
 
+	/**
+	 * @param caughtExceptions the caughtExceptions to set
+	 */
 	public void setCaughtExceptions(ParseException[] caughtExceptions) {
 		this.caughtExceptions = caughtExceptions;
 	}
@@ -116,12 +124,8 @@ public class SimpleBibTeXParser {
 		this.warnings.clear();
 	}
 
-
-	public SimpleBibTeXParser() {
-		this.warnings = new LinkedList<String>();
-	}
-
-	/** Parses one BibTeX entry into a {@link BibTex} object.
+	/**
+	 * Parses one BibTeX entry into a {@link BibTex} object.
 	 * 
 	 * @param bibtex - the BibTeX entry as string.
 	 * @return The filled {@link BibTex} object.
@@ -131,14 +135,21 @@ public class SimpleBibTeXParser {
 	 * @throws IOException
 	 */
 	public BibTex parseBibTeX (final String bibtex) throws ParseException, IOException {
-		final List<BibTex> list = parseInternal(bibtex, true);
+		final List<BibTex> list = this.parseInternal(bibtex, true);
 		if (list.size() > 0)
 			return list.get(0);
 		return null;
 	}
 
+	/**
+	 * TODO: improve documentation
+	 * @param bibtex
+	 * @return TODO
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public List<BibTex> parseBibTeXs (final String bibtex) throws ParseException, IOException { 
-		return parseInternal(bibtex, false);
+		return this.parseInternal(bibtex, false);
 	}
 
 	private List<BibTex> parseInternal (final String bibtex, final boolean firstEntryOnly) throws ParseException, IOException {
@@ -193,9 +204,9 @@ public class SimpleBibTeXParser {
 					 * topLevelComment = comment.getContent();
 					 */
 					continue;
-				} else {
-					continue;
 				}
+				
+				continue;
 			}
 			/*
 			 * add entry to result list
@@ -208,7 +219,8 @@ public class SimpleBibTeXParser {
 				return result;
 			}
 		}
-		setCaughtExceptions(parser.getExceptions());
+		
+		this.setCaughtExceptions(parser.getExceptions());
 		return result;
 	}
 
@@ -251,7 +263,7 @@ public class SimpleBibTeXParser {
 	 */
 	protected BibTex fillBibtexFromEntry(final BibtexEntry entry) {
 		final BibTex bibtex = new BibTex();
-
+		
 		/* ************************************************
 		 * process non standard bibtex fields 
 		 * ************************************************/
@@ -259,7 +271,8 @@ public class SimpleBibTeXParser {
 		/*
 		 * get set of all current fieldnames - like address, author etc. 
 		 */
-		final ArrayList<String> nonStandardFieldNames = new ArrayList<String>(entry.getFields().keySet());
+		@SuppressWarnings("unchecked")
+		final List<String> nonStandardFieldNames = new ArrayList<String>(entry.getFields().keySet());
 		/*
 		 * remove standard fields from list to retrieve nonstandard ones
 		 * 
@@ -269,7 +282,7 @@ public class SimpleBibTeXParser {
 		nonStandardFieldNames.removeAll(StandardBibTeXFields.getStandardBibTeXFields());
 
 		// iter over arraylist to retrieve nonstandard field values
-		final StringBuffer miscBuffer = new StringBuffer();
+		final StringBuilder miscBuffer = new StringBuilder();
 		for (final String key:nonStandardFieldNames) {
 			final String value = ((BibtexString) entry.getFieldValue(key)).getContent();
 			miscBuffer.append(key + " = {"	+ value + "},\n");
@@ -353,17 +366,16 @@ public class SimpleBibTeXParser {
 		 * 
 		 * FIXME: add a test for this!
 		 */
-		field = (BibtexString) entry.getFieldValue("comment");	if (field != null) bibtex.setPrivnote(field.getContent().replace("(private-note)", ""));
+		field = (BibtexString) entry.getFieldValue("comment");
+		if (field != null) bibtex.setPrivnote(field.getContent().replace("(private-note)", ""));
 		/*
 		 * we export our private notes as "privnote" - add it here
 		 */
-		field = (BibtexString) entry.getFieldValue("privnote");	if (field != null) bibtex.setPrivnote(field.getContent());
+		field = (BibtexString) entry.getFieldValue("privnote");
+		if (field != null) bibtex.setPrivnote(field.getContent());
 		
 		return bibtex;
-	}
-	
-	
-	
+	}	
 
 	/** Extracts all persons from the given field value and concatenates their names
 	 * with {@value #AND}.
@@ -376,11 +388,12 @@ public class SimpleBibTeXParser {
 			/*
 			 * cast into a person list and extract the persons
 			 */
+			@SuppressWarnings("unchecked") // getList specified to return a list of BibtexPersons
 			final List<BibtexPerson> personList = ((BibtexPersonList) fieldValue).getList();
 			/*
 			 * result buffer
 			 */
-			final StringBuffer personBuffer = new StringBuffer();
+			final StringBuilder personBuffer = new StringBuilder();
 			/*
 			 * build person names
 			 */
@@ -400,7 +413,7 @@ public class SimpleBibTeXParser {
 				 * and only change the order in the JSPs.
 				 *  
 				 */
-				final StringBuffer personName = new StringBuffer();
+				final StringBuilder personName = new StringBuilder();
 				/*
 				 * first name
 				 */
@@ -424,13 +437,13 @@ public class SimpleBibTeXParser {
 				/*
 				 * next name
 				 */
-				personBuffer.append(personName.toString().trim() + AND);
+				personBuffer.append(personName.toString().trim() + PersonNameUtils.PERSON_NAME_DELIMITER);
 			}
 			/* 
 			 * remove last " and " 
 			 */
-			if (personBuffer.length() > AND.length()) {
-				return personBuffer.substring(0, personBuffer.length() - AND.length());
+			if (personBuffer.length() > PersonNameUtils.PERSON_NAME_DELIMITER.length()) {
+				return personBuffer.substring(0, personBuffer.length() - PersonNameUtils.PERSON_NAME_DELIMITER.length());
 			} 
 		}
 		return null;

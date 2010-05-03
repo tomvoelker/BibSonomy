@@ -37,8 +37,12 @@ import java.util.Set;
 public class StandardBibTeXFields {
 
 	private final static Set<String> standardBibTeXFields = new HashSet<String>();
-
+	private final static Set<String> standardBibSonomyFields = new HashSet<String>();
+	
 	static {
+		/*
+		 * standard BibTeX fields
+		 */
 		standardBibTeXFields.add("abstract");
 		standardBibTeXFields.add("address");
 		standardBibTeXFields.add("annote");
@@ -66,14 +70,12 @@ public class StandardBibTeXFields {
 		standardBibTeXFields.add("url");
 		standardBibTeXFields.add("volume");
 		standardBibTeXFields.add("year");
-	}
-	
-	
-	private final static Set<String> standardBibSonomyFields = new HashSet<String>();
-
-	static {
+		
+		/*
+		 * the standard BibSonomy fields
+		 */
 		standardBibSonomyFields.addAll(standardBibTeXFields);
-	
+		
 		// added, because otherwise "day" will go to "misc"
 		standardBibSonomyFields.add("day");
 		// standard fields for bibsonomy
@@ -86,14 +88,16 @@ public class StandardBibTeXFields {
 		standardBibSonomyFields.add("biburl");   // added because this way it is not added to "misc"
 	}
 
-
+	/**
+	 * @return the {@link StandardBibTeXFields#standardBibSonomyFields}
+	 */
 	public static Set<String> getStandardBibSonomyFields() {
 		return standardBibSonomyFields;
 	}
 	
-
-
-
+	/**
+	 * @return the {@link StandardBibTeXFields#standardBibTeXFields}
+	 */
 	public static Set<String> getStandardBibTeXFields() {
 		return standardBibTeXFields;
 	}
