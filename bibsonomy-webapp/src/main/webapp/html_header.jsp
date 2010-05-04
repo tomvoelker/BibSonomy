@@ -42,7 +42,9 @@
 	<script type="text/javascript" src="/resources/javascript/jquery_corner.js"></script>
 	<script type="text/javascript" src="/resources/javascript/jquery_autocomplete.js"></script>    
 	<script type="text/javascript" src="/resources/javascript/jquery_textarea_autoresize.js"></script>  
-
+    <c:if test="${projectName == 'PUMA'}">
+		<link rel="stylesheet" type="text/css" href="/resources_puma/css/puma.css">
+    </c:if> 
     
     <%-- enable logging with user permission --%>
     <c:if test="${user.logLevel != 1}">
@@ -94,6 +96,11 @@
   </div>
 
   <div id="main">
+
+    <c:if test="${projectName == 'PUMA'}">
+		<img id="headerlogoimage" src="/resources_puma/image/puma_2b_comic_150_3.png">
+	</c:if>
+	  
 	<div id="main_header">
 	
 		<!-- Navigation -->
