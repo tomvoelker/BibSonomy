@@ -104,7 +104,7 @@ public class EmailPostingService {
 		/*
 		 * getting DB access
 		 */
-		log.info("getting database access");
+		log.info("getting database access for user " + email.getTo().getUsername());
 		final LogicInterface logic;
 		final LogicFactory logicFactory = new LogicFactory(email.getTo(), email.getFrom());
 		if (directDatabaseAccess) {
