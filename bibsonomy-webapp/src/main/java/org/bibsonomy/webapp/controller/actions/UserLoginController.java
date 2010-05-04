@@ -278,6 +278,13 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 				cookieLogic.addUserCookie(bibsonomyUsername, ldapUserinfo.getPasswordHashMd5Hex());
 
 				/*
+				 * update password
+				 */
+				
+				user.setPassword(ldapUserinfo.getPasswordHashMd5Hex());
+				adminLogic.updateUser(user, UserUpdateOperation.UPDATE_PASSWORD);
+
+				/*
 				 * update lastAccessTimestamp
 				 */
 				adminLogic.updateUser(user, UserUpdateOperation.UPDATE_LDAP_TIMESTAMP);
