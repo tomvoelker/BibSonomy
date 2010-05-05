@@ -36,7 +36,8 @@ public class GetTagsByAuthor extends TagChainElement {
 	@Override
 	protected boolean canHandle(final TagParam param) {
 		return (SearchEntity.AUTHOR.equals(param.getSearchEntity()) &&
-		        param.getGrouping() == GroupingEntity.ALL &&
+		        ( (param.getGrouping() == GroupingEntity.ALL  )|| 
+		          (param.getGrouping() == GroupingEntity.GROUP && present(param.getRequestedGroupName())) ) &&
 				!present(param.getTagIndex()) &&
 				!present(param.getBibtexKey()) &&
 				present(param.getSearch()));
