@@ -187,8 +187,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return a list of posts
 	 */
-	public List<Post<R>> getPostsByConceptForGroup(final String requestedGroupName, final List<TagIndex> tagIndex, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
-		final P param = this.createParam(limit, offset);
+	public List<Post<R>> getPostsByConceptForGroup(final String loginUser, final List<Integer> visibleGroupIDs, final String requestedGroupName, final List<TagIndex> tagIndex, final int limit, final int offset, final Collection<SystemTag> systemTags, final DBSession session) {
+		final P param = this.createParam(loginUser, null, limit, offset);
+		param.setGroups(visibleGroupIDs);
 		param.setRequestedGroupName(requestedGroupName);
 		param.setTagIndex(tagIndex);
 		param.addAllToSystemTags(systemTags);
@@ -196,6 +197,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.postList("get" + this.resourceClassName + "ByConceptForGroup", param, session);
 	}
+
 
 	/**
 	 * <em>/concept/user/MaxMustermann/EinTag</em><br/><br/>
