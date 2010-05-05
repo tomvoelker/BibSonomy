@@ -567,15 +567,22 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 * requestedUserName must be set
 	 * tagIndex must be set
 	 */
+	
 	@Test
 	public void getBookmarksByConceptForGroup() {
 		final BookmarkParam param = new BookmarkParam();
-		param.addSimpleConceptName("suchmaschine");
-		param.setRequestedGroupName(TESTUSER1_NAME);
-		param.setGroups(new ArrayList<Integer>());
+		param.setUserName("testuser1");
+		//param.setRequestedUserName("testuser1");
+		param.setGroupId(-1);
+		param.setGrouping(GroupingEntity.GROUP);
+		param.addSimpleConceptName("apple");
+		param.setRequestedGroupName("testgroup2");
+		param.setGroups(Arrays.asList(0, 4));
+		
 		
 		final List<Post<Bookmark>> posts = bookmarkDb.getPosts(param, this.dbSession);
-		assertEquals(3, posts.size());
+		
+		assertEquals(1, posts.size());
 	}
 	
 	/**
