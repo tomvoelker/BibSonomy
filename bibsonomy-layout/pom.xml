@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>JabRef</groupId>
 			<artifactId>JabRef</artifactId>
-			<version>2.4.3-18</version>
+			<version>2.4.3-20</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

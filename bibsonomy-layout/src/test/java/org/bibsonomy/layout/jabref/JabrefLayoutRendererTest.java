@@ -31,7 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import net.sf.jabref.BibtexEntry;
-import net.sf.jabref.BibtexEntryImpl;
 import net.sf.jabref.BibtexEntryType;
 import net.sf.jabref.bst.VM;
 
@@ -118,7 +117,7 @@ public class JabrefLayoutRendererTest {
 			VM vm = new VM(bst);
 			
 			final List<BibtexEntry> bibtexs = new LinkedList<BibtexEntry>();
-			final BibtexEntry entry = new BibtexEntryImpl();
+			final BibtexEntry entry = new BibtexEntry();
 			
 			entry.setField("title", "Als ich ein kleiner Junge war");
 			entry.setField("author", "Erich Kästner");

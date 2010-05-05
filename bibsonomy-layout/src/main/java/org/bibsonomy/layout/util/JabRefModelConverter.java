@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Set;
 
 import net.sf.jabref.BibtexEntry;
-import net.sf.jabref.BibtexEntryImpl;
 import net.sf.jabref.BibtexEntryType;
 import net.sf.jabref.JabRefPreferences;
 
@@ -49,7 +48,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.ValidationUtils;
 
@@ -121,7 +119,7 @@ public class JabRefModelConverter {
 			/*
 			 * what we want
 			 */
-			final BibtexEntry entry = new BibtexEntryImpl();
+			final BibtexEntry entry = new BibtexEntry();
 			/*
 			 * we use introspection to get all fields ...
 			 */
