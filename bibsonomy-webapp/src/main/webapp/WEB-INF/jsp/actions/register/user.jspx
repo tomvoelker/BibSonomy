@@ -23,59 +23,87 @@
           <fmt:message key="navi.register"/>
         </jsp:attribute>
       
+      	<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/fsform.css" />
+		</jsp:attribute>
         
         <jsp:attribute name="content">
 
           <div id="general">
 
+
             <form:form action="/register" method="POST">
+		        <errors:global errors="${errors}"/>             
 
-              <errors:global errors="${errors}"/>             
-
-              <table>
-                <tr>
-                  <td><form:label path="registerUser.name" ><fmt:message key="navi.username"/>:</form:label></td>
-                  <td><form:input path="registerUser.name" /><form:errors cssClass="errmsg" path="registerUser.name" /></td>
-                </tr>
-
-                <tr>
-                  <td><form:label path="registerUser.realname" ><fmt:message key="user.settings.realname"/>:</form:label></td>
-                  <td><form:input path="registerUser.realname" /><form:errors cssClass="errmsg" path="registerUser.realname" /></td>
-                </tr>
-
-                <tr>
-                  <td><form:label path="registerUser.email" ><fmt:message key="user.settings.email"/>:</form:label></td>
-                  <td><form:input path="registerUser.email" /><form:errors cssClass="errmsg" path="registerUser.email" /></td>
-                </tr>
-      
-                <tr>
-                  <td><form:label path="registerUser.homepage" ><fmt:message key="user.settings.homepage"/>:</form:label></td>
-                  <td><form:input path="registerUser.homepage" /><form:errors cssClass="errmsg" path="registerUser.homepage" /></td>
-                </tr>
-
-                <tr>
-                  <td><form:label path="registerUser.password" ><fmt:message key="navi.password"/>:</form:label></td>
-                  <td><form:password path="registerUser.password" /><form:errors cssClass="errmsg" path="registerUser.password" /></td>
-                </tr>
-
-                <tr>
-                  <td><form:label path="passwordCheck" ><fmt:message key="user.settings.passwordCheck"/>:</form:label></td>
-                  <td><form:password path="passwordCheck" /><form:errors cssClass="errmsg" path="passwordCheck" /></td>
-                </tr>
-
-                <tr>
-                  <td><form:label path="recaptcha_response_field" ><fmt:message key="captcha"/>:</form:label></td>
-                  <td>${command.captchaHTML}<form:errors cssClass="errmsg" path="recaptcha_response_field" /></td>
-                </tr>
-
-                <tr>
-                  <td colspan="3">
-                    <input type="hidden" name="ckey" value="${command.context.ckey}"/>
-                    <fmt:message key="navi.register" var="submit"/>
-                    <input type="submit" value="${submit}" />
-                  </td>
-                </tr>
-              </table>
+				<fieldset class="fsOuter">
+				
+					<fieldset class="fsInner">
+						<legend><fmt:message key="register.personal"/></legend>
+						
+						<div class="fsRow">
+			  				<form:label cssClass="fsLabel" path="registerUser.name" ><fmt:message key="navi.username"/>*</form:label>
+			  				<form:input cssClass="fsInput reqinput" path="registerUser.name" tabindex="2"/>
+			  				<div class="dissError"><form:errors path="registerUser.name" /></div>
+            			</div>
+            			
+            			<div class="fsRow">
+			  				<form:label cssClass="fsLabel" path="registerUser.password" ><fmt:message key="navi.password"/>*</form:label>
+			  				<form:password cssClass="fsInput reqinput" path="registerUser.password" tabindex="2"/>
+			  				<div class="dissError"><form:errors path="registerUser.password" /></div>
+            			</div>
+            	
+            			<div class="fsRow">
+			  				<form:label cssClass="fsLabel" path="passwordCheck" ><fmt:message key="user.settings.passwordCheck"/>*</form:label>
+			  				<form:password cssClass="fsInput reqinput" path="passwordCheck" tabindex="2"/>
+			  				<div class="dissError"><form:errors path="passwordCheck" /></div>
+            			</div>
+            		
+            			<div class="fsRow">
+			  				<form:label cssClass="fsLabel" path="registerUser.email" ><fmt:message key="user.settings.email"/>*</form:label>
+			  				<form:input cssClass="fsInput reqinput" path="registerUser.email" tabindex="2"/>
+			  				<div class="dissError"><form:errors path="registerUser.email" /></div>
+            			</div>
+            		</fieldset>
+            		
+            		
+            		<fieldset class="fsInner">
+						<legend><fmt:message key="register.additional"/></legend>
+              	
+              			<div class="fsRow">
+			  				<form:label cssClass="fsLabel" path="registerUser.homepage" ><fmt:message key="user.settings.homepage"/></form:label>
+			  				<form:input cssClass="fsInput" path="registerUser.homepage" tabindex="2"/>
+			  				<div class="dissError"><form:errors path="registerUser.homepage" /></div>
+            			</div>
+            			
+            			<div class="fsRow">
+			  				<form:label cssClass="fsLabel" path="registerUser.realname" ><fmt:message key="user.settings.realname"/></form:label>
+			  				<form:input cssClass="fsInput" path="registerUser.realname" tabindex="2"/>
+			  				<div class="dissError"><form:errors path="registerUser.realname" /></div>
+            			</div>
+            		</fieldset>
+            		
+            		<fieldset class="fsInner">
+						<legend><fmt:message key="register.captchaAndPrivacy"/></legend>
+              
+						<div class="fsRow">
+			  				<form:label cssClass="fsLabel" path="recaptcha_response_field" ><fmt:message key="captcha"/>*</form:label>
+			  				${command.captchaHTML} 
+			  				<div class="dissError"><form:errors path="recaptcha_response_field" /></div>
+            			</div>
+             		
+             			<div class="fsRow">
+			  				<form:label cssClass="fsLabel" path="acceptPrivacy" ><fmt:message key="register.acceptPrivacy"/>*</form:label>
+			  				<form:checkbox path="acceptPrivacy" value="yes"/>
+			  				<div class="dissError"><form:errors path="acceptPrivacy" /></div>
+            			</div>
+             
+             			<div class="clearfloat p">
+             				<input type="hidden" name="ckey" value="${command.context.ckey}"/>	
+		                    <fmt:message key="navi.register" var="submit"/>
+        		            <input type="submit" value="${submit}" />
+	             		</div>
+	             	</fieldset>
+	             </fieldset>	
             </form:form>
             
             <p style="font-size: 0.9em;">
@@ -87,6 +115,27 @@
           </div>
       
       </jsp:attribute>
+      
+      <jsp:attribute name="beforeBodyClose">
+          <script type="text/javascript">
+             //<mtl:cdata>
+             <![CDATA[
+                // vanishing error boxes
+                $(".dissError").mouseover(function() {
+                  $(this).fadeOut('slow');
+                });
+                $(".dissError").change(function() {
+                    $(this).fadeOut('slow');
+                  });
+                $("#command fieldset input").focus(function() {
+                  $(this).parent("fieldset").find('.dissError').not(':hidden').fadeOut('slow');
+                });
+                $(".dissError:empty").hide("1");
+             ]]> 
+             //</mtl:cdata>
+          </script>
+       
+       </jsp:attribute>
       
   </layout:layout>
   

@@ -89,6 +89,12 @@ public class UserRegistrationValidator implements Validator<UserRegistrationComm
 		}
 
 		/*
+		 * check that the user accepts our privacy statement
+		 */
+		if (!command.isAcceptPrivacy()) {
+			errors.rejectValue("acceptPrivacy", "error.field.valid.acceptPrivacy");
+		}
+		/*
 		 * check, that challenge response is given
 		 */
 		ValidationUtils.rejectIfEmptyOrWhitespace(errors, "recaptcha_response_field", "error.field.required");

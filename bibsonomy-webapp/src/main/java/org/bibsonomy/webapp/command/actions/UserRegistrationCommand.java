@@ -39,7 +39,10 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	 * The response to the captcha, the user entered.
 	 */
 	private String recaptcha_response_field;
-	
+	/**
+	 * User accepts our privacy statement and AGB.
+	 */
+	private boolean acceptPrivacy;
 	
 	
 
@@ -87,6 +90,16 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 
 	public void setPasswordCheck(String passwordCheck) {
 		this.passwordCheck = passwordCheck;
+	}
+
+	public boolean isAcceptPrivacy() {
+		return this.acceptPrivacy;
+	}
+	public boolean getAcceptPrivacy() {
+		return this.acceptPrivacy;
+	}
+	public void setAcceptPrivacy(boolean acceptPrivacy) {
+		this.acceptPrivacy = acceptPrivacy;
 	}
 
 }
