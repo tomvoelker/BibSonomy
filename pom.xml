@@ -322,6 +322,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-changes-plugin</artifactId>
+				<version>2.3</version>
 				<configuration>
 					<issueLinkTemplate>
 						%URL%/index.php?func=detail&amp;aid=%ISSUE%&amp;group_id=52&amp;atid=278
