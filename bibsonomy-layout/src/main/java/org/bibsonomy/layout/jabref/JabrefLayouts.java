@@ -23,6 +23,8 @@
 
 package org.bibsonomy.layout.jabref;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -259,6 +261,7 @@ public class JabrefLayouts {
 		}
 	}
 
+	@Override
 	public String toString() {
 		return layouts.toString();
 	}
@@ -275,7 +278,7 @@ public class JabrefLayouts {
 		 * check if custom filter exists
 		 */
 		final String userLayoutName = JabrefLayoutUtils.userLayoutName(userName);
-		if (!layouts.containsKey(userLayoutName)) {
+		if (present(userName) && !layouts.containsKey(userLayoutName)) {
 			/*
 			 * custom filter of current user is not loaded yet -> check if a filter exists at all
 			 */
