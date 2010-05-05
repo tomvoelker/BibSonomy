@@ -101,7 +101,8 @@ INSERT INTO `bookmark` (`content_id`, `book_url_hash`, `book_description`, `book
 (9, '294a9e1d594297e7bb9da9e11229c5d7', 'fireball.com',             'fireball',                  1, '1815-12-10 00:00:00', 'testuser1', 0, '2008-01-29 10:36:06', 0),
 (10, '85ab919107e4cc79b345e996b3c0b097', 'kde', 					'KDE Page', 				 0, '1815-12-10 00:00:00', 'testuser4', 0, '2008-01-29 12:36:06', 0),
 (11, '85ab919107e4cc79b345e996b3c0b097', 'kde', 					'KDE Page', 				 2, '1815-12-10 00:00:00', 'testuser4', 0, '2008-01-29 15:36:06', 0),
-(15, '10ab297107e4bb79b345e406b3c2a087', 'kde.uni-kassel.de',		'KDE Uni Kassel Page',		 3, '1815-12-10 00:00:00', 'testuser1', 0, '2010-03-22 16:00:00', 0);
+(15, '10ab297107e4bb79b345e406b3c2a087', 'kde.uni-kassel.de',		'KDE Uni Kassel Page',		 3, '1815-12-10 00:00:00', 'testuser1', 0, '2010-03-22 16:00:00', 0),
+(16, '2574200000e4bb79b100e406b777a044', 'wm2010.com',				'WM2010',					 3, '1815-12-10 00:00:00', 'testuser1', 0, '2010-03-22 16:00:00', 0);
 
 
 -- 
@@ -357,8 +358,10 @@ INSERT INTO `tags` (`tag_id`, `tag_name`, `tag_stem`, `tag_ctr`, `tag_ctr_public
 (17, 'bibtexgroup',   '', 1, 1, 0),
 (18, 'privatebibtex', '', 1, 1, 0),
 (19, 'friendbibtex',  '', 1, 1, 0),
-(20, 'amazon',  '', 1, 1, 0),
-(21, 'tomcat',  '', 1, 1, 0);
+(20, 'amazon',  	  '', 1, 1, 0),
+(21, 'tomcat',        '', 1, 1, 0),
+(22, 'weltmeisterschaft', '', 1, 1, 0);
+
 
 
 
@@ -442,7 +445,8 @@ INSERT INTO `tas` (`tas_id`, `tag_name`, `tag_lower`, `content_id`, `content_typ
 (27, 'suchmaschine',   'suchmaschine',  2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:19:51'),
 (28, 'google',         'google',        2, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
 (29, 'tomcat',         'tomcat',        15, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
-(30, 'amazon',         'amazon',        15, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17');
+(30, 'amazon',         'amazon',        15, 1, 'testuser1',   '1815-12-10 00:00:00', 0, '2008-01-18 10:20:17'),
+(31, 'weltmeisterschaft', 'weltmeisterschaft', 16, 1, 'testuser1',   '1815-12-10 00:00:00', 3, '2008-01-18 10:20:17');
 
 
 
@@ -480,7 +484,8 @@ INSERT INTO `urls` (`book_url_hash`, `book_url`, `book_url_ctr`) VALUES
 ('b7aa3a91885e432c6c95bec0145c3968', 'http://www.friendscout24.de', 1),
 ('85ab919107e4cc79b345e996b3c0b097', 'http://www.ard.de', 2),
 ('e9ea2574c49c3778f166e8b4b6ed63dd', 'http://www.apple.com\r\n', 1),
-('10ab297107e4bb79b345e406b3c2a087', 'http://www.cs.uni-kassel.de', 1);
+('10ab297107e4bb79b345e406b3c2a087', 'http://www.cs.uni-kassel.de', 1),
+('2574200000e4bb79b100e406b777a044', 'http://www.wm2010.com', 1);
 
 
 
