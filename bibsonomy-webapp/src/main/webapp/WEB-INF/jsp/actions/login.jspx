@@ -27,15 +27,17 @@
         <jsp:attribute name="content">
 
           <div id="general">
-            <c:if test="${not empty command.notice}">
-              <div style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
-                <fmt:message key="login.notice.welcome_1"/> <a style="font-weight: bold;" href="/">${projectName}</a>, <fmt:message key="login.notice.welcome_2"/>
-                <br/><br/>
-                <b><fmt:message key="${command.notice}"/></b>
-                <br/><br/>
-                <fmt:message key="login.notice.welcome_3"/><c:out value=" "/><a style="font-weight:bold;" href="/register"><fmt:message key="login.notice.welcome_4"/></a>.
-              </div>
-            </c:if>
+          	<mtl:exists path="command.notice">
+            	<c:if test="${not empty command.notice}">
+              		<div style="border:1px solid #006699; padding: 1em; margin-bottom: 1em;">
+                		<fmt:message key="login.notice.welcome_1"/> <a style="font-weight: bold;" href="/">${projectName}</a>, <fmt:message key="login.notice.welcome_2"/>
+                		<br/><br/>
+                		<b><fmt:message key="${command.notice}"/></b>
+                		<br/><br/>
+                		<fmt:message key="login.notice.welcome_3"/><c:out value=" "/><a style="font-weight:bold;" href="/register"><fmt:message key="login.notice.welcome_4"/></a>.
+              		</div>
+            	</c:if>
+            </mtl:exists>
 
 		   <!-- show global error messages -->
            <errors:global errors="${errors}"/>             
