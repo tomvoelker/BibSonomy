@@ -26,7 +26,7 @@ Date: Fri, 30 Apr 2010 15:14:06 +0200
 From: =?ISO-8859-15?Q?John_D=E4e?= <johndoe@cs.uni-kassel.de>
 User-Agent: Mozilla-Thunderbird 2.0.0.22 (X11/20090707)
 MIME-Version: 1.0
-To: =?ISO-8859-15?Q?John_D=E4e?= BibSonomy Posting <johndoe-99cafad8ce2afb5879c6c85c14cc5259+private@api.bibsonomy.org>
+To: =?ISO-8859-15?Q?John_D=E4e?= BibSonomy Posting <johndoe-99cafad8ce2afb5879c6c85c14cc5259+private@posts.bibsonomy.org>
 Subject: social dagsocial todo
 X-Enigmail-Version: 0.95.0
 Content-Type: text/plain; charset=ISO-8859-15
@@ -39,7 +39,10 @@ X-GMX-Antispam: 0 (Mail was not recognized as spam);
 X-GMX-UID: lOLocz5rPjlsSD87PjU2Ay8zMTE2NYlM
 
 
+
+
 http://twitris.knoesis.org/
+
 http://kenai.com/projects/community-equity
 
 - --

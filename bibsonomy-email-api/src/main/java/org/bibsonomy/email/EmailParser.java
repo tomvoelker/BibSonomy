@@ -156,6 +156,8 @@ public class EmailParser {
 		while ((line = reader.readLine()) != null) {
 			if (line.startsWith(BODY_HTTP)) {
 				urls.add(line.trim());
+			} else if (line.trim().isEmpty()) {
+				// ignore empty lines
 			} else {
 				/*
 				 * if we have found at least one URL, we stop after
