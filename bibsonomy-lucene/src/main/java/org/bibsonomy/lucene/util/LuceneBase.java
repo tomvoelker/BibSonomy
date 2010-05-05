@@ -48,10 +48,10 @@ public class LuceneBase {
 	
 	/** the naming context for lucene classes */
 	public static final String CONTEXT_ENV_NAME    = "java:/comp/env";
-	/** naming context for variables */
-	public static final String CONTEXT_INDEX_PATH  = "luceneIndexPath";
-	/** context variable determining whether lucene should update the index */
-	public static final String CONTEXT_ENABLE_FLAG = "enableLuceneUpdater";
+//	/** naming context for variables */
+//	public static final String CONTEXT_INDEX_PATH  = "luceneIndexPath";
+//	/** context variable determining whether lucene should update the index */
+//	public static final String CONTEXT_ENABLE_FLAG = "enableLuceneUpdater";
 	/** context variable containing lucene's configuration */
 	public static final String CONTEXT_CONFIG_BEAN = "luceneConfig";
 		
@@ -106,9 +106,9 @@ public class LuceneBase {
 	 */
 	protected static void initRuntimeConfiguration() {
 		try {
-			Context initContext = new InitialContext();
-			Context envContext  = (Context) initContext.lookup(CONTEXT_ENV_NAME);
-			LuceneConfig config = (LuceneConfig)envContext.lookup(CONTEXT_CONFIG_BEAN);
+			final Context initContext = new InitialContext();
+			final Context envContext  = (Context) initContext.lookup(CONTEXT_ENV_NAME);
+			final LuceneConfig config = (LuceneConfig)envContext.lookup(CONTEXT_CONFIG_BEAN);
 			
 			// index base path
 			setIndexBasePath(config.getIndexPath());
@@ -157,7 +157,7 @@ public class LuceneBase {
 			setEnableUpdater(Boolean.valueOf(config.getEnableUpdater()));
 			loadIndexIntoRam = Boolean.valueOf(config.getLoadIndexIntoRam());
 		} catch (Exception e) {
-			log.error("Error requesting JNDI environment variables ' ("+e.getMessage()+")");
+			log.error("Error requesting JNDI environment variables", e);
 		}
 		
 		// done - print out debug information
