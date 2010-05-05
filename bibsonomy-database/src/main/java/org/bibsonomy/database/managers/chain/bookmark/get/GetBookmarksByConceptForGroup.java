@@ -21,11 +21,12 @@ public class GetBookmarksByConceptForGroup extends BookmarkChainElement {
 
 	@Override
 	protected List<Post<Bookmark>> handle(final BookmarkParam param, final DBSession session) {
-		return this.db.getPostsByConceptForGroup(param.getRequestedGroupName(), param.getTagIndex(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
+		return this.db.getPostsByConceptForGroup(param.getUserName(), param.getGroups(), param.getRequestedGroupName(), param.getTagIndex(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 	}
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
+		
 		return (param.getGrouping() == GroupingEntity.GROUP &&
 				present(param.getRequestedGroupName()) &&
 				present(param.getTagIndex()) &&
@@ -35,5 +36,6 @@ public class GetBookmarksByConceptForGroup extends BookmarkChainElement {
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
 				!present(param.getSearch()));
+		
 	}
 }
