@@ -28,8 +28,11 @@ public class DatabaseSchemaInformation {
 	private static final Log log = LogFactory.getLog(DatabaseSchemaInformation.class);
 	
 	private static final String BIBTEX_COMMON_ID = "BibTexCommon.bibtex_common";
+	private static final String USER_COMMON_ID = "UserCommon.user";
 	private static final String BIBTEX_DATABASE_NAME = "bibtex";
+	private static final String USER_DATABASE_NAME = "user";
 	private static final String COLUMN_SIZE = "COLUMN_SIZE";
+	
 	
 	private static final Map<Class<?>, Map<String, Integer>> fieldLength = new HashMap<Class<?>, Map<String,Integer>>();
 	
@@ -38,6 +41,7 @@ public class DatabaseSchemaInformation {
 		 * get the max field lengths
 		 */
 		getMaxFieldLengths(BIBTEX_COMMON_ID, BIBTEX_DATABASE_NAME);
+		getMaxFieldLengths(USER_COMMON_ID, USER_DATABASE_NAME);
 	}
 
 	private static void getMaxFieldLengths(final String mappingId, final String tableName) {
