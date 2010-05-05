@@ -184,7 +184,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		} catch (final Exception ex) {
 			response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 			errors.reject("error.internal", new Object[]{ex}, "Internal Server Error: " + ex.getMessage());
-			log.error("Could not complete controller (general exception) for request /" + request.getRequestURI() + "?" + request.getQueryString(), ex);
+			log.error("Could not complete controller (general exception) for request /" + request.getRequestURI() + "?" + request.getQueryString() + " with referer " + request.getHeader("Referer"), ex);
 		}
 		
 		log.debug("Exception catching block passed, putting comand+errors into model.");
