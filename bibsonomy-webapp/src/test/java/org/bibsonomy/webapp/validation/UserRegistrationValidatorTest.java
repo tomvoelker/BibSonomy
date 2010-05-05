@@ -107,7 +107,7 @@ public class UserRegistrationValidatorTest {
 		command.setRegisterUser(validUser);
 		command.setPasswordCheck("foo");
 		command.setRecaptcha_response_field("response");
-		
+		command.setAcceptPrivacy(true);
 		
 		assertFalse(errors.hasErrors());
 		
@@ -152,7 +152,7 @@ public class UserRegistrationValidatorTest {
 		command.setRegisterUser(validUser);
 		command.setPasswordCheck("foo");
 		command.setRecaptcha_response_field("response");
-		
+		command.setAcceptPrivacy(true);
 		
 		assertFalse(errors.hasErrors());
 		
