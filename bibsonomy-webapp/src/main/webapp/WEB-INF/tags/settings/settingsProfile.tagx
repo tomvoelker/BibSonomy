@@ -28,14 +28,6 @@
 		
 		<form:form name="account" method="post" action="/updateUserProfile">		
 
-
-		<!-- display potential errors -->
-		<errors:global errors="${errors}"/>
-		
-
-
-
-	
         <h2><fmt:message key="settings.generalInformation" /></h2>		
     
     	<div id="fsform">

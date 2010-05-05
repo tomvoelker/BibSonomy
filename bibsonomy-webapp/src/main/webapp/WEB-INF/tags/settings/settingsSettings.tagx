@@ -28,10 +28,7 @@
 	<fmt:message var="generateapikey" key="settings.generateapikey"/>
 	<fmt:message var="updatesettings" key="settings.updatesettings" />
 	<fmt:message var="deleteaccount" key="settings.deleteaccount" />
-		
-	<!-- display potential errors -->
-	<errors:global errors="${errors}"/>
-		
+				
 	<!-- style settings -->		
 	<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
 	<form:form id="styleSettingsForm" method="POST" action="/updateUserSettings">
