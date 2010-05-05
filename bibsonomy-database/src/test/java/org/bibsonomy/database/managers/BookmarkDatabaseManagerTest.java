@@ -683,7 +683,7 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		 * the id of the post we're testing
 		 */
 		final String userName = "testuser1";
-		final String oldIntraHash = "6f372faea7ff92eedf52f597090a6291";
+		final String oldIntraHash = "2574200000e4bb79b100e406b777a044";
 		/*
 		 * get original post for later comparison
 		 */
