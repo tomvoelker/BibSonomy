@@ -72,6 +72,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 			String group,  
 			String searchTerms, 
 			String requestedUserName, String requestedGroupName, 
+			List<String> groupMembers,
 			String year, String firstYear, String lastYear, 
 			List<String> tagList) {
 		// FIXME: configure this
@@ -112,7 +113,8 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		//--------------------------------------------------------------------
 		// build query
 		//--------------------------------------------------------------------
-		BooleanQuery mainQuery       = new BooleanQuery();
+		BooleanQuery mainQuery        = new BooleanQuery();
+		BooleanQuery groupMemberQuery = new BooleanQuery();
 
 		//--------------------------------------------------------------------
 		// search terms
@@ -145,18 +147,16 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 					);
 		}
 		//--------------------------------------------------------------------
-		// post owned by group
-		// FIXME: this isn't used - what is the difference between 
-		//        'requestedGroupName' and 'group'?
+		// restrict to group members
 		//--------------------------------------------------------------------
-		/*
-		if ( ValidationUtils.present(requestedGroupName) ) {
-			mainQuery.add(
-					new TermQuery(new Term(FLD_GROUP, requestedGroupName)),
-					Occur.MUST
-					);
+		if ( ValidationUtils.present(requestedGroupName) && ValidationUtils.present(groupMembers) ) {
+			for ( String member: groupMembers ) {
+				Query memberQuery = new TermQuery(new Term(FLD_USER, member));
+				groupMemberQuery.add(memberQuery, Occur.SHOULD);
+			}
+			mainQuery.add(groupMemberQuery, Occur.MUST);
 		}
-		*/
+
 		//--------------------------------------------------------------------
 		// post owned by group
 		//--------------------------------------------------------------------

@@ -135,6 +135,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 * @param search
 	 * @param requestedUserName
 	 * @param requestedGroupName
+	 * @param groupMembers group members
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
@@ -144,11 +145,17 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 * @return
 	 */
 	public ResultList<Post<R>> searchAuthor(String group, String search,
-			String requestedUserName, String requestedGroupName, String year,
-			String firstYear, String lastYear, List<String> tagList, int limit,
+			String requestedUserName, String requestedGroupName,  
+			String year, String firstYear, String lastYear, List<String> tagList, int limit,
 			int offset) {
+		//--------------------------------------------------------------------
+		// query bibsonomy's database for missing data
+		//--------------------------------------------------------------------
+		// get given groups members
+		List<String> groupMembers = this.dbLogic.getGroupMembersByGroupName(requestedGroupName);
+		
 		// build query
-		QuerySortContainer authorQuery = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList);
+		QuerySortContainer authorQuery = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, groupMembers, year, firstYear, lastYear, tagList);
 		// perform search query
 		return this.doSearch(authorQuery, limit, offset);
 	}
@@ -231,10 +238,16 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 * @return
 	 */
 	public List<Tag> getTagsByAuthor(String group, String search,
-			String requestedUserName, String requestedGroupName, String year,
-			String firstYear, String lastYear, List<String> tagList) {
+			String requestedUserName, String requestedGroupName, 
+			String year, String firstYear, String lastYear, List<String> tagList) {
+		//--------------------------------------------------------------------
+		// query bibsonomy's database for missing data
+		//--------------------------------------------------------------------
+		// get given groups members
+		List<String> groupMembers = this.dbLogic.getGroupMembersByGroupName(requestedGroupName);
+
 		// build query
-		QuerySortContainer qf = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagList);
+		QuerySortContainer qf = buildAuthorQuery(group, search, requestedUserName, requestedGroupName, groupMembers, year, firstYear, lastYear, tagList);
 		// limit number of posts to consider for building the tag cloud
 		qf.setLimit(getTagCloudLimit());
 		// query index
@@ -679,6 +692,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 *        )  
 	 *        
 	 * FIXME: merge buildFulltextQuery and buildGroupSearchQuery
+	 * FIXME: shouldn't this query also respect 'visible for friends'?
 	 * 
 	 * @param group group name from which posts should be searched
 	 * @param searchTerms search query
@@ -782,6 +796,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 * @param searchTerms
 	 * @param requestedUserName
 	 * @param requestedGroupName
+	 * @param groupMembers group members
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
@@ -792,6 +807,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 			String group,  
 			String searchTerms, 
 			String requestedUserName, String requestedGroupName, 
+			List<String> groupMembers,
 			String year, String firstYear, String lastYear, 
 			List<String> tagList);
 	

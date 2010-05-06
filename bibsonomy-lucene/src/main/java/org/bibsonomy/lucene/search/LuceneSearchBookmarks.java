@@ -40,8 +40,8 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 	@Override
 	protected QuerySortContainer buildAuthorQuery(String group,
 			String searchTerms, String requestedUserName,
-			String requestedGroupName, String year, String firstYear,
-			String lastYear, List<String> tagList) {
+			String requestedGroupName, List<String> groupMembers,
+			String year, String firstYear, String lastYear, List<String> tagList) {
 		throw new UnsupportedOperationException("Author search not available for bookmarks");
 	}
 	

@@ -115,6 +115,7 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @return
 	 */
 	public String getGroupNameByGroupId(int groupId);
+	
 
 	/**
 	 * get given groups members
@@ -123,6 +124,14 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @return
 	 */
 	public List<String> getGroupMembersByGroupId(int groupId);
+
+	/**
+	 * get given group's members
+	 * 
+	 * @param groupName
+	 * @return
+	 */
+	public List<String> getGroupMembersByGroupName(String groupName);
 
 	/**
 	 * get all members of the given group, which have the user as a friend

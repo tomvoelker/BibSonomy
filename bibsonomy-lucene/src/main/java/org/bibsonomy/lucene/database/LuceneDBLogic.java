@@ -182,6 +182,29 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 	}
 
 	/**
+	 * get given group's members
+	 * 
+	 * @param groupName
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List<String> getGroupMembersByGroupName(String groupName) {
+		List<String> retVal = null;
+		
+		try {
+			retVal = (List<String>)this.sqlMap.queryForList("getGroupMembersByGroupName", groupName);
+		} catch (SQLException e) {
+			log.error("Error getting group members", e);
+		}
+		if( retVal==null ) {
+			retVal = new LinkedList<String>();
+		}
+		
+		return retVal;	
+	}
+	
+	
+	/**
 	 * get all members of the given group, which have the user as a friend
 	 * 
 	 * @param groupId
