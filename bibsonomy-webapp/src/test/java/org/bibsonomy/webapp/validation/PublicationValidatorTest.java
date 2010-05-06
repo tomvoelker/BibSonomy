@@ -116,8 +116,8 @@ public class PublicationValidatorTest {
 		valid.validate(posts, errors);
 
 
-		System.out.println("################## global errors");
-		System.out.println(errors.getGlobalErrors());
+//		System.out.println("################## global errors");
+//		System.out.println(errors.getGlobalErrors());
 
 		/*
 		 * FIXME: add Asserts!
