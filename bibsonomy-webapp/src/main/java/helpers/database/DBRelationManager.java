@@ -2,14 +2,17 @@ package helpers.database;
 
 import helpers.constants;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
-import java.sql.*;
-
-import resources.TagRelation;
 import resources.Tag;
+import resources.TagRelation;
 
 
 /**
@@ -25,8 +28,8 @@ public class DBRelationManager extends DBManager {
 	 * the relation already exists)
 	 * see also: http://dev.mysql.com/doc/refman/5.0/en/insert.html
 	 */
-	private static final String SQL_INSERT_TAGREL    = "INSERT IGNORE INTO tagtagrelations (relationID,lower,upper,date_of_create,user_name) VALUES (?,?,?,?,?)";
-	private static final String SQL_DELETE_TAGREL    = "DELETE FROM tagtagrelations WHERE lower=? AND upper=? AND user_name=?;";
+	private static final String SQL_INSERT_TAGREL    = "INSERT IGNORE INTO tagtagrelations (relationID,lower,upper,date_of_create,user_name,lower_lcase, upper_lcase) VALUES (?,?,?,?,?,?,?)";
+	private static final String SQL_DELETE_TAGREL    = "DELETE FROM tagtagrelations WHERE user_name=? AND upper=? AND lower=?;";
 	private static final String SQL_LOG_TAGREL       = "INSERT INTO log_tagtagrelations "
 													 + "(relationID, lower, upper, date_of_create, user_name) "
 													 + "SELECT relationID, lower, upper, date_of_create, user_name FROM tagtagrelations WHERE lower=? AND upper=? AND user_name=?";
@@ -92,6 +95,8 @@ public class DBRelationManager extends DBManager {
 					stmtP_insert_tagrel.setString(3, relation.getUpper());
 					stmtP_insert_tagrel.setTimestamp(4, new Timestamp((new Date()).getTime()) );
 					stmtP_insert_tagrel.setString(5, user);
+					stmtP_insert_tagrel.setString(6, relation.getLower().toLowerCase());
+					stmtP_insert_tagrel.setString(7, relation.getUpper().toLowerCase());
 					stmtP_insert_tagrel.executeUpdate();
 				}
 			}
