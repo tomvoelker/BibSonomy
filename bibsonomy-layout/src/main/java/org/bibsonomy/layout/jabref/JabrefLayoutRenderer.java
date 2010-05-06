@@ -324,7 +324,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		try {
 			return BibtexParser.parse(new StringReader(bibtexStrings.toString())).getDatabase();
 		} catch (final Exception e) {
-			log.fatal("Error parsing BibTeX objects for JabRef output.", e);
+			log.warn("Error parsing BibTeX objects for JabRef output: " + e);
 			throw new LayoutRenderingException("Error parsing BibTeX entries: " + e.getMessage());
 		}
 	}
