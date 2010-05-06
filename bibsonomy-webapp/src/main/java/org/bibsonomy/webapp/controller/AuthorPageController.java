@@ -1,6 +1,5 @@
 package org.bibsonomy.webapp.controller;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -54,6 +53,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		final boolean hasTags = (this.countNonSystemTags(requTags) > 0); 			
 		
 		// check for further system tags
+		// FIXME: how may this happen? http://www.bibsonomy.org/author<tag>/tag
 		final List<String> sysTags = SystemTagsUtil.extractSystemTagsFromString(authorQuery, " ");
 		if (sysTags.size() > 0) {
 			// remove them from the query
@@ -61,11 +61,12 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 			// add them to the tags list
 			requTags.addAll(sysTags);
 		}
+		sysTags.addAll(SystemTagsUtil.extractSystemTags(requTags));
 				
 		// add the requested author as a system tag
-		List<String> sysAuthor = new LinkedList<String>();
-		sysAuthor.add(SystemTagsUtil.buildSystemTagString(SystemTags.AUTHOR, authorQuery));
-		requTags.addAll(sysAuthor);
+		String sysAuthor = SystemTagsUtil.buildSystemTagString(SystemTags.AUTHOR, authorQuery);
+		requTags.add(sysAuthor);
+		sysTags.add(sysAuthor);
 		
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, null, null, requTags, null, 1000, null);
@@ -92,7 +93,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-			this.setTags(command, BibTex.class, groupingEntity, null, null, sysAuthor, null, 1000, null);
+			this.setTags(command, BibTex.class, groupingEntity, null, null, sysTags, null, 1000, null);
 			this.endTiming();
 			if(hasTags){
 				this.setRelatedTags(command, BibTex.class, groupingEntity, null, null, requTags, Order.ADDED, 0, 20, null);
