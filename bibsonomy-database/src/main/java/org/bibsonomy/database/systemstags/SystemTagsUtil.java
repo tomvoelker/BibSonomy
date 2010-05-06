@@ -1,7 +1,9 @@
 package org.bibsonomy.database.systemstags;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -80,6 +82,24 @@ public class SystemTagsUtil {
 						// do nothing - there is no system tag like this in this case
 					}
 				} 		
+			}
+		}
+		
+		return sysTags;
+	}
+	
+	/**
+	 * returns all system tags which are contained in a given collection of tags
+	 * 
+	 * @param tags collection of tags
+	 * @return all system tags which are contained in input tags
+	 */
+	public static List<String> extractSystemTags(Collection<String> tags) {
+		List<String> sysTags = new LinkedList<String>();
+		
+		for( String tag : tags ) {
+			if( isSystemTag(tag) ) {
+				sysTags.add(tag);
 			}
 		}
 		
