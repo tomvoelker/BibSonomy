@@ -7,6 +7,7 @@ import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
+import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTag;
@@ -102,6 +103,9 @@ public class ForFriendTag extends SystemTag {
 
 	/**
 	 * Checks the preconditions to this tags usage, adds errorMessages
+	 * using the tag is allowed, 
+	 * - if the sender is in the friends list of the receiver or 
+	 * - if a group exists that both sender and receiver are a member of
 	 * @param intraHash
 	 * @param session
 	 * @param sender
@@ -109,8 +113,9 @@ public class ForFriendTag extends SystemTag {
 	 * @return true iff sender is allowed to use the tag
 	 */
 	private boolean hasPermissions(final String sender, final String receiver, final String intraHash, final DBSession session) {
-		if (!generalDb.isFriendOf(sender, receiver, session)) {
-			final String defaultMessage = this.getName()+ ": "  + receiver + " does not exist or did not add you as a friend.";
+		GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+		if ( !( generalDb.isFriendOf(sender, receiver, session) || groupDb.getCommonGroups(sender, receiver, session).size()>0 ) ) {
+			final String defaultMessage = this.getName()+ ": "  + receiver + " did not add you as a friend and is not a member of any of your groups.";
 			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.notFriend", new String[]{receiver}));
 			return false;
 		}
