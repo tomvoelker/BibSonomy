@@ -303,7 +303,11 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		if (present(postsToDelete)) {
 			log.debug("deleting "  + postsToDelete.size() + " posts for user " + loginUserName);
-			this.logic.deletePosts(loginUserName, postsToDelete);
+			try {
+				this.logic.deletePosts(loginUserName, postsToDelete);
+			} catch (IllegalStateException e) {
+				// ignore - posts were already deleted
+			}
 		}
 
 		/*
