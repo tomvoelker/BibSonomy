@@ -1,21 +1,21 @@
 /**
- *
+ *  
  *  BibSonomy-Scraper - Web page scrapers returning BibTeX for BibSonomy.
- *
- *  Copyright (C) 2006 - 2010 Knowledge & Data Engineering Group,
+ *   
+ *  Copyright (C) 2006 - 2009 Knowledge & Data Engineering Group, 
  *                            University of Kassel, Germany
  *                            http://www.kde.cs.uni-kassel.de/
- *
+ *  
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU General Public License
  *  as published by the Free Software Foundation; either version 2
  *  of the License, or (at your option) any later version.
- *
+ * 
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- *
+ *  
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -32,9 +32,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -81,8 +81,12 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	
 	private static final Pattern patternBrokenPages = Pattern.compile("(.*pages = \"[0-9]+) - ([0-9]+\".*)", Pattern.DOTALL); 
 	
+	private static final String KEYWORD_DELIMITER = ", ";
+
+	
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SCIENCE_CITATION_HOST), Pattern.compile(SCIENCE_CITATION_PATH + ".*")));
 
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
 
@@ -142,21 +146,25 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 				// merge multiple keyword fields
 				String _bibtex = WebUtils.getPostContentAsString(new URL(SCIENCE_CITATION_URL), postContent, "latin1");
 				final StringBuilder _keywords = new StringBuilder();
-				final String _delim = ", ";
 				
 				Matcher _m = patternKeywords.matcher(_bibtex);
 				
 				while (_m.find()) {
 					_keywords.append(_m.group(1));
-					_keywords.append(_delim);
+					_keywords.append(KEYWORD_DELIMITER);
 					if (_bibtex.contains(_m.group() + ",")) {
 						_bibtex = _bibtex.replace(_m.group() + ",", "");
 					} else {
 						_bibtex = _bibtex.replace(_m.group(), "");
 					}
 				}
-				
-				_keywords.delete(_keywords.lastIndexOf(_delim), _keywords.lastIndexOf(_delim) + 1);
+
+				/*
+				 * remove last comma
+				 */
+				final int indexOfDelim = _keywords.lastIndexOf(KEYWORD_DELIMITER);
+				if (indexOfDelim > 0)
+					_keywords.delete(indexOfDelim, indexOfDelim + 1);
 				
 				// change quotes to curly brackets. it could be possible, that the abstract contains double quotes
 				_m = patternQuoteStart.matcher(_bibtex);
@@ -223,6 +231,7 @@ public class ScienceDirectScraper extends AbstractUrlScraper {
 	}
 
 
+	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}

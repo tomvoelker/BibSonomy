@@ -1060,4 +1060,11 @@
 		<BibFile>IOPScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.iop.IOPScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_179">
+		<TestDescription>URL scraping test with publication from siencedirect</TestDescription>
+		<URL>http://www.sciencedirect.com/science?_ob=ArticleURL&amp;_udi=B6TFN-3YYMK95-X&amp;_user=4861060&amp;_coverDate=03%2F31%2F2000&amp;_rdoc=1&amp;_fmt=high&amp;_orig=search&amp;_sort=d&amp;_docanchor=&amp;view=c&amp;_acct=C000065416&amp;_version=1&amp;_urlVersion=0&amp;_userid=4861060&amp;md5=97f0b3ba3f66fa8a5d57a5b48b0beb8c</URL>
+		<BibFile>ScienceDirectScraperUnitURLTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
+		<Enabled>true</Enabled>
+	</URLTest>
 </test:Tests>
