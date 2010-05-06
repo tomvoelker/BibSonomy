@@ -1,7 +1,5 @@
 <%@include file="include_jsp_head.jsp" %>
 
-<jsp:useBean id="registrationHandlerBean" class="beans.RegistrationHandlerBean" scope="request"/>
-
 <%-- include HTML header --%>
 <jsp:include page="html_header.jsp">
   <jsp:param name="title" value="join group" />
