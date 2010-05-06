@@ -87,7 +87,7 @@ public class LayoutView<LAYOUT extends Layout> extends AbstractView {
 					throw new RuntimeException("No layout for publications renderer available.");
 				}
 			} catch (final LayoutRenderingException e) {
-				log.error("Could not render layout " + layout + ".", e);
+				log.error("Could not render layout " + layout + ": " + e.getMessage());
 				/*
 				 * layout could not be found or contains errors -> set HTTP status to 400
 				 */
