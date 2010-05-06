@@ -50,7 +50,7 @@ public class DBBibtexURLManager extends DBManager {
 				return true;
 			}
 		} catch (SQLException e) {
-			log.fatal("Could not create URL for hash " + hash + " from user " + user, e);
+			log.warn("Could not create URL for hash " + hash + " from user " + user + ": " + e);
 		} finally {
 			c.close(); // close database connection
 		}
