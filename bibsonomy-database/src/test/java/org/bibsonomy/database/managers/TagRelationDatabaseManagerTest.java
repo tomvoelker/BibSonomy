@@ -106,10 +106,11 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	@Test
 	public void getPickedConceptsForUser() {
 		final List<Tag> relations = tagRelDb.getPickedConceptsForUser("testuser3", this.dbSession);
-		// testuser3 has three concepts but only two are picked
-		assertEquals(2, relations.size());
+		// testuser3 has four concepts but only three are picked
+		//("programming" and "Programming" are counted as two different concepts in this query!)
+		assertEquals(3, relations.size());
 	}
-
+ 
 	/**
 	 * retrieve all concepts for a user
 	 */
@@ -117,8 +118,9 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 	public void getAllConceptsForUser() {
 		final TagRelationParam param = LogicInterfaceHelper.buildParam(TagRelationParam.class, GroupingEntity.USER, "testuser1", null, null, null, 0, Integer.MAX_VALUE, null, null, new User());
 		final List<Tag> relations = tagRelDb.getAllConceptsForUser(param, this.dbSession);
-		// testuser1 has three concepts
-		assertEquals(3, relations.size());
+		// testuser1 has four concepts 
+		//("linux" and "Linux" are counted as two different concepts in this query!)
+		assertEquals(4, relations.size());
 	}
 
 	/**
@@ -129,6 +131,7 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		final List<Tag> concepts = tagRelDb.getAllConcepts(this.dbSession);
 		// there are 3 concepts from users listed in table 'user': 
 		// "linux", "programming", and "suchmaschine"
+		// (capital letters are not taken into account in this query) 
 		assertEquals(3, concepts.size());
 		// the concept "programming" has the subTag "C" from two different users and from one spammer
 		assertEquals(2, concepts.get(1).getSubTags().get(1).getUsercount());
