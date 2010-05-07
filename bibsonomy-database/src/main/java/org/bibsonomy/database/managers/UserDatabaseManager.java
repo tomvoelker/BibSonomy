@@ -18,6 +18,7 @@ import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
+import org.bibsonomy.database.validation.DatabaseModelValidator;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
@@ -37,7 +38,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(UserDatabaseManager.class);
 	
 	private static final UserDatabaseManager singleton = new UserDatabaseManager();
-	
 	private static final UserChain chain = new UserChain();
 	
 	/**
@@ -47,16 +47,20 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return singleton;
 	}
 	
-	private final BasketDatabaseManager basketDBManager;
-	private final InboxDatabaseManager inboxDBManager;
 	private final DatabasePluginRegistry plugins;
 	private final AdminDatabaseManager adminDBManager;
+	private final BasketDatabaseManager basketDBManager;
+	private final InboxDatabaseManager inboxDBManager;
+	
+
+	private final DatabaseModelValidator<User> validator;
 
 	private UserDatabaseManager() {
 		this.inboxDBManager = InboxDatabaseManager.getInstance();
 		this.basketDBManager = BasketDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.adminDBManager = AdminDatabaseManager.getInstance();
+		this.validator = new DatabaseModelValidator<User>();
 	}
 
 	/**
@@ -83,25 +87,26 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public User getUserDetails(final String username, final DBSession session) {
 		final String lowerCaseUsername = username.toLowerCase();
-		User user = this.queryForObject("getUserDetails", lowerCaseUsername, User.class, session);
+		final User user = this.queryForObject("getUserDetails", lowerCaseUsername, User.class, session);
 		if (user == null) {
 			/*
 			 * user does not exist -> create an empty (=unknown) user
 			 */
-			user = new User();
-		} else {
-			/*
-			 * user exists: get number of posts in his basket and inbox
-			 */
-			final int numPosts = this.basketDBManager.getNumBasketEntries(lowerCaseUsername, session);
-			user.getBasket().setNumPosts(numPosts);
-			final int inboxMessages = this.inboxDBManager.getNumInboxMessages(lowerCaseUsername, session);
-			user.getInbox().setNumPosts(inboxMessages);
-			/*
-			 * get the settings of the user
-			 */
-			user.setSettings(this.getUserSettings(lowerCaseUsername, session));
+			return new User();
 		}
+		
+		/*
+		 * user exists: get number of posts in his basket and inbox
+		 */
+		final int numPosts = this.basketDBManager.getNumBasketEntries(lowerCaseUsername, session);
+		user.getBasket().setNumPosts(numPosts);
+		final int inboxMessages = this.inboxDBManager.getNumInboxMessages(lowerCaseUsername, session);
+		user.getInbox().setNumPosts(inboxMessages);
+		/*
+		 * get the settings of the user
+		 */
+		user.setSettings(this.getUserSettings(lowerCaseUsername, session));
+		
 		return user;
 	}
 	
@@ -191,9 +196,24 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return name of created user
 	 */
 	public String createUser(final User user, final DBSession session) {
-		this.insertUser(user, session);
-		// if we don't get an exception here, we assume the user has been created successfully
-		return user.getName();
+		session.beginTransaction();
+		try {
+			this.insertUser(user, session);
+			session.commitTransaction();
+			// if we don't get an exception here, we assume the user has been created successfully
+			return user.getName();
+		} finally {
+			session.endTransaction();
+		}
+	}
+	
+	/**
+	 * checks if the user is valid
+	 * @param user
+	 * @param session
+	 */
+	private void checkUser(final User user, final DBSession session) {
+		this.validator.validateFieldLength(user, user.getName(), session);	
 	}
 
 	/**
@@ -234,7 +254,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		 * probably, we should add here more code to check for null values!
 		 */
 		
-		
+		this.checkUser(user, session);
 		this.insert("insertUser", user, session);
 		
 		/*
@@ -273,65 +293,36 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Change the user details
-	 * @param user
-	 * @param session
-	 * @return the username
-	 */
-	public String changeUser(final User user, final DBSession session) {
-		this.updateUser(user, session);
-		return user.getName();
-	}
-
-	/**
 	 * Updates a user (NOT his settings).
 	 * For settings update we have {@link UserDatabaseManager#updateUserSettingsForUser(User, DBSession)}
 	 * @param user the user containing all fields to be updated
 	 * @param session
+	 * @return the user's name iff update was successful
 	 */
-	private void updateUser(final User user, final DBSession session) {
-		// TODO: this check is also done in the dblogic
-		final User existingUser = this.getUserDetails(user.getName(), session);
-		if (!present(existingUser.getName())) { 
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User '" + user.getName() + "' does not exist");
+	public String updateUser(final User user, final DBSession session) {
+		session.beginTransaction();
+		try {
+			final User existingUser = this.getUserDetails(user.getName(), session);
+			if (!present(existingUser.getName())) { 
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User '" + user.getName() + "' does not exist");
+			}
+			
+			// update user (does not incl. userSettings)
+			UserUtils.updateUser(existingUser, user);
+			/*
+			 * FIXME: OpenID and LdapId were updated in existingUser
+			 * but the current "updateUser" Statement will leave those fields unchanged in the database
+			 */
+			this.plugins.onUserUpdate(existingUser.getName(), session);
+			
+			this.checkUser(existingUser, session);
+			this.update("updateUser", existingUser, session);
+			session.commitTransaction();
+		} finally {
+			session.endTransaction();
 		}
-		// update user (does not incl. userSettings)
-		UserUtils.updateUser(existingUser, user);
-		/*
-		 * FIXME: OpenID and LdapId were updated in existingUser
-		 * but the current "updateUser" Statement will leave those fields unchanged in the database
-		 */
-		this.plugins.onUserUpdate(existingUser.getName(), session);
-
-		this.update("updateUser", existingUser, session);
-	}
-	
-	/**
-	 * Remove a user from the database. This function executes a DELETE on the user 
-	 * and openid-user table and erases all data about this user.
-	 * 
-	 * ATTENTION: This function is used ONLY by the updateUser-method, which works
-	 * currently in the old-fashioned "delete-insert" style. As soon as we implement
-	 * a proper update method, this removeUser-Method can be deleted.
-	 * 
-	 * @param userName 
-	 * 			- a user name 
-	 * @param session 
-	 * 			- DB session
-	 */
-	private void removeUser(final String userName, final DBSession session) {
-		if (present(userName) == false) {
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Username not set");
-		}
-		// TODO this should also delete tas entries
-		this.delete("deleteUser", userName, session);
 		
-		// 2009/03/10, fei: removing openids during user update drops them,
-		//        as 'getUserDetails' doesn't fetch user's openid(s)
-		//        @see org.bibsonomy.database.DBLogic#storeUser(final User user, final boolean update)
-		//this.delete("deleteOpenIDUser", userName, session);		
-		
-		//throw new UnsupportedOperationException("Not implemented");
+		return user.getName();
 	}
 
 	/**
@@ -392,12 +383,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		for (final Group group: groups){
 			groupDBManager.removeUserFromGroup(group.getName(), userName, session);
 		}
+		
 		/*
 		 * FIXME: we must remove the user's open ID from the corresponding table, 
 		 * otherwise a new registration with that ID is not possible.
 		 */
-		
-		
 		
 		/*
 		 * flag user as spammer & all his posts as spam
@@ -459,7 +449,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (!present(password) || !present(username)) return notLoggedInUser;
 
 		// get user from database
-		final User foundUser = getUserDetails(username, session);
+		final User foundUser = this.getUserDetails(username, session);
 
 		// user exists and password is correct
 		if ((foundUser.getName() != null) && (foundUser.getPassword().equals(password))) return foundUser;
@@ -501,7 +491,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.update("updateLastLdapRequestDateForLdapUserIdByUsername", user.getName(), session);
 		return user.getName();
 	}
-
 	
 	/**
 	 * Retrieve a list of related users by folkrank for a given list of tags
@@ -675,7 +664,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		
 		this.delete("deleteRelation_"+relation.toString(), param, session);
 	}
-	
 
 	/**
 	 * Returns a list of users which are related to a given user by folkrank.
@@ -688,14 +676,13 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of users, related by folkrank to the given user. 
 	 */
 	public List<User> getRelatedUsersByFolkrankAndUser(final String requestedUsername, final String loginUserName, int limit, int offset, final DBSession session) {
-		UserParam param = new UserParam();
+		final UserParam param = new UserParam();
 		param.setRequestedUserName(requestedUsername);
 		param.setUserName(loginUserName);
 		param.setOffset(offset);
 		param.setLimit(limit);
 		return this.queryForList("getRelatedUsersByFolkrankAndUser", param, User.class, session);
 	}
-	
 	
 	/**
 	 * Returns a a list of related users to a given users, bassed on a similarity computation
@@ -710,7 +697,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of users, related to the requestedUser by the given relation
 	 */
 	public List<User> getRelatedUsersBySimilarity(final String requestedUserName, final String loginUserName, final UserRelation relation, final int limit, final int offset, final DBSession session) {
-		UserParam param = new UserParam();
+		final UserParam param = new UserParam();
 		param.setRequestedUserName(requestedUserName);
 		param.setUserName(loginUserName);
 		param.setUserRelation(relation);
@@ -728,7 +715,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return chain.getFirstElement().perform(param, session);
 	}
 	
-	
 	/**
 	 * Check if one user follows another one.
 	 * 
@@ -737,7 +723,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @param session - DB session
 	 * @return true if sourceUser follows the possible
 	 */
-	public Boolean isFollowerOfUser(User possibleFollower, User targetUser, final DBSession session) {
+	public boolean isFollowerOfUser(User possibleFollower, User targetUser, final DBSession session) {
 		if (!present(possibleFollower) || !present(targetUser)) {
 			return false;
 		}
@@ -748,7 +734,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			}
 		}
 		return false;
-	}	
-	
+	}
 	
 }

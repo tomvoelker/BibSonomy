@@ -16,6 +16,9 @@ import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.errors.FieldLengthErrorMessage;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -96,7 +99,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * Retrieve the names of users present in a group with given group ID
 	 */
-	@Ignore
+	@Ignore // FIXME: deleteUser() test deletes user "testuser2"
 	@Test
 	public void getUserNamesOfGroupId() {
 		final List<String> users = userDb.getUserNamesByGroupId(ParamUtils.TESTGROUP1, this.dbSession);
@@ -125,12 +128,11 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(RANDOM_TESTUSER, userName);
 		final User user = userDb.getUserDetails(RANDOM_TESTUSER, this.dbSession);
 		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "registrationDate", "reminderPasswordRequestDate", "updatedAt" });
+	}
 
-		try {
-			userDb.createUser(null, this.dbSession);
-			fail("expected exception");
-		} catch (Exception ignore) {
-		}
+	@Test(expected = Exception.class)
+	public void createUserWrongUsage() {
+		userDb.createUser(null, this.dbSession);
 	}
 
 	/**
@@ -143,7 +145,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// FIXME: it should be possible to change almost all properties of a
 		// user - implement me...
 		newTestuser.setRealname("New TestUser");
-		final String userName = userDb.changeUser(newTestuser, this.dbSession);
+		final String userName = userDb.updateUser(newTestuser, this.dbSession);
 		assertEquals(RANDOM_TESTUSER, userName);
 		newTestuser = userDb.getUserDetails(RANDOM_TESTUSER, this.dbSession);
 		assertEquals("New TestUser", newTestuser.getRealname());
@@ -151,7 +153,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		// you can't change the user's name
 		try {
 			newTestuser.setName(newTestuser.getName() + "-changed");
-			userDb.changeUser(newTestuser, this.dbSession);
+			userDb.updateUser(newTestuser, this.dbSession);
 			fail("expected exception");
 		} catch (RuntimeException ignore) {
 		}
@@ -226,10 +228,8 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	 */
 	@Test
 	public void deleteUser() {
-		// create a new user object
-		User user = new User();
-		// use a name of the test databases, in this case "testuser2"
-		user.setName("testuser2");
+		// create a new user object, use a name of the test databases, in this case "testuser2"
+		User user = new User("testuser2");
 		
 		// get groups for this user. testuser should be member of testgroup1
 		List<Group> groups = groupDb.getGroupsForUser(user.getName(), true, this.dbSession);
@@ -376,4 +376,20 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		friendsOfUser = userDb.getUserRelation(sourceUser, UserRelation.OF_FRIEND, this.dbSession);
 		assertEquals(0, friendsOfUser.size());		
 	}
+	
+	@Test
+	public void testMaxFieldLength() {
+		User user = userDb.getUserDetails("testuser1", this.dbSession);
+		user.setHobbies("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+		try {
+			userDb.updateUser(user , this.dbSession);
+			fail("missing DatabaseException");
+		} catch (DatabaseException e) {
+			final List<ErrorMessage> errorMessages = e.getErrorMessages("testuser1");
+			assertEquals(1, errorMessages.size());
+			final FieldLengthErrorMessage errorMessage = (FieldLengthErrorMessage) errorMessages.get(0);
+			assertNotNull(errorMessage.getMaxLengthForField("hobbies"));
+		}
+	}
+	
 }

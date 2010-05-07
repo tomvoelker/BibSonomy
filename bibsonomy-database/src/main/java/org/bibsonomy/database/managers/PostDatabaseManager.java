@@ -2,10 +2,6 @@ package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +19,6 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
-import org.bibsonomy.common.errors.FieldLengthErrorMessage;
 import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
 import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
@@ -36,8 +31,8 @@ import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.database.util.DatabaseSchemaInformation;
 import org.bibsonomy.database.util.DatabaseUtils;
+import org.bibsonomy.database.validation.DatabaseModelValidator;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -80,6 +75,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/** factory for creating system tags */
 	private SystemTagFactory systemTagFactory;
 
+	/** the validator for the posts*/
+	protected final DatabaseModelValidator<R> validator;
+
 
 	/**
 	 * inits the database managers and resource class name
@@ -91,6 +89,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.permissionDb = PermissionDatabaseManager.getInstance();
 		this.groupDb = GroupDatabaseManager.getInstance();
 		this.resourceClassName = this.getResourceClassName();
+		this.validator = new DatabaseModelValidator<R>();
 	}
 
 	/**
@@ -179,6 +178,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * group which are tagged at least with one of the concept tags or its
 	 * subtags
 	 * 
+	 * @param loginUser 
+	 * @param visibleGroupIDs 
 	 * @param requestedGroupName
 	 * @param tagIndex
 	 * @param limit
@@ -1258,46 +1259,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 
 	protected void checkPost(final Post<R> post, final DBSession session) {
 		final R resource = post.getResource();
-		final Class<? extends Resource> resourceClass = resource.getClass();
-
-		try {
-			final BeanInfo bi = Introspector.getBeanInfo(resourceClass);
-			final FieldLengthErrorMessage fieldLengthError = new FieldLengthErrorMessage();
-
-			/*
-			 * loop through all properties
-			 * if there are any performance issues, their cause might be here
-			 */
-			for (final PropertyDescriptor d : bi.getPropertyDescriptors()) {			
-				final Method getter = d.getReadMethod();
-
-				if (present(getter)) {					
-					final Object value = getter.invoke(resource, (Object[])null);
-
-					/*
-					 * check max length
-					 */
-					if (value instanceof String) {
-						final String stringValue = (String) value;
-
-						final int length = stringValue.length();
-						final String propertyName = d.getName();
-						final int maxLength = DatabaseSchemaInformation.getMaxColumnLengthForProperty(resourceClass, propertyName);
-
-						if ((maxLength > 0) && (length > maxLength)) {
-							fieldLengthError.addToFields(propertyName, maxLength);
-						}
-					}
-				}
-			}
-
-			if (fieldLengthError.hasErrors()) {
-				session.addError(resource.getIntraHash(), fieldLengthError);
-			}
-
-		} catch (final Exception ex) {
-			log.error("could not introspect object of class '" + resourceClass.getName() + "'", ex);
-		}				
+		this.validator.validateFieldLength(resource, resource.getIntraHash(), session);			
 	}
 
 	private void performUpdateAll(Post<R> post, Post<R> oldPost, DBSession session) {

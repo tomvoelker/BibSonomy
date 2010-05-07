@@ -1092,12 +1092,10 @@ public class DBLogic implements LogicInterface {
 					/*
 					 * error: user name does not exist
 					 */
-					final String errorMsg = "user " + user.getName() + " does not exist";
-					log.warn(errorMsg);
-					throw new ValidationException(errorMsg);
+					throw new ValidationException("user " + user.getName() + " does not exist");
 				}
 				
-				return this.userDBManager.changeUser(user, session);
+				return this.userDBManager.updateUser(user, session);
 			}
 			
 			/*
@@ -1107,9 +1105,7 @@ public class DBLogic implements LogicInterface {
 				/*
 				 * error: user name already exists
 				 */
-				final String errorMsg = "user " + user.getName() + " already exists";
-				log.warn(errorMsg);
-				throw new ValidationException(errorMsg);
+				throw new ValidationException("user " + user.getName() + " already exists");
 			}
 			return this.userDBManager.createUser(user, session);
 		} finally {
