@@ -262,7 +262,7 @@ public class SimpleBibTeXParser {
 	 * @return
 	 */
 	protected BibTex fillBibtexFromEntry(final BibtexEntry entry) {
-		final BibTex bibtex = new BibTex();
+		final BibTex bibtex = this.createPublication();
 		
 		/* ************************************************
 		 * process non standard bibtex fields 
@@ -376,6 +376,10 @@ public class SimpleBibTeXParser {
 		
 		return bibtex;
 	}	
+
+	protected BibTex createPublication() {
+		return new BibTex();
+	}
 
 	/** Extracts all persons from the given field value and concatenates their names
 	 * with {@value #AND}.

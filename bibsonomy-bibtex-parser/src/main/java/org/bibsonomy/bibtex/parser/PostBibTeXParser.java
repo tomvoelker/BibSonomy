@@ -34,6 +34,7 @@ import org.antlr.runtime.RecognitionException;
 import org.bibsonomy.common.enums.SerializeBibtexMode;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.factories.ResourceFactory;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.TagStringUtils;
@@ -62,7 +63,26 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 	 * Specifies the whitespace substitute for keywords and tags
 	 */
 	private String whitespace;
-
+	
+	private Class<? extends BibTex> pubInstanceToCreate = BibTex.class;
+	private final ResourceFactory resourceFactory;
+	
+	/**
+	 * inits the resource factory
+	 */
+	public PostBibTeXParser() {
+		this.resourceFactory = new ResourceFactory();
+	}
+	
+	/**
+	 * sets the publication type to create
+	 * @param pubInstanceToCreate
+	 */
+	public PostBibTeXParser(final Class<? extends BibTex> pubInstanceToCreate) {
+		this();
+		this.pubInstanceToCreate = pubInstanceToCreate;
+	}
+	
 	/**
 	 * Parses the given BibTeX entry and puts fields which are not part of the
 	 * {@link BibTex} class into the Post. See {@link #fillPost(BibTex)} for 
@@ -255,6 +275,11 @@ public class PostBibTeXParser extends SimpleBibTeXParser {
 		 * BibTexUtils.toBibtexString(post) puts into the string. 
 		 */
 		return this.parseBibTeXPost(BibTexUtils.toBibtexString(post, SerializeBibtexMode.PLAIN_MISCFIELDS));
+	}
+	
+	@Override
+	protected BibTex createPublication() {
+		return this.resourceFactory.createPublication(this.pubInstanceToCreate);
 	}
 
 	/**
