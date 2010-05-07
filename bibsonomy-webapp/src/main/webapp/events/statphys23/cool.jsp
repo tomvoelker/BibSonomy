@@ -31,8 +31,8 @@
     </sql:query>
     
     
-    <%@include file="/boxes/tagboxstyle.jsp" %> 
-</ul>
+    <ul class="tagcloud"> 
+	</ul>
 
     <ul id="tagcloudy">
     <c:forEach var="row" items="${rst.rows}">
