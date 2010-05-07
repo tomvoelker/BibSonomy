@@ -284,8 +284,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Updates a user
-	 * @param user the user
+	 * Updates a user (NOT his settings).
+	 * For settings update we have {@link UserDatabaseManager#updateUserSettingsForUser(User, DBSession)}
+	 * @param user the user containing all fields to be updated
 	 * @param session
 	 */
 	private void updateUser(final User user, final DBSession session) {
@@ -294,45 +295,15 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (!present(existingUser.getName())) { 
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User '" + user.getName() + "' does not exist");
 		}
-			
-		// FIXME if this should copy all properties from the one bean to the
-		// other we might want to come up with a more generic version of this
-		// code block - so if we add a field to the User bean we don't have to
-		// remember adding it here
-		existingUser.setEmail(!present(user.getEmail()) 		? existingUser.getEmail() 		: user.getEmail());
-		existingUser.setPassword(!present(user.getPassword()) 	? existingUser.getPassword() 	: user.getPassword());		
-		existingUser.setRealname(!present(user.getRealname()) 	? existingUser.getRealname() 	: user.getRealname());		
-		existingUser.setHomepage(!present(user.getHomepage()) 	? existingUser.getHomepage() 	: user.getHomepage());
-		existingUser.setApiKey(!present(user.getApiKey()) 		? existingUser.getApiKey()	 	: user.getApiKey());		
-		existingUser.setBirthday(!present(user.getBirthday()) 	? existingUser.getBirthday() 	: user.getBirthday());
-		existingUser.setGender(!present(user.getGender()) 		? existingUser.getGender() 		: user.getGender());
-		existingUser.setHobbies(!present(user.getHobbies()) 	? existingUser.getHobbies() 	: user.getHobbies());
-		existingUser.setInterests(!present(user.getInterests()) ? existingUser.getInterests() 	: user.getInterests());
-		existingUser.setSpammer(!present(user.getSpammer()) 	? existingUser.getSpammer() 	: user.getSpammer());
-		existingUser.setIPAddress(!present(user.getIPAddress()) ? existingUser.getIPAddress() 	: user.getIPAddress());
-		existingUser.setOpenURL(!present(user.getOpenURL()) 	? existingUser.getOpenURL() 	: user.getOpenURL());
-		existingUser.setPlace(!present(user.getPlace()) 		? existingUser.getPlace() 		: user.getPlace());
-		existingUser.setProfession(!present(user.getProfession()) ? existingUser.getProfession(): user.getProfession());
-		existingUser.setOpenID(!present(user.getOpenID())       ? existingUser.getOpenID()      : user.getOpenID());
-		existingUser.setLdapId(!present(user.getLdapId())       ? existingUser.getLdapId()      : user.getLdapId());
-
-		// we don't want to change the registration date on update!
-		//existingUser.setRegistrationDate(!present(user.getRegistrationDate()) ? existingUser.getRegistrationDate() : user.getRegistrationDate());
-
-		existingUser.setUpdatedBy(!present(user.getUpdatedBy()) 	? existingUser.getUpdatedBy() 	: user.getUpdatedBy());
-		existingUser.setUpdatedAt(!present(user.getUpdatedAt()) 	? existingUser.getUpdatedAt() 	: user.getUpdatedAt());
-
-		existingUser.setReminderPassword(!present(user.getReminderPassword()) ? existingUser.getReminderPassword() : user.getReminderPassword());
-		existingUser.setReminderPasswordRequestDate(!present(user.getReminderPasswordRequestDate()) ? existingUser.getReminderPasswordRequestDate() : user.getReminderPasswordRequestDate());
-		
+		// update user (does not incl. userSettings)
+		UserUtils.updateUser(existingUser, user);
 		/*
-		 * FIXME: user settings are completely missing!
+		 * FIXME: OpenID and LdapId were updated in existingUser
+		 * but the current "updateUser" Statement will leave those fields unchanged in the database
 		 */
 		this.plugins.onUserUpdate(existingUser.getName(), session);
 
-		// TODO: update existing dataset instead of delete and re-insert
-		this.removeUser(existingUser.getName(), session);
-		this.insert("insertUser", existingUser, session);	
+		this.update("updateUser", existingUser, session);
 	}
 	
 	/**

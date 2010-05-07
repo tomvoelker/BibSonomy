@@ -41,6 +41,16 @@
 			)
 	</insert>
 	
+	<update id="updateUser" parameterClass="user">
+		UPDATE user
+		SET user_email = #email#, user_password = #password#, user_realname = #realname#, user_homepage = #homepage#, 
+			api_key = #apiKey#, birthday = #birthday#, gender = #gender#, hobbies = #hobbies#, interests = #interests#, 
+			ip_address= #IPAddress#, openurl = #openURL#, place = #place#, profession = #profession#, 
+			spammer = #spammer#, updated_by = #updatedBy#, updated_at = #updatedAt#
+			<isNotNull property="reminderPassword">,tmp_password = #reminderPassword#, tmp_request_date = #reminderPasswordRequestDate#</isNotNull>		
+		WHERE user_name=#name#
+	</update>
+	
 	<insert id="insertOpenIDUser" parameterClass="user">
 		INSERT INTO openIDUser 
 		VALUES (#name#, #openID#)
