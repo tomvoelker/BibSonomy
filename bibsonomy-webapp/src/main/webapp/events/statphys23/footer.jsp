@@ -8,8 +8,7 @@
   </div>
 
   
-  <!-- script type="text/javascript">init(${user.tagboxStyle}, ${user.tagboxSort}, ${user.tagboxMinfreq}, "${param.requUser}");</script-->
-  
+ 
 </div> 
 </body>
 </html>
