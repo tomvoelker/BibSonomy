@@ -50,7 +50,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		 * remember if tags were given by user - if so, forward to special page
 		 * (this also checks of only systemtags are contained) 
 		 */		
-		final boolean hasTags = (this.countNonSystemTags(requTags) > 0); 			
+		final boolean hasTags = (SystemTagsUtil.countNonSystemTags(requTags) > 0);	
 		
 		// check for further system tags
 		// FIXME: how may this happen? http://www.bibsonomy.org/author<tag>/tag

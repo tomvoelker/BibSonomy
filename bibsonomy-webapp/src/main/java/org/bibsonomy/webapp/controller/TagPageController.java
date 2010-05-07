@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.StringUtils;
@@ -40,6 +41,9 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		}
 		
 		final List<String> requTags = command.getRequestedTagsList();
+		
+		// count number of non system tags
+		final int tagCount = SystemTagsUtil.countNonSystemTags(requTags); 
 		
 		// handle case when only tags are requested
 		// FIXME we can only retrieve 1000 tags here
@@ -88,9 +92,11 @@ public class TagPageController extends SingleResourceListControllerWithTags impl
 		// html format - retrieve relted tags and return HTML view
 		if (command.getFormat().equals("html")) {
 			command.setPageTitle("tag :: " + StringUtils.implodeStringCollection(requTags, " "));		
-			this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
+			if (tagCount > 0) {
+				this.setRelatedTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
+			}
 			// similar tags only make sense for a single requested tag
-			if (command.getRequestedTagsList().size() == 1) {
+			if (tagCount == 1) {
 				this.setSimilarTags(command, Resource.class, GroupingEntity.ALL, null, null, requTags, order, 0, Parameters.NUM_RELATED_TAGS, null);
 			}
 			// set total nr. of posts 

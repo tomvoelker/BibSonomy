@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.TagSimilarity;
-import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.RelatedTagCommand;
@@ -58,22 +57,5 @@ public class SingleResourceListControllerWithTags extends SingleResourceListCont
 		RelatedTagCommand similarTags = cmd.getSimilarTags();
 		similarTags.setRelatedTags(this.logic.getTags(resourceType, groupingEntity, groupingName, regex, tags, null, order, start, end, search, TagSimilarity.COSINE));		
 	}
-	
-	
-	/**
-	 * Count the number of "normal" (i.e., non-system) tags
-	 * within a list of tags
-	 * 
-	 * @param tags - a list of tag strings
-	 * @return - the number of non-system tags
-	 */
-	protected int countNonSystemTags(List<String> tags) {
-		int numNonSysTags = 0;
-		for (String tag : tags) {
-			if (tag != null && !SystemTagsUtil.isSystemTag(tag)) {
-				numNonSysTags++;
-			}			
-		}
-		return numNonSysTags;
-	}
+
 }
