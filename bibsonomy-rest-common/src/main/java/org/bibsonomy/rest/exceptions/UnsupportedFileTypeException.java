@@ -29,8 +29,9 @@ package org.bibsonomy.rest.exceptions;
  *          jillig Exp $
  */
 public class UnsupportedFileTypeException extends RuntimeException {
-
 	private static final long serialVersionUID = 1L;
+	
+	private final String[] allowedExt;
 
 	/**
 	 * Constructs a new unsupported file type exception with the specified
@@ -41,8 +42,9 @@ public class UnsupportedFileTypeException extends RuntimeException {
 	 * 				the supported file type extensions.
 	 *            
 	 */
-	public UnsupportedFileTypeException(final String [] allowedExt) {
+	public UnsupportedFileTypeException(final String[] allowedExt) {
 		super("Please check your file. Only " + getExceptionExtensions(allowedExt) + " files are accepted.");
+		this.allowedExt = allowedExt;
 	}
 	
 	/**
@@ -55,14 +57,23 @@ public class UnsupportedFileTypeException extends RuntimeException {
 	 * @return
 	 */
 	private static String getExceptionExtensions(final String[] allowedExt) {
-		final StringBuffer buf = new StringBuffer();
+		final StringBuilder buf = new StringBuilder();
 		for (int i = 0; i < allowedExt.length - 1; i++) {
 			buf.append(allowedExt[i].toUpperCase() + ", ");
 		}
+		
 		if (allowedExt.length > 1) {
 			buf.append("or ");
 		}
 		buf.append(allowedExt[allowedExt.length - 1].toUpperCase());
+		
 		return buf.toString();
+	}
+
+	/**
+	 * @return the allowed Extensions
+	 */
+	public String[] getAllowedExt() {
+		return allowedExt;
 	}
 }
