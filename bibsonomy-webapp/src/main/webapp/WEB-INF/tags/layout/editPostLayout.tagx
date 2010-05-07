@@ -11,6 +11,7 @@
 	xmlns:errors="urn:jsptagdir:/WEB-INF/tags/errors"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:post="urn:jsptagdir:/WEB-INF/tags/post"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
     xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
   >
 
@@ -128,6 +129,13 @@
                                    -->         
 								<c:if test="${not empty command.captchaHTML}">
 						        	<fieldset class="fsInner">
+										<c:if test="${resourceType eq 'Publication'}">
+											<p>
+												<fmt:message key="post.edit.spam_note"/>
+												<parts:email address="${projectEmail}"/><!-- da brauchen wir was anderes -->
+											</p>
+										</c:if>
+
 										<span class="fsLabel"><fmt:message key="captcha"/></span>
 						              	<span class="fsInput">${command.captchaHTML}<form:errors cssClass="errmsg" path="recaptcha_response_field" /></span>
 						            </fieldset>
