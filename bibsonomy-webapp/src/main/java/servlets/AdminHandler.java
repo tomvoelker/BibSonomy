@@ -16,9 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.User;
 
-import beans.UserBean;
-import filters.SessionSettingsFilter;
+import filters.InitUserFilter;
 
 
 /**
@@ -52,7 +52,7 @@ public class AdminHandler extends HttpServlet {
 		/*
 		 * check user name (only admins are allowed)
 		 */
-		UserBean user = SessionSettingsFilter.getUser(request);
+		User user = InitUserFilter.getUser(request);
 		String userName = user.getName();
 
 		if (!(allowedUsers.contains(userName))) {

@@ -30,10 +30,10 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.User;
 
-import beans.UserBean;
 import filters.ActionValidationFilter;
-import filters.SessionSettingsFilter;
+import filters.InitUserFilter;
 
 /**
  * @author Serak
@@ -71,7 +71,7 @@ public class SettingsHandler extends HttpServlet{
 		PreparedStatement stmtP = null;
 
 		HttpSession session = request.getSession(true);
-		UserBean user = SessionSettingsFilter.getUser(request);
+		User user = InitUserFilter.getUser(request);
 		String currUser = user.getName(); 
 
 		/*

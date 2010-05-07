@@ -14,9 +14,9 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.User;
 
 import resources.Resource;
-import beans.UserBean;
 
 /**
  * This filter checks the credential of the user and sets a corresponding request 
@@ -49,8 +49,8 @@ public class ActionValidationFilter implements Filter {
 		/*
 		 * This filter makes only sense, if user is logged in.
 		 */
-		UserBean user = SessionSettingsFilter.getUser(httpServletRequest);
-		if (user.getName() != null) {
+		User user = InitUserFilter.getUser(httpServletRequest);
+		if (user != null && user.getName() != null) {
 			/*
 			 * get sessions credential storage variable
 			 */
@@ -82,7 +82,6 @@ public class ActionValidationFilter implements Filter {
 		chain.doFilter(request, response);
 
 	}
-	
 	/** Static method to check validity of the sent credential.
 	 * @param request
 	 * @return
@@ -103,7 +102,7 @@ public class ActionValidationFilter implements Filter {
 	 * @param session
 	 * @return
 	 */
-	private String getNewCredential(UserBean user, HttpSession session) {
+	private String getNewCredential(User user, HttpSession session) {
 		return (Resource.hash(user.getEmail() + session.getId())); 
 	}
 

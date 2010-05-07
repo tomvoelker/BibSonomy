@@ -26,14 +26,11 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
-import org.bibsonomy.model.Group;
 import org.bibsonomy.model.User;
-import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -48,7 +45,6 @@ import org.openid4java.consumer.ConsumerException;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import servlets.listeners.InitialConfigListener;
-import beans.UserBean;
 
 /**
  * This Filter reads user information/settings from DB or Cookies and makes it
@@ -85,7 +81,6 @@ public class InitUserFilter implements Filter {
 	 */
 	public static final String USER_COOKIE_NAME = "_currUser";
 	public static final String OPENID_COOKIE_NAME = "_openIDUser";
-	public static final String SETTINGS_COOKIE_NAME = "_styleSettings";
 	public static final String REQ_ATTRIB_USER = "user";
 	public static final String REQ_ATTRIB_LANGUAGE = SessionLocaleResolver.class.getName() + ".LOCALE";
 	public static final String REQ_ATTRIB_LOGIN_USER = "loginUser";
@@ -167,7 +162,7 @@ public class InitUserFilter implements Filter {
 				 * special handling for SAP X.509 certificates
 				 */
 				try {
-					log.info("no user cookie found, trying X.509");
+					log.debug("no user cookie found, trying X.509");
 					/*
 					 * get user name from client certificate
 					 */
@@ -195,10 +190,10 @@ public class InitUserFilter implements Filter {
 						loginUser.setName(uname);
 					}
 				} catch (final Exception e) {
-					log.info("Certificate authentication failed.", e);
+					log.debug("Certificate authentication failed.", e);
 				}
 			} else if (userCookie != null) {
-				log.info("found user cookie");
+				log.debug("found user cookie");
 				/*
 				 * user has Cookie set: try to authenticate
 				 */
@@ -239,7 +234,7 @@ public class InitUserFilter implements Filter {
 						// timeDiff is in seconds
 						long timeDiff = (dateNow.getTime() - userLastAccess.getTime())/1000;						
 						
-						log.info("last access of user "+userName+" was on "+userLastAccess.toString()+ " ("+(timeDiff/3600)+" hours ago = "+ " ("+(timeDiff/60)+" minutes ago = "+timeDiff+" seconds ago)");
+						log.debug("last access of user "+userName+" was on "+userLastAccess.toString()+ " ("+(timeDiff/3600)+" hours ago = "+ " ("+(timeDiff/60)+" minutes ago = "+timeDiff+" seconds ago)");
 		//DEBUG
 		//timeDiff=timeToReAuth;
 					
@@ -251,7 +246,7 @@ public class InitUserFilter implements Filter {
 						
 						if ( timeDiff > timeToReAuth ) {
 							// re-auth
-							log.info("last access time is up - ldap re-auth required -> throw reauthrequiredException");
+							log.debug("last access time is up - ldap re-auth required -> throw reauthrequiredException");
 							
 							/*
 							 * check credentials against ldap server
@@ -260,8 +255,8 @@ public class InitUserFilter implements Filter {
 							 */
 							Ldap ldap = new Ldap();
 							LdapUserinfo ldapUserinfo = new LdapUserinfo();
-							log.info("loginUser = " + loginUser.getName());
-							log.info("Trying to re-auth user " + userName + " via LDAP (uid="+loginUser.getLdapId()+")");
+							log.debug("loginUser = " + loginUser.getName());
+							log.debug("Trying to re-auth user " + userName + " via LDAP (uid="+loginUser.getLdapId()+")");
 					        ldapUserinfo = ldap.checkauth(loginUser.getLdapId(), userPass);
 		//DEBUG
 		//ldapUserinfo = null;
@@ -271,17 +266,17 @@ public class InitUserFilter implements Filter {
 								 * user credentials do not match --> show error message
 								 * and go to login page
 								 */
-								log.info("ra-auth of user " + userName + " failed.");
+								log.debug("ra-auth of user " + userName + " failed.");
 								loginUser = null;
 							} else {
 			
-								log.info("ra-auth of user " + userName + " succeeded.");
+								log.debug("ra-auth of user " + userName + " succeeded.");
 			
 								loginUser = logic.getUserDetails(userName);
 		
 								// if ldap credentials are ok, update lastAccessTimestamp
 								if (null != logic.updateUser(loginUser, UserUpdateOperation.UPDATE_LDAP_TIMESTAMP)) {
-									log.info("update LDAP-Timestamp of user " + userName + " successful");
+									log.debug("update LDAP-Timestamp of user " + userName + " successful");
 								} else {
 									log.error("error on updating LDAP-Timestamp of user " + userName + "!");
 								}
@@ -306,7 +301,7 @@ public class InitUserFilter implements Filter {
 					log.warn("Someone manipulated the user cookie (IP: " + ip_address + ") : " + userCookie);
 				}
 			} else if (openIDCookie != null) {
-				log.info("found OpenID cookie");
+				log.debug("found OpenID cookie");
 
 				/*
 				 * user has OpenID cookie set
@@ -379,7 +374,7 @@ public class InitUserFilter implements Filter {
 					/*
 					 * HTTP BASIC AUTHENTICATION
 					 */
-					log.info("Authentication for user '" + auth[0] + "' using HTTP basic auth.");
+					log.debug("Authentication for user '" + auth[0] + "' using HTTP basic auth.");
 
 					/*
 					 * FIXME: The password is expected to be already MD5-encoded
@@ -398,35 +393,16 @@ public class InitUserFilter implements Filter {
 				}
 			}
 		} catch (ValidationException valEx) {
-			log.info("Login failed.", valEx);
+			log.debug("Login failed.", valEx);
 		}
 
 		if (loginUser == null) {
-			log.info("user not found in DB or user has no cookie set");
+			log.debug("user not found in DB or user has no cookie set");
 			/*
 			 * user is not in DB/authenticated properly: get/set values from
 			 * Cookie
 			 */
 			loginUser = new User();
-
-			String settingsCookie = getCookie(httpServletRequest, SETTINGS_COOKIE_NAME);
-			if (settingsCookie != null) {
-				log.info("found settings cookie");
-				/*
-				 * user has a settings cookie: fill bean from its values
-				 */
-				String[] settingsCookieParts = settingsCookie.split(",");
-
-				// check for manipulated cookie
-				if (settingsCookieParts.length == 5) {
-					log.info("settings cookie is valid, using it");
-					loginUser.getSettings().setTagboxStyle(Integer.parseInt(settingsCookieParts[0]));
-					loginUser.getSettings().setTagboxSort(Integer.parseInt(settingsCookieParts[1]));
-					loginUser.getSettings().setTagboxMinfreq(Integer.parseInt(settingsCookieParts[2]));
-					loginUser.getSettings().setTagboxTooltip(Integer.parseInt(settingsCookieParts[3]));
-					loginUser.getSettings().setListItemcount(Integer.parseInt(settingsCookieParts[4]));
-				}
-			}
 		}
 
 		/*
@@ -435,21 +411,18 @@ public class InitUserFilter implements Filter {
 		httpServletRequest.setAttribute(REQ_ATTRIB_LOGIN_USER, loginUser);
 
 		/*
-		 * for backwards compatibility, we copy here the data from the user
-		 * object into a "BibSonomy 1" UserBean Object
+		 * For backwards compatibility, we add the user
+		 * as request attribute (used by old servlets and JSPs).
 		 */
-		// TODO copy contents loginUser -> user
-		final UserBean userBean = createUserBean(loginUser);
-		httpServletRequest.setAttribute(REQ_ATTRIB_USER, userBean);
+		httpServletRequest.setAttribute(REQ_ATTRIB_USER, loginUser);
 
 		// add default language to request if no language is set
-		if (httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE) == null) httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(userBean.getDefaultLanguage()));
+		if (httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE) == null) httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(loginUser.getSettings().getDefaultLanguage()));
 
-		log.info("finished: " + loginUser);
+		log.debug("finished: " + loginUser);
 
 		// Pass control on to the next filter
 		chain.doFilter(request, response);
-
 	}
 
 	/**
@@ -536,6 +509,14 @@ public class InitUserFilter implements Filter {
 	 * **************************************************
 	 */
 
+	/** Small helper method for Servlets to easily retrieve UserBean.
+	 * @param request
+	 * @return
+	 */
+	public static User getUser(HttpServletRequest request) {
+		return (User) request.getAttribute(REQ_ATTRIB_USER);
+	}
+
 	private static String getUserName(HttpServletRequest request) throws CertificateException {
 		return getUserIdFromCertificate(getCert(request));
 	}
@@ -586,67 +567,6 @@ public class InitUserFilter implements Filter {
 		return uid.substring(idx + 1).trim().toUpperCase().trim();
 	}
 
-	private static UserBean createUserBean(User loginUser) {
-
-		// general info
-		UserBean userBean = new UserBean();
-		userBean.setEmail(loginUser.getEmail());
-		userBean.setHomepage(loginUser.getHomepage() == null ? null : loginUser.getHomepage().toString());
-		userBean.setName(loginUser.getName());
-		userBean.setOpenurl(loginUser.getOpenURL());
-		userBean.setRealname(loginUser.getRealname());
-		userBean.setRole(loginUser.getRole());
-		userBean.setApiKey(loginUser.getApiKey());
-
-		// settings
-		final UserSettings settings = loginUser.getSettings();
-		userBean.setTagboxMinfreq(settings.getTagboxMinfreq());
-		userBean.setTagboxSort(settings.getTagboxSort());
-		userBean.setTagboxStyle(settings.getTagboxStyle());
-		userBean.setTagboxTooltip(settings.getTagboxTooltip());
-		userBean.setItemcount(settings.getListItemcount());
-		userBean.setDefaultLanguage(settings.getDefaultLanguage());
-		userBean.setLogLevel(settings.getLogLevel());
-
-
-		if(loginUser.getSettings().getConfirmDelete())
-			userBean.setConfirmDelete("true");
-		else
-			userBean.setConfirmDelete("false");
-
-
-		// basket size
-		userBean.setPostsInBasket(loginUser.getBasket().getNumPosts());
-
-		// groups
-		for (Group g : loginUser.getGroups()) {
-			/*
-			 * Ignore public, private, friends - because we don't want to see
-			 * them on the basket page and also not in the "groups" menu. The
-			 * UserBean contains a method "getAllGroups" to get those groups,
-			 * too.
-			 */
-			if (!GroupID.isSpecialGroupId(g.getGroupId())) {
-				userBean.addGroup(g.getName());
-			}
-		}
-		return userBean;
-	}
-
-	/**
-	 * Encodes a string with {@link URLEncoder#encode(String, String)} with
-	 * UTF-8.
-	 * 
-	 * @param s
-	 * @return
-	 */
-	private static String encode(final String s) {
-		try {
-			return URLEncoder.encode(s, "UTF-8");
-		} catch (UnsupportedEncodingException ex) {
-			return s;
-		}
-	}
 
 	/**
 	 * Decodes a string with {@link URLDecoder#decode(String, String)} with

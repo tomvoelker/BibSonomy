@@ -27,10 +27,10 @@ import net.tanesha.recaptcha.ReCaptchaResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.User;
 
 import servlets.listeners.InitialConfigListener;
-import beans.UserBean;
-import filters.SessionSettingsFilter;
+import filters.InitUserFilter;
 
 
 public class JoinGroupHandler extends HttpServlet {
@@ -71,7 +71,7 @@ public class JoinGroupHandler extends HttpServlet {
 		/* Get the session attribute of current user  */
 		HttpSession session = request.getSession(true);
 
-		UserBean userBean = SessionSettingsFilter.getUser(request);
+		User userBean = InitUserFilter.getUser(request);
 		String currUser = userBean.getName(); 
 		if (currUser == null) {
 			// TODO: does this work on bibsonomy.org? I guess, /bibsonomy/ is added, because

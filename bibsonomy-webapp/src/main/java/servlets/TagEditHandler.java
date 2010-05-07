@@ -23,15 +23,15 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.User;
 
 import resources.Bibtex;
 import resources.Bookmark;
 import resources.Resource;
 import resources.SplittedTags;
 import resources.Tag;
-import beans.UserBean;
 import filters.ActionValidationFilter;
-import filters.SessionSettingsFilter;
+import filters.InitUserFilter;
 
 /**
  * 
@@ -79,7 +79,7 @@ public class TagEditHandler extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		
-		UserBean user = SessionSettingsFilter.getUser(request);
+		User user = InitUserFilter.getUser(request);
 		String currUser = user.getName(); 
 		
 		if (currUser == null) {

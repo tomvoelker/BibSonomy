@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.model.User;
 import org.bibsonomy.model.extra.BibTexExtra;
 
-import beans.UserBean;
 import filters.ActionValidationFilter;
-import filters.SessionSettingsFilter;
+import filters.InitUserFilter;
 
 public class ExtendedFieldsHandler extends HttpServlet{
 
@@ -32,7 +32,7 @@ public class ExtendedFieldsHandler extends HttpServlet{
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		final UserBean user = SessionSettingsFilter.getUser(request);
+		final User user = InitUserFilter.getUser(request);
 		final String currUser = user.getName(); 
 		if (currUser == null) {
 			response.sendRedirect("/login?referer=/basket");
@@ -73,7 +73,7 @@ public class ExtendedFieldsHandler extends HttpServlet{
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		final UserBean user = SessionSettingsFilter.getUser(request);
+		final User user = InitUserFilter.getUser(request);
 		final String currUser = user.getName(); 
 		if (currUser == null) {
 			response.sendRedirect("/login?referer=/basket");
