@@ -69,7 +69,7 @@
 					<!-- cancel request only if right params existing -->
 				  	<h2>
 				  		<fmt:message key="settings.group.deny">
-		  					<fmt:param><a href="/user/${mtl:encodeURI(param.user)}"><c:out value="${fn:escapeXml(param.user)}"/></a></fmt:param>
+		  					<fmt:param><a href="/user/${mtl:encodeURI(param.user)}"><c:out value="${param.user}"/></a></fmt:param>
 		  				</fmt:message>
 		  			</h2>
 		  			<form:form id="groupAddDenyUser" method="post" action="/JoinGroupHandler">
@@ -144,7 +144,7 @@
 			<!-- user is logged in with wrong account -->
 			<div id="groups" class="highlightBox">
 				<fmt:message key="settings.group.login">
-					<fmt:param><c:out value="${fn:escapeXml(param.requGroup)}"/></fmt:param>
+					<fmt:param><c:out value="${param.requGroup}"/></fmt:param>
 				</fmt:message>
 			</div>
 
