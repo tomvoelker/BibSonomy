@@ -132,7 +132,7 @@
 										<c:if test="${resourceType eq 'Publication'}">
 											<p>
 												<fmt:message key="post.edit.spam_note"/>
-												<parts:email address="${projectEmail}"/><!-- da brauchen wir was anderes -->
+												<parts:email address="${projectNoSpamEmail}"/>
 											</p>
 										</c:if>
 
