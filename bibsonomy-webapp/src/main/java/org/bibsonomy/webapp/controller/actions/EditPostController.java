@@ -1,7 +1,6 @@
 package org.bibsonomy.webapp.controller.actions;
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,6 +36,7 @@ import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.recommender.TagRecommender;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -154,7 +154,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			 */
 			return new ExtendedRedirectView("/login" + 
 					"?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + 
-					"&referer=" + safeURIEncode(requestLogic.getCompleteRequestURL() + "&referer=" + safeURIEncode(requestLogic.getReferer()))); 
+					"&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL() + "&referer=" + UrlUtils.safeURIEncode(requestLogic.getReferer()))); 
 		}
 
 		final User loginUser = context.getLoginUser();
@@ -274,21 +274,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	}
 	
 	protected abstract void workOnCommand(final COMMAND command, final User loginUser);
-
-	/**
-	 * TODO extract method; used by many controllers
-	 * Encodes the given String with URLEncoder. If that fails, returns an empty string.
-	 * 
-	 * @param s
-	 * @return
-	 */
-	protected String safeURIEncode(final String s) {
-		try {
-			return URLEncoder.encode(s, "UTF-8");
-		} catch (Exception ex) {
-			return s;
-		}
-	}
 
 	/**
 	 * This methods does everything which needs to be done before proceeding to

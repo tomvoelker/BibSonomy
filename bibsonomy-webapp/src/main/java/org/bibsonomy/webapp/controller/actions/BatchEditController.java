@@ -31,6 +31,7 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.BatchEditCommand;
@@ -101,8 +102,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * check if user is logged in
 		 */
 		if (!context.isUserLoggedIn()) {
-			errors.reject("error.general.login");
-			return Views.LOGIN;
+			return new ExtendedRedirectView("/login" + 
+					"?notice=" + "error.general.login" + 
+					"&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL() + "&referer=" + UrlUtils.safeURIEncode(requestLogic.getReferer()))); 
 		}
 
 		/*

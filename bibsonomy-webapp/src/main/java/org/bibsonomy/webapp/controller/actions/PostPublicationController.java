@@ -36,6 +36,7 @@ import org.bibsonomy.rest.utils.impl.FileUploadFactory;
 import org.bibsonomy.scraper.converter.EndnoteToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.ConversionException;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -122,7 +123,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			 */
 			return new ExtendedRedirectView("/login" + 
 					"?notice=" + LOGIN_NOTICE + publication.getClass().getSimpleName().toLowerCase() + 
-					"&referer=" + safeURIEncode(requestLogic.getCompleteRequestURL() + "&referer=" + safeURIEncode(requestLogic.getReferer()))); 
+					"&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL() + "&referer=" + UrlUtils.safeURIEncode(requestLogic.getReferer()))); 
 		}
 
 		/* 
