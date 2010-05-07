@@ -13,20 +13,21 @@ import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 
 /**
+ * TODO: some check methods were copied from the UserValidator!
+ * 
  * @author cvo
  * @version $Id: UserUpdateProfileValidator.java,v 1.1 2009-12-14 13:50:03
  *          voigtmannc Exp $
  */
 public class UserUpdateProfileValidator implements Validator<SettingsViewCommand> {
 
+	private static final String[] ALLOWED_GENDERS = { "f", "m" };
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean supports(final Class clazz) {
 		return SettingsViewCommand.class.equals(clazz);
 	}
-
-	private static final String[] ALLOWED_GENDERS = { "f", "m" };
-
 
 	@Override
 	public void validate(final Object target, final Errors errors) {
@@ -81,7 +82,7 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 
 	private void checkProfilePrivlevel(final String level, final Errors errors) {
 		if (!ProfilePrivlevel.isProfilePrivlevel(level)) {
-			errors.rejectValue("user.settings.profilePrivlevel", "error.field.valid.groups"); // TODO: create error message ??!
+			errors.rejectValue("user.settings.profilePrivlevel", "error.field.valid.profilePrivlevel"); // TODO: create error message ??!
 		}
 	}
 

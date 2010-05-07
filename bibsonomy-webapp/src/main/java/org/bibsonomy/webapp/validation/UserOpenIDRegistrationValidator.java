@@ -13,10 +13,13 @@ import org.springframework.validation.ValidationUtils;
  */
 public class UserOpenIDRegistrationValidator implements Validator<UserOpenIDRegistrationCommand>{
 
+	@SuppressWarnings("unchecked")
+	@Override
 	public boolean supports(Class clazz) {
 		return UserOpenIDRegistrationCommand.class.equals(clazz);
 	}
 
+	@Override
 	public void validate(Object target, Errors errors) {
 		UserOpenIDRegistrationCommand userObj = (UserOpenIDRegistrationCommand) target;
 		

@@ -1,8 +1,6 @@
 package org.bibsonomy.webapp.validation;
 
-import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
-import org.bibsonomy.webapp.command.actions.ImportCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
@@ -16,13 +14,12 @@ public class ChangePasswordValidator implements Validator<SettingsViewCommand> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean supports(Class clazz) {
-
+	public boolean supports(final Class clazz) {
 		return SettingsViewCommand.class.equals(clazz);
 	}
 
 	@Override
-	public void validate(Object target, Errors errors) {
+	public void validate(final Object target, final Errors errors) {
 		final SettingsViewCommand command = (SettingsViewCommand) target;
 
 		Assert.notNull(command);
@@ -36,7 +33,6 @@ public class ChangePasswordValidator implements Validator<SettingsViewCommand> {
 		// if there is no field error on newPassword or passwordCheck but they
 		// don't equal fail
 		if (!errors.hasFieldErrors("newPassword") && !errors.hasFieldErrors("newPasswordRetype")) {
-
 			if (!command.getNewPassword().equals(command.getNewPasswordRetype())) {
 				errors.rejectValue("newPasswordRetype", "error.settings.password.match");
 			}

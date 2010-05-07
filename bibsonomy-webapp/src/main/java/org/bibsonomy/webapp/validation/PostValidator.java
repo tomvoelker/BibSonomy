@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.validation;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 import java.util.Set;
 
@@ -7,14 +9,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.util.Validator;
 import org.springframework.util.Assert;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
+
+
 /**
  * @author fba
  * @version $Id$
@@ -22,6 +28,9 @@ import org.springframework.validation.ValidationUtils;
  */
 public class PostValidator<RESOURCE extends Resource> implements Validator<EditPostCommand<RESOURCE>> {
 	private static final Log log = LogFactory.getLog(PostValidator.class);
+	
+	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
+	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
 	
 	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz) {
@@ -40,14 +49,23 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 		 */
 		Assert.notNull(obj);
 		
+		@SuppressWarnings("unchecked")
 		final EditPostCommand<RESOURCE> command = (EditPostCommand<RESOURCE>) obj;
 		/*
 		 * Let's check, that the given command is not null.
 		 */
 		Assert.notNull(command);
 
-		validatePost(errors, command.getPost(), command.getAbstractGrouping(), command.getGroups());
+		this.validatePost(errors, command.getPost(), command.getAbstractGrouping(), command.getGroups());
+		
+		this.validateTags(errors, command);
+	}
 
+	/**
+	 * @param errors
+	 * @param command
+	 */
+	protected void validateTags(final Errors errors, final EditPostCommand<RESOURCE> command) {
 		/*
 		 * validate tags
 		 */
@@ -81,7 +99,7 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 	 * @param abstractGrouping
 	 * @param groups
 	 */
-	public void validatePost(final Errors errors, final Post<RESOURCE> post, final String abstractGrouping, final List<String> groups) {
+	protected void validatePost(final Errors errors, final Post<RESOURCE> post, final String abstractGrouping, final List<String> groups) {
 		errors.pushNestedPath("post");
 		validateResource(errors, post.getResource());
 		errors.popNestedPath(); // post
@@ -95,7 +113,7 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 	 * @param errors
 	 * @param resource
 	 */
-	public void validateResource(final Errors errors, final RESOURCE resource) {
+	protected void validateResource(final Errors errors, final RESOURCE resource) {
 		/*
 		 * validate the resource
 		 */
@@ -103,7 +121,7 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 		/*
 		 * every resource has a title ...
 		 */
-		if (!org.bibsonomy.util.ValidationUtils.present(resource.getTitle())) {
+		if (!present(resource.getTitle())) {
 			errors.rejectValue("title", "error.field.valid.title");
 		}
 		/*
@@ -124,10 +142,10 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 	 * @param abstractGrouping
 	 * @param groups
 	 */
-	public void validateGroups(final Errors errors, final String abstractGrouping, final List<String> groups) {
+	protected void validateGroups(final Errors errors, final String abstractGrouping, final List<String> groups) {
 		log.debug("got abstractGrouping " + abstractGrouping);
 		log.debug("got groups " + groups);
-		if ("public".equals(abstractGrouping) || "private".equals(abstractGrouping)) {
+		if (PUBLIC_GROUP.getName().equals(abstractGrouping) || PRIVATE_GROUP.getName().equals(abstractGrouping)) {
 			if (groups != null && !groups.isEmpty()) {
 				/*
 				 * "public" or "private" selected, but other group chosen

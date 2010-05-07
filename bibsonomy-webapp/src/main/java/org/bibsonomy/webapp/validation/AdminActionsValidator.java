@@ -1,10 +1,10 @@
 package org.bibsonomy.webapp.validation;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.webapp.command.ajax.AdminAjaxCommand;
 import org.bibsonomy.webapp.util.Validator;
@@ -18,16 +18,13 @@ import org.springframework.validation.Errors;
  */
 public class AdminActionsValidator implements Validator<AdminAjaxCommand> {
 	
-	private static final Log log = LogFactory.getLog(AdminActionsValidator.class);
-
 	@SuppressWarnings("unchecked")
 	public boolean supports(final Class clazz) {
 		return AdminAjaxCommand.class.equals(clazz);
 	}
 
 	@Override
-	public void validate(Object settingsObj, Errors errors) {
-
+	public void validate(final Object settingsObj, final Errors errors) {
 		/*
 		 * To ensure that the received command is not null, we throw an
 		 * exception, if this assertion fails.
@@ -56,18 +53,15 @@ public class AdminActionsValidator implements Validator<AdminAjaxCommand> {
 	 *            expression
 	 * @param errors
 	 */
-	private void validateRegExForWhitelist(final String regex,
-			final Errors errors) {
-		if (regex == null || "".equals(regex.trim())) {
+	private void validateRegExForWhitelist(final String regex, final Errors errors) {
+		if (!present(regex)) {
 			errors.rejectValue("value", "error.field.valid.admin.whitelist");
 		} else {
 
 			try {
-				Pattern pattern = Pattern.compile(regex);
-			} catch (PatternSyntaxException e) {
-				errors
-						.rejectValue("value",
-								"error.field.valid.admin.whitelist");
+				Pattern.compile(regex);
+			} catch (final PatternSyntaxException e) {
+				errors.rejectValue("value", "error.field.valid.admin.whitelist");
 			}
 		}
 

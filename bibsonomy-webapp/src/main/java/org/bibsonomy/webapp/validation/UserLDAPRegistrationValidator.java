@@ -15,10 +15,13 @@ import org.springframework.validation.ValidationUtils;
  */
 public class UserLDAPRegistrationValidator implements Validator<UserLDAPRegistrationCommand>{
 
+	@SuppressWarnings("unchecked")
+	@Override
 	public boolean supports(Class clazz) {
 		return UserLDAPRegistrationCommand.class.equals(clazz);
 	}
 
+	@Override
 	public void validate(Object target, Errors errors) {
 		UserLDAPRegistrationCommand userObj = (UserLDAPRegistrationCommand) target;
 		
