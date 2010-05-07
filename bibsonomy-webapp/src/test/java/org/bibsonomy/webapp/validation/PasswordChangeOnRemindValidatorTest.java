@@ -1,7 +1,10 @@
 package org.bibsonomy.webapp.validation;
-import java.util.HashMap;
 
-import junit.framework.Assert;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.util.HashMap;
 
 import org.bibsonomy.webapp.command.actions.PasswordChangeOnRemindCommand;
 import org.junit.Test;
@@ -23,11 +26,11 @@ public class PasswordChangeOnRemindValidatorTest {
 	public void testSupports(){
 		final PasswordChangeOnRemindValidator validator = new PasswordChangeOnRemindValidator();
 		
-		Assert.assertFalse(validator.supports(String.class));
+		assertFalse(validator.supports(String.class));
 		
-		Assert.assertFalse(validator.supports(null));
+		assertFalse(validator.supports(null));
 		
-		Assert.assertTrue(validator.supports(PasswordChangeOnRemindCommand.class));
+		assertTrue(validator.supports(PasswordChangeOnRemindCommand.class));
 	}
 	
 	/**
@@ -41,7 +44,7 @@ public class PasswordChangeOnRemindValidatorTest {
 		
 		try {
 			validator.validate(null, errors);
-			Assert.fail("Should raise an IllegalArgumentException");
+			fail("Should raise an IllegalArgumentException");
 		} catch (IllegalArgumentException e) {
 			
 		}
@@ -61,7 +64,7 @@ public class PasswordChangeOnRemindValidatorTest {
 		command.setPasswordCheck("foo");
 		
 		
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 		
 		/*
 		 * should not fail
@@ -71,7 +74,7 @@ public class PasswordChangeOnRemindValidatorTest {
 		/*
 		 * no errors
 		 */
-		Assert.assertFalse(errors.hasErrors());
+		assertFalse(errors.hasErrors());
 		
 		/*
 		 * set different password
@@ -86,7 +89,6 @@ public class PasswordChangeOnRemindValidatorTest {
 		/*
 		 * should contain some entries
 		 */
-		Assert.assertTrue(errors.hasErrors());
-		
+		assertTrue(errors.hasErrors());
 	}
 }
