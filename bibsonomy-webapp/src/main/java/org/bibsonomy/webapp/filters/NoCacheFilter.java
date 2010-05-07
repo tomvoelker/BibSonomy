@@ -1,6 +1,3 @@
-/*
- * Created on 12.10.2007
- */
 package org.bibsonomy.webapp.filters;
 
 import java.io.IOException;
@@ -14,9 +11,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Filter sets everything in the response what could make clients
  * not cache it.
@@ -24,12 +18,12 @@ import org.apache.commons.logging.LogFactory;
  * @author Jens Illig
  */
 public class NoCacheFilter implements Filter {
-
-	private final static Log log = LogFactory.getLog(NoCacheFilter.class);
 	
+	@Override
 	public void destroy() {
 	}
 
+	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
 		
 		/*
@@ -56,6 +50,7 @@ public class NoCacheFilter implements Filter {
 	    filterChain.doFilter(request, response);
 	}
 
+	@Override
 	public void init(FilterConfig arg0) throws ServletException {
 	}
 
