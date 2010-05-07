@@ -4,6 +4,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.model.User;
@@ -21,7 +23,7 @@ import org.springframework.validation.Errors;
  */
 public class UserUpdateProfileValidator implements Validator<SettingsViewCommand> {
 
-	private static final String[] ALLOWED_GENDERS = { "f", "m" };
+	private static final List<String> ALLOWED_GENDERS = Arrays.asList("f", "m");
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -60,10 +62,8 @@ public class UserUpdateProfileValidator implements Validator<SettingsViewCommand
 		if (present(gender)) {
 			gender = gender.trim();
 			
-			for (final String a_gender: ALLOWED_GENDERS) {
-				if (a_gender.equals(gender)) {
-					return;
-				}
+			if (ALLOWED_GENDERS.contains(gender)) {
+				return;
 			}
 		}
 		errors.rejectValue("user.gender", "error.profile.gender");
