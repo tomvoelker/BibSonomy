@@ -89,6 +89,23 @@ public class SystemTagsUtil {
 	}
 	
 	/**
+	 * Count the number of "normal" (i.e., non-system) tags
+	 * within a list of tags
+	 * 
+	 * @param tags - a list of tag strings
+	 * @return - the number of non-system tags
+	 */
+	public static int countNonSystemTags(List<String> tags) {
+		int numNonSysTags = 0;
+		for (String tag : tags) {
+			if (tag != null && !isSystemTag(tag)) {
+				numNonSysTags++;
+			}			
+		}
+		return numNonSysTags;
+	}
+	
+	/**
 	 * returns all system tags which are contained in a given collection of tags
 	 * 
 	 * @param tags collection of tags

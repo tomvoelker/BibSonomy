@@ -36,6 +36,7 @@ public class GetTagsByResourceSearch extends TagChainElement {
 		return ( !present(param.getBibtexKey()) &&
 				 !present(param.getRegex()) &&
 				 !present(param.getHash()) &&
+				 !present(param.getTagRelationType()) &&
 				(present(param.getSearch()) || present(param.getTitle()) || present(param.getAuthor())) );
 	}
 	

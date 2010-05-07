@@ -28,9 +28,6 @@ public class GetSimilarTags extends TagChainElement {
 				present(param.getTagIndex()) &&
 				present(param.getTagRelationType()) &&
 				!present(param.getBibtexKey()) &&
-				!present(param.getSearch()) &&
-				!present(param.getTitle()) &&
-				!present(param.getAuthor()) &&
 				param.getTagRelationType() == TagSimilarity.COSINE);
 	}
 }
