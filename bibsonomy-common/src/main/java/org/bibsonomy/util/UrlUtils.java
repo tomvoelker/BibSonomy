@@ -181,4 +181,18 @@ public class UrlUtils {
 			throw new RuntimeException(ex.getMessage());
 		}
 	}
+
+	/**
+	 * Encodes the given String with URLEncoder. If that fails, returns an empty string.
+	 * 
+	 * @param s
+	 * @return
+	 */
+	public static String safeURIEncode(final String s) {
+		try {
+			return URLEncoder.encode(s, "UTF-8");
+		} catch (Exception ex) {
+			return s;
+		}
+	}
 }
