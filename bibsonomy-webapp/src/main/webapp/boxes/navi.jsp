@@ -44,9 +44,11 @@
 	<li>
 	  <%-- dropdown menu for groups --%>		
   	  <div id="grp_menu" class="nicedropmenudiv">
-	    <c:forEach var="grp" items="${user.groups}">
-		  <a href="/group/<mtl:encode value='${grp}'/>"><c:out value='${grp}'/></a>
-		</c:forEach>  	
+  	  	<c:if test="${not empty loginUser.groups}">
+	    	<c:forEach var="grp" items="${user.groups}">
+		  	<a href="/group/<mtl:encode value='${grp.name}'/>"><c:out value='${grp.name}'/></a>
+			</c:forEach>
+		</c:if>  	
 	  </div>										
 	</li>
 	<li>
