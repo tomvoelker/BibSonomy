@@ -93,7 +93,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 
 	/** Main method which does the registration.
 	 * 
-	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
+	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(org.bibsonomy.webapp.command.BaseCommand)
 	 */
 	public View workOn(UserRegistrationCommand command) {
 		log.debug("workOn() called");
@@ -312,13 +312,10 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 	/** Returns, if validation is required for the given command. On default,
 	 * for all incoming data validation is required.
 	 * 
-	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(java.lang.Object)
+	 * @see org.bibsonomy.webapp.util.ValidationAwareController#isValidationRequired(org.bibsonomy.webapp.command.BaseCommand)
 	 */
 	public boolean isValidationRequired(final UserRegistrationCommand command) {
-		/*
-		 * TODO: When is validation really required?
-		 */
-		return true;
+		return true; // TODO: When is validation really required?
 	}
 
 	/** Checks the status of the given inetAddress in the DB
