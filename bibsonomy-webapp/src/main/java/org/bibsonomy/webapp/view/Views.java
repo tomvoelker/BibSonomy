@@ -8,7 +8,7 @@ import org.bibsonomy.webapp.util.View;
 
 /**
  * some symbols for views in the application, along with information 
- * which views are capable to display bibtex / bookmark only
+ * which views are capable to display publication / bookmark only
  * 
  * @author Jens Illig
  * @author rja
@@ -94,8 +94,6 @@ public enum Views implements View {
 	 * friends page show all tags whose are viewable for friends by a friend of you
 	 */
 	FRIENDSPAGE("friends"),
-	
-	
 	
 	/**
 	 * friend page shows all posts which are set viewable for friends of the requested user
@@ -190,12 +188,10 @@ public enum Views implements View {
 	/** scraper info list **/
 	SCRAPER_INFO("scraperInfo"),
 
-
 	/**
 	 * reporting
 	 */
 	REPORTING("reporting"),
-	
 	
 	
 	/* *****************************************************
@@ -221,6 +217,7 @@ public enum Views implements View {
 	 * get bibtex keys for a given user
 	 */
 	AJAX_GET_BIBTEXKEYS_FOR_USER("ajax/bibtexkeys"),
+	
 	/**
 	 * posts 
 	 */
@@ -235,6 +232,7 @@ public enum Views implements View {
 	 * a tag cloud (to reload it using AJAX)
 	 */
 	AJAX_TAGCLOUD("ajax/tagcloud"),
+	
 	/**
 	 * response for quick AJAX tag editing
 	 */
@@ -303,17 +301,6 @@ public enum Views implements View {
 	REGISTER_USER_OPENID_SUCCESS("actions/register/openid/user_success"),
 	
 	/**
-	 * where user can attach an openid url to her/his user account
-	 */
-	// ATTACH_USER_OPENID("actions/register/openid/user_attach"),
-	/**
-	 * OpenID register form prefilled with information from 
-	 * the OpenID provider
-	 */
-	// ATTACH_USER_OPENID_PROVIDER_FORM("actions/register/openid/attach_provider_form"),
-
-	
-	/**
 	 * User registration form for LDAP registering
 	 */
 	REGISTER_USER_LDAP("actions/register/ldap/user"),
@@ -328,7 +315,6 @@ public enum Views implements View {
 	 * After a user has successfully registered using LDAP, he will see this view.
 	 */
 	REGISTER_USER_LDAP_SUCCESS("actions/register/ldap/user_success"),
-
 	
 	/**
 	 * Log into the system. 
@@ -339,18 +325,27 @@ public enum Views implements View {
 	 * The dialog to EDIT a bookmark (big dialog).
 	 */
 	EDIT_BOOKMARK("actions/post/editBookmark"),
+	
 	/**
 	 * The dialog to EDIT a publication (big dialog).
 	 */
 	EDIT_PUBLICATION("actions/post/editPublication"),
+	
+	/**
+	 * The dialog to EDIT a gold standard publication (big dialog)
+	 */
+	EDIT_GOLD_STANDARD_PUBLICATION("actions/post/editGoldStandardPublication"), 
+	
 	/**
 	 * The dialog to enter a URL for posting (small dialog).
 	 */
 	POST_BOOKMARK("actions/post/postBookmark"), 	
+	
 	/**
 	 * The dialog to post one or more publications (tabbed view)
 	 */
 	POST_PUBLICATION("actions/post/postPublication"),
+	
 	/** 
 	 * import view 
 	 */
@@ -376,7 +371,6 @@ public enum Views implements View {
 	 */
 	DOWNLOAD_FILE("downloadFile"),
 	
-	
 	/**
 	 * to edit the tags of publications
 	 */
@@ -386,13 +380,11 @@ public enum Views implements View {
 	 * to edit the tags of bookmarks 
 	 */
 	BATCHEDITURL("actions/edit/batchediturl"),
+	
 	/**
 	 * edit tags
 	 */
 	EDIT_TAGS("actions/edit/edittags"),
-
-	
-	
 	
 	/* *****************************************************
 	 * query independent views to show bookmark or 
@@ -492,9 +484,7 @@ public enum Views implements View {
 	/**
 	 * export layouts in a JSON object
 	 */
-	EXPORTLAYOUTS("exportLayouts"),
-	
-	
+	EXPORTLAYOUTS("exportLayouts"),	
 	
 	/* *************************************************************************
 	 * TODO: The following views have been added by not so careful developers 
@@ -532,16 +522,11 @@ public enum Views implements View {
 	 */
 	FOLLOWERS("followers"),
 	
-
-
 	
 	/**
 	 * PUMA the first page you see when entering the application
 	 */
 	PUMAHOMEPAGE("pumahome");
-	
-	
-	
 	
 	private final String name;
 	
@@ -563,7 +548,7 @@ public enum Views implements View {
 	 * @param format the name of the format
 	 * @return true if the corresponding view displays only bibtex posts, false otherwise
 	 */
-	public static Boolean isBibtexOnlyFormat(final String format) {
+	public static boolean isBibtexOnlyFormat(final String format) {
 		if ("bibtex".equals(format) || 
 			"publrss".equals(format) ||
 			"publ".equals(format) ||			
@@ -584,7 +569,7 @@ public enum Views implements View {
 	 * @param format the name of the format
 	 * @return true if the corresponding view displays only bookmark posts, false otherwise
 	 */
-	public static Boolean isBookmarkOnlyFormat(final String format) {
+	public static boolean isBookmarkOnlyFormat(final String format) {
 		if ("xml".equals(format) || 
 			"rss".equals(format) ||
 			"batchediturl".equals(format) ||

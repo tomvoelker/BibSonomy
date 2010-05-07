@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -19,20 +18,22 @@ import org.springframework.validation.Errors;
  * @author daill
  * @version $Id$
  */
-public class DeleteUserController implements MinimalisticController<SettingsViewCommand>, ErrorAware, ValidationAwareController<SettingsViewCommand> {
-
+public class DeleteUserController implements ValidationAwareController<SettingsViewCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(DeleteUserController.class);
 	
-	private LogicInterface logic;
-	private Errors errors = null;
 	private static final String TAB_URL = "/settings";
+	
+	private LogicInterface logic;
+	private Errors errors;
 
+	@Override
 	public SettingsViewCommand instantiateCommand() {
 		final SettingsViewCommand command = new SettingsViewCommand();
 		command.setTabURL(TAB_URL);
 		return command;
 	}
 
+	@Override
 	public View workOn(SettingsViewCommand command) {
 		final RequestWrapperContext context = command.getContext();
 		
@@ -45,7 +46,6 @@ public class DeleteUserController implements MinimalisticController<SettingsView
 		} 
 		
 		command.setUser(context.getLoginUser());
-		
 		
 		/**
 		 * go back to the settings page and display errors from command field

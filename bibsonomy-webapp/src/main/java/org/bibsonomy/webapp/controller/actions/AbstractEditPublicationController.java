@@ -206,7 +206,7 @@ public abstract class AbstractEditPublicationController<COMMAND extends EditPubl
 		 * exchange post with a parsed version
 		 */
 		try {
-			new PostBibTeXParser().updateWithParsedBibTeX(post);
+			new PostBibTeXParser(this.instantiateResource().getClass()).updateWithParsedBibTeX(post);
 		} catch (final ParseException ex) {
 			/*
 			 * we silently ignore parsing errors - they have been handled by the

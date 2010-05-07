@@ -1,4 +1,5 @@
 package org.bibsonomy.webapp.controller.actions;
+
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
@@ -23,6 +25,7 @@ import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.systemstags.SystemTags;
+import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
@@ -31,14 +34,17 @@ import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.GroupUtils;
+import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.recommender.tags.database.RecommenderStatisticsManager;
 import org.bibsonomy.services.URLGenerator;
 import org.bibsonomy.services.recommender.TagRecommender;
 import org.bibsonomy.util.UrlUtils;
+import org.bibsonomy.webapp.command.BaseCommand;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.SingleResourceListController;
+import org.bibsonomy.webapp.controller.ajax.RecommendationsAjaxController;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -51,6 +57,7 @@ import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ValidationUtils;
 
 /**
  * @author fba
@@ -59,31 +66,32 @@ import org.springframework.validation.Errors;
  * @param <COMMAND> 
  */
 public abstract class EditPostController<RESOURCE extends Resource,COMMAND extends EditPostCommand<RESOURCE>> extends SingleResourceListController implements MinimalisticController<COMMAND>, ErrorAware {
-
 	private static final Log log = LogFactory.getLog(EditPostController.class);
+	
+	/**
+	 * FIXME: system tag handling should be done by system tags ... not by this
+	 * controller.
+	 */
+	private static final String SYS_RELEVANT_FOR = SystemTags.RELEVANTFOR.getPrefix() + SystemTags.SYSTAG_DELIM;
+	
+	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
+	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
+	
+	protected static final String LOGIN_NOTICE = "login.notice.post.";
+	
+	
 	protected Errors errors = null;
 	private TagRecommender tagRecommender;
 	private Captcha captcha;
 	protected RequestLogic requestLogic;
 	private URLGenerator urlGenerator;
 
-
-	/**
-	 * FIXME: system tag handling should be done by system tags ... not by this
-	 * controller.
-	 */
-	private static final String SYS_RELEVANT_FOR = SystemTags.RELEVANTFOR.getPrefix() + SystemTags.SYSTAG_DELIM;
-
-	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
-	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
-
-	protected static final String LOGIN_NOTICE = "login.notice.post.";
-
 	/**
 	 * Returns an instance of the command the controller handles.
 	 * 
 	 * @see org.bibsonomy.webapp.util.MinimalisticController#instantiateCommand()
 	 */
+	@Override
 	public COMMAND instantiateCommand() {
 		final COMMAND command = instantiateEditPostCommand();
 		/*
@@ -99,7 +107,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 */
 		command.setPost(new Post<RESOURCE>());
 		command.setAbstractGrouping(PUBLIC_GROUP.getName());
-		command.getPost().setResource(instantiateResource());
+		command.getPost().setResource(this.instantiateResource());
 
 		/*
 		 * set default values.
@@ -121,12 +129,12 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 */
 	protected abstract RESOURCE instantiateResource();
 
-
 	/**
 	 * Main method which does the posting-procedure.
 	 * 
-	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(java.lang.Object)
+	 * @see org.bibsonomy.webapp.util.MinimalisticController#workOn(BaseCommand)
 	 */
+	@Override
 	public View workOn(final COMMAND command) {
 		final RequestWrapperContext context = command.getContext();
 		/*
@@ -159,7 +167,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 
 		final User loginUser = context.getLoginUser();
 
-
 		/*
 		 * After having handled the general issues (login, referer, etc.),
 		 * sub classes can now execute their workOn code 
@@ -173,21 +180,16 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			/*
 			 * check the captcha (if it is wrong, an error is added)
 			 */
-			checkCaptcha(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), requestLogic.getHostInetAddress());
+			this.checkCaptcha(command.getRecaptcha_challenge_field(), command.getRecaptcha_response_field(), requestLogic.getHostInetAddress());
 		}
-
-
+		
 		/*
 		 * handle copying of a post using intra hash + user name
 		 */
 		final String hash = command.getHash();
 		final String user = command.getUser();
-		if (present(hash) && present(user)) {
-			/*
-			 * hash + user given: user wants to copy a post
-			 * FIXME: really ensure, that the tag field is not filled
-			 *        (otherwise the post is automatically saved ...)
-			 */
+		if (present(hash)) {
+			// the user can be empty => goldstandard
 			final Post<RESOURCE> post;
 			if (urlGenerator.matchesPage(requestLogic.getReferer(), URLGenerator.Page.INBOX)) {
 				/*
@@ -197,15 +199,15 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 				 * that the user who owns the post already has deleted it (and thus
 				 * we must check the log table to get the post). 
 				 */
-				post = getInboxPost(loginUser.getName(), hash, user);
+				post = this.getInboxPost(loginUser.getName(), hash, user);
 			} else {
 				/*
 				 * regular copy
 				 */
-				post = getPostDetails(hash, user);
+				post = this.getPostDetails(hash, user);
 			}
 			command.setPost(post);
-		} else {
+		} else {			
 			/*
 			 * The post in the command is coming from the form: bring it into 
 			 * the format we're using internally. 
@@ -230,12 +232,11 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		final String intraHashToUpdate = command.getIntraHashToUpdate();
 		if (present(intraHashToUpdate)) {
 			log.debug("intra hash to update found -> handling update of existing post");
-			return handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
+			return this.handleUpdatePost(command, context, loginUser, post, intraHashToUpdate);
 		}
 
 		log.debug("no intra hash given -> new post");
-		return handleCreatePost(command, context, loginUser, post);
-
+		return this.handleCreatePost(command, context, loginUser, post);
 	}
 
 	/**
@@ -258,7 +259,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * Thus, if the loginUser has several posts with the same hash in his inbox,
 		 * we get them all and must compare each post against the given user name.
 		 */
-		final List<?> dbPosts = logic.getPosts((Class<? extends Resource>) instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, 0, Integer.MAX_VALUE, null);
+		final List<?> dbPosts = logic.getPosts((Class<? extends Resource>) this.instantiateResource().getClass(), GroupingEntity.INBOX, loginUserName, null, hash, null, null, 0, Integer.MAX_VALUE, null);
 		if (present(dbPosts)) {
 			for (final Object dbPost: dbPosts) {
 				final Post<RESOURCE> castedDbPost = (Post<RESOURCE>) dbPost;
@@ -270,6 +271,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 				}
 			}
 		}
+		
 		throw new ResourceNotFoundException(hash);
 	}
 	
@@ -331,7 +333,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * 
 	 * @param post
 	 */
-	protected void preparePostForView(final Post<RESOURCE> post) {
+	protected void preparePostForView(@SuppressWarnings("unused") final Post<RESOURCE> post) {
 		// do nothing	
 	}
 
@@ -340,7 +342,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * 
 	 * @param post
 	 */
-	protected void preparePostAfterView(final Post<RESOURCE> post) {
+	protected void preparePostAfterView(@SuppressWarnings("unused") final Post<RESOURCE> post) {
 		// do nothing		
 	}
 
@@ -367,7 +369,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			 * ckey is invalid, so this is probably the first call --> get post
 			 * from DB
 			 */
-			final Post<RESOURCE> dbPost = getPostDetails(intraHashToUpdate, loginUserName);
+			final Post<RESOURCE> dbPost = this.getPostDetails(intraHashToUpdate, loginUserName);
 			if (dbPost == null) {
 				/*
 				 * invalid intra hash: post could not be found
@@ -378,7 +380,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			/*
 			 * put post into command
 			 */
-			populateCommandWithPost(command, dbPost);
+			this.populateCommandWithPost(command, dbPost);
 			/*
 			 * returning to view
 			 */
@@ -388,7 +390,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * ckey is given, so user is already editing the post -> parse tags
 		 */
-		cleanAndValidatePost(command, post);
+		this.cleanAndValidatePost(command, post);
 		/*
 		 * check, if the post has changed
 		 */
@@ -403,7 +405,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 				/*
 				 * post exists -> warn user
 				 */
-				setDuplicateErrorMessage(post, errors);
+				this.setDuplicateErrorMessage(post, errors);
 			}
 		}
 		/*
@@ -412,7 +414,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		if (errors.hasErrors()) {
 			log.debug("returning to view because of errors: " + errors.getErrorCount());
 			log.debug("post is " + post.getResource());
-			return getEditPostView(command, loginUser);
+			return this.getEditPostView(command, loginUser);
 		}
 		/*
 		 * the post to update has the given intra hash
@@ -430,9 +432,9 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			/*
 			 * update post in DB
 			 */
-			updatePosts = logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
+			updatePosts = this.logic.updatePosts(posts, PostUpdateOperation.UPDATE_ALL);
 		} catch (final DatabaseException ex) {
-			return handleDatabaseException(command, loginUser, post, ex, "update");
+			return this.handleDatabaseException(command, loginUser, post, ex, "update");
 		}
 		
 		if (!present(updatePosts)) {
@@ -448,12 +450,12 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * update recommender table such that recommendations are linked to the final post
 		 */
-		setRecommendationFeedback(post, command.getPostID());
+		this.setRecommendationFeedback(post, command.getPostID());
 
 		/*
 		 * leave if and reach final redirect
 		 */
-		return finalRedirect(loginUserName, command.getReferer());
+		return this.finalRedirect(loginUserName, command.getReferer());
 	}
 
 	/**
@@ -494,7 +496,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * @see {https://www.kde.cs.uni-kassel.de/mediawiki/index.php/Bibsonomy:PostPublicationUmziehen#gel.C3.B6schte.2Fge.C3.A4nderte_Posts_.28Hash-Redirect-Problem.29}
 	 */
 	@SuppressWarnings("unchecked")
-	private Post<RESOURCE> getPostDetails(final String intraHash, final String userName) {
+	protected Post<RESOURCE> getPostDetails(final String intraHash, final String userName) {
 		try {
 			return (Post<RESOURCE>) logic.getPostDetails(intraHash, userName);
 		} catch (final ResourceMovedException e) {
@@ -508,6 +510,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			 * and https://www.kde.cs.uni-kassel.de/mediawiki/index.php/Bibsonomy:PostPublicationUmziehen#gel.C3.B6schte.2Fge.C3.A4nderte_Posts_.28Hash-Redirect-Problem.29
 			 */
 		}
+		
 		return null;
 	}
 
@@ -573,8 +576,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * 
 	 * @param command
 	 */
-	private void validatePost(final EditPostCommand<RESOURCE> command) {
-		org.springframework.validation.ValidationUtils.invokeValidator(getValidator(), command, errors);
+	protected void validatePost(final EditPostCommand<RESOURCE> command) {
+		ValidationUtils.invokeValidator(this.getValidator(), command, errors);
 	}
 
 	/**
@@ -583,7 +586,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * 
 	 * @param post
 	 */
-	protected void cleanPost(final Post<RESOURCE> post) {
+	protected void cleanPost(@SuppressWarnings("unused") final Post<RESOURCE> post) {
 		// noop
 	}
 
@@ -595,7 +598,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * @param post - the final post as saved in the database.
 	 * @param postID - the ID of the post during the posting process.
 	 */
-	private void setRecommendationFeedback(final Post<RESOURCE> post, final int postID) {
+	protected void setRecommendationFeedback(final Post<RESOURCE> post, final int postID) {
 		try {
 			/*
 			 * To allow the recommender to identify the post and connect it with
@@ -612,7 +615,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		}
 	}
 
-
 	/**
 	 * Create the final redirect after successful creating / updating a post. We 
 	 * redirect to the URL the user was initially coming from. If we don't have 
@@ -624,7 +626,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * @return
 	 */
 	private View finalRedirect(final String userName, final String referer) {
-
 		/*
 		 * If there is no referer URL given, redirect to the user's home page. 
 		 */
@@ -661,7 +662,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * parses the tags, 
 		 */
-		cleanAndValidatePost(command, post);
+		this.cleanAndValidatePost(command, post);
 
 		/*
 		 * return to form until validation passes
@@ -682,10 +683,10 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 */
 		if (!context.isValidCkey()) {
 			errors.reject("error.field.valid.ckey");
-			return getEditPostView(command, loginUser);
+			return this.getEditPostView(command, loginUser);
 		}
 
-		setDate(post, loginUserName);
+		this.setDate(post, loginUserName);
 
 		/*
 		 * create list for posting
@@ -735,10 +736,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * create tag string for view input field (NOTE: this needs to be done
 		 * after initializing the relevantFor groups, because there the
 		 * relevantFor tags are removed from the post)
-		 * 
 		 */
-		command.setTags(getSimpleTagString(dbPost.getTags()));
-
+		command.setTags(TagUtils.toTagString(dbPost.getTags(), " "));
 	}
 
 
@@ -880,14 +879,18 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	protected boolean setDiffPost(final EditPostCommand<RESOURCE> command) {
 		final RequestWrapperContext context = command.getContext();
 		final Post<RESOURCE> post = command.getPost();
-		final String loginUserName = context.getLoginUser().getName();
+		final String loginUserName = context.getLoginUser().getName();		
 		final RESOURCE resource = post.getResource();
 		resource.recalculateHashes();
-
+		
+		if (resource instanceof GoldStandard<?>) {
+			resource.setIntraHash(SimHash.getSimHash(resource, HashID.INTRA_HASH));
+		}
+		
 		/*
 		 * is resource already owned by the user?
 		 */
-		final Post<RESOURCE> dbPost = getPostDetails(resource.getIntraHash(), loginUserName);
+		final Post<RESOURCE> dbPost = this.getPostDetails(resource.getIntraHash(), loginUserName);
 
 		if (dbPost != null) {
 			log.debug("set diff post");
@@ -906,12 +909,15 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 
 			return true;
 		}
+		
 		return false;		
 	}
 
 	/**
 	 * Copy the groups from the command into the post (make proper groups from
 	 * them)
+	 * 
+	 * FIXME: copied from {@link RecommendationsAjaxController}
 	 * 
 	 * @param command -
 	 *            contains the groups as represented by the form fields.
@@ -1002,7 +1008,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * is member of.
 		 */
 		final List<Group> usersGroups = loginUser.getGroups();
-		final ArrayList<Group> groupsWithTagSets = new ArrayList<Group>();
+		final List<Group> groupsWithTagSets = new ArrayList<Group>();
 		for (final Group group : usersGroups) {
 			if (group.getName() != null) {
 				groupsWithTagSets.add(this.logic.getGroupDetails(group.getName()));
@@ -1010,20 +1016,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		}
 		loginUser.setGroups(groupsWithTagSets);
 
-	}
-
-	/**
-	 * Concatenates the tags into one tag string to show them to the user.
-	 * 
-	 * @param tags
-	 * @return A string representing the tags, separated by space
-	 */
-	private String getSimpleTagString(final Set<Tag> tags) {
-		final StringBuffer s = new StringBuffer();
-		for (final Tag tt : tags) {
-			s.append(tt.getName() + " ");
-		}
-		return s.toString();
 	}
 
 	protected abstract PostValidator<RESOURCE> getValidator();
@@ -1035,7 +1027,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	public void setErrors(final Errors errors) {
 		this.errors = errors;
 	}
-
 
 	/**
 	 * @return The tag recommender associated with this controller.
@@ -1107,5 +1098,4 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	public void setUrlGenerator(URLGenerator urlGenerator) {
 		this.urlGenerator = urlGenerator;
 	}
-
 }
