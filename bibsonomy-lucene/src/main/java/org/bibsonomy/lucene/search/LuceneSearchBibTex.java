@@ -53,6 +53,12 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		return singleton;
 	}
 	
+	@Override
+	protected Query buildAuthorSearchQuery(final String authorSearchTerms) {
+		Query authorTermQuery = parseSearchQuery(FLD_AUTHOR, authorSearchTerms);
+		return authorTermQuery;
+	}
+	
 	/**
      * <em>/author/MaxMustermann</em><br/><br/>
 	 * This method prepares queries which retrieve all publications for a given

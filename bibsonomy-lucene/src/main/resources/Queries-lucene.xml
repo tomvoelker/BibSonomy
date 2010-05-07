@@ -16,7 +16,22 @@
 		FROM groups
 		WHERE `group` = #groupId#		 
 	</select>
+
+	<!-- get given group's members -->
+	<select id="getGroupMembersByGroupName" resultClass="string" parameterClass="string">
+		SELECT g.user_name 
+		FROM groups g 
+		JOIN groupids gn USING (`group`)
+		WHERE gn.group_name = #groupName#
+	</select>
 	
+	<!-- get all friends of the given user -->
+	<select id="getFriendsForUser" resultClass="string" parameterClass="string">
+		SELECT user_name
+		FROM friends
+		WHERE f_user_name = #userName#
+	</select>
+
 	<!-- get all members of the given group, which have the user as a friend -->
 	<select id="getGroupFriendsByGroupIdForUser" resultClass="string" parameterClass="pair">
 		SELECT f.user_name

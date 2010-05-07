@@ -1,5 +1,6 @@
 package org.bibsonomy.lucene.database;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -107,6 +108,13 @@ public interface LuceneDBInterface<R extends Resource> {
 	 */
 	public List<String> getNonSpamPredictionForTimeRange(Date fromDate);
 
+	/**
+	 * get list of all friends for a given user
+	 * 
+	 * @param userName the user name
+	 * @return all friends of given user 
+	 */
+	public Collection<String> getFriendsForUser(String userName);
 	
 	/**
 	 * get group name

@@ -1,6 +1,7 @@
 package org.bibsonomy.lucene.database;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -137,6 +138,27 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		return retVal;	
 	}
 	
+	
+	/**
+	 * get list of all friends for a given user
+	 * 
+	 * @param userName the user name
+	 * @return all friends of given user 
+	 */
+	public Collection<String> getFriendsForUser(String userName) {
+		List<String> retVal = null;
+		
+		try {
+			retVal = (List<String>)this.sqlMap.queryForList("getFriendsForUser", userName);
+		} catch (SQLException e) {
+			log.error("Error getting friends for user "+userName, e);
+		}
+		if( retVal==null ) {
+			retVal = new LinkedList<String>();
+		}
+		
+		return retVal;	
+	}
 	
 	/**
 	 * get group name

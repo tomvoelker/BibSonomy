@@ -25,11 +25,14 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.queryParser.QueryParser.Operator;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Filter;
+import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.TermRangeFilter;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.store.FSDirectory;
@@ -47,6 +50,7 @@ import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ValidationUtils;
+import static org.bibsonomy.util.ValidationUtils.*;
 
 /**
  * abstract parent class for lucene search
@@ -127,6 +131,54 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		return doSearch(fullTextQuery, limit, offset);
 	}
 
+	/**
+	 * search for posts using the lucene index
+	 * 
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param allowedGroups
+	 * @param friends
+	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param tagIndex
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @return
+	 */
+	public ResultList<Post<R>> getPosts(
+			final String userName, final String requestedUserName, String requestedGroupName, 
+			final Collection<String> allowedGroups,
+			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
+			final String year, final String firstYear, final String lastYear, int limit, int offset) {
+		// build query
+		QuerySortContainer query = buildQuery(
+				userName, requestedUserName, requestedGroupName,
+				allowedGroups, 
+				searchTerms, titleSearchTerms, authorSearchTerms, tagIndex,
+				year, firstYear, lastYear);
+		// perform search query
+		return doSearch(query, limit, offset);
+	}
+	
+	public List<Tag> getTags(
+			final String userName, final String requestedUserName, String requestedGroupName, 
+			final Collection<String> allowedGroups,
+			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
+			final String year, final String firstYear, final String lastYear, int limit, int offset) {
+		// build query
+		QuerySortContainer qf = buildQuery(
+				userName, requestedUserName, requestedGroupName,
+				allowedGroups, 
+				searchTerms, titleSearchTerms, authorSearchTerms, tagIndex,
+				year, firstYear, lastYear);
+		// limit number of posts to consider for building the tag cloud
+		qf.setLimit(getTagCloudLimit());
+		// query index
+		return doTagSearch(qf);
+	}	
 	
 	/**
 	 * TODO: document me
@@ -555,6 +607,320 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	private void enableIndex() {
 		this.isReady = true;
 	}
+
+	/**
+	 * parse given search term for allowing lucene's search syntax
+	 * 
+	 * @param searchTerms a lucene search query
+	 * @return the parsed query term
+	 */
+	protected Query buildFulltextSearchQuery(final String searchTerms) {
+		Query searchTermQuery = parseSearchQuery(FLD_MERGEDFIELDS, searchTerms);
+		return searchTermQuery;
+	}
+
+	/**
+	 * parse given search term for allowing lucene's search syntax on the title field
+	 * 
+	 * @param searchTerms a lucene search query
+	 * @return the parsed query term
+	 */
+	protected Query buildTitleSearchQuery(final String searchTerms) {
+		Query searchTermQuery = parseSearchQuery(FLD_TITLE, searchTerms);
+		return searchTermQuery;
+	}
+	
+	/**
+	 * build query to search for posts who's private notes field matches to the given search terms
+	 * @param userName
+	 * @return
+	 */
+	protected Query buildPrivateNotesQuery(String userName, String searchTerms) {
+		BooleanQuery privateSearchQuery = new BooleanQuery();
+		
+		if( ValidationUtils.present(userName) ) {
+			Query privateSearchTermQuery    = parseSearchQuery(FLD_PRIVATEFIELDS, searchTerms);
+			privateSearchQuery.add(privateSearchTermQuery, Occur.MUST);
+			privateSearchQuery.add(new TermQuery(new Term(FLD_USER, userName)), Occur.MUST);
+		}
+		
+		return privateSearchQuery;
+	}
+
+	/**
+	 * restrict result list to posts with given tag assignments
+	 * 
+	 * @param tagIndex list of tags 
+	 * @return search query for restricting posts to given tag assignments
+	 */
+	protected Query buildTagSearchQuery(Collection<String> tagIndex) {
+		//--------------------------------------------------------------------
+		// prepare input parameters
+		//--------------------------------------------------------------------
+		List<String> tags = new LinkedList<String>();
+		if( ValidationUtils.present(tagIndex) ) {
+			for( String tag : tagIndex) {
+				try {
+					tags.add(parseToken(FLD_TAS, tag));
+				} catch (IOException e) {
+					log.error("Error parsing input tag " + tag + " ("+e.getMessage()+")");
+					tags.add(tag);
+				}
+			}
+			tagIndex = tags;
+		}
+		
+		//--------------------------------------------------------------------
+		// restrict to given tags
+		//--------------------------------------------------------------------
+		BooleanQuery tagQuery = new BooleanQuery();
+		if( ValidationUtils.present(tags) ) {
+			for ( String tagItem : tags){
+				tagQuery.add(new TermQuery(new Term(FLD_TAS, tagItem)), Occur.MUST);
+			}
+		}
+		
+		// all done
+		return tagQuery;
+	}	
+
+	protected abstract Query buildAuthorSearchQuery(final String autherSearchTerms);
+	
+	/**
+	 * restrict result list to posts owned by one of the given group members 
+	 * @param requestedGroupName
+	 * @param groupMembers
+	 * @return
+	 */
+	protected BooleanQuery buildGroupSearchQuery(final String requestedGroupName) {
+		// get given group's members
+		Collection<String> groupMembers = this.dbLogic.getGroupMembersByGroupName(requestedGroupName);
+		
+		//--------------------------------------------------------------------
+		// restrict to group members
+		//--------------------------------------------------------------------
+		BooleanQuery groupMemberQuery = new BooleanQuery();
+		if ( ValidationUtils.present(requestedGroupName) && ValidationUtils.present(groupMembers) ) {
+			for ( String member: groupMembers ) {
+				Query memberQuery = new TermQuery(new Term(FLD_USER, member));
+				groupMemberQuery.add(memberQuery, Occur.SHOULD);
+			}
+		}
+		return groupMemberQuery;
+	}
+	
+	/**
+	 * restrict given query to posts belonging to a given time range
+	 * 
+	 * @param mainQuery
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @return
+	 */
+	protected Query makeTimeRangeQuery(BooleanQuery mainQuery, String year, String firstYear, String lastYear) {
+		//--------------------------------------------------------------------
+		// exact year query
+		//--------------------------------------------------------------------
+		boolean includeLowerBound = false;
+		boolean includeUpperBound = false;
+
+		if ( ValidationUtils.present(year) ) {
+			year = year.replaceAll("\\D", "");
+			mainQuery.add( new TermQuery(new Term(FLD_YEAR, year)), Occur.MUST );
+		} else {
+		//--------------------------------------------------------------------
+		// range query
+		//--------------------------------------------------------------------
+			// firstYear != null, lastYear != null
+			if( ValidationUtils.present(firstYear) ) {
+				firstYear = firstYear.replaceAll("\\D", "");
+				includeLowerBound = true;
+			}
+			// firstYear == null, lastYear != null
+			if( ValidationUtils.present(lastYear) ) {
+				lastYear = lastYear.replaceAll("\\D", "");
+				includeUpperBound = true; 
+			}
+		}
+		if (includeLowerBound || includeUpperBound) {
+			// if upper or lower bound is given, then use filter
+			FilteredQuery filteredQuery = null;
+			Filter rangeFilter = new TermRangeFilter(FLD_YEAR , firstYear, lastYear, includeLowerBound, includeUpperBound);
+			filteredQuery = new FilteredQuery(mainQuery,rangeFilter);
+			return filteredQuery;
+		} else {
+			return mainQuery;
+		}
+	}
+	
+	/**
+	 * restrict result to posts which are visible to the user
+	 * 
+	 * @param userName the logged in user's name
+	 * @param allowedGroups list of groups of which the logged in user is a member
+	 * @param friends list of users who's private post the logged in user may see
+	 * @return a query term which restricts the result to posts, which are visible to the user
+	 */
+	protected Query buildAccessModeQuery(final String userName, final Collection<String> allowedGroups) {
+		//--------------------------------------------------------------------
+		// get missing information from bibsonomy's database
+		//--------------------------------------------------------------------
+		final Collection<String> friends = this.dbLogic.getFriendsForUser(userName);
+		
+		BooleanQuery accessModeQuery  = new BooleanQuery();
+		BooleanQuery privatePostQuery = new BooleanQuery();
+
+		//--------------------------------------------------------------------
+		// allowed groups
+		//--------------------------------------------------------------------
+		for ( String groupName : allowedGroups) {
+			Query groupQuery = new TermQuery(new Term(FLD_GROUP, groupName));
+			accessModeQuery.add(groupQuery, Occur.SHOULD);
+		}
+		
+		//--------------------------------------------------------------------
+		// private post query
+		//--------------------------------------------------------------------
+		if( ValidationUtils.present(userName) ) {
+			BooleanQuery privatePostGroups = new BooleanQuery();
+			privatePostGroups.add(new TermQuery(new Term(FLD_GROUP, GroupID.PRIVATE.name().toLowerCase())), Occur.SHOULD);
+			privatePostGroups.add(new TermQuery(new Term(FLD_GROUP, GroupID.FRIENDS.name().toLowerCase())), Occur.SHOULD);
+			privatePostQuery.add(privatePostGroups, Occur.MUST);
+			privatePostQuery.add(new TermQuery(new Term(FLD_USER, userName)), Occur.MUST);
+			accessModeQuery.add(privatePostQuery, Occur.SHOULD);
+		}
+
+		if( ValidationUtils.present(friends) ) {
+			BooleanQuery friendPostQuery= new BooleanQuery();
+			friendPostQuery.add(new TermQuery(new Term(FLD_GROUP, GroupID.FRIENDS.name().toLowerCase())), Occur.MUST);
+
+			BooleanQuery friendPostAllowanceQuery= new BooleanQuery();
+			// the post owner's friend may read the post
+			for( String friend : friends ) {
+				friendPostAllowanceQuery.add(new TermQuery(new Term(FLD_USER, friend)), Occur.SHOULD);
+			}
+
+			friendPostQuery.add(friendPostAllowanceQuery, Occur.MUST);
+			accessModeQuery.add(friendPostQuery, Occur.SHOULD);
+		}
+				
+		
+		// all done
+		return accessModeQuery; 
+	}
+	
+	
+	/**
+	 * build the overall lucene serach query term
+	 * @param userName
+	 * @param requestedUserName restrict the resulting posts to those which are owned by this user name
+	 * @param requestedGroupName restrict the resulting posts to those which are owned this group
+	 * @param searchTerms
+	 * @return
+	 */
+	protected QuerySortContainer buildQuery(
+			final String userName, final String requestedUserName, String requestedGroupName, 
+			final Collection<String> allowedGroups,
+			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms,
+			final Collection<String> tagIndex,
+			final String year, final String firstYear, final String lastYear) {		
+		//--------------------------------------------------------------------
+		// build the query
+		//--------------------------------------------------------------------
+		// the resulting main query
+		BooleanQuery mainQuery       = new BooleanQuery();
+		BooleanQuery searchQuery     = new BooleanQuery();
+		
+		// search full text 
+		if( present(searchTerms) ) {
+			Query fulltextQuery     = buildFulltextSearchQuery(searchTerms);
+			searchQuery.add(fulltextQuery, Occur.SHOULD);
+		}
+		
+		// search private nodes
+		if( present(userName) && present(searchTerms) ) {
+			Query privateNotesQuery = buildPrivateNotesQuery(userName, searchTerms);
+			searchQuery.add(privateNotesQuery, Occur.SHOULD);
+		}
+
+		// search title 
+		if( present(titleSearchTerms) ) {
+			Query titleQuery        = buildTitleSearchQuery(titleSearchTerms);
+			searchQuery.add(titleQuery, Occur.MUST);
+		}
+		
+		// search author
+		if( present(authorSearchTerms) ) {
+			Query authorQuery       = buildAuthorSearchQuery(authorSearchTerms);
+			searchQuery.add(authorQuery, Occur.MUST);
+		}
+		
+		// search tag assignments
+		if( present(tagIndex) ) {
+			Query tagQuery          = buildTagSearchQuery(tagIndex);
+			searchQuery.add(tagQuery, Occur.MUST);
+		}
+		
+		// restrict result to given group
+		if( present(requestedGroupName) ) {
+			BooleanQuery groupQuery  = buildGroupSearchQuery(requestedGroupName);
+			if( groupQuery.getClauses().length >= 1 ) {
+				mainQuery.add(groupQuery, Occur.MUST);
+			}
+		}
+		
+		// restricting access to posts visible to the user
+		Query accessModeQuery = buildAccessModeQuery(userName, allowedGroups);
+		
+		//--------------------------------------------------------------------
+		// post owned by user
+		//--------------------------------------------------------------------
+		if ( ValidationUtils.present(requestedUserName) ) {
+			mainQuery.add(new TermQuery(new Term(FLD_USER, requestedUserName)), Occur.MUST);
+		}
+
+		//--------------------------------------------------------------------
+		// post owned by group
+		//--------------------------------------------------------------------
+		if ( false && ValidationUtils.present(requestedGroupName) ) {
+			mainQuery.add(new TermQuery(new Term(FLD_GROUP, requestedGroupName)), Occur.MUST);
+		}
+		
+		//--------------------------------------------------------------------
+		// build final query
+		//--------------------------------------------------------------------
+
+		// combine query terms
+		mainQuery.add(searchQuery, Occur.MUST);
+		mainQuery.add(accessModeQuery, Occur.MUST);
+
+		// set ordering
+		Sort sort = new Sort(new SortField(FLD_DATE,SortField.LONG,true));
+		
+		// all done
+		log.debug("[Full text] Search query: " + mainQuery.toString());
+		QuerySortContainer qf = new QuerySortContainer();
+		qf.setQuery(makeTimeRangeQuery(mainQuery, year, firstYear, lastYear));
+		qf.setSort(sort);
+		
+		// set up collector
+		TagCountCollector collector;
+		try {
+			collector = new TagCountCollector(null, CFG_TAG_CLOUD_LIMIT, qf.getSort());
+		} catch (IOException e) {
+			log.error("Error building tag cloud collector");
+			collector = null;
+		}
+		qf.setTagCountCollector(collector);
+		
+		return qf;
+	}
+
+
+
+	
+	
 	
 	/**
 	 * construct lucene query filter for full text search 'search:all' and 'search:username':
@@ -971,7 +1337,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 * @param searchTerms
 	 * @return
 	 */
-	private Query parseSearchQuery(String fieldName, String searchTerms) {
+	protected Query parseSearchQuery(String fieldName, String searchTerms) {
 		// parse search terms for handling phrase search
 		QueryParser searchTermParser = new QueryParser(LUCENE_24, fieldName, getAnalyzer());
 		// FIXME: configure default operator via spring
