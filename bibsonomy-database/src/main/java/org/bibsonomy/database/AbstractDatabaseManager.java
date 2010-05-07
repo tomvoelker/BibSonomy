@@ -13,6 +13,9 @@ import org.bibsonomy.database.util.QueryFor;
 import org.bibsonomy.database.util.StatementType;
 
 /**
+ * TODO: remove all protected methods with the boolean flag ignoreException
+ * TODO: remove the boolean flag ignoreException everywhere else (also in DBSession)
+ * 
  * This is the superclass for all classes that are implementing methods to
  * retrieve data from a database. It provides methods for the interaction with
  * the database, i.e. a lot of convenience methods that return the
@@ -30,7 +33,7 @@ public class AbstractDatabaseManager {
 	/**
 	 * if Lucene should be used for full text search or the database 
 	 */
-	protected boolean doLuceneSearch = false;
+	private boolean doLuceneSearch = false;
 	
 	/**
 	 * configure search mode (database or lucene)
@@ -66,6 +69,7 @@ public class AbstractDatabaseManager {
 	 * Can be used to start a query that retrieves a list of objectf of a certain type.
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	protected <T> List<T> queryForList(final String query, final Object param, @SuppressWarnings("unused") final Class<T> type, final boolean ignoreException, final DBSession session) {
 		return (List<T>) this.queryForAnything(query, param, QueryFor.LIST, ignoreException, session);
 	}
@@ -80,6 +84,7 @@ public class AbstractDatabaseManager {
 	 * XXX: do we really want to use these?
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	protected List queryForList(final String query, final Object param, final boolean ignoreException, final DBSession session) {
 		return queryForList(query, param, Object.class, ignoreException, session);
 	}
@@ -100,6 +105,7 @@ public class AbstractDatabaseManager {
 	 * FIXME: what to do if {@link #queryForAnything(String, Object, QueryFor, boolean, DBSession)} returns null
 	 */
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	protected <T> T queryForObject(final String query, final Object param, @SuppressWarnings("unused") Class<T> type, final boolean ignoreException, final DBSession session) {
 		return (T) this.queryForAnything(query, param, QueryFor.OBJECT, ignoreException, session);
 	}
@@ -109,6 +115,7 @@ public class AbstractDatabaseManager {
 	}
 	
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	protected <T> T queryForObject(final String query, final Object param, T result, final boolean ignoreException, final DBSession session) {
 		return (T) this.queryForAnything(query, param, result, QueryFor.OBJECT, ignoreException, session);
 	}
@@ -120,6 +127,7 @@ public class AbstractDatabaseManager {
 	/**
 	 * @see #queryForObject(String, Object, DBSession)
 	 */
+	@Deprecated
 	protected Object queryForObject(final String query, final Object param, final boolean ignoreException, final DBSession session) {
 		return this.queryForAnything(query, param, QueryFor.OBJECT, ignoreException, session);
 	}
@@ -151,6 +159,7 @@ public class AbstractDatabaseManager {
 	/**
 	 * Inserts an object into the database.
 	 */
+	@Deprecated
 	protected void insert(final String query, final Object param, final boolean ignoreException, final DBSession session) {
 		this.insertUpdateDelete(query, param, StatementType.INSERT, ignoreException, session);
 	}
@@ -162,6 +171,7 @@ public class AbstractDatabaseManager {
 	/**
 	 * Updates an object in the database.
 	 */
+	@Deprecated
 	protected void update(final String query, final Object param, final boolean ignoreException, final DBSession session) {
 		this.insertUpdateDelete(query, param, StatementType.UPDATE, ignoreException, session);
 	}
@@ -173,6 +183,7 @@ public class AbstractDatabaseManager {
 	/**
 	 * Deletes an object from the database.
 	 */
+	@Deprecated
 	protected void delete(final String query, final Object param, final boolean ignoreException, final DBSession session) {
 		this.insertUpdateDelete(query, param, StatementType.DELETE, ignoreException, session);
 	}
