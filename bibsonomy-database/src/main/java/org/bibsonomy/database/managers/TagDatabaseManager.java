@@ -569,77 +569,42 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	}
 
 	/**
-	 * Get all tags of an author, which assigned to the authors
+	 * returns all tags assigned to posts which are matching the given query
 	 * 
-	 * @param search
-	 * @param groupId
+	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
+	 * @param allowedGroups
+	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param tagIndex
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
-	 * @param simHash
-	 * @param tagIndex
-	 * @param limit 
-	 * @param session
-	 * @return a list of tags of an author, which assigned to the authors
+	 * @param limit
+	 * @param offset
+	 * @return
 	 */
-	public List<Tag> getTagsByAuthorLucene(final String search, final int groupId, final String requestedUserName, final String requestedGroupName, final String year, final String firstYear, final String lastYear, final int simHash, final List<String> tagIndex, final int limit, final DBSession session) {
-		if (!present(publicationSearch)) {
-			log.error("No author searcher available.");
+	public List<Tag> getTagsByResourceSearch(
+			final String userName, final String requestedUserName, String requestedGroupName, 
+			final Collection<String> allowedGroups,
+			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
+			final String year, final String firstYear, final String lastYear, int limit, int offset) {
+		
+		if( isDoLuceneSearch() && present(this.publicationSearch) && present(this.bookmarkSearch) ) {
+			final List<Tag> bookmarkTags    = 
+				bookmarkSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, limit, offset);
+			final List<Tag> publicationTags =
+				publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, limit, offset);
+			final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
+			return retVal;
+		} else {
 			return new LinkedList<Tag>();
 		}
+	}	
+	
 
-		final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
-		String group = groupDb.getGroupNameByGroupId(groupId, session);
-
-		final long starttimeQuery = System.currentTimeMillis();
-		// FIXME: we arbitrarily choose a tag cloud limit of 100
-		final List<Tag> bookmarkTags = new LinkedList<Tag>();
-		final List<Tag> publicationTags = publicationSearch.getTagsByAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex);
-		final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
-		log.debug("Lucene author tag cloud query time: " + (System.currentTimeMillis()-starttimeQuery) + " ms");
-
-		return retVal;
-	}
-
-	/**
-	 * Get all tags assigned to relevant documents of a given search result
-	 * 
-	 * TODO: Of course it would be more sufficient to gather these tags 
-	 *       while searching for resources
-	 * 
-	 * @param param 
-	 * @param session
-	 * @return list of tags
-	 */
-	public List<Tag> getTagsBySearchString(final TagParam param, final DBSession session) {
-		List<Tag> bookmarkList    = new LinkedList<Tag>();
-		List<Tag> publicationList = new LinkedList<Tag>();
-
-		// FIXME: is there a better (=generic) way to handle different resource types in the 
-		//        TagDatabaseManager?
-		if (present(bookmarkSearch)) {
-			bookmarkList = bookmarkSearch.getTagsBySearchString(null, param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames());
-		}
-		if (present(publicationSearch)) {
-			publicationList = publicationSearch.getTagsBySearchString(null, param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames());
-		}
-
-		// all done
-		// TagParam's semantic is special: 
-		//       order == FREQENCY -> top popular tags, limit value set in param object
-		//       order == null     -> tags filtered by min. frequency, limit value not set
-		Order tagOrder;
-		if (Order.FREQUENCY.equals(param.getOrder())) {
-			tagOrder = Order.POPULAR;
-		} else {
-			tagOrder = Order.FREQUENCY;
-			param.setLimit(0);
-		}
-
-		return TagUtils.mergeTagLists(bookmarkList, publicationList, tagOrder, tagOrder, param.getLimit());
-	}
 
 	/**
 	 * Get all tags of a given group

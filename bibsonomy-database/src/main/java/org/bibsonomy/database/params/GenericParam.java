@@ -58,9 +58,14 @@ public abstract class GenericParam {
 	private String tagName;
 	
 	/**
-	 * FIXME what is this for?
+	 * A title for searching resources by a given title
 	 */
 	private String title;
+	
+	/**
+	 * A author name for searching resources by a given author
+	 */
+	private String author;
 	
 	/**
 	 * List of (tagname, index)-pairs, where tagname can be both a name of a tag
@@ -742,6 +747,14 @@ public abstract class GenericParam {
 	 */
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getAuthor() {
+		return author;
 	}
 
 	/**

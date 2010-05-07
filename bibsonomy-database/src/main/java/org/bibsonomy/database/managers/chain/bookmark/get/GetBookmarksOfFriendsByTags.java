@@ -48,6 +48,8 @@ public class GetBookmarksOfFriendsByTags extends BookmarkChainElement {
 				param.getNumTransitiveConcepts() == 0 &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
-				!present(param.getSearch()));
+				!present(param.getSearch()) &&
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()));
 	}
 }

@@ -582,7 +582,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
-	public List<Post<R>> getPostsSearchForGroup(final int groupId, final List<Integer> visibleGroupIDs, final String search, final String loginUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<R>> getPostsSearchForGroup(final String groupName, final Collection<String> visibleGroups, final String search, final String loginUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
 		if (this.isDoLuceneSearch()) {
 			final ResourceSearch<R> lucene = this.getResourceSearch();
 			if (!present(lucene)) {
@@ -592,19 +592,57 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			
 			// get search results from lucene
 			final long starttimeQuery = System.currentTimeMillis();
-			final List<Post<R>> postList = lucene.searchGroup(groupId, visibleGroupIDs, search, loginUserName, limit, offset, null);
+			final List<Post<R>> postList = 
+				lucene.getPosts(loginUserName, null, groupName, visibleGroups, search, null, null, null, null, null, null, limit, offset);
+				//searchGroup(groupId, visibleGroupIDs, search, loginUserName, limit, offset, null);
 			log.debug("Lucene" + this.resourceClassName + " complete group search query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 			return postList;
 		}
 
 		final P param = this.createParam(loginUserName, null, limit, offset);
+		Integer groupId = this.groupDb.getGroupIdByGroupName(groupName, session);
 		param.setGroupId(groupId);
 		param.setSearch(search);
+		Collection<Integer> visibleGroupIDs = new LinkedList<Integer>();
+		for( String group : visibleGroups ) {
+			groupId = this.groupDb.getGroupIdByGroupName(group, session);
+			visibleGroupIDs.add(groupId);
+		}
 		param.setGroups(visibleGroupIDs);
 		param.addAllToSystemTags(systemTags);
 
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.postList("get" + this.resourceClassName + "SearchForGroup", param, session);
+	}
+	
+	/**
+	 * get list of posts from resource searcher
+	 * 
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param allowedGroups
+	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param tagIndex
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param limit
+	 * @param offset
+	 * @return
+	 */
+	public List<Post<R>> getPostsByResourceSearch(
+			final String userName, final String requestedUserName, String requestedGroupName, 
+			final Collection<String> allowedGroups,
+			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
+			final String year, final String firstYear, final String lastYear, int limit, int offset) {
+		if( this.isDoLuceneSearch() && present(this.resourceSearch) ) {
+			return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, limit, offset);
+		} else {
+			return new LinkedList<Post<R>>();
+		}
 	}
 
 	/**
@@ -636,7 +674,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		
 		// get search results from lucene
 		final long starttimeQuery = System.currentTimeMillis();
-		final List<Post<R>> postList = lucene.searchPosts(group, search, requestedUserName, loginUserName, groupNames, limit, offset);
+		final List<Post<R>> postList = 
+			lucene.getPosts(loginUserName, requestedUserName, group, null, search, null, null, null, null, null, null, limit, offset);
+		//searchPosts(group, search, requestedUserName, loginUserName, groupNames, limit, offset);
 		final long endtimeQuery = System.currentTimeMillis();
 		log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
@@ -1576,4 +1616,5 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @return new param for insert a resource
 	 */
 	protected abstract P getInsertParam(final Post<? extends R> post, final DBSession session);
+
 }

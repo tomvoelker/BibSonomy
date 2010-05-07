@@ -249,8 +249,7 @@ public class LogicInterfaceHelper {
 			return true;
 		} else if (tagName.equals("author")) {
 			// sys:author: set search entity accordingly
-			param.setSearchEntity(SearchEntity.AUTHOR);
-			param.setSearch(tagValue);
+			param.setAuthor(tagValue);
 			logger.debug("set search to " + tagValue + " after matching for author system tag");
 			return true;
 		} else if (tagName.equals("user")) {

@@ -15,6 +15,7 @@ import org.bibsonomy.database.managers.chain.tag.get.GetTagsByFriendOfUser;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByGroup;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByHash;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByHashForUser;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsByResourceSearch;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsBySearchString;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsViewable;
@@ -33,6 +34,7 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 	private final ChainElement<Tag, TagParam> getTagsViewable;
 	private final ChainElement<Tag, TagParam> getTagsByRegularExpression;
 	private final ChainElement<Tag, TagParam> getAllTags;
+	private final ChainElement<Tag, TagParam> getTagsByResourceSearch;
 	private final ChainElement<Tag, TagParam> getTagsByAuthor;	
 	private final ChainElement<Tag, TagParam> getTagsBySearchString;	
 	private final ChainElement<Tag, TagParam> getRelatedTagsForGroup;
@@ -56,6 +58,7 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 		this.getTagsViewable = new GetTagsViewable();
 		this.getAllTags = new GetAllTags();
 		this.getTagsByRegularExpression = new GetTagsByExpression();
+		this.getTagsByResourceSearch = new GetTagsByResourceSearch();
 		this.getTagsByAuthor=new GetTagsByAuthor();
 		this.getTagsBySearchString = new GetTagsBySearchString();
 		this.getRelatedTagsForGroup = new GetRelatedTagsForGroup();
@@ -75,7 +78,8 @@ public class TagChain implements FirstChainElement<Tag, TagParam> {
 		this.getAllTags.setNext(this.getSimilarTags);
 		this.getSimilarTags.setNext(this.getRelatedTags);
 		this.getRelatedTags.setNext(this.getTagsBySearchString);
-		this.getTagsBySearchString.setNext(this.getTagsByAuthor);
+		this.getTagsBySearchString.setNext(this.getTagsByResourceSearch);
+		this.getTagsByResourceSearch.setNext(this.getTagsByAuthor);
 		this.getTagsByAuthor.setNext(this.getRelatedTagsByAuthorAndTag);
 		this.getRelatedTagsByAuthorAndTag.setNext(getTagsViewable);
 		this.getTagsViewable.setNext(this.getTagsByRegularExpression);

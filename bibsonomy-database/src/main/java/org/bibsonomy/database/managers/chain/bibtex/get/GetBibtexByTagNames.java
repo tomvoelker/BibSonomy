@@ -38,6 +38,8 @@ public class GetBibtexByTagNames extends BibTexChainElement {
 				param.getNumTransitiveConcepts() == 0 &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED, Order.FOLKRANK) &&
-				!present(param.getSearch()));
+				!present(param.getSearch()) &&
+				!present(param.getAuthor()) &&
+				!present(param.getTitle()) );
 	}
 }

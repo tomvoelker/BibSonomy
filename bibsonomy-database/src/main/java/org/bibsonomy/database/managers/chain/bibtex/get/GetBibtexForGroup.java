@@ -43,6 +43,8 @@ public class GetBibtexForGroup extends BibTexChainElement {
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
 				!present(param.getOrder()) &&
-				!present(param.getSearch()));
+				!present(param.getSearch()) &&
+				!present(param.getAuthor()) &&
+				!present(param.getTitle()));
 	}
 }

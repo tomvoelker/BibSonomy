@@ -33,6 +33,8 @@ public class GetBibtexForHomePage extends BibTexChainElement {
 				!present(param.getTagIndex()) &&
 				!(present(param.getHash())) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()) &&
 				!present(param.getSearch()));
 	}
 }

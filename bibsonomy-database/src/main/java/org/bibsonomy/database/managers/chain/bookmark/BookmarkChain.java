@@ -9,6 +9,7 @@ import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByFollowed
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByFriends;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHash;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHashForUser;
+import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByResourceSearch;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByTagNames;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByTagNamesAndUser;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByTitle;
@@ -47,6 +48,7 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByUserFriends;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByUserAndTagsFriends;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByFriends;
+	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByResourceSearch;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksSearch;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksSearchForGroup;
 	private final ChainElement<Post<Bookmark>, BookmarkParam> getBookmarksByConceptByTag;
@@ -74,6 +76,7 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 		this.getBookmarksByUserAndTagsFriends = new GetBookmarksOfFriendsByTags();
 		this.getBookmarksByFriends = new GetBookmarksByFriends();
 		this.getBookmarksByFollowedUsers = new GetBookmarksByFollowedUsers();
+		this.getBookmarksByResourceSearch = new GetBookmarksByResourceSearch();
 		this.getBookmarksSearch = new GetBookmarksSearch();
 		this.getBookmarksSearchForGroup = new GetBookmarksSearchForGroup();
 		this.getBookmarksByConceptByTag = new GetBookmarksByConceptByTag();
@@ -95,7 +98,8 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 		this.getBookmarksByUserFriends.setNext(this.getBookmarksByUserAndTagsFriends);
 		this.getBookmarksByUserAndTagsFriends.setNext(this.getBookmarksByFriends);
 		this.getBookmarksByFriends.setNext(this.getBookmarksByFollowedUsers);
-		this.getBookmarksByFollowedUsers.setNext(this.getBookmarksSearch);
+		this.getBookmarksByFollowedUsers.setNext(this.getBookmarksByResourceSearch);
+		this.getBookmarksByResourceSearch.setNext(this.getBookmarksSearch);
 		this.getBookmarksSearch.setNext(this.getBookmarksSearchForGroup);
 		this.getBookmarksSearchForGroup.setNext(this.getBookmarksByConceptByTag);
 		this.getBookmarksByConceptByTag.setNext(this.getBookmarksByConceptForGroup);

@@ -40,6 +40,8 @@ public class GetBookmarksForGroup extends BookmarkChainElement {
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
 				!present(param.getOrder()) &&
-				!present(param.getSearch()));
+				!present(param.getSearch()) &&
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()));
 	}
 }

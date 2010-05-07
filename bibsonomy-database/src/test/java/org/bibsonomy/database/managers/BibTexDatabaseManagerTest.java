@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
@@ -379,11 +380,11 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		String userName = "testuser1";
 		String search = "search";
 
-		List<Post<BibTex>> posts = bibTexDb.getPostsSearchForGroup(PUBLIC_GROUP_ID, new LinkedList<Integer>(), search, userName, 5, 0, null, this.dbSession);
+		List<Post<BibTex>> posts = bibTexDb.getPostsSearchForGroup(GroupID.PUBLIC.name(), new LinkedList<String>(), search, userName, 5, 0, null, this.dbSession);
 		assertEquals(1, posts.size());
 
 		search = "search test string bibtext";
-		posts = bibTexDb.getPostsSearchForGroup(PUBLIC_GROUP_ID, new LinkedList<Integer>(), search, userName, 5, 0, null, this.dbSession);
+		posts = bibTexDb.getPostsSearchForGroup(GroupID.PUBLIC.name(), new LinkedList<String>(), search, userName, 5, 0, null, this.dbSession);
 		assertEquals(1, posts.size());
 	}
 

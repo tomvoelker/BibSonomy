@@ -34,6 +34,7 @@ public class GetBookmarksPopular extends BookmarkChainElement {
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.POPULAR) &&
 				!present(param.getSearch()) &&
-				!present(param.getTitle()));
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()));
 	}
 }

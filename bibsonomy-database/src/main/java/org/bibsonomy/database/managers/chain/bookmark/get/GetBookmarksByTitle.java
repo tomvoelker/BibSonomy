@@ -1,11 +1,8 @@
 package org.bibsonomy.database.managers.chain.bookmark.get;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.DBSession;
@@ -29,10 +26,6 @@ public class GetBookmarksByTitle extends BookmarkChainElement {
 
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return (param.getGrouping() == GroupingEntity.ALL &&
-				present(param.getTitle())                 && 
-				!present(param.getSearch())               &&
-				!present(param.getHash())
-				);
+		return false;
 	}
 }

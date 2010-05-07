@@ -39,6 +39,9 @@ public class GetTagsByFriendOfUser extends TagChainElement {
 				present(param.getRequestedUserName()) && 
 				!present(param.getRegex()) &&
 				!present(param.getBibtexKey()) &&
+				!present(param.getSearch()) &&
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()) &&
 				!present(param.getHash()));
 	}
 }

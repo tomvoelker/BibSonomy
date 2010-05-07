@@ -36,6 +36,8 @@ public class GetBookmarksByTagNamesAndUser extends BookmarkChainElement {
 				param.getNumSimpleTags() > 0 &&
 				param.getNumTransitiveConcepts() == 0 &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
-				!present(param.getSearch()));
+				!present(param.getSearch()) && 
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()));
 	}
 }

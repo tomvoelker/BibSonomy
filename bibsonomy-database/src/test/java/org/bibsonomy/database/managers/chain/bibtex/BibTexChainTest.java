@@ -8,8 +8,6 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
-import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByAuthor;
-import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByAuthorAndTag;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibTexByConceptByTag;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByConceptForGroup;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByConceptForUser;
@@ -17,6 +15,7 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByFollowedUsers
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByFriends;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHash;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByHashForUser;
+import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByResourceSearch;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByTagNames;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexByTagNamesAndUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForGroup;
@@ -27,7 +26,6 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUs
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByTags;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexPopular;
-import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexSearch;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexViewable;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.enums.Order;
@@ -314,7 +312,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setSearch("Grahl");
 		this.bibtexParam.setSearchEntity(SearchEntity.AUTHOR);
 		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetBibTexByAuthor.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetBibtexByResourceSearch.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -329,7 +327,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setSearch("Grahl");
 		this.bibtexParam.setSearchEntity(SearchEntity.AUTHOR);
 		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetBibTexByAuthorAndTag.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetBibtexByResourceSearch.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**
@@ -344,7 +342,7 @@ public class BibTexChainTest extends AbstractChainTest {
 		this.bibtexParam.setLimit(350);
 		this.bibtexParam.setSearchEntity(SearchEntity.ALL);
 		bibtexChain.getFirstElement().perform(this.bibtexParam, this.dbSession, chainStatus);
-		assertEquals(GetBibtexSearch.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetBibtexByResourceSearch.class, chainStatus.getChainElement().getClass());
 	}
 	/**
 	 * tests getBibtexFromBasketForUser

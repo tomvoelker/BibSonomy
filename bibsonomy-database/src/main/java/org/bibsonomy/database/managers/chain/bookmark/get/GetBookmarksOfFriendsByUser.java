@@ -48,6 +48,8 @@ public class GetBookmarksOfFriendsByUser extends BookmarkChainElement {
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
-				!present(param.getSearch()));
+				!present(param.getSearch()) && 
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()));
 	}
 }

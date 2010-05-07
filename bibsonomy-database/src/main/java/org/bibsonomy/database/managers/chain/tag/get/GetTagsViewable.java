@@ -37,6 +37,8 @@ public class GetTagsViewable extends TagChainElement {
 				param.getGrouping() == GroupingEntity.VIEWABLE &&
 				present(param.getRequestedGroupName()) &&
 				!present(param.getSearch()) &&
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()) &&
 				!present(param.getBibtexKey()) &&
 				!present(param.getRegex()));
 	}

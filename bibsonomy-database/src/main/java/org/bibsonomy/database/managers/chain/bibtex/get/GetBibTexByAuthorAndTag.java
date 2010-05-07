@@ -1,22 +1,17 @@
 package org.bibsonomy.database.managers.chain.bibtex.get;
 
-import static org.bibsonomy.util.ValidationUtils.nullOrEqual;
-import static org.bibsonomy.util.ValidationUtils.present;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
-import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChainElement;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * Returns a list of BibTex's for given tag/tags and author.
@@ -55,11 +50,6 @@ public class GetBibTexByAuthorAndTag extends BibTexChainElement {
 
 	@Override
 	protected boolean canHandle(final BibTexParam param) {
-		return (SearchEntity.AUTHOR.equals(param.getSearchEntity()) &&
-				present(param.getSearch()) && 
-				!present(param.getBibtexKey()) &&
-				present(param.getTagIndex()) &&
-				!present(param.getHash()) &&
-				nullOrEqual(param.getOrder(), Order.ADDED));
+		return false;
 	}
 }

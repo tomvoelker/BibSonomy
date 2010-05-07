@@ -9,16 +9,13 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.common.enums.SearchEntity;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.database.managers.chain.tag.get.GetAllTags;
 import org.bibsonomy.database.managers.chain.tag.get.GetPopularTags;
-import org.bibsonomy.database.managers.chain.tag.get.GetRelatedTagsByAuthorAndTags;
-import org.bibsonomy.database.managers.chain.tag.get.GetTagsByAuthor;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByBibtexkey;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByExpression;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByGroup;
-import org.bibsonomy.database.managers.chain.tag.get.GetTagsBySearchString;
+import org.bibsonomy.database.managers.chain.tag.get.GetTagsByResourceSearch;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsViewable;
 import org.bibsonomy.database.params.TagParam;
@@ -110,11 +107,10 @@ public class TagChainTest extends AbstractChainTest {
 		TagParam param = new TagParam();
 		param.setTagIndex(null);
 		param.setGrouping(GroupingEntity.ALL);
-		param.setSearch("Stumme");
+		param.setAuthor("Stumme");
 		param.setContentTypeByClass(BibTex.class);
-		param.setSearchEntity(SearchEntity.AUTHOR);
 		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
-		assertEquals(GetTagsByAuthor.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetTagsByResourceSearch.class, chainStatus.getChainElement().getClass());
 	}
 	
 	/**
@@ -132,7 +128,7 @@ public class TagChainTest extends AbstractChainTest {
 		param.setHash(null);
 		param.setBibtexKey(null);
 		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
-		assertEquals(GetTagsBySearchString.class, this.chainStatus.getChainElement().getClass());
+		assertEquals(GetTagsByResourceSearch.class, this.chainStatus.getChainElement().getClass());
 	}
 	
 	/**
@@ -152,11 +148,10 @@ public class TagChainTest extends AbstractChainTest {
 		param.setTagIndex(tagIndex);
 		
 		param.setGrouping(GroupingEntity.VIEWABLE);
-		param.setSearch("Stumme");
+		param.setAuthor("Stumme");
 		param.setContentTypeByClass(BibTex.class);
-		param.setSearchEntity(SearchEntity.AUTHOR);
 		tagChain.getFirstElement().perform(param, this.dbSession, chainStatus);
-		assertEquals(GetRelatedTagsByAuthorAndTags.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetTagsByResourceSearch.class, chainStatus.getChainElement().getClass());
 	}
 
 	/**

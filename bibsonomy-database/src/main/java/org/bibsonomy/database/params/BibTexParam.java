@@ -14,7 +14,7 @@ public class BibTexParam extends ResourceParam<BibTex> {
 	private String firstYear;
 	private String lastYear;
 	private String year;
-
+	
 	@Override
 	public int getContentType() {
 		return ConstantID.BIBTEX_CONTENT_TYPE.getId();
@@ -80,4 +80,5 @@ public class BibTexParam extends ResourceParam<BibTex> {
 	public void setYear(String year) {
 		this.year = year;
 	}
+
 }

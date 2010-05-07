@@ -45,6 +45,8 @@ public class GetBibtexForGroupAndTag extends BibTexChainElement {
 				param.getNumTransitiveConcepts() == 0 &&
 				!present(param.getHash()) &&
 				!present(param.getOrder()) &&
-				!present(param.getSearch()));
+				!present(param.getSearch()) &&
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()));
 	}
 }

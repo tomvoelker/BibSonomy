@@ -31,6 +31,8 @@ public class GetAllTags extends TagChainElement {
 				!present(param.getTagIndex()) &&
 				!present(param.getHash()) &&
 				!present(param.getBibtexKey()) &&
-				!present(param.getSearch()));
+				!present(param.getSearch()) &&
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()));
 	}
 }

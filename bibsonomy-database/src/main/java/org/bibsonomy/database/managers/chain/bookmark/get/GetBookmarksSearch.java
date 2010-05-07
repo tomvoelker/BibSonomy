@@ -34,7 +34,6 @@ public class GetBookmarksSearch extends BookmarkChainElement {
 	
 	@Override
 	protected boolean canHandle(final BookmarkParam param) {
-		return ((param.getGrouping() == GroupingEntity.ALL || param.getGrouping() == GroupingEntity.USER) &&
-				present(param.getSearch()));
+		return false;
 	}
 }

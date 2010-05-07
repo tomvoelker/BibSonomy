@@ -26,6 +26,9 @@ public class GetRelatedTagsForGroup extends TagChainElement {
 		return (present(param.getRequestedGroupName()) &&
 				param.getGrouping() == GroupingEntity.GROUP &&
 				!present(param.getBibtexKey()) &&
+				!present(param.getSearch()) &&
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()) &&
 				present(param.getTagIndex()));
 	}
 }

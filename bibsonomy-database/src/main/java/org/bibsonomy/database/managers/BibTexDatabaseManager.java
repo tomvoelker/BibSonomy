@@ -71,17 +71,18 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * @see org.bibsonomy.database.managers.PostDatabaseManager#getPostsSearchForGroup(int, java.util.List, java.lang.String, java.lang.String, int, int, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public List<Post<BibTex>> getPostsSearchForGroup(final int groupId, List<Integer> visibleGroups, final String search, final String requestedUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
+	public List<Post<BibTex>> getPostsSearchForGroup(final String groupName, Collection<String> visibleGroups, final String search, final String requestedUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
 		/*
 		 * do lucene search
 		 */
 		if (this.isDoLuceneSearch()) {
-			return super.getPostsSearchForGroup(groupId, visibleGroups, search, requestedUserName, limit, offset, systemTags, session);
+			return super.getPostsSearchForGroup(groupName, visibleGroups, search, requestedUserName, limit, offset, systemTags, session);
 		}
 		/*
 		 * do database search
 		 */
 		final BibTexParam param = this.createParam(null, requestedUserName, limit, offset);
+		final Integer groupId = this.groupDb.getGroupIdByGroupName(groupName, session);
 		param.setGroupId(groupId);
 		param.setSearch(search);
 
@@ -155,7 +156,8 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		String group = groupDb.getGroupNameByGroupId(groupId, session);
 		
 		final long starttimeQuery = System.currentTimeMillis();
-		final List<Post<BibTex>> posts = resourceSearch.getPostsByTitle(group, search, requestedUserName, userName, requestedGroupName, limit, offset);
+		final List<Post<BibTex>> posts = 
+			resourceSearch.getPosts(userName, requestedUserName, group, null, search, null, null, null, null, null, null, limit, offset);
 		log.debug("LuceneBibTex complete query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 		return posts;
 	}
@@ -383,7 +385,9 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		
 		final long starttimeQuery = System.currentTimeMillis();
 
-		final List<Post<BibTex>> postBibtexList = this.getResourceSearch().searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, limit, offset);
+		final List<Post<BibTex>> postBibtexList = 
+			this.getResourceSearch().getPosts(null, null, group, null, null, null, search, tagIndex, year, firstYear, lastYear, limit, offset);
+			//searchAuthor(group, search, requestedUserName, requestedGroupName, year, firstYear, lastYear, tagIndex, limit, offset);
 		log.debug("LuceneBibTex complete query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 			
 		return postBibtexList;

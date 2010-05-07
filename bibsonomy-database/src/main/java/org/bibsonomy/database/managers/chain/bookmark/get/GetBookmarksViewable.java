@@ -46,6 +46,8 @@ public class GetBookmarksViewable extends BookmarkChainElement {
 				present(param.getRequestedGroupName()) &&
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
-				!present(param.getSearch()));
+				!present(param.getSearch()) &&
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()));
 	}
 }

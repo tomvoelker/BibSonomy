@@ -28,6 +28,8 @@ public class GetPopularTags extends TagChainElement {
 				Order.POPULAR.equals(param.getOrder()) &&
 				!present(param.getRegex()) &&
 				!present(param.getSearch()) &&
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()) &&
 				!present(param.getBibtexKey()) &&
 				!present(param.getHash()));
 	}

@@ -33,6 +33,7 @@ public class GetBookmarksForHomePage extends BookmarkChainElement {
 				!present(param.getHash()) &&
 				nullOrEqual(param.getOrder(), Order.ADDED) &&
 				!present(param.getSearch()) &&
-				!present(param.getTitle()));
+				!present(param.getTitle()) &&
+				!present(param.getAuthor()));
 	}
 }
