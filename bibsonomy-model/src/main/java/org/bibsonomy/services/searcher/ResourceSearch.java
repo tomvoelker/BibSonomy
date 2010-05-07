@@ -25,7 +25,6 @@ package org.bibsonomy.services.searcher;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -43,107 +42,54 @@ import org.bibsonomy.model.Tag;
  * @param <R>
  */
 public interface ResourceSearch<R extends Resource> {
-	/**
-	 * TODO: document me
-	 * 
-	 * @param group
-	 * @param searchTerms
-	 * @param requestedUserName
-	 * @param UserName
-	 * @param GroupNames
-	 * @param limit
-	 * @param offset
-	 * @return
-	 */
-	public ResultList<Post<R>> searchPosts(String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset);
-
 
 	/**
-	 * TODO: document me
-	 * 
-	 * @param group
-	 * @param search
-	 * @param requestedUserName
-	 * @param requestedGroupName
-	 * @param year
-	 * @param firstYear
-	 * @param lastYear
-	 * @param tagList
-	 * @param limit
-	 * @param offset
-	 * @return
-	 */
-	public ResultList<Post<R>> searchAuthor(String group, String search,
-			String requestedUserName, String requestedGroupName, String year,
-			String firstYear, String lastYear, List<String> tagList, int limit,
-			int offset);
-
-	/**
-	 * <em>/search/ein+lustiger+satz+group%3AmyGroup</em><br/><br/>
-	 * 
-	 * @param groupId group to search
-	 * @param visibleGroupIDs groups the user has access to
-	 * @param search the search query
+	 * search for posts using the lucene index
 	 * @param userName
-	 * @param limit number of posts to display
-	 * @param offset first post in the result list
-	 * @param systemTags NOT IMPLEMENTED 
-	 * @return
-	 */
-	public ResultList<Post<R>> searchGroup(final int groupId, final List<Integer> visibleGroupIDs, final String search, final String authUserName, final int limit, final int offset, Collection<? extends Tag> systemTags);
-
-	
-	/**
-	 * get tag cloud for given author
-	 * 
-	 * @param group
-	 * @param search
 	 * @param requestedUserName
 	 * @param requestedGroupName
+	 * @param allowedGroups
+	 * @param friends
+	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param tagIndex
 	 * @param year
 	 * @param firstYear
 	 * @param lastYear
-	 * @param tagList
-	 * @param limit 
-	 * @return
-	 */
-	public List<Tag> getTagsByAuthor(String group, String search,
-			String requestedUserName, String requestedGroupName, String year,
-			String firstYear, String lastYear, List<String> tagList);
-			
-
-	/**
-	 * get tag cloud for given search string
-	 * 
-	 * TODO: implement getTagsByAuthor as a special case
-	 * 
-	 * @param group
-	 * @param searchTerms
-	 * @param requestedUserName
-	 * @param UserName
-	 * @param GroupNames
-	 * @param tagOrder
-	 * @param limitType
-	 * @param limit
-	 * @return
-	 */
-	public List<Tag> getTagsBySearchString(String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames);
-
-	/**
-	 * get lists of post matched by title
-	 * 
-	 * TODO: clean up interface, like PostDatabaseManager
-	 * 
-	 * @param group
-	 * @param searchTerms
-	 * @param requestedUserName
-	 * @param UserName
-	 * @param GroupNames
 	 * @param limit
 	 * @param offset
 	 * @return
 	 */
-	public ResultList<Post<R>> getPostsByTitle(String group, String searchTerms, String requestedUserName, String UserName, Set<String> GroupNames, int limit, int offset);
+	public ResultList<Post<R>> getPosts(
+			final String userName, final String requestedUserName, String requestedGroupName, 
+			final Collection<String> allowedGroups,
+			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
+			final String year, final String firstYear, final String lastYear, int limit, int offset);
+	
 
-
+	/**
+	 * get tag cloud for given search query
+	 * 
+	 * @param userName
+	 * @param requestedUserName
+	 * @param requestedGroupName
+	 * @param allowedGroups
+	 * @param searchTerms
+	 * @param titleSearchTerms
+	 * @param authorSearchTerms
+	 * @param tagIndex
+	 * @param year
+	 * @param firstYear
+	 * @param lastYear
+	 * @param limit
+	 * @param offset
+	 * @return
+	 */
+	public List<Tag> getTags(
+			final String userName, final String requestedUserName, String requestedGroupName, 
+			final Collection<String> allowedGroups,
+			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
+			final String year, final String firstYear, final String lastYear, int limit, int offset);
+	
 }
