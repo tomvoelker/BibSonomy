@@ -31,10 +31,18 @@ public class BadRequestOrResponseException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @see RuntimeException#RuntimeException(String)
+	 * @param message
+	 */
 	public BadRequestOrResponseException(final String message) {
 		super(message);
 	}
 
+	/**
+	 * @see RuntimeException#RuntimeException(Throwable)
+	 * @param cause
+	 */
 	public BadRequestOrResponseException(final Throwable cause) {
 		super(cause);
 	}

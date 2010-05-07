@@ -28,9 +28,12 @@ package org.bibsonomy.rest.exceptions;
  * @version $Id$
  */
 public class NoSuchResourceException extends RuntimeException {
-
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @see RuntimeException#RuntimeException(String)
+	 * @param message
+	 */
 	public NoSuchResourceException(final String message) {
 		super(message);
 	}

@@ -28,9 +28,12 @@ package org.bibsonomy.rest.exceptions;
  * @version $Id$
  */
 public class AuthenticationException extends RuntimeException {
-
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * @see RuntimeException#RuntimeException(String)
+	 * @param message
+	 */
 	public AuthenticationException(final String message) {
 		super(message);
 	}
