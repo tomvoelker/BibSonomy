@@ -8,7 +8,6 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.RelationsCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
@@ -20,7 +19,6 @@ import org.bibsonomy.webapp.view.Views;
  */
 public class RelationsController extends SingleResourceListControllerWithTags implements MinimalisticController<RelationsCommand>{
 	private static final Log LOGGER = LogFactory.getLog(RelationsController.class);
-	private LogicInterface logic;
 
 	/*
 	 * the following concepts are unwanted on the relations page
@@ -64,11 +62,6 @@ public class RelationsController extends SingleResourceListControllerWithTags im
 
 		this.endTiming();
 		return Views.RELATIONS;
-	}
-
-	@Override
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
 	}
 
 }
