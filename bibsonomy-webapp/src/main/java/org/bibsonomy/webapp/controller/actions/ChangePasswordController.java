@@ -10,7 +10,6 @@ import org.bibsonomy.util.StringUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
 import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
@@ -22,10 +21,9 @@ import org.springframework.validation.Errors;
 
 /**
  * @author cvo
- * @version $Id: ChangePasswordController.java,v 1.4 2009-12-02 12:51:14
- *          voigtmannc Exp $
+ * @version $Id$
  */
-public class ChangePasswordController implements MinimalisticController<SettingsViewCommand>, ErrorAware, ValidationAwareController<SettingsViewCommand> {
+public class ChangePasswordController implements ValidationAwareController<SettingsViewCommand>, ErrorAware {
 
 	private static final Log log = LogFactory.getLog(ChangePasswordController.class);
 
@@ -60,7 +58,6 @@ public class ChangePasswordController implements MinimalisticController<Settings
 
 	@Override
 	public View workOn(final SettingsViewCommand command) {
-
 		final RequestWrapperContext context = command.getContext();
 	
 		/*
@@ -98,7 +95,7 @@ public class ChangePasswordController implements MinimalisticController<Settings
 			/*
 			 * change password
 			 */
-			changePassword(loginUser, command);
+			this.changePassword(loginUser, command);
 		} else {
 			errors.reject("error.field.valid.ckey");
 		}
@@ -139,13 +136,11 @@ public class ChangePasswordController implements MinimalisticController<Settings
 
 	@Override
 	public Errors getErrors() {
-
 		return this.errors;
 	}
 
 	@Override
 	public void setErrors(final Errors errors) {
-
 		this.errors = errors;
 	}
 
@@ -178,13 +173,11 @@ public class ChangePasswordController implements MinimalisticController<Settings
 
 	@Override
 	public Validator<SettingsViewCommand> getValidator() {
-
 		return new ChangePasswordValidator();
 	}
 
 	@Override
 	public boolean isValidationRequired(final SettingsViewCommand command) {
-
 		return true;
 	}
 }
