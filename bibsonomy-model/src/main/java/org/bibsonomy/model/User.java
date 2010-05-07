@@ -21,6 +21,7 @@
  *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
+
 package org.bibsonomy.model;
 
 import java.io.Serializable;
@@ -38,6 +39,10 @@ import org.bibsonomy.model.util.UserUtils;
  * @version $Id$
  */
 public class User implements Serializable{
+	/*
+	 * WARNING: When adding new fields make sure to integrate them into the updateUser method
+	 * {@link UserUtils#updateUser}
+	 */
 
 	/**
 	 * For persistency (Serializable)
@@ -828,8 +833,5 @@ public class User implements Serializable{
 	public void setReminderPasswordRequestDate(Date reminderPasswordRequestDate) {
 		this.reminderPasswordRequestDate = reminderPasswordRequestDate;
 	}
-
-
-
 
 }
