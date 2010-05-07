@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.controller;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.layout.jabref.JabrefLayoutUtils;
 import org.bibsonomy.layout.jabref.LayoutPart;
@@ -24,7 +22,6 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class SettingsPageController implements MinimalisticController<SettingsViewCommand>, ErrorAware {
-	private static final Log log = LogFactory.getLog(SettingsPageController.class);
 
 	/**
 	 * hold current errors
@@ -65,7 +62,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		}
 		case 1: {
 			// called by the setting tab
-			workOnSettingsTab(command);
 			break;
 		}
 		case 2: {
@@ -134,10 +130,6 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 			}
 		}
 	}
-
-	private void workOnSettingsTab(final SettingsViewCommand command) {
-		// no work to do
-	}
 	
 	private void workOnGroupTab(final SettingsViewCommand command) {
 		final String groupName = command.getContext().getLoginUser().getName();
@@ -180,6 +172,9 @@ public class SettingsPageController implements MinimalisticController<SettingsVi
 		this.errors = errors;
 	}
 
+	/**
+	 * @param logic the logic to set
+	 */
 	public void setLogic(final LogicInterface logic) {
 		this.logic = logic;
 	}
