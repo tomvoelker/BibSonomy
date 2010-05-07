@@ -19,6 +19,7 @@ import org.springframework.validation.Errors;
 public class InboxPageController extends SingleResourceListController implements MinimalisticController<UserResourceViewCommand>, ErrorAware {
 	private Errors errors;
 
+	@Override
 	public View workOn(final UserResourceViewCommand command) {
 		/*
 		 * FIXME: implement filter=no parameter
@@ -27,18 +28,20 @@ public class InboxPageController extends SingleResourceListController implements
 		// user has to be logged in
 		if (!command.getContext().isUserLoggedIn()){
 			errors.reject("error.general.login");
-			return Views.ERROR;
+			return Views.ERROR; // TODO: redirect to login page
 		}
-		this.startTiming(this.getClass(), command.getFormat());
+		
+		final String format = command.getFormat();
+		this.startTiming(this.getClass(), format);
 
 		// determine which lists to initialize depending on the output format 
 		// and the requested resource type
-		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());		
+		this.chooseListsToInitialize(format, command.getResourcetype());		
 		final String loginUserName = command.getContext().getLoginUser().getName();
 		// retrieve and set the requested resource lists
 		for (final Class<? extends Resource> resourceType : listsToInitialise) {
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();
-			setList(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, entriesPerPage);
+			this.setList(command, resourceType, GroupingEntity.INBOX, loginUserName, null, null, null, null, null, entriesPerPage);
 			postProcessAndSortList(command, resourceType);
 			/*
 			 * mark all posts to be inbox posts (such that the "remove" link appears 
@@ -52,13 +55,13 @@ public class InboxPageController extends SingleResourceListController implements
 		this.endTiming();
 
 		// html format - retrieve tags and return HTML view
-		if ("html".equals(command.getFormat())) {
+		if ("html".equals(format)) {
 			command.setPageTitle("inbox");
 			return Views.INBOX;		
 		}
 
 		// export - return the appropriate view
-		return Views.getViewByFormat(command.getFormat());	
+		return Views.getViewByFormat(format);	
 	}
 
 	public UserResourceViewCommand instantiateCommand() {

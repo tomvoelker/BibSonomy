@@ -38,11 +38,9 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 	private static final Log log = LogFactory.getLog(MySearchController.class);
 
 	public View workOn(final MySearchCommand command) {
-
 		/*
 		 * FIXME: implement this for a group!
 		 */
-
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 
@@ -123,8 +121,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 		buildRelationTables(bibtex, command);
 
 		// set page title
-		// TODO: internationalize
-		command.setPageTitle("user :: " + groupingName);
+		command.setPageTitle("user :: " + groupingName); // TODO: i18n
 
 		this.endTiming();
 
@@ -245,7 +242,6 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 	}
 
 	public MySearchCommand instantiateCommand() {
-
 		return new MySearchCommand();
 	}
 
@@ -256,7 +252,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 	 * @return a string containing all authors and editors
 	 */
 	private String buildAuthorsAndEditors(String author, String editor) {
-		StringBuffer authors = new StringBuffer();
+		final StringBuilder authors = new StringBuilder();
 
 		if (author != null) authors.append(author);
 
@@ -315,7 +311,7 @@ public class MySearchController extends SingleResourceListControllerWithTags imp
 				}
 			}
 
-			StringBuffer lastName = new StringBuffer();
+			StringBuilder lastName = new StringBuilder();
 			while (i < nameList.size()) {
 				lastName.append(nameList.get(i++) + " ");
 			}

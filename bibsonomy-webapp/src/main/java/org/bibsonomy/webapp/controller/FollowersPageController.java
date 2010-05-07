@@ -28,14 +28,15 @@ import org.bibsonomy.webapp.view.Views;
 public class FollowersPageController extends SingleResourceListController implements MinimalisticController<FollowersViewCommand>{
 	private static final Log log = LogFactory.getLog(FollowersPageController.class);
 
-	public View workOn(FollowersViewCommand command) {
+	@Override
+	public View workOn(final FollowersViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		final String format = command.getFormat();
 		this.startTiming(this.getClass(), format);
 
 		// you have to be logged in
-		if (command.getContext().isUserLoggedIn() == false) {
-			throw new MalformedURLSchemeException("error.general.login");
+		if (!command.getContext().isUserLoggedIn()) {
+			throw new MalformedURLSchemeException("error.general.login"); // TODO: redirect to login page?!
 		}
 		
 		// set params
@@ -48,7 +49,7 @@ public class FollowersPageController extends SingleResourceListController implem
 		}
 		
 		// ranking settings
-		Integer start = command.getRanking().getPeriod() * Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
+		final Integer start = command.getRanking().getPeriod() * Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING;
 		command.getRanking().setPeriodStart(start + 1);
 		command.getRanking().setPeriodEnd(start + Parameters.NUM_RESOURCES_FOR_PERSONALIZED_RANKING);		
 		
@@ -69,10 +70,11 @@ public class FollowersPageController extends SingleResourceListController implem
 		this.chooseListsToInitialize(format, command.getResourcetype());
 		
 		// fetch all tags of logged-in user
-		List<Tag> loginUserTags = this.logic.getTags(Resource.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, null, null, null, 0, Integer.MAX_VALUE, null, null);
+		final String username = command.getContext().getLoginUser().getName();
+		final List<Tag> loginUserTags = this.logic.getTags(Resource.class, GroupingEntity.USER, username, null, null, null, null, 0, Integer.MAX_VALUE, null, null);
 		
 		// fetch all tags of followed users TODO implement...
-		List<Tag> targetUserTags = this.logic.getTags(Resource.class, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, null, null, null, 0, Integer.MAX_VALUE, null, null);		
+		final List<Tag> targetUserTags = this.logic.getTags(Resource.class, GroupingEntity.USER, username, null, null, null, null, 0, Integer.MAX_VALUE, null, null);		
 		
 		// retrieve and set the requested resource lists, along with total
 		// counts
@@ -103,12 +105,12 @@ public class FollowersPageController extends SingleResourceListController implem
 		
 
 		// html format - retrieve tags and return HTML view
-		if (format.equals("html")) {
+		if ("html".equals(format)) {
 			command.setFollowersOfUser(logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.FOLLOWER_OF, null, 0, 0));
 			command.setUserIsFollowing(logic.getUsers(null, GroupingEntity.FOLLOWER, null, null, null, null, UserRelation.OF_FOLLOWER, null, 0, 0));
 
 			// retrieve similar users, by the given user similarity measure
-			List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, command.getContext().getLoginUser().getName(), null, null, null, userRelation, null, 0, 10);	
+			final List<User> similarUsers = this.logic.getUsers(null, GroupingEntity.USER, username, null, null, null, userRelation, null, 0, 10);	
 			command.getRelatedUserCommand().setRelatedUsers(similarUsers);			
 			
 			this.endTiming();
@@ -120,6 +122,7 @@ public class FollowersPageController extends SingleResourceListController implem
 		return Views.getViewByFormat(format);
 	}
 
+	@Override
 	public FollowersViewCommand instantiateCommand() {
 		return new FollowersViewCommand();
 	}

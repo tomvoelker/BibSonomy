@@ -3,47 +3,39 @@
  */
 package org.bibsonomy.webapp.controller;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.webapp.command.GroupsListCommand;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
 /**
- * Controller for group overview
- * 
- * groups
+ * Controller for group overview:
+ * - groups
  * 
  * @author Folke Eisterlehner
  */
 public class GroupsPageController extends SingleResourceListController implements MinimalisticController<GroupsListCommand> {
-	private static final Log log = LogFactory.getLog(GroupsPageController.class);
 
 	/**
 	 * implementation of {@link MinimalisticController} interface
 	 */
-	public View workOn(GroupsListCommand command) {
-		// filll out overhead
-		command.setPageTitle("groups");
+	@Override
+	public View workOn(final GroupsListCommand command) {
+		// fill out title
+		command.setPageTitle("groups"); // TODO: i18n
 		
-		// get group data
-		// We want to get all group members. Begin and end value are
-		// passed to the MySQL LIMIT statement for which documentation
-		// yields:
-		//    "To retrieve all rows from a certain offset up to the end
-		//     of the result set, you can use some large number for the 
-		//     second parameter."
-		// The example gives 18446744073709551615 which is out of bound for int.
+		/*
+		 * get all groups from db; Integer#MAX_VALUE should be enough
+		 */
 		command.setList(logic.getGroups(0, Integer.MAX_VALUE));
-
-		// all done.
+		
 		return Views.GROUPSPAGE;
 	}
 
 	/**
 	 * implementation of {@link MinimalisticController} interface
 	 */
+	@Override
 	public GroupsListCommand instantiateCommand() {
 		return new GroupsListCommand();
 	}	

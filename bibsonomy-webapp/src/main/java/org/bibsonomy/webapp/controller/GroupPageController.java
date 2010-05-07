@@ -36,14 +36,15 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
 
+		final String groupingName = command.getRequestedGroup();
+		
 		// if no group given -> error
-		if (command.getRequestedGroup() == null) {
+		if (!present(groupingName)) {
 			throw new MalformedURLSchemeException("error.group_page_without_groupname");
 		}				
 
 		// set grouping entity and grouping name
 		final GroupingEntity groupingEntity = GroupingEntity.GROUP;
-		final String groupingName = command.getRequestedGroup();
 		final List<String> requTags = command.getRequestedTagsList();
 
 		//check if system-tag "sys:relevantFor:" exists in taglist
@@ -82,8 +83,6 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {
-
-
 			if (isRelevantFor && filter != FilterEntity.JUST_PDF) {
 				/*
 				 * handle the "relevant for group" pages
@@ -95,8 +94,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			} 
 
 			// set title
-			// TODO: localize
-			command.setPageTitle("group :: " + groupingName);	
+			command.setPageTitle("group :: " + groupingName); // TODO: localize
 
 			// always retrieve all tags of this group
 			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, null);
@@ -104,8 +102,8 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 
 			if (requTags.size() > 0) {
 				this.setRelatedTags(command, Resource.class, groupingEntity, groupingName, null, requTags, Order.ADDED, 0, 20, null);
-				this.endTiming();
 			}
+			
 			this.endTiming();
 
 			// forward to bibtex page if PDF filter is set
@@ -116,16 +114,17 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			} 
 
 			return Views.GROUPPAGE;		
-		}		
+		}
+		
 		this.endTiming();
 		// export - return the appropriate view
 		return Views.getViewByFormat(command.getFormat());		
 	}
 
+	@Override
 	public GroupResourceViewCommand instantiateCommand() {
 		return new GroupResourceViewCommand();
-	}	
-
+	}
 
 	/**
 	 * Retrieve all members of the given group in dependence of the group privacy level
@@ -143,19 +142,20 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 	}
 
 	/**
-	 * @FIXME This should be done by the system-tag framework
+	 * FIXME This should be done by the system-tag framework
 	 */
 	private boolean checkRelevantFor(List<String> tags){
-		for(String tag: tags){
+		for (String tag : tags) {
 			/* 
 			 * let's not be too strict here if we find wrong capitalization (e.g. 
 			 * 'relevantfor' instead of 'relevantFor'
 			 */			
-			if(tag.toLowerCase().startsWith(SystemTags.RELEVANTFOR.getPrefix().toLowerCase())){
+			if (tag.toLowerCase().startsWith(SystemTags.RELEVANTFOR.getPrefix().toLowerCase())) {
 				log.debug("SYSTEMTAG 'sys:relevantFor:' found --> forward to the relevant-for View");
 				return true;
 			}
 		}
+		
 		return false;
 	}
 }
