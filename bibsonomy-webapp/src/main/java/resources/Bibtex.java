@@ -25,10 +25,10 @@ public class Bibtex extends Resource {
 	private static final int MAX_LEN_BOOKTITLE=6000;
 	
 	// similarity hashes
-	public static final int SIM_HASH_0 = 0; // OLD intra-user hash
-	public static final int SIM_HASH_1 = 1; // inter-user hash 1 (actually used!)
-	public static final int SIM_HASH_2 = 2; // NEW intra-user hash
-	public static final int SIM_HASH_3 = 3; // inter-user hash 3 (unused)
+	private static final int SIM_HASH_0 = 0; // OLD intra-user hash
+	private static final int SIM_HASH_1 = 1; // inter-user hash 1 (actually used!)
+	private static final int SIM_HASH_2 = 2; // NEW intra-user hash
+	private static final int SIM_HASH_3 = 3; // inter-user hash 3 (unused)
 	public static final int INTER_HASH = SIM_HASH_1; // default similarity hash (inter-user hash)
 	public static final int INTRA_HASH = SIM_HASH_2;
 
@@ -66,6 +66,7 @@ public class Bibtex extends Resource {
 		//super.setContentType(Bibtex.CONTENT_TYPE);
 	}
 
+	@Override
 	public String toString () {
 		return super.toString() + 
 			"[BibTeX: authors = " + getAuthor() + ", " +
@@ -170,6 +171,7 @@ public class Bibtex extends Resource {
 	public void setYear (String y)      {setEntry("year", cropToLength(y, MAX_LEN_YEAR));     this.validY = y != null && !y.trim().equals("");}
 	public void setAuthor (String a)    {setEntry("author", cropToLength(a, MAX_LEN_AUTHOR)); this.validA = a != null && !a.trim().equals("");  }
 	public void setEditor (String e)    {setEntry("editor", cropToLength(e, MAX_LEN_EDITOR)); this.validE = e != null && !e.trim().equals("");	 }
+	@Override
 	public void setTitle (String t)     {super.setTitle(t); setHashesToNull(); }
 	
 	
@@ -196,6 +198,7 @@ public class Bibtex extends Resource {
 	public void setSchool (String s)           {setEntry("school",s);	    }
 	public void setSeries (String se)          {setEntry("series",se);	    } 
 	public void setType (String t)             {setEntry("type", t);	    } 
+	@Override
 	public void setUrl (String u)       	   {setEntry("url", u);         }
 	public void setVolume (String v)           {setEntry("volume",v);	    }
 	
@@ -226,6 +229,7 @@ public class Bibtex extends Resource {
 	public String getSchool ()        {	return getEntry("school");	    }
 	public String getSeries ()        {	return getEntry("series");	    }
 	public String getType ()          {	return getEntry("type");	    }
+	@Override
 	public String getUrl ()           {	return getEntry("url");	        }
 	public String getVolume ()        {	return getEntry("volume");	    }
 	public String getYear ()          {	return getEntry("year");	    }
@@ -429,25 +433,21 @@ public class Bibtex extends Resource {
 
 	
 	
+	@Override
 	public int getContentType () {
 		return Bibtex.CONTENT_TYPE;
 	}
 
 	
 	// every user has exactly one entry with that hash (INTRA-USER-HASH)
+	@Override
 	public String getHash() {
 		// every user hash exactly one entry with that hash
 		return getSimHash(INTRA_HASH);
 	}
-	
-	// getter for JSPs (therefore small letters)
-	public String getSimhash () {
-		// return the default simhash (INTER-USER-HASH)
-		return getSimHash(INTER_HASH);
-	}
-	
+
 	/* similarity hashes */
-	public String getSimHash (int h) {
+	private String getSimHash (int h) {
 		if (h == SIM_HASH_2) {
 			// every user has exactly one entry with that hash (NEW intra-user hash)
 			if (simhash2 == null) {
