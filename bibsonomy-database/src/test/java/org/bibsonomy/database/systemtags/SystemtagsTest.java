@@ -493,7 +493,8 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 			user.setRole(Role.DEFAULT);
 			user.setToClassify(1);
 			user.setAlgorithm(null);
-			userDb.createUser(user, this.dbSession);
+			userDb.createUser(user, this.dbSession);			
+			userDb.activateUser(user, this.dbSession);
 		}
 		return user;
 	}
