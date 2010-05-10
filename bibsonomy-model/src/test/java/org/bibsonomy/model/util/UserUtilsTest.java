@@ -66,6 +66,33 @@ public class UserUtilsTest {
 			}
 		}
 	}
+	
+
+	/**
+	 * tests generateActivationKey
+	 */
+	@Test
+	public void generateActivationKey() {
+		final User user = new User();
+		user.setApiKey(UserUtils.generateApiKey());
+		user.setIPAddress("0.0.0.0");
+		user.setName("testuser");
+		assertEquals(32, UserUtils.generateActivationCode(user).length());
+		
+		/*
+		 * generate some keys and make sure that they're all different
+		 */
+		final Set<String> codes = new HashSet<String>();
+		// supporting 2^16 users with different keys should be enough for now
+		final int NUMBER_OF_KEYS = (int) Math.pow(2, 16);
+		for (int i = 0; i < NUMBER_OF_KEYS; i++) {
+			final int oldSize = codes.size();
+			codes.add(UserUtils.generateActivationCode(user));
+			if (oldSize + 1 != codes.size()) {
+				fail("There's a duplicate Activation key");
+			}
+		}
+	}
 
 	/**
 	 * tests setGroupsByGroupIDs
