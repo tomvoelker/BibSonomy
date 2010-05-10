@@ -183,10 +183,10 @@ public class UrlUtils {
 	}
 
 	/**
-	 * Encodes the given String with URLEncoder. If that fails, returns an empty string.
+	 * Encodes the given String with URLEncoder. If that fails, returns the string.
 	 * 
 	 * @param s
-	 * @return
+	 * @return the encoded string (if that fails, returns the string)
 	 */
 	public static String safeURIEncode(final String s) {
 		try {
