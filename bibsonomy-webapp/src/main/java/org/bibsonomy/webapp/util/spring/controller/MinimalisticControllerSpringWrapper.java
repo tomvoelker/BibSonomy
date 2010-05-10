@@ -14,8 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.LuceneException;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.webapp.command.BaseCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.exceptions.ServiceUnavailableException;
@@ -166,10 +166,10 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
 			errors.reject(malformed.getMessage());
 			log.warn("Could not complete controller (invalid URL scheme) : " + malformed.getMessage());
-		} catch (final ValidationException nv) {
+		} catch (final AccessDeniedException ad) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			errors.reject(nv.getMessage());
-			log.warn("Could not complete controller (ValidationException), occured in: " + nv.getStackTrace()[0] + ", msg is: " + nv.getMessage());
+			errors.reject(ad.getMessage());
+			log.warn("Could not complete controller (AccessDeniedException), occured in: " + ad.getStackTrace()[0] + ", msg is: " + ad.getMessage());
 		} catch (final ServiceUnavailableException e) {
 			response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
 			response.setHeader("Retry-After", Long.toString(e.getRetryAfter()));
@@ -227,7 +227,7 @@ public class MinimalisticControllerSpringWrapper<T extends BaseCommand> extends 
 		 * method (since we're using this MinimalisticController ... wrapper)
 		 *  
 		 */
-		binder.registerCustomEditor(Date.class, new CustomDateEditor(DATE_FORMAT,true));
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(DATE_FORMAT, true));
 
 		/*
 		 * setting the dis/allowed fields for the binder

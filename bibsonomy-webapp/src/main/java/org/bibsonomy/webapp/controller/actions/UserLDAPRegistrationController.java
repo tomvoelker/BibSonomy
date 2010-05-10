@@ -3,7 +3,7 @@ package org.bibsonomy.webapp.controller.actions;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.webapp.command.actions.UserLDAPRegistrationCommand;
@@ -68,7 +68,7 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 		 */
 		if (context.isUserLoggedIn() && !Role.ADMIN.equals(loginUser.getRole())) {
 			log.warn("User " + loginUser.getName() + " tried to access user registration without having role " + Role.ADMIN);
-			throw new ValidationException("error.method_not_allowed");
+			throw new AccessDeniedException("error.method_not_allowed");
 		}
 
 		log.info("errors"+errors.toString());
@@ -78,9 +78,9 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 			
 			if (command.getStep() == 3) {
 				return Views.REGISTER_USER_LDAP_FORM;
-			} else {
-				return Views.REGISTER_USER_LDAP;
 			}
+			
+			return Views.REGISTER_USER_LDAP;
 		}
 
 		/*

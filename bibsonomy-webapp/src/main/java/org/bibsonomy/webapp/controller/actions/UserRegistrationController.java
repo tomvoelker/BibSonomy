@@ -8,8 +8,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
@@ -112,7 +112,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		 * If user is logged in and not an admin: show error message
 		 */
 		if (context.isUserLoggedIn() && !Role.ADMIN.equals(loginUser.getRole())) {
-			throw new ValidationException("error.method_not_allowed");
+			throw new AccessDeniedException("error.method_not_allowed");
 		}
 
 		/* Check cookies

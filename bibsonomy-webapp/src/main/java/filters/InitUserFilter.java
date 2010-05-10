@@ -27,7 +27,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.User;
@@ -85,6 +85,7 @@ public class InitUserFilter implements Filter {
 	public static final String REQ_ATTRIB_LANGUAGE = SessionLocaleResolver.class.getName() + ".LOCALE";
 	public static final String REQ_ATTRIB_LOGIN_USER = "loginUser";
 	public static final String REQ_ATTRIB_LOGIN_USER_PASSWORD = "loginUserPassword";
+	
 	/**
 	 * Enables X.509 authentication.
 	 */
@@ -177,7 +178,7 @@ public class InitUserFilter implements Filter {
 						 */
 						final LogicInterface logic = dbLogicFactory.getLogicAccess(uname, X509_GENERIC_PASSWORD);
 						loginUser = logic.getUserDetails(uname);
-					} catch (ValidationException e) {
+					} catch (AccessDeniedException e) {
 						loginUser = createX509User(ibatisDBSessionFactory, uname);
 					}
 
@@ -235,8 +236,6 @@ public class InitUserFilter implements Filter {
 						long timeDiff = (dateNow.getTime() - userLastAccess.getTime())/1000;						
 						
 						log.debug("last access of user "+userName+" was on "+userLastAccess.toString()+ " ("+(timeDiff/3600)+" hours ago = "+ " ("+(timeDiff/60)+" minutes ago = "+timeDiff+" seconds ago)");
-		//DEBUG
-		//timeDiff=timeToReAuth;
 					
 						/*
 						 *  check lastAccess - re-auth required?
@@ -258,8 +257,7 @@ public class InitUserFilter implements Filter {
 							log.debug("loginUser = " + loginUser.getName());
 							log.debug("Trying to re-auth user " + userName + " via LDAP (uid="+loginUser.getLdapId()+")");
 					        ldapUserinfo = ldap.checkauth(loginUser.getLdapId(), userPass);
-		//DEBUG
-		//ldapUserinfo = null;
+					        
 							if (null == ldapUserinfo)
 							{
 								/*
@@ -283,16 +281,7 @@ public class InitUserFilter implements Filter {
 							}
 							
 						}
-					}		
-						
-					
-						
-
-	
-						
-					
-//*****************************************************************					
-					
+					}
 				} else {
 					/*
 					 * something is wrong with the cookie: log!
@@ -392,7 +381,7 @@ public class InitUserFilter implements Filter {
 					loginUser = logic.getUserDetails(auth[0]);
 				}
 			}
-		} catch (ValidationException valEx) {
+		} catch (AccessDeniedException valEx) {
 			log.debug("Login failed.", valEx);
 		}
 
@@ -464,7 +453,7 @@ public class InitUserFilter implements Filter {
 	 * 
 	 * @param request
 	 * @param cookieName
-	 * @return
+	 * @return the value of a cookie with the given name
 	 */
 	public static String getCookie(HttpServletRequest request, String cookieName) {
 		Cookie cookieList[] = request.getCookies();
@@ -509,9 +498,10 @@ public class InitUserFilter implements Filter {
 	 * **************************************************
 	 */
 
-	/** Small helper method for Servlets to easily retrieve UserBean.
+	/**
+	 * Small helper method for Servlets to easily retrieve UserBean.
 	 * @param request
-	 * @return
+	 * @return the user
 	 */
 	public static User getUser(HttpServletRequest request) {
 		return (User) request.getAttribute(REQ_ATTRIB_USER);

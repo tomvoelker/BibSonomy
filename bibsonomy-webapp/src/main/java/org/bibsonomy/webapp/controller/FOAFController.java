@@ -1,10 +1,10 @@
-package org.bibsonomy.webapp.controller;
+ package org.bibsonomy.webapp.controller;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.util.List;
 
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.StringUtils;
@@ -57,7 +57,7 @@ public class FOAFController implements MinimalisticController<FOAFCommand> {
 		try {
 			final List<User> friends = this.logic.getFriendsOfUser(user);
 			user.addFriends(friends);
-		} catch (final ValidationException ex) {
+		} catch (final AccessDeniedException ex) {
 			// ignore it
 		}
 		
