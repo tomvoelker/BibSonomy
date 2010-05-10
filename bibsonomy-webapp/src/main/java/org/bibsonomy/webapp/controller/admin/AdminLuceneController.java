@@ -10,7 +10,7 @@ import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.bibsonomy.common.enums.Classifier;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.lucene.search.LuceneResourceSearch;
 import org.bibsonomy.lucene.search.LuceneSearchBibTex;
 import org.bibsonomy.lucene.search.LuceneSearchBookmarks;
@@ -53,7 +53,7 @@ public class AdminLuceneController implements MinimalisticController<AdminLucene
 		/* Check user role
 		 * If user is not logged in or not an admin: show error message */
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
-			throw new ValidationException("error.method_not_allowed");
+			throw new AccessDeniedException("error.method_not_allowed");
 		}
 		
 		command.setPageTitle("admin lucene");

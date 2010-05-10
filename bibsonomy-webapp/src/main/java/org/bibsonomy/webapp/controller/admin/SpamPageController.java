@@ -9,7 +9,7 @@ import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -27,16 +27,14 @@ import org.bibsonomy.webapp.view.Views;
  * @author Beate Krause
  * @version $Id$
  **/
-
-public class SpamPageController implements
-		MinimalisticController<AdminViewCommand> {
-
+public class SpamPageController implements MinimalisticController<AdminViewCommand> {
 	private static final Log log = LogFactory.getLog(SpamPageController.class);
 
+	
 	private LogicInterface logic;
-
 	private UserSettings userSettings;
 
+	@Override
 	public View workOn(AdminViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
 
@@ -47,9 +45,8 @@ public class SpamPageController implements
 		 * Check user role If user is not logged in or not an admin: show error
 		 * message
 		 */
-		if (!context.isUserLoggedIn()
-				|| !Role.ADMIN.equals(loginUser.getRole())) {
-			throw new ValidationException("error.method_not_allowed");
+		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(loginUser.getRole())) {
+			throw new AccessDeniedException("error.method_not_allowed");
 		}
 
 		command.setPageTitle("admin");
@@ -65,9 +62,7 @@ public class SpamPageController implements
 		}
 
 		for (ClassifierSettings s : ClassifierSettings.values()) {
-			command
-					.setClassifierSetting(s, this.logic
-							.getClassifierSettings(s));
+			command.setClassifierSetting(s, this.logic.getClassifierSettings(s));
 		}
 
 		/*
@@ -75,16 +70,14 @@ public class SpamPageController implements
 		 */
 		if (command.getAclUserInfo() != null) {
 			if ("flag_spammer".equals(command.getAction())) {
-				if (!logic.getUserDetails(command.getAclUserInfo())
-						.getSpammer()) {
+				if (!logic.getUserDetails(command.getAclUserInfo()).getSpammer()) {
 					User user = new User(command.getAclUserInfo());
 					user.setToClassify(0);
 					user.setAlgorithm("admin");
 					user.setSpammer(true);
 					this.logic.updateUser(user, UserUpdateOperation.UPDATE_ALL);
 				} else {
-					command
-							.addInfo("The user was already flagged as a spammer.");
+					command.addInfo("The user was already flagged as a spammer.");
 				}
 			}
 
@@ -95,51 +88,34 @@ public class SpamPageController implements
 
 	}
 
+	@Override
 	public AdminViewCommand instantiateCommand() {
 		return new AdminViewCommand();
 	}
-
-	public void setLogic(LogicInterface logic) {
-		this.logic = logic;
-	}
-
-	public void setStatistics(AdminViewCommand cmd) {
+	
+	private void setStatistics(AdminViewCommand cmd) {
 		AdminStatisticsCommand command = cmd.getStatisticsCommand();
 
 		for (int interval : cmd.getInterval()) {
-			command.setNumAdminSpammer(Long.valueOf(interval), this.logic
-					.getClassifiedUserCount(Classifier.ADMIN,
-							SpamStatus.SPAMMER, interval));
-			command.setNumAdminNoSpammer(Long.valueOf(interval), this.logic
-					.getClassifiedUserCount(Classifier.ADMIN,
-							SpamStatus.NO_SPAMMER, interval));
-			command.setNumClassifierSpammer(Long.valueOf(interval), this.logic
-					.getClassifiedUserCount(Classifier.CLASSIFIER,
-							SpamStatus.SPAMMER, interval));
-			command.setNumClassifierSpammerUnsure(Long.valueOf(interval),
-					this.logic.getClassifiedUserCount(Classifier.CLASSIFIER,
-							SpamStatus.SPAMMER_NOT_SURE, interval));
-			command.setNumClassifierNoSpammerUnsure(Long.valueOf(interval),
-					this.logic.getClassifiedUserCount(Classifier.CLASSIFIER,
-							SpamStatus.NO_SPAMMER_NOT_SURE, interval));
-			command.setNumClassifierNoSpammer(Long.valueOf(interval),
-					this.logic.getClassifiedUserCount(Classifier.CLASSIFIER,
-							SpamStatus.NO_SPAMMER, interval));
+			command.setNumAdminSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.SPAMMER, interval));
+			command.setNumAdminNoSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.ADMIN, SpamStatus.NO_SPAMMER, interval));
+			command.setNumClassifierSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER, interval));
+			command.setNumClassifierSpammerUnsure(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.SPAMMER_NOT_SURE, interval));
+			command.setNumClassifierNoSpammerUnsure(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER_NOT_SURE, interval));
+			command.setNumClassifierNoSpammer(Long.valueOf(interval), this.logic.getClassifiedUserCount(Classifier.CLASSIFIER, SpamStatus.NO_SPAMMER, interval));
 		}
 	}
 
-	public void setUsers(AdminViewCommand cmd) {
-		Classifier classifier = null;
-		SpamStatus status = null;
-
+	private void setUsers(AdminViewCommand cmd) {
 		if (cmd.getSelTab() == AdminViewCommand.CLASSIFIER_EVALUATE) {
-
 			// TODO: Interval checken
-			List<User> u = this.logic
-					.getClassifierComparison(cmd.getInterval()[0]);
-			cmd.setContent(u);
+			final List<User> users = this.logic.getClassifierComparison(cmd.getInterval()[0]);
+			cmd.setContent(users);
 			return;
 		}
+		
+		Classifier classifier = null;
+		SpamStatus status = null;
 
 		/* set content in dependence of the selected tab */
 		switch (cmd.getSelTab()) {
@@ -175,16 +151,28 @@ public class SpamPageController implements
 			status = SpamStatus.NO_SPAMMER_NOT_SURE;
 			break;
 		}
-		cmd.setContent(this.logic.getClassifiedUsers(classifier, status, cmd
-				.getLimit()));
+		cmd.setContent(this.logic.getClassifiedUsers(classifier, status, cmd.getLimit()));
 	}
 
+	/**
+	 * @return the userSettings
+	 */
 	public UserSettings getUserSettings() {
 		return this.userSettings;
 	}
 
+	/**
+	 * @param userSettings the userSettings to set
+	 */
 	public void setUserSettings(UserSettings userSettings) {
 		this.userSettings = userSettings;
+	}
+
+	/**
+	 * @param logic the logic to set
+	 */
+	public void setLogic(LogicInterface logic) {
+		this.logic = logic;
 	}
 
 }

@@ -13,7 +13,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.EvaluatorUser;
@@ -23,7 +23,6 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.ajax.AdminAjaxCommand;
 import org.bibsonomy.webapp.controller.ajax.AjaxController;
 import org.bibsonomy.webapp.util.ErrorAware;
-import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.ValidationAwareController;
 import org.bibsonomy.webapp.util.Validator;
@@ -39,7 +38,7 @@ import org.springframework.validation.Errors;
  * @author Beate Krause
  * @version $Id$
  */
-public class AdminAjaxController extends AjaxController implements MinimalisticController<AdminAjaxCommand> , ErrorAware, ValidationAwareController<AdminAjaxCommand>{	
+public class AdminAjaxController extends AjaxController implements ValidationAwareController<AdminAjaxCommand>, ErrorAware {	
 	private static final Log log = LogFactory.getLog(AdminAjaxController.class);
 	
 	private Errors errors;
@@ -51,7 +50,7 @@ public class AdminAjaxController extends AjaxController implements MinimalisticC
 		/* Check user role
 		 * If user is not logged in or not an admin: show error message */
 		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(context.getLoginUser().getRole())) {
-			throw new ValidationException("error.method_not_allowed");
+			throw new AccessDeniedException("error.method_not_allowed");
 		}
 		
 		final String action = command.getAction();
