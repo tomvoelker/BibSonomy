@@ -89,7 +89,9 @@ public enum GroupingEntity {
 	 * for constraining the entities in the list to the ones contained in the 
 	 * inbox of the given user
 	 */
-	INBOX;
+	INBOX,
+	
+	PENDING;
 	
 	/**
 	 * @param groupingEntity name of the GroupingEntity Instance to retrieve
