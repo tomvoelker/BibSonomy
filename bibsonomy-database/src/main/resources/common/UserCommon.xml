@@ -35,11 +35,15 @@
 		<result property="ldapId" 			column="ldapUserId"		javaType="string" />
 		<result property="lastLdapUpdate" 	column="lastAccess"  	javaType="date" />			
 	</resultMap>
+	
+	<resultMap id="userWithActivationCode"  class="user" extends="user"> 
+		<result property="activationCode"   column="activation_code" javaType="string" />
+	</resultMap>
 
 	<resultMap id="userWithSettings"  class="user" extends="user"> 
 		<result property="settings"   resultMap="UserCommon.userSettings"/>
 	</resultMap>
-
+	
 	<resultMap id="userSettings" class="userSettings">
 		<result property="listItemcount"   column="list_itemcount" javaType="integer" />	
 		<result property="tagboxMinfreq"   column="tagbox_minfreq" javaType="integer" />
