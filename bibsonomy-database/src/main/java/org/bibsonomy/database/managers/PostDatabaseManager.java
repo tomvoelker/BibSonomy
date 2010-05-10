@@ -572,8 +572,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * Prepares queries to retrieve posts which match a fulltext search in the
 	 * fulltext search table with the requested group<br/>
 	 * 
-	 * @param groupId
-	 * @param visibleGroupIDs 
+	 * @param groupName 
+	 * @param visibleGroups 
 	 * @param search
 	 * @param loginUserName
 	 * @param limit
@@ -631,18 +631,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param lastYear
 	 * @param limit
 	 * @param offset
-	 * @return
+	 * @return a list of posts
 	 */
-	public List<Post<R>> getPostsByResourceSearch(
-			final String userName, final String requestedUserName, String requestedGroupName, 
-			final Collection<String> allowedGroups,
-			final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex,
-			final String year, final String firstYear, final String lastYear, int limit, int offset) {
-		if( this.isDoLuceneSearch() && present(this.resourceSearch) ) {
+	public List<Post<R>> getPostsByResourceSearch(final String userName, final String requestedUserName, String requestedGroupName, final Collection<String> allowedGroups,final String searchTerms, final String titleSearchTerms, final String authorSearchTerms, final Collection<String> tagIndex, final String year, final String firstYear, final String lastYear, int limit, int offset) {
+		if (this.isDoLuceneSearch() && present(this.resourceSearch)) {
 			return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, limit, offset);
-		} else {
-			return new LinkedList<Post<R>>();
 		}
+		
+		return new LinkedList<Post<R>>();
 	}
 
 	/**
