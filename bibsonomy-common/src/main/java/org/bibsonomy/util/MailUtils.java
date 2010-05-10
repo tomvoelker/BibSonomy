@@ -70,8 +70,38 @@ public class MailUtils {
 	 * @param locale - a locale to use for localization
 	 * @return <code>true</code>, if the email could be send without errors.
 	 */
-	public boolean sendRegistrationMail (final String userName, final String userEmail, final String inetAddress, final Locale locale) {
+	public boolean sendActivationMail (final String userName, final String userEmail, final String inetAddress, final Locale locale) {
 		final Object[] messagesParameters = new Object[]{userName, projectName, projectHome, projectBlog, projectEmail};
+		/*
+		 * Format the message "mail.registration.body" with the given parameters.
+		 */
+		final String messageBody    = messageSource.getMessage("mail.activation.body", messagesParameters, locale);
+		final String messageSubject = messageSource.getMessage("mail.activation.subject", messagesParameters, locale);
+
+		/*
+		 * set the recipients
+		 */
+		final String recipient[] = new String[] {userEmail};
+		try {
+			sendMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
+			return true;
+		} catch (final MessagingException e) {
+			log.fatal("Could not send registration mail: " + e.getMessage());
+		}
+		return false;
+	}
+	
+	/** Sends the registration mail to the user and to the project admins.
+	 * 
+	 * @param userName - the name of the user which registered. 
+	 * @param userEmail - the email address of the user which registered.
+	 * @param activationCode - user activation code
+	 * @param inetAddress - 
+	 * @param locale - a locale to use for localization
+	 * @return <code>true</code>, if the email could be send without errors.
+	 */
+	public boolean sendRegistrationMail (final String userName, final String userEmail, final String activationCode, final String inetAddress, final Locale locale) {
+		final Object[] messagesParameters = new Object[]{userName, projectName, projectHome, projectBlog, projectEmail, activationCode};
 		/*
 		 * Format the message "mail.registration.body" with the given parameters.
 		 */
@@ -90,6 +120,7 @@ public class MailUtils {
 		}
 		return false;
 	}
+	
 	
 	/**
 	 * Method to send the password reminder mail

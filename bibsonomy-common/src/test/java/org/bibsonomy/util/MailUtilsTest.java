@@ -80,7 +80,7 @@ public class MailUtilsTest {
 	@Ignore
 	public void testSendRegistrationMail() {
 		try {
-			assertTrue(mailUtils.sendRegistrationMail("testuser", "devnull@cs.uni-kassel.de", "255.255.255.255", new Locale("en")));
+			assertTrue(mailUtils.sendRegistrationMail("testuser", "devnull@cs.uni-kassel.de","00000000000000000000000000000000", "255.255.255.255", new Locale("en")));
 		} catch (Exception e) {
 			fail();
 		}
