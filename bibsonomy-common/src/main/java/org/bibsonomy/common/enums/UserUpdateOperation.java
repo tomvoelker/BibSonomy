@@ -55,7 +55,11 @@ public enum UserUpdateOperation {
 	/**
 	 * Update only timestamp of LDAP update of a user
 	 */
-	UPDATE_LDAP_TIMESTAMP(5);
+	UPDATE_LDAP_TIMESTAMP(5),
+	/**
+	 * Activates the user
+	 */
+	ACTIVATE(6);
 	
 	private int id;
 	
