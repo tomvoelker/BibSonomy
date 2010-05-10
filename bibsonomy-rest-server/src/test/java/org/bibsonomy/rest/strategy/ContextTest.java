@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.rest.enums.HttpMethod;
 import org.bibsonomy.rest.strategy.groups.AddGroupStrategy;
 import org.bibsonomy.rest.strategy.groups.AddUserToGroupStrategy;
@@ -255,7 +255,7 @@ public class ContextTest extends AbstractContextTest {
 		try {
 			new Context(this.is, null, HttpMethod.GET, null, Collections.EMPTY_MAP, null, null);
 			fail("Should throw exception");
-		} catch (final ValidationException ex) {
+		} catch (final AccessDeniedException ex) {
 		}
 
 		try {

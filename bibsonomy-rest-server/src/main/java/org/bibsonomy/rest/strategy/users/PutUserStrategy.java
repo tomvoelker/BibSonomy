@@ -5,6 +5,7 @@ import java.io.Writer;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
@@ -35,7 +36,7 @@ public class PutUserStrategy extends AbstractUpdateStrategy {
 		// ensure username equals auth-username (or user is admin)
 		final User authenticatedUser = this.getLogic().getAuthenticatedUser();
 		if (!(this.userName.equals(authenticatedUser.getName()) || Role.ADMIN.equals(authenticatedUser.getRole())))  
-			throw new ValidationException("The operation is not permitted for the logged-in user: " + authenticatedUser.getName());
+			throw new AccessDeniedException("The operation is not permitted for the logged-in user: " + authenticatedUser.getName());
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -227,7 +228,7 @@ public final class RestServlet extends HttpServlet {
 		} catch (final BadRequestOrResponseException e) {
 			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-		} catch (final ValidationException e) {
+		} catch (final AccessDeniedException e) {
 			log.error(e.getMessage());
 			sendError(request, response, HttpServletResponse.SC_FORBIDDEN, e.getMessage());
 		} catch (final ResourceMovedException e) {

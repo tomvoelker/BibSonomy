@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.enums.RenderingFormat;
@@ -45,8 +46,8 @@ public class GetPostDocumentStrategy extends Strategy{
 	
 	@Override
 	public void validate() throws ValidationException {
-		// TODO: this check is also done by dblogic
-		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new ValidationException("You are not authorized to perform the requested operation");
+		// TODO: check if this check is also done by dblogic
+		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new AccessDeniedException();
 	}
 	
 	@Override

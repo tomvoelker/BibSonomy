@@ -13,6 +13,7 @@ import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
 import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
@@ -44,7 +45,7 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 	@Override
 	public void validate() throws ValidationException {
 		// TODO: this check is also done by the dblogic
-		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new ValidationException("You are not authorized to perform the requested operation");
+		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new AccessDeniedException();
 	}
 
 	@Override

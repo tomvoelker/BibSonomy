@@ -4,6 +4,7 @@ import java.io.Writer;
 import java.util.List;
 
 import org.apache.commons.fileupload.FileItem;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
@@ -39,6 +40,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 		this.resourceHash = resourceHash;
 		this.items = context.getItemList();
 		this.projectHome = context.getAdditionalInfos().get("projectHome");
+		
 		this.fileUploadFactory = new FileUploadFactory();
 		this.fileUploadFactory.setDocpath(context.getAdditionalInfos().get("docPath"));
 		this.fileUploadFactory.setTempPath(false);
@@ -47,7 +49,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 	@Override
 	public void validate() throws ValidationException {
 		// TODO: this check is also done by the dblogic
-		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new ValidationException("You are not authorized to perform the requested operation");
+		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new AccessDeniedException();
 	}
 
 	@Override
@@ -57,6 +59,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 		try {
 
 			final Document document = up.writeUploadedFile();
+			
 			/*
 			 * add user name to document (needed by createDocument) 
 			 */

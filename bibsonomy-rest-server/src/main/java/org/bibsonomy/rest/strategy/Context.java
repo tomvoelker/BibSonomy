@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -106,7 +107,7 @@ public final class Context {
 		this.items = items;
 		this.additionalInfos = additionalInfos;
 
-		if (url == null || "/".equals(url)) throw new ValidationException("It is forbidden to access '/'.");
+		if (url == null || "/".equals(url)) throw new AccessDeniedException("It is forbidden to access '/'.");
 		this.urlTokens = new StringTokenizer(url, "/");
 
 		// choose rendering format (defaults to xml)
