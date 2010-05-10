@@ -10,14 +10,7 @@
 		configuration file for BibSonomy's (tag) recommendation services
 	 -->
 	 
-	 
-	 <!--
-	 	wrapper for old style servlets 
-	  -->
-	<bean id="springWrapper" class="servlets.SpringWrapper" scope="singleton" factory-method="getInstance">
-		<property name="tagRecommender" ref="multiplexingTagRecommender"/>
-	</bean>	
-	
+
 	<!-- 
 		Simple tag recommender
 	 -->
