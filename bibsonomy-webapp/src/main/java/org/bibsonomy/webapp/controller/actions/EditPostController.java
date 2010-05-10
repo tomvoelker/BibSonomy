@@ -80,7 +80,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	protected static final String LOGIN_NOTICE = "login.notice.post.";
 	
 	
-	protected Errors errors = null;
+	protected Errors errors;
 	private TagRecommender tagRecommender;
 	private Captcha captcha;
 	protected RequestLogic requestLogic;
@@ -153,16 +153,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * only users which are logged in might post -> send them to
 		 * login page
 		 */
-		if (!context.isUserLoggedIn()) {
-			/*
-			 * We add two referer headers: the inner for this controller to 
-			 * send the user back to the page he was initially coming from,
-			 * the outer for the login page to send the user back to this 
-			 * controller.
-			 */
-			return new ExtendedRedirectView("/login" + 
-					"?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + 
-					"&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL() + "&referer=" + UrlUtils.safeURIEncode(requestLogic.getReferer()))); 
+		if (!this.canEditPost(context)) {
+			return this.getAccessDeniedView(command); 
 		}
 
 		final User loginUser = context.getLoginUser();
@@ -190,22 +182,12 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		final String user = command.getUser();
 		if (present(hash)) {
 			// the user can be empty => goldstandard
-			final Post<RESOURCE> post;
-			if (urlGenerator.matchesPage(requestLogic.getReferer(), URLGenerator.Page.INBOX)) {
-				/*
-				 * The user tries to copy a post from his inbox.
-				 * 
-				 * We need a special method to get this post, since it could happen
-				 * that the user who owns the post already has deleted it (and thus
-				 * we must check the log table to get the post). 
-				 */
-				post = this.getInboxPost(loginUser.getName(), hash, user);
-			} else {
-				/*
-				 * regular copy
-				 */
-				post = this.getPostDetails(hash, user);
-			}
+			final Post<RESOURCE> post = this.getCopyPost(loginUser, hash, user);
+			
+			/* 
+			 * FIXME: what to do if the post can't be found? 
+			 * getCopyPost will return null and anytime a npe can be thrown!
+			 */
 			command.setPost(post);
 		} else {			
 			/*
@@ -237,6 +219,39 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 
 		log.debug("no intra hash given -> new post");
 		return this.handleCreatePost(command, context, loginUser, post);
+	}
+
+	protected boolean canEditPost(final RequestWrapperContext context) {
+		return context.isUserLoggedIn();
+	}
+
+	protected View getAccessDeniedView(final COMMAND command) {
+		/*
+		 * We add two referer headers: the inner for this controller to 
+		 * send the user back to the page he was initially coming from,
+		 * the outer for the login page to send the user back to this 
+		 * controller.
+		 */
+		return new ExtendedRedirectView("/login" + 
+				"?notice=" + LOGIN_NOTICE + command.getPost().getResource().getClass().getSimpleName().toLowerCase() + 
+				"&referer=" + UrlUtils.safeURIEncode(requestLogic.getCompleteRequestURL() + "&referer=" + UrlUtils.safeURIEncode(requestLogic.getReferer())));
+	}
+	
+	protected Post<RESOURCE> getCopyPost(final User loginUser, final String hash, final String user) {
+		if (urlGenerator.matchesPage(requestLogic.getReferer(), URLGenerator.Page.INBOX)) {
+			/*
+			 * The user tries to copy a post from his inbox.
+			 * 
+			 * We need a special method to get this post, since it could happen
+			 * that the user who owns the post already has deleted it (and thus
+			 * we must check the log table to get the post). 
+			 */
+			return this.getInboxPost(loginUser.getName(), hash, user);
+		}
+		/*
+		 * regular copy
+		 */
+		return this.getPostDetails(hash, user);
 	}
 
 	/**

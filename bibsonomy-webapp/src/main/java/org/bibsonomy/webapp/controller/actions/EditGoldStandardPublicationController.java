@@ -2,11 +2,15 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.User;
 import org.bibsonomy.util.ObjectUtils;
 import org.bibsonomy.webapp.command.actions.PostPublicationCommand;
+import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.validation.GoldStandardPostValidator;
 import org.bibsonomy.webapp.validation.PostValidator;
@@ -26,22 +30,27 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	@Override
 	protected Post<BibTex> getPostDetails(String intraHash, String userName) {
 		/*
-		 * get goldstandard post
+		 * get goldstandard post; username must be empty!
 		 */
-		final Post<BibTex> post = super.getPostDetails(intraHash, "");
-		if (present(post)) {
-			return post;
-		}
+		return super.getPostDetails(intraHash, "");
+	}
+	
+	@Override
+	protected Post<BibTex> getCopyPost(User loginUser, String hash, String user) {
+		@SuppressWarnings("unchecked")
+		final Post<BibTex> post = (Post<BibTex>) this.logic.getPostDetails(hash, user);
 		
-		/*
-		 * maybe someone will create a new goldstandard from an normal user post
-		 */
-		if (present(userName)) {
-			final Post<BibTex> postDetails = super.getPostDetails(intraHash, userName);
-			return this.convertToGoldStandard(postDetails);
-		}
-		
-		return null;
+		return this.convertToGoldStandard(post);
+	}
+	
+	@Override
+	protected boolean canEditPost(RequestWrapperContext context) {
+		return super.canEditPost(context) && Role.ADMIN.equals(context.getLoginUser().getRole());
+	}
+	
+	@Override
+	protected View getAccessDeniedView(final PostPublicationCommand command) {
+		throw new AccessDeniedException("You are not allowed to edit Goldstandards!!!");
 	}
 	
 	private Post<BibTex> convertToGoldStandard(Post<BibTex> post) {
