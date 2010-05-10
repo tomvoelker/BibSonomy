@@ -170,7 +170,7 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	
 	@Override
 	public AjaxRecommenderCommand<R> instantiateCommand() {
-		final AjaxRecommenderCommand<R> command = this.createNewCommand();
+		final AjaxRecommenderCommand<R> command = new AjaxRecommenderCommand<R>();
 		/*
 		 * initialize lists
 		 * FIXME: is it really neccessary to initialize ALL those lists? Which are really needed?
@@ -191,8 +191,6 @@ public abstract class RecommendationsAjaxController<R extends Resource> extends 
 	}
 
 	protected abstract R initResource();
-
-	protected abstract AjaxRecommenderCommand<R> createNewCommand();
 	
 	//------------------------------------------------------------------------
 	// private helper functions
