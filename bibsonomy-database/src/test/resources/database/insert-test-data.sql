@@ -283,6 +283,14 @@ INSERT INTO `log_prediction` VALUES
 (1, 'testspammer', 1, UNIX_TIMESTAMP(NOW()),'2008-06-18 14:27:35', 'testlogging', 0, 0.2);
 
 
+--
+-- Data for table `pendingUser`
+--
+
+INSERT INTO `pendingUser` (`user_name`,`user_email`,`user_password`,`user_homepage`,`user_realname`,`spammer`,`openurl`,`reg_date`,`ip_address`,`id`,`tmp_password`,`tmp_request_date`,`tagbox_style`,`tagbox_sort`,`tagbox_minfreq`,`tagbox_max_count`,`is_max_count`,`tagbox_tooltip`,`list_itemcount`,`spammer_suggest`,`birthday`,`gender`,`profession`,`interests`,`hobbies`,`place`,`profilegroup`,`api_key`,`updated_by`,`updated_at`,`role`,`lang`,`to_classify`,`log_level`,`activation_code`) VALUES 
+-- user_name     user_email                   user_password   user_homepage                           user_realname   spammer   openurl                       reg_date               ip_address id    tmp_password tmp_request_date tagbox_style tagbox_sort tagbox_minfreq tagbox_tooltip list_itemcount  spammer_suggest birthday gender profession interests hobbies place                               profilegroup api_key                             updated_by updated_at             role lang to_classify log_level activation_code
+('activationtestuser1',   'testuser1@bibsonomy.org',   'test123', 'http://www.bibsonomy.org/user/testuser1',   'Test Activation User 1',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-01-01 01:23:55', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1, '6dfab2a50e9629f780306ff34ff3d856'),
+('activationtestuser2',   'testuser2@bibsonomy.org',   'test123', 'http://www.bibsonomy.org/user/testuser2',   'Test Activation User 2',  0, 'http://sfxserv.rug.ac.be:8888/rug', '2007-07-08 01:23:55', '0.0.0.0', NULL, NULL, '1815-12-10 00:00:00',  0, 0, 0, 0, 0, 1, 10,                                                        1,              NULL,    'm', 'test-profession', 'test-interests', 'test-hobbies', 'test-place', 1,           '11111111111111111111111111111111', 'rja',     '1815-12-10 00:00:00', 0,  'en', 0, 1, 'ac47d3f92b90c89e46170f7049beda37');
 
 -- 
 -- Data for table `picked_concepts`
