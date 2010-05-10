@@ -31,7 +31,15 @@ package org.bibsonomy.common.exceptions;
 public class AccessDeniedException extends RuntimeException {
 	private static final long serialVersionUID = -2496286544331707252L;
 	
+	private static final String DEFAULT_MESSAGE = "You are not authorized to perform the requested operation.";
 
+	/**
+	 * creates an AccessDeniedException with {@link #DEFAULT_MESSAGE}
+	 */
+	public AccessDeniedException() {
+		super(DEFAULT_MESSAGE);
+	}
+	
 	/**
 	 * @see RuntimeException#RuntimeException(String)
 	 * @param message
