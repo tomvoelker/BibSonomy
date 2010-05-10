@@ -23,6 +23,8 @@
 
 package org.bibsonomy.model.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
@@ -31,7 +33,6 @@ import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.User;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Static methods to handle Posts.
@@ -48,7 +49,7 @@ public class PostUtils {
 	 */
 	public static void populatePostWithUser(final Post<? extends Resource> post, final User user) {
 		final User postUser = post.getUser();
-		if (!ValidationUtils.present(postUser) || !ValidationUtils.present(postUser.getName())) {
+		if (!present(postUser) || !present(postUser.getName())) {
 			post.setUser(user);
 		}
  	}
@@ -63,7 +64,7 @@ public class PostUtils {
 	 * @throws ValidationException - if the user name of the post does not match the given user name.
 	 */
 	public static void setGroupIds(final Post<? extends Resource> post, final User user) throws ValidationException {
-		if (!ValidationUtils.present(user.getName()) || !user.getName().equals(post.getUser().getName())) {
+		if (!present(user.getName()) || !user.getName().equals(post.getUser().getName())) {
 			throw new ValidationException("user name of post does not match user name of posting user");
 		}
 		setGroupIds(post, user.isSpammer());
