@@ -68,14 +68,41 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(2, friends.size());
 	}
 	
+    /**
+     * tests getPendingUsers
+     */
+    @Test
+    public void getPendingUsers() {
+        List<User> users = userDb.getPendingUsers(0, Integer.MAX_VALUE, this.dbSession);
+        assertEquals(2,users.size());
+    }
+    
+    /**
+     * tests getPendingUserByActivationCode
+     */
+    @Test
+    public void getPendingUserByActivationCode() {
+        List<User> users = userDb.getPendingUserByActivationCode("ac47d3f92b90c89e46170f7049beda37", 0, Integer.MAX_VALUE, this.dbSession);
+        assertEquals("ac47d3f92b90c89e46170f7049beda37",users.get(0).getActivationCode());
+    }
+    
+    /**
+     * tests getPendingUserByUsername
+     */
+    @Test
+    public void getPendingUserByUsername() {
+        List<User> users = userDb.getPendingUserByUsername("activationtestuser1", 0, Integer.MAX_VALUE, this.dbSession);
+        assertEquals("activationtestuser1",users.get(0).getName());
+    }
+	
 	/**
 	 * tests getAllUsers
 	 */
 	@Test
 	public void getAllUsers() {
-		// there're 6 users that aren't spammers
-		List<User> users = userDb.getAllUsers(0, 10, this.dbSession);
-		assertEquals(6, users.size());
+        List<User> users = userDb.getAllUsers(0, 10, this.dbSession);
+	    // there're 6 users that aren't spammers
+        assertEquals(6, users.size());	       
 
 		// make sure limit and offset work
 		users = userDb.getAllUsers(0, 2, this.dbSession);
@@ -95,7 +122,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertNotNull(user.getBasket());
 		assertEquals(Role.ADMIN, user.getRole());
 	}
-
+	
 	/**
 	 * Retrieve the names of users present in a group with given group ID
 	 */
@@ -126,7 +153,10 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		newUser.setAlgorithm(null);
 		final String userName = userDb.createUser(newUser, this.dbSession);
 		assertEquals(RANDOM_TESTUSER, userName);
+        userDb.activateUser(newUser, this.dbSession);
+
 		final User user = userDb.getUserDetails(RANDOM_TESTUSER, this.dbSession);
+		newUser.setActivationCode(null);
 		ModelUtils.assertPropertyEquality(newUser, user, Integer.MAX_VALUE, null, new String[] { "apiKey", "IPAddress", "basket", "gender", "interests", "hobbies", "profession", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "registrationDate", "reminderPasswordRequestDate", "updatedAt" });
 	}
 
@@ -134,9 +164,21 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	public void createUserWrongUsage() {
 		userDb.createUser(null, this.dbSession);
 	}
+	
+    /**
+     * tests activateUser
+     */
+	@Test
+    public void activateUser() {
+	    User user = userDb.getPendingUserByUsername("activationtestuser1", 0, Integer.MAX_VALUE, this.dbSession).get(0);
+	    userDb.activateUser(user, this.dbSession);
+        User testuser = userDb.getUserDetails("activationtestuser1", this.dbSession);
+        assertEquals("Test Activation User 1", testuser.getRealname());
+    }
 
 	/**
 	 * tests updateUser
+	 * TODO: make sure that activateUser-Test is already completed
 	 */
 	@Test
 	public void changeUser() {
