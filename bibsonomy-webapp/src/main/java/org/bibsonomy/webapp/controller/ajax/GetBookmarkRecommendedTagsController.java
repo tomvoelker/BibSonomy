@@ -1,7 +1,6 @@
 package org.bibsonomy.webapp.controller.ajax;
 
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.webapp.command.ajax.AjaxRecommenderCommand;
 
 
 /**
@@ -11,11 +10,6 @@ import org.bibsonomy.webapp.command.ajax.AjaxRecommenderCommand;
  * @version $Id$
  */
 public class GetBookmarkRecommendedTagsController extends RecommendationsAjaxController<Bookmark> {
-
-	@Override
-	protected AjaxRecommenderCommand<Bookmark> createNewCommand() {
-		return new AjaxRecommenderCommand<Bookmark>();
-	}
 
 	@Override
 	protected Bookmark initResource() {
