@@ -584,7 +584,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param lastYear
 	 * @param limit
 	 * @param offset
-	 * @return
+	 * @return a list of tags
 	 */
 	public List<Tag> getTagsByResourceSearch(
 			final String userName, final String requestedUserName, String requestedGroupName, 
@@ -599,12 +599,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				publicationSearch.getTags(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, limit, offset);
 			final List<Tag> retVal = TagUtils.mergeTagLists(bookmarkTags, publicationTags, Order.POPULAR, Order.POPULAR, limit);
 			return retVal;
-		} else {
-			return new LinkedList<Tag>();
 		}
-	}	
-	
-
+		
+		return new LinkedList<Tag>();
+	}
 
 	/**
 	 * Get all tags of a given group
