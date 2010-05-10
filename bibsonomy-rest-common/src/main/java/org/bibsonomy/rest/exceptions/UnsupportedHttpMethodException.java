@@ -32,13 +32,21 @@ import org.bibsonomy.rest.enums.HttpMethod;
  * @version $Id$
  */
 public class UnsupportedHttpMethodException extends RuntimeException {
-
 	private static final long serialVersionUID = 1L;
 
+	/** 
+	 * @param httpMethod the unsupported httpMethod
+	 */
 	public UnsupportedHttpMethodException(final String httpMethod) {
 		super("HTTP-Method ('" + httpMethod + "') is not supported");
 	}
 
+	/**
+	 * TODO: improve documentation
+	 * 
+	 * @param httpMethod
+	 * @param resourceName
+	 */
 	public UnsupportedHttpMethodException(final HttpMethod httpMethod, final String resourceName) {
 		super("HTTP-Method ('" + httpMethod.name() + "') is not supported for the " + resourceName + " Resource");
 	}
