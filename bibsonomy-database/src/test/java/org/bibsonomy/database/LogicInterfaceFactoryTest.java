@@ -3,7 +3,7 @@ package org.bibsonomy.database;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
 import org.junit.Before;
@@ -60,7 +60,7 @@ public class LogicInterfaceFactoryTest extends AbstractDatabaseManagerTest {
 			try {
 				factory.getLogicAccess(username, password);
 				fail("Should throw ValidationException");
-			} catch (ValidationException ignore) {
+			} catch (AccessDeniedException ignore) {
 			}
 		}
 	}

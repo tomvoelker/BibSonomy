@@ -1,6 +1,6 @@
 package org.bibsonomy.database;
 
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -33,7 +33,7 @@ public class DBLogicLDAPInterfaceFactory extends DBLogicUserInterfaceFactory {
 			if (loggedInUser.getName() != null) {
 				return new DBLogic(loggedInUser, this.dbSessionFactory);
 			}
-			throw new ValidationException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
+			throw new AccessDeniedException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
 		// guest access
 		return new DBLogic(new User(), this.dbSessionFactory);

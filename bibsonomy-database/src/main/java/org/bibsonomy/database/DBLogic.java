@@ -30,6 +30,7 @@ import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
@@ -150,11 +151,6 @@ public class DBLogic implements LogicInterface {
 	 * master connection, if not logged in, the secondary connection
 	 */
 	private DBSession openSession() {
-		// uncomment following to access secondary datasource for not logged-in
-		// users
-		// if (this.loginUser.getName() == null) {
-		// return this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
-		// }
 		return this.dbSessionFactory.getDatabaseSession();
 	}
 
@@ -730,7 +726,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	private void ensureLoggedIn() {
 		if (this.loginUser.getName() == null) {
-			throw new ValidationException("You are not authorized to perform the requested operation.");
+			throw new AccessDeniedException("Please log in!");
 		}
 	}
 
@@ -1484,10 +1480,15 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public String createConcept(final Tag concept, final GroupingEntity grouping, final String groupingName) {
-		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
-			throw new ValidationException("You are not authorized to perform the requested operation");
-		}
+		this.ensureIsLoggedInAndGroupingNameIsUserName(groupingName);
 		return this.storeConcept(concept, grouping, groupingName, false);
+	}
+
+	// FIXME: method name
+	private void ensureIsLoggedInAndGroupingNameIsUserName(final String groupingName) {
+		if ((this.loginUser.getName() == null) || (!this.loginUser.getName().equals(groupingName))) {
+			throw new AccessDeniedException();
+		}
 	}
 
 	/*
@@ -1499,9 +1500,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void deleteConcept(final String concept, final GroupingEntity grouping, final String groupingName) {
-		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
-			throw new ValidationException("You are not authorized to perform the requested operation");
-		}
+		this.ensureIsLoggedInAndGroupingNameIsUserName(groupingName);
 
 		final DBSession session = openSession();
 		try {
@@ -1521,9 +1520,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void deleteRelation(final String upper, final String lower, final GroupingEntity grouping, final String groupingName) {
-		if ((this.loginUser.getName() == null) || (this.loginUser.getName().equals(groupingName) == false)) {
-			throw new ValidationException("You are not authorized to perform the requested operation");
-		}
+		this.ensureIsLoggedInAndGroupingNameIsUserName(groupingName);
 
 		final DBSession session = openSession();
 		try {
@@ -1868,7 +1865,9 @@ public class DBLogic implements LogicInterface {
 				/*
 				 * get the complete post from the database
 				 */
-				final Post<BibTex> copy = this.publicationDBManager.getPostDetails(this.loginUser.getName(), post.getResource().getIntraHash(), post.getUser().getName(), UserUtils.getListOfGroupIDs(this.loginUser), session);
+				final String intraHash = post.getResource().getIntraHash();
+				final String postUserName = post.getUser().getName();
+				final Post<BibTex> copy = this.publicationDBManager.getPostDetails(this.loginUser.getName(), intraHash, postUserName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 
 				/*
 				 * post might be null, because a) it does not exist b) user may
@@ -1876,9 +1875,9 @@ public class DBLogic implements LogicInterface {
 				 */
 				if (copy == null) {
 					/*
-					 * FIXME: proper exception message!
+					 * TODO: exception handling?!
 					 */
-					throw new ValidationException("You are not authorized to perform the requested operation");
+					throw new ValidationException("Post with hash " + intraHash + " of user " + postUserName + " not found!");
 				}
 
 				/*
@@ -1975,6 +1974,9 @@ public class DBLogic implements LogicInterface {
 					final String receiver = loginUser.getName();
 					final String resourceHash = post.getResource().getIntraHash();
 					if (!present(receiver) || !present(resourceHash)) {
+						/*
+						 * FIXME: proper exception message!
+						 */
 						throw new ValidationException("You are not authorized to perform the requested operation");
 					}
 					this.inboxDBManager.deleteInboxMessage(sender, receiver, resourceHash, session);
@@ -2007,8 +2009,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void createReferences(String postHash, Set<String> references) {
-		this.ensureLoggedIn(); // only logged in users can create references
-		// TODO: add more restrictions ??
+		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can create references
 		
 		final DBSession session = this.openSession();
 		try {
@@ -2024,8 +2025,7 @@ public class DBLogic implements LogicInterface {
 	 */
 	@Override
 	public void deleteReferences(String postHash, Set<String> references) {
-		this.ensureLoggedIn(); // only logged in users can delete references
-		// TODO: add more restrictions ??
+		this.permissionDBManager.ensureAdminAccess(loginUser); // only admins can delete references
 		
 		final DBSession session = this.openSession();
 		try {

@@ -11,6 +11,7 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.ProfilePrivlevel;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.util.DBSession;
@@ -60,7 +61,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void checkStartEnd(final User loginUser, final Integer start, final Integer end, final String itemType) {
 		if (!isAdmin(loginUser) && end > END_MAX) {
-			throw new ValidationException("You are not authorized to retrieve more than the last " + END_MAX + " " + itemType + " items.");
+			throw new AccessDeniedException("You are not authorized to retrieve more than the last " + END_MAX + " " + itemType + " items.");
 		}
 	}
 
@@ -83,7 +84,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void ensureWriteAccess(final User loginUser, final String userName) {
 		if (loginUser.getName() == null || !loginUser.getName().toLowerCase().equals(userName.toLowerCase())) {
-			throw new ValidationException("You are not authorized to perform the requested operation.");
+			throw new AccessDeniedException();
 		}
 	}
 
@@ -173,7 +174,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 				if (loginUser.getName() != null) {
 					isAllowed = loginUser.getName().equals(groupingName);
 					if (!isAllowed && FilterEntity.JUST_PDF.equals(filter)) {
-						throw new ValidationException("error.pdf_only_not_authorized_for_user");
+						throw new AccessDeniedException("error.pdf_only_not_authorized_for_user");
 					}
 				}
 			}
@@ -185,7 +186,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 				 */
 				isAllowed = group != null && UserUtils.getListOfGroupIDs(loginUser).contains(group.getGroupId()) && group.isSharedDocuments();
 				if (!isAllowed && FilterEntity.JUST_PDF.equals(filter)) {
-					throw new ValidationException("error.pdf_only_not_authorized_for_group");
+					throw new AccessDeniedException("error.pdf_only_not_authorized_for_group");
 				}
 			}
 		}
@@ -254,7 +255,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 			throw new ValidationException("Special groups not allowed for this system tag.");
 		final Integer groupID = this.groupDb.getGroupIdByGroupNameAndUserName(groupName, userName, session);
 		if( groupID==GroupID.INVALID.getId() )
-			throw new ValidationException("You are not authorized to perform the requested operation.");
+			throw new AccessDeniedException();
 	}
 	
 
@@ -288,7 +289,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void ensureAdminAccess(final User loginUser) {
 		if (!present(loginUser.getName()) || !isAdmin(loginUser)) {
-			throw new ValidationException("You are not authorized to perform the requested operation.");
+			throw new AccessDeniedException();
 		}
 	}
 
@@ -358,7 +359,7 @@ public class PermissionDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void ensureIsAdminOrSelf(final User loginUser, final String userName) {
 		if (!this.isAdminOrSelf(loginUser, userName)) {
-			throw new ValidationException("You are not authorized to perform the requested operation.");
+			throw new AccessDeniedException();
 		}
 	}
 

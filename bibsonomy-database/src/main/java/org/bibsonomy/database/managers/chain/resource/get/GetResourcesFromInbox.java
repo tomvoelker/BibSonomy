@@ -21,7 +21,7 @@ import org.bibsonomy.model.Resource;
  * @version $Id$
  * 
  */
-public class GetResourceFromInbox<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
+public class GetResourcesFromInbox<R extends Resource, P extends ResourceParam<R>> extends ResourceChainElement<R, P> {
 	
 	@Override
 	protected List<Post<R>> handle(final P param, final DBSession session) {

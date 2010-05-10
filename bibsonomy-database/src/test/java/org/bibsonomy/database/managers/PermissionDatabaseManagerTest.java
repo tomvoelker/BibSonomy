@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.Role;
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -46,7 +46,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		for (int i = 0; i <= 1000; i++) {
 			try {
 				permissionDb.checkStartEnd(new User(), 0, i, "test");
-			} catch (ValidationException ignore) {
+			} catch (AccessDeniedException ignore) {
 				fail("no exception expected");
 			}
 		}
@@ -55,7 +55,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 			try {
 				permissionDb.checkStartEnd(new User(), 0, i, "test");
 				fail("expected exception");
-			} catch (ValidationException ignore) {
+			} catch (AccessDeniedException ignore) {
 			}
 		}
 		// OK 
@@ -64,7 +64,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		for (int i = 1001; i < 10000; i++) {
 			try {
 				permissionDb.checkStartEnd(admin, 0, i, "test");
-			} catch (ValidationException ignore) {
+			} catch (AccessDeniedException ignore) {
 				fail("no exception expected");
 			}
 		}
@@ -81,7 +81,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		try {
 			permissionDb.ensureWriteAccess(post, new User("testuser2"));
 			fail("expected exception");
-		} catch (ValidationException ignore) {
+		} catch (AccessDeniedException ignore) {
 		}
 
 		final Document document  = new Document();
@@ -90,14 +90,14 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		try {
 			permissionDb.ensureWriteAccess(new User("testuser2"), document.getUserName());
 			fail("expected exception");
-		} catch (ValidationException ignore) {
+		} catch (AccessDeniedException ignore) {
 		}
 
 		permissionDb.ensureWriteAccess(new User("testuser1"), "testuser1");
 		try {
 			permissionDb.ensureWriteAccess(new User("testuser1"), "testuser2");
 			fail("expected exception");
-		} catch (ValidationException ignore) {
+		} catch (AccessDeniedException ignore) {
 		}
 	}
 
@@ -132,7 +132,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				user.setRole(Role.DEFAULT);
 				permissionDb.ensureAdminAccess(user);
 				fail("should throw an exception");
-			} catch (ValidationException ignore) {
+			} catch (AccessDeniedException ignore) {
 			}
 
 			// This must throw an exception, because users without a name
@@ -141,7 +141,7 @@ public class PermissionDatabaseManagerTest extends AbstractDatabaseManagerTest {
 				user.setRole(Role.ADMIN);
 				permissionDb.ensureAdminAccess(user);
 				fail("should throw an exception");
-			} catch (ValidationException ignore) {
+			} catch (AccessDeniedException ignore) {
 			}
 		}
 	}

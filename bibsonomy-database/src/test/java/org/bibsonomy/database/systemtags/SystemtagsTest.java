@@ -22,7 +22,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.managers.AbstractDBLogicBase;
@@ -232,7 +232,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		try {
 			logic1.createPosts(posts2);
 			fail("User was not allowed to write post");
-		} catch (ValidationException ve){
+		} catch (AccessDeniedException ve){
 			// ignore
 		}
 	}

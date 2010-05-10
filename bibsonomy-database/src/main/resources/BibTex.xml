@@ -185,7 +185,6 @@
 		      AND tt.content_id = t.content_id
 		      AND g.group = b.group
 		      <include refid="sysTagsEntryType"/>
-		      <!-- AND b.group IN (0,1,2)" TODO: WOZU sollte das gut sein?? bei der Bookmark Query war es auch drin! -->
 		ORDER BY b.date DESC, b.content_id DESC
 	</select>
 
@@ -629,7 +628,7 @@
 		WHERE t.group = g.group                                                  <!-- join groupname -->
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      <include refid="sysTagsYear"/>									 <!-- sys:year: systemtag -->
-		      <include refid="sysTagsEntryType"/>	
+		      <include refid="sysTagsEntryType"/>								 <!-- sys:entrytype: systemtag -->
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select> 

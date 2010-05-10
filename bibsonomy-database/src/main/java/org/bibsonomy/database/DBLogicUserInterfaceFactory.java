@@ -1,6 +1,6 @@
 package org.bibsonomy.database;
 
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.util.DBSession;
@@ -35,12 +35,11 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 			if (loggedInUser.getName() != null) {
 				return new DBLogic(loggedInUser, this.dbSessionFactory);
 			}
-			throw new ValidationException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
+			throw new AccessDeniedException("Wrong Authentication ('" + loginName + "'/'" + password + "')");
 		}
 		// guest access
 		return new DBLogic(new User(), this.dbSessionFactory);
 	}
-
 	
 	/**
 	 * Returns a user object containing the details of the user, if he is logged
@@ -63,7 +62,6 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 			session.close();
 		}
 	}
-
 	
 	/**
 	 * Calls the correct validation method on the {@link UserDatabaseManager}.
@@ -76,9 +74,6 @@ public class DBLogicUserInterfaceFactory implements LogicInterfaceFactory {
 		return this.userDBManager.validateUserUserAccess(loginName, password, session);
 	}
 	
-	
-	
-
 	/**
 	 * @param dbSessionFactory
 	 *            the {@link DBSessionFactory} to use
