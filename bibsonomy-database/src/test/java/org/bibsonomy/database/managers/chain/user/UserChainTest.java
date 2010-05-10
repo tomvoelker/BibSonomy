@@ -8,6 +8,9 @@ import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.database.managers.chain.user.get.GetAllUsers;
 import org.bibsonomy.database.managers.chain.user.get.GetFollowersOfUser;
 import org.bibsonomy.database.managers.chain.user.get.GetFriendsOfUser;
+import org.bibsonomy.database.managers.chain.user.get.GetPendingUserByActivationCode;
+import org.bibsonomy.database.managers.chain.user.get.GetPendingUserByUsername;
+import org.bibsonomy.database.managers.chain.user.get.GetPendingUsers;
 import org.bibsonomy.database.managers.chain.user.get.GetRelatedUsersByTags;
 import org.bibsonomy.database.managers.chain.user.get.GetRelatedUsersByUser;
 import org.bibsonomy.database.managers.chain.user.get.GetUserFollowers;
@@ -124,6 +127,41 @@ public class UserChainTest extends AbstractChainTest {
 		userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
 		assertEquals(GetUserFollowers.class, chainStatus.getChainElement().getClass());
 	}
+	
+    /**
+     * get all pending users
+     **/
+    @Test
+    public void getPendingUsers(){
+        UserParam param = new UserParam();
+        param.setGrouping(GroupingEntity.PENDING);
+        userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+        assertEquals(GetPendingUsers.class, chainStatus.getChainElement().getClass());
+    }
+    
+    /**
+     * get all pending users
+     **/
+    @Test
+    public void getPendingUserByActivationCode(){
+        UserParam param = new UserParam();
+        param.setGrouping(GroupingEntity.PENDING);
+        param.setSearch("00000000000000000000000000000000");
+        userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+        assertEquals(GetPendingUserByActivationCode.class, chainStatus.getChainElement().getClass());
+    }
+    
+    /**
+     * get pending users by username
+     **/
+    @Test
+    public void getPendingUserByUsername(){
+        UserParam param = new UserParam();
+        param.setGrouping(GroupingEntity.PENDING);
+        param.setRequestedGroupName("activationtestuser1");
+        userChain.getFirstElement().perform(param, this.dbSession, chainStatus);
+        assertEquals(GetPendingUserByUsername.class, chainStatus.getChainElement().getClass());
+    }
 	
 	/**
 	 * get followers of user
