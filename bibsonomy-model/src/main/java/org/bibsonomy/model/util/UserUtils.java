@@ -94,6 +94,17 @@ public class UserUtils {
 			user.addGroup(new Group(groupID));
 		}
 	}
+	
+	/**
+	 * Generates the ActivationCode for a specific user.
+	 * 
+	 * @param user
+	 * @return activationCode
+	 */
+	public static String generateActivationCode(final User user) {
+		String prepareStatement = user.getName() + user.getIPAddress() + user.getApiKey() + new String(generateRandom());
+		return HashUtils.getMD5Hash(prepareStatement.getBytes());
+	}
 
 	/**
 	 * Helper function to get a list of group IDs from the user's list of groups

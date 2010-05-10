@@ -213,7 +213,10 @@ public class User implements Serializable{
 	/** The mode of the classifier (day or night) */ 
 	private String mode;
 	
-	
+	/**
+	 * The Activation Code
+	 */
+	private String activationCode;
 
 	/**
 	 * The temporary password the user can request when asking for a password reminder.
@@ -625,7 +628,20 @@ public class User implements Serializable{
 	public void setInbox(Inbox inbox) {
 		this.inbox = inbox;
 	}
+	
+	/** 
+	 * @return activationCode
+	 */
+	public String getActivationCode() {
+		return this.activationCode;
+	}
 
+	/**
+	 * @param activationCode
+	 */
+	public void setActivationCode(String activationCode) {
+		this.activationCode = activationCode;
+	}
 	
 	
 	/**
