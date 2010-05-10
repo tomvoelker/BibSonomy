@@ -14,6 +14,9 @@
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
 	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requestedUser="${command.requestedUser}" requPath="${requPath}">
+		<jsp:attribute name="headerExt">
+			<link rel="stylesheet" type="text/css" href="${resdir}/css/goldstandards.css" />
+	    </jsp:attribute>
 	
 		<jsp:attribute name="heading">
 		<a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png"/>${mtl:ch('nbsp')}<fmt:message key="navi.bibtex.cap"/></a> :: 
@@ -59,7 +62,27 @@
 						<span class="sidebar_h"><fmt:message key="users"/></span>
 						<users:related cmd="${command.relatedUserCommand}" userSimilarity="bibtexdetails"/>
 					</li>			
-				</c:if>			
+				</c:if>
+				<c:if test="${not empty command.goldStandardPublication}">
+					<li>
+						<span class="sidebar_h"><fmt:message key="goldstandard"/></span>
+						<c:set var="goldstandard" value="${command.goldStandardPublication.resource}"/>
+						<ul class="goldstandard">
+							<a href="/bibtex/1${goldstandard.interHash}"><c:out value="${goldstandard.title}"/></a>
+							<c:if test="${not empty goldstandard.references}">
+								<div class="goldstandard_references">
+									<span class="gold_standard_references_info"><fmt:message key="goldstandard.references.info"/></span>
+									<ul>
+										<c:forEach var="reference" items="${goldstandard.references}">
+											<li><a href="/bibtex/1${reference.interHash}"><c:out value="${reference.title}"/></a></li>
+										</c:forEach>
+									</ul>
+								</div>
+							</c:if>
+						</ul>
+						
+					</li>			
+				</c:if>
 			</ul>
 		</jsp:attribute>
 				

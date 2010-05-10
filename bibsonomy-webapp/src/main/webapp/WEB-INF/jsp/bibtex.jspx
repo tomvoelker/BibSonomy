@@ -21,6 +21,18 @@
 			</form>
 		</jsp:attribute>
 		
+		<jsp:attribute name="headerExt">
+			<c:if test="${not empty command.goldStandardPublication}">
+				<link rel="stylesheet" type="text/css" href="${resdir}/css/goldstandards.css" />
+				<link rel="stylesheet" type="text/css" href="${resdir}/css/jquery_ui/jquery.ui.tabs.css" />
+				<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.core.min.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.widget.min.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/jquery_ui/jquery.ui.tabs.min.js">&amp;nbsp;</script>
+				<script type="text/javascript" src="${resdir}/javascript/goldstandards.js">&amp;nbsp;</script>
+			</c:if>
+	    </jsp:attribute>
+	    
+		
 		<jsp:attribute name="sidebar">
 			<ul id="sidebar">			
 				<!-- display tags -->

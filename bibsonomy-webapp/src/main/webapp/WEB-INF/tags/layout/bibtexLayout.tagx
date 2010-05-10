@@ -5,7 +5,8 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:resources="urn:jsptagdir:/WEB-INF/tags/resources"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:goldstandardpublication="urn:jsptagdir:/WEB-INF/tags/resources/goldstandardpublication">
 
 	<jsp:directive.attribute name="command" type="org.bibsonomy.webapp.command.SimpleResourceViewCommand" required="true"/>	
 	<jsp:directive.attribute name="requPath" type="java.lang.String" required="true"/>
@@ -47,14 +48,21 @@
 			</c:if>
 		</jsp:attribute>
 		<jsp:attribute name="content">
-			<div id="general_100">
-				<c:if test="${not empty contentHeading}">
-					<jsp:invoke fragment="contentHeading" />
-				</c:if>
-			</div>
+			<c:choose>
+				<!-- if a goldstandard is present show the goldstandard not the list of posts -->
+				<c:when test="${not empty command.goldStandardPublication}">
+					<goldstandardpublication:details otherPosts="${command.bibtex.list}" post="${command.goldStandardPublication}"></goldstandardpublication:details>
+				</c:when>
+				<c:otherwise>
+					<div id="general_100">
+					<c:if test="${not empty contentHeading}">
+						<jsp:invoke fragment="contentHeading" />
+					</c:if>
+					</div>
 
-			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
-
+					<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+				</c:otherwise>
+			</c:choose>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

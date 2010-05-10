@@ -1,0 +1,30 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"		
+	xmlns:jsp="http://java.sun.com/JSP/Page">
+	
+	<jsp:directive.attribute name="publication" type="org.bibsonomy.model.BibTex" required="true" />
+	
+	<c:choose>
+		<c:when test="${not empty publication.author}">
+			<c:forEach var="author" items="${publication.authorList}" varStatus="loopStatus">
+				<c:url var="authorUrl" value="${projectHome}author/${fn:escapeXml(author.lastName)}"/>
+				<a href="${authorUrl}">${mtl:cleanBibtex(author.lastName)}</a>, ${mtl:cleanBibtex(author.firstName)}     	 
+				<c:if test="${not loopStatus.last}"><c:out value=" "/>/<c:out value=" "/></c:if>
+			</c:forEach>
+		</c:when>
+		<c:otherwise>
+			<c:if test="${not empty publication.editor}">
+				<c:forEach var="editor" items="${publication.editorList}" varStatus="loopStatus">		
+					<c:url var="authorUrl" value="${projectHome}author/${fn:escapeXml(editor.lastName)}"/>
+					<a href="${authorUrl}">${mtl:cleanBibtex(editor.lastName)}</a>, ${mtl:cleanBibtex(editor.firstName)} 
+					<c:if test="${not loopStatus.last}"><c:out value=" "/>/<c:out value=" "/></c:if>
+				</c:forEach>
+				(eds.).
+			</c:if>
+		</c:otherwise>
+		<!-- TODO: link -->
+	</c:choose>: <a href="/bibtex/1${publication.interHash}">${mtl:cleanBibtex(publication.title)}</a>. <c:if test="${not empty publication.year}"> <c:out value="${publication.year}"/></c:if>
+</jsp:root>

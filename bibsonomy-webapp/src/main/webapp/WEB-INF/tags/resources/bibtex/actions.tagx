@@ -93,7 +93,16 @@
 			</c:otherwise>
 		</c:choose>
 		<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+		<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
+			<!-- GOLDSTANDARD -->
+	    	<a href="/editGoldStandardPublication?hash=${post.resource.intraHash}&amp;user=${mtl:encodeURI(post.user.name)}" name="${post.resource.intraHash}" title="${editTagsTitle}">
+				<fmt:message key="bibtex.actions.gold"/>
+			</a>
+			<c:out value=" "/>${mtl:ch('post.actions.delim')}<c:out value=" "/>
+		</c:if>
 	</c:if>
+	
+	
 
 	<c:if test="${post.inboxPost}">
 		<!-- REMOVE Message from Inbox -->
