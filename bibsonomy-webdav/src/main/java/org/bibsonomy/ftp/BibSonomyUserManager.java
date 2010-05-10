@@ -13,7 +13,7 @@ import org.apache.ftpserver.usermanager.AnonymousAuthentication;
 import org.apache.ftpserver.usermanager.UsernamePasswordAuthentication;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.ConcurrentLoginPermission;
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.database.DBLogicUserInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.model.logic.LogicInterface;
@@ -71,7 +71,7 @@ public class BibSonomyUserManager implements UserManager {
 			try {
 				this.getLogicAccess(username, password);
 				return getUserByName(username);
-			} catch (final ValidationException ex) {
+			} catch (final AccessDeniedException ex) {
 				throw new AuthenticationFailedException(ex);
 			} catch (final FtpException ex) {
 				throw new AuthenticationFailedException("User doesn't exist", ex);
@@ -94,10 +94,10 @@ public class BibSonomyUserManager implements UserManager {
 	private void getLogicAccess(final String username, final String password) throws AuthenticationFailedException {
 		try {
 			this.logicInterface = this.logicInterfaceFactory.getLogicAccess(username, StringUtils.getMD5Hash(password));
-		} catch (final ValidationException ignored) {
+		} catch (final AccessDeniedException ignored) {
 			try {
 				this.logicInterface = this.logicInterfaceFactory.getLogicAccess(username, password);
-			} catch (final ValidationException ex) {
+			} catch (final AccessDeniedException ex) {
 				throw new AuthenticationFailedException(ex);
 			}
 		}
