@@ -2,10 +2,12 @@ package org.bibsonomy.webapp.controller.actions;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
@@ -173,13 +175,17 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		/*
 		 * check, if user name already exists
 		 */
-		if (registerUser.getName() != null && logic.getUserDetails(registerUser.getName()).getName() != null) {
-			/*
-			 * yes -> user must choose another name
-			 */
-			errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
-		}
 		
+		if (registerUser.getName() != null) {
+			final List<User> pendingUserList = logic.getUsers(null, GroupingEntity.PENDING, registerUser.getName(), null, null, null, null, null, 0, Integer.MAX_VALUE);
+			if (logic.getUserDetails(registerUser.getName()).getName() != null || pendingUserList.size() > 0) {
+				/*
+				 * yes -> user must choose another name
+				 */
+				errors.rejectValue("registerUser.name", "error.field.duplicate.user.name");
+			}
+		}
+
 		/*
 		 * return to form until validation passes
 		 */
@@ -226,7 +232,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		registerUser.setPassword(StringUtils.getMD5Hash(registerUser.getPassword()));
 
 		/*
-		 * create user in DB
+		 * create user in DB - he still needs to be activated
 		 */
 		logic.createUser(registerUser);
 
@@ -234,7 +240,7 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 		 * send registration confirmation mail
 		 */
 		try {
-			mailUtils.sendRegistrationMail(registerUser.getName(), registerUser.getEmail(), inetAddress, locale);
+			mailUtils.sendRegistrationMail(registerUser.getName(), registerUser.getEmail(), registerUser.getActivationCode(), inetAddress, locale);
 		} catch (final Exception e) {
 			log.error("Could not send registration confirmation mail for user " + registerUser.getName(), e);
 		}
@@ -250,11 +256,6 @@ public class UserRegistrationController implements MinimalisticController<UserRe
 			return Views.REGISTER_USER_SUCCESS_ADMIN; 
 		}
 
-
-		/*
-		 * log user into system ...
-		 */
-		cookieLogic.addUserCookie(registerUser.getName(), registerUser.getPassword());
 		/*
 		 * ... and present him a success view
 		 */
