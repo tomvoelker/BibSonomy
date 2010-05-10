@@ -66,6 +66,7 @@ DELETE FROM `openIDUser`;
 DELETE FROM `picked_concepts`;
 DELETE FROM `popular_tags`;
 DELETE FROM `prediction`;
+DELETE FROM `pendingUser`;
 DELETE FROM `ranking_queue`;
 DELETE FROM `rankings`;
 DELETE FROM `scraperMetaData`;
