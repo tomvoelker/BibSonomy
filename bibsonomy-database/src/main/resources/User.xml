@@ -9,7 +9,47 @@
 		LEFT JOIN ldapUser USING (user_name) 
 		WHERE spammer = 0 LIMIT #limit# OFFSET #offset#
 	</select>
+	
+	<select id="getPendingUserByActivationCode" resultMap="UserCommon.userWithActivationCode" parameterClass="userParam">
+		SELECT <include refid="commonUserAttributes"/>, activation_code
+		FROM pendingUser 
+		LEFT JOIN ldapUser USING (user_name) 
+		WHERE spammer = 0 
+		AND activation_code = #rawSearch#
+		LIMIT #limit# OFFSET #offset#
+	</select>
 
+	<select id="getPendingUserByUsername" resultMap="UserCommon.userWithActivationCode" parameterClass="userParam">
+		SELECT <include refid="commonUserAttributes"/>, activation_code
+		FROM pendingUser 
+		LEFT JOIN ldapUser USING (user_name) 
+		WHERE spammer = 0 
+		AND user_name = #requestedGroupName#
+		LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<select id="getPendingUsers" resultMap="UserCommon.userWithActivationCode" parameterClass="userParam">
+		SELECT <include refid="commonUserAttributes"/>, activation_code
+		FROM pendingUser 
+		LEFT JOIN ldapUser USING (user_name) 
+		WHERE spammer = 0 
+		LIMIT #limit# OFFSET #offset#
+	</select>
+	
+	<insert id="activateUser" parameterClass="string"> 	
+		INSERT INTO user (user_name, user_email, user_password, user_realname, user_homepage, 
+							api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date,
+							spammer, updated_by, updated_at, role, to_classify, lang, tagbox_style, tagbox_sort, tagbox_minfreq, 
+							tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete,
+							tmp_password, tmp_request_date)
+		SELECT user_name, user_email, user_password, user_realname, user_homepage, 
+			   	api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date, 
+				spammer, updated_by, updated_at, role, to_classify, lang, tagbox_style, tagbox_sort, tagbox_minfreq, 
+				tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete,
+				tmp_password, tmp_request_date
+		FROM pendingUser WHERE pendingUser.user_name = #username#
+	</insert>
+	
 	<select id="getUserDetails" resultMap="UserCommon.userWithSettings" parameterClass="string">
 		SELECT <include refid="allUserAttributes"/>
 		FROM user 
@@ -23,6 +63,23 @@
 		WHERE `group` = $groupId$
 	</select>
 
+	<insert id="insertPendingUser" parameterClass="user">
+		INSERT INTO pendingUser ( 
+			user_name, user_email, user_password, user_realname, user_homepage, 
+			api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date, 
+			spammer, updated_by, updated_at, role, to_classify, lang, tagbox_style, tagbox_sort, tagbox_minfreq, 
+			tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete, activation_code
+			<isNotNull property="reminderPassword">,tmp_password, tmp_request_date</isNotNull>			   
+			)
+		VALUES (
+			#name#, #email#, #password#, #realname#, #homepage#, 
+			#apiKey#, #birthday#, #gender#, #hobbies#, #interests#, #IPAddress#, #openURL#, #place#, #profession#, #registrationDate#, 
+			#spammer#,#updatedBy#, #updatedAt#, #role#, #toClassify#, #settings.defaultLanguage#, #settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, 
+			#settings.tagboxMaxCount#, #settings.isMaxCount#, #settings.tagboxTooltip#, #settings.listItemcount#, #settings.logLevel#, #settings.confirmDelete#, #activationCode#
+			<isNotNull property="reminderPassword">,#reminderPassword#,#reminderPasswordRequestDate#</isNotNull>	
+			)
+	</insert>
+	
 	<!-- TODO: insert other attributes (see allUserAtributes in UserCommon.xml); dbe 20071119 -->
 	<insert id="insertUser" parameterClass="user">
 		INSERT INTO user ( 
@@ -65,6 +122,10 @@
 		DELETE FROM user WHERE user_name = #userName#
 	</delete>
 	
+	<delete id="deletePendingUser" parameterClass="string">
+		DELETE FROM pendingUser WHERE pendingUser.user_name = #username#
+	</delete>
+
 	<delete id="deleteOpenIDUser" parameterClass="string">
 		DELETE FROM openIDUser WHERE user_name = #userName#
 	</delete>	
