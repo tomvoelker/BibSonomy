@@ -34,18 +34,6 @@
 						<property name="allowedFields" ref="bookmarkRequestParameters" />
 					</bean>
 				</entry>
-				<entry key="/ajax/getPublicationsByPartialTitle.json">
-					<bean parent="controllerBase">
-						<property name="controllerBeanName"	value="ajaxGetPublicationsByPartialTitle" />
-						<property name="allowedFields" >
-							<list>
-								<value>title</value>
-								<value>userName</value>
-								<value>requestedUserName</value>
-							</list>
-						</property>
-					</bean>
-				</entry>
 				<entry key="/ajax/getPublicationRecommendedTags">
 					<bean parent="controllerBase">
 						<property name="controllerBeanName"	value="ajaxGetPublicationRecommendedTagsController" />
@@ -91,6 +79,18 @@
 						</property>
 					</bean>
 				</entry>
+				<entry key="/ajax/goldstandards/references">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="editGoldstandardReferencesController"/>
+						 <property name="allowedFields">
+                            <list>
+                                <value>action</value>
+								<value>hash</value>
+								<value>references</value>
+							</list>
+						</property>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
@@ -103,6 +103,10 @@
 	<bean id="generalAjaxController" class="org.bibsonomy.webapp.controller.ajax.GeneralAjaxController" scope="request">
 		<property name="logic" ref="logic"/>
 		<property name="userSettings" ref="userSettings"/>
+	</bean>	
+	
+	<bean id="editGoldstandardReferencesController" class="org.bibsonomy.webapp.controller.ajax.EditGoldstandardReferencesController" scope="request">
+		<property name="logic" ref="logic"/>
 	</bean>	
 		
 		
@@ -117,12 +121,6 @@
 		<property name="tagRecommender"	ref="multiplexingTagRecommender" />
 		<!-- tag recommender used for spammer -->
 		<property name="spamTagRecommender" ref="jensRecommender"/>
-	</bean>
-	
-	<bean id="ajaxGetPublicationsByPartialTitle"
-		class="org.bibsonomy.webapp.controller.ajax.GetPublicationsByPartialTitleController"
-		scope="request">
-		<property name="logic" ref="logic" />
 	</bean>
 	
 	<bean id="ajaxGetPublicationRecommendedTagsController"
