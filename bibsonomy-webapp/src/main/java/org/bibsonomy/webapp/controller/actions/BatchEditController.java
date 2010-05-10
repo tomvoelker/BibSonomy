@@ -2,8 +2,6 @@ package org.bibsonomy.webapp.controller.actions;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,7 +30,6 @@ import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.PostUtils;
 import org.bibsonomy.model.util.TagUtils;
 import org.bibsonomy.util.UrlUtils;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.actions.BatchEditCommand;
 import org.bibsonomy.webapp.util.ErrorAware;
@@ -58,10 +55,10 @@ import org.springframework.validation.Errors;
  * @version $Id$
  */
 public class BatchEditController implements MinimalisticController<BatchEditCommand>, ErrorAware {
-
-	private static final int HASH_LENGTH = 32;
 	private static final Log log = LogFactory.getLog(BatchEditController.class);
 
+	private static final int HASH_LENGTH = 32;
+	
 	/**
 	 * To redirect the user to the page she initially viewed before pressing
 	 * the (batch)"edit" button, we need to strip the "bedit*" part of the URL
@@ -94,7 +91,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * We store the referer in the command, to send the user back to the 
 		 * page he's coming from at the end of the posting process. 
 		 */
-		if (!ValidationUtils.present(command.getReferer())) {
+		if (!present(command.getReferer())) {
 			command.setReferer(requestLogic.getReferer());
 		}
 
@@ -158,7 +155,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		/*
 		 * put the posts from the session into a hash map (for faster access)
 		 */
-		final HashMap<String, Post<? extends Resource>> postMap = getPostMap(updatePosts);
+		final Map<String, Post<? extends Resource>> postMap = getPostMap(updatePosts);
 		/*
 		 * the tags that should be added to all posts
 		 */
@@ -168,15 +165,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		final Map<String, String> newTagsMap = command.getNewTags();
 		final Map<String, String> oldTagsMap = command.getOldTags();
-
-
-		log.debug("#postFlags: " + postFlags.size() + 
-				", #postMap: " + postMap.size() + 
-				", #addTags: " + addTags.size() + 
-				", #newTags: " + newTagsMap.size() + 
-				", #oldTags: " + oldTagsMap.size());
-
-
+		
+		log.debug("#postFlags: " + postFlags.size() + ", #postMap: " + postMap.size() + ", #addTags: " + addTags.size() + ", #newTags: " + newTagsMap.size() + ", #oldTags: " + oldTagsMap.size());
+		
 		/* *******************************************************
 		 * THIRD: initialize temporary variables (lists)
 		 * *******************************************************/
@@ -189,10 +180,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * All posts will get the same date.
 		 */
 		final Date now = new Date();
-
-
-
-
+		
 		/* *******************************************************
 		 * FOURTH: prepare the posts
 		 * *******************************************************/
@@ -294,9 +282,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			}
 		}
 
-
-
-
 		/* *******************************************************
 		 * FIFTH: update the database
 		 * *******************************************************/
@@ -335,9 +320,6 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 
 		log.debug("finished batch edit for user " + loginUserName);
 
-
-
-
 		/* *******************************************************
 		 * SIXTH: return to view
 		 * *******************************************************/
@@ -347,6 +329,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		if ("ajax".equals(command.getFormat())) {
 			return Views.AJAX_EDITTAGS;
 		}
+		
 		/*
 		 * return to batch edit view on errors
 		 */
@@ -356,6 +339,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			} 
 			return Views.BATCHEDITURL;  
 		}
+		
 		/*
 		 * return to the page the user was initially coming from
 		 */
@@ -407,7 +391,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @param overwrite
 	 * @param loginUserName TODO
 	 */
-	private void storePosts(final List<Post<? extends Resource>> posts, final String resourceType, final HashMap<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final boolean overwrite, String loginUserName) {
+	private void storePosts(final List<Post<? extends Resource>> posts, final String resourceType, final Map<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final boolean overwrite, String loginUserName) {
 		final List<Post<?>> postsForUpdate  = new LinkedList<Post<?>>();
 		try {
 			/*
@@ -494,7 +478,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @param operation - the type of operation that should be performed with the posts in the database. 
 	 * @param loginUserName - to complete the post from the database, we need the user's name 
 	 */
-	private void updatePosts(final List<Post<? extends Resource>> posts, final String resourceType, final HashMap<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final PostUpdateOperation operation, final String loginUserName) {
+	private void updatePosts(final List<Post<? extends Resource>> posts, final String resourceType, final Map<String, Post<?>> postMap, final List<Post<?>> postsWithErrors, final PostUpdateOperation operation, final String loginUserName) {
 		try {
 			this.logic.updatePosts(posts, operation);
 		} catch (final DatabaseException ex) {
@@ -580,10 +564,10 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	private HashMap<String, Post<? extends Resource>> getPostMap(final boolean updatePosts) {
+	private Map<String, Post<? extends Resource>> getPostMap(final boolean updatePosts) {
 		final HashMap<String, Post<? extends Resource>> postMap = new HashMap<String, Post<? extends Resource>>();
 		final List<Post<? extends Resource>> postsFromSession = (List<Post<? extends Resource>>) this.requestLogic.getSessionAttribute(PostPublicationController.TEMPORARILY_IMPORTED_PUBLICATIONS);
-		if (!updatePosts && ValidationUtils.present(postsFromSession)) {
+		if (!updatePosts && present(postsFromSession)) {
 			/*
 			 * Put the posts into a hashmap, so we don't have to loop 
 			 * through the list for every stored post.
@@ -635,27 +619,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * if no URL is given, we redirect to the user's page
 		 */
 		if (!present(redirectUrl)) 
-			redirectUrl = encodeStringToUTF8("/user" + loginUserName);
+			redirectUrl = UrlUtils.safeURIEncode("/user" + loginUserName); // TODO: should be done by the URLGenerator
 		return new ExtendedRedirectView(redirectUrl);
 	}
-
-
-	/**
-	 * encodes a string to utf-8 format
-	 * 
-	 * TODO: extract to helper class, ...
-	 * 
-	 * @param toEncode
-	 * @return the encoded utf-8 string
-	 */
-	private static String encodeStringToUTF8(String toEncode) {
-		try {
-			return URLEncoder.encode(toEncode, "UTF-8");
-		} catch (UnsupportedEncodingException ex) {
-			return toEncode;
-		}
-	}
-
 
 	@Override
 	public Errors getErrors() {
