@@ -769,6 +769,13 @@
 	</rule>
 	
 
+	<!-- /concept/tag/TAG -->
+	<rule>
+		<name>/activate/ACTIVATIONCODE</name>
+		<from>^/+activate/([^/]+)$</from>
+		<set type="parameter" name="activationCode">$1</set>
+		<to last="true">/activate</to>
+	</rule>
 
 
 	<!-- ############## new actions - testing! ############### -->
