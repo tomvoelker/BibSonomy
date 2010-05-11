@@ -127,7 +127,7 @@ public class TagChainTest extends AbstractChainTest {
 		param.setTagIndex(null);
 		param.setHash(null);
 		param.setBibtexKey(null);
-		this.tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
+		tagChain.getFirstElement().perform(param, this.dbSession, this.chainStatus);
 		assertEquals(GetTagsByResourceSearch.class, this.chainStatus.getChainElement().getClass());
 	}
 	
