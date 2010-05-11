@@ -1,0 +1,79 @@
+li.section {
+  padding: 1ex;
+  margin-top: 2ex;
+  margin-bottom: 2ex;
+  background: #f0f0f0;
+}
+li.question {
+  list-style: square;
+  margin-left: 1em;
+}
+div.section>h3 {
+  float: left;
+}
+
+#faqbase * a {
+  font-weight: normal;
+}
+
+a.up {
+  text-align: right;
+  float: right;
+  font-size: 80%;
+}
+
+dl.faq dd dl {
+  margin-left: 2em;
+}
+
+dl.faq {
+  margin-left: 0;
+  display: block;
+  padding: 1ex;
+}
+
+dt {
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+dl.faq>dt {
+  color: black;
+  font-weight: bold;
+}
+
+dl.faq>dd {
+  color: #505050;
+  margin-left: 0;
+  padding: 2pt 0 1.5ex 0;
+}
+
+ul.faq {
+  list-style: square;
+}
+
+ul.help { /* Schlimmer Hack (chs); wieso h�ngt das so weit links?  */
+  margin-left: 1em;
+  list-style: square;
+}
+
+ul.help li {
+  padding: 1pt;
+  font-weight: normal;
+}
+
+ul.faq li {
+  padding: 1pt;
+  font-weight: bold;
+}
+
+ul.subfaq li {
+  font-weight: normal;
+  color: #707070;
+}
+
+code {
+  padding-left: .5em;
+  padding-right: .5em;
+  font-weight: bold;
+}
