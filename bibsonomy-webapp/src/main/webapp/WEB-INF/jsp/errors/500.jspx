@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<jsp:root version="2.0" 
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout">
+	
+	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	
+	<jsp:attribute name="heading">
+		error code 500
+	</jsp:attribute>
+	
+	<jsp:attribute name="content">
+	
+		<div id="error">
+			<fmt:message key="error.500"/>
+		</div>
+	
+	</jsp:attribute>
+	
+	</layout:paneLayout>
+</jsp:root>
