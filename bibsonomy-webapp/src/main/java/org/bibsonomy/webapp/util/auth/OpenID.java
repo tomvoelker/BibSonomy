@@ -29,21 +29,15 @@ import org.openid4java.message.sreg.SRegResponse;
  * @version $Id$
  */
 public class OpenID implements Serializable {
+	/**
+	 * Logger
+	 */
+	private static final Log log = LogFactory.getLog(OpenID.class);
 
 	/**
 	 * serial uid
 	 */
 	private static final long serialVersionUID = 437358812087062133L;
-
-	/**
-	 * Logger
-	 */
-	private static final Log log = LogFactory.getLog(OpenID.class);
-	
-	/**
-	 * manager for openID authentication
-	 */
-	private OpenIdConsumerManager manager;
 	
 	/**
 	 * name of session attribute 
@@ -56,9 +50,15 @@ public class OpenID implements Serializable {
 	public static final String OPENID_LOGIC_SESSION_ATTRIBUTE = "openid-logic";
 	
 	/**
-	 * name of sesseion attribute to store the discovery information
+	 * name of session attribute to store the discovery information
 	 */
 	public static final String OPENID_DISCOVERY_SESSION_ATTRIBUTE = "openid-disc";
+	
+	
+	/**
+	 * manager for openID authentication
+	 */
+	private OpenIdConsumerManager manager;
 	
 	/**
 	 * Authenticates an OpenID request and forwards the user to her 
@@ -77,6 +77,7 @@ public class OpenID implements Serializable {
 		/*
 		 *  perform discovery on the user-supplied identifier
 		 */
+		@SuppressWarnings("unchecked")
 		List discoveries = manager.discover(openID);
 		manager.setNonceVerifier(new InMemoryNonceVerifier(100000));
 		

@@ -10,15 +10,17 @@ import org.openid4java.consumer.ConsumerManager;
  * @version $Id$
  */
 public class OpenIdConsumerManager extends ConsumerManager implements Serializable {
-
-	public OpenIdConsumerManager() throws ConsumerException {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	
+	private static final long serialVersionUID = 1045931496332265932L;
 
 	/**
-	 * 
+	 * default constructor
+	 * @throws ConsumerException
 	 */
-	private static final long serialVersionUID = 1045931496332265932L;
+	public OpenIdConsumerManager() throws ConsumerException {
+		super();
+	}
+
+	
 
 }
