@@ -563,21 +563,18 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		return (List<RecQueryParam>)sqlMap.queryForList("getQueriesBySID", sid);
 	}
 	
-	/**
-	 * Get recommender-info for admin statuspage
-	 * @return recommender-info
-	 * @param id recommenderID
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommenderAdminOverview(java.lang.String)
 	 */
+	@SuppressWarnings("unchecked")
 	public RecAdminOverview getRecommenderAdminOverview(String id) throws SQLException{
 		return (RecAdminOverview)getSqlMapInstance().queryForObject("recAdminOverview", id);
 	}
 	
-	/** 
-	 * Get Average Latency For given recommender.
-	 * @return average latency
-	 * @param sid recommender's settingID
-	 * @param numberOfQueries number of (newest) queries which will be used to calculate the average latency
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getAverageLatencyForRecommender(java.lang.Long, java.lang.Long)
 	 */
+	@SuppressWarnings("unchecked")
 	public Long getAverageLatencyForRecommender(Long sid, Long numberOfQueries) throws SQLException{
 		if(numberOfQueries <= 0) return null;
 		
@@ -585,12 +582,26 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		return (Long)getSqlMapInstance().queryForObject("getAverageLatencyForSettingID", param);
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getActiveRecommenderSettingIds()
+	 */
+	@SuppressWarnings("unchecked")
 	public List<Long> getActiveRecommenderSettingIds() throws SQLException{
 		return (List<Long>)getSqlMapInstance().queryForList("getSettingIdsByStatus", 1);
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getDisabledRecommenderSettingIds()
+	 */
+	@SuppressWarnings("unchecked")
 	public List<Long> getDisabledRecommenderSettingIds() throws SQLException{
 		return (List<Long>)getSqlMapInstance().queryForList("getSettingIdsByStatus", 0);
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommenderIdsForSettingIds(java.util.List)
+	 */
+	@SuppressWarnings("unchecked")
 	public Map<Long, String> getRecommenderIdsForSettingIds(List<Long> sids) throws SQLException{
 		Map<Long, String> resultmap = new TreeMap<Long,String>();
 		for(Long sid: sids)
@@ -598,6 +609,10 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		return resultmap;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#updateRecommenderstatus(java.util.List, java.util.List)
+	 */
+	@SuppressWarnings("unchecked")
 	public void updateRecommenderstatus(List<Long> activeRecs, List<Long> disabledRecs ) throws SQLException{
 		SqlMapClient sqlMap = getSqlMapInstance();
 		
@@ -609,12 +624,20 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		  for(Long p: disabledRecs)
 		    sqlMap.update("deactivateRecommender", p);
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#removeRecommender(java.lang.Long)
+	 */
+	@SuppressWarnings("unchecked")
 	public void removeRecommender(long sid) throws SQLException{
 		SqlMapClient sqlMap = getSqlMapInstance();
 		sqlMap.update("removeRecommender", sid);
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see org.bibsonomy.recommender.tags.database.DBLogic#updateRecommenderUrl(java.lang.Long, java.net.URL)
+	 */
+	@SuppressWarnings("unchecked")
 	public void updateRecommenderUrl(long sid, URL url) throws SQLException{
 		RecSettingParam param = new RecSettingParam();
 		param.setRecId(url.toString());
@@ -625,8 +648,6 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		sqlMap.update("updateRecommenderStatusUrl", param);
 		sqlMap.update("updateRecommenderSettingUrl", param);
 	}
-	
-	
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#guessQueryFromPost(java.lang.Integer)

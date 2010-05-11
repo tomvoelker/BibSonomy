@@ -1,9 +1,11 @@
 package org.bibsonomy.recommender.tags.database;
 
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedSet;
 
 import org.bibsonomy.model.Post;
@@ -12,6 +14,7 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tags.database.params.Pair;
 import org.bibsonomy.recommender.tags.database.params.RecQueryParam;
 import org.bibsonomy.recommender.tags.database.params.RecSettingParam;
+import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.database.params.SelectorSettingParam;
 import org.bibsonomy.recommender.tags.database.params.TasEntry;
 
@@ -361,6 +364,68 @@ public interface DBLogic {
 	 */
 	public List<RecQueryParam> getQueriesForRecommender(Long sid) throws SQLException;
 
+	/**
+	 * Get recommender-info for admin statuspage
+	 * @return recommender-info
+	 * @param id recommenderID
+	 */
+	public RecAdminOverview getRecommenderAdminOverview(String id) throws SQLException;
+		
+	/**
+	 * Get the average latency of a given recommender-setting
+	 * 
+	 * @param sid
+	 * @param numberOfQueries number of newest latency-values which will be fetched to calculate the average latency
+	 * @return average latency of the recommender
+	 * @throws SQLException
+	 */
+	public Long getAverageLatencyForRecommender(Long sid, Long numberOfQueries) throws SQLException;
+	
+	/**
+	 * Get all settingids which are set to status 'active'
+	 * @return identifiers of currently activated settings 
+	 * @throws SQLException
+	 */
+	public List<Long> getActiveRecommenderSettingIds() throws SQLException;
+	
+	/**
+	 * Get all settingids which are set to status 'disabled'
+	 * @return identifiers of currently disabled settings 
+	 * @throws SQLException
+	 */
+	public List<Long> getDisabledRecommenderSettingIds() throws SQLException;
+	
+    /**
+     * Get related recommender-ids for a list of setting-ids
+     * @param sids setting-ids
+     * @return map settingid->recommenderid
+     * @throws SQLException
+     */
+	public Map<Long, String> getRecommenderIdsForSettingIds(List<Long> sids) throws SQLException;
+	
+	/**
+	 * Activate and disable several recommenders at once.
+	 * @param activeRecs identifiers of the settings to be activated
+	 * @param disabledRecs identifiers of the settings to be disabled
+	 * @throws SQLException
+	 */
+	public void updateRecommenderstatus(List<Long> activeRecs, List<Long> disabledRecs ) throws SQLException;
+		
+	/**
+	 * Set a recommender to status 'removed'.
+	 * @param sid setting-id of the recommender
+	 * @throws SQLException
+	 */
+	public void removeRecommender(long sid) throws SQLException;
+	
+	/**
+	 * Change the url of a recommender which is already contained in the database.
+	 * @param sid setting-id
+	 * @param url new url
+	 * @throws SQLException
+	 */
+	public void updateRecommenderUrl(long sid, URL url) throws SQLException;
+	
 	/**
 	 * Tries to guess query_id from given content id.
 	 * 
