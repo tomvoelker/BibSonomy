@@ -223,6 +223,9 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		if (!present(user)) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "User object isn't present");
 		user.setApiKey(UserUtils.generateApiKey());
 		
+		// Generates the activationCode
+        user.setActivationCode(UserUtils.generateActivationCode(user));
+		
 		/*
 		 * The spammer column in MySQL is defined as
 		 * 
@@ -252,10 +255,14 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		user.setRole(Role.DEFAULT);
 		/*
 		 * probably, we should add here more code to check for null values!
-		 */
+		 */		
 		
 		this.checkUser(user, session);
-		this.insert("insertUser", user, session);
+		
+		if(!present(user.getOpenID()) || !present(user.getLdapId()))
+		    this.insert("insertPendingUser", user, session);
+		else
+		    this.insert("insertUser", user, session);
 		
 		/*
 		 * insert openID of user in separate table if present
@@ -325,6 +332,14 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		return user.getName();
 	}
 
+
+    private void deletePendingUser(final String username, final DBSession session) {
+        if (username == null) {
+            ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "username was null");
+        }
+        this.delete("deletePendingUser", username, session);
+    }
+    
 	/**
 	 * Delete a user. This is the method to be called from the LogicInterface; it does not
 	 * truly REMOVE a user from the DB, but does
@@ -734,6 +749,44 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 			}
 		}
 		return false;
-	}
+	}  
+    
+    /**
+     * Activates the user. This moves the user entry from the pendingUser to the user table.
+     *
+     * @param user 
+     * @param session 
+     * @return name of created user
+     */
+    public String activateUser(final User user, final DBSession session) {
+        this.insert("activateUser", user.getName(), session);
+        this.deletePendingUser(user.getName(), session);
+        return user.getName();
+    }
+    
+
+    /**
+     * Returns pending users.
+     * 
+     * @param start 
+     * @param end 
+     * @param session 
+     * @return list of all users
+     */
+    public List<User> getPendingUsers(final int start, final int end,  final DBSession session) {
+        final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, start, end, null, null, new User());     
+        return this.queryForList("getPendingUsers", param, User.class, session);
+    }
+
+    public List<User> getPendingUserByActivationCode(final String search, final int start, final int end,  final DBSession session) {
+        final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, start, end, search, null, new User());     
+        return this.queryForList("getPendingUserByActivationCode", param, User.class, session);
+    }
+
+    public List<User> getPendingUserByUsername(final String username, final int start, final int end,  final DBSession session) {
+        final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, username, null, null, null, start, end, null, null, new User());     
+        return this.queryForList("getPendingUserByUsername", param, User.class, session);
+    }
+    
 	
 }
