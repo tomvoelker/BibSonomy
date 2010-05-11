@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -9,16 +11,11 @@ import java.util.TreeMap;
 import java.util.Vector;
 import java.util.Map.Entry;
 
-import org.bibsonomy.util.ValidationUtils;
-import org.bibsonomy.webapp.exceptions.NotAcceptableException;
-
 /**
  * @author rja
  * @version $Id$
  */
 public class HeaderUtils {
-	
-
 
 	/**
 	 * Mapping of mime types to the supported export formats.
@@ -66,7 +63,7 @@ public class HeaderUtils {
 	public static String getResponseFormat(final String acceptHeader, final int contentType) {		
 
 		// if no acceptHeader is set, return default (= 0);
-		if (!ValidationUtils.present(acceptHeader)) return FORMAT_URLS[0][contentType];
+		if (!present(acceptHeader)) return FORMAT_URLS[0][contentType];
 
 		// maps the q-value to output format (reverse order)
 		final SortedMap<Double,Vector<String>> preferredTypes = new TreeMap<Double,Vector<String>>(new Comparator<Double>() {
