@@ -5,19 +5,21 @@ import java.io.Serializable;
 import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
- * This Commands information: which Message is to be removed from the inbox 
+ * This Commands information: which Message is to be removed from the inbox
+ * 
  * @author sdo
  * @version $Id$
  */
 public class RemoveMessageCommand extends BaseCommand implements Serializable {
 	private static final long serialVersionUID = -6623936347565283765L;
+	
+	
 	private String hash;
 	private String user;
 	private boolean clear;
-
 	
 	/**
-	 * @return true if user wishes to delete all from his inbox
+	 * @return true if user wishes to delete all from his inbox messages
 	 */
 	public boolean isClear() {
 		return this.clear;
@@ -56,8 +58,6 @@ public class RemoveMessageCommand extends BaseCommand implements Serializable {
 	 */
 	public void setHash(final String hash) {
 		this.hash = hash;
-	}
-
-	
+	}	
 	
 }
