@@ -22,7 +22,6 @@ import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.DBLogicApiInterfaceFactory;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
@@ -181,7 +180,7 @@ public final class RestServlet extends HttpServlet {
 			final Context context = new Context(request.getInputStream(), logic, method, request.getPathInfo(), request.getParameterMap(), parser.getList(), additionalInfos);
 
 			// validate request
-			context.validate();
+			context.canAccess();
 
 			// set some response headers
 			response.setContentType(context.getContentType(request.getHeader("User-Agent")));
@@ -320,8 +319,8 @@ public final class RestServlet extends HttpServlet {
 		log.debug("Username/API-key: " + username + " / " + apiKey);
 		try {
 			return logicFactory.getLogicAccess(username, apiKey);
-		} catch (final ValidationException ve) {
-			throw new AuthenticationException("Authentication failure: " + ve.getMessage());
+		} catch (final AccessDeniedException e) {
+			throw new AuthenticationException("Authentication failure: " + e.getMessage());
 		}
 	}
 }

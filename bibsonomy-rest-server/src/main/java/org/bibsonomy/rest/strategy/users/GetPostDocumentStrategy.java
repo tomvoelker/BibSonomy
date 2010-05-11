@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.enums.RenderingFormat;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
+import org.bibsonomy.rest.exceptions.NoSuchResourceException;
 import org.bibsonomy.rest.strategy.Context;
 import org.bibsonomy.rest.strategy.Strategy;
 import org.bibsonomy.rest.utils.FileDownloadInterface;
@@ -40,13 +40,12 @@ public class GetPostDocumentStrategy extends Strategy{
 		this.resourceHash = resourceHash;
 		this.fileName = fileName;
 		this.additionalInfos = context.getAdditionalInfos();
-		context.setRenderingFormat(RenderingFormat.PDF);
 		
+		context.setRenderingFormat(RenderingFormat.PDF);
 	}
 	
 	@Override
-	public void validate() throws ValidationException {
-		// TODO: check if this check is also done by dblogic
+	public void canAccess() {
 		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new AccessDeniedException();
 	}
 	
@@ -54,6 +53,11 @@ public class GetPostDocumentStrategy extends Strategy{
 	public void perform(final ByteArrayOutputStream outStream){
 		// request the document from the db
 		final Document doc =  this.getLogic().getDocument(userName, resourceHash, fileName);
+		
+		if (doc == null) {
+			throw new NoSuchResourceException("can't find document!");
+		}
+		
 		BufferedInputStream buf = null;
 		
 		try {

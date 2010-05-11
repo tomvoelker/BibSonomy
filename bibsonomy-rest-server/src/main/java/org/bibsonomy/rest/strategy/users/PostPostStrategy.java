@@ -17,7 +17,6 @@ import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -43,8 +42,7 @@ public class PostPostStrategy extends AbstractCreateStrategy {
 	}
 
 	@Override
-	public void validate() throws ValidationException {
-		// TODO: this check is also done by the dblogic
+	public void canAccess() {
 		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new AccessDeniedException();
 	}
 

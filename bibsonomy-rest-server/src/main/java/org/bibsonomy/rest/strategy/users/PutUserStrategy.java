@@ -3,16 +3,16 @@ package org.bibsonomy.rest.strategy.users;
 import java.io.Reader;
 import java.io.Writer;
 
-import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.rest.strategy.AbstractUpdateStrategy;
 import org.bibsonomy.rest.strategy.Context;
 
 /**
+ * strategy for updating an user
+ * 		- users/USERNAME (HTTP-Method: PUT)
+ * 
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
  * @version $Id$
  */
@@ -28,15 +28,6 @@ public class PutUserStrategy extends AbstractUpdateStrategy {
 		super(context);
 		this.userName = userName;
 		this.doc = context.getDocument();
-	}
-
-	@Override
-	public void validate() throws ValidationException {
-		// TODO: this check is also done by the DBLogic by calling updateUser @see PutUserStrategy#update()
-		// ensure username equals auth-username (or user is admin)
-		final User authenticatedUser = this.getLogic().getAuthenticatedUser();
-		if (!(this.userName.equals(authenticatedUser.getName()) || Role.ADMIN.equals(authenticatedUser.getRole())))  
-			throw new AccessDeniedException("The operation is not permitted for the logged-in user: " + authenticatedUser.getName());
 	}
 
 	@Override

@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.commons.fileupload.FileItem;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.Document;
 import org.bibsonomy.rest.exceptions.BadRequestOrResponseException;
 import org.bibsonomy.rest.strategy.AbstractCreateStrategy;
@@ -20,7 +19,7 @@ import org.bibsonomy.rest.utils.impl.FileUploadFactory;
  * @author Christian Kramer
  * @version $Id$
  */
-public class PostPostDocumentStrategy extends AbstractCreateStrategy{
+public class PostPostDocumentStrategy extends AbstractCreateStrategy {
 	private final String userName;
 	private final String resourceHash;
 	private final List<FileItem> items;
@@ -47,8 +46,7 @@ public class PostPostDocumentStrategy extends AbstractCreateStrategy{
 	}
 	
 	@Override
-	public void validate() throws ValidationException {
-		// TODO: this check is also done by the dblogic
+	public void canAccess() {
 		if (!this.userName.equals(this.getLogic().getAuthenticatedUser().getName())) throw new AccessDeniedException();
 	}
 

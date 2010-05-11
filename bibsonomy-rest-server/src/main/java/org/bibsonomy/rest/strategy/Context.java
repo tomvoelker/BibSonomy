@@ -131,12 +131,11 @@ public final class Context {
 	}
 
 	/**
-	 * Validates a strategy: correct userName, etc
-	 * 
-	 * @throws ValidationException
+	 * checks if the user is allowed to access the resource
+	 * if not throws {@link AccessDeniedException}
 	 */
-	public void validate() throws ValidationException {
-		this.strategy.validate();
+	public void canAccess() {
+		this.strategy.canAccess();
 	}
 
 	/**

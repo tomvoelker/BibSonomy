@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
-import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -29,11 +28,10 @@ public abstract class Strategy {
 	}
 
 	/**
-	 * Validates a state: correct userName, etc
-	 * 
-	 * @throws ValidationException
+	 * @see Context#canAccess()
 	 */
-	public void validate() throws ValidationException {
+	public void canAccess() {
+		// noop
 	}
 
 	/**
