@@ -26,11 +26,20 @@ import resources.Resource;
  *
  */
 public class ActionValidationFilter implements Filter {
-
-	public static final String REQUEST_ATTRIB_VALID_CREDENTIAL = "validckey"; // true or false
-	public static final String REQUEST_ATTRIB_CREDENTIAL = "ckey";            // current ckey
-	private static final String REQUEST_PARAM_CREDENTIAL = "ckey";             // ckey from request
 	private final static Log log = LogFactory.getLog(ActionValidationFilter.class);
+
+	/**
+	 * TODO: improve documentation
+	 */
+	public static final String REQUEST_ATTRIB_VALID_CREDENTIAL = "validckey"; // true or false
+	
+	/**
+	 * TODO: improve documentation
+	 */
+	public static final String REQUEST_ATTRIB_CREDENTIAL = "ckey"; // current ckey
+	
+	private static final String REQUEST_PARAM_CREDENTIAL = "ckey"; // ckey from request
+	
 
 	protected FilterConfig filterConfig = null;
 
@@ -84,7 +93,7 @@ public class ActionValidationFilter implements Filter {
 	}
 	/** Static method to check validity of the sent credential.
 	 * @param request
-	 * @return
+	 * @return <true> iff ckey is valid
 	 */
 	public static boolean isValidCkey (final ServletRequest request) {
 		final Boolean validCredential = (Boolean) request.getAttribute(REQUEST_ATTRIB_VALID_CREDENTIAL);

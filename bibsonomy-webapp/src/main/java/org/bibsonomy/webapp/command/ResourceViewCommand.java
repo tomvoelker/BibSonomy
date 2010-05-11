@@ -7,8 +7,8 @@ package org.bibsonomy.webapp.command;
 /**
  * command with fields for the resource lists.
  * 
- * is mainly a container for two list commands (bookmarks & bibtexs), the requested username
- * and a list of tags associated with the bookmarks / bibtexs
+ * is mainly a container for two list commands (bookmarks & publications), the requested username
+ * and a list of tags associated with the bookmarks / publications
  * 
  * @see BaseCommand
  * @author Jens Illig
@@ -48,15 +48,21 @@ public class ResourceViewCommand extends BaseCommand {
 	
 	/** filter group resources  */
 	private String filter = "";
-		
+
+	/**
+	 * @return the duplicates
+	 */
 	public String getDuplicates() {
 		return this.duplicates;
 	}
-
+	
+	/**
+	 * @param duplicates the duplicates to set
+	 */
 	public void setDuplicates(String duplicates) {
 		this.duplicates = duplicates;
 	}
-
+	
 	/**
 	 * @return name of the user whose resources are requested
 	 */
@@ -106,109 +112,191 @@ public class ResourceViewCommand extends BaseCommand {
 		this.format = format;
 	}
 
+	/**
+	 * @return the resourcetype
+	 */
 	public String getResourcetype() {
 		return this.resourcetype;
 	}
 
+	/**
+	 * @param resourcetype the resourcetype to set
+	 */
 	public void setResourcetype(String resourcetype) {
 		this.resourcetype = resourcetype;
 	}
 
+	/**
+	 * @return the sortPage
+	 */
 	public String getSortPage() {
 		return this.sortPage;
 	}
 
+	/**
+	 * @param sortPage the sortPage to set
+	 */
 	public void setSortPage(String sortPage) {
 		this.sortPage = sortPage;
 	}
 
+	/**
+	 * @return the sortPageOrder
+	 */
 	public String getSortPageOrder() {
 		return this.sortPageOrder;
 	}
 
+	/**
+	 * @param sortPageOrder the sortPageOrder to set
+	 */
 	public void setSortPageOrder(String sortPageOrder) {
 		this.sortPageOrder = sortPageOrder;
 	}
 
+	/**
+	 * @return the restrictToTags
+	 */
 	public boolean getRestrictToTags() {
 		return this.restrictToTags;
 	}
 
+	/**
+	 * @param restrictToTags the restrictToTags to set
+	 */
 	public void setRestrictToTags(boolean restrictToTags) {
 		this.restrictToTags = restrictToTags;
 	}
 
+	/**
+	 * @return the callback
+	 */
 	public String getCallback() {
 		return this.callback;
 	}
 
-	public void setCallback(String callBack) {
-		this.callback = callBack;
-	}		
-	
+	/**
+	 * @param callback the callback to set
+	 */
+	public void setCallback(String callback) {
+		this.callback = callback;
+	}
+
+	/**
+	 * @return the filter
+	 */
 	public String getFilter() {
 		return this.filter;
 	}
 
+	/**
+	 * @param filter the filter to set
+	 */
 	public void setFilter(String filter) {
 		this.filter = filter;
 	}
 
+	/**
+	 * @return the layout
+	 */
 	public String getLayout() {
 		return this.layout;
 	}
 
+	/**
+	 * @param layout the layout to set
+	 */
 	public void setLayout(String layout) {
 		this.layout = layout;
 	}
 
+	/**
+	 * @return the formatEmbedded
+	 */
 	public boolean getformatEmbedded() {
 		return this.formatEmbedded;
 	}
 
+	/**
+	 * @param formatEmbedded the formatEmbedded to set
+	 */
 	public void setformatEmbedded(boolean formatEmbedded) {
 		this.formatEmbedded = formatEmbedded;
 	}
+	
+	/**
+	 * @return the tagstype
+	 */
+	public String getTagstype() {
+		return this.tagstype;
+	}
 
+	/**
+	 * @param tagstype the tagstype to set
+	 */
 	public void setTagstype(String tagstype) {
 		this.tagstype = tagstype;
 	}
 
-	public String getTagstype() {
-		return tagstype;
-	}
-
+	/**
+	 * @return the notags
+	 */
 	public boolean isNotags() {
 		return this.notags;
 	}
 
+	/**
+	 * @param notags the notags to set
+	 */
 	public void setNotags(boolean notags) {
 		this.notags = notags;
 	}
+	
+	/**
+	 * @return the personalized
+	 */
+	public Boolean getPersonalized() {
+		return this.personalized;
+	}
 
+	/**
+	 * @param personalized the personalized to set
+	 */
 	public void setPersonalized(Boolean personalized) {
 		this.personalized = personalized;
 	}
-
-	public Boolean getPersonalized() {
-		return personalized;
-	}
 	
+	/**
+	 * @return @see {@link #getPersonalized()}
+	 */
 	public Boolean isPersonalized() {
 		return personalized;
 	}
+	
+	/**
+	 * @return the applicationName
+	 */
+	public String getApplicationName() {
+		return this.applicationName;
+	}
 
+	/**
+	 * @param applicationName the applicationName to set
+	 */
 	public void setApplicationName(String applicationName) {
 		this.applicationName = applicationName;
 	}
 
-	public String getApplicationName() {
-		return applicationName;
-	}
+	/**
+	 * @return the referer
+	 */
 	public String getReferer() {
 		return this.referer;
 	}
 
+	/**
+	 * @param referer the referer to set
+	 */
 	public void setReferer(String referer) {
 		this.referer = referer;
 	}

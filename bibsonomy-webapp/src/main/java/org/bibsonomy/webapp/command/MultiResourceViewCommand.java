@@ -53,41 +53,52 @@ public class MultiResourceViewCommand extends ResourceViewCommand {
 	 */
 	public <T extends Resource> List<String> getListsDescription(final Class<T> resourceType) {
 		if (resourceType == BibTex.class) {
-			return getListsBibTeXDescription();
+			return this.getListsBibTeXDescription();
 		} else if (resourceType == Bookmark.class) {
-			return getListsBookmarkDescription();
+			return this.getListsBookmarkDescription();
 		}
 		throw new UnsupportedResourceTypeException(resourceType.getName());
 	}
 
+	/**
+	 * @return the listsBibTeXDescription
+	 */
 	public List<String> getListsBibTeXDescription() {
 		return this.listsBibTeXDescription;
 	}
 
-
-	public void setListsBibTeXDescription(final List<String> listBibTeXDescription) {
-		this.listsBibTeXDescription = listBibTeXDescription;
+	/**
+	 * @param listsBibTeXDescription the listsBibTeXDescription to set
+	 */
+	public void setListsBibTeXDescription(List<String> listsBibTeXDescription) {
+		this.listsBibTeXDescription = listsBibTeXDescription;
 	}
 
-
+	/**
+	 * @return the listsBookmarkDescription
+	 */
 	public List<String> getListsBookmarkDescription() {
 		return this.listsBookmarkDescription;
 	}
 
-
-	public void setListsBookmarkDescription(final List<String> listBookmarkDescription) {
-		this.listsBookmarkDescription = listBookmarkDescription;
+	/**
+	 * @param listsBookmarkDescription the listsBookmarkDescription to set
+	 */
+	public void setListsBookmarkDescription(List<String> listsBookmarkDescription) {
+		this.listsBookmarkDescription = listsBookmarkDescription;
 	}
 
-
+	/**
+	 * @return the listsBibTeX
+	 */
 	public List<ListCommand<Post<BibTex>>> getListsBibTeX() {
 		return this.listsBibTeX;
 	}
 
-
+	/**
+	 * @return the listsBookmark
+	 */
 	public List<ListCommand<Post<Bookmark>>> getListsBookmark() {
 		return this.listsBookmark;
-	}
-
-	
+	}	
 }

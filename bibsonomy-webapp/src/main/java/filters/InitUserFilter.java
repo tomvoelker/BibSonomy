@@ -52,17 +52,23 @@ import servlets.listeners.InitialConfigListener;
  * 
  */
 public class InitUserFilter implements Filter {
-
+	private final static Log log = LogFactory.getLog(InitUserFilter.class);
+	
 	/*
 	 * All X.509 users get the same password in the database, since it is never
 	 * used for authentication.
 	 */
 	private static final String X509_GENERIC_PASSWORD = "*";
 	
+	/**
+	 * the resources (css, js) path
+	 */
 	public static final String STATIC_RESOURCES = "/resources";
+	
+	/**
+	 * the api path
+	 */
 	public static final String API = "/api";
-
-	private final static Log log = LogFactory.getLog(InitUserFilter.class);
 
 	/**
 	 * The filter configuration object we are associated with. If this value is
@@ -80,10 +86,30 @@ public class InitUserFilter implements Filter {
 	 * Constants to describe Cookie and Bean informations
 	 */
 	public static final String USER_COOKIE_NAME = "_currUser";
+	
+	/**
+	 * TODO: improve documentation
+	 */
 	public static final String OPENID_COOKIE_NAME = "_openIDUser";
+	
+	/**
+	 * TODO: improve documentation
+	 */
 	public static final String REQ_ATTRIB_USER = "user";
+	
+	/**
+	 * TODO: improve documentation
+	 */
 	public static final String REQ_ATTRIB_LANGUAGE = SessionLocaleResolver.class.getName() + ".LOCALE";
+	
+	/**
+	 * TODO: improve documentation
+	 */
 	public static final String REQ_ATTRIB_LOGIN_USER = "loginUser";
+	
+	/**
+	 * TODO: improve documentation
+	 */
 	public static final String REQ_ATTRIB_LOGIN_USER_PASSWORD = "loginUserPassword";
 	
 	/**
@@ -559,6 +585,8 @@ public class InitUserFilter implements Filter {
 
 
 	/**
+	 * TODO: move to UrlUtils!!
+	 * 
 	 * Decodes a string with {@link URLDecoder#decode(String, String)} with
 	 * UTF-8.
 	 * 

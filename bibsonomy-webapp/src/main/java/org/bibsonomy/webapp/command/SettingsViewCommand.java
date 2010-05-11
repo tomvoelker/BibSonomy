@@ -29,7 +29,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 * this three types determine the different possible actions which will be handled 
 	 * by this controller for the settings.settings site
 	 */
-	String action;
+	private String action;
 	
 	/**
 	 * current user
@@ -169,14 +169,23 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		return this.overwrite;
 	}
 
+	/**
+	 * @param overwrite the overwrite to set
+	 */
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
 	}
 
+	/**
+	 * @return the file
+	 */
 	public CommonsMultipartFile getFile() {
 		return this.file;
 	}
 
+	/**
+	 * @param file the file to set
+	 */
 	public void setFile(CommonsMultipartFile file) {
 		this.file = file;
 	}
@@ -268,10 +277,6 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public void setEndHash(String endHash) {
 		this.endHash = endHash;
 	}
-
-	public void setOldPassword(String oldPassword) {
-		this.oldPassword = oldPassword;
-	}
 	
 	public void setHasOwnGroup(boolean hasOwnGroup) {
 		this.hasOwnGroup = hasOwnGroup;
@@ -280,87 +285,157 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	public boolean getHasOwnGroup() {
 		return hasOwnGroup;
 	}
+	
+	/**
+	 * @return the friendsOfUser
+	 */
+	public List<User> getFriendsOfUser() {
+		return this.friendsOfUser;
+	}
 
+	/**
+	 * @param friendsOfUser the friendsOfUser to set
+	 */
 	public void setFriendsOfUser(List<User> friendsOfUser) {
 		this.friendsOfUser = friendsOfUser;
 	}
 
-	public List<User> getFriendsOfUser() {
-		return friendsOfUser;
+	/**
+	 * @return the userFriends
+	 */
+	public List<User> getUserFriends() {
+		return this.userFriends;
 	}
 
+	/**
+	 * @param userFriends the userFriends to set
+	 */
 	public void setUserFriends(List<User> userFriends) {
 		this.userFriends = userFriends;
 	}
 
-	public List<User> getUserFriends() {
-		return userFriends;
-	}
-
+	/**
+	 * @return the user
+	 */
 	public User getUser() {
 		return this.user;
 	}
 
+	/**
+	 * @param user the user to set
+	 */
 	public void setUser(User user) {
 		this.user = user;
 	}
 
+	/**
+	 * @return the oldPassword
+	 */
 	public String getOldPassword() {
 		return this.oldPassword;
 	}
 
+	/**
+	 * @param oldPassword the oldPassword to set
+	 */
+	public void setOldPassword(String oldPassword) {
+		this.oldPassword = oldPassword;
+	}
+
+	/**
+	 * @return the newPassword
+	 */
 	public String getNewPassword() {
 		return this.newPassword;
 	}
 
-	public String getNewPasswordRetype() {
-		return this.newPasswordRetype;
-	}
-
+	/**
+	 * @param newPassword the newPassword to set
+	 */
 	public void setNewPassword(String newPassword) {
 		this.newPassword = newPassword;
 	}
 
+	/**
+	 * @return the newPasswordRetype
+	 */
+	public String getNewPasswordRetype() {
+		return this.newPasswordRetype;
+	}
+
+	/**
+	 * @param newPasswordRetype the newPasswordRetype to set
+	 */
 	public void setNewPasswordRetype(String newPasswordRetype) {
 		this.newPasswordRetype = newPasswordRetype;
 	}
-	
+
+	/**
+	 * @return the action
+	 */
 	public String getAction() {
 		return this.action;
 	}
 
+	/**
+	 * @param action the action to set
+	 */
 	public void setAction(String action) {
 		this.action = action;
 	}
 
+	/**
+	 * @return the delete
+	 */
 	public String getDelete() {
 		return this.delete;
 	}
 
+	/**
+	 * @param delete the delete to set
+	 */
 	public void setDelete(String delete) {
 		this.delete = delete;
 	}
-
+	
+	/**
+	 * @return the changeTo
+	 */
 	public int getChangeTo() {
 		return this.changeTo;
 	}
 
+	/**
+	 * @param changeTo the changeTo to set
+	 */
 	public void setChangeTo(int changeTo) {
 		this.changeTo = changeTo;
 	}
-	
+
+	/**
+	 * @return the importData
+	 */
+	public String getImportData() {
+		return this.importData;
+	}
+
+	/**
+	 * @param importData the importData to set
+	 */
 	public void setImportData(String importData) {
 		this.importData = importData;
 	}
 
-	public String getImportData() {
-		return importData;
-	}
-
+	/**
+	 * @return the group
+	 */
 	public Group getGroup() {
 		return this.group;
 	}
 
+	/**
+	 * @param group the group to set
+	 */
 	public void setGroup(Group group) {
 		this.group = group;
 	}
