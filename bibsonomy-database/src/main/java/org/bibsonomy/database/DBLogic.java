@@ -1007,14 +1007,15 @@ public class DBLogic implements LogicInterface {
 	@Override
 	public String updateUser(final User user, final UserUpdateOperation operation) {
 		/*
-		 * only logged in users can update user settings
+		 * only logged in users can update user settings.
 		 */
-		this.ensureLoggedIn();
-		/*
-		 * only admins can change settings of /other/ users
-		 */
-		this.permissionDBManager.ensureIsAdminOrSelf(loginUser, user.getName());
-
+        if(!UserUpdateOperation.ACTIVATE.equals(operation)) {
+            this.ensureLoggedIn();
+            /*
+             * only admins can change settings of /other/ users
+             */
+		    this.permissionDBManager.ensureIsAdminOrSelf(loginUser, user.getName());
+        }
 		if (UserUpdateOperation.UPDATE_ALL.equals(operation)) {
 			/*
 			 * update only (!) spammer settings
@@ -1061,6 +1062,9 @@ public class DBLogic implements LogicInterface {
 	
 				case UPDATE_LDAP_TIMESTAMP:
 					return this.userDBManager.updateLastLdapRequest(user, session);
+					
+                case ACTIVATE:
+                    return this.userDBManager.activateUser(user, session);
 			}
 
 		} finally {
@@ -1080,6 +1084,7 @@ public class DBLogic implements LogicInterface {
 
 		try {
 			final User existingUser = userDBManager.getUserDetails(user.getName(), session);
+            final List<User> pendingUserList = userDBManager.getPendingUserByUsername(user.getName(), 0, Integer.MAX_VALUE, session);
 			if (update) {
 				/*
 				 * update the user
@@ -1097,7 +1102,7 @@ public class DBLogic implements LogicInterface {
 			/*
 			 * create a new user
 			 */
-			if (present(existingUser.getName())) {
+			if (present(existingUser.getName()) || pendingUserList.size() > 0) {
 				/*
 				 * error: user name already exists
 				 */
