@@ -32,32 +32,65 @@ public class RankingCommand {
 	 */
 	private boolean normalize = false;
 	
-	public Integer getPeriodStart() {
-		return this.periodStart;
-	}
-	public void setPeriodStart(Integer periodStart) {
-		this.periodStart = periodStart;
-	}
-	public Integer getPeriodEnd() {
-		return this.periodEnd;
-	}
-	public void setPeriodEnd(Integer periodEnd) {
-		this.periodEnd = periodEnd;
-	}
+	/**
+	 * @return the period
+	 */
 	public Integer getPeriod() {
 		return this.period;
 	}
+
+	/**
+	 * @param period the period to set
+	 */
 	public void setPeriod(Integer period) {
 		this.period = period;
 	}
+
+	/**
+	 * @return the periodStart
+	 */
+	public Integer getPeriodStart() {
+		return this.periodStart;
+	}
+
+	/**
+	 * @param periodStart the periodStart to set
+	 */
+	public void setPeriodStart(Integer periodStart) {
+		this.periodStart = periodStart;
+	}
+
+	/**
+	 * @return the periodEnd
+	 */
+	public Integer getPeriodEnd() {
+		return this.periodEnd;
+	}
+
+	/**
+	 * @param periodEnd the periodEnd to set
+	 */
+	public void setPeriodEnd(Integer periodEnd) {
+		this.periodEnd = periodEnd;
+	}
+
+	/**
+	 * @return the name of the {@link #method} (lower case)
+	 */
 	public String getMethod() {
 		return this.method.name().toLowerCase();
 	}
 	
+	/**
+	 * @return the {@link #method}
+	 */
 	public RankingMethod getMethodObj() {
 		return this.method;
 	}
 	
+	/**
+	 * @param method the name of the method to set
+	 */
 	public void setMethod(String method) {
 		if (method != null) {
 			RankingMethod newMethod = EnumUtils.searchEnumByName(RankingMethod.values(), method);
@@ -66,13 +99,24 @@ public class RankingCommand {
 			}
 		}
 	}
+	
+	/**
+	 * @return the normalize
+	 */
 	public boolean getNormalize() {
 		return this.normalize;
 	}
+	
+	/**
+	 * @param normalize the normalize to set
+	 */
 	public void setNormalize(boolean normalize) {
 		this.normalize = normalize;
 	}
-	
+
+	/**
+	 * @return the next period
+	 */
 	public Integer getNextPeriod() {
 		if (this.period == null) {
 			return 1;
@@ -80,11 +124,13 @@ public class RankingCommand {
 		return this.period + 1;
 	}
 	
+	/**
+	 * @return the previous period
+	 */
 	public Integer getPrevPeriod() {
 		if (this.period == null || this.period == 0) {
 			return 0;
 		}
 		return this.period - 1;
 	}
-
 }
