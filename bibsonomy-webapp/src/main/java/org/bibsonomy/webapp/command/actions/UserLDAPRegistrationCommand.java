@@ -10,11 +10,11 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @version $Id$
  */
 public class UserLDAPRegistrationCommand extends BaseCommand implements Serializable {
-	
 	/**
 	 * serial uid
 	 */
 	private static final long serialVersionUID = 1371638749968299277L;
+	
 	
 	/**
 	 * Holds the details of the user which wants to register (like name, email, password)
@@ -42,18 +42,22 @@ public class UserLDAPRegistrationCommand extends BaseCommand implements Serializ
 	 */
 	public void setRegisterUser(User registerUser) {
 		this.registerUser = registerUser;
-	}
+	}	
 	
-	
+	/**
+	 * @return the loginmessage
+	 */
 	public String getLoginmessage() {
 		return this.loginmessage;
 	}
 
+	/**
+	 * @param loginmessage the loginmessage to set
+	 */
 	public void setLoginmessage(String loginmessage) {
 		this.loginmessage = loginmessage;
 	}
-	
-	
+
 	/**
 	 * @return registration step
 	 */

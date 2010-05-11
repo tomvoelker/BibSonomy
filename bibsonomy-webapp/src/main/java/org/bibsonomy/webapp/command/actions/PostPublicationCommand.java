@@ -1,12 +1,13 @@
 package org.bibsonomy.webapp.command.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
-import org.bibsonomy.util.ValidationUtils;
 import org.bibsonomy.webapp.command.ListCommand;
 import org.bibsonomy.webapp.command.TabCommand;
 import org.bibsonomy.webapp.command.TabsCommandInterface;
@@ -26,9 +27,9 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 */
 	private static final String TAB_URL = "/postPublication"; 
 	
-	/****************************
+	/* ***************************
 	 * FOR THE TAB FUNCTIONALITY
-	 ****************************/
+	 * ***************************/
 	
 	/**
 	 * TAB HEADER LOCALIZED
@@ -39,14 +40,50 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		"post_bibtex.bibtex_endnote.title", 
 		"post_bibtex.doi_isbn.title"
 	};
+	
 	/**
 	 * stores if the user wants to overwrite existing posts 
 	 */
 	private boolean overwrite;
+	
 	/**
 	 *  id of currently selected tab 
 	 */
 	protected Integer selTab = null;
+	
+	/**
+	 * holds the tabcommands, containing tuples of the number of a tab and the message key
+	 * representing the clickable textheader of the corresponding tab. 
+	 */
+	private List<TabCommand> tabs;
+	
+	/**
+	 * the description of the snippet/upload file
+	 */
+	private String description;
+	
+	/**
+	 * constructor
+	 * inits the tabs and sets their titles
+	 */
+	public PostPublicationCommand() {
+		tabs = new ArrayList<TabCommand>();
+		// Preparation for all tabs
+		//=== make the tabtitle available
+		this.addTabs(tabTitles);
+
+		//=== change default tab to the manual tab
+		
+		if (!present(selTab))
+			selTab = 0;
+		
+		this.setTabURL(TAB_URL);
+		
+		/*
+		 * defaults:
+		 */
+		this.whitespace = "_";
+	}
 	
 	/**
 	 * @return The index of the currently selected tab.
@@ -61,12 +98,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setSelTab(final Integer selectedTab) {
 		this.selTab = selectedTab;
 	}
-	
-	/**
-	 * holds the tabcommands, containing tuples of the number of a tab and the message key
-	 * representing the clickable textheader of the corresponding tab. 
-	 */
-	private List<TabCommand> tabs;
 	
 	/**
 	 * @return the tabcommands (tabs)
@@ -159,23 +190,17 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 		this.deleteCheckedPosts = deleteCheckedPosts;
 	}
 	
-	
 	/**
-	 * the description of the snippet/upload file
+	 * @return the description
 	 */
-	private String description;
-	
-	
 	public String getDescription() {
 		return this.description;
 	}
-	
+
 	@Override
 	public void setDescription(final String description) {
 		this.description = description;
 	}
-	
-	
 	
 	/****************************
 	 * SPECIAL FOR FILE UPLOAD
@@ -186,90 +211,121 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	 */
 	private CommonsMultipartFile file;
 	
-	
+	/**
+	 * @return the file
+	 */
 	public CommonsMultipartFile getFile() {
 		return this.file;
 	}
 
-	public void setFile(final CommonsMultipartFile file) {
+	/**
+	 * @param file the file to set
+	 */
+	public void setFile(CommonsMultipartFile file) {
 		this.file = file;
 	}
-	
-	
+
 	/**
 	 * The whitespace substitute
 	 */
 	private String whitespace;
 	
+	/**
+	 * @return the whitespace
+	 */
 	public String getWhitespace() {
 		return this.whitespace;
 	}
 
-	public void setWhitespace(final String whitespace) {
+	/**
+	 * @param whitespace the whitespace to set
+	 */
+	public void setWhitespace(String whitespace) {
 		this.whitespace = whitespace;
 	}
 
-	
 	/**
 	 * encoding of the file
 	 */
 	private String encoding;
 	
+	/**
+	 * @return the encoding
+	 */
 	public String getEncoding() {
 		return this.encoding;
 	}
 
-	public void setEncoding(final String encoding) {
+	/**
+	 * @param encoding the encoding to set
+	 */
+	public void setEncoding(String encoding) {
 		this.encoding = encoding;
 	}
 
-	
 	/**
 	 * the delimiter
 	 */
 	private String delimiter;
-
+	
+	/**
+	 * @return the delimiter
+	 */
 	public String getDelimiter() {
 		return this.delimiter;
 	}
 
-	public void setDelimiter(final String delimiter) {
+	/**
+	 * @param delimiter the delimiter to set
+	 */
+	public void setDelimiter(String delimiter) {
 		this.delimiter = delimiter;
 	}
 
-	
 	/**
 	 * Determines, if the bookmarks will be saved before being edited or afterwards
 	 */
 	private boolean editBeforeImport;
 	
-	public boolean getEditBeforeImport() {
-		return this.editBeforeImport;
+	/**
+	 * @param editBeforeImport the editBeforeImport to set
+	 */
+	public void setEditBeforeImport(boolean editBeforeImport) {
+		this.editBeforeImport = editBeforeImport;
 	}
-	
+
+	/**
+	 * @return the editBeforeImport
+	 */
 	public boolean isEditBeforeImport() {
 		return this.editBeforeImport;
 	}
-
-	public void setEditBeforeImport(final boolean editBeforeImport) {
-		this.editBeforeImport = editBeforeImport;
+	
+	/**
+	 * @return @see {@link #isEditBeforeImport()}
+	 */
+	public boolean getEditBeforeImport() {
+		return this.editBeforeImport;
 	}
-	
-	
+
 	/**
 	 * The posts, that were updated during import.
 	 */
-	private Map<String,String> updatedPosts;
-	
-	public Map<String,String> getUpdatedPosts() {
+	private Map<String,String> updatedPosts;	
+
+	/**
+	 * @return the updatedPosts
+	 */
+	public Map<String, String> getUpdatedPosts() {
 		return this.updatedPosts;
 	}
 
-	public void setUpdatedPosts(final Map<String, String> updatedBookmarkEntries) {
-		this.updatedPosts = updatedBookmarkEntries;
+	/**
+	 * @param updatedPosts the updatedPosts to set
+	 */
+	public void setUpdatedPosts(Map<String, String> updatedPosts) {
+		this.updatedPosts = updatedPosts;
 	}
-
-	
 
 	/**
 	 * For multiple posts
@@ -303,7 +359,6 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setPosts(final ListCommand<Post<BibTex>> bibtex) {
 		this.posts = bibtex;
 	}
-
 	
 	@Override
 	public List<Object> getContent() {
@@ -315,36 +370,25 @@ public class PostPublicationCommand extends EditPublicationCommand implements Ta
 	public void setContent(final List<Object> content) {
 		// TODO Auto-generated method stub
 	}
-	
-	public PostPublicationCommand(){
-		tabs = new ArrayList<TabCommand>();
-		// Preparation for all tabs
-		//=== make the tabtitle available
-		addTabs(tabTitles);
 
-		//=== change default tab to the manual tab
-		
-		if (!ValidationUtils.present(selTab))
-			selTab = 0;
-		
-		this.setTabURL(TAB_URL);
-		
-		/*
-		 * defaults:
-		 */
-		this.whitespace = "_";
-	}
-	
-	public boolean getOverwrite() {
-		return this.overwrite;
-	}
-	
+	/**
+	 * @return the overwrite
+	 */
 	public boolean isOverwrite() {
 		return this.overwrite;
 	}
+	
+	/**
+	 * @return @see {@link #isOverwrite()}
+	 */
+	public boolean getOverwrite() {
+		return this.overwrite;
+	}
 
+	/**
+	 * @param overwrite the overwrite to set
+	 */
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
 	}
-	
 }

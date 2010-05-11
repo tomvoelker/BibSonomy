@@ -22,7 +22,8 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	private List<Tag> copytags;
 	
 	private Post<RESOURCE> post;
-	private String tags ;
+	
+	private String tags;
 	
 	private Post<RESOURCE> diffPost;
 	
@@ -41,13 +42,11 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	 */
 	private String user;
 	
-	
 	/**
 	 * When the tag field contains commas, it is only accepted, if this boolean is set to <code>true</code> 
 	 */
 	private boolean acceptComma = false;
 	private boolean containsComma = false;
-	
 	
 	/**
 	 * The abstract (or general) group of the post:
@@ -71,57 +70,92 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	private String recaptcha_response_field;
 	private String captchaHTML;
 
-	
+	/**
+	 * @return the post
+	 */
 	public Post<RESOURCE> getPost() {
 		return this.post;
 	}
 
+	/**
+	 * @param post the post to set
+	 */
 	public void setPost(Post<RESOURCE> post) {
 		this.post = post;
 	}
 
+	/**
+	 * @return the tags
+	 */
+	public String getTags() {
+		return this.tags;
+	}
+
+	/**
+	 * @param tags the tags to set
+	 */
 	public void setTags(String tags) {
 		this.tags = tags;
 	}
 
-	public String getTags() {
-		return tags;
-	}
-
+	/**
+	 * @return the groups
+	 */
 	public List<String> getGroups() {
 		return this.groups;
 	}
 
+	/**
+	 * @param groups the groups to set
+	 */
 	public void setGroups(List<String> groups) {
 		this.groups = groups;
 	}
 
+	/**
+	 * @return the relevantGroups
+	 */
 	public List<String> getRelevantGroups() {
 		return this.relevantGroups;
 	}
 
+	/**
+	 * @param relevantGroups the relevantGroups to set
+	 */
 	public void setRelevantGroups(List<String> relevantGroups) {
 		this.relevantGroups = relevantGroups;
 	}
-	
+
+	/**
+	 * @return the recommendedTags
+	 */
 	public SortedSet<RecommendedTag> getRecommendedTags() {
 		return this.recommendedTags;
 	}
 
+	/**
+	 * @param recommendedTags the recommendedTags to set
+	 */
 	public void setRecommendedTags(SortedSet<RecommendedTag> recommendedTags) {
 		this.recommendedTags = recommendedTags;
 	}
-
+		
+	/**
+	 * @return the relevantTagSets
+	 */
 	public Map<String, Map<String, List<String>>> getRelevantTagSets() {
 		return this.relevantTagSets;
 	}
 
+	/**
+	 * @param relevantTagSets the relevantTagSets to set
+	 */
 	public void setRelevantTagSets(Map<String, Map<String, List<String>>> relevantTagSets) {
 		this.relevantTagSets = relevantTagSets;
 	}
 
-		
-	/** Sets the tags from the copied post.
+	/**
+	 * Sets the tags from the copied post.
 	 * Needed for the (old) "copy" links.
 	 * 
 	 * @param tags
@@ -133,50 +167,86 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 		}
 	}
 	
-	public List<Tag> getCopytags(){
+	/**
+	 * @return the copytags
+	 */
+	public List<Tag> getCopytags() {
 		return this.copytags;
 	}
-	
-	public void setCopytags(final List<Tag> tags){
-		this.copytags = tags;
+
+	/**
+	 * @param copytags the copytags to set
+	 */
+	public void setCopytags(List<Tag> copytags) {
+		this.copytags = copytags;
 	}
 
+	/**
+	 * @return the abstractGrouping
+	 */
 	public String getAbstractGrouping() {
 		return this.abstractGrouping;
 	}
 
+	/**
+	 * @param abstractGrouping the abstractGrouping to set
+	 */
 	public void setAbstractGrouping(String abstractGrouping) {
 		this.abstractGrouping = abstractGrouping;
 	}
 
+	/**
+	 * @return the diffPost
+	 */
 	public Post<RESOURCE> getDiffPost() {
 		return this.diffPost;
 	}
 
+	/**
+	 * @param diffPost the diffPost to set
+	 */
 	public void setDiffPost(Post<RESOURCE> diffPost) {
 		this.diffPost = diffPost;
 	}
 
+	/**
+	 * @return the intraHashToUpdate
+	 */
 	public String getIntraHashToUpdate() {
 		return this.intraHashToUpdate;
 	}
 
+	/**
+	 * @param intraHashToUpdate the intraHashToUpdate to set
+	 */
 	public void setIntraHashToUpdate(String intraHashToUpdate) {
 		this.intraHashToUpdate = intraHashToUpdate;
 	}
 
+	/**
+	 * @return the acceptComma
+	 */
 	public boolean isAcceptComma() {
 		return this.acceptComma;
 	}
 
+	/**
+	 * @param acceptComma the acceptComma to set
+	 */
 	public void setAcceptComma(boolean acceptComma) {
 		this.acceptComma = acceptComma;
 	}
-
+	
+	/**
+	 * @return the containsComma
+	 */
 	public boolean getContainsComma() {
 		return this.containsComma;
 	}
 
+	/**
+	 * @param containsComma the containsComma to set
+	 */
 	public void setContainsComma(boolean containsComma) {
 		this.containsComma = containsComma;
 	}
@@ -194,7 +264,7 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 
 	/**
 	 * @see #setPostID(int)
-	 * @return
+	 * @return the postID used by the recommenders
 	 */
 	public int getPostID() {
 		return postID;
@@ -231,28 +301,46 @@ public class EditPostCommand<RESOURCE extends Resource> extends PostCommand {
 	public void setUser(String user) {
 		this.user = user;
 	}
-	
-	public String getCaptchaHTML() {
-		return this.captchaHTML;
-	}
 
-	public void setCaptchaHTML(String captchaHTML) {
-		this.captchaHTML = captchaHTML;
-	}
-
+	/**
+	 * @return the recaptcha_challenge_field
+	 */
 	public String getRecaptcha_challenge_field() {
 		return this.recaptcha_challenge_field;
 	}
 
-	public void setRecaptcha_challenge_field(String recaptcha_challenge_field) {
-		this.recaptcha_challenge_field = recaptcha_challenge_field;
+	/**
+	 * @param recaptchaChallengeField the recaptcha_challenge_field to set
+	 */
+	public void setRecaptcha_challenge_field(String recaptchaChallengeField) {
+		this.recaptcha_challenge_field = recaptchaChallengeField;
 	}
 
+	/**
+	 * @return the recaptcha_response_field
+	 */
 	public String getRecaptcha_response_field() {
 		return this.recaptcha_response_field;
 	}
 
-	public void setRecaptcha_response_field(String recaptcha_response_field) {
-		this.recaptcha_response_field = recaptcha_response_field;
+	/**
+	 * @param recaptchaResponseField the recaptcha_response_field to set
+	 */
+	public void setRecaptcha_response_field(String recaptchaResponseField) {
+		this.recaptcha_response_field = recaptchaResponseField;
+	}
+
+	/**
+	 * @return the captchaHTML
+	 */
+	public String getCaptchaHTML() {
+		return this.captchaHTML;
+	}
+
+	/**
+	 * @param captchaHTML the captchaHTML to set
+	 */
+	public void setCaptchaHTML(String captchaHTML) {
+		this.captchaHTML = captchaHTML;
 	}
 }

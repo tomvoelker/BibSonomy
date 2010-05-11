@@ -10,7 +10,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
  * @author mwa
  * @version $Id$
  */
-public class ImportCommand extends BaseCommand{
+public class ImportCommand extends BaseCommand {
 	
 	/** when true, duplicate entries will be overwritten **/
 	private boolean overwrite;
@@ -32,15 +32,14 @@ public class ImportCommand extends BaseCommand{
 	/** the file to import **/
 	private CommonsMultipartFile file;
 	
-	private Map<String, String> newBookmarks = null;
+	private Map<String, String> newBookmarks;
 
-	private Map<String, String> updatedBookmarks = null;
+	private Map<String, String> updatedBookmarks;
 
-	private List<String> nonCreatedBookmarks = null;
+	private List<String> nonCreatedBookmarks;
 	
-	private List<String> storedConcepts = null;
+	private List<String> storedConcepts;
 	
-
 	/** for delicious import only, import bookmarks or bundles? **/
 	private String importData;
 	
@@ -50,48 +49,56 @@ public class ImportCommand extends BaseCommand{
 	public boolean isOverwrite() {
 		return this.overwrite;
 	}
+	
 	/**
 	 * @param overwrite
 	 */
 	public void setOverwrite(boolean overwrite) {
 		this.overwrite = overwrite;
 	}
+	
 	/**
 	 * @return the actual import-type
 	 */
 	public String getImportType() {
 		return this.type;
 	}
+	
 	/**
 	 * @param type
 	 */
 	public void setImportType(String type) {
 		this.type = type;
 	}
+	
 	/**
 	 * @return the userName, required for importing resources form a remote service
 	 */
 	public String getUserName() {
 		return this.userName;
 	}
+	
 	/**
 	 * @param userName
 	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+	
 	/**
 	 * @return the user's password
 	 */
 	public String getPassWord() {
 		return this.passWord;
 	}
+	
 	/**
 	 * @param passWord
 	 */
 	public void setPassWord(String passWord) {
 		this.passWord = passWord;
 	}
+	
 	/**
 	 * 
 	 * @return a Map containing the URLs of all created bookmarks
@@ -99,6 +106,7 @@ public class ImportCommand extends BaseCommand{
 	public Map<String, String> getNewBookmarks() {
 		return this.newBookmarks;
 	}
+	
 	/**
 	 * 
 	 * @param newBookmarks
@@ -106,6 +114,7 @@ public class ImportCommand extends BaseCommand{
 	public void setNewBookmarks(Map<String, String> newBookmarks) {
 		this.newBookmarks = newBookmarks;
 	}
+	
 	/**
 	 * 
 	 * @return a Map containing the URLs of all updated bookmarks
@@ -113,6 +122,7 @@ public class ImportCommand extends BaseCommand{
 	public Map<String, String> getUpdatedBookmarks() {
 		return this.updatedBookmarks;
 	}
+	
 	/**
 	 * 
 	 * @param updatedBookmarks
@@ -120,6 +130,7 @@ public class ImportCommand extends BaseCommand{
 	public void setUpdatedBookmarks(Map<String, String> updatedBookmarks) {
 		this.updatedBookmarks = updatedBookmarks;
 	}
+	
 	/**
 	 * 
 	 * @return a Map containing the URLs of all non created bookmarks
@@ -127,6 +138,7 @@ public class ImportCommand extends BaseCommand{
 	public List<String> getNonCreatedBookmarks() {
 		return this.nonCreatedBookmarks;
 	}
+	
 	/**
 	 * 
 	 * @param nonCreatedBookmarks
@@ -134,72 +146,72 @@ public class ImportCommand extends BaseCommand{
 	public void setNonCreatedBookmarks(List<String> nonCreatedBookmarks) {
 		this.nonCreatedBookmarks = nonCreatedBookmarks;
 	}
+	
 	/**
-	 * 
-	 * @return
+	 * @return the group
 	 */
 	public String getGroup() {
 		return this.group;
 	}
+	
 	/**
-	 * 
-	 * @param group
+	 * @param group the group to set
 	 */
 	public void setGroup(String group) {
 		this.group = group;
 	}
+	
 	/**
-	 * 
-	 * @return
+	 * @return the file
 	 */
 	public CommonsMultipartFile getFile() {
 		return this.file;
 	}
+	
 	/**
-	 * 
-	 * @param file
+	 * @param file the file to set
 	 */
 	public void setFile(CommonsMultipartFile file) {
 		this.file = file;
 	}
+	
 	/**
-	 * 
-	 * @return
+	 * @return the totalCount
 	 */
 	public int getTotalCount() {
 		return this.totalCount;
 	}
+
 	/**
-	 * 
-	 * @param totalCount
+	 * @param totalCount the totalCount to set
 	 */
 	public void setTotalCount(int totalCount) {
 		this.totalCount = totalCount;
 	}
+	
 	/**
-	 * 
-	 * @return
+	 * @return the storedConcepts
 	 */
 	public List<String> getStoredConcepts() {
 		return this.storedConcepts;
 	}
+
 	/**
-	 * 
-	 * @param storedConcepts
+	 * @param storedConcepts the storedConcepts to set
 	 */
 	public void setStoredConcepts(List<String> storedConcepts) {
 		this.storedConcepts = storedConcepts;
 	}
+
 	/**
-	 * 
-	 * @return
+	 * @return the importData
 	 */
 	public String getImportData() {
 		return this.importData;
 	}
+
 	/**
-	 * 
-	 * @param importData
+	 * @param importData the importData to set
 	 */
 	public void setImportData(String importData) {
 		this.importData = importData;

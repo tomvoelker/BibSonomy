@@ -12,11 +12,9 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @version $Id$
  */
 public class UserRegistrationCommand extends BaseCommand implements Serializable {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1371638749968299277L;
+	
+	
 	/**
 	 * Holds the details of the user which wants to register (like name, email, password)
 	 */
@@ -43,8 +41,6 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	 * User accepts our privacy statement and AGB.
 	 */
 	private boolean acceptPrivacy;
-	
-	
 
 	/** 
 	 * @return The user which tries to register.
@@ -59,45 +55,80 @@ public class UserRegistrationCommand extends BaseCommand implements Serializable
 	public void setRegisterUser(User registerUser) {
 		this.registerUser = registerUser;
 	}
-
+	
+	/**
+	 * @return the captchaHTML
+	 */
 	public String getCaptchaHTML() {
 		return this.captchaHTML;
 	}
 
+	/**
+	 * @param captchaHTML the captchaHTML to set
+	 */
 	public void setCaptchaHTML(String captchaHTML) {
 		this.captchaHTML = captchaHTML;
 	}
 
+	/**
+	 * @return the recaptcha_challenge_field
+	 */
 	public String getRecaptcha_challenge_field() {
 		return this.recaptcha_challenge_field;
 	}
 
-	public void setRecaptcha_challenge_field(String recaptcha_challenge_field) {
-		this.recaptcha_challenge_field = recaptcha_challenge_field;
+	/**
+	 * @param recaptchaChallengeField the recaptcha_challenge_field to set
+	 */
+	public void setRecaptcha_challenge_field(String recaptchaChallengeField) {
+		this.recaptcha_challenge_field = recaptchaChallengeField;
 	}
 
+	/**
+	 * @return the recaptcha_response_field
+	 */
 	public String getRecaptcha_response_field() {
 		return this.recaptcha_response_field;
 	}
 
-	public void setRecaptcha_response_field(String recaptcha_response_field) {
-		this.recaptcha_response_field = recaptcha_response_field;
+	/**
+	 * @param recaptchaResponseField the recaptcha_response_field to set
+	 */
+	public void setRecaptcha_response_field(String recaptchaResponseField) {
+		this.recaptcha_response_field = recaptchaResponseField;
 	}
 
+	/**
+	 * @return the passwordCheck
+	 */
 	public String getPasswordCheck() {
 		return this.passwordCheck;
 	}
 
+	/**
+	 * @param passwordCheck the passwordCheck to set
+	 */
 	public void setPasswordCheck(String passwordCheck) {
 		this.passwordCheck = passwordCheck;
 	}
-
+	
+	/**
+	 * @return the acceptPrivacy
+	 */
 	public boolean isAcceptPrivacy() {
 		return this.acceptPrivacy;
 	}
+	
+	/**
+	 * @return @see {@link #isAcceptPrivacy()}
+	 */
 	public boolean getAcceptPrivacy() {
 		return this.acceptPrivacy;
 	}
+
+	/**
+	 * @param acceptPrivacy the acceptPrivacy to set
+	 */
 	public void setAcceptPrivacy(boolean acceptPrivacy) {
 		this.acceptPrivacy = acceptPrivacy;
 	}

@@ -9,11 +9,7 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @author cvo
  * @version $Id$
  */
-public class DownloadFileCommand extends BaseCommand implements Serializable{
-
-	/**
-	 * 
-	 */
+public class DownloadFileCommand extends BaseCommand implements Serializable {
 	private static final long serialVersionUID = 5650155398969930691L;
 
 	/**
