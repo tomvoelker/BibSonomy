@@ -82,15 +82,31 @@ public class PasswordReminderCommand extends BaseCommand implements Serializable
 	public void setRecaptcha_response_field(String recaptcha_response_field) {
 		this.recaptcha_response_field = recaptcha_response_field;
 	}
+
+	/**
+	 * @return the userName
+	 */
 	public String getUserName() {
 		return this.userName;
 	}
+
+	/**
+	 * @param userName the userName to set
+	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
+	/**
+	 * @return the userEmail
+	 */
 	public String getUserEmail() {
 		return this.userEmail;
 	}
+
+	/**
+	 * @param userEmail the userEmail to set
+	 */
 	public void setUserEmail(String userEmail) {
 		this.userEmail = userEmail;
 	}

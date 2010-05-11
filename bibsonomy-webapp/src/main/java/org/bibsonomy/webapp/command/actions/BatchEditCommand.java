@@ -66,7 +66,7 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	 * @param deleteCheckedPosts the flag that determines, weather the dialogue called was configured to 
 	 * edit(delete) or edit(create) existing posts.
 	 */
-	public void setDeleteCheckedPosts(boolean deleteCheckedPosts) {
+	public void setDeleteCheckedPosts(final boolean deleteCheckedPosts) {
 		this.deleteCheckedPosts = deleteCheckedPosts;
 	}
 	
@@ -80,7 +80,7 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	/**
 	 * @param tags the tags to set
 	 */
-	public void setTags(String tags) {
+	public void setTags(final String tags) {
 		this.tags = tags;
 	}
 
@@ -94,7 +94,7 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	/**
 	 * @param oldTags the oldTags to set
 	 */
-	public void setOldTags(Map<String, String> oldTags) {
+	public void setOldTags(final Map<String, String> oldTags) {
 		this.oldTags = oldTags;
 	}
 
@@ -108,7 +108,7 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	/**
 	 * @param newTags the newTags to set
 	 */
-	public void setNewTags(Map<String, String> newTags) {
+	public void setNewTags(final Map<String, String> newTags) {
 		this.newTags = newTags;
 	}
 
@@ -122,15 +122,21 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	/**
 	 * @param delete the delete to set
 	 */
-	public void setDelete(Map<String, Boolean> delete) {
+	public void setDelete(final Map<String, Boolean> delete) {
 		this.delete = delete;
 	}
 
+	/**
+	 * @return the editBeforeImport
+	 */
 	public boolean isEditBeforeImport() {
 		return this.editBeforeImport;
 	}
 
-	public void setEditBeforeImport(boolean editBeforeImport) {
+	/**
+	 * @param editBeforeImport the editBeforeImport to set
+	 */
+	public void setEditBeforeImport(final boolean editBeforeImport) {
 		this.editBeforeImport = editBeforeImport;
 	}
 
@@ -140,19 +146,21 @@ public class BatchEditCommand extends TagResourceViewCommand {
 	}
 
 	@Override
-	public void setResourcetype(String resourcetype) {
+	public void setResourcetype(final String resourcetype) {
 		this.resourcetype = resourcetype;
 	}
-	public boolean getOverwrite() {
-		return this.overwrite;
-	}
-	
+
+	/**
+	 * @return the overwrite
+	 */
 	public boolean isOverwrite() {
 		return this.overwrite;
 	}
 
-	public void setOverwrite(boolean overwrite) {
+	/**
+	 * @param overwrite the overwrite to set
+	 */
+	public void setOverwrite(final boolean overwrite) {
 		this.overwrite = overwrite;
 	}
-
 }
