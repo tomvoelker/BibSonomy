@@ -8,7 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.UserUpdateOperation;
-import org.bibsonomy.common.exceptions.ValidationException;
+import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
@@ -25,6 +25,7 @@ import org.springframework.validation.Errors;
 
 /**
  * @author Clemens Baier
+ * @version $Id$
  */
 public class UserActivationController implements MinimalisticController<UserActivationCommand>, ErrorAware {
 	private static final Log log = LogFactory.getLog(UserActivationController.class);
@@ -43,14 +44,14 @@ public class UserActivationController implements MinimalisticController<UserActi
 
 	@Override
 	public View workOn(UserActivationCommand command) {
-		RequestWrapperContext context = command.getContext();
-
+		final RequestWrapperContext context = command.getContext();
 		command.setPageTitle("activation");
+		
 		/*
 		 * user must not be logged in
 		 */
 		if (context.isUserLoggedIn()) {
-			throw new ValidationException("error.method_not_allowed");
+			throw new AccessDeniedException("error.method_not_allowed");
 		}
 		
 		final String inetAddress = requestLogic.getInetAddress();
