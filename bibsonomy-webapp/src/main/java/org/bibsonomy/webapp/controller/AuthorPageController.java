@@ -27,6 +27,7 @@ import org.bibsonomy.webapp.view.Views;
 public class AuthorPageController extends SingleResourceListControllerWithTags implements MinimalisticController<AuthorResourceCommand>{
 	private static final Log log = LogFactory.getLog(AuthorPageController.class);
 
+	@Override
 	public View workOn(AuthorResourceCommand command) {
 		log.debug(this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
@@ -82,7 +83,8 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 			final ListCommand<?> listCommand = command.getListCommand(resourceType);
 			final List<?> list = listCommand.getList();
 
-			if (list instanceof ResultList) {
+			if (list instanceof ResultList<?>) {
+				@SuppressWarnings("unchecked")
 				final ResultList<Post<?>> resultList = (ResultList<Post<?>>) list;
 				listCommand.setTotalCount(resultList.getTotalCount()); 
 				log.debug("AuthorPageController: resultList.getTotalCount()=" + resultList.getTotalCount());
@@ -106,6 +108,7 @@ public class AuthorPageController extends SingleResourceListControllerWithTags i
 		return Views.getViewByFormat(command.getFormat());		
 	}
 	
+	@Override
 	public AuthorResourceCommand instantiateCommand() {
 		return new AuthorResourceCommand();
 	}
