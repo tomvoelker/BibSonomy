@@ -9,10 +9,8 @@ import org.bibsonomy.webapp.command.BaseCommand;
  * @version $Id$
  */
 public class DeletePostCommand extends BaseCommand implements Serializable{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6623936347565283765L;
+	
 	private String resourceHash;
 
 	/**

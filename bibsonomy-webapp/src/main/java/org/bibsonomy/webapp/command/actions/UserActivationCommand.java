@@ -6,9 +6,9 @@ import org.bibsonomy.webapp.command.BaseCommand;
 
 /**
  * @author Clemens Baier
+ * @version $Id$
  */
 public class UserActivationCommand extends BaseCommand implements Serializable {
-
 	private static final long serialVersionUID = 952301302153030500L;
 	
 	/**
@@ -29,7 +29,4 @@ public class UserActivationCommand extends BaseCommand implements Serializable {
 	public void setActivationCode(String activationCode) {
 		this.activationCode = activationCode;
 	}
-	
-	
-
 }
