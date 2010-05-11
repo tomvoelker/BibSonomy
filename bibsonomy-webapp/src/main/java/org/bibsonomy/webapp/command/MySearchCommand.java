@@ -209,7 +209,7 @@ public class MySearchCommand extends SimpleResourceViewCommand{
 	 * @return a string of the elements
 	 */
 	private String getArrayToString(SortedSet[] list) {
-		StringBuffer buf = new StringBuffer();
+		StringBuilder buf = new StringBuilder();
 		
 		buf.append("[");
 		if (list != null) {
@@ -228,6 +228,7 @@ public class MySearchCommand extends SimpleResourceViewCommand{
 					buf.append(",");
 			}
 		}
+		
 		buf.append("]");		
 		
 		return buf.toString();
