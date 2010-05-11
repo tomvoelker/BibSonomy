@@ -527,6 +527,29 @@ public enum Views implements View {
 	 */
 	FOLLOWERS("followers"),
 	
+	/*
+	 * Error pages
+	 */
+	
+	/**
+	 * 404
+	 */
+	ERROR404("errors/404"),
+
+	/**
+	 * 405
+	 */
+	ERROR405("errors/405"),
+
+	/**
+	 * 500
+	 */
+	ERROR500("errors/500"),
+
+	/**
+	 * 503
+	 */
+	ERROR503("errors/503"),
 	
 	/**
 	 * PUMA the first page you see when entering the application
