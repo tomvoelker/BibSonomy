@@ -1,0 +1,44 @@
+<jsp:root version="2.0"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	
+	<jsp:directive.attribute name="pageTitle" type="java.lang.String" required="true"/>	
+	<jsp:directive.attribute name="heading" fragment="true" required="true"/>
+	<jsp:directive.attribute name="content" fragment="true" required="true"/>	
+	<jsp:directive.attribute name="headerExt" fragment="true" />
+	
+    <fmt:setBundle basename="messages" scope="request"/>
+
+	<jsp:output doctype-root-element="html"	doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" />
+  
+	<jsp:element name="html">
+		<jsp:attribute name="xmlns">http://www.w3.org/1999/xhtml</jsp:attribute>
+		<jsp:body>
+			<head>
+				<meta http-equiv="content-Type" content="text/html; charset=UTF-8" />
+				<link rel="stylesheet" type="text/css" href="http://www.bibsonomy.org/resources/css/style.css" />
+				<link rel="icon" href="http://www.bibsonomy.org/resources/images/favicon.png" type="image/png" />
+				<script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/chrome.js">&amp;nbsp;</script>
+                <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/util.js">&amp;nbsp;</script>
+                <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/recommender.js">&amp;nbsp;</script>
+                <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/jquery_126_min.js">&amp;nbsp;</script>
+                <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/jquery_corner.js">&amp;nbsp;</script>
+                <script type="text/javascript" src="http://www.bibsonomy.org/resources/javascript/jquery_form_224.js">&amp;nbsp;</script> 
+				
+				<title><c:out value="${pageTitle}"/></title>
+				
+				<jsp:invoke fragment="headerExt"/>
+			</head>
+			<body style="background-color: #e5f3fa;">
+
+				<jsp:invoke fragment="content"/>
+
+
+			</body>
+		</jsp:body>
+	</jsp:element>
+
+</jsp:root>
