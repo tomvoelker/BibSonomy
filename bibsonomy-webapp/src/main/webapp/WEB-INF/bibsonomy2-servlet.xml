@@ -254,10 +254,29 @@
 						<property name="controllerBeanName" value="exportLayoutController"/>
 					</bean>
 				</entry>
+				<entry key="/errors/404">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="error404PageController"/>
+					</bean>
+				</entry>
+				<entry key="/errors/405">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="error405PageController"/>
+					</bean>
+				</entry>
+				<entry key="/errors/500">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="error500PageController"/>
+					</bean>
+				</entry>
+				<entry key="/errors/504">
+					<bean parent="controllerBase">
+						<property name="controllerBeanName" value="error503PageController"/>
+					</bean>
+				</entry>
 			</map>
 		</property>
 	</bean>
-	
 
 
 
@@ -689,6 +708,18 @@
 	<!--  #################### static views #################### -->
 	<bean id="buttonPageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
 		<property name="view" value="BUTTONS"></property>
+	</bean>
+	<bean id="error404PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="ERROR404"></property>
+	</bean>
+	<bean id="error405PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="ERROR405"></property>
+	</bean>
+	<bean id="error500PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="ERROR500"></property>
+	</bean>
+	<bean id="error503PageController" class="org.bibsonomy.webapp.controller.special.StaticViewController" scope="request">
+		<property name="view" value="ERROR503"></property>
 	</bean>
 
 	<!--  #################### imports #################### -->
