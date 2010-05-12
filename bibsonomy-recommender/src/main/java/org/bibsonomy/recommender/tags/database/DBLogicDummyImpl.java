@@ -1,5 +1,6 @@
 package org.bibsonomy.recommender.tags.database;
 
+import java.net.URL;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
@@ -14,6 +15,7 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.recommender.tags.database.params.Pair;
+import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
 import org.bibsonomy.recommender.tags.database.params.RecQueryParam;
 import org.bibsonomy.recommender.tags.database.params.RecSettingParam;
 import org.bibsonomy.recommender.tags.database.params.SelectorSettingParam;
@@ -264,6 +266,58 @@ public class DBLogicDummyImpl implements DBLogic {
 	@Override
 	public void setResultSelectorToQuery(Long qid, Long rid)
 			throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Long> getActiveRecommenderSettingIds() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long getAverageLatencyForRecommender(Long sid, Long numberOfQueries)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Long> getDisabledRecommenderSettingIds() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public RecAdminOverview getRecommenderAdminOverview(String id)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map<Long, String> getRecommenderIdsForSettingIds(List<Long> sids)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void removeRecommender(long sid) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateRecommenderUrl(long sid, URL url) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateRecommenderstatus(List<Long> activeRecs,
+			List<Long> disabledRecs) throws SQLException {
 		// TODO Auto-generated method stub
 		
 	}
