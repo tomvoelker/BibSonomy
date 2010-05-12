@@ -268,7 +268,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 				
 		final List<String> singletonList = Collections.singletonList(post.getResource().getIntraHash());
 
-		EasyMock.expect(serverLogic.createPosts(PropertyEqualityArgumentMatcher.eq(posts, "[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.realname", "[0].resource.scraperId", "[0].resource.openURL", "[0].user.IPAddress", "[0].user.basket", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.toClassify", "[0].user.updatedBy", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId"))).andReturn(singletonList);
+		EasyMock.expect(serverLogic.createPosts(PropertyEqualityArgumentMatcher.eq(posts, "[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.realname", "[0].resource.scraperId", "[0].resource.openURL", "[0].user.IPAddress", "[0].user.basket", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.toClassify", "[0].user.updatedBy", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId", "[0].user.activationCode"))).andReturn(singletonList);
 		EasyMock.replay(serverLogic);
 		assertEquals(singletonList, clientLogic.createPosts(posts));
 		EasyMock.verify(serverLogic);
@@ -285,7 +285,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 	}
 	public String createUser(final User user) {
 
-		final User eqUser = PropertyEqualityArgumentMatcher.eq(user, "apiKey", "IPAddress", "basket",  "inbox", "gender", "interests", "hobbies", "profession", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "openID", "ldapId");
+		final User eqUser = PropertyEqualityArgumentMatcher.eq(user, "activationCode", "apiKey", "IPAddress", "basket",  "inbox", "gender", "interests", "hobbies", "profession", "openURL", "place", "spammer", "settings", "toClassify", "updatedBy", "reminderPassword", "openID", "ldapId");
 		
 		final String userName = serverLogic.createUser(eqUser);
 		
@@ -624,7 +624,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		
 		final List<String> singletonList = Collections.singletonList(post.getResource().getIntraHash());
 		
-		EasyMock.expect(serverLogic.updatePosts(PropertyEqualityArgumentMatcher.eq(posts, "[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.realname", "[0].resource.scraperId", "[0].resource.openURL", "[0].user.IPAddress", "[0].user.basket", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.updatedBy", "[0].user.toClassify", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(singletonList);
+		EasyMock.expect(serverLogic.updatePosts(PropertyEqualityArgumentMatcher.eq(posts, "[0].date", "[0].user.apiKey", "[0].user.email", "[0].user.homepage", "[0].user.password", "[0].user.realname", "[0].resource.scraperId", "[0].resource.openURL", "[0].user.IPAddress", "[0].user.basket", "[0].user.inbox", "[0].user.gender", "[0].user.interests", "[0].user.hobbies", "[0].user.profession", "[0].user.openURL", "[0].user.place", "[0].user.spammer", "[0].user.settings", "[0].user.algorithm", "[0].user.prediction", "[0].user.mode", "[0].user.updatedBy", "[0].user.toClassify", "[0].user.reminderPassword", "[0].user.openID", "[0].user.ldapId", "[0].user.activationCode"), PropertyEqualityArgumentMatcher.eq(operation, ""))).andReturn(singletonList);
 		EasyMock.replay(serverLogic);
 		assertEquals(singletonList, clientLogic.updatePosts(posts, operation));
 		EasyMock.verify(serverLogic);
@@ -641,7 +641,7 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		createUser(ModelUtils.getUser());
 	}
 	public String updateUser(final User user, final UserUpdateOperation operation) {
-		EasyMock.expect(serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, "apiKey"))).andReturn("rVal");
+		EasyMock.expect(serverLogic.createUser(PropertyEqualityArgumentMatcher.eq(user, "activationCode", "apiKey"))).andReturn("rVal");
 		EasyMock.replay(serverLogic);
 		assertEquals("rVal", clientLogic.createUser(user));
 		EasyMock.verify(serverLogic);
