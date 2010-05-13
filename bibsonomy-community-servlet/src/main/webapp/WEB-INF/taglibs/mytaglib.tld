@@ -320,5 +320,11 @@
   	<function-class>tags.Functions</function-class>
   	<function-signature>Boolean contains(java.util.Collection, java.lang.Object)</function-signature>
   </function>
+
+  <function>
+  	<name>extractDOI</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String extractDOI(java.lang.String)</function-signature>
+  </function>
   
 </taglib>

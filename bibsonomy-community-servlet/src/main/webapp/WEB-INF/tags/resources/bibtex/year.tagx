@@ -1,0 +1,20 @@
+<jsp:root version="2.0" 
+	xmlns:c="http://java.sun.com/jsp/jstl/core"	
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	
+	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
+	<jsp:directive.attribute name="braces" type="java.lang.Boolean" required="true"/>
+	<jsp:directive.attribute name="month" type="java.lang.Boolean" />
+	
+	<c:choose>
+		<c:when test="${not empty post.resource.month and month == true}">
+			<em>${mtl:cleanBibtex(post.resource.month)}<c:out value=" "/>${mtl:cleanBibtex(post.resource.year)}.<c:out value=" "/></em>
+		</c:when>
+	<c:otherwise>
+		<c:if test="${braces == true}"><c:out value="("/></c:if>
+			<em>${mtl:cleanBibtex(post.resource.year)}</em>
+		<c:if test="${braces == true}"><c:out value=") "/></c:if>
+	</c:otherwise>	
+	</c:choose>	
+</jsp:root>
