@@ -21,11 +21,15 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-model</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
-			<artifactId>bibsonomy-common</artifactId>
+			<artifactId>bibsonomy-layout</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>

@@ -12,8 +12,19 @@
 			(e.g. http://www.bibsonomy.org/resources/css/style.css)
 		</description>
 		<param-name>resdir</param-name>
-		<param-value>/resources</param-value>
+		<param-value>/bibsonomy-community-servlet/resources</param-value>
 	</context-param>	
+
+	<context-param>
+		<param-name>projectHome</param-name>
+		<!-- project home URL, INCLUDING the trailing slash! -->
+		<param-value>http://www.biblicious.org/</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>projectContext</param-name>
+		<param-value>/bibsonomy-community-servlet</param-value>
+	</context-param>
 
 	<listener>
 		<description>
@@ -24,7 +35,14 @@
 		</listener-class>
 	</listener>
 
-
+	<listener>
+		<listener-class>servlets.listeners.InitialConfigListener</listener-class>
+	</listener>
+	<listener>
+		<description>loads beans from applicationContext.xml</description>
+   		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  	</listener>
+  	
 	<servlet>
 		<servlet-name>dispatcher</servlet-name>
 		<servlet-class>
