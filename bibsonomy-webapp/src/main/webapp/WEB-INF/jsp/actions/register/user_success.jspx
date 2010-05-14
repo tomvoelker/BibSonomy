@@ -34,8 +34,6 @@
             <p><fmt:message key="register.activate"/> </p>
 
             <hr style="margin: 2em 0em 2em 0em;"/>
-
-          </div>
       
 	    </jsp:attribute>
       
