@@ -12,6 +12,7 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.RequestWrapperContext;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 import org.springframework.validation.Errors;
 
@@ -93,8 +94,8 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		}
 		
 		
-		// go back where you've come from
-		return Views.SETTINGSPAGE;
+		// success: go back where you've come from
+		return new ExtendedRedirectView("/settings?selTab=1");
 	}
 	
 	private void actionLogging(final SettingsViewCommand command, final User user) {
