@@ -130,7 +130,7 @@ public class ChangePasswordController implements ValidationAwareController<Setti
 			log.debug("password of " + updatedUser + " has been changed successfully");
 			
 		} else {// old password is wrong
-			errors.reject("error.settings.password.incorect");			
+			errors.rejectValue("oldPassword", "error.settings.password.incorect");
 		}
 	}
 
