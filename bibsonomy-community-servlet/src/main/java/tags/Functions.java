@@ -28,6 +28,8 @@ import org.bibsonomy.util.EnumUtils;
 import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 
+import flexjson.JSONSerializer;
+
 
 
 /**
@@ -639,5 +641,30 @@ public class Functions  {
 		return DOIUtils.extractDOI(doiString);
 	}
 	
+	
+	/**
+	 * serialize given object to a json string
+	 * 
+	 * @param object object to serialize
+	 * @param includes list of properties to include
+	 * @param excludes list of properties to exclude
+	 * @param deep deep searialization
+	 * @param pretty pretty printing
+	 * @return
+	 */
+	public static String serializeJSON(final Object object, final String[] includes, final String[] excludes, boolean deep, boolean pretty) {
+		JSONSerializer serializer = new JSONSerializer();
+		
+		String json = "";
+		if( deep ) {
+			json = serializer.include(includes).exclude(excludes).deepSerialize(object);
+		} else if( pretty ) {
+			json = serializer.include(includes).exclude(excludes).prettyPrint(object);
+		} else {
+			json = serializer.include(includes).exclude(excludes).serialize(object);
+		}
+		
+		return json;
+	}
 	
 }
