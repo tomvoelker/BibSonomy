@@ -6,6 +6,9 @@
 	<display-name>bibsonomy-community-servlet</display-name>
 
 
+	<!--+
+	    | context parameters
+	    +-->
 	<context-param>
 		<description>
 			URL path under which static resources (js, css, images, ...) are reachable
@@ -26,6 +29,9 @@
 		<param-value>/bibsonomy-community-servlet</param-value>
 	</context-param>
 
+	<!--+
+	    | context listeners
+	    +-->
 	<listener>
 		<description>
 			loads beans from applicationContext.xml
@@ -42,7 +48,27 @@
 		<description>loads beans from applicationContext.xml</description>
    		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   	</listener>
+
+	<!--+
+	    | filters
+	    +-->
+	<filter>
+		<filter-name>InitUserFilter</filter-name>
+		<filter-class>filters.InitUserFilter</filter-class>
+		<init-param>	
+			<!-- use X.509 certificates instead of DB to authenticate users -->
+			<param-name>useX509forAuth</param-name>
+			<param-value>false</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>InitUserFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
   	
+	<!--+
+	    | servlets
+	    +-->
 	<servlet>
 		<servlet-name>dispatcher</servlet-name>
 		<servlet-class>

@@ -13,6 +13,7 @@
 			<map>
 			    <entry key="/"><ref bean="frontPageController"/></entry>
 				<entry key="/queryResources"><ref bean="resourceQueryController"/></entry>
+				<entry key="/clusterSettings"><ref bean="clusterSettingsController"/></entry>
 			</map>
 		</property>
 	</bean>
@@ -23,6 +24,14 @@
 	</bean>
 	
 	<bean id="resourceQueryController" class="org.bibsonomy.community.webapp.controller.ResourceQueryController">
+	</bean>
+
+	<bean id="clusterSettingsController" class="org.bibsonomy.community.webapp.controller.ClusterSettingsController">
+		<property name="allowedFields">
+			<list>
+				<value>format</value>
+			</list>
+		</property>
 	</bean>
 
 

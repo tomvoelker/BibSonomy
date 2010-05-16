@@ -29,7 +29,36 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-layout</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.openid4java</groupId>
+			<artifactId>openid4java</artifactId>
+			<version>0.9.5</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>spring-dao</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>spring-jdbc</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>flexjson</groupId>
+			<artifactId>flexjson</artifactId>
+			<version>1.9.2</version>
+		</dependency>
+		<dependency>
+		  <groupId>apache-collections</groupId>
+		  <artifactId>commons-collections</artifactId>
+		  <version>3.1</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -90,15 +119,6 @@
 			</extension>
 		</extensions>
 		<plugins>
-			<plugin>
-				<groupId>com.google.code.maven-license-plugin</groupId>
-				<artifactId>maven-license-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>src/main/webapp/**</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>

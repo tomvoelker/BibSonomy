@@ -12,49 +12,9 @@
 	
 <jsp:directive.page contentType="application/json; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-<c:if test="${not empty command.callback}">
-   <c:out value="${command.callback}"/> (
-</c:if>
+	<c:set var="includes" value="${fn:split('clusters.annotation,clusters.instances',',')}"/>
+	<c:set var="excludes" value="${fn:split('*.globalcount,*.stem,bibtex,bookmark,context,tagcloud,commandName,duplicates,filter,layout,restrictToTags,sortPageOrder,sortPage,tagstype,requestedUser,pageTitle,notags,loginMethod,*.class',',')}"/>
 
-
-{  
-   "types" : {
-      "Bookmark" : {
-         "pluralLabel" : "Bookmarks"
-      },
-      "Publication" : {
-         "pluralLabel" : "Publications"
-      },
-      "Tag" : {
-         "pluralLabel" : "Tags"
-      }
-   },
-   
-   "properties" : {
-      "count" : {
-         "valueType" : "number"
-      },
-      "date" : {
-         "valueType" : "date"
-      },
-      "url" : {
-         "valueType" : "url"
-      },
-      "id" : {
-         "valueType" : "url"
-      },
-      "tags" : {
-         "valueType" : "item"
-      },
-      "user" : {
-         "valueType" : "item"
-      }      
-   }
-   
-}
-
-<c:if test="${not empty command.callback}">
-   )
-</c:if> 
+	${mtl:serializeJSON(command, includes, excludes, false, true)}
 
  </jsp:root>
