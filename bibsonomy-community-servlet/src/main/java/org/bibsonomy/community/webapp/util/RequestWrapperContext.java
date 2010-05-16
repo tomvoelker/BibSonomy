@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.bibsonomy.model.User;
 import org.tuckey.web.filters.urlrewrite.UrlRewriter;
 
+import filters.InitUserFilter;
+
 /**
  * <p>
  * Provides access to loginUser, format, ckey, validCkey, etc. by extracting
@@ -40,7 +42,7 @@ public class RequestWrapperContext {
 	 * @return An instance of the logged in user.
 	 */
 	public User getLoginUser() {
-		return null; 
+		return (User) getRequestAttribute(InitUserFilter.REQ_ATTRIB_LOGIN_USER); 
 	}
 	
 	/**
