@@ -326,5 +326,10 @@
   	<function-class>tags.Functions</function-class>
   	<function-signature>String extractDOI(java.lang.String)</function-signature>
   </function>
-  
+    
+  <function>
+  	<name>serializeJSON</name>
+  	<function-class>tags.Functions</function-class>
+  	<function-signature>String serializeJSON(java.lang.Object, java.lang.String[], java.lang.String[], boolean, boolean)</function-signature>
+  </function>
 </taglib>
