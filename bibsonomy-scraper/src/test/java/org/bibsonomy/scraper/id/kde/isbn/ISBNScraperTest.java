@@ -58,7 +58,7 @@ public class ISBNScraperTest {
 	}
 	
 	/**
-	 * starts URL test with id url_167
+	 * starts URL test with id url_170
 	 */
 	@Test
 	@Ignore
@@ -68,7 +68,7 @@ public class ISBNScraperTest {
 	}
 	
 	/**
-	 * starts URL test with id url_167
+	 * starts URL test with id url_171
 	 */
 	@Test
 	@Ignore
