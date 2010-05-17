@@ -25,6 +25,7 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.util.StringUtils;
+import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Supplies methods to adapt the LogicInterface to the database layer.
@@ -34,6 +35,8 @@ import org.bibsonomy.util.StringUtils;
  * @version $Id$
  */
 public class LogicInterfaceHelper {
+	/** separates aggregated system tag values */
+	private static final String LIST_SEPARATOR = " ";
 	
 	protected static final Log logger = LogFactory.getLog(ChainElement.class);
 
@@ -243,9 +246,15 @@ public class LogicInterfaceHelper {
 			return true;
 		} else if (tagName.equals("title")) {
 			// :title: set the title to tagValue
-			param.setTitle(tagValue);
+			String oldValue = param.getTitle();
+			if( !ValidationUtils.present(oldValue) ) {
+				oldValue = tagValue;
+			} else {
+				oldValue += LIST_SEPARATOR + tagValue;
+			}
+			param.setTitle(oldValue);
 			param.setGrouping(GroupingEntity.ALL);
-			logger.debug("set title to " + tagValue + " after matching for title system tag");
+			logger.debug("set title to " + oldValue + " after matching for title system tag");
 			return true;
 		} else if (tagName.equals("author")) {
 			// sys:author: set search entity accordingly
