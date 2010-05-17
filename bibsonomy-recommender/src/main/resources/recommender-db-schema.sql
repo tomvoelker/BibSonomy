@@ -66,6 +66,14 @@ CREATE TABLE recommender_settings(
 	PRIMARY KEY (setting_id)
 ) DEFAULT CHARSET=utf8;
 
+DROP TABLE IF EXISTS recommender_status;
+CREATE TABLE `recommender_status` (
+  `setting_id` bigint(20) unsigned NOT NULL,
+  `url` varchar(255) default NULL,
+  `status` int(1) default NULL,
+  PRIMARY KEY  (`setting_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
 DROP TABLE IF EXISTS recommender_selectors;
 CREATE TABLE recommender_selectors(
 	selector_id BIGINT NOT NULL AUTO_INCREMENT,
