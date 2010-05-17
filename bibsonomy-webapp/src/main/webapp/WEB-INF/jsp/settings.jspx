@@ -107,6 +107,9 @@
                 $(".dissError").mouseover(function() {
                   $(this).fadeOut('slow');
                 });
+                $(".dissError").each(function() {
+                    $(this).prev().keyup(function () {$(this).next('.dissError').fadeOut('slow');});
+                  });
                 $("#command fieldset input").focus(function() {
                   $(this).parent("fieldset").find('.dissError').not(':hidden').fadeOut('slow');
                 });
