@@ -17,13 +17,13 @@ import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForGroup;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForGroupAndTag;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForHomePage;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForUser;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksFromInbox;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksOfFriendsByTags;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksPopular;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksSearch;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksSearchForGroup;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksViewable;
+import org.bibsonomy.database.managers.chain.resource.get.GetBibTexFromInbox;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -81,7 +81,7 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 		this.getBookmarksSearchForGroup = new GetBookmarksSearchForGroup();
 		this.getBookmarksByConceptByTag = new GetBookmarksByConceptByTag();
 		this.getBookmarksByConceptForGroup = new GetBookmarksByConceptForGroup();
-		this.getBookmarksFromInbox = new GetBookmarksFromInbox();
+		this.getBookmarksFromInbox = new GetBibTexFromInbox<Bookmark, BookmarkParam>();
 		this.getBookmarksByTitle = new GetBookmarksByTitle();
 		
 		this.getBookmarksForHomePage.setNext(this.getBookmarksForPopular);

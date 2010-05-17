@@ -21,13 +21,13 @@ import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForGroupAndTag;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForHomePage;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromBasketForUser;
-import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexFromInbox;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByTags;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexPopular;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexSearch;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexSearchForGroup;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexViewable;
+import org.bibsonomy.database.managers.chain.resource.get.GetBibTexFromInbox;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -62,7 +62,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByConceptForGroup;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexFromBasketForUser;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexByFollowedUsers;
-	private final ChainElement<Post<BibTex>, BibTexParam> getBibTexFromInbox;
+	private final ChainElement<Post<BibTex>, BibTexParam> getResourcesFromInbox;
 	private final ChainElement<Post<BibTex>, BibTexParam> getBibtexByTitle;
 
 	/**
@@ -93,7 +93,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexByKey = new GetBibtexByKey();
 		this.getBibTexFromBasketForUser = new GetBibtexFromBasketForUser();
 		this.getBibTexByFollowedUsers = new GetBibtexByFollowedUsers();
-		this.getBibTexFromInbox = new GetBibtexFromInbox();
+		this.getResourcesFromInbox = new GetBibTexFromInbox<BibTex, BibTexParam>();
 		this.getBibtexByTitle = new GetBibTexByTitle();
 
 		this.getBibtexByTitle.setNext(this.getBibTexForHomePage);
@@ -121,7 +121,7 @@ public class BibTexChain implements FirstChainElement<Post<BibTex>, BibTexParam>
 		this.getBibTexByConceptByTag.setNext(this.getBibTexByConceptForGroup);
 		this.getBibTexByConceptForGroup.setNext(this.getBibTexByKey);
 		this.getBibTexByKey.setNext(this.getBibTexFromBasketForUser);
-		this.getBibTexFromBasketForUser.setNext(this.getBibTexFromInbox);
+		this.getBibTexFromBasketForUser.setNext(this.getResourcesFromInbox);
 	}
 
 	public ChainElement<Post<BibTex>, BibTexParam> getFirstElement() {
