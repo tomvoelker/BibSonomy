@@ -62,7 +62,7 @@
 		<URL>http://scitation.aip.org/vsearch/servlet/VerityServlet?KEY=FREESR&amp;smode=results&amp;maxdisp=10&amp;possible1=star&amp;possible1zone=article&amp;fromyear=1893&amp;frommonth=Jan&amp;toyear=2007&amp;tomonth=Aug&amp;OUTLOG=NO&amp;viewabs=PSISDG&amp;key=DISPLAY&amp;docID=1&amp;page=0&amp;chapter=0</URL>
 		<BibFile>AipScitationScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
-		<Enabled>true</Enabled>
+		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_10">
 		<TestDescription>URL scraping test with arxiv publications</TestDescription>
