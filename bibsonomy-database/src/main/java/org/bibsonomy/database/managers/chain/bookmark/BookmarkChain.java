@@ -23,7 +23,7 @@ import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksPopular;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksSearch;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksSearchForGroup;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksViewable;
-import org.bibsonomy.database.managers.chain.resource.get.GetBibTexFromInbox;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesFromInbox;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -81,7 +81,7 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 		this.getBookmarksSearchForGroup = new GetBookmarksSearchForGroup();
 		this.getBookmarksByConceptByTag = new GetBookmarksByConceptByTag();
 		this.getBookmarksByConceptForGroup = new GetBookmarksByConceptForGroup();
-		this.getBookmarksFromInbox = new GetBibTexFromInbox<Bookmark, BookmarkParam>();
+		this.getBookmarksFromInbox = new GetResourcesFromInbox<Bookmark, BookmarkParam>();
 		this.getBookmarksByTitle = new GetBookmarksByTitle();
 		
 		this.getBookmarksForHomePage.setNext(this.getBookmarksForPopular);
