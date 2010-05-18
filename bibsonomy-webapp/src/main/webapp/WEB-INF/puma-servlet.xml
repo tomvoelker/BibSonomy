@@ -18,17 +18,18 @@
 		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_CONTEXTPARAM"/>
 	</bean>
 	
-
-    <!--  #################### controller #################### -->
-	<bean id="homepageController" class="de.unikassel.puma.webapp.controller" scope="request">
-		<property name="logic" ref="logic"/>
-		<property name="userSettings" ref="userSettings"/>
-		<property name="listsToInitialise">
-			<list>
-				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>
-				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>
-			</list>
-		</property>
-	</bean>
+<!-- Wouldn't it make sense to overwrite the <bean id="hompageController" ...> here so 
+project.bean.homepageController in project.properties would be superfluous -->
+<!--      #################### controller #################### -->
+<!--	<bean id="homepageController" class="de.unikassel.puma.webapp.controller.HomepageController" scope="request">-->
+<!--		<property name="logic" ref="logic"/>-->
+<!--		<property name="userSettings" ref="userSettings"/>-->
+<!--		<property name="listsToInitialise">-->
+<!--			<list>-->
+<!--				<value type="java.lang.Class">org.bibsonomy.model.BibTex</value>-->
+<!--				<value type="java.lang.Class">org.bibsonomy.model.Bookmark</value>-->
+<!--			</list>-->
+<!--		</property>-->
+<!--	</bean>-->
 	
 </beans>
