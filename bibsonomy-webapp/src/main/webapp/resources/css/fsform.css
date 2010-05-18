@@ -90,3 +90,36 @@
 .fsWaitingText {
 	font-style: italic;
 }
+
+.suggestionBox{
+	background-color:#006699;
+	color:#FF;
+	padding:3px;
+}
+
+.suggestionBoxContent{
+	background-color:#FFFFFF;
+	z-index:999;
+	border:1px solid #006699;
+	border-left:3px solid #006699
+}
+
+.suggestionDetails{
+	font-size:10px;
+}
+
+.selectedSuggestionEntry{
+	background-color:#006699;
+	cursor:pointer;
+	color:#FF;
+}
+
+.evenSuggestionEntry{
+	background-color:#FF;
+	color:#006699;
+}
+
+.oddSuggestionEntry{
+	background-color:#EE;
+	color:#006699;
+}
