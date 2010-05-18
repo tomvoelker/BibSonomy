@@ -4,6 +4,24 @@ var bg_color_over = "#006699";
 var text_color = '#006699';
 
 /**
+ * prepares the search parameters for lucene
+ * 
+ * @param title
+ *				title entered by the user
+ * @return 
+ *				the constructed parameter that is passed to lucene
+ */
+
+function createParameters(title) {
+	partials = title.split(" ");
+	title = "";
+	for(i = 0; i < partials.length; i++) {
+		title += "sys:title:"+partials[i]+"*"+((i+1 < partials.length)?"+":""); 
+	}
+	return title;
+}
+
+/**
  * queries the titles and further details of publications by a partial title
  * 
  * @param partialTitle
@@ -25,7 +43,7 @@ function getSuggestions(partialTitle) {
 	if(partialTitle.length > 1) {
 		var query = $.ajax({
 			type: "GET",
-			url: "http://www.bibsonomy.org/json/tag/sys:title:"+encodeURIComponent(partialTitle)+"*?items=10",
+			url: "http://www.bibsonomy.org/json/tag/"+createParameters(partialTitle)+"?items=10",
 			dataType: "jsonp",
 			success: function(json){
 			processResponse(json);
@@ -65,8 +83,6 @@ function processResponse(data) {
 	suggestionBox.html(p);
 	var has_elements = false;
 	$.each(data.items, function(i, item) {
-		if(item.label.toUpperCase().indexOf($(form_name).val().toUpperCase()) >= 0) {
-				has_elements = true;
 				var editors = "";
 				var author = "";
 				var year = "";
@@ -114,6 +130,7 @@ function processResponse(data) {
 							element.css("background-color", bg_color_over);
 							element.css("color", "#FFFFFF");
 							(element.children('span:first')).html(element.attr('title'));
+							element.parent().hide().show("slow");
 						}
 				)
 				
@@ -127,7 +144,6 @@ function processResponse(data) {
 				)
 		
 				suggestionBox.append(element);
-		}
 	})
 
 	if(suggestionBox.width() < (width)){
@@ -144,10 +160,7 @@ function processResponse(data) {
 				"border-left":"3px solid #006699"
 			}
 	);
-	if(!has_elements)
-		suggestionBox.hide();
-	else 
-		suggestionBox.show();
+	suggestionBox.show();
 }
 
 /**
@@ -299,8 +312,13 @@ function getPreviousByClass(match_el, className) {
  */
 function formatLabel (label) {
 	max_len = 50;
-	form_length = $(form_name).val().length;
-	pos = label.toUpperCase().indexOf($(form_name).val().toUpperCase());
+	label  = label.substr(0, max_len) + ((max_len < label.length)?" ... ":"");
+	partials = $(form_name).val().split(" ");
+	for(i = 0; i < partials.length; i++) {
+		label = label.replace(eval('/'+partials[i]+'/i'), '<b>'+partials[i].toUpperCase()+'</b>');
+	}
+	// TODO: matched terms are always uppercase, propably not how they are entered
+	/*pos = label.toUpperCase().indexOf($(form_name).val().toUpperCase());
 	prepend = "";
 	append = "";
 	if(pos > 0) {
@@ -327,7 +345,7 @@ function formatLabel (label) {
 		+'<b>'
 		+label.substr(pos, $(form_name).val().length)
 		+'</b>'
-		+append;
-
-	return title;
+		+append;*/
+	
+	return label;
 }
