@@ -153,10 +153,10 @@ while (my ($key, $value) = each(%tagtag_ctr_hash)) {
     my ($tag1, $tag2) = split(/\|#\|/,$key);
     my $number = $stm_update_tag->execute($value,$tag1,$tag2);
 ##    my $number;
-    print "$number = stm_update_tag->execute($value,$tag1,$tag2);\n";
+##    print "$number = stm_update_tag->execute($value,$tag1,$tag2);\n";
     
     if ($number eq "0E0") {
-	print "stm_instert_tagtag->execute($tag1,$tag2,$value);\n";
+##	print "stm_instert_tagtag->execute($tag1,$tag2,$value);\n";
 	$stm_instert_tagtag->execute($tag1,$tag2,$value);
     }  
 }

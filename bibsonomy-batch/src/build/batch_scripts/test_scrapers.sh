@@ -16,6 +16,11 @@
 # - added head comments
 # - removed amazon access keys
 # - documented additional xerces JAR
+# dbe, 2010-03-02
+# - changed location of scraper jar to hudson
+# rja, 2010-05-10
+# - added "-tr ... |tail -n1" to extraction of $VERSION to always get the
+#   latest JAR
 #
 
 ##########################################################################
@@ -29,19 +34,21 @@ JARDIR=$TOMCAT"/webapps/bibsonomy-webapp/WEB-INF/lib"
 #
 # directory on the remote continuum machine, where the 
 # bibsonomy-scraper-test*.jar is 
-REPOSI="shaun:/home/stud/continuum/.m2/repository/org/bibsonomy/bibsonomy-scraper"
+REPOSI="hudson@hudson:/var/lib/hudson/.m2/repository/org/bibsonomy/bibsonomy-scraper"
 ##########################################################################
 # first: copy latest scraper-test JAR to this machine ...
 # 
 # get version number of current scraper JAR in tomcat dir
-VERSION=$(ls $JARDIR/bibsonomy-scraper*.jar | sed -e 's/.*-//' -e 's/.jar//')
+VERSION=$(ls -tr $JARDIR/bibsonomy-scraper*.jar | tail -n1 | sed -e 's/.*bibsonomy-scraper-//' -e 's/.jar//')
 #
 # copy corresponding test JAR from continuum to /tmp
 #
 TESTJAR=bibsonomy-scraper-${VERSION}-tests.jar
 FROM=$REPOSI/$VERSION/$TESTJAR
 TO=/tmp/$TESTJAR
-echo "copying version $VERSION of scraper test JAR from $FROM to $TO"
+
+
+# echo "copying version $VERSION of scraper test JAR from $FROM to $TO"
 scp $FROM $TO
 
 
@@ -52,7 +59,10 @@ scp $FROM $TO
 #  - scraper test JAR in /tmp
 #  - log4j JAR in tomcat/common/lib
 #  - xerces in tomcat/common/lib
-CLASSPATH=$TO:$(ls $TOMCAT/common/lib/log4j*.jar):$(ls $TOMCAT/common/lib/xerces*.jar)
+CLASSPATH=$TO:\
+$(ls $TOMCAT/common/lib/log4j*.jar):\
+$(ls $TOMCAT/common/lib/xerces*.jar):\
+$(ls $TOMCAT/common/lib/commons-logging*.jar)
 for jar in $JARDIR/*.jar; do
   CLASSPATH=$CLASSPATH:$jar
 done

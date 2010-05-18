@@ -9,7 +9,8 @@
 #   * initial version
 # - 2009(07/12 
 #   * adapted to master / slave setting (dbe)
-
+# - 2009/11/16
+#   * modified behaviour: only slave is checked (dbe)
 #
 # modules
 #
@@ -44,7 +45,11 @@ my $stm;
 my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/mysql/run/mysqld.sock";
 # fit to master
 my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
-my @dbConnections = ($slave, $master);
+#
+# add here all dbconecttions to be checked
+#
+#my @dbConnections = ($slave, $master);
+my @dbConnections = ($slave);
 
 foreach my $dbConn (@dbConnections) {
 
@@ -77,9 +82,9 @@ foreach my $dbConn (@dbConnections) {
 	$dbh->disconnect();
 
 	if ($msg) {
-	#	open MAIL, "| mail -s \"Queries gekillt\" bibsonomy\@cs.uni-kassel.de" or die;
-	#	print MAIL $msg;
-	#	close MAIL;
+		open MAIL, "| mail -s \"Queries gekillt (odie)\" bibsonomy\@cs.uni-kassel.de" or die;
+		print MAIL $msg;
+		close MAIL;
 	    print STDERR $msg;
 	}
 

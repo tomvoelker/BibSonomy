@@ -4,6 +4,10 @@
 # Makes full and incremental backups of a bibsonomy database.
 #
 # Changes:
+#   2010-05-18 (rja)
+#   - renamed search tables to search_old_*
+#   2009-11-30
+#   - added ignore-table options to mysqldump to ignore search tables
 #   2007-11-29
 #   - adopted to odie
 #   2007-11-20
@@ -33,6 +37,16 @@ DB_SOCKET=$DB_DIR/run/mysqld.sock     # MySQL socket file
 DB_MYSQLDUMP=/usr/bin/mysqldump       # location of mysqldump
 DB_MYSQLADMIN=/usr/bin/mysqladmin     # location of mysqladim
 
+# check number of arguments
+if [ $# -ne 2 ]; then
+  echo "usage:"
+  echo "  $0 action database"
+  echo "where action is either full or incr"
+  exit
+fi
+ACTION=$1
+DB=$2
+
 # options for mysqldump
 DB_MYSQLDUMP_OPTIONS="--add-drop-table \
          --add-locks \
@@ -45,17 +59,9 @@ DB_MYSQLDUMP_OPTIONS="--add-drop-table \
          --master-data=1 \
          --delete-master-logs \
          --single-transaction \
+         --ignore-table=${DB}.search_old_bibtex \
+         --ignore-table=${DB}.search_old_bookmark \
          --result-file=$BACKUP_DIR/dump_$CURRENT_DAY.sql"
-
-# check number of arguments
-if [ $# -ne 2 ]; then
-  echo "usage:"
-  echo "  $0 action database"
-  echo "where action is either full or incr"
-  exit
-fi
-ACTION=$1
-DB=$2
 
 #########################################################################
 # FULL backup
