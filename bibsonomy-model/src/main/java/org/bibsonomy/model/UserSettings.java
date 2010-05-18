@@ -73,7 +73,7 @@ public class UserSettings implements Serializable {
 	/**
 	 * the default language for i18n
 	 */
-	private String defaultLanguage = "en";
+	private String defaultLanguage;
 	
 	/**
 	 * How much data about the user behavior (clicking, etc.) is logged.
