@@ -72,7 +72,7 @@ CREATE TABLE `recommender_status` (
   `url` varchar(255) default NULL,
   `status` int(1) default NULL,
   PRIMARY KEY  (`setting_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS recommender_selectors;
 CREATE TABLE recommender_selectors(
