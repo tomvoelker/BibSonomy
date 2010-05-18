@@ -1,7 +1,5 @@
 var form_name = '#post\\.resource\\.title';
 var suggestionBox = $("#suggestionBox");
-var bg_color_over = "#006699";
-var text_color = '#006699';
 
 /**
  * prepares the search parameters for lucene
@@ -43,7 +41,7 @@ function getSuggestions(partialTitle) {
 	if(partialTitle.length > 1) {
 		var query = $.ajax({
 			type: "GET",
-			url: "http://www.bibsonomy.org/json/tag/"+createParameters(partialTitle)+"?items=10",
+			url: "/json/tag/"+createParameters(partialTitle)+"?items=10",
 			dataType: "jsonp",
 			success: function(json){
 			processResponse(json);
@@ -73,7 +71,7 @@ function processResponse(data) {
 		return;
 	}
 
-	var p = $('<div class="suggBox" style="background-color: #006699; color: #FFFFFF; padding:3px;">'
+	var p = $('<div class="suggestionBoxContent">'
 			+title
 			+'</div>');
 
@@ -81,12 +79,16 @@ function processResponse(data) {
 	var width = $(form_name).width();
 	var top = parseInt(pos.top+$(form_name).height());
 	suggestionBox.html(p);
-	var has_elements = false;
 	$.each(data.items, function(i, item) {
 				var editors = "";
 				var author = "";
 				var year = "";
-		
+				var intraHash = item.intraHash;
+				var tags = concatArray(item.tags, null, '+');
+				//var k = m;
+				var className = (((m++)%2 == 0)?'evenSuggestionEntry':'oddSuggestionEntry');
+				var formatted_text = formatLabel(item.label);
+				
 				if(item.editor != 'undefined') {
 					editors = concatArray(item.editor, 20);
 				}
@@ -99,23 +101,22 @@ function processResponse(data) {
 					year = '('+item.year+')';
 				}
 		
-				var intraHash = item.intraHash;
-				var tags = concatArray(item.tags, null, '+');
-				var k = m;
-				var bg_color = (((m++)%2 == 0)?'#FFFFFF':'#EEEEEE');
-				var formatted_text = formatLabel(item.label);
+				
 				var element = 
-					$('<div class="suggestion_entry" style="cursor:pointer; color:'+text_color+';background-color:'
+					$('<div ' //style="cursor:pointer; color:'+text_color+';background-color:'
 							+bg_color // change the background-color every step
 							+'"><span>'
 						+formatted_text
-						+'</span><br><span style="font-size:10px;">'
+						+'</span><br><span class="suggestionDetails">'
 						+author
 						+year
-						+'</span></div>');
+						+'</span></div>').addClass(
+								className
+						);
 		
 				element.attr('url', '/editPublication?hash='+intraHash+'&user='+item.user+'&copytag='+tags);
 				element.attr('title', item.label);
+				element.attr('selected', false);
 				element.click(
 						// get title specific data
 						// and set the forms accordingly
@@ -127,22 +128,20 @@ function processResponse(data) {
 				
 				element.mouseover(
 						function () {
-							element.css("background-color", bg_color_over);
-							element.css("color", "#FFFFFF");
+							element.removeClass().addClass('selectedSuggestionEntry').addClass('suggestion_entry_selected');
 							(element.children('span:first')).html(element.attr('title'));
-							element.parent().hide().show("slow");
+							element.parent().hide().fadeIn();
 						}
 				)
 				
 				element.mouseout(
 						function () {
-							element.css("background-color", bg_color);
-							element.css("color", text_color);
+							element.removeClass().addClass(className).addClass('suggestion_entry');
 							(element.children('span:first')).html(formatted_text);
-							suggestionBox.children(".suggestion_entry_selected").css({"background-color":bg_color_over, "color":"#FFFFFF"});
+							//suggestionBox.children().addClass('selectedSuggestionEntry');
 						}
 				)
-		
+				element.addClass('suggestion_entry');
 				suggestionBox.append(element);
 	})
 
@@ -153,11 +152,7 @@ function processResponse(data) {
 	suggestionBox.css(
 			{
 				"left":(pos.left)+"px",
-				"top":top+"px",
-				"background-color":"#FFFFFF",
-				"z-index":"999",
-				"border":"1px solid #006699",
-				"border-left":"3px solid #006699"
+				"top":top+"px"
 			}
 	);
 	suggestionBox.show();
@@ -203,25 +198,23 @@ function getKey(e) {
 		var selected_field = null;
 		if((selected_field = DOMTraverseFlatByClass(parent.childNodes[0], 'suggestion_entry_selected')) == null) {
 			if((el = getPreviousByClass(parent.lastChild, 'suggestion_entry')) != null) {
-				el.className = 'suggestion_entry_selected';
-				if(el.style != 'undefined') {
+				//el.className = 'suggestion_entry_selected';
+				triggerEvt(el, "mouseover");
+				/*if(el.style != 'undefined') {
 					el.setAttribute("bg", el.style.backgroundColor);
 				}
 				el.style.backgroundColor = bg_color_over;
-				el.style.color = "#FFFFFF";
+				el.style.color = "#FFFFFF";*/
 			}
 		} else {
-			selected_field.className = 'suggestion_entry';
-			selected_field.style.backgroundColor = selected_field.getAttribute("bg");
+			//selected_field.className = 'suggestion_entry';
+			triggerEvt(selected_field, "mouseout");
+			/*selected_field.style.backgroundColor = selected_field.getAttribute("bg");
 			selected_field.removeAttribute("bg");
-			selected_field.style.color = text_color;
+			selected_field.style.color = text_color;*/
 			if((el = getPreviousByClass(selected_field.previousSibling, 'suggestion_entry')) != null) {
-				el.className = 'suggestion_entry_selected';
-				if(el.style != 'undefined') {
-					el.setAttribute("bg", el.style.backgroundColor);
-				}
-				el.style.backgroundColor = bg_color_over;
-				el.style.color = "#FFFFFF";
+				//el.className = 'suggestion_entry_selected';
+				triggerEvt(el, "mouseover");
 			}
 		}
 		
@@ -229,25 +222,23 @@ function getKey(e) {
 	} else if(e.keyCode == 40){
 		if((selected_field = DOMTraverseFlatByClass(parent.childNodes[0], 'suggestion_entry_selected')) == null) {
 			if((el = getNextByClass(parent.firstChild, 'suggestion_entry')) != null) {
-				el.className = 'suggestion_entry_selected';
-				if(el.style != 'undefined') {
-					el.setAttribute("bg", el.style.backgroundColor);
-				}
-				el.style.backgroundColor = bg_color_over;
-				el.style.color = "#FFFFFF";
+				//el.className = 'suggestion_entry_selected';
+				triggerEvt(el, "mouseover");
 			}
 		} else {
-			selected_field.className = 'suggestion_entry';
+			triggerEvt(selected_field, "mouseout");
+			/*selected_field.className = 'suggestion_entry';
 			selected_field.style.backgroundColor = selected_field.getAttribute("bg");
 			selected_field.removeAttribute("bg");
-			selected_field.style.color = text_color;
+			selected_field.style.color = text_color;*/
 			if((el = getNextByClass(selected_field.nextSibling, 'suggestion_entry')) != null) {
-				el.className = 'suggestion_entry_selected';
-				if(el.style.backgroundColor != 'undefined') {
+				//el.addclassName = 'suggestion_entry_selected';
+				triggerEvt(el, "mouseover");
+				/*if(el.style.backgroundColor != 'undefined') {
 					el.setAttribute("bg", el.style.backgroundColor);
 				}
 				el.style.backgroundColor = bg_color_over;
-				el.style.color = "#FFFFFF";
+				el.style.color = "#FFFFFF";*/
 			}
 		}
 		return false;
@@ -269,7 +260,7 @@ function DOMTraverseFlatByClass(el, className) {
 	var valid_ed = null;
 
 	while(el != null) {
-		if(el.tagName == 'DIV' && el.className == className) {
+		if(el.tagName == 'DIV' && cmpClass(el, className)) {
 			return el;
 		}
 		el = el.nextSibling;
@@ -277,10 +268,23 @@ function DOMTraverseFlatByClass(el, className) {
 	return null;
 }
 
+function triggerEvt(el, eventName) {
+	var evt;
+	
+	if (document.createEvent){
+		evt = document.createEvent("MouseEvents");
+		evt.initMouseEvent(eventName, true, true, window,
+		0, 0, 0, 0, 0, false, false, false, false, 0, null);
+	}
+	(evt)? el.dispatchEvent(evt):
+	((eventName == 'mouseover')?el.mouseover && el.mouseover():el.mouseout && el.mouseout());
+	
+}
+
 function getNextByClass(match_el, className) {
 	while(match_el != null) {
 		if(match_el.tagName == 'DIV'){
-			if(match_el.className == className) {
+			if(cmpClass(match_el, className)) {
 				return match_el;
 			}
 
@@ -293,7 +297,7 @@ function getNextByClass(match_el, className) {
 function getPreviousByClass(match_el, className) {
 	while(match_el != null) {
 		if(match_el.tagName == 'DIV'){
-			if(match_el.className == className) {
+			if(cmpClass(match_el, className)) {
 				return match_el;
 			}
 
@@ -349,3 +353,42 @@ function formatLabel (label) {
 	
 	return label;
 }
+
+/**
+ * adds a given class tot he element
+ * 
+ * @param el
+ *            the element to add the class to
+ * @param value
+ *            the class name we want to add
+ * @return 
+ */
+function addClass(el, value) {
+	if(el) {
+		el.className += " "+value;
+	} else {
+		el.className = value;
+	}
+}
+
+/**
+ * look for a match with the elements classes and a given class name
+ * 
+ * @param el
+ *            the element to match the class with
+ * @param value
+ *            the class we're looking for
+ * @return true if a match is given, false otherwise
+ */
+function cmpClass(el, value) {
+	for
+	(i = 0, partials = el.className.split(" "); 
+	partials.length > i; 
+	i++) {
+		if(value == partials[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
