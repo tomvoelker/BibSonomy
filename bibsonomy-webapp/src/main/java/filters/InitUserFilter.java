@@ -432,7 +432,14 @@ public class InitUserFilter implements Filter {
 		httpServletRequest.setAttribute(REQ_ATTRIB_USER, loginUser);
 
 		// add default language to request if no language is set
-		if (httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE) == null) httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(loginUser.getSettings().getDefaultLanguage()));
+		if (httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE) == null) {
+			if(loginUser.getSettings().getDefaultLanguage() == null) {
+				httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale((String) httpServletRequest.getSession().getServletContext().getAttribute("project.defaultLocale")));
+			} else {
+				httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(loginUser.getSettings().getDefaultLanguage()));
+
+			}
+		}
 
 		log.debug("finished: " + loginUser);
 
