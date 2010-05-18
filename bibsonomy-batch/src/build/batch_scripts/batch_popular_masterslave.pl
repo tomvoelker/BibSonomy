@@ -59,10 +59,10 @@ my $db_master_sock = "";
 # slave
 my $db_slave      = shift @ARGV;
 my $db_slave_pass = $ENV{'DB_PASS'};
-my $db_slave_host = "odie";
+my $db_slave_host = "localhost";
 my $db_slave_port = 3306;
 my $db_slave_user = "batch";
-my $db_slave_sock = "mysql_socket=/var/mysql/run/mysql.sock";
+my $db_slave_sock = "mysql_socket=/var/run/mysqld/mysqld.sock";
 
 # test configuration
 # # master

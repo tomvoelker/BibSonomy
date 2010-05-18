@@ -43,7 +43,7 @@ my $database = shift @ARGV;     # same db name on all hosts
 my $user     = "batch";         # same user name on all databases
 my $password = $ENV{'DB_PASS'}; # same password on all databases
 # fit to slave
-my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/mysql/run/mysqld.sock";
+my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/run/mysqld/mysqld.sock";
 # fit to master
 my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
 

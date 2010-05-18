@@ -75,7 +75,7 @@ my $user     = "batch";         # same user name on all databases
 my $password = $ENV{'DB_PASS'}; # same password on all databases
 
 # master and slave databases 
-my $slave    = "DBI:mysql:database=$database;host=odie:3306;mysql_socket=/var/mysql/run/mysqld.sock";
+my $slave    = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/var/run/mysqld/mysqld.sock";
 my $master   = "DBI:mysql:database=$database;host=gandalf:6033";
 #my $master  = "DBI:mysql:database=$database;host=localhost:3306;mysql_socket=/mnt/raid-db/mysql/run/mysqld.sock"; # for the local case
 
