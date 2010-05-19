@@ -39,6 +39,8 @@ import org.junit.Test;
 /**
  * @author Robert Jaeschke
  * @author Anton Wilhelm (awil)
+ * 
+ * @version $Id$
  */
 public class TagParserTest {
 	private Set<Tag> parse(final String tagString) {
@@ -88,12 +90,10 @@ public class TagParserTest {
 	@Test
 	public void isEmpty() {
 		final Tag t = new Tag();
-//		assertTrue(t.getTagrelations().isEmpty());
 		assertTrue(t.getSubTags().isEmpty());
 		assertTrue(t.getSuperTags().isEmpty());
 		assertTrue(t.getGlobalcount()==0);
 		assertTrue(t.getUsercount()==0);
-//		assertTrue(t.getForUsers().isEmpty());
 		assertTrue(t.getName() == null || t.getName().trim().equals(""));
 	}
 
@@ -112,8 +112,6 @@ public class TagParserTest {
 		
 		
 		assertEquals(testSet, tags);
-//		assertTrue(t.getTagrelations().isEmpty());
-//		assertTrue(t.getForUsers().isEmpty());
 	}
 
 	/**
@@ -193,16 +191,6 @@ public class TagParserTest {
 	
 		assertTrue(tags.contains(t1));
 		assertTrue(checkForSuperRelation(tags, t1));
-		
-//		// check users
-//		Set<String> testSet3 = new HashSet<String>();
-//		testSet3.add("klaus");
-//		assertEquals(testSet3, t.getForUsers());
-//	
-//		// adding user names to tag set
-//		testSet.add("for:klaus");
-//		t.addForTag("klaus");
-//		assertEquals(testSet, t.getTags());
 	}
 	
 	/**
@@ -245,20 +233,6 @@ public class TagParserTest {
 		
 		assertTrue(checkForSuperRelation(tags, tagFoo));
 		assertTrue(checkForSubRelation(tags, tagBar));
-		
-
-//		// check for:users
-//		Set<String> testSet3 = new HashSet<String>();
-//		testSet3.add("klaus");
-//		testSet3.add("manni");
-//		assertEquals(testSet3, t.getForUsers());
-//
-//		// adding user names to tag set
-//		t.addForTag("klaus");
-//		t.addForTag("manni");
-//		testSet.add("for:klaus");
-//		testSet.add("for:manni");
-//		assertEquals(testSet, t.getTags());
 	}
 	
 	/**
@@ -355,30 +329,6 @@ public class TagParserTest {
 		
 		assertEquals(testSet, tags);	
 	}
-	
-//	/**
-//	 * test cloning of tag object
-//	 */
-//	@Test
-//	public void cloneWorks() {
-//		// check tagrelations
-//		Tag tagBar = new Tag("bar");
-//		Tag tagFoo = new Tag("foo");
-//		tagFoo.addSuperTag(tagBar);
-//		tagBar.addSubTag(tagFoo);
-//		
-//		Tag tagClone = null;
-//		
-//		//clone
-//		try {
-//			tagClone = tagBar.clone();
-//		} catch (CloneNotSupportedException ex) {
-//			ex.printStackTrace();
-//		}
-//		
-//		assertEquals(tagBar, tagClone);
-//		assertEquals(tagBar.getSubTags(), tagClone.getSubTags());
-//	}
 	
 	/**
 	 * test tagrelation

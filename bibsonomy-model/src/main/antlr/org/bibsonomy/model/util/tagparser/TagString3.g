@@ -12,51 +12,58 @@ tokens {
 
 
 @header {
-	package org.bibsonomy.model.util.tagparser;
-	import org.antlr.runtime.BitSet;
-  import org.antlr.runtime.CommonTokenStream;
-  import org.antlr.runtime.IntStream;
-  import org.antlr.runtime.MismatchedSetException;
-  import org.antlr.runtime.MismatchedTokenException;
-  import org.antlr.runtime.Parser;
-  import org.antlr.runtime.RecognitionException;
-  import org.antlr.runtime.Token;
-  import org.antlr.runtime.TokenStream;
-	
-	import org.bibsonomy.model.Tag;
-	import java.util.Set;
-	import java.util.HashMap;
+
+package org.bibsonomy.model.util.tagparser;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.model.Tag;
+import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 }
+
 @lexer::header {
-	package org.bibsonomy.model.util.tagparser;
+
+package org.bibsonomy.model.util.tagparser;
+
 }
 
 @members{
-	Tag lastTag = null;
-	Set<Tag> tags;
-	HashMap<String, Tag> tagList = new HashMap<String, Tag>();
+
+	private static final Log log = LogFactory.getLog(TagString3Parser.class);
+
+	private Tag lastTag = null;
+	private Set<Tag> tags;
+	private Map<String, Tag> tagList = new HashMap<String, Tag>();
         
-  /**
-   * constructor with Tag object included
-   * @param tokens
-   * @param tags
-   */
+	/**
+	 * constructor with Tag object included
+	 * @param tokens
+	 * @param tags
+	 */
 	public TagString3Parser(CommonTokenStream tokens, Set<Tag> tags) {
 		this(tokens); 
 		this.tags = tags;
 	}
-	
+
 	@Override
-	protected void mismatch(IntStream input, int ttype, BitSet follow) throws RecognitionException {
-		throw new MismatchedTokenException(ttype, input);
-  }
+	public boolean mismatchIsMissingToken(IntStream input, BitSet follow) {
+		return false;
+	}
+  
+	@Override
+	public boolean mismatchIsUnwantedToken(IntStream input, int ttype) {
+		return false;
+	}
+
 }
+
 // catchblock for all methods in the parser
 // print what the parser found and what it expected
 @rulecatch {
-    catch (MismatchedTokenException e) {
-    	String err = "line: "+e.line+", "+e.charPositionInLine+"; found "+getTokenErrorDisplay(e.token)+ " but expected "+tokenNames[e.expecting];
-//    	System.out.println(err);
+    catch (final Exception e) {
+    	log.fatal("parser exception: ", e);
     }
 }
 
@@ -67,7 +74,7 @@ tagstring
 
 //tag ( uprel | lorel )*
 ctag
-	@init{
+	@init {
 		if (tags.size() >= Tag.MAX_TAGS_ALLOWED) return;
 	}
     :   t = tag {lastTag=t;} (uprel | lorel)* 
@@ -105,7 +112,7 @@ norel
 //		TAG
 tag returns [Tag t = null]
     :   tt=TAG {
-            //System.out.println("found |" + tt.getText() + "|");
+            log.debug("found |" + tt.getText() + "|");
 						if (!tagList.containsKey(tt.getText())) {
 							t = new Tag(tt.getText());
 							                      
