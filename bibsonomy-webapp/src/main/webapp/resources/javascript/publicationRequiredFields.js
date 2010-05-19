@@ -13,10 +13,10 @@ var suggestionBox = $("#suggestionBox");
 function createParameters(title) {
 	partials = title.split(" ");
 	title = "";
-	for(i = 0; i < partials.length; i++) {
+	for(i = 0; i < parseInt(partials.length); i++) {
 		if(partials[i] == "" || partials[i] == " " )
 			continue;
-		title += "sys:title:"+partials[i]+"*"+((i+1 < partials.length)?"+":""); 
+		title += "sys:title:"+partials[i]+"*"+((i+1 < parseInt(partials.length))?"+":""); 
 	}
 	return title;
 }
@@ -39,8 +39,8 @@ function getSuggestions(partialTitle) {
 		},
 		140);
 	});
-
-	if(partialTitle.length > 1) {
+	
+	if(parseInt(partialTitle.length) > 1) {
 		var query = $.ajax({
 			type: "GET",
 			url: "/json/tag/"+createParameters(partialTitle)+"?items=10",
@@ -68,7 +68,7 @@ function processResponse(data) {
 	var title = getString('post.resource.suggested');
 	
 	// if there's no data abort
-	if(data.items.length == 0) {
+	if(parseInt(data.items.length) == 0) {
 		suggestionBox.hide();
 		return;
 	}
@@ -130,7 +130,6 @@ function processResponse(data) {
 						function () {
 							element.removeClass().addClass('selectedSuggestionEntry').addClass('suggestion_entry_selected');
 							(element.children('span:first')).html(element.attr('title'));
-							element.parent().hide().fadeIn();
 						}
 				)
 				
@@ -140,7 +139,6 @@ function processResponse(data) {
 							(element.children('span:first')).html(formatted_text);
 						}
 				)
-				element.addClass('suggestion_entry');
 				suggestionBox.append(element);
 	})
 
@@ -293,41 +291,11 @@ function getPreviousByClass(match_el, className) {
  */
 function formatLabel (label) {
 	max_len = 50;
-	label  = label.substr(0, max_len) + ((max_len < label.length)?" ... ":"");
+	label  = label.substr(0, max_len) + ((max_len < parseInt(label.length))?" ... ":"");
 	partials = $(form_name).val().split(" ");
-	for(i = 0; i < partials.length; i++) {
+	for(i = 0; i < parseInt(partials.length); i++) {
 		label = label.replace(eval('/'+partials[i]+'/i'), '<b>'+partials[i].toUpperCase()+'</b>');
 	}
-	// TODO: matched terms are always uppercase, propably not how they are entered
-	/*pos = label.toUpperCase().indexOf($(form_name).val().toUpperCase());
-	prepend = "";
-	append = "";
-	if(pos > 0) {
-		prepend = label.substr(0, pos);
-	}
-	if(label.length > pos+form_length) {
-		append = label.substr(pos + $(form_name).val().length);
-	}
-	
-	max_len -= form_length;
-	
-	if(prepend != "") {
-		l = prepend.length-Math.min(max_len, prepend.length);
-		prepend = ((max_len < prepend.length)?"... ":"")+prepend.substr(l, prepend.length-l);
-		max_len -= Math.min(max_len, prepend.length);
-	} 
-
-	if(append != "" && max_len > 0) {
-		append = append.substr(0, max_len)+((max_len < append.length)?" ...":"");
-	}
-
-	var title =
-		prepend
-		+'<b>'
-		+label.substr(pos, $(form_name).val().length)
-		+'</b>'
-		+append;*/
-	
 	return label;
 }
 
@@ -360,7 +328,7 @@ function addClass(el, value) {
 function cmpClass(el, value) {
 	for
 	(i = 0, partials = el.className.split(" "); 
-	partials.length > i; 
+	parseInt(partials.length) > i; 
 	i++) {
 		if(value == partials[i]) {
 			return true;
