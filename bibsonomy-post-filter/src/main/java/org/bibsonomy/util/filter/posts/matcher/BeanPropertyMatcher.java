@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Required;
  * @author:  rja
  * @version: $Id$
  * $Author$
+ * @param <T> 
  * 
  */
 public class BeanPropertyMatcher<T> implements Matcher {
@@ -21,10 +22,19 @@ public class BeanPropertyMatcher<T> implements Matcher {
 	private T propertyValue;
 	private Comparator<T> comparator;
 
+	/**
+	 * default contructor
+	 */
 	public BeanPropertyMatcher() {
-		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * TODO: improve documentation
+	 * 
+	 * @param propertyName
+	 * @param comparator
+	 * @param propertyValue
+	 */
 	public BeanPropertyMatcher(String propertyName, Comparator<T> comparator, T propertyValue) {
 		super();
 		this.propertyName = propertyName;
@@ -45,34 +55,51 @@ public class BeanPropertyMatcher<T> implements Matcher {
 	 * @param post
 	 * @return
 	 */
+	@SuppressWarnings("unchecked")
 	private T getProperty(final Post<? extends Resource> post) {
 		return (T) new BeanWrapperImpl(post).getPropertyValue(propertyName);
 	}
-	
-	
 
+	/**
+	 * @return the propertyName
+	 */
 	public String getPropertyName() {
 		return propertyName;
 	}
 
+	/**
+	 * @param propertyName the propertyName to set
+	 */
 	@Required
 	public void setPropertyName(String propertyName) {
 		this.propertyName = propertyName;
 	}
 
+	/**
+	 * @return the propertyValue
+	 */
 	public T getPropertyValue() {
 		return propertyValue;
 	}
 
+	/**
+	 * @param propertyValue the propertyValue to set
+	 */
 	@Required
 	public void setPropertyValue(T propertyValue) {
 		this.propertyValue = propertyValue;
 	}
 
+	/**
+	 * @return the comparator
+	 */
 	public Comparator<T> getComparator() {
 		return comparator;
 	}
 
+	/**
+	 * @param comparator the comparator to set
+	 */
 	@Required
 	public void setComparator(Comparator<T> comparator) {
 		this.comparator = comparator;

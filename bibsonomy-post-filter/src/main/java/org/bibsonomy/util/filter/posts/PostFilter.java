@@ -20,8 +20,11 @@ public class PostFilter {
 	private Matcher matcher;
 	private Modifier modifier;
 
+	/**
+	 * default contructor
+	 */
 	public PostFilter() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 
@@ -30,6 +33,7 @@ public class PostFilter {
 		this.matcher = matcher;
 		this.modifier = modifier;
 	}
+	
 	/**
 	 * Returns all posts where the {@link #matcher} matched.
 	 * 
@@ -47,6 +51,7 @@ public class PostFilter {
 
 		return filteredPosts;
 	}
+	
 	/**
 	 * Filters the posts using {@link #matcher}, then updates them. Returns only
 	 * those posts, where the filter matches and which have been updated (i.e.,
@@ -69,18 +74,38 @@ public class PostFilter {
 
 		return updatedPosts;
 	}
+
+	/**
+	 * @return the matcher
+	 */
 	public Matcher getMatcher() {
 		return matcher;
 	}
+
+
+	/**
+	 * @param matcher the matcher to set
+	 */
 	public void setMatcher(Matcher matcher) {
 		this.matcher = matcher;
 	}
+
+
+	/**
+	 * @return the modifier
+	 */
 	public Modifier getModifier() {
 		return modifier;
 	}
+
+
+	/**
+	 * @param modifier the modifier to set
+	 */
 	public void setModifier(Modifier modifier) {
 		this.modifier = modifier;
 	}
+
 
 	@Override
 	public String toString() {

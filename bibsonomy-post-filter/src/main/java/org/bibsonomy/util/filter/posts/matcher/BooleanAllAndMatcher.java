@@ -36,8 +36,7 @@ public class BooleanAllAndMatcher implements AllMatcher {
 		}
 		return true;
 	}
-
-
+	
 	public Matcher[] getMatchers() {
 		return matchers.toArray(new Matcher[matchers.size()]);
 	}

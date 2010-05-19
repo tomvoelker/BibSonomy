@@ -6,6 +6,7 @@ package org.bibsonomy.util.filter.posts.comparator;
  * @author:  rja
  * @version: $Id$
  * $Author$
+ * @param <T> 
  * 
  */
 public class Equals<T> implements Comparator<T> {
