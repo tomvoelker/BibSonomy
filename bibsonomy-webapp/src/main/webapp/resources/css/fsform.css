@@ -111,15 +111,15 @@
 .selectedSuggestionEntry{
 	background-color:#006699;
 	cursor:pointer;
-	color:#FF;
+	color:#fff;
 }
 
 .evenSuggestionEntry{
-	background-color:#FF;
+	background-color:#fff;
 	color:#006699;
 }
 
 .oddSuggestionEntry{
-	background-color:#EE;
+	background-color:#eee;
 	color:#006699;
 }
