@@ -21,7 +21,7 @@ my $password = $ENV{'DB_PASS'}; # same password on all databases
 # query database to get inconsistent spammers
 
 #print STDERR "Selecting tas users\n"; 
-my $dbh = DBI->connect("DBI:mysql:database=bibsonomy;host=localhost:6033;mysql_socket=/var/mysql/run/mysqld.sock", $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
+my $dbh = DBI->connect("DBI:mysql:database=bibsonomy;host=localhost:6033;mysql_socket=/var/run/mysqld/mysqld.sock", $user, $password, {RaiseError => 1, AutoCommit => 0, "mysql_enable_utf8" => 1});
 
 # select all users from tas which have public posts
 my $stm = $dbh->prepare("SELECT user_name FROM tas WHERE `group`=0");
