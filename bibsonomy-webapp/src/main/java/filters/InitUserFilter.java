@@ -103,6 +103,11 @@ public class InitUserFilter implements Filter {
 	public static final String REQ_ATTRIB_LANGUAGE = SessionLocaleResolver.class.getName() + ".LOCALE";
 	
 	/**
+	 * Name of the Attribute that stores the default language in the servers context.xml 
+	 */
+	public static final String PROJECT_DEFAULT_LANGUAGE = "project.defaultLocale";
+	
+	/**
 	 * TODO: improve documentation
 	 */
 	public static final String REQ_ATTRIB_LOGIN_USER = "loginUser";
@@ -433,7 +438,12 @@ public class InitUserFilter implements Filter {
 
 		// add default language to request if no language is set
 		if (httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE) == null) {
+			if(loginUser.getSettings().getDefaultLanguage() == null) {
+				httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale((String) httpServletRequest.getSession().getServletContext().getAttribute(PROJECT_DEFAULT_LANGUAGE)));
+			} else {
 				httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(loginUser.getSettings().getDefaultLanguage()));
+
+			}
 		}
 
 		log.debug("finished: " + loginUser);
