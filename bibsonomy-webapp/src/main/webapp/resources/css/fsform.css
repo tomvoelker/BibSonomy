@@ -91,17 +91,16 @@
 	font-style: italic;
 }
 
-.suggestionBox{
-	background-color:#006699;
+#suggestionBox{
 	color:#fff;
-	padding:3px;
+	z-index:999;
+	border:1px solid #006699;
+	border-left:3px solid #006699;	
 }
 
 .suggestionBoxContent{
-	background-color:#FFFFFF;
-	z-index:999;
-	border:1px solid #006699;
-	border-left:3px solid #006699
+	padding:3px;
+	background-color:#006699;
 }
 
 .suggestionDetails{
