@@ -14,6 +14,8 @@ function createParameters(title) {
 	partials = title.split(" ");
 	title = "";
 	for(i = 0; i < partials.length; i++) {
+		if(partials[i] == "" || partials[i] == " " )
+			continue;
 		title += "sys:title:"+partials[i]+"*"+((i+1 < partials.length)?"+":""); 
 	}
 	return title;
@@ -103,9 +105,7 @@ function processResponse(data) {
 		
 				
 				var element = 
-					$('<div ' //style="cursor:pointer; color:'+text_color+';background-color:'
-							+bg_color // change the background-color every step
-							+'"><span>'
+					$('<div class="suggestion_entry"><span>'
 						+formatted_text
 						+'</span><br><span class="suggestionDetails">'
 						+author
@@ -138,7 +138,6 @@ function processResponse(data) {
 						function () {
 							element.removeClass().addClass(className).addClass('suggestion_entry');
 							(element.children('span:first')).html(formatted_text);
-							//suggestionBox.children().addClass('selectedSuggestionEntry');
 						}
 				)
 				element.addClass('suggestion_entry');
@@ -198,22 +197,11 @@ function getKey(e) {
 		var selected_field = null;
 		if((selected_field = DOMTraverseFlatByClass(parent.childNodes[0], 'suggestion_entry_selected')) == null) {
 			if((el = getPreviousByClass(parent.lastChild, 'suggestion_entry')) != null) {
-				//el.className = 'suggestion_entry_selected';
 				triggerEvt(el, "mouseover");
-				/*if(el.style != 'undefined') {
-					el.setAttribute("bg", el.style.backgroundColor);
-				}
-				el.style.backgroundColor = bg_color_over;
-				el.style.color = "#FFFFFF";*/
 			}
 		} else {
-			//selected_field.className = 'suggestion_entry';
 			triggerEvt(selected_field, "mouseout");
-			/*selected_field.style.backgroundColor = selected_field.getAttribute("bg");
-			selected_field.removeAttribute("bg");
-			selected_field.style.color = text_color;*/
 			if((el = getPreviousByClass(selected_field.previousSibling, 'suggestion_entry')) != null) {
-				//el.className = 'suggestion_entry_selected';
 				triggerEvt(el, "mouseover");
 			}
 		}
@@ -222,23 +210,12 @@ function getKey(e) {
 	} else if(e.keyCode == 40){
 		if((selected_field = DOMTraverseFlatByClass(parent.childNodes[0], 'suggestion_entry_selected')) == null) {
 			if((el = getNextByClass(parent.firstChild, 'suggestion_entry')) != null) {
-				//el.className = 'suggestion_entry_selected';
 				triggerEvt(el, "mouseover");
 			}
 		} else {
 			triggerEvt(selected_field, "mouseout");
-			/*selected_field.className = 'suggestion_entry';
-			selected_field.style.backgroundColor = selected_field.getAttribute("bg");
-			selected_field.removeAttribute("bg");
-			selected_field.style.color = text_color;*/
 			if((el = getNextByClass(selected_field.nextSibling, 'suggestion_entry')) != null) {
-				//el.addclassName = 'suggestion_entry_selected';
 				triggerEvt(el, "mouseover");
-				/*if(el.style.backgroundColor != 'undefined') {
-					el.setAttribute("bg", el.style.backgroundColor);
-				}
-				el.style.backgroundColor = bg_color_over;
-				el.style.color = "#FFFFFF";*/
 			}
 		}
 		return false;
