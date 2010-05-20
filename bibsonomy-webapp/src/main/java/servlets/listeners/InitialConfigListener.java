@@ -35,27 +35,7 @@ public class InitialConfigListener implements ServletContextListener {
 			String initParamName = e.nextElement();
 			servletContext.setAttribute(initParamName, servletContext.getInitParameter(initParamName));
 		}
-		/*
-		 * configure proxy
-		 */
-		configureProxy();
 	}
-	
-	/**
-	 * If proxyHost and proxyPort are set in web.xml, corresponding 
-	 * system properties are set and proxy is automagically used by 
-	 * URLConnection.
-	 */
-	private void configureProxy() {
-		final String proxyHost = getInitParam("proxyHost");
-		final String proxyPort = getInitParam("proxyPort");
-		if (proxyHost != null && proxyPort != null) {
-			System.setProperty("proxyHost", proxyHost);
-			System.setProperty("proxyPort", proxyPort);
-			System.setProperty("proxySet",  "true");
-		}
-	}
-	
 	
 	public void contextDestroyed(ServletContextEvent event) {}
 
