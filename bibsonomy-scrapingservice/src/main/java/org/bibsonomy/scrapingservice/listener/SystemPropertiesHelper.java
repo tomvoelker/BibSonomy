@@ -17,6 +17,9 @@ public class SystemPropertiesHelper implements ServletContextListener {
 
 	@SuppressWarnings("unchecked")
 	public void contextInitialized(final ServletContextEvent event) {
+		
+		log.info("initializing system properties");
+		
 		final ServletContext context = event.getServletContext();
 		final Enumeration<String> params = context.getInitParameterNames();
 		
