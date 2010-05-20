@@ -15,8 +15,6 @@ tokens {
 
 package org.bibsonomy.model.util.tagparser;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Tag;
 import java.util.Set;
 import java.util.HashMap;
@@ -30,8 +28,6 @@ package org.bibsonomy.model.util.tagparser;
 }
 
 @members{
-
-	private static final Log log = LogFactory.getLog(TagString3Parser.class);
 
 	private Tag lastTag = null;
 	private Set<Tag> tags;
@@ -63,7 +59,7 @@ package org.bibsonomy.model.util.tagparser;
 // print what the parser found and what it expected
 @rulecatch {
     catch (final Exception e) {
-    	log.fatal("parser exception: ", e);
+    	// ignore
     }
 }
 
@@ -112,7 +108,6 @@ norel
 //		TAG
 tag returns [Tag t = null]
     :   tt=TAG {
-            log.debug("found |" + tt.getText() + "|");
 						if (!tagList.containsKey(tt.getText())) {
 							t = new Tag(tt.getText());
 							                      
