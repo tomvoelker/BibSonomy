@@ -52,7 +52,12 @@
 				        <a href="/followers">
 				        	<fmt:message key="navi.my.plural"/><c:out value=" "/>
 				        	<fmt:message key="navi.followedUsers.my"/>
-				        </a>				        
+				        </a>
+				        <a href="/cv/user/${fn:escapeXml(user.name)}">
+				        	<fmt:message key="navi.my"/>
+				        	<fmt:message key="navi.cv"/>						
+						</a>
+				        			        
 					  </div>						
 				</li>
 				<li>
