@@ -46,13 +46,13 @@
 
           <div class="fsRow">
             <form:label cssClass="fsLabel" path="post.resource.author" ><fmt:message key="post.resource.author"/>* </form:label><buttons:help message="post.resource.author.help"/>
-            <form:textarea cssClass="fsInput reqinput" path="post.resource.author" tabindex="2" rows="3" onkeyup="sz(this);" />
+            <form:textarea cssClass="fsInput reqinput" path="post.resource.author" tabindex="2" rows="2" onkeyup="sz(this);" />
             <div class="dissError"><form:errors path="post.resource.author" /></div>
           </div>
           
           <div class="fsRow">
             <form:label cssClass="fsLabel" path="post.resource.editor" ><fmt:message key="post.resource.editor"/>* </form:label><buttons:help message="post.resource.editor.help"/>
-            <form:textarea cssClass="fsInput reqinput" path="post.resource.editor" tabindex="2" rows="3" onkeyup="sz(this);" />
+            <form:textarea cssClass="fsInput reqinput" path="post.resource.editor" tabindex="2" rows="2" onkeyup="sz(this);" />
             <div class="dissError"><form:errors path="post.resource.editor" /></div>
           </div>
           
