@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CommunityDBManage">
+	<!--+ =================================================================+ 
+	    |                            lookup                                |
+	    +================================================================= +-->
+	    
+	<!-- get list of all public non-spam bibtex posts belonging to given community -->
+	<select id="getBibTexForCommunity" resultMap="BibTexCommon.bibtexPost" parameterClass="resourceParam">
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name
+		FROM $communityDBName$.resources AS r
+		JOIN bibtex AS b USING (content_id)
+		JOIN tas AS t USING (content_id)
+		WHERE r.run_id = #runId#
+		  AND r.community_id = #communityId#
+		  AND r.content_type = 2
+		  AND b.group = 0
+		LIMIT #offset#, #limit#
+	</select>
+	
+	<!-- get list of all public non-spam bookmarks belonging to given community -->
+	<select id="getBookmarksForCommunity" parameterClass="resourceParam" resultMap="BookmarkCommon.bookmarkPost">
+		SELECT <include refid ="bookmarkAttributes"/>, t.tag_name, u.book_url
+		FROM $communityDBName$.resources AS r
+		JOIN bookmark AS b USING (content_id)
+		JOIN tas AS t USING (content_id)
+		JOIN urls AS u USING (book_url_hash) 
+		WHERE r.run_id = #runId#
+		  AND r.community_id = #communityId#
+		  AND r.content_type = 1
+		  AND b.group = 0
+		LIMIT #offset#, #limit#
+	</select>		
+</sqlMap>

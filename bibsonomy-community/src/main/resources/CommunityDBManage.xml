@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CommunityDBManage">
+	<!--+ =================================================================+ 
+	    |                             add                                  |
+	    +================================================================= +-->
+	    
+	<!--+
+	    | int addAlgorithm(final Algorithm algorithm);
+	    |
+		| WARNING: LAST_INSERT_ID() is not thread-safe, but while iBatis doesn't
+		|          support JDBC 3.0's getGeneratedKeys(), this is the technique of 
+		|          choice (see http://issues.apache.org/jira/browse/IBATIS-142)
+	  	+-->
+	<insert id="addAlgorithm" parameterClass="communityParam">
+		INSERT INTO algorithms (name,meta)
+		VALUES ( #algorithmName#, #algorithmMeta# )
+ 		<selectKey resultClass="integer" keyProperty="algorithmID">
+			SELECT LAST_INSERT_ID() AS value
+	    </selectKey>
+	</insert>
+	
+	<!--+
+	    | int addRunSet();
+	    |
+		| WARNING: LAST_INSERT_ID() is not thread-safe, but while iBatis doesn't
+		|          support JDBC 3.0's getGeneratedKeys(), this is the technique of 
+		|          choice (see http://issues.apache.org/jira/browse/IBATIS-142)
+	  	+-->
+	<insert id="addRunSet" parameterClass="communityParam">
+		INSERT INTO run (date)
+		VALUES ( #date# )
+ 		<selectKey resultClass="integer" keyProperty="blockID">
+			SELECT LAST_INSERT_ID() AS value
+	    </selectKey>
+	</insert>
+	    
+	<!--+
+	    | int addAlgorithmToRunSet(final Algorithm algorithm, final int block_id);
+	    |
+		| WARNING: LAST_INSERT_ID() is not thread-safe, but while iBatis doesn't
+		|          support JDBC 3.0's getGeneratedKeys(), this is the technique of 
+		|          choice (see http://issues.apache.org/jira/browse/IBATIS-142)
+	  	+-->
+	<insert id="addAlgorithmToRunSet" parameterClass="communityParam">
+		INSERT INTO run_settings (block_id, algorithm_id, clusters, topics)
+		VALUES ( #blockID#, #algorithmID#, #clusterCount#, #topicCount# )
+ 		<selectKey resultClass="integer" keyProperty="runID">
+			SELECT LAST_INSERT_ID() AS value
+	    </selectKey>
+	</insert>
+	    
+	<!--+
+	    | void addUserToCommunity(final int run_id, final int community_id, final String user_name, final double p); 
+	    +-->
+	<insert id="addUserToCommunity" parameterClass="communityParam">
+		INSERT INTO community (run_id, community_id, user_name, p)
+		VALUES ( #runID#, #communityID#, #userName#, #weight# )
+	</insert>
+	    
+	<!--+
+	    | void addTagToCommunity(final int run_id, final int community_id, final int topic_id, final String tag_name);
+	    +-->
+	<insert id="addTagToCommunity" parameterClass="communityParam">
+		INSERT INTO topics (run_id, community_id, topic_id, tag_name, p)
+		VALUES ( #runID#, #communityID#, #topicID#, #tagName#, #weight# )
+	</insert>
+
+	<!--+
+	    | void addResourceToCommunity(final int run_id, final int, community_id, final ConstantID content_type);
+	    +-->
+	<insert id="addResourceToCommunity" parameterClass="communityParam">
+		INSERT INTO resources (run_id, community_id, content_id, content_type, p)
+		VALUES ( #runID#, #communityID#, #contentID#, #contentType#, #weight# )
+	</insert>
+
+
+	<!--+ =================================================================+ 
+	    |                            lookup                                |
+	    +================================================================= +-->
+	<select id="getAlgorithmID" parameterClass="communityParam" resultClass="integer">
+		SELECT MIN(algorithm_id) 
+		FROM algorithms
+		WHERE name = #algorithmName# AND meta = #algorithmMeta#
+	</select>
+</sqlMap>
