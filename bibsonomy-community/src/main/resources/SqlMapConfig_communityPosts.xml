@@ -1,0 +1,21 @@
+<!DOCTYPE sqlMapConfig
+PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<properties resource="database_posts.properties"/>
+
+	<typeAlias alias="communityParam"   type="org.bibsonomy.community.database.param.CommunityParam" />
+ 	
+	<transactionManager type="JDBC">
+		<dataSource type="JNDI">
+			<property name="DataSource" value="java:comp/env/jdbc/bibsonomy_community_posts"/>
+		</dataSource>
+	</transactionManager>
+	
+	<sqlMap resource="common/TypeAliases-community.xml" />
+	<sqlMap resource="common/CommunityDBCommon.xml" />
+	<sqlMap resource="common/BibTexCommon-community.xml" />
+	<sqlMap resource="common/BookmarkCommon-community.xml" />
+	<sqlMap resource="CommunityDBPosts.xml" />
+</sqlMapConfig>
+
