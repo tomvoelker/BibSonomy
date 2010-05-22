@@ -7,10 +7,10 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
-	<layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
+	<layout:paneLayout pageTitle="${command.pageTitle} error 503" command="${command}" requPath="${requPath}">
 	
 	<jsp:attribute name="heading">
-		error code 503
+		error 503
 	</jsp:attribute>
 	
 	<jsp:attribute name="content">
