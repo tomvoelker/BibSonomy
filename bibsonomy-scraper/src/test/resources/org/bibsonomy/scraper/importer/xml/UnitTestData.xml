@@ -63,6 +63,7 @@
 		<BibFile>AipScitationScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.aip.AipScitationScraper</Scraper>
 		<Enabled>false</Enabled>
+		<AdditionalInfo>The download link is broken by aip.org</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_10">
 		<TestDescription>URL scraping test with arxiv publications</TestDescription>
@@ -227,14 +228,14 @@
 		<URL>http://ieeexplore.ieee.org/xpl/bkabstractplus.jsp?bkn=5263132</URL>
 		<BibFile>IEEEXploreBookScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreBookScraper</Scraper>
+		<Enabled>false</Enabled>
+		<AdditionalInfo>The output is completely the same but the test fails ...</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_37">
 		<TestDescription>URL test for work pages from librarything (standard language)</TestDescription>
 		<URL>http://www.librarything.de/work/1926837/details</URL>
 		<BibFile>LibrarythingScraperUnitURLTest3.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.librarything.LibrarythingScraper</Scraper>
-		<Enabled>false</Enabled>
-		<AdditionalInfo>The output is completely the same but the test fails ...</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_38">
 		<TestDescription>URL test for bibsonomy.org/bibtex</TestDescription>
@@ -424,6 +425,7 @@
 		<BibFile>AIFBScraperUnitURLTest7.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.karlsruhe.AIFBScraper</Scraper>
 		<Enabled>false</Enabled>
+		<AdditionalInfo>This entry has been removed</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_73">
 		<TestDescription>Cambridge Journals Url Test</TestDescription>
@@ -623,14 +625,12 @@
 		<URL>http://arjournals.annualreviews.org/doi/abs/10.1146/annurev.bioeng.6.040803.140250</URL>
 		<BibFile>AnnualreviewsScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_107">
 		<TestDescription>URL test for AnnualreviewsScraper</TestDescription>
 		<URL>http://arjournals.annualreviews.org/action/showCitFormats?doi=10.1146/annurev.bioeng.6.040803.140250</URL>
 		<BibFile>AnnualreviewsScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.annualreviews.AnnualreviewsScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_108">
 		<TestDescription>URL test for AclScraper</TestDescription>
@@ -857,7 +857,6 @@
 		<URL>http://www.agu.org/pubs/crossref/2008/2008JD010287.shtml</URL>
 		<BibFile>AGUScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.agu.AGUScraper</Scraper>
-		<Enabled>false</Enabled>
 	</URLTest>
 	<URLTest id="url_147">
 		<TestDescription>eprint url test</TestDescription>
