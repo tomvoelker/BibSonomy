@@ -2128,3 +2128,26 @@ function switchLogin() {
 	}
 	
 }
+
+function prepareErrorBoxes(className) {
+	  var el_name = "."+className;
+	  $(el_name).each(
+	          function (){
+	        	  if(parseInt($(this).html().length) == 0) {
+	        		  return true;
+	        	  }
+	        	  
+	        	  $(this).mouseover(function() {
+	        		    $(this).fadeOut('slow');
+	        	  });
+
+	              if(typeof $(this).children(':first') != undefined &&
+	              	$(this).children(':first').attr('id') != undefined) {
+	                  var id = ("#"+($(this).children(':first').attr('id')).substr(0, ($(this).children(':first').attr('id')).length-".errors".length)).replace(/\./g, "\\.");
+		              var copy = $(this);
+		              var callback = function () {copy.fadeOut('slow');};
+		              $(id).keyup(callback).change(callback);
+	                }
+		  		 $(this).fadeIn("slow");    
+	});
+}

@@ -167,21 +167,9 @@
              //<mtl:cdata>
              <![CDATA[
                 // vanishing error boxes
-                $(".dissError").mouseover(function() {
-                  $(this).fadeOut('slow');
+                $(document).ready(function() {
+                	prepareErrorBoxes('.dissError');
                 });
-                $(".dissError").each(
-                        function (){
-                            var copy = this;
-                            if($(this).children(':first').id != undefined)
-                                var id = "#"+($(this).children(':first').id).substr(0, ($(this).children(':first').id).length-".errors".length);
-                            	$(id).keyup(
-                                    function () {
-										copy.hide();
-                                	}
-                            );
-                        });
-                $(".dissError:empty").hide("1");
 
                 function toggleImage(pictureId, pictureActive, pictureInactive, divId) {
 					$(document.getElementById(divId)).slideToggle("slow"); 
