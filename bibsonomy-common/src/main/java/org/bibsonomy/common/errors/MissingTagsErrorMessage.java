@@ -11,7 +11,7 @@ public class MissingTagsErrorMessage extends ErrorMessage {
 	 */
 	public MissingTagsErrorMessage() {
 		this.setDefaultMessage("The post has no tags. A post must have at least one tag.");
-		this.setErrorCode("database.exception.missingTag");
+		this.setErrorCode("database.exception.missing.tag");
 	}
 
 }
