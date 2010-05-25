@@ -33,6 +33,9 @@ import static org.junit.Assert.assertTrue;
  * Scraper URL tests #36 for IEEEXploreBookScraper
  * @author tst
  *
+ *
+ * Sometime tests are failing though the output and the string in the test file seems to be the same.
+ * In that case, check if the scraped context has dos line endings.
  */
 public class IEEEXploreBookScraperTest {
 	

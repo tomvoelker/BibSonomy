@@ -228,8 +228,8 @@
 		<URL>http://ieeexplore.ieee.org/xpl/bkabstractplus.jsp?bkn=5263132</URL>
 		<BibFile>IEEEXploreBookScraperUnitURLTest.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ieee.IEEEXploreBookScraper</Scraper>
-		<Enabled>false</Enabled>
-		<AdditionalInfo>The output is completely the same but the test fails ...</AdditionalInfo>
+		<Enabled>true</Enabled>
+		<AdditionalInfo>This file has dos formatted line endings</AdditionalInfo>
 	</URLTest>
 	<URLTest id="url_37">
 		<TestDescription>URL test for work pages from librarything (standard language)</TestDescription>
