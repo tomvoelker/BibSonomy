@@ -47,15 +47,25 @@ tokens {
 	}
 	
 	// for own exception catching
+//	@Override
+//	protected void mismatch(IntStream input, int ttype, BitSet follow) throws RecognitionException {
+//		throw new MismatchedTokenException(ttype, input);
+//  }
+    
+    @Override
+	public boolean mismatchIsMissingToken(IntStream input, BitSet follow) {
+		return false;
+	}
+  
 	@Override
-	protected void mismatch(IntStream input, int ttype, BitSet follow) throws RecognitionException {
-		throw new MismatchedTokenException(ttype, input);
-    }
+	public boolean mismatchIsUnwantedToken(IntStream input, int ttype) {
+		return false;
+	}
 }
 // catchblock for all methods in the parser
 // print what the parser found and what it expected
 @rulecatch {
-    catch (MismatchedTokenException e) {
+    catch (Exception e) {
     	// getTokenErrorDisplay() does only work with ANTLR 3.0.1, alternative: getText()
     	//String err = "line: "+e.line+", "+e.charPositionInLine+"; found "+getTokenErrorDisplay(e.token)+
     	//String err = "line: "+e.line+", "+e.charPositionInLine+"; found '"+e.token.getText()+
