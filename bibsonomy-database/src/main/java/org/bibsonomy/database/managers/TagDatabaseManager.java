@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.common.errors.MissingTagsErrorMessage;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.tag.TagChain;
@@ -208,6 +209,22 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.delete("deleteGroupTas", contentId, session);
 	}
 
+	
+	/**
+	 * Checks if the post as at least one tag,
+	 * adds MissingTagsErrorMessage else
+	 * @param post
+	 * @param session
+	 * @return
+	 */
+	private void checkTags(final Post<?> post, final DBSession session) {
+		if (!present(post.getTags()) || post.getTags().isEmpty()) {
+			session.addError(post.getResource().getIntraHash(), new MissingTagsErrorMessage());
+		}
+	}
+	
+	
+	
 	/**
 	 * Inserts the tags from the given post.
 	 * 
@@ -215,6 +232,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @param session
 	 */
 	public void insertTags(final Post<?> post, final DBSession session) {
+		this.checkTags(post, session);
 		final TagParam tagParam = new TagParam();
 		tagParam.setTags(post.getTags());
 		/*
