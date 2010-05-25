@@ -16,9 +16,9 @@ function createParameters(title) {
 	for(i = 0; i < parseInt(partials.length); i++) {
 		if(partials[i] == "" || partials[i] == " " )
 			continue;
-		title += "sys:title:"+partials[i]+"*"+((i+1 < parseInt(partials.length))?"+":""); 
+		title += "sys:title:"+partials[i]+((i+1 < parseInt(partials.length))?"+":""); 
 	}
-	return title;
+	return title+"*";
 }
 
 /**
@@ -294,7 +294,7 @@ function formatLabel (label) {
 	label  = label.substr(0, max_len) + ((max_len < parseInt(label.length))?" ... ":"");
 	partials = $(form_name).val().split(" ");
 	for(i = 0; i < parseInt(partials.length); i++) {
-		label = label.replace(eval('/'+partials[i]+'/i'), '<b>'+partials[i].toUpperCase()+'</b>');
+		label = label.replace(eval('/'+partials[i]+'/ig'), '<b>'+partials[i].toUpperCase()+'</b>');
 	}
 	return label;
 }
