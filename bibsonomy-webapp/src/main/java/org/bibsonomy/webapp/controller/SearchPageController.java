@@ -32,7 +32,7 @@ public class SearchPageController extends SingleResourceListController implement
 	 * supported grouping entities.
 	 */
 	private static final List<GroupingEntity> SUPPORTED_GROUPING_ENTITIES = Arrays.asList(GroupingEntity.USER, GroupingEntity.GROUP);
-
+	
 	@Override
 	public View workOn(final SearchViewCommand command) {
 		log.debug(this.getClass().getSimpleName());
@@ -46,6 +46,9 @@ public class SearchPageController extends SingleResourceListController implement
 		String search = command.getRequestedSearch();
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
+		
+		//maximum number of displayed tags
+		int maximumTags = Integer.MAX_VALUE;
 
 		/*
 		 * search only in a user's, group's, etc. posts ...
@@ -76,6 +79,11 @@ public class SearchPageController extends SingleResourceListController implement
 			}
 		}
 		
+		//When GroupingEntity.ALL database allows only 1000 tags maximum
+		if(groupingEntity.equals(GroupingEntity.ALL)) {
+			maximumTags = 1000;
+		}
+		
 		// // determine which lists to initalize depending on the output format and the requested resourcetype
 		this.chooseListsToInitialize(command.getFormat(), command.getResourcetype());
 		
@@ -100,7 +108,7 @@ public class SearchPageController extends SingleResourceListController implement
 		if ("html".equals(command.getFormat())) {
 			command.setPageTitle("search");
 			// fill the tag cloud with all tag assignments of the relevant documents
-			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, Integer.MAX_VALUE, search);
+			this.setTags(command, Resource.class, groupingEntity, groupingName, null, null, null, maximumTags, search);
 			this.endTiming();
 			return Views.SEARCHPAGE;			
 		}
