@@ -1068,4 +1068,10 @@
 		<Scraper>org.bibsonomy.scraper.url.kde.science.ScienceDirectScraper</Scraper>
 		<Enabled>true</Enabled>
 	</URLTest>
+	<URLTest id="url_180">
+		<TestDescription>DBLP scraping test (html page)</TestDescription>
+		<URL>http://dblp.uni-trier.de/rec/bibtex/conf/semweb/ChoudhuryBP09</URL>
+		<BibFile>DBLPScraperUnitTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
+	</URLTest>
 </test:Tests>

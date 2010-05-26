@@ -23,6 +23,7 @@
 
 package org.bibsonomy.scraper.url.kde.dblp;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -30,13 +31,18 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.bibtex.parser.SimpleBibTeXParser;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.Scraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
-import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
+import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
+import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+
+import bibtex.parser.ParseException;
 
 /**
  * @author wbi
@@ -68,33 +74,49 @@ public class DBLPScraper extends AbstractUrlScraper {
 	private static final String DBLP_HOST_NAME4  = "http://www.vldb.org/dblp/";
 	private static final String DBLP_HOST_NAME5  = "http://sunsite.informatik.rwth-aachen.de/dblp/";
 	 */
-	private static final Pattern DBLP_PATTERN = Pattern.compile(".*<pre>\\s*(@[A-Za-z]+\\s*\\{.+?\\})\\s*</pre>.*", Pattern.MULTILINE | Pattern.DOTALL);
+	private static final Pattern DBLP_PATTERN = Pattern.compile("(<pre>\\s*(@[A-Za-z]+\\s*\\{.+?\\})\\s*</pre>)+", Pattern.MULTILINE | Pattern.DOTALL);
 
 
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
+		
+		String bibtexContent = "";
 
-		//Filtering the <a href="...">DBLP</a>: links out of the content
-		int beginDBLPLink = sc.getPageContent().indexOf("<a href=\"http://dblp.uni-trier.de/db/about/bibtex.html\">");
-		int endDBLPLink = sc.getPageContent().indexOf("DBLP</a>:");
-
-		final String pageContent = new String(sc.getPageContent().substring(0, beginDBLPLink) + sc.getPageContent().substring(endDBLPLink+9));
-
-
-		final Matcher m = DBLP_PATTERN.matcher(pageContent);	
-		if (m.matches()) {
-			StringBuffer bibtexResult = new StringBuffer(m.group(1));
+		final Matcher m = DBLP_PATTERN.matcher(sc.getPageContent());
+		while(m.find()) {
+			// get the bibtex entry out of the <pre> blocks
+			String bibtexResult = m.group(2);
 			
 			// append url
 			BibTexUtils.addFieldIfNotContained(bibtexResult, "url", sc.getUrl().toString());
 			
-			// add downloaded bibtex to result 
-			sc.setBibtexResult(bibtexResult.toString().trim());
-			
-			return true;
-		}else
-			throw new PageNotSupportedException("no bibtex snippet available");
+			// add them to the final bibtex list
+			bibtexContent += bibtexResult.replaceFirst("<a href=\".*?\">(.*)</a>", "$1");
+		}
 
+		// if there are any bibtex entries
+		if (!"".equals(bibtexContent)){
+			try {
+				SimpleBibTeXParser parser = new SimpleBibTeXParser();
+				// parse and get them as string
+				BibTex bibtex = parser.parseBibTeX(bibtexContent);
+				
+				// if there are no exception and bibtex is not null
+				if (bibtex != null && parser.getCaughtExceptions() == null){
+					// ... set the result and return true
+					sc.setBibtexResult(BibTexUtils.toBibtexString(bibtex));
+					return true;
+				} else {
+					return false;
+				}
+			} catch (ParseException ex) {
+				throw new InternalFailureException(ex);
+			} catch (IOException ex) {
+				throw new InternalFailureException(ex);
+			} 
+		} else {
+			throw new ScrapingFailureException("failure during download");
+		}
 	}
 
 	public String getInfo() {
@@ -117,4 +139,5 @@ public class DBLPScraper extends AbstractUrlScraper {
 		return SITE_URL;
 	}
 }
+
 
