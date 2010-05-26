@@ -40,7 +40,7 @@ public class DBLPScraperTest {
 	 * starts URL test with id url_56
 	 */
 	@Test
-	
+	@Ignore
 	public void urlTestRun(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_56"));
@@ -50,7 +50,7 @@ public class DBLPScraperTest {
 	 * starts URL test with id url_180
 	 */
 	@Test
-	
+	@Ignore
 	public void urlTest1Run(){
 		UnitTestRunner runner = new UnitTestRunner();
 		assertTrue(runner.runSingleTest("url_180"));
