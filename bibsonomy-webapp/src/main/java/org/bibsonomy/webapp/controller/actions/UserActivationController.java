@@ -1,5 +1,7 @@
 package org.bibsonomy.webapp.controller.actions;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -25,6 +27,9 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.validation.Errors;
 
 /**
+ * controller for
+ * 		- activate/ACTIVATIONCODE
+ * 
  * @author Clemens Baier
  * @version $Id$
  */
@@ -59,16 +64,21 @@ public class UserActivationController implements MinimalisticController<UserActi
 		final String inetAddress = requestLogic.getInetAddress();
 		final Locale locale = requestLogic.getLocale();
 		
+		// TODO: why not getting the activationCode from the command?!
 		final String activationCode = requestLogic.getParameter("activationCode");
-		final List<User> list = logic.getUsers(null, GroupingEntity.PENDING, null, null, null, null, null, activationCode, 0, Integer.MAX_VALUE);
+		final List<User> list = logic.getUsers(null, GroupingEntity.PENDING, null, null, null, null, null, activationCode, 0, 1);
 		User pendingUser = null;
-		if (list.size() == 0) {
+		if (list.size() == 0 || !present(activationCode)) {
 			errors.reject("error.illegal_activation_code");
 		} else {
 			log.debug("trying to activate user with code '" + activationCode + "'");
 
 			pendingUser = list.get(0);
-			/*
+			
+			/* 
+			 * FIXME: this check should be done by the userdatabasemanager in
+			 * the activate user method
+			 * 
 			 * check, if activation code is invalid.
 			 * 
 			 * now < registration_date + 24h
@@ -152,11 +162,17 @@ public class UserActivationController implements MinimalisticController<UserActi
 		this.mailUtils = mailUtils;
 	}
 
-	public void setCookieLogic(CookieLogic cookieLogic) {
-		this.cookieLogic = cookieLogic;
+	/**
+	 * @return the cookieLogic
+	 */
+	public CookieLogic getCookieLogic() {
+		return this.cookieLogic;
 	}
 
-	public CookieLogic getCookieLogic() {
-		return cookieLogic;
+	/**
+	 * @param cookieLogic the cookieLogic to set
+	 */
+	public void setCookieLogic(CookieLogic cookieLogic) {
+		this.cookieLogic = cookieLogic;
 	}
 }
