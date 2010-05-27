@@ -2150,4 +2150,7 @@ function prepareErrorBoxes(className) {
 	                }
 		  		 $(this).fadeIn("slow");    
 	});
+	// this is a workaround because the tags input element's id is not 'tags' but 'inpf'
+	$('#inpf').keyup(function() {$('#tags\\.errors').parent().fadeOut('slow');});
+	  
 }
