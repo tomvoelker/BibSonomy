@@ -26,7 +26,7 @@ public class GetBibtexByResourceSearch extends BibTexChainElement {
 		List<String> tagIndex = null;
 		if(present(param.getTagIndex())) {
 			tagIndex = extractTagNames(param.getTagIndex());
-		};
+		}
 		
 		// query the resource searcher
 		return this.db.getPostsByResourceSearch(

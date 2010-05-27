@@ -66,11 +66,11 @@ public class AbstractDatabaseManager {
 	}
 	
 	/**
-	 * Can be used to start a query that retrieves a list of objectf of a certain type.
+	 * Can be used to start a query that retrieves a list of objects of a certain type.
 	 */
 	@SuppressWarnings("unchecked")
 	@Deprecated
-	protected <T> List<T> queryForList(final String query, final Object param, @SuppressWarnings("unused") final Class<T> type, final boolean ignoreException, final DBSession session) {
+	protected <T> List<T> queryForList(final String query, final Object param, final Class<T> type, final boolean ignoreException, final DBSession session) {
 		return (List<T>) this.queryForAnything(query, param, QueryFor.LIST, ignoreException, session);
 	}
 
@@ -106,7 +106,7 @@ public class AbstractDatabaseManager {
 	 */
 	@SuppressWarnings("unchecked")
 	@Deprecated
-	protected <T> T queryForObject(final String query, final Object param, @SuppressWarnings("unused") Class<T> type, final boolean ignoreException, final DBSession session) {
+	protected <T> T queryForObject(final String query, final Object param, final Class<T> type, final boolean ignoreException, final DBSession session) {
 		return (T) this.queryForAnything(query, param, QueryFor.OBJECT, ignoreException, session);
 	}
 

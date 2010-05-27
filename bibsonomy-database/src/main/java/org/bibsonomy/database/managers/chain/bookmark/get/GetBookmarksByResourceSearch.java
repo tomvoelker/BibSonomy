@@ -26,7 +26,7 @@ public class GetBookmarksByResourceSearch extends BookmarkChainElement {
 		List<String> tagIndex = null;
 		if(present(param.getTagIndex())) {
 			tagIndex = extractTagNames(param.getTagIndex());
-		};
+		}
 		
 		// query the resource searcher
 		return this.db.getPostsByResourceSearch(

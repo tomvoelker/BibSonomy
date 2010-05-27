@@ -178,6 +178,7 @@ public class GroupDatabaseManager extends AbstractDatabaseManager {
 			// if the user isn't a member of the group he can't see other
 			// members -> and we'll fall through to HIDDEN
 			if (this.isUserInGroup(authUser, groupname, session)) break;
+			//$FALL-THROUGH$
 		case HIDDEN:
 			group.setUsers(Collections.<User> emptyList());
 			break;
