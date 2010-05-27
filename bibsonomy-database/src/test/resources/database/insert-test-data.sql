@@ -185,7 +185,7 @@ INSERT INTO `groups` VALUES
 INSERT INTO `ids` VALUES 
 (0,  1073741824, 'content_id'),
 (1,  1073741824, 'tas id'),
-(2,  0,  'relation id'),
+(2,  21,  'relation id'),
 (3,  0,  'question id'),
 (4,  1,  'cycle id'),
 (5,  0,  'extended_fields_id'),
