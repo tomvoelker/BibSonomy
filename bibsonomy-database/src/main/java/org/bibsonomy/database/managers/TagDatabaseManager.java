@@ -687,6 +687,10 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return list of tags
 	 */
 	public List<Tag> getRelatedTagsForUser(final String userName, final String requestedUserName, final List<TagIndex> tagIndex, final List<Integer> visibleGroupIDs, int limit, int offset, final DBSession session) {
+		// check maximum number of tags
+		if (this.exceedsMaxSize(tagIndex)) {
+			return new ArrayList<Tag>();
+		}		
 		final TagParam param = new TagParam();
 		param.setUserName(userName);
 		param.setRequestedUserName(requestedUserName);
@@ -969,6 +973,9 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * @return a list of tags
 	 */
 	public List<Tag> getRelatedTagsByAuthorAndTag(final TagParam param, final DBSession session){
+		if (this.exceedsMaxSize(param.getTagIndex())) {
+			return new ArrayList<Tag>();
+		}		
 		return this.queryForList("getRelatedTagsByAuthorAndTag", param, Tag.class, session);
 	}
 
