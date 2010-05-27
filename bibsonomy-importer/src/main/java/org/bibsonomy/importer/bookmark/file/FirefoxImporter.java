@@ -27,7 +27,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * 
- * Imports bookmarks and relations from Delicious.
+ * Imports bookmarks and relations from Firefox.
  * 
  * @author:  rja
  * @version: $Id$
@@ -101,7 +101,7 @@ public class FirefoxImporter implements FileBookmarkImporter, RelationImporter {
 		// if tags are provided by upper nodes these tags belong to this node
 		// too
 		if (upperTags != null) {
-			tags = (Vector<String>) upperTags.clone();
+			tags = new Vector<String>(upperTags);
 		}
 		// if no tags are provided create a new vector
 		else {
@@ -116,7 +116,7 @@ public class FirefoxImporter implements FileBookmarkImporter, RelationImporter {
 		for (int i = 0; i < children.getLength(); i++) {
 			Node currentNode = children.item(i);
 			// connect all upper tags with the currentNode
-			Vector<String> myTags = (Vector<String>) tags.clone();
+			Vector<String> myTags = new Vector<String>(tags);
 			if (!"".equals(sepTag)) {
 				myTags.add(sepTag);
 			}
@@ -233,8 +233,7 @@ public class FirefoxImporter implements FileBookmarkImporter, RelationImporter {
 
 	@Override
 	public void setCredentials(String userName, String password) {
-		// TODO Auto-generated method stub
-		
+		// ...		
 	}
 }
 
