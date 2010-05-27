@@ -18,13 +18,13 @@
 		
 		<c:if test="${command.context.loginUser.role eq 'ADMIN'}">
 			<li>
-				<fmt:message key="post.actions.edit.title" var="editTitle"/>
+				<fmt:message key="post.actions.edit.gold.title" var="editTitle"/>
 				<a href="/editGoldStandardPublication?intraHashToUpdate=${goldstandard.interHash}" title="${fn:escapeXml(editTitle)}">
 					<fmt:message key="post.actions.edit"/>
 				</a>
 			</li>
 			<li>
-				<fmt:message key="post.actions.edit.title" var="deleteTitle"/>
+				<fmt:message key="post.actions.delete.gold.title" var="deleteTitle"/>
 				<c:url var="deleteUrl" value="/deletePost" context="${projectContext}">
 		           <c:param name="resourceHash" value="${goldstandard.interHash}" />
 		           <c:param name="ckey" value="${ckey}" />
