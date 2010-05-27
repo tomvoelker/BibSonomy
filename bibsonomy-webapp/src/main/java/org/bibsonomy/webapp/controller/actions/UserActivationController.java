@@ -94,7 +94,7 @@ public class UserActivationController implements MinimalisticController<UserActi
 		 * send activation confirmation mail
 		 */
 		try {
-			mailUtils.sendRegistrationMail(pendingUser.getName(), pendingUser.getEmail(), pendingUser.getActivationCode(), inetAddress, locale);
+			mailUtils.sendActivationMail(pendingUser.getName(), pendingUser.getEmail(), inetAddress, locale);
 		} catch (final Exception e) {
 			log.error("Could not send activation confirmation mail for user " + pendingUser.getName(), e);
 		}
