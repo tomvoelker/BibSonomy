@@ -74,7 +74,6 @@ DELETE FROM `search_bibtex`;
 DELETE FROM `search_bibtex_old`;
 DELETE FROM `search_bookmark`;
 DELETE FROM `search_bookmark_old`;
-DELETE FROM `search_old`;
 DELETE FROM `spammer_tags`;
 DELETE FROM `tags`;
 DELETE FROM `tagtag`;
