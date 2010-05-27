@@ -26,10 +26,8 @@
         
         <jsp:attribute name="content">
 
-            <!-- ###################### welcome ####################### -->
-            <h2><fmt:message key="register.success" ><fmt:param value="${command.context.loginUser.name}"/></fmt:message></h2>
-          
-            <p><fmt:message key="register.welcome"/> <a href="/">${projectName}</a>!</p>
+            <!-- ###################### welcome ####################### -->          
+            <h2><fmt:message key="register.welcome"/> <a href="/">${projectName}</a>!</h2>
   
             <p><fmt:message key="register.activate"/> </p>
 
