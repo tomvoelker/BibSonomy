@@ -66,11 +66,11 @@
 				</c:forEach></ul>
 				</li>
 			</c:if>
-<!-- loginUser.groups -->
+			<!-- loginUser.groups -->
 			<li>    
 				<span class="sidebar_h"><a href="/groups"><fmt:message key="groups"/></a></span>
 				<ul><c:forEach var="group" items="${user.groups}">
-			  	<li><a href="/group/${mtl:encodeURI(group)}"><c:out value='${group}'/></a></li>
+			  	<li><a href="/group/${mtl:encodeURI(group.name)}"><c:out value='${group.name}'/></a></li>
 				</c:forEach></ul>
 			</li>
 			
