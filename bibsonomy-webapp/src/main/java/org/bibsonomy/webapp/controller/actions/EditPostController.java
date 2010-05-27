@@ -642,9 +642,10 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 */
 	private View finalRedirect(final String userName, final String referer) {
 		/*
-		 * If there is no referer URL given, redirect to the user's home page. 
+		 * If there is no referer URL given, or if we come from a postBookmark/postPublication page, 
+		 * redirect to the user's home page. 
 		 */
-		if (!present(referer)) {
+		if (!present(referer) || referer.matches(".*/postPublication$") || referer.matches(".*/postBookmark$")) {
 			return new ExtendedRedirectView(urlGenerator.getUserUrl(userName));
 		}
 		/*
