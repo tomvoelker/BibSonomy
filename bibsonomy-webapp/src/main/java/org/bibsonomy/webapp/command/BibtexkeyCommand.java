@@ -7,7 +7,7 @@ package org.bibsonomy.webapp.command;
  * @author Flori
  * @version $Id$
  */
-public class BibtexkeyCommand extends TagResourceViewCommand{
+public class BibtexkeyCommand extends BibtexResourceViewCommand{
 	
 	/** String to search for */
 	private String requestedKey = "";
