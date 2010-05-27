@@ -13,6 +13,7 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.util.MailUtils;
 import org.bibsonomy.webapp.command.actions.UserActivationCommand;
+import org.bibsonomy.webapp.util.CookieLogic;
 import org.bibsonomy.webapp.util.ErrorAware;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.RequestLogic;
@@ -32,6 +33,7 @@ public class UserActivationController implements MinimalisticController<UserActi
 
 	private RequestLogic requestLogic;
 	private LogicInterface logic;
+	private CookieLogic cookieLogic;
 	private Errors errors;
 	private MailUtils mailUtils;
 	
@@ -99,6 +101,11 @@ public class UserActivationController implements MinimalisticController<UserActi
 			log.error("Could not send activation confirmation mail for user " + pendingUser.getName(), e);
 		}
 		
+		/*
+		 * set cookie so that user is authenticated
+		 */
+		this.cookieLogic.addUserCookie(pendingUser.getName(), pendingUser.getPassword());
+		
 		return new ExtendedRedirectView(successRedirect);
 	}
 
@@ -143,5 +150,13 @@ public class UserActivationController implements MinimalisticController<UserActi
 	@Required
 	public void setMailUtils(MailUtils mailUtils) {
 		this.mailUtils = mailUtils;
+	}
+
+	public void setCookieLogic(CookieLogic cookieLogic) {
+		this.cookieLogic = cookieLogic;
+	}
+
+	public CookieLogic getCookieLogic() {
+		return cookieLogic;
 	}
 }
