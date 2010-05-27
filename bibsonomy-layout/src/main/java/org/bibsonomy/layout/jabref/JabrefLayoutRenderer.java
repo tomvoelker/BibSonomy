@@ -310,6 +310,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 					bib.addMiscField("misc_id", bib.getMiscField("id"));
 					bib.removeMiscField("id");
 				}
+				bib.serializeMiscFields();
 				
 				// set some fields so we can easily access them later in the export filters
 				bib.addMiscField("bibsonomyUsername", post.getUser().getName());   // bibsonomy username
