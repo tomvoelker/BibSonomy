@@ -297,7 +297,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 			final T resource = post.getResource();
 			
 			if (resource instanceof BibTex) {
-				
+				@SuppressWarnings("unchecked")
 				final Post<BibTex> bibPost = (Post<BibTex>) post;
 				final BibTex bib = bibPost.getResource();
 				 

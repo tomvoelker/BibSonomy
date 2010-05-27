@@ -44,7 +44,7 @@ import org.xml.sax.SAXException;
 public class XMLJabrefLayoutReaderTest {
 
 	@Test
-	public void testGetJabrefLayouts() throws SAXException, IOException {
+	public void testGetJabrefLayouts() throws IOException {
 		
 		final InputStream stream = XMLJabrefLayoutReader.class.getClassLoader().getResourceAsStream("org/bibsonomy/layout/jabref/JabrefLayouts.xml");
 		
@@ -92,7 +92,7 @@ public class XMLJabrefLayoutReaderTest {
 			if (layout.getName().equals("se")) {
 				found = true;
 				
-				Assert.assertEquals("se", layout.getBaseFileName());;
+				Assert.assertEquals("se", layout.getBaseFileName());
 				Assert.assertEquals("text/html", layout.getMimeType());
 				Assert.assertEquals(".html", layout.getExtension());
 				Assert.assertEquals("SE Kassel", layout.getDisplayName());

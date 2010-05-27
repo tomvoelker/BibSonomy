@@ -98,7 +98,7 @@ public class JabrefLayoutRendererTest {
 	}
 
 	public static void main(String[] args) {
-		final JabrefLayoutRenderer renderer = JabrefLayoutRenderer.getInstance();
+		//final JabrefLayoutRenderer renderer = JabrefLayoutRenderer.getInstance();
 		//renderer.setDefaultLayoutFilePath(args[0]);
 
 		final JabrefLayoutRendererTest t = new JabrefLayoutRendererTest();
@@ -111,6 +111,7 @@ public class JabrefLayoutRendererTest {
 		System.exit(0);	
 	}
 	
+	@SuppressWarnings("unused")
 	private void testBstVM() {
 		try {
 			final File bst = new File("/home/rja/paper/papers/2007/issi/lni.bst");
