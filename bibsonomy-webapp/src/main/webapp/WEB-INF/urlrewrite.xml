@@ -769,7 +769,7 @@
 	</rule>
 	
 
-	<!-- /concept/tag/TAG -->
+	<!-- /activate/ACTIVATIONCODE -->
 	<rule>
 		<name>/activate/ACTIVATIONCODE</name>
 		<from>^/+activate/([^/]+)$</from>
