@@ -453,8 +453,8 @@ public class InitUserFilter implements Filter {
 		//if user changed language in /settings change the language to the new requested language
 		} else {
 			final String lang = loginUser.getSettings().getDefaultLanguage();
-			final String sessionLang = (String) httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE);
-			if( lang != null && !sessionLang.equals(lang)) {
+			final Locale sessionLang = (Locale) httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE);
+			if( lang != null && !sessionLang.getLanguage().equals(new Locale(lang))) {
 				httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(lang));
 			}
 		}
