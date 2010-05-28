@@ -166,6 +166,11 @@ public class InitUserFilter implements Filter {
 		 * ignore resource files (CSS, JPEG/PNG, JavaScript) ...
 		 */
 		if (requPath.startsWith(STATIC_RESOURCES) || requPath.startsWith(API)) {
+			
+			//workaround that prevent the the 404 error to break because of no loginUser is set
+			//if user requests a site that doesn't exists
+			request.setAttribute(REQ_ATTRIB_LOGIN_USER, new User());
+			
 			chain.doFilter(request, response);
 			return;
 		}
@@ -443,6 +448,14 @@ public class InitUserFilter implements Filter {
 			} else {
 				httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(loginUser.getSettings().getDefaultLanguage()));
 
+			}
+			
+		//if user changed language in /settings change the language to the new requested language
+		} else {
+			final String lang = loginUser.getSettings().getDefaultLanguage();
+			final String sessionLang = (String) httpServletRequest.getSession().getAttribute(REQ_ATTRIB_LANGUAGE);
+			if( lang != null && !sessionLang.equals(lang)) {
+				httpServletRequest.getSession().setAttribute(REQ_ATTRIB_LANGUAGE, new Locale(lang));
 			}
 		}
 
