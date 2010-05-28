@@ -37,6 +37,8 @@ public class TagCountCollector extends Collector {
 	
 	private Map<Integer,IndexReader> docToReaderMap;
 	private IndexReader lastReader = null;
+	@SuppressWarnings("unused")
+	// TODO: REMOVE ME?
 	private int lastDocBase = 0;
 
 	/**

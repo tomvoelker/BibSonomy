@@ -291,7 +291,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 	protected abstract String getResourceName();
 	
 	/** fill given posts with additional data */
-	protected void fillPost(@SuppressWarnings("unused") LucenePost<R> postEntry) {
+	protected void fillPost(LucenePost<R> postEntry) {
 		// noop
 	}
 	

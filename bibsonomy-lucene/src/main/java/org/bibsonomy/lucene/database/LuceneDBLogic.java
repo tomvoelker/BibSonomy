@@ -289,7 +289,7 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 			log.error("Error fetching " + this.getResourceName() + " for given time range", e);
 		}
 		
-		log.debug("retrieveRecordsFromDatabase: " + retVal.size());
+		log.debug("retrieveRecordsFromDatabase: " + ((retVal == null) ? -1 : retVal.size()));
 		return retVal;
 	}
 

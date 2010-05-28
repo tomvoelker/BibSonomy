@@ -571,7 +571,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 						log.error("Error building full text tag cloud for query " + qf.getQuery().toString());
 					}
 				}
-			};
+			}
 			
 			if( retVal==null )
 				retVal = new LinkedList<Tag>();
@@ -1185,7 +1185,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	 * @param systemTags TODO: NOT IMPLEMENTED
 	 * @return
 	 */
-	protected QuerySortContainer buildGroupSearchQuery(@SuppressWarnings("unused") String groupName, List<String> visibleGroups, List<String> userGroupFriends, List<String> groupMembers, String search, String authUserName,  @SuppressWarnings("unused") final int limit, @SuppressWarnings("unused") final int offset,  @SuppressWarnings("unused") Collection<? extends Tag> systemTags ) {
+	protected QuerySortContainer buildGroupSearchQuery(String groupName, List<String> visibleGroups, List<String> userGroupFriends, List<String> groupMembers, String search, String authUserName,  final int limit, final int offset,  Collection<? extends Tag> systemTags ) {
 		// FIXME: configure this
 		String orderBy = FLD_DATE;
 
@@ -1279,7 +1279,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		qf.setQuery(mainQuery);
 		qf.setSort(sort);
 		return qf;
-	};
+	}
 
 	/** 
 	 * analyzes given input parameter

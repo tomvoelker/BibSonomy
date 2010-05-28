@@ -177,8 +177,8 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 	 * @throws NoSuchMethodException
 	 */
 	private String extractPropertyValue( 
-			@SuppressWarnings("unused") Map<String, Map<String, Object>> bibTexPropertyMap, LuceneTypeHandler<Object> typeHandler,
-			@SuppressWarnings("unused") String propertyName, Object item) 
+			Map<String, Map<String, Object>> bibTexPropertyMap, LuceneTypeHandler<Object> typeHandler,
+			String propertyName, Object item) 
 	throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		String itemValue = null;
 		// get the string value for the given object
