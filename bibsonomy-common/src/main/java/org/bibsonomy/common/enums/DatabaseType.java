@@ -30,6 +30,7 @@ package org.bibsonomy.common.enums;
  * @author Dominik Benz
  * @version $Id$
  */
+@Deprecated
 public enum DatabaseType {
 	/** DB master */
 	MASTER,
