@@ -728,5 +728,5 @@
     <import resource="bibsonomy2-servlet-actions.xml"/>
     <import resource="bibsonomy2-servlet-ajax.xml"/>	
     <import resource="bibsonomy2-servlet-admin.xml"/>
-
+	<import resource="bibsonomy2-servlet-lucene.xml"/>
 </beans>
