@@ -19,8 +19,6 @@ import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
 
-import resources.Bibtex;
-
 /**
  * Controller for group reporting pages.
  * 
@@ -78,7 +76,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		/*
 		 * init entrytypes 
 		 */
-		for (String type : Bibtex.entrytypes) { command.getPublicationCounts().getColumnHeaders().add(type); }
+		for (String type : BibTexUtils.ENTRYTYPES) { command.getPublicationCounts().getColumnHeaders().add(type); }
 		/*
 		 * loop over entries, accumulate and fill command
 		 */
@@ -97,7 +95,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 					}
 					// init a new row with zero values
 					row = new HashMap<String,Integer>();
-					for (String type : Bibtex.entrytypes) {
+					for (String type : BibTexUtils.ENTRYTYPES) {
 						row.put(type, 0);
 					}
 				}
@@ -147,15 +145,20 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		return Views.REPORTING;
 	}
 	
-	
+	/**
+	 * @return the logic
+	 */
 	public LogicInterface getLogic() {
 		return this.logic;
 	}
 
+	/**
+	 * @param logic the logic to set
+	 */
 	public void setLogic(LogicInterface logic) {
 		this.logic = logic;
 	}
-	
+
 	@Override
 	public GroupReportingCommand instantiateCommand() {
 		return new GroupReportingCommand();
