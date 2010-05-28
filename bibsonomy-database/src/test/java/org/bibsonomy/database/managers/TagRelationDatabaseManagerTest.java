@@ -145,4 +145,67 @@ public class TagRelationDatabaseManagerTest extends AbstractDatabaseManagerTest 
 		final Tag concept = tagRelDb.getGlobalConceptByName("programming", this.dbSession);
 		assertEquals(4, concept.getSubTags().size());
 	}
+
+	/**
+	 * Tests if updating a tagtagrelation works properly
+	 *
+	 */
+	//TODO does this test changes the testdb also for other tests ?
+	@Test
+	public void testUpdateTagRelations() {
+		Tag a = new Tag(".net");
+		Tag b = new Tag("java");
+		User user = new User("testuser1");
+		TagRelationParam before = new TagRelationParam();
+		before.setLowerTagName(".net");
+		before.setUpperTagName("programming");
+		before.setOwnerUserName("testuser1");
+		
+
+		TagRelationParam after = new TagRelationParam();
+		after.setLowerTagName("java");
+		after.setUpperTagName("programming");
+		after.setOwnerUserName("testuser1");
+		
+		assertTrue(tagRelDb.isRelationPresent(before, this.dbSession));
+		assertTrue(tagRelDb.isRelationPresent(after, this.dbSession));
+		
+		tagRelDb.updateTagRelations(user, a, b, this.dbSession);
+		
+		assertFalse(tagRelDb.isRelationPresent(before, this.dbSession));
+		assertTrue(tagRelDb.isRelationPresent(after, this.dbSession));
+		
+
+		a = new Tag("java");
+		b = new Tag("haskel");
+		user = new User("testuser1");
+		before = new TagRelationParam();
+		before.setLowerTagName("java");
+		before.setUpperTagName("programming");
+		before.setOwnerUserName("testuser1");
+		
+
+		TagRelationParam otherUser = new TagRelationParam();
+		otherUser.setLowerTagName("java");
+		otherUser.setUpperTagName("programming");
+		otherUser.setOwnerUserName("testuser2");
+		
+
+		after = new TagRelationParam();
+		after.setLowerTagName("haskel");
+		after.setUpperTagName("programming");
+		after.setOwnerUserName("testuser1");
+		
+		assertTrue(tagRelDb.isRelationPresent(before, this.dbSession));
+		assertFalse(tagRelDb.isRelationPresent(after, this.dbSession));
+		assertTrue(tagRelDb.isRelationPresent(otherUser, this.dbSession));
+		
+		tagRelDb.updateTagRelations(user, a, b, this.dbSession);
+		
+		assertFalse(tagRelDb.isRelationPresent(before, this.dbSession));
+		assertTrue(tagRelDb.isRelationPresent(after, this.dbSession));
+		assertTrue(tagRelDb.isRelationPresent(otherUser, this.dbSession));
+		
+		
+	}
 }
