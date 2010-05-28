@@ -8,12 +8,12 @@
 	<artifactId>bibsonomy-layout</artifactId>
 	<packaging>jar</packaging>
 	<name>BibSonomy-Layout</name>
-	<version>2.0.6</version>
+	<version>2.0.7-SNAPSHOT</version>
 	<description>Layout engine for the webapp.</description>
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>2.0.6</version>
+		<version>2.0.7-SNAPSHOT</version>
 	</parent>
 
 
