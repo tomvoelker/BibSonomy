@@ -7,6 +7,7 @@
 	                    http://www.springframework.org/schema/util 
 	                    http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
+	
 	<!-- 
 		extracts properties from the provided file and inserts them into bean 
 		properties using "${property.name}" notation  
@@ -17,7 +18,6 @@
 		</property>
 		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_CONTEXTPARAM"/>
 	</bean>
-
 
 	<bean id="controllerBase" class="org.bibsonomy.webapp.util.spring.controller.MinimalisticControllerSpringWrapper" abstract="true">
 		<property name="allowedFields" ref="allowedFields"/>
