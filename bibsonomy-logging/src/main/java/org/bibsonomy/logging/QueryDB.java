@@ -46,6 +46,7 @@ public class QueryDB {
 	public static void main(String[] args) throws IOException {
 
 		final QueryDB db = QueryDB.getInstance();
+		System.out.println(db);
 
 //		try {
 			/*

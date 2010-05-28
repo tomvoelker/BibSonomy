@@ -28,6 +28,9 @@ import javax.servlet.http.HttpServletResponse;
 
 public class LogMe extends HttpServlet {
 	
+
+        private static final long serialVersionUID = 7035035642527692979L;
+        
 	private static final Log log = LogFactory.getLog(LogMe.class);
 
 	public static List<String> getMatches(Pattern pattern, String text, int splitAtSpace) {
@@ -102,6 +105,7 @@ public class LogMe extends HttpServlet {
 	//		System.out.println (req.getParameter("dompath"));
 	//		System.out.println (req.getHeader("remote_addr"));
 			
+			@SuppressWarnings("unchecked")
 			Enumeration<String> headerNames = req.getHeaderNames();
 			String cookieUsername = "";
 	    	String cookieSessionId = "";
@@ -135,7 +139,8 @@ public class LogMe extends HttpServlet {
 			
 			 Pattern p = Pattern.compile("#([a-zA-Z0-9-_]+)");
 			 String text = req.getParameter("dompath2");
-			 List<String> idArray = getMatches(p, text);
+			 @SuppressWarnings("unused")
+			List<String> idArray = getMatches(p, text);
 			
 //			 System.out.println (idArray.toString());
 			 
