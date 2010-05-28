@@ -13,6 +13,7 @@ import org.bibsonomy.lucene.util.LuceneBase;
  *        THIS UPDATE WILL BE LOST!!!
  * 
  * @author fei
+ * @version $Id$
  */
 public class DocumentCacheComparator extends LuceneBase implements Comparator<Document> {
 
@@ -33,8 +34,8 @@ public class DocumentCacheComparator extends LuceneBase implements Comparator<Do
 				int cmp = date1.compareTo(date2);
 				if( cmp==0 )
 					return -1;
-				else
-					return cmp;
+				
+				return cmp;
 			}
 		} catch(NumberFormatException e) {
 			return -1;

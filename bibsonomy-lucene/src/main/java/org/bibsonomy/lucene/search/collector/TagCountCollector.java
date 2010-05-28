@@ -1,5 +1,7 @@
 package org.bibsonomy.lucene.search.collector;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,7 +20,6 @@ import org.apache.lucene.search.Scorer;
 import org.apache.lucene.search.Searcher;
 import org.apache.lucene.search.Sort;
 import org.bibsonomy.model.Tag;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * experimental hits collector for calculating author tag cloud
@@ -26,7 +27,7 @@ import org.bibsonomy.util.ValidationUtils;
  * FIXME: springify this
  * 
  * @author fei
- *
+ * @version $Id$
  */
 public class TagCountCollector extends Collector {
 	private static final Log log = LogFactory.getLog(TagCountCollector.class);
@@ -36,11 +37,13 @@ public class TagCountCollector extends Collector {
 	
 	private Map<Integer,IndexReader> docToReaderMap;
 	private IndexReader lastReader = null;
-	@SuppressWarnings("unused")
 	private int lastDocBase = 0;
 
 	/**
 	 * constructor
+	 * @param filter 
+	 * @param nDocs 
+	 * @param sort 
 	 * @throws IOException 
 	 */
 	public TagCountCollector(Filter filter, int nDocs, Sort sort) throws IOException {
@@ -50,6 +53,7 @@ public class TagCountCollector extends Collector {
 
 	@Override
 	public boolean acceptsDocsOutOfOrder() {
+		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -69,10 +73,10 @@ public class TagCountCollector extends Collector {
 	}
 	
 	/**
-	 * fetches tags and their corresponding counts from collected documents 
+	 * fetches tags and their corresponding counts from collected documents
 	 * 
 	 * @param searcher index searcher for accessing documents
-	 * @return
+	 * @return the tags and their corresponding counts from collected documents
 	 */
 	public List<Tag> getTags(Searcher searcher) {
 		Map<String,Integer> tagCounter = new HashMap<String,Integer>();
@@ -84,10 +88,10 @@ public class TagCountCollector extends Collector {
 				FieldSelector tasSelector = new MapFieldSelector(FLD_TAS); 
 				Document doc = docToReaderMap.get(docId).document(docId, tasSelector);
 				String tags = doc.get(FLD_TAS);
-				if( ValidationUtils.present(tags) ) {
+				if( present(tags) ) {
 					for(String tag : tags.split(CFG_LIST_DELIMITER)) {
 						Integer oldCnt = tagCounter.get(tag);
-						if( !ValidationUtils.present(oldCnt) )
+						if( !present(oldCnt) )
 							oldCnt=1;
 						else
 							oldCnt+=1;

@@ -27,6 +27,7 @@ import com.ibatis.sqlmap.client.extensions.TypeHandlerCallback;
  */
 public class ResourceTypeHandlerCallback implements TypeHandlerCallback {
 
+	@Override
 	public Object getResult(final ResultGetter getter) throws SQLException {
 		final String value = getter.getString();
 		if (getter.wasNull()) {
@@ -34,7 +35,8 @@ public class ResourceTypeHandlerCallback implements TypeHandlerCallback {
 		}
 		return this.valueOf(value);
 	}
-
+	
+	@Override
 	public void setParameter(final ParameterSetter setter, final Object parameter) throws SQLException {
 		if (parameter == null) {
 			throw new IllegalArgumentException("given resource is null");		
@@ -48,6 +50,7 @@ public class ResourceTypeHandlerCallback implements TypeHandlerCallback {
 		}
 	}
 
+	@Override
 	public Object valueOf(final String str) {
 		try {
 			final int value = Integer.parseInt(str);

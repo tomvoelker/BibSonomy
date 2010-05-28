@@ -2,33 +2,19 @@ package org.bibsonomy.lucene.search;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.ResultList;
 
 /**
  * class for bookmark search
  * 
  * @author fei
- *
+ * @version $Id$
  */
-public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
-	@SuppressWarnings("unused")
-	private static final Log log = LogFactory.getLog(LuceneSearchBookmarks.class);
-	
+public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {	
 	private final static LuceneSearchBookmarks singleton = new LuceneSearchBookmarks();
-	
-	/**
-	 * constructor
-	 */
-	private LuceneSearchBookmarks() {
-		reloadIndex(0);
-	}
 
 	/**
 	 * @return LuceneSearchBookmarks
@@ -36,13 +22,16 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 	public static LuceneSearchBookmarks getInstance() {
 		return singleton;
 	}
-
-
+	
+	/**
+	 * constructor
+	 */
+	private LuceneSearchBookmarks() {
+		reloadIndex(0);
+	}
+	
 	@Override
-	protected QuerySortContainer buildAuthorQuery(String group,
-			String searchTerms, String requestedUserName,
-			String requestedGroupName, List<String> groupMembers,
-			String year, String firstYear, String lastYear, List<String> tagList) {
+	protected QuerySortContainer buildAuthorQuery(String group, String searchTerms, String requestedUserName, String requestedGroupName, List<String> groupMembers, String year, String firstYear, String lastYear, List<String> tagList) {
 		throw new UnsupportedOperationException("Author search not available for bookmarks");
 	}
 	
@@ -53,15 +42,8 @@ public class LuceneSearchBookmarks extends LuceneResourceSearch<Bookmark> {
 	}
 	
 	@Override
-	protected Class<Bookmark> getResourceType() {
-		return Bookmark.class;
+	protected String getResourceName() {
+		return Bookmark.class.getSimpleName();
 	}
-
-	@Override
-	protected ResultList<Post<Bookmark>> createEmptyResultList() {
-		return new ResultList<Post<Bookmark>>();
-	}
-
-
 
 }

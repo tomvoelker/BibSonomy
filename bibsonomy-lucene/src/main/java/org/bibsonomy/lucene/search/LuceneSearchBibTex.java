@@ -23,18 +23,16 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.ResultList;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
  * class for bibtex search
  * 
  * @author fei
- *
+ * @version $Id$
  */
 public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
-	final Log log = LogFactory.getLog(LuceneSearchBibTex.class);
+	private static final Log log = LogFactory.getLog(LuceneSearchBibTex.class);
 
 	private final static LuceneSearchBibTex singleton = new LuceneSearchBibTex();
 	
@@ -54,8 +52,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 	
 	@Override
 	protected Query buildAuthorSearchQuery(final String authorSearchTerms) {
-		Query authorTermQuery = parseSearchQuery(FLD_AUTHOR, authorSearchTerms);
-		return authorTermQuery;
+		return parseSearchQuery(FLD_AUTHOR, authorSearchTerms);
 	}
 	
 	/**
@@ -73,6 +70,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 	 * @param tagList
 	 * @return
 	 */
+	@Override
 	protected QuerySortContainer buildAuthorQuery(
 			String group,  
 			String searchTerms, 
@@ -235,12 +233,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 	}
 	
 	@Override
-	protected Class<BibTex> getResourceType() {
-		return BibTex.class;
-	}
-
-	@Override
-	protected ResultList<Post<BibTex>> createEmptyResultList() {
-		return new ResultList<Post<BibTex>>();
+	protected String getResourceName() {
+		return BibTex.class.getSimpleName();
 	}
 }

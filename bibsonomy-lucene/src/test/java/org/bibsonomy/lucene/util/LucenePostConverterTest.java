@@ -20,6 +20,10 @@ import org.bibsonomy.testutil.CommonModelUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * @author fei
+ * @version $Id$
+ */
 public class LucenePostConverterTest extends LuceneBase {
 	LuceneResourceConverter<BibTex> bibTexConverter;
 	LuceneResourceConverter<Bookmark> bookmarkConverter;

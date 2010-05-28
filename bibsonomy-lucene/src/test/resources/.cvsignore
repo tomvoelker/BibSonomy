@@ -1,6 +1,2 @@
-luceneTest_publications
-luceneTest_bookmarks
 *.properties
-luceneTest_bibtex
-lucene_bibtex
-lucene_bookmarks
+lucene_*
