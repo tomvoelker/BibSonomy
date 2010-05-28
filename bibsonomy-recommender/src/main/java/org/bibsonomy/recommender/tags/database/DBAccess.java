@@ -62,7 +62,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	private final SqlMapClient sqlMap;
 	private final SqlMapClient sqlBibMap;  // access to bibsonomy's db
 
-	private static DBLogic instance = null;;
+	private static DBLogic instance = null;
 	
 	private DBAccess() {
 		try {
@@ -91,8 +91,8 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	}
 	
 
-	/* (non-Javadoc)
-	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getSqlMapInstance()
+	/**
+	 * @return A connection to the recommender SqlMapClient 
 	 */
 	public SqlMapClient getSqlMapInstance () {
 		return sqlMap;
@@ -219,7 +219,6 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	 * 
 	 * @param qid query's id
 	 * @param rid result selector's id
-	 * @throws SQLException
 	 */
 	public void setResultSelectorToQuery(Long qid, Long rid )  {
 		// connect query with setting
@@ -304,7 +303,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 
 		// insert data
 		sqlMap.insert("connectWithPost", postMap);
-	};
+	}
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommendations(java.lang.Long, java.lang.Long)
@@ -370,7 +369,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Long> getSelectedRecommenderIDs(Long qid) throws SQLException {
-		List<Long> queryResult = (List<Long>)getSqlMapInstance().queryForList("getQuerySelection", qid);
+		List<Long> queryResult = getSqlMapInstance().queryForList("getQuerySelection", qid);
 	    // all done.
 	    return queryResult;
 	}
@@ -383,7 +382,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		TasParam param = new TasParam();
 		param.setOffset(offset);
 		param.setRange(range);
-		List<TasEntry> queryResult = (List<TasEntry>)sqlBibMap.queryForList("getNewestEntries", param);
+		List<TasEntry> queryResult = sqlBibMap.queryForList("getNewestEntries", param);
 		
 		return queryResult;
 	}
@@ -419,7 +418,6 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getNumberOfTagsForUser(java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
 	public Integer getNumberOfTagsForUser(String username) throws SQLException {
 		return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTagsForUser", username);
 	}
@@ -427,15 +425,13 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getNumberOfTasForUser(java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
 	public Integer getNumberOfTasForUser(String username) throws SQLException {
 		return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTasForUser", username);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getNumberOfTagsForResource(java.lang.Class, java.lang.String)
-	 */
-	@SuppressWarnings("unchecked")
+	 */	
 	public <T extends Resource> Integer getNumberOfTagsForResource(final Class<T> resourceType, final String intraHash) throws SQLException {
 		if (BibTex.class.equals(resourceType)) {
 			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTagsForBibTeX", intraHash);
@@ -448,7 +444,6 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getNumberOfTasForResource(java.lang.Class, java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
 	public <T extends Resource> Integer getNumberOfTasForResource(final Class<T> resourceType, final String intraHash) throws SQLException {
 		if (BibTex.class.equals(resourceType)) {
 			return (Integer)getSqlBibMapInstance().queryForObject("getNumberOfTasForBibTeX", intraHash);
@@ -490,7 +485,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		RecQuerySettingParam param = new RecQuerySettingParam();
 		param.setQid(qid);
 		param.setSid(sid);
-		return (List<String>)sqlMap.queryForList("getTagNamesForRecQuery", param);
+		return sqlMap.queryForList("getTagNamesForRecQuery", param);
 	}
 	
 	/* (non-Javadoc)
@@ -498,7 +493,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<String> getTagNamesForPost(Integer cid) throws SQLException {
-		return (List<String>)sqlBibMap.queryForList("getTagNamesForCID", cid);
+		return sqlBibMap.queryForList("getTagNamesForCID", cid);
 	}
 	
 	/* (non-Javadoc)
@@ -513,7 +508,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Long> getActiveRecommenderIDs(Long qid) throws SQLException {
-		return (List<Long>)getSqlMapInstance().queryForList("getActiveRecommenderIDsForQuery", qid);
+		return getSqlMapInstance().queryForList("getActiveRecommenderIDsForQuery", qid);
 	}
 
 	/* (non-Javadoc)
@@ -521,14 +516,14 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Long> getAllRecommenderIDs(Long qid) throws SQLException {
-		return (List<Long>)getSqlMapInstance().queryForList("getAllRecommenderIDsForQuery", qid);
+		return getSqlMapInstance().queryForList("getAllRecommenderIDsForQuery", qid);
 	}
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommenderSelectionCount(java.lang.Long)
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Pair<Long,Long>> getRecommenderSelectionCount(Long qid) throws SQLException {
-		return (List<Pair<Long,Long>>)getSqlMapInstance().queryForList("getRecommenderSelectionCount", qid);
+		return getSqlMapInstance().queryForList("getRecommenderSelectionCount", qid);
 	}
 	
 	
@@ -537,7 +532,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Long> getAllNotSelectedRecommenderIDs(Long qid) throws SQLException {
-		return (List<Long>)getSqlMapInstance().queryForList("getAllNotSelectedRecommenderIDsForQuery", qid);
+		return getSqlMapInstance().queryForList("getAllNotSelectedRecommenderIDsForQuery", qid);
 	}
 	
 	
@@ -560,13 +555,12 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<RecQueryParam> getQueriesForRecommender(Long sid) throws SQLException {
-		return (List<RecQueryParam>)sqlMap.queryForList("getQueriesBySID", sid);
+		return sqlMap.queryForList("getQueriesBySID", sid);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommenderAdminOverview(java.lang.String)
 	 */
-	@SuppressWarnings("unchecked")
 	public RecAdminOverview getRecommenderAdminOverview(String id) throws SQLException{
 		return (RecAdminOverview)getSqlMapInstance().queryForObject("recAdminOverview", id);
 	}
@@ -574,7 +568,6 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getAverageLatencyForRecommender(java.lang.Long, java.lang.Long)
 	 */
-	@SuppressWarnings("unchecked")
 	public Long getAverageLatencyForRecommender(Long sid, Long numberOfQueries) throws SQLException{
 		if(numberOfQueries <= 0) return null;
 		
@@ -587,7 +580,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Long> getActiveRecommenderSettingIds() throws SQLException{
-		return (List<Long>)getSqlMapInstance().queryForList("getSettingIdsByStatus", 1);
+		return getSqlMapInstance().queryForList("getSettingIdsByStatus", 1);
 	}
 	
 	/* (non-Javadoc)
@@ -595,13 +588,12 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Long> getDisabledRecommenderSettingIds() throws SQLException{
-		return (List<Long>)getSqlMapInstance().queryForList("getSettingIdsByStatus", 0);
+		return getSqlMapInstance().queryForList("getSettingIdsByStatus", 0);
 	}
 	
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#getRecommenderIdsForSettingIds(java.util.List)
 	 */
-	@SuppressWarnings("unchecked")
 	public Map<Long, String> getRecommenderIdsForSettingIds(List<Long> sids) throws SQLException{
 		Map<Long, String> resultmap = new TreeMap<Long,String>();
 		for(Long sid: sids)
@@ -612,7 +604,6 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#updateRecommenderstatus(java.util.List, java.util.List)
 	 */
-	@SuppressWarnings("unchecked")
 	public void updateRecommenderstatus(List<Long> activeRecs, List<Long> disabledRecs ) throws SQLException{
 		SqlMapClient sqlMap = getSqlMapInstance();
 		
@@ -628,7 +619,6 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#removeRecommender(java.lang.Long)
 	 */
-	@SuppressWarnings("unchecked")
 	public void removeRecommender(long sid) throws SQLException{
 		SqlMapClient sqlMap = getSqlMapInstance();
 		sqlMap.update("removeRecommender", sid);
@@ -637,7 +627,6 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 	/* (non-Javadoc)
 	 * @see org.bibsonomy.recommender.tags.database.DBLogic#updateRecommenderUrl(java.lang.Long, java.net.URL)
 	 */
-	@SuppressWarnings("unchecked")
 	public void updateRecommenderUrl(long sid, URL url) throws SQLException{
 		RecSettingParam param = new RecSettingParam();
 		param.setRecId(url.toString());
@@ -665,11 +654,11 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 			PostParam param = new PostParam();
 			param.setTimestamp(tas.getTimeStamp());
 			param.setUserName(tas.getUserName());
-			List<QueryGuess> qids = (List<QueryGuess>)sqlMap.queryForList("getNearestQueriesForPost", param);
+			List<QueryGuess> qids = sqlMap.queryForList("getNearestQueriesForPost", param);
 			// select first one if exists
 			if( (qids.size()>0)&&(qids.get(0).getDiff()<300) )
 				result = qids.get(0).getQid();			
-		};
+		}
 		
 		// all done.
 		return result; 
@@ -690,7 +679,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 			PostParam param = new PostParam();
 			param.setTimestamp(recQuery.getTimeStamp());
 			param.setUserName(recQuery.getUserName());
-			List<PostGuess> cids = (List<PostGuess>)sqlBibMap.queryForList("getNearestPostsForQuery", param);
+			List<PostGuess> cids = sqlBibMap.queryForList("getNearestPostsForQuery", param);
 			// select first one if exists
 			// FIXME: think of something usefull
 			if( (cids.size()>0)&&(cids.get(0).getDiff()<300) )
@@ -923,7 +912,7 @@ public class DBAccess extends AbstractDatabaseManager implements DBLogic {
 		if( (post.getGroups()!=null)&&(!post.getGroups().isEmpty()) ) {
 			final int groupId =  post.getGroups().iterator().next().getGroupId();
 			param.setGroupId(groupId);
-		};
+		}
 		try {
 			sqlMap.startTransaction();
    			sqlMap.insert("insertBookmark", param);

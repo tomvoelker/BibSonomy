@@ -368,6 +368,7 @@ public interface DBLogic {
 	 * Get recommender-info for admin statuspage
 	 * @return recommender-info
 	 * @param id recommenderID
+	 * @throws SQLException 
 	 */
 	public RecAdminOverview getRecommenderAdminOverview(String id) throws SQLException;
 		
