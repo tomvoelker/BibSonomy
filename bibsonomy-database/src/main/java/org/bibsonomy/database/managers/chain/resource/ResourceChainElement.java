@@ -1,7 +1,6 @@
 package org.bibsonomy.database.managers.chain.resource;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
@@ -9,7 +8,6 @@ import org.bibsonomy.database.managers.BibTexDatabaseManager;
 import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.PostDatabaseManager;
 import org.bibsonomy.database.managers.chain.ChainElement;
-import org.bibsonomy.database.managers.chain.ChainPerform;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.ResourceParam;
@@ -18,13 +16,13 @@ import org.bibsonomy.model.Resource;
 
 /**
  * 
- * @param <R> 
- * @param <P> 
+ * @param <R> the resource of the chain element
+ * @param <P> the param of the chain element
  * 
  * @author dzo
  * @version $Id$
  */
-public abstract class ResourceChainElement<R extends Resource, P extends ResourceParam<R>> extends ChainElement<Post<R>, P> implements ChainPerform<P, List<Post<R>>, Post<R>> {
+public abstract class ResourceChainElement<R extends Resource, P extends ResourceParam<R>> extends ChainElement<Post<R>, P> {
 
 	// TODO: extract to an external class?!
 	private static final Map<Class<?>, PostDatabaseManager<?, ?>> dbs;
