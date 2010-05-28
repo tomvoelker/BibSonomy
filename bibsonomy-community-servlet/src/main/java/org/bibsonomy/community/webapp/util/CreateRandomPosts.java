@@ -7,7 +7,7 @@ import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
-import org.bibsonomy.model.Post;
+import org.bibsonomy.community.model.Post;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 
@@ -39,7 +39,7 @@ public class CreateRandomPosts {
 		tag.setName(MAGIC_TAG);
 		post.getTags().add(tag);
 
-		post.setContentId(null); // will be set in storePost()
+		post.setContentId((int)Math.floor(Math.random()*1000));
 		post.setDescription("luceneTestPost");
 		post.setDate(new Date(System.currentTimeMillis()));
 		final User user = new User();
@@ -98,7 +98,7 @@ public class CreateRandomPosts {
 		tag.setName("tag2");
 		post.getTags().add(tag);
 
-		post.setContentId(null); // will be set in storePost()
+		post.setContentId((int)Math.floor(Math.random()*1000));
 		post.setDescription("Some description");
 		post.setDate(new Date());
 		final User user = new User();
