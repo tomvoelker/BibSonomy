@@ -59,7 +59,7 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 	protected List<LucenePost<BibTex>> getPostsForUserInternal(ResourcesParam<BibTex> param) {
 		List<LucenePost<BibTex>> retVal = null;
 		try {
-			retVal = (List<LucenePost<BibTex>>)this.sqlMap.queryForList("getBibTexForUser", param);
+			retVal = this.sqlMap.queryForList("getBibTexForUser", param);
 		} catch (SQLException e) {
 			log.error("Error fetching publications for user " + param.getUserName(), e);
 		}
@@ -70,13 +70,13 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected List<Integer> getContentIdsToDeleteInternal(Pair<Date, Date> param) throws SQLException {
-		return (List<Integer>)this.sqlMap.queryForList("getBibTexContentIdsToDelete", param);
+		return this.sqlMap.queryForList("getBibTexContentIdsToDelete", param);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Integer> getContentIdsToDeleteInternal(Date lastLogDate) throws SQLException {
-		return (List<Integer>)this.sqlMap.queryForList("getBibTexContentIdsToDelete2", lastLogDate);
+		return this.sqlMap.queryForList("getBibTexContentIdsToDelete2", lastLogDate);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -88,12 +88,12 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 		param.setSecond(toDate);
 		List<HashMap<String,Object>> retVal = null; 
 		try {
-			retVal = (List<HashMap<String,Object>>)this.sqlMap.queryForList("getBibTexPostsForTimeRange", param);
+			retVal = this.sqlMap.queryForList("getBibTexPostsForTimeRange", param);
 		} catch (SQLException e) {
 			log.error("Error fetching publications for given time range", e);
 		}
 		
-		log.debug("retrieveRecordsFromDatabase: " + retVal.size());
+		log.debug("retrieveRecordsFromDatabase: " + ((retVal == null) ? -1 : retVal.size()));
 		return retVal;
 	}
 	
@@ -101,7 +101,7 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 	@Override
 	protected List<Post<BibTex>> getUpdatedPostsForTimeRange(ResourcesParam<BibTex> param) throws SQLException {
 		List<Post<BibTex>> retVal = null;
-		retVal = (List<Post<BibTex>>)this.sqlMap.queryForList("getUpdatedBibTexPostsForTimeRange", param);
+		retVal = this.sqlMap.queryForList("getUpdatedBibTexPostsForTimeRange", param);
 		return retVal;
 	}
 	
@@ -143,7 +143,7 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 		
 		List<LucenePost<BibTex>> retVal = null;
 		try {
-			retVal = (List<LucenePost<BibTex>>)sqlMap.queryForList("getBibTexForIndex3", param);
+			retVal = sqlMap.queryForList("getBibTexForIndex3", param);
 		} catch (SQLException e) {
 			log.error("Error getting bibtex entries.", e);
 			retVal = new LinkedList<LucenePost<BibTex>>();
@@ -162,7 +162,7 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 		
 		List<Post<BibTex>> retVal = null;
 		try {
-			retVal = (List<Post<BibTex>>)sqlMap.queryForList("getBibTexPostsForTimeRange2", param);
+			retVal = sqlMap.queryForList("getBibTexPostsForTimeRange2", param);
 		} catch (SQLException e) {
 			log.error("Error getting bibtex entries.", e);
 			retVal = new LinkedList<Post<BibTex>>();
@@ -180,7 +180,7 @@ public class LuceneBibTexLogic extends LuceneDBLogic<BibTex> {
 		
 		List<LucenePost<BibTex>> retVal = null;
 		try {
-			retVal = (List<LucenePost<BibTex>>)sqlMap.queryForList("getBibTexPostsForTimeRange3", param);
+			retVal = sqlMap.queryForList("getBibTexPostsForTimeRange3", param);
 		} catch (SQLException e) {
 			log.error("Error getting bibtex entries.", e);
 			retVal = new LinkedList<LucenePost<BibTex>>();

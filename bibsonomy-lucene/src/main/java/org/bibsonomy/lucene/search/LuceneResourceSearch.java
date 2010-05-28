@@ -1,6 +1,7 @@
 package org.bibsonomy.lucene.search;
 
 import static org.apache.lucene.util.Version.LUCENE_24;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,14 +44,12 @@ import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
 import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.lucene.util.LuceneResourceConverter;
-import org.bibsonomy.lucene.util.Utils;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.ResultList;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.services.searcher.ResourceSearch;
 import org.bibsonomy.util.ValidationUtils;
-import static org.bibsonomy.util.ValidationUtils.*;
 
 /**
  * abstract parent class for lucene search
@@ -403,7 +402,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	}
 
 	public LuceneIndexStatistics getStatistics() {
-		return Utils.getStatistics(luceneIndexPath);
+	    return new LuceneIndexStatistics();
 	}	
 	
 	//------------------------------------------------------------------------
@@ -553,6 +552,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 	/**
 	 * collect all tags assigned to relevant documents
 	 */
+	/* FIXME: unused
 	private List<Tag> doTagCollection(QuerySortContainer qf) {
 		if( !getEnableTagClouds() ) {
 			return new LinkedList<Tag>();
@@ -575,7 +575,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 						log.error("Error building full text tag cloud for query " + qf.getQuery().toString());
 					}
 				}
-			};
+			}
 			
 			if( retVal==null )
 				retVal = new LinkedList<Tag>();
@@ -586,6 +586,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		// all done.
 		return retVal;
 	}
+	*/
 	
 	/**
 	 * check whether index is ready for searching
@@ -883,9 +884,12 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		//--------------------------------------------------------------------
 		// post owned by group
 		//--------------------------------------------------------------------
+		/*
+		 * FIXME: THIS IS DEAD CODE!
 		if ( false && ValidationUtils.present(requestedGroupName) ) {
 			mainQuery.add(new TermQuery(new Term(FLD_GROUP, requestedGroupName)), Occur.MUST);
 		}
+		*/
 		
 		//--------------------------------------------------------------------
 		// build final query
@@ -1302,7 +1306,7 @@ public abstract class LuceneResourceSearch<R extends Resource> extends LuceneBas
 		qf.setQuery(mainQuery);
 		qf.setSort(sort);
 		return qf;
-	};
+	}
 
 	/** 
 	 * analyzes given input parameter

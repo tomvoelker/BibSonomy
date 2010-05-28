@@ -109,7 +109,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 		} catch (Exception e) {
 			disableIndex();
 		}
-	};
+	}
 	
 
 

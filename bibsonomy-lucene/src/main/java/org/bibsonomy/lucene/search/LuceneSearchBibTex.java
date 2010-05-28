@@ -25,7 +25,6 @@ import org.bibsonomy.lucene.search.collector.TagCountCollector;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
-import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.util.ValidationUtils;
 
 /**

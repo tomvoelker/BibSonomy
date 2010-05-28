@@ -145,11 +145,12 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 	 * @param userName the user name
 	 * @return all friends of given user 
 	 */
+	@SuppressWarnings("unchecked")
 	public Collection<String> getFriendsForUser(String userName) {
 		List<String> retVal = null;
 		
 		try {
-			retVal = (List<String>)this.sqlMap.queryForList("getFriendsForUser", userName);
+			retVal = this.sqlMap.queryForList("getFriendsForUser", userName);
 		} catch (SQLException e) {
 			log.error("Error getting friends for user "+userName, e);
 		}
@@ -192,7 +193,7 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		List<String> retVal = null;
 		
 		try {
-			retVal = (List<String>)this.sqlMap.queryForList("getGroupMembersByGroupId", groupId);
+			retVal = this.sqlMap.queryForList("getGroupMembersByGroupId", groupId);
 		} catch (SQLException e) {
 			log.error("Error getting group members", e);
 		}
@@ -214,7 +215,7 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		List<String> retVal = null;
 		
 		try {
-			retVal = (List<String>)this.sqlMap.queryForList("getGroupMembersByGroupName", groupName);
+			retVal = this.sqlMap.queryForList("getGroupMembersByGroupName", groupName);
 		} catch (SQLException e) {
 			log.error("Error getting group members", e);
 		}
@@ -242,7 +243,7 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		param.setSecond(authUserName);
 		
 		try {
-			retVal = (List<String>)this.sqlMap.queryForList("getGroupFriendsByGroupIdForUser", param);
+			retVal = this.sqlMap.queryForList("getGroupFriendsByGroupIdForUser", param);
 		} catch (SQLException e) {
 			log.error("Error getting friends of given user for given group", e);
 		}

@@ -10,7 +10,6 @@ import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.ResultList;
-import org.bibsonomy.model.enums.Order;
 
 /**
  * class for bookmark search

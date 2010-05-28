@@ -258,7 +258,7 @@ public abstract class GenericParam {
 
 	public List<TagIndex> getTagIndex() {
 		//return Collections.unmodifiableList(this.tagIndex);
-		return tagIndex=this.tagIndex;
+		return this.tagIndex;
 	}
 
 	public void setTagIndex(List<TagIndex> tagIndex) {

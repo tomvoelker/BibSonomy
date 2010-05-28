@@ -77,7 +77,7 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends LuceneBa
 	public List<GroupParam> getGroupIDs() {
 		List<GroupParam> retVal = null;
 		try {
-			retVal = (List<GroupParam>)sqlMap.queryForList("getGroupIDs");
+			retVal = sqlMap.queryForList("getGroupIDs");
 		} catch (SQLException e) {
 			log.error("Error getting group ids.", e);
 			retVal = new LinkedList<GroupParam>();
@@ -95,7 +95,7 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends LuceneBa
 		
 		List<TasParam> retVal = null;
 		try {
-			retVal = (List<TasParam>)sqlMap.queryForList("getTasEntries", param);
+			retVal = sqlMap.queryForList("getTasEntries", param);
 		} catch (SQLException e) {
 			log.error("Error getting Tas entries.", e);
 			retVal = new LinkedList<TasParam>();
@@ -114,14 +114,14 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends LuceneBa
 		List<TasParam> retVal = null;
 		
 		try {
-			retVal = (List<TasParam>)sqlMap.queryForList("getGroupedTasEntries", param);
+			retVal = sqlMap.queryForList("getGroupedTasEntries", param);
 		} catch (SQLException e) {
 			log.error("Error getting grouped tas entries", e);
 			retVal = new LinkedList<TasParam>();
 		}
 		
 		return retVal;
-	};
+	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -132,7 +132,7 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends LuceneBa
 		List<GroupTasParam> retVal = null;
 		
 		try {
-			retVal = (List<GroupTasParam>)sqlMap.queryForList("getGroupTasEntries", param);
+			retVal = sqlMap.queryForList("getGroupTasEntries", param);
 		} catch (SQLException e) {
 			log.error("Error getting group tas entries", e);
 			retVal = new LinkedList<GroupTasParam>();
@@ -147,7 +147,7 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends LuceneBa
 		List<String> retVal = null;
 		
 		try {
-			retVal = (List<String>)sqlMap.queryForList("getSpamPredictionForTimeRange", fromDate);
+			retVal = sqlMap.queryForList("getSpamPredictionForTimeRange", fromDate);
 		} catch (SQLException e) {
 			log.error("Error getting flagged users", e);
 			retVal = new LinkedList<String>();
@@ -163,7 +163,7 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends LuceneBa
 		List<String> retVal = null;
 		
 		try {
-			retVal = (List<String>)sqlMap.queryForList("getNonSpamPredictionForTimeRange", fromDate);
+			retVal = sqlMap.queryForList("getNonSpamPredictionForTimeRange", fromDate);
 		} catch (SQLException e) {
 			log.error("Error getting unflagged users", e);
 			retVal = new LinkedList<String>();
@@ -178,7 +178,7 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends LuceneBa
 		Map<String,String> retVal = null;
 		
 		try {
-			retVal = (Map<String,String>)sqlMap.queryForMap("getUrlMap",null,"hash", "url");
+			retVal = sqlMap.queryForMap("getUrlMap",null,"hash", "url");
 		} catch (SQLException e) {
 			log.error("Error getting unflagged users", e);
 			retVal = new HashMap<String,String>();

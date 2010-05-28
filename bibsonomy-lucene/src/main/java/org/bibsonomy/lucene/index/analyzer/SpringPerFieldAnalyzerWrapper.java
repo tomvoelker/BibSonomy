@@ -22,6 +22,7 @@ import org.springframework.beans.factory.BeanFactory;
  *
  */
 public class SpringPerFieldAnalyzerWrapper extends Analyzer {
+	@SuppressWarnings("unused")
 	private static final Log log = LogFactory.getLog(SpringPerFieldAnalyzerWrapper.class);
 
 	/** singleton pattern's instance reference */

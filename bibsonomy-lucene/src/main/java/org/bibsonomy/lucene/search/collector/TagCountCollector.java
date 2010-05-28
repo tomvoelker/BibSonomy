@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,6 +36,7 @@ public class TagCountCollector extends Collector {
 	
 	private Map<Integer,IndexReader> docToReaderMap;
 	private IndexReader lastReader = null;
+	@SuppressWarnings("unused")
 	private int lastDocBase = 0;
 
 	/**
@@ -50,7 +50,6 @@ public class TagCountCollector extends Collector {
 
 	@Override
 	public boolean acceptsDocsOutOfOrder() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
