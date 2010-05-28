@@ -24,16 +24,30 @@
 	</bean>
 	
 	<bean id="resourceQueryController" class="org.bibsonomy.community.webapp.controller.ResourceQueryController">
+		<property name="bibTexManager" ref="bibTexLogic"/>
+		<property name="bookmarkManager" ref="bookmarkLogic"/>
+		<property name="tagManager" ref="tagLogic"/>
+		<property name="communityManager" ref="communityLogic"/>
 	</bean>
-
+	
 	<bean id="clusterSettingsController" class="org.bibsonomy.community.webapp.controller.ClusterSettingsController">
-		<property name="allowedFields">
-			<list>
-				<value>format</value>
-			</list>
-		</property>
+		<property name="tagManager" ref="tagLogic"/>
+		<property name="communityManager" ref="communityLogic"/>
+		<property name="userSettingsManager" ref="userSettingsLogic"/>
 	</bean>
 
+    <!--  #################### logic beans #################### -->
+	<bean id="bibTexLogic" class="org.bibsonomy.community.database.BibTexPostManager">
+	</bean>
+	<bean id="bookmarkLogic" class="org.bibsonomy.community.database.BookmarkPostManager">
+	</bean>
+	<bean id="tagLogic" class="org.bibsonomy.community.database.TagManager">
+	</bean>
+	<bean id="communityLogic" class="org.bibsonomy.community.database.CommunityManager">
+	</bean>
+	<bean id="userSettingsLogic" class="org.bibsonomy.community.database.UserSettingsManager">
+	</bean>
+    
 
 	<!--  #################### view resolver #################### -->
 	<!-- default: JSPs -->

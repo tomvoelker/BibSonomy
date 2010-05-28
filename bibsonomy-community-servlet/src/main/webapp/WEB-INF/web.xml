@@ -28,6 +28,15 @@
 		<param-name>projectContext</param-name>
 		<param-value>/bibsonomy-community-servlet</param-value>
 	</context-param>
+	
+	<!--+
+	    | environment entries
+	    +-->
+	<resource-env-ref>
+		<description>Community Configuration Bean</description>
+		<resource-env-ref-name>communityConfig</resource-env-ref-name>
+		<resource-env-ref-type>org.bibsonomy.community.util.CommunityConfig</resource-env-ref-type>
+	</resource-env-ref>
 
 	<!--+
 	    | context listeners
