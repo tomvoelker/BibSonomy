@@ -1,0 +1,339 @@
+package org.bibsonomy.database.common.impl;
+
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.common.errors.ErrorMessage;
+import org.bibsonomy.common.exceptions.QueryTimeoutException;
+import org.bibsonomy.common.exceptions.database.DatabaseException;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.util.ExceptionUtils;
+
+import com.ibatis.common.jdbc.exception.NestedSQLException;
+import com.ibatis.sqlmap.client.SqlMapExecutor;
+import com.ibatis.sqlmap.client.SqlMapSession;
+import com.mysql.jdbc.exceptions.MySQLTimeoutException;
+
+/**
+ * This class wraps the iBatis SqlMap and manages database sessions. Transactions are virtual,
+ * which means a counter is used to emulate nested transactions.
+ * 
+ * @author Jens Illig
+ * @author Christian Schenk
+ * @version $Id$
+ */
+public class DBSessionImpl implements DBSession {
+	private static final Log log = LogFactory.getLog(DBSessionImpl.class);
+	
+	/** Communication with the database is done with the sqlMap */
+	public final SqlMapSession sqlMap;
+	/** how many commit-calls have to be made for getting the real transaction to become committed */
+	private int transactionDepth;
+	private int uncommittedDepth;
+	/**
+	 * if one virtual transaction is aborted, no other virtual transaction will
+	 * become committed until all virtual transactions are ended
+	 */
+	private boolean aborted;
+	private boolean closed;
+	private final Map<String, ErrorMessage> errorMessages;
+
+	protected DBSessionImpl(final SqlMapSession sqlMap) {
+		this.sqlMap = sqlMap;
+		this.transactionDepth = 0;
+		this.uncommittedDepth = 0;
+		this.aborted = false;
+		this.closed = false;
+		
+		this.errorMessages = new HashMap<String, ErrorMessage>();
+	}
+
+	/**
+	 * Returns the sqlMap associated with this transaction.
+	 * @return TODO
+	 */
+	public SqlMapExecutor getSqlMapExecutor() {
+		return this.sqlMap;
+	}
+
+	/**
+	 * Starts a virtual transaction (a real one if no real transaction has been
+	 * started yet). Either transactionSuccess or transactionFailure MUST be
+	 * called hereafter.
+	 */
+	public void beginTransaction() {
+		if (this.aborted == true) {
+			// TODO: log message?!?
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "real transaction already aborted");
+		}
+		if (this.transactionDepth == 0) {
+			try {
+				this.sqlMap.startTransaction();
+			} catch (final SQLException ex) {
+				// TODO: log message?!?
+				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't start transaction");
+			}
+			// a new transaction
+			this.errorMessages.clear();
+		}
+		++this.transactionDepth;
+		++this.uncommittedDepth;
+	}
+
+	/**
+	 * Marks the current (virtual) transaction as having been sucessfully
+	 * completed. If the transaction isn't virtual a following call to
+	 * endTransaction will do a commit on the real transaction.
+	 */
+	public void commitTransaction() {
+		if (this.uncommittedDepth > 0) {
+			--this.uncommittedDepth;
+		} else {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "No transaction open");
+		}
+	}
+
+	/**
+	 * If this is called before the current (virtual) transaction has been
+	 * committed, the transaction-stack is marked as failed. This causes the
+	 * real transaction (with all N virtual nested transactions) to abort.<br/>
+	 * 
+	 * This should always be called after each transaction, that has begun with
+	 * beginTransaction, sometimes with a preceeding call to commitTransaction,
+	 * sometimes (in case of an exception) without.
+	 */
+	public void endTransaction() {
+		if (this.transactionDepth > 0) {
+			--this.transactionDepth;
+			if (this.transactionDepth < this.uncommittedDepth) {
+				// endTransaction was called before commitTransaction => abort
+				this.aborted = true;
+			}
+			if (this.transactionDepth == 0) {
+				if (this.uncommittedDepth == 0) {
+					if (this.aborted == false) {
+						if (this.errorMessages.isEmpty()){
+							// everything went well during the whole transaction => commit
+							try {
+								this.sqlMap.commitTransaction();
+								log.debug("committed");
+							} catch (final SQLException ex) {
+								ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't commit transaction");
+							}
+						}
+					}
+				}
+				this.uncommittedDepth = 0;
+				this.aborted = false;
+				try {
+					this.sqlMap.endTransaction();
+					log.debug("ended");
+				} catch (final SQLException ex) {
+					ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't end transaction");
+				}
+				if (!this.errorMessages.isEmpty()) {
+					// errors occurred, sql connection was closed => throw databaseException
+					log.info("Couldn't commit transaction due to errors during the session");
+					throw new DatabaseException(); // TODO: this.errorMessages);
+				}
+			}
+		} else {
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "No transaction open");
+		}
+	}
+
+	/**
+	 * MUST be called to release the db-connection
+	 */
+	public void close() {
+		try {
+			this.sqlMap.endTransaction();
+			log.debug("ended");
+		} catch (final SQLException ex) {
+			// TODO: log message?!?
+			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't end transaction");
+		}
+		this.sqlMap.close();
+		this.closed = true;
+	}
+
+	/**
+	 * marks this session to have a failed job
+	 */
+	private void somethingWentWrong() {
+		if (this.transactionDepth > 0) {
+			this.aborted = true;
+		}
+	}
+
+	/**
+	 * @return whether this session has an aborted transaction 
+	 */
+	public boolean isAborted() {
+		return this.aborted;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.common.DBSession#queryForObject(java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public Object queryForObject(final String query, final Object param) {
+		try {
+			return this.sqlMap.queryForObject(query, param);
+		} catch (final Exception e) {
+			this.handleException(e, query);
+		}
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.common.DBSession#queryForList(java.lang.String, java.lang.Object)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List queryForList(final String query, final Object param) {
+		try {
+			return this.sqlMap.queryForList(query, param);
+		} catch (final Exception e) {
+			this.handleException(e, query);
+		}
+		return null;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.common.DBSession#insert(java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public void insert(final String query, final Object param) {
+		try {
+			this.sqlMap.insert(query, param);
+		} catch (final Exception e) {
+			this.handleException(e, query);
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.common.DBSession#update(java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public void update(final String query, final Object param) {
+		try {
+			this.sqlMap.update(query, param);
+		} catch (Exception e) {
+			this.handleException(e, query);
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.database.common.DBSession#delete(java.lang.String, java.lang.Object)
+	 */
+	@Override
+	public void delete(final String query, final Object param) {
+		try {
+			this.sqlMap.delete(query, param);
+		} catch (Exception e) {
+			this.handleException(e, query);
+		}
+	}
+	
+	private void handleException(final Exception e, String query) {
+		// XXX: :(
+		if (e instanceof NestedSQLException) {
+			this.handleException((NestedSQLException)e, query);
+		}
+		
+		log.error("Caught exception " + e.getClass().getSimpleName());
+		this.logException(query, e);
+	}
+	
+	private void handleException(final NestedSQLException ex, String query) {
+		if (!this.errorMessages.isEmpty()) {
+			if ("22001".equals(ex.getSQLState())) {
+				/*
+				 * 22001 (string too long for the column)
+				 * ignore exception because a FieldLengthErrorMessage was added to databaseException
+				 * and the "commit" method will throw the databaseException
+				 */
+				return;
+			}
+		}
+
+		final Throwable cause = ex.getCause();
+		if (cause != null && SQLException.class.equals(cause.getClass())) {
+			/*
+			 * catch exceptions that happens because of
+			 * query interruption due to time limits
+			 * 
+			 * Error code 1317: "Query execution was interrupted"
+			 * Error code 1028: "Sort aborted"
+			 * (see http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html) 
+			 * 
+			 */
+			switch (((SQLException)cause).getErrorCode()) {
+			case 1317:
+				log.info("Query timeout for query: " + query);
+				throw new QueryTimeoutException(ex, query);
+			case 1028:
+				log.info("Sort aborted for query: " + query);
+				throw new QueryTimeoutException(ex, query);
+			case 1105:
+				/*
+				 * Here we catch the wonderful "unknown error" (code 1105) exception of MySQL.
+				 * On 2008-04-21 we found that it occurs, when a statement is killed during its
+				 * "statistics" phase (mysql version 5.0.45). We filed a bug report 
+				 * <http://bugs.mysql.com/bug.php?id=36230> and as workaround added this if- 
+				 * block.
+				 * 
+				 * http://dev.mysql.com/doc/refman/5.1/en/error-messages-server.html
+				 */
+				log.info("Hit MySQL bug 36230. (with query: " + query + "). See <http://bugs.mysql.com/bug.php?id=36230> for more information.");
+				throw new QueryTimeoutException(ex, query);
+			default:
+				break;
+			}
+		}
+		
+		if (cause != null && cause.getClass().equals(MySQLTimeoutException.class)) {
+			log.info("MySQL Query timeout for query " + query);
+			throw new QueryTimeoutException(ex, query);
+		}
+
+		this.logException(query, ex);
+	}
+
+	/**
+	 * @param query
+	 * @param ex
+	 */
+	private void logException(final String query, final Exception ex) {
+		String msg = "Couldn't execute query '" + query + "'";
+		this.somethingWentWrong();
+		ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, msg);
+	}
+
+	@Override
+	public void addError(String key, ErrorMessage errorMessage) {
+		this.errorMessages.put(key, errorMessage);
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		// Try to take care of other peoples mistakes. It may take a while
+		// before this is called, but it's better than nothing.
+		if (this.closed == false) {
+			log.error(this.getClass().getName() + " not closed");
+			this.sqlMap.close();
+		}
+		super.finalize();
+	}
+}
