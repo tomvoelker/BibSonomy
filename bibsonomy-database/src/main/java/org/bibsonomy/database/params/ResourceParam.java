@@ -27,5 +27,12 @@ public class ResourceParam<T extends Resource> extends GenericParam {
 	public T getResource() {
 		return resource;
 	}
+	
+	/**
+	 * @return TODO
+	 */
+	public boolean canHandle() {
+		return true;
+	}
 
 }

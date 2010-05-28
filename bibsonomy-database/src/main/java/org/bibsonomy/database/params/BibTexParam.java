@@ -1,5 +1,7 @@
 package org.bibsonomy.database.params;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.model.BibTex;
 
@@ -79,6 +81,11 @@ public class BibTexParam extends ResourceParam<BibTex> {
 	@Deprecated
 	public void setYear(String year) {
 		this.year = year;
+	}
+	
+	@Override
+	public boolean canHandle() {
+		return !present(this.getBibtexKey());
 	}
 
 }
