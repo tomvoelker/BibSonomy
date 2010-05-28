@@ -64,9 +64,6 @@
 				</c:if>			
 		 
 		 
-		 
-		 
-		 
 		  		<form:form action="/edit_tags" method="post">
 		 
 		 			<fieldset class="fsInner">
@@ -124,37 +121,16 @@
 					      <form:label cssClass="fsLabel" path="editTags.delTags"><fmt:message key="edittags.main.replace" />:<buttons:help message="edittags.help.delTags" /></form:label>
 					      <form:input cssClass="fsInput" path="editTags.delTags" id="inpf" onclick="setActiveInputField(this.id)" tabindex="1"/>		        
 					    </div>
-<!--		            	<div class="fsRow">-->
-<!--		        			 -->
-<!--	    	    				TODO: help message should be something like "these tags will be removed from every posts which contains ALL of these tags"-->
-<!--	        			 	-->
-<!--		            		<span class="fsLabel"><fmt:message key="edittags.main.replace" />:</span><buttons:help message="edittags.help.delTags" />-->
-<!--	        				<input id="inpf" name="delTags" class="fsInput" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" tabindex="1" />-->
-<!--						</div>-->
-									
 						<div class="fsRow">
 					      <form:label cssClass="fsLabel" path="editTags.addTags"><fmt:message key="edittags.main.newtags" />:<buttons:help message="edittags.help.addTags" /></form:label>
 					      <form:input cssClass="fsInput" path="editTags.addTags" id="inpfNew" onclick="setActiveInputField(this.id)" tabindex="2"/>		        
 					    </div>
-<!--						<div class="fsRow">-->
-<!--			        		 -->
-<!--	        					TODO: help message should be something like "these tags will be added to every post which contains ALL of the above tags"-->
-<!--			        		 -->
-<!--	        				<span class="fsLabel"><fmt:message key="edittags.main.newtags" />:</span><buttons:help message="edittags.help.addTags" />-->
-<!--	        				<input id="inpfNew" name="addTags" class="fsInput" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" tabindex="2" />-->
-<!--	        			</div>-->
-	
-	
 						<div class="fsRow">
 							<!-- 
 								TODO: help message missing
 							 -->
 		        			<form:label cssClass="fsLabel" path="editTags.updateRelations"><fmt:message key="edittags.main.updaterelations" />: <buttons:help message="edittags.help.updateRelations" /></form:label>
 							<form:checkbox cssClass="fsInput" path="editTags.updateRelations"/><fmt:message key="edittags.main.note" />
-<!--							
-								<form:input cssClass="fsInput" path="updateRelations"/>-->
-<!--		        			<input type="checkbox" name="updaterelations" value="yes" tabindex="3"/>-->
-<!--		        			<div style="display:inline;"><fmt:message key="edittags.main.note" /></div>-->
 		        		</div>
 
 						<div class="fsRow">
@@ -164,11 +140,7 @@
 			    			<input type="submit" value="${send}"/><c:out value=" "/>
 			    			<input type="reset" value="${reset}"/>
 			    		</div>
-		
-						
-		
 		        	</fieldset>
-		
 				</form:form>
 
 
@@ -183,14 +155,6 @@
 		  
 		 			<fieldset class="fsInner">
 						<h2><fmt:message key="edittags.main.insertRelationsOne" /></h2>
-
-<!--						<div class="fsRow">-->
-<!--			    			-->
-<!--		    				<input class="fsInput fsSmall" id="insert_up" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="upper" tabindex="7"/><span style="float:left;">&#8592;</span>-->
-<!--							<buttons:help message="edittags.help.enterSubTag"/>-->
-<!--		   					<input class="fsInput fsSmall" id="insert_lo" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" autocomplete="off" name="lower" tabindex="6" />-->
-<!---->
-<!--						</div>-->
 						<div class="fsRow">
 					      <form:label cssClass="fsLabel" path="relationsEdit.upper"><fmt:message key="edittags.main.insertRelationsTwo" />:<buttons:help message="edittags.help.enterSuperTag" /></form:label>
 					      <form:input cssClass="fsInput fsSmall" path="relationsEdit.upper" id="insert_up" onclick="setActiveInputField(this.id)" onfocus="setActiveInputField(this.id)" tabindex="7"/><span style="float:left;">&#8592;</span>
@@ -215,14 +179,6 @@
 			    <form:form action="/edit_tags" method="post">
 			    	<fieldset class="fsInner">  
 						<h2><fmt:message key="edittags.main.deleteRelationsOne" /></h2>
-						
-<!--						<div class="fsRow">-->
-<!--							<span class="fsLabel"><fmt:message key="edittags.main.deleteRelationsTwo" />:</span>-->
-<!--							<buttons:help message="edittags.help.enterSuperTag" />-->
-<!--							<input id="delete_up" class="fsInput fsSmall" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="upper" tabindex="11"/><span style="float:left;">&#8592;</span>-->
-<!--							<buttons:help message="edittags.help.enterSubTag"/>-->
-<!--							<input id="delete_lo" class="fsInput fsSmall" onClick="setActiveInputField(this.id)" onFocus="setActiveInputField(this.id)" name="lower" tabindex="10" />-->
-<!--			    		</div>-->
 			    		
 						<div class="fsRow">
 					      <form:label cssClass="fsLabel" path="relationsEdit.upper"><fmt:message key="edittags.main.deleteRelationsTwo" />:<buttons:help message="edittags.help.enterSuperTag" /></form:label>
