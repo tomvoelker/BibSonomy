@@ -6,8 +6,6 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
@@ -26,9 +24,7 @@ import org.bibsonomy.model.enums.Order;
  * @version $Id$
  */
 public class GetBibtexViewable extends BibTexChainElement {
-
-	private static final Log log = LogFactory.getLog(GetBibtexViewable.class);
-
+	
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
 		final Integer groupId = this.groupDb.getGroupIdByGroupNameAndUserName(param.getRequestedGroupName(), param.getUserName(), session);
