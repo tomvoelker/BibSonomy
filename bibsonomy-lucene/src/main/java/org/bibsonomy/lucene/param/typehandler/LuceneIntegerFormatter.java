@@ -5,24 +5,23 @@ package org.bibsonomy.lucene.param.typehandler;
  * convert date objects to a standardized string representation
  * 
  * @author fei
+ * @version $Id$
  */
-public class LuceneIntegerFormatter extends AbstractTypeHandler {
+public class LuceneIntegerFormatter extends AbstractTypeHandler<Integer> {
 
 	@Override
-	public String getValue(Object obj) {
+	public String getValue(Integer obj) {
 		return obj.toString();
 	}
 
 	@Override
-	public Object setValue(String str) {
-		Integer retVal = null;
-		
+	public Integer setValue(String str) {
 		try {
-			retVal = Integer.parseInt(str);
+			return Integer.parseInt(str);
 		} catch( Exception e ) {
 			log.error("Error parsing number " + str, e);
 		}
 				
-		return retVal;
+		return null;
 	}
 }

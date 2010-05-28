@@ -9,21 +9,22 @@ import org.bibsonomy.model.Tag;
  * convert date objects to a standardized string representation
  * 
  * @author fei
+ * @version $Id$
  */
-public class LuceneTagsFormatter extends LuceneCollectionFormatter {
+public class LuceneTagsFormatter extends LuceneCollectionFormatter<Tag> {
 
 	@Override
-	protected Collection<? extends Object> createCollection() {
+	protected Collection<Tag> createCollection() {
 		return new LinkedHashSet<Tag>();
 	}
 
 	@Override
-	protected Object createItem(String token) {
+	protected Tag createItem(String token) {
 		return new Tag(token);
 	}
 
 	@Override
-	protected String convertItem(Object item) {
-		return ((Tag)item).getName();
+	protected String convertItem(Tag item) {
+		return item.getName();
 	}
 }
