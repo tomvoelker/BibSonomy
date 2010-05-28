@@ -76,6 +76,7 @@ public class DatabaseUtils {
 	 * Returns an SqlMap for a given database type (master, slave)
 	 * @param dbType TODO
 	 */
+	@Deprecated
 	protected static SqlMapSession getSqlMap(DatabaseType dbType) {
 		if (dbType.equals(DatabaseType.MASTER)) {
 			return client.openSession();

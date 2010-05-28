@@ -14,6 +14,8 @@ public class IbatisDBSessionFactory implements DBSessionFactory {
 		return new DBSessionImpl(DatabaseUtils.getSqlMap());
 	}
 	
+	@Override
+	@Deprecated
 	public DBSession getDatabaseSession(DatabaseType dbType) {
 		if (dbType.equals(DatabaseType.MASTER)) {
 			return new DBSessionImpl(DatabaseUtils.getSqlMap(DatabaseType.MASTER));
