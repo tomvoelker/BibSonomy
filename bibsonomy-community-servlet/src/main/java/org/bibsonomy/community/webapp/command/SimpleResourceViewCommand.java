@@ -6,7 +6,7 @@ package org.bibsonomy.community.webapp.command;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
-import org.bibsonomy.model.Post;
+import org.bibsonomy.community.model.Post;
 import org.bibsonomy.model.Resource;
 
 /**
