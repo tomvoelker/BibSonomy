@@ -9,6 +9,9 @@ public class Post<R extends Resource> extends org.bibsonomy.model.Post<R>{
 	
 	private Integer communityId;
 
+	/** custom flag for multi-purpose use */
+	private Integer customFlag;
+
 	private double weight;
 
 	public Post() {
@@ -37,5 +40,13 @@ public class Post<R extends Resource> extends org.bibsonomy.model.Post<R>{
 
 	public Integer getCommunityId() {
 		return communityId;
+	}
+
+	public void setCustomFlag(Integer customFlag) {
+		this.customFlag = customFlag;
+	}
+
+	public Integer getCustomFlag() {
+		return customFlag;
 	}
 }
