@@ -2,43 +2,44 @@ package org.bibsonomy.community.webapp.command;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.list.LazyList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.community.model.Cluster;
+import org.bibsonomy.community.model.Post;
+import org.bibsonomy.community.model.ResourceCluster;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 
 
 @SuppressWarnings("unchecked")
-public class ClusterViewCommand<T> extends SimpleResourceViewCommand {
+public class ResourceClusterViewCommand extends SimpleResourceViewCommand {
 	
-	public static class ClusterFactory<T> implements Factory {
+	public static class ClusterFactory implements Factory {
 		public Object create() {
-			return new Cluster<T>();
+			return new ResourceCluster();
 		}
 	}
 	
-	private static final Log log = LogFactory.getLog(ClusterViewCommand.class);
+	private static final Log log = LogFactory.getLog(ResourceClusterViewCommand.class);
 	
 	/** collection of clusters considered by this controller */
 	// private Collection<Cluster<T>> clusters = new ArrayList<Cluster<T>>();
-	private Collection<Cluster<T>> clusters = (Collection<Cluster<T>>)LazyList.decorate(new ArrayList<Cluster<T>>(), new ClusterFactory<T>());
+	private Collection<ResourceCluster> clusters = (Collection<ResourceCluster>)LazyList.decorate(new ArrayList<ResourceCluster>(), new ClusterFactory());
 
-	public ClusterViewCommand() {
+	public ResourceClusterViewCommand() {
 		log.info("Object created...");
 	}
 	
 	//------------------------------------------------------------------------
 	// getter/setter
 	//------------------------------------------------------------------------
-	public void setClusters(Collection<Cluster<T>> clusters) {
+	public void setClusters(Collection<ResourceCluster> clusters) {
 		this.clusters = clusters;
 	}
 
-	public Collection<Cluster<T>> getClusters() {
+	public Collection<ResourceCluster> getClusters() {
 		return clusters;
 	}
 

@@ -1,0 +1,29 @@
+<jsp:root version="2.0" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:json="urn:jsptagdir:/WEB-INF/tags/clusters/json"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<jsp:directive.attribute name="command" type="org.bibsonomy.community.webapp.command.ResourceClusterViewCommand" required="true" />
+	{
+	"clusters" : [
+	<c:forEach var="cluster" varStatus="clusterStatus" items="${command.clusters}">
+		{
+		"clusterID" : "${cluster.clusterID}",
+		"clusterPos": "${clusterStatus.count-1}",
+		"weight"    : "${cluster.weight}",
+		"bookmarks" : [
+			<c:forEach var="post" varStatus="status" items="${cluster.bookmark}">
+				<json:bookmark post="${post}"/><c:if test="${not status.last}">,</c:if>
+			</c:forEach>
+		],
+		"bibtex" : [
+			<c:forEach var="post" varStatus="status" items="${cluster.bibtex}">
+				<json:bibtex post="${post}"/><c:if test="${not status.last}">,</c:if>
+			</c:forEach>
+			]
+		}
+		<c:if test="${not clusterStatus.last}">,</c:if>
+	</c:forEach>
+	]
+	}
+</jsp:root>
