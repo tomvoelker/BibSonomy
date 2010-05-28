@@ -833,7 +833,7 @@ public class TestDBLogic implements LogicInterface {
 		return null;
 	}
 	
-	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags) {
+	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final boolean updateRelations) {
 		return 0;
 	}
 
