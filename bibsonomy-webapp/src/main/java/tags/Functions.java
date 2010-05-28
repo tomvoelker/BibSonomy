@@ -1,5 +1,8 @@
 package tags;
 
+import static org.bibsonomy.model.util.BibTexUtils.ENTRYTYPES;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -42,10 +45,10 @@ import resources.Resource;
  */
 public class Functions  {
 
-	/*
+	/**
 	 * Mapping of BibTeX entry types to SWRC entry types
+	 * @see BibTexUtils#ENTRYTYPES
 	 */
-	private static String[] bibtexEntryTypes = {"article","book","booklet","inbook","incollection","inproceedings","manual","mastersthesis","misc","phdthesis","proceedings","techreport",     "unpublished"}; 
 	private static String[] swrcEntryTypes   = {"Article","Book","Booklet","InBook","InCollection","InProceedings","Manual","MasterThesis","Misc","PhDThesis","Proceedings","TechnicalReport","Unpublished"}; 
 	private static String[] risEntryTypes    = {"Journal Article","Book", "Book", "Book Section", "Book Section", "Conference Paper", "Generic", "Thesis", "Generic", "Thesis", "Conference Proceedings", "Report", "Unpublished Work"};
 	
@@ -399,10 +402,11 @@ public class Functions  {
 	 * @return The list of available bibtex entry types
 	 */
 	public static String[] getBibTeXEntryTypes() {
-		return bibtexEntryTypes;
+		return ENTRYTYPES;
 	}
 	
-	/** Maps BibTeX entry types to SWRC entry types.
+	/**
+	 * Maps BibTeX entry types to SWRC entry types.
 	 * 
 	 * TODO: stolen from old code in {@link EntryType} ... 
 	 * very inefficient ... use a static map instead
@@ -411,9 +415,9 @@ public class Functions  {
 	 * @return TODO
 	 */
 	public static String getSWRCEntryType(final String bibtexEntryType) {
-		for (int i = 0; i < bibtexEntryTypes.length; i++) {
+		for (int i = 0; i < ENTRYTYPES.length; i++) {
 			/* Comparison with current entrytype value */
-			if (bibtexEntryTypes[i].equals(bibtexEntryType)) {
+			if (ENTRYTYPES[i].equals(bibtexEntryType)) {
 				/* match found -> print and stop loop */
 				return swrcEntryTypes[i];
 			}
@@ -430,9 +434,9 @@ public class Functions  {
 	 * @return The RIS entry type
 	 */
 	public static String getRISEntryType(final String bibtexEntryType) {
-		for (int i = 0; i < bibtexEntryTypes.length; i++) {
+		for (int i = 0; i < ENTRYTYPES.length; i++) {
 			/* Comparison with current entrytype value */
-			if (bibtexEntryTypes[i].equals(bibtexEntryType)) {
+			if (ENTRYTYPES[i].equals(bibtexEntryType)) {
 				/* match found -> print and stop loop */
 				return risEntryTypes[i];
 			}
@@ -628,7 +632,7 @@ public class Functions  {
 	 * @return the "next" user similarity
 	 */
 	public static String toggleUserSimilarity(final String userSimilarity) {
-		if (userSimilarity == null || "".equals(userSimilarity)) {
+		if (!present(userSimilarity)) {
 			return UserRelation.FOLKRANK.name().toLowerCase();
 		}
 		final UserRelation rel = EnumUtils.searchEnumByName(UserRelation.values(), userSimilarity);

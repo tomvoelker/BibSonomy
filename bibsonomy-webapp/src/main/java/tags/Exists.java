@@ -2,8 +2,6 @@ package tags;
 
 import javax.servlet.jsp.JspTagException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.NotReadablePropertyException;
 import org.springframework.web.servlet.support.BindStatus;
 import org.springframework.web.servlet.tags.RequestContextAwareTag;
@@ -17,8 +15,9 @@ import org.springframework.web.util.ExpressionEvaluationUtils;
  * @version $Id$
  */
 public class Exists extends RequestContextAwareTag {
-	private static final Log log = LogFactory.getLog(Exists.class);
 	private static final long serialVersionUID = 8378817318583491829L;
+	
+	
 	private String path;
 	
 	@Override
