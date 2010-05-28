@@ -7,29 +7,58 @@
 	    +================================================================= +-->
 	    
 	<!-- get list of all public non-spam bibtex posts belonging to given community -->
-	<select id="getBibTexForCommunity" resultMap="BibTexCommon.bibtexPost" parameterClass="resourceParam">
-		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name
+	<select id="getBibTexForCommunity" parameterClass="resourceParam" resultMap="BibTexCommon.communityBibtexPost">
+		SELECT <include refid ="allBibtexAttributesWithSimHashes"/>, t.tag_name, r.p as weight, r.community_id
 		FROM $communityDBName$.resources AS r
 		JOIN bibtex AS b USING (content_id)
 		JOIN tas AS t USING (content_id)
+		JOIN $communityDBName$.tmp_post_count AS c ON (b.simhash1=c.hash AND c.community_id=r.community_id)
 		WHERE r.run_id = #runId#
 		  AND r.community_id = #communityId#
 		  AND r.content_type = 2
 		  AND b.group = 0
+		GROUP BY b.simhash1
+		ORDER BY r.p DESC
 		LIMIT #offset#, #limit#
 	</select>
 	
 	<!-- get list of all public non-spam bookmarks belonging to given community -->
-	<select id="getBookmarksForCommunity" parameterClass="resourceParam" resultMap="BookmarkCommon.bookmarkPost">
-		SELECT <include refid ="bookmarkAttributes"/>, t.tag_name, u.book_url
+	<select id="getBookmarksForCommunity" parameterClass="resourceParam" resultMap="BookmarkCommon.communityBookmarkPost">
+		SELECT <include refid ="bookmarkAttributes"/>, t.tag_name, u.book_url, r.p as weight, r.community_id
 		FROM $communityDBName$.resources AS r
 		JOIN bookmark AS b USING (content_id)
 		JOIN tas AS t USING (content_id)
-		JOIN urls AS u USING (book_url_hash) 
+		JOIN urls AS u USING (book_url_hash)
+		JOIN $communityDBName$.tmp_post_count AS c ON (b.book_url_hash=c.hash AND c.community_id=r.community_id) 
 		WHERE r.run_id = #runId#
 		  AND r.community_id = #communityId#
 		  AND r.content_type = 1
 		  AND b.group = 0
+		GROUP BY b.book_url_hash
+		ORDER BY r.p DESC
 		LIMIT #offset#, #limit#
-	</select>		
+	</select>
+	
+	<!-- get list of most popular tags for given community -->
+	<select id="getTagCloudPopularForCommunity" parameterClass="resourceParam" resultMap="Common.tagCount">
+		SELECT tag_name AS name, count
+		FROM $communityDBName$.tmp_tag_count
+		WHERE community_id = #communityId#
+		ORDER BY count DESC
+		LIMIT #offset#, #limit#
+	</select>
+	
+	
+	<select id="listCommunitiesBookmark" parameterClass="resourceParam" resultMap="Common.communityBookmarks">
+		SELECT c.community_id, <include refid ="bookmarkAttributes"/>,r.p as weight, t.tag_name, u.book_url 
+		FROM $communityDBName$.community c
+		JOIN (SELECT * FROM $communityDBName$.resources r WHERE r.run_id=#runId# ORDER BY r.p DESC LIMIT 10) as r
+		JOIN bookmark b USING (content_id)
+		JOIN tas t USING (content_id)
+		JOIN urls AS u USING (book_url_hash)
+		WHERE c.run_id = #runId#
+		ORDER BY r.p DESC
+		LIMIT #limit#
+	</select>
+	
 </sqlMap>

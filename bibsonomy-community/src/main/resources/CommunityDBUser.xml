@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CommunityDBManage">
+	<!--+ =================================================================+ 
+	    |                            insert                                |
+	    +================================================================= +-->
+	<insert id="setUserAffiliation" parameterClass="communityParam">
+		REPLACE INTO user_community_settings (user_name,run_id,community_id,weight)
+		VALUES ( #userName#, #runID#, #communityID#, #weight# )
+	</insert>	  
+	  
+	<!--+ =================================================================+ 
+	    |                            update                                |
+	    +================================================================= +-->
+	
+	<!--+ =================================================================+ 
+	    |                            lookup                                |
+	    +================================================================= +-->
+	<select id="getUserAffiliation" parameterClass="communityParam" resultMap="Common.communityAffiliation">
+		SELECT run_id, community_id, weight
+		FROM user_community_settings
+		WHERE user_name = #userName#
+	</select>
+</sqlMap>

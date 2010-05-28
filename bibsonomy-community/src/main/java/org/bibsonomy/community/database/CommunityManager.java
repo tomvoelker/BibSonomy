@@ -1,5 +1,6 @@
 package org.bibsonomy.community.database;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 
@@ -7,10 +8,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.community.algorithm.Algorithm;
 import org.bibsonomy.community.database.param.CommunityParam;
+import org.bibsonomy.community.database.param.CommunityResourceParam;
+import org.bibsonomy.community.enums.Ordering;
 import org.bibsonomy.community.model.Cluster;
 import org.bibsonomy.community.model.Post;
+import org.bibsonomy.community.model.ResourceCluster;
 import org.bibsonomy.community.model.Tag;
 import org.bibsonomy.community.model.User;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.Resource;
 
 import com.ibatis.sqlmap.client.SqlMapClient;
 
@@ -27,9 +34,23 @@ public class CommunityManager extends AbstractDBManager implements DBManageInter
 
 	/** singleton pattern's instance reference */
 	protected static CommunityManager instance = null;
+
+	/** bookmark post manager for accessing bibsonomy posts */
+	private BibTexPostManager bibtexLogic;
+	
+	/** bibtex post manager for accessing bibsonomy posts */
+	private BookmarkPostManager bookmarkLogic;
+
+	/** tag manager for accessing tag clouds */
+	private TagManager tagLogic;
 	
 	private CommunityManager() {
 		super(SQLMAP);
+		
+		bibtexLogic   = BibTexPostManager.getInstance();
+		bookmarkLogic = BookmarkPostManager.getInstance(); 
+		tagLogic      = TagManager.getInstance();
+		
 		log.debug("Community database manager initialzied!");
 	}
 	
@@ -171,6 +192,51 @@ public class CommunityManager extends AbstractDBManager implements DBManageInter
 		return algorithmID;
 	}
 
+	public Collection<String> getUsersForCommunity(int run_id, int community_id, Ordering order, int limit, int offset) {
+		CommunityParam param = new CommunityParam();
+		param.setRunID(run_id);
+		param.setCommunityID(community_id);
+		return queryForList("getUsersForCommunity", param);
+	}
 
+	public Collection<Integer> listCommunities(final int run_id, final int limit, final int offset) {
+		CommunityParam param = new CommunityParam();
+		param.setRunID(run_id);
+		param.setLimit(limit);
+		param.setOffset(offset);
+		return queryForList("listCommunities", param);
+	}
 
+	public Collection<Integer> listCommunities(final int run_id) {
+		CommunityParam param = new CommunityParam();
+		param.setRunID(run_id);
+		return queryForList("listAllCommunities", param);
+	}
+
+	public Collection<ResourceCluster> getCommunities(int runId, int tagCloudLimit, int bibTexLimit, int bookmarkLimit, int limit, int offset) {
+		// get list of all community ids
+		final CommunityParam communityParam = new CommunityParam();
+		communityParam.setRunID(runId);
+		Collection<Integer> communityIdx = listCommunities(runId, limit, offset);
+		
+		// fetch each community
+		Collection<ResourceCluster> communities = new ArrayList<ResourceCluster>();
+		for( final Integer communityId : communityIdx ) {
+			ResourceCluster community = new ResourceCluster();
+			Collection<Post<Bookmark>> bookmarks = bookmarkLogic.getPostsForCommunity(runId, communityId, Ordering.POPULAR, bookmarkLimit, 0);
+			Collection<Post<BibTex>> bibTex = bibtexLogic.getPostsForCommunity(runId, communityId, Ordering.POPULAR, bibTexLimit, 0);
+			Collection<Tag> tagCloud = tagLogic.getTagCloudForCommunity(runId, communityId, Ordering.POPULAR, tagCloudLimit, 0);
+			
+			community.setBookmark(bookmarks);
+			community.setBibtex(bibTex);
+			community.setTags(tagCloud);
+			
+			// store community
+			communities.add(community);
+		}
+		
+		// all done
+		return communities;
+	}
+	
 }

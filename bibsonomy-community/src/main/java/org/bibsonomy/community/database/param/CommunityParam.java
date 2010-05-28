@@ -2,13 +2,15 @@ package org.bibsonomy.community.database.param;
 
 import java.util.Date;
 
+import org.bibsonomy.database.params.GenericParam;
+
 /**
  * hopelessly over full parameter bean for passing database parameters
  * 
  * @author fei
  *
  */
-public class CommunityParam {
+public class CommunityParam extends GenericParam {
 	private int algorithmID;
 	private int blockID;
 	private int runID;

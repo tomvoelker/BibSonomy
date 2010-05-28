@@ -20,8 +20,25 @@
 	<resultMap id="tag" class="tag" groupBy="name">
 		<result property="name" column="tag_name" javaType="string" />
 	</resultMap>
+
+	<resultMap id="tagCount" class="tag" groupBy="name">
+		<result property="name" column="name" javaType="string" />
+		<result property="globalcount" column="count" javaType="integer" />
+	</resultMap>
 	
 	<resultMap id="user" class="user" groupBy="name">
 		<result property="name" column="user_name" javaType="string" />
+	</resultMap>
+	
+
+	<resultMap id="communityAffiliation" class="communityParam">
+		<result property="runID" column="run_id" javaType="integer"/>
+		<result property="communityID" column="community_id" javaType="integer"/>
+		<result property="weight" column="weight" javaType="double"/>
+	</resultMap>
+	
+	<resultMap id="communityBookmarks" class="resourceCluster">
+		<result property="clusterID" column="community_id" javaType="integer"/>
+		<result property="bookmark" resultMap="BookmarkCommon.communityBookmarkPost"/>
 	</resultMap>
 </sqlMap>

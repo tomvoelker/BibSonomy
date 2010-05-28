@@ -20,6 +20,8 @@
 	
 	<!-- community model types -->
 	<typeAlias alias="communityPost"         type="org.bibsonomy.community.model.Post" />
+	<typeAlias alias="resourceParam"         type="org.bibsonomy.community.database.param.CommunityResourceParam" />
+	<typeAlias alias="resourceCluster"       type="org.bibsonomy.community.model.ResourceCluster" />
 
 	<!-- misc types -->
 	<typeAlias alias="date"               type="java.util.Date" />
@@ -31,6 +33,6 @@
 	<typeAlias alias="bibtexParam"        type="org.bibsonomy.community.database.param.BibTexParam" />
 	
 	<!-- Results -->
-	<typeAlias alias="pair"               type="org.bibsonomy.lucene.database.results.Pair" />
+	<typeAlias alias="pair"               type="org.bibsonomy.community.util.Pair" />
 	
 </sqlMap>

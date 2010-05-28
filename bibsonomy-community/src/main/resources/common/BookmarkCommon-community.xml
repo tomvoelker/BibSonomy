@@ -11,14 +11,11 @@
 
 	<resultMap id="bookmarkPost" class="communityPost" extends="Common.posts">
 		<result property="resource"   resultMap="BookmarkCommon.bookmark" />
+		<result property="weight"     column="weight"      javaType="double" />
 	</resultMap>
-
-	<resultMap id="bookmarkPostWithoutUrl" class="communityPost" extends="Common.posts">
-		<result property="resource"   resultMap="BookmarkCommon.bookmarkWithoutUrl" />
-	</resultMap>
-
 
 	<resultMap id="communityBookmarkPost" class="communityPost" extends="BookmarkCommon.bookmarkPost">
+		<result property="weight"         column="weight"      javaType="double" />
 		<result property="communityId"    column="community_id" />
 	</resultMap>
 
@@ -29,6 +26,11 @@
 
 	<sql id="bookmarkAttributes">
 		<include refid="commonBookmarkAttributes"/>
+	</sql>	
+	
+	<sql id="bookmarkAttributes2">
+	    bm.content_id, bm.user_name, bm.book_description as title, bm.book_extended as description, 
+		bm.date, bm.book_url_hash AS intraHash, bm.book_url_hash AS interHash
 	</sql>	
 
 </sqlMap>

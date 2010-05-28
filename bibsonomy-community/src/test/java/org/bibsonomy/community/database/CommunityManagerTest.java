@@ -18,6 +18,7 @@ import org.bibsonomy.community.algorithm.Algorithm;
 import org.bibsonomy.community.algorithm.MockAlgorithm;
 import org.bibsonomy.community.database.CommunityManager;
 import org.bibsonomy.community.database.DBManageInterface;
+import org.bibsonomy.community.enums.Ordering;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
@@ -39,18 +40,20 @@ import org.junit.Test;
  * @author fei
  * @version $Id$
  */
-public class PostManagerTest {
-	private static final Log log = LogFactory.getLog(PostManagerTest.class);
+public class CommunityManagerTest {
+	private static final Log log = LogFactory.getLog(CommunityManagerTest.class);
 	
 	BibTexPostManager bibTexLogic;
 	BookmarkPostManager bookmarkLogic;
+	CommunityManager communityLogic; 
 	
 	@Before
 	public void setUp() {
 		// bind datasource access via JNDI
 		JNDITestDatabaseBinder.bind();
-		bibTexLogic = BibTexPostManager.getInstance();
-		bookmarkLogic = BookmarkPostManager.getInstance();
+		bibTexLogic    = BibTexPostManager.getInstance();
+		bookmarkLogic  = BookmarkPostManager.getInstance();
+		communityLogic = CommunityManager.getInstance();
 	}
 	
 	@After
@@ -60,26 +63,24 @@ public class PostManagerTest {
 
 	
 	/**
-	 * Test adding new algorithm
-	 * @throws Exception 
+	 * test retrieving all users for a given community
+	 * @throws Exception
 	 */
 	@Test
-	@Ignore
-	public void testBibTexPosts() throws Exception {
-		Collection<Post<BibTex>> posts = this.bibTexLogic.getPostsForCommunity(17, 11, null, 10, 0);
-	}	
-
-	/**
-	 * Test adding new algorithm
-	 * @throws Exception 
-	 */
-	@Test
-	@Ignore
-	public void testBookmarkPosts() throws Exception {
-		Collection<Post<Bookmark>> posts = this.bookmarkLogic.getPostsForCommunity(17, 0, null, 10, 0);
-	}	
+	public void testCommunityList() throws Exception {
+		Collection<Integer> communities = communityLogic.listCommunities(17);
+	}
 	
-	//------------------------------------------------------------------------
+	@Test
+	public void testCommunityUsers() throws Exception {
+		Collection<String> users = communityLogic.getUsersForCommunity(17, 44, Ordering.POPULAR, 10, 0);
+	}
+
+	@Test
+	public void testGetCommunities() throws Exception {
+		Collection<ResourceCluster> communities = communityLogic.getCommunities(17, 25, 5, 5, 4, 0);
+	}
+//------------------------------------------------------------------------
 	// private helpers
 	//------------------------------------------------------------------------
 }

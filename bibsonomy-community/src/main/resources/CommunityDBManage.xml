@@ -84,4 +84,25 @@
 		FROM algorithms
 		WHERE name = #algorithmName# AND meta = #algorithmMeta#
 	</select>
+	
+	<select id="getUsersForCommunity" parameterClass="communityParam" resultClass="string">
+		SELECT user_name
+		FROM community
+		WHERE run_id = #runID#
+		  AND community_id = #communityID#
+		ORDER BY p DESC 
+	</select>
+	
+	<select id="listCommunities" parameterClass="communityParam" resultClass="integer">
+		SELECT distinct community_id
+		FROM community
+		WHERE run_id = #runID#
+		LIMIT #offset#, #limit#  
+	</select>
+
+	<select id="listAllCommunities" parameterClass="communityParam" resultClass="integer">
+		SELECT distinct community_id
+		FROM community
+		WHERE run_id = #runID#
+	</select>
 </sqlMap>

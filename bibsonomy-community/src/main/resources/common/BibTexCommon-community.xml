@@ -44,6 +44,7 @@
 	</resultMap>
 
 	<resultMap id="communityBibtexPost" class="communityPost" extends="bibtexPost">
+		<result property="weight"     column="weight"      javaType="double" />
 		<result property="communityId"    column="community_id" />
 	</resultMap>
 
