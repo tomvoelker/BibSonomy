@@ -51,7 +51,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	private final AdminDatabaseManager adminDBManager;
 	private final BasketDatabaseManager basketDBManager;
 	private final InboxDatabaseManager inboxDBManager;
-	
 
 	private final DatabaseModelValidator<User> validator;
 
@@ -60,6 +59,7 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		this.basketDBManager = BasketDatabaseManager.getInstance();
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.adminDBManager = AdminDatabaseManager.getInstance();
+		
 		this.validator = new DatabaseModelValidator<User>();
 	}
 
@@ -763,7 +763,6 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
         this.deletePendingUser(user.getName(), session);
         return user.getName();
     }
-    
 
     /**
      * Returns pending users.
@@ -778,15 +777,32 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
         return this.queryForList("getPendingUsers", param, User.class, session);
     }
 
-    public List<User> getPendingUserByActivationCode(final String search, final int start, final int end,  final DBSession session) {
-        final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, start, end, search, null, new User());     
+    /**
+     * returns all pending users by activation code
+     * 
+     * @param search
+     * @param start
+     * @param end
+     * @param session
+     * @return a list of users with the specified activation code (search)
+     */
+    public List<User> getPendingUserByActivationCode(final String search, final int start, final int end,  final DBSession session) {	
+    	// FIXME: what to do if search is null
+    	final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, null, null, null, null, start, end, search, null, new User());     
         return this.queryForList("getPendingUserByActivationCode", param, User.class, session);
     }
 
+    /**
+     * returns all pending users by username
+     * 
+     * @param username
+     * @param start
+     * @param end
+     * @param session
+     * @return  a list of users with the username
+     */
     public List<User> getPendingUserByUsername(final String username, final int start, final int end,  final DBSession session) {
         final UserParam param = LogicInterfaceHelper.buildParam(UserParam.class, null, username, null, null, null, start, end, null, null, new User());     
         return this.queryForList("getPendingUserByUsername", param, User.class, session);
-    }
-    
-	
+    }	
 }
