@@ -94,7 +94,7 @@
          <c:if test="${!empty post.resource.publisher}">"publisher":"${mtl:quoteJSONcleanBibTeX(post.resource.publisher)}",</c:if>
          <c:if test="${!empty post.resource.address}">"address":"${mtl:quoteJSONcleanBibTeX(post.resource.address)}",</c:if>
          "year": "${mtl:quoteJSON(post.resource.year)}", 
-         "url": "${mtl:cleanUrl(post.resource.url)}", 
+         "url": "${mtl:quoteJSON(post.resource.url)}", 
          <c:if test="${! empty post.resource.authorList}">
          "author": [ 
             <c:forEach var="author" varStatus="authorStatus" items="${post.resource.authorList}">"${mtl:quoteJSONcleanBibTeX(author.name)}"<c:if test="${not authorStatus.last}">,</c:if></c:forEach>
