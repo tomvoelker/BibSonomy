@@ -18,12 +18,13 @@
 	<!--+
 	    | lucene index generator 
 	    +-->
-	<bean id="luceneBibTexIndexGenerator" class="org.bibsonomy.lucene.index.LuceneGenerateBibTexIndex" factory-method="getPreInitInstance">
+	<bean id="luceneBibTexIndexGenerator" class="org.bibsonomy.lucene.util.generator.LuceneGenerateBibTexIndex" factory-method="getInstance">
 		<property name="logic" ref="luceneBibTexLogic"/>
 		<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
 		<property name="resourceConverter" ref="luceneBibTexConverter"/>
+		
 	</bean>
-	<bean id="luceneBookmarkIndexGenerator" class="org.bibsonomy.lucene.index.LuceneGenerateBookmarkIndex" factory-method="getPreInitInstance">
+	<bean id="luceneBookmarkIndexGenerator" class="org.bibsonomy.lucene.util.generator.LuceneGenerateBookmarkIndex" factory-method="getInstance">
 		<property name="logic" ref="luceneBookmarkLogic"/>
 		<property name="analyzer" ref="luceneBookmarkFieldWrapperAnalyzer"/>
 		<property name="resourceConverter" ref="luceneBookmarkConverter"/>
@@ -35,7 +36,6 @@
 	<util:list id="bibtexIndeces">
 		<bean id="luceneBibTexIndex0" class="org.bibsonomy.lucene.index.LuceneBibTexIndex">
 			<constructor-arg value="0"/>
-			<property name="indexId" value="0"/>
 			<property name="analyzer" ref="luceneBibTexFieldWrapperAnalyzer"/>
 		</bean>
 		<bean id="luceneBibTexIndex1" class="org.bibsonomy.lucene.index.LuceneBibTexIndex">
@@ -79,13 +79,13 @@
 	<!--+
 	    | lucene index manager (e.g. spam) 
 	    +-->
-	<bean id="luceneBibTexManager" class="org.bibsonomy.lucene.index.LuceneBibTexManager" factory-method="getPreInitInstance">
+	<bean id="luceneBibTexManager" class="org.bibsonomy.lucene.index.manager.LuceneBibTexManager" factory-method="getInstance">
 		<property name="resourceIndeces" ref="bibtexIndeces"/>
 		<property name="dbLogic" ref="luceneBibTexLogic"/>
 		<property name="searcher" ref="luceneBibTexSearch"/>
 		<property name="resourceConverter" ref="luceneBibTexConverter"/>
 	</bean>
-	<bean id="luceneBookmarkManager" class="org.bibsonomy.lucene.index.LuceneBookmarkManager" factory-method="getPreInitInstance">
+	<bean id="luceneBookmarkManager" class="org.bibsonomy.lucene.index.manager.LuceneBookmarkManager" factory-method="getInstance">
 		<property name="resourceIndeces" ref="bookmarkIndeces"/>
 		<property name="dbLogic" ref="luceneBookmarkLogic"/>
 		<property name="searcher" ref="luceneBookmarkSearch"/>
@@ -94,11 +94,5 @@
 	
 	
 	<!--  #################### imports #################### -->
-	
 	<import resource="LuceneIndexConfig.xml"/>
-	
-	<!-- 
-	<import resource="LuceneAnalyzerConfig.xml"/>
-    <import resource="LuceneBookmarkFields.xml"/>
-    -->
 </beans>

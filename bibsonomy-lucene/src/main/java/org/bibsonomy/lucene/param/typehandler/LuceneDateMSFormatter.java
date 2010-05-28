@@ -7,26 +7,24 @@ import java.util.Date;
  * convert date object's milliseconds to a long value (as string)
  * 
  * @author fei
+ * @version $Id$
  */
-public class LuceneDateMSFormatter extends AbstractTypeHandler {
+public class LuceneDateMSFormatter extends AbstractTypeHandler<Date> {
 
 	@Override
-	public String getValue(Object obj) {
-		return new Long(((Date)obj).getTime()).toString();
+	public String getValue(Date obj) {
+		return new Long(obj.getTime()).toString();
 	}
 
 	@Override
-	public Object setValue(String str) {
-		Date retVal = null;
-		
+	public Date setValue(String str) {
 		try {
 			long ms = Long.parseLong(str);
-			retVal  = new Date(ms);
+			return new Date(ms);
 		} catch( Exception e ) {
 			log.error("Error parsing date " + str, e);
-			retVal = new Date(0);
 		}
 				
-		return retVal;
+		return new Date(0);
 	}
 }

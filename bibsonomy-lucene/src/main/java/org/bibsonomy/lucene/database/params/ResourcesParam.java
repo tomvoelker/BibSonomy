@@ -17,22 +17,12 @@ public class ResourcesParam<T extends Resource> extends GenericParam {
 	
 	/** A list of resources. */
 	private List<T> resources;
-
-	/** start date */
-	Date fromDate;
-	
-	/** end date */
-	Date toDate;
 	
 	/** newest tas_id during last index update */
 	private Integer lastTasId;
 
 	/** newest change_date during last index update */
 	private Date lastLogDate;
-	
-	public ResourcesParam() {
-		super();
-	}
 	
 	/**
 	 * @return resources
@@ -47,36 +37,32 @@ public class ResourcesParam<T extends Resource> extends GenericParam {
 	public void setResources(List<T> resources) {
 		this.resources = resources;
 	}
-	
-	public void setFromDate(Date fromDate) {
-		this.fromDate = fromDate;
-	}
 
-	public Date getFromDate() {
-		return fromDate;
-	}
-	
-	public void setToDate(Date toDate) {
-		this.toDate = toDate;
-	}
-
-	public Date getToDate() {
-		return toDate;
-	}
-
-	public void setLastTasId(Integer lastTasId) {
-		this.lastTasId = lastTasId;
-	}
-
+	/**
+	 * @return the lastTasId
+	 */
 	public Integer getLastTasId() {
 		return lastTasId;
 	}
 
-	public void setLastLogDate(Date lastLogDate) {
-		this.lastLogDate = lastLogDate;
+	/**
+	 * @param lastTasId the lastTasId to set
+	 */
+	public void setLastTasId(Integer lastTasId) {
+		this.lastTasId = lastTasId;
 	}
 
+	/**
+	 * @return the lastLogDate
+	 */
 	public Date getLastLogDate() {
 		return lastLogDate;
+	}
+
+	/**
+	 * @param lastLogDate the lastLogDate to set
+	 */
+	public void setLastLogDate(Date lastLogDate) {
+		this.lastLogDate = lastLogDate;
 	}
 }

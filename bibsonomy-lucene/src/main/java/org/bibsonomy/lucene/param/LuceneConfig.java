@@ -4,6 +4,7 @@ package org.bibsonomy.lucene.param;
  * bean for configuring lucene via JNDI
  * 
  * @author fei
+ * @version $Id$
  */
 public class LuceneConfig {
 	/** configure search mode (lucene/database) */
@@ -25,59 +26,129 @@ public class LuceneConfig {
 	/** number of posts to consider for building the tag cloud */
 	private String tagCloudLimit = "1000";
 	
+	/**
+	 * @return the indexPath
+	 */
+	public String getIndexPath() {
+		return indexPath;
+	}
+	
+	/**
+	 * @param indexPath the indexPath to set
+	 */
 	public void setIndexPath(String indexPath) {
 		this.indexPath = indexPath;
 	}
-	public String getIndexPath() {
-		return indexPath;
-	}              
+	
+	/**
+	 * @param enableUpdater the string representation of enableUpdater
+	 */
 	public void setEnableUpdater(String enableUpdater) {
 		this.enableUpdater = Boolean.valueOf(enableUpdater);
 	}
+	
+	/**
+	 * @return the string representation of enableUpdater
+	 */
 	public String getEnableUpdater() {
 		return enableUpdater.toString();
 	}
-	public void setEnableTagClouds(String enableTagClouds) {
-		this.enableTagClouds = Boolean.valueOf(enableTagClouds);
+	
+	/**
+	 * @return the enableTagClouds
+	 */
+	public Boolean getEnableTagClouds() {
+		return enableTagClouds;
 	}
-	public String getEnableTagClouds() {
-		return enableTagClouds.toString();
+
+	/**
+	 * @param enableTagClouds the enableTagClouds to set
+	 */
+	public void setEnableTagClouds(Boolean enableTagClouds) {
+		this.enableTagClouds = enableTagClouds;
 	}
+
+	/**
+	 * @return the searchMode
+	 */
+	public String getSearchMode() {
+		return searchMode;
+	}
+
+	/**
+	 * @param searchMode the searchMode to set
+	 */
 	public void setSearchMode(String searchMode) {
 		this.searchMode = searchMode;
 	}
-	public String getSearchMode() {
-		return searchMode;
-	}              
+
+	/**
+	 * @param loadIndexIntoRam the string representation of loadINtexIntoRam
+	 */
 	public void setLoadIndexIntoRam(String loadIndexIntoRam) {
 		this.loadIndexIntoRam = Boolean.valueOf(loadIndexIntoRam);
 	}
+	
+	/**
+	 * @return the string representation of loadIndexIntoRam
+	 */
 	public String getLoadIndexIntoRam() {
 		return loadIndexIntoRam.toString();
 	}
-	public void setMaximumFieldLength(String maximumFieldLength) {
-		this.maximumFieldLength = maximumFieldLength;
-	}
+	
+	/**
+	 * @return the maximumFieldLength
+	 */
 	public String getMaximumFieldLength() {
 		return maximumFieldLength;
 	}
-	public void setDbDriverName(String dbDriverName) {
-		this.dbDriverName = dbDriverName;
+
+	/**
+	 * @param maximumFieldLength the maximumFieldLength to set
+	 */
+	public void setMaximumFieldLength(String maximumFieldLength) {
+		this.maximumFieldLength = maximumFieldLength;
 	}
+	
+	/**
+	 * @return the dbDriverName
+	 */
 	public String getDbDriverName() {
 		return dbDriverName;
 	}
-	public void setRedundantCnt(String redundantCnt) {
-		this.redundantCnt = redundantCnt;
+
+	/**
+	 * @param dbDriverName the dbDriverName to set
+	 */
+	public void setDbDriverName(String dbDriverName) {
+		this.dbDriverName = dbDriverName;
 	}
+	
+	/**
+	 * @return the redundantCnt
+	 */
 	public String getRedundantCnt() {
 		return redundantCnt;
 	}
-	public void setTagCloudLimit(String tagCloudLimit) {
-		this.tagCloudLimit = tagCloudLimit;
+
+	/**
+	 * @param redundantCnt the redundantCnt to set
+	 */
+	public void setRedundantCnt(String redundantCnt) {
+		this.redundantCnt = redundantCnt;
 	}
+
+	/**
+	 * @return the tagCloudLimit
+	 */
 	public String getTagCloudLimit() {
 		return tagCloudLimit;
 	}
-	
+
+	/**
+	 * @param tagCloudLimit the tagCloudLimit to set
+	 */
+	public void setTagCloudLimit(String tagCloudLimit) {
+		this.tagCloudLimit = tagCloudLimit;
+	}
 }

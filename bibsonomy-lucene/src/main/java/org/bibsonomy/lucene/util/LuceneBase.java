@@ -1,5 +1,7 @@
 package org.bibsonomy.lucene.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
@@ -7,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.index.IndexWriter;
 import org.bibsonomy.lucene.param.LuceneConfig;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * this class is a temporary hack for collecting all constants which should be consistent 
@@ -16,25 +17,33 @@ import org.bibsonomy.util.ValidationUtils;
  *  FIXME: this should be consistent with the spring configuration
  *  
  * @author fei
- *
+ * @version $Id$
  */
 public class LuceneBase {
 	private static final Log log = LogFactory.getLog(LuceneBase.class);
 	
-	//------------------------------------------------------------------------
-	// static configuration
-	//------------------------------------------------------------------------
+	/** TODO: improve documentation */
 	public static final String PARAM_RELEVANCE = "relevance";
 
+	/** TODO: improve documentation */
 	public static final String CFG_LUCENENAME         = "luceneName";
+	/** TODO: improve documentation */
 	public static final String CFG_ANALYZER           = "fieldAnalyzer";
+	/** TODO: improve documentation */
 	public static final String CFG_TYPEHANDLER        = "typeHandler";
+	/** TODO: improve documentation */
 	public static final String CFG_ITEMPROPERTY       = "itemProperty";
+	/** TODO: improve documentation */
 	public static final String CFG_LIST_DELIMITER     = " ";
+	/** TODO: improve documentation */
 	public static final String CFG_FLDINDEX           = "luceneIndex";
+	/** TODO: improve documentation */
 	public static final String CFG_FLDSTORE           = "luceneStore";
+	/** TODO: improve documentation */
 	public static final String CFG_FULLTEXT_FLAG      = "fulltextSearch";
+	/** TODO: improve documentation */
 	public static final String CFG_PRIVATE_FLAG       = "privateSearch";
+	/** TODO: improve documentation */
 	public static final String CFG_INDEX_ID_DELIMITER = "-";
 	
 	/** delimiter to specify which field to search for */
@@ -48,15 +57,13 @@ public class LuceneBase {
 	
 	/** the naming context for lucene classes */
 	public static final String CONTEXT_ENV_NAME    = "java:/comp/env";
-//	/** naming context for variables */
-//	public static final String CONTEXT_INDEX_PATH  = "luceneIndexPath";
-//	/** context variable determining whether lucene should update the index */
-//	public static final String CONTEXT_ENABLE_FLAG = "enableLuceneUpdater";
+	
 	/** context variable containing lucene's configuration */
 	public static final String CONTEXT_CONFIG_BEAN = "luceneConfig";
 		
 	/** name of the property file which configures lucene */
 	public static final String PROPERTYFILENAME    = "lucene.properties";
+	/** TODO: improve documentation */
 	public static final String LUCENE_CONTEXT_XML  = "LuceneIndexConfig.xml";
 
 	// FIXME: configure these fieldnames via spring
@@ -82,29 +89,26 @@ public class LuceneBase {
 	/** keyword identifying limited field length in the lucene index */
 	public static final Object KEY_LIMITED       = "LIMITED";
 
+	/** TODO: improve documentation */
 	public static final int SQL_BLOCKSIZE = 25000;
-
-	public static final String PROP_DB_DRIVER_NAME = "db.driver";	
-	public static final String LUCENE_INDEX_PATH_PREFIX = "luceneIndexPath";
 	
 	//------------------------------------------------------------------------
 	// runtime configuration
 	//------------------------------------------------------------------------
-	private static String indexBasePath           = "";
-	private static String searchMode              = "database";
-	private static Boolean enableUpdater          = false;
-	private static Boolean loadIndexIntoRam       = false;
-	private static String dbDriverName            = "com.mysql.jdbc.Driver";
-	private static IndexWriter.MaxFieldLength maximumFieldLength
-	                                              = new IndexWriter.MaxFieldLength(5000);
-	private static Integer redundantCnt           = 2;
-	private static Boolean enableTagClouds        = false;
-	private static Integer tagCloudLimit          = 1000;
+	private static String indexBasePath = "";
+	private static String searchMode = "database";
+	private static Boolean enableUpdater = false;
+	private static Boolean loadIndexIntoRam = false;
+	private static String dbDriverName = "com.mysql.jdbc.Driver";
+	private static IndexWriter.MaxFieldLength maximumFieldLength = new IndexWriter.MaxFieldLength(5000);
+	private static Integer redundantCnt = 2;
+	private static Boolean enableTagClouds = false;
+	private static Integer tagCloudLimit = 1000;
 	
 	/**
 	 * get runtime configuration from context
 	 */
-	protected static void initRuntimeConfiguration() {
+	public static void initRuntimeConfiguration() {
 		try {
 			final Context initContext = new InitialContext();
 			final Context envContext  = (Context) initContext.lookup(CONTEXT_ENV_NAME);
@@ -113,13 +117,13 @@ public class LuceneBase {
 			// index base path
 			setIndexBasePath(config.getIndexPath());
 			// search mode
-			if( ValidationUtils.present(config.getSearchMode()) )
+			if( present(config.getSearchMode()) )
 				searchMode       = config.getSearchMode();
 			// db driver name
-			if( ValidationUtils.present(config.getDbDriverName()) )
+			if( present(config.getDbDriverName()) )
 				dbDriverName = config.getDbDriverName();
 			// maximum field length in the lucene index
-			if( ValidationUtils.present(config.getMaximumFieldLength())) {
+			if( present(config.getMaximumFieldLength())) {
 				String mflIn = config.getMaximumFieldLength();
 				if( KEY_UNLIMITED.equals(mflIn) ) {
 					maximumFieldLength = IndexWriter.MaxFieldLength.UNLIMITED;
@@ -138,7 +142,7 @@ public class LuceneBase {
 			}
 			
 			// nr. of redundant indeces
-			if( ValidationUtils.present(config.getRedundantCnt()) ) {
+			if( present(config.getRedundantCnt()) ) {
 				Integer value;
 				try {
 					value = Integer.parseInt(config.getRedundantCnt());
@@ -166,63 +170,103 @@ public class LuceneBase {
 		log.debug("\t enableUpdater    : " + getEnableUpdater());
 		log.debug("\t loadIndexIntoRam : " + loadIndexIntoRam);
 	}
-	
-	//------------------------------------------------------------------------
-	// getter/setter
-	//------------------------------------------------------------------------
-	public static void setIndexBasePath(String indexBasePath) {
-		LuceneBase.indexBasePath = indexBasePath;
-	}
 
+	/**
+	 * @return the indexBasePath
+	 */
 	public static String getIndexBasePath() {
 		return indexBasePath;
 	}
 
-	public static void setMaximumFieldLength(IndexWriter.MaxFieldLength maximumFieldLength) {
-		LuceneBase.maximumFieldLength = maximumFieldLength;
+	/**
+	 * @param indexBasePath the indexBasePath to set
+	 */
+	public static void setIndexBasePath(String indexBasePath) {
+		LuceneBase.indexBasePath = indexBasePath;
 	}
 
+	/**
+	 * @return the maximumFieldLength
+	 */
 	public static IndexWriter.MaxFieldLength getMaximumFieldLength() {
 		return maximumFieldLength;
 	}
 
-	public static void setDbDriverName(String dbDriverName) {
-		LuceneBase.dbDriverName = dbDriverName;
+	/**
+	 * @param maximumFieldLength the maximumFieldLength to set
+	 */
+	public static void setMaximumFieldLength(
+			IndexWriter.MaxFieldLength maximumFieldLength) {
+		LuceneBase.maximumFieldLength = maximumFieldLength;
 	}
 
+	/**
+	 * @return the dbDriverName
+	 */
 	public static String getDbDriverName() {
 		return dbDriverName;
 	}
 
+	/**
+	 * @param dbDriverName the dbDriverName to set
+	 */
+	public static void setDbDriverName(String dbDriverName) {
+		LuceneBase.dbDriverName = dbDriverName;
+	}
+
+	/**
+	 * @param enableUpdater the enableUpdater to set
+	 */
 	public static void setEnableUpdater(Boolean enableUpdater) {
 		LuceneBase.enableUpdater = enableUpdater;
 	}
 
+	/**
+	 * @return the enableUpdater
+	 */
 	public static Boolean getEnableUpdater() {
 		return enableUpdater;
 	}
 
+	/**
+	 * @param redundantCnt the redundantCnt to set
+	 */
 	public static void setRedundantCnt(Integer redundantCnt) {
 		LuceneBase.redundantCnt = redundantCnt;
 	}
 
+	/**
+	 * @return the redundantCnt
+	 */
 	public static Integer getRedundantCnt() {
 		return redundantCnt;
 	}
 
-	public static void setEnableTagClouds(Boolean enableTagClouds) {
-		LuceneBase.enableTagClouds = enableTagClouds;
-	}
-
+	/**
+	 * @return the enableTagClouds
+	 */
 	public static Boolean getEnableTagClouds() {
 		return enableTagClouds;
 	}
 
-	public static void setTagCloudLimit(Integer tagCloudLimit) {
-		LuceneBase.tagCloudLimit = tagCloudLimit;
+	/**
+	 * @param enableTagClouds the enableTagClouds to set
+	 */
+	public static void setEnableTagClouds(Boolean enableTagClouds) {
+		LuceneBase.enableTagClouds = enableTagClouds;
 	}
 
+	/**
+	 * @return the tagCloudLimit
+	 */
 	public static Integer getTagCloudLimit() {
 		return tagCloudLimit;
+	}
+
+	/**
+	 * @param tagCloudLimit the tagCloudLimit to set
+	 */
+	public static void setTagCloudLimit(Integer tagCloudLimit) {
+		LuceneBase.tagCloudLimit = tagCloudLimit;
 	}
 }

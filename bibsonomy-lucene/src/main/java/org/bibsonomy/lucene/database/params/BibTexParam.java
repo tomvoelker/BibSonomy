@@ -9,7 +9,7 @@ import org.bibsonomy.model.BibTex;
  * @author Christian Schenk
  * @version $Id$
  */
-public class BibTexParam extends ResourcesParam<BibTex> implements SingleResourceParam<BibTex> {
+public class BibTexParam extends ResourcesParam<BibTex> {
 
 	/** A single resource */
 	private BibTex resource;
@@ -43,76 +43,93 @@ public class BibTexParam extends ResourcesParam<BibTex> implements SingleResourc
 	 * defines the entry type of the requested bibtex entries
 	 */
 	private String entryType;
-	
-	public BibTexParam() {
-		super();
-		
-		this.firstYear = null;
-		this.lastYear = null;
-		this.year = null;
-		this.setBibtexKey(null);
-	}
 
 	@Override
 	public int getContentType() {
 		return ConstantID.BIBTEX_CONTENT_TYPE.getId();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.params.SingleResourceParam#getResource()
+	/**
+	 * @return the publication
 	 */
-	@Override
 	public BibTex getResource() {
 		if (this.resource == null) this.resource = new BibTex();
 		return this.resource;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.bibsonomy.database.params.SingleResourceParam#setResource(org.bibsonomy.model.Resource)
+	/**
+	 * @param resource the bookmark to set
 	 */
-	@Override
 	public void setResource(BibTex resource) {
 		this.resource = resource;
 	}
 
+	/**
+	 * @return the firstYear
+	 */
 	public String getFirstYear() {
-		return this.firstYear;
+		return firstYear;
 	}
 
+	/**
+	 * @param firstYear the firstYear to set
+	 */
 	public void setFirstYear(String firstYear) {
 		this.firstYear = firstYear;
 	}
 
+	/**
+	 * @return the lastYear
+	 */
 	public String getLastYear() {
-		return this.lastYear;
+		return lastYear;
 	}
 
+	/**
+	 * @param lastYear the lastYear to set
+	 */
 	public void setLastYear(String lastYear) {
 		this.lastYear = lastYear;
 	}
 
+	/**
+	 * @return the year
+	 */
 	public String getYear() {
-		return this.year;
+		return year;
 	}
 
+	/**
+	 * @param year the year to set
+	 */
 	public void setYear(String year) {
 		this.year = year;
 	}
 
+	/**
+	 * @return the documentsAttached
+	 */
 	public boolean isDocumentsAttached() {
-		return this.documentsAttached;
+		return documentsAttached;
 	}
 
+	/**
+	 * @param documentsAttached the documentsAttached to set
+	 */
 	public void setDocumentsAttached(boolean documentsAttached) {
 		this.documentsAttached = documentsAttached;
 	}
-	
+
+	/**
+	 * @return the entryType
+	 */
 	public String getEntryType() {
-		return this.entryType;
+		return entryType;
 	}
 
+	/**
+	 * @param entryType the entryType to set
+	 */
 	public void setEntryType(String entryType) {
 		this.entryType = entryType;
 	}

@@ -4,33 +4,20 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.PerFieldAnalyzerWrapper;
 import org.apache.lucene.analysis.TokenStream;
 import org.bibsonomy.lucene.util.LuceneBase;
-import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.util.ValidationUtils;
-import org.springframework.beans.factory.BeanFactory;
 
 /**
  * this field wrapps lucene's PerFieldAnalyzerWrapper for making it
  * configurable via spring
  * 
  * @author fei
- *
+ * @version $Id$
  */
-public class SpringPerFieldAnalyzerWrapper extends Analyzer {
-	@SuppressWarnings("unused")
-	private static final Log log = LogFactory.getLog(SpringPerFieldAnalyzerWrapper.class);
-
-	/** singleton pattern's instance reference */
-	private static SpringPerFieldAnalyzerWrapper instance;
-
-	/** bean factory */
-	private static BeanFactory beanFactory;
-	
+public class SpringPerFieldAnalyzerWrapper extends Analyzer {	
 	/** map configuring the index */
 	private Map<String,Map<String,Object>> propertyMap;
 
@@ -45,42 +32,11 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 
 	/** we delegate to this analyzer */
 	private PerFieldAnalyzerWrapper analyzer;
-
-	/**
-	 * static initialization
-	 */
-	static {
-		beanFactory = LuceneSpringContextWrapper.getBeanFactory();
-	}
-	
-	private SpringPerFieldAnalyzerWrapper() {
-		this.setFullTextSearchAnalyzer(null);
-		this.defaultAnalyzer = null;
-		this.fieldMap = null;
-	}
 	
 	/**
-	 * singleton pattern's pre-initialization instantiation method  
-	 * 
-	 * @return
+	 * default constructor
 	 */
-	public static SpringPerFieldAnalyzerWrapper getInstance() {
-		if( instance==null ) {
-			instance = (SpringPerFieldAnalyzerWrapper)beanFactory.getBean("luceneFieldWrapperAnalyzer");
-		}
-		return instance;
-	}
-
-	/**
-	 * singleton pattern's pre-initialization instantiation method  
-	 * 
-	 * @return
-	 */
-	public static SpringPerFieldAnalyzerWrapper getPreInitInstance() {
-		if( instance==null ) {
-			instance = new SpringPerFieldAnalyzerWrapper();
-		}
-		return instance;
+	public SpringPerFieldAnalyzerWrapper() {
 	}
 	
 	/**
@@ -101,25 +57,40 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 	public TokenStream tokenStream(String fieldName, Reader reader) {
 		return this.analyzer.tokenStream(fieldName, reader);
 	}
-
+	
+	/**
+	 * @param fieldMap the fieldMap to set
+	 */
 	public void setFieldMap(Map<String, Object> fieldMap) {
 		this.fieldMap = fieldMap;
 		init();
 	}
 
+	/**
+	 * @return the fieldMap
+	 */
 	public Map<String, Object> getFieldMap() {
 		return fieldMap;
 	}
 
+	/**
+	 * @param defaultAnalyzer the defaultAnalyzer to set
+	 */
 	public void setDefaultAnalyzer(Analyzer defaultAnalyzer) {
 		this.defaultAnalyzer = defaultAnalyzer;
 		init();
 	}
 
+	/**
+	 * @return defaultAnalyzer
+	 */
 	public Analyzer getDefaultAnalyzer() {
 		return defaultAnalyzer;
 	}
 
+	/**
+	 * @param propertyMap the propertyMap to set
+	 */
 	public void setPropertyMap(Map<String,Map<String,Object>> propertyMap) {
 		this.propertyMap = propertyMap;
 		
@@ -138,10 +109,16 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 			fieldMap.put(LuceneBase.FLD_MERGEDFIELDS, this.fullTextSearchAnalyzer);
 	}
 
+	/**
+	 * @return the propertyMap
+	 */
 	public Map<String,Map<String,Object>> getPropertyMap() {
 		return propertyMap;
 	}
 
+	/**
+	 * @param fullTextSearchAnalyzer the fullTextSearchAnalyzer
+	 */
 	public void setFullTextSearchAnalyzer(Analyzer fullTextSearchAnalyzer) {
 		this.fullTextSearchAnalyzer = fullTextSearchAnalyzer;
 		// update fieldmap
@@ -149,7 +126,11 @@ public class SpringPerFieldAnalyzerWrapper extends Analyzer {
 			fieldMap.put(LuceneBase.FLD_MERGEDFIELDS, this.fullTextSearchAnalyzer);
 		}
 	}
-
+	
+	/**
+	 * 
+	 * @return the fullTextSearchAnalyzer
+	 */
 	public Analyzer getFullTextSearchAnalyzer() {
 		return fullTextSearchAnalyzer;
 	}

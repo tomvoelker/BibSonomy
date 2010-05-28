@@ -160,7 +160,7 @@
 	</select>
 	
 	<!-- get list of all non-spam bookmarks -->
-	<select id="getBookmarksForIndex3" parameterClass="bookmarkParam" resultMap="BookmarkCommon.bookmarkPost">
+	<select id="getBookmarkForIndex3" parameterClass="bookmarkParam" resultMap="BookmarkCommon.bookmarkPost">
 		SELECT 
 			bb.*, 
 			t.tag_name,

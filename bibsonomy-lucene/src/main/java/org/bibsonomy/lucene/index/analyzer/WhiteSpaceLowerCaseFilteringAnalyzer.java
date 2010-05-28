@@ -19,6 +19,7 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
  * TODO: implement reusableTokenStream
  * 
  * @author fei
+ * @version $Id$
  *
  */
 public class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {
@@ -46,17 +47,17 @@ public class WhiteSpaceLowerCaseFilteringAnalyzer extends Analyzer {
 		return result; 
 	}
 
+	/**
+	 * @return the stopSet
+	 */
+	public Set<String> getStopSet() {
+		return stopSet;
+	}
 
-	//------------------------------------------------------------------------
-	// getter/setter
-	//------------------------------------------------------------------------
-	
+	/**
+	 * @param stopSet the stopSet to set
+	 */
 	public void setStopSet(Set<String> stopSet) {
 		this.stopSet = stopSet;
 	}
-
-
-	public Set<String> getStopSet() {
-		return stopSet;
-	} 
 }

@@ -184,6 +184,9 @@ public abstract class GenericParam {
 	private Date fromDate;
 	private Date toDate;
 
+	/**
+	 * sets default value
+	 */
 	public GenericParam() {
 		this.tagIndex = new ArrayList<TagIndex>();
 		this.numSimpleTags = 0;
@@ -207,17 +210,20 @@ public abstract class GenericParam {
 		this.groupNames =  new HashSet<String>();
 		//when using this field the value of days must be greater 0 
 		this.days = -1;
-		
 	}
 
 	/**
 	 * Implementations of this class will have to implement this method to
 	 * identify their content type.
+	 * @return the caseSensitvieTagNames
 	 */
 	public boolean isCaseSensitiveTagNames() {
 		return this.caseSensitiveTagNames;
 	}
 
+	/**
+	 * @param caseSensitive the caseSensitive to set
+	 */
 	public void setCaseSensitiveTagNames(boolean caseSensitive) {
 		this.caseSensitiveTagNames = caseSensitive;
 	}
@@ -226,44 +232,74 @@ public abstract class GenericParam {
 		this.tagIndex.add(new TagIndex(tagName, this.tagIndex.size() + 1));
 	}
 
+	/**
+	 * adds a tag to the tag index
+	 * @param tagName the name of the tag to add
+	 */
 	public void addTagName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numSimpleTags++;
 	}
 	
+	/**
+	 * adds a simple concept to the tag index
+	 * @param tagName
+	 */
 	public void addSimpleConceptName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numSimpleConcepts++;
 	}
 	
+	/**
+	 * adds a transitive concept to the tag index
+	 * @param tagName
+	 */
 	public void addTransitiveConceptName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numTransitiveConcepts++;
 	}
 	
+	/**
+	 * adds a simple concept with parent name to the tag index
+	 * @param tagName
+	 */
 	public void addSimpleConceptWithParentName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numSimpleConceptsWithParent++;
 	}
 	
+	/**
+	 * adds a single concept with ancestors to the tag index
+	 * @param tagName
+	 */
 	public void addSimpleConceptwithAncestorsName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numSimpleConceptsWithAncestors++;
 	}
 	
+	/**
+	 * add a correlated concept to the tag index
+	 * @param tagName
+	 */
 	public void addCorrelatedConceptName(final String tagName) {
 		this.addToTagIndex(tagName);
 		this.numCorrelatedConcepts++;
 	}	
 
+	/**
+	 * @return the tag index
+	 */
 	public List<TagIndex> getTagIndex() {
-		//return Collections.unmodifiableList(this.tagIndex);
 		return this.tagIndex;
 	}
 
+	/**
+	 * @param tagIndex the tagIndex to set
+	 */
 	public void setTagIndex(List<TagIndex> tagIndex) {
 		this.tagIndex = tagIndex;
 	}
+	
 	/**
 	 * This is used to determine the max. amount of join-indices for the
 	 * iteration of the join-index; e.g. if we're searching for tag names. If we
@@ -273,6 +309,7 @@ public abstract class GenericParam {
 	 * or setter. A call to tagIndex.size() is not possible. An attempt fails
 	 * with "There is no READABLE property named 'size' in class
 	 * 'java.util.ArrayList'".
+	 * @return the max index of the tagIndex
 	 */
 	public int getMaxTagIndex() {
 		// TODO: if this methods name was intuitive, size-1 should be returned
@@ -280,59 +317,98 @@ public abstract class GenericParam {
 		return this.tagIndex.size();
 	}
 
+	/**
+	 * @return the id of the groupType
+	 */
 	public int getGroupType() {
 		return groupType.getId();
 	}
 
+	/**
+	 * @param groupType the groupType to set
+	 */
 	public void setGroupType(GroupID groupType) {
 		this.groupType = groupType;
 	}
 
+	/**
+	 * @return the search
+	 */
 	public String getSearch() {
 		return this.search;
 	}
 
+	/**
+	 * @return the rawSearch
+	 */
 	public String getRawSearch() {
 		return this.rawSearch;
 	}
 
+	/**
+	 * @param search the search to set
+	 */
 	public void setSearch(String search) {
 		if (search != null) {
 			this.rawSearch = search;
 			this.search = search.replaceAll("([\\s]|^)([\\S&&[^-]])", " +$2");
 		}
 	}
+	
+	/**
+	 * @return the date
+	 */
+	public Date getDate() {
+		return date;
+	}
 
+	/**
+	 * @param date the date to set
+	 */
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	/**
+	 * @return the userName
+	 */
 	public String getUserName() {
 		return userName;
 	}
 
+	/**
+	 * @param userName the userName to set
+	 */
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
 
+	/**
+	 * @return the limit
+	 */
 	public int getLimit() {
-		return this.limit;
+		return limit;
 	}
 
+	/**
+	 * @param limit the limit to set
+	 */
 	public void setLimit(int limit) {
 		this.limit = limit;
 	}
 
+	/**
+	 * @return the offset
+	 */
 	public int getOffset() {
-		return this.offset;
+		return offset;
 	}
 
+	/**
+	 * @param offset the offset to set
+	 */
 	public void setOffset(int offset) {
 		this.offset = offset;
-	}
-
-	public Date getDate() {
-		return this.date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
 	}
 
 	/**
@@ -356,133 +432,225 @@ public abstract class GenericParam {
 	 */
 	public void setGroups(Collection<Integer> groups) {
 		this.groups = new HashSet<Integer>(groups);
-	}	
-
-	public int getGroupId() {
-		return this.groupId;
 	}
 
+	/**
+	 * @return the groupId
+	 */
+	public int getGroupId() {
+		return groupId;
+	}
+
+	/**
+	 * @param groupId the groupId to set
+	 */
 	public void setGroupId(int groupId) {
 		this.groupId = groupId;
 	}
 
 	// TODO: what hash?, what for?, why in genericparam and not in
 	// resource-field?
-	public String getHash() {
-		return this.hash;
-	}
-
-	public void setHash(String hash) {
-		this.hash = hash;
-	}
-	
+	/**
+	 * @return the id of the simHash
+	 */
 	public int getSimHash() {
 		return this.simHash.getId();
 	}
 
+	/**
+	 * @return the hash
+	 */
+	public String getHash() {
+		return hash;
+	}
+
+	/**
+	 * @param hash the hash to set
+	 */
+	public void setHash(String hash) {
+		this.hash = hash;
+	}
+
+	/**
+	 * @param simHash the simHash to set
+	 */
 	public void setSimHash(HashID simHash) {
 		this.simHash = simHash;
 	}
-
-
+	
 	// TODO: why in genericparam and not in resource-field?
+	/**
+	 * @return the requestedUserName
+	 */
 	public String getRequestedUserName() {
-		return this.requestedUserName;
+		return requestedUserName;
 	}
 
+	/**
+	 * @param requestedUserName the requestedUserName to set
+	 */
 	public void setRequestedUserName(String requestedUserName) {
 		this.requestedUserName = requestedUserName;
 	}
 
+	/**
+	 * @return the requestedGroupName
+	 */
 	public String getRequestedGroupName() {
-		return this.requestedGroupName;
+		return requestedGroupName;
 	}
 
+	/**
+	 * @param requestedGroupName the requestedGroupName to set
+	 */
 	public void setRequestedGroupName(String requestedGroupName) {
 		this.requestedGroupName = requestedGroupName;
 	}
 
+	/**
+	 * @return the requestedContentId
+	 */
 	public int getRequestedContentId() {
-		return this.requestedContentId;
+		return requestedContentId;
 	}
 
+	/**
+	 * @param requestedContentId the requestedContentId to set
+	 */
 	public void setRequestedContentId(int requestedContentId) {
 		this.requestedContentId = requestedContentId;
 	}
 
+	/**
+	 * @return the id of the idsType
+	 */
 	public int getIdsType() {
 		return this.idsType.getId();
 	}
 
+	/**
+	 * @param idsType the idsType to set
+	 */
 	public void setIdsType(ConstantID idsType) {
 		this.idsType = idsType;
 	}
 
+	/**
+	 * @return the newContentId
+	 */
 	public int getNewContentId() {
-		return this.newContentId;
+		return newContentId;
 	}
 
+	/**
+	 * @param newContentId the newContentId to set
+	 */
 	public void setNewContentId(int newContentId) {
 		this.newContentId = newContentId;
 	}
 
+	/**
+	 * @return the tags
+	 */
 	public Set<Tag> getTags() {
 		return this.tags;
 	}
 
+	/**
+	 * @param tags the tags to set
+	 */
 	public void setTags(Set<Tag> tags) {
 		this.tags = tags;
 	}
 
+	/**
+	 * @return the tag
+	 */
 	public Tag getTag() {
 		return this.tag;
 	}
 
+	/**
+	 * @param tag the tag to set
+	 */
 	public void setTag(Tag tag) {
 		this.tag = tag;
 		this.tagName = tag.getName();
 	}
 
+	/**
+	 * @return the friendOf
+	 */
 	public boolean getFriendOf() {
 		return this.friendOf;
 	}
 
+	/**
+	 * @param friendOf the friendOf to set
+	 */
 	public void setFriendOf(boolean friendOf) {
 		this.friendOf = friendOf;
 	}
 
+	/**
+	 * @return the description
+	 */
 	public String getDescription() {
-		return this.description;
+		return description;
 	}
 
+	/**
+	 * @param description the description to set
+	 */
 	public void setDescription(String description) {
 		this.description = description;
 	}
 
+	/**
+	 * @return the extension
+	 */
 	public String getExtension() {
-		return this.extension;
+		return extension;
 	}
 
+	/**
+	 * @param extension the extension to set
+	 */
 	public void setExtension(String extension) {
 		this.extension = extension;
 	}
 
+	/**
+	 * @return the url
+	 */
 	public String getUrl() {
-		return this.url;
+		return url;
 	}
 
+	/**
+	 * @param url the url to set
+	 */
 	public void setUrl(String url) {
 		this.url = url;
 	}
 
+	/**
+	 * @return the id of the contentType
+	 */
 	public int getContentType() {
 		return this.contentType.getId();
 	}
 
+	/**
+	 * @param contentType the contentType to set
+	 */
 	public void setContentType(ConstantID contentType) {
 		this.contentType = contentType;
 	}
 	
+	/**
+	 * @param nativeContentType the resouce type used to set the content type
+	 */
 	public void setContentTypeByClass(Class<? extends Resource> nativeContentType) {
 		if (BibTex.class.isAssignableFrom(nativeContentType)) {
 			setContentType(ConstantID.BIBTEX_CONTENT_TYPE);
@@ -495,6 +663,9 @@ public abstract class GenericParam {
 		}
 	}
 
+	/**
+	 * @return the tag name
+	 */
 	public String getTagName() {
 		if (tag != null) {
 			return tag.getName();
@@ -502,115 +673,198 @@ public abstract class GenericParam {
 		return this.tagName;
 	}
 
+	/**
+	 * @param tagName the tagName to set
+	 */
 	public void setTagName(String tagName) {
 		this.tag = null;
 		this.tagName = tagName;
 	}
 
+	/**
+	 * @return the tag name (lower case)
+	 */
 	public String getTagNameLower() {
 		return this.getTagName().toLowerCase();
 	}
 
+	/**
+	 * @return the title
+	 */
 	public String getTitle() {
-		return this.title;
+		return title;
 	}
 
+	/**
+	 * @param title the title to set
+	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
-	public GroupingEntity getGrouping() {
-		return this.grouping;
+
+	/**
+	 * @return the order
+	 */
+	public Order getOrder() {
+		return order;
 	}
 
+	/**
+	 * @param order the order to set
+	 */
+	public void setOrder(Order order) {
+		this.order = order;
+	}
+
+	/**
+	 * @return the grouping
+	 */
+	public GroupingEntity getGrouping() {
+		return grouping;
+	}
+
+	/**
+	 * @param grouping the grouping to set
+	 */
 	public void setGrouping(GroupingEntity grouping) {
 		this.grouping = grouping;
 	}
 
-	public Order getOrder() {
-		return this.order;
-	}
-
-	public void setOrder(Order order) {
-		this.order = order;
-	}	
-
+	/**
+	 * @return the filter
+	 */
 	public FilterEntity getFilter() {
-		return this.filter;
+		return filter;
 	}
 
+	/**
+	 * @param filter the filter to set
+	 */
 	public void setFilter(FilterEntity filter) {
 		this.filter = filter;
 	}
 
+	/**
+	 * @return the numSimpleConcepts
+	 */
 	public Integer getNumSimpleConcepts() {
 		return this.numSimpleConcepts;
 	}
 
+	/**
+	 * @return the numSimpleTags
+	 */
 	public Integer getNumSimpleTags() {
 		return this.numSimpleTags;
 	}
-
+	
+	/**
+	 * @return the numTransitiveConcepts
+	 */
 	public Integer getNumTransitiveConcepts() {
 		return this.numTransitiveConcepts;
 	}
 
+	/**
+	 * @return the numSimpleConceptsWithParent
+	 */
 	public int getNumSimpleConceptsWithParent() {
 		return this.numSimpleConceptsWithParent;
 	}
 
+	/**
+	 * @return the numCorrelatedConcepts
+	 */
 	public int getNumCorrelatedConcepts() {
 		return this.numCorrelatedConcepts;
 	}
 
+	/**
+	 * @return the numSimpleConceptsWithAncestors
+	 */
 	public int getNumSimpleConceptsWithAncestors() {
 		return this.numSimpleConceptsWithAncestors;
 	}
-
+	
+	/**
+	 * @param numTransitiveConcepts the numTransitiveConcepts to set
+	 */
 	public void setNumTransitiveConcepts(int numTransitiveConcepts) {
 		this.numTransitiveConcepts = numTransitiveConcepts;
 	}
 
+	/**
+	 * @param numSimpleConcepts the numSimpleConcepts to set
+	 */
 	public void setNumSimpleConcepts(int numSimpleConcepts) {
 		this.numSimpleConcepts = numSimpleConcepts;
 	}
 
+	/**
+	 * @param numSimpleTags the numSimpleTags to set
+	 */
 	public void setNumSimpleTags(int numSimpleTags) {
 		this.numSimpleTags = numSimpleTags;
 	}
-	
+
+	/**
+	 * adds a groupId to the set
+	 * @param groupId the groupId to add
+	 */
 	public void addGroup(Integer groupId) {
 		this.groups.add(groupId);
 	}
 	
+	/**
+	 * adds a collection of groups to the group id set
+	 * @param groups a collection of group ids to add
+	 */
 	public void addGroups(Collection<Integer> groups) {
 		this.groups.addAll(groups);
 	}
-
-	public int getDays() {
-		return this.days;
-	}
-
-	public void setDays(int days) {
-		this.days = days;
-	}
-
-	public void setSearchEntity(SearchEntity searchEntity) {
-		this.searchEntity = searchEntity;
-	}
-
+	
+	/**
+	 * @return the searchEntity
+	 */
 	public SearchEntity getSearchEntity() {
 		return searchEntity;
 	}
 
+	/**
+	 * @param searchEntity the searchEntity to set
+	 */
+	public void setSearchEntity(SearchEntity searchEntity) {
+		this.searchEntity = searchEntity;
+	}
+
+	/**
+	 * @return the days
+	 */
+	public int getDays() {
+		return days;
+	}
+
+	/**
+	 * @param days the days to set
+	 */
+	public void setDays(int days) {
+		this.days = days;
+	}
+
+	/**
+	 * @return the bibtexKey
+	 */
+	public String getBibtexKey() {
+		return bibtexKey;
+	}
+
+	/**
+	 * @param bibtexKey the bibtexKey to set
+	 */
 	public void setBibtexKey(String bibtexKey) {
 		this.bibtexKey = bibtexKey;
 	}
 
-	public String getBibtexKey() {
-		return bibtexKey;
-	}
-	
 	/**
 	 * add group ids and groupnames of groups this user may see
 	 * 
@@ -652,19 +906,31 @@ public abstract class GenericParam {
 		return ReflectionToStringBuilder.toString(this, ToStringStyle.MULTI_LINE_STYLE);
 	}
 
-	public void setFromDate(Date fromDate) {
-		this.fromDate = fromDate;
-	}
-
+	/**
+	 * @return the fromDate
+	 */
 	public Date getFromDate() {
 		return fromDate;
 	}
 
-	public void setToDate(Date toDate) {
-		this.toDate = toDate;
+	/**
+	 * @param fromDate the fromDate to set
+	 */
+	public void setFromDate(Date fromDate) {
+		this.fromDate = fromDate;
 	}
 
+	/**
+	 * @return the toDate
+	 */
 	public Date getToDate() {
 		return toDate;
+	}
+
+	/**
+	 * @param toDate the toDate to set
+	 */
+	public void setToDate(Date toDate) {
+		this.toDate = toDate;
 	}
 }

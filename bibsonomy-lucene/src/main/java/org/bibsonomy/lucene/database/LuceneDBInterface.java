@@ -18,14 +18,13 @@ import org.bibsonomy.model.Resource;
  * interface encapsulating database access for lucene
  * 
  * @author fei
+ * @version $Id$
  * 
- * @param R resource type
+ * @param <R> resource type
  */
 public interface LuceneDBInterface<R extends Resource> {
 
-	/**
-	 * get all posts for given user
-	 * 
+	/** 
 	 * @param userName
 	 * @param requestedUserName
 	 * @param simHash
@@ -33,78 +32,78 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * @param visibleGroupIDs
 	 * @param limit
 	 * @param offset
-	 * @return
+	 * @return all posts for given user
 	 */
 	public List<LucenePost<R>> getPostsForUser(final String userName, final String requestedUserName, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset);
 
 	/**
-	 * get most recent post's date
-	 * @return
+	 * @return get most recent post's date
 	 */
 	public Date getNewestRecordDateFromTas();
 
 	/**
-	 * get most recent post's date
-	 * @return
+	 * @return get most recent post's date
 	 */
 	public Integer getNewestContentIdFromTas();
 	
 	/**
-	 * get list of content ids to delete from index with fromDate<date<=date
-	 * 
 	 * @param fromDate
 	 * @param toDate
+	 * 
+	 * @return get list of content ids to delete from index with fromDate<date<=date
 	 */
 	public List<Integer> getContentIdsToDelete(Date fromDate, Date toDate);
 	
 	/**
 	 * get list of content ids to delete from index with fromDate<date<=date
 	 * 
-	 * @param fromDate
+	 * @param lastLogDate
+	 * @return list of content ids to delete from index with fromDate<date<=date
 	 */
 	public List<Integer> getContentIdsToDelete(Date lastLogDate);
 
 	/**
-	 * get all public posts within a given time range
-	 * 
-	 * FIXME: use bibsonomy model classes
-	 * 
 	 * @param fromDate
 	 * @param toDate
-	 * @return
+	 * 
+	 * @return get all public posts within a given time range
 	 */
-	@Deprecated
+	@Deprecated // FIXME: use bibsonomy model classes
 	public List<HashMap<String, Object>> getPostsForTimeRange(Date fromDate, Date toDate);
 
+	/**
+	 * @param fromDate
+	 * @param toDate
+	 * 
+	 * @return TODO: improve documentation
+	 */
 	public List<Post<R>> getPostsForTimeRange2(Date fromDate, Date toDate);
-
+	
+	/**
+	 * @param lastTasId
+	 * @return new posts to insert in the index
+	 */
 	public List<LucenePost<R>> getNewPosts(Integer lastTasId);
 
 	/**
-	 * get list of all posts where in the given time range only the tag assignments
+	 * @param fromDate
+	 * @param toDate
+	 * @return  get list of all posts where in the given time range only the tag assignments
 	 * have changed
-	 * 
-	 * @param retrieveFromDate
-	 * @param retrieveToDate
-	 * @return
 	 */
 	public List<Post<R>> getUpdatedPostsForTimeRange(Date fromDate, Date toDate);
 	
 	/**
-	 * get list of all users which where flagged as spammer since last 
-	 * index update
-	 * 
 	 * @param fromDate
-	 * @return
+	 * @return get list of all users which where flagged as spammer since last 
+	 * index update
 	 */
 	public List<String> getSpamPredictionForTimeRange(Date fromDate);
 
-	/**
-	 * get list of all users which where flagged as spammer since last 
-	 * index update
-	 * 
+	/** 
 	 * @param fromDate
-	 * @return
+	 * @return get list of all users which where flagged as spammer since last 
+	 * index update
 	 */
 	public List<String> getNonSpamPredictionForTimeRange(Date fromDate);
 
@@ -117,19 +116,14 @@ public interface LuceneDBInterface<R extends Resource> {
 	public Collection<String> getFriendsForUser(String userName);
 	
 	/**
-	 * get group name
-	 * 
 	 * @param groupId
-	 * @return
+	 * @return group name to the given groupId
 	 */
 	public String getGroupNameByGroupId(int groupId);
-	
 
 	/**
-	 * get given groups members
-	 * 
 	 * @param groupId
-	 * @return
+	 * @return the members of the group
 	 */
 	public List<String> getGroupMembersByGroupId(int groupId);
 
@@ -137,16 +131,14 @@ public interface LuceneDBInterface<R extends Resource> {
 	 * get given group's members
 	 * 
 	 * @param groupName
-	 * @return
+	 * @return the members of the group
 	 */
 	public List<String> getGroupMembersByGroupName(String groupName);
 
 	/**
-	 * get all members of the given group, which have the user as a friend
-	 * 
 	 * @param groupId
 	 * @param authUserName
-	 * @return
+	 * @return get all members of the given group, which have the user as a friend
 	 */
 	public List<String> getGroupFriendsByGroupIdForUser(int groupId, String authUserName);	
 	
@@ -155,28 +147,27 @@ public interface LuceneDBInterface<R extends Resource> {
 	// TODO: maybe we should introduce a special class hierarchy
 	//------------------------------------------------------------------------
 	/** 
-	 * get newest tas_id from database 
+	 * @return get newest tas_id from database 
 	 */
 	public Integer getLastTasId();
 
 	/** 
-	 * get latest log_date from database
+	 * @return get latest log_date from database
 	 */
 	public Date getLastLogDate();
 	
 	/** 
-	 * get number of TAS entries 
+	 * @return get number of TAS entries 
 	 */
 	public int getTasSize();
 	
 	/**
-	 * get number of posts
+	 * @return get number of posts
 	 */
 	public int getNumberOfPosts();
 	
 	/**
-	 * get list of group ids with corresponding group names
-	 * @return
+	 * @return get list of group ids with corresponding group names
 	 */
 	public List<GroupParam> getGroupIDs();
 	
@@ -208,17 +199,15 @@ public interface LuceneDBInterface<R extends Resource> {
 	 */
 	public List<GroupTasParam> getGroupTasEntries(Integer skip, Integer max);
 
-	/**
-	 * get post entries for index creation
-	 * 
+	/** 
 	 * @param skip offset
 	 * @param max size
-	 * @return
+	 * @return get post entries for index creation
 	 */
-	List<LucenePost<R>> getPostEntries(Integer skip, Integer max);
+	public List<LucenePost<R>> getPostEntries(Integer skip, Integer max);
 	
 	/**
-	 * get map from url-hashes to corresponding urls
+	 * @return get map from url-hashes to corresponding urls
 	 */
-	Map<String,String> getUrlMap();
+	public Map<String,String> getUrlMap();
 }

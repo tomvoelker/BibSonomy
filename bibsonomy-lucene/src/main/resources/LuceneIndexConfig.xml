@@ -45,16 +45,16 @@
 	<bean id="luceneDiacriticsAnalyzer" class="org.bibsonomy.lucene.index.analyzer.DiacriticsLowerCaseFilteringAnalyzer"/>
 	<bean id="luceneSimpleKeywordAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SimpleKeywordAnalyzer"/>
 	
-	<bean id="luceneBookmarkFieldWrapperAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper" factory-method="getPreInitInstance">
+	<bean id="luceneBookmarkFieldWrapperAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper">
 		<property name="fullTextSearchAnalyzer" ref="luceneDiacriticsAnalyzer"/>
-		<property name="defaultAnalyzer" ref="luceneStandardAnalyzer"/>
 		<property name="propertyMap" ref="bookmarkPropertyMap"/>
+		<property name="defaultAnalyzer" ref="luceneStandardAnalyzer"/>
 	</bean>
 
-	<bean id="luceneBibTexFieldWrapperAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper" factory-method="getPreInitInstance">
+	<bean id="luceneBibTexFieldWrapperAnalyzer" class="org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper">
 		<property name="fullTextSearchAnalyzer" ref="luceneDiacriticsAnalyzer"/>
-		<property name="defaultAnalyzer" ref="luceneStandardAnalyzer"/>
 		<property name="propertyMap" ref="bibTexPropertyMap"/>
+		<property name="defaultAnalyzer" ref="luceneStandardAnalyzer"/>
 	</bean>
 
 

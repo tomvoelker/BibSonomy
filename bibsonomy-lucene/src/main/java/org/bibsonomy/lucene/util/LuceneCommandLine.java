@@ -1,6 +1,7 @@
 package org.bibsonomy.lucene.util;
 
 import static org.apache.lucene.util.Version.LUCENE_24;
+import static org.bibsonomy.lucene.util.LuceneBase.CFG_INDEX_ID_DELIMITER;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,33 +28,41 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.bibsonomy.lucene.index.analyzer.SpringPerFieldAnalyzerWrapper;
 
-public class LuceneCommandLine extends LuceneBase {
+/**
+ * @author fei
+ * @version $Id$
+ */
+public class LuceneCommandLine {
 	private static final Log log = LogFactory.getLog(LuceneCommandLine.class);
 	
-	private Analyzer analyzer = SpringPerFieldAnalyzerWrapper.getInstance();
+	// FIXME: check implementation
+	private Analyzer analyzer = new SpringPerFieldAnalyzerWrapper();
 	
 	static {
 		JNDITestDatabaseBinder.bind();
 	}
 	
+	/**
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
-		
 		LuceneCommandLine lcml = new LuceneCommandLine();
 		lcml.init();
 		lcml.doQuerying();
 	}
 
 	private void init() {
-		super.initRuntimeConfiguration();
+		LuceneBase.initRuntimeConfiguration();
 	}
 
 	private void doQuerying() throws Exception {
-		String bibTexIndexPath = getIndexBasePath() + "lucene_BibTex" + CFG_INDEX_ID_DELIMITER + "0";
+		String bibTexIndexPath = LuceneBase.getIndexBasePath() + "lucene_BibTex" + CFG_INDEX_ID_DELIMITER + "0";
 		Directory bibTexDirectory = FSDirectory.open(new File(bibTexIndexPath));
 		IndexReader bibTexReader = IndexReader.open(bibTexDirectory, false);
 		IndexSearcher bibTexSearcher = new IndexSearcher(bibTexReader);
 
-		String bookmarkIndexPath = getIndexBasePath() + "lucene_Bookmark" + CFG_INDEX_ID_DELIMITER + "0";
+		String bookmarkIndexPath = LuceneBase.getIndexBasePath() + "lucene_Bookmark" + CFG_INDEX_ID_DELIMITER + "0";
 		Directory bookmarkDirectory = FSDirectory.open(new File(bookmarkIndexPath));
 		IndexReader bookmarkReader = IndexReader.open(bookmarkDirectory, false);
 		IndexSearcher bookmarkSearcher = new IndexSearcher(bookmarkReader);

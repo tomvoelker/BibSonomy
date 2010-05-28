@@ -7,7 +7,7 @@ import org.bibsonomy.model.Resource;
  * class for managing the lucene bookmark index
  * 
  * @author fei
- *
+ * @version $Id$
  */
 public class LuceneBookmarkIndex extends LuceneResourceIndex<Bookmark> {
 

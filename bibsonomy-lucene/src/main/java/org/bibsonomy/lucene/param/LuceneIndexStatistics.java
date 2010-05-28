@@ -2,8 +2,9 @@
 package org.bibsonomy.lucene.param;
 
 /**
- * This class defines a user. An unknown user has an empty (<code>null</code>) name.
- * 
+ * lucene statistics like current version, number of docs
+ *  
+ * @author sst
  * @version $Id$
  */
 public class LuceneIndexStatistics {
@@ -70,12 +71,14 @@ public class LuceneIndexStatistics {
 	public void setNumDeletedDocs(int numDeletedDocs) {
 		this.numDeletedDocs = numDeletedDocs;
 	}
+	
 	/**
 	 * @return the lastModified
 	 */
 	public long getLastModified() {
 		return this.lastModified;
 	}
+	
 	/**
 	 * @param lastModified the lastModified to set
 	 */
@@ -95,10 +98,5 @@ public class LuceneIndexStatistics {
 	 */
 	public void setCurrent(boolean isCurrent) {
 		this.isCurrent = isCurrent;
-	}
-
-	
-	
-	
-	
+	}	
 }

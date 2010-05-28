@@ -14,7 +14,6 @@ import org.bibsonomy.lucene.database.params.GroupParam;
 import org.bibsonomy.lucene.database.params.GroupTasParam;
 import org.bibsonomy.lucene.database.params.ListParam;
 import org.bibsonomy.lucene.database.params.TasParam;
-import org.bibsonomy.lucene.util.LuceneBase;
 import org.bibsonomy.model.Resource;
 
 import com.ibatis.common.resources.Resources;
@@ -22,11 +21,16 @@ import com.ibatis.sqlmap.client.SqlMapClient;
 import com.ibatis.sqlmap.client.SqlMapClientBuilder;
 
 /**
+ * TODO: an AbstractDatabaseManager class e.g in bibsonomy-database-common
+ * 
  * implements methods needed for index creation
+ * 
  * @author fei
- *
+ * @version $Id$
+ * 
+ * @param <R> 
  */
-public abstract class LuceneDBGenerateLogic<R extends Resource> extends LuceneBase implements LuceneDBInterface<R> {
+public abstract class LuceneDBGenerateLogic<R extends Resource> implements LuceneDBInterface<R> {
 	private static final Log log = LogFactory.getLog(LuceneDBGenerateLogic.class);
 
 	/** path to the ibatis database configuration file */
@@ -40,25 +44,23 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends LuceneBa
 	 */
 	protected LuceneDBGenerateLogic() {
 		try {
-			// initialize database client for recommender logs
-			String resource = SQL_MAP_CONFIG;
-			Reader reader = Resources.getResourceAsReader (resource);
+			// initialize database client for lucene queries
+			final Reader reader = Resources.getResourceAsReader(SQL_MAP_CONFIG);
 			sqlMap = SqlMapClientBuilder.buildSqlMapClient(reader);
 			log.info("Database connection initialized.");
 		} catch (Exception e) {
-			throw new RuntimeException ("Error initializing LuceneDBLogic class.", e);
+			throw new RuntimeException("Error initializing LuceneDBGenerateLogic class.", e);
 		}
 	}
 	
 	@Override
 	public Integer getLastTasId() {
-		Integer retVal = 0;
 		try {
-			retVal = (Integer)sqlMap.queryForObject("getLastTasId");
+			return (Integer)sqlMap.queryForObject("getLastTasId");
 		} catch (SQLException e) {
 			log.error("Error determining last tas entry.", e);
 		}
-		return retVal;
+		return 0;
 	}
 	
 	@Override
@@ -75,52 +77,45 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends LuceneBa
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<GroupParam> getGroupIDs() {
-		List<GroupParam> retVal = null;
 		try {
-			retVal = sqlMap.queryForList("getGroupIDs");
+			return sqlMap.queryForList("getGroupIDs");
 		} catch (SQLException e) {
 			log.error("Error getting group ids.", e);
-			retVal = new LinkedList<GroupParam>();
 		}
 		
-		return retVal;
+		return new LinkedList<GroupParam>();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<TasParam> getTasEntries(Integer skip, Integer max) {
-		ListParam param = new ListParam();
+		final ListParam param = new ListParam();
 		param.setOffset(skip);
 		param.setSize(max);
 		
-		List<TasParam> retVal = null;
 		try {
-			retVal = sqlMap.queryForList("getTasEntries", param);
+			return sqlMap.queryForList("getTasEntries", param);
 		} catch (SQLException e) {
 			log.error("Error getting Tas entries.", e);
-			retVal = new LinkedList<TasParam>();
 		}
 		
-		return retVal;
+		return new LinkedList<TasParam>();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<TasParam> getGroupedTasEntries(int skip, int max) {
-		ListParam param = new ListParam();
+		final ListParam param = new ListParam();
 		param.setOffset(skip);
 		param.setSize(max);
 		
-		List<TasParam> retVal = null;
-		
 		try {
-			retVal = sqlMap.queryForList("getGroupedTasEntries", param);
+			return sqlMap.queryForList("getGroupedTasEntries", param);
 		} catch (SQLException e) {
 			log.error("Error getting grouped tas entries", e);
-			retVal = new LinkedList<TasParam>();
 		}
 		
-		return retVal;
+		return new LinkedList<TasParam>();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -129,61 +124,49 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> extends LuceneBa
 		ListParam param = new ListParam();
 		param.setOffset(skip);
 		param.setSize(max);
-		List<GroupTasParam> retVal = null;
 		
 		try {
-			retVal = sqlMap.queryForList("getGroupTasEntries", param);
+			return sqlMap.queryForList("getGroupTasEntries", param);
 		} catch (SQLException e) {
 			log.error("Error getting group tas entries", e);
-			retVal = new LinkedList<GroupTasParam>();
 		}
 		
-		return retVal;
+		return new LinkedList<GroupTasParam>();
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override 
-	public List<String> getSpamPredictionForTimeRange(Date fromDate) {
-		List<String> retVal = null;
-		
+	public List<String> getSpamPredictionForTimeRange(Date fromDate) {	
 		try {
-			retVal = sqlMap.queryForList("getSpamPredictionForTimeRange", fromDate);
+			return sqlMap.queryForList("getSpamPredictionForTimeRange", fromDate);
 		} catch (SQLException e) {
 			log.error("Error getting flagged users", e);
-			retVal = new LinkedList<String>();
 		}
 		
-		return retVal;
+		return new LinkedList<String>();
 	}
-
 	
 	@SuppressWarnings("unchecked")
 	@Override 
-	public List<String> getNonSpamPredictionForTimeRange(Date fromDate) {
-		List<String> retVal = null;
-		
+	public List<String> getNonSpamPredictionForTimeRange(Date fromDate) {		
 		try {
-			retVal = sqlMap.queryForList("getNonSpamPredictionForTimeRange", fromDate);
+			return sqlMap.queryForList("getNonSpamPredictionForTimeRange", fromDate);
 		} catch (SQLException e) {
 			log.error("Error getting unflagged users", e);
-			retVal = new LinkedList<String>();
 		}
 		
-		return retVal;
+		return new LinkedList<String>();
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public Map<String,String> getUrlMap() {
-		Map<String,String> retVal = null;
-		
+	public Map<String,String> getUrlMap() {		
 		try {
-			retVal = sqlMap.queryForMap("getUrlMap",null,"hash", "url");
+			return sqlMap.queryForMap("getUrlMap", null, "hash", "url");
 		} catch (SQLException e) {
-			log.error("Error getting unflagged users", e);
-			retVal = new HashMap<String,String>();
+			log.error("Error getting url map", e);
 		}
 		
-		return retVal;
+		return new HashMap<String,String>();
 	}
 }

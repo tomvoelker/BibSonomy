@@ -15,9 +15,6 @@ import org.bibsonomy.model.enums.Order;
  *
  */
 public class QuerySortContainer {
-	/**
-	 * serialVersionUID
-	 */
 	private static final long serialVersionUID = -5889003240930421319L;
 	
 	
@@ -47,9 +44,9 @@ public class QuerySortContainer {
 	private int limit;
 	
 	/**
-	 * TopDocs collector
+	 * tagcount collector
 	 */
-	private TagCountCollector topDocsCollector;
+	private TagCountCollector tagCountCollector;
 
 	/**
 	 * @return the query
@@ -67,50 +64,73 @@ public class QuerySortContainer {
 	}
 	
 	/**
-	 * @return the query
+	 * @return the sort
 	 */
 	public Sort getSort() {
 		return this.sort;
 	}
 
 	/**
-	 * @param query the query to set
+	 * @param sort the sort to set
 	 */
 	public void setSort(Sort sort) {
 		this.sort = sort;
 		
-	}
+	}	
 
-	public void setTagCountCollector(TagCountCollector topDocsCollector) {
-		this.topDocsCollector = topDocsCollector;
-	}
-
-	public TagCountCollector getTagCountCollector() {
-		return topDocsCollector;
-	}
-
-	public void setOrder(Order order) {
-		this.order = order;
-	}
-
+	/**
+	 * @return the order
+	 */
 	public Order getOrder() {
 		return order;
 	}
 
-	public void setLimit(int limit) {
-		this.limit = limit;
+	/**
+	 * @param order the order to set
+	 */
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 
+	/**
+	 * @return the limit
+	 */
 	public int getLimit() {
 		return limit;
 	}
 
+	/**
+	 * @param limit the limit to set
+	 */
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
+
+	/**
+	 * @return the limitType
+	 */
+	public Order getLimitType() {
+		return limitType;
+	}
+
+	/**
+	 * @param limitType the limitType to set
+	 */
 	public void setLimitType(Order limitType) {
 		this.limitType = limitType;
 	}
 
-	public Order getLimitType() {
-		return limitType;
+	/**
+	 * @param tagCountCollector the tagCountCollector to set
+	 */
+	public void setTagCountCollector(TagCountCollector tagCountCollector) {
+		this.tagCountCollector = tagCountCollector;
 	}
-	
+
+	/**
+	 * @return the tagCountCollector
+	 */
+	public TagCountCollector getTagCountCollector() {
+		return tagCountCollector;
+	}	
 }

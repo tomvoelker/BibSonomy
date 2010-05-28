@@ -1,31 +1,31 @@
 package org.bibsonomy.lucene.param.typehandler;
 
+import static org.bibsonomy.lucene.util.LuceneBase.CFG_LIST_DELIMITER;
+
 import java.util.Collection;
 
 /**
  * convert date objects to a standardized string representation
  * 
  * @author fei
+ * @version $Id$
+ * @param <T> 
  */
-public abstract class LuceneCollectionFormatter extends AbstractTypeHandler {
-	private static final String CFG_LIST_DELIMITER = " ";
+public abstract class LuceneCollectionFormatter<T> extends AbstractTypeHandler<Collection<T>> {
 	
 	@Override
-	public String getValue(Object obj) {
-		Collection<?> collection = (Collection<?>)obj;
-		
-		String retVal = "";
-		for( Object item : collection ) {
-			retVal += CFG_LIST_DELIMITER + convertItem(item);
+	public String getValue(Collection<T> collection) {		
+		StringBuilder retVal = new StringBuilder("");
+		for (T item : collection) {
+			retVal.append(CFG_LIST_DELIMITER).append(convertItem(item));
 		}
 			
-		return retVal.trim();
+		return retVal.toString().trim();
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	@Override
-	public Object setValue(String str) {
-		Collection<Object> retVal = (Collection<Object>) createCollection();
+	public Collection<T> setValue(String str) {
+		Collection<T> retVal = this.createCollection();
 		
 		String[] tokens = str.split(CFG_LIST_DELIMITER);
 		
@@ -35,8 +35,7 @@ public abstract class LuceneCollectionFormatter extends AbstractTypeHandler {
 		return retVal;
 	}
 
-
-	protected abstract Collection<? extends Object> createCollection();
-	protected abstract Object createItem(String token);
-	protected abstract String convertItem(Object item);
+	protected abstract Collection<T> createCollection();
+	protected abstract T createItem(String token);
+	protected abstract String convertItem(T item);
 }

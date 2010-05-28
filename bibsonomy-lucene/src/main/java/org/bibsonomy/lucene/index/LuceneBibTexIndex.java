@@ -7,7 +7,7 @@ import org.bibsonomy.model.Resource;
  * class for managing the lucene bibtex index
  * 
  * @author fei
- *
+ * @version $Id$
  */
 public class LuceneBibTexIndex extends LuceneResourceIndex<BibTex> {
 

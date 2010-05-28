@@ -3,6 +3,7 @@ package org.bibsonomy.lucene.database;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,21 +20,24 @@ import org.bibsonomy.model.Resource;
  * class for accessing the bibsonomy database 
  * 
  * @author fei
- *
+ * @version $Id$
+ * @param <R> the resource the logic handles
  */
 public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerateLogic<R> {
-	private final Log log = LogFactory.getLog(LuceneDBLogic.class);
+	private static final Log log = LogFactory.getLog(LuceneDBLogic.class);
 
 	/**
 	 * constructor disabled for enforcing singleton pattern 
 	 */
 	protected LuceneDBLogic() {
-		super();
 	}
 	
-	//------------------------------------------------------------------------
-	// db interface implementation
-	//------------------------------------------------------------------------
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getPostsForUser(java.lang.String, java.lang.String, org.bibsonomy.common.enums.HashID, int, java.util.List, int, int)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<LucenePost<R>> getPostsForUser(final String userName, final String requestedUserName, final HashID simHash, final int groupId, final List<Integer> visibleGroupIDs, final int limit, final int offset) {
 		final ResourcesParam<R> param = getResourcesParam();
 		param.setRequestedUserName(requestedUserName);
@@ -43,14 +47,21 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		param.setLimit(limit);
 		param.setOffset(offset);
 		
-		List<LucenePost<R>> retVal;
-		retVal = getPostsForUserInternal(param);
-		if( retVal!=null )
-			return retVal;
-		else 
-			return new LinkedList<LucenePost<R>>();
+		List<LucenePost<R>> retVal = null;
+		try {
+			retVal = this.sqlMap.queryForList("get" + this.getResourceName() + "ForUser", param);
+		} catch (SQLException e) {
+			log.error("Error fetching " +" for user " + param.getUserName(), e);
+		}
+		
+		return retVal != null ? retVal : new LinkedList<LucenePost<R>>();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getNewestRecordDateFromTas()
+	 */
+	@Override
 	public Date getNewestRecordDateFromTas() {
 		Date retVal = null;
 		try {
@@ -62,6 +73,10 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		return retVal;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getNewestContentIdFromTas()
+	 */
 	@Override
 	public Integer getNewestContentIdFromTas() {
 		Integer retVal = 0;
@@ -74,6 +89,12 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		return retVal;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getContentIdsToDelete(java.util.Date, java.util.Date)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<Integer> getContentIdsToDelete(Date fromDate, Date toDate) {
 		List<Integer> retVal;
 		
@@ -82,7 +103,7 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		param.setSecond(toDate);
 		
 		try {
-			retVal = getContentIdsToDeleteInternal(param);
+			retVal = this.sqlMap.queryForList("get" + this.getResourceName() + "ContentIdsToDelete", param);
 		} catch (SQLException e) {
 			log.error("Error getting content ids to delete", e);
 			retVal = new LinkedList<Integer>();
@@ -93,11 +114,17 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		return retVal;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getContentIdsToDelete(java.util.Date)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<Integer> getContentIdsToDelete(Date lastLogDate) {
 		List<Integer> retVal;
 		
 		try {
-			retVal = getContentIdsToDeleteInternal(lastLogDate);
+			retVal = this.sqlMap.queryForList("get" + this.getResourceName() + "ContentIdsToDelete2", lastLogDate);
 		} catch (SQLException e) {
 			log.error("Error getting content ids to delete", e);
 			retVal = new LinkedList<Integer>();
@@ -108,14 +135,11 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		return retVal;
 	}
 	
-	/**
-	 * get list of all posts where in the given time range only the tag assignments
-	 * have changed
-	 * 
-	 * @param retrieveFromDate
-	 * @param retrieveToDate
-	 * @return
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getUpdatedPostsForTimeRange(java.util.Date, java.util.Date)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Post<R>> getUpdatedPostsForTimeRange(Date fromDate, Date toDate) {
 		List<Post<R>> retVal = null;
@@ -125,7 +149,7 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		param.setToDate(toDate);
 		
 		try {
-			retVal = getUpdatedPostsForTimeRange(param);
+			retVal = this.sqlMap.queryForList("getUpdated" + this.getResourceName() + "PostsForTimeRange", param);
 		} catch (SQLException e) {
 			log.error("Error getting content ids to delete", e);
 		}
@@ -138,14 +162,12 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		return retVal;	
 	}
 	
-	
-	/**
-	 * get list of all friends for a given user
-	 * 
-	 * @param userName the user name
-	 * @return all friends of given user 
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getFriendsForUser(java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public Collection<String> getFriendsForUser(String userName) {
 		List<String> retVal = null;
 		
@@ -161,12 +183,11 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		return retVal;	
 	}
 	
-	/**
-	 * get group name
-	 * 
-	 * @param groupId
-	 * @return
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getGroupNameByGroupId(int)
 	 */
+	@Override
 	public String getGroupNameByGroupId(int groupId) {
 		String retVal = null;
 		
@@ -182,13 +203,12 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		return retVal;	
 	}
 
-	/**
-	 * get given groups members
-	 * 
-	 * @param groupId
-	 * @return
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getGroupMembersByGroupId(int)
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public List<String> getGroupMembersByGroupId(int groupId) {
 		List<String> retVal = null;
 		
@@ -204,12 +224,11 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		return retVal;	
 	}
 
-	/**
-	 * get given group's members
-	 * 
-	 * @param groupName
-	 * @return
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getGroupMembersByGroupName(java.lang.String)
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public List<String> getGroupMembersByGroupName(String groupName) {
 		List<String> retVal = null;
@@ -226,15 +245,12 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		return retVal;	
 	}
 	
-	
-	/**
-	 * get all members of the given group, which have the user as a friend
-	 * 
-	 * @param groupId
-	 * @param authUserName
-	 * @return
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getGroupFriendsByGroupIdForUser(int, java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public List<String> getGroupFriendsByGroupIdForUser(int groupId, String authUserName) {
 		List<String> retVal = null;
 		
@@ -254,13 +270,122 @@ public abstract class LuceneDBLogic<R extends Resource> extends LuceneDBGenerate
 		return retVal;	
 	}
 
-	//------------------------------------------------------------------------
-	// abstract interface definition
-	//------------------------------------------------------------------------
-	protected abstract List<LucenePost<R>> getPostsForUserInternal(ResourcesParam<R> param);
-	protected abstract List<Post<R>> getUpdatedPostsForTimeRange(ResourcesParam<R> param)throws SQLException;
-	protected abstract List<Integer> getContentIdsToDeleteInternal(Pair<Date, Date> param) throws SQLException;
-	protected abstract List<Integer> getContentIdsToDeleteInternal(Date lastLogDate) throws SQLException;
-	protected abstract ResourcesParam<R> getResourcesParam();
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getPostsForTimeRange(java.util.Date, java.util.Date)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	@Deprecated
+	public List<HashMap<String, Object>> getPostsForTimeRange(Date fromDate, Date toDate) {
+		final Pair<Date,Date> param = new Pair<Date,Date>();
+		param.setFirst(fromDate);
+		param.setSecond(toDate);
+		
+		List<HashMap<String,Object>> retVal = null;
+		try {
+			retVal = this.sqlMap.queryForList("get" + this.getResourceName() + "PostsForTimeRange", param);
+		} catch (SQLException e) {
+			log.error("Error fetching " + this.getResourceName() + " for given time range", e);
+		}
+		
+		log.debug("retrieveRecordsFromDatabase: " + retVal.size());
+		return retVal;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getLastLogDate()
+	 */
+	@Override
+	public Date getLastLogDate() {
+		Date retVal = null;
+		try {
+			retVal = (Date)sqlMap.queryForObject("getLastLog" + this.getResourceName());
+		} catch (SQLException e) {
+			log.error("Error determining last log date.", e);
+		}
+		
+		return retVal != null ? retVal : new Date(System.currentTimeMillis());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getNumberOfPosts()
+	 */
+	@Override
+	public int getNumberOfPosts() {
+		Integer retVal = 0;
+		try {
+			retVal = (Integer)sqlMap.queryForObject("get" + this.getResourceName() + "Count");
+		} catch (SQLException e) {
+			log.error("Error determining " + this.getResourceName() + " size.", e);
+		}
+		return retVal;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getPostsForTimeRange2(java.util.Date, java.util.Date)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Post<R>> getPostsForTimeRange2(Date fromDate, Date toDate) {
+		final ResourcesParam<R> param = this.getResourcesParam();
+		param.setFromDate(fromDate);
+		param.setToDate(toDate);
+		param.setLimit(Integer.MAX_VALUE);
+		
+		try {
+			return sqlMap.queryForList("get" + this.getResourceName() + "PostsForTimeRange2", param);
+		} catch (SQLException e) {
+			log.error("Error getting " + this.getResourceName() + " entries.", e);
+		}
+		
+		return new LinkedList<Post<R>>();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getPostEntries(java.lang.Integer, java.lang.Integer)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<LucenePost<R>> getPostEntries(Integer skip, Integer max) {
+		final ResourcesParam<R> param = this.getResourcesParam();
+		param.setOffset(skip);
+		param.setLimit(max);
+		
+		try {
+			return sqlMap.queryForList("get" + this.getResourceName() + "ForIndex3", param);
+		} catch (SQLException e) {
+			log.error("Error getting " + this.getResourceName() + " entries.", e);
+		}
+		
+		return new LinkedList<LucenePost<R>>();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.bibsonomy.lucene.database.LuceneDBInterface#getNewPosts(java.lang.Integer)
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<LucenePost<R>> getNewPosts(Integer lastTasId) {
+		final ResourcesParam<R> param = this.getResourcesParam();
+		param.setLastTasId(lastTasId);
+		param.setLimit(Integer.MAX_VALUE);
+		
+		try {
+			return sqlMap.queryForList("get" + this.getResourceName() + "PostsForTimeRange3", param);
+		} catch (SQLException e) {
+			log.error("Error getting " + this.getResourceName() + " entries.", e);
+		}
+		
+		return new LinkedList<LucenePost<R>>();
+	}
 	
+	protected abstract String getResourceName();
+	
+	protected abstract ResourcesParam<R> getResourcesParam();
 }

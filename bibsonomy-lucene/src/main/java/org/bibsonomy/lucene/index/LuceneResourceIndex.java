@@ -1,5 +1,13 @@
 package org.bibsonomy.lucene.index;
 
+import static org.bibsonomy.lucene.util.LuceneBase.CFG_INDEX_ID_DELIMITER;
+import static org.bibsonomy.lucene.util.LuceneBase.CFG_LUCENE_INDEX_PREFIX;
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_CONTENT_ID;
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_LAST_LOG_DATE;
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_LAST_TAS_ID;
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_USER_NAME;
+import static org.bibsonomy.lucene.util.LuceneBase.getIndexBasePath;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
@@ -34,15 +42,29 @@ import org.bibsonomy.model.Resource;
  * abstract base class for managing lucene resource indices
  * 
  * @author fei
+ * @version $Id$
  *
- * @param <R>
+ * @param <R> the resource of the index
  */
-public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase {
+public abstract class LuceneResourceIndex<R extends Resource> {
 	protected static final Log log = LogFactory.getLog(LuceneResourceIndex.class);
 
 	/** coding whether index is opened for writing or reading */
 	public static enum AccessMode {
-		None, ReadOnly, WriteOnly;
+		/**
+		 * none
+		 */
+		None,
+		
+		/**
+		 * read only
+		 */
+		ReadOnly,
+		
+		/**
+		 * write only
+		 */
+		WriteOnly;
 	}
 	/** indicating whether index is opened for writing or reading */
 	private AccessMode accessMode;
@@ -109,7 +131,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 		} catch (Exception e) {
 			disableIndex();
 		}
-	}
+	};
 	
 
 
@@ -146,8 +168,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	
 	
 	/**
-	 * get latest log_date[ms] from index 
-	 * @return
+	 * @return the latest log_date[ms] from index 
 	 */
 	public long getLastLogDate() {
 		// FIXME: this synchronisation is very inefficient 
@@ -179,24 +200,20 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 				}
 			}
 
-			if( lastLogDate!=null )
-				return lastLogDate; 
-			else
-				return Long.MAX_VALUE;
+			return lastLogDate != null ? lastLogDate : Long.MAX_VALUE;
 		}
 	}
 	
 	/**
 	 * set newest log_date[ms] 
+	 * @param lastLogDate the lastLogDate to set
 	 */
 	public void setLastLogDate(long lastLogDate) {
 		this.lastLogDate = lastLogDate;
 	}
 	
-	
-	/**
-	 * get newest tas_id from index
-	 * @return
+	/** 
+	 * @return the newest tas_id from index
 	 */
 	public Integer getLastTasId() {
 		synchronized(this) {
@@ -226,15 +243,12 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 				}
 			}
 			
-			if( lastTasId!=null )
-				return lastTasId; 
-			else
-				return Integer.MAX_VALUE;
+			return lastTasId != null ? lastTasId : Integer.MAX_VALUE;
 		}
 	}
 	
 	/** 
-	 * set newest tas_id
+	 * @param lastTasId the lastTasId to set
 	 */
 	public void setLastTasId(Integer lastTasId) {
 		this.lastTasId = lastTasId;
@@ -254,9 +268,6 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 * mark user's posts for deletion from index
 	 * 
 	 * @param username
-	 * @return
-	 * @throws CorruptIndexException
-	 * @throws IOException
 	 */
 	public void flagUser(String username) {
 		synchronized(this) {
@@ -267,10 +278,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	/**
 	 * unflag given user as spammer - enabling further posts to be inserted 
 	 * 
-	 * @param username
-	 * @return
-	 * @throws CorruptIndexException
-	 * @throws IOException
+	 * @param userName
 	 */
 	public void unFlagUser(String userName) {
 		synchronized(this) {
@@ -297,7 +305,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 * 
 	 * @param contentIdsToDelete list of content ids which should be removed from the index
 	 */
-	protected void deleteDocumentsInIndex(List<Integer> contentIdsToDelete) {
+	public void deleteDocumentsInIndex(List<Integer> contentIdsToDelete) {
 		synchronized(this) {
 			this.contentIdsToDelete.addAll(contentIdsToDelete);
 		}
@@ -317,7 +325,7 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	/**
 	 * cache given post for insertion
 	 * 
-	 * @param doc post document to insert into the index
+	 * @param docs post documents to insert into the index
 	 */
 	public void insertDocuments(List<Document> docs) {
 		synchronized(this) {
@@ -459,7 +467,6 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 * write given post into the index
 	 * 
 	 * @param post
-	 * @return
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
@@ -474,7 +481,6 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 	 * write given post into the index
 	 * 
 	 * @param post
-	 * @return
 	 * @throws CorruptIndexException
 	 * @throws IOException
 	 */
@@ -678,30 +684,45 @@ public abstract class LuceneResourceIndex<R extends Resource> extends LuceneBase
 		return name;
 	}
 	
-	//------------------------------------------------------------------------
-	// getter/setter
-	//------------------------------------------------------------------------
+	/**
+	 * @return the postsToInsert
+	 */
 	public Set<Document> getPostsToInsert() {
 		return this.postsToInsert;
 	}
 
+	/**
+	 * @return the usersToFlag
+	 */
 	public Set<String> getUsersToFlag() {
-		return this.usersToFlag;
+		return usersToFlag;
 	}
 
-	public void setAnalyzer(Analyzer analyzer) {
-		this.analyzer = analyzer;
-	}
-
+	/**
+	 * @return the analyzer
+	 */
 	public Analyzer getAnalyzer() {
 		return analyzer;
 	}
 
-	public void setIndexId(int indexId) {
-		this.indexId = indexId;
+	/**
+	 * @param analyzer the analyzer to set
+	 */
+	public void setAnalyzer(Analyzer analyzer) {
+		this.analyzer = analyzer;
 	}
 
+	/**
+	 * @return the indexId
+	 */
 	public int getIndexId() {
-		return this.indexId;
+		return indexId;
+	}
+
+	/**
+	 * @param indexId the indexId to set
+	 */
+	public void setIndexId(int indexId) {
+		this.indexId = indexId;
 	}
 }

@@ -1,5 +1,7 @@
 package org.bibsonomy.lucene.util;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
@@ -10,17 +12,20 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Index;
 import org.apache.lucene.document.Field.Store;
+import org.bibsonomy.lucene.param.LucenePost;
 import org.bibsonomy.lucene.param.typehandler.LuceneTypeHandler;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
-import org.bibsonomy.util.ValidationUtils;
+import org.bibsonomy.model.User;
 import org.bibsonomy.util.tex.TexDecode;
 
 /**
- * class for converting bibsonomy post model objects to lucene
- * documents
+ * class for converting bibsonomy post model objects to lucene documents
  * 
  * @author fei
+ * @version $Id$
+ * 
+ * @param <R> the resource to convert
  */
 public abstract class LuceneResourceConverter<R extends Resource> extends LuceneBase {
 	private static final Log log = LogFactory.getLog(LuceneResourceConverter.class);
@@ -31,8 +36,8 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 	/**
 	 * read property values from given lucene document and creates post model
 	 * 
-	 * @param post
-	 * @return
+	 * @param doc
+	 * @return the post representation of the lucene document
 	 */
 	public Post<R> writePost(Document doc) {
 		// initialize 
@@ -45,10 +50,11 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 			String fieldName   = (String)postPropertyMap.get(propertyName).get(CFG_LUCENENAME);
 			String propertyStr = doc.get(fieldName); 
 			
-			if( !ValidationUtils.present(propertyStr) )
+			if( !present(propertyStr) )
 				continue;
 			
-			LuceneTypeHandler typeHandler = (LuceneTypeHandler)postPropertyMap.get(propertyName).get(CFG_TYPEHANDLER);
+			@SuppressWarnings("unchecked")
+			LuceneTypeHandler<Object> typeHandler = (LuceneTypeHandler<Object>)postPropertyMap.get(propertyName).get(CFG_TYPEHANDLER);
 
 			Object propertyValue = null;
 			if( typeHandler!=null ) {
@@ -72,7 +78,7 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 	 * read property values from given object as defined in given propertyMap
 	 * 
 	 * @param post
-	 * @return
+	 * @return the lucene document representation of the post
 	 */
 	public Document readPost(Post<R> post) {
 		Document retVal = new Document();
@@ -104,7 +110,8 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 				property = PropertyUtils.getProperty(post, propertyName);
 				// only handle non-null values
 				if( property!=null ) {
-					LuceneTypeHandler typeHandler  = (LuceneTypeHandler)postPropertyMap.get(propertyName).get(CFG_TYPEHANDLER);
+					@SuppressWarnings("unchecked")
+					LuceneTypeHandler<Object> typeHandler  = (LuceneTypeHandler<Object>)postPropertyMap.get(propertyName).get(CFG_TYPEHANDLER);
 					
 					// get property value
 					propertyValue = extractPropertyValue(postPropertyMap, typeHandler, propertyName, property);
@@ -134,12 +141,12 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 				// add field to the lucene document
 				retVal.add( new Field(luceneName, propertyValue, fldStore, fldIndex));
 				// add term to full text search field, if configured accordingly 
-				if( ValidationUtils.present(postPropertyMap.get(propertyName).get(CFG_FULLTEXT_FLAG)) &&
+				if( present(postPropertyMap.get(propertyName).get(CFG_FULLTEXT_FLAG)) &&
 				    (Boolean)postPropertyMap.get(propertyName).get(CFG_FULLTEXT_FLAG) ) {
 					mergedField += CFG_LIST_DELIMITER + propertyValue;
 				}
 				// add term to private full text search field, if configured accordingly 
-				if( ValidationUtils.present(postPropertyMap.get(propertyName).get(CFG_PRIVATE_FLAG)) &&
+				if( present(postPropertyMap.get(propertyName).get(CFG_PRIVATE_FLAG)) &&
 				    (Boolean)postPropertyMap.get(propertyName).get(CFG_PRIVATE_FLAG) ) {
 					privateField += CFG_LIST_DELIMITER + propertyValue;
 				}
@@ -162,16 +169,16 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 	/**
 	 * extracts property value from given object
 	 * 
-	 * @param bibTexPropertyMap
-	 * @param propertyName
+	 * @param bibTexPropertyMap TODO: unused
+	 * @param propertyName TODO: unused
 	 * @param item
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException
 	 */
 	private String extractPropertyValue( 
-			Map<String, Map<String, Object>> bibTexPropertyMap, LuceneTypeHandler typeHandler,
-			String propertyName, Object item) 
+			@SuppressWarnings("unused") Map<String, Map<String, Object>> bibTexPropertyMap, LuceneTypeHandler<Object> typeHandler,
+			@SuppressWarnings("unused") String propertyName, Object item) 
 	throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		String itemValue = null;
 		// get the string value for the given object
@@ -202,18 +209,28 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 		return mergedFieldUTF8;
 	}
 	
-	//------------------------------------------------------------------------
-	// abstract interface
-	//------------------------------------------------------------------------
-	protected abstract Post<R> createEmptyPost();
+	private Post<R> createEmptyPost() {
+		R resource = this.createNewResource();
+		User user = new User();
+		final Post<R> post = new LucenePost<R>();
+		post.setResource(resource);
+		post.setUser(user);
+		post.getResource().recalculateHashes();
+		return post;
+	}
 	
-	//------------------------------------------------------------------------
-	// getter/setter
-	//------------------------------------------------------------------------
+	protected abstract R createNewResource();
+
+	/**
+	 * @param postPropertyMap the postPropertyMap to set
+	 */
 	public void setPostPropertyMap(Map<String,Map<String,Object>> postPropertyMap) {
 		this.postPropertyMap = postPropertyMap;
 	}
 
+	/**
+	 * @return the postPropertyMap
+	 */
 	public Map<String,Map<String,Object>> getPostPropertyMap() {
 		return this.postPropertyMap;
 	}

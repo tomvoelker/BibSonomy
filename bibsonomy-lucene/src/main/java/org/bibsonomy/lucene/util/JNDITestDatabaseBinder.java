@@ -1,5 +1,8 @@
 package org.bibsonomy.lucene.util;
 
+import static org.bibsonomy.lucene.util.LuceneBase.CONTEXT_CONFIG_BEAN;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,10 +14,10 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 import org.bibsonomy.lucene.param.LuceneConfig;
-import org.bibsonomy.util.ValidationUtils;
 import org.mockejb.jndi.MockContextFactory;
 
 /**
@@ -23,15 +26,11 @@ import org.mockejb.jndi.MockContextFactory;
  * tree.
  * 
  * @author Dominik Benz
- * @version $Id: JNDITestDatabaseBinder.java,v 1.1 2009-09-30 16:58:16 folke Exp
- *          $
+ * @version $Id$
  */
-
-public final class JNDITestDatabaseBinder extends LuceneBase {
-
+public final class JNDITestDatabaseBinder {
 	/** logging */
-	private static final Logger log = Logger
-			.getLogger(JNDITestDatabaseBinder.class);
+	private static final Log log = LogFactory.getLog(JNDITestDatabaseBinder.class);
 
 	/** context name for environment variables */
 	public static final String CONTEXTNAME = "java:/comp/env/";
@@ -77,17 +76,16 @@ public final class JNDITestDatabaseBinder extends LuceneBase {
 
 		// get properties
 		for( Object key : props.keySet() ) {
-			if( !ValidationUtils.present((key.toString()))||!(key.toString()).startsWith(CONTEXT_CONFIG_BEAN) )
+			if( !present((key.toString()))||!(key.toString()).startsWith(CONTEXT_CONFIG_BEAN) )
 				continue;
-			else {
-				String propertyName = getPropertyName((String)key);
-				String propertyValue= props.getProperty((String)key);
-				try {
-					PropertyUtils.setNestedProperty(config, propertyName, propertyValue);
-					log.debug("Set lucene configuration property "+propertyName+" to "+propertyValue);
-				} catch (Exception e) {
-					log.warn("Error setting lucene configuration property "+propertyName+" to "+propertyValue+"('"+e.getMessage()+"')");
-				}
+			
+			String propertyName = getPropertyName((String)key);
+			String propertyValue= props.getProperty((String)key);
+			try {
+				PropertyUtils.setNestedProperty(config, propertyName, propertyValue);
+				log.debug("Set lucene configuration property "+propertyName+" to "+propertyValue);
+			} catch (Exception e) {
+				log.warn("Error setting lucene configuration property "+propertyName+" to "+propertyValue+"('"+e.getMessage()+"')");
 			}
 		}
 		
@@ -95,13 +93,11 @@ public final class JNDITestDatabaseBinder extends LuceneBase {
 		try {
 			MockContextFactory.setAsInitial();
 			ctx = new InitialContext();
-			ctx.bind(contextName+CONTEXT_CONFIG_BEAN, config);
+			ctx.bind(contextName + CONTEXT_CONFIG_BEAN, config);
 		} catch (NamingException ex) {
 			log.error("Error binding environment variable:'" + contextName + "' via JNDI ('"+ex.getMessage()+"')");
 		}
 	}
-
-
 
 	private static void bindDatabaseContext(final String contextName,
 			final String fileName) {

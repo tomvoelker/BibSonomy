@@ -246,7 +246,7 @@
 		|    fromDate 
 		|    toDate 
 		+-->
-	<select id="getBookmarkForTimeRange2" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
+	<select id="getBookmarkPostsForTimeRange2" resultMap="BookmarkCommon.bookmarkPost" parameterClass="bookmarkParam">
 		SELECT g.*, bb.content_id, bb.book_url_hash AS interHash, bb.book_url_hash AS intraHash, title, description, bb.date,
 		       bb.book_url, bb.book_url_ctr AS count, t.tag_name, bb.user_name
 		FROM (SELECT t1.content_id, t1.book_url_hash, t1.book_description AS title, t1.book_extended AS description, t1.date,
@@ -268,7 +268,7 @@
 		|    fromDate 
 		|    toDate 
 		+-->
-	<select id="getBookmarkForTimeRange3" resultMap="BookmarkCommon.luceneBookmarkPost" parameterClass="bookmarkParam">
+	<select id="getBookmarkPostsForTimeRange3" resultMap="BookmarkCommon.luceneBookmarkPost" parameterClass="bookmarkParam">
 	    SELECT <include refid ="luceneBookmarkAttributes"/>
 	    FROM tas t
 	      JOIN bookmark b USING (content_id)
