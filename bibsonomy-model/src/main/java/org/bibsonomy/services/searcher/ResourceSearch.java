@@ -34,10 +34,8 @@ import org.bibsonomy.model.Tag;
 /**
  * Interface for resource search operations
  * 
- * TODO: This interface got a bit messy, as more and more queries were
- *       added. We should redesign and clean the interface.
- * 
  * @author fei, dzo
+ * @version $Id$
  *
  * @param <R>
  */
@@ -45,11 +43,11 @@ public interface ResourceSearch<R extends Resource> {
 
 	/**
 	 * search for posts using the lucene index
+	 * 
 	 * @param userName
 	 * @param requestedUserName
 	 * @param requestedGroupName
 	 * @param allowedGroups
-	 * @param friends
 	 * @param searchTerms
 	 * @param titleSearchTerms
 	 * @param authorSearchTerms
@@ -59,7 +57,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param lastYear
 	 * @param limit
 	 * @param offset
-	 * @return
+	 * @return a list of posts containing the search result
 	 */
 	public ResultList<Post<R>> getPosts(
 			final String userName, final String requestedUserName, String requestedGroupName, 
@@ -84,7 +82,7 @@ public interface ResourceSearch<R extends Resource> {
 	 * @param lastYear
 	 * @param limit
 	 * @param offset
-	 * @return
+	 * @return the tag cloud for the given search
 	 */
 	public List<Tag> getTags(
 			final String userName, final String requestedUserName, String requestedGroupName, 

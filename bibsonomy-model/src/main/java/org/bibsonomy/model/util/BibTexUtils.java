@@ -68,21 +68,25 @@ public class BibTexUtils {
 	 * all fields from the resource) 
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_BIBURL = "biburl";
+	
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource) 
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_DESCRIPTION = "description";
+	
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource)
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_KEYWORDS = "keywords";
+	
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
 	 * all fields from the resource)
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_PRIVNOTE = "privnote";
+	
 	/**
 	 * This fields from the post are added to the BibTeX string (in addition to 
 	 * all fields from the resource)
@@ -94,6 +98,13 @@ public class BibTexUtils {
 		ADDITIONAL_MISC_FIELD_PRIVNOTE
 	};
 	
+	/**
+	 * the supported entrytypes of a bibtex
+	 * be careful when changing order some code uses the order to map entrytypes to (swrc|ris) entrytypes
+	 */
+	public static final String[] ENTRYTYPES = {"article", "book", "booklet", "inbook", "incollection", "inproceedings",
+		"manual", "mastersthesis", "misc", "phdthesis", "proceedings", "techreport", "unpublished"};
+	
 	/*
 	 * patterns used for matching
 	 */
@@ -101,9 +112,6 @@ public class BibTexUtils {
 	private static final Pattern DOI_PATTERN = Pattern.compile("http://.+/(.+?/.+?$)");
 	private static final Pattern LAST_COMMA_PATTERN = Pattern.compile(".+}?\\s*,\\s*}\\s*$", Pattern.MULTILINE | Pattern.DOTALL);
 	private static final Pattern NUMERIC_PATTERN = Pattern.compile("^\\d+$");
-
-	private static final String[] ENTRYTYPES = {"article", "book", "booklet", "inbook", "incollection", "inproceedings",
-		"manual", "mastersthesis", "misc", "phdthesis", "proceedings", "techreport", "unpublished"};
 
 	/*
 	 * fields to be excluded when creating bibtex strings.

@@ -40,6 +40,7 @@ import org.bibsonomy.model.Post;
  * @version $Id$
  */
 public class BookmarkPostComparator extends PostComparator implements Comparator<Post<Bookmark>>, Serializable {
+	private static final long serialVersionUID = -2993829588313719046L;
 
 	/**
 	 * Constructor
@@ -50,8 +51,7 @@ public class BookmarkPostComparator extends PostComparator implements Comparator
 	public BookmarkPostComparator(final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
 		super(sortKeys, sortOrders);
 	}
-
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

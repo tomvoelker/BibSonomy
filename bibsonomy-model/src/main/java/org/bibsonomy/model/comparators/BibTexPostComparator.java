@@ -42,6 +42,7 @@ import org.bibsonomy.model.util.BibTexUtils;
  * @version $Id$
  */
 public class BibTexPostComparator extends PostComparator implements Comparator<Post<BibTex>>, Serializable {
+	private static final long serialVersionUID = 8550700973763853912L;
 
 	/**
 	 * Constructor
@@ -52,7 +53,6 @@ public class BibTexPostComparator extends PostComparator implements Comparator<P
 	public BibTexPostComparator(final List<SortKey> sortKeys, final List<SortOrder> sortOrders) {
 		super(sortKeys, sortOrders);
 	}
-
 
 	/*
 	 * (non-Javadoc)
