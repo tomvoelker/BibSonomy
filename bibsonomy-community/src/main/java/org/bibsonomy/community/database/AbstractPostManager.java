@@ -5,9 +5,11 @@ import java.util.LinkedList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.community.database.param.CommunityParam;
 import org.bibsonomy.community.database.param.CommunityResourceParam;
 import org.bibsonomy.community.enums.Ordering;
 import org.bibsonomy.community.model.Post;
+import org.bibsonomy.community.model.ResourceCluster;
 import org.bibsonomy.model.Resource;
 
 /** 
@@ -51,30 +53,6 @@ public abstract class AbstractPostManager<R extends Resource> extends AbstractDB
 		param.setOffset(offset);
 		
 		return ensureList(getPostsForCommunityInternal(param));
-	}
-	
-
-	//------------------------------------------------------------------------
-	// helper functions
-	//------------------------------------------------------------------------
-	private Collection<Post<R>> ensureList(Collection<Post<R>> posts) {
-		if( posts==null )
-			return new LinkedList<Post<R>>();
-		else
-			return posts;
-	}
-
-	@SuppressWarnings("unchecked")
-	protected Collection<Post<R>> queryForList(final String queryName, CommunityResourceParam<R> param) {
-		param.setCommunityDBName(getCommunityDBName());
-		Collection<Post<R>> retVal = null;
-		try {
-			retVal = (Collection<Post<R>>)getSqlMap().queryForList(queryName, param);
-		} catch (Exception e) {
-			log.error("Error fetching resources in query '"+queryName+"'", e);
-		}
-		
-		return retVal;
 	}
 
 	//------------------------------------------------------------------------

@@ -3,8 +3,10 @@ package org.bibsonomy.community.database;
 import java.util.Collection;
 
 import org.bibsonomy.community.algorithm.Algorithm;
+import org.bibsonomy.community.enums.Ordering;
 import org.bibsonomy.community.model.Cluster;
 import org.bibsonomy.community.model.Post;
+import org.bibsonomy.community.model.ResourceCluster;
 import org.bibsonomy.community.model.Tag;
 import org.bibsonomy.community.model.User;
 import org.bibsonomy.model.Resource;
@@ -100,5 +102,40 @@ public interface DBManageInterface {
 	 * @return given algorithm's id if existing - otherwise null
 	 */
 	public Integer getAlgorithmID(final Algorithm algorithm) throws Exception;
+
+	/**
+	 * get user names for given community
+	 * @param run_id
+	 * @param community_id
+	 * @param order
+	 * @return
+	 */
+	public Collection<String> getUsersForCommunity(final int run_id, final int community_id, final Ordering order, final int limit, final int offset);
 	
+	/**
+	 * retrieve a list of all community ids for the given run_id
+	 * @param run_id
+	 * @return
+	 */
+	public Collection<Integer> listCommunities(final int run_id, final int limit, final int offset);
+
+	/**
+	 * retrieve a list of all community ids for the given run_id
+	 * @param run_id
+	 * @return
+	 */
+	public Collection<Integer> listCommunities(final int run_id);
+
+	/**
+	 * retrieve (a sample of) all communities for a given run id
+	 * 
+	 * @param run_id
+	 * @param tagCloudLimit max. number of most important tags to retrieve
+	 * @param bibTexLimit max. number of most important publications to retrieve
+	 * @param bookmarkLimit max. number of most important bookmarks to retrieve
+	 * @param limit number of communities to retrieve
+	 * @param offset number of communities to skip
+	 * @return
+	 */
+	public Collection<ResourceCluster> getCommunities(final int runId, final int tagCloudLimit, final int bibTexLimit, final int bookmarkLimit, final int limit, final int offset);
 }

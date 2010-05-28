@@ -41,7 +41,7 @@ public class MockupImporter implements CommunityImporter {
 	}
 	
 	private Collection<Cluster<User>> generateCommunities() {
-		List<org.bibsonomy.model.Tag> annotations = new LinkedList<org.bibsonomy.model.Tag>();
+		List<Tag> annotations = new LinkedList<Tag>();
 		for( String topic : topics ) {
 			annotations.add(new Tag(topic));
 		}
@@ -67,7 +67,7 @@ public class MockupImporter implements CommunityImporter {
 	}
 	
 	private Collection<Cluster<Tag>> generateTopics() {	
-		List<org.bibsonomy.model.Tag> annotations = new LinkedList<org.bibsonomy.model.Tag>();
+		List<Tag> annotations = new LinkedList<Tag>();
 		for( String topic : topics ) {
 			annotations.add(new Tag(topic));
 		}
@@ -93,7 +93,7 @@ public class MockupImporter implements CommunityImporter {
 	}
 
 	public Collection<Cluster<Post<? extends Resource>>> getResources() {
-		List<org.bibsonomy.model.Tag> annotations = new LinkedList<org.bibsonomy.model.Tag>();
+		List<Tag> annotations = new LinkedList<Tag>();
 		for( String topic : topics ) {
 			annotations.add(new Tag(topic));
 		}
