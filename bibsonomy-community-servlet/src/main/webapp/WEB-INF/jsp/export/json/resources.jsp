@@ -4,7 +4,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
+	xmlns:json="urn:jsptagdir:/WEB-INF/tags/clusters/json"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
@@ -12,124 +12,6 @@
 	
 <jsp:directive.page contentType="application/json; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 
-<c:if test="${not empty command.callback}">
-   <c:out value="${command.callback}"/> (
-</c:if>
-
-{  
-   "types" : {
-      "Bookmark" : {
-         "pluralLabel" : "Bookmarks"
-      },
-      "Publication" : {
-         "pluralLabel" : "Publications"
-      },
-      "Tag" : {
-         "pluralLabel" : "Tags"
-      }
-   },
-   
-   "properties" : {
-      "count" : {
-         "valueType" : "number"
-      },
-      "date" : {
-         "valueType" : "date"
-      },
-      "url" : {
-         "valueType" : "url"
-      },
-      "id" : {
-         "valueType" : "url"
-      },
-      "tags" : {
-         "valueType" : "item"
-      },
-      "user" : {
-         "valueType" : "item"
-      }      
-   },
-   
-   "items" : [
-      <!-- bookmarks -->
-      <c:forEach var="post" varStatus="status" items="${command.bookmark.list}">
-      {  
-         "type" : "Bookmark",
-         "id"   : "${projectHome}url/${post.resource.intraHash}/${mtl:quoteJSON(post.user.name)}",
-         "intraHash" : "${post.resource.intraHash}",
-         "label" : "${mtl:quoteJSON(post.resource.title)}",
-         "user" : "${mtl:quoteJSON(post.user.name)}",
-         "description" : "${mtl:quoteJSON(post.description)}",
-         "date" : "<fmt:formatDate value='${post.date}' pattern="yyyy-MM-dd hh:mm:ss"/>",
-         "count" : ${post.resource.count},
-         "tags" : [
-            <c:forEach var="tag" varStatus="tagStatus" items="${post.tags}">"${mtl:quoteJSON(tag.name)}"<c:if test="${not tagStatus.last}">,</c:if></c:forEach>
-         ],
-         "url" : "${mtl:quoteJSON(post.resource.url)}"
-      }<c:if test="${not status.last}">,</c:if>
-      </c:forEach>
-      
-      <!-- comma between bibtex & bookmark resources, if both present -->
-      <c:if test="${not empty command.bookmark.list and not empty command.bibtex.list}">,</c:if>
-      
-      <!-- publications -->
-      <c:forEach var="post" varStatus="status" items="${command.bibtex.list}">
-      {  
-         "type" : "Publication",
-         "id"   : "${projectHome}bibtex/2${post.resource.intraHash}/${mtl:quoteJSON(post.user.name)}",
-         "intraHash" : "${post.resource.intraHash}",
-         "label" : "${mtl:quoteJSONcleanBibTeX(post.resource.title)}",
-         "user" : "${mtl:quoteJSON(post.user.name)}",
-         "description" : "${mtl:quoteJSON(post.description)}",
-         "date" : "<fmt:formatDate value='${post.date}' pattern="yyyy-MM-dd hh:mm:ss"/>",
-         "count" : ${post.resource.count},
-         "tags" : [
-            <c:forEach var="tag" varStatus="tagStatus" items="${post.tags}">"${mtl:quoteJSON(tag.name)}"<c:if test="${not tagStatus.last}">,</c:if></c:forEach>
-         ],
-         "pub-type": "${post.resource.entrytype}",
-         <c:if test="${!empty post.resource.journal}">"journal": "${mtl:quoteJSONcleanBibTeX(post.resource.journal)}",</c:if>
-         <c:if test="${!empty post.resource.booktitle}">"booktitle": "${mtl:quoteJSONcleanBibTeX(post.resource.booktitle)}",</c:if>
-         <c:if test="${!empty post.resource.series}">"series": "${mtl:quoteJSONcleanBibTeX(post.resource.series)}",</c:if>
-         <c:if test="${!empty post.resource.publisher}">"publisher":"${mtl:quoteJSONcleanBibTeX(post.resource.publisher)}",</c:if>
-         <c:if test="${!empty post.resource.address}">"address":"${mtl:quoteJSONcleanBibTeX(post.resource.address)}",</c:if>
-         "year": "${mtl:quoteJSON(post.resource.year)}", 
-         "url": "${mtl:cleanUrl(post.resource.url)}", 
-         <c:if test="${! empty post.resource.authorList}">
-         "author": [ 
-            <c:forEach var="author" varStatus="authorStatus" items="${post.resource.authorList}">"${mtl:quoteJSONcleanBibTeX(author.name)}"<c:if test="${not authorStatus.last}">,</c:if></c:forEach>
-         ],
-         </c:if>
-         <c:if test="${! empty post.resource.editorList}">
-         "editor": [ 
-            <c:forEach var="editor" varStatus="editorStatus" items="${post.resource.editorList}">"${mtl:quoteJSONcleanBibTeX(editor.name)}"<c:if test="${not editorStatus.last}">,</c:if></c:forEach>
-         ],
-         </c:if>
-         <c:if test="${!empty post.resource.volume}">"volume": "${mtl:quoteJSONcleanBibTeX(post.resource.volume)}",</c:if>  
-         <c:if test="${!empty post.resource.number}">"number": "${mtl:quoteJSONcleanBibTeX(post.resource.number)}",</c:if>
-         <c:if test="${!empty post.resource.pages}">"pages": "${mtl:quoteJSONcleanBibTeX(post.resource.pages)}",</c:if>
-         <c:if test="${!empty post.resource.note}">"note": "${mtl:quoteJSONcleanBibTeX(post.resource.note)}",</c:if>
-         <c:if test="${!empty post.resource.abstract}">"abstract": "${mtl:quoteJSONcleanBibTeX(post.resource.abstract)}",</c:if>
-         "bibtexKey": "${mtl:quoteJSONcleanBibTeX(post.resource.bibtexKey)}"
-      }<c:if test="${not status.last}">,</c:if>
-      </c:forEach>
-      
-      <!-- comma if tags are present, preceded by either bookmarks or bibtexs -->
-      <c:if test="${not empty command.tagcloud.tags and (not empty command.bookmark.list or not empty command.bibtex.list)}">,</c:if>
-
-      <!-- tags -->
-      <c:forEach var="tag" varStatus="status" items="${command.tagcloud.tags}" >
-      {
-         "type" : "Tag",
-         "label" : "${mtl:quoteJSON(tag.name)}", 
-         "count" : ${tag.usercount}
-      }<c:if test="${not status.last}">,</c:if>
-      </c:forEach>
-
-   ]
-}
-
-<c:if test="${not empty command.callback}">
-   )
-</c:if> 
+	<json:cluster command="${command}"/>
 
  </jsp:root>
