@@ -324,7 +324,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				 * Finally: delete the TAS and insert the new TAS.
 				 * FIXME: delete group tas, too.
 				 */
-				this.deleteTas(post.getContentId(), session);
+				this.deleteTags(post, session);
 
 				final TagParam tagParam = new TagParam();
 				tagParam.setTags(post.getTags());
@@ -351,7 +351,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 				 * FIXME: shouldn't we use insertTags() here?
 				 * (because otherwise grouptas are not updated 
 				 */
-				this.insertTas(tagParam, session);
+				this.insertTags(tagParam, session);
 			}
 
 			session.commitTransaction();

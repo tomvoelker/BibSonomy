@@ -3,7 +3,7 @@
 
 <sqlMap namespace="TagRelation">
 	<insert id="insertTagRelationIfNotPresent" parameterClass="tagRelationParam">
-		INSERT INTO tagtagrelations (relationID, lower, upper, date_of_create,
+		INSERT IGNORE INTO tagtagrelations (relationID, lower, upper, date_of_create,
 			user_name, lower_lcase, upper_lcase)
 		SELECT value+1, #lowerTagName#, #upperTagName#, #creationDate#, 
 			#ownerUserName#, LCASE(#lowerTagName#), LCASE(#upperTagName#)
@@ -22,6 +22,19 @@
 		DELETE FROM tagtagrelations 
 		WHERE user_name=#ownerUserName#
 			AND upper=#upperTagName#
+	</delete>
+	
+	
+	<delete id="deleteEqualConcepts" parameterClass="updateParam">
+		DELETE FROM tagtagrelations 
+		  WHERE lower = #newId# AND upper = #newId# AND user_name = #user.name#
+	</delete>
+	
+<!--	Needed because if the user changes one relation to another that does exist 
+		the replacement is skipped -->
+	<delete id="deleteOldConcepts" parameterClass="updateParam">
+		DELETE FROM tagtagrelations 
+		  WHERE (lower = #oldId# OR upper = #oldId#) AND user_name = #user.name#
 	</delete>
 
 	<!-- the resultMap needs the column subTagCount whose value is always 1, since a 
@@ -107,6 +120,18 @@
 			AND lower = #lowerTagName#
 			AND upper = #upperTagName# 
 	</select>
+	
+	<update id="updateUpperTagRelations" parameterClass="updateParam">
+		UPDATE IGNORE tagtagrelations t 
+		  SET t.upper = #newId#
+		  WHERE t.upper = #oldId# AND t.user_name = #user.name#
+	</update>
+	
+	<update id="updateLowerTagRelations" parameterClass="updateParam">
+		UPDATE IGNORE tagtagrelations t 
+		  SET t.lower = #newId#
+		  WHERE t.lower = #oldId# AND t.user_name = #user.name#
+	</update>
 	
 	<update id="pickConcept" parameterClass="tagRelationParam">
 		UPDATE tagtagrelations 

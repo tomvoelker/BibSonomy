@@ -1,17 +1,22 @@
 package org.bibsonomy.database.managers;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.ConstantID;
+import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.managers.chain.concept.ConceptChain;
 import org.bibsonomy.database.params.TagRelationParam;
+import org.bibsonomy.database.params.UpdateParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.User;
 import org.bibsonomy.util.ExceptionUtils;
 
 /**
@@ -104,7 +109,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	private void insertIfNotPresent(final TagRelationParam trp, final DBSession session) {
 		session.beginTransaction();
 		try {
-			this.insert("insertTagRelationIfNotPresent", trp, true, session);
+			this.insert("insertTagRelationIfNotPresent", trp, false, session);
 			this.generalDb.updateIds(ConstantID.IDS_TAGREL_ID, session);
 		} catch (final Exception ex) {
 			// TODO: improve me...
@@ -275,5 +280,23 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 	 */
 	public void pickAllConcepts(final String ownerUserName, final DBSession session){
 		this.update("pickAllConcepts", ownerUserName, session);
+	}
+
+	public void updateTagRelations(final User user, final Tag tagToReplace, final Tag replacementTag, final DBSession session) {
+		if(!present(tagToReplace.getName()) || !present(replacementTag.getName())) {
+			log.error("tried to replace tag without name in TagRelationDatabase.updateTagRelations()");
+			throw new ValidationException("tried to replace tag without valid name");
+		}
+		
+		UpdateParam<String> param = new UpdateParam<String>();
+		param.setOldId(tagToReplace.getName());
+		param.setNewId(replacementTag.getName());
+		param.setUser(user);
+		
+		this.update("updateUpperTagRelations", param, session);
+		this.update("updateLowerTagRelations", param, session);
+		this.update("deleteEqualConcepts", param, session);
+		this.update("deleteOldConcepts", param, session);
+		
 	}
 }

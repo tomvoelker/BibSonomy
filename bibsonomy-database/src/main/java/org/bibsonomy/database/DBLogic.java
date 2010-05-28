@@ -956,18 +956,29 @@ public class DBLogic implements LogicInterface {
 	 * one might want to add:</p> <ul> <li>ignore case</li> </ul>
 	 */
 	@Override
-	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags) {
+	public int updateTags(final User user, final List<Tag> tagsToReplace, final List<Tag> replacementTags, final boolean updateRelations) {
 		this.ensureLoggedIn();
 		this.permissionDBManager.ensureWriteAccess(loginUser, user.getName());
+		
 		/*
 		 * 
 		 */
 		final DBSession session = this.openSession();
 		try {
+			
+			if(updateRelations) {
+				if(tagsToReplace.size() != 1 || replacementTags.size() != 1)
+					throw new ValidationException("TODO");
+				
+				this.tagRelationsDBManager.updateTagRelations(user, tagsToReplace.get(0), replacementTags.get(0), session);
+
+			}
+
 			/*
-			 * delegate to tagDBManager
+			 * finaly delegate to tagDBManager
 			 */
 			return this.tagDBManager.updateTags(user, tagsToReplace, replacementTags, session);
+		
 		} finally {
 			session.close();
 		}
@@ -1514,7 +1525,7 @@ public class DBLogic implements LogicInterface {
 			session.close();
 		}
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -43,6 +43,7 @@
 	<typeAlias alias="authorParam"    	  type="org.bibsonomy.database.params.AuthorParam" />
 	<typeAlias alias="basketParam"    	  type="org.bibsonomy.database.params.BasketParam" />	
 	<typeAlias alias="inboxParam"		  type="org.bibsonomy.database.params.InboxParam" />
+	<typeAlias alias="updateParam"		  type="org.bibsonomy.database.params.UpdateParam" />
 		
 
 </sqlMap>
