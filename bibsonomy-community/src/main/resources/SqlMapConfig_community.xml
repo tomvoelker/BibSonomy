@@ -12,7 +12,9 @@ PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
 		</dataSource>
 	</transactionManager>
 	
+	<sqlMap resource="common/TypeAliases-community.xml" />
 	<sqlMap resource="common/CommunityDBCommon.xml" />
 	<sqlMap resource="CommunityDBManage.xml" />
+	<sqlMap resource="CommunityDBUser.xml" />
 </sqlMapConfig>
 
