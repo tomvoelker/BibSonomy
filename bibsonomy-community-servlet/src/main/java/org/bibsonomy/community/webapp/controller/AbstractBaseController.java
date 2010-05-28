@@ -1,23 +1,24 @@
 package org.bibsonomy.community.webapp.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.bibsonomy.community.webapp.command.BaseCommand;
-import org.bibsonomy.community.webapp.command.ClusterViewCommand;
+import org.bibsonomy.community.webapp.command.ContextCommand;
 import org.bibsonomy.community.webapp.command.ResourceViewCommand;
 import org.bibsonomy.community.webapp.util.RequestWrapperContext;
-import org.bibsonomy.model.Tag;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.ServletRequestDataBinder;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractCommandController;
 
 
-public abstract class AbstractBaseController extends AbstractCommandController {
+public abstract class AbstractBaseController<T extends ContextCommand> extends AbstractCommandController {
 	private static final String OUTPUT_FORMAT = "html"; // "html" or "json"
 
 	private String[] allowedFields;
 	private String[] disallowedFields;	
 	
-	protected void initializeCommand(ClusterViewCommand<Tag> command, final HttpServletRequest request) {
+	protected void initializeCommand(T command, final HttpServletRequest request) {
 		/*
 		 * create context and populate it with the request
 		 */
@@ -42,6 +43,34 @@ public abstract class AbstractBaseController extends AbstractCommandController {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	protected ModelAndView handle(HttpServletRequest request,
+			HttpServletResponse response, Object commandObj, BindException errors)
+			throws Exception {
+		T command = (T)commandObj;
+		initializeCommand(command, request);
+		
+		return workOn(command);
+	}
+	
+
+
+	//------------------------------------------------------------------------
+	// abstract interface
+	//------------------------------------------------------------------------
+	/**
+	 * @param command a command object initialized by the framework based on
+	 *                the parameters of som request-event like a http-request
+	 * @return some symbol that describes the next state of the
+	 *         application (the view)
+	 */
+	public abstract ModelAndView workOn(T command);
+	protected abstract T instantiateCommand();	
+	
+	//------------------------------------------------------------------------
+	// helper functions
+	//------------------------------------------------------------------------
 	protected final String getOutputFormat(ResourceViewCommand command) {
 		if( command!=null && command.getFormat()!=null ) {
 			return command.getFormat();
@@ -49,10 +78,10 @@ public abstract class AbstractBaseController extends AbstractCommandController {
 			return OUTPUT_FORMAT;
 		}
 	}
+	
 	//------------------------------------------------------------------------
 	// getter/setter
 	//------------------------------------------------------------------------
-
 	public void setAllowedFields(String[] allowedFields) {
 		this.allowedFields = allowedFields;
 	}

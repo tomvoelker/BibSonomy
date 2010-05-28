@@ -17,7 +17,7 @@
 	<jsp:directive.attribute name="actions" fragment="true" required="true"/>
 	<jsp:directive.attribute name="bmicon" fragment="true" required="true"/>
    
-	<li class="bm">
+	<li class="bm cluster${post.customFlag}">
 
         <!-- only display icon when user is logged in and does NOT visit his own userpage  -->
         <c:if test="${command.context.userLoggedIn and command.requestedUser ne loginUserName}">

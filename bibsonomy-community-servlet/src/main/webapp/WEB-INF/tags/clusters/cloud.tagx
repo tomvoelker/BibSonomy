@@ -2,12 +2,12 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
-	<jsp:directive.attribute name="cluster" type="org.bibsonomy.model.Cluster" required="true" />
+	<jsp:directive.attribute name="cluster" type="org.bibsonomy.community.model.ResourceCluster" required="true" />
 
 	<ul class="clusterStyle" id="tagbox">
 	
 		<!-- loop over tags -->
-		<c:forEach var="tag" items="${cluster.instances}">
+		<c:forEach var="tag" items="${cluster.tags}">
 			<li class="clusterTagStyle">
 				${fn:escapeXml(tag.name)}
 			</li>

@@ -16,7 +16,7 @@
 
 	<ul>
 		<c:forEach var="cluster" varStatus="status" items="${command.clusters}">
-				<li class="clusterClass">
+				<li class="clusterSettings${status.count-1}">
 					<!-- display the cluster -->						
 					<!-- ${fn:escapeXml(tag.name)} -->
 					<clusters:cloud cluster="${cluster}"/>

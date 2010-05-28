@@ -24,8 +24,8 @@ import org.bibsonomy.community.model.ResourceCluster;
 import org.bibsonomy.community.model.Tag;
 import org.springframework.web.servlet.ModelAndView;
 
-public class ResourceQueryController extends AbstractBaseController<ResourceClusterViewCommand> {
-	private final static Log log = LogFactory.getLog(ResourceQueryController.class);
+public class ClusterListController extends AbstractBaseController<ResourceClusterViewCommand> {
+	private final static Log log = LogFactory.getLog(ClusterListController.class);
 	
 	/** bibtex posts */
 	private BibTexPostManager bibTexManager;
@@ -36,7 +36,7 @@ public class ResourceQueryController extends AbstractBaseController<ResourceClus
 	/** community access */
 	private CommunityManager communityManager;
 	
-	public ResourceQueryController() {
+	public ClusterListController() {
 		setCommandClass(ResourceClusterViewCommand.class);
 	}
 

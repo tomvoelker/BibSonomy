@@ -2,69 +2,118 @@ package org.bibsonomy.community.webapp.controller;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.community.database.CommunityManager;
+import org.bibsonomy.community.database.TagManager;
+import org.bibsonomy.community.database.UserSettingsManager;
+import org.bibsonomy.community.enums.Ordering;
+import org.bibsonomy.community.model.Cluster;
+import org.bibsonomy.community.model.ResourceCluster;
+import org.bibsonomy.community.model.Tag;
+import org.bibsonomy.community.model.User;
+import org.bibsonomy.community.util.Pair;
 import org.bibsonomy.community.webapp.command.ClusterViewCommand;
-import org.bibsonomy.community.webapp.util.RequestWrapperContext;
-import org.bibsonomy.model.Cluster;
-import org.bibsonomy.model.Tag;
-import org.springframework.validation.BindException;
+import org.bibsonomy.community.webapp.command.ResourceClusterViewCommand;
+import org.bibsonomy.community.webapp.command.ResourceViewCommand;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Bookmark;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractCommandController;
 
 
-public class ClusterSettingsController extends AbstractBaseController {
+public class ClusterSettingsController extends AbstractBaseController<ResourceClusterViewCommand> {
+	private static final Log log = LogFactory.getLog(ClusterSettingsController.class);
 
+	private UserSettingsManager userSettingsManager;
+	private CommunityManager communityManager;
+	private TagManager tagManager;
+	
 	public ClusterSettingsController() {
-		setCommandClass(ClusterViewCommand.class);
+		setCommandClass(ResourceClusterViewCommand.class);
 	}
 	
-	@SuppressWarnings("unchecked")
+	//------------------------------------------------------------------------
+	// controller interface
+	//------------------------------------------------------------------------
+
 	@Override
-	protected ModelAndView handle(HttpServletRequest request,
-			HttpServletResponse response, Object commandObject, BindException errors)
-			throws Exception {
-		ClusterViewCommand<Tag> command = (ClusterViewCommand<Tag>)commandObject;
-		initializeCommand(command, request);
-		
-		final RequestWrapperContext context = command.getContext();
-		if( context.isUserLoggedIn() ) {
-			populateClusterSettings(command, 10);
-		}
-		
-		String outputFormat = getOutputFormat(command);
-        return new ModelAndView("export/"+outputFormat+"/settings", "command", command);
+	protected ResourceClusterViewCommand instantiateCommand() {
+		return new ResourceClusterViewCommand();
 	}
 
-	private void populateClusterSettings(final ClusterViewCommand<Tag> command, final int nTags ) {
+	@Override
+	public ModelAndView workOn(ResourceClusterViewCommand command) {
+		if( command.getContext().isUserLoggedIn() ) {
+			User user = new User(command.getContext().getLoginUser());
+			try {
+				userSettingsManager.fillUserAffiliation(user);
+				populateClusterSettings(command, user, 25);
+			} catch (Exception e) {
+				log.error("Error getting cluster affiliations for user "+user.getName(),e);
+			}
+		}
+        return new ModelAndView("export/"+getOutputFormat(command)+"/settings", "command", command);
+	}
+	
+	//------------------------------------------------------------------------
+	// helper functions
+	//------------------------------------------------------------------------
+	private void populateClusterSettings(final ResourceClusterViewCommand command, final User user, final int nTags ) {
 		String[] topics = {"politics", "computer", "medcine"};
 		List<Tag> annotations = new LinkedList<Tag>();
 		for( String topic : topics ) {
 			annotations.add(new Tag(topic));
 		}
 		
-		Collection<Cluster<Tag>> clusters = new ArrayList<Cluster<Tag>>(topics.length); 
-		for( int i=0; i<topics.length; i++ ) {
-			Cluster<Tag> cluster = new Cluster<Tag>();
-			cluster.setClusterID((int)Math.floor(Math.random()*42));
-			Collection<Tag> tags = new LinkedList<Tag>(); 
-			for( int j=0; j<nTags; j++ ) {
-				Tag tag = new Tag(topics[i]+"_"+j);
-				tag.setUsercount((int)Math.round(100*1.0/(j+1)));
-				tags.add(tag);
-			}
-			cluster.setInstances(tags);
-			cluster.setAnnotation(annotations.subList(i, i+1));
+		Collection<ResourceCluster> clusters = new ArrayList<ResourceCluster>(topics.length);
+		for( final Map.Entry<Pair<Integer,Integer>, Double> entry : user.getCommunityAffiliation().entrySet() ) {
+			final Integer runId        = entry.getKey().getFirst();
+			final Integer communityId = entry.getKey().getSecond();
+			final Double  weight       = entry.getValue(); 
+			
+			ResourceCluster cluster = new ResourceCluster();
+			cluster.setRunID(runId);
+			cluster.setClusterID(communityId);
+			Collection<Tag> tags = tagManager.getTagCloudForCommunity(runId, communityId, Ordering.POPULAR, nTags, 0); 
+			cluster.setTags(tags);
+			//cluster.setAnnotation(annotations.subList(i, i+1));
 			clusters.add(cluster);
 		}
 		
 		command.setClusters(clusters);
 	}
+	
+	//------------------------------------------------------------------------
+	// getter/setter
+	//------------------------------------------------------------------------
+	public void setCommunityManager(CommunityManager communityManager) {
+		this.communityManager = communityManager;
+	}
+
+	public CommunityManager getCommunityManager() {
+		return communityManager;
+	}
+
+	public void setUserSettingsManager(UserSettingsManager userSettingsManager) {
+		this.userSettingsManager = userSettingsManager;
+	}
+
+	public UserSettingsManager getUserSettingsManager() {
+		return userSettingsManager;
+	}
+
+	public void setTagManager(TagManager tagManager) {
+		this.tagManager = tagManager;
+	}
+
+	public TagManager getTagManager() {
+		return tagManager;
+	}
+
 
 	
 }
