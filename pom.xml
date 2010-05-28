@@ -180,6 +180,7 @@
 	<modules>
 		<module>bibsonomy-bibtex-parser</module>
 		<module>bibsonomy-common</module>
+		<module>bibsonomy-database-common</module>
 		<module>bibsonomy-batch</module>
 		<module>bibsonomy-model</module>
 		<module>bibsonomy-dl-importer</module>
@@ -194,7 +195,7 @@
 		<module>bibsonomy-rest-client</module>
 		<module>bibsonomy-rest-common</module>
 		<module>bibsonomy-rest-server</module>
-<!--  		<module>bibsonomy-spielwiese</module> -->
+<!--  	<module>bibsonomy-spielwiese</module> -->
 		<module>bibsonomy-webapp</module>
 <!-- 	<module>bibsonomy-webdav</module> -->
 	</modules>
