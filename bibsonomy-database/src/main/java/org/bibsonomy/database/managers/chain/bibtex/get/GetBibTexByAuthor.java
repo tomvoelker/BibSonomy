@@ -15,14 +15,12 @@ import org.bibsonomy.model.Post;
  * @author Miranda Grahl
  * @version $Id$
  */
+@Deprecated // TODO: remove!
 public class GetBibTexByAuthor extends BibTexChainElement {
 
-	@SuppressWarnings("deprecation") // TODO: lucene can't handle system tags
+	// TODO: lucene can't handle system tags
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		// uncomment following for a quick hack to access secondary datasource
-		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
-
 		if (this.db.isDoLuceneSearch()) {
 			/*
 			 * FIXME: why is the parameter "tagIndex" = null? 

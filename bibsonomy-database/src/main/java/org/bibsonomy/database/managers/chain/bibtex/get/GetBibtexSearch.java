@@ -15,13 +15,11 @@ import org.bibsonomy.model.Post;
  * @author Dominik Benz
  * @version $Id$
  */
+@Deprecated // TODO: remove!
 public class GetBibtexSearch extends BibTexChainElement {
 
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, DBSession session) {
-		// uncomment following for a quick hack to access secondary datasource
-		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);
-
 		if (this.db.isDoLuceneSearch()) {
 			return this.db.getPostsSearchLucene(GroupID.INVALID.getId(), param.getRawSearch(), param.getRequestedUserName(), param.getUserName(), param.getGroupNames(), param.getLimit(), param.getOffset(), session);
 		}

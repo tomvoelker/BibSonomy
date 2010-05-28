@@ -16,18 +16,17 @@ import org.bibsonomy.model.Post;
 /**
  * Returns a list of BibTex's for given tag/tags and author.
  * 
+ * 
  * @author Miranda Grahl
  * @version $Id$
  */
+@Deprecated // TODO: remove
 public class GetBibTexByAuthorAndTag extends BibTexChainElement {
 	private static final Log LOGGER = LogFactory.getLog(GetBibTexByAuthorAndTag.class);
 
-	@SuppressWarnings("deprecation") // TODO: lucene can't handle system tags
+//	@SuppressWarnings("deprecation") // TODO: lucene can't handle system tags
 	@Override
 	protected List<Post<BibTex>> handle(final BibTexParam param, final DBSession session) {
-		// uncomment following for a quick hack to access secondary datasource
-		// session = this.dbSessionFactory.getDatabaseSession(DatabaseType.SLAVE);		
-
 		if (this.db.isDoLuceneSearch()) {
 			LOGGER.debug("Using Lucene in GetBibtexByAuthor");
 			
