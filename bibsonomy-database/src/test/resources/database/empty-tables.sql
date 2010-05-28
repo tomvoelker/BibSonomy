@@ -16,13 +16,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-DELETE FROM `ContentModifiedTags`;
 DELETE FROM `DBLP`;
-DELETE FROM `DBLPFailures`;
-DELETE FROM `MostSimTagsByContent`;
-DELETE FROM `TagContent`;
-DELETE FROM `TagUser`;
-DELETE FROM `TmpMostSimTagsByContent`;
 DELETE FROM `author`;
 DELETE FROM `author_bibtex_content`;
 DELETE FROM `author_bibtex_name`;
@@ -71,9 +65,7 @@ DELETE FROM `ranking_queue`;
 DELETE FROM `rankings`;
 DELETE FROM `scraperMetaData`;
 DELETE FROM `search_bibtex`;
-DELETE FROM `search_bibtex_old`;
 DELETE FROM `search_bookmark`;
-DELETE FROM `search_bookmark_old`;
 DELETE FROM `spammer_tags`;
 DELETE FROM `tags`;
 DELETE FROM `tagtag`;
