@@ -22,35 +22,54 @@ public class GroupReportingCommand extends BaseCommand {
 	private String transposeMatrix = "";
 
 	private String requestedTags;
-	
+
+	/**
+	 * @return the requestedGroup
+	 */
 	public String getRequestedGroup() {
 		return this.requestedGroup;
 	}
-	
+
+	/**
+	 * @param requestedGroup the requestedGroup to set
+	 */
 	public void setRequestedGroup(String requestedGroup) {
 		this.requestedGroup = requestedGroup;
 	}
 
-	public ReportingTableCommand<Integer, String, Integer> getPublicationCounts() {
-		return this.publicationCounts;
+	/**
+	 * @return the transposeMatrix
+	 */
+	public String getTransposeMatrix() {
+		return this.transposeMatrix;
 	}
 
+	/**
+	 * @param transposeMatrix the transposeMatrix to set
+	 */
 	public void setTransposeMatrix(String transposeMatrix) {
 		this.transposeMatrix = transposeMatrix;
 	}
 
-	public String getTransposeMatrix() {
-		return transposeMatrix;
-	}
-
+	/**
+	 * @return the requestedTags
+	 */
 	public String getRequestedTags() {
 		return this.requestedTags;
 	}
 
+	/**
+	 * @param requestedTags the requestedTags to set
+	 */
 	public void setRequestedTags(String requestedTags) {
 		this.requestedTags = requestedTags;
 	}
 
-	
+	/**
+	 * @return the publicationCounts
+	 */
+	public ReportingTableCommand<Integer, String, Integer> getPublicationCounts() {
+		return this.publicationCounts;
+	}
 	
 }
