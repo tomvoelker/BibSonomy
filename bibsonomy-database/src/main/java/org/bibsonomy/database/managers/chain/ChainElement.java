@@ -8,8 +8,6 @@ import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.database.util.DBSessionFactory;
-import org.bibsonomy.database.util.IbatisDBSessionFactory;
 
 /**
  * Represents one element in the chain of responsibility.
@@ -30,12 +28,6 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 	protected final GroupDatabaseManager groupDb;
 	/** The next element of the chain */
 	protected ChainElement<L, P> next;
-	
-	/** 
-	 * This is a quick hack to enable the access of the secondary 
-	 * datasource from behind the logic interface
-	 */
-	protected DBSessionFactory dbSessionFactory;
 
 	/**
 	 * Constructor
@@ -44,7 +36,6 @@ public abstract class ChainElement<L, P extends GenericParam> implements ChainPe
 		this.generalDb = GeneralDatabaseManager.getInstance();
 		this.groupDb = GroupDatabaseManager.getInstance();
 		this.next = null;
-		this.dbSessionFactory = new IbatisDBSessionFactory();
 	}
 
 	/**
