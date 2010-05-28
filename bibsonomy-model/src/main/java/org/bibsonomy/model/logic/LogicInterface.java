@@ -204,9 +204,11 @@ public interface LogicInterface extends PostLogicInterface, GoldStandardPostLogi
 	 * together at the same post, they're replaced!
 	 * 
 	 * @param replacementTags - the tags which replace the other tags.
+	 * @param updateRelations - if true additional to the replace of the tags the corresponding relations are updated,
+	 * be aware that this can only be done if tagsToReplace.size == 1 and replacementTags == 1
 	 * @return - The number of posts which were updated.
 	 */
-	public int updateTags(User user, List<Tag> tagsToReplace, List<Tag> replacementTags);
+	public int updateTags(User user, List<Tag> tagsToReplace, List<Tag> replacementTags, boolean updateRelations);
 	
 	/**
 	 * Removes the given user.
