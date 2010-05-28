@@ -215,15 +215,12 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	 * adds MissingTagsErrorMessage else
 	 * @param post
 	 * @param session
-	 * @return
 	 */
 	private void checkTags(final Post<?> post, final DBSession session) {
-		if (!present(post.getTags()) || post.getTags().isEmpty()) {
+		if (!present(post.getTags())) {
 			session.addError(post.getResource().getIntraHash(), new MissingTagsErrorMessage());
 		}
 	}
-	
-	
 	
 	/**
 	 * Inserts the tags from the given post.
