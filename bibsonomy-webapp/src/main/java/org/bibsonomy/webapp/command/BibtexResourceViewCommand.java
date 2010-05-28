@@ -1,7 +1,5 @@
 package org.bibsonomy.webapp.command;
 
-import org.bibsonomy.model.GoldStandardPublication;
-import org.bibsonomy.model.Post;
 
 /**
  * @author mwa
@@ -18,8 +16,6 @@ public class BibtexResourceViewCommand extends TagResourceViewCommand {
 	/** the group whode resources are requested*/
 	private ConceptsCommand concepts = new ConceptsCommand();
 
-	private Post<GoldStandardPublication> goldStandardPublication;
-	
 	/**
 	 * @return the hash of a bibtex
 	 */
@@ -60,19 +56,5 @@ public class BibtexResourceViewCommand extends TagResourceViewCommand {
 	 */
 	public void setConcepts(ConceptsCommand concepts) {
 		this.concepts = concepts;
-	}
-
-	/**
-	 * @param goldStandardPublication the goldStandardPublication to set
-	 */
-	public void setGoldStandardPublication(Post<GoldStandardPublication> goldStandardPublication) {
-		this.goldStandardPublication = goldStandardPublication;
-	}
-
-	/**
-	 * @return the goldStandardPublication
-	 */
-	public Post<GoldStandardPublication> getGoldStandardPublication() {
-		return goldStandardPublication;
 	}
 }

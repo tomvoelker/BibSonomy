@@ -3,6 +3,7 @@ package org.bibsonomy.webapp.command;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
+import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -19,6 +20,8 @@ import org.bibsonomy.model.Resource;
 public class SimpleResourceViewCommand extends ResourceViewCommand {
 	private ListCommand<Post<Bookmark>> bookmark = new ListCommand<Post<Bookmark>>(this);
 	private ListCommand<Post<BibTex>> bibtex = new ListCommand<Post<BibTex>>(this);
+	private Post<GoldStandardPublication> goldStandardPublication;
+	
 	/**
 	 * @param <T> type of the entities in the list
 	 * @param resourceType type of the entities in the list
@@ -61,6 +64,20 @@ public class SimpleResourceViewCommand extends ResourceViewCommand {
 	 */
 	public void setBookmark(final ListCommand<Post<Bookmark>> bookmark) {
 		this.bookmark = bookmark;
+	}
+
+	/**
+	 * @param goldStandardPublication the goldStandardPublication to set
+	 */
+	public void setGoldStandardPublication(Post<GoldStandardPublication> goldStandardPublication) {
+		this.goldStandardPublication = goldStandardPublication;
+	}
+
+	/**
+	 * @return the goldStandardPublication
+	 */
+	public Post<GoldStandardPublication> getGoldStandardPublication() {
+		return goldStandardPublication;
 	}
 	
 }
