@@ -23,32 +23,48 @@ public class ReportingTableCommand<T,U,V> {
 	private List<T> rowHeaders = new ArrayList<T>();
 	
 	/** labels of the columns of the matrix */
-	private List<U> columnHeaders = new ArrayList<U>();	
-	
+	private List<U> columnHeaders = new ArrayList<U>();
 
-	
+	/**
+	 * @return the values
+	 */
 	public Map<T, Map<U, V>> getValues() {
 		return this.values;
 	}
 
+	/**
+	 * @param values the values to set
+	 */
 	public void setValues(Map<T, Map<U, V>> values) {
 		this.values = values;
 	}
 
+	/**
+	 * @return the rowHeaders
+	 */
 	public List<T> getRowHeaders() {
 		return this.rowHeaders;
 	}
 
-	public void setRowHeaders(List<T> rows) {
-		this.rowHeaders = rows;
+	/**
+	 * @param rowHeaders the rowHeaders to set
+	 */
+	public void setRowHeaders(List<T> rowHeaders) {
+		this.rowHeaders = rowHeaders;
 	}
 
+	/**
+	 * @return the columnHeaders
+	 */
 	public List<U> getColumnHeaders() {
 		return this.columnHeaders;
 	}
 
-	public void setColumnHeaders(List<U> columns) {
-		this.columnHeaders = columns;
+	/**
+	 * @param columnHeaders the columnHeaders to set
+	 */
+	public void setColumnHeaders(List<U> columnHeaders) {
+		this.columnHeaders = columnHeaders;
 	}
 
 }
