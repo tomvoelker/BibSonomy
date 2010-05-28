@@ -1,13 +1,14 @@
 package resources;
 
+import helpers.constants;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
 
-import helpers.constants;
-
+@Deprecated
 public abstract class Resource implements Cloneable {
 
 	public static final int UNDEFINED_CONTENT_ID =   -1;	
@@ -50,6 +51,7 @@ public abstract class Resource implements Cloneable {
 
 
 	// toString
+	@Override
 	public String toString () {
 		return user + "(" + date  + ") : [" + tag + "] ---> " + title;
 	}
@@ -96,7 +98,7 @@ public abstract class Resource implements Cloneable {
 		StringBuffer result = new StringBuffer();
 		int i;
 		for (i = 0; i < buffer.length; i++) {
-			String hex = Integer.toHexString ((int) buffer[i]);
+			String hex = Integer.toHexString (buffer[i]);
 			if (hex.length() == 1) {
 				hex = "0" + hex;
 			}
@@ -165,6 +167,7 @@ public abstract class Resource implements Cloneable {
 	 * 
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() throws CloneNotSupportedException {
 		Resource copy = (Resource)super.clone();
 		// copy taglist

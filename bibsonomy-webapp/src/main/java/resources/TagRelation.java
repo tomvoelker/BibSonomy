@@ -1,5 +1,6 @@
 package resources;
 
+@Deprecated
 public class TagRelation implements Comparable<TagRelation> {
 	
 	private String upper;
@@ -28,6 +29,7 @@ public class TagRelation implements Comparable<TagRelation> {
 		return valid;
 	}
 	
+	@Override
 	public boolean equals(Object o) {
 		TagRelation tagrel = null;
 		try {
@@ -42,6 +44,7 @@ public class TagRelation implements Comparable<TagRelation> {
 			   tagrel.getLower().equals(lower);
 	}
 	
+	@Override
 	public String toString(){
 		return upper + UPPER_LOWER + lower;
 	}

@@ -5,12 +5,11 @@ package resources;
 import helpers.parser.TagStringLexer;
 import helpers.parser.TagStringParser;
 
-import java.io.StringReader;
-import java.util.TreeSet;
-import java.util.Set;
-
-// These imports are necessary for Antlr 3.0.1 (3.05b)
 import java.io.IOException;
+import java.io.StringReader;
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
@@ -25,6 +24,7 @@ import org.antlr.runtime.RecognitionException;
  *  </ul>
  *
  */
+@Deprecated
 public class Tag implements Cloneable {
 	
 	private Set<String> tags;                // the tags as a set
@@ -432,6 +432,7 @@ public class Tag implements Cloneable {
 	 * 
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() throws CloneNotSupportedException {
 		Tag copy = new Tag();
 		// copy tag list
@@ -447,6 +448,7 @@ public class Tag implements Cloneable {
 	 * @return a String representation of this object including "for:" tags
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString(){
 		StringBuffer buffer = new StringBuffer();
 		for(String tag: tags){

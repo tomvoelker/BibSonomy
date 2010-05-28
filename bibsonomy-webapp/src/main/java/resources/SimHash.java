@@ -1,8 +1,15 @@
 
 package resources;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
 
+@Deprecated
 public abstract class SimHash {
 	
 	/* Input: a String of persons, divided by " and "

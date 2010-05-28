@@ -1,5 +1,6 @@
 package resources;
 
+@Deprecated
 public class SimHash1 extends SimHash {
 	
 	public static String getHash (Bibtex b) {	

@@ -3,6 +3,7 @@ package resources;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+@Deprecated
 public class Bookmark extends Resource {
 	public static final int CONTENT_TYPE=1;
 	
@@ -17,6 +18,7 @@ public class Bookmark extends Resource {
 	  //super.setContentType(Bookmark.CONTENT_TYPE);	
 	}
 	
+	@Override
 	public void setUrl (String url) {
 		super.setUrl(url);
 		this.hash = hash(super.getUrl());
@@ -36,6 +38,7 @@ public class Bookmark extends Resource {
 		return u.getHost();
 	}
 	
+	@Override
 	public String toString () {
 		return super.toString() + " [URL = " + super.getUrl() + "]";
 	}
@@ -66,10 +69,12 @@ public class Bookmark extends Resource {
 	public void setHash (String hash) {
 		this.hash = hash;
 	}
+	@Override
 	public String getHash () { // return the hash of THIS url
 		return hash;
 	}
 	
+	@Override
 	public int getContentType () {
 		return Bookmark.CONTENT_TYPE;
 	}

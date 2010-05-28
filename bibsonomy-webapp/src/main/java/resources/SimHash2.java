@@ -4,6 +4,7 @@ package resources;
  * NEW intra user hash
  *
  */
+@Deprecated
 public class SimHash2 extends SimHash {
 	
 	public static String getHash (Bibtex b) {

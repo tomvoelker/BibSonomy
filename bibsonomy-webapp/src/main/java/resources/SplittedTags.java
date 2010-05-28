@@ -9,6 +9,7 @@ import java.util.StringTokenizer;
  * a query (big self join) which selects all posts which have all of the tags.
  *
  */
+@Deprecated
 public class SplittedTags extends LinkedList<String> {
 	
 	/**

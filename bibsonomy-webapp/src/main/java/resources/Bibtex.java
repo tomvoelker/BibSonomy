@@ -15,6 +15,7 @@ import org.bibsonomy.model.PersonName;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.model.util.PersonNameUtils;
 
+@Deprecated
 public class Bibtex extends Resource {
 	public static final int CONTENT_TYPE=2;
 	private static final int MAX_LEN_AUTHOR = 6000;
