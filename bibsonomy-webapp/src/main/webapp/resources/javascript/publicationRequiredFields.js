@@ -1,4 +1,8 @@
+
+// the form we're receiving input from
 var form_name = '#post\\.resource\\.title';
+
+// our suggestion box
 var suggestionBox = $("#suggestionBox");
 
 /**
@@ -11,14 +15,17 @@ var suggestionBox = $("#suggestionBox");
  */
 
 function createParameters(title) {
-	partials = title.split(" ");
-	title = "";
-	for(i = 0; i < parseInt(partials.length); i++) {
-		if(partials[i] == "" || partials[i] == " " )
-			continue;
-		title += "sys:title:"+partials[i]+((i+1 < parseInt(partials.length))?"+":""); 
+	if(title[title.length-1] == " ") {
+		title = title.substr(0, title.length-1);
 	}
-	return title+"*";
+	var partials = title.split(" ");
+	title = "";
+
+	for(i = 0; i < parseInt(partials.length); i++) {
+		title += "sys:title:"+partials[i]+((i+1 < parseInt(partials.length))?"+":"*"); 
+	}
+
+	return title;
 }
 
 /**
@@ -43,7 +50,7 @@ function getSuggestions(partialTitle) {
 	if(parseInt(partialTitle.length) > 1) {
 		var query = $.ajax({
 			type: "GET",
-			url: "/json/tag/"+createParameters(partialTitle)+"?items=10",
+			url: "http://www.bibsonomy.org/json/tag/"+createParameters(partialTitle)+"?items=10",
 			dataType: "jsonp",
 			success: function(json){
 			processResponse(json);
@@ -78,8 +85,9 @@ function processResponse(data) {
 			+'</div>');
 
 	var pos = $(form_name).offset();
-	var width = $(form_name).width();
+	var width = parseInt($(form_name).width());
 	var top = parseInt(pos.top+$(form_name).height());
+	var delim = ' '+getString('and')+' ';
 	suggestionBox.html(p);
 	$.each(data.items, function(i, item) {
 				var editors = "";
@@ -92,11 +100,11 @@ function processResponse(data) {
 				var formatted_text = formatLabel(item.label);
 				
 				if(item.editor != 'undefined') {
-					editors = concatArray(item.editor, 20);
+					editors = concatArray(item.editor, 20, delim);
 				}
 		
 				if(item.author != 'undefined') {
-					author = concatArray(item.author, 27);
+					author = concatArray(item.author, 27, delim);
 				}
 		
 				if(item.year != 'undefined') {
@@ -174,7 +182,7 @@ function concatArray(data, max_len, delim) {
 		delim = "\n";
 	}
 	for(entry in data) {
-		retVal += data[entry] + delim;
+		retVal += data[entry] + ((entry < data.length-1)?delim:"");
 	}
 	return ((max_len != null) && (retVal.length > max_len))?retVal.substr(0, max_len)+"...":retVal;
 }
@@ -300,7 +308,7 @@ function formatLabel (label) {
 }
 
 /**
- * adds a given class tot he element
+ * adds a given class to the element
  * 
  * @param el
  *            the element to add the class to
@@ -336,4 +344,3 @@ function cmpClass(el, value) {
 	}
 	return false;
 }
-
