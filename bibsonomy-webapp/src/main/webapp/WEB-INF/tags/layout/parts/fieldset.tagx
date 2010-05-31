@@ -9,24 +9,33 @@
 	<jsp:directive.attribute name="maximized" type="java.lang.Boolean" required="true" description="Shall the fieldset be shown (true) or hidden (false)?"/>
 	<jsp:directive.attribute name="content" fragment="true" required="true" description="The content of the fieldset (i.e., the form fields)."/>	
 
+	<!--+
+		| set variables for hiding the contents
+		+-->
+	<c:choose>
+		<c:when test="${maximized}">
+			<c:set var="fsClass" value="fsInner"/>
+			<c:set var="image" value="icon_collapse.png"/>
+		</c:when>
+		<c:otherwise>
+			<c:set var="fsClass" value="fsHidden"/>
+			<c:set var="image" value="icon_expand.png"/>
+		</c:otherwise>
+	</c:choose>
 
-	<fieldset class="fsInner">
+
+
+	<fieldset class="${fsClass}">
 		<legend>
 			<!-- 
 			   | toggle button for maximizing/minimizing this fieldset
 			   -->
-			<c:choose>
-				<c:when test="${maximized}">
-					<img class="toggler" src="${resdir}/image/icon_collapse.png" border="0"/>	
-				</c:when>
-				<c:otherwise>
-					<img class="toggler" src="${resdir}/image/icon_expand.png" border="0"/>
-				</c:otherwise>
-			</c:choose>
+			<img class="toggler" src="${resdir}/image/${image}" border="0"/>	
 			<!-- 
 			   | legend text + extension
 			   -->
 			<fmt:message key="${legendKey}"/>
+			<c:out value=" "/>
 			<c:if test="${not empty legendExt}">
 				<jsp:invoke fragment="legendExt"/>
 			</c:if>
