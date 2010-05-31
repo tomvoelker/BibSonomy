@@ -26,6 +26,7 @@
  */
 package org.bibsonomy.scraper;
 
+import org.bibsonomy.scraper.url.kde.aanda.AandAScraper;
 import org.bibsonomy.scraper.url.kde.acl.AclScraper;
 import org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper;
 import org.bibsonomy.scraper.url.kde.acs.ACSScraper;
@@ -181,6 +182,7 @@ public class KDEUrlCompositeScraper extends UrlCompositeScraper {
 		addScraper(new IsiScraper());
 		addScraper(new CasesJournalScraper());
 		addScraper(new ElsevierhealthScraper());
+		addScraper(new AandAScraper());
 	}
 
 }

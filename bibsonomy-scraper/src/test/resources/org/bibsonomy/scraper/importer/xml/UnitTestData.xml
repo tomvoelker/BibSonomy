@@ -1074,4 +1074,17 @@
 		<BibFile>DBLPScraperUnitTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.dblp.DBLPScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_181">
+		<TestDescription>A and A scraping test</TestDescription>
+		<URL>http://www.aanda.org/index.php?option=article&amp;access=doi&amp;doi=10.1051/0004-6361:20053694</URL>
+		<BibFile>AandAScraperUnitURLTest.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.aanda.AandAScraper</Scraper>
+	</URLTest>
+	<URLTest id="url_182">
+		<TestDescription>A and A scraping test</TestDescription>
+		<URL>http://www.aanda.org/index.php?option=article&amp;access=doi&amp;doi=10.1051/0004-6361/201014294</URL>
+		<BibFile>AandAScraperUnitURLTest1.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.aanda.AandAScraper</Scraper>
+		<AdditionalInfo>wait until AandA changed their output</AdditionalInfo>
+	</URLTest>
 </test:Tests>
