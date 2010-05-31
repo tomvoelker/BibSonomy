@@ -28,6 +28,14 @@
     margin: 8px 0px 0px 0px;
 }
 
+.fsHidden {
+	border: 0px;	
+}
+
+.fsHidden > div {
+	display: none;
+}
+
 .fsLabel {
     text-align: right;
 }
