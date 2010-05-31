@@ -70,23 +70,25 @@
                                     | user is posting an existing resource ...
                                      -->
                                 <c:if test="${not empty command.diffPost}">
-                                  <fieldset class="fsInner">
-                                    <legend><fmt:message key="note"/></legend>
-                                    <p>
-                                      <span style="float:left; font-weight: bold; margin-right: 1em;"><fmt:message key="post.edit.existent" /></span>
-                                      <buttons:help message="post.edit.existent.help"/>
-                                    </p>
-                                  </fieldset>
+                                	<parts:fieldset maximized="true" legendKey="note">
+                                		<jsp:attribute name="content">
+		                                    <p>
+        		                              <span style="float:left; font-weight: bold; margin-right: 1em;"><fmt:message key="post.edit.existent" /></span>
+                		                      <buttons:help message="post.edit.existent.help"/>
+                        		            </p>
+                                    	</jsp:attribute>
+                                  	</parts:fieldset>
                                 </c:if>
 
                       
                                 <!--
                                    | general information 
                                    -->
-								<fieldset class="fsInner">
-									<legend><fmt:message key="post.resource.fields.general"/></legend>
-                                    <jsp:invoke fragment="generalInformation"/>
-								</fieldset>
+                                <parts:fieldset maximized="true" legendKey="post.resource.fields.general">
+                                	<jsp:attribute name="content">
+    	                                <jsp:invoke fragment="generalInformation"/>
+									</jsp:attribute>
+                                </parts:fieldset>
 								
 								<jsp:invoke fragment="tagsAndGroups" />
 	
@@ -114,17 +116,19 @@
                                    | a Captcha for our spammers ... 
                                    -->         
 								<c:if test="${not empty command.captchaHTML}">
-						        	<fieldset class="fsInner">
-										<c:if test="${resourceType eq 'Publication'}">
-											<p>
-												<fmt:message key="post.edit.spam_note"/>
-												<parts:email address="${projectNoSpamEmail}"/>
-											</p>
-										</c:if>
-
-										<span class="fsLabel"><fmt:message key="captcha"/></span>
-						              	<span class="fsInput">${command.captchaHTML}<form:errors cssClass="errmsg" path="recaptcha_response_field" /></span>
-						            </fieldset>
+									<parts:fieldset maximized="true" legendKey="captcha">
+										<jsp:attribute name="content">
+									
+											<c:if test="${resourceType eq 'Publication'}">
+												<p>
+													<fmt:message key="post.edit.spam_note"/>
+													<parts:email address="${projectNoSpamEmail}"/>
+												</p>
+											</c:if>
+											<span class="fsLabel"><fmt:message key="captcha"/></span>
+						              		<span class="fsInput">${command.captchaHTML}<form:errors cssClass="errmsg" path="recaptcha_response_field" /></span>
+						              	</jsp:attribute>
+						            </parts:fieldset>
 						        </c:if>
           
   

@@ -1,0 +1,43 @@
+<jsp:root version="2.0" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+	<jsp:directive.attribute name="legendKey" type="java.lang.String" required="true" description="The message key describing the form fields inside this field set."/>
+	<jsp:directive.attribute name="legendExt" fragment="true" required="false" description="If text is not sufficient for the legend, use this fragment to add arbitrary content."/>	
+	<jsp:directive.attribute name="maximized" type="java.lang.Boolean" required="true" description="Shall the fieldset be shown (true) or hidden (false)?"/>
+	<jsp:directive.attribute name="content" fragment="true" required="true" description="The content of the fieldset (i.e., the form fields)."/>	
+
+
+	<fieldset class="fsInner">
+		<legend>
+			<!-- 
+			   | toggle button for maximizing/minimizing this fieldset
+			   -->
+			<c:choose>
+				<c:when test="${maximized}">
+					<img class="toggler" src="${resdir}/image/icon_collapse.png" border="0"/>	
+				</c:when>
+				<c:otherwise>
+					<img class="toggler" src="${resdir}/image/icon_expand.png" border="0"/>
+				</c:otherwise>
+			</c:choose>
+			<!-- 
+			   | legend text + extension
+			   -->
+			<fmt:message key="${legendKey}"/>
+			<c:if test="${not empty legendExt}">
+				<jsp:invoke fragment="legendExt"/>
+			</c:if>
+		</legend>
+		
+		<!-- 
+			| fieldset content
+			-->
+		<jsp:invoke fragment="content"/>
+		
+	</fieldset>
+
+
+</jsp:root>
