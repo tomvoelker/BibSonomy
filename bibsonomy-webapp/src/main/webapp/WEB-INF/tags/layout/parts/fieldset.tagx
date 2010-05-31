@@ -44,8 +44,9 @@
 		<!-- 
 			| fieldset content
 			-->
-		<jsp:invoke fragment="content"/>
-		
+		<div>
+			<jsp:invoke fragment="content"/>
+		</div>
 	</fieldset>
 
 
