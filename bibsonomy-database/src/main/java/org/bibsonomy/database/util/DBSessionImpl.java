@@ -126,7 +126,7 @@ public class DBSessionImpl implements DBSession {
 				}
 				if (this.databaseException.hasErrorMessages()) {
 					// errors occurred, sql connection was closed => throw databaseException
-					log.info("Couldn't commit transaction due to errors during the session");
+					log.info("Couldn't commit transaction due to errors during the session stored in this databaseException: \n" + this.databaseException.toString());
 					throw this.databaseException;
 				}
 			}
