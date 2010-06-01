@@ -219,6 +219,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 	private void checkTags(final Post<?> post, final DBSession session) {
 		if (!present(post.getTags())) {
 			session.addError(post.getResource().getIntraHash(), new MissingTagsErrorMessage());
+			log.warn("Added missingTagsErrorMessage for " + post.getResource().getIntraHash());
 		}
 	}
 	

@@ -1122,10 +1122,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			 * check if user is trying to create a resource that already exists
 			 */
 			if (present(postInDB)) {
-				//throw new IllegalArgumentException("Could not create new " + this.resourceClassName + ": This " + this.resourceClassName +" already exists in your collection (intrahash: " + intraHash + ")");
 				final ErrorMessage errorMessage = new DuplicatePostErrorMessage(this.resourceClassName, post.getResource().getIntraHash());
 				session.addError(post.getResource().getIntraHash(), errorMessage);
-				// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
+				log.warn("Added DuplicatePostErrorMessage for post " + post.getResource().getIntraHash());
 				session.commitTransaction();
 				return false;
 			}
@@ -1196,10 +1195,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 					session.addError(post.getResource().getIntraHash(), errorMessage);
 					// we have to commit to adjust counters in session otherwise we will not get the DatabaseException from the session
 					session.commitTransaction();
+					log.warn("Added UpdatePostErrorMessage (" + this.resourceClassName + " with hash " + oldHash + " does not exist for user " + userName + ")");
 					return false;
-					//FIXME:remove this comment
-					//log.warn(this.resourceClassName + " with hash " + oldHash + " does not exist for user " + userName);
-					//throw new ResourceNotFoundException(oldHash);
 				}
 
 			} else {
@@ -1387,15 +1384,11 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	protected void insertPost(final Post<R> post, final DBSession session) {
 		boolean errors = false;
 		if (!present(post.getResource())) {
-			//TODO: remove this comment
-			//throw new InvalidModelException("There is no resource for this post.");
 			ErrorMessage errorMessage = new MissingFieldErrorMessage("Resource");
 			session.addError(post.getResource().getIntraHash(), errorMessage);
 			errors = true;
 		}
 		if (!present(post.getGroups())) {
-			// TODO: remove this comment
-			//throw new InvalidModelException("There are no groups for this post.");
 			ErrorMessage errorMessage = new MissingFieldErrorMessage("Groups");
 			session.addError(post.getResource().getIntraHash(), errorMessage);
 			errors = true;
@@ -1406,6 +1399,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		if (errors) {
 			// one or more errors occurred in this method 
 			// => we don't want to go deeper into the process with these kinds of errors
+			log.error("Added MissingFieldErrorMessage for post " + post.getResource().getIntraHash());
 			return;
 		}
 		

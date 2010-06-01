@@ -118,9 +118,9 @@ public class ForGroupTag extends SystemTag {
 		 *  Check if the group exists and whether it owns the post already
 		 */
 		if (!present(groupDBLogic.getGroupDetails(groupName))) {
-			log.debug("Unknown group!");
 			String defaultMessage = this.getName()+": " + groupName + "does not exist.";
 			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forGroup.noSuchGroup", new String[] {groupName}));
+			log.warn("Added SystemTagErrorMessage (for group: Unknown Group) for post " + intraHash);
 			return; // this tag can not be used => abort
 		}
 		if (present( groupDBLogic.getPostDetails(intraHash, groupName) )) {
@@ -178,6 +178,7 @@ public class ForGroupTag extends SystemTag {
 					errorMessage.setDefaultMessage("This error occured while executing the for: tag: "+errorMessage.getDefaultMessage());
 					errorMessage.setErrorCode("database.exception.systemTag.forGroup.copy");
 					session.addError(intraHash, errorMessage);
+					log.warn("Added SystemTagErrorMessage (for group: errors while storing group's post) for post " + intraHash);
 				}
 			}
 		}
@@ -196,11 +197,13 @@ public class ForGroupTag extends SystemTag {
 		if (permissionDb.isSpecialGroup(groupName) ) {
 			final String defaultMessage = this.getName() + ": "+ groupName + ": is a special group. You are not allowed to forward posts to special groups.";
 			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forGroup.specialGroup", new String[] {groupName}));
+			log.warn("Added SystemTagErrorMessage (for group: permission denied) for post " + intraHash);
 			return false;			
 		} 
 		if (!permissionDb.isMemberOfGroup(userName, groupName,  session) ) {
 			final String defaultMessage =this.getName() + ": You are not a member of " + groupName + ".";
-				session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forGroup.member", new String[] {groupName}));
+			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forGroup.member", new String[] {groupName}));
+			log.warn("Added SystemTagErrorMessage (for group: not member) for post " + intraHash);
 			return false;			
 		}
 		return true;

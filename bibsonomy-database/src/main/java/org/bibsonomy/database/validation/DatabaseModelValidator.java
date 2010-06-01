@@ -64,7 +64,8 @@ public class DatabaseModelValidator<T> {
 			
 			if (fieldLengthError.hasErrors()) {
 				session.addError(id, fieldLengthError);
-			}
+				log.warn("Added fieldlengthError");
+			} 
 		} catch (final Exception ex) {
 			log.error("could not introspect object of class 'user'", ex);
 		}

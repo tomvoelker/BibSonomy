@@ -96,6 +96,7 @@ public class ForFriendTag extends SystemTag {
 			this.getTag().setName("sent:" + receiver);	// 4. rename this tag for the sender (store receiverName)
 		} catch(UnsupportedResourceTypeException urte) {
 			session.addError(intraHash, new UnspecifiedErrorMessage(urte));
+			log.warn("Added UnspecifiedErrorMessage (unsupported ResourceType) for post " + intraHash);
 		}
 		this.tagDb.insertTags(post, session);		// 5. store the tags for the sender with the confirmation tag: sent:userName
 	}
@@ -117,11 +118,13 @@ public class ForFriendTag extends SystemTag {
 		if ( !( generalDb.isFriendOf(sender, receiver, session) || groupDb.getCommonGroups(sender, receiver, session).size()>0 ) ) {
 			final String defaultMessage = this.getName()+ ": "  + receiver + " did not add you as a friend and is not a member of any of your groups.";
 			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.notFriend", new String[]{receiver}));
+			log.warn("Added SystemTagErrorMessage (send: not friend nor common group) for post " + intraHash);
 			return false;
 		}
 		if (sender.equals(receiver)) {
 			final String defaultMessage = this.getName()+": You can not send messages to yourself.";
 			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.self", new String[]{receiver}));
+			log.warn("Added SystemTagErrorMessage (send: sender is receiver) for post " + intraHash);
 			return false;
 		}
 		return true;

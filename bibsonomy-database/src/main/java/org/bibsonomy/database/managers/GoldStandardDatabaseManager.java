@@ -160,12 +160,11 @@ public abstract class GoldStandardDatabaseManager<RR extends Resource, R extends
 				if (!present(oldPost)) {
 					final String hash = resource.getInterHash();
 					/*
-					 * not found -> throw exception
-					 * 
+					 * not found -> add ErrorMessage
 					 */
 					final ErrorMessage errorMessage = new UpdatePostErrorMessage(this.resourceClassName, hash);
 					session.addError(hash, errorMessage);
-					
+					log.warn("Added UpdatePostErrorMessage for post " + post.getResource().getIntraHash());
 					session.commitTransaction();
 					
 					return false;
