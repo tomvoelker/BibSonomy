@@ -112,4 +112,19 @@ public class DatabaseException extends RuntimeException {
 			}
 		}
 	}
+	
+	
+	@Override
+	public String toString() {
+		String result = "DatabaseException: listing errorMessages...\n";
+		if (errorMessages.isEmpty()) {
+			//no errorMessages have been collected
+			result += "No errorMessages have been collected.";
+			return result;
+		}
+		for (String hash: errorMessages.keySet()) {
+			result += hash + ": " + errorMessages.get(hash).toString() + "\n";
+		}
+		return result;
+	}
 }

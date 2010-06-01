@@ -37,7 +37,7 @@ public class UnspecifiedErrorMessage extends ErrorMessage {
 	 * @param ex The exception that was caught.
 	 */
 	public UnspecifiedErrorMessage(Exception ex) {
-		this.setDefaultMessage(ex.getMessage());
+		this.setDefaultMessage(ex.getClass().getName() + " : " + ex.getMessage());
 		this.setErrorCode("database.exception.unspecified");
 		this.setParameters(null);
 		this.ex = ex;
