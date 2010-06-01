@@ -13,7 +13,7 @@
 	
   <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
       	
-  <layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" fullscreen="true" selectedNaviTab="nav_tags">
+  <layout:paneLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}" fullscreen="true" selectedNaviTab="nav_my">
    	
     <jsp:attribute name="heading">
       <a rel="path_menu" href="#"><img alt="" src="${resdir}/image/box_arrow.png" />${mtl:ch('nbsp')}<fmt:message key="navi.mysearch" /></a>	
