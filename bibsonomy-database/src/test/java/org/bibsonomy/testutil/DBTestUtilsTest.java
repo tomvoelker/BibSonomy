@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.bibsonomy.database.params.beans.TagIndex;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.junit.Test;
 
 /**
@@ -37,12 +37,13 @@ public class DBTestUtilsTest {
 	/**
 	 * tests {@link DBTestUtils#addToTagIndex(List, String...)}
 	 */
+	@Test
 	public void tagIndexAdd() {
 		final List<TagIndex> index = DBTestUtils.getTagIndex(TAG_STRING_1, TAG_STRING_2);
 		DBTestUtils.addToTagIndex(index, TAG_STRING_3);
 		
 		final TagIndex thirdIndex = index.get(2);
 		assertEquals(TAG_STRING_3, thirdIndex.getTagName());
-		assertEquals(2, thirdIndex.getIndex());
+		assertEquals(3, thirdIndex.getIndex());
 	}
 }

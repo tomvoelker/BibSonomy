@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bibsonomy.database.params.beans.TagIndex;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Tag;

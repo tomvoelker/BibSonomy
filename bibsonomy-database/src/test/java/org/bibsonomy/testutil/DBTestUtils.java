@@ -3,7 +3,7 @@ package org.bibsonomy.testutil;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bibsonomy.database.params.beans.TagIndex;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 
 /**
  * @author dzo
