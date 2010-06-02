@@ -46,7 +46,7 @@ public class MailUtils {
 
 	private static final Log log = LogFactory.getLog(MailUtils.class);
 	/*
-	 * The following constants are configured using JNDI.
+	 * The following constants are configured
 	 */
 	private String projectName;
 	private String projectHome;
@@ -66,11 +66,11 @@ public class MailUtils {
 	 * 
 	 * @param userName - the name of the user which registered. 
 	 * @param userEmail - the email address of the user which registered.
-	 * @param inetAddress - 
+	 * @param inetAddress - TODO: unused
 	 * @param locale - a locale to use for localization
 	 * @return <code>true</code>, if the email could be send without errors.
 	 */
-	public boolean sendActivationMail (final String userName, final String userEmail, final String inetAddress, final Locale locale) {
+	public boolean sendActivationMail(final String userName, final String userEmail, final String inetAddress, final Locale locale) {
 		final Object[] messagesParameters = new Object[]{userName, projectName, projectHome, projectBlog, projectEmail};
 		/*
 		 * Format the message "mail.registration.body" with the given parameters.
@@ -81,7 +81,7 @@ public class MailUtils {
 		/*
 		 * set the recipients
 		 */
-		final String recipient[] = new String[] {userEmail};
+		final String[] recipient = {userEmail};
 		try {
 			sendMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
 			return true;
@@ -91,12 +91,13 @@ public class MailUtils {
 		return false;
 	}
 	
-	/** Sends the registration mail to the user and to the project admins.
+	/** 
+	 * Sends the registration mail to the user and to the project admins.
 	 * 
 	 * @param userName - the name of the user which registered. 
 	 * @param userEmail - the email address of the user which registered.
 	 * @param activationCode - user activation code
-	 * @param inetAddress - 
+	 * @param inetAddress - TODO: unused!!!
 	 * @param locale - a locale to use for localization
 	 * @return <code>true</code>, if the email could be send without errors.
 	 */
@@ -111,7 +112,7 @@ public class MailUtils {
 		/*
 		 * set the recipients
 		 */
-		final String recipient[] = new String[] {userEmail};
+		final String[] recipient = {userEmail};
 		try {
 			sendMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
 			return true;
@@ -127,7 +128,7 @@ public class MailUtils {
 	 * 
 	 * @param userName
 	 * @param userEmail
-	 * @param inetAddress
+	 * @param inetAddress TODO: unused!!!
 	 * @param locale
 	 * @param maxmin 
 	 * @param tmppw 
@@ -142,7 +143,7 @@ public class MailUtils {
 		/*
 		 * set the recipients
 		 */
-		final String recipient[] = new String[] {userEmail};
+		final String[] recipient = {userEmail};
 		try {
 			sendMail(recipient,  messageSubject, messageBody, projectRegistrationFromAddress);
 			return true;
@@ -152,14 +153,16 @@ public class MailUtils {
 		return false;
 	}
 
-	/** Sends a mail to the given recipients
+	/**
+	 * Sends a mail to the given recipients
+	 * 
 	 * @param recipients
 	 * @param subject
 	 * @param message
 	 * @param from
 	 * @throws MessagingException
 	 */
-	private void sendMail(final String recipients[ ], final String subject, final String message, final String from) throws MessagingException {
+	private void sendMail(final String[] recipients, final String subject, final String message, final String from) throws MessagingException {
 		boolean debug = false;
 
 		// create some properties and get the default Session
@@ -189,8 +192,8 @@ public class MailUtils {
 		Transport.send(msg);
 	}
 
-
-	/** The name of the project.
+	/**
+	 * The name of the project.
 	 * 
 	 * @param projectName
 	 */
@@ -198,8 +201,8 @@ public class MailUtils {
 		this.projectName = projectName;
 	}
 
-
-	/** The base URL of the project.
+	/**
+	 * The base URL of the project.
 	 * 
 	 * @param projectHome
 	 */
@@ -207,8 +210,8 @@ public class MailUtils {
 		this.projectHome = projectHome;
 	}
 
-
-	/** A URL to the blog of the project.
+	/** 
+	 * A URL to the blog of the project.
 	 * 
 	 * @param projectBlog
 	 */
@@ -216,8 +219,8 @@ public class MailUtils {
 		this.projectBlog = projectBlog;
 	}
 
-
-	/** The email address users can use to contact the project admins. 
+	/**
+	 * The email address users can use to contact the project admins. 
 	 * 
 	 * @param projectEmail
 	 */
@@ -225,8 +228,8 @@ public class MailUtils {
 		this.projectEmail = projectEmail;
 	}
 
-
-	/** The From: address of registration mails. 
+	/**
+	 * The From: address of registration mails. 
 	 * 
 	 * @param projectRegistrationFromAddress
 	 */
@@ -234,7 +237,8 @@ public class MailUtils {
 		this.projectRegistrationFromAddress = projectRegistrationFromAddress;
 	}
 
-	/** A host which accepts SMTP requests and should be used for sending mails.
+	/**
+	 * A host which accepts SMTP requests and should be used for sending mails.
 	 * 
 	 * @param mailHost
 	 */
@@ -248,6 +252,5 @@ public class MailUtils {
 	public void setMessageSource(MessageSource messageSource) {
 		this.messageSource = messageSource;
 	}
-
 
 }
