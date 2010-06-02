@@ -1,6 +1,6 @@
 package org.bibsonomy.database;
 
-import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.User;
 
 /**

@@ -1,7 +1,7 @@
 package org.bibsonomy.database;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
-import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 

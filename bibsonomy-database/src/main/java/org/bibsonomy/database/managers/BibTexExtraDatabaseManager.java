@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BibTexExtraParam;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.extra.BibTexExtra;
 import org.bibsonomy.model.extra.ExtendedFields;
 

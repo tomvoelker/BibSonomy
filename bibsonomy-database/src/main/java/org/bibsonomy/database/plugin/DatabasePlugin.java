@@ -1,8 +1,8 @@
 package org.bibsonomy.database.plugin;
 
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.util.DBSession;
 
 /**
  * This interface supplies hooks which can be implemented by plugins. This way

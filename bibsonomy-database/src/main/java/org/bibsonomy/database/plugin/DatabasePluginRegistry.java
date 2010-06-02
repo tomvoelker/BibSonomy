@@ -6,13 +6,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.UserParam;
 import org.bibsonomy.database.plugin.plugins.BasketPlugin;
 import org.bibsonomy.database.plugin.plugins.BibTexExtraPlugin;
 import org.bibsonomy.database.plugin.plugins.GoldStandardPublicationReferencePlugin;
 import org.bibsonomy.database.plugin.plugins.Logging;
-import org.bibsonomy.database.util.DBSession;
 
 /**
  * All database plugins are registered here.

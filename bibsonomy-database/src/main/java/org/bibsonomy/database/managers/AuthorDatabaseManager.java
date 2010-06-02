@@ -3,7 +3,7 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.Author;
 
 /**

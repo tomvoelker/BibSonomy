@@ -4,12 +4,12 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.params.GroupParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
 
 /**

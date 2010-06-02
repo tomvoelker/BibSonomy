@@ -12,8 +12,8 @@ import org.bibsonomy.common.enums.ClassifierSettings;
 import org.bibsonomy.common.enums.InetAddressStatus;
 import org.bibsonomy.common.enums.SpamStatus;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.AdminParam;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
 
 /**
@@ -24,8 +24,7 @@ import org.bibsonomy.model.User;
  * @author Robert Jäschke
  * @author Stefan Stützer
  * @author Beate Krause
- * @version $Id: AdminDatabaseManager.java,v 1.14 2008-11-04 17:25:11 beatekr
- *          Exp $
+ * @version $Id$
  */
 public class AdminDatabaseManager extends AbstractDatabaseManager {
 	private static final Log log = LogFactory.getLog(AdminDatabaseManager.class);
@@ -38,7 +37,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 * 
 	 * TODO: Make database names constants.
 	 */
-	private final List<String> tableNames = Arrays.asList("tas", "grouptas", "bibtex", "bookmark");
+	private static final List<String> tableNames = Arrays.asList("tas", "grouptas");
 
 	/**
 	 * @return a singleton instance of this AdminDatabaseManager
@@ -224,7 +223,6 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 	 */
 
 	public boolean checkPredictionChange(final AdminParam param, final DBSession session) {
-
 		if (param.getConfidence() != null && param.getPrediction() != null) {
 			// check if prediction and confidence values changed, only update if
 			// they changed
@@ -250,6 +248,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 				}
 			}
 		}
+		
 		return true;
 	}
 
@@ -295,6 +294,7 @@ public class AdminDatabaseManager extends AbstractDatabaseManager {
 			param.setPrediction(status.getId());
 			return this.queryForList("getClassifiedUsers", param, User.class, session);
 		}
+		
 		return null;
 	}
 

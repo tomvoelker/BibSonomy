@@ -16,11 +16,11 @@ import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.errors.MissingTagsErrorMessage;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.tag.TagChain;
 import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -252,7 +252,7 @@ public class TagDatabaseManager extends AbstractDatabaseManager {
 		this.insertTags(tagParam, session);
 	}
 
-	/** Updates the posts by replacing all tags as described in {@link LogicInterface#updateTags(User, List, List)}.
+	/** Updates the posts by replacing all tags as described in {@link LogicInterface#updateTags(User, List, List, boolean)}.
 	 * 
 	 * TODO: This method hasn't been tested, yet - it has been written
 	 * from scratch to migrate the functionality of the /edittags-page.

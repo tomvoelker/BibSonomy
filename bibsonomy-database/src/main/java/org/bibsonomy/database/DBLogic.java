@@ -35,6 +35,8 @@ import org.bibsonomy.common.exceptions.QueryTimeoutException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.AdminDatabaseManager;
 import org.bibsonomy.database.managers.AuthorDatabaseManager;
 import org.bibsonomy.database.managers.BasketDatabaseManager;
@@ -57,8 +59,6 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
@@ -1475,7 +1475,7 @@ public class DBLogic implements LogicInterface {
 	public Tag getConceptDetails(final String conceptName, final GroupingEntity grouping, final String groupingName) {
 		final DBSession session = openSession();
 		try {
-			if (grouping.equals(GroupingEntity.USER) || grouping.equals(GroupingEntity.GROUP) && groupingName != null && groupingName != "") {
+			if (grouping.equals(GroupingEntity.USER) || grouping.equals(GroupingEntity.GROUP) && present(groupingName)) {
 				return this.tagRelationsDBManager.getConceptForUser(conceptName, groupingName, session);
 			} else if (grouping.equals(GroupingEntity.ALL)) {
 				return this.tagRelationsDBManager.getGlobalConceptByName(conceptName, session);

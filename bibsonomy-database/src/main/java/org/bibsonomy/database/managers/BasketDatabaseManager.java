@@ -1,9 +1,9 @@
 package org.bibsonomy.database.managers;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
-import org.bibsonomy.database.util.DBSession;
 
 /**
  * Manages Basket functionalities

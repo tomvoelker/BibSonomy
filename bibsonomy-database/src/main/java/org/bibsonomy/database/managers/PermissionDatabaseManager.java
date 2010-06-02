@@ -14,7 +14,7 @@ import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.database.AbstractDatabaseManager;
-import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;

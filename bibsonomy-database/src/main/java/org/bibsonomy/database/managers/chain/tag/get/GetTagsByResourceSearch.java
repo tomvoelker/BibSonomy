@@ -6,10 +6,10 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.params.beans.TagIndex;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
 
 /**

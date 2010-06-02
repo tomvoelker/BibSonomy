@@ -3,8 +3,8 @@ package org.bibsonomy.database.managers;
 import java.util.List;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 

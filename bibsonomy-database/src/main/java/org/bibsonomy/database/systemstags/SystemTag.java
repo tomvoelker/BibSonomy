@@ -1,8 +1,8 @@
 package org.bibsonomy.database.systemstags;
 
 import org.bibsonomy.common.enums.PostUpdateOperation;
-import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.database.util.DBSessionFactory;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;

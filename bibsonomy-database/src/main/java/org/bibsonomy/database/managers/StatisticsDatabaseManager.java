@@ -7,12 +7,12 @@ import java.util.Map;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.statistic.post.PostStatisticChain;
 import org.bibsonomy.database.managers.chain.statistic.tag.TagStatisticChain;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.params.StatisticsParam;
-import org.bibsonomy.database.params.beans.TagIndex;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
@@ -216,7 +216,7 @@ public class StatisticsDatabaseManager extends AbstractDatabaseManager {
 	 * @return number of resources that are available for some groups and tagged by a tag of the tagIndex
 	 */
 	public int getNumberOfResourcesForUserAndGroupByTag(final Class<? extends Resource> resourceType, final String requestedUserName, final List<TagIndex> tagIndex, final String loginUserName, final List<Integer> visibleGroupIDs, final DBSession session){
-		return this.getDatabaseManagerForResourceType(resourceType).getGroupPostsCount(requestedUserName, loginUserName, visibleGroupIDs, session);
+		return this.getDatabaseManagerForResourceType(resourceType).getGroupPostsCountByTag(requestedUserName, loginUserName, tagIndex, visibleGroupIDs, session);
 	}
 
 	/**

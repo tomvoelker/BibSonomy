@@ -14,13 +14,13 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.managers.chain.bibtex.BibTexChain;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.ResourceParam;
-import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.systemstags.SystemTag;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
@@ -156,8 +156,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 		String group = groupDb.getGroupNameByGroupId(groupId, session);
 		
 		final long starttimeQuery = System.currentTimeMillis();
-		final List<Post<BibTex>> posts = 
-			resourceSearch.getPosts(userName, requestedUserName, group, null, search, null, null, null, null, null, null, limit, offset);
+		final List<Post<BibTex>> posts = resourceSearch.getPosts(userName, requestedUserName, group, null, search, null, null, null, null, null, null, limit, offset);
 		log.debug("LuceneBibTex complete query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 		return posts;
 	}

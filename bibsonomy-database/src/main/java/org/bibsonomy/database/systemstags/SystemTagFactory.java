@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.bibsonomy.database.util.DBSessionFactory;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.Tag;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

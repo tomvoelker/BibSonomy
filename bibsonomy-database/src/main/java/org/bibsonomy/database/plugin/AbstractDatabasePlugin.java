@@ -1,9 +1,9 @@
 package org.bibsonomy.database.plugin;
 
 import org.bibsonomy.database.AbstractDatabaseManager;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BasketParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.util.DBSession;
 
 /**
  * This class should be used by plugins. This way they don't have to implement

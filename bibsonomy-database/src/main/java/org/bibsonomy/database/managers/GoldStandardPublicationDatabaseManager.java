@@ -3,8 +3,8 @@ package org.bibsonomy.database.managers;
 import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
