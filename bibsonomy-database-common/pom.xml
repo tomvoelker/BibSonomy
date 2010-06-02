@@ -34,14 +34,20 @@
     	<version>2.0.7-SNAPSHOT</version>
     </dependency>
     <dependency>
-		<groupId>org.apache.ibatis</groupId>
-		<artifactId>ibatis-sqlmap</artifactId>
-		<version>SNAPSHOT</version>
+			<groupId>org.apache.ibatis</groupId>
+			<artifactId>ibatis-sqlmap</artifactId>
+			<version>SNAPSHOT</version>
 		<classifier>r737724</classifier>
-	</dependency>
-	<dependency>
-		<groupId>mysql</groupId>
-		<artifactId>mysql-connector-java</artifactId>
-	</dependency>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mockejb</groupId>
+			<artifactId>mockejb</artifactId>
+			<version>0.6-beta2</version>
+			<scope>test</scope>
+		</dependency>
   </dependencies>
 </project>
