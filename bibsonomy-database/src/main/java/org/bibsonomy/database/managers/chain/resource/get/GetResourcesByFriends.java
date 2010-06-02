@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.params.ResourceParam;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;

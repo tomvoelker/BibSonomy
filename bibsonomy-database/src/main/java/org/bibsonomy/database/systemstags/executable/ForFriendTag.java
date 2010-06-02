@@ -6,12 +6,12 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.systemstags.SystemTag;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 

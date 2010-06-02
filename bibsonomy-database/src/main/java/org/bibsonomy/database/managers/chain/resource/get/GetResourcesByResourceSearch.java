@@ -5,11 +5,11 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.resource.ResourceChainElement;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByResourceSearch;
 import org.bibsonomy.database.params.ResourceParam;
-import org.bibsonomy.database.params.beans.TagIndex;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
