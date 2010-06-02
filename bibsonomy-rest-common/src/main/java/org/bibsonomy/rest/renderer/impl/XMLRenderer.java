@@ -105,9 +105,14 @@ import org.xml.sax.SAXParseException;
  */
 public class XMLRenderer implements Renderer {
 	private static final Log log = LogFactory.getLog(XMLRenderer.class);
+	
 	private static final String JAXB_PACKAGE_DECLARATION = "org.bibsonomy.rest.renderer.xml";
+	
 	private static XMLRenderer renderer;
 	
+	/**
+	 * @return the {@link XMLRenderer} instance
+	 */
 	public static Renderer getInstance() {
 		if (renderer == null) {
 			renderer = new XMLRenderer();

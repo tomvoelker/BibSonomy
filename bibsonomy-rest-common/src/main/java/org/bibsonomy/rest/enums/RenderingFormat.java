@@ -37,12 +37,19 @@ import org.bibsonomy.common.exceptions.ValidationException;
  */
 public enum RenderingFormat {
 
-	/** currently only XML is supported */
+	/**
+	 * currently only XML is supported
+	 */
 	XML,
+	
+	/**
+	 * TODO: improve documentation
+	 */
 	PDF;
 
 	/**
-	 * Returns the rendering format to the given string.
+	 * @param renderingFormat 
+	 * @return the rendering format to the given string.
 	 */
 	public static RenderingFormat getRenderingFormat(final String renderingFormat) {
 		if (renderingFormat == null) throw new InternServerException("RenderingFormat is null");

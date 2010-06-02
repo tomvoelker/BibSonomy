@@ -45,7 +45,10 @@ import org.bibsonomy.rest.validation.ModelValidator;
  */
 public class RestProperties {
 	private static final Log log = LogFactory.getLog(RestProperties.class);
+	
 	private static RestProperties singleton = null;
+	
+	
 	
 	private ModelValidator validator = null; 
 	private final Properties properties;
@@ -57,7 +60,7 @@ public class RestProperties {
 		SYSTEM_NAME("BibSonomy"),					// FIXME: should be configurable
 		CONTENT_TYPE("text/xml"),
 		PDF_TYPE("application/pdf"),
-		API_USER_AGENT("BibSonomyWebServiceClient"),
+		API_USER_AGENT("BibSonomyWebServiceClient"), // TODO: BibSonomy
 		URL_TAGS("tags"),
 		URL_CONCEPTS("concepts"),
 		URL_USERS("users"),

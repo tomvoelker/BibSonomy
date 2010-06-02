@@ -34,10 +34,34 @@ import org.bibsonomy.rest.exceptions.UnsupportedHttpMethodException;
  */
 public enum HttpMethod {
 
-	GET, POST, PUT, DELETE, HEAD;
-
 	/**
-	 * Returns the corresponding HttpMethod-enum for the given string.
+	 * the GET method
+	 */
+	GET,
+	
+	/**
+	 * the POST method
+	 */
+	POST,
+	
+	/**
+	 * the PUT method
+	 */
+	PUT,
+	
+	/**
+	 * the DELETE method
+	 */
+	DELETE,
+	
+	/**
+	 * the HEAD method
+	 */
+	HEAD;
+
+	/** 
+	 * @param httpMethod 
+	 * @return the corresponding HttpMethod-enum for the given string.
 	 */
 	public static HttpMethod getHttpMethod(final String httpMethod) {
 		if (httpMethod == null) throw new InternServerException("HTTP-Method is null");

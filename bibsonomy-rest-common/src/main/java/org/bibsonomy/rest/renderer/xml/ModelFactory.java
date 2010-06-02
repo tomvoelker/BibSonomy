@@ -43,6 +43,7 @@ import org.bibsonomy.common.exceptions.InvalidModelException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Document;
+import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -64,18 +65,27 @@ public class ModelFactory {
 
 	private static ModelFactory modelFactory;
 
-	private ModelValidator modelValidator = null; 
-
-	private ModelFactory() {
-	}
-
+	/**
+	 * @return the {@link ModelFactory} instance
+	 */
 	public static ModelFactory getInstance() {
 		if (ModelFactory.modelFactory == null) {
 			ModelFactory.modelFactory = new ModelFactory();
 		}
 		return ModelFactory.modelFactory;
 	}
+	
+	private ModelValidator modelValidator = null; 
 
+	private ModelFactory() {
+	}
+
+	/**
+	 * creates a user based on the xml user
+	 * 
+	 * @param xmlUser
+	 * @return the converted user
+	 */
 	public User createUser(final UserType xmlUser) {
 		checkUser(xmlUser);
 
@@ -113,6 +123,12 @@ public class ModelFactory {
 		return user;
 	}
 
+	/**
+	 * creates a {@link Group} based on the xml group
+	 * 
+	 * @param xmlGroup
+	 * @return the converted group
+	 */
 	public Group createGroup(final GroupType xmlGroup) {
 		checkGroup(xmlGroup);
 
@@ -135,10 +151,23 @@ public class ModelFactory {
 		return group;
 	}
 
+	/**
+	 * converts a xml tag to the model representation
+	 * 
+	 * @param xmlTag
+	 * @return the created tag
+	 */
 	public Tag createTag(final TagType xmlTag) {
 		return createTag(xmlTag, 1);
 	}
 
+	/**
+	 * TODO: improve documentation
+	 * 
+	 * @param xmlTag
+	 * @param depth
+	 * @return the created tag
+	 */
 	public Tag createTag(final TagType xmlTag, final int depth) {
 		checkTag(xmlTag);
 
@@ -159,8 +188,7 @@ public class ModelFactory {
 		}
 		return tag;
 	}
-
-
+	
 	private List<Tag> createTags(final List<TagsType> xmlTags, final int depth) {
 		final List<Tag> rVal = new ArrayList<Tag>();
 		for (final TagsType xmlSubTags : xmlTags) {
@@ -171,7 +199,13 @@ public class ModelFactory {
 		}
 		return rVal;
 	}
-
+	
+	/**
+	 * creates a {@link RecommendedTag} based on the xml tag
+	 * 
+	 * @param xmlTag
+	 * @return the created recommended Tag
+	 */
 	public RecommendedTag createRecommendedTag(final TagType xmlTag) {
 		final RecommendedTag tag = new RecommendedTag();
 		tag.setName(xmlTag.getName()); assert(tag.getName()!=null);
@@ -182,6 +216,12 @@ public class ModelFactory {
 		return tag;
 	}
 	
+	/**
+	 * creates a {@link GoldStandard} post based on the xml post
+	 * 
+	 * @param xmlPost
+	 * @return the converted post
+	 */
 	public Post<Resource> createStandardPost(final PostType xmlPost) {
 		checkStandardPost(xmlPost);
 		
@@ -197,13 +237,19 @@ public class ModelFactory {
 			
 			post.setResource(publication);
 		} else {
-			// TODO: implement a gold standard for bookmarks
+			// TODO: implement a gold standard for bookmarks?!?
 			throw new InvalidModelException("resource is not supported");
 		}
 		
 		return post;
 	}
 
+	/**
+	 * converts a xml post to the model post
+	 * 
+	 * @param xmlPost
+	 * @return the converted post
+	 */
 	public Post<Resource> createPost(final PostType xmlPost) {
 		checkPost(xmlPost);
 
@@ -341,7 +387,8 @@ public class ModelFactory {
 		publication.setPrivnote(xmlPublication.getPrivnote());
 	}
 
-	/** Checks the bibtex. Here a model validator can be plugged in which does the checking.
+	/**
+	 * Checks the bibtex. Here a model validator can be plugged in which does the checking.
 	 * 
 	 * @param publication
 	 */
@@ -380,11 +427,17 @@ public class ModelFactory {
 		return post.getPostingdate().toGregorianCalendar().getTime();
 	}
 
+	/**
+	 * @return the modelValidator
+	 */
 	public ModelValidator getModelValidator() {
 		return this.modelValidator;
 	}
 
-	public void setModelValidator(final ModelValidator modelValidator) {
+	/**
+	 * @param modelValidator the modelValidator to set
+	 */
+	public void setModelValidator(ModelValidator modelValidator) {
 		this.modelValidator = modelValidator;
 	}
 }
