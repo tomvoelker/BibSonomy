@@ -56,6 +56,7 @@ public class TestDatabaseLoader {
 	 */
 	private TestDatabaseLoader() {
 		// parse all sql scripts
+		long start = System.currentTimeMillis();
 		log.debug("parsing create statements");
 		this.createStatements = this.parseInputStream(DBLogic.class.getClassLoader().getResourceAsStream(SCHEMA_FILENAME));
 		
@@ -64,6 +65,8 @@ public class TestDatabaseLoader {
 		
 		log.debug("parsing delete statements");
 		this.deleteStatements = this.parseInputStream(TestDatabaseLoader.class.getClassLoader().getResourceAsStream(DELETE_FILENAME));
+		long elapsed = (System.currentTimeMillis() - start ) / 1000;
+		log.debug("Done; took " + elapsed + " seconds.");
 	}
 	
 	
@@ -111,18 +114,28 @@ public class TestDatabaseLoader {
 	 * Executes all statements from the SQL scripts.
 	 */
 	public void load() {
+		long start, elapsed;
 		try {
+			log.debug("Starting to load test database.");
 			final SimpleJDBCHelper jdbc = new SimpleJDBCHelper();
 			/*
 			 * do initialization: drop database, create it, use it
 			 */
 			final String database = jdbc.getDatabaseConfig().getDatabase();
-			if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {			
+			if (jdbc.getDatabaseConfig().createDatabaseBeforeLoading()) {
+				log.debug("Starting to drop + create database" + database);
+				start = System.currentTimeMillis();
 				jdbc.execute("DROP DATABASE IF EXISTS `" + database + "`;");
 				jdbc.execute("CREATE DATABASE `" + database + "`;");
+				elapsed = (System.currentTimeMillis() - start ) / 1000;
+				log.debug("Done; took " + elapsed + " seconds.");
 			}
 	
+			log.debug("Switch to database " + database);
+			start = System.currentTimeMillis();
 			jdbc.execute("USE `" + database + "`;");
+			elapsed = (System.currentTimeMillis() - start ) / 1000;
+			log.debug("Done; took " + elapsed + " seconds.");
 			/*
 			 * execute statements from script
 			 */
@@ -135,8 +148,11 @@ public class TestDatabaseLoader {
 			statements.addAll(this.insertStatements);
 
 			for (final String statement : statements) {
+				start = System.currentTimeMillis();
 				log.debug("executing SQL statement: " + statement);
 				jdbc.execute(statement);
+				elapsed = (System.currentTimeMillis() - start ) / 1000;
+				log.debug("Done; took " + elapsed + " seconds.");				
 			}			
 			
 			jdbc.close();
