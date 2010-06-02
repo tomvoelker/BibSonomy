@@ -70,10 +70,10 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 	private AccessMode accessMode;
 
 	/** gives read only access to the lucene index */
-	IndexReader indexReader;
+	private IndexReader indexReader;
 
 	/** gives write access to the lucene index */
-	IndexWriter indexWriter;
+	private IndexWriter indexWriter;
 	
 	/** path to the lucene index */
 	private String luceneIndexPath;
@@ -133,8 +133,6 @@ public abstract class LuceneResourceIndex<R extends Resource> {
 		}
 	}
 	
-
-
 	/**
 	 * initialize internal data structures
 	 * @throws IOException 
