@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.concept.ConceptChainElement;
 import org.bibsonomy.database.params.TagRelationParam;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
 
 /**
