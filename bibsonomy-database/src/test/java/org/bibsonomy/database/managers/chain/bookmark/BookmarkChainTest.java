@@ -13,6 +13,7 @@ import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByFollowed
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByFriends;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHash;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByHashForUser;
+import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByResourceSearch;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByTagNames;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByTagNamesAndUser;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForGroup;
@@ -22,7 +23,6 @@ import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForUser;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksOfFriendsByTags;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksOfFriendsByUser;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksPopular;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksSearch;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksViewable;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
@@ -31,7 +31,6 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -253,18 +252,19 @@ public class BookmarkChainTest extends AbstractChainTest {
 	/**
 	 * tests getBookmarksSearch
 	 */
-	@Ignore
+	@Test
 	public void getBookmarksSearch() {
 		this.bookmarkParam.setGrouping(GroupingEntity.ALL);
 		this.bookmarkParam.setRequestedUserName(null);
 		this.bookmarkParam.setSearch("\"www.ubuntuusers.de\"");
 		bookmarkChain.getFirstElement().perform(this.bookmarkParam, this.dbSession, chainStatus);
-		assertEquals(GetBookmarksSearch.class, chainStatus.getChainElement().getClass());
+		assertEquals(GetBookmarksByResourceSearch.class, chainStatus.getChainElement().getClass());
 	}
 	
 	/**
 	 * tests getBookmarkByFollowedUsers
 	 */
+	@Test
 	public void getBookmarkByFollowedUsers() {
 		this.bookmarkParam.setGrouping(GroupingEntity.FOLLOWER);
 		this.bookmarkParam.addGroups(new ArrayList<Integer>(0));
