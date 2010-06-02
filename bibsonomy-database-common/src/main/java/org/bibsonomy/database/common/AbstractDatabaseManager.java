@@ -18,12 +18,15 @@ import java.util.List;
 public abstract class AbstractDatabaseManager {	
 	
 	/**
-	 * TODODZ
+	 * just calls the {@link #init()} method
 	 */
 	public AbstractDatabaseManager() {
 		this.init();
 	}
 	
+	/**
+	 * override this method to init more than the abstractDatabaseManager does
+	 */
 	protected void init() {
 		// noop
 	}
@@ -54,16 +57,35 @@ public abstract class AbstractDatabaseManager {
 	 * In this case we break the rule to create one method for every return
 	 * type, because with a single object it doesn't result in an unchecked
 	 * cast.
-	 * 
-	 * FIXME: what to do if {@link #queryForAnything(String, Object, QueryFor, DBSession)} returns null
 	 */
 	@SuppressWarnings("unchecked")
 	protected <T> T queryForObject(final String query, final Object param, @SuppressWarnings("unused") final Class<T> type, final DBSession session) {
 		return (T) session.queryForObject(query, param);
 	}
 
+	/**
+	 * 
+	 * @param query
+	 * @param param
+	 * @param session
+	 * @return
+	 */
 	protected Object queryForObject(final String query, final Object param, final DBSession session) {
 		return this.queryForObject(query, param, Object.class, session);
+	}
+	
+	/**
+	 * 
+	 * @param <T>
+	 * @param query
+	 * @param param
+	 * @param store
+	 * @param session
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	protected <T> T queryForObject(final String query, final Object param, final T store, final DBSession session) {
+		return (T) session.queryForObject(query, param, store);
 	}
 	
 	/**

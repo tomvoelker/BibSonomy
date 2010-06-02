@@ -3,6 +3,7 @@ package org.bibsonomy.database.common.impl;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +16,6 @@ import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.util.ExceptionUtils;
 
 import com.ibatis.common.jdbc.exception.NestedSQLException;
-import com.ibatis.sqlmap.client.SqlMapExecutor;
 import com.ibatis.sqlmap.client.SqlMapSession;
 import com.mysql.jdbc.exceptions.MySQLTimeoutException;
 
@@ -41,7 +41,7 @@ public class DBSessionImpl implements DBSession {
 	 */
 	private boolean aborted;
 	private boolean closed;
-	private final Map<String, ErrorMessage> errorMessages;
+	private final Map<String, List<ErrorMessage>> errorMessages;
 
 	protected DBSessionImpl(final SqlMapSession sqlMap) {
 		this.sqlMap = sqlMap;
@@ -50,15 +50,7 @@ public class DBSessionImpl implements DBSession {
 		this.aborted = false;
 		this.closed = false;
 		
-		this.errorMessages = new HashMap<String, ErrorMessage>();
-	}
-
-	/**
-	 * Returns the sqlMap associated with this transaction.
-	 * @return TODO
-	 */
-	public SqlMapExecutor getSqlMapExecutor() {
-		return this.sqlMap;
+		this.errorMessages = new HashMap<String, List<ErrorMessage>>();
 	}
 
 	/**
@@ -67,7 +59,7 @@ public class DBSessionImpl implements DBSession {
 	 * called hereafter.
 	 */
 	public void beginTransaction() {
-		if (this.aborted == true) {
+		if (this.aborted) {
 			// TODO: log message?!?
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "real transaction already aborted");
 		}
@@ -138,8 +130,8 @@ public class DBSessionImpl implements DBSession {
 				}
 				if (!this.errorMessages.isEmpty()) {
 					// errors occurred, sql connection was closed => throw databaseException
-					log.info("Couldn't commit transaction due to errors during the session");
-					throw new DatabaseException(); // TODO: this.errorMessages);
+					log.info("Couldn't commit transaction due to errors during the session; error messages: " + this.errorMessages.toString());
+					throw new DatabaseException(this.errorMessages);
 				}
 			}
 		} else {
@@ -250,10 +242,10 @@ public class DBSessionImpl implements DBSession {
 		// XXX: :(
 		if (e instanceof NestedSQLException) {
 			this.handleException((NestedSQLException)e, query);
-		}
-		
-		log.error("Caught exception " + e.getClass().getSimpleName());
-		this.logException(query, e);
+		} else {
+			log.error("Caught exception " + e.getClass().getSimpleName());
+			this.logException(query, e);
+		}		
 	}
 	
 	private void handleException(final NestedSQLException ex, String query) {
@@ -323,7 +315,14 @@ public class DBSessionImpl implements DBSession {
 
 	@Override
 	public void addError(String key, ErrorMessage errorMessage) {
-		this.errorMessages.put(key, errorMessage);
+		List<ErrorMessage> errorMessages = this.errorMessages.get(key);
+		
+		if (errorMessages == null) {
+			errorMessages = new LinkedList<ErrorMessage>();
+			this.errorMessages.put(key, errorMessages);
+		}
+		
+		errorMessages.add(errorMessage);
 	}
 	
 	@Override
@@ -335,5 +334,16 @@ public class DBSessionImpl implements DBSession {
 			this.sqlMap.close();
 		}
 		super.finalize();
+	}
+
+	@Override
+	public Object queryForObject(String query, Object param, Object store) {
+		try {
+			return this.sqlMap.queryForObject(query, param, store);
+		} catch (final Exception e) {
+			this.handleException(e, query);
+		}
+		
+		return null;
 	}
 }

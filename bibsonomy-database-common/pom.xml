@@ -2,6 +2,7 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
+  <name>BibSonomy-Database-Common</name>
   <parent>
     <artifactId>bibsonomy</artifactId>
     <groupId>org.bibsonomy</groupId>
@@ -10,7 +11,8 @@
   <groupId>org.bibsonomy</groupId>
   <artifactId>bibsonomy-database-common</artifactId>
   <version>2.0.7-SNAPSHOT</version>
-  <name>bibsonomy-database-common</name>
+  <packaging>jar</packaging>
+  
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -28,7 +30,7 @@
     </dependency>
     <dependency>
     	<groupId>org.bibsonomy</groupId>
-    	<artifactId>bibsonomy-common</artifactId>
+    	<artifactId>bibsonomy-model</artifactId>
     	<version>2.0.7-SNAPSHOT</version>
     </dependency>
     <dependency>
