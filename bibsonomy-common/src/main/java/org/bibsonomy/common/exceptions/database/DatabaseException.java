@@ -37,7 +37,8 @@ import org.bibsonomy.common.errors.ErrorMessage;
  * @version $Id$
  */
 public class DatabaseException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -5703687462706009432L;
+	
 	
 	private final Map<String, List<ErrorMessage>> errorMessages;
 	
@@ -48,6 +49,12 @@ public class DatabaseException extends RuntimeException {
 		this.errorMessages = new HashMap<String, List<ErrorMessage>>();
 	}
 	
+	/**
+	 * @param errorMessages
+	 */
+	public DatabaseException(final Map<String, List<ErrorMessage>> errorMessages) {
+		this.errorMessages = new HashMap<String, List<ErrorMessage>>(errorMessages);
+	}
 	
 	/**
 	 * @return the errorMessages
@@ -113,18 +120,17 @@ public class DatabaseException extends RuntimeException {
 		}
 	}
 	
-	
 	@Override
 	public String toString() {
-		String result = "DatabaseException: listing errorMessages...\n";
+		final StringBuilder result = new StringBuilder("DatabaseException: listing errorMessages...\n");
 		if (errorMessages.isEmpty()) {
 			//no errorMessages have been collected
-			result += "No errorMessages have been collected.";
-			return result;
+			result.append("No errorMessages have been collected.");
+			return result.toString();
 		}
-		for (String hash: errorMessages.keySet()) {
-			result += hash + ": " + errorMessages.get(hash).toString() + "\n";
+		for (final String key: errorMessages.keySet()) {
+			result.append(key).append(": ").append(errorMessages.get(key).toString()).append("\n");
 		}
-		return result;
+		return result.toString();
 	}
 }
