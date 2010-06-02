@@ -1,5 +1,6 @@
 package org.bibsonomy.lucene.param.comparator;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.apache.lucene.document.Document;
@@ -15,7 +16,8 @@ import org.bibsonomy.lucene.util.LuceneBase;
  * @author fei
  * @version $Id$
  */
-public class DocumentCacheComparator extends LuceneBase implements Comparator<Document> {
+public class DocumentCacheComparator extends LuceneBase implements Comparator<Document>, Serializable {
+	private static final long serialVersionUID = -5135628928597791434L;
 
 	@Override
 	public int compare(Document o1, Document o2) {
