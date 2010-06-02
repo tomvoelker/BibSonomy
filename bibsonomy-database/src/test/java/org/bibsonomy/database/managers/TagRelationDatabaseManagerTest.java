@@ -10,8 +10,8 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.TagRelationParam;
-import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;

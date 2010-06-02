@@ -1,6 +1,8 @@
 package org.bibsonomy.database.util;
 
-import org.bibsonomy.common.enums.DatabaseType;
+import org.bibsonomy.database.common.impl.AbstractDBSessionFactory;
+
+import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
  * Factory for real database sessions via iBatis.
@@ -8,23 +10,10 @@ import org.bibsonomy.common.enums.DatabaseType;
  * @author Jens Illig
  * @version $Id$
  */
-public class IbatisDBSessionFactory implements DBSessionFactory {
+public class IbatisDBSessionFactory extends AbstractDBSessionFactory {
 
-	public DBSession getDatabaseSession() {
-		return new DBSessionImpl(DatabaseUtils.getSqlMap());
-	}
-	
 	@Override
-	@Deprecated
-	public DBSession getDatabaseSession(DatabaseType dbType) {
-		if (dbType.equals(DatabaseType.MASTER)) {
-			return new DBSessionImpl(DatabaseUtils.getSqlMap(DatabaseType.MASTER));
-		}
-		if (dbType.equals(DatabaseType.SLAVE)) {
-			return new DBSessionImpl(DatabaseUtils.getSqlMap(DatabaseType.SLAVE));
-		}
-		// default: master connection
-		return new DBSessionImpl(DatabaseUtils.getSqlMap(DatabaseType.MASTER));
+	protected SqlMapSession getSqlMap() {
+		return DatabaseUtils.getSqlMap();
 	}
-
 }

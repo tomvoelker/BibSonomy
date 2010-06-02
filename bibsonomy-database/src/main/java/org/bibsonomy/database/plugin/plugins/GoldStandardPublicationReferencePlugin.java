@@ -1,9 +1,9 @@
 package org.bibsonomy.database.plugin.plugins;
 
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GoldStandardReferenceParam;
 import org.bibsonomy.database.params.LoggingParam;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
-import org.bibsonomy.database.util.DBSession;
 
 /**
  * @author dzo

@@ -8,8 +8,9 @@ import java.util.ArrayList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.DatabaseType;
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.util.ExceptionUtils;
@@ -27,10 +28,9 @@ import com.ibatis.sqlmap.client.SqlMapSession;
  * @version $Id$
  */
 public class DatabaseUtils {
-
 	private static final Log log = LogFactory.getLog(DatabaseUtils.class);
+	
 	private static final SqlMapClient client;
-	private static final SqlMapClient secondaryClient;
 
 	static {
 		// primary SqlMapClient
@@ -43,48 +43,13 @@ public class DatabaseUtils {
 			clientTmp = null;
 			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't initialize SqlMapClient");
 		}
-		client = clientTmp;		
-		
-		// secondary SqlMapClient
-		SqlMapClient secondaryClientTmp;
-		try {
-			final String secondaryResource = "SecondarySqlMapConfig.xml";
-			final Reader secondaryReader = Resources.getResourceAsReader(secondaryResource);
-			secondaryClientTmp = SqlMapClientBuilder.buildSqlMapClient(secondaryReader); 
-		} catch (final Exception ex) {
-			// fall back to primary client, if available
-			if (client != null) {
-				secondaryClientTmp = client;
-			}
-			else {
-				secondaryClientTmp = null;
-				ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't initialize SqlMapClient");
-			}
-		}
-		secondaryClient = secondaryClientTmp;		
-		
+		client = clientTmp;
 	}
 
 	/**
 	 * Returns the default SqlMap which can be used to query the database.
 	 */
 	protected static SqlMapSession getSqlMap() {
-		return client.openSession();
-	}
-	
-	/**
-	 * Returns an SqlMap for a given database type (master, slave)
-	 * @param dbType TODO
-	 */
-	@Deprecated
-	protected static SqlMapSession getSqlMap(DatabaseType dbType) {
-		if (dbType.equals(DatabaseType.MASTER)) {
-			return client.openSession();
-		}
-		if (dbType.equals(DatabaseType.SLAVE)) {
-			return secondaryClient.openSession();
-		}
-		// default
 		return client.openSession();
 	}
 

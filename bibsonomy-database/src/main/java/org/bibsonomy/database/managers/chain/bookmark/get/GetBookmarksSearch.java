@@ -3,9 +3,9 @@ package org.bibsonomy.database.managers.chain.bookmark.get;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupID;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.bookmark.BookmarkChainElement;
 import org.bibsonomy.database.params.BookmarkParam;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
 

@@ -1,8 +1,8 @@
 package org.bibsonomy.database.plugin.plugins;
 
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.BasketDatabaseManager;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
-import org.bibsonomy.database.util.DBSession;
 
 /**
  * Updates/Deletes items from the basket.

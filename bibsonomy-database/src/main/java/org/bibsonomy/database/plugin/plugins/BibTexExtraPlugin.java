@@ -1,9 +1,9 @@
 package org.bibsonomy.database.plugin.plugins;
 
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.BasketDatabaseManager;
 import org.bibsonomy.database.managers.BibTexExtraDatabaseManager;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
-import org.bibsonomy.database.util.DBSession;
 
 /**
  * This plugin takes care of additional features for BibTex posts.
