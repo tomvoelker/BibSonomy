@@ -1,10 +1,10 @@
 package org.bibsonomy.database;
 
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
-import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.database.util.DBSessionFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;

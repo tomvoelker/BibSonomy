@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.AbstractChainTest;
 import org.bibsonomy.database.managers.chain.tag.get.GetAllTags;
 import org.bibsonomy.database.managers.chain.tag.get.GetPopularTags;
@@ -19,7 +20,6 @@ import org.bibsonomy.database.managers.chain.tag.get.GetTagsByResourceSearch;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsByUser;
 import org.bibsonomy.database.managers.chain.tag.get.GetTagsViewable;
 import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;

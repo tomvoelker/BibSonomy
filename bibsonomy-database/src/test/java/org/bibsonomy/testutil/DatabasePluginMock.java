@@ -5,9 +5,9 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
 
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.plugin.AbstractDatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePlugin;
-import org.bibsonomy.database.util.DBSession;
 import org.junit.Test;
 
 /**

@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
-import org.bibsonomy.database.util.DBSession;
 
 
 

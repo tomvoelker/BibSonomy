@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.ConstantID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.enums.Order;

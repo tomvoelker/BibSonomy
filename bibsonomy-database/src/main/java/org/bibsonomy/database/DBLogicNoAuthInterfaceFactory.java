@@ -1,7 +1,7 @@
 package org.bibsonomy.database;
 
-import org.bibsonomy.database.util.DBSession;
-import org.bibsonomy.database.util.DBSessionFactory;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
