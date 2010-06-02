@@ -42,6 +42,6 @@ public class QueryTimeoutException extends RuntimeException {
 	 *            retrieval by the {@link #getMessage()} method.
 	 */
 	public QueryTimeoutException(Exception ex, String query) {
-		super(ex);
+		super(query, ex);
 	}
 }
