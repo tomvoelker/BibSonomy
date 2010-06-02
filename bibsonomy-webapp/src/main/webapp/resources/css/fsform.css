@@ -134,3 +134,13 @@
 .dissError{
 	display:none;
 }
+
+img.fsToggleExpand{
+	border:none;
+	background-image:url('resources/image/icon_expand.png');
+}
+
+img.fsToggleCollapse{
+	border:none;
+	background-image:url('resources/image/icon_collapse.png');
+}

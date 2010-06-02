@@ -344,3 +344,27 @@ function cmpClass(el, value) {
 	}
 	return false;
 }
+
+/**
+ * toggles the visibility of the content element encapsulated within the fieldset 
+ * 
+ * @param el
+ *            the toggle element that has been clicked
+ * @return 
+ */
+function toggleFieldsetVisibility(el) {
+	var content = null;
+	if((content = getNextByClass(el.parentNode, "")) == null) {
+		return;
+	}
+	
+	if((el.className.lastIndexOf('Expand') > -1)) {
+		el.parentNode.parentNode.className = "fsInner";
+		el.className = "fsToggleCollapse";
+		content.style.display = "";
+	} else {
+		el.parentNode.parentNode.className = "fsHidden";
+		el.className = "fsToggleExpand";
+		content.style.display = "none";
+	}
+}

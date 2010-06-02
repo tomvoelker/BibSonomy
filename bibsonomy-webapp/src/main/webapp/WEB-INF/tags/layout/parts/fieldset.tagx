@@ -15,11 +15,11 @@
 	<c:choose>
 		<c:when test="${maximized}">
 			<c:set var="fsClass" value="fsInner"/>
-			<c:set var="image" value="icon_collapse.png"/>
+			<c:set var="fsToggleClass" value="fsToggleCollapse"/>
 		</c:when>
 		<c:otherwise>
 			<c:set var="fsClass" value="fsHidden"/>
-			<c:set var="image" value="icon_expand.png"/>
+			<c:set var="fsToggleClass" value="fsToggleExpand"/>
 		</c:otherwise>
 	</c:choose>
 
@@ -30,7 +30,7 @@
 			<!-- 
 			   | toggle button for maximizing/minimizing this fieldset
 			   -->
-			<img class="toggler" src="${resdir}/image/${image}" border="0"/>	
+			<img class="${fsToggleClass}" onClick="toggleFieldsetVisibility(this)"/>	
 			<!-- 
 			   | legend text + extension
 			   -->
