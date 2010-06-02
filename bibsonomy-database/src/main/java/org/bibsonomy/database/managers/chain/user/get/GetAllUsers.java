@@ -3,9 +3,9 @@ package org.bibsonomy.database.managers.chain.user.get;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.user.UserChainElement;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.User;
 
 import static org.bibsonomy.util.ValidationUtils.present;
