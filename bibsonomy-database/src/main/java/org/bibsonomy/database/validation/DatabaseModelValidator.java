@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.errors.FieldLengthErrorMessage;
-import org.bibsonomy.database.util.DBSession;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.util.DatabaseSchemaInformation;
 
 /**

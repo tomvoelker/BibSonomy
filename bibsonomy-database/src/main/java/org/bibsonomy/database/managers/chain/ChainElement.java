@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.util.DBSession;
 
 /**
  * Represents one element in the chain of responsibility.

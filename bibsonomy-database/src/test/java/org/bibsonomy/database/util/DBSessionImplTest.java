@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import org.bibsonomy.database.common.impl.DBSessionImpl;
 import org.bibsonomy.testutil.JNDITestDatabaseBinder;
 import org.junit.After;
 import org.junit.Before;

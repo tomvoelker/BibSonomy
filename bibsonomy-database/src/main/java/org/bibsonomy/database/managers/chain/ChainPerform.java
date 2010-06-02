@@ -2,8 +2,8 @@ package org.bibsonomy.database.managers.chain;
 
 import java.util.List;
 
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.database.util.DBSession;
 
 /**
  * This interface encapsulates the getter for a list of T's (bookmarks,

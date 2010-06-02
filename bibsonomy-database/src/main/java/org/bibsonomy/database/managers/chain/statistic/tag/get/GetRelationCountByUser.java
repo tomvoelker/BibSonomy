@@ -3,9 +3,9 @@ package org.bibsonomy.database.managers.chain.statistic.tag.get;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.statistic.StatisticChainElement;
 import org.bibsonomy.database.params.StatisticsParam;
-import org.bibsonomy.database.util.DBSession;
 
 /**
  * Returns the number of relations for the current user.

@@ -7,10 +7,10 @@ import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForGroupAndTag;
 import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.params.beans.TagIndex;
 import org.bibsonomy.model.Tag;
 import org.junit.Test;
 

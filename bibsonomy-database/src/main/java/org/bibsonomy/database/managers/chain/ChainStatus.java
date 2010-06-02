@@ -17,14 +17,14 @@ import org.bibsonomy.database.params.GenericParam;
  * {@link ChainElement}. This way the caller would know the callee (by checking
  * it's instance) and could call the handle method himself. The latter wouldn't
  * be too bad either and this class and the extra method
- * {@link ChainElement#perform(GenericParam, org.bibsonomy.database.util.DBSession, ChainStatus)}
+ * {@link ChainElement#perform(GenericParam, org.bibsonomy.database.common.DBSession, ChainStatus)}
  * would be obsolete.<br/>
  * 
  * Another way would be an aspect (e.g. with AspectJ) with a pointcut for every
  * call to
- * {@link ChainElement#perform(GenericParam, org.bibsonomy.database.util.DBSession)}
+ * {@link ChainElement#perform(GenericParam, org.bibsonomy.database.common.DBSession)}
  * that memorizes the class which executes its
- * {@link ChainElement#handle(GenericParam, org.bibsonomy.database.util.DBSession)}
+ * {@link ChainElement#handle(GenericParam, org.bibsonomy.database.common.DBSession)}
  * method. After that one could <em>ask</em> the aspect for the result. This
  * would be very clean because we wouldn't have to change the <em>real</em>
  * code: the aspect for the tests would do it.

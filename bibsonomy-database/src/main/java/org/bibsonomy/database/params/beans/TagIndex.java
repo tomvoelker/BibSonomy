@@ -8,6 +8,7 @@ package org.bibsonomy.database.params.beans;
  * @author Christian Schenk
  * @version $Id$
  */
+@Deprecated
 public class TagIndex {
 
 	/** This name can be both a name of a tag or concept. */
