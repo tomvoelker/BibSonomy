@@ -30,6 +30,6 @@
 	<typeAlias alias="bibtexParam"        type="org.bibsonomy.lucene.database.params.BibTexParam" />
 	
 	<!-- Results -->
-	<typeAlias alias="pair"               type="org.bibsonomy.lucene.database.results.Pair" />
+	<typeAlias alias="pair"               type="org.bibsonomy.database.common.params.Pair" />
 	
 </sqlMap>
