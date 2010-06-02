@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.bibsonomy.database.common.impl.DBSessionImpl;
-import org.bibsonomy.testutil.JNDITestDatabaseBinder;
+import org.bibsonomy.database.testutil.JNDIBinder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class DBSessionImplTest {
 	 */
 	@Before
 	public void setUp() {
-		JNDITestDatabaseBinder.bind();
+		JNDIBinder.bind();
 		this.session = (DBSessionImpl) DatabaseUtils.getDBSessionFactory().getDatabaseSession();
 	}
 
@@ -35,7 +35,7 @@ public class DBSessionImplTest {
 	@After
 	public void tearDown() {
 		this.session.close();
-		JNDITestDatabaseBinder.unbind();
+		JNDIBinder.unbind();
 	}
 
 	/**

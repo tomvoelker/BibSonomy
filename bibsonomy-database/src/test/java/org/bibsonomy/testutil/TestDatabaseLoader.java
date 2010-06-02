@@ -15,6 +15,7 @@ import java.util.Scanner;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.database.DBLogic;
+import org.bibsonomy.database.testutil.JNDIBinder;
 import org.junit.Ignore;
 
 /**
@@ -167,7 +168,7 @@ public class TestDatabaseLoader {
  * @author Christian Schenk
  */
 final class SimpleJDBCHelper implements Closeable {
-	private final String configFile = "database.properties";
+	private final String configFile = "bibsonomy_database.properties";
 	private Connection connection;
 	private final DatabaseConfig cfg;
 	
@@ -226,14 +227,14 @@ final class SimpleJDBCHelper implements Closeable {
 	    } catch (IOException e) {
 	    	throw new RuntimeException("Can't get config file '" + this.configFile + "'");
 	    }		
-	    // four properties need to be set
-	    if (prop.keySet().size() != 5) {
-	    	throw new RuntimeException("Error while reading config file '" + this.configFile + "'; expected 5 values, found " + prop.keySet().size()); 
+	    // six properties need to be set
+	    if (prop.keySet().size() != 6) {
+	    	throw new RuntimeException("Error while reading config file '" + this.configFile + "'; expected 6 values, found " + prop.keySet().size()); 
 	    }
 
 		return new DatabaseConfig() {
 			public String getUrl() {
-				return prop.getProperty("url");
+				return JNDIBinder.JDBC_URL_START + prop.getProperty(JNDIBinder.HOST_KEY) + prop.getProperty(JNDIBinder.OPTIONS_KEY);
 			}
 			
 			/** Extracts the name of the database from the URL. 
@@ -243,15 +244,15 @@ final class SimpleJDBCHelper implements Closeable {
 			 * @return The name of the database.
 			 */
 			public String getDatabase() {
-				return prop.getProperty("database");
+				return prop.getProperty(JNDIBinder.DATABASE_KEY);
 			}
 
 			public String getUsername() {
-				return prop.getProperty("username");
+				return prop.getProperty(JNDIBinder.USERNAME_KEY);
 			}
 
 			public String getPassword() {
-				return prop.getProperty("password");
+				return prop.getProperty(JNDIBinder.PASSWORD_KEY);
 			}
 			
 			public boolean createDatabaseBeforeLoading() {

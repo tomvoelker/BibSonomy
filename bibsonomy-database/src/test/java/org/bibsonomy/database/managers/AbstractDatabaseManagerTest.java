@@ -6,10 +6,10 @@ import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.plugin.DatabasePlugin;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
+import org.bibsonomy.database.testutil.JNDIBinder;
 import org.bibsonomy.database.util.DatabaseManagerInitializer;
 import org.bibsonomy.database.util.IbatisDBSessionFactory;
 import org.bibsonomy.testutil.DatabasePluginMock;
-import org.bibsonomy.testutil.JNDITestDatabaseBinder;
 import org.bibsonomy.testutil.TestDatabaseLoader;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -47,7 +47,7 @@ public abstract class AbstractDatabaseManagerTest {
 	@BeforeClass
 	public static void initDatabase() {
 		// bind datasource access via JNDI
-		JNDITestDatabaseBinder.bind();
+		JNDIBinder.bind();
 		
 		TestDatabaseLoader.getInstance().load();
 		
@@ -71,7 +71,7 @@ public abstract class AbstractDatabaseManagerTest {
 	 */
 	@AfterClass
 	public static void unbind() {
-		JNDITestDatabaseBinder.unbind();
+		JNDIBinder.unbind();
 	}
 
 	/**
