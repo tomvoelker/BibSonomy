@@ -31,7 +31,7 @@ public class DBSessionImpl implements DBSession {
 	private static final Log log = LogFactory.getLog(DBSessionImpl.class);
 	
 	/** Communication with the database is done with the sqlMap */
-	public final SqlMapSession sqlMap;
+	private final SqlMapSession sqlMap;
 	/** how many commit-calls have to be made for getting the real transaction to become committed */
 	private int transactionDepth;
 	private int uncommittedDepth;
@@ -345,5 +345,12 @@ public class DBSessionImpl implements DBSession {
 		}
 		
 		return null;
+	}
+
+	/**
+	 * @return the sqlMap
+	 */
+	public SqlMapSession getSqlMapExecutor() {
+		return this.sqlMap;
 	}
 }
