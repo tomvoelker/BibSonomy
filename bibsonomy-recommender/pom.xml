@@ -33,6 +33,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-database-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-database</artifactId>
 		</dependency>
 		<dependency>
@@ -46,7 +50,6 @@
 		<dependency>
 			<groupId>org.apache.ibatis</groupId>
 			<artifactId>ibatis-sqlmap</artifactId>
-			<!-- version>2.3.4.726</version-->
 			<version>SNAPSHOT</version>
 			<classifier>r737724</classifier>
 		</dependency>
