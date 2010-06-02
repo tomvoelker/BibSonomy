@@ -388,6 +388,18 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-database-common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
+				<artifactId>bibsonomy-database-common</artifactId>
+				<version>${project.version}</version>
+				<scope>test</scope>
+				<type>test-jar</type>
+			</dependency>
+			<dependency>
+				<groupId>org.bibsonomy</groupId>
 				<artifactId>bibsonomy-model</artifactId>
 				<version>${project.version}</version>
 			</dependency>
