@@ -3,13 +3,8 @@
 
 <sqlMapConfig>
 
-	<!-- 
-		define query timeout - works only with mysql-connector-java
-		version 5.0.5+ (dbe, 20071010)
-	-->	
-	<settings
-		defaultStatementTimeout="30"
-	/>
+	<!-- define query timeout (works only with mysql-connector-java 5.0.5+) -->	
+	<settings defaultStatementTimeout="30" />
 
 	<typeAlias alias="date" type="java.util.Date" />
 	<typeAlias alias="url" type="java.net.URL" />
@@ -19,12 +14,12 @@
 	<typeAlias alias="Privlevel" type="org.bibsonomy.common.enums.Privlevel" />
 	<typeAlias alias="ProfilePrivlevel" type="org.bibsonomy.common.enums.ProfilePrivlevel" />
 
-	<typeHandler javaType="url" callback="org.bibsonomy.database.typehandler.UrlTypeHandlerCallback" />
-	<typeHandler javaType="InetAddress" callback="org.bibsonomy.database.typehandler.InetAddressTypeHandlerCallback" />
-    <typeHandler javaType="InetAddressStatus" callback="org.bibsonomy.database.typehandler.InetAddressStatusTypeHandlerCallback" />
-    <typeHandler javaType="Role" callback="org.bibsonomy.database.typehandler.RoleTypeHandlerCallback" />
-    <typeHandler javaType="Privlevel" callback="org.bibsonomy.database.typehandler.PrivlevelTypeHandlerCallback" />
-    <typeHandler javaType="ProfilePrivlevel" callback="org.bibsonomy.database.typehandler.ProfilePrivlevelTypeHandlerCallback" />
+	<typeHandler javaType="url" callback="org.bibsonomy.database.common.typehandler.UrlTypeHandlerCallback" />
+	<typeHandler javaType="InetAddress" callback="org.bibsonomy.database.common.typehandler.InetAddressTypeHandlerCallback" />
+    <typeHandler javaType="InetAddressStatus" callback="org.bibsonomy.database.common.typehandler.InetAddressStatusTypeHandlerCallback" />
+    <typeHandler javaType="Role" callback="org.bibsonomy.database.common.typehandler.RoleTypeHandlerCallback" />
+    <typeHandler javaType="Privlevel" callback="org.bibsonomy.database.common.typehandler.PrivlevelTypeHandlerCallback" />
+    <typeHandler javaType="ProfilePrivlevel" callback="org.bibsonomy.database.common.typehandler.ProfilePrivlevelTypeHandlerCallback" />
     
 	<transactionManager type="JDBC">
 		<dataSource type="JNDI">

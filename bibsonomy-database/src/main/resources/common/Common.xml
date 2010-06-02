@@ -22,7 +22,7 @@
 	    <!-- the custom type handler maps the content_type to an appropriate
 	         resource class -->
 		<result property="resource" column="content_type" javaType="Resource" 
-		typeHandler="org.bibsonomy.database.typehandler.ResourceTypeHandlerCallback" />
+		typeHandler="org.bibsonomy.database.common.typehandler.ResourceTypeHandlerCallback" />
 	</resultMap>
 
 	<resultMap id="group" class="group" groupBy="groupId">
