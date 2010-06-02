@@ -5,8 +5,7 @@ import org.bibsonomy.database.common.DBSessionFactory;
 
 import com.ibatis.sqlmap.client.SqlMapSession;
 
-/**
- * 
+/** 
  * @author dzo
  * @version $Id$
  */
