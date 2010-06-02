@@ -8,20 +8,25 @@
 	<artifactId>bibsonomy-community-servlet</artifactId>
 	<packaging>war</packaging>
 	<name>BibSonomy Community Servlet</name>
-	<version>2.0.4-SNAPSHOT</version>
+	<version>2.0.7-SNAPSHOT</version>
 	<description>
 		Web application for providing community based access to BibSonomy
 	</description>
 	<parent>
 		<artifactId>bibsonomy</artifactId>
 		<groupId>org.bibsonomy</groupId>
-		<version>2.0.4-SNAPSHOT</version>
+		<version>2.0.7-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
 			<artifactId>bibsonomy-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.bibsonomy</groupId>
+			<artifactId>bibsonomy-community</artifactId>
+			<version>2.0.7-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.bibsonomy</groupId>
