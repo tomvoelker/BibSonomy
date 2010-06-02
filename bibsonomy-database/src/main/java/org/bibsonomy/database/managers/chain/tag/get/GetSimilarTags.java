@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.TagSimilarity;
+import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.tag.TagChainElement;
 import org.bibsonomy.database.params.TagParam;
-import org.bibsonomy.database.util.DBSession;
 import org.bibsonomy.model.Tag;
 
 /**
