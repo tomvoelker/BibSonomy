@@ -79,7 +79,7 @@ public final class JNDIBinder {
 		final Set<String> names = new HashSet<String>();
 		
 		try {
-			final Enumeration<URL> resources = JNDIBinder.class.getClassLoader().getResources("/");
+			final Enumeration<URL> resources = JNDIBinder.class.getClassLoader().getResources("");
 			final URL nextElement = resources.nextElement();
 			
 			final File file = new File(nextElement.getPath());
