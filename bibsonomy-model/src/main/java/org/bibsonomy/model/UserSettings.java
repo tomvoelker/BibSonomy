@@ -69,6 +69,21 @@ public class UserSettings implements Serializable {
 	 * number of list items per page; how many posts to show in post lists
 	 */
 	private int listItemcount = 20;
+
+	/**
+	 * which resource(s) should be shown in the resource views
+	 * 0 == all
+	 * 1 == bookmark
+	 * 2 == publication 
+	 */
+	private int resourceToShow = 0;
+	
+	/**
+	 * which interface should be shown in editPublication
+	 * 0 == advanced
+	 * 1 == simple
+	 */
+	private int interFace = 0;
 	
 	/**
 	 * the default language for i18n
@@ -255,6 +270,33 @@ public class UserSettings implements Serializable {
 	 */
 	public ProfilePrivlevel getProfilePrivlevel() {
 		return profilePrivlevel;
+	}
+
+	/**
+	 * @param resourceToShow
+	 */
+	public void setResourceToShow(int resourceToShow) {
+		this.resourceToShow = resourceToShow;
+	}
+		
+	/**
+	 * @return the resourceToShow
+	 */
+	public int getResourceToShow() {
+		return resourceToShow;
+	}
+
+	/**
+	 * @param interFace
+	 */
+	public void setInterFace(int interFace) {
+		this.interFace = interFace;
+	}
+	/**
+	 * @return the interFace
+	 */
+	public int getInterFace() {
+		return interFace;
 	}
 	
 }
