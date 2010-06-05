@@ -28,6 +28,11 @@
 	<fmt:message var="generateapikey" key="settings.generateapikey"/>
 	<fmt:message var="updatesettings" key="settings.updatesettings" />
 	<fmt:message var="deleteaccount" key="settings.deleteaccount" />
+	<fmt:message var="all" key="settings.all"/>
+	<fmt:message var="bookmark" key="settings.bookmark"/>
+	<fmt:message var="publication" key="settings.publication"/>
+	<fmt:message var="advanced" key="settings.advanced"/>
+	<fmt:message var="simple" key="settings.simple"/>
 				
 	<!-- style settings -->		
 	<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
@@ -113,6 +118,25 @@
 			        <form:input cssClass="fsInput fsSmall" path="user.settings.listItemcount"/>
 			      </div>
 		         
+		         <div class="fsRow">
+			        <form:label cssClass="fsLabel" path="user.settings.resourceToShow"><fmt:message key="settings.resource.resourceToShow"/></form:label>
+			        <buttons:help message="settings.resource.resourceToShow.help"/>
+			        <form:select cssClass="fsInput fsSmall" path="user.settings.resourceToShow">
+			          <form:option label="${all}" value="0" />
+			          <form:option label="${bookmark}" value="1" />
+			          <form:option label="${publication}" value="2" />
+			        </form:select>
+			      </div>
+			      
+			      <div class="fsRow">
+			        <form:label cssClass="fsLabel" path="user.settings.interFace"><fmt:message key="settings.editPublication.interFace"/></form:label>
+			        <buttons:help message="settings.editPublication.interFace.help"/>
+			        <form:select cssClass="fsInput fsSmall" path="user.settings.interFace">
+			          <form:option label="${advanced}" value="0" />
+			          <form:option label="${simple}" value="1" />
+			        </form:select>
+			      </div>
+			      
 			      <div class="fsRow">
 			        <form:label cssClass="fsLabel" path="user.settings.defaultLanguage"><fmt:message key="settings.tag.defaultLanguage"/></form:label>
 			        <buttons:help message="settings.tag.defaultLanguage.help"/>

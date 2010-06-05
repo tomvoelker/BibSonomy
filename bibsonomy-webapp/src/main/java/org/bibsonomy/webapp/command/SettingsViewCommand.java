@@ -44,6 +44,21 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	private int changeTo;
 	
 	/**
+	 * which resource(s) should be shown in the resource views
+	 * 0 == all
+	 * 1 == bookmark
+	 * 2 == publication 
+	 */
+	private int resourceToShow = 0;
+	
+	/**
+	 * which interface should be shown in editPublication
+	 * 0 == advanced
+	 * 1 == simple
+	 */
+	private int interFace = 0;
+	
+	/**
 	 * users which added the current login user in their friend list 
 	 */
 	private List<User> friendsOfUser;
@@ -438,5 +453,33 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setGroup(Group group) {
 		this.group = group;
+	}
+
+	/**
+	 * @param resourceToShow the resourceToShow to set
+	 */
+	public void setResourceToShow(int resourceToShow) {
+		this.resourceToShow = resourceToShow;
+	}
+
+	/**
+	 * @return the resourceToShow
+	 */
+	public int getResourceToShow() {
+		return resourceToShow;
+	}
+
+	/**
+	 * @param interFace the interFace to set
+	 */
+	public void setInterFace(int interFace) {
+		this.interFace = interFace;
+	}
+
+	/**
+	 * @return the interFace
+	 */
+	public int getInterFace() {
+		return interFace;
 	}
 }

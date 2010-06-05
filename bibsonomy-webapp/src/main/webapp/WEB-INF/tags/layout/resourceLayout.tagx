@@ -78,6 +78,19 @@
 			</div>
 			<resources:bookmarks listView="${command.bookmark}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
 			<resources:bibtexs listView="${command.bibtex}" loginUserName="${command.context.loginUser.name}" disableActions="${disableActions}" disableListNavigation="${disableListNavigation}" requPath="${requPath}"/>
+					
+			<c:choose>
+				<c:when test="${command.context.loginUser.settings.resourceToShow == 1}">
+					<script>
+						javascript:expandBookmarkList();
+					</script>
+				</c:when>
+				<c:when test="${command.context.loginUser.settings.resourceToShow == 2}">
+					<script>
+						javascript:expandBibTexList();
+					</script>
+				</c:when>
+			</c:choose>
 		</jsp:attribute>
 	</layout:layout>
 </jsp:root>

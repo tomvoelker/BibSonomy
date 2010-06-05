@@ -27,7 +27,6 @@ public class HomepageController extends SingleResourceListController implements 
 		log.debug(this.getClass().getSimpleName());
 		log.info("PUMA:" + this.getClass().getSimpleName());
 		this.startTiming(this.getClass(), command.getFormat());
-
 		
 		// handle the case when only tags are requested
 		this.handleTagsOnly(command, GroupingEntity.ALL, null, null, null, null, MAX_TAGS, null);
