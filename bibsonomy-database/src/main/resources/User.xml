@@ -41,12 +41,12 @@
 							api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date,
 							spammer, updated_by, updated_at, role, to_classify, lang, tagbox_style, tagbox_sort, tagbox_minfreq, 
 							tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete,
-							tmp_password, tmp_request_date)
+							tmp_password, tmp_request_date, resource_to_show, interface)
 		SELECT user_name, user_email, user_password, user_realname, user_homepage, 
 			   	api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date, 
 				spammer, updated_by, updated_at, role, to_classify, lang, tagbox_style, tagbox_sort, tagbox_minfreq, 
 				tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete,
-				tmp_password, tmp_request_date
+				tmp_password, tmp_request_date, resource_to_show, interface
 		FROM pendingUser WHERE pendingUser.user_name = #username#
 	</insert>
 	
@@ -68,14 +68,15 @@
 			user_name, user_email, user_password, user_realname, user_homepage, 
 			api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date, 
 			spammer, updated_by, updated_at, role, to_classify, tagbox_style, tagbox_sort, tagbox_minfreq, 
-			tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete, activation_code
+			tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete, activation_code, resource_to_show, interface
 			<isNotNull property="reminderPassword">,tmp_password, tmp_request_date</isNotNull>			   
 			)
 		VALUES (
 			#name#, #email#, #password#, #realname#, #homepage#, 
 			#apiKey#, #birthday#, #gender#, #hobbies#, #interests#, #IPAddress#, #openURL#, #place#, #profession#, #registrationDate#, 
 			#spammer#,#updatedBy#, #updatedAt#, #role#, #toClassify#, #settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, 
-			#settings.tagboxMaxCount#, #settings.isMaxCount#, #settings.tagboxTooltip#, #settings.listItemcount#, #settings.logLevel#, #settings.confirmDelete#, #activationCode#
+			#settings.tagboxMaxCount#, #settings.isMaxCount#, #settings.tagboxTooltip#, #settings.listItemcount#, #settings.logLevel#, 
+			#settings.confirmDelete#, #activationCode#, #settings.resourceToShow#, #settings.interFace#
 			<isNotNull property="reminderPassword">,#reminderPassword#,#reminderPasswordRequestDate#</isNotNull>	
 			)
 	</insert>
@@ -86,14 +87,16 @@
 			user_name, user_email, user_password, user_realname, user_homepage, 
 			api_key, birthday, gender, hobbies, interests, ip_address, openurl, place, profession, reg_date, 
 			spammer, updated_by, updated_at, role, to_classify,  tagbox_style, tagbox_sort, tagbox_minfreq, 
-			tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete
+			tagbox_max_count, is_max_count, tagbox_tooltip, list_itemcount, log_level, confirmDelete,
+			resource_to_show, interface
 			<isNotNull property="reminderPassword">,tmp_password, tmp_request_date</isNotNull>			   
 			)
 		VALUES (
 			#name#, #email#, #password#, #realname#, #homepage#, 
 			#apiKey#, #birthday#, #gender#, #hobbies#, #interests#, #IPAddress#, #openURL#, #place#, #profession#, #registrationDate#, 
 			#spammer#,#updatedBy#, #updatedAt#, #role#, #toClassify#,  #settings.tagboxStyle#, #settings.tagboxSort#, #settings.tagboxMinfreq#, 
-			#settings.tagboxMaxCount#, #settings.isMaxCount#, #settings.tagboxTooltip#, #settings.listItemcount#, #settings.logLevel#, #settings.confirmDelete#
+			#settings.tagboxMaxCount#, #settings.isMaxCount#, #settings.tagboxTooltip#, #settings.listItemcount#, #settings.logLevel#, 
+			#settings.confirmDelete#, #settings.resourceToShow#, #settings.interFace#
 			<isNotNull property="reminderPassword">,#reminderPassword#,#reminderPasswordRequestDate#</isNotNull>	
 			)
 	</insert>
@@ -187,7 +190,9 @@
 		tagbox_sort = #settings.tagboxSort#,
 		tagbox_style = #settings.tagboxStyle#,
 		is_max_count = #settings.isMaxCount#,
-		confirmDelete = #settings.confirmDelete#
+		confirmDelete = #settings.confirmDelete#,
+		resource_to_show = #settings.resourceToShow#,
+		interface = #settings.interFace#
 		WHERE user_name = #name#
 	</update>
 
