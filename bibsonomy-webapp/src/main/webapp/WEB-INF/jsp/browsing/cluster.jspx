@@ -6,11 +6,15 @@
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
+	xmlns:json="urn:jsptagdir:/WEB-INF/tags/export/json"
 	xmlns:users="urn:jsptagdir:/WEB-INF/tags/users"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
+	
+	<!-- load json templates -->
+	<json:templates>${mtl:ch('nbsp')}</json:templates>
 	
 	<layout:clusterLayout pageTitle="${command.pageTitle}" command="${command}" requPath="${requPath}">
 	
@@ -21,269 +25,137 @@
 		       | ajax content loader call back functions
 		       +-->
            <script type="text/javascript">
-           	  var numberOfClusters = ${command.numberOfClusters};
-           	  var clusterSettings;
-           	  var clusterResources;
-           	  var numberOfPosts = 25;
+           		var numberOfClusters;
+           	 	var clusterSettings;
+           	  	var clusterResources;
+           	  	var numberOfPosts = 25;
+
+				var bibTexEntries   = {};
+          		var bookmarkEntries = {};
+
+           	  	/** FIXME: configure this url somewhere */
+           	  	var communityBaseUrl = "${command.communityBaseUrl}";//'/bibsonomy-community-servlet';
+          		var projectHome      = "${projectHome}";
+          		var maxClusterCount  = "${command.maxClusterCount}";           	  
               //<mtl:cdata>
               <![CDATA[
-                  /**
-                   * count number of clusters (deprecated)
-                   */
-				  function countCluster() {
-				     var clusters = document.getElementById("clusterSettings");
-				     var elements = clusters.getElementsByTagName("div");
-
-				     numberOfClusters = 0;
-					 for(i = 0; i < elements.length; i++) {
-						 if( elements[i].id.startsWith("slider") ) {
-						    numberOfClusters++;
-						 }
-					 }
-				  }
-
-                  /**
-                   * called, when new resources arrived
-                   */
-                  function loadContentCallback(response, status, xhr) {
-                  }
-
-                  /**
-                   * called, when new settings were received
-                   */
-                  function loadSettingsCallback(response, status, xhr) {
-                     function createContext(idx) {
-                    	id = idx;
-                    	return {
-                        	value: 50,
-                    		change: function(event, ui) { changeClusterWeight(id, ui.value) }
-                    	}
-                     }
-
-                     // count number of clusters
-					 // countCluster();
-
-                   	 // initialize sliders for each cluster
-                     for( i=0; i<numberOfClusters; i++ ) {
-                   	    var sliderName = "#slider"+i;
-                        $(document).ready(function() {
-                  	       $(sliderName).slider(createContext(i));
-                  	    });
-                     }
-                  }
-                  
-
-                  /**
-                   * reload resources
-                   */
-                  function reloadContent() {
-                      // build query parameters
-                      var queryParams = "";
-                      for( i=0; i<numberOfClusters; i++ ) {
-                    	  queryParams += "clusters["+i+"].clusterID="+clusterSettings.clusters[i].clusterID;
-                    	  queryParams += "&clusters["+i+"].weight="+clusterSettings.clusters[i].weight;
-                    	  if( i<numberOfClusters-1 ) {
-                        	  queryParams += "&";
-                    	  }
-                      }
-
-                	  //$('#outer').load('/bibsonomy-community-servlet/queryResources?'+queryParams, function(response, status, xhr) {loadContentCallback(response, status, xhr)});
-					  $.getJSON('/bibsonomy-community-servlet/queryResources?'+queryParams+'&format=json', function(data) {
-                    		clusterResources = data;
-                    		updateContent();
-                	  });
-                  };
-
-                  /**
-                   * re-rank given cluster resources according to user settings
-                   */
-				  function updateContent() {
-					  //readPosts(clusterResources);
-      				  //rankPostsByRandom(clusterResources);
-      				  rankPostsByWeight(clusterResources);
-          			  var bt = btTemplate.expand(bibTexEntries);
-        			  var bm = bmTemplate.expand(bookmarkEntries);
-          			  document.getElementById("bmEntries").innerHTML = bm;
-          			  document.getElementById("btEntries").innerHTML = bt;
-				  }
-                  
-                  /**
-                   * adopt current cluster settings according to user input
-                   */
-                  function changeClusterWeight(i, value) {
-                      clusterSettings.clusters[i].weight = value;
-                      updateContent();
-                  }
-
-                  /** 
-                   * fetch new cluster settings from server
-                   */
-                  function reloadSettings() {
-                	  $('#clusterSettings').load('/bibsonomy-community-servlet/clusterSettings?format=html', function(response, status, xhr) {loadSettingsCallback(response, status, xhr)});
-                	  $.getJSON('/bibsonomy-community-servlet/clusterSettings?format=json', function(data) {
-                    	  clusterSettings = data;
-                    	  var n = clusterSettings.clusters.length;
-                		});
-                  }
-              ]]> 
-             //</mtl:cdata>
-          </script>
-          <c:set var="jsonBibTexTemplate">
-              <![CDATA[
-   	      			{# This is a comment and will be removed from the output.}
-   	      			{.section items}
-   	      			  <div id="bibtexList" class="bookbox">
-   	      			  <div class="bboxheader">
-   	      			     <h2 class="listh">publications</h2>
-   	      			  </div>
-   	      			  <div class="kiste">
-					  	<span class="actions">&nbsp;</span>
-					  </div>   
-   	      			  <ul id="bibtex">
-   	      			     {.repeated section @}
-   	      			     <li class="bm cluster{clusterPos|html-attr-value}">
-	   	      			     <div class="bmtitle"><a href="/bibtex/{intraHash|html-attr-value}">{label}</a></div>
-							 <div class="bmdesc">
-							 	<span style="color: rgb(85, 85, 85);">
-								 	{.section author}
-								 	{.repeated section @}
-								 		{@|html}
-								 	{.end}
-								 	{.or}
-								 	{.end}
-								</span>
-								<em>{journal}</em>(<em>{year}</em>) 
-							 </div>
-							 <span class="bmmeta">
-							 	<span class="bmtags">
-							 		{.section tags}
-							 		{.repeated section @}
-							 		<a href="user/{user|html-attr-value}/{@|html-attr-value}">{@|html}</a>
-							 		{.end}
-							 		{.or}
-							 		{.end}
-							 	</span>
-								by <a name="{user}" href="/user/{user|html-attr-value}">{user|html}</a>
-							 </span>
-							 <div class="bmfoot">
-							    <span class="bmaction">
-							    	<a>pick</a>|
-									<a>edit</a>|
-									<a>delete</a>|
-									<a>BibTeX</a>
-								</span>
-							 </div>
-   	      			     </li>
-   	      			     {.end}
-   	      			  </table>
-   	      			  </div>
-   	      			{.or}
-   	      			  <p><em>(No page content matches)</em></p>
-   	      			{.end}					
-              ]]> 
-		  </c:set>
-          <c:set var="jsonBookmarkTemplate">
-              <![CDATA[
-   	      			{# This is a comment and will be removed from the output.}
-   	      			{.section items}
-   	      			  <div id="bibtexList" class="bookbox">
-   	      			  <div class="bboxheader">
-   	      			     <h2 class="listh">bookmarks</h2>
-   	      			  </div>   
-   	      			  <div class="kiste">
-					  	<span class="actions">&nbsp;</span>
-					  </div>   
-   	      			  <ul id="bibtex">
-   	      			     {.repeated section @}
-   	      			     <li class="bm cluster{clusterPos|html-attr-value}">
-	   	      			     <div class="bmtitle"><a href="/bibtex/{intraHash|html-attr-value}">{label}</a></div>
-							 <div class="bmdesc">
-							 	{description|html} 
-							 </div>
-							 <span class="bmmeta">
-							 	<span class="bmtags">
-							 		{.section tags}
-							 		{.repeated section @}
-							 		<a href="user/{user|html-attr-value}/{@|html-attr-value}">{@|html}</a>
-							 		{.end}
-							 		{.or}
-							 		{.end}
-							 	</span>
-								by <a name="{user}" href="/user/{user|html-attr-value}">{user|html}</a>
-							 </span>
-							 <div class="bmfoot">
-							    <span class="bmaction">
-							    	<a>pick</a>|
-									<a>edit</a>|
-								</span>
-							 </div>
-   	      			     </li>
-   	      			     {.end}
-   	      			  </table>
-   	      			  </div>
-   	      			{.or}
-   	      			  <p><em>(No page content matches)</em></p>
-   	      			{.end}					
-              ]]> 
-		  </c:set>
-          <script type="text/javascript">
-          var projectHome = "${projectHome}";
-          var jsonBibTexTemplate   = "${mtl:escapeJavaScript(jsonBibTexTemplate)}";
-	      var jsonBookmarkTemplate = "${mtl:escapeJavaScript(jsonBookmarkTemplate)}";
-	      var btTemplate = jsontemplate.Template(jsonBibTexTemplate);
- 		  var bmTemplate = jsontemplate.Template(jsonBookmarkTemplate);
-          var bibTexEntries = {};
-          var bookmarkEntries = {};
-          //<mtl:cdata>
-          <![CDATA[
-			  $(document).ready(function() {
-      		  	//write();
-   			  });
-
-			  /**
-			   * stores publications in global var bibTexEntries and bookmarks in bookmarkEntries
-			   */
-   			  function readPosts(posts) {
-   	   			  clusters = posts.clusters;
-				  bibTexEntries.items   = new Array();
-				  bookmarkEntries.items = new Array();
-				  
-   	   			  for( i=0; i<clusters.length; i++ ) {
-   	   	   			  clusterPos = clusters[i].clusterPos;
-					  bibtex     = clusters[i].bibtex;
-					  bookmarks  = clusters[i].bookmarks;
-					  for( j=0; j<bookmarks.length; j++ ) {
-						bookmarks[j].clusterPos = clusterPos;
-   	   	   				bookmarkEntries.items.push(bookmarks[j]);
-   	   	   			  };
-					  for( j=0; j<bibtex.length; j++ ) {
-						bibtex[j].clusterPos = clusterPos;  
-   	   	   	   			if( bibtex[j].journal == undefined ) {
-   	   	   	   	   			bibtex[j].journal = "";
-   	   	   	   			}
-   	   	   			    bibTexEntries.items.push(bibtex[j]);  
-   	   	   			  }
-   	   			  }
-   			  }
+				//----------------------------------------------------------
+                // resources view management 
+                //----------------------------------------------------------
+                /**
+                 * called when new resources arrived
+                 */
+                function loadContentCallback(response, status, xhr) {
+                }
 
 				/**
-				 * ensure that all required fields are defined
-				 */
-			    function normalizePost(post, clusterPos) {
-			    	post.clusterPos = clusterPos;
-	   	   	   		if( post.journal == undefined ) {
-   	   	   	   			post.journal = "";
- 	   	   	   		}
-			    }
-			    
+                 * reload resources
+                 */
+				function reloadContent() {
+					// display the waiting circle
+					startWaiting('#wait_reloadContent');
+					
+					// build query parameters
+                    var queryParams = "";
+                    for( i=0; i<numberOfClusters; i++ ) {
+                    	queryParams += "clusters["+i+"].clusterID="+clusterSettings.clusters[i].clusterID;
+                    	queryParams += "&clusters["+i+"].weight="+clusterSettings.clusters[i].weight;
+                    	if( i<numberOfClusters-1 ) {
+                        	queryParams += "&";
+                    	}
+                    }
+                    
+                	// query server for resources
+                    $.getJSON(communityBaseUrl+'/queryResources?'+queryParams+'&format=json', function(data) {
+                  		clusterResources = data;
+                  		updateContent();
+                  		
+    					// hide the waiting circle
+    					stopWaiting('#wait_reloadContent');
+					});
+				};
+				
+                /**
+                 * re-rank given cluster resources according to user settings
+                 */
+				function updateContent() {
+      				currentResourceRanking(clusterResources);
+        			
+        			var bt = renderJson(bibTexEntries, 'bibTexResourceList');
+        			var bm = renderJson(bookmarkEntries, 'bookmarkResourceList');
+        			
+          			document.getElementById("bmEntries").innerHTML = bm;
+          			document.getElementById("btEntries").innerHTML = bt;
+				}
+
+                /**
+                 * loads and renders given cluster's resources via ajax if 
+                 * necessary 
+                 */
+				function loadClusterResources(elementId, clusterPos) {
+					if( clusterResources == undefined ) {
+						alert("Clusters not loaded");
+						return;
+					} else if( clusterResources.clusters[clusterPos].bibtex == undefined ||
+							   clusterResources.clusters[clusterPos].bibtex.length == 0  ||
+							   clusterResources.clusters[clusterPos].bookmarks == undefined ||
+							   clusterResources.clusters[clusterPos].bookmarks.length == 0 ) {
+
+	                	// query server for resources
+						queryParams = "";
+	                    queryParams += "clusters[0].clusterID="+clusterResources.clusters[clusterPos].clusterID;
+	                    queryParams += "&clusters[0].weight="+clusterResources.clusters[clusterPos].weight;
+	                    queryParams += "&limit=6&offset=0";
+	                    $.getJSON(communityBaseUrl+'/queryResources?'+queryParams+'&format=json', function(data) {
+	                    	clusterResources.clusters[clusterPos].bibtex    = data.clusters[0].bibtex;
+	                    	clusterResources.clusters[clusterPos].bookmarks = data.clusters[0].bookmarks;
+
+							// turn of progress indicator
+							stopWaiting('wait_'+elementId);
+		                    
+							// render retrieved resources
+		                    var cl = renderJson(clusterResources.clusters[clusterPos], 'resourcesPreview');
+	                		document.getElementById(elementId).innerHTML = cl;
+						});
+
+
+												
+					} 
+				}
+
+                //----------------------------------------------------------
+                // resource rankings
+                //----------------------------------------------------------
+                /** all supported rankings */
+                var resourceRankings = {
+                    "weight" : rankPostsByWeight,
+					"random" : rankPostsByRandom,
+				    "date"   : rankPostsByDate
+                };
+
+                /** determines which ranking should be applied */
+                var currentResourceRanking = rankPostsByWeight;
+                
+                /**
+                 * sets the ranking to use
+                 */
+                function setRanking(rankingId) {
+                    if( rankingId in resourceRankings ) {
+                        currentResourceRanking = resourceRankings[rankingId];
+                    }
+                    reloadContent();
+                }
+                
 			    /**
 			     * display the most important resources
 			     */
 				function rankPostsByWeight(clusterResources) {
+					// helper for sorting resources
 					function weightComparator(obj1, obj2) {
 						return obj1.weight < obj2.weight ? 1 : (obj1.weight > obj2.weight ? -1 : 0)
 					};
-					
+
+					// helper for merging lists of resources 
 					function addPosts(arr1, arr2, clusterPos, weight) {
 						for( i=0; i<arr2.length; i++ ) {
 							normalizePost(arr2[i], clusterPos);
@@ -327,71 +199,149 @@
    	   	   			// finally sort posts across clusters
    	   	   			bibTexEntries.items.sort(weightComparator);
    	   	   			bookmarkEntries.items.sort(weightComparator);
+				}
+
+				/**
+				 * get a random sample of the posts
+   				 */
+				function rankPostsByRandom(clusterResources) {
+   	   				// init data structures
+   	   				clusters = clusterResources.clusters;
+					bibTexEntries.items   = new Array();
+					bookmarkEntries.items = new Array();
+   	   			  
+   	   				// read in weights from the sliders
+   	   				updateWeights();
+
+   	   				// sum up all weights for calculating sample size proportions
+   	   				weightSum = 0;
+   	   				for( i=0; i<numberOfClusters; i++ ) {
+   	   	   				weightSum += clusterSettings.clusters[i].weight;
+   	   				}
+
+   	   				// draw a random sample from each cluster, sized
+   	   				// proportional to the user given weights
+   	   				for( i=0; i<clusters.length; i++ ) {
+   	   	   				cluster = clusters[i];
+   	   	   				// create random index sequence
+   	   	   				cluster.rndBibTexSeq   = new Array();
+   	   	   				cluster.rndBookmarkSeq = new Array();
+   	   	   				
+   	   	   				// determine number of posts to sample
+   	   	   				clusterPostCount     = Math.round(numberOfPosts * (clusterSettings.clusters[i].weight/weightSum));
+   	   	   				clusterBibTexCount   = Math.min(clusterPostCount, cluster.bibtex.length);
+   	   	   		    	clusterBookmarkCount = Math.min(clusterPostCount, cluster.bookmarks.length);
+
+   	   	   		    	// create BibTex sample
+   	   	   		    	var bibtexSampleCache = new Array();
+   	   	   		    	for( j=0; j<clusterBibTexCount; j++ ) {
+   	   	   		   			var next;
+   	   	   		   			while( ( !(next = Math.floor(Math.random()*cluster.bibtex.length)) in bibtexSampleCache) ){};
+
+							bibtexSampleCache[next] = 1;
+   	   	   		   			
+   	   	   	   		    	post = cluster.bibtex[next];
+   	   	   	   		    	post.clusterPos = cluster.clusterPos;
+     	   	   	   			if( post.journal == undefined ) {
+         	   	   	   			post.journal = "";
+       	   	   	   			}
+   	   	   	   		    	bibTexEntries.items.push(post);
+   	   	   		      	}
+     	   	   		      
+   	   	   		    	// create Bookmark sample
+   	   	   		    	var bookmarkSampleCache = new Array();
+   	   	   		    	for( j=0; j<clusterBookmarkCount; j++ ) {
+   	   	   		   			var next;
+ 	   		   				while( ( !(next = Math.floor(Math.random()*cluster.bookmarks.length)) in bookmarkSampleCache) ){};
+
+ 	   		   				bookmarkSampleCache[next] = 1;
+ 	   		   			
+ 	   	   		    		post = cluster.bookmarks[next];
+ 	   	   		    		post.clusterPos = cluster.clusterPos;
+ 	   	   		    		bookmarkEntries.items.push(post);
+   	   					}
+   	   				}	
+   	   				// finally shuffle all posts
+   	   				shuffleArray(bibTexEntries.items);
+   	   				shuffleArray(bookmarkEntries.items);
    				}
 
-   			  /**
-   			   * get a random sample of the posts
-   			   */
-   			  function rankPostsByRandom(clusterResources) {
-   	   			  // init data structures
-   	   			  clusters = clusterResources.clusters;
-				  bibTexEntries.items   = new Array();
-				  bookmarkEntries.items = new Array();
+				/**
+				 * get a random sample of the posts
+   				 */
+				function rankPostsByRandom2(clusterResources) {
+   	   				// init data structures
+   	   				clusters = clusterResources.clusters;
+					bibTexEntries.items   = new Array();
+					bookmarkEntries.items = new Array();
    	   			  
-   	   			  // read in weights from the sliders
-   	   			  updateWeights();
+   	   				// read in weights from the sliders
+   	   				updateWeights();
 
-   	   			  // sum up all weights for calculating sample size proportions
-   	   			  weightSum = 0;
-   	   			  for( i=0; i<numberOfClusters; i++ ) {
-   	   	   			  weightSum += clusterSettings.clusters[i].weight;
-   	   			  }
+   	   				// sum up all weights for calculating sample size proportions
+   	   				weightSum = 0;
+   	   				for( i=0; i<numberOfClusters; i++ ) {
+   	   	   				weightSum += clusterSettings.clusters[i].weight;
+   	   				}
 
-   	   			  // draw a random sample from each cluster, sized
-   	   			  // proportional to the user given weights
-   	   			  for( i=0; i<clusters.length; i++ ) {
-   	   	   			  cluster = clusters[i];
-   	   	   			  // create random index sequence
-   	   	   			  cluster.rndBibTexSeq   = new Array();
-   	   	   			  cluster.rndBookmarkSeq = new Array();
-   	   	   			  for( j=0; j<cluster.bookmarks.length; j++ ) {
-   	   	   	   			  cluster.rndBookmarkSeq[j] = j;
-   	   	   			  };
-   	   	   			  for( j=0; j<cluster.bibtex.length; j++ ) {
-   	   	   	   			  cluster.rndBibTexSeq[j] = j;
-   	   	   			  };
-   	   	   			  shuffleArray(cluster.rndBookmarkSeq);
-   	   	   			  shuffleArray(cluster.rndBibTexSeq);
+   	   				// draw a random sample from each cluster, sized
+   	   				// proportional to the user given weights
+   	   				for( i=0; i<clusters.length; i++ ) {
+   	   	   				cluster = clusters[i];
+   	   	   				// create random index sequence
+   	   	   				cluster.rndBibTexSeq   = new Array();
+   	   	   				cluster.rndBookmarkSeq = new Array();
+   	   	   				for( j=0; j<cluster.bookmarks.length; j++ ) {
+   	   	   	   				cluster.rndBookmarkSeq[j] = j;
+   	   	   				};
+   	   	   				for( j=0; j<cluster.bibtex.length; j++ ) {
+   	   	   	   				cluster.rndBibTexSeq[j] = j;
+   	   	   				};
+   	   	   				shuffleArray(cluster.rndBookmarkSeq);
+   	   	   				shuffleArray(cluster.rndBibTexSeq);
 
-   	   	   			  // determine number of posts to sample
-   	   	   			  clusterPostCount     = Math.round(numberOfPosts * (clusterSettings.clusters[i].weight/weightSum));
-   	   	   			  clusterBibTexCount   = Math.min(clusterPostCount, cluster.bibtex.length);
-   	   	   		      clusterBookmarkCount = Math.min(clusterPostCount, cluster.bookmarks.length);
+   	   	   				// determine number of posts to sample
+   	   	   				clusterPostCount     = Math.round(numberOfPosts * (clusterSettings.clusters[i].weight/weightSum));
+   	   	   				clusterBibTexCount   = Math.min(clusterPostCount, cluster.bibtex.length);
+   	   	   		    	clusterBookmarkCount = Math.min(clusterPostCount, cluster.bookmarks.length);
 
-   	   	   		      // create BibTex sample
-   	   	   		      for( j=0; j<clusterBibTexCount; j++ ) {
-   	   	   	   		      post = cluster.bibtex[cluster.rndBibTexSeq[j]];
-   	   	   	   		      post.clusterPos = cluster.clusterPos;
-     	   	   	   		  if( post.journal == undefined ) {
-         	   	   	   		  post.journal = "";
-       	   	   	   		  }
-   	   	   	   		      bibTexEntries.items.push(post);
-   	   	   		      }
-   	   	   		      // create Bookmark sample
-   	   	   		      for( j=0; j<clusterBookmarkCount; j++ ) {
-   	   	   	   		      post = cluster.bookmarks[cluster.rndBookmarkSeq[j]];
-   	   	   	   		      post.clusterPos = cluster.clusterPos;
-   	   	   		 		  bookmarkEntries.items.push(post);
-   	   	   		      }
-   	   			  }
-   	   			  // finally shuffle all posts
-   	   			  shuffleArray(bibTexEntries.items);
-   	   			  shuffleArray(bookmarkEntries.items);
-   			  }
-   			  function rankPostsByDate(json) {
-   	   			  
-   			  }
+   	   	   		    	// create BibTex sample
+   	   	   		    	for( j=0; j<clusterBibTexCount; j++ ) {
+   	   	   	   		    	post = cluster.bibtex[cluster.rndBibTexSeq[j]];
+   	   	   	   		    	post.clusterPos = cluster.clusterPos;
+     	   	   	   			if( post.journal == undefined ) {
+         	   	   	   			post.journal = "";
+       	   	   	   			}
+   	   	   	   		    	bibTexEntries.items.push(post);
+   	   	   		      	}
+     	   	   		      
+   	   	   		    	// create Bookmark sample
+   	   	   		    	for( j=0; j<clusterBookmarkCount; j++ ) {
+   	   	   	   		    	post = cluster.bookmarks[cluster.rndBookmarkSeq[j]];
+   	   	   	   		    	post.clusterPos = cluster.clusterPos;
+   	   	   		 			bookmarkEntries.items.push(post);
+   	   	   		    	}
+   	   				}
+   	   				// finally shuffle all posts
+   	   				shuffleArray(bibTexEntries.items);
+   	   				shuffleArray(bookmarkEntries.items);
+   				}
+				/**
+   				 * display newest posts first
+   			   	 */
+   				function rankPostsByDate(clusterResources) {
+				}
 
+				/**
+				 * ensure that all required fields are defined
+				 */
+				function normalizePost(post, clusterPos) {
+					post.clusterPos = clusterPos;
+		   	   	   	if( post.journal == undefined ) {
+ 	   		   	   		post.journal = "";
+	   	   	   		}
+				}
+			    
    			  	/**
    			  	 * normalizes cluster weights for better comparibility
    			  	 */
@@ -428,235 +378,277 @@
            	   	   			  }
        	   	   			  }
        	   			  }
-     	   			  
    				}
    				
-   			  function updateWeights() {
-   				for( i=0; i<numberOfClusters; i++ ) {
-                   	sliderName = "#slider"+i;
-               	   	value = $(sliderName).slider( "option", "value" );
-               		clusterSettings.clusters[i].weight = value;
+                //----------------------------------------------------------
+                // settings view management 
+                //----------------------------------------------------------
+                /**
+                 * called when new settings were received
+                 *  - initialize slider for each received cluster
+                 */
+				function initializeSettings() {
+                    // little hack for dealing with call by reference semantics 
+					function createContext(idx) {
+                    	id = idx;
+                    	return {
+                        	value: 50,
+                    		change: function(event, ui) { changeClusterWeight(id, ui.value) }
+                    	}
+					}
+
+					// initialize sliders for each cluster
+                    for( i=0; i<numberOfClusters; i++ ) {
+                   		var sliderName = "#slider"+i;
+                        $(document).ready(function() {
+                  	    	$(sliderName).slider(createContext(i));
+                  	    });
+					}
+				}
+
+				/**
+                 * adopt current cluster settings according to user input
+                 */
+                function changeClusterWeight(i, value) {
+                    clusterSettings.clusters[i].weight = value;
+                    updateContent();
                 }
-   			  }
-   			  
-   			function shuffleArray ( myArray ) {
-   			  i = myArray.length;
-   			  if ( i == 0 ) return false;
-   			  while ( --i ) {
-   			     var j = Math.floor( Math.random() * ( i + 1 ) );
-   			     var tempi = myArray[i];
-   			     var tempj = myArray[j];
-   			     myArray[i] = tempj;
-   			     myArray[j] = tempi;
-   			   }
-   			}
 
-   			function write() {
-       			var t = jsontemplate.Template(jsonBibTexTemplate);
-       			var u = jsontemplate.Template(jsonBookmarkTemplate);
-      			var test = {
-				   "items" : [
-				      {  
-				         "type" : "Publication",
-				         "id"   : "http://www.biblicious.org/bibtex/20214f2e7e3f71d81109dd70a7015e542/kurtjx",
-				         "intraHash" : "0214f2e7e3f71d81109dd70a7015e542",
-				         "label" : "Statistical mechanics of complex networks",
-				         "user" : "kurtjx",
-				         "description" : "",
-				         "date" : "2008-04-11 06:29:02",
-				         "count" : 0,
-				         "tags" : [ "tag1", "tag2", "tag3"
-				         ],
-				         "pub-type": "article",
-				         "journal": "Rev. Mod. Phys.","publisher":"American Physical Society",
-				         "year": "2002", 
-				         "url": "", 
-				         
-				         "author": [ 
-				            "R\\'eka Albert","Albert-L\\'aszl\\'o Barab\\'asi"
-				         ],
-				         "volume": "74","number": "1","pages": "47--97",
-				         "bibtexKey": "RevModPhys.74.47"
-				      }
+				/** 
+				 * read in values from cluster sliders and stores them globally
+				 */
+     			function updateWeights() {
+     	   			for( i=0; i<numberOfClusters; i++ ) {
+     	            	sliderName = "#slider"+i;
+     	               	value = $(sliderName).slider( "option", "value" );
+     	               	clusterSettings.clusters[i].weight = value;
+					}
+     	   		}
 
-				   ]
-				};
-      			var json = {
-      					"types" : {
-				      "Bookmark" : {
-				         "pluralLabel" : "Bookmarks"
-				      },
-				      "Publication" : {
-				         "pluralLabel" : "Publications"
-				      },
-				      "Tag" : {
-				         "pluralLabel" : "Tags"
-				      }
-				   },
-				   
-				   "properties" : {
-				      "count" : {
-				         "valueType" : "number"
-				      },
-				      "date" : {
-				         "valueType" : "date"
-				      },
-				      "url" : {
-				         "valueType" : "url"
-				      },
-				      "id" : {
-				         "valueType" : "url"
-				      },
-				      "tags" : {
-				         "valueType" : "item"
-				      },
-				      "user" : {
-				         "valueType" : "item"
-				      }      
-				   },
-				   
-				   "items" : [
-				      
-				      {  
-				         "type" : "Bookmark",
-				         "id"   : "http://www.biblicious.org/url/ae206e8daf59b4566ed8abcedc548448/lisher",
-				         "intraHash" : "ae206e8daf59b4566ed8abcedc548448",
-				         "label" : "Dokumentation zu Yahoo Pipes",
-				         "user" : "lisher",
-				         "description" : "Umfassende Dokumentation inclusive Tutorials und Informationen über die einzelnen Module. Erklärt auch, was Pipes überhaupt sind. Ganz interessant und gut erklärt, allerdings für einen Anfänger ohne Grundlagenkenntnisse über Feeds etc. ein bisschen unübersichtlich",
-				         "date" : "2007-11-02 11:56:43",
-				         "count" : 0,
-				         "tags" : [
-				            "fhhdb07"
-				         ],
-				         "url" : "http://pipes.yahoo.com/pipes/docs"
-				      },
-				      {  
-				         "type" : "Bookmark",
-				         "id"   : "http://www.biblicious.org/url/dd0a62f05d0bb55c7a202ca7db7ad262/lisher",
-				         "intraHash" : "dd0a62f05d0bb55c7a202ca7db7ad262",
-				         "label" : "Yahoo Pipes, eine Einführung",
-				         "user" : "lisher",
-				         "description" : "Sehr hilfreich, gut für absolute Anfänger geeignet. Kleinschrittige Erklärungen helfen weiter. Viele Beispiele, außerdem wird ganz gut grundsätzlich erklärt, worum es geht.",
-				         "date" : "2007-11-02 11:58:41",
-				         "count" : 0,
-				         "tags" : [
-				            "fhhdb07"
-				         ],
-				         "url" : "http://guxx.de/2007/08/15/yahoo-pipes-eine-einfuhrung/"
-				      },
-				      {  
-				         "type" : "Bookmark",
-				         "id"   : "http://www.biblicious.org/url/4554bd47be4128109cb1ccb3aab0d6c3/lisher",
-				         "intraHash" : "4554bd47be4128109cb1ccb3aab0d6c3",
-				         "label" : "allegro-C: Software für Bibliotheken",
-				         "user" : "lisher",
-				         "description" : "Homepage von Allegro-C",
-				         "date" : "2007-11-03 04:31:08",
-				         "count" : 0,
-				         "tags" : [
-				            "allegro-c"
-				         ],
-				         "url" : "http://www.allegro-c.de/"
-				      },
-				      {  
-				         "type" : "Bookmark",
-				         "id"   : "http://www.biblicious.org/url/63616463333adc05d1196b0b8bfceb4c/lisher",
-				         "intraHash" : "63616463333adc05d1196b0b8bfceb4c",
-				         "label" : "Schulungsmaterial allegro-c",
-				         "user" : "lisher",
-				         "description" : "",
-				         "date" : "2007-11-03 04:33:07",
-				         "count" : 0,
-				         "tags" : [
-				            "allegro-c"
-				         ],
-				         "url" : "http://www.andreaswolfconsulting.de/allegro-schulungsmaterial.html"
-				      },
-				      {  
-				         "type" : "Publication",
-				         "id"   : "http://www.biblicious.org/bibtex/26a324ad689b027f1882a9fc98dca1410/kurtjx",
-				         "intraHash" : "6a324ad689b027f1882a9fc98dca1410",
-				         "label" : "Mixing patterns in networks",
-				         "user" : "kurtjx",
-				         "description" : "",
-				         "date" : "2008-03-23 04:56:08",
-				         "count" : 0,
-				         "tags" : [
-				            "assortativity"
-				         ],
-				         "pub-type": "article",
-				         "journal": "Physical Review E",
-				         "year": "2003", 
-				         "url": "http://www.citebase.org/abstract?id=oai:arXiv.org:cond-mat/0209450", 
-				         
-				         "author": [ 
-				            "M. E. J. Newman"
-				         ],
-				         "volume": "67","pages": "026126","abstract": "We study assortative mixing in networks, the tendency for vertices in networks to be connected to other vertices that are like or unlike them in some way. We consider mixing according to discrete characteristics such as language or race in social networks and scalar characteristics such as age. As a special example of the latter we consider mixing according to vertex degree, i.e., according to the number of connections vertices have to other vertices: do gregarious people tend to associate with other gregarious people? We propose a number of measures of assortative mixing appropriate to the various mixing types, and apply them to a variety of real-world networks, showing that assortative mixing is a pervasive phenomenon found in many networks. We also propose several models of assortatively mixed networks, both analytic ones based on generating function methods, and numerical ones based on Monte Carlo graph generation techniques. We use these models to probe the properties of networks as their level of assortativity is varied. In the particular case of mixing by degree, we find strong variation with assortativity in the connectivity of the network and in the resilience of the network to the removal of vertices.",
-				         "bibtexKey": "newman-assort-2003"
-				      },
-				      {  
-				         "type" : "Publication",
-				         "id"   : "http://www.biblicious.org/bibtex/20214f2e7e3f71d81109dd70a7015e542/kurtjx",
-				         "intraHash" : "0214f2e7e3f71d81109dd70a7015e542",
-				         "label" : "Statistical mechanics of complex networks",
-				         "user" : "kurtjx",
-				         "description" : "",
-				         "date" : "2008-04-11 06:29:02",
-				         "count" : 0,
-				         "tags" : [
-				            "complexnets_survey"
-				         ],
-				         "pub-type": "article",
-				         "journal": "Rev. Mod. Phys.","publisher":"American Physical Society",
-				         "year": "2002", 
-				         "url": "", 
-				         
-				         "author": [ 
-				            "R\\'eka Albert","Albert-L\\'aszl\\'o Barab\\'asi"
-				         ],
-				         "volume": "74","number": "1","pages": "47--97",
-				         "bibtexKey": "RevModPhys.74.47"
-				      }
+                /** 
+                 * fetch new cluster settings from server
+                 */
+                function reloadSettings() {
+                    reloadSettings(false);
+                }
+                
+                /** 
+                 * fetch new cluster settings from server
+                 */
+                function reloadSettings(loadContentFlag) {
+                    startWaiting('#wait_reloadSettings');
+					// fetch json cluster settings
+					$.getJSON(communityBaseUrl+'/clusterSettings?format=json', function(data) {
+                  		clusterSettings = data;
+                  		normalizeClusterSettings(clusterSettings.clusters);
+                  		
+                  		numberOfClusters = clusterSettings.clusters.length;
 
-				   ]
-				};
-				readPosts(json);
-      			var bm = u.expand(bookmarkEntries);
-      			var bt = t.expand(bibTexEntries);
-      			document.getElementById("bmEntries").innerHTML = bm;
-      			document.getElementById("btEntries").innerHTML = bt;
-    		  }
-              ]]> 
-              //</mtl:cdata>
-           </script>
+                  		// render cluster representation
+                  		var cl = renderJson(data, 'clusterSettings');
+                		document.getElementById("clusterSettings").innerHTML = cl;
+
+                		// render sliders
+                		initializeSettings();
+                		
+                        stopWaiting('#wait_reloadSettings');
+
+                        // reload resources if needed
+                        if( loadContentFlag ) {
+                            reloadContent();
+                        }
+
+                        if( clusterSettings.clusters.length < maxClusterCount ) {
+                        	$('#addClustersNavigation').show();
+                        } else {
+                        	$('#addClustersNavigation').hide();
+                        }
+              		});
+                }
+
+
+                /**
+                 * fills and calculates all needed attributes for cluster settings 
+                 */
+                function normalizeClusterSettings(clusters) {
+ 	          		for( var i=0; i<clusters.length; i++ ) {
+ 	 	          		clusters[i]['clusterPos'] = i;
+ 	          		}
+                }
+                
+                /**
+                 * fills and calculates all needed attributes for tag clouds
+                 */
+                function normalizeTags(clusters) {
+             		// calculate maxTagCounts
+	          		for( var i=0; i<clusters.length; i++ ) {
+    	          		var maxTagCount = -1;
+        	      		for( var j=0; j<clusters[i].tags.length; j++ ) {
+            	  			if( maxTagCount < clusters[i].tags[j].globalcount ) {
+                	  			maxTagCount = clusters[i].tags[j].globalcount;
+              				}
+	              		}
+    	          		for( var j=0; j<clusters[i].tags.length; j++ ) {
+        	      			clusters[i].tags[j]['maxTagCount'] = maxTagCount;
+            	  		}
+          			}
+                 }
+
+                //----------------------------------------------------------
+                // cluster view navigation
+                //----------------------------------------------------------
+                /**
+                 * resets viex index for displaying all clusters from the beginning
+                 */
+                function resetClusterView() {
+                    if( clusterResources != undefined && 'listView' in clusterResources ) {
+                        delete clusterResources.listView;
+                    }
+                 }
+                
+                /**
+                 * show cluster overview 
+                 */
+                function showClusterPage() {
+                    if( clusterResources != undefined && clusterResources.listView != undefined ) {
+                        limit =  clusterResources.listView.limit;
+                        offset = clusterResources.listView.offset;
+                    	showClusters(offset, limit);
+                    } else {
+                    	showClusters(0, 6);
+                    }
+                }
+                  
+                /**
+                 * show cluster overview 
+                 */
+                function showClusters(offset, limit) {
+  					alert("Limit: "+limit+" / Offset: " + offset);
+  					startWaiting('#wait_showClusterPage'); 
+                	$.getJSON(communityBaseUrl+'/clusterList?limit='+limit+'&offset='+offset+'&format=json', function(data) {
+                    	clusterResources = data;
+
+                        normalizeTags(clusterResources.clusters);
+                    	
+                        var cl = renderJson(data, 'clusterOverview');
+                		document.getElementById("bmEntries").innerHTML = cl;
+                		document.getElementById("btEntries").innerHTML = "";
+
+                		stopWaiting('#wait_showClusterPage');
+					});
+				}
+
+                /**
+                 * show next cluster page
+                 */
+                function showNextClusters() {
+                    var limit  = clusterResources.listView.limit; 
+  					var offset = 1.0*clusterResources.listView.offset + 1.0*limit;
+
+  					showClusters(offset, limit);					
+				}
+
+                /**
+                 * show previous cluster page
+                 */
+                function showPreviousClusters() {
+                    var limit  = clusterResources.listView.limit; 
+  					var offset = clusterResources.listView.offset - 1.0*limit;
+
+  					showClusters(offset, limit);					
+				}
+
+				/**
+				 * resource view for cluster tooltips
+				 */
+				 function showClusterTooltip(cluster) {
+				 }
+                  
+                //----------------------------------------------------------
+                // common helper functions
+                //----------------------------------------------------------
+  				function shuffleArray ( myArray ) {
+					i = myArray.length;
+       	   			if ( i == 0 ) return false;
+       	   			while ( --i ) {
+       	   			   var j = Math.floor( Math.random() * ( i + 1 ) );
+       	   			   var tempi = myArray[i];
+       	   			   var tempj = myArray[j];
+       	   			   myArray[i] = tempj;
+       	   			   myArray[j] = tempi;
+       	   			}
+       	   		}
+
+                /**
+                 * shows given waiting elements
+                 */
+       	   		function startWaiting(elementId) {
+       	   			$(elementId).show()
+       	   		}
+
+                /**
+                 * hides given waiting elements
+                 */
+       	   		function stopWaiting(elementId) {
+       	   			$(elementId).hide()
+       	   		}
+
+                /**
+                 * initializes
+                 */
+       	   		function setUp() {
+       	   			reloadSettings(true);
+       	   			reloadContent();
+       	   		}
+
+       	   		// 'main'
+   	       	   	$(document).ready(function() {
+   	      	    	setUp();
+   	      	    });
+              ]]>
+             //</mtl:cdata>
+          </script>
+		  
 		</jsp:attribute>
 		
 		<jsp:attribute name="headerExt">
 			<!--  style sheets for slidebars -->
-			<link href="/bibsonomy-community-servlet/resources/css/ui-lightness/jquery-ui-1.8.1.custom.css" rel="stylesheet" type="text/css"/>
+			<link href="${command.communityBaseUrl}/resources/css/ui-lightness/jquery-ui-1.8.1.custom.css" rel="stylesheet" type="text/css"/>
 
 			<!--  coloring according to clustering -->
-			<link href="/bibsonomy-community-servlet/resources/css/clusterViews.css" rel="stylesheet" type="text/css"/>
+			<link href="${command.communityBaseUrl}/resources/css/clusterViews.css" rel="stylesheet" type="text/css"/>
 			
 			<!--  script for slidebars -->
-			<script type="text/javascript" src="/bibsonomy-community-servlet/resources/javascript/jquery-ui-1.8.1.custom.min.js">&amp;nbsp;</script>	
-
+			<script type="text/javascript" src="${command.communityBaseUrl}/resources/javascript/jquery-ui-1.8.1.custom.min.js">&amp;nbsp;</script>	
+				
 			<!--  script for json templates -->
 			<script type="text/javascript" src="${resdir}/javascript/json-template.js">&amp;nbsp;</script>	
-			
+
 		</jsp:attribute>
 		
 		<jsp:attribute name="sidebar">
-			<div id="clusterSettings"><c:out value=" "/></div>
 			
 			<ul id="sidebar">
 				<li>
+					<a onclick="setRanking('random')">Random Sample</a> | 
+					<a onclick="setRanking('weight')">Sort by relevance</a> | 
+					<a onclick="setRanking('date')">Sort by date</a>
+				</li>
+				<li>
 					<a onclick="reloadContent()">Update Resources</a>
+					<img  id="wait_reloadContent" alt="loading resources..." src="${command.communityBaseUrl}${resdir}/image/ajax-loader2.gif" style="display: none;"/>
 				</li>
 				<li>
 					<a onclick="reloadSettings()">Update Settings</a>
+					<img  id="wait_reloadSettings" alt="loading resources..." src="${command.communityBaseUrl}${resdir}/image/ajax-loader2.gif" style="display: none;"/>
+				</li>
+				<li>
+					<div id="clusterSettings"><c:out value=" "/></div>
+				</li>
+				
+				<li id="addClustersNavigation">
+					<a onclick="resetClusterView();showClusterPage()">Add Communities</a>
+					<img  id="wait_showClusterPage" alt="loading resources..." src="${command.communityBaseUrl}${resdir}/image/ajax-loader2.gif" style="display: none;"/>
 				</li>
 			</ul>
 
