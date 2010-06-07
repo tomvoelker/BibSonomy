@@ -74,6 +74,12 @@ public class BibTexUtils {
 	 * all fields from the resource) 
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_DESCRIPTION = "description";
+
+	/**
+	 * This field from the post is added to the BibTeX string (in addition to 
+	 * all fields from the resource) 
+	 */
+	public static final String ADDITIONAL_MISC_FIELD_ADDED_AT = "added-at";
 	
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
@@ -95,7 +101,8 @@ public class BibTexUtils {
 		ADDITIONAL_MISC_FIELD_DESCRIPTION,
 		ADDITIONAL_MISC_FIELD_KEYWORDS,
 		ADDITIONAL_MISC_FIELD_BIBURL,
-		ADDITIONAL_MISC_FIELD_PRIVNOTE
+		ADDITIONAL_MISC_FIELD_PRIVNOTE,
+		ADDITIONAL_MISC_FIELD_ADDED_AT 
 	};
 	
 	/**
@@ -440,11 +447,16 @@ public class BibTexUtils {
 		 * add additional fields.
 		 *  
 		 * ATTENTION: if you add fields here, you have to add them also 
-		 * in SimpleBibTeXParser.updateWithParsedBibTeX!
+		 * (in SimpleBibTeXParser.updateWithParsedBibTeX!)
+		 * in ADDITIONAL_MISC_FIELDS. Thus when someone enters a bibtex field with the 
+		 * name of your added field, it will not be stored in the misc section.
 		 */
 		bib.addMiscField(ADDITIONAL_MISC_FIELD_KEYWORDS, TagUtils.toTagString(post.getTags(), " "));
 		if (present(post.getDescription())) {
 			bib.addMiscField(ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());
+		}
+		if (present(post.getDate())) {
+			bib.addMiscField(ADDITIONAL_MISC_FIELD_ADDED_AT, post.getDate().toString());
 		}
 		return toBibtexString(bib, mode);
 	}
