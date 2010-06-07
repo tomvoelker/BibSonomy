@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -232,6 +233,10 @@ public class LibrarythingScraper extends AbstractUrlScraper {
 			resultBibtex.append("\turl = {" + url + "},\n");
 
 		String bibResult = resultBibtex.toString();
+		
+		// need to unscaped the html entities since they use them on their page
+		bibResult = StringEscapeUtils.unescapeHtml(bibResult);
+		
 		bibResult = bibResult.substring(0, bibResult.length()-2) + "\n}\n";
 
 		sc.setBibtexResult(bibResult);

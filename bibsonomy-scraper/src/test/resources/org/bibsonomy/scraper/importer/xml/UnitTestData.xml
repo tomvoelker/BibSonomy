@@ -91,7 +91,7 @@
 	</URLTest>
 	<URLTest id="url_15">
 		<TestDescription>Scraping test for publications from ingentaconnect.com</TestDescription>
-		<URL>http://www.ingentaconnect.com/search/article?title=pagerank&amp;title_type=tka&amp;year_from=1998&amp;year_to=2007&amp;database=1&amp;pageSize=20&amp;index=2</URL>
+		<URL>http://www.ingentaconnect.com/search/article?title=pagerank&amp;title_type=tka&amp;year_from=1998&amp;year_to=2007&amp;database=1&amp;pageSize=20&amp;index=3</URL>
 		<BibFile>IngentaconnectScraperUnitURLTest1.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
 	</URLTest>
@@ -1001,7 +1001,7 @@
 	</URLTest>
 	<URLTest id="url_169">
 		<TestDescription>Scraping test for publications from ingentaconnect.com</TestDescription>
-		<URL>http://www.ingentaconnect.com/search/article?title=google&amp;title_type=tka&amp;year_from=1998&amp;year_to=2009&amp;database=1&amp;pageSize=20&amp;index=3</URL>
+		<URL>http://www.ingentaconnect.com/search/article?title=google&amp;title_type=tka&amp;year_from=1998&amp;year_to=2009&amp;database=1&amp;pageSize=20&amp;index=4</URL>
 		<BibFile>IngentaconnectScraperUnitURLTest2.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.ingenta.IngentaconnectScraper</Scraper>
 	</URLTest>
