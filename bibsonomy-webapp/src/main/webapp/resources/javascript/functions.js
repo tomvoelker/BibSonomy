@@ -732,9 +732,10 @@ function xget_event (event) {
 	 * @return result list
 	 */
 	function populateSuggestionsFromJSON(json) {
-		// parse JSON into 'associative array'-object
-		var data = eval( "(" + json + ")" );
-		var tagCloud = data.items;
+		// if there's no data we don't need to proceed
+		if(parseInt(json.items.length) == 0)
+			return;
+		var tagCloud = json.items;
 		
 		// construct array from object such that sorting functions can be applied 
 		var tagList = [];

@@ -184,10 +184,10 @@
                 // get user's tags for suggestions
                 $.ajax({
                     type: "GET",
-                    url: "/json/tags/user/" + encodeURIComponent(userName) + "?tagcloud.maxCount=100000",
-                    data: "",
-                    success: function(data){
-                       populateSuggestionsFromJSON(data);
+                    url: "http://www.bibsonomy.org/json/tags/user/" + encodeURIComponent(userName) + "?tagcloud.maxCount=100000",
+                    dataType: "jsonp",
+                    success: function(json){
+                       populateSuggestionsFromJSON(json);
                     }
                 });
           
