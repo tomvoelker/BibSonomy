@@ -775,7 +775,8 @@ public class DBAccess implements DBLogic {
 		if( settingId==null ) {
 			log.debug("Given setting not found -> adding new");
 			settingId = (Long) sqlMap.insert("addRecommenderSetting", setting);
-			sqlMap.insert("createStatusForNewRecommender", settingId);    			
+			setting.setSetting_id(settingId);
+			sqlMap.insert("createStatusForNewRecommender", setting);
 			log.debug("Setting and status added @" + settingId);
 		} else {
 			log.debug("Given setting found in DB at " + settingId +" -> setting status to 'active'");
