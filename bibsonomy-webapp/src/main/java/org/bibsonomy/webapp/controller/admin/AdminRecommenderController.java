@@ -1,7 +1,6 @@
 package org.bibsonomy.webapp.controller.admin;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,12 +15,11 @@ import org.bibsonomy.model.User;
 import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.recommender.tags.TagRecommenderConnector;
-import org.bibsonomy.recommender.tags.WebserviceTagRecommender;
 import org.bibsonomy.recommender.tags.database.DBAccess;
 import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
-import org.bibsonomy.recommender.tags.database.params.RecSettingParam;
 import org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender;
 import org.bibsonomy.services.recommender.TagRecommender;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.admin.AdminRecommenderViewCommand;
 import org.bibsonomy.webapp.command.admin.AdminRecommenderViewCommand.Tab;
 import org.bibsonomy.webapp.util.MinimalisticController;
@@ -39,12 +37,17 @@ import org.bibsonomy.webapp.view.Views;
 
 
 public class AdminRecommenderController implements MinimalisticController<AdminRecommenderViewCommand>{
+	private static final String CMD_EDITRECOMMENDER 		 = "editRecommender";
+	private static final String CMD_UPDATE_RECOMMENDERSTATUS = "updateRecommenderstatus";
+	private static final String CMD_REMOVERECOMMENDER        = "removerecommender";
+	private static final String CMD_ADDRECOMMENDER           = "addrecommender";
 	private static final Log log = LogFactory.getLog(AdminRecommenderController.class);
 	private static final DBAccess db = (DBAccess)DBAccess.getInstance(); 
 	
 	private LogicInterface logic;
 	private UserSettings userSettings;
 	private MultiplexingTagRecommender mp;
+	private List<TagRecommender> localRecommenders;
     
 	
 	/** 
@@ -54,7 +57,8 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		List<Long> recs = null;
 		try{
 			recs = db.getActiveRecommenderSettingIds();
-			addRecommendersToMultiplexer(recs);
+			for(Long sid: recs)
+				mp.addAbstractRecommender(sid);
 		}
 		catch(SQLException e){
 		    log.debug("Couldn't initialize multiplexer! ", e);
@@ -68,7 +72,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		
 		Tab tab = Tab.values()[command.getTab()];
 		
-		log.debug("ACTIVE TAB: " + tab + " -> " + command.getTabDescription());
+		log.info("ACTIVE TAB: " + tab + " -> " + command.getTabDescription());
 		
 		/* Check user role
 		 * If user is not logged in or not an admin: show error message */
@@ -85,16 +89,13 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		if(command.getAction() == null){
 			// Do nothing
 	    }   // Add
-		    // TODO: set recommender to be inactive when added?
-		else if(command.getAction().equals("addrecommender")){
+		else if(command.getAction().equals(CMD_ADDRECOMMENDER)){
 			try{
-				String newUrl = command.getNewrecurl();
-				if(newUrl.indexOf(' ') != -1)
-					throw new MalformedURLException();
-				URL recUrl = new URL(command.getNewrecurl());
+				if(!UrlUtils.isValid(command.getNewrecurl())) throw new MalformedURLException();
+				
 			    Long sid = db.insertRecommenderSetting(command.getNewrecurl(), "Webservice", command.getNewrecurl().getBytes());
 			    
-				addRecommenderToMultiplexer(sid);
+			    mp.addAbstractRecommender(sid);
 				command.setAdminResponse("Successfully added and activated new recommender with setting_id "+sid+"!");
 			}
 			catch(MalformedURLException e){
@@ -108,8 +109,8 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 			command.setTab(Tab.ADD);
 			
 		} // Remove
-		else if(command.getAction().equals("removerecommender")){
-			removeRecommenderFromMultiplexer(command.getDeletesid());
+		else if(command.getAction().equals(CMD_REMOVERECOMMENDER)){
+			mp.removeAbstractRecommender(command.getDeletesid());
 			
 			//update database
 			try{
@@ -127,44 +128,28 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		 * Store activation/deactivation-settings in the database;
 		 * remove from/add to multiplexer 
 		*/
-		else if(command.getAction().equals("updateRecommenderstatus")){
-
-			try{
-				// Update multiplexer
-				if(command.getActiveRecs() != null)
-					addRecommendersToMultiplexer(command.getActiveRecs());
-				if(command.getDisabledRecs() != null)
-					removeRecommendersFromMultiplexer(command.getDisabledRecs());
-				
-				// Update database 
-			    db.updateRecommenderstatus(command.getActiveRecs(), command.getDisabledRecs());
-
-				//return new ExtendedRedirectView("/admin/recommender?action=activate");
-				command.setTab(Tab.ACTIVATE);
-				command.setAdminResponse("Successfully Updated Recommenderstatus!");
-				
-			} catch(SQLException e){
-				log.debug(e);
-				command.setAdminResponse("Error updating recommenderstatus: Could not store data!");
-			}
-
+		else if(command.getAction().equals(CMD_UPDATE_RECOMMENDERSTATUS)){
+			
+			for(Long sid: command.getActiveRecs())
+				mp.addAbstractRecommender(sid);
+			for(Long sid: command.getDisabledRecs())
+				mp.removeAbstractRecommender(sid);
+			command.setTab(Tab.ACTIVATE);
+			command.setAdminResponse("Successfully Updated Recommenderstatus!");
 		}
 
 		/*
 		 * Change the url of a recommender
 		*/
-		else if(command.getAction().equals("editRecommender")){
+		else if(command.getAction().equals(CMD_EDITRECOMMENDER)){
 			try{
-				//TODO: better URL-check
-				String newUrl = command.getNewrecurl();
-				if(newUrl.indexOf(' ') != -1)
-					throw new MalformedURLException();
-				URL recUrl = new URL(command.getNewrecurl());
+				if(!UrlUtils.isValid(command.getNewrecurl())) throw new MalformedURLException();
+				URL newRecurl = new URL(command.getNewrecurl());
 
 				long sid = command.getDeletesid();
-				removeRecommenderFromMultiplexer(sid);
-				db.updateRecommenderUrl(command.getDeletesid(), recUrl);
-				addRecommenderToMultiplexer(sid);
+				mp.removeAbstractRecommender(sid);
+				db.updateRecommenderUrl(command.getDeletesid(), newRecurl);
+				mp.addAbstractRecommender(sid);
 				
 				command.setAdminResponse("Successfully Updated Recommenderurl!");
 			}
@@ -221,15 +206,10 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		 * store in command.activeRecs/command.disabledRecs
 		 */
 		else if((int)command.getTab() == Tab.ACTIVATE.ordinal()){
-			//if(command.getActiveRecommenders() == null && command.getDisabledRecommenders() == null){
 			    try{
 			      Map<Long, String> activeRecs   = db.getRecommenderIdsForSettingIds(db.getActiveRecommenderSettingIds());
 			      Map<Long, String> disabledRecs = db.getRecommenderIdsForSettingIds(db.getDisabledRecommenderSettingIds());
 			      
-			      /*
-			      command.setActiveRecs(db.getActiveRecommenderSettingIds());
-			      command.setDisabledRecs(db.getDisabledRecommenderSettingIds());
-			      */
 			      command.setActiveRecommenders(activeRecs);
 			      command.setDisabledRecommenders(disabledRecs);
 			      
@@ -237,13 +217,11 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 			    catch(SQLException e){
 				    log.debug(e);
 			    }
-			//}
 		}
 		/*
 		 * Remove or add distant recommenders.
 		 * Deleted recommender will get a seperate status-value in the database
 		 */
-		// TODO: add recommenderid to settingid
 		else if((int)command.getTab() == Tab.ADD.ordinal()){
 			try{
 		      
@@ -283,119 +261,9 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 	public void setMultiplexingTagRecommender(MultiplexingTagRecommender mp){
 		this.mp = mp;
 	}
-
-	
-	/** Find the position of a setting in the multiplexer's recommenderlist. 
-	 * @param list list of TagRecommenderConnectors
-	 * @param setting RecSettingParam to search for
-	 * @return index of the setting, -1 if it is not in the list  
-	 */
-	private int findSettingIndex(List<TagRecommenderConnector> list, RecSettingParam setting){
-		int i = -1;
-		for(TagRecommenderConnector p: list){
-		    i++;
-			//compare recID
-			if(p.getId().equals(setting.getRecId())){
-				byte[] meta1 = setting.getRecMeta();
-				byte[] meta2 = p.getMeta();
-				
-				//compare meta-data
-				if(meta1.length != meta2.length) continue;
-				for(int j=0; j<meta1.length; j++)
-					if(meta1[j] != meta2[j]) continue;
-				
-				//recommender with same rec_id and meta already exists 
-				return i;
-			}
-		}
-		//recommender was not found
-		return -1;
+	/** @param localRecommenders */
+	public void setLocalRecommenders(List<TagRecommender> localRecommenders){
+		this.localRecommenders = localRecommenders;
 	}
-	
-	/** Get information for a setting-id from the database
-	 *  @param id Setting_id of the recommender
-	 *  @return new RecSettingParam-object for this setting_id
-	 */
-	private RecSettingParam instantiateSettingParamForRecId(Long id){
-		log.info("Bearbeite jetzt SettingID: " + id);
-		RecSettingParam newSetting = null;
-		try{
-			newSetting = db.getRecommender(new Long(id));
-			newSetting.setSetting_id(id);
-		}
-		catch(SQLException e){
-			log.debug("Could not instantiate RecSettingParam for Setting_id " + id + ": ", e);
-		}
-		return newSetting;
-	}
-
-	/** Add a recommender identified by its settingId to the multiplexer.
-	 *  @param sid Setting_id of the recommender
-	 */
-	private void addRecommenderToMultiplexer(Long sid){
-		List<Long> sids = new ArrayList<Long>();
-		sids.add(sid);
-		addRecommendersToMultiplexer(sids);
-	}
-	
-	/** Add a list of recommenders identified by their settingId to the multiplexer.
-	 *  @param sids Setting_ids of the recommenders
-	 */
-	private void addRecommendersToMultiplexer(List<Long> sids){
-		List<TagRecommenderConnector> distantRecommenders = mp.getDistRecommenders();
-		
-		for(Long sid: sids){
-			//TODO: Also check local recommenders
-			if(sid == 2 || sid==3) continue;
-			
-		    RecSettingParam newSetting = instantiateSettingParamForRecId(sid);
-		    
-			/* Recommender does not exist yet? -> Add to list of distant recommenders. */
-			if(findSettingIndex(distantRecommenders, newSetting) == -1){
-				URI newRecURI = null;
-				try{
-					newRecURI = new URI(newSetting.getRecId());
-					WebserviceTagRecommender newRec = new WebserviceTagRecommender(newRecURI);
-					distantRecommenders.add(newRec);
-				}
-				catch(Exception e){
-					log.debug(e);
-				}
-		    }
-		}
-		mp.setDistRecommenders(distantRecommenders);
-	}
-
-	/** Remove a recommender identified by its settingId from the multiplexer.
-	 *  @param sid Setting_id of the recommender
-	 */
-	private void removeRecommenderFromMultiplexer(Long sid){
-		List<Long> sids = new ArrayList<Long>();
-		sids.add(sid);
-		removeRecommendersFromMultiplexer(sids);
-	}
-	
-
-	/** Remove a list of recommenders identified by their settingId from the multiplexer.
-	 *  @param sids Setting_ids of the recommenders
-	 */
-	private void removeRecommendersFromMultiplexer(List<Long> sids){
-		List<TagRecommenderConnector> distantRecommenders = mp.getDistRecommenders();
-
-		for(Long sid: sids){
-			//TODO: Also check local recommenders
-			if(sid == 2 || sid==3) continue;
-			RecSettingParam currentSetting = instantiateSettingParamForRecId(sid);
-			
-			//If recommender was found at a certain position in the list, remove it
-			int currentSettingIndex = findSettingIndex(distantRecommenders, currentSetting);
-			if(currentSettingIndex != -1){
-				distantRecommenders.remove(currentSettingIndex);
-			}
-		}
-	    mp.setDistRecommenders(distantRecommenders);
-	}
-	
-
 
 }

@@ -23,11 +23,11 @@
 	    +-->
 	<bean id="multiplexingTagRecommender" class="org.bibsonomy.recommender.tags.multiplexer.MultiplexingTagRecommender" init-method="init" scope="singleton">
 	    <property name="queryTimeout" value="1000"/>
-		<property name="localRecommenders" ref="localRecommenderList"/>
 		<property name="postModifiers" ref="postModifierList"/>
 		<property name="tagModifiers" ref="tagFilterList"/>
 		<property name="resultSelector" ref="selectOneWithoutReplacement"/>
 		<property name="dbLogic" ref="recoDBLogic"/>
+	    <property name="localRecommenderLookup" ref="localRecommenderList"/>
 	</bean>	  
 
 	<util:list id="localRecommenderList" list-class="java.util.ArrayList">
