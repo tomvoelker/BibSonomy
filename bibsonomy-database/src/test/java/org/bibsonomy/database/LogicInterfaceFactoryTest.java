@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
 import org.bibsonomy.model.logic.LogicInterfaceFactory;
+import org.bibsonomy.util.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,7 +36,7 @@ public class LogicInterfaceFactoryTest extends AbstractDatabaseManagerTest {
 	@Test
 	public void getLogicAccessUser() {
 		for (final String username : new String[] { "testuser1", "testuser2", "testuser3" }) {
-			assertNotNull(this.userFactory.getLogicAccess(username, "test123"));
+			assertNotNull(this.userFactory.getLogicAccess(username, StringUtils.getMD5Hash("test123")));
 			this.assertNoLogin(this.userFactory, username);
 		}
 	}
@@ -58,7 +59,7 @@ public class LogicInterfaceFactoryTest extends AbstractDatabaseManagerTest {
 		for (final String password : new String[] { "", " ", null, "invalid-password" }) {
 			try {
 				factory.getLogicAccess(username, password);
-				fail("Should throw ValidationException");
+				fail("Should throw AccessDeniedException");
 			} catch (AccessDeniedException ignore) {
 			}
 		}

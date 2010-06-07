@@ -1,12 +1,12 @@
 package org.bibsonomy.database.systemtags;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.List;
 
 import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Tests SystemTagsUtil
@@ -23,19 +23,19 @@ public class SystemTagsUtilTest {
 	@Test
 	public void extractSystemTagsFromString() {
 		// check for a given string
-		String test = "This is a test string conaining sys:user:dbenz some system tags sys:days:10 .";
-		List<String> sysTags = SystemTagsUtil.extractSystemTagsFromString(test, " ");
+		StringBuilder test = new StringBuilder("This is a test string conaining sys:user:dbenz some system tags sys:days:10 .");
+		List<String> sysTags = SystemTagsUtil.extractSystemTagsFromString(test.toString(), " ");
 		assertEquals(2, sysTags.size());
 		assertEquals("sys:user:dbenz", sysTags.get(0));
 		assertEquals("sys:days:10", sysTags.get(1));
 		
 		// check all possible system tags
-		test = "";
+		test = new StringBuilder();
 		for (SystemTags s : SystemTags.values()) {
-			test += " " + s.getPrefix() + SystemTags.SYSTAG_DELIM + "foo";
+			test.append(" ").append(s.getPrefix()).append(SystemTags.SYSTAG_DELIM).append("foo");
 		}
-		test += " ";
-		sysTags = SystemTagsUtil.extractSystemTagsFromString(test, " ");
+		test.append(" ");
+		sysTags = SystemTagsUtil.extractSystemTagsFromString(test.toString(), " ");
 		assertEquals(SystemTags.values().length, sysTags.size());
 	}
 

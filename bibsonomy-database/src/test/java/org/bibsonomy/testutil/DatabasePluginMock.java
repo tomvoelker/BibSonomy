@@ -133,12 +133,15 @@ public class DatabasePluginMock extends AbstractDatabasePlugin {
 	 * sets all boolean fields to false
 	 */
 	public void reset() {
-		try {
-			for (final Field field : this.getClass().getDeclaredFields()) {
+		
+		for (final Field field : this.getClass().getDeclaredFields()) {
+			try {
 				field.setBoolean(this, false);
+			} catch (IllegalArgumentException ex) {
+				// ignore
+			} catch (IllegalAccessException ex) {
+				// ignore
 			}
-		} catch (final Exception ignored) {
-			// will not happen
 		}
 	}
 
