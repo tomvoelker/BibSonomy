@@ -130,7 +130,20 @@
 			      
 			      <div class="fsRow">
 			        <form:label cssClass="fsLabel" path="user.settings.interFace"><fmt:message key="settings.editPublication.interFace"/></form:label>
-			        <buttons:help message="settings.editPublication.interFace.help"/>
+			        <buttons:help message="settings.editPublication.interFace.help">
+			        	<jsp:attribute name="helpText">
+			        		<ol>
+			        			<li> <fmt:message key="settings.editPublication.interFace.help.advanced">
+			        					<fmt:param>${advanced}</fmt:param>
+			        				</fmt:message>
+			        			</li>
+			        			<li> <fmt:message key="settings.editPublication.interFace.help.simple">
+			        					<fmt:param>${simple}</fmt:param>
+			        				</fmt:message>
+			        			</li>
+			        		</ol>
+			        	</jsp:attribute>
+			        </buttons:help>
 			        <form:select cssClass="fsInput fsSmall" path="user.settings.interFace">
 			          <form:option label="${advanced}" value="0" />
 			          <form:option label="${simple}" value="1" />
