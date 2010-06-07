@@ -76,6 +76,11 @@ public enum Views implements View {
 	TAGPAGE("tag"),
 	
 	/**
+	 * cluster page for browsing resources based on clusterings
+	 */
+	CLUSTERPAGE("browsing/cluster"),
+	
+	/**
 	 * inbox page
 	 */
 	INBOX("inbox"),
