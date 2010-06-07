@@ -44,9 +44,10 @@
 		 | Get list of pairs containing given user's most popular tag name and frequency
 		 + --> 
 	<select id="getMostPopularTagsForUser" parameterClass="postParam" resultMap="RecommendationLogCommon.tagFrequency">
-		SELECT tag_lower as first, COUNT(tag_lower) as second 
-		FROM tas 
-		WHERE user_name = #userName# 
+		SELECT t.tag_lower as first, COUNT(tag_lower) as second 
+		FROM tas t
+		JOIN user u using(user_name) 
+		WHERE u.id = #userName# 
 		GROUP BY tag_lower 
 		ORDER BY COUNT(tag_lower) DESC 
 		LIMIT #range#
