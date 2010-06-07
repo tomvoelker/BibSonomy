@@ -7,15 +7,14 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.Map;
+import java.util.SortedSet;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
-import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.BibTex;
@@ -24,13 +23,13 @@ import org.bibsonomy.model.Post;
 import org.bibsonomy.model.RecommendedTag;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.comparators.RecommendedTagComparator;
+import org.bibsonomy.recommender.tags.database.params.LatencyParam;
 import org.bibsonomy.recommender.tags.database.params.Pair;
 import org.bibsonomy.recommender.tags.database.params.PostGuess;
 import org.bibsonomy.recommender.tags.database.params.PostParam;
 import org.bibsonomy.recommender.tags.database.params.PostRecParam;
 import org.bibsonomy.recommender.tags.database.params.QueryGuess;
 import org.bibsonomy.recommender.tags.database.params.RecAdminOverview;
-import org.bibsonomy.recommender.tags.database.params.LatencyParam;
 import org.bibsonomy.recommender.tags.database.params.RecQueryParam;
 import org.bibsonomy.recommender.tags.database.params.RecQuerySettingParam;
 import org.bibsonomy.recommender.tags.database.params.RecResponseParam;
@@ -49,8 +48,9 @@ import com.ibatis.sqlmap.client.SqlMapClientBuilder;
  * Class for encapsulating database access of recommenders. Implements {@link DBLogic}.
  * 
  * @author fei
+ * @version $Id$
  */
-public class DBAccess extends AbstractDatabaseManager implements DBLogic {
+public class DBAccess implements DBLogic {
 	private static final Log log = LogFactory.getLog(DBAccess.class);
 	
 	//------------------------------------------------------------------------
