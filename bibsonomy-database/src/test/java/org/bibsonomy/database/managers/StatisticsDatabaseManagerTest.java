@@ -12,6 +12,7 @@ import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.testutil.DBTestUtils;
 import org.bibsonomy.testutil.ParamUtils;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -23,6 +24,10 @@ public class StatisticsDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	
 	private static StatisticsDatabaseManager statisticsDb;
 	
+	@BeforeClass
+	public static void setManager() {
+		statisticsDb = StatisticsDatabaseManager.getInstance();
+	}
 	
 	private List<Integer> visibleGroupIDs;
 	
