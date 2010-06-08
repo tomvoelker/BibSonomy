@@ -301,35 +301,35 @@ public class SimpleBibTeXParser {
 		// retrieve entry type - should not be null or ""
 		bibtex.setEntrytype(entry.getEntryType());
 
-		BibtexString field = null;
-		field = (BibtexString) entry.getFieldValue("title"); if (field != null) bibtex.setTitle(field.getContent());
-		field = (BibtexString) entry.getFieldValue("year");  if (field != null) bibtex.setYear(field.getContent()); 
+		String field = null;
+		field = getValue(entry.getFieldValue("title")); if (field != null) bibtex.setTitle(field);
+		field = getValue(entry.getFieldValue("year"));  if (field != null) bibtex.setYear(field); 
 
 		/*
 		 * add optional fields
 		 */
-		field = (BibtexString) entry.getFieldValue("crossref");     if (field != null) bibtex.setCrossref(field.getContent());     
-		field = (BibtexString) entry.getFieldValue("address");      if (field != null) bibtex.setAddress(field.getContent());      
-		field = (BibtexString) entry.getFieldValue("annote");       if (field != null) bibtex.setAnnote(field.getContent());       
-		field = (BibtexString) entry.getFieldValue("booktitle");    if (field != null) bibtex.setBooktitle(field.getContent());    
-		field = (BibtexString) entry.getFieldValue("chapter");      if (field != null) bibtex.setChapter(field.getContent());      
-		field = (BibtexString) entry.getFieldValue("day");          if (field != null) bibtex.setDay(field.getContent());
-		field = (BibtexString) entry.getFieldValue("edition");      if (field != null) bibtex.setEdition(field.getContent());      
-		field = (BibtexString) entry.getFieldValue("howpublished"); if (field != null) bibtex.setHowpublished(field.getContent()); 
-		field = (BibtexString) entry.getFieldValue("institution");	if (field != null) bibtex.setInstitution(field.getContent());  
-		field = (BibtexString) entry.getFieldValue("journal");      if (field != null) bibtex.setJournal(field.getContent());      
-		field = (BibtexString) entry.getFieldValue("key");	        if (field != null) bibtex.setKey(field.getContent());
-		field = (BibtexString) entry.getFieldValue("note");         if (field != null) bibtex.setNote(field.getContent());         
-		field = (BibtexString) entry.getFieldValue("number");       if (field != null) bibtex.setNumber(field.getContent());       
-		field = (BibtexString) entry.getFieldValue("organization"); if (field != null) bibtex.setOrganization(field.getContent()); 
-		field = (BibtexString) entry.getFieldValue("pages");        if (field != null) bibtex.setPages(field.getContent());        
-		field = (BibtexString) entry.getFieldValue("publisher");    if (field != null) bibtex.setPublisher(field.getContent());    
-		field = (BibtexString) entry.getFieldValue("school");       if (field != null) bibtex.setSchool(field.getContent());       
-		field = (BibtexString) entry.getFieldValue("series");       if (field != null) bibtex.setSeries(field.getContent());       
-		field = (BibtexString) entry.getFieldValue("url");          if (field != null) bibtex.setUrl(field.getContent());           
-		field = (BibtexString) entry.getFieldValue("volume");		if (field != null) bibtex.setVolume(field.getContent());        
-		field = (BibtexString) entry.getFieldValue("abstract");		if (field != null) bibtex.setAbstract(field.getContent());
-		field = (BibtexString) entry.getFieldValue("type");  		if (field != null) bibtex.setType(field.getContent());          
+		field = getValue(entry.getFieldValue("crossref"));     if (field != null) bibtex.setCrossref(field);     
+		field = getValue(entry.getFieldValue("address"));      if (field != null) bibtex.setAddress(field);      
+		field = getValue(entry.getFieldValue("annote"));       if (field != null) bibtex.setAnnote(field);       
+		field = getValue(entry.getFieldValue("booktitle"));    if (field != null) bibtex.setBooktitle(field);    
+		field = getValue(entry.getFieldValue("chapter"));      if (field != null) bibtex.setChapter(field);      
+		field = getValue(entry.getFieldValue("day"));          if (field != null) bibtex.setDay(field);
+		field = getValue(entry.getFieldValue("edition"));      if (field != null) bibtex.setEdition(field);      
+		field = getValue(entry.getFieldValue("howpublished")); if (field != null) bibtex.setHowpublished(field); 
+		field = getValue(entry.getFieldValue("institution"));  if (field != null) bibtex.setInstitution(field);  
+		field = getValue(entry.getFieldValue("journal"));      if (field != null) bibtex.setJournal(field);      
+		field = getValue(entry.getFieldValue("key"));	       if (field != null) bibtex.setKey(field);
+		field = getValue(entry.getFieldValue("note"));         if (field != null) bibtex.setNote(field);         
+		field = getValue(entry.getFieldValue("number"));       if (field != null) bibtex.setNumber(field);       
+		field = getValue(entry.getFieldValue("organization")); if (field != null) bibtex.setOrganization(field); 
+		field = getValue(entry.getFieldValue("pages"));        if (field != null) bibtex.setPages(field);        
+		field = getValue(entry.getFieldValue("publisher"));    if (field != null) bibtex.setPublisher(field);    
+		field = getValue(entry.getFieldValue("school"));       if (field != null) bibtex.setSchool(field);       
+		field = getValue(entry.getFieldValue("series"));       if (field != null) bibtex.setSeries(field);       
+		field = getValue(entry.getFieldValue("url"));          if (field != null) bibtex.setUrl(field);           
+		field = getValue(entry.getFieldValue("volume"));	   if (field != null) bibtex.setVolume(field);        
+		field = getValue(entry.getFieldValue("abstract"));	   if (field != null) bibtex.setAbstract(field);
+		field = getValue(entry.getFieldValue("type"));  	   if (field != null) bibtex.setType(field);          
 
 		/*
 		 * special handling for month - it can be a macro!
@@ -340,7 +340,7 @@ public class SimpleBibTeXParser {
 		if (month instanceof BibtexMacroReference) {
 			bibtex.setMonth(((BibtexMacroReference) month).getKey());
 		} else if (month instanceof BibtexString) {
-			field = (BibtexString) month; if (field != null) bibtex.setMonth(field.getContent());        
+			field = getValue(month); if (field != null) bibtex.setMonth(field);        
 		}
 
 		/*
@@ -359,13 +359,13 @@ public class SimpleBibTeXParser {
 		 * 
 		 * FIXME: add a test for this!
 		 */
-		field = (BibtexString) entry.getFieldValue("comment");
-		if (field != null) bibtex.setPrivnote(field.getContent().replace("(private-note)", ""));
+		field = getValue(entry.getFieldValue("comment"));
+		if (field != null) bibtex.setPrivnote(field.replace("(private-note)", ""));
 		/*
 		 * we export our private notes as "privnote" - add it here
 		 */
-		field = (BibtexString) entry.getFieldValue("privnote");
-		if (field != null) bibtex.setPrivnote(field.getContent());
+		field = getValue(entry.getFieldValue("privnote"));
+		if (field != null) bibtex.setPrivnote(field);
 		
 		return bibtex;
 	}
