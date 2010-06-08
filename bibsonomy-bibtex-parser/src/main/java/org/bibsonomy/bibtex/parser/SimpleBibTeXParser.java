@@ -26,7 +26,9 @@ package org.bibsonomy.bibtex.parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +38,7 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.PersonNameUtils;
 
 import bibtex.dom.BibtexAbstractValue;
+import bibtex.dom.BibtexConcatenatedValue;
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexFile;
 import bibtex.dom.BibtexMacroReference;
@@ -253,7 +256,7 @@ public class SimpleBibTeXParser {
 			warnings.add(ee.getMessage());
 		}
 	}
-
+	
 	/**
 	 * This method does the main BibTeX work - after parsing it gets all field 
 	 * values from the parsed entry and fills the BibTex object.
@@ -267,7 +270,6 @@ public class SimpleBibTeXParser {
 		/* ************************************************
 		 * process non standard bibtex fields 
 		 * ************************************************/
-
 		/*
 		 * get set of all current fieldnames - like address, author etc. 
 		 */
@@ -282,18 +284,21 @@ public class SimpleBibTeXParser {
 		nonStandardFieldNames.removeAll(StandardBibTeXFields.getStandardBibTeXFields());
 
 		// iter over arraylist to retrieve nonstandard field values
-		final StringBuilder miscBuffer = new StringBuilder();
 		for (final String key:nonStandardFieldNames) {
-			final String value = ((BibtexString) entry.getFieldValue(key)).getContent();
-			miscBuffer.append(key + " = {"	+ value + "},\n");
-			bibtex.addMiscField(key, value);
+			final BibtexAbstractValue fieldValue = entry.getFieldValue(key);
+			if (fieldValue instanceof BibtexString) {
+				final String value = ((BibtexString) fieldValue).getContent();
+				bibtex.addMiscField(key, value);
+			} else if (fieldValue instanceof BibtexConcatenatedValue) {
+				/*
+				 * don't touch it but instead just add the plain string 
+				 */
+				final StringWriter sw = new StringWriter();
+				fieldValue.printBibtex(new PrintWriter(sw));
+				bibtex.addMiscField(key, sw.getBuffer().toString());
+			}
 		}
-		// remove last colon
-		if (miscBuffer.length() > 3) {
-			miscBuffer.delete(miscBuffer.length() - 2, miscBuffer.length());
-		}
-
-		bibtex.setMisc(miscBuffer.toString());
+		bibtex.serializeMiscFields();
 
 		/* ************************************************
 		 * process standard bibtex fields 
