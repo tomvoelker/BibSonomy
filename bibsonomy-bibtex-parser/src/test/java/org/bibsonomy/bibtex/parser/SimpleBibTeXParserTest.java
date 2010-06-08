@@ -27,9 +27,13 @@ package org.bibsonomy.bibtex.parser;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
+import org.bibsonomy.common.enums.SerializeBibtexMode;
 import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.util.BibTexUtils;
 import org.junit.Test;
 
 import bibtex.parser.ParseException;
@@ -118,7 +122,7 @@ public class SimpleBibTeXParserTest {
 			final BibTex bibtex = parser.parseBibTeX(foo);
 
 
-			System.out.println(bibtex);
+//			System.out.println(bibtex);
 //			assertEquals("Foo Barness", bibtex.getTitle());
 //			assertEquals("M. Mustermann", bibtex.getAuthor());
 //			assertEquals("article", bibtex.getEntrytype());
@@ -215,6 +219,78 @@ public class SimpleBibTeXParserTest {
 		} catch (IOException ex) {
 			fail(ex.getMessage());
 		}	
+	}
+	
+	@Test
+	public void testMacroExpansion() {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+		try {
+			final BibTex parsedBibTeX = parser.parseBibTeX(
+					"@string{AW = \"Addison--Wesley Publishing Company\"}\n" +
+					"@article{foo,\n" +
+					"  month = jun,\n" + 
+					"  publisher = AW,\n" +
+					"  journal = jacm,\n" +
+					"  confmonth = {30~} # jan # {~-- 2~} # feb,\n" + 
+					"  nonstandardfield = AW # \" foo\"\n" + 
+					"}"
+			);
+			/*
+			 * defined at the beginning
+			 */
+			assertEquals("Addison--Wesley Publishing Company", parsedBibTeX.getPublisher());
+			/*
+			 * predefined in BibTeX styles
+			 */
+			assertEquals("Journal of the ACM", parsedBibTeX.getJournal());
+
+		} catch (ParseException ex) {
+			fail(ex.getMessage());
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}	
+	}
+	
+	@Test
+	public void testFile1() {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+		try {
+			final BibTex parsedBibTeX = parser.parseBibTeX(getTestFile("test1.bib"));
+			/*
+			 * defined at the beginning
+			 */
+			assertEquals("Australian Comput. Soc.", parsedBibTeX.getPublisher());
+			/*
+			 * concatenated bibtex field
+			 */
+			assertEquals("{30~}#jan#{~-- 2~}#feb", parsedBibTeX.getMiscField("confmonth"));
+			/*
+			 * After 
+			 *   serialize -> parse -> serialize
+			 * we must get the same BibTeX string
+			 * 
+			 */
+			
+			final String s = BibTexUtils.toBibtexString(parsedBibTeX, SerializeBibtexMode.PLAIN_MISCFIELDS);
+			final BibTex sp = parser.parseBibTeX(s);
+			final String sp2 = BibTexUtils.toBibtexString(sp, SerializeBibtexMode.PLAIN_MISCFIELDS);
+			assertEquals(s, sp2);
+		} catch (ParseException ex) {
+			fail(ex.getMessage());
+		} catch (IOException ex) {
+			fail(ex.getMessage());
+		}
+	}
+	
+	private static String getTestFile(final String filename) throws IOException {
+		final BufferedReader stream = new BufferedReader(new InputStreamReader(SimpleBibTeXParser.class.getClassLoader().getResourceAsStream(filename), "UTF-8"));
+		final StringBuilder buf = new StringBuilder();
+		String line;
+		while ((line = stream.readLine()) != null) {
+			buf.append(line + "\n");
+		}
+		stream.close();
+		return buf.toString();
 	}
 
 	protected BibTex getExampleBibtex() {
