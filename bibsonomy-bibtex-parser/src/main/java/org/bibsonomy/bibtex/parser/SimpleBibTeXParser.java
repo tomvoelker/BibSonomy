@@ -378,6 +378,7 @@ public class SimpleBibTeXParser {
 	 * @return
 	 */
 	private String getValue(final BibtexAbstractValue fieldValue) {
+		if (fieldValue == null) return null;
 		final String value;
 		if (fieldValue instanceof BibtexString) {
 			value = ((BibtexString) fieldValue).getContent();
