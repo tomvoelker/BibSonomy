@@ -38,7 +38,6 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.PersonNameUtils;
 
 import bibtex.dom.BibtexAbstractValue;
-import bibtex.dom.BibtexConcatenatedValue;
 import bibtex.dom.BibtexEntry;
 import bibtex.dom.BibtexFile;
 import bibtex.dom.BibtexMacroReference;
@@ -285,18 +284,7 @@ public class SimpleBibTeXParser {
 
 		// iter over arraylist to retrieve nonstandard field values
 		for (final String key:nonStandardFieldNames) {
-			final BibtexAbstractValue fieldValue = entry.getFieldValue(key);
-			if (fieldValue instanceof BibtexString) {
-				final String value = ((BibtexString) fieldValue).getContent();
-				bibtex.addMiscField(key, value);
-			} else if (fieldValue instanceof BibtexConcatenatedValue) {
-				/*
-				 * don't touch it but instead just add the plain string 
-				 */
-				final StringWriter sw = new StringWriter();
-				fieldValue.printBibtex(new PrintWriter(sw));
-				bibtex.addMiscField(key, sw.getBuffer().toString());
-			}
+			bibtex.addMiscField(key, getValue(entry.getFieldValue(key)));
 		}
 		bibtex.serializeMiscFields();
 
@@ -380,6 +368,29 @@ public class SimpleBibTeXParser {
 		if (field != null) bibtex.setPrivnote(field.getContent());
 		
 		return bibtex;
+	}
+
+	/**
+	 * Extracts a string from the given fieldValue. Depending on the type
+	 * of the value, it might contain macros!
+	 * 
+	 * @param fieldValue
+	 * @return
+	 */
+	private String getValue(final BibtexAbstractValue fieldValue) {
+		final String value;
+		if (fieldValue instanceof BibtexString) {
+			value = ((BibtexString) fieldValue).getContent();
+		} else {
+			/*
+			 * It's probably a BibtexConcatenatedValue - 
+			 * don't touch it but instead just add the plain string 
+			 */
+			final StringWriter sw = new StringWriter();
+			fieldValue.printBibtex(new PrintWriter(sw));
+			value = sw.getBuffer().toString();
+		}
+		return value;
 	}	
 
 	protected BibTex createPublication() {
