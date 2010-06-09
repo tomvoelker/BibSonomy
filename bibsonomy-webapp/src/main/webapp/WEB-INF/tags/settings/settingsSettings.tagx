@@ -119,17 +119,14 @@
 			      </div>
 		         
 		         <div class="fsRow">
-			        <form:label cssClass="fsLabel" path="user.settings.resourceToShow"><fmt:message key="settings.resource.resourceToShow"/></form:label>
+			        <form:label cssClass="fsLabel" path="user.settings.showBookmark"><fmt:message key="settings.resource.resourceToShow"/></form:label>
 			        <buttons:help message="settings.resource.resourceToShow.help"/>
-			        <form:select cssClass="fsInput fsSmall" path="user.settings.resourceToShow">
-			          <form:option label="${all}" value="0" />
-			          <form:option label="${bookmark}" value="1" />
-			          <form:option label="${publication}" value="2" />
-			        </form:select>
+			        <form:checkbox path="user.settings.showBookmark" label="${bookmark}"/>
+			        <form:checkbox path="user.settings.showBibtex" label="${publication}"/>
 			      </div>
 			      
 			      <div class="fsRow">
-			        <form:label cssClass="fsLabel" path="user.settings.interFace"><fmt:message key="settings.editPublication.interFace"/></form:label>
+			        <form:label cssClass="fsLabel" path="user.settings.simpleInterface"><fmt:message key="settings.editPublication.interFace"/></form:label>
 			        <buttons:help message="settings.editPublication.interFace.help">
 			        	<jsp:attribute name="helpText">
 			        		<ol>
@@ -144,7 +141,7 @@
 			        		</ol>
 			        	</jsp:attribute>
 			        </buttons:help>
-			        <form:select cssClass="fsInput fsSmall" path="user.settings.interFace">
+			        <form:select cssClass="fsInput fsSmall" path="user.settings.simpleInterface">
 			          <form:option label="${advanced}" value="0" />
 			          <form:option label="${simple}" value="1" />
 			        </form:select>

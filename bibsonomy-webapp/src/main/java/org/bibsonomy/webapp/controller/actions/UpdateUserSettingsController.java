@@ -4,6 +4,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.model.User;
+import org.bibsonomy.model.UserSettings;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.model.util.UserUtils;
 import org.bibsonomy.webapp.command.SettingsViewCommand;
@@ -113,21 +114,25 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 	}
 	
 	private void actionLayoutTagPost(final SettingsViewCommand command, final User user) {
-		user.getSettings().setDefaultLanguage(command.getUser().getSettings().getDefaultLanguage());
-		user.getSettings().setListItemcount(command.getUser().getSettings().getListItemcount());
-		user.getSettings().setTagboxTooltip(command.getUser().getSettings().getTagboxTooltip());
-		user.getSettings().setResourceToShow(command.getUser().getSettings().getResourceToShow());
-		user.getSettings().setInterFace(command.getUser().getSettings().getInterFace());
+		final UserSettings userSettings = user.getSettings();
+		final UserSettings newUserSettings = command.getUser().getSettings();
 		
-		if(command.getUser().getSettings().getIsMaxCount()) {
-			user.getSettings().setIsMaxCount(true);
-			user.getSettings().setTagboxMaxCount(command.getChangeTo());
+		userSettings.setDefaultLanguage(newUserSettings.getDefaultLanguage());
+		userSettings.setListItemcount(newUserSettings.getListItemcount());
+		userSettings.setTagboxTooltip(newUserSettings.getTagboxTooltip());
+		userSettings.setShowBookmark(newUserSettings.isShowBookmark());
+		userSettings.setShowBibtex(newUserSettings.isShowBibtex());
+		userSettings.setSimpleInterface(newUserSettings.isSimpleInterface());
+		
+		if(newUserSettings.getIsMaxCount()) {
+			userSettings.setIsMaxCount(true);
+			userSettings.setTagboxMaxCount(command.getChangeTo());
 		} else {
-			user.getSettings().setIsMaxCount(false);
-			user.getSettings().setTagboxMinfreq(command.getChangeTo());
+			userSettings.setIsMaxCount(false);
+			userSettings.setTagboxMinfreq(command.getChangeTo());
 		}
-		user.getSettings().setTagboxSort(command.getUser().getSettings().getTagboxSort());
-		user.getSettings().setTagboxStyle(command.getUser().getSettings().getTagboxStyle());
+		userSettings.setTagboxSort(newUserSettings.getTagboxSort());
+		userSettings.setTagboxStyle(newUserSettings.getTagboxStyle());
 		
 		final String updatedUser = adminLogic.updateUser(user, UserUpdateOperation.UPDATE_SETTINGS);
 		log.info("settings for the layout of tag boxes and post lists of user " + updatedUser + " has been changed successfully");

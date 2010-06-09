@@ -43,20 +43,7 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	private int changeTo;
 	
-	/**
-	 * which resource(s) should be shown in the resource views
-	 * 0 == all
-	 * 1 == bookmark
-	 * 2 == publication 
-	 */
-	private int resourceToShow = 0;
 	
-	/**
-	 * which interface should be shown in editPublication
-	 * 0 == advanced
-	 * 1 == simple
-	 */
-	private int interFace = 0;
 	
 	/**
 	 * users which added the current login user in their friend list 
@@ -172,14 +159,23 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.profilePrivlevel = profilePrivlevel;
 	}
 
+	/**
+	 * @return importType
+	 */
 	public String getImportType() {
 		return this.importType;
 	}
 
+	/**
+	 * @param importType
+	 */
 	public void setImportType(String importType) {
 		this.importType = importType;
 	}
 	
+	/**
+	 * @return overwrite
+	 */
 	public boolean getOverwrite() {
 		return this.overwrite;
 	}
@@ -205,30 +201,51 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		this.file = file;
 	}
 
+	/**
+	 * @return newBookmarks
+	 */
 	public Map<String, String> getNewBookmarks() {
 		return this.newBookmarks;
 	}
 
+	/**
+	 * @return updatedBookmarks
+	 */
 	public Map<String, String> getUpdatedBookmark() {
 		return this.updatedBookmarks;
 	}
 
+	/**
+	 * @return nonCreatedBookmarks
+	 */
 	public List<String> getNonCreatedBookmark() {
 		return this.nonCreatedBookmarks;
 	}
 
+	/**
+	 * @param newBookmarks
+	 */
 	public void setNewBookmarks(Map<String, String> newBookmarks) {
 		this.newBookmarks = newBookmarks;
 	}
 
+	/**
+	 * @param updatedBookmarks
+	 */
 	public void setUpdatedBookmarks(Map<String, String> updatedBookmarks) {
 		this.updatedBookmarks = updatedBookmarks;
 	}
 
+	/**
+	 * @param nonCreatedBookmarks
+	 */
 	public void setNonCreatedBookmarks(List<String> nonCreatedBookmarks) {
 		this.nonCreatedBookmarks = nonCreatedBookmarks;
 	}
 
+	/**
+	 * @param privlevel
+	 */
 	public void setPrivlevel(int privlevel) {
 		this.privlevel = privlevel;
 	}
@@ -237,6 +254,9 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		return privlevel;
 	}
 
+	/**
+	 * @param sharedDocuments
+	 */
 	public void setSharedDocuments(int sharedDocuments) {
 		this.sharedDocuments = sharedDocuments;
 	}
@@ -269,30 +289,51 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 		return this.endHash;
 	}
 
+	/**
+	 * @param beginName
+	 */
 	public void setBeginName(String beginName) {
 		this.beginName = beginName;
 	}
 
+	/**
+	 * @param beginHash
+	 */
 	public void setBeginHash(String beginHash) {
 		this.beginHash = beginHash;
 	}
 
+	/**
+	 * @param itemName
+	 */
 	public void setItemName(String itemName) {
 		this.itemName = itemName;
 	}
 
+	/**
+	 * @param itemHash
+	 */
 	public void setItemHash(String itemHash) {
 		this.itemHash = itemHash;
 	}
 
+	/**
+	 * @param endName
+	 */
 	public void setEndName(String endName) {
 		this.endName = endName;
 	}
 
+	/**
+	 * @param endHash
+	 */
 	public void setEndHash(String endHash) {
 		this.endHash = endHash;
 	}
 	
+	/**
+	 * @param hasOwnGroup
+	 */
 	public void setHasOwnGroup(boolean hasOwnGroup) {
 		this.hasOwnGroup = hasOwnGroup;
 	}
@@ -453,33 +494,5 @@ public class SettingsViewCommand extends TabsCommand<Object> implements Serializ
 	 */
 	public void setGroup(Group group) {
 		this.group = group;
-	}
-
-	/**
-	 * @param resourceToShow the resourceToShow to set
-	 */
-	public void setResourceToShow(int resourceToShow) {
-		this.resourceToShow = resourceToShow;
-	}
-
-	/**
-	 * @return the resourceToShow
-	 */
-	public int getResourceToShow() {
-		return resourceToShow;
-	}
-
-	/**
-	 * @param interFace the interFace to set
-	 */
-	public void setInterFace(int interFace) {
-		this.interFace = interFace;
-	}
-
-	/**
-	 * @return the interFace
-	 */
-	public int getInterFace() {
-		return interFace;
 	}
 }
