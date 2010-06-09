@@ -10,7 +10,7 @@
 	
 	<jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
 	
-	<parts:fieldset maximized="true" legendKey="post.resource.fields.detailed">
+	<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.detailed">
 		<jsp:attribute name="legendExt">
 	      (<a id="collapse" href="javascript:showAll()"><fmt:message key="post.resource.fields.detailed.show.all"/></a>)
 	   	</jsp:attribute>
@@ -159,7 +159,7 @@
         </jsp:attribute>
      </parts:fieldset>
      
-     <parts:fieldset maximized="true" legendKey="post.resource.fields.comments" >
+     <parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.fields.comments" >
 	     <jsp:attribute name="content">
          
         	 <!-- 
