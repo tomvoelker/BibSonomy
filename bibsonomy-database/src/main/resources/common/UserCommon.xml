@@ -56,8 +56,9 @@
 		<result property="defaultLanguage" 	column="lang" 	       		javaType="string" />	
 		<result property="confirmDelete"   	column="confirmDelete"  	javaType="boolean" />
 		<result property="profilePrivlevel" column="profilegroup"   	javaType="ProfilePrivlevel" />	
-		<result property="resourceToShow"   column="resource_to_show"   javaType="integer" />
-		<result property="interFace"     	column="interface"   		javaType="integer" />			
+		<result property="showBookmark"   	column="show_bookmark"  	javaType="boolean" />
+		<result property="showBibtex"   	column="show_bibtex"  		javaType="boolean" />
+		<result property="simpleInterface"  column="simple_interface"  	javaType="boolean" />	
 	</resultMap>	
 
 	<sql id="allUserAttributes">
@@ -73,7 +74,7 @@
 	</sql>
 
 	<sql id="userSettingsAttributes">
-		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, lang, log_level, confirmDelete, profilegroup, tagbox_max_count, is_max_count, resource_to_show, interface
+		tagbox_style, tagbox_sort, tagbox_minfreq, tagbox_tooltip, list_itemcount, lang, log_level, confirmDelete, profilegroup, tagbox_max_count, is_max_count, show_bookmark, show_bibtex, simple_interface
 	</sql>	
 
 </sqlMap>
