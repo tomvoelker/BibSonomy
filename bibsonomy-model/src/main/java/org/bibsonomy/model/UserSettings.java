@@ -70,20 +70,11 @@ public class UserSettings implements Serializable {
 	 */
 	private int listItemcount = 20;
 
-	/**
-	 * which resource(s) should be shown in the resource views
-	 * 0 == all
-	 * 1 == bookmark
-	 * 2 == publication 
-	 */
-	private int resourceToShow = 0;
+	private boolean showBookmark = true;
 	
-	/**
-	 * which interface should be shown in editPublication
-	 * 0 == advanced
-	 * 1 == simple
-	 */
-	private int interFace = 0;
+	private boolean showBibtex = true;
+	
+	private boolean simpleInterface = false;
 	
 	/**
 	 * the default language for i18n
@@ -271,32 +262,45 @@ public class UserSettings implements Serializable {
 	public ProfilePrivlevel getProfilePrivlevel() {
 		return profilePrivlevel;
 	}
-
 	/**
-	 * @param resourceToShow
+	 * @return the showBookmark
 	 */
-	public void setResourceToShow(int resourceToShow) {
-		this.resourceToShow = resourceToShow;
-	}
-		
-	/**
-	 * @return the resourceToShow
-	 */
-	public int getResourceToShow() {
-		return resourceToShow;
+	public boolean isShowBookmark() {
+		return this.showBookmark;
 	}
 
 	/**
-	 * @param interFace
+	 * @param showBookmark the showBookmark to set
 	 */
-	public void setInterFace(int interFace) {
-		this.interFace = interFace;
+	public void setShowBookmark(boolean showBookmark) {
+		this.showBookmark = showBookmark;
 	}
+
 	/**
-	 * @return the interFace
+	 * @return the showPublication
 	 */
-	public int getInterFace() {
-		return interFace;
+	public boolean isShowBibtex() {
+		return this.showBibtex;
 	}
-	
+
+	/**
+	 * @param showPublication the showPublication to set
+	 */
+	public void setShowBibtex(boolean showPublication) {
+		this.showBibtex = showPublication;
+	}
+
+	/**
+	 * @return the simpleInterface
+	 */
+	public boolean isSimpleInterface() {
+		return this.simpleInterface;
+	}
+
+	/**
+	 * @param simpleInterface the simpleInterface to set
+	 */
+	public void setSimpleInterface(boolean simpleInterface) {
+		this.simpleInterface = simpleInterface;
+	}
 }
