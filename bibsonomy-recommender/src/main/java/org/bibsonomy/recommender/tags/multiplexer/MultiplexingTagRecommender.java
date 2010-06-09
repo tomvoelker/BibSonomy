@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
@@ -91,8 +92,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	private int numberOfTagsToRecommend = DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND;
 	
 	/** map recommender systems to their corresponding setting ids */
-	private  ConcurrentHashMap<TagRecommender,Long> recommenderLookup;
-	private  ConcurrentHashMap<Long, TagRecommender> settingLookup;
+	private  ConcurrentHashMap<TagRecommender,Long> activeRecommenders;
 	private  ConcurrentHashMap<Long, TagRecommender> localRecommenderLookup;
 	
 	/** we speed up the multiplexer by caching query results */
@@ -138,8 +138,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		//
 		// 0. Initialize data structures 
 		//
-		recommenderLookup = new ConcurrentHashMap<TagRecommender, Long>();
-		settingLookup     = new ConcurrentHashMap<Long, TagRecommender>();
+		activeRecommenders = new ConcurrentHashMap<TagRecommender, Long>();
 		
 		//
 		// 1. Store all registered recommender systems in the db
@@ -175,6 +174,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		disconnectRecommenders();
 	}
 	
+	
 	//------------------------------------------------------------------------
 	// Implementation of recommender registration
 	//------------------------------------------------------------------------
@@ -183,30 +183,14 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * @param recommender
 	 * @return true on success, false otherwise
 	 */
-	public boolean addRecommender(TagRecommender recommender){
+	public boolean enableLocalRecommender(TagRecommender recommender){
 		log.info("adding local recommender: "+recommender.getInfo());
-		if(!recommenderLookup.containsKey(recommender))
+		if(!activeRecommenders.containsKey(recommender))
 		    getLocalRecommenders().add(recommender);
 		if( initialized ) {
 			registerRecommender(recommender);
 		}
 		return true;
-	}
-	
-	/**
-	 * Adds a local recommender.
-	 * FIXME: is the method actually used?
-	 * 
-	 * @param sid SettingId
-	 * @return true on success, false otherwise
-	 */
-	public boolean addRecommender(Long sid){
-		if(sid == null) return false;
-			
-		if(!settingLookup.containsKey(sid))
-			return this.addRecommender(localRecommenderLookup.get(sid));
-		
-		return false;
 	}
 	
 	
@@ -215,9 +199,9 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * @param recommender
 	 * @return true on success, false otherwise
 	 */
-	public boolean addRecommenderConnector(TagRecommenderConnector recommender) {
+	public boolean enableDistantRecommender(TagRecommenderConnector recommender) {
 		log.info("adding distant recommender: "+recommender.getInfo());
-		if(!recommenderLookup.containsKey(recommender))
+		if(!activeRecommenders.containsKey(recommender))
 		    getDistRecommenders().add(recommender);
 		if( initialized ) {
 			registerRecommender(recommender);
@@ -228,56 +212,62 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	}
 	
 	/**
-	 * Adds distant recommender.
-	 * @param sid settingId
-	 * @return true on success, false otherwise
-	 */
-	public boolean addRecommenderConnector(Long sid){
-		//recommender already added
-		if(settingLookup.containsKey(sid)) return false;
-
-		// Get recommenderId
-		RecSettingParam newSetting = null;
-		try{  newSetting = dbLogic.getRecommender(sid);  }
-		catch(SQLException e){
-			log.warn("Could not instantiate RecSettingParam for Setting_id " + sid + ": ", e); }
-		
-		// Add to distant recommenders
-		try{
-			URI newRecURI = new URI(newSetting.getRecId());
-			WebserviceTagRecommender newRec = new WebserviceTagRecommender(newRecURI);
-			return this.addRecommenderConnector(newRec);
-		}
-		catch(URISyntaxException e){
-			log.debug("Could not add recommender with setting-id "+ sid +"to multiplexer, because "+ newSetting.getRecId() +" is not a valid URI.", e);
-		}
-		return false;
-	}
-	
-	/**
-	 * Add a recommender identified by its settingid and regardless of its type (distant or local).
+	 * Enable a recommender identified by its settingid and regardless of its type (distant or local).
 	 * @param sid
 	 * @return true on success
 	 */
-	public boolean addAbstractRecommender(Long sid){
-		if(localRecommenderLookup.containsKey(sid))
-			return addRecommender(sid);
-		else
-			return addRecommenderConnector(sid);
+	public boolean enableRecommender(Long sid){
+		if(sid == null) return false;
+		
+		// Local Setting
+		if(localRecommenderLookup.containsKey(sid)){
+			if(!activeRecommenders.containsValue(sid))
+				return this.enableLocalRecommender(localRecommenderLookup.get(sid));
+			else return false;
+		}
+		
+		// Distant Setting
+		else{
+			//recommender already added
+			if(activeRecommenders.containsValue(sid)) return false;
+
+			// Get recommenderId
+			RecSettingParam newSetting = null;
+			try{  newSetting = dbLogic.getRecommender(sid);  }
+			catch(SQLException e){
+				log.warn("Could not instantiate RecSettingParam for Setting_id " + sid + ": ", e); }
+			
+			// Add to distant recommenders
+			try{
+				URI newRecURI = new URI(newSetting.getRecId());
+				WebserviceTagRecommender newRec = new WebserviceTagRecommender(newRecURI);
+				return this.enableDistantRecommender(newRec);
+			}
+			catch(URISyntaxException e){
+				log.debug("Could not add recommender with setting-id "+ sid +"to multiplexer, because "+ newSetting.getRecId() +" is not a valid URI.", e);
+			}
+			return false;
+		}
 	}
 
+	
 	/** 
-	 *  Remove a recommender (distant or local).
+	 *  Disable a recommender (distant or local).
 	 *  @param sid SettingId
 	 *  @return true if this recommender was activated (and is now deactivated)
 	 *  */ 
-	public boolean removeAbstractRecommender(Long sid){
+	public boolean disableRecommender(Long sid){
 		// No recommender with this settingId
-		if(sid == null || !settingLookup.containsKey(sid)) return false;
+		if(sid == null || !activeRecommenders.containsValue(sid)) return false;
 		
-		TagRecommender delRec = settingLookup.get(sid);
-		settingLookup.remove(sid);
-		recommenderLookup.remove(delRec);
+		TagRecommender delRec = null;
+		for(Entry<TagRecommender, Long> current : activeRecommenders.entrySet()){
+			if(current.getValue().equals(sid)){
+			    delRec = current.getKey();
+			    break;
+			}
+		}
+		activeRecommenders.remove(delRec);
 		
 	    //TODO: dblogic cleanup
 	    List<Long> disabledRecs = new ArrayList<Long>();
@@ -383,7 +373,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 				// query remote recommender
 				for( TagRecommenderConnector con: getDistRecommenders() ) {
 					// each recommender is identified by an unique id:
-					Long sid = recommenderLookup.get(con);
+					Long sid = activeRecommenders.get(con);
 					if( sid!=null ) {
 						dbLogic.addRecommenderToQuery(qid, sid);
 						RecommenderDispatcher dispatcher = 
@@ -404,7 +394,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			 */
 			for( TagRecommender rec: getLocalRecommenders() ) {
 				// each recommender is identified by an unique id:
-				Long sid = recommenderLookup.get(rec);
+				Long sid = activeRecommenders.get(rec);
 				if( sid!=null ) {
 					dbLogic.addRecommenderToQuery(qid, sid);
 					// query recommender
@@ -924,8 +914,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			log.fatal("Couldn't store recommender setting.", ex);
 		}
 		if( sid!=null ){
-			recommenderLookup.put(reco, sid);
-			settingLookup.put(sid, reco);
+			activeRecommenders.put(reco, sid);
 		}
 	}
 
