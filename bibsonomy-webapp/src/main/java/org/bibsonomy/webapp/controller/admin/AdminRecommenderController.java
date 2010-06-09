@@ -58,7 +58,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		try{
 			recs = db.getActiveRecommenderSettingIds();
 			for(Long sid: recs)
-				mp.addAbstractRecommender(sid);
+				mp.enableRecommender(sid);
 		}
 		catch(SQLException e){
 		    log.debug("Couldn't initialize multiplexer! ", e);
@@ -95,7 +95,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 				
 			    Long sid = db.insertRecommenderSetting(command.getNewrecurl(), "Webservice", command.getNewrecurl().getBytes());
 			    
-			    mp.addAbstractRecommender(sid);
+			    mp.enableRecommender(sid);
 				command.setAdminResponse("Successfully added and activated new recommender with setting_id "+sid+"!");
 			}
 			catch(MalformedURLException e){
@@ -110,7 +110,7 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 			
 		} // Remove
 		else if(command.getAction().equals(CMD_REMOVERECOMMENDER)){
-			mp.removeAbstractRecommender(command.getDeletesid());
+			mp.disableRecommender(command.getDeletesid());
 			
 			//update database
 			try{
@@ -131,9 +131,9 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 		else if(command.getAction().equals(CMD_UPDATE_RECOMMENDERSTATUS)){
 			
 			for(Long sid: command.getActiveRecs())
-				mp.addAbstractRecommender(sid);
+				mp.enableRecommender(sid);
 			for(Long sid: command.getDisabledRecs())
-				mp.removeAbstractRecommender(sid);
+				mp.disableRecommender(sid);
 			command.setTab(Tab.ACTIVATE);
 			command.setAdminResponse("Successfully Updated Recommenderstatus!");
 		}
@@ -147,9 +147,9 @@ public class AdminRecommenderController implements MinimalisticController<AdminR
 				URL newRecurl = new URL(command.getNewrecurl());
 
 				long sid = command.getDeletesid();
-				mp.removeAbstractRecommender(sid);
+				mp.disableRecommender(sid);
 				db.updateRecommenderUrl(command.getDeletesid(), newRecurl);
-				mp.addAbstractRecommender(sid);
+				mp.enableRecommender(sid);
 				
 				command.setAdminResponse("Successfully Updated Recommenderurl!");
 			}
