@@ -26,6 +26,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 public class ResourceQueryController extends AbstractBaseController<ResourceClusterViewCommand> {
 	private final static Log log = LogFactory.getLog(ResourceQueryController.class);
+
+	private static final Integer RESOURCELIMIT = 100;
 	
 	/** bibtex posts */
 	private BibTexPostManager bibTexManager;
@@ -50,22 +52,25 @@ public class ResourceQueryController extends AbstractBaseController<ResourceClus
 
 	@Override
 	public ModelAndView workOn(ResourceClusterViewCommand command) {
-		final int runId = 17;
+		final int runId = 19;
 		
 		if( command.getContext().isUserLoggedIn() ) {
 			List<Post<BibTex>> bibTexPosts = new LinkedList<Post<BibTex>>();
 			List<Post<Bookmark>> bookmarkPosts = new LinkedList<Post<Bookmark>>();
 			
+			final int limit  = (command.getLimit()==null)?RESOURCELIMIT:command.getLimit();
+			final int offset = (command.getOffset()==null)?0:command.getOffset();
+			
 			int i = 0;
 			for( ResourceCluster cluster : command.getClusters() ) {
 				log.info("Querying for community "+cluster.getClusterID()+"...");
-				Collection<Post<BibTex>> btposts = this.bibTexManager.getPostsForCommunity(runId, cluster.getClusterID(), Ordering.POPULAR, 100, 0);
+				Collection<Post<BibTex>> btposts = this.bibTexManager.getPostsForCommunity(runId, cluster.getClusterID(), Ordering.POPULAR, limit, offset);
 				for( Post<?> post : btposts ) {
 					post.setCustomFlag(i);
 				}
 				cluster.setBibtex(btposts);
 				bibTexPosts.addAll(btposts);
-				Collection<Post<Bookmark>> bmposts = this.bookmarkManager.getPostsForCommunity(runId, cluster.getClusterID(), Ordering.POPULAR, 100, 0); 
+				Collection<Post<Bookmark>> bmposts = this.bookmarkManager.getPostsForCommunity(runId, cluster.getClusterID(), Ordering.POPULAR, limit, offset); 
 				for( Post<?> post : bmposts ) {
 					post.setCustomFlag(i);
 				}

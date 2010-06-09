@@ -1,5 +1,8 @@
 package org.bibsonomy.community.webapp.controller;
 
+import static org.bibsonomy.community.webapp.enums.ClusterSettingActions.*;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -12,16 +15,11 @@ import org.bibsonomy.community.database.CommunityManager;
 import org.bibsonomy.community.database.TagManager;
 import org.bibsonomy.community.database.UserSettingsManager;
 import org.bibsonomy.community.enums.Ordering;
-import org.bibsonomy.community.model.Cluster;
 import org.bibsonomy.community.model.ResourceCluster;
 import org.bibsonomy.community.model.Tag;
 import org.bibsonomy.community.model.User;
 import org.bibsonomy.community.util.Pair;
-import org.bibsonomy.community.webapp.command.ClusterViewCommand;
 import org.bibsonomy.community.webapp.command.ResourceClusterViewCommand;
-import org.bibsonomy.community.webapp.command.ResourceViewCommand;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Bookmark;
 import org.springframework.web.servlet.ModelAndView;
 
 
@@ -50,6 +48,15 @@ public class ClusterSettingsController extends AbstractBaseController<ResourceCl
 		if( command.getContext().isUserLoggedIn() ) {
 			User user = new User(command.getContext().getLoginUser());
 			try {
+				if( ADDCLUSTERS.toString().equals(command.getAction()) && present(command.getClusters())) {
+					// add given clusters to user settings
+					userSettingsManager.addUserAffiliation(user, command.getClusters());
+				} else if( REMOVECLUSTERS.toString().equals(command.getAction()) && present(command.getClusters())) {
+					// remove given clusters from user settings
+					userSettingsManager.removeUserAffiliation(user, command.getClusters());
+				} else {
+					// just display current settings
+				}
 				userSettingsManager.fillUserAffiliation(user);
 				populateClusterSettings(command, user, 25);
 			} catch (Exception e) {

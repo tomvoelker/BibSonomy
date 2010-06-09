@@ -1,5 +1,6 @@
 package org.bibsonomy.community.webapp.controller;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,10 +11,12 @@ import org.bibsonomy.community.database.BibTexPostManager;
 import org.bibsonomy.community.database.BookmarkPostManager;
 import org.bibsonomy.community.database.CommunityManager;
 import org.bibsonomy.community.database.TagManager;
+import org.bibsonomy.community.database.UserSettingsManager;
 import org.bibsonomy.community.enums.Ordering;
 import org.bibsonomy.community.webapp.command.ClusterViewCommand;
 import org.bibsonomy.community.webapp.command.ListCommand;
 import org.bibsonomy.community.webapp.command.ResourceClusterViewCommand;
+import org.bibsonomy.community.webapp.command.ResourceViewCommand;
 import org.bibsonomy.community.webapp.util.CreateRandomPosts;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -26,6 +29,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 public class ClusterListController extends AbstractBaseController<ResourceClusterViewCommand> {
 	private final static Log log = LogFactory.getLog(ClusterListController.class);
+
+	private static final Integer CLUSTERLIMIT = 6;
+	private static final int TAGCLOUDLIMIT    = 25;
+	private static final int BIBTEXLIMIT      = 5;
+	private static final int BOOKMARKLIMIT    = 5;
 	
 	/** bibtex posts */
 	private BibTexPostManager bibTexManager;
@@ -35,6 +43,8 @@ public class ClusterListController extends AbstractBaseController<ResourceCluste
 	private TagManager tagManager;
 	/** community access */
 	private CommunityManager communityManager;
+	/** user settings accsess */
+	private UserSettingsManager userSettingsManager;
 	
 	public ClusterListController() {
 		setCommandClass(ResourceClusterViewCommand.class);
@@ -50,45 +60,54 @@ public class ClusterListController extends AbstractBaseController<ResourceCluste
 
 	@Override
 	public ModelAndView workOn(ResourceClusterViewCommand command) {
-		final int runId = 17;
+		final int runId = 19;
 		
 		if( command.getContext().isUserLoggedIn() ) {
-			List<Post<BibTex>> bibTexPosts = new LinkedList<Post<BibTex>>();
-			List<Post<Bookmark>> bookmarkPosts = new LinkedList<Post<Bookmark>>();
-			
-			int i = 0;
-			for( ResourceCluster cluster : command.getClusters() ) {
-				log.info("Querying for community "+cluster.getClusterID()+"...");
-				Collection<Post<BibTex>> btposts = this.bibTexManager.getPostsForCommunity(runId, cluster.getClusterID(), Ordering.POPULAR, 100, 0);
-				for( Post<?> post : btposts ) {
-					post.setCustomFlag(i);
-				}
-				cluster.setBibtex(btposts);
-				bibTexPosts.addAll(btposts);
-				Collection<Post<Bookmark>> bmposts = this.bookmarkManager.getPostsForCommunity(runId, cluster.getClusterID(), Ordering.POPULAR, 100, 0); 
-				for( Post<?> post : bmposts ) {
-					post.setCustomFlag(i);
-				}
-				cluster.setBookmark(bmposts);
-				bookmarkPosts.addAll(bmposts);
-				i++;
+			final int limit  = (command.getLimit()==null)?CLUSTERLIMIT:command.getLimit();
+			final int offset = (command.getOffset()==null)?0:command.getOffset();
+			try {
+				Integer communityCount = this.communityManager.getNumberOfCommunities(runId);
+				command.setTotal(communityCount);
+			} catch (Exception e) {
+				log.error("Error fetching number of clusters", e);
 			}
-			
-			populateResources(command, bibTexPosts, bookmarkPosts, 50);
+			Collection<ResourceCluster> communities = this.communityManager.getCommunities(runId, TAGCLOUDLIMIT, BIBTEXLIMIT, BOOKMARKLIMIT, limit, offset);
+			command.setClusters(communities);
+			populateResources(command,25);
+		} else {
+			command.setClusters(new ArrayList<ResourceCluster>());
 		}
-		return new ModelAndView("export/"+getOutputFormat(command)+"/resources", "command", command);
+		
+		if( "json".equals(getOutputFormat(command)) ) {
+			return new ModelAndView("export/json/resources", "command", command);
+		} else {
+			populateResources(command, 25);
+			return new ModelAndView("export/html/clusterlist", "command", command);
+		}
 	}
 	
+
 	//------------------------------------------------------------------------
 	// helper functions
 	//------------------------------------------------------------------------
-	private void populateResources(final ResourceClusterViewCommand resources, final List<Post<BibTex>> bibTexPosts, final List<Post<Bookmark>> bookmarkPosts, final int entriesPerPage) {
+	private void populateResources(final ResourceClusterViewCommand command, final int entriesPerPage) {
+		for( ResourceCluster community : command.getClusters() ) {
+			ResourceClusterViewCommand newCommand = new ResourceClusterViewCommand();
+			populateResources(newCommand, community.getBibtex(), community.getBookmark(), entriesPerPage);
+			Collection<ResourceCluster> clusters = new ArrayList<ResourceCluster>();
+			clusters.add(community);
+			newCommand.setClusters(clusters);
+		}
+		
+	}
+	
+	private void populateResources(final ResourceClusterViewCommand resources, final Collection<Post<BibTex>> bibTexPosts, final Collection<Post<Bookmark>> bookmarkPosts, final int entriesPerPage) {
 		ListCommand<Post<BibTex>> bibTex      = new ListCommand<Post<BibTex>>(resources);
 		ListCommand<Post<Bookmark>> bookmarks = new ListCommand<Post<Bookmark>>(resources);
 	
-		bookmarks.setList(bookmarkPosts);
+		bookmarks.setList((List<Post<Bookmark>>) bookmarkPosts);
 		bookmarks.setEntriesPerPage(entriesPerPage);
-		bibTex.setList(bibTexPosts);
+		bibTex.setList((List<Post<BibTex>>) bibTexPosts);
 		bibTex.setEntriesPerPage(entriesPerPage);
 
 		resources.setBibtex(bibTex);
@@ -129,6 +148,14 @@ public class ClusterListController extends AbstractBaseController<ResourceCluste
 
 	public CommunityManager getCommunityManager() {
 		return communityManager;
+	}
+
+	public void setUserSettingsManager(UserSettingsManager userSettingsManager) {
+		this.userSettingsManager = userSettingsManager;
+	}
+
+	public UserSettingsManager getUserSettingsManager() {
+		return userSettingsManager;
 	}
 
 }

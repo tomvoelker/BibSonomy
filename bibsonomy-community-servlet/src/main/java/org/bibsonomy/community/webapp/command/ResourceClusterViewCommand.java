@@ -28,8 +28,19 @@ public class ResourceClusterViewCommand extends SimpleResourceViewCommand {
 	// private Collection<Cluster<T>> clusters = new ArrayList<Cluster<T>>();
 	private Collection<ResourceCluster> clusters = (Collection<ResourceCluster>)LazyList.decorate(new ArrayList<ResourceCluster>(), new ClusterFactory());
 
+	/** limit */
+	private Integer limit;
+	
+	/** offset */
+	private Integer offset;
+	
+	/** total number of clusters */
+	private Integer total;
+	
+	/** action identifier */
+	private String action;
+	
 	public ResourceClusterViewCommand() {
-		log.info("Object created...");
 	}
 	
 	//------------------------------------------------------------------------
@@ -41,6 +52,38 @@ public class ResourceClusterViewCommand extends SimpleResourceViewCommand {
 
 	public Collection<ResourceCluster> getClusters() {
 		return clusters;
+	}
+
+	public void setLimit(Integer limit) {
+		this.limit = limit;
+	}
+
+	public Integer getLimit() {
+		return limit;
+	}
+
+	public void setOffset(Integer offset) {
+		this.offset = offset;
+	}
+
+	public Integer getOffset() {
+		return offset;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setTotal(Integer total) {
+		this.total = total;
+	}
+
+	public Integer getTotal() {
+		return total;
 	}
 
 }
