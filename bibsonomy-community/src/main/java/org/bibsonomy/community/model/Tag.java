@@ -8,6 +8,10 @@ public class Tag extends org.bibsonomy.model.Tag {
 	private int topicId = 0;
 	
 	
+	public Tag() {
+		super();
+	}
+
 	public Tag(String tagName) {
 		super(tagName);
 	}

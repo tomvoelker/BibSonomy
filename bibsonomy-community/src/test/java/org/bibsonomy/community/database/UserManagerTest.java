@@ -1,11 +1,16 @@
 package org.bibsonomy.community.database;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.community.model.ResourceCluster;
 import org.bibsonomy.community.model.User;
 import org.bibsonomy.community.util.JNDITestDatabaseBinder;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -38,6 +43,7 @@ public class UserManagerTest {
 	 * @throws Exception 
 	 */
 	@Test
+	@Ignore
 	public void testBibTexPosts() throws Exception {
 		User user = new User("testUser");
 		user.setAffiliation(17, 23, 0.3412);
@@ -50,7 +56,29 @@ public class UserManagerTest {
 		userManager.fillUserAffiliation(user2);
 	}	
 
+	@Test
+	public void testAddCommunity() throws Exception {
+		User user = new User("testUser");
+		Collection<ResourceCluster> clusters = new ArrayList<ResourceCluster>();
+		ResourceCluster cluster = new ResourceCluster();
+		cluster.setClusterID(2342);
+		cluster.setWeight(0.2342);
+		clusters.add(cluster);
+		userManager.addUserAffiliation(user, clusters);
+	}
 
+	@Test
+	public void testRemoveCommunity() throws Exception {
+		User user = new User("testUser");
+		Collection<ResourceCluster> clusters = new ArrayList<ResourceCluster>();
+		ResourceCluster cluster = new ResourceCluster();
+		cluster.setClusterID(2342);
+		cluster.setWeight(0.2342);
+		clusters.add(cluster);
+		userManager.addUserAffiliation(user, clusters);
+		
+		userManager.removeUserAffiliation(user, clusters);
+	}
 	
 	//------------------------------------------------------------------------
 	// private helpers
