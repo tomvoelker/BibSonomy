@@ -32,8 +32,8 @@ import org.bibsonomy.services.recommender.TagRecommender;
 /**
  * Class for querying several recommenders. 
  * Each recommendation request is sent to all registered recommenders. Thereby each 
- * query to an recommendation is identified by an unique transaction id which is used 
- * to manage asynchronous events. Responses of the recommenders are collected using 
+ * query to a recommender is identified by an unique transaction id ("query id")  which is 
+ * used to manage asynchronous events. Responses of the recommenders are collected using 
  * the consumer/producer schema.  
  * The overall result is chosen in selectResult(). Request, all received responses 
  * as well as timing and individual recommender meta information is stored using 
@@ -43,31 +43,47 @@ import org.bibsonomy.services.recommender.TagRecommender;
  */
 public class MultiplexingTagRecommender implements TagRecommender {
 	private static final Log log = LogFactory.getLog(MultiplexingTagRecommender.class);
-	Object lockResults = new Object();              // while selecting a result,
-	// no further recommender answers 
-	// should be added to database
-	private List<TagRecommender> localRecommenders;         // recommenders with object reference
-	private List<TagRecommenderConnector> distRecommenders;    // recommenders with remote access
+	
+	/** indicates that post identifier was not given */
+	public static int UNKNOWN_POSTID = -1;
+	
+	/** default value for the number of tags to recommend */
+	private static final int DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND = 5;
+
+	/** lock for synchronizing concurrent read/write operations */
+	Object lockResults = new Object();
+	
+	/** recommenders with object reference */
+	private List<TagRecommender> localRecommenders;
+	
+	/** recommenders with remote access */
+	private List<TagRecommenderConnector> distRecommenders;    
 
 	/** timeout for querying distant recommender */
-	private int queryTimeout = 100;                
+	private int queryTimeout = 100;
+	
 	/** result selection strategy */
 	private RecommendationSelector resultSelector;
+	
 	/** result selector's id (as stored in the db) */
 	private long selectorID;
 
+	/** 
+	 * not all (especially private posts) should be send to remote recommender 
+	 * systems - these filter are used for filtering out posts before requests
+	 * are sent to remote recommender systems
+	 */
 	private PostPrivacyFilter postPrivacyFilter;
 	
+	/**
+	 * these objects may alter certain fields in post object before they are
+	 * sent to recommender systems (e.g., for making posts anonymous)
+	 */
 	private List<PostModifier> postModifiers;
 	
 	/** before storing recommended tags, all these filters are applied */
 	private List<RecommendedTagModifier> tagModifiers;
-
-	/** indicates that post identifier was not given */
-	public static int UNKNOWN_POSTID = -1;
-
-	/** FIXME: reuse AbstractTagRecommender */
-	private static final int DEFAULT_NUMBER_OF_TAGS_TO_RECOMMEND = 5;
+	
 	/**
 	 * The maximal number of tags the recommender shall return on a call to
 	 * {@link #getRecommendedTags(Post)}.
@@ -85,10 +101,12 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	/** flag indicating, whether an instance was correctly initialized */
 	private boolean initialized = false;
 
+	/** class for accessing the data base */ 
 	private DBLogic dbLogic;
 	
 	/** debug variable counting the number of open query threads */
 	private static int queryThreadCounter = 0;
+	
 	/** debug variable counting the number of open feedback threads */
 	private static int feedbackThreadCounter = 0;
 	
@@ -107,8 +125,6 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		postModifiers     = new LinkedList<PostModifier>();
 		tagModifiers      = new LinkedList<RecommendedTagModifier>();
 	}
-	
-	
 	
 	/**
 	 * post-instance init method: this method has to be called when all 
@@ -151,7 +167,14 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		initialized = true;
 	}
 	
-
+	/**
+	 * destructor
+	 */
+	@Override
+	protected void finalize() {
+		disconnectRecommenders();
+	}
+	
 	//------------------------------------------------------------------------
 	// Implementation of recommender registration
 	//------------------------------------------------------------------------
@@ -165,17 +188,15 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		if(!recommenderLookup.containsKey(recommender))
 		    getLocalRecommenders().add(recommender);
 		if( initialized ) {
-			registerRecommender(
-					recommender,
-					recommender.getClass().getCanonicalName(), 
-					recommender.getInfo(), 
-					null);
+			registerRecommender(recommender);
 		}
 		return true;
 	}
 	
 	/**
-	 * Adds recommender.
+	 * Adds a local recommender.
+	 * FIXME: is the method actually used?
+	 * 
 	 * @param sid SettingId
 	 * @return true on success, false otherwise
 	 */
@@ -199,11 +220,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		if(!recommenderLookup.containsKey(recommender))
 		    getDistRecommenders().add(recommender);
 		if( initialized ) {
-			registerRecommender(
-					recommender,
-					recommender.getId(), 
-					recommender.getInfo(), 
-					recommender.getMeta());
+			registerRecommender(recommender);
 		}
 		try{ recommender.connect(); }
 		catch(Exception e){ log.debug("Could not connect to recommender " + recommender.getId(), e); }
@@ -286,35 +303,42 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * @return false if none of the registered recommenders could be initialized
 	 */
 	public boolean connectRecommenders() {
+		boolean success = false;
 		// connect to each recommender
 		for(TagRecommenderConnector rec: getDistRecommenders()) {
 			try {
 				log.info("connecting to "+rec.getInfo());
-				if( !rec.connect() );
+				if( rec.connect() ) {
+					success = true;
+				}
 			} catch( Exception e ) {
 				// TODO remove rec from list
 			}
 		}
-		return true;
+		return success;
 	}
+	
 	/** 
 	 * @return false if one of the registered recommenders could not be disconnected
 	 */
 	public boolean disconnectRecommenders() {
+		boolean success = false;
 		// disconnect from each recommender
 		for(TagRecommenderConnector rec: getDistRecommenders()) {
 			try {
 				log.info("disconnecting from "+rec.getInfo());
-				if( !rec.disconnect() );
+				if( rec.disconnect() ) {
+					success = true;
+				}
 			} catch( Exception e ) {
 				// TODO remove rec from list
 			}
 		}
-		return true;
+		return success;
 	}
 
 	//------------------------------------------------------------------------
-	// TagRecommender interface implementation
+	// manage queries
 	//------------------------------------------------------------------------
 	/**
 	 * Extends TagRecommender's interface with a parameter which is used to map
@@ -328,11 +352,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * @param post The post for which tag recommendations are requested.
 	 * @param postID ID for mapping posts to recommender queries
 	 */
-	public void addRecommendedTags(
-			Collection<RecommendedTag> recommendedTags, 
-			Post<? extends Resource> post, 
-			int postID) {
-
+	public void addRecommendedTags(Collection<RecommendedTag> recommendedTags, Post<? extends Resource> post, int postID) {
 		log.debug("["+postID+"]querying["+localRecommenders+", "+distRecommenders+"]");
 
 		// id identifying this query
@@ -340,6 +360,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 
 		// list for managing pending recommenders
 		List<RecommenderDispatcher> dispatchers = new ArrayList<RecommenderDispatcher>();
+		
 		// query's time stamp
 		Timestamp ts = new Timestamp(System.currentTimeMillis());
 
@@ -351,35 +372,25 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			resultCache.startQuery(qid);
 			
 			/*
-			 * TODO: the filteredPost is null, when it is non public!
-			 * Thus: check for null posts and ignore them for suggestion.
-			 * (or: ignore the remote recommender, see below)
-			 * 
-			 * TODO: local recommender should get the unfiltered posts, such that
-			 * we get some suggestions for sure.
-			 * 
-			 *  For the challenge, we just put all participants recommender into
-			 *  the distRecommender list, such that they don't get private posts.
-			 * 
+			 * query remote recommender systems - we filter out certain posts for respecting privacy
 			 */
 			final Post<? extends Resource> filteredPost = postPrivacyFilter.filterPost(post);
 			if (filteredPost != null) {
 				// apply post modifiers
-				for( PostModifier pm : getPostModifiers() )
+				for( PostModifier pm : getPostModifiers() ) {
 					pm.alterPost(filteredPost);
+				};
 				// query remote recommender
 				for( TagRecommenderConnector con: getDistRecommenders() ) {
 					// each recommender is identified by an unique id:
 					Long sid = recommenderLookup.get(con);
 					if( sid!=null ) {
 						dbLogic.addRecommenderToQuery(qid, sid);
-						//dbLogic.addRecommender(qid, con.getId(), con.getInfo(), con.getMeta());
 						RecommenderDispatcher dispatcher = 
 							new RecommenderDispatcher(con, filteredPost, qid, sid, null);
 						dispatchers.add(dispatcher);
 						dispatcher.start();
 					} else {
-						// TODO: this is only for initial debugging
 						log.fatal("("+qid+")Didn't find recommender id - THIS SHOULD NEVER HAPPEN");
 					}
 				}
@@ -396,7 +407,6 @@ public class MultiplexingTagRecommender implements TagRecommender {
 				Long sid = recommenderLookup.get(rec);
 				if( sid!=null ) {
 					dbLogic.addRecommenderToQuery(qid, sid);
-					// dbLogic.addRecommender(qid, rec.getClass().getCanonicalName().toString(), rec.getInfo(), null);
 					// query recommender
 					// FIXME: local recommender are also aborted when timeout is reached,
 					//        so their might be no recommendations at all
@@ -405,7 +415,6 @@ public class MultiplexingTagRecommender implements TagRecommender {
 					dispatchers.add(dispatcher);
 					dispatcher.start();
 				} else {
-					// TODO: this is only for initial debugging
 					log.fatal("("+qid+")Didn't find recommender id - THIS SHOULD NEVER HAPPEN");
 				}
 			};
@@ -433,14 +442,17 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			try {
 				selectResult(qid, recommendedTags);
 			} catch (SQLException ex) {
-				// TODO Auto-generated catch block
 				log.error("("+qid+")"+ex.getMessage(), ex);
 			}
 		};
 		log.debug("("+qid+") Running threads: "+queryThreadCounter+" query threads and "+feedbackThreadCounter+" feedback threads");
 	}
 
-	/** Simply adds recommendations to the given collection of recommended tags. 
+	//------------------------------------------------------------------------
+	// TagRecommender interface implementation
+	//------------------------------------------------------------------------	
+	/** 
+	 * Simply adds recommendations to the given collection of recommended tags. 
 	 * 
 	 * @see org.bibsonomy.services.recommender.TagRecommender#addRecommendedTags(java.util.Collection, org.bibsonomy.model.Post)
 	 */	
@@ -448,6 +460,9 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		addRecommendedTags(recommendedTags, post, UNKNOWN_POSTID);
 	}
 
+	/**
+	 * get recommendation
+	 */
 	public SortedSet<RecommendedTag> getRecommendedTags(Post<? extends Resource> post) {
 		return getRecommendedTags(post, UNKNOWN_POSTID);
 	};
@@ -472,6 +487,52 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		addRecommendedTags(recommendedTags, post, postID);
 		return recommendedTags;
 	}
+	
+	@Override
+	public void setFeedback(Post<? extends Resource> post) {
+		try {
+			dbLogic.connectWithPost(post, post.getContentId());
+		} catch (SQLException e) {
+			throw new RuntimeException("Could not connect post: " + e);
+		}
+		
+		
+		/*
+		 * set feedback for remotely running recommender systems 
+		 */
+		// list for managing pending recommenders
+		List<FeedbackDispatcher> dispatchers = new ArrayList<FeedbackDispatcher>();
+		final Post<? extends Resource> filteredPost = postPrivacyFilter.filterPost(post);
+		if (filteredPost != null) {
+			// apply post modifiers
+			for( PostModifier pm : getPostModifiers() )
+				pm.alterPost(filteredPost);
+			// send feedback to remote recommenders
+			for( TagRecommenderConnector con: getDistRecommenders() ) {
+				FeedbackDispatcher dispatcher = 
+					new FeedbackDispatcher(con, post);
+				dispatchers.add(dispatcher);
+				dispatcher.start();
+			}
+		}
+
+
+		/*
+		 * set feedback for local recommenders
+		 * 
+		 * they get the unfiltered post, since we trust them
+		 */
+		for( TagRecommender rec: getLocalRecommenders() ) {
+			// query recommender
+			// FIXME: local recommenders are also aborded when timout is reached,
+			//        so their might be now recommendations at all
+			FeedbackDispatcher dispatcher = 
+				new FeedbackDispatcher(rec, post);
+			dispatchers.add(dispatcher);
+			dispatcher.start();
+		};
+	}
+	
 
 	public String getInfo() {
 		return "Multiplexing recommender for querying several independent recommenders.";
@@ -517,9 +578,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	 * @return true on success, false otherwise
 	 * @throws SQLException 
 	 */
-	private boolean addQueryResponse(
-			Long qid, Long sid, long queryTime,
-			SortedSet<RecommendedTag> tags) throws SQLException {
+	private boolean addQueryResponse(Long qid, Long sid, long queryTime, SortedSet<RecommendedTag> tags) throws SQLException {
 		// filter out invalid recommendations
 		for( RecommendedTagModifier filter : getTagModifiers() )
 			filter.alterTags(tags);
@@ -533,7 +592,10 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			
 		return true;
 	}
-
+	
+	//------------------------------------------------------------------------
+	// getter/setter
+	//------------------------------------------------------------------------
 	public void setDistRecommenders(List<TagRecommenderConnector> distRecommenders) {
 		if (getDistRecommenders()!=null) 
 			disconnectRecommenders();
@@ -627,6 +689,31 @@ public class MultiplexingTagRecommender implements TagRecommender {
 		return numberOfTagsToRecommend;
 	}
 	
+	public DBLogic getDbLogic() {
+		return this.dbLogic;
+	}
+	
+	public void setDbLogic(DBLogic dbLogic) {
+		this.dbLogic = dbLogic;
+	}
+
+	public void setPostModifiers(List<PostModifier> postModifiers) {
+		this.postModifiers = postModifiers;
+	}
+	
+	public List<PostModifier> getPostModifiers() {
+		return postModifiers;
+	}
+	
+	
+	public void setTagModifiers(List<RecommendedTagModifier> tagModifiers) {
+		this.tagModifiers = tagModifiers;
+	}
+	
+	public List<RecommendedTagModifier> getTagModifiers() {
+		return tagModifiers;
+	}
+
 	//------------------------------------------------------------------------
 	// Implementation of dispatching recommendation queries
 	//------------------------------------------------------------------------
@@ -737,6 +824,7 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			abort = true;
 		}
 	}
+	
 	/**
 	 * Threaded class for dispatching and collecting a single recommender query.
 	 * 
@@ -798,77 +886,28 @@ public class MultiplexingTagRecommender implements TagRecommender {
 	}
 	
 	
-	public DBLogic getDbLogic() {
-		return this.dbLogic;
-	}
-	public void setDbLogic(DBLogic dbLogic) {
-		this.dbLogic = dbLogic;
-	}
-	@Override
-	public void setFeedback(Post<? extends Resource> post) {
-		try {
-			dbLogic.connectWithPost(post, post.getContentId());
-		} catch (SQLException e) {
-			throw new RuntimeException("Could not connect post: " + e);
-		}
-		
-		
-		/*
-		 * TODO: the filteredPost is null, when it is non public!
-		 * Thus: check for null posts and ignore them for suggestion.
-		 * (or: ignore the remote recommenders, see below)
-		 * 
-		 * TODO: local recommenders should get the unfiltered posts, such that
-		 * we get some suggestions for sure.
-		 * 
-		 *  For the challenge, we just put all participants recommenders into
-		 *  the distRecommender list, such that they don't get private posts.
-		 * 
-		 */
-		// list for managing pending recommenders
-		List<FeedbackDispatcher> dispatchers = new ArrayList<FeedbackDispatcher>();
-		final Post<? extends Resource> filteredPost = postPrivacyFilter.filterPost(post);
-		if (filteredPost != null) {
-			// apply post modifiers
-			for( PostModifier pm : getPostModifiers() )
-				pm.alterPost(filteredPost);
-			// send feedback to remote recommenders
-			for( TagRecommenderConnector con: getDistRecommenders() ) {
-				FeedbackDispatcher dispatcher = 
-					new FeedbackDispatcher(con, post);
-				dispatchers.add(dispatcher);
-				dispatcher.start();
-			}
-		}
-
-
-		/*
-		 * set feedback for local recommenders
-		 * 
-		 * they get the unfiltered post, since we trust them
-		 */
-		for( TagRecommender rec: getLocalRecommenders() ) {
-			// query recommender
-			// FIXME: local recommenders are also aborded when timout is reached,
-			//        so their might be now recommendations at all
-			FeedbackDispatcher dispatcher = 
-				new FeedbackDispatcher(rec, post);
-			dispatchers.add(dispatcher);
-			dispatcher.start();
-		};
-	}
-	
-	public void setPostModifiers(List<PostModifier> postModifiers) {
-		this.postModifiers = postModifiers;
-	}
-	
-	public List<PostModifier> getPostModifiers() {
-		return postModifiers;
-	}
-	
 	//------------------------------------------------------------------------
 	// Private helper functions
-	//------------------------------------------------------------------------	
+	//------------------------------------------------------------------------
+
+	/**
+	 * register recommender system in all relevant data structures
+	 * 
+	 * @param  reco a tag recommender to register
+	 */
+	private void registerRecommender(TagRecommender recommender) {
+		registerRecommender(recommender, recommender.getClass().getCanonicalName(), recommender.getInfo(), null);
+	}
+	
+	/**
+	 * register recommender system in all relevant data structures
+	 * 
+	 * @param  reco a tag recommender to register
+	 */
+	private void registerRecommender(TagRecommenderConnector recommender) {
+		registerRecommender(recommender, recommender.getId(), recommender.getInfo(), recommender.getMeta());
+	}
+
 	/**
 	 * register recommender system in all relevant data structures
 	 * 
@@ -905,20 +944,5 @@ public class MultiplexingTagRecommender implements TagRecommender {
 			log.fatal("Could not store result selection strategy", ex);
 		}
 	}
-	
-	public void setTagModifiers(List<RecommendedTagModifier> tagModifiers) {
-		this.tagModifiers = tagModifiers;
-	}
-	
-	public List<RecommendedTagModifier> getTagModifiers() {
-		return tagModifiers;
-	}
-	
-	/**
-	 * destructor
-	 */
-	@Override
-	protected void finalize() {
-		disconnectRecommenders();
-	}
+
 }
