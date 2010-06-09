@@ -14,6 +14,7 @@
 			    <entry key="/"><ref bean="frontPageController"/></entry>
 				<entry key="/queryResources"><ref bean="resourceQueryController"/></entry>
 				<entry key="/clusterSettings"><ref bean="clusterSettingsController"/></entry>
+				<entry key="/clusterList"><ref bean="clusterListController"/></entry>
 			</map>
 		</property>
 	</bean>
@@ -31,6 +32,12 @@
 	</bean>
 	
 	<bean id="clusterSettingsController" class="org.bibsonomy.community.webapp.controller.ClusterSettingsController">
+		<property name="tagManager" ref="tagLogic"/>
+		<property name="communityManager" ref="communityLogic"/>
+		<property name="userSettingsManager" ref="userSettingsLogic"/>
+	</bean>
+
+	<bean id="clusterListController" class="org.bibsonomy.community.webapp.controller.ClusterListController">
 		<property name="tagManager" ref="tagLogic"/>
 		<property name="communityManager" ref="communityLogic"/>
 		<property name="userSettingsManager" ref="userSettingsLogic"/>
