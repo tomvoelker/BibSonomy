@@ -9,10 +9,22 @@
 		REPLACE INTO user_community_settings (user_name,run_id,community_id,weight)
 		VALUES ( #userName#, #runID#, #communityID#, #weight# )
 	</insert>	  
-	  
+	   
+	<insert id="addUserAffiliation" parameterClass="communityParam">
+		REPLACE INTO user_community_settings (user_name,run_id,community_id,weight)
+		VALUES ( #userName#, #runID#, #communityID#, #weight# )
+	</insert>
+	
 	<!--+ =================================================================+ 
-	    |                            update                                |
+	    |                            remove                                |
 	    +================================================================= +-->
+	<delete id="removeUserAffiliation" parameterClass="communityParam">
+		DELETE 
+		FROM user_community_settings
+		WHERE user_name = #userName#
+		  AND run_id = #runID#
+		  AND community_id = #communityID#
+	</delete>
 	
 	<!--+ =================================================================+ 
 	    |                            lookup                                |

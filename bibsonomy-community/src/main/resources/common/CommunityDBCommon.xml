@@ -19,11 +19,13 @@
 	
 	<resultMap id="tag" class="tag" groupBy="name">
 		<result property="name" column="tag_name" javaType="string" />
+		<result property="weight" column="weight" javaType="double" />
 	</resultMap>
 
 	<resultMap id="tagCount" class="tag" groupBy="name">
 		<result property="name" column="name" javaType="string" />
 		<result property="globalcount" column="count" javaType="integer" />
+		<result property="weight" column="weight" javaType="double" />
 	</resultMap>
 	
 	<resultMap id="user" class="user" groupBy="name">

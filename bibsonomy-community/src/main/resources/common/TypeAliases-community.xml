@@ -6,7 +6,6 @@
 -->
 <sqlMap namespace="TypeAliases">
 	<!-- Model types -->
-	<typeAlias alias="tag"                type="org.bibsonomy.model.Tag" />
 	<typeAlias alias="bookmark"           type="org.bibsonomy.model.Bookmark" />
 	<typeAlias alias="bibtex"             type="org.bibsonomy.model.BibTex" />
 	<typeAlias alias="post"               type="org.bibsonomy.model.Post" />
@@ -19,6 +18,7 @@
 	<typeAlias alias="author"			  type="org.bibsonomy.model.Author" />
 	
 	<!-- community model types -->
+	<typeAlias alias="tag"                type="org.bibsonomy.community.model.Tag" />
 	<typeAlias alias="communityPost"         type="org.bibsonomy.community.model.Post" />
 	<typeAlias alias="resourceParam"         type="org.bibsonomy.community.database.param.CommunityResourceParam" />
 	<typeAlias alias="resourceCluster"       type="org.bibsonomy.community.model.ResourceCluster" />

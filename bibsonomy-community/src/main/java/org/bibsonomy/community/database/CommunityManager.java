@@ -3,6 +3,7 @@ package org.bibsonomy.community.database;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -199,6 +200,12 @@ public class CommunityManager extends AbstractDBManager implements DBManageInter
 		return queryForList("getUsersForCommunity", param);
 	}
 
+	public Integer getNumberOfCommunities(int runId) throws Exception {
+		CommunityParam param = new CommunityParam();
+		param.setRunID(runId);
+		return (Integer)getSqlMap().queryForObject("getNumberOfCommunities", param);
+	}
+	
 	public Collection<Integer> listCommunities(final int run_id, final int limit, final int offset) {
 		CommunityParam param = new CommunityParam();
 		param.setRunID(run_id);
@@ -223,8 +230,11 @@ public class CommunityManager extends AbstractDBManager implements DBManageInter
 		Collection<ResourceCluster> communities = new ArrayList<ResourceCluster>();
 		for( final Integer communityId : communityIdx ) {
 			ResourceCluster community = new ResourceCluster();
-			Collection<Post<Bookmark>> bookmarks = bookmarkLogic.getPostsForCommunity(runId, communityId, Ordering.POPULAR, bookmarkLimit, 0);
-			Collection<Post<BibTex>> bibTex = bibtexLogic.getPostsForCommunity(runId, communityId, Ordering.POPULAR, bibTexLimit, 0);
+			community.setClusterID(communityId);
+			Collection<Post<Bookmark>> bookmarks = new LinkedList<Post<Bookmark>>();
+			//bookmarkLogic.getPostsForCommunity(runId, communityId, Ordering.POPULAR, bookmarkLimit, 0);
+			Collection<Post<BibTex>> bibTex = new LinkedList<Post<BibTex>>(); 
+			//bibtexLogic.getPostsForCommunity(runId, communityId, Ordering.POPULAR, bibTexLimit, 0);
 			Collection<Tag> tagCloud = tagLogic.getTagCloudForCommunity(runId, communityId, Ordering.POPULAR, tagCloudLimit, 0);
 			
 			community.setBookmark(bookmarks);
@@ -238,5 +248,5 @@ public class CommunityManager extends AbstractDBManager implements DBManageInter
 		// all done
 		return communities;
 	}
-	
+
 }

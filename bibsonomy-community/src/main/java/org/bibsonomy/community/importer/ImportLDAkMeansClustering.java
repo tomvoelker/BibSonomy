@@ -17,6 +17,23 @@ import org.bibsonomy.model.Resource;
 public class ImportLDAkMeansClustering {
 	private static final Log log = LogFactory.getLog(ImportLDAkMeansClustering.class);
 	
+	/**
+	 * args:
+	 * 
+	 * 0) url 
+	 * 1) database
+	 * 2) username
+	 * 3) password
+	 * 
+	 * 4) userMapFile
+	 * 5) contentIDsFile
+	 * 6) clusteringFile
+	 * 7) resouceFile
+	 * 8) topicFile
+	 * 
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String[] args) throws Exception {
 		if( args.length <= 0 ) {
 			usage();

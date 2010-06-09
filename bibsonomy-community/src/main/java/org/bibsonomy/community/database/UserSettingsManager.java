@@ -1,11 +1,13 @@
 package org.bibsonomy.community.database;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.community.database.param.CommunityParam;
+import org.bibsonomy.community.model.ResourceCluster;
 import org.bibsonomy.community.model.User;
 import org.bibsonomy.community.util.Pair;
 
@@ -56,6 +58,42 @@ public class UserSettingsManager extends AbstractDBManager {
 	}
 	
 	//------------------------------------------------------------------------
+	// set
+	//------------------------------------------------------------------------
+	public void removeUserAffiliation(User user, Collection<ResourceCluster> clusters) throws Exception {
+		getSqlMap().startBatch();
+		
+		int runId = 17;
+		for( ResourceCluster cluster : clusters ) {
+			CommunityParam param = new CommunityParam();
+			param.setUserName(user.getName());
+			param.setRunID(runId);
+			param.setCommunityID(cluster.getClusterID());
+			
+			getSqlMap().delete("removeUserAffiliation", param);
+		};
+		getSqlMap().executeBatch();
+		
+	}
+	
+	public void addUserAffiliation(User user, Collection<ResourceCluster> clusters) throws Exception {
+		getSqlMap().startBatch();
+		
+		int runId = 17;
+		for( ResourceCluster cluster : clusters ) {
+			CommunityParam param = new CommunityParam();
+			param.setUserName(user.getName());
+			param.setRunID(runId);
+			param.setCommunityID(cluster.getClusterID());
+			param.setWeight(cluster.getWeight());
+		
+			getSqlMap().insert("addUserAffiliation", param);
+		};
+		getSqlMap().executeBatch();
+	}
+	
+	
+	//------------------------------------------------------------------------
 	// get
 	//------------------------------------------------------------------------
 	/**
@@ -73,4 +111,5 @@ public class UserSettingsManager extends AbstractDBManager {
 			user.setAffiliation(entry.getRunID(), entry.getCommunityID(), entry.getWeight());
 		}
 	}
+
 }

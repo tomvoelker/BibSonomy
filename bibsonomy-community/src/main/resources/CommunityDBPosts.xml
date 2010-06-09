@@ -41,9 +41,12 @@
 	
 	<!-- get list of most popular tags for given community -->
 	<select id="getTagCloudPopularForCommunity" parameterClass="resourceParam" resultMap="Common.tagCount">
-		SELECT tag_name AS name, count
-		FROM $communityDBName$.tmp_tag_count
-		WHERE community_id = #communityId#
+		SELECT c.tag_name AS name, c.count, t.p as weight
+		FROM $communityDBName$.tmp_tag_count c
+		JOIN $communityDBName$.topics t ON (t.community_id=c.community_id AND t.tag_name=c.tag_name)
+		WHERE c.community_id = #communityId#
+		  AND t.run_id = #runId#
+		GROUP BY c.tag_name
 		ORDER BY count DESC
 		LIMIT #offset#, #limit#
 	</select>

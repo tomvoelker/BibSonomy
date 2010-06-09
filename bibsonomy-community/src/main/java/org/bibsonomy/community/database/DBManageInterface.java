@@ -111,6 +111,13 @@ public interface DBManageInterface {
 	 * @return
 	 */
 	public Collection<String> getUsersForCommunity(final int run_id, final int community_id, final Ordering order, final int limit, final int offset);
+
+	/**
+	 * get the number of different communities for the given run id
+	 * @param runId
+	 * @return
+	 */
+	public Integer getNumberOfCommunities(final int runId) throws Exception;
 	
 	/**
 	 * retrieve a list of all community ids for the given run_id

@@ -93,6 +93,12 @@
 		ORDER BY p DESC 
 	</select>
 	
+	<select id="getNumberOfCommunities" parameterClass="communityParam" resultClass="integer">
+		SELECT clusters
+		FROM run_settings
+		WHERE run_id = #runID#
+	</select>
+	
 	<select id="listCommunities" parameterClass="communityParam" resultClass="integer">
 		SELECT distinct community_id
 		FROM community
