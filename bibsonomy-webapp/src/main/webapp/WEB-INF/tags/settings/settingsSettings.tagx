@@ -142,8 +142,8 @@
 			        	</jsp:attribute>
 			        </buttons:help>
 			        <form:select cssClass="fsInput fsSmall" path="user.settings.simpleInterface">
-			          <form:option label="${advanced}" value="0" />
-			          <form:option label="${simple}" value="1" />
+			          <form:option label="${advanced}" value="false" />
+			          <form:option label="${simple}" value="true" />
 			        </form:select>
 			      </div>
 			      
