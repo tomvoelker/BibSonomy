@@ -1,17 +1,23 @@
 package org.bibsonomy.webapp.controller.reporting;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.model.BibTex;
+import org.bibsonomy.model.Post;
+import org.bibsonomy.model.logic.LogicInterface;
+import org.bibsonomy.model.util.BibTexUtils;
+import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.reporting.GroupReportingCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
-
-import sun.rmi.runtime.Log;
 
 /**
  * Controller for group reporting pages.
@@ -22,16 +28,12 @@ import sun.rmi.runtime.Log;
  * @version $Id$
  */
 public class GroupReportingPageController implements MinimalisticController<GroupReportingCommand> {
-
-	private static final Log log = LogFactory.getLog(GroupReportingPageController.class);
 	
 	/** logic interface */
 	private LogicInterface logic;
 	
-
 	@Override
 	public View workOn(GroupReportingCommand command) {
-		
 		// allow only logged-in users FIXME: check errormsg
 		if (command.getContext().getLoginUser().getName() == null) {
 			throw new MalformedURLSchemeException("Not logged in!");
@@ -43,7 +45,7 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		}
 		
 		// if no tags given return FIXME: check errormsg
-		if (command.getRequestedTags() == null || command.getRequestedTags().length() == 0) {
+		if (!present(command.getRequestedTags())) {
 			throw new MalformedURLSchemeException("error.tag_page_without_tag");
 		}		
 		
