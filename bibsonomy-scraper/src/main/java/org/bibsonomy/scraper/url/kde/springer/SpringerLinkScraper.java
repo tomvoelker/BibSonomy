@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.url.kde.springer;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -54,14 +56,17 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "SpringerLink";
 	private static final String SITE_URL = "http://springerlink.com/";
 	
+	/*
+	 * FIXME: remove
+	 */
 	private static final String userAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";	
 
-	private static final Pattern contentPattern = Pattern.compile("content\\/(.+?)\\/");
-	private static final Pattern idPattern = Pattern.compile("id=([^\\&]*)");
+	private static final Pattern CONTENT_PATTERN = Pattern.compile("content\\/(.+?)\\/");
+	private static final Pattern ID_PATTERN = Pattern.compile("id=([^\\&]*)");
 
 	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
 	private static final String SPRINGER_CITATION_HOST_DE = "springerlink.de";
-	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
+	private static final String INFO = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
 
 	
 	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
@@ -72,42 +77,42 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	}
 	
 	@Override
-	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
+	protected boolean scrapeInternal(final ScrapingContext sc) throws ScrapingException {
 			sc.setScraper(this);
 
-			// This Scraper might handle the specified url
 			try {
+				final String url = sc.getUrl().toString();
 				/*
-				 *  guess Springer url
+				 *  extract document ID
 				 */
-				String docid = null;
-				
-				final Matcher mContent = contentPattern.matcher(sc.getUrl().toString());
-				final Matcher mId = idPattern.matcher(sc.getUrl().toString());
+				final String docid;
+				final Matcher mContent = CONTENT_PATTERN.matcher(url);
+				final Matcher mId = ID_PATTERN.matcher(url);
 				if (mContent.find()) {
 					docid = mContent.group(1);
 				} else if (mId.find()) {
 					docid = mId.group(1);
 				} else {
-					
+					/*
+					 * could not find ID
+					 */
 					return false;
 				}
 				
 				/* 
 				 * create query URL
 				 */
-				URL queryURL = new URL(("http://springerlink.com/export.mpx?code=" + docid + "&mode=ris"));
+				final URL queryURL = new URL((SITE_URL + "export.mpx?code=" + docid + "&mode=ris"));
 
 				/*
 				 * download RIS file
 				 */
-				String RisResult = getRisFromSpringer(queryURL, getCookieFromSpringer());
+				final String RisResult = getRisFromSpringer(queryURL, getCookieFromSpringer());
 
 				/*
 				 * convert ris to bibtex
 				 */
 				String bibtexEntries = new RisToBibtexConverter().RisToBibtex(RisResult);
-				//System.out.println("DEBUG: " + bibtexEntries);
 
 				/*
 				 * cleanup doi
@@ -117,12 +122,12 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				/*
 				 * Job done
 				 */
-				if (bibtexEntries != null && !"".equals(bibtexEntries)) {
+				if (present(bibtexEntries)) {
 					sc.setBibtexResult(bibtexEntries);
 					return true;
-				}else
-					throw new ScrapingFailureException("getting bibtex failed");
-
+				} 
+				
+				throw new ScrapingFailureException("getting bibtex failed");
 			} catch (MalformedURLException e) {
 				throw new InternalFailureException(e);
 			} catch (IOException e) {
@@ -207,7 +212,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	}
 	
 	public String getInfo() {
-		return info;
+		return INFO;
 	}
 	
 	@Override
