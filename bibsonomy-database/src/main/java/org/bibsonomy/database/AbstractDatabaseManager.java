@@ -18,10 +18,12 @@ public class AbstractDatabaseManager extends org.bibsonomy.database.common.Abstr
 	/**
 	 * if Lucene should be used for full text search or the database 
 	 */
-	private boolean doLuceneSearch;
+	private boolean doLuceneSearch = false;
 	
-	@Override
-	protected void init() {
+	/**
+	 * TODO
+	 */
+	public AbstractDatabaseManager() {		
 		/*
 		 * configure search mode
 		 * FIXME: don't do this using JNDI ...
@@ -34,7 +36,6 @@ public class AbstractDatabaseManager extends org.bibsonomy.database.common.Abstr
 			if (searchMode != null) {
 				doLuceneSearch = "lucene".equals(searchMode);
 			} else {
-				doLuceneSearch = false;
 				log.error("Error when trying to read environment variable 'searchmode' via JNDI / System.", ex);
 			}
 		}
