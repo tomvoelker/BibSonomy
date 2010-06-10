@@ -88,7 +88,14 @@
 	    	    	
 	    	    	<div class="fsRow">
 						<label class="fsLabel" for="importData"><fmt:message key="import.kind"/></label>
-						<buttons:help message="TODO"/>
+						<buttons:help message="import.kind.help">
+				        	<jsp:attribute name="helpText">
+				        		<ol>
+				        			<li> <fmt:message key="import.kind.help.bookmarks"/></li>
+				        			<li> <fmt:message key="import.kind.help.bundles"/></li>
+				        		</ol>
+			    	    	</jsp:attribute>
+						</buttons:help>
 						<div style="font-size:80%">
 	                        <form:radiobutton path="importData" value="posts"/>
 	                        <fmt:message key="bookmarks"/>
@@ -98,10 +105,6 @@
                         </div>
 	    	    	</div>
 	    	    	
-	  				<div class="fsRow">
-						<fmt:message key="settings.delicious.hint" />
-					</div>
-						    
 		  			<div class="fsRow">
 	    	     		<!-- <input type="hidden" name="ckey" value="${ckey}"/>-->
 	      				<!-- <input type="hidden" name="import" value="delicious"/> -->
