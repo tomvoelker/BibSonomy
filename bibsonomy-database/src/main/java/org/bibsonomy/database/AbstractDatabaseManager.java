@@ -21,7 +21,7 @@ public class AbstractDatabaseManager extends org.bibsonomy.database.common.Abstr
 	private boolean doLuceneSearch = false;
 	
 	/**
-	 * TODO
+	 * sets the search mode
 	 */
 	public AbstractDatabaseManager() {		
 		/*
