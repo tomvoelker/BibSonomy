@@ -453,4 +453,118 @@
 		<mimeType>text/html</mimeType>
 		<extension>.html</extension>
 	</layout>	
+	<layout name="publist-de" >
+		<displayName>Publication List in HTML Format similar to DIN1505 (German version); with Javascript to show/hide Bibtex/Abstracts</displayName>
+		<description xml:lang="en">
+			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
+			Standardization (DIN); German version.
+			Additionally, there is Javascript functionality to show/ hide BibTeX and Abstract
+			information of an entry. 
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe zur Erzeugung von Publikationslisten ähnlich zum 
+			Format DIN1505 gemäß dem Deutschen Institut für Normung (deutsche Version).
+			Die BibTex-/Abstrakt-Information zu einem Eintrag kann mittels Javascript-Links
+			ein- und ausgeblendet werden.		
+		</description>
+		<directory>publist-de</directory>
+		<baseFileName>publist-de</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="publist-en" >
+		<displayName>Publication List in HTML Format similar to DIN1505 (English version); with Javascript to show/hide Bibtex/Abstracts</displayName>
+		<description xml:lang="en">
+			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
+			Standardization (DIN); English version.
+			Additionally, there is Javascript functionality to show/ hide BibTeX and Abstract
+			information of an entry.			
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe zur Erzeugung von Publikationslisten ähnlich zum 
+			Format DIN1505 gemäß dem Deutschen Institut für Normung (englische Version).
+			Die BibTex-/Abstrakt-Information zu einem Eintrag kann mittels Javascript-Links
+			ein- und ausgeblendet werden.
+		</description>
+		<directory>publist-en</directory>
+		<baseFileName>publist-en</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="publist-type-de" >
+		<displayName>Publication List in HTML Format similar to DIN1505, grouped by entrytype (German version); with Javascript to show/hide Bibtex/Abstracts</displayName>
+		<description xml:lang="en">
+			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
+			Standardization (DIN), grouped by entrytype; German version.
+			Additionally, there is Javascript functionality to show/ hide BibTeX and Abstract
+			information of an entry.			
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe zur Erzeugung von Publikationslisten ähnlich zum 
+			Format DIN1505 gemäß dem Deutschen Institut für Normung, gruppiert nach Eintragstyp (deutsche Version).
+			Die BibTex-/Abstrakt-Information zu einem Eintrag kann mittels Javascript-Links
+			ein- und ausgeblendet werden.					
+		</description>
+		<directory>publist-type-de</directory>
+		<baseFileName>publist-type-de</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="publist-type-en" >
+		<displayName>Publication List in HTML Format similar to DIN1505, grouped by entrytype (English version); with Javascript to show/hide Bibtex/Abstracts</displayName>
+		<description xml:lang="en">
+			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
+			Standardization (DIN), grouped by entrype; English version.
+			Additionally, there is Javascript functionality to show/ hide BibTeX and Abstract
+			information of an entry.			
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe zur Erzeugung von Publikationslisten ähnlich zum 
+			Format DIN1505 gemäß dem Deutschen Institut für Normung, gruppiert nach Eintragstyp (englische Version).
+			Die BibTex-/Abstrakt-Information zu einem Eintrag kann mittels Javascript-Links
+			ein- und ausgeblendet werden.					
+		</description>
+		<directory>publist-type-en</directory>
+		<baseFileName>publist-type-en</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>		
+	<layout name="publist-year-de" >
+		<displayName>Publication List in HTML Format similar to DIN1505, grouped by year (German version); with Javascript to show/hide Bibtex/Abstracts</displayName>
+		<description xml:lang="en">
+			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
+			Standardization (DIN), grouped by year; German version.
+			Additionally, there is Javascript functionality to show/ hide BibTeX and Abstract
+			information of an entry.			
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe zur Erzeugung von Publikationslisten ähnlich zum 
+			Format DIN1505 gemäß dem Deutschen Institut für Normung, gruppiert nach Jahr (deutsche Version).
+			Die BibTex-/Abstrakt-Information zu einem Eintrag kann mittels Javascript-Links
+			ein- und ausgeblendet werden.					
+		</description>
+		<directory>publist-year-de</directory>
+		<baseFileName>publist-year-de</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>	
+	<layout name="publist-year-en" >
+		<displayName>Publication List in HTML Format similar to DIN1505, grouped by year (English version); with Javascript to show/hide Bibtex/Abstracts</displayName>
+		<description xml:lang="en">
+			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
+			Standardization (DIN), grouped by year; English version.
+			Additionally, there is Javascript functionality to show/ hide BibTeX and Abstract
+			information of an entry.			
+		</description>
+		<description xml:lang="de">
+			HTML-Ausgabe zur Erzeugung von Publikationslisten ähnlich zum 
+			Format DIN1505 gemäß dem Deutschen Institut für Normung, gruppiert nach Jahr (englische Version).
+			Die BibTex-/Abstrakt-Information zu einem Eintrag kann mittels Javascript-Links
+			ein- und ausgeblendet werden.					
+		</description>
+		<directory>publist-year-en</directory>
+		<baseFileName>publist-year-en</baseFileName>
+		<mimeType>text/html</mimeType>
+		<extension>.html</extension>
+	</layout>				
 </layouts>
