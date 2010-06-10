@@ -1,6 +1,7 @@
 package org.bibsonomy.database.managers;
 
 import static org.bibsonomy.util.ValidationUtils.present;
+import static org.bibsonomy.util.ValidationUtils.presentValidGroupId;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -41,7 +42,6 @@ import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.GroupUtils;
 import org.bibsonomy.model.util.SimHash;
 import org.bibsonomy.services.searcher.ResourceSearch;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * Used to create, read, update and delete posts from the database.
@@ -88,7 +88,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.permissionDb = PermissionDatabaseManager.getInstance();
 		this.groupDb = GroupDatabaseManager.getInstance();
+		
 		this.resourceClassName = this.getResourceClassName();
+		
 		this.validator = new DatabaseModelValidator<R>();
 	}
 
@@ -536,8 +538,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return this.postList("get" + this.resourceClassName + "ByHashForUser", param, session);
 	}
 
-
-
 	/**
 	 * <em>/search/ein+lustiger+satz</em><br/><br/>
 	 * 
@@ -558,6 +558,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
+	@Deprecated // TODO: remove me; search is done by lucene
 	public List<Post<R>> getPostsSearch(final int groupId, final String search, final String requestedUserName, final int limit, final int offset, final DBSession session) {
 		final P param = this.createParam(null, requestedUserName, limit, offset);
 		param.setGroupId(groupId);
@@ -582,6 +583,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
+	@Deprecated // TODO: remove me; search is done by lucene (code for lucene also obsolete)
 	public List<Post<R>> getPostsSearchForGroup(final String groupName, final Collection<String> visibleGroups, final String search, final String loginUserName, final int limit, final int offset, Collection<SystemTag> systemTags, final DBSession session) {
 		if (this.isDoLuceneSearch()) {
 			final ResourceSearch<R> lucene = this.getResourceSearch();
@@ -638,6 +640,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, limit, offset);
 		}
 		
+		log.error("lucene search is maybe disabled (" + this.isDoLuceneSearch() + ") or no resource searcher is set");	
 		return new LinkedList<Post<R>>();
 	}
 
@@ -655,6 +658,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return list of posts
 	 */
+	@Deprecated // TODO: remove me; old lucene method
 	public List<Post<R>> getPostsSearchLucene(final int groupId, final String search, final String requestedUserName, final String loginUserName, final Set<String> groupNames,  final int limit, final int offset, final DBSession session) {
 		final ResourceSearch<R> lucene = this.getResourceSearch();
 		if (!present(lucene)) {
@@ -663,16 +667,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		}
 
 		String group = null;
-		if (ValidationUtils.presentValidGroupId(groupId)) {
+		if (presentValidGroupId(groupId)) {
 			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 			group = groupDb.getGroupNameByGroupId(groupId, session);
 		}
 		
 		// get search results from lucene
 		final long starttimeQuery = System.currentTimeMillis();
-		final List<Post<R>> postList = 
-			lucene.getPosts(loginUserName, requestedUserName, group, null, search, null, null, null, null, null, null, limit, offset);
-		//searchPosts(group, search, requestedUserName, loginUserName, groupNames, limit, offset);
+		final List<Post<R>> postList = lucene.getPosts(loginUserName, requestedUserName, group, null, search, null, null, null, null, null, null, limit, offset);
 		final long endtimeQuery = System.currentTimeMillis();
 		log.debug("Lucene" + this.resourceClassName + " complete query time: " + (endtimeQuery-starttimeQuery) + "ms");
 
@@ -688,6 +690,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @param session
 	 * @return number of posts for a given search
 	 */
+	@Deprecated // TODO: remove method
 	public Integer getPostsSearchCount(final int groupId, final String search, final String requestedUserName, final DBSession session) {
 		final P param = this.getNewParam();
 		param.setRequestedUserName(requestedUserName);
