@@ -5,19 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.model.BibTex;
-import org.bibsonomy.model.Post;
-import org.bibsonomy.model.logic.LogicInterface;
-import org.bibsonomy.model.util.BibTexUtils;
-import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.reporting.GroupReportingCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.Views;
+
+import sun.rmi.runtime.Log;
 
 /**
  * Controller for group reporting pages.
@@ -40,7 +34,6 @@ public class GroupReportingPageController implements MinimalisticController<Grou
 		
 		// allow only logged-in users FIXME: check errormsg
 		if (command.getContext().getLoginUser().getName() == null) {
-			log.error("Not logged in on reporting page!");
 			throw new MalformedURLSchemeException("Not logged in!");
 		}
 		
