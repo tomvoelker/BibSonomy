@@ -29,15 +29,14 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
-import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
@@ -54,7 +53,6 @@ import org.bibsonomy.util.id.DOIUtils;
 public class SpringerLinkScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "SpringerLink";
 	private static final String SITE_URL = "http://springerlink.com/";
-	private static final String info = "This scraper parses a publication page from " + href("http://springerlink.com/", SITE_NAME)+".";
 	
 	private static final String userAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";	
 
@@ -63,6 +61,8 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 
 	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
 	private static final String SPRINGER_CITATION_HOST_DE = "springerlink.de";
+	private static final String info = "This scraper parses a publication page from " + href(SITE_URL, SITE_NAME)+".";
+
 	
 	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
 	
@@ -71,6 +71,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 		patterns.add(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + SPRINGER_CITATION_HOST_DE), AbstractUrlScraper.EMPTY_PATTERN));
 	}
 	
+	@Override
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 			sc.setScraper(this);
 
@@ -209,6 +210,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 		return info;
 	}
 	
+	@Override
 	public List<Tuple<Pattern, Pattern>> getUrlPatterns() {
 		return patterns;
 	}
