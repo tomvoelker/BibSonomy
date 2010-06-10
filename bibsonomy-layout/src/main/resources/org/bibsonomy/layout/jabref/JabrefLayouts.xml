@@ -454,7 +454,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="publist-de" >
-		<displayName>Publication List in HTML Format similar to DIN1505 (German version); with Javascript to show/hide Bibtex/Abstracts</displayName>
+		<displayName>Publication List in HTML Format similar to DIN1505 (German version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN); German version.
@@ -473,7 +473,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="publist-en" >
-		<displayName>Publication List in HTML Format similar to DIN1505 (English version); with Javascript to show/hide Bibtex/Abstracts</displayName>
+		<displayName>Publication List in HTML Format similar to DIN1505 (English version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN); English version.
@@ -492,7 +492,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="publist-type-de" >
-		<displayName>Publication List in HTML Format similar to DIN1505, grouped by entrytype (German version); with Javascript to show/hide Bibtex/Abstracts</displayName>
+		<displayName>Publication List in HTML Format similar to DIN1505, grouped by entrytype (German version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN), grouped by entrytype; German version.
@@ -511,7 +511,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="publist-type-en" >
-		<displayName>Publication List in HTML Format similar to DIN1505, grouped by entrytype (English version); with Javascript to show/hide Bibtex/Abstracts</displayName>
+		<displayName>Publication List in HTML Format similar to DIN1505, grouped by entrytype (English version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN), grouped by entrype; English version.
@@ -530,7 +530,7 @@
 		<extension>.html</extension>
 	</layout>		
 	<layout name="publist-year-de" >
-		<displayName>Publication List in HTML Format similar to DIN1505, grouped by year (German version); with Javascript to show/hide Bibtex/Abstracts</displayName>
+		<displayName>Publication List in HTML Format similar to DIN1505, grouped by year (German version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN), grouped by year; German version.
@@ -549,7 +549,7 @@
 		<extension>.html</extension>
 	</layout>	
 	<layout name="publist-year-en" >
-		<displayName>Publication List in HTML Format similar to DIN1505, grouped by year (English version); with Javascript to show/hide Bibtex/Abstracts</displayName>
+		<displayName>Publication List in HTML Format similar to DIN1505, grouped by year (English version)</displayName>
 		<description xml:lang="en">
 			HTML output format for publication lists similar to the DIN1505 norm of the German Institute for
 			Standardization (DIN), grouped by year; English version.
