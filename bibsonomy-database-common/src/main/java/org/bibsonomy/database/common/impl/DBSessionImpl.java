@@ -204,12 +204,13 @@ public class DBSessionImpl implements DBSession {
 	 * @see org.bibsonomy.database.common.DBSession#insert(java.lang.String, java.lang.Object)
 	 */
 	@Override
-	public void insert(final String query, final Object param) {
+	public Object insert(final String query, final Object param) {
 		try {
-			this.sqlMap.insert(query, param);
+			return this.sqlMap.insert(query, param);
 		} catch (final Exception e) {
 			this.handleException(e, query);
 		}
+		return null;
 	}
 	
 	/*

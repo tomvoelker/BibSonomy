@@ -15,21 +15,7 @@ import java.util.List;
  * @author Christian Schenk
  * @version $Id$
  */
-public abstract class AbstractDatabaseManager {	
-	
-	/**
-	 * just calls the {@link #init()} method
-	 */
-	public AbstractDatabaseManager() {
-		this.init();
-	}
-	
-	/**
-	 * override this method to init more than the abstractDatabaseManager does
-	 */
-	protected void init() {
-		// noop
-	}
+public abstract class AbstractDatabaseManager {
 
 	/**
 	 * Can be used to start a query that retrieves a list of objects of a certain type.
@@ -91,8 +77,8 @@ public abstract class AbstractDatabaseManager {
 	/**
 	 * Inserts an object into the database.
 	 */
-	protected void insert(final String query, final Object param, final DBSession session) {
-		session.insert(query, param);
+	protected Object insert(final String query, final Object param, final DBSession session) {
+		return session.insert(query, param);
 	}
 
 	/**

@@ -85,8 +85,9 @@ public interface DBSession {
 	 * 
 	 * @param query
 	 * @param param
+	 * @return the primary key of the new database column
 	 */
-	public void insert(final String query, final Object param);
+	public Object insert(final String query, final Object param);
 
 	/**
 	 * updates the param
