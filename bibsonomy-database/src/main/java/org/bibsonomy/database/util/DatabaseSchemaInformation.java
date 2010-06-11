@@ -46,7 +46,7 @@ public class DatabaseSchemaInformation {
 
 	private static void getMaxFieldLengths(final String mappingId, final String tableName) {
 		final Map<String, Integer> maxLength = new HashMap<String, Integer>();
-		final SqlMapSession sqlMap = DatabaseUtils.getSqlMap();
+		final SqlMapSession sqlMap = IbatisDBSessionFactory.getSqlMapClient().openSession();
 		
 		if (sqlMap instanceof SqlMapSessionImpl) {
 			final SqlMapSessionImpl impl = (SqlMapSessionImpl) sqlMap;
@@ -85,7 +85,7 @@ public class DatabaseSchemaInformation {
 	 */
 	@SuppressWarnings("unchecked")
 	private static <R> R getSchemaInformation(final Class<R> resultClass, final String tableNamePattern, final String columnNamePattern, final String columnLabel) {
-		final SqlMapSession sqlMap = DatabaseUtils.getSqlMap();
+		final SqlMapSession sqlMap = IbatisDBSessionFactory.getSqlMapClient().openSession();
 		final DataSource dataSource = sqlMap.getDataSource();
 		
 		try {

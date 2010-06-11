@@ -2,23 +2,14 @@ package org.bibsonomy.database.util;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.params.GenericParam;
-import org.bibsonomy.util.ExceptionUtils;
-
-import com.ibatis.common.resources.Resources;
-import com.ibatis.sqlmap.client.SqlMapClient;
-import com.ibatis.sqlmap.client.SqlMapClientBuilder;
-import com.ibatis.sqlmap.client.SqlMapSession;
 
 /**
  * Methods concerning the database.
@@ -27,31 +18,7 @@ import com.ibatis.sqlmap.client.SqlMapSession;
  * @author Christian Schenk
  * @version $Id$
  */
-public class DatabaseUtils {
-	private static final Log log = LogFactory.getLog(DatabaseUtils.class);
-	
-	private static final SqlMapClient client;
-
-	static {
-		// primary SqlMapClient
-		SqlMapClient clientTmp;
-		try {
-			final String resource = "SqlMapConfig.xml";
-			final Reader reader = Resources.getResourceAsReader(resource);
-			clientTmp = SqlMapClientBuilder.buildSqlMapClient(reader); 
-		} catch (final IOException ex) {
-			clientTmp = null;
-			ExceptionUtils.logErrorAndThrowRuntimeException(log, ex, "Couldn't initialize SqlMapClient");
-		}
-		client = clientTmp;
-	}
-
-	/**
-	 * Returns the default SqlMap which can be used to query the database.
-	 */
-	protected static SqlMapSession getSqlMap() {
-		return client.openSession();
-	}
+public final class DatabaseUtils {
 
 	/**
 	 * Checks if the logged-in user may see private / friends posts
@@ -70,7 +37,7 @@ public class DatabaseUtils {
 	 */
 	public static void checkPrivateFriendsGroup(final GeneralDatabaseManager db, final GenericParam param, final DBSession session) {		 				
 		if (present(param.getUserName()) && present(param.getRequestedUserName())) {
-			final ArrayList<Integer> groupIds = new ArrayList<Integer>();
+			final List<Integer> groupIds = new ArrayList<Integer>();
 			// If userName and requestedUserName are the same -> add private and friends
 			// otherwise: if they're friends -> only add friends
 			if (param.getUserName().equals(param.getRequestedUserName())) {
@@ -103,7 +70,6 @@ public class DatabaseUtils {
 		 * 
 		 */
 		DatabaseUtils.checkPrivateFriendsGroup(db, param, session);
-
 	}
 
 	/**
