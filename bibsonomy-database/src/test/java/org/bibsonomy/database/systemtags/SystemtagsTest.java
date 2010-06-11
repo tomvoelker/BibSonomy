@@ -1,6 +1,7 @@
 package org.bibsonomy.database.systemtags;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -11,7 +12,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.common.enums.GroupID;
@@ -32,9 +32,7 @@ import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
 import org.bibsonomy.database.params.BibTexParam;
-import org.bibsonomy.database.systemstags.SystemTag;
 import org.bibsonomy.database.systemstags.SystemTagFactory;
-import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -50,7 +48,6 @@ import org.bibsonomy.testutil.ParamUtils;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * @author Andreas Koch
@@ -60,7 +57,6 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 	
 	private static UserDatabaseManager userDb;
 	private static InboxDatabaseManager inboxDb;
-	private static SystemTagFactory systemTagFactory;
 	private static GroupDatabaseManager groupDb;
 	private static BookmarkDatabaseManager bookmarkDb;
 	private static BibTexDatabaseManager bibTexDb;
@@ -71,22 +67,12 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 	@BeforeClass
 	public static void setupManagers() {
 		userDb = UserDatabaseManager.getInstance();
-		systemTagFactory = new SystemTagFactory();
 		groupDb = GroupDatabaseManager.getInstance();
 		inboxDb = InboxDatabaseManager.getInstance();
 		bookmarkDb = BookmarkDatabaseManager.getInstance();
 		bibTexDb = BibTexDatabaseManager.getInstance();
 	}
 
-	/**
-	 * tests removeAllSystemTags()
-	 */
-	@Test
-	public void removeAllSystemTags() {
-		Set<Tag> tags = ModelUtils.getTagSet("normalTag", "for:someGroup", "send:someUser", "anotherNormalTag", "sys:someSystemTagThing", "system:someOtherSystemTagThing", "yetOneMoreNormalTag");
-		systemTagFactory.removeAllSystemTags(tags);
-		assertEquals(tags.size(), 3);
-	}
 
 	@Test
 	@Ignore
@@ -128,28 +114,15 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		assertEquals(13, param.getDays());
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
-	public void testSpring() {
-		// initialize spring bean factory
-		ClassPathXmlApplicationContext springBeanFactory = new ClassPathXmlApplicationContext("systemtags-context.xml");
-		// create test bean
-		Map<String, SystemTag> map = (Map<String, SystemTag>) springBeanFactory.getBean("executableSystemTagMap");
-		
-		assertNotNull(map.get("for"));
-	}
-	
-	@Test
-	public void testArgumentExtraction() {
-		final Set<Tag> tags = ModelUtils.getTagSet("for:kde", "sys:for:kde", "system:for:kde");
-		
-		for (final Tag tag : tags) {
-			assertEquals("for", SystemTagsUtil.extractName(tag.getName()));
-			assertEquals("kde", SystemTagsUtil.extractArgument(tag.getName()));
-		}
-		
-		systemTagFactory.removeSystemTag(tags, "for");
-		assertEquals(0, tags.size());
+	public void testSystemTagFactory() {
+		// test initialization of systemTag collections (in constructor of SystemTagFactory)
+		SystemTagFactory sysTagFactory = SystemTagFactory.getInstance();
+		assertNotNull(sysTagFactory.getExecutableSystemTag("for"));
+		assertTrue(sysTagFactory.isExecutableSystemTag("send"));
+		assertTrue(sysTagFactory.isSearchSystemTag("author"));
+		assertFalse(sysTagFactory.isExecutableSystemTag("author"));
+		assertFalse(sysTagFactory.isSearchSystemTag("send"));		
 	}
 	
 	@Test

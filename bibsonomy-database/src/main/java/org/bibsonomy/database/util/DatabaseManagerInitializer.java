@@ -5,7 +5,6 @@ import org.bibsonomy.database.managers.BookmarkDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.managers.UserDatabaseManager;
-import org.bibsonomy.database.systemstags.SystemTagFactory;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.services.searcher.ResourceSearch;
@@ -26,9 +25,6 @@ public class DatabaseManagerInitializer {
 
 	/** the bookmark resource searcher */
 	private ResourceSearch<Bookmark> bookmarkSearcher;
-	
-	/** the system tag factory */
-	private SystemTagFactory systemTagFactory;
 	
 	/** the publication database manager */
 	private final BibTexDatabaseManager bibTexManager;
@@ -91,22 +87,5 @@ public class DatabaseManagerInitializer {
 		return bookmarkSearcher;
 	}
 
-	/**
-	 * also sets the system tag factory in the resource managers
-	 * 
-	 * @param systemTagFactory the systemTagFactory to set
-	 */
-	public void setSystemTagFactory(SystemTagFactory systemTagFactory) {
-		this.systemTagFactory = systemTagFactory;
-		this.bibTexManager.setSystemTagFactory(systemTagFactory);
-		this.bookmarkManager.setSystemTagFactory(systemTagFactory);
-	}
-
-	/**
-	 * @return the systemTagFactory
-	 */
-	public SystemTagFactory getSystemTagFactory() {
-		return systemTagFactory;
-	}
 	
 }

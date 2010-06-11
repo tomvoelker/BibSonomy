@@ -58,12 +58,12 @@ public abstract class AbstractDatabaseManagerTest {
 		
 		pluginRegistry = DatabasePluginRegistry.getInstance();
 		
+		// init SystemTagFactory
+		SystemTagFactory.getInstance().setDbSessionFactory(dbSessionFactory);
+
 		// init managers
-		final SystemTagFactory systemTagFactory = new SystemTagFactory();
-		systemTagFactory.setSessionFactory(dbSessionFactory);
-		
+	
 		dbManagerInitializer = new DatabaseManagerInitializer();
-		dbManagerInitializer.setSystemTagFactory(systemTagFactory);
 	}
 	
 	/**

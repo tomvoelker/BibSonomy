@@ -31,7 +31,8 @@ import org.bibsonomy.database.managers.chain.FirstChainElement;
 import org.bibsonomy.database.params.ResourceParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.database.systemstags.SystemTag;
-import org.bibsonomy.database.systemstags.SystemTagFactory;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.bibsonomy.database.util.DatabaseUtils;
 import org.bibsonomy.database.validation.DatabaseModelValidator;
 import org.bibsonomy.model.Group;
@@ -72,9 +73,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	/** instance of the lucene searcher */
 	private ResourceSearch<R> resourceSearch;
 
-	/** factory for creating system tags */
-	private SystemTagFactory systemTagFactory;
-
 	/** the validator for the posts*/
 	protected final DatabaseModelValidator<R> validator;
 
@@ -108,19 +106,6 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.resourceSearch = resourceSearch;
 	}
 
-	/**
-	 * @return the systemTagFactory
-	 */
-	protected SystemTagFactory getSystemTagFactory() {
-		return this.systemTagFactory;
-	}
-
-	/**
-	 * @param systemTagFactory the systemTagFactory to set
-	 */
-	public void setSystemTagFactory(SystemTagFactory systemTagFactory) {
-		this.systemTagFactory = systemTagFactory;
-	}
 
 	@SuppressWarnings("unchecked")
 	protected List<Post<R>> postList(final String query, final P param, final DBSession session) {
@@ -1108,8 +1093,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * systemtags perform before create
 			 */
-			List<SystemTag> systemTags = this.getSystemTags(post, new HashSet<Tag>());
-			for (final SystemTag systemTag: systemTags) {
+			List<ExecutableSystemTag> systemTags = this.getSystemTags(post, new HashSet<Tag>());
+			for (final ExecutableSystemTag systemTag: systemTags) {
 				systemTag.performBeforeCreate(post, session);
 			}
 			final String userName = post.getUser().getName();
@@ -1144,7 +1129,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * systemTags perform after create
 			 */
-			for (final SystemTag systemTag: systemTags) {
+			for (final ExecutableSystemTag systemTag: systemTags) {
 				systemTag.performAfterCreate(post, session);
 			}
 			session.commitTransaction();
@@ -1210,8 +1195,8 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * perform system tags before update
 			 */
-			final List<SystemTag> systemTags = this.getSystemTags(post, oldPost.getTags());
-			for (final SystemTag systemTag : systemTags) {
+			final List<ExecutableSystemTag> executableSystemTags = this.getSystemTags(post, oldPost.getTags());
+			for (final ExecutableSystemTag systemTag : executableSystemTags) {
 				systemTag.performBeforeUpdate(post, oldPost, operation, session);
 			}
 
@@ -1283,7 +1268,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * systemTags perform after Update
 			 */
-			for (final SystemTag systemTag: systemTags) {
+			for (final ExecutableSystemTag systemTag: executableSystemTags) {
 				systemTag.performAfterUpdate(post, oldPost, operation, session);
 			}
 			session.commitTransaction();
@@ -1531,17 +1516,18 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	// FIXME: Find a better way for deactivating systemtags. s.a. 
 	// - a SystemTag knows whether it is active or not and can deactivate itself
 	// - a SystemTag is renamed (and thus inactive) after it has done its job
-	private List<SystemTag> getSystemTags(final Post<?> post, final Set<Tag> alreadyExecutedTags) {
-		List<SystemTag> systemTags = new ArrayList<SystemTag>();
+	/*
+	 * FIXME: Move to SystemTagUtil
+	 */
+	private List<ExecutableSystemTag> getSystemTags(final Post<?> post, final Set<Tag> alreadyExecutedTags) {
+		List<ExecutableSystemTag> sysTags = new ArrayList<ExecutableSystemTag>();
 		for (final Tag tag : post.getTags()) {
-			if(present(this.systemTagFactory) ) {
-				final SystemTag stt = this.systemTagFactory.createExecutableTag(tag);
-				if (present(stt) && !alreadyExecutedTags.contains(stt)) {
-					systemTags.add(stt);
-				}
+			final ExecutableSystemTag stt = SystemTagsUtil.createExecutableTag(tag);
+			if (present(stt) && !alreadyExecutedTags.contains(stt)) {
+				sysTags.add(stt);
 			}
 		}
-		return systemTags;
+		return sysTags;
 	}
 
 	/**

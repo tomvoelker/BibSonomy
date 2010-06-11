@@ -71,6 +71,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
     /**
      * tests getPendingUsers
      */
+	@Ignore
     @Test
     public void getPendingUsers() {
         List<User> users = userDb.getPendingUsers(0, Integer.MAX_VALUE, this.dbSession);
@@ -89,6 +90,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
     /**
      * tests getPendingUserByUsername
      */
+    @Ignore
     @Test
     public void getPendingUserByUsername() {
         List<User> users = userDb.getPendingUserByUsername("activationtestuser1", 0, Integer.MAX_VALUE, this.dbSession);
@@ -98,6 +100,7 @@ public class UserDatabaseManagerTest extends AbstractDatabaseManagerTest {
 	/**
 	 * tests getAllUsers
 	 */
+    @Ignore
 	@Test
 	public void getAllUsers() {
         List<User> users = userDb.getAllUsers(0, 10, this.dbSession);

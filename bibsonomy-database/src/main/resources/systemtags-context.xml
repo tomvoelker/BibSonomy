@@ -8,11 +8,15 @@
 	                    http://www.springframework.org/schema/beans/spring-beans.xsd
 	                    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.5.xsd">
 
+<!--+
+    | Every systemTag in BibSonomy is registered in one of the following sets/maps
+    | A systemTag that is not registered here will not be identified as a systemTag. 
+	+-->
+
 	<!--+
-		| Configuring mapping from system tag names to corresponding tag handler.
-		| General naming scheme is 'sys:<tagname>:<attribute>' - but for backward 
-		| compatibility the system tag dispatcher matches also '<tagname>:<attribute>'.
-		| {@see DBLogic.storePost}
+	    | EXECUTABLE SYSTEMTAGS
+		| In this map we list all executable systemTags
+		| The references are used in the construction of instances of such tags
 		+-->
 	<util:map id="executableSystemTagMap" map-class="java.util.HashMap">
 		<entry key="for" value-ref="forGroupTag"/>
@@ -20,11 +24,18 @@
 	</util:map>
 	
 	<!--+
-	    | 'for:group' system tag
+	    | beans for the executable systemTags
 	    +-->
 	<bean id="forGroupTag" class="org.bibsonomy.database.systemstags.executable.ForGroupTag"/>
-	<!-- +
-		 | 'send:user' system tag
-		 +-->
 	<bean id="forFriendTag" class="org.bibsonomy.database.systemstags.executable.ForFriendTag"/>
+	
+	<!--+
+	    |SEARCH SYSTEMTAGS
+	    |FIXME: coming soon
+	    +-->	
+	<util:set id="searchSystemTagSet" set-class="java.util.HashSet" value-type="java.lang.String">
+		<value>author</value>
+		<value>year</value>
+	</util:set>
+	    
 </beans>
