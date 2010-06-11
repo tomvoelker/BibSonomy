@@ -1,12 +1,13 @@
 package org.bibsonomy.database.systemstags.database;
 
+import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTag;
 
 /**
  * @author dzo
  * @version $Id$
  */
-public class YearSystemTag extends DatabaseSystemTag {
+public class YearSystemTag extends AbstractSystemTagImpl implements DatabaseSystemTag{
 	
 	/**
 	 * these variables will be used with systemtags.
@@ -69,7 +70,6 @@ public class YearSystemTag extends DatabaseSystemTag {
 		this.year = year;
 	}
 
-	@Override
 	public SystemTag newInstance() {
 		return new YearSystemTag();
 	}

@@ -1,16 +1,11 @@
 package org.bibsonomy.database.systemstags;
 
-import static org.bibsonomy.util.ValidationUtils.present;
-
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.bibsonomy.database.common.DBSessionFactory;
-import org.bibsonomy.model.Tag;
+import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
@@ -18,139 +13,96 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @version $Id$
  */
 public class SystemTagFactory {
-	private Map<String, SystemTag> executableSystemTagMap;
-
-	private DBSessionFactory sessionFactory;
+	/*
+	 * FIXME: rename class since this is no longer a real factory
+	 * it is used as a bean (singleton) as a register of all systemTags
+	 */
 	
+    private static final SystemTagFactory singleton = new SystemTagFactory();
 
+    // The map that contains all executable systemTags
+	private Map<String, ExecutableSystemTag> executableSystemTagMap;
+	
+	// The set that contains all searchSystemTags
+	private final Set<String> searchSystemTagSet;
+	
+	// The DBSessionFactory (we need it for the forGroup tag)
+	private DBSessionFactory dbSessionFactory;
+	
 	/**
 	 * Constructor
 	 */
 	@SuppressWarnings("unchecked")
-	public SystemTagFactory() {
+	private SystemTagFactory() {
 		/*
 		 * FIXME: shouldn't we configure this from the outside?
 		 */
 		final ClassPathXmlApplicationContext springBeanFactory = new ClassPathXmlApplicationContext("systemtags-context.xml");
-		setExecutableSystemTagMap((HashMap<String,SystemTag>)springBeanFactory.getBean("executableSystemTagMap"));
+		this.executableSystemTagMap = ((HashMap<String, ExecutableSystemTag>)springBeanFactory.getBean("executableSystemTagMap"));
+		this.searchSystemTagSet = ((Set<String>)springBeanFactory.getBean("searchSystemTagSet"));
 	}
 	
 	/**
-	 * @return map with executables system tags
+ 	 * @return the singleton 
 	 */
-	public Map<String, SystemTag> getExecutableSystemTagMap() {
-		if (executableSystemTagMap == null) {
-			executableSystemTagMap = new HashMap<String, SystemTag>();
-		}
-		return executableSystemTagMap;
+	public static SystemTagFactory getInstance() {
+		return singleton;
 	}
-
-
+	
 	/**
-	 * Sets the map with the executable system tags.
-	 * 
-	 * @param executableSystemTagMap
+	 * Returns a new instance of the required systemTag
+	 * @param tagName = the tag describing the systemTag e. g. send:xyz or for:xyz
 	 */
-	public void setExecutableSystemTagMap(final HashMap<String, SystemTag> executableSystemTagMap) {
-		this.executableSystemTagMap = executableSystemTagMap;
-	}
-
-	/**
-	 * Check whether given tag matches to a registered system tag and
-	 * initialize corresponding instance on success.
-	 * 
-	 * @param tag
-	 * @return null, if given tag doesn't match to a known system tag.
-	 */
-	public SystemTag createExecutableTag(final Tag tag) {
-		if (!isSystemTag(tag.getName()))
-			return null;
-		final String name = SystemTagsUtil.extractName(tag.getName());
-		if (present(name)) {
-			if (present(getExecutableSystemTagMap().get(name))) {
-				final SystemTag retVal = getExecutableSystemTagMap().get(name).newInstance();
-				retVal.setTag(tag);
-				retVal.setDbSessionFactory(sessionFactory);
-				retVal.setSystemTagFactory(this);
-				return retVal;
-			}
+	public ExecutableSystemTag getExecutableSystemTag(String tagType) {
+		if (isExecutableSystemTag(tagType)) {
+			return this.executableSystemTagMap.get(tagType).newInstance();
 		}
 		return null;
 	}
 
 	/**
-	 * @param tag
-	 * @return true if tag is existent
+	 * Determins whether a tag (given by name) is an executable systemTag
+	 * @param tagName
+	 * @return
 	 */
-	public boolean isSystemTag(final String tag) {
-		final String name = SystemTagsUtil.extractName(tag);
-		return present(name) && getExecutableSystemTagMap().containsKey(name);
+	public boolean isExecutableSystemTag(String tagType) {
+		return this.executableSystemTagMap.containsKey(tagType);
 	}
-
-
 	
 	/**
-	 * Removes all occurrences of system tags sys:&lt;name&gt;:&lt;argument&gt;,
-	 * system:&lt;name&gt;:&lt;argument&gt; and &lt;name&gt;:&lt;argument&gt;
-	 * 
-	 * @param tags collection of tags to alter 
-	 * @param name the name of the system tag to be removed. 
-	 * @return number of occurrences removed.
+	 * Determins whether a tag (given by name) is a systemTag
+	 * @param tagName
+	 * @return
 	 */
-	public int removeSystemTag(final Set<Tag> tags, final String name) {
-		int nr = 0;
-		
-		final Collection<Tag> toRemove = new HashSet<Tag>();
-		// traverse all tags
-		for (final Tag tag : tags ) {
-			if( isSystemTag(tag.getName()) && present(name) && name.equals(SystemTagsUtil.extractName(tag.getName())) ) {
-				toRemove.add(tag);
-				nr++;
-			}
-		}
-		// remove collected occurrences
-		tags.removeAll(toRemove);
-		
-		// all done.
-		return nr;
+	public boolean isSearchSystemTag(String tagType) {
+		return this.searchSystemTagSet.contains(tagType);
 	}
-
-
-	/**
-	 * removes all SystemTags from a given tag set
-	 * @param tags
-	 * @return number of tags, that were removed
-	 */
-	public int removeAllSystemTags(final Set<Tag> tags) {
-		final Iterator<Tag> iterator = tags.iterator();
-		int nr = 0;
-		
-		while (iterator.hasNext()) {
-			final Tag tag = iterator.next();
-			/*
-			 *  FIXME: We have two(!) isSystemTag methods, the first tests for executables, the other one for sys: or system:
-			 *  Implement one method to check for all systemTags
-			*/
-			if (isSystemTag(tag.getName()) || SystemTagsUtil.isSystemTag(tag.getName())) {
-				iterator.remove();
-				nr++;
-			}
-		}
-		return nr;
-	}
-
-
+	
 	/**
 	 * @return The session factory of this system tag factory.
 	 */
-	public DBSessionFactory getSessionFactory() {
-		return this.sessionFactory;
+	public DBSessionFactory getDbSessionFactory() {
+		return this.dbSessionFactory;
 	}
 
-	/** Sets the session factory for DB access.
+	/**  
 	 * @param sessionFactory
 	 */
-	public void setSessionFactory(DBSessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
+	public void setDbSessionFactory(DBSessionFactory sessionFactory) {
+		this.dbSessionFactory = sessionFactory;
+	}
+
+	/**
+	 * @return map with executables system tags
+	 */
+	public Map<String, ExecutableSystemTag> getExecutableSystemTagMap() {
+		return this.executableSystemTagMap;
+	}
+
+	/**
+	 * @param executableSystemTagMap
+	 */
+	public void setExecutableSystemTagMap(final HashMap<String, ExecutableSystemTag> executableSystemTagMap) {
+		this.executableSystemTagMap = executableSystemTagMap;
 	}
 }

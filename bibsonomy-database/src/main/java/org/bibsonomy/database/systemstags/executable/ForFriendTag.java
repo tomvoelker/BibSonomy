@@ -11,7 +11,7 @@ import org.bibsonomy.database.managers.GeneralDatabaseManager;
 import org.bibsonomy.database.managers.GroupDatabaseManager;
 import org.bibsonomy.database.managers.InboxDatabaseManager;
 import org.bibsonomy.database.managers.TagDatabaseManager;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 
@@ -23,16 +23,13 @@ import org.bibsonomy.model.Resource;
  * @author sdo
  * @version $Id$
  */
-public class ForFriendTag extends SystemTag {
+public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSystemTag{
 	private static final Log log = LogFactory.getLog(ForFriendTag.class);
 	//------------------------------------------------------------------------
 	/**
 	 * This database manager is needed to ensure that a user is allowed to send
 	 * posts to given user.
 	 */
-	private final GeneralDatabaseManager generalDb; //needed to check: Is sender friend of receiver?
-	private final InboxDatabaseManager inboxDb;
-	private final TagDatabaseManager tagDb;
 
 	/**
 	 * Constructor
@@ -40,13 +37,10 @@ public class ForFriendTag extends SystemTag {
 	public ForFriendTag() {
 		log.debug("initializing");
 		// initialize database manager
-		this.inboxDb = InboxDatabaseManager.getInstance();
-		this.generalDb=GeneralDatabaseManager.getInstance();
-		this.tagDb = TagDatabaseManager.getInstance();
 	}
 
 	@Override
-	public SystemTag newInstance() {
+	public ForFriendTag newInstance() {
 		return new ForFriendTag();
 	}
 	
@@ -73,7 +67,7 @@ public class ForFriendTag extends SystemTag {
 	@Override
 	public <T extends Resource> void performAfterCreate(final Post<T> post, final DBSession session) {
 		log.debug("performing after access");
-		String receiver = getValue().toLowerCase();
+		String receiver = this.getArgument().toLowerCase();
 		String sender = post.getUser().getName();
 		String intraHash = post.getResource().getIntraHash();
 		/*
@@ -88,17 +82,18 @@ public class ForFriendTag extends SystemTag {
 		 * Rename forFriendTag from send:userName to sent:userName
 		 * We deactivate the systemTag to avoid sending the Message again and again each time the sender updates his post
 		 */
-		this.tagDb.deleteTags(post, session);		// 1. delete all tags from the database (will be replaced by new ones)
+		TagDatabaseManager tagDb = TagDatabaseManager.getInstance();
+		tagDb.deleteTags(post, session);		// 1. delete all tags from the database (will be replaced by new ones)
 		this.getTag().setName("from:" + sender);	// 2. rename this tag for the receiver (store senderName)
 		try {
-			inboxDb.createInboxMessage(sender, receiver, post, session); // 3. store the inboxMessage with tag from:senderName 
+			InboxDatabaseManager.getInstance().createInboxMessage(sender, receiver, post, session); // 3. store the inboxMessage with tag from:senderName 
 			log.debug("message was created");
 			this.getTag().setName("sent:" + receiver);	// 4. rename this tag for the sender (store receiverName)
 		} catch(UnsupportedResourceTypeException urte) {
 			session.addError(intraHash, new UnspecifiedErrorMessage(urte));
 			log.warn("Added UnspecifiedErrorMessage (unsupported ResourceType) for post " + intraHash);
 		}
-		this.tagDb.insertTags(post, session);		// 5. store the tags for the sender with the confirmation tag: sent:userName
+		tagDb.insertTags(post, session);		// 5. store the tags for the sender with the confirmation tag: sent:userName
 	}
 
 
@@ -115,6 +110,7 @@ public class ForFriendTag extends SystemTag {
 	 */
 	private boolean hasPermissions(final String sender, final String receiver, final String intraHash, final DBSession session) {
 		GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
+		GeneralDatabaseManager generalDb = GeneralDatabaseManager.getInstance();
 		if ( !( generalDb.isFriendOf(sender, receiver, session) || groupDb.getCommonGroups(sender, receiver, session).size()>0 ) ) {
 			final String defaultMessage = this.getName()+ ": "  + receiver + " did not add you as a friend and is not a member of any of your groups.";
 			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forFriend.notFriend", new String[]{receiver}));

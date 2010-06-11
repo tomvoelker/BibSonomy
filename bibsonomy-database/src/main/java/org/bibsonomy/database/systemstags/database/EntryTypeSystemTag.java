@@ -1,12 +1,13 @@
 package org.bibsonomy.database.systemstags.database;
 
+import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.database.systemstags.SystemTag;
 
 /**
  * @author dzo
  * @version $Id$
  */
-public class EntryTypeSystemTag extends DatabaseSystemTag {
+public class EntryTypeSystemTag extends AbstractSystemTagImpl implements DatabaseSystemTag {
 
 	private String entryType;
 
@@ -24,7 +25,7 @@ public class EntryTypeSystemTag extends DatabaseSystemTag {
 		return entryType;
 	}
 
-	@Override
+	
 	public SystemTag newInstance() {
 		return new EntryTypeSystemTag();
 	}

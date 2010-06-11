@@ -16,8 +16,10 @@ import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.database.DBLogicNoAuthInterfaceFactory;
 import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.database.managers.PermissionDatabaseManager;
-import org.bibsonomy.database.systemstags.SystemTag;
+import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
@@ -38,25 +40,28 @@ import org.bibsonomy.model.util.GroupUtils;
  * @author fei
  * @version $Id$
  */
-public class ForGroupTag extends SystemTag {
+public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
 	
 	private static final Log log = LogFactory.getLog(ForGroupTag.class);
-	private final PermissionDatabaseManager permissionDb; // needed to check permission to post for the given group
+	
+	private DBSessionFactory dbSessionFactory = null;
 
 	/**
 	 * Constructor
 	 */
 	public ForGroupTag() {
 		log.debug("initializing");
-		// get database manager singleton
-		this.permissionDb = PermissionDatabaseManager.getInstance();
 	}
 
 	@Override
-	public SystemTag newInstance() {
+	public ForGroupTag newInstance() {
 		return new ForGroupTag();
 	}
 
+	public void setDBSessionFactory(DBSessionFactory dbSessionFactory) {
+		this.dbSessionFactory = dbSessionFactory;
+	}
+	
 	@Override
 	public <T extends Resource> void performBeforeCreate(final Post<T> post, final DBSession session) {
 		log.debug("performing after access");
@@ -100,7 +105,7 @@ public class ForGroupTag extends SystemTag {
 	 */
 	private <T extends Resource> void perform(Post<T> userPost, Set<Tag> userTags, final DBSession session) {
 		log.debug("performing after access");
-		final String groupName = getValue(); // the group's name
+		final String groupName = this.getArgument(); // the group's name
 		final String userName = userPost.getUser().getName();
 		final String intraHash = userPost.getResource().getIntraHash();
 		
@@ -112,7 +117,7 @@ public class ForGroupTag extends SystemTag {
 		 * Make a DBLogic for the group
 		 */
 		DBLogicNoAuthInterfaceFactory logicFactory = new DBLogicNoAuthInterfaceFactory();
-		logicFactory.setDbSessionFactory(getDbSessionFactory());
+		logicFactory.setDbSessionFactory(this.dbSessionFactory);
 		LogicInterface groupDBLogic = logicFactory.getLogicAccess(groupName, "");
 		/*
 		 *  Check if the group exists and whether it owns the post already
@@ -131,7 +136,6 @@ public class ForGroupTag extends SystemTag {
 		 *  Permissions are granted and the group doesn't own the post yet
 		 *  => Copy the post and store it for the group
 		 */
-		log.debug("Old post: "+userPost.toString());
 		//FIXME: How do we properly clone a post?
 		Post<T> groupPost = new Post<T>();
 		groupPost.setResource(userPost.getResource());
@@ -143,7 +147,7 @@ public class ForGroupTag extends SystemTag {
 		 * remove all systemTags to avoid any side effects and contradictions 
 		 */
 		final Set<Tag> groupTags = new HashSet<Tag>(userTags);
-		getSystemTagFactory().removeAllSystemTags(groupTags);
+		SystemTagsUtil.removeAllSystemTags(groupTags);
 		groupTags.add(new Tag("from:"+userName));
 		groupPost.setTags(groupTags);
 		/*
@@ -152,7 +156,6 @@ public class ForGroupTag extends SystemTag {
 		 *  original != public => copy = dbGroup
 		 *  => check if post.groups has only the public group
 		 */
-		// TODO: Find a better way to check for "public" (e.g. via GroupUtils)
 		if (userPost.getGroups().size()==1 && userPost.getGroups().contains(GroupUtils.getPublicGroup())) {
 			// public is the only group (if visibility was public, there should be only one group)
 			groupPost.setGroups(new HashSet<Group>());
@@ -161,7 +164,6 @@ public class ForGroupTag extends SystemTag {
 			// visibility is different from public => post is only visible for dbGroup
 			groupPost.addGroup(groupName);
 		}
-		log.debug("New post: "+groupPost.toString());
 		/*
 		 * groupPost is complete and can be stored for the group
 		 */
@@ -182,6 +184,7 @@ public class ForGroupTag extends SystemTag {
 				}
 			}
 		}
+		log.debug("copied post was stored successfully");
 	}
 
 
@@ -194,6 +197,7 @@ public class ForGroupTag extends SystemTag {
 	 * @return true iff user is allowed to use the tag
 	 */
 	private boolean hasPermissions(final String intraHash, final DBSession session, final String groupName, final String userName) {
+		PermissionDatabaseManager permissionDb = PermissionDatabaseManager.getInstance();
 		if (permissionDb.isSpecialGroup(groupName) ) {
 			final String defaultMessage = this.getName() + ": "+ groupName + ": is a special group. You are not allowed to forward posts to special groups.";
 			session.addError(intraHash, new SystemTagErrorMessage(defaultMessage, "database.exception.systemTag.forGroup.specialGroup", new String[] {groupName}));
