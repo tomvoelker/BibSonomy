@@ -358,13 +358,13 @@ function toggleFieldsetVisibility(el) {
 		return;
 	}
 	
-	if((el.className.lastIndexOf('Expand') > -1)) {
+	if(el.parentNode.parentNode.className == 'fsHidden') {
 		el.parentNode.parentNode.className = "fsInner";
-		el.className = "fsToggleCollapse";
+		el.src = "/resources/image/icon_expand.png";
 		content.style.display = "";
 	} else {
 		el.parentNode.parentNode.className = "fsHidden";
-		el.className = "fsToggleExpand";
+		el.src = "/resources/image/icon_expand.png";
 		content.style.display = "none";
 	}
 }

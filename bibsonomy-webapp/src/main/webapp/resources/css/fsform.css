@@ -135,12 +135,18 @@
 	display:none;
 }
 
-img.fsToggleExpand{
+.fsToggleExpand{
 	border:none;
-	background-image:url('resources/image/icon_expand.png');
+	background-image:url('/resources/image/icon_expand.png');
+	background-repeat: no-repeat; 
+	height: 9px; 
+	width: 9px; 
 }
 
-img.fsToggleCollapse{
+.fsToggleCollapse{
 	border:none;
-	background-image:url('resources/image/icon_collapse.png');
+	background-image:url('/resources/image/icon_collapse.png');
+	background-repeat: no-repeat; 
+	height: 9px; 
+	width: 9px; 
 }
