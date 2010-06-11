@@ -2,16 +2,8 @@ package org.bibsonomy.database.managers.chain.bookmark;
 
 import org.bibsonomy.database.managers.chain.ChainElement;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByConceptByTag;
 import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByResourceSearch;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksByTagNamesAndUser;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForGroup;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForGroupAndTag;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksForUser;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksOfFriendsByTags;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksOfFriendsByUser;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksPopular;
-import org.bibsonomy.database.managers.chain.bookmark.get.GetBookmarksViewable;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptByTag;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForGroup;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByConceptForUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFollowedUsers;
@@ -19,8 +11,16 @@ import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByFriends;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHash;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByHashForUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNames;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesByTagNamesAndUser;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroup;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroupAndTag;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForHomepage;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForUser;
 import org.bibsonomy.database.managers.chain.resource.get.GetResourcesFromInbox;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByTags;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesOfFriendsByUser;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesPopular;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesViewable;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Post;
@@ -55,23 +55,23 @@ public class BookmarkChain implements FirstChainElement<Post<Bookmark>, Bookmark
 	 * Constructs the chain
 	 */
 	public BookmarkChain() {
-		this.getBookmarksForUser = new GetBookmarksForUser();
+		this.getBookmarksForUser = new GetResourcesForUser<Bookmark, BookmarkParam>();
 		this.getBookmarksByHash = new GetResourcesByHash<Bookmark, BookmarkParam>();
 		this.getBookmarksByHashForUser = new GetResourcesByHashForUser<Bookmark, BookmarkParam>();
 		this.getBookmarksByTagNames = new GetResourcesByTagNames<Bookmark, BookmarkParam>();
-		this.getBookmarksByTagNamesAndUser = new GetBookmarksByTagNamesAndUser();
-		this.getBookmarksForGroup = new GetBookmarksForGroup();
-		this.getBookmarksForGroupAndTag = new GetBookmarksForGroupAndTag();
+		this.getBookmarksByTagNamesAndUser = new GetResourcesByTagNamesAndUser<Bookmark, BookmarkParam>();
+		this.getBookmarksForGroup = new GetResourcesForGroup<Bookmark, BookmarkParam>();
+		this.getBookmarksForGroupAndTag = new GetResourcesForGroupAndTag<Bookmark, BookmarkParam>();
 		this.getBookmarksForHomePage = new GetResourcesForHomepage<Bookmark, BookmarkParam>();
-		this.getBookmarksForPopular = new GetBookmarksPopular();
-		this.getBookmarksViewable = new GetBookmarksViewable();
+		this.getBookmarksForPopular = new GetResourcesPopular<Bookmark, BookmarkParam>();
+		this.getBookmarksViewable = new GetResourcesViewable<Bookmark, BookmarkParam>();
 		this.getBookmarksByConcept = new GetResourcesByConceptForUser<Bookmark, BookmarkParam>();
-		this.getBookmarksByUserFriends = new GetBookmarksOfFriendsByUser();
-		this.getBookmarksByUserAndTagsFriends = new GetBookmarksOfFriendsByTags();
+		this.getBookmarksByUserFriends = new GetResourcesOfFriendsByUser<Bookmark, BookmarkParam>();
+		this.getBookmarksByUserAndTagsFriends = new GetResourcesOfFriendsByTags<Bookmark, BookmarkParam>();
 		this.getBookmarksByFriends = new GetResourcesByFriends<Bookmark, BookmarkParam>();
 		this.getBookmarksByFollowedUsers = new GetResourcesByFollowedUsers<Bookmark, BookmarkParam>();
 		this.getBookmarksByResourceSearch = new GetBookmarksByResourceSearch();
-		this.getBookmarksByConceptByTag = new GetBookmarksByConceptByTag();
+		this.getBookmarksByConceptByTag = new GetResourcesByConceptByTag<Bookmark, BookmarkParam>();
 		this.getBookmarksByConceptForGroup = new GetResourcesByConceptForGroup<Bookmark, BookmarkParam>();
 		this.getBookmarksFromInbox = new GetResourcesFromInbox<Bookmark, BookmarkParam>();
 		

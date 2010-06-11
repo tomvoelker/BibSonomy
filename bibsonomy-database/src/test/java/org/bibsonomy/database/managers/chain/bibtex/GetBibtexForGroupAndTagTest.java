@@ -9,8 +9,9 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.AbstractDatabaseManagerTest;
-import org.bibsonomy.database.managers.chain.bibtex.get.GetBibtexForGroupAndTag;
+import org.bibsonomy.database.managers.chain.resource.get.GetResourcesForGroupAndTag;
 import org.bibsonomy.database.params.BibTexParam;
+import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Tag;
 import org.junit.Test;
 
@@ -53,7 +54,7 @@ public class GetBibtexForGroupAndTagTest extends AbstractDatabaseManagerTest {
 		p.setNumTransitiveConcepts(0);
 		p.addGroup(GroupID.PUBLIC.getId());
 
-		GetBibtexForGroupAndTag handler = new GetBibtexForGroupAndTag();
+		GetResourcesForGroupAndTag<BibTex, BibTexParam> handler = new GetResourcesForGroupAndTag<BibTex, BibTexParam>();
 		
 		handler.perform(p, dbSession);
 	}

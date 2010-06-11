@@ -877,7 +877,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(10, posts2.size());
 	}
 	
-	
 	/**
 	 * tests getBibtexByKey
 	 */
@@ -890,7 +889,6 @@ public class BibTexDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		assertEquals(1,posts.size());
 		assertEquals(posts.get(0).getResource().getBibtexKey(), "test bibtexKey");
 	}
-	
 	
 	/**
 	 * tests {@link BibTexDatabaseManager#getPostsByFollowedUsers(String, List, int, int, org.bibsonomy.database.util.DBSession)}
