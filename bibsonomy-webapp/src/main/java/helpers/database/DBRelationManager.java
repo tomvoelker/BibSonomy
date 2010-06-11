@@ -29,7 +29,7 @@ public class DBRelationManager extends DBManager {
 	 * see also: http://dev.mysql.com/doc/refman/5.0/en/insert.html
 	 */
 	private static final String SQL_INSERT_TAGREL    = "INSERT IGNORE INTO tagtagrelations (relationID,lower,upper,date_of_create,user_name,lower_lcase, upper_lcase) VALUES (?,?,?,?,?,?,?)";
-	private static final String SQL_DELETE_TAGREL    = "DELETE FROM tagtagrelations WHERE user_name=? AND upper=? AND lower=?;";
+	private static final String SQL_DELETE_TAGREL    = "DELETE FROM tagtagrelations WHERE lower=? AND upper=? AND user_name=?;";
 	private static final String SQL_LOG_TAGREL       = "INSERT INTO log_tagtagrelations "
 													 + "(relationID, lower, upper, date_of_create, user_name) "
 													 + "SELECT relationID, lower, upper, date_of_create, user_name FROM tagtagrelations WHERE lower=? AND upper=? AND user_name=?";
