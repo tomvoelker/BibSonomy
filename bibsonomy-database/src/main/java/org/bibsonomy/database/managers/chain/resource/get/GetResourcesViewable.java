@@ -50,7 +50,6 @@ public class GetResourcesViewable<R extends Resource, P extends ResourceParam<R>
 		}
 		
 		if (present(param.getTagIndex())) {
-			// TODO: publication chain element first to params for method were missing; correct?
 			return this.getDatabaseManagerForType(param.getClass()).getPostsViewableByTag(param.getUserName(), param.getRequestedUserName(), param.getTagIndex(), groupId, param.getFilter(), param.getLimit(), param.getOffset(), param.getSystemTags().values(), session);
 		}
 		
