@@ -360,7 +360,7 @@ function toggleFieldsetVisibility(el) {
 	
 	if(el.parentNode.parentNode.className == 'fsHidden') {
 		el.parentNode.parentNode.className = "fsInner";
-		el.src = "/resources/image/icon_expand.png";
+		el.src = "/resources/image/icon_collapse.png";
 		content.style.display = "";
 	} else {
 		el.parentNode.parentNode.className = "fsHidden";

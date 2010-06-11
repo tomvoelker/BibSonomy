@@ -134,19 +134,3 @@
 .dissError{
 	display:none;
 }
-
-.fsToggleExpand{
-	border:none;
-	background-image:url('/resources/image/icon_expand.png');
-	background-repeat: no-repeat; 
-	height: 9px; 
-	width: 9px; 
-}
-
-.fsToggleCollapse{
-	border:none;
-	background-image:url('/resources/image/icon_collapse.png');
-	background-repeat: no-repeat; 
-	height: 9px; 
-	width: 9px; 
-}
