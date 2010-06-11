@@ -10,10 +10,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bibsonomy.database.common.DBSession;
+import org.bibsonomy.database.common.DBSessionFactory;
 import org.bibsonomy.lucene.database.params.GroupParam;
 import org.bibsonomy.lucene.database.params.GroupTasParam;
 import org.bibsonomy.lucene.database.params.ListParam;
 import org.bibsonomy.lucene.database.params.TasParam;
+import org.bibsonomy.lucene.database.util.LuceneDatabaseSessionFactory;
 import org.bibsonomy.model.Resource;
 
 import com.ibatis.common.resources.Resources;
@@ -39,10 +42,13 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> implements Lucen
 	/** access to database */
 	protected final SqlMapClient sqlMap;
 
+	private DBSessionFactory sessionFactory;
+
 	/**
 	 * Constructor
 	 */
 	protected LuceneDBGenerateLogic() {
+		this.sessionFactory = new LuceneDatabaseSessionFactory();
 		try {
 			// initialize database client for lucene queries
 			final Reader reader = Resources.getResourceAsReader(SQL_MAP_CONFIG);
@@ -51,6 +57,10 @@ public abstract class LuceneDBGenerateLogic<R extends Resource> implements Lucen
 		} catch (Exception e) {
 			throw new RuntimeException("Error initializing LuceneDBGenerateLogic class.", e);
 		}
+	}
+	
+	protected DBSession openSession() {
+		return this.sessionFactory.getDatabaseSession();
 	}
 	
 	@Override

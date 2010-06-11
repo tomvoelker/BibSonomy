@@ -41,7 +41,7 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 	 */
 	public Post<R> writePost(Document doc) {
 		// initialize 
-		Post<R> post = createEmptyPost();
+		final Post<R> post = this.createEmptyPost();
 
 		// cycle though all properties and store the corresponding
 		// values in the content hash map
@@ -67,7 +67,6 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 			} catch (Exception e) {
 				log.error("Error setting property " + propertyName + " to " + propertyValue.toString(), e);
 			}
-
 		}
 		
 		// all done.
@@ -210,8 +209,8 @@ public abstract class LuceneResourceConverter<R extends Resource> extends Lucene
 	}
 	
 	private Post<R> createEmptyPost() {
-		R resource = this.createNewResource();
-		User user = new User();
+		final R resource = this.createNewResource();
+		final User user = new User();
 		final Post<R> post = new LucenePost<R>();
 		post.setResource(resource);
 		post.setUser(user);

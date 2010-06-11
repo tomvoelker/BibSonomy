@@ -1,8 +1,5 @@
 package org.bibsonomy.lucene.util.generator;
 
-
-
-
 /**
  * Generates empty index files for lucene. The path of the index files is configured 
  * in 'lucene.properties'

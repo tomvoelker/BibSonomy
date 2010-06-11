@@ -1,8 +1,10 @@
 package org.bibsonomy.lucene.search;
 
 import static org.apache.lucene.util.Version.LUCENE_24;
+import static org.bibsonomy.util.ValidationUtils.present;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,7 +25,6 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.bibsonomy.lucene.param.QuerySortContainer;
 import org.bibsonomy.lucene.search.collector.TagCountCollector;
 import org.bibsonomy.model.BibTex;
-import org.bibsonomy.util.ValidationUtils;
 
 /**
  * class for bibtex search
@@ -37,22 +38,30 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 	private final static LuceneSearchBibTex singleton = new LuceneSearchBibTex();
 	
 	/**
-	 * constructor
-	 */
-	private LuceneSearchBibTex() {
-		reloadIndex(0);
-	}
-	
-	/**
 	 * @return LuceneSearchBookmarks
 	 */
 	public static LuceneSearchBibTex getInstance() {
 		return singleton;
 	}
 	
+	/**
+	 * constructor
+	 */
+	private LuceneSearchBibTex() {
+		this.reloadIndex(0);
+	}
+	
 	@Override
-	protected Query buildAuthorSearchQuery(final String authorSearchTerms) {
-		return parseSearchQuery(FLD_AUTHOR, authorSearchTerms);
+	protected BooleanQuery buildSearchQuery(String userName, String searchTerms, String titleSearchTerms, String authorSearchTerms, Collection<String> tagIndex) {
+		final BooleanQuery searchQuery = super.buildSearchQuery(userName, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex);
+		
+		// search author
+		if( present(authorSearchTerms) ) {
+			final Query authorQuery = this.parseSearchQuery(FLD_AUTHOR, authorSearchTerms);
+			searchQuery.add(authorQuery, Occur.MUST);
+		}
+		
+		return searchQuery;
 	}
 	
 	/**
@@ -71,20 +80,14 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 	 * @return
 	 */
 	@Override
-	protected QuerySortContainer buildAuthorQuery(
-			String group,  
-			String searchTerms, 
-			String requestedUserName, String requestedGroupName, 
-			List<String> groupMembers,
-			String year, String firstYear, String lastYear, 
-			List<String> tagList) {
+	protected QuerySortContainer buildAuthorQuery(String group, String searchTerms, String requestedUserName, String requestedGroupName, List<String> groupMembers, String year, String firstYear, String lastYear, List<String> tagList) {
 		// FIXME: configure this
 //		String orderBy = "relevance"; 
-		String orderBy = "date"; 
+		final String orderBy = "date"; 
 		
 		// prepare input parameters
-		List<String> tags = new LinkedList<String>();
-		if( ValidationUtils.present(tagList) ) {
+		final List<String> tags = new LinkedList<String>();
+		if( present(tagList) ) {
 			for( String tag : tagList ) {
 				try {
 					tags.add(parseToken(FLD_TAS, tag));
@@ -96,17 +99,14 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 			tagList = tags;
 		}
 		
-		QuerySortContainer qf = new QuerySortContainer();
+		final QuerySortContainer qf = new QuerySortContainer();
 		
 		//--------------------------------------------------------------------
 		// set ordering
 		//--------------------------------------------------------------------
-		Sort sort = null;
+		final Sort sort;
 		if (PARAM_RELEVANCE.equals(orderBy)) {
-			sort = new Sort(new SortField[]{
-					SortField.FIELD_SCORE,	
-					new SortField(FLD_DATE,SortField.STRING,true)
-  			});
+			sort = new Sort(SortField.FIELD_SCORE, new SortField(FLD_DATE,SortField.STRING,true));
 		} else { 
 			// orderBy=="date"
 			sort = new Sort(new SortField(FLD_DATE, SortField.STRING,true));
@@ -116,8 +116,8 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		//--------------------------------------------------------------------
 		// build query
 		//--------------------------------------------------------------------
-		BooleanQuery mainQuery        = new BooleanQuery();
-		BooleanQuery groupMemberQuery = new BooleanQuery();
+		final BooleanQuery mainQuery = new BooleanQuery();
+		final BooleanQuery groupMemberQuery = new BooleanQuery();
 
 		//--------------------------------------------------------------------
 		// search terms
@@ -131,8 +131,9 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 			// orderBy=="date"
 			searchTermParser.setDefaultOperator(QueryParser.Operator.AND);
 		}
-		Query authorQuery = null;
-		if( ValidationUtils.present(searchTerms) ) {
+		
+		if( present(searchTerms) ) {
+			Query authorQuery = null;
 			try {
 				authorQuery = searchTermParser.parse(searchTerms);
 			} catch (ParseException e) {
@@ -140,19 +141,17 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 			}
 			mainQuery.add(authorQuery, Occur.MUST);
 		}
+		
 		//--------------------------------------------------------------------
 		// post owned by user
 		//--------------------------------------------------------------------
-		if ( ValidationUtils.present(requestedUserName) ) {
-			mainQuery.add(
-					new TermQuery(new Term(FLD_USER, requestedUserName)),
-					Occur.MUST
-					);
+		if ( present(requestedUserName) ) {
+			mainQuery.add(new TermQuery(new Term(FLD_USER, requestedUserName)), Occur.MUST);
 		}
 		//--------------------------------------------------------------------
 		// restrict to group members
 		//--------------------------------------------------------------------
-		if ( ValidationUtils.present(requestedGroupName) && ValidationUtils.present(groupMembers) ) {
+		if ( present(requestedGroupName) && present(groupMembers) ) {
 			for ( String member: groupMembers ) {
 				Query memberQuery = new TermQuery(new Term(FLD_USER, member));
 				groupMemberQuery.add(memberQuery, Occur.SHOULD);
@@ -163,7 +162,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		//--------------------------------------------------------------------
 		// post owned by group
 		//--------------------------------------------------------------------
-		if ( ValidationUtils.present(group) ) {
+		if ( present(group) ) {
 			mainQuery.add( new TermQuery(new Term(FLD_GROUP, group)), Occur.MUST );
 		}
 		
@@ -174,7 +173,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		boolean includeLowerBound = false;
 		boolean includeUpperBound = false;
 
-		if ( ValidationUtils.present(year) ) {
+		if ( present(year) ) {
 			year = year.replaceAll("\\D", "");
 			mainQuery.add( new TermQuery(new Term(FLD_YEAR, year)), Occur.MUST );
 		} else {
@@ -182,12 +181,12 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		// range query
 		//--------------------------------------------------------------------
 			// firstYear != null, lastYear != null
-			if( ValidationUtils.present(firstYear) ) {
+			if( present(firstYear) ) {
 				firstYear = firstYear.replaceAll("\\D", "");
 				includeLowerBound = true;
 			}
 			// firstYear == null, lastYear != null
-			if( ValidationUtils.present(lastYear) ) {
+			if( present(lastYear) ) {
 				lastYear = lastYear.replaceAll("\\D", "");
 				includeUpperBound = true; 
 			}
@@ -197,7 +196,7 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		// restrict to given tags
 		//--------------------------------------------------------------------
 		BooleanQuery tagQuery = new BooleanQuery();
-		if( ValidationUtils.present(tagList) ) {
+		if( present(tagList) ) {
 			for ( String tagItem : tagList){
 				tagQuery.add(new TermQuery(new Term(FLD_TAS, tagItem)), Occur.MUST);
 			}
@@ -209,9 +208,8 @@ public class LuceneSearchBibTex extends LuceneResourceSearch<BibTex> {
 		//--------------------------------------------------------------------
 		if (includeLowerBound || includeUpperBound) {
 			// if upper or lower bound is given, then use filter
-			FilteredQuery filteredQuery = null;
-			Filter rangeFilter=new TermRangeFilter(FLD_YEAR , firstYear, lastYear, includeLowerBound, includeUpperBound);
-			filteredQuery=new FilteredQuery(mainQuery,rangeFilter);
+			final Filter rangeFilter = new TermRangeFilter(FLD_YEAR , firstYear, lastYear, includeLowerBound, includeUpperBound);
+			final FilteredQuery filteredQuery = new FilteredQuery(mainQuery,rangeFilter);
 			qf.setQuery(filteredQuery);
 		} else {
 			qf.setQuery(mainQuery);

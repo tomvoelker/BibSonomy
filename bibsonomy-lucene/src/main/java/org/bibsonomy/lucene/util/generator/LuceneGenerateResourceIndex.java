@@ -233,7 +233,7 @@ public abstract class LuceneGenerateResourceIndex<R extends Resource> {
 				copyDirectory(inputFile, outputFile);
 				log.info("Done.");
 			} catch( Exception e) {
-				log.error("Error copying index to index file "+i);
+				log.error("Error copying index to index file " + i, e);
 			}
 		}
 	}

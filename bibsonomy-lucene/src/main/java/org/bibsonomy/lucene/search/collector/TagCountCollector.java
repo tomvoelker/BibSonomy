@@ -42,6 +42,7 @@ public class TagCountCollector extends Collector {
 	private int lastDocBase = 0;
 
 	/**
+	 * TODO: check constructor filter nDocs and sort aren't need. IOException, too
 	 * constructor
 	 * @param filter 
 	 * @param nDocs 

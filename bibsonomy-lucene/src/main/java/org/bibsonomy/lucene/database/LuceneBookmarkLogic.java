@@ -38,6 +38,6 @@ public class LuceneBookmarkLogic extends LuceneDBLogic<Bookmark> {
 	
 	@Override
 	protected String getResourceName() {
-		return "Bookmark";
+		return Bookmark.class.getSimpleName();
 	}
 }

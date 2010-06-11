@@ -4,6 +4,8 @@ import org.bibsonomy.lucene.util.LuceneSpringContextWrapper;
 import org.bibsonomy.model.BibTex;
 
 /**
+ * TODO: rename to LucenePublicationManager
+ * 
  * class for maintaining the lucene index
  * 
  *  - regularly update the index by looking for new posts

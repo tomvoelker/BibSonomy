@@ -32,12 +32,15 @@ import org.bibsonomy.model.User;
 public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	private static final Log log = LogFactory.getLog(LuceneResourceManager.class);
 
+	/** constant for querying for all posts which have been deleted since the last index update */
+	private static final long QUERY_TIME_OFFSET_MS = 30*1000;
+	
 	/** flag indicating whether to update the index or not */
 	private Boolean luceneUpdaterEnabled = true;
 	
 	private boolean useUpdater = false;
 	
-	private int alreadyRunning        = 0; // das geht bestimmt irgendwie besser
+	private int alreadyRunning = 0; // das geht bestimmt irgendwie besser
 	private int maxAlreadyRunningTrys = 20;
 
 	/** the resource index */ 
@@ -51,9 +54,6 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	
 	/** the lucene index searcher */
 	private LuceneResourceSearch<R> searcher;
-
-	/** constant for querying for all posts which have been deleted since the last index update */
-	private static final long QUERY_TIME_OFFSET_MS = 30*1000;
 	
 	/** converts post model objects to lucene documents */
 	private LuceneResourceConverter<R> resourceConverter;
@@ -304,7 +304,7 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 	 *        it is probably more efficient to get all un-flagged-posts directly via 
 	 *        a join with the user table
 	 */
-	private void updatePredictions() {
+	protected void updatePredictions() {
 		// keeps track of the newest log_date during last index update
 		Long lastLogDate  = this.resourceIndex.getLastLogDate()-QUERY_TIME_OFFSET_MS;
 		
@@ -335,11 +335,10 @@ public class LuceneResourceManager<R extends Resource> extends LuceneBase {
 		}
 	}
 	
-	
 	/**
 	 * flag/unflag spammer, depending on user.getPrediction()
 	 */
-	private void  flagSpammer(User user) {
+	private void flagSpammer(final User user) {
 		log.debug("flagSpammer called for user " + user.getName());
 		switch( user.getPrediction() ) {
 		case 0:
