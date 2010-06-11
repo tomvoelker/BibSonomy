@@ -21,7 +21,7 @@
 		<c:set var="overwriteBiblicious" />
 		<fmt:message var="private" key="post.resource.private"/>
 		<fmt:message var="public" key="post.resource.public"/>
-		<fmt:message var="valueButton" key="settings.firefox.button.text"/>
+		<fmt:message var="valueButton" key="settings.import.button"/>
 		
 		<input name="ckey" type="hidden" value="${command.context.ckey}"/>
 		
