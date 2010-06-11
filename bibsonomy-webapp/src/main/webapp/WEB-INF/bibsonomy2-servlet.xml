@@ -309,7 +309,8 @@
 	<bean id="settingsPageController" class="org.bibsonomy.webapp.controller.SettingsPageController" scope="request">
 		<property name="logic" ref="logic"/>
 		<!-- <property name="userSettings" ref="userSettings"/> -->
-		<!-- <property name="docpath"><value>${project.document.path}</value></property> -->
+		<!-- <property name="docpath"><value>${project.document.path}</value></property>
+-->
 	</bean>
 
 	<bean id="userPageController" class="org.bibsonomy.webapp.controller.UserPageController" scope="request">
@@ -574,10 +575,12 @@
 	
 	<bean id="jabrefLayoutRenderer" class="org.bibsonomy.layout.jabref.JabrefLayoutRenderer" factory-method="getInstance"/>
 
-	<!-- provides access to the request for all controllers, which need it -->
+	<!-- provides access to the request for all controllers, which need it
+-->
 	<bean id="requestLogic" class="org.bibsonomy.webapp.util.RequestLogic" scope="request"/>
 
-	<!-- provides access to the response for all controllers, which need it -->
+	<!-- provides access to the response for all controllers, which need it
+-->
 	<bean id="responseLogic" class="org.bibsonomy.webapp.util.ResponseLogic" scope="request"/>
 
 	<!-- provides access to cookies -->
@@ -585,7 +588,8 @@
 		<property name="requestLogic" ref="requestLogic"/>
 		<property name="responseLogic" ref="responseLogic"/>
 		<!-- configuration of cookies -->
-		<property name="cookieAge" value="31536000"/><!-- one year (= 3600 * 24 * 365 seconds) -->
+		<property name="cookieAge" value="31536000"/><!-- one year (= 3600 * 24 * 365 seconds)
+-->
 		<property name="cookiePath" value="/"/>
 		<property name="cookieUser" value="_currUser"/>
 		<property name="cookieSpammer" value="_lPost"/>
@@ -612,7 +616,8 @@
 	    to be a user with role "admin". 
 	 -->
 	<bean id="adminLogic" class="org.bibsonomy.webapp.util.spring.factorybeans.AdminLogicFactoryBean" scope="request">
-	    <!-- name the admin user will have when accessing the logic interface -->
+	    <!-- name the admin user will have when accessing the logic interface
+-->
 		<property name="adminUserName" value="admin"/>
 		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 	</bean>	
@@ -621,12 +626,11 @@
 	<bean id="resourceSearchInitializer" class="org.bibsonomy.database.util.DatabaseManagerInitializer">
 		<property name="bibTexSearcher" ref="luceneBibTexSearch"/>
 		<property name="bookmarkSearcher" ref="luceneBookmarkSearch"/>
-		<property name="systemTagFactory" ref="systemTagFactory"/>
 	</bean>
 	
 	<!-- factory for creating system tags -->
-	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory">
-		<property name="sessionFactory" ref="dbSessionFactory"/>
+	<bean id="systemTagFactory" class="org.bibsonomy.database.systemstags.SystemTagFactory" factory-method="getInstance">
+		<property name="dbSessionFactory" ref="dbSessionFactory"/>
 	</bean>
 
 	<!-- lucene bibtex searcher -->
@@ -657,7 +661,8 @@
 	</bean>
 	
 	
-	<!--  #################### locale and theme resolver #################### -->
+	<!--  #################### locale and theme resolver ####################
+-->
 	
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
 		<property name="defaultLocale"><value>${project.defaultLocale}</value></property>
