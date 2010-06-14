@@ -121,10 +121,6 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				 */
 				String bibtexEntries = new RisToBibtexConverter().RisToBibtex(RisResult);
 				bibtexEntries = StringEscapeUtils.unescapeHtml(bibtexEntries);
-				
-				FileWriter f1 = new FileWriter("file2.txt"); 
-				f1.write(bibtexEntries); 
-				f1.close(); 
 
 				/*
 				 * cleanup doi
