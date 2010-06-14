@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -72,17 +73,31 @@ public class SystemTagsUtilTest {
 	}
 	
 	/**
-	 * tests removeAllSystemTags()
+	 * tests to remove or extract and count systemTags and non-systemTags
+	 * removeAllSystemTags()
+	 * removeAllNonSystemTags()
+	 * extractNonSystemTags()
+	 * countNonSystemTags()
 	 */
 	@Test
 	public void removeAllSystemTags() {
+		// tagNames: 3 systemTags and 5 nonSystemTags
 		String[] tagNames = {"normalTag", "for:someGroup", "send:someUser", "anotherNormalTag", "sys:author:sdo", "sys:someSystemTagThing", "system:someOtherSystemTag:Thing", "yetOneMoreNormalTag"};
 		// test countNonSystemTags()
 		assertEquals(5, SystemTagsUtil.countNonSystemTags( Arrays.asList(tagNames) ));
+		// test extractSystemTags()
+		assertEquals(3, SystemTagsUtil.extractSystemTags(Arrays.asList(tagNames)).size());
 		// test removeAllSystemTags()
 		Set<Tag> tags = ModelUtils.getTagSet(tagNames);
 		SystemTagsUtil.removeAllSystemTags(tags);
 		assertEquals(5, tags.size());
+		// test removeAllNonSystemTags()
+		tags = ModelUtils.getTagSet(tagNames);
+		ArrayList<String> tagNameList = new ArrayList<String>();
+		for (int i=0; i<tagNames.length; i++) {
+			tagNameList.add(tagNames[i]);
+		}
+		assertEquals(5, SystemTagsUtil.removeAllNonSystemTags(tagNameList));
 	}
 
 	

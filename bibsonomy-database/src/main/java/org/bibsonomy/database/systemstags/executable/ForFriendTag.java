@@ -23,7 +23,7 @@ import org.bibsonomy.model.Resource;
  * @author sdo
  * @version $Id$
  */
-public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSystemTag{
+public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
 	private static final Log log = LogFactory.getLog(ForFriendTag.class);
 	//------------------------------------------------------------------------
 	/**

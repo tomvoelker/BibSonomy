@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -148,10 +147,11 @@ public class SystemTagsUtil {
 
 	/**
 	 * Removes all systemTags from a given set of tags
+	 * Warning: the given Collection must support iterator.remove()
 	 * @param tags = the set of tags
 	 * @return number of tags, that were removed
 	 */
-	public static int removeAllSystemTags(final Set<Tag> tags) {
+	public static int removeAllSystemTags(final Collection<Tag> tags) {
 		int removeCounter = 0;
 		for (final Iterator<Tag> iter= tags.iterator(); iter.hasNext();) {
 			final Tag tag = iter.next();
@@ -164,10 +164,28 @@ public class SystemTagsUtil {
 	}
 
 	/**
-	 * Returns a List containing the names of all systemTags of a given Collection of tagNames
+	 * Removes all non-systemTags from a given set of tagNames
+	 * Warning: the given Collection must support iterator.remove()
+	 * @param tagNames = the set of tagNames
+	 * @return number of tags, that were removed
+	 */
+	public static int removeAllNonSystemTags(final Collection<String> tagNames) {
+		int removeCounter = 0;
+		for  (final Iterator<String> iter = tagNames.iterator(); iter.hasNext();) {
+			String tagName = iter.next();
+			if ( !isSystemTag( tagName ) ) {
+				iter.remove();
+				removeCounter++;
+			}
+		}
+		return removeCounter;
+	}
+	
+	/**
+	 * Returns a new List containing the names of all systemTags of a given Collection of tagNames
 	 * 
 	 * @param tags collection of tags
-	 * @return all system tags which are contained in input tags
+	 * @return a new list with all system tags which are contained in input tags
 	 */
 	public static List<String> extractSystemTags(final Collection<String> tagNames) {
 		final List<String> sysTags = new LinkedList<String>();
