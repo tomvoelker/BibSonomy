@@ -50,6 +50,7 @@ import org.bibsonomy.scraper.converter.RisToBibtexConverter;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.id.DOIUtils;
 
 
@@ -114,14 +115,14 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				/*
 				 * download RIS file
 				 */
-				final String RisResult = getRisFromSpringer(queryURL, getCookieFromSpringer());
-
+				String cookies = WebUtils.getCookies(new URL(SITE_URL + "home/main.mpx"));
+				final String RisResult =  WebUtils.getContentAsString(queryURL, cookies);
+				
 				/*
 				 * convert ris to bibtex
 				 */
 				String bibtexEntries = new RisToBibtexConverter().RisToBibtex(RisResult);
 				bibtexEntries = StringEscapeUtils.unescapeHtml(bibtexEntries);
-
 				/*
 				 * cleanup doi
 				 */
@@ -141,86 +142,6 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 			} catch (IOException e) {
 				throw new InternalFailureException(e);
 			}
-	}
-	
-	
-
-	/** 
-	 * FIXME: refactor
-	 * Downloads the RIS file for the specified URL from Springer, returns it as a String.
-	 * 
-	 * @param queryURL
-	 * @param cookie needed to download the file.
-	 * @return
-	 * @throws IOException
-	 */
-	private String getRisFromSpringer(URL queryURL, String cookie) throws IOException {
-		/*
-		 * get RIS-file from springer
-		 */
-		HttpURLConnection urlConn = (HttpURLConnection) queryURL.openConnection();
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-		 * pages require it to download content.
-		 */
-		urlConn.setRequestProperty("User-Agent", userAgent);
-		//insert cookie
-		urlConn.setRequestProperty("Cookie", cookie);
-		urlConn.connect();
-		StringWriter out = new StringWriter();
-		InputStreamReader in = new InputStreamReader(urlConn.getInputStream(), "UTF-8");
-		int b;
-		while ((b = in.read()) >= 0) {
-			out.write(b);
-		}
-		urlConn.disconnect();
-		return out.toString();
-	}
-
-	
-	
-	/** FIXME: refactor
-	 * Gets Cookie from SpringerLink and returns it as string.
-	 * @return
-	 * @throws IOException
-	 */
-	private String getCookieFromSpringer () throws IOException {		
-		/*
-		 * receive cookie from springer
-		 */
-		URL mainURL = new URL(SITE_URL + "home/main.mpx");
-		HttpURLConnection urlConn;
-		urlConn = (HttpURLConnection) mainURL.openConnection();
-		urlConn.setAllowUserInteraction(false);
-		urlConn.setDoInput(true);
-		urlConn.setDoOutput(false);
-		urlConn.setUseCaches(false);
-		/*
-		 * set user agent (see http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html) since some 
-		 * pages require it to download content.
-		 */
-		urlConn.setRequestProperty("User-Agent", userAgent);
-		urlConn.connect();
-		
-		// set all necessary cookies
-		/*
-		 * extract cookie from connection
-		 */
-		List<String> cookieContent = urlConn.getHeaderFields().get("Set-Cookie");
-		//extract sessionID and store in cookie
-		for (String crumb : cookieContent) {
-			
-			if (crumb.contains("ASP")){
-				
-				return crumb;
-			}
-		}
-		urlConn.disconnect();
-		return null;
 	}
 	
 	public String getInfo() {
