@@ -58,7 +58,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	private static final Log log = LogFactory.getLog(BatchEditController.class);
 
 	private static final int HASH_LENGTH = 32;
-	
+
 	/**
 	 * To redirect the user to the page she initially viewed before pressing
 	 * the (batch)"edit" button, we need to strip the "bedit*" part of the URL
@@ -165,9 +165,9 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 */
 		final Map<String, String> newTagsMap = command.getNewTags();
 		final Map<String, String> oldTagsMap = command.getOldTags();
-		
+
 		log.debug("#postFlags: " + postFlags.size() + ", #postMap: " + postMap.size() + ", #addTags: " + addTags.size() + ", #newTags: " + newTagsMap.size() + ", #oldTags: " + oldTagsMap.size());
-		
+
 		/* *******************************************************
 		 * THIRD: initialize temporary variables (lists)
 		 * *******************************************************/
@@ -180,7 +180,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		 * All posts will get the same date.
 		 */
 		final Date now = new Date();
-		
+
 		/* *******************************************************
 		 * FOURTH: prepare the posts
 		 * *******************************************************/
@@ -329,7 +329,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 		if ("ajax".equals(command.getFormat())) {
 			return Views.AJAX_EDITTAGS;
 		}
-		
+
 		/*
 		 * return to batch edit view on errors
 		 */
@@ -339,7 +339,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 			} 
 			return Views.BATCHEDITURL;  
 		}
-		
+
 		/*
 		 * return to the page the user was initially coming from
 		 */
@@ -608,13 +608,15 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 	 */
 	private View getFinalRedirect(final String referer, final String loginUserName) {
 		String redirectUrl = referer;
-		/*
-		 * if we come from bedit{bib, burl}/{group, user}/{groupname, username},
-		 * we remove this prefix to get back to the simple resource view in the group or user section
-		 */
-		final Matcher prefixMatcher = BATCH_EDIT_URL_PATTERN.matcher(referer);
-		if (prefixMatcher.find())
-			redirectUrl = prefixMatcher.replaceFirst("");
+		if (present(referer)) {
+			/*
+			 * if we come from bedit{bib, burl}/{group, user}/{groupname, username},
+			 * we remove this prefix to get back to the simple resource view in the group or user section
+			 */
+			final Matcher prefixMatcher = BATCH_EDIT_URL_PATTERN.matcher(referer);
+			if (prefixMatcher.find())
+				redirectUrl = prefixMatcher.replaceFirst("");
+		}
 		/*
 		 * if no URL is given, we redirect to the user's page
 		 */
