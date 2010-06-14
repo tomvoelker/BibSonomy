@@ -2,7 +2,6 @@ package org.bibsonomy.webapp.controller;
 
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -150,12 +149,7 @@ public abstract class ResourceListController {
 
 			// if tags are requested (not related tags), remove non-systemtags from tags list
 			if (tagsType.equalsIgnoreCase(TagsType.DEFAULT.getName() ) && tags != null ) {
-				Iterator<String> it = tags.iterator();
-				while (it.hasNext()) {
-					if ( !SystemTagsUtil.isSystemTag( it.next() ) ) {
-						it.remove();
-					}
-				}
+				SystemTagsUtil.removeAllNonSystemTags(tags);
 			}
 
 			// check if limitation to a single resourcetype is requested			
