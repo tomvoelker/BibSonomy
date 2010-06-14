@@ -25,9 +25,15 @@ package org.bibsonomy.scraper.url.kde.springer;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.net.CookieHandler;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.net.CookieStore;
+import java.net.HttpCookie;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,6 +42,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
@@ -61,7 +68,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	 */
 	private static final String userAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";	
 
-	private static final Pattern CONTENT_PATTERN = Pattern.compile("content\\/(.+?)\\/");
+	private static final Pattern CONTENT_PATTERN = Pattern.compile("content/(.+?)(/|$)");
 	private static final Pattern ID_PATTERN = Pattern.compile("id=([^\\&]*)");
 
 	private static final String SPRINGER_CITATION_HOST_COM = "springerlink.com";
@@ -113,6 +120,11 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 				 * convert ris to bibtex
 				 */
 				String bibtexEntries = new RisToBibtexConverter().RisToBibtex(RisResult);
+				bibtexEntries = StringEscapeUtils.unescapeHtml(bibtexEntries);
+				
+				FileWriter f1 = new FileWriter("file2.txt"); 
+				f1.write(bibtexEntries); 
+				f1.close(); 
 
 				/*
 				 * cleanup doi
@@ -180,7 +192,7 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 	 * @return
 	 * @throws IOException
 	 */
-	private String getCookieFromSpringer () throws IOException {
+	private String getCookieFromSpringer () throws IOException {		
 		/*
 		 * receive cookie from springer
 		 */
@@ -197,13 +209,17 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 		 */
 		urlConn.setRequestProperty("User-Agent", userAgent);
 		urlConn.connect();
+		
+		// set all necessary cookies
 		/*
 		 * extract cookie from connection
 		 */
 		List<String> cookieContent = urlConn.getHeaderFields().get("Set-Cookie");
 		//extract sessionID and store in cookie
 		for (String crumb : cookieContent) {
+			
 			if (crumb.contains("ASP")){
+				
 				return crumb;
 			}
 		}
