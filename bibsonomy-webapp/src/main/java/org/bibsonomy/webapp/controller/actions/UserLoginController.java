@@ -377,11 +377,15 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 
 		/*
 		 * flag spammers with a cookie 
-		 * FIXME: here we sometimes get an NPE (why? cause: neither the ldap nor
-		 * the openid nor the db were used to authenticate the user
-		 * (username and hashedPassword are empty))
 		 */
-		this.cookieLogic.addSpammerCookie(user.isSpammer());
+		if (present(user)) {
+			/*
+			 * FIXME: here we sometimes get an NPE (why? cause: neither the ldap nor
+			 * the openid nor the db were used to authenticate the user
+			 * (username and hashedPassword are empty))
+			 */
+			this.cookieLogic.addSpammerCookie(user.isSpammer());
+		}
 
 		/*
 		 * To prevent Session-Fixation attacks (see http://www.jsptutorial.org/content/session) 
