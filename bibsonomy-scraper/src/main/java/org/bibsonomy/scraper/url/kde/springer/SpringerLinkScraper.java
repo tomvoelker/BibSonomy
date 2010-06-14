@@ -25,16 +25,7 @@ package org.bibsonomy.scraper.url.kde.springer;
 
 import static org.bibsonomy.util.ValidationUtils.present;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.StringWriter;
-import java.net.CookieHandler;
-import java.net.CookieManager;
-import java.net.CookiePolicy;
-import java.net.CookieStore;
-import java.net.HttpCookie;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.LinkedList;
@@ -63,11 +54,6 @@ import org.bibsonomy.util.id.DOIUtils;
 public class SpringerLinkScraper extends AbstractUrlScraper {
 	private static final String SITE_NAME = "SpringerLink";
 	private static final String SITE_URL = "http://springerlink.com/";
-	
-	/*
-	 * FIXME: remove
-	 */
-	private static final String userAgent = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)";	
 
 	private static final Pattern CONTENT_PATTERN = Pattern.compile("content/(.+?)(/|$)");
 	private static final Pattern ID_PATTERN = Pattern.compile("id=([^\\&]*)");
@@ -153,13 +139,9 @@ public class SpringerLinkScraper extends AbstractUrlScraper {
 		return patterns;
 	}
 
-
-
 	public String getSupportedSiteName() {
 		return SITE_NAME;
 	}
-
-
 
 	public String getSupportedSiteURL() {
 		return SITE_URL;
