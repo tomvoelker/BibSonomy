@@ -588,7 +588,7 @@ public class Functions  {
 			if (! ".html".equals(layout.getExtension())) {
 				return "The requested layout is not valid; only HTML layouts are allowed. Requested extension is: " + layout.getExtension();
 			}
-			return layoutRenderer.renderLayout(layout, posts, true).toString();
+			return layoutRenderer.renderLayout(layout, posts, true, false).toString();
 		} catch (final LayoutRenderingException ex) {
 			return ex.getMessage();			
 		} catch (final UnsupportedEncodingException ex) {
