@@ -1,4 +1,4 @@
-\begingroup{year}<h3>\year</h3>\endgroup{year}
+\begingroup{year}<h3><a name="\year">\year</a></h3>\endgroup{year}
 <div style="margin-bottom:1em">\begin{author}\format[AuthorLastFirstAbbreviator,AuthorAndsReplacer,HTMLChars]{\author}: \end{author}<i>\begin{title}\format[HTMLChars]{\title}. \end{title}</i>\begin{address}\format[HTMLChars]{\address}, \end{address}\begin{school}\format[HTMLChars]{\school}, \end{school}\begin{type}\format[HTMLChars]{\type}, \end{type}\begin{year}\format[HTMLChars]{\year}\end{year}<br/>
 \begin{url}<a href="\format[HTMLChars]{\url}">[Volltext]</a>&nbsp;\end{url}\begin{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\bibsonomyUsername','abstract')">[Kurzfassung]</a>&nbsp;\end{abstract}<a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\bibsonomyUsername','bibtex')">[BibTeX]</a>
 <a name="DependOnJS" style="display:none" href="javascript:toggleInfo('\intrahash\bibsonomyUsername','endnote')">[Endnote]</a>
