@@ -50,7 +50,7 @@ function getSuggestions(partialTitle) {
 	if(parseInt(partialTitle.length) > 1) {
 		var query = $.ajax({
 			type: "GET",
-			url: "/json/tag/"+createParameters(partialTitle)+"?items=10",
+			url: "/json/tag/"+createParameters(encodeURIComponent(partialTitle))+"?items=10",
 			dataType: "jsonp",
 			success: function(json){
 			processResponse(json);
