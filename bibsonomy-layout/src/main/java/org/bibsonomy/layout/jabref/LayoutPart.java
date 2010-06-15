@@ -56,11 +56,15 @@ public enum LayoutPart {
 	/**
 	 * 
 	 */
-	ITEM("item");
+	ITEM("item"),
+    /**
+     * 
+     */
+    QUICKNAV("quicknav");
 
-	public static LayoutPart[] layoutParts = new LayoutPart[]{BEGIN, END, ITEM, EMBEDDEDBEGIN, EMBEDDEDEND};
+	public static LayoutPart[] layoutParts = new LayoutPart[]{QUICKNAV, BEGIN, END, ITEM, EMBEDDEDBEGIN, EMBEDDEDEND};
 	
-	private static String[] allTypes = new String[] {BEGIN.name, END.name, ITEM.name, EMBEDDEDBEGIN.name, EMBEDDEDEND.name};
+	private static String[] allTypes = new String[] {QUICKNAV.name, BEGIN.name, END.name, ITEM.name, EMBEDDEDBEGIN.name, EMBEDDEDEND.name};
 
 	/**
 	 * The name of a part.

@@ -96,7 +96,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * 
 	 * @see org.bibsonomy.services.renderer.LayoutRenderer#renderLayout(org.bibsonomy.model.Layout, java.util.List, java.io.OutputStream)
 	 */
-	public <T extends Resource> StringBuffer renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final boolean embeddedLayout) throws LayoutRenderingException, IOException {
+	public <T extends Resource> StringBuffer renderLayout(final JabrefLayout layout, final List<Post<T>> posts, final boolean embeddedLayout, final boolean quicknav) throws LayoutRenderingException, IOException {
 		log.debug("rendering " + posts.size() + " posts with " + layout.getName() + " layout");
 		/*
 		 * XXX: different handling of "duplicates = no" in new code:
@@ -113,7 +113,7 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 		/*
 		 * render the database
 		 */
-		return renderDatabase(database, layout, embeddedLayout);
+		return renderDatabase(database, layout, embeddedLayout, quicknav);
 	}
 
 
@@ -166,12 +166,14 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 	 * @param userName User to whom the passed entries belong 
 	 * @param layout - the layout to be rendered. If "custom", export with user specific layout filter
 	 * @param embeddedLayout - if <code>true</code> the corresponding embedded begin/end parts 
-	 * (see {@link LayoutPart}) are used (only if available).
+	 * @param quicknav - if <code>true</code> show the quicknav 
+     * (see {@link LayoutPart}) are used (only if available).
 	 * @return output The formatted BibTeX entries as a string.
 	 * @throws LayoutRenderingException - if a layout could not be found
 	 */
-	private StringBuffer renderDatabase(final BibtexDatabase database, final JabrefLayout layout, final boolean embeddedLayout) throws LayoutRenderingException {
+	private StringBuffer renderDatabase(final BibtexDatabase database, final JabrefLayout layout, final boolean embeddedLayout, final boolean quicknav) throws LayoutRenderingException {
 		final StringBuffer output = new StringBuffer();  
+		final StringBuffer entries = new StringBuffer();  
 
 		/* 
 		 * *************** rendering the header ***************** 
@@ -221,11 +223,23 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 				 */
 				throw new LayoutRenderingException("no custom layout found");
 			} 
-			for (final BibtexEntry entry: sorted) {	              
+			for (final BibtexEntry entry: sorted) {	     
 				output.append(itemLayout.doLayout(entry, database));
 			}	        
 
 		} else {
+		    
+		    /**
+		     * Need this extra loop for rendering, cause Jabref cant handle 2 begingroups.
+		     */
+            for (final BibtexEntry entry: sorted) {
+                if(quicknav) {
+                    Layout quicknavLayout = layout.getSubLayout(LayoutPart.QUICKNAV);
+                    if(quicknavLayout != null)
+                        output.append(quicknavLayout.doLayout(entry, database));                   
+                }                
+            }
+            
 			// try to retrieve type-specific layouts and process output
 			for (final BibtexEntry entry: sorted) {
 
@@ -244,12 +258,13 @@ public class JabrefLayoutRenderer implements LayoutRenderer<JabrefLayout> {
 						throw new LayoutRenderingException("layout file(s) for '" + layout.getName() + "' could not be found");
 					}
 				} 
-				output.append(itemLayout.doLayout(entry, database));
+				
+				entries.append(itemLayout.doLayout(entry, database));
 			}
 
-
 		}
-
+		
+		output.append(entries);
 
 
 
