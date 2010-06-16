@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.url.kde.nasaads;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +44,6 @@ import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.PageNotSupportedException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
-
 
 /**
  * Scarper for NASA ADS.
@@ -97,7 +98,7 @@ public class NasaAdsScraper extends AbstractUrlScraper {
 		/*
 		 * check of snippet
 		 */
-		if(sc.getSelectedText() != null){
+		if(present(sc.getSelectedText())){
 			sc.setBibtexResult(sc.getSelectedText());
 			return true;
 

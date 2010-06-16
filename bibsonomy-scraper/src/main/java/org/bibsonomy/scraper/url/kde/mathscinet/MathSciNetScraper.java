@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.url.kde.mathscinet;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
@@ -84,7 +86,7 @@ public class MathSciNetScraper extends AbstractUrlScraper {
 			/*
 			 * check of snippet
 			 */			
-			if(sc.getSelectedText() != null && sc.getUrl().toString().contains(URL_MATHSCINET_FMT_PARAMETER)){
+			if(present(sc.getSelectedText()) && sc.getUrl().toString().contains(URL_MATHSCINET_FMT_PARAMETER)){
 				sc.setBibtexResult(sc.getSelectedText());
 				return true;
 				

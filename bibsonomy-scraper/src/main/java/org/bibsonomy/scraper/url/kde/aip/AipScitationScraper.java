@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.url.kde.aip;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
@@ -109,7 +111,7 @@ public class AipScitationScraper extends AbstractUrlScraper {
 		 * check of snippet
 		 * snippet must be from a bibtex page
 		 */			
-		if(sc.getSelectedText() != null && sc.getUrl().getPath().startsWith(URL_AIP_CITATION_BIBTEX_PAGE_PATH) && sc.getUrl().toString().contains(HTML_INPUT_NAME_FN_AND_VALUE)){
+		if(present(sc.getSelectedText()) && sc.getUrl().getPath().startsWith(URL_AIP_CITATION_BIBTEX_PAGE_PATH) && sc.getUrl().toString().contains(HTML_INPUT_NAME_FN_AND_VALUE)){
 			sc.setBibtexResult(cleanKeywords(sc.getSelectedText()));
 			
 			return true;

@@ -23,6 +23,8 @@
 
 package org.bibsonomy.scraper.url.kde.citeseer;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -86,14 +88,14 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 			}
 
 			// check for selected bibtex snippet
-			if(sc.getSelectedText() != null){
+			if(present(sc.getSelectedText())){
 				sc.setBibtexResult(sc.getSelectedText());
 				sc.setScraper(this);
 				return true;
 			}
 			
 			// no snippet selected
-			final String page = sc.getPageContent();
+			String page = sc.getPageContent();
 			
 			// search BibTeXsnippet in html
 			final Matcher matcher = bibtexPattern.matcher(page);
@@ -111,6 +113,8 @@ public class CiteseerxScraper extends AbstractUrlScraper {
 				
 				// append url
 				bibtex = BibTexUtils.addFieldIfNotContained(bibtex, "url", sc.getUrl().toString());
+				
+				
 				
 				sc.setBibtexResult(bibtex);
 				return true;

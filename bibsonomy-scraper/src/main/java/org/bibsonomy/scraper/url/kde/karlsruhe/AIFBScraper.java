@@ -23,6 +23,9 @@
 
 package org.bibsonomy.scraper.url.kde.karlsruhe;
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +39,6 @@ import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.util.WebUtils;
-
 
 /** Scraper for AIFB.
  * 
@@ -90,7 +92,7 @@ public class AIFBScraper extends AbstractUrlScraper {
 
 		String bibtex = null;
 		
-		if(sc.getSelectedText() == null){
+		if(!present(sc.getSelectedText())){
 			/*
 			 * returns itself to know, which scraper scraped this
 			 */
