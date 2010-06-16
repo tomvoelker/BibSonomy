@@ -69,4 +69,27 @@ function reloadRecommendation() {
 
     $('#postForm').ajaxSubmit(tagRecoOptions); 
 }
-     
+
+/**
+ * toggles the visibility of the content element encapsulated within the fieldset 
+ * 
+ * @param el
+ *            the toggle element that has been clicked
+ * @return 
+ */
+function toggleFieldsetVisibility(el) {
+	var content = null;
+	if((content = getNextByClass(el.parentNode, "")) == null) {
+		return;
+	}
+	
+	if(el.parentNode.parentNode.className == 'fsHidden') {
+		el.parentNode.parentNode.className = "fsInner";
+		el.src = "/resources/image/icon_collapse.png";
+		content.style.display = "";
+	} else {
+		el.parentNode.parentNode.className = "fsHidden";
+		el.src = "/resources/image/icon_expand.png";
+		content.style.display = "none";
+	}
+}
