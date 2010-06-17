@@ -171,9 +171,17 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 	 * @return the user's name
 	 */
 	public String updateUserProfile(User user, final DBSession session) {
-		if (!present(this.getUserDetails(user.getName(), session).getName())) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user profile for nonexistent user");
-		this.update("updateUserProfile", user, session);
-		return user.getName();
+		session.beginTransaction();
+		try {
+			if (!present(this.getUserDetails(user.getName(), session).getName())) ExceptionUtils.logErrorAndThrowRuntimeException(log, null, "Can't update user profile for nonexistent user");
+			this.checkUser(user, session);
+			this.update("updateUserProfile", user, session);
+			session.commitTransaction();
+			
+			return user.getName();
+		} finally {
+			session.endTransaction();
+		}
 	}
 
 	/**
@@ -259,10 +267,11 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		
 		this.checkUser(user, session);
 		
-		if(!present(user.getOpenID()) || !present(user.getLdapId()))
+		if(!present(user.getOpenID()) || !present(user.getLdapId())) {
 		    this.insert("insertPendingUser", user, session);
-		else
+		} else {
 		    this.insert("insertUser", user, session);
+		}
 		
 		/*
 		 * insert openID of user in separate table if present
