@@ -79,17 +79,25 @@ function reloadRecommendation() {
  */
 function toggleFieldsetVisibility(el) {
 	var content = null;
+	var icon_url = null;
+	var className = null;
 	if((content = getNextByClass(el.parentNode, "")) == null) {
 		return;
 	}
 	
-	if(el.parentNode.parentNode.className == 'fsHidden') {
+	if(cmpClass(el.parentNode.parentNode, 'fsHidden')) {
+		$(content).hide();
 		el.parentNode.parentNode.className = "fsInner";
-		el.src = "/resources/image/icon_collapse.png";
-		content.style.display = "";
+		icon_url = "/resources/image/icon_collapse.png";
 	} else {
-		el.parentNode.parentNode.className = "fsHidden";
-		el.src = "/resources/image/icon_expand.png";
-		content.style.display = "none";
+			icon_url = "/resources/image/icon_expand.png";
+			className = "fsHidden";		
 	}
+	
+	$(content).css('visibility', 'hidden').slideToggle(200, function() {
+			el.src = icon_url;
+			if(className)
+				el.parentNode.parentNode.className = className;
+			$(this).css('visibility', 'visible');
+		});
 }

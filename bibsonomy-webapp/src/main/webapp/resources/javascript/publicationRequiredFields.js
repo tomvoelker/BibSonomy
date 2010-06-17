@@ -1,5 +1,5 @@
 
-// the form we're receiving input from
+//the form we're receiving input from
 var form_name = '#post\\.resource\\.title';
 
 // our suggestion box
@@ -264,31 +264,6 @@ function triggerEvt(el, eventName) {
 	
 }
 
-function getNextByClass(match_el, className) {
-	while(match_el != null) {
-		if(match_el.tagName == 'DIV'){
-			if(cmpClass(match_el, className)) {
-				return match_el;
-			}
-
-		}
-		match_el = match_el.nextSibling;
-	}
-	return null;
-}	
-
-function getPreviousByClass(match_el, className) {
-	while(match_el != null) {
-		if(match_el.tagName == 'DIV'){
-			if(cmpClass(match_el, className)) {
-				return match_el;
-			}
-
-		}
-		match_el = match_el.previousSibling;
-	}
-	return null;
-}
 
 /**
  * format the matching part of a string bold
@@ -321,50 +296,5 @@ function addClass(el, value) {
 		el.className += " "+value;
 	} else {
 		el.className = value;
-	}
-}
-
-/**
- * look for a match with the elements classes and a given class name
- * 
- * @param el
- *            the element to match the class with
- * @param value
- *            the class we're looking for
- * @return true if a match is given, false otherwise
- */
-function cmpClass(el, value) {
-	for
-	(i = 0, partials = el.className.split(" "); 
-	parseInt(partials.length) > i; 
-	i++) {
-		if(value == partials[i]) {
-			return true;
-		}
-	}
-	return false;
-}
-
-/**
- * toggles the visibility of the content element encapsulated within the fieldset 
- * 
- * @param el
- *            the toggle element that has been clicked
- * @return 
- */
-function toggleFieldsetVisibility(el) {
-	var content = null;
-	if((content = getNextByClass(el.parentNode, "")) == null) {
-		return;
-	}
-	
-	if(el.parentNode.parentNode.className == 'fsHidden') {
-		el.parentNode.parentNode.className = "fsInner";
-		el.src = "/resources/image/icon_collapse.png";
-		content.style.display = "";
-	} else {
-		el.parentNode.parentNode.className = "fsHidden";
-		el.src = "/resources/image/icon_expand.png";
-		content.style.display = "none";
 	}
 }

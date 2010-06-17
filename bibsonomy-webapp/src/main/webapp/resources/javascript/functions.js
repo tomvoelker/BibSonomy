@@ -2152,6 +2152,52 @@ function prepareErrorBoxes(className) {
 		  		 $(this).fadeIn("slow");    
 	});
 	// this is a workaround because the tags input element's id is not 'tags' but 'inpf'
-	$('#inpf').keyup(function() {$('#tags\\.errors').parent().fadeOut('slow');});
-	  
+	$('#inpf').keyup(function() {$('#tags\\.errors').parent().fadeOut('slow');});  
+}
+
+
+/**
+ * look for a match with the elements classes and a given class name
+ * 
+ * @param el
+ *            the element to match the class with
+ * @param value
+ *            the class we're looking for
+ * @return true if a match is given, false otherwise
+ */
+function cmpClass(el, value) {
+	for
+	(i = 0, partials = el.className.split(" "); 
+	parseInt(partials.length) > i; 
+	i++) {
+		if(value == partials[i]) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function getNextByClass(match_el, className) {
+	while(match_el != null) {
+		if(match_el.tagName == 'DIV'){
+			if(cmpClass(match_el, className)) {
+				return match_el;
+			}
+		}
+		match_el = match_el.nextSibling;
+	}
+	return null;
+}	
+
+function getPreviousByClass(match_el, className) {
+	while(match_el != null) {
+		if(match_el.tagName == 'DIV'){
+			if(cmpClass(match_el, className)) {
+				return match_el;
+			}
+
+		}
+		match_el = match_el.previousSibling;
+	}
+	return null;
 }

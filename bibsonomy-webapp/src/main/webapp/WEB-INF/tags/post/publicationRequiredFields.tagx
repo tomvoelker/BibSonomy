@@ -16,7 +16,8 @@
     
      -->
 
-
+	<script type="text/javascript" src="/resources/javascript/publicationRequiredFields.js"> <!--  --></script>
+	
     <jsp:directive.attribute name="post" type="org.bibsonomy.model.Post" required="true"/>
     <jsp:directive.attribute name="autocompletion" type="java.lang.Boolean" required="true"/>
 
