@@ -2155,7 +2155,6 @@ function prepareErrorBoxes(className) {
 	$('#inpf').keyup(function() {$('#tags\\.errors').parent().fadeOut('slow');});  
 }
 
-
 /**
  * look for a match with the elements classes and a given class name
  * 

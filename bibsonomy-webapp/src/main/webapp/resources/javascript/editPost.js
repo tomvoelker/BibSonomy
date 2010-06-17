@@ -87,7 +87,7 @@ function toggleFieldsetVisibility(el) {
 	
 	if(cmpClass(el.parentNode.parentNode, 'fsHidden')) {
 		$(content).hide();
-		el.parentNode.parentNode.className = "fsInner";
+		$(el.parentNode.parentNode).removeClass('fsHidden');
 		icon_url = "/resources/image/icon_collapse.png";
 	} else {
 			icon_url = "/resources/image/icon_expand.png";
@@ -97,7 +97,7 @@ function toggleFieldsetVisibility(el) {
 	$(content).css('visibility', 'hidden').slideToggle(200, function() {
 			el.src = icon_url;
 			if(className)
-				el.parentNode.parentNode.className = className;
+				$(el.parentNode.parentNode).addClass(className);
 			$(this).css('visibility', 'visible');
 		});
 }

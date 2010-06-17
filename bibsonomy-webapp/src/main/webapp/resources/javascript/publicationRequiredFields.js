@@ -281,20 +281,3 @@ function formatLabel (label) {
 	}
 	return label;
 }
-
-/**
- * adds a given class to the element
- * 
- * @param el
- *            the element to add the class to
- * @param value
- *            the class name we want to add
- * @return 
- */
-function addClass(el, value) {
-	if(el) {
-		el.className += " "+value;
-	} else {
-		el.className = value;
-	}
-}
