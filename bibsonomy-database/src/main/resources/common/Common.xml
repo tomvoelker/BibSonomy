@@ -312,26 +312,30 @@
 	2. 2005-2007
 	3. -2005
 	4. 2005-
+	
+	ATTENTION: don't use this snippet for queries involving more than one table
+	           with a column labled 'year'. We don't use table aliases here, 
+	           so you would get an ambiguous-column-exception.
 	 -->
 	<sql id="sysTagsYear">
 		<dynamic prepend="AND">
 			<isNotNull property="systemTags.Year">
 				<isNotNull property="systemTags.Year.year">		
-					CAST(b.year AS SIGNED) = #systemTags.Year.year#
+					CAST(year AS SIGNED) = #systemTags.Year.year#
 				</isNotNull>
 				<isNotNull property="systemTags.Year.firstYear">
 					<isNotNull property="systemTags.Year.lastYear">
-					CAST(b.year AS SIGNED) BETWEEN #systemTags.Year.firstYear# AND #systemTags.Year.lastYear#
+					CAST(year AS SIGNED) BETWEEN #systemTags.Year.firstYear# AND #systemTags.Year.lastYear#
 					</isNotNull>
 				</isNotNull>
 				<isNotNull property="systemTags.Year.firstYear">
 					<isNull property="systemTags.Year.lastYear">
-					CAST(b.year AS SIGNED) >= #systemTags.Year.firstYear#
+					CAST(year AS SIGNED) >= #systemTags.Year.firstYear#
 					</isNull>
 				</isNotNull>
 				<isNotNull property="systemTags.Year.lastYear">
 					<isNull property="systemTags.Year.firstYear">
-					CAST(b.year AS SIGNED) &lt;= #systemTags.Year.lastYear#
+					CAST(year AS SIGNED) &lt;= #systemTags.Year.lastYear#
 					</isNull>
 				</isNotNull>
 			</isNotNull>
@@ -347,12 +351,16 @@
 		</dynamic>
 	</sql>
 	
-	<!-- dynamic AND for systag entrytype -->
+	<!-- dynamic AND for systag entrytype 
+	ATTENTION: don't use this snippet for queries involving more than one table
+	           with a column labled 'entrytype'. We don't use table aliases here, 
+	           so you would get an ambiguous-column-exception.	
+	-->
 	<sql id="sysTagsEntryType">
 		<dynamic prepend="AND">
 			<isNotNull property="systemTags.EntryType">
 				<isNotNull property="systemTags.EntryType.entryType">		
-					b.entrytype = #systemTags.EntryType.entryType#
+					entrytype = #systemTags.EntryType.entryType#
 				</isNotNull>
 			</isNotNull>
 		</dynamic>
