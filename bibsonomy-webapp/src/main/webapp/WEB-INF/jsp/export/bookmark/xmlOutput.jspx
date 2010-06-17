@@ -32,6 +32,8 @@
 			  user="${fn:escapeXml(post.user.name)}"
 			  tag="${fn:escapeXml(tags)}"
 			  time="${postDate}"/>
+		<!-- otherwise tags accumulate over all posts ...-->
+		<c:set var="tags" value=""/>
 	</c:forEach>
 </posts>
 
