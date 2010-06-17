@@ -135,6 +135,7 @@
 				AND <include refid="bibtexSimHash"/>
 				AND g.group = b.group
 				<include refid="sysTagsEntryType"/>
+				<include refid="sysTagsYear"/>
 				ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 	
@@ -156,6 +157,7 @@
 				AND <include refid="bibtexSimHash"/>
 				AND g.group = b.group
 				<include refid="sysTagsEntryType"/>
+				<include refid="sysTagsYear"/>
 				ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 
@@ -537,6 +539,7 @@
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		      <include refid="sysTagsEntryType"/>
+		      <include refid="sysTagsYear"/>
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
@@ -574,6 +577,7 @@
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		      <include refid="sysTagsEntryType"/>
+		      <include refid="sysTagsYear"/>
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 	
@@ -611,6 +615,7 @@
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		      <include refid="sysTagsEntryType"/>
+		      <include refid="sysTagsYear"/>
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select>
 
@@ -668,15 +673,10 @@
 		FROM (SELECT t1.*, h.ctr AS count
 		      FROM bibtex t1 FORCE INDEX(user_name_date_content_id_idx), bibhash h
 		      WHERE <include refid="bibtexSimHash3"/>
-		            AND t1.user_name = #requestedUserName#
+		            AND t1.user_name = #requestedUserName#	
 		            <include refid="restrictToGroups"/>
-		        	<dynamic prepend="AND">
-		        		<isNotNull property="systemTags.EntryType">
-		        			<isNotNull property="systemTags.EntryType.entryType">
-		        				entrytype = #systemTags.EntryType.entryType#
-		        			</isNotNull>
-		        		</isNotNull>
-		     		</dynamic>
+			  		<include refid="sysTagsEntryType"/>
+			  		<include refid="sysTagsYear"/>		            
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
