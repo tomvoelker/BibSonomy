@@ -113,6 +113,7 @@
 			bibhash h
 			WHERE <include refid="bibtexSimHash"/>
 			  <include refid="sysTagsEntryType"/>
+			  <include refid="sysTagsYear"/> 
 		ORDER BY b.date DESC, b.content_id DESC;
 	</select>
 	
