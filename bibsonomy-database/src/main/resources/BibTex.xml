@@ -648,6 +648,7 @@
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		      <include refid="sysTagsEntryType"/>
+		      <include refid="sysTagsYear"/>
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select> 
 	
@@ -659,6 +660,7 @@
 		      AND <include refid="bibtexSimHash"/>                               <!-- join counts, ... -->
 		      AND b.content_id = bb.content_id                                   <!-- join rest of entry -->
 		      <include refid="sysTagsEntryType"/>
+		      <include refid="sysTagsYear"/>
 		ORDER BY bb.date DESC, bb.content_id DESC
 	</select> 
 
