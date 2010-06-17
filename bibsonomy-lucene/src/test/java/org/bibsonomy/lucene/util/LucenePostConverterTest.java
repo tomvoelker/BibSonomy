@@ -1,5 +1,11 @@
 package org.bibsonomy.lucene.util;
 
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_ADDRESS;
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_AUTHOR;
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_GROUP;
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_TAS;
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_TITLE;
+import static org.bibsonomy.lucene.util.LuceneBase.FLD_YEAR;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
@@ -25,7 +31,7 @@ import org.junit.Test;
  * @author fei
  * @version $Id$
  */
-public class LucenePostConverterTest extends LuceneBase {
+public class LucenePostConverterTest {
 	private static LuceneResourceConverter<BibTex> bibTexConverter;
 	private static LuceneResourceConverter<Bookmark> bookmarkConverter;
 	
@@ -208,7 +214,6 @@ public class LucenePostConverterTest extends LuceneBase {
 		
 		final Bookmark resource = new Bookmark();
 		resource.setCount(0);
-		//bookmark.setIntraHash("e44a7a8fac3a70901329214fcc1525aa");
 		resource.setTitle("test"+(Math.round(Math.random()*Integer.MAX_VALUE))+" "+titleText); // TODO: random with seed
 		resource.setUrl("http://www.test"+(Math.round(Math.random()*Integer.MAX_VALUE))+"url.org"); // TODO: random with seed
 		resource.recalculateHashes();
