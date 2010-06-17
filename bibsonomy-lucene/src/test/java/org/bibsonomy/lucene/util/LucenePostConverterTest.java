@@ -2,7 +2,6 @@ package org.bibsonomy.lucene.util;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.Map;
 
@@ -14,10 +13,12 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
+import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.testutil.CommonModelUtils;
-import org.junit.Before;
+import org.bibsonomy.testutil.ModelUtils;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -25,12 +26,12 @@ import org.junit.Test;
  * @version $Id$
  */
 public class LucenePostConverterTest extends LuceneBase {
-	LuceneResourceConverter<BibTex> bibTexConverter;
-	LuceneResourceConverter<Bookmark> bookmarkConverter;
+	private static LuceneResourceConverter<BibTex> bibTexConverter;
+	private static LuceneResourceConverter<Bookmark> bookmarkConverter;
 	
 	@SuppressWarnings("unchecked")
-	@Before
-	public void setUp() {
+	@BeforeClass
+	public static void setUp() {
 		// bind datasource access via JNDI
 		JNDITestDatabaseBinder.bind();
 		LuceneBase.initRuntimeConfiguration();
@@ -50,13 +51,11 @@ public class LucenePostConverterTest extends LuceneBase {
 	
 	@Test
 	public void writeBookmarkPost() {
-		final LucenePost<Bookmark> refPost =	generateBookmarkTestPost(
-			"testTitle", "testTag", "testAuthor", "testUser", 
-			new Date(System.currentTimeMillis()), GroupID.PUBLIC);
+		final LucenePost<Bookmark> refPost = generateBookmarkTestPost("testTitle", "testTag", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
 		
-		final Document doc = this.bookmarkConverter.readPost(refPost);
+		final Document doc = bookmarkConverter.readPost(refPost);
 		
-		final Post<Bookmark> testPost = this.bookmarkConverter.writePost(doc); 
+		final Post<Bookmark> testPost = bookmarkConverter.writePost(doc); 
 
 		//--------------------------------------------------------------------
 		// compare some elements
@@ -83,13 +82,10 @@ public class LucenePostConverterTest extends LuceneBase {
 	
 	@Test
 	public void writeBibTexPost() {
-		final LucenePost<BibTex> refPost =	generateBibTexTestPost(
-			"testTitle", "testTag", "testAuthor", "testUser", 
-			new Date(System.currentTimeMillis()), GroupID.PUBLIC);
+		final LucenePost<BibTex> refPost = generateBibTexTestPost( "testTitle", "testTag", "testAuthor", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
+		final Document doc = bibTexConverter.readPost(refPost);
 		
-		final Document doc = this.bibTexConverter.readPost(refPost);
-		
-		final Post<BibTex> testPost = this.bibTexConverter.writePost(doc); 
+		final Post<BibTex> testPost = bibTexConverter.writePost(doc); 
 
 		//--------------------------------------------------------------------
 		// compare some elements
@@ -117,15 +113,11 @@ public class LucenePostConverterTest extends LuceneBase {
 		}
 	}
 	
-	
 	@Test
-	public void bibTexPost() throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-		final LucenePost<BibTex> testPost = generateBibTexTestPost(
-				"testTitle", "testTag", "testAuthor", "testUser", 
-				new Date(System.currentTimeMillis()), GroupID.PUBLIC);
-
+	public void bibTexPost() {
+		final LucenePost<BibTex> testPost = generateBibTexTestPost("testTitle", "testTag", "testAuthor", "testUser", new Date(System.currentTimeMillis()), GroupID.PUBLIC);
 		
-		final Document postDoc = this.bibTexConverter.readPost(testPost);
+		final Document postDoc = bibTexConverter.readPost(testPost);
 		
 		//--------------------------------------------------------------------
 		// compare some elements
@@ -135,7 +127,6 @@ public class LucenePostConverterTest extends LuceneBase {
 		// tags
 		for( final Tag tag : testPost.getTags() ) {
 			final String tagName = tag.getName();
-			
 			assertEquals(true, postDoc.get(FLD_TAS).contains(tagName));
 		}
 		// author
@@ -147,7 +138,6 @@ public class LucenePostConverterTest extends LuceneBase {
 		// groups
 		for( final Group group : testPost.getGroups() ) {
 			final String tagName = group.getName();
-			
 			assertEquals(true, postDoc.get(FLD_GROUP).contains(tagName));
 		}
 	}
@@ -158,112 +148,70 @@ public class LucenePostConverterTest extends LuceneBase {
 	 * 
 	 * GroupID.PUBLIC
 	 */
-	private static LucenePost <BibTex> generateBibTexTestPost(
-			final String titleText, final String tagName, 
-			final String authorName, 
-			final String userName, final Date postDate, final GroupID groupID) {
+	private static LucenePost<BibTex> generateBibTexTestPost(final String titleText, final String tagName, final String authorName, final String userName, final Date postDate, final GroupID groupID) {
+		final LucenePost<BibTex> post = createEmptyPost(BibTex.class, tagName, groupID, postDate, userName);
 		
-		final LucenePost<BibTex> post = new LucenePost<BibTex>();
-		post.setContentId((int)Math.floor(Math.random()*Integer.MAX_VALUE));
-
-		final Group group = new Group(groupID);
-	
-		post.getGroups().add(group);
-
-		Tag tag = new Tag();
-		tag.setName("tag1");
-		post.getTags().add(tag);
-		tag = new Tag();
-		tag.setName("tag2");
-		post.getTags().add(tag);
-		tag = new Tag();
-		tag.setName(tagName);
-		post.getTags().add(tag);
-
-		post.setContentId(null); // will be set in storePost()
-		post.setDescription("luceneTestPost");
-		post.setDate(postDate);
 		final User user = new User();
 		CommonModelUtils.setBeanPropertiesOn(user);
 		user.setName(userName);
 		user.setRole(Role.NOBODY);
 		post.setUser(user);
-		final BibTex resource;
-
+		final BibTex resource = new BibTex();
+		CommonModelUtils.setBeanPropertiesOn(resource);
+		resource.setCount(0);		
+		resource.setEntrytype("inproceedings");
+		resource.setAuthor("MegaMan and Lucene GigaWoman "+authorName);
+		resource.setEditor("Peter Silie "+authorName);
+		resource.setTitle("bibtex insertpost test");
 		
-		final BibTex bibtex = new BibTex();
-		CommonModelUtils.setBeanPropertiesOn(bibtex);
-		bibtex.setCount(0);		
-		bibtex.setEntrytype("inproceedings");
-		bibtex.setAuthor("MegaMan and Lucene GigaWoman "+authorName);
-		bibtex.setEditor("Peter Silie "+authorName);
-		bibtex.setTitle("bibtex insertpost test");
-		resource = bibtex;
-		
-		String title, year, journal, booktitle, volume, number = null;
-		title = "title "+ (Math.round(Math.random()*Integer.MAX_VALUE))+" "+titleText;
-		year = "test year";
-		journal = "test journal";
-		booktitle = "test booktitle";
-		volume = "test volume";
-		number = "test number";
-		bibtex.setTitle(title);
-		bibtex.setYear(year);
-		bibtex.setJournal(journal);
-		bibtex.setBooktitle(booktitle);
-		bibtex.setVolume(volume);
-		bibtex.setNumber(number);
-		bibtex.setScraperId(-1);
-		bibtex.setType("2");
-		bibtex.recalculateHashes();
+		resource.setTitle("title "+ (Math.round(Math.random()*Integer.MAX_VALUE))+" "+titleText); // TODO: random with seed
+		resource.setYear("test year");
+		resource.setJournal("test journal");
+		resource.setBooktitle("test booktitle");
+		resource.setVolume("test volume");
+		resource.setNumber("test number");
+		resource.setScraperId(-1);
+		resource.setType("2");
+		resource.recalculateHashes();
 		post.setResource(resource);
 		return post;
 	}
-	
+
+	private static <T extends Resource> LucenePost<T> createEmptyPost(@SuppressWarnings("unused") final Class<T> rClass, final String tagName, final GroupID groupID, Date postDate, String userName) {
+		final LucenePost<T> post = new LucenePost<T>();
+		post.setContentId((int)Math.floor(Math.random()*Integer.MAX_VALUE)); // TODO: random with seed
+
+		final Group group = new Group(groupID);
+		post.getGroups().add(group);
+
+		post.setTags(ModelUtils.getTagSet("tag1", "tag2", tagName));
+		
+		post.setContentId(null);
+		post.setDescription("luceneTestPost");
+		post.setDate(postDate);
+		
+		final User user = new User();
+		CommonModelUtils.setBeanPropertiesOn(user);
+		user.setName(userName);
+		user.setRole(Role.NOBODY);
+		post.setUser(user);
+		
+		return post;
+	}
+
 	/**
 	 * generate a Bookmark Post, can't call setBeanPropertiesOn() because private
 	 * so copy & paste the setBeanPropertiesOn() into this method
 	 */
-	private static LucenePost <Bookmark> generateBookmarkTestPost(
-			final String titleText, final String tagName, 
-			final String authorName, 
-			final String userName, final Date postDate, final GroupID groupID	
-			) {
+	private static LucenePost<Bookmark> generateBookmarkTestPost(final String titleText, final String tagName, final String userName, final Date postDate, final GroupID groupID) {
+		final LucenePost<Bookmark> post = createEmptyPost(Bookmark.class, tagName, groupID, postDate, userName);
 		
-		final LucenePost<Bookmark> post = new LucenePost<Bookmark>();
-		post.setContentId((int)Math.floor(Math.random()*Integer.MAX_VALUE));
-
-		final Group group = new Group(groupID);
-		post.getGroups().add(group);
-
-		Tag tag = new Tag();
-		tag.setName("tag1");
-		post.getTags().add(tag);
-		tag = new Tag();
-		tag.setName("tag2");
-		post.getTags().add(tag);
-		tag = new Tag();
-		tag.setName(tagName);
-		post.getTags().add(tag);
-
-		post.setContentId(null); // will be set in storePost()
-		post.setDescription("Some description");
-		post.setDate(postDate);
-		final User user = new User();
-		CommonModelUtils.setBeanPropertiesOn(user);
-		user.setName(userName);
-		user.setRole(Role.NOBODY);
-		post.setUser(user);
-		final Bookmark resource;
-
-		
-		final Bookmark bookmark = new Bookmark();
-		bookmark.setCount(0);
+		final Bookmark resource = new Bookmark();
+		resource.setCount(0);
 		//bookmark.setIntraHash("e44a7a8fac3a70901329214fcc1525aa");
-		bookmark.setTitle("test"+(Math.round(Math.random()*Integer.MAX_VALUE))+" "+titleText);
-		bookmark.setUrl("http://www.test"+(Math.round(Math.random()*Integer.MAX_VALUE))+"url.org");
-		bookmark.recalculateHashes();
-		resource = bookmark;
+		resource.setTitle("test"+(Math.round(Math.random()*Integer.MAX_VALUE))+" "+titleText); // TODO: random with seed
+		resource.setUrl("http://www.test"+(Math.round(Math.random()*Integer.MAX_VALUE))+"url.org"); // TODO: random with seed
+		resource.recalculateHashes();
 		
 		post.setResource(resource);
 		return post;
