@@ -691,13 +691,8 @@
 		      WHERE <include refid="bibtexSimHash3"/>
 		            AND t1.user_name = #requestedUserName#
 		            <include refid="restrictToGroups"/>
-		            <dynamic prepend="AND">
-		            	<isNotNull property="systemTags.EntryType">
-							<isNotNull property="systemTags.EntryType.entryType">		
-								t1.entrytype = #systemTags.EntryType.entryType#
-							</isNotNull>
-						</isNotNull>
-		     		</dynamic>
+			  		<include refid="sysTagsEntryType"/>
+			  		<include refid="sysTagsYear"/>	
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT JOIN document d USING(content_id) 
@@ -714,14 +709,8 @@
 		            AND t1.user_name = #requestedUserName#
 		            <include refid="restrictToGroups"/>
 		      AND d.content_id = t1.content_id
-		      	<include refid="restrictToGroups"/>
-		             <dynamic prepend="AND">
-		             	<isNotNull property="systemTags.EntryType">
-							<isNotNull property="systemTags.EntryType.entryType">		
-								t1.entrytype = #systemTags.EntryType.entryType#
-							</isNotNull>
-						</isNotNull>
-		     		</dynamic>
+			  		<include refid="sysTagsEntryType"/>
+			  		<include refid="sysTagsYear"/>	
 		      ORDER BY date DESC
 		      LIMIT #limit# OFFSET #offset#) AS b2
 		LEFT OUTER JOIN tas AS t ON b2.content_id = t.content_id, groupids AS g
