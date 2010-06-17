@@ -70,14 +70,15 @@
                                     | user is posting an existing resource ...
                                      -->
                                 <c:if test="${not empty command.diffPost}">
-                                	<parts:fieldset maximized="true" legendKey="note">
-                                		<jsp:attribute name="content">
-		                                    <p>
-        		                              <span style="float:left; font-weight: bold; margin-right: 1em;"><fmt:message key="post.edit.existent" /></span>
-                		                      <buttons:help message="post.edit.existent.help"/>
-                        		            </p>
-                                    	</jsp:attribute>
-                                  	</parts:fieldset>
+                                	<fieldset class="fsInner">
+                                		<legend>
+                                			<fmt:message key="note"/>
+                                		</legend>
+	                                    <p>
+       		                              <span style="float:left; font-weight: bold; margin-right: 1em;"><fmt:message key="post.edit.existent" /></span>
+               		                      <buttons:help message="post.edit.existent.help"/>
+                       		            </p>
+                                  	</fieldset>
                                 </c:if>
 
                       
@@ -184,7 +185,7 @@
                 // get user's tags for suggestions
                 $.ajax({
                     type: "GET",
-                    url: "http://www.bibsonomy.org/json/tags/user/" + encodeURIComponent(userName) + "?tagcloud.maxCount=100000",
+                    url: "/json/tags/user/" + encodeURIComponent(userName) + "?tagcloud.maxCount=100000",
                     dataType: "jsonp",
                     success: function(json){
                        populateSuggestionsFromJSON(json);
