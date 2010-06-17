@@ -4,6 +4,7 @@
 	xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts"
 	xmlns:form="http://www.springframework.org/tags/form">
 
 
@@ -18,22 +19,21 @@
   
   
 	<div id="groupBoxright">
-		<fieldset id="fsgroupBoxright">
-			<legend>
-				<fmt:message key="post.resource.relevantfor"/>
-			</legend>	
+		<parts:fieldset maximized="${not command.context.loginUser.settings.simpleInterface}" legendKey="post.resource.relevantfor">
+		<!-- fieldset id="fsgroupBoxright"-->
+			<jsp:attribute name="content">
 
-            <!-- select box for "other" groups -->
-            <form:select cssStyle="float:left; margin-right: 1ex;" path="relevantGroups" size="5" onchange="showTagSets(this)" tabindex="2">
-              <fmt:message var="pleaseselect" key="form.input.select"/>
-              <form:option value="" label="${pleaseselect}"/>
-           	  <form:options items="${groups}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
-            </form:select>
+            	<!-- select box for "other" groups -->
+            	<form:select cssStyle="float:left; margin-right: 1ex;" path="relevantGroups" size="5" onchange="showTagSets(this)" tabindex="2">
+              		<fmt:message var="pleaseselect" key="form.input.select"/>
+              		<form:option value="" label="${pleaseselect}"/>
+           	  		<form:options items="${groups}" itemLabel="${fn:escapeXml('name')}" itemValue="${fn:escapeXml('name')}"/>
+            	</form:select>
 			
-            <span class="expl_s">
-              <fmt:message key="post.resource.relevant"/>
-            </span>
-	
-		</fieldset>		
+            	<span class="expl_s">
+              		<fmt:message key="post.resource.relevant"/>
+            	</span>
+			</jsp:attribute>	
+		</parts:fieldset>
 	</div>
 </jsp:root>
