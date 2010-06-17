@@ -26,7 +26,7 @@ public class EditGoldstandardReferencesController extends AjaxController impleme
 	@Override
 	public View workOn(final EditGoldstandardReferencesCommand command) {
 		final RequestWrapperContext context = command.getContext();
-		if (!context.isUserLoggedIn() || Role.ADMIN.equals(context.getLoginUser().getRole())) {
+		if (!context.isUserLoggedIn() || !Role.ADMIN.equals(context.getLoginUser().getRole())) {
 			throw new AccessDeniedException("You are not allowed to edit references of a goldstandard");
 		}
 		
