@@ -23,9 +23,12 @@
 
 package org.bibsonomy.scraper.url.kde.acm;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,6 +43,7 @@ import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
+import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.util.id.DOIUtils;
 import org.w3c.dom.Attr;
@@ -63,8 +67,19 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	private static final String BIBTEX_STRING_ON_ACM = "BibTeX";
 
 	private static final String BROKEN_END = "},\n }";
+	
+	private static final String BETA_SITE_URL  = "http://portal.acm.org/beta/";
+	private static final String BETA_DOWNLOAD_PATH  = "exportformats.cfm?";
+	private static final String BETA_ABSTRACT_PATH  = "tab_abstract.cfm?";
+	private static final String BETA_DOWNLOAD_ID_PATTERN  = "navigate[(]'.*?(id=.*)&.*[)]";
 
-	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "portal.acm.org"), AbstractUrlScraper.EMPTY_PATTERN));
+	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
+
+	static {
+		final Pattern hostPattern = Pattern.compile(".*portal.acm.org");
+		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN));
+		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile("/beta/" + ".*")));
+	}
 	
 	private static final String P_TAG_CLASS_FONT     = "<\\s*p\\s+class=[\"|\']abstract[\"|\']>\\s*<\\s*font\\s+color.*?<\\s*/\\s*p\\s*>";
 	private static final String P_TAG_CLASS          = ".*(<\\s*p\\s+class=[\"|\']abstract[\"|\']>.*)";
@@ -76,76 +91,86 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	
 	protected boolean scrapeInternal(ScrapingContext sc) throws ScrapingException {
 		sc.setScraper(this);
+		
+			// This Scraper might handle the specified url
+			try {
+				final StringBuffer bibtexEntries = new StringBuffer();
+				// Parse the page and obtain a DOM
+				final Document document = XmlUtils.getDOM(sc.getPageContent());
+				String abstrct = null;
+			
+				/*
+				 * need to decide which url format should be handled.
+				 * In fact that the beta URL hasn't a unique subdomain
+				 * i decided to switch it here
+				 *
+				 */
+				if(!sc.getUrl().toString().matches(".*/beta/.*")){
+					// save path to popup page of current bibtex entry
+					final List<String> pathsToScrape = extractSinglePath(document); // holds the paths to the popup pages
+		
+					/*
+					 * Scrape entries from popup BibTeX site. BibTeX entry on these
+					 * pages looks like this: <PRE id="155273">@article{155273,
+					 * author = {The Author}, title = {This is the title}...}</pre>
+					 */
+					bibtexEntries.append(extractBibtexEntries(SITE_URL, pathsToScrape));
 
-		// This Scraper might handle the specified url
-		try {
-
-			final StringBuffer bibtexEntries = new StringBuffer("");
-
-			// Parse the page and obtain a DOM
-			final Document document = XmlUtils.getDOM(sc.getPageContent());
-
-			// save path to popup page of current bibtex entry
-			final List<String> pathsToScrape = extractSinglePath(document); // holds the paths to the popup pages
-
-
-			/*
-			 * Scrape entries from popup BibTeX site. BibTeX entry on these
-			 * pages looks like this: <PRE id="155273">@article{155273,
-			 * author = {The Author}, title = {This is the title}...}</pre>
-			 */
-			for (final String path: pathsToScrape) {
-				final Document doc = XmlUtils.getDOM(new URL(SITE_URL + path));
-
-				final NodeList pres = doc.getElementsByTagName("pre");
-				for (int i = 0; i < pres.getLength(); i++) {
-					final Node currNode = pres.item(i);
-					final NodeList childnodes = currNode.getChildNodes();
-					if (childnodes.getLength() > 0) {
-						bibtexEntries.append(" " + currNode.getChildNodes().item(0).getNodeValue());
-					}
+					/*
+					 * try to scrape the abstract via DOM tree
+					 */
+					abstrct = extractAbstract(document);
+				} else {
+					// save path to popup page on the beta acm site
+					final List<String> pathsToScrape = extractSinglePathBeta(document); // holds the paths to the popup pages
+					
+					/*
+					 * Scrape entries from popup BibTeX site. BibTeX entry on these
+					 * pages looks like this: <PRE id="155273">@article{155273,
+					 * author = {The Author}, title = {This is the title}...}</pre>
+					 */
+					bibtexEntries.append(extractBibtexEntries(BETA_SITE_URL, pathsToScrape).toString().trim());
+					
+					/*
+					 * try to scrape the abstract via DOM tree
+					 */
+					abstrct = extractBetaAbstract(sc);
 				}
-			}
 
-			/*
-			 * Some entries (e.g., http://portal.acm.org/citation.cfm?id=500737.500755) seem
-			 * to have broken BibTeX entries with a "," too much at the end. We remove this
-			 * here.
-			 */
-			final int indexOf = bibtexEntries.indexOf(BROKEN_END, bibtexEntries.length() - BROKEN_END.length() - 1);
-			if (indexOf > 0) {
-				bibtexEntries.replace(indexOf, bibtexEntries.length(), "}\n}");
-			}
-
-			
-			/*
-			 * append URL
-			 */
-			BibTexUtils.addFieldIfNotContained(bibtexEntries, "url", sc.getUrl().toString());
-			/*
-			 * at first, try to extract the abstract via DOM
-			 */
-			String abstrct = extractAbstract(document);
-			
-			/*
-			 * if this fails, try to extract the abstract via REGEX
-			 */
-			if (abstrct == null) {
-				abstrct = extractAbstract(sc);
-			}
-			
-			if (abstrct != null) {
-				BibTexUtils.addFieldIfNotContained(bibtexEntries, "abstract", abstrct);
-			} else // log if abstract is not available
-				log.info("ACMBasicScraper: Abstract not available");
-
-			final String result = DOIUtils.cleanDOI(bibtexEntries.toString().trim());
-
-			if (!"".equals(result)) {
-				sc.setBibtexResult(result);
-				return true;
-			} else
-				throw new ScrapingFailureException("getting bibtex failed");
+				/*
+				 * Some entries (e.g., http://portal.acm.org/citation.cfm?id=500737.500755) seem
+				 * to have broken BibTeX entries with a "," too much at the end. We remove this
+				 * here.
+				 */
+				final int indexOf = bibtexEntries.indexOf(BROKEN_END, bibtexEntries.length() - BROKEN_END.length() - 1);
+				if (indexOf > 0) {
+					bibtexEntries.replace(indexOf, bibtexEntries.length(), "}\n}");
+				}
+				
+				/*
+				 * append URL
+				 */
+				BibTexUtils.addFieldIfNotContained(bibtexEntries, "url", sc.getUrl().toString());
+				
+				/*
+				 * if scraping of abstract via DOM tree fails, try to extract the abstract via REGEX
+				 */
+				if (abstrct == null) {
+					abstrct = extractAbstract(sc);
+				}
+				
+				if (abstrct != null) {
+					BibTexUtils.addFieldIfNotContained(bibtexEntries, "abstract", abstrct);
+				} else // log if abstract is not available
+					log.info("ACMBasicScraper: Abstract not available");
+	
+				final String result = DOIUtils.cleanDOI(bibtexEntries.toString().trim());
+	
+				if (!"".equals(result)) {
+					sc.setBibtexResult(result);
+					return true;
+				} else
+					throw new ScrapingFailureException("getting bibtex failed");
 		} catch (Exception e) {
 			throw new InternalFailureException(e);
 		}
@@ -230,6 +255,55 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 				}
 			}
 		}
+		return abstrct;
+	}
+	
+	/**
+	 * Scraping the abstract from the beta page is a little bit tricky, because
+	 * the new beta page loads content on request. Therefore the abstract isn't present in the
+	 * standard page content. So we have to extract the id and build the url which should
+	 * be loaded on the main page and scrape its content.
+	 * 
+	 * structure is as follows:
+	 * 
+	 * <div style="" class="tabBody">
+	 *		<p>
+	 *			<div style="display:inline">
+	 *				<par>
+	 *					abstract text
+	 *				</par>
+	 *			</div>
+	 *		</p>	
+	 *	</div>
+	 * 
+	 * @param sc
+	 * @return abstract
+	 * @throws ScrapingException
+	 * @throws IOException
+	 */
+	private String extractBetaAbstract(final ScrapingContext sc) throws ScrapingException, IOException{
+		String abstrct = null;
+		
+		// reuse the id pattern to extract the id
+		Pattern idPattern = Pattern.compile(BETA_DOWNLOAD_ID_PATTERN);
+		Matcher idMatcher = idPattern.matcher(sc.getPageContent());
+		
+		// if its available get the dom
+		if(idMatcher.find()){
+			Document doc = XmlUtils.getDOM(WebUtils.getContentAsString(BETA_SITE_URL + BETA_ABSTRACT_PATH + idMatcher.group(1)+"&usebody=tabBody"));
+			NodeList nList = doc.getElementsByTagName("div");
+			// get the two div's
+			for(int i = 0; i < nList.getLength(); i++){
+				Node n = nList.item(i);
+				if(n.hasAttributes()){
+					// and use the one with this specific style attribute and extract the text
+					if("display:inline".equals(n.getAttributes().getNamedItem("style").getNodeValue())){
+						abstrct = XmlUtils.getText(n);
+					}
+				}
+			}
+		}
+		
 		return abstrct;
 	}
 	
@@ -372,6 +446,35 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 		int firstPrimePos = nodeValue.indexOf("'") + 1;
 		return nodeValue.substring(firstPrimePos, nodeValue.indexOf("'", firstPrimePos));
 	}
+	
+	/**
+	 * This method extracts the id from the BibTeX download anchor 
+	 * of the beta page which looks like this:
+	 * <a href="javascript:ColdFusion.Window.show('theformats');ColdFusion.navigate('exportformats.cfm?id=359859&expformat=bibtex','theformats');" 
+	 * class="small-link-text">BibTeX</a>
+	 * 
+	 * Build the beta download path with the extracted id.
+	 * 
+	 * 
+	 * @param nodeValue
+	 * @return the correct download path
+	 */
+	private String extractPathFromHref(String nodeValue){
+		String path = "";
+		String id = "";
+		
+		// use the id pattern to fetch the id
+		Pattern p = Pattern.compile(BETA_DOWNLOAD_ID_PATTERN);
+		Matcher m = p.matcher(nodeValue);
+		
+		// if it could be found build the path
+		if(m.find()){
+			id = m.group(1);
+			path = BETA_DOWNLOAD_PATH + id + "&expformat=bibtex";
+		}
+		
+		return path;
+	}
 
 	/**
 	 * This method extracts the popup path of current page. We use this method
@@ -396,6 +499,72 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 		return pathsToScrape;
 	}
 
+	/**
+	 * This method extracts the popup path of beta page of ACM. We use this method
+	 * whenever the snippet is empty.
+	 * 
+	 * @param doc The document to extract the popup path from.
+	 * @param snippet
+	 */
+	private List<String> extractSinglePathBeta(final Document doc) {
+		final List<String> pathsToScrape = new ArrayList<String>(); // holds the paths to the popup pages
+		final NodeList as = doc.getElementsByTagName("a");
+		for (int i = 0; i < as.getLength(); i++) {
+			final Node currNode = as.item(i);
+			final NodeList childnodes = currNode.getChildNodes();
+
+			if (childnodes.getLength() > 0) {
+				if (BIBTEX_STRING_ON_ACM.equals(currNode.getChildNodes().item(0).getNodeValue())) {
+					pathsToScrape.add(extractPathFromHref(currNode.getAttributes().getNamedItem("href").getNodeValue()));
+				}
+			}
+		}
+		return pathsToScrape;
+	}
+	
+	/**
+	 * This method walks through the dom of the given url
+	 * and tries to extract the bibtex entries.
+	 * 
+	 * Structure is:
+	 * 
+	 * ...
+	 * <PRE>
+	 * 	Bibtex Entry
+	 * </PRE>
+	 * ...
+	 * 
+	 * 
+	 * @param siteUrl
+	 * @param pathsToScrape
+	 * @return extracted bibtex entries
+	 * @throws MalformedURLException
+	 * @throws IOException
+	 */
+	private StringBuffer extractBibtexEntries(final String siteUrl, final List<String> pathsToScrape) throws MalformedURLException, IOException{
+		final StringBuffer bibtexEntries = new StringBuffer(); 
+
+		// walk through list of paths
+		for (String path : pathsToScrape){
+			// create a DOM with each
+			final Document doc = XmlUtils.getDOM(new URL(siteUrl + path));
+			
+			// fetch the nodelist
+			final NodeList pres = doc.getElementsByTagName("pre");
+			
+			// and extract the bibtex entry
+			for (int i = 0; i < pres.getLength(); i++) {
+				final Node currNode = pres.item(i);
+				final NodeList childnodes = currNode.getChildNodes();
+				if (childnodes.getLength() > 0) {
+					bibtexEntries.append(" " + currNode.getChildNodes().item(0).getNodeValue().trim());
+				}
+			}
+		}
+		
+		return bibtexEntries;
+	}
+	
 	public String getInfo() {
 		return info;
 	}

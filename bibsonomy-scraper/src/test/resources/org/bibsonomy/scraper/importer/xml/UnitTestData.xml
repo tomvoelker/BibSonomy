@@ -1093,4 +1093,10 @@
 		<BibFile>SpringerLinkScraperUnitURLTest5.bib</BibFile>
 		<Scraper>org.bibsonomy.scraper.url.kde.springer.SpringerLinkScraper</Scraper>
 	</URLTest>
+	<URLTest id="url_184">
+		<TestDescription>acm url test</TestDescription>
+		<URL>http://portal.acm.org/beta/citation.cfm?id=359859</URL>
+		<BibFile>ACMBasicScraperUnitURLTest5.bib</BibFile>
+		<Scraper>org.bibsonomy.scraper.url.kde.acm.ACMBasicScraper</Scraper>
+	</URLTest>
 </test:Tests>
