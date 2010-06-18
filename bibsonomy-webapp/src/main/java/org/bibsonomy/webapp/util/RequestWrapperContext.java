@@ -76,7 +76,8 @@ public class RequestWrapperContext {
 	 * @return <code>true</code>, when the request contained a valid ckey.
 	 */
 	public boolean isValidCkey() {
-		return (Boolean) getRequestAttribute(ActionValidationFilter.REQUEST_ATTRIB_VALID_CREDENTIAL);
+		Object isValidCkey = getRequestAttribute(ActionValidationFilter.REQUEST_ATTRIB_VALID_CREDENTIAL);
+		return isValidCkey != null && (Boolean) isValidCkey;
 	}
 	
 	private Object getRequestAttribute(final String name) {
