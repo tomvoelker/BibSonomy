@@ -1,31 +1,24 @@
 package org.bibsonomy.scraper.url.kde.aanda;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.model.util.BibTexUtils;
 import org.bibsonomy.scraper.AbstractUrlScraper;
 import org.bibsonomy.scraper.ScrapingContext;
 import org.bibsonomy.scraper.Tuple;
 import org.bibsonomy.scraper.exceptions.InternalFailureException;
 import org.bibsonomy.scraper.exceptions.ScrapingException;
 import org.bibsonomy.scraper.exceptions.ScrapingFailureException;
-import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.util.WebUtils;
 import org.bibsonomy.util.XmlUtils;
-import org.bibsonomy.util.tex.TexDecode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * @author ckr
+ * @author Christian Kramer
  * @version $Id$
  */
 public class AandAScraper extends AbstractUrlScraper{
@@ -38,7 +31,6 @@ public class AandAScraper extends AbstractUrlScraper{
 	
 	private static final Pattern hostPattern = Pattern.compile(".*" + "aanda.org");
 	
-	private static final Pattern doiPattern = Pattern.compile("<a href=\".*?doi=(.*)?&");
 	private static final String downloadUrl = "http://www.aanda.org/index.php?option=com_makeref&task=output&type=bibtex&doi=";
 	
 	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN));
