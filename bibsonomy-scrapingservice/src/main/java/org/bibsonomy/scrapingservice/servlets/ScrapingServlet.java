@@ -122,7 +122,7 @@ public class ScrapingServlet extends javax.servlet.http.HttpServlet implements j
 					 * handle special output formats
 					 */
 					final String bibtexString = bean.getBibtex();
-					System.out.println(bibtexString);
+					//System.out.println(bibtexString);
 					if ("bibtex".equals(format)) {
 						/* *******************************************
 						 * text/x-bibtex
