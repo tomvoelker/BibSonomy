@@ -74,46 +74,9 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 	}
 
 
-	@Test
-	@Ignore
-	public void testAttribute() {
-		String groupingTag = "sys:grouping";
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { groupingTag }), "", null, 0, 50, null, null, new User("testuser"));
-		assertEquals(GroupingEntity.USER, param.getGrouping());
-	}
-
-	@Test
-	@Ignore
-	public void testFormat() {
-		String systemtag = "sys:date:12:03:1983";
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User("testuser"));
-		assertEquals(GroupingEntity.FRIEND, param.getGrouping());
-	}
-
-	@Test
-	@Ignore
-	public void testFormatFalse() {
-		String systemtag = "sys:date:12:03:3";
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User("testuser"));
-		assertEquals(GroupingEntity.USER, param.getGrouping());
-	}
-
-	@Test
-	@Ignore
-	public void testBibtexKey() {
-		String systemtag = "sys:bibtexkey:123456";
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User("testuser"));
-		assertEquals("123456", param.getBibtexKey());
-	}
-
-	@Test
-	@Ignore
-	public void testDays() {
-		String systemtag = "sys:days:13";
-		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User("testuser"));
-		assertEquals(13, param.getDays());
-	}
-	
+	/**
+	 * Test Functionality of the SystemTagFactory
+	 */
 	@Test
 	public void testSystemTagFactory() {
 		// test initialization of systemTag collections (in constructor of SystemTagFactory)
@@ -121,10 +84,186 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		assertNotNull(sysTagFactory.getExecutableSystemTag("for"));
 		assertTrue(sysTagFactory.isExecutableSystemTag("send"));
 		assertTrue(sysTagFactory.isSearchSystemTag("author"));
+		assertTrue(sysTagFactory.isSearchSystemTag("entrytype"));
 		assertFalse(sysTagFactory.isExecutableSystemTag("author"));
 		assertFalse(sysTagFactory.isSearchSystemTag("send"));		
 	}
 	
+
+	
+	/**
+	 * Test Search SystemTags
+	 */
+	
+	@Test
+	public void testAuthor() {
+		String systemtag = "sys:author:greatAuthor";
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User("testuser"));
+		assertEquals("greatAuthor", param.getAuthor());
+	}
+
+	@Test
+	public void testBibtexKey() {
+		String systemtag = "sys:bibtexkey:123456";
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User("testuser"));
+		assertEquals("123456", param.getBibtexKey());
+	}
+
+	@Test
+	public void testDays() {
+		String systemtag = "sys:days:13";
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User("testuser"));
+		assertEquals(13, param.getDays());
+	}
+	
+	/**
+	 * Tests most queries which should be useable with the entrytype system tag.
+	 */
+	@Test
+	public void testEntryType(){
+		BibTexParam param = null;
+		List<Post<BibTex>> posts = null;
+		
+		/*
+		 * tests the GetBibtexForUser query
+		 */
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser1", Collections.singletonList("sys:entrytype:Article"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
+		posts = bibTexDb.getPosts(param, this.dbSession);
+		
+		assertEquals(0, posts.size());
+		
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser1", Collections.singletonList("sys:entrytype:test entrytype"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
+		posts = bibTexDb.getPosts(param, this.dbSession);
+		
+		assertEquals(2, posts.size());
+		
+		/*
+		 * tests the GetBibtexByKey query
+		 */
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:Book"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
+		param.setNumSimpleConcepts(0);
+		param.setNumTransitiveConcepts(0);
+		param.setBibtexKey("test bibtexKey");
+		posts = bibTexDb.getPosts(param, this.dbSession);
+		
+		assertEquals(0, posts.size());		
+		
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:test entrytype"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
+		param.setNumSimpleConcepts(0);
+		param.setNumTransitiveConcepts(0);
+		param.setBibtexKey("test bibtexKey");
+		posts = bibTexDb.getPosts(param, this.dbSession);
+		
+		assertEquals(2, posts.size());
+		
+		/*
+		 * tests the GetBibtexByTagNamesAndUser query
+		 */
+		List<String> tags = new ArrayList<String>();
+		tags.add("sys:entrytype:Book");
+		tags.add("testbibtex");
+		
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser1", tags, "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
+		param.setNumSimpleConcepts(0);
+		param.setNumTransitiveConcepts(0);
+		param.setNumSimpleTags(1);
+		posts = bibTexDb.getPosts(param, this.dbSession);
+		
+		assertEquals(0, posts.size());		
+		
+		tags = new ArrayList<String>();
+		tags.add("sys:entrytype:test entrytype");
+		tags.add("testbibtex");
+		
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser1", tags , "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
+		param.setNumSimpleConcepts(0);
+		param.setNumTransitiveConcepts(0);
+		param.setNumSimpleTags(1);
+		posts = bibTexDb.getPosts(param, this.dbSession);
+		
+		assertEquals(2, posts.size());
+		
+		/*
+		 * tests the GetBibtexByConceptForUser query
+		 */
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser1", Collections.singletonList("sys:entrytype:Book"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
+		param.setNumSimpleConcepts(1);
+		param.setNumTransitiveConcepts(0);
+		param.setNumSimpleTags(0);
+		param.addSimpleConceptName("testbibtex");
+		posts = bibTexDb.getPosts(param, this.dbSession);
+		
+		assertEquals(0, posts.size());
+		
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser1", Collections.singletonList("sys:entrytype:test entrytype"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
+		param.setNumSimpleConcepts(1);
+		param.setNumTransitiveConcepts(0);
+		param.setNumSimpleTags(0);
+		param.addSimpleConceptName("testbibtex");
+		posts = bibTexDb.getPosts(param, this.dbSession);
+		
+		assertEquals(2, posts.size());
+		
+		/*
+		 * tests the GetBibtexForHomePage query
+		 */
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:Book"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
+		posts = bibTexDb.getPosts(param, this.dbSession);
+		
+		assertEquals(0, posts.size());
+		
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:test entrytype"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
+		posts = bibTexDb.getPosts(param, this.dbSession);
+		
+		assertEquals(2, posts.size());
+	}
+	
+	@Test
+	public void testGroup() {
+		String systemtag = "sys:group:someGroup";
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User("testuser"));
+		assertEquals("someGroup", param.getRequestedGroupName());
+		assertEquals(GroupingEntity.GROUP, param.getGrouping());
+	}
+
+	@Test
+	public void testTitle() {
+		String systemtag1 = "sys:title:word1";
+		String systemtag2 = "sys:title:word2";
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag1, systemtag2 }), "", null, 0, 50, null, null, new User("testuser"));
+		assertEquals("word1 word2", param.getTitle());
+	}
+
+	@Test
+	public void testUser() {
+		String systemtag = "sys:user:Me";
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User("testuser"));
+		assertEquals("Me", param.getRequestedUserName());
+		assertEquals(GroupingEntity.USER, param.getGrouping());
+	}
+	
+	@Test
+	public void testYear() {
+		String systemTag = "sys:Year:1999";
+        BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemTag }), "", null, 0, 50, null, null, new User("testuser"));
+		assertEquals("1999", param.getYear());
+		systemTag = "sys:year:2000-2010";
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemTag }), "", null, 0, 50, null, null, new User("testuser"));
+		assertEquals("2000-2010", param.getFirstYear());
+		assertEquals("2000-2010", param.getLastYear());
+		systemTag = "sys:year:2000-";
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemTag }), "", null, 0, 50, null, null, new User("testuser"));
+		assertEquals("2000", param.getFirstYear());
+		systemTag = "sys:year:-2010";
+		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemTag }), "", null, 0, 50, null, null, new User("testuser"));
+		assertEquals("2010", param.getLastYear());
+		// Test if systemTag was added to param's systemTag Collection
+		assertNotNull(param.getSystemTags().get("year"));
+	}
+	
+	/**
+	 * Test Executable SystemTags
+	 */
 	@Test
 	public void testForGroupTag() {
 		// create users
@@ -210,9 +349,7 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		}
 	}
 	
-	/**
-	 *  test functionality of the ForFriend SystemTag (and the inbox)
-	 */
+	
 	@Test
 	public void testForFriendTag(){
 		/*
@@ -383,6 +520,8 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		user2Logic.deleteInboxMessages(null, true);
 	}
 	
+
+	
 	/*
 	 * create a testBookmark for a given user and with given TAgs
 	 */
@@ -509,105 +648,33 @@ public class SystemtagsTest extends AbstractDBLogicBase {
 		return groupPosts;
 	}
 	
+	
 	/**
-	 * Tests the most queries which should be useable with the entrytype system tag.
+	 * Some old tests, should probably be deleted since the tested functions are no longer in use
 	 */
 	@Test
-	public void testEntryType(){
-		BibTexParam param = null;
-		List<Post<BibTex>> posts = null;
-		
-		/*
-		 * tests the GetBibtexForUser query
-		 */
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser1", Collections.singletonList("sys:entrytype:Article"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
-		posts = bibTexDb.getPosts(param, this.dbSession);
-		
-		assertEquals(0, posts.size());
-		
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser1", Collections.singletonList("sys:entrytype:test entrytype"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
-		posts = bibTexDb.getPosts(param, this.dbSession);
-		
-		assertEquals(2, posts.size());
-		
-		/*
-		 * tests the GetBibtexByKey query
-		 */
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:Book"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
-		param.setNumSimpleConcepts(0);
-		param.setNumTransitiveConcepts(0);
-		param.setBibtexKey("test bibtexKey");
-		posts = bibTexDb.getPosts(param, this.dbSession);
-		
-		assertEquals(0, posts.size());		
-		
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:test entrytype"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
-		param.setNumSimpleConcepts(0);
-		param.setNumTransitiveConcepts(0);
-		param.setBibtexKey("test bibtexKey");
-		posts = bibTexDb.getPosts(param, this.dbSession);
-		
-		assertEquals(2, posts.size());
-		
-		/*
-		 * tests the GetBibtexByTagNamesAndUser query
-		 */
-		List<String> tags = new ArrayList<String>();
-		tags.add("sys:entrytype:Book");
-		tags.add("testbibtex");
-		
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser1", tags, "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
-		param.setNumSimpleConcepts(0);
-		param.setNumTransitiveConcepts(0);
-		param.setNumSimpleTags(1);
-		posts = bibTexDb.getPosts(param, this.dbSession);
-		
-		assertEquals(0, posts.size());		
-		
-		tags = new ArrayList<String>();
-		tags.add("sys:entrytype:test entrytype");
-		tags.add("testbibtex");
-		
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser1", tags , "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
-		param.setNumSimpleConcepts(0);
-		param.setNumTransitiveConcepts(0);
-		param.setNumSimpleTags(1);
-		posts = bibTexDb.getPosts(param, this.dbSession);
-		
-		assertEquals(2, posts.size());
-		
-		/*
-		 * tests the GetBibtexByConceptForUser query
-		 */
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser1", Collections.singletonList("sys:entrytype:Book"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
-		param.setNumSimpleConcepts(1);
-		param.setNumTransitiveConcepts(0);
-		param.setNumSimpleTags(0);
-		param.addSimpleConceptName("testbibtex");
-		posts = bibTexDb.getPosts(param, this.dbSession);
-		
-		assertEquals(0, posts.size());
-		
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser1", Collections.singletonList("sys:entrytype:test entrytype"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
-		param.setNumSimpleConcepts(1);
-		param.setNumTransitiveConcepts(0);
-		param.setNumSimpleTags(0);
-		param.addSimpleConceptName("testbibtex");
-		posts = bibTexDb.getPosts(param, this.dbSession);
-		
-		assertEquals(2, posts.size());
-		
-		/*
-		 * tests the GetBibtexForHomePage query
-		 */
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:Book"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
-		posts = bibTexDb.getPosts(param, this.dbSession);
-		
-		assertEquals(0, posts.size());
-		
-		param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.ALL, "testuser1", Collections.singletonList("sys:entrytype:test entrytype"), "", Order.ADDED, 0, 50, null, null, new User("testuser1"));
-		posts = bibTexDb.getPosts(param, this.dbSession);
-		
-		assertEquals(2, posts.size());
+	@Ignore
+	public void testAttribute() {
+		String groupingTag = "sys:grouping";
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { groupingTag }), "", null, 0, 50, null, null, new User("testuser"));
+		assertEquals(GroupingEntity.USER, param.getGrouping());
 	}
+
+	@Test
+	@Ignore
+	public void testFormat() {
+		String systemtag = "sys:date:12:03:1983";
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User("testuser"));
+		assertEquals(GroupingEntity.FRIEND, param.getGrouping());
+	}
+
+	@Test
+	@Ignore
+	public void testFormatFalse() {
+		String systemtag = "sys:date:12:03:3";
+		final BibTexParam param = LogicInterfaceHelper.buildParam(BibTexParam.class, GroupingEntity.USER, "testuser", Arrays.asList(new String[] { systemtag }), "", null, 0, 50, null, null, new User("testuser"));
+		assertEquals(GroupingEntity.USER, param.getGrouping());
+	}
+
+
 }

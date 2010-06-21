@@ -1,6 +1,7 @@
 package org.bibsonomy.database.util;
 
-import java.util.Arrays;
+import static org.bibsonomy.util.ValidationUtils.present;
+
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -18,15 +19,12 @@ import org.bibsonomy.database.params.StatisticsParam;
 import org.bibsonomy.database.params.TagParam;
 import org.bibsonomy.database.params.TagRelationParam;
 import org.bibsonomy.database.params.UserParam;
-import org.bibsonomy.database.systemstags.database.EntryTypeSystemTag;
-import org.bibsonomy.database.systemstags.database.YearSystemTag;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.search.SearchSystemTag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.logic.PostLogicInterface;
 import org.bibsonomy.model.util.UserUtils;
-import org.bibsonomy.util.StringUtils;
-import org.bibsonomy.util.ValidationUtils;
-
 /**
  * Supplies methods to adapt the LogicInterface to the database layer.
  * 
@@ -143,11 +141,18 @@ public class LogicInterfaceHelper {
 				logger.debug("working on input tag: " + tag);
 
 				if (tag.length() > 2) {
-					if (tag.contains(":")) {
+					//if (SystemTagsUtil.isSearchSystemTag(tag)) {
+						SearchSystemTag searchTag = SystemTagsUtil.createSearchSystemTag(tag);
+						if (present(searchTag)) {
+							searchTag.handleParam(param);
+							continue;
+						}
+					//}
+					/*SDOif (tag.contains(":")) {
 						if (handleSystemTag(tag, param)) {
 							continue;
 						}
-					}
+					}*/
 
 					if (tag.charAt(0) != '-' && tag.charAt(0) != '<' && tag.charAt(tag.length() - 1) != '>') {
 						param.addTagName(tag);
@@ -201,10 +206,12 @@ public class LogicInterfaceHelper {
 		return param;
 	}
 
-	@SuppressWarnings("deprecation") // TODO: lucene can't handle system tags
+	
+	
+/*	@SuppressWarnings("deprecation") // TODO: lucene can't handle system tags
 	private static boolean handleSystemTag(String tag, GenericParam param) {
 		logger.debug("working on possible system tag " + tag);
-		String tagName;
+ 		String tagName;
 		String tagValue;
 		String[] tags = tag.split(":");
 		if (tag.startsWith("sys:") || tag.startsWith("system:")) {
@@ -214,10 +221,11 @@ public class LogicInterfaceHelper {
 			tagName = tags[0];
 			tagValue = StringUtils.implodeStringArray(Arrays.copyOfRange(tags, 1, tags.length), ":").trim();
 		}
+		
 /*
  * rja, 2010-02-09: turned off, since currently no system tags of this kind are
  * contained in the SystemTagFactory
- */
+ *
 //		SystemTagType sTag = SystemTagFactory.createTag(tagName, tag.substring(tag.indexOf(tagName) + tagName.length()));
 //		if (sTag != null && SystemTagsUtil.getAttributeValue(sTag, SystemTagFactory.GROUPING) != null) {
 //			GroupingEntity ge = GroupingEntity.getGroupingEntity(SystemTagsUtil.getAttributeValue(sTag, SystemTagFactory.GROUPING));
@@ -320,17 +328,18 @@ public class LogicInterfaceHelper {
             }			
 		} else if (tagName.equals("entrytype")){
 			// TODO: this should be done by a factory!!!
-			final EntryTypeSystemTag sysTag = new EntryTypeSystemTag();
-			sysTag.setEntryType(tagValue);
-			sysTag.setName("EntryType");
+			//final EntryTypeSystemTag sysTag = new EntryTypeSystemTag();
+			//sysTag.setEntryType(tagValue);
+			//sysTag.setArgument(tagValue);
+			//sysTag.setName("EntryType");
 			
-			param.addToSystemTags(sysTag);
+			//param.addToSystemTags(sysTag);
 			logger.debug("Set entry type to '" + tagValue +"' after matching entrytype system tag");
 			return true;
 		}
 		
 		return false;
-	}
+	}*/
 
 	/**
 	 * Instatiates a param object for the given class.

@@ -1093,7 +1093,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * systemtags perform before create
 			 */
-			List<ExecutableSystemTag> systemTags = this.getSystemTags(post, new HashSet<Tag>());
+			List<ExecutableSystemTag> systemTags = SystemTagsUtil.extractExecutableSystemTags(post.getTags(), new HashSet<Tag>());
 			for (final ExecutableSystemTag systemTag: systemTags) {
 				systemTag.performBeforeCreate(post, session);
 			}
@@ -1195,7 +1195,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * perform system tags before update
 			 */
-			final List<ExecutableSystemTag> executableSystemTags = this.getSystemTags(post, oldPost.getTags());
+			final List<ExecutableSystemTag> executableSystemTags = SystemTagsUtil.extractExecutableSystemTags(post.getTags(), oldPost.getTags());
 			for (final ExecutableSystemTag systemTag : executableSystemTags) {
 				systemTag.performBeforeUpdate(post, oldPost, operation, session);
 			}
@@ -1507,29 +1507,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 
-	/**
-	 * returns a list of all systemTags of a post
-	 * @param alreadyExecutedTags - the list of all tags, that have been executed and therefore shall not be used again
-	 * @param post
-	 * @return a list 
-	 */
-	// FIXME: Find a better way for deactivating systemtags. s.a. 
-	// - a SystemTag knows whether it is active or not and can deactivate itself
-	// - a SystemTag is renamed (and thus inactive) after it has done its job
-	/*
-	 * FIXME: Move to SystemTagUtil
-	 */
-	private List<ExecutableSystemTag> getSystemTags(final Post<?> post, final Set<Tag> alreadyExecutedTags) {
-		List<ExecutableSystemTag> sysTags = new ArrayList<ExecutableSystemTag>();
-		for (final Tag tag : post.getTags()) {
-			final ExecutableSystemTag stt = SystemTagsUtil.createExecutableTag(tag);
-			if (present(stt) && !alreadyExecutedTags.contains(stt)) {
-				sysTags.add(stt);
-			}
-		}
-		return sysTags;
-	}
-
+	
 	/**
 	 * called when a post was deleted successfully
 	 * 

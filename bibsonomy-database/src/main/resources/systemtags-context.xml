@@ -15,13 +15,13 @@
 
 	<!--+
 	    | EXECUTABLE SYSTEMTAGS
-		| In this map we list all executable systemTags
+		| In this list we list all executable systemTags
 		| The references are used in the construction of instances of such tags
 		+-->
-	<util:map id="executableSystemTagMap" map-class="java.util.HashMap">
-		<entry key="for" value-ref="forGroupTag"/>
-		<entry key="send" value-ref="forFriendTag"/>
-	</util:map>
+	<util:set id="executableSystemTagSet" set-class="java.util.HashSet">
+		<ref bean="forGroupTag"/>
+		<ref bean="forFriendTag"/>
+	</util:set>
 	
 	<!--+
 	    | beans for the executable systemTags
@@ -31,11 +31,37 @@
 	
 	<!--+
 	    |SEARCH SYSTEMTAGS
-	    |FIXME: add all tags ... coming soon
-	    +-->	
-	<util:set id="searchSystemTagSet" set-class="java.util.HashSet" value-type="java.lang.String">
-		<value>author</value>
-		<value>year</value>
+ 		+-->
+	<util:set id="searchSystemTagSet" set-class="java.util.HashSet">
+		<ref bean="authorTag"/>
+		<ref bean="bibtexkeyTag"/>
+		<ref bean="daysTag"/>
+		<ref bean="entrytypeTag"/>
+		<ref bean="groupTag"/>
+		<ref bean="titleTag"/>
+		<ref bean="userTag"/>
+		<ref bean="yearTag"/>
 	</util:set>
-	    
+	
+	
+	<!--+
+	    | beans for the search systemTags
+	    +-->
+	<bean id="authorTag" class="org.bibsonomy.database.systemstags.search.AuthorSystemTag"/>
+	<bean id="bibtexkeyTag" class="org.bibsonomy.database.systemstags.search.BibTexKeySystemTag"/>
+	<bean id="daysTag" class="org.bibsonomy.database.systemstags.search.DaysSystemTag"/>
+	<bean id="entrytypeTag" class="org.bibsonomy.database.systemstags.search.EntryTypeSystemTag"/>
+	<bean id="groupTag" class="org.bibsonomy.database.systemstags.search.GroupSystemTag"/>
+	<bean id="titleTag" class="org.bibsonomy.database.systemstags.search.TitleSystemTag"/>
+	<bean id="userTag" class="org.bibsonomy.database.systemstags.search.UserSystemTag"/>
+	<bean id="yearTag" class="org.bibsonomy.database.systemstags.search.YearSystemTag"/>
+
+	<!--+
+	    |MARKUP SYSTEMTAGS
+	   
+	<util:set id="markUpSystemTagSet" set-class="java.util.HashSet" value-type="java.lang.String">
+		<value>myown</value>
+		<value>relevantfor</value>
+	</util:set>
+	  +-->	  
 </beans>
