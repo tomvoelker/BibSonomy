@@ -7,8 +7,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.search.BibTexKeySystemTag;
+import org.bibsonomy.database.systemstags.search.UserSystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.webapp.command.BibtexkeyCommand;
@@ -40,14 +41,14 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 		
 		// add bibtexkey as the only systemtag (sys:user:USERNAME is handeled below)
 		command.getRequestedTagsList().clear();
-		command.getRequestedTagsList().add(SystemTagsUtil.buildSystemTagString(SystemTags.BIBTEXKEY, command.getRequestedKey()));		
+		command.getRequestedTagsList().add(SystemTagsUtil.buildSystemTagString(BibTexKeySystemTag.NAME, command.getRequestedKey()));		
 		
 		// default grouping entity / grouping name
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
 				
 		// check for systemtag sys:user:USERNAME
-		List<String> sysTags = SystemTagsUtil.extractSystemTagsFromString(command.getRequestedTags(), " ");		
+		List<String> sysTags = SystemTagsUtil.extractSearchSystemTagsFromString(command.getRequestedTags(), " ");		
 		final String systemTagUser = extractSystemTagUser(sysTags);		
 		if (systemTagUser != null) {
 			command.setRequestedUser(systemTagUser);
@@ -105,8 +106,8 @@ public class BibtexkeyPageController extends SingleResourceListController implem
 	 */
 	private String extractSystemTagUser(List<String> sysTags) {
 		for (String sysTag : sysTags) {
-			if (sysTag.toLowerCase().startsWith(SystemTags.USER.getPrefix().toLowerCase())) {
-				return sysTag.substring(sysTag.lastIndexOf(SystemTags.SYSTAG_DELIM) + 1, sysTag.length()).trim();
+			if (SystemTagsUtil.isSystemTagWithPrefix(sysTag, UserSystemTag.NAME)) {
+				return SystemTagsUtil.extractArgument(sysTag);
 			}
 		}
 		return null;

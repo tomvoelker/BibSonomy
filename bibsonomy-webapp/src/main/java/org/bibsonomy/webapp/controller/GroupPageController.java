@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.FilterEntity;
 import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.systemstags.SystemTags;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Resource;
@@ -48,7 +48,7 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		final List<String> requTags = command.getRequestedTagsList();
 
 		//check if system-tag "sys:relevantFor:" exists in taglist
-		final boolean isRelevantFor = checkRelevantFor(requTags);
+		final boolean isRelevantFor = SystemTagsUtil.containsSystemTag(requTags, SystemTagsUtil.RELEVANT_FOR, true);
 		
 		// handle case when only tags are requested
 		this.handleTagsOnly(command, groupingEntity, groupingName, null, requTags , null, Integer.MAX_VALUE, null);
@@ -141,21 +141,4 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 		cmd.setGroup(group);
 	}
 
-	/**
-	 * FIXME This should be done by the system-tag framework
-	 */
-	private boolean checkRelevantFor(List<String> tags){
-		for (String tag : tags) {
-			/* 
-			 * let's not be too strict here if we find wrong capitalization (e.g. 
-			 * 'relevantfor' instead of 'relevantFor'
-			 */			
-			if (tag.toLowerCase().startsWith(SystemTags.RELEVANTFOR.getPrefix().toLowerCase())) {
-				log.debug("SYSTEMTAG 'sys:relevantFor:' found --> forward to the relevant-for View");
-				return true;
-			}
-		}
-		
-		return false;
-	}
 }

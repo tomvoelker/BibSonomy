@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
-import org.bibsonomy.database.systemstags.SystemTags;
 import org.bibsonomy.database.systemstags.SystemTagsUtil;
+import org.bibsonomy.database.systemstags.search.BibTexKeySystemTag;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.util.XmlUtils;
 import org.bibsonomy.webapp.command.ajax.GeneralAjaxCommand;
@@ -65,7 +65,7 @@ public class GeneralAjaxController extends AjaxController implements Minimalisti
 		 * fetch posts
 		 */		
 		final List<String> tags = new ArrayList<String>();
-		tags.add(SystemTagsUtil.buildSystemTagString(SystemTags.BIBTEXKEY, requestedBibTexKey));
+		tags.add(SystemTagsUtil.buildSystemTagString(BibTexKeySystemTag.NAME, requestedBibTexKey));
 		command.setBibtexPosts(this.logic.getPosts(BibTex.class, GroupingEntity.USER, requestedUserName, tags, null, null, null, 0, 20, null));
 	}
 	

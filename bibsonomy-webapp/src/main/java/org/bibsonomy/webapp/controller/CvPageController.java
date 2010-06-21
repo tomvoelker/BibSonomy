@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import java.util.Collections;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.webapp.command.UserResourceViewCommand;
@@ -22,8 +23,7 @@ import org.bibsonomy.webapp.view.Views;
  * @version $Id$
  */
 public class CvPageController extends ResourceListController implements MinimalisticController<UserResourceViewCommand> {
-	private static final String TAG_MYOWN = "myown";
-	
+
 	/**
 	 * implementation of {@link MinimalisticController} interface
 	 */
@@ -48,7 +48,7 @@ public class CvPageController extends ResourceListController implements Minimali
 		 */
 		for (final Class<? extends Resource> resourceType : this.listsToInitialise) {
 			final int entriesPerPage = command.getListCommand(resourceType).getEntriesPerPage();		
-			this.setList(command, resourceType, groupingEntity, requUser, Collections.singletonList(TAG_MYOWN), null, Order.ADDED, null, null, entriesPerPage);
+			this.setList(command, resourceType, groupingEntity, requUser, Collections.singletonList(SystemTagsUtil.CV_TAG), null, Order.ADDED, null, null, entriesPerPage);
 		}
 		
 		return Views.CVPAGE;

@@ -24,7 +24,7 @@ import org.bibsonomy.common.exceptions.InternServerException;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
 import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
-import org.bibsonomy.database.systemstags.SystemTags;
+import org.bibsonomy.database.systemstags.SystemTagsUtil;
 import org.bibsonomy.model.GoldStandard;
 import org.bibsonomy.model.Group;
 import org.bibsonomy.model.Post;
@@ -72,7 +72,6 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 	 * FIXME: system tag handling should be done by system tags ... not by this
 	 * controller.
 	 */
-	private static final String SYS_RELEVANT_FOR = SystemTags.RELEVANTFOR.getPrefix() + SystemTags.SYSTAG_DELIM;
 	
 	private static final Group PUBLIC_GROUP = GroupUtils.getPublicGroup();
 	private static final Group PRIVATE_GROUP = GroupUtils.getPrivateGroup();
@@ -818,8 +817,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		final Iterator<Tag> iterator = tags.iterator();
 		while (iterator.hasNext()) {
 			final String name = iterator.next().getName();
-			if (name.startsWith(SYS_RELEVANT_FOR)) {
-				relevantGroups.add(name.substring(SYS_RELEVANT_FOR.length()));
+			if (SystemTagsUtil.isSystemTagWithPrefix(name, SystemTagsUtil.RELEVANT_FOR)) {
+				relevantGroups.add(SystemTagsUtil.extractArgument(name));
 				/*
 				 * removing the tag from the post such that it is not shown in
 				 * the tag input form
@@ -849,7 +848,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 				 * ignore groups the user is not a member of
 				 */
 				if (groups.contains(new Group(relevantGroup))) {
-					tags.add(new Tag(SYS_RELEVANT_FOR + relevantGroup));
+					tags.add( new Tag( SystemTagsUtil.buildSystemTagString(SystemTagsUtil.RELEVANT_FOR, relevantGroup) ) );
 				} else {
 					log.info("ignored relevantFor group '" + relevantGroup + "' because user is not member of it");
 				}
