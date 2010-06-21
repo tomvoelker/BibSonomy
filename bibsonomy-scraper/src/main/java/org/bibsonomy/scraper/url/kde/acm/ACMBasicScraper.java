@@ -73,13 +73,7 @@ public class ACMBasicScraper extends AbstractUrlScraper {
 	private static final String BETA_ABSTRACT_PATH  = "tab_abstract.cfm?";
 	private static final String BETA_DOWNLOAD_ID_PATTERN  = "navigate[(]'.*?(id=.*)&.*[)]";
 
-	private static final List<Tuple<Pattern,Pattern>> patterns = new LinkedList<Tuple<Pattern,Pattern>>();
-
-	static {
-		final Pattern hostPattern = Pattern.compile(".*portal.acm.org");
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, AbstractUrlScraper.EMPTY_PATTERN));
-		patterns.add(new Tuple<Pattern, Pattern>(hostPattern, Pattern.compile("/beta/" + ".*")));
-	}
+	private static final List<Tuple<Pattern, Pattern>> patterns = Collections.singletonList(new Tuple<Pattern, Pattern>(Pattern.compile(".*" + "portal.acm.org"), AbstractUrlScraper.EMPTY_PATTERN));
 	
 	private static final String P_TAG_CLASS_FONT     = "<\\s*p\\s+class=[\"|\']abstract[\"|\']>\\s*<\\s*font\\s+color.*?<\\s*/\\s*p\\s*>";
 	private static final String P_TAG_CLASS          = ".*(<\\s*p\\s+class=[\"|\']abstract[\"|\']>.*)";
