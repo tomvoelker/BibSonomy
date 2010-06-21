@@ -91,7 +91,7 @@
   
   <a href="/help" rel="Help">help</a> &middot;
   <a href="http://bibsonomy.blogspot.com/">blog</a> &middot;
-  <a href="/help/about/">about</a> &middot;
+  <a href="/help/contact">about</a> &middot;
   <a href="?lang=en"><img alt="en" src="/resources/image/lang_en.png"/></a>
   </div>
 

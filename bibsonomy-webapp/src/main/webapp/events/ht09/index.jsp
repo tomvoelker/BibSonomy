@@ -55,7 +55,7 @@
 
     <div class="linkbox">
         <a href="/help/basic">What is ${projectName}?</a>
-        <a href="/help/tutorials">Tutorials</a>
+        <a href="/help/tutorials">Tutorial</a>
         <a href="/register">Get a ${projectName} account!</a>
     </div>
 
