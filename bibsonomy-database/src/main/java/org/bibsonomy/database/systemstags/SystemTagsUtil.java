@@ -7,14 +7,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.bibsonomy.common.exceptions.UnsupportedSystemTagException;
 import org.bibsonomy.database.systemstags.executable.ExecutableSystemTag;
+import org.bibsonomy.database.systemstags.executable.ForFriendTag;
 import org.bibsonomy.database.systemstags.executable.ForGroupTag;
-import org.bibsonomy.database.systemstags.xml.Attribute;
-import org.bibsonomy.database.systemstags.xml.SystemTagType;
+import org.bibsonomy.database.systemstags.search.SearchSystemTag;
 import org.bibsonomy.model.Tag;
 
 /**
@@ -35,9 +35,14 @@ public class SystemTagsUtil {
 	 * <li> system:someStringWithoutColon:someString
 	 * </ul>
 	 *  WARNING: this pattern identifies any String of the above form
-	 *  Thus a string that matches the pattern is not neccessarily a systemTag
+	 *  Thus a string that matches the pattern is not neccessarily a systemTag - it just looks like one
 	 */
 	private final static Pattern SYS_TAG_PATTERN = Pattern.compile("^(sys:|system:)?([^:]+):(.+)");
+	private final static String PREFIX ="sys";
+	private final static String DELIM = ":";
+	
+	public final static String RELEVANT_FOR = "relevantfor";
+	public final static String CV_TAG = "myown";
 	
 	// The systemTagFactory that manages our registered systemTags
 	private static final SystemTagFactory sysTagFactory = SystemTagFactory.getInstance();
@@ -67,7 +72,7 @@ public class SystemTagsUtil {
 	 */
 	public static boolean isSearchSystemTag(final String tagName) {
 		final String tagType = SystemTagsUtil.extractName(tagName);
-		return sysTagFactory.isSearchSystemTag(tagType);
+		return present(tagType) && sysTagFactory.isSearchSystemTag(tagType);
 	}
 	
 	/**
@@ -80,6 +85,43 @@ public class SystemTagsUtil {
 	public static boolean isSystemTag(final String tagName) {
 		final String tagType = extractName(tagName);
 		return sysTagFactory.isExecutableSystemTag(tagType) || sysTagFactory.isSearchSystemTag(tagType);
+	}
+	
+	/**
+	 * Determins whether a tag (given by name) is a systemTag of a given kind
+	 * (i. e. if the extracted tagName matches a given String
+	 * @param tagName
+	 * @param tagType
+	 * @return
+	 */
+	public static boolean isSystemTag(final String tagName, final String tagType) {
+		final String extractedTagType = extractName(tagName);
+		return extractedTagType.toLowerCase().equals(tagType.toLowerCase());
+	}
+
+	public static boolean startsWithPrefix(final String tagName) {
+		return tagName.toLowerCase().startsWith(PREFIX);
+	}
+	
+	public static boolean isSystemTagWithPrefix(final String tagName, final String tagType) {
+		return isSystemTag(tagName, tagType) && startsWithPrefix(tagName);
+	}
+
+	/**
+	 * Checks, if a list of tagNames contains a member, that starts with a given string, ignoring case
+	 * @param tagNames = a list of tagNames
+	 * @param tagType = the type we are looking for
+	 * @param prefixRequired = set true if systemTag must occur with prefix or false if prefix is optional
+	 * @return true if tagNames contains a tagName that matches the given tagType as a systemTag
+	 */
+	public static boolean containsSystemTag(final List<String> tagNames, final String tagType, final boolean prefixRequired) {
+		for (String tagName : tagNames) {
+			if ( (prefixRequired && isSystemTagWithPrefix(tagName, tagType))
+					|| (!prefixRequired && isSystemTag(tagName, tagType)) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -99,8 +141,9 @@ public class SystemTagsUtil {
 		return numNonSysTags;
 	}
 	
-
 	
+
+
 	/*
 	 * Methods to create systemTags
 	 */
@@ -117,26 +160,65 @@ public class SystemTagsUtil {
 		if (present(name)) {
 			final ExecutableSystemTag sysTag = sysTagFactory.getExecutableSystemTag(name);
 			if (present(sysTag)) {
-				sysTag.setTag(tag);
-				sysTag.setName(name);
 				sysTag.setArgument(extractArgument(tag.getName()));
-				setIndividualFields(sysTag);
+				setIndividualFields(sysTag, tag);
 			}
 			return sysTag;
 		}
 		return null;
 	}
 
-
 	/**
 	 * Sets some fields, that are required by some ExecutableSystemTags but not all of them
 	 * @param sysTag
 	 */
-	private static void setIndividualFields (ExecutableSystemTag sysTag) {
+	private static void setIndividualFields (ExecutableSystemTag sysTag, Tag tag) {
 		if (ForGroupTag.class.isAssignableFrom(sysTag.getClass())) {
 			// The forGroupTag needs a DBSessionFactory to create a post for the group
 			((ForGroupTag)sysTag).setDBSessionFactory(sysTagFactory.getDbSessionFactory());
+		} else if (ForFriendTag.class.isAssignableFrom(sysTag.getClass())) {
+			// The forFriendTag needs access to the regular Tag of its post
+			((ForFriendTag)sysTag).setTag(tag);
 		}
+	}
+	
+	/**
+	 * Create a new instance of an executable systemTag
+	 * 
+	 * @param tag = the original Tag from that a systemTag is to be created
+	 * @return a new instance of the matching systemTag 
+	 * 		   or null, if the given tag does not describe a systemTag
+	 */
+	public static SearchSystemTag createSearchSystemTag(final String tagName) {
+		final String name = extractName(tagName);
+		if (present(name)) {
+			final SearchSystemTag sysTag = sysTagFactory.getSearchSystemTag(name);
+			if (present(sysTag)) {
+				sysTag.setArgument(extractArgument(tagName));
+			}
+			return sysTag;
+		}
+		return null;
+	}
+
+	/**
+	 * Builds a system tag string for a given kind of system tag and an argument
+	 * @param sysTagName = which kind of system tag
+	 * @param sysTagArgument = argument of the system tag
+	 * @return the system tag string built
+	 */
+	public static String buildSystemTagString(String sysTagName, String sysTagArgument) {
+		return PREFIX + DELIM + sysTagName + DELIM + sysTagArgument;
+	}
+
+	/**
+	 * Wrapper method for {SystemTagsUtil.buildSystemTagString(SystemTags sysTagName, String sysTagArgument)}
+	 * @param sysTagPrefix 
+	 * @param sysTagArgument 
+	 * @return @see {SystemTagsUtil.buildSystemTagString(SystemTags sysTagPrefix, String sysTagValue)}
+	 */
+	public static String buildSystemTagString(String sysTagName, Integer sysTagArgument) {
+		return buildSystemTagString(sysTagName, String.valueOf(sysTagArgument));
 	}
 	
 	
@@ -198,6 +280,46 @@ public class SystemTagsUtil {
 	}
 	
 
+	/**
+	 * Returns a list of all executable systemTags of a post that have not previously been executed
+	 * @param alreadyExecutedTags - the list of all tags, that have been executed and therefore shall not be used again
+	 * @param post
+	 * @return a list 
+	 */
+	public static List<ExecutableSystemTag> extractExecutableSystemTags(final Set<Tag> tags, final Set<Tag> alreadyExecutedTags) {
+		List<ExecutableSystemTag> sysTags = new ArrayList<ExecutableSystemTag>();
+		for (final Tag tag : tags) {
+			final ExecutableSystemTag stt = createExecutableTag(tag);
+			if (present(stt) && !alreadyExecutedTags.contains(stt)) {
+				sysTags.add(stt);
+			}
+		}
+		return sysTags;
+	}
+
+
+	/**
+	 * Parses a given string for system tags
+	 * @param search = a string to be searched for system tags
+	 * @param delim = the delimiter by which the string is to be tokenized
+	 * @return a list of Strings that were recognized as SearchSystemTags
+	 */
+	public static List<String> extractSearchSystemTagsFromString(String search, String delim) {
+		List<String> sysTags = new ArrayList<String>();
+		if (search == null) {
+			return sysTags;
+		}
+		for (String s : search.split(delim)) {
+			s = s.trim().toLowerCase();
+			if (isSearchSystemTag(s)) {
+				sysTags.add(s);
+			}
+		}
+		return sysTags;
+	}
+
+
+	
 	
 	
 	/*
@@ -222,7 +344,7 @@ public class SystemTagsUtil {
 		}
 		final Matcher sysTagMatcher = SYS_TAG_PATTERN.matcher(tagName);
 		if( sysTagMatcher.lookingAt() ) {
-			return sysTagMatcher.group(3);
+			return sysTagMatcher.group(3).trim();
 		}
 		return null;
 	}
@@ -239,9 +361,6 @@ public class SystemTagsUtil {
 	 * @param tagName the system tag string
 	 * @return tag's name
 	 */
-	/*
-	 * FIXME: rename extractTagType
-	 */
 	public static String extractName(final String tagName) {
 		if (!present(tagName)) {
 			return null;
@@ -253,96 +372,5 @@ public class SystemTagsUtil {
 			return tagName;
 		}
 	}	
-
-	
-	
-	
-	
-	
-	
-	/*
-	 * FIXME: These methods have not been checked by sdo yet
-	 */
-	
-	/**
-	 * build a system tag string for a given kind of system tag and a value
-	 * 
-	 * @param sysTagPrefix - 
-	 * 			which kind of system tag
-	 * @param sysTagValue -
-	 * 			the value of the system tag
-	 * 
-	 * @return the system tag string built
-	 */
-	public static String buildSystemTagString(SystemTags sysTagPrefix, String sysTagValue) {
-		return sysTagPrefix.getPrefix() + SystemTags.SYSTAG_DELIM + sysTagValue;
-	}
-	/**
-	 * Wrapper method for {SystemTagsUtil.buildSystemTagString(SystemTags sysTagPrefix, String sysTagValue)}
-	 * 
-	 * @param sysTagPrefix 
-	 * @param sysTagValue 
-	 * 
-	 * @return @see {SystemTagsUtil.buildSystemTagString(SystemTags sysTagPrefix, String sysTagValue)}
-	 */
-	public static String buildSystemTagString(SystemTags sysTagPrefix, Integer sysTagValue) {
-		return buildSystemTagString(sysTagPrefix, String.valueOf(sysTagValue));
-	}
-
-	//FIXME: What does this method do?
-	// Fortunatelly nobody uses it!
-	/**
-	 * TODO: improve doc
-	 * @param sTag
-	 * @param attributeName
-	 * @return TODO
-	 */
-	public static String getAttributeValue(final SystemTagType sTag, final String attributeName) {
-		for (final Attribute attribute : sTag.getAttribute()) {
-			if (attribute.getName().equals(attributeName)) {
-				return attribute.getValue();
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Parses a given string for system tags; first, the input strins is tokenized by
-	 * the given delimiter (delim), then for each token it checked whether the token
-	 * is a system tag
-	 * 
-	 * @param search -
-	 * 			a string to be searched for system tags
-	 * @param delim - 
-	 * 			the delimiter by which the string is to be tokenized
-	 * @return TODO: improve doc
-	 */
-	public static List<String> extractSystemTagsFromString(String search, String delim) {
-		List<String> sysTags = new ArrayList<String>();
-		if (search == null) return sysTags;
-		
-		String[] sysTagParts;
-		
-		for (String s : search.split(delim)) {
-			s = s.trim().toLowerCase();
-			// check for 'sys:'
-			if (s.startsWith(SystemTags.GLOBAL_PREFIX)) {
-				sysTagParts = s.split(SystemTags.SYSTAG_DELIM);
-				// extract middle part (e.g. 'user' from 'sys:user:dbenz'
-				if (sysTagParts.length > 1) {
-					try {
-						// check if the system tag exists
-						SystemTags.getSystemTag(sysTagParts[1].trim());
-						// if yes -> add to list (exception is thrown otherwise)
-						sysTags.add(s);
-					} catch (UnsupportedSystemTagException ex) {
-						// do nothing - there is no system tag like this in this case
-					}
-				} 		
-			}
-		}
-		
-		return sysTags;
-	}
 
 }

@@ -1,7 +1,5 @@
 package org.bibsonomy.database.systemstags.executable;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
@@ -14,6 +12,7 @@ import org.bibsonomy.database.managers.TagDatabaseManager;
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
 
 /**
  * This system tag creates a link to its post in the inbox of a specified user (the receiver)
@@ -24,26 +23,26 @@ import org.bibsonomy.model.Resource;
  * @version $Id$
  */
 public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
-	private static final Log log = LogFactory.getLog(ForFriendTag.class);
-	//------------------------------------------------------------------------
-	/**
-	 * This database manager is needed to ensure that a user is allowed to send
-	 * posts to given user.
-	 */
-
-	/**
-	 * Constructor
-	 */
-	public ForFriendTag() {
-		log.debug("initializing");
-		// initialize database manager
-	}
-
+	
+	private static final String NAME = "send";
+	
+	private Tag tag; // the original (regular) tag that this systemTag was created from
+	
+	
 	@Override
 	public ForFriendTag newInstance() {
 		return new ForFriendTag();
 	}
 	
+	@Override
+	public String getName() {
+		return NAME;
+	}
+	
+	public void setTag(Tag tag) {
+		this.tag = tag;
+	}
+
 	@Override
 	public <T extends Resource> void performBeforeCreate(final Post<T> post, final DBSession session) {
 		log.debug("performing before acess");
@@ -58,10 +57,9 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 
 	@Override
 	public <T extends Resource> void performAfterUpdate(Post<T> newPost, final Post<T> oldPost, PostUpdateOperation operation, DBSession session) {
-		// do exactly the same as in a Create => ignore operation
+		// do exactly the same as in a Creation of a post (i. e. ignore which operation)
 		this.performAfterCreate(newPost, session);
 	}
-
 
 
 	@Override
@@ -84,11 +82,11 @@ public class ForFriendTag extends AbstractSystemTagImpl implements ExecutableSys
 		 */
 		TagDatabaseManager tagDb = TagDatabaseManager.getInstance();
 		tagDb.deleteTags(post, session);		// 1. delete all tags from the database (will be replaced by new ones)
-		this.getTag().setName("from:" + sender);	// 2. rename this tag for the receiver (store senderName)
+		this.tag.setName("from:" + sender);	// 2. rename this tag for the receiver (store senderName)
 		try {
 			InboxDatabaseManager.getInstance().createInboxMessage(sender, receiver, post, session); // 3. store the inboxMessage with tag from:senderName 
 			log.debug("message was created");
-			this.getTag().setName("sent:" + receiver);	// 4. rename this tag for the sender (store receiverName)
+			this.tag.setName("sent:" + receiver);	// 4. rename this tag for the sender (store receiverName)
 		} catch(UnsupportedResourceTypeException urte) {
 			session.addError(intraHash, new UnspecifiedErrorMessage(urte));
 			log.warn("Added UnspecifiedErrorMessage (unsupported ResourceType) for post " + intraHash);

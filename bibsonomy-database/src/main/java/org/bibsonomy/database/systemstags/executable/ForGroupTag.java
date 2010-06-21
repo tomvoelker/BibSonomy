@@ -8,8 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
@@ -42,20 +40,18 @@ import org.bibsonomy.model.util.GroupUtils;
  */
 public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSystemTag {
 	
-	private static final Log log = LogFactory.getLog(ForGroupTag.class);
+	private static final String NAME = "for";
 	
 	private DBSessionFactory dbSessionFactory = null;
-
-	/**
-	 * Constructor
-	 */
-	public ForGroupTag() {
-		log.debug("initializing");
-	}
 
 	@Override
 	public ForGroupTag newInstance() {
 		return new ForGroupTag();
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
 	}
 
 	public void setDBSessionFactory(DBSessionFactory dbSessionFactory) {
@@ -212,6 +208,5 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 		}
 		return true;
 	}
-
 }
 
