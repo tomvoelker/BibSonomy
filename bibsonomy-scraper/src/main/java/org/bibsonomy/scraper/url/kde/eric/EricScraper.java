@@ -54,7 +54,7 @@ public class EricScraper extends AbstractUrlScraper {
 	
 	private static final String ERIC_HOST = "eric.ed.gov";
 	
-	private static final String EXPORT_BASE_URL = "http://www.eric.ed.gov/ERICWebPortal/custom/portlets/clipboard/performExport.jsp?texttype=endnote&accno=";
+	private static final String EXPORT_BASE_URL = "http://www.eric.ed.gov/ERICWebPortal/MyERIC/clipboard/performExport.jsp?texttype=endnote&accno=";
 	
 	private static final String PATTERN_ACCNO = "accno=([^&]*)";
 
