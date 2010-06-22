@@ -411,9 +411,10 @@ INSERT INTO `tagtagrelations` (`relationID`, `date_of_create`, `date_of_last_mod
 (16, '1815-12-10 00:00:00', '2009-02-12 00:12:38', 'testuser2',   'C',        'programming',  1, 'c',        'programming'),
 (17, '1815-12-10 00:00:00', '2009-10-12 20:00:05', 'testuser1',   '.net',     'programming',  1, '.net',     'programming'),
 (18, '1815-12-10 00:00:00', '2009-11-22 07:10:59', 'testuser2',   'java',     'programming',  1, 'java',     'programming'),
-(19, '2009-12-12 20:00:05', '2009-12-12 20:00:05', 'testspammer', 'bla',      'blubb',        1, 'bla',      'blubb'),
-(20, '2009-12-12 20:00:15', '2009-12-12 20:00:15', 'testspammer', 'c',        'programming',  1, 'c',        'programming'),
-(21, '2009-12-12 20:00:18', '2009-12-12 20:00:18', 'testspammer2', 'perl',    'programming',  1, 'perl',     'programming');
+(19, '1815-12-11 00:10:00', '2009-12-22 07:10:59', 'testuser3',   'java',     'programming',  1, 'java',     'programming'),
+(20, '2009-12-12 20:00:05', '2009-12-12 20:00:05', 'testspammer', 'bla',      'blubb',        1, 'bla',      'blubb'),
+(21, '2009-12-12 20:00:15', '2009-12-12 20:00:15', 'testspammer', 'c',        'programming',  1, 'c',        'programming'),
+(22, '2009-12-12 20:00:18', '2009-12-12 20:00:18', 'testspammer2', 'perl',    'programming',  1, 'perl',     'programming');
 
 
 
