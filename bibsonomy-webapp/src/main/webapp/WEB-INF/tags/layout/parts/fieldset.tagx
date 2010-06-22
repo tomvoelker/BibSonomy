@@ -18,7 +18,7 @@
 			<c:set var="fsIconUrl" value="/resources/image/icon_collapse.png"/>
 		</c:when>
 		<c:otherwise>
-			<c:set var="fsClass" value="fsInner fsHidden"/>
+			<c:set var="fsClass" value="fsHidden"/>
 			<c:set var="fsIconUrl" value="/resources/image/icon_expand.png"/>
 		</c:otherwise>
 	</c:choose>

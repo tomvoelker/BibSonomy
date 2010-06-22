@@ -15,11 +15,13 @@
     width:auto;
     font-weight:normal;
 }
-.fsOuter, .fsInner {
+.fsOuter, .fsInner, .fsVisible {
     border: 1px solid #069;
     background-color: #eee; 
     position: relative;
-    min-width: 650px;
+}
+.fsOuter, .fsInner{
+	min-width: 650px;
 }
 .fsOuter {
     padding: 0px 10px 10px 10px;
@@ -29,7 +31,7 @@
 }
 
 .fsHidden {
-	border: none;	
+	border: none;
 }
 
 .fsHidden > div {
