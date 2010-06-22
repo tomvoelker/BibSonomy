@@ -7,7 +7,8 @@
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
+	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld"
+	xmlns:parts="urn:jsptagdir:/WEB-INF/tags/layout/parts">
 	
 	<jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
 	
@@ -38,44 +39,7 @@
 		<ul id="sidebar">
 			<!--  links to tag / concept pages -->
 			<div class="smalltext">
-			
-			<c:choose>
-				<c:when test="${command.context.userLoggedIn}">
-					<c:if test="${empty command.requestedUser}">
-						<c:set var="conceptlinkname"><fmt:message key="tag.asConceptFrom"/>${mtl:ch('nbsp')}${command.context.loginUser.name}</c:set>
-						<c:set var="conceptlink">/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${fn:escapeXml(command.requestedTags)}</c:set>
-					</c:if>
-					<c:if test="${not empty command.requestedUser}">
-						<c:set var="conceptlinkname"><fmt:message key="tag.asConceptFromAll"/></c:set>
-						<c:set var="conceptlink">/concept/tag/${fn:escapeXml(command.requestedTags)}</c:set>
-					</c:if>
-				</c:when>
-				<c:otherwise>
-					<c:set var="conceptlinkname"></c:set>
-					<c:if test="${not empty command.requestedUser}">
-						<c:set var="conceptlinkname"><fmt:message key="tag.asConceptFromAll"/></c:set>
-						<c:set var="conceptlink">/concept/tag/${fn:escapeXml(command.requestedTags)}</c:set>
-					</c:if>
-				</c:otherwise>
-			</c:choose>
-			<!-- display the link to the concept page -->
-			<c:if test="${not empty conceptlinkname}">
-				<li>
-					<a href="${conceptlink}" class="selectedConcept">${fn:escapeXml(command.requestedTags)}</a>${mtl:ch('nbsp')}${conceptlinkname}
-				</li>
-			</c:if>
-			<!-- display the link to the userpage-->
-			<c:if test="${command.context.userLoggedIn}">
-				<li>
-					<a href="/user/${fn:escapeXml(command.context.loginUser.name)}/${fn:escapeXml(command.requestedTags)}" class="selectedConcept">${fn:escapeXml(command.requestedTags)}</a>${mtl:ch('nbsp')}<fmt:message key="tag.asTagFrom"/>${mtl:ch('nbsp')}${command.context.loginUser.name}
-				</li>
-			</c:if>
-			
-			<!-- display the link to the tag page -->
-			<li style="margin-bottom: 1ex;">
-				<a href="/tag/${fn:escapeXml(command.requestedTags)}" class="selectedConcept">${fn:escapeXml(command.requestedTags)}</a>${mtl:ch('nbsp')}<fmt:message key="tag.asTagFromAll"/>
-			</li>
-			
+				<parts:tagsAndConceptsForSidebar/>
 			</div>			
 			
 			<!-- display user's tag relations -->			
