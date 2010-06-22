@@ -200,7 +200,11 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * this is the post we're working on for now ...
 		 */
 		final Post<RESOURCE> post = command.getPost();
-
+		if (!present(post)) {
+			errors.reject("error.post.notfound");
+			return getEditPostView(command, loginUser);
+		}
+		
 		/*
 		 * set user, init post groups, relevant for tags (FIXME: candidate for 
 		 * system tags) and recommender
@@ -329,7 +333,8 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * prepare post from internal format into user's form format
 		 */
-		this.preparePostForView(command.getPost());
+		final org.bibsonomy.webapp.command.actions.Post<RESOURCE> post = command.getPost();
+		if (present(post)) this.preparePostForView(post);
 		if (loginUser.isSpammer()) {
 			/*
 			 * Generate HTML to show captcha.
