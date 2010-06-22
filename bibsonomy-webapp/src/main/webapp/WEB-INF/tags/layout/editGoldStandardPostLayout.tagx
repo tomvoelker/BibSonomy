@@ -97,14 +97,9 @@
                                    | buttons 
                                    -->
 								<div class="clearfloat p">
-									<c:set var="save"><fmt:message key="save"/></c:set>
-	                                <c:set var="reset"><fmt:message key="resetbutton"/></c:set>
 	                                <input type="hidden" name="postID" value="${command.postID}"/>
                                     <input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
 	                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-	                                <form:hidden path="intraHashToUpdate"/>
-									<input type="reset" value="${reset}" tabindex="2"/>
-									<input type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
 								</div>
 	
                                 <c:if test="${not empty detailedInformation}">
@@ -131,12 +126,16 @@
 						              	</jsp:attribute>
 						            </parts:fieldset>
 						        </c:if>
-          
-  
+						        <div>
+									<c:set var="save"><fmt:message key="save"/></c:set>
+							      	<c:set var="reset"><fmt:message key="resetbutton"/></c:set>
+									<form:hidden path="intraHashToUpdate"/>
+									<input type="reset" value="${reset}" tabindex="2"/>
+									<input type="submit" value="${save}" onclick="clear_tags();" tabindex="2"/>
+								</div>
 				    </fieldset>
 			     </div>
 			  </form:form>
-             
               <c:if test="${not empty extraInformation}">
                   <jsp:invoke fragment="extraInformation"/>
               </c:if>
