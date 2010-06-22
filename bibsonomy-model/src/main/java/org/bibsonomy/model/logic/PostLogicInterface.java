@@ -131,8 +131,11 @@ public interface PostLogicInterface {
 	 * @param search free text search
 	 * @param order a flag indicating the way of sorting
 	 * @param filter filter for the retrieved posts
-	 * @param constraint - a possible contstraint on the statistics
+	 * @param constraint - a possible constraint on the statistics
 	 * @return a filtered list of posts. may be empty but not null
+	 */
+	/*
+	 * FIXME: javadoc: returns an int (supposedly the number of posts that match the parameters), no list of posts
 	 */
 	public int getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint);
 }
