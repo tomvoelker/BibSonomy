@@ -262,7 +262,8 @@
 					<c:out value=" "/>
 					<fmt:message key="system.contact"/>
 					<c:out value=" "/>
-					<parts:email address="${projectEmail}"/>
+					<parts:email address="${projectEmail}"/>.
+					<fmt:message key="system.termsOfUse"/>
 					<script type="text/javascript">
 		              <![CDATA[
 						init(${loginUser.settings.tagboxStyle}, ${loginUser.settings.tagboxSort}, ${loginUser.settings.tagboxMinfreq}, "${fn:escapeXml(requestedUser)}", "${loginUser.name}", "${ckey}", "${projectName}");
