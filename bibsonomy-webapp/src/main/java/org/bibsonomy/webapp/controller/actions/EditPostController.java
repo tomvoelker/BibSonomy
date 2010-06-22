@@ -333,7 +333,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		/*
 		 * prepare post from internal format into user's form format
 		 */
-		final org.bibsonomy.webapp.command.actions.Post<RESOURCE> post = command.getPost();
+		final Post<RESOURCE> post = command.getPost();
 		if (present(post)) this.preparePostForView(post);
 		if (loginUser.isSpammer()) {
 			/*
