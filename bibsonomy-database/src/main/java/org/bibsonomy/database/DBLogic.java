@@ -1464,9 +1464,14 @@ public class DBLogic implements LogicInterface {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * @param String conceptName, GroupingEntity grouping, String groupingName
+	 * 			
+	 * @return a concept, i.e. a tag with its assigned subtags
 	 * 
+	 * in both queries getConceptForUser and getGlobalConceptByName 
+	 * the case of parameter conceptName is ignored 
+	 *  
 	 * @see
 	 * org.bibsonomy.model.logic.LogicInterface#getConceptDetails(java.lang.
 	 * String, org.bibsonomy.common.enums.GroupingEntity, java.lang.String)
