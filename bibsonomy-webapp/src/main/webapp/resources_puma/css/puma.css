@@ -270,3 +270,36 @@ table.report td {
 a.reportingTableHeaderDescription {
 	color: #888888;
 }
+
+#tab_content {
+	border: 1px solid #DF430D;
+}
+
+.fsOuter, .fsInner {
+	border: 1px solid #DF430D;
+}
+
+input[type="text"], input[type="password"], input[type="file"], textarea, select {
+	border: 1px solid #DF430D;
+}
+		 
+.reqinput {
+	background-color:#FFE7DF;
+}		 
+		 
+#tab #selected {
+	border-color:#DF430D;
+}		 
+
+#tab #selected a{
+	color:#DF430D;
+}	
+
+
+input[type="submit"], input[type="button"], input[type="reset"] {
+	border:1px solid #df430d;
+}	 
+
+div.help > a, div.help > b {
+	color:#DF430D;
+}
