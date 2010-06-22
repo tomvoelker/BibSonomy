@@ -110,6 +110,12 @@ public class GroupPageController extends SingleResourceListControllerWithTags im
 			if (filter == FilterEntity.JUST_PDF) {
 				return Views.GROUPDOCUMENTPAGE;
 			} else if(requTags.size() > 0){
+				
+				//get the information on tags and concepts for the sidebar
+				command.setConceptsOfGroup(this.getConceptsForSidebar(command, GroupingEntity.GROUP, groupingName, requTags));
+				command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
+				command.setPostCountForTagsForAll(this.getPostCountForSidebar(GroupingEntity.ALL, "", requTags));
+				
 				return Views.GROUPTAGPAGE;	
 			} 
 

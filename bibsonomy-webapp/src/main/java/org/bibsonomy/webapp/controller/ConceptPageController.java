@@ -37,15 +37,32 @@ public class ConceptPageController extends SingleResourceListController implemen
 		
 		final List<String> requTags = command.getRequestedTagsList();
 
-		for (int i = 0; i < requTags.size(); i++){
-			requTags.set(i, "->" + requTags.get(i));
-		}
-		
 		final String requUser = command.getRequestedUser();
 		final String requGroup = command.getRequestedGroup();
+		final String loginUser = command.getContext().getLoginUser().getName();
 		
 		GroupingEntity groupingEntity = GroupingEntity.ALL;
 		String groupingName = null;
+		
+		//get the information on tags and concepts needed for the sidebar
+		command.setPostCountForTagsForAll(this.getPostCountForSidebar(GroupingEntity.ALL, "", requTags));
+		if (present(requUser)) {
+			command.setPostCountForTagsForRequestedUser(this.getPostCountForSidebar(GroupingEntity.USER, requUser, requTags));
+			command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
+		}
+		else if (present(requGroup)) {
+			command.setPostCountForTagsForGroup(this.getPostCountForSidebar(GroupingEntity.GROUP, requGroup, requTags));
+			command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
+		}
+		else if (present(loginUser)) {
+			command.setPostCountForTagsForLoginUser(this.getPostCountForSidebar(GroupingEntity.USER, loginUser, requTags));
+			command.setConceptsOfLoginUser(this.getConceptsForSidebar(command, GroupingEntity.USER, loginUser, requTags));
+		}
+		
+		
+		for (int i = 0; i < requTags.size(); i++){
+			requTags.set(i, "->" + requTags.get(i));
+		}
 		
 		// title
 		final StringBuilder pageTitle = new StringBuilder("concept :: ");
@@ -90,6 +107,8 @@ public class ConceptPageController extends SingleResourceListController implemen
 			command.getConcepts().setConceptList(concepts);
 			command.getConcepts().setNumConcepts(concepts.size());
 		}
+
+		
 		
 		// html format - retrieve tags and return HTML view
 		if ("html".equals(command.getFormat())) {

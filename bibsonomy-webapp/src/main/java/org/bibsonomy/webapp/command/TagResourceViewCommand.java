@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.bibsonomy.model.Tag;
+
 /**
  * Bean for Tag Sites
  * 
@@ -29,6 +31,15 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	
 	/** related users - needed for FolkRank */
 	private RelatedUserCommand relatedUserCommand = new RelatedUserCommand();
+
+	private int postCountForTagsForLoginUser = 0;
+	private int postCountForTagsForRequestedUser = 0;
+	private int postCountForTagsForGroup = 0;
+	private int postCountForTagsForAll = 0;
+	private List<Tag> conceptsOfLoginUser = new ArrayList<Tag>();
+	private List<Tag> conceptsOfRequestedUser = new ArrayList<Tag>();
+	private List<Tag> conceptsOfGroup = new ArrayList<Tag>();
+	private List<Tag> conceptsOfAll = new ArrayList<Tag>();
 	
 	/**
 	 * @return the requested tagstring as a list
@@ -70,7 +81,7 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 	}
 	
 	/**
-	 * @return the relatedusercommand
+	 * @return the relatedUserCommand
 	 */
 	public RelatedUserCommand getRelatedUserCommand() {
 		return this.relatedUserCommand;
@@ -118,4 +129,116 @@ public class TagResourceViewCommand extends SimpleResourceViewCommand{
 		this.similarTags = similarTags;
 	}
 	
+	
+	/**
+	 * @param postCount
+	 */
+	public void setPostCountForTagsForLoginUser(int postCount) {
+		this.postCountForTagsForLoginUser = postCount;
+	}
+
+	/**
+	 * @return  number of loginUser's posts for the requestedTags
+	 */
+	public int getPostCountForTagsForLoginUser() {
+		return postCountForTagsForLoginUser;
+	}
+	
+	/**
+	 * @param postCount
+	 */
+	public void setPostCountForTagsForRequestedUser(int postCount) {
+		this.postCountForTagsForRequestedUser = postCount;
+	}
+
+	/**
+	 * @return number of requestedUser's posts for the requestedTags
+	 */
+	public int getPostCountForTagsForRequestedUser() {
+		return postCountForTagsForRequestedUser;
+	}
+	
+	/**
+	 * @param postCount
+	 */
+	public void setPostCountForTagsForGroup(int postCount) {
+		this.postCountForTagsForGroup = postCount;
+	}
+
+	/**
+	 * @return number of requestedGroup's posts for the requestedTags
+	 */
+	public int getPostCountForTagsForGroup() {
+		return postCountForTagsForGroup;
+	}
+	
+	/**
+	 * @param postCount
+	 */
+	public void setPostCountForTagsForAll(int postCount) {
+		this.postCountForTagsForAll = postCount;
+	}
+
+	/**
+	 * @return number of all posts for the requestedTags
+	 */
+	public int getPostCountForTagsForAll() {
+		return postCountForTagsForAll;
+	}
+	
+	/**
+	 * @param conceptsOfLoginUser
+	 */
+	public void setConceptsOfLoginUser(List<Tag> conceptsOfLoginUser) {
+		this.conceptsOfLoginUser = conceptsOfLoginUser;
+	}
+
+	/**
+	 * @return conceptsOfLoginUser (a list of tags)
+	 */
+	public List<Tag> getConceptsOfLoginUser() {
+		return conceptsOfLoginUser;
+	}
+	
+	/**
+	 * @param conceptsOfRequestedUser
+	 */
+	public void setConceptsOfRequestedUser(List<Tag> conceptsOfRequestedUser) {
+		this.conceptsOfRequestedUser = conceptsOfRequestedUser;
+	}
+
+	/**
+	 * @return conceptsOfRequestedUser (a list of tags)
+	 */
+	public List<Tag> getConceptsOfRequestedUser() {
+		return conceptsOfRequestedUser;
+	}
+	
+	/**
+	 * @param conceptsOfGroup
+	 */
+	public void setConceptsOfGroup(List<Tag> conceptsOfGroup) {
+		this.conceptsOfGroup = conceptsOfGroup;
+	}
+
+	/**
+	 * @return conceptsOfGroup (a list of tags)
+	 */
+	public List<Tag> getConceptsOfGroup() {
+		return conceptsOfGroup;
+	}
+	
+	/**
+	 * @param conceptsOfAll
+	 */
+	public void setConceptsOfAll(List<Tag> conceptsOfAll) {
+		this.conceptsOfAll = conceptsOfAll;
+	}
+
+	/**
+	 * @return conceptsOfAll (a list of tags)
+	 */
+	public List<Tag> getConceptsOfAll() {
+		return conceptsOfAll;
+	}
 }

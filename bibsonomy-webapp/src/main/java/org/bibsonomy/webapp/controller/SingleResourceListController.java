@@ -1,9 +1,18 @@
 package org.bibsonomy.webapp.controller;
 
 
+import static org.bibsonomy.util.ValidationUtils.present;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bibsonomy.common.enums.FilterEntity;
+import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
 import org.bibsonomy.model.Resource;
+import org.bibsonomy.model.Tag;
+import org.bibsonomy.model.enums.Order;
 import org.bibsonomy.model.util.BookmarkUtils;
 import org.bibsonomy.util.SortUtils;
 import org.bibsonomy.webapp.command.SimpleResourceViewCommand;
@@ -29,6 +38,34 @@ public abstract class SingleResourceListController extends ResourceListControlle
 				BookmarkUtils.sortBookmarkList(cmd.getBookmark().getList(), SortUtils.parseSortKeys(cmd.getSortPage()), SortUtils.parseSortOrders(cmd.getSortPageOrder()) );
 			}			
 		}
+	}
+	
+	/** 
+	 * returns a list of concepts, namely those tags of the requestedTags that the user groupingName has as concepts
+	 * 
+	 */
+	protected <T extends SimpleResourceViewCommand> List<Tag> getConceptsForSidebar (final T cmd, GroupingEntity groupingEntity, String groupingName, List<String> requTags) {
+		List<Tag> concepts = new ArrayList<Tag>();
+		for (String requTag : requTags) {
+			Tag conceptDetails = this.logic.getConceptDetails(requTag, groupingEntity, groupingName);
+			if (present(conceptDetails)) {
+				concepts.add(conceptDetails);
+			}
+		}
+		// concepts is not empty if groupingName has at least one of the requested Tags as a concept
+		return concepts;
+	}
+	
+	
+	/** 
+	 * returns the number of posts tagged with all of requTags by groupingName. 
+	 * 
+	 */
+	protected int getPostCountForSidebar (GroupingEntity groupingEntity, String groupingName, List<String> requTags) {
+		int a = 0;
+		a += this.logic.getPostStatistics(BibTex.class, groupingEntity, groupingName, requTags, null, Order.ADDED, FilterEntity.UNFILTERED, 0, 999, null, null);
+		a += this.logic.getPostStatistics(Bookmark.class, groupingEntity, groupingName, requTags, null, Order.ADDED, FilterEntity.UNFILTERED, 0, 999, null, null);
+		return a;
 	}
 	
 }

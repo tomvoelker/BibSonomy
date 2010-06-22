@@ -159,6 +159,11 @@ public class UserPageController extends SingleResourceListControllerWithTags imp
 					return Views.USERDOCUMENTPAGE;
 				}
 				
+				//get the information needed for the sidebar
+				command.setConceptsOfRequestedUser(this.getConceptsForSidebar(command, GroupingEntity.USER, groupingName, requTags));
+				command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
+				command.setPostCountForTagsForAll(this.getPostCountForSidebar(GroupingEntity.ALL, "", requTags));
+				
 				return Views.USERTAGPAGE;
 			}
 
