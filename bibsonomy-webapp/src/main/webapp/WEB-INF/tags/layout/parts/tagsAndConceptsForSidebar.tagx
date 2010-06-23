@@ -71,9 +71,9 @@
 			${fn:escapeXml(command.requestedGroup)}		
 			<!-- if user is logged in, he benefits of seeing the postCount -->
 			<c:if test="${command.context.userLoggedIn}">
-				<c:out value=" (${fn:escapeXml(command.postCountForTagsForRequestedGroup)} "/>
+				<c:out value=" (${fn:escapeXml(command.postCountForTagsForGroup)} "/>
 				<c:choose>
-					<c:when test="${command.postCountForTagsForRequestedGroup == 1}">
+					<c:when test="${command.postCountForTagsForGroup == 1}">
 						<fmt:message key="post"/>
 					</c:when>
 					<c:otherwise>
@@ -120,11 +120,20 @@
 	<c:if test="${not empty command.conceptsOfLoginUser}">
 		<c:forEach var="conceptVar" items="${command.conceptsOfLoginUser}">
 			<li>
-				<a href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(conceptVar.name)}">${fn:escapeXml(conceptVar.name)}</a>
+				<c:set var="conceptTitle">
+					<fmt:message key="subtags" />
+					<c:out value=": "/>
+					<!-- following code has to be in one line - do neither separate nor remove space characters! -->
+					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} </c:forEach>
+				</c:set>
+				<a title="${conceptTitle}" 
+					href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(conceptVar.name)}">
+					<c:out value="${fn:escapeXml(conceptVar.name)}"/>
+				</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFrom"/>
 				<c:out value=" "/>
-				${fn:escapeXml(command.context.loginUser.name)}				
+				${fn:escapeXml(command.context.loginUser.name)}								
 			</li>
 		</c:forEach>
 		<c:if test="${requTagsListLength > 1}" >
@@ -132,6 +141,7 @@
 				<a href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFrom"/>
+				<c:out value=" "/>
 				${fn:escapeXml(command.context.loginUser.name)}			
 			</li>
 		</c:if>
@@ -141,7 +151,16 @@
 	<c:if test="${not empty command.conceptsOfRequestedUser}">
 		<c:forEach var="conceptVar" items="${command.conceptsOfRequestedUser}">
 			<li>
-				<a href="/concept/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(conceptVar.name)}">${fn:escapeXml(conceptVar.name)}</a>
+				<c:set var="conceptTitle">
+					<fmt:message key="subtags" />
+					<c:out value=": "/>
+					<!-- following code has to be in one line - do neither separate nor remove space characters! -->
+					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} </c:forEach>
+				</c:set>
+				<a title="${conceptTitle}" 
+					href="/concept/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(conceptVar.name)}">
+					<c:out value="${fn:escapeXml(conceptVar.name)}"/>
+				</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFrom"/>
 				<c:out value=" "/>
@@ -153,6 +172,7 @@
 				<a href="/concept/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFrom"/>
+				<c:out value=" "/>
 				${fn:escapeXml(command.requestedUser)}			
 			</li>
 		</c:if>
@@ -162,9 +182,19 @@
 	<c:if test="${not empty command.conceptsOfGroup}">
 		<c:forEach var="conceptVar" items="${command.conceptsOfGroup}">
     		<li>
-				<a href="/concept/group/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(conceptVar.name)}">${fn:escapeXml(conceptVar.name)}</a>
+    			<c:set var="conceptTitle">
+					<fmt:message key="subtags" />
+					<c:out value=": "/>
+					<!-- following code has to be in one line - do neither separate nor remove space characters! -->
+					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} </c:forEach>
+				</c:set>
+				<a title="${conceptTitle}" 
+					href="/concept/group/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(conceptVar.name)}">
+					<c:out value="${fn:escapeXml(conceptVar.name)}"/>
+				</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFromGroup"/>
+				<c:out value=" "/>
 				${fn:escapeXml(command.requestedGroup)}		
 			</li>
 		</c:forEach>
@@ -173,6 +203,7 @@
 				<a href="/concept/user/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(command.requestedTags)}">${fn:escapeXml(command.requestedTags)}</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFromGroup"/>
+				<c:out value=" "/>
 				${fn:escapeXml(command.requestedGroup)}			
 			</li>
 		</c:if>
@@ -182,7 +213,16 @@
 	<c:if test="${not empty command.conceptsOfAll}">
 		<c:forEach var="conceptVar" items="${command.conceptsOfAll}">
 			<li>
-				<a href="/concept/tag/${mtl:encodeURI(conceptVar.name)}">${fn:escapeXml(conceptVar.name)}</a>
+				<c:set var="conceptTitle">
+					<fmt:message key="subtags" />
+					<c:out value=": "/>
+					<!-- following code has to be in one line - do not separate! -->
+					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} </c:forEach>
+				</c:set>
+				<a 	title="${conceptTitle}" 
+					href="/concept/tag/${mtl:encodeURI(conceptVar.name)}">
+					<c:out value="${fn:escapeXml(conceptVar.name)}"/>
+				</a>
 				<c:out value=" "/>
 				<fmt:message key="tag.asConceptFromAll"/>
 			</li>
