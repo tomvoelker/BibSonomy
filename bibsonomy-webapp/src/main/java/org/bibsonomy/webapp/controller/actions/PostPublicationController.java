@@ -472,7 +472,7 @@ public class PostPublicationController extends AbstractEditPublicationController
 			/*
 			 * FIXME: the key is missing! We need to get the supported file types from the exception
 			 */
-			errors.reject("error.upload.failed.filetype", e.getMessage());
+			errors.reject("error.upload.failed.filetype", FileUploadInterface.bibtexEndnoteExt, e.getMessage());
 		} catch (final Exception ex1) {
 			errors.reject("error.upload.failed.fileAccess", "An error occurred while accessing your file.");
 		} finally {

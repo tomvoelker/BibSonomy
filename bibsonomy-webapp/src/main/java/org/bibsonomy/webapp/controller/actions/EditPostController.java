@@ -393,7 +393,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 				/*
 				 * invalid intra hash: post could not be found
 				 */
-				errors.reject("error.post.notfound");
+				errors.reject("error.post.notfound", "The post with the given intra hash could not be found.");
 				return Views.ERROR;
 			}
 			/*
@@ -562,7 +562,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			post.getTags().addAll(TagUtils.parse(command.getTags()));
 		} catch (final Exception e) {
 			log.warn("error parsing tags", e);
-			errors.rejectValue("tags", "error.field.valid.tags.parseerror");
+			errors.rejectValue("tags", "error.field.valid.tags.parseerror", "Your tags could not be parsed.");
 		}
 		/*
 		 * validate post
@@ -702,7 +702,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 		 * sent.
 		 */
 		if (!context.isValidCkey()) {
-			errors.reject("error.field.valid.ckey");
+			errors.reject("error.field.valid.ckey", "The provided security token is invalid.");
 			return this.getEditPostView(command, loginUser);
 		}
 
@@ -785,7 +785,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 						/*
 						 * invalid response from user
 						 */
-						errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha");
+						errors.rejectValue("recaptcha_response_field", "error.field.valid.captcha", "The provided security token is invalid.");
 					} else if (res.getErrorMessage() != null) {
 						/*
 						 * valid response, but still an error
@@ -805,7 +805,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			/*
 			 * no response given
 			 */
-			errors.rejectValue("recaptcha_response_field", "error.field.required");
+			errors.rejectValue("recaptcha_response_field", "error.field.required", "This field is required.");
 		}
 	}
 
@@ -918,7 +918,7 @@ public abstract class EditPostController<RESOURCE extends Resource,COMMAND exten
 			 * already posted; warn user FIXME: this is bookmark-only and does 
 			 * not work for publications
 			 */
-			errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked");
+			errors.rejectValue("post.resource.url", "error.field.valid.url.alreadybookmarked", "You have already bookmarked this URL. ");
 
 			// set intraHash, diff post and set dbPost as post of command
 			command.setIntraHashToUpdate(resource.getIntraHash());
