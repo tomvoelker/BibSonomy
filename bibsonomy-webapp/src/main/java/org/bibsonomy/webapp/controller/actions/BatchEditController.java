@@ -20,6 +20,8 @@ import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.errors.DuplicatePostErrorMessage;
 import org.bibsonomy.common.errors.ErrorMessage;
 import org.bibsonomy.common.errors.SystemTagErrorMessage;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -521,7 +523,7 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 						 * NOTE: we need the complete post (not only hash or so) to
 						 * show it on the batch edit page.
 						 */
-						final Post<?> post;
+						Post<?> post = null;
 						if (PostUpdateOperation.UPDATE_ALL.equals(operation)) {
 							/*
 							 * XXX: we use the type of operation as indicator where to get the posts from
@@ -535,7 +537,13 @@ public class BatchEditController implements MinimalisticController<BatchEditComm
 							 * only the tags shall be updated -> we got only the hash from
 							 * the page and must get the post from the database
 							 */
-							post = logic.getPostDetails(postHash, loginUserName);
+							try {
+								post = logic.getPostDetails(postHash, loginUserName);
+							} catch (ResourceNotFoundException ex1) {
+								// ignore
+							} catch (ResourceMovedException ex1) {
+								// i
+							}
 							/*
 							 * we must add the tags from the post we tried to update - 
 							 * since those tags probably caused the error 

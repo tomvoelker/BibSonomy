@@ -4,6 +4,8 @@ import static org.bibsonomy.util.ValidationUtils.present;
 
 import org.bibsonomy.common.enums.Role;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
@@ -38,8 +40,14 @@ public class EditGoldStandardPublicationController extends AbstractEditPublicati
 	@Override
 	protected Post<BibTex> getCopyPost(User loginUser, String hash, String user) {
 		@SuppressWarnings("unchecked")
-		final Post<BibTex> post = (Post<BibTex>) this.logic.getPostDetails(hash, user);
-		
+		Post<BibTex> post = null;
+		try {
+			post = (Post<BibTex>) this.logic.getPostDetails(hash, user);
+		} catch (ResourceNotFoundException ex) {
+			// ignore
+		} catch (ResourceMovedException ex) {
+			// ignore		
+		}
 		return this.convertToGoldStandard(post);
 	}
 	

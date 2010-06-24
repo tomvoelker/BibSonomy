@@ -27,6 +27,8 @@ import org.bibsonomy.common.enums.StatisticsConstraint;
 import org.bibsonomy.common.enums.TagSimilarity;
 import org.bibsonomy.common.enums.UserRelation;
 import org.bibsonomy.common.enums.UserUpdateOperation;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Author;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Bookmark;
@@ -434,14 +436,40 @@ public class LogicInterfaceProxyTest implements LogicInterface {
 		final Post<BibTex> expectedBibtexPost = ModelUtils.generatePost(BibTex.class);
 		final Post<Bookmark> expectedBookmarkPost = ModelUtils.generatePost(Bookmark.class);
 		
-		EasyMock.expect(serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedBibtexPost);
-		EasyMock.expect(serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedBookmarkPost);
+		try {
+			EasyMock.expect(serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedBibtexPost);
+		} catch (ResourceNotFoundException ex) {
+			// ignore
+		} catch (ResourceMovedException ex) {
+			// ignore
+		}
+		try {
+			EasyMock.expect(serverLogic.getPostDetails(resourceHash, userName)).andReturn((Post) expectedBookmarkPost);
+		} catch (ResourceNotFoundException ex) {
+			// ignore
+		} catch (ResourceMovedException ex) {
+			// ignore
+		}
 		EasyMock.replay(serverLogic);
 		
 		final String[] ignoreProperties = new String[] {"date", "user.activationCode", "user.apiKey", "user.email", "user.homepage", "user.password", "user.realname", "resource.scraperId", "resource.openURL", "user.IPAddress", "user.basket", "user.inbox", "user.gender", "user.interests", "user.hobbies", "user.profession", "user.openURL", "user.place", "user.spammer", "user.settings", "user.algorithm", "user.prediction", "user.mode", "user.toClassify", "user.updatedBy", "user.reminderPassword", "user.openID", "user.ldapId"};
-		final Post<? extends org.bibsonomy.model.Resource> returnedBibtexPost = clientLogic.getPostDetails(resourceHash,userName);
+		Post<? extends org.bibsonomy.model.Resource> returnedBibtexPost = null;
+		try {
+			returnedBibtexPost = clientLogic.getPostDetails(resourceHash,userName);
+		} catch (ResourceNotFoundException ex) {
+			// ignore
+		} catch (ResourceMovedException ex) {
+			// ignore
+		}
 		ModelUtils.assertPropertyEquality(expectedBibtexPost, returnedBibtexPost, 5, null, ignoreProperties);
-		final Post<? extends org.bibsonomy.model.Resource> returnedBookmarkPost = clientLogic.getPostDetails(resourceHash,userName);
+		Post<? extends org.bibsonomy.model.Resource> returnedBookmarkPost = null;
+		try {
+			returnedBookmarkPost = clientLogic.getPostDetails(resourceHash,userName);
+		} catch (ResourceNotFoundException ex) {
+			// ignore
+		} catch (ResourceMovedException ex) {
+			// ignore
+		}
 		ModelUtils.assertPropertyEquality(expectedBookmarkPost, returnedBookmarkPost, 5, null, ignoreProperties);
 		EasyMock.verify(serverLogic);
 		assertLogin();

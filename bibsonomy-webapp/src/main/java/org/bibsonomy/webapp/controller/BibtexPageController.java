@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bibsonomy.common.enums.GroupingEntity;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.GoldStandardPublication;
 import org.bibsonomy.model.Post;
@@ -81,7 +83,14 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 				for (final Post<BibTex> b : command.getBibtex().getList()) {
 					final BibTex publication = b.getResource();
 					@SuppressWarnings("unchecked")
-					final Post<BibTex> postDetails = (Post<BibTex>) this.logic.getPostDetails(publication.getIntraHash(), b.getUser().getName());
+					Post<BibTex> postDetails = null;
+					try {
+						postDetails = (Post<BibTex>) this.logic.getPostDetails(publication.getIntraHash(), b.getUser().getName());
+					} catch (ResourceNotFoundException ex) {
+						// ignore
+					} catch (ResourceMovedException ex) {
+						// ignore
+					}
 					bibtex.add(postDetails);
 					
 					goldHash = postDetails.getResource().getInterHash();
@@ -98,8 +107,15 @@ public class BibtexPageController extends SingleResourceListControllerWithTags i
 		/*
 		 * get the gold standard
 		 */
-		@SuppressWarnings("unchecked") // a publication has a goldstandardpublication
-		final Post<GoldStandardPublication> goldStandard = (Post<GoldStandardPublication>) this.logic.getPostDetails(goldHash, GOLD_STANDARD_USER_NAME);
+		@SuppressWarnings("unchecked")
+		Post<GoldStandardPublication> goldStandard = null;
+		try {
+			goldStandard = (Post<GoldStandardPublication>) this.logic.getPostDetails(goldHash, GOLD_STANDARD_USER_NAME);
+		} catch (ResourceNotFoundException ex) {
+			// ignore
+		} catch (ResourceMovedException ex) {
+			// ignore
+		}
 		command.setGoldStandardPublication(goldStandard);
 
 		/*
