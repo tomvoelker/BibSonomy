@@ -17,6 +17,8 @@ import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.enums.PostUpdateOperation;
 import org.bibsonomy.common.enums.Role;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.params.BookmarkParam;
 import org.bibsonomy.database.util.LogicInterfaceHelper;
@@ -628,7 +630,14 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		/*
 		 * get original post for later comparison
 		 */
-		final Post<Bookmark> oldPost = bookmarkDb.getPostDetails(userName, intraHash, userName, Collections.singletonList(0), this.dbSession);
+		Post<Bookmark> oldPost = null;
+		try {
+			oldPost = bookmarkDb.getPostDetails(userName, intraHash, userName, Collections.singletonList(0), this.dbSession);
+		} catch (ResourceMovedException ex1) {
+			// ignore
+		} catch (ResourceNotFoundException ex1) {
+			// ignore
+		}
 		/*
 		 * OK, normally this should be tested elsewhere, but here
 		 * we check, if the post contains all information it should,
@@ -651,7 +660,14 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		post.setTags(tags);
 		bookmarkDb.updatePost(post, intraHash, PostUpdateOperation.UPDATE_TAGS, this.dbSession);
 		
-		final Post<Bookmark> newPost = bookmarkDb.getPostDetails(userName, intraHash, userName, Collections.singletonList(0), this.dbSession);
+		Post<Bookmark> newPost = null;
+		try {
+			newPost = bookmarkDb.getPostDetails(userName, intraHash, userName, Collections.singletonList(0), this.dbSession);
+		} catch (ResourceMovedException ex) {
+			// ignore
+		} catch (ResourceNotFoundException ex) {
+			// ignore
+		}
 		final Set<Tag> dbTags = newPost.getTags();
 		assertTagsByName(tags, dbTags);
 		
@@ -687,7 +703,14 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		/*
 		 * get original post for later comparison
 		 */
-		final Post<Bookmark> oldPost = bookmarkDb.getPostDetails(userName, oldIntraHash, userName, Collections.singletonList(0), this.dbSession);
+		Post<Bookmark> oldPost = null;
+		try {
+			oldPost = bookmarkDb.getPostDetails(userName, oldIntraHash, userName, Collections.singletonList(0), this.dbSession);
+		} catch (ResourceMovedException ex) {
+			// ignore
+		} catch (ResourceNotFoundException ex) {
+			// ignore
+		}
 	
 		/*
 		 * We set only the tags, the user name, and the resource's hash.
@@ -708,7 +731,14 @@ public class BookmarkDatabaseManagerTest extends AbstractDatabaseManagerTest {
 		post.setTags(tags);
 		bookmarkDb.updatePost(post, oldIntraHash, PostUpdateOperation.UPDATE_ALL, this.dbSession);
 		
-		final Post<Bookmark> newPost = bookmarkDb.getPostDetails(userName, newIntraHash, userName, Collections.singletonList(0), this.dbSession);
+		Post<Bookmark> newPost = null;
+		try {
+			newPost = bookmarkDb.getPostDetails(userName, newIntraHash, userName, Collections.singletonList(0), this.dbSession);
+		} catch (ResourceMovedException ex) {
+			// ignore
+		} catch (ResourceNotFoundException ex) {
+			// ignore
+		}
 		final Set<Tag> dbTags = newPost.getTags();
 		
 		assertTagsByName(tags, dbTags);

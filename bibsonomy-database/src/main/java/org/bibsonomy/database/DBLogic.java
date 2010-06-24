@@ -32,6 +32,8 @@ import org.bibsonomy.common.enums.UserUpdateOperation;
 import org.bibsonomy.common.errors.UnspecifiedErrorMessage;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.QueryTimeoutException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.UnsupportedResourceTypeException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.common.exceptions.database.DatabaseException;
@@ -372,7 +374,14 @@ public class DBLogic implements LogicInterface {
 		final DBSession session = this.openSession();
 		try {
 			for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : this.allDatabaseManagers.values()) {
-				final Post<? extends Resource> post = manager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				Post<? extends Resource> post = null;
+				try {
+					post = manager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				} catch (ResourceMovedException ex) {
+					// ignore
+				} catch (ResourceNotFoundException ex) {
+					// ignore
+				}
 				/*
 				 * if a manager found a post, return it
 				 */
@@ -1188,7 +1197,14 @@ public class DBLogic implements LogicInterface {
 				/*
 				 * document shall be attached to a post
 				 */
-				final Post<BibTex> post = publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				Post<BibTex> post = null;
+				try {
+					post = publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				} catch (ResourceMovedException ex) {
+					// ignore
+				} catch (ResourceNotFoundException ex) {
+					// ignore
+				}
 				if (present(post)) {
 					/*
 					 * post really exists!
@@ -1268,7 +1284,14 @@ public class DBLogic implements LogicInterface {
 				 * we just forward this task to getPostDetails from the
 				 * BibTeXDatabaseManager and extract the documents.
 				 */
-				final Post<BibTex> post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				Post<BibTex> post = null;
+				try {
+					post = this.publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, lowerCaseUserName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				} catch (ResourceMovedException ex) {
+					// ignore
+				} catch (ResourceNotFoundException ex) {
+				// ignore
+				}
 				if (post != null && post.getResource().getDocuments() != null) {
 					/*
 					 * post found and post contains documents (bibtexdbmanager
@@ -1320,7 +1343,14 @@ public class DBLogic implements LogicInterface {
 				 * the document belongs to a post --> check if the user owns the
 				 * post
 				 */
-				final Post<BibTex> post = publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				Post<BibTex> post = null;
+				try {
+					post = publicationDBManager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
+				} catch (ResourceMovedException ex) {
+					//ignore
+				} catch (ResourceNotFoundException ex) {
+					// ignore
+				}
 				if (post != null) {
 					/*
 					 * the given resource hash belongs to a post of the user ->

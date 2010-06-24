@@ -124,9 +124,13 @@ public class ForGroupTag extends AbstractSystemTagImpl implements ExecutableSyst
 			log.warn("Added SystemTagErrorMessage (for group: Unknown Group) for post " + intraHash);
 			return; // this tag can not be used => abort
 		}
-		if (present( groupDBLogic.getPostDetails(intraHash, groupName) )) {
-			log.debug("Given post already owned by group. Skipping...");
-			return;
+		try {
+			if (present( groupDBLogic.getPostDetails(intraHash, groupName) )) {
+				log.debug("Given post already owned by group. Skipping...");
+				return;
+			}
+		} catch (Exception ex) {
+			// ignore
 		}
 		/*
 		 *  Permissions are granted and the group doesn't own the post yet

@@ -24,6 +24,7 @@ import org.bibsonomy.common.errors.IdenticalHashErrorMessage;
 import org.bibsonomy.common.errors.MissingFieldErrorMessage;
 import org.bibsonomy.common.errors.UpdatePostErrorMessage;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
@@ -86,9 +87,9 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		this.plugins = DatabasePluginRegistry.getInstance();
 		this.permissionDb = PermissionDatabaseManager.getInstance();
 		this.groupDb = GroupDatabaseManager.getInstance();
-		
+
 		this.resourceClassName = this.getResourceClassName();
-		
+
 		this.validator = new DatabaseModelValidator<R>();
 	}
 
@@ -139,7 +140,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		return this.postList("get" + this.resourceClassName + "FromInboxByHash", param, session);
 	}
 
-	
+
 	/**
 	 * <em>/concept/tag/TAGNAME</em>
 	 * 
@@ -576,12 +577,12 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 				log.error("No resource searcher available.");
 				return new LinkedList<Post<R>>();
 			}
-			
+
 			// get search results from lucene
 			final long starttimeQuery = System.currentTimeMillis();
 			final List<Post<R>> postList = 
 				lucene.getPosts(loginUserName, null, groupName, visibleGroups, search, null, null, null, null, null, null, limit, offset);
-				//searchGroup(groupId, visibleGroupIDs, search, loginUserName, limit, offset, null);
+			//searchGroup(groupId, visibleGroupIDs, search, loginUserName, limit, offset, null);
 			log.debug("Lucene" + this.resourceClassName + " complete group search query time: " + (System.currentTimeMillis() - starttimeQuery) + "ms");
 			return postList;
 		}
@@ -601,7 +602,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		DatabaseUtils.prepareGetPostForGroup(this.generalDb, param, session);
 		return this.postList("get" + this.resourceClassName + "SearchForGroup", param, session);
 	}
-	
+
 	/**
 	 * get list of posts from resource searcher
 	 * 
@@ -624,7 +625,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		if (this.isDoLuceneSearch() && present(this.resourceSearch)) {
 			return this.resourceSearch.getPosts(userName, requestedUserName, requestedGroupName, allowedGroups, searchTerms, titleSearchTerms, authorSearchTerms, tagIndex, year, firstYear, lastYear, limit, offset);
 		}
-		
+
 		log.error("lucene search is maybe disabled (" + this.isDoLuceneSearch() + ") or no resource searcher is set");	
 		return new LinkedList<Post<R>>();
 	}
@@ -656,7 +657,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			final GroupDatabaseManager groupDb = GroupDatabaseManager.getInstance();
 			group = groupDb.getGroupNameByGroupId(groupId, session);
 		}
-		
+
 		// get search results from lucene
 		final long starttimeQuery = System.currentTimeMillis();
 		final List<Post<R>> postList = lucene.getPosts(loginUserName, requestedUserName, group, null, search, null, null, null, null, null, null, limit, offset);
@@ -1053,7 +1054,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 * @see org.bibsonomy.database.managers.CrudableContent#getPostsDetails(java.lang.String, java.lang.String, java.lang.String, java.util.List, org.bibsonomy.database.util.DBSession)
 	 */
 	@Override
-	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public Post<R> getPostDetails(final String loginUserName, final String resourceHash, final String requestedUserName, final List<Integer> visibleGroupIDs, final DBSession session) throws ResourceMovedException, ResourceNotFoundException {
 		final List<Post<R>> list = this.getPostsByHashForUser(loginUserName, resourceHash, requestedUserName, visibleGroupIDs, HashID.INTRA_HASH, session);
 
 		if (list.isEmpty()) {
@@ -1089,7 +1090,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 		session.beginTransaction();
 		try {
 			this.checkPost(post, session);
-			
+
 			/*
 			 * systemtags perform before create
 			 */
@@ -1105,7 +1106,18 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * get posts with the intrahash of the given post to check for possible duplicates 
 			 */
-			final Post<R> postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
+			Post<R> postInDB = null;
+			try {
+				postInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
+			} catch(ResourceMovedException ex) {
+				/*
+				 * getPostDetails() throws a ResourceMovedException for hashes for which
+				 * no actual post exists, but an old post has existed with that hash.
+				 * 
+				 * Since we are not interested in former posts with that hash we ignore
+				 * this exception silently. 
+				 */
+			}
 			/*
 			 * check if user is trying to create a resource that already exists
 			 */
@@ -1218,8 +1230,18 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			/*
 			 * get posts with the intrahash of the given post to check for possible duplicates 
 			 */
-			final Post<R> newPostInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
-
+			Post<R> newPostInDB = null; 
+			try {
+				newPostInDB = this.getPostDetails(userName, intraHash, userName, new ArrayList<Integer>(), session);
+			} catch(ResourceMovedException ex) {
+				/*
+				 * getPostDetails() throws a ResourceMovedException for hashes for which
+				 * no actual post exists, but an old post has existed with that hash.
+				 * 
+				 * Since we are not interested in former posts with that hash we ignore
+				 * this exception silently. 
+				 */
+			}
 			/*
 			 * check if user is trying to create a resource that already exists
 			 */
@@ -1390,7 +1412,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 			log.error("Added MissingFieldErrorMessage for post " + post.getResource().getIntraHash());
 			return;
 		}
-		
+
 		final P param = this.getInsertParam(post, session);
 		// insert
 		this.insertPost(param, session);
@@ -1454,7 +1476,14 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	 */
 	@Override
 	public boolean deletePost(String userName, String resourceHash, DBSession session) {
-		final Post<R> post = this.getPostDetails(userName, resourceHash, userName, new ArrayList<Integer>(), session);
+		Post<R> post = null;
+		try {
+			post = this.getPostDetails(userName, resourceHash, userName, new ArrayList<Integer>(), session);
+		} catch (ResourceMovedException ex) {
+			// ignore
+		} catch (ResourceNotFoundException ex) {
+			// ignore
+		}
 
 		if (!present(post)) {
 			log.debug("post with hash \"" + resourceHash + "\" not found");
@@ -1507,7 +1536,7 @@ public abstract class PostDatabaseManager<R extends Resource, P extends Resource
 	}
 
 
-	
+
 	/**
 	 * called when a post was deleted successfully
 	 * 

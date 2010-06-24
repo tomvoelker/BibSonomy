@@ -14,6 +14,7 @@ import org.bibsonomy.common.enums.GroupID;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.enums.HashID;
 import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.common.params.beans.TagIndex;
 import org.bibsonomy.database.managers.chain.FirstChainElement;
@@ -479,7 +480,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 	 * 
 	 */
 	@Override
-	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) {
+	public Post<BibTex> getPostDetails(final String authUser, final String resourceHash, final String userName, final List<Integer> visibleGroupIDs, final DBSession session) throws ResourceMovedException, ResourceNotFoundException {
 		// get post from database
 		final Post<BibTex> post = super.getPostDetails(authUser, resourceHash, userName, visibleGroupIDs, session);
 		
@@ -512,17 +513,7 @@ public class BibTexDatabaseManager extends PostDatabaseManager<BibTex, BibTexPar
 			 * Resource has been changed and thus could be found in logging table. We send back the new resource hash. 
 			 */
 			final Post<BibTex> loggedPost = loggedList.get(0);
-			if (!resourceHash.equals(loggedPost.getResource().getIntraHash())) {
-				/*
-				 * TODO: quick fix to break loops when the hash has not changed.
-				 * This does not help in the case of more complex change patterns 
-				 * (e.g., A -> B -> A). To fix that, we have to respect the 
-				 * date given to the exception and implement a query which 
-				 * returns the latest post with given hash+username whose 
-				 * posting date is smaller or equal to the given date.  
-				 */
-				throw new ResourceMovedException(resourceHash, loggedPost.getResource().getIntraHash(), userName, loggedPost.getDate());
-			}
+			throw new ResourceMovedException(resourceHash, loggedPost.getResource().getIntraHash(), userName, loggedPost.getDate());
 		}
 		
 		return null;

@@ -524,7 +524,12 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		final List<String> createPosts = dbl.createPosts(posts);
 		assertEquals(1, createPosts.size());
 		
-		final Post<? extends Resource> savedPost = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		Post<? extends Resource> savedPost = null;
+		try {
+			savedPost = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		} catch (Exception ex1) {
+			// ignore
+		}
 		assertNotNull(savedPost);
 		
 		// get the contentId if more than tags were updated the contentId changes
@@ -553,7 +558,12 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		/*
 		 * check if only tags were updated
 		 */
-		final Post<? extends Resource> updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		Post<? extends Resource> updatedResource = null;
+		try {
+			updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		} catch (Exception ex) {
+			// ignore
+		}
 		assertNotNull(updatedResource);
 		
 		// check content id
@@ -590,7 +600,12 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		final List<String> createPosts = dbl.createPosts(posts);
 		assertEquals(1, createPosts.size());
 		
-		final Post<? extends Resource> savedPost = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		Post<? extends Resource> savedPost = null;
+		try {
+			savedPost = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		} catch (Exception ex) {
+			// ignore
+		}
 		
 		// get the contentId if more than tags were updated the contentId changes
 		final int contentId = savedPost.getContentId();
@@ -618,7 +633,12 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		/*
 		 * check if only tags were updated
 		 */
-		final Post<? extends Resource> updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		Post<? extends Resource> updatedResource = null;
+		try {
+			updatedResource = dbl.getPostDetails(createPosts.get(0), TEST_REQUEST_USER_NAME);
+		} catch (Exception ex) {
+			// ignore
+		}
 		assertNotNull(updatedResource);
 		
 		// check content id
@@ -648,7 +668,12 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		final List<String> createdPosts = dbl.createPosts(create);
 		assertEquals(1, createdPosts.size());
 		
-		final Post<?> createdPost = dbl.getPostDetails(createdPosts.get(0), TEST_REQUEST_USER_NAME);
+		Post<?> createdPost = null;
+		try {
+			createdPost = dbl.getPostDetails(createdPosts.get(0), TEST_REQUEST_USER_NAME);
+		} catch (Exception ex) {
+			// ignore
+		}
 		
 		final Bookmark createdBookmark = (Bookmark) createdPost.getResource();
 		
@@ -661,7 +686,12 @@ public class DBLogicTest extends AbstractDBLogicBase {
 		final List<String> updatedPosts = dbl.updatePosts(update, PostUpdateOperation.UPDATE_ALL);
 		assertEquals(1, updatedPosts.size());
 		
-		final Post<?> updatedPost = dbl.getPostDetails(updatedPosts.get(0), TEST_REQUEST_USER_NAME);
+		Post<?> updatedPost = null;
+		try {
+			updatedPost = dbl.getPostDetails(updatedPosts.get(0), TEST_REQUEST_USER_NAME);
+		} catch (Exception ex) {
+			// ignore
+		}
 		
 		final Bookmark updatedBookmark = (Bookmark) updatedPost.getResource();
 		assertEquals(newURL, updatedBookmark.getUrl());
