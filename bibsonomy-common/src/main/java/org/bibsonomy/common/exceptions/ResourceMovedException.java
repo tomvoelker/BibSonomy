@@ -30,7 +30,7 @@ import java.util.Date;
  * @version $Id: ResourceNotFoundException.java,v 1.2 2007-10-30 17:37:35 jillig
  *          Exp $
  */
-public class ResourceMovedException extends RuntimeException {
+public class ResourceMovedException extends Exception {
 
 	private static final long serialVersionUID = 1L;
 
