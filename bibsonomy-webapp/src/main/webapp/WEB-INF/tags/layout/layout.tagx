@@ -118,9 +118,13 @@
 						<c:url var="loginUrl" value="/login" context="${projectContext}"/>
 						<a href="${loginUrl}"><fmt:message key="navi.login"/></a>
 						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
-						<c:url var="registerUrl" value="/register" context="${projectContext}"/>
-						<a href="${registerUrl}"><fmt:message key="navi.register"/></a>
-						<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>	
+						<!-- turn registration link off, if empty message configured -->
+						<fmt:message key="navi.register" var="naviRegister"/>
+						<c:if test="${not empty naviRegister}">
+							<c:url var="registerUrl" value="/register" context="${projectContext}"/>
+							<a href="${registerUrl}"><c:out value="${naviRegister}"/></a>
+							<c:out value=" "/>${mtl:ch('menu.delim')}<c:out value=" "/>
+						</c:if>
 					</c:otherwise>
 				</c:choose>
 				
