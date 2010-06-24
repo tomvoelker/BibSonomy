@@ -29,20 +29,20 @@ import org.springframework.validation.Errors;
 import filters.InitUserFilter;
 
 /**
- * This controller handles the registration of users via Ldap 
+ * This controller handles the registration of users via LDAP
  * 
  * @author Sven Stefani
- * @version $Id: UserLDAPRegistrationController.java,v 1.1 2009-12-07 10:08:38
- *          sven Exp $
+ * @version $Id$
  */
 public class UserLDAPRegistrationController implements MinimalisticController<UserLDAPRegistrationCommand>, ErrorAware, ValidationAwareController<UserLDAPRegistrationCommand>, RequestAware, CookieAware {
-
+	private static final Log log = LogFactory.getLog(UserLDAPRegistrationController.class);
+	
+	
 	protected LogicInterface logic;
 	protected LogicInterface adminLogic;
 	private Errors errors = null;
 	private RequestLogic requestLogic;
 	private CookieLogic cookieLogic;
-	// private Ldap ldapLogic;
 
 	private String projectHome;
 
@@ -51,8 +51,7 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 	 */
 	private String successRedirect = "";
 
-	private static final Log log = LogFactory.getLog(UserLDAPRegistrationController.class);
-
+	@Override
 	public View workOn(UserLDAPRegistrationCommand command) {
 		log.debug("workOn() called");
 
@@ -135,10 +134,9 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 			
 
 			// check credentials
-			Ldap ldap = new Ldap();
-			LdapUserinfo ldapUserinfo = new LdapUserinfo();
+			final Ldap ldap = new Ldap();
 			log.info("Trying to login user " + registerUserName + " via LDAP");
-			ldapUserinfo = ldap.checkauth(registerUserName, registerUserPassword);
+			final LdapUserinfo ldapUserinfo = ldap.checkauth(registerUserName, registerUserPassword);
 
 			if (null == ldapUserinfo) {
 				log.info("Login check for registering failed for user " + registerUserName + " via LDAP");
@@ -150,13 +148,12 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 			} else {
 				// if login was successful, insert ldap data to command
 				log.info("Login check for registering succeeded for user " + registerUserName + " via LDAP");
-				System.out.println("UserLDAPRegistration:: " + ldapUserinfo.toString());
 
 				// check if username is already used and try another
 				String newName = ldapUserinfo.getSureName().toLowerCase();
 				int tryCount = 0;
 				log.info("try existence of username: "+newName);
-				while ((newName.equalsIgnoreCase(adminLogic.getUserDetails(newName).getName())) && (tryCount<101)) {
+				while ((newName.equalsIgnoreCase(adminLogic.getUserDetails(newName).getName())) && (tryCount < 101)) {
 					try {
 						if (tryCount == 0) {
 							// try first character of forename concatenated with surename
@@ -179,15 +176,13 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 						}
 						log.info("try existence of username: "+newName+" ("+tryCount+")");
 						tryCount++;
-					}
-					catch (IndexOutOfBoundsException ex) {
+					} catch (IndexOutOfBoundsException ex) {
 						/*
 						 * if some substring values are out of range, catch exception and use surename
 						 */
 						newName = ldapUserinfo.getSureName().toLowerCase();
 						tryCount = 99;
 					}
-					
 				}
 
 				command.getRegisterUser().setName(newName);
@@ -302,6 +297,7 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 		return Views.REGISTER_USER_LDAP;
 	}
 
+	@Override
 	public UserLDAPRegistrationCommand instantiateCommand() {
 		final UserLDAPRegistrationCommand userLdapRegistrationCommand = new UserLDAPRegistrationCommand();
 		/*
@@ -311,26 +307,32 @@ public class UserLDAPRegistrationController implements MinimalisticController<Us
 		return userLdapRegistrationCommand;
 	}
 
+	@Override
 	public Errors getErrors() {
 		return this.errors;
 	}
 
+	@Override
 	public void setErrors(Errors errors) {
 		this.errors = errors;
 	}
 
+	@Override
 	public Validator<UserLDAPRegistrationCommand> getValidator() {
 		return new UserLDAPRegistrationValidator();
 	}
 
+	@Override
 	public boolean isValidationRequired(UserLDAPRegistrationCommand command) {
 		return true;
 	}
 
+	@Override
 	public void setRequestLogic(RequestLogic requestLogic) {
 		this.requestLogic = requestLogic;
 	}
 
+	@Override
 	public void setCookieLogic(CookieLogic cookieLogic) {
 		this.cookieLogic = cookieLogic;
 	}
