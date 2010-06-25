@@ -13,8 +13,7 @@ import org.junit.Test;
 
 /**
  * @author Manuel Bork <manuel.bork@uni-kassel.de>
- * @version $Id: GetPostDetailsStrategyTest.java,v 1.3 2007/06/05 23:33:30
- *          cschenk Exp $
+ * @version $Id$
  */
 public class GetPostDetailsStrategyTest extends AbstractContextTest {
 
