@@ -74,10 +74,8 @@
                                 		<legend>
                                 			<fmt:message key="note"/>
                                 		</legend>
-	                                    <p>
-       		                              <span style="float:left; font-weight: bold; margin-right: 1em;"><fmt:message key="post.edit.existent" /></span>
-               		                      <buttons:help message="post.edit.existent.help"/>
-                       		            </p>
+      		                            <span style="float:left; font-weight: bold; margin-left: 1em;"><fmt:message key="post.edit.existent" /></span>
+               		                    <buttons:help message="post.edit.existent.help"/>
                                   	</fieldset>
                                 </c:if>
 
