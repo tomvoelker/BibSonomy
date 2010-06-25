@@ -370,18 +370,11 @@ public class DBLogic implements LogicInterface {
 	 * @see org.bibsonomy.model.logic.PostLogicInterface#getPostDetails(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) {
+	public Post<? extends Resource> getPostDetails(final String resourceHash, final String userName) throws ResourceMovedException, ResourceNotFoundException {
 		final DBSession session = this.openSession();
 		try {
 			for (final CrudableContent<? extends Resource, ? extends GenericParam> manager : this.allDatabaseManagers.values()) {
-				Post<? extends Resource> post = null;
-				try {
-					post = manager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
-				} catch (ResourceMovedException ex) {
-					// ignore
-				} catch (ResourceNotFoundException ex) {
-					// ignore
-				}
+				final Post<? extends Resource> post = manager.getPostDetails(this.loginUser.getName(), resourceHash, userName, UserUtils.getListOfGroupIDs(this.loginUser), session);
 				/*
 				 * if a manager found a post, return it
 				 */
