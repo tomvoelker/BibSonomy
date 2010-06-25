@@ -1,6 +1,9 @@
 package org.bibsonomy.webapp.validation;
 
-import java.io.IOException;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,14 +14,11 @@ import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.webapp.command.actions.EditPostCommand;
 import org.bibsonomy.webapp.controller.actions.EditPublicationController;
-import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.validation.Errors;
 import org.springframework.validation.MapBindingResult;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
-
-import bibtex.parser.ParseException;
 
 /**
  * @author rja
@@ -26,8 +26,8 @@ import bibtex.parser.ParseException;
  */
 public class PublicationValidatorTest {
 
-	final PostValidator<BibTex> postValidator = new PostValidator<BibTex>();
-	final EditPublicationController controller = new EditPublicationController();
+	private static final PostValidator<BibTex> postValidator = new PostValidator<BibTex>();
+	private static final EditPublicationController controller = new EditPublicationController();
 
 	private static final String bibtexEntry1 = "@inproceedings{stumme05finite,\n" + 
 	"        title = {A Finite State Model for On-Line Analytical Processing in Triadic Contexts.},\n" +
@@ -55,7 +55,7 @@ public class PublicationValidatorTest {
 		/*
 		 * no author or editor: errors!
 		 */
-		Assert.assertTrue(errors.hasErrors());
+		assertTrue(errors.hasErrors());
 		/*
 		 * set fields such that no errors occur
 		 */
@@ -70,17 +70,17 @@ public class PublicationValidatorTest {
 		 * bind them here) 
 		 */
 		errors = validate(command);
-		Assert.assertEquals(0, errors.getGlobalErrorCount());
-		Assert.assertEquals(1, errors.getErrorCount());
-		Assert.assertEquals(1, errors.getFieldErrorCount("tags"));
+		assertEquals(0, errors.getGlobalErrorCount());
+		assertEquals(1, errors.getErrorCount());
+		assertEquals(1, errors.getFieldErrorCount("tags"));
 		/*
 		 * broken misc field: errors!
 		 */
 		bib.setMisc("foo = {bar");
 		errors = validate(command);
-		Assert.assertEquals(0, errors.getGlobalErrorCount());
-		Assert.assertEquals(2, errors.getErrorCount());
-		Assert.assertEquals(1, errors.getFieldErrorCount("post.resource.misc"));
+		assertEquals(0, errors.getGlobalErrorCount());
+		assertEquals(2, errors.getErrorCount());
+		assertEquals(1, errors.getFieldErrorCount("post.resource.misc"));
 	}
 
 	@Test
@@ -109,24 +109,21 @@ public class PublicationValidatorTest {
 		posts.add(post2);
 		posts.add(post1);
 
+		@SuppressWarnings("unchecked")
 		final MapBindingResult errors = new MapBindingResult(new HashMap(), "command");
 
 		final PostListValidator valid = new PostListValidator();
 
 		valid.validate(posts, errors);
-
-
-//		System.out.println("################## global errors");
-//		System.out.println(errors.getGlobalErrors());
-
+		
 		/*
 		 * FIXME: add Asserts!
 		 */
 	}
 
+	
 	@Test
 	public void testMiscFieldValidation() throws Exception {
-
 		final PostBibTeXParser parser = new PostBibTeXParser();
 		parser.setDelimiter(" ");
 		parser.setWhitespace("_");
@@ -135,48 +132,41 @@ public class PublicationValidatorTest {
 		/*
 		 * FIXME: why aren't commas, etc. removed?
 		 */
-
-		try {
-			/*
-			 * Parse the BibTeX snippet	
-			 */
-			final List<Post<BibTex>> posts = parser.parseBibTeXPosts(bibtexEntry1);
-			/*
-			 * validate the post
-			 */
-			final BibTex resource = posts.get(0).getResource();
-			
-			final MapBindingResult errors = new MapBindingResult(new HashMap(), "bibtex");
-			
-			ValidationUtils.invokeValidator(new PublicationValidator(), resource, errors);
-			
-			/*
-			 * The misc field "ee" contains some {} which should not cause 
-			 * validation errors.
-			 */
-			Assert.assertFalse(errors.hasErrors());
-
-		} catch (final ParseException ex) {
-			Assert.fail(ex.getMessage());
-		} catch (final IOException ex) {
-			Assert.fail(ex.getMessage());
-		}
+		/*
+		 * Parse the BibTeX snippet	
+		 */
+		final List<Post<BibTex>> posts = parser.parseBibTeXPosts(bibtexEntry1);
+		/*
+		 * validate the post
+		 */
+		final BibTex resource = posts.get(0).getResource();
+		@SuppressWarnings("unchecked")
+		final MapBindingResult errors = new MapBindingResult(new HashMap(), "bibtex");
 		
+		ValidationUtils.invokeValidator(new PublicationValidator(), resource, errors);
+		
+		/*
+		 * The misc field "ee" contains some {} which should not cause 
+		 * validation errors.
+		 */
+		assertFalse(errors.hasErrors());		
 	}
 
 
 	public static class PostListValidator implements Validator {
-
 		private final PublicationValidator postValidator = new PublicationValidator();
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public boolean supports(Class clazz) {
 			return true;
 		}
 
+		
 		@Override
 		public void validate(Object target, Errors errors) {
-			if (target instanceof List) {
+			if (target instanceof List<?>) {
+				@SuppressWarnings("unchecked")
 				final List<Post<BibTex>> posts = (List) target;
 
 				final ListIterator<Post<BibTex>> listIterator = posts.listIterator();
@@ -203,17 +193,16 @@ public class PublicationValidatorTest {
 			}
 
 		}
-
-
 	}
 
 	private EditPostCommand<BibTex> newCommand() {
 		return controller.instantiateCommand();
 	}
+	
 	private MapBindingResult validate(EditPostCommand<BibTex> command) {
+		@SuppressWarnings("unchecked")
 		final MapBindingResult errors = new MapBindingResult(new HashMap(), "user");
 		postValidator.validate(command, errors);
 		return errors;
 	}
-
 }
