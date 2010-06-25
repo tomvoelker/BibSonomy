@@ -1179,7 +1179,7 @@ span.info {
 div.help {
 	float: left;
 	position: relative;
-	margin-right:5px; 
+	margin: 0 5px 0 0; 
 	font-size: 90%;
 	display: inline;
 	cursor: help;
