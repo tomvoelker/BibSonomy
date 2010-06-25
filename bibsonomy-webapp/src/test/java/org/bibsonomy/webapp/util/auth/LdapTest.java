@@ -12,23 +12,15 @@ import org.junit.Test;
  * @version $Id$
  */
 public class LdapTest {
-
-	//private static final Logger log = Logger.getLogger(LdapTest.class);
 	
+	@Ignore // test only, if ldap connection is available
 	@Test
-	public void dummy() {
-		
-	}
-
-	// test only, if ldap connection is available
-	@Ignore
 	public void connection() {
 		String ldapUserId = "02004160";
         String ldapCredentials = "170874";
 
         Ldap ldap = new Ldap();
-		LdapUserinfo ldapUserinfo = new LdapUserinfo();
-        ldapUserinfo = ldap.checkauth(ldapUserId, ldapCredentials);
+		LdapUserinfo ldapUserinfo = ldap.checkauth(ldapUserId, ldapCredentials);
 		assertNotNull("ldapUserinfo is null. Something with LDAP is wrong, maybe authorization failure." , ldapUserinfo);
 		assertFalse("userID is not set in ldapUserinfo, some strange thing happens!", ldapUserinfo.getUserId()=="");
 	}
