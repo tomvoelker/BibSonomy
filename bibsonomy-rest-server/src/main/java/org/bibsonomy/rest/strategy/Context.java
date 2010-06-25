@@ -16,6 +16,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.common.exceptions.AccessDeniedException;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.common.exceptions.ValidationException;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.RestProperties;
@@ -141,8 +143,11 @@ public final class Context {
 	/**
 	 * @param outStream
 	 * @throws InternServerException
+	 * @throws ResourceMovedException 
+	 * @throws ResourceNotFoundException 
+	 * @throws NoSuchResourceException 
 	 */
-	public void perform(final ByteArrayOutputStream outStream) throws InternServerException {
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceNotFoundException, ResourceMovedException {
 		this.strategy.perform(outStream);
 	}
 

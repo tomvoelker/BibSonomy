@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.logic.LogicInterface;
 import org.bibsonomy.rest.RestProperties;
 import org.bibsonomy.rest.exceptions.NoSuchResourceException;
@@ -38,8 +40,10 @@ public abstract class Strategy {
 	 * @param outStream
 	 * @throws InternServerException
 	 * @throws NoSuchResourceException
+	 * @throws ResourceNotFoundException 
+	 * @throws ResourceMovedException 
 	 */
-	public abstract void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException;
+	public abstract void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ResourceNotFoundException;
 
 	/**
 	 * Get Content type to be set for response, depending on the specified user agent.

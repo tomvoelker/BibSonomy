@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.Writer;
 
 import org.bibsonomy.common.exceptions.InternServerException;
+import org.bibsonomy.common.exceptions.ResourceMovedException;
+import org.bibsonomy.common.exceptions.ResourceNotFoundException;
 import org.bibsonomy.model.Post;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.rest.ViewModel;
@@ -34,7 +36,7 @@ public class GetPostDetailsStrategy extends Strategy {
 	}
 
 	@Override
-	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException {
+	public void perform(final ByteArrayOutputStream outStream) throws InternServerException, NoSuchResourceException, ResourceMovedException, ResourceNotFoundException {
 		writer = new EscapingPrintWriter(outStream);
 		// delegate to the renderer
 		final Post<? extends Resource> post = this.getLogic().getPostDetails(this.resourceHash, this.userName);
