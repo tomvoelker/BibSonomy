@@ -93,21 +93,11 @@
 								
 								<jsp:invoke fragment="tagsAndGroups" />
 	
-                                <!--
-                                   | buttons 
-                                   -->
-								<div class="clearfloat p">
-	                                <input type="hidden" name="postID" value="${command.postID}"/>
-                                    <input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
-	                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
-								</div>
-	
                                 <c:if test="${not empty detailedInformation}">
                                     <jsp:invoke fragment="detailedInformation"/>
                                 </c:if>
   
-            
-          
+                  
                                 <!--
                                    | a Captcha for our spammers ... 
                                    -->         
@@ -126,7 +116,14 @@
 						              	</jsp:attribute>
 						            </parts:fieldset>
 						        </c:if>
-						        <div>
+
+                                <!--
+                                   | buttons 
+                                   -->
+								<div>
+	                                <input type="hidden" name="postID" value="${command.postID}"/>
+                                    <input type="hidden" name="referer" value="${fn:escapeXml(command.referer)}"/>
+	                                <input type="hidden" name="ckey" value="${fn:escapeXml(command.context.ckey)}"/>
 									<c:set var="save"><fmt:message key="save"/></c:set>
 							      	<c:set var="reset"><fmt:message key="resetbutton"/></c:set>
 									<form:hidden path="intraHashToUpdate"/>
