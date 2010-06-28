@@ -115,7 +115,7 @@ public interface PostLogicInterface {
 	public List<String> updatePosts(List<Post<? extends Resource>> posts, PostUpdateOperation operation);
 	
 	/**  
-	 * retrieves the counts of a filterable list of posts.
+	 * retrieves the number of posts matching to the given constraints
 	 * 
 	 * @param resourceType resource type to be shown.
 	 * @param grouping
@@ -140,9 +140,6 @@ public interface PostLogicInterface {
 	 * @param filter filter for the retrieved posts
 	 * @param constraint - a possible constraint on the statistics
 	 * @return a filtered list of posts. may be empty but not null
-	 */
-	/*
-	 * FIXME: javadoc: returns an int (supposedly the number of posts that match the parameters), no list of posts
 	 */
 	public int getPostStatistics(Class<? extends Resource> resourceType, GroupingEntity grouping, String groupingName, List<String> tags, String hash, Order order, FilterEntity filter, int start, int end, String search, StatisticsConstraint constraint);
 }
