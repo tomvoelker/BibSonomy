@@ -108,7 +108,7 @@ public class TagUtils {
 	/**
 	 * returns the default delimiter for a concatenated list of tags
 	 * 
-	 * @return
+	 * @return default delimiter for a concatenated list of tags
 	 */
 	public static String getDefaultListDelimiter() {
 		return defaultListDelimiter;
