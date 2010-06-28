@@ -40,6 +40,8 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.comparators.TagCountComparator;
 import org.bibsonomy.model.enums.Order;
+import org.bibsonomy.model.util.tagparser.TagString3Lexer;
+import org.bibsonomy.model.util.tagparser.TagString3Parser;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
