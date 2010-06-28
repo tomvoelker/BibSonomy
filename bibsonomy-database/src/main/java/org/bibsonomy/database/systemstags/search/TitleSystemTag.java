@@ -5,6 +5,7 @@ import static org.bibsonomy.util.ValidationUtils.present;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.database.params.GenericParam;
 import org.bibsonomy.database.systemstags.AbstractSystemTagImpl;
+import org.bibsonomy.model.util.TagUtils;
 
 /**
  * @author sdo
@@ -31,7 +32,7 @@ public class TitleSystemTag extends AbstractSystemTagImpl implements
 			param.setTitle(this.getArgument());
 		} else {
 			// we append the new title part
-			param.setTitle( param.getTitle() + GenericParam.LIST_SEPARATOR + this.getArgument() );
+			param.setTitle( param.getTitle() + TagUtils.getDefaultListDelimiter() + this.getArgument() );
 		}
 		param.setGrouping(GroupingEntity.ALL);
 		log.debug("set title to " + param.getTitle() + " after matching for title system tag");

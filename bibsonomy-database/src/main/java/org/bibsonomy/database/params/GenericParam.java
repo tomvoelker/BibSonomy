@@ -42,9 +42,6 @@ import org.bibsonomy.util.ValidationUtils;
  * @version $Id$
  */
 public abstract class GenericParam {
-	
-	public static final String LIST_SEPARATOR = " ";
-
 	/**
 	 * A set of tags
 	 */
