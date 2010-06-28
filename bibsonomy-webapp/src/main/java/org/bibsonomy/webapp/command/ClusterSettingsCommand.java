@@ -11,22 +11,31 @@ public class ClusterSettingsCommand extends SimpleResourceViewCommand {
 	/** base url for the cluster servlet */
 	private String communityBaseUrl;
 
-	//------------------------------------------------------------------------
-	// getter/setter
-	//------------------------------------------------------------------------
-	public void setCommunityBaseUrl(String communityBaseUrl) {
-		this.communityBaseUrl = communityBaseUrl;
+	/**
+	 * @return the maxClusterCount
+	 */
+	public Integer getMaxClusterCount() {
+		return this.maxClusterCount;
 	}
 
-	public String getCommunityBaseUrl() {
-		return communityBaseUrl;
-	}
-
+	/**
+	 * @param maxClusterCount the maxClusterCount to set
+	 */
 	public void setMaxClusterCount(Integer maxClusterCount) {
 		this.maxClusterCount = maxClusterCount;
 	}
 
-	public Integer getMaxClusterCount() {
-		return maxClusterCount;
+	/**
+	 * @return the communityBaseUrl
+	 */
+	public String getCommunityBaseUrl() {
+		return this.communityBaseUrl;
+	}
+
+	/**
+	 * @param communityBaseUrl the communityBaseUrl to set
+	 */
+	public void setCommunityBaseUrl(String communityBaseUrl) {
+		this.communityBaseUrl = communityBaseUrl;
 	}
 }
