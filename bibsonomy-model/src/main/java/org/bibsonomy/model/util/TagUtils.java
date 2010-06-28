@@ -40,8 +40,6 @@ import org.apache.commons.logging.LogFactory;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.comparators.TagCountComparator;
 import org.bibsonomy.model.enums.Order;
-import org.bibsonomy.model.util.tagparser.TagString3Lexer;
-import org.bibsonomy.model.util.tagparser.TagString3Parser;
 import org.bibsonomy.util.ValidationUtils;
 
 /**
@@ -53,6 +51,8 @@ public class TagUtils {
 	
 	private static final Tag emptyTag = new Tag("system:unfiled");
 	private static final Tag importedTag = new Tag("imported");
+	/** string which is used for separating different tags in a concatenated string */
+	private static final String defaultListDelimiter = " ";
 	
 	/**
 	 * Get the maximum user count of all tags contained in a list
@@ -102,6 +102,15 @@ public class TagUtils {
 	public static Tag getImportedTag() {
 		return importedTag;
 	}
+	
+	/**
+	 * returns the default delimiter for a concatenated list of tags
+	 * 
+	 * @return
+	 */
+	public static String getDefaultListDelimiter() {
+		return defaultListDelimiter;
+	}	
 	
 	/**
 	 * Converts a collection of tags into a string of tags using the given delimiter. 
@@ -279,5 +288,4 @@ public class TagUtils {
 		// all done
 		return mergedList.subList(0, Math.min(mergedList.size(), limit));
 	}
-
 }
