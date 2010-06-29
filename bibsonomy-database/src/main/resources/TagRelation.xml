@@ -24,14 +24,20 @@
 			AND upper=#upperTagName#
 	</delete>
 	
-	
+	<!-- 
+		TODO: why should we delete those concepts? Which feature needs this query?
+	-->	
 	<delete id="deleteEqualConcepts" parameterClass="updateParam">
 		DELETE FROM tagtagrelations 
 		  WHERE lower = #newId# AND upper = #newId# AND user_name = #user.name#
 	</delete>
 	
-<!--	Needed because if the user changes one relation to another that does exist 
-		the replacement is skipped -->
+	<!--	
+		Needed because if the user changes one relation to another that does exist 
+		the replacement is skipped 
+		TODO: This query potentially deletes whole concepts! This should not be 
+		necessary. Please remove.	
+		-->
 	<delete id="deleteOldConcepts" parameterClass="updateParam">
 		DELETE FROM tagtagrelations 
 		  WHERE (lower = #oldId# OR upper = #oldId#) AND user_name = #user.name#
@@ -41,12 +47,9 @@
 		user cannot	have the same relation twice -->
 	<select id="getPickedConceptsForUser" parameterClass="String"
 		resultMap="TagCommon.tagWithSubtags">
-		SELECT upper AS tag_name, 
-			lower AS subTag, 
-			'1' AS subTagCount
-		FROM tagtagrelations
-		USE INDEX (username_picked_upperlcase_upper_lowerlcase_idx)
-		WHERE user_name=#userName#
+		SELECT upper AS tag_name, lower AS subTag, '1' AS subTagCount
+		  FROM tagtagrelations
+		  WHERE user_name=#userName#
 			AND picked=true
 	</select>
 
@@ -54,71 +57,60 @@
 		user cannot	have the same relation twice -->
 	<select id="getAllConceptsForUser" parameterClass="tagRelationParam"
 		resultMap="TagCommon.tagWithSubtags">
-		SELECT t.upper AS tag_name,
-			t.lower AS subTag,
-			'1' AS subTagCount
-		FROM tagtagrelations t,
-		(SELECT DISTINCT upper AS tag_name
-			FROM tagtagrelations
-			USE INDEX (username_upperlcase_upper_lowerlcase_idx)
-			WHERE user_name=#requestedUserName#
-			LIMIT #limit#
-			OFFSET #offset#) AS r
-		WHERE user_name=#requestedUserName#
-		AND t.upper=r.tag_name;
+		SELECT t.upper AS tag_name, t.lower AS subTag, '1' AS subTagCount
+		  FROM tagtagrelations t,
+		    (SELECT DISTINCT upper AS tag_name, user_name
+			  FROM tagtagrelations
+			  WHERE user_name=#requestedUserName#
+			  LIMIT #limit#
+			  OFFSET #offset#) AS r
+		  WHERE t.user_name=r.user_name
+		    AND t.upper=r.tag_name;
 	</select>
 
 	<!-- the resultMap needs the column subTagCount whose value is always 1, since a 
 		user cannot	have the same relation twice -->
 	<select id="getConceptForUser" parameterClass="tagRelationParam"
 		resultMap="TagCommon.tagWithSubtags">
-		SELECT upper_lcase AS tag_name, 
-			lower_lcase AS subTag,
-			'1' as subTagCount
-		FROM tagtagrelations
-		WHERE user_name=#ownerUserName#
+		SELECT upper_lcase AS tag_name, lower_lcase AS subTag, '1' as subTagCount
+		  FROM tagtagrelations
+		  WHERE user_name=#ownerUserName#
 			AND upper_lcase=LCASE(#upperTagName#)
-		GROUP BY upper_lcase, 
-			lower_lcase
+		  GROUP BY upper_lcase, lower_lcase
 	</select>
 
 	
 	<select id="getAllConcepts" resultMap="TagCommon.tagWithSubtagsAndUserCount">
-		SELECT tagCount.upper AS tag_name, 
-			r.lower_lcase AS subTag, 
-			tagCount.usercount AS user_count, 
-			COUNT(r.lower_lcase) AS subTagCount
-		FROM tagtagrelations r JOIN user u USING(user_name), 
+		SELECT tagCount.upper AS tag_name, r.lower_lcase AS subTag, 
+			   tagCount.usercount AS user_count, COUNT(r.lower_lcase) AS subTagCount
+		  FROM tagtagrelations r JOIN user u USING (user_name), 
 			(SELECT upper_lcase AS upper, COUNT(DISTINCT user_name) AS usercount, 
-			COUNT(upper_lcase COLLATE utf8_unicode_ci) AS count
-			FROM tagtagrelations JOIN user u USING(user_name)
-			WHERE u.spammer = 0
-			GROUP BY upper COLLATE utf8_unicode_ci 
-			ORDER BY usercount DESC, count DESC LIMIT 50
-		) AS tagCount
-		WHERE tagCount.upper=r.upper_lcase
+			     COUNT(upper_lcase COLLATE utf8_unicode_ci) AS count
+			   FROM tagtagrelations JOIN user u USING (user_name)
+			   WHERE u.spammer = 0
+			   GROUP BY upper_lcase COLLATE utf8_unicode_ci 
+			   ORDER BY usercount DESC, count DESC LIMIT 50
+		    ) AS tagCount
+		  WHERE tagCount.upper=r.upper_lcase
 			AND u.spammer = 0
-		GROUP BY tagCount.upper, 
-			r.lower_lcase
+		  GROUP BY tagCount.upper, r.lower_lcase
 	</select>
 
 	<select id="getGlobalConceptByName" parameterClass="String"
 		resultMap="TagCommon.tagWithSubtags">
-		SELECT upper_lcase AS tag_name, 
-			lower_lcase AS subTag,
+		SELECT upper_lcase AS tag_name,	lower_lcase AS subTag,
 			COUNT(DISTINCT user_name) AS subTagCount
-		FROM tagtagrelations JOIN user u USING(user_name)
-		WHERE upper_lcase = LCASE(#conceptName#)
+		  FROM tagtagrelations JOIN user u USING (user_name)
+		  WHERE upper_lcase = LCASE(#conceptName#)
 			AND u.spammer = 0
-		GROUP BY upper_lcase, 
-			lower_lcase
+		  GROUP BY upper_lcase,	lower_lcase
 	</select>
 
 	<select id="getRelationID" parameterClass="tagRelationParam"
 		resultClass="string">
 		SELECT relationID 
-		FROM tagtagrelations 
-		WHERE user_name = #ownerUserName# 
+		  FROM tagtagrelations 
+		  WHERE user_name = #ownerUserName# 
 			AND lower = #lowerTagName#
 			AND upper = #upperTagName# 
 	</select>
@@ -137,27 +129,27 @@
 	
 	<update id="pickConcept" parameterClass="tagRelationParam">
 		UPDATE tagtagrelations 
-		SET picked = true
-		WHERE user_name = #ownerUserName# 
+		  SET picked = true
+		  WHERE user_name = #ownerUserName# 
 			AND upper = #upperTagName#
 	</update>
 	
 	<update id="unpickConcept" parameterClass="tagRelationParam">
 		UPDATE tagtagrelations 
-		SET picked = false
-		WHERE user_name = #ownerUserName# 
+		  SET picked = false
+		  WHERE user_name = #ownerUserName# 
 			AND upper = #upperTagName#
 	</update>
 	
 	<update id="pickAllConcepts" parameterClass="String">
 		UPDATE tagtagrelations 
-		SET picked = true
-		WHERE user_name = #ownerUserName#
+		  SET picked = true
+		  WHERE user_name = #ownerUserName#
 	</update>
 	
 	<update id="unpickAllConcepts" parameterClass="String">
 		UPDATE tagtagrelations 
-		SET picked = false
-		WHERE user_name = #ownerUserName#
+		  SET picked = false
+		  WHERE user_name = #ownerUserName#
 	</update>
 </sqlMap>
