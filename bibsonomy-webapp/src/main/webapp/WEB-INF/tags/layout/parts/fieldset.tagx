@@ -14,12 +14,12 @@
 		+-->
 	<c:choose>
 		<c:when test="${maximized}">
-			<c:set var="fsClass" value="fsInner"/>
-			<c:set var="fsIconUrl" value="/resources/image/icon_collapse.png"/>
+			<c:set var="fsClass" value="fsVisible"/>
+			<c:set var="fsIconUrl" value="${resdir}/image/icon_collapse.png"/>
 		</c:when>
 		<c:otherwise>
 			<c:set var="fsClass" value="fsHidden"/>
-			<c:set var="fsIconUrl" value="/resources/image/icon_expand.png"/>
+			<c:set var="fsIconUrl" value="${resdir}/image/icon_expand.png"/>
 		</c:otherwise>
 	</c:choose>
 
