@@ -69,35 +69,3 @@ function reloadRecommendation() {
 
     $('#postForm').ajaxSubmit(tagRecoOptions); 
 }
-
-/**
- * toggles the visibility of the content element encapsulated within the fieldset 
- * 
- * @param el
- *            the toggle element that has been clicked
- * @return 
- */
-function toggleFieldsetVisibility(el) {
-	var content = null;
-	var icon_url = null;
-	var className = null;
-	if((content = getNextByClass(el.parentNode, "")) == null) {
-		return;
-	}
-	
-	if(cmpClass(el.parentNode.parentNode, 'fsHidden')) {
-		$(content).hide();
-		$(el.parentNode.parentNode).removeClass('fsHidden').addClass('fsVisible');
-		icon_url = "/resources/image/icon_collapse.png";
-	} else {
-		icon_url = "/resources/image/icon_expand.png";
-		className = "fsHidden";		
-	}
-	
-	$(content).css('visibility', 'hidden').slideToggle(200, function() {
-			el.src = icon_url;
-			if(className)
-				$(el.parentNode.parentNode).removeClass('fsVisible').addClass(className);
-			$(this).css('visibility', 'visible');
-		});
-}
