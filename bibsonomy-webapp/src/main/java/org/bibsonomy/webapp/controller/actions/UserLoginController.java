@@ -181,7 +181,7 @@ public class UserLoginController implements MinimalisticController<UserLoginComm
 		try {
 			useLDAP = (Boolean) envContext.lookup("useLdapPasswordforBibsonomyLogin");
 		} catch (NamingException ex) {
-			log.error("Error when trying to read environment variable 'useLdapPasswordforBibsonomyLogin' via JNDI.", ex);
+			log.error("Error when trying to read environment variable 'useLdapPasswordforBibsonomyLogin' via JNDI.");
 			useLDAP = false;
 		}
 
