@@ -203,6 +203,6 @@ public class ModelValidationUtils {
 		if (!present(xmlPublication.getYear())) throw new InvalidModelException(XML_IS_INVALID_MSG + "year is missing in element 'bibtex'");
 		if (!present(xmlPublication.getBibtexKey())) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex key is missing in element 'bibtex'");
 		if (!present(xmlPublication.getEntrytype())) throw new InvalidModelException(XML_IS_INVALID_MSG + "bibtex entry type is missing in element 'bibtex'");
-		if (!present(xmlPublication.getAuthor()) && !present(xmlPublication)) throw new InvalidModelException(XML_IS_INVALID_MSG + "editor(s) and author(s) are missing (one of the two is required) in element 'bibtex'");
+		if (!present(xmlPublication.getAuthor()) && !present(xmlPublication.getEditor())) throw new InvalidModelException(XML_IS_INVALID_MSG + "editor(s) and author(s) are missing (one of the two is required) in element 'bibtex'");
 	}
 }
