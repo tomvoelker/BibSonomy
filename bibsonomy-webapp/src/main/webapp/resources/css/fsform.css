@@ -24,12 +24,13 @@
 .fsOuter {
     padding: 0 10px 10px 10px;
 }
-.fsInner, .fsHidden {
+.fsInner, .fsHidden, .fsVisible {
     margin: 8px 0 0 0;
 }
 
 .fsHidden {
 	border: none;
+    margin-left: 1px;
 }
 
 .fsHidden > div {
