@@ -100,7 +100,7 @@
 	                    <input type="hidden" name="registerUser.ldapId" value="${command.registerUser.ldapId}"/>
 	                    <input type="hidden" name="registerUser.password" value="${command.registerUser.password}"/>
 	                    
-	                    <fmt:message key="navi.register" var="submit"/>
+	                    <fmt:message key="register.send" var="submit"/>
 	                    <input type="submit" value="${submit}" />
 	                  </td>
 	                </tr>

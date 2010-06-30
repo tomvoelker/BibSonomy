@@ -36,7 +36,7 @@
 				<!-- global error messages -->			
 	            <errors:global errors="${errors}"/>             
 		
-				<fmt:message key="navi.register" var="submit"/>
+				<fmt:message key="register.send" var="submit"/>
 	
 				<h2><fmt:message key="register.notice.openid"/></h2> 
 				

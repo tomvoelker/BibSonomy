@@ -99,7 +99,7 @@
              
              			<div class="clearfloat p">
              				<input type="hidden" name="ckey" value="${command.context.ckey}"/>	
-		                    <fmt:message key="navi.register" var="submit"/>
+		                    <fmt:message key="register.send" var="submit"/>
         		            <input type="submit" value="${submit}" />
 	             		</div>
 	             	</fieldset>
