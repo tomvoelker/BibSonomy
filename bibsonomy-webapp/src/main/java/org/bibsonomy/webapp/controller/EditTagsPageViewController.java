@@ -13,11 +13,13 @@ import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
 import org.bibsonomy.model.util.TagUtils;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.EditTagsPageViewCommand;
 import org.bibsonomy.webapp.command.actions.EditTagsCommand;
 import org.bibsonomy.webapp.command.actions.RelationsEditCommand;
 import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
 import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
@@ -33,12 +35,14 @@ import org.bibsonomy.webapp.view.Views;
 
 public class EditTagsPageViewController extends SingleResourceListControllerWithTags implements MinimalisticController<EditTagsPageViewCommand> {
 
+	private RequestLogic requestLogic;
+
 	public View workOn(EditTagsPageViewCommand command) {
 		/*
 		 * no user given -> error
 		 */
 		if (!command.getContext().isUserLoggedIn()) {
-			throw new MalformedURLSchemeException("error.user_page_without_username");
+			return getAccessDeniedView(command, "error.general.login");
 		}
 
 		switch (command.getForcedAction()) {
@@ -179,5 +183,32 @@ public class EditTagsPageViewController extends SingleResourceListControllerWith
 
 	public EditTagsPageViewCommand instantiateCommand() {
 		return new EditTagsPageViewCommand();
+	}
+	
+	/**
+	 * redirect to the login page - and back
+	 * 
+	 * @param command the command
+	 * @param notice a notice to display at the login page
+	 * @return
+	 */
+	protected View getAccessDeniedView(final EditTagsPageViewCommand command, String notice) {
+		return new ExtendedRedirectView("/login" + 
+				"?notice=" + notice + 
+				"&referer=" + UrlUtils.safeURIEncode(getRequestLogic().getCompleteRequestURL()));
+	}
+
+	/**
+	 * @param requestLogic the request logic
+	 */
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
+	}
+
+	/**
+	 * @return the request logic
+	 */
+	public RequestLogic getRequestLogic() {
+		return requestLogic;
 	}
 }

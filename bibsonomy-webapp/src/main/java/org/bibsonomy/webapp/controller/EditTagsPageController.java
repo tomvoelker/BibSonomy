@@ -6,15 +6,19 @@ import org.bibsonomy.common.enums.ConceptStatus;
 import org.bibsonomy.common.enums.GroupingEntity;
 import org.bibsonomy.model.Resource;
 import org.bibsonomy.model.Tag;
+import org.bibsonomy.util.UrlUtils;
 import org.bibsonomy.webapp.command.EditTagsPageViewCommand;
-import org.bibsonomy.webapp.exceptions.MalformedURLSchemeException;
 import org.bibsonomy.webapp.util.MinimalisticController;
+import org.bibsonomy.webapp.util.RequestLogic;
 import org.bibsonomy.webapp.util.View;
+import org.bibsonomy.webapp.view.ExtendedRedirectView;
 import org.bibsonomy.webapp.view.Views;
 
 
 /**
  * Controller for the edit_tags page (only the view!)
+ * 
+ * FIXME: Is this class ever used???
  * 
  * @author Henrik Bartholmai
  * @version $Id$
@@ -23,12 +27,14 @@ import org.bibsonomy.webapp.view.Views;
 
 public class EditTagsPageController extends SingleResourceListControllerWithTags implements MinimalisticController<EditTagsPageViewCommand> {
 
+	private RequestLogic requestLogic;
+	
 	public View workOn(EditTagsPageViewCommand command) {
 		/*
 		 * no user given -> error
 		 */
 		if (!command.getContext().isUserLoggedIn()) {
-			throw new MalformedURLSchemeException("error.user_page_without_username");
+			return getAccessDeniedView(command, "error.general.login");
 		}
 
 		/*
@@ -60,5 +66,32 @@ public class EditTagsPageController extends SingleResourceListControllerWithTags
 
 	public EditTagsPageViewCommand instantiateCommand() {
 		return new EditTagsPageViewCommand();
+	}
+	
+	/**
+	 * redirect to the login page - and back
+	 * 
+	 * @param command the command
+	 * @param notice a notice to display at the login page
+	 * @return
+	 */
+	protected View getAccessDeniedView(final EditTagsPageViewCommand command, String notice) {
+		return new ExtendedRedirectView("/login" + 
+				"?notice=" + notice + 
+				"&referer=" + UrlUtils.safeURIEncode(getRequestLogic().getCompleteRequestURL()));
+	}
+
+	/**
+	 * @param requestLogic the request logic
+	 */
+	public void setRequestLogic(RequestLogic requestLogic) {
+		this.requestLogic = requestLogic;
+	}
+
+	/**
+	 * @return the request logic
+	 */
+	public RequestLogic getRequestLogic() {
+		return requestLogic;
 	}
 }
