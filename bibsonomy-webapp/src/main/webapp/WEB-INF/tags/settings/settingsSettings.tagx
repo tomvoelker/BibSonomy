@@ -37,7 +37,12 @@
 	<!-- style settings -->		
 	<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
 	<form:form id="styleSettingsForm" method="POST" action="/updateUserSettings">
-    
+
+         
+           | show global errors
+           
+        <errors:global errors="${errors}"/>
+        
     	<div id="fsform">
 			<fieldset class="fsInner">
 	  			<div class="fsRow">
@@ -123,6 +128,7 @@
 			        <buttons:help message="settings.resource.resourceToShow.help"/>
 			        <form:checkbox path="user.settings.showBookmark" label="${bookmark}"/>
 			        <form:checkbox path="user.settings.showBibtex" label="${publication}"/>
+			  		<div class="dissError"><form:errors path="user.settings.showBookmark" /></div>
 			      </div>
 			      
 			      <div class="fsRow">
@@ -266,5 +272,17 @@
 		</div>	
 
 	</form:form>		
+	
+	<script type="text/javascript">
+       //<mtl:cdata>
+	       <![CDATA[
+	          // vanishing error boxes
+	          $(document).ready( function(){
+					prepareErrorBoxes('dissError');
+	          	}
+	          );
+	       ]]> 
+       //</mtl:cdata>
+    </script>
 
 </jsp:root>

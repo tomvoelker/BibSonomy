@@ -91,6 +91,9 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		 * if there are errors, show them
 		 */
 		if (errors.hasErrors()){
+			//needed for the right values in the settings columns
+			command.setUser(context.getLoginUser());
+			
 			return Views.SETTINGSPAGE;
 		}
 		
@@ -117,11 +120,18 @@ public class UpdateUserSettingsController implements MinimalisticController<Sett
 		final UserSettings userSettings = user.getSettings();
 		final UserSettings newUserSettings = command.getUser().getSettings();
 		
+
+		if(!newUserSettings.isShowBibtex() && !newUserSettings.isShowBookmark()) {
+			errors.rejectValue("user.settings.showBookmark", "error.field.oneResourceMin");
+			return;
+		}
+		
 		userSettings.setDefaultLanguage(newUserSettings.getDefaultLanguage());
 		userSettings.setListItemcount(newUserSettings.getListItemcount());
 		userSettings.setTagboxTooltip(newUserSettings.getTagboxTooltip());
 		userSettings.setShowBookmark(newUserSettings.isShowBookmark());
 		userSettings.setShowBibtex(newUserSettings.isShowBibtex());
+		
 		userSettings.setSimpleInterface(newUserSettings.isSimpleInterface());
 		
 		if(newUserSettings.getIsMaxCount()) {
