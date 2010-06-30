@@ -27,8 +27,6 @@
         <jsp:attribute name="content">
 
 	      <div id="general">
-			<!-- OpenID logo -->
-			<div style="font-size: 30px;color:red;font-weight:bold">LDAP</div>
 			
 			<p>			           
             <form:form action="/registerLDAP" method="POST">
