@@ -61,7 +61,7 @@ public class SystemTagsUtil {
 	 */
 	public static boolean isExecutableSystemTag(final String tagName) {
 		final String tagType = SystemTagsUtil.extractName(tagName);
-		return sysTagFactory.isExecutableSystemTag(tagType);
+		return present(tagType) && containsSystemTagDelim(tagName) && sysTagFactory.isExecutableSystemTag(tagType);
 	}
 	
 	/**
@@ -72,7 +72,7 @@ public class SystemTagsUtil {
 	 */
 	public static boolean isSearchSystemTag(final String tagName) {
 		final String tagType = SystemTagsUtil.extractName(tagName);
-		return present(tagType) && sysTagFactory.isSearchSystemTag(tagType);
+		return present(tagType) && containsSystemTagDelim(tagName) && sysTagFactory.isSearchSystemTag(tagType);
 	}
 	
 	/**
@@ -96,7 +96,7 @@ public class SystemTagsUtil {
 	 */
 	public static boolean isSystemTag(final String tagName, final String tagType) {
 		final String extractedTagType = extractName(tagName);
-		return extractedTagType.toLowerCase().equals(tagType.toLowerCase());
+		return containsSystemTagDelim(tagName) && extractedTagType.toLowerCase().equals(tagType.toLowerCase());
 	}
 
 	public static boolean startsWithPrefix(final String tagName) {
@@ -107,6 +107,17 @@ public class SystemTagsUtil {
 		return isSystemTag(tagName, tagType) && startsWithPrefix(tagName);
 	}
 
+	/*
+	 * FIXME:This is just a fix, the colon should not be a necessity (e. g. myown)
+	 * For the long run: Each systemTag should know for itself whether it needs the prefix, the colon or some argument
+	 */
+	private static boolean containsSystemTagDelim(final String tagName) {
+		if (tagName.contains(DELIM)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	/**
 	 * Checks, if a list of tagNames contains a member, that starts with a given string, ignoring case
 	 * @param tagNames = a list of tagNames
