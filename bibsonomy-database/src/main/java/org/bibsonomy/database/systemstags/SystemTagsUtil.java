@@ -84,7 +84,7 @@ public class SystemTagsUtil {
 	 */
 	public static boolean isSystemTag(final String tagName) {
 		final String tagType = extractName(tagName);
-		return sysTagFactory.isExecutableSystemTag(tagType) || sysTagFactory.isSearchSystemTag(tagType);
+		return present(tagType) && containsSystemTagDelim(tagName) && (sysTagFactory.isExecutableSystemTag(tagType) || sysTagFactory.isSearchSystemTag(tagType));
 	}
 	
 	/**

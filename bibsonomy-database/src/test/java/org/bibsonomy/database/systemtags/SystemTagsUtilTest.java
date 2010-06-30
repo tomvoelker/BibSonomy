@@ -65,7 +65,7 @@ public class SystemTagsUtilTest {
 		}
 		
 		// some non-SystemTags
-		String[] nonSystemTags = {"syst:author:sdo", "send:", "foo", "sys:foo:bar"};
+		String[] nonSystemTags = {"syst:author:sdo", "send:", "foo", "sys:foo:bar", "send"};
 		for (int i = 0; i<nonSystemTags.length; i++) {
 			assertFalse(SystemTagsUtil.isSystemTag(nonSystemTags[i]));
 		}
