@@ -22,7 +22,7 @@ function createParameters(title) {
 	title = "";
 
 	for(i = 0; i < parseInt(partials.length); i++) {
-		title += "sys:title:"+partials[i]+((i+1 < parseInt(partials.length))?"+":"*"); 
+		title += "sys:title:"+encodeURIComponent(partials[i])+((i+1 < parseInt(partials.length))?"+":"*"); 
 	}
 
 	return title;
@@ -50,7 +50,7 @@ function getSuggestions(partialTitle) {
 	if(parseInt(partialTitle.length) > 1) {
 		var query = $.ajax({
 			type: "GET",
-			url: "/json/tag/"+createParameters(encodeURIComponent(partialTitle))+"?items=10",
+			url: "/json/tag/"+createParameters(partialTitle)+"?items=10",
 			dataType: "jsonp",
 			success: function(json){
 			processResponse(json);
@@ -263,7 +263,6 @@ function triggerEvt(el, eventName) {
 	((eventName == 'mouseover')?el.mouseover && el.mouseover():el.mouseout && el.mouseout());
 	
 }
-
 
 /**
  * format the matching part of a string bold
