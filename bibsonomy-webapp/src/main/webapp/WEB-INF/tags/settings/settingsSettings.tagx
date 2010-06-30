@@ -38,9 +38,9 @@
 	<h2><fmt:message key="settings.styleSettingsHeader"/></h2>
 	<form:form id="styleSettingsForm" method="POST" action="/updateUserSettings">
 
-         
-           | show global errors
-           
+         <!--  
+         	| show global errors
+           -->
         <errors:global errors="${errors}"/>
         
     	<div id="fsform">
