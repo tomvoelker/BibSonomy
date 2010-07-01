@@ -146,7 +146,7 @@ public class PostValidator<RESOURCE extends Resource> implements Validator<EditP
 		log.debug("got abstractGrouping " + abstractGrouping);
 		log.debug("got groups " + groups);
 		if (PUBLIC_GROUP.getName().equals(abstractGrouping) || PRIVATE_GROUP.getName().equals(abstractGrouping)) {
-			if (groups != null && !groups.isEmpty()) {
+			if (present(groups)) {
 				/*
 				 * "public" or "private" selected, but other group chosen
 				 */

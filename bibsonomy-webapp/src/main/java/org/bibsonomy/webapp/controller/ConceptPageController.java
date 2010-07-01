@@ -52,7 +52,7 @@ public class ConceptPageController extends SingleResourceListController implemen
 		}
 		else if (present(requGroup)) {
 			command.setPostCountForTagsForGroup(this.getPostCountForSidebar(GroupingEntity.GROUP, requGroup, requTags));
-			command.setConceptsOfGroup(this.getConceptsForSidebar(command, GroupingEntity.GROUP, null, requTags));
+			command.setConceptsOfAll(this.getConceptsForSidebar(command, GroupingEntity.ALL, null, requTags));
 		}
 		else if (present(loginUser)) {
 			command.setPostCountForTagsForLoginUser(this.getPostCountForSidebar(GroupingEntity.USER, loginUser, requTags));

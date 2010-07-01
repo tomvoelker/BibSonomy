@@ -25,6 +25,7 @@ public class EditTagsPageViewCommand extends ResourceViewCommand {
 	 * 0 pure edit_tags page display
 	 * 1 edit the tags
 	 * 2 add/del relations
+	 * FIXME: use an enum
 	 */
 	private int forcedAction = 0;
 	

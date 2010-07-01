@@ -124,7 +124,7 @@
 					<fmt:message key="subtags" />
 					<c:out value=": "/>
 					<!-- following code has to be in one line - do neither separate nor remove space characters! -->
-					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} </c:forEach>
+					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
 				</c:set>
 				<a title="${conceptTitle}" 
 					href="/concept/user/${fn:escapeXml(command.context.loginUser.name)}/${mtl:encodeURI(conceptVar.name)}">
@@ -155,7 +155,7 @@
 					<fmt:message key="subtags" />
 					<c:out value=": "/>
 					<!-- following code has to be in one line - do neither separate nor remove space characters! -->
-					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} </c:forEach>
+					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
 				</c:set>
 				<a title="${conceptTitle}" 
 					href="/concept/user/${fn:escapeXml(command.requestedUser)}/${mtl:encodeURI(conceptVar.name)}">
@@ -186,7 +186,7 @@
 					<fmt:message key="subtags" />
 					<c:out value=": "/>
 					<!-- following code has to be in one line - do neither separate nor remove space characters! -->
-					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} </c:forEach>
+					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
 				</c:set>
 				<a title="${conceptTitle}" 
 					href="/concept/group/${fn:escapeXml(command.requestedGroup)}/${mtl:encodeURI(conceptVar.name)}">
@@ -217,7 +217,7 @@
 					<fmt:message key="subtags" />
 					<c:out value=": "/>
 					<!-- following code has to be in one line - do not separate! -->
-					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} </c:forEach>
+					<c:forEach var="subtag" items="${conceptVar.subTags}"> ${fn:escapeXml(subtag.name)} <c:out value=" "/></c:forEach>
 				</c:set>
 				<a 	title="${conceptTitle}" 
 					href="/concept/tag/${mtl:encodeURI(conceptVar.name)}">
