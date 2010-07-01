@@ -791,7 +791,7 @@
 	<rule><!-- /faq to /help/faq -->
 		<name>/faq</name>
 		<from>^/faq(.*)$</from>
-		<to type="permanent-redirect" last="true">/help/faq/$1</to>
+		<to type="permanent-redirect" last="true">/help/faq$1</to>
 	</rule>
 
 	<!-- old editBookmark/Publication forms - used by the buttons! -->
