@@ -267,10 +267,10 @@ public class UserDatabaseManager extends AbstractDatabaseManager {
 		
 		this.checkUser(user, session);
 		
-		if(!present(user.getOpenID()) || !present(user.getLdapId())) {
-		    this.insert("insertPendingUser", user, session);
-		} else {
+		if( present(user.getOpenID()) || present(user.getLdapId())) {
 		    this.insert("insertUser", user, session);
+		} else {
+		    this.insert("insertPendingUser", user, session);
 		}
 		
 		/*

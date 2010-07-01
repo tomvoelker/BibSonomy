@@ -27,7 +27,7 @@
 	<!-- 
 		TODO: why should we delete those concepts? Which feature needs this query?
 	-->	
-	<delete id="deleteEqualConcepts" parameterClass="updateParam">
+	<delete id="deleteEqualConcepts" parameterClass="loggingParam">
 		DELETE FROM tagtagrelations 
 		  WHERE lower = #newId# AND upper = #newId# AND user_name = #user.name#
 	</delete>
@@ -38,7 +38,7 @@
 		TODO: This query potentially deletes whole concepts! This should not be 
 		necessary. Please remove.	
 		-->
-	<delete id="deleteOldConcepts" parameterClass="updateParam">
+	<delete id="deleteOldConcepts" parameterClass="loggingParam">
 		DELETE FROM tagtagrelations 
 		  WHERE (lower = #oldId# OR upper = #oldId#) AND user_name = #user.name#
 	</delete>
@@ -101,7 +101,7 @@
 		SELECT upper_lcase AS tag_name,	lower_lcase AS subTag,
 			COUNT(DISTINCT user_name) AS subTagCount
 		  FROM tagtagrelations JOIN user u USING (user_name)
-		  WHERE upper_lcase = LCASE(#conceptName#)
+		  WHERE upper_lcase = #conceptName#
 			AND u.spammer = 0
 		  GROUP BY upper_lcase,	lower_lcase
 	</select>
@@ -115,15 +115,15 @@
 			AND upper = #upperTagName# 
 	</select>
 	
-	<update id="updateUpperTagRelations" parameterClass="updateParam">
+	<update id="updateUpperTagRelations" parameterClass="loggingParam">
 		UPDATE IGNORE tagtagrelations t 
-		  SET t.upper = #newId#
+		  SET t.upper = #newId#, t.upper_lcase = LCASE(#newId#)
 		  WHERE t.upper = #oldId# AND t.user_name = #user.name#
 	</update>
 	
-	<update id="updateLowerTagRelations" parameterClass="updateParam">
+	<update id="updateLowerTagRelations" parameterClass="loggingParam">
 		UPDATE IGNORE tagtagrelations t 
-		  SET t.lower = #newId#
+		  SET t.lower = #newId#, t.lower_lcase = LCASE(#newId#)
 		  WHERE t.lower = #oldId# AND t.user_name = #user.name#
 	</update>
 	

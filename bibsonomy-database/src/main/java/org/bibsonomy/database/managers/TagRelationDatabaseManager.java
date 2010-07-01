@@ -13,7 +13,7 @@ import org.bibsonomy.database.AbstractDatabaseManager;
 import org.bibsonomy.database.common.DBSession;
 import org.bibsonomy.database.managers.chain.concept.ConceptChain;
 import org.bibsonomy.database.params.TagRelationParam;
-import org.bibsonomy.database.params.UpdateParam;
+import org.bibsonomy.database.params.LoggingParam;
 import org.bibsonomy.database.plugin.DatabasePluginRegistry;
 import org.bibsonomy.model.Tag;
 import org.bibsonomy.model.User;
@@ -296,7 +296,7 @@ public class TagRelationDatabaseManager extends AbstractDatabaseManager {
 			throw new ValidationException("tried to replace tag without valid name");
 		}
 		
-		UpdateParam<String> param = new UpdateParam<String>();
+		LoggingParam<String> param = new LoggingParam<String>();
 		param.setOldId(tagToReplace.getName());
 		param.setNewId(replacementTag.getName());
 		param.setUser(user);
