@@ -5,10 +5,10 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 	xmlns:layout="urn:jsptagdir:/WEB-INF/tags/layout"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:user="urn:jsptagdir:/WEB-INF/tags/resources/user"
 	xmlns:tags="urn:jsptagdir:/WEB-INF/tags/tags"
-    xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
+  xmlns:buttons="urn:jsptagdir:/WEB-INF/tags/buttons"
 	xmlns:mtl="urn:jsptld:/WEB-INF/taglibs/mytaglib.tld">
 	
   <jsp:directive.page contentType="text/html; charset=UTF-8" language="java" pageEncoding="UTF-8" session="true" />
@@ -32,6 +32,7 @@
 			<!-- need to switch between if the user is logged in or not -->
 	        <fmt:message key="tagrelations.all.text.partOne"/>
 		    <c:if test="${command.context.userLoggedIn}">
+		    <c:out value=" " />
 				<fmt:message key="tagrelations.all.text.partTwo">
 			    	<fmt:param><a href="/relations/${fn:escapeXml(command.context.loginUser.name)}"><fmt:message key="navi.my.plural"/><fmt:message key="navi.relations"/></a></fmt:param>
 			      	<fmt:param><a href="/edit_tags"><fmt:message key="navi.editTags"/></a></fmt:param>
