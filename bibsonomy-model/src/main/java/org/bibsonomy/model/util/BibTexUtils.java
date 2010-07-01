@@ -33,6 +33,8 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -80,6 +82,10 @@ public class BibTexUtils {
 	 * all fields from the resource) 
 	 */
 	public static final String ADDITIONAL_MISC_FIELD_ADDED_AT = "added-at";
+	/**
+	 * ISO date + time for "added-at" field  
+	 */
+	private static final DateFormat ADDED_AT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 	
 	/**
 	 * This field from the post is added to the BibTeX string (in addition to 
@@ -456,7 +462,7 @@ public class BibTexUtils {
 			bib.addMiscField(ADDITIONAL_MISC_FIELD_DESCRIPTION, post.getDescription());
 		}
 		if (present(post.getDate())) {
-			bib.addMiscField(ADDITIONAL_MISC_FIELD_ADDED_AT, post.getDate().toString());
+			bib.addMiscField(ADDITIONAL_MISC_FIELD_ADDED_AT, ADDED_AT_DATE_FORMAT.format(post.getDate()));
 		}
 		return toBibtexString(bib, mode);
 	}
