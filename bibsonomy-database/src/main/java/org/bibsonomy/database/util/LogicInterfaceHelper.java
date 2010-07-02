@@ -32,11 +32,8 @@ import org.bibsonomy.model.util.UserUtils;
  * @author Christian Schenk
  * @version $Id$
  */
-public class LogicInterfaceHelper {
-	/** separates aggregated system tag values */
-	private static final String LIST_SEPARATOR = " ";
-	
-	protected static final Log logger = LogFactory.getLog(ChainElement.class);
+public class LogicInterfaceHelper {	
+	private static final Log logger = LogFactory.getLog(ChainElement.class);
 
 	/**
 	 * 
@@ -142,7 +139,7 @@ public class LogicInterfaceHelper {
 
 				if (tag.length() > 2) {
 					//if (SystemTagsUtil.isSearchSystemTag(tag)) {
-						SearchSystemTag searchTag = SystemTagsUtil.createSearchSystemTag(tag);
+						final SearchSystemTag searchTag = SystemTagsUtil.createSearchSystemTag(tag);
 						if (present(searchTag)) {
 							searchTag.handleParam(param);
 							continue;
@@ -208,7 +205,9 @@ public class LogicInterfaceHelper {
 
 	
 	
-/*	@SuppressWarnings("deprecation") // TODO: lucene can't handle system tags
+/*	TODO: remove old code
+ * @SuppressWarnings("deprecation") // TODO: lucene can't handle system tags
+ 
 	private static boolean handleSystemTag(String tag, GenericParam param) {
 		logger.debug("working on possible system tag " + tag);
  		String tagName;
