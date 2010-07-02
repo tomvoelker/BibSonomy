@@ -51,36 +51,36 @@ import bibtex.parser.ParseException;
  */
 public class BibtexParserUtils {
 	private static final Log log = LogFactory.getLog(BibtexParserUtils.class);
-	
+
 	private static final String BIBTEX_IS_INVALID_MSG = "The validation of the BibTeX entry failed: ";
-	
+
 	/**
 	 * Person fields
 	 */
 	private static enum personField {
 		AUTHORS("author"),
 		EDITORS("editor");
-		
+
 		private final String label;
-		
+
 		private personField(final String label) {
 			this.label = label;
 		}
-		
+
 		public String getLabel() {
 			return this.label;
 		}
 	}
 
 	// the parsed bibtex
-	private BibtexFile bibfile;
-	
+	private final BibtexFile bibfile;
+
 	// internal pointer to current entry
 	private Integer currentEntryId;
-	
+
 	// current entry
 	private BibtexEntry currentEntry;	
-	
+
 	/**
 	 * create a new BibTex Utils Object; the given 
 	 * bibtexString is parsed, and the internal pointer is set to the first entry
@@ -92,7 +92,7 @@ public class BibtexParserUtils {
 		this.currentEntryId = -1;
 		this.nextEntry();
 	}
-	
+
 	/**
 	 * move the internal pointer to the next entry
 	 */
@@ -108,7 +108,7 @@ public class BibtexParserUtils {
 			this.nextEntry();
 		}
 	}
-	
+
 	/**
 	 * Check if there is another bibtex entry besides the current one
 	 * 
@@ -116,8 +116,8 @@ public class BibtexParserUtils {
 	 */
 	public boolean hasNextEntry() {
 		for (int pos = this.currentEntryId + 1; 
-				pos <= this.bibfile.getEntries().size() - 1; 
-				pos++ ) {
+		pos <= this.bibfile.getEntries().size() - 1; 
+		pos++ ) {
 			final Object entry = this.bibfile.getEntries().get( pos );
 			if (entry instanceof BibtexEntry) {
 				return true;	
@@ -125,7 +125,7 @@ public class BibtexParserUtils {
 		}		
 		return false;
 	}
-	
+
 	/**
 	 * Parse a given bibtex string
 	 * 
@@ -135,18 +135,18 @@ public class BibtexParserUtils {
 	private final BibtexFile parse(final String bibtexString) {
 		final BibtexParser parser = new BibtexParser(true);
 		final BibtexFile bibtexFile = new BibtexFile();
-		
+
 		try {
 			// parse file, exceptions are catched below
 			parser.parse(bibtexFile, new StringReader(bibtexString));
-			
+
 			// expand person Lists			
 			final PersonListExpander pListExpander = new PersonListExpander(true, true, false);
 			pListExpander.expand(bibtexFile);
-			
+
 			// return bibtexFile
 			return bibtexFile;
-			
+
 		} catch (final ParseException ex) {
 			log.error(ex.getMessage());
 			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "Error while parsing BibTeX.");
@@ -158,7 +158,7 @@ public class BibtexParserUtils {
 			throw new ValidationException(BIBTEX_IS_INVALID_MSG + "Error when trying to normalize authors.");
 		}							
 	}
-			
+
 	/**
 	 * Return the author field of the current entry formatted according to
 	 * FIRSTNAME LASTNAME and FIRSTNAME LASTNAME and ...
@@ -168,7 +168,7 @@ public class BibtexParserUtils {
 	public String getFormattedAuthorString() {
 		return getFormattedPersonString(this.currentEntry, personField.AUTHORS);
 	}
-	
+
 	/**
 	 * Return the author field of the current entry formatted according to
 	 * FIRSTNAME LASTNAME and FIRSTNAME LASTNAME and ...
@@ -200,32 +200,32 @@ public class BibtexParserUtils {
 				@SuppressWarnings("unchecked") // BibtexPersonList.getList specified to return a list of BibtexPersons
 				final List<BibtexPerson> personList = personsString.getList();
 				log.debug("personList: " + personList);
-							
+
 				for (final BibtexPerson person:personList) {
-										
+
 					// build one person					
-					final StringBuffer personString = new StringBuffer();
+					final StringBuilder personString = new StringBuilder();
 					final String first = person.getFirst();
 					if (first != null) {
 						personString.append(first);
 					}
-					
+
 					final String preLast = person.getPreLast();
 					if (preLast != null) {
-						personString.append(" " + preLast);
+						personString.append(" ").append(preLast);
 					}
-					
+
 					final String last = person.getLast();
 					if (last != null) {
-						personString.append(" " + last);
+						personString.append(" ").append(last);
 					}
-					
-					personBuffer.append(personString + " and ");
+
+					personBuffer.append(personString).append(" and ");
 					log.debug("personString: " + personString);
 				}
 				/* remove last " and " */
 				if (!personList.isEmpty()) {
-					return(personBuffer.substring(0, personBuffer.lastIndexOf(" and ")));
+					return (personBuffer.substring(0, personBuffer.lastIndexOf(" and ")));
 				}
 				// this means there was an error when trying to format this person
 				log.error(BIBTEX_IS_INVALID_MSG + "Error while trying to format person list: " + personsString);

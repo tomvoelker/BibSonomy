@@ -25,7 +25,6 @@
 package org.bibsonomy.bibtex.parser;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,8 +34,6 @@ import org.bibsonomy.common.enums.SerializeBibtexMode;
 import org.bibsonomy.model.BibTex;
 import org.bibsonomy.model.util.BibTexUtils;
 import org.junit.Test;
-
-import bibtex.parser.ParseException;
 
 /**
  * @author rja
@@ -59,99 +56,67 @@ public class SimpleBibTeXParserTest {
 	"author = {M. Mustermann}}";
 
 	private static final String entry3 = "@phdthesis{david2007domain,\n" + 
-		"address={Saarbrücken},\n" + 
-		"author={Sánchez, David and Universitat Polit{226}ecnica de Catalunya},\n" + 
-		"isbn={9783836470698 3836470691},\n" + 
-		"pages={--},\n" + 
-		"publisher={VDM Verlag Dr. Müller}, refid={426144281},\n" + 
-		"title={Domain ontology learning from the web an unsupervised, automatic and domain independent approach},\n" + 
-		"year={2007},\n" + 
-		"url = {http://www.worldcat.org/title/domain-ontology-learning-from-the-web-an-unsupervised-automatic-and-domain-independent-approach/oclc/426144281&referer=brief_results}\n" + 
-		"}";
-	
-	@Test
-	public void testParseBibTeX1() {
-		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
-		try {
-			final BibTex bibtex = parser.parseBibTeX(entry1);
-
-			assertEquals("Web 2.0 ", bibtex.getTitle());
-			assertEquals("Jens Behrendt and Klaus Zeppenfeld", bibtex.getAuthor());
-			assertEquals("book", bibtex.getEntrytype());
-			assertEquals("behrendt2007", bibtex.getBibtexKey());
-			assertEquals("Springer", bibtex.getPublisher());
-			assertEquals("2007", bibtex.getYear());
-			assertEquals("http://ftubhan.tugraz.at/han/ZDB-2-STI/www.springerlink.com/content/wk5317/", bibtex.getUrl());
-			assertEquals("ISR_07", bibtex.getMiscField("keywords"));
-			assertEquals("http://www.bibsonomy.org/bibtex/22407a08751c316c63686d37228a25b3d/diam_eter", bibtex.getMiscField("biburl"));
-
-		} catch (ParseException ex) {
-			fail(ex.getMessage());
-		} catch (IOException ex) {
-			fail(ex.getMessage());		
-		}
-	}
-
+	"address={Saarbrücken},\n" + 
+	"author={Sánchez, David and Universitat Polit{226}ecnica de Catalunya},\n" + 
+	"isbn={9783836470698 3836470691},\n" + 
+	"pages={--},\n" + 
+	"publisher={VDM Verlag Dr. Müller}, refid={426144281},\n" + 
+	"title={Domain ontology learning from the web an unsupervised, automatic and domain independent approach},\n" + 
+	"year={2007},\n" + 
+	"url = {http://www.worldcat.org/title/domain-ontology-learning-from-the-web-an-unsupervised-automatic-and-domain-independent-approach/oclc/426144281&referer=brief_results}\n" + 
+	"}";
 
 	@Test
-	public void testParseBibTeX2() {
+	public void testParseBibTeX1() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
-		try {
-			final BibTex bibtex = parser.parseBibTeX(entry2);
+		final BibTex bibtex = parser.parseBibTeX(entry1);
 
-			assertEquals("Foo Barness", bibtex.getTitle());
-			assertEquals("M. Mustermann", bibtex.getAuthor());
-			assertEquals("article", bibtex.getEntrytype());
-			assertEquals("foo", bibtex.getBibtexKey());
-
-		} catch (ParseException ex) {
-			fail(ex.getMessage());
-		} catch (IOException ex) {
-			fail(ex.getMessage());		
-		}
+		assertEquals("Web 2.0 ", bibtex.getTitle());
+		assertEquals("Jens Behrendt and Klaus Zeppenfeld", bibtex.getAuthor());
+		assertEquals("book", bibtex.getEntrytype());
+		assertEquals("behrendt2007", bibtex.getBibtexKey());
+		assertEquals("Springer", bibtex.getPublisher());
+		assertEquals("2007", bibtex.getYear());
+		assertEquals("http://ftubhan.tugraz.at/han/ZDB-2-STI/www.springerlink.com/content/wk5317/", bibtex.getUrl());
+		assertEquals("ISR_07", bibtex.getMiscField("keywords"));
+		assertEquals("http://www.bibsonomy.org/bibtex/22407a08751c316c63686d37228a25b3d/diam_eter", bibtex.getMiscField("biburl"));
 	}
 
 	@Test
-	public void testParse3() {
+	public void testParseBibTeX2() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
-		try {
-			final String foo = 
-				"@article{foo,\n" +
-				"author = {{Hartmann}, L. and {Burkert}, A.},\n" +
-				"title = {Hallo}\n}";
-			final BibTex bibtex = parser.parseBibTeX(foo);
+		final BibTex bibtex = parser.parseBibTeX(entry2);
 
-
-//			System.out.println(bibtex);
-//			assertEquals("Foo Barness", bibtex.getTitle());
-//			assertEquals("M. Mustermann", bibtex.getAuthor());
-//			assertEquals("article", bibtex.getEntrytype());
-//			assertEquals("foo", bibtex.getBibtexKey());
-
-		} catch (ParseException ex) {
-			fail(ex.getMessage());
-		} catch (IOException ex) {
-			fail(ex.getMessage());		
-		}
-
+		assertEquals("Foo Barness", bibtex.getTitle());
+		assertEquals("M. Mustermann", bibtex.getAuthor());
+		assertEquals("article", bibtex.getEntrytype());
+		assertEquals("foo", bibtex.getBibtexKey());
 	}
-	
-	@Test
-	public void testParseBibTe32() {
-		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
-		try {
-			final BibTex bibtex = parser.parseBibTeX(entry3);
-			
-			assertEquals("Domain ontology learning from the web an unsupervised, automatic and domain independent approach", bibtex.getTitle());
-			assertEquals("phdthesis", bibtex.getEntrytype());
-			assertEquals("david2007domain", bibtex.getBibtexKey());
-			assertEquals("David Sánchez and Universitat Polit{226}ecnica de Catalunya", bibtex.getAuthor());
 
-		} catch (ParseException ex) {
-			fail(ex.getMessage());
-		} catch (IOException ex) {
-			fail(ex.getMessage());		
-		}
+	@Test
+	public void testParse3() throws Exception {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+		final String foo = 
+			"@article{foo,\n" +
+			"author = {{Hartmann}, L. and {Burkert}, A.},\n" +
+			"title = {Hallo}\n}";
+		final BibTex bibtex = parser.parseBibTeX(foo);
+
+		assertEquals("Hallo", bibtex.getTitle());
+		//		assertEquals("L. {Hartmann} and A. {Burkert}", bibtex.getAuthor()); TODO: correct?!?
+		assertEquals("article", bibtex.getEntrytype());
+		assertEquals("foo", bibtex.getBibtexKey());
+	}
+
+	@Test
+	public void testParseBibTe32() throws Exception {
+		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
+		final BibTex bibtex = parser.parseBibTeX(entry3);
+
+		assertEquals("Domain ontology learning from the web an unsupervised, automatic and domain independent approach", bibtex.getTitle());
+		assertEquals("phdthesis", bibtex.getEntrytype());
+		assertEquals("david2007domain", bibtex.getBibtexKey());
+		assertEquals("David Sánchez and Universitat Polit{226}ecnica de Catalunya", bibtex.getAuthor());
 	}
 
 	/**
@@ -171,25 +136,19 @@ public class SimpleBibTeXParserTest {
 	 * 
 	 * Nevertheless, we document this "feature" here because we can't just 
 	 * change it without changing other methods (like author handling).
+	 * @throws Exception 
 	 */
 	@Test
-	public void testAuthorNormalization() {
+	public void testAuthorNormalization() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
 
-		try {
-			final BibTex parsedBibTeX = parser.parseBibTeX(
-					"@article{foo,\n" +
-					"  author = {Knuth, D.E.}\n" + 
-					"}"
-			);
-			
-			assertEquals("D.E. Knuth", parsedBibTeX.getAuthor());
+		final BibTex parsedBibTeX = parser.parseBibTeX(
+				"@article{foo,\n" +
+				"  author = {Knuth, D.E.}\n" + 
+				"}"
+		);
 
-		} catch (ParseException ex) {
-			fail(ex.getMessage());
-		} catch (IOException ex) {
-			fail(ex.getMessage());
-		}	
+		assertEquals("D.E. Knuth", parsedBibTeX.getAuthor());
 	}
 
 	/**
@@ -202,86 +161,67 @@ public class SimpleBibTeXParserTest {
 	 * abbreviations!).
 	 */
 	@Test
-	public void testMonthNormalization() {
+	public void testMonthNormalization() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
 
-		try {
-			final BibTex parsedBibTeX = parser.parseBibTeX(
-					"@article{foo,\n" +
-					"  month = jun\n" + 
-					"}"
-			);
-			
-			assertEquals("jun", parsedBibTeX.getMonth());
+		final BibTex parsedBibTeX = parser.parseBibTeX(
+				"@article{foo,\n" +
+				"  month = jun\n" + 
+				"}"
+		);
 
-		} catch (ParseException ex) {
-			fail(ex.getMessage());
-		} catch (IOException ex) {
-			fail(ex.getMessage());
-		}	
+		assertEquals("jun", parsedBibTeX.getMonth());
 	}
-	
+
 	@Test
-	public void testMacroExpansion() {
+	public void testMacroExpansion() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
-		try {
-			final BibTex parsedBibTeX = parser.parseBibTeX(
-					"@string{AW = \"Addison--Wesley Publishing Company\"}\n" +
-					"@article{foo,\n" +
-					"  month = jun,\n" + 
-					"  publisher = AW,\n" +
-					"  journal = jacm,\n" +
-					"  confmonth = {30~} # jan # {~-- 2~} # feb,\n" + 
-					"  nonstandardfield = AW # \" foo\"\n" + 
-					"}"
-			);
-			/*
-			 * defined at the beginning
-			 */
-			assertEquals("Addison--Wesley Publishing Company", parsedBibTeX.getPublisher());
-			/*
-			 * predefined in BibTeX styles
-			 */
-			assertEquals("Journal of the ACM", parsedBibTeX.getJournal());
 
-		} catch (ParseException ex) {
-			fail(ex.getMessage());
-		} catch (IOException ex) {
-			fail(ex.getMessage());
-		}	
+		final BibTex parsedBibTeX = parser.parseBibTeX(
+				"@string{AW = \"Addison--Wesley Publishing Company\"}\n" +
+				"@article{foo,\n" +
+				"  month = jun,\n" + 
+				"  publisher = AW,\n" +
+				"  journal = jacm,\n" +
+				"  confmonth = {30~} # jan # {~-- 2~} # feb,\n" + 
+				"  nonstandardfield = AW # \" foo\"\n" + 
+				"}"
+		);
+		/*
+		 * defined at the beginning
+		 */
+		assertEquals("Addison--Wesley Publishing Company", parsedBibTeX.getPublisher());
+		/*
+		 * predefined in BibTeX styles
+		 */
+		assertEquals("Journal of the ACM", parsedBibTeX.getJournal());
 	}
-	
+
 	@Test
-	public void testFile1() {
+	public void testFile1() throws Exception {
 		final SimpleBibTeXParser parser = new SimpleBibTeXParser();
-		try {
-			final BibTex parsedBibTeX = parser.parseBibTeX(getTestFile("test1.bib"));
-			/*
-			 * defined at the beginning
-			 */
-			assertEquals("Australian Comput. Soc.", parsedBibTeX.getPublisher());
-			/*
-			 * concatenated bibtex field
-			 */
-			assertEquals("{30~}#jan#{~-- 2~}#feb", parsedBibTeX.getMiscField("confmonth"));
-			/*
-			 * After 
-			 *   serialize -> parse -> serialize
-			 * we must get the same BibTeX string
-			 * 
-			 */
-			
-			final String s = BibTexUtils.toBibtexString(parsedBibTeX, SerializeBibtexMode.PLAIN_MISCFIELDS);
-			final BibTex sp = parser.parseBibTeX(s);
-			final String sp2 = BibTexUtils.toBibtexString(sp, SerializeBibtexMode.PLAIN_MISCFIELDS);
-			assertEquals(s, sp2);
-		} catch (ParseException ex) {
-			fail(ex.getMessage());
-		} catch (IOException ex) {
-			fail(ex.getMessage());
-		}
+		final BibTex parsedBibTeX = parser.parseBibTeX(getTestFile("test1.bib"));
+		/*
+		 * defined at the beginning
+		 */
+		assertEquals("Australian Comput. Soc.", parsedBibTeX.getPublisher());
+		/*
+		 * concatenated bibtex field
+		 */
+		assertEquals("{30~}#jan#{~-- 2~}#feb", parsedBibTeX.getMiscField("confmonth"));
+		/*
+		 * After 
+		 *   serialize -> parse -> serialize
+		 * we must get the same BibTeX string
+		 * 
+		 */
+
+		final String s = BibTexUtils.toBibtexString(parsedBibTeX, SerializeBibtexMode.PLAIN_MISCFIELDS);
+		final BibTex sp = parser.parseBibTeX(s);
+		final String sp2 = BibTexUtils.toBibtexString(sp, SerializeBibtexMode.PLAIN_MISCFIELDS);
+		assertEquals(s, sp2);
 	}
-	
+
 	private static String getTestFile(final String filename) throws IOException {
 		final BufferedReader stream = new BufferedReader(new InputStreamReader(SimpleBibTeXParser.class.getClassLoader().getResourceAsStream(filename), "UTF-8"));
 		final StringBuilder buf = new StringBuilder();
