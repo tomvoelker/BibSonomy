@@ -6,8 +6,7 @@ import org.bibsonomy.common.enums.ConceptStatus;
 
 /**
  * @author Jens Illig
- * @version $Id: TagRelationParam.java,v 1.1 2008-03-11 17:50:51 ss05sstuetzer
- *          Exp $
+ * @version $Id$
  */
 public class TagRelationParam extends GenericParam {
 
@@ -28,7 +27,7 @@ public class TagRelationParam extends GenericParam {
 	/**
 	 * @param creationDate
 	 */
-	public void setCreationDate(Date creationDate) {
+	public void setCreationDate(final Date creationDate) {
 		this.creationDate = creationDate;
 	}
 
@@ -42,7 +41,7 @@ public class TagRelationParam extends GenericParam {
 	/**
 	 * @param lowerTagName
 	 */
-	public void setLowerTagName(String lowerTagName) {
+	public void setLowerTagName(final String lowerTagName) {
 		this.lowerTagName = lowerTagName;
 	}
 
@@ -56,7 +55,7 @@ public class TagRelationParam extends GenericParam {
 	/**
 	 * @param ownerUserName
 	 */
-	public void setOwnerUserName(String ownerUserName) {
+	public void setOwnerUserName(final String ownerUserName) {
 		this.ownerUserName = ownerUserName;
 	}
 
@@ -70,7 +69,7 @@ public class TagRelationParam extends GenericParam {
 	/**
 	 * @param relationId
 	 */
-	public void setRelationId(Integer relationId) {
+	public void setRelationId(final Integer relationId) {
 		this.relationId = relationId;
 	}
 
@@ -84,7 +83,7 @@ public class TagRelationParam extends GenericParam {
 	/**
 	 * @param upperTagName
 	 */
-	public void setUpperTagName(String upperTagName) {
+	public void setUpperTagName(final String upperTagName) {
 		this.upperTagName = upperTagName;
 	}
 
@@ -98,7 +97,7 @@ public class TagRelationParam extends GenericParam {
 	/**
 	 * @param conceptStatus
 	 */
-	public void setConceptStatus(ConceptStatus conceptStatus) {
+	public void setConceptStatus(final ConceptStatus conceptStatus) {
 		this.conceptStatus = conceptStatus;
 	}
 }
