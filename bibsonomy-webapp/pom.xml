@@ -16,6 +16,32 @@
 	<description>The webapplication for Bibsonomy.</description>
 	<build>
 		<plugins>
+		<plugin>
+			<groupId>org.apache.myfaces.trinidadbuild</groupId>
+			<artifactId>maven-javascript-plugin</artifactId>
+			<configuration>
+				<sourcePath>./javascript</sourcePath>
+				<sourceDirectory>src/main/webapp/resources</sourceDirectory>
+				<targetPath>./debug/javascript</targetPath>
+				<targetDirectory>${project.build.directory}</targetDirectory>
+				<optimizeTargetPath>./${project.artifactId}-${project.parent.version}/resources/javascript</optimizeTargetPath>
+			</configuration>
+			<executions>
+				<execution>
+					<phase>process-resources</phase>
+						<goals>
+							<goal>reduce-javascript</goal>
+						</goals>
+				</execution>
+			</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<warSourceExclude>*javascript/*.js</warSourceExclude>
+				</configuration>
+			</plugin>
 			<plugin>
        			<groupId>org.antlr</groupId>
        			<artifactId>antlr3-maven-plugin</artifactId>
